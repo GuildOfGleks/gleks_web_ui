@@ -1,0 +1,213 @@
+.gog-ms-wrapper {
+  --gog-ms-gap: 4px;
+  --gog-ms-label-color: var(--accent-color);
+  --gog-ms-field-bg: var(--surface-color);
+  --gog-ms-field-border: var(--accent-dim);
+  --gog-ms-field-color: var(--text-color);
+  --gog-ms-value-color: var(--text-color);
+  --gog-ms-placeholder-color: var(--muted-text-color);
+  --gog-ms-focus-border: var(--accent-color);
+  --gog-ms-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
+  --gog-ms-error-color: var(--danger-color);
+  --gog-ms-border-color: var(--accent-color);
+  --gog-ms-panel-bg: var(--surface-color);
+  --gog-ms-panel-border: var(--accent-color);
+  --gog-ms-panel-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --gog-ms-option-hover-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  --gog-ms-checkbox-border: var(--accent-dim);
+  --gog-ms-checkbox-bg: var(--background-color);
+  --gog-ms-checkbox-checked-bg: var(--accent-color);
+  --gog-ms-checkbox-checked-color: var(--primary-color);
+  --gog-ms-disabled-opacity: 0.4;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-ms-gap);
+  position: relative;
+  width: 100%;
+}
+
+.gog-ms__label {
+  font-size: var(--text-sm);
+  color: var(--gog-ms-label-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gog-ms {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background-color: var(--gog-ms-field-bg);
+  border: 2px solid var(--gog-ms-field-border);
+  color: var(--gog-ms-field-color);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  min-height: 44px;
+}
+
+.gog-ms:hover:not(.gog-ms--disabled) {
+  border-color: var(--gog-ms-focus-border);
+}
+
+.gog-ms:focus-visible {
+  outline: 3px solid var(--gog-ms-focus-ring);
+  outline-offset: 2px;
+}
+
+.gog-ms--open {
+  border-color: var(--gog-ms-border-color);
+  box-shadow: 0 0 8px var(--gog-ms-focus-ring);
+}
+
+.gog-ms--disabled {
+  opacity: var(--gog-ms-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.gog-ms--error {
+  border-color: var(--gog-ms-error-color);
+}
+
+.gog-ms__value {
+  font-size: var(--text-md);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--gog-ms-value-color);
+}
+
+.gog-ms__value--placeholder {
+  color: var(--gog-ms-placeholder-color);
+}
+
+.gog-ms__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.gog-ms__clear {
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  font-size: 0.7rem;
+  color: var(--gog-ms-placeholder-color);
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.gog-ms__clear:hover {
+  color: var(--gog-ms-field-color);
+}
+
+.gog-ms__clear:focus-visible {
+  outline: 3px solid var(--gog-ms-focus-ring);
+  outline-offset: 2px;
+}
+
+.gog-ms__arrow {
+  font-size: 1rem;
+  color: var(--gog-ms-border-color);
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.gog-ms__arrow--up {
+  transform: rotate(180deg);
+}
+
+.gog-ms__dropdown {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  z-index: var(--dropdown-z, 300);
+  background-color: var(--gog-ms-panel-bg);
+  border: 2px solid var(--gog-ms-panel-border);
+  max-height: 260px;
+  overflow-y: auto;
+  box-shadow: var(--gog-ms-panel-shadow);
+}
+
+.gog-ms__dropdown--portal {
+  position: fixed;
+  top: unset;
+  left: unset;
+  right: unset;
+}
+
+.gog-ms__controls {
+  display: flex;
+  gap: 4px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--gog-ms-field-border);
+}
+
+.gog-ms__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+  color: var(--text-color);
+}
+
+.gog-ms__option:hover {
+  background-color: var(--gog-ms-option-hover-bg);
+}
+
+.gog-ms__option--selected {
+  color: var(--gog-ms-border-color);
+}
+
+.gog-ms__checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--gog-ms-checkbox-border);
+  background-color: var(--gog-ms-checkbox-bg);
+  flex-shrink: 0;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.gog-ms__checkbox--checked {
+  border-color: var(--gog-ms-checkbox-checked-bg);
+  background-color: var(--gog-ms-checkbox-checked-bg);
+  color: var(--gog-ms-checkbox-checked-color);
+}
+
+.gog-ms__checkbox svg {
+  width: 12px;
+  height: 12px;
+}
+
+.gog-ms__error {
+  font-size: var(--text-xs);
+  color: var(--gog-ms-error-color);
+  margin-top: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-ms,
+  .gog-ms__clear,
+  .gog-ms__arrow,
+  .gog-ms__option,
+  .gog-ms__checkbox {
+    transition: none;
+  }
+}

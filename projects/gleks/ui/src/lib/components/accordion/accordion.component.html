@@ -1,0 +1,56 @@
+<div
+  class="gog-accordion gog-contained-layout"
+  [class.gog-accordion--md]="size() === 'md'"
+  [class.gog-accordion--sm]="size() === 'sm'"
+  [class.gog-accordion--loading]="loading()"
+>
+  @if (loading()) {
+    @for (item of items(); track item.id) {
+      <div class="gog-accordion__item gog-accordion__item--skeleton">
+        <div class="gog-accordion__header gog-accordion__header--skeleton">
+          <span class="gog-accordion__skeleton-line"></span>
+        </div>
+      </div>
+    }
+  } @else {
+    @for (item of items(); track item.id) {
+      <div class="gog-accordion__item" [class.gog-accordion__item--open]="isOpen(item.id)">
+        <button
+          [id]="'gog-acc-btn-' + item.id"
+          class="gog-accordion__header font-heading"
+          [class.gog-accordion__header--open]="isOpen(item.id)"
+          [attr.aria-expanded]="isOpen(item.id)"
+          [attr.aria-controls]="'gog-acc-body-' + item.id"
+          (click)="toggle(item.id)"
+          type="button"
+        >
+          <span class="gog-accordion__title">{{ item.title }}</span>
+          <span class="gog-accordion__chevron" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+
+        <div
+          [id]="'gog-acc-body-' + item.id"
+          class="gog-accordion__body font-body"
+          role="region"
+          [attr.aria-labelledby]="'gog-acc-btn-' + item.id"
+          [hidden]="!isOpen(item.id)"
+        >
+          @if (contentTpl(); as tpl) {
+            <ng-container *ngTemplateOutlet="tpl.templateRef; context: { $implicit: item }" />
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

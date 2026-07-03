@@ -1,0 +1,89 @@
+<div class="gog-ms-wrapper gog-contained-layout">
+  @if (label()) {
+    <label class="gog-ms__label font-heading">{{ label() }}</label>
+  }
+
+  <div
+    class="gog-ms"
+    role="combobox"
+    tabindex="0"
+    [attr.aria-expanded]="isOpen()"
+    aria-haspopup="listbox"
+    [attr.aria-controls]="'gog-ms-listbox-' + instanceId"
+    [attr.aria-disabled]="isDisabled()"
+    [attr.aria-label]="label() ? null : ariaLabel() || placeholder() || 'Select'"
+    [class.gog-ms--open]="isOpen()"
+    [class.gog-ms--disabled]="isDisabled()"
+    [class.gog-ms--error]="hasError()"
+    (click)="toggle()"
+    (keydown.enter)="toggle()"
+    (keydown.space)="toggle(); $event.preventDefault()"
+    (keydown.escape)="close()"
+  >
+    <span class="gog-ms__value font-body" [class.gog-ms__value--placeholder]="!selectedNames()">
+      {{ selectedNames() || placeholder() }}
+    </span>
+
+    <span class="gog-ms__actions">
+      @if (selectedNames()) {
+        <button
+          type="button"
+          type="button"
+          class="gog-ms__clear gog-inline-center"
+          (click)="clearTrigger($event)"
+          aria-label="Clear selection"
+        >
+          ✕
+        </button>
+      }
+      <span class="gog-ms__arrow" [class.gog-ms__arrow--up]="isOpen()" aria-hidden="true">▾</span>
+    </span>
+  </div>
+
+  @if (isOpen()) {
+    <div
+      [id]="'gog-ms-listbox-' + instanceId"
+      class="gog-ms__dropdown"
+      role="listbox"
+      aria-multiselectable="true"
+      [style.z-index]="dropdownZIndex() ?? null"
+      (click)="$event.stopPropagation()"
+    >
+      @if (showControls()) {
+        <div class="gog-ms__controls">
+          <gog-button variant="ghost" size="sm" (click)="selectAll($event)">Select all</gog-button>
+          <gog-button variant="ghost" size="sm" (click)="clearAll($event)">Clear</gog-button>
+        </div>
+      }
+      @for (option of options(); track option.id) {
+        <div
+          class="gog-ms__option font-body"
+          role="option"
+          [attr.aria-selected]="isSelected(option.id)"
+          [class.gog-ms__option--selected]="isSelected(option.id)"
+          (mousedown)="toggleOption(option, $event)"
+          (click)="$event.stopPropagation()"
+        >
+          <span class="gog-ms__checkbox" [class.gog-ms__checkbox--checked]="isSelected(option.id)">
+            @if (isSelected(option.id)) {
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path
+                  d="M3 8.5L6.5 12L13 4"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            }
+          </span>
+          {{ option.name }}
+        </div>
+      }
+    </div>
+  }
+
+  @if (visibleError()) {
+    <span class="gog-ms__error font-body" role="alert">{{ visibleError() }}</span>
+  }
+</div>
