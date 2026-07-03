@@ -1,4 +1,4 @@
-﻿:root {
+:root[data-theme='light'] {
   --background-color: #f8f3ea;
   --surface-color: #ede2cc;
   --text-color: #1a1208;
@@ -15,6 +15,7 @@
   --border-color: #c9b896;
   --hover-color: #e4d6bc;
   --radius: 0px;
+  --gog-spinner-overlay-bg: rgba(248, 243, 234, 0.75);
 
   --header-bg: #d4b483;
   --header-foreground: #1a1208;
@@ -27,6 +28,13 @@
   --space-md: 16px;
   --space-lg: 24px;
   --space-2xl: 48px;
+
+  --btn-sm-padding: 0.5rem 0.875rem;
+  --btn-md-padding: 0.75rem 1.25rem;
+  --btn-lg-padding: 1rem 1.5rem;
+  --btn-sm-font-size: 0.875rem;
+  --btn-md-font-size: 1rem;
+  --btn-lg-font-size: 1.125rem;
 }
 
 :root[data-theme='dark'] {
@@ -46,14 +54,11 @@
   --border-color: #2a1f0e;
   --hover-color: #221a0c;
   --radius: 0px;
+  --gog-spinner-overlay-bg: rgba(10, 8, 3, 0.65);
 
   --header-bg: #0e0b06;
   --header-foreground: #fae000;
   --header-border: #724700;
   --footer-bg: #0e0b06;
   --footer-foreground: #946700;
-}
-
-:root:not([data-theme]) {
-  --background-color: #faf6ee;
 }
