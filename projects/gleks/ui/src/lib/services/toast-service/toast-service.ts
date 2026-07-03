@@ -1,4 +1,5 @@
-﻿import { Injectable, signal } from '@angular/core';
+import { Injectable, TemplateRef, signal } from '@angular/core';
+import { GogIconName } from '../../components/icon/icon.component';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 export type ToastPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -7,6 +8,8 @@ export interface Toast {
   id: string;
   message: string;
   type: ToastType;
+  iconName: GogIconName;
+  iconTemplate?: TemplateRef<unknown> | null;
   isSticky: boolean;
   duration: number;
   position: ToastPosition;
@@ -15,6 +18,8 @@ export interface Toast {
 export interface ToastConfig {
   message: string;
   type?: ToastType;
+  iconName?: GogIconName;
+  iconTemplate?: TemplateRef<unknown> | null;
   isSticky?: boolean;
   duration?: number;
   position?: ToastPosition;
@@ -40,6 +45,8 @@ export class ToastService {
       id,
       message: config.message,
       type: config.type ?? 'info',
+      iconName: config.iconName ?? this.defaultIconName(config.type ?? 'info'),
+      iconTemplate: config.iconTemplate ?? null,
       isSticky: config.isSticky ?? false,
       duration: config.duration ?? DEFAULT_DURATION,
       position: config.position ?? DEFAULT_POSITION,
@@ -71,5 +78,18 @@ export class ToastService {
 
   info(message: string, config?: Partial<ToastConfig>): string {
     return this.show({ ...config, message, type: 'info' });
+  }
+
+  private defaultIconName(type: ToastType): GogIconName {
+    switch (type) {
+      case 'success':
+        return 'success';
+      case 'error':
+        return 'error';
+      case 'warning':
+        return 'warning';
+      default:
+        return 'info';
+    }
   }
 }

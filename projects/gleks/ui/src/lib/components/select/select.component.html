@@ -24,7 +24,9 @@
       }
     </select>
 
-    <span class="gog-select__chevron" aria-hidden="true"></span>
+    <span class="gog-select__chevron" aria-hidden="true">
+      <gog-icon [template]="chevronTemplate()" name="chevron-down" />
+    </span>
   </div>
 
   @if (hasError()) {

@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
-import { Injectable, inject, signal, Type } from '@angular/core';
+import { Injectable, TemplateRef, inject, signal, Type } from '@angular/core';
+import { GogIconName } from '../../components/icon/icon.component';
 
 export interface DialogConfig {
   title?: string;
@@ -8,6 +9,8 @@ export interface DialogConfig {
   modal?: boolean;
   closable?: boolean;
   draggable?: boolean;
+  closeIconName?: GogIconName;
+  closeIconTemplate?: TemplateRef<unknown> | null;
   width?: string;
   maxWidth?: string;
   /** ARIA role for the dialog panel. Use 'alertdialog' for confirmation prompts. Default: 'dialog' */

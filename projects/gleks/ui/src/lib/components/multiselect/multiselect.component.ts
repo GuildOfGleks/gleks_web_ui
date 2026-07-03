@@ -11,6 +11,7 @@ import {
   inject,
   input,
   model,
+  TemplateRef,
   signal,
   createComponent,
 } from '@angular/core';
@@ -18,6 +19,7 @@ import { ButtonComponent } from '../button/button.component';
 import { isPlatformBrowser } from '@angular/common';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { IconComponent } from '../icon/icon.component';
 
 export interface GogMultiselectOption {
   id: string | number;
@@ -26,7 +28,7 @@ export interface GogMultiselectOption {
 
 @Component({
   selector: 'gog-multiselect-dropdown-portal',
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, IconComponent],
   template: `
     <div
       class="gog-ms__dropdown gog-ms__dropdown--portal"
@@ -54,15 +56,7 @@ export interface GogMultiselectOption {
         >
           <span class="gog-ms__checkbox" [class.gog-ms__checkbox--checked]="isSelected(option.id)">
             @if (isSelected(option.id)) {
-              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path
-                  d="M3 8.5L6.5 12L13 4"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+              <gog-icon name="check" />
             }
           </span>
           {{ option.name }}
@@ -92,7 +86,7 @@ export class GogMultiselectDropdownPortal {
 
 @Component({
   selector: 'gog-multiselect',
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, IconComponent],
   templateUrl: './multiselect.component.html',
   styleUrl: './multiselect.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -114,6 +108,8 @@ export class MultiselectComponent implements ControlValueAccessor {
   readonly dropdownZIndex = input<number | null>(null);
   readonly appendToBody = input(false);
   readonly disabled = input(false);
+  readonly chevronTemplate = input<TemplateRef<unknown> | null>(null);
+  readonly clearIconTemplate = input<TemplateRef<unknown> | null>(null);
 
   /** Two-way bindable selected ids: `[(value)]="signal"`. */
   readonly value = model<(string | number)[]>([]);

@@ -45,11 +45,11 @@
                 @if (col.sortable() && !loading()) {
                   <span class="gog-table__sort-icon" aria-hidden="true">
                     @if (getSortDirection(col.field()) === 'asc') {
-                      <i class="fa-solid fa-sort-up"></i>
+                      <gog-icon name="sort-up" />
                     } @else if (getSortDirection(col.field()) === 'desc') {
-                      <i class="fa-solid fa-sort-down"></i>
+                      <gog-icon name="sort-down" />
                     } @else {
-                      <i class="fa-solid fa-sort"></i>
+                      <gog-icon name="sort" />
                     }
                   </span>
                 }

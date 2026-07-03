@@ -64,6 +64,10 @@
   flex-shrink: 0;
 }
 
+.gog-toast__icon gog-icon {
+  font-size: 1rem;
+}
+
 .gog-toast__message {
   flex: 1;
   font-size: var(--text-sm);
@@ -75,6 +79,10 @@
   flex-shrink: 0;
   --gog-btn-padding: 0.125rem 0.25rem;
   --gog-btn-font-size: 0.75rem;
+}
+
+.gog-toast__close gog-icon {
+  font-size: 0.75rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

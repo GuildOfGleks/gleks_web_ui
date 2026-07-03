@@ -5,13 +5,15 @@ import {
   forwardRef,
   input,
   model,
+  TemplateRef,
   signal,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'gog-checkbox',
-  imports: [],
+  imports: [IconComponent],
   templateUrl: './checkbox.component.html',
   styleUrl: './checkbox.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +29,7 @@ export class CheckboxComponent {
   readonly label = input('');
   readonly ariaLabel = input('');
   readonly disabled = input(false);
+  readonly checkIconTemplate = input<TemplateRef<unknown> | null>(null);
 
   /** Two-way bindable checked state: `[(checked)]="signal"`. */
   readonly checked = model<boolean>(false);

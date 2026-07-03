@@ -8,6 +8,7 @@ export * from './lib/components/checkbox/checkbox.component';
 export * from './lib/components/dialog/confirmation-dialog/confirmation-dialog.component';
 export * from './lib/components/dialog/dialog.component';
 export * from './lib/components/dialog/dialog.tokens';
+export * from './lib/components/icon/icon.component';
 export * from './lib/components/toast/toast.component';
 export * from './lib/components/toast/toast-container/toast-container.component';
 export * from './lib/components/inputfield/inputfield.component';

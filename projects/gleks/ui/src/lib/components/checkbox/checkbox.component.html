@@ -11,15 +11,7 @@
 
   <span class="gog-checkbox__box gog-inline-center" [class.gog-checkbox__box--checked]="checked()">
     @if (checked()) {
-      <svg class="gog-checkbox__icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path
-          d="M3 8.5L6.5 12L13 4"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
+      <gog-icon [template]="checkIconTemplate()" name="check" />
     }
   </span>
 

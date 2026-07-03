@@ -72,12 +72,18 @@
   position: absolute;
   top: 50%;
   right: 14px;
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid var(--gog-select-chevron-color);
-  border-bottom: 2px solid var(--gog-select-chevron-color);
+  width: 16px;
+  height: 16px;
+  color: var(--gog-select-chevron-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
-  transform: translateY(-70%) rotate(45deg);
+  transform: translateY(-50%);
+}
+
+.gog-select__chevron gog-icon {
+  font-size: 0.875rem;
 }
 
 .gog-select__error {

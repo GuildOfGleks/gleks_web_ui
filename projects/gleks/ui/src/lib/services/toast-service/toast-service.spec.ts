@@ -19,6 +19,8 @@ describe('ToastService', () => {
         id,
         message: 'Saved',
         type: 'info',
+        iconName: 'info',
+        iconTemplate: null,
         isSticky: false,
         duration: 4000,
         position: 'bottom-right',

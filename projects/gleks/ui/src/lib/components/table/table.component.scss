@@ -114,6 +114,10 @@
   flex-shrink: 0;
 }
 
+.gog-table__sort-icon gog-icon {
+  font-size: 0.65rem;
+}
+
 .gog-table__th--sorted .gog-table__sort-icon {
   opacity: 1;
 }

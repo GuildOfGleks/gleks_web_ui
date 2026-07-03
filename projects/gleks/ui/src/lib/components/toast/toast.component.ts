@@ -11,10 +11,11 @@ import {
 } from '@angular/core';
 import { ButtonComponent } from '../button/button.component';
 import { Toast } from '../../services/toast-service/toast-service';
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'gog-toast',
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, IconComponent],
   templateUrl: './toast.component.html',
   styleUrl: './toast.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,16 +31,7 @@ export class ToastComponent implements OnDestroy {
 
   readonly visible = signal(false);
   private autoDismissTimer: ReturnType<typeof setTimeout> | null = null;
-
-  protected readonly icon = computed(() => {
-    const icons: Record<string, string> = {
-      success: 'fa-solid fa-check',
-      error: 'fa-solid fa-xmark',
-      warning: 'fa-solid fa-triangle-exclamation',
-      info: 'fa-solid fa-circle-info',
-    };
-    return icons[this.toast().type] ?? 'fa-solid fa-circle-info';
-  });
+  private dismissTimer: ReturnType<typeof setTimeout> | null = null;
 
   protected readonly ariaRole = computed(() =>
     ['error', 'warning'].includes(this.toast().type) ? 'alert' : 'status',
@@ -64,6 +56,10 @@ export class ToastComponent implements OnDestroy {
       clearTimeout(this.autoDismissTimer);
       this.autoDismissTimer = null;
     }
+    if (this.dismissTimer !== null) {
+      clearTimeout(this.dismissTimer);
+      this.dismissTimer = null;
+    }
   }
 
   close(): void {
@@ -72,8 +68,14 @@ export class ToastComponent implements OnDestroy {
       clearTimeout(this.autoDismissTimer);
       this.autoDismissTimer = null;
     }
+    if (this.dismissTimer !== null) {
+      clearTimeout(this.dismissTimer);
+    }
     this.visible.set(false);
     const id = this.toast().id;
-    setTimeout(() => this.dismissed.emit(id), 250);
+    this.dismissTimer = setTimeout(() => {
+      this.dismissTimer = null;
+      this.dismissed.emit(id);
+    }, 250);
   }
 }

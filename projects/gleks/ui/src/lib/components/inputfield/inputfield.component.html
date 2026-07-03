@@ -19,11 +19,11 @@
           [attr.aria-label]="iconStartLabel() || null"
           (click)="onIconStartClick()"
         >
-          <i [class]="iconStart()"></i>
+          <gog-icon [template]="iconStartTemplate()" [name]="iconStart() || 'check'" />
         </button>
       } @else {
-          <span class="gog-input__icon gog-inline-center gog-input__icon--start" aria-hidden="true">
-          <i [class]="iconStart()"></i>
+        <span class="gog-input__icon gog-inline-center gog-input__icon--start" aria-hidden="true">
+          <gog-icon [template]="iconStartTemplate()" [name]="iconStart() || 'check'" />
         </span>
       }
     }
@@ -50,11 +50,11 @@
           [attr.aria-label]="iconEndLabel() || null"
           (click)="onIconEndClick()"
         >
-          <i [class]="iconEnd()"></i>
+          <gog-icon [template]="iconEndTemplate()" [name]="iconEnd() || 'check'" />
         </button>
       } @else {
-          <span class="gog-input__icon gog-inline-center gog-input__icon--end" aria-hidden="true">
-          <i [class]="iconEnd()"></i>
+        <span class="gog-input__icon gog-inline-center gog-input__icon--end" aria-hidden="true">
+          <gog-icon [template]="iconEndTemplate()" [name]="iconEnd() || 'check'" />
         </span>
       }
     }

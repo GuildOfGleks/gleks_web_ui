@@ -69,6 +69,11 @@
   flex-shrink: 0;
   padding: 0;
   line-height: 1;
+  font-size: 0.875rem;
+}
+
+.gog-dialog__close gog-icon {
+  font-size: 0.875rem;
 }
 
 .gog-dialog__close:hover {

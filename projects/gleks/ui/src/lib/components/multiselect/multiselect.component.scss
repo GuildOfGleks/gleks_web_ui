@@ -94,15 +94,20 @@
 }
 
 .gog-ms__clear {
-  padding: 2px 4px;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
   border: 0;
   border-radius: 2px;
   background: transparent;
-  font-size: 0.7rem;
   color: var(--gog-ms-placeholder-color);
   line-height: 1;
   cursor: pointer;
   transition: color 0.15s ease;
+}
+
+.gog-ms__clear gog-icon {
+  font-size: 0.7rem;
 }
 
 .gog-ms__clear:hover {
@@ -115,10 +120,17 @@
 }
 
 .gog-ms__arrow {
-  font-size: 1rem;
   color: var(--gog-ms-border-color);
   transition: transform 0.2s ease;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.gog-ms__arrow gog-icon {
+  font-size: 0.875rem;
 }
 
 .gog-ms__arrow--up {

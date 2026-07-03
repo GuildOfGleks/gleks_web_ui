@@ -7,16 +7,18 @@ import {
   input,
   model,
   Signal,
+  TemplateRef,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
 
 import { GogSize } from '../../shared/types';
+import { IconComponent, type GogIconName } from '../icon/icon.component';
 
 @Component({
   selector: 'gog-inputfield',
-  imports: [],
+  imports: [IconComponent],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,10 +41,14 @@ export class InputfieldComponent implements ControlValueAccessor {
   readonly inputId = input('');
   readonly disabled = input(false);
   readonly size = input<GogSize>('md');
-  /** FontAwesome classes for the leading icon, e.g. `"fa-solid fa-envelope"` */
-  readonly iconStart = input('');
-  /** FontAwesome classes for the trailing icon, e.g. `"fa-solid fa-eye"` */
-  readonly iconEnd = input('');
+  /** Default icon name for the leading icon. */
+  readonly iconStart = input<GogIconName | ''>('');
+  /** Default icon name for the trailing icon. */
+  readonly iconEnd = input<GogIconName | ''>('');
+  /** Custom leading icon template. */
+  readonly iconStartTemplate = input<TemplateRef<unknown> | null>(null);
+  /** Custom trailing icon template. */
+  readonly iconEndTemplate = input<TemplateRef<unknown> | null>(null);
   /** When provided, the start icon becomes a clickable button invoking this fn */
   readonly iconStartFn = input<(() => void) | null>(null);
   /** When provided, the end icon becomes a clickable button invoking this fn */
@@ -73,8 +79,8 @@ export class InputfieldComponent implements ControlValueAccessor {
     }
     return !!this.errorMessage() && !this.value();
   });
-  protected readonly hasIconStart = computed(() => !!this.iconStart());
-  protected readonly hasIconEnd = computed(() => !!this.iconEnd());
+  protected readonly hasIconStart = computed(() => !!this.iconStartTemplate() || !!this.iconStart());
+  protected readonly hasIconEnd = computed(() => !!this.iconEndTemplate() || !!this.iconEnd());
   protected readonly hasIconStartAction = computed(() => !!this.iconStartFn());
   protected readonly hasIconEndAction = computed(() => !!this.iconEndFn());
 

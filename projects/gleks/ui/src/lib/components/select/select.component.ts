@@ -5,9 +5,11 @@ import {
   forwardRef,
   input,
   model,
+  TemplateRef,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { IconComponent } from '../icon/icon.component';
 
 export interface GogSelectOption {
   id: string | number;
@@ -17,7 +19,7 @@ export interface GogSelectOption {
 
 @Component({
   selector: 'gog-select',
-  imports: [],
+  imports: [IconComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +44,7 @@ export class SelectComponent implements ControlValueAccessor {
   readonly dropdownZIndex = input<number | null>(null);
   readonly appendToBody = input(false);
   readonly disabled = input(false);
+  readonly chevronTemplate = input<TemplateRef<unknown> | null>(null);
 
   /** Two-way bindable selected value: `[(value)]="signal"`. */
   readonly value = model<string | number | null>(null);

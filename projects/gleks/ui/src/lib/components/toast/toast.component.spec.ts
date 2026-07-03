@@ -17,6 +17,7 @@ describe('ToastComponent', () => {
       id: 'toast-1',
       message: 'Saved',
       type: 'success',
+      iconName: 'success',
       isSticky: true,
       duration: 4000,
       position: 'bottom-right',
