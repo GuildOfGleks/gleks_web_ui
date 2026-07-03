@@ -1,0 +1,171 @@
+<section class="showcase">
+  <div class="showcase__hero card">
+    <div>
+      <p class="eyebrow">Demo playground</p>
+      <h2>Building blocks with modern Angular signals</h2>
+      <p class="lead">
+        A live showcase for forms, feedback, dialogs, and toast actions — including custom SVG
+        icon slots.
+      </p>
+    </div>
+
+    <div class="showcase__hero-actions">
+      <gog-button variant="primary" type="button" (gogClick)="showToast()">Show toast</gog-button>
+      <gog-button variant="outline" type="button" (gogClick)="openConfirmDialog()">
+        Open dialog
+      </gog-button>
+      <gog-button variant="ghost" type="button" (gogClick)="toggleTheme()">
+        Toggle {{ themeLabel() }} theme
+      </gog-button>
+    </div>
+  </div>
+
+  <div class="showcase__grid">
+    <article class="card">
+      <h3>Toast API</h3>
+      <div class="field-grid">
+        <gog-inputfield
+          label="Message"
+          inputId="toast-message"
+          [iconStartTemplate]="fieldIcon"
+          [(value)]="toastMessage"
+        />
+        <gog-select
+          label="Type"
+          inputId="toast-type"
+          [options]="toastTypes"
+          [chevronTemplate]="chevronIcon"
+          [(value)]="toastType"
+        />
+        <gog-select
+          label="Position"
+          inputId="toast-position"
+          [options]="positions"
+          [chevronTemplate]="chevronIcon"
+          [(value)]="toastPosition"
+        />
+      </div>
+
+      <div class="action-row">
+        <gog-button variant="primary" type="button" (gogClick)="showToast()">Preview toast</gog-button>
+        <gog-button variant="ghost" type="button" (gogClick)="showToastBurst()">
+          Queue 7 toasts
+        </gog-button>
+      </div>
+    </article>
+
+    <article class="card">
+      <h3>Forms</h3>
+      <div class="field-grid">
+        <gog-inputfield
+          label="Name"
+          inputId="name"
+          [iconStartTemplate]="fieldIcon"
+          [iconEndTemplate]="fieldIcon"
+          [(value)]="formName"
+        />
+
+        <gog-checkbox
+          label="Accept terms"
+          [checkIconTemplate]="checkIcon"
+          [(checked)]="acceptTerms"
+        />
+
+        <gog-select
+          label="Framework"
+          inputId="framework"
+          [options]="frameworks"
+          [chevronTemplate]="chevronIcon"
+          [(value)]="framework"
+        />
+
+        <gog-multiselect
+          label="Features"
+          [options]="features"
+          [chevronTemplate]="chevronIcon"
+          [clearIconTemplate]="closeIcon"
+          [(value)]="selectedFeatures"
+        />
+      </div>
+
+      <p class="meta">Selected features: {{ featureSummary() }}</p>
+    </article>
+
+    <article class="card">
+      <h3>Overlay and theme</h3>
+      <p class="meta">Current theme: {{ themeLabel() }}</p>
+      <p class="meta">Last dialog result: {{ lastDialogResult() }}</p>
+      <div class="action-row">
+        <gog-button variant="primary" type="button" (gogClick)="openConfirmDialog()">
+          Open confirmation dialog
+        </gog-button>
+        <gog-button variant="ghost" type="button" (gogClick)="setSampleData()">
+          Load sample data
+        </gog-button>
+      </div>
+    </article>
+  </div>
+
+  <ng-template #fieldIcon>
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M3 8.5L6.5 12L13 4"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </ng-template>
+
+  <ng-template #checkIcon>
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M3 8.5L6.5 12L13 4"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </ng-template>
+
+  <ng-template #chevronIcon>
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M4 6L8 10L12 6"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </ng-template>
+
+  <ng-template #toastIcon>
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M8 2.5L10.2 5.8L14 6.4L11.3 9.1L11.9 13L8 11.2L4.1 13L4.7 9.1L2 6.4L5.8 5.8L8 2.5Z"
+        stroke="currentColor"
+        stroke-width="1.2"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </ng-template>
+
+  <ng-template #toastActionIcon>
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M4 8H12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      <path d="M8 4L12 8L8 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </ng-template>
+
+  <ng-template #closeIcon>
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+    </svg>
+  </ng-template>
+
+  <gog-toast-container [maxVisiblePerPosition]="5" />
+  <gog-dialog />
+</section>
