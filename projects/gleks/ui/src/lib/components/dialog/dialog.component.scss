@@ -20,6 +20,8 @@
 .gog-dialog__panel {
   --gog-dialog-border: var(--border-color);
   --gog-dialog-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+  --gog-dialog-offset-x: 0px;
+  --gog-dialog-offset-y: 0px;
 
   display: flex;
   flex-direction: column;
@@ -32,6 +34,7 @@
   animation: gog-slide-in 0.2s ease;
   min-width: 320px;
   border-radius: var(--radius);
+  transform: translate3d(var(--gog-dialog-offset-x), var(--gog-dialog-offset-y), 0);
 }
 
 .gog-dialog__header {
@@ -42,6 +45,12 @@
   border-bottom: 1px solid var(--border-color);
   gap: 12px;
   flex-shrink: 0;
+}
+
+.gog-dialog__header--draggable {
+  cursor: move;
+  touch-action: none;
+  user-select: none;
 }
 
 .gog-dialog__title {

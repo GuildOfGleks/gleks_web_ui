@@ -3,21 +3,31 @@
     class="gog-dialog__backdrop"
     [class.gog-dialog__backdrop--modal]="dialog.config.modal !== false"
     [style.z-index]="panelZ(dialog)"
-    (click)="onBackdropClick($event, dialog)"
-    (keydown.escape)="closeIfClosable(dialog)"
+    (pointerdown)="onBackdropPointerDown($event, dialog)"
+    (pointerup)="onBackdropPointerUp($event, dialog)"
+    (pointercancel)="onBackdropPointerUp($event, dialog)"
   >
     <div
+      #panel
       class="gog-dialog__panel"
+      [attr.data-dialog-id]="dialog.id"
       [style.--dropdown-z]="panelZ(dialog) + 10"
+      [style.--gog-dialog-offset-x]="dialog.offsetX + 'px'"
+      [style.--gog-dialog-offset-y]="dialog.offsetY + 'px'"
       [style.width]="dialog.config.width ?? 'auto'"
       [style.max-width]="dialog.config.maxWidth ?? '90vw'"
       [attr.role]="dialog.config.role ?? 'dialog'"
       [attr.aria-modal]="dialog.config.modal === false ? null : 'true'"
       tabindex="-1"
       [attr.aria-labelledby]="dialog.config.title ? getTitleId(dialog) : null"
+      (keydown)="onPanelKeydown($event, dialog, panel)"
     >
       @if (dialog.config.title || dialog.config.closable !== false) {
-        <div class="gog-dialog__header">
+        <div
+          class="gog-dialog__header"
+          [class.gog-dialog__header--draggable]="isDraggable(dialog)"
+          (pointerdown)="startDrag($event, dialog)"
+        >
           @if (dialog.config.title) {
             <h2 [id]="getTitleId(dialog)" class="gog-dialog__title font-heading">
               {{ dialog.config.title }}
