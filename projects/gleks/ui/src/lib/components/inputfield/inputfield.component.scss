@@ -1,0 +1,181 @@
+.gog-input-wrapper {
+  --gog-input-gap: 4px;
+  --gog-input-label-color: var(--accent-color);
+  --gog-input-field-bg: var(--surface-color);
+  --gog-input-field-border: var(--accent-dim);
+  --gog-input-field-color: var(--text-color);
+  --gog-input-placeholder-color: var(--muted-text-color);
+  --gog-input-focus-border: var(--accent-color);
+  --gog-input-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
+  --gog-input-error-color: var(--danger-color);
+  --gog-input-icon-color: var(--muted-text-color);
+  --gog-input-icon-hover-color: var(--accent-color);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-input-gap);
+  width: 100%;
+}
+
+.gog-input__label {
+  font-size: var(--text-sm);
+  color: var(--gog-input-label-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Field container — positions icons absolutely over the input */
+.gog-input__field-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.gog-input__field {
+  --gog-input-padding-y: 10px;
+  --gog-input-pl: 14px;
+  --gog-input-pr: 14px;
+  --gog-input-font: var(--text-md);
+
+  width: 100%;
+  padding: var(--gog-input-padding-y) var(--gog-input-pr) var(--gog-input-padding-y)
+  var(--gog-input-pl);
+  font-size: var(--gog-input-font);
+  color: var(--gog-input-field-color);
+  background-color: var(--gog-input-field-bg);
+  border: 2px solid var(--gog-input-field-border);
+  border-radius: var(--radius);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Size modifiers */
+.gog-input-wrapper--sm .gog-input__field {
+  --gog-input-padding-y: 6px;
+  --gog-input-pl: 10px;
+  --gog-input-pr: 10px;
+  --gog-input-font: var(--text-sm);
+}
+
+.gog-input-wrapper--lg .gog-input__field {
+  --gog-input-padding-y: 14px;
+  --gog-input-pl: 18px;
+  --gog-input-pr: 18px;
+  --gog-input-font: var(--text-lg);
+}
+
+/* Icon side padding overrides */
+.gog-input-wrapper--icon-start .gog-input__field {
+  --gog-input-pl: 36px;
+}
+.gog-input-wrapper--icon-end .gog-input__field {
+  --gog-input-pr: 36px;
+}
+
+.gog-input-wrapper--sm.gog-input-wrapper--icon-start .gog-input__field {
+  --gog-input-pl: 30px;
+}
+.gog-input-wrapper--sm.gog-input-wrapper--icon-end .gog-input__field {
+  --gog-input-pr: 30px;
+}
+
+.gog-input-wrapper--lg.gog-input-wrapper--icon-start .gog-input__field {
+  --gog-input-pl: 44px;
+}
+.gog-input-wrapper--lg.gog-input-wrapper--icon-end .gog-input__field {
+  --gog-input-pr: 44px;
+}
+
+.gog-input__field::placeholder {
+  color: var(--gog-input-placeholder-color);
+}
+
+.gog-input__field:focus {
+  border-color: var(--gog-input-focus-border);
+  box-shadow: 0 0 8px var(--gog-input-focus-ring);
+}
+
+.gog-input__field:focus-visible {
+  outline: 3px solid var(--gog-input-focus-border);
+  outline-offset: 2px;
+}
+
+.gog-input__field:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.gog-input__field--error {
+  border-color: var(--gog-input-error-color);
+}
+
+/* Icon slots */
+.gog-input__icon {
+  position: absolute;
+  color: var(--gog-input-icon-color);
+  font-size: var(--text-md);
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* Clickable icon button resets */
+.gog-input__icon--action {
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+  border-radius: 4px;
+  color: var(--gog-input-icon-color);
+  transition: color 0.15s ease;
+}
+
+.gog-input__icon--action:hover {
+  color: var(--gog-input-icon-hover-color);
+}
+
+.gog-input__icon--action:focus-visible {
+  outline: 2px solid var(--gog-input-icon-hover-color);
+  outline-offset: 2px;
+}
+
+.gog-input__icon--start {
+  left: 10px;
+}
+.gog-input__icon--end {
+  right: 10px;
+}
+
+.gog-input-wrapper--sm .gog-input__icon {
+  font-size: var(--text-sm);
+}
+.gog-input-wrapper--sm .gog-input__icon--start {
+  left: 8px;
+}
+.gog-input-wrapper--sm .gog-input__icon--end {
+  right: 8px;
+}
+
+.gog-input-wrapper--lg .gog-input__icon {
+  font-size: var(--text-lg);
+}
+.gog-input-wrapper--lg .gog-input__icon--start {
+  left: 14px;
+}
+.gog-input-wrapper--lg .gog-input__icon--end {
+  right: 14px;
+}
+
+.gog-input__error {
+  font-size: var(--text-xs, 12px);
+  color: var(--gog-input-error-color);
+  margin-top: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-input__field {
+    transition: none;
+  }
+}

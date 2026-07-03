@@ -1,0 +1,70 @@
+<div
+  class="gog-input-wrapper gog-contained-layout"
+  [class.gog-input-wrapper--sm]="size() === 'sm'"
+  [class.gog-input-wrapper--lg]="size() === 'lg'"
+  [class.gog-input-wrapper--icon-start]="hasIconStart()"
+  [class.gog-input-wrapper--icon-end]="hasIconEnd()"
+>
+  @if (label()) {
+    <label class="gog-input__label font-heading" [attr.for]="inputId() || null">{{
+        label()
+      }}</label>
+  }
+  <div class="gog-input__field-container">
+    @if (hasIconStart()) {
+      @if (hasIconStartAction()) {
+        <button
+          type="button"
+          class="gog-input__icon gog-inline-center gog-input__icon--start gog-input__icon--action"
+          [attr.aria-label]="iconStartLabel() || null"
+          (click)="onIconStartClick()"
+        >
+          <i [class]="iconStart()"></i>
+        </button>
+      } @else {
+          <span class="gog-input__icon gog-inline-center gog-input__icon--start" aria-hidden="true">
+          <i [class]="iconStart()"></i>
+        </span>
+      }
+    }
+    <input
+      class="gog-input__field font-body"
+      [class.gog-input__field--error]="hasError()"
+      [attr.id]="inputId() || null"
+      [type]="type()"
+      [attr.name]="name() || null"
+      [placeholder]="placeholder()"
+      [value]="value()"
+      [disabled]="isDisabled()"
+      [autocomplete]="effectiveAutocomplete()"
+      [attr.aria-invalid]="hasError()"
+      [attr.aria-describedby]="hasError() && inputId() ? inputId() + '-error' : null"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+    />
+    @if (hasIconEnd()) {
+      @if (hasIconEndAction()) {
+        <button
+          type="button"
+          class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action"
+          [attr.aria-label]="iconEndLabel() || null"
+          (click)="onIconEndClick()"
+        >
+          <i [class]="iconEnd()"></i>
+        </button>
+      } @else {
+          <span class="gog-input__icon gog-inline-center gog-input__icon--end" aria-hidden="true">
+          <i [class]="iconEnd()"></i>
+        </span>
+      }
+    }
+  </div>
+  @if (hasError() && errorMessage()) {
+    <span
+      class="gog-input__error font-body"
+      [attr.id]="inputId() ? inputId() + '-error' : null"
+      role="alert"
+    >{{ errorMessage() }}</span
+    >
+  }
+</div>
