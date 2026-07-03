@@ -5,6 +5,7 @@
       [class.gog-table--col-borders]="showColumnBorders()"
       [class.gog-table--loading]="loading()"
       [class.gog-table--md]="size() === 'md'"
+      [class.gog-table--sticky-header]="stickyHeader()"
       [class.gog-table--sm]="size() === 'sm'"
     >
       <colgroup>
@@ -82,7 +83,7 @@
                       *ngTemplateOutlet="bodyTpl; context: { $implicit: row, index: i }"
                     />
                   } @else {
-                    {{ getCellValue(row, col.field()) }}
+                    {{ formatCellValue(row, col.field()) }}
                   }
                 </td>
               }

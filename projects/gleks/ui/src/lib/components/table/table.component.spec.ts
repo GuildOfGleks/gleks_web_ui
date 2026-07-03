@@ -30,4 +30,11 @@ describe('TableComponent', () => {
 
     expect((component.sortedData() as Array<{ id: number; name: string }>).map((row) => row.id)).toEqual([1, 2]);
   });
+
+  it('should use the configured empty placeholder', () => {
+    fixture.componentRef.setInput('emptyPlaceholder', '—');
+    fixture.detectChanges();
+
+    expect(component.emptyPlaceholder()).toBe('—');
+  });
 });

@@ -68,6 +68,12 @@
   overflow: hidden;
 }
 
+.gog-table--sticky-header .gog-table__th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
 .gog-table__th--num {
   width: 48px;
   text-align: center;

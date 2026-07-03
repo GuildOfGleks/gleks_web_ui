@@ -31,6 +31,8 @@ interface SortState {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'gog-table-host',
+    '[style.display]': '"block"',
+    '[style.width]': '"100%"',
   },
 })
 export class TableComponent<T extends object> {
@@ -39,6 +41,7 @@ export class TableComponent<T extends object> {
   readonly pageSize = input<number>(0);
   readonly showRowNumbers = input<boolean>(true);
   readonly showTotal = input<boolean>(false);
+  readonly emptyPlaceholder = input<string>('-');
   /** Alignment of pagination controls */
   readonly paginatorPosition = input<'left' | 'center' | 'right'>('center');
   /** Alignment of total count label (only when showTotal=true) */
@@ -47,6 +50,8 @@ export class TableComponent<T extends object> {
   readonly loading = input<boolean>(false);
   /** Show vertical borders between columns */
   readonly showColumnBorders = input<boolean>(false);
+  /** Stick header row to the top of the viewport while scrolling */
+  readonly stickyHeader = input<boolean>(false);
   /** Row density: lg (default) / md (compact) / sm (dense) */
   readonly size = input<GogSize>('lg');
 
@@ -174,6 +179,11 @@ export class TableComponent<T extends object> {
 
   getCellValue(row: T, field: string): unknown {
     return (row as Record<string, unknown>)[field];
+  }
+
+  formatCellValue(row: T, field: string): string {
+    const value = this.getCellValue(row, field);
+    return value == null ? this.emptyPlaceholder() : String(value);
   }
 
   globalRowIndex(localIndex: number): number {
