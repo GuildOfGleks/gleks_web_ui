@@ -3,6 +3,9 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "@gleks/ui": ["./dist/gleks/ui"]
+    },
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -21,5 +24,19 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "files": []
+  "files": [],
+  "references": [
+    {
+      "path": "./projects/gleks/ui/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/gleks/ui/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/ui-showcase/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/ui-showcase/tsconfig.spec.json"
+    }
+  ]
 }

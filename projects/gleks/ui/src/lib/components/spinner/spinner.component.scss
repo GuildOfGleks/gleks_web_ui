@@ -1,0 +1,185 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Overlay ───────────────────────────────────────────────────────────── */
+.gog-spinner__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 8, 3, 0.65);
+  backdrop-filter: blur(3px);
+  animation: gog-spinner-fade-in 0.2s ease;
+}
+
+:root:not([data-theme='dark']) .gog-spinner__overlay {
+  background: rgba(248, 243, 234, 0.75);
+}
+
+/* ── Sizes ─────────────────────────────────────────────────────────────── */
+.gog-spinner__wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  contain: layout style;
+}
+
+.gog-spinner__wrap--sm {
+  width: 18px;
+  height: 18px;
+}
+.gog-spinner__wrap--md {
+  width: 48px;
+  height: 48px;
+}
+.gog-spinner__wrap--lg {
+  width: 96px;
+  height: 96px;
+}
+
+.gog-spinner__svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ── Color tokens — override via --gog-spinner-color (e.g. inside a button) */
+.gog-spinner__track {
+  stroke: var(--gog-spinner-color, var(--accent-dim));
+  opacity: 0.35;
+}
+
+.gog-spinner__arc-outer {
+  stroke: var(--gog-spinner-color, var(--accent-color));
+  stroke-dasharray: 100 63;
+  transform-origin: 32px 32px;
+  animation:
+    gog-spin-cw 1.4s linear infinite,
+    gog-arc-outer-pulse 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px var(--gog-spinner-color, var(--accent-color)));
+}
+
+.gog-spinner__arc-inner {
+  stroke: var(--gog-spinner-color, var(--accent-bright));
+  stroke-dasharray: 35 78;
+  transform-origin: 32px 32px;
+  animation:
+    gog-spin-ccw 2s linear infinite,
+    gog-arc-inner-pulse 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px var(--gog-spinner-color, var(--accent-bright)));
+  opacity: 0.75;
+}
+
+/* Light theme — keep arcs visible against parchment */
+:root:not([data-theme='dark']) .gog-spinner__arc-outer {
+  filter: drop-shadow(0 0 4px rgba(90, 66, 0, 0.5));
+}
+:root:not([data-theme='dark']) .gog-spinner__arc-inner {
+  stroke: var(--gog-spinner-color, var(--accent-dim));
+  filter: drop-shadow(0 0 3px rgba(90, 66, 0, 0.4));
+}
+
+/* ── Diamond tick group ─────────────────────────────────────────────────── */
+.gog-spinner__ticks {
+  transform-origin: 32px 32px;
+  animation: gog-spin-ccw 6s linear infinite;
+}
+
+.gog-spinner__diamond {
+  fill: var(--gog-spinner-color, var(--accent-bright));
+  opacity: 0.85;
+  filter: drop-shadow(0 0 3px var(--gog-spinner-color, var(--accent-color)));
+}
+
+:root:not([data-theme='dark']) .gog-spinner__diamond {
+  fill: var(--gog-spinner-color, var(--accent-color));
+  opacity: 0.9;
+  filter: drop-shadow(0 0 2px rgba(90, 66, 0, 0.6));
+}
+
+/* ── Inner rune ─────────────────────────────────────────────────────────── */
+.gog-spinner__rune-wrap {
+  animation: gog-rune-pulse 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px var(--gog-spinner-color, var(--accent-color)));
+}
+
+.gog-spinner__rune {
+  font-family: var(--font-heading), serif;
+  fill: var(--gog-spinner-color, var(--accent-bright));
+  font-size: 20px;
+}
+
+:root:not([data-theme='dark']) .gog-spinner__rune {
+  fill: var(--gog-spinner-color, var(--accent-color));
+}
+
+/* sm — show all layers, just scale down via viewBox naturally */
+.gog-spinner__wrap--sm .gog-spinner__arc-inner {
+  stroke-width: 1;
+}
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes gog-spin-cw {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes gog-spin-ccw {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes gog-arc-outer-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes gog-arc-inner-pulse {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes gog-rune-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes gog-spinner-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-spinner__arc-outer,
+  .gog-spinner__arc-inner,
+  .gog-spinner__ticks,
+  .gog-spinner__rune-wrap {
+    animation: none;
+  }
+}

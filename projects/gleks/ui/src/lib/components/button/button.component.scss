@@ -1,0 +1,142 @@
+.gog-btn {
+  --gog-btn-bg: #b68b00;
+  --gog-btn-color: #1a1208;
+  --gog-btn-border: transparent;
+  --gog-btn-radius: 0px;
+  --gog-btn-padding: var(--btn-md-padding);
+  --gog-btn-font-size: var(--btn-md-font-size);
+  --gog-btn-shadow: none;
+  --gog-btn-hover-bg: #fae000;
+  --gog-btn-hover-shadow: 0 0 12px rgba(250, 224, 0, 0.35);
+  /* spinner inside a button must contrast against the gold background */
+  --gog-spinner-color: #1a1208;
+
+  contain: layout style;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 2px solid var(--gog-btn-border);
+  border-radius: var(--gog-btn-radius);
+  padding: var(--gog-btn-padding);
+  font-size: var(--gog-btn-font-size);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background-color: var(--gog-btn-bg);
+  color: var(--gog-btn-color);
+  box-shadow: var(--gog-btn-shadow);
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    color 0.15s ease;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.gog-btn:focus-visible {
+  outline: 3px solid var(--gog-btn-hover-bg);
+  outline-offset: 3px;
+}
+
+.gog-btn:hover:not(:disabled) {
+  background-color: var(--gog-btn-hover-bg);
+  box-shadow: var(--gog-btn-hover-shadow);
+}
+
+.gog-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-btn {
+    transition: none;
+  }
+
+  .gog-btn:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+.gog-btn:disabled {
+  opacity: 0.4;
+}
+
+/* === Variants === */
+
+/* primary: solid gold */
+.gog-btn--primary {
+  --gog-btn-bg: #fae000;
+  --gog-btn-color: #1a1208;
+  --gog-btn-hover-bg: #fdcc64;
+  --gog-btn-hover-shadow: 0 0 16px rgba(250, 224, 0, 0.45);
+}
+
+.gog-btn--secondary {
+  --gog-btn-bg: #d8b300;
+  --gog-btn-color: #1a1208;
+  --gog-btn-hover-bg: #fae000;
+  --gog-btn-hover-shadow: none;
+}
+
+/* outline: transparent with golden border */
+.gog-btn--outline {
+  --gog-btn-bg: transparent;
+  --gog-btn-color: var(--accent-color);
+  --gog-btn-border: var(--accent-color);
+  --gog-btn-hover-bg: var(--accent-color);
+  --gog-btn-hover-shadow: none;
+  --gog-spinner-color: var(--accent-color);
+}
+
+.gog-btn--outline:hover:not(:disabled) {
+  color: var(--primary-color);
+}
+
+/* ghost: no border, subtle hover */
+.gog-btn--ghost {
+  --gog-btn-bg: transparent;
+  --gog-btn-color: var(--accent-color);
+  --gog-btn-hover-bg: rgba(182, 139, 0, 0.12);
+  --gog-btn-hover-shadow: none;
+  --gog-spinner-color: var(--accent-color);
+}
+
+/* === Sizes === */
+.gog-btn--sm {
+  --gog-btn-padding: var(--btn-sm-padding);
+  --gog-btn-font-size: var(--btn-sm-font-size);
+}
+
+.gog-btn--lg {
+  --gog-btn-padding: var(--btn-lg-padding);
+  --gog-btn-font-size: var(--btn-lg-font-size);
+}
+
+/* === Full width === */
+:host(.gog-host--full-width) {
+  display: flex;
+}
+
+:host(.gog-host--full-width) .gog-btn {
+  width: 100%;
+}
+
+/* === Loading state === */
+.gog-btn--loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.gog-btn__content--hidden {
+  visibility: hidden;
+}
+
+/* absolute center so the spinner is always in the middle of the button */
+.gog-btn__spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 70%;
+  max-height: 70%;
+}

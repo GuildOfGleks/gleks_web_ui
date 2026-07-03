@@ -1,0 +1,25 @@
+<button
+  (click)="onClick($event)"
+  [attr.disabled]="isDisabled() ? true : null"
+  [class.cursor-not-allowed]="isDisabled()"
+  [class.cursor-pointer]="!isDisabled()"
+  [class.cursor-wait]="loading()"
+  [class.gog-btn--ghost]="variant() === 'ghost'"
+  [class.gog-btn--lg]="size() === 'lg'"
+  [class.gog-btn--loading]="loading()"
+  [class.gog-btn--md]="size() === 'md'"
+  [class.gog-btn--outline]="variant() === 'outline'"
+  [class.gog-btn--primary]="variant() === 'primary'"
+  [class.gog-btn--secondary]="variant() === 'secondary'"
+  [class.gog-btn--sm]="size() === 'sm'"
+  [type]="type()"
+  class="gog-btn fw-black font-heading"
+>
+  @if (loading()) {
+    <gog-spinner [size]="spinnerSize()" aria-hidden="true" class="gog-btn__spinner" />
+  }
+
+  <span [class.gog-btn__content--hidden]="loading()" class="gog-btn__content">
+    <ng-content></ng-content>
+  </span>
+</button>
