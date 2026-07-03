@@ -1,0 +1,92 @@
+:host {
+  display: block;
+}
+
+.gog-select {
+  --gog-select-gap: 4px;
+  --gog-select-label-color: var(--accent-color);
+  --gog-select-field-bg: var(--surface-color);
+  --gog-select-field-border: var(--accent-dim);
+  --gog-select-field-color: var(--text-color);
+  --gog-select-focus-border: var(--accent-color);
+  --gog-select-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
+  --gog-select-error-color: var(--danger-color);
+  --gog-select-chevron-color: var(--accent-color);
+  --gog-select-disabled-opacity: 0.4;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-select-gap);
+  width: 100%;
+}
+
+.gog-select--disabled {
+  opacity: var(--gog-select-disabled-opacity);
+}
+
+.gog-select__label {
+  font-size: var(--text-sm);
+  color: var(--gog-select-label-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gog-select__field {
+  position: relative;
+}
+
+.gog-select__control {
+  width: 100%;
+  padding: 10px 40px 10px 14px;
+  font-size: var(--text-md);
+  color: var(--gog-select-field-color);
+  background-color: var(--gog-select-field-bg);
+  border: 2px solid var(--gog-select-field-border);
+  border-radius: var(--radius);
+  outline: none;
+  appearance: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.gog-select__control:focus {
+  border-color: var(--gog-select-focus-border);
+  box-shadow: 0 0 8px var(--gog-select-focus-ring);
+}
+
+.gog-select__control:focus-visible {
+  outline: 3px solid var(--gog-select-focus-border);
+  outline-offset: 2px;
+}
+
+.gog-select__control:disabled {
+  cursor: not-allowed;
+}
+
+.gog-select__control option {
+  color: var(--text-color);
+}
+
+.gog-select__chevron {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--gog-select-chevron-color);
+  border-bottom: 2px solid var(--gog-select-chevron-color);
+  pointer-events: none;
+  transform: translateY(-70%) rotate(45deg);
+}
+
+.gog-select__error {
+  font-size: var(--text-xs);
+  color: var(--gog-select-error-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-select__control {
+    transition: none;
+  }
+}

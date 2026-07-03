@@ -1,0 +1,35 @@
+<div class="gog-select gog-contained-layout" [class.gog-select--disabled]="isDisabled()">
+  @if (label()) {
+    <label class="gog-select__label font-heading" [attr.for]="inputId">{{ label() }}</label>
+  }
+
+  <div class="gog-select__field">
+    <select
+      class="gog-select__control font-body"
+      [id]="inputId"
+      [value]="selectedValue()"
+      [disabled]="isDisabled()"
+      [attr.aria-label]="label() ? null : ariaLabel() || placeholder() || 'Select'"
+      [attr.aria-invalid]="hasError()"
+      [attr.aria-describedby]="errorId()"
+      (change)="onValueChange($event)"
+      (blur)="onBlur()"
+    >
+      <option value="" disabled hidden>{{ placeholder() }}</option>
+
+      @for (option of options(); track option.id) {
+        <option [value]="option.id" [disabled]="option.disabled ?? false">
+          {{ option.name }}
+        </option>
+      }
+    </select>
+
+    <span class="gog-select__chevron" aria-hidden="true"></span>
+  </div>
+
+  @if (hasError()) {
+    <span class="gog-select__error font-body" [attr.id]="errorId()" role="alert">
+      {{ errorMessage() }}
+    </span>
+  }
+</div>

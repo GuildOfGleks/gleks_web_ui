@@ -1,0 +1,49 @@
+<div class="gog-slider gog-contained-layout" [class.gog-slider--disabled]="isDisabled()">
+  <div class="gog-slider__header">
+    @if (label()) {
+      <label [attr.for]="inputId" class="gog-slider__label font-heading">{{ label() }}</label>
+    }
+
+    @if (showValue()) {
+      <span class="gog-slider__value font-mono">{{ clampedValue() }}</span>
+    }
+  </div>
+
+  <div class="gog-slider__track-container">
+    <div class="gog-slider__track">
+      <div class="gog-slider__fill"></div>
+    </div>
+
+    <div class="gog-slider__thumb" aria-hidden="true"></div>
+
+    <input
+      [id]="inputId"
+      class="gog-slider__input"
+      type="range"
+      [attr.aria-label]="label() ? null : ariaLabel() || 'Slider'"
+      [attr.aria-valuemin]="min()"
+      [attr.aria-valuemax]="max()"
+      [attr.aria-valuenow]="clampedValue()"
+      [attr.aria-invalid]="!!errorMessage()"
+      [attr.aria-describedby]="errorId()"
+      [min]="min()"
+      [max]="max()"
+      [step]="step()"
+      [value]="clampedValue()"
+      [disabled]="isDisabled()"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+    />
+  </div>
+
+  <div class="gog-slider__range-labels font-mono">
+    <span>{{ min() }}</span>
+    <span>{{ max() }}</span>
+  </div>
+
+  @if (errorMessage()) {
+    <span class="gog-slider__error font-body" [attr.id]="errorId()" role="alert">
+      {{ errorMessage() }}
+    </span>
+  }
+</div>

@@ -1,0 +1,124 @@
+:host {
+  display: block;
+}
+
+.gog-slider {
+  --gog-slider-gap: 6px;
+  --gog-slider-label-color: var(--accent-color);
+  --gog-slider-value-color: var(--accent-color);
+  --gog-slider-track-bg: var(--accent-dim);
+  --gog-slider-fill-bg: var(--accent-color);
+  --gog-slider-thumb-bg: var(--accent-color);
+  --gog-slider-thumb-border: var(--background-color);
+  --gog-slider-thumb-shadow: color-mix(in srgb, var(--accent-bright) 40%, transparent);
+  --gog-slider-focus-ring: color-mix(in srgb, var(--accent-color) 30%, transparent);
+  --gog-slider-range-color: var(--muted-text-color);
+  --gog-slider-error-color: var(--danger-color);
+  --gog-slider-disabled-opacity: 0.4;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-slider-gap);
+  width: 100%;
+}
+
+.gog-slider--disabled {
+  opacity: var(--gog-slider-disabled-opacity);
+  pointer-events: none;
+}
+
+.gog-slider__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gog-slider__label {
+  font-size: var(--text-sm);
+  color: var(--gog-slider-label-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gog-slider__value {
+  min-width: 40px;
+  font-size: var(--text-sm);
+  color: var(--gog-slider-value-color);
+  text-align: right;
+}
+
+.gog-slider__track-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 20px;
+}
+
+.gog-slider__track {
+  position: absolute;
+  inset-inline: 0;
+  height: 4px;
+  overflow: hidden;
+  background-color: var(--gog-slider-track-bg);
+  pointer-events: none;
+}
+
+.gog-slider__fill {
+  width: 100%;
+  height: 100%;
+  background-color: var(--gog-slider-fill-bg);
+  transform: scaleX(var(--fill-scale, 0));
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.gog-slider__thumb {
+  position: absolute;
+  top: 50%;
+  left: var(--thumb-pos, 0%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--gog-slider-thumb-border);
+  border-radius: 50%;
+  background-color: var(--gog-slider-thumb-bg);
+  pointer-events: none;
+  translate: -50% -50%;
+  will-change: translate;
+  box-shadow: 0 0 6px var(--gog-slider-thumb-shadow);
+}
+
+.gog-slider__track-container:focus-within .gog-slider__thumb {
+  box-shadow:
+    0 0 0 3px var(--gog-slider-focus-ring),
+    0 0 6px var(--gog-slider-thumb-shadow);
+}
+
+.gog-slider__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.gog-slider__range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--gog-slider-range-color);
+}
+
+.gog-slider__error {
+  font-size: var(--text-xs);
+  color: var(--gog-slider-error-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-slider__fill,
+  .gog-slider__thumb {
+    will-change: auto;
+  }
+}
