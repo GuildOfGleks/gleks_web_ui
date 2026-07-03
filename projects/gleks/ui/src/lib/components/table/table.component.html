@@ -1,0 +1,136 @@
+<div class="gog-table-wrapper gog-contained-layout">
+  <div class="gog-table-scroll">
+    <table
+      class="gog-table font-body"
+      [class.gog-table--col-borders]="showColumnBorders()"
+      [class.gog-table--loading]="loading()"
+      [class.gog-table--md]="size() === 'md'"
+      [class.gog-table--sm]="size() === 'sm'"
+    >
+      <colgroup>
+        @if (showRowNumbers()) {
+          <col class="gog-table__col--num" />
+        }
+        @for (col of columns(); track col.field()) {
+          <col
+            [style.width]="col.width() || null"
+            [style.min-width]="col.minWidth() || null"
+            [style.max-width]="col.maxWidth() || null"
+          />
+        }
+      </colgroup>
+      <thead>
+        <tr>
+        @if (showRowNumbers()) {
+          <th class="gog-table__th gog-table__th--num font-heading" scope="col">#</th>
+        }
+        @for (col of columns(); track col.field()) {
+          <th
+            class="gog-table__th font-heading"
+            scope="col"
+            [class.gog-table__th--sortable]="col.sortable() && !loading()"
+            [class.gog-table__th--sorted]="getSortDirection(col.field())"
+            [attr.aria-sort]="getAriaSort(col.field())"
+            [attr.tabindex]="col.sortable() && !loading() ? 0 : null"
+            (click)="handleSortClick(col)"
+            (keydown.enter)="handleSortClick(col)"
+            (keydown.space)="handleSortClick(col); $event.preventDefault()"
+          >
+            @if (getHeaderTemplate(col.field()); as headerTpl) {
+              <ng-container *ngTemplateOutlet="headerTpl" />
+            } @else {
+              <span class="gog-table__th-inner">
+                {{ col.header() || col.field() }}
+                @if (col.sortable() && !loading()) {
+                  <span class="gog-table__sort-icon" aria-hidden="true">
+                    @if (getSortDirection(col.field()) === 'asc') {
+                      <i class="fa-solid fa-sort-up"></i>
+                    } @else if (getSortDirection(col.field()) === 'desc') {
+                      <i class="fa-solid fa-sort-down"></i>
+                    } @else {
+                      <i class="fa-solid fa-sort"></i>
+                    }
+                  </span>
+                }
+              </span>
+            }
+          </th>
+        }
+        </tr>
+      </thead>
+      <tbody>
+        @if (loading()) {
+          <tr>
+            <td class="gog-table__loading-cell" [attr.colspan]="emptyColspan()">
+              <gog-spinner size="md" />
+            </td>
+          </tr>
+        } @else if (visibleRows().length === 0) {
+          <tr>
+            <td class="gog-table__empty" [attr.colspan]="emptyColspan()">—</td>
+          </tr>
+        } @else {
+          @for (row of visibleRows(); track $index; let i = $index) {
+            <tr class="gog-table__row">
+              @if (showRowNumbers()) {
+                <td class="gog-table__td gog-table__td--num">{{ globalRowIndex(i) }}</td>
+              }
+              @for (col of columns(); track col.field()) {
+                <td class="gog-table__td">
+                  @if (getBodyTemplate(col.field()); as bodyTpl) {
+                    <ng-container
+                      *ngTemplateOutlet="bodyTpl; context: { $implicit: row, index: i }"
+                    />
+                  } @else {
+                    {{ getCellValue(row, col.field()) }}
+                  }
+                </td>
+              }
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (hasPagination() || showTotal()) {
+    <div class="gog-table__footer">
+      @if (showTotal()) {
+        <span class="gog-table__total font-body" [style.grid-area]="totalGridArea()">
+          Total: {{ value().length }}
+        </span>
+      }
+
+      @if (hasPagination()) {
+        <nav
+          class="gog-table__pagination"
+          [style.grid-area]="paginatorGridArea()"
+          aria-label="Table pagination"
+        >
+          <gog-button variant="ghost" size="sm" [disabled]="currentPage() === 1" (gogClick)="prev()"
+            >‹</gog-button
+          >
+          @for (page of pageNumbers(); track $index) {
+            @if (isNumber(page)) {
+              <gog-button
+                size="sm"
+                [variant]="page === currentPage() ? 'primary' : 'ghost'"
+                (gogClick)="goTo(page)"
+                >{{ page }}</gog-button
+              >
+            } @else {
+              <span class="gog-table__pagination-ellipsis">…</span>
+            }
+          }
+          <gog-button
+            variant="ghost"
+            size="sm"
+            [disabled]="currentPage() === totalPages()"
+            (gogClick)="next()"
+          >›</gog-button
+          >
+        </nav>
+      }
+    </div>
+  }
+</div>
