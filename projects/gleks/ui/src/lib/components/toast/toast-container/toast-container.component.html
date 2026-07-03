@@ -1,0 +1,11 @@
+@for (group of groups(); track trackGroup($index, group)) {
+  <div class="gog-toast-container gog-toast-container--{{ group.position }}">
+    @for (toast of group.toasts; track trackToast($index, toast)) {
+        <gog-toast
+          [toast]="toast"
+          [class.slide-left]="isLeft(group.position)"
+          (dismissed)="dismiss($event)"
+        />
+    }
+  </div>
+}

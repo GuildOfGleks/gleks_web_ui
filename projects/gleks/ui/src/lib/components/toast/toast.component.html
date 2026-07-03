@@ -1,0 +1,14 @@
+<div
+  class="gog-toast"
+  [class.gog-toast--success]="toast().type === 'success'"
+  [class.gog-toast--error]="toast().type === 'error'"
+  [class.gog-toast--warning]="toast().type === 'warning'"
+  [class.gog-toast--info]="toast().type === 'info'"
+  [class.gog-toast--visible]="visible()"
+>
+  <span class="gog-toast__icon" aria-hidden="true"><i [class]="icon()"></i></span>
+  <span class="gog-toast__message font-body">{{ toast().message }}</span>
+  <gog-button class="gog-toast__close" variant="ghost" size="sm" type="button" aria-label="Close toast" (gogClick)="close()">
+    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+  </gog-button>
+</div>

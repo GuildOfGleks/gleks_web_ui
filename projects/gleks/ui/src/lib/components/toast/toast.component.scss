@@ -1,0 +1,84 @@
+:host {
+  display: block;
+}
+
+.gog-toast {
+  --toast-bg: var(--surface-color);
+  --toast-border: var(--accent-color);
+  --toast-color: var(--text-color);
+  --toast-icon-color: var(--accent-color);
+  --toast-enter-distance: var(--gog-toast-enter-distance);
+
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--toast-bg);
+  border-left: 4px solid var(--toast-border);
+  color: var(--toast-color);
+  box-shadow: var(--gog-toast-shadow);
+  min-width: var(--gog-toast-min-width);
+  max-width: var(--gog-toast-max-width);
+  pointer-events: all;
+  opacity: 0;
+  transform: translateX(var(--toast-enter-distance));
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.gog-toast--visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* slide from left for left-side positions — handled by container via CSS var */
+:host(.slide-left) .gog-toast {
+  --toast-enter-distance: calc(var(--gog-toast-enter-distance) * -1);
+}
+
+.gog-toast--success {
+  --toast-border: var(--success-color);
+  --toast-icon-color: var(--success-color);
+}
+
+.gog-toast--error {
+  --toast-border: var(--danger-color);
+  --toast-icon-color: var(--danger-color);
+}
+
+.gog-toast--warning {
+  --toast-border: var(--accent-bright);
+  --toast-icon-color: var(--accent-bright);
+}
+
+.gog-toast--info {
+  --toast-border: var(--accent-color);
+  --toast-icon-color: var(--accent-color);
+}
+
+.gog-toast__icon {
+  color: var(--toast-icon-color);
+  font-size: 1rem;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.gog-toast__message {
+  flex: 1;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.gog-toast__close {
+  align-self: flex-start;
+  flex-shrink: 0;
+  --gog-btn-padding: 0.125rem 0.25rem;
+  --gog-btn-font-size: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-toast {
+    transition: none;
+  }
+}
