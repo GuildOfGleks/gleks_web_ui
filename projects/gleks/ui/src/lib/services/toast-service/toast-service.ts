@@ -10,9 +10,17 @@ export interface Toast {
   type: ToastType;
   iconName: GogIconName;
   iconTemplate?: TemplateRef<unknown> | null;
+  actions: ToastAction[];
   isSticky: boolean;
   duration: number;
   position: ToastPosition;
+  dedupeKey: string;
+  revision: number;
+}
+
+export interface ToastAction {
+  label: string;
+  onClick: (toast: Toast) => void;
 }
 
 export interface ToastConfig {
@@ -20,6 +28,8 @@ export interface ToastConfig {
   type?: ToastType;
   iconName?: GogIconName;
   iconTemplate?: TemplateRef<unknown> | null;
+  actions?: ToastAction[];
+  dedupeKey?: string;
   isSticky?: boolean;
   duration?: number;
   position?: ToastPosition;
@@ -40,20 +50,58 @@ export class ToastService {
   }
 
   show(config: ToastConfig): string {
-    const id = this.generateId();
-    const toast: Toast = {
-      id,
-      message: config.message,
-      type: config.type ?? 'info',
-      iconName: config.iconName ?? this.defaultIconName(config.type ?? 'info'),
-      iconTemplate: config.iconTemplate ?? null,
-      isSticky: config.isSticky ?? false,
-      duration: config.duration ?? DEFAULT_DURATION,
-      position: config.position ?? DEFAULT_POSITION,
-    };
+    const type = config.type ?? 'info';
+    const iconName = config.iconName ?? this.defaultIconName(type);
+    const actions = config.actions ?? [];
+    const dedupeKey =
+      config.dedupeKey ??
+      this.buildDedupeKey(
+        config.message,
+        type,
+        iconName,
+        config.position ?? DEFAULT_POSITION,
+        actions,
+        config.iconTemplate ?? null,
+      );
 
-    this.toasts.update((list) => [...list, toast]);
-    return id;
+    let createdId = this.generateId();
+
+    this.toasts.update((list) => {
+      let existingIndex = -1;
+      if (dedupeKey) {
+        for (let index = list.length - 1; index >= 0; index -= 1) {
+          if (list[index].dedupeKey === dedupeKey) {
+            existingIndex = index;
+            break;
+          }
+        }
+      }
+      const nextToast: Toast = {
+        id: existingIndex >= 0 ? list[existingIndex].id : createdId,
+        message: config.message,
+        type,
+        iconName,
+        iconTemplate: config.iconTemplate ?? null,
+        actions,
+        isSticky: config.isSticky ?? false,
+        duration: config.duration ?? DEFAULT_DURATION,
+        position: config.position ?? DEFAULT_POSITION,
+        dedupeKey,
+        revision: existingIndex >= 0 ? list[existingIndex].revision + 1 : 0,
+      };
+
+      if (existingIndex >= 0) {
+        const next = [...list];
+        next[existingIndex] = nextToast;
+        createdId = nextToast.id;
+        return next;
+      }
+
+      createdId = nextToast.id;
+      return [...list, nextToast];
+    });
+
+    return createdId;
   }
 
   dismiss(id: string): void {
@@ -91,5 +139,17 @@ export class ToastService {
       default:
         return 'info';
     }
+  }
+
+  private buildDedupeKey(
+    message: string,
+    type: ToastType,
+    iconName: GogIconName,
+    position: ToastPosition,
+    actions: ToastAction[],
+    iconTemplate: TemplateRef<unknown> | null,
+  ): string {
+    if (actions.length > 0) return '';
+    return [message, type, iconName, position, iconTemplate ? 'template' : 'default'].join('|');
   }
 }

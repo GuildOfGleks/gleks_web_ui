@@ -20,9 +20,13 @@ describe('ToastContainerComponent', () => {
         message: 'Saved',
         type: 'success',
         iconName: 'success',
+        iconTemplate: null,
+        actions: [],
         isSticky: true,
         duration: 4000,
         position: 'bottom-right',
+        dedupeKey: 'Saved|success|success|bottom-right|default',
+        revision: 0,
       },
     ]);
     fixture.detectChanges();

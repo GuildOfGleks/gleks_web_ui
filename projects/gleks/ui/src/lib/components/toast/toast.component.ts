@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
   OnDestroy,
@@ -10,7 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { ButtonComponent } from '../button/button.component';
-import { Toast } from '../../services/toast-service/toast-service';
+import { Toast, ToastAction } from '../../services/toast-service/toast-service';
 import { IconComponent } from '../icon/icon.component';
 
 @Component({
@@ -30,8 +31,13 @@ export class ToastComponent implements OnDestroy {
   readonly dismissed = output<string>();
 
   readonly visible = signal(false);
+  readonly isPaused = signal(false);
   private autoDismissTimer: ReturnType<typeof setTimeout> | null = null;
-  private dismissTimer: ReturnType<typeof setTimeout> | null = null;
+  private startedAt = 0;
+  private remainingMs = 0;
+  private isClosing = signal(false);
+
+  protected readonly hasActions = computed(() => this.toast().actions.length > 0);
 
   protected readonly ariaRole = computed(() =>
     ['error', 'warning'].includes(this.toast().type) ? 'alert' : 'status',
@@ -43,39 +49,94 @@ export class ToastComponent implements OnDestroy {
 
   constructor() {
     afterNextRender(() => this.visible.set(true));
-    afterNextRender(() => {
+    effect((onCleanup) => {
       const toast = this.toast();
+      this.isPaused.set(false);
+      this.isClosing.set(false);
+      this.clearAutoDismissTimer();
+      this.remainingMs = toast.duration;
+
       if (!toast.isSticky) {
-        this.autoDismissTimer = setTimeout(() => this.close(), toast.duration);
+        this.startAutoDismiss(this.remainingMs);
       }
+
+      onCleanup(() => this.clearAutoDismissTimer());
     });
   }
 
   ngOnDestroy(): void {
-    if (this.autoDismissTimer !== null) {
-      clearTimeout(this.autoDismissTimer);
-      this.autoDismissTimer = null;
-    }
-    if (this.dismissTimer !== null) {
-      clearTimeout(this.dismissTimer);
-      this.dismissTimer = null;
-    }
+    this.clearAutoDismissTimer();
   }
 
   close(): void {
-    if (!this.visible()) return;
+    if (!this.visible() || this.isClosing()) return;
+    this.clearAutoDismissTimer();
+    this.isPaused.set(false);
+    this.isClosing.set(true);
+    this.visible.set(false);
+    const id = this.toast().id;
+
+    if (this.prefersReducedMotion()) {
+      this.isClosing.set(false);
+      queueMicrotask(() => this.dismissed.emit(id));
+    }
+  }
+
+  protected pauseAutoDismiss(): void {
+    const toast = this.toast();
+    if (toast.isSticky || this.isPaused() || this.isClosing()) return;
+    if (this.autoDismissTimer === null) return;
+
+    const elapsed = Date.now() - this.startedAt;
+    this.remainingMs = Math.max(0, this.remainingMs - elapsed);
+    this.clearAutoDismissTimer();
+    this.isPaused.set(true);
+  }
+
+  protected resumeAutoDismiss(): void {
+    const toast = this.toast();
+    if (toast.isSticky || !this.isPaused() || this.isClosing()) return;
+
+    this.isPaused.set(false);
+    if (this.remainingMs <= 0) {
+      this.close();
+      return;
+    }
+
+    this.startAutoDismiss(this.remainingMs);
+  }
+
+  protected onTransitionEnd(event: TransitionEvent): void {
+    if (!this.isClosing() || event.target !== event.currentTarget) return;
+    if (event.propertyName !== 'opacity' && event.propertyName !== 'transform') return;
+
+    this.isClosing.set(false);
+    this.dismissed.emit(this.toast().id);
+  }
+
+  protected runAction(action: ToastAction): void {
+    action.onClick(this.toast());
+  }
+
+  private startAutoDismiss(duration: number): void {
+    this.clearAutoDismissTimer();
+    this.remainingMs = duration;
+    this.startedAt = Date.now();
+    this.autoDismissTimer = setTimeout(() => {
+      this.autoDismissTimer = null;
+      this.remainingMs = 0;
+      this.close();
+    }, duration);
+  }
+
+  private clearAutoDismissTimer(): void {
     if (this.autoDismissTimer !== null) {
       clearTimeout(this.autoDismissTimer);
       this.autoDismissTimer = null;
     }
-    if (this.dismissTimer !== null) {
-      clearTimeout(this.dismissTimer);
-    }
-    this.visible.set(false);
-    const id = this.toast().id;
-    this.dismissTimer = setTimeout(() => {
-      this.dismissTimer = null;
-      this.dismissed.emit(id);
-    }, 250);
+  }
+
+  private prefersReducedMotion(): boolean {
+    return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 }

@@ -7,11 +7,16 @@
   --toast-border: var(--accent-color);
   --toast-color: var(--text-color);
   --toast-icon-color: var(--accent-color);
-  --toast-enter-distance: var(--gog-toast-enter-distance);
+  --toast-enter-x: var(--gog-toast-enter-distance);
+  --toast-stack-index: 0;
+  --toast-stack-step: 6px;
+  --toast-stack-scale-step: 0.02;
+  --toast-stack-offset: calc(var(--toast-stack-index) * var(--toast-stack-step));
+  --toast-stack-scale: calc(1 - (var(--toast-stack-index) * var(--toast-stack-scale-step)));
+  --toast-progress-color: var(--toast-border);
 
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  position: relative;
+  display: block;
   padding: 12px 14px;
   background: var(--toast-bg);
   border-left: 4px solid var(--toast-border);
@@ -21,7 +26,8 @@
   max-width: var(--gog-toast-max-width);
   pointer-events: all;
   opacity: 0;
-  transform: translateX(var(--toast-enter-distance));
+  overflow: hidden;
+  transform: translate3d(var(--toast-enter-x), calc(var(--toast-stack-offset) * -1), 0) scale(var(--toast-stack-scale));
   transition:
     opacity 0.25s ease,
     transform 0.25s ease;
@@ -29,12 +35,12 @@
 
 .gog-toast--visible {
   opacity: 1;
-  transform: translateX(0);
+  transform: translate3d(0, calc(var(--toast-stack-offset) * -1), 0) scale(var(--toast-stack-scale));
 }
 
 /* slide from left for left-side positions — handled by container via CSS var */
 :host(.slide-left) .gog-toast {
-  --toast-enter-distance: calc(var(--gog-toast-enter-distance) * -1);
+  --toast-enter-x: calc(var(--gog-toast-enter-distance) * -1);
 }
 
 .gog-toast--success {
@@ -68,10 +74,35 @@
   font-size: 1rem;
 }
 
+.gog-toast__content {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.gog-toast__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
 .gog-toast__message {
   flex: 1;
   font-size: var(--text-sm);
   line-height: 1.5;
+}
+
+.gog-toast__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gog-toast__action {
+  --gog-btn-padding: 0.25rem 0.5rem;
+  --gog-btn-font-size: 0.75rem;
 }
 
 .gog-toast__close {
@@ -85,8 +116,34 @@
   font-size: 0.75rem;
 }
 
+.gog-toast__progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: color-mix(in srgb, var(--toast-progress-color) 30%, transparent);
+  transform-origin: left center;
+  animation: gog-toast-progress var(--toast-duration) linear forwards;
+}
+
+.gog-toast--paused .gog-toast__progress {
+  animation-play-state: paused;
+}
+
+@keyframes gog-toast-progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .gog-toast {
+  .gog-toast,
+  .gog-toast__progress {
     transition: none;
+    animation: none;
   }
 }

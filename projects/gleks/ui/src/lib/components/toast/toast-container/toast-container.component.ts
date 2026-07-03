@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ToastComponent } from '../toast.component';
 import { ToastPosition, ToastService } from '../../../services/toast-service/toast-service';
 
@@ -13,11 +13,15 @@ const POSITIONS: ToastPosition[] = ['top-left', 'top-right', 'bottom-left', 'bot
 })
 export class ToastContainerComponent {
   private readonly toastService = inject(ToastService);
+  readonly maxVisiblePerPosition = input(5);
 
   readonly groups = computed(() =>
     POSITIONS.map((position) => ({
       position,
-      toasts: this.toastService.toasts().filter((toast) => toast.position === position),
+      toasts: this.toastService
+        .toasts()
+        .filter((toast) => toast.position === position)
+        .slice(Math.max(0, this.maxVisiblePerPosition()) * -1),
     })).filter((group) => group.toasts.length > 0),
   );
 

@@ -21,9 +21,12 @@ describe('ToastService', () => {
         type: 'info',
         iconName: 'info',
         iconTemplate: null,
+        actions: [],
         isSticky: false,
         duration: 4000,
         position: 'bottom-right',
+        dedupeKey: 'Saved|info|info|bottom-right|default',
+        revision: 0,
       },
     ]);
   });
@@ -37,5 +40,14 @@ describe('ToastService', () => {
 
     service.dismissAll();
     expect(service.toasts()).toEqual([]);
+  });
+
+  it('should refresh duplicate toasts', () => {
+    const first = service.show({ message: 'Saved' });
+    const second = service.show({ message: 'Saved' });
+
+    expect(second).toBe(first);
+    expect(service.toasts().length).toBe(1);
+    expect(service.toasts()[0].revision).toBe(1);
   });
 });
