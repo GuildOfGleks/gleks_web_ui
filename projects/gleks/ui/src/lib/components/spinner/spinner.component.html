@@ -1,11 +1,11 @@
 @if (overlay()) {
-  <div class="gog-spinner__overlay">
-    <div class="gog-spinner__wrap gog-spinner__wrap--{{ size() }}">
+  <div class="gog-spinner__overlay gog-flex-center">
+    <div class="gog-spinner__wrap gog-contained-layout gog-spinner__wrap--{{ size() }}">
       <ng-container *ngTemplateOutlet="spinnerTpl" />
     </div>
   </div>
 } @else {
-  <div class="gog-spinner__wrap gog-spinner__wrap--{{ size() }}">
+  <div class="gog-spinner__wrap gog-contained-layout gog-spinner__wrap--{{ size() }}">
     <ng-container *ngTemplateOutlet="spinnerTpl" />
   </div>
 }

@@ -1,17 +1,8 @@
-:host {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* ── Overlay ───────────────────────────────────────────────────────────── */
 .gog-spinner__overlay {
   position: fixed;
   inset: 0;
   z-index: 8000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: rgba(10, 8, 3, 0.65);
   backdrop-filter: blur(3px);
   animation: gog-spinner-fade-in 0.2s ease;
@@ -23,11 +14,7 @@
 
 /* ── Sizes ─────────────────────────────────────────────────────────────── */
 .gog-spinner__wrap {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
-  contain: layout style;
 }
 
 .gog-spinner__wrap--sm {

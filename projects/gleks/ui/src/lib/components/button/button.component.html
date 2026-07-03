@@ -1,9 +1,9 @@
 <button
   (click)="onClick($event)"
   [attr.disabled]="isDisabled() ? true : null"
-  [class.cursor-not-allowed]="isDisabled()"
-  [class.cursor-pointer]="!isDisabled()"
-  [class.cursor-wait]="loading()"
+  [class.gog-cursor-not-allowed]="isDisabled()"
+  [class.gog-cursor-pointer]="!isDisabled()"
+  [class.gog-cursor-wait]="loading()"
   [class.gog-btn--ghost]="variant() === 'ghost'"
   [class.gog-btn--lg]="size() === 'lg'"
   [class.gog-btn--loading]="loading()"
@@ -13,7 +13,7 @@
   [class.gog-btn--secondary]="variant() === 'secondary'"
   [class.gog-btn--sm]="size() === 'sm'"
   [type]="type()"
-  class="gog-btn fw-black font-heading"
+  class="gog-btn gog-inline-center gog-contained-layout fw-black font-heading"
 >
   @if (loading()) {
     <gog-spinner [size]="spinnerSize()" aria-hidden="true" class="gog-btn__spinner" />

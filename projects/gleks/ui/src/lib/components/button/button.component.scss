@@ -11,10 +11,6 @@
   /* spinner inside a button must contrast against the gold background */
   --gog-spinner-color: #1a1208;
 
-  contain: layout style;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
   border: 2px solid var(--gog-btn-border);
   border-radius: var(--gog-btn-radius);
@@ -30,7 +26,6 @@
     box-shadow 0.15s ease,
     color 0.15s ease;
   line-height: 1;
-  cursor: pointer;
 }
 
 .gog-btn:focus-visible {
@@ -121,7 +116,6 @@
   width: 100%;
 }
 
-/* === Loading state === */
 .gog-btn--loading {
   position: relative;
   pointer-events: none;

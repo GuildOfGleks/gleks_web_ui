@@ -1,0 +1,7 @@
+.fw-black {
+  font-weight: 900;
+}
+
+.font-heading {
+  font-family: var(--font-heading), serif;
+}

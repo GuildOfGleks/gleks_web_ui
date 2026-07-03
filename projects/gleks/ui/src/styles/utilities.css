@@ -1,0 +1,27 @@
+.gog-inline-center {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gog-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gog-contained-layout {
+  contain: layout style;
+}
+
+.gog-cursor-pointer {
+  cursor: pointer;
+}
+
+.gog-cursor-wait {
+  cursor: wait;
+}
+
+.gog-cursor-not-allowed {
+  cursor: not-allowed;
+}
