@@ -21,6 +21,8 @@ export interface Toast {
 export interface ToastAction {
   label: string;
   onClick: (toast: Toast) => void;
+  iconName?: GogIconName;
+  iconTemplate?: TemplateRef<unknown> | null;
 }
 
 export interface ToastConfig {

@@ -105,6 +105,10 @@
   --gog-btn-font-size: 0.75rem;
 }
 
+.gog-toast__action gog-icon {
+  font-size: 0.75rem;
+}
+
 .gog-toast__close {
   align-self: flex-start;
   flex-shrink: 0;
