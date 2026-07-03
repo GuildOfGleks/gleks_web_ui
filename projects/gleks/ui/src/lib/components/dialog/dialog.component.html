@@ -1,0 +1,39 @@
+@for (dialog of dialogService.dialogs(); track trackDialog($index, dialog)) {
+  <div
+    class="gog-dialog__backdrop"
+    [class.gog-dialog__backdrop--modal]="dialog.config.modal !== false"
+    [style.z-index]="panelZ(dialog)"
+    (click)="onBackdropClick($event, dialog)"
+    (keydown.escape)="closeIfClosable(dialog)"
+  >
+    <div
+      class="gog-dialog__panel"
+      [style.--dropdown-z]="panelZ(dialog) + 10"
+      [style.width]="dialog.config.width ?? 'auto'"
+      [style.max-width]="dialog.config.maxWidth ?? '90vw'"
+      [attr.role]="dialog.config.role ?? 'dialog'"
+      [attr.aria-modal]="dialog.config.modal === false ? null : 'true'"
+      tabindex="-1"
+      [attr.aria-labelledby]="dialog.config.title ? getTitleId(dialog) : null"
+    >
+      @if (dialog.config.title || dialog.config.closable !== false) {
+        <div class="gog-dialog__header">
+          @if (dialog.config.title) {
+            <h2 [id]="getTitleId(dialog)" class="gog-dialog__title font-heading">
+              {{ dialog.config.title }}
+            </h2>
+          }
+          @if (dialog.config.closable !== false) {
+            <button type="button" class="gog-dialog__close gog-inline-center" aria-label="Close dialog" (click)="close(dialog)">
+              x
+            </button>
+          }
+        </div>
+      }
+
+      <div class="gog-dialog__body">
+        <ng-container *ngComponentOutlet="dialog.config.component; injector: getInjector(dialog)" />
+      </div>
+    </div>
+  </div>
+}

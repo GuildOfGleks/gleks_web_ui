@@ -1,0 +1,29 @@
+:host {
+  display: block;
+  contain: layout style;
+}
+
+.confirm-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 320px;
+  max-width: 440px;
+  color: var(--text-color);
+}
+
+.confirm-dialog__title {
+  margin: 0;
+}
+
+.confirm-dialog__description {
+  margin: 0;
+  color: var(--muted-text-color);
+}
+
+.confirm-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}

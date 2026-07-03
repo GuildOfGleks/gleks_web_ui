@@ -1,0 +1,16 @@
+<div
+  class="confirm-dialog"
+  [attr.aria-labelledby]="'confirm-title-' + instanceId"
+  [attr.aria-describedby]="'confirm-desc-' + instanceId"
+>
+  <h3 [id]="'confirm-title-' + instanceId" class="confirm-dialog__title heading-md">
+    {{ data.title }}
+  </h3>
+  <p [id]="'confirm-desc-' + instanceId" class="confirm-dialog__description body-sm">
+    {{ data.description }}
+  </p>
+  <div class="confirm-dialog__actions">
+    <gog-button variant="ghost" type="button" (gogClick)="cancel()">{{ data.cancelText }}</gog-button>
+    <gog-button variant="primary" type="button" (gogClick)="confirm()">{{ data.confirmText }}</gog-button>
+  </div>
+</div>

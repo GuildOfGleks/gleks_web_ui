@@ -1,14 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GogThemeService } from './gog-theme.service';
+import { ThemeService } from './theme.service';
 
-describe('GogThemeService', () => {
+describe('ThemeService', () => {
   beforeEach(() => {
     document.documentElement.removeAttribute('data-theme');
   });
 
   it('should initialize and switch themes', () => {
-    const service = TestBed.runInInjectionContext(() => new GogThemeService());
+    const service = TestBed.runInInjectionContext(() => new ThemeService());
 
     expect(service.theme()).toBe('light');
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
