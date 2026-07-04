@@ -1,0 +1,23 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-select</p>
+    <h2>Select</h2>
+    <p class="lead">
+      A native `&lt;select&gt;` wrapper with label, chevron icon slot, error state, and
+      `ControlValueAccessor` support.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Playground</h3>
+    <div class="field-grid">
+      <gog-select
+        label="Framework"
+        inputId="framework"
+        [options]="frameworks"
+        [(value)]="framework"
+      />
+    </div>
+    <p class="meta">Selected: {{ selectionSummary() }}</p>
+  </article>
+</section>

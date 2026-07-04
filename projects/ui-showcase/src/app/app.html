@@ -1,10 +1,28 @@
 <div class="app-shell">
   <header class="app-shell__header">
-    <p class="app-shell__eyebrow">@gleks/ui</p>
-    <h1>{{ title() }}</h1>
-    <p class="app-shell__lead">
-      A live playground for the latest components, tokens, overlays, and reusable icon slots.
-    </p>
+    <div class="app-shell__intro">
+      <p class="app-shell__eyebrow">&#64;gleks/ui</p>
+      <h1>{{ title() }}</h1>
+      <p class="app-shell__lead">
+        A live playground for the latest components, tokens, overlays, and reusable icon slots.
+      </p>
+    </div>
+
+    <gog-button variant="ghost" type="button" (gogClick)="toggleTheme()">
+      Toggle {{ themeLabel() }} theme
+    </gog-button>
+
+    <nav class="app-shell__nav" aria-label="Component showcase pages">
+      @for (link of navLinks; track link.path) {
+        <a
+          class="app-shell__nav-link"
+          [routerLink]="link.path"
+          routerLinkActive="app-shell__nav-link--active"
+        >
+          {{ link.label }}
+        </a>
+      }
+    </nav>
   </header>
 
   <router-outlet />

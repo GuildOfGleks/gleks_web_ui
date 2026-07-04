@@ -1,0 +1,23 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-multiselect</p>
+    <h2>Multiselect</h2>
+    <p class="lead">
+      A checkbox-driven multiselect dropdown with select-all/clear controls and an optional
+      body-portaled panel.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Playground</h3>
+    <div class="field-grid">
+      <gog-multiselect
+        label="Features"
+        [options]="features"
+        [showControls]="true"
+        [(value)]="selectedFeatures"
+      />
+    </div>
+    <p class="meta">Selected features: {{ featureSummary() }}</p>
+  </article>
+</section>

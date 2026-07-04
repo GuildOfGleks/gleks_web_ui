@@ -1,0 +1,19 @@
+@use '../detail' as *;
+
+.variant-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.variant-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.variant-row__label {
+  min-width: 72px;
+  text-transform: capitalize;
+  color: var(--muted-text-color);
+}

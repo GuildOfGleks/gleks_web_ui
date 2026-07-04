@@ -1,0 +1,38 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-button</p>
+    <h2>Button</h2>
+    <p class="lead">
+      A debounced action button with three variants, three sizes, and built-in loading and
+      disabled states.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Variants &amp; sizes</h3>
+    <div class="variant-grid">
+      @for (variant of variants; track variant) {
+        <div class="variant-row">
+          <span class="variant-row__label">{{ variant }}</span>
+          @for (size of sizes; track size) {
+            <gog-button [variant]="variant" [size]="size" type="button" (gogClick)="onClick(variant, size)">
+              {{ size }}
+            </gog-button>
+          }
+        </div>
+      }
+    </div>
+    <p class="meta">{{ lastClicked() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>States</h3>
+    <div class="action-row">
+      <gog-button variant="primary" type="button" [disabled]="true">Disabled</gog-button>
+      <gog-button variant="primary" type="button" [loading]="isLoading()" (gogClick)="simulateLoading()">
+        Simulate loading
+      </gog-button>
+      <gog-button variant="outline" type="button" [fullWidth]="true">Full width</gog-button>
+    </div>
+  </article>
+</section>

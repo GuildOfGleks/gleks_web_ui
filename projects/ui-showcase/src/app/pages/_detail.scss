@@ -1,8 +1,9 @@
+// Shared layout primitives for component detail pages under `pages/*-page`.
 :host {
   display: block;
 }
 
-.showcase {
+.detail {
   display: grid;
   gap: 24px;
 }
@@ -12,31 +13,6 @@
   border: 1px solid var(--border-color);
   background: color-mix(in srgb, var(--surface-color) 92%, transparent);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-}
-
-.showcase__hero {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: flex-start;
-}
-
-.showcase__hero-actions,
-.action-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.showcase__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.field-grid {
-  display: grid;
-  gap: 14px;
 }
 
 .eyebrow {
@@ -61,4 +37,16 @@ h3 {
 .meta {
   margin: 8px 0 0;
   color: var(--muted-text-color);
+}
+
+.action-row,
+.field-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.field-grid {
+  display: grid;
+  gap: 14px;
 }

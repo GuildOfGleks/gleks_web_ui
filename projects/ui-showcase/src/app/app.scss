@@ -12,10 +12,17 @@
 
 .app-shell__header {
   display: grid;
-  gap: 8px;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 16px 24px;
   padding: 24px;
   border: 1px solid var(--border-color);
   background: color-mix(in srgb, var(--surface-color) 88%, transparent);
+}
+
+.app-shell__intro {
+  display: grid;
+  gap: 8px;
 }
 
 .app-shell__eyebrow {
@@ -36,4 +43,43 @@ h1 {
   margin: 0;
   max-width: 68ch;
   color: var(--muted-text-color);
+}
+
+.app-shell__nav {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.app-shell__nav-link {
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  color: var(--muted-text-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    color: var(--text-color);
+    border-color: var(--accent-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  &--active {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 12%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell__nav-link {
+    transition: none;
+  }
 }

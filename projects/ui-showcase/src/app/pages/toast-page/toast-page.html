@@ -1,0 +1,36 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-toast</p>
+    <h2>Toast</h2>
+    <p class="lead">
+      Fire-and-forget notifications via `ToastService`, rendered by a positioned
+      `gog-toast-container` with stacking, actions, and icon slots.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Toast API</h3>
+    <div class="field-grid">
+      <gog-inputfield label="Message" inputId="toast-message" [(value)]="toastMessage" />
+      <gog-select
+        label="Type"
+        inputId="toast-type"
+        [options]="toastTypes"
+        [(value)]="toastType"
+      />
+      <gog-select
+        label="Position"
+        inputId="toast-position"
+        [options]="positions"
+        [(value)]="toastPosition"
+      />
+    </div>
+
+    <div class="action-row">
+      <gog-button variant="primary" type="button" (gogClick)="showToast()">Preview toast</gog-button>
+      <gog-button variant="ghost" type="button" (gogClick)="showToastBurst()">Queue 7 toasts</gog-button>
+    </div>
+  </article>
+
+  <gog-toast-container [maxVisiblePerPosition]="5" />
+</section>

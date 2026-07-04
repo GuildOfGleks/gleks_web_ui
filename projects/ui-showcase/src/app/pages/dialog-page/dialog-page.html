@@ -1,0 +1,22 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-dialog</p>
+    <h2>Dialog</h2>
+    <p class="lead">
+      A draggable, closable modal service with a bundled confirmation dialog and a promise-based
+      result.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Overlay</h3>
+    <p class="meta">Last dialog result: {{ lastDialogResult() }}</p>
+    <div class="action-row">
+      <gog-button variant="primary" type="button" (gogClick)="openConfirmDialog()">
+        Open confirmation dialog
+      </gog-button>
+    </div>
+  </article>
+
+  <gog-dialog />
+</section>

@@ -1,0 +1,20 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-checkbox</p>
+    <h2>Checkbox</h2>
+    <p class="lead">
+      A two-way bindable checkbox with a `ControlValueAccessor` implementation and a
+      customizable check icon slot.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Playground</h3>
+    <div class="field-grid">
+      <gog-checkbox label="Accept terms" [(checked)]="acceptTerms" />
+      <gog-checkbox label="Subscribe to newsletter" [(checked)]="subscribeNewsletter" />
+      <gog-checkbox label="Disabled option" [disabled]="true" />
+    </div>
+    <p class="meta">{{ summary() }}</p>
+  </article>
+</section>
