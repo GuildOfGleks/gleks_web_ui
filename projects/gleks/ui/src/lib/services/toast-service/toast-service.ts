@@ -151,7 +151,10 @@ export class ToastService {
     actions: ToastAction[],
     iconTemplate: TemplateRef<unknown> | null,
   ): string {
-    if (actions.length > 0) return '';
-    return [message, type, iconName, position, iconTemplate ? 'template' : 'default'].join('|');
+    // Actions carry closures that can't be compared by value, so only their
+    // label/icon "shape" is used — this lets repeated calls with equivalent
+    // actions (e.g. a fresh "Undo" callback each time) still dedupe correctly.
+    const actionsSignature = actions.map((action) => `${action.label}:${action.iconName ?? ''}`).join(',');
+    return [message, type, iconName, position, iconTemplate ? 'template' : 'default', actionsSignature].join('|');
   }
 }

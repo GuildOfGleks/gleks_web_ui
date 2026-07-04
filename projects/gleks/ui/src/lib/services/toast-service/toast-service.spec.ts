@@ -25,7 +25,7 @@ describe('ToastService', () => {
         isSticky: false,
         duration: 4000,
         position: 'bottom-right',
-        dedupeKey: 'Saved|info|info|bottom-right|default',
+        dedupeKey: 'Saved|info|info|bottom-right|default|',
         revision: 0,
       },
     ]);
@@ -49,5 +49,21 @@ describe('ToastService', () => {
     expect(second).toBe(first);
     expect(service.toasts().length).toBe(1);
     expect(service.toasts()[0].revision).toBe(1);
+  });
+
+  it('should refresh duplicate toasts even when they carry equivalent actions', () => {
+    const makeConfig = () => ({
+      message: 'Saved successfully',
+      actions: [{ label: 'Undo', onClick: () => {} }],
+    });
+
+    const first = service.show(makeConfig());
+    const second = service.show(makeConfig());
+    const third = service.show(makeConfig());
+
+    expect(second).toBe(first);
+    expect(third).toBe(first);
+    expect(service.toasts().length).toBe(1);
+    expect(service.toasts()[0].revision).toBe(2);
   });
 });

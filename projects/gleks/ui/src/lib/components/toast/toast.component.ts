@@ -4,11 +4,13 @@ import {
   Component,
   computed,
   effect,
+  ElementRef,
   inject,
   input,
   OnDestroy,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { ButtonComponent } from '../button/button.component';
 import { Toast, ToastAction } from '../../services/toast-service/toast-service';
@@ -37,6 +39,8 @@ export class ToastComponent implements OnDestroy {
   private remainingMs = 0;
   private isClosing = signal(false);
 
+  private readonly progressEl = viewChild<ElementRef<HTMLElement>>('progress');
+
   protected readonly hasActions = computed(() => this.toast().actions.length > 0);
 
   protected readonly ariaRole = computed(() =>
@@ -57,6 +61,7 @@ export class ToastComponent implements OnDestroy {
       this.remainingMs = toast.duration;
 
       if (!toast.isSticky) {
+        this.restartProgressAnimation();
         this.startAutoDismiss(this.remainingMs);
       }
 
@@ -127,6 +132,20 @@ export class ToastComponent implements OnDestroy {
       this.remainingMs = 0;
       this.close();
     }, duration);
+  }
+
+  /**
+   * Forces the CSS progress-bar animation to restart from full width. Simply updating the
+   * `--toast-duration` custom property doesn't retrigger a running `animation`, so the element
+   * is briefly detached from the animation and reflowed before being reattached.
+   */
+  private restartProgressAnimation(): void {
+    const el = this.progressEl()?.nativeElement;
+    if (!el) return;
+
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
   }
 
   private clearAutoDismissTimer(): void {

@@ -59,5 +59,6 @@ export class ToastPage {
     for (let index = 1; index <= 7; index += 1) {
       this.toastService.info(`Queued toast ${index}`, { position: 'top-right' });
     }
-  }
+  } 
 }
+
