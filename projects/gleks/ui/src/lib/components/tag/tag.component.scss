@@ -7,7 +7,7 @@
   --gog-tag-padding-block: 0.375rem;
   --gog-tag-padding-inline: 0.75rem;
   --gog-tag-gap: 0.375rem;
-  --gog-tag-radius: var(--gog-tag-rounded-radius, 0.5rem);
+  --gog-tag-radius: max(var(--radius), 2px);
   --gog-tag-icon-size: 0.875rem;
 
   display: inline-flex;
@@ -70,7 +70,7 @@
 }
 
 :host(.gog-tag--rounded) {
-  --gog-tag-radius: var(--gog-tag-rounded-radius, 0.5rem);
+  --gog-tag-radius: max(var(--radius), 2px);
 }
 
 :host(.gog-tag--pill) {
