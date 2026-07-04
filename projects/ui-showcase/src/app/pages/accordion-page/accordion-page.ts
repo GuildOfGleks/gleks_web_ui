@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/
 import {
   AccordionComponent,
   ButtonComponent,
+  GogAccordionChevronDirective,
   GogAccordionHeaderDirective,
   GogAccordionContentDirective,
   GogAccordionItem,
@@ -27,6 +28,7 @@ interface AccordionDemoPanel extends GogAccordionItem {
   imports: [
     AccordionComponent,
     ButtonComponent,
+    GogAccordionChevronDirective,
     GogAccordionHeaderDirective,
     GogAccordionContentDirective,
     SpinnerOverlayComponent,

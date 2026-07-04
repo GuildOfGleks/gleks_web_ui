@@ -3,6 +3,7 @@ import {
   effect,
   Component,
   contentChild,
+  ElementRef,
   Directive,
   inject,
   input,
@@ -29,6 +30,11 @@ export interface GogAccordionToggleEvent {
   open: boolean;
 }
 
+export interface GogAccordionChevronContext {
+  $implicit: GogAccordionItem;
+  open: boolean;
+}
+
 @Directive({
   selector: '[gogAccordionContent]',
 })
@@ -43,6 +49,13 @@ export class GogAccordionHeaderDirective {
   readonly templateRef = inject<TemplateRef<GogAccordionHeaderContext>>(TemplateRef);
 }
 
+@Directive({
+  selector: '[gogAccordionChevron]',
+})
+export class GogAccordionChevronDirective {
+  readonly templateRef = inject<TemplateRef<GogAccordionChevronContext>>(TemplateRef);
+}
+
 @Component({
   selector: 'gog-accordion',
   imports: [NgTemplateOutlet],
@@ -54,15 +67,19 @@ export class GogAccordionHeaderDirective {
   },
 })
 export class AccordionComponent {
+  private readonly host = inject(ElementRef<HTMLElement>);
+
   readonly items = input<GogAccordionItem[]>([]);
   readonly size = input<GogSize>('lg');
   readonly expandFirst = input(false);
   readonly multi = input(false);
   readonly loading = input(false);
+  readonly showChevron = input(true);
 
   readonly gogToggle = output<GogAccordionToggleEvent>();
 
   readonly headerTpl = contentChild(GogAccordionHeaderDirective);
+  readonly chevronTpl = contentChild(GogAccordionChevronDirective);
   readonly contentTpl = contentChild(GogAccordionContentDirective);
 
   protected readonly openIds = signal<Set<string | number>>(new Set());
@@ -97,5 +114,33 @@ export class AccordionComponent {
 
     this.openIds.set(next);
     this.gogToggle.emit({ item, open: next.has(id) });
+  }
+
+  protected onHeaderKeydown(event: KeyboardEvent, index: number): void {
+    const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End'];
+    if (!keys.includes(event.key)) {
+      return;
+    }
+
+    const host = this.host.nativeElement as HTMLElement;
+    const headers = Array.from(host.querySelectorAll('.gog-accordion__header')) as HTMLButtonElement[];
+
+    if (headers.length === 0) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const lastIndex = headers.length - 1;
+    const nextIndex =
+      event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? lastIndex
+          : event.key === 'ArrowDown'
+            ? (index + 1) % headers.length
+            : (index - 1 + headers.length) % headers.length;
+
+    headers[nextIndex]?.focus();
   }
 }

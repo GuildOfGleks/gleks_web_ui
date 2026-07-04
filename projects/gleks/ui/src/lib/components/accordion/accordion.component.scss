@@ -99,19 +99,18 @@
 /* === Body === */
 
 .gog-accordion__body {
-  --gog-accordion-body-max-height: 24rem;
-
-  max-height: 0;
+  display: grid;
+  grid-template-rows: 0fr;
   opacity: 0;
   overflow: hidden;
   border-top: 1px solid var(--accent-dim);
   transition:
-    max-height 0.18s ease,
+    grid-template-rows 0.2s ease,
     opacity 0.18s ease;
 }
 
 .gog-accordion__body--open {
-  max-height: var(--gog-accordion-body-max-height);
+  grid-template-rows: 1fr;
   opacity: 1;
 }
 
@@ -141,10 +140,6 @@
   gap: 2px;
 }
 
-.gog-accordion--md .gog-accordion__body {
-  --gog-accordion-body-max-height: 18rem;
-}
-
 .gog-accordion--md .gog-accordion__body-inner {
   padding: 8px 14px 12px;
   font-size: var(--text-sm);
@@ -165,10 +160,6 @@
 
 .gog-accordion--sm .gog-accordion__header-content {
   gap: 2px;
-}
-
-.gog-accordion--sm .gog-accordion__body {
-  --gog-accordion-body-max-height: 14rem;
 }
 
 .gog-accordion--sm .gog-accordion__body-inner {

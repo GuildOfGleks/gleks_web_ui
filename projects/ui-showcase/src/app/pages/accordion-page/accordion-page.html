@@ -70,4 +70,39 @@
       </ng-template>
     </gog-accordion>
   </article>
+
+  <article class="card">
+    <h3>Chevron template</h3>
+    <p class="meta">
+      The trigger keeps button semantics, while the chevron itself can be themed or replaced.
+    </p>
+
+    <gog-accordion [items]="panels" [expandFirst]="false" size="sm" (gogToggle)="onAccordionToggle($event)">
+      <ng-template gogAccordionChevron let-open="open">
+        <span class="accordion-chevron__glyph">{{ open ? '−' : '+' }}</span>
+      </ng-template>
+
+      <ng-template gogAccordionContent let-item>
+        @if (isLoaded(item.id)) {
+          @if (panelFor(item.id); as panel) {
+            <div class="accordion-body accordion-body--chevron-demo">
+              <p class="meta">{{ panel.summary }}</p>
+              <ul class="accordion-notes accordion-notes--compact">
+                @for (note of panel.notes; track note) {
+                  <li>{{ note }}</li>
+                }
+              </ul>
+            </div>
+          }
+        } @else {
+          <gog-spinner-overlay [loading]="isLoading(item.id)" size="sm" ariaLabel="Loading accordion content">
+            <div class="accordion-loading-shell accordion-loading-shell--compact" aria-hidden="true">
+              <span class="accordion-loading-shell__line accordion-loading-shell__line--wide"></span>
+              <span class="accordion-loading-shell__line"></span>
+            </div>
+          </gog-spinner-overlay>
+        }
+      </ng-template>
+    </gog-accordion>
+  </article>
 </section>

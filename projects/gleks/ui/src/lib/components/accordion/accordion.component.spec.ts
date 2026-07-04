@@ -3,17 +3,26 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {
   AccordionComponent,
+  GogAccordionChevronDirective,
   GogAccordionContentDirective,
   GogAccordionHeaderDirective,
 } from './accordion.component';
 
 @Component({
   standalone: true,
-  imports: [AccordionComponent, GogAccordionHeaderDirective, GogAccordionContentDirective],
+  imports: [
+    AccordionComponent,
+    GogAccordionHeaderDirective,
+    GogAccordionChevronDirective,
+    GogAccordionContentDirective,
+  ],
   template: `
     <gog-accordion [items]="items" (gogToggle)="lastToggle = $event">
       <ng-template gogAccordionHeader let-item let-open="open">
         <span class="custom-header">{{ item.title }} {{ open ? 'open' : 'closed' }}</span>
+      </ng-template>
+      <ng-template gogAccordionChevron let-item let-open="open">
+        <span class="custom-chevron">{{ item.title }} {{ open ? 'v' : '>' }}</span>
       </ng-template>
       <ng-template gogAccordionContent let-item>
         <span class="custom-body">{{ item.title }} body</span>
@@ -99,5 +108,54 @@ describe('AccordionComponent', () => {
       item: { id: 1, title: 'First' },
       open: true,
     });
+  });
+
+  it('should move focus with arrow keys and home/end', async () => {
+    fixture.componentRef.setInput('items', [
+      { id: 1, title: 'First' },
+      { id: 2, title: 'Second' },
+      { id: 3, title: 'Third' },
+    ]);
+    await fixture.whenStable();
+
+    const buttons = fixture.nativeElement.querySelectorAll('.gog-accordion__header') as NodeListOf<HTMLButtonElement>;
+    buttons[0].focus();
+    buttons[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await fixture.whenStable();
+    expect(document.activeElement).toBe(buttons[1]);
+
+    buttons[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+    await fixture.whenStable();
+    expect(document.activeElement).toBe(buttons[0]);
+
+    buttons[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+    await fixture.whenStable();
+    expect(document.activeElement).toBe(buttons[2]);
+
+    buttons[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+    await fixture.whenStable();
+    expect(document.activeElement).toBe(buttons[0]);
+  });
+
+  it('should allow disabling the default chevron', async () => {
+    fixture.componentRef.setInput('items', [{ id: 1, title: 'First' }]);
+    fixture.componentRef.setInput('showChevron', false);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.gog-accordion__chevron')).toBeNull();
+  });
+
+  it('should render a custom chevron template', async () => {
+    const hostFixture = TestBed.createComponent(AccordionHostComponent);
+    await hostFixture.whenStable();
+
+    expect(hostFixture.nativeElement.querySelector('.custom-chevron')?.textContent).toContain('First >');
+
+    hostFixture.componentInstance.items = [{ id: 1, title: 'First' }];
+    hostFixture.detectChanges();
+    hostFixture.nativeElement.querySelector('.gog-accordion__header')?.click();
+    await hostFixture.whenStable();
+
+    expect(hostFixture.nativeElement.querySelector('.custom-chevron')?.textContent).toContain('First v');
   });
 });

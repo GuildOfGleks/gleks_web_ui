@@ -18,10 +18,12 @@
         <button
           [id]="'gog-acc-btn-' + item.id"
           class="gog-accordion__header font-heading"
+          [class.gog-accordion__header--chevronless]="!showChevron()"
           [class.gog-accordion__header--open]="isOpen(item.id)"
           [attr.aria-expanded]="isOpen(item.id)"
           [attr.aria-controls]="'gog-acc-body-' + item.id"
           (click)="toggle(item)"
+          (keydown)="onHeaderKeydown($event, $index)"
           type="button"
         >
           <span class="gog-accordion__header-content">
@@ -33,18 +35,26 @@
               <span class="gog-accordion__title">{{ item.title }}</span>
             }
           </span>
-          <span class="gog-accordion__chevron" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </span>
+          @if (showChevron()) {
+            <span class="gog-accordion__chevron" aria-hidden="true">
+              @if (chevronTpl(); as tpl) {
+                <ng-container
+                  *ngTemplateOutlet="tpl.templateRef; context: { $implicit: item, open: isOpen(item.id) }"
+                />
+              } @else {
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              }
+            </span>
+          }
         </button>
 
         <div

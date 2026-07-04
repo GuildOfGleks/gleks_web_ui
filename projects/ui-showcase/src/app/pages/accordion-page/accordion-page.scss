@@ -105,6 +105,26 @@
   width: 58%;
 }
 
+.accordion-loading-shell--compact {
+  min-height: 72px;
+}
+
+.accordion-notes--compact {
+  margin-top: 0;
+}
+
+.accordion-chevron__glyph {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent-dim) 16%, transparent);
+  color: var(--accent-color);
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
 @media (max-width: 640px) {
   .accordion-body__stats {
     grid-template-columns: 1fr;
