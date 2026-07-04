@@ -1,4 +1,8 @@
-<div class="gog-slider gog-contained-layout" [class.gog-slider--disabled]="isDisabled()">
+<div
+  class="gog-slider gog-contained-layout"
+  [class.gog-slider--disabled]="isDisabled()"
+  [class.gog-slider--thumb-hidden]="!showThumb()"
+>
   <div class="gog-slider__header">
     @if (label()) {
       <label [attr.for]="inputId" class="gog-slider__label font-heading">{{ label() }}</label>
@@ -14,7 +18,9 @@
       <div class="gog-slider__fill"></div>
     </div>
 
-    <div class="gog-slider__thumb" aria-hidden="true"></div>
+    @if (showThumb()) {
+      <div class="gog-slider__thumb" aria-hidden="true"></div>
+    }
 
     <input
       [id]="inputId"

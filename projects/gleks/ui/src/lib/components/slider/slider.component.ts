@@ -36,6 +36,7 @@ export class SliderComponent implements ControlValueAccessor {
   readonly max = input(100);
   readonly step = input(1);
   readonly showValue = input(true);
+  readonly showThumb = input(true);
   readonly errorMessage = input('');
   readonly ariaLabel = input('');
   readonly disabled = input(false);

@@ -27,6 +27,10 @@
   pointer-events: none;
 }
 
+.gog-slider--thumb-hidden .gog-slider__thumb {
+  display: none;
+}
+
 .gog-slider__header {
   display: flex;
   align-items: center;

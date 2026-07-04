@@ -11,13 +11,16 @@ import { ButtonComponent, SliderComponent } from '@gleks/ui';
 export class SliderPage {
   protected readonly volume = signal(45);
   protected readonly brightness = signal(70);
+  protected readonly precision = signal(0.45);
 
   protected readonly summary = computed(
-    () => `Volume is ${this.volume()} and brightness is ${this.brightness()}.`,
+    () =>
+      `Volume is ${this.volume()}, brightness is ${this.brightness()}, and precision is ${this.precision()}.`,
   );
 
   protected reset(): void {
     this.volume.set(45);
     this.brightness.set(70);
+    this.precision.set(0.45);
   }
 }
