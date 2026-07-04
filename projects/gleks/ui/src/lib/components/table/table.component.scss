@@ -16,6 +16,7 @@
   flex-direction: column;
   gap: 12px;
   width: 100%;
+  overflow-anchor: none;
 }
 
 .gog-table-scroll {
@@ -109,13 +110,13 @@
   display: inline-block;
   width: 1em;
   text-align: center;
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   opacity: 0.6;
   flex-shrink: 0;
 }
 
 .gog-table__sort-icon gog-icon {
-  font-size: 0.65rem;
+  font-size: 0.8rem;
 }
 
 .gog-table__th--sorted .gog-table__sort-icon {

@@ -14,7 +14,7 @@ import {
   TemplateRef,
   signal,
   createComponent,
-} from '@angular/core'; 
+} from '@angular/core';
 import { ButtonComponent } from '../button/button.component';
 import { isPlatformBrowser } from '@angular/common';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
