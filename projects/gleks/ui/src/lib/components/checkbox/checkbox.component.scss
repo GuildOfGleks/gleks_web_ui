@@ -48,8 +48,9 @@
   width: var(--gog-checkbox-box-size, 24px);
   height: var(--gog-checkbox-box-size, 24px);
   box-sizing: border-box;
-  border: 2px solid var(--gog-checkbox-border-color);
-  border-radius: 4px;
+  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+    var(--gog-checkbox-border-color);
+  border-radius: var(--radius);
   background-color: var(--gog-checkbox-bg);
   color: var(--gog-checkbox-icon-color);
   flex: 0 0 auto;
@@ -76,8 +77,8 @@
 
 .gog-checkbox__dash {
   width: calc(var(--gog-checkbox-box-size, 24px) * 0.45);
-  height: 2px;
-  border-radius: 999px;
+  height: var(--gog-checkbox-dash-height, 2px);
+  border-radius: var(--gog-checkbox-dash-radius, 999px);
   background-color: currentColor;
   pointer-events: none;
 }

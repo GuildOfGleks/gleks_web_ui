@@ -1,0 +1,74 @@
+<section class="detail themes-page">
+  <div class="detail__hero card">
+    <p class="eyebrow">Theme lab</p>
+    <h2>One component set, three radically different skins</h2>
+    <p class="lead">
+      The app shell can switch the whole showcase at runtime, and this page compares all three
+      custom themes side by side so the differences stay obvious.
+    </p>
+  </div>
+
+  <div class="themes-grid">
+    @for (theme of themes; track theme.name) {
+      <article class="theme-panel theme-panel--{{ theme.name }}">
+        <header class="theme-panel__header">
+          <p class="theme-panel__eyebrow">{{ theme.label }}</p>
+          <h3>{{ theme.summary }}</h3>
+        </header>
+
+        <div class="theme-panel__body">
+          <div class="theme-panel__sample-row">
+            <gog-button type="button">Primary</gog-button>
+            <gog-button variant="outline" type="button">Outline</gog-button>
+            <gog-button variant="ghost" type="button">Ghost</gog-button>
+          </div>
+
+          <div class="theme-panel__sample-grid">
+            <gog-checkbox
+              [checked]="isChecked()"
+              label="Deploy control tower"
+              (checkedChange)="isChecked.set($event)"
+            />
+
+            <gog-inputfield
+              label="Signal"
+              placeholder="Neon pulse"
+              [value]="search()"
+              (valueChange)="search.set($event)"
+            />
+
+            <gog-select
+              label="Mode"
+              placeholder="Select mode"
+              [options]="modes"
+              [value]="mode()"
+              (valueChange)="mode.set($event)"
+            />
+
+            <gog-slider
+              label="Impact"
+              [min]="0"
+              [max]="100"
+              [value]="intensity()"
+              (valueChange)="intensity.set($event)"
+            />
+
+            <div class="theme-panel__chip-row">
+              <gog-chip iconName="info" size="md">Readable</gog-chip>
+              <gog-tag iconName="warning" variant="warning">Alert</gog-tag>
+            </div>
+
+            <div class="theme-panel__icons" aria-hidden="true">
+              <gog-icon name="check" />
+              <gog-icon name="warning" />
+              <gog-icon name="info" />
+              <gog-icon name="close" />
+            </div>
+
+            <gog-spinner aria-label="Loading preview" />
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+</section>

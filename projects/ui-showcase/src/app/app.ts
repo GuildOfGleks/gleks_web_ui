@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonComponent, ThemeService } from '@gleks/ui';
 
+import { showcaseThemes, type ShowcaseThemeName } from './showcase-themes';
+
 interface ShowcaseNavLink {
   path: string;
   label: string;
@@ -18,12 +20,20 @@ export class App {
   private readonly themeService = inject(ThemeService);
 
   protected readonly title = signal('Gleks UI Showcase');
-  protected readonly themeLabel = computed(() => (this.themeService.theme() === 'dark' ? 'Dark' : 'Light'));
+  protected readonly themes = showcaseThemes;
+  protected readonly activeTheme = computed(() => this.themeService.theme() as ShowcaseThemeName);
+  protected readonly themeLabel = computed(
+   () => this.themes.find((theme) => theme.name === this.activeTheme())?.label ?? this.activeTheme(),
+  );
+  protected readonly themeSummary = computed(
+   () => this.themes.find((theme) => theme.name === this.activeTheme())?.summary ?? '',
+  );
 
   protected readonly navLinks: ShowcaseNavLink[] = [
-    { path: 'buttons', label: 'Button' },
-    { path: 'checkbox', label: 'Checkbox' },
-    { path: 'inputfield', label: 'Inputfield' },
+   { path: 'themes', label: 'Themes' },
+   { path: 'buttons', label: 'Button' },
+   { path: 'checkbox', label: 'Checkbox' },
+   { path: 'inputfield', label: 'Inputfield' },
     { path: 'chip', label: 'Chip' },
     { path: 'select', label: 'Select' },
     { path: 'multiselect', label: 'Multiselect' },
@@ -36,7 +46,11 @@ export class App {
     { path: 'dialog', label: 'Dialog' },
   ];
 
-  protected toggleTheme(): void {
-    this.themeService.toggleTheme();
+  protected isActiveTheme(theme: ShowcaseThemeName): boolean {
+    return this.activeTheme() === theme;
+  }
+
+  protected setTheme(theme: ShowcaseThemeName): void {
+    this.themeService.setTheme(theme);
   }
 }

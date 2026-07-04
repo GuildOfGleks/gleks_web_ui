@@ -36,12 +36,17 @@
 }
 
 .gog-ms {
+  --gog-ms-padding-y: var(--control-padding-y, 10px);
+  --gog-ms-padding-x: var(--control-padding-x, 14px);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
+  padding: var(--gog-ms-padding-y) var(--gog-ms-padding-x);
   background-color: var(--gog-ms-field-bg);
-  border: 2px solid var(--gog-ms-field-border);
+  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+    var(--gog-ms-field-border);
+  border-radius: var(--radius);
   color: var(--gog-ms-field-color);
   cursor: pointer;
   user-select: none;
@@ -103,7 +108,7 @@
   height: 1rem;
   padding: 0;
   border: 0;
-  border-radius: 2px;
+  border-radius: var(--gog-ms-clear-radius, 2px);
   background: transparent;
   color: var(--gog-ms-placeholder-color);
   line-height: 1;
@@ -149,10 +154,11 @@
   right: 0;
   z-index: var(--dropdown-z, 300);
   background-color: var(--gog-ms-panel-bg);
-  border: 2px solid var(--gog-ms-panel-border);
+  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+    var(--gog-ms-panel-border);
   max-height: 260px;
   overflow-y: auto;
-  box-shadow: var(--gog-ms-panel-shadow);
+  box-shadow: var(--panel-shadow);
 }
 
 .gog-ms__dropdown--up {
@@ -172,7 +178,8 @@
   display: flex;
   gap: 4px;
   padding: 6px 10px;
-  border-bottom: 1px solid var(--gog-ms-field-border);
+  border-bottom: var(--control-border-width, 2px) var(--control-border-style, solid)
+    var(--gog-ms-field-border);
 }
 
 .gog-ms__option {
@@ -180,7 +187,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
+  padding: var(--control-padding-y, 10px) var(--gog-ms-padding-x);
   border: 0;
   background: transparent;
   text-align: left;
@@ -210,7 +217,8 @@
   justify-content: center;
   width: 18px;
   height: 18px;
-  border: 2px solid var(--gog-ms-checkbox-border);
+  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+    var(--gog-ms-checkbox-border);
   background-color: var(--gog-ms-checkbox-bg);
   flex-shrink: 0;
   transition:

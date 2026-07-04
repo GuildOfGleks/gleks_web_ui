@@ -4,13 +4,26 @@
       <p class="app-shell__eyebrow">&#64;gleks/ui</p>
       <h1>{{ title() }}</h1>
       <p class="app-shell__lead">
-        A live playground for the latest components, tokens, overlays, and reusable icon slots.
+        A live playground for the latest components, tokens, overlays, and radically different
+        theme systems.
+      </p>
+      <p class="app-shell__theme-copy">
+        <strong>{{ themeLabel() }}</strong>
+        <span>{{ themeSummary() }}</span>
       </p>
     </div>
 
-    <gog-button variant="ghost" type="button" (gogClick)="toggleTheme()">
-      Toggle {{ themeLabel() }} theme
-    </gog-button>
+    <div class="app-shell__theme-switcher" role="group" aria-label="Theme presets">
+      @for (theme of themes; track theme.name) {
+        <gog-button
+          [variant]="isActiveTheme(theme.name) ? 'primary' : 'outline'"
+          type="button"
+          (gogClick)="setTheme(theme.name)"
+        >
+          {{ theme.label }}
+        </gog-button>
+      }
+    </div>
 
     <nav class="app-shell__nav" aria-label="Component showcase pages">
       @for (link of navLinks; track link.path) {

@@ -45,9 +45,13 @@
 }
 
 .gog-select__control {
+  --gog-select-control-padding-y: var(--control-padding-y, 10px);
+  --gog-select-control-padding-x: var(--control-padding-x, 14px);
+
   width: 100%;
   min-height: 44px;
-  padding: 10px 40px 10px 14px;
+  padding: var(--gog-select-control-padding-y) 40px var(--gog-select-control-padding-y)
+    var(--gog-select-control-padding-x);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -55,7 +59,8 @@
   font-size: var(--text-md);
   color: var(--gog-select-field-color);
   background-color: var(--gog-select-field-bg);
-  border: 2px solid var(--gog-select-field-border);
+  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+    var(--gog-select-field-border);
   border-radius: var(--radius);
   outline: none;
   cursor: pointer;
@@ -117,11 +122,12 @@
   right: 0;
   z-index: var(--dropdown-z, 300);
   background-color: var(--surface-color);
-  border: 2px solid var(--gog-select-field-border);
+  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+    var(--gog-select-field-border);
   border-radius: var(--radius);
   max-height: 260px;
   overflow-y: auto;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--panel-shadow);
 }
 
 .gog-select__dropdown--up {
@@ -142,7 +148,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
+  padding: var(--control-padding-y, 10px) var(--gog-select-control-padding-x);
   border: 0;
   background: transparent;
   text-align: left;

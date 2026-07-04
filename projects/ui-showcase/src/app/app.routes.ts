@@ -4,7 +4,11 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'buttons',
+    redirectTo: 'themes',
+  },
+  {
+    path: 'themes',
+    loadComponent: () => import('./pages/themes-page/themes-page').then((m) => m.ThemesPage),
   },
   {
     path: 'buttons',
@@ -60,6 +64,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'buttons',
+    redirectTo: 'themes',
   },
 ];

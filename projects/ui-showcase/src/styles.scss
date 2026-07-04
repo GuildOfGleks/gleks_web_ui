@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
 
 :root {
   --font-heading: 'Cinzel', serif;
@@ -11,6 +13,7 @@
   --surface-color: #ede2cc;
   --text-color: #1a1208;
   --muted-text-color: #5c3d00;
+  --color-text-secondary: #5c3d00;
   --primary-color: #1a1208;
   --accent-color: #7a5c00;
   --accent-bright: #b68b00;
@@ -23,13 +26,44 @@
   --info-color: #6b7280;
   --border-color: #c9b896;
   --hover-color: #e4d6bc;
-  --radius: 0px;
+  --radius: 8px;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
 
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
   --space-lg: 24px;
   --space-2xl: 48px;
+  --control-padding-y: 10px;
+  --control-padding-x: 14px;
+  --control-icon-offset: 10px;
+  --control-checkbox-padding: 6px;
+  --control-checkbox-box-size-sm: 18px;
+  --control-checkbox-box-size-md: 24px;
+  --control-checkbox-box-size-lg: 32px;
+  --control-checkbox-label-size-sm: 0.8125rem;
+  --control-checkbox-label-size-md: 0.9375rem;
+  --control-checkbox-label-size-lg: 1.0625rem;
+  --control-checkbox-icon-size-sm: 12px;
+  --control-checkbox-icon-size-md: 14px;
+  --control-checkbox-icon-size-lg: 18px;
+
+  --panel-radius: calc(var(--radius) + 8px);
+  --panel-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  --panel-border-width: 1px;
+  --panel-border-style: solid;
+  --control-border-width: 2px;
+  --control-border-style: solid;
+  --gog-icon-size: 1em;
+  --gog-icon-stroke-width: 2;
+  --gog-spinner-size-sm: 18px;
+  --gog-spinner-size-md: 48px;
+  --gog-spinner-size-lg: 96px;
+  --gog-spinner-rune-size: 20px;
 
   --btn-sm-padding: 0.5rem 0.875rem;
   --btn-md-padding: 0.75rem 1.25rem;
@@ -48,11 +82,19 @@
   --gog-toast-enter-distance: 110%;
 }
 
+:root[data-theme='light'] {
+  color-scheme: light;
+  --control-border-width: 2px;
+  --control-border-style: solid;
+}
+
 :root[data-theme='dark'] {
+  color-scheme: dark;
   --background-color: #0e0b06;
   --surface-color: #181208;
   --text-color: #fdcc64;
   --muted-text-color: #946700;
+  --color-text-secondary: #946700;
   --primary-color: #0e0b06;
   --accent-color: #fae000;
   --accent-bright: #fdcc64;
@@ -65,7 +107,175 @@
   --info-color: #9ca3af;
   --border-color: #2a1f0e;
   --hover-color: #221a0c;
+  --radius: 6px;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.1rem;
+  --panel-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
   --gog-spinner-overlay-bg: rgba(10, 8, 3, 0.65);
+  --gog-spinner-size-sm: 18px;
+  --gog-spinner-size-md: 48px;
+  --gog-spinner-size-lg: 96px;
+  --gog-spinner-rune-size: 20px;
+  --control-border-width: 2px;
+  --control-border-style: solid;
+}
+
+:root[data-theme='cyberpunk'] {
+  color-scheme: dark;
+  --background-color: #050816;
+  --surface-color: #101833;
+  --text-color: #ecfbff;
+  --muted-text-color: #72d9ff;
+  --color-text-secondary: #72d9ff;
+  --primary-color: #050816;
+  --accent-color: #ff4edb;
+  --accent-bright: #6ef7ff;
+  --accent-dim: #1e7bbf;
+  --accent-pale: #24173f;
+  --secondary-color: #8a5cff;
+  --success-color: #32f7a7;
+  --danger-color: #ff6b8a;
+  --warning-color: #ffd24d;
+  --info-color: #71d9ff;
+  --border-color: #42e8ff;
+  --hover-color: #18284a;
+  --radius: 22px;
+  --text-xs: 0.7rem;
+  --text-sm: 0.85rem;
+  --text-md: 0.98rem;
+  --text-lg: 1.15rem;
+  --font-heading: 'Orbitron', sans-serif;
+  --panel-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  --control-border-width: 2px;
+  --control-border-style: dashed;
+  --gog-icon-size: 1.1em;
+  --gog-icon-stroke-width: 1.75;
+  --gog-spinner-size-sm: 16px;
+  --gog-spinner-size-md: 44px;
+  --gog-spinner-size-lg: 90px;
+  --gog-spinner-rune-size: 18px;
+  --btn-sm-padding: 0.45rem 0.85rem;
+  --btn-md-padding: 0.75rem 1.2rem;
+  --btn-lg-padding: 1rem 1.45rem;
+  --control-padding-y: 8px;
+  --control-padding-x: 12px;
+  --control-icon-offset: 8px;
+  --control-checkbox-padding: 4px;
+  --control-checkbox-box-size-md: 22px;
+  --control-checkbox-box-size-lg: 30px;
+  --control-checkbox-label-size-md: 0.9rem;
+  --control-checkbox-label-size-lg: 1rem;
+  --control-checkbox-icon-size-md: 13px;
+  --control-checkbox-icon-size-lg: 16px;
+  --gog-spinner-overlay-bg: rgba(5, 8, 22, 0.72);
+  --control-border-width: 2px;
+  --control-border-style: dashed;
+}
+
+:root[data-theme='warcraft'] {
+  color-scheme: dark;
+  --background-color: #1d1308;
+  --surface-color: #2d1c10;
+  --text-color: #f6deb0;
+  --muted-text-color: #c59f68;
+  --color-text-secondary: #c59f68;
+  --primary-color: #1d1308;
+  --accent-color: #d4a73a;
+  --accent-bright: #f6cf6b;
+  --accent-dim: #7c5523;
+  --accent-pale: #3f2a16;
+  --secondary-color: #9e6f2f;
+  --success-color: #4fb06d;
+  --danger-color: #d9655b;
+  --warning-color: #f1bc43;
+  --info-color: #b3d4ff;
+  --border-color: #8f5f26;
+  --hover-color: #412815;
+  --radius: 8px;
+  --text-xs: 0.78rem;
+  --text-sm: 0.9rem;
+  --text-md: 1rem;
+  --text-lg: 1.1rem;
+  --font-heading: 'Cinzel', serif;
+  --panel-shadow: 0 18px 38px rgba(20, 11, 4, 0.45);
+  --control-border-width: 2px;
+  --control-border-style: double;
+  --gog-icon-size: 1.05em;
+  --gog-icon-stroke-width: 2.2;
+  --gog-spinner-size-sm: 20px;
+  --gog-spinner-size-md: 52px;
+  --gog-spinner-size-lg: 100px;
+  --gog-spinner-rune-size: 22px;
+  --btn-sm-padding: 0.5rem 0.95rem;
+  --btn-md-padding: 0.8rem 1.3rem;
+  --btn-lg-padding: 1rem 1.55rem;
+  --control-padding-y: 11px;
+  --control-padding-x: 16px;
+  --control-icon-offset: 12px;
+  --control-checkbox-padding: 7px;
+  --control-checkbox-box-size-md: 26px;
+  --control-checkbox-box-size-lg: 34px;
+  --control-checkbox-label-size-md: 0.975rem;
+  --control-checkbox-label-size-lg: 1.1rem;
+  --control-checkbox-icon-size-md: 15px;
+  --control-checkbox-icon-size-lg: 19px;
+  --gog-spinner-overlay-bg: rgba(18, 10, 3, 0.78);
+  --control-border-width: 2px;
+  --control-border-style: double;
+}
+
+:root[data-theme='red-alert-3'] {
+  color-scheme: dark;
+  --background-color: #140000;
+  --surface-color: #250404;
+  --text-color: #fff4f0;
+  --muted-text-color: #ff8b73;
+  --color-text-secondary: #ff8b73;
+  --primary-color: #140000;
+  --accent-color: #ff2b2b;
+  --accent-bright: #ffb24a;
+  --accent-dim: #7d1010;
+  --accent-pale: #3e0808;
+  --secondary-color: #ff6d2d;
+  --success-color: #3ef28d;
+  --danger-color: #ff5252;
+  --warning-color: #ffb13b;
+  --info-color: #ffa87a;
+  --border-color: #ff5a3d;
+  --hover-color: #391111;
+  --radius: 0px;
+  --text-xs: 0.72rem;
+  --text-sm: 0.82rem;
+  --text-md: 0.95rem;
+  --text-lg: 1.08rem;
+  --font-heading: 'Russo One', sans-serif;
+  --panel-shadow: 0 20px 42px rgba(0, 0, 0, 0.42);
+  --control-border-width: 3px;
+  --control-border-style: solid;
+  --gog-icon-size: 1.02em;
+  --gog-icon-stroke-width: 2.4;
+  --gog-spinner-size-sm: 17px;
+  --gog-spinner-size-md: 46px;
+  --gog-spinner-size-lg: 92px;
+  --gog-spinner-rune-size: 19px;
+  --btn-sm-padding: 0.45rem 0.9rem;
+  --btn-md-padding: 0.7rem 1.15rem;
+  --btn-lg-padding: 0.95rem 1.45rem;
+  --control-padding-y: 7px;
+  --control-padding-x: 12px;
+  --control-icon-offset: 8px;
+  --control-checkbox-padding: 4px;
+  --control-checkbox-box-size-md: 20px;
+  --control-checkbox-box-size-lg: 28px;
+  --control-checkbox-label-size-md: 0.875rem;
+  --control-checkbox-label-size-lg: 0.98rem;
+  --control-checkbox-icon-size-md: 13px;
+  --control-checkbox-icon-size-lg: 16px;
+  --gog-spinner-overlay-bg: rgba(20, 0, 0, 0.8);
+  --control-border-width: 3px;
+  --control-border-style: solid;
 }
 
 html,

@@ -8,6 +8,11 @@
   --gog-accordion-skeleton-start: var(--accent-dim);
   --gog-accordion-skeleton-mid: color-mix(in srgb, var(--accent-dim) 50%, transparent);
   --gog-accordion-skeleton-end: var(--accent-dim);
+  --gog-accordion-radius: var(--radius);
+  --gog-accordion-body-radius: var(--radius);
+  --gog-accordion-body-padding-y: 12px;
+  --gog-accordion-body-padding-x: 16px;
+  --gog-accordion-body-radius-skeleton: 2px;
 
   display: flex;
   flex-direction: column;
@@ -17,11 +22,13 @@
 /* === Item === */
 
 .gog-accordion__item {
-  border-bottom: 1px solid var(--gog-accordion-border-color);
+  border-bottom: var(--control-border-width, 1px) var(--control-border-style, solid)
+    var(--gog-accordion-border-color);
 }
 
 .gog-accordion__item:first-child {
-  border-top: 1px solid var(--gog-accordion-border-color);
+  border-top: var(--control-border-width, 1px) var(--control-border-style, solid)
+    var(--gog-accordion-border-color);
 }
 
 /* === Header / trigger === */
@@ -31,7 +38,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 14px 16px;
+  padding: 14px var(--gog-accordion-body-padding-x);
   gap: 12px;
   background: transparent;
   border: none;
@@ -103,7 +110,8 @@
   grid-template-rows: 0fr;
   opacity: 0;
   overflow: hidden;
-  border-top: 1px solid var(--accent-dim);
+  border-top: var(--control-border-width, 1px) var(--control-border-style, solid)
+    var(--accent-dim);
   transition:
     grid-template-rows 0.2s ease,
     opacity 0.18s ease;
@@ -117,7 +125,8 @@
 .gog-accordion__body-inner {
   min-height: 0;
   overflow: hidden;
-  padding: 12px 16px 16px;
+  padding: var(--gog-accordion-body-padding-y) var(--gog-accordion-body-padding-x)
+    calc(var(--gog-accordion-body-padding-y) + 4px);
   color: var(--gog-accordion-body-color);
   font-size: var(--text-md);
   line-height: 1.6;
@@ -184,7 +193,7 @@
   display: block;
   height: 12px;
   width: 55%;
-  border-radius: 2px;
+  border-radius: var(--gog-accordion-body-radius-skeleton);
   background: linear-gradient(
     90deg,
     var(--gog-accordion-skeleton-start) 25%,

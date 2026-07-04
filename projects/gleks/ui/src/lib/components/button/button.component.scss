@@ -11,7 +11,8 @@
   --gog-spinner-color: var(--text-color);
 
   gap: 8px;
-  border: 2px solid var(--gog-btn-border);
+  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+    var(--gog-btn-border);
   border-radius: var(--gog-btn-radius);
   padding: var(--gog-btn-padding);
   font-size: var(--gog-btn-font-size);

@@ -14,16 +14,16 @@
 }
 
 .gog-spinner__wrap--sm {
-  width: 18px;
-  height: 18px;
+  width: var(--gog-spinner-size-sm, 18px);
+  height: var(--gog-spinner-size-sm, 18px);
 }
 .gog-spinner__wrap--md {
-  width: 48px;
-  height: 48px;
+  width: var(--gog-spinner-size-md, 48px);
+  height: var(--gog-spinner-size-md, 48px);
 }
 .gog-spinner__wrap--lg {
-  width: 96px;
-  height: 96px;
+  width: var(--gog-spinner-size-lg, 96px);
+  height: var(--gog-spinner-size-lg, 96px);
 }
 
 .gog-spinner__svg {
@@ -80,7 +80,7 @@
 .gog-spinner__rune {
   font-family: var(--font-heading), serif;
   fill: var(--gog-spinner-color, var(--accent-bright));
-  font-size: 20px;
+  font-size: var(--gog-spinner-rune-size, 20px);
 }
 
 /* sm — show all layers, just scale down via viewBox naturally */
