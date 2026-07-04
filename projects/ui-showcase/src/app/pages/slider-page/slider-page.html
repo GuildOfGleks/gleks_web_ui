@@ -1,0 +1,24 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-slider</p>
+    <h2>Slider</h2>
+    <p class="lead">
+      A form-control slider with label, min/max markers, and signal-friendly two-way binding.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Controls</h3>
+    <div class="field-grid">
+      <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />
+      <gog-slider label="Brightness" [min]="0" [max]="100" [step]="10" [(value)]="brightness" />
+      <gog-slider label="Disabled" [value]="25" [disabled]="true" />
+    </div>
+
+    <div class="action-row">
+      <gog-button variant="ghost" type="button" (gogClick)="reset()">Reset</gog-button>
+    </div>
+
+    <p class="meta">{{ summary() }}</p>
+  </article>
+</section>

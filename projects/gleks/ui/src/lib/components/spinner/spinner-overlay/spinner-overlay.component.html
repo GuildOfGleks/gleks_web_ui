@@ -1,0 +1,11 @@
+<div class="gog-spinner-overlay">
+  <div class="gog-spinner-overlay__content">
+    <ng-content />
+  </div>
+
+  @if (loading()) {
+    <div class="gog-spinner-overlay__scrim">
+      <gog-spinner [size]="size()" [ariaLabel]="ariaLabel()" />
+    </div>
+  }
+</div>

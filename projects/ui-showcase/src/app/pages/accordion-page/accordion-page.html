@@ -1,0 +1,30 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-accordion</p>
+    <h2>Accordion</h2>
+    <p class="lead">
+      An expandable content panel with single-open and multi-open modes, plus a content template
+      slot for custom bodies.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Behavior</h3>
+    <div class="action-row">
+      <gog-button variant="primary" type="button" (gogClick)="toggleMulti()">
+        Multi-open: {{ multi() ? 'on' : 'off' }}
+      </gog-button>
+    </div>
+
+    <gog-accordion [items]="items" [expandFirst]="true" [multi]="multi()" size="md">
+      <ng-template gogAccordionContent let-item>
+        <p class="meta">{{ item.summary }}</p>
+        <ul class="accordion-notes">
+          @for (note of item.notes; track note) {
+            <li>{{ note }}</li>
+          }
+        </ul>
+      </ng-template>
+    </gog-accordion>
+  </article>
+</section>

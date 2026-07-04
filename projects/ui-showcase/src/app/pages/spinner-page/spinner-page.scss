@@ -1,0 +1,23 @@
+@use '../detail' as *;
+
+.spinner-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.spinner-tile {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  min-width: 110px;
+}
+
+.spinner-overlay-panel {
+  display: grid;
+  gap: 12px;
+  min-height: 180px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--surface-color) 88%, transparent);
+}

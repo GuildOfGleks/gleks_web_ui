@@ -1,0 +1,42 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-spinner</p>
+    <h2>Spinner</h2>
+    <p class="lead">
+      A branded loading indicator with size variants and an optional full-screen overlay mode.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <div class="spinner-grid">
+      @for (size of sizes; track size) {
+        <div class="spinner-tile">
+          <gog-spinner [size]="size" [ariaLabel]="'Loading ' + size" />
+          <span class="meta">{{ size.toUpperCase() }}</span>
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Overlay mode</h3>
+    <p class="lead">Wrap any section to block interaction while data is loading.</p>
+    <div class="action-row">
+      <gog-button variant="primary" type="button" (gogClick)="previewOverlay()">
+        Preview overlay
+      </gog-button>
+    </div>
+    <gog-spinner-overlay [loading]="showOverlay()" size="lg" ariaLabel="Loading showcase content">
+      <div class="spinner-overlay-panel">
+        <p class="meta">
+          This area can be a card, a sidebar, or any custom section the consumer chooses.
+        </p>
+        <div class="action-row">
+          <gog-button variant="ghost" type="button">Sample action</gog-button>
+          <gog-button variant="outline" type="button">Another action</gog-button>
+        </div>
+      </div>
+    </gog-spinner-overlay>
+  </article>
+</section>

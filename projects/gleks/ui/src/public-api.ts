@@ -15,6 +15,7 @@ export * from './lib/components/inputfield/inputfield.component';
 export * from './lib/components/select/select.component';
 export * from './lib/components/multiselect/multiselect.component';
 export * from './lib/components/slider/slider.component';
+export * from './lib/components/spinner/spinner-overlay/spinner-overlay.component';
 export * from './lib/components/table/column';
 export * from './lib/components/table/table.component';
 export * from './lib/components/table/template.directive';

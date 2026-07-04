@@ -26,6 +26,10 @@ export class App {
     { path: 'inputfield', label: 'Inputfield' },
     { path: 'select', label: 'Select' },
     { path: 'multiselect', label: 'Multiselect' },
+    { path: 'table', label: 'Table' },
+    { path: 'slider', label: 'Slider' },
+    { path: 'spinner', label: 'Spinner' },
+    { path: 'accordion', label: 'Accordion' },
     { path: 'toast', label: 'Toast' },
     { path: 'dialog', label: 'Dialog' },
   ];

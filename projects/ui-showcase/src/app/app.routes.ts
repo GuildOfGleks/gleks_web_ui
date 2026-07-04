@@ -27,6 +27,22 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/multiselect-page/multiselect-page').then((m) => m.MultiselectPage),
   },
   {
+    path: 'table',
+    loadComponent: () => import('./pages/table-page/table-page').then((m) => m.TablePage),
+  },
+  {
+    path: 'slider',
+    loadComponent: () => import('./pages/slider-page/slider-page').then((m) => m.SliderPage),
+  },
+  {
+    path: 'spinner',
+    loadComponent: () => import('./pages/spinner-page/spinner-page').then((m) => m.SpinnerPage),
+  },
+  {
+    path: 'accordion',
+    loadComponent: () => import('./pages/accordion-page/accordion-page').then((m) => m.AccordionPage),
+  },
+  {
     path: 'toast',
     loadComponent: () => import('./pages/toast-page/toast-page').then((m) => m.ToastPage),
   },

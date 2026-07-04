@@ -52,7 +52,7 @@ export class ToastPage {
           },
         },
       ],
-    });
+    }); 
   }
 
   protected showToastBurst(): void {
@@ -60,5 +60,4 @@ export class ToastPage {
       this.toastService.info(`Queued toast ${index}`, { position: 'top-right' });
     }
   }
-} 
-
+}
