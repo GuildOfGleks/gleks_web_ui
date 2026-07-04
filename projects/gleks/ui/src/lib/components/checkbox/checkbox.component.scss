@@ -1,14 +1,12 @@
 .gog-checkbox {
   /*
-   * Sizing variables (box/label/icon size) are set on the host element in
-   * checkbox.component.ts based on the `size` input and must NOT be
-   * redeclared here: a declaration on this element would always win over
+   * Sizing variables (box/label/icon size) and padding are set on the host
+   * element in checkbox.component.ts based on the `size` input and must NOT
+   * be redeclared here: a declaration on this element would always win over
    * the value inherited from the host, pinning every checkbox to the same
-   * size regardless of `size()`. Only non-sizing defaults are provided
-   * here; sizing defaults are supplied via var(--x, fallback) below.
+   * dimensions regardless of `size()`.
    */
   --gog-checkbox-gap: 10px;
-  --gog-checkbox-padding: 6px;
   --gog-checkbox-border-color: var(--accent-dim);
   --gog-checkbox-bg: var(--surface-color);
   --gog-checkbox-checked-bg: var(--accent-color);

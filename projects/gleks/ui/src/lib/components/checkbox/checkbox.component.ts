@@ -11,6 +11,10 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IconComponent } from '../icon/icon.component';
 import { GogSize } from '../../shared/types';
+import {
+  GOG_CHECKABLE_CONTROL_PADDING,
+  GOG_CHECKABLE_CONTROL_SIZE_MAP,
+} from '../../shared/checkable-control.config';
 
 @Component({
   selector: 'gog-checkbox',
@@ -45,37 +49,11 @@ export class CheckboxComponent implements ControlValueAccessor {
 
   private readonly cvaDisabled = signal(false);
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
-  protected readonly boxSize = computed(() => {
-    switch (this.size()) {
-      case 'sm':
-        return '18px';
-      case 'lg':
-        return '32px';
-      default:
-        return '24px';
-    }
-  });
-  protected readonly checkboxPadding = '6px';
-  protected readonly labelSize = computed(() => {
-    switch (this.size()) {
-      case 'sm':
-        return '0.8125rem';
-      case 'lg':
-        return '1.0625rem';
-      default:
-        return '0.9375rem';
-    }
-  });
-  protected readonly iconSize = computed(() => {
-    switch (this.size()) {
-      case 'sm':
-        return '12px';
-      case 'lg':
-        return '18px';
-      default:
-        return '14px';
-    }
-  });
+  protected readonly controlSize = computed(() => GOG_CHECKABLE_CONTROL_SIZE_MAP[this.size()]);
+  protected readonly boxSize = computed(() => this.controlSize().boxSize);
+  protected readonly checkboxPadding = GOG_CHECKABLE_CONTROL_PADDING;
+  protected readonly labelSize = computed(() => this.controlSize().labelSize);
+  protected readonly iconSize = computed(() => this.controlSize().indicatorSize);
 
   private onCheckedChange: (val: boolean) => void = () => {};
   private onTouched: () => void = () => {};

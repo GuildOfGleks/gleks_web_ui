@@ -55,4 +55,12 @@ describe('CheckboxComponent', () => {
     expect(input.getAttribute('aria-checked')).toBe('mixed');
     expect(fixture.nativeElement.querySelector('.gog-checkbox__dash')).toBeTruthy();
   });
+
+  it('should keep the check icon hidden from assistive tech', () => {
+    fixture.componentRef.setInput('checked', true);
+    fixture.detectChanges();
+
+    const icon = fixture.nativeElement.querySelector('gog-icon') as HTMLElement | null;
+    expect(icon?.getAttribute('aria-hidden')).toBe('true');
+  });
 });
