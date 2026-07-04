@@ -39,6 +39,13 @@ describe('CheckboxComponent', () => {
     expect(host.style.getPropertyValue('--gog-checkbox-box-size')).toBe('32px');
   });
 
+  it('should reserve padding around the checkbox box', () => {
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.style.getPropertyValue('--gog-checkbox-padding')).toBe('6px');
+  });
+
   it('should render the indeterminate state', () => {
     fixture.componentRef.setInput('indeterminate', true);
     fixture.detectChanges();

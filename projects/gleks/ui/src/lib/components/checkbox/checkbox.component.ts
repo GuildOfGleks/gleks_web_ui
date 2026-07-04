@@ -22,6 +22,7 @@ import { GogSize } from '../../shared/types';
     '[style.--gog-checkbox-box-size]': 'boxSize()',
     '[style.--gog-checkbox-label-size]': 'labelSize()',
     '[style.--gog-checkbox-icon-size]': 'iconSize()',
+    '[style.--gog-checkbox-padding]': 'checkboxPadding',
   },
   providers: [
     {
@@ -54,6 +55,7 @@ export class CheckboxComponent implements ControlValueAccessor {
         return '24px';
     }
   });
+  protected readonly checkboxPadding = '6px';
   protected readonly labelSize = computed(() => {
     switch (this.size()) {
       case 'sm':

@@ -8,6 +8,7 @@
    * here; sizing defaults are supplied via var(--x, fallback) below.
    */
   --gog-checkbox-gap: 10px;
+  --gog-checkbox-padding: 6px;
   --gog-checkbox-border-color: var(--accent-dim);
   --gog-checkbox-bg: var(--surface-color);
   --gog-checkbox-checked-bg: var(--accent-color);
@@ -20,6 +21,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--gog-checkbox-gap);
+  padding: var(--gog-checkbox-padding);
   position: relative;
   cursor: pointer;
   user-select: none;
@@ -32,8 +34,8 @@
 
 .gog-checkbox__input {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: var(--gog-checkbox-padding);
+  left: var(--gog-checkbox-padding);
   width: var(--gog-checkbox-box-size, 24px);
   height: var(--gog-checkbox-box-size, 24px);
   margin: 0;

@@ -15,7 +15,7 @@ export class CheckboxPage {
   protected readonly disabledChecked = signal(true);
   protected readonly disabledIndeterminate = signal(false);
 
-  protected readonly summary = computed(() => 
+  protected readonly summary = computed(() =>
     `Terms: ${this.acceptTerms() ? 'accepted' : 'declined'} · Newsletter: ${
       this.subscribeNewsletter() ? 'subscribed' : 'not subscribed'
     }`,
