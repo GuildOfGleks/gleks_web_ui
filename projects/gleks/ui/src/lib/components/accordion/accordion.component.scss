@@ -125,16 +125,22 @@
 .gog-accordion__body-inner {
   min-height: 0;
   overflow: hidden;
-  padding: var(--gog-accordion-body-padding-y) var(--gog-accordion-body-padding-x)
-    calc(var(--gog-accordion-body-padding-y) + 4px);
+  /* vertical padding is 0 while closed so the collapsed grid row can reach 0
+     (padding is never clipped by overflow, so it would otherwise keep the
+     body visible as a thin sliver even when "closed"). */
+  padding: 0 var(--gog-accordion-body-padding-x);
   color: var(--gog-accordion-body-color);
   font-size: var(--text-md);
   line-height: 1.6;
   transform: translateY(-2px);
-  transition: transform 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    padding 0.2s ease;
 }
 
 .gog-accordion__body--open .gog-accordion__body-inner {
+  padding-top: var(--gog-accordion-body-padding-y);
+  padding-bottom: calc(var(--gog-accordion-body-padding-y) + 4px);
   transform: translateY(0);
 }
 
@@ -150,8 +156,14 @@
 }
 
 .gog-accordion--md .gog-accordion__body-inner {
-  padding: 8px 14px 12px;
+  padding-left: 14px;
+  padding-right: 14px;
   font-size: var(--text-sm);
+}
+
+.gog-accordion--md .gog-accordion__body--open .gog-accordion__body-inner {
+  padding-top: 8px;
+  padding-bottom: 12px;
 }
 
 .gog-accordion--md .gog-accordion__chevron {
@@ -172,9 +184,15 @@
 }
 
 .gog-accordion--sm .gog-accordion__body-inner {
-  padding: 6px 10px 8px;
+  padding-left: 10px;
+  padding-right: 10px;
   font-size: var(--text-xs);
   line-height: 1.5;
+}
+
+.gog-accordion--sm .gog-accordion__body--open .gog-accordion__body-inner {
+  padding-top: 6px;
+  padding-bottom: 8px;
 }
 
 .gog-accordion--sm .gog-accordion__chevron {
