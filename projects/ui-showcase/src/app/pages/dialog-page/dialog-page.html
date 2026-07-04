@@ -3,8 +3,8 @@
     <p class="eyebrow">gog-dialog</p>
     <h2>Dialog</h2>
     <p class="lead">
-      A draggable, closable modal service with a bundled confirmation dialog and a promise-based
-      result.
+      A draggable, closable modal service with a bundled confirmation dialog plus custom dialog
+      examples for loading states and a validated warehouse form.
     </p>
   </div>
 
@@ -15,7 +15,21 @@
       <gog-button variant="primary" type="button" (gogClick)="openConfirmDialog()">
         Open confirmation dialog
       </gog-button>
+      <gog-button variant="ghost" type="button" (gogClick)="openLoadingDialog()">
+        Open loading dialog
+      </gog-button>
+      <gog-button variant="ghost" type="button" (gogClick)="openWarehouseRegistrationDialog()">
+        Open warehouse form
+      </gog-button>
     </div>
+  </article>
+
+  <article class="card">
+    <h3>Custom examples</h3>
+    <p class="meta">
+      The loading dialog fakes an inventory request, and the warehouse form uses `FormBuilder`,
+      validation, and `getRawValue()` before showing a toast on save.
+    </p>
   </article>
 
   <gog-dialog />

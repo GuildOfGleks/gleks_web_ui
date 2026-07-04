@@ -1,0 +1,48 @@
+<div class="loading-dialog" [attr.aria-labelledby]="titleId" [attr.aria-describedby]="descriptionId">
+  <div class="loading-dialog__header">
+    @if (isLoading()) {
+      <gog-spinner size="lg" ariaLabel="Loading warehouse data" />
+    } @else {
+      <span class="loading-dialog__badge" aria-hidden="true">Loaded</span>
+    }
+
+    <div class="loading-dialog__copy">
+      <p class="eyebrow">Custom dialog</p>
+      <h3 [id]="titleId" class="loading-dialog__title">Warehouse inventory snapshot</h3>
+      <p [id]="descriptionId" class="loading-dialog__description">
+        The dialog simulates a backend request, then reveals a fresh snapshot for the receiving
+        team.
+      </p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <p class="loading-dialog__status">Fetching the latest records from the warehouse service...</p>
+  } @else {
+    <div class="loading-dialog__grid">
+      <div class="loading-dialog__metric">
+        <span>Location</span>
+        <strong>{{ snapshot()?.location }}</strong>
+      </div>
+      <div class="loading-dialog__metric">
+        <span>Open batches</span>
+        <strong>{{ snapshot()?.batches }}</strong>
+      </div>
+      <div class="loading-dialog__metric">
+        <span>Items in stock</span>
+        <strong>{{ snapshot()?.items }}</strong>
+      </div>
+      <div class="loading-dialog__metric">
+        <span>Refreshed at</span>
+        <strong>{{ snapshot()?.refreshedAt }}</strong>
+      </div>
+    </div>
+  }
+
+  <div class="loading-dialog__actions">
+    <gog-button variant="ghost" type="button" [loading]="isLoading()" (gogClick)="reload()">
+      Reload data
+    </gog-button>
+    <gog-button variant="primary" type="button" (gogClick)="close()">Close</gog-button>
+  </div>
+</div>

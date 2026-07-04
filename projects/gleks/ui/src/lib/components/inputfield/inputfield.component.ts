@@ -3,15 +3,12 @@ import {
   Component,
   computed,
   forwardRef,
-  inject,
   input,
   model,
-  Signal,
   TemplateRef,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { GogSize } from '../../shared/types';
 import { IconComponent, type GogIconName } from '../icon/icon.component';
@@ -62,23 +59,12 @@ export class InputfieldComponent implements ControlValueAccessor {
   readonly value = model<string>('');
 
   private readonly cvaDisabled = signal(false);
-  private readonly ngControl = inject(NgControl, { optional: true, self: true });
-
-  private readonly _touched = signal(false);
-  private readonly formStatus: Signal<string> = this.ngControl?.statusChanges
-    ? toSignal(this.ngControl.statusChanges, { initialValue: this.ngControl.status ?? 'VALID' })
-    : signal('VALID');
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
   protected readonly effectiveAutocomplete = computed(
-    () => this.autocomplete() || (this.type() === 'password' ? 'current-password' : 'off'),
+   () => this.autocomplete() || (this.type() === 'password' ? 'current-password' : 'off'),
   );
-  protected readonly hasError = computed(() => {
-    if (this.ngControl) {
-      return this._touched() && this.formStatus() === 'INVALID';
-    }
-    return !!this.errorMessage() && !this.value();
-  });
+  protected readonly hasError = computed(() => !!this.errorMessage() && !this.value());
   protected readonly hasIconStart = computed(() => !!this.iconStartTemplate() || !!this.iconStart());
   protected readonly hasIconEnd = computed(() => !!this.iconEndTemplate() || !!this.iconEnd());
   protected readonly hasIconStartAction = computed(() => !!this.iconStartFn());
@@ -86,12 +72,6 @@ export class InputfieldComponent implements ControlValueAccessor {
 
   private _onChange: (val: string) => void = () => {};
   private _onTouched: () => void = () => {};
-
-  constructor() {
-    if (this.ngControl) {
-      this.ngControl.valueAccessor = this;
-    }
-  }
 
   writeValue(val: string): void {
     this.value.set(val ?? '');
@@ -125,6 +105,5 @@ export class InputfieldComponent implements ControlValueAccessor {
 
   onBlur(): void {
     this._onTouched();
-    this._touched.set(true);
   }
 }

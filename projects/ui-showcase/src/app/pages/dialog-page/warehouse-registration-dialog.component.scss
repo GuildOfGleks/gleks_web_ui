@@ -1,0 +1,148 @@
+:host {
+  display: block;
+  contain: layout style;
+}
+
+.registration-dialog {
+  display: grid;
+  gap: 20px;
+  min-width: min(100%, 56rem);
+  color: var(--text-color);
+}
+
+.registration-dialog__header {
+  display: grid;
+  gap: 6px;
+}
+
+.registration-dialog__title,
+.registration-dialog__section-title {
+  margin: 0;
+}
+
+.registration-dialog__description {
+  margin: 0;
+  color: var(--muted-text-color);
+  max-width: 70ch;
+}
+
+.registration-dialog__section {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--surface-color) 90%, transparent);
+}
+
+.registration-dialog__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.registration-dialog__grid--compact {
+  align-items: start;
+}
+
+.registration-dialog__field {
+  display: grid;
+  gap: 6px;
+}
+
+.registration-dialog__label {
+  font-size: 0.875rem;
+  color: var(--muted-text-color);
+}
+
+.registration-dialog__native,
+.registration-dialog__textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--surface-color) 96%, transparent);
+  color: var(--text-color);
+  padding: 0.75rem 0.9rem;
+  font: inherit;
+}
+
+.registration-dialog__native {
+  min-height: 2.75rem;
+}
+
+.registration-dialog__textarea {
+  resize: vertical;
+  min-height: 7rem;
+}
+
+.registration-dialog__native:focus-visible,
+.registration-dialog__textarea:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.registration-dialog__error,
+.registration-dialog__hint {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.registration-dialog__error {
+  color: var(--danger-color, #ef4444);
+}
+
+.registration-dialog__checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+}
+
+.registration-dialog__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color);
+}
+
+.registration-dialog__check input {
+  width: 1rem;
+  height: 1rem;
+}
+
+.registration-dialog__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.registration-dialog__hint {
+  max-width: 40ch;
+  color: var(--muted-text-color);
+}
+
+.registration-dialog__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 48rem) {
+  .registration-dialog {
+    min-width: min(100%, 100%);
+  }
+
+  .registration-dialog__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .registration-dialog__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .registration-dialog__actions {
+    justify-content: stretch;
+  }
+}
