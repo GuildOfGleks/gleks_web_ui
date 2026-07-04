@@ -9,7 +9,7 @@
   --gog-chip-border: var(--border-color);
   --gog-chip-color: var(--text-color);
   --gog-chip-font-size: 0.875rem;
-  --gog-chip-padding-block: 0.375rem;
+  --gog-chip-padding-block: 0.4rem;
   --gog-chip-padding-inline: 0.75rem;
   --gog-chip-gap: 0.5rem;
   --gog-chip-radius: max(var(--radius), 2px);
@@ -24,6 +24,7 @@
   box-sizing: border-box;
   width: fit-content;
   max-width: 100%;
+  overflow: hidden;
   padding: var(--gog-chip-padding-block) var(--gog-chip-padding-inline);
   border: 1px solid var(--gog-chip-border);
   border-radius: var(--gog-chip-radius);
@@ -31,7 +32,7 @@
   color: var(--gog-chip-color);
   font-size: var(--gog-chip-font-size);
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.2;
   white-space: nowrap;
   user-select: none;
 }
@@ -51,7 +52,11 @@
 }
 
 .gog-chip__content {
+  flex: 1 1 auto;
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 .gog-chip__avatar {
@@ -96,7 +101,7 @@
 
 :host(.gog-chip--sm) .gog-chip__surface {
   --gog-chip-font-size: 0.75rem;
-  --gog-chip-padding-block: 0.25rem;
+  --gog-chip-padding-block: 0.3rem;
   --gog-chip-padding-inline: 0.5rem;
   --gog-chip-gap: 0.375rem;
   --gog-chip-avatar-size: 1rem;
@@ -106,7 +111,7 @@
 
 :host(.gog-chip--md) .gog-chip__surface {
   --gog-chip-font-size: 0.875rem;
-  --gog-chip-padding-block: 0.375rem;
+  --gog-chip-padding-block: 0.45rem;
   --gog-chip-padding-inline: 0.75rem;
   --gog-chip-gap: 0.5rem;
   --gog-chip-avatar-size: 1.25rem;
@@ -116,7 +121,7 @@
 
 :host(.gog-chip--lg) .gog-chip__surface {
   --gog-chip-font-size: 1rem;
-  --gog-chip-padding-block: 0.5rem;
+  --gog-chip-padding-block: 0.6rem;
   --gog-chip-padding-inline: 0.875rem;
   --gog-chip-gap: 0.625rem;
   --gog-chip-avatar-size: 1.5rem;
