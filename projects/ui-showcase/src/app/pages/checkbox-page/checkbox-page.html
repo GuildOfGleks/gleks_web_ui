@@ -9,11 +9,32 @@
   </div>
 
   <article class="card">
-    <h3>Playground</h3>
-    <div class="field-grid">
-      <gog-checkbox label="Accept terms" [(checked)]="acceptTerms" />
-      <gog-checkbox label="Subscribe to newsletter" [(checked)]="subscribeNewsletter" />
-      <gog-checkbox label="Disabled option" [disabled]="true" />
+    <h3>States</h3>
+    <div class="checkbox-grid">
+      <div class="checkbox-group">
+        <h4 class="checkbox-group__title">Default</h4>
+        <gog-checkbox label="Unchecked" [(checked)]="subscribeNewsletter" />
+        <gog-checkbox label="Checked" [(checked)]="acceptTerms" />
+        <gog-checkbox label="Indeterminate" [indeterminate]="true" />
+      </div>
+
+      <div class="checkbox-group">
+        <h4 class="checkbox-group__title">Disabled</h4>
+        <gog-checkbox label="Disabled unchecked" [disabled]="true" />
+        <gog-checkbox label="Disabled checked" [checked]="disabledChecked()" [disabled]="true" />
+        <gog-checkbox
+          label="Disabled indeterminate"
+          [indeterminate]="true"
+          [disabled]="true"
+        />
+      </div>
+
+      <div class="checkbox-group">
+        <h4 class="checkbox-group__title">Sizes</h4> 
+        <gog-checkbox label="Small" size="sm" [(checked)]="triState" />
+        <gog-checkbox label="Medium" size="md" [checked]="true" />
+        <gog-checkbox label="Large" size="lg" [indeterminate]="true" />
+      </div>
     </div>
     <p class="meta">{{ summary() }}</p>
   </article>

@@ -1,1 +1,17 @@
 @use '../detail' as *;
+
+.checkbox-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.checkbox-group {
+  display: grid;
+  gap: 12px;
+}
+
+.checkbox-group__title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+}

@@ -1,6 +1,13 @@
 .gog-checkbox {
+  /*
+   * Sizing variables (box/label/icon size) are set on the host element in
+   * checkbox.component.ts based on the `size` input and must NOT be
+   * redeclared here: a declaration on this element would always win over
+   * the value inherited from the host, pinning every checkbox to the same
+   * size regardless of `size()`. Only non-sizing defaults are provided
+   * here; sizing defaults are supplied via var(--x, fallback) below.
+   */
   --gog-checkbox-gap: 10px;
-  --gog-checkbox-box-size: 20px;
   --gog-checkbox-border-color: var(--accent-dim);
   --gog-checkbox-bg: var(--surface-color);
   --gog-checkbox-checked-bg: var(--accent-color);
@@ -27,43 +34,57 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: var(--gog-checkbox-box-size);
-  height: var(--gog-checkbox-box-size);
+  width: var(--gog-checkbox-box-size, 24px);
+  height: var(--gog-checkbox-box-size, 24px);
   margin: 0;
   opacity: 0;
   cursor: inherit;
 }
 
 .gog-checkbox__box {
-  width: var(--gog-checkbox-box-size);
-  height: var(--gog-checkbox-box-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--gog-checkbox-box-size, 24px);
+  height: var(--gog-checkbox-box-size, 24px);
+  box-sizing: border-box;
   border: 2px solid var(--gog-checkbox-border-color);
   border-radius: 4px;
   background-color: var(--gog-checkbox-bg);
   color: var(--gog-checkbox-icon-color);
+  flex: 0 0 auto;
+  line-height: 0;
+  overflow: hidden;
   transition:
     border-color 0.15s ease,
     background-color 0.15s ease;
 }
 
 .gog-checkbox__input:checked + .gog-checkbox__box,
+.gog-checkbox__input:indeterminate + .gog-checkbox__box,
 .gog-checkbox__box--checked {
   border-color: var(--gog-checkbox-checked-border);
   background-color: var(--gog-checkbox-checked-bg);
 }
 
-.gog-checkbox__icon {
-  width: 14px;
-  height: 14px;
+.gog-checkbox__box gog-icon {
+  display: block;
+  font-size: var(--gog-checkbox-icon-size, 14px);
+  line-height: 1;
   pointer-events: none;
 }
 
-.gog-checkbox__box gog-icon {
-  font-size: 0.7rem;
+.gog-checkbox__dash {
+  width: calc(var(--gog-checkbox-box-size, 24px) * 0.45);
+  height: 2px;
+  border-radius: 999px;
+  background-color: currentColor;
+  pointer-events: none;
 }
 
 .gog-checkbox__label {
-  font-size: var(--text-sm);
+  font-size: var(--gog-checkbox-label-size, 0.9375rem);
+  line-height: 1.3;
   color: var(--gog-checkbox-label-color);
 }
 

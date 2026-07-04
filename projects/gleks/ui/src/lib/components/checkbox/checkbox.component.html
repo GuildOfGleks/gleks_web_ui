@@ -3,15 +3,23 @@
     class="gog-checkbox__input"
     type="checkbox"
     [checked]="checked()"
+    [indeterminate]="indeterminate()"
     [disabled]="isDisabled()"
+    [attr.aria-checked]="indeterminate() ? 'mixed' : null"
     [attr.aria-label]="label() ? null : ariaLabel() || null"
     (change)="onInputChange($event)"
     (blur)="onBlur()"
   />
 
-  <span class="gog-checkbox__box gog-inline-center" [class.gog-checkbox__box--checked]="checked()">
+  <span
+    class="gog-checkbox__box"
+    [class.gog-checkbox__box--checked]="checked()"
+    [class.gog-checkbox__box--indeterminate]="indeterminate()"
+  >
     @if (checked()) {
       <gog-icon [template]="checkIconTemplate()" name="check" />
+    } @else if (indeterminate()) {
+      <span class="gog-checkbox__dash" aria-hidden="true"></span>
     }
   </span>
 

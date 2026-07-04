@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IconComponent } from '../icon/icon.component';
+import { GogSize } from '../../shared/types';
 
 @Component({
   selector: 'gog-checkbox',
@@ -17,6 +18,11 @@ import { IconComponent } from '../icon/icon.component';
   templateUrl: './checkbox.component.html',
   styleUrl: './checkbox.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[style.--gog-checkbox-box-size]': 'boxSize()',
+    '[style.--gog-checkbox-label-size]': 'labelSize()',
+    '[style.--gog-checkbox-icon-size]': 'iconSize()',
+  },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -28,6 +34,8 @@ import { IconComponent } from '../icon/icon.component';
 export class CheckboxComponent implements ControlValueAccessor {
   readonly label = input('');
   readonly ariaLabel = input('');
+  readonly size = input<GogSize>('md');
+  readonly indeterminate = input(false);
   readonly disabled = input(false);
   readonly checkIconTemplate = input<TemplateRef<unknown> | null>(null);
 
@@ -36,6 +44,36 @@ export class CheckboxComponent implements ControlValueAccessor {
 
   private readonly cvaDisabled = signal(false);
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
+  protected readonly boxSize = computed(() => {
+    switch (this.size()) {
+      case 'sm':
+        return '18px';
+      case 'lg':
+        return '32px';
+      default:
+        return '24px';
+    }
+  });
+  protected readonly labelSize = computed(() => {
+    switch (this.size()) {
+      case 'sm':
+        return '0.8125rem';
+      case 'lg':
+        return '1.0625rem';
+      default:
+        return '0.9375rem';
+    }
+  });
+  protected readonly iconSize = computed(() => {
+    switch (this.size()) {
+      case 'sm':
+        return '12px';
+      case 'lg':
+        return '18px';
+      default:
+        return '14px';
+    }
+  });
 
   private onCheckedChange: (val: boolean) => void = () => {};
   private onTouched: () => void = () => {};
