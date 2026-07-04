@@ -29,7 +29,7 @@ export interface GogMultiselectOption {
 
 @Component({
   selector: 'gog-multiselect-dropdown-portal',
-  imports: [ButtonComponent, IconComponent],
+  imports: [ButtonComponent],
   template: `
     <div
       [id]="listboxId"
@@ -48,23 +48,43 @@ export interface GogMultiselectOption {
           <gog-button variant="ghost" size="sm" (click)="onClearAll($event)">Clear</gog-button>
         </div>
       }
-      @for (option of options; track option.id) {
-        <button
-          type="button"
-          class="gog-ms__option font-body"
-          role="option"
-          [attr.aria-selected]="isSelected(option.id)"
-          [class.gog-ms__option--selected]="isSelected(option.id)"
-          (click)="onToggle(option, $event)"
-        >
-          <span class="gog-ms__checkbox" [class.gog-ms__checkbox--checked]="isSelected(option.id)">
-            @if (isSelected(option.id)) {
-              <gog-icon name="check" />
-            }
+      <div class="gog-ms__options">
+        @for (option of options; track option.id) {
+          <button
+            type="button"
+            class="gog-ms__option font-body"
+            role="option"
+            [attr.aria-selected]="isSelected(option.id)"
+            [class.gog-ms__option--selected]="isSelected(option.id)"
+            (click)="onToggle(option, $event)"
+          >
+          <span class="gog-ms__option-mark" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" focusable="false" aria-hidden="true">
+              <rect
+                x="2.5"
+                y="2.5"
+                width="11"
+                height="11"
+                rx="2"
+                [attr.fill]="isSelected(option.id) ? 'currentColor' : 'none'"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              @if (isSelected(option.id)) {
+                <path
+                  d="M4 8L6.75 10.75L12 5.5"
+                  stroke="var(--gog-ms-checkbox-checked-color)"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              }
+            </svg>
           </span>
-          {{ option.name }}
-        </button>
-      }
+            {{ option.name }}
+          </button>
+        }
+      </div>
     </div>
   `,
   styleUrl: './multiselect.component.scss',
@@ -274,7 +294,33 @@ export class MultiselectComponent implements ControlValueAccessor {
 
   private estimatePanelHeight(): number {
     const controlsHeight = this.showControls() ? 38 : 0;
-    return Math.min(Math.max(this.options().length, 1) * 40 + controlsHeight, 260);
+    const optionsCount = Math.max(this.options().length, 1);
+    const optionsPadding = this.getOptionPadding() * 2;
+    const optionGap = this.getOptionGap();
+    const optionsHeight = optionsCount * 40 + Math.max(optionsCount - 1, 0) * optionGap + optionsPadding;
+    return Math.min(optionsHeight + controlsHeight, 260);
+  }
+
+  private getOptionGap(): number {
+    if (!this.isBrowser) {
+      return 4;
+    }
+
+    const gap = getComputedStyle(this.elRef.nativeElement).getPropertyValue('--gog-ms-option-gap').trim();
+    const parsedGap = Number.parseFloat(gap);
+    return Number.isFinite(parsedGap) ? parsedGap : 4;
+  }
+
+  private getOptionPadding(): number {
+    if (!this.isBrowser) {
+      return 4;
+    }
+
+    const padding = getComputedStyle(this.elRef.nativeElement)
+      .getPropertyValue('--gog-ms-options-padding')
+      .trim();
+    const parsedPadding = Number.parseFloat(padding);
+    return Number.isFinite(parsedPadding) ? parsedPadding : 4;
   }
 
   private updateInlineDirection(): void {

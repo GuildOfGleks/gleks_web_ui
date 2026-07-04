@@ -58,31 +58,43 @@
           <gog-button variant="ghost" size="sm" (click)="clearAll($event)">Clear</gog-button>
         </div>
       }
-      @for (option of options(); track option.id) {
-        <button
-          type="button"
-          class="gog-ms__option font-body"
-          role="option"
-          [attr.aria-selected]="isSelected(option.id)"
-          [class.gog-ms__option--selected]="isSelected(option.id)"
-          (click)="toggleOption(option, $event)"
-        >
-          <span class="gog-ms__checkbox" [class.gog-ms__checkbox--checked]="isSelected(option.id)">
-            @if (isSelected(option.id)) {
-              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path
-                  d="M3 8.5L6.5 12L13 4"
+      <div class="gog-ms__options">
+        @for (option of options(); track option.id) {
+          <button
+            type="button"
+            class="gog-ms__option font-body"
+            role="option"
+            [attr.aria-selected]="isSelected(option.id)"
+            [class.gog-ms__option--selected]="isSelected(option.id)"
+            (click)="toggleOption(option, $event)"
+          >
+            <span class="gog-ms__option-mark" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" focusable="false" aria-hidden="true">
+                <rect
+                  x="2.5"
+                  y="2.5"
+                  width="11"
+                  height="11"
+                  rx="2"
+                  [attr.fill]="isSelected(option.id) ? 'currentColor' : 'none'"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  stroke-width="1.5"
                 />
+                @if (isSelected(option.id)) {
+                  <path
+                    d="M4 8L6.75 10.75L12 5.5"
+                    stroke="var(--gog-ms-checkbox-checked-color)"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                }
               </svg>
-            }
-          </span>
-          {{ option.name }}
-        </button>
-      }
+            </span>
+            {{ option.name }}
+          </button>
+        }
+      </div>
     </div>
   }
 
