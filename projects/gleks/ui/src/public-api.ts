@@ -24,3 +24,4 @@ export * from './lib/services/dialog-service/dialog.service';
 export * from './lib/services/toast-service/toast-service';
 export * from './lib/services/theme-service/theme.service';
 export * from './lib/shared/types';
+export type { GogDropdownDirection } from './lib/shared/dropdown-position';

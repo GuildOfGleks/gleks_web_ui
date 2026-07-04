@@ -46,6 +46,7 @@
     <div
       [id]="'gog-ms-listbox-' + instanceId"
       class="gog-ms__dropdown"
+      [class.gog-ms__dropdown--up]="dropdownDirectionState() === 'up'"
       role="listbox"
       aria-multiselectable="true"
       [style.z-index]="dropdownZIndex() ?? null"

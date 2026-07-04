@@ -20,6 +20,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IconComponent } from '../icon/icon.component';
+import { resolveDropdownPlacement, type GogDropdownDirection } from '../../shared/dropdown-position';
 
 export interface GogMultiselectOption {
   id: string | number;
@@ -31,10 +32,12 @@ export interface GogMultiselectOption {
   imports: [ButtonComponent, IconComponent],
   template: `
     <div
+      [id]="listboxId"
       class="gog-ms__dropdown gog-ms__dropdown--portal"
       [style.top.px]="top"
       [style.left.px]="left"
       [style.width.px]="width"
+      [style.max-height.px]="maxHeight"
       [style.z-index]="zIndex"
       role="listbox"
       aria-multiselectable="true"
@@ -71,7 +74,10 @@ export class GogMultiselectDropdownPortal {
   top = 0;
   left = 0;
   width = 200;
+  maxHeight = 260;
   zIndex = 9999;
+  listboxId = '';
+  direction: 'up' | 'down' = 'down';
   options: GogMultiselectOption[] = [];
   selectedIds: (string | number)[] = [];
   showControls = false;
@@ -105,6 +111,7 @@ export class MultiselectComponent implements ControlValueAccessor {
   readonly options = input<GogMultiselectOption[]>([]);
   readonly errorMessage = input('');
   readonly showControls = input(false);
+  readonly dropdownDirection = input<GogDropdownDirection>('auto');
   readonly dropdownZIndex = input<number | null>(null);
   readonly appendToBody = input(false);
   readonly disabled = input(false);
@@ -117,6 +124,7 @@ export class MultiselectComponent implements ControlValueAccessor {
 
   private readonly cvaDisabled = signal(false);
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
+  protected readonly dropdownDirectionState = signal<'up' | 'down'>('down');
 
   private readonly elRef = inject(ElementRef<HTMLElement>);
   private readonly appRef = inject(ApplicationRef);
@@ -170,7 +178,12 @@ export class MultiselectComponent implements ControlValueAccessor {
   }
 
   onScrollOrResize(): void {
-    if (this.isOpen() && this.appendToBody()) this.updatePortalPosition();
+    if (!this.isOpen()) return;
+    if (this.appendToBody()) {
+      this.updatePortalPosition();
+      return;
+    }
+    this.updateInlineDirection();
   }
 
   writeValue(val: (string | number)[] | null): void {
@@ -197,6 +210,8 @@ export class MultiselectComponent implements ControlValueAccessor {
     if (this.appendToBody()) {
       if (next) this.openPortal();
       else this.destroyPortal();
+    } else if (next) {
+      this.updateInlineDirection();
     }
   }
 
@@ -257,6 +272,26 @@ export class MultiselectComponent implements ControlValueAccessor {
     if (this.appendToBody()) this.destroyPortal();
   }
 
+  private estimatePanelHeight(): number {
+    const controlsHeight = this.showControls() ? 38 : 0;
+    return Math.min(Math.max(this.options().length, 1) * 40 + controlsHeight, 260);
+  }
+
+  private updateInlineDirection(): void {
+    if (!this.isBrowser) return;
+
+    const placement = resolveDropdownPlacement(
+      this.dropdownDirection(),
+      this.elRef.nativeElement.getBoundingClientRect(),
+      this.estimatePanelHeight(),
+      window.innerHeight,
+      2,
+      8,
+    );
+
+    this.dropdownDirectionState.set(placement.direction);
+  }
+
   private openPortal(): void {
     if (!this.isBrowser) return;
     this.destroyPortal();
@@ -273,7 +308,10 @@ export class MultiselectComponent implements ControlValueAccessor {
     inst.options = this.options();
     inst.selectedIds = [...this.value()];
     inst.showControls = this.showControls();
+    inst.listboxId = `gog-ms-listbox-${this.instanceId}`;
     inst.zIndex = this.dropdownZIndex() ?? 9999;
+    inst.direction = this.dropdownDirectionState();
+    inst.maxHeight = this.estimatePanelHeight();
     inst.onToggle = (o, e) => this.toggleOption(o, e);
     inst.onSelectAll = (e) => this.selectAll(e);
     inst.onClearAll = (e) => this.clearAll(e);
@@ -284,11 +322,23 @@ export class MultiselectComponent implements ControlValueAccessor {
   }
 
   private updatePortalPosition(): void {
-    if (!this.portalRef) return;
-    const rect = this.elRef.nativeElement.getBoundingClientRect();
-    this.portalRef.instance.top = rect.bottom;
-    this.portalRef.instance.left = rect.left;
-    this.portalRef.instance.width = rect.width;
+    if (!this.portalRef || !this.isBrowser) return;
+
+    const placement = resolveDropdownPlacement(
+      this.dropdownDirection(),
+      this.elRef.nativeElement.getBoundingClientRect(),
+      this.estimatePanelHeight(),
+      window.innerHeight,
+      2,
+      8,
+    );
+
+    this.portalRef.instance.direction = placement.direction;
+    this.portalRef.instance.top = placement.top;
+    this.portalRef.instance.left = placement.left;
+    this.portalRef.instance.width = placement.width;
+    this.portalRef.instance.maxHeight = placement.maxHeight;
+    this.dropdownDirectionState.set(placement.direction);
     this.portalRef.changeDetectorRef.detectChanges();
   }
 

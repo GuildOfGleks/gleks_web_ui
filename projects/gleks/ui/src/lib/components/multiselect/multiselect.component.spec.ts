@@ -37,4 +37,21 @@ describe('MultiselectComponent', () => {
 
     expect(component.value()).toEqual(['a']);
   });
+
+  it('opens upward when requested', async () => {
+    fixture.componentRef.setInput('options', [
+      { id: 'a', name: 'Alpha' },
+      { id: 'b', name: 'Beta' },
+    ]);
+    fixture.componentRef.setInput('dropdownDirection', 'up');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const trigger = fixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+    trigger.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.gog-ms__dropdown')?.classList.contains('gog-ms__dropdown--up')).toBe(true);
+  });
 });

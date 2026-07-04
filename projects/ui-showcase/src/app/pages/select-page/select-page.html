@@ -3,7 +3,7 @@
     <p class="eyebrow">gog-select</p>
     <h2>Select</h2>
     <p class="lead">
-      A native `&lt;select&gt;` wrapper with label, chevron icon slot, error state, and
+      A dropdown select with label, chevron icon slot, error state, placement control, and
       `ControlValueAccessor` support.
     </p>
   </div>
@@ -15,6 +15,7 @@
         label="Framework"
         inputId="framework"
         [options]="frameworks"
+        dropdownDirection="down"
         [(value)]="framework"
       />
     </div>

@@ -3,8 +3,8 @@
     <p class="eyebrow">gog-multiselect</p>
     <h2>Multiselect</h2>
     <p class="lead">
-      A checkbox-driven multiselect dropdown with select-all/clear controls and an optional
-      body-portaled panel.
+      A checkbox-driven multiselect dropdown with select-all/clear controls, placement control,
+      and an optional body-portaled panel.
     </p>
   </div>
 
@@ -15,6 +15,7 @@
         label="Features"
         [options]="features"
         [showControls]="true"
+        dropdownDirection="up"
         [(value)]="selectedFeatures"
       />
     </div>
