@@ -9,21 +9,64 @@
   </div>
 
   <article class="card">
-    <h3>Behavior</h3>
+    <h3>Remote content with custom headers</h3>
     <div class="action-row">
       <gog-button variant="primary" type="button" (gogClick)="toggleMulti()">
         Multi-open: {{ multi() ? 'on' : 'off' }}
       </gog-button>
     </div>
 
-    <gog-accordion [items]="items" [expandFirst]="false" [multi]="multi()" size="md">
+    <gog-accordion [items]="panels" [expandFirst]="false" [multi]="multi()" size="md" (gogToggle)="onAccordionToggle($event)">
+      <ng-template gogAccordionHeader let-item let-open="open">
+        <span class="accordion-header__kicker">{{ item.kicker }}</span>
+        <span class="accordion-header__title-row">
+          <span class="accordion-header__title">{{ item.title }}</span>
+          <span class="accordion-header__status" [class.accordion-header__status--loading]="isLoading(item.id)">
+            @if (isLoaded(item.id)) {
+              Loaded
+            } @else if (isLoading(item.id)) {
+              Loading...
+            } @else {
+              Tap to load
+            }
+          </span>
+        </span>
+        <span class="accordion-header__summary">
+          {{ open ? 'Expanded section' : item.summary }}
+        </span>
+      </ng-template>
+
       <ng-template gogAccordionContent let-item>
-        <p class="meta">{{ item.summary }}</p>
-        <ul class="accordion-notes">
-          @for (note of item.notes; track note) {
-            <li>{{ note }}</li>
+        @if (isLoaded(item.id)) {
+          @if (panelFor(item.id); as panel) {
+            <div class="accordion-body">
+              <p class="meta">{{ panel.summary }}</p>
+
+              <div class="accordion-body__stats">
+                @for (stat of panel.stats; track stat.label) {
+                  <div class="accordion-body__stat">
+                    <span class="accordion-body__stat-label">{{ stat.label }}</span>
+                    <strong class="accordion-body__stat-value">{{ stat.value }}</strong>
+                  </div>
+                }
+              </div>
+
+              <ul class="accordion-notes">
+                @for (note of panel.notes; track note) {
+                  <li>{{ note }}</li>
+                }
+              </ul>
+            </div>
           }
-        </ul>
+        } @else {
+          <gog-spinner-overlay [loading]="isLoading(item.id)" size="md" ariaLabel="Loading accordion content">
+            <div class="accordion-loading-shell" aria-hidden="true">
+              <span class="accordion-loading-shell__line accordion-loading-shell__line--wide"></span>
+              <span class="accordion-loading-shell__line"></span>
+              <span class="accordion-loading-shell__line accordion-loading-shell__line--short"></span>
+            </div>
+          </gog-spinner-overlay>
+        }
       </ng-template>
     </gog-accordion>
   </article>

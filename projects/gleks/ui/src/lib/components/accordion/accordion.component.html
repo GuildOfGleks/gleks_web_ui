@@ -21,10 +21,18 @@
           [class.gog-accordion__header--open]="isOpen(item.id)"
           [attr.aria-expanded]="isOpen(item.id)"
           [attr.aria-controls]="'gog-acc-body-' + item.id"
-          (click)="toggle(item.id)"
+          (click)="toggle(item)"
           type="button"
         >
-          <span class="gog-accordion__title">{{ item.title }}</span>
+          <span class="gog-accordion__header-content">
+            @if (headerTpl(); as tpl) {
+              <ng-container
+                *ngTemplateOutlet="tpl.templateRef; context: { $implicit: item, open: isOpen(item.id) }"
+              />
+            } @else {
+              <span class="gog-accordion__title">{{ item.title }}</span>
+            }
+          </span>
           <span class="gog-accordion__chevron" aria-hidden="true">
             <svg
               viewBox="0 0 24 24"

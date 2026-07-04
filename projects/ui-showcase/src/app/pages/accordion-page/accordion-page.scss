@@ -6,3 +6,107 @@
   color: var(--muted-text-color);
 }
 
+.accordion-header__kicker {
+  color: var(--accent-color);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.accordion-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.accordion-header__title {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.accordion-header__status {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-dim) 18%, transparent);
+  color: var(--muted-text-color);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.accordion-header__status--loading {
+  color: var(--accent-color);
+}
+
+.accordion-header__summary {
+  color: var(--muted-text-color);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+.accordion-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.accordion-body__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.accordion-body__stat {
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent-dim) 40%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent-dim) 8%, transparent);
+}
+
+.accordion-body__stat-label {
+  display: block;
+  color: var(--muted-text-color);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.accordion-body__stat-value {
+  display: block;
+  margin-top: 4px;
+}
+
+.accordion-loading-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 120px;
+  padding: 4px 0;
+}
+
+.accordion-loading-shell__line {
+  display: block;
+  height: 12px;
+  width: 100%;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-dim) 18%, transparent);
+}
+
+.accordion-loading-shell__line--wide {
+  width: 86%;
+}
+
+.accordion-loading-shell__line--short {
+  width: 58%;
+}
+
+@media (max-width: 640px) {
+  .accordion-body__stats {
+    grid-template-columns: 1fr;
+  }
+}

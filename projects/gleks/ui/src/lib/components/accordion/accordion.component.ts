@@ -6,6 +6,7 @@ import {
   Directive,
   inject,
   input,
+  output,
   signal,
   TemplateRef,
 } from '@angular/core';
@@ -18,6 +19,16 @@ export interface GogAccordionItem {
   [key: string]: unknown;
 }
 
+export interface GogAccordionHeaderContext {
+  $implicit: GogAccordionItem;
+  open: boolean;
+}
+
+export interface GogAccordionToggleEvent {
+  item: GogAccordionItem;
+  open: boolean;
+}
+
 @Directive({
   selector: '[gogAccordionContent]',
 })
@@ -25,6 +36,12 @@ export class GogAccordionContentDirective {
   readonly templateRef = inject<TemplateRef<{ $implicit: GogAccordionItem }>>(TemplateRef);
 }
 
+@Directive({
+  selector: '[gogAccordionHeader]',
+})
+export class GogAccordionHeaderDirective {
+  readonly templateRef = inject<TemplateRef<GogAccordionHeaderContext>>(TemplateRef);
+}
 
 @Component({
   selector: 'gog-accordion',
@@ -43,6 +60,9 @@ export class AccordionComponent {
   readonly multi = input(false);
   readonly loading = input(false);
 
+  readonly gogToggle = output<GogAccordionToggleEvent>();
+
+  readonly headerTpl = contentChild(GogAccordionHeaderDirective);
   readonly contentTpl = contentChild(GogAccordionContentDirective);
 
   protected readonly openIds = signal<Set<string | number>>(new Set());
@@ -63,17 +83,19 @@ export class AccordionComponent {
     return this.openIds().has(id);
   }
 
-  protected toggle(id: string | number): void {
-    const current = this.openIds();
-    const next = new Set(current);
+  protected toggle(item: GogAccordionItem): void {
+   const id = item.id;
+   const current = this.openIds();
+   const next = new Set(current);
 
-    if (next.has(id)) {
-      next.delete(id);
+   if (next.has(id)) {
+     next.delete(id);
     } else {
       if (!this.multi()) next.clear();
       next.add(id);
     }
 
     this.openIds.set(next);
+    this.gogToggle.emit({ item, open: next.has(id) });
   }
 }
