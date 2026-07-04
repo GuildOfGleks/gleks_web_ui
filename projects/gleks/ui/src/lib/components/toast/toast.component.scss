@@ -8,14 +8,45 @@
   --toast-color: var(--text-color);
   --toast-icon-color: var(--accent-color);
   --toast-enter-x: var(--gog-toast-enter-distance);
-  --toast-stack-index: 0;
-  --toast-stack-step: 6px;
-  --toast-stack-scale-step: 0.02;
-  --toast-stack-offset: calc(var(--toast-stack-index) * var(--toast-stack-step));
-  --toast-stack-scale: calc(1 - (var(--toast-stack-index) * var(--toast-stack-scale-step)));
   --toast-progress-color: var(--toast-border);
 
+  /* Card-stack geometry: this toast's index (0 = front of the queue, actively counting down;
+     higher = further back, waiting) is set per-toast by the container via an inline style on
+     the `<gog-toast>` host. The corner direction and the hovered/expanded flag are inherited
+     custom properties set further up on the container element. They are intentionally *not*
+     redeclared here — only referenced with a `var(..., fallback)` — otherwise redeclaring them
+     would shadow the inherited values. */
+  --toast-stack-depth: min(var(--toast-stack-index, 0), 6);
+
+  --gog-toast-stack-peek: 14px;
+  --gog-toast-stack-scale-step: 0.06;
+  --gog-toast-stack-expanded-gap: 84px;
+  --gog-toast-stack-min-opacity: 0.4;
+
+  --toast-stack-collapsed-y: calc(
+    var(--toast-stack-depth) * var(--gog-toast-stack-peek) * var(--toast-stack-direction, 1)
+  );
+  --toast-stack-expanded-y: calc(
+    var(--toast-stack-depth) * var(--gog-toast-stack-expanded-gap) * var(--toast-stack-direction, 1)
+  );
+  --toast-stack-y: calc(
+    var(--toast-stack-collapsed-y) + (var(--toast-stack-expanded-y) - var(--toast-stack-collapsed-y)) *
+      var(--toast-stack-expanded, 0)
+  );
+  --toast-stack-collapsed-scale: calc(1 - (var(--toast-stack-depth) * var(--gog-toast-stack-scale-step)));
+  --toast-stack-scale: calc(
+    var(--toast-stack-collapsed-scale) + (1 - var(--toast-stack-collapsed-scale)) * var(--toast-stack-expanded, 0)
+  );
+  --toast-stack-collapsed-opacity: max(
+    var(--gog-toast-stack-min-opacity),
+    calc(1 - (var(--toast-stack-depth) * 0.18))
+  );
+  --toast-stack-opacity: calc(
+    var(--toast-stack-collapsed-opacity) + (1 - var(--toast-stack-collapsed-opacity)) * var(--toast-stack-expanded, 0)
+  );
+
   position: relative;
+  z-index: calc(100 - var(--toast-stack-index, 0));
   display: block;
   padding: 12px 14px;
   background: var(--toast-bg);
@@ -27,15 +58,15 @@
   pointer-events: all;
   opacity: 0;
   overflow: hidden;
-  transform: translate3d(var(--toast-enter-x), calc(var(--toast-stack-offset) * -1), 0) scale(var(--toast-stack-scale));
+  transform: translate3d(var(--toast-enter-x), var(--toast-stack-y), 0) scale(var(--toast-stack-scale));
   transition:
     opacity 0.25s ease,
     transform 0.25s ease;
 }
 
 .gog-toast--visible {
-  opacity: 1;
-  transform: translate3d(0, calc(var(--toast-stack-offset) * -1), 0) scale(var(--toast-stack-scale));
+  opacity: var(--toast-stack-opacity);
+  transform: translate3d(0, var(--toast-stack-y), 0) scale(var(--toast-stack-scale));
 }
 
 /* slide from left for left-side positions — handled by container via CSS var */
@@ -131,7 +162,8 @@
   animation: gog-toast-progress var(--toast-duration) linear forwards;
 }
 
-.gog-toast--paused .gog-toast__progress {
+.gog-toast--paused .gog-toast__progress,
+.gog-toast--queued .gog-toast__progress {
   animation-play-state: paused;
 }
 

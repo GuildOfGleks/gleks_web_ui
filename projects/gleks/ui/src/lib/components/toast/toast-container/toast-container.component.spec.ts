@@ -36,4 +36,17 @@ describe('ToastContainerComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should keep the oldest toasts visible (FIFO) and queue overflow at the back', () => {
+    fixture.componentRef.setInput('maxVisiblePerPosition', 2);
+    TestBed.inject(ToastService).toasts.set([
+      { id: 'a', message: 'A', type: 'info', iconName: 'info', iconTemplate: null, actions: [], isSticky: false, duration: 4000, position: 'top-right', dedupeKey: 'a', revision: 0 },
+      { id: 'b', message: 'B', type: 'info', iconName: 'info', iconTemplate: null, actions: [], isSticky: false, duration: 4000, position: 'top-right', dedupeKey: 'b', revision: 0 },
+      { id: 'c', message: 'C', type: 'info', iconName: 'info', iconTemplate: null, actions: [], isSticky: false, duration: 4000, position: 'top-right', dedupeKey: 'c', revision: 0 },
+    ]);
+    fixture.detectChanges();
+
+    const group = component.groups().find((g) => g.position === 'top-right');
+    expect(group?.toasts.map((t) => t.id)).toEqual(['a', 'b']);
+  });
 });

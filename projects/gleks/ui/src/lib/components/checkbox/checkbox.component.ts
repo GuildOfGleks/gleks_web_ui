@@ -8,7 +8,7 @@ import {
   TemplateRef,
   signal,
 } from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IconComponent } from '../icon/icon.component';
 
 @Component({
@@ -25,7 +25,7 @@ import { IconComponent } from '../icon/icon.component';
     },
   ],
 })
-export class CheckboxComponent {
+export class CheckboxComponent implements ControlValueAccessor {
   readonly label = input('');
   readonly ariaLabel = input('');
   readonly disabled = input(false);

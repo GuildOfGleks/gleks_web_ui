@@ -3,6 +3,7 @@
     @for (toast of group.toasts; track trackToast($index, toast); let toastIndex = $index) {
       <gog-toast
         [toast]="toast"
+        [isFront]="toastIndex === 0"
         [class.slide-left]="isLeft(group.position)"
         [style.--toast-stack-index]="toastIndex"
         (dismissed)="dismiss($event)"

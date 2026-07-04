@@ -18,10 +18,12 @@ export class ToastContainerComponent {
   readonly groups = computed(() =>
     POSITIONS.map((position) => ({
       position,
+      // Keep the oldest toasts first: they're at the front of the queue (actively ticking),
+      // while newer arrivals wait their turn at the back of the visible stack.
       toasts: this.toastService
         .toasts()
         .filter((toast) => toast.position === position)
-        .slice(Math.max(0, this.maxVisiblePerPosition()) * -1),
+        .slice(0, Math.max(0, this.maxVisiblePerPosition())),
     })).filter((group) => group.toasts.length > 0),
   );
 

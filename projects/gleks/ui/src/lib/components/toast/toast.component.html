@@ -1,6 +1,7 @@
 <div
   class="gog-toast"
   [class.gog-toast--paused]="isPaused()"
+  [class.gog-toast--queued]="!isFront()"
   [class.gog-toast--success]="toast().type === 'success'"
   [class.gog-toast--error]="toast().type === 'error'"
   [class.gog-toast--warning]="toast().type === 'warning'"

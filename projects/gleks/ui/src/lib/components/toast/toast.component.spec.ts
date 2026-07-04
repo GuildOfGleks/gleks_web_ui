@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 
 import { ToastComponent } from './toast.component';
 
@@ -72,5 +73,54 @@ describe('ToastComponent', () => {
     await fixture.whenStable();
 
     expect(progress.style.animation).toBe('');
+  });
+
+  it('should not auto-dismiss a queued (non-front) toast, and should start counting down once promoted to front', async () => {
+    vi.useFakeTimers();
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: vi.fn().mockReturnValue({ matches: true }),
+    });
+    try {
+      const dismissedSpy = vi.fn();
+      const queuedFixture = TestBed.createComponent(ToastComponent);
+      queuedFixture.componentInstance.dismissed.subscribe(dismissedSpy);
+      queuedFixture.componentRef.setInput('toast', {
+        id: 'toast-queued',
+        message: 'Queued toast',
+        type: 'info',
+        iconName: 'info',
+        iconTemplate: null,
+        actions: [],
+        isSticky: false,
+        duration: 1000,
+        position: 'top-right',
+        dedupeKey: 'Queued toast|info|info|top-right|default|',
+        revision: 0,
+      });
+      queuedFixture.componentRef.setInput('isFront', false);
+      queuedFixture.detectChanges();
+      await queuedFixture.whenStable();
+
+      vi.advanceTimersByTime(5000);
+      queuedFixture.detectChanges();
+      expect(dismissedSpy).not.toHaveBeenCalled();
+
+      queuedFixture.componentRef.setInput('isFront', true);
+      queuedFixture.detectChanges();
+      await queuedFixture.whenStable();
+
+      vi.advanceTimersByTime(999);
+      queuedFixture.detectChanges();
+      expect(dismissedSpy).not.toHaveBeenCalled();
+
+      vi.advanceTimersByTime(1);
+      queuedFixture.detectChanges();
+      await Promise.resolve();
+      expect(dismissedSpy).toHaveBeenCalledWith('toast-queued');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

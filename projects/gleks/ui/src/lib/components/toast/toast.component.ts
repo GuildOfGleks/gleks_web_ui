@@ -30,6 +30,8 @@ import { IconComponent } from '../icon/icon.component';
 })
 export class ToastComponent implements OnDestroy {
   readonly toast = input.required<Toast>();
+  /** Whether this toast is the active, front-of-queue toast — only the front toast counts down. */
+  readonly isFront = input<boolean>(true);
   readonly dismissed = output<string>();
 
   readonly visible = signal(false);
@@ -55,12 +57,15 @@ export class ToastComponent implements OnDestroy {
     afterNextRender(() => this.visible.set(true));
     effect((onCleanup) => {
       const toast = this.toast();
+      const isFront = this.isFront();
       this.isPaused.set(false);
       this.isClosing.set(false);
       this.clearAutoDismissTimer();
       this.remainingMs = toast.duration;
 
-      if (!toast.isSticky) {
+      // Toasts queued behind the front one keep a full, frozen progress bar and don't count
+      // down — they only start ticking once they become the front toast.
+      if (!toast.isSticky && isFront) {
         this.restartProgressAnimation();
         this.startAutoDismiss(this.remainingMs);
       }
@@ -89,7 +94,7 @@ export class ToastComponent implements OnDestroy {
 
   protected pauseAutoDismiss(): void {
     const toast = this.toast();
-    if (toast.isSticky || this.isPaused() || this.isClosing()) return;
+    if (toast.isSticky || !this.isFront() || this.isPaused() || this.isClosing()) return;
     if (this.autoDismissTimer === null) return;
 
     const elapsed = Date.now() - this.startedAt;
@@ -100,7 +105,7 @@ export class ToastComponent implements OnDestroy {
 
   protected resumeAutoDismiss(): void {
     const toast = this.toast();
-    if (toast.isSticky || !this.isPaused() || this.isClosing()) return;
+    if (toast.isSticky || !this.isFront() || !this.isPaused() || this.isClosing()) return;
 
     this.isPaused.set(false);
     if (this.remainingMs <= 0) {

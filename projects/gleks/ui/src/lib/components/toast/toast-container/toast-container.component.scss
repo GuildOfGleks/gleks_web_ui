@@ -5,36 +5,58 @@
 .gog-toast-container {
   position: fixed;
   z-index: var(--gog-toast-z-index);
-  display: flex;
-  flex-direction: column;
-  gap: var(--gog-toast-gap);
+  display: grid;
   padding: var(--gog-toast-stack-padding);
   pointer-events: none;
   max-width: var(--gog-toast-max-width);
 }
 
+/* All toasts for a position share the same grid cell so they can overlap into a card stack. */
+.gog-toast-container > gog-toast {
+  grid-column: 1;
+  grid-row: 1;
+}
+
 .gog-toast-container--top-right {
   top: 0;
   right: 0;
-  align-items: flex-end;
+  justify-items: end;
 }
 
 .gog-toast-container--top-left {
   top: 0;
   left: 0;
-  align-items: flex-start;
+  justify-items: start;
 }
 
 .gog-toast-container--bottom-right {
   bottom: 0;
   right: 0;
-  align-items: flex-end;
-  flex-direction: column-reverse;
+  justify-items: end;
 }
 
 .gog-toast-container--bottom-left {
   bottom: 0;
   left: 0;
-  align-items: flex-start;
-  flex-direction: column-reverse;
+  justify-items: start;
+}
+
+/* Older toasts recede away from the anchored corner: downward for top-anchored stacks,
+   upward for bottom-anchored ones. */
+.gog-toast-container--top-left,
+.gog-toast-container--top-right {
+  align-items: start;
+  --toast-stack-direction: 1;
+}
+
+.gog-toast-container--bottom-left,
+.gog-toast-container--bottom-right {
+  align-items: end;
+  --toast-stack-direction: -1;
+}
+
+/* Hovering the stack (or any toast within it, since toasts opt back into pointer events)
+   expands the cards into a fully separated list. */
+.gog-toast-container:hover {
+  --toast-stack-expanded: 1;
 }
