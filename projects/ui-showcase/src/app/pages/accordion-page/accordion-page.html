@@ -16,7 +16,7 @@
       </gog-button>
     </div>
 
-    <gog-accordion [items]="items" [expandFirst]="true" [multi]="multi()" size="md">
+    <gog-accordion [items]="items" [expandFirst]="false" [multi]="multi()" size="md">
       <ng-template gogAccordionContent let-item>
         <p class="meta">{{ item.summary }}</p>
         <ul class="accordion-notes">

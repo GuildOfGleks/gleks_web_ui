@@ -26,8 +26,37 @@ describe('AccordionComponent', () => {
       { id: 2, title: 'Second' },
     ]);
     fixture.componentRef.setInput('expandFirst', true);
-    fixture.detectChanges();
+    return fixture.whenStable().then(() => {
+      const button = fixture.nativeElement.querySelector('.gog-accordion__header') as HTMLButtonElement;
+      const body = fixture.nativeElement.querySelector('.gog-accordion__body') as HTMLElement;
 
-    expect((component as any).isOpen(1)).toBe(true);
+      expect(button.getAttribute('aria-expanded')).toBe('true');
+      expect(body.classList.contains('gog-accordion__body--open')).toBe(true);
+      expect(body.getAttribute('aria-hidden')).toBe('false');
+      expect(body.hasAttribute('inert')).toBe(false);
+    });
+  });
+
+  it('should toggle the animated body state when a header is clicked', async () => {
+    fixture.componentRef.setInput('items', [{ id: 1, title: 'First' }]);
+    await fixture.whenStable();
+
+    const button = fixture.nativeElement.querySelector('.gog-accordion__header') as HTMLButtonElement;
+    const body = fixture.nativeElement.querySelector('.gog-accordion__body') as HTMLElement;
+
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(body.classList.contains('gog-accordion__body--open')).toBe(false);
+
+    button.click();
+    await fixture.whenStable();
+
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(body.classList.contains('gog-accordion__body--open')).toBe(true);
+
+    button.click();
+    await fixture.whenStable();
+
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(body.classList.contains('gog-accordion__body--open')).toBe(false);
   });
 });

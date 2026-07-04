@@ -42,13 +42,17 @@
         <div
           [id]="'gog-acc-body-' + item.id"
           class="gog-accordion__body font-body"
+          [class.gog-accordion__body--open]="isOpen(item.id)"
           role="region"
           [attr.aria-labelledby]="'gog-acc-btn-' + item.id"
-          [hidden]="!isOpen(item.id)"
+          [attr.aria-hidden]="!isOpen(item.id)"
+          [attr.inert]="!isOpen(item.id) ? '' : null"
         >
-          @if (contentTpl(); as tpl) {
-            <ng-container *ngTemplateOutlet="tpl.templateRef; context: { $implicit: item }" />
-          }
+          <div class="gog-accordion__body-inner">
+            @if (contentTpl(); as tpl) {
+              <ng-container *ngTemplateOutlet="tpl.templateRef; context: { $implicit: item }" />
+            }
+          </div>
         </div>
       </div>
     }
