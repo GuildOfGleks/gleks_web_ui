@@ -51,12 +51,13 @@ Every component `.scss` file follows the rules below. See
 The library references app-level design tokens that the **consuming application must define**
 in its global styles (they are intentionally *not* shipped by the library):
 
-- Palette: `--accent-color`, `--accent-bright`, `--accent-dim`, `--primary-color`.
+- Palette: `--accent-color`, `--accent-bright`, `--accent-dim`, `--primary-color`,
+  `--warning-color`, `--info-color`.
 - Button sizing: `--btn-sm-padding`, `--btn-md-padding`, `--btn-lg-padding`,
   `--btn-sm-font-size`, `--btn-md-font-size`, `--btn-lg-font-size`.
 - Typography: `--font-heading`.
 
-Always consume these through `var(...)` with a sensible fallback where possible. Do not
+Always consume these through `var(...)` with a sensible fallback where possible. Do not 
 hardcode brand colors when a token exists. If you introduce a new token, document it here.
 
 ## Encapsulation & scope

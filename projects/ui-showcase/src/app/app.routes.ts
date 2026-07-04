@@ -47,6 +47,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/toast-page/toast-page').then((m) => m.ToastPage),
   },
   {
+    path: 'tag',
+    loadComponent: () => import('./pages/tag-page/tag-page').then((m) => m.TagPage),
+  },
+  {
     path: 'dialog',
     loadComponent: () => import('./pages/dialog-page/dialog-page').then((m) => m.DialogPage),
   },

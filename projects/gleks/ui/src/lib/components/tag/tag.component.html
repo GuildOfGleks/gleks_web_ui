@@ -1,0 +1,12 @@
+@if (hasIcon()) {
+  <gog-icon
+    class="gog-tag__icon"
+    [ariaHidden]="true"
+    [name]="iconName() ?? 'info'"
+    [template]="iconTemplate()"
+  />
+}
+
+<span class="gog-tag__content">
+  <ng-content></ng-content>
+</span>

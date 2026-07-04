@@ -31,6 +31,7 @@ export class App {
     { path: 'spinner', label: 'Spinner' },
     { path: 'accordion', label: 'Accordion' },
     { path: 'toast', label: 'Toast' },
+    { path: 'tag', label: 'Tag' },
     { path: 'dialog', label: 'Dialog' },
   ];
 

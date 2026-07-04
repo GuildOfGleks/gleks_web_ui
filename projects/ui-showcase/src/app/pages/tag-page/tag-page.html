@@ -1,0 +1,53 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-tag</p>
+    <h2>Tag</h2>
+    <p class="lead">
+      An informational status label with semantic colors, three sizes, and width that follows the
+      text without wrapping.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Semantic variants</h3>
+    <div class="tag-grid">
+      @for (variant of variants; track variant) {
+        <div class="tag-row">
+          <span class="tag-row__label">{{ variant }}</span>
+          <gog-tag [variant]="variant" [iconName]="variantIcons[variant]">
+            Example
+          </gog-tag>
+          <gog-tag [variant]="variant">In stock</gog-tag>
+          <gog-tag [variant]="variant" [iconName]="variantIcons[variant]">Paid</gog-tag> 
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <div class="tag-grid">
+      @for (size of sizes; track size) {
+        <div class="tag-row">
+          <span class="tag-row__label">{{ size }}</span>
+          <gog-tag [size]="size" variant="success">Available</gog-tag>
+          <gog-tag [size]="size" variant="warning">New</gog-tag>
+          <gog-tag [size]="size" variant="danger">Error</gog-tag>
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Shapes</h3>
+    <div class="tag-grid">
+      @for (shape of shapes; track shape) {
+        <div class="tag-row">
+          <span class="tag-row__label">{{ shape }}</span>
+          <gog-tag [shape]="shape" variant="success" iconName="check">Available</gog-tag>
+          <gog-tag [shape]="shape" variant="warning" iconName="warning">New</gog-tag>
+        </div>
+      }
+    </div>
+  </article>
+</section>
