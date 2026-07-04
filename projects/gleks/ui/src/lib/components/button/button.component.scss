@@ -20,6 +20,7 @@
   background-color: var(--gog-btn-bg);
   color: var(--gog-btn-color);
   box-shadow: var(--gog-btn-shadow);
+  cursor: pointer;
   transition:
     background-color 0.15s ease,
     box-shadow 0.15s ease,
@@ -53,6 +54,7 @@
 
 .gog-btn:disabled {
   opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* === Variants === */

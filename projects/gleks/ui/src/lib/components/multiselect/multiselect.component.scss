@@ -32,6 +32,7 @@
   color: var(--gog-ms-label-color);
   text-transform: uppercase;
   letter-spacing: 1px;
+  cursor: pointer;
 }
 
 .gog-ms {
@@ -66,6 +67,10 @@
 
 .gog-ms--disabled {
   opacity: var(--gog-ms-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.gog-ms--disabled .gog-ms__label {
   cursor: not-allowed;
 }
 

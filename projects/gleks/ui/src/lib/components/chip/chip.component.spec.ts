@@ -11,7 +11,7 @@ describe('ChipComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ChipComponent],
     }).compileComponents();
- 
+
     fixture = TestBed.createComponent(ChipComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();

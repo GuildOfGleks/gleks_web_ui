@@ -26,15 +26,22 @@
   opacity: var(--gog-select-disabled-opacity);
 }
 
+.gog-select--disabled .gog-select__label,
+.gog-select--disabled .gog-select__field {
+  cursor: not-allowed;
+}
+
 .gog-select__label {
   font-size: var(--text-sm);
   color: var(--gog-select-label-color);
   text-transform: uppercase;
   letter-spacing: 1px;
+  cursor: pointer;
 }
 
 .gog-select__field {
   position: relative;
+  cursor: pointer;
 }
 
 .gog-select__control {
