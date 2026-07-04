@@ -156,6 +156,7 @@
   background-color: var(--gog-ms-panel-bg);
   border: var(--control-border-width, 2px) var(--control-border-style, solid)
     var(--gog-ms-panel-border);
+  border-radius: var(--radius);
   max-height: 260px;
   overflow-y: auto;
   box-shadow: var(--panel-shadow);
