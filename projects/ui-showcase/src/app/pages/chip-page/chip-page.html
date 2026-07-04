@@ -1,0 +1,43 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-chip</p>
+    <h2>Chip</h2>
+    <p class="lead">
+      A compact interactive object with optional avatar, removable action, and theme-driven
+      rounding.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>People</h3>
+    <div class="chip-grid">
+      @for (person of people; track person.name) {
+        <gog-chip [avatarUrl]="person.avatarUrl" [ariaLabel]="person.name" (gogClick)="onChipClick(person.name)">
+          {{ person.name }}
+        </gog-chip>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Active filters</h3>
+    <div class="chip-grid">
+      @for (filter of filters(); track filter) {
+        <gog-chip [removable]="true" [removeAriaLabel]="'Remove filter ' + filter" (gogClick)="onChipClick(filter)" (gogRemove)="removeFilter(filter)">
+          {{ filter }}
+        </gog-chip>
+      }
+    </div>
+    <p class="meta">{{ lastAction() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Sizes &amp; shapes</h3>
+    <div class="chip-grid">
+      <gog-chip size="sm">Small</gog-chip>
+      <gog-chip size="md">Medium</gog-chip>
+      <gog-chip size="lg" shape="pill">Large pill</gog-chip>
+      <gog-chip iconName="info">With icon</gog-chip>
+    </div>
+  </article>
+</section>

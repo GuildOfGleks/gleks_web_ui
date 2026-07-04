@@ -24,6 +24,7 @@ export class App {
     { path: 'buttons', label: 'Button' },
     { path: 'checkbox', label: 'Checkbox' },
     { path: 'inputfield', label: 'Inputfield' },
+    { path: 'chip', label: 'Chip' },
     { path: 'select', label: 'Select' },
     { path: 'multiselect', label: 'Multiselect' },
     { path: 'table', label: 'Table' },

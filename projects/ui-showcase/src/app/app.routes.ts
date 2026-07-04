@@ -19,6 +19,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/inputfield-page/inputfield-page').then((m) => m.InputfieldPage),
   },
   {
+    path: 'chip',
+    loadComponent: () => import('./pages/chip-page/chip-page').then((m) => m.ChipPage),
+  },
+  {
     path: 'select',
     loadComponent: () => import('./pages/select-page/select-page').then((m) => m.SelectPage),
   },

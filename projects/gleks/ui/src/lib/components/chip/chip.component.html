@@ -1,0 +1,33 @@
+<div
+  class="gog-chip__surface"
+  [attr.aria-label]="ariaLabel() || null"
+  [attr.aria-disabled]="disabled() ? 'true' : null"
+  [attr.role]="isInteractive() ? 'button' : null"
+  [attr.tabindex]="isInteractive() ? 0 : null"
+  (click)="onChipClick($event)"
+  (keydown)="onKeydown($event)"
+>
+  @if (avatarUrl()) {
+    <img class="gog-chip__avatar" [src]="avatarUrl()" [alt]="avatarAlt()" />
+  }
+
+  @if (iconName()) {
+    <gog-icon class="gog-chip__icon" [ariaHidden]="true" [name]="iconName() ?? 'check'" />
+  }
+
+  <span class="gog-chip__content">
+    <ng-content></ng-content>
+  </span>
+
+  @if (removable()) {
+    <button
+      class="gog-chip__remove"
+      type="button"
+      [attr.aria-label]="removeAriaLabel()"
+      [disabled]="disabled()"
+      (click)="onRemoveClick($event)"
+    >
+      <gog-icon name="close" />
+    </button>
+  }
+</div>

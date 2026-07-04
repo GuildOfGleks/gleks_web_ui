@@ -12,6 +12,7 @@ export * from './lib/components/icon/icon.component';
 export * from './lib/components/toast/toast.component';
 export * from './lib/components/toast/toast-container/toast-container.component';
 export * from './lib/components/inputfield/inputfield.component';
+export * from './lib/components/chip/chip.component';
 export * from './lib/components/tag/tag.component';
 export * from './lib/components/select/select.component';
 export * from './lib/components/multiselect/multiselect.component';

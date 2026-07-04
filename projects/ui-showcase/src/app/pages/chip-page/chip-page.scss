@@ -1,0 +1,7 @@
+@use '../detail' as *;
+
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
