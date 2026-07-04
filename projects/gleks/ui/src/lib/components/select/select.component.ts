@@ -41,15 +41,15 @@ export interface GogSelectOption {
       role="listbox"
     >
       @for (option of options; track option.id) {
-        <div
+        <button
+          type="button"
           class="gog-select__option font-body"
           role="option"
           [attr.aria-selected]="isSelected(option.id)"
           [attr.aria-disabled]="option.disabled ?? false"
           [class.gog-select__option--selected]="isSelected(option.id)"
           [class.gog-select__option--disabled]="option.disabled ?? false"
-          (mousedown)="onSelect(option, $event)"
-          (click)="$event.stopPropagation()"
+          (click)="onSelect(option, $event)"
         >
           <span class="gog-select__option-mark" aria-hidden="true">
             @if (isSelected(option.id)) {
@@ -57,7 +57,7 @@ export interface GogSelectOption {
             }
           </span>
           <span class="gog-select__option-label">{{ option.name }}</span>
-        </div>
+        </button>
       }
     </div>
   `,

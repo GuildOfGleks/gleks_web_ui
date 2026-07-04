@@ -31,8 +31,8 @@ describe('MultiselectComponent', () => {
     trigger.click();
     fixture.detectChanges();
 
-    const option = fixture.nativeElement.querySelector('.gog-ms__option') as HTMLElement;
-    option.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    const option = fixture.nativeElement.querySelector('.gog-ms__option') as HTMLButtonElement;
+    option.click();
     fixture.detectChanges();
 
     expect(component.value()).toEqual(['a']);

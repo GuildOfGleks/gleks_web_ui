@@ -59,13 +59,13 @@
         </div>
       }
       @for (option of options(); track option.id) {
-        <div
+        <button
+          type="button"
           class="gog-ms__option font-body"
           role="option"
           [attr.aria-selected]="isSelected(option.id)"
           [class.gog-ms__option--selected]="isSelected(option.id)"
-          (mousedown)="toggleOption(option, $event)"
-          (click)="$event.stopPropagation()"
+          (click)="toggleOption(option, $event)"
         >
           <span class="gog-ms__checkbox" [class.gog-ms__checkbox--checked]="isSelected(option.id)">
             @if (isSelected(option.id)) {
@@ -81,7 +81,7 @@
             }
           </span>
           {{ option.name }}
-        </div>
+        </button>
       }
     </div>
   }

@@ -14,7 +14,7 @@ import {
   TemplateRef,
   signal,
   createComponent,
-} from '@angular/core';
+} from '@angular/core'; 
 import { ButtonComponent } from '../button/button.component';
 import { isPlatformBrowser } from '@angular/common';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
@@ -49,13 +49,13 @@ export interface GogMultiselectOption {
         </div>
       }
       @for (option of options; track option.id) {
-        <div
+        <button
+          type="button"
           class="gog-ms__option font-body"
           role="option"
           [attr.aria-selected]="isSelected(option.id)"
           [class.gog-ms__option--selected]="isSelected(option.id)"
-          (mousedown)="onToggle(option, $event)"
-          (click)="$event.stopPropagation()"
+          (click)="onToggle(option, $event)"
         >
           <span class="gog-ms__checkbox" [class.gog-ms__checkbox--checked]="isSelected(option.id)">
             @if (isSelected(option.id)) {
@@ -63,7 +63,7 @@ export interface GogMultiselectOption {
             }
           </span>
           {{ option.name }}
-        </div>
+        </button>
       }
     </div>
   `,

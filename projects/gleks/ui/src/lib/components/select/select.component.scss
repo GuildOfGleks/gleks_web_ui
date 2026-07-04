@@ -131,10 +131,15 @@
 }
 
 .gog-select__option {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
   color: var(--text-color);
   cursor: pointer;
   transition: background-color 0.12s ease;
@@ -151,6 +156,11 @@
 .gog-select__option--disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.gog-select__option:focus-visible {
+  outline: 3px solid var(--gog-select-focus-border);
+  outline-offset: -3px;
 }
 
 .gog-select__option-mark {

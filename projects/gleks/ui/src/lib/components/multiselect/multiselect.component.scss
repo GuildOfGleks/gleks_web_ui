@@ -171,10 +171,15 @@
 }
 
 .gog-ms__option {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
   font-size: var(--text-sm);
   cursor: pointer;
   transition: background-color 0.12s ease;
@@ -187,6 +192,11 @@
 
 .gog-ms__option--selected {
   color: var(--gog-ms-border-color);
+}
+
+.gog-ms__option:focus-visible {
+  outline: 3px solid var(--gog-ms-focus-ring);
+  outline-offset: -3px;
 }
 
 .gog-ms__checkbox {

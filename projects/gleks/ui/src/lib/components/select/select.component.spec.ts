@@ -33,8 +33,8 @@ describe('SelectComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const option = fixture.nativeElement.querySelector('.gog-select__option') as HTMLElement;
-    option.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+    const option = fixture.nativeElement.querySelector('.gog-select__option') as HTMLButtonElement;
+    option.click();
     fixture.detectChanges();
     await fixture.whenStable();
 
