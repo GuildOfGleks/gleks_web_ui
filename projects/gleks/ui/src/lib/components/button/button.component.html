@@ -1,9 +1,9 @@
 <button
   (click)="onClick($event)"
-  [attr.disabled]="isDisabled() ? true : null"
-  [class.gog-cursor-not-allowed]="isDisabled()"
-  [class.gog-cursor-pointer]="!isDisabled()"
-  [class.gog-cursor-wait]="loading()"
+  [attr.aria-busy]="loading() ? 'true' : null"
+  [attr.aria-disabled]="isDisabled() && !isNativeDisabled() ? 'true' : null"
+  [attr.aria-label]="ariaLabel()"
+  [attr.disabled]="isNativeDisabled() ? true : null"
   [class.gog-btn--ghost]="variant() === 'ghost'"
   [class.gog-btn--lg]="size() === 'lg'"
   [class.gog-btn--loading]="loading()"
@@ -12,6 +12,9 @@
   [class.gog-btn--primary]="variant() === 'primary'"
   [class.gog-btn--secondary]="variant() === 'secondary'"
   [class.gog-btn--sm]="size() === 'sm'"
+  [class.gog-cursor-not-allowed]="isDisabled()"
+  [class.gog-cursor-pointer]="!isDisabled()"
+  [class.gog-cursor-wait]="loading()"
   [type]="type()"
   class="gog-btn gog-inline-center gog-contained-layout fw-black font-heading"
 >

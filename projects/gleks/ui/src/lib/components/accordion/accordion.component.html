@@ -1,8 +1,8 @@
 <div
-  class="gog-accordion gog-contained-layout"
+  [class.gog-accordion--loading]="loading()"
   [class.gog-accordion--md]="size() === 'md'"
   [class.gog-accordion--sm]="size() === 'sm'"
-  [class.gog-accordion--loading]="loading()"
+  class="gog-accordion gog-contained-layout"
 >
   @if (loading()) {
     @for (item of items(); track item.id) {
@@ -14,55 +14,71 @@
     }
   } @else {
     @for (item of items(); track item.id) {
-      <div class="gog-accordion__item" [class.gog-accordion__item--open]="isOpen(item.id)">
-        <button
-          [id]="'gog-acc-btn-' + item.id"
-          class="gog-accordion__header font-heading"
-          [class.gog-accordion__header--chevronless]="!showChevron()"
-          [class.gog-accordion__header--open]="isOpen(item.id)"
-          [attr.aria-expanded]="isOpen(item.id)"
-          [attr.aria-controls]="'gog-acc-body-' + item.id"
-          (click)="toggle(item)"
-          (keydown)="onHeaderKeydown($event, $index)"
-          type="button"
-        >
-          <span class="gog-accordion__header-content">
-            @if (headerTpl(); as tpl) {
-              <ng-container
-                *ngTemplateOutlet="tpl.templateRef; context: { $implicit: item, open: isOpen(item.id) }"
-              />
-            } @else {
-              <span class="gog-accordion__title">{{ item.title }}</span>
-            }
-          </span>
-          @if (showChevron()) {
-            <span class="gog-accordion__chevron" aria-hidden="true">
-              @if (chevronTpl(); as tpl) {
+      <div
+        class="gog-accordion__item"
+        [class.gog-accordion__item--open]="isOpen(item.id)"
+        [class.gog-accordion__item--disabled]="item.disabled"
+      >
+        <ng-template #headerButton>
+          <button
+            [id]="uid + '-btn-' + item.id"
+            class="gog-accordion__header font-heading"
+            [class.gog-accordion__header--chevronless]="!showChevron()"
+            [class.gog-accordion__header--open]="isOpen(item.id)"
+            [attr.aria-expanded]="isOpen(item.id)"
+            [attr.aria-controls]="uid + '-body-' + item.id"
+            [attr.aria-disabled]="item.disabled ? 'true' : null"
+            [disabled]="item.disabled || null"
+            (click)="toggle(item)"
+            (keydown)="onHeaderKeydown($event)"
+            type="button"
+          >
+            <span class="gog-accordion__header-content">
+              @if (headerTpl(); as tpl) {
                 <ng-container
                   *ngTemplateOutlet="tpl.templateRef; context: { $implicit: item, open: isOpen(item.id) }"
                 />
               } @else {
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
+                <span class="gog-accordion__title">{{ item.title }}</span>
               }
             </span>
-          }
-        </button>
+            @if (showChevron()) {
+              <span class="gog-accordion__chevron" aria-hidden="true">
+                @if (chevronTpl(); as tpl) {
+                  <ng-container
+                    *ngTemplateOutlet="tpl.templateRef; context: { $implicit: item, open: isOpen(item.id) }"
+                  />
+                } @else {
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                }
+              </span>
+            }
+          </button>
+        </ng-template>
+
+        @if (headingLevel(); as level) {
+          <div role="heading" [attr.aria-level]="level" class="gog-accordion__heading">
+            <ng-container [ngTemplateOutlet]="headerButton" />
+          </div>
+        } @else {
+          <ng-container [ngTemplateOutlet]="headerButton" />
+        }
 
         <div
-          [id]="'gog-acc-body-' + item.id"
+          [id]="uid + '-body-' + item.id"
           class="gog-accordion__body font-body"
           [class.gog-accordion__body--open]="isOpen(item.id)"
           role="region"
-          [attr.aria-labelledby]="'gog-acc-btn-' + item.id"
+          [attr.aria-labelledby]="uid + '-btn-' + item.id"
           [attr.aria-hidden]="!isOpen(item.id)"
           [attr.inert]="!isOpen(item.id) ? '' : null"
         >
