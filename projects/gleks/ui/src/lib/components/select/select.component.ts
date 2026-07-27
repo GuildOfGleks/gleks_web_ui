@@ -19,6 +19,8 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IconComponent } from '../icon/icon.component';
 import { resolveDropdownPlacement, type GogDropdownDirection } from '../../shared/dropdown-position';
+import { handleRovingFocusKeydown } from '../../shared/roving-focus';
+import { GogSize } from '../../shared/types';
 
 export interface GogSelectOption {
   id: string | number;
@@ -33,6 +35,8 @@ export interface GogSelectOption {
     <div
       [id]="listboxId"
       class="gog-select__dropdown gog-select__dropdown--portal"
+      [class.gog-select__dropdown--sm]="size === 'sm'"
+      [class.gog-select__dropdown--lg]="size === 'lg'"
       [style.top.px]="top"
       [style.left.px]="left"
       [style.width.px]="width"
@@ -50,6 +54,7 @@ export interface GogSelectOption {
           [class.gog-select__option--selected]="isSelected(option.id)"
           [class.gog-select__option--disabled]="option.disabled ?? false"
           (click)="onSelect(option, $event)"
+          (keydown)="onOptionKeydown($event)"
         >
           <span class="gog-select__option-mark" aria-hidden="true">
             @if (isSelected(option.id)) {
@@ -72,9 +77,11 @@ class GogSelectDropdownPortal {
   zIndex = 300;
   listboxId = '';
   direction: 'up' | 'down' = 'down';
+  size: GogSize = 'md';
   options: GogSelectOption[] = [];
   selectedValue: string | number | null = null;
   onSelect: (option: GogSelectOption, event: MouseEvent) => void = () => {};
+  onOptionKeydown: (event: KeyboardEvent) => void = () => {};
 
   isSelected(id: string | number): boolean {
     return this.selectedValue === id;
@@ -112,6 +119,7 @@ export class SelectComponent implements ControlValueAccessor {
   readonly placeholder = input('Select...');
   readonly options = input<GogSelectOption[]>([]);
   readonly errorMessage = input('');
+  readonly size = input<GogSize>('md');
   readonly dropdownDirection = input<GogDropdownDirection>('auto');
   readonly dropdownZIndex = input<number | null>(null);
   readonly appendToBody = input(false);
@@ -136,7 +144,12 @@ export class SelectComponent implements ControlValueAccessor {
   protected readonly selectedOption = computed(
     () => this.options().find((option) => String(option.id) === String(this.value())) ?? null,
   );
-  protected readonly hasError = computed(() => !!this.errorMessage() && this.value() === null);
+  /**
+   * Consumer-controlled: shown for as long as `errorMessage` is non-empty. The
+   * consumer decides when to clear it, rather than the field silently hiding it
+   * once something is selected.
+   */
+  protected readonly hasError = computed(() => !!this.errorMessage());
   protected readonly errorId = computed(() => (this.hasError() ? `${this.triggerId()}-error` : null));
 
   private portalHost: HTMLElement | null = null;
@@ -219,6 +232,40 @@ export class SelectComponent implements ControlValueAccessor {
     this.close();
   }
 
+  /** Jumps from the trigger into the option list on ArrowDown/ArrowUp while the dropdown is open. */
+  protected onTriggerArrowKeydown(event: Event): void {
+    if (!this.isOpen()) return;
+    event.preventDefault();
+
+    const options = this.enabledOptionElements();
+    if (options.length === 0) return;
+
+    const index = (event as KeyboardEvent).key === 'ArrowUp' ? options.length - 1 : 0;
+    options[index]?.focus();
+  }
+
+  protected onOptionKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.close();
+      this.focusTrigger();
+      return;
+    }
+
+    handleRovingFocusKeydown(event, this.enabledOptionElements());
+  }
+
+  private enabledOptionElements(): HTMLButtonElement[] {
+    const scope = this.appendToBody() && this.portalHost ? this.portalHost : (this.elRef.nativeElement as HTMLElement);
+    return Array.from(
+      scope.querySelectorAll<HTMLButtonElement>('.gog-select__option:not([aria-disabled="true"])'),
+    );
+  }
+
+  private focusTrigger(): void {
+    (this.elRef.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.gog-select__control')?.focus();
+  }
+
   private openDropdown(): void {
     this.onTouched();
     if (this.appendToBody()) {
@@ -264,7 +311,9 @@ export class SelectComponent implements ControlValueAccessor {
     inst.selectedValue = this.value();
     inst.listboxId = this.listboxId();
     inst.zIndex = this.dropdownZIndex() ?? 300;
+    inst.size = this.size();
     inst.onSelect = (option, event) => this.selectOption(option, event);
+    inst.onOptionKeydown = (event) => this.onOptionKeydown(event);
 
     this.updatePortalPosition();
     this.appRef.attachView(this.portalRef.hostView);

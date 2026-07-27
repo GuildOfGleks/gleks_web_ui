@@ -64,7 +64,12 @@ export class InputfieldComponent implements ControlValueAccessor {
   protected readonly effectiveAutocomplete = computed(
    () => this.autocomplete() || (this.type() === 'password' ? 'current-password' : 'off'),
   );
-  protected readonly hasError = computed(() => !!this.errorMessage() && !this.value());
+  /**
+   * Consumer-controlled: shown for as long as `errorMessage` is non-empty. The
+   * consumer decides when to clear it (e.g. `errorMessage="control.invalid && control.touched ? 'msg' : ''"`)
+   * rather than the field silently hiding it once something is typed.
+   */
+  protected readonly hasError = computed(() => !!this.errorMessage());
   protected readonly hasIconStart = computed(() => !!this.iconStartTemplate() || !!this.iconStart());
   protected readonly hasIconEnd = computed(() => !!this.iconEndTemplate() || !!this.iconEnd());
   protected readonly hasIconStartAction = computed(() => !!this.iconStartFn());

@@ -46,6 +46,13 @@ export class App {
     { path: 'dialog', label: 'Dialog' },
   ];
 
+  protected readonly pageLinks: ShowcaseNavLink[] = [
+    { path: 'dashboard', label: 'Dashboard' },
+    { path: 'settings', label: 'Settings' },
+    { path: 'catalog', label: 'Catalog' },
+    { path: 'onboarding', label: 'Onboarding' },
+  ];
+
   protected isActiveTheme(theme: ShowcaseThemeName): boolean {
     return this.activeTheme() === theme;
   }

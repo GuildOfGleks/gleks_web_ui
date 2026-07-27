@@ -1,1 +1,5 @@
 @use '../detail' as *;
+
+.field-grid > gog-select {
+  flex: 1 1 220px;
+}

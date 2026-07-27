@@ -21,10 +21,13 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IconComponent } from '../icon/icon.component';
 import { resolveDropdownPlacement, type GogDropdownDirection } from '../../shared/dropdown-position';
+import { handleRovingFocusKeydown } from '../../shared/roving-focus';
+import { GogSize } from '../../shared/types';
 
 export interface GogMultiselectOption {
   id: string | number;
   name: string;
+  disabled?: boolean;
 }
 
 @Component({
@@ -34,6 +37,8 @@ export interface GogMultiselectOption {
     <div
       [id]="listboxId"
       class="gog-ms__dropdown gog-ms__dropdown--portal"
+      [class.gog-ms__dropdown--sm]="size === 'sm'"
+      [class.gog-ms__dropdown--lg]="size === 'lg'"
       [style.top.px]="top"
       [style.left.px]="left"
       [style.width.px]="width"
@@ -55,8 +60,11 @@ export interface GogMultiselectOption {
             class="gog-ms__option font-body"
             role="option"
             [attr.aria-selected]="isSelected(option.id)"
+            [attr.aria-disabled]="option.disabled ?? false"
             [class.gog-ms__option--selected]="isSelected(option.id)"
+            [class.gog-ms__option--disabled]="option.disabled ?? false"
             (click)="onToggle(option, $event)"
+            (keydown)="onOptionKeydown($event)"
           >
           <span class="gog-ms__option-mark" aria-hidden="true">
             <svg viewBox="0 0 16 16" fill="none" focusable="false" aria-hidden="true">
@@ -90,7 +98,7 @@ export interface GogMultiselectOption {
   styleUrl: './multiselect.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GogMultiselectDropdownPortal {
+class GogMultiselectDropdownPortal {
   top = 0;
   left = 0;
   width = 200;
@@ -98,12 +106,14 @@ export class GogMultiselectDropdownPortal {
   zIndex = 9999;
   listboxId = '';
   direction: 'up' | 'down' = 'down';
+  size: GogSize = 'md';
   options: GogMultiselectOption[] = [];
   selectedIds: (string | number)[] = [];
   showControls = false;
   onToggle: (o: GogMultiselectOption, e: MouseEvent) => void = () => {};
   onSelectAll: (e: MouseEvent) => void = () => {};
   onClearAll: (e: MouseEvent) => void = () => {};
+  onOptionKeydown: (event: KeyboardEvent) => void = () => {};
 
   isSelected(id: string | number): boolean {
     return this.selectedIds.includes(id);
@@ -130,6 +140,7 @@ export class MultiselectComponent implements ControlValueAccessor {
   readonly placeholder = input('Select...');
   readonly options = input<GogMultiselectOption[]>([]);
   readonly errorMessage = input('');
+  readonly size = input<GogSize>('md');
   readonly showControls = input(false);
   readonly dropdownDirection = input<GogDropdownDirection>('auto');
   readonly dropdownZIndex = input<number | null>(null);
@@ -162,7 +173,10 @@ export class MultiselectComponent implements ControlValueAccessor {
     if (this.ngControl) {
       return this._touched() && this.formStatus() === 'INVALID';
     }
-    return !!this.errorMessage() && this.value().length === 0;
+    // Consumer-controlled: shown for as long as `errorMessage` is non-empty. The
+    // consumer decides when to clear it, rather than the field silently hiding it
+    // once something is selected.
+    return !!this.errorMessage();
   });
 
   protected readonly visibleError = computed(() => (this.hasError() ? this.errorMessage() : ''));
@@ -237,6 +251,7 @@ export class MultiselectComponent implements ControlValueAccessor {
 
   protected toggleOption(option: GogMultiselectOption, e: MouseEvent): void {
     e.stopPropagation();
+    if (option.disabled) return;
     this.applyToggle(option.id);
     if (this.appendToBody() && this.portalRef) {
       this.portalRef.instance.selectedIds = [...this.value()];
@@ -255,7 +270,9 @@ export class MultiselectComponent implements ControlValueAccessor {
 
   protected selectAll(e: MouseEvent): void {
     e.stopPropagation();
-    const all = this.options().map((o) => o.id);
+    const all = this.options()
+      .filter((o) => !o.disabled)
+      .map((o) => o.id);
     this.value.set(all);
     this._onChange(all);
     this._onTouched();
@@ -290,6 +307,40 @@ export class MultiselectComponent implements ControlValueAccessor {
     if (!this.isOpen()) return;
     this.isOpen.set(false);
     if (this.appendToBody()) this.destroyPortal();
+  }
+
+  /** Jumps from the trigger into the option list on ArrowDown/ArrowUp while the dropdown is open. */
+  protected onTriggerArrowKeydown(event: Event): void {
+    if (!this.isOpen()) return;
+    event.preventDefault();
+
+    const options = this.enabledOptionElements();
+    if (options.length === 0) return;
+
+    const index = (event as KeyboardEvent).key === 'ArrowUp' ? options.length - 1 : 0;
+    options[index]?.focus();
+  }
+
+  protected onOptionKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.close();
+      this.focusTrigger();
+      return;
+    }
+
+    handleRovingFocusKeydown(event, this.enabledOptionElements());
+  }
+
+  private enabledOptionElements(): HTMLButtonElement[] {
+    const scope = this.appendToBody() && this.portalHost ? this.portalHost : (this.elRef.nativeElement as HTMLElement);
+    return Array.from(
+      scope.querySelectorAll<HTMLButtonElement>('.gog-ms__option:not([aria-disabled="true"])'),
+    );
+  }
+
+  private focusTrigger(): void {
+    (this.elRef.nativeElement as HTMLElement).querySelector<HTMLElement>('.gog-ms')?.focus();
   }
 
   private estimatePanelHeight(): number {
@@ -358,9 +409,11 @@ export class MultiselectComponent implements ControlValueAccessor {
     inst.zIndex = this.dropdownZIndex() ?? 9999;
     inst.direction = this.dropdownDirectionState();
     inst.maxHeight = this.estimatePanelHeight();
+    inst.size = this.size();
     inst.onToggle = (o, e) => this.toggleOption(o, e);
     inst.onSelectAll = (e) => this.selectAll(e);
     inst.onClearAll = (e) => this.clearAll(e);
+    inst.onOptionKeydown = (event) => this.onOptionKeydown(event);
 
     this.updatePortalPosition();
     this.appRef.attachView(this.portalRef.hostView);

@@ -1,0 +1,56 @@
+<section class="settings">
+  <header class="settings__header card">
+    <p class="eyebrow">Full page example</p>
+    <h2>Account settings</h2>
+    <p class="lead">
+      A realistic settings form: `gog-accordion` groups the sections, each field validates
+      independently via consumer-computed `errorMessage`s, and saving shows a `gog-button` loading
+      state followed by a `gog-toast`.
+    </p>
+  </header>
+
+  <div class="card">
+    <gog-accordion [items]="sections" [multi]="true" [expandFirst]="true" size="md">
+      <ng-template gogAccordionContent let-item>
+        @switch (item.id) {
+          @case ('profile') {
+            <div class="settings__grid">
+              <gog-inputfield label="Full name" [errorMessage]="nameError()" [(value)]="name" />
+              <gog-inputfield label="Email" type="email" [errorMessage]="emailError()" [(value)]="email" />
+            </div>
+            <gog-checkbox label="Make my profile public" [(checked)]="publicProfile" />
+          }
+          @case ('preferences') {
+            <div class="settings__grid">
+              <gog-select label="Theme" [options]="themeOptions" [(value)]="theme" />
+              <gog-slider label="Notification volume" [min]="0" [max]="100" [step]="5" [(value)]="notificationVolume" />
+            </div>
+            <gog-checkbox label="Enable beta features" [(checked)]="betaFeatures" />
+          }
+          @case ('keywords') {
+            <p class="meta">Posts containing these words are hidden from your feed.</p>
+            <div class="settings__keyword-input">
+              <gog-inputfield placeholder="Add a keyword..." [(value)]="newKeyword" />
+              <gog-button variant="outline" type="button" (gogClick)="addKeyword()">Add</gog-button>
+            </div>
+            <div class="settings__chips">
+              @for (keyword of mutedKeywords(); track keyword) {
+                <gog-chip [removable]="true" [removeAriaLabel]="'Remove ' + keyword" (gogRemove)="removeKeyword(keyword)">
+                  {{ keyword }}
+                </gog-chip>
+              }
+            </div>
+          }
+        }
+      </ng-template>
+    </gog-accordion>
+  </div>
+
+  <div class="action-row">
+    <gog-button variant="primary" type="button" [loading]="saving()" [disabled]="!isValid()" (gogClick)="save()">
+      Save changes
+    </gog-button>
+  </div>
+</section>
+
+<gog-toast-container />

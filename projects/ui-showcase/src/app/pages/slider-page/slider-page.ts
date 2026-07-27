@@ -18,6 +18,11 @@ export class SliderPage {
       `Volume is ${this.volume()}, brightness is ${this.brightness()}, and precision is ${this.precision()}.`,
   );
 
+  protected readonly budget = signal(80);
+  protected readonly budgetError = computed(() =>
+    this.budget() > 70 ? 'Over the recommended budget for this tier.' : '',
+  );
+
   protected reset(): void {
     this.volume.set(45);
     this.brightness.set(70);

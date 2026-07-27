@@ -24,8 +24,20 @@ describe('TagComponent', () => {
     fixture.detectChanges();
 
     const host = fixture.nativeElement as HTMLElement;
+    expect(host.classList.contains('gog-tag')).toBe(true);
     expect(host.classList.contains('gog-tag--info')).toBe(true);
+    expect(host.classList.contains('gog-tag--md')).toBe(true);
     expect(host.classList.contains('gog-tag--rounded')).toBe(true);
+    expect(host.classList.contains('gog-tag--has-icon')).toBe(false);
+  });
+
+  it('should add the has-icon class only when an icon name or template is set', () => {
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).classList.contains('gog-tag--has-icon')).toBe(false);
+
+    fixture.componentRef.setInput('iconName', 'check');
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).classList.contains('gog-tag--has-icon')).toBe(true);
   });
 
   it('should map semantic variants to the matching classes', () => {

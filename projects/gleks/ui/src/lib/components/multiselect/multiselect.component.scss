@@ -21,12 +21,27 @@
   --gog-ms-checkbox-checked-bg: var(--accent-color);
   --gog-ms-checkbox-checked-color: var(--primary-color);
   --gog-ms-disabled-opacity: 0.4;
+  --gog-ms-padding-y: var(--control-padding-y, 10px);
+  --gog-ms-padding-x: var(--control-padding-x, 14px);
+  --gog-ms-font-size: var(--text-md);
 
   display: flex;
   flex-direction: column;
   gap: var(--gog-ms-gap);
   position: relative;
   width: 100%;
+}
+
+.gog-ms-wrapper--sm {
+  --gog-ms-padding-y: 6px;
+  --gog-ms-padding-x: 10px;
+  --gog-ms-font-size: var(--text-sm);
+}
+
+.gog-ms-wrapper--lg {
+  --gog-ms-padding-y: 14px;
+  --gog-ms-padding-x: 18px;
+  --gog-ms-font-size: var(--text-lg);
 }
 
 .gog-ms__label {
@@ -38,9 +53,6 @@
 }
 
 .gog-ms {
-  --gog-ms-padding-y: var(--control-padding-y, 10px);
-  --gog-ms-padding-x: var(--control-padding-x, 14px);
-
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -86,7 +98,7 @@
 }
 
 .gog-ms__value {
-  font-size: var(--text-md);
+  font-size: var(--gog-ms-font-size);
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -170,11 +182,27 @@
 }
 
 .gog-ms__dropdown--portal {
+  /* The portal is appended straight to <body>, outside .gog-ms-wrapper's DOM subtree,
+     so it can't inherit these from the trigger — redeclare with the same defaults
+     and let --sm/--lg below override them, same as the .gog-ms-wrapper modifiers do. */
+  --gog-ms-padding-x: var(--control-padding-x, 14px);
+  --gog-ms-font-size: var(--text-md);
+
   position: fixed;
   top: unset;
   bottom: unset;
   left: unset;
   right: unset;
+}
+
+.gog-ms__dropdown--portal.gog-ms__dropdown--sm {
+  --gog-ms-padding-x: 10px;
+  --gog-ms-font-size: var(--text-sm);
+}
+
+.gog-ms__dropdown--portal.gog-ms__dropdown--lg {
+  --gog-ms-padding-x: 18px;
+  --gog-ms-font-size: var(--text-lg);
 }
 
 .gog-ms__controls {
@@ -202,11 +230,16 @@
   background: transparent;
   text-align: left;
   font: inherit;
-  font-size: var(--text-md);
+  font-size: var(--gog-ms-font-size);
   cursor: pointer;
   border-radius: calc(var(--radius) - 2px);
   transition: background-color 0.12s ease;
   color: var(--text-color);
+}
+
+.gog-ms__option--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .gog-ms__option:hover {

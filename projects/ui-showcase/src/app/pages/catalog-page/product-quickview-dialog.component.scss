@@ -1,0 +1,27 @@
+.quickview {
+  display: grid;
+  gap: 10px;
+}
+
+.quickview__category {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  color: var(--muted-text-color);
+}
+
+.quickview__description {
+  margin: 0;
+  color: var(--muted-text-color);
+}
+
+.quickview__price {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+}
+
+.quickview__actions {
+  margin-top: 8px;
+}

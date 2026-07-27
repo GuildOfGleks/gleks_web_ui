@@ -68,6 +68,59 @@ describe('ChipComponent', () => {
     expect(getComputedStyle(removeButton).cursor).toBe('pointer');
   });
 
+  it('should emit gogClick on Enter and Space, but not other keys', () => {
+    const emitSpy = vi.fn();
+    component.gogClick.subscribe(emitSpy);
+    fixture.detectChanges();
+
+    const surface = fixture.nativeElement.querySelector('.gog-chip__surface') as HTMLElement;
+    surface.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    surface.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+    surface.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
+
+    expect(emitSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('should not emit gogClick when disabled, from click or keyboard', () => {
+    const emitSpy = vi.fn();
+    component.gogClick.subscribe(emitSpy);
+    fixture.componentRef.setInput('disabled', true);
+    fixture.detectChanges();
+
+    const surface = fixture.nativeElement.querySelector('.gog-chip__surface') as HTMLElement;
+    surface.click();
+    surface.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+
+    expect(emitSpy).not.toHaveBeenCalled();
+    expect(surface.getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('should emit gogRemove without also emitting gogClick, and stop the click bubbling', () => {
+    const clickSpy = vi.fn();
+    const removeSpy = vi.fn();
+    component.gogClick.subscribe(clickSpy);
+    component.gogRemove.subscribe(removeSpy);
+    fixture.componentRef.setInput('removable', true);
+    fixture.detectChanges();
+
+    const removeButton = fixture.nativeElement.querySelector('.gog-chip__remove') as HTMLButtonElement;
+    removeButton.click();
+
+    expect(removeSpy).toHaveBeenCalledTimes(1);
+    expect(clickSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not emit gogRemove when disabled', () => {
+    const removeSpy = vi.fn();
+    component.gogRemove.subscribe(removeSpy);
+    fixture.componentRef.setInput('removable', true);
+    fixture.componentRef.setInput('disabled', true);
+    fixture.detectChanges();
+
+    const removeButton = fixture.nativeElement.querySelector('.gog-chip__remove') as HTMLButtonElement;
+    expect(removeButton.disabled).toBe(true);
+  });
+
   it('should support pill shape', () => {
     fixture.componentRef.setInput('shape', 'pill');
     fixture.detectChanges();

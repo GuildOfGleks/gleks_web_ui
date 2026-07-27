@@ -1,4 +1,8 @@
-<div class="gog-ms-wrapper gog-contained-layout">
+<div
+  class="gog-ms-wrapper gog-contained-layout"
+  [class.gog-ms-wrapper--sm]="size() === 'sm'"
+  [class.gog-ms-wrapper--lg]="size() === 'lg'"
+>
   @if (label()) {
     <label class="gog-ms__label font-heading">{{ label() }}</label>
   }
@@ -6,7 +10,7 @@
   <div
     class="gog-ms"
     role="combobox"
-    tabindex="0"
+    [attr.tabindex]="isDisabled() ? -1 : 0"
     [attr.aria-expanded]="isOpen()"
     aria-haspopup="listbox"
     [attr.aria-controls]="'gog-ms-listbox-' + instanceId"
@@ -16,9 +20,11 @@
     [class.gog-ms--disabled]="isDisabled()"
     [class.gog-ms--error]="hasError()"
     (click)="toggle()"
-    (keydown.enter)="toggle()"
+    (keydown.enter)="toggle(); $event.preventDefault()"
     (keydown.space)="toggle(); $event.preventDefault()"
     (keydown.escape)="close()"
+    (keydown.arrowdown)="onTriggerArrowKeydown($event)"
+    (keydown.arrowup)="onTriggerArrowKeydown($event)"
   >
     <span class="gog-ms__value font-body" [class.gog-ms__value--placeholder]="!selectedNames()">
       {{ selectedNames() || placeholder() }}
@@ -27,7 +33,6 @@
     <span class="gog-ms__actions">
       @if (selectedNames()) {
         <button
-          type="button"
           type="button"
           class="gog-ms__clear gog-inline-center"
           (click)="clearTrigger($event)"
@@ -65,8 +70,11 @@
             class="gog-ms__option font-body"
             role="option"
             [attr.aria-selected]="isSelected(option.id)"
+            [attr.aria-disabled]="option.disabled ?? false"
             [class.gog-ms__option--selected]="isSelected(option.id)"
+            [class.gog-ms__option--disabled]="option.disabled ?? false"
             (click)="toggleOption(option, $event)"
+            (keydown)="onOptionKeydown($event)"
           >
             <span class="gog-ms__option-mark" aria-hidden="true">
               <svg viewBox="0 0 16 16" fill="none" focusable="false" aria-hidden="true">

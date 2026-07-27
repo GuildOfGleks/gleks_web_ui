@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { GogSize } from '../../shared/types';
+import { handleRovingFocusKeydown } from '../../shared/roving-focus';
 
 export interface GogAccordionItem {
   id: string | number;
@@ -151,11 +152,6 @@ export class AccordionComponent {
   }
 
   protected onHeaderKeydown(event: KeyboardEvent): void {
-    const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End'];
-    if (!keys.includes(event.key)) {
-      return;
-    }
-
     const host = this.host.nativeElement as HTMLElement;
     // Disabled headers are excluded so arrow/Home/End navigation skips over them,
     // matching the WAI-ARIA expectation that non-interactive controls aren't focus stops.
@@ -163,28 +159,6 @@ export class AccordionComponent {
       host.querySelectorAll('.gog-accordion__header:not([disabled])'),
     ) as HTMLButtonElement[];
 
-    if (headers.length === 0) {
-      return;
-    }
-
-    const current = event.currentTarget as HTMLButtonElement;
-    const index = headers.indexOf(current);
-    if (index === -1) {
-      return;
-    }
-
-    event.preventDefault();
-
-    const lastIndex = headers.length - 1;
-    const nextIndex =
-      event.key === 'Home'
-        ? 0
-        : event.key === 'End'
-          ? lastIndex
-          : event.key === 'ArrowDown'
-            ? (index + 1) % headers.length
-            : (index - 1 + headers.length) % headers.length;
-
-    headers[nextIndex]?.focus();
+    handleRovingFocusKeydown(event, headers);
   }
 }

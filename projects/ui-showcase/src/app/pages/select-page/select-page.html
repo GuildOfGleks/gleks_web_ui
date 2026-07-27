@@ -3,8 +3,10 @@
     <p class="eyebrow">gog-select</p>
     <h2>Select</h2>
     <p class="lead">
-      A dropdown select with label, chevron icon slot, error state, placement control, and
-      `ControlValueAccessor` support.
+      A dropdown select with label, chevron icon slot, error state, size variants, disabled
+      options, placement control, a body-portaled panel, and `ControlValueAccessor` support. Once
+      open, Arrow Up/Down move between options, Home/End jump to the first/last, and Escape
+      closes.
     </p>
   </div>
 
@@ -20,5 +22,49 @@
       />
     </div>
     <p class="meta">Selected: {{ selectionSummary() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <div class="field-grid">
+      @for (size of sizes; track size) {
+        <gog-select [label]="'Size: ' + size" [size]="size" [options]="frameworks" [(value)]="sizeDemoValue" />
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>States</h3>
+    <div class="field-grid">
+      <gog-select label="Disabled" [options]="frameworks" [value]="'angular'" [disabled]="true" />
+
+      <gog-select label="Plan (one option disabled)" [options]="plansWithDisabled" [(value)]="plan" />
+
+      <gog-select
+        label="Required plan"
+        placeholder="Choose a plan..."
+        [options]="plansWithDisabled"
+        [errorMessage]="requiredError()"
+        [(value)]="requiredValue"
+      />
+    </div>
+    <div class="action-row">
+      <gog-checkbox label="Require a selection" [(checked)]="requireSelection" />
+    </div>
+    <p class="meta">
+      The error above is entirely computed by this page — `gog-select` just renders whatever
+      `errorMessage` it's given, for as long as it's non-empty.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Append to body</h3>
+    <p class="lead">
+      Useful inside scrollable or overflow-clipped containers — the panel escapes into
+      `document.body` instead of getting clipped.
+    </p>
+    <div class="field-grid">
+      <gog-select label="Region" [options]="regions" [appendToBody]="true" dropdownDirection="auto" [(value)]="region" />
+    </div>
   </article>
 </section>

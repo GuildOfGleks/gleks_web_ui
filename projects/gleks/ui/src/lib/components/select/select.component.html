@@ -2,6 +2,8 @@
   class="gog-select gog-contained-layout"
   [class.gog-select--disabled]="isDisabled()"
   [class.gog-select--open]="isOpen()"
+  [class.gog-select--sm]="size() === 'sm'"
+  [class.gog-select--lg]="size() === 'lg'"
 >
   @if (label()) {
     <label class="gog-select__label font-heading" [attr.for]="triggerId()">{{ label() }}</label>
@@ -23,6 +25,8 @@
       (keydown.enter)="toggle(); $event.preventDefault()"
       (keydown.space)="toggle(); $event.preventDefault()"
       (keydown.escape)="close()"
+      (keydown.arrowdown)="onTriggerArrowKeydown($event)"
+      (keydown.arrowup)="onTriggerArrowKeydown($event)"
     >
       <span class="gog-select__value" [class.gog-select__value--placeholder]="!selectedOption()">
         {{ selectedOption()?.name || placeholder() }}
@@ -52,6 +56,7 @@
             [class.gog-select__option--selected]="selectedOption()?.id === option.id"
             [class.gog-select__option--disabled]="option.disabled ?? false"
             (click)="selectOption(option, $event)"
+            (keydown)="onOptionKeydown($event)"
           >
             <span class="gog-select__option-mark" aria-hidden="true">
               @if (selectedOption()?.id === option.id) {

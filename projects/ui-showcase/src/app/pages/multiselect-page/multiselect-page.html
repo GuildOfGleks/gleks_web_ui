@@ -3,8 +3,9 @@
     <p class="eyebrow">gog-multiselect</p>
     <h2>Multiselect</h2>
     <p class="lead">
-      A checkbox-driven multiselect dropdown with select-all/clear controls, placement control,
-      and an optional body-portaled panel.
+      A checkbox-driven multiselect dropdown with select-all/clear controls, size variants,
+      disabled options, placement control, and an optional body-portaled panel. Once open, Arrow
+      Up/Down move between options, Home/End jump to the first/last, and Escape closes.
     </p>
   </div>
 
@@ -20,5 +21,56 @@
       />
     </div>
     <p class="meta">Selected features: {{ featureSummary() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <div class="field-grid">
+      @for (size of sizes; track size) {
+        <gog-multiselect [label]="'Size: ' + size" [size]="size" [options]="features" [(value)]="sizeDemoValue" />
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>States</h3>
+    <div class="field-grid">
+      <gog-multiselect label="Disabled" [options]="features" [value]="['toast']" [disabled]="true" />
+
+      <gog-multiselect label="Permissions (one disabled)" [options]="permissionsWithDisabled" [(value)]="permissions" />
+
+      <gog-multiselect
+        label="Required tags"
+        placeholder="Pick at least one..."
+        [options]="permissionsWithDisabled"
+        [errorMessage]="requiredError()"
+        [(value)]="requiredValue"
+      />
+    </div>
+    <div class="action-row">
+      <gog-checkbox label="Require a selection" [(checked)]="requireSelection" />
+    </div>
+    <p class="meta">
+      The error above is entirely computed by this page — `gog-multiselect` just renders whatever
+      `errorMessage` it's given, for as long as it's non-empty.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Append to body</h3>
+    <p class="lead">
+      Useful inside scrollable or overflow-clipped containers — the panel escapes into
+      `document.body` instead of getting clipped.
+    </p>
+    <div class="field-grid">
+      <gog-multiselect
+        label="Tags"
+        [options]="tags"
+        [showControls]="true"
+        [appendToBody]="true"
+        dropdownDirection="auto"
+        [(value)]="selectedTags"
+      />
+    </div>
   </article>
 </section>

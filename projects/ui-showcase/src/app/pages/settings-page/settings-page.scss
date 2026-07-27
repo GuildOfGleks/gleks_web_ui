@@ -1,0 +1,35 @@
+@use '../detail' as *;
+
+.settings {
+  display: grid;
+  gap: 20px;
+}
+
+.settings__header {
+  display: grid;
+  gap: 8px;
+}
+
+.settings__grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-bottom: 14px;
+}
+
+.settings__keyword-input {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  margin: 10px 0 14px;
+
+  gog-inputfield {
+    flex: 1 1 auto;
+  }
+}
+
+.settings__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

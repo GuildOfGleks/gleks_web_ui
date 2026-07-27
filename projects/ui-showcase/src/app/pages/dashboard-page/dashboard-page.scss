@@ -1,0 +1,48 @@
+@use '../detail' as *;
+
+.dash {
+  display: grid;
+  gap: 20px;
+}
+
+.dash__header {
+  display: grid;
+  gap: 8px;
+}
+
+.dash__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+
+  > * {
+    flex: 1 1 220px;
+  }
+}
+
+.dash__role {
+  text-transform: capitalize;
+}
+
+.dash__teams {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dash__team-chip {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-dim) 14%, transparent);
+  color: var(--muted-text-color);
+  font-size: 0.72rem;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.dash__row-action {
+  display: block;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  white-space: nowrap;
+}

@@ -26,7 +26,21 @@
     </div>
 
     <nav class="app-shell__nav" aria-label="Component showcase pages">
+      <span class="app-shell__nav-group-label">Components</span>
       @for (link of navLinks; track link.path) {
+        <a
+          class="app-shell__nav-link"
+          [routerLink]="link.path"
+          routerLinkActive="app-shell__nav-link--active"
+        >
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+
+    <nav class="app-shell__nav" aria-label="Full page showcase examples">
+      <span class="app-shell__nav-group-label">Full pages</span>
+      @for (link of pageLinks; track link.path) {
         <a
           class="app-shell__nav-link"
           [routerLink]="link.path"

@@ -3,8 +3,8 @@
     <p class="eyebrow">gog-table</p>
     <h2>Table</h2>
     <p class="lead">
-      A sortable, paginated data table with custom cell templates, loading states, and built-in
-      row numbers.
+      A sortable, paginated data table with custom cell/header templates, size variants, sticky
+      headers, loading and empty states, and built-in row numbers.
     </p>
   </div>
 
@@ -29,6 +29,74 @@
       <column field="status" header="Status" [sortable]="true"></column>
       <column field="owner" header="Owner"></column>
       <column field="updated" header="Updated"></column>
+    </gog-table>
+  </article>
+
+  <article class="card">
+    <h3>Custom cell &amp; header templates</h3>
+    <p class="lead">
+      Any column can swap its default text rendering for a projected `&lt;ng-template
+      template="field"&gt;` — here the status column renders a `gog-tag` instead of raw text.
+    </p>
+
+    <gog-table [value]="rows" [showRowNumbers]="false" size="md">
+      <column field="component" header="Component" [sortable]="true"></column>
+      <column field="status" header="Status"></column>
+      <column field="owner" header="Owner"></column>
+
+      <ng-template template="status" type="header">
+        <span class="table-status-header">Status</span>
+      </ng-template>
+      <ng-template template="status" type="body" let-row>
+        <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{ $any(row).status }}</gog-tag>
+      </ng-template>
+    </gog-table>
+  </article>
+
+  <article class="card">
+    <h3>Size, sticky header &amp; paginator position</h3>
+    <div class="action-row">
+      @for (option of sizes; track option) {
+        <gog-button [variant]="size() === option ? 'primary' : 'ghost'" size="sm" type="button" (gogClick)="size.set(option)">
+          {{ option }}
+        </gog-button>
+      }
+      <gog-button [variant]="stickyHeader() ? 'primary' : 'outline'" size="sm" type="button" (gogClick)="toggleStickyHeader()">
+        Sticky header: {{ stickyHeader() ? 'on' : 'off' }}
+      </gog-button>
+      @for (position of paginatorPositions; track position) {
+        <gog-button [variant]="paginatorPosition() === position ? 'primary' : 'ghost'" size="sm" type="button" (gogClick)="paginatorPosition.set(position)">
+          Paginator: {{ position }}
+        </gog-button>
+      }
+    </div>
+
+    <div class="table-scroll-demo">
+      <gog-table
+        [value]="rows"
+        [pageSize]="2"
+        [size]="size()"
+        [stickyHeader]="stickyHeader()"
+        [paginatorPosition]="paginatorPosition()"
+      >
+        <column field="component" header="Component" [sortable]="true"></column>
+        <column field="status" header="Status" [sortable]="true"></column>
+        <column field="owner" header="Owner"></column>
+      </gog-table>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Empty state</h3>
+    <div class="action-row">
+      <gog-button variant="ghost" type="button" (gogClick)="toggleEmpty()">
+        {{ showEmpty() ? 'Restore rows' : 'Clear rows' }}
+      </gog-button>
+    </div>
+
+    <gog-table [value]="showEmpty() ? [] : rows" size="sm">
+      <column field="component" header="Component"></column>
+      <column field="owner" header="Owner"></column>
     </gog-table>
   </article>
 </section>
