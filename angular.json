@@ -134,6 +134,83 @@
           }
         }
       }
+    },
+    "gleks-ui-lab": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/gleks-ui-lab",
+      "sourceRoot": "projects/gleks-ui-lab/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/gleks-ui-lab/src/main.ts",
+            "tsConfig": "projects/gleks-ui-lab/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/gleks-ui-lab/public"
+              }
+            ],
+            "styles": [
+              "node_modules/@guildofgleks/ui/src/styles/index.css",
+              "projects/gleks-ui-lab/src/styles.scss"
+            ],
+            "server": "projects/gleks-ui-lab/src/main.server.ts",
+            "outputMode": "server",
+            "security": {
+              "allowedHosts": []
+            },
+            "ssr": {
+              "entry": "projects/gleks-ui-lab/src/server.ts"
+            }
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "gleks-ui-lab:build:production"
+            },
+            "development": {
+              "buildTarget": "gleks-ui-lab:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        }
+      }
     }
   }
 }

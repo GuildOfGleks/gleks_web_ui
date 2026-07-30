@@ -1,0 +1,19 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/app",
+    "types": ["node"],
+    /*
+     * Unlike ui-showcase, this app is a real external consumer of the published
+     * `@guildofgleks/ui` package (installed from npm), not the workspace source.
+     * The root tsconfig aliases that name to `./dist/gleks/ui` for the showcase's
+     * benefit; clearing `paths` here makes gleks-ui-lab resolve it from
+     * node_modules instead, same as any outside project would.
+     */
+    "paths": {}
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
+}

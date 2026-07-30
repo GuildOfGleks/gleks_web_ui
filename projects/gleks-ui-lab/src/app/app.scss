@@ -1,0 +1,14 @@
+.smoke-test {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.smoke-test__status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gog-success-color, seagreen);
+}

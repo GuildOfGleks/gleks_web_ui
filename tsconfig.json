@@ -46,6 +46,12 @@
     },
     {
       "path": "./projects/ui-showcase/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/gleks-ui-lab/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/gleks-ui-lab/tsconfig.spec.json"
     }
   ]
 }

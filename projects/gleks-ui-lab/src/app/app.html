@@ -1,0 +1,14 @@
+<main class="smoke-test">
+  <h1>{{ title() }}</h1>
+
+  <gog-button variant="primary" (gogClick)="onSmokeTestClick()"> @guildofgleks/ui + FontAwesome </gog-button>
+
+  @if (wired()) {
+    <p class="smoke-test__status">
+      <fa-icon [icon]="faCircleCheck" />
+      Библиотека и иконки подключены.
+    </p>
+  }
+</main>
+
+<router-outlet />
