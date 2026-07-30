@@ -112,66 +112,86 @@
 
   /* ── Light palette (also the no-data-theme default) ───────────────────────── */
   color-scheme: light;
-  --background-color: #f8f3ea;
-  --surface-color: #ede2cc;
-  --text-color: #1a1208;
-  --muted-text-color: #5c3d00;
-  --primary-color: #1a1208;
-  --accent-color: #7a5c00;
-  --accent-bright: #b68b00;
-  --accent-dim: #5a4200;
-  --accent-pale: #fde8c8;
+  --background-color: #f6f0e6;
+  --surface-color: #eae0d0;
+  --hover-color: #dfd3bf;
+  --border-color: #c4b496;
+  --text-color: #1e170e;
+  --muted-text-color: #6e5438;
+  --primary-color: #1e170e;
+  --accent-color: #8c6200;
+  --accent-bright: #b8860b;
+  --accent-dim: #634500;
+  --accent-pale: #f4e8c1;
   --secondary-color: #a07800;
-  --success-color: #166534;
-  --danger-color: #b91c1c;
-  --warning-color: #a16207;
-  --info-color: #6b7280;
-  --border-color: #c9b896;
-  --hover-color: #e4d6bc;
-  --panel-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-  --gog-spinner-overlay-bg: rgba(248, 243, 234, 0.75);
+  --success-color: #2d6a4f;
+  --danger-color: #9b2226;
+  --warning-color: #bb3e03;
+  --info-color: #4a6fa5;
+  --panel-shadow: 0 12px 28px rgba(30, 23, 14, 0.08);
+  --gog-spinner-overlay-bg: rgba(246, 240, 230, 0.75);
 }
 
 :root[data-theme='light'] {
   color-scheme: light;
-  --background-color: #f8f3ea;
-  --surface-color: #ede2cc;
-  --text-color: #1a1208;
-  --muted-text-color: #5c3d00;
-  --primary-color: #1a1208;
-  --accent-color: #7a5c00;
-  --accent-bright: #b68b00;
-  --accent-dim: #5a4200;
-  --accent-pale: #fde8c8;
+
+  /* Фоновые и поверхностные тона (Тёплый пергамент) */
+  --background-color: #f6f0e6;
+  --surface-color: #eae0d0;
+  --hover-color: #dfd3bf;
+  --border-color: #c4b496;
+
+  /* Типографика */
+  --text-color: #1e170e;             /* Глубокий тёмно-коричневый вместо чисто черного */
+  --accent-text-color: #ece4d0;
+  --muted-text-color: #6e5438;       /* Мягкий коричневый */
+
+  /* Бренд и акценты (Благородное золото) */
+  --primary-color: #1e170e;
+  --accent-color: #8c6200;          /* Более контрастный золотисто-бронзовый */
+  --accent-bright: #b8860b;
+  --accent-dim: #634500;
+  --accent-pale: #f4e8c1;
   --secondary-color: #a07800;
-  --success-color: #166534;
-  --danger-color: #b91c1c;
-  --warning-color: #a16207;
-  --info-color: #6b7280;
-  --border-color: #c9b896;
-  --hover-color: #e4d6bc;
-  --panel-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-  --gog-spinner-overlay-bg: rgba(248, 243, 234, 0.75);
+
+  /* Гармонизированная семантика (Подходит под warm-стиль) */
+  --success-color: #2d6a4f;          /* Изумрудно-зеленый */
+  --danger-color: #9b2226;           /* Рубиновый */
+  --warning-color: #bb3e03;          /* Тёмно-янтарный */
+  --info-color: #4a6fa5;             /* Приглушенный стальной синий */
+
+  --panel-shadow: 0 12px 28px rgba(30, 23, 14, 0.08);
+  --gog-spinner-overlay-bg: rgba(246, 240, 230, 0.75);
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --background-color: #0e0b06;
-  --surface-color: #181208;
-  --text-color: #fdcc64;
-  --muted-text-color: #946700;
-  --primary-color: #0e0b06;
-  --accent-color: #fae000;
-  --accent-bright: #fdcc64;
-  --accent-dim: #b68b00;
-  --accent-pale: #724700;
-  --secondary-color: #d8b300;
-  --success-color: #16a34a;
-  --danger-color: #ef4444;
-  --warning-color: #f59e0b;
-  --info-color: #9ca3af;
-  --border-color: #2a1f0e;
-  --hover-color: #221a0c;
-  --panel-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
-  --gog-spinner-overlay-bg: rgba(10, 8, 3, 0.65);
+
+  /* Фоновые и поверхностные тона (Тёмная обсидиановая кузница) */
+  --background-color: #0f0d0a;
+  --surface-color: #191510;
+  --hover-color: #262018;
+  --border-color: #382e22;
+
+  /* Типографика (Комфортная для чтения) */
+  --text-color: #e5dec9;             /* Мягкий крем/слоновая кость (глаза не устают) */
+  --accent-text-color: #e5dec9;
+  --muted-text-color: #9e8c72;       /* Приглушенное пергаментное золото */
+
+  /* Бренд и акценты (Светящееся золото) */
+  --primary-color: #e5dec9;
+  --accent-color: #f3be3a;           /* Яркий золотой акцент */
+  --accent-bright: #ffd05b;
+  --accent-dim: #b5881a;
+  --accent-pale: #3d2f0e;
+  --secondary-color: #d4a373;
+
+  /* Гармонизированная семантика для тёмной темы */
+  --success-color: #52b788;
+  --danger-color: #e63946;
+  --warning-color: #f4a261;
+  --info-color: #64dfdf;
+
+  --panel-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+  --gog-spinner-overlay-bg: rgba(15, 13, 10, 0.75);
 }
