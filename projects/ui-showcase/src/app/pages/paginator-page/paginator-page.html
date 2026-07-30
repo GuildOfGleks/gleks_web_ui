@@ -1,0 +1,147 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-paginator</p>
+    <h2>Paginator</h2>
+    <p class="lead">
+      Page-number controls, extracted from <code>gog-table</code> into a standalone component. It
+      only needs a page count — no notion of rows or columns — so it drops into a table, an
+      accordion, a plain list, or anything else you page through.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Basic usage</h3>
+    <p class="lead">
+      <code>page</code> is a two-way bindable model — <code>[(page)]="mySignal"</code> — and
+      <code>totalPages</code> is the only other thing the paginator needs to know. By default it
+      shows a fixed, centered window of page buttons that slides as you navigate — click through and
+      watch page 1 drop off once the current page moves past the middle of the window.
+    </p>
+    <gog-paginator [(page)]="basicPage" [totalPages]="basicTotalPages()" />
+    <p class="meta">Page {{ basicPage() }} of {{ basicTotalPages() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Flexible page-range settings</h3>
+    <p class="lead">
+      <code>rangeMode="window"</code> (the default) keeps exactly <code>visiblePages</code>
+      buttons on screen, centered on the current page, with no ellipsis unless
+      <code>showFirstPage</code>/<code>showLastPage</code> ask for one.
+      <code>rangeMode="ellipsis"</code> is the original behavior — first and last page always
+      pinned, <code>siblingCount</code> pages kept around the current one — preserved as an opt-in
+      for consumers already built around that look, like <code>gog-table</code> itself.
+    </p>
+
+    <div class="action-row">
+      @for (mode of rangeModes; track mode) {
+        <gog-button
+          [variant]="demoRangeMode() === mode ? 'primary' : 'ghost'"
+          size="sm"
+          type="button"
+          (gogClick)="demoRangeMode.set(mode)"
+        >
+          rangeMode: {{ mode }}
+        </gog-button>
+      }
+    </div>
+
+    @if (demoRangeMode() === 'window') {
+      <div class="action-row">
+        @for (count of visiblePagesOptions; track count) {
+          <gog-button
+            [variant]="demoVisiblePages() === count ? 'primary' : 'ghost'"
+            size="sm"
+            type="button"
+            (gogClick)="demoVisiblePages.set(count)"
+          >
+            visiblePages: {{ count }}
+          </gog-button>
+        }
+        <gog-button
+          [variant]="demoShowFirstPage() ? 'primary' : 'outline'"
+          size="sm"
+          type="button"
+          (gogClick)="toggleShowFirstPage()"
+        >
+          showFirstPage: {{ demoShowFirstPage() ? 'on' : 'off' }}
+        </gog-button>
+        <gog-button
+          [variant]="demoShowLastPage() ? 'primary' : 'outline'"
+          size="sm"
+          type="button"
+          (gogClick)="toggleShowLastPage()"
+        >
+          showLastPage: {{ demoShowLastPage() ? 'on' : 'off' }}
+        </gog-button>
+      </div>
+    }
+
+    <gog-paginator
+      [(page)]="demoPage"
+      [totalPages]="demoTotalPages()"
+      [rangeMode]="demoRangeMode()"
+      [visiblePages]="demoVisiblePages()"
+      [showFirstPage]="demoShowFirstPage()"
+      [showLastPage]="demoShowLastPage()"
+    />
+    <p class="meta">Page {{ demoPage() }} of {{ demoTotalPages() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <div class="paginator-size-stack">
+      @for (size of sizes; track size) {
+        <div class="paginator-size-stack__row">
+          <span class="paginator-size-stack__label">{{ size.toUpperCase() }}</span>
+          <gog-paginator [totalPages]="5" [page]="2" [size]="size" />
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Disabled</h3>
+    <p class="lead">
+      <code>disabled</code> freezes every control — useful while the page it navigates is itself
+      loading.
+    </p>
+    <gog-paginator [(page)]="disabledPage" [totalPages]="8" [disabled]="true" />
+  </article>
+
+  <article class="card">
+    <h3>Applied to a plain list</h3>
+    <p class="lead">
+      No table, no rows — just an array sliced by hand using <code>page</code> and a page size the
+      consumer owns.
+    </p>
+    <ul class="fruit-list">
+      @for (item of visibleListItems(); track item) {
+        <li class="fruit-list__item">{{ item }}</li>
+      }
+    </ul>
+    <gog-paginator [(page)]="listPage" [totalPages]="listTotalPages()" />
+  </article>
+
+  <article class="card">
+    <h3>Applied to an accordion</h3>
+    <p class="lead">
+      The same component pages through a <code>gog-accordion</code>'s items — only the current
+      page's FAQ entries are passed into <code>[items]</code>.
+    </p>
+    <gog-accordion [items]="visibleFaqItems()" size="md">
+      <ng-template gogAccordionContent let-item>
+        <p class="meta">{{ item.answer }}</p>
+      </ng-template>
+    </gog-accordion>
+    <gog-paginator [(page)]="faqPage" [totalPages]="faqTotalPages()" />
+  </article>
+
+  <article class="card">
+    <h3>Applied to a table</h3>
+    <p class="lead">
+      <code>gog-table</code>'s own pagination is now composed from this same
+      <code>gog-paginator</code>, wired with <code>rangeMode="ellipsis"</code> to keep its
+      established look — see the "Table" page in the nav for it wired up against real rows.
+    </p>
+  </article>
+</section>

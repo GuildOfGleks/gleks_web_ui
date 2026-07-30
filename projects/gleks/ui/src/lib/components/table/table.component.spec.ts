@@ -31,7 +31,9 @@ const DEFAULT_ROWS: Row[] = [
       <column field="id" header="ID" [sortable]="true"></column>
       <column field="name" header="Name" [sortable]="true"></column>
       <ng-template template="id" type="header"><em class="custom-header">ID#</em></ng-template>
-      <ng-template template="name" type="body" let-row><strong class="custom-body">{{ $any(row).name }}</strong></ng-template>
+      <ng-template template="name" type="body" let-row
+        ><strong class="custom-body">{{ $any(row).name }}</strong></ng-template
+      >
     </gog-table>
   `,
 })
@@ -69,7 +71,9 @@ describe('TableComponent', () => {
 
     component.sortState.set({ field: 'id', direction: 'asc' });
 
-    expect((component.sortedData() as Array<{ id: number; name: string }>).map((row) => row.id)).toEqual([1, 2]);
+    expect(
+      (component.sortedData() as Array<{ id: number; name: string }>).map((row) => row.id),
+    ).toEqual([1, 2]);
   });
 
   it('should use the configured empty placeholder', () => {
@@ -130,7 +134,9 @@ describe('TableComponent with projected columns and templates', () => {
 
   it('renders custom header and body cell templates instead of the defaults', async () => {
     expect(hostFixture.nativeElement.querySelector('.custom-header')?.textContent).toContain('ID#');
-    expect(hostFixture.nativeElement.querySelectorAll('.custom-body').length).toBe(DEFAULT_ROWS.length);
+    expect(hostFixture.nativeElement.querySelectorAll('.custom-body').length).toBe(
+      DEFAULT_ROWS.length,
+    );
   });
 
   it('shows the empty state with the configured placeholder when there are no rows', async () => {
@@ -146,7 +152,9 @@ describe('TableComponent with projected columns and templates', () => {
     hostFixture.componentRef.setInput('loading', true);
     await hostFixture.whenStable();
 
-    const loadingCell = hostFixture.nativeElement.querySelector('.gog-table__loading-cell') as HTMLElement;
+    const loadingCell = hostFixture.nativeElement.querySelector(
+      '.gog-table__loading-cell',
+    ) as HTMLElement;
     expect(loadingCell).toBeTruthy();
     expect(loadingCell.getAttribute('colspan')).toBe('3');
     expect(hostFixture.nativeElement.querySelector('.gog-table__row')).toBeNull();
@@ -182,8 +190,9 @@ describe('TableComponent with projected columns and templates', () => {
     });
 
     it('clamps the current page back when the data set shrinks', async () => {
-      const table = hostFixture.debugElement.query(By.directive(TableComponent)).componentInstance as TableComponent<Row>;
-      table.goTo(2);
+      const table = hostFixture.debugElement.query(By.directive(TableComponent))
+        .componentInstance as TableComponent<Row>;
+      table.currentPage.set(2);
       await hostFixture.whenStable();
       expect(table.currentPage()).toBe(2);
 

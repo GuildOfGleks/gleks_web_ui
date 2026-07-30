@@ -7,7 +7,6 @@
   --gog-table-hover-bg: var(--accent-pale);
   --gog-table-muted-color: var(--muted-text-color);
   --gog-table-focus-ring: var(--accent-color);
-  --gog-table-pagination-gap: 4px;
   --gog-table-footer-gap: 8px;
   --gog-table-loading-opacity: 0.5;
   --gog-table-scroll-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
@@ -206,13 +205,6 @@
   text-align: right;
 }
 
-.gog-table__pagination {
-  display: flex;
-  align-items: center;
-  gap: var(--gog-table-pagination-gap);
-  flex-wrap: wrap;
-}
-
 .gog-table__pagination[style*='grid-area: left'] {
   justify-content: flex-start;
 }
@@ -223,16 +215,6 @@
 
 .gog-table__pagination[style*='grid-area: right'] {
   justify-content: flex-end;
-}
-
-.gog-table__pagination-ellipsis {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 32px;
-  color: var(--gog-table-muted-color);
-  font-size: var(--text-sm);
-  user-select: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,0 +1,18 @@
+:host {
+  --gog-paginator-gap: 4px;
+
+  display: flex;
+  align-items: center;
+  gap: var(--gog-paginator-gap);
+  flex-wrap: wrap;
+}
+
+.gog-paginator__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  color: var(--muted-text-color);
+  font-size: var(--text-sm);
+  user-select: none;
+}

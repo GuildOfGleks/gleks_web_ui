@@ -1,0 +1,38 @@
+@use '../detail' as *;
+
+.paginator-size-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.paginator-size-stack__row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.paginator-size-stack__label {
+  width: 3ch;
+  color: var(--muted-text-color);
+  font-size: 0.75rem;
+}
+
+.fruit-list {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  max-width: 260px;
+}
+
+.fruit-list__item {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--surface-color) 88%, transparent);
+}
+
+gog-accordion {
+  display: block;
+  margin-bottom: 16px;
+}

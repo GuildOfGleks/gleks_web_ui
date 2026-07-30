@@ -9,8 +9,8 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { ButtonComponent } from '../button/button.component';
 import { IconComponent } from '../icon/icon.component';
+import { PaginatorComponent } from '../paginator/paginator.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
 import { GogSize } from '../../shared/types';
@@ -26,7 +26,7 @@ interface SortState {
 
 @Component({
   selector: 'gog-table',
-  imports: [SpinnerComponent, ButtonComponent, NgTemplateOutlet, IconComponent],
+  imports: [SpinnerComponent, PaginatorComponent, NgTemplateOutlet, IconComponent],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -103,21 +103,6 @@ export class TableComponent<T extends object> {
     return this.sortedData().slice(start, start + size);
   });
 
-  readonly pageNumbers = computed(() => {
-    const total = this.totalPages();
-    const current = this.currentPage();
-    const delta = 2;
-    const range: (number | '...')[] = [];
-    for (let i = 1; i <= total; i++) {
-      if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
-        range.push(i);
-      } else if (range[range.length - 1] !== '...') {
-        range.push('...');
-      }
-    }
-    return range;
-  });
-
   readonly hasPagination = computed(
     () => !this.loading() && this.pageSize() > 0 && this.totalPages() > 1,
   );
@@ -158,24 +143,8 @@ export class TableComponent<T extends object> {
     return null;
   }
 
-  goTo(page: number): void {
-    if (page < 1 || page > this.totalPages()) return;
-    this.currentPage.set(page);
-  }
-
-  prev(): void {
-    this.goTo(this.currentPage() - 1);
-  }
-  next(): void {
-    this.goTo(this.currentPage() + 1);
-  }
-
   handleSortClick(col: Column<T>): void {
     if (!this.loading()) this.toggleSort(col);
-  }
-
-  isNumber(val: number | '...'): val is number {
-    return typeof val === 'number';
   }
 
   getCellValue(row: T, field: string): unknown {

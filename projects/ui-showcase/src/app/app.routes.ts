@@ -41,6 +41,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/table-page/table-page').then((m) => m.TablePage),
   },
   {
+    path: 'paginator',
+    loadComponent: () =>
+      import('./pages/paginator-page/paginator-page').then((m) => m.PaginatorPage),
+  },
+  {
     path: 'slider',
     loadComponent: () => import('./pages/slider-page/slider-page').then((m) => m.SliderPage),
   },

@@ -1,0 +1,32 @@
+<gog-button
+  variant="ghost"
+  [size]="size()"
+  [disabled]="disabled() || page() === 1"
+  ariaLabel="Previous page"
+  (gogClick)="prev()"
+  >‹</gog-button
+>
+
+@for (item of pageNumbers(); track $index) {
+  @if (isNumber(item)) {
+    <gog-button
+      [size]="size()"
+      [variant]="item === page() ? 'primary' : 'ghost'"
+      [disabled]="disabled()"
+      [ariaLabel]="item === page() ? 'Page ' + item + ', current page' : 'Go to page ' + item"
+      (gogClick)="goTo(item)"
+      >{{ item }}</gog-button
+    >
+  } @else {
+    <span class="gog-paginator__ellipsis">…</span>
+  }
+}
+
+<gog-button
+  variant="ghost"
+  [size]="size()"
+  [disabled]="disabled() || page() === totalPages()"
+  ariaLabel="Next page"
+  (gogClick)="next()"
+  >›</gog-button
+>

@@ -45,6 +45,7 @@ export class App {
     { path: 'select', label: 'Select' },
     { path: 'multiselect', label: 'Multiselect' },
     { path: 'table', label: 'Table' },
+    { path: 'paginator', label: 'Paginator' },
     { path: 'slider', label: 'Slider' },
     { path: 'spinner', label: 'Spinner' },
     { path: 'skeleton', label: 'Skeleton' },
