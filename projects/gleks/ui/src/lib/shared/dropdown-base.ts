@@ -42,7 +42,7 @@ const VIEWPORT_PADDING = 8;
 /** Keep in sync with the `max-height` on `.gog-select__dropdown` / `.gog-ms__dropdown`. */
 const MAX_PANEL_HEIGHT = 260;
 /** Fallback row height used before the panel has been measured. */
-const DEFAULT_OPTION_HEIGHT = 32;
+const DEFAULT_OPTION_HEIGHT = 40;
 /** Must match the `var(--dropdown-z, …)` fallback in the component stylesheets. */
 const DEFAULT_PANEL_Z_INDEX = 300;
 

@@ -6,6 +6,7 @@ import {
   GogAccordionHeaderDirective,
   GogAccordionContentDirective,
   GogAccordionItem,
+  GogSize,
   SpinnerOverlayComponent,
   GogAccordionToggleEvent,
 } from '@guildofgleks/ui';
@@ -47,6 +48,11 @@ export class AccordionPage implements OnDestroy {
     { id: 'returns', title: 'Returns', body: 'Free returns within 30 days of delivery.' },
     { id: 'warranty', title: 'Warranty (unavailable)', body: 'Not offered on this item.', disabled: true },
   ];
+
+  protected readonly sizeDemoItems: BasicAccordionItem[] = [
+    { id: 'one', title: 'One', body: 'Sample content for the size comparison.' },
+  ];
+  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly panels: AccordionDemoPanel[] = [
     {

@@ -1,7 +1,9 @@
 <div
   [class.gog-accordion--loading]="loading()"
+  [class.gog-accordion--slg]="size() === 'slg'"
   [class.gog-accordion--md]="size() === 'md'"
   [class.gog-accordion--sm]="size() === 'sm'"
+  [class.gog-accordion--xsm]="size() === 'xsm'"
   class="gog-accordion gog-contained-layout"
 >
   @if (loading()) {

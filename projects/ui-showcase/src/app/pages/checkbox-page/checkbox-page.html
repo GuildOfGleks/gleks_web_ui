@@ -31,9 +31,11 @@
 
       <div class="checkbox-group">
         <h4 class="checkbox-group__title">Sizes</h4>
+        <gog-checkbox label="Extra small" size="xsm" [checked]="true" />
         <gog-checkbox label="Small" size="sm" [(checked)]="triState" />
         <gog-checkbox label="Medium" size="md" [checked]="true" />
         <gog-checkbox label="Large" size="lg" [indeterminate]="true" />
+        <gog-checkbox label="Extra large" size="slg" [checked]="true" />
       </div>
     </div>
     <p class="meta">{{ summary() }}</p>

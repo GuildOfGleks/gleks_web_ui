@@ -9,6 +9,22 @@
   </div>
 
   <article class="card">
+    <h3>Sizes</h3>
+    <div class="accordion-size-grid">
+      @for (sizeOption of sizes; track sizeOption) {
+        <div>
+          <p class="meta">{{ sizeOption }}</p>
+          <gog-accordion [items]="sizeDemoItems" [size]="sizeOption" [expandFirst]="true">
+            <ng-template gogAccordionContent let-item>
+              <p class="meta">{{ item.body }}</p>
+            </ng-template>
+          </gog-accordion>
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Basic usage</h3>
     <p class="meta">
       Default rendering (no custom header/chevron templates), default <code>lg</code> size,

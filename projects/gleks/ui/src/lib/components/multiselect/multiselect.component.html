@@ -5,8 +5,10 @@
 -->
 <div
   class="gog-ms-wrapper"
+  [class.gog-ms-wrapper--xsm]="size() === 'xsm'"
   [class.gog-ms-wrapper--sm]="size() === 'sm'"
   [class.gog-ms-wrapper--lg]="size() === 'lg'"
+  [class.gog-ms-wrapper--slg]="size() === 'slg'"
 >
   <!--
     Associated with aria-labelledby rather than `for`: the trigger is a div with
@@ -79,8 +81,10 @@
     class="gog-ms__dropdown"
     [class.gog-ms__dropdown--up]="!appendToBody() && dropdownDirectionState() === 'up'"
     [class.gog-ms__dropdown--portal]="appendToBody()"
+    [class.gog-ms__dropdown--xsm]="appendToBody() && size() === 'xsm'"
     [class.gog-ms__dropdown--sm]="appendToBody() && size() === 'sm'"
     [class.gog-ms__dropdown--lg]="appendToBody() && size() === 'lg'"
+    [class.gog-ms__dropdown--slg]="appendToBody() && size() === 'slg'"
     [style.top.px]="appendToBody() ? panelPlacement()?.top : null"
     [style.left.px]="appendToBody() ? panelPlacement()?.left : null"
     [style.width]="appendToBody() ? resolvedPanelWidth() : null"

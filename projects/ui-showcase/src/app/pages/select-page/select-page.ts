@@ -10,7 +10,7 @@ import { CheckboxComponent, GogSelectOption, GogSize, IconComponent, SelectCompo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectPage {
-  protected readonly sizes: GogSize[] = ['sm', 'md', 'lg'];
+  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly framework = signal<string | number | null>('angular');
   protected readonly frameworks: GogSelectOption[] = [

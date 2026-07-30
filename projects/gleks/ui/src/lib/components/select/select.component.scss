@@ -15,9 +15,9 @@
   --gog-select-option-hover-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
   --gog-select-option-selected-color: var(--accent-color);
   --gog-select-disabled-opacity: 0.4;
-  --gog-select-control-padding-y: var(--control-padding-y, 6px);
-  --gog-select-control-padding-x: var(--control-padding-x, 10px);
-  --gog-select-control-font: var(--text-sm);
+  --gog-select-control-padding-y: var(--control-padding-y, 10px);
+  --gog-select-control-padding-x: var(--control-padding-x, 14px);
+  --gog-select-control-font: var(--text-md);
 
   display: flex;
   flex-direction: column;
@@ -25,16 +25,28 @@
   width: 100%;
 }
 
-.gog-select--sm {
+.gog-select--xsm {
   --gog-select-control-padding-y: 4px;
   --gog-select-control-padding-x: 8px;
   --gog-select-control-font: var(--text-xs);
 }
 
+.gog-select--sm {
+  --gog-select-control-padding-y: 6px;
+  --gog-select-control-padding-x: 10px;
+  --gog-select-control-font: var(--text-sm);
+}
+
 .gog-select--lg {
-  --gog-select-control-padding-y: 10px;
-  --gog-select-control-padding-x: 14px;
-  --gog-select-control-font: var(--text-md);
+  --gog-select-control-padding-y: 14px;
+  --gog-select-control-padding-x: 18px;
+  --gog-select-control-font: var(--text-lg);
+}
+
+.gog-select--slg {
+  --gog-select-control-padding-y: 18px;
+  --gog-select-control-padding-x: 22px;
+  --gog-select-control-font: 1.25rem;
 }
 
 .gog-select--disabled {
@@ -152,9 +164,9 @@
      and let --sm/--lg below override them, same as the .gog-select modifiers do.
      Every --gog-select-* token the panel and its options read has to be listed here;
      anything left out resolves to nothing and the panel renders unstyled. */
-  --gog-select-control-padding-y: var(--control-padding-y, 6px);
-  --gog-select-control-padding-x: var(--control-padding-x, 10px);
-  --gog-select-control-font: var(--text-sm);
+  --gog-select-control-padding-y: var(--control-padding-y, 10px);
+  --gog-select-control-padding-x: var(--control-padding-x, 14px);
+  --gog-select-control-font: var(--text-md);
   --gog-select-field-border: var(--accent-dim);
   --gog-select-focus-border: var(--accent-color);
   --gog-select-option-hover-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
@@ -167,16 +179,28 @@
   right: unset;
 }
 
-.gog-select__dropdown--portal.gog-select__dropdown--sm {
+.gog-select__dropdown--portal.gog-select__dropdown--xsm {
   --gog-select-control-padding-y: 4px;
   --gog-select-control-padding-x: 8px;
   --gog-select-control-font: var(--text-xs);
 }
 
+.gog-select__dropdown--portal.gog-select__dropdown--sm {
+  --gog-select-control-padding-y: 6px;
+  --gog-select-control-padding-x: 10px;
+  --gog-select-control-font: var(--text-sm);
+}
+
 .gog-select__dropdown--portal.gog-select__dropdown--lg {
-  --gog-select-control-padding-y: 10px;
-  --gog-select-control-padding-x: 14px;
-  --gog-select-control-font: var(--text-md);
+  --gog-select-control-padding-y: 14px;
+  --gog-select-control-padding-x: 18px;
+  --gog-select-control-font: var(--text-lg);
+}
+
+.gog-select__dropdown--portal.gog-select__dropdown--slg {
+  --gog-select-control-padding-y: 18px;
+  --gog-select-control-padding-x: 22px;
+  --gog-select-control-font: 1.25rem;
 }
 
 .gog-select__option {

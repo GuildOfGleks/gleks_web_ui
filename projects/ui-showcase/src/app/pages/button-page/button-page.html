@@ -3,14 +3,14 @@
     <p class="eyebrow">gog-button</p>
     <h2>Button</h2>
     <p class="lead">
-      A debounced action button with four variants, three sizes, and built-in loading, disabled,
+      A debounced action button with four variants, five sizes, and built-in loading, disabled,
       and full-width states.
     </p>
   </div>
 
   <article class="card">
     <h3>Variants &amp; sizes</h3>
-    <p class="meta">Every combination of the four variants and three sizes.</p>
+    <p class="meta">Every combination of the four variants and five sizes.</p>
     <div class="variant-grid">
       @for (variant of variants; track variant) {
         <div class="variant-row">
@@ -50,15 +50,17 @@
 
     <p class="meta">The spinner scales with the button size:</p>
     <div class="action-row">
-      <gog-button variant="secondary" size="sm" type="button" [loading]="loadingSm()" (gogClick)="simulateLoadingFor('sm')">
-        Small
-      </gog-button>
-      <gog-button variant="secondary" size="md" type="button" [loading]="loadingMd()" (gogClick)="simulateLoadingFor('md')">
-        Medium
-      </gog-button>
-      <gog-button variant="secondary" size="lg" type="button" [loading]="loadingLg()" (gogClick)="simulateLoadingFor('lg')">
-        Large
-      </gog-button>
+      @for (sizeOption of sizes; track sizeOption) {
+        <gog-button
+          variant="secondary"
+          [size]="sizeOption"
+          type="button"
+          [loading]="loadingBySize[sizeOption]()"
+          (gogClick)="simulateLoadingFor(sizeOption)"
+        >
+          {{ sizeOption }}
+        </gog-button>
+      }
     </div>
   </article>
 

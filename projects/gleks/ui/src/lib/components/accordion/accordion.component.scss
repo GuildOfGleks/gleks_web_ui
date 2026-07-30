@@ -10,8 +10,8 @@
   --gog-accordion-skeleton-end: var(--accent-dim);
   --gog-accordion-radius: var(--radius);
   --gog-accordion-body-radius: var(--radius);
-  --gog-accordion-body-padding-y: 8px;
-  --gog-accordion-body-padding-x: 14px;
+  --gog-accordion-body-padding-y: 12px;
+  --gog-accordion-body-padding-x: 16px;
   --gog-accordion-skeleton-radius: 2px;
 
   display: flex;
@@ -60,7 +60,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 10px var(--gog-accordion-body-padding-x);
+  padding: 14px var(--gog-accordion-body-padding-x);
   gap: 12px;
   background: transparent;
   border: none;
@@ -69,7 +69,7 @@
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   transition: color 0.15s ease,
   background-color 0.15s ease;
 }
@@ -105,8 +105,8 @@
 
 .gog-accordion__chevron {
   flex-shrink: 0;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   color: var(--gog-accordion-border-color);
   transition: transform 0.2s ease,
   color 0.15s ease;
@@ -150,7 +150,7 @@
      body visible as a thin sliver even when "closed"). */
   padding: 0 var(--gog-accordion-body-padding-x);
   color: var(--gog-accordion-body-color);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   line-height: 1.6;
   transform: translateY(-2px);
   transition: transform 0.18s ease,
@@ -163,12 +163,34 @@
   transform: translateY(0);
 }
 
+/* === slg (extra roomy) === */
+
+.gog-accordion--slg .gog-accordion__header {
+  padding: 18px 18px;
+  font-size: var(--text-md);
+}
+
+.gog-accordion--slg .gog-accordion__body-inner {
+  padding-left: 18px;
+  padding-right: 18px;
+  font-size: var(--text-lg);
+}
+
+.gog-accordion--slg .gog-accordion__body--open .gog-accordion__body-inner {
+  padding-top: 16px;
+  padding-bottom: 20px;
+}
+
+.gog-accordion--slg .gog-accordion__chevron {
+  width: 18px;
+  height: 18px;
+}
+
 /* === md (compact) === */
 
 .gog-accordion--md .gog-accordion__header {
-  padding: 6px 10px;
+  padding: 10px 14px;
   font-size: var(--text-xs);
-  letter-spacing: 0.4px;
 }
 
 .gog-accordion--md .gog-accordion__header-content {
@@ -176,27 +198,27 @@
 }
 
 .gog-accordion--md .gog-accordion__body-inner {
-  padding-left: 10px;
-  padding-right: 10px;
-  font-size: var(--text-xs);
+  padding-left: 14px;
+  padding-right: 14px;
+  font-size: var(--text-sm);
 }
 
 .gog-accordion--md .gog-accordion__body--open .gog-accordion__body-inner {
-  padding-top: 6px;
-  padding-bottom: 8px;
+  padding-top: 8px;
+  padding-bottom: 12px;
 }
 
 .gog-accordion--md .gog-accordion__chevron {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
 }
 
 /* === sm (extra compact) === */
 
 .gog-accordion--sm .gog-accordion__header {
-  padding: 4px 8px;
+  padding: 6px 10px;
   font-size: var(--text-xs);
-  letter-spacing: 0.2px;
+  letter-spacing: 0.4px;
 }
 
 .gog-accordion--sm .gog-accordion__header-content {
@@ -204,18 +226,46 @@
 }
 
 .gog-accordion--sm .gog-accordion__body-inner {
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: var(--text-xs);
+}
+
+.gog-accordion--sm .gog-accordion__body--open .gog-accordion__body-inner {
+  padding-top: 6px;
+  padding-bottom: 8px;
+}
+
+.gog-accordion--sm .gog-accordion__chevron {
+  width: 12px;
+  height: 12px;
+}
+
+/* === xsm (ultra compact) === */
+
+.gog-accordion--xsm .gog-accordion__header {
+  padding: 4px 8px;
+  font-size: var(--text-xs);
+  letter-spacing: 0.2px;
+}
+
+.gog-accordion--xsm .gog-accordion__header-content {
+  gap: 2px;
+}
+
+.gog-accordion--xsm .gog-accordion__body-inner {
   padding-left: 8px;
   padding-right: 8px;
   font-size: var(--text-xs);
   line-height: 1.5;
 }
 
-.gog-accordion--sm .gog-accordion__body--open .gog-accordion__body-inner {
+.gog-accordion--xsm .gog-accordion__body--open .gog-accordion__body-inner {
   padding-top: 4px;
   padding-bottom: 6px;
 }
 
-.gog-accordion--sm .gog-accordion__chevron {
+.gog-accordion--xsm .gog-accordion__chevron {
   width: 10px;
   height: 10px;
 }

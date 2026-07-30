@@ -97,6 +97,11 @@
 }
 
 /* === Sizes === */
+.gog-btn--xsm {
+  --gog-btn-padding: var(--btn-xsm-padding);
+  --gog-btn-font-size: var(--btn-xsm-font-size);
+}
+
 .gog-btn--sm {
   --gog-btn-padding: var(--btn-sm-padding);
   --gog-btn-font-size: var(--btn-sm-font-size);
@@ -105,6 +110,11 @@
 .gog-btn--lg {
   --gog-btn-padding: var(--btn-lg-padding);
   --gog-btn-font-size: var(--btn-lg-font-size);
+}
+
+.gog-btn--slg {
+  --gog-btn-padding: var(--btn-slg-padding);
+  --gog-btn-font-size: var(--btn-slg-font-size);
 }
 
 /* === Full width === */

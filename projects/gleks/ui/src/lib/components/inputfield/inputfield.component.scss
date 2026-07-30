@@ -32,10 +32,10 @@
 }
 
 .gog-input__field {
-  --gog-input-padding-y: var(--control-padding-y, 6px);
-  --gog-input-pl: var(--control-padding-x, 10px);
-  --gog-input-pr: var(--control-padding-x, 10px);
-  --gog-input-font: var(--text-sm);
+  --gog-input-padding-y: var(--control-padding-y, 10px);
+  --gog-input-pl: var(--control-padding-x, 14px);
+  --gog-input-pr: var(--control-padding-x, 14px);
+  --gog-input-font: var(--text-md);
 
   width: 100%;
   padding: var(--gog-input-padding-y) var(--gog-input-pr) var(--gog-input-padding-y)
@@ -53,40 +53,68 @@
 }
 
 /* Size modifiers */
-.gog-input-wrapper--sm .gog-input__field {
+.gog-input-wrapper--xsm .gog-input__field {
   --gog-input-padding-y: 4px;
   --gog-input-pl: 8px;
   --gog-input-pr: 8px;
   --gog-input-font: var(--text-xs);
 }
 
+.gog-input-wrapper--sm .gog-input__field {
+  --gog-input-padding-y: 6px;
+  --gog-input-pl: 10px;
+  --gog-input-pr: 10px;
+  --gog-input-font: var(--text-sm);
+}
+
 .gog-input-wrapper--lg .gog-input__field {
-  --gog-input-padding-y: 10px;
-  --gog-input-pl: 14px;
-  --gog-input-pr: 14px;
-  --gog-input-font: var(--text-md);
+  --gog-input-padding-y: 14px;
+  --gog-input-pl: 18px;
+  --gog-input-pr: 18px;
+  --gog-input-font: var(--text-lg);
+}
+
+.gog-input-wrapper--slg .gog-input__field {
+  --gog-input-padding-y: 18px;
+  --gog-input-pl: 22px;
+  --gog-input-pr: 22px;
+  --gog-input-font: 1.25rem;
 }
 
 /* Icon side padding overrides */
 .gog-input-wrapper--icon-start .gog-input__field {
-  --gog-input-pl: 30px;
+  --gog-input-pl: 36px;
 }
 .gog-input-wrapper--icon-end .gog-input__field {
-  --gog-input-pr: 30px;
+  --gog-input-pr: 36px;
 }
 
-.gog-input-wrapper--sm.gog-input-wrapper--icon-start .gog-input__field {
+.gog-input-wrapper--xsm.gog-input-wrapper--icon-start .gog-input__field {
   --gog-input-pl: 24px;
 }
-.gog-input-wrapper--sm.gog-input-wrapper--icon-end .gog-input__field {
+.gog-input-wrapper--xsm.gog-input-wrapper--icon-end .gog-input__field {
   --gog-input-pr: 24px;
 }
 
+.gog-input-wrapper--sm.gog-input-wrapper--icon-start .gog-input__field {
+  --gog-input-pl: 30px;
+}
+.gog-input-wrapper--sm.gog-input-wrapper--icon-end .gog-input__field {
+  --gog-input-pr: 30px;
+}
+
 .gog-input-wrapper--lg.gog-input-wrapper--icon-start .gog-input__field {
-  --gog-input-pl: 36px;
+  --gog-input-pl: 44px;
 }
 .gog-input-wrapper--lg.gog-input-wrapper--icon-end .gog-input__field {
-  --gog-input-pr: 36px;
+  --gog-input-pr: 44px;
+}
+
+.gog-input-wrapper--slg.gog-input-wrapper--icon-start .gog-input__field {
+  --gog-input-pl: 52px;
+}
+.gog-input-wrapper--slg.gog-input-wrapper--icon-end .gog-input__field {
+  --gog-input-pr: 52px;
 }
 
 .gog-input__field::placeholder {
@@ -116,7 +144,7 @@
 .gog-input__icon {
   position: absolute;
   color: var(--gog-input-icon-color);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   pointer-events: none;
   line-height: 1;
 }
@@ -143,30 +171,50 @@
 }
 
 .gog-input__icon--start {
-  left: var(--control-icon-offset, 8px);
+  left: var(--control-icon-offset, 10px);
 }
 .gog-input__icon--end {
-  right: var(--control-icon-offset, 8px);
+  right: var(--control-icon-offset, 10px);
 }
 
-.gog-input-wrapper--sm .gog-input__icon {
+.gog-input-wrapper--xsm .gog-input__icon {
   font-size: var(--text-xs);
 }
-.gog-input-wrapper--sm .gog-input__icon--start {
+.gog-input-wrapper--xsm .gog-input__icon--start {
   left: 6px;
 }
-.gog-input-wrapper--sm .gog-input__icon--end {
+.gog-input-wrapper--xsm .gog-input__icon--end {
   right: 6px;
 }
 
+.gog-input-wrapper--sm .gog-input__icon {
+  font-size: var(--text-sm);
+}
+.gog-input-wrapper--sm .gog-input__icon--start {
+  left: 8px;
+}
+.gog-input-wrapper--sm .gog-input__icon--end {
+  right: 8px;
+}
+
 .gog-input-wrapper--lg .gog-input__icon {
-  font-size: var(--text-md);
+  font-size: var(--text-lg);
 }
 .gog-input-wrapper--lg .gog-input__icon--start {
-  left: 10px;
+  left: 14px;
 }
 .gog-input-wrapper--lg .gog-input__icon--end {
-  right: 10px;
+  right: 14px;
+}
+
+.gog-input-wrapper--slg .gog-input__icon {
+  font-size: 1.25rem;
+}
+.gog-input-wrapper--slg .gog-input__icon--start {
+  left: 18px;
+}
+.gog-input-wrapper--slg .gog-input__icon--end {
+  right: 18px;
 }
 
 .gog-input__error {

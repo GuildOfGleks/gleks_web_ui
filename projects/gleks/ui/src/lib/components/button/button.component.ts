@@ -58,7 +58,16 @@ export class ButtonComponent {
   protected isNativeDisabled = computed(() => this.disabled());
   /** Logically blocked from activating (disabled OR loading), used to guard click handling. */
   protected isDisabled = computed(() => this.disabled() || this.loading());
-  protected spinnerSize = computed<GogSize>(() => (this.size() === 'lg' ? 'md' : 'sm'));
+  private static readonly SPINNER_SIZE_BY_BUTTON_SIZE: Record<GogSize, GogSize> = {
+    xsm: 'sm',
+    sm: 'sm',
+    md: 'sm',
+    lg: 'md',
+    slg: 'lg',
+  };
+  protected spinnerSize = computed<GogSize>(
+    () => ButtonComponent.SPINNER_SIZE_BY_BUTTON_SIZE[this.size()],
+  );
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly click$ = new Subject<MouseEvent>();

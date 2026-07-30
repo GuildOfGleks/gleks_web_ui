@@ -11,7 +11,7 @@ import { ButtonComponent, GogSize, SpinnerComponent, SpinnerOverlayComponent } f
 export class SpinnerPage implements OnDestroy {
   protected readonly showOverlay = signal(false);
   protected readonly showFullscreenOverlay = signal(false);
-  protected readonly sizes: GogSize[] = ['sm', 'md', 'lg'];
+  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
   private overlayTimer: ReturnType<typeof setTimeout> | null = null;
   private fullscreenTimer: ReturnType<typeof setTimeout> | null = null;
 

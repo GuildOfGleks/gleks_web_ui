@@ -16,7 +16,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MultiselectPage {
-  protected readonly sizes: GogSize[] = ['sm', 'md', 'lg'];
+  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly selectedFeatures = signal<(string | number)[]>(['toast', 'dialog']);
   protected readonly features: GogMultiselectOption[] = [

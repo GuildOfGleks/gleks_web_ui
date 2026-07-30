@@ -42,7 +42,7 @@ describe('CheckboxComponent', () => {
 
     const host = fixture.nativeElement as HTMLElement;
     expect(host.style.getPropertyValue('--gog-checkbox-box-size')).toBe(
-      'var(--control-checkbox-box-size-lg, 24px)',
+      'var(--control-checkbox-box-size-lg, 32px)',
     );
   });
 

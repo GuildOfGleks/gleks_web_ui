@@ -7,8 +7,10 @@
   class="gog-select"
   [class.gog-select--disabled]="isDisabled()"
   [class.gog-select--open]="isOpen()"
+  [class.gog-select--xsm]="size() === 'xsm'"
   [class.gog-select--sm]="size() === 'sm'"
   [class.gog-select--lg]="size() === 'lg'"
+  [class.gog-select--slg]="size() === 'slg'"
 >
   <!--
     Associated with aria-labelledby rather than `for`: the trigger is a <button>, which is
@@ -72,8 +74,10 @@
     class="gog-select__dropdown"
     [class.gog-select__dropdown--up]="!appendToBody() && dropdownDirectionState() === 'up'"
     [class.gog-select__dropdown--portal]="appendToBody()"
+    [class.gog-select__dropdown--xsm]="appendToBody() && size() === 'xsm'"
     [class.gog-select__dropdown--sm]="appendToBody() && size() === 'sm'"
     [class.gog-select__dropdown--lg]="appendToBody() && size() === 'lg'"
+    [class.gog-select__dropdown--slg]="appendToBody() && size() === 'slg'"
     [style.top.px]="appendToBody() ? panelPlacement()?.top : null"
     [style.left.px]="appendToBody() ? panelPlacement()?.left : null"
     [style.width]="appendToBody() ? resolvedPanelWidth() : null"

@@ -38,7 +38,7 @@ export class TablePage implements OnDestroy {
   protected readonly loading = signal(false);
   private loadingTimer: ReturnType<typeof setTimeout> | null = null;
 
-  protected readonly sizes: GogSize[] = ['sm', 'md', 'lg'];
+  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
   protected readonly size = signal<GogSize>('lg');
 
   protected readonly paginatorPositions: Array<'left' | 'center' | 'right'> = ['left', 'center', 'right'];

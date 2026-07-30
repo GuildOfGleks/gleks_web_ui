@@ -48,39 +48,52 @@
   --panel-border-style: solid;
 
   /* ── Control metrics ─────────────────────────────────────────────────────────
-     The sm/md/lg scale was shifted down a notch: lg now reads like the old md,
-     md like the old sm, and sm got a new, smaller floor of its own. */
-  --control-padding-y: 6px;
-  --control-padding-x: 10px;
-  --control-icon-offset: 8px;
+     Five-tier scale: xsm/slg bookend the original sm/md/lg (restored below to
+     their pre-compaction numbers) as new extremes for extra-tight or extra-roomy
+     layouts. */
+  --control-padding-y: 10px;
+  --control-padding-x: 14px;
+  --control-icon-offset: 10px;
   --control-border-width: 2px;
   --control-border-style: solid;
 
   --control-checkbox-padding: 6px;
-  --control-checkbox-box-size-sm: 12px;
-  --control-checkbox-box-size-md: 18px;
-  --control-checkbox-box-size-lg: 24px;
-  --control-checkbox-label-size-sm: 0.6875rem;
-  --control-checkbox-label-size-md: 0.8125rem;
-  --control-checkbox-label-size-lg: 0.9375rem;
-  --control-checkbox-icon-size-sm: 10px;
-  --control-checkbox-icon-size-md: 12px;
-  --control-checkbox-icon-size-lg: 14px;
+  --control-checkbox-box-size-xsm: 12px;
+  --control-checkbox-box-size-sm: 18px;
+  --control-checkbox-box-size-md: 24px;
+  --control-checkbox-box-size-lg: 32px;
+  --control-checkbox-box-size-slg: 40px;
+  --control-checkbox-label-size-xsm: 0.6875rem;
+  --control-checkbox-label-size-sm: 0.8125rem;
+  --control-checkbox-label-size-md: 0.9375rem;
+  --control-checkbox-label-size-lg: 1.0625rem;
+  --control-checkbox-label-size-slg: 1.1875rem;
+  --control-checkbox-icon-size-xsm: 10px;
+  --control-checkbox-icon-size-sm: 12px;
+  --control-checkbox-icon-size-md: 14px;
+  --control-checkbox-icon-size-lg: 18px;
+  --control-checkbox-icon-size-slg: 22px;
 
   /* ── Button sizing ─────────────────────────────────────────────────────────── */
-  --btn-sm-padding: 0.25rem 0.5rem;
-  --btn-md-padding: 0.5rem 0.875rem;
-  --btn-lg-padding: 0.75rem 1.25rem;
-  --btn-sm-font-size: 0.75rem;
-  --btn-md-font-size: 0.875rem;
-  --btn-lg-font-size: 1rem;
+  --btn-xsm-padding: 0.25rem 0.5rem;
+  --btn-sm-padding: 0.5rem 0.875rem;
+  --btn-md-padding: 0.75rem 1.25rem;
+  --btn-lg-padding: 1rem 1.5rem;
+  --btn-slg-padding: 1.25rem 1.75rem;
+  --btn-xsm-font-size: 0.75rem;
+  --btn-sm-font-size: 0.875rem;
+  --btn-md-font-size: 1rem;
+  --btn-lg-font-size: 1.125rem;
+  --btn-slg-font-size: 1.25rem;
 
   /* ── Icon & spinner ───────────────────────────────────────────────────────── */
   --gog-icon-size: 1em;
   --gog-icon-stroke-width: 2;
-  --gog-spinner-size-sm: 12px;
-  --gog-spinner-size-md: 18px;
-  --gog-spinner-size-lg: 48px;
+  --gog-spinner-size-xsm: 12px;
+  --gog-spinner-size-sm: 18px;
+  --gog-spinner-size-md: 48px;
+  --gog-spinner-size-lg: 96px;
+  --gog-spinner-size-slg: 144px;
   --gog-spinner-rune-size: 20px;
 
   /* ── Toast stack ──────────────────────────────────────────────────────────── */
