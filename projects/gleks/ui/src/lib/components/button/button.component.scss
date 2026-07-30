@@ -1,6 +1,6 @@
 .gog-btn {
   --gog-btn-bg: var(--accent-color);
-  --gog-btn-color: var(--primary-color);
+  --gog-btn-color: var(--accent-text-color, var(--primary-color));
   --gog-btn-border: transparent;
   --gog-btn-radius: var(--radius);
   --gog-btn-padding: var(--btn-md-padding);
@@ -61,14 +61,14 @@
 /* primary: solid gold */
 .gog-btn--primary {
   --gog-btn-bg: var(--accent-color);
-  --gog-btn-color: var(--primary-color);
+  --gog-btn-color: var(--accent-text-color, var(--primary-color));
   --gog-btn-hover-bg: var(--accent-bright);
   --gog-btn-hover-shadow: 0 0 16px color-mix(in srgb, var(--accent-bright) 45%, transparent);
 }
 
 .gog-btn--secondary {
   --gog-btn-bg: var(--secondary-color);
-  --gog-btn-color: var(--primary-color);
+  --gog-btn-color: var(--accent-text-color, var(--primary-color));
   --gog-btn-hover-bg: var(--accent-color);
   --gog-btn-hover-shadow: none;
 }

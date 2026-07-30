@@ -11,7 +11,7 @@
   --gog-checkbox-bg: var(--surface-color);
   --gog-checkbox-checked-bg: var(--accent-color);
   --gog-checkbox-checked-border: var(--accent-color);
-  --gog-checkbox-icon-color: var(--primary-color);
+  --gog-checkbox-icon-color: var(--accent-text-color, var(--primary-color));
   --gog-checkbox-label-color: var(--muted-text-color);
   --gog-checkbox-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
   --gog-checkbox-disabled-opacity: 0.4;
