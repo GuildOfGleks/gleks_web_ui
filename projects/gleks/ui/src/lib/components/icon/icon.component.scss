@@ -5,14 +5,14 @@
   line-height: 0;
 }
 
-.gog-icon__svg {
+::ng-deep .gog-icon__svg {
   width: var(--gog-icon-size, 1em);
   height: var(--gog-icon-size, 1em);
   display: block;
   color: currentColor;
 }
 
-.gog-icon__svg path,
-.gog-icon__svg circle {
+::ng-deep .gog-icon__svg path,
+::ng-deep .gog-icon__svg circle {
   stroke-width: var(--gog-icon-stroke-width, 2);
 }
