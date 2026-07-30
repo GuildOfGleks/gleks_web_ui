@@ -68,4 +68,12 @@ describe('SpinnerComponent', () => {
     expect(hostFixture.nativeElement.querySelector('.my-custom-loader')).toBeTruthy();
     expect(hostFixture.nativeElement.querySelector('svg')).toBeNull();
   });
+
+  it('should still size the wrapper around custom content', () => {
+    fixture.componentRef.setInput('variant', 'custom');
+    fixture.componentRef.setInput('size', 'xsm');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.gog-spinner__wrap--xsm')).toBeTruthy();
+  });
 });
