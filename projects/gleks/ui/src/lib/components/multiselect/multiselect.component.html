@@ -91,11 +91,8 @@
     [attr.aria-labelledby]="label() ? labelId() : null"
     (click)="$event.stopPropagation()"
   >
-    @if (showControls()) {
-      <div class="gog-ms__controls">
-        <gog-button variant="ghost" size="sm" (click)="selectAll($event)">Select all</gog-button>
-        <gog-button variant="ghost" size="sm" (click)="clearAll($event)">Clear</gog-button>
-      </div>
+    @if (showControls() && controlsPosition() === 'top') {
+      <ng-container [ngTemplateOutlet]="controlsRowTpl" />
     }
     <div class="gog-ms__options">
       @for (option of options(); track option.id) {
@@ -143,5 +140,15 @@
         </button>
       }
     </div>
+    @if (showControls() && controlsPosition() === 'bottom') {
+      <ng-container [ngTemplateOutlet]="controlsRowTpl" />
+    }
+  </div>
+</ng-template>
+
+<ng-template #controlsRowTpl>
+  <div class="gog-ms__controls" [class.gog-ms__controls--bottom]="controlsPosition() === 'bottom'">
+    <gog-button variant="ghost" size="sm" (click)="selectAll($event)">Select all</gog-button>
+    <gog-button variant="ghost" size="sm" (click)="clearAll($event)">Clear</gog-button>
   </div>
 </ng-template>

@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CheckboxComponent, GogMultiselectOption, GogSize, MultiselectComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-multiselect-page',
-  imports: [MultiselectComponent, CheckboxComponent],
+  imports: [MultiselectComponent, CheckboxComponent, ReactiveFormsModule],
   templateUrl: './multiselect-page.html',
   styleUrl: './multiselect-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,4 +43,21 @@ export class MultiselectPage {
     { id: 'docs', name: 'Docs' },
   ];
   protected readonly selectedTags = signal<(string | number)[]>([]);
+
+  /** `errorDisplay="auto"`: no manually computed error string, the field follows the
+   * FormControl's own touched/invalid state instead. */
+  protected readonly permissionsFormControl = new FormControl<(string | number)[]>([], {
+    nonNullable: true,
+    validators: Validators.required,
+  });
+
+  protected readonly countries: GogMultiselectOption[] = Array.from({ length: 20 }, (_, i) => ({
+    id: `country-${i}`,
+    name: `Country ${i + 1}`,
+  }));
+  protected readonly topControlsValue = signal<(string | number)[]>([]);
+  protected readonly bottomControlsValue = signal<(string | number)[]>([]);
+
+  protected readonly compactPanelValue = signal<(string | number)[]>([]);
+  protected readonly bottomOfPageValue = signal<(string | number)[]>([]);
 }

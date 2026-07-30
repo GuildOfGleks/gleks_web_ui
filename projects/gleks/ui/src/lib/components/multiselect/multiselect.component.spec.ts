@@ -259,6 +259,42 @@ describe('MultiselectComponent', () => {
     });
   });
 
+  describe('controlsPosition', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('options', [
+        { id: 'a', name: 'Alpha' },
+        { id: 'b', name: 'Beta' },
+      ]);
+      fixture.componentRef.setInput('showControls', true);
+    });
+
+    it('renders the controls row before the options by default', () => {
+      fixture.detectChanges();
+      (fixture.nativeElement.querySelector('.gog-ms') as HTMLElement).click();
+      fixture.detectChanges();
+
+      const panel = fixture.nativeElement.querySelector('[role="listbox"]') as HTMLElement;
+      const controls = panel.querySelector('.gog-ms__controls') as HTMLElement;
+      expect(controls.classList.contains('gog-ms__controls--bottom')).toBe(false);
+      // DOCUMENT_POSITION_FOLLOWING on `.gog-ms__options` means controls comes first.
+      const options = panel.querySelector('.gog-ms__options') as HTMLElement;
+      expect(controls.compareDocumentPosition(options) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('renders the controls row after the options when set to bottom', () => {
+      fixture.componentRef.setInput('controlsPosition', 'bottom');
+      fixture.detectChanges();
+      (fixture.nativeElement.querySelector('.gog-ms') as HTMLElement).click();
+      fixture.detectChanges();
+
+      const panel = fixture.nativeElement.querySelector('[role="listbox"]') as HTMLElement;
+      const controls = panel.querySelector('.gog-ms__controls') as HTMLElement;
+      const options = panel.querySelector('.gog-ms__options') as HTMLElement;
+      expect(controls.classList.contains('gog-ms__controls--bottom')).toBe(true);
+      expect(controls.compareDocumentPosition(options) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
+    });
+  });
+
   describe('keyboard navigation', () => {
     beforeEach(() => {
       fixture.componentRef.setInput('options', [

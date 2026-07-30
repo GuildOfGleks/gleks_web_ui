@@ -58,6 +58,26 @@
   </article>
 
   <article class="card">
+    <h3>Reactive Forms — automatic error timing</h3>
+    <p class="lead">
+      With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides
+      for itself when to show the error — once the control has been touched and is invalid —
+      instead of the page computing that timing. Click the field, then click away without
+      choosing anything.
+    </p>
+    <div class="field-grid">
+      <gog-select
+        label="Billing cycle"
+        placeholder="Choose a cycle..."
+        [options]="billingCycles"
+        [formControl]="billingCycleControl"
+        errorMessage="A billing cycle is required."
+        errorDisplay="auto"
+      />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Append to body</h3>
     <p class="lead">
       Useful inside scrollable or overflow-clipped containers — the panel escapes into
@@ -65,6 +85,46 @@
     </p>
     <div class="field-grid">
       <gog-select label="Region" [options]="regions" [appendToBody]="true" dropdownDirection="auto" [(value)]="region" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Custom panel size</h3>
+    <p class="lead">
+      <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and
+      override the trigger-derived size — useful when the panel needs to be narrower/wider or
+      shorter than the field itself. Applies only with <code>appendToBody</code>; the list below
+      has 20 options, capped to 160px so it scrolls internally.
+    </p>
+    <div class="field-grid">
+      <gog-select
+        label="Country (fixed 220px / 160px)"
+        [options]="countries"
+        [appendToBody]="true"
+        dropdownWidth="220px"
+        dropdownMaxHeight="160px"
+        [(value)]="compactPanelValue"
+      />
+    </div>
+  </article>
+
+  <div class="detail__spacer" aria-hidden="true"></div>
+
+  <article class="card">
+    <h3>Opening near the bottom of the page</h3>
+    <p class="lead">
+      Scroll down to reach this one. With <code>appendToBody</code>, the panel flips upward
+      automatically and is positioned against the trigger itself — not the whole field — so it
+      never covers the label above it or the control below it.
+    </p>
+    <div class="field-grid">
+      <gog-select
+        label="Country"
+        [options]="countries"
+        [appendToBody]="true"
+        dropdownDirection="auto"
+        [(value)]="bottomOfPageValue"
+      />
     </div>
   </article>
 </section>

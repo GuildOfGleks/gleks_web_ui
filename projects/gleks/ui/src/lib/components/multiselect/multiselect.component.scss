@@ -220,10 +220,22 @@
 }
 
 .gog-ms__controls {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
   gap: 4px;
   padding: 6px 10px;
+  background-color: var(--gog-ms-panel-bg);
   border-bottom: var(--control-border-width, 2px) var(--control-border-style, solid)
+    var(--gog-ms-field-border);
+}
+
+.gog-ms__controls--bottom {
+  top: auto;
+  bottom: 0;
+  border-bottom: 0;
+  border-top: var(--control-border-width, 2px) var(--control-border-style, solid)
     var(--gog-ms-field-border);
 }
 

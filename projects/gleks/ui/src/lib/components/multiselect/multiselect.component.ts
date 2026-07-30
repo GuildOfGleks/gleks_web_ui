@@ -28,6 +28,8 @@ const CONTROLS_ROW_HEIGHT = 38;
 })
 export class MultiselectComponent extends GogDropdownBase<(string | number)[]> {
   readonly showControls = input(false);
+  /** Where the "select all"/"clear" row sits relative to the option list. Sticky either way. */
+  readonly controlsPosition = input<'top' | 'bottom'>('top');
   readonly clearIconTemplate = input<TemplateRef<unknown> | null>(null);
 
   /** Two-way bindable selected ids: `[(value)]="signal"`. */
