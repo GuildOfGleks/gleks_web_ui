@@ -75,8 +75,8 @@
 .gog-chip__remove {
   display: inline-grid;
   place-items: center;
-  width: var(--gog-chip-remove-size);
-  height: var(--gog-chip-remove-size);
+  width: calc(var(--gog-chip-remove-size) * 1.1);
+  height: calc(var(--gog-chip-remove-size) * 1.1);
   padding: 0;
   border: 0;
   border-radius: 50%;

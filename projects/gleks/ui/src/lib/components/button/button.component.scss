@@ -8,7 +8,7 @@
   --gog-btn-shadow: none;
   --gog-btn-hover-bg: var(--accent-bright);
   --gog-btn-hover-shadow: 0 0 12px color-mix(in srgb, var(--accent-bright) 35%, transparent);
-  --gog-spinner-color: var(--accent-text-color);
+  --gog-spinner-color: var(--text-color);
 
   gap: 8px;
   border: var(--control-border-width, 2px) var(--control-border-style, solid) var(--gog-btn-border);
