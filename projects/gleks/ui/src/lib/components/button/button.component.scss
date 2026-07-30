@@ -1,44 +1,63 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-btn-<prop>            per-instance override. Never declared here or in the
+ *                               theme, so it always wins when a consumer sets it.
+ *   --gog-btn-variant-<prop>    internal, set by the variant classes below.
+ *   --gog-btn-size-<prop>       internal, set by the size classes below.
+ *   --gog-btn-<variant>-<prop>  the actual values, all in styles/theme.css.
+ * Nothing in this file is a literal: every colour, font, metric and duration resolves
+ * to a theme token, so a theme can restyle the button without touching this stylesheet.
+ */
 .gog-btn {
-  --gog-btn-bg: var(--accent-color);
-  --gog-btn-color: var(--accent-text-color, var(--primary-color));
-  --gog-btn-border: transparent;
-  --gog-btn-radius: var(--radius);
-  --gog-btn-padding: var(--btn-md-padding);
-  --gog-btn-font-size: var(--btn-md-font-size);
-  --gog-btn-shadow: none;
-  --gog-btn-hover-bg: var(--accent-bright);
-  --gog-btn-hover-shadow: 0 0 12px color-mix(in srgb, var(--accent-bright) 35%, transparent);
-  --gog-spinner-color: var(--text-color);
+  /* Scopes the spinner rendered inside a loading button to the variant's spinner colour. */
+  --gog-spinner-color: var(
+    --gog-btn-spinner-color,
+    var(--gog-btn-variant-spinner-color, var(--gog-btn-primary-spinner-color))
+  );
 
-  gap: 8px;
-  border: var(--control-border-width, 2px) var(--control-border-style, solid) var(--gog-btn-border);
+  gap: var(--gog-btn-gap);
+  border: var(--gog-btn-border-width) var(--gog-btn-border-style)
+    var(--gog-btn-border, var(--gog-btn-variant-border, var(--gog-btn-primary-border)));
   border-radius: var(--gog-btn-radius);
-  padding: var(--gog-btn-padding);
-  font-size: var(--gog-btn-font-size);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  background-color: var(--gog-btn-bg);
-  color: var(--gog-btn-color);
-  box-shadow: var(--gog-btn-shadow);
+  padding: var(--gog-btn-padding, var(--gog-btn-size-padding, var(--btn-md-padding)));
+  font-family: var(--gog-btn-font-family);
+  font-weight: var(--gog-btn-font-weight);
+  font-size: var(--gog-btn-font-size, var(--gog-btn-size-font-size, var(--btn-md-font-size)));
+  letter-spacing: var(--gog-btn-letter-spacing);
+  text-transform: var(--gog-btn-text-transform);
+  line-height: var(--gog-btn-line-height);
+  background-color: var(--gog-btn-bg, var(--gog-btn-variant-bg, var(--gog-btn-primary-bg)));
+  color: var(--gog-btn-color, var(--gog-btn-variant-color, var(--gog-btn-primary-color)));
+  box-shadow: var(--gog-btn-shadow, var(--gog-btn-variant-shadow, var(--gog-btn-primary-shadow)));
   cursor: pointer;
-  transition: background-color 0.15s ease,
-  box-shadow 0.15s ease,
-  color 0.15s ease;
-  line-height: 1;
+  transition: background-color var(--gog-btn-transition-duration) var(--gog-easing),
+  box-shadow var(--gog-btn-transition-duration) var(--gog-easing),
+  color var(--gog-btn-transition-duration) var(--gog-easing);
 }
 
 .gog-btn:focus-visible {
-  outline: 3px solid var(--gog-btn-hover-bg);
-  outline-offset: 3px;
+  outline: var(--gog-btn-focus-ring-width) solid
+    var(--gog-btn-hover-bg, var(--gog-btn-variant-hover-bg, var(--gog-btn-primary-hover-bg)));
+  outline-offset: var(--gog-btn-focus-ring-offset);
 }
 
 .gog-btn:hover:not(:disabled) {
-  background-color: var(--gog-btn-hover-bg);
-  box-shadow: var(--gog-btn-hover-shadow);
+  background-color: var(
+    --gog-btn-hover-bg,
+    var(--gog-btn-variant-hover-bg, var(--gog-btn-primary-hover-bg))
+  );
+  color: var(
+    --gog-btn-hover-color,
+    var(--gog-btn-variant-hover-color, var(--gog-btn-primary-hover-color))
+  );
+  box-shadow: var(
+    --gog-btn-hover-shadow,
+    var(--gog-btn-variant-hover-shadow, var(--gog-btn-primary-hover-shadow))
+  );
 }
 
 .gog-btn:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: scale(var(--gog-btn-active-scale));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -52,7 +71,7 @@
 }
 
 .gog-btn:disabled {
-  opacity: 0.4;
+  opacity: var(--gog-btn-disabled-opacity);
   cursor: not-allowed;
 }
 
@@ -60,61 +79,75 @@
 
 /* primary: solid gold */
 .gog-btn--primary {
-  --gog-btn-bg: var(--accent-color);
-  --gog-btn-color: var(--accent-text-color, var(--primary-color));
-  --gog-btn-hover-bg: var(--accent-bright);
-  --gog-btn-hover-shadow: 0 0 16px color-mix(in srgb, var(--accent-bright) 45%, transparent);
+  --gog-btn-variant-bg: var(--gog-btn-primary-bg);
+  --gog-btn-variant-color: var(--gog-btn-primary-color);
+  --gog-btn-variant-border: var(--gog-btn-primary-border);
+  --gog-btn-variant-shadow: var(--gog-btn-primary-shadow);
+  --gog-btn-variant-hover-bg: var(--gog-btn-primary-hover-bg);
+  --gog-btn-variant-hover-color: var(--gog-btn-primary-hover-color);
+  --gog-btn-variant-hover-shadow: var(--gog-btn-primary-hover-shadow);
+  --gog-btn-variant-spinner-color: var(--gog-btn-primary-spinner-color);
 }
 
 .gog-btn--secondary {
-  --gog-btn-bg: var(--secondary-color);
-  --gog-btn-color: var(--accent-text-color, var(--primary-color));
-  --gog-btn-hover-bg: var(--accent-color);
-  --gog-btn-hover-shadow: none;
+  --gog-btn-variant-bg: var(--gog-btn-secondary-bg);
+  --gog-btn-variant-color: var(--gog-btn-secondary-color);
+  --gog-btn-variant-border: var(--gog-btn-secondary-border);
+  --gog-btn-variant-shadow: var(--gog-btn-secondary-shadow);
+  --gog-btn-variant-hover-bg: var(--gog-btn-secondary-hover-bg);
+  --gog-btn-variant-hover-color: var(--gog-btn-secondary-hover-color);
+  --gog-btn-variant-hover-shadow: var(--gog-btn-secondary-hover-shadow);
+  --gog-btn-variant-spinner-color: var(--gog-btn-secondary-spinner-color);
 }
 
 /* outline: transparent with golden border */
 .gog-btn--outline {
-  --gog-btn-bg: transparent;
-  --gog-btn-color: var(--accent-color);
-  --gog-btn-border: var(--accent-color);
-  --gog-btn-hover-bg: var(--accent-color);
-  --gog-btn-hover-shadow: none;
-  --gog-spinner-color: var(--accent-color);
-}
-
-.gog-btn--outline:hover:not(:disabled) {
-  color: var(--primary-color);
+  --gog-btn-variant-bg: var(--gog-btn-outline-bg);
+  --gog-btn-variant-color: var(--gog-btn-outline-color);
+  --gog-btn-variant-border: var(--gog-btn-outline-border);
+  --gog-btn-variant-shadow: var(--gog-btn-outline-shadow);
+  --gog-btn-variant-hover-bg: var(--gog-btn-outline-hover-bg);
+  --gog-btn-variant-hover-color: var(--gog-btn-outline-hover-color);
+  --gog-btn-variant-hover-shadow: var(--gog-btn-outline-hover-shadow);
+  --gog-btn-variant-spinner-color: var(--gog-btn-outline-spinner-color);
 }
 
 /* ghost: no border, subtle hover */
 .gog-btn--ghost {
-  --gog-btn-bg: transparent;
-  --gog-btn-color: var(--accent-color);
-  --gog-btn-hover-bg: color-mix(in srgb, var(--accent-color) 12%, transparent);
-  --gog-btn-hover-shadow: none;
-  --gog-spinner-color: var(--accent-color);
+  --gog-btn-variant-bg: var(--gog-btn-ghost-bg);
+  --gog-btn-variant-color: var(--gog-btn-ghost-color);
+  --gog-btn-variant-border: var(--gog-btn-ghost-border);
+  --gog-btn-variant-shadow: var(--gog-btn-ghost-shadow);
+  --gog-btn-variant-hover-bg: var(--gog-btn-ghost-hover-bg);
+  --gog-btn-variant-hover-color: var(--gog-btn-ghost-hover-color);
+  --gog-btn-variant-hover-shadow: var(--gog-btn-ghost-hover-shadow);
+  --gog-btn-variant-spinner-color: var(--gog-btn-ghost-spinner-color);
 }
 
 /* === Sizes === */
 .gog-btn--xsm {
-  --gog-btn-padding: var(--btn-xsm-padding);
-  --gog-btn-font-size: var(--btn-xsm-font-size);
+  --gog-btn-size-padding: var(--btn-xsm-padding);
+  --gog-btn-size-font-size: var(--btn-xsm-font-size);
 }
 
 .gog-btn--sm {
-  --gog-btn-padding: var(--btn-sm-padding);
-  --gog-btn-font-size: var(--btn-sm-font-size);
+  --gog-btn-size-padding: var(--btn-sm-padding);
+  --gog-btn-size-font-size: var(--btn-sm-font-size);
+}
+
+.gog-btn--md {
+  --gog-btn-size-padding: var(--btn-md-padding);
+  --gog-btn-size-font-size: var(--btn-md-font-size);
 }
 
 .gog-btn--lg {
-  --gog-btn-padding: var(--btn-lg-padding);
-  --gog-btn-font-size: var(--btn-lg-font-size);
+  --gog-btn-size-padding: var(--btn-lg-padding);
+  --gog-btn-size-font-size: var(--btn-lg-font-size);
 }
 
 .gog-btn--slg {
-  --gog-btn-padding: var(--btn-slg-padding);
-  --gog-btn-font-size: var(--btn-slg-font-size);
+  --gog-btn-size-padding: var(--btn-slg-padding);
+  --gog-btn-size-font-size: var(--btn-slg-font-size);
 }
 
 /* === Full width === */
@@ -132,7 +165,7 @@
   /* Loading buttons stay natively focusable (aria-disabled + aria-busy instead of
      `disabled`) so keyboard users don't lose focus mid-action. `:disabled` styling
      below therefore no longer covers this state, so the dim is applied explicitly. */
-  opacity: 0.7;
+  opacity: var(--gog-btn-loading-opacity);
 }
 
 .gog-btn__content--hidden {
@@ -145,6 +178,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  max-width: 70%;
-  max-height: 70%;
+  max-width: var(--gog-btn-spinner-max-size);
+  max-height: var(--gog-btn-spinner-max-size);
 }

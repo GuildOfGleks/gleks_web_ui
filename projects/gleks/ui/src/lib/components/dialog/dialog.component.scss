@@ -1,3 +1,6 @@
+/* Every value resolves to a `--gog-dialog-*` token declared in styles/theme.css.
+   `--gog-dialog-offset-x/-y` are the exception: dialog.component.html sets them
+   per-instance while a dialog is being dragged. */
 :host {
   display: contents;
 }
@@ -8,42 +11,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-lg);
-  animation: gog-fade-in 0.15s ease;
+  padding: var(--gog-dialog-backdrop-padding);
+  animation: gog-fade-in var(--gog-dialog-backdrop-fade-duration) var(--gog-easing);
 }
 
 .gog-dialog__backdrop--modal {
-  background: rgba(10, 8, 3, 0.72);
-  backdrop-filter: blur(2px);
+  background: var(--gog-dialog-backdrop-bg);
+  backdrop-filter: blur(var(--gog-dialog-backdrop-blur));
 }
 
 .gog-dialog__panel {
-  --gog-dialog-border: var(--border-color);
-  --gog-dialog-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
-  --gog-dialog-offset-x: 0px;
-  --gog-dialog-offset-y: 0px;
-
   display: flex;
   flex-direction: column;
-  background: var(--surface-color);
-  color: var(--text-color);
-  border: 1px solid var(--gog-dialog-border);
+  background: var(--gog-dialog-bg);
+  color: var(--gog-dialog-color);
+  border: var(--gog-dialog-border-width) var(--gog-dialog-border-style)
+    var(--gog-dialog-border);
   box-shadow: var(--gog-dialog-shadow);
   overflow: visible;
-  max-height: 90vh;
-  animation: gog-slide-in 0.2s ease;
-  min-width: 320px;
-  border-radius: var(--radius);
-  transform: translate3d(var(--gog-dialog-offset-x), var(--gog-dialog-offset-y), 0);
+  max-height: var(--gog-dialog-max-height);
+  animation: gog-slide-in var(--gog-dialog-enter-duration) var(--gog-easing);
+  min-width: var(--gog-dialog-min-width);
+  border-radius: var(--gog-dialog-radius);
+  transform: translate3d(var(--gog-dialog-offset-x, 0px), var(--gog-dialog-offset-y, 0px), 0);
 }
 
 .gog-dialog__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px 14px;
-  border-bottom: 1px solid var(--border-color);
-  gap: 12px;
+  padding: var(--gog-dialog-header-padding);
+  border-bottom: var(--gog-dialog-border-width) var(--gog-dialog-border-style)
+    var(--gog-dialog-header-border-color);
+  gap: var(--gog-dialog-header-gap);
   flex-shrink: 0;
 }
 
@@ -55,43 +55,44 @@
 
 .gog-dialog__title {
   margin: 0;
-  color: var(--text-color);
+  color: var(--gog-dialog-color);
+  font-family: var(--gog-dialog-font-family);
 }
 
 .gog-dialog__close {
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid transparent;
+  width: var(--gog-dialog-close-size);
+  height: var(--gog-dialog-close-size);
+  border: var(--gog-dialog-border-width) var(--gog-dialog-border-style) transparent;
   background: transparent;
-  color: var(--muted-text-color);
+  color: var(--gog-dialog-close-color);
   cursor: pointer;
   flex-shrink: 0;
   padding: 0;
   line-height: 1;
-  font-size: 0.875rem;
+  font-size: var(--gog-dialog-close-font-size);
 }
 
 .gog-dialog__close gog-icon {
-  font-size: 0.875rem;
+  font-size: var(--gog-dialog-close-font-size);
 }
 
 .gog-dialog__close:hover {
-  color: var(--text-color);
-  border-color: var(--border-color);
-  background: color-mix(in srgb, var(--hover-color) 70%, transparent);
+  color: var(--gog-dialog-close-hover-color);
+  border-color: var(--gog-dialog-close-hover-border);
+  background: var(--gog-dialog-close-hover-bg);
 }
 
 .gog-dialog__close:focus-visible {
-  outline: 3px solid var(--accent-color);
-  outline-offset: 2px;
+  outline: var(--gog-dialog-close-focus-ring-width) solid var(--gog-dialog-close-focus-ring);
+  outline-offset: var(--gog-dialog-close-focus-ring-offset);
 }
 
 .gog-dialog__body {
-  padding: 20px;
+  padding: var(--gog-dialog-body-padding);
   overflow-y: auto;
   flex: 1;
-  max-height: calc(90vh - 60px);
+  max-height: var(--gog-dialog-body-max-height);
 }
 
 @keyframes gog-fade-in {
@@ -105,7 +106,7 @@
 
 @keyframes gog-slide-in {
   from {
-    transform: translateY(-12px);
+    transform: translateY(var(--gog-dialog-enter-distance));
     opacity: 0;
   }
   to {

@@ -1,52 +1,50 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-select-control-<prop>  per-instance override, never declared here.
+ *   --gog-select-size-<prop>     internal, set by the size classes below.
+ *   --field-<size>-<prop>        the shared field scale (input / select / multiselect).
+ * `md` is the default size, so every chain bottoms out at --field-md-*.
+ */
 :host {
   display: block;
 }
 
 .gog-select {
-  --gog-select-gap: 4px;
-  --gog-select-label-color: var(--accent-color);
-  --gog-select-field-bg: var(--surface-color);
-  --gog-select-field-border: var(--accent-dim);
-  --gog-select-field-color: var(--text-color);
-  --gog-select-focus-border: var(--accent-color);
-  --gog-select-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
-  --gog-select-error-color: var(--danger-color);
-  --gog-select-chevron-color: var(--accent-color);
-  --gog-select-option-hover-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
-  --gog-select-option-selected-color: var(--accent-color);
-  --gog-select-disabled-opacity: 0.4;
-  --gog-select-control-padding-y: var(--control-padding-y, 10px);
-  --gog-select-control-padding-x: var(--control-padding-x, 14px);
-  --gog-select-control-font: var(--text-md);
-
   display: flex;
   flex-direction: column;
   gap: var(--gog-select-gap);
   width: 100%;
 }
 
-.gog-select--xsm {
-  --gog-select-control-padding-y: 4px;
-  --gog-select-control-padding-x: 8px;
-  --gog-select-control-font: var(--text-xs);
+/* Size modifiers — `md` needs no block, it is the fallback of every chain below.
+   The same tokens are set by .gog-select__dropdown--<size> for the body-portalled
+   panel, which sits outside this subtree and so inherits from :root instead. */
+.gog-select--xsm,
+.gog-select__dropdown--xsm {
+  --gog-select-size-padding-y: var(--field-xsm-padding-y);
+  --gog-select-size-padding-x: var(--field-xsm-padding-x);
+  --gog-select-size-font-size: var(--field-xsm-font-size);
 }
 
-.gog-select--sm {
-  --gog-select-control-padding-y: 6px;
-  --gog-select-control-padding-x: 10px;
-  --gog-select-control-font: var(--text-sm);
+.gog-select--sm,
+.gog-select__dropdown--sm {
+  --gog-select-size-padding-y: var(--field-sm-padding-y);
+  --gog-select-size-padding-x: var(--field-sm-padding-x);
+  --gog-select-size-font-size: var(--field-sm-font-size);
 }
 
-.gog-select--lg {
-  --gog-select-control-padding-y: 14px;
-  --gog-select-control-padding-x: 18px;
-  --gog-select-control-font: var(--text-lg);
+.gog-select--lg,
+.gog-select__dropdown--lg {
+  --gog-select-size-padding-y: var(--field-lg-padding-y);
+  --gog-select-size-padding-x: var(--field-lg-padding-x);
+  --gog-select-size-font-size: var(--field-lg-font-size);
 }
 
-.gog-select--slg {
-  --gog-select-control-padding-y: 18px;
-  --gog-select-control-padding-x: 22px;
-  --gog-select-control-font: 1.25rem;
+.gog-select--slg,
+.gog-select__dropdown--slg {
+  --gog-select-size-padding-y: var(--field-slg-padding-y);
+  --gog-select-size-padding-x: var(--field-slg-padding-x);
+  --gog-select-size-font-size: var(--field-slg-font-size);
 }
 
 .gog-select--disabled {
@@ -59,10 +57,11 @@
 }
 
 .gog-select__label {
-  font-size: var(--text-sm);
+  font-family: var(--gog-select-label-font-family);
+  font-size: var(--gog-select-label-font-size);
   color: var(--gog-select-label-color);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  text-transform: var(--gog-select-label-text-transform);
+  letter-spacing: var(--gog-select-label-letter-spacing);
   cursor: pointer;
 }
 
@@ -73,33 +72,36 @@
 
 .gog-select__control {
   width: 100%;
-  padding: var(--gog-select-control-padding-y) 40px var(--gog-select-control-padding-y)
-    var(--gog-select-control-padding-x);
+  padding: var(--gog-select-control-padding-y, var(--gog-select-size-padding-y, var(--field-md-padding-y)))
+  var(--gog-select-chevron-inset)
+  var(--gog-select-control-padding-y, var(--gog-select-size-padding-y, var(--field-md-padding-y)))
+  var(--gog-select-control-padding-x, var(--gog-select-size-padding-x, var(--field-md-padding-x)));
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  font-size: var(--gog-select-control-font);
+  gap: var(--gog-select-control-gap);
+  font-family: var(--gog-select-font-family);
+  font-size: var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size)));
   color: var(--gog-select-field-color);
   background-color: var(--gog-select-field-bg);
-  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+  border: var(--gog-select-field-border-width) var(--gog-select-field-border-style)
     var(--gog-select-field-border);
-  border-radius: var(--radius);
+  border-radius: var(--gog-select-radius);
   outline: none;
   cursor: pointer;
   transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    border-color var(--gog-select-transition-duration) var(--gog-easing),
+    box-shadow var(--gog-select-transition-duration) var(--gog-easing);
 }
 
 .gog-select__control:focus {
   border-color: var(--gog-select-focus-border);
-  box-shadow: 0 0 8px var(--gog-select-focus-ring);
+  box-shadow: var(--gog-select-focus-glow);
 }
 
 .gog-select__control:focus-visible {
-  outline: 3px solid var(--gog-select-focus-border);
-  outline-offset: 2px;
+  outline: var(--gog-select-focus-ring-width) solid var(--gog-select-focus-border);
+  outline-offset: var(--gog-select-focus-ring-offset);
 }
 
 .gog-select__control:disabled {
@@ -120,12 +122,12 @@
 }
 
 .gog-select__value--placeholder {
-  color: var(--muted-text-color);
+  color: var(--gog-select-placeholder-color);
 }
 
 .gog-select__chevron {
-  width: calc(var(--gog-select-control-font) * 1);
-  height: calc(var(--gog-select-control-font) * 1);
+  width: var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size)));
+  height: var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size)));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,43 +137,37 @@
 }
 
 .gog-select__chevron gog-icon {
-  font-size: calc(var(--gog-select-control-font) * 0.875);
+  font-size: calc(
+    var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size))) *
+      var(--gog-select-chevron-icon-ratio)
+  );
 }
 
 .gog-select__dropdown {
   position: absolute;
-  top: calc(100% + 2px);
+  top: calc(100% + var(--gog-select-panel-offset));
   left: 0;
   right: 0;
-  z-index: var(--dropdown-z, 300);
-  background-color: var(--surface-color);
-  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+  z-index: var(--dropdown-z);
+  background-color: var(--gog-select-panel-bg);
+  border: var(--gog-select-field-border-width) var(--gog-select-field-border-style)
     var(--gog-select-field-border);
-  border-radius: var(--radius);
-  max-height: 260px;
+  border-radius: var(--gog-select-radius);
+  max-height: var(--gog-select-panel-max-height);
   overflow-y: auto;
-  box-shadow: var(--panel-shadow);
+  box-shadow: var(--gog-select-panel-shadow);
 }
 
 .gog-select__dropdown--up {
   top: auto;
-  bottom: calc(100% + 2px);
+  bottom: calc(100% + var(--gog-select-panel-offset));
 }
 
 .gog-select__dropdown--portal {
-  /* The portal is appended straight to <body>, outside .gog-select's DOM subtree,
-     so it can't inherit these from the trigger — redeclare with the same defaults
-     and let --sm/--lg below override them, same as the .gog-select modifiers do.
-     Every --gog-select-* token the panel and its options read has to be listed here;
-     anything left out resolves to nothing and the panel renders unstyled. */
-  --gog-select-control-padding-y: var(--control-padding-y, 10px);
-  --gog-select-control-padding-x: var(--control-padding-x, 14px);
-  --gog-select-control-font: var(--text-md);
-  --gog-select-field-border: var(--accent-dim);
-  --gog-select-focus-border: var(--accent-color);
-  --gog-select-option-hover-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
-  --gog-select-option-selected-color: var(--accent-color);
-
+  /* The portal is appended straight to <body>, outside .gog-select's DOM subtree.
+     Every colour and metric it paints with now lives on :root (styles/theme.css), so
+     it inherits them there; only the per-size tokens have to be restated, which the
+     .gog-select__dropdown--<size> selectors above do. */
   position: fixed;
   top: unset;
   bottom: unset;
@@ -179,44 +175,22 @@
   right: unset;
 }
 
-.gog-select__dropdown--portal.gog-select__dropdown--xsm {
-  --gog-select-control-padding-y: 4px;
-  --gog-select-control-padding-x: 8px;
-  --gog-select-control-font: var(--text-xs);
-}
-
-.gog-select__dropdown--portal.gog-select__dropdown--sm {
-  --gog-select-control-padding-y: 6px;
-  --gog-select-control-padding-x: 10px;
-  --gog-select-control-font: var(--text-sm);
-}
-
-.gog-select__dropdown--portal.gog-select__dropdown--lg {
-  --gog-select-control-padding-y: 14px;
-  --gog-select-control-padding-x: 18px;
-  --gog-select-control-font: var(--text-lg);
-}
-
-.gog-select__dropdown--portal.gog-select__dropdown--slg {
-  --gog-select-control-padding-y: 18px;
-  --gog-select-control-padding-x: 22px;
-  --gog-select-control-font: 1.25rem;
-}
-
 .gog-select__option {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: var(--gog-select-control-padding-y) var(--gog-select-control-padding-x);
+  gap: var(--gog-select-option-gap);
+  padding: var(--gog-select-control-padding-y, var(--gog-select-size-padding-y, var(--field-md-padding-y)))
+  var(--gog-select-control-padding-x, var(--gog-select-size-padding-x, var(--field-md-padding-x)));
   border: 0;
   background: transparent;
   text-align: left;
   font: inherit;
-  font-size: var(--gog-select-control-font);
-  color: var(--text-color);
+  font-family: var(--gog-select-font-family);
+  font-size: var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size)));
+  color: var(--gog-select-option-color);
   cursor: pointer;
-  transition: background-color 0.12s ease;
+  transition: background-color var(--gog-select-option-transition-duration) var(--gog-easing);
 }
 
 .gog-select__option:hover {
@@ -228,30 +202,40 @@
 }
 
 .gog-select__option--disabled {
-  opacity: 0.5;
+  opacity: var(--gog-select-option-disabled-opacity);
   cursor: not-allowed;
 }
 
 .gog-select__option:focus-visible {
-  outline: 3px solid var(--gog-select-focus-border);
-  outline-offset: -3px;
+  outline: var(--gog-select-focus-ring-width) solid var(--gog-select-focus-border);
+  outline-offset: calc(var(--gog-select-focus-ring-width) * -1);
 }
 
 .gog-select__option-mark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: calc(var(--gog-select-control-font) * 1.125);
-  height: calc(var(--gog-select-control-font) * 1.125);
+  width: calc(
+    var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size))) *
+      var(--gog-select-mark-size-ratio)
+  );
+  height: calc(
+    var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size))) *
+      var(--gog-select-mark-size-ratio)
+  );
   flex-shrink: 0;
 }
 
 .gog-select__option-mark gog-icon {
-  font-size: calc(var(--gog-select-control-font) * 0.875);
+  font-size: calc(
+    var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size))) *
+      var(--gog-select-mark-icon-ratio)
+  );
 }
 
 .gog-select__error {
-  font-size: var(--text-xs);
+  font-family: var(--gog-select-font-family);
+  font-size: var(--gog-select-error-font-size);
   color: var(--gog-select-error-color);
 }
 

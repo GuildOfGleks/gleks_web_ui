@@ -1,14 +1,17 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-tag-accent            per-instance override of the variant colour.
+ *   --gog-tag-bg/-border/-color per-instance override of a single painted surface.
+ *   --gog-tag-variant-color     internal, set by the variant classes below.
+ *   --gog-tag-size-<prop>       internal, set by the size classes below.
+ *   --gog-tag-<name>-<prop>     the actual values, all in styles/theme.css.
+ */
 :host {
-  --gog-tag-variant-color: var(--info-color, var(--muted-text-color));
-  --gog-tag-bg: color-mix(in srgb, var(--gog-tag-variant-color) 10%, var(--surface-color));
-  --gog-tag-border: var(--gog-tag-variant-color);
-  --gog-tag-color: color-mix(in srgb, var(--gog-tag-variant-color) 82%, black);
-  --gog-tag-font-size: 0.875rem;
-  --gog-tag-padding-block: 0.375rem;
-  --gog-tag-padding-inline: 0.75rem;
-  --gog-tag-gap: 0.375rem;
-  --gog-tag-radius: max(var(--radius), 2px);
-  --gog-tag-icon-size: 0.875rem;
+  /* Internal: the one colour every surface below is derived from. */
+  --gog-tag-resolved-color: var(
+    --gog-tag-accent,
+    var(--gog-tag-variant-color, var(--gog-tag-default-color))
+  );
 
   display: inline-flex;
   align-items: center;
@@ -16,81 +19,102 @@
   box-sizing: border-box;
   width: fit-content;
   max-width: 100%;
-  padding: var(--gog-tag-padding-block) var(--gog-tag-padding-inline);
-  border: 1px solid var(--gog-tag-border);
+  padding: var(--gog-tag-padding-block, var(--gog-tag-size-padding-block, var(--gog-tag-md-padding-block)))
+  var(--gog-tag-padding-inline, var(--gog-tag-size-padding-inline, var(--gog-tag-md-padding-inline)));
+  border: var(--gog-tag-border-width) var(--gog-tag-border-style)
+    var(--gog-tag-border, var(--gog-tag-resolved-color));
   border-radius: var(--gog-tag-radius);
-  background-color: var(--gog-tag-bg);
-  box-shadow: inset 0 0 0 1px var(--gog-tag-border);
-  color: var(--gog-tag-color);
-  font-size: var(--gog-tag-font-size);
-  font-weight: 600;
-  line-height: 1;
+  background-color: var(
+    --gog-tag-bg,
+    color-mix(in srgb, var(--gog-tag-resolved-color) var(--gog-tag-bg-mix), var(--gog-tag-bg-base))
+  );
+  box-shadow: inset 0 0 0 var(--gog-tag-inner-border-width)
+    var(--gog-tag-border, var(--gog-tag-resolved-color));
+  color: var(
+    --gog-tag-color,
+    color-mix(
+      in srgb,
+      var(--gog-tag-resolved-color) var(--gog-tag-color-mix),
+      var(--gog-tag-color-base)
+    )
+  );
+  font-family: var(--gog-tag-font-family);
+  font-size: var(--gog-tag-font-size, var(--gog-tag-size-font-size, var(--gog-tag-md-font-size)));
+  font-weight: var(--gog-tag-font-weight);
+  line-height: var(--gog-tag-line-height);
   white-space: nowrap;
-  gap: var(--gog-tag-gap);
+  gap: var(--gog-tag-gap, var(--gog-tag-size-gap, var(--gog-tag-md-gap)));
 }
 
+/* === Variants === */
+
 :host(.gog-tag--success) {
-  --gog-tag-variant-color: var(--success-color);
+  --gog-tag-variant-color: var(--gog-tag-success-color);
 }
 
 :host(.gog-tag--danger) {
-  --gog-tag-variant-color: var(--danger-color);
+  --gog-tag-variant-color: var(--gog-tag-danger-color);
 }
 
 :host(.gog-tag--warning) {
-  --gog-tag-variant-color: var(--warning-color);
+  --gog-tag-variant-color: var(--gog-tag-warning-color);
 }
 
 :host(.gog-tag--info) {
-  --gog-tag-variant-color: var(--info-color);
+  --gog-tag-variant-color: var(--gog-tag-info-color);
 }
 
+/* === Sizes ===
+   `md` needs no block: it is what every chain above falls back to. */
+
 :host(.gog-tag--xsm) {
-  --gog-tag-font-size: 0.6875rem;
-  --gog-tag-padding-block: 0.1875rem;
-  --gog-tag-padding-inline: 0.375rem;
-  --gog-tag-gap: 0.1875rem;
-  --gog-tag-icon-size: 0.6875rem;
+  --gog-tag-size-font-size: var(--gog-tag-xsm-font-size);
+  --gog-tag-size-padding-block: var(--gog-tag-xsm-padding-block);
+  --gog-tag-size-padding-inline: var(--gog-tag-xsm-padding-inline);
+  --gog-tag-size-gap: var(--gog-tag-xsm-gap);
+  --gog-tag-size-icon-size: var(--gog-tag-xsm-icon-size);
 }
 
 :host(.gog-tag--sm) {
-  --gog-tag-font-size: 0.75rem;
-  --gog-tag-padding-block: 0.25rem;
-  --gog-tag-padding-inline: 0.5rem;
-  --gog-tag-gap: 0.25rem;
-  --gog-tag-icon-size: 0.75rem;
+  --gog-tag-size-font-size: var(--gog-tag-sm-font-size);
+  --gog-tag-size-padding-block: var(--gog-tag-sm-padding-block);
+  --gog-tag-size-padding-inline: var(--gog-tag-sm-padding-inline);
+  --gog-tag-size-gap: var(--gog-tag-sm-gap);
+  --gog-tag-size-icon-size: var(--gog-tag-sm-icon-size);
 }
 
 :host(.gog-tag--md) {
-  --gog-tag-font-size: 0.875rem;
-  --gog-tag-padding-block: 0.375rem;
-  --gog-tag-padding-inline: 0.75rem;
-  --gog-tag-gap: 0.375rem;
-  --gog-tag-icon-size: 0.875rem;
+  --gog-tag-size-font-size: var(--gog-tag-md-font-size);
+  --gog-tag-size-padding-block: var(--gog-tag-md-padding-block);
+  --gog-tag-size-padding-inline: var(--gog-tag-md-padding-inline);
+  --gog-tag-size-gap: var(--gog-tag-md-gap);
+  --gog-tag-size-icon-size: var(--gog-tag-md-icon-size);
 }
 
 :host(.gog-tag--lg) {
-  --gog-tag-font-size: 1rem;
-  --gog-tag-padding-block: 0.5rem;
-  --gog-tag-padding-inline: 0.875rem;
-  --gog-tag-gap: 0.5rem;
-  --gog-tag-icon-size: 1rem;
+  --gog-tag-size-font-size: var(--gog-tag-lg-font-size);
+  --gog-tag-size-padding-block: var(--gog-tag-lg-padding-block);
+  --gog-tag-size-padding-inline: var(--gog-tag-lg-padding-inline);
+  --gog-tag-size-gap: var(--gog-tag-lg-gap);
+  --gog-tag-size-icon-size: var(--gog-tag-lg-icon-size);
 }
 
 :host(.gog-tag--slg) {
-  --gog-tag-font-size: 1.125rem;
-  --gog-tag-padding-block: 0.625rem;
-  --gog-tag-padding-inline: 1rem;
-  --gog-tag-gap: 0.625rem;
-  --gog-tag-icon-size: 1.125rem;
+  --gog-tag-size-font-size: var(--gog-tag-slg-font-size);
+  --gog-tag-size-padding-block: var(--gog-tag-slg-padding-block);
+  --gog-tag-size-padding-inline: var(--gog-tag-slg-padding-inline);
+  --gog-tag-size-gap: var(--gog-tag-slg-gap);
+  --gog-tag-size-icon-size: var(--gog-tag-slg-icon-size);
 }
 
+/* === Shape === */
+
 :host(.gog-tag--rounded) {
-  --gog-tag-radius: max(var(--radius), 2px);
+  border-radius: var(--gog-tag-radius);
 }
 
 :host(.gog-tag--pill) {
-  --gog-tag-radius: var(--gog-tag-pill-radius, 9999px);
+  border-radius: var(--gog-tag-pill-radius);
 }
 
 .gog-tag__content {
@@ -99,5 +123,5 @@
 
 .gog-tag__icon {
   flex-shrink: 0;
-  font-size: var(--gog-tag-icon-size);
+  font-size: var(--gog-tag-icon-size, var(--gog-tag-size-icon-size, var(--gog-tag-md-icon-size)));
 }

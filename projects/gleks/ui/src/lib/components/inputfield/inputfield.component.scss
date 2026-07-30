@@ -1,16 +1,11 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-input-<prop>        per-instance override, never declared here.
+ *   --gog-input-size-<prop>   internal, set by the size classes below.
+ *   --field-<size>-<prop>     the shared field scale (input / select / multiselect).
+ * `md` is the default size, so every chain bottoms out at --field-md-*.
+ */
 .gog-input-wrapper {
-  --gog-input-gap: 4px;
-  --gog-input-label-color: var(--accent-color);
-  --gog-input-field-bg: var(--surface-color);
-  --gog-input-field-border: var(--accent-dim);
-  --gog-input-field-color: var(--text-color);
-  --gog-input-placeholder-color: var(--muted-text-color);
-  --gog-input-focus-border: var(--accent-color);
-  --gog-input-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
-  --gog-input-error-color: var(--danger-color);
-  --gog-input-icon-color: var(--muted-text-color);
-  --gog-input-icon-hover-color: var(--accent-color);
-
   display: flex;
   flex-direction: column;
   gap: var(--gog-input-gap);
@@ -18,10 +13,11 @@
 }
 
 .gog-input__label {
-  font-size: var(--text-sm);
+  font-family: var(--gog-input-label-font-family);
+  font-size: var(--gog-input-label-font-size);
   color: var(--gog-input-label-color);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  text-transform: var(--gog-input-label-text-transform);
+  letter-spacing: var(--gog-input-label-letter-spacing);
 }
 
 /* Field container — positions icons absolutely over the input */
@@ -32,89 +28,63 @@
 }
 
 .gog-input__field {
-  --gog-input-padding-y: var(--control-padding-y, 10px);
-  --gog-input-pl: var(--control-padding-x, 14px);
-  --gog-input-pr: var(--control-padding-x, 14px);
-  --gog-input-font: var(--text-md);
-
   width: 100%;
-  padding: var(--gog-input-padding-y) var(--gog-input-pr) var(--gog-input-padding-y)
-  var(--gog-input-pl);
-  font-size: var(--gog-input-font);
+  padding: var(--gog-input-padding-y, var(--gog-input-size-padding-y, var(--field-md-padding-y)))
+  var(--gog-input-pr, var(--gog-input-size-padding-x, var(--field-md-padding-x)))
+  var(--gog-input-padding-y, var(--gog-input-size-padding-y, var(--field-md-padding-y)))
+  var(--gog-input-pl, var(--gog-input-size-padding-x, var(--field-md-padding-x)));
+  font-family: var(--gog-input-font-family);
+  font-size: var(--gog-input-font, var(--gog-input-size-font-size, var(--field-md-font-size)));
   color: var(--gog-input-field-color);
   background-color: var(--gog-input-field-bg);
-  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+  border: var(--gog-input-field-border-width) var(--gog-input-field-border-style)
     var(--gog-input-field-border);
-  border-radius: var(--radius);
+  border-radius: var(--gog-input-radius);
   outline: none;
   transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    border-color var(--gog-input-transition-duration) var(--gog-easing),
+    box-shadow var(--gog-input-transition-duration) var(--gog-easing);
 }
 
-/* Size modifiers */
-.gog-input-wrapper--xsm .gog-input__field {
-  --gog-input-padding-y: 4px;
-  --gog-input-pl: 8px;
-  --gog-input-pr: 8px;
-  --gog-input-font: var(--text-xs);
+/* Size modifiers — `md` needs no block, it is the fallback of every chain above. */
+.gog-input-wrapper--xsm {
+  --gog-input-size-padding-y: var(--field-xsm-padding-y);
+  --gog-input-size-padding-x: var(--field-xsm-padding-x);
+  --gog-input-size-font-size: var(--field-xsm-font-size);
+  --gog-input-size-icon-offset: var(--field-xsm-icon-offset);
+  --gog-input-size-icon-inset: var(--field-xsm-icon-inset);
 }
 
-.gog-input-wrapper--sm .gog-input__field {
-  --gog-input-padding-y: 6px;
-  --gog-input-pl: 10px;
-  --gog-input-pr: 10px;
-  --gog-input-font: var(--text-sm);
+.gog-input-wrapper--sm {
+  --gog-input-size-padding-y: var(--field-sm-padding-y);
+  --gog-input-size-padding-x: var(--field-sm-padding-x);
+  --gog-input-size-font-size: var(--field-sm-font-size);
+  --gog-input-size-icon-offset: var(--field-sm-icon-offset);
+  --gog-input-size-icon-inset: var(--field-sm-icon-inset);
 }
 
-.gog-input-wrapper--lg .gog-input__field {
-  --gog-input-padding-y: 14px;
-  --gog-input-pl: 18px;
-  --gog-input-pr: 18px;
-  --gog-input-font: var(--text-lg);
+.gog-input-wrapper--lg {
+  --gog-input-size-padding-y: var(--field-lg-padding-y);
+  --gog-input-size-padding-x: var(--field-lg-padding-x);
+  --gog-input-size-font-size: var(--field-lg-font-size);
+  --gog-input-size-icon-offset: var(--field-lg-icon-offset);
+  --gog-input-size-icon-inset: var(--field-lg-icon-inset);
 }
 
-.gog-input-wrapper--slg .gog-input__field {
-  --gog-input-padding-y: 18px;
-  --gog-input-pl: 22px;
-  --gog-input-pr: 22px;
-  --gog-input-font: 1.25rem;
+.gog-input-wrapper--slg {
+  --gog-input-size-padding-y: var(--field-slg-padding-y);
+  --gog-input-size-padding-x: var(--field-slg-padding-x);
+  --gog-input-size-font-size: var(--field-slg-font-size);
+  --gog-input-size-icon-offset: var(--field-slg-icon-offset);
+  --gog-input-size-icon-inset: var(--field-slg-icon-inset);
 }
 
-/* Icon side padding overrides */
+/* Icon side padding overrides — an icon widens the field's inner gutter on that side. */
 .gog-input-wrapper--icon-start .gog-input__field {
-  --gog-input-pl: 36px;
+  --gog-input-pl: var(--gog-input-size-icon-inset, var(--field-md-icon-inset));
 }
 .gog-input-wrapper--icon-end .gog-input__field {
-  --gog-input-pr: 36px;
-}
-
-.gog-input-wrapper--xsm.gog-input-wrapper--icon-start .gog-input__field {
-  --gog-input-pl: 24px;
-}
-.gog-input-wrapper--xsm.gog-input-wrapper--icon-end .gog-input__field {
-  --gog-input-pr: 24px;
-}
-
-.gog-input-wrapper--sm.gog-input-wrapper--icon-start .gog-input__field {
-  --gog-input-pl: 30px;
-}
-.gog-input-wrapper--sm.gog-input-wrapper--icon-end .gog-input__field {
-  --gog-input-pr: 30px;
-}
-
-.gog-input-wrapper--lg.gog-input-wrapper--icon-start .gog-input__field {
-  --gog-input-pl: 44px;
-}
-.gog-input-wrapper--lg.gog-input-wrapper--icon-end .gog-input__field {
-  --gog-input-pr: 44px;
-}
-
-.gog-input-wrapper--slg.gog-input-wrapper--icon-start .gog-input__field {
-  --gog-input-pl: 52px;
-}
-.gog-input-wrapper--slg.gog-input-wrapper--icon-end .gog-input__field {
-  --gog-input-pr: 52px;
+  --gog-input-pr: var(--gog-input-size-icon-inset, var(--field-md-icon-inset));
 }
 
 .gog-input__field::placeholder {
@@ -123,16 +93,16 @@
 
 .gog-input__field:focus {
   border-color: var(--gog-input-focus-border);
-  box-shadow: 0 0 8px var(--gog-input-focus-ring);
+  box-shadow: var(--gog-input-focus-glow);
 }
 
 .gog-input__field:focus-visible {
-  outline: 3px solid var(--gog-input-focus-border);
-  outline-offset: 2px;
+  outline: var(--gog-input-focus-ring-width) solid var(--gog-input-focus-border);
+  outline-offset: var(--gog-input-focus-ring-offset);
 }
 
 .gog-input__field:disabled {
-  opacity: 0.4;
+  opacity: var(--gog-input-disabled-opacity);
   cursor: not-allowed;
 }
 
@@ -144,7 +114,7 @@
 .gog-input__icon {
   position: absolute;
   color: var(--gog-input-icon-color);
-  font-size: var(--text-md);
+  font-size: var(--gog-input-size-font-size, var(--field-md-font-size));
   pointer-events: none;
   line-height: 1;
 }
@@ -156,9 +126,9 @@
   border: none;
   cursor: pointer;
   pointer-events: auto;
-  border-radius: var(--gog-input-icon-action-radius, 4px);
+  border-radius: var(--gog-input-icon-action-radius);
   color: var(--gog-input-icon-color);
-  transition: color 0.15s ease;
+  transition: color var(--gog-input-transition-duration) var(--gog-easing);
 }
 
 .gog-input__icon--action:hover {
@@ -166,61 +136,22 @@
 }
 
 .gog-input__icon--action:focus-visible {
-  outline: 2px solid var(--gog-input-icon-hover-color);
-  outline-offset: 2px;
+  outline: var(--gog-input-icon-focus-ring-width) solid var(--gog-input-icon-hover-color);
+  outline-offset: var(--gog-input-focus-ring-offset);
 }
 
 .gog-input__icon--start {
-  left: var(--control-icon-offset, 10px);
+  left: var(--gog-input-size-icon-offset, var(--field-md-icon-offset));
 }
 .gog-input__icon--end {
-  right: var(--control-icon-offset, 10px);
-}
-
-.gog-input-wrapper--xsm .gog-input__icon {
-  font-size: var(--text-xs);
-}
-.gog-input-wrapper--xsm .gog-input__icon--start {
-  left: 6px;
-}
-.gog-input-wrapper--xsm .gog-input__icon--end {
-  right: 6px;
-}
-
-.gog-input-wrapper--sm .gog-input__icon {
-  font-size: var(--text-sm);
-}
-.gog-input-wrapper--sm .gog-input__icon--start {
-  left: 8px;
-}
-.gog-input-wrapper--sm .gog-input__icon--end {
-  right: 8px;
-}
-
-.gog-input-wrapper--lg .gog-input__icon {
-  font-size: var(--text-lg);
-}
-.gog-input-wrapper--lg .gog-input__icon--start {
-  left: 14px;
-}
-.gog-input-wrapper--lg .gog-input__icon--end {
-  right: 14px;
-}
-
-.gog-input-wrapper--slg .gog-input__icon {
-  font-size: 1.25rem;
-}
-.gog-input-wrapper--slg .gog-input__icon--start {
-  left: 18px;
-}
-.gog-input-wrapper--slg .gog-input__icon--end {
-  right: 18px;
+  right: var(--gog-input-size-icon-offset, var(--field-md-icon-offset));
 }
 
 .gog-input__error {
-  font-size: var(--text-xs, 12px);
+  font-family: var(--gog-input-font-family);
+  font-size: var(--gog-input-error-font-size);
   color: var(--gog-input-error-color);
-  margin-top: 2px;
+  margin-top: var(--gog-input-error-offset);
 }
 
 @media (prefers-reduced-motion: reduce) {

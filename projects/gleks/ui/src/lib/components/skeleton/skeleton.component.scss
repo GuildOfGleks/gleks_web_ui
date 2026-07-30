@@ -1,15 +1,11 @@
+/*
+ * Every value here comes from a `--gog-skeleton-*` token declared in styles/theme.css.
+ * Nothing is defaulted on :host — a declaration here would out-cascade the theme and
+ * make the component unthemeable.
+ */
 :host {
-  --gog-skeleton-base: color-mix(in srgb, var(--border-color) 40%, var(--surface-color));
-  --gog-skeleton-shine: color-mix(in srgb, var(--gog-skeleton-base), white 35%);
-  --gog-skeleton-radius: var(--radius);
-  --gog-skeleton-line-gap: var(--space-sm);
-
   display: block;
   width: 100%;
-}
-
-:host(.gog-skeleton--square) {
-  --gog-skeleton-radius: 0px;
 }
 
 .gog-skeleton__bone {
@@ -20,6 +16,10 @@
   border-radius: var(--gog-skeleton-radius);
 }
 
+:host(.gog-skeleton--square) .gog-skeleton__bone {
+  border-radius: var(--gog-skeleton-square-radius);
+}
+
 /* ── Text ──────────────────────────────────────────────────────────────── */
 :host(.gog-skeleton--text) {
   display: grid;
@@ -28,35 +28,39 @@
 
 .gog-skeleton__line {
   width: 100%;
-  height: var(--gog-skeleton-line-height, 14px);
-  border-radius: calc(var(--gog-skeleton-radius) / 2);
+  height: var(--gog-skeleton-line-height, var(--gog-skeleton-line-height-md));
+  border-radius: var(--gog-skeleton-line-radius);
+}
+
+:host(.gog-skeleton--square) .gog-skeleton__line {
+  border-radius: var(--gog-skeleton-square-radius);
 }
 
 .gog-skeleton__line--short {
-  width: 60%;
+  width: var(--gog-skeleton-short-line-width);
 }
 
 :host(.gog-skeleton--text.gog-skeleton--xsm) {
-  --gog-skeleton-line-height: 8px;
+  --gog-skeleton-line-height: var(--gog-skeleton-line-height-xsm);
 }
 :host(.gog-skeleton--text.gog-skeleton--sm) {
-  --gog-skeleton-line-height: 10px;
+  --gog-skeleton-line-height: var(--gog-skeleton-line-height-sm);
 }
 :host(.gog-skeleton--text.gog-skeleton--md) {
-  --gog-skeleton-line-height: 14px;
+  --gog-skeleton-line-height: var(--gog-skeleton-line-height-md);
 }
 :host(.gog-skeleton--text.gog-skeleton--lg) {
-  --gog-skeleton-line-height: 18px;
+  --gog-skeleton-line-height: var(--gog-skeleton-line-height-lg);
 }
 :host(.gog-skeleton--text.gog-skeleton--slg) {
-  --gog-skeleton-line-height: 24px;
+  --gog-skeleton-line-height: var(--gog-skeleton-line-height-slg);
 }
 
 /* ── Circle ────────────────────────────────────────────────────────────── */
 :host(.gog-skeleton--circle) {
   display: inline-block;
-  width: var(--gog-skeleton-circle-size, 48px);
-  height: var(--gog-skeleton-circle-size, 48px);
+  width: var(--gog-skeleton-circle-size, var(--gog-skeleton-circle-size-md));
+  height: var(--gog-skeleton-circle-size, var(--gog-skeleton-circle-size-md));
 }
 
 :host(.gog-skeleton--circle) .gog-skeleton__shape {
@@ -66,26 +70,26 @@
 }
 
 :host(.gog-skeleton--circle.gog-skeleton--xsm) {
-  --gog-skeleton-circle-size: 24px;
+  --gog-skeleton-circle-size: var(--gog-skeleton-circle-size-xsm);
 }
 :host(.gog-skeleton--circle.gog-skeleton--sm) {
-  --gog-skeleton-circle-size: 32px;
+  --gog-skeleton-circle-size: var(--gog-skeleton-circle-size-sm);
 }
 :host(.gog-skeleton--circle.gog-skeleton--md) {
-  --gog-skeleton-circle-size: 48px;
+  --gog-skeleton-circle-size: var(--gog-skeleton-circle-size-md);
 }
 :host(.gog-skeleton--circle.gog-skeleton--lg) {
-  --gog-skeleton-circle-size: 64px;
+  --gog-skeleton-circle-size: var(--gog-skeleton-circle-size-lg);
 }
 :host(.gog-skeleton--circle.gog-skeleton--slg) {
-  --gog-skeleton-circle-size: 96px;
+  --gog-skeleton-circle-size: var(--gog-skeleton-circle-size-slg);
 }
 
 /* ── Rect ──────────────────────────────────────────────────────────────── */
 :host(.gog-skeleton--rect) {
   display: block;
   width: 100%;
-  height: var(--gog-skeleton-rect-height, 120px);
+  height: var(--gog-skeleton-rect-height, var(--gog-skeleton-rect-height-md));
 }
 
 :host(.gog-skeleton--rect) .gog-skeleton__shape {
@@ -94,19 +98,19 @@
 }
 
 :host(.gog-skeleton--rect.gog-skeleton--xsm) {
-  --gog-skeleton-rect-height: 40px;
+  --gog-skeleton-rect-height: var(--gog-skeleton-rect-height-xsm);
 }
 :host(.gog-skeleton--rect.gog-skeleton--sm) {
-  --gog-skeleton-rect-height: 64px;
+  --gog-skeleton-rect-height: var(--gog-skeleton-rect-height-sm);
 }
 :host(.gog-skeleton--rect.gog-skeleton--md) {
-  --gog-skeleton-rect-height: 120px;
+  --gog-skeleton-rect-height: var(--gog-skeleton-rect-height-md);
 }
 :host(.gog-skeleton--rect.gog-skeleton--lg) {
-  --gog-skeleton-rect-height: 200px;
+  --gog-skeleton-rect-height: var(--gog-skeleton-rect-height-lg);
 }
 :host(.gog-skeleton--rect.gog-skeleton--slg) {
-  --gog-skeleton-rect-height: 320px;
+  --gog-skeleton-rect-height: var(--gog-skeleton-rect-height-slg);
 }
 
 /* ── Animations ────────────────────────────────────────────────────────── */
@@ -116,12 +120,12 @@
     opacity: 1;
   }
   50% {
-    opacity: 0.5;
+    opacity: var(--gog-skeleton-pulse-min-opacity);
   }
 }
 
 :host(.gog-skeleton--pulse) .gog-skeleton__bone {
-  animation: gog-skeleton-pulse 1.6s ease-in-out infinite;
+  animation: gog-skeleton-pulse var(--gog-skeleton-pulse-duration) ease-in-out infinite;
 }
 
 @keyframes gog-skeleton-wave {
@@ -138,7 +142,7 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(90deg, transparent, var(--gog-skeleton-shine), transparent);
-  animation: gog-skeleton-wave 1.6s ease-in-out infinite;
+  animation: gog-skeleton-wave var(--gog-skeleton-wave-duration) ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,19 +1,14 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-table-<prop>          per-instance override, never declared here.
+ *   --gog-table-size-<prop>     internal, set by the size classes below.
+ *   --gog-table-<size>-<prop>   the actual values, all in styles/theme.css.
+ * `lg` is the default size, so every chain bottoms out at --gog-table-lg-*.
+ */
 .gog-table-wrapper {
-  --gog-table-border-color: var(--accent-dim);
-  --gog-table-surface: var(--surface-color);
-  --gog-table-text-color: var(--text-color);
-  --gog-table-accent-color: var(--accent-color);
-  --gog-table-accent-bright: var(--accent-bright);
-  --gog-table-hover-bg: var(--accent-pale);
-  --gog-table-muted-color: var(--muted-text-color);
-  --gog-table-focus-ring: var(--accent-color);
-  --gog-table-footer-gap: 8px;
-  --gog-table-loading-opacity: 0.5;
-  --gog-table-scroll-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--gog-table-gap);
   width: 100%;
   overflow-anchor: none;
 }
@@ -26,58 +21,61 @@
 .gog-table {
   width: 100%;
   border-collapse: collapse;
-  border: 2px solid var(--gog-table-border-color);
+  border: var(--gog-table-border-width) var(--gog-table-border-style)
+    var(--gog-table-border-color);
   background-color: var(--gog-table-surface);
   color: var(--gog-table-text-color);
+  font-family: var(--gog-table-font-family);
   table-layout: fixed;
-  --tbl-th-padding-v: 10px;
-  --tbl-td-padding-v: 10px;
-  --tbl-padding-h: 14px;
-  --tbl-th-font-size: var(--text-sm);
-  --tbl-td-font-size: var(--text-md);
 }
 
+/* === Sizes ===
+   `lg` needs no block: it is what every chain below falls back to. */
+
 .gog-table--slg {
-  --tbl-th-padding-v: 14px;
-  --tbl-td-padding-v: 14px;
-  --tbl-th-font-size: var(--text-md);
-  --tbl-td-font-size: var(--text-lg);
+  --gog-table-size-th-padding-v: var(--gog-table-slg-padding-v);
+  --gog-table-size-td-padding-v: var(--gog-table-slg-padding-v);
+  --gog-table-size-th-font-size: var(--gog-table-slg-th-font-size);
+  --gog-table-size-td-font-size: var(--gog-table-slg-td-font-size);
 }
 
 .gog-table--md {
-  --tbl-th-padding-v: 6px;
-  --tbl-td-padding-v: 6px;
-  --tbl-th-font-size: var(--text-xs);
-  --tbl-td-font-size: var(--text-sm);
+  --gog-table-size-th-padding-v: var(--gog-table-md-padding-v);
+  --gog-table-size-td-padding-v: var(--gog-table-md-padding-v);
+  --gog-table-size-th-font-size: var(--gog-table-md-th-font-size);
+  --gog-table-size-td-font-size: var(--gog-table-md-td-font-size);
 }
 
 .gog-table--sm {
-  --tbl-th-padding-v: 3px;
-  --tbl-td-padding-v: 3px;
-  --tbl-th-font-size: var(--text-xs);
-  --tbl-td-font-size: var(--text-xs);
+  --gog-table-size-th-padding-v: var(--gog-table-sm-padding-v);
+  --gog-table-size-td-padding-v: var(--gog-table-sm-padding-v);
+  --gog-table-size-th-font-size: var(--gog-table-sm-th-font-size);
+  --gog-table-size-td-font-size: var(--gog-table-sm-td-font-size);
 }
 
 .gog-table--xsm {
-  --tbl-th-padding-v: 2px;
-  --tbl-td-padding-v: 2px;
-  --tbl-th-font-size: var(--text-xs);
-  --tbl-td-font-size: var(--text-xs);
+  --gog-table-size-th-padding-v: var(--gog-table-xsm-padding-v);
+  --gog-table-size-td-padding-v: var(--gog-table-xsm-padding-v);
+  --gog-table-size-th-font-size: var(--gog-table-xsm-th-font-size);
+  --gog-table-size-td-font-size: var(--gog-table-xsm-td-font-size);
 }
 
 .gog-table__col--num {
-  width: 48px;
+  width: var(--gog-table-num-col-width);
 }
 
 .gog-table__th {
-  padding: var(--tbl-th-padding-v) var(--tbl-padding-h);
+  padding: var(--gog-table-th-padding-v, var(--gog-table-size-th-padding-v, var(--gog-table-lg-padding-v)))
+  var(--gog-table-padding-h);
   text-align: left;
-  font-size: var(--tbl-th-font-size);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-family: var(--gog-table-header-font-family);
+  font-size: var(--gog-table-th-font-size, var(--gog-table-size-th-font-size, var(--gog-table-lg-th-font-size)));
+  text-transform: var(--gog-table-header-text-transform);
+  letter-spacing: var(--gog-table-header-letter-spacing);
   color: var(--gog-table-accent-color);
   background-color: var(--gog-table-surface);
-  border-bottom: 2px solid var(--gog-table-border-color);
+  border-bottom: var(--gog-table-border-width) var(--gog-table-border-style)
+    var(--gog-table-border-color);
   white-space: normal;
   overflow: hidden;
 }
@@ -89,7 +87,7 @@
 }
 
 .gog-table__th--num {
-  width: 48px;
+  width: var(--gog-table-num-col-width);
   text-align: center;
   color: var(--gog-table-muted-color);
 }
@@ -100,8 +98,8 @@
 }
 
 .gog-table__th--sortable:focus-visible {
-  outline: 3px solid var(--gog-table-focus-ring);
-  outline-offset: -3px;
+  outline: var(--gog-table-focus-ring-width) solid var(--gog-table-focus-ring);
+  outline-offset: calc(var(--gog-table-focus-ring-width) * -1);
 }
 
 .gog-table__th--sortable:hover {
@@ -115,16 +113,16 @@
 .gog-table__th-inner {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--gog-table-th-inner-gap);
   width: 100%;
 }
 
 .gog-table__sort-icon {
   display: inline-block;
-  width: 1.1em;
+  width: var(--gog-table-sort-icon-width);
   text-align: center;
-  font-size: 0.9em;
-  opacity: 0.6;
+  font-size: var(--gog-table-sort-icon-size);
+  opacity: var(--gog-table-sort-icon-opacity);
   flex-shrink: 0;
 }
 
@@ -133,9 +131,11 @@
 }
 
 .gog-table__td {
-  padding: var(--tbl-td-padding-v) var(--tbl-padding-h);
-  font-size: var(--tbl-td-font-size);
-  border-bottom: 1px solid var(--gog-table-border-color);
+  padding: var(--gog-table-td-padding-v, var(--gog-table-size-td-padding-v, var(--gog-table-lg-padding-v)))
+  var(--gog-table-padding-h);
+  font-size: var(--gog-table-td-font-size, var(--gog-table-size-td-font-size, var(--gog-table-lg-td-font-size)));
+  border-bottom: var(--gog-table-row-border-width) var(--gog-table-border-style)
+    var(--gog-table-border-color);
   vertical-align: middle;
   overflow-wrap: break-word;
   word-break: break-word;
@@ -145,9 +145,9 @@
 .gog-table__td--num {
   text-align: center;
   color: var(--gog-table-muted-color);
-  font-size: var(--text-xs);
-  font-family: var(--font-mono);
-  width: 48px;
+  font-size: var(--gog-table-num-font-size);
+  font-family: var(--gog-table-numeric-font-family);
+  width: var(--gog-table-num-col-width);
 }
 
 .gog-table__row:last-child .gog-table__td {
@@ -155,7 +155,7 @@
 }
 
 .gog-table__row {
-  transition: background-color 0.12s ease;
+  transition: background-color var(--gog-table-row-transition-duration) var(--gog-easing);
 }
 
 .gog-table__row:hover {
@@ -163,10 +163,10 @@
 }
 
 .gog-table__empty {
-  padding: 24px 14px;
+  padding: var(--gog-table-empty-padding);
   text-align: center;
   color: var(--gog-table-muted-color);
-  font-size: var(--text-md);
+  font-size: var(--gog-table-empty-font-size);
 }
 
 .gog-table--loading thead {
@@ -175,13 +175,14 @@
 }
 
 .gog-table__loading-cell {
-  padding: 32px 14px;
+  padding: var(--gog-table-loading-padding);
   text-align: center;
 }
 
 .gog-table--col-borders .gog-table__th:not(:last-child),
 .gog-table--col-borders .gog-table__td:not(:last-child) {
-  border-right: 1px solid var(--gog-table-border-color);
+  border-right: var(--gog-table-row-border-width) var(--gog-table-border-style)
+    var(--gog-table-border-color);
 }
 
 .gog-table__footer {
@@ -189,16 +190,16 @@
   grid-template-columns: 1fr auto 1fr;
   grid-template-areas: 'left center right';
   align-items: center;
-  min-height: 32px;
+  min-height: var(--gog-table-footer-min-height);
   gap: var(--gog-table-footer-gap);
 }
 
 .gog-table__total {
-  font-size: var(--text-xs);
+  font-size: var(--gog-table-total-font-size);
   color: var(--gog-table-muted-color);
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-family: var(--gog-table-numeric-font-family);
+  text-transform: var(--gog-table-total-text-transform);
+  letter-spacing: var(--gog-table-total-letter-spacing);
 }
 
 .gog-table__total[style*='grid-area: right'] {

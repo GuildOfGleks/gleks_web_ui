@@ -17,9 +17,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--gog-spinner-overlay-bg, rgba(10, 8, 3, 0.65));
-  backdrop-filter: blur(3px);
-  animation: gog-spinner-overlay-fade-in 0.2s ease;
+  background: var(--gog-spinner-overlay-bg);
+  backdrop-filter: blur(var(--gog-spinner-overlay-blur));
+  animation: gog-spinner-overlay-fade-in var(--gog-spinner-overlay-fade-duration) var(--gog-easing);
 }
 
 @keyframes gog-spinner-overlay-fade-in {

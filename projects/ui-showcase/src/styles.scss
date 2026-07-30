@@ -89,47 +89,20 @@
  * }
  */
 
-:root[data-theme='light'] {
-  color-scheme: light;
-  --control-border-width: 2px;
-  --control-border-style: solid;
-}
-
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --background-color: #0e0b06;
-  --surface-color: #181208;
-  --text-color: #fdcc64;
-  --muted-text-color: #946700;
-  --color-text-secondary: #946700;
-  --primary-color: #0e0b06;
-  --accent-color: #fae000;
-  --accent-bright: #fdcc64;
-  --accent-dim: #b68b00;
-  --accent-pale: #724700;
-  --secondary-color: #d8b300;
-  --success-color: #16a34a;
-  --danger-color: #ef4444;
-  --warning-color: #f59e0b;
-  --info-color: #9ca3af;
-  --border-color: #2a1f0e;
-  --hover-color: #221a0c;
-  --radius: 6px;
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.1rem;
-  --panel-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
-  --gog-spinner-overlay-bg: rgba(10, 8, 3, 0.65);
-  --gog-spinner-size-sm: 18px;
-  --gog-spinner-size-md: 48px;
-  --gog-spinner-size-lg: 96px;
-  --gog-spinner-rune-size: 20px;
-  --control-border-width: 2px;
-  --control-border-style: solid;
-}
-
-:root[data-theme='cyberpunk'] {
+/*
+ * `light` and `dark` are the library's own themes and are deliberately NOT restated
+ * here — the showcase has to render exactly what a fresh install renders, so anything
+ * declared for those two attribute values would be masking `styles/theme.css` rather
+ * than exercising it. (The blocks that used to sit here re-skinned dark with a
+ * different palette and re-declared --control-border-* with the library's own values.)
+ *
+ * The three below are *additional* themes, not overrides: they exist only in the
+ * showcase and only touch foundation tokens, which is exactly the extension path the
+ * library documents. Every component token derives from those, so they carry through
+ * without any component-level overrides.
+ */
+:root[data-theme='cyberpunk'],
+[data-theme='cyberpunk'] {
   color-scheme: dark;
   --background-color: #050816;
   --surface-color: #101833;
@@ -177,11 +150,10 @@
   --control-checkbox-icon-size-md: 13px;
   --control-checkbox-icon-size-lg: 16px;
   --gog-spinner-overlay-bg: rgba(5, 8, 22, 0.72);
-  --control-border-width: 2px;
-  --control-border-style: dashed;
 }
 
-:root[data-theme='warcraft'] {
+:root[data-theme='warcraft'],
+[data-theme='warcraft'] {
   color-scheme: dark;
   --background-color: #1d1308;
   --surface-color: #2d1c10;
@@ -229,11 +201,10 @@
   --control-checkbox-icon-size-md: 15px;
   --control-checkbox-icon-size-lg: 19px;
   --gog-spinner-overlay-bg: rgba(18, 10, 3, 0.78);
-  --control-border-width: 2px;
-  --control-border-style: double;
 }
 
-:root[data-theme='red-alert-3'] {
+:root[data-theme='red-alert-3'],
+[data-theme='red-alert-3'] {
   color-scheme: dark;
   --background-color: #140000;
   --surface-color: #250404;
@@ -281,8 +252,6 @@
   --control-checkbox-icon-size-md: 13px;
   --control-checkbox-icon-size-lg: 16px;
   --gog-spinner-overlay-bg: rgba(20, 0, 0, 0.8);
-  --control-border-width: 3px;
-  --control-border-style: solid;
 }
 
 html,

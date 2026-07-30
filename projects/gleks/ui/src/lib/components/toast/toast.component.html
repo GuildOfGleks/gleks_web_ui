@@ -17,7 +17,7 @@
       <gog-icon [template]="toast().iconTemplate ?? null" [name]="toast().iconName" />
     </span>
     <div class="gog-toast__main">
-      <span class="gog-toast__message font-body">{{ toast().message }}</span>
+      <span class="gog-toast__message">{{ toast().message }}</span>
       @if (hasActions()) {
         <div class="gog-toast__actions">
           @for (action of toast().actions; track action.label) {

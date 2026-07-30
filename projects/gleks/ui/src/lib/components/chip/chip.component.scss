@@ -1,3 +1,10 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-chip-<prop>          per-instance override, never declared here.
+ *   --gog-chip-size-<prop>     internal, set by the size classes below.
+ *   --gog-chip-<size>-<prop>   the actual values, all in styles/theme.css.
+ * `md` is the default size, so every chain bottoms out at --gog-chip-md-*.
+ */
 :host {
   display: inline-flex;
   max-width: 100%;
@@ -5,49 +12,38 @@
 }
 
 .gog-chip__surface {
-  --gog-chip-bg: color-mix(in srgb, var(--surface-color) 88%, var(--hover-color));
-  --gog-chip-border: var(--border-color);
-  --gog-chip-color: var(--text-color);
-  --gog-chip-font-size: 0.875rem;
-  --gog-chip-padding-block: 0.4rem;
-  --gog-chip-padding-inline: 0.75rem;
-  --gog-chip-gap: 0.5rem;
-  --gog-chip-radius: max(var(--radius), 2px);
-  --gog-chip-avatar-size: 1.25rem;
-  --gog-chip-icon-size: 0.875rem;
-  --gog-chip-remove-size: 1rem;
-  --gog-chip-remove-color: var(--muted-text-color);
-
   display: inline-flex;
   align-items: center;
-  gap: var(--gog-chip-gap);
+  gap: var(--gog-chip-gap, var(--gog-chip-size-gap, var(--gog-chip-md-gap)));
   box-sizing: border-box;
   width: fit-content;
   max-width: 100%;
   overflow: hidden;
-  padding: var(--gog-chip-padding-block) var(--gog-chip-padding-inline);
-  border: 1px solid var(--gog-chip-border);
+  padding: var(--gog-chip-padding-block, var(--gog-chip-size-padding-block, var(--gog-chip-md-padding-block)))
+  var(--gog-chip-padding-inline, var(--gog-chip-size-padding-inline, var(--gog-chip-md-padding-inline)));
+  border: var(--gog-chip-border-width) var(--gog-chip-border-style) var(--gog-chip-border);
   border-radius: var(--gog-chip-radius);
   background-color: var(--gog-chip-bg);
   color: var(--gog-chip-color);
-  font-size: var(--gog-chip-font-size);
-  font-weight: 500;
-  line-height: 1.2;
+  font-family: var(--gog-chip-font-family);
+  font-size: var(--gog-chip-font-size, var(--gog-chip-size-font-size, var(--gog-chip-md-font-size)));
+  font-weight: var(--gog-chip-font-weight);
+  line-height: var(--gog-chip-line-height);
   white-space: nowrap;
   user-select: none;
 }
 
 .gog-chip__surface:focus-visible {
-  outline: 2px solid var(--gog-chip-border);
-  outline-offset: 2px;
+  outline: var(--gog-chip-focus-ring-width) solid var(--gog-chip-border);
+  outline-offset: var(--gog-chip-focus-ring-offset);
 }
 
 :host(.gog-chip--clickable) .gog-chip__surface:hover:not([aria-disabled='true']) {
-  background-color: color-mix(in srgb, var(--hover-color) 45%, var(--surface-color));
+  background-color: var(--gog-chip-hover-bg);
 }
 
 .gog-chip__surface[aria-disabled='true'] {
-  opacity: 0.55;
+  opacity: var(--gog-chip-disabled-opacity);
   pointer-events: none;
 }
 
@@ -56,12 +52,12 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.2;
+  line-height: var(--gog-chip-line-height);
 }
 
 .gog-chip__avatar {
-  width: var(--gog-chip-avatar-size);
-  height: var(--gog-chip-avatar-size);
+  width: var(--gog-chip-avatar-size, var(--gog-chip-size-avatar-size, var(--gog-chip-md-avatar-size)));
+  height: var(--gog-chip-avatar-size, var(--gog-chip-size-avatar-size, var(--gog-chip-md-avatar-size)));
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -69,95 +65,112 @@
 
 .gog-chip__icon {
   flex-shrink: 0;
-  font-size: var(--gog-chip-icon-size);
+  font-size: var(--gog-chip-icon-size, var(--gog-chip-size-icon-size, var(--gog-chip-md-icon-size)));
 }
 
 .gog-chip__remove {
   display: inline-grid;
   place-items: center;
-  width: calc(var(--gog-chip-remove-size) * 1.1);
-  height: calc(var(--gog-chip-remove-size) * 1.1);
+  width: calc(
+    var(--gog-chip-remove-size, var(--gog-chip-size-remove-size, var(--gog-chip-md-remove-size))) *
+      var(--gog-chip-remove-scale)
+  );
+  height: calc(
+    var(--gog-chip-remove-size, var(--gog-chip-size-remove-size, var(--gog-chip-md-remove-size))) *
+      var(--gog-chip-remove-scale)
+  );
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: transparent;
   color: var(--gog-chip-remove-color);
-  font-size: var(--gog-chip-remove-size);
+  font-size: var(--gog-chip-remove-size, var(--gog-chip-size-remove-size, var(--gog-chip-md-remove-size)));
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .gog-chip__remove:hover:not(:disabled) {
-  color: var(--text-color);
+  color: var(--gog-chip-remove-hover-color);
 }
 
 .gog-chip__remove:focus-visible {
-  outline: 2px solid var(--gog-chip-border);
-  outline-offset: 2px;
+  outline: var(--gog-chip-focus-ring-width) solid var(--gog-chip-border);
+  outline-offset: var(--gog-chip-focus-ring-offset);
 }
 
+/* === Sizes ===
+   `md` needs no block: it is what every chain above falls back to. */
+
 :host(.gog-chip--xsm) .gog-chip__surface {
-  --gog-chip-font-size: 0.6875rem;
-  --gog-chip-padding-block: 0.225rem;
-  --gog-chip-padding-inline: 0.375rem;
-  --gog-chip-gap: 0.275rem;
-  --gog-chip-avatar-size: 0.875rem;
-  --gog-chip-icon-size: 0.6875rem;
-  --gog-chip-remove-size: 0.75rem;
+  --gog-chip-size-font-size: var(--gog-chip-xsm-font-size);
+  --gog-chip-size-padding-block: var(--gog-chip-xsm-padding-block);
+  --gog-chip-size-padding-inline: var(--gog-chip-xsm-padding-inline);
+  --gog-chip-size-gap: var(--gog-chip-xsm-gap);
+  --gog-chip-size-avatar-size: var(--gog-chip-xsm-avatar-size);
+  --gog-chip-size-icon-size: var(--gog-chip-xsm-icon-size);
+  --gog-chip-size-remove-size: var(--gog-chip-xsm-remove-size);
 }
 
 :host(.gog-chip--sm) .gog-chip__surface {
-  --gog-chip-font-size: 0.75rem;
-  --gog-chip-padding-block: 0.3rem;
-  --gog-chip-padding-inline: 0.5rem;
-  --gog-chip-gap: 0.375rem;
-  --gog-chip-avatar-size: 1rem;
-  --gog-chip-icon-size: 0.75rem;
-  --gog-chip-remove-size: 0.875rem;
+  --gog-chip-size-font-size: var(--gog-chip-sm-font-size);
+  --gog-chip-size-padding-block: var(--gog-chip-sm-padding-block);
+  --gog-chip-size-padding-inline: var(--gog-chip-sm-padding-inline);
+  --gog-chip-size-gap: var(--gog-chip-sm-gap);
+  --gog-chip-size-avatar-size: var(--gog-chip-sm-avatar-size);
+  --gog-chip-size-icon-size: var(--gog-chip-sm-icon-size);
+  --gog-chip-size-remove-size: var(--gog-chip-sm-remove-size);
 }
 
 :host(.gog-chip--md) .gog-chip__surface {
-  --gog-chip-font-size: 0.875rem;
-  --gog-chip-padding-block: 0.45rem;
-  --gog-chip-padding-inline: 0.75rem;
-  --gog-chip-gap: 0.5rem;
-  --gog-chip-avatar-size: 1.25rem;
-  --gog-chip-icon-size: 0.875rem;
-  --gog-chip-remove-size: 1rem;
+  --gog-chip-size-font-size: var(--gog-chip-md-font-size);
+  --gog-chip-size-padding-block: var(--gog-chip-md-padding-block);
+  --gog-chip-size-padding-inline: var(--gog-chip-md-padding-inline);
+  --gog-chip-size-gap: var(--gog-chip-md-gap);
+  --gog-chip-size-avatar-size: var(--gog-chip-md-avatar-size);
+  --gog-chip-size-icon-size: var(--gog-chip-md-icon-size);
+  --gog-chip-size-remove-size: var(--gog-chip-md-remove-size);
 }
 
 :host(.gog-chip--lg) .gog-chip__surface {
-  --gog-chip-font-size: 1rem;
-  --gog-chip-padding-block: 0.6rem;
-  --gog-chip-padding-inline: 0.875rem;
-  --gog-chip-gap: 0.625rem;
-  --gog-chip-avatar-size: 1.5rem;
-  --gog-chip-icon-size: 1rem;
-  --gog-chip-remove-size: 1.125rem;
+  --gog-chip-size-font-size: var(--gog-chip-lg-font-size);
+  --gog-chip-size-padding-block: var(--gog-chip-lg-padding-block);
+  --gog-chip-size-padding-inline: var(--gog-chip-lg-padding-inline);
+  --gog-chip-size-gap: var(--gog-chip-lg-gap);
+  --gog-chip-size-avatar-size: var(--gog-chip-lg-avatar-size);
+  --gog-chip-size-icon-size: var(--gog-chip-lg-icon-size);
+  --gog-chip-size-remove-size: var(--gog-chip-lg-remove-size);
 }
 
 :host(.gog-chip--slg) .gog-chip__surface {
-  --gog-chip-font-size: 1.125rem;
-  --gog-chip-padding-block: 0.75rem;
-  --gog-chip-padding-inline: 1rem;
-  --gog-chip-gap: 0.75rem;
-  --gog-chip-avatar-size: 1.75rem;
-  --gog-chip-icon-size: 1.125rem;
-  --gog-chip-remove-size: 1.25rem;
+  --gog-chip-size-font-size: var(--gog-chip-slg-font-size);
+  --gog-chip-size-padding-block: var(--gog-chip-slg-padding-block);
+  --gog-chip-size-padding-inline: var(--gog-chip-slg-padding-inline);
+  --gog-chip-size-gap: var(--gog-chip-slg-gap);
+  --gog-chip-size-avatar-size: var(--gog-chip-slg-avatar-size);
+  --gog-chip-size-icon-size: var(--gog-chip-slg-icon-size);
+  --gog-chip-size-remove-size: var(--gog-chip-slg-remove-size);
 }
 
+/* === Shape === */
+
 :host(.gog-chip--pill) .gog-chip__surface {
-  --gog-chip-radius: 9999px;
+  border-radius: var(--gog-chip-pill-radius);
 }
 
 :host(.gog-chip--rounded) .gog-chip__surface {
-  --gog-chip-radius: max(var(--radius), 2px);
+  border-radius: var(--gog-chip-radius);
 }
 
 :host(.gog-chip--has-avatar) .gog-chip__surface {
-  padding-left: calc(var(--gog-chip-padding-inline) * 0.9);
+  padding-left: calc(
+    var(--gog-chip-padding-inline, var(--gog-chip-size-padding-inline, var(--gog-chip-md-padding-inline))) *
+      var(--gog-chip-avatar-inset-ratio)
+  );
 }
 
 :host(.gog-chip--removable) .gog-chip__surface {
-  padding-right: calc(var(--gog-chip-padding-inline) * 0.85);
+  padding-right: calc(
+    var(--gog-chip-padding-inline, var(--gog-chip-size-padding-inline, var(--gog-chip-md-padding-inline))) *
+      var(--gog-chip-remove-inset-ratio)
+  );
 }

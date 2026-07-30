@@ -24,7 +24,7 @@
         <ng-template #headerButton>
           <button
             [id]="uid + '-btn-' + item.id"
-            class="gog-accordion__header font-heading"
+            class="gog-accordion__header"
             [class.gog-accordion__header--chevronless]="!showChevron()"
             [class.gog-accordion__header--open]="isOpen(item.id)"
             [attr.aria-expanded]="isOpen(item.id)"
@@ -68,7 +68,7 @@
 
         <div
           [id]="uid + '-body-' + item.id"
-          class="gog-accordion__body font-body"
+          class="gog-accordion__body"
           [class.gog-accordion__body--open]="isOpen(item.id)"
           role="region"
           [attr.aria-labelledby]="uid + '-btn-' + item.id"

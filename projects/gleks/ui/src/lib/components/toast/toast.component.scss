@@ -1,12 +1,16 @@
+/*
+ * Every colour, metric and duration resolves to a `--gog-toast-*` token declared in
+ * styles/theme.css. `--toast-border`/`--toast-icon-color` remain the per-instance
+ * hooks the type modifiers fall through, and `--toast-duration` is set per toast by
+ * the template from the toast's own timeout.
+ */
 :host {
   display: block;
 }
 
 .gog-toast {
-  --toast-bg: var(--surface-color);
-  --toast-border: var(--accent-color);
-  --toast-color: var(--text-color);
-  --toast-icon-color: var(--accent-color);
+  --toast-border: var(--gog-toast-type-color, var(--gog-toast-border));
+  --toast-icon-color: var(--gog-toast-type-color, var(--gog-toast-icon-color));
   --toast-enter-x: var(--gog-toast-enter-distance);
   --toast-progress-color: var(--toast-border);
 
@@ -16,12 +20,7 @@
      custom properties set further up on the container element. They are intentionally *not*
      redeclared here — only referenced with a `var(..., fallback)` — otherwise redeclaring them
      would shadow the inherited values. */
-  --toast-stack-depth: min(var(--toast-stack-index, 0), 6);
-
-  --gog-toast-stack-peek: 14px;
-  --gog-toast-stack-scale-step: 0.06;
-  --gog-toast-stack-expanded-gap: 84px;
-  --gog-toast-stack-min-opacity: 0.4;
+  --toast-stack-depth: min(var(--toast-stack-index, 0), var(--gog-toast-stack-max-depth));
 
   --toast-stack-collapsed-y: calc(
     var(--toast-stack-depth) * var(--gog-toast-stack-peek) * var(--toast-stack-direction, 1)
@@ -39,19 +38,21 @@
   );
   --toast-stack-collapsed-opacity: max(
     var(--gog-toast-stack-min-opacity),
-    calc(1 - (var(--toast-stack-depth) * 0.18))
+    calc(1 - (var(--toast-stack-depth) * var(--gog-toast-stack-opacity-step)))
   );
   --toast-stack-opacity: calc(
     var(--toast-stack-collapsed-opacity) + (1 - var(--toast-stack-collapsed-opacity)) * var(--toast-stack-expanded, 0)
   );
 
   position: relative;
-  z-index: calc(100 - var(--toast-stack-index, 0));
+  z-index: calc(var(--gog-toast-base-z) - var(--toast-stack-index, 0));
   display: block;
-  padding: 12px 14px;
-  background: var(--toast-bg);
-  border-left: 4px solid var(--toast-border);
-  color: var(--toast-color);
+  padding: var(--gog-toast-padding);
+  background: var(--gog-toast-bg);
+  border-left: var(--gog-toast-accent-width) solid var(--toast-border);
+  border-radius: var(--gog-toast-radius);
+  color: var(--gog-toast-color);
+  font-family: var(--gog-toast-font-family);
   box-shadow: var(--gog-toast-shadow);
   min-width: var(--gog-toast-min-width);
   max-width: var(--gog-toast-max-width);
@@ -60,8 +61,8 @@
   overflow: hidden;
   transform: translate3d(var(--toast-enter-x), var(--toast-stack-y), 0) scale(var(--toast-stack-scale));
   transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
+    opacity var(--gog-toast-transition-duration) var(--gog-easing),
+    transform var(--gog-toast-transition-duration) var(--gog-easing);
 }
 
 .gog-toast--visible {
@@ -74,81 +75,79 @@
   --toast-enter-x: calc(var(--gog-toast-enter-distance) * -1);
 }
 
+/* === Types === */
+
 .gog-toast--success {
-  --toast-border: var(--success-color);
-  --toast-icon-color: var(--success-color);
+  --gog-toast-type-color: var(--gog-toast-success-color);
 }
 
 .gog-toast--error {
-  --toast-border: var(--danger-color);
-  --toast-icon-color: var(--danger-color);
+  --gog-toast-type-color: var(--gog-toast-error-color);
 }
 
 .gog-toast--warning {
-  --toast-border: var(--accent-bright);
-  --toast-icon-color: var(--accent-bright);
+  --gog-toast-type-color: var(--gog-toast-warning-color);
 }
 
 .gog-toast--info {
-  --toast-border: var(--accent-color);
-  --toast-icon-color: var(--accent-color);
+  --gog-toast-type-color: var(--gog-toast-info-color);
 }
 
 .gog-toast__icon {
   color: var(--toast-icon-color);
-  font-size: 1rem;
-  line-height: 1.4;
+  font-size: var(--gog-toast-icon-size);
+  line-height: var(--gog-toast-icon-line-height);
   flex-shrink: 0;
 }
 
 .gog-toast__icon gog-icon {
-  font-size: 1rem;
+  font-size: var(--gog-toast-icon-size);
 }
 
 .gog-toast__content {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: var(--gog-toast-content-gap);
 }
 
 .gog-toast__main {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--gog-toast-main-gap);
   min-width: 0;
 }
 
 .gog-toast__message {
   flex: 1;
-  font-size: var(--text-sm);
-  line-height: 1.5;
+  font-size: var(--gog-toast-message-font-size);
+  line-height: var(--gog-toast-message-line-height);
 }
 
 .gog-toast__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--gog-toast-actions-gap);
 }
 
 .gog-toast__action {
-  --gog-btn-padding: 0.25rem 0.5rem;
-  --gog-btn-font-size: 0.75rem;
+  --gog-btn-padding: var(--gog-toast-action-padding);
+  --gog-btn-font-size: var(--gog-toast-action-font-size);
 }
 
 .gog-toast__action gog-icon {
-  font-size: 0.75rem;
+  font-size: var(--gog-toast-action-font-size);
 }
 
 .gog-toast__close {
   align-self: flex-start;
   flex-shrink: 0;
-  --gog-btn-padding: 0.125rem 0.25rem;
-  --gog-btn-font-size: 0.75rem;
+  --gog-btn-padding: var(--gog-toast-close-padding);
+  --gog-btn-font-size: var(--gog-toast-close-font-size);
 }
 
 .gog-toast__close gog-icon {
-  font-size: 0.75rem;
+  font-size: var(--gog-toast-close-font-size);
 }
 
 .gog-toast__progress {
@@ -156,8 +155,12 @@
   right: 0;
   bottom: 0;
   left: 0;
-  height: 3px;
-  background: color-mix(in srgb, var(--toast-progress-color) 30%, transparent);
+  height: var(--gog-toast-progress-height);
+  background: color-mix(
+    in srgb,
+    var(--toast-progress-color) var(--gog-toast-progress-opacity),
+    transparent
+  );
   transform-origin: left center;
   animation: gog-toast-progress var(--toast-duration) linear forwards;
 }

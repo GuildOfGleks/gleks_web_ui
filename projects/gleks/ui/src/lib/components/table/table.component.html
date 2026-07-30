@@ -1,7 +1,7 @@
 <div class="gog-table-wrapper gog-contained-layout">
   <div class="gog-table-scroll">
     <table
-      class="gog-table font-body"
+      class="gog-table"
       [class.gog-table--col-borders]="showColumnBorders()"
       [class.gog-table--loading]="loading()"
       [class.gog-table--slg]="size() === 'slg'"
@@ -25,11 +25,11 @@
       <thead>
         <tr>
           @if (showRowNumbers()) {
-            <th class="gog-table__th gog-table__th--num font-heading" scope="col">#</th>
+            <th class="gog-table__th gog-table__th--num" scope="col">#</th>
           }
           @for (col of columns(); track col.field()) {
             <th
-              class="gog-table__th font-heading"
+              class="gog-table__th"
               scope="col"
               [class.gog-table__th--sortable]="col.sortable() && !loading()"
               [class.gog-table__th--sorted]="getSortDirection(col.field())"
@@ -99,7 +99,7 @@
   @if (hasPagination() || showTotal()) {
     <div class="gog-table__footer">
       @if (showTotal()) {
-        <span class="gog-table__total font-body" [style.grid-area]="totalGridArea()">
+        <span class="gog-table__total" [style.grid-area]="totalGridArea()">
           Total: {{ value().length }}
         </span>
       }

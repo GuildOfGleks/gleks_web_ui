@@ -18,13 +18,13 @@
     assistive tech alike.
   -->
   @if (label()) {
-    <label class="gog-select__label font-heading" [id]="labelId()">{{ label() }}</label>
+    <label class="gog-select__label" [id]="labelId()">{{ label() }}</label>
   }
 
   <div class="gog-select__field">
     <button
       type="button"
-      class="gog-select__control font-body"
+      class="gog-select__control"
       [id]="triggerId()"
       [disabled]="isDisabled()"
       [attr.aria-labelledby]="label() ? labelId() : null"
@@ -56,7 +56,7 @@
   </div>
 
   @if (hasError()) {
-    <span class="gog-select__error font-body" [attr.id]="errorId()" role="alert">
+    <span class="gog-select__error" [attr.id]="errorId()" role="alert">
       {{ visibleError() }}
     </span>
   }
@@ -95,7 +95,7 @@
       -->
       <button
         type="button"
-        class="gog-select__option font-body"
+        class="gog-select__option"
         role="option"
         tabindex="-1"
         [attr.aria-selected]="isSelected(option.id)"

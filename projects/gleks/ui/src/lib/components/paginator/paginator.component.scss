@@ -1,6 +1,9 @@
+/*
+ * Page buttons are gog-button instances, so they follow the `--gog-btn-*` tokens.
+ * Only the row gap and the ellipsis are the paginator's own; both live in
+ * styles/theme.css as `--gog-paginator-*`.
+ */
 :host {
-  --gog-paginator-gap: 4px;
-
   display: flex;
   align-items: center;
   gap: var(--gog-paginator-gap);
@@ -11,8 +14,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  color: var(--muted-text-color);
-  font-size: var(--text-sm);
+  min-width: var(--gog-paginator-ellipsis-min-width);
+  color: var(--gog-paginator-ellipsis-color);
+  font-family: var(--gog-paginator-ellipsis-font-family);
+  font-size: var(--gog-paginator-ellipsis-font-size);
   user-select: none;
 }

@@ -16,7 +16,7 @@
     name at all whenever `label` was set, because that also suppresses the aria-label.
   -->
   @if (label()) {
-    <label class="gog-ms__label font-heading" [id]="labelId()">{{ label() }}</label>
+    <label class="gog-ms__label" [id]="labelId()">{{ label() }}</label>
   }
 
   <div
@@ -39,7 +39,7 @@
     (keydown.arrowdown)="onTriggerArrowKeydown($event)"
     (keydown.arrowup)="onTriggerArrowKeydown($event)"
   >
-    <span class="gog-ms__value font-body" [class.gog-ms__value--placeholder]="!selectedNames()">
+    <span class="gog-ms__value" [class.gog-ms__value--placeholder]="!selectedNames()">
       {{ selectedNames() || placeholder() }}
     </span>
 
@@ -65,7 +65,7 @@
   }
 
   @if (visibleError()) {
-    <span class="gog-ms__error font-body" role="alert">{{ visibleError() }}</span>
+    <span class="gog-ms__error" role="alert">{{ visibleError() }}</span>
   }
 </div>
 
@@ -107,7 +107,7 @@
         -->
         <button
           type="button"
-          class="gog-ms__option font-body"
+          class="gog-ms__option"
           role="option"
           tabindex="-1"
           [attr.aria-selected]="isSelected(option.id)"

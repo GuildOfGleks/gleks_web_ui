@@ -10,7 +10,10 @@
 
   <div class="themes-grid">
     @for (theme of themes; track theme.name) {
-      <article class="theme-panel theme-panel--{{ theme.name }}">
+      <!-- `data-theme` is the library's own theme hook, so the panel picks up the whole
+           theme — palette *and* the component tokens derived from it — from the global
+           [data-theme='…'] blocks in styles.scss. No per-panel token list needed. -->
+      <article class="theme-panel" [attr.data-theme]="theme.name">
         <header class="theme-panel__header">
           <p class="theme-panel__eyebrow">{{ theme.label }}</p>
           <h3>{{ theme.summary }}</h3>

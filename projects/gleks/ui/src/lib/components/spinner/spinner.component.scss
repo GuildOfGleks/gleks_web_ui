@@ -1,11 +1,18 @@
+/*
+ * `--gog-spinner-color` is the per-instance override: set it on (or above) a spinner to
+ * paint every layer one colour, the way gog-button does for its loading state. Left
+ * undeclared here so it stays an override; each layer's own default is a
+ * `--gog-spinner-*-color` token in styles/theme.css.
+ */
+
 /* ── Overlay ───────────────────────────────────────────────────────────── */
 .gog-spinner__overlay {
   position: fixed;
   inset: 0;
-  z-index: 8000;
-  background: var(--gog-spinner-overlay-bg, rgba(10, 8, 3, 0.65));
-  backdrop-filter: blur(3px);
-  animation: gog-spinner-fade-in 0.2s ease;
+  z-index: var(--gog-spinner-overlay-z);
+  background: var(--gog-spinner-overlay-bg);
+  backdrop-filter: blur(var(--gog-spinner-overlay-blur));
+  animation: gog-spinner-fade-in var(--gog-spinner-overlay-fade-duration) var(--gog-easing);
 }
 
 /* ── Sizes ─────────────────────────────────────────────────────────────── */
@@ -14,24 +21,24 @@
 }
 
 .gog-spinner__wrap--xsm {
-  width: var(--gog-spinner-size-xsm, 12px);
-  height: var(--gog-spinner-size-xsm, 12px);
+  width: var(--gog-spinner-size-xsm);
+  height: var(--gog-spinner-size-xsm);
 }
 .gog-spinner__wrap--sm {
-  width: var(--gog-spinner-size-sm, 18px);
-  height: var(--gog-spinner-size-sm, 18px);
+  width: var(--gog-spinner-size-sm);
+  height: var(--gog-spinner-size-sm);
 }
 .gog-spinner__wrap--md {
-  width: var(--gog-spinner-size-md, 48px);
-  height: var(--gog-spinner-size-md, 48px);
+  width: var(--gog-spinner-size-md);
+  height: var(--gog-spinner-size-md);
 }
 .gog-spinner__wrap--lg {
-  width: var(--gog-spinner-size-lg, 96px);
-  height: var(--gog-spinner-size-lg, 96px);
+  width: var(--gog-spinner-size-lg);
+  height: var(--gog-spinner-size-lg);
 }
 .gog-spinner__wrap--slg {
-  width: var(--gog-spinner-size-slg, 144px);
-  height: var(--gog-spinner-size-slg, 144px);
+  width: var(--gog-spinner-size-slg);
+  height: var(--gog-spinner-size-slg);
 }
 
 .gog-spinner__svg {
@@ -40,61 +47,61 @@
   overflow: visible;
 }
 
-/* ── Color tokens — override via --gog-spinner-color (e.g. inside a button) */
+/* ── Layer colours — override them all at once via --gog-spinner-color ──── */
 .gog-spinner__track {
-  stroke: var(--gog-spinner-color, var(--accent-dim));
-  opacity: 0.35;
+  stroke: var(--gog-spinner-color, var(--gog-spinner-track-color));
+  opacity: var(--gog-spinner-track-opacity);
 }
 
 .gog-spinner__arc-outer {
-  stroke: var(--gog-spinner-color, var(--accent-color));
-  stroke-dasharray: 100 63;
+  stroke: var(--gog-spinner-color, var(--gog-spinner-arc-outer-color));
+  stroke-dasharray: var(--gog-spinner-arc-outer-dash);
   transform-origin: 32px 32px;
   animation:
-    gog-spin-cw 1.4s linear infinite,
-    gog-arc-outer-pulse 2.8s ease-in-out infinite;
-  filter: drop-shadow(0 0 5px var(--gog-spinner-color, var(--accent-color)));
+    gog-spin-cw var(--gog-spinner-spin-duration) linear infinite,
+    gog-arc-outer-pulse var(--gog-spinner-pulse-duration) ease-in-out infinite;
+  filter: drop-shadow(0 0 var(--gog-spinner-arc-outer-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color)));
 }
 
 .gog-spinner__arc-inner {
-  stroke: var(--gog-spinner-color, var(--accent-bright));
-  stroke-dasharray: 35 78;
+  stroke: var(--gog-spinner-color, var(--gog-spinner-arc-inner-color));
+  stroke-dasharray: var(--gog-spinner-arc-inner-dash);
   transform-origin: 32px 32px;
   animation:
-    gog-spin-ccw 2s linear infinite,
-    gog-arc-inner-pulse 2.8s ease-in-out infinite;
-  filter: drop-shadow(0 0 4px var(--gog-spinner-color, var(--accent-bright)));
-  opacity: 0.75;
+    gog-spin-ccw var(--gog-spinner-spin-slow-duration) linear infinite,
+    gog-arc-inner-pulse var(--gog-spinner-pulse-duration) ease-in-out infinite;
+  filter: drop-shadow(0 0 var(--gog-spinner-arc-inner-glow) var(--gog-spinner-color, var(--gog-spinner-arc-inner-color)));
+  opacity: var(--gog-spinner-arc-inner-opacity);
 }
 
 /* ── Diamond tick group ─────────────────────────────────────────────────── */
 .gog-spinner__ticks {
   transform-origin: 32px 32px;
-  animation: gog-spin-ccw 6s linear infinite;
+  animation: gog-spin-ccw var(--gog-spinner-ticks-duration) linear infinite;
 }
 
 .gog-spinner__diamond {
-  fill: var(--gog-spinner-color, var(--accent-bright));
-  opacity: 0.85;
-  filter: drop-shadow(0 0 3px var(--gog-spinner-color, var(--accent-color)));
+  fill: var(--gog-spinner-color, var(--gog-spinner-diamond-color));
+  opacity: var(--gog-spinner-diamond-opacity);
+  filter: drop-shadow(0 0 var(--gog-spinner-diamond-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color)));
 }
 
 /* ── Inner rune ─────────────────────────────────────────────────────────── */
 .gog-spinner__rune-wrap {
-  animation: gog-rune-pulse 2.8s ease-in-out infinite;
-  filter: drop-shadow(0 0 6px var(--gog-spinner-color, var(--accent-color)));
+  animation: gog-rune-pulse var(--gog-spinner-pulse-duration) ease-in-out infinite;
+  filter: drop-shadow(0 0 var(--gog-spinner-rune-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color)));
 }
 
 .gog-spinner__rune {
-  font-family: var(--font-heading), serif;
-  fill: var(--gog-spinner-color, var(--accent-bright));
-  font-size: var(--gog-spinner-rune-size, 20px);
+  font-family: var(--gog-spinner-rune-font-family);
+  fill: var(--gog-spinner-color, var(--gog-spinner-rune-color));
+  font-size: var(--gog-spinner-rune-size);
 }
 
 /* xsm/sm — show all layers, just scale down via viewBox naturally */
 .gog-spinner__wrap--xsm .gog-spinner__arc-inner,
 .gog-spinner__wrap--sm .gog-spinner__arc-inner {
-  stroke-width: 1;
+  stroke-width: var(--gog-spinner-arc-inner-stroke-compact);
 }
 
 /* ── Ring variant — tapered conic ring, cut out via mask ──────────────────── */
@@ -103,15 +110,15 @@
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  padding: 16%;
+  padding: var(--gog-spinner-ring-padding);
   border-radius: 50%;
-  background: var(--gog-spinner-color, var(--accent-color));
+  background: var(--gog-spinner-color, var(--gog-spinner-arc-outer-color));
   -webkit-mask: var(--gog-spinner-ring-mask);
   mask: var(--gog-spinner-ring-mask);
   -webkit-mask-composite: source-out;
   mask-composite: subtract;
-  animation: gog-spin-cw 1s infinite linear;
-  filter: drop-shadow(0 0 5px var(--gog-spinner-color, var(--accent-color)));
+  animation: gog-spin-cw var(--gog-spinner-ring-duration) infinite linear;
+  filter: drop-shadow(0 0 var(--gog-spinner-ring-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color)));
   --gog-spinner-ring-mask:
     conic-gradient(#0000 10%, #000),
     linear-gradient(#000 0 0) content-box;
@@ -135,17 +142,17 @@
     opacity: 1;
   }
   50% {
-    opacity: 0.8;
+    opacity: var(--gog-spinner-arc-outer-pulse-opacity);
   }
 }
 
 @keyframes gog-arc-inner-pulse {
   0%,
   100% {
-    opacity: 0.75;
+    opacity: var(--gog-spinner-arc-inner-opacity);
   }
   50% {
-    opacity: 0.45;
+    opacity: var(--gog-spinner-arc-inner-pulse-opacity);
   }
 }
 
@@ -155,7 +162,7 @@
     opacity: 1;
   }
   50% {
-    opacity: 0.4;
+    opacity: var(--gog-spinner-rune-pulse-opacity);
   }
 }
 

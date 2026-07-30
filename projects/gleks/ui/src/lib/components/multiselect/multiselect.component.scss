@@ -1,30 +1,12 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-ms-padding-y, --gog-ms-padding-x, --gog-ms-font-size
+ *                            per-instance override, never declared here.
+ *   --gog-ms-size-<prop>     internal, set by the size classes below.
+ *   --field-<size>-<prop>    the shared field scale (input / select / multiselect).
+ * `md` is the default size, so every chain bottoms out at --field-md-*.
+ */
 .gog-ms-wrapper {
-  --gog-ms-gap: 4px;
-  --gog-ms-option-gap: 4px;
-  --gog-ms-options-padding: 4px;
-  --gog-ms-label-color: var(--accent-color);
-  --gog-ms-field-bg: var(--surface-color);
-  --gog-ms-field-border: var(--accent-dim);
-  --gog-ms-field-color: var(--text-color);
-  --gog-ms-value-color: var(--text-color);
-  --gog-ms-placeholder-color: var(--muted-text-color);
-  --gog-ms-focus-border: var(--accent-color);
-  --gog-ms-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
-  --gog-ms-error-color: var(--danger-color);
-  --gog-ms-border-color: var(--accent-color);
-  --gog-ms-panel-bg: var(--surface-color);
-  --gog-ms-panel-border: var(--accent-color);
-  --gog-ms-panel-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  --gog-ms-option-hover-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
-  --gog-ms-checkbox-border: var(--accent-dim);
-  --gog-ms-checkbox-bg: var(--background-color);
-  --gog-ms-checkbox-checked-bg: var(--accent-color);
-  --gog-ms-checkbox-checked-color: var(--primary-color);
-  --gog-ms-disabled-opacity: 0.4;
-  --gog-ms-padding-y: var(--control-padding-y, 10px);
-  --gog-ms-padding-x: var(--control-padding-x, 14px);
-  --gog-ms-font-size: var(--text-md);
-
   display: flex;
   flex-direction: column;
   gap: var(--gog-ms-gap);
@@ -32,35 +14,43 @@
   width: 100%;
 }
 
-.gog-ms-wrapper--xsm {
-  --gog-ms-padding-y: 4px;
-  --gog-ms-padding-x: 8px;
-  --gog-ms-font-size: var(--text-xs);
+/* Size modifiers — `md` needs no block, it is the fallback of every chain below.
+   The same tokens are set by .gog-ms__dropdown--<size> for the body-portalled panel,
+   which sits outside this subtree and so inherits from :root instead. */
+.gog-ms-wrapper--xsm,
+.gog-ms__dropdown--xsm {
+  --gog-ms-size-padding-y: var(--field-xsm-padding-y);
+  --gog-ms-size-padding-x: var(--field-xsm-padding-x);
+  --gog-ms-size-font-size: var(--field-xsm-font-size);
 }
 
-.gog-ms-wrapper--sm {
-  --gog-ms-padding-y: 6px;
-  --gog-ms-padding-x: 10px;
-  --gog-ms-font-size: var(--text-sm);
+.gog-ms-wrapper--sm,
+.gog-ms__dropdown--sm {
+  --gog-ms-size-padding-y: var(--field-sm-padding-y);
+  --gog-ms-size-padding-x: var(--field-sm-padding-x);
+  --gog-ms-size-font-size: var(--field-sm-font-size);
 }
 
-.gog-ms-wrapper--lg {
-  --gog-ms-padding-y: 14px;
-  --gog-ms-padding-x: 18px;
-  --gog-ms-font-size: var(--text-lg);
+.gog-ms-wrapper--lg,
+.gog-ms__dropdown--lg {
+  --gog-ms-size-padding-y: var(--field-lg-padding-y);
+  --gog-ms-size-padding-x: var(--field-lg-padding-x);
+  --gog-ms-size-font-size: var(--field-lg-font-size);
 }
 
-.gog-ms-wrapper--slg {
-  --gog-ms-padding-y: 18px;
-  --gog-ms-padding-x: 22px;
-  --gog-ms-font-size: 1.25rem;
+.gog-ms-wrapper--slg,
+.gog-ms__dropdown--slg {
+  --gog-ms-size-padding-y: var(--field-slg-padding-y);
+  --gog-ms-size-padding-x: var(--field-slg-padding-x);
+  --gog-ms-size-font-size: var(--field-slg-font-size);
 }
 
 .gog-ms__label {
-  font-size: var(--text-sm);
+  font-family: var(--gog-ms-label-font-family);
+  font-size: var(--gog-ms-label-font-size);
   color: var(--gog-ms-label-color);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  text-transform: var(--gog-ms-label-text-transform);
+  letter-spacing: var(--gog-ms-label-letter-spacing);
   cursor: pointer;
 }
 
@@ -68,17 +58,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--gog-ms-padding-y) var(--gog-ms-padding-x);
+  padding: var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--field-md-padding-y)))
+  var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--field-md-padding-x)));
   background-color: var(--gog-ms-field-bg);
-  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+  border: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
     var(--gog-ms-field-border);
-  border-radius: var(--radius);
+  border-radius: var(--gog-ms-radius);
   color: var(--gog-ms-field-color);
   cursor: pointer;
   user-select: none;
   transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    border-color var(--gog-ms-transition-duration) var(--gog-easing),
+    box-shadow var(--gog-ms-transition-duration) var(--gog-easing);
 }
 
 .gog-ms:hover:not(.gog-ms--disabled) {
@@ -86,13 +77,13 @@
 }
 
 .gog-ms:focus-visible {
-  outline: 3px solid var(--gog-ms-focus-ring);
-  outline-offset: 2px;
+  outline: var(--gog-ms-focus-ring-width) solid var(--gog-ms-focus-ring);
+  outline-offset: var(--gog-ms-focus-ring-offset);
 }
 
 .gog-ms--open {
   border-color: var(--gog-ms-border-color);
-  box-shadow: 0 0 8px var(--gog-ms-focus-ring);
+  box-shadow: var(--gog-ms-focus-glow);
 }
 
 .gog-ms--disabled {
@@ -109,7 +100,8 @@
 }
 
 .gog-ms__value {
-  font-size: var(--gog-ms-font-size);
+  font-family: var(--gog-ms-font-family);
+  font-size: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -124,25 +116,27 @@
 .gog-ms__actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--gog-ms-actions-gap);
   flex-shrink: 0;
 }
 
 .gog-ms__clear {
-  width: calc(var(--gog-ms-font-size) * 1);
-  height: calc(var(--gog-ms-font-size) * 1);
+  width: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
+  height: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
   padding: 0;
   border: 0;
-  border-radius: var(--gog-ms-clear-radius, 2px);
+  border-radius: var(--gog-ms-clear-radius);
   background: transparent;
   color: var(--gog-ms-placeholder-color);
   line-height: 1;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: color var(--gog-ms-transition-duration) var(--gog-easing);
 }
 
 .gog-ms__clear gog-icon {
-  font-size: calc(var(--gog-ms-font-size) * 0.7);
+  font-size: calc(
+    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size))) * var(--gog-ms-clear-icon-ratio)
+  );
 }
 
 .gog-ms__clear:hover {
@@ -150,22 +144,24 @@
 }
 
 .gog-ms__clear:focus-visible {
-  outline: 3px solid var(--gog-ms-focus-ring);
-  outline-offset: 2px;
+  outline: var(--gog-ms-focus-ring-width) solid var(--gog-ms-focus-ring);
+  outline-offset: var(--gog-ms-focus-ring-offset);
 }
 
 .gog-ms__arrow {
   color: var(--gog-ms-border-color);
-  transition: transform 0.2s ease;
+  transition: transform var(--gog-ms-arrow-transition-duration) var(--gog-easing);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: calc(var(--gog-ms-font-size) * 1);
-  height: calc(var(--gog-ms-font-size) * 1);
+  width: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
+  height: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
 }
 
 .gog-ms__arrow gog-icon {
-  font-size: calc(var(--gog-ms-font-size) * 0.875);
+  font-size: calc(
+    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size))) * var(--gog-ms-arrow-icon-ratio)
+  );
 }
 
 .gog-ms__arrow--up {
@@ -174,46 +170,29 @@
 
 .gog-ms__dropdown {
   position: absolute;
-  top: calc(100% + 2px);
+  top: calc(100% + var(--gog-ms-panel-offset));
   left: 0;
   right: 0;
-  z-index: var(--dropdown-z, 300);
+  z-index: var(--dropdown-z);
   background-color: var(--gog-ms-panel-bg);
-  border: var(--control-border-width, 2px) var(--control-border-style, solid)
+  border: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
     var(--gog-ms-panel-border);
-  border-radius: var(--radius);
-  max-height: 260px;
+  border-radius: var(--gog-ms-radius);
+  max-height: var(--gog-ms-panel-max-height);
   overflow-y: auto;
-  box-shadow: var(--panel-shadow);
+  box-shadow: var(--gog-ms-panel-shadow);
 }
 
 .gog-ms__dropdown--up {
   top: auto;
-  bottom: calc(100% + 2px);
+  bottom: calc(100% + var(--gog-ms-panel-offset));
 }
 
 .gog-ms__dropdown--portal {
-  /* The portal is appended straight to <body>, outside .gog-ms-wrapper's DOM subtree,
-     so it can't inherit these from the trigger — redeclare with the same defaults
-     and let --sm/--lg below override them, same as the .gog-ms-wrapper modifiers do.
-     Every --gog-ms-* token the panel, its controls row and its options read has to be
-     listed here; anything left out resolves to nothing, which is how the panel ended up
-     rendering with a transparent background over the page. */
-  --gog-ms-padding-y: var(--control-padding-y, 10px);
-  --gog-ms-padding-x: var(--control-padding-x, 14px);
-  --gog-ms-font-size: var(--text-md);
-  --gog-ms-panel-bg: var(--surface-color);
-  --gog-ms-panel-border: var(--accent-color);
-  --gog-ms-border-color: var(--accent-color);
-  --gog-ms-field-border: var(--accent-dim);
-  --gog-ms-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
-  --gog-ms-option-gap: 4px;
-  --gog-ms-options-padding: 4px;
-  --gog-ms-option-hover-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
-  --gog-ms-checkbox-border: var(--accent-dim);
-  --gog-ms-checkbox-checked-bg: var(--accent-color);
-  --gog-ms-checkbox-checked-color: var(--primary-color);
-
+  /* The portal is appended straight to <body>, outside .gog-ms-wrapper's DOM subtree.
+     Every colour and metric it paints with now lives on :root (styles/theme.css), so
+     it inherits them there; only the per-size tokens have to be restated, which the
+     .gog-ms__dropdown--<size> selectors above do. */
   position: fixed;
   top: unset;
   bottom: unset;
@@ -221,39 +200,15 @@
   right: unset;
 }
 
-.gog-ms__dropdown--portal.gog-ms__dropdown--xsm {
-  --gog-ms-padding-y: 4px;
-  --gog-ms-padding-x: 8px;
-  --gog-ms-font-size: var(--text-xs);
-}
-
-.gog-ms__dropdown--portal.gog-ms__dropdown--sm {
-  --gog-ms-padding-y: 6px;
-  --gog-ms-padding-x: 10px;
-  --gog-ms-font-size: var(--text-sm);
-}
-
-.gog-ms__dropdown--portal.gog-ms__dropdown--lg {
-  --gog-ms-padding-y: 14px;
-  --gog-ms-padding-x: 18px;
-  --gog-ms-font-size: var(--text-lg);
-}
-
-.gog-ms__dropdown--portal.gog-ms__dropdown--slg {
-  --gog-ms-padding-y: 18px;
-  --gog-ms-padding-x: 22px;
-  --gog-ms-font-size: 1.25rem;
-}
-
 .gog-ms__controls {
   position: sticky;
   top: 0;
   z-index: 1;
   display: flex;
-  gap: 4px;
-  padding: 6px 10px;
+  gap: var(--gog-ms-controls-gap);
+  padding: var(--gog-ms-controls-padding);
   background-color: var(--gog-ms-panel-bg);
-  border-bottom: var(--control-border-width, 2px) var(--control-border-style, solid)
+  border-bottom: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
     var(--gog-ms-field-border);
 }
 
@@ -261,7 +216,7 @@
   top: auto;
   bottom: 0;
   border-bottom: 0;
-  border-top: var(--control-border-width, 2px) var(--control-border-style, solid)
+  border-top: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
     var(--gog-ms-field-border);
 }
 
@@ -276,21 +231,23 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: var(--gog-ms-padding-y) var(--gog-ms-padding-x);
+  gap: var(--gog-ms-option-gap-inline);
+  padding: var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--field-md-padding-y)))
+  var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--field-md-padding-x)));
   border: 0;
   background: transparent;
   text-align: left;
   font: inherit;
-  font-size: var(--gog-ms-font-size);
+  font-family: var(--gog-ms-font-family);
+  font-size: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
   cursor: pointer;
-  border-radius: calc(var(--radius) - 2px);
-  transition: background-color 0.12s ease;
-  color: var(--text-color);
+  border-radius: var(--gog-ms-option-radius);
+  transition: background-color var(--gog-ms-option-transition-duration) var(--gog-easing);
+  color: var(--gog-ms-option-color);
 }
 
 .gog-ms__option--disabled {
-  opacity: 0.5;
+  opacity: var(--gog-ms-option-disabled-opacity);
   cursor: not-allowed;
 }
 
@@ -303,18 +260,24 @@
 }
 
 .gog-ms__option:focus-visible {
-  outline: 3px solid var(--gog-ms-focus-ring);
-  outline-offset: -3px;
+  outline: var(--gog-ms-focus-ring-width) solid var(--gog-ms-focus-ring);
+  outline-offset: calc(var(--gog-ms-focus-ring-width) * -1);
 }
 
 .gog-ms__option-mark {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: calc(var(--gog-ms-font-size) * 1.2375);
-  height: calc(var(--gog-ms-font-size) * 1.2375);
+  width: calc(
+    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size))) * var(--gog-ms-mark-size-ratio)
+  );
+  height: calc(
+    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size))) * var(--gog-ms-mark-size-ratio)
+  );
   flex-shrink: 0;
-  font-size: calc(var(--gog-ms-font-size) * 1.125);
+  font-size: calc(
+    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size))) * var(--gog-ms-mark-icon-ratio)
+  );
   color: var(--gog-ms-checkbox-border);
 }
 
@@ -323,9 +286,10 @@
 }
 
 .gog-ms__error {
-  font-size: var(--text-xs);
+  font-family: var(--gog-ms-font-family);
+  font-size: var(--gog-ms-error-font-size);
   color: var(--gog-ms-error-color);
-  margin-top: 2px;
+  margin-top: var(--gog-ms-error-offset);
 }
 
 @media (prefers-reduced-motion: reduce) {

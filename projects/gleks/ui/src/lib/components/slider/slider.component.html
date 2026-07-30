@@ -5,11 +5,11 @@
 >
   <div class="gog-slider__header">
     @if (label()) {
-      <label [attr.for]="inputId" class="gog-slider__label font-heading">{{ label() }}</label>
+      <label [attr.for]="inputId" class="gog-slider__label">{{ label() }}</label>
     }
 
     @if (showValue()) {
-      <span class="gog-slider__value font-mono">{{ clampedValue() }}</span>
+      <span class="gog-slider__value">{{ clampedValue() }}</span>
     }
   </div>
 
@@ -42,13 +42,13 @@
     />
   </div>
 
-  <div class="gog-slider__range-labels font-mono">
+  <div class="gog-slider__range-labels">
     <span>{{ min() }}</span>
     <span>{{ max() }}</span>
   </div>
 
   @if (hasError()) {
-    <span class="gog-slider__error font-body" [attr.id]="errorId()" role="alert">
+    <span class="gog-slider__error" [attr.id]="errorId()" role="alert">
       {{ visibleError() }}
     </span>
   }

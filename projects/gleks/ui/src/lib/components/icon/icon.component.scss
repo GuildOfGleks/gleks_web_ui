@@ -11,8 +11,8 @@
    still reaches it; the CSS below wins over the SVG's width/height attributes
    because presentational attributes have lower priority than author rules. */
 :host ::ng-deep svg {
-  width: var(--gog-icon-size, 1em);
-  height: var(--gog-icon-size, 1em);
+  width: var(--gog-icon-size, var(--gog-icon-fallback-size));
+  height: var(--gog-icon-size, var(--gog-icon-fallback-size));
   display: block;
   color: currentColor;
 }
@@ -20,5 +20,5 @@
 :host ::ng-deep svg path,
 :host ::ng-deep svg circle,
 :host ::ng-deep svg rect {
-  stroke-width: var(--gog-icon-stroke-width, 2);
+  stroke-width: var(--gog-icon-stroke-width);
 }

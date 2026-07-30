@@ -8,7 +8,7 @@
   [class.gog-input-wrapper--icon-end]="hasIconEnd()"
 >
   @if (label()) {
-    <label class="gog-input__label font-heading" [attr.for]="inputId() || null">{{
+    <label class="gog-input__label" [attr.for]="inputId() || null">{{
         label()
       }}</label>
   }
@@ -30,7 +30,7 @@
       }
     }
     <input
-      class="gog-input__field font-body"
+      class="gog-input__field"
       [class.gog-input__field--error]="hasError()"
       [attr.id]="inputId() || null"
       [type]="effectiveType()"
@@ -63,7 +63,7 @@
   </div>
   @if (visibleError()) {
     <span
-      class="gog-input__error font-body"
+      class="gog-input__error"
       [attr.id]="inputId() ? inputId() + '-error' : null"
       role="alert"
     >{{ visibleError() }}</span

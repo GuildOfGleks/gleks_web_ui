@@ -29,7 +29,7 @@
           (pointerdown)="startDrag($event, dialog)"
         >
           @if (dialog.config.title) {
-            <h2 [id]="getTitleId(dialog)" class="gog-dialog__title font-heading">
+            <h2 [id]="getTitleId(dialog)" class="gog-dialog__title">
               {{ dialog.config.title }}
             </h2>
           }

@@ -4,18 +4,39 @@
  * Every token the components read, with a working default, so the library renders
  * correctly from a single import and a consumer can override only what they care about.
  *
- * Structure:
- *   :root                      structural tokens + the light palette, so the components
- *                              work even with no `data-theme` attribute present
- *   :root[data-theme='light']  light palette (what ThemeService sets by default)
- *   :root[data-theme='dark']   dark palette
+ * ── The three layers ─────────────────────────────────────────────────────────────
+ *   1. Foundation  — palette, type scale, spacing, motion, focus. Restyles everything.
+ *   2. Component   — `--gog-<block>-*`. Every colour, font, border, radius, shadow,
+ *                    padding and duration each component paints with lives here, so a
+ *                    theme can restyle one component without touching its stylesheet.
+ *   3. Instance    — a handful of deliberately UNDECLARED tokens (`--gog-btn-bg`,
+ *                    `--gog-btn-padding`, `--gog-tag-bg`, …) that variant/size classes
+ *                    fall back through. Left unset on purpose: a value declared here
+ *                    would out-cascade the variant classes and pin every button to one
+ *                    look. Set them on an element to override a single instance.
  *
- * Only the palette and a couple of depth cues change per theme; sizing, spacing and
- * typography are declared once on :root and inherited by every theme. Declaring a theme
- * as `:root[data-theme='…']` only would drop the structural tokens for that theme.
+ * No component stylesheet declares a `--gog-*` default of its own — everything a
+ * component paints resolves to a token below.
  *
- * To add a theme, copy a palette block and change the attribute value — anything left
- * out falls back to the :root value.
+ * ── Why there are two blocks, and which one to add a token to ────────────────────
+ * A custom property's `var()` references are substituted on the element that *declares*
+ * it, not where it is read. So `--gog-btn-primary-bg: var(--accent-color)` declared on
+ * `:root` freezes to the root palette: a `data-theme` scope further down the tree could
+ * change `--accent-color` and buttons inside it would not follow.
+ *
+ *   `:root`             — literals only (and the light palette default). Values that
+ *                         reference nothing, so resolving them once at the root is right.
+ *   `:root, [data-theme]` — every token whose value reads another token. Re-declared on
+ *                         each theme scope so it re-derives from that scope's palette
+ *                         and metrics. **A new token that contains `var(` goes here.**
+ *
+ * ── Adding a theme ───────────────────────────────────────────────────────────────
+ * Declare a palette against the attribute value; the derived layer re-resolves for you:
+ *
+ *   :root[data-theme='mine'], [data-theme='mine'] { --accent-color: #ff4edb; }
+ *
+ * Listing both selectors makes the theme work at the root *and* on any subtree, so a
+ * single page can show several themes side by side.
  */
 
 :root {
@@ -43,9 +64,21 @@
   --space-2xl: 48px;
 
   --radius: 8px;
-  --panel-radius: calc(var(--radius) + 8px);
   --panel-border-width: 1px;
   --panel-border-style: solid;
+
+  /* ── Motion ──────────────────────────────────────────────────────────────────
+     Every component transition/animation is expressed in these. Set them to 0s to
+     flatten all motion theme-wide (components also honour prefers-reduced-motion). */
+  --gog-duration-fast: 0.12s;
+  --gog-duration-base: 0.15s;
+  --gog-duration-slow: 0.2s;
+  --gog-easing: ease;
+
+  /* ── Focus & disabled ───────────────────────────────────────────────────────── */
+  --gog-focus-ring-width: 3px;
+  --gog-focus-ring-offset: 2px;
+  --gog-disabled-opacity: 0.4;
 
   /* ── Control metrics ─────────────────────────────────────────────────────────
      Five-tier scale: xsm/slg bookend the original sm/md/lg (restored below to
@@ -86,6 +119,30 @@
   --btn-lg-font-size: 1.125rem;
   --btn-slg-font-size: 1.25rem;
 
+  /* ── Field sizing (input / select / multiselect share one scale) ───────────── */
+  --field-xsm-padding-y: 4px;
+  --field-xsm-padding-x: 8px;
+  --field-xsm-icon-offset: 6px;
+  --field-xsm-icon-inset: 24px;
+
+  --field-sm-padding-y: 6px;
+  --field-sm-padding-x: 10px;
+  --field-sm-icon-offset: 8px;
+  --field-sm-icon-inset: 30px;
+
+  --field-md-icon-inset: 36px;
+
+  --field-lg-padding-y: 14px;
+  --field-lg-padding-x: 18px;
+  --field-lg-icon-offset: 14px;
+  --field-lg-icon-inset: 44px;
+
+  --field-slg-padding-y: 18px;
+  --field-slg-padding-x: 22px;
+  --field-slg-font-size: 1.25rem;
+  --field-slg-icon-offset: 18px;
+  --field-slg-icon-inset: 52px;
+
   /* ── Icon & spinner ───────────────────────────────────────────────────────── */
   --gog-icon-size: 1.2em;
   --gog-icon-stroke-width: 2;
@@ -109,6 +166,7 @@
      Baseline for dropdown panels. gog-dialog re-declares this on its own panel so
      dropdowns opened inside a dialog stack above it. */
   --dropdown-z: 300;
+  --gog-spinner-overlay-z: 8000;
 
   /* ── Light palette (also the no-data-theme default) ───────────────────────── */
   color-scheme: light;
@@ -133,7 +191,9 @@
   --gog-spinner-overlay-bg: rgba(246, 240, 230, 0.75);
 }
 
-:root[data-theme='light'] {
+
+:root[data-theme='light'],
+[data-theme='light'] {
   color-scheme: light;
 
   /* Фоновые и поверхностные тона (Тёплый пергамент) */
@@ -165,7 +225,8 @@
   --gog-spinner-overlay-bg: rgba(246, 240, 230, 0.75);
 }
 
-:root[data-theme='dark'] {
+:root[data-theme='dark'],
+[data-theme='dark'] {
   color-scheme: dark;
 
   /* Фоновые и поверхностные тона (Тёмная обсидиановая кузница) */
@@ -195,4 +256,682 @@
 
   --panel-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
   --gog-spinner-overlay-bg: rgba(15, 13, 10, 0.75);
+}
+
+/*
+ * ── Derived layer ───────────────────────────────────────────────────────────────
+ * Re-declared on every theme scope so each one re-derives from its own palette and
+ * metrics. Everything here reads another token; nothing here is a bare literal.
+ */
+:root,
+[data-theme] {
+  /* ── Derived foundation tokens ───────────────────────────────────────────────
+     Split out of the literal block above because they read other tokens: they have
+     to re-resolve inside each theme scope. */
+  --panel-radius: calc(var(--radius) + 8px);
+  --field-xsm-font-size: var(--text-xs);
+  --field-sm-font-size: var(--text-sm);
+  --field-md-padding-y: var(--control-padding-y);
+  --field-md-padding-x: var(--control-padding-x);
+  --field-md-font-size: var(--text-md);
+  --field-md-icon-offset: var(--control-icon-offset);
+  --field-lg-font-size: var(--text-lg);
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     COMPONENT TOKENS
+     Everything below is what an individual component paints with. Override a block
+     to restyle just that component; the values themselves all derive from the
+     foundation tokens above, so a palette swap carries through for free.
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  /* ── Accordion ─────────────────────────────────────────────────────────────── */
+  --gog-accordion-font-family: var(--font-heading);
+  --gog-accordion-body-font-family: var(--font-body);
+  --gog-accordion-border-color: var(--accent-dim);
+  --gog-accordion-border-width: var(--control-border-width);
+  --gog-accordion-border-style: var(--control-border-style);
+  --gog-accordion-text-color: var(--text-color);
+  --gog-accordion-accent-color: var(--accent-color);
+  --gog-accordion-hover-bg: color-mix(in srgb, var(--accent-dim) 10%, transparent);
+  --gog-accordion-hover-ring: color-mix(in srgb, var(--accent-color) 30%, transparent);
+  --gog-accordion-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-accordion-body-color: var(--text-color);
+  --gog-accordion-body-line-height: 1.6;
+  --gog-accordion-header-text-transform: uppercase;
+  --gog-accordion-header-gap: 12px;
+  --gog-accordion-disabled-opacity: 0.5;
+  --gog-accordion-transition-duration: var(--gog-duration-base);
+  --gog-accordion-body-transition-duration: var(--gog-duration-slow);
+  --gog-accordion-chevron-transition-duration: var(--gog-duration-slow);
+  --gog-accordion-body-lift: -2px;
+  /* Flat by default — corner rounding is a look, not a given; consumers who want it
+     opt in per-instance or theme-wide by overriding these two. */
+  --gog-accordion-radius: 0px;
+  --gog-accordion-body-radius: 0px;
+  --gog-accordion-header-bg: transparent;
+  /* A subtle black wash over whatever sits behind the accordion, so the body always
+     reads slightly darker than the header regardless of the surrounding surface color. */
+  --gog-accordion-body-bg: color-mix(in srgb, black 6%, transparent);
+  --gog-accordion-skeleton-start: var(--accent-dim);
+  --gog-accordion-skeleton-mid: color-mix(in srgb, var(--accent-dim) 50%, transparent);
+  --gog-accordion-skeleton-end: var(--accent-dim);
+  --gog-accordion-skeleton-radius: 2px;
+  --gog-accordion-skeleton-height: 12px;
+  --gog-accordion-skeleton-width: 55%;
+  --gog-accordion-skeleton-duration: 1.4s;
+  /* Per-size metrics. `lg` is the default size. */
+  --gog-accordion-xsm-padding-y: 4px;
+  --gog-accordion-xsm-padding-x: 8px;
+  --gog-accordion-xsm-font-size: var(--text-xs);
+  --gog-accordion-xsm-letter-spacing: 0.2px;
+  --gog-accordion-xsm-content-gap: 2px;
+  --gog-accordion-xsm-body-font-size: var(--text-xs);
+  --gog-accordion-xsm-body-line-height: 1.5;
+  --gog-accordion-xsm-body-padding-top: 4px;
+  --gog-accordion-xsm-body-padding-bottom: 6px;
+  --gog-accordion-xsm-chevron-size: 11px;
+  --gog-accordion-xsm-chevron-font-size: 10px;
+
+  --gog-accordion-sm-padding-y: 6px;
+  --gog-accordion-sm-padding-x: 10px;
+  --gog-accordion-sm-font-size: var(--text-xs);
+  --gog-accordion-sm-letter-spacing: 0.4px;
+  --gog-accordion-sm-content-gap: 2px;
+  --gog-accordion-sm-body-font-size: var(--text-xs);
+  --gog-accordion-sm-body-line-height: var(--gog-accordion-body-line-height);
+  --gog-accordion-sm-body-padding-top: 6px;
+  --gog-accordion-sm-body-padding-bottom: 8px;
+  --gog-accordion-sm-chevron-size: 13px;
+  --gog-accordion-sm-chevron-font-size: 12px;
+
+  --gog-accordion-md-padding-y: 10px;
+  --gog-accordion-md-padding-x: 14px;
+  --gog-accordion-md-font-size: var(--text-xs);
+  --gog-accordion-md-letter-spacing: 0.8px;
+  --gog-accordion-md-content-gap: 2px;
+  --gog-accordion-md-body-font-size: var(--text-sm);
+  --gog-accordion-md-body-line-height: var(--gog-accordion-body-line-height);
+  --gog-accordion-md-body-padding-top: 8px;
+  --gog-accordion-md-body-padding-bottom: 12px;
+  --gog-accordion-md-chevron-size: 15px;
+  --gog-accordion-md-chevron-font-size: 14px;
+
+  --gog-accordion-lg-padding-y: 14px;
+  --gog-accordion-lg-padding-x: 16px;
+  --gog-accordion-lg-font-size: var(--text-sm);
+  --gog-accordion-lg-letter-spacing: 0.8px;
+  --gog-accordion-lg-content-gap: 4px;
+  --gog-accordion-lg-body-font-size: var(--text-md);
+  --gog-accordion-lg-body-line-height: var(--gog-accordion-body-line-height);
+  --gog-accordion-lg-body-padding-top: 12px;
+  --gog-accordion-lg-body-padding-bottom: 16px;
+  --gog-accordion-lg-chevron-size: 18px;
+  --gog-accordion-lg-chevron-font-size: 16px;
+
+  --gog-accordion-slg-padding-y: 18px;
+  --gog-accordion-slg-padding-x: 18px;
+  --gog-accordion-slg-font-size: var(--text-md);
+  --gog-accordion-slg-letter-spacing: 0.8px;
+  --gog-accordion-slg-content-gap: 4px;
+  --gog-accordion-slg-body-font-size: var(--text-lg);
+  --gog-accordion-slg-body-line-height: var(--gog-accordion-body-line-height);
+  --gog-accordion-slg-body-padding-top: 16px;
+  --gog-accordion-slg-body-padding-bottom: 20px;
+  --gog-accordion-slg-chevron-size: 20px;
+  --gog-accordion-slg-chevron-font-size: 18px;
+
+  /* ── Button ────────────────────────────────────────────────────────────────
+     `--gog-btn-bg`, `--gog-btn-color`, `--gog-btn-border`, `--gog-btn-shadow`,
+     `--gog-btn-hover-bg`, `--gog-btn-hover-shadow`, `--gog-btn-padding` and
+     `--gog-btn-font-size` are intentionally NOT declared — they are the per-instance
+     escape hatch the variant/size classes fall back through. */
+  --gog-btn-font-family: var(--font-heading);
+  --gog-btn-font-weight: 900;
+  --gog-btn-letter-spacing: 1px;
+  --gog-btn-text-transform: uppercase;
+  --gog-btn-line-height: 1;
+  --gog-btn-gap: var(--space-sm);
+  --gog-btn-radius: var(--radius);
+  --gog-btn-border-width: var(--control-border-width);
+  --gog-btn-border-style: var(--control-border-style);
+  --gog-btn-transition-duration: var(--gog-duration-base);
+  --gog-btn-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-btn-focus-ring-offset: 3px;
+  --gog-btn-active-scale: 0.97;
+  --gog-btn-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-btn-loading-opacity: 0.7;
+  --gog-btn-spinner-max-size: 70%;
+
+  --gog-btn-primary-bg: var(--accent-color);
+  --gog-btn-primary-color: var(--accent-text-color, var(--primary-color));
+  --gog-btn-primary-border: transparent;
+  --gog-btn-primary-shadow: none;
+  --gog-btn-primary-hover-bg: var(--accent-bright);
+  --gog-btn-primary-hover-color: var(--gog-btn-primary-color);
+  --gog-btn-primary-hover-shadow: 0 0 16px color-mix(in srgb, var(--accent-bright) 45%, transparent);
+  --gog-btn-primary-spinner-color: var(--text-color);
+
+  --gog-btn-secondary-bg: var(--secondary-color);
+  --gog-btn-secondary-color: var(--accent-text-color, var(--primary-color));
+  --gog-btn-secondary-border: transparent;
+  --gog-btn-secondary-shadow: none;
+  --gog-btn-secondary-hover-bg: var(--accent-color);
+  --gog-btn-secondary-hover-color: var(--gog-btn-secondary-color);
+  --gog-btn-secondary-hover-shadow: none;
+  --gog-btn-secondary-spinner-color: var(--text-color);
+
+  --gog-btn-outline-bg: transparent;
+  --gog-btn-outline-color: var(--accent-color);
+  --gog-btn-outline-border: var(--accent-color);
+  --gog-btn-outline-shadow: none;
+  --gog-btn-outline-hover-bg: var(--accent-color);
+  --gog-btn-outline-hover-color: var(--primary-color);
+  --gog-btn-outline-hover-shadow: none;
+  --gog-btn-outline-spinner-color: var(--accent-color);
+
+  --gog-btn-ghost-bg: transparent;
+  --gog-btn-ghost-color: var(--accent-color);
+  --gog-btn-ghost-border: transparent;
+  --gog-btn-ghost-shadow: none;
+  --gog-btn-ghost-hover-bg: color-mix(in srgb, var(--accent-color) 12%, transparent);
+  --gog-btn-ghost-hover-color: var(--gog-btn-ghost-color);
+  --gog-btn-ghost-hover-shadow: none;
+  --gog-btn-ghost-spinner-color: var(--accent-color);
+
+  /* ── Checkbox ──────────────────────────────────────────────────────────────
+     Box/label/icon size and padding come from the `--control-checkbox-*` scale;
+     checkbox.component.ts maps the `size` input onto the host. */
+  --gog-checkbox-font-family: var(--font-body);
+  --gog-checkbox-gap: 10px;
+  --gog-checkbox-radius: var(--radius);
+  --gog-checkbox-border-width: var(--control-border-width);
+  --gog-checkbox-border-style: var(--control-border-style);
+  --gog-checkbox-border-color: var(--accent-dim);
+  --gog-checkbox-bg: var(--surface-color);
+  --gog-checkbox-checked-bg: var(--accent-color);
+  --gog-checkbox-checked-border: var(--accent-color);
+  --gog-checkbox-icon-color: var(--accent-text-color, var(--primary-color));
+  --gog-checkbox-label-color: var(--muted-text-color);
+  --gog-checkbox-label-line-height: 1.3;
+  --gog-checkbox-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
+  --gog-checkbox-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-checkbox-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-checkbox-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-checkbox-transition-duration: var(--gog-duration-base);
+  --gog-checkbox-dash-width-ratio: 0.45;
+  --gog-checkbox-dash-height: 2px;
+  --gog-checkbox-dash-radius: 999px;
+
+  /* ── Chip ──────────────────────────────────────────────────────────────────
+     `--gog-chip-*` size tokens below are the per-size scale; the unsuffixed
+     `--gog-chip-font-size`/`-padding-*`/`-gap`/`-avatar-size`/`-icon-size`/
+     `-remove-size` are left undeclared as the per-instance escape hatch. */
+  --gog-chip-font-family: inherit;
+  --gog-chip-bg: color-mix(in srgb, var(--surface-color) 88%, var(--hover-color));
+  --gog-chip-hover-bg: color-mix(in srgb, var(--hover-color) 45%, var(--surface-color));
+  --gog-chip-border: var(--border-color);
+  --gog-chip-border-width: 1px;
+  --gog-chip-border-style: solid;
+  --gog-chip-color: var(--text-color);
+  --gog-chip-font-weight: 500;
+  --gog-chip-line-height: 1.2;
+  --gog-chip-radius: max(var(--radius), 2px);
+  --gog-chip-pill-radius: 9999px;
+  --gog-chip-remove-color: var(--muted-text-color);
+  --gog-chip-remove-hover-color: var(--text-color);
+  --gog-chip-remove-scale: 1.1;
+  --gog-chip-avatar-inset-ratio: 0.9;
+  --gog-chip-remove-inset-ratio: 0.85;
+  --gog-chip-disabled-opacity: 0.55;
+  --gog-chip-focus-ring-width: 2px;
+  --gog-chip-focus-ring-offset: var(--gog-focus-ring-offset);
+
+  --gog-chip-xsm-font-size: 0.6875rem;
+  --gog-chip-xsm-padding-block: 0.225rem;
+  --gog-chip-xsm-padding-inline: 0.375rem;
+  --gog-chip-xsm-gap: 0.275rem;
+  --gog-chip-xsm-avatar-size: 0.875rem;
+  --gog-chip-xsm-icon-size: 0.6875rem;
+  --gog-chip-xsm-remove-size: 0.75rem;
+
+  --gog-chip-sm-font-size: 0.75rem;
+  --gog-chip-sm-padding-block: 0.3rem;
+  --gog-chip-sm-padding-inline: 0.5rem;
+  --gog-chip-sm-gap: 0.375rem;
+  --gog-chip-sm-avatar-size: 1rem;
+  --gog-chip-sm-icon-size: 0.75rem;
+  --gog-chip-sm-remove-size: 0.875rem;
+
+  --gog-chip-md-font-size: 0.875rem;
+  --gog-chip-md-padding-block: 0.45rem;
+  --gog-chip-md-padding-inline: 0.75rem;
+  --gog-chip-md-gap: 0.5rem;
+  --gog-chip-md-avatar-size: 1.25rem;
+  --gog-chip-md-icon-size: 0.875rem;
+  --gog-chip-md-remove-size: 1rem;
+
+  --gog-chip-lg-font-size: 1rem;
+  --gog-chip-lg-padding-block: 0.6rem;
+  --gog-chip-lg-padding-inline: 0.875rem;
+  --gog-chip-lg-gap: 0.625rem;
+  --gog-chip-lg-avatar-size: 1.5rem;
+  --gog-chip-lg-icon-size: 1rem;
+  --gog-chip-lg-remove-size: 1.125rem;
+
+  --gog-chip-slg-font-size: 1.125rem;
+  --gog-chip-slg-padding-block: 0.75rem;
+  --gog-chip-slg-padding-inline: 1rem;
+  --gog-chip-slg-gap: 0.75rem;
+  --gog-chip-slg-avatar-size: 1.75rem;
+  --gog-chip-slg-icon-size: 1.125rem;
+  --gog-chip-slg-remove-size: 1.25rem;
+
+  /* ── Dialog ────────────────────────────────────────────────────────────────── */
+  --gog-dialog-font-family: var(--font-heading);
+  /* Deliberately a flat value rather than a palette derivation: the scrim has to read
+     the same over any page content. Restate it per theme if a lighter wash suits. */
+  --gog-dialog-backdrop-bg: rgba(10, 8, 3, 0.72);
+  --gog-dialog-backdrop-blur: 2px;
+  --gog-dialog-backdrop-padding: var(--space-lg);
+  --gog-dialog-backdrop-fade-duration: var(--gog-duration-base);
+  --gog-dialog-enter-duration: var(--gog-duration-slow);
+  --gog-dialog-enter-distance: -12px;
+  --gog-dialog-bg: var(--surface-color);
+  --gog-dialog-color: var(--text-color);
+  --gog-dialog-border: var(--border-color);
+  --gog-dialog-border-width: var(--panel-border-width);
+  --gog-dialog-border-style: var(--panel-border-style);
+  --gog-dialog-radius: var(--radius);
+  --gog-dialog-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+  --gog-dialog-min-width: 320px;
+  --gog-dialog-max-height: 90vh;
+  --gog-dialog-header-padding: 16px 20px 14px;
+  --gog-dialog-header-gap: 12px;
+  --gog-dialog-header-border-color: var(--border-color);
+  --gog-dialog-body-padding: 20px;
+  --gog-dialog-body-max-height: calc(var(--gog-dialog-max-height) - 60px);
+  --gog-dialog-close-size: 2rem;
+  --gog-dialog-close-font-size: 0.875rem;
+  --gog-dialog-close-color: var(--muted-text-color);
+  --gog-dialog-close-hover-color: var(--text-color);
+  --gog-dialog-close-hover-bg: color-mix(in srgb, var(--hover-color) 70%, transparent);
+  --gog-dialog-close-hover-border: var(--border-color);
+  --gog-dialog-close-focus-ring: var(--accent-color);
+  --gog-dialog-close-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-dialog-close-focus-ring-offset: var(--gog-focus-ring-offset);
+
+  /* Confirmation dialog */
+  --gog-confirm-gap: 12px;
+  --gog-confirm-min-width: 320px;
+  --gog-confirm-max-width: 440px;
+  --gog-confirm-color: var(--text-color);
+  --gog-confirm-description-color: var(--muted-text-color);
+  --gog-confirm-actions-gap: var(--space-sm);
+  --gog-confirm-actions-offset: var(--space-sm);
+
+  /* ── Icon ──────────────────────────────────────────────────────────────────── */
+  --gog-icon-fallback-size: 1em;
+
+  /* ── Input field ───────────────────────────────────────────────────────────── */
+  --gog-input-font-family: var(--font-body);
+  --gog-input-label-font-family: var(--font-heading);
+  --gog-input-gap: 4px;
+  --gog-input-label-color: var(--accent-color);
+  --gog-input-label-font-size: var(--text-sm);
+  --gog-input-label-letter-spacing: 1px;
+  --gog-input-label-text-transform: uppercase;
+  --gog-input-field-bg: var(--surface-color);
+  --gog-input-field-border: var(--accent-dim);
+  --gog-input-field-border-width: var(--control-border-width);
+  --gog-input-field-border-style: var(--control-border-style);
+  --gog-input-radius: var(--radius);
+  --gog-input-field-color: var(--text-color);
+  --gog-input-placeholder-color: var(--muted-text-color);
+  --gog-input-focus-border: var(--accent-color);
+  --gog-input-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
+  --gog-input-focus-glow: 0 0 8px var(--gog-input-focus-ring);
+  --gog-input-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-input-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-input-error-color: var(--danger-color);
+  --gog-input-error-font-size: var(--text-xs);
+  --gog-input-error-offset: 2px;
+  --gog-input-icon-color: var(--muted-text-color);
+  --gog-input-icon-hover-color: var(--accent-color);
+  --gog-input-icon-action-radius: 4px;
+  --gog-input-icon-focus-ring-width: 2px;
+  --gog-input-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-input-transition-duration: var(--gog-duration-base);
+
+  /* ── Multiselect ───────────────────────────────────────────────────────────── */
+  --gog-ms-font-family: var(--font-body);
+  --gog-ms-label-font-family: var(--font-heading);
+  --gog-ms-gap: 4px;
+  --gog-ms-option-gap: 4px;
+  --gog-ms-options-padding: 4px;
+  --gog-ms-label-color: var(--accent-color);
+  --gog-ms-label-font-size: var(--text-sm);
+  --gog-ms-label-letter-spacing: 1px;
+  --gog-ms-label-text-transform: uppercase;
+  --gog-ms-field-bg: var(--surface-color);
+  --gog-ms-field-border: var(--accent-dim);
+  --gog-ms-field-border-width: var(--control-border-width);
+  --gog-ms-field-border-style: var(--control-border-style);
+  --gog-ms-radius: var(--radius);
+  --gog-ms-field-color: var(--text-color);
+  --gog-ms-value-color: var(--text-color);
+  --gog-ms-placeholder-color: var(--muted-text-color);
+  --gog-ms-focus-border: var(--accent-color);
+  --gog-ms-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
+  --gog-ms-focus-glow: 0 0 8px var(--gog-ms-focus-ring);
+  --gog-ms-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-ms-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-ms-error-color: var(--danger-color);
+  --gog-ms-error-font-size: var(--text-xs);
+  --gog-ms-error-offset: 2px;
+  --gog-ms-border-color: var(--accent-color);
+  --gog-ms-panel-bg: var(--surface-color);
+  --gog-ms-panel-border: var(--accent-color);
+  --gog-ms-panel-shadow: var(--panel-shadow);
+  --gog-ms-panel-max-height: 260px;
+  --gog-ms-panel-offset: 2px;
+  --gog-ms-option-hover-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  --gog-ms-option-color: var(--text-color);
+  --gog-ms-option-gap-inline: 10px;
+  --gog-ms-option-radius: calc(var(--radius) - 2px);
+  --gog-ms-option-disabled-opacity: 0.5;
+  --gog-ms-option-transition-duration: var(--gog-duration-fast);
+  --gog-ms-checkbox-border: var(--accent-dim);
+  --gog-ms-checkbox-bg: var(--background-color);
+  --gog-ms-checkbox-checked-bg: var(--accent-color);
+  --gog-ms-checkbox-checked-color: var(--primary-color);
+  --gog-ms-controls-gap: 4px;
+  --gog-ms-controls-padding: 6px 10px;
+  --gog-ms-actions-gap: 6px;
+  --gog-ms-clear-radius: 2px;
+  --gog-ms-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-ms-transition-duration: var(--gog-duration-base);
+  --gog-ms-arrow-transition-duration: var(--gog-duration-slow);
+  /* Icon geometry, expressed as a ratio of the control's font size. */
+  --gog-ms-clear-icon-ratio: 0.7;
+  --gog-ms-arrow-icon-ratio: 0.875;
+  --gog-ms-mark-size-ratio: 1.2375;
+  --gog-ms-mark-icon-ratio: 1.125;
+
+  /* ── Paginator ─────────────────────────────────────────────────────────────── */
+  --gog-paginator-gap: 4px;
+  --gog-paginator-ellipsis-color: var(--muted-text-color);
+  --gog-paginator-ellipsis-font-size: var(--text-sm);
+  --gog-paginator-ellipsis-font-family: var(--font-body);
+  --gog-paginator-ellipsis-min-width: 32px;
+
+  /* ── Select ────────────────────────────────────────────────────────────────── */
+  --gog-select-font-family: var(--font-body);
+  --gog-select-label-font-family: var(--font-heading);
+  --gog-select-gap: 4px;
+  --gog-select-label-color: var(--accent-color);
+  --gog-select-label-font-size: var(--text-sm);
+  --gog-select-label-letter-spacing: 1px;
+  --gog-select-label-text-transform: uppercase;
+  --gog-select-field-bg: var(--surface-color);
+  --gog-select-field-border: var(--accent-dim);
+  --gog-select-field-border-width: var(--control-border-width);
+  --gog-select-field-border-style: var(--control-border-style);
+  --gog-select-radius: var(--radius);
+  --gog-select-field-color: var(--text-color);
+  --gog-select-placeholder-color: var(--muted-text-color);
+  --gog-select-focus-border: var(--accent-color);
+  --gog-select-focus-ring: color-mix(in srgb, var(--accent-color) 25%, transparent);
+  --gog-select-focus-glow: 0 0 8px var(--gog-select-focus-ring);
+  --gog-select-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-select-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-select-error-color: var(--danger-color);
+  --gog-select-error-font-size: var(--text-xs);
+  --gog-select-chevron-color: var(--accent-color);
+  --gog-select-chevron-inset: 40px;
+  --gog-select-control-gap: 12px;
+  --gog-select-panel-bg: var(--surface-color);
+  --gog-select-panel-shadow: var(--panel-shadow);
+  --gog-select-panel-max-height: 260px;
+  --gog-select-panel-offset: 2px;
+  --gog-select-option-hover-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  --gog-select-option-selected-color: var(--accent-color);
+  --gog-select-option-color: var(--text-color);
+  --gog-select-option-gap: 10px;
+  --gog-select-option-disabled-opacity: 0.5;
+  --gog-select-option-transition-duration: var(--gog-duration-fast);
+  /* Icon geometry, expressed as a ratio of the control's font size. */
+  --gog-select-chevron-icon-ratio: 0.875;
+  --gog-select-mark-size-ratio: 1.125;
+  --gog-select-mark-icon-ratio: 0.875;
+  --gog-select-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-select-transition-duration: var(--gog-duration-base);
+
+  /* ── Skeleton ─────────────────────────────────────────────────────────────── */
+  --gog-skeleton-base: color-mix(in srgb, var(--border-color) 40%, var(--surface-color));
+  --gog-skeleton-shine: color-mix(in srgb, var(--gog-skeleton-base), white 35%);
+  --gog-skeleton-radius: var(--radius);
+  --gog-skeleton-square-radius: 0px;
+  --gog-skeleton-line-radius: calc(var(--gog-skeleton-radius) / 2);
+  --gog-skeleton-line-gap: var(--space-sm);
+  --gog-skeleton-short-line-width: 60%;
+  --gog-skeleton-pulse-duration: 1.6s;
+  --gog-skeleton-pulse-min-opacity: 0.5;
+  --gog-skeleton-wave-duration: 1.6s;
+  --gog-skeleton-line-height-xsm: 8px;
+  --gog-skeleton-line-height-sm: 10px;
+  --gog-skeleton-line-height-md: 14px;
+  --gog-skeleton-line-height-lg: 18px;
+  --gog-skeleton-line-height-slg: 24px;
+  --gog-skeleton-circle-size-xsm: 24px;
+  --gog-skeleton-circle-size-sm: 32px;
+  --gog-skeleton-circle-size-md: 48px;
+  --gog-skeleton-circle-size-lg: 64px;
+  --gog-skeleton-circle-size-slg: 96px;
+  --gog-skeleton-rect-height-xsm: 40px;
+  --gog-skeleton-rect-height-sm: 64px;
+  --gog-skeleton-rect-height-md: 120px;
+  --gog-skeleton-rect-height-lg: 200px;
+  --gog-skeleton-rect-height-slg: 320px;
+
+  /* ── Slider ───────────────────────────────────────────────────────────────── */
+  --gog-slider-label-font-family: var(--font-heading);
+  --gog-slider-value-font-family: var(--font-mono);
+  --gog-slider-error-font-family: var(--font-body);
+  --gog-slider-gap: 6px;
+  --gog-slider-label-color: var(--accent-color);
+  --gog-slider-label-font-size: var(--text-sm);
+  --gog-slider-label-letter-spacing: 1px;
+  --gog-slider-label-text-transform: uppercase;
+  --gog-slider-value-color: var(--accent-color);
+  --gog-slider-value-font-size: var(--text-sm);
+  --gog-slider-value-min-width: 40px;
+  --gog-slider-track-height: 4px;
+  --gog-slider-track-area-height: 20px;
+  --gog-slider-track-radius: 0px;
+  --gog-slider-track-bg: var(--accent-dim);
+  --gog-slider-fill-bg: var(--accent-color);
+  --gog-slider-thumb-size: 16px;
+  --gog-slider-thumb-bg: var(--accent-color);
+  --gog-slider-thumb-border: var(--background-color);
+  --gog-slider-thumb-border-width: 2px;
+  --gog-slider-thumb-radius: 50%;
+  --gog-slider-thumb-shadow: color-mix(in srgb, var(--accent-bright) 40%, transparent);
+  --gog-slider-thumb-glow-size: 6px;
+  --gog-slider-focus-ring: color-mix(in srgb, var(--accent-color) 30%, transparent);
+  --gog-slider-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-slider-range-color: var(--muted-text-color);
+  --gog-slider-range-font-size: var(--text-xs);
+  --gog-slider-error-color: var(--danger-color);
+  --gog-slider-error-font-size: var(--text-xs);
+  --gog-slider-disabled-opacity: var(--gog-disabled-opacity);
+
+  /* ── Spinner ──────────────────────────────────────────────────────────────── */
+  --gog-spinner-rune-font-family: var(--font-heading);
+  --gog-spinner-track-color: var(--accent-dim);
+  --gog-spinner-arc-outer-color: var(--accent-color);
+  --gog-spinner-arc-inner-color: var(--accent-bright);
+  --gog-spinner-diamond-color: var(--accent-bright);
+  --gog-spinner-rune-color: var(--accent-bright);
+  --gog-spinner-glow-color: var(--accent-color);
+  --gog-spinner-track-opacity: 0.35;
+  --gog-spinner-arc-inner-opacity: 0.75;
+  --gog-spinner-diamond-opacity: 0.85;
+  --gog-spinner-arc-outer-pulse-opacity: 0.8;
+  --gog-spinner-arc-inner-pulse-opacity: 0.45;
+  --gog-spinner-rune-pulse-opacity: 0.4;
+  --gog-spinner-arc-outer-dash: 100 63;
+  --gog-spinner-arc-inner-dash: 35 78;
+  --gog-spinner-arc-inner-stroke-compact: 1;
+  --gog-spinner-spin-duration: 1.4s;
+  --gog-spinner-spin-slow-duration: 2s;
+  --gog-spinner-ticks-duration: 6s;
+  --gog-spinner-pulse-duration: 2.8s;
+  --gog-spinner-ring-duration: 1s;
+  --gog-spinner-ring-padding: 16%;
+  --gog-spinner-arc-outer-glow: 5px;
+  --gog-spinner-arc-inner-glow: 4px;
+  --gog-spinner-diamond-glow: 3px;
+  --gog-spinner-rune-glow: 6px;
+  --gog-spinner-ring-glow: 5px;
+  --gog-spinner-overlay-blur: 3px;
+  --gog-spinner-overlay-fade-duration: var(--gog-duration-slow);
+
+  /* ── Table ────────────────────────────────────────────────────────────────── */
+  --gog-table-font-family: var(--font-body);
+  --gog-table-header-font-family: var(--font-heading);
+  --gog-table-numeric-font-family: var(--font-mono);
+  --gog-table-gap: 12px;
+  --gog-table-border-color: var(--accent-dim);
+  --gog-table-border-width: 2px;
+  --gog-table-border-style: solid;
+  --gog-table-row-border-width: 1px;
+  --gog-table-surface: var(--surface-color);
+  --gog-table-text-color: var(--text-color);
+  --gog-table-accent-color: var(--accent-color);
+  --gog-table-accent-bright: var(--accent-bright);
+  --gog-table-hover-bg: var(--accent-pale);
+  --gog-table-muted-color: var(--muted-text-color);
+  --gog-table-focus-ring: var(--accent-color);
+  --gog-table-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-table-header-letter-spacing: 1px;
+  --gog-table-header-text-transform: uppercase;
+  --gog-table-num-col-width: 48px;
+  --gog-table-th-inner-gap: 6px;
+  --gog-table-sort-icon-size: 0.9em;
+  --gog-table-sort-icon-width: 1.1em;
+  --gog-table-sort-icon-opacity: 0.6;
+  --gog-table-empty-padding: 24px 14px;
+  --gog-table-empty-font-size: var(--text-md);
+  --gog-table-loading-padding: 32px 14px;
+  --gog-table-loading-opacity: 0.5;
+  --gog-table-row-transition-duration: var(--gog-duration-fast);
+  --gog-table-footer-gap: var(--space-sm);
+  --gog-table-footer-min-height: 32px;
+  --gog-table-total-font-size: var(--text-xs);
+  --gog-table-total-letter-spacing: 0.5px;
+  --gog-table-total-text-transform: uppercase;
+  --gog-table-num-font-size: var(--text-xs);
+  --gog-table-padding-h: 14px;
+  --gog-table-xsm-padding-v: 2px;
+  --gog-table-xsm-th-font-size: var(--text-xs);
+  --gog-table-xsm-td-font-size: var(--text-xs);
+  --gog-table-sm-padding-v: 3px;
+  --gog-table-sm-th-font-size: var(--text-xs);
+  --gog-table-sm-td-font-size: var(--text-xs);
+  --gog-table-md-padding-v: 6px;
+  --gog-table-md-th-font-size: var(--text-xs);
+  --gog-table-md-td-font-size: var(--text-sm);
+  --gog-table-lg-padding-v: 10px;
+  --gog-table-lg-th-font-size: var(--text-sm);
+  --gog-table-lg-td-font-size: var(--text-md);
+  --gog-table-slg-padding-v: 14px;
+  --gog-table-slg-th-font-size: var(--text-md);
+  --gog-table-slg-td-font-size: var(--text-lg);
+
+  /* ── Tag ──────────────────────────────────────────────────────────────────
+     Like the button, the unsuffixed `--gog-tag-bg`/`-border`/`-color`/`-font-size`
+     and friends stay undeclared so variant and size classes can fall through them. */
+  --gog-tag-font-family: inherit;
+  --gog-tag-default-color: var(--info-color, var(--muted-text-color));
+  --gog-tag-success-color: var(--success-color);
+  --gog-tag-danger-color: var(--danger-color);
+  --gog-tag-warning-color: var(--warning-color);
+  --gog-tag-info-color: var(--info-color);
+  --gog-tag-bg-mix: 10%;
+  --gog-tag-color-mix: 82%;
+  --gog-tag-bg-base: var(--surface-color);
+  --gog-tag-color-base: black;
+  --gog-tag-border-width: 1px;
+  --gog-tag-border-style: solid;
+  --gog-tag-inner-border-width: 1px;
+  --gog-tag-font-weight: 600;
+  --gog-tag-line-height: 1;
+  --gog-tag-radius: max(var(--radius), 2px);
+  --gog-tag-pill-radius: 9999px;
+
+  --gog-tag-xsm-font-size: 0.6875rem;
+  --gog-tag-xsm-padding-block: 0.1875rem;
+  --gog-tag-xsm-padding-inline: 0.375rem;
+  --gog-tag-xsm-gap: 0.1875rem;
+  --gog-tag-xsm-icon-size: 0.6875rem;
+
+  --gog-tag-sm-font-size: 0.75rem;
+  --gog-tag-sm-padding-block: 0.25rem;
+  --gog-tag-sm-padding-inline: 0.5rem;
+  --gog-tag-sm-gap: 0.25rem;
+  --gog-tag-sm-icon-size: 0.75rem;
+
+  --gog-tag-md-font-size: 0.875rem;
+  --gog-tag-md-padding-block: 0.375rem;
+  --gog-tag-md-padding-inline: 0.75rem;
+  --gog-tag-md-gap: 0.375rem;
+  --gog-tag-md-icon-size: 0.875rem;
+
+  --gog-tag-lg-font-size: 1rem;
+  --gog-tag-lg-padding-block: 0.5rem;
+  --gog-tag-lg-padding-inline: 0.875rem;
+  --gog-tag-lg-gap: 0.5rem;
+  --gog-tag-lg-icon-size: 1rem;
+
+  --gog-tag-slg-font-size: 1.125rem;
+  --gog-tag-slg-padding-block: 0.625rem;
+  --gog-tag-slg-padding-inline: 1rem;
+  --gog-tag-slg-gap: 0.625rem;
+  --gog-tag-slg-icon-size: 1.125rem;
+
+  /* ── Toast ────────────────────────────────────────────────────────────────── */
+  --gog-toast-font-family: var(--font-body);
+  --gog-toast-bg: var(--surface-color);
+  --gog-toast-color: var(--text-color);
+  --gog-toast-border: var(--accent-color);
+  --gog-toast-icon-color: var(--accent-color);
+  --gog-toast-success-color: var(--success-color);
+  --gog-toast-error-color: var(--danger-color);
+  --gog-toast-warning-color: var(--accent-bright);
+  --gog-toast-info-color: var(--accent-color);
+  --gog-toast-accent-width: 4px;
+  --gog-toast-padding: 12px 14px;
+  --gog-toast-radius: 0px;
+  --gog-toast-content-gap: 10px;
+  --gog-toast-main-gap: var(--space-sm);
+  --gog-toast-actions-gap: 6px;
+  --gog-toast-message-font-size: var(--text-sm);
+  --gog-toast-message-line-height: 1.5;
+  --gog-toast-icon-size: 1rem;
+  --gog-toast-icon-line-height: 1.4;
+  --gog-toast-action-padding: 0.25rem 0.5rem;
+  --gog-toast-action-font-size: 0.75rem;
+  --gog-toast-close-padding: 0.125rem 0.25rem;
+  --gog-toast-close-font-size: 0.75rem;
+  --gog-toast-progress-height: 3px;
+  --gog-toast-progress-opacity: 30%;
+  --gog-toast-transition-duration: 0.25s;
+  --gog-toast-base-z: 100;
+  /* Card-stack geometry */
+  --gog-toast-stack-peek: 14px;
+  --gog-toast-stack-scale-step: 0.06;
+  --gog-toast-stack-expanded-gap: 84px;
+  --gog-toast-stack-min-opacity: 0.4;
+  --gog-toast-stack-opacity-step: 0.18;
+  --gog-toast-stack-max-depth: 6;
 }
