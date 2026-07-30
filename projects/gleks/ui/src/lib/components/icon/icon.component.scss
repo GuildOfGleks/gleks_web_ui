@@ -5,14 +5,20 @@
   line-height: 0;
 }
 
-::ng-deep .gog-icon__svg {
+/* Icon markup is injected via [innerHTML] (see icon.component.ts), so it never
+   receives Angular's emulated-encapsulation content attribute and carries its
+   own hardcoded width/height. Target the raw <svg> tag with ::ng-deep so this
+   still reaches it; the CSS below wins over the SVG's width/height attributes
+   because presentational attributes have lower priority than author rules. */
+:host ::ng-deep svg {
   width: var(--gog-icon-size, 1em);
   height: var(--gog-icon-size, 1em);
   display: block;
   color: currentColor;
 }
 
-::ng-deep .gog-icon__svg path,
-::ng-deep .gog-icon__svg circle {
+:host ::ng-deep svg path,
+:host ::ng-deep svg circle,
+:host ::ng-deep svg rect {
   stroke-width: var(--gog-icon-stroke-width, 2);
 }
