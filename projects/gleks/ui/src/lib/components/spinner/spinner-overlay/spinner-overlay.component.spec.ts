@@ -52,4 +52,12 @@ describe('SpinnerOverlayComponent', () => {
 
     expect(fixture.nativeElement.querySelector('.gog-spinner-overlay__content')).toBeTruthy();
   });
+
+  it('should pass the variant through to the inner spinner', () => {
+    fixture.componentRef.setInput('loading', true);
+    fixture.componentRef.setInput('variant', 'ring');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.gog-spinner__ring')).toBeTruthy();
+  });
 });

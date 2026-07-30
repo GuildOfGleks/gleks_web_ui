@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { GogSize } from '../../../shared/types';
+import { GogSize, GogSpinnerVariant } from '../../../shared/types';
 import { SpinnerComponent } from '../spinner.component';
 
 @Component({
@@ -18,4 +18,5 @@ export class SpinnerOverlayComponent {
   readonly loading = input(false);
   readonly size = input<GogSize>('md');
   readonly ariaLabel = input('Loading');
+  readonly variant = input<GogSpinnerVariant>('runic');
 }

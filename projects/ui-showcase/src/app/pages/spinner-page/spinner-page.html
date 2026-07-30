@@ -20,14 +20,60 @@
   </article>
 
   <article class="card">
+    <h3>Variants</h3>
+    <p class="lead">
+      Two built-in presets ship with <code>gog-spinner</code> — pick one via the
+      <code>variant</code> input. <code>runic</code> is the original branded spinner;
+      <code>ring</code> is a plain tapered ring for a more neutral look.
+    </p>
+    <div class="spinner-grid">
+      @for (variant of variants; track variant) {
+        <div class="spinner-tile">
+          <gog-spinner [variant]="variant" size="lg" [ariaLabel]="'Loading, ' + variant + ' variant'" />
+          <span class="meta">{{ variant.toUpperCase() }}</span>
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Custom variant</h3>
+    <p class="lead">
+      Need your own look entirely? Set <code>variant="custom"</code> and project any markup —
+      it inherits the size wrapper, overlay behaviour, and picks up
+      <code>--gog-spinner-color</code> like the built-in presets.
+    </p>
+    <div class="spinner-grid">
+      <div class="spinner-tile">
+        <gog-spinner variant="custom" size="lg" ariaLabel="Loading, custom variant">
+          <div class="custom-dots-loader">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </gog-spinner>
+        <span class="meta">CUSTOM</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Overlay mode</h3>
-    <p class="lead">Wrap any section to block interaction while data is loading.</p>
+    <p class="lead">
+      Wrap any section to block interaction while data is loading. <code>gog-spinner-overlay</code>
+      also accepts <code>variant</code>, forwarded straight to the inner <code>gog-spinner</code>.
+    </p>
     <div class="action-row">
       <gog-button variant="primary" type="button" (gogClick)="previewOverlay()">
         Preview overlay
       </gog-button>
     </div>
-    <gog-spinner-overlay [loading]="showOverlay()" size="lg" ariaLabel="Loading showcase content">
+    <gog-spinner-overlay
+      [loading]="showOverlay()"
+      size="lg"
+      variant="ring"
+      ariaLabel="Loading showcase content"
+    >
       <div class="spinner-overlay-panel">
         <p class="meta">
           This area can be a card, a sidebar, or any custom section the consumer chooses.

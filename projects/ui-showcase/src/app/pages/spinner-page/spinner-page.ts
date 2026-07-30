@@ -1,5 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
-import { ButtonComponent, GogSize, SpinnerComponent, SpinnerOverlayComponent } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  GogSize,
+  GogSpinnerVariant,
+  SpinnerComponent,
+  SpinnerOverlayComponent,
+} from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-spinner-page',
@@ -12,6 +18,7 @@ export class SpinnerPage implements OnDestroy {
   protected readonly showOverlay = signal(false);
   protected readonly showFullscreenOverlay = signal(false);
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
+  protected readonly variants: GogSpinnerVariant[] = ['runic', 'ring'];
   private overlayTimer: ReturnType<typeof setTimeout> | null = null;
   private fullscreenTimer: ReturnType<typeof setTimeout> | null = null;
 
