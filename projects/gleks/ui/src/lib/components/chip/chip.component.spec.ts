@@ -50,6 +50,16 @@ describe('ChipComponent', () => {
     expect(surface.style.cursor).toBe('default');
   });
 
+  it('should drop the hover affordance class when not clickable', () => {
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.classList.contains('gog-chip--clickable')).toBe(true);
+
+    fixture.componentRef.setInput('clickable', false);
+    fixture.detectChanges();
+    expect(host.classList.contains('gog-chip--clickable')).toBe(false);
+  });
+
   it('should render avatar and remove button when configured', () => {
     fixture.componentRef.setInput('avatarUrl', 'https://example.com/avatar.png');
     fixture.componentRef.setInput('removable', true);
@@ -110,15 +120,13 @@ describe('ChipComponent', () => {
     expect(clickSpy).not.toHaveBeenCalled();
   });
 
-  it('should not emit gogRemove when disabled', () => {
-    const removeSpy = vi.fn();
-    component.gogRemove.subscribe(removeSpy);
+  it('should not render remove button when disabled', () => {
     fixture.componentRef.setInput('removable', true);
     fixture.componentRef.setInput('disabled', true);
     fixture.detectChanges();
 
-    const removeButton = fixture.nativeElement.querySelector('.gog-chip__remove') as HTMLButtonElement;
-    expect(removeButton.disabled).toBe(true);
+    const removeButton = fixture.nativeElement.querySelector('.gog-chip__remove');
+    expect(removeButton).toBeNull();
   });
 
   it('should support pill shape', () => {

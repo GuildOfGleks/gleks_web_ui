@@ -20,12 +20,11 @@
     <ng-content></ng-content>
   </span>
 
-  @if (removable()) {
+  @if (removable() && !disabled()) {
     <button
       class="gog-chip__remove"
       type="button"
       [attr.aria-label]="removeAriaLabel()"
-      [disabled]="disabled()"
       (click)="onRemoveClick($event)"
     >
       <gog-icon name="close" />

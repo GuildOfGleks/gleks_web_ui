@@ -42,7 +42,7 @@
   outline-offset: 2px;
 }
 
-.gog-chip__surface:hover:not([aria-disabled='true']) {
+:host(.gog-chip--clickable) .gog-chip__surface:hover:not([aria-disabled='true']) {
   background-color: color-mix(in srgb, var(--hover-color) 45%, var(--surface-color));
 }
 
@@ -94,10 +94,6 @@
 .gog-chip__remove:focus-visible {
   outline: 2px solid var(--gog-chip-border);
   outline-offset: 2px;
-}
-
-.gog-chip__remove:disabled {
-  cursor: default;
 }
 
 :host(.gog-chip--xsm) .gog-chip__surface {

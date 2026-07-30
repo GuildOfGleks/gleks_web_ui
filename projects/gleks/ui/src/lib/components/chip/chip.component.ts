@@ -35,6 +35,7 @@ export class ChipComponent {
       `gog-chip--${this.shape()}`,
       this.removable() ? 'gog-chip--removable' : null,
       this.disabled() ? 'gog-chip--disabled' : 'gog-chip--interactive',
+      this.clickable() ? 'gog-chip--clickable' : null,
       this.avatarUrl() ? 'gog-chip--has-avatar' : null,
       this.iconName() ? 'gog-chip--has-icon' : null,
     ]
@@ -58,7 +59,6 @@ export class ChipComponent {
 
   protected onRemoveClick(event: MouseEvent): void {
     event.stopPropagation();
-    if (this.disabled()) return;
     this.gogRemove.emit();
   }
 }
