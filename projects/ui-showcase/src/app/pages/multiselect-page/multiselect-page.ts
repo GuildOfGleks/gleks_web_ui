@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { CheckboxComponent, GogMultiselectOption, GogSize, MultiselectComponent } from '@gleks/ui';
+import { CheckboxComponent, GogMultiselectOption, GogSize, MultiselectComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-multiselect-page',

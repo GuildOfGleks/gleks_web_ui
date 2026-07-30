@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ChipComponent } from '@gleks/ui';
+import { ChipComponent } from '@guildofgleks/ui';
 
 interface ChipPerson {
   name: string;

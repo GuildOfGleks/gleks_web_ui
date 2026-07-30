@@ -8,7 +8,7 @@ import {
   ToastPosition,
   ToastService,
   ToastType,
-} from '@gleks/ui';
+} from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-toast-page',

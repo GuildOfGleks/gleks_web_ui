@@ -5,7 +5,7 @@ import {
   InputfieldComponent,
   ToastContainerComponent,
   ToastService,
-} from '@gleks/ui';
+} from '@guildofgleks/ui';
 
 type AuthMode = 'login' | 'register' | 'reset';
 

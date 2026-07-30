@@ -1,13 +1,18 @@
 ---
-description: 'Authoring guide for the @gleks/ui component library (Angular v21)'
+description: 'Authoring guide for the @guildofgleks/ui component library (Angular v21)'
 applyTo: 'projects/gleks/ui/**'
 ---
 
-# @gleks/ui — Library Authoring Guide
+# @guildofgleks/ui — Library Authoring Guide
 
 This library exists to guarantee a **consistent, reusable UI across all future Gleks
-projects**. Everything here is a distributable package (`@gleks/ui`, built with
-`ng-packagr`), so treat every change as public API that another team will depend on.
+projects**. Everything here is a distributable package built with `ng-packagr`, so treat
+every change as public API that another team will depend on.
+
+**Two names, one package.** It is published to npm as **`@guildofgleks/ui`** — that is what
+consumers install and import. **`@gleks/ui`** is the workspace-internal project name used by
+the CLI (`ng build @gleks/ui`, `ng test @gleks/ui`) and is also mapped as an import alias.
+Use the published name in anything a consumer will read: README, examples, showcase code.
 
 Read this together with `general.instructions.md`. The rules below are derived from
 `angular.json` and the existing conventions in `projects/gleks/ui`. When they conflict
@@ -16,7 +21,8 @@ with a generic recommendation, **these win**.
 ## Workspace facts (from `angular.json`)
 
 - **Angular v21** (`@angular/*@^21.2`), TypeScript `~5.9`, strict mode.
-- Library project `@gleks/ui`, `root: projects/gleks/ui`, `sourceRoot: .../src`.
+- Library project `@gleks/ui` (published as `@guildofgleks/ui`), `root: projects/gleks/ui`,
+  `sourceRoot: .../src`.
 - **Selector prefix: `gog`** (e.g. `gog-button`, `gog-spinner`).
 - **Styles: `scss`** — every component uses a `styleUrl` `.scss` file.
 - **Change detection: `OnPush`** and **`standalone: true`** are enforced by schematics.

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { ButtonComponent, DIALOG_DATA, DIALOG_REF, DialogRef, GogTagVariant, TagComponent } from '@gleks/ui';
+import { ButtonComponent, DIALOG_DATA, DIALOG_REF, DialogRef, GogTagVariant, TagComponent } from '@guildofgleks/ui';
 
 export interface ProductQuickviewData {
   name: string;

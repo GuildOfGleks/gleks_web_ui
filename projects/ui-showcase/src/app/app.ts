@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { ButtonComponent, ThemeService } from '@gleks/ui';
+import { ButtonComponent, ThemeService } from '@guildofgleks/ui';
 
 import { showcaseThemes, type ShowcaseThemeName } from './showcase-themes';
 

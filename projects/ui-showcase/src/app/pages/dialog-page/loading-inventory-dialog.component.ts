@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { ButtonComponent, SpinnerComponent } from '@gleks/ui';
-import { DIALOG_REF, type DialogRef } from '@gleks/ui';
+import { ButtonComponent, SpinnerComponent } from '@guildofgleks/ui';
+import { DIALOG_REF, type DialogRef } from '@guildofgleks/ui';
 
 interface InventorySnapshot {
   location: string;

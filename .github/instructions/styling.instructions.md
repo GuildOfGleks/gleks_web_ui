@@ -1,9 +1,9 @@
 ---
-description: 'SCSS & theming conventions for @gleks/ui'
+description: 'SCSS & theming conventions for @guildofgleks/ui'
 applyTo: 'projects/gleks/ui/**/*.scss'
 ---
 
-# @gleks/ui — Styling & Theming
+# @guildofgleks/ui — Styling & Theming
 
 Consistent styling is what makes the library feel like one product across projects.
 Every component `.scss` file follows the rules below. See

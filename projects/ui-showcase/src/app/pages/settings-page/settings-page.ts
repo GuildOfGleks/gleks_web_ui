@@ -12,7 +12,7 @@ import {
   SliderComponent,
   ToastContainerComponent,
   ToastService,
-} from '@gleks/ui';
+} from '@guildofgleks/ui';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

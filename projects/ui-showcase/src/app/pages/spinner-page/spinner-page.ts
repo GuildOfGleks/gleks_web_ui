@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
-import { ButtonComponent, GogSize, SpinnerComponent, SpinnerOverlayComponent } from '@gleks/ui';
+import { ButtonComponent, GogSize, SpinnerComponent, SpinnerOverlayComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-spinner-page',

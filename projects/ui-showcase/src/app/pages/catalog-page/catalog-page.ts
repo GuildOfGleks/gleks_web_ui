@@ -14,7 +14,7 @@ import {
   TagComponent,
   ToastContainerComponent,
   ToastService,
-} from '@gleks/ui';
+} from '@guildofgleks/ui';
 import { ProductQuickviewDialogComponent } from './product-quickview-dialog.component';
 
 type StockLevel = 'in-stock' | 'low-stock' | 'out-of-stock';

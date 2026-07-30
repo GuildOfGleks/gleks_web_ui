@@ -5,7 +5,7 @@ import {
   DialogComponent,
   DialogService,
   ToastService,
-} from '@gleks/ui';
+} from '@guildofgleks/ui';
 import {
   LoadingInventoryDialogComponent,
 } from './loading-inventory-dialog.component';

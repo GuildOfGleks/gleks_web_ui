@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
-import { ButtonComponent, Column, GogSize, GogTagVariant, TableComponent, TagComponent, TemplateDirective } from '@gleks/ui';
+import { ButtonComponent, Column, GogSize, GogTagVariant, TableComponent, TagComponent, TemplateDirective } from '@guildofgleks/ui';
 
 interface DemoRow {
   component: string;

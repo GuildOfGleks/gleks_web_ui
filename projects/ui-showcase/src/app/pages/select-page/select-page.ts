@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { CheckboxComponent, GogSelectOption, GogSize, SelectComponent } from '@gleks/ui';
+import { CheckboxComponent, GogSelectOption, GogSize, SelectComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-select-page',

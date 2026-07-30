@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { ButtonComponent, SliderComponent } from '@gleks/ui';
+import { ButtonComponent, SliderComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-slider-page',

@@ -16,7 +16,7 @@ import {
   TemplateDirective,
   ToastContainerComponent,
   ToastService,
-} from '@gleks/ui';
+} from '@guildofgleks/ui';
 
 type MemberStatus = 'active' | 'invited' | 'suspended';
 

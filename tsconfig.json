@@ -4,6 +4,15 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
+      /*
+       * Both names resolve to the same build output.
+       *
+       * `@guildofgleks/ui` is the published npm name — the showcase imports through it so
+       * the example code on its pages is exactly what a consumer writes, copy-paste and all.
+       * `@gleks/ui` is the workspace-internal project name (`ng build @gleks/ui`) and is
+       * kept as an alias so existing imports and CLI commands keep working.
+       */
+      "@guildofgleks/ui": ["./dist/gleks/ui"],
       "@gleks/ui": ["./dist/gleks/ui"]
     },
     "strict": true,
