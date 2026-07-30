@@ -33,7 +33,7 @@ describe('CheckboxComponent', () => {
     expect(component.checked()).toBe(true);
   });
 
-  // The host vars are deliberately `var(--control-checkbox-*, <default>)` rather than
+  // The host vars are deliberately `var(--gog-control-checkbox-*, <default>)` rather than
   // resolved pixel values: that is what lets a consumer re-scale every checkbox in the
   // app by defining one app-level token, while still getting a sane size if they don't.
   it('should expose the configured size token', () => {

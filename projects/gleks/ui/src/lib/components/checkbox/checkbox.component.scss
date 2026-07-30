@@ -1,7 +1,7 @@
 .gog-checkbox {
   /*
    * Sizing variables (box/label/icon size) and padding are set on the host
-   * element in checkbox.component.ts from the `--control-checkbox-*` scale and
+   * element in checkbox.component.ts from the `--gog-control-checkbox-*` scale and
    * must NOT be redeclared here: a declaration on this element would always win
    * over the value inherited from the host, pinning every checkbox to the same
    * dimensions regardless of `size()`. Everything else resolves to a

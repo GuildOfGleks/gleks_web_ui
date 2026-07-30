@@ -44,8 +44,10 @@ reached 1.0, so breaking changes may land in minor versions.
   panel-height estimation instead of the unused base default, fixing a latent
   under-estimate in the panel's up/down placement math.
 
-## [0.1.0]
+## [0.0.1] through 0.2.2
 
-Initial baseline: accordion, button, checkbox, chip, dialog, icon, inputfield,
-multiselect, paginator, select, skeleton, slider, spinner, table, tag and toast
-components, plus the shared theme (`styles/theme.css`) and `ThemeService`.
+Initial development, published as `0.0.1`: accordion, button, checkbox, chip, dialog,
+icon, inputfield, multiselect, paginator, select, skeleton, slider, spinner, table, tag
+and toast components, plus the shared theme (`styles/theme.css`) and `ThemeService`.
+Versions up to `0.2.2` were developed without per-release changelog entries; this file
+starts tracking changes from `Unreleased` onward.

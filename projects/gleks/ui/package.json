@@ -1,6 +1,9 @@
 {
   "name": "@guildofgleks/ui",
-  "version": "0.1.0",
+  "version": "0.2.2",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "description": "A lightweight Angular 21 component library — standalone, signal-based, OnPush, with no CDK or Material dependency.",
   "keywords": [
     "angular",
@@ -13,15 +16,6 @@
     "standalone",
     "accessible"
   ],
-  "homepage": "https://github.com/Balthazariy/gleks_web_ui#readme",
-  "bugs": {
-    "url": "https://github.com/Balthazariy/gleks_web_ui/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Balthazariy/gleks_web_ui.git",
-    "directory": "projects/gleks/ui"
-  },
   "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^21.2.0",

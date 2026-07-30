@@ -94,7 +94,7 @@
  * here — the showcase has to render exactly what a fresh install renders, so anything
  * declared for those two attribute values would be masking `styles/theme.css` rather
  * than exercising it. (The blocks that used to sit here re-skinned dark with a
- * different palette and re-declared --control-border-* with the library's own values.)
+ * different palette and re-declared --gog-control-border-* with the library's own values.)
  *
  * The three below are *additional* themes, not overrides: they exist only in the
  * showcase and only touch foundation tokens, which is exactly the extension path the

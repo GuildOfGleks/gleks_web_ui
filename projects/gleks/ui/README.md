@@ -1,14 +1,41 @@
-# @guildofgleks/ui
+![NPM Version](https://img.shields.io/npm/v/@guildofgleks/ui?color=red)
+![Node Version](https://img.shields.io/node/v/@guildofgleks/ui)
+![Angular 21+](https://img.shields.io/badge/Angular-21%2B-dd0031?logo=angular)
+![NPM Downloads](https://img.shields.io/npm/dm/@guildofgleks/ui)
+![License](https://img.shields.io/npm/l/@guildofgleks/ui)
 
-A lightweight Angular component library. No CDK, no Material — the only runtime
+A lightweight Angular 21 component library. No CDK, no Material — the only runtime
 dependencies are `@angular/core`, `@angular/common` and `@angular/forms`.
 
-Requires **Angular 21**. Every component is standalone, `OnPush`, and signal-based.
+**Tags:** angular, angular21, components, ui-library, design-system, signals, standalone, accessible
+
+## Features
+
+- 16 standalone components — accordion, button, checkbox, chip, dialog, icon,
+  inputfield, multiselect, paginator, select, skeleton, slider, spinner, table, tag,
+  toast — plus `DialogService`, `ToastService` and `ThemeService`.
+- Signal-based API throughout: `input()` / `output()` / `model()`, `OnPush` change
+  detection, no NgModules.
+- No CDK, no Material — a small dependency footprint on top of `@angular/core`,
+  `@angular/common` and `@angular/forms`.
+- Full theming through CSS custom properties: restyle any component, swap the whole
+  palette, or ship light/dark and custom themes at runtime via a `data-theme` attribute.
+- `ControlValueAccessor` on every form control (checkbox, inputfield, select,
+  multiselect, slider) — works with `formControl`, `formControlName` and `ngModel`.
+- Accessible by default: keyboard navigation, ARIA attributes, WCAG AA contrast.
 
 ## Install
 
+npm:
+
 ```bash
 npm install @guildofgleks/ui
+```
+
+yarn:
+
+```bash
+yarn add @guildofgleks/ui
 ```
 
 ## Setup
@@ -66,9 +93,9 @@ so a palette swap carries through without touching anything else.
 | Motion | `--gog-duration-fast`, `--gog-duration-base`, `--gog-duration-slow`, `--gog-easing` |
 | Focus / state | `--gog-focus-ring-width`, `--gog-focus-ring-offset`, `--gog-disabled-opacity` |
 | Controls | `--gog-control-padding-y`, `--gog-control-padding-x`, `--gog-control-icon-offset`, `--gog-control-border-width`, `--gog-control-border-style` |
-| Fields | `--field-{xsm,sm,md,lg,slg}-{padding-y,padding-x,font-size,icon-offset,icon-inset}` — shared by input, select and multiselect |
-| Buttons | `--btn-{xsm,sm,md,lg,slg}-padding`, `--btn-{xsm,sm,md,lg,slg}-font-size` |
-| Checkables | `--gog-control-checkbox-padding`, `--control-checkbox-box-size-{xsm…slg}`, `--control-checkbox-label-size-{xsm…slg}`, `--control-checkbox-icon-size-{xsm…slg}` |
+| Fields | `--gog-field-{xsm,sm,md,lg,slg}-{padding-y,padding-x,font-size,icon-offset,icon-inset}` — shared by input, select and multiselect |
+| Buttons | `--gog-btn-{xsm,sm,md,lg,slg}-padding`, `--gog-btn-{xsm,sm,md,lg,slg}-font-size` |
+| Checkables | `--gog-control-checkbox-padding`, `--gog-control-checkbox-box-size-{xsm…slg}`, `--gog-control-checkbox-label-size-{xsm…slg}`, `--gog-control-checkbox-icon-size-{xsm…slg}` |
 | Overlays | `--gog-dropdown-z`, `--gog-spinner-overlay-z` |
 
 **2. Component tokens** — `--gog-<block>-*`, one block per component in `theme.css`, for
@@ -160,28 +187,6 @@ and `ngModel`. With a form control attached, the error message appears once the 
 is both touched and invalid; without one it shows for as long as `errorMessage` is
 non-empty, and the consumer decides when to clear it.
 
-### Dropdown panels
+## License
 
-`gog-select` and `gog-multiselect` render their panel inline by default. Inside a
-scrollable or `overflow: hidden` container that clips it, set `[appendToBody]="true"` and
-the panel is rendered into `document.body` instead, positioned against the trigger. It
-picks up the stacking order that applies at the trigger, so a dropdown opened inside a
-`gog-dialog` still stacks above it.
-
-## Development
-
-Run from the workspace root:
-
-```bash
-npm run build:lib    # ng build @gleks/ui  → dist/gleks/ui
-npm run test:lib     # ng test @gleks/ui   (Vitest)
-npm start            # the ui-showcase playground
-```
-
-### Publishing
-
-```bash
-npm run build:lib
-cd dist/gleks/ui
-npm publish
-```
+MIT © Roman Malitskyi
