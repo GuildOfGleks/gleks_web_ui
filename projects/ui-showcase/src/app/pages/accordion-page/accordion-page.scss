@@ -135,3 +135,69 @@
     grid-template-columns: 1fr;
   }
 }
+
+.accordion-scroll-box {
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 8px;
+  border: 1px solid color-mix(in srgb, var(--accent-dim) 40%, transparent);
+  border-radius: 10px;
+}
+
+.accordion-status-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.accordion-status-header__icon {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+.accordion-status-header__icon--success {
+  color: var(--success-color);
+}
+
+.accordion-status-header__icon--warning {
+  color: var(--warning-color);
+}
+
+.accordion-status-header__icon--danger {
+  color: var(--danger-color);
+}
+
+.accordion-metrics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+}
+
+.accordion-mini-table {
+  display: grid;
+  flex-shrink: 0;
+  grid-auto-flow: column;
+  gap: 12px;
+}
+
+.accordion-mini-table__row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.accordion-mini-table__cell--label {
+  color: var(--muted-text-color);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.accordion-mini-table__cell--value {
+  font-size: 0.85rem;
+}

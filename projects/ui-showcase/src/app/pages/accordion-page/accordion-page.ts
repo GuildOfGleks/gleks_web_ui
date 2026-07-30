@@ -6,7 +6,9 @@ import {
   GogAccordionHeaderDirective,
   GogAccordionContentDirective,
   GogAccordionItem,
+  GogIconName,
   GogSize,
+  IconComponent,
   SpinnerOverlayComponent,
   GogAccordionToggleEvent,
 } from '@guildofgleks/ui';
@@ -28,6 +30,23 @@ interface AccordionDemoPanel extends GogAccordionItem {
   loadDelay: number;
 }
 
+interface LongContentItem extends GogAccordionItem {
+  paragraphs: string[];
+}
+
+interface StatusHeaderItem extends GogAccordionItem {
+  icon: GogIconName;
+  tone: 'success' | 'warning' | 'danger';
+  subtitle: string;
+  body: string;
+}
+
+interface MetricsHeaderItem extends GogAccordionItem {
+  region: string;
+  metrics: AccordionDemoStat[];
+  body: string;
+}
+
 @Component({
   selector: 'app-accordion-page',
   imports: [
@@ -36,6 +55,7 @@ interface AccordionDemoPanel extends GogAccordionItem {
     GogAccordionChevronDirective,
     GogAccordionHeaderDirective,
     GogAccordionContentDirective,
+    IconComponent,
     SpinnerOverlayComponent,
   ],
   templateUrl: './accordion-page.html',
@@ -90,6 +110,85 @@ export class AccordionPage implements OnDestroy {
         { label: 'Motion', value: 'Reduced' },
       ],
       loadDelay: 1900,
+    },
+  ];
+
+  private static readonly changelogLines = [
+    'Reworked the focus ring so it stays visible against every theme surface.',
+    'Fixed a race where rapid toggling could leave two panels open in single-open mode.',
+    'Trimmed the bundle by inlining the chevron icon instead of loading it lazily.',
+    'Improved keyboard navigation to skip disabled headers when using Home/End.',
+    'Added reduced-motion support to the expand/collapse transition.',
+    'Corrected a contrast issue with muted text on the dark palette.',
+    'Standardized padding across the xsm through slg size tiers.',
+    'Resolved a memory leak when accordions were destroyed while animating.',
+  ];
+
+  protected readonly longContentItem: LongContentItem = {
+    id: 'changelog-full',
+    title: 'Full changelog (grows the page)',
+    paragraphs: Array.from(
+      { length: 20 },
+      (_, i) => `v${20 - i}.0 — ${AccordionPage.changelogLines[i % AccordionPage.changelogLines.length]}`,
+    ),
+  };
+
+  protected readonly scrollableItem: LongContentItem = {
+    id: 'changelog-scrollable',
+    title: 'Full changelog (scrolls internally)',
+    paragraphs: Array.from(
+      { length: 20 },
+      (_, i) => `v${20 - i}.0 — ${AccordionPage.changelogLines[(i + 3) % AccordionPage.changelogLines.length]}`,
+    ),
+  };
+
+  protected readonly statusItems: StatusHeaderItem[] = [
+    {
+      id: 'api',
+      title: 'API',
+      icon: 'success',
+      tone: 'success',
+      subtitle: 'All endpoints responding normally',
+      body: 'p99 latency is 118ms across all regions. No incidents in the last 30 days.',
+    },
+    {
+      id: 'database',
+      title: 'Database',
+      icon: 'warning',
+      tone: 'warning',
+      subtitle: 'Replica lag above threshold',
+      body: 'The eu-west read replica is 4.2s behind primary. Auto-scaling has been triggered.',
+    },
+    {
+      id: 'cache',
+      title: 'Cache',
+      icon: 'error',
+      tone: 'danger',
+      subtitle: 'Cluster unreachable',
+      body: 'Connection to the cache cluster timed out. Requests are falling through to the database.',
+    },
+  ];
+
+  protected readonly metricsItems: MetricsHeaderItem[] = [
+    {
+      id: 'eu-west',
+      title: 'EU West',
+      region: 'Frankfurt',
+      metrics: [
+        { label: 'Uptime', value: '99.98%' },
+        { label: 'Latency', value: '42ms' },
+      ],
+      body: 'Primary region for European traffic. Backed by three availability zones.',
+    },
+    {
+      id: 'us-east',
+      title: 'US East',
+      region: 'Virginia',
+      metrics: [
+        { label: 'Uptime', value: '99.95%' },
+        { label: 'Latency', value: '58ms' },
+      ],
+      body: 'Handles North American traffic and serves as the failover region for EU West.',
     },
   ];
 

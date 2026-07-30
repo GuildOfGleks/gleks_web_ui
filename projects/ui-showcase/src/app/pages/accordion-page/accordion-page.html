@@ -146,6 +146,87 @@
   </article>
 
   <article class="card">
+    <h3>Long content</h3>
+    <p class="meta">
+      One panel with enough content to grow the page when opened, and a second whose body caps
+      its own height and scrolls internally — the accordion doesn't need to know about either,
+      it just measures whatever height the content template ends up with.
+    </p>
+    <gog-accordion [items]="[longContentItem, scrollableItem]" size="md">
+      <ng-template gogAccordionContent let-item>
+        @if (item.id === 'changelog-scrollable') {
+          <div class="accordion-scroll-box">
+            @for (line of item.paragraphs; track line) {
+              <p class="meta">{{ line }}</p>
+            }
+          </div>
+        } @else {
+          @for (line of item.paragraphs; track line) {
+            <p class="meta">{{ line }}</p>
+          }
+        }
+      </ng-template>
+    </gog-accordion>
+  </article>
+
+  <article class="card">
+    <h3>Custom headers — icon + status</h3>
+    <p class="meta">
+      The header slot accepts any markup, so a status icon and a second line of text sit
+      comfortably next to the title.
+    </p>
+    <gog-accordion [items]="statusItems" size="md">
+      <ng-template gogAccordionHeader let-item>
+        <span class="accordion-status-header">
+          <gog-icon [name]="item.icon" class="accordion-status-header__icon accordion-status-header__icon--{{ item.tone }}" />
+          <span class="accordion-header__title-row">
+            <span class="accordion-header__title">{{ item.title }}</span>
+            <span class="accordion-header__summary">{{ item.subtitle }}</span>
+          </span>
+        </span>
+      </ng-template>
+
+      <ng-template gogAccordionContent let-item>
+        <p class="meta">{{ item.body }}</p>
+      </ng-template>
+    </gog-accordion>
+  </article>
+
+  <article class="card">
+    <h3>Custom headers — mini table</h3>
+    <p class="meta">
+      Since the header template gets the full item, it can render structured data — here a
+      small metrics table — instead of a plain title.
+    </p>
+    <gog-accordion [items]="metricsItems" size="md">
+      <ng-template gogAccordionHeader let-item>
+        <span class="accordion-metrics-header">
+          <span class="accordion-header__title-row">
+            <span class="accordion-header__title">{{ item.title }}</span>
+            <span class="accordion-header__summary">{{ item.region }}</span>
+          </span>
+          <span class="accordion-mini-table" role="table">
+            @for (metric of item.metrics; track metric.label) {
+              <span class="accordion-mini-table__row" role="row">
+                <span class="accordion-mini-table__cell accordion-mini-table__cell--label" role="cell">
+                  {{ metric.label }}
+                </span>
+                <span class="accordion-mini-table__cell accordion-mini-table__cell--value" role="cell">
+                  {{ metric.value }}
+                </span>
+              </span>
+            }
+          </span>
+        </span>
+      </ng-template>
+
+      <ng-template gogAccordionContent let-item>
+        <p class="meta">{{ item.body }}</p>
+      </ng-template>
+    </gog-accordion>
+  </article>
+
+  <article class="card">
     <h3>Loading skeleton</h3>
     <p class="meta">
       <code>loading="true"</code> replaces every item with a shimmering placeholder — for when

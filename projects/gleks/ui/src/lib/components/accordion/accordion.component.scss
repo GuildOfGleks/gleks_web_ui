@@ -8,8 +8,14 @@
   --gog-accordion-skeleton-start: var(--accent-dim);
   --gog-accordion-skeleton-mid: color-mix(in srgb, var(--accent-dim) 50%, transparent);
   --gog-accordion-skeleton-end: var(--accent-dim);
-  --gog-accordion-radius: var(--radius);
-  --gog-accordion-body-radius: var(--radius);
+  /* Flat by default — corner rounding is a look, not a given; consumers who want it
+     opt in per-instance or theme-wide by overriding these two. */
+  --gog-accordion-radius: 0px;
+  --gog-accordion-body-radius: 0px;
+  --gog-accordion-header-bg: transparent;
+  /* A subtle black wash over whatever sits behind the accordion, so the body always
+     reads slightly darker than the header regardless of the surrounding surface color. */
+  --gog-accordion-body-bg: color-mix(in srgb, black 6%, transparent);
   --gog-accordion-body-padding-y: 12px;
   --gog-accordion-body-padding-x: 16px;
   --gog-accordion-skeleton-radius: 2px;
@@ -62,7 +68,7 @@
   width: 100%;
   padding: 14px var(--gog-accordion-body-padding-x);
   gap: 12px;
-  background: transparent;
+  background: var(--gog-accordion-header-bg);
   border: none;
   color: var(--gog-accordion-text-color);
   text-align: left;
@@ -147,6 +153,7 @@
      (padding is never clipped by overflow, so it would otherwise keep the
      body visible as a thin sliver even when "closed"). */
   padding: 0 var(--gog-accordion-body-padding-x);
+  background: var(--gog-accordion-body-bg);
   color: var(--gog-accordion-body-color);
   font-size: var(--text-md);
   line-height: 1.6;
