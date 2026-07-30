@@ -129,8 +129,8 @@
 }
 
 .gog-ms__clear {
-  width: 1rem;
-  height: 1rem;
+  width: calc(var(--gog-ms-font-size) * 1);
+  height: calc(var(--gog-ms-font-size) * 1);
   padding: 0;
   border: 0;
   border-radius: var(--gog-ms-clear-radius, 2px);
@@ -142,7 +142,7 @@
 }
 
 .gog-ms__clear gog-icon {
-  font-size: 0.7rem;
+  font-size: calc(var(--gog-ms-font-size) * 0.7);
 }
 
 .gog-ms__clear:hover {
@@ -160,12 +160,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1rem;
-  height: 1rem;
+  width: calc(var(--gog-ms-font-size) * 1);
+  height: calc(var(--gog-ms-font-size) * 1);
 }
 
 .gog-ms__arrow gog-icon {
-  font-size: 0.875rem;
+  font-size: calc(var(--gog-ms-font-size) * 0.875);
 }
 
 .gog-ms__arrow--up {
@@ -311,19 +311,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: calc(var(--gog-ms-font-size) * 1.125);
+  height: calc(var(--gog-ms-font-size) * 1.125);
   flex-shrink: 0;
+  font-size: calc(var(--gog-ms-font-size) * 1.125);
   color: var(--gog-ms-checkbox-border);
 }
 
 .gog-ms__option--selected .gog-ms__option-mark {
   color: var(--gog-ms-checkbox-checked-bg);
-}
-
-.gog-ms__option-mark svg {
-  width: 18px;
-  height: 18px;
 }
 
 .gog-ms__error {

@@ -124,8 +124,8 @@
 }
 
 .gog-select__chevron {
-  width: 16px;
-  height: 16px;
+  width: calc(var(--gog-select-control-font) * 1);
+  height: calc(var(--gog-select-control-font) * 1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,7 +135,7 @@
 }
 
 .gog-select__chevron gog-icon {
-  font-size: 0.875rem;
+  font-size: calc(var(--gog-select-control-font) * 0.875);
 }
 
 .gog-select__dropdown {
@@ -241,13 +241,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: calc(var(--gog-select-control-font) * 1.125);
+  height: calc(var(--gog-select-control-font) * 1.125);
   flex-shrink: 0;
 }
 
 .gog-select__option-mark gog-icon {
-  font-size: 0.875rem;
+  font-size: calc(var(--gog-select-control-font) * 0.875);
 }
 
 .gog-select__error {
