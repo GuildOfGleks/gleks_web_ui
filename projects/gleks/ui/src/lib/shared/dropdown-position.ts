@@ -52,7 +52,14 @@ export function resolveDropdownPlacement(
   gap = DEFAULT_GAP,
   viewportPadding = DEFAULT_VIEWPORT_PADDING,
 ): GogDropdownPlacement {
-  const resolvedDirection = resolveDropdownDirection(direction, triggerRect, panelHeight, viewportHeight, gap, viewportPadding);
+  const resolvedDirection = resolveDropdownDirection(
+    direction,
+    triggerRect,
+    panelHeight,
+    viewportHeight,
+    gap,
+    viewportPadding,
+  );
 
   if (resolvedDirection === 'up') {
     const availableSpace = Math.max(0, triggerRect.top - gap - viewportPadding);

@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
-import { ButtonComponent, Column, GogSize, GogTagVariant, TableComponent, TagComponent, TemplateDirective } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  Column,
+  GogSize,
+  GogTagVariant,
+  TableComponent,
+  TagComponent,
+  TemplateDirective,
+} from '@guildofgleks/ui';
 
 interface DemoRow {
   component: string;
@@ -41,7 +49,11 @@ export class TablePage implements OnDestroy {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
   protected readonly size = signal<GogSize>('lg');
 
-  protected readonly paginatorPositions: Array<'left' | 'center' | 'right'> = ['left', 'center', 'right'];
+  protected readonly paginatorPositions: ('left' | 'center' | 'right')[] = [
+    'left',
+    'center',
+    'right',
+  ];
   protected readonly paginatorPosition = signal<'left' | 'center' | 'right'>('center');
 
   protected readonly stickyHeader = signal(false);

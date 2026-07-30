@@ -13,6 +13,8 @@
     "build:showcase": "ng build ui-showcase",
     "format": "prettier --write \"projects/**/*.{ts,html,scss,css}\"",
     "format:check": "prettier --check \"projects/**/*.{ts,html,scss,css}\"",
+    "lint": "ng lint @gleks/ui && ng lint ui-showcase",
+    "check:tokens": "node scripts/check-tokens.mjs",
     "serve:ssr:ui-showcase": "node dist/ui-showcase/server/server.mjs"
   },
   "private": true,
@@ -34,12 +36,16 @@
     "@angular/build": "^21.2.18",
     "@angular/cli": "^21.2.0",
     "@angular/compiler-cli": "^21.2.0",
+    "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
+    "angular-eslint": "21.4.0",
+    "eslint": "^10.3.0",
     "jsdom": "^28.0.0",
     "ng-packagr": "^21.2.0",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",
+    "typescript-eslint": "8.59.2",
     "vitest": "^4.0.8"
   }
 }

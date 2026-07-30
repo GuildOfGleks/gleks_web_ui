@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, Injector } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  effect,
+  inject,
+  Injector,
+} from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { DIALOG_DATA, DIALOG_REF } from './dialog.tokens';
 import { DialogService, OpenDialog } from '../../services/dialog-service/dialog.service';
@@ -161,7 +168,10 @@ export class DialogComponent {
   }
 
   protected isDraggable(dialog: OpenDialog): boolean {
-    return dialog.config.draggable !== false && (dialog.config.title !== undefined || dialog.config.closable !== false);
+    return (
+      dialog.config.draggable !== false &&
+      (dialog.config.title !== undefined || dialog.config.closable !== false)
+    );
   }
 
   private get dialogDocument(): Document {
@@ -173,7 +183,9 @@ export class DialogComponent {
     const topDialog = dialogs[dialogs.length - 1];
     if (!topDialog) return;
 
-    const panel = (this.host.nativeElement as HTMLElement).querySelector(`[data-dialog-id="${topDialog.id}"]`) as HTMLElement | null;
+    const panel = (this.host.nativeElement as HTMLElement).querySelector(
+      `[data-dialog-id="${topDialog.id}"]`,
+    ) as HTMLElement | null;
     if (!panel) return;
 
     const focusables = this.getFocusableElements(panel);
@@ -182,7 +194,8 @@ export class DialogComponent {
 
   private getFocusableElements(panel: HTMLElement): HTMLElement[] {
     return Array.from(panel.querySelectorAll<HTMLElement>(this.focusableSelector)).filter(
-      (element) => !element.hasAttribute('disabled') && element.tabIndex !== -1 && this.isVisible(element),
+      (element) =>
+        !element.hasAttribute('disabled') && element.tabIndex !== -1 && this.isVisible(element),
     );
   }
 

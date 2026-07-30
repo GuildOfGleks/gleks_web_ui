@@ -186,7 +186,9 @@ describe('ToastComponent', () => {
     const dismissedSpy = vi.fn();
     component.dismissed.subscribe(dismissedSpy);
 
-    const closeButton = fixture.nativeElement.querySelector('.gog-toast__close button') as HTMLButtonElement;
+    const closeButton = fixture.nativeElement.querySelector(
+      '.gog-toast__close button',
+    ) as HTMLButtonElement;
     closeButton.click();
     await Promise.resolve();
 
@@ -211,7 +213,9 @@ describe('ToastComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const actionButton = fixture.nativeElement.querySelector('.gog-toast__action button') as HTMLButtonElement;
+    const actionButton = fixture.nativeElement.querySelector(
+      '.gog-toast__action button',
+    ) as HTMLButtonElement;
     actionButton.click();
 
     expect(onClick).toHaveBeenCalledTimes(1);

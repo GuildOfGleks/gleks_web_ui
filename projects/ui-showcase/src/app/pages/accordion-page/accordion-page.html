@@ -55,12 +55,21 @@
       </gog-button>
     </div>
 
-    <gog-accordion [items]="panels" [expandFirst]="false" [multi]="multi()" size="md" (gogToggle)="onAccordionToggle($event)">
+    <gog-accordion
+      [items]="panels"
+      [expandFirst]="false"
+      [multi]="multi()"
+      size="md"
+      (gogToggle)="onAccordionToggle($event)"
+    >
       <ng-template gogAccordionHeader let-item let-open="open">
         <span class="accordion-header__kicker">{{ item.kicker }}</span>
         <span class="accordion-header__title-row">
           <span class="accordion-header__title">{{ item.title }}</span>
-          <span class="accordion-header__status" [class.accordion-header__status--loading]="isLoading(item.id)">
+          <span
+            class="accordion-header__status"
+            [class.accordion-header__status--loading]="isLoading(item.id)"
+          >
             @if (isLoaded(item.id)) {
               Loaded
             } @else if (isLoading(item.id)) {
@@ -98,11 +107,19 @@
             </div>
           }
         } @else {
-          <gog-spinner-overlay [loading]="isLoading(item.id)" size="lg" ariaLabel="Loading accordion content">
+          <gog-spinner-overlay
+            [loading]="isLoading(item.id)"
+            size="lg"
+            ariaLabel="Loading accordion content"
+          >
             <div class="accordion-loading-shell" aria-hidden="true">
-              <span class="accordion-loading-shell__line accordion-loading-shell__line--wide"></span>
+              <span
+                class="accordion-loading-shell__line accordion-loading-shell__line--wide"
+              ></span>
               <span class="accordion-loading-shell__line"></span>
-              <span class="accordion-loading-shell__line accordion-loading-shell__line--short"></span>
+              <span
+                class="accordion-loading-shell__line accordion-loading-shell__line--short"
+              ></span>
             </div>
           </gog-spinner-overlay>
         }
@@ -116,7 +133,12 @@
       The trigger keeps button semantics, while the chevron itself can be themed or replaced.
     </p>
 
-    <gog-accordion [items]="panels" [expandFirst]="false" size="sm" (gogToggle)="onAccordionToggle($event)">
+    <gog-accordion
+      [items]="panels"
+      [expandFirst]="false"
+      size="sm"
+      (gogToggle)="onAccordionToggle($event)"
+    >
       <ng-template gogAccordionChevron let-open="open">
         <span class="accordion-chevron__glyph">{{ open ? '−' : '+' }}</span>
       </ng-template>
@@ -134,9 +156,18 @@
             </div>
           }
         } @else {
-          <gog-spinner-overlay [loading]="isLoading(item.id)" size="sm" ariaLabel="Loading accordion content">
-            <div class="accordion-loading-shell accordion-loading-shell--compact" aria-hidden="true">
-              <span class="accordion-loading-shell__line accordion-loading-shell__line--wide"></span>
+          <gog-spinner-overlay
+            [loading]="isLoading(item.id)"
+            size="sm"
+            ariaLabel="Loading accordion content"
+          >
+            <div
+              class="accordion-loading-shell accordion-loading-shell--compact"
+              aria-hidden="true"
+            >
+              <span
+                class="accordion-loading-shell__line accordion-loading-shell__line--wide"
+              ></span>
               <span class="accordion-loading-shell__line"></span>
             </div>
           </gog-spinner-overlay>
@@ -148,9 +179,9 @@
   <article class="card">
     <h3>Long content</h3>
     <p class="meta">
-      One panel with enough content to grow the page when opened, and a second whose body caps
-      its own height and scrolls internally — the accordion doesn't need to know about either,
-      it just measures whatever height the content template ends up with.
+      One panel with enough content to grow the page when opened, and a second whose body caps its
+      own height and scrolls internally — the accordion doesn't need to know about either, it just
+      measures whatever height the content template ends up with.
     </p>
     <gog-accordion [items]="[longContentItem, scrollableItem]" size="md">
       <ng-template gogAccordionContent let-item>
@@ -172,13 +203,16 @@
   <article class="card">
     <h3>Custom headers — icon + status</h3>
     <p class="meta">
-      The header slot accepts any markup, so a status icon and a second line of text sit
-      comfortably next to the title.
+      The header slot accepts any markup, so a status icon and a second line of text sit comfortably
+      next to the title.
     </p>
     <gog-accordion [items]="statusItems" size="md">
       <ng-template gogAccordionHeader let-item>
         <span class="accordion-status-header">
-          <gog-icon [name]="item.icon" class="accordion-status-header__icon accordion-status-header__icon--{{ item.tone }}" />
+          <gog-icon
+            [name]="item.icon"
+            class="accordion-status-header__icon accordion-status-header__icon--{{ item.tone }}"
+          />
           <span class="accordion-header__title-row">
             <span class="accordion-header__title">{{ item.title }}</span>
             <span class="accordion-header__summary">{{ item.subtitle }}</span>
@@ -195,8 +229,8 @@
   <article class="card">
     <h3>Custom headers — mini table</h3>
     <p class="meta">
-      Since the header template gets the full item, it can render structured data — here a
-      small metrics table — instead of a plain title.
+      Since the header template gets the full item, it can render structured data — here a small
+      metrics table — instead of a plain title.
     </p>
     <gog-accordion [items]="metricsItems" size="md">
       <ng-template gogAccordionHeader let-item>
@@ -208,10 +242,16 @@
           <span class="accordion-mini-table" role="table">
             @for (metric of item.metrics; track metric.label) {
               <span class="accordion-mini-table__row" role="row">
-                <span class="accordion-mini-table__cell accordion-mini-table__cell--label" role="cell">
+                <span
+                  class="accordion-mini-table__cell accordion-mini-table__cell--label"
+                  role="cell"
+                >
                   {{ metric.label }}
                 </span>
-                <span class="accordion-mini-table__cell accordion-mini-table__cell--value" role="cell">
+                <span
+                  class="accordion-mini-table__cell accordion-mini-table__cell--value"
+                  role="cell"
+                >
                   {{ metric.value }}
                 </span>
               </span>
@@ -229,8 +269,8 @@
   <article class="card">
     <h3>Loading skeleton</h3>
     <p class="meta">
-      <code>loading="true"</code> replaces every item with a shimmering placeholder — for when
-      the list of items itself hasn't arrived yet, as opposed to per-item content.
+      <code>loading="true"</code> replaces every item with a shimmering placeholder — for when the
+      list of items itself hasn't arrived yet, as opposed to per-item content.
     </p>
     <gog-accordion [items]="basicItems" [loading]="true" />
   </article>

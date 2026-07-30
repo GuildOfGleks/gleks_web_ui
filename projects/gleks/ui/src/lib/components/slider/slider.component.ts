@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DoCheck,
   inject,
   input,
   model,
@@ -22,7 +23,7 @@ import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
     '[style.--fill-scale]': 'fillScale()',
   },
 })
-export class SliderComponent implements ControlValueAccessor {
+export class SliderComponent implements ControlValueAccessor, DoCheck {
   private static nextId = 0;
   protected readonly inputId = `gog-slider-${++SliderComponent.nextId}`;
 
@@ -43,7 +44,11 @@ export class SliderComponent implements ControlValueAccessor {
 
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cvaDisabled = signal(false);
-  private readonly errorState = new GogErrorState(this.errorMessage, this.errorDisplay, this.ngControl);
+  private readonly errorState = new GogErrorState(
+    this.errorMessage,
+    this.errorDisplay,
+    this.ngControl,
+  );
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
   protected readonly clampedValue = computed(() => {

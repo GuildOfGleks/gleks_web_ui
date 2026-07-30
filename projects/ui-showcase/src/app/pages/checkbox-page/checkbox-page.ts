@@ -17,10 +17,11 @@ export class CheckboxPage {
   protected readonly disabledChecked = signal(true);
   protected readonly starred = signal(true);
 
-  protected readonly summary = computed(() =>
-    `Terms: ${this.acceptTerms() ? 'accepted' : 'declined'} · Newsletter: ${
-      this.subscribeNewsletter() ? 'subscribed' : 'not subscribed'
-    }`,
+  protected readonly summary = computed(
+    () =>
+      `Terms: ${this.acceptTerms() ? 'accepted' : 'declined'} · Newsletter: ${
+        this.subscribeNewsletter() ? 'subscribed' : 'not subscribed'
+      }`,
   );
 
   /** Required checkbox driven entirely through `ControlValueAccessor` — no `[(checked)]`. */
@@ -39,7 +40,12 @@ export class CheckboxPage {
   protected readonly requiredSummary = computed(() => {
     const checked = this.requiredValue();
     const status = this.requiredStatus();
-    const state = status === 'DISABLED' ? 'disabled' : status === 'INVALID' ? 'invalid (must be checked)' : 'valid';
+    const state =
+      status === 'DISABLED'
+        ? 'disabled'
+        : status === 'INVALID'
+          ? 'invalid (must be checked)'
+          : 'valid';
     return `Form control: ${checked ? 'checked' : 'not checked'} · ${state}`;
   });
 

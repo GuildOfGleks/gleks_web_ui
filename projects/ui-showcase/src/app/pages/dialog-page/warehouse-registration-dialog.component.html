@@ -31,7 +31,12 @@
 
       <div class="registration-dialog__field">
         <label class="registration-dialog__label" for="product-name">Product name</label>
-        <input id="product-name" class="registration-dialog__native" type="text" formControlName="productName" />
+        <input
+          id="product-name"
+          class="registration-dialog__native"
+          type="text"
+          formControlName="productName"
+        />
         @if (fieldError(controls.productName, 'Product name'); as productNameError) {
           <p class="registration-dialog__error" role="alert">{{ productNameError }}</p>
         }
@@ -71,7 +76,12 @@
 
       <div class="registration-dialog__field">
         <label class="registration-dialog__label" for="barcode">Barcode</label>
-        <input id="barcode" class="registration-dialog__native" type="text" formControlName="barcode" />
+        <input
+          id="barcode"
+          class="registration-dialog__native"
+          type="text"
+          formControlName="barcode"
+        />
         @if (fieldError(controls.barcode, 'Barcode'); as barcodeError) {
           <p class="registration-dialog__error" role="alert">{{ barcodeError }}</p>
         }
@@ -111,7 +121,11 @@
 
       <div class="registration-dialog__field">
         <label class="registration-dialog__label" for="warehouse-zone">Warehouse zone</label>
-        <select id="warehouse-zone" class="registration-dialog__native" formControlName="warehouseZone">
+        <select
+          id="warehouse-zone"
+          class="registration-dialog__native"
+          formControlName="warehouseZone"
+        >
           @for (option of zoneOptions; track option.id) {
             <option [value]="option.id">{{ option.name }}</option>
           }
@@ -195,7 +209,12 @@
 
       <div class="registration-dialog__field">
         <label class="registration-dialog__label" for="contact-name">Contact name</label>
-        <input id="contact-name" class="registration-dialog__native" type="text" formControlName="contactName" />
+        <input
+          id="contact-name"
+          class="registration-dialog__native"
+          type="text"
+          formControlName="contactName"
+        />
         @if (fieldError(controls.contactName, 'Contact name'); as contactNameError) {
           <p class="registration-dialog__error" role="alert">{{ contactNameError }}</p>
         }
@@ -203,7 +222,12 @@
 
       <div class="registration-dialog__field">
         <label class="registration-dialog__label" for="contact-email">Contact email</label>
-        <input id="contact-email" class="registration-dialog__native" type="email" formControlName="contactEmail" />
+        <input
+          id="contact-email"
+          class="registration-dialog__native"
+          type="email"
+          formControlName="contactEmail"
+        />
         @if (fieldError(controls.contactEmail, 'Contact email'); as contactEmailError) {
           <p class="registration-dialog__error" role="alert">{{ contactEmailError }}</p>
         }

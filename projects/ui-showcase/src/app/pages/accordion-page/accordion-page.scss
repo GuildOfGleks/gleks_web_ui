@@ -8,11 +8,11 @@
 .accordion-notes {
   margin: 12px 0 0;
   padding-inline-start: 20px;
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
 }
 
 .accordion-header__kicker {
-  color: var(--accent-color);
+  color: var(--gog-accent-color);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -36,19 +36,19 @@
   flex-shrink: 0;
   padding: 2px 8px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-dim) 18%, transparent);
-  color: var(--muted-text-color);
+  background: color-mix(in srgb, var(--gog-accent-dim) 18%, transparent);
+  color: var(--gog-muted-text-color);
   font-size: 0.7rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .accordion-header__status--loading {
-  color: var(--accent-color);
+  color: var(--gog-accent-color);
 }
 
 .accordion-header__summary {
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
   font-size: 0.82rem;
   line-height: 1.35;
   text-transform: none;
@@ -68,14 +68,14 @@
 
 .accordion-body__stat {
   padding: 10px 12px;
-  border: 1px solid color-mix(in srgb, var(--accent-dim) 40%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gog-accent-dim) 40%, transparent);
   border-radius: 10px;
-  background: color-mix(in srgb, var(--accent-dim) 8%, transparent);
+  background: color-mix(in srgb, var(--gog-accent-dim) 8%, transparent);
 }
 
 .accordion-body__stat-label {
   display: block;
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -99,7 +99,7 @@
   height: 12px;
   width: 100%;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-dim) 18%, transparent);
+  background: color-mix(in srgb, var(--gog-accent-dim) 18%, transparent);
 }
 
 .accordion-loading-shell__line--wide {
@@ -124,8 +124,8 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--accent-dim) 16%, transparent);
-  color: var(--accent-color);
+  background: color-mix(in srgb, var(--gog-accent-dim) 16%, transparent);
+  color: var(--gog-accent-color);
   font-size: 0.95rem;
   line-height: 1;
 }
@@ -140,7 +140,7 @@
   max-height: 220px;
   overflow-y: auto;
   padding-right: 8px;
-  border: 1px solid color-mix(in srgb, var(--accent-dim) 40%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gog-accent-dim) 40%, transparent);
   border-radius: 10px;
 }
 
@@ -158,15 +158,15 @@
 }
 
 .accordion-status-header__icon--success {
-  color: var(--success-color);
+  color: var(--gog-success-color);
 }
 
 .accordion-status-header__icon--warning {
-  color: var(--warning-color);
+  color: var(--gog-warning-color);
 }
 
 .accordion-status-header__icon--danger {
-  color: var(--danger-color);
+  color: var(--gog-danger-color);
 }
 
 .accordion-metrics-header {
@@ -192,7 +192,7 @@
 }
 
 .accordion-mini-table__cell--label {
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;

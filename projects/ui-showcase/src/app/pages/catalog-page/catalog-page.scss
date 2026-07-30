@@ -38,9 +38,9 @@
   display: grid;
   gap: 8px;
   padding: 16px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  background: color-mix(in srgb, var(--surface-color) 94%, transparent);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: color-mix(in srgb, var(--gog-surface-color) 94%, transparent);
 }
 
 .catalog__card-top {
@@ -52,20 +52,20 @@
 
 .catalog__category-chip {
   text-transform: capitalize;
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
   font-size: 0.72rem;
   letter-spacing: 0.06em;
 }
 
 .catalog__name {
   margin: 0;
-  font-family: var(--font-heading);
+  font-family: var(--gog-font-heading);
   font-size: 1rem;
 }
 
 .catalog__price {
   margin: 0;
-  color: var(--accent-color);
+  color: var(--gog-accent-color);
   font-weight: 600;
 }
 

@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CheckboxComponent, GogSelectOption, GogSize, IconComponent, SelectComponent } from '@guildofgleks/ui';
+import {
+  CheckboxComponent,
+  GogSelectOption,
+  GogSize,
+  IconComponent,
+  SelectComponent,
+} from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-select-page',
@@ -50,7 +56,10 @@ export class SelectPage {
     { id: 'monthly', name: 'Monthly' },
     { id: 'yearly', name: 'Yearly (2 months free)' },
   ];
-  protected readonly billingCycleControl = new FormControl<string | number | null>(null, Validators.required);
+  protected readonly billingCycleControl = new FormControl<string | number | null>(
+    null,
+    Validators.required,
+  );
 
   protected readonly countries: GogSelectOption[] = Array.from({ length: 20 }, (_, i) => ({
     id: `country-${i}`,

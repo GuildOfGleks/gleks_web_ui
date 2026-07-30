@@ -48,7 +48,9 @@
         <span class="table-status-header">Status</span>
       </ng-template>
       <ng-template template="status" type="body" let-row>
-        <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{ $any(row).status }}</gog-tag>
+        <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{
+          $any(row).status
+        }}</gog-tag>
       </ng-template>
     </gog-table>
   </article>
@@ -57,15 +59,30 @@
     <h3>Size, sticky header &amp; paginator position</h3>
     <div class="action-row">
       @for (option of sizes; track option) {
-        <gog-button [variant]="size() === option ? 'primary' : 'ghost'" size="sm" type="button" (gogClick)="size.set(option)">
+        <gog-button
+          [variant]="size() === option ? 'primary' : 'ghost'"
+          size="sm"
+          type="button"
+          (gogClick)="size.set(option)"
+        >
           {{ option }}
         </gog-button>
       }
-      <gog-button [variant]="stickyHeader() ? 'primary' : 'outline'" size="sm" type="button" (gogClick)="toggleStickyHeader()">
+      <gog-button
+        [variant]="stickyHeader() ? 'primary' : 'outline'"
+        size="sm"
+        type="button"
+        (gogClick)="toggleStickyHeader()"
+      >
         Sticky header: {{ stickyHeader() ? 'on' : 'off' }}
       </gog-button>
       @for (position of paginatorPositions; track position) {
-        <gog-button [variant]="paginatorPosition() === position ? 'primary' : 'ghost'" size="sm" type="button" (gogClick)="paginatorPosition.set(position)">
+        <gog-button
+          [variant]="paginatorPosition() === position ? 'primary' : 'ghost'"
+          size="sm"
+          type="button"
+          (gogClick)="paginatorPosition.set(position)"
+        >
           Paginator: {{ position }}
         </gog-button>
       }
@@ -113,8 +130,8 @@
   <article class="card">
     <h3>Total count position</h3>
     <p class="lead">
-      <code>showTotal</code> renders a row count; <code>totalPosition</code> places it left,
-      right, or opposite the paginator (the default).
+      <code>showTotal</code> renders a row count; <code>totalPosition</code> places it left, right,
+      or opposite the paginator (the default).
     </p>
     <div class="field-grid">
       <div>

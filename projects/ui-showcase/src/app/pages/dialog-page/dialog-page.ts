@@ -6,9 +6,7 @@ import {
   DialogService,
   ToastService,
 } from '@guildofgleks/ui';
-import {
-  LoadingInventoryDialogComponent,
-} from './loading-inventory-dialog.component';
+import { LoadingInventoryDialogComponent } from './loading-inventory-dialog.component';
 import {
   WarehouseRegistrationDialogComponent,
   type WarehouseRegistrationDialogResult,
@@ -59,7 +57,8 @@ export class DialogPage {
       component: ConfirmationDialogComponent,
       data: {
         title: 'Non-modal dialog',
-        description: 'modal="false" — no backdrop dimming, no focus trap; the rest of the page stays interactive while this is open.',
+        description:
+          'modal="false" — no backdrop dimming, no focus trap; the rest of the page stays interactive while this is open.',
         confirmText: 'Got it',
         cancelText: 'Close',
       },
@@ -77,7 +76,8 @@ export class DialogPage {
       component: ConfirmationDialogComponent,
       data: {
         title: 'No escape hatch',
-        description: 'closable="false" — no header, no X button, Escape and backdrop clicks do nothing. Only the buttons below can close it.',
+        description:
+          'closable="false" — no header, no X button, Escape and backdrop clicks do nothing. Only the buttons below can close it.',
         confirmText: 'Acknowledge',
         cancelText: 'Dismiss',
       },
@@ -86,7 +86,9 @@ export class DialogPage {
       width: 'min(100%, 28rem)',
     });
 
-    void ref.afterClosed.then(() => this.lastDialogResult.set('Non-closable dialog closed via its own buttons'));
+    void ref.afterClosed.then(() =>
+      this.lastDialogResult.set('Non-closable dialog closed via its own buttons'),
+    );
   }
 
   protected openNonDraggableDialog(): void {
@@ -129,7 +131,8 @@ export class DialogPage {
       component: ConfirmationDialogComponent,
       data: {
         title: 'Top dialog',
-        description: 'Opened second, so it stacks above the first with a higher z-index. Drag me by the header.',
+        description:
+          'Opened second, so it stacks above the first with a higher z-index. Drag me by the header.',
         confirmText: 'OK',
         cancelText: 'Close',
       },

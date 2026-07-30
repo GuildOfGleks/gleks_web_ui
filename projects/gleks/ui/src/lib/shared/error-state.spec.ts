@@ -26,7 +26,11 @@ describe('GogErrorState', () => {
 
     it('ignores control touched/invalid state even when a control is attached', () => {
       const errorMessage = signal('Required');
-      const state = new GogErrorState(errorMessage, signal<GogErrorDisplay>('manual'), fakeNgControl(false, true));
+      const state = new GogErrorState(
+        errorMessage,
+        signal<GogErrorDisplay>('manual'),
+        fakeNgControl(false, true),
+      );
 
       expect(state.hasError()).toBe(true);
     });

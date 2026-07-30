@@ -41,6 +41,8 @@ export class MultiselectComponent extends GogDropdownBase<(string | number)[]> {
   protected readonly triggerClass = 'gog-ms';
   protected override readonly optionGapToken = '--gog-ms-option-gap';
   protected override readonly optionsPaddingToken = '--gog-ms-options-padding';
+  protected override readonly panelMaxHeightToken = '--gog-ms-panel-max-height';
+  protected override readonly optionHeightToken = '--gog-ms-option-height';
 
   protected readonly listboxId = computed(() => `gog-ms-listbox-${this.uid}`);
   protected readonly labelId = computed(() => `gog-ms-label-${this.uid}`);
@@ -62,7 +64,9 @@ export class MultiselectComponent extends GogDropdownBase<(string | number)[]> {
 
     const current = this.value();
     this.commitValue(
-      this.isSelected(option.id) ? current.filter((id) => id !== option.id) : [...current, option.id],
+      this.isSelected(option.id)
+        ? current.filter((id) => id !== option.id)
+        : [...current, option.id],
     );
   }
 

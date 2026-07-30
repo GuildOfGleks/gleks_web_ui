@@ -36,9 +36,21 @@ const STATUS_VARIANTS: Record<MemberStatus, GogTagVariant> = {
 
 const SEED_MEMBERS: Member[] = [
   { id: 1, name: 'Ada Lovelace', role: 'admin', status: 'active', teams: ['engineering'] },
-  { id: 2, name: 'Grace Hopper', role: 'editor', status: 'active', teams: ['engineering', 'design'] },
+  {
+    id: 2,
+    name: 'Grace Hopper',
+    role: 'editor',
+    status: 'active',
+    teams: ['engineering', 'design'],
+  },
   { id: 3, name: 'Alan Turing', role: 'admin', status: 'active', teams: ['engineering'] },
-  { id: 4, name: 'Margaret Hamilton', role: 'editor', status: 'invited', teams: ['engineering', 'qa'] },
+  {
+    id: 4,
+    name: 'Margaret Hamilton',
+    role: 'editor',
+    status: 'invited',
+    teams: ['engineering', 'qa'],
+  },
   { id: 5, name: 'Katherine Johnson', role: 'viewer', status: 'active', teams: ['sales'] },
   { id: 6, name: 'Hedy Lamarr', role: 'viewer', status: 'suspended', teams: ['sales', 'design'] },
   { id: 7, name: 'Radia Perlman', role: 'editor', status: 'active', teams: ['engineering'] },
@@ -94,7 +106,8 @@ export class DashboardPage {
     return this.members().filter((member) => {
       if (search && !member.name.toLowerCase().includes(search)) return false;
       if (role && member.role !== role) return false;
-      if (teams.length > 0 && !teams.some((team) => member.teams.includes(String(team)))) return false;
+      if (teams.length > 0 && !teams.some((team) => member.teams.includes(String(team))))
+        return false;
       return true;
     });
   });

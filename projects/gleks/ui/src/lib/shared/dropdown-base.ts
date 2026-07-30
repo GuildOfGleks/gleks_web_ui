@@ -3,6 +3,7 @@ import {
   ApplicationRef,
   DestroyRef,
   Directive,
+  DoCheck,
   ElementRef,
   ModelSignal,
   PLATFORM_ID,
@@ -39,11 +40,11 @@ export interface GogDropdownOption {
 const PANEL_GAP = 2;
 /** Smallest allowed gap between the panel and the viewport edge. */
 const VIEWPORT_PADDING = 8;
-/** Keep in sync with the `max-height` on `.gog-select__dropdown` / `.gog-ms__dropdown`. */
-const MAX_PANEL_HEIGHT = 260;
-/** Fallback row height used before the panel has been measured. */
-const DEFAULT_OPTION_HEIGHT = 40;
-/** Must match the `var(--dropdown-z, …)` fallback in the component stylesheets. */
+/** Used only if a subclass's `panelMaxHeightToken` isn't declared anywhere in the cascade. */
+const FALLBACK_MAX_PANEL_HEIGHT = 260;
+/** Used only if a subclass's `optionHeightToken` isn't declared anywhere in the cascade. */
+const FALLBACK_OPTION_HEIGHT = 40;
+/** Must match the `var(--gog-dropdown-z, …)` fallback in the component stylesheets. */
 const DEFAULT_PANEL_Z_INDEX = 300;
 
 /**
@@ -56,7 +57,7 @@ const DEFAULT_PANEL_Z_INDEX = 300;
  * extend it; it is not meant to be used or subclassed by consumers.
  */
 @Directive()
-export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
+export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, DoCheck {
   private static nextUid = 0;
 
   readonly label = input('');
@@ -70,7 +71,7 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
   readonly dropdownDirection = input<GogDropdownDirection>('auto');
   /**
    * Explicit stacking order for the panel. Left unset the panel falls back to the
-   * stylesheet's `--dropdown-z`, so the default lives in CSS where a consumer can
+   * stylesheet's `--gog-dropdown-z`, so the default lives in CSS where a consumer can
    * retheme it, rather than being baked into the component.
    */
   readonly dropdownZIndex = input<number | null>(null);
@@ -110,6 +111,10 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
    */
   protected readonly optionGapToken: string = '--gog-dropdown-option-gap';
   protected readonly optionsPaddingToken: string = '--gog-dropdown-options-padding';
+  /** Keep in sync with the real `max-height` on the subclass's `__dropdown` block. */
+  protected readonly panelMaxHeightToken: string = '--gog-dropdown-panel-max-height';
+  /** Estimated row height fed into the placement math; not a real layout property. */
+  protected readonly optionHeightToken: string = '--gog-dropdown-option-height';
 
   /** Unique per-instance suffix, so several dropdowns on a page can't collide on DOM ids. */
   protected readonly uid = ++GogDropdownBase.nextUid;
@@ -123,7 +128,11 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
   private readonly overlay = new GogDropdownOverlay(this.appRef, this.document);
 
   private readonly cvaDisabled = signal(false);
-  private readonly errorState = new GogErrorState(this.errorMessage, this.errorDisplay, this.ngControl);
+  private readonly errorState = new GogErrorState(
+    this.errorMessage,
+    this.errorDisplay,
+    this.ngControl,
+  );
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
   protected readonly dropdownDirectionState = signal<'up' | 'down'>('down');
@@ -131,7 +140,7 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
   /**
    * Stacking order to write onto the panel, or null to leave it to the stylesheet.
    *
-   * Only needed when appending to `<body>`: an inline panel inherits `--dropdown-z` from
+   * Only needed when appending to `<body>`: an inline panel inherits `--gog-dropdown-z` from
    * its surroundings — which is how a dropdown inside a dialog ends up above the dialog —
    * but an appended one sits outside that subtree and inherits nothing, so the value has
    * to be resolved from the trigger and written out explicitly.
@@ -155,6 +164,8 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
   /** Measured once per open rather than per scroll tick — see `refreshPanelMetrics`. */
   private optionGap = 0;
   private optionsPadding = 0;
+  private maxPanelHeight = FALLBACK_MAX_PANEL_HEIGHT;
+  private optionHeight = FALLBACK_OPTION_HEIGHT;
   private repositionFrame: number | null = null;
 
   private onChangeFn: (val: TValue) => void = () => {};
@@ -274,7 +285,8 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
     if (!target) return;
 
     const inside =
-      this.elRef.nativeElement.contains(target) || (this.overlay.hostElement?.contains(target) ?? false);
+      this.elRef.nativeElement.contains(target) ||
+      (this.overlay.hostElement?.contains(target) ?? false);
 
     if (!inside) {
       this.close();
@@ -330,7 +342,9 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
   }
 
   protected focusTrigger(): void {
-    (this.elRef.nativeElement as HTMLElement).querySelector<HTMLElement>(`.${this.triggerClass}`)?.focus();
+    (this.elRef.nativeElement as HTMLElement)
+      .querySelector<HTMLElement>(`.${this.triggerClass}`)
+      ?.focus();
   }
 
   /** Extra chrome stacked above the options (e.g. a select-all row), in px. */
@@ -351,7 +365,7 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
     const template = this.panelTemplate();
     if (!template) return;
 
-    this.overlay.attach(template);
+    this.overlay.attach(template, this.elRef.nativeElement);
   }
 
   /**
@@ -363,6 +377,8 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
     if (!this.isBrowser) {
       this.optionGap = 0;
       this.optionsPadding = 0;
+      this.maxPanelHeight = FALLBACK_MAX_PANEL_HEIGHT;
+      this.optionHeight = FALLBACK_OPTION_HEIGHT;
       this.panelZIndex.set(null);
       return;
     }
@@ -370,6 +386,14 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
     const styles = getComputedStyle(this.elRef.nativeElement);
     this.optionGap = readPx(styles.getPropertyValue(this.optionGapToken), 0);
     this.optionsPadding = readPx(styles.getPropertyValue(this.optionsPaddingToken), 0);
+    this.maxPanelHeight = readPx(
+      styles.getPropertyValue(this.panelMaxHeightToken),
+      FALLBACK_MAX_PANEL_HEIGHT,
+    );
+    this.optionHeight = readPx(
+      styles.getPropertyValue(this.optionHeightToken),
+      FALLBACK_OPTION_HEIGHT,
+    );
     this.panelZIndex.set(this.appendToBody() ? this.resolvePanelZIndex(styles) : null);
   }
 
@@ -387,8 +411,8 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
     }
 
     const count = Math.max(this.options().length, 1);
-    const rows = count * DEFAULT_OPTION_HEIGHT + Math.max(count - 1, 0) * this.optionGap;
-    return Math.min(rows + this.optionsPadding * 2 + this.extraPanelHeight(), MAX_PANEL_HEIGHT);
+    const rows = count * this.optionHeight + Math.max(count - 1, 0) * this.optionGap;
+    return Math.min(rows + this.optionsPadding * 2 + this.extraPanelHeight(), this.maxPanelHeight);
   }
 
   /**
@@ -405,7 +429,7 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
 
   /** The stacking order the panel would have had if it were still inside the subtree. */
   private resolvePanelZIndex(triggerStyles: CSSStyleDeclaration): number {
-    const inherited = triggerStyles.getPropertyValue('--dropdown-z').trim();
+    const inherited = triggerStyles.getPropertyValue('--gog-dropdown-z').trim();
     if (inherited) {
       return readPx(inherited, DEFAULT_PANEL_Z_INDEX);
     }
@@ -414,7 +438,7 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
     // getComputedStyle (jsdom does not), so also look for an inline declaration up the
     // tree — which is exactly how gog-dialog hands its stacking order to nested dropdowns.
     for (let el: HTMLElement | null = this.elRef.nativeElement; el; el = el.parentElement) {
-      const declared = el.style.getPropertyValue('--dropdown-z').trim();
+      const declared = el.style.getPropertyValue('--gog-dropdown-z').trim();
       if (declared) {
         return readPx(declared, DEFAULT_PANEL_Z_INDEX);
       }

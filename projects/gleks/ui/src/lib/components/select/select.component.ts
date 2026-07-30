@@ -32,11 +32,16 @@ export class SelectComponent extends GogDropdownBase<string | number | null> {
   protected readonly emptyValue = null;
   protected readonly optionClass = 'gog-select__option';
   protected readonly triggerClass = 'gog-select__control';
+  protected override readonly optionGapToken = '--gog-select-option-gap';
+  protected override readonly panelMaxHeightToken = '--gog-select-panel-max-height';
+  protected override readonly optionHeightToken = '--gog-select-option-height';
 
   protected readonly triggerId = computed(() => this.inputId() || `gog-select-${this.uid}`);
   protected readonly listboxId = computed(() => `${this.triggerId()}-listbox`);
   protected readonly labelId = computed(() => `${this.triggerId()}-label`);
-  protected readonly errorId = computed(() => (this.hasError() ? `${this.triggerId()}-error` : null));
+  protected readonly errorId = computed(() =>
+    this.hasError() ? `${this.triggerId()}-error` : null,
+  );
 
   protected readonly selectedOption = computed(
     () => this.options().find((option) => String(option.id) === String(this.value())) ?? null,

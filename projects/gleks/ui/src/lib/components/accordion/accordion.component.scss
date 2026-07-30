@@ -54,8 +54,14 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: var(--gog-accordion-padding-y, var(--gog-accordion-size-padding-y, var(--gog-accordion-lg-padding-y)))
-  var(--gog-accordion-padding-x, var(--gog-accordion-size-padding-x, var(--gog-accordion-lg-padding-x)));
+  padding: var(
+      --gog-accordion-padding-y,
+      var(--gog-accordion-size-padding-y, var(--gog-accordion-lg-padding-y))
+    )
+    var(
+      --gog-accordion-padding-x,
+      var(--gog-accordion-size-padding-x, var(--gog-accordion-lg-padding-x))
+    );
   gap: var(--gog-accordion-header-gap);
   background: var(--gog-accordion-header-bg);
   border: none;
@@ -64,10 +70,17 @@
   cursor: pointer;
   font-family: var(--gog-accordion-font-family);
   text-transform: var(--gog-accordion-header-text-transform);
-  letter-spacing: var(--gog-accordion-letter-spacing, var(--gog-accordion-size-letter-spacing, var(--gog-accordion-lg-letter-spacing)));
-  font-size: var(--gog-accordion-font-size, var(--gog-accordion-size-font-size, var(--gog-accordion-lg-font-size)));
-  transition: color var(--gog-accordion-transition-duration) var(--gog-easing),
-  background-color var(--gog-accordion-transition-duration) var(--gog-easing);
+  letter-spacing: var(
+    --gog-accordion-letter-spacing,
+    var(--gog-accordion-size-letter-spacing, var(--gog-accordion-lg-letter-spacing))
+  );
+  font-size: var(
+    --gog-accordion-font-size,
+    var(--gog-accordion-size-font-size, var(--gog-accordion-lg-font-size))
+  );
+  transition:
+    color var(--gog-accordion-transition-duration) var(--gog-easing),
+    background-color var(--gog-accordion-transition-duration) var(--gog-easing);
 }
 
 .gog-accordion__header:hover {
@@ -93,7 +106,10 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--gog-accordion-content-gap, var(--gog-accordion-size-content-gap, var(--gog-accordion-lg-content-gap)));
+  gap: var(
+    --gog-accordion-content-gap,
+    var(--gog-accordion-size-content-gap, var(--gog-accordion-lg-content-gap))
+  );
   min-width: 0;
 }
 
@@ -104,12 +120,22 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--gog-accordion-chevron-size, var(--gog-accordion-size-chevron-size, var(--gog-accordion-lg-chevron-size)));
-  height: var(--gog-accordion-chevron-size, var(--gog-accordion-size-chevron-size, var(--gog-accordion-lg-chevron-size)));
-  font-size: var(--gog-accordion-chevron-font-size, var(--gog-accordion-size-chevron-font-size, var(--gog-accordion-lg-chevron-font-size)));
+  width: var(
+    --gog-accordion-chevron-size,
+    var(--gog-accordion-size-chevron-size, var(--gog-accordion-lg-chevron-size))
+  );
+  height: var(
+    --gog-accordion-chevron-size,
+    var(--gog-accordion-size-chevron-size, var(--gog-accordion-lg-chevron-size))
+  );
+  font-size: var(
+    --gog-accordion-chevron-font-size,
+    var(--gog-accordion-size-chevron-font-size, var(--gog-accordion-lg-chevron-font-size))
+  );
   color: var(--gog-accordion-border-color);
-  transition: transform var(--gog-accordion-chevron-transition-duration) var(--gog-easing),
-  color var(--gog-accordion-transition-duration) var(--gog-easing);
+  transition:
+    transform var(--gog-accordion-chevron-transition-duration) var(--gog-easing),
+    color var(--gog-accordion-transition-duration) var(--gog-easing);
 }
 
 .gog-accordion__header--open .gog-accordion__chevron {
@@ -126,8 +152,9 @@
   overflow: hidden;
   border-top: var(--gog-accordion-border-width) var(--gog-accordion-border-style)
     var(--gog-accordion-border-color);
-  transition: grid-template-rows var(--gog-accordion-body-transition-duration) var(--gog-easing),
-  opacity var(--gog-accordion-body-transition-duration) var(--gog-easing);
+  transition:
+    grid-template-rows var(--gog-accordion-body-transition-duration) var(--gog-easing),
+    opacity var(--gog-accordion-body-transition-duration) var(--gog-easing);
 }
 
 .gog-accordion__body--open {
@@ -144,22 +171,35 @@
      (padding is never clipped by overflow, so it would otherwise keep the
      body visible as a thin sliver even when "closed"). */
   padding: 0
-  var(--gog-accordion-padding-x, var(--gog-accordion-size-padding-x, var(--gog-accordion-lg-padding-x)));
+    var(
+      --gog-accordion-padding-x,
+      var(--gog-accordion-size-padding-x, var(--gog-accordion-lg-padding-x))
+    );
   background: var(--gog-accordion-body-bg);
   color: var(--gog-accordion-body-color);
   font-family: var(--gog-accordion-body-font-family);
-  font-size: var(--gog-accordion-body-font-size, var(--gog-accordion-size-body-font-size, var(--gog-accordion-lg-body-font-size)));
+  font-size: var(
+    --gog-accordion-body-font-size,
+    var(--gog-accordion-size-body-font-size, var(--gog-accordion-lg-body-font-size))
+  );
   /* No instance hook of its own: the per-size tokens already default to
      --gog-accordion-body-line-height, so setting that restyles every size. */
   line-height: var(--gog-accordion-size-body-line-height, var(--gog-accordion-lg-body-line-height));
   transform: translateY(var(--gog-accordion-body-lift));
-  transition: transform var(--gog-accordion-body-transition-duration) var(--gog-easing),
-  padding var(--gog-accordion-body-transition-duration) var(--gog-easing);
+  transition:
+    transform var(--gog-accordion-body-transition-duration) var(--gog-easing),
+    padding var(--gog-accordion-body-transition-duration) var(--gog-easing);
 }
 
 .gog-accordion__body--open .gog-accordion__body-inner {
-  padding-top: var(--gog-accordion-body-padding-top, var(--gog-accordion-size-body-padding-top, var(--gog-accordion-lg-body-padding-top)));
-  padding-bottom: var(--gog-accordion-body-padding-bottom, var(--gog-accordion-size-body-padding-bottom, var(--gog-accordion-lg-body-padding-bottom)));
+  padding-top: var(
+    --gog-accordion-body-padding-top,
+    var(--gog-accordion-size-body-padding-top, var(--gog-accordion-lg-body-padding-top))
+  );
+  padding-bottom: var(
+    --gog-accordion-body-padding-bottom,
+    var(--gog-accordion-size-body-padding-bottom, var(--gog-accordion-lg-body-padding-bottom))
+  );
   transform: translateY(0);
 }
 
@@ -235,10 +275,10 @@
   width: var(--gog-accordion-skeleton-width);
   border-radius: var(--gog-accordion-skeleton-radius);
   background: linear-gradient(
-      90deg,
-      var(--gog-accordion-skeleton-start) 25%,
-      var(--gog-accordion-skeleton-mid) 50%,
-      var(--gog-accordion-skeleton-end) 75%
+    90deg,
+    var(--gog-accordion-skeleton-start) 25%,
+    var(--gog-accordion-skeleton-mid) 50%,
+    var(--gog-accordion-skeleton-end) 75%
   );
   background-size: 200% 100%;
   animation: gog-accordion-shimmer var(--gog-accordion-skeleton-duration) infinite;

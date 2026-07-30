@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import {
   AccordionComponent,
@@ -45,14 +52,70 @@ const STOCK_VARIANTS: Record<StockLevel, GogTagVariant> = {
 };
 
 const PRODUCTS: Product[] = [
-  { id: 1, name: 'Aurora Desk Lamp', category: 'home', price: 42, stock: 'in-stock', description: 'Warm-dimmable lamp with a walnut base.' },
-  { id: 2, name: 'Trailblazer Jacket', category: 'apparel', price: 128, stock: 'low-stock', description: 'Weatherproof shell for three-season hikes.' },
-  { id: 3, name: 'Nimbus Wireless Buds', category: 'electronics', price: 89, stock: 'in-stock', description: 'Active noise cancelling, 30h battery.' },
-  { id: 4, name: 'Fieldnotes Journal', category: 'books', price: 18, stock: 'in-stock', description: 'Dot-grid pages, lays flat, pocket-sized.' },
-  { id: 5, name: 'Summit Trekking Poles', category: 'apparel', price: 64, stock: 'out-of-stock', description: 'Carbon-fiber, collapsible to 15in.' },
-  { id: 6, name: 'Orbit Smart Plug', category: 'electronics', price: 24, stock: 'in-stock', description: 'Schedule and monitor any outlet remotely.' },
-  { id: 7, name: 'Terra Ceramic Mug', category: 'home', price: 16, stock: 'low-stock', description: 'Hand-thrown stoneware, holds heat well.' },
-  { id: 8, name: 'Deep Work Field Guide', category: 'books', price: 22, stock: 'in-stock', description: 'A short book on protecting focus.' },
+  {
+    id: 1,
+    name: 'Aurora Desk Lamp',
+    category: 'home',
+    price: 42,
+    stock: 'in-stock',
+    description: 'Warm-dimmable lamp with a walnut base.',
+  },
+  {
+    id: 2,
+    name: 'Trailblazer Jacket',
+    category: 'apparel',
+    price: 128,
+    stock: 'low-stock',
+    description: 'Weatherproof shell for three-season hikes.',
+  },
+  {
+    id: 3,
+    name: 'Nimbus Wireless Buds',
+    category: 'electronics',
+    price: 89,
+    stock: 'in-stock',
+    description: 'Active noise cancelling, 30h battery.',
+  },
+  {
+    id: 4,
+    name: 'Fieldnotes Journal',
+    category: 'books',
+    price: 18,
+    stock: 'in-stock',
+    description: 'Dot-grid pages, lays flat, pocket-sized.',
+  },
+  {
+    id: 5,
+    name: 'Summit Trekking Poles',
+    category: 'apparel',
+    price: 64,
+    stock: 'out-of-stock',
+    description: 'Carbon-fiber, collapsible to 15in.',
+  },
+  {
+    id: 6,
+    name: 'Orbit Smart Plug',
+    category: 'electronics',
+    price: 24,
+    stock: 'in-stock',
+    description: 'Schedule and monitor any outlet remotely.',
+  },
+  {
+    id: 7,
+    name: 'Terra Ceramic Mug',
+    category: 'home',
+    price: 16,
+    stock: 'low-stock',
+    description: 'Hand-thrown stoneware, holds heat well.',
+  },
+  {
+    id: 8,
+    name: 'Deep Work Field Guide',
+    category: 'books',
+    price: 22,
+    stock: 'in-stock',
+    description: 'A short book on protecting focus.',
+  },
 ];
 
 @Component({
@@ -96,7 +159,9 @@ export class CatalogPage implements OnDestroy {
   protected readonly filteredProducts = computed(() => {
     const categories = this.appliedCategories();
     const maxPrice = this.appliedMaxPrice();
-    return PRODUCTS.filter((product) => categories.has(product.category) && product.price <= maxPrice);
+    return PRODUCTS.filter(
+      (product) => categories.has(product.category) && product.price <= maxPrice,
+    );
   });
 
   protected stockLabel(stock: StockLevel): string {

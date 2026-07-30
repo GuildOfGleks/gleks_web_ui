@@ -3,10 +3,9 @@
     <p class="eyebrow">gog-select</p>
     <h2>Select</h2>
     <p class="lead">
-      A dropdown select with label, chevron icon slot, error state, size variants, disabled
-      options, placement control, a body-portaled panel, and `ControlValueAccessor` support. Once
-      open, Arrow Up/Down move between options, Home/End jump to the first/last, and Escape
-      closes.
+      A dropdown select with label, chevron icon slot, error state, size variants, disabled options,
+      placement control, a body-portaled panel, and `ControlValueAccessor` support. Once open, Arrow
+      Up/Down move between options, Home/End jump to the first/last, and Escape closes.
     </p>
   </div>
 
@@ -28,7 +27,12 @@
     <h3>Sizes</h3>
     <div class="field-grid">
       @for (size of sizes; track size) {
-        <gog-select [label]="'Size: ' + size" [size]="size" [options]="frameworks" [(value)]="sizeDemoValue" />
+        <gog-select
+          [label]="'Size: ' + size"
+          [size]="size"
+          [options]="frameworks"
+          [(value)]="sizeDemoValue"
+        />
       }
     </div>
   </article>
@@ -38,7 +42,11 @@
     <div class="field-grid">
       <gog-select label="Disabled" [options]="frameworks" [value]="'angular'" [disabled]="true" />
 
-      <gog-select label="Plan (one option disabled)" [options]="plansWithDisabled" [(value)]="plan" />
+      <gog-select
+        label="Plan (one option disabled)"
+        [options]="plansWithDisabled"
+        [(value)]="plan"
+      />
 
       <gog-select
         label="Required plan"
@@ -60,10 +68,9 @@
   <article class="card">
     <h3>Reactive Forms — automatic error timing</h3>
     <p class="lead">
-      With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides
-      for itself when to show the error — once the control has been touched and is invalid —
-      instead of the page computing that timing. Click the field, then click away without
-      choosing anything.
+      With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides for
+      itself when to show the error — once the control has been touched and is invalid — instead of
+      the page computing that timing. Click the field, then click away without choosing anything.
     </p>
     <div class="field-grid">
       <gog-select
@@ -80,15 +87,20 @@
   <article class="card">
     <h3>Custom chevron &amp; label-less field</h3>
     <p class="lead">
-      <code>chevronTemplate</code> swaps the trigger's icon. <code>ariaLabel</code> names a
-      field that has no visible <code>label</code> at all.
+      <code>chevronTemplate</code> swaps the trigger's icon. <code>ariaLabel</code> names a field
+      that has no visible <code>label</code> at all.
     </p>
     <ng-template #sortChevron>
       <gog-icon name="sort" />
     </ng-template>
     <div class="field-grid">
       <gog-select [options]="sortOptions" [chevronTemplate]="sortChevron" [(value)]="sortValue" />
-      <gog-select ariaLabel="Country (no visible label)" placeholder="Pick a country" [options]="countries" [(value)]="ariaOnlyValue" />
+      <gog-select
+        ariaLabel="Country (no visible label)"
+        placeholder="Pick a country"
+        [options]="countries"
+        [(value)]="ariaOnlyValue"
+      />
     </div>
   </article>
 
@@ -99,17 +111,23 @@
       `document.body` instead of getting clipped.
     </p>
     <div class="field-grid">
-      <gog-select label="Region" [options]="regions" [appendToBody]="true" dropdownDirection="auto" [(value)]="region" />
+      <gog-select
+        label="Region"
+        [options]="regions"
+        [appendToBody]="true"
+        dropdownDirection="auto"
+        [(value)]="region"
+      />
     </div>
   </article>
 
   <article class="card">
     <h3>Custom panel size</h3>
     <p class="lead">
-      <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and
-      override the trigger-derived size — useful when the panel needs to be narrower/wider or
-      shorter than the field itself. Applies only with <code>appendToBody</code>; the list below
-      has 20 options, capped to 160px so it scrolls internally.
+      <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and override
+      the trigger-derived size — useful when the panel needs to be narrower/wider or shorter than
+      the field itself. Applies only with <code>appendToBody</code>; the list below has 20 options,
+      capped to 160px so it scrolls internally.
     </p>
     <div class="field-grid">
       <gog-select
@@ -129,8 +147,8 @@
     <h3>Opening near the bottom of the page</h3>
     <p class="lead">
       Scroll down to reach this one. With <code>appendToBody</code>, the panel flips upward
-      automatically and is positioned against the trigger itself — not the whole field — so it
-      never covers the label above it or the control below it.
+      automatically and is positioned against the trigger itself — not the whole field — so it never
+      covers the label above it or the control below it.
     </p>
     <div class="field-grid">
       <gog-select

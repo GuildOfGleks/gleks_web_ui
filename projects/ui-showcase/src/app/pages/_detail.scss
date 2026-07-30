@@ -10,9 +10,9 @@
 
 .card {
   padding: 20px;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--surface-color) 92%, transparent);
-  box-shadow: var(--panel-shadow);
+  border: 1px solid var(--gog-border-color);
+  background: color-mix(in srgb, var(--gog-surface-color) 92%, transparent);
+  box-shadow: var(--gog-panel-shadow);
 }
 
 .eyebrow {
@@ -20,23 +20,23 @@
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.75rem;
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
 }
 
 h2,
 h3 {
   margin: 0 0 8px;
-  font-family: var(--font-heading);
+  font-family: var(--gog-font-heading);
 }
 
 .lead {
   max-width: 62ch;
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
 }
 
 .meta {
   margin: 8px 0 0;
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
 }
 
 .action-row,

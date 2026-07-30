@@ -25,7 +25,9 @@ export class MultiselectPage {
     { id: 'forms', name: 'Forms' },
     { id: 'table', name: 'Table' },
   ];
-  protected readonly featureSummary = computed(() => this.selectedFeatures().join(', ') || 'None selected');
+  protected readonly featureSummary = computed(
+    () => this.selectedFeatures().join(', ') || 'None selected',
+  );
 
   protected readonly sizeDemoValue = signal<(string | number)[]>(['toast']);
 

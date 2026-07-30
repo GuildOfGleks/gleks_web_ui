@@ -22,8 +22,8 @@ selector prefix `app` and `scss` styles. Follow `general.instructions.md` plus t
 
 ## Design tokens
 
-- The library relies on app-provided CSS custom properties (`--accent-color`,
-  `--btn-md-padding`, `--font-heading`, etc. — see `styling.instructions.md`).
+- The library relies on app-provided CSS custom properties (`--gog-accent-color`,
+  `--gog-btn-md-padding`, `--gog-font-heading`, etc. — see `styling.instructions.md`).
   Define these global tokens in `src/styles.scss` so library components render correctly.
 
 ## SSR safety (this app renders on the server)

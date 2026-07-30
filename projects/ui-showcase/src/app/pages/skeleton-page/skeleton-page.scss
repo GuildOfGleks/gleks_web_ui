@@ -52,7 +52,7 @@
 
 .skeleton-size-stack__label {
   width: 3ch;
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
   font-size: 0.75rem;
 }
 
@@ -61,8 +61,8 @@
   display: grid;
   gap: 16px;
   padding: 20px;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--surface-color) 88%, transparent);
+  border: 1px solid var(--gog-border-color);
+  background: color-mix(in srgb, var(--gog-surface-color) 88%, transparent);
   max-width: 420px;
 }
 
@@ -94,13 +94,13 @@
 .profile-card__role,
 .profile-card__bio {
   margin: 0;
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
 }
 
 .profile-card__banner {
   height: 120px;
-  border-radius: var(--radius);
-  background: linear-gradient(135deg, var(--accent-dim), var(--accent-color));
+  border-radius: var(--gog-radius);
+  background: linear-gradient(135deg, var(--gog-accent-dim), var(--gog-accent-color));
 }
 
 /* ── Catalog list demo ─────────────────────────────────────────────────── */
@@ -115,7 +115,7 @@
   align-items: center;
   gap: 14px;
   padding: 10px 0;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--gog-border-color);
 }
 
 .catalog-list__row gog-skeleton {
@@ -124,7 +124,7 @@
 }
 
 .catalog-list__row--data {
-  color: var(--text-color);
+  color: var(--gog-text-color);
 }
 
 .catalog-list__bullet {
@@ -132,7 +132,7 @@
   height: 32px;
   border-radius: 50%;
   flex-shrink: 0;
-  background: color-mix(in srgb, var(--accent-color) 25%, var(--surface-color));
+  background: color-mix(in srgb, var(--gog-accent-color) 25%, var(--gog-surface-color));
 }
 
 .catalog-list__name {
@@ -141,5 +141,5 @@
 }
 
 .catalog-list__category {
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
 }

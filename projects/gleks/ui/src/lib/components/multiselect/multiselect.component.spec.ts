@@ -54,14 +54,22 @@ describe('MultiselectComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(fixture.nativeElement.querySelector('.gog-ms__dropdown')?.classList.contains('gog-ms__dropdown--up')).toBe(true);
+    expect(
+      fixture.nativeElement
+        .querySelector('.gog-ms__dropdown')
+        ?.classList.contains('gog-ms__dropdown--up'),
+    ).toBe(true);
   });
 
   it('applies the size modifier class to the host wrapper', () => {
     fixture.componentRef.setInput('size', 'lg');
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.gog-ms-wrapper')?.classList.contains('gog-ms-wrapper--lg')).toBe(true);
+    expect(
+      fixture.nativeElement
+        .querySelector('.gog-ms-wrapper')
+        ?.classList.contains('gog-ms-wrapper--lg'),
+    ).toBe(true);
   });
 
   describe('disabled', () => {
@@ -98,7 +106,9 @@ describe('MultiselectComponent', () => {
       fixture.componentRef.setInput('errorMessage', 'Selection required');
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.querySelector('.gog-ms__error')?.textContent).toContain('Selection required');
+      expect(fixture.nativeElement.querySelector('.gog-ms__error')?.textContent).toContain(
+        'Selection required',
+      );
     });
 
     it('hides the error only when the consumer clears errorMessage', () => {
@@ -194,7 +204,9 @@ describe('MultiselectComponent', () => {
       (fixture.nativeElement.querySelector('.gog-ms') as HTMLElement).click();
       fixture.detectChanges();
 
-      const options = fixture.nativeElement.querySelectorAll('.gog-ms__option') as NodeListOf<HTMLButtonElement>;
+      const options = fixture.nativeElement.querySelectorAll(
+        '.gog-ms__option',
+      ) as NodeListOf<HTMLButtonElement>;
       options[1].click();
       fixture.detectChanges();
 
@@ -206,7 +218,9 @@ describe('MultiselectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const options = fixture.nativeElement.querySelectorAll('.gog-ms__option') as NodeListOf<HTMLButtonElement>;
+      const options = fixture.nativeElement.querySelectorAll(
+        '.gog-ms__option',
+      ) as NodeListOf<HTMLButtonElement>;
       options[0].focus();
       options[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
       await fixture.whenStable();
@@ -278,7 +292,9 @@ describe('MultiselectComponent', () => {
       expect(controls.classList.contains('gog-ms__controls--bottom')).toBe(false);
       // DOCUMENT_POSITION_FOLLOWING on `.gog-ms__options` means controls comes first.
       const options = panel.querySelector('.gog-ms__options') as HTMLElement;
-      expect(controls.compareDocumentPosition(options) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(
+        controls.compareDocumentPosition(options) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
     });
 
     it('renders the controls row after the options when set to bottom', () => {
@@ -291,7 +307,9 @@ describe('MultiselectComponent', () => {
       const controls = panel.querySelector('.gog-ms__controls') as HTMLElement;
       const options = panel.querySelector('.gog-ms__options') as HTMLElement;
       expect(controls.classList.contains('gog-ms__controls--bottom')).toBe(true);
-      expect(controls.compareDocumentPosition(options) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
+      expect(
+        controls.compareDocumentPosition(options) & Node.DOCUMENT_POSITION_PRECEDING,
+      ).toBeTruthy();
     });
   });
 
@@ -314,7 +332,9 @@ describe('MultiselectComponent', () => {
       trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
       await fixture.whenStable();
 
-      const options = fixture.nativeElement.querySelectorAll('.gog-ms__option') as NodeListOf<HTMLButtonElement>;
+      const options = fixture.nativeElement.querySelectorAll(
+        '.gog-ms__option',
+      ) as NodeListOf<HTMLButtonElement>;
       expect(document.activeElement).toBe(options[0]);
     });
 
@@ -324,7 +344,9 @@ describe('MultiselectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const options = fixture.nativeElement.querySelectorAll('.gog-ms__option') as NodeListOf<HTMLButtonElement>;
+      const options = fixture.nativeElement.querySelectorAll(
+        '.gog-ms__option',
+      ) as NodeListOf<HTMLButtonElement>;
       options[0].focus();
       options[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
       await fixture.whenStable();
@@ -427,7 +449,9 @@ describe('MultiselectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const portalOption = document.body.querySelector('[role="listbox"] .gog-ms__option') as HTMLButtonElement;
+      const portalOption = document.body.querySelector(
+        '[role="listbox"] .gog-ms__option',
+      ) as HTMLButtonElement;
       portalOption.click();
       fixture.detectChanges();
       await fixture.whenStable();
@@ -545,7 +569,11 @@ describe('MultiselectComponent', () => {
       @Component({
         imports: [MultiselectComponent, ReactiveFormsModule],
         template: `
-          <gog-multiselect [formControl]="control" [options]="options" errorMessage="Pick at least one" />
+          <gog-multiselect
+            [formControl]="control"
+            [options]="options"
+            errorMessage="Pick at least one"
+          />
         `,
         changeDetection: ChangeDetectionStrategy.OnPush,
       })

@@ -29,19 +29,24 @@
     var(--toast-stack-depth) * var(--gog-toast-stack-expanded-gap) * var(--toast-stack-direction, 1)
   );
   --toast-stack-y: calc(
-    var(--toast-stack-collapsed-y) + (var(--toast-stack-expanded-y) - var(--toast-stack-collapsed-y)) *
+    var(--toast-stack-collapsed-y) +
+      (var(--toast-stack-expanded-y) - var(--toast-stack-collapsed-y)) *
       var(--toast-stack-expanded, 0)
   );
-  --toast-stack-collapsed-scale: calc(1 - (var(--toast-stack-depth) * var(--gog-toast-stack-scale-step)));
+  --toast-stack-collapsed-scale: calc(
+    1 - (var(--toast-stack-depth) * var(--gog-toast-stack-scale-step))
+  );
   --toast-stack-scale: calc(
-    var(--toast-stack-collapsed-scale) + (1 - var(--toast-stack-collapsed-scale)) * var(--toast-stack-expanded, 0)
+    var(--toast-stack-collapsed-scale) + (1 - var(--toast-stack-collapsed-scale)) *
+      var(--toast-stack-expanded, 0)
   );
   --toast-stack-collapsed-opacity: max(
     var(--gog-toast-stack-min-opacity),
     calc(1 - (var(--toast-stack-depth) * var(--gog-toast-stack-opacity-step)))
   );
   --toast-stack-opacity: calc(
-    var(--toast-stack-collapsed-opacity) + (1 - var(--toast-stack-collapsed-opacity)) * var(--toast-stack-expanded, 0)
+    var(--toast-stack-collapsed-opacity) + (1 - var(--toast-stack-collapsed-opacity)) *
+      var(--toast-stack-expanded, 0)
   );
 
   position: relative;
@@ -59,7 +64,8 @@
   pointer-events: all;
   opacity: 0;
   overflow: hidden;
-  transform: translate3d(var(--toast-enter-x), var(--toast-stack-y), 0) scale(var(--toast-stack-scale));
+  transform: translate3d(var(--toast-enter-x), var(--toast-stack-y), 0)
+    scale(var(--toast-stack-scale));
   transition:
     opacity var(--gog-toast-transition-duration) var(--gog-easing),
     transform var(--gog-toast-transition-duration) var(--gog-easing);

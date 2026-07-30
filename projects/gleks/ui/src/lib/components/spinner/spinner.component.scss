@@ -60,7 +60,9 @@
   animation:
     gog-spin-cw var(--gog-spinner-spin-duration) linear infinite,
     gog-arc-outer-pulse var(--gog-spinner-pulse-duration) ease-in-out infinite;
-  filter: drop-shadow(0 0 var(--gog-spinner-arc-outer-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color)));
+  filter: drop-shadow(
+    0 0 var(--gog-spinner-arc-outer-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color))
+  );
 }
 
 .gog-spinner__arc-inner {
@@ -70,7 +72,10 @@
   animation:
     gog-spin-ccw var(--gog-spinner-spin-slow-duration) linear infinite,
     gog-arc-inner-pulse var(--gog-spinner-pulse-duration) ease-in-out infinite;
-  filter: drop-shadow(0 0 var(--gog-spinner-arc-inner-glow) var(--gog-spinner-color, var(--gog-spinner-arc-inner-color)));
+  filter: drop-shadow(
+    0 0 var(--gog-spinner-arc-inner-glow)
+      var(--gog-spinner-color, var(--gog-spinner-arc-inner-color))
+  );
   opacity: var(--gog-spinner-arc-inner-opacity);
 }
 
@@ -83,13 +88,17 @@
 .gog-spinner__diamond {
   fill: var(--gog-spinner-color, var(--gog-spinner-diamond-color));
   opacity: var(--gog-spinner-diamond-opacity);
-  filter: drop-shadow(0 0 var(--gog-spinner-diamond-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color)));
+  filter: drop-shadow(
+    0 0 var(--gog-spinner-diamond-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color))
+  );
 }
 
 /* ── Inner rune ─────────────────────────────────────────────────────────── */
 .gog-spinner__rune-wrap {
   animation: gog-rune-pulse var(--gog-spinner-pulse-duration) ease-in-out infinite;
-  filter: drop-shadow(0 0 var(--gog-spinner-rune-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color)));
+  filter: drop-shadow(
+    0 0 var(--gog-spinner-rune-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color))
+  );
 }
 
 .gog-spinner__rune {
@@ -118,10 +127,10 @@
   -webkit-mask-composite: source-out;
   mask-composite: subtract;
   animation: gog-spin-cw var(--gog-spinner-ring-duration) infinite linear;
-  filter: drop-shadow(0 0 var(--gog-spinner-ring-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color)));
-  --gog-spinner-ring-mask:
-    conic-gradient(#0000 10%, #000),
-    linear-gradient(#000 0 0) content-box;
+  filter: drop-shadow(
+    0 0 var(--gog-spinner-ring-glow) var(--gog-spinner-color, var(--gog-spinner-glow-color))
+  );
+  --gog-spinner-ring-mask: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
 }
 
 /* ── Animations ─────────────────────────────────────────────────────────── */

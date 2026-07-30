@@ -33,11 +33,15 @@ describe('TagComponent', () => {
 
   it('should add the has-icon class only when an icon name or template is set', () => {
     fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).classList.contains('gog-tag--has-icon')).toBe(false);
+    expect((fixture.nativeElement as HTMLElement).classList.contains('gog-tag--has-icon')).toBe(
+      false,
+    );
 
     fixture.componentRef.setInput('iconName', 'check');
     fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).classList.contains('gog-tag--has-icon')).toBe(true);
+    expect((fixture.nativeElement as HTMLElement).classList.contains('gog-tag--has-icon')).toBe(
+      true,
+    );
   });
 
   it('should map semantic variants to the matching classes', () => {

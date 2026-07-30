@@ -19,10 +19,10 @@
   border: var(--gog-btn-border-width) var(--gog-btn-border-style)
     var(--gog-btn-border, var(--gog-btn-variant-border, var(--gog-btn-primary-border)));
   border-radius: var(--gog-btn-radius);
-  padding: var(--gog-btn-padding, var(--gog-btn-size-padding, var(--btn-md-padding)));
+  padding: var(--gog-btn-padding, var(--gog-btn-size-padding, var(--gog-btn-md-padding)));
   font-family: var(--gog-btn-font-family);
   font-weight: var(--gog-btn-font-weight);
-  font-size: var(--gog-btn-font-size, var(--gog-btn-size-font-size, var(--btn-md-font-size)));
+  font-size: var(--gog-btn-font-size, var(--gog-btn-size-font-size, var(--gog-btn-md-font-size)));
   letter-spacing: var(--gog-btn-letter-spacing);
   text-transform: var(--gog-btn-text-transform);
   line-height: var(--gog-btn-line-height);
@@ -30,9 +30,10 @@
   color: var(--gog-btn-color, var(--gog-btn-variant-color, var(--gog-btn-primary-color)));
   box-shadow: var(--gog-btn-shadow, var(--gog-btn-variant-shadow, var(--gog-btn-primary-shadow)));
   cursor: pointer;
-  transition: background-color var(--gog-btn-transition-duration) var(--gog-easing),
-  box-shadow var(--gog-btn-transition-duration) var(--gog-easing),
-  color var(--gog-btn-transition-duration) var(--gog-easing);
+  transition:
+    background-color var(--gog-btn-transition-duration) var(--gog-easing),
+    box-shadow var(--gog-btn-transition-duration) var(--gog-easing),
+    color var(--gog-btn-transition-duration) var(--gog-easing);
 }
 
 .gog-btn:focus-visible {
@@ -126,28 +127,28 @@
 
 /* === Sizes === */
 .gog-btn--xsm {
-  --gog-btn-size-padding: var(--btn-xsm-padding);
-  --gog-btn-size-font-size: var(--btn-xsm-font-size);
+  --gog-btn-size-padding: var(--gog-btn-xsm-padding);
+  --gog-btn-size-font-size: var(--gog-btn-xsm-font-size);
 }
 
 .gog-btn--sm {
-  --gog-btn-size-padding: var(--btn-sm-padding);
-  --gog-btn-size-font-size: var(--btn-sm-font-size);
+  --gog-btn-size-padding: var(--gog-btn-sm-padding);
+  --gog-btn-size-font-size: var(--gog-btn-sm-font-size);
 }
 
 .gog-btn--md {
-  --gog-btn-size-padding: var(--btn-md-padding);
-  --gog-btn-size-font-size: var(--btn-md-font-size);
+  --gog-btn-size-padding: var(--gog-btn-md-padding);
+  --gog-btn-size-font-size: var(--gog-btn-md-font-size);
 }
 
 .gog-btn--lg {
-  --gog-btn-size-padding: var(--btn-lg-padding);
-  --gog-btn-size-font-size: var(--btn-lg-font-size);
+  --gog-btn-size-padding: var(--gog-btn-lg-padding);
+  --gog-btn-size-font-size: var(--gog-btn-lg-font-size);
 }
 
 .gog-btn--slg {
-  --gog-btn-size-padding: var(--btn-slg-padding);
-  --gog-btn-size-font-size: var(--btn-slg-font-size);
+  --gog-btn-size-padding: var(--gog-btn-slg-padding);
+  --gog-btn-size-font-size: var(--gog-btn-slg-font-size);
 }
 
 /* === Full width === */

@@ -21,8 +21,7 @@
 .gog-table {
   width: 100%;
   border-collapse: collapse;
-  border: var(--gog-table-border-width) var(--gog-table-border-style)
-    var(--gog-table-border-color);
+  border: var(--gog-table-border-width) var(--gog-table-border-style) var(--gog-table-border-color);
   background-color: var(--gog-table-surface);
   color: var(--gog-table-text-color);
   font-family: var(--gog-table-font-family);
@@ -65,11 +64,17 @@
 }
 
 .gog-table__th {
-  padding: var(--gog-table-th-padding-v, var(--gog-table-size-th-padding-v, var(--gog-table-lg-padding-v)))
-  var(--gog-table-padding-h);
+  padding: var(
+      --gog-table-th-padding-v,
+      var(--gog-table-size-th-padding-v, var(--gog-table-lg-padding-v))
+    )
+    var(--gog-table-padding-h);
   text-align: left;
   font-family: var(--gog-table-header-font-family);
-  font-size: var(--gog-table-th-font-size, var(--gog-table-size-th-font-size, var(--gog-table-lg-th-font-size)));
+  font-size: var(
+    --gog-table-th-font-size,
+    var(--gog-table-size-th-font-size, var(--gog-table-lg-th-font-size))
+  );
   text-transform: var(--gog-table-header-text-transform);
   letter-spacing: var(--gog-table-header-letter-spacing);
   color: var(--gog-table-accent-color);
@@ -131,9 +136,15 @@
 }
 
 .gog-table__td {
-  padding: var(--gog-table-td-padding-v, var(--gog-table-size-td-padding-v, var(--gog-table-lg-padding-v)))
-  var(--gog-table-padding-h);
-  font-size: var(--gog-table-td-font-size, var(--gog-table-size-td-font-size, var(--gog-table-lg-td-font-size)));
+  padding: var(
+      --gog-table-td-padding-v,
+      var(--gog-table-size-td-padding-v, var(--gog-table-lg-padding-v))
+    )
+    var(--gog-table-padding-h);
+  font-size: var(
+    --gog-table-td-font-size,
+    var(--gog-table-size-td-font-size, var(--gog-table-lg-td-font-size))
+  );
   border-bottom: var(--gog-table-row-border-width) var(--gog-table-border-style)
     var(--gog-table-border-color);
   vertical-align: middle;

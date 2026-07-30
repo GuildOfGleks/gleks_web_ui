@@ -5,7 +5,6 @@ import {
   computed,
   effect,
   ElementRef,
-  inject,
   input,
   OnDestroy,
   output,
@@ -161,6 +160,8 @@ export class ToastComponent implements OnDestroy {
   }
 
   private prefersReducedMotion(): boolean {
-    return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return (
+      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
   }
 }

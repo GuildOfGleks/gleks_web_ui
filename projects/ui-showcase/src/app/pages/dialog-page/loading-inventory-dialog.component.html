@@ -1,4 +1,8 @@
-<div class="loading-dialog" [attr.aria-labelledby]="titleId" [attr.aria-describedby]="descriptionId">
+<div
+  class="loading-dialog"
+  [attr.aria-labelledby]="titleId"
+  [attr.aria-describedby]="descriptionId"
+>
   <div class="loading-dialog__header">
     @if (isLoading()) {
       <gog-spinner size="lg" ariaLabel="Loading warehouse data" />

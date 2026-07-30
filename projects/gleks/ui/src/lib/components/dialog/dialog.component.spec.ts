@@ -7,7 +7,9 @@ import { DialogService } from '../../services/dialog-service/dialog.service';
 
 @Component({
   standalone: true,
-  template: `<input class="first-input" /><button type="button" class="second-button">Second</button>`,
+  template: `<input class="first-input" /><button type="button" class="second-button">
+      Second
+    </button>`,
 })
 class DialogContentComponent {}
 
@@ -58,7 +60,9 @@ describe('DialogComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(fixture.nativeElement.querySelector('.gog-dialog__title')?.textContent).toContain('My dialog');
+    expect(fixture.nativeElement.querySelector('.gog-dialog__title')?.textContent).toContain(
+      'My dialog',
+    );
     expect(fixture.nativeElement.querySelector('.first-input')).toBeTruthy();
   });
 
@@ -175,7 +179,9 @@ describe('DialogComponent', () => {
       const secondButton = fixture.nativeElement.querySelector('.second-button') as HTMLElement;
 
       firstInput.focus();
-      panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }));
+      panel.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }),
+      );
 
       expect(document.activeElement).toBe(secondButton);
     });
@@ -203,8 +209,12 @@ describe('DialogComponent', () => {
       await fixture.whenStable();
 
       const header = fixture.nativeElement.querySelector('.gog-dialog__header') as HTMLElement;
-      header.dispatchEvent(new MouseEvent('pointerdown', { clientX: 10, clientY: 10, button: 0, bubbles: true }));
-      document.dispatchEvent(new MouseEvent('pointermove', { clientX: 40, clientY: 35, bubbles: true }));
+      header.dispatchEvent(
+        new MouseEvent('pointerdown', { clientX: 10, clientY: 10, button: 0, bubbles: true }),
+      );
+      document.dispatchEvent(
+        new MouseEvent('pointermove', { clientX: 40, clientY: 35, bubbles: true }),
+      );
 
       const dialog = dialogService.dialogs()[0];
       expect(dialog.offsetX).toBe(30);
@@ -219,8 +229,12 @@ describe('DialogComponent', () => {
       await fixture.whenStable();
 
       const closeButton = fixture.nativeElement.querySelector('.gog-dialog__close') as HTMLElement;
-      closeButton.dispatchEvent(new MouseEvent('pointerdown', { clientX: 10, clientY: 10, button: 0, bubbles: true }));
-      document.dispatchEvent(new MouseEvent('pointermove', { clientX: 40, clientY: 35, bubbles: true }));
+      closeButton.dispatchEvent(
+        new MouseEvent('pointerdown', { clientX: 10, clientY: 10, button: 0, bubbles: true }),
+      );
+      document.dispatchEvent(
+        new MouseEvent('pointermove', { clientX: 40, clientY: 35, bubbles: true }),
+      );
 
       const dialog = dialogService.dialogs()[0];
       expect(dialog.offsetX).toBe(0);

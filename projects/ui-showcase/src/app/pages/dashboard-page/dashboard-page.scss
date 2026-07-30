@@ -33,8 +33,8 @@
 .dash__team-chip {
   padding: 2px 8px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-dim) 14%, transparent);
-  color: var(--muted-text-color);
+  background: color-mix(in srgb, var(--gog-accent-dim) 14%, transparent);
+  color: var(--gog-muted-text-color);
   font-size: 0.72rem;
   text-transform: capitalize;
   white-space: nowrap;

@@ -3,8 +3,8 @@
     <p class="eyebrow">gog-button</p>
     <h2>Button</h2>
     <p class="lead">
-      A debounced action button with four variants, five sizes, and built-in loading, disabled,
-      and full-width states.
+      A debounced action button with four variants, five sizes, and built-in loading, disabled, and
+      full-width states.
     </p>
   </div>
 
@@ -16,7 +16,12 @@
         <div class="variant-row">
           <span class="variant-row__label">{{ variant }}</span>
           @for (size of sizes; track size) {
-            <gog-button [variant]="variant" [size]="size" type="button" (gogClick)="onClick(variant, size)">
+            <gog-button
+              [variant]="variant"
+              [size]="size"
+              type="button"
+              (gogClick)="onClick(variant, size)"
+            >
               {{ size }}
             </gog-button>
           }
@@ -28,7 +33,9 @@
 
   <article class="card">
     <h3>Disabled</h3>
-    <p class="meta">One disabled button per variant — disabled state must stay legible on every color.</p>
+    <p class="meta">
+      One disabled button per variant — disabled state must stay legible on every color.
+    </p>
     <div class="action-row">
       @for (variant of variants; track variant) {
         <gog-button [variant]="variant" type="button" [disabled]="true">{{ variant }}</gog-button>
@@ -39,11 +46,16 @@
   <article class="card">
     <h3>Loading</h3>
     <p class="meta">
-      Loading swaps the label for a spinner and blocks clicks (via <code>aria-disabled</code>,
-      not the native <code>disabled</code> attribute, so focus is preserved).
+      Loading swaps the label for a spinner and blocks clicks (via <code>aria-disabled</code>, not
+      the native <code>disabled</code> attribute, so focus is preserved).
     </p>
     <div class="action-row">
-      <gog-button variant="primary" type="button" [loading]="isLoading()" (gogClick)="simulateLoading()">
+      <gog-button
+        variant="primary"
+        type="button"
+        [loading]="isLoading()"
+        (gogClick)="simulateLoading()"
+      >
         Simulate loading
       </gog-button>
     </div>
@@ -100,7 +112,9 @@
       behind your clicks.
     </p>
     <div class="action-row">
-      <gog-button variant="primary" type="button" (gogClick)="onSpamClick()">Click me fast</gog-button>
+      <gog-button variant="primary" type="button" (gogClick)="onSpamClick()"
+        >Click me fast</gog-button
+      >
     </div>
     <p class="meta">Accepted clicks: {{ clickCount() }}</p>
   </article>

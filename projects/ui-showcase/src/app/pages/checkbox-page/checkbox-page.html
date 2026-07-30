@@ -3,8 +3,8 @@
     <p class="eyebrow">gog-checkbox</p>
     <h2>Checkbox</h2>
     <p class="lead">
-      A two-way bindable checkbox with a `ControlValueAccessor` implementation and a
-      customizable check icon slot.
+      A two-way bindable checkbox with a `ControlValueAccessor` implementation and a customizable
+      check icon slot.
     </p>
   </div>
 
@@ -22,11 +22,7 @@
         <h4 class="checkbox-group__title">Disabled</h4>
         <gog-checkbox label="Disabled unchecked" [disabled]="true" />
         <gog-checkbox label="Disabled checked" [checked]="disabledChecked()" [disabled]="true" />
-        <gog-checkbox
-          label="Disabled indeterminate"
-          [indeterminate]="true"
-          [disabled]="true"
-        />
+        <gog-checkbox label="Disabled indeterminate" [indeterminate]="true" [disabled]="true" />
       </div>
 
       <div class="checkbox-group">
@@ -56,8 +52,8 @@
   <article class="card">
     <h3>Custom check icon</h3>
     <p class="meta">
-      <code>checkIconTemplate</code> replaces the default checkmark glyph — here it's swapped
-      for a star.
+      <code>checkIconTemplate</code> replaces the default checkmark glyph — here it's swapped for a
+      star.
     </p>
     <ng-template #starIcon>
       <gog-icon name="warning" />

@@ -18,6 +18,7 @@
     assistive tech alike.
   -->
   @if (label()) {
+    <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -- associated via aria-labelledby above instead, see comment -->
     <label class="gog-select__label" [id]="labelId()">{{ label() }}</label>
   }
 
@@ -69,6 +70,7 @@
   no longer inherit the size tokens from the `.gog-select--sm/--lg` wrapper.
 -->
 <ng-template #panelTpl>
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -- (click) below is housekeeping stopPropagation, not an interactive handler; the focusable/keyboard-operable elements are the options inside -->
   <div
     [id]="listboxId()"
     class="gog-select__dropdown"

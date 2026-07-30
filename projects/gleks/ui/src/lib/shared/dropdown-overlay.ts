@@ -28,11 +28,21 @@ export class GogDropdownOverlay {
     return this.viewRef !== null;
   }
 
-  attach(template: TemplateRef<unknown>): void {
+  attach(template: TemplateRef<unknown>, themeSource: Element | null = null): void {
     this.detach();
 
     this.hostEl = this.document.createElement('div');
     this.hostEl.classList.add('gog-overlay-host');
+
+    // `data-theme` can be scoped to any subtree, not just `:root` (see the themes
+    // showcase page), so the host has to copy it from wherever the trigger actually
+    // sits rather than assume the document-wide theme applies.
+    const themedAncestor = themeSource?.closest('[data-theme]');
+    const theme = themedAncestor?.getAttribute('data-theme');
+    if (theme) {
+      this.hostEl.setAttribute('data-theme', theme);
+    }
+
     this.document.body.appendChild(this.hostEl);
 
     this.viewRef = template.createEmbeddedView({});

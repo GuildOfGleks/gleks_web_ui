@@ -29,7 +29,11 @@
     <div class="spinner-grid">
       @for (variant of variants; track variant) {
         <div class="spinner-tile">
-          <gog-spinner [variant]="variant" size="lg" [ariaLabel]="'Loading, ' + variant + ' variant'" />
+          <gog-spinner
+            [variant]="variant"
+            size="lg"
+            [ariaLabel]="'Loading, ' + variant + ' variant'"
+          />
           <span class="meta">{{ variant.toUpperCase() }}</span>
         </div>
       }
@@ -39,8 +43,8 @@
   <article class="card">
     <h3>Custom variant</h3>
     <p class="lead">
-      Need your own look entirely? Set <code>variant="custom"</code> and project any markup —
-      it inherits the size wrapper, overlay behaviour, and picks up
+      Need your own look entirely? Set <code>variant="custom"</code> and project any markup — it
+      inherits the size wrapper, overlay behaviour, and picks up
       <code>--gog-spinner-color</code> like the built-in presets.
     </p>
     <div class="spinner-grid">
@@ -60,8 +64,9 @@
   <article class="card">
     <h3>Overlay mode</h3>
     <p class="lead">
-      Wrap any section to block interaction while data is loading. <code>gog-spinner-overlay</code>
-      also accepts <code>variant</code>, forwarded straight to the inner <code>gog-spinner</code>.
+      Wrap any section to block interaction while data is loading.
+      <code>gog-spinner-overlay</code> also accepts <code>variant</code>, forwarded straight to the
+      inner <code>gog-spinner</code>.
     </p>
     <div class="action-row">
       <gog-button variant="primary" type="button" (gogClick)="previewOverlay()">
@@ -106,8 +111,8 @@
   <article class="card">
     <h3>Custom color</h3>
     <p class="lead">
-      Override <code>--gog-spinner-color</code> to recolor the spinner regardless of theme —
-      useful when it sits on a surface where the default accent color wouldn't read well.
+      Override <code>--gog-spinner-color</code> to recolor the spinner regardless of theme — useful
+      when it sits on a surface where the default accent color wouldn't read well.
     </p>
     <div class="spinner-grid">
       <div class="spinner-tile spinner-tile--danger">

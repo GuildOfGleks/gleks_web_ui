@@ -19,8 +19,14 @@
   box-sizing: border-box;
   width: fit-content;
   max-width: 100%;
-  padding: var(--gog-tag-padding-block, var(--gog-tag-size-padding-block, var(--gog-tag-md-padding-block)))
-  var(--gog-tag-padding-inline, var(--gog-tag-size-padding-inline, var(--gog-tag-md-padding-inline)));
+  padding: var(
+      --gog-tag-padding-block,
+      var(--gog-tag-size-padding-block, var(--gog-tag-md-padding-block))
+    )
+    var(
+      --gog-tag-padding-inline,
+      var(--gog-tag-size-padding-inline, var(--gog-tag-md-padding-inline))
+    );
   border: var(--gog-tag-border-width) var(--gog-tag-border-style)
     var(--gog-tag-border, var(--gog-tag-resolved-color));
   border-radius: var(--gog-tag-radius);

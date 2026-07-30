@@ -1,11 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import {
-  ButtonComponent,
-  DIALOG_REF,
-  DialogRef,
-  ToastService,
-} from '@guildofgleks/ui';
+import { ButtonComponent, DIALOG_REF, DialogRef, ToastService } from '@guildofgleks/ui';
 
 export interface WarehouseRegistrationDialogResult {
   registrationCode: string;

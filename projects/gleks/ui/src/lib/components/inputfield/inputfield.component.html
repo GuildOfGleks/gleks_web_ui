@@ -8,9 +8,7 @@
   [class.gog-input-wrapper--icon-end]="hasIconEnd()"
 >
   @if (label()) {
-    <label class="gog-input__label" [attr.for]="inputId() || null">{{
-        label()
-      }}</label>
+    <label class="gog-input__label" [attr.for]="inputId() || null">{{ label() }}</label>
   }
   <div class="gog-input__field-container">
     @if (hasIconStart()) {
@@ -66,7 +64,7 @@
       class="gog-input__error"
       [attr.id]="inputId() ? inputId() + '-error' : null"
       role="alert"
-    >{{ visibleError() }}</span
+      >{{ visibleError() }}</span
     >
   }
 </div>

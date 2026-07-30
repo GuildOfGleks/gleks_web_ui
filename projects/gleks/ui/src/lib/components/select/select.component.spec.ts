@@ -15,7 +15,7 @@ function stubRect(target: Element, rect: Partial<DOMRect>): void {
     height: 0,
     x: 0,
     y: 0,
-    toJSON() {},
+    toJSON: () => {},
     ...rect,
   } as DOMRect);
 }
@@ -46,7 +46,9 @@ describe('SelectComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+    const control = fixture.nativeElement.querySelector(
+      '.gog-select__control',
+    ) as HTMLButtonElement;
     control.click();
     fixture.detectChanges();
     await fixture.whenStable();
@@ -69,19 +71,27 @@ describe('SelectComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+    const control = fixture.nativeElement.querySelector(
+      '.gog-select__control',
+    ) as HTMLButtonElement;
     control.click();
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(fixture.nativeElement.querySelector('.gog-select__dropdown')?.classList.contains('gog-select__dropdown--up')).toBe(true);
+    expect(
+      fixture.nativeElement
+        .querySelector('.gog-select__dropdown')
+        ?.classList.contains('gog-select__dropdown--up'),
+    ).toBe(true);
   });
 
   it('applies the size modifier class to the host wrapper', () => {
     fixture.componentRef.setInput('size', 'lg');
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.gog-select')?.classList.contains('gog-select--lg')).toBe(true);
+    expect(
+      fixture.nativeElement.querySelector('.gog-select')?.classList.contains('gog-select--lg'),
+    ).toBe(true);
   });
 
   describe('errorMessage', () => {
@@ -90,7 +100,9 @@ describe('SelectComponent', () => {
       fixture.componentRef.setInput('errorMessage', 'Selection required');
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.querySelector('.gog-select__error')?.textContent).toContain('Selection required');
+      expect(fixture.nativeElement.querySelector('.gog-select__error')?.textContent).toContain(
+        'Selection required',
+      );
     });
 
     it('hides the error only when the consumer clears errorMessage', () => {
@@ -170,7 +182,9 @@ describe('SelectComponent', () => {
       document.addEventListener = spy as typeof document.addEventListener;
 
       try {
-        const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+        const control = fixture.nativeElement.querySelector(
+          '.gog-select__control',
+        ) as HTMLButtonElement;
         control.click();
         fixture.detectChanges();
         await fixture.whenStable();
@@ -198,7 +212,9 @@ describe('SelectComponent', () => {
       await fixture.whenStable();
 
       const label = fixture.nativeElement.querySelector('.gog-select__label') as HTMLElement;
-      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = fixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
 
       expect(label.id).toBeTruthy();
       expect(control.getAttribute('aria-labelledby')).toBe(label.id);
@@ -212,7 +228,9 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = fixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
       expect(control.getAttribute('aria-labelledby')).toBeNull();
       expect(control.getAttribute('aria-label')).toBe('Pick a region');
     });
@@ -245,12 +263,16 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = fixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
       control.click();
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const option = fixture.nativeElement.querySelector('.gog-select__option') as HTMLButtonElement;
+      const option = fixture.nativeElement.querySelector(
+        '.gog-select__option',
+      ) as HTMLButtonElement;
       option.focus();
       option.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
       fixture.detectChanges();
@@ -277,7 +299,9 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const options = fixture.nativeElement.querySelectorAll('.gog-select__option') as NodeListOf<HTMLButtonElement>;
+      const options = fixture.nativeElement.querySelectorAll(
+        '.gog-select__option',
+      ) as NodeListOf<HTMLButtonElement>;
       options[1].click();
       fixture.detectChanges();
 
@@ -289,7 +313,9 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const options = fixture.nativeElement.querySelectorAll('.gog-select__option') as NodeListOf<HTMLButtonElement>;
+      const options = fixture.nativeElement.querySelectorAll(
+        '.gog-select__option',
+      ) as NodeListOf<HTMLButtonElement>;
       options[0].focus();
       options[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
       await fixture.whenStable();
@@ -310,7 +336,9 @@ describe('SelectComponent', () => {
     });
 
     it('moves focus from the trigger into the option list with ArrowDown', async () => {
-      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = fixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
       control.click();
       fixture.detectChanges();
       await fixture.whenStable();
@@ -318,17 +346,23 @@ describe('SelectComponent', () => {
       control.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
       await fixture.whenStable();
 
-      const options = fixture.nativeElement.querySelectorAll('.gog-select__option') as NodeListOf<HTMLButtonElement>;
+      const options = fixture.nativeElement.querySelectorAll(
+        '.gog-select__option',
+      ) as NodeListOf<HTMLButtonElement>;
       expect(document.activeElement).toBe(options[0]);
     });
 
     it('moves focus with ArrowDown/ArrowUp/Home/End across options', async () => {
-      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = fixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
       control.click();
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const options = fixture.nativeElement.querySelectorAll('.gog-select__option') as NodeListOf<HTMLButtonElement>;
+      const options = fixture.nativeElement.querySelectorAll(
+        '.gog-select__option',
+      ) as NodeListOf<HTMLButtonElement>;
       options[0].focus();
       options[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
       await fixture.whenStable();
@@ -340,12 +374,16 @@ describe('SelectComponent', () => {
     });
 
     it('closes the dropdown and refocuses the trigger on Escape from an option', async () => {
-      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = fixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
       control.click();
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const option = fixture.nativeElement.querySelector('.gog-select__option') as HTMLButtonElement;
+      const option = fixture.nativeElement.querySelector(
+        '.gog-select__option',
+      ) as HTMLButtonElement;
       option.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
       fixture.detectChanges();
       await fixture.whenStable();
@@ -388,7 +426,9 @@ describe('SelectComponent', () => {
 
       expect(document.body.querySelector('[role="listbox"]')).toBeNull();
 
-      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = fixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
       control.click();
       fixture.detectChanges();
       await fixture.whenStable();
@@ -401,6 +441,21 @@ describe('SelectComponent', () => {
       await fixture.whenStable();
 
       expect(document.body.querySelector('[role="listbox"]')).toBeNull();
+    });
+
+    it("copies the trigger's scoped data-theme onto the overlay host", async () => {
+      fixture.nativeElement.setAttribute('data-theme', 'cyberpunk');
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      (fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const host = document.body.querySelector('.gog-overlay-host') as HTMLElement;
+      expect(host.getAttribute('data-theme')).toBe('cyberpunk');
     });
 
     it('reuses the trigger-relative placement for the appended panel', async () => {
@@ -449,7 +504,9 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = fixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
       const host = fixture.nativeElement.querySelector('.gog-select') as HTMLElement;
 
       // The host's rect starts well above the trigger's — exactly what a `<label>` stacked
@@ -467,14 +524,14 @@ describe('SelectComponent', () => {
       expect(panel.style.top).toBe('182px');
     });
 
-    // A dropdown inside a dialog is stacked by the dialog setting --dropdown-z on its
+    // A dropdown inside a dialog is stacked by the dialog setting --gog-dropdown-z on its
     // panel. An appended dropdown leaves that subtree, so the value has to be carried
     // over explicitly or the panel renders behind the dialog that opened it.
-    it('carries an inherited --dropdown-z onto the appended panel', async () => {
+    it('carries an inherited --gog-dropdown-z onto the appended panel', async () => {
       @Component({
         imports: [SelectComponent],
         template: `
-          <div [style.--dropdown-z]="1500">
+          <div [style.--gog-dropdown-z]="1500">
             <gog-select [options]="options" [appendToBody]="true" />
           </div>
         `,
@@ -487,7 +544,9 @@ describe('SelectComponent', () => {
       const hostFixture = TestBed.createComponent(StackingHostComponent);
       await hostFixture.whenStable();
 
-      (hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      (
+        hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement
+      ).click();
       await hostFixture.whenStable();
 
       const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
@@ -507,7 +566,9 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const portalOption = document.body.querySelector('[role="listbox"] .gog-select__option') as HTMLButtonElement;
+      const portalOption = document.body.querySelector(
+        '[role="listbox"] .gog-select__option',
+      ) as HTMLButtonElement;
       portalOption.click();
       fixture.detectChanges();
       await fixture.whenStable();
@@ -556,7 +617,9 @@ describe('SelectComponent', () => {
     });
 
     it('propagates a selection to the FormControl value', async () => {
-      (hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      (
+        hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement
+      ).click();
       await hostFixture.whenStable();
 
       (hostFixture.nativeElement.querySelector('.gog-select__option') as HTMLButtonElement).click();
@@ -568,7 +631,9 @@ describe('SelectComponent', () => {
     it('marks the FormControl as touched once the dropdown closes', async () => {
       expect(host.control.touched).toBe(false);
 
-      const control = hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = hostFixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
       control.click();
       await hostFixture.whenStable();
       control.click();
@@ -581,7 +646,9 @@ describe('SelectComponent', () => {
       host.control.disable();
       await hostFixture.whenStable();
 
-      const control = hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = hostFixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
       expect(control.disabled).toBe(true);
     });
 
@@ -591,7 +658,9 @@ describe('SelectComponent', () => {
       expect(host.control.invalid).toBe(true);
       expect(hostFixture.nativeElement.querySelector('.gog-select__error')).toBeNull();
 
-      const control = hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const control = hostFixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
       control.click();
       await hostFixture.whenStable();
       control.click();
@@ -611,7 +680,11 @@ describe('SelectComponent', () => {
       @Component({
         imports: [SelectComponent, ReactiveFormsModule],
         template: `
-          <gog-select [formControl]="control" [options]="options" errorMessage="Selection required" />
+          <gog-select
+            [formControl]="control"
+            [options]="options"
+            errorMessage="Selection required"
+          />
         `,
         changeDetection: ChangeDetectionStrategy.OnPush,
       })

@@ -3,9 +3,9 @@
     <p class="eyebrow">gog-multiselect</p>
     <h2>Multiselect</h2>
     <p class="lead">
-      A checkbox-driven multiselect dropdown with select-all/clear controls, size variants,
-      disabled options, placement control, and an optional body-portaled panel. Once open, Arrow
-      Up/Down move between options, Home/End jump to the first/last, and Escape closes.
+      A checkbox-driven multiselect dropdown with select-all/clear controls, size variants, disabled
+      options, placement control, and an optional body-portaled panel. Once open, Arrow Up/Down move
+      between options, Home/End jump to the first/last, and Escape closes.
     </p>
   </div>
 
@@ -27,7 +27,12 @@
     <h3>Sizes</h3>
     <div class="field-grid">
       @for (size of sizes; track size) {
-        <gog-multiselect [label]="'Size: ' + size" [size]="size" [options]="features" [(value)]="sizeDemoValue" />
+        <gog-multiselect
+          [label]="'Size: ' + size"
+          [size]="size"
+          [options]="features"
+          [(value)]="sizeDemoValue"
+        />
       }
     </div>
   </article>
@@ -35,9 +40,18 @@
   <article class="card">
     <h3>States</h3>
     <div class="field-grid">
-      <gog-multiselect label="Disabled" [options]="features" [value]="['toast']" [disabled]="true" />
+      <gog-multiselect
+        label="Disabled"
+        [options]="features"
+        [value]="['toast']"
+        [disabled]="true"
+      />
 
-      <gog-multiselect label="Permissions (one disabled)" [options]="permissionsWithDisabled" [(value)]="permissions" />
+      <gog-multiselect
+        label="Permissions (one disabled)"
+        [options]="permissionsWithDisabled"
+        [(value)]="permissions"
+      />
 
       <gog-multiselect
         label="Required tags"
@@ -59,9 +73,9 @@
   <article class="card">
     <h3>Reactive Forms — automatic error timing</h3>
     <p class="lead">
-      Same idea as <code>gog-select</code>: <code>errorDisplay="auto"</code> shows the error
-      once the attached <code>[formControl]</code> has been touched and is invalid, with no
-      manual error computation on this page's side.
+      Same idea as <code>gog-select</code>: <code>errorDisplay="auto"</code> shows the error once
+      the attached <code>[formControl]</code> has been touched and is invalid, with no manual error
+      computation on this page's side.
     </p>
     <div class="field-grid">
       <gog-multiselect
@@ -78,15 +92,24 @@
   <article class="card">
     <h3>Custom chevron &amp; label-less field</h3>
     <p class="lead">
-      <code>chevronTemplate</code> swaps the trigger's icon. <code>ariaLabel</code> names a
-      field that has no visible <code>label</code> at all.
+      <code>chevronTemplate</code> swaps the trigger's icon. <code>ariaLabel</code> names a field
+      that has no visible <code>label</code> at all.
     </p>
     <ng-template #sortChevron>
       <gog-icon name="sort" />
     </ng-template>
     <div class="field-grid">
-      <gog-multiselect [options]="sortOptions" [chevronTemplate]="sortChevron" [(value)]="sortValue" />
-      <gog-multiselect ariaLabel="Tags (no visible label)" placeholder="Pick tags" [options]="tags" [(value)]="ariaOnlyValue" />
+      <gog-multiselect
+        [options]="sortOptions"
+        [chevronTemplate]="sortChevron"
+        [(value)]="sortValue"
+      />
+      <gog-multiselect
+        ariaLabel="Tags (no visible label)"
+        placeholder="Pick tags"
+        [options]="tags"
+        [(value)]="ariaOnlyValue"
+      />
     </div>
   </article>
 
@@ -111,9 +134,9 @@
   <article class="card">
     <h3>"Select all" / "Clear" position</h3>
     <p class="lead">
-      <code>controlsPosition</code> puts the control row above or below the option list —
-      either way it's pinned in place with <code>position: sticky</code>, so it stays visible
-      instead of scrolling away with a long option list.
+      <code>controlsPosition</code> puts the control row above or below the option list — either way
+      it's pinned in place with <code>position: sticky</code>, so it stays visible instead of
+      scrolling away with a long option list.
     </p>
     <div class="field-grid">
       <gog-multiselect
@@ -139,9 +162,9 @@
   <article class="card">
     <h3>Custom panel size</h3>
     <p class="lead">
-      <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and
-      override the trigger-derived size. Applies only with <code>appendToBody</code>; the list
-      below has 20 options, capped to 160px so it scrolls internally.
+      <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and override
+      the trigger-derived size. Applies only with <code>appendToBody</code>; the list below has 20
+      options, capped to 160px so it scrolls internally.
     </p>
     <div class="field-grid">
       <gog-multiselect
@@ -161,8 +184,8 @@
     <h3>Opening near the bottom of the page</h3>
     <p class="lead">
       Scroll down to reach this one. With <code>appendToBody</code>, the panel flips upward
-      automatically and is positioned against the trigger itself — not the whole field — so it
-      never covers the label above it or the control below it.
+      automatically and is positioned against the trigger itself — not the whole field — so it never
+      covers the label above it or the control below it.
     </p>
     <div class="field-grid">
       <gog-multiselect

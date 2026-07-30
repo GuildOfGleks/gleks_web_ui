@@ -74,7 +74,9 @@ describe('ChipComponent', () => {
     fixture.componentRef.setInput('removable', true);
     fixture.detectChanges();
 
-    const removeButton = fixture.nativeElement.querySelector('.gog-chip__remove') as HTMLButtonElement;
+    const removeButton = fixture.nativeElement.querySelector(
+      '.gog-chip__remove',
+    ) as HTMLButtonElement;
     expect(getComputedStyle(removeButton).cursor).toBe('pointer');
   });
 
@@ -113,7 +115,9 @@ describe('ChipComponent', () => {
     fixture.componentRef.setInput('removable', true);
     fixture.detectChanges();
 
-    const removeButton = fixture.nativeElement.querySelector('.gog-chip__remove') as HTMLButtonElement;
+    const removeButton = fixture.nativeElement.querySelector(
+      '.gog-chip__remove',
+    ) as HTMLButtonElement;
     removeButton.click();
 
     expect(removeSpy).toHaveBeenCalledTimes(1);

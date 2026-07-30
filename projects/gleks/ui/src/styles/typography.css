@@ -3,13 +3,13 @@
 }
 
 .font-heading {
-  font-family: var(--font-heading), serif;
+  font-family: var(--gog-font-heading), serif;
 }
 
 .font-body {
-  font-family: var(--font-body), sans-serif;
+  font-family: var(--gog-font-body), sans-serif;
 }
 
 .font-mono {
-  font-family: var(--font-mono), monospace;
+  font-family: var(--gog-font-mono), monospace;
 }

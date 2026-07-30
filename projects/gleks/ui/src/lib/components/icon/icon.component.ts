@@ -1,5 +1,12 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, TemplateRef, computed, input, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  TemplateRef,
+  computed,
+  input,
+  inject,
+} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GogIconName, ICON_DEFS } from '../../shared/icons';
 
@@ -31,7 +38,11 @@ export class IconComponent {
   readonly title = input('');
   readonly ariaHidden = input(true);
 
-  protected readonly ariaLabel = computed(() => (this.ariaHidden() ? null : this.title() || this.name()));
+  protected readonly ariaLabel = computed(() =>
+    this.ariaHidden() ? null : this.title() || this.name(),
+  );
 
-  protected readonly iconSvg = computed(() => this.sanitizer.bypassSecurityTrustHtml(ICON_DEFS[this.name()]));
+  protected readonly iconSvg = computed(() =>
+    this.sanitizer.bypassSecurityTrustHtml(ICON_DEFS[this.name()]),
+  );
 }

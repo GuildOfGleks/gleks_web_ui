@@ -16,14 +16,25 @@
           @case ('profile') {
             <div class="settings__grid">
               <gog-inputfield label="Full name" [errorMessage]="nameError()" [(value)]="name" />
-              <gog-inputfield label="Email" type="email" [errorMessage]="emailError()" [(value)]="email" />
+              <gog-inputfield
+                label="Email"
+                type="email"
+                [errorMessage]="emailError()"
+                [(value)]="email"
+              />
             </div>
             <gog-checkbox label="Make my profile public" [(checked)]="publicProfile" />
           }
           @case ('preferences') {
             <div class="settings__grid">
               <gog-select label="Theme" [options]="themeOptions" [(value)]="theme" />
-              <gog-slider label="Notification volume" [min]="0" [max]="100" [step]="5" [(value)]="notificationVolume" />
+              <gog-slider
+                label="Notification volume"
+                [min]="0"
+                [max]="100"
+                [step]="5"
+                [(value)]="notificationVolume"
+              />
             </div>
             <gog-checkbox label="Enable beta features" [(checked)]="betaFeatures" />
           }
@@ -35,7 +46,11 @@
             </div>
             <div class="settings__chips">
               @for (keyword of mutedKeywords(); track keyword) {
-                <gog-chip [removable]="true" [removeAriaLabel]="'Remove ' + keyword" (gogRemove)="removeKeyword(keyword)">
+                <gog-chip
+                  [removable]="true"
+                  [removeAriaLabel]="'Remove ' + keyword"
+                  (gogRemove)="removeKeyword(keyword)"
+                >
                   {{ keyword }}
                 </gog-chip>
               }
@@ -47,7 +62,13 @@
   </div>
 
   <div class="action-row">
-    <gog-button variant="primary" type="button" [loading]="saving()" [disabled]="!isValid()" (gogClick)="save()">
+    <gog-button
+      variant="primary"
+      type="button"
+      [loading]="saving()"
+      [disabled]="!isValid()"
+      (gogClick)="save()"
+    >
       Save changes
     </gog-button>
   </div>

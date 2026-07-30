@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import {
   ButtonComponent,
   CheckboxComponent,
@@ -27,7 +34,9 @@ export class OnboardingPage implements OnDestroy {
 
   // Shared password visibility
   protected readonly showPassword = signal(false);
-  protected readonly passwordFieldType = computed(() => (this.showPassword() ? 'text' : 'password'));
+  protected readonly passwordFieldType = computed(() =>
+    this.showPassword() ? 'text' : 'password',
+  );
 
   // Login
   protected readonly loginEmail = signal('');
@@ -63,7 +72,9 @@ export class OnboardingPage implements OnDestroy {
   });
   protected readonly registerConfirmError = computed(() => {
     if (!this.registerAttempted()) return '';
-    return this.registerConfirmPassword() === this.registerPassword() ? '' : 'Passwords do not match.';
+    return this.registerConfirmPassword() === this.registerPassword()
+      ? ''
+      : 'Passwords do not match.';
   });
   protected readonly registerTermsError = computed(() =>
     this.registerAttempted() && !this.acceptTerms() ? 'You must accept the terms to continue.' : '',

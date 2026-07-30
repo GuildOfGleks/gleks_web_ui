@@ -21,30 +21,30 @@
    panel, which sits outside this subtree and so inherits from :root instead. */
 .gog-select--xsm,
 .gog-select__dropdown--xsm {
-  --gog-select-size-padding-y: var(--field-xsm-padding-y);
-  --gog-select-size-padding-x: var(--field-xsm-padding-x);
-  --gog-select-size-font-size: var(--field-xsm-font-size);
+  --gog-select-size-padding-y: var(--gog-field-xsm-padding-y);
+  --gog-select-size-padding-x: var(--gog-field-xsm-padding-x);
+  --gog-select-size-font-size: var(--gog-field-xsm-font-size);
 }
 
 .gog-select--sm,
 .gog-select__dropdown--sm {
-  --gog-select-size-padding-y: var(--field-sm-padding-y);
-  --gog-select-size-padding-x: var(--field-sm-padding-x);
-  --gog-select-size-font-size: var(--field-sm-font-size);
+  --gog-select-size-padding-y: var(--gog-field-sm-padding-y);
+  --gog-select-size-padding-x: var(--gog-field-sm-padding-x);
+  --gog-select-size-font-size: var(--gog-field-sm-font-size);
 }
 
 .gog-select--lg,
 .gog-select__dropdown--lg {
-  --gog-select-size-padding-y: var(--field-lg-padding-y);
-  --gog-select-size-padding-x: var(--field-lg-padding-x);
-  --gog-select-size-font-size: var(--field-lg-font-size);
+  --gog-select-size-padding-y: var(--gog-field-lg-padding-y);
+  --gog-select-size-padding-x: var(--gog-field-lg-padding-x);
+  --gog-select-size-font-size: var(--gog-field-lg-font-size);
 }
 
 .gog-select--slg,
 .gog-select__dropdown--slg {
-  --gog-select-size-padding-y: var(--field-slg-padding-y);
-  --gog-select-size-padding-x: var(--field-slg-padding-x);
-  --gog-select-size-font-size: var(--field-slg-font-size);
+  --gog-select-size-padding-y: var(--gog-field-slg-padding-y);
+  --gog-select-size-padding-x: var(--gog-field-slg-padding-x);
+  --gog-select-size-font-size: var(--gog-field-slg-font-size);
 }
 
 .gog-select--disabled {
@@ -72,16 +72,28 @@
 
 .gog-select__control {
   width: 100%;
-  padding: var(--gog-select-control-padding-y, var(--gog-select-size-padding-y, var(--field-md-padding-y)))
-  var(--gog-select-chevron-inset)
-  var(--gog-select-control-padding-y, var(--gog-select-size-padding-y, var(--field-md-padding-y)))
-  var(--gog-select-control-padding-x, var(--gog-select-size-padding-x, var(--field-md-padding-x)));
+  padding: var(
+      --gog-select-control-padding-y,
+      var(--gog-select-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(--gog-select-chevron-inset)
+    var(
+      --gog-select-control-padding-y,
+      var(--gog-select-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(
+      --gog-select-control-padding-x,
+      var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))
+    );
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--gog-select-control-gap);
   font-family: var(--gog-select-font-family);
-  font-size: var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size)));
+  font-size: var(
+    --gog-select-control-font,
+    var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+  );
   color: var(--gog-select-field-color);
   background-color: var(--gog-select-field-bg);
   border: var(--gog-select-field-border-width) var(--gog-select-field-border-style)
@@ -126,8 +138,14 @@
 }
 
 .gog-select__chevron {
-  width: var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size)));
-  height: var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size)));
+  width: var(
+    --gog-select-control-font,
+    var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+  );
+  height: var(
+    --gog-select-control-font,
+    var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -138,7 +156,10 @@
 
 .gog-select__chevron gog-icon {
   font-size: calc(
-    var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size))) *
+    var(
+        --gog-select-control-font,
+        var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+      ) *
       var(--gog-select-chevron-icon-ratio)
   );
 }
@@ -148,7 +169,7 @@
   top: calc(100% + var(--gog-select-panel-offset));
   left: 0;
   right: 0;
-  z-index: var(--dropdown-z);
+  z-index: var(--gog-dropdown-z);
   background-color: var(--gog-select-panel-bg);
   border: var(--gog-select-field-border-width) var(--gog-select-field-border-style)
     var(--gog-select-field-border);
@@ -180,14 +201,23 @@
   display: flex;
   align-items: center;
   gap: var(--gog-select-option-gap);
-  padding: var(--gog-select-control-padding-y, var(--gog-select-size-padding-y, var(--field-md-padding-y)))
-  var(--gog-select-control-padding-x, var(--gog-select-size-padding-x, var(--field-md-padding-x)));
+  padding: var(
+      --gog-select-control-padding-y,
+      var(--gog-select-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(
+      --gog-select-control-padding-x,
+      var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))
+    );
   border: 0;
   background: transparent;
   text-align: left;
   font: inherit;
   font-family: var(--gog-select-font-family);
-  font-size: var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size)));
+  font-size: var(
+    --gog-select-control-font,
+    var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+  );
   color: var(--gog-select-option-color);
   cursor: pointer;
   transition: background-color var(--gog-select-option-transition-duration) var(--gog-easing);
@@ -216,11 +246,17 @@
   align-items: center;
   justify-content: center;
   width: calc(
-    var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size))) *
+    var(
+        --gog-select-control-font,
+        var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+      ) *
       var(--gog-select-mark-size-ratio)
   );
   height: calc(
-    var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size))) *
+    var(
+        --gog-select-control-font,
+        var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+      ) *
       var(--gog-select-mark-size-ratio)
   );
   flex-shrink: 0;
@@ -228,7 +264,10 @@
 
 .gog-select__option-mark gog-icon {
   font-size: calc(
-    var(--gog-select-control-font, var(--gog-select-size-font-size, var(--field-md-font-size))) *
+    var(
+        --gog-select-control-font,
+        var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+      ) *
       var(--gog-select-mark-icon-ratio)
   );
 }

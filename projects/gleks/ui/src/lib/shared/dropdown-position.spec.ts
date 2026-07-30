@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveCssLengthPx, resolveDropdownDirection, resolveDropdownPlacement } from './dropdown-position';
+import {
+  resolveCssLengthPx,
+  resolveDropdownDirection,
+  resolveDropdownPlacement,
+} from './dropdown-position';
 
 describe('dropdown-position', () => {
   it('prefers down when there is enough space below', () => {

@@ -29,7 +29,10 @@
               (gogClick)="runAction(action)"
             >
               @if (action.iconName || action.iconTemplate) {
-                <gog-icon [template]="action.iconTemplate ?? null" [name]="action.iconName ?? 'check'" />
+                <gog-icon
+                  [template]="action.iconTemplate ?? null"
+                  [name]="action.iconName ?? 'check'"
+                />
               }
               {{ action.label }}
             </gog-button>

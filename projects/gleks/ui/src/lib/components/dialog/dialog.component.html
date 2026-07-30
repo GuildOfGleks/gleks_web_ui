@@ -11,7 +11,7 @@
       #panel
       class="gog-dialog__panel"
       [attr.data-dialog-id]="dialog.id"
-      [style.--dropdown-z]="panelZ(dialog) + 10"
+      [style.--gog-dropdown-z]="panelZ(dialog) + 10"
       [style.--gog-dialog-offset-x]="dialog.offsetX + 'px'"
       [style.--gog-dialog-offset-y]="dialog.offsetY + 'px'"
       [style.width]="dialog.config.width ?? 'auto'"
@@ -34,7 +34,12 @@
             </h2>
           }
           @if (dialog.config.closable !== false) {
-            <button type="button" class="gog-dialog__close gog-inline-center" aria-label="Close dialog" (click)="close(dialog)">
+            <button
+              type="button"
+              class="gog-dialog__close gog-inline-center"
+              aria-label="Close dialog"
+              (click)="close(dialog)"
+            >
               <gog-icon
                 [template]="dialog.config.closeIconTemplate ?? null"
                 [name]="dialog.config.closeIconName ?? 'close'"

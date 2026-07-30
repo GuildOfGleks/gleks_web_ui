@@ -10,7 +10,11 @@
     {{ data.description }}
   </p>
   <div class="confirm-dialog__actions">
-    <gog-button variant="ghost" type="button" (gogClick)="cancel()">{{ data.cancelText }}</gog-button>
-    <gog-button variant="primary" type="button" (gogClick)="confirm()">{{ data.confirmText }}</gog-button>
+    <gog-button variant="ghost" type="button" (gogClick)="cancel()">{{
+      data.cancelText
+    }}</gog-button>
+    <gog-button variant="primary" type="button" (gogClick)="confirm()">{{
+      data.confirmText
+    }}</gog-button>
   </div>
 </div>

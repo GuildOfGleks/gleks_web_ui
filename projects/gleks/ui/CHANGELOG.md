@@ -1,0 +1,51 @@
+# Changelog
+
+All notable changes to `@guildofgleks/ui` are documented here. Format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
+reached 1.0, so breaking changes may land in minor versions.
+
+## [Unreleased]
+
+### Added
+
+- `column`'s `comparator` input for custom per-column sort ordering; the default
+  comparator now uses `Intl.Collator` for numeric-aware string sorting
+  (`"item2" < "item10"`) instead of raw `<`/`>`.
+- `gog-table` cell/sort values now resolve dot-path nested fields (e.g.
+  `field="address.city"`).
+- ESLint (`@angular-eslint`, flat config) across `@gleks/ui` and `ui-showcase`, wired
+  into CI alongside `format:check` and a token-consistency check (every
+  `var(--gog-*)` read with no fallback must resolve to a declared default).
+- `LICENSE` (MIT) and this changelog.
+
+### Changed
+
+- **Breaking:** every previously unprefixed global design token in `theme.css`
+  (`--accent-color`, `--text-color`, `--radius`, `--control-*`, `--field-*`,
+  `--dropdown-z`, etc.) is now `--gog-*` prefixed, matching the component-token
+  convention. Update any consumer theme overrides to the new names.
+- **Breaking:** `column`'s `field` input is now a plain `string` (was
+  `keyof T & string`) to support nested dot-paths.
+- `gog-select`/`gog-multiselect` panel sizing constants (max height, estimated row
+  height) are now read from CSS custom properties
+  (`--gog-select-panel-max-height`, `--gog-select-option-height`, and the
+  multiselect equivalents) instead of hardcoded in TypeScript, so they're themeable.
+- `gog-table`'s pagination state now uses `linkedSignal` instead of a manual
+  `effect`, resetting to page 1 on sort changes and clamping to `totalPages` on
+  data/page-size changes, while still deferring to `gog-paginator`'s own
+  self-clamping `page` model.
+
+### Fixed
+
+- An append-to-body dropdown panel now copies the trigger's scoped `data-theme`
+  (not just `:root`'s) onto its overlay host, so panels stay themed when opened
+  inside a themed subtree.
+- `gog-select` now correctly reads its own `--gog-select-option-gap` token for
+  panel-height estimation instead of the unused base default, fixing a latent
+  under-estimate in the panel's up/down placement math.
+
+## [0.1.0]
+
+Initial baseline: accordion, button, checkbox, chip, dialog, icon, inputfield,
+multiselect, paginator, select, skeleton, slider, spinner, table, tag and toast
+components, plus the shared theme (`styles/theme.css`) and `ThemeService`.

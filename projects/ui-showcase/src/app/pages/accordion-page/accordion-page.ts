@@ -64,9 +64,18 @@ interface MetricsHeaderItem extends GogAccordionItem {
 })
 export class AccordionPage implements OnDestroy {
   protected readonly basicItems: BasicAccordionItem[] = [
-    { id: 'shipping', title: 'Shipping', body: 'Ships within 2 business days via standard courier.' },
+    {
+      id: 'shipping',
+      title: 'Shipping',
+      body: 'Ships within 2 business days via standard courier.',
+    },
     { id: 'returns', title: 'Returns', body: 'Free returns within 30 days of delivery.' },
-    { id: 'warranty', title: 'Warranty (unavailable)', body: 'Not offered on this item.', disabled: true },
+    {
+      id: 'warranty',
+      title: 'Warranty (unavailable)',
+      body: 'Not offered on this item.',
+      disabled: true,
+    },
   ];
 
   protected readonly sizeDemoItems: BasicAccordionItem[] = [
@@ -80,7 +89,11 @@ export class AccordionPage implements OnDestroy {
       title: 'Signals',
       kicker: 'Reactive state',
       summary: 'Loaded from the server after the panel opens.',
-      notes: ['Keep mutations explicit.', 'Favor pure derivations.', 'Bind directly from the template.'],
+      notes: [
+        'Keep mutations explicit.',
+        'Favor pure derivations.',
+        'Bind directly from the template.',
+      ],
       stats: [
         { label: 'Version', value: '21.2' },
         { label: 'Mode', value: 'Local' },
@@ -92,7 +105,11 @@ export class AccordionPage implements OnDestroy {
       title: 'Routing',
       kicker: 'Lazy loading',
       summary: 'The content appears only after the simulated fetch completes.',
-      notes: ['Keep routes small.', 'Expose each component as its own page.', 'Use the shell nav to jump around.'],
+      notes: [
+        'Keep routes small.',
+        'Expose each component as its own page.',
+        'Use the shell nav to jump around.',
+      ],
       stats: [
         { label: 'Entry', value: 'Feature route' },
         { label: 'Strategy', value: 'Deferred' },
@@ -104,7 +121,11 @@ export class AccordionPage implements OnDestroy {
       title: 'Accessibility',
       kicker: 'WCAG AA',
       summary: 'Each panel waits for its own response before rendering body data.',
-      notes: ['Preserve focus order.', 'Use real buttons and labels.', 'Keep content readable by screen readers.'],
+      notes: [
+        'Preserve focus order.',
+        'Use real buttons and labels.',
+        'Keep content readable by screen readers.',
+      ],
       stats: [
         { label: 'Checks', value: 'AXE-ready' },
         { label: 'Motion', value: 'Reduced' },
@@ -129,7 +150,8 @@ export class AccordionPage implements OnDestroy {
     title: 'Full changelog (grows the page)',
     paragraphs: Array.from(
       { length: 20 },
-      (_, i) => `v${20 - i}.0 — ${AccordionPage.changelogLines[i % AccordionPage.changelogLines.length]}`,
+      (_, i) =>
+        `v${20 - i}.0 — ${AccordionPage.changelogLines[i % AccordionPage.changelogLines.length]}`,
     ),
   };
 
@@ -138,7 +160,8 @@ export class AccordionPage implements OnDestroy {
     title: 'Full changelog (scrolls internally)',
     paragraphs: Array.from(
       { length: 20 },
-      (_, i) => `v${20 - i}.0 — ${AccordionPage.changelogLines[(i + 3) % AccordionPage.changelogLines.length]}`,
+      (_, i) =>
+        `v${20 - i}.0 — ${AccordionPage.changelogLines[(i + 3) % AccordionPage.changelogLines.length]}`,
     ),
   };
 
@@ -193,8 +216,12 @@ export class AccordionPage implements OnDestroy {
   ];
 
   protected readonly multi = signal(false);
-  protected readonly loadingState = signal<Record<string, { loading: boolean; loaded: boolean }>>({});
-  private readonly panelMap = new Map(this.panels.map((panel) => [String(panel.id), panel] as const));
+  protected readonly loadingState = signal<Record<string, { loading: boolean; loaded: boolean }>>(
+    {},
+  );
+  private readonly panelMap = new Map(
+    this.panels.map((panel) => [String(panel.id), panel] as const),
+  );
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
 
   protected toggleMulti(): void {

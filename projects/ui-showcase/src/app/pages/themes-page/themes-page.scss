@@ -9,20 +9,25 @@
 // element (see themes-page.html) brings the whole theme in, and anything restated
 // here would mask it. Only the card's own geometry lives here.
 .theme-panel {
-  --panel-radius: calc(var(--radius) + 10px);
+  --gog-panel-radius: calc(var(--gog-radius) + 10px);
 
   display: grid;
   gap: 18px;
   padding: 24px;
-  border: var(--panel-border-width, 1px) var(--panel-border-style, solid) var(--border-color);
-  border-radius: var(--panel-radius);
+  border: var(--gog-panel-border-width, 1px) var(--gog-panel-border-style, solid)
+    var(--gog-border-color);
+  border-radius: var(--gog-panel-radius);
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--surface-color) 94%, transparent), transparent),
-    color-mix(in srgb, var(--surface-color) 90%, transparent);
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--gog-surface-color) 94%, transparent),
+      transparent
+    ),
+    color-mix(in srgb, var(--gog-surface-color) 90%, transparent);
   // Without this the panel keeps inheriting the *page* text colour, so a dark theme's
   // copy renders in the light theme's near-black and is unreadable on its own surface.
-  color: var(--text-color);
-  box-shadow: var(--panel-shadow);
+  color: var(--gog-text-color);
+  box-shadow: var(--gog-panel-shadow);
 }
 
 .theme-panel__header {
@@ -35,12 +40,12 @@
   text-transform: uppercase;
   letter-spacing: 0.16em;
   font-size: 0.75rem;
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
 }
 
 .theme-panel h3 {
   margin: 0;
-  font-family: var(--font-heading);
+  font-family: var(--gog-font-heading);
   font-size: clamp(1.4rem, 2vw, 2rem);
 }
 
@@ -65,8 +70,5 @@
 
 .theme-panel__icons {
   font-size: 1.25rem;
-  color: var(--accent-color);
+  color: var(--gog-accent-color);
 }
-
-
-

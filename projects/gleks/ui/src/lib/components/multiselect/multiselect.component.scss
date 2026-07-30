@@ -19,30 +19,30 @@
    which sits outside this subtree and so inherits from :root instead. */
 .gog-ms-wrapper--xsm,
 .gog-ms__dropdown--xsm {
-  --gog-ms-size-padding-y: var(--field-xsm-padding-y);
-  --gog-ms-size-padding-x: var(--field-xsm-padding-x);
-  --gog-ms-size-font-size: var(--field-xsm-font-size);
+  --gog-ms-size-padding-y: var(--gog-field-xsm-padding-y);
+  --gog-ms-size-padding-x: var(--gog-field-xsm-padding-x);
+  --gog-ms-size-font-size: var(--gog-field-xsm-font-size);
 }
 
 .gog-ms-wrapper--sm,
 .gog-ms__dropdown--sm {
-  --gog-ms-size-padding-y: var(--field-sm-padding-y);
-  --gog-ms-size-padding-x: var(--field-sm-padding-x);
-  --gog-ms-size-font-size: var(--field-sm-font-size);
+  --gog-ms-size-padding-y: var(--gog-field-sm-padding-y);
+  --gog-ms-size-padding-x: var(--gog-field-sm-padding-x);
+  --gog-ms-size-font-size: var(--gog-field-sm-font-size);
 }
 
 .gog-ms-wrapper--lg,
 .gog-ms__dropdown--lg {
-  --gog-ms-size-padding-y: var(--field-lg-padding-y);
-  --gog-ms-size-padding-x: var(--field-lg-padding-x);
-  --gog-ms-size-font-size: var(--field-lg-font-size);
+  --gog-ms-size-padding-y: var(--gog-field-lg-padding-y);
+  --gog-ms-size-padding-x: var(--gog-field-lg-padding-x);
+  --gog-ms-size-font-size: var(--gog-field-lg-font-size);
 }
 
 .gog-ms-wrapper--slg,
 .gog-ms__dropdown--slg {
-  --gog-ms-size-padding-y: var(--field-slg-padding-y);
-  --gog-ms-size-padding-x: var(--field-slg-padding-x);
-  --gog-ms-size-font-size: var(--field-slg-font-size);
+  --gog-ms-size-padding-y: var(--gog-field-slg-padding-y);
+  --gog-ms-size-padding-x: var(--gog-field-slg-padding-x);
+  --gog-ms-size-font-size: var(--gog-field-slg-font-size);
 }
 
 .gog-ms__label {
@@ -58,8 +58,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--field-md-padding-y)))
-  var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--field-md-padding-x)));
+  padding: var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--gog-field-md-padding-y)))
+    var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x)));
   background-color: var(--gog-ms-field-bg);
   border: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
     var(--gog-ms-field-border);
@@ -101,7 +101,7 @@
 
 .gog-ms__value {
   font-family: var(--gog-ms-font-family);
-  font-size: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
+  font-size: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -121,8 +121,8 @@
 }
 
 .gog-ms__clear {
-  width: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
-  height: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
+  width: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
+  height: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
   padding: 0;
   border: 0;
   border-radius: var(--gog-ms-clear-radius);
@@ -135,7 +135,8 @@
 
 .gog-ms__clear gog-icon {
   font-size: calc(
-    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size))) * var(--gog-ms-clear-icon-ratio)
+    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size))) *
+      var(--gog-ms-clear-icon-ratio)
   );
 }
 
@@ -154,13 +155,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
-  height: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
+  width: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
+  height: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
 }
 
 .gog-ms__arrow gog-icon {
   font-size: calc(
-    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size))) * var(--gog-ms-arrow-icon-ratio)
+    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size))) *
+      var(--gog-ms-arrow-icon-ratio)
   );
 }
 
@@ -173,7 +175,7 @@
   top: calc(100% + var(--gog-ms-panel-offset));
   left: 0;
   right: 0;
-  z-index: var(--dropdown-z);
+  z-index: var(--gog-dropdown-z);
   background-color: var(--gog-ms-panel-bg);
   border: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
     var(--gog-ms-panel-border);
@@ -232,14 +234,14 @@
   display: flex;
   align-items: center;
   gap: var(--gog-ms-option-gap-inline);
-  padding: var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--field-md-padding-y)))
-  var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--field-md-padding-x)));
+  padding: var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--gog-field-md-padding-y)))
+    var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x)));
   border: 0;
   background: transparent;
   text-align: left;
   font: inherit;
   font-family: var(--gog-ms-font-family);
-  font-size: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size)));
+  font-size: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
   cursor: pointer;
   border-radius: var(--gog-ms-option-radius);
   transition: background-color var(--gog-ms-option-transition-duration) var(--gog-easing);
@@ -269,14 +271,17 @@
   align-items: center;
   justify-content: center;
   width: calc(
-    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size))) * var(--gog-ms-mark-size-ratio)
+    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size))) *
+      var(--gog-ms-mark-size-ratio)
   );
   height: calc(
-    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size))) * var(--gog-ms-mark-size-ratio)
+    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size))) *
+      var(--gog-ms-mark-size-ratio)
   );
   flex-shrink: 0;
   font-size: calc(
-    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--field-md-font-size))) * var(--gog-ms-mark-icon-ratio)
+    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size))) *
+      var(--gog-ms-mark-icon-ratio)
   );
   color: var(--gog-ms-checkbox-border);
 }

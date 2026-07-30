@@ -39,7 +39,9 @@ describe('nextRovingFocusIndex', () => {
 describe('handleRovingFocusKeydown', () => {
   function makeItems(count: number): HTMLButtonElement[] {
     // jsdom only updates document.activeElement for elements attached to the document.
-    return Array.from({ length: count }, () => document.body.appendChild(document.createElement('button')));
+    return Array.from({ length: count }, () =>
+      document.body.appendChild(document.createElement('button')),
+    );
   }
 
   function keydown(key: string, currentTarget: HTMLElement): KeyboardEvent {

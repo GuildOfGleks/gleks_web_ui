@@ -38,13 +38,13 @@ Every component `.scss` file follows the rules below. See
 /* variants only re-map the custom properties */
 .gog-btn--outline {
   --gog-btn-bg: transparent;
-  --gog-btn-color: var(--accent-color);
+  --gog-btn-color: var(--gog-accent-color);
 }
 ```
 
 - This lets consumers re-skin components by overriding `--gog-*` without touching internals,
   and lets a parent component theme a child (e.g. a button setting `--gog-spinner-color`).
-- When reading a shared design token, use a fallback: `var(--gog-spinner-color, var(--accent-color))`.
+- When reading a shared design token, use a fallback: `var(--gog-spinner-color, var(--gog-accent-color))`.
 
 ## Design-token contract
 
@@ -72,6 +72,15 @@ A dropdown opened with `[appendToBody]` is stamped into `<body>`, so it inherits
 children read has to be redeclared in the `--portal` modifier block (see
 `.gog-select__dropdown--portal` / `.gog-ms__dropdown--portal`). Miss one and that
 property silently drops out only in append-to-body mode.
+
+`data-theme` is exactly the same problem: it can be scoped to any element, not just
+`:root` (the themes showcase page puts it on a plain `<article>` so several themes render
+side by side). A panel appended straight to `<body>` sits outside that scoped subtree and
+would otherwise fall back to whatever theme `:root` carries. `GogDropdownOverlay.attach()`
+copies `data-theme` from the trigger's nearest `[data-theme]` ancestor onto the overlay
+host for exactly this reason — any new append-to-body panel must go through that same
+overlay helper rather than appending to `document.body` directly, or it will silently lose
+scoped theming.
 
 ## Encapsulation & scope
 

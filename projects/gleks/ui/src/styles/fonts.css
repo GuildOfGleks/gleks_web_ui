@@ -10,7 +10,7 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --font-heading: 'Cinzel', serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --gog-font-heading: 'Cinzel', serif;
+  --gog-font-body: 'Inter', sans-serif;
+  --gog-font-mono: 'JetBrains Mono', monospace;
 }

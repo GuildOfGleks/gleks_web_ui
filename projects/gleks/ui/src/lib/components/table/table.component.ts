@@ -3,8 +3,8 @@ import {
   Component,
   computed,
   contentChildren,
-  effect,
   input,
+  linkedSignal,
   signal,
   TemplateRef,
 } from '@angular/core';
@@ -14,8 +14,20 @@ import { PaginatorComponent } from '../paginator/paginator.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
 import { GogSize } from '../../shared/types';
-import { Column } from './column';
+import { Column, defaultCompare } from './column';
 import { TemplateDirective } from './template.directive';
+
+/** Resolves `field` against `row`, following dot-paths (e.g. `"address.city"`). */
+function getByPath(row: unknown, field: string): unknown {
+  if (!field.includes('.')) return (row as Record<string, unknown> | null)?.[field];
+
+  let value: unknown = row;
+  for (const key of field.split('.')) {
+    if (value == null) return undefined;
+    value = (value as Record<string, unknown>)[key];
+  }
+  return value;
+}
 
 export type SortDirection = 'asc' | 'desc' | null;
 
@@ -59,32 +71,25 @@ export class TableComponent<T extends object> {
   readonly columns = contentChildren(Column);
   readonly templates = contentChildren(TemplateDirective);
 
-  readonly currentPage = signal(1);
   readonly sortState = signal<SortState>({ field: '', direction: null });
-
-  constructor() {
-    effect(() => {
-      this.value();
-      this.pageSize();
-      this.currentPage();
-      const total = this.totalPages();
-      if (this.currentPage() > total) {
-        this.currentPage.set(total);
-      }
-    });
-  }
 
   readonly sortedData = computed(() => {
     const { field, direction } = this.sortState();
     const rows = [...this.value()];
     if (!field || !direction) return rows;
+
+    const compare =
+      this.columns()
+        .find((col) => col.field() === field)
+        ?.comparator() ?? defaultCompare;
+
     return rows.sort((a, b) => {
-      const av = (a as Record<string, unknown>)[field];
-      const bv = (b as Record<string, unknown>)[field];
+      const av = getByPath(a, field);
+      const bv = getByPath(b, field);
       if (av == null && bv == null) return 0;
       if (av == null) return 1;
       if (bv == null) return -1;
-      const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+      const cmp = compare(av, bv);
       return direction === 'asc' ? cmp : -cmp;
     });
   });
@@ -93,6 +98,21 @@ export class TableComponent<T extends object> {
     const size = this.pageSize();
     if (!size) return 1;
     return Math.max(1, Math.ceil(this.sortedData().length / size));
+  });
+
+  /**
+   * Resets to page 1 whenever the sort changes (a new sort re-orders the whole data set,
+   * so whatever page the user was on no longer means anything) and clamps down to
+   * `totalPages` whenever the data set or page size shrinks — but otherwise preserves
+   * wherever the paginator navigated to. `gog-paginator`'s own `page` model additionally
+   * self-clamps against `totalPages` on its own, so this only has to handle the reset case.
+   */
+  readonly currentPage = linkedSignal<{ total: number; sortState: SortState }, number>({
+    source: () => ({ total: this.totalPages(), sortState: this.sortState() }),
+    computation: (src, previous) => {
+      if (!previous || previous.source.sortState !== src.sortState) return 1;
+      return Math.min(Math.max(1, previous.value), src.total);
+    },
   });
 
   readonly visibleRows = computed(() => {
@@ -117,7 +137,7 @@ export class TableComponent<T extends object> {
     return this.headerTemplateMap().get(field) ?? null;
   }
 
-  toggleSort(col: Column<T>): void {
+  toggleSort(col: Column): void {
     if (!col.sortable()) return;
     const cur = this.sortState();
     const field = col.field();
@@ -128,7 +148,6 @@ export class TableComponent<T extends object> {
     } else {
       this.sortState.set({ field: '', direction: null });
     }
-    this.currentPage.set(1);
   }
 
   getSortDirection(field: string): SortDirection {
@@ -143,12 +162,12 @@ export class TableComponent<T extends object> {
     return null;
   }
 
-  handleSortClick(col: Column<T>): void {
+  handleSortClick(col: Column): void {
     if (!this.loading()) this.toggleSort(col);
   }
 
   getCellValue(row: T, field: string): unknown {
-    return (row as Record<string, unknown>)[field];
+    return getByPath(row, field);
   }
 
   formatCellValue(row: T, field: string): string {

@@ -64,7 +64,8 @@ export class DialogService {
     };
 
     if (config.modal !== false && this.modalDialogCount === 0) {
-      this.focusedBeforeOpen = this.document.activeElement instanceof HTMLElement ? this.document.activeElement : null;
+      this.focusedBeforeOpen =
+        this.document.activeElement instanceof HTMLElement ? this.document.activeElement : null;
       this.lockBodyScroll();
     }
 

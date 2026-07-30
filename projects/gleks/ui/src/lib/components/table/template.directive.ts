@@ -17,6 +17,7 @@ export interface GogTableHeaderContext {
  *   <ng-template template="status" type="header">...</ng-template>
  */
 @Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[template]',
 })
 export class TemplateDirective {
@@ -27,6 +28,7 @@ export class TemplateDirective {
 
   static ngTemplateContextGuard<T>(
     _dir: TemplateDirective,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used as a type guard
     ctx: unknown,
   ): ctx is GogTableBodyContext<T> | GogTableHeaderContext {
     return true;

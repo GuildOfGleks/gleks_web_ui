@@ -38,7 +38,10 @@
             <span class="gog-accordion__header-content">
               @if (headerTpl(); as tpl) {
                 <ng-container
-                  *ngTemplateOutlet="tpl.templateRef; context: { $implicit: item, open: isOpen(item.id) }"
+                  *ngTemplateOutlet="
+                    tpl.templateRef;
+                    context: { $implicit: item, open: isOpen(item.id) }
+                  "
                 />
               } @else {
                 <span class="gog-accordion__title">{{ item.title }}</span>
@@ -48,7 +51,10 @@
               <span class="gog-accordion__chevron" aria-hidden="true">
                 @if (chevronTpl(); as tpl) {
                   <ng-container
-                    *ngTemplateOutlet="tpl.templateRef; context: { $implicit: item, open: isOpen(item.id) }"
+                    *ngTemplateOutlet="
+                      tpl.templateRef;
+                      context: { $implicit: item, open: isOpen(item.id) }
+                    "
                   />
                 } @else {
                   <gog-icon name="chevron-down" />

@@ -10,7 +10,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--gog-checkbox-gap);
-  padding: var(--gog-checkbox-padding, var(--control-checkbox-padding));
+  padding: var(--gog-checkbox-padding, var(--gog-control-checkbox-padding));
   position: relative;
   cursor: pointer;
   user-select: none;
@@ -23,10 +23,10 @@
 
 .gog-checkbox__input {
   position: absolute;
-  top: var(--gog-checkbox-padding, var(--control-checkbox-padding));
-  left: var(--gog-checkbox-padding, var(--control-checkbox-padding));
-  width: var(--gog-checkbox-box-size, var(--control-checkbox-box-size-md));
-  height: var(--gog-checkbox-box-size, var(--control-checkbox-box-size-md));
+  top: var(--gog-checkbox-padding, var(--gog-control-checkbox-padding));
+  left: var(--gog-checkbox-padding, var(--gog-control-checkbox-padding));
+  width: var(--gog-checkbox-box-size, var(--gog-control-checkbox-box-size-md));
+  height: var(--gog-checkbox-box-size, var(--gog-control-checkbox-box-size-md));
   margin: 0;
   opacity: 0;
   cursor: inherit;
@@ -36,8 +36,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--gog-checkbox-box-size, var(--control-checkbox-box-size-md));
-  height: var(--gog-checkbox-box-size, var(--control-checkbox-box-size-md));
+  width: var(--gog-checkbox-box-size, var(--gog-control-checkbox-box-size-md));
+  height: var(--gog-checkbox-box-size, var(--gog-control-checkbox-box-size-md));
   box-sizing: border-box;
   border: var(--gog-checkbox-border-width) var(--gog-checkbox-border-style)
     var(--gog-checkbox-border-color);
@@ -47,8 +47,9 @@
   flex: 0 0 auto;
   line-height: 0;
   overflow: hidden;
-  transition: border-color var(--gog-checkbox-transition-duration) var(--gog-easing),
-  background-color var(--gog-checkbox-transition-duration) var(--gog-easing);
+  transition:
+    border-color var(--gog-checkbox-transition-duration) var(--gog-easing),
+    background-color var(--gog-checkbox-transition-duration) var(--gog-easing);
 }
 
 .gog-checkbox__box--checked,
@@ -59,14 +60,14 @@
 
 .gog-checkbox__box gog-icon {
   display: block;
-  font-size: var(--gog-checkbox-icon-size, var(--control-checkbox-icon-size-md));
+  font-size: var(--gog-checkbox-icon-size, var(--gog-control-checkbox-icon-size-md));
   line-height: 1;
   pointer-events: none;
 }
 
 .gog-checkbox__dash {
   width: calc(
-    var(--gog-checkbox-box-size, var(--control-checkbox-box-size-md)) *
+    var(--gog-checkbox-box-size, var(--gog-control-checkbox-box-size-md)) *
       var(--gog-checkbox-dash-width-ratio)
   );
   height: var(--gog-checkbox-dash-height);
@@ -77,7 +78,7 @@
 
 .gog-checkbox__label {
   font-family: var(--gog-checkbox-font-family);
-  font-size: var(--gog-checkbox-label-size, var(--control-checkbox-label-size-md));
+  font-size: var(--gog-checkbox-label-size, var(--gog-control-checkbox-label-size-md));
   line-height: var(--gog-checkbox-label-line-height);
   color: var(--gog-checkbox-label-color);
 }

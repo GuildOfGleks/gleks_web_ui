@@ -13,7 +13,7 @@
 
 .paginator-size-stack__label {
   width: 3ch;
-  color: var(--muted-text-color);
+  color: var(--gog-muted-text-color);
   font-size: 0.75rem;
 }
 
@@ -28,8 +28,8 @@
 
 .fruit-list__item {
   padding: 8px 12px;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--surface-color) 88%, transparent);
+  border: 1px solid var(--gog-border-color);
+  background: color-mix(in srgb, var(--gog-surface-color) 88%, transparent);
 }
 
 gog-accordion {

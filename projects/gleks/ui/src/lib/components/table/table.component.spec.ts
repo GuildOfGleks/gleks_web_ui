@@ -71,9 +71,9 @@ describe('TableComponent', () => {
 
     component.sortState.set({ field: 'id', direction: 'asc' });
 
-    expect(
-      (component.sortedData() as Array<{ id: number; name: string }>).map((row) => row.id),
-    ).toEqual([1, 2]);
+    expect((component.sortedData() as { id: number; name: string }[]).map((row) => row.id)).toEqual(
+      [1, 2],
+    );
   });
 
   it('should use the configured empty placeholder', () => {
@@ -81,6 +81,56 @@ describe('TableComponent', () => {
     fixture.detectChanges();
 
     expect(component.emptyPlaceholder()).toBe('—');
+  });
+
+  it('sorts strings numeric-aware via the default Intl.Collator comparator', () => {
+    fixture.componentRef.setInput('value', [
+      { id: 1, name: 'item10' },
+      { id: 2, name: 'item2' },
+    ]);
+
+    component.sortState.set({ field: 'name', direction: 'asc' });
+
+    expect(component.sortedData().map((row) => (row as Row).name)).toEqual(['item2', 'item10']);
+  });
+
+  it('resolves nested dot-path fields via getCellValue', () => {
+    const row = { profile: { address: { city: 'Kyiv' } } };
+    expect(component.getCellValue(row as never, 'profile.address.city')).toBe('Kyiv');
+    expect(component.getCellValue(row as never, 'profile.missing.city')).toBeUndefined();
+  });
+});
+
+describe('TableComponent with a custom column comparator', () => {
+  @Component({
+    standalone: true,
+    imports: [TableComponent, Column],
+    template: `
+      <gog-table [value]="rows">
+        <column field="name" [sortable]="true" [comparator]="reverseAlpha"></column>
+      </gog-table>
+    `,
+  })
+  class TableCustomComparatorHostComponent {
+    readonly rows = [{ name: 'Alpha' }, { name: 'Bravo' }, { name: 'Charlie' }];
+    readonly reverseAlpha = (a: unknown, b: unknown) => (a === b ? 0 : a! < b! ? 1 : -1);
+  }
+
+  it("uses the column's comparator instead of the default when sorting", async () => {
+    await TestBed.configureTestingModule({
+      imports: [TableCustomComparatorHostComponent],
+    }).compileComponents();
+
+    const hostFixture = TestBed.createComponent(TableCustomComparatorHostComponent);
+    hostFixture.detectChanges();
+    await hostFixture.whenStable();
+
+    const table = hostFixture.debugElement.query(By.directive(TableComponent))
+      .componentInstance as TableComponent<{ name: string }>;
+    table.toggleSort(table.columns()[0]);
+    await hostFixture.whenStable();
+
+    expect(table.sortedData().map((row) => row.name)).toEqual(['Charlie', 'Bravo', 'Alpha']);
   });
 });
 

@@ -6,7 +6,11 @@ export function isRovingFocusKey(key: string): key is RovingFocusKey {
   return (ROVING_FOCUS_KEYS as readonly string[]).includes(key);
 }
 
-export function nextRovingFocusIndex(key: RovingFocusKey, currentIndex: number, count: number): number {
+export function nextRovingFocusIndex(
+  key: RovingFocusKey,
+  currentIndex: number,
+  count: number,
+): number {
   const lastIndex = count - 1;
   switch (key) {
     case 'Home':
@@ -26,7 +30,10 @@ export function nextRovingFocusIndex(key: RovingFocusKey, currentIndex: number, 
  * untouched) for any other key, or when `items` doesn't contain the current target,
  * so callers can safely invoke this unconditionally from a keydown handler.
  */
-export function handleRovingFocusKeydown(event: KeyboardEvent, items: readonly HTMLElement[]): boolean {
+export function handleRovingFocusKeydown(
+  event: KeyboardEvent,
+  items: readonly HTMLElement[],
+): boolean {
   if (!isRovingFocusKey(event.key) || items.length === 0) {
     return false;
   }

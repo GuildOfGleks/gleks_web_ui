@@ -21,7 +21,9 @@ export class TagComponent {
   readonly iconName = input<GogIconName | null>(null);
   readonly iconTemplate = input<TemplateRef<unknown> | null>(null);
 
-  protected readonly hasIcon = computed(() => this.iconTemplate() !== null || this.iconName() !== null);
+  protected readonly hasIcon = computed(
+    () => this.iconTemplate() !== null || this.iconName() !== null,
+  );
 
   protected readonly hostClasses = computed(() =>
     [

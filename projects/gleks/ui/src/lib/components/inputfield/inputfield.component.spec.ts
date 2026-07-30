@@ -93,7 +93,9 @@ describe('InputfieldComponent', () => {
       fixture.componentRef.setInput('iconEnd', 'check');
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.querySelector('.gog-input__icon--end.gog-input__icon--action')).toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('.gog-input__icon--end.gog-input__icon--action'),
+      ).toBeNull();
       expect(fixture.nativeElement.querySelector('.gog-input__icon--end')).toBeTruthy();
     });
   });
@@ -163,7 +165,10 @@ describe('InputfieldComponent', () => {
       changeDetection: ChangeDetectionStrategy.OnPush,
     })
     class InputfieldFormHostComponent {
-      readonly control = new FormControl('', { nonNullable: true, validators: Validators.required });
+      readonly control = new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      });
     }
 
     it('propagates typing to the FormControl value', async () => {
@@ -198,17 +203,26 @@ describe('InputfieldComponent', () => {
       await hostFixture.whenStable();
 
       expect(hostFixture.componentInstance.control.touched).toBe(false);
-      expect(hostFixture.nativeElement.querySelector('.gog-input__error')?.textContent).toContain('Required');
+      expect(hostFixture.nativeElement.querySelector('.gog-input__error')?.textContent).toContain(
+        'Required',
+      );
     });
 
     it('withholds the error until touched when errorDisplay is auto', async () => {
       @Component({
         imports: [InputfieldComponent, ReactiveFormsModule],
-        template: `<gog-inputfield [formControl]="control" errorMessage="Required" errorDisplay="auto" />`,
+        template: `<gog-inputfield
+          [formControl]="control"
+          errorMessage="Required"
+          errorDisplay="auto"
+        />`,
         changeDetection: ChangeDetectionStrategy.OnPush,
       })
       class AutoErrorDisplayHostComponent {
-        readonly control = new FormControl('', { nonNullable: true, validators: Validators.required });
+        readonly control = new FormControl('', {
+          nonNullable: true,
+          validators: Validators.required,
+        });
       }
 
       const hostFixture = TestBed.createComponent(AutoErrorDisplayHostComponent);
@@ -220,7 +234,9 @@ describe('InputfieldComponent', () => {
       input.dispatchEvent(new Event('blur'));
       await hostFixture.whenStable();
 
-      expect(hostFixture.nativeElement.querySelector('.gog-input__error')?.textContent).toContain('Required');
+      expect(hostFixture.nativeElement.querySelector('.gog-input__error')?.textContent).toContain(
+        'Required',
+      );
     });
   });
 });

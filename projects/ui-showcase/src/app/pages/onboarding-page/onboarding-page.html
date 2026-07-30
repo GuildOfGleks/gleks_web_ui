@@ -1,7 +1,11 @@
 <section class="onboarding">
   <div class="card onboarding__panel">
     <p class="eyebrow">Full page example</p>
-    <h2>{{ mode() === 'login' ? 'Sign in' : mode() === 'register' ? 'Create account' : 'Reset password' }}</h2>
+    <h2>
+      {{
+        mode() === 'login' ? 'Sign in' : mode() === 'register' ? 'Create account' : 'Reset password'
+      }}
+    </h2>
     <p class="lead">
       A multi-step auth flow built from `gog-inputfield` (with a clickable trailing icon for
       password visibility), `gog-checkbox` for terms acceptance, and `gog-button` loading states —
@@ -9,20 +13,40 @@
     </p>
 
     <div class="onboarding__tabs" role="tablist">
-      <gog-button [variant]="mode() === 'login' ? 'primary' : 'ghost'" size="sm" type="button" (gogClick)="setMode('login')">
+      <gog-button
+        [variant]="mode() === 'login' ? 'primary' : 'ghost'"
+        size="sm"
+        type="button"
+        (gogClick)="setMode('login')"
+      >
         Sign in
       </gog-button>
-      <gog-button [variant]="mode() === 'register' ? 'primary' : 'ghost'" size="sm" type="button" (gogClick)="setMode('register')">
+      <gog-button
+        [variant]="mode() === 'register' ? 'primary' : 'ghost'"
+        size="sm"
+        type="button"
+        (gogClick)="setMode('register')"
+      >
         Register
       </gog-button>
-      <gog-button [variant]="mode() === 'reset' ? 'primary' : 'ghost'" size="sm" type="button" (gogClick)="setMode('reset')">
+      <gog-button
+        [variant]="mode() === 'reset' ? 'primary' : 'ghost'"
+        size="sm"
+        type="button"
+        (gogClick)="setMode('reset')"
+      >
         Reset password
       </gog-button>
     </div>
 
     @if (mode() === 'login') {
       <form class="onboarding__form" (submit)="$event.preventDefault(); submitLogin()">
-        <gog-inputfield label="Email" type="email" [errorMessage]="loginEmailError()" [(value)]="loginEmail" />
+        <gog-inputfield
+          label="Email"
+          type="email"
+          [errorMessage]="loginEmailError()"
+          [(value)]="loginEmail"
+        />
         <gog-inputfield
           label="Password"
           [type]="passwordFieldType()"
@@ -41,8 +65,17 @@
 
     @if (mode() === 'register') {
       <form class="onboarding__form" (submit)="$event.preventDefault(); submitRegister()">
-        <gog-inputfield label="Full name" [errorMessage]="registerNameError()" [(value)]="registerName" />
-        <gog-inputfield label="Email" type="email" [errorMessage]="registerEmailError()" [(value)]="registerEmail" />
+        <gog-inputfield
+          label="Full name"
+          [errorMessage]="registerNameError()"
+          [(value)]="registerName"
+        />
+        <gog-inputfield
+          label="Email"
+          type="email"
+          [errorMessage]="registerEmailError()"
+          [(value)]="registerEmail"
+        />
         <gog-inputfield
           label="Password"
           [type]="passwordFieldType()"
@@ -70,7 +103,12 @@
 
     @if (mode() === 'reset') {
       <form class="onboarding__form" (submit)="$event.preventDefault(); submitReset()">
-        <gog-inputfield label="Email" type="email" [errorMessage]="resetEmailError()" [(value)]="resetEmail" />
+        <gog-inputfield
+          label="Email"
+          type="email"
+          [errorMessage]="resetEmailError()"
+          [(value)]="resetEmail"
+        />
         <gog-button variant="primary" type="submit" [loading]="submitting()" [fullWidth]="true">
           Send reset link
         </gog-button>

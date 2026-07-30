@@ -52,9 +52,11 @@ describe('SliderComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.gog-slider__thumb')).toBeNull();
-    expect(fixture.nativeElement.querySelector('.gog-slider')?.classList.contains('gog-slider--thumb-hidden')).toBe(
-      true,
-    );
+    expect(
+      fixture.nativeElement
+        .querySelector('.gog-slider')
+        ?.classList.contains('gog-slider--thumb-hidden'),
+    ).toBe(true);
   });
 
   describe('clamping', () => {
@@ -119,7 +121,9 @@ describe('SliderComponent', () => {
     it('shows the error exactly as long as the consumer sets errorMessage, independent of the value', () => {
       fixture.componentRef.setInput('errorMessage', 'Out of range');
       fixture.detectChanges();
-      expect(fixture.nativeElement.querySelector('.gog-slider__error')?.textContent).toContain('Out of range');
+      expect(fixture.nativeElement.querySelector('.gog-slider__error')?.textContent).toContain(
+        'Out of range',
+      );
 
       const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
       input.value = '50';
@@ -136,7 +140,12 @@ describe('SliderComponent', () => {
   describe('ControlValueAccessor / Reactive Forms integration', () => {
     @Component({
       imports: [SliderComponent, ReactiveFormsModule],
-      template: `<gog-slider [formControl]="control" [min]="0" [max]="10" errorMessage="Out of range" />`,
+      template: `<gog-slider
+        [formControl]="control"
+        [min]="0"
+        [max]="10"
+        errorMessage="Out of range"
+      />`,
       changeDetection: ChangeDetectionStrategy.OnPush,
     })
     class SliderFormHostComponent {
@@ -161,7 +170,9 @@ describe('SliderComponent', () => {
       await hostFixture.whenStable();
 
       expect(hostFixture.componentInstance.control.touched).toBe(false);
-      expect(hostFixture.nativeElement.querySelector('.gog-slider__error')?.textContent).toContain('Out of range');
+      expect(hostFixture.nativeElement.querySelector('.gog-slider__error')?.textContent).toContain(
+        'Out of range',
+      );
     });
 
     it('withholds the error until touched when errorDisplay is auto', async () => {
@@ -191,7 +202,9 @@ describe('SliderComponent', () => {
       input.dispatchEvent(new Event('blur'));
       await hostFixture.whenStable();
 
-      expect(hostFixture.nativeElement.querySelector('.gog-slider__error')?.textContent).toContain('Out of range');
+      expect(hostFixture.nativeElement.querySelector('.gog-slider__error')?.textContent).toContain(
+        'Out of range',
+      );
     });
   });
 });

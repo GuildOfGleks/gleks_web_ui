@@ -16,6 +16,7 @@
     name at all whenever `label` was set, because that also suppresses the aria-label.
   -->
   @if (label()) {
+    <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -- associated via aria-labelledby above instead, see comment -->
     <label class="gog-ms__label" [id]="labelId()">{{ label() }}</label>
   }
 
@@ -55,7 +56,10 @@
         </button>
       }
       <span class="gog-ms__arrow" [class.gog-ms__arrow--up]="isOpen()" aria-hidden="true">
-        <gog-icon [template]="chevronTemplate()" [name]="isOpen() ? 'chevron-up' : 'chevron-down'" />
+        <gog-icon
+          [template]="chevronTemplate()"
+          [name]="isOpen() ? 'chevron-up' : 'chevron-down'"
+        />
       </span>
     </span>
   </div>
@@ -76,6 +80,7 @@
   no longer inherit the size tokens from the `.gog-ms-wrapper--sm/--lg` wrapper.
 -->
 <ng-template #panelTpl>
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -- (click) below is housekeeping stopPropagation, not an interactive handler; the focusable/keyboard-operable elements are the options inside -->
   <div
     [id]="listboxId()"
     class="gog-ms__dropdown"

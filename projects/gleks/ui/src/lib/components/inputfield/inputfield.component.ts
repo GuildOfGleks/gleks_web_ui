@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DoCheck,
   inject,
   input,
   model,
@@ -21,7 +22,7 @@ import { IconComponent, type GogIconName } from '../icon/icon.component';
   styleUrl: './inputfield.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputfieldComponent implements ControlValueAccessor {
+export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly label = input('');
   readonly placeholder = input('');
   readonly type = input<'text' | 'password' | 'email'>('text');
@@ -60,7 +61,11 @@ export class InputfieldComponent implements ControlValueAccessor {
 
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cvaDisabled = signal(false);
-  private readonly errorState = new GogErrorState(this.errorMessage, this.errorDisplay, this.ngControl);
+  private readonly errorState = new GogErrorState(
+    this.errorMessage,
+    this.errorDisplay,
+    this.ngControl,
+  );
   private readonly passwordVisible = signal(false);
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
@@ -69,11 +74,13 @@ export class InputfieldComponent implements ControlValueAccessor {
     this.isPasswordField() && this.passwordVisible() ? 'text' : this.type(),
   );
   protected readonly effectiveAutocomplete = computed(
-   () => this.autocomplete() || (this.type() === 'password' ? 'current-password' : 'off'),
+    () => this.autocomplete() || (this.type() === 'password' ? 'current-password' : 'off'),
   );
   protected readonly hasError = this.errorState.hasError;
   protected readonly visibleError = this.errorState.visibleError;
-  protected readonly hasIconStart = computed(() => !!this.iconStartTemplate() || !!this.iconStart());
+  protected readonly hasIconStart = computed(
+    () => !!this.iconStartTemplate() || !!this.iconStart(),
+  );
   protected readonly hasIconStartAction = computed(() => !!this.iconStartFn());
 
   /** For password fields the trailing icon is always the built-in show/hide toggle. */
@@ -87,8 +94,12 @@ export class InputfieldComponent implements ControlValueAccessor {
         : this.showPasswordLabel()
       : this.iconEndLabel(),
   );
-  protected readonly hasIconEnd = computed(() => !!this.iconEndTemplate() || !!this.effectiveIconEnd());
-  protected readonly hasIconEndAction = computed(() => this.isPasswordField() || !!this.iconEndFn());
+  protected readonly hasIconEnd = computed(
+    () => !!this.iconEndTemplate() || !!this.effectiveIconEnd(),
+  );
+  protected readonly hasIconEndAction = computed(
+    () => this.isPasswordField() || !!this.iconEndFn(),
+  );
 
   private _onChange: (val: string) => void = () => {};
   private _onTouched: () => void = () => {};

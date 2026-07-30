@@ -14,9 +14,7 @@
       @for (variant of variants; track variant) {
         <div class="tag-row">
           <span class="tag-row__label">{{ variant }}</span>
-          <gog-tag [variant]="variant" [iconName]="variantIcons[variant]">
-            Example
-          </gog-tag>
+          <gog-tag [variant]="variant" [iconName]="variantIcons[variant]"> Example </gog-tag>
           <gog-tag [variant]="variant">In stock</gog-tag>
           <gog-tag [variant]="variant" [iconName]="variantIcons[variant]">Paid</gog-tag>
         </div>

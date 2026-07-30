@@ -42,7 +42,8 @@ export class InputfieldPage {
     // there and the message would go stale if it were the only trigger.
     this.usernameValue();
     if (this.usernameControl.hasError('required')) return 'Username is required.';
-    if (this.usernameControl.hasError('minlength')) return 'Username must be at least 3 characters.';
+    if (this.usernameControl.hasError('minlength'))
+      return 'Username must be at least 3 characters.';
     return '';
   });
 
