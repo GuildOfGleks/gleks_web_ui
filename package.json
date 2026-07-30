@@ -18,7 +18,7 @@
     "serve:ssr:ui-showcase": "node dist/ui-showcase/server/server.mjs",
     "build:ssr:ui-showcase": "ng run ui-showcase:server:production",
     "build:ssr:ui-showcase:dev": "ng run ui-showcase:server:development",
-    "publish": "npm run build:lib && cd dist/gleks/ui && npm publish --access public"
+    "release": "npm run build:lib && npm publish dist/gleks/ui --access public"
   },
   "private": true,
   "packageManager": "npm@11.6.2",

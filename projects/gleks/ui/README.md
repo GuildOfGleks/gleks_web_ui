@@ -1,6 +1,6 @@
 ![NPM Version](https://img.shields.io/npm/v/@guildofgleks/ui?color=red)
 ![Node Version](https://img.shields.io/node/v/@guildofgleks/ui)
-![Angular 21+](https://img.shields.io/badge/Angular-21%2B-dd0031?logo=angular)
+![Angular 21](https://img.shields.io/badge/Angular-21%2B-dd0031?logo=angular)
 ![NPM Downloads](https://img.shields.io/npm/dm/@guildofgleks/ui)
 ![License](https://img.shields.io/npm/l/@guildofgleks/ui)
 
