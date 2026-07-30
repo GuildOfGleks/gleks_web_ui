@@ -26,4 +26,30 @@ describe('SpinnerOverlayComponent', () => {
 
     expect(fixture.nativeElement.querySelector('.gog-spinner-overlay__scrim')).toBeTruthy();
   });
+
+  it('should not render the overlay scrim when not loading', () => {
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.gog-spinner-overlay__scrim')).toBeNull();
+  });
+
+  it('should set aria-busy to true only while loading', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.getAttribute('aria-busy')).toBeNull();
+
+    fixture.componentRef.setInput('loading', true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.getAttribute('aria-busy')).toBe('true');
+
+    fixture.componentRef.setInput('loading', false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.getAttribute('aria-busy')).toBeNull();
+  });
+
+  it('should always project the wrapped content regardless of loading state', () => {
+    fixture.componentRef.setInput('loading', true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.gog-spinner-overlay__content')).toBeTruthy();
+  });
 });

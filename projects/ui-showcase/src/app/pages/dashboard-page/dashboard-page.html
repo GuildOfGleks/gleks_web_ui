@@ -1,0 +1,53 @@
+<section class="dash">
+  <header class="dash__header card">
+    <p class="eyebrow">Full page example</p>
+    <h2>Team admin dashboard</h2>
+    <p class="lead">
+      Filters built from `gog-inputfield`/`gog-select`/`gog-multiselect` drive a sortable,
+      paginated `gog-table`. Removing a member opens a `gog-dialog` confirmation before the row
+      disappears and a `gog-toast` confirms the result.
+    </p>
+  </header>
+
+  <div class="card dash__filters">
+    <gog-inputfield label="Search" placeholder="Filter by name..." iconStart="check" [(value)]="search" />
+    <gog-select label="Role" placeholder="All roles" [options]="roleOptions" [(value)]="roleFilter" />
+    <gog-multiselect label="Teams" placeholder="All teams" [options]="teamOptions" [(value)]="teamFilter" />
+  </div>
+
+  <div class="card">
+    <gog-table [value]="filteredMembers()" [pageSize]="5" [showTotal]="true" size="md">
+      <column field="name" header="Name" [sortable]="true"></column>
+      <column field="role" header="Role" [sortable]="true"></column>
+      <column field="status" header="Status" [sortable]="true"></column>
+      <column field="teams" header="Teams"></column>
+      <column field="id" header="" width="110px"></column>
+
+      <ng-template template="role" type="body" let-row>
+        <span class="dash__role">{{ $any(row).role }}</span>
+      </ng-template>
+
+      <ng-template template="status" type="body" let-row>
+        <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{ $any(row).status }}</gog-tag>
+      </ng-template>
+
+      <ng-template template="teams" type="body" let-row>
+        <span class="dash__teams">
+          @for (team of $any(row).teams; track team) {
+            <span class="dash__team-chip">{{ teamLabel(team) }}</span>
+          }
+        </span>
+      </ng-template>
+
+      <ng-template template="id" type="header"></ng-template>
+      <ng-template template="id" type="body" let-row>
+        <span class="dash__row-action">
+          <gog-button variant="ghost" size="sm" type="button" (gogClick)="removeMember($any(row))">Remove</gog-button>
+        </span>
+      </ng-template>
+    </gog-table>
+  </div>
+</section>
+
+<gog-dialog />
+<gog-toast-container />

@@ -1,24 +1,41 @@
-<div class="gog-ms-wrapper gog-contained-layout">
+<!--
+  Deliberately not `gog-contained-layout`: `contain: layout` makes this element a stacking
+  context, which traps the panel's z-index inside it and lets whatever follows on the page
+  paint over the open dropdown.
+-->
+<div
+  class="gog-ms-wrapper"
+  [class.gog-ms-wrapper--sm]="size() === 'sm'"
+  [class.gog-ms-wrapper--lg]="size() === 'lg'"
+>
+  <!--
+    Associated with aria-labelledby rather than `for`: the trigger is a div with
+    role="combobox", not a labelable element. Without this the trigger had no accessible
+    name at all whenever `label` was set, because that also suppresses the aria-label.
+  -->
   @if (label()) {
-    <label class="gog-ms__label font-heading">{{ label() }}</label>
+    <label class="gog-ms__label font-heading" [id]="labelId()">{{ label() }}</label>
   }
 
   <div
     class="gog-ms"
     role="combobox"
-    tabindex="0"
+    [attr.tabindex]="isDisabled() ? -1 : 0"
     [attr.aria-expanded]="isOpen()"
     aria-haspopup="listbox"
-    [attr.aria-controls]="'gog-ms-listbox-' + instanceId"
+    [attr.aria-controls]="listboxId()"
     [attr.aria-disabled]="isDisabled()"
+    [attr.aria-labelledby]="label() ? labelId() : null"
     [attr.aria-label]="label() ? null : ariaLabel() || placeholder() || 'Select'"
     [class.gog-ms--open]="isOpen()"
     [class.gog-ms--disabled]="isDisabled()"
     [class.gog-ms--error]="hasError()"
     (click)="toggle()"
-    (keydown.enter)="toggle()"
+    (keydown.enter)="toggle(); $event.preventDefault()"
     (keydown.space)="toggle(); $event.preventDefault()"
     (keydown.escape)="close()"
+    (keydown.arrowdown)="onTriggerArrowKeydown($event)"
+    (keydown.arrowup)="onTriggerArrowKeydown($event)"
   >
     <span class="gog-ms__value font-body" [class.gog-ms__value--placeholder]="!selectedNames()">
       {{ selectedNames() || placeholder() }}
@@ -28,77 +45,110 @@
       @if (selectedNames()) {
         <button
           type="button"
-          type="button"
           class="gog-ms__clear gog-inline-center"
-          (click)="clearTrigger($event)"
+          (click)="clearAll($event)"
           aria-label="Clear selection"
         >
-        <gog-icon [template]="clearIconTemplate()" name="close" />
+          <gog-icon [template]="clearIconTemplate()" name="close" />
         </button>
       }
-    <span class="gog-ms__arrow" [class.gog-ms__arrow--up]="isOpen()" aria-hidden="true">
-      <gog-icon [template]="chevronTemplate()" [name]="isOpen() ? 'chevron-up' : 'chevron-down'" />
-    </span>
+      <span class="gog-ms__arrow" [class.gog-ms__arrow--up]="isOpen()" aria-hidden="true">
+        <gog-icon [template]="chevronTemplate()" [name]="isOpen() ? 'chevron-up' : 'chevron-down'" />
+      </span>
     </span>
   </div>
 
-  @if (isOpen()) {
-    <div
-      [id]="'gog-ms-listbox-' + instanceId"
-      class="gog-ms__dropdown"
-      [class.gog-ms__dropdown--up]="dropdownDirectionState() === 'up'"
-      role="listbox"
-      aria-multiselectable="true"
-      [style.z-index]="dropdownZIndex() ?? null"
-      (click)="$event.stopPropagation()"
-    >
-      @if (showControls()) {
-        <div class="gog-ms__controls">
-          <gog-button variant="ghost" size="sm" (click)="selectAll($event)">Select all</gog-button>
-          <gog-button variant="ghost" size="sm" (click)="clearAll($event)">Clear</gog-button>
-        </div>
-      }
-      <div class="gog-ms__options">
-        @for (option of options(); track option.id) {
-          <button
-            type="button"
-            class="gog-ms__option font-body"
-            role="option"
-            [attr.aria-selected]="isSelected(option.id)"
-            [class.gog-ms__option--selected]="isSelected(option.id)"
-            (click)="toggleOption(option, $event)"
-          >
-            <span class="gog-ms__option-mark" aria-hidden="true">
-              <svg viewBox="0 0 16 16" fill="none" focusable="false" aria-hidden="true">
-                <rect
-                  x="2.5"
-                  y="2.5"
-                  width="11"
-                  height="11"
-                  rx="2"
-                  [attr.fill]="isSelected(option.id) ? 'currentColor' : 'none'"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                />
-                @if (isSelected(option.id)) {
-                  <path
-                    d="M4 8L6.75 10.75L12 5.5"
-                    stroke="var(--gog-ms-checkbox-checked-color)"
-                    stroke-width="1.75"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                }
-              </svg>
-            </span>
-            {{ option.name }}
-          </button>
-        }
-      </div>
-    </div>
+  @if (isOpen() && !appendToBody()) {
+    <ng-container [ngTemplateOutlet]="panelTpl" />
   }
 
   @if (visibleError()) {
     <span class="gog-ms__error font-body" role="alert">{{ visibleError() }}</span>
   }
 </div>
+
+<!--
+  One template for both render modes. When `appendToBody` is set it is stamped into
+  <body> by the overlay, which is why the portal-only modifier and the resolved
+  coordinates are applied conditionally: outside the component's subtree the panel can
+  no longer inherit the size tokens from the `.gog-ms-wrapper--sm/--lg` wrapper.
+-->
+<ng-template #panelTpl>
+  <div
+    [id]="listboxId()"
+    class="gog-ms__dropdown"
+    [class.gog-ms__dropdown--up]="!appendToBody() && dropdownDirectionState() === 'up'"
+    [class.gog-ms__dropdown--portal]="appendToBody()"
+    [class.gog-ms__dropdown--sm]="appendToBody() && size() === 'sm'"
+    [class.gog-ms__dropdown--lg]="appendToBody() && size() === 'lg'"
+    [style.top.px]="appendToBody() ? panelPlacement()?.top : null"
+    [style.left.px]="appendToBody() ? panelPlacement()?.left : null"
+    [style.width]="appendToBody() ? resolvedPanelWidth() : null"
+    [style.max-height]="appendToBody() ? resolvedPanelMaxHeight() : null"
+    [style.z-index]="dropdownZIndex() ?? panelZIndex()"
+    role="listbox"
+    aria-multiselectable="true"
+    [attr.aria-labelledby]="label() ? labelId() : null"
+    (click)="$event.stopPropagation()"
+  >
+    @if (showControls() && controlsPosition() === 'top') {
+      <ng-container [ngTemplateOutlet]="controlsRowTpl" />
+    }
+    <div class="gog-ms__options">
+      @for (option of options(); track option.id) {
+        <!--
+          tabindex="-1" keeps the list to a single tab stop, as the listbox pattern
+          expects: focus moves between options with the arrow keys, not by tabbing
+          through every one. Programmatic .focus() still works on a negative tabindex.
+        -->
+        <button
+          type="button"
+          class="gog-ms__option font-body"
+          role="option"
+          tabindex="-1"
+          [attr.aria-selected]="isSelected(option.id)"
+          [attr.aria-disabled]="option.disabled ?? false"
+          [class.gog-ms__option--selected]="isSelected(option.id)"
+          [class.gog-ms__option--disabled]="option.disabled ?? false"
+          (click)="toggleOption(option, $event)"
+          (keydown)="onOptionKeydown($event)"
+        >
+          <span class="gog-ms__option-mark" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" focusable="false" aria-hidden="true">
+              <rect
+                x="2.5"
+                y="2.5"
+                width="11"
+                height="11"
+                rx="2"
+                [attr.fill]="isSelected(option.id) ? 'currentColor' : 'none'"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              @if (isSelected(option.id)) {
+                <path
+                  d="M4 8L6.75 10.75L12 5.5"
+                  stroke="var(--gog-ms-checkbox-checked-color)"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              }
+            </svg>
+          </span>
+          {{ option.name }}
+        </button>
+      }
+    </div>
+    @if (showControls() && controlsPosition() === 'bottom') {
+      <ng-container [ngTemplateOutlet]="controlsRowTpl" />
+    }
+  </div>
+</ng-template>
+
+<ng-template #controlsRowTpl>
+  <div class="gog-ms__controls" [class.gog-ms__controls--bottom]="controlsPosition() === 'bottom'">
+    <gog-button variant="ghost" size="sm" (click)="selectAll($event)">Select all</gog-button>
+    <gog-button variant="ghost" size="sm" (click)="clearAll($event)">Clear</gog-button>
+  </div>
+</ng-template>

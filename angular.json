@@ -67,7 +67,10 @@
                 "input": "projects/ui-showcase/public"
               }
             ],
-            "styles": ["projects/ui-showcase/src/styles.scss"],
+            "styles": [
+              "projects/gleks/ui/src/styles/index.css",
+              "projects/ui-showcase/src/styles.scss"
+            ],
             "server": "projects/ui-showcase/src/main.server.ts",
             "outputMode": "server",
             "security": {

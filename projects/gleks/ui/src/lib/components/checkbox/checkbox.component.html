@@ -1,25 +1,25 @@
-<label class="gog-checkbox gog-contained-layout" [class.gog-checkbox--disabled]="isDisabled()">
+<label [class.gog-checkbox--disabled]="isDisabled()" class="gog-checkbox gog-contained-layout">
   <input
-    class="gog-checkbox__input"
-    type="checkbox"
-    [checked]="checked()"
-    [indeterminate]="indeterminate()"
-    [disabled]="isDisabled()"
+    (blur)="onBlur()"
+    (change)="onInputChange($event)"
     [attr.aria-checked]="indeterminate() ? 'mixed' : null"
     [attr.aria-label]="label() ? null : ariaLabel() || null"
-    (change)="onInputChange($event)"
-    (blur)="onBlur()"
+    [checked]="checked()"
+    [disabled]="isDisabled()"
+    [indeterminate]="indeterminate()"
+    class="gog-checkbox__input"
+    type="checkbox"
   />
 
   <span
-    class="gog-checkbox__box"
     [class.gog-checkbox__box--checked]="checked()"
     [class.gog-checkbox__box--indeterminate]="indeterminate()"
+    class="gog-checkbox__box"
   >
-    @if (checked()) {
-      <gog-icon [template]="checkIconTemplate()" name="check" />
-    } @else if (indeterminate()) {
+    @if (indeterminate()) {
       <span class="gog-checkbox__dash" aria-hidden="true"></span>
+    } @else if (checked()) {
+      <gog-icon [template]="checkIconTemplate()" name="check" />
     }
   </span>
 

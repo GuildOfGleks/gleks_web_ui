@@ -12,7 +12,7 @@
   --gog-accordion-body-radius: var(--radius);
   --gog-accordion-body-padding-y: 12px;
   --gog-accordion-body-padding-x: 16px;
-  --gog-accordion-body-radius-skeleton: 2px;
+  --gog-accordion-skeleton-radius: 2px;
 
   display: flex;
   flex-direction: column;
@@ -22,13 +22,35 @@
 /* === Item === */
 
 .gog-accordion__item {
-  border-bottom: var(--control-border-width, 1px) var(--control-border-style, solid)
-    var(--gog-accordion-border-color);
+  border-bottom: var(--control-border-width, 1px) var(--control-border-style, solid) var(--gog-accordion-border-color);
 }
 
 .gog-accordion__item:first-child {
-  border-top: var(--control-border-width, 1px) var(--control-border-style, solid)
-    var(--gog-accordion-border-color);
+  border-top: var(--control-border-width, 1px) var(--control-border-style, solid) var(--gog-accordion-border-color);
+  border-top-left-radius: var(--gog-accordion-radius);
+  border-top-right-radius: var(--gog-accordion-radius);
+}
+
+.gog-accordion__item:last-child {
+  border-bottom-left-radius: var(--gog-accordion-radius);
+  border-bottom-right-radius: var(--gog-accordion-radius);
+  overflow: hidden;
+}
+
+.gog-accordion__item--disabled .gog-accordion__header {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.gog-accordion__item--disabled .gog-accordion__header:hover {
+  color: var(--gog-accordion-text-color);
+  background-color: transparent;
+}
+
+/* The optional role="heading" wrapper must not affect layout — the header button
+   still needs to behave as a direct flex child of .gog-accordion__item. */
+.gog-accordion__heading {
+  display: contents;
 }
 
 /* === Header / trigger === */
@@ -48,9 +70,8 @@
   text-transform: uppercase;
   letter-spacing: 0.8px;
   font-size: var(--text-sm);
-  transition:
-    color 0.15s ease,
-    background-color 0.15s ease;
+  transition: color 0.15s ease,
+  background-color 0.15s ease;
 }
 
 .gog-accordion__header:hover {
@@ -87,9 +108,8 @@
   width: 16px;
   height: 16px;
   color: var(--gog-accordion-border-color);
-  transition:
-    transform 0.2s ease,
-    color 0.15s ease;
+  transition: transform 0.2s ease,
+  color 0.15s ease;
 }
 
 .gog-accordion__chevron svg {
@@ -110,11 +130,9 @@
   grid-template-rows: 0fr;
   opacity: 0;
   overflow: hidden;
-  border-top: var(--control-border-width, 1px) var(--control-border-style, solid)
-    var(--accent-dim);
-  transition:
-    grid-template-rows 0.2s ease,
-    opacity 0.18s ease;
+  border-top: var(--control-border-width, 1px) var(--control-border-style, solid) var(--accent-dim);
+  transition: grid-template-rows 0.2s ease,
+  opacity 0.18s ease;
 }
 
 .gog-accordion__body--open {
@@ -125,6 +143,8 @@
 .gog-accordion__body-inner {
   min-height: 0;
   overflow: hidden;
+  border-bottom-left-radius: var(--gog-accordion-body-radius);
+  border-bottom-right-radius: var(--gog-accordion-body-radius);
   /* vertical padding is 0 while closed so the collapsed grid row can reach 0
      (padding is never clipped by overflow, so it would otherwise keep the
      body visible as a thin sliver even when "closed"). */
@@ -133,9 +153,8 @@
   font-size: var(--text-md);
   line-height: 1.6;
   transform: translateY(-2px);
-  transition:
-    transform 0.18s ease,
-    padding 0.2s ease;
+  transition: transform 0.18s ease,
+  padding 0.2s ease;
 }
 
 .gog-accordion__body--open .gog-accordion__body-inner {
@@ -211,12 +230,12 @@
   display: block;
   height: 12px;
   width: 55%;
-  border-radius: var(--gog-accordion-body-radius-skeleton);
+  border-radius: var(--gog-accordion-skeleton-radius);
   background: linear-gradient(
-    90deg,
-    var(--gog-accordion-skeleton-start) 25%,
-    var(--gog-accordion-skeleton-mid) 50%,
-    var(--gog-accordion-skeleton-end) 75%
+      90deg,
+      var(--gog-accordion-skeleton-start) 25%,
+      var(--gog-accordion-skeleton-mid) 50%,
+      var(--gog-accordion-skeleton-end) 75%
   );
   background-size: 200% 100%;
   animation: gog-accordion-shimmer 1.4s infinite;

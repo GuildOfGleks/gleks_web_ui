@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
-import { ButtonComponent, Column, TableComponent } from '@gleks/ui';
+import { ButtonComponent, Column, GogSize, GogTagVariant, TableComponent, TagComponent, TemplateDirective } from '@guildofgleks/ui';
 
 interface DemoRow {
   component: string;
@@ -8,9 +8,15 @@ interface DemoRow {
   updated: string;
 }
 
+const STATUS_VARIANTS: Record<string, GogTagVariant> = {
+  Ready: 'success',
+  'In review': 'warning',
+  Planned: 'info',
+};
+
 @Component({
   selector: 'app-table-page',
-  imports: [ButtonComponent, Column, TableComponent],
+  imports: [ButtonComponent, Column, TableComponent, TemplateDirective, TagComponent],
   templateUrl: './table-page.html',
   styleUrl: './table-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +33,19 @@ export class TablePage implements OnDestroy {
   protected readonly loading = signal(false);
   private loadingTimer: ReturnType<typeof setTimeout> | null = null;
 
+  protected readonly sizes: GogSize[] = ['sm', 'md', 'lg'];
+  protected readonly size = signal<GogSize>('lg');
+
+  protected readonly paginatorPositions: Array<'left' | 'center' | 'right'> = ['left', 'center', 'right'];
+  protected readonly paginatorPosition = signal<'left' | 'center' | 'right'>('center');
+
+  protected readonly stickyHeader = signal(false);
+  protected readonly showEmpty = signal(false);
+
+  protected statusVariant(status: string): GogTagVariant {
+    return STATUS_VARIANTS[status] ?? 'info';
+  }
+
   protected toggleLoading(): void {
     if (this.loadingTimer) {
       clearTimeout(this.loadingTimer);
@@ -37,6 +56,14 @@ export class TablePage implements OnDestroy {
       this.loading.set(false);
       this.loadingTimer = null;
     }, 1200);
+  }
+
+  protected toggleStickyHeader(): void {
+    this.stickyHeader.update((value) => !value);
+  }
+
+  protected toggleEmpty(): void {
+    this.showEmpty.update((value) => !value);
   }
 
   ngOnDestroy(): void {

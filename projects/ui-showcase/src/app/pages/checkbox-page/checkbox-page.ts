@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { CheckboxComponent } from '@gleks/ui';
+import { CheckboxComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-checkbox-page',

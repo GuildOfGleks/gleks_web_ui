@@ -1,0 +1,14 @@
+<div class="quickview">
+  <p class="quickview__category">{{ data.category }}</p>
+  <div class="quickview__status">
+    <gog-tag [variant]="data.stockVariant" size="sm">{{ data.stockLabel }}</gog-tag>
+  </div>
+  <p class="quickview__description">{{ data.description }}</p>
+  <p class="quickview__price">{{ data.price | number: '1.2-2' }} USD</p>
+
+  <div class="quickview__actions">
+    <gog-button variant="primary" type="button" [disabled]="data.stock === 'out-of-stock'" (gogClick)="addToCart()">
+      Add to cart
+    </gog-button>
+  </div>
+</div>

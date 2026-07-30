@@ -11,7 +11,7 @@ import { GogTagShape } from '../../shared/types';
   styleUrl: './tag.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[class]': '"gog-tag gog-tag--" + variant() + " gog-tag--" + size() + " gog-tag--" + shape() + (hasIcon() ? " gog-tag--has-icon" : "")',
+    '[class]': 'hostClasses()',
   },
 })
 export class TagComponent {
@@ -22,4 +22,16 @@ export class TagComponent {
   readonly iconTemplate = input<TemplateRef<unknown> | null>(null);
 
   protected readonly hasIcon = computed(() => this.iconTemplate() !== null || this.iconName() !== null);
+
+  protected readonly hostClasses = computed(() =>
+    [
+      'gog-tag',
+      `gog-tag--${this.variant()}`,
+      `gog-tag--${this.size()}`,
+      `gog-tag--${this.shape()}`,
+      this.hasIcon() ? 'gog-tag--has-icon' : null,
+    ]
+      .filter((className): className is string => className !== null)
+      .join(' '),
+  );
 }

@@ -23,4 +23,15 @@
 
     <p class="meta">{{ summary() }}</p>
   </article>
+
+  <article class="card">
+    <h3>Validation</h3>
+    <p class="lead">
+      `errorMessage` is consumer-controlled: `gog-slider` just renders whatever it's given, for as
+      long as it's non-empty — this page recomputes it every time the value changes.
+    </p>
+    <div class="field-grid">
+      <gog-slider label="Monthly budget" [min]="0" [max]="100" [step]="5" [errorMessage]="budgetError()" [(value)]="budget" />
+    </div>
+  </article>
 </section>

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { ButtonComponent, SliderComponent } from '@gleks/ui';
+import { ButtonComponent, SliderComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-slider-page',
@@ -16,6 +16,11 @@ export class SliderPage {
   protected readonly summary = computed(
     () =>
       `Volume is ${this.volume()}, brightness is ${this.brightness()}, and precision is ${this.precision()}.`,
+  );
+
+  protected readonly budget = signal(80);
+  protected readonly budgetError = computed(() =>
+    this.budget() > 70 ? 'Over the recommended budget for this tier.' : '',
   );
 
   protected reset(): void {

@@ -81,14 +81,14 @@ export class DialogComponent {
   }
 
   protected onBackdropPointerDown(event: PointerEvent, dialog: OpenDialog): void {
-    if (!dialog.config.closable) return;
+    if (dialog.config.closable === false) return;
     if (event.target === event.currentTarget) {
       this.backdropPress.add(dialog.id);
     }
   }
 
   protected onBackdropPointerUp(event: PointerEvent, dialog: OpenDialog): void {
-    if (!dialog.config.closable) return;
+    if (dialog.config.closable === false) return;
     const shouldClose = this.backdropPress.has(dialog.id) && event.target === event.currentTarget;
     this.backdropPress.delete(dialog.id);
     if (shouldClose) {

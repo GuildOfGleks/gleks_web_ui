@@ -8,7 +8,7 @@ import {
   GogAccordionItem,
   SpinnerOverlayComponent,
   GogAccordionToggleEvent,
-} from '@gleks/ui';
+} from '@guildofgleks/ui';
 
 interface AccordionDemoStat {
   label: string;

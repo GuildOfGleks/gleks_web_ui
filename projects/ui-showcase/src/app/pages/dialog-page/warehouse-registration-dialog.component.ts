@@ -5,7 +5,7 @@ import {
   DIALOG_REF,
   DialogRef,
   ToastService,
-} from '@gleks/ui';
+} from '@guildofgleks/ui';
 
 export interface WarehouseRegistrationDialogResult {
   registrationCode: string;

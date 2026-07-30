@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { ButtonComponent, ThemeService } from '@gleks/ui';
+import { ButtonComponent, ThemeService } from '@guildofgleks/ui';
 
 import { showcaseThemes, type ShowcaseThemeName } from './showcase-themes';
 
@@ -44,6 +44,13 @@ export class App {
     { path: 'toast', label: 'Toast' },
     { path: 'tag', label: 'Tag' },
     { path: 'dialog', label: 'Dialog' },
+  ];
+
+  protected readonly pageLinks: ShowcaseNavLink[] = [
+    { path: 'dashboard', label: 'Dashboard' },
+    { path: 'settings', label: 'Settings' },
+    { path: 'catalog', label: 'Catalog' },
+    { path: 'onboarding', label: 'Onboarding' },
   ];
 
   protected isActiveTheme(theme: ShowcaseThemeName): boolean {

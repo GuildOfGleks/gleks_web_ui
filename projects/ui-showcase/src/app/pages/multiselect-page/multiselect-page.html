@@ -3,8 +3,9 @@
     <p class="eyebrow">gog-multiselect</p>
     <h2>Multiselect</h2>
     <p class="lead">
-      A checkbox-driven multiselect dropdown with select-all/clear controls, placement control,
-      and an optional body-portaled panel.
+      A checkbox-driven multiselect dropdown with select-all/clear controls, size variants,
+      disabled options, placement control, and an optional body-portaled panel. Once open, Arrow
+      Up/Down move between options, Home/End jump to the first/last, and Escape closes.
     </p>
   </div>
 
@@ -20,5 +21,143 @@
       />
     </div>
     <p class="meta">Selected features: {{ featureSummary() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <div class="field-grid">
+      @for (size of sizes; track size) {
+        <gog-multiselect [label]="'Size: ' + size" [size]="size" [options]="features" [(value)]="sizeDemoValue" />
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>States</h3>
+    <div class="field-grid">
+      <gog-multiselect label="Disabled" [options]="features" [value]="['toast']" [disabled]="true" />
+
+      <gog-multiselect label="Permissions (one disabled)" [options]="permissionsWithDisabled" [(value)]="permissions" />
+
+      <gog-multiselect
+        label="Required tags"
+        placeholder="Pick at least one..."
+        [options]="permissionsWithDisabled"
+        [errorMessage]="requiredError()"
+        [(value)]="requiredValue"
+      />
+    </div>
+    <div class="action-row">
+      <gog-checkbox label="Require a selection" [(checked)]="requireSelection" />
+    </div>
+    <p class="meta">
+      The error above is entirely computed by this page — `gog-multiselect` just renders whatever
+      `errorMessage` it's given, for as long as it's non-empty.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Reactive Forms — automatic error timing</h3>
+    <p class="lead">
+      Same idea as <code>gog-select</code>: <code>errorDisplay="auto"</code> shows the error
+      once the attached <code>[formControl]</code> has been touched and is invalid, with no
+      manual error computation on this page's side.
+    </p>
+    <div class="field-grid">
+      <gog-multiselect
+        label="Permissions"
+        placeholder="Pick at least one..."
+        [options]="permissionsWithDisabled"
+        [formControl]="permissionsFormControl"
+        errorMessage="Pick at least one permission."
+        errorDisplay="auto"
+      />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Append to body</h3>
+    <p class="lead">
+      Useful inside scrollable or overflow-clipped containers — the panel escapes into
+      `document.body` instead of getting clipped.
+    </p>
+    <div class="field-grid">
+      <gog-multiselect
+        label="Tags"
+        [options]="tags"
+        [showControls]="true"
+        [appendToBody]="true"
+        dropdownDirection="auto"
+        [(value)]="selectedTags"
+      />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>"Select all" / "Clear" position</h3>
+    <p class="lead">
+      <code>controlsPosition</code> puts the control row above or below the option list —
+      either way it's pinned in place with <code>position: sticky</code>, so it stays visible
+      instead of scrolling away with a long option list.
+    </p>
+    <div class="field-grid">
+      <gog-multiselect
+        label="Top (default)"
+        [options]="countries"
+        [showControls]="true"
+        [appendToBody]="true"
+        dropdownDirection="down"
+        [(value)]="topControlsValue"
+      />
+      <gog-multiselect
+        label="Bottom"
+        [options]="countries"
+        [showControls]="true"
+        controlsPosition="bottom"
+        [appendToBody]="true"
+        dropdownDirection="down"
+        [(value)]="bottomControlsValue"
+      />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Custom panel size</h3>
+    <p class="lead">
+      <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and
+      override the trigger-derived size. Applies only with <code>appendToBody</code>; the list
+      below has 20 options, capped to 160px so it scrolls internally.
+    </p>
+    <div class="field-grid">
+      <gog-multiselect
+        label="Country (fixed 240px / 160px)"
+        [options]="countries"
+        [appendToBody]="true"
+        dropdownWidth="240px"
+        dropdownMaxHeight="160px"
+        [(value)]="compactPanelValue"
+      />
+    </div>
+  </article>
+
+  <div class="detail__spacer" aria-hidden="true"></div>
+
+  <article class="card">
+    <h3>Opening near the bottom of the page</h3>
+    <p class="lead">
+      Scroll down to reach this one. With <code>appendToBody</code>, the panel flips upward
+      automatically and is positioned against the trigger itself — not the whole field — so it
+      never covers the label above it or the control below it.
+    </p>
+    <div class="field-grid">
+      <gog-multiselect
+        label="Country"
+        [options]="countries"
+        [showControls]="true"
+        [appendToBody]="true"
+        dropdownDirection="auto"
+        [(value)]="bottomOfPageValue"
+      />
+    </div>
   </article>
 </section>

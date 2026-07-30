@@ -5,8 +5,8 @@ import {
   forwardRef,
   input,
   model,
-  TemplateRef,
   signal,
+  TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IconComponent } from '../icon/icon.component';
@@ -44,19 +44,21 @@ export class CheckboxComponent implements ControlValueAccessor {
   readonly disabled = input(false);
   readonly checkIconTemplate = input<TemplateRef<unknown> | null>(null);
 
-  /** Two-way bindable checked state: `[(checked)]="signal"`. */
+  /**
+   * Two-way bindable checked state: `[(checked)]="signal"`.
+   * This is the same state Angular Forms drives via `writeValue`/`registerOnChange`
+   * when the component is used with `formControlName`/`[formControl]`/`ngModel`.
+   * Don't wire both a form directive AND `[(checked)]` to the same instance —
+   * pick one, otherwise you end up with two competing sources of truth.
+   */
   readonly checked = model<boolean>(false);
-
-  private readonly cvaDisabled = signal(false);
-  protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
   protected readonly controlSize = computed(() => GOG_CHECKABLE_CONTROL_SIZE_MAP[this.size()]);
   protected readonly boxSize = computed(() => this.controlSize().boxSize);
   protected readonly checkboxPadding = GOG_CHECKABLE_CONTROL_PADDING;
   protected readonly labelSize = computed(() => this.controlSize().labelSize);
   protected readonly iconSize = computed(() => this.controlSize().indicatorSize);
-
-  private onCheckedChange: (val: boolean) => void = () => {};
-  private onTouched: () => void = () => {};
+  private readonly cvaDisabled = signal(false);
+  protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
 
   writeValue(val: boolean): void {
     this.checked.set(val ?? false);
@@ -87,4 +89,8 @@ export class CheckboxComponent implements ControlValueAccessor {
     if (this.isDisabled()) return;
     this.onTouched();
   }
+
+  private onCheckedChange: (val: boolean) => void = () => {};
+
+  private onTouched: () => void = () => {};
 }

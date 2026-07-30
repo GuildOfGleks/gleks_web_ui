@@ -11,7 +11,7 @@ import {
   SliderComponent,
   SpinnerComponent,
   TagComponent,
-} from '@gleks/ui';
+} from '@guildofgleks/ui';
 
 import { showcaseThemes } from '../../showcase-themes';
 

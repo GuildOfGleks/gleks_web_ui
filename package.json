@@ -7,6 +7,11 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "build:lib": "ng build @gleks/ui",
+    "test:lib": "ng test @gleks/ui",
+    "build:showcase": "ng build ui-showcase",
+    "format": "prettier --write \"projects/**/*.{ts,html,scss,css}\"",
+    "format:check": "prettier --check \"projects/**/*.{ts,html,scss,css}\"",
     "serve:ssr:ui-showcase": "node dist/ui-showcase/server/server.mjs"
   },
   "private": true,

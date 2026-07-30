@@ -1,0 +1,68 @@
+<section class="catalog">
+  <header class="catalog__header card">
+    <p class="eyebrow">Full page example</p>
+    <h2>Product catalog</h2>
+    <p class="lead">
+      An accordion filter sidebar drives a product grid: applying filters shows a
+      `gog-spinner-overlay` while the (simulated) request is in flight, and each card opens a
+      `gog-dialog` quick view that can add the item to the cart with a `gog-toast` confirmation.
+    </p>
+  </header>
+
+  <div class="catalog__layout">
+    <aside class="card catalog__filters">
+      <h3>Filters</h3>
+      <gog-accordion [items]="filterSections" [multi]="true" [expandFirst]="true" size="sm">
+        <ng-template gogAccordionContent let-item>
+          @switch (item.id) {
+            @case ('category') {
+              <div class="catalog__category-list">
+                @for (category of categories; track category) {
+                  <gog-checkbox
+                    [label]="category"
+                    [checked]="isCategoryChecked(category)"
+                    (checkedChange)="toggleCategory(category)"
+                  />
+                }
+              </div>
+            }
+            @case ('price') {
+              <gog-slider label="Up to" [min]="10" [max]="150" [step]="10" [(value)]="pendingMaxPrice" />
+            }
+          }
+        </ng-template>
+      </gog-accordion>
+
+      <div class="action-row">
+        <gog-button variant="primary" type="button" (gogClick)="applyFilters()">Apply filters</gog-button>
+      </div>
+    </aside>
+
+    <div class="catalog__results">
+      <gog-spinner-overlay [loading]="loading()" ariaLabel="Loading products">
+        <div class="catalog__grid">
+          @for (product of filteredProducts(); track product.id) {
+            <article class="catalog__card">
+              <div class="catalog__card-top">
+                <span class="catalog__category-chip">{{ product.category }}</span>
+                <gog-tag [variant]="stockVariant(product.stock)" size="sm">{{ stockLabel(product.stock) }}</gog-tag>
+              </div>
+              <h4 class="catalog__name">{{ product.name }}</h4>
+              <p class="catalog__price">{{ product.price | number: '1.0-2' }} USD</p>
+              <div class="action-row">
+                <gog-button variant="outline" size="sm" type="button" (gogClick)="quickView(product)">
+                  Quick view
+                </gog-button>
+              </div>
+            </article>
+          } @empty {
+            <p class="meta">No products match the current filters.</p>
+          }
+        </div>
+      </gog-spinner-overlay>
+    </div>
+  </div>
+</section>
+
+<gog-dialog />
+<gog-toast-container />

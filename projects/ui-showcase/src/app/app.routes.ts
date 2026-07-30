@@ -63,6 +63,22 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dialog-page/dialog-page').then((m) => m.DialogPage),
   },
   {
+    path: 'dashboard',
+    loadComponent: () => import('./pages/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
+  },
+  {
+    path: 'settings',
+    loadComponent: () => import('./pages/settings-page/settings-page').then((m) => m.SettingsPage),
+  },
+  {
+    path: 'catalog',
+    loadComponent: () => import('./pages/catalog-page/catalog-page').then((m) => m.CatalogPage),
+  },
+  {
+    path: 'onboarding',
+    loadComponent: () => import('./pages/onboarding-page/onboarding-page').then((m) => m.OnboardingPage),
+  },
+  {
     path: '**',
     redirectTo: 'themes',
   },

@@ -11,8 +11,7 @@
   --gog-spinner-color: var(--text-color);
 
   gap: 8px;
-  border: var(--control-border-width, 2px) var(--control-border-style, solid)
-    var(--gog-btn-border);
+  border: var(--control-border-width, 2px) var(--control-border-style, solid) var(--gog-btn-border);
   border-radius: var(--gog-btn-radius);
   padding: var(--gog-btn-padding);
   font-size: var(--gog-btn-font-size);
@@ -22,10 +21,9 @@
   color: var(--gog-btn-color);
   box-shadow: var(--gog-btn-shadow);
   cursor: pointer;
-  transition:
-    background-color 0.15s ease,
-    box-shadow 0.15s ease,
-    color 0.15s ease;
+  transition: background-color 0.15s ease,
+  box-shadow 0.15s ease,
+  color 0.15s ease;
   line-height: 1;
 }
 
@@ -121,6 +119,10 @@
 .gog-btn--loading {
   position: relative;
   pointer-events: none;
+  /* Loading buttons stay natively focusable (aria-disabled + aria-busy instead of
+     `disabled`) so keyboard users don't lose focus mid-action. `:disabled` styling
+     below therefore no longer covers this state, so the dim is applied explicitly. */
+  opacity: 0.7;
 }
 
 .gog-btn__content--hidden {

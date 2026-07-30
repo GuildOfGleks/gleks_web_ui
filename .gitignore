@@ -8,6 +8,8 @@
 
 # Node
 /node_modules
+# ng-packagr drops one of these next to the library it builds
+/projects/*/*/node_modules
 npm-debug.log
 yarn-error.log
 

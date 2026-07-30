@@ -1,18 +1,20 @@
 ---
-description: 'Guide for the ui-showcase app that consumes @gleks/ui'
+description: 'Guide for the ui-showcase app that consumes @guildofgleks/ui'
 applyTo: 'projects/ui-showcase/**'
 ---
 
 # ui-showcase — Consuming App Guide
 
-`ui-showcase` demonstrates and validates `@gleks/ui`. It is an **SSR application**
+`ui-showcase` demonstrates and validates `@guildofgleks/ui`. It is an **SSR application**
 (`@angular/build:application`, `outputMode: server`, `ssr.entry: src/server.ts`) with
 selector prefix `app` and `scss` styles. Follow `general.instructions.md` plus the rules below.
 
 ## Consuming the library
 
-- Import components from the package entry point `@gleks/ui`, never via deep relative paths
-  into `projects/gleks/ui`.
+- Import components from the **published** package name `@guildofgleks/ui`, never via deep
+  relative paths into `projects/gleks/ui`. The showcase doubles as the source of the
+  documentation examples, so its import lines have to be what a consumer actually writes.
+  (`@gleks/ui` resolves to the same build output, but it is workspace-internal.)
 - If a symbol isn't exported from the library's `public-api.ts`, add the export there —
   do not reach into library internals.
 - Drive components through their inputs and react to their `gog*` outputs; do not restyle

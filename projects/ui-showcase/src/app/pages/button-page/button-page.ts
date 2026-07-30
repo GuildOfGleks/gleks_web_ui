@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ButtonComponent, GogSize, GogVariant } from '@gleks/ui';
+import { ButtonComponent, GogSize, GogVariant } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-button-page',

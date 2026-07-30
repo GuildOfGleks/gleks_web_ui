@@ -1,0 +1,30 @@
+@use '../detail' as *;
+
+.onboarding {
+  display: grid;
+  justify-content: center;
+}
+
+.onboarding__panel {
+  width: min(100%, 30rem);
+  display: grid;
+  gap: 12px;
+}
+
+.onboarding__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.onboarding__form {
+  display: grid;
+  gap: 14px;
+}
+
+.onboarding__field-error {
+  margin: -6px 0 0;
+  color: var(--danger-color);
+  font-size: var(--text-xs);
+}

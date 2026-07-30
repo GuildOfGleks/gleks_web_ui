@@ -50,3 +50,9 @@ h3 {
   display: grid;
   gap: 14px;
 }
+
+/** Pushes whatever follows below the fold, for demos that only make sense once you have to
+ * scroll to reach them (e.g. a dropdown flipping open upward near the bottom of the page). */
+.detail__spacer {
+  height: 70vh;
+}
