@@ -10,6 +10,12 @@
   justify-content: center;
 }
 
+/*
+ * Scopes reflow to this subtree. Never put it on an element that has to paint something
+ * outside its own box — `contain: layout` creates a stacking context, so a popup inside
+ * it can no longer stack above the rest of the page no matter its z-index. That rules it
+ * out for gog-select and gog-multiselect.
+ */
 .gog-contained-layout {
   contain: layout style;
 }

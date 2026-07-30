@@ -1,3 +1,17 @@
-@import './fonts.css';
+/*
+ * The single stylesheet a @guildofgleks/ui consumer needs:
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *
+ * It brings the baseline theme (every token the components read), the typography helpers
+ * and the utility classes that component templates rely on — `font-body`, `font-heading`
+ * and `gog-contained-layout` are applied inside the components themselves, so without
+ * this import they resolve to nothing.
+ *
+ * `fonts.css` is deliberately NOT included: it pulls three families from Google Fonts,
+ * which a library should not impose on its consumers. Import it explicitly if you want
+ * the showcase's typography.
+ */
+@import './theme.css';
 @import './typography.css';
 @import './utilities.css';

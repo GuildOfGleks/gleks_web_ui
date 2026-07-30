@@ -1,4 +1,6 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MultiselectComponent } from './multiselect.component';
 
@@ -107,6 +109,74 @@ describe('MultiselectComponent', () => {
       fixture.componentRef.setInput('errorMessage', '');
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('.gog-ms__error')).toBeNull();
+    });
+  });
+
+  // `contain: layout` creates a stacking context, which would trap the panel's z-index
+  // inside the control and let following page content paint over the open dropdown.
+  it('does not apply layout containment to the element wrapping the panel', () => {
+    fixture.detectChanges();
+
+    const wrapper = fixture.nativeElement.querySelector('.gog-ms-wrapper') as HTMLElement;
+    expect(wrapper.classList.contains('gog-contained-layout')).toBe(false);
+  });
+
+  describe('accessible name', () => {
+    it('associates the visible label with the combobox trigger', () => {
+      fixture.componentRef.setInput('label', 'Tags');
+      fixture.detectChanges();
+
+      const label = fixture.nativeElement.querySelector('.gog-ms__label') as HTMLElement;
+      const trigger = fixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+
+      expect(label.id).toBeTruthy();
+      expect(trigger.getAttribute('aria-labelledby')).toBe(label.id);
+      // Setting `label` suppresses aria-label, so without the association above the
+      // combobox would be left with no accessible name at all.
+      expect(trigger.hasAttribute('aria-label')).toBe(false);
+    });
+
+    it('falls back to ariaLabel when there is no visible label', () => {
+      fixture.componentRef.setInput('ariaLabel', 'Pick tags');
+      fixture.detectChanges();
+
+      const trigger = fixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+      expect(trigger.getAttribute('aria-labelledby')).toBeNull();
+      expect(trigger.getAttribute('aria-label')).toBe('Pick tags');
+    });
+
+    it('gives each instance its own ids so several can coexist on a page', async () => {
+      const second = TestBed.createComponent(MultiselectComponent);
+      second.componentRef.setInput('label', 'Other');
+      fixture.componentRef.setInput('label', 'First');
+      fixture.detectChanges();
+      second.detectChanges();
+      await second.whenStable();
+
+      const firstLabel = fixture.nativeElement.querySelector('.gog-ms__label') as HTMLElement;
+      const secondLabel = second.nativeElement.querySelector('.gog-ms__label') as HTMLElement;
+      expect(firstLabel.id).not.toBe(secondLabel.id);
+    });
+  });
+
+  describe('tab order', () => {
+    it('keeps the option list to a single tab stop', () => {
+      fixture.componentRef.setInput('options', [
+        { id: 'a', name: 'Alpha' },
+        { id: 'b', name: 'Beta' },
+      ]);
+      fixture.detectChanges();
+
+      (fixture.nativeElement.querySelector('.gog-ms') as HTMLElement).click();
+      fixture.detectChanges();
+
+      const options = fixture.nativeElement.querySelectorAll(
+        '.gog-ms__option',
+      ) as NodeListOf<HTMLButtonElement>;
+      expect(options.length).toBe(2);
+      for (const option of options) {
+        expect(option.tabIndex).toBe(-1);
+      }
     });
   });
 
@@ -247,7 +317,40 @@ describe('MultiselectComponent', () => {
 
   describe('appendToBody', () => {
     afterEach(() => {
-      document.querySelectorAll('gog-multiselect-dropdown-portal').forEach((el) => el.remove());
+      document.querySelectorAll('.gog-overlay-host').forEach((el) => el.remove());
+    });
+
+    it('renders exactly one listbox, not an inline one alongside the appended one', async () => {
+      fixture.componentRef.setInput('options', [
+        { id: 'a', name: 'Alpha' },
+        { id: 'b', name: 'Beta' },
+      ]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      (fixture.nativeElement.querySelector('.gog-ms') as HTMLElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(document.querySelectorAll('[role="listbox"]').length).toBe(1);
+      expect(fixture.nativeElement.querySelector('.gog-ms__dropdown')).toBeNull();
+    });
+
+    it('applies the portal size modifier so the panel keeps its sizing outside the wrapper', async () => {
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.componentRef.setInput('size', 'lg');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      (fixture.nativeElement.querySelector('.gog-ms') as HTMLElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      expect(panel.classList.contains('gog-ms__dropdown--portal')).toBe(true);
+      expect(panel.classList.contains('gog-ms__dropdown--lg')).toBe(true);
     });
 
     it('renders the dropdown into document.body and removes it on close', async () => {
@@ -294,6 +397,103 @@ describe('MultiselectComponent', () => {
       await fixture.whenStable();
 
       expect(component.value()).toEqual(['a']);
+    });
+
+    it('keeps the appended panel in step with the selection without re-attaching it', async () => {
+      fixture.componentRef.setInput('options', [
+        { id: 'a', name: 'Alpha' },
+        { id: 'b', name: 'Beta' },
+      ]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      (fixture.nativeElement.querySelector('.gog-ms') as HTMLElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      (panel.querySelector('.gog-ms__option') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // Same panel element, updated in place: the overlay renders the component's own
+      // template, so selection state propagates without any manual field syncing.
+      expect(document.body.querySelector('[role="listbox"]')).toBe(panel);
+      const options = panel.querySelectorAll('.gog-ms__option');
+      expect(options[0].getAttribute('aria-selected')).toBe('true');
+      expect(options[1].getAttribute('aria-selected')).toBe('false');
+    });
+  });
+
+  describe('ControlValueAccessor / Reactive Forms integration', () => {
+    @Component({
+      imports: [MultiselectComponent, ReactiveFormsModule],
+      template: `
+        <gog-multiselect [formControl]="control" [options]="options" errorMessage="Pick at least one" />
+      `,
+      changeDetection: ChangeDetectionStrategy.OnPush,
+    })
+    class MultiselectFormHostComponent {
+      readonly control = new FormControl<(string | number)[]>([], {
+        nonNullable: true,
+        validators: Validators.required,
+      });
+      readonly options = [
+        { id: 'a', name: 'Alpha' },
+        { id: 'b', name: 'Beta' },
+      ];
+    }
+
+    let hostFixture: ComponentFixture<MultiselectFormHostComponent>;
+    let host: MultiselectFormHostComponent;
+
+    beforeEach(async () => {
+      hostFixture = TestBed.createComponent(MultiselectFormHostComponent);
+      host = hostFixture.componentInstance;
+      await hostFixture.whenStable();
+    });
+
+    it('applies values written to the FormControl', async () => {
+      host.control.setValue(['b']);
+      await hostFixture.whenStable();
+
+      const value = hostFixture.nativeElement.querySelector('.gog-ms__value') as HTMLElement;
+      expect(value.textContent?.trim()).toBe('Beta');
+    });
+
+    it('propagates toggles to the FormControl value', async () => {
+      (hostFixture.nativeElement.querySelector('.gog-ms') as HTMLElement).click();
+      await hostFixture.whenStable();
+
+      (hostFixture.nativeElement.querySelector('.gog-ms__option') as HTMLButtonElement).click();
+      await hostFixture.whenStable();
+
+      expect(host.control.value).toEqual(['a']);
+    });
+
+    it('disables the trigger when the FormControl is disabled', async () => {
+      host.control.disable();
+      await hostFixture.whenStable();
+
+      const trigger = hostFixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+      expect(trigger.getAttribute('tabindex')).toBe('-1');
+      expect(trigger.getAttribute('aria-disabled')).toBe('true');
+    });
+
+    it('withholds the error until the control has been touched', async () => {
+      expect(host.control.invalid).toBe(true);
+      expect(hostFixture.nativeElement.querySelector('.gog-ms__error')).toBeNull();
+
+      const trigger = hostFixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+      trigger.click();
+      await hostFixture.whenStable();
+      trigger.click();
+      await hostFixture.whenStable();
+
+      expect(hostFixture.nativeElement.querySelector('.gog-ms__error')?.textContent).toContain(
+        'Pick at least one',
+      );
     });
   });
 });

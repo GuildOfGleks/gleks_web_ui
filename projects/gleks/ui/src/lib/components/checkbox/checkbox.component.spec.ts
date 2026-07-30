@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
@@ -33,19 +33,26 @@ describe('CheckboxComponent', () => {
     expect(component.checked()).toBe(true);
   });
 
+  // The host vars are deliberately `var(--control-checkbox-*, <default>)` rather than
+  // resolved pixel values: that is what lets a consumer re-scale every checkbox in the
+  // app by defining one app-level token, while still getting a sane size if they don't.
   it('should expose the configured size token', () => {
     fixture.componentRef.setInput('size', 'lg');
     fixture.detectChanges();
 
     const host = fixture.nativeElement as HTMLElement;
-    expect(host.style.getPropertyValue('--gog-checkbox-box-size')).toBe('32px');
+    expect(host.style.getPropertyValue('--gog-checkbox-box-size')).toBe(
+      'var(--control-checkbox-box-size-lg, 32px)',
+    );
   });
 
   it('should reserve padding around the checkbox box', () => {
     fixture.detectChanges();
 
     const host = fixture.nativeElement as HTMLElement;
-    expect(host.style.getPropertyValue('--gog-checkbox-padding')).toBe('6px');
+    expect(host.style.getPropertyValue('--gog-checkbox-padding')).toBe(
+      'var(--control-checkbox-padding, 6px)',
+    );
   });
 
   describe('indeterminate', () => {
@@ -130,33 +137,36 @@ describe('CheckboxComponent', () => {
   });
 
   describe('two-way [(checked)] binding', () => {
+    // The bound state is a signal, not a plain field: under the zoneless test setup a
+    // plain-field write never marks the host view dirty, so change detection only picks
+    // it up in the dev-mode verification pass and throws NG0100.
     @Component({
-      standalone: true,
       imports: [CheckboxComponent],
       template: ` <gog-checkbox [(checked)]="agreed" label="I agree" />`,
+      changeDetection: ChangeDetectionStrategy.OnPush,
     })
     class CheckboxHostComponent {
-      agreed = false;
+      readonly agreed = signal(false);
     }
 
     it('should propagate toggles back out to the bound signal', async () => {
       const hostFixture = TestBed.createComponent(CheckboxHostComponent);
-      hostFixture.detectChanges();
+      await hostFixture.whenStable();
 
       const input = hostFixture.nativeElement.querySelector('input') as HTMLInputElement;
       input.checked = true;
       input.dispatchEvent(new Event('change'));
-      hostFixture.detectChanges();
+      await hostFixture.whenStable();
 
-      expect(hostFixture.componentInstance.agreed).toBe(true);
+      expect(hostFixture.componentInstance.agreed()).toBe(true);
     });
 
     it('should reflect external writes to the bound signal in the DOM', async () => {
       const hostFixture = TestBed.createComponent(CheckboxHostComponent);
-      hostFixture.detectChanges();
+      await hostFixture.whenStable();
 
-      hostFixture.componentInstance.agreed = true;
-      hostFixture.detectChanges();
+      hostFixture.componentInstance.agreed.set(true);
+      await hostFixture.whenStable();
 
       const input = hostFixture.nativeElement.querySelector('input') as HTMLInputElement;
       expect(input.checked).toBe(true);

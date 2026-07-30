@@ -1,12 +1,22 @@
+<!--
+  Deliberately not `gog-contained-layout`: `contain: layout` makes this element a stacking
+  context, which traps the panel's z-index inside it and lets whatever follows on the page
+  paint over the open dropdown.
+-->
 <div
-  class="gog-select gog-contained-layout"
+  class="gog-select"
   [class.gog-select--disabled]="isDisabled()"
   [class.gog-select--open]="isOpen()"
   [class.gog-select--sm]="size() === 'sm'"
   [class.gog-select--lg]="size() === 'lg'"
 >
+  <!--
+    Associated with aria-labelledby rather than `for`: the trigger is a <button>, which is
+    not a labelable element, so `for` pointing at it is silently ignored by browsers and
+    assistive tech alike.
+  -->
   @if (label()) {
-    <label class="gog-select__label font-heading" [attr.for]="triggerId()">{{ label() }}</label>
+    <label class="gog-select__label font-heading" [id]="labelId()">{{ label() }}</label>
   }
 
   <div class="gog-select__field">
@@ -15,6 +25,7 @@
       class="gog-select__control font-body"
       [id]="triggerId()"
       [disabled]="isDisabled()"
+      [attr.aria-labelledby]="label() ? labelId() : null"
       [attr.aria-label]="label() ? null : ariaLabel() || placeholder() || 'Select'"
       [attr.aria-controls]="listboxId()"
       [attr.aria-expanded]="isOpen()"
@@ -38,35 +49,7 @@
     </button>
 
     @if (isOpen() && !appendToBody()) {
-      <div
-        [id]="listboxId()"
-        class="gog-select__dropdown"
-        [class.gog-select__dropdown--up]="dropdownDirectionState() === 'up'"
-        [style.z-index]="dropdownZIndex() ?? null"
-        role="listbox"
-        (click)="$event.stopPropagation()"
-      >
-        @for (option of options(); track option.id) {
-          <button
-            type="button"
-            class="gog-select__option font-body"
-            role="option"
-            [attr.aria-selected]="selectedOption()?.id === option.id"
-            [attr.aria-disabled]="option.disabled ?? false"
-            [class.gog-select__option--selected]="selectedOption()?.id === option.id"
-            [class.gog-select__option--disabled]="option.disabled ?? false"
-            (click)="selectOption(option, $event)"
-            (keydown)="onOptionKeydown($event)"
-          >
-            <span class="gog-select__option-mark" aria-hidden="true">
-              @if (selectedOption()?.id === option.id) {
-                <gog-icon name="check" />
-              }
-            </span>
-            <span class="gog-select__option-label">{{ option.name }}</span>
-          </button>
-        }
-      </div>
+      <ng-container [ngTemplateOutlet]="panelTpl" />
     }
   </div>
 
@@ -76,3 +59,55 @@
     </span>
   }
 </div>
+
+<!--
+  One template for both render modes. When `appendToBody` is set it is stamped into
+  <body> by the overlay, which is why the portal-only modifier and the resolved
+  coordinates are applied conditionally: outside the component's subtree the panel can
+  no longer inherit the size tokens from the `.gog-select--sm/--lg` wrapper.
+-->
+<ng-template #panelTpl>
+  <div
+    [id]="listboxId()"
+    class="gog-select__dropdown"
+    [class.gog-select__dropdown--up]="!appendToBody() && dropdownDirectionState() === 'up'"
+    [class.gog-select__dropdown--portal]="appendToBody()"
+    [class.gog-select__dropdown--sm]="appendToBody() && size() === 'sm'"
+    [class.gog-select__dropdown--lg]="appendToBody() && size() === 'lg'"
+    [style.top.px]="appendToBody() ? panelPlacement()?.top : null"
+    [style.left.px]="appendToBody() ? panelPlacement()?.left : null"
+    [style.width.px]="appendToBody() ? panelPlacement()?.width : null"
+    [style.max-height.px]="appendToBody() ? panelPlacement()?.maxHeight : null"
+    [style.z-index]="dropdownZIndex() ?? panelZIndex()"
+    role="listbox"
+    [attr.aria-labelledby]="label() ? labelId() : null"
+    (click)="$event.stopPropagation()"
+  >
+    @for (option of options(); track option.id) {
+      <!--
+        tabindex="-1" keeps the list to a single tab stop, as the listbox pattern expects:
+        focus is moved between options with the arrow keys, not by tabbing through every
+        one of them. Programmatic .focus() still works on a negative tabindex.
+      -->
+      <button
+        type="button"
+        class="gog-select__option font-body"
+        role="option"
+        tabindex="-1"
+        [attr.aria-selected]="isSelected(option.id)"
+        [attr.aria-disabled]="option.disabled ?? false"
+        [class.gog-select__option--selected]="isSelected(option.id)"
+        [class.gog-select__option--disabled]="option.disabled ?? false"
+        (click)="selectOption(option, $event)"
+        (keydown)="onOptionKeydown($event)"
+      >
+        <span class="gog-select__option-mark" aria-hidden="true">
+          @if (isSelected(option.id)) {
+            <gog-icon name="check" />
+          }
+        </span>
+        <span class="gog-select__option-label">{{ option.name }}</span>
+      </button>
+    }
+  </div>
+</ng-template>

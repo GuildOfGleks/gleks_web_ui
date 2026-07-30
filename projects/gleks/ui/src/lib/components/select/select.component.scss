@@ -150,10 +150,16 @@
 .gog-select__dropdown--portal {
   /* The portal is appended straight to <body>, outside .gog-select's DOM subtree,
      so it can't inherit these from the trigger — redeclare with the same defaults
-     and let --sm/--lg below override them, same as the .gog-select modifiers do. */
+     and let --sm/--lg below override them, same as the .gog-select modifiers do.
+     Every --gog-select-* token the panel and its options read has to be listed here;
+     anything left out resolves to nothing and the panel renders unstyled. */
   --gog-select-control-padding-y: var(--control-padding-y, 10px);
   --gog-select-control-padding-x: var(--control-padding-x, 14px);
   --gog-select-control-font: var(--text-md);
+  --gog-select-field-border: var(--accent-dim);
+  --gog-select-focus-border: var(--accent-color);
+  --gog-select-option-hover-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  --gog-select-option-selected-color: var(--accent-color);
 
   position: fixed;
   top: unset;

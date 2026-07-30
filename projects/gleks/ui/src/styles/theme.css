@@ -1,0 +1,162 @@
+/*
+ * @guildofgleks/ui — baseline theme
+ *
+ * Every token the components read, with a working default, so the library renders
+ * correctly from a single import and a consumer can override only what they care about.
+ *
+ * Structure:
+ *   :root                      structural tokens + the light palette, so the components
+ *                              work even with no `data-theme` attribute present
+ *   :root[data-theme='light']  light palette (what ThemeService sets by default)
+ *   :root[data-theme='dark']   dark palette
+ *
+ * Only the palette and a couple of depth cues change per theme; sizing, spacing and
+ * typography are declared once on :root and inherited by every theme. Declaring a theme
+ * as `:root[data-theme='…']` only would drop the structural tokens for that theme.
+ *
+ * To add a theme, copy a palette block and change the attribute value — anything left
+ * out falls back to the :root value.
+ */
+
+:root {
+  /* ── Typography ───────────────────────────────────────────────────────────────
+     Generic stacks on purpose: a UI library should not force a webfont download on
+     its consumers. Point these at your own families to restyle all text at once.
+     `styles/fonts.css` is an optional import that wires up the showcase's families. */
+  --font-heading: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'JetBrains Mono', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 3rem;
+
+  /* ── Spacing & geometry ─────────────────────────────────────────────────────── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-2xl: 48px;
+
+  --radius: 8px;
+  --panel-radius: calc(var(--radius) + 8px);
+  --panel-border-width: 1px;
+  --panel-border-style: solid;
+
+  /* ── Control metrics ────────────────────────────────────────────────────────── */
+  --control-padding-y: 10px;
+  --control-padding-x: 14px;
+  --control-icon-offset: 10px;
+  --control-border-width: 2px;
+  --control-border-style: solid;
+
+  --control-checkbox-padding: 6px;
+  --control-checkbox-box-size-sm: 18px;
+  --control-checkbox-box-size-md: 24px;
+  --control-checkbox-box-size-lg: 32px;
+  --control-checkbox-label-size-sm: 0.8125rem;
+  --control-checkbox-label-size-md: 0.9375rem;
+  --control-checkbox-label-size-lg: 1.0625rem;
+  --control-checkbox-icon-size-sm: 12px;
+  --control-checkbox-icon-size-md: 14px;
+  --control-checkbox-icon-size-lg: 18px;
+
+  /* ── Button sizing ─────────────────────────────────────────────────────────── */
+  --btn-sm-padding: 0.5rem 0.875rem;
+  --btn-md-padding: 0.75rem 1.25rem;
+  --btn-lg-padding: 1rem 1.5rem;
+  --btn-sm-font-size: 0.875rem;
+  --btn-md-font-size: 1rem;
+  --btn-lg-font-size: 1.125rem;
+
+  /* ── Icon & spinner ───────────────────────────────────────────────────────── */
+  --gog-icon-size: 1em;
+  --gog-icon-stroke-width: 2;
+  --gog-spinner-size-sm: 18px;
+  --gog-spinner-size-md: 48px;
+  --gog-spinner-size-lg: 96px;
+  --gog-spinner-rune-size: 20px;
+
+  /* ── Toast stack ──────────────────────────────────────────────────────────── */
+  --gog-toast-min-width: 280px;
+  --gog-toast-max-width: 400px;
+  --gog-toast-gap: 10px;
+  --gog-toast-stack-padding: 16px;
+  --gog-toast-z-index: 9999;
+  --gog-toast-enter-distance: 110%;
+  --gog-toast-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+
+  /* ── Overlay stacking ───────────────────────────────────────────────────────
+     Baseline for dropdown panels. gog-dialog re-declares this on its own panel so
+     dropdowns opened inside a dialog stack above it. */
+  --dropdown-z: 300;
+
+  /* ── Light palette (also the no-data-theme default) ───────────────────────── */
+  color-scheme: light;
+  --background-color: #f8f3ea;
+  --surface-color: #ede2cc;
+  --text-color: #1a1208;
+  --muted-text-color: #5c3d00;
+  --primary-color: #1a1208;
+  --accent-color: #7a5c00;
+  --accent-bright: #b68b00;
+  --accent-dim: #5a4200;
+  --accent-pale: #fde8c8;
+  --secondary-color: #a07800;
+  --success-color: #166534;
+  --danger-color: #b91c1c;
+  --warning-color: #a16207;
+  --info-color: #6b7280;
+  --border-color: #c9b896;
+  --hover-color: #e4d6bc;
+  --panel-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  --gog-spinner-overlay-bg: rgba(248, 243, 234, 0.75);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --background-color: #f8f3ea;
+  --surface-color: #ede2cc;
+  --text-color: #1a1208;
+  --muted-text-color: #5c3d00;
+  --primary-color: #1a1208;
+  --accent-color: #7a5c00;
+  --accent-bright: #b68b00;
+  --accent-dim: #5a4200;
+  --accent-pale: #fde8c8;
+  --secondary-color: #a07800;
+  --success-color: #166534;
+  --danger-color: #b91c1c;
+  --warning-color: #a16207;
+  --info-color: #6b7280;
+  --border-color: #c9b896;
+  --hover-color: #e4d6bc;
+  --panel-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  --gog-spinner-overlay-bg: rgba(248, 243, 234, 0.75);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --background-color: #0e0b06;
+  --surface-color: #181208;
+  --text-color: #fdcc64;
+  --muted-text-color: #946700;
+  --primary-color: #0e0b06;
+  --accent-color: #fae000;
+  --accent-bright: #fdcc64;
+  --accent-dim: #b68b00;
+  --accent-pale: #724700;
+  --secondary-color: #d8b300;
+  --success-color: #16a34a;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  --info-color: #9ca3af;
+  --border-color: #2a1f0e;
+  --hover-color: #221a0c;
+  --panel-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  --gog-spinner-overlay-bg: rgba(10, 8, 3, 0.65);
+}

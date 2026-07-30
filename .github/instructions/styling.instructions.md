@@ -46,19 +46,32 @@ Every component `.scss` file follows the rules below. See
   and lets a parent component theme a child (e.g. a button setting `--gog-spinner-color`).
 - When reading a shared design token, use a fallback: `var(--gog-spinner-color, var(--accent-color))`.
 
-## Design-token contract (host app responsibility)
+## Design-token contract
 
-The library references app-level design tokens that the **consuming application must define**
-in its global styles (they are intentionally *not* shipped by the library):
+The library references app-level design tokens (palette, type scale, control metrics,
+button sizing). These are **shipped with working defaults** in `src/styles/theme.css`,
+pulled in via `src/styles/index.css`, which is the one stylesheet a consumer imports.
 
-- Palette: `--accent-color`, `--accent-bright`, `--accent-dim`, `--primary-color`,
-  `--warning-color`, `--info-color`.
-- Button sizing: `--btn-sm-padding`, `--btn-md-padding`, `--btn-lg-padding`,
-  `--btn-sm-font-size`, `--btn-md-font-size`, `--btn-lg-font-size`.
-- Typography: `--font-heading`.
+Rules when touching tokens:
 
-Always consume these through `var(...)` with a sensible fallback where possible. Do not 
-hardcode brand colors when a token exists. If you introduce a new token, document it here.
+- Every app-level token the components read MUST have a default in `theme.css`. A token
+  consumed but never declared makes the whole declaration invalid at computed-value time —
+  `background-color: var(--undefined)` silently becomes `transparent`, it does not fall
+  back to the previous value.
+- Put **structural** tokens (sizing, spacing, typography) on `:root` and only the palette
+  in the `:root[data-theme='…']` blocks, so a theme inherits everything it doesn't
+  override. Declaring structural tokens inside a single theme block drops them for
+  every other theme.
+- Document any new app-level token in the README's theming table.
+- Do not hardcode brand colors when a token exists.
+
+### Panels rendered outside the component subtree
+
+A dropdown opened with `[appendToBody]` is stamped into `<body>`, so it inherits **no**
+`--gog-*` token declared on the component's wrapper block. Every token the panel and its
+children read has to be redeclared in the `--portal` modifier block (see
+`.gog-select__dropdown--portal` / `.gog-ms__dropdown--portal`). Miss one and that
+property silently drops out only in append-to-body mode.
 
 ## Encapsulation & scope
 

@@ -1,4 +1,6 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { SelectComponent } from './select.component';
 
@@ -83,6 +85,163 @@ describe('SelectComponent', () => {
       fixture.componentRef.setInput('errorMessage', '');
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('.gog-select__error')).toBeNull();
+    });
+  });
+
+  // `contain: layout` creates a stacking context, which would trap the panel's z-index
+  // inside the control and let following page content paint over the open dropdown.
+  it('does not apply layout containment to the element wrapping the panel', () => {
+    fixture.detectChanges();
+
+    const wrapper = fixture.nativeElement.querySelector('.gog-select') as HTMLElement;
+    expect(wrapper.classList.contains('gog-contained-layout')).toBe(false);
+  });
+
+  describe('click outside', () => {
+    beforeEach(async () => {
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+    });
+
+    it('closes when a click lands outside the component', async () => {
+      (fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(fixture.nativeElement.querySelector('.gog-select__dropdown')).toBeTruthy();
+
+      document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-select__dropdown')).toBeNull();
+    });
+
+    it('ignores clicks inside the appended panel', async () => {
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      (fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      expect(panel).toBeTruthy();
+
+      // The panel is a sibling of the component in the DOM, so "inside" has to be decided
+      // against the overlay host as well as the component element.
+      panel.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(document.body.querySelector('[role="listbox"]')).toBeTruthy();
+
+      document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(document.body.querySelector('[role="listbox"]')).toBeNull();
+    });
+
+    it('stops listening once closed', async () => {
+      const added: string[] = [];
+      const originalAdd = document.addEventListener.bind(document);
+      const spy = (type: string, ...rest: unknown[]) => {
+        added.push(type);
+        return (originalAdd as (t: string, ...r: unknown[]) => void)(type, ...rest);
+      };
+      document.addEventListener = spy as typeof document.addEventListener;
+
+      try {
+        const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+        control.click();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(added.filter((type) => type === 'click').length).toBe(1);
+
+        control.click();
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        // Reopening must not stack a second listener on top of the first.
+        control.click();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(added.filter((type) => type === 'click').length).toBe(2);
+      } finally {
+        document.addEventListener = originalAdd as typeof document.addEventListener;
+      }
+    });
+  });
+
+  describe('accessible name', () => {
+    it('associates the visible label with the trigger via aria-labelledby', async () => {
+      fixture.componentRef.setInput('label', 'Region');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const label = fixture.nativeElement.querySelector('.gog-select__label') as HTMLElement;
+      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+
+      expect(label.id).toBeTruthy();
+      expect(control.getAttribute('aria-labelledby')).toBe(label.id);
+      // `for` on a <button> is ignored by browsers, so it must not be relied on.
+      expect(label.hasAttribute('for')).toBe(false);
+      expect(control.hasAttribute('aria-label')).toBe(false);
+    });
+
+    it('falls back to ariaLabel when there is no visible label', async () => {
+      fixture.componentRef.setInput('ariaLabel', 'Pick a region');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      expect(control.getAttribute('aria-labelledby')).toBeNull();
+      expect(control.getAttribute('aria-label')).toBe('Pick a region');
+    });
+  });
+
+  describe('tab order', () => {
+    it('keeps the option list to a single tab stop', async () => {
+      fixture.componentRef.setInput('options', [
+        { id: 'a', name: 'Alpha' },
+        { id: 'b', name: 'Beta' },
+      ]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      (fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const options = fixture.nativeElement.querySelectorAll(
+        '.gog-select__option',
+      ) as NodeListOf<HTMLButtonElement>;
+      expect(options.length).toBe(2);
+      for (const option of options) {
+        expect(option.tabIndex).toBe(-1);
+      }
+    });
+
+    it('closes and returns focus to the trigger when tabbing out of the list', async () => {
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      control.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const option = fixture.nativeElement.querySelector('.gog-select__option') as HTMLButtonElement;
+      option.focus();
+      option.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-select__dropdown')).toBeNull();
+      expect(document.activeElement).toBe(control);
     });
   });
 
@@ -182,7 +341,24 @@ describe('SelectComponent', () => {
 
   describe('appendToBody', () => {
     afterEach(() => {
-      document.querySelectorAll('gog-select-dropdown-portal').forEach((el) => el.remove());
+      document.querySelectorAll('.gog-overlay-host').forEach((el) => el.remove());
+    });
+
+    it('renders exactly one listbox, not an inline one alongside the appended one', async () => {
+      fixture.componentRef.setInput('options', [
+        { id: 'a', name: 'Alpha' },
+        { id: 'b', name: 'Beta' },
+      ]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      (fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(document.querySelectorAll('[role="listbox"]').length).toBe(1);
+      expect(fixture.nativeElement.querySelector('.gog-select__dropdown')).toBeNull();
     });
 
     it('renders the dropdown into document.body and removes it on close', async () => {
@@ -211,6 +387,51 @@ describe('SelectComponent', () => {
       expect(document.body.querySelector('[role="listbox"]')).toBeNull();
     });
 
+    it('reuses the trigger-relative placement for the appended panel', async () => {
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      (fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      expect(panel.classList.contains('gog-select__dropdown--portal')).toBe(true);
+      // Coordinates are resolved in TS and written as inline styles; jsdom reports a
+      // zero-sized trigger, so the assertion is only that they were applied at all.
+      expect(panel.style.top).not.toBe('');
+      expect(panel.style.width).not.toBe('');
+    });
+
+    // A dropdown inside a dialog is stacked by the dialog setting --dropdown-z on its
+    // panel. An appended dropdown leaves that subtree, so the value has to be carried
+    // over explicitly or the panel renders behind the dialog that opened it.
+    it('carries an inherited --dropdown-z onto the appended panel', async () => {
+      @Component({
+        imports: [SelectComponent],
+        template: `
+          <div [style.--dropdown-z]="1500">
+            <gog-select [options]="options" [appendToBody]="true" />
+          </div>
+        `,
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class StackingHostComponent {
+        readonly options = [{ id: 'a', name: 'Alpha' }];
+      }
+
+      const hostFixture = TestBed.createComponent(StackingHostComponent);
+      await hostFixture.whenStable();
+
+      (hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      await hostFixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      expect(panel.style.zIndex).toBe('1500');
+    });
+
     it('selecting an option from the portal updates the value and closes it', async () => {
       fixture.componentRef.setInput('options', [
         { id: 'a', name: 'Alpha' },
@@ -231,6 +452,87 @@ describe('SelectComponent', () => {
 
       expect(component.value()).toBe('a');
       expect(document.body.querySelector('[role="listbox"]')).toBeNull();
+    });
+  });
+
+  describe('ControlValueAccessor / Reactive Forms integration', () => {
+    @Component({
+      imports: [SelectComponent, ReactiveFormsModule],
+      template: `
+        <gog-select [formControl]="control" [options]="options" errorMessage="Selection required" />
+      `,
+      changeDetection: ChangeDetectionStrategy.OnPush,
+    })
+    class SelectFormHostComponent {
+      readonly control = new FormControl<string | number | null>(null, Validators.required);
+      readonly options = [
+        { id: 'a', name: 'Alpha' },
+        { id: 'b', name: 'Beta' },
+      ];
+    }
+
+    let hostFixture: ComponentFixture<SelectFormHostComponent>;
+    let host: SelectFormHostComponent;
+
+    beforeEach(async () => {
+      hostFixture = TestBed.createComponent(SelectFormHostComponent);
+      host = hostFixture.componentInstance;
+      await hostFixture.whenStable();
+    });
+
+    it('applies values written to the FormControl', async () => {
+      host.control.setValue('b');
+      await hostFixture.whenStable();
+
+      const value = hostFixture.nativeElement.querySelector('.gog-select__value') as HTMLElement;
+      expect(value.textContent?.trim()).toBe('Beta');
+    });
+
+    it('propagates a selection to the FormControl value', async () => {
+      (hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      await hostFixture.whenStable();
+
+      (hostFixture.nativeElement.querySelector('.gog-select__option') as HTMLButtonElement).click();
+      await hostFixture.whenStable();
+
+      expect(host.control.value).toBe('a');
+    });
+
+    it('marks the FormControl as touched once the dropdown closes', async () => {
+      expect(host.control.touched).toBe(false);
+
+      const control = hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      control.click();
+      await hostFixture.whenStable();
+      control.click();
+      await hostFixture.whenStable();
+
+      expect(host.control.touched).toBe(true);
+    });
+
+    it('disables the trigger when the FormControl is disabled', async () => {
+      host.control.disable();
+      await hostFixture.whenStable();
+
+      const control = hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      expect(control.disabled).toBe(true);
+    });
+
+    // With a form control attached the error follows the control rather than the bare
+    // presence of `errorMessage`, so a pristine invalid field stays quiet.
+    it('withholds the error until the control has been touched', async () => {
+      expect(host.control.invalid).toBe(true);
+      expect(hostFixture.nativeElement.querySelector('.gog-select__error')).toBeNull();
+
+      const control = hostFixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      control.click();
+      await hostFixture.whenStable();
+      control.click();
+      await hostFixture.whenStable();
+
+      expect(hostFixture.nativeElement.querySelector('.gog-select__error')?.textContent).toContain(
+        'Selection required',
+      );
     });
   });
 });

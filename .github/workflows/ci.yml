@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [master, refactoring]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The library must build standalone, before anything that consumes it.
+      - name: Build @gleks/ui
+        run: npm run build:lib
+
+      - name: Test @gleks/ui
+        run: npm run test:lib
+
+      # Catches breaking changes to the library's public API: the showcase is the
+      # only real consumer, so a compile error here means a consumer-facing break.
+      - name: Build ui-showcase
+        run: npm run build:showcase
