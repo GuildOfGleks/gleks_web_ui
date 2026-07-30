@@ -1,0 +1,13 @@
+@switch (shape()) {
+  @case ('text') {
+    @for (isShort of lineList(); track $index) {
+      <span
+        class="gog-skeleton__bone gog-skeleton__line"
+        [class.gog-skeleton__line--short]="isShort"
+      ></span>
+    }
+  }
+  @default {
+    <span class="gog-skeleton__bone gog-skeleton__shape"></span>
+  }
+}

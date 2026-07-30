@@ -3,3 +3,5 @@ export type GogVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 export type GogSpinnerVariant = 'runic' | 'ring' | 'custom';
 export type GogTagVariant = 'success' | 'danger' | 'warning' | 'info';
 export type GogTagShape = 'rounded' | 'pill';
+export type GogSkeletonShape = 'text' | 'circle' | 'rect';
+export type GogSkeletonAnimation = 'pulse' | 'wave' | 'none';

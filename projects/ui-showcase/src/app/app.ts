@@ -29,23 +29,25 @@ export class App {
   protected readonly themeSwitcherEnabled = false;
   protected readonly activeTheme = computed(() => this.themeService.theme() as ShowcaseThemeName);
   protected readonly themeLabel = computed(
-   () => this.themes.find((theme) => theme.name === this.activeTheme())?.label ?? this.activeTheme(),
+    () =>
+      this.themes.find((theme) => theme.name === this.activeTheme())?.label ?? this.activeTheme(),
   );
   protected readonly themeSummary = computed(
-   () => this.themes.find((theme) => theme.name === this.activeTheme())?.summary ?? '',
+    () => this.themes.find((theme) => theme.name === this.activeTheme())?.summary ?? '',
   );
 
   protected readonly navLinks: ShowcaseNavLink[] = [
-   { path: 'themes', label: 'Themes' },
-   { path: 'buttons', label: 'Button' },
-   { path: 'checkbox', label: 'Checkbox' },
-   { path: 'inputfield', label: 'Inputfield' },
+    { path: 'themes', label: 'Themes' },
+    { path: 'buttons', label: 'Button' },
+    { path: 'checkbox', label: 'Checkbox' },
+    { path: 'inputfield', label: 'Inputfield' },
     { path: 'chip', label: 'Chip' },
     { path: 'select', label: 'Select' },
     { path: 'multiselect', label: 'Multiselect' },
     { path: 'table', label: 'Table' },
     { path: 'slider', label: 'Slider' },
     { path: 'spinner', label: 'Spinner' },
+    { path: 'skeleton', label: 'Skeleton' },
     { path: 'accordion', label: 'Accordion' },
     { path: 'toast', label: 'Toast' },
     { path: 'tag', label: 'Tag' },

@@ -20,7 +20,8 @@ export const routes: Routes = [
   },
   {
     path: 'inputfield',
-    loadComponent: () => import('./pages/inputfield-page/inputfield-page').then((m) => m.InputfieldPage),
+    loadComponent: () =>
+      import('./pages/inputfield-page/inputfield-page').then((m) => m.InputfieldPage),
   },
   {
     path: 'chip',
@@ -32,7 +33,8 @@ export const routes: Routes = [
   },
   {
     path: 'multiselect',
-    loadComponent: () => import('./pages/multiselect-page/multiselect-page').then((m) => m.MultiselectPage),
+    loadComponent: () =>
+      import('./pages/multiselect-page/multiselect-page').then((m) => m.MultiselectPage),
   },
   {
     path: 'table',
@@ -47,8 +49,13 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/spinner-page/spinner-page').then((m) => m.SpinnerPage),
   },
   {
+    path: 'skeleton',
+    loadComponent: () => import('./pages/skeleton-page/skeleton-page').then((m) => m.SkeletonPage),
+  },
+  {
     path: 'accordion',
-    loadComponent: () => import('./pages/accordion-page/accordion-page').then((m) => m.AccordionPage),
+    loadComponent: () =>
+      import('./pages/accordion-page/accordion-page').then((m) => m.AccordionPage),
   },
   {
     path: 'toast',
@@ -64,7 +71,8 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    loadComponent: () => import('./pages/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
+    loadComponent: () =>
+      import('./pages/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
   },
   {
     path: 'settings',
@@ -76,7 +84,8 @@ export const routes: Routes = [
   },
   {
     path: 'onboarding',
-    loadComponent: () => import('./pages/onboarding-page/onboarding-page').then((m) => m.OnboardingPage),
+    loadComponent: () =>
+      import('./pages/onboarding-page/onboarding-page').then((m) => m.OnboardingPage),
   },
   {
     path: '**',

@@ -1,0 +1,149 @@
+:host {
+  --gog-skeleton-base: color-mix(in srgb, var(--border-color) 40%, var(--surface-color));
+  --gog-skeleton-shine: color-mix(in srgb, var(--gog-skeleton-base), white 35%);
+  --gog-skeleton-radius: var(--radius);
+  --gog-skeleton-line-gap: var(--space-sm);
+
+  display: block;
+  width: 100%;
+}
+
+:host(.gog-skeleton--square) {
+  --gog-skeleton-radius: 0px;
+}
+
+.gog-skeleton__bone {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background-color: var(--gog-skeleton-base);
+  border-radius: var(--gog-skeleton-radius);
+}
+
+/* ── Text ──────────────────────────────────────────────────────────────── */
+:host(.gog-skeleton--text) {
+  display: grid;
+  gap: var(--gog-skeleton-line-gap);
+}
+
+.gog-skeleton__line {
+  width: 100%;
+  height: var(--gog-skeleton-line-height, 14px);
+  border-radius: calc(var(--gog-skeleton-radius) / 2);
+}
+
+.gog-skeleton__line--short {
+  width: 60%;
+}
+
+:host(.gog-skeleton--text.gog-skeleton--xsm) {
+  --gog-skeleton-line-height: 8px;
+}
+:host(.gog-skeleton--text.gog-skeleton--sm) {
+  --gog-skeleton-line-height: 10px;
+}
+:host(.gog-skeleton--text.gog-skeleton--md) {
+  --gog-skeleton-line-height: 14px;
+}
+:host(.gog-skeleton--text.gog-skeleton--lg) {
+  --gog-skeleton-line-height: 18px;
+}
+:host(.gog-skeleton--text.gog-skeleton--slg) {
+  --gog-skeleton-line-height: 24px;
+}
+
+/* ── Circle ────────────────────────────────────────────────────────────── */
+:host(.gog-skeleton--circle) {
+  display: inline-block;
+  width: var(--gog-skeleton-circle-size, 48px);
+  height: var(--gog-skeleton-circle-size, 48px);
+}
+
+:host(.gog-skeleton--circle) .gog-skeleton__shape {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+:host(.gog-skeleton--circle.gog-skeleton--xsm) {
+  --gog-skeleton-circle-size: 24px;
+}
+:host(.gog-skeleton--circle.gog-skeleton--sm) {
+  --gog-skeleton-circle-size: 32px;
+}
+:host(.gog-skeleton--circle.gog-skeleton--md) {
+  --gog-skeleton-circle-size: 48px;
+}
+:host(.gog-skeleton--circle.gog-skeleton--lg) {
+  --gog-skeleton-circle-size: 64px;
+}
+:host(.gog-skeleton--circle.gog-skeleton--slg) {
+  --gog-skeleton-circle-size: 96px;
+}
+
+/* ── Rect ──────────────────────────────────────────────────────────────── */
+:host(.gog-skeleton--rect) {
+  display: block;
+  width: 100%;
+  height: var(--gog-skeleton-rect-height, 120px);
+}
+
+:host(.gog-skeleton--rect) .gog-skeleton__shape {
+  width: 100%;
+  height: 100%;
+}
+
+:host(.gog-skeleton--rect.gog-skeleton--xsm) {
+  --gog-skeleton-rect-height: 40px;
+}
+:host(.gog-skeleton--rect.gog-skeleton--sm) {
+  --gog-skeleton-rect-height: 64px;
+}
+:host(.gog-skeleton--rect.gog-skeleton--md) {
+  --gog-skeleton-rect-height: 120px;
+}
+:host(.gog-skeleton--rect.gog-skeleton--lg) {
+  --gog-skeleton-rect-height: 200px;
+}
+:host(.gog-skeleton--rect.gog-skeleton--slg) {
+  --gog-skeleton-rect-height: 320px;
+}
+
+/* ── Animations ────────────────────────────────────────────────────────── */
+@keyframes gog-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+:host(.gog-skeleton--pulse) .gog-skeleton__bone {
+  animation: gog-skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes gog-skeleton-wave {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+:host(.gog-skeleton--wave) .gog-skeleton__bone::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--gog-skeleton-shine), transparent);
+  animation: gog-skeleton-wave 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-skeleton__bone,
+  .gog-skeleton__bone::after {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,194 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-skeleton</p>
+    <h2>Skeleton</h2>
+    <p class="lead">
+      A placeholder bone that mirrors the shape of content still loading — text lines, avatars,
+      images, cards — so the layout holds still and the user never stares at a blank screen.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Shapes</h3>
+    <p class="lead">
+      Three shapes cover most layouts: <code>text</code> for lines of copy, <code>circle</code> for
+      avatars, and <code>rect</code> for images or media blocks.
+    </p>
+    <div class="skeleton-grid">
+      <div class="skeleton-tile">
+        <gog-skeleton shape="text" [lines]="3" style="width: 220px" />
+        <span class="meta">TEXT</span>
+      </div>
+      <div class="skeleton-tile">
+        <gog-skeleton shape="circle" size="lg" />
+        <span class="meta">CIRCLE</span>
+      </div>
+      <div class="skeleton-tile skeleton-tile--wide">
+        <gog-skeleton shape="rect" size="sm" />
+        <span class="meta">RECT</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Text lines</h3>
+    <p class="lead">
+      <code>lines</code> stacks several bars with the theme's spacing rhythm. Past one line, the
+      last bar renders shorter — the same silhouette a real paragraph leaves behind.
+    </p>
+    <div class="skeleton-lines-demo">
+      <div class="skeleton-lines-col">
+        <gog-skeleton shape="text" [lines]="1" />
+        <span class="meta">1 line</span>
+      </div>
+      <div class="skeleton-lines-col">
+        <gog-skeleton shape="text" [lines]="3" />
+        <span class="meta">3 lines</span>
+      </div>
+      <div class="skeleton-lines-col">
+        <gog-skeleton shape="text" [lines]="5" size="sm" />
+        <span class="meta">5 lines, sm</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <p class="lead">
+      <code>size</code> follows the library's five-tier scale and controls line thickness, circle
+      diameter, and default rect height.
+    </p>
+    <div class="skeleton-size-row">
+      @for (size of sizes; track size) {
+        <div class="skeleton-tile">
+          <gog-skeleton shape="circle" [size]="size" />
+          <span class="meta">{{ size.toUpperCase() }}</span>
+        </div>
+      }
+    </div>
+    <div class="skeleton-size-stack">
+      @for (size of sizes; track size) {
+        <div class="skeleton-size-stack__row">
+          <span class="skeleton-size-stack__label">{{ size.toUpperCase() }}</span>
+          <gog-skeleton shape="rect" [size]="size" style="width: 260px" />
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Animations</h3>
+    <p class="lead">
+      <code>pulse</code> (default) fades opacity, <code>wave</code> sweeps a shimmer highlight
+      across the bone, and <code>none</code> holds a static tone — useful when
+      <code>prefers-reduced-motion</code> matters most, or the surrounding UI is already busy.
+    </p>
+    <div class="skeleton-grid">
+      @for (animation of animations; track animation) {
+        <div class="skeleton-tile skeleton-tile--wide">
+          <gog-skeleton shape="rect" size="xsm" [animation]="animation" />
+          <span class="meta">{{ animation.toUpperCase() }}</span>
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Custom dimensions &amp; corners</h3>
+    <p class="lead">
+      <code>width</code>/<code>height</code> override the shape/size default outright, and
+      <code>rounded="false"</code> squares off the corners — handy for a banner image that bleeds to
+      the edge of its container.
+    </p>
+    <div class="skeleton-grid">
+      <div class="skeleton-tile skeleton-tile--wide">
+        <gog-skeleton shape="rect" width="100%" height="64px" />
+        <span class="meta">CUSTOM 64PX</span>
+      </div>
+      <div class="skeleton-tile">
+        <gog-skeleton shape="circle" width="56px" />
+        <span class="meta">CUSTOM 56PX</span>
+      </div>
+      <div class="skeleton-tile skeleton-tile--wide">
+        <gog-skeleton shape="rect" [rounded]="false" />
+        <span class="meta">SQUARE CORNERS</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Composed: profile card</h3>
+    <p class="lead">
+      Real screens rarely load a single shape in isolation — a card is usually an avatar plus a
+      couple of text lines plus a media block, all resolving together. This one re-loads on demand
+      so you can see the swap from bones to content.
+    </p>
+    <div class="action-row">
+      <gog-button variant="primary" type="button" (gogClick)="reloadProfile()">
+        Reload profile
+      </gog-button>
+    </div>
+    <div class="profile-card">
+      @if (profileLoading()) {
+        <div class="profile-card__header">
+          <gog-skeleton shape="circle" size="lg" ariaLabel="Loading profile" />
+          <div class="profile-card__header-text">
+            <gog-skeleton shape="text" width="65%" />
+            <gog-skeleton shape="text" width="40%" size="sm" />
+          </div>
+        </div>
+        <gog-skeleton shape="rect" size="md" />
+        <gog-skeleton shape="text" [lines]="3" />
+      } @else {
+        <div class="profile-card__header">
+          <img
+            class="profile-card__avatar"
+            alt="Maya Stone"
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><rect width='64' height='64' rx='32' fill='%23d4b483'/><text x='32' y='38' text-anchor='middle' font-size='24' font-family='Arial' fill='%231a1208'>MS</text></svg>"
+          />
+          <div class="profile-card__header-text">
+            <p class="profile-card__name">Maya Stone</p>
+            <p class="profile-card__role">Product Designer</p>
+          </div>
+        </div>
+        <div class="profile-card__banner"></div>
+        <p class="profile-card__bio">
+          Maya leads the design system team, focused on making complex flows feel simple across web
+          and mobile. Ten years in, still sweating the details.
+        </p>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Composed: table rows</h3>
+    <p class="lead">
+      Same idea applied to a list — each row shows an icon-sized circle and two text bones until its
+      row of data resolves.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" type="button" (gogClick)="toggleListLoading()">
+        {{ listLoading() ? 'Show data' : 'Show loading state' }}
+      </gog-button>
+    </div>
+    <div class="catalog-list">
+      @if (listLoading()) {
+        @for (placeholder of [0, 1, 2, 3]; track placeholder) {
+          <div class="catalog-list__row">
+            <gog-skeleton shape="circle" size="sm" />
+            <gog-skeleton shape="text" width="70%" />
+            <gog-skeleton shape="text" width="45%" />
+          </div>
+        }
+      } @else {
+        @for (row of rows; track row.name) {
+          <div class="catalog-list__row catalog-list__row--data">
+            <span class="catalog-list__bullet"></span>
+            <span class="catalog-list__name">{{ row.name }}</span>
+            <span class="catalog-list__category">{{ row.category }}</span>
+          </div>
+        }
+      }
+    </div>
+  </article>
+</section>
