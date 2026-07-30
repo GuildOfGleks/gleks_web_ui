@@ -169,7 +169,11 @@
             },
             "ssr": {
               "entry": "projects/gleks-ui-lab/src/server.ts"
-            }
+            },
+            "allowedCommonJsDependencies": [
+              "@fortawesome/free-solid-svg-icons",
+              "@fortawesome/angular-fontawesome"
+            ]
           },
           "configurations": {
             "production": {

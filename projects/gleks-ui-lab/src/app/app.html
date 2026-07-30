@@ -1,14 +1,57 @@
-<main class="smoke-test">
-  <h1>{{ title() }}</h1>
+<div class="lab-layout">
 
-  <gog-button variant="primary" (gogClick)="onSmokeTestClick()"> @guildofgleks/ui + FontAwesome </gog-button>
+  <!-- 1. ХЕДЕР (Шапка сайта) -->
+  <header class="lab-header">
+    <div class="header-left">
+      <span class="logo-title font-heading">GUILD OF GLEKS LAB</span>
+      <span class="version-tag">v0.2.2</span>
+    </div>
 
-  @if (wired()) {
-    <p class="smoke-test__status">
-      <fa-icon [icon]="faCircleCheck" />
-      Библиотека и иконки подключены.
-    </p>
-  }
-</main>
+    <div class="header-controls">
+      <button class="theme-btn" (click)="toggleTheme()">
+        <fa-icon [icon]="isDark() ? faMoon : faSun"></fa-icon>
+      </button>
+      <a href="https://www.npmjs.com/package/@guildofgleks/ui" target="_blank" class="nav-link">NPM</a>
+    </div>
+  </header>
 
-<router-outlet />
+  <aside class="lab-sidebar-left">
+    <div class="sidebar-title font-heading">Components</div>
+
+    <nav class="component-nav">
+      <a routerLink="/components/button" routerLinkActive="active" class="nav-item">Button</a>
+      <a routerLink="/components/accordion" routerLinkActive="active" class="nav-item">Accordion</a>
+      <a routerLink="/components/table" routerLinkActive="active" class="nav-item">Table</a>
+      <a routerLink="/components/checkbox" routerLinkActive="active" class="nav-item">Checkbox</a>
+      <a routerLink="/components/input" routerLinkActive="active" class="nav-item">Input</a>
+      <a routerLink="/components/select" routerLinkActive="active" class="nav-item">Select</a>
+      <a routerLink="/components/dialog" routerLinkActive="active" class="nav-item">Dialog</a>
+      <a routerLink="/components/toast" routerLinkActive="active" class="nav-item">Toast</a>
+    </nav>
+  </aside>
+
+  <main class="lab-main-content">
+    <div class="content-container">
+      <router-outlet />
+    </div>
+
+    <footer class="lab-footer">
+      <div class="footer-copy">© 2026 Guild of Gleks UI. MIT License.</div>
+      <div class="footer-links">
+        <a href="https://your-domain.com">Documentation</a>
+        <a href="https://www.npmjs.com/package/@guildofgleks/ui">NPM Package</a>
+      </div>
+    </footer>
+  </main>
+
+  <aside class="lab-sidebar-right">
+    <div class="sidebar-title font-heading">On this page</div>
+    <nav class="toc-nav">
+      <a href="#overview" class="toc-link">Overview</a>
+      <a href="#examples" class="toc-link">Examples</a>
+      <a href="#api" class="toc-link">API Reference</a>
+      <a href="#styling" class="toc-link">Styling Tokens</a>
+    </nav>
+  </aside>
+
+</div>
