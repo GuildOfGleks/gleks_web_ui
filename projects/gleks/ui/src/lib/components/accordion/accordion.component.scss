@@ -10,8 +10,8 @@
   --gog-accordion-skeleton-end: var(--accent-dim);
   --gog-accordion-radius: var(--radius);
   --gog-accordion-body-radius: var(--radius);
-  --gog-accordion-body-padding-y: 12px;
-  --gog-accordion-body-padding-x: 16px;
+  --gog-accordion-body-padding-y: 8px;
+  --gog-accordion-body-padding-x: 14px;
   --gog-accordion-skeleton-radius: 2px;
 
   display: flex;
@@ -60,7 +60,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 14px var(--gog-accordion-body-padding-x);
+  padding: 10px var(--gog-accordion-body-padding-x);
   gap: 12px;
   background: transparent;
   border: none;
@@ -69,7 +69,7 @@
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   transition: color 0.15s ease,
   background-color 0.15s ease;
 }
@@ -105,8 +105,8 @@
 
 .gog-accordion__chevron {
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   color: var(--gog-accordion-border-color);
   transition: transform 0.2s ease,
   color 0.15s ease;
@@ -150,7 +150,7 @@
      body visible as a thin sliver even when "closed"). */
   padding: 0 var(--gog-accordion-body-padding-x);
   color: var(--gog-accordion-body-color);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   line-height: 1.6;
   transform: translateY(-2px);
   transition: transform 0.18s ease,
@@ -166,8 +166,9 @@
 /* === md (compact) === */
 
 .gog-accordion--md .gog-accordion__header {
-  padding: 10px 14px;
+  padding: 6px 10px;
   font-size: var(--text-xs);
+  letter-spacing: 0.4px;
 }
 
 .gog-accordion--md .gog-accordion__header-content {
@@ -175,27 +176,27 @@
 }
 
 .gog-accordion--md .gog-accordion__body-inner {
-  padding-left: 14px;
-  padding-right: 14px;
-  font-size: var(--text-sm);
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: var(--text-xs);
 }
 
 .gog-accordion--md .gog-accordion__body--open .gog-accordion__body-inner {
-  padding-top: 8px;
-  padding-bottom: 12px;
+  padding-top: 6px;
+  padding-bottom: 8px;
 }
 
 .gog-accordion--md .gog-accordion__chevron {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 /* === sm (extra compact) === */
 
 .gog-accordion--sm .gog-accordion__header {
-  padding: 6px 10px;
+  padding: 4px 8px;
   font-size: var(--text-xs);
-  letter-spacing: 0.4px;
+  letter-spacing: 0.2px;
 }
 
 .gog-accordion--sm .gog-accordion__header-content {
@@ -203,20 +204,20 @@
 }
 
 .gog-accordion--sm .gog-accordion__body-inner {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
   font-size: var(--text-xs);
   line-height: 1.5;
 }
 
 .gog-accordion--sm .gog-accordion__body--open .gog-accordion__body-inner {
-  padding-top: 6px;
-  padding-bottom: 8px;
+  padding-top: 4px;
+  padding-bottom: 6px;
 }
 
 .gog-accordion--sm .gog-accordion__chevron {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
 }
 
 /* === Loading / skeleton === */

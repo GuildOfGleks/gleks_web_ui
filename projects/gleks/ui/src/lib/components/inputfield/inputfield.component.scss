@@ -32,10 +32,10 @@
 }
 
 .gog-input__field {
-  --gog-input-padding-y: var(--control-padding-y, 10px);
-  --gog-input-pl: var(--control-padding-x, 14px);
-  --gog-input-pr: var(--control-padding-x, 14px);
-  --gog-input-font: var(--text-md);
+  --gog-input-padding-y: var(--control-padding-y, 6px);
+  --gog-input-pl: var(--control-padding-x, 10px);
+  --gog-input-pr: var(--control-padding-x, 10px);
+  --gog-input-font: var(--text-sm);
 
   width: 100%;
   padding: var(--gog-input-padding-y) var(--gog-input-pr) var(--gog-input-padding-y)
@@ -54,39 +54,39 @@
 
 /* Size modifiers */
 .gog-input-wrapper--sm .gog-input__field {
-  --gog-input-padding-y: 6px;
-  --gog-input-pl: 10px;
-  --gog-input-pr: 10px;
-  --gog-input-font: var(--text-sm);
+  --gog-input-padding-y: 4px;
+  --gog-input-pl: 8px;
+  --gog-input-pr: 8px;
+  --gog-input-font: var(--text-xs);
 }
 
 .gog-input-wrapper--lg .gog-input__field {
-  --gog-input-padding-y: 14px;
-  --gog-input-pl: 18px;
-  --gog-input-pr: 18px;
-  --gog-input-font: var(--text-lg);
+  --gog-input-padding-y: 10px;
+  --gog-input-pl: 14px;
+  --gog-input-pr: 14px;
+  --gog-input-font: var(--text-md);
 }
 
 /* Icon side padding overrides */
 .gog-input-wrapper--icon-start .gog-input__field {
-  --gog-input-pl: 36px;
-}
-.gog-input-wrapper--icon-end .gog-input__field {
-  --gog-input-pr: 36px;
-}
-
-.gog-input-wrapper--sm.gog-input-wrapper--icon-start .gog-input__field {
   --gog-input-pl: 30px;
 }
-.gog-input-wrapper--sm.gog-input-wrapper--icon-end .gog-input__field {
+.gog-input-wrapper--icon-end .gog-input__field {
   --gog-input-pr: 30px;
 }
 
+.gog-input-wrapper--sm.gog-input-wrapper--icon-start .gog-input__field {
+  --gog-input-pl: 24px;
+}
+.gog-input-wrapper--sm.gog-input-wrapper--icon-end .gog-input__field {
+  --gog-input-pr: 24px;
+}
+
 .gog-input-wrapper--lg.gog-input-wrapper--icon-start .gog-input__field {
-  --gog-input-pl: 44px;
+  --gog-input-pl: 36px;
 }
 .gog-input-wrapper--lg.gog-input-wrapper--icon-end .gog-input__field {
-  --gog-input-pr: 44px;
+  --gog-input-pr: 36px;
 }
 
 .gog-input__field::placeholder {
@@ -116,7 +116,7 @@
 .gog-input__icon {
   position: absolute;
   color: var(--gog-input-icon-color);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   pointer-events: none;
   line-height: 1;
 }
@@ -143,30 +143,30 @@
 }
 
 .gog-input__icon--start {
-  left: var(--control-icon-offset, 10px);
+  left: var(--control-icon-offset, 8px);
 }
 .gog-input__icon--end {
-  right: var(--control-icon-offset, 10px);
+  right: var(--control-icon-offset, 8px);
 }
 
 .gog-input-wrapper--sm .gog-input__icon {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
 }
 .gog-input-wrapper--sm .gog-input__icon--start {
-  left: 8px;
+  left: 6px;
 }
 .gog-input-wrapper--sm .gog-input__icon--end {
-  right: 8px;
+  right: 6px;
 }
 
 .gog-input-wrapper--lg .gog-input__icon {
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
 }
 .gog-input-wrapper--lg .gog-input__icon--start {
-  left: 14px;
+  left: 10px;
 }
 .gog-input-wrapper--lg .gog-input__icon--end {
-  right: 14px;
+  right: 10px;
 }
 
 .gog-input__error {

@@ -31,23 +31,23 @@
   background-color: var(--gog-table-surface);
   color: var(--gog-table-text-color);
   table-layout: fixed;
-  --tbl-th-padding-v: 10px;
-  --tbl-td-padding-v: 10px;
-  --tbl-padding-h: 14px;
-  --tbl-th-font-size: var(--text-sm);
-  --tbl-td-font-size: var(--text-md);
-}
-
-.gog-table--md {
   --tbl-th-padding-v: 6px;
   --tbl-td-padding-v: 6px;
+  --tbl-padding-h: 14px;
   --tbl-th-font-size: var(--text-xs);
   --tbl-td-font-size: var(--text-sm);
 }
 
-.gog-table--sm {
+.gog-table--md {
   --tbl-th-padding-v: 3px;
   --tbl-td-padding-v: 3px;
+  --tbl-th-font-size: var(--text-xs);
+  --tbl-td-font-size: var(--text-xs);
+}
+
+.gog-table--sm {
+  --tbl-th-padding-v: 2px;
+  --tbl-td-padding-v: 2px;
   --tbl-th-font-size: var(--text-xs);
   --tbl-td-font-size: var(--text-xs);
 }

@@ -3,12 +3,12 @@
   --gog-tag-bg: color-mix(in srgb, var(--gog-tag-variant-color) 10%, var(--surface-color));
   --gog-tag-border: var(--gog-tag-variant-color);
   --gog-tag-color: color-mix(in srgb, var(--gog-tag-variant-color) 82%, black);
-  --gog-tag-font-size: 0.875rem;
-  --gog-tag-padding-block: 0.375rem;
-  --gog-tag-padding-inline: 0.75rem;
-  --gog-tag-gap: 0.375rem;
+  --gog-tag-font-size: 0.75rem;
+  --gog-tag-padding-block: 0.25rem;
+  --gog-tag-padding-inline: 0.5rem;
+  --gog-tag-gap: 0.25rem;
   --gog-tag-radius: max(var(--radius), 2px);
-  --gog-tag-icon-size: 0.875rem;
+  --gog-tag-icon-size: 0.75rem;
 
   display: inline-flex;
   align-items: center;
@@ -46,6 +46,14 @@
 }
 
 :host(.gog-tag--sm) {
+  --gog-tag-font-size: 0.6875rem;
+  --gog-tag-padding-block: 0.1875rem;
+  --gog-tag-padding-inline: 0.375rem;
+  --gog-tag-gap: 0.1875rem;
+  --gog-tag-icon-size: 0.6875rem;
+}
+
+:host(.gog-tag--md) {
   --gog-tag-font-size: 0.75rem;
   --gog-tag-padding-block: 0.25rem;
   --gog-tag-padding-inline: 0.5rem;
@@ -53,20 +61,12 @@
   --gog-tag-icon-size: 0.75rem;
 }
 
-:host(.gog-tag--md) {
+:host(.gog-tag--lg) {
   --gog-tag-font-size: 0.875rem;
   --gog-tag-padding-block: 0.375rem;
   --gog-tag-padding-inline: 0.75rem;
   --gog-tag-gap: 0.375rem;
   --gog-tag-icon-size: 0.875rem;
-}
-
-:host(.gog-tag--lg) {
-  --gog-tag-font-size: 1rem;
-  --gog-tag-padding-block: 0.5rem;
-  --gog-tag-padding-inline: 0.875rem;
-  --gog-tag-gap: 0.5rem;
-  --gog-tag-icon-size: 1rem;
 }
 
 :host(.gog-tag--rounded) {
