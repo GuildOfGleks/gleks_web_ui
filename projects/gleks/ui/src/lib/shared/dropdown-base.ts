@@ -17,7 +17,14 @@ import {
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { GogDropdownOverlay } from './dropdown-overlay';
-import { type GogDropdownDirection, type GogDropdownPlacement, resolveDropdownPlacement } from './dropdown-position';
+import {
+  type GogDropdownDirection,
+  type GogDropdownPlacement,
+  type GogDropdownTriggerRect,
+  resolveCssLengthPx,
+  resolveDropdownPlacement,
+} from './dropdown-position';
+import { GogErrorState, type GogErrorDisplay } from './error-state';
 import { handleRovingFocusKeydown } from './roving-focus';
 import { GogSize } from './types';
 
@@ -57,6 +64,8 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
   readonly placeholder = input('Select...');
   readonly options = input<GogDropdownOption[]>([]);
   readonly errorMessage = input('');
+  /** See `GogErrorDisplay`. Defaults to `'manual'`, matching every other control in the library. */
+  readonly errorDisplay = input<GogErrorDisplay>('manual');
   readonly size = input<GogSize>('md');
   readonly dropdownDirection = input<GogDropdownDirection>('auto');
   /**
@@ -65,6 +74,20 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
    * retheme it, rather than being baked into the component.
    */
   readonly dropdownZIndex = input<number | null>(null);
+  /**
+   * Fixed panel width as any CSS length (`'320px'`, `'40ch'`, `'100%'`, …), applied only
+   * when `appendToBody` is set. Left unset the panel matches the trigger's width, same as
+   * the inline panel already does via CSS.
+   */
+  readonly dropdownWidth = input<string | null>(null);
+  /**
+   * Fixed panel max-height as any CSS length, applied only when `appendToBody` is set.
+   * `px`, `%` and `vh` also feed the up/down placement math (see `resolveCssLengthPx`); any
+   * other unit still renders correctly but is invisible to that heuristic, so the panel may
+   * pick the "wrong" side close to a viewport edge. Left unset the panel keeps the existing
+   * viewport-derived, auto-flipping height.
+   */
+  readonly dropdownMaxHeight = input<string | null>(null);
   readonly appendToBody = input(false);
   readonly disabled = input(false);
   readonly chevronTemplate = input<TemplateRef<unknown> | null>(null);
@@ -100,8 +123,7 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
   private readonly overlay = new GogDropdownOverlay(this.appRef, this.document);
 
   private readonly cvaDisabled = signal(false);
-  private readonly controlTouched = signal(false);
-  private readonly controlInvalid = signal(false);
+  private readonly errorState = new GogErrorState(this.errorMessage, this.errorDisplay, this.ngControl);
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
   protected readonly dropdownDirectionState = signal<'up' | 'down'>('down');
@@ -116,20 +138,19 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
    */
   protected readonly panelZIndex = signal<number | null>(null);
 
-  /**
-   * With a form control attached the error follows the control: shown once the field has
-   * been touched and is invalid. Without one it is consumer-controlled and stays visible
-   * for as long as `errorMessage` is non-empty — the consumer decides when to clear it,
-   * rather than the field silently hiding it once something is selected.
-   */
-  protected readonly hasError = computed(() => {
-    if (this.ngControl) {
-      return this.controlTouched() && this.controlInvalid();
-    }
-    return !!this.errorMessage();
+  /** `dropdownWidth`, or the trigger-derived width from `panelPlacement`, as a CSS value. */
+  protected readonly resolvedPanelWidth = computed(() => {
+    const width = this.panelPlacement()?.width;
+    return this.dropdownWidth() ?? (width != null ? `${width}px` : null);
+  });
+  /** `dropdownMaxHeight`, or the viewport-derived max-height from `panelPlacement`. */
+  protected readonly resolvedPanelMaxHeight = computed(() => {
+    const maxHeight = this.panelPlacement()?.maxHeight;
+    return this.dropdownMaxHeight() ?? (maxHeight != null ? `${maxHeight}px` : null);
   });
 
-  protected readonly visibleError = computed(() => (this.hasError() ? this.errorMessage() : ''));
+  protected readonly hasError = this.errorState.hasError;
+  protected readonly visibleError = this.errorState.visibleError;
 
   /** Measured once per open rather than per scroll tick — see `refreshPanelMetrics`. */
   private optionGap = 0;
@@ -183,19 +204,8 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
     });
   }
 
-  /**
-   * `NgControl` exposes validity as plain properties, and its control does not exist yet
-   * while this component is being constructed — reading `statusChanges` that early yields
-   * null and leaves the error state frozen. Mirroring on each check sidesteps the setup
-   * ordering entirely; re-setting a signal to its current value notifies nothing, so the
-   * common case costs two comparisons.
-   */
   ngDoCheck(): void {
-    const control = this.ngControl?.control;
-    if (!control) return;
-
-    this.controlTouched.set(control.touched);
-    this.controlInvalid.set(control.invalid);
+    this.errorState.check();
   }
 
   writeValue(val: TValue | null): void {
@@ -366,12 +376,31 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
   /**
    * Rough height, used only to choose up/down and to cap `max-height` before the panel
    * has been laid out. Deliberately an estimate: measuring would require rendering the
-   * panel first, which is what we are trying to position.
+   * panel first, which is what we are trying to position. A resolvable `dropdownMaxHeight`
+   * replaces the row-count guess outright, since it is exact rather than estimated.
    */
   private estimatePanelHeight(): number {
+    const custom = this.dropdownMaxHeight();
+    if (custom) {
+      const resolved = resolveCssLengthPx(custom, window.innerHeight);
+      if (resolved !== null) return resolved;
+    }
+
     const count = Math.max(this.options().length, 1);
     const rows = count * DEFAULT_OPTION_HEIGHT + Math.max(count - 1, 0) * this.optionGap;
     return Math.min(rows + this.optionsPadding * 2 + this.extraPanelHeight(), MAX_PANEL_HEIGHT);
+  }
+
+  /**
+   * The trigger's own rect, not the whole component's — a label above it or an error
+   * message below it sit in normal document flow and are not part of what the panel needs
+   * to clear. This also keeps `appendToBody` placement consistent with the inline panel,
+   * which is already positioned purely relative to the trigger via CSS.
+   */
+  private triggerRect(): GogDropdownTriggerRect {
+    const host = this.elRef.nativeElement as HTMLElement;
+    const trigger = host.querySelector<HTMLElement>(`.${this.triggerClass}`) ?? host;
+    return trigger.getBoundingClientRect();
   }
 
   /** The stacking order the panel would have had if it were still inside the subtree. */
@@ -399,7 +428,7 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor {
 
     const placement = resolveDropdownPlacement(
       this.dropdownDirection(),
-      this.elRef.nativeElement.getBoundingClientRect(),
+      this.triggerRect(),
       this.estimatePanelHeight(),
       window.innerHeight,
       PANEL_GAP,

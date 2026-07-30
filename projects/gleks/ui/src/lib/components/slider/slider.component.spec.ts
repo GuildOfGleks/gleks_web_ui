@@ -1,4 +1,6 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { SliderComponent } from './slider.component';
 
@@ -128,6 +130,68 @@ describe('SliderComponent', () => {
       fixture.componentRef.setInput('errorMessage', '');
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('.gog-slider__error')).toBeNull();
+    });
+  });
+
+  describe('ControlValueAccessor / Reactive Forms integration', () => {
+    @Component({
+      imports: [SliderComponent, ReactiveFormsModule],
+      template: `<gog-slider [formControl]="control" [min]="0" [max]="10" errorMessage="Out of range" />`,
+      changeDetection: ChangeDetectionStrategy.OnPush,
+    })
+    class SliderFormHostComponent {
+      readonly control = new FormControl(0, { nonNullable: true, validators: Validators.min(1) });
+    }
+
+    it('propagates input changes to the FormControl value', async () => {
+      const hostFixture = TestBed.createComponent(SliderFormHostComponent);
+      const host = hostFixture.componentInstance;
+      await hostFixture.whenStable();
+
+      const input = hostFixture.nativeElement.querySelector('input') as HTMLInputElement;
+      input.value = '5';
+      input.dispatchEvent(new Event('input'));
+      await hostFixture.whenStable();
+
+      expect(host.control.value).toBe(5);
+    });
+
+    it('defaults to manual, showing the error immediately despite an untouched FormControl', async () => {
+      const hostFixture = TestBed.createComponent(SliderFormHostComponent);
+      await hostFixture.whenStable();
+
+      expect(hostFixture.componentInstance.control.touched).toBe(false);
+      expect(hostFixture.nativeElement.querySelector('.gog-slider__error')?.textContent).toContain('Out of range');
+    });
+
+    it('withholds the error until touched when errorDisplay is auto', async () => {
+      @Component({
+        imports: [SliderComponent, ReactiveFormsModule],
+        template: `
+          <gog-slider
+            [formControl]="control"
+            [min]="0"
+            [max]="10"
+            errorMessage="Out of range"
+            errorDisplay="auto"
+          />
+        `,
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class AutoErrorDisplayHostComponent {
+        readonly control = new FormControl(0, { nonNullable: true, validators: Validators.min(1) });
+      }
+
+      const hostFixture = TestBed.createComponent(AutoErrorDisplayHostComponent);
+      await hostFixture.whenStable();
+
+      expect(hostFixture.nativeElement.querySelector('.gog-slider__error')).toBeNull();
+
+      const input = hostFixture.nativeElement.querySelector('input') as HTMLInputElement;
+      input.dispatchEvent(new Event('blur'));
+      await hostFixture.whenStable();
+
+      expect(hostFixture.nativeElement.querySelector('.gog-slider__error')?.textContent).toContain('Out of range');
     });
   });
 });

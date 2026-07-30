@@ -1,8 +1,24 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { vi } from 'vitest';
 
 import { SelectComponent } from './select.component';
+
+function stubRect(target: Element, rect: Partial<DOMRect>): void {
+  vi.spyOn(target, 'getBoundingClientRect').mockReturnValue({
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+    toJSON() {},
+    ...rect,
+  } as DOMRect);
+}
 
 describe('SelectComponent', () => {
   let component: SelectComponent;
@@ -405,6 +421,52 @@ describe('SelectComponent', () => {
       expect(panel.style.width).not.toBe('');
     });
 
+    it('lets dropdownWidth/dropdownMaxHeight override the computed panel size', async () => {
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.componentRef.setInput('dropdownWidth', '320px');
+      fixture.componentRef.setInput('dropdownMaxHeight', '20%');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      (fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      expect(panel.style.width).toBe('320px');
+      expect(panel.style.maxHeight).toBe('20%');
+    });
+
+    // Regression: placement used to be measured from the whole `<gog-select>` host —
+    // label and error included — rather than the trigger itself, so a label above the
+    // control shrank the perceived space above it and could push the panel to overlap
+    // the control when opening upward.
+    it('positions the appended panel relative to the trigger, not the label around it', async () => {
+      fixture.componentRef.setInput('label', 'Region');
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement;
+      const host = fixture.nativeElement.querySelector('.gog-select') as HTMLElement;
+
+      // The host's rect starts well above the trigger's — exactly what a `<label>` stacked
+      // above the `<button>` produces in a real layout.
+      stubRect(control, { top: 140, bottom: 180, left: 20, width: 200 });
+      stubRect(host, { top: 100, bottom: 220, left: 20, width: 200 });
+
+      control.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      // Down direction: top follows the trigger's bottom (180) + the panel gap (2), not
+      // the host's.
+      expect(panel.style.top).toBe('182px');
+    });
+
     // A dropdown inside a dialog is stacked by the dialog setting --dropdown-z on its
     // panel. An appended dropdown leaves that subtree, so the value has to be carried
     // over explicitly or the panel renders behind the dialog that opened it.
@@ -459,7 +521,12 @@ describe('SelectComponent', () => {
     @Component({
       imports: [SelectComponent, ReactiveFormsModule],
       template: `
-        <gog-select [formControl]="control" [options]="options" errorMessage="Selection required" />
+        <gog-select
+          [formControl]="control"
+          [options]="options"
+          errorMessage="Selection required"
+          errorDisplay="auto"
+        />
       `,
       changeDetection: ChangeDetectionStrategy.OnPush,
     })
@@ -518,7 +585,7 @@ describe('SelectComponent', () => {
       expect(control.disabled).toBe(true);
     });
 
-    // With a form control attached the error follows the control rather than the bare
+    // With `errorDisplay="auto"` the error follows the control rather than the bare
     // presence of `errorMessage`, so a pristine invalid field stays quiet.
     it('withholds the error until the control has been touched', async () => {
       expect(host.control.invalid).toBe(true);
@@ -530,6 +597,33 @@ describe('SelectComponent', () => {
       control.click();
       await hostFixture.whenStable();
 
+      expect(hostFixture.nativeElement.querySelector('.gog-select__error')?.textContent).toContain(
+        'Selection required',
+      );
+    });
+  });
+
+  describe('errorDisplay', () => {
+    // Default is 'manual' — the same contract as every other control in the library —
+    // even when a FormControl happens to be attached, so attaching reactive forms doesn't
+    // silently change how `errorMessage` behaves unless a consumer opts into 'auto'.
+    it('defaults to manual even with a FormControl attached, showing the error immediately', async () => {
+      @Component({
+        imports: [SelectComponent, ReactiveFormsModule],
+        template: `
+          <gog-select [formControl]="control" [options]="options" errorMessage="Selection required" />
+        `,
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class DefaultErrorDisplayHostComponent {
+        readonly control = new FormControl<string | number | null>(null, Validators.required);
+        readonly options = [{ id: 'a', name: 'Alpha' }];
+      }
+
+      const hostFixture = TestBed.createComponent(DefaultErrorDisplayHostComponent);
+      await hostFixture.whenStable();
+
+      expect(hostFixture.componentInstance.control.touched).toBe(false);
       expect(hostFixture.nativeElement.querySelector('.gog-select__error')?.textContent).toContain(
         'Selection required',
       );

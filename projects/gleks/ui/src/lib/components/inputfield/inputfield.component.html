@@ -59,12 +59,12 @@
       }
     }
   </div>
-  @if (hasError() && errorMessage()) {
+  @if (visibleError()) {
     <span
       class="gog-input__error font-body"
       [attr.id]="inputId() ? inputId() + '-error' : null"
       role="alert"
-    >{{ errorMessage() }}</span
+    >{{ visibleError() }}</span
     >
   }
 </div>

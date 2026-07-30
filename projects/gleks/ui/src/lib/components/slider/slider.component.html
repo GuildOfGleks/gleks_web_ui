@@ -30,7 +30,7 @@
       [attr.aria-valuemin]="min()"
       [attr.aria-valuemax]="max()"
       [attr.aria-valuenow]="clampedValue()"
-      [attr.aria-invalid]="!!errorMessage()"
+      [attr.aria-invalid]="hasError()"
       [attr.aria-describedby]="errorId()"
       [min]="min()"
       [max]="max()"
@@ -47,9 +47,9 @@
     <span>{{ max() }}</span>
   </div>
 
-  @if (errorMessage()) {
+  @if (hasError()) {
     <span class="gog-slider__error font-body" [attr.id]="errorId()" role="alert">
-      {{ errorMessage() }}
+      {{ visibleError() }}
     </span>
   }
 </div>

@@ -430,7 +430,12 @@ describe('MultiselectComponent', () => {
     @Component({
       imports: [MultiselectComponent, ReactiveFormsModule],
       template: `
-        <gog-multiselect [formControl]="control" [options]="options" errorMessage="Pick at least one" />
+        <gog-multiselect
+          [formControl]="control"
+          [options]="options"
+          errorMessage="Pick at least one"
+          errorDisplay="auto"
+        />
       `,
       changeDetection: ChangeDetectionStrategy.OnPush,
     })
@@ -491,6 +496,35 @@ describe('MultiselectComponent', () => {
       trigger.click();
       await hostFixture.whenStable();
 
+      expect(hostFixture.nativeElement.querySelector('.gog-ms__error')?.textContent).toContain(
+        'Pick at least one',
+      );
+    });
+  });
+
+  describe('errorDisplay', () => {
+    // Default is 'manual', matching every other control in the library, even when a
+    // FormControl happens to be attached.
+    it('defaults to manual even with a FormControl attached, showing the error immediately', async () => {
+      @Component({
+        imports: [MultiselectComponent, ReactiveFormsModule],
+        template: `
+          <gog-multiselect [formControl]="control" [options]="options" errorMessage="Pick at least one" />
+        `,
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class DefaultErrorDisplayHostComponent {
+        readonly control = new FormControl<(string | number)[]>([], {
+          nonNullable: true,
+          validators: Validators.required,
+        });
+        readonly options = [{ id: 'a', name: 'Alpha' }];
+      }
+
+      const hostFixture = TestBed.createComponent(DefaultErrorDisplayHostComponent);
+      await hostFixture.whenStable();
+
+      expect(hostFixture.componentInstance.control.touched).toBe(false);
       expect(hostFixture.nativeElement.querySelector('.gog-ms__error')?.textContent).toContain(
         'Pick at least one',
       );

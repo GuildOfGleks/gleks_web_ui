@@ -55,7 +55,7 @@
 
   @if (hasError()) {
     <span class="gog-select__error font-body" [attr.id]="errorId()" role="alert">
-      {{ errorMessage() }}
+      {{ visibleError() }}
     </span>
   }
 </div>
@@ -76,8 +76,8 @@
     [class.gog-select__dropdown--lg]="appendToBody() && size() === 'lg'"
     [style.top.px]="appendToBody() ? panelPlacement()?.top : null"
     [style.left.px]="appendToBody() ? panelPlacement()?.left : null"
-    [style.width.px]="appendToBody() ? panelPlacement()?.width : null"
-    [style.max-height.px]="appendToBody() ? panelPlacement()?.maxHeight : null"
+    [style.width]="appendToBody() ? resolvedPanelWidth() : null"
+    [style.max-height]="appendToBody() ? resolvedPanelMaxHeight() : null"
     [style.z-index]="dropdownZIndex() ?? panelZIndex()"
     role="listbox"
     [attr.aria-labelledby]="label() ? labelId() : null"

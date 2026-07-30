@@ -2,14 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  forwardRef,
+  inject,
   input,
   model,
   TemplateRef,
   signal,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 
+import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
 import { GogSize } from '../../shared/types';
 import { IconComponent, type GogIconName } from '../icon/icon.component';
 
@@ -19,13 +20,6 @@ import { IconComponent, type GogIconName } from '../icon/icon.component';
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputfieldComponent),
-      multi: true,
-    },
-  ],
 })
 export class InputfieldComponent implements ControlValueAccessor {
   readonly label = input('');
@@ -34,6 +28,8 @@ export class InputfieldComponent implements ControlValueAccessor {
   /** Defaults to 'current-password' for password fields, 'off' otherwise */
   readonly autocomplete = input('');
   readonly errorMessage = input('');
+  /** See `GogErrorDisplay`. Defaults to `'manual'`, matching every other control in the library. */
+  readonly errorDisplay = input<GogErrorDisplay>('manual');
   readonly name = input('');
   readonly inputId = input('');
   readonly disabled = input(false);
@@ -58,18 +54,16 @@ export class InputfieldComponent implements ControlValueAccessor {
   /** Two-way bindable value: `[(value)]="signal"` or `[value]` / `(valueChange)`. */
   readonly value = model<string>('');
 
+  private readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cvaDisabled = signal(false);
+  private readonly errorState = new GogErrorState(this.errorMessage, this.errorDisplay, this.ngControl);
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
   protected readonly effectiveAutocomplete = computed(
    () => this.autocomplete() || (this.type() === 'password' ? 'current-password' : 'off'),
   );
-  /**
-   * Consumer-controlled: shown for as long as `errorMessage` is non-empty. The
-   * consumer decides when to clear it (e.g. `errorMessage="control.invalid && control.touched ? 'msg' : ''"`)
-   * rather than the field silently hiding it once something is typed.
-   */
-  protected readonly hasError = computed(() => !!this.errorMessage());
+  protected readonly hasError = this.errorState.hasError;
+  protected readonly visibleError = this.errorState.visibleError;
   protected readonly hasIconStart = computed(() => !!this.iconStartTemplate() || !!this.iconStart());
   protected readonly hasIconEnd = computed(() => !!this.iconEndTemplate() || !!this.iconEnd());
   protected readonly hasIconStartAction = computed(() => !!this.iconStartFn());
@@ -77,6 +71,19 @@ export class InputfieldComponent implements ControlValueAccessor {
 
   private _onChange: (val: string) => void = () => {};
   private _onTouched: () => void = () => {};
+
+  constructor() {
+    // Registering through NgControl instead of NG_VALUE_ACCESSOR keeps `this.ngControl`
+    // available for `hasError` — providing NG_VALUE_ACCESSOR on the component while also
+    // injecting NgControl would be a dependency cycle.
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
+
+  ngDoCheck(): void {
+    this.errorState.check();
+  }
 
   writeValue(val: string): void {
     this.value.set(val ?? '');

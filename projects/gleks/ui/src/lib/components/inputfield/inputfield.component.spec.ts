@@ -1,4 +1,6 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { vi } from 'vitest';
 
 import { InputfieldComponent } from './inputfield.component';
@@ -151,6 +153,74 @@ describe('InputfieldComponent', () => {
 
       const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
       expect(input.disabled).toBe(true);
+    });
+  });
+
+  describe('ControlValueAccessor / Reactive Forms integration', () => {
+    @Component({
+      imports: [InputfieldComponent, ReactiveFormsModule],
+      template: `<gog-inputfield [formControl]="control" errorMessage="Required" />`,
+      changeDetection: ChangeDetectionStrategy.OnPush,
+    })
+    class InputfieldFormHostComponent {
+      readonly control = new FormControl('', { nonNullable: true, validators: Validators.required });
+    }
+
+    it('propagates typing to the FormControl value', async () => {
+      const hostFixture = TestBed.createComponent(InputfieldFormHostComponent);
+      const host = hostFixture.componentInstance;
+      await hostFixture.whenStable();
+
+      const input = hostFixture.nativeElement.querySelector('input') as HTMLInputElement;
+      input.value = 'hello';
+      input.dispatchEvent(new Event('input'));
+      await hostFixture.whenStable();
+
+      expect(host.control.value).toBe('hello');
+    });
+
+    it('marks the FormControl as touched on blur', async () => {
+      const hostFixture = TestBed.createComponent(InputfieldFormHostComponent);
+      const host = hostFixture.componentInstance;
+      await hostFixture.whenStable();
+
+      expect(host.control.touched).toBe(false);
+
+      const input = hostFixture.nativeElement.querySelector('input') as HTMLInputElement;
+      input.dispatchEvent(new Event('blur'));
+      await hostFixture.whenStable();
+
+      expect(host.control.touched).toBe(true);
+    });
+
+    it('defaults to manual, showing the error immediately despite an untouched FormControl', async () => {
+      const hostFixture = TestBed.createComponent(InputfieldFormHostComponent);
+      await hostFixture.whenStable();
+
+      expect(hostFixture.componentInstance.control.touched).toBe(false);
+      expect(hostFixture.nativeElement.querySelector('.gog-input__error')?.textContent).toContain('Required');
+    });
+
+    it('withholds the error until touched when errorDisplay is auto', async () => {
+      @Component({
+        imports: [InputfieldComponent, ReactiveFormsModule],
+        template: `<gog-inputfield [formControl]="control" errorMessage="Required" errorDisplay="auto" />`,
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class AutoErrorDisplayHostComponent {
+        readonly control = new FormControl('', { nonNullable: true, validators: Validators.required });
+      }
+
+      const hostFixture = TestBed.createComponent(AutoErrorDisplayHostComponent);
+      await hostFixture.whenStable();
+
+      expect(hostFixture.nativeElement.querySelector('.gog-input__error')).toBeNull();
+
+      const input = hostFixture.nativeElement.querySelector('input') as HTMLInputElement;
+      input.dispatchEvent(new Event('blur'));
+      await hostFixture.whenStable();
+
+      expect(hostFixture.nativeElement.querySelector('.gog-input__error')?.textContent).toContain('Required');
     });
   });
 });
