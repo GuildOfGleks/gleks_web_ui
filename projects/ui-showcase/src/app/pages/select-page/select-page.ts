@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CheckboxComponent, GogSelectOption, GogSize, SelectComponent } from '@guildofgleks/ui';
+import { CheckboxComponent, GogSelectOption, GogSize, IconComponent, SelectComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-select-page',
-  imports: [SelectComponent, CheckboxComponent, ReactiveFormsModule],
+  imports: [SelectComponent, CheckboxComponent, IconComponent, ReactiveFormsModule],
   templateUrl: './select-page.html',
   styleUrl: './select-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,4 +58,12 @@ export class SelectPage {
   }));
   protected readonly compactPanelValue = signal<string | number | null>(null);
   protected readonly bottomOfPageValue = signal<string | number | null>(null);
+
+  protected readonly sortOptions: GogSelectOption[] = [
+    { id: 'newest', name: 'Newest first' },
+    { id: 'oldest', name: 'Oldest first' },
+  ];
+  protected readonly sortValue = signal<string | number | null>('newest');
+
+  protected readonly ariaOnlyValue = signal<string | number | null>(null);
 }

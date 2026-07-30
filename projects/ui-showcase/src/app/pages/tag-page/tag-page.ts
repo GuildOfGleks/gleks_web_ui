@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { GogIconName, GogSize, GogTagShape, GogTagVariant, TagComponent } from '@guildofgleks/ui';
+import { GogIconName, GogSize, GogTagShape, GogTagVariant, IconComponent, TagComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-tag-page',
-  imports: [TagComponent],
+  imports: [TagComponent, IconComponent],
   templateUrl: './tag-page.html',
   styleUrl: './tag-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

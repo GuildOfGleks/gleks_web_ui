@@ -9,6 +9,29 @@
   </div>
 
   <article class="card">
+    <h3>Basic usage</h3>
+    <p class="meta">
+      Default rendering (no custom header/chevron templates), default <code>lg</code> size,
+      <code>expandFirst</code>, single-open, and a disabled item.
+    </p>
+    <gog-accordion [items]="basicItems" [expandFirst]="true">
+      <ng-template gogAccordionContent let-item>
+        <p class="meta">{{ item.body }}</p>
+      </ng-template>
+    </gog-accordion>
+  </article>
+
+  <article class="card">
+    <h3>No chevron</h3>
+    <p class="meta"><code>showChevron="false"</code> drops the trailing icon entirely.</p>
+    <gog-accordion [items]="basicItems" [showChevron]="false" size="md">
+      <ng-template gogAccordionContent let-item>
+        <p class="meta">{{ item.body }}</p>
+      </ng-template>
+    </gog-accordion>
+  </article>
+
+  <article class="card">
     <h3>Remote content with custom headers</h3>
     <div class="action-row">
       <gog-button variant="primary" type="button" (gogClick)="toggleMulti()">
@@ -104,5 +127,14 @@
         }
       </ng-template>
     </gog-accordion>
+  </article>
+
+  <article class="card">
+    <h3>Loading skeleton</h3>
+    <p class="meta">
+      <code>loading="true"</code> replaces every item with a shimmering placeholder — for when
+      the list of items itself hasn't arrived yet, as opposed to per-item content.
+    </p>
+    <gog-accordion [items]="basicItems" [loading]="true" />
   </article>
 </section>

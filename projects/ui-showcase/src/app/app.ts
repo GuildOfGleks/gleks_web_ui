@@ -21,6 +21,12 @@ export class App {
 
   protected readonly title = signal('Gleks UI Showcase');
   protected readonly themes = showcaseThemes;
+  /**
+   * Temporarily off while the component showcase pages are being rewritten, so every
+   * page renders the library's pristine default theme (see styles.scss) instead of the
+   * showcase's own "Classic" branding. Flip back on once that's done.
+   */
+  protected readonly themeSwitcherEnabled = false;
   protected readonly activeTheme = computed(() => this.themeService.theme() as ShowcaseThemeName);
   protected readonly themeLabel = computed(
    () => this.themes.find((theme) => theme.name === this.activeTheme())?.label ?? this.activeTheme(),

@@ -15,6 +15,7 @@
       <gog-slider label="Precision" [min]="0" [max]="1" [step]="0.01" [(value)]="precision" />
       <gog-slider label="Range only" [min]="0" [max]="100" [step]="1" [showThumb]="false" [value]="35" />
       <gog-slider label="Disabled" [value]="25" [disabled]="true" [showThumb]="false"/>
+      <gog-slider label="Disabled (with thumb)" [value]="60" [disabled]="true" />
     </div>
 
     <div class="action-row">
@@ -25,6 +26,18 @@
   </article>
 
   <article class="card">
+    <h3>Labeling</h3>
+    <p class="lead">
+      <code>showValue="false"</code> hides the numeric readout. With no <code>label</code>,
+      use <code>ariaLabel</code> so assistive tech still gets a name.
+    </p>
+    <div class="field-grid">
+      <gog-slider label="No value readout" [showValue]="false" [(value)]="hiddenValue" />
+      <gog-slider ariaLabel="Opacity (no visible label)" [(value)]="ariaOnlyValue" />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Validation</h3>
     <p class="lead">
       `errorMessage` is consumer-controlled: `gog-slider` just renders whatever it's given, for as
@@ -32,6 +45,25 @@
     </p>
     <div class="field-grid">
       <gog-slider label="Monthly budget" [min]="0" [max]="100" [step]="5" [errorMessage]="budgetError()" [(value)]="budget" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Reactive forms — automatic error timing</h3>
+    <p class="lead">
+      With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the slider shows
+      the error once it's been touched (drag it, then click elsewhere) and is invalid, instead
+      of the page computing that timing.
+    </p>
+    <div class="field-grid">
+      <gog-slider
+        label="Minimum threshold"
+        [min]="0"
+        [max]="100"
+        [formControl]="minimumControl"
+        errorDisplay="auto"
+        [errorMessage]="minimumErrorMessage()"
+      />
     </div>
   </article>
 </section>

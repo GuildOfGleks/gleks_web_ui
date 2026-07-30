@@ -39,6 +39,17 @@
   </article>
 
   <article class="card">
+    <h3>Custom icon template</h3>
+    <p class="meta"><code>iconTemplate</code> takes priority over <code>iconName</code>.</p>
+    <ng-template #starIcon>
+      <gog-icon name="checkbox-checked" />
+    </ng-template>
+    <div class="tag-grid">
+      <gog-tag variant="success" [iconTemplate]="starIcon">Featured</gog-tag>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Shapes</h3>
     <div class="tag-grid">
       @for (shape of shapes; track shape) {

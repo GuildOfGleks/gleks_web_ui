@@ -8,6 +8,11 @@ interface DemoRow {
   updated: string;
 }
 
+interface SparseRow {
+  component: string;
+  owner: string | null;
+}
+
 const STATUS_VARIANTS: Record<string, GogTagVariant> = {
   Ready: 'success',
   'In review': 'warning',
@@ -41,6 +46,12 @@ export class TablePage implements OnDestroy {
 
   protected readonly stickyHeader = signal(false);
   protected readonly showEmpty = signal(false);
+
+  protected readonly sparseRows: SparseRow[] = [
+    { component: 'Buttons', owner: 'Design' },
+    { component: 'Checkbox', owner: null },
+    { component: 'Table', owner: null },
+  ];
 
   protected statusVariant(status: string): GogTagVariant {
     return STATUS_VARIANTS[status] ?? 'info';

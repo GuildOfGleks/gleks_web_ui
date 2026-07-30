@@ -87,6 +87,54 @@
   </article>
 
   <article class="card">
+    <h3>Missing values</h3>
+    <p class="lead">
+      A cell whose field is <code>null</code>/<code>undefined</code> falls back to
+      <code>emptyPlaceholder</code> — <code>"-"</code> by default, overridable per table.
+    </p>
+    <div class="field-grid">
+      <div>
+        <p class="meta">Default placeholder</p>
+        <gog-table [value]="sparseRows" [showRowNumbers]="false" size="sm">
+          <column field="component" header="Component"></column>
+          <column field="owner" header="Owner"></column>
+        </gog-table>
+      </div>
+      <div>
+        <p class="meta">emptyPlaceholder="N/A"</p>
+        <gog-table [value]="sparseRows" [showRowNumbers]="false" emptyPlaceholder="N/A" size="sm">
+          <column field="component" header="Component"></column>
+          <column field="owner" header="Owner"></column>
+        </gog-table>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Total count position</h3>
+    <p class="lead">
+      <code>showTotal</code> renders a row count; <code>totalPosition</code> places it left,
+      right, or opposite the paginator (the default).
+    </p>
+    <div class="field-grid">
+      <div>
+        <p class="meta">totalPosition="left"</p>
+        <gog-table [value]="rows" [pageSize]="3" [showTotal]="true" totalPosition="left" size="sm">
+          <column field="component" header="Component"></column>
+          <column field="status" header="Status"></column>
+        </gog-table>
+      </div>
+      <div>
+        <p class="meta">totalPosition="right"</p>
+        <gog-table [value]="rows" [pageSize]="3" [showTotal]="true" totalPosition="right" size="sm">
+          <column field="component" header="Component"></column>
+          <column field="status" header="Status"></column>
+        </gog-table>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Empty state</h3>
     <div class="action-row">
       <gog-button variant="ghost" type="button" (gogClick)="toggleEmpty()">

@@ -32,5 +32,38 @@
     </p>
   </article>
 
+  <article class="card">
+    <h3>Modal, closable &amp; draggable toggles</h3>
+    <p class="meta">
+      Every example above uses <code>modal</code>, <code>closable</code>, and
+      <code>draggable</code> all <code>true</code> (the defaults). Here's what turning each one
+      off looks like individually.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" type="button" (gogClick)="openNonModalDialog()">
+        modal="false"
+      </gog-button>
+      <gog-button variant="outline" type="button" (gogClick)="openNonClosableDialog()">
+        closable="false"
+      </gog-button>
+      <gog-button variant="outline" type="button" (gogClick)="openNonDraggableDialog()">
+        draggable="false"
+      </gog-button>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Stacked dialogs</h3>
+    <p class="meta">
+      Opening a dialog while one is already open stacks it on top with a higher z-index —
+      each keeps its own drag position.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" type="button" (gogClick)="openStackedDialogs()">
+        Open two stacked dialogs
+      </gog-button>
+    </div>
+  </article>
+
   <gog-dialog />
 </section>

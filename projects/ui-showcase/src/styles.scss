@@ -1,86 +1,93 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
-
-:root {
-  --font-heading: 'Cinzel', serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-
-  --background-color: #f8f3ea;
-  --surface-color: #ede2cc;
-  --text-color: #1a1208;
-  --muted-text-color: #5c3d00;
-  --color-text-secondary: #5c3d00;
-  --primary-color: #1a1208;
-  --accent-color: #7a5c00;
-  --accent-bright: #b68b00;
-  --accent-dim: #5a4200;
-  --accent-pale: #fde8c8;
-  --secondary-color: #a07800;
-  --success-color: #166534;
-  --danger-color: #b91c1c;
-  --warning-color: #a16207;
-  --info-color: #6b7280;
-  --border-color: #c9b896;
-  --hover-color: #e4d6bc;
-  --radius: 8px;
-
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.125rem;
-
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-2xl: 48px;
-  --control-padding-y: 10px;
-  --control-padding-x: 14px;
-  --control-icon-offset: 10px;
-  --control-checkbox-padding: 6px;
-  --control-checkbox-box-size-sm: 18px;
-  --control-checkbox-box-size-md: 24px;
-  --control-checkbox-box-size-lg: 32px;
-  --control-checkbox-label-size-sm: 0.8125rem;
-  --control-checkbox-label-size-md: 0.9375rem;
-  --control-checkbox-label-size-lg: 1.0625rem;
-  --control-checkbox-icon-size-sm: 12px;
-  --control-checkbox-icon-size-md: 14px;
-  --control-checkbox-icon-size-lg: 18px;
-
-  --panel-radius: calc(var(--radius) + 8px);
-  --panel-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-  --panel-border-width: 1px;
-  --panel-border-style: solid;
-  --control-border-width: 2px;
-  --control-border-style: solid;
-  --gog-icon-size: 1em;
-  --gog-icon-stroke-width: 2;
-  --gog-spinner-size-sm: 18px;
-  --gog-spinner-size-md: 48px;
-  --gog-spinner-size-lg: 96px;
-  --gog-spinner-rune-size: 20px;
-
-  --btn-sm-padding: 0.5rem 0.875rem;
-  --btn-md-padding: 0.75rem 1.25rem;
-  --btn-lg-padding: 1rem 1.5rem;
-  --btn-sm-font-size: 0.875rem;
-  --btn-md-font-size: 1rem;
-  --btn-lg-font-size: 1.125rem;
-
-  --gog-spinner-overlay-bg: rgba(248, 243, 234, 0.75);
-  --gog-toast-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
-  --gog-toast-min-width: 280px;
-  --gog-toast-max-width: 400px;
-  --gog-toast-gap: 10px;
-  --gog-toast-stack-padding: 16px;
-  --gog-toast-z-index: 9999;
-  --gog-toast-enter-distance: 110%;
-}
+/*
+ * The showcase's own "Classic" branding (fonts + token overrides) is temporarily
+ * disabled — along with the theme-switcher buttons in app.html — so every page
+ * renders the library's own pristine defaults from theme.css, unmodified, as a
+ * fresh install would look. Re-enable both together when it's time to restyle.
+ *
+ * @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap');
+ * @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+ * @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+ * @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
+ * @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+ *
+ * :root {
+ *   --font-heading: 'Cinzel', serif;
+ *   --font-body: 'Inter', sans-serif;
+ *   --font-mono: 'JetBrains Mono', monospace;
+ *
+ *   --background-color: #f8f3ea;
+ *   --surface-color: #ede2cc;
+ *   --text-color: #1a1208;
+ *   --muted-text-color: #5c3d00;
+ *   --color-text-secondary: #5c3d00;
+ *   --primary-color: #1a1208;
+ *   --accent-color: #7a5c00;
+ *   --accent-bright: #b68b00;
+ *   --accent-dim: #5a4200;
+ *   --accent-pale: #fde8c8;
+ *   --secondary-color: #a07800;
+ *   --success-color: #166534;
+ *   --danger-color: #b91c1c;
+ *   --warning-color: #a16207;
+ *   --info-color: #6b7280;
+ *   --border-color: #c9b896;
+ *   --hover-color: #e4d6bc;
+ *   --radius: 8px;
+ *
+ *   --text-xs: 0.75rem;
+ *   --text-sm: 0.875rem;
+ *   --text-md: 1rem;
+ *   --text-lg: 1.125rem;
+ *
+ *   --space-xs: 4px;
+ *   --space-sm: 8px;
+ *   --space-md: 16px;
+ *   --space-lg: 24px;
+ *   --space-2xl: 48px;
+ *   --control-padding-y: 10px;
+ *   --control-padding-x: 14px;
+ *   --control-icon-offset: 10px;
+ *   --control-checkbox-padding: 6px;
+ *   --control-checkbox-box-size-sm: 18px;
+ *   --control-checkbox-box-size-md: 24px;
+ *   --control-checkbox-box-size-lg: 32px;
+ *   --control-checkbox-label-size-sm: 0.8125rem;
+ *   --control-checkbox-label-size-md: 0.9375rem;
+ *   --control-checkbox-label-size-lg: 1.0625rem;
+ *   --control-checkbox-icon-size-sm: 12px;
+ *   --control-checkbox-icon-size-md: 14px;
+ *   --control-checkbox-icon-size-lg: 18px;
+ *
+ *   --panel-radius: calc(var(--radius) + 8px);
+ *   --panel-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+ *   --panel-border-width: 1px;
+ *   --panel-border-style: solid;
+ *   --control-border-width: 2px;
+ *   --control-border-style: solid;
+ *   --gog-icon-size: 1em;
+ *   --gog-icon-stroke-width: 2;
+ *   --gog-spinner-size-sm: 18px;
+ *   --gog-spinner-size-md: 48px;
+ *   --gog-spinner-size-lg: 96px;
+ *   --gog-spinner-rune-size: 20px;
+ *
+ *   --btn-sm-padding: 0.5rem 0.875rem;
+ *   --btn-md-padding: 0.75rem 1.25rem;
+ *   --btn-lg-padding: 1rem 1.5rem;
+ *   --btn-sm-font-size: 0.875rem;
+ *   --btn-md-font-size: 1rem;
+ *   --btn-lg-font-size: 1.125rem;
+ *
+ *   --gog-spinner-overlay-bg: rgba(248, 243, 234, 0.75);
+ *   --gog-toast-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+ *   --gog-toast-min-width: 280px;
+ *   --gog-toast-max-width: 400px;
+ *   --gog-toast-gap: 10px;
+ *   --gog-toast-stack-padding: 16px;
+ *   --gog-toast-z-index: 9999;
+ *   --gog-toast-enter-distance: 110%;
+ * }
+ */
 
 :root[data-theme='light'] {
   color-scheme: light;

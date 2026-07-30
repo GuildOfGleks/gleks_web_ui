@@ -39,4 +39,37 @@
       </div>
     </gog-spinner-overlay>
   </article>
+
+  <article class="card">
+    <h3>Full-screen overlay</h3>
+    <p class="lead">
+      <code>gog-spinner</code> itself can render as a fixed, viewport-covering overlay via
+      <code>overlay="true"</code> — distinct from <code>gog-spinner-overlay</code>, which only
+      covers its own content.
+    </p>
+    <div class="action-row">
+      <gog-button variant="primary" type="button" (gogClick)="previewFullscreenOverlay()">
+        Preview full-screen overlay
+      </gog-button>
+    </div>
+    @if (showFullscreenOverlay()) {
+      <gog-spinner [overlay]="true" size="lg" ariaLabel="Loading page" />
+    }
+  </article>
+
+  <article class="card">
+    <h3>Custom color</h3>
+    <p class="lead">
+      Override <code>--gog-spinner-color</code> to recolor the spinner regardless of theme —
+      useful when it sits on a surface where the default accent color wouldn't read well.
+    </p>
+    <div class="spinner-grid">
+      <div class="spinner-tile spinner-tile--danger">
+        <gog-spinner ariaLabel="Loading, danger color" />
+      </div>
+      <div class="spinner-tile spinner-tile--success">
+        <gog-spinner ariaLabel="Loading, success color" />
+      </div>
+    </div>
+  </article>
 </section>

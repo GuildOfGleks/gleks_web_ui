@@ -15,6 +15,10 @@ interface AccordionDemoStat {
   value: string;
 }
 
+interface BasicAccordionItem extends GogAccordionItem {
+  body: string;
+}
+
 interface AccordionDemoPanel extends GogAccordionItem {
   kicker: string;
   summary: string;
@@ -38,6 +42,12 @@ interface AccordionDemoPanel extends GogAccordionItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccordionPage implements OnDestroy {
+  protected readonly basicItems: BasicAccordionItem[] = [
+    { id: 'shipping', title: 'Shipping', body: 'Ships within 2 business days via standard courier.' },
+    { id: 'returns', title: 'Returns', body: 'Free returns within 30 days of delivery.' },
+    { id: 'warranty', title: 'Warranty (unavailable)', body: 'Not offered on this item.', disabled: true },
+  ];
+
   protected readonly panels: AccordionDemoPanel[] = [
     {
       id: 'signals',

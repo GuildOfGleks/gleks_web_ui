@@ -3,13 +3,14 @@
     <p class="eyebrow">gog-button</p>
     <h2>Button</h2>
     <p class="lead">
-      A debounced action button with three variants, three sizes, and built-in loading and
-      disabled states.
+      A debounced action button with four variants, three sizes, and built-in loading, disabled,
+      and full-width states.
     </p>
   </div>
 
   <article class="card">
     <h3>Variants &amp; sizes</h3>
+    <p class="meta">Every combination of the four variants and three sizes.</p>
     <div class="variant-grid">
       @for (variant of variants; track variant) {
         <div class="variant-row">
@@ -26,13 +27,89 @@
   </article>
 
   <article class="card">
-    <h3>States</h3>
+    <h3>Disabled</h3>
+    <p class="meta">One disabled button per variant — disabled state must stay legible on every color.</p>
     <div class="action-row">
-      <gog-button variant="primary" type="button" [disabled]="true">Disabled</gog-button>
+      @for (variant of variants; track variant) {
+        <gog-button [variant]="variant" type="button" [disabled]="true">{{ variant }}</gog-button>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Loading</h3>
+    <p class="meta">
+      Loading swaps the label for a spinner and blocks clicks (via <code>aria-disabled</code>,
+      not the native <code>disabled</code> attribute, so focus is preserved).
+    </p>
+    <div class="action-row">
       <gog-button variant="primary" type="button" [loading]="isLoading()" (gogClick)="simulateLoading()">
         Simulate loading
       </gog-button>
+    </div>
+
+    <p class="meta">The spinner scales with the button size:</p>
+    <div class="action-row">
+      <gog-button variant="secondary" size="sm" type="button" [loading]="loadingSm()" (gogClick)="simulateLoadingFor('sm')">
+        Small
+      </gog-button>
+      <gog-button variant="secondary" size="md" type="button" [loading]="loadingMd()" (gogClick)="simulateLoadingFor('md')">
+        Medium
+      </gog-button>
+      <gog-button variant="secondary" size="lg" type="button" [loading]="loadingLg()" (gogClick)="simulateLoadingFor('lg')">
+        Large
+      </gog-button>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Full width</h3>
+    <p class="meta">Stretches to fill its container; wrapped here in a narrower box to show it.</p>
+    <div class="width-demo">
       <gog-button variant="outline" type="button" [fullWidth]="true">Full width</gog-button>
     </div>
+  </article>
+
+  <article class="card">
+    <h3>Icon-only</h3>
+    <p class="meta">
+      No visible label, so <code>ariaLabel</code> is required — it targets the inner
+      <code>&lt;button&gt;</code>, unlike a plain <code>aria-label</code> attribute on
+      <code>&lt;gog-button&gt;</code> itself.
+    </p>
+    <div class="action-row">
+      <gog-button variant="primary" type="button" ariaLabel="Confirm">
+        <gog-icon name="check" />
+      </gog-button>
+      <gog-button variant="outline" type="button" ariaLabel="Dismiss">
+        <gog-icon name="close" />
+      </gog-button>
+      <gog-button variant="ghost" size="sm" type="button" ariaLabel="More info">
+        <gog-icon name="info" />
+      </gog-button>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Debounce guard</h3>
+    <p class="meta">
+      Clicks are throttled leading-edge: the first click fires immediately, further clicks are
+      dropped for <code>debounce</code> ms (default 300). Click rapidly and watch the counter lag
+      behind your clicks.
+    </p>
+    <div class="action-row">
+      <gog-button variant="primary" type="button" (gogClick)="onSpamClick()">Click me fast</gog-button>
+    </div>
+    <p class="meta">Accepted clicks: {{ clickCount() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Native type semantics</h3>
+    <p class="meta"><code>type</code> is forwarded to the native <code>&lt;button&gt;</code>.</p>
+    <form class="action-row" (submit)="onFormSubmit($event)" (reset)="onFormReset()">
+      <gog-button variant="primary" type="submit">Submit</gog-button>
+      <gog-button variant="outline" type="reset">Reset</gog-button>
+    </form>
+    <p class="meta">{{ formResult() }}</p>
   </article>
 </section>

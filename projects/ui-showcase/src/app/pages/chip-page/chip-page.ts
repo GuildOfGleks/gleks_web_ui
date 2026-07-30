@@ -28,6 +28,14 @@ export class ChipPage {
     },
   ];
 
+  protected readonly team = signal([
+    {
+      name: 'Priya Patel',
+      avatarUrl:
+        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><rect width='64' height='64' rx='32' fill='%237a5c00'/><text x='32' y='38' text-anchor='middle' font-size='24' font-family='Arial' fill='white'>PP</text></svg>",
+    },
+  ]);
+
   protected readonly lastAction = signal('No chip clicked yet.');
 
   protected onChipClick(label: string): void {
@@ -37,5 +45,10 @@ export class ChipPage {
   protected removeFilter(label: string): void {
     this.filters.update((current) => current.filter((item) => item !== label));
     this.lastAction.set(`Removed "${label}"`);
+  }
+
+  protected removeTeamMember(name: string): void {
+    this.team.update((current) => current.filter((member) => member.name !== name));
+    this.lastAction.set(`Removed "${name}"`);
   }
 }

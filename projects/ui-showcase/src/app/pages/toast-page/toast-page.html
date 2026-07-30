@@ -32,5 +32,28 @@
     </div>
   </article>
 
+  <article class="card">
+    <h3>Types</h3>
+    <p class="meta">Each type gets a default icon (success/error/warning/info) unless overridden.</p>
+    <div class="action-row">
+      <gog-button variant="outline" type="button" (gogClick)="showTypeGallery()">
+        Fire one of each type
+      </gog-button>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sticky &amp; duration</h3>
+    <p class="meta">
+      <code>isSticky</code> disables auto-dismiss entirely; <code>duration</code> overrides the
+      4s default.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" type="button" (gogClick)="showSticky()">Sticky toast</gog-button>
+      <gog-button variant="outline" type="button" (gogClick)="showLongDuration()">10s duration</gog-button>
+      <gog-button variant="ghost" type="button" (gogClick)="dismissAll()">Dismiss all</gog-button>
+    </div>
+  </article>
+
   <gog-toast-container [maxVisiblePerPosition]="5" />
 </section>

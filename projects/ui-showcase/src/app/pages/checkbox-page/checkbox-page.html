@@ -9,7 +9,7 @@
   </div>
 
   <article class="card">
-    <h3>States</h3>
+    <h3>States, disabled &amp; sizes</h3>
     <div class="checkbox-grid">
       <div class="checkbox-group">
         <h4 class="checkbox-group__title">Default</h4>
@@ -30,12 +30,53 @@
       </div>
 
       <div class="checkbox-group">
-        <h4 class="checkbox-group__title">Sizes</h4> 
+        <h4 class="checkbox-group__title">Sizes</h4>
         <gog-checkbox label="Small" size="sm" [(checked)]="triState" />
         <gog-checkbox label="Medium" size="md" [checked]="true" />
         <gog-checkbox label="Large" size="lg" [indeterminate]="true" />
       </div>
     </div>
     <p class="meta">{{ summary() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Labeling</h3>
+    <p class="meta">
+      With no <code>label</code>, nothing renders next to the box — use <code>ariaLabel</code>
+      so assistive tech still gets a name. Hover/inspect to confirm there's no visible text.
+    </p>
+    <div class="action-row">
+      <gog-checkbox label="Visible label" [(checked)]="starred" />
+      <gog-checkbox ariaLabel="Star this item (no visible label)" [(checked)]="starred" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Custom check icon</h3>
+    <p class="meta">
+      <code>checkIconTemplate</code> replaces the default checkmark glyph — here it's swapped
+      for a star.
+    </p>
+    <ng-template #starIcon>
+      <gog-icon name="warning" />
+    </ng-template>
+    <div class="action-row">
+      <gog-checkbox label="Custom icon" [checked]="true" [checkIconTemplate]="starIcon" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Reactive forms</h3>
+    <p class="meta">
+      Bound via <code>[formControl]</code> only — no <code>[(checked)]</code> — proving the
+      <code>ControlValueAccessor</code> wiring on its own.
+    </p>
+    <div class="action-row">
+      <gog-checkbox label="I agree to the terms (required)" [formControl]="requiredControl" />
+      <gog-button variant="outline" size="sm" type="button" (gogClick)="toggleFormDisabled()">
+        Toggle form-disabled
+      </gog-button>
+    </div>
+    <p class="meta">{{ requiredSummary() }}</p>
   </article>
 </section>

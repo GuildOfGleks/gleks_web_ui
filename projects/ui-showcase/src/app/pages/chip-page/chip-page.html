@@ -9,7 +9,7 @@
   </div>
 
   <article class="card">
-    <h3>People</h3>
+    <h3>People (avatar, clickable)</h3>
     <div class="chip-grid">
       @for (person of people; track person.name) {
         <gog-chip [avatarUrl]="person.avatarUrl" [ariaLabel]="person.name" (gogClick)="onChipClick(person.name)">
@@ -20,7 +20,7 @@
   </article>
 
   <article class="card">
-    <h3>Active filters</h3>
+    <h3>Active filters (removable)</h3>
     <div class="chip-grid">
       @for (filter of filters(); track filter) {
         <gog-chip [removable]="true" [removeAriaLabel]="'Remove filter ' + filter" (gogClick)="onChipClick(filter)" (gogRemove)="removeFilter(filter)">
@@ -32,12 +32,63 @@
   </article>
 
   <article class="card">
-    <h3>Sizes &amp; shapes</h3>
+    <h3>Avatar + removable</h3>
+    <p class="meta">The two features compose — an avatar chip can also be removable.</p>
+    <div class="chip-grid">
+      @for (member of team(); track member.name) {
+        <gog-chip
+          [avatarUrl]="member.avatarUrl"
+          [ariaLabel]="member.name"
+          [removable]="true"
+          [removeAriaLabel]="'Remove ' + member.name"
+          (gogRemove)="removeTeamMember(member.name)"
+        >
+          {{ member.name }}
+        </gog-chip>
+      }
+      @if (team().length === 0) {
+        <p class="meta">All team chips removed.</p>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
     <div class="chip-grid">
       <gog-chip size="sm">Small</gog-chip>
       <gog-chip size="md">Medium</gog-chip>
-      <gog-chip size="lg" shape="pill">Large pill</gog-chip>
-      <gog-chip iconName="info">With icon</gog-chip>
+      <gog-chip size="lg">Large</gog-chip>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Shapes</h3>
+    <div class="chip-grid">
+      <gog-chip shape="rounded">Rounded</gog-chip>
+      <gog-chip shape="pill">Pill</gog-chip>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Icon</h3>
+    <div class="chip-grid">
+      <gog-chip iconName="info">Informational</gog-chip>
+      <gog-chip iconName="success">Verified</gog-chip>
+      <gog-chip iconName="warning" [removable]="true">With icon &amp; remove</gog-chip>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Disabled &amp; non-clickable</h3>
+    <p class="meta">
+      <code>disabled</code> dims the chip and disables its remove button too.
+      <code>clickable="false"</code> keeps it fully opaque but drops the button role/cursor —
+      for a chip that's purely informational, not an action.
+    </p>
+    <div class="chip-grid">
+      <gog-chip [disabled]="true">Disabled</gog-chip>
+      <gog-chip [disabled]="true" [removable]="true">Disabled removable</gog-chip>
+      <gog-chip [clickable]="false">Not clickable</gog-chip>
     </div>
   </article>
 </section>

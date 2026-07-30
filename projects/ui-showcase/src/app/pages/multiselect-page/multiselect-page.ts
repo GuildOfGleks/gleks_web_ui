@@ -1,10 +1,16 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CheckboxComponent, GogMultiselectOption, GogSize, MultiselectComponent } from '@guildofgleks/ui';
+import {
+  CheckboxComponent,
+  GogMultiselectOption,
+  GogSize,
+  IconComponent,
+  MultiselectComponent,
+} from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-multiselect-page',
-  imports: [MultiselectComponent, CheckboxComponent, ReactiveFormsModule],
+  imports: [MultiselectComponent, CheckboxComponent, IconComponent, ReactiveFormsModule],
   templateUrl: './multiselect-page.html',
   styleUrl: './multiselect-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,4 +66,12 @@ export class MultiselectPage {
 
   protected readonly compactPanelValue = signal<(string | number)[]>([]);
   protected readonly bottomOfPageValue = signal<(string | number)[]>([]);
+
+  protected readonly sortOptions: GogMultiselectOption[] = [
+    { id: 'name', name: 'Name' },
+    { id: 'date', name: 'Date' },
+  ];
+  protected readonly sortValue = signal<(string | number)[]>([]);
+
+  protected readonly ariaOnlyValue = signal<(string | number)[]>([]);
 }

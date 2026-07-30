@@ -24,22 +24,37 @@
     </div>
     <p class="meta">
       The email error is computed by this page from the current value — `gog-inputfield` only
-      renders whatever `errorMessage` it's given.
+      renders whatever `errorMessage` it's given (`errorDisplay="manual"`, the default).
     </p>
   </article>
 
   <article class="card">
+    <h3>Password visibility toggle</h3>
+    <p class="lead">
+      Built in: any field with <code>type="password"</code> automatically gets a trailing
+      eye / eye-off button that swaps the native input type between <code>password</code> and
+      <code>text</code> — no extra wiring needed.
+    </p>
+    <div class="field-grid">
+      <gog-inputfield label="Password" inputId="password" type="password" [(value)]="password" />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Clickable icon action</h3>
-    <p class="lead">A trailing icon can act as a button via `iconEndFn`, e.g. a visibility toggle.</p>
+    <p class="lead">
+      A trailing icon can act as a button via <code>iconEndFn</code> — combined here with a
+      decorative leading icon.
+    </p>
     <div class="field-grid">
       <gog-inputfield
-        label="Password"
-        inputId="password"
-        [type]="passwordFieldType()"
-        [iconEnd]="showPassword() ? 'chevron-up' : 'chevron-down'"
-        [iconEndFn]="togglePasswordVisibility.bind(this)"
-        iconEndLabel="Toggle password visibility"
-        [(value)]="password"
+        label="Search"
+        inputId="search"
+        iconStart="info"
+        iconEnd="close"
+        [iconEndFn]="clearSearch.bind(this)"
+        iconEndLabel="Clear search"
+        [(value)]="search"
       />
     </div>
   </article>
@@ -51,6 +66,25 @@
       <gog-inputfield label="Medium" size="md" placeholder="Medium field" />
       <gog-inputfield label="Large" size="lg" placeholder="Large field" />
       <gog-inputfield label="Disabled" [disabled]="true" [(value)]="disabledValue" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Reactive forms — automatic error timing</h3>
+    <p class="lead">
+      With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides
+      for itself when to show the error — once the control has been touched and is invalid —
+      instead of the page computing that timing. Click the field, type less than 3 characters,
+      then click away.
+    </p>
+    <div class="field-grid">
+      <gog-inputfield
+        label="Username"
+        inputId="username"
+        [formControl]="usernameControl"
+        errorDisplay="auto"
+        [errorMessage]="usernameErrorMessage()"
+      />
     </div>
   </article>
 </section>

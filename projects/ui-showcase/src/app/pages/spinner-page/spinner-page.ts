@@ -10,8 +10,10 @@ import { ButtonComponent, GogSize, SpinnerComponent, SpinnerOverlayComponent } f
 })
 export class SpinnerPage implements OnDestroy {
   protected readonly showOverlay = signal(false);
+  protected readonly showFullscreenOverlay = signal(false);
   protected readonly sizes: GogSize[] = ['sm', 'md', 'lg'];
   private overlayTimer: ReturnType<typeof setTimeout> | null = null;
+  private fullscreenTimer: ReturnType<typeof setTimeout> | null = null;
 
   protected previewOverlay(): void {
     if (this.overlayTimer) {
@@ -25,9 +27,24 @@ export class SpinnerPage implements OnDestroy {
     }, 1500);
   }
 
+  protected previewFullscreenOverlay(): void {
+    if (this.fullscreenTimer) {
+      clearTimeout(this.fullscreenTimer);
+    }
+
+    this.showFullscreenOverlay.set(true);
+    this.fullscreenTimer = setTimeout(() => {
+      this.showFullscreenOverlay.set(false);
+      this.fullscreenTimer = null;
+    }, 1500);
+  }
+
   ngOnDestroy(): void {
     if (this.overlayTimer) {
       clearTimeout(this.overlayTimer);
+    }
+    if (this.fullscreenTimer) {
+      clearTimeout(this.fullscreenTimer);
     }
   }
 }

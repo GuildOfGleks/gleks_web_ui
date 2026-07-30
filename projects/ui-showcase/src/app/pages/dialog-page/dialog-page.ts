@@ -53,6 +53,95 @@ export class DialogPage {
     });
   }
 
+  protected openNonModalDialog(): void {
+    const ref = this.dialogService.open<boolean>({
+      title: 'Non-modal dialog',
+      component: ConfirmationDialogComponent,
+      data: {
+        title: 'Non-modal dialog',
+        description: 'modal="false" — no backdrop dimming, no focus trap; the rest of the page stays interactive while this is open.',
+        confirmText: 'Got it',
+        cancelText: 'Close',
+      },
+      modal: false,
+      closable: true,
+      draggable: true,
+      width: 'min(100%, 28rem)',
+    });
+
+    void ref.afterClosed.then(() => this.lastDialogResult.set('Non-modal dialog closed'));
+  }
+
+  protected openNonClosableDialog(): void {
+    const ref = this.dialogService.open<boolean>({
+      component: ConfirmationDialogComponent,
+      data: {
+        title: 'No escape hatch',
+        description: 'closable="false" — no header, no X button, Escape and backdrop clicks do nothing. Only the buttons below can close it.',
+        confirmText: 'Acknowledge',
+        cancelText: 'Dismiss',
+      },
+      modal: true,
+      closable: false,
+      width: 'min(100%, 28rem)',
+    });
+
+    void ref.afterClosed.then(() => this.lastDialogResult.set('Non-closable dialog closed via its own buttons'));
+  }
+
+  protected openNonDraggableDialog(): void {
+    const ref = this.dialogService.open<boolean>({
+      title: 'Fixed in place',
+      component: ConfirmationDialogComponent,
+      data: {
+        title: 'Fixed in place',
+        description: 'draggable="false" — the header is still there, but dragging it does nothing.',
+        confirmText: 'OK',
+        cancelText: 'Close',
+      },
+      modal: true,
+      closable: true,
+      draggable: false,
+      width: 'min(100%, 28rem)',
+    });
+
+    void ref.afterClosed.then(() => this.lastDialogResult.set('Non-draggable dialog closed'));
+  }
+
+  protected openStackedDialogs(): void {
+    this.dialogService.open<boolean>({
+      title: 'Bottom dialog',
+      component: ConfirmationDialogComponent,
+      data: {
+        title: 'Bottom dialog',
+        description: 'Drag the dialog on top by its header to reveal this one underneath it.',
+        confirmText: 'OK',
+        cancelText: 'Close',
+      },
+      modal: true,
+      closable: true,
+      draggable: true,
+      width: 'min(100%, 26rem)',
+    });
+
+    const top = this.dialogService.open<boolean>({
+      title: 'Top dialog',
+      component: ConfirmationDialogComponent,
+      data: {
+        title: 'Top dialog',
+        description: 'Opened second, so it stacks above the first with a higher z-index. Drag me by the header.',
+        confirmText: 'OK',
+        cancelText: 'Close',
+      },
+      modal: true,
+      closable: true,
+      draggable: true,
+      width: 'min(100%, 26rem)',
+    });
+
+    void top.afterClosed.then(() => this.lastDialogResult.set('Top dialog of the stack closed'));
+  }
+
   protected openLoadingDialog(): void {
     const ref = this.dialogService.open<void>({
       title: 'Warehouse inventory snapshot',

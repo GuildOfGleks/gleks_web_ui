@@ -76,6 +76,21 @@
   </article>
 
   <article class="card">
+    <h3>Custom chevron &amp; label-less field</h3>
+    <p class="lead">
+      <code>chevronTemplate</code> swaps the trigger's icon. <code>ariaLabel</code> names a
+      field that has no visible <code>label</code> at all.
+    </p>
+    <ng-template #sortChevron>
+      <gog-icon name="sort" />
+    </ng-template>
+    <div class="field-grid">
+      <gog-multiselect [options]="sortOptions" [chevronTemplate]="sortChevron" [(value)]="sortValue" />
+      <gog-multiselect ariaLabel="Tags (no visible label)" placeholder="Pick tags" [options]="tags" [(value)]="ariaOnlyValue" />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Append to body</h3>
     <p class="lead">
       Useful inside scrollable or overflow-clipped containers — the panel escapes into

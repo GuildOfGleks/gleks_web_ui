@@ -60,4 +60,31 @@ export class ToastPage {
       this.toastService.info(`Queued toast ${index}`, { position: 'top-right' });
     }
   }
+
+  protected showTypeGallery(): void {
+    this.toastService.success('Success — saved successfully.');
+    this.toastService.error('Error — something went wrong.');
+    this.toastService.warning('Warning — check this before continuing.');
+    this.toastService.info('Info — just so you know.');
+  }
+
+  protected showSticky(): void {
+    this.toastService.show({
+      message: 'Sticky — stays until dismissed or "Dismiss all" is clicked.',
+      type: 'warning',
+      isSticky: true,
+    });
+  }
+
+  protected showLongDuration(): void {
+    this.toastService.show({
+      message: 'Slow — auto-dismisses after 10s instead of the 4s default.',
+      type: 'info',
+      duration: 10000,
+    });
+  }
+
+  protected dismissAll(): void {
+    this.toastService.dismissAll();
+  }
 }
