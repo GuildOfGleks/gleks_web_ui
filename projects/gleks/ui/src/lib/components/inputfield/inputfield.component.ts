@@ -50,6 +50,10 @@ export class InputfieldComponent implements ControlValueAccessor {
   readonly iconStartLabel = input('');
   /** aria-label for the end icon button (required when iconEndFn is set) */
   readonly iconEndLabel = input('');
+  /** aria-label for the reveal-password button, shown when `type` is `'password'` */
+  readonly showPasswordLabel = input('Show password');
+  /** aria-label for the hide-password button, shown once the password is revealed */
+  readonly hidePasswordLabel = input('Hide password');
 
   /** Two-way bindable value: `[(value)]="signal"` or `[value]` / `(valueChange)`. */
   readonly value = model<string>('');
@@ -57,17 +61,34 @@ export class InputfieldComponent implements ControlValueAccessor {
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cvaDisabled = signal(false);
   private readonly errorState = new GogErrorState(this.errorMessage, this.errorDisplay, this.ngControl);
+  private readonly passwordVisible = signal(false);
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
+  protected readonly isPasswordField = computed(() => this.type() === 'password');
+  protected readonly effectiveType = computed(() =>
+    this.isPasswordField() && this.passwordVisible() ? 'text' : this.type(),
+  );
   protected readonly effectiveAutocomplete = computed(
    () => this.autocomplete() || (this.type() === 'password' ? 'current-password' : 'off'),
   );
   protected readonly hasError = this.errorState.hasError;
   protected readonly visibleError = this.errorState.visibleError;
   protected readonly hasIconStart = computed(() => !!this.iconStartTemplate() || !!this.iconStart());
-  protected readonly hasIconEnd = computed(() => !!this.iconEndTemplate() || !!this.iconEnd());
   protected readonly hasIconStartAction = computed(() => !!this.iconStartFn());
-  protected readonly hasIconEndAction = computed(() => !!this.iconEndFn());
+
+  /** For password fields the trailing icon is always the built-in show/hide toggle. */
+  protected readonly effectiveIconEnd = computed<GogIconName | ''>(() =>
+    this.isPasswordField() ? (this.passwordVisible() ? 'eye-off' : 'eye') : this.iconEnd(),
+  );
+  protected readonly effectiveIconEndLabel = computed(() =>
+    this.isPasswordField()
+      ? this.passwordVisible()
+        ? this.hidePasswordLabel()
+        : this.showPasswordLabel()
+      : this.iconEndLabel(),
+  );
+  protected readonly hasIconEnd = computed(() => !!this.iconEndTemplate() || !!this.effectiveIconEnd());
+  protected readonly hasIconEndAction = computed(() => this.isPasswordField() || !!this.iconEndFn());
 
   private _onChange: (val: string) => void = () => {};
   private _onTouched: () => void = () => {};
@@ -106,6 +127,10 @@ export class InputfieldComponent implements ControlValueAccessor {
   }
 
   protected onIconEndClick(): void {
+    if (this.isPasswordField()) {
+      this.passwordVisible.update((visible) => !visible);
+      return;
+    }
     this.iconEndFn()?.();
   }
 

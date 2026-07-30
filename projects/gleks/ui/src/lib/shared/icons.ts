@@ -1,6 +1,3 @@
-import { Component, TemplateRef, computed, input } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
-
 export type GogIconName =
   | 'check'
   | 'close'
@@ -14,63 +11,39 @@ export type GogIconName =
   | 'warning'
   | 'info'
   | 'checkbox'
-  | 'checkbox-checked';
+  | 'checkbox-checked'
+  | 'eye'
+  | 'eye-off';
 
 export const ICON_DEFS: Record<GogIconName, string> = {
-  check: `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-</svg>`,
+  check: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>`,
 
-  close: `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-</svg>`,
+  close: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`,
 
-  'chevron-up': `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <path d="M4 10L8 6L12 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-</svg>`,
+  'chevron-up': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up-icon lucide-chevron-up"><path d="m18 15-6-6-6 6"/></svg>`,
 
-  'chevron-down': `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-</svg>`,
+  'chevron-down': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>`,
 
-  sort: `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <path d="M5 5.5H11M5 8H11M5 10.5H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-</svg>`,
+  sort: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-up-icon lucide-arrow-down-up"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>`,
 
-  'sort-up': `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <path d="M8 3L4.5 6.5H11.5L8 3Z" fill="currentColor" />
-</svg>`,
+  'sort-up': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-narrow-wide-icon lucide-arrow-up-narrow-wide"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="M11 12h4"/><path d="M11 16h7"/><path d="M11 20h10"/></svg>`,
 
-  'sort-down': `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <path d="M8 13L11.5 9.5H4.5L8 13Z" fill="currentColor" />
-</svg>`,
+  'sort-down': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-wide-narrow-icon lucide-arrow-down-wide-narrow"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>`,
 
-  success: `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <path d="M3 8.5L6.2 11.7L13 4.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-</svg>`,
+  success: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>`,
 
-  error: `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-</svg>`,
+  error: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bug-icon lucide-bug"><path d="M12 20v-9"/><path d="M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z"/><path d="M14.12 3.88 16 2"/><path d="M21 21a4 4 0 0 0-3.81-4"/><path d="M21 5a4 4 0 0 1-3.55 3.97"/><path d="M22 13h-4"/><path d="M3 21a4 4 0 0 1 3.81-4"/><path d="M3 5a4 4 0 0 0 3.55 3.97"/><path d="M6 13H2"/><path d="m8 2 1.88 1.88"/><path d="M9 7.13V6a3 3 0 1 1 6 0v1.13"/></svg>`,
 
-  warning: `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <path d="M8 3L14 13H2L8 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-  <path d="M8 6V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-  <circle cx="8" cy="11.5" r="0.75" fill="currentColor" />
-</svg>`,
+  warning: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert-icon lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
 
-  info: `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5" />
-  <path d="M8 7V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-  <circle cx="8" cy="5.25" r="0.75" fill="currentColor" />
-</svg>`,
+  info: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info-icon lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`,
 
-  checkbox: `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <rect x="2.5" y="2.5" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.5" />
-</svg>`,
+  checkbox: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-icon lucide-square"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>`,
 
-  'checkbox-checked': `<svg class="gog-icon__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-  <rect x="2.5" y="2.5" width="11" height="11" rx="2" fill="currentColor" stroke="currentColor" stroke-width="1.5" />
-  <path d="M4 8L6.75 10.75L12 5.5" stroke="var(--gog-ms-checkbox-checked-color)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
-</svg>`,
+  'checkbox-checked': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>`,
+
+  eye: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>`,
+
+  'eye-off': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off-icon lucide-eye-off"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>`,
 };
+

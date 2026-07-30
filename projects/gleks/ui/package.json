@@ -1,6 +1,6 @@
 {
   "name": "@guildofgleks/ui",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A lightweight Angular 21 component library — standalone, signal-based, OnPush, with no CDK or Material dependency.",
   "keywords": [
     "angular",

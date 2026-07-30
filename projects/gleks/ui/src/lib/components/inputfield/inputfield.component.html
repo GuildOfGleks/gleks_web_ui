@@ -31,7 +31,7 @@
       class="gog-input__field font-body"
       [class.gog-input__field--error]="hasError()"
       [attr.id]="inputId() || null"
-      [type]="type()"
+      [type]="effectiveType()"
       [attr.name]="name() || null"
       [placeholder]="placeholder()"
       [value]="value()"
@@ -47,14 +47,14 @@
         <button
           type="button"
           class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action"
-          [attr.aria-label]="iconEndLabel() || null"
+          [attr.aria-label]="effectiveIconEndLabel() || null"
           (click)="onIconEndClick()"
         >
-          <gog-icon [template]="iconEndTemplate()" [name]="iconEnd() || 'check'" />
+          <gog-icon [template]="iconEndTemplate()" [name]="effectiveIconEnd() || 'check'" />
         </button>
       } @else {
         <span class="gog-input__icon gog-inline-center gog-input__icon--end" aria-hidden="true">
-          <gog-icon [template]="iconEndTemplate()" [name]="iconEnd() || 'check'" />
+          <gog-icon [template]="iconEndTemplate()" [name]="effectiveIconEnd() || 'check'" />
         </span>
       }
     }

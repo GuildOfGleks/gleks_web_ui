@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, TemplateRef, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, TemplateRef, computed, input, inject } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { GogIconName, ICON_DEFS } from '../../shared/icons';
 
 export type { GogIconName } from '../../shared/icons';
@@ -23,6 +24,8 @@ export type { GogIconName } from '../../shared/icons';
   },
 })
 export class IconComponent {
+  private readonly sanitizer = inject(DomSanitizer);
+
   readonly name = input<GogIconName>('close');
   readonly template = input<TemplateRef<unknown> | null>(null);
   readonly title = input('');
@@ -30,7 +33,5 @@ export class IconComponent {
 
   protected readonly ariaLabel = computed(() => (this.ariaHidden() ? null : this.title() || this.name()));
 
-  protected iconSvg() {
-    return ICON_DEFS[this.name()];
-  }
+  protected readonly iconSvg = computed(() => this.sanitizer.bypassSecurityTrustHtml(ICON_DEFS[this.name()]));
 }
