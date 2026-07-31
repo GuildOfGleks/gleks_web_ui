@@ -1,0 +1,152 @@
+<div class="generator-header">
+  <a routerLink="/general/theming" class="generator-header__back">← Back to Theming</a>
+  <h1 class="generator-header__title font-heading">Theme Generator</h1>
+  <p class="generator-header__intro">
+    Pick a component, edit any token below and watch the preview update live. Copy the
+    result whenever you like — nothing is saved, reloading the page resets everything.
+  </p>
+
+  <gog-select
+    label="Component"
+    inputId="generator-component"
+    [options]="componentOptions"
+    [value]="selectedComponentId()"
+    (valueChange)="onComponentChange($event)"
+  />
+</div>
+
+<div class="generator-layout">
+  <div class="generator-preview">
+    <div class="generator-preview__label">Live preview</div>
+    <div #previewWrapper class="generator-preview__stage" [style]="previewStyle()">
+      @switch (selectedComponentId()) {
+        @case ('accordion') {
+          <gog-accordion [items]="accordionItems" [expandFirst]="true">
+            <ng-template gogAccordionContent let-item>
+              <p>{{ item.body }}</p>
+            </ng-template>
+          </gog-accordion>
+        }
+        @case ('button') {
+          <div class="generator-preview__row">
+            <gog-button variant="primary">Primary</gog-button>
+            <gog-button variant="secondary">Secondary</gog-button>
+            <gog-button variant="outline">Outline</gog-button>
+            <gog-button variant="ghost">Ghost</gog-button>
+          </div>
+        }
+        @case ('checkbox') {
+          <gog-checkbox label="Checked option" [checked]="true" />
+        }
+        @case ('chip') {
+          <div class="generator-preview__row">
+            <gog-chip>Angular</gog-chip>
+            <gog-chip iconName="info">Informational</gog-chip>
+          </div>
+        }
+        @case ('dialog') {
+          <gog-button variant="primary" type="button" (gogClick)="openDialogPreview()">
+            Open dialog
+          </gog-button>
+          <gog-dialog />
+        }
+        @case ('icon') {
+          <div class="generator-preview__row">
+            <gog-icon name="check" />
+            <gog-icon name="info" />
+            <gog-icon name="warning" />
+          </div>
+        }
+        @case ('inputfield') {
+          <gog-inputfield label="Name" inputId="preview-name" [value]="'Ada Lovelace'" />
+        }
+        @case ('multiselect') {
+          <gog-multiselect label="Features" [options]="multiselectOptions" [value]="['toast']" />
+        }
+        @case ('paginator') {
+          <gog-paginator [page]="2" [totalPages]="5" />
+        }
+        @case ('select') {
+          <gog-select
+            label="Framework"
+            inputId="preview-framework"
+            [options]="selectOptions"
+            [value]="'angular'"
+          />
+        }
+        @case ('skeleton') {
+          <gog-skeleton shape="text" [lines]="3" style="width: 220px" />
+        }
+        @case ('slider') {
+          <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [value]="45" />
+        }
+        @case ('spinner') {
+          <gog-spinner size="lg" ariaLabel="Loading" />
+        }
+        @case ('table') {
+          <gog-table [value]="tableRows" size="md">
+            <column field="component" header="Component" [sortable]="true"></column>
+            <column field="status" header="Status"></column>
+          </gog-table>
+        }
+        @case ('tag') {
+          <div class="generator-preview__row">
+            <gog-tag variant="success">Available</gog-tag>
+            <gog-tag variant="danger">Deprecated</gog-tag>
+            <gog-tag variant="warning">Beta</gog-tag>
+            <gog-tag variant="info">New</gog-tag>
+          </div>
+        }
+        @case ('toast') {
+          <gog-toast [toast]="previewToast" />
+        }
+      }
+    </div>
+  </div>
+
+  <div class="generator-editor">
+    <div class="generator-editor__header">
+      <h3 class="generator-editor__title">{{ selectedLabel() }} tokens</h3>
+      <button type="button" class="generator-editor__reset-all" (click)="resetAll()">
+        Reset all
+      </button>
+    </div>
+
+    @if (tokenNames().length === 0) {
+      <p class="generator-editor__loading">Loading tokens…</p>
+    } @else {
+      <div class="generator-editor__list">
+        @for (name of tokenNames(); track name) {
+          <div class="generator-editor__row">
+            <code class="generator-editor__name">{{ name }}</code>
+            <input
+              type="text"
+              class="generator-editor__input"
+              [value]="currentValue(name)"
+              (input)="onTokenInput(name, $any($event.target).value)"
+            />
+            @if (overrides()[name] !== undefined) {
+              <button
+                type="button"
+                class="generator-editor__row-reset"
+                [attr.aria-label]="'Reset ' + name + ' to default'"
+                (click)="resetToken(name)"
+              >
+                ✕
+              </button>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<section class="generator-output">
+  <h3 class="generator-output__title">Copy this component's theme</h3>
+  @if (generatedCssMarkdown(); as css) {
+    <app-markdown [markdown]="css" />
+  } @else {
+    <p class="generator-editor__loading">Loading…</p>
+  }
+</section>

@@ -111,6 +111,7 @@
   min-width: 0; /* предотвращает расползание flex-элементов */
 
   .content-container {
+    box-sizing: border-box;
     padding: 36px 48px;
     max-width: 960px;
     width: 100%;

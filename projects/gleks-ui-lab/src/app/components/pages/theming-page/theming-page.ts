@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { httpResource } from '@angular/common/http';
 import {
   AccordionComponent,
+  ButtonComponent,
   GogAccordionContentDirective,
   type GogAccordionItem,
 } from '@guildofgleks/ui';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from './token-reference-data';
-import { injectFullLibraryCss } from './full-library-css';
+import { injectFullLibraryCss } from '../../shared/full-library-css';
 
 interface FullCssSection extends GogAccordionItem {
   readonly markdown?: string;
@@ -15,7 +17,7 @@ interface FullCssSection extends GogAccordionItem {
 
 @Component({
   selector: 'app-theming-page',
-  imports: [MarkdownComponent, AccordionComponent, GogAccordionContentDirective],
+  imports: [RouterLink, MarkdownComponent, AccordionComponent, GogAccordionContentDirective, ButtonComponent],
   templateUrl: './theming-page.html',
   styleUrl: './theming-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

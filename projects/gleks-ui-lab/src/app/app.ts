@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ButtonComponent, SelectComponent, ThemeService } from '@guildofgleks/ui';
+import { ButtonComponent, ThemeService } from '@guildofgleks/ui';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faPalette } from '@fortawesome/free-solid-svg-icons';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
@@ -12,13 +12,7 @@ interface ThemeMenuOption {
 
 @Component({
   selector: 'app-root',
-  imports: [
-    RouterOutlet,
-    SelectComponent,
-    FaIconComponent,
-    ButtonComponent,
-    SidebarLeftComponent,
-  ],
+  imports: [RouterOutlet, FaIconComponent, ButtonComponent, SidebarLeftComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
