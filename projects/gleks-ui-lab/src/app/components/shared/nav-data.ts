@@ -1,8 +1,9 @@
 import { NavItem, NavSection } from '../types/nav-item';
 
-const GENERAL_NAV_ITEMS: readonly NavItem[] = [
+export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Overview', path: 'general/overview' },
   { label: 'Getting Started', path: 'general/getting-started' },
+  { label: 'Theming', path: 'general/theming' },
   { label: 'Compare with Material and PrimeNG', path: 'general/compare' },
   { label: 'FAQ', path: 'general/faq' },
 ];

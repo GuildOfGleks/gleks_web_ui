@@ -1,0 +1,46 @@
+@if (hasMarkdown()) {
+  <app-markdown [markdown]="markdown()!" />
+}
+
+<section class="token-reference">
+  <h2 class="token-reference__title font-heading">Token Reference</h2>
+  <p class="token-reference__intro">
+    Every CSS custom property a component paints with, grouped by area. Override any of
+    them — on a single instance, a subtree, or a theme — to restyle the library.
+  </p>
+
+  <gog-accordion [items]="tokenSections" [multi]="true" size="md">
+    <ng-template gogAccordionContent let-item>
+      <div class="token-table-scroll">
+        <table class="token-table">
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of $any(item.tokens); track row.name) {
+              <tr>
+                <td><code>{{ row.name }}</code></td>
+                <td>{{ row.description }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </ng-template>
+  </gog-accordion>
+
+  <p class="token-reference__full-intro">Or see everything at once, ready to copy:</p>
+
+  <gog-accordion class="token-reference__full" [items]="fullCssSections()" size="md">
+    <ng-template gogAccordionContent let-item>
+      @if ($any(item.markdown); as css) {
+        <app-markdown [markdown]="css" />
+      } @else {
+        <p class="token-reference__loading">Loading…</p>
+      }
+    </ng-template>
+  </gog-accordion>
+</section>

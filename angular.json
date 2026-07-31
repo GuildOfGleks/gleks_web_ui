@@ -156,6 +156,11 @@
               {
                 "glob": "**/*",
                 "input": "projects/gleks-ui-lab/public"
+              },
+              {
+                "glob": "*.css",
+                "input": "node_modules/@guildofgleks/ui/src/styles",
+                "output": "docs/styles"
               }
             ],
             "styles": [

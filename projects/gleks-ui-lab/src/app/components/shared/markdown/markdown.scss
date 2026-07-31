@@ -1,0 +1,178 @@
+app-markdown {
+  display: block;
+}
+
+.markdown-body {
+  color: var(--gog-text-color);
+  font-size: var(--gog-text-md);
+  line-height: 1.6;
+
+  :first-child {
+    margin-top: 0;
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: var(--gog-accent-color);
+    line-height: 1.3;
+    margin: 1.6em 0 0.6em;
+  }
+
+  h1 {
+    font-size: var(--gog-text-2xl);
+  }
+
+  h2 {
+    font-size: var(--gog-text-xl);
+    border-bottom: 1px solid var(--gog-border-color);
+    padding-bottom: 0.3em;
+  }
+
+  h3 {
+    font-size: var(--gog-text-lg);
+  }
+
+  p,
+  ul,
+  ol {
+    margin: 0 0 1em;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.4em;
+  }
+
+  li + li {
+    margin-top: 0.3em;
+  }
+
+  a {
+    color: var(--gog-accent-color);
+  }
+
+  strong {
+    color: var(--gog-text-color);
+  }
+
+  p code {
+    font-family: var(--gog-font-mono);
+    font-size: 0.9em;
+    background-color: var(--gog-hover-color);
+    border-radius: 4px;
+    padding: 0.15em 0.4em;
+  }
+
+  blockquote {
+    margin: 0 0 1em;
+    padding: 0.4em 1em;
+    border-left: 3px solid var(--gog-accent-color);
+    color: var(--gog-muted-text-color);
+  }
+}
+
+/* Fenced code blocks — rendered by the custom `marked` renderer in markdown-renderer.ts */
+.code-block {
+  margin: 0 0 1.2em;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background-color: var(--gog-surface-color);
+  overflow: hidden;
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background-color: var(--gog-hover-color);
+    border-bottom: 1px solid var(--gog-border-color);
+  }
+
+  &__lang {
+    font-family: var(--gog-font-mono);
+    font-size: var(--gog-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gog-muted-text-color);
+  }
+
+  &__copy {
+    font-family: var(--gog-font-body);
+    font-size: var(--gog-text-xs);
+    padding: 3px 10px;
+    border: 1px solid var(--gog-border-color);
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--gog-muted-text-color);
+    cursor: pointer;
+    transition: all var(--gog-duration-fast);
+
+    &:hover {
+      color: var(--gog-accent-color);
+      border-color: var(--gog-accent-color);
+    }
+  }
+
+  pre {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: auto;
+  }
+
+  code {
+    font-family: var(--gog-font-mono);
+    font-size: var(--gog-text-sm);
+  }
+}
+
+/* highlight.js token colors, mapped to the library's theme tokens so code blocks
+   follow light/dark theme switches instead of shipping a fixed hljs theme. */
+.hljs-comment,
+.hljs-quote {
+  color: var(--gog-muted-text-color);
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-type,
+.hljs-built_in {
+  color: var(--gog-accent-color);
+  font-weight: 600;
+}
+
+.hljs-string,
+.hljs-symbol,
+.hljs-addition {
+  color: var(--gog-success-color);
+}
+
+.hljs-number {
+  color: var(--gog-info-color);
+}
+
+.hljs-title,
+.hljs-section {
+  color: var(--gog-accent-bright);
+}
+
+.hljs-name,
+.hljs-tag {
+  color: var(--gog-accent-color);
+}
+
+.hljs-attr,
+.hljs-attribute {
+  color: var(--gog-secondary-color);
+}
+
+.hljs-variable,
+.hljs-template-variable {
+  color: var(--gog-warning-color);
+}
+
+.hljs-deletion {
+  color: var(--gog-danger-color);
+}
