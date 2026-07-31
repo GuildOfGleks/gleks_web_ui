@@ -1,6 +1,6 @@
 .lab-layout {
   display: grid;
-  grid-template-columns: 240px 1fr 220px; /* Сайдбар слева | Контент | Панель справа */
+  grid-template-columns: 180px 1fr 180px; /* Сайдбар слева | Контент | Панель справа */
   grid-template-rows: 60px 1fr;
   grid-template-areas:
     "header  header  header"
@@ -97,44 +97,9 @@
   top: 60px;
   overflow-y: auto;
   height: calc(100vh - 60px);
+  padding: 0;
   background-color: var(--gog-surface-color);
   border-right: 1px solid var(--gog-border-color);
-
-  .sidebar-title {
-    font-size: var(--gog-text-xs);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--gog-muted-text-color);
-    margin-bottom: 12px;
-    padding-left: 8px;
-  }
-
-  .component-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    .nav-item {
-      padding: 8px 12px;
-      border-radius: var(--gog-radius);
-      color: var(--gog-text-color);
-      text-decoration: none;
-      font-size: var(--gog-text-sm);
-      transition: all var(--gog-duration-fast);
-
-      &:hover {
-        background-color: var(--gog-hover-color);
-        color: var(--gog-accent-color);
-      }
-
-      &.active {
-        background-color: color-mix(in srgb, var(--gog-accent-color) 15%, transparent);
-        color: var(--gog-accent-color);
-        font-weight: 600;
-        border-left: 3px solid var(--gog-accent-color);
-      }
-    }
-  }
 }
 
 /* 3. Центральная область (Контент + Футер) */
@@ -213,7 +178,7 @@
 /* Адаптив под планшеты и мобильные */
 @media (max-width: 1100px) {
   .lab-layout {
-    grid-template-columns: 220px 1fr;
+    grid-template-columns: 180px 1fr;
     grid-template-areas:
       "header  header"
       "sidebar main";

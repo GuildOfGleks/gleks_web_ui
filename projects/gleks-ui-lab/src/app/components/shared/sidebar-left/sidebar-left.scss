@@ -1,0 +1,41 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sidebar-title {
+  font-size: var(--gog-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--gog-muted-text-color);
+  margin-bottom: 12px;
+  padding-left: 8px;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .nav-item {
+    padding: 8px 12px;
+    border-radius: var(--gog-radius);
+    color: var(--gog-text-color);
+    text-decoration: none;
+    font-size: var(--gog-text-sm);
+    transition: all var(--gog-duration-fast);
+
+    &:hover {
+      background-color: var(--gog-hover-color);
+      color: var(--gog-accent-color);
+    }
+
+    &.active {
+      background-color: color-mix(in srgb, var(--gog-accent-color) 15%, transparent);
+      color: var(--gog-accent-color);
+      font-weight: 600;
+      border-left: 3px solid var(--gog-accent-color);
+    }
+  }
+}

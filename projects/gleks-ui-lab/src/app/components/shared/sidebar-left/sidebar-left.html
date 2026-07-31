@@ -1,0 +1,11 @@
+@for (section of sections; track section.title) {
+  <div class="nav-section">
+    <div class="sidebar-title font-heading">{{ section.title }}</div>
+
+    <nav class="nav-list">
+      @for (item of section.items; track item.path) {
+        <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{ item.label }}</a>
+      }
+    </nav>
+  </div>
+}

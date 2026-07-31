@@ -1,0 +1,16 @@
+.page-stub {
+  padding: 32px;
+  border: 1px dashed var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+
+  &__title {
+    margin-top: 0;
+    color: var(--gog-accent-color);
+  }
+
+  &__text {
+    color: var(--gog-muted-text-color);
+    margin-bottom: 0;
+  }
+}
