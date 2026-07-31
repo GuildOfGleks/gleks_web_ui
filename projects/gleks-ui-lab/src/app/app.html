@@ -8,9 +8,33 @@
     </div>
 
     <div class="header-controls">
-      <button class="theme-btn" (click)="toggleTheme()">
-        <fa-icon [icon]="isDark() ? faMoon : faSun"></fa-icon>
-      </button>
+      <div class="theme-switcher">
+        <gog-button
+          variant="ghost"
+          size="sm"
+          ariaLabel="Change theme"
+          (gogClick)="toggleThemeMenu()"
+        >
+          <fa-icon [icon]="faPalette"></fa-icon>
+        </gog-button>
+
+        @if (isThemeMenuOpen()) {
+          <div class="theme-switcher__menu" role="menu" aria-label="Theme">
+            @for (option of themeOptions; track option.value) {
+              <button
+                type="button"
+                role="menuitemradio"
+                class="theme-switcher__item"
+                [class.theme-switcher__item--active]="option.value === activeTheme()"
+                [attr.aria-checked]="option.value === activeTheme()"
+                (click)="selectTheme(option.value)"
+              >
+                {{ option.label }}
+              </button>
+            }
+          </div>
+        }
+      </div>
       <a href="https://www.npmjs.com/package/@guildofgleks/ui" target="_blank" class="nav-link">NPM</a>
     </div>
   </header>
