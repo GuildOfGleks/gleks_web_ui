@@ -74,6 +74,20 @@ describe('TableComponent', () => {
 
       expect((fixture.nativeElement as HTMLElement).style.width).toBe('fit-content');
     });
+
+    it('should also shrink the inner <table>, not just the host', async () => {
+      // table-layout:fixed doesn't resolve a percentage width against a shrink-to-fit
+      // ancestor the way an ordinary block box would, so the host alone reporting
+      // fit-content isn't enough — the <table> element itself needs the same override,
+      // or it keeps demanding its old 100%-of-something width and drags the host along.
+      const table = fixture.nativeElement.querySelector('table.gog-table') as HTMLTableElement;
+      expect(table.style.width).toBe('100%');
+
+      fixture.componentRef.setInput('fullWidth', false);
+      await fixture.whenStable();
+
+      expect(table.style.width).toBe('fit-content');
+    });
   });
 
   it('should sort rows by the configured field', () => {

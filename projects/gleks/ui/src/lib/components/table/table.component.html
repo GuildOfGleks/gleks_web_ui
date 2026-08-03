@@ -9,6 +9,7 @@
       [class.gog-table--sticky-header]="stickyHeader()"
       [class.gog-table--sm]="size() === 'sm'"
       [class.gog-table--xsm]="size() === 'xsm'"
+      [style.width]="fullWidth() ? '100%' : 'fit-content'"
     >
       <colgroup>
         @if (showRowNumbers()) {
