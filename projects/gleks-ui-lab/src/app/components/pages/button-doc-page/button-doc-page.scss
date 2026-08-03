@@ -1,0 +1,165 @@
+.button-doc {
+  &__hero {
+    margin-bottom: 2em;
+  }
+
+  &__eyebrow {
+    margin: 0 0 0.4em;
+    font-family: var(--gog-font-mono);
+    font-size: var(--gog-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gog-accent-color);
+  }
+
+  &__title {
+    margin: 0 0 0.4em;
+    font-size: var(--gog-text-2xl);
+  }
+
+  &__lead {
+    margin: 0;
+    max-width: 60ch;
+    color: var(--gog-muted-text-color);
+    line-height: 1.6;
+  }
+}
+
+.doc-section {
+  margin-top: 2.4em;
+
+  &__title {
+    font-size: var(--gog-text-xl);
+    color: var(--gog-accent-color);
+    border-bottom: 1px solid var(--gog-border-color);
+    padding-bottom: 0.3em;
+    margin: 0 0 0.6em;
+  }
+
+  &__subtitle {
+    font-size: var(--gog-text-md);
+    margin: 1.4em 0 0.6em;
+  }
+
+  &__intro {
+    color: var(--gog-text-color);
+    line-height: 1.6;
+    margin: 0 0 1em;
+
+    a {
+      color: var(--gog-accent-color);
+    }
+  }
+
+  &__meta {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+    margin: 0.6em 0;
+  }
+}
+
+.demo-card {
+  margin-bottom: 1.6em;
+  padding: 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+
+  &__title {
+    margin: 0 0 0.4em;
+    font-size: var(--gog-text-md);
+  }
+
+  &__meta {
+    margin: 0 0 1em;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+
+    code {
+      font-family: var(--gog-font-mono);
+      font-size: 0.9em;
+      background-color: var(--gog-hover-color);
+      border-radius: 4px;
+      padding: 0.15em 0.4em;
+    }
+  }
+
+  &__preview {
+    margin-bottom: 1em;
+  }
+}
+
+.variant-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.variant-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+
+  &__label {
+    min-width: 72px;
+    text-transform: capitalize;
+    color: var(--gog-muted-text-color);
+  }
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.width-demo {
+  max-width: 320px;
+}
+
+.api-table-scroll {
+  overflow-x: auto;
+}
+
+.api-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--gog-text-sm);
+  margin-bottom: 1.2em;
+
+  th,
+  td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--gog-border-color);
+    vertical-align: top;
+  }
+
+  th {
+    font-size: var(--gog-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gog-muted-text-color);
+  }
+
+  td {
+    color: var(--gog-text-color);
+
+    &:last-child {
+      color: var(--gog-muted-text-color);
+    }
+  }
+
+  code {
+    font-family: var(--gog-font-mono);
+    font-size: 0.9em;
+    color: var(--gog-accent-color);
+    white-space: nowrap;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}

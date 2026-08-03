@@ -1,0 +1,15 @@
+@if (headings().length) {
+  <div class="sidebar-title font-heading">On this page</div>
+  <nav class="toc-nav">
+    @for (heading of headings(); track heading.id) {
+      <a
+        href="{{ currentPath() }}#{{ heading.id }}"
+        class="toc-link"
+        [class.toc-link--active]="heading.id === activeId()"
+        (click)="onLinkClick($event, heading.id)"
+      >
+        {{ heading.text }}
+      </a>
+    }
+  </nav>
+}

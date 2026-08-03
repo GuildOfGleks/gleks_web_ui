@@ -126,33 +126,9 @@
   top: 60px;
   padding: 0 16px;
   height: calc(100vh - 60px);
+  overflow-y: auto;
   border-left: 1px solid var(--gog-border-color);
   background-color: var(--gog-surface-color);
-
-  .sidebar-title {
-    font-size: var(--gog-text-xs);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--gog-muted-text-color);
-    margin-bottom: 12px;
-  }
-
-  .toc-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    .toc-link {
-      font-size: var(--gog-text-xs);
-      color: var(--gog-muted-text-color);
-      text-decoration: none;
-      transition: color var(--gog-duration-fast);
-
-      &:hover {
-        color: var(--gog-accent-color);
-      }
-    }
-  }
 }
 
 /* 5. Футер */

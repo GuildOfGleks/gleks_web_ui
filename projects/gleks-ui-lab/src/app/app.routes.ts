@@ -24,6 +24,11 @@ export const routes: Routes = [
       import('./components/pages/general-page/general-page').then((m) => m.GeneralPage),
   },
   {
+    path: 'components/button',
+    loadComponent: () =>
+      import('./components/pages/button-doc-page/button-doc-page').then((m) => m.ButtonDocPage),
+  },
+  {
     path: 'components/:name',
     loadComponent: () =>
       import('./components/pages/component-preview-page/component-preview-page').then(

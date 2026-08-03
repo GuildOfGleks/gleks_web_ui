@@ -63,7 +63,7 @@ export class ButtonComponent {
     sm: 'sm',
     md: 'sm',
     lg: 'md',
-    slg: 'lg',
+    slg: 'md',
   };
   protected spinnerSize = computed<GogSize>(
     () => ButtonComponent.SPINNER_SIZE_BY_BUTTON_SIZE[this.size()],

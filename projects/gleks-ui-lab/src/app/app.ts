@@ -4,6 +4,7 @@ import { ButtonComponent, ThemeService } from '@guildofgleks/ui';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faPalette } from '@fortawesome/free-solid-svg-icons';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
+import { TocComponent } from './components/shared/toc/toc';
 
 interface ThemeMenuOption {
   value: string;
@@ -12,7 +13,7 @@ interface ThemeMenuOption {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FaIconComponent, ButtonComponent, SidebarLeftComponent],
+  imports: [RouterOutlet, FaIconComponent, ButtonComponent, SidebarLeftComponent, TocComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

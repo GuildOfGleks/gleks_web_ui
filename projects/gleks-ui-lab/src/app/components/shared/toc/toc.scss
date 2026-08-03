@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.sidebar-title {
+  font-size: var(--gog-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gog-muted-text-color);
+  margin-bottom: 12px;
+}
+
+.toc-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .toc-link {
+    font-size: var(--gog-text-xs);
+    color: var(--gog-muted-text-color);
+    text-decoration: none;
+    padding-left: 8px;
+    border-left: 2px solid transparent;
+    transition:
+      color var(--gog-duration-fast),
+      border-color var(--gog-duration-fast);
+
+    &:hover {
+      color: var(--gog-accent-color);
+    }
+
+    &--active {
+      color: var(--gog-accent-color);
+      font-weight: 600;
+      border-left-color: var(--gog-accent-color);
+    }
+  }
+}
