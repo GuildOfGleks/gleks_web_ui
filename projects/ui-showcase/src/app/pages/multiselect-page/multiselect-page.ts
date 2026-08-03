@@ -69,6 +69,9 @@ export class MultiselectPage {
   protected readonly compactPanelValue = signal<(string | number)[]>([]);
   protected readonly bottomOfPageValue = signal<(string | number)[]>([]);
 
+  protected readonly fullWidthFeatures = signal<(string | number)[]>([]);
+  protected readonly fullWidthTags = signal<(string | number)[]>(['bug']);
+
   protected readonly sortOptions: GogMultiselectOption[] = [
     { id: 'name', name: 'Name' },
     { id: 'date', name: 'Date' },

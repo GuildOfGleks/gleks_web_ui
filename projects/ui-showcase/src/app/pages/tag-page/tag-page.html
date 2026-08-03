@@ -48,6 +48,17 @@
   </article>
 
   <article class="card">
+    <h3>Full width</h3>
+    <p class="meta">
+      <code>fullWidth</code> opts out of the default content-fitted sizing. Wrapped here in a
+      narrower box to show it.
+    </p>
+    <div class="width-demo">
+      <gog-tag variant="info" [fullWidth]="true">Full width</gog-tag>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Shapes</h3>
     <div class="tag-grid">
       @for (shape of shapes; track shape) {

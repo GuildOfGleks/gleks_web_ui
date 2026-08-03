@@ -71,6 +71,25 @@
   </article>
 
   <article class="card">
+    <h3>Full width</h3>
+    <p class="meta">
+      Full width of its container by default (see every field above). <code>[fullWidth]="false"</code>
+      shrinks the trigger to fit its selected summary instead.
+    </p>
+    <div class="field-row">
+      <div class="field-row__grow">
+        <gog-multiselect label="Features" [options]="features" [(value)]="fullWidthFeatures" />
+      </div>
+      <gog-multiselect
+        label="Tags"
+        [options]="tags"
+        [(value)]="fullWidthTags"
+        [fullWidth]="false"
+      />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Reactive Forms — automatic error timing</h3>
     <p class="lead">
       Same idea as <code>gog-select</code>: <code>errorDisplay="auto"</code> shows the error once

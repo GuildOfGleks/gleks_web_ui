@@ -224,8 +224,26 @@ export class AccordionPage implements OnDestroy {
   );
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
 
+  protected readonly fetchedItems = signal<BasicAccordionItem[]>([]);
+  protected readonly isFetchingList = signal(false);
+  private fetchTimer: ReturnType<typeof setTimeout> | null = null;
+
   protected toggleMulti(): void {
     this.multi.update((current) => !current);
+  }
+
+  protected simulateListFetch(): void {
+    if (this.fetchTimer !== null) {
+      clearTimeout(this.fetchTimer);
+    }
+
+    this.fetchedItems.set([]);
+    this.isFetchingList.set(true);
+    this.fetchTimer = setTimeout(() => {
+      this.fetchedItems.set(this.basicItems);
+      this.isFetchingList.set(false);
+      this.fetchTimer = null;
+    }, 1600);
   }
 
   protected panelFor(id: GogAccordionItem['id']): AccordionDemoPanel | null {
@@ -282,5 +300,9 @@ export class AccordionPage implements OnDestroy {
       clearTimeout(timer);
     }
     this.timers.clear();
+
+    if (this.fetchTimer !== null) {
+      clearTimeout(this.fetchTimer);
+    }
   }
 }

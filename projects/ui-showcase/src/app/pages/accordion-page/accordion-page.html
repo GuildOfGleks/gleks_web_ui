@@ -286,11 +286,31 @@
   </article>
 
   <article class="card">
-    <h3>Loading skeleton</h3>
+    <h3>Loading skeleton — known item count</h3>
     <p class="meta">
       <code>loading="true"</code> replaces every item with a <code>gog-skeleton</code> placeholder
-      row — for when the list of items itself hasn't arrived yet, as opposed to per-item content.
+      row — one row per item, so the placeholder already matches the eventual shape.
     </p>
     <gog-accordion [items]="basicItems" [loading]="true" />
+  </article>
+
+  <article class="card">
+    <h3>Loading skeleton — item count not known yet</h3>
+    <p class="meta">
+      The more common real case: <code>items</code> starts out empty because the list itself
+      hasn't arrived. With no items to count, the skeleton falls back to
+      <code>skeletonCount</code> rows instead, then switches to matching <code>items</code> once
+      the fetch resolves.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" type="button" (gogClick)="simulateListFetch()">
+        Simulate fetch
+      </gog-button>
+    </div>
+    <gog-accordion [items]="fetchedItems()" [skeletonCount]="3" [loading]="isFetchingList()">
+      <ng-template gogAccordionContent let-item>
+        <p class="meta">{{ item.body }}</p>
+      </ng-template>
+    </gog-accordion>
   </article>
 </section>

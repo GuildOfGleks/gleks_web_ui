@@ -68,6 +68,14 @@ export class SelectPage {
   protected readonly compactPanelValue = signal<string | number | null>(null);
   protected readonly bottomOfPageValue = signal<string | number | null>(null);
 
+  protected readonly fullWidthCountry = signal<string | number | null>(null);
+  protected readonly currencies: GogSelectOption[] = [
+    { id: 'usd', name: 'USD' },
+    { id: 'eur', name: 'EUR' },
+    { id: 'gbp', name: 'GBP' },
+  ];
+  protected readonly currency = signal<string | number | null>('usd');
+
   protected readonly sortOptions: GogSelectOption[] = [
     { id: 'newest', name: 'Newest first' },
     { id: 'oldest', name: 'Oldest first' },

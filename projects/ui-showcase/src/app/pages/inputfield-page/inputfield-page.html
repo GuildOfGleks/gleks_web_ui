@@ -72,6 +72,22 @@
   </article>
 
   <article class="card">
+    <h3>Full width</h3>
+    <p class="meta">
+      Full width of its container by default (see the fields above, each filling its own
+      <code>field-grid</code> cell). <code>[fullWidth]="false"</code> shrinks a field to fit its
+      own content instead — useful when a short field (like a ZIP code) shouldn't stretch to
+      match its neighbors.
+    </p>
+    <div class="field-row">
+      <div class="field-row__grow">
+        <gog-inputfield label="City" placeholder="City" />
+      </div>
+      <gog-inputfield label="ZIP" placeholder="ZIP" [fullWidth]="false" />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Reactive forms — automatic error timing</h3>
     <p class="lead">
       With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides for

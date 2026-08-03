@@ -38,6 +38,26 @@
   </article>
 
   <article class="card">
+    <h3>Full width</h3>
+    <p class="meta">
+      Full width of its container by default (see every field above). <code>[fullWidth]="false"</code>
+      shrinks the trigger to fit its selected label instead — useful for a compact field
+      alongside one that should keep growing.
+    </p>
+    <div class="field-row">
+      <div class="field-row__grow">
+        <gog-select label="Country" [options]="countries" [(value)]="fullWidthCountry" />
+      </div>
+      <gog-select
+        label="Currency"
+        [options]="currencies"
+        [(value)]="currency"
+        [fullWidth]="false"
+      />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>States</h3>
     <div class="field-grid">
       <gog-select label="Disabled" [options]="frameworks" [value]="'angular'" [disabled]="true" />

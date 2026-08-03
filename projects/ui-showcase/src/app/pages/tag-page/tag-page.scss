@@ -17,3 +17,9 @@
   text-transform: capitalize;
   color: var(--gog-muted-text-color);
 }
+
+.width-demo {
+  max-width: 320px;
+  border: 1px dashed var(--gog-border-color);
+  padding: 12px;
+}

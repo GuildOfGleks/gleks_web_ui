@@ -152,6 +152,19 @@
   </article>
 
   <article class="card">
+    <h3>Full width</h3>
+    <p class="meta">
+      Full width of its container by default (see every table above).
+      <code>[fullWidth]="false"</code> shrinks the table to fit its columns instead — useful
+      for a narrow, two-column table that shouldn't stretch to fill a wide page.
+    </p>
+    <gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">
+      <column field="component" header="Component"></column>
+      <column field="status" header="Status"></column>
+    </gog-table>
+  </article>
+
+  <article class="card">
     <h3>Empty state</h3>
     <div class="action-row">
       <gog-button variant="ghost" type="button" (gogClick)="toggleEmpty()">

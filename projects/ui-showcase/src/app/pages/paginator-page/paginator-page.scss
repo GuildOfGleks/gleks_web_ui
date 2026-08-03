@@ -36,3 +36,14 @@ gog-accordion {
   display: block;
   margin-bottom: 16px;
 }
+
+.paginator-width-demo {
+  display: grid;
+  gap: 6px;
+}
+
+.paginator-width-demo__box {
+  border: 1px dashed var(--gog-border-color);
+  padding: 12px;
+  margin-bottom: 12px;
+}

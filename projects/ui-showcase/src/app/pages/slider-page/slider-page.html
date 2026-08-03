@@ -45,6 +45,23 @@
   </article>
 
   <article class="card">
+    <h3>Full width</h3>
+    <p class="lead">
+      Full width of its container by default (see every slider above). A slider's track has no
+      content of its own to shrink-wrap to, so <code>[fullWidth]="false"</code> instead sizes it
+      to <code>--gog-slider-auto-width</code> (240px by default) — a fixed, themeable fallback
+      rather than a content-derived one.
+    </p>
+    <gog-slider
+      label="Compact"
+      [min]="0"
+      [max]="100"
+      [(value)]="compactValue"
+      [fullWidth]="false"
+    />
+  </article>
+
+  <article class="card">
     <h3>Validation</h3>
     <p class="lead">
       `errorMessage` is consumer-controlled: `gog-slider` just renders whatever it's given, for as

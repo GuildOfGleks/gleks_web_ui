@@ -3,3 +3,14 @@
 .field-grid > gog-multiselect {
   flex: 1 1 220px;
 }
+
+.field-row {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.field-row__grow {
+  flex: 1 1 240px;
+}

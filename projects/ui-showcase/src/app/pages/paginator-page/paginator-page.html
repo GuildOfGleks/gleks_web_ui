@@ -100,6 +100,26 @@
   </article>
 
   <article class="card">
+    <h3>Full width</h3>
+    <p class="lead">
+      Full width of its container by default — the dashed outline below is the container, not
+      the paginator, so you can see the component's own box claims the full row even though the
+      buttons don't fill it. <code>[fullWidth]="false"</code> shrinks the box to fit the buttons
+      instead.
+    </p>
+    <div class="paginator-width-demo">
+      <p class="meta">fullWidth: true (default)</p>
+      <div class="paginator-width-demo__box">
+        <gog-paginator [totalPages]="5" [page]="2" />
+      </div>
+      <p class="meta">fullWidth: false</p>
+      <div class="paginator-width-demo__box">
+        <gog-paginator [totalPages]="5" [page]="2" [fullWidth]="false" />
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Disabled</h3>
     <p class="lead">
       <code>disabled</code> freezes every control — useful while the page it navigates is itself
