@@ -151,13 +151,6 @@
   --gog-accordion-body-radius: 0px;
   --gog-accordion-header-bg: transparent;
   --gog-accordion-body-bg: color-mix(in srgb, black 6%, transparent);
-  --gog-accordion-skeleton-start: var(--gog-accent-dim);
-  --gog-accordion-skeleton-mid: color-mix(in srgb, var(--gog-accent-dim) 50%, transparent);
-  --gog-accordion-skeleton-end: var(--gog-accent-dim);
-  --gog-accordion-skeleton-radius: 2px;
-  --gog-accordion-skeleton-height: 12px;
-  --gog-accordion-skeleton-width: 55%;
-  --gog-accordion-skeleton-duration: 1.4s;
   /* Per-size metrics (xsm/sm/md/lg/slg) — lg is the default size. */
   --gog-accordion-xsm-padding-y: 4px;
   --gog-accordion-xsm-padding-x: 8px;
@@ -602,6 +595,7 @@
   --gog-skeleton-rect-height-slg: 320px;
 
   /* Slider */
+  --gog-slider-auto-width: 240px;
   --gog-slider-label-font-family: var(--gog-font-heading);
   --gog-slider-value-font-family: var(--gog-font-mono);
   --gog-slider-error-font-family: var(--gog-font-body);
