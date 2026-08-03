@@ -1,0 +1,206 @@
+/*
+ * Two extra example themes, on top of the library's built-in `light` and `dark`.
+ * They exist only in this docs app — nothing here touches the published
+ * @guildofgleks/ui package. Selectable from the theme switcher in the header,
+ * they're a demo of exactly the pattern documented in theming.md ("Building
+ * your own theme"): declare a palette against a new `data-theme` value, plus
+ * whichever component tokens the ecosystem you're imitating doesn't get for
+ * free from that palette.
+ *
+ * `--gog-radius`, `--gog-control-border-width` and `--gog-focus-ring-*` are
+ * foundation tokens that most component tokens already derive from (see
+ * `--gog-btn-radius: var(--gog-radius)` etc. in theme.css), so re-declaring
+ * just those three cascades into buttons, fields, checkboxes and dialogs at
+ * once — the rest of the overrides below are only for the handful of tokens
+ * each library hardcodes independently (accordion/toast radius, label
+ * styling, border colors that default to an accent tint instead of neutral
+ * gray, shadows).
+ */
+
+/* ── PrimeNG (Aura, light, blue primary) ─────────────────────────────────── */
+[data-theme='primeng'] {
+  color-scheme: light;
+
+  /* Palette */
+  --gog-background-color: #f8fafc;
+  --gog-surface-color: #ffffff;
+  --gog-hover-color: #f1f5f9;
+  --gog-border-color: #e2e8f0;
+  --gog-text-color: #0f172a;
+  --gog-accent-text-color: #ffffff;
+  --gog-muted-text-color: #64748b;
+  --gog-primary-color: #0f172a;
+  --gog-accent-color: #3b82f6;
+  --gog-accent-bright: #2563eb;
+  --gog-accent-dim: #1d4ed8;
+  --gog-accent-pale: #dbeafe;
+  --gog-secondary-color: #64748b;
+  --gog-success-color: #22c55e;
+  --gog-danger-color: #ef4444;
+  --gog-warning-color: #f59e0b;
+  --gog-info-color: #0ea5e9;
+  --gog-panel-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+  --gog-spinner-overlay-bg: rgba(248, 250, 252, 0.75);
+
+  /* Fonts — PrimeNG doesn't split heading/body, one system sans everywhere */
+  --gog-font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --gog-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --gog-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Structure — thinner borders, tighter focus ring, 6px radius everywhere
+     that derives from --gog-radius (buttons, fields, checkboxes, dialogs) */
+  --gog-radius: 6px;
+  --gog-control-border-width: 1px;
+  --gog-focus-ring-width: 2px;
+  --gog-focus-ring-offset: 2px;
+
+  /* Button — no uppercase/letter-spacing, medium weight, body font */
+  --gog-btn-font-family: var(--gog-font-body);
+  --gog-btn-font-weight: 500;
+  --gog-btn-letter-spacing: normal;
+  --gog-btn-text-transform: none;
+
+  /* Field labels — muted gray, not accent-colored caps */
+  --gog-input-label-color: var(--gog-muted-text-color);
+  --gog-input-label-font-family: var(--gog-font-body);
+  --gog-input-label-letter-spacing: normal;
+  --gog-input-label-text-transform: none;
+  --gog-input-field-border: var(--gog-border-color);
+  --gog-select-label-color: var(--gog-muted-text-color);
+  --gog-select-label-font-family: var(--gog-font-body);
+  --gog-select-label-letter-spacing: normal;
+  --gog-select-label-text-transform: none;
+  --gog-select-field-border: var(--gog-border-color);
+  --gog-ms-label-color: var(--gog-muted-text-color);
+  --gog-ms-label-font-family: var(--gog-font-body);
+  --gog-ms-label-letter-spacing: normal;
+  --gog-ms-label-text-transform: none;
+  --gog-ms-field-border: var(--gog-border-color);
+  --gog-ms-checkbox-border: var(--gog-border-color);
+
+  /* Checkbox */
+  --gog-checkbox-border-color: var(--gog-border-color);
+  --gog-checkbox-label-color: var(--gog-text-color);
+
+  /* Accordion — surface header instead of transparent, no uppercase */
+  --gog-accordion-font-family: var(--gog-font-body);
+  --gog-accordion-header-text-transform: none;
+  --gog-accordion-header-bg: var(--gog-surface-color);
+  --gog-accordion-hover-bg: var(--gog-hover-color);
+  --gog-accordion-body-bg: var(--gog-surface-color);
+  --gog-accordion-border-color: var(--gog-border-color);
+  --gog-accordion-radius: 6px;
+  --gog-accordion-body-radius: 6px;
+
+  /* Table — no uppercase headers, neutral row hover */
+  --gog-table-header-font-family: var(--gog-font-body);
+  --gog-table-header-text-transform: none;
+  --gog-table-border-color: var(--gog-border-color);
+  --gog-table-hover-bg: var(--gog-hover-color);
+
+  /* Slider / spinner — neutral track instead of accent-tinted */
+  --gog-slider-track-bg: var(--gog-border-color);
+  --gog-slider-label-color: var(--gog-muted-text-color);
+  --gog-spinner-track-color: var(--gog-border-color);
+
+  /* Dialog / toast */
+  --gog-dialog-backdrop-bg: rgba(0, 0, 0, 0.32);
+  --gog-dialog-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+  --gog-toast-radius: 6px;
+}
+
+/* ── Material (M3 baseline, light) ───────────────────────────────────────── */
+[data-theme='material'] {
+  color-scheme: light;
+
+  /* Palette */
+  --gog-background-color: #fef7ff;
+  --gog-surface-color: #f7f2fa;
+  --gog-hover-color: #ece6f0;
+  --gog-border-color: #cac4d0;
+  --gog-text-color: #1c1b1f;
+  --gog-accent-text-color: #ffffff;
+  --gog-muted-text-color: #49454f;
+  --gog-primary-color: #1c1b1f;
+  --gog-accent-color: #6750a4;
+  --gog-accent-bright: #7f67be;
+  --gog-accent-dim: #4f378b;
+  --gog-accent-pale: #eaddff;
+  --gog-secondary-color: #625b71;
+  --gog-success-color: #2e7d32;
+  --gog-danger-color: #b3261e;
+  --gog-warning-color: #f9a825;
+  --gog-info-color: #0288d1;
+  --gog-panel-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --gog-spinner-overlay-bg: rgba(254, 247, 255, 0.75);
+
+  /* Fonts — Material is Roboto end to end, no heading/body split */
+  --gog-font-heading: Roboto, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --gog-font-body: Roboto, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --gog-font-mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Structure — small 4px radius is the base (fields, checkboxes); buttons
+     and dialogs opt into a bigger shape below since M3's shape scale isn't
+     uniform like PrimeNG's */
+  --gog-radius: 4px;
+  --gog-control-border-width: 1px;
+  --gog-focus-ring-width: 2px;
+  --gog-focus-ring-offset: 2px;
+
+  /* Button — pill-shaped, no uppercase, medium weight, body font */
+  --gog-btn-font-family: var(--gog-font-body);
+  --gog-btn-font-weight: 500;
+  --gog-btn-letter-spacing: normal;
+  --gog-btn-text-transform: none;
+  --gog-btn-radius: 20px;
+
+  /* Field labels — on-surface-variant gray, not accent-colored caps */
+  --gog-input-label-color: var(--gog-muted-text-color);
+  --gog-input-label-font-family: var(--gog-font-body);
+  --gog-input-label-letter-spacing: normal;
+  --gog-input-label-text-transform: none;
+  --gog-input-field-border: var(--gog-border-color);
+  --gog-select-label-color: var(--gog-muted-text-color);
+  --gog-select-label-font-family: var(--gog-font-body);
+  --gog-select-label-letter-spacing: normal;
+  --gog-select-label-text-transform: none;
+  --gog-select-field-border: var(--gog-border-color);
+  --gog-ms-label-color: var(--gog-muted-text-color);
+  --gog-ms-label-font-family: var(--gog-font-body);
+  --gog-ms-label-letter-spacing: normal;
+  --gog-ms-label-text-transform: none;
+  --gog-ms-field-border: var(--gog-border-color);
+  --gog-ms-checkbox-border: var(--gog-border-color);
+
+  /* Checkbox — small square radius, on-surface-variant border */
+  --gog-checkbox-radius: 2px;
+  --gog-checkbox-border-color: var(--gog-border-color);
+  --gog-checkbox-label-color: var(--gog-text-color);
+
+  /* Accordion — rounded panel, surface header, no uppercase */
+  --gog-accordion-font-family: var(--gog-font-body);
+  --gog-accordion-header-text-transform: none;
+  --gog-accordion-header-bg: var(--gog-surface-color);
+  --gog-accordion-hover-bg: var(--gog-hover-color);
+  --gog-accordion-body-bg: var(--gog-surface-color);
+  --gog-accordion-border-color: var(--gog-border-color);
+  --gog-accordion-radius: 12px;
+  --gog-accordion-body-radius: 12px;
+
+  /* Table — no uppercase headers, neutral row hover */
+  --gog-table-header-font-family: var(--gog-font-body);
+  --gog-table-header-text-transform: none;
+  --gog-table-border-color: var(--gog-border-color);
+  --gog-table-hover-bg: var(--gog-hover-color);
+
+  /* Slider / spinner — neutral track instead of accent-tinted */
+  --gog-slider-track-bg: var(--gog-border-color);
+  --gog-slider-label-color: var(--gog-muted-text-color);
+  --gog-spinner-track-color: var(--gog-border-color);
+
+  /* Dialog (M3 "extra-large" shape) / toast (M3 snackbar shape) */
+  --gog-dialog-backdrop-bg: rgba(0, 0, 0, 0.32);
+  --gog-dialog-radius: 28px;
+  --gog-dialog-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --gog-toast-radius: 4px;
+}

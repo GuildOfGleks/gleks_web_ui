@@ -28,6 +28,8 @@ export class App {
   protected readonly themeOptions: ThemeMenuOption[] = [
     { value: 'light', label: 'Light' },
     { value: 'dark', label: 'Dark' },
+    { value: 'primeng', label: 'PrimeNG' },
+    { value: 'material', label: 'Material' },
   ];
 
   protected readonly activeTheme = computed(() => this.themeService.theme());
