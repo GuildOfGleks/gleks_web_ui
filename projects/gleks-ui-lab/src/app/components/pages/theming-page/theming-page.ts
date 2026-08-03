@@ -9,7 +9,6 @@ import {
 } from '@guildofgleks/ui';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from './token-reference-data';
-import { injectFullLibraryCss } from '../../shared/full-library-css';
 
 interface FullCssSection extends GogAccordionItem {
   readonly markdown?: string;
@@ -24,7 +23,7 @@ interface FullCssSection extends GogAccordionItem {
 })
 export class ThemingPage {
   private readonly content = httpResource.text(() => '/docs/theming.md');
-  private readonly fullLibraryCss = injectFullLibraryCss();
+  private readonly themeStarterCss = httpResource.text(() => '/docs/styles/theme-starter.css');
 
   protected readonly markdown = computed(() => this.content.value());
   protected readonly hasMarkdown = computed(() => this.content.status() === 'resolved');
@@ -32,11 +31,11 @@ export class ThemingPage {
   protected readonly tokenSections = TOKEN_SECTIONS;
 
   protected readonly fullCssSections = computed<FullCssSection[]>(() => {
-    const css = this.fullLibraryCss();
+    const css = this.themeStarterCss.value();
     return [
       {
-        id: 'all-styles',
-        title: 'All Styles — Full CSS',
+        id: 'theme-starter',
+        title: 'Theme Starter — Copy & Customize',
         markdown: css ? '```css\n' + css + '\n```' : undefined,
       },
     ];
