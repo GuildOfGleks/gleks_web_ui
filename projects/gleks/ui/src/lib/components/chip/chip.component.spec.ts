@@ -60,6 +60,21 @@ describe('ChipComponent', () => {
     expect(host.classList.contains('gog-chip--clickable')).toBe(false);
   });
 
+  describe('fullWidth', () => {
+    it('should apply the full-width host class so the stylesheet rules take effect', () => {
+      fixture.componentRef.setInput('fullWidth', true);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.classList.contains('gog-host--full-width')).toBe(true);
+    });
+
+    it('should not apply the full-width host class by default', () => {
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.classList.contains('gog-host--full-width')).toBe(false);
+    });
+  });
+
   it('should render avatar and remove button when configured', () => {
     fixture.componentRef.setInput('avatarUrl', 'https://example.com/avatar.png');
     fixture.componentRef.setInput('removable', true);

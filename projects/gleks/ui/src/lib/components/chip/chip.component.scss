@@ -201,3 +201,12 @@
       var(--gog-chip-remove-inset-ratio)
   );
 }
+
+/* === Full width === */
+:host(.gog-host--full-width) {
+  display: flex;
+}
+
+:host(.gog-host--full-width) .gog-chip__surface {
+  width: 100%;
+}

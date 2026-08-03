@@ -136,6 +136,21 @@ describe('CheckboxComponent', () => {
     });
   });
 
+  describe('fullWidth', () => {
+    it('should apply the full-width host class so the stylesheet rules take effect', () => {
+      fixture.componentRef.setInput('fullWidth', true);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.classList.contains('gog-host--full-width')).toBe(true);
+    });
+
+    it('should not apply the full-width host class by default', () => {
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.classList.contains('gog-host--full-width')).toBe(false);
+    });
+  });
+
   describe('two-way [(checked)] binding', () => {
     // The bound state is a signal, not a plain field: under the zoneless test setup a
     // plain-field write never marks the host view dirty, so change detection only picks

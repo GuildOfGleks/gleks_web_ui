@@ -93,3 +93,12 @@
     transition: none;
   }
 }
+
+/* === Full width === */
+:host(.gog-host--full-width) {
+  display: flex;
+}
+
+:host(.gog-host--full-width) .gog-checkbox {
+  width: 100%;
+}

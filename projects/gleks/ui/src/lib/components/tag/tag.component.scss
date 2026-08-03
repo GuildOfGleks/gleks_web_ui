@@ -131,3 +131,9 @@
   flex-shrink: 0;
   font-size: var(--gog-tag-icon-size, var(--gog-tag-size-icon-size, var(--gog-tag-md-icon-size)));
 }
+
+/* === Full width === */
+:host(.gog-host--full-width) {
+  display: flex;
+  width: 100%;
+}

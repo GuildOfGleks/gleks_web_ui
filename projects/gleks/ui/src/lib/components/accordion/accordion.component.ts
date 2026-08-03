@@ -17,6 +17,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { GogSize } from '../../shared/types';
 import { handleRovingFocusKeydown } from '../../shared/roving-focus';
 import { IconComponent } from '../icon/icon.component';
+import { SkeletonComponent } from '../skeleton/skeleton.component';
 
 export interface GogAccordionItem {
   id: string | number;
@@ -65,7 +66,7 @@ export class GogAccordionChevronDirective {
 
 @Component({
   selector: 'gog-accordion',
-  imports: [NgTemplateOutlet, IconComponent],
+  imports: [NgTemplateOutlet, IconComponent, SkeletonComponent],
   templateUrl: './accordion.component.html',
   styleUrl: './accordion.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

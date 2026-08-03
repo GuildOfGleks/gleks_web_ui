@@ -290,6 +290,21 @@ describe('AccordionComponent', () => {
         '.gog-accordion__header:not(.gog-accordion__header--skeleton)',
       ),
     ).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('gog-skeleton').length).toBe(2);
+  });
+
+  it('should auto-rotate the default chevron but leave a custom chevron template alone', async () => {
+    fixture.componentRef.setInput('items', [{ id: 1, title: 'First' }]);
+    await fixture.whenStable();
+
+    const defaultChevron = fixture.nativeElement.querySelector('.gog-accordion__chevron');
+    expect(defaultChevron.classList.contains('gog-accordion__chevron--auto-rotate')).toBe(true);
+
+    const hostFixture = TestBed.createComponent(AccordionHostComponent);
+    await hostFixture.whenStable();
+
+    const customChevron = hostFixture.nativeElement.querySelector('.gog-accordion__chevron');
+    expect(customChevron.classList.contains('gog-accordion__chevron--auto-rotate')).toBe(false);
   });
 
   it('should wrap headers in role="heading" when headingLevel is set', async () => {

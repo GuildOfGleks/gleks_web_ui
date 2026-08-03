@@ -133,14 +133,25 @@
     var(--gog-accordion-size-chevron-font-size, var(--gog-accordion-lg-chevron-font-size))
   );
   color: var(--gog-accordion-border-color);
+  transition: color var(--gog-accordion-transition-duration) var(--gog-easing);
+}
+
+.gog-accordion__header--open .gog-accordion__chevron {
+  color: var(--gog-accordion-accent-color);
+}
+
+/* Only the default (chevron-down) icon auto-rotates on open. A custom
+   `gogAccordionChevron` template owns its own open/closed presentation —
+   swapping icons itself, say — so forcing this rotation on it too would
+   double up with whatever the template already does. */
+.gog-accordion__chevron--auto-rotate {
   transition:
     transform var(--gog-accordion-chevron-transition-duration) var(--gog-easing),
     color var(--gog-accordion-transition-duration) var(--gog-easing);
 }
 
-.gog-accordion__header--open .gog-accordion__chevron {
+.gog-accordion__header--open .gog-accordion__chevron--auto-rotate {
   transform: rotate(180deg);
-  color: var(--gog-accordion-accent-color);
 }
 
 /* === Body === */
@@ -269,30 +280,6 @@
   pointer-events: none;
 }
 
-.gog-accordion__skeleton-line {
-  display: block;
-  height: var(--gog-accordion-skeleton-height);
-  width: var(--gog-accordion-skeleton-width);
-  border-radius: var(--gog-accordion-skeleton-radius);
-  background: linear-gradient(
-    90deg,
-    var(--gog-accordion-skeleton-start) 25%,
-    var(--gog-accordion-skeleton-mid) 50%,
-    var(--gog-accordion-skeleton-end) 75%
-  );
-  background-size: 200% 100%;
-  animation: gog-accordion-shimmer var(--gog-accordion-skeleton-duration) infinite;
-}
-
-@keyframes gog-accordion-shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .gog-accordion__header,
   .gog-accordion__chevron {
@@ -302,9 +289,5 @@
   .gog-accordion__body,
   .gog-accordion__body-inner {
     transition: none;
-  }
-
-  .gog-accordion__skeleton-line {
-    animation: none;
   }
 }

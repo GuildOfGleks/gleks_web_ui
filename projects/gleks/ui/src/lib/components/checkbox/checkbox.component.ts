@@ -27,6 +27,9 @@ import {
     '[style.--gog-checkbox-label-size]': 'labelSize()',
     '[style.--gog-checkbox-icon-size]': 'iconSize()',
     '[style.--gog-checkbox-padding]': 'checkboxPadding',
+    // Drives the :host(.gog-host--full-width) rules in the stylesheet — without this
+    // binding the `fullWidth` input has no visible effect.
+    '[class.gog-host--full-width]': 'fullWidth()',
   },
   providers: [
     {
@@ -42,6 +45,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   readonly size = input<GogSize>('md');
   readonly indeterminate = input(false);
   readonly disabled = input(false);
+  readonly fullWidth = input(false);
   readonly checkIconTemplate = input<TemplateRef<unknown> | null>(null);
 
   /**

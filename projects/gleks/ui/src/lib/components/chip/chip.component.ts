@@ -19,6 +19,7 @@ export class ChipComponent {
   readonly disabled = input(false);
   readonly clickable = input(true);
   readonly removable = input(false);
+  readonly fullWidth = input(false);
   readonly ariaLabel = input('');
   readonly removeAriaLabel = input('Remove chip');
   readonly avatarUrl = input<string | null>(null);
@@ -38,6 +39,7 @@ export class ChipComponent {
       this.clickable() ? 'gog-chip--clickable' : null,
       this.avatarUrl() ? 'gog-chip--has-avatar' : null,
       this.iconName() ? 'gog-chip--has-icon' : null,
+      this.fullWidth() ? 'gog-host--full-width' : null,
     ]
       .filter((className): className is string => className !== null)
       .join(' '),

@@ -20,6 +20,7 @@ export class TagComponent {
   readonly shape = input<GogTagShape>('rounded');
   readonly iconName = input<GogIconName | null>(null);
   readonly iconTemplate = input<TemplateRef<unknown> | null>(null);
+  readonly fullWidth = input(false);
 
   protected readonly hasIcon = computed(
     () => this.iconTemplate() !== null || this.iconName() !== null,
@@ -32,6 +33,7 @@ export class TagComponent {
       `gog-tag--${this.size()}`,
       `gog-tag--${this.shape()}`,
       this.hasIcon() ? 'gog-tag--has-icon' : null,
+      this.fullWidth() ? 'gog-host--full-width' : null,
     ]
       .filter((className): className is string => className !== null)
       .join(' '),

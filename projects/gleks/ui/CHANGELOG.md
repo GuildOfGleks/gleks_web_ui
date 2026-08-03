@@ -6,6 +6,29 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [Unreleased]
 
+## [21.2.3] - 2026-08-03
+
+### Changed
+
+- `gog-accordion`'s `loading` skeleton now renders with `gog-skeleton` instead
+  of a bespoke shimmer implementation. **Breaking:** the
+  `--gog-accordion-skeleton-start/-mid/-end/-radius/-height/-width/-duration`
+  tokens are gone — restyle the loading state via the shared `--gog-skeleton-*`
+  tokens instead.
+
+### Fixed
+
+- `gog-accordion`'s chevron no longer force-rotates 180° when a custom
+  `gogAccordionChevron` template is supplied. Previously the wrapper always
+  rotated on open regardless of what the template rendered, so a template that
+  swapped between a `chevron-up`/`chevron-down` icon per `open` state ended up
+  double-transformed (both states visually pointing the same way). The rotation
+  now only applies to the built-in default chevron; a custom template owns its
+  open/closed presentation entirely, including bringing its own animation or
+  swapping in a completely different icon.
+
+## [21.2.2] - 2026-07-30
+
 ### Added
 
 - `column`'s `comparator` input for custom per-column sort ordering; the default
@@ -49,5 +72,6 @@ reached 1.0, so breaking changes may land in minor versions.
 Initial development, published as `0.0.1`: accordion, button, checkbox, chip, dialog,
 icon, inputfield, multiselect, paginator, select, skeleton, slider, spinner, table, tag
 and toast components, plus the shared theme (`styles/theme.css`) and `ThemeService`.
-Versions up to `0.2.2` were developed without per-release changelog entries; this file
-starts tracking changes from `Unreleased` onward.
+Versions up to `0.2.2` were developed without per-release changelog entries. `0.2.2` was
+published with the wrong version scheme and immediately re-published, with no code
+changes, as `21.2.2` — this file tracks changes from `21.2.2` onward.
