@@ -177,6 +177,25 @@
   </article>
 
   <article class="card">
+    <h3>Chevron icon swap</h3>
+    <p class="meta">
+      A chevron template that swaps between two icons based on <code>open</code> instead of
+      relying on the library's built-in rotation. The wrapper only auto-rotates the default
+      chevron — a custom template like this one fully owns its own open/closed presentation, so
+      the icon swap here isn't fighting an extra rotation underneath it.
+    </p>
+    <gog-accordion [items]="basicItems">
+      <ng-template gogAccordionChevron let-open="open">
+        <gog-icon [name]="open ? 'chevron-up' : 'chevron-down'" />
+      </ng-template>
+
+      <ng-template gogAccordionContent let-item>
+        <p class="meta">{{ item.body }}</p>
+      </ng-template>
+    </gog-accordion>
+  </article>
+
+  <article class="card">
     <h3>Long content</h3>
     <p class="meta">
       One panel with enough content to grow the page when opened, and a second whose body caps its
@@ -269,8 +288,8 @@
   <article class="card">
     <h3>Loading skeleton</h3>
     <p class="meta">
-      <code>loading="true"</code> replaces every item with a shimmering placeholder — for when the
-      list of items itself hasn't arrived yet, as opposed to per-item content.
+      <code>loading="true"</code> replaces every item with a <code>gog-skeleton</code> placeholder
+      row — for when the list of items itself hasn't arrived yet, as opposed to per-item content.
     </p>
     <gog-accordion [items]="basicItems" [loading]="true" />
   </article>
