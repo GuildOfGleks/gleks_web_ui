@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   contentChild,
   Directive,
   effect,
@@ -81,6 +82,14 @@ export class AccordionComponent {
   readonly expandFirst = input(false);
   readonly multi = input(false);
   readonly loading = input(false);
+  /**
+   * How many skeleton rows to render while `loading` is true and `items` is still
+   * empty — the common case of "the list itself hasn't arrived yet," where there's
+   * no item count to derive a row count from. Ignored once `items` has entries:
+   * then one skeleton row is rendered per item instead, so the placeholder matches
+   * the eventual shape.
+   */
+  readonly skeletonCount = input(3);
   readonly showChevron = input(true);
   /**
    * When set, wraps each header button in `role="heading"` with this `aria-level`,
@@ -115,6 +124,10 @@ export class AccordionComponent {
    * with a new array reference after the user closed everything by hand.
    */
   private readonly autoExpanded = signal(false);
+  protected readonly skeletonRows = computed(() => {
+    const count = this.items().length || this.skeletonCount();
+    return Array.from({ length: count }, (_, index) => index);
+  });
 
   constructor() {
     effect(() => {

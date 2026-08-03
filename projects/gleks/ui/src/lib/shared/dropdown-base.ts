@@ -56,7 +56,15 @@ const DEFAULT_PANEL_Z_INDEX = 300;
  * Exported because it appears in the public type signatures of the components that
  * extend it; it is not meant to be used or subclassed by consumers.
  */
-@Directive()
+@Directive({
+  host: {
+    // Drives the :host(.gog-host--auto-width) rules in each subclass's stylesheet —
+    // without this binding the `fullWidth` input has no visible effect. Inverted from
+    // gog-button's full-width class: these controls are full width by default, so the
+    // class only appears once a consumer opts *out* of that.
+    '[class.gog-host--auto-width]': '!fullWidth()',
+  },
+})
 export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, DoCheck {
   private static nextUid = 0;
 
@@ -92,6 +100,11 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
   readonly appendToBody = input(false);
   readonly disabled = input(false);
   readonly chevronTemplate = input<TemplateRef<unknown> | null>(null);
+  /**
+   * Full width of the container by default, matching every other field-style control.
+   * Set to `false` to shrink the trigger to fit its selected label instead.
+   */
+  readonly fullWidth = input(true);
 
   readonly isOpen = signal(false);
 

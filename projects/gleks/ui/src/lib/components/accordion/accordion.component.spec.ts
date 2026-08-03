@@ -293,6 +293,25 @@ describe('AccordionComponent', () => {
     expect(fixture.nativeElement.querySelectorAll('gog-skeleton').length).toBe(2);
   });
 
+  it('should fall back to skeletonCount rows while loading when items is still empty', async () => {
+    fixture.componentRef.setInput('loading', true);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelectorAll('.gog-accordion__item--skeleton').length).toBe(
+      3,
+    );
+  });
+
+  it('should respect a custom skeletonCount while items is empty', async () => {
+    fixture.componentRef.setInput('loading', true);
+    fixture.componentRef.setInput('skeletonCount', 5);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelectorAll('.gog-accordion__item--skeleton').length).toBe(
+      5,
+    );
+  });
+
   it('should auto-rotate the default chevron but leave a custom chevron template alone', async () => {
     fixture.componentRef.setInput('items', [{ id: 1, title: 'First' }]);
     await fixture.whenStable();

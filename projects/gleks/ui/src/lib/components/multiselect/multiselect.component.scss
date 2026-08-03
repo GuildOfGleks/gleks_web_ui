@@ -14,6 +14,20 @@
   width: 100%;
 }
 
+/*
+ * `width` has no effect on the host's own (inline, unstyled) box, so this only matters
+ * once something outside — a flex or grid parent — blockifies it, which is also exactly
+ * when its default "just wrap the inline content" sizing stops applying and this needs
+ * to take over instead.
+ */
+:host(.gog-host--auto-width) {
+  width: fit-content;
+}
+
+:host(.gog-host--auto-width) .gog-ms-wrapper {
+  width: fit-content;
+}
+
 /* Size modifiers — `md` needs no block, it is the fallback of every chain below.
    The same tokens are set by .gog-ms__dropdown--<size> for the body-portalled panel,
    which sits outside this subtree and so inherits from :root instead. */

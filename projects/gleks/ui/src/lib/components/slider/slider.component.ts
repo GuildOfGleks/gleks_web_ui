@@ -21,6 +21,11 @@ import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
   host: {
     '[style.--thumb-pos]': 'thumbPos()',
     '[style.--fill-scale]': 'fillScale()',
+    // Drives the :host(.gog-host--auto-width) rule in the stylesheet — without this
+    // binding the `fullWidth` input has no visible effect. Inverted from gog-button's
+    // full-width class: this control is full width by default, so the class only
+    // appears once a consumer opts *out* of that.
+    '[class.gog-host--auto-width]': '!fullWidth()',
   },
 })
 export class SliderComponent implements ControlValueAccessor, DoCheck {
@@ -38,6 +43,13 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
   readonly errorDisplay = input<GogErrorDisplay>('manual');
   readonly ariaLabel = input('');
   readonly disabled = input(false);
+  /**
+   * Full width of the container by default. Set to `false` to size the track to
+   * `--gog-slider-auto-width` instead — a slider's track has no content of its own to
+   * shrink-wrap to, so unlike the other field controls this needs an explicit fallback
+   * width rather than `fit-content`.
+   */
+  readonly fullWidth = input(true);
 
   /** Two-way bindable value: `[(value)]="signal"`. */
   readonly value = model<number>(0);

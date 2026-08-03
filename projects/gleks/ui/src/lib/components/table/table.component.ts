@@ -45,11 +45,16 @@ interface SortState {
   host: {
     class: 'gog-table-host',
     '[style.display]': '"block"',
-    '[style.width]': '"100%"',
+    '[style.width]': 'fullWidth() ? "100%" : "fit-content"',
   },
 })
 export class TableComponent<T extends object> {
   readonly value = input<T[]>([]);
+  /**
+   * Full width of the container by default. Set to `false` to shrink the table to fit
+   * its columns' content instead.
+   */
+  readonly fullWidth = input(true);
   /** 0 = no pagination */
   readonly pageSize = input<number>(0);
   readonly showRowNumbers = input<boolean>(true);

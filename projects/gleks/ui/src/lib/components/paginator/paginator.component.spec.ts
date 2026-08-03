@@ -29,6 +29,20 @@ describe('PaginatorComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('fullWidth', () => {
+    it('should not apply the auto-width host class by default', () => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.classList.contains('gog-host--auto-width')).toBe(false);
+    });
+
+    it('should apply the auto-width host class when set to false', () => {
+      fixture.componentRef.setInput('fullWidth', false);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.classList.contains('gog-host--auto-width')).toBe(true);
+    });
+  });
+
   it('should default to page 1', () => {
     fixture.detectChanges();
     expect(component.page()).toBe(1);

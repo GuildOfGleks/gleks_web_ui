@@ -21,6 +21,13 @@ import { IconComponent, type GogIconName } from '../icon/icon.component';
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    // Drives the :host(.gog-host--auto-width) rule in the stylesheet — without this
+    // binding the `fullWidth` input has no visible effect. Inverted from gog-button's
+    // full-width class: this field is full width by default, so the class only appears
+    // once a consumer opts *out* of that.
+    '[class.gog-host--auto-width]': '!fullWidth()',
+  },
 })
 export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly label = input('');
@@ -35,6 +42,11 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly inputId = input('');
   readonly disabled = input(false);
   readonly size = input<GogSize>('md');
+  /**
+   * Full width of the container by default, matching every other field-style control.
+   * Set to `false` to shrink the field to fit its content instead.
+   */
+  readonly fullWidth = input(true);
   /** Default icon name for the leading icon. */
   readonly iconStart = input<GogIconName | ''>('');
   /** Default icon name for the trailing icon. */

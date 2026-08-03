@@ -9,6 +9,10 @@
   display: block;
 }
 
+:host(.gog-host--auto-width) {
+  width: fit-content;
+}
+
 .gog-select {
   display: flex;
   flex-direction: column;

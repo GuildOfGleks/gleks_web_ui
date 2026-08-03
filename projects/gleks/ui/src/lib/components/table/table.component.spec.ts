@@ -63,6 +63,19 @@ describe('TableComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('fullWidth', () => {
+    it('should be 100% wide by default', () => {
+      expect((fixture.nativeElement as HTMLElement).style.width).toBe('100%');
+    });
+
+    it('should shrink to fit its content when set to false', async () => {
+      fixture.componentRef.setInput('fullWidth', false);
+      await fixture.whenStable();
+
+      expect((fixture.nativeElement as HTMLElement).style.width).toBe('fit-content');
+    });
+  });
+
   it('should sort rows by the configured field', () => {
     fixture.componentRef.setInput('value', [
       { id: 2, name: 'Bravo' },

@@ -8,6 +8,20 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.2.3] - 2026-08-03
 
+### Added
+
+- `fullWidth` input on `gog-checkbox`, `gog-chip` and `gog-tag`, matching the
+  existing `gog-button` behavior: `false` by default (sized to content), `true`
+  stretches the component to fill its container.
+- `fullWidth` input on `gog-inputfield`, `gog-select`, `gog-multiselect`,
+  `gog-table`, `gog-paginator` and `gog-slider`. Inverted from the input above:
+  these are already full width of their container by default, so `fullWidth`
+  defaults to `true` and set it to `false` to shrink the control to fit its
+  content instead (a fixed `--gog-slider-auto-width`, 240px by default, for
+  `gog-slider` specifically — its track has no content of its own to size to).
+- `gog-accordion`'s `skeletonCount` input: how many skeleton rows to render
+  while `loading` is true and `items` is still empty. Defaults to `3`.
+
 ### Changed
 
 - `gog-accordion`'s `loading` skeleton now renders with `gog-skeleton` instead
@@ -18,6 +32,12 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- `gog-accordion`'s `loading` skeleton now actually renders while `items` is
+  empty. It previously rendered one skeleton row per existing item, so the
+  most common real-world case — showing loading state before the item list
+  has arrived at all — silently rendered nothing. It now falls back to
+  `skeletonCount` rows whenever `items` is empty, and still mirrors `items`
+  once they exist.
 - `gog-accordion`'s chevron no longer force-rotates 180° when a custom
   `gogAccordionChevron` template is supplied. Previously the wrapper always
   rotated on open regardless of what the template rendered, so a template that

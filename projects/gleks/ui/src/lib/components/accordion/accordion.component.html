@@ -7,7 +7,7 @@
   class="gog-accordion gog-contained-layout"
 >
   @if (loading()) {
-    @for (item of items(); track item.id) {
+    @for (row of skeletonRows(); track row) {
       <div class="gog-accordion__item gog-accordion__item--skeleton">
         <div class="gog-accordion__header gog-accordion__header--skeleton">
           <gog-skeleton shape="text" [size]="size()" width="55%" />

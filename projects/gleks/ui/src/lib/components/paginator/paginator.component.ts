@@ -13,11 +13,21 @@ import { GogPaginatorRangeMode, GogSize } from '../../shared/types';
     class: 'gog-paginator',
     role: 'navigation',
     '[attr.aria-label]': 'ariaLabel()',
+    // Drives the :host(.gog-host--auto-width) rule in the stylesheet — without this
+    // binding the `fullWidth` input has no visible effect. Inverted from gog-button's
+    // full-width class: this control is full width by default, so the class only
+    // appears once a consumer opts *out* of that.
+    '[class.gog-host--auto-width]': '!fullWidth()',
   },
 })
 export class PaginatorComponent {
   /** 1-based current page. Two-way bindable: `[(page)]="myPageSignal"`. */
   readonly page = model(1);
+  /**
+   * Full width of the container by default. Set to `false` to shrink to fit the page
+   * buttons instead.
+   */
+  readonly fullWidth = input(true);
   readonly totalPages = input(1);
   /**
    * `window` (default): a fixed number of page buttons (`visiblePages`) that slides to keep

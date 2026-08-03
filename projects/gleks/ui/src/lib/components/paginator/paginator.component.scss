@@ -10,6 +10,10 @@
   flex-wrap: wrap;
 }
 
+:host(.gog-host--auto-width) {
+  width: fit-content;
+}
+
 .gog-paginator__ellipsis {
   display: inline-flex;
   align-items: center;

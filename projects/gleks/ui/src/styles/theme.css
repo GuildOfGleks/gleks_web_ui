@@ -733,6 +733,7 @@
   --gog-skeleton-rect-height-slg: 320px;
 
   /* ── Slider ───────────────────────────────────────────────────────────────── */
+  --gog-slider-auto-width: 240px;
   --gog-slider-label-font-family: var(--gog-font-heading);
   --gog-slider-value-font-family: var(--gog-font-mono);
   --gog-slider-error-font-family: var(--gog-font-body);

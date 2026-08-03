@@ -3,6 +3,10 @@
   display: block;
 }
 
+:host(.gog-host--auto-width) {
+  width: var(--gog-slider-auto-width);
+}
+
 .gog-slider {
   display: flex;
   flex-direction: column;

@@ -23,6 +23,19 @@ describe('InputfieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('fullWidth', () => {
+    it('should not apply the auto-width host class by default', () => {
+      expect(fixture.nativeElement.classList.contains('gog-host--auto-width')).toBe(false);
+    });
+
+    it('should apply the auto-width host class when set to false', async () => {
+      fixture.componentRef.setInput('fullWidth', false);
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.classList.contains('gog-host--auto-width')).toBe(true);
+    });
+  });
+
   it('should update value from the native input', () => {
     fixture.detectChanges();
 
