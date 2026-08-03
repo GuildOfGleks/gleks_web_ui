@@ -24,6 +24,13 @@ export const routes: Routes = [
       import('./components/pages/general-page/general-page').then((m) => m.GeneralPage),
   },
   {
+    path: 'components/accordion',
+    loadComponent: () =>
+      import('./components/pages/accordion-doc-page/accordion-doc-page').then(
+        (m) => m.AccordionDocPage,
+      ),
+  },
+  {
     path: 'components/button',
     loadComponent: () =>
       import('./components/pages/button-doc-page/button-doc-page').then((m) => m.ButtonDocPage),
