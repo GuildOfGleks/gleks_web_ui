@@ -211,3 +211,148 @@ h2[id],
 h3[id] {
   scroll-margin-top: 76px;
 }
+
+/*
+ * Code block chrome, shared by the markdown-rendered fenced blocks (markdown.ts) and
+ * `app-code-tabs`. Both render highlighted code via `[innerHTML]`, which Angular's
+ * scoped component styles can't reach, so this has to be genuinely global rather than
+ * living in either component's stylesheet — and keeping it in exactly one place is also
+ * what keeps every code block's `max-height` identical, by construction.
+ */
+:root {
+  --gleks-code-max-height: 420px;
+}
+
+.code-block {
+  margin: 0 0 1.2em;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background-color: var(--gog-surface-color);
+  overflow: hidden;
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background-color: var(--gog-hover-color);
+    border-bottom: 1px solid var(--gog-border-color);
+  }
+
+  &__lang {
+    font-family: var(--gog-font-mono);
+    font-size: var(--gog-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gog-muted-text-color);
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  &__tab {
+    font-family: var(--gog-font-mono);
+    font-size: var(--gog-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--gog-muted-text-color);
+    cursor: pointer;
+    transition: all var(--gog-duration-fast);
+
+    &:hover {
+      color: var(--gog-accent-color);
+    }
+  }
+
+  &__tab--active {
+    border-color: var(--gog-border-color);
+    background-color: var(--gog-surface-color);
+    color: var(--gog-accent-color);
+  }
+
+  &__copy {
+    font-family: var(--gog-font-body);
+    font-size: var(--gog-text-xs);
+    padding: 3px 10px;
+    border: 1px solid var(--gog-border-color);
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--gog-muted-text-color);
+    cursor: pointer;
+    transition: all var(--gog-duration-fast);
+
+    &:hover {
+      color: var(--gog-accent-color);
+      border-color: var(--gog-accent-color);
+    }
+  }
+
+  pre {
+    margin: 0;
+    padding: 14px 16px;
+    max-height: var(--gleks-code-max-height);
+    overflow: auto;
+  }
+
+  code {
+    font-family: var(--gog-font-mono);
+    font-size: var(--gog-text-sm);
+  }
+}
+
+/* highlight.js token colors, mapped to the library's theme tokens so code blocks
+   follow light/dark theme switches instead of shipping a fixed hljs theme. */
+.hljs-comment,
+.hljs-quote {
+  color: var(--gog-muted-text-color);
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-type,
+.hljs-built_in {
+  color: var(--gog-accent-color);
+  font-weight: 600;
+}
+
+.hljs-string,
+.hljs-symbol,
+.hljs-addition {
+  color: var(--gog-success-color);
+}
+
+.hljs-number {
+  color: var(--gog-info-color);
+}
+
+.hljs-title,
+.hljs-section {
+  color: var(--gog-accent-bright);
+}
+
+.hljs-name,
+.hljs-tag {
+  color: var(--gog-accent-color);
+}
+
+.hljs-attr,
+.hljs-attribute {
+  color: var(--gog-secondary-color);
+}
+
+.hljs-variable,
+.hljs-template-variable {
+  color: var(--gog-warning-color);
+}
+
+.hljs-deletion {
+  color: var(--gog-danger-color);
+}

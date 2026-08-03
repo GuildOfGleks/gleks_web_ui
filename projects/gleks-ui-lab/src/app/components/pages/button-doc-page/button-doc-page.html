@@ -18,7 +18,7 @@
       <div class="demo-card__preview">
         <gog-button variant="primary" (gogClick)="onClick('primary', 'md')">Click me</gog-button>
       </div>
-      <app-markdown [markdown]="overviewSnippet" />
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
     </div>
     <p class="doc-section__meta">{{ lastClicked() }}</p>
   </section>
@@ -41,7 +41,7 @@
           </div>
         }
       </div>
-      <app-markdown [markdown]="variantsSnippet" />
+      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
     </article>
 
     <article class="demo-card">
@@ -54,7 +54,7 @@
           <gog-button [variant]="variant" [disabled]="true">{{ variant }}</gog-button>
         }
       </div>
-      <app-markdown [markdown]="disabledSnippet" />
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
     </article>
 
     <article class="demo-card">
@@ -82,7 +82,7 @@
           </gog-button>
         }
       </div>
-      <app-markdown [markdown]="loadingSnippet" />
+      <app-code-tabs [html]="loadingHtml" [ts]="loadingTs" />
     </article>
 
     <article class="demo-card">
@@ -93,7 +93,7 @@
       <div class="demo-card__preview width-demo">
         <gog-button variant="outline" [fullWidth]="true">Full width</gog-button>
       </div>
-      <app-markdown [markdown]="fullWidthSnippet" />
+      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
     </article>
 
     <article class="demo-card">
@@ -114,7 +114,7 @@
           <gog-icon name="info" />
         </gog-button>
       </div>
-      <app-markdown [markdown]="iconOnlySnippet" />
+      <app-code-tabs [html]="iconOnlyHtml" [ts]="iconOnlyTs" />
     </article>
 
     <article class="demo-card">
@@ -128,7 +128,7 @@
         <gog-button variant="primary" (gogClick)="onSpamClick()">Click me fast</gog-button>
       </div>
       <p class="demo-card__meta">Accepted clicks: {{ clickCount() }}</p>
-      <app-markdown [markdown]="debounceSnippet" />
+      <app-code-tabs [html]="debounceHtml" [ts]="debounceTs" />
     </article>
 
     <article class="demo-card">
@@ -141,7 +141,7 @@
         <gog-button variant="outline" type="reset">Reset</gog-button>
       </form>
       <p class="demo-card__meta">{{ formResult() }}</p>
-      <app-markdown [markdown]="formSnippet" />
+      <app-code-tabs [html]="formHtml" [ts]="formTs" />
     </article>
   </section>
 

@@ -25,7 +25,7 @@
           </ng-template>
         </gog-accordion>
       </div>
-      <app-markdown [markdown]="overviewSnippet" />
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
     </div>
     <p class="doc-section__meta">{{ lastToggled() }}</p>
   </section>
@@ -48,7 +48,7 @@
           </div>
         }
       </div>
-      <app-markdown [markdown]="sizesSnippet" />
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
     </article>
 
     <article class="demo-card">
@@ -68,7 +68,7 @@
           </ng-template>
         </gog-accordion>
       </div>
-      <app-markdown [markdown]="multiSnippet" />
+      <app-code-tabs [html]="multiHtml" [ts]="multiTs" />
     </article>
 
     <article class="demo-card">
@@ -77,7 +77,7 @@
         A disabled item's header is non-interactive and skipped by keyboard navigation — see
         "Warranty" above.
       </p>
-      <app-markdown [markdown]="disabledSnippet" />
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
     </article>
 
     <article class="demo-card">
@@ -110,7 +110,7 @@
           </ng-template>
         </gog-accordion>
       </div>
-      <app-markdown [markdown]="customHeaderSnippet" />
+      <app-code-tabs [html]="customHeaderHtml" [ts]="customHeaderTs" />
     </article>
 
     <article class="demo-card">
@@ -127,7 +127,7 @@
           </ng-template>
         </gog-accordion>
       </div>
-      <app-markdown [markdown]="headingLevelSnippet" />
+      <app-code-tabs [html]="headingLevelHtml" [ts]="headingLevelTs" />
     </article>
 
     <article class="demo-card">
@@ -142,7 +142,7 @@
         </div>
         <gog-accordion [items]="basicItems" [loading]="isAccordionLoading()" />
       </div>
-      <app-markdown [markdown]="loadingSnippet" />
+      <app-code-tabs [html]="loadingHtml" [ts]="loadingTs" />
     </article>
 
     <article class="demo-card">
@@ -162,7 +162,7 @@
           </ng-template>
         </gog-accordion>
       </div>
-      <app-markdown [markdown]="controlledSnippet" />
+      <app-code-tabs [html]="controlledHtml" [ts]="controlledTs" />
     </article>
   </section>
 

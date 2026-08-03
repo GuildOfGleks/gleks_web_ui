@@ -1,0 +1,10 @@
+/*
+ * The actual `.code-block` chrome (toolbar, tabs, copy button, pre, code, hljs token
+ * colors) lives in `styles.scss` as a global rule — this component renders highlighted
+ * code via `[innerHTML]`, which scoped component styles can't reach, and sharing the one
+ * global block with the markdown-rendered code blocks is also what keeps every code
+ * block's `max-height` identical. See `styles.scss` for that block.
+ */
+:host {
+  display: block;
+}

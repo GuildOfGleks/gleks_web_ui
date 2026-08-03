@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonComponent, GogSize, GogVariant, IconComponent } from '@guildofgleks/ui';
+import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -67,7 +68,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-button-doc-page',
-  imports: [ButtonComponent, IconComponent, MarkdownComponent, RouterLink],
+  imports: [ButtonComponent, IconComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
   templateUrl: './button-doc-page.html',
   styleUrl: './button-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -96,29 +97,193 @@ export class ButtonDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { ButtonComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ButtonComponent],\n})\n```";
 
-  protected readonly overviewSnippet =
-    '```html\n<gog-button variant="primary" (gogClick)="onClick($event)">\n  Click me\n</gog-button>\n```';
+  protected readonly overviewHtml =
+    '<gog-button variant="primary" (gogClick)="onClick($event)">\n  Click me\n</gog-button>';
+  protected readonly overviewTs = [
+    "import { Component } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent],',
+    '  template: `',
+    '    <gog-button variant="primary" (gogClick)="onClick($event)">',
+    '      Click me',
+    '    </gog-button>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  onClick(event: MouseEvent): void {',
+    "    console.log('Clicked', event);",
+    '  }',
+    '}',
+  ].join('\n');
 
-  protected readonly variantsSnippet =
-    '```html\n<gog-button variant="primary" size="md">Primary</gog-button>\n<gog-button variant="secondary" size="md">Secondary</gog-button>\n<gog-button variant="outline" size="md">Outline</gog-button>\n<gog-button variant="ghost" size="md">Ghost</gog-button>\n```';
+  protected readonly variantsHtml = [
+    '<gog-button variant="primary" size="md">Primary</gog-button>',
+    '<gog-button variant="secondary" size="md">Secondary</gog-button>',
+    '<gog-button variant="outline" size="md">Outline</gog-button>',
+    '<gog-button variant="ghost" size="md">Ghost</gog-button>',
+  ].join('\n');
+  protected readonly variantsTs = [
+    "import { Component } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent],',
+    '  template: `',
+    '    <gog-button variant="primary" size="md">Primary</gog-button>',
+    '    <gog-button variant="secondary" size="md">Secondary</gog-button>',
+    '    <gog-button variant="outline" size="md">Outline</gog-button>',
+    '    <gog-button variant="ghost" size="md">Ghost</gog-button>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
 
-  protected readonly disabledSnippet =
-    '```html\n<gog-button variant="primary" [disabled]="true">Primary</gog-button>\n```';
+  protected readonly disabledHtml = '<gog-button variant="primary" [disabled]="true">Primary</gog-button>';
+  protected readonly disabledTs = [
+    "import { Component } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent],',
+    '  template: `<gog-button variant="primary" [disabled]="true">Primary</gog-button>`,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
 
-  protected readonly loadingSnippet =
-    '```html\n<gog-button\n  variant="primary"\n  [loading]="isLoading()"\n  (gogClick)="simulateLoading()"\n>\n  Simulate loading\n</gog-button>\n```';
+  protected readonly loadingHtml = [
+    '<gog-button',
+    '  variant="primary"',
+    '  [loading]="isLoading()"',
+    '  (gogClick)="simulateLoading()"',
+    '>',
+    '  Simulate loading',
+    '</gog-button>',
+  ].join('\n');
+  protected readonly loadingTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent],',
+    '  template: `',
+    '    <gog-button',
+    '      variant="primary"',
+    '      [loading]="isLoading()"',
+    '      (gogClick)="simulateLoading()"',
+    '    >',
+    '      Simulate loading',
+    '    </gog-button>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly isLoading = signal(false);',
+    '',
+    '  protected simulateLoading(): void {',
+    '    this.isLoading.set(true);',
+    '    setTimeout(() => this.isLoading.set(false), 1500);',
+    '  }',
+    '}',
+  ].join('\n');
 
-  protected readonly fullWidthSnippet =
-    '```html\n<gog-button variant="outline" [fullWidth]="true">Full width</gog-button>\n```';
+  protected readonly fullWidthHtml = '<gog-button variant="outline" [fullWidth]="true">Full width</gog-button>';
+  protected readonly fullWidthTs = [
+    "import { Component } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent],',
+    '  template: `<gog-button variant="outline" [fullWidth]="true">Full width</gog-button>`,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
 
-  protected readonly iconOnlySnippet =
-    '```html\n<gog-button variant="primary" ariaLabel="Confirm">\n  <gog-icon name="check" />\n</gog-button>\n```';
+  protected readonly iconOnlyHtml = [
+    '<gog-button variant="primary" ariaLabel="Confirm">',
+    '  <gog-icon name="check" />',
+    '</gog-button>',
+  ].join('\n');
+  protected readonly iconOnlyTs = [
+    "import { Component } from '@angular/core';",
+    "import { ButtonComponent, IconComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent, IconComponent],',
+    '  template: `',
+    '    <gog-button variant="primary" ariaLabel="Confirm">',
+    '      <gog-icon name="check" />',
+    '    </gog-button>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
 
-  protected readonly debounceSnippet =
-    '```html\n<gog-button variant="primary" [debounce]="300" (gogClick)="onSpamClick()">\n  Click me fast\n</gog-button>\n```';
+  protected readonly debounceHtml =
+    '<gog-button variant="primary" [debounce]="300" (gogClick)="onSpamClick()">Click me fast</gog-button>';
+  protected readonly debounceTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent],',
+    '  template: `',
+    '    <gog-button variant="primary" [debounce]="300" (gogClick)="onSpamClick()">',
+    '      Click me fast',
+    '    </gog-button>',
+    '    <p>Accepted clicks: {{ clickCount() }}</p>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly clickCount = signal(0);',
+    '',
+    '  protected onSpamClick(): void {',
+    '    this.clickCount.update((count) => count + 1);',
+    '  }',
+    '}',
+  ].join('\n');
 
-  protected readonly formSnippet =
-    '```html\n<form (submit)="onFormSubmit($event)" (reset)="onFormReset()">\n  <gog-button variant="primary" type="submit">Submit</gog-button>\n  <gog-button variant="outline" type="reset">Reset</gog-button>\n</form>\n```';
+  protected readonly formHtml = [
+    '<form (submit)="onFormSubmit($event)" (reset)="onFormReset()">',
+    '  <gog-button variant="primary" type="submit">Submit</gog-button>',
+    '  <gog-button variant="outline" type="reset">Reset</gog-button>',
+    '</form>',
+  ].join('\n');
+  protected readonly formTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent],',
+    '  template: `',
+    '    <form (submit)="onFormSubmit($event)" (reset)="onFormReset()">',
+    '      <gog-button variant="primary" type="submit">Submit</gog-button>',
+    '      <gog-button variant="outline" type="reset">Reset</gog-button>',
+    '    </form>',
+    '    <p>{{ formResult() }}</p>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly formResult = signal('Neither button pressed yet.');",
+    '',
+    '  protected onFormSubmit(event: Event): void {',
+    '    event.preventDefault();',
+    '    this.formResult.set(\'Submitted via type="submit".\');',
+    '  }',
+    '',
+    '  protected onFormReset(): void {',
+    '    this.formResult.set(\'Reset via type="reset".\');',
+    '  }',
+    '}',
+  ].join('\n');
 
   protected onClick(variant: GogVariant, size: GogSize): void {
     this.lastClicked.set(`Clicked "${variant}" (${size})`);
