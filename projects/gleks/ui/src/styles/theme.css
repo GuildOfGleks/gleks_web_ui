@@ -175,7 +175,7 @@
   --gog-hover-color: #dfd3bf;
   --gog-border-color: #c4b496;
   --gog-text-color: #1e170e;
-  --gog-accent-text-color: #ece4d0;
+  --gog-accent-text-color: #ffffff;
   --gog-muted-text-color: #6e5438;
   --gog-primary-color: #1e170e;
   --gog-accent-color: #8c6200;
@@ -203,7 +203,7 @@
 
   /* Типографика */
   --gog-text-color: #1e170e; /* Глубокий тёмно-коричневый вместо чисто черного */
-  --gog-accent-text-color: #ece4d0;
+  --gog-accent-text-color: #ffffff;
   --gog-muted-text-color: #6e5438; /* Мягкий коричневый */
 
   /* Бренд и акценты (Благородное золото) */
