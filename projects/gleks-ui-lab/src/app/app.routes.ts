@@ -65,6 +65,25 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'components/multiselect',
+    loadComponent: () =>
+      import('./components/pages/multiselect-doc-page/multiselect-doc-page').then(
+        (m) => m.MultiselectDocPage,
+      ),
+  },
+  {
+    path: 'components/paginator',
+    loadComponent: () =>
+      import('./components/pages/paginator-doc-page/paginator-doc-page').then(
+        (m) => m.PaginatorDocPage,
+      ),
+  },
+  {
+    path: 'components/select',
+    loadComponent: () =>
+      import('./components/pages/select-doc-page/select-doc-page').then((m) => m.SelectDocPage),
+  },
+  {
     path: 'components/:name',
     loadComponent: () =>
       import('./components/pages/component-preview-page/component-preview-page').then(
