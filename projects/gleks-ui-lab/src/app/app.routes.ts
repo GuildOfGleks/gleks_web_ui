@@ -36,6 +36,18 @@ export const routes: Routes = [
       import('./components/pages/button-doc-page/button-doc-page').then((m) => m.ButtonDocPage),
   },
   {
+    path: 'components/checkbox',
+    loadComponent: () =>
+      import('./components/pages/checkbox-doc-page/checkbox-doc-page').then(
+        (m) => m.CheckboxDocPage,
+      ),
+  },
+  {
+    path: 'components/chip',
+    loadComponent: () =>
+      import('./components/pages/chip-doc-page/chip-doc-page').then((m) => m.ChipDocPage),
+  },
+  {
     path: 'components/:name',
     loadComponent: () =>
       import('./components/pages/component-preview-page/component-preview-page').then(
