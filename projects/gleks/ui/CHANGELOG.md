@@ -16,6 +16,18 @@ reached 1.0, so breaking changes may land in minor versions.
   `gogReachStart`/`gogReachEnd` outputs, a `gogScroll` metrics output, and
   `scrollTo`/`scrollToTop`/`scrollToBottom`/`scrollToLeft`/`scrollToRight`
   public methods. New `--gog-scroll-*` tokens in `theme.css`.
+- `gog-scroll`'s `overscrollBehavior` input (`'auto'` | `'contain'` | `'none'`,
+  mirrors the CSS property of the same name): what happens when a scroll
+  gesture reaches this instance's edge. Defaults to `'auto'` — chains to the
+  next scrollable ancestor, same as an un-customized `overflow: auto` div, so
+  scrolling to the end of a `gog-scroll`'d section and continuing the same
+  gesture now keeps scrolling the page instead of stopping dead. Unset, falls
+  back to the new `GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR` injection token
+  (itself `'auto'` unless a consumer overrides it app-wide). `gog-select`/
+  `gog-multiselect`'s option panel and `gog-dialog`'s body now set
+  `overscrollBehavior="contain"` explicitly, preserving their existing
+  (correct, overlay-appropriate) behavior now that the component-wide default
+  has changed to chain-through.
 
 ### Changed
 

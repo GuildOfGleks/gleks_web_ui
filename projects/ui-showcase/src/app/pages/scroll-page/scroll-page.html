@@ -109,6 +109,39 @@
   </article>
 
   <article class="card">
+    <h3>Scroll chaining</h3>
+    <p class="lead">
+      <code>overscrollBehavior</code> controls what happens once a scroll gesture hits this
+      instance's edge. <code>"auto"</code> (the default) chains it to the next scrollable
+      ancestor — scroll to the end of the box below and keep scrolling with the same gesture:
+      the page itself keeps going, exactly like a native <code>overflow: auto</code> div.
+      <code>"contain"</code> stops the gesture dead at the edge instead — suited to overlay-style
+      panels (which is why <code>gog-select</code>'s option panel and <code>gog-dialog</code>'s
+      body set it explicitly). There's also a
+      <code>GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR</code> injection token to change the app-wide
+      default instead of setting the input on every instance.
+    </p>
+    <div class="two-up">
+      <div>
+        <p class="meta">overscrollBehavior="auto" (default)</p>
+        <gog-scroll class="text-demo text-demo--short">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="text-demo__paragraph">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </div>
+      <div>
+        <p class="meta">overscrollBehavior="contain"</p>
+        <gog-scroll overscrollBehavior="contain" class="text-demo text-demo--short">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="text-demo__paragraph">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Reach events</h3>
     <p class="lead">
       <code>gogReachEnd</code> / <code>gogReachStart</code> fire once per edge transition —

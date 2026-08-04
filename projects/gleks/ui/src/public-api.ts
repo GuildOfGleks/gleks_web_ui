@@ -20,6 +20,7 @@ export * from './lib/components/slider/slider.component';
 export * from './lib/components/skeleton/skeleton.component';
 export * from './lib/components/paginator/paginator.component';
 export * from './lib/components/scroll/scroll.component';
+export * from './lib/components/scroll/scroll.tokens';
 export * from './lib/components/spinner/spinner-overlay/spinner-overlay.component';
 export * from './lib/components/table/column';
 export * from './lib/components/table/table.component';
