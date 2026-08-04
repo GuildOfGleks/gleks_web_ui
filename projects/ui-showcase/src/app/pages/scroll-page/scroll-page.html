@@ -117,9 +117,10 @@
       the page itself keeps going, exactly like a native <code>overflow: auto</code> div.
       <code>"contain"</code> stops the gesture dead at the edge instead — suited to overlay-style
       panels (which is why <code>gog-select</code>'s option panel and <code>gog-dialog</code>'s
-      body set it explicitly). There's also a
-      <code>GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR</code> injection token to change the app-wide
-      default instead of setting the input on every instance.
+      body set it explicitly). To change the app-wide default instead of setting the input on
+      every instance, call <code>provideGogConfig({{ '{' }} scroll: {{ '{' }} overscrollBehavior:
+      'contain' {{ '}' }} {{ '}' }})</code> in your app's providers — every unset
+      <code>gog-scroll</code> instance falls back to it.
     </p>
     <div class="two-up">
       <div>
