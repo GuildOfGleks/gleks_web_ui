@@ -1,0 +1,180 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-scroll</p>
+    <h2>Scroll</h2>
+    <p class="lead">
+      A drop-in replacement for a native <code>overflow: auto</code> region: the content still
+      scrolls natively, only the browser's own scrollbar chrome is hidden and replaced with a
+      themeable, draggable overlay thumb. This whole page is scrolled by one — see the app shell
+      around this content.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Plain content — a lot of text</h3>
+    <p class="lead">
+      The most common case: wrap anything that might overflow in <code>&lt;gog-scroll&gt;</code>
+      and give it a height. No other markup changes.
+    </p>
+    <div class="field-grid">
+      <gog-scroll class="text-demo">
+        @for (paragraph of paragraphs; track paragraph) {
+          <p class="text-demo__paragraph">{{ paragraph }}</p>
+        }
+      </gog-scroll>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <p class="meta">
+      <code>size="normal"</code> (default) vs. <code>size="thin"</code> — thin suits compact
+      chrome like a dropdown panel or dialog body.
+    </p>
+    <div class="two-up">
+      <div>
+        <p class="meta">normal</p>
+        <gog-scroll class="text-demo text-demo--short">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="text-demo__paragraph">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </div>
+      <div>
+        <p class="meta">thin</p>
+        <gog-scroll size="thin" class="text-demo text-demo--short">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="text-demo__paragraph">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Axes</h3>
+    <p class="meta">
+      <code>axis</code> is <code>"vertical"</code> by default. <code>"horizontal"</code> disables
+      vertical scrolling and lets content grow to its natural width instead of wrapping;
+      <code>"both"</code> renders both tracks plus a corner filler where they meet.
+    </p>
+    <div class="field-grid">
+      <div>
+        <p class="meta">horizontal</p>
+        <gog-scroll axis="horizontal" class="row-demo">
+          <div class="card-row">
+            @for (card of wideCards; track card) {
+              <div class="card-row__card">{{ card }}</div>
+            }
+          </div>
+        </gog-scroll>
+      </div>
+      <div>
+        <p class="meta">both</p>
+        <gog-scroll axis="both" class="grid-scroll-demo">
+          <div class="grid-demo">
+            @for (cell of gridCells; track cell) {
+              <div class="grid-demo__cell">{{ cell }}</div>
+            }
+          </div>
+        </gog-scroll>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Auto-hide vs. always visible</h3>
+    <p class="meta">
+      By default the thumb fades in on hover/scroll and fades back out after
+      <code>hideDelay</code> ms idle. <code>[autoHide]="false"</code> keeps it always on screen.
+    </p>
+    <div class="two-up">
+      <div>
+        <p class="meta">autoHide (default)</p>
+        <gog-scroll class="text-demo text-demo--short">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="text-demo__paragraph">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </div>
+      <div>
+        <p class="meta">[autoHide]="false"</p>
+        <gog-scroll [autoHide]="false" class="text-demo text-demo--short">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="text-demo__paragraph">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Reach events</h3>
+    <p class="lead">
+      <code>gogReachEnd</code> / <code>gogReachStart</code> fire once per edge transition —
+      handy for a "load more" trigger or a chat log that should know when it's pinned to the
+      bottom.
+    </p>
+    <div class="field-grid">
+      <gog-scroll
+        class="text-demo text-demo--short"
+        (gogReachEnd)="onReachEnd($event)"
+        (gogReachStart)="onReachStart($event)"
+      >
+        @for (paragraph of paragraphs; track paragraph) {
+          <p class="text-demo__paragraph">{{ paragraph }}</p>
+        }
+      </gog-scroll>
+    </div>
+    <p class="meta">
+      {{ reachedEnd() ? 'Reached the bottom.' : 'Scroll down to the last paragraph…' }}
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Programmatic scrolling</h3>
+    <p class="lead">
+      The component instance exposes <code>scrollTo</code>, <code>scrollToTop</code>,
+      <code>scrollToBottom</code>, <code>scrollToLeft</code> and <code>scrollToRight</code> — a
+      template reference variable is enough to call them, no <code>@ViewChild</code> needed.
+    </p>
+    <div class="field-grid">
+      <gog-scroll #textList class="text-demo text-demo--short">
+        @for (paragraph of paragraphs; track paragraph) {
+          <p class="text-demo__paragraph">{{ paragraph }}</p>
+        }
+      </gog-scroll>
+    </div>
+    <div class="action-row">
+      <gog-button variant="ghost" type="button" (gogClick)="textList.scrollToTop()">
+        To top
+      </gog-button>
+      <gog-button variant="ghost" type="button" (gogClick)="textList.scrollToBottom()">
+        To bottom
+      </gog-button>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Already used inside existing components</h3>
+    <p class="lead">
+      <code>gog-select</code> and <code>gog-multiselect</code> use it for their option panel,
+      <code>gog-dialog</code> uses it for the body, and <code>gog-table</code> uses it for its
+      horizontal scroll — all with the native scrollbar hidden the same way as here. Nothing
+      about consuming those components changes; this is purely internal.
+    </p>
+    <p class="lead">
+      You can also wrap any existing component in a <code>gog-scroll</code> yourself to cap its
+      height — here's <code>gog-table</code> capped at 220px:
+    </p>
+    <div class="field-grid">
+      <gog-scroll class="table-demo">
+        <gog-table [value]="tableRows" [stickyHeader]="true">
+          <column field="component" header="Component"></column>
+          <column field="status" header="Status"></column>
+          <column field="owner" header="Owner"></column>
+        </gog-table>
+      </gog-scroll>
+    </div>
+  </article>
+</section>

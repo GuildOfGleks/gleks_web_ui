@@ -1,10 +1,18 @@
 :host {
   display: block;
-  min-height: 100vh;
+  /* A definite height (not min-height) — gog-scroll needs one from its own parent to
+     reliably size the scroll region it replaces below; percentage/flex-grown heights work
+     the same way this element's own height:100% now resolves from body's (html, body {
+     height: 100% } in styles.scss), a genuinely definite chain, not a max-height clamp. */
+  height: 100%;
+}
+
+.app-shell-scroll {
+  height: 100%;
 }
 
 .app-shell {
-  min-height: 100vh;
+  min-height: 100%;
   padding: 32px;
   display: grid;
   gap: 28px;

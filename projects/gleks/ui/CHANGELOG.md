@@ -4,7 +4,8 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [Unreleased]
+## [21.2.4] - planned
+- new scroll component.
 
 ## [21.2.3] - 2026-08-03
 

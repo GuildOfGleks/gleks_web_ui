@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { ButtonComponent, ThemeService } from '@guildofgleks/ui';
+import { ButtonComponent, ScrollComponent, ThemeService } from '@guildofgleks/ui';
 
 import { showcaseThemes, type ShowcaseThemeName } from './showcase-themes';
 
@@ -11,7 +11,7 @@ interface ShowcaseNavLink {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, ButtonComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ButtonComponent, ScrollComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +45,7 @@ export class App {
     { path: 'select', label: 'Select' },
     { path: 'multiselect', label: 'Multiselect' },
     { path: 'table', label: 'Table' },
+    { path: 'scroll', label: 'Scroll' },
     { path: 'paginator', label: 'Paginator' },
     { path: 'slider', label: 'Slider' },
     { path: 'spinner', label: 'Spinner' },
