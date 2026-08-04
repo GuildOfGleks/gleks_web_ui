@@ -170,91 +170,101 @@
 
   /* ── Light palette (also the no-data-theme default) ───────────────────────── */
   color-scheme: light;
-  --gog-background-color: #f6f0e6;
-  --gog-surface-color: #eae0d0;
-  --gog-hover-color: #dfd3bf;
-  --gog-border-color: #c4b496;
-  --gog-text-color: #1e170e;
+  /* Фоновые и поверхностные тона */
+  --gog-background-color: #f7f3eb; /* Тёплый пергаментный фон страницы */
+  --gog-surface-color: #ffffff;    /* КИСЛО-БЕЛЫЙ ПЕРГАМЕНТ карточек (создает контраст со слоем 1!) */
+  --gog-hover-color: #f0e7d7;      /* Состояние наведения (мягкий воск) */
+  --gog-border-color: #d8c7ad;     /* Состаренная латунная рамка */
+
+  /* Типографика (Старинные дубовые чернила) */
+  --gog-text-color: #17120c;       /* Глубокие чернила (высокий контраст WCAG AAA) */
   --gog-accent-text-color: #ffffff;
-  --gog-muted-text-color: #6e5438;
-  --gog-primary-color: #1e170e;
-  --gog-accent-color: #8c6200;
-  --gog-accent-bright: #b8860b;
-  --gog-accent-dim: #634500;
-  --gog-accent-pale: #f4e8c1;
-  --gog-secondary-color: #a07800;
-  --gog-success-color: #2d6a4f;
-  --gog-danger-color: #9b2226;
-  --gog-warning-color: #bb3e03;
-  --gog-info-color: #4a6fa5;
-  --gog-panel-shadow: 0 12px 28px rgba(30, 23, 14, 0.08);
-  --gog-spinner-overlay-bg: rgba(246, 240, 230, 0.75);
+  --gog-muted-text-color: #63503c; /* Приглушенные печные чернила */
+
+  /* Бренд и акценты (Гильдейское Сусальное Золото) */
+  --gog-primary-color: #17120c;
+  --gog-accent-color: #9e6f00;     /* Насыщенный благородный золотисто-бронзовый */
+  --gog-accent-bright: #c88e00;   /* Яркий отблеск золота */
+  --gog-accent-dim: #735100;      /* Темная бронза */
+  --gog-accent-pale: #f8f1df;     /* Светлая подложка под золото */
+  --gog-secondary-color: #6b5328;
+
+  /* Гармонизированная алхимическая семантика */
+  --gog-success-color: #216e4e;   /* Изумруд */
+  --gog-danger-color: #a7232b;    /* Рубин */
+  --gog-warning-color: #c45100;   /* Тёмный янтарь */
+  --gog-info-color: #2b5c8f;      /* Лазурит */
+
+  /* Объёмная мягкая тень старой кожи */
+  --gog-panel-shadow: 0 4px 20px rgba(23, 18, 12, 0.08), 0 1px 3px rgba(23, 18, 12, 0.04);
+  --gog-spinner-overlay-bg: rgba(247, 243, 235, 0.85);
 }
 
 :root[data-theme='light'],
 [data-theme='light'] {
   color-scheme: light;
 
-  /* Фоновые и поверхностные тона (Тёплый пергамент) */
-  --gog-background-color: #f6f0e6;
-  --gog-surface-color: #eae0d0;
-  --gog-hover-color: #dfd3bf;
-  --gog-border-color: #c4b496;
+  /* Фоновые и поверхностные тона */
+  --gog-background-color: #f7f3eb; /* Тёплый пергаментный фон страницы */
+  --gog-surface-color: #ffffff;    /* КИСЛО-БЕЛЫЙ ПЕРГАМЕНТ карточек (создает контраст со слоем 1!) */
+  --gog-hover-color: #f0e7d7;      /* Состояние наведения (мягкий воск) */
+  --gog-border-color: #d8c7ad;     /* Состаренная латунная рамка */
 
-  /* Типографика */
-  --gog-text-color: #1e170e; /* Глубокий тёмно-коричневый вместо чисто черного */
+  /* Типографика (Старинные дубовые чернила) */
+  --gog-text-color: #17120c;       /* Глубокие чернила (высокий контраст WCAG AAA) */
   --gog-accent-text-color: #ffffff;
-  --gog-muted-text-color: #6e5438; /* Мягкий коричневый */
+  --gog-muted-text-color: #63503c; /* Приглушенные печные чернила */
 
-  /* Бренд и акценты (Благородное золото) */
-  --gog-primary-color: #1e170e;
-  --gog-accent-color: #8c6200; /* Более контрастный золотисто-бронзовый */
-  --gog-accent-bright: #b8860b;
-  --gog-accent-dim: #634500;
-  --gog-accent-pale: #f4e8c1;
-  --gog-secondary-color: #a07800;
+  /* Бренд и акценты (Гильдейское Сусальное Золото) */
+  --gog-primary-color: #17120c;
+  --gog-accent-color: #9e6f00;     /* Насыщенный благородный золотисто-бронзовый */
+  --gog-accent-bright: #c88e00;   /* Яркий отблеск золота */
+  --gog-accent-dim: #735100;      /* Темная бронза */
+  --gog-accent-pale: #f8f1df;     /* Светлая подложка под золото */
+  --gog-secondary-color: #6b5328;
 
-  /* Гармонизированная семантика (Подходит под warm-стиль) */
-  --gog-success-color: #2d6a4f; /* Изумрудно-зеленый */
-  --gog-danger-color: #9b2226; /* Рубиновый */
-  --gog-warning-color: #bb3e03; /* Тёмно-янтарный */
-  --gog-info-color: #4a6fa5; /* Приглушенный стальной синий */
+  /* Гармонизированная алхимическая семантика */
+  --gog-success-color: #216e4e;   /* Изумруд */
+  --gog-danger-color: #a7232b;    /* Рубин */
+  --gog-warning-color: #c45100;   /* Тёмный янтарь */
+  --gog-info-color: #2b5c8f;      /* Лазурит */
 
-  --gog-panel-shadow: 0 12px 28px rgba(30, 23, 14, 0.08);
-  --gog-spinner-overlay-bg: rgba(246, 240, 230, 0.75);
+  /* Объёмная мягкая тень старой кожи */
+  --gog-panel-shadow: 0 4px 20px rgba(23, 18, 12, 0.08), 0 1px 3px rgba(23, 18, 12, 0.04);
+  --gog-spinner-overlay-bg: rgba(247, 243, 235, 0.85);
 }
 
 :root[data-theme='dark'],
 [data-theme='dark'] {
   color-scheme: dark;
 
-  /* Фоновые и поверхностные тона (Тёмная обсидиановая кузница) */
-  --gog-background-color: #0f0d0a;
-  --gog-surface-color: #191510;
-  --gog-hover-color: #262018;
-  --gog-border-color: #382e22;
+  /* Фоновые и поверхностные тона */
+  --gog-background-color: #0d0b08; /* Глубокий кузнечный обсидиан */
+  --gog-surface-color: #16120e;    /* Тёмное обожженное железо (карточки) */
+  --gog-hover-color: #241d17;      /* Наведение на элементы */
+  --gog-border-color: #3d3122;     /* Состаренная чеканенная бронза */
 
-  /* Типографика (Комфортная для чтения) */
-  --gog-text-color: #e5dec9; /* Мягкий крем/слоновая кость (глаза не устают) */
-  --gog-accent-text-color: #e5dec9;
-  --gog-muted-text-color: #9e8c72; /* Приглушенное пергаментное золото */
+  /* Типографика (Светящаяся Слоновая Кость) */
+  --gog-text-color: #f3ebd8;       /* Мягкий светящийся пергамент */
+  --gog-accent-text-color: #0d0b08;
+  --gog-muted-text-color: #9e8d76; /* Приглушенная бронза */
 
-  /* Бренд и акценты (Светящееся золото) */
-  --gog-primary-color: #e5dec9;
-  --gog-accent-color: #f3be3a; /* Яркий золотой акцент */
-  --gog-accent-bright: #ffd05b;
-  --gog-accent-dim: #b5881a;
-  --gog-accent-pale: #3d2f0e;
+  /* Бренд и акценты (Светящееся Золото Алхимии) */
+  --gog-primary-color: #f3ebd8;
+  --gog-accent-color: #fbbf24;     /* Плазменный янтарь */
+  --gog-accent-bright: #fde047;   /* Яркий золотой луч */
+  --gog-accent-dim: #b48310;      /* Приглушенное золото */
+  --gog-accent-pale: #2b210c;     /* Тёмный золотой отсвет */
   --gog-secondary-color: #d4a373;
 
-  /* Гармонизированная семантика для тёмной темы */
-  --gog-success-color: #52b788;
-  --gog-danger-color: #e63946;
-  --gog-warning-color: #f4a261;
-  --gog-info-color: #64dfdf;
+  /* Семантика */
+  --gog-success-color: #34d399;   /* Светящийся изумруд */
+  --gog-danger-color: #f87171;    /* Светящийся рубин */
+  --gog-warning-color: #fbbf24;   /* Янтарь */
+  --gog-info-color: #38bdf8;      /* Сапфир */
 
-  --gog-panel-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
-  --gog-spinner-overlay-bg: rgba(15, 13, 10, 0.75);
+  --gog-panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--gog-border-color);
+  --gog-spinner-overlay-bg: rgba(13, 11, 8, 0.85);
 }
 
 /*
@@ -659,6 +669,26 @@
   --gog-paginator-ellipsis-font-size: var(--gog-text-sm);
   --gog-paginator-ellipsis-font-family: var(--gog-font-body);
   --gog-paginator-ellipsis-min-width: 32px;
+
+  /* ── Scroll ────────────────────────────────────────────────────────────────── */
+  --gog-scroll-track-bg: transparent;
+  --gog-scroll-track-radius: var(--gog-radius);
+  --gog-scroll-thumb-bg: var(--gog-accent-dim);
+  --gog-scroll-thumb-hover-bg: var(--gog-accent-color);
+  --gog-scroll-thumb-active-bg: var(--gog-accent-bright);
+  --gog-scroll-thumb-radius: var(--gog-radius);
+  --gog-scroll-thumb-inset: 2px;
+  --gog-scroll-corner-bg: transparent;
+  --gog-scroll-fade-duration: var(--gog-duration-base);
+  --gog-scroll-focus-ring: var(--gog-accent-color);
+  --gog-scroll-focus-ring-width: var(--gog-focus-ring-width);
+  /* Per-size pair for the two-tier `--gog-scroll-track-width`/`-thumb-min-size` chains
+     that scroll.component.scss's `.gog-scroll--thin` modifier switches between. `normal`
+     is the unmarked default, mirroring --gog-table-lg-*. */
+  --gog-scroll-normal-track-width: 10px;
+  --gog-scroll-thin-track-width: 6px;
+  --gog-scroll-normal-thumb-min-size: 32px;
+  --gog-scroll-thin-thumb-min-size: 24px;
 
   /* ── Select ────────────────────────────────────────────────────────────────── */
   --gog-select-font-family: var(--gog-font-body);
