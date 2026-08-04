@@ -89,9 +89,15 @@
 
 .gog-dialog__body {
   padding: var(--gog-dialog-body-padding);
-  overflow-y: auto;
   flex: 1;
+  /* Overrides the flex-item default of auto, which would otherwise refuse to shrink
+     below the projected content's full height and defeat the max-height below. */
+  min-height: 0;
   max-height: var(--gog-dialog-body-max-height);
+}
+
+.gog-dialog__scroll {
+  height: 100%;
 }
 
 @keyframes gog-fade-in {

@@ -190,13 +190,21 @@
   left: 0;
   right: 0;
   z-index: var(--gog-dropdown-z);
+  display: flex;
+  flex-direction: column;
   background-color: var(--gog-ms-panel-bg);
   border: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
     var(--gog-ms-panel-border);
   border-radius: var(--gog-ms-radius);
   max-height: var(--gog-ms-panel-max-height);
-  overflow-y: auto;
   box-shadow: var(--gog-ms-panel-shadow);
+}
+
+.gog-ms__scroll {
+  /* min-height: 0 overrides the flex-item default of auto, which would otherwise refuse
+     to shrink below the option list's full height and defeat the max-height above. */
+  flex: 1;
+  min-height: 0;
 }
 
 .gog-ms__dropdown--up {
@@ -217,9 +225,9 @@
 }
 
 .gog-ms__controls {
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  /* Sits outside .gog-ms__scroll as a flex sibling, so it stays pinned above/below the
+     scrollable options without needing position: sticky. */
+  flex-shrink: 0;
   display: flex;
   gap: var(--gog-ms-controls-gap);
   padding: var(--gog-ms-controls-padding);
@@ -229,8 +237,6 @@
 }
 
 .gog-ms__controls--bottom {
-  top: auto;
-  bottom: 0;
   border-bottom: 0;
   border-top: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
     var(--gog-ms-field-border);

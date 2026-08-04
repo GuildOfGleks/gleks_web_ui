@@ -1,5 +1,5 @@
 <div class="gog-table-wrapper gog-contained-layout">
-  <div class="gog-table-scroll">
+  <gog-scroll axis="horizontal" class="gog-table-scroll">
     <table
       class="gog-table"
       [class.gog-table--col-borders]="showColumnBorders()"
@@ -95,7 +95,7 @@
         }
       </tbody>
     </table>
-  </div>
+  </gog-scroll>
 
   @if (hasPagination() || showTotal()) {
     <div class="gog-table__footer">

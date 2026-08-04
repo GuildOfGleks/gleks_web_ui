@@ -1,0 +1,150 @@
+/*
+ * `--gog-scroll-track-width` / `--gog-scroll-thumb-min-size` are declared here (not just
+ * consumed) so `.gog-scroll--thin` can remap them and scroll.component.ts can read the
+ * resolved value back via getComputedStyle for the thumb-size math — see refreshTokens().
+ * Every other value resolves to a `--gog-scroll-*` token declared in styles/theme.css.
+ */
+:host {
+  display: block;
+}
+
+.gog-scroll {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  contain: layout style;
+
+  --gog-scroll-track-width: var(--gog-scroll-normal-track-width);
+  --gog-scroll-thumb-min-size: var(--gog-scroll-normal-thumb-min-size);
+}
+
+.gog-scroll--thin {
+  --gog-scroll-track-width: var(--gog-scroll-thin-track-width);
+  --gog-scroll-thumb-min-size: var(--gog-scroll-thin-thumb-min-size);
+}
+
+.gog-scroll__viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: contain;
+
+  /* The scroll itself stays native — only the browser's own chrome is hidden; the overlay
+     thumb below replaces it visually. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+.gog-scroll--v .gog-scroll__viewport {
+  overflow-y: auto;
+}
+
+.gog-scroll--h .gog-scroll__viewport {
+  overflow-x: auto;
+}
+
+.gog-scroll__viewport:focus-visible {
+  outline: var(--gog-scroll-focus-ring-width) solid var(--gog-scroll-focus-ring);
+  outline-offset: calc(var(--gog-scroll-focus-ring-width) * -1);
+}
+
+.gog-scroll__content {
+  min-height: 100%;
+}
+
+.gog-scroll--h .gog-scroll__content {
+  width: max-content;
+  min-width: 100%;
+}
+
+.gog-scroll__track {
+  position: absolute;
+  z-index: 1;
+  background-color: var(--gog-scroll-track-bg);
+  border-radius: var(--gog-scroll-track-radius);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--gog-scroll-fade-duration) var(--gog-easing);
+}
+
+.gog-scroll__track--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.gog-scroll__track--v {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--gog-scroll-track-width);
+}
+
+.gog-scroll--both .gog-scroll__track--v {
+  bottom: var(--gog-scroll-track-width);
+}
+
+.gog-scroll__track--h {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--gog-scroll-track-width);
+}
+
+.gog-scroll--both .gog-scroll__track--h {
+  right: var(--gog-scroll-track-width);
+}
+
+.gog-scroll__thumb {
+  position: absolute;
+  background-color: var(--gog-scroll-thumb-bg);
+  border-radius: var(--gog-scroll-thumb-radius);
+  cursor: pointer;
+  touch-action: none;
+  transition: background-color var(--gog-scroll-fade-duration) var(--gog-easing);
+}
+
+/* top/height and left/width are set inline from JS as percentages of the track — the
+   thumb's *containing block* (not its own box, unlike a transform), so no px math needed
+   here to keep them in sync with the track's actual rendered size. */
+.gog-scroll__thumb--v {
+  left: var(--gog-scroll-thumb-inset);
+  right: var(--gog-scroll-thumb-inset);
+  min-height: var(--gog-scroll-thumb-min-size);
+}
+
+.gog-scroll__thumb--h {
+  top: var(--gog-scroll-thumb-inset);
+  bottom: var(--gog-scroll-thumb-inset);
+  min-width: var(--gog-scroll-thumb-min-size);
+}
+
+.gog-scroll__thumb:hover {
+  background-color: var(--gog-scroll-thumb-hover-bg);
+}
+
+.gog-scroll__thumb--active {
+  background-color: var(--gog-scroll-thumb-active-bg);
+}
+
+.gog-scroll__corner {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: var(--gog-scroll-track-width);
+  height: var(--gog-scroll-track-width);
+  background-color: var(--gog-scroll-corner-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-scroll__track,
+  .gog-scroll__thumb {
+    transition: none;
+  }
+}

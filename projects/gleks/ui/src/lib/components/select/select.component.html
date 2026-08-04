@@ -89,31 +89,39 @@
     [attr.aria-labelledby]="label() ? labelId() : null"
     (click)="$event.stopPropagation()"
   >
-    @for (option of options(); track option.id) {
-      <!--
-        tabindex="-1" keeps the list to a single tab stop, as the listbox pattern expects:
-        focus is moved between options with the arrow keys, not by tabbing through every
-        one of them. Programmatic .focus() still works on a negative tabindex.
-      -->
-      <button
-        type="button"
-        class="gog-select__option"
-        role="option"
-        tabindex="-1"
-        [attr.aria-selected]="isSelected(option.id)"
-        [attr.aria-disabled]="option.disabled ?? false"
-        [class.gog-select__option--selected]="isSelected(option.id)"
-        [class.gog-select__option--disabled]="option.disabled ?? false"
-        (click)="selectOption(option, $event)"
-        (keydown)="onOptionKeydown($event)"
-      >
-        <span class="gog-select__option-mark" aria-hidden="true">
-          @if (isSelected(option.id)) {
-            <gog-icon name="check" />
-          }
-        </span>
-        <span class="gog-select__option-label">{{ option.name }}</span>
-      </button>
-    }
+    <!--
+      Not a tab stop of its own: the listbox pattern's only stop is the trigger, with
+      focus moved between options via the arrow keys (roving-focus.ts), which already
+      scrolls the focused option into view natively — no separate keyboard-scroll target
+      needed here.
+    -->
+    <gog-scroll size="thin" [focusable]="false" class="gog-select__scroll">
+      @for (option of options(); track option.id) {
+        <!--
+          tabindex="-1" keeps the list to a single tab stop, as the listbox pattern expects:
+          focus is moved between options with the arrow keys, not by tabbing through every
+          one of them. Programmatic .focus() still works on a negative tabindex.
+        -->
+        <button
+          type="button"
+          class="gog-select__option"
+          role="option"
+          tabindex="-1"
+          [attr.aria-selected]="isSelected(option.id)"
+          [attr.aria-disabled]="option.disabled ?? false"
+          [class.gog-select__option--selected]="isSelected(option.id)"
+          [class.gog-select__option--disabled]="option.disabled ?? false"
+          (click)="selectOption(option, $event)"
+          (keydown)="onOptionKeydown($event)"
+        >
+          <span class="gog-select__option-mark" aria-hidden="true">
+            @if (isSelected(option.id)) {
+              <gog-icon name="check" />
+            }
+          </span>
+          <span class="gog-select__option-label">{{ option.name }}</span>
+        </button>
+      }
+    </gog-scroll>
   </div>
 </ng-template>

@@ -10,10 +10,11 @@ import { NgComponentOutlet } from '@angular/common';
 import { DIALOG_DATA, DIALOG_REF } from './dialog.tokens';
 import { DialogService, OpenDialog } from '../../services/dialog-service/dialog.service';
 import { IconComponent } from '../icon/icon.component';
+import { ScrollComponent } from '../scroll/scroll.component';
 
 @Component({
   selector: 'gog-dialog',
-  imports: [NgComponentOutlet, IconComponent],
+  imports: [NgComponentOutlet, IconComponent, ScrollComponent],
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

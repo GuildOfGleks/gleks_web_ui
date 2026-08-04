@@ -1,0 +1,65 @@
+<div
+  class="gog-scroll"
+  [class.gog-scroll--thin]="size() === 'thin'"
+  [class.gog-scroll--v]="axis() !== 'horizontal'"
+  [class.gog-scroll--h]="axis() !== 'vertical'"
+  [class.gog-scroll--both]="axis() === 'both'"
+  [class.gog-scroll--dragging]="dragAxis() !== null"
+>
+  <div
+    #viewport
+    class="gog-scroll__viewport"
+    [attr.tabindex]="focusable() ? 0 : null"
+    [attr.role]="focusable() ? 'region' : null"
+    [attr.aria-label]="focusable() && ariaLabel() ? ariaLabel() : null"
+    (scroll)="onScroll()"
+    (pointerenter)="onActivity()"
+    (pointermove)="onActivity()"
+  >
+    <div #content class="gog-scroll__content">
+      <ng-content />
+    </div>
+  </div>
+
+  @if (showTrackV()) {
+    <div
+      class="gog-scroll__track gog-scroll__track--v"
+      [class.gog-scroll__track--visible]="!autoHide() || interacting() || dragAxis() === 'vertical'"
+      (pointerdown)="onTrackPointerDown($event, 'vertical')"
+    >
+      <div
+        class="gog-scroll__thumb gog-scroll__thumb--v"
+        [class.gog-scroll__thumb--active]="dragAxis() === 'vertical'"
+        [style.height.%]="thumbSizeV()"
+        [style.top.%]="thumbPosV()"
+        (pointerdown)="onThumbPointerDown($event, 'vertical')"
+        (pointermove)="onThumbPointerMove($event, 'vertical')"
+        (pointerup)="onThumbPointerUp($event)"
+        (pointercancel)="onThumbPointerUp($event)"
+      ></div>
+    </div>
+  }
+
+  @if (showTrackH()) {
+    <div
+      class="gog-scroll__track gog-scroll__track--h"
+      [class.gog-scroll__track--visible]="!autoHide() || interacting() || dragAxis() === 'horizontal'"
+      (pointerdown)="onTrackPointerDown($event, 'horizontal')"
+    >
+      <div
+        class="gog-scroll__thumb gog-scroll__thumb--h"
+        [class.gog-scroll__thumb--active]="dragAxis() === 'horizontal'"
+        [style.width.%]="thumbSizeH()"
+        [style.left.%]="thumbPosH()"
+        (pointerdown)="onThumbPointerDown($event, 'horizontal')"
+        (pointermove)="onThumbPointerMove($event, 'horizontal')"
+        (pointerup)="onThumbPointerUp($event)"
+        (pointercancel)="onThumbPointerUp($event)"
+      ></div>
+    </div>
+  }
+
+  @if (axis() === 'both' && showTrackV() && showTrackH()) {
+    <div class="gog-scroll__corner" aria-hidden="true"></div>
+  }
+</div>

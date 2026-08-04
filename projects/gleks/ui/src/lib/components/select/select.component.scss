@@ -174,13 +174,21 @@
   left: 0;
   right: 0;
   z-index: var(--gog-dropdown-z);
+  display: flex;
+  flex-direction: column;
   background-color: var(--gog-select-panel-bg);
   border: var(--gog-select-field-border-width) var(--gog-select-field-border-style)
     var(--gog-select-field-border);
   border-radius: var(--gog-select-radius);
   max-height: var(--gog-select-panel-max-height);
-  overflow-y: auto;
   box-shadow: var(--gog-select-panel-shadow);
+}
+
+.gog-select__scroll {
+  /* min-height: 0 overrides the flex-item default of auto, which would otherwise refuse
+     to shrink below the option list's full height and defeat the max-height above. */
+  flex: 1;
+  min-height: 0;
 }
 
 .gog-select__dropdown--up {

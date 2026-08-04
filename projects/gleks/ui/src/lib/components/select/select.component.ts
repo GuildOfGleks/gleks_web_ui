@@ -11,13 +11,14 @@ import {
 
 import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-base';
 import { IconComponent } from '../icon/icon.component';
+import { ScrollComponent } from '../scroll/scroll.component';
 
 /** @deprecated Prefer `GogDropdownOption`; kept as an alias so existing imports keep working. */
 export type GogSelectOption = GogDropdownOption;
 
 @Component({
   selector: 'gog-select',
-  imports: [IconComponent, NgTemplateOutlet],
+  imports: [IconComponent, NgTemplateOutlet, ScrollComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

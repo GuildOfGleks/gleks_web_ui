@@ -12,6 +12,7 @@ import {
 import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-base';
 import { ButtonComponent } from '../button/button.component';
 import { IconComponent } from '../icon/icon.component';
+import { ScrollComponent } from '../scroll/scroll.component';
 
 /** @deprecated Prefer `GogDropdownOption`; kept as an alias so existing imports keep working. */
 export type GogMultiselectOption = GogDropdownOption;
@@ -21,7 +22,7 @@ const CONTROLS_ROW_HEIGHT = 38;
 
 @Component({
   selector: 'gog-multiselect',
-  imports: [ButtonComponent, IconComponent, NgTemplateOutlet],
+  imports: [ButtonComponent, IconComponent, NgTemplateOutlet, ScrollComponent],
   templateUrl: './multiselect.component.html',
   styleUrl: './multiselect.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

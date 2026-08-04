@@ -50,7 +50,15 @@
       }
 
       <div class="gog-dialog__body">
-        <ng-container *ngComponentOutlet="dialog.config.component; injector: getInjector(dialog)" />
+        <!--
+          Not a tab stop: the panel runs its own focus trap over the projected content
+          (onPanelKeydown), keyed to a fixed focusable-element selector. Leaving this
+          focusable would insert an extra stop ahead of that content and change which
+          element the trap treats as "first".
+        -->
+        <gog-scroll size="thin" [focusable]="false" class="gog-dialog__scroll">
+          <ng-container *ngComponentOutlet="dialog.config.component; injector: getInjector(dialog)" />
+        </gog-scroll>
       </div>
     </div>
   </div>

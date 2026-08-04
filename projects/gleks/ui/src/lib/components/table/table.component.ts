@@ -11,6 +11,7 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { IconComponent } from '../icon/icon.component';
 import { PaginatorComponent } from '../paginator/paginator.component';
+import { ScrollComponent } from '../scroll/scroll.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
 import { GogSize } from '../../shared/types';
@@ -38,7 +39,7 @@ interface SortState {
 
 @Component({
   selector: 'gog-table',
-  imports: [SpinnerComponent, PaginatorComponent, NgTemplateOutlet, IconComponent],
+  imports: [SpinnerComponent, PaginatorComponent, NgTemplateOutlet, IconComponent, ScrollComponent],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
