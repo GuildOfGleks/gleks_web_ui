@@ -39,6 +39,12 @@
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
+  /* Without this, the browser's scroll-anchoring can silently nudge an *ancestor*
+     scroller's scrollTop to compensate for layout shifts inside this viewport (e.g. the
+     overlay thumb/track fading in on interaction) — which reads exactly like scroll
+     "leaking" past an overscroll-behavior: contain boundary that's otherwise working
+     correctly. gog-table-wrapper disables it for the same reason. */
+  overflow-anchor: none;
   /* overflow-x/-y and overscroll-behavior-x/-y are set inline from viewportOverflowX/Y and
      viewportOverscrollX/Y — see scroll.component.ts for why they're measured-overflow-driven
      rather than static, axis-only CSS rules. */

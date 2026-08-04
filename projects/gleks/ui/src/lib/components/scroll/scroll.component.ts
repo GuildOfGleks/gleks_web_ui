@@ -15,7 +15,8 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { GogScrollAxis, GogScrollSize } from '../../shared/types';
+import { GogScrollAxis, GogScrollOverscrollBehavior, GogScrollSize } from '../../shared/types';
+import { GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR } from './scroll.tokens';
 
 /** Snapshot of the viewport's native scroll geometry, emitted on every scroll/resize. */
 export interface GogScrollMetrics {
@@ -75,6 +76,12 @@ export class ScrollComponent {
   readonly focusable = input(true);
   /** Accessible name for the viewport when `focusable` is true and there is no visible label. */
   readonly ariaLabel = input('');
+  /**
+   * What happens when a scroll gesture reaches this instance's edge. Unset, falls back to
+   * `GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR` (app-wide, itself `'auto'` unless a consumer
+   * overrides it). See `GogScrollOverscrollBehavior` for what each value does.
+   */
+  readonly overscrollBehavior = input<GogScrollOverscrollBehavior | undefined>(undefined);
 
   readonly gogScroll = output<GogScrollMetrics>();
   readonly gogReachStart = output<GogScrollDirection>();
@@ -115,9 +122,21 @@ export class ScrollComponent {
     if (!this.measured()) return 'auto';
     return this.showTrackH() ? 'auto' : 'visible';
   });
-  /** Only contains scroll chaining on an axis that's actually acting as a scroll container. */
-  protected readonly viewportOverscrollY = computed(() => (this.showTrackV() ? 'contain' : 'auto'));
-  protected readonly viewportOverscrollX = computed(() => (this.showTrackH() ? 'contain' : 'auto'));
+  private readonly defaultOverscrollBehavior = inject(GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR);
+  protected readonly resolvedOverscrollBehavior = computed(
+    () => this.overscrollBehavior() ?? this.defaultOverscrollBehavior,
+  );
+  /**
+   * Only applies `resolvedOverscrollBehavior` on an axis that's actually acting as a scroll
+   * container — on an axis that's `visible` (see viewportOverflowY/X above) there is no
+   * scroll boundary on it to contain in the first place.
+   */
+  protected readonly viewportOverscrollY = computed(() =>
+    this.showTrackV() ? this.resolvedOverscrollBehavior() : 'auto',
+  );
+  protected readonly viewportOverscrollX = computed(() =>
+    this.showTrackH() ? this.resolvedOverscrollBehavior() : 'auto',
+  );
   protected readonly thumbSizeV = signal(100);
   protected readonly thumbPosV = signal(0);
   protected readonly thumbSizeH = signal(100);

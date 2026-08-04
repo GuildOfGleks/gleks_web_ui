@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 
 import { ScrollComponent } from './scroll.component';
+import { GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR } from './scroll.tokens';
 
 /** jsdom never lays elements out, so scroll/client metrics are stubbed per test as needed. */
 function mockMetrics(
@@ -195,6 +196,65 @@ describe('ScrollComponent', () => {
       expect(starts).toEqual(['vertical']);
       // still just the one gogReachEnd from before — leaving the bottom doesn't re-fire it
       expect(ends).toEqual(['vertical']);
+    });
+  });
+
+  describe('overscroll behavior', () => {
+    function dispatchScroll(): void {
+      viewport.dispatchEvent(new Event('scroll'));
+    }
+
+    it('defaults to auto (chains scroll to the next ancestor) when nothing overflows', () => {
+      expect(component.overscrollBehavior()).toBeUndefined();
+      expect(viewport.style.overscrollBehaviorY).toBe('auto');
+    });
+
+    it('applies the default only on an axis that is actually overflowing', async () => {
+      mockMetrics(viewport, { scrollHeight: 800, clientHeight: 200 });
+      Object.defineProperty(viewport, 'scrollTop', { value: 0, configurable: true });
+      dispatchScroll();
+      await fixture.whenStable();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+
+      expect(viewport.style.overscrollBehaviorY).toBe('auto');
+    });
+
+    it('applies an explicit overscrollBehavior input once the axis overflows', async () => {
+      fixture.componentRef.setInput('overscrollBehavior', 'contain');
+      mockMetrics(viewport, { scrollHeight: 800, clientHeight: 200 });
+      Object.defineProperty(viewport, 'scrollTop', { value: 0, configurable: true });
+      dispatchScroll();
+      await fixture.whenStable();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+
+      expect(viewport.style.overscrollBehaviorY).toBe('contain');
+    });
+
+    it('leaves a non-overflowing axis at auto even with an explicit overscrollBehavior input', async () => {
+      fixture.componentRef.setInput('overscrollBehavior', 'contain');
+      mockMetrics(viewport, { scrollHeight: 100, clientHeight: 100 });
+      dispatchScroll();
+      await fixture.whenStable();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+
+      expect(viewport.style.overscrollBehaviorY).toBe('auto');
+    });
+
+    it('falls back to GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR when the input is unset', async () => {
+      // The outer beforeEach already instantiated a TestBed environment (it created a
+      // fixture), so a differently-provided one has to start from a clean slate.
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [ScrollComponent],
+        providers: [{ provide: GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR, useValue: 'contain' }],
+      }).compileComponents();
+
+      const providedFixture = TestBed.createComponent(ScrollComponent);
+      const providedComponent = providedFixture.componentInstance;
+      await providedFixture.whenStable();
+
+      expect(providedComponent.overscrollBehavior()).toBeUndefined();
+      expect(providedComponent['resolvedOverscrollBehavior']()).toBe('contain');
     });
   });
 
