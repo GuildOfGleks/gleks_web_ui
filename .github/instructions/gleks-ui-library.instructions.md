@@ -145,3 +145,16 @@ See `styling.instructions.md` for the full SCSS/theming contract. In short:
 4. Passes AXE / WCAG AA, supports keyboard focus and reduced motion.
 5. Has passing Vitest specs covering the public API.
 6. `ng build @gleks/ui` succeeds with no new warnings.
+7. **Verified live in `ui-showcase`**, not just via specs — Vitest/jsdom does not lay out real
+   CSS, so layout-dependent bugs (percentage-height chains, scroll-chaining, `position:
+   sticky` containment, circular intrinsic sizing) only surface in an actual browser. Build
+   the library (`ng build @gleks/ui`), point `ui-showcase` at the fresh build (see that
+   project's own instructions for how), and click through the relevant showcase page(s)
+   before calling a fix done. Do this *after* the change is otherwise debugged and its own
+   bugs are fixed — it's the final check, not a substitute for the steps above.
+8. **Once step 7 passes, record the change in `projects/gleks/ui/CHANGELOG.md`** under the
+   in-progress version heading at the top (Added/Changed/Fixed sections, matching the
+   existing entries' style). Do this for every user-visible library change, not just new
+   components — bug fixes and behavior changes belong there too. Do **not** bump the
+   published version, edit `package.json`'s version, or run `npm publish`/the `release`
+   script yourself — the user cuts the release and announces it separately.

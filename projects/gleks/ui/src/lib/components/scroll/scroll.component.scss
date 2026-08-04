@@ -39,7 +39,9 @@
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
-  overflow: hidden;
+  /* overflow-x/-y and overscroll-behavior-x/-y are set inline from viewportOverflowX/Y and
+     viewportOverscrollX/Y — see scroll.component.ts for why they're measured-overflow-driven
+     rather than static, axis-only CSS rules. */
 
   /* The scroll itself stays native — only the browser's own chrome is hidden; the overlay
      thumb below replaces it visually. */
@@ -51,23 +53,6 @@
     width: 0;
     height: 0;
   }
-}
-
-/*
- * overscroll-behavior is set per-axis (the `-x`/`-y` longhands), not the `overscroll-behavior`
- * shorthand, and only for an axis this instance actually scrolls. The shorthand sets both
- * axes at once — on a horizontal-only instance (e.g. gog-table's wrapper) that also
- * "contains" vertical wheel scroll on an axis that was never scrollable to begin with,
- * which swallows the gesture instead of letting it bubble up to scroll the page.
- */
-.gog-scroll--v .gog-scroll__viewport {
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
-}
-
-.gog-scroll--h .gog-scroll__viewport {
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
 }
 
 .gog-scroll__viewport:focus-visible {

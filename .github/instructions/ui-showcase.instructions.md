@@ -9,6 +9,32 @@ applyTo: 'projects/ui-showcase/**'
 (`@angular/build:application`, `outputMode: server`, `ssr.entry: src/server.ts`) with
 selector prefix `app` and `scss` styles. Follow `general.instructions.md` plus the rules below.
 
+## Verifying local library changes (unpublished)
+
+`ui-showcase` resolves `@guildofgleks/ui` from `node_modules` like any real consumer would
+(`tsconfig.app.json` deliberately clears the workspace's `@guildofgleks/ui` → `dist/gleks/ui`
+path alias for this project — see that file's own comment). That means a rebuilt library
+does **not** show up here automatically; `node_modules/@guildofgleks/ui` still holds whatever
+was last actually `npm install`ed. To check an unreleased library change live, before it's
+published:
+
+1. `ng build @gleks/ui` to refresh `dist/gleks/ui`.
+2. Copy that build over the installed copy for local verification only — this is **not** a
+   publish, and `node_modules` is regenerable, so it's safe/reversible:
+   ```
+   rm -rf node_modules/@guildofgleks/ui && cp -r dist/gleks/ui node_modules/@guildofgleks/ui
+   ```
+3. Restart the `ng serve ui-showcase` dev server — it does not watch `dist/` or
+   `node_modules`, so an already-running server keeps serving the old code. If you rebuild
+   the library again while iterating, restart the dev server again each time.
+4. If the browser throws `Failed to fetch dynamically imported module` or an "outdated
+   pre-bundle" error after a library rebuild, that's Vite's dependency-optimizer cache
+   getting out of sync across restarts, not a real bug — stop the dev server, delete
+   `.angular/cache/*/ui-showcase/vite`, and restart it.
+
+A real `npm publish` (the `release` script) is a separate, user-triggered step — never run it
+yourself; this local-copy trick is only for verifying a change before that happens.
+
 ## Consuming the library
 
 - Import components from the **published** package name `@guildofgleks/ui`, never via deep

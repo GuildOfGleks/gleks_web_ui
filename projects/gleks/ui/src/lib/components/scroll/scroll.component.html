@@ -9,6 +9,10 @@
   <div
     #viewport
     class="gog-scroll__viewport"
+    [style.overflow-y]="viewportOverflowY()"
+    [style.overflow-x]="viewportOverflowX()"
+    [style.overscroll-behavior-y]="viewportOverscrollY()"
+    [style.overscroll-behavior-x]="viewportOverscrollX()"
     [attr.tabindex]="focusable() ? 0 : null"
     [attr.role]="focusable() ? 'region' : null"
     [attr.aria-label]="focusable() && ariaLabel() ? ariaLabel() : null"

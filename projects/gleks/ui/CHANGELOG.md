@@ -5,9 +5,57 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.2.4] - planned
-- new scroll component.
 
-## [21.2.3] - 2026-08-03
+### Added
+
+- `gog-scroll`: a drop-in replacement for a native `overflow: auto` region.
+  Content keeps scrolling natively (wheel, touch, keyboard, focus-into-view);
+  only the browser's own scrollbar chrome is hidden and replaced with a
+  themeable, draggable overlay thumb. `axis` (`vertical`/`horizontal`/`both`),
+  `size` (`normal`/`thin`), `autoHide`/`hideDelay`, `reachThreshold` with
+  `gogReachStart`/`gogReachEnd` outputs, a `gogScroll` metrics output, and
+  `scrollTo`/`scrollToTop`/`scrollToBottom`/`scrollToLeft`/`scrollToRight`
+  public methods. New `--gog-scroll-*` tokens in `theme.css`.
+
+### Changed
+
+- `gog-select` and `gog-multiselect`: the option panel now scrolls via
+  `gog-scroll` instead of native `overflow-y`.
+- `gog-dialog`: the body now scrolls via `gog-scroll` instead of native
+  `overflow-y`.
+- `gog-table`: horizontal scrolling now goes through `gog-scroll` instead of
+  native `overflow-x`.
+
+### Fixed
+
+- `gog-scroll` internals used `height: 100%` chains from `:host` down to the
+  viewport. A host whose own height comes from being flex-grown inside a
+  `max-height`-only ancestor (exactly the select/multiselect dropdown panel
+  and dialog body cases above) still failed to resolve a percentage height
+  read off it, collapsing back to content size — the panel stopped clipping
+  and scrolling. Switched every level to flex-basis chains
+  (`flex: 1 1 auto` + `min-height: 0`), which don't have that failure mode.
+- `gog-scroll`'s horizontal content wrapper used `width: max-content`, which
+  created a circular sizing reference against a `width: 100%` child (e.g.
+  `gog-table`'s own `<table>`) and made some browsers fall back to a huge
+  sentinel width (~1,000,000px), pushing the table off-screen. Removed —
+  children already overflow a normal block parent without it.
+- `gog-scroll` set `overscroll-behavior: contain` (both axes) on the
+  viewport unconditionally, which also blocked wheel scroll on an axis the
+  instance never actually scrolls (e.g. vertical wheel over a horizontal-only
+  instance), preventing it from bubbling up to scroll the page. Now set only
+  on the axis that's actually acting as a scroll container.
+- `gog-scroll` kept a disabled or currently-non-overflowing axis at
+  `overflow: hidden`/`auto`, which makes an element a "scroll container" per
+  spec regardless of whether it has anything to scroll — becoming the
+  containing block for `position: sticky` descendants and a scroll-chaining
+  boundary, whether needed or not. This broke `gog-table`'s `stickyHeader`
+  and swallowed wheel scroll whenever a `gog-table` (which always wraps its
+  own horizontal scroll in a `gog-scroll`) was itself nested inside another
+  scrolling container, e.g. a `gog-scroll` capping its height. Both axes are
+  now `visible` unless that specific axis is genuinely scrolling.
+
+## [21.2.3] - 2026-08-03 
 
 ### Added
 

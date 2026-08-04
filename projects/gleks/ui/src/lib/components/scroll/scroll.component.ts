@@ -6,6 +6,7 @@ import {
   ElementRef,
   PLATFORM_ID,
   afterNextRender,
+  computed,
   effect,
   inject,
   input,
@@ -84,6 +85,39 @@ export class ScrollComponent {
 
   protected readonly showTrackV = signal(false);
   protected readonly showTrackH = signal(false);
+  /**
+   * Flips true once the first real measurement has run. Before that (SSR, or the client
+   * frame before hydration/afterNextRender fires), an allowed axis defaults to `auto` — the
+   * same safe, always-clips behavior this component had before viewportOverflowY/X existed —
+   * rather than guessing `visible` from a `showTrackV`/`H` that just hasn't been measured yet.
+   */
+  private readonly measured = signal(false);
+  /**
+   * `overflow-y`/`overflow-x` on the viewport, driven by measured overflow rather than a
+   * static `axis`-only class. Any axis that isn't *currently, actually* scrolling — because
+   * it's disabled by `axis`, or because it's allowed but the content doesn't overflow it —
+   * gets `visible`, never `hidden`/`auto`. A non-`visible` overflow value makes the viewport
+   * a "scroll container" per spec regardless of whether it has anything to scroll, which
+   * becomes the containing block for `position: sticky` descendants (e.g. gog-table's sticky
+   * header) and a scroll-chaining boundary for wheel input. Left non-visible on a disabled or
+   * unneeded axis, an instance nested inside another scroller — axis="horizontal" wrapping a
+   * table that fits, itself inside a taller outer gog-scroll — would silently swallow the
+   * outer axis's wheel scroll and break its sticky headers, even though this instance itself
+   * never visibly scrolls that axis. `visible` whenever the axis is inert avoids both.
+   */
+  protected readonly viewportOverflowY = computed(() => {
+    if (this.axis() === 'horizontal') return 'visible';
+    if (!this.measured()) return 'auto';
+    return this.showTrackV() ? 'auto' : 'visible';
+  });
+  protected readonly viewportOverflowX = computed(() => {
+    if (this.axis() === 'vertical') return 'visible';
+    if (!this.measured()) return 'auto';
+    return this.showTrackH() ? 'auto' : 'visible';
+  });
+  /** Only contains scroll chaining on an axis that's actually acting as a scroll container. */
+  protected readonly viewportOverscrollY = computed(() => (this.showTrackV() ? 'contain' : 'auto'));
+  protected readonly viewportOverscrollX = computed(() => (this.showTrackH() ? 'contain' : 'auto'));
   protected readonly thumbSizeV = signal(100);
   protected readonly thumbPosV = signal(0);
   protected readonly thumbSizeH = signal(100);
@@ -304,6 +338,7 @@ export class ScrollComponent {
 
     this.showTrackV.set(overflowV);
     this.showTrackH.set(overflowH);
+    this.measured.set(true);
 
     if (overflowV) {
       const minPct = clientHeight > 0 ? (this.thumbMinSizePx / clientHeight) * 100 : 0;
