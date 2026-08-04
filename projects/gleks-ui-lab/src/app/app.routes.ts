@@ -84,6 +84,25 @@ export const routes: Routes = [
       import('./components/pages/select-doc-page/select-doc-page').then((m) => m.SelectDocPage),
   },
   {
+    path: 'components/skeleton',
+    loadComponent: () =>
+      import('./components/pages/skeleton-doc-page/skeleton-doc-page').then(
+        (m) => m.SkeletonDocPage,
+      ),
+  },
+  {
+    path: 'components/slider',
+    loadComponent: () =>
+      import('./components/pages/slider-doc-page/slider-doc-page').then((m) => m.SliderDocPage),
+  },
+  {
+    path: 'components/spinner',
+    loadComponent: () =>
+      import('./components/pages/spinner-doc-page/spinner-doc-page').then(
+        (m) => m.SpinnerDocPage,
+      ),
+  },
+  {
     path: 'components/:name',
     loadComponent: () =>
       import('./components/pages/component-preview-page/component-preview-page').then(

@@ -1,0 +1,303 @@
+.skeleton-doc {
+  &__hero {
+    margin-bottom: 2em;
+  }
+
+  &__eyebrow {
+    margin: 0 0 0.4em;
+    font-family: var(--gog-font-mono);
+    font-size: var(--gog-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gog-accent-color);
+  }
+
+  &__title {
+    margin: 0 0 0.4em;
+    font-size: var(--gog-text-2xl);
+  }
+
+  &__lead {
+    margin: 0;
+    max-width: 60ch;
+    color: var(--gog-muted-text-color);
+    line-height: 1.6;
+
+    code {
+      font-family: var(--gog-font-mono);
+      font-size: 0.9em;
+      background-color: var(--gog-hover-color);
+      border-radius: 4px;
+      padding: 0.15em 0.4em;
+    }
+  }
+}
+
+.doc-section {
+  margin-top: 2.4em;
+
+  &__title {
+    font-size: var(--gog-text-xl);
+    color: var(--gog-accent-color);
+    border-bottom: 1px solid var(--gog-border-color);
+    padding-bottom: 0.3em;
+    margin: 0 0 0.6em;
+  }
+
+  &__subtitle {
+    font-size: var(--gog-text-md);
+    margin: 1.4em 0 0.6em;
+  }
+
+  &__intro {
+    color: var(--gog-text-color);
+    line-height: 1.6;
+    margin: 0 0 1em;
+
+    a {
+      color: var(--gog-accent-color);
+    }
+  }
+
+  &__meta {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+    margin: 0.6em 0;
+  }
+}
+
+.demo-card {
+  margin-bottom: 1.6em;
+  padding: 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+
+  &__title {
+    margin: 0 0 0.4em;
+    font-size: var(--gog-text-md);
+  }
+
+  &__meta {
+    margin: 0 0 1em;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+
+    code {
+      font-family: var(--gog-font-mono);
+      font-size: 0.9em;
+      background-color: var(--gog-hover-color);
+      border-radius: 4px;
+      padding: 0.15em 0.4em;
+    }
+  }
+
+  &__preview {
+    margin-bottom: 1em;
+  }
+}
+
+.skeleton-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.skeleton-tile {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  min-width: 110px;
+
+  &--wide {
+    flex: 1 1 220px;
+    min-width: 220px;
+  }
+
+  &__meta {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.skeleton-lines-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.skeleton-lines-col {
+  display: grid;
+  gap: 10px;
+  width: 200px;
+}
+
+/* ── Profile card demo ─────────────────────────────────────────────────── */
+.profile-card {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--gog-border-color);
+  background: color-mix(in srgb, var(--gog-surface-color) 88%, transparent);
+  max-width: 420px;
+}
+
+.profile-card__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-card__header-text {
+  display: grid;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.profile-card__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.profile-card__name {
+  margin: 0;
+  font-weight: 600;
+}
+
+.profile-card__role,
+.profile-card__bio {
+  margin: 0;
+  color: var(--gog-muted-text-color);
+}
+
+.profile-card__banner {
+  height: 120px;
+  border-radius: var(--gog-radius);
+  background: linear-gradient(135deg, var(--gog-accent-dim), var(--gog-accent-color));
+}
+
+/* ── Product grid demo ─────────────────────────────────────────────────── */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  max-width: 620px;
+}
+
+.product-card {
+  display: grid;
+  gap: 8px;
+
+  &--data {
+    color: var(--gog-text-color);
+  }
+
+  &__swatch {
+    height: 120px;
+    border-radius: var(--gog-radius);
+  }
+
+  &__name {
+    margin: 0;
+    font-weight: 600;
+    font-size: var(--gog-text-sm);
+  }
+
+  &__price {
+    margin: 0;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+  }
+}
+
+/* ── Chat conversation demo ────────────────────────────────────────────── */
+.chat-thread {
+  display: grid;
+  gap: 10px;
+  max-width: 380px;
+}
+
+.chat-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+
+  &--mine {
+    justify-content: flex-end;
+  }
+}
+
+.chat-row__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--gog-accent-color) 25%, var(--gog-surface-color));
+}
+
+.chat-row__bubble {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--gog-border-color);
+  background: var(--gog-surface-color);
+  color: var(--gog-text-color);
+  font-size: var(--gog-text-sm);
+  line-height: 1.4;
+}
+
+.chat-row--mine .chat-row__bubble {
+  background: color-mix(in srgb, var(--gog-accent-color) 16%, var(--gog-surface-color));
+  border-color: transparent;
+}
+
+.api-table-scroll {
+  overflow-x: auto;
+}
+
+.api-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--gog-text-sm);
+  margin-bottom: 1.2em;
+
+  th,
+  td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--gog-border-color);
+    vertical-align: top;
+  }
+
+  th {
+    font-size: var(--gog-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gog-muted-text-color);
+  }
+
+  td {
+    color: var(--gog-text-color);
+
+    &:last-child {
+      color: var(--gog-muted-text-color);
+    }
+  }
+
+  code {
+    font-family: var(--gog-font-mono);
+    font-size: 0.9em;
+    color: var(--gog-accent-color);
+    white-space: nowrap;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}

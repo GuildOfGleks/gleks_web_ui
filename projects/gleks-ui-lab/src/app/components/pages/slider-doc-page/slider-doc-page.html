@@ -1,0 +1,181 @@
+<div class="slider-doc">
+  <header class="slider-doc__hero">
+    <p class="slider-doc__eyebrow">gog-slider</p>
+    <h1 class="slider-doc__title font-heading">Slider</h1>
+    <p class="slider-doc__lead">
+      A form-control slider with label, min/max/step, an optional thumb-less range display,
+      and full <code>ControlValueAccessor</code> support.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the component and drop it into a template.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage — a labeled slider bound with [(value)]:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview width-demo">
+        <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+    <p class="doc-section__meta">Value: {{ volume() }}</p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Controls</h3>
+      <p class="demo-card__meta">
+        <code>step</code> works at any scale, from whole numbers to fractional precision.
+        <code>[showThumb]="false"</code> renders a bare filled track — a range indicator with
+        no drag handle — and <code>disabled</code> combines with either.
+      </p>
+      <div class="demo-card__preview field-grid">
+        <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />
+        <gog-slider label="Brightness" [min]="0" [max]="100" [step]="10" [(value)]="brightness" />
+        <gog-slider label="Precision" [min]="0" [max]="1" [step]="0.01" [(value)]="precision" />
+        <gog-slider
+          label="Range only"
+          [min]="0"
+          [max]="100"
+          [step]="1"
+          [showThumb]="false"
+          [value]="35"
+        />
+        <gog-slider label="Disabled" [value]="25" [disabled]="true" [showThumb]="false" />
+        <gog-slider label="Disabled (with thumb)" [value]="60" [disabled]="true" />
+      </div>
+      <div class="demo-card__preview">
+        <gog-button variant="ghost" type="button" (gogClick)="reset()">Reset</gog-button>
+      </div>
+      <p class="demo-card__meta">{{ summary() }}</p>
+      <app-code-tabs [html]="controlsHtml" [ts]="controlsTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Labeling</h3>
+      <p class="demo-card__meta">
+        <code>showValue="false"</code> hides the numeric readout. With no <code>label</code>,
+        use <code>ariaLabel</code> so assistive tech still gets a name.
+      </p>
+      <div class="demo-card__preview field-grid">
+        <gog-slider label="No value readout" [showValue]="false" [(value)]="hiddenValue" />
+        <gog-slider ariaLabel="Opacity (no visible label)" [(value)]="ariaOnlyValue" />
+      </div>
+      <app-code-tabs [html]="labelingHtml" [ts]="labelingTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Full width</h3>
+      <p class="demo-card__meta">
+        Full width of its container by default (see every slider above). A slider's track has
+        no content of its own to shrink-wrap to, so <code>[fullWidth]="false"</code> instead
+        sizes it to <code>--gog-slider-auto-width</code> (240px by default) — a fixed,
+        themeable fallback rather than a content-derived one.
+      </p>
+      <div class="demo-card__preview">
+        <gog-slider label="Compact" [min]="0" [max]="100" [(value)]="compactValue" [fullWidth]="false" />
+      </div>
+      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Validation</h3>
+      <p class="demo-card__meta">
+        <code>errorMessage</code> is consumer-controlled: <code>gog-slider</code> just renders
+        whatever it's given, for as long as it's non-empty — this page recomputes it every
+        time the value changes. Drag past 70 to see it.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-slider
+          label="Monthly budget"
+          [min]="0"
+          [max]="100"
+          [step]="5"
+          [errorMessage]="budgetError()"
+          [(value)]="budget"
+        />
+      </div>
+      <app-code-tabs [html]="validationHtml" [ts]="validationTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive Forms — automatic error timing</h3>
+      <p class="demo-card__meta">
+        With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the slider
+        shows the error once it's been touched (drag it, then click elsewhere) and is invalid,
+        instead of the page computing that timing.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-slider
+          label="Minimum threshold"
+          [min]="0"
+          [max]="100"
+          [formControl]="minimumControl"
+          errorDisplay="auto"
+          [errorMessage]="minimumErrorMessage()"
+        />
+      </div>
+      <app-code-tabs [html]="formHtml" [ts]="formTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td><code>{{ row.type }}</code></td>
+              <td><code>{{ row.default }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the slider paints with. Override any of them — on a single
+      instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
+      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
