@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { ButtonComponent } from './button.component';
+import { GOG_CONFIG } from '../../shared/config';
 
 describe('ButtonComponent', () => {
   let component: ButtonComponent;
@@ -217,6 +218,21 @@ describe('ButtonComponent', () => {
       button.click();
       await fixture.whenStable();
       expect(clicks.length).toBe(2);
+    });
+
+    it('falls back to GOG_CONFIG.button.debounce when the input is unset', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [ButtonComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { button: { debounce: 30 } } }],
+      }).compileComponents();
+
+      const providedFixture = TestBed.createComponent(ButtonComponent);
+      const providedComponent = providedFixture.componentInstance;
+      await providedFixture.whenStable();
+
+      expect(providedComponent.debounce()).toBeUndefined();
+      expect(providedComponent['resolvedDebounce']()).toBe(30);
     });
   });
 });

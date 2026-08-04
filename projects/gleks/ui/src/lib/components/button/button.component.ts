@@ -13,7 +13,10 @@ import { throttle } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { GogSize, GogVariant } from '../../shared/types';
+import { GOG_CONFIG } from '../../shared/config';
 import { SpinnerComponent } from '../spinner/spinner.component';
+
+const DEFAULT_DEBOUNCE = 300;
 
 @Component({
   selector: 'gog-button',
@@ -40,8 +43,9 @@ export class ButtonComponent {
    * guard, not a delay before the first click fires: the first click in a
    * window is emitted immediately (leading edge), and any further clicks
    * within `debounce` ms are silently dropped until the window elapses.
+   * Unset, falls back to `GOG_CONFIG.button.debounce`, then to `300`.
    */
-  debounce = input<number>(300);
+  debounce = input<number | undefined>(undefined);
 
   /**
    * Accessible name for the button, forwarded to the native <button>.
@@ -69,13 +73,18 @@ export class ButtonComponent {
     () => ButtonComponent.SPINNER_SIZE_BY_BUTTON_SIZE[this.size()],
   );
 
+  private readonly globalConfig = inject(GOG_CONFIG);
+  protected readonly resolvedDebounce = computed(
+    () => this.debounce() ?? this.globalConfig.button?.debounce ?? DEFAULT_DEBOUNCE,
+  );
+
   private readonly destroyRef = inject(DestroyRef);
   private readonly click$ = new Subject<MouseEvent>();
 
   constructor() {
     this.click$
       .pipe(
-        throttle(() => timer(this.debounce()), { leading: true, trailing: false }),
+        throttle(() => timer(this.resolvedDebounce()), { leading: true, trailing: false }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((event) => this.gogClick.emit(event));

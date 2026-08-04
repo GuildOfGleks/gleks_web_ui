@@ -114,6 +114,38 @@ See `styling.instructions.md` for the full SCSS/theming contract. In short:
 - Styles must never leak globally: rely on component style encapsulation and scope everything
   under the block class or `:host`.
 
+## Global configuration
+
+Some inputs are things a whole app wants to set once — a house style for how long a
+scrollbar stays visible before auto-hiding, how aggressively a button debounces clicks —
+rather than repeat on every instance. `lib/shared/config.ts` gives consumers one place to do
+that: the `GOG_CONFIG` injection token (an app-wide `GogGlobalConfig` object, defaulting to
+`{}`) and a `provideGogConfig(...)` helper to set it, instead of Angular Material's pattern
+of a separate injection token per component per setting.
+
+**Only add a field to `GogGlobalConfig` for inputs that can't already be a CSS token.** Most
+"global default" needs are visual (colors, radii, durations) and already have a mechanism:
+the `--gog-*` custom properties in `styles/theme.css` (see `styling.instructions.md`) — a
+consumer overriding `--gog-scroll-thumb-color` at `:root` already gets that applied
+everywhere, no TypeScript involved. `GogGlobalConfig` exists only for the inputs a component
+reads in TypeScript, where a CSS token can't reach — a `setTimeout`/`timer` duration, an
+RxJS `throttle` window. If an input's value only ever flows into the template as a bound
+style, it belongs in `theme.css`, not here.
+
+To make an existing or new input configurable this way:
+
+1. Change the input to `input<T | undefined>(undefined)` (it no longer carries the
+   component's default itself) and keep a `const DEFAULT_X = ...` near the top of the file
+   for that default.
+2. `private readonly globalConfig = inject(GOG_CONFIG);`
+3. Add a `resolvedX = computed(() => this.x() ?? this.globalConfig.<component>?.x ?? DEFAULT_X)`
+   and use `resolvedX()` everywhere internally (template and class) instead of the raw input.
+   An instance's own input, when set, always wins over the global config.
+4. Add the field under that component's key in the `GogGlobalConfig` interface in
+   `lib/shared/config.ts`, with a type matching the input.
+5. Don't add a field "for consistency" before some component actually reads it — an
+   interface field with no component honoring it is a silent no-op for whoever sets it.
+
 ## Accessibility (mandatory)
 
 - Every component MUST pass AXE checks and meet **WCAG AA** (contrast, focus, ARIA).

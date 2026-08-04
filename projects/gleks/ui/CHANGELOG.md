@@ -21,16 +21,30 @@ reached 1.0, so breaking changes may land in minor versions.
   gesture reaches this instance's edge. Defaults to `'auto'` — chains to the
   next scrollable ancestor, same as an un-customized `overflow: auto` div, so
   scrolling to the end of a `gog-scroll`'d section and continuing the same
-  gesture now keeps scrolling the page instead of stopping dead. Unset, falls
-  back to the new `GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR` injection token
-  (itself `'auto'` unless a consumer overrides it app-wide). `gog-select`/
+  gesture now keeps scrolling the page instead of stopping dead. `gog-select`/
   `gog-multiselect`'s option panel and `gog-dialog`'s body now set
   `overscrollBehavior="contain"` explicitly, preserving their existing
   (correct, overlay-appropriate) behavior now that the component-wide default
   has changed to chain-through.
+- `GOG_CONFIG`/`GogGlobalConfig`/`provideGogConfig(...)`: one injection token
+  for app-wide defaults across the library's component inputs, instead of a
+  separate token per component per setting. Call `provideGogConfig({ scroll:
+  {...}, button: {...} })` once in your app's providers (or a route's/
+  component's own `providers` for a subtree-scoped override); any instance
+  that doesn't set the input itself falls back to the configured value, then
+  to the component's own hardcoded default. `gog-scroll`'s `size`, `autoHide`,
+  `hideDelay` and `overscrollBehavior` and `gog-button`'s `debounce` are the
+  first inputs wired up to it — see the "Global configuration" section in
+  `gleks-ui-library.instructions.md` for how to add more. This only covers
+  inputs read in TypeScript that can't already be a CSS token; visual
+  defaults remain the `--gog-*` custom properties in `theme.css`.
 
 ### Changed
 
+- `gog-scroll`'s `size`, `autoHide`, `hideDelay` and `overscrollBehavior` inputs and
+  `gog-button`'s `debounce` input now default to `undefined` instead of a hardcoded
+  value, so they can fall through to `GOG_CONFIG` — read the resolved value (e.g. via
+  the rendered DOM) rather than the raw input signal if you need the effective default.
 - `gog-select` and `gog-multiselect`: the option panel now scrolls via
   `gog-scroll` instead of native `overflow-y`.
 - `gog-dialog`: the body now scrolls via `gog-scroll` instead of native

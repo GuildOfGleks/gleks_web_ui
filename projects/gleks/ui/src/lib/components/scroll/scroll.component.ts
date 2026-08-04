@@ -16,7 +16,7 @@ import {
 } from '@angular/core';
 
 import { GogScrollAxis, GogScrollOverscrollBehavior, GogScrollSize } from '../../shared/types';
-import { GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR } from './scroll.tokens';
+import { GOG_CONFIG } from '../../shared/config';
 
 /** Snapshot of the viewport's native scroll geometry, emitted on every scroll/resize. */
 export interface GogScrollMetrics {
@@ -34,6 +34,11 @@ type GogScrollDirection = 'vertical' | 'horizontal';
 const OVERFLOW_EPSILON = 1;
 /** Portion of the viewport paged per track click, leaving visual continuity with the old view. */
 const TRACK_CLICK_PAGE_RATIO = 0.9;
+/** Built-in fallbacks — the bottom of each input's GOG_CONFIG.scroll ?? this chain. */
+const DEFAULT_SIZE: GogScrollSize = 'normal';
+const DEFAULT_AUTO_HIDE = true;
+const DEFAULT_HIDE_DELAY = 800;
+const DEFAULT_OVERSCROLL_BEHAVIOR: GogScrollOverscrollBehavior = 'auto';
 
 function readPx(raw: string, fallback: number): number {
   const parsed = Number.parseFloat(raw.trim());
@@ -61,10 +66,15 @@ function clamp(value: number, min: number, max: number): number {
 export class ScrollComponent {
   /** Which axes get an overlay thumb. Native scrolling on the other axis is unaffected. */
   readonly axis = input<GogScrollAxis>('vertical');
-  readonly size = input<GogScrollSize>('normal');
-  /** Fades the thumb out after `hideDelay` ms of inactivity; false keeps it always visible. */
-  readonly autoHide = input(true);
-  readonly hideDelay = input(800);
+  /** Unset, falls back to `GOG_CONFIG.scroll.size`, then to `'normal'`. */
+  readonly size = input<GogScrollSize | undefined>(undefined);
+  /**
+   * Fades the thumb out after `hideDelay` ms of inactivity; false keeps it always visible.
+   * Unset, falls back to `GOG_CONFIG.scroll.autoHide`, then to `true`.
+   */
+  readonly autoHide = input<boolean | undefined>(undefined);
+  /** Unset, falls back to `GOG_CONFIG.scroll.hideDelay`, then to `800`. */
+  readonly hideDelay = input<number | undefined>(undefined);
   /** Pixel distance from an edge that still counts as "reached" for gogReachStart/End. */
   readonly reachThreshold = input(0);
   /**
@@ -78,8 +88,8 @@ export class ScrollComponent {
   readonly ariaLabel = input('');
   /**
    * What happens when a scroll gesture reaches this instance's edge. Unset, falls back to
-   * `GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR` (app-wide, itself `'auto'` unless a consumer
-   * overrides it). See `GogScrollOverscrollBehavior` for what each value does.
+   * `GOG_CONFIG.scroll.overscrollBehavior`, then to `'auto'`. See `GogScrollOverscrollBehavior`
+   * for what each value does.
    */
   readonly overscrollBehavior = input<GogScrollOverscrollBehavior | undefined>(undefined);
 
@@ -122,9 +132,22 @@ export class ScrollComponent {
     if (!this.measured()) return 'auto';
     return this.showTrackH() ? 'auto' : 'visible';
   });
-  private readonly defaultOverscrollBehavior = inject(GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR);
+  /** App/subtree-wide fallbacks for the inputs above that don't set their own value. */
+  private readonly globalConfig = inject(GOG_CONFIG);
+  protected readonly resolvedSize = computed(
+    () => this.size() ?? this.globalConfig.scroll?.size ?? DEFAULT_SIZE,
+  );
+  protected readonly resolvedAutoHide = computed(
+    () => this.autoHide() ?? this.globalConfig.scroll?.autoHide ?? DEFAULT_AUTO_HIDE,
+  );
+  protected readonly resolvedHideDelay = computed(
+    () => this.hideDelay() ?? this.globalConfig.scroll?.hideDelay ?? DEFAULT_HIDE_DELAY,
+  );
   protected readonly resolvedOverscrollBehavior = computed(
-    () => this.overscrollBehavior() ?? this.defaultOverscrollBehavior,
+    () =>
+      this.overscrollBehavior() ??
+      this.globalConfig.scroll?.overscrollBehavior ??
+      DEFAULT_OVERSCROLL_BEHAVIOR,
   );
   /**
    * Only applies `resolvedOverscrollBehavior` on an axis that's actually acting as a scroll
@@ -189,7 +212,7 @@ export class ScrollComponent {
     // afterNextRender has run, when there is nothing yet to measure.
     effect(() => {
       this.axis();
-      this.size();
+      this.resolvedSize();
       if (!this.resizeObserver) return;
       this.refreshTokens();
       this.scheduleMeasure();
@@ -323,11 +346,11 @@ export class ScrollComponent {
       clearTimeout(this.hideTimer);
       this.hideTimer = null;
     }
-    if (!this.autoHide()) return;
+    if (!this.resolvedAutoHide()) return;
 
     this.hideTimer = setTimeout(() => {
       if (this.dragAxis() === null) this.interacting.set(false);
-    }, this.hideDelay());
+    }, this.resolvedHideDelay());
   }
 
   /** Reads the tokens that feed thumb-size math. Cheap, but still only once per change. */

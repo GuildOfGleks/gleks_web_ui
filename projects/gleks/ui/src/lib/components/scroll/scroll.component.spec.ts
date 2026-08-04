@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 
 import { ScrollComponent } from './scroll.component';
-import { GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR } from './scroll.tokens';
+import { GOG_CONFIG } from '../../shared/config';
 
 /** jsdom never lays elements out, so scroll/client metrics are stubbed per test as needed. */
 function mockMetrics(
@@ -43,8 +43,10 @@ describe('ScrollComponent', () => {
 
   it('defaults to a vertical, non-thin, auto-hiding, focusable viewport', () => {
     expect(component.axis()).toBe('vertical');
-    expect(component.size()).toBe('normal');
-    expect(component.autoHide()).toBe(true);
+    expect(component.size()).toBeUndefined();
+    expect(component['resolvedSize']()).toBe('normal');
+    expect(component.autoHide()).toBeUndefined();
+    expect(component['resolvedAutoHide']()).toBe(true);
     expect(component.focusable()).toBe(true);
     expect(viewport.getAttribute('tabindex')).toBe('0');
     expect(viewport.getAttribute('role')).toBe('region');
@@ -240,13 +242,13 @@ describe('ScrollComponent', () => {
       expect(viewport.style.overscrollBehaviorY).toBe('auto');
     });
 
-    it('falls back to GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR when the input is unset', async () => {
+    it('falls back to GOG_CONFIG.scroll.overscrollBehavior when the input is unset', async () => {
       // The outer beforeEach already instantiated a TestBed environment (it created a
       // fixture), so a differently-provided one has to start from a clean slate.
       TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
         imports: [ScrollComponent],
-        providers: [{ provide: GOG_SCROLL_DEFAULT_OVERSCROLL_BEHAVIOR, useValue: 'contain' }],
+        providers: [{ provide: GOG_CONFIG, useValue: { scroll: { overscrollBehavior: 'contain' } } }],
       }).compileComponents();
 
       const providedFixture = TestBed.createComponent(ScrollComponent);
