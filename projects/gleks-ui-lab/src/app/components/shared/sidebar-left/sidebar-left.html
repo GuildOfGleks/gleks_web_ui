@@ -5,6 +5,15 @@
     <nav class="nav-list">
       @for (item of section.items; track item.path) {
         <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{ item.label }}</a>
+        @if (item.children?.length) {
+          <div class="nav-list nav-list--nested">
+            @for (child of item.children; track child.path) {
+              <a [routerLink]="'/' + child.path" routerLinkActive="active" class="nav-item nav-item--nested">{{
+                child.label
+              }}</a>
+            }
+          </div>
+        }
       }
     </nav>
   </div>

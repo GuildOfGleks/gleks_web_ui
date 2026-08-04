@@ -70,6 +70,48 @@ app-markdown {
     border-left: 3px solid var(--gog-accent-color);
     color: var(--gog-muted-text-color);
   }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--gog-text-sm);
+    margin: 0 0 1.4em;
+    display: block;
+    overflow-x: auto;
+
+    th,
+    td {
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--gog-border-color);
+      vertical-align: top;
+    }
+
+    th {
+      font-size: var(--gog-text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gog-muted-text-color);
+      white-space: nowrap;
+    }
+
+    td {
+      color: var(--gog-text-color);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    code {
+      font-family: var(--gog-font-mono);
+      font-size: 0.9em;
+      background-color: var(--gog-hover-color);
+      border-radius: 4px;
+      padding: 0.15em 0.4em;
+      white-space: nowrap;
+    }
+  }
 }
 
 /*

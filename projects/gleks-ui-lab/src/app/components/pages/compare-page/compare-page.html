@@ -1,0 +1,132 @@
+<div class="compare-page">
+  <header class="compare-page__hero">
+    <p class="compare-page__eyebrow">guildofgleks/ui vs. Angular Material vs. PrimeNG</p>
+    <h1 class="compare-page__title font-heading">Why Guild of Gleks UI?</h1>
+    <p class="compare-page__lead">
+      Three libraries, three different bets. Here's the short version — every number
+      below, plus the exact commands used to produce it, lives in the
+      <a routerLink="/general/compare-full">full technical comparison</a>.
+    </p>
+  </header>
+
+  <div class="card-grid">
+    <article class="compare-card compare-card--wide">
+      <h2 class="compare-card__title font-heading">Where every byte counts</h2>
+      <p class="compare-card__lead">
+        Bundle weight isn't an abstract concern — it's load time on a slow connection,
+        it's your Lighthouse score, it's the size budget your team argues about every
+        sprint. Measured from each library's real published npm package, minified and
+        gzipped:
+      </p>
+
+      <div class="bundle-chart">
+        @for (bar of bundleBars; track bar.label) {
+          <div class="bundle-row">
+            <div class="bundle-row__label">
+              <span class="bundle-row__name" [class.bundle-row__name--emphasis]="bar.emphasis">{{
+                bar.label
+              }}</span>
+              <span class="bundle-row__detail">{{ bar.detail }}</span>
+            </div>
+            <div class="bundle-row__track">
+              <div
+                class="bundle-row__fill"
+                [class.bundle-row__fill--emphasis]="bar.emphasis"
+                [style.width.%]="bar.percent"
+              >
+                <span class="bundle-row__value">{{ bar.value }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <p class="compare-card__callout">
+        The entire library — all 16 components — is smaller gzipped than
+        <strong>just four</strong> components from either Material or PrimeNG.
+      </p>
+      <p class="compare-card__footnote">
+        Guild of Gleks UI's bar is the whole catalogue; Material and PrimeNG's bars are
+        only Button + Select + Dialog + Table, since neither publishes a combined
+        "everything" bundle. See the
+        <a routerLink="/general/compare-full">full comparison</a> for the methodology
+        and the raw per-component numbers.
+      </p>
+    </article>
+
+    <article class="compare-card compare-card--wide">
+      <h2 class="compare-card__title font-heading">What should you choose?</h2>
+
+      <div class="spec-grid">
+        <div class="spec-grid__row spec-grid__row--head">
+          <div class="spec-grid__cell spec-grid__cell--label"></div>
+          <div class="spec-grid__cell spec-grid__cell--emphasis">Guild of Gleks UI</div>
+          <div class="spec-grid__cell">Angular Material</div>
+          <div class="spec-grid__cell">PrimeNG</div>
+        </div>
+        @for (row of specRows; track row.label) {
+          <div class="spec-grid__row">
+            <div class="spec-grid__cell spec-grid__cell--label">{{ row.label }}</div>
+            <div class="spec-grid__cell spec-grid__cell--emphasis">{{ row.gleks }}</div>
+            <div class="spec-grid__cell">{{ row.material }}</div>
+            <div class="spec-grid__cell">{{ row.primeng }}</div>
+          </div>
+        }
+      </div>
+
+      <div class="guidance-grid">
+        @for (item of guidance; track item.library) {
+          <div class="guidance-card">
+            <p class="guidance-card__library">{{ item.library }}</p>
+            <p class="guidance-card__text">{{ item.text }}</p>
+          </div>
+        }
+      </div>
+    </article>
+
+    <article class="compare-card">
+      <h2 class="compare-card__title font-heading">Not trying to win every category</h2>
+      <p class="compare-card__lead">
+        Guild of Gleks UI isn't trying to fix everything wrong with Angular UI
+        libraries, replace Material or PrimeNG outright, or out-feature either one.
+        It doesn't have a data grid, a chart, or an org chart, and it isn't pretending
+        to.
+      </p>
+      <p class="compare-card__lead">
+        Its actual claims are narrower and, hopefully, more honest: a lighter path to
+        a finished UI than either alternative, and a bundle small enough that it
+        barely registers in a size budget. Component breadth and ecosystem maturity
+        are deliberate tradeoffs here, not oversights.
+      </p>
+      <a class="compare-card__link" routerLink="/general/compare-full" fragment="what-this-library-doesnt-try-to-be">
+        See exactly what's missing →
+      </a>
+    </article>
+
+    <article class="compare-card">
+      <h2 class="compare-card__title font-heading">How old a browser do you need?</h2>
+      <p class="compare-card__lead">
+        All three currently track Angular's own
+        <a href="https://angular.dev/reference/versions" target="_blank" rel="noopener">"Baseline" browser policy</a>
+        for whichever Angular major they require — recent evergreen Chrome, Edge,
+        Firefox and Safari, not a fixed old version. None of the three libraries
+        layers its own separate browser floor on top of that.
+      </p>
+      <p class="compare-card__lead">
+        If you're stuck supporting genuinely old hardware — Chrome 109-class machines
+        are still common on corporate fleets — pinning an older release of Material or
+        PrimeNG, built against an older Angular major, reaches back much further than
+        this library can today. Guild of Gleks UI only has recent-Angular releases so
+        far, so that fallback doesn't exist here yet.
+      </p>
+    </article>
+  </div>
+
+  <footer class="compare-page__footer">
+    <p class="compare-page__footer-text">
+      Want the receipts? Every figure on this page — plus dependency counts,
+      deprecated-API counts, and the exact commands used to produce them — is in the
+    </p>
+    <a class="compare-page__footer-link" routerLink="/general/compare-full">Full Technical Comparison →</a>
+  </footer>
+</div>

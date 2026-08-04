@@ -38,4 +38,25 @@
       border-left: 3px solid var(--gog-accent-color);
     }
   }
+
+  &--nested {
+    margin: 2px 0 4px;
+    padding-left: 14px;
+    border-left: 1px solid var(--gog-border-color);
+    gap: 2px;
+  }
+
+  .nav-item--nested {
+    font-size: var(--gog-text-xs);
+    color: var(--gog-muted-text-color);
+    padding: 6px 12px;
+
+    &:hover {
+      color: var(--gog-accent-color);
+    }
+
+    &.active {
+      border-left-width: 2px;
+    }
+  }
 }

@@ -4,7 +4,11 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Overview', path: 'general/overview' },
   { label: 'Getting Started', path: 'general/getting-started' },
   { label: 'Theming', path: 'general/theming' },
-  { label: 'Compare with Material and PrimeNG', path: 'general/compare' },
+  {
+    label: 'Compare with Material and PrimeNG',
+    path: 'general/compare',
+    children: [{ label: 'Full Technical Comparison', path: 'general/compare-full' }],
+  },
   { label: 'FAQ', path: 'general/faq' },
 ];
 

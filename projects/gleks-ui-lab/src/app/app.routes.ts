@@ -19,6 +19,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'general/compare',
+    loadComponent: () =>
+      import('./components/pages/compare-page/compare-page').then((m) => m.ComparePage),
+  },
+  {
     path: 'general/:slug',
     loadComponent: () =>
       import('./components/pages/general-page/general-page').then((m) => m.GeneralPage),

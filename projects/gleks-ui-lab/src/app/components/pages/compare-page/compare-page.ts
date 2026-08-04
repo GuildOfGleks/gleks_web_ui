@@ -1,0 +1,90 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+interface BundleBar {
+  readonly label: string;
+  readonly detail: string;
+  readonly value: string;
+  readonly percent: number;
+  readonly emphasis: boolean;
+}
+
+const BUNDLE_BARS: readonly BundleBar[] = [
+  {
+    label: 'Guild of Gleks UI',
+    detail: 'entire library — 16 components',
+    value: '38.6 KB',
+    percent: 12,
+    emphasis: true,
+  },
+  {
+    label: 'Angular Material',
+    detail: 'Button + Select + Dialog + Table only',
+    value: '154 KB',
+    percent: 46,
+    emphasis: false,
+  },
+  {
+    label: 'PrimeNG',
+    detail: 'Button + Select + Dialog + Table only',
+    value: '332 KB',
+    percent: 100,
+    emphasis: false,
+  },
+];
+
+interface SpecRow {
+  readonly label: string;
+  readonly gleks: string;
+  readonly material: string;
+  readonly primeng: string;
+}
+
+const SPEC_ROWS: readonly SpecRow[] = [
+  { label: 'Components', gleks: '16', material: '~35', primeng: '90+' },
+  {
+    label: 'Theming',
+    gleks: 'Plain CSS variables',
+    material: 'Sass mixins / M3 tokens',
+    primeng: 'JS preset system',
+  },
+  {
+    label: 'Setup',
+    gleks: 'npm install, import, done',
+    material: '+ @angular/cdk, theme mixins',
+    primeng: '+ 6 runtime packages, a preset',
+  },
+];
+
+interface GuidanceCard {
+  readonly library: string;
+  readonly text: string;
+}
+
+const GUIDANCE: readonly GuidanceCard[] = [
+  {
+    library: 'Guild of Gleks UI',
+    text: "You want to ship fast, keep the bundle small, and restyle a component by setting a CSS variable — not by learning a theming API first.",
+  },
+  {
+    library: 'Angular Material',
+    text: "You want Google's own design language and a decade of production hardening, and don't mind pulling in the CDK to get there.",
+  },
+  {
+    library: 'PrimeNG',
+    text: 'Your product needs something this library — or Material — simply doesn\'t have: rich data grids, charts, org charts, or one of dozens of specialized widgets.',
+  },
+];
+
+@Component({
+  selector: 'app-compare-page',
+  imports: [RouterLink],
+  templateUrl: './compare-page.html',
+  styleUrl: './compare-page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ComparePage {
+  protected readonly bundleBars = BUNDLE_BARS;
+  protected readonly specRows = SPEC_ROWS;
+  protected readonly guidance = GUIDANCE;
+}
