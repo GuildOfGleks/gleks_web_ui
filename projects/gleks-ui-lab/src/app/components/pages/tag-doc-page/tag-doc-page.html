@@ -1,0 +1,143 @@
+<div class="tag-doc">
+  <header class="tag-doc__hero">
+    <p class="tag-doc__eyebrow">gog-tag</p>
+    <h1 class="tag-doc__title font-heading">Tag</h1>
+    <p class="tag-doc__lead">
+      An informational status label with four semantic variants, two shapes, five sizes, and
+      width that follows the text without wrapping by default.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the component and drop it into a template.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-tag variant="success" iconName="check">In stock</gog-tag>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Semantic variants</h3>
+      <p class="demo-card__meta">Four variants cover the common status meanings.</p>
+      <div class="demo-card__preview action-row">
+        @for (variantOption of variants; track variantOption) {
+          <gog-tag [variant]="variantOption" [iconName]="variantIcons[variantOption]">
+            {{ variantOption }}
+          </gog-tag>
+        }
+      </div>
+      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
+      <div class="demo-card__preview action-row">
+        @for (sizeOption of sizes; track sizeOption) {
+          <gog-tag [size]="sizeOption" variant="success">Available</gog-tag>
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Shapes</h3>
+      <p class="demo-card__meta">Square-ish rounded corners, or a fully rounded pill.</p>
+      <div class="demo-card__preview action-row">
+        <gog-tag shape="rounded" variant="success" iconName="check">Available</gog-tag>
+        <gog-tag shape="pill" variant="success" iconName="check">Available</gog-tag>
+      </div>
+      <app-code-tabs [html]="shapesHtml" [ts]="shapesTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom icon template</h3>
+      <p class="demo-card__meta"><code>iconTemplate</code> takes priority over <code>iconName</code>.</p>
+      <ng-template #starIcon>
+        <gog-icon name="checkbox-checked" />
+      </ng-template>
+      <div class="demo-card__preview">
+        <gog-tag variant="success" [iconTemplate]="starIcon">Featured</gog-tag>
+      </div>
+      <app-code-tabs [html]="customIconHtml" [ts]="customIconTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Full width</h3>
+      <p class="demo-card__meta">
+        Fits its text with no wrapping by default (see every tag above).
+        <code>fullWidth</code> stretches it to fill its container instead — wrapped here in a
+        narrower box to show it.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-tag variant="info" [fullWidth]="true">Full width</gog-tag>
+      </div>
+      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td><code>{{ row.type }}</code></td>
+              <td><code>{{ row.default }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the tag paints with. Override any of them — on a single
+      instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
+      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

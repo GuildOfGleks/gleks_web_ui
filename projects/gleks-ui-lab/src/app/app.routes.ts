@@ -103,6 +103,21 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'components/table',
+    loadComponent: () =>
+      import('./components/pages/table-doc-page/table-doc-page').then((m) => m.TableDocPage),
+  },
+  {
+    path: 'components/tag',
+    loadComponent: () =>
+      import('./components/pages/tag-doc-page/tag-doc-page').then((m) => m.TagDocPage),
+  },
+  {
+    path: 'components/toast',
+    loadComponent: () =>
+      import('./components/pages/toast-doc-page/toast-doc-page').then((m) => m.ToastDocPage),
+  },
+  {
     path: 'components/:name',
     loadComponent: () =>
       import('./components/pages/component-preview-page/component-preview-page').then(
