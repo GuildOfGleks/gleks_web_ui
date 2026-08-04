@@ -1,0 +1,187 @@
+<div class="inputfield-doc">
+  <header class="inputfield-doc__hero">
+    <p class="inputfield-doc__eyebrow">gog-inputfield</p>
+    <h1 class="inputfield-doc__title font-heading">Input Field</h1>
+    <p class="inputfield-doc__lead">
+      A text field with five sizes, leading/trailing icons that can double as buttons, a
+      built-in password reveal toggle, and full ControlValueAccessor support.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the component and drop it into a template.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage — a labeled field bound with [(value)]:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview width-demo">
+        <gog-inputfield label="Name" placeholder="Ada Lovelace" [(value)]="name" />
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+    <p class="doc-section__meta">Value: "{{ name() }}"</p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
+      <div class="demo-card__preview size-column">
+        @for (sizeOption of sizes; track sizeOption) {
+          <gog-inputfield [size]="sizeOption" [label]="sizeOption" [placeholder]="sizeOption" />
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Password</h3>
+      <p class="demo-card__meta">
+        <code>type="password"</code> gets a built-in show/hide toggle for free — the trailing
+        icon and its accessible label switch automatically.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-inputfield label="Password" type="password" [(value)]="password" />
+      </div>
+      <app-code-tabs [html]="passwordHtml" [ts]="passwordTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Icons</h3>
+      <p class="demo-card__meta">
+        A decorative icon with no function, and an action icon: setting
+        <code>iconEndFn</code> turns the trailing icon into a real button (requires
+        <code>iconEndLabel</code> for accessibility).
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-inputfield label="Search" iconStart="info" placeholder="Decorative start icon" />
+        <gog-inputfield
+          label="Clearable"
+          iconEnd="close"
+          iconEndLabel="Clear"
+          [iconEndFn]="clearSearch"
+          [(value)]="search"
+        />
+      </div>
+      <p class="demo-card__meta">{{ lastIconAction() }}</p>
+      <app-code-tabs [html]="iconsHtml" [ts]="iconsTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Error message</h3>
+      <p class="demo-card__meta">
+        <code>errorDisplay="manual"</code> (the default) shows <code>errorMessage</code> for as
+        long as it's non-empty — you own the timing. Type fewer than 3 characters to see it.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-inputfield
+          label="Username"
+          [(value)]="manualErrorValue"
+          [errorMessage]="
+            manualErrorValue().length > 0 && manualErrorValue().length < 3
+              ? 'At least 3 characters'
+              : ''
+          "
+        />
+      </div>
+      <app-code-tabs [html]="errorHtml" [ts]="errorTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive Forms</h3>
+      <p class="demo-card__meta">
+        Wire it to a <code>FormControl</code> with <code>[formControl]</code> instead of
+        <code>[(value)]</code>. With <code>errorDisplay="auto"</code>, the error only shows
+        once the control has been touched and is invalid — blur the empty field to see it.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-inputfield
+          label="Email"
+          [formControl]="emailControl"
+          errorMessage="Enter a valid email"
+          errorDisplay="auto"
+        />
+      </div>
+      <app-code-tabs [html]="formHtml" [ts]="formTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled</h3>
+      <div class="demo-card__preview width-demo">
+        <gog-inputfield label="Disabled" [disabled]="true" value="Read only" />
+      </div>
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Auto width</h3>
+      <p class="demo-card__meta">
+        Fields fill their container by default; <code>fullWidth="false"</code> shrinks the
+        field to fit its content instead.
+      </p>
+      <div class="demo-card__preview">
+        <gog-inputfield label="Zip code" [fullWidth]="false" placeholder="00000" />
+      </div>
+      <app-code-tabs [html]="autoWidthHtml" [ts]="autoWidthTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td><code>{{ row.type }}</code></td>
+              <td><code>{{ row.default }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the input field paints with. Override any of them — on a single
+      instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
+      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

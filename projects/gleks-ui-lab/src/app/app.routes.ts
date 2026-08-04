@@ -48,6 +48,23 @@ export const routes: Routes = [
       import('./components/pages/chip-doc-page/chip-doc-page').then((m) => m.ChipDocPage),
   },
   {
+    path: 'components/dialog',
+    loadComponent: () =>
+      import('./components/pages/dialog-doc-page/dialog-doc-page').then((m) => m.DialogDocPage),
+  },
+  {
+    path: 'components/icon',
+    loadComponent: () =>
+      import('./components/pages/icon-doc-page/icon-doc-page').then((m) => m.IconDocPage),
+  },
+  {
+    path: 'components/inputfield',
+    loadComponent: () =>
+      import('./components/pages/inputfield-doc-page/inputfield-doc-page').then(
+        (m) => m.InputfieldDocPage,
+      ),
+  },
+  {
     path: 'components/:name',
     loadComponent: () =>
       import('./components/pages/component-preview-page/component-preview-page').then(
