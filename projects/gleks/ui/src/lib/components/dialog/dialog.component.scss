@@ -89,15 +89,23 @@
 
 .gog-dialog__body {
   padding: var(--gog-dialog-body-padding);
+  display: flex;
+  flex-direction: column;
   flex: 1;
   /* Overrides the flex-item default of auto, which would otherwise refuse to shrink
      below the projected content's full height and defeat the max-height below. */
   min-height: 0;
   max-height: var(--gog-dialog-body-max-height);
+  overflow: hidden;
 }
 
 .gog-dialog__scroll {
-  height: 100%;
+  /* Not height: 100% — a flex item whose own height comes from being flex-grown inside a
+     max-height-only ancestor (this body, inside .gog-dialog__panel) still fails to resolve
+     a percentage height read off it in some browsers; flex-basis chains don't have that
+     failure mode. See scroll.component.scss's header comment for the full story. */
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 @keyframes gog-fade-in {

@@ -3,15 +3,27 @@
  * consumed) so `.gog-scroll--thin` can remap them and scroll.component.ts can read the
  * resolved value back via getComputedStyle for the thumb-size math — see refreshTokens().
  * Every other value resolves to a `--gog-scroll-*` token declared in styles/theme.css.
+ *
+ * Sizing uses flex chains (`flex: 1 1 auto` + `min-height: 0`), not `height: 100%`, all the
+ * way from :host down to .gog-scroll__viewport. A host whose own height comes from being
+ * flex-grown inside a `max-height`-only ancestor (e.g. gog-select's/gog-multiselect's
+ * dropdown panel) *does* get a real, definite computed height that way — but a percentage
+ * `height: 100%` read off it still resolves as if that ancestor were indefinite and falls
+ * back to content size, so the child never actually gets capped. Flex distribution doesn't
+ * have that failure mode at any depth, which is why every level below uses it instead.
  */
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
 }
 
 .gog-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   position: relative;
   width: 100%;
-  height: 100%;
   contain: layout style;
 
   --gog-scroll-track-width: var(--gog-scroll-normal-track-width);
@@ -24,10 +36,10 @@
 }
 
 .gog-scroll__viewport {
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
-  height: 100%;
   overflow: hidden;
-  overscroll-behavior: contain;
 
   /* The scroll itself stays native — only the browser's own chrome is hidden; the overlay
      thumb below replaces it visually. */
@@ -41,26 +53,26 @@
   }
 }
 
+/*
+ * overscroll-behavior is set per-axis (the `-x`/`-y` longhands), not the `overscroll-behavior`
+ * shorthand, and only for an axis this instance actually scrolls. The shorthand sets both
+ * axes at once — on a horizontal-only instance (e.g. gog-table's wrapper) that also
+ * "contains" vertical wheel scroll on an axis that was never scrollable to begin with,
+ * which swallows the gesture instead of letting it bubble up to scroll the page.
+ */
 .gog-scroll--v .gog-scroll__viewport {
   overflow-y: auto;
+  overscroll-behavior-y: contain;
 }
 
 .gog-scroll--h .gog-scroll__viewport {
   overflow-x: auto;
+  overscroll-behavior-x: contain;
 }
 
 .gog-scroll__viewport:focus-visible {
   outline: var(--gog-scroll-focus-ring-width) solid var(--gog-scroll-focus-ring);
   outline-offset: calc(var(--gog-scroll-focus-ring-width) * -1);
-}
-
-.gog-scroll__content {
-  min-height: 100%;
-}
-
-.gog-scroll--h .gog-scroll__content {
-  width: max-content;
-  min-width: 100%;
 }
 
 .gog-scroll__track {

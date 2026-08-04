@@ -181,6 +181,10 @@
     var(--gog-select-field-border);
   border-radius: var(--gog-select-radius);
   max-height: var(--gog-select-panel-max-height);
+  /* Defensive: gog-select__scroll's own overlay clips its content correctly on its own,
+     but this still keeps the panel visually masked (rounded corners, no bleed) for a frame
+     before it has measured, or if a browser ever mis-sizes the flex chain below. */
+  overflow: hidden;
   box-shadow: var(--gog-select-panel-shadow);
 }
 

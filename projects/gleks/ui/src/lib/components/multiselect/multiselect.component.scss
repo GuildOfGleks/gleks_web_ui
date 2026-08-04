@@ -197,6 +197,10 @@
     var(--gog-ms-panel-border);
   border-radius: var(--gog-ms-radius);
   max-height: var(--gog-ms-panel-max-height);
+  /* Defensive: gog-ms__scroll's own overlay clips its content correctly on its own, but
+     this still keeps the panel visually masked (rounded corners, no bleed) for a frame
+     before it has measured, or if a browser ever mis-sizes the flex chain below. */
+  overflow: hidden;
   box-shadow: var(--gog-ms-panel-shadow);
 }
 
