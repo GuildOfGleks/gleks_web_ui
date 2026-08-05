@@ -2,13 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  forwardRef,
+  inject,
   input,
   model,
   signal,
   TemplateRef,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { IconComponent } from '../icon/icon.component';
 import { GogSize } from '../../shared/types';
 import {
@@ -31,13 +31,6 @@ import {
     // binding the `fullWidth` input has no visible effect.
     '[class.gog-host--full-width]': 'fullWidth()',
   },
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => CheckboxComponent),
-      multi: true,
-    },
-  ],
 })
 export class CheckboxComponent implements ControlValueAccessor {
   readonly label = input('');
@@ -51,7 +44,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   /**
    * Two-way bindable checked state: `[(checked)]="signal"`.
    * This is the same state Angular Forms drives via `writeValue`/`registerOnChange`
-   * when the component is used with `formControlName`/`[formControl]`/`ngModel`.
+   * when the component is used with `formControlName`/`[formControl]`.
    * Don't wire both a form directive AND `[(checked)]` to the same instance —
    * pick one, otherwise you end up with two competing sources of truth.
    */
@@ -61,8 +54,18 @@ export class CheckboxComponent implements ControlValueAccessor {
   protected readonly checkboxPadding = GOG_CHECKABLE_CONTROL_PADDING;
   protected readonly labelSize = computed(() => this.controlSize().labelSize);
   protected readonly iconSize = computed(() => this.controlSize().indicatorSize);
+  private readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cvaDisabled = signal(false);
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
+
+  constructor() {
+    // Registering through NgControl instead of NG_VALUE_ACCESSOR matches the pattern used
+    // by every other form control in the library — providing NG_VALUE_ACCESSOR on the
+    // component while also injecting NgControl would be a dependency cycle.
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
 
   writeValue(val: boolean): void {
     this.checked.set(val ?? false);

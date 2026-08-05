@@ -8,8 +8,8 @@ import { NgControl } from '@angular/forms';
  *
  * `'auto'`: shown once the attached form control has been touched and is invalid — the
  * consumer only supplies the message text, not the timing. Requires a
- * `[formControl]` / `formControlName` / `ngModel` on the element; without one this falls
- * back to `'manual'`, since there is no control state to key off.
+ * `[formControl]` / `formControlName` on the element; without one this falls back to
+ * `'manual'`, since there is no control state to key off.
  */
 export type GogErrorDisplay = 'auto' | 'manual';
 

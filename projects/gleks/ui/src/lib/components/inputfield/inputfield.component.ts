@@ -32,9 +32,15 @@ import { IconComponent, type GogIconName } from '../icon/icon.component';
 export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly label = input('');
   readonly placeholder = input('');
-  readonly type = input<'text' | 'password' | 'email'>('text');
+  readonly type = input<'text' | 'password' | 'email' | 'number' | 'date'>('text');
   /** Defaults to 'current-password' for password fields, 'off' otherwise */
   readonly autocomplete = input('');
+  /** Only applied when `type="number"`. */
+  readonly min = input<number | null>(null);
+  /** Only applied when `type="number"`. */
+  readonly max = input<number | null>(null);
+  /** Only applied when `type="number"`. */
+  readonly step = input<number | null>(null);
   readonly errorMessage = input('');
   /** See `GogErrorDisplay`. Defaults to `'manual'`, matching every other control in the library. */
   readonly errorDisplay = input<GogErrorDisplay>('manual');
@@ -68,7 +74,12 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   /** aria-label for the hide-password button, shown once the password is revealed */
   readonly hidePasswordLabel = input('Hide password');
 
-  /** Two-way bindable value: `[(value)]="signal"` or `[value]` / `(valueChange)`. */
+  /**
+   * Two-way bindable value: `[(value)]="signal"` or `[value]` / `(valueChange)`.
+   * Always a string, including for `type="number"` — that field's `formControl`/
+   * `formControlName` value is a `number` (or `null` when empty); the string here is only
+   * the raw text shown in the native input.
+   */
   readonly value = model<string>('');
 
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
@@ -82,6 +93,7 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
   protected readonly isPasswordField = computed(() => this.type() === 'password');
+  protected readonly isNumberField = computed(() => this.type() === 'number');
   protected readonly effectiveType = computed(() =>
     this.isPasswordField() && this.passwordVisible() ? 'text' : this.type(),
   );
@@ -113,7 +125,8 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     () => this.isPasswordField() || !!this.iconEndFn(),
   );
 
-  private _onChange: (val: string) => void = () => {};
+  /** `number` for a `type="number"` field (`null` when empty), `string` otherwise. */
+  private _onChange: (val: string | number | null) => void = () => {};
   private _onTouched: () => void = () => {};
 
   constructor() {
@@ -129,11 +142,11 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     this.errorState.check();
   }
 
-  writeValue(val: string): void {
-    this.value.set(val ?? '');
+  writeValue(val: string | number | null): void {
+    this.value.set(val === null || val === undefined ? '' : String(val));
   }
 
-  registerOnChange(fn: (val: string) => void): void {
+  registerOnChange(fn: (val: string | number | null) => void): void {
     this._onChange = fn;
   }
 
@@ -160,6 +173,12 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   onInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.value.set(input.value);
+
+    if (this.isNumberField()) {
+      this._onChange(input.value === '' ? null : input.valueAsNumber);
+      return;
+    }
+
     this._onChange(input.value);
   }
 

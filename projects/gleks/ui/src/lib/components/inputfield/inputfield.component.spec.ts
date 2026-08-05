@@ -252,4 +252,72 @@ describe('InputfieldComponent', () => {
       );
     });
   });
+
+  describe('type="number"', () => {
+    @Component({
+      imports: [InputfieldComponent, ReactiveFormsModule],
+      template: `<gog-inputfield
+        type="number"
+        [min]="1"
+        [max]="10"
+        [step]="1"
+        [formControl]="control"
+      />`,
+      changeDetection: ChangeDetectionStrategy.OnPush,
+    })
+    class NumberInputfieldFormHostComponent {
+      readonly control = new FormControl<number | null>(5, { nonNullable: false });
+    }
+
+    it('renders a native number input with min/max/step attributes', async () => {
+      const hostFixture = TestBed.createComponent(NumberInputfieldFormHostComponent);
+      await hostFixture.whenStable();
+
+      const input = hostFixture.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(input.type).toBe('number');
+      expect(input.min).toBe('1');
+      expect(input.max).toBe('10');
+      expect(input.step).toBe('1');
+      expect(input.value).toBe('5');
+    });
+
+    it('propagates typing to the FormControl as a number, not a string', async () => {
+      const hostFixture = TestBed.createComponent(NumberInputfieldFormHostComponent);
+      const host = hostFixture.componentInstance;
+      await hostFixture.whenStable();
+
+      const input = hostFixture.nativeElement.querySelector('input') as HTMLInputElement;
+      input.value = '7';
+      input.dispatchEvent(new Event('input'));
+      await hostFixture.whenStable();
+
+      expect(host.control.value).toBe(7);
+      expect(typeof host.control.value).toBe('number');
+    });
+
+    it('propagates an empty field as null', async () => {
+      const hostFixture = TestBed.createComponent(NumberInputfieldFormHostComponent);
+      const host = hostFixture.componentInstance;
+      await hostFixture.whenStable();
+
+      const input = hostFixture.nativeElement.querySelector('input') as HTMLInputElement;
+      input.value = '';
+      input.dispatchEvent(new Event('input'));
+      await hostFixture.whenStable();
+
+      expect(host.control.value).toBeNull();
+    });
+  });
+
+  describe('type="date"', () => {
+    it('renders a native date input', async () => {
+      fixture.componentRef.setInput('type', 'date');
+      fixture.componentRef.setInput('value', '2026-07-04');
+      await fixture.whenStable();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(input.type).toBe('date');
+      expect(input.value).toBe('2026-07-04');
+    });
+  });
 });

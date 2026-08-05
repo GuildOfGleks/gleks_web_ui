@@ -1,0 +1,110 @@
+/*
+ * Reuses the `--gog-input-*` field tokens (see inputfield.component.scss) so a textarea
+ * matches every other text field out of the box, restyling both from one token set.
+ */
+.gog-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-input-gap);
+  width: 100%;
+}
+
+:host(.gog-host--auto-width) {
+  width: fit-content;
+}
+
+:host(.gog-host--auto-width) .gog-input-wrapper {
+  width: fit-content;
+}
+
+.gog-input__label {
+  font-family: var(--gog-input-label-font-family);
+  font-size: var(--gog-input-label-font-size);
+  color: var(--gog-input-label-color);
+  text-transform: var(--gog-input-label-text-transform);
+  letter-spacing: var(--gog-input-label-letter-spacing);
+}
+
+.gog-input__field {
+  width: 100%;
+  padding: var(--gog-input-padding-y, var(--gog-input-size-padding-y, var(--gog-field-md-padding-y)))
+    var(--gog-input-padding-x, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x)));
+  font-family: var(--gog-input-font-family);
+  font-size: var(--gog-input-font, var(--gog-input-size-font-size, var(--gog-field-md-font-size)));
+  color: var(--gog-input-field-color);
+  background-color: var(--gog-input-field-bg);
+  border: var(--gog-input-field-border-width) var(--gog-input-field-border-style)
+    var(--gog-input-field-border);
+  border-radius: var(--gog-input-radius);
+  outline: none;
+  transition:
+    border-color var(--gog-input-transition-duration) var(--gog-easing),
+    box-shadow var(--gog-input-transition-duration) var(--gog-easing);
+}
+
+.gog-textarea__field {
+  resize: vertical;
+  min-height: 2.5em;
+  line-height: 1.5;
+}
+
+.gog-input-wrapper--xsm {
+  --gog-input-size-padding-y: var(--gog-field-xsm-padding-y);
+  --gog-input-size-padding-x: var(--gog-field-xsm-padding-x);
+  --gog-input-size-font-size: var(--gog-field-xsm-font-size);
+}
+
+.gog-input-wrapper--sm {
+  --gog-input-size-padding-y: var(--gog-field-sm-padding-y);
+  --gog-input-size-padding-x: var(--gog-field-sm-padding-x);
+  --gog-input-size-font-size: var(--gog-field-sm-font-size);
+}
+
+.gog-input-wrapper--lg {
+  --gog-input-size-padding-y: var(--gog-field-lg-padding-y);
+  --gog-input-size-padding-x: var(--gog-field-lg-padding-x);
+  --gog-input-size-font-size: var(--gog-field-lg-font-size);
+}
+
+.gog-input-wrapper--slg {
+  --gog-input-size-padding-y: var(--gog-field-slg-padding-y);
+  --gog-input-size-padding-x: var(--gog-field-slg-padding-x);
+  --gog-input-size-font-size: var(--gog-field-slg-font-size);
+}
+
+.gog-input__field::placeholder {
+  color: var(--gog-input-placeholder-color);
+}
+
+.gog-input__field:focus {
+  border-color: var(--gog-input-focus-border);
+  box-shadow: var(--gog-input-focus-glow);
+}
+
+.gog-input__field:focus-visible {
+  outline: var(--gog-input-focus-ring-width) solid var(--gog-input-focus-border);
+  outline-offset: var(--gog-input-focus-ring-offset);
+}
+
+.gog-input__field:disabled {
+  opacity: var(--gog-input-disabled-opacity);
+  cursor: not-allowed;
+  resize: none;
+}
+
+.gog-input__field--error {
+  border-color: var(--gog-input-error-color);
+}
+
+.gog-input__error {
+  font-family: var(--gog-input-font-family);
+  font-size: var(--gog-input-error-font-size);
+  color: var(--gog-input-error-color);
+  margin-top: var(--gog-input-error-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-input__field {
+    transition: none;
+  }
+}

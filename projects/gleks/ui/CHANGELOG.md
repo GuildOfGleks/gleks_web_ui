@@ -8,6 +8,16 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- `gog-textarea`: a multi-line counterpart to `gog-inputfield`, sharing its
+  `--gog-input-*` tokens. `ControlValueAccessor`-based, works with
+  `formControl`/`formControlName`. `label`, `placeholder`, `errorMessage`,
+  `errorDisplay`, `disabled`, `size`, `fullWidth` and `rows` inputs.
+- `gog-inputfield`'s `type` input now also accepts `'number'` and `'date'`,
+  plus new `min`/`max`/`step` inputs (applied only for `type="number"`). For a
+  `number` field the value written to/read from an attached
+  `formControl`/`formControlName` is a `number` (`null` when the field is
+  empty) rather than a string — `[(value)]` stays a string either way, since
+  it mirrors the native input's raw text.
 - `gog-scroll`: a drop-in replacement for a native `overflow: auto` region.
   Content keeps scrolling natively (wheel, touch, keyboard, focus-into-view);
   only the browser's own scrollbar chrome is hidden and replaced with a
@@ -41,6 +51,10 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- `gog-checkbox` now registers its `ControlValueAccessor` by self-injecting
+  `NgControl` in the constructor, matching every other form control in the
+  library, instead of the `NG_VALUE_ACCESSOR`/`forwardRef` provider pattern.
+  No behavior change — `formControl`/`formControlName` usage is unaffected.
 - `gog-scroll`'s `size`, `autoHide`, `hideDelay` and `overscrollBehavior` inputs and
   `gog-button`'s `debounce` input now default to `undefined` instead of a hardcoded
   value, so they can fall through to `GOG_CONFIG` — read the resolved value (e.g. via

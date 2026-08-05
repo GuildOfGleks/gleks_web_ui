@@ -11,9 +11,9 @@ dependencies are `@angular/core`, `@angular/common` and `@angular/forms`.
 
 ## Features
 
-- 16 standalone components — accordion, button, checkbox, chip, dialog, icon,
+- 17 standalone components — accordion, button, checkbox, chip, dialog, icon,
   inputfield, multiselect, paginator, select, skeleton, slider, spinner, table, tag,
-  toast — plus `DialogService`, `ToastService` and `ThemeService`.
+  textarea, toast — plus `DialogService`, `ToastService` and `ThemeService`.
 - Signal-based API throughout: `input()` / `output()` / `model()`, `OnPush` change
   detection, no NgModules.
 - No CDK, no Material — a small dependency footprint on top of `@angular/core`,
@@ -21,7 +21,10 @@ dependencies are `@angular/core`, `@angular/common` and `@angular/forms`.
 - Full theming through CSS custom properties: restyle any component, swap the whole
   palette, or ship light/dark and custom themes at runtime via a `data-theme` attribute.
 - `ControlValueAccessor` on every form control (checkbox, inputfield, select,
-  multiselect, slider) — works with `formControl`, `formControlName` and `ngModel`.
+  multiselect, slider, textarea) — built and tested against Reactive Forms (`formControl` /
+  `formControlName`). The library does not use `ngModel`/`FormsModule` anywhere itself,
+  and template-driven usage via `[(ngModel)]` is untested — CVA makes it likely to work,
+  but it isn't a supported or verified path.
 - Accessible by default: keyboard navigation, ARIA attributes, WCAG AA contrast.
 
 ## Install
@@ -177,15 +180,18 @@ Google Fonts) add `@guildofgleks/ui/styles/fonts.css` as well.
 
 `gog-accordion`, `gog-button`, `gog-checkbox`, `gog-chip`, `gog-dialog`, `gog-icon`,
 `gog-inputfield`, `gog-multiselect`, `gog-paginator`, `gog-select`, `gog-skeleton`,
-`gog-slider`, `gog-spinner`, `gog-spinner-overlay`, `gog-table`, `gog-tag`, `gog-toast`.
+`gog-slider`, `gog-spinner`, `gog-spinner-overlay`, `gog-table`, `gog-tag`, `gog-textarea`,
+`gog-toast`.
 
 Services: `DialogService`, `ToastService`, `ThemeService`.
 
-`gog-checkbox`, `gog-inputfield`, `gog-select`, `gog-multiselect` and `gog-slider`
-implement `ControlValueAccessor`, so they work with `[formControl]`, `formControlName`
-and `ngModel`. With a form control attached, the error message appears once the control
-is both touched and invalid; without one it shows for as long as `errorMessage` is
-non-empty, and the consumer decides when to clear it.
+`gog-checkbox`, `gog-inputfield`, `gog-select`, `gog-multiselect`, `gog-slider` and
+`gog-textarea` implement `ControlValueAccessor` and are built for Reactive Forms — use
+`[formControl]` or `formControlName`. The library itself never imports `FormsModule` or
+uses `ngModel`; `[(ngModel)]` is not tested against these components and isn't a
+supported usage path. With a form control attached, the error message appears once the
+control is both touched and invalid; without one it shows for as long as `errorMessage`
+is non-empty, and the consumer decides when to clear it.
 
 ## License
 

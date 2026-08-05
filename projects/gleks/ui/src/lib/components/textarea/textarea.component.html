@@ -1,0 +1,30 @@
+<div
+  class="gog-input-wrapper gog-contained-layout"
+  [class.gog-input-wrapper--xsm]="size() === 'xsm'"
+  [class.gog-input-wrapper--sm]="size() === 'sm'"
+  [class.gog-input-wrapper--lg]="size() === 'lg'"
+  [class.gog-input-wrapper--slg]="size() === 'slg'"
+>
+  @if (label()) {
+    <label class="gog-input__label" [attr.for]="inputId() || null">{{ label() }}</label>
+  }
+  <textarea
+    class="gog-input__field gog-textarea__field"
+    [class.gog-input__field--error]="hasError()"
+    [attr.id]="inputId() || null"
+    [attr.name]="name() || null"
+    [placeholder]="placeholder()"
+    [rows]="rows()"
+    [value]="value()"
+    [disabled]="isDisabled()"
+    [attr.aria-invalid]="hasError()"
+    [attr.aria-describedby]="hasError() && inputId() ? inputId() + '-error' : null"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+  ></textarea>
+  @if (visibleError()) {
+    <span class="gog-input__error" [attr.id]="inputId() ? inputId() + '-error' : null" role="alert"
+      >{{ visibleError() }}</span
+    >
+  }
+</div>
