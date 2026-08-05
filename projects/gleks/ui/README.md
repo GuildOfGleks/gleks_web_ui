@@ -11,9 +11,9 @@ dependencies are `@angular/core`, `@angular/common` and `@angular/forms`.
 
 ## Features
 
-- 17 standalone components — accordion, button, checkbox, chip, dialog, icon,
-  inputfield, multiselect, paginator, select, skeleton, slider, spinner, table, tag,
-  textarea, toast — plus `DialogService`, `ToastService` and `ThemeService`.
+- 18 standalone components — accordion, button, checkbox, chip, collapsible, dialog,
+  icon, inputfield, multiselect, paginator, select, skeleton, slider, spinner, table,
+  tag, textarea, toast — plus `DialogService`, `ToastService` and `ThemeService`.
 - Signal-based API throughout: `input()` / `output()` / `model()`, `OnPush` change
   detection, no NgModules.
 - No CDK, no Material — a small dependency footprint on top of `@angular/core`,
@@ -178,12 +178,18 @@ Google Fonts) add `@guildofgleks/ui/styles/fonts.css` as well.
 
 ## Components
 
-`gog-accordion`, `gog-button`, `gog-checkbox`, `gog-chip`, `gog-dialog`, `gog-icon`,
-`gog-inputfield`, `gog-multiselect`, `gog-paginator`, `gog-select`, `gog-skeleton`,
-`gog-slider`, `gog-spinner`, `gog-spinner-overlay`, `gog-table`, `gog-tag`, `gog-textarea`,
-`gog-toast`.
+`gog-accordion`, `gog-button`, `gog-checkbox`, `gog-chip`, `gog-collapsible`, `gog-dialog`,
+`gog-icon`, `gog-inputfield`, `gog-multiselect`, `gog-paginator`, `gog-select`,
+`gog-skeleton`, `gog-slider`, `gog-spinner`, `gog-spinner-overlay`, `gog-table`, `gog-tag`,
+`gog-textarea`, `gog-toast`.
 
 Services: `DialogService`, `ToastService`, `ThemeService`.
+
+`gog-collapsible` is a headless expand/collapse primitive — no owned markup, no portal.
+Project any element as the trigger via `gogCollapsibleTrigger` and any element as the
+panel via `gogCollapsibleContent`; `[(open)]` is two-way bindable. Useful for anything
+that needs an inline expanding region without the overlay behavior of `gog-select`/
+`gog-multiselect` — e.g. a collapsible group of links in a nav sidebar.
 
 `gog-checkbox`, `gog-inputfield`, `gog-select`, `gog-multiselect`, `gog-slider` and
 `gog-textarea` implement `ControlValueAccessor` and are built for Reactive Forms — use

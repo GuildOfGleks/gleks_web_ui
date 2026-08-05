@@ -31,3 +31,39 @@
 .gog-cursor-not-allowed {
   cursor: not-allowed;
 }
+
+/*
+ * `gog-collapsible`'s trigger/content classes, global rather than component-scoped: both
+ * are applied via `gogCollapsibleTrigger`/`gogCollapsibleContent` directives to elements a
+ * *consumer* projects into `<gog-collapsible>` — light DOM that belongs to the consumer's
+ * own view, not `gog-collapsible`'s, so a scoped stylesheet on the component itself would
+ * never reach it.
+ */
+.gog-collapsible__trigger {
+  cursor: pointer;
+}
+
+.gog-collapsible__trigger[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: var(--gog-collapsible-disabled-opacity);
+}
+
+.gog-collapsible__content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-height var(--gog-collapsible-transition-duration) var(--gog-easing),
+    opacity var(--gog-collapsible-transition-duration) var(--gog-easing);
+}
+
+.gog-collapsible__content--open {
+  max-height: var(--gog-collapsible-max-height);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-collapsible__content {
+    transition: none;
+  }
+}

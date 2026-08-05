@@ -382,6 +382,17 @@
   --gog-accordion-slg-chevron-size: 20px;
   --gog-accordion-slg-chevron-font-size: 18px;
 
+  /* ── Collapsible ───────────────────────────────────────────────────────────
+     No portal, no owned markup — see utilities.css for the actual `.gog-collapsible__*`
+     rules (they style content this component's consumer projects, which sits outside
+     `gog-collapsible`'s own view and can't be reached by its scoped stylesheet). */
+  --gog-collapsible-transition-duration: var(--gog-duration-slow);
+  /* Generous fixed cap rather than a measured height: the CSS-only max-height transition
+     trades exact timing for arbitrary content (any number of children) without JS. Override
+     per-instance if a particular panel's content can exceed this. */
+  --gog-collapsible-max-height: 480px;
+  --gog-collapsible-disabled-opacity: var(--gog-disabled-opacity);
+
   /* ── Button ────────────────────────────────────────────────────────────────
      `--gog-btn-bg`, `--gog-btn-color`, `--gog-btn-border`, `--gog-btn-shadow`,
      `--gog-btn-hover-bg`, `--gog-btn-hover-shadow`, `--gog-btn-padding` and

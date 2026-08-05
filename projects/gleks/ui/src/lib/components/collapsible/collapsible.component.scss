@@ -1,0 +1,8 @@
+/*
+ * `gog-collapsible` itself renders no box of its own — it stays `display: contents` so
+ * the trigger and content elements a consumer projects behave as direct flow children of
+ * whatever the collapsible sits inside (e.g. a nav list), not as children of an extra wrapper.
+ */
+:host {
+  display: contents;
+}

@@ -8,6 +8,12 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- `gog-collapsible`: a headless expand/collapse primitive — inline, not a portal (unlike
+  `gog-select`/`gog-multiselect`'s panel). Owns no markup: project any element as the
+  trigger via `gogCollapsibleTrigger` and any element as the panel via
+  `gogCollapsibleContent`; `[(open)]` is two-way bindable, `disabled` blocks toggling.
+  New `--gog-collapsible-*` tokens in `theme.css`; the trigger/content CSS classes live in
+  `utilities.css` since the projected content sits outside the component's own view.
 - `gog-textarea`: a multi-line counterpart to `gog-inputfield`, sharing its
   `--gog-input-*` tokens. `ControlValueAccessor`-based, works with
   `formControl`/`formControlName`. `label`, `placeholder`, `errorMessage`,
