@@ -10,261 +10,150 @@
     <p class="eyebrow">Custom dialog</p>
     <h3 [id]="titleId" class="registration-dialog__title">Warehouse product registration</h3>
     <p [id]="descriptionId" class="registration-dialog__description">
-      A large reactive form built with `FormBuilder` and `getRawValue()`. Validation keeps the
-      payload complete before the save toast appears.
+      A large reactive form built with `FormBuilder` and `getRawValue()`, using only
+      `@guildofgleks/ui` field components. Validation keeps the payload complete before the
+      save toast appears.
     </p>
   </header>
 
   <section class="registration-dialog__section">
     <h4 class="registration-dialog__section-title">Product details</h4>
     <div class="registration-dialog__grid">
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="registration-code">Registration code</label>
-        <input
-          id="registration-code"
-          class="registration-dialog__native"
-          type="text"
-          formControlName="registrationCode"
-          readonly
-        />
-      </div>
+      <gog-inputfield label="Registration code" formControlName="registrationCode" />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="product-name">Product name</label>
-        <input
-          id="product-name"
-          class="registration-dialog__native"
-          type="text"
-          formControlName="productName"
-        />
-        @if (fieldError(controls.productName, 'Product name'); as productNameError) {
-          <p class="registration-dialog__error" role="alert">{{ productNameError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Product name"
+        formControlName="productName"
+        [errorMessage]="fieldError(controls.productName, 'Product name') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="sku">SKU</label>
-        <input id="sku" class="registration-dialog__native" type="text" formControlName="sku" />
-        @if (fieldError(controls.sku, 'SKU'); as skuError) {
-          <p class="registration-dialog__error" role="alert">{{ skuError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="SKU"
+        formControlName="sku"
+        [errorMessage]="fieldError(controls.sku, 'SKU') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="category">Category</label>
-        <select id="category" class="registration-dialog__native" formControlName="category">
-          @for (option of categoryOptions; track option.id) {
-            <option [value]="option.id">{{ option.name }}</option>
-          }
-        </select>
-        @if (fieldError(controls.category, 'Category'); as categoryError) {
-          <p class="registration-dialog__error" role="alert">{{ categoryError }}</p>
-        }
-      </div>
+      <gog-select
+        label="Category"
+        formControlName="category"
+        [options]="categoryOptions"
+        [errorMessage]="fieldError(controls.category, 'Category') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="supplier">Supplier</label>
-        <select id="supplier" class="registration-dialog__native" formControlName="supplier">
-          @for (option of supplierOptions; track option.id) {
-            <option [value]="option.id">{{ option.name }}</option>
-          }
-        </select>
-        @if (fieldError(controls.supplier, 'Supplier'); as supplierError) {
-          <p class="registration-dialog__error" role="alert">{{ supplierError }}</p>
-        }
-      </div>
+      <gog-select
+        label="Supplier"
+        formControlName="supplier"
+        [options]="supplierOptions"
+        [errorMessage]="fieldError(controls.supplier, 'Supplier') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="barcode">Barcode</label>
-        <input
-          id="barcode"
-          class="registration-dialog__native"
-          type="text"
-          formControlName="barcode"
-        />
-        @if (fieldError(controls.barcode, 'Barcode'); as barcodeError) {
-          <p class="registration-dialog__error" role="alert">{{ barcodeError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Barcode"
+        formControlName="barcode"
+        [errorMessage]="fieldError(controls.barcode, 'Barcode') || ''"
+      />
     </div>
   </section>
 
   <section class="registration-dialog__section">
     <h4 class="registration-dialog__section-title">Warehouse details</h4>
     <div class="registration-dialog__grid registration-dialog__grid--compact">
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="quantity">Quantity</label>
-        <input
-          id="quantity"
-          class="registration-dialog__native"
-          type="number"
-          min="1"
-          step="1"
-          formControlName="quantity"
-        />
-        @if (fieldError(controls.quantity, 'Quantity'); as quantityError) {
-          <p class="registration-dialog__error" role="alert">{{ quantityError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Quantity"
+        type="number"
+        [min]="1"
+        [step]="1"
+        formControlName="quantity"
+        [errorMessage]="fieldError(controls.quantity, 'Quantity') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="unit">Unit</label>
-        <select id="unit" class="registration-dialog__native" formControlName="unit">
-          @for (option of unitOptions; track option.id) {
-            <option [value]="option.id">{{ option.name }}</option>
-          }
-        </select>
-        @if (fieldError(controls.unit, 'Unit'); as unitError) {
-          <p class="registration-dialog__error" role="alert">{{ unitError }}</p>
-        }
-      </div>
+      <gog-select
+        label="Unit"
+        formControlName="unit"
+        [options]="unitOptions"
+        [errorMessage]="fieldError(controls.unit, 'Unit') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="warehouse-zone">Warehouse zone</label>
-        <select
-          id="warehouse-zone"
-          class="registration-dialog__native"
-          formControlName="warehouseZone"
-        >
-          @for (option of zoneOptions; track option.id) {
-            <option [value]="option.id">{{ option.name }}</option>
-          }
-        </select>
-        @if (fieldError(controls.warehouseZone, 'Warehouse zone'); as warehouseZoneError) {
-          <p class="registration-dialog__error" role="alert">{{ warehouseZoneError }}</p>
-        }
-      </div>
+      <gog-select
+        label="Warehouse zone"
+        formControlName="warehouseZone"
+        [options]="zoneOptions"
+        [errorMessage]="fieldError(controls.warehouseZone, 'Warehouse zone') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="received-at">Received at</label>
-        <input
-          id="received-at"
-          class="registration-dialog__native"
-          type="date"
-          formControlName="receivedAt"
-        />
-        @if (fieldError(controls.receivedAt, 'Received date'); as receivedError) {
-          <p class="registration-dialog__error" role="alert">{{ receivedError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Received at"
+        type="date"
+        formControlName="receivedAt"
+        [errorMessage]="fieldError(controls.receivedAt, 'Received date') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="shelf">Shelf</label>
-        <input id="shelf" class="registration-dialog__native" type="text" formControlName="shelf" />
-        @if (fieldError(controls.shelf, 'Shelf'); as shelfError) {
-          <p class="registration-dialog__error" role="alert">{{ shelfError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Shelf"
+        formControlName="shelf"
+        [errorMessage]="fieldError(controls.shelf, 'Shelf') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="rack">Rack</label>
-        <input id="rack" class="registration-dialog__native" type="text" formControlName="rack" />
-        @if (fieldError(controls.rack, 'Rack'); as rackError) {
-          <p class="registration-dialog__error" role="alert">{{ rackError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Rack"
+        formControlName="rack"
+        [errorMessage]="fieldError(controls.rack, 'Rack') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="bin">Bin</label>
-        <input id="bin" class="registration-dialog__native" type="text" formControlName="bin" />
-        @if (fieldError(controls.bin, 'Bin'); as binError) {
-          <p class="registration-dialog__error" role="alert">{{ binError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Bin"
+        formControlName="bin"
+        [errorMessage]="fieldError(controls.bin, 'Bin') || ''"
+      />
     </div>
   </section>
 
   <section class="registration-dialog__section">
     <h4 class="registration-dialog__section-title">Operations and compliance</h4>
     <div class="registration-dialog__grid registration-dialog__grid--compact">
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="unit-cost">Unit cost</label>
-        <input
-          id="unit-cost"
-          class="registration-dialog__native"
-          type="number"
-          min="0.01"
-          step="0.01"
-          formControlName="unitCost"
-        />
-        @if (fieldError(controls.unitCost, 'Unit cost'); as unitCostError) {
-          <p class="registration-dialog__error" role="alert">{{ unitCostError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Unit cost"
+        type="number"
+        [min]="0.01"
+        [step]="0.01"
+        formControlName="unitCost"
+        [errorMessage]="fieldError(controls.unitCost, 'Unit cost') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="reorder-level">Reorder level</label>
-        <input
-          id="reorder-level"
-          class="registration-dialog__native"
-          type="number"
-          min="1"
-          step="1"
-          formControlName="reorderLevel"
-        />
-        @if (fieldError(controls.reorderLevel, 'Reorder level'); as reorderError) {
-          <p class="registration-dialog__error" role="alert">{{ reorderError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Reorder level"
+        type="number"
+        [min]="1"
+        [step]="1"
+        formControlName="reorderLevel"
+        [errorMessage]="fieldError(controls.reorderLevel, 'Reorder level') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="contact-name">Contact name</label>
-        <input
-          id="contact-name"
-          class="registration-dialog__native"
-          type="text"
-          formControlName="contactName"
-        />
-        @if (fieldError(controls.contactName, 'Contact name'); as contactNameError) {
-          <p class="registration-dialog__error" role="alert">{{ contactNameError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Contact name"
+        formControlName="contactName"
+        [errorMessage]="fieldError(controls.contactName, 'Contact name') || ''"
+      />
 
-      <div class="registration-dialog__field">
-        <label class="registration-dialog__label" for="contact-email">Contact email</label>
-        <input
-          id="contact-email"
-          class="registration-dialog__native"
-          type="email"
-          formControlName="contactEmail"
-        />
-        @if (fieldError(controls.contactEmail, 'Contact email'); as contactEmailError) {
-          <p class="registration-dialog__error" role="alert">{{ contactEmailError }}</p>
-        }
-      </div>
+      <gog-inputfield
+        label="Contact email"
+        type="email"
+        formControlName="contactEmail"
+        [errorMessage]="fieldError(controls.contactEmail, 'Contact email') || ''"
+      />
     </div>
 
     <div class="registration-dialog__checks">
-      <label class="registration-dialog__check">
-        <input type="checkbox" formControlName="fragile" />
-        <span>Fragile</span>
-      </label>
-      <label class="registration-dialog__check">
-        <input type="checkbox" formControlName="temperatureControlled" />
-        <span>Temperature controlled</span>
-      </label>
-      <label class="registration-dialog__check">
-        <input type="checkbox" formControlName="allowBackorder" />
-        <span>Allow backorder</span>
-      </label>
-      <label class="registration-dialog__check">
-        <input type="checkbox" formControlName="qualityCheckPassed" />
-        <span>Quality check passed</span>
-      </label>
+      <gog-checkbox label="Fragile" formControlName="fragile" />
+      <gog-checkbox label="Temperature controlled" formControlName="temperatureControlled" />
+      <gog-checkbox label="Allow backorder" formControlName="allowBackorder" />
+      <gog-checkbox label="Quality check passed" formControlName="qualityCheckPassed" />
     </div>
   </section>
 
   <section class="registration-dialog__section">
     <h4 class="registration-dialog__section-title">Notes</h4>
-    <div class="registration-dialog__field">
-      <label class="registration-dialog__label" for="notes">Internal notes</label>
-      <textarea
-        id="notes"
-        class="registration-dialog__textarea"
-        rows="4"
-        formControlName="notes"
-      ></textarea>
-    </div>
+    <gog-textarea label="Internal notes" [rows]="4" formControlName="notes" />
   </section>
 
   <div class="registration-dialog__footer">

@@ -1,6 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { ButtonComponent, DIALOG_REF, DialogRef, ToastService } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  CheckboxComponent,
+  DIALOG_REF,
+  DialogRef,
+  InputfieldComponent,
+  SelectComponent,
+  TextareaComponent,
+  ToastService,
+} from '@guildofgleks/ui';
 
 export interface WarehouseRegistrationDialogResult {
   registrationCode: string;
@@ -29,7 +38,14 @@ export interface WarehouseRegistrationDialogResult {
 
 @Component({
   selector: 'app-warehouse-registration-dialog',
-  imports: [ReactiveFormsModule, ButtonComponent],
+  imports: [
+    ReactiveFormsModule,
+    ButtonComponent,
+    InputfieldComponent,
+    SelectComponent,
+    CheckboxComponent,
+    TextareaComponent,
+  ],
   templateUrl: './warehouse-registration-dialog.component.html',
   styleUrl: './warehouse-registration-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

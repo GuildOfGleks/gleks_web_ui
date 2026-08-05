@@ -45,68 +45,15 @@
   align-items: start;
 }
 
-.registration-dialog__field {
-  display: grid;
-  gap: 6px;
-}
-
-.registration-dialog__label {
-  font-size: 0.875rem;
-  color: var(--gog-muted-text-color);
-}
-
-.registration-dialog__native,
-.registration-dialog__textarea {
-  width: 100%;
-  border-radius: 12px;
-  border: 1px solid var(--gog-border-color);
-  background: color-mix(in srgb, var(--gog-surface-color) 96%, transparent);
-  color: var(--gog-text-color);
-  padding: 0.75rem 0.9rem;
-  font: inherit;
-}
-
-.registration-dialog__native {
-  min-height: 2.75rem;
-}
-
-.registration-dialog__textarea {
-  resize: vertical;
-  min-height: 7rem;
-}
-
-.registration-dialog__native:focus-visible,
-.registration-dialog__textarea:focus-visible {
-  outline: 2px solid var(--gog-accent-color);
-  outline-offset: 2px;
-}
-
-.registration-dialog__error,
 .registration-dialog__hint {
   margin: 0;
   font-size: 0.875rem;
-}
-
-.registration-dialog__error {
-  color: var(--gog-danger-color);
 }
 
 .registration-dialog__checks {
   display: flex;
   flex-wrap: wrap;
   gap: 12px 20px;
-}
-
-.registration-dialog__check {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--gog-text-color);
-}
-
-.registration-dialog__check input {
-  width: 1rem;
-  height: 1rem;
 }
 
 .registration-dialog__footer {
