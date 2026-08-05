@@ -313,4 +313,25 @@
       </ng-template>
     </gog-accordion>
   </article>
+
+  <article class="card">
+    <h3>gog-collapsible</h3>
+    <p class="meta">
+      A headless expand/collapse primitive — inline, not a portal like <code>gog-select</code>'s
+      panel. It owns no markup: <code>gogCollapsibleTrigger</code> and
+      <code>gogCollapsibleContent</code> attach to whatever elements you project. The typical use
+      case is a collapsible group of links in a nav sidebar, shown here with a plain button and a
+      list of links standing in for that.
+    </p>
+    <gog-collapsible [(open)]="categoriesOpen">
+      <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+        Categories ({{ categoriesOpen() ? 'open' : 'closed' }})
+      </button>
+      <div gogCollapsibleContent class="collapsible-demo__panel">
+        <button class="collapsible-demo__link" type="button">Category A</button>
+        <button class="collapsible-demo__link" type="button">Category B</button>
+        <button class="collapsible-demo__link" type="button">Category C</button>
+      </div>
+    </gog-collapsible>
+  </article>
 </section>

@@ -33,7 +33,9 @@ import { showcaseThemes } from '../../showcase-themes';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ThemesPage {
-  protected readonly themes = showcaseThemes.filter((theme) => theme.name !== 'light');
+  protected readonly themes = showcaseThemes.filter(
+    (theme) => theme.name !== 'light' && theme.name !== 'dark',
+  );
   protected readonly isChecked = signal(true);
   protected readonly intensity = signal(72);
   protected readonly search = signal('Neon pulse');

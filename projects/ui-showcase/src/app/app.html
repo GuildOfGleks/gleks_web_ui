@@ -8,27 +8,21 @@
         A live playground for the latest components, tokens, overlays, and radically different theme
         systems.
       </p>
-      @if (themeSwitcherEnabled) {
-        <p class="app-shell__theme-copy">
-          <strong>{{ themeLabel() }}</strong>
-          <span>{{ themeSummary() }}</span>
-        </p>
-      }
+      <p class="app-shell__theme-copy">
+        <strong>{{ themeLabel() }}</strong>
+        <span>{{ themeSummary() }}</span>
+      </p>
     </div>
 
-    @if (themeSwitcherEnabled) {
-      <div class="app-shell__theme-switcher" role="group" aria-label="Theme presets">
-        @for (theme of themes; track theme.name) {
-          <gog-button
-            [variant]="isActiveTheme(theme.name) ? 'primary' : 'outline'"
-            type="button"
-            (gogClick)="setTheme(theme.name)"
-          >
-            {{ theme.label }}
-          </gog-button>
-        }
-      </div>
-    }
+    <div class="app-shell__theme-switcher">
+      <gog-select
+        ariaLabel="Theme preset"
+        [options]="themeOptions"
+        [value]="activeTheme()"
+        [fullWidth]="false"
+        (valueChange)="setTheme($event)"
+      />
+    </div>
 
     <nav class="app-shell__nav" aria-label="Component showcase pages">
       <span class="app-shell__nav-group-label">Components</span>

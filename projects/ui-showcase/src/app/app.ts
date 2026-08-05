@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { ButtonComponent, ScrollComponent, ThemeService } from '@guildofgleks/ui';
+import { GogDropdownOption, ScrollComponent, SelectComponent, ThemeService } from '@guildofgleks/ui';
 
 import { showcaseThemes, type ShowcaseThemeName } from './showcase-themes';
 
@@ -11,7 +11,7 @@ interface ShowcaseNavLink {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, ButtonComponent, ScrollComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ScrollComponent, SelectComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,12 +21,10 @@ export class App {
 
   protected readonly title = signal('Gleks UI Showcase');
   protected readonly themes = showcaseThemes;
-  /**
-   * Temporarily off while the component showcase pages are being rewritten, so every
-   * page renders the library's pristine default theme (see styles.scss) instead of the
-   * showcase's own "Classic" branding. Flip back on once that's done.
-   */
-  protected readonly themeSwitcherEnabled = false;
+  protected readonly themeOptions: GogDropdownOption[] = showcaseThemes.map((theme) => ({
+    id: theme.name,
+    name: theme.label,
+  }));
   protected readonly activeTheme = computed(() => this.themeService.theme() as ShowcaseThemeName);
   protected readonly themeLabel = computed(
     () =>
@@ -63,11 +61,8 @@ export class App {
     { path: 'onboarding', label: 'Onboarding' },
   ];
 
-  protected isActiveTheme(theme: ShowcaseThemeName): boolean {
-    return this.activeTheme() === theme;
-  }
-
-  protected setTheme(theme: ShowcaseThemeName): void {
-    this.themeService.setTheme(theme);
+  protected setTheme(theme: string | number | null): void {
+    if (theme === null) return;
+    this.themeService.setTheme(String(theme));
   }
 }
