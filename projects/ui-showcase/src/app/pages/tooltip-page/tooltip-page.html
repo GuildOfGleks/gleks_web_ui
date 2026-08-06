@@ -171,10 +171,14 @@
   <article class="card">
     <h3>Content &amp; sizing</h3>
     <p class="lead">
-      No default cap on height — a hint is meant to read as a short paragraph, not a
-      scrollable panel, so it just wraps to <code>--gog-tooltip-max-width</code>
-      (<code>280px</code> by default) and grows as tall as it needs. A single unbroken run of
-      characters longer than the max-width still breaks mid-word instead of overflowing it.
+      Text wraps to <code>--gog-tooltip-max-width</code> (<code>280px</code> by default) — a
+      single unbroken run of characters longer than that still breaks mid-word instead of
+      overflowing it. Height is capped separately, at <code>--gog-tooltip-max-height</code>
+      (<code>220px</code> by default): content under that renders at exactly its own height,
+      nothing padded out; content over it scrolls inside an internal <code>gog-scroll</code>,
+      the same themeable scrollbar every other overflowing panel in this library
+      (<code>gog-dialog</code>'s body, <code>gog-select</code>'s panel) uses instead of the
+      browser's own.
     </p>
     <div class="action-row">
       <gog-button variant="outline" [gogTooltip]="longText">Long paragraph</gog-button>
@@ -184,24 +188,32 @@
       <gog-button variant="outline" gogTooltip="A narrower bubble" gogTooltipClass="showcase-tooltip--narrow">
         Narrower max-width
       </gog-button>
+      <gog-button variant="outline" [gogTooltip]="veryLongContent">
+        Default height cap (220px)
+      </gog-button>
       <gog-button
         variant="outline"
         [gogTooltip]="longCapped"
         gogTooltipClass="showcase-tooltip--capped"
       >
-        Capped height + scroll
+        Custom height cap (90px)
       </gog-button>
     </div>
     <p class="meta">
-      "Capped height + scroll" adds a plain <code>max-height</code> +
-      <code>overflow-y: auto</code> through the same <code>gogTooltipClass</code> mechanism —
-      not a library feature, since most hints shouldn't need it, but there's nothing stopping
-      a consumer who wants it for one unusually long tooltip. To actually scroll it: move the
-      mouse from the button down into the bubble before it closes. The bubble is hoverable
-      (WCAG 2.1 SC 1.4.13) — moving the pointer onto it cancels the pending hide the same way
-      re-entering the trigger would, so it stays open (and scrollable) for as long as the
-      pointer is over either one.
+      To actually scroll one: move the mouse from the button down into the bubble before it
+      closes. The bubble is hoverable (WCAG 2.1 SC 1.4.13) — moving the pointer onto it
+      cancels the pending hide the same way re-entering the trigger would, so it stays open
+      (and scrollable) for as long as the pointer is over either one.
     </p>
+    <ng-template #veryLongContent>
+      <p>Every environment its own approval chain:</p>
+      <p>1. A merge to main queues a build and deploys to staging automatically.</p>
+      <p>2. Staging soak time is 30 minutes minimum before production is even offered.</p>
+      <p>3. Production requires sign-off from a workspace admin, logged with a reason.</p>
+      <p>4. Rollbacks go through the exact same approval step as a forward deploy.</p>
+      <p>5. Every step is logged to the audit trail with the actor and a timestamp.</p>
+      <p>6. Failed deploys page the on-call engineer for that service automatically.</p>
+    </ng-template>
     <ng-template #longCapped>
       <p>Every environment its own approval chain:</p>
       <p>1. A merge to main queues a build and deploys to staging automatically.</p>

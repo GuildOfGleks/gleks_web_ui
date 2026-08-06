@@ -514,10 +514,9 @@ body {
   --gog-tooltip-max-width: 120px;
 }
 
-/* max-height/overflow aren't --gog-tooltip-* tokens (the library doesn't cap height by
-   default — see the Tooltip page's "Content & sizing" card) — plain CSS properties reach
-   the bubble through gogTooltipClass exactly the same way a token override does. */
+/* The bubble already caps its content at --gog-tooltip-max-height (220px default) through
+   an internal gog-scroll — this just demos overriding that token to something smaller than
+   the default, the same way --gog-tooltip-max-width is overridden above. */
 .showcase-tooltip--capped {
-  max-height: 90px;
-  overflow-y: auto;
+  --gog-tooltip-max-height: 90px;
 }

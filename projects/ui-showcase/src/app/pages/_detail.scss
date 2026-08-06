@@ -51,6 +51,19 @@ h3 {
   gap: 14px;
 }
 
+/* Grid items default to min-width: auto, i.e. "never shrink below your content's own
+   min-content size" — for most field-grid cells (a gog-select, an gog-inputfield) that's a
+   no-op since they're happy to shrink. It stops being a no-op the moment a cell holds
+   something with a wide, non-shrinking min-content, like a horizontal gog-scroll demo's row
+   of fixed-width cards: without this, the grid track grows to fit that row instead of
+   clipping it, so gog-scroll's own viewport never actually overflows and its horizontal
+   track never appears, no matter how narrow the page gets. min-width: 0 lets the track (and
+   this cell) shrink to the grid's available space as normal, handing the overflow to
+   whatever's inside the cell instead of the grid itself. */
+.field-grid > * {
+  min-width: 0;
+}
+
 /** Pushes whatever follows below the fold, for demos that only make sense once you have to
  * scroll to reach them (e.g. a dropdown flipping open upward near the bottom of the page). */
 .detail__spacer {
