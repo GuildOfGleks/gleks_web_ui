@@ -318,7 +318,7 @@
   --gog-control-checkbox-icon-size-lg: 18px;
   --gog-control-checkbox-icon-size-slg: 22px;
 
-  /* Chip — the unsuffixed --gog-chip-font-size/-padding-*/-gap/-avatar-size/-icon-size/
+  /* Chip — the unsuffixed --gog-chip-font-size/-padding-`*`/-gap/-avatar-size/-icon-size/
      -remove-size are the per-instance escape hatch, left undeclared on purpose. */
   --gog-chip-font-family: inherit;
   --gog-chip-bg: color-mix(in srgb, var(--gog-surface-color) 88%, var(--gog-hover-color));
