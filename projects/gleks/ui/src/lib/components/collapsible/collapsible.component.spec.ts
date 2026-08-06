@@ -8,19 +8,25 @@ import { GogCollapsibleTriggerDirective } from './collapsible-trigger.directive'
 @Component({
   imports: [CollapsibleComponent, GogCollapsibleTriggerDirective, GogCollapsibleContentDirective],
   template: `
-    <gog-collapsible [(open)]="open" [disabled]="disabled()">
+    <gog-collapsible
+      [(open)]="open"
+      [disabled]="disabled()"
+      [collapseOnFocusOut]="collapseOnFocusOut()"
+    >
       <button gogCollapsibleTrigger>Categories</button>
       <div gogCollapsibleContent>
-        <a>Sub A</a>
-        <a>Sub B</a>
+        <a tabindex="0">Sub A</a>
+        <a tabindex="0">Sub B</a>
       </div>
     </gog-collapsible>
+    <button id="outside">Outside</button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class CollapsibleHostComponent {
   readonly open = signal(false);
   readonly disabled = signal(false);
+  readonly collapseOnFocusOut = signal(false);
 }
 
 describe('CollapsibleComponent', () => {
@@ -43,6 +49,14 @@ describe('CollapsibleComponent', () => {
 
   function content(): HTMLElement {
     return fixture.nativeElement.querySelector('div');
+  }
+
+  function subLink(index: number): HTMLAnchorElement {
+    return fixture.nativeElement.querySelectorAll('a')[index];
+  }
+
+  function outsideButton(): HTMLButtonElement {
+    return fixture.nativeElement.querySelector('#outside');
   }
 
   it('renders closed by default', () => {
@@ -95,5 +109,55 @@ describe('CollapsibleComponent', () => {
 
     expect(host.open()).toBe(false);
     expect(trigger().getAttribute('aria-disabled')).toBe('true');
+  });
+
+  describe('collapseOnFocusOut', () => {
+    beforeEach(async () => {
+      host.open.set(true);
+      await fixture.whenStable();
+    });
+
+    it('stays open when focus leaves and collapseOnFocusOut is off (default)', async () => {
+      subLink(0).dispatchEvent(
+        new FocusEvent('focusout', { relatedTarget: outsideButton(), bubbles: true }),
+      );
+      await fixture.whenStable();
+
+      expect(host.open()).toBe(true);
+    });
+
+    it('closes once focus leaves both the trigger and the content', async () => {
+      host.collapseOnFocusOut.set(true);
+      await fixture.whenStable();
+
+      subLink(1).dispatchEvent(
+        new FocusEvent('focusout', { relatedTarget: outsideButton(), bubbles: true }),
+      );
+      await fixture.whenStable();
+
+      expect(host.open()).toBe(false);
+    });
+
+    it('stays open when focus moves between the trigger and the content', async () => {
+      host.collapseOnFocusOut.set(true);
+      await fixture.whenStable();
+
+      trigger().dispatchEvent(
+        new FocusEvent('focusout', { relatedTarget: subLink(0), bubbles: true }),
+      );
+      await fixture.whenStable();
+
+      expect(host.open()).toBe(true);
+    });
+
+    it('closes on a relatedTarget-less focusout (e.g. window losing focus)', async () => {
+      host.collapseOnFocusOut.set(true);
+      await fixture.whenStable();
+
+      subLink(0).dispatchEvent(new FocusEvent('focusout', { relatedTarget: null, bubbles: true }));
+      await fixture.whenStable();
+
+      expect(host.open()).toBe(false);
+    });
   });
 });
