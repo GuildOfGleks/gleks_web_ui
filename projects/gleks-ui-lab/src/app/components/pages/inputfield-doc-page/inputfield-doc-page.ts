@@ -19,15 +19,21 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: 'string (model)',
     default: "''",
     description:
-      'Two-way bindable value via [(value)]. Also the value Angular Forms drives through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel.',
+      "Two-way bindable value via [(value)]. Always a string — even for type=\"number\" — since it mirrors the native input's raw text. Also the value Angular Forms drives through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel; there, a number field's value is a number (null when empty) instead.",
   },
   { name: 'label', type: 'string', default: "''", description: 'Field label.' },
   { name: 'placeholder', type: 'string', default: "''", description: 'Native placeholder text.' },
   {
     name: 'type',
-    type: "'text' | 'password' | 'email'",
+    type: "'text' | 'password' | 'email' | 'number' | 'date'",
     default: "'text'",
     description: 'Native input type. password gets a built-in show/hide toggle for free.',
+  },
+  {
+    name: 'min / max / step',
+    type: 'number | null',
+    default: 'null',
+    description: 'Only applied when type="number" — forwarded to the native min/max/step attributes.',
   },
   {
     name: 'autocomplete',
@@ -124,6 +130,8 @@ export class InputfieldDocPage {
     nonNullable: true,
     validators: [Validators.required, Validators.email],
   });
+  protected readonly quantityControl = new FormControl<number | null>(1);
+  protected readonly deliveryDate = signal('');
 
   protected readonly importSnippet =
     "```typescript\nimport { InputfieldComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [InputfieldComponent],\n})\n```";
@@ -278,6 +286,46 @@ export class InputfieldDocPage {
     '    nonNullable: true,',
     '    validators: [Validators.required, Validators.email],',
     '  });',
+    '}',
+  ].join('\n');
+
+  protected readonly numberDateHtml = [
+    '<gog-inputfield',
+    '  label="Quantity"',
+    '  type="number"',
+    '  [min]="1"',
+    '  [max]="10"',
+    '  [step]="1"',
+    '  [formControl]="quantityControl"',
+    '/>',
+    '',
+    '<gog-inputfield label="Delivery date" type="date" [(value)]="deliveryDate" />',
+  ].join('\n');
+  protected readonly numberDateTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { FormControl, ReactiveFormsModule } from '@angular/forms';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent, ReactiveFormsModule],',
+    '  template: `',
+    '    <gog-inputfield',
+    '      label="Quantity"',
+    '      type="number"',
+    '      [min]="1"',
+    '      [max]="10"',
+    '      [step]="1"',
+    '      [formControl]="quantityControl"',
+    '    />',
+    '',
+    '    <gog-inputfield label="Delivery date" type="date" [(value)]="deliveryDate" />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  // formControl.value is a number here (null when empty) — [(value)] would stay the raw string.',
+    '  protected readonly quantityControl = new FormControl<number | null>(1);',
+    "  protected readonly deliveryDate = signal('');",
     '}',
   ].join('\n');
 

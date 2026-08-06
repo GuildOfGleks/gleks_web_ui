@@ -208,6 +208,14 @@
   --gog-accordion-slg-chevron-size: 20px;
   --gog-accordion-slg-chevron-font-size: 18px;
 
+  /* Collapsible — headless: the trigger/content elements a consumer projects are styled
+     via the global .gog-collapsible__* classes in utilities.css, not a scoped stylesheet. */
+  --gog-collapsible-transition-duration: var(--gog-duration-slow);
+  /* Generous fixed cap rather than a measured height — override per-instance if a
+     particular panel's content can exceed this. */
+  --gog-collapsible-max-height: 480px;
+  --gog-collapsible-disabled-opacity: var(--gog-disabled-opacity);
+
   /* Button — the unsuffixed --gog-btn-bg/-color/-border/-shadow/-padding/-font-size
      are intentionally left undeclared: the per-instance escape hatch variant/size
      classes fall back through, e.g. <gog-button style="--gog-btn-bg: #ff4edb"> */
@@ -524,6 +532,25 @@
   --gog-paginator-ellipsis-font-size: var(--gog-text-sm);
   --gog-paginator-ellipsis-font-family: var(--gog-font-body);
   --gog-paginator-ellipsis-min-width: 32px;
+
+  /* Scroll */
+  --gog-scroll-track-bg: transparent;
+  --gog-scroll-track-radius: var(--gog-radius);
+  --gog-scroll-thumb-bg: var(--gog-accent-dim);
+  --gog-scroll-thumb-hover-bg: var(--gog-accent-color);
+  --gog-scroll-thumb-active-bg: var(--gog-accent-bright);
+  --gog-scroll-thumb-radius: var(--gog-radius);
+  --gog-scroll-thumb-inset: 2px;
+  --gog-scroll-corner-bg: transparent;
+  --gog-scroll-fade-duration: var(--gog-duration-base);
+  --gog-scroll-focus-ring: var(--gog-accent-color);
+  --gog-scroll-focus-ring-width: var(--gog-focus-ring-width);
+  /* Two-tier track-width/thumb-min-size pair the `size="thin"` input switches between;
+     `normal` is the unmarked default. */
+  --gog-scroll-normal-track-width: 10px;
+  --gog-scroll-thin-track-width: 6px;
+  --gog-scroll-normal-thumb-min-size: 32px;
+  --gog-scroll-thin-thumb-min-size: 24px;
 
   /* Select */
   --gog-select-font-family: var(--gog-font-body);

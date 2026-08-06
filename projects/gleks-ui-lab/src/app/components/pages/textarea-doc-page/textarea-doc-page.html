@@ -1,0 +1,166 @@
+<div class="textarea-doc">
+  <header class="textarea-doc__hero">
+    <p class="textarea-doc__eyebrow">gog-textarea</p>
+    <h1 class="textarea-doc__title font-heading">Text Area</h1>
+    <p class="textarea-doc__lead">
+      A multi-line counterpart to <a routerLink="/components/inputfield">gog-inputfield</a>,
+      sharing its five sizes, error handling and full ControlValueAccessor support.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the component and drop it into a template.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage — a labeled field bound with [(value)]:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview width-demo">
+        <gog-textarea label="Bio" placeholder="Tell us about yourself" [(value)]="bio" />
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+    <p class="doc-section__meta">Value: "{{ bio() }}"</p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">Five size steps, from xsm to slg — the same scale as gog-inputfield.</p>
+      <div class="demo-card__preview size-column">
+        @for (sizeOption of sizes; track sizeOption) {
+          <gog-textarea [size]="sizeOption" [label]="sizeOption" [rows]="2" />
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Rows</h3>
+      <p class="demo-card__meta">
+        <code>rows</code> sets the native attribute controlling the field's initial height.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-textarea label="Notes" [rows]="8" />
+      </div>
+      <app-code-tabs [html]="rowsHtml" [ts]="rowsTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Error message</h3>
+      <p class="demo-card__meta">
+        <code>errorDisplay="manual"</code> (the default) shows <code>errorMessage</code> for as
+        long as it's non-empty. Type fewer than 10 characters to see it.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-textarea
+          label="Feedback"
+          [(value)]="manualErrorValue"
+          [errorMessage]="
+            manualErrorValue().length > 0 && manualErrorValue().length < 10
+              ? 'At least 10 characters'
+              : ''
+          "
+        />
+      </div>
+      <app-code-tabs [html]="errorHtml" [ts]="errorTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive Forms</h3>
+      <p class="demo-card__meta">
+        Wire it to a <code>FormControl</code> with <code>[formControl]</code> instead of
+        <code>[(value)]</code>. With <code>errorDisplay="auto"</code>, the error only shows once
+        the control has been touched and is invalid — blur the empty field to see it.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-textarea
+          label="Comment"
+          [formControl]="commentControl"
+          errorMessage="At least 10 characters"
+          errorDisplay="auto"
+        />
+      </div>
+      <app-code-tabs [html]="formHtml" [ts]="formTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled</h3>
+      <div class="demo-card__preview width-demo">
+        <gog-textarea label="Disabled" [disabled]="true" value="Read only" />
+      </div>
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Auto width</h3>
+      <p class="demo-card__meta">
+        Fields fill their container by default; <code>fullWidth="false"</code> shrinks the field
+        to fit its content instead.
+      </p>
+      <div class="demo-card__preview">
+        <gog-textarea label="Short note" [fullWidth]="false" [rows]="2" />
+      </div>
+      <app-code-tabs [html]="autoWidthHtml" [ts]="autoWidthTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td><code>{{ row.type }}</code></td>
+              <td><code>{{ row.default }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      <code>gog-textarea</code> paints with the same <code>--gog-input-*</code> tokens as
+      <a routerLink="/components/inputfield">gog-inputfield</a> — there's no separate token set
+      to learn. Override any of them — on a single instance, a subtree, or a theme — to restyle
+      it. See the <a routerLink="/general/theming">Theming</a> guide for the full
+      token-layering model.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

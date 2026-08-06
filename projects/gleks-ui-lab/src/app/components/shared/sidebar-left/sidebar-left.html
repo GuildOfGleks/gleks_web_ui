@@ -4,15 +4,27 @@
 
     <nav class="nav-list">
       @for (item of section.items; track item.path) {
-        <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{ item.label }}</a>
-        @if (item.children?.length) {
-          <div class="nav-list nav-list--nested">
-            @for (child of item.children; track child.path) {
-              <a [routerLink]="'/' + child.path" routerLinkActive="active" class="nav-item nav-item--nested">{{
-                child.label
-              }}</a>
-            }
-          </div>
+        @if (item.open) {
+          <gog-collapsible [(open)]="item.open" class="nav-collapsible">
+            <a
+              [routerLink]="'/' + item.path"
+              routerLinkActive="active"
+              gogCollapsibleTrigger
+              class="nav-item nav-item--parent"
+            >
+              <span>{{ item.label }}</span>
+              <gog-icon name="chevron-down" class="nav-collapsible__chevron" />
+            </a>
+            <div gogCollapsibleContent class="nav-list nav-list--nested">
+              @for (child of item.children; track child.path) {
+                <a [routerLink]="'/' + child.path" routerLinkActive="active" class="nav-item nav-item--nested">{{
+                  child.label
+                }}</a>
+              }
+            </div>
+          </gog-collapsible>
+        } @else {
+          <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{ item.label }}</a>
         }
       }
     </nav>

@@ -37,6 +37,24 @@
       font-weight: 600;
       border-left: 3px solid var(--gog-accent-color);
     }
+
+    &--parent {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+    }
+  }
+
+  .nav-collapsible__chevron {
+    flex-shrink: 0;
+    color: var(--gog-muted-text-color);
+    transition: transform var(--gog-duration-fast);
+  }
+
+  .nav-item--parent.gog-collapsible__trigger--open .nav-collapsible__chevron {
+    transform: rotate(180deg);
   }
 
   &--nested {

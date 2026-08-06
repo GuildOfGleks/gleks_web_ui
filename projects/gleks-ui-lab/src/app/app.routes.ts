@@ -53,6 +53,13 @@ export const routes: Routes = [
       import('./components/pages/chip-doc-page/chip-doc-page').then((m) => m.ChipDocPage),
   },
   {
+    path: 'components/collapsible',
+    loadComponent: () =>
+      import('./components/pages/collapsible-doc-page/collapsible-doc-page').then(
+        (m) => m.CollapsibleDocPage,
+      ),
+  },
+  {
     path: 'components/dialog',
     loadComponent: () =>
       import('./components/pages/dialog-doc-page/dialog-doc-page').then((m) => m.DialogDocPage),
@@ -82,6 +89,11 @@ export const routes: Routes = [
       import('./components/pages/paginator-doc-page/paginator-doc-page').then(
         (m) => m.PaginatorDocPage,
       ),
+  },
+  {
+    path: 'components/scroll',
+    loadComponent: () =>
+      import('./components/pages/scroll-doc-page/scroll-doc-page').then((m) => m.ScrollDocPage),
   },
   {
     path: 'components/select',
@@ -116,6 +128,13 @@ export const routes: Routes = [
     path: 'components/tag',
     loadComponent: () =>
       import('./components/pages/tag-doc-page/tag-doc-page').then((m) => m.TagDocPage),
+  },
+  {
+    path: 'components/textarea',
+    loadComponent: () =>
+      import('./components/pages/textarea-doc-page/textarea-doc-page').then(
+        (m) => m.TextareaDocPage,
+      ),
   },
   {
     path: 'components/toast',

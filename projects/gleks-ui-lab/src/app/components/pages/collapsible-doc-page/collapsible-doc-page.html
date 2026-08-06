@@ -1,0 +1,197 @@
+<div class="collapsible-doc">
+  <header class="collapsible-doc__hero">
+    <p class="collapsible-doc__eyebrow">gog-collapsible</p>
+    <h1 class="collapsible-doc__title font-heading">Collapsible</h1>
+    <p class="collapsible-doc__lead">
+      A headless expand/collapse primitive — inline, not a portal. It owns no markup of its
+      own: project any element as the trigger with <code>gogCollapsibleTrigger</code> and any
+      element as the panel with <code>gogCollapsibleContent</code>.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the component and its two directives.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">
+      A trigger and a panel, both projected in — <code>[(open)]</code> is two-way bindable:
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-collapsible [(open)]="basicOpen">
+          <button type="button" gogCollapsibleTrigger class="doc-trigger">
+            {{ basicOpen() ? 'Hide details' : 'Show details' }}
+          </button>
+          <p gogCollapsibleContent class="doc-panel">
+            Ships within 2 business days via standard courier.
+          </p>
+        </gog-collapsible>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+    <p class="doc-section__meta">Open: {{ basicOpen() }}</p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom trigger element</h3>
+      <p class="demo-card__meta">
+        <code>gogCollapsibleTrigger</code> works on anything clickable — here it's a whole
+        header row, not a <code>&lt;button&gt;</code>.
+      </p>
+      <div class="demo-card__preview">
+        <gog-collapsible [(open)]="controlledOpen">
+          <div class="doc-card-header" gogCollapsibleTrigger>
+            <span>Order #4471</span>
+            <gog-icon [name]="controlledOpen() ? 'chevron-up' : 'chevron-down'" />
+          </div>
+          <div gogCollapsibleContent class="doc-card-body">
+            <p>3 items — shipped Aug 4, arriving Aug 6.</p>
+          </div>
+        </gog-collapsible>
+      </div>
+      <app-code-tabs [html]="customTriggerHtml" [ts]="customTriggerTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled</h3>
+      <p class="demo-card__meta">
+        <code>disabled</code> blocks the trigger's click handler and sets
+        <code>aria-disabled</code> — a programmatic <code>[open]</code> write still works.
+      </p>
+      <div class="demo-card__preview">
+        <gog-collapsible [(open)]="disabledOpen" [disabled]="true">
+          <button type="button" gogCollapsibleTrigger class="doc-trigger">
+            Unavailable section
+          </button>
+          <p gogCollapsibleContent class="doc-panel">
+            You should never see this — the trigger is inert.
+          </p>
+        </gog-collapsible>
+      </div>
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Controlled from outside</h3>
+      <p class="demo-card__meta">
+        No <code>gogCollapsibleTrigger</code> anywhere — external buttons drive
+        <code>[(open)]</code> directly.
+      </p>
+      <div class="demo-card__preview action-row">
+        <gog-button size="sm" (gogClick)="controlledOpen.set(true)">Open</gog-button>
+        <gog-button size="sm" variant="ghost" (gogClick)="controlledOpen.set(false)">Close</gog-button>
+      </div>
+      <div class="demo-card__preview">
+        <gog-collapsible [(open)]="controlledOpen">
+          <p gogCollapsibleContent class="doc-panel">
+            Driven entirely from outside — try the buttons above.
+          </p>
+        </gog-collapsible>
+      </div>
+      <app-code-tabs [html]="controlledHtml" [ts]="controlledTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Independent FAQ list</h3>
+      <p class="demo-card__meta">
+        Each row owns its own <code>open</code> state in an array — unlike
+        <a routerLink="/components/accordion">gog-accordion</a>, nothing here closes a sibling
+        when one opens.
+      </p>
+      <div class="demo-card__preview faq-list">
+        @for (item of faqItems(); track item.id) {
+          <gog-collapsible [open]="item.open" (openChange)="setFaqOpen(item.id, $event)">
+            <button type="button" gogCollapsibleTrigger class="doc-trigger">
+              {{ item.question }}
+            </button>
+            <p gogCollapsibleContent class="doc-panel">{{ item.answer }}</p>
+          </gog-collapsible>
+        }
+      </div>
+      <app-code-tabs [html]="faqHtml" [ts]="faqTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">gog-collapsible — Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td><code>{{ row.type }}</code></td>
+              <td><code>{{ row.default }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Directives</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Selector</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of directives; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td><code>{{ row.selector }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      The component itself renders no box — <code>gogCollapsibleTrigger</code> and
+      <code>gogCollapsibleContent</code> style the elements <em>you</em> project, via global
+      <code>.gog-collapsible__*</code> classes rather than a scoped stylesheet, since that
+      content sits outside <code>gog-collapsible</code>'s own view. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td><code>{{ row.name }}</code></td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

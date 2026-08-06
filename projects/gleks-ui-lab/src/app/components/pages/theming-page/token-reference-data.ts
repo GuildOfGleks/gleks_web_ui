@@ -202,6 +202,22 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    id: 'collapsible',
+    title: 'Collapsible',
+    tokens: [
+      {
+        name: '--gog-collapsible-transition-duration',
+        description: 'Expand/collapse animation timing.',
+      },
+      {
+        name: '--gog-collapsible-max-height',
+        description:
+          'Fixed cap the open content transitions toward (a CSS-only max-height animation can\'t target a measured "auto" height). Raise it per-instance if a panel\'s content can exceed 480px.',
+      },
+      { name: '--gog-collapsible-disabled-opacity', description: 'Opacity applied to a disabled trigger.' },
+    ],
+  },
+  {
     id: 'dialog',
     title: 'Dialog',
     tokens: [
@@ -290,6 +306,25 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-paginator-ellipsis-color / -ellipsis-font-size',
         description: 'The "…" truncation marker.',
+      },
+    ],
+  },
+  {
+    id: 'scroll',
+    title: 'Scroll',
+    tokens: [
+      { name: '--gog-scroll-track-bg / -track-radius', description: 'Track background and corner radius.' },
+      {
+        name: '--gog-scroll-thumb-bg / -thumb-hover-bg / -thumb-active-bg',
+        description: 'Draggable thumb color, per interaction state.',
+      },
+      { name: '--gog-scroll-thumb-radius / -thumb-inset', description: 'Thumb shape and inset from the track edges.' },
+      { name: '--gog-scroll-corner-bg', description: 'Background of the corner square where two tracks meet.' },
+      { name: '--gog-scroll-fade-duration', description: 'Auto-hide fade animation timing.' },
+      { name: '--gog-scroll-focus-ring / -focus-ring-width', description: 'Keyboard focus ring on the viewport.' },
+      {
+        name: '--gog-scroll-{normal|thin}-track-width / -thumb-min-size',
+        description: 'Track width and minimum thumb length, per size step.',
       },
     ],
   },

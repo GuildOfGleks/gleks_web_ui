@@ -109,6 +109,31 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">Number and date</h3>
+      <p class="demo-card__meta">
+        <code>type="number"</code> accepts <code>min</code>/<code>max</code>/<code>step</code>;
+        wired to a <code>formControl</code>, its value is a real <code>number</code>
+        (<code>null</code> when empty) rather than the raw string <code>[(value)]</code> would
+        give you. <code>type="date"</code> renders the native date picker.
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-inputfield
+          label="Quantity"
+          type="number"
+          [min]="1"
+          [max]="10"
+          [step]="1"
+          [formControl]="quantityControl"
+        />
+        <gog-inputfield label="Delivery date" type="date" [(value)]="deliveryDate" />
+      </div>
+      <p class="demo-card__meta">
+        Quantity (number): {{ quantityControl.value }} — Delivery date (string): "{{ deliveryDate() }}"
+      </p>
+      <app-code-tabs [html]="numberDateHtml" [ts]="numberDateTs" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Disabled</h3>
       <div class="demo-card__preview width-demo">
         <gog-inputfield label="Disabled" [disabled]="true" value="Read only" />
