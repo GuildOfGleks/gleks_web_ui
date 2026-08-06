@@ -24,6 +24,16 @@ export const routes: Routes = [
       import('./pages/inputfield-page/inputfield-page').then((m) => m.InputfieldPage),
   },
   {
+    path: 'textarea',
+    loadComponent: () =>
+      import('./pages/textarea-page/textarea-page').then((m) => m.TextareaPage),
+  },
+  {
+    path: 'radio-group',
+    loadComponent: () =>
+      import('./pages/radio-group-page/radio-group-page').then((m) => m.RadioGroupPage),
+  },
+  {
     path: 'chip',
     loadComponent: () => import('./pages/chip-page/chip-page').then((m) => m.ChipPage),
   },
@@ -82,6 +92,11 @@ export const routes: Routes = [
   {
     path: 'dialog',
     loadComponent: () => import('./pages/dialog-page/dialog-page').then((m) => m.DialogPage),
+  },
+  {
+    path: 'global-config',
+    loadComponent: () =>
+      import('./pages/global-config-page/global-config-page').then((m) => m.GlobalConfigPage),
   },
   {
     path: 'dashboard',

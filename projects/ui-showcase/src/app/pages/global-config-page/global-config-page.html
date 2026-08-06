@@ -1,0 +1,82 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">GOG_CONFIG</p>
+    <h2>Global Config</h2>
+    <p class="lead">
+      A handful of component inputs are things a whole app wants to set once — how aggressively
+      <code>gog-button</code> debounces clicks, how long a <code>gog-scroll</code> thumb stays
+      visible before fading — instead of repeating on every instance. <code>GOG_CONFIG</code> and
+      <code>provideGogConfig(...)</code> are the library's one place to do that.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Connecting it</h3>
+    <p class="lead">
+      Call <code>provideGogConfig(...)</code> once, in your app's root providers — typically
+      <code>app.config.ts</code>:
+    </p>
+    <pre class="code-block"><code>// app.config.ts
+import &#123; ApplicationConfig &#125; from '&#64;angular/core';
+import &#123; provideGogConfig &#125; from '&#64;guildofgleks/ui';
+
+export const appConfig: ApplicationConfig = &#123;
+  providers: [
+    provideGogConfig(&#123;
+      button: &#123; debounce: 1500 &#125;,
+      scroll: &#123; autoHide: false &#125;,
+    &#125;),
+    // ...your other providers
+  ],
+&#125;;</code></pre>
+    <p class="meta">
+      Every <code>gog-button</code> and <code>gog-scroll</code> in the app then picks up those
+      defaults automatically — no per-instance inputs needed. An instance's own input, when set,
+      still always wins over the global config; this only fills in what the instance didn't
+      specify itself. Providing it again further down the tree (a route, a single component's own
+      <code>providers</code>, as the section below does) replaces the whole object for that
+      subtree instead of merging with the parent's.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Without it connected — library defaults</h3>
+    <p class="lead">
+      This showcase app's own <code>app.config.ts</code> does not call
+      <code>provideGogConfig</code> anywhere, so everything on this page falls back to each
+      component's own hardcoded default: <code>gog-button</code> debounces at
+      <strong>300ms</strong>, <code>gog-scroll</code> fades its thumb after
+      <strong>~800ms</strong>. Nothing breaks — the components are fully usable with zero
+      configuration; you just get their built-in defaults everywhere.
+    </p>
+    <div class="scope-demo">
+      <div class="scope-demo__row">
+        <gog-button (gogClick)="onDefaultClick()">Click me fast</gog-button>
+        <gog-button variant="ghost" size="sm" type="button" (gogClick)="resetDefault()">
+          Reset
+        </gog-button>
+        <span class="meta">Accepted clicks: {{ defaultClickCount() }}</span>
+      </div>
+
+      <gog-scroll class="scope-demo__scroll">
+        @for (paragraph of paragraphs; track paragraph) {
+          <p class="scope-demo__paragraph">{{ paragraph }}</p>
+        }
+      </gog-scroll>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>With it connected</h3>
+    <p class="lead">
+      <code>&lt;app-global-config-scope&gt;</code> below has
+      <code>provideGogConfig(&#123; button: &#123; debounce: 1500 &#125;, scroll: &#123; autoHide:
+      false &#125; &#125;)</code>
+      in its own component <code>providers</code> — the same call, just scoped to one subtree
+      instead of the whole app, so this page can show both side by side. Click both buttons
+      rapidly for a couple of seconds and compare the accepted-click counts; the scroll thumb here
+      also never fades, since <code>autoHide</code> is off.
+    </p>
+    <app-global-config-scope />
+  </article>
+</section>

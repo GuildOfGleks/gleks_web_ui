@@ -1,0 +1,29 @@
+.scope-demo {
+  display: grid;
+  gap: 12px;
+}
+
+.scope-demo__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.scope-demo__scroll {
+  height: 140px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+}
+
+.scope-demo__paragraph {
+  margin: 0;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--gog-border-color);
+  font-size: 0.85rem;
+  color: var(--gog-text-color);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}

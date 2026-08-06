@@ -1,0 +1,88 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-textarea</p>
+    <h2>Textarea</h2>
+    <p class="lead">
+      A labeled multi-line text field with error message support, size variants, adjustable
+      initial row count, and `ControlValueAccessor` integration — the textarea counterpart to
+      `gog-inputfield`.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Playground</h3>
+    <div class="field-grid">
+      <gog-textarea label="Bio" inputId="bio" [(value)]="bio" />
+
+      <gog-textarea
+        label="Notes"
+        inputId="notes"
+        placeholder="Short internal note..."
+        [errorMessage]="notesError()"
+        [(value)]="notes"
+      />
+    </div>
+    <p class="meta">
+      The notes error is computed by this page from the current value — `gog-textarea` only
+      renders whatever `errorMessage` it's given (`errorDisplay="manual"`, the default).
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Rows</h3>
+    <p class="lead">
+      <code>rows</code> sets the native <code>rows</code> attribute, controlling the field's
+      initial height before the user resizes it.
+    </p>
+    <div class="field-grid">
+      <gog-textarea label="Compact (2 rows)" [rows]="2" placeholder="Compact field" />
+      <gog-textarea label="Default (4 rows)" placeholder="Default field" />
+      <gog-textarea label="Tall (8 rows)" [rows]="8" placeholder="Tall field" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sizes &amp; disabled</h3>
+    <div class="field-grid">
+      <gog-textarea label="Extra small" size="xsm" placeholder="Extra small field" />
+      <gog-textarea label="Small" size="sm" placeholder="Small field" />
+      <gog-textarea label="Medium" size="md" placeholder="Medium field" />
+      <gog-textarea label="Large" size="lg" placeholder="Large field" />
+      <gog-textarea label="Extra large" size="slg" placeholder="Extra large field" />
+      <gog-textarea label="Disabled" [disabled]="true" [(value)]="disabledValue" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Full width</h3>
+    <p class="meta">
+      Full width of its container by default. <code>[fullWidth]="false"</code> shrinks the field
+      to fit its content instead, matching every other field-style control in the library.
+    </p>
+    <div class="field-row">
+      <div class="field-row__grow">
+        <gog-textarea label="Description" placeholder="Full width by default" />
+      </div>
+      <gog-textarea label="Code" placeholder="Auto width" [fullWidth]="false" [rows]="2" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Reactive forms — automatic error timing</h3>
+    <p class="lead">
+      With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides
+      for itself when to show the error — once the control has been touched and is invalid —
+      instead of the page computing that timing. Click the field, type less than 10 characters,
+      then click away.
+    </p>
+    <div class="field-grid">
+      <gog-textarea
+        label="Feedback"
+        inputId="feedback"
+        [formControl]="feedbackControl"
+        errorDisplay="auto"
+        [errorMessage]="feedbackErrorMessage()"
+      />
+    </div>
+  </article>
+</section>

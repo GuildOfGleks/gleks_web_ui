@@ -1,0 +1,85 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-radio-group</p>
+    <h2>Radio Group</h2>
+    <p class="lead">
+      A native <code>&lt;input type="radio"&gt;</code> group driven by an <code>options</code>
+      array, with a two-way bindable selection and a `ControlValueAccessor` implementation — mutual
+      exclusivity and arrow-key navigation between options come for free from the shared
+      <code>name</code> the group gives its native radios.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Playground</h3>
+    <div class="action-row">
+      <gog-radio-group label="Plan" [options]="planOptions" [(value)]="plan" />
+    </div>
+    <p class="meta">{{ summary() }}</p>
+    <p class="meta">
+      "Enterprise" is disabled at the option level (<code>disabled: true</code> on that option),
+      independent of the group's own <code>disabled</code> input.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Orientation</h3>
+    <p class="lead">
+      <code>orientation="vertical"</code> (default) stacks options in a column;
+      <code>"horizontal"</code> lays them out in a row.
+    </p>
+    <div class="orientation-grid">
+      <gog-radio-group
+        label="Vertical"
+        [options]="sizeOptions"
+        [(value)]="orientationDemo"
+      />
+      <gog-radio-group
+        label="Horizontal"
+        orientation="horizontal"
+        [options]="sizeOptions"
+        [(value)]="orientationDemo"
+      />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sizes &amp; disabled</h3>
+    <div class="size-grid">
+      <gog-radio-group label="Extra small" size="xsm" [options]="sizeOptions" value="sm" />
+      <gog-radio-group label="Small" size="sm" [options]="sizeOptions" value="md" />
+      <gog-radio-group label="Medium" size="md" [options]="sizeOptions" value="lg" />
+      <gog-radio-group label="Large" size="lg" [options]="sizeOptions" value="sm" />
+      <gog-radio-group label="Extra large" size="slg" [options]="sizeOptions" value="md" />
+      <gog-radio-group
+        label="Disabled group"
+        [disabled]="true"
+        [options]="sizeOptions"
+        [(value)]="disabledGroupValue"
+      />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Reactive forms</h3>
+    <p class="meta">
+      Bound via <code>[formControl]</code> only — no <code>[(value)]</code> — proving the
+      <code>ControlValueAccessor</code> wiring on its own. With <code>errorDisplay="auto"</code>,
+      the group decides for itself when to show the error (once touched and invalid) — pick
+      nothing, tab away, and it appears.
+    </p>
+    <div class="action-row">
+      <gog-radio-group
+        label="Choose a plan (required)"
+        [options]="planOptions"
+        [formControl]="requiredControl"
+        errorDisplay="auto"
+        errorMessage="Please choose a plan."
+      />
+      <gog-button variant="outline" size="sm" type="button" (gogClick)="toggleFormDisabled()">
+        Toggle form-disabled
+      </gog-button>
+    </div>
+    <p class="meta">{{ requiredSummary() }}</p>
+  </article>
+</section>

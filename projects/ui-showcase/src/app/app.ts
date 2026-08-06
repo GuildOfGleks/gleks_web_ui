@@ -46,7 +46,9 @@ export class App {
     { path: 'themes', label: 'Themes' },
     { path: 'buttons', label: 'Button' },
     { path: 'checkbox', label: 'Checkbox' },
+    { path: 'radio-group', label: 'Radio Group' },
     { path: 'inputfield', label: 'Inputfield' },
+    { path: 'textarea', label: 'Textarea' },
     { path: 'chip', label: 'Chip' },
     { path: 'select', label: 'Select' },
     { path: 'multiselect', label: 'Multiselect' },
@@ -64,6 +66,7 @@ export class App {
   ];
 
   protected readonly pageLinks: ShowcaseNavLink[] = [
+    { path: 'global-config', label: 'Global Config' },
     { path: 'dashboard', label: 'Dashboard' },
     { path: 'settings', label: 'Settings' },
     { path: 'catalog', label: 'Catalog' },

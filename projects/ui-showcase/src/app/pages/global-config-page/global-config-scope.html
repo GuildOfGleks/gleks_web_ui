@@ -1,0 +1,20 @@
+<div class="scope-demo">
+  <p class="meta">
+    <code>provideGogConfig(&#123; button: &#123; debounce: 1500 &#125;, scroll: &#123; autoHide:
+    false &#125; &#125;)</code>
+    is in this component's own <code>providers</code> — nothing below was told about it
+    explicitly.
+  </p>
+
+  <div class="scope-demo__row">
+    <gog-button (gogClick)="onClick()">Click me fast</gog-button>
+    <gog-button variant="ghost" size="sm" type="button" (gogClick)="reset()">Reset</gog-button>
+    <span class="meta">Accepted clicks: {{ clickCount() }}</span>
+  </div>
+
+  <gog-scroll class="scope-demo__scroll">
+    @for (paragraph of paragraphs; track paragraph) {
+      <p class="scope-demo__paragraph">{{ paragraph }}</p>
+    }
+  </gog-scroll>
+</div>

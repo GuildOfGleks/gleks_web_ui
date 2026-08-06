@@ -17,6 +17,8 @@ export class SliderPage {
   protected readonly hiddenValue = signal(60);
   protected readonly ariaOnlyValue = signal(50);
   protected readonly compactValue = signal(40);
+  protected readonly orientationHorizontalValue = signal(30);
+  protected readonly orientationVerticalValue = signal(65);
 
   protected readonly summary = computed(
     () =>

@@ -45,6 +45,49 @@
   </article>
 
   <article class="card">
+    <h3>Orientation</h3>
+    <p class="lead">
+      <code>orientation="horizontal"</code> (default, used everywhere above) or
+      <code>"vertical"</code> — the developer picks per instance, there's no global default for
+      this since it's a layout decision, not a house style. Both are backed by the same native
+      <code>&lt;input type="range"&gt;</code>, so dragging, touch, and keyboard (Up/Down as well
+      as Left/Right) all work the same either way. Value increases upward for a vertical slider,
+      same convention as a volume fader.
+    </p>
+    <div class="orientation-row">
+      <gog-slider
+        label="Horizontal"
+        [min]="0"
+        [max]="100"
+        [step]="5"
+        [(value)]="orientationHorizontalValue"
+      />
+      <gog-slider
+        label="Vertical"
+        orientation="vertical"
+        [min]="0"
+        [max]="100"
+        [step]="5"
+        [(value)]="orientationVerticalValue"
+      />
+      <gog-slider
+        label="Vertical, no thumb"
+        orientation="vertical"
+        [min]="0"
+        [max]="100"
+        [showThumb]="false"
+        [value]="80"
+      />
+      <gog-slider
+        label="Vertical, disabled"
+        orientation="vertical"
+        [value]="50"
+        [disabled]="true"
+      />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Full width</h3>
     <p class="lead">
       Full width of its container by default (see every slider above). A slider's track has no

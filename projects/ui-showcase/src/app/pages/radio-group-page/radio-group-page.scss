@@ -1,8 +1,8 @@
 @use '../detail' as *;
 
-.orientation-row {
+.orientation-grid,
+.size-grid {
   display: flex;
-  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 32px;
+  gap: 24px;
 }
