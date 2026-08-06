@@ -4,24 +4,36 @@
   [class.gog-input-wrapper--sm]="size() === 'sm'"
   [class.gog-input-wrapper--lg]="size() === 'lg'"
   [class.gog-input-wrapper--slg]="size() === 'slg'"
+  [class.gog-input-wrapper--float-in]="resolvedFloatLabel() === 'in'"
+  [class.gog-input-wrapper--float-on]="resolvedFloatLabel() === 'on'"
+  [class.gog-input-wrapper--float-over]="resolvedFloatLabel() === 'over'"
+  [class.gog-input-wrapper--floated]="isFloatLabelFloated()"
 >
-  @if (label()) {
+  @if (label() && resolvedFloatLabel() === 'none') {
     <label class="gog-input__label" [attr.for]="inputId() || null">{{ label() }}</label>
   }
-  <textarea
-    class="gog-input__field gog-textarea__field"
-    [class.gog-input__field--error]="hasError()"
-    [attr.id]="inputId() || null"
-    [attr.name]="name() || null"
-    [placeholder]="placeholder()"
-    [rows]="rows()"
-    [value]="value()"
-    [disabled]="isDisabled()"
-    [attr.aria-invalid]="hasError()"
-    [attr.aria-describedby]="hasError() && inputId() ? inputId() + '-error' : null"
-    (input)="onInput($event)"
-    (blur)="onBlur()"
-  ></textarea>
+  <div class="gog-input__field-container">
+    @if (label() && isFloatLabelActive()) {
+      <label class="gog-input__label gog-input__label--float" [attr.for]="inputId() || null">{{
+        label()
+      }}</label>
+    }
+    <textarea
+      class="gog-input__field gog-textarea__field"
+      [class.gog-input__field--error]="hasError()"
+      [attr.id]="inputId() || null"
+      [attr.name]="name() || null"
+      [placeholder]="effectivePlaceholder()"
+      [rows]="rows()"
+      [value]="value()"
+      [disabled]="isDisabled()"
+      [attr.aria-invalid]="hasError()"
+      [attr.aria-describedby]="hasError() && inputId() ? inputId() + '-error' : null"
+      (input)="onInput($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    ></textarea>
+  </div>
   @if (visibleError()) {
     <span class="gog-input__error" [attr.id]="inputId() ? inputId() + '-error' : null" role="alert"
       >{{ visibleError() }}</span

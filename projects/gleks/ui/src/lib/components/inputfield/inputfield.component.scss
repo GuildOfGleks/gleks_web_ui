@@ -171,8 +171,112 @@
   margin-top: var(--gog-input-error-offset);
 }
 
+/*
+ * Float label — three variants, each picking a different floated *target* position for
+ * the same absolutely-positioned label:
+ *   --float-in   stays fully inside the field's border
+ *   --float-on   ends up centered on the top border line (background patch masks it)
+ *   --float-over ends up fully above the field, outside the border
+ * `--floated` (set once the field is focused or has content) decides whether the label is
+ * actually at that target or still resting in the middle of the field like a placeholder.
+ * The label stays a real associated <label> throughout — only its CSS position changes,
+ * so `for`/`aria-labelledby` wiring is unaffected by which variant (if any) is active.
+ */
+.gog-input__label--float {
+  position: absolute;
+  left: var(--gog-input-pl, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x)));
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: calc(
+    100% -
+      var(--gog-input-pl, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x))) -
+      var(--gog-input-pr, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x)))
+  );
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  color: var(--gog-input-placeholder-color);
+  font-size: var(--gog-input-size-font-size, var(--gog-field-md-font-size));
+  text-transform: none;
+  letter-spacing: normal;
+  transition:
+    transform var(--gog-input-transition-duration) var(--gog-easing),
+    font-size var(--gog-input-transition-duration) var(--gog-easing),
+    color var(--gog-input-transition-duration) var(--gog-easing),
+    top var(--gog-input-transition-duration) var(--gog-easing),
+    background-color var(--gog-input-transition-duration) var(--gog-easing);
+}
+
+/*
+ * 'in' and 'on' keep the label inside/on the border at all times, so — unlike 'over', which
+ * floats fully clear of the box — they need genuine headroom above the text the whole time
+ * the variant is active, not only once floated. Without this the floated label (font-size
+ * shrunk, pinned near the top) simply overlaps the vertically-centered field text instead of
+ * clearing it. `padding-top` grows (not both edges) so the extra room lands above the text;
+ * the resting label's `top` is pinned to that same grown offset instead of the box's true
+ * center so it still lines up with the (now off-center) text position at rest.
+ */
+.gog-input-wrapper--float-in,
+.gog-input-wrapper--float-on {
+  --gog-input-float-top-padding: calc(
+    var(--gog-input-padding-y, var(--gog-input-size-padding-y, var(--gog-field-md-padding-y))) +
+      var(--gog-input-float-label-reserve, 14px)
+  );
+}
+
+.gog-input-wrapper--float-in .gog-input__field,
+.gog-input-wrapper--float-on .gog-input__field {
+  padding-top: var(--gog-input-float-top-padding);
+}
+
+.gog-input-wrapper--float-in .gog-input__label--float,
+.gog-input-wrapper--float-on .gog-input__label--float {
+  top: var(--gog-input-float-top-padding);
+  transform: none;
+}
+
+.gog-input-wrapper--float-in.gog-input-wrapper--floated .gog-input__label--float {
+  top: var(--gog-input-float-label-in-top, 8px);
+  transform: translateY(0);
+  font-size: var(--gog-input-label-font-size);
+  color: var(--gog-input-label-color);
+  text-transform: var(--gog-input-label-text-transform);
+  letter-spacing: var(--gog-input-label-letter-spacing);
+}
+
+.gog-input-wrapper--float-on.gog-input-wrapper--floated .gog-input__label--float {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: var(--gog-input-label-font-size);
+  color: var(--gog-input-label-color);
+  text-transform: var(--gog-input-label-text-transform);
+  letter-spacing: var(--gog-input-label-letter-spacing);
+  background-color: var(--gog-input-float-label-on-bg, var(--gog-input-field-bg));
+  padding: 0 4px;
+  left: calc(
+    var(--gog-input-pl, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x))) - 4px
+  );
+}
+
+.gog-input-wrapper--float-over.gog-input-wrapper--floated .gog-input__label--float {
+  top: calc(-1 * var(--gog-input-float-label-over-gap, 8px));
+  transform: translateY(-100%);
+  font-size: var(--gog-input-label-font-size);
+  color: var(--gog-input-label-color);
+  text-transform: var(--gog-input-label-text-transform);
+  letter-spacing: var(--gog-input-label-letter-spacing);
+}
+
+/* Only 'over' floats fully outside the box, so only it needs permanently reserved space
+   above the field for the label to float into. */
+.gog-input-wrapper--float-over .gog-input__field-container {
+  margin-top: var(--gog-input-float-label-over-reserve, 1.4em);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .gog-input__field {
+  .gog-input__field,
+  .gog-input__label--float {
     transition: none;
   }
 }

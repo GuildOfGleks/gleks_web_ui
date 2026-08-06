@@ -9,13 +9,17 @@
   [class.gog-ms-wrapper--sm]="size() === 'sm'"
   [class.gog-ms-wrapper--lg]="size() === 'lg'"
   [class.gog-ms-wrapper--slg]="size() === 'slg'"
+  [class.gog-ms-wrapper--float-in]="resolvedFloatLabel() === 'in'"
+  [class.gog-ms-wrapper--float-on]="resolvedFloatLabel() === 'on'"
+  [class.gog-ms-wrapper--float-over]="resolvedFloatLabel() === 'over'"
+  [class.gog-ms-wrapper--floated]="isFloatLabelFloated()"
 >
   <!--
     Associated with aria-labelledby rather than `for`: the trigger is a div with
     role="combobox", not a labelable element. Without this the trigger had no accessible
     name at all whenever `label` was set, because that also suppresses the aria-label.
   -->
-  @if (label()) {
+  @if (label() && resolvedFloatLabel() === 'none') {
     <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -- associated via aria-labelledby above instead, see comment -->
     <label class="gog-ms__label" [id]="labelId()">{{ label() }}</label>
   }
@@ -34,14 +38,20 @@
     [class.gog-ms--disabled]="isDisabled()"
     [class.gog-ms--error]="hasError()"
     (click)="toggle()"
+    (focus)="onFocusIn()"
+    (blur)="onFocusOut()"
     (keydown.enter)="toggle(); $event.preventDefault()"
     (keydown.space)="toggle(); $event.preventDefault()"
     (keydown.escape)="close()"
     (keydown.arrowdown)="onTriggerArrowKeydown($event)"
     (keydown.arrowup)="onTriggerArrowKeydown($event)"
   >
+    @if (label() && isFloatLabelActive()) {
+      <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -- associated via aria-labelledby above instead, see comment -->
+      <label class="gog-ms__label gog-ms__label--float" [id]="labelId()">{{ label() }}</label>
+    }
     <span class="gog-ms__value" [class.gog-ms__value--placeholder]="!selectedNames()">
-      {{ selectedNames() || placeholder() }}
+      {{ selectedNames() || effectivePlaceholder() }}
     </span>
 
     <span class="gog-ms__actions">

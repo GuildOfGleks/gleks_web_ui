@@ -4,6 +4,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { vi } from 'vitest';
 
 import { InputfieldComponent } from './inputfield.component';
+import { GOG_CONFIG } from '../../shared/config';
 
 describe('InputfieldComponent', () => {
   let component: InputfieldComponent;
@@ -318,6 +319,115 @@ describe('InputfieldComponent', () => {
       const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
       expect(input.type).toBe('date');
       expect(input.value).toBe('2026-07-04');
+    });
+  });
+
+  describe('floatLabel', () => {
+    it('defaults to none — no float-label markup, and placeholder passes through unchanged', async () => {
+      fixture.componentRef.setInput('label', 'Email');
+      fixture.componentRef.setInput('placeholder', 'you@example.com');
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-input__label--float')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.gog-input__label')?.textContent).toBe('Email');
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(input.placeholder).toBe('you@example.com');
+    });
+
+    it('renders the float label and hides the placeholder once a variant is set', async () => {
+      fixture.componentRef.setInput('label', 'Email');
+      fixture.componentRef.setInput('placeholder', 'you@example.com');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-input__label--float')?.textContent).toBe(
+        'Email',
+      );
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(input.placeholder).toBe('');
+      expect(
+        fixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).not.toContain('gog-input-wrapper--floated');
+    });
+
+    it('instance floatLabel input wins over GOG_CONFIG.floatLabel.variant', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [InputfieldComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { floatLabel: { variant: 'over' } } }],
+      }).compileComponents();
+
+      const providedFixture = TestBed.createComponent(InputfieldComponent);
+      providedFixture.componentRef.setInput('label', 'Email');
+      providedFixture.componentRef.setInput('floatLabel', 'in');
+      await providedFixture.whenStable();
+
+      expect(
+        providedFixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).toContain('gog-input-wrapper--float-in');
+    });
+
+    it('falls back to GOG_CONFIG.floatLabel.variant when the instance input is unset', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [InputfieldComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { floatLabel: { variant: 'on' } } }],
+      }).compileComponents();
+
+      const providedFixture = TestBed.createComponent(InputfieldComponent);
+      providedFixture.componentRef.setInput('label', 'Email');
+      await providedFixture.whenStable();
+
+      expect(
+        providedFixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).toContain('gog-input-wrapper--float-on');
+    });
+
+    it('marks the field as floated once it has a value, even without focus', async () => {
+      fixture.componentRef.setInput('label', 'Email');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      fixture.componentRef.setInput('value', 'a@b.com');
+      await fixture.whenStable();
+
+      expect(
+        fixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).toContain('gog-input-wrapper--floated');
+    });
+
+    it('marks the field as floated on focus and unfloats on blur when still empty', async () => {
+      fixture.componentRef.setInput('label', 'Email');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      await fixture.whenStable();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      input.dispatchEvent(new Event('focus'));
+      await fixture.whenStable();
+      expect(
+        fixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).toContain('gog-input-wrapper--floated');
+
+      input.dispatchEvent(new Event('blur'));
+      await fixture.whenStable();
+      expect(
+        fixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).not.toContain('gog-input-wrapper--floated');
+    });
+
+    describe('floatLabelShowPlaceholder', () => {
+      it('keeps the placeholder hidden at rest even when true, and reveals it once floated', async () => {
+        fixture.componentRef.setInput('label', 'Email');
+        fixture.componentRef.setInput('placeholder', 'you@example.com');
+        fixture.componentRef.setInput('floatLabel', 'in');
+        fixture.componentRef.setInput('floatLabelShowPlaceholder', true);
+        await fixture.whenStable();
+
+        const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+        expect(input.placeholder).toBe('');
+
+        input.dispatchEvent(new Event('focus'));
+        await fixture.whenStable();
+        expect(input.placeholder).toBe('you@example.com');
+      });
     });
   });
 });

@@ -54,6 +54,7 @@ export class MultiselectComponent extends GogDropdownBase<(string | number)[]> {
       .filter(Boolean)
       .join(', '),
   );
+  protected readonly hasFloatValue = computed(() => this.value().length > 0);
 
   protected isSelected(id: string | number): boolean {
     return this.value().includes(id);

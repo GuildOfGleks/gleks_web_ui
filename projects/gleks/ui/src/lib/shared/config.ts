@@ -1,6 +1,11 @@
 import { InjectionToken, Provider } from '@angular/core';
 
-import { GogScrollOverscrollBehavior, GogScrollSize, GogTooltipPosition } from './types';
+import {
+  GogFloatLabelVariant,
+  GogScrollOverscrollBehavior,
+  GogScrollSize,
+  GogTooltipPosition,
+} from './types';
 
 /**
  * App-wide defaults for the handful of component inputs where that actually makes sense —
@@ -31,6 +36,16 @@ export interface GogGlobalConfig {
     showDelay?: number;
     hideDelay?: number;
     position?: GogTooltipPosition;
+  };
+  /** Applies to `gog-inputfield`, `gog-select`, `gog-multiselect` and `gog-textarea`. */
+  floatLabel?: {
+    variant?: GogFloatLabelVariant;
+    /**
+     * Whether the field's own `placeholder` reappears once its label has floated out of
+     * the way. Defaults to `false` — the placeholder stays hidden the whole time a float
+     * label is active, since the resting label already occupies that space.
+     */
+    showPlaceholder?: boolean;
   };
 }
 

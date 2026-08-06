@@ -47,6 +47,7 @@ export class SelectComponent extends GogDropdownBase<string | number | null> {
   protected readonly selectedOption = computed(
     () => this.options().find((option) => String(option.id) === String(this.value())) ?? null,
   );
+  protected readonly hasFloatValue = computed(() => this.value() !== null);
 
   protected isSelected(id: string | number): boolean {
     return this.selectedOption()?.id === id;

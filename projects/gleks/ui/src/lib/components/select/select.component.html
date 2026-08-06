@@ -11,18 +11,26 @@
   [class.gog-select--sm]="size() === 'sm'"
   [class.gog-select--lg]="size() === 'lg'"
   [class.gog-select--slg]="size() === 'slg'"
+  [class.gog-select--float-in]="resolvedFloatLabel() === 'in'"
+  [class.gog-select--float-on]="resolvedFloatLabel() === 'on'"
+  [class.gog-select--float-over]="resolvedFloatLabel() === 'over'"
+  [class.gog-select--floated]="isFloatLabelFloated()"
 >
   <!--
     Associated with aria-labelledby rather than `for`: the trigger is a <button>, which is
     not a labelable element, so `for` pointing at it is silently ignored by browsers and
     assistive tech alike.
   -->
-  @if (label()) {
+  @if (label() && resolvedFloatLabel() === 'none') {
     <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -- associated via aria-labelledby above instead, see comment -->
     <label class="gog-select__label" [id]="labelId()">{{ label() }}</label>
   }
 
   <div class="gog-select__field">
+    @if (label() && isFloatLabelActive()) {
+      <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -- associated via aria-labelledby above instead, see comment -->
+      <label class="gog-select__label gog-select__label--float" [id]="labelId()">{{ label() }}</label>
+    }
     <button
       type="button"
       class="gog-select__control"
@@ -36,6 +44,8 @@
       [attr.aria-invalid]="hasError()"
       [attr.aria-describedby]="errorId()"
       (click)="toggle()"
+      (focus)="onFocusIn()"
+      (blur)="onFocusOut()"
       (keydown.enter)="toggle(); $event.preventDefault()"
       (keydown.space)="toggle(); $event.preventDefault()"
       (keydown.escape)="close()"
@@ -43,7 +53,7 @@
       (keydown.arrowup)="onTriggerArrowKeydown($event)"
     >
       <span class="gog-select__value" [class.gog-select__value--placeholder]="!selectedOption()">
-        {{ selectedOption()?.name || placeholder() }}
+        {{ selectedOption()?.name || effectivePlaceholder() }}
       </span>
 
       <span class="gog-select__chevron" aria-hidden="true">

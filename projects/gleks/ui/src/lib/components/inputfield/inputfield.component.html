@@ -6,11 +6,20 @@
   [class.gog-input-wrapper--slg]="size() === 'slg'"
   [class.gog-input-wrapper--icon-start]="hasIconStart()"
   [class.gog-input-wrapper--icon-end]="hasIconEnd()"
+  [class.gog-input-wrapper--float-in]="resolvedFloatLabel() === 'in'"
+  [class.gog-input-wrapper--float-on]="resolvedFloatLabel() === 'on'"
+  [class.gog-input-wrapper--float-over]="resolvedFloatLabel() === 'over'"
+  [class.gog-input-wrapper--floated]="isFloatLabelFloated()"
 >
-  @if (label()) {
+  @if (label() && resolvedFloatLabel() === 'none') {
     <label class="gog-input__label" [attr.for]="inputId() || null">{{ label() }}</label>
   }
   <div class="gog-input__field-container">
+    @if (label() && isFloatLabelActive()) {
+      <label class="gog-input__label gog-input__label--float" [attr.for]="inputId() || null">{{
+        label()
+      }}</label>
+    }
     @if (hasIconStart()) {
       @if (hasIconStartAction()) {
         <button
@@ -33,7 +42,7 @@
       [attr.id]="inputId() || null"
       [type]="effectiveType()"
       [attr.name]="name() || null"
-      [placeholder]="placeholder()"
+      [placeholder]="effectivePlaceholder()"
       [value]="value()"
       [disabled]="isDisabled()"
       [autocomplete]="effectiveAutocomplete()"
@@ -43,6 +52,7 @@
       [attr.aria-invalid]="hasError()"
       [attr.aria-describedby]="hasError() && inputId() ? inputId() + '-error' : null"
       (input)="onInput($event)"
+      (focus)="onFocus()"
       (blur)="onBlur()"
     />
     @if (hasIconEnd()) {

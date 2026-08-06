@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MultiselectComponent } from './multiselect.component';
+import { GOG_CONFIG } from '../../shared/config';
 
 describe('MultiselectComponent', () => {
   let component: MultiselectComponent;
@@ -605,6 +606,119 @@ describe('MultiselectComponent', () => {
       expect(hostFixture.nativeElement.querySelector('.gog-ms__error')?.textContent).toContain(
         'Pick at least one',
       );
+    });
+  });
+
+  describe('floatLabel', () => {
+    it('defaults to none — no float-label markup, and the placeholder passes through unchanged', async () => {
+      fixture.componentRef.setInput('label', 'Tags');
+      fixture.componentRef.setInput('placeholder', 'Pick tags');
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-ms__label--float')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.gog-ms__value')?.textContent.trim()).toBe(
+        'Pick tags',
+      );
+    });
+
+    it('renders the float label and hides the placeholder once a variant is set', async () => {
+      fixture.componentRef.setInput('label', 'Tags');
+      fixture.componentRef.setInput('placeholder', 'Pick tags');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      await fixture.whenStable();
+
+      const floatLabel = fixture.nativeElement.querySelector(
+        '.gog-ms__label--float',
+      ) as HTMLElement;
+      expect(floatLabel.textContent).toBe('Tags');
+      expect(floatLabel.id).toBeTruthy();
+      const trigger = fixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+      expect(trigger.getAttribute('aria-labelledby')).toBe(floatLabel.id);
+      expect(fixture.nativeElement.querySelector('.gog-ms__value')?.textContent.trim()).toBe('');
+    });
+
+    it('instance floatLabel input wins over GOG_CONFIG.floatLabel.variant', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [MultiselectComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { floatLabel: { variant: 'over' } } }],
+      }).compileComponents();
+
+      const providedFixture = TestBed.createComponent(MultiselectComponent);
+      providedFixture.componentRef.setInput('label', 'Tags');
+      providedFixture.componentRef.setInput('floatLabel', 'in');
+      await providedFixture.whenStable();
+
+      expect(
+        providedFixture.nativeElement.querySelector('.gog-ms-wrapper').classList,
+      ).toContain('gog-ms-wrapper--float-in');
+    });
+
+    it('falls back to GOG_CONFIG.floatLabel.variant when the instance input is unset', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [MultiselectComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { floatLabel: { variant: 'on' } } }],
+      }).compileComponents();
+
+      const providedFixture = TestBed.createComponent(MultiselectComponent);
+      providedFixture.componentRef.setInput('label', 'Tags');
+      await providedFixture.whenStable();
+
+      expect(
+        providedFixture.nativeElement.querySelector('.gog-ms-wrapper').classList,
+      ).toContain('gog-ms-wrapper--float-on');
+    });
+
+    it('marks the field as floated once a selection is made, even without focus', async () => {
+      fixture.componentRef.setInput('label', 'Tags');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.componentRef.setInput('value', ['a']);
+      await fixture.whenStable();
+
+      expect(
+        fixture.nativeElement.querySelector('.gog-ms-wrapper').classList,
+      ).toContain('gog-ms-wrapper--floated');
+    });
+
+    it('marks the field as floated on focus and unfloats on blur when still empty', async () => {
+      fixture.componentRef.setInput('label', 'Tags');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      await fixture.whenStable();
+
+      const trigger = fixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+      trigger.dispatchEvent(new Event('focus'));
+      await fixture.whenStable();
+      expect(
+        fixture.nativeElement.querySelector('.gog-ms-wrapper').classList,
+      ).toContain('gog-ms-wrapper--floated');
+
+      trigger.dispatchEvent(new Event('blur'));
+      await fixture.whenStable();
+      expect(
+        fixture.nativeElement.querySelector('.gog-ms-wrapper').classList,
+      ).not.toContain('gog-ms-wrapper--floated');
+    });
+
+    describe('floatLabelShowPlaceholder', () => {
+      it('keeps the placeholder hidden at rest even when true, and reveals it once floated', async () => {
+        fixture.componentRef.setInput('label', 'Tags');
+        fixture.componentRef.setInput('placeholder', 'Pick tags');
+        fixture.componentRef.setInput('floatLabel', 'in');
+        fixture.componentRef.setInput('floatLabelShowPlaceholder', true);
+        await fixture.whenStable();
+
+        expect(fixture.nativeElement.querySelector('.gog-ms__value')?.textContent.trim()).toBe('');
+
+        const trigger = fixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+        trigger.dispatchEvent(new Event('focus'));
+        await fixture.whenStable();
+
+        expect(fixture.nativeElement.querySelector('.gog-ms__value')?.textContent.trim()).toBe(
+          'Pick tags',
+        );
+      });
     });
   });
 });

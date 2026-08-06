@@ -4,6 +4,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { vi } from 'vitest';
 
 import { SelectComponent } from './select.component';
+import { GOG_CONFIG } from '../../shared/config';
 
 function stubRect(target: Element, rect: Partial<DOMRect>): void {
   vi.spyOn(target, 'getBoundingClientRect').mockReturnValue({
@@ -713,6 +714,129 @@ describe('SelectComponent', () => {
       expect(hostFixture.nativeElement.querySelector('.gog-select__error')?.textContent).toContain(
         'Selection required',
       );
+    });
+  });
+
+  describe('floatLabel', () => {
+    it('defaults to none — no float-label markup, and the placeholder passes through unchanged', async () => {
+      fixture.componentRef.setInput('label', 'Region');
+      fixture.componentRef.setInput('placeholder', 'Pick a region');
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-select__label--float')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.gog-select__value')?.textContent.trim()).toBe(
+        'Pick a region',
+      );
+    });
+
+    it('renders the float label and hides the placeholder once a variant is set', async () => {
+      fixture.componentRef.setInput('label', 'Region');
+      fixture.componentRef.setInput('placeholder', 'Pick a region');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      await fixture.whenStable();
+
+      const floatLabel = fixture.nativeElement.querySelector(
+        '.gog-select__label--float',
+      ) as HTMLElement;
+      expect(floatLabel.textContent).toBe('Region');
+      expect(floatLabel.id).toBeTruthy();
+      const control = fixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
+      expect(control.getAttribute('aria-labelledby')).toBe(floatLabel.id);
+      expect(fixture.nativeElement.querySelector('.gog-select__value')?.textContent.trim()).toBe(
+        '',
+      );
+    });
+
+    it('instance floatLabel input wins over GOG_CONFIG.floatLabel.variant', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [SelectComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { floatLabel: { variant: 'over' } } }],
+      }).compileComponents();
+
+      const providedFixture = TestBed.createComponent(SelectComponent);
+      providedFixture.componentRef.setInput('label', 'Region');
+      providedFixture.componentRef.setInput('floatLabel', 'in');
+      await providedFixture.whenStable();
+
+      expect(
+        providedFixture.nativeElement.querySelector('.gog-select').classList,
+      ).toContain('gog-select--float-in');
+    });
+
+    it('falls back to GOG_CONFIG.floatLabel.variant when the instance input is unset', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [SelectComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { floatLabel: { variant: 'on' } } }],
+      }).compileComponents();
+
+      const providedFixture = TestBed.createComponent(SelectComponent);
+      providedFixture.componentRef.setInput('label', 'Region');
+      await providedFixture.whenStable();
+
+      expect(
+        providedFixture.nativeElement.querySelector('.gog-select').classList,
+      ).toContain('gog-select--float-on');
+    });
+
+    it('marks the field as floated once a value is selected, even without focus', async () => {
+      fixture.componentRef.setInput('label', 'Region');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.componentRef.setInput('value', 'a');
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-select').classList).toContain(
+        'gog-select--floated',
+      );
+    });
+
+    it('marks the field as floated on focus and unfloats on blur when still empty', async () => {
+      fixture.componentRef.setInput('label', 'Region');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      await fixture.whenStable();
+
+      const control = fixture.nativeElement.querySelector(
+        '.gog-select__control',
+      ) as HTMLButtonElement;
+      control.dispatchEvent(new Event('focus'));
+      await fixture.whenStable();
+      expect(fixture.nativeElement.querySelector('.gog-select').classList).toContain(
+        'gog-select--floated',
+      );
+
+      control.dispatchEvent(new Event('blur'));
+      await fixture.whenStable();
+      expect(fixture.nativeElement.querySelector('.gog-select').classList).not.toContain(
+        'gog-select--floated',
+      );
+    });
+
+    describe('floatLabelShowPlaceholder', () => {
+      it('keeps the placeholder hidden at rest even when true, and reveals it once floated', async () => {
+        fixture.componentRef.setInput('label', 'Region');
+        fixture.componentRef.setInput('placeholder', 'Pick a region');
+        fixture.componentRef.setInput('floatLabel', 'in');
+        fixture.componentRef.setInput('floatLabelShowPlaceholder', true);
+        await fixture.whenStable();
+
+        expect(
+          fixture.nativeElement.querySelector('.gog-select__value')?.textContent.trim(),
+        ).toBe('');
+
+        const control = fixture.nativeElement.querySelector(
+          '.gog-select__control',
+        ) as HTMLButtonElement;
+        control.dispatchEvent(new Event('focus'));
+        await fixture.whenStable();
+
+        expect(
+          fixture.nativeElement.querySelector('.gog-select__value')?.textContent.trim(),
+        ).toBe('Pick a region');
+      });
     });
   });
 });

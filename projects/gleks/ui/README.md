@@ -130,8 +130,12 @@ They are `--gog-btn-{bg,color,border,shadow,hover-bg,hover-color,hover-shadow,pa
 `--gog-tag-{accent,bg,border,color,font-size,gap,padding-block,padding-inline,icon-size}`,
 `--gog-chip-{font-size,gap,padding-block,padding-inline,avatar-size,icon-size,remove-size}`,
 the per-size field hooks (`--gog-input-padding-y`, `--gog-select-control-font`,
-`--gog-ms-font-size`, `--gog-table-td-padding-v`, `--gog-accordion-padding-y`, …) and
-`--gog-spinner-color`.
+`--gog-ms-font-size`, `--gog-table-td-padding-v`, `--gog-accordion-padding-y`, …),
+`--gog-spinner-color`, and the float label offsets — `--gog-{input,select,ms}-float-label-in-top`
+(distance from the top border for the `'in'` variant), `--gog-{input,select,ms}-float-label-on-bg`
+(the patch masking the border behind an `'on'` label), and
+`--gog-{input,select,ms}-float-label-over-{gap,reserve}` (space above the field for the
+`'over'` variant, both the gap to the floated label and the space permanently reserved for it).
 
 ### Light and dark
 
@@ -208,6 +212,14 @@ uses `ngModel`; `[(ngModel)]` is not tested against these components and isn't a
 supported usage path. With a form control attached, the error message appears once the
 control is both touched and invalid; without one it shows for as long as `errorMessage`
 is non-empty, and the consumer decides when to clear it.
+
+`gog-inputfield`, `gog-select`, `gog-multiselect` and `gog-textarea` all accept a
+`floatLabel` input — `'in'` (floats up but stays inside the border), `'on'` (floats to sit
+centered on the top border line) or `'over'` (floats fully above the field, outside the
+border) — plus `floatLabelShowPlaceholder` to reveal the field's own `placeholder` once the
+label has floated out of the way (it stays hidden the whole time otherwise, since the
+resting label already sits where it would). Both default to off/`false` and are settable
+per instance or app-wide via `GOG_CONFIG.floatLabel`.
 
 ## License
 

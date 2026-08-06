@@ -17,6 +17,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
+import { GOG_CONFIG } from './config';
 import { GogDropdownOverlay } from './dropdown-overlay';
 import {
   type GogDropdownDirection,
@@ -27,7 +28,9 @@ import {
 } from './dropdown-position';
 import { GogErrorState, type GogErrorDisplay } from './error-state';
 import { handleRovingFocusKeydown } from './roving-focus';
-import { GogSize } from './types';
+import { GogFloatLabelVariant, GogSize } from './types';
+
+const DEFAULT_FLOAT_LABEL_VARIANT: GogFloatLabelVariant = 'none';
 
 /** A single choice in any of the listbox-style controls (`gog-select`, `gog-multiselect`). */
 export interface GogDropdownOption {
@@ -105,6 +108,10 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
    * Set to `false` to shrink the trigger to fit its selected label instead.
    */
   readonly fullWidth = input(true);
+  /** Unset, falls back to `GOG_CONFIG.floatLabel.variant`, then to `'none'` (off). */
+  readonly floatLabel = input<GogFloatLabelVariant | undefined>(undefined);
+  /** Unset, falls back to `GOG_CONFIG.floatLabel.showPlaceholder`, then to `false`. */
+  readonly floatLabelShowPlaceholder = input<boolean | undefined>(undefined);
 
   readonly isOpen = signal(false);
 
@@ -118,6 +125,8 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
   protected abstract readonly optionClass: string;
   /** BEM class of the focusable trigger. */
   protected abstract readonly triggerClass: string;
+  /** Whether the control currently has a selection — drives the float-label "filled" state. */
+  protected abstract readonly hasFloatValue: Signal<boolean>;
   /**
    * Spacing tokens feeding the height estimate. Overridable so each control keeps the
    * `--gog-<block>-*` names it already exposes to consumers for theming.
@@ -138,7 +147,11 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
   private readonly appRef = inject(ApplicationRef);
   private readonly destroyRef = inject(DestroyRef);
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
+  private readonly globalConfig = inject(GOG_CONFIG);
   private readonly overlay = new GogDropdownOverlay(this.appRef, this.document);
+
+  /** Set from `(focus)`/`(blur)` on the trigger — see `onFocusIn`/`onFocusOut`. */
+  protected readonly isFocused = signal(false);
 
   private readonly cvaDisabled = signal(false);
   private readonly errorState = new GogErrorState(
@@ -173,6 +186,28 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
 
   protected readonly hasError = this.errorState.hasError;
   protected readonly visibleError = this.errorState.visibleError;
+
+  protected readonly resolvedFloatLabel = computed(
+    () => this.floatLabel() ?? this.globalConfig.floatLabel?.variant ?? DEFAULT_FLOAT_LABEL_VARIANT,
+  );
+  protected readonly resolvedFloatLabelShowPlaceholder = computed(
+    () => this.floatLabelShowPlaceholder() ?? this.globalConfig.floatLabel?.showPlaceholder ?? false,
+  );
+  protected readonly isFloatLabelActive = computed(() => this.resolvedFloatLabel() !== 'none');
+  protected readonly isFloatLabelFloated = computed(
+    () => this.isFocused() || this.hasFloatValue(),
+  );
+  /**
+   * The text shown as the "nothing selected" fallback. While a float label is active the
+   * resting label already sits where this would, so it's suppressed unless the consumer
+   * opted into `floatLabelShowPlaceholder` — and even then, only once the label has floated
+   * out of the way.
+   */
+  protected readonly effectivePlaceholder = computed(() => {
+    if (!this.isFloatLabelActive()) return this.placeholder();
+    if (!this.resolvedFloatLabelShowPlaceholder()) return '';
+    return this.isFloatLabelFloated() ? this.placeholder() : '';
+  });
 
   /** Measured once per open rather than per scroll tick — see `refreshPanelMetrics`. */
   private optionGap = 0;
@@ -249,6 +284,16 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
     if (isDisabled) {
       this.close();
     }
+  }
+
+  /** Bound to `(focus)` on the trigger — only drives the float-label floated state. */
+  protected onFocusIn(): void {
+    this.isFocused.set(true);
+  }
+
+  /** Bound to `(blur)` on the trigger — only drives the float-label floated state. */
+  protected onFocusOut(): void {
+    this.isFocused.set(false);
   }
 
   protected toggle(): void {

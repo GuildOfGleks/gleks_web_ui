@@ -28,3 +28,12 @@ export type GogScrollOverscrollBehavior = 'auto' | 'contain' | 'none';
  * side still flips to its opposite if the requested side has no room but the opposite does.
  */
 export type GogTooltipPosition = 'auto' | 'top' | 'bottom' | 'left' | 'right';
+/**
+ * Where a field's label sits once it "floats" out of its resting position (overlapping the
+ * field like a placeholder) on focus or once the field has content. `'none'` (the default)
+ * keeps today's static label-above-the-field layout — nothing floats.
+ * - `'in'` — floats up but stays fully inside the field's border.
+ * - `'on'` — floats up until vertically centered on the top border line.
+ * - `'over'` — floats all the way above the field, outside the border.
+ */
+export type GogFloatLabelVariant = 'none' | 'in' | 'on' | 'over';

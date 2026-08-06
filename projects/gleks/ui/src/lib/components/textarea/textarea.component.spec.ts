@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { TextareaComponent } from './textarea.component';
+import { GOG_CONFIG } from '../../shared/config';
 
 describe('TextareaComponent', () => {
   let component: TextareaComponent;
@@ -149,6 +150,111 @@ describe('TextareaComponent', () => {
       expect(hostFixture.nativeElement.querySelector('.gog-input__error')?.textContent).toContain(
         'Required',
       );
+    });
+  });
+
+  describe('floatLabel', () => {
+    it('defaults to none — no float-label markup, and placeholder passes through unchanged', async () => {
+      fixture.componentRef.setInput('label', 'Notes');
+      fixture.componentRef.setInput('placeholder', 'Add notes...');
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-input__label--float')).toBeNull();
+      const textarea = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+      expect(textarea.placeholder).toBe('Add notes...');
+    });
+
+    it('renders the float label and hides the placeholder once a variant is set', async () => {
+      fixture.componentRef.setInput('label', 'Notes');
+      fixture.componentRef.setInput('placeholder', 'Add notes...');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-input__label--float')?.textContent).toBe(
+        'Notes',
+      );
+      const textarea = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+      expect(textarea.placeholder).toBe('');
+    });
+
+    it('instance floatLabel input wins over GOG_CONFIG.floatLabel.variant', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [TextareaComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { floatLabel: { variant: 'over' } } }],
+      }).compileComponents();
+
+      const providedFixture = TestBed.createComponent(TextareaComponent);
+      providedFixture.componentRef.setInput('label', 'Notes');
+      providedFixture.componentRef.setInput('floatLabel', 'in');
+      await providedFixture.whenStable();
+
+      expect(
+        providedFixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).toContain('gog-input-wrapper--float-in');
+    });
+
+    it('falls back to GOG_CONFIG.floatLabel.variant when the instance input is unset', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [TextareaComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { floatLabel: { variant: 'on' } } }],
+      }).compileComponents();
+
+      const providedFixture = TestBed.createComponent(TextareaComponent);
+      providedFixture.componentRef.setInput('label', 'Notes');
+      await providedFixture.whenStable();
+
+      expect(
+        providedFixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).toContain('gog-input-wrapper--float-on');
+    });
+
+    it('marks the field as floated once it has a value, even without focus', async () => {
+      fixture.componentRef.setInput('label', 'Notes');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      fixture.componentRef.setInput('value', 'some text');
+      await fixture.whenStable();
+
+      expect(
+        fixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).toContain('gog-input-wrapper--floated');
+    });
+
+    it('marks the field as floated on focus and unfloats on blur when still empty', async () => {
+      fixture.componentRef.setInput('label', 'Notes');
+      fixture.componentRef.setInput('floatLabel', 'in');
+      await fixture.whenStable();
+
+      const textarea = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+      textarea.dispatchEvent(new Event('focus'));
+      await fixture.whenStable();
+      expect(
+        fixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).toContain('gog-input-wrapper--floated');
+
+      textarea.dispatchEvent(new Event('blur'));
+      await fixture.whenStable();
+      expect(
+        fixture.nativeElement.querySelector('.gog-input-wrapper').classList,
+      ).not.toContain('gog-input-wrapper--floated');
+    });
+
+    describe('floatLabelShowPlaceholder', () => {
+      it('keeps the placeholder hidden at rest even when true, and reveals it once floated', async () => {
+        fixture.componentRef.setInput('label', 'Notes');
+        fixture.componentRef.setInput('placeholder', 'Add notes...');
+        fixture.componentRef.setInput('floatLabel', 'in');
+        fixture.componentRef.setInput('floatLabelShowPlaceholder', true);
+        await fixture.whenStable();
+
+        const textarea = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+        expect(textarea.placeholder).toBe('');
+
+        textarea.dispatchEvent(new Event('focus'));
+        await fixture.whenStable();
+        expect(textarea.placeholder).toBe('Add notes...');
+      });
     });
   });
 });
