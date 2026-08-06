@@ -4,6 +4,16 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.2.5] - planned
+
+### Added
+
+- `gog-collapsible`'s `collapseOnFocusOut` input (`boolean`, default `false`): closes the
+  panel once focus leaves both the trigger and the content — e.g. Tabbing past the last
+  focusable element inside, or a click landing elsewhere on the page. Off by default, since
+  plenty of consumers (an FAQ list, a settings section read top to bottom) want the panel to
+  stay open regardless of where focus goes next.
+
 ## [21.2.4] - 2026-08-05
 
 ### Added
