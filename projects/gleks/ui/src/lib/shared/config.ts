@@ -1,6 +1,6 @@
 import { InjectionToken, Provider } from '@angular/core';
 
-import { GogScrollOverscrollBehavior, GogScrollSize } from './types';
+import { GogScrollOverscrollBehavior, GogScrollSize, GogTooltipPosition } from './types';
 
 /**
  * App-wide defaults for the handful of component inputs where that actually makes sense —
@@ -26,6 +26,11 @@ export interface GogGlobalConfig {
   };
   button?: {
     debounce?: number;
+  };
+  tooltip?: {
+    showDelay?: number;
+    hideDelay?: number;
+    position?: GogTooltipPosition;
   };
 }
 

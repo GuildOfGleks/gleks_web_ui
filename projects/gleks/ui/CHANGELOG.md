@@ -32,6 +32,32 @@ reached 1.0, so breaking changes may land in minor versions.
   focusable element inside, or a click landing elsewhere on the page. Off by default, since
   plenty of consumers (an FAQ list, a settings section read top to bottom) want the panel to
   stay open regardless of where focus goes next.
+- `gogTooltip`: a new directive, not a component — drop it on any element, a `gog-*`
+  component's own host tag or a plain native one (`<button gogTooltip="Save changes">`,
+  `<gog-chip [gogTooltip]="hint">`), to add a hover/focus tooltip without that element
+  needing to know anything about it. Content is a plain string or a `TemplateRef` for richer
+  markup. `gogTooltipPosition` (`GogTooltipPosition`: `'auto'` default, or an explicit
+  `'top'`/`'bottom'`/`'left'`/`'right'` that flips to its opposite if it has no room),
+  `gogTooltipShowDelay` (default `300`ms), `gogTooltipHideDelay` (default `100`ms) and
+  `gogTooltipDisabled` inputs; the first three also read `GOG_CONFIG.tooltip` for an
+  app-wide default the same way `gog-scroll`/`gog-button` already do, with an instance's own
+  input always winning. Shown on both mouse hover and keyboard focus (`focusin`/`focusout`,
+  not `focus`/`blur`, so it stays replay-safe under SSR event replay) and dismissible with
+  Escape, per WCAG 2.1 SC 1.4.13. The bubble is appended to `document.body` (so it's never
+  clipped by an ancestor's `overflow: hidden`) via a new internal `GogTooltipOverlay`, built
+  on `ViewContainerRef.createComponent` + relocating the node rather than
+  `GogDropdownOverlay`'s `TemplateRef` approach, since a directive has no template of its
+  own to attach from. Visually it's the same "floating panel" recipe as `gog-dialog`'s panel
+  and `gog-select`'s dropdown (`--gog-surface-color` background, plain `--gog-border-color`
+  border, `--gog-panel-shadow`), not a bespoke inverted bubble, so it reads as part of a
+  themed app rather than a generic dark tooltip dropped on top of it. `gogTooltipClass`
+  applies a class straight to the bubble, for restyling one instance — needed because the
+  bubble sits outside any scoped ancestor's stylesheet once appended to `document.body`, the
+  same "Panels rendered outside the component subtree" limitation `gog-select`'s
+  `[appendToBody]` panel already has, so the class has to come from an unscoped (global)
+  stylesheet. New `--gog-tooltip-*` tokens in `theme.css`; `gog-dialog`'s panel now also
+  raises `--gog-tooltip-z` (mirroring the existing `--gog-dropdown-z` bump) so a tooltip
+  triggered inside a dialog stacks above it.
 
 ### Changed
 
@@ -41,6 +67,17 @@ reached 1.0, so breaking changes may land in minor versions.
   `--gog-slider-fill-bg` also accepts a gradient (e.g. `linear-gradient(...)`), not just a
   solid color. The thumb ("handle") was already fully customizable via its existing
   `--gog-slider-thumb-*` tokens (size, background, border, radius, glow) — no change there.
+
+### Fixed
+
+- `gog-slider`'s track background (`--gog-slider-track-bg`) no longer reuses
+  `--gog-accent-dim` — it sat on the same hue ramp as the fill (`--gog-accent-color`), so at
+  the track's 4px height the two read as one blob instead of a recessed groove with an
+  accent fill on top. Now `color-mix(in srgb, var(--gog-text-color) 30%, var(--gog-border-color))`:
+  a desaturated, theme-adaptive gray that darkens toward black in the light theme and
+  lightens toward parchment in the dark theme (`--gog-text-color` sits at whichever end of
+  that range per theme), so it's always distinct from the accent-colored fill and legible
+  against its own theme's surface.
 
 ## [21.2.4] - 2026-08-05
 

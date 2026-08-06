@@ -1,0 +1,82 @@
+/*
+ * Appended straight to `document.body` by `GogTooltipOverlay`, same as a `gog-select`
+ * panel opened with `[appendToBody]` — so every token it reads has to be redeclared for
+ * that context (there is no "inline" mode to fall back to here, unlike the dropdowns).
+ * `top`/`left` are written inline by the directive (see the `[style.top.px]` /
+ * `[style.left.px]` host bindings); this file only owns the visuals.
+ */
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--gog-tooltip-z);
+  max-width: var(--gog-tooltip-max-width);
+  padding: var(--gog-tooltip-padding);
+  border-radius: var(--gog-tooltip-radius);
+  border: var(--gog-tooltip-border-width) var(--gog-tooltip-border-style) var(--gog-tooltip-border-color);
+  background: var(--gog-tooltip-bg);
+  color: var(--gog-tooltip-color);
+  font-family: var(--gog-tooltip-font-family);
+  font-size: var(--gog-tooltip-font-size);
+  line-height: var(--gog-tooltip-line-height);
+  box-shadow: var(--gog-tooltip-shadow);
+  /* Non-interactive by design — a short hint, not a panel with its own controls — so it
+     never intercepts the pointer on its way to whatever sits underneath. */
+  pointer-events: none;
+  word-wrap: break-word;
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity var(--gog-tooltip-transition-duration) var(--gog-easing),
+    transform var(--gog-tooltip-transition-duration) var(--gog-easing);
+}
+
+:host(.gog-tooltip--visible) {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gog-tooltip__arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: var(--gog-tooltip-arrow-size) solid transparent;
+}
+
+:host(.gog-tooltip--top) .gog-tooltip__arrow {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: var(--gog-tooltip-bg);
+  border-bottom-width: 0;
+}
+
+:host(.gog-tooltip--bottom) .gog-tooltip__arrow {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: var(--gog-tooltip-bg);
+  border-top-width: 0;
+}
+
+:host(.gog-tooltip--left) .gog-tooltip__arrow {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: var(--gog-tooltip-bg);
+  border-right-width: 0;
+}
+
+:host(.gog-tooltip--right) .gog-tooltip__arrow {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: var(--gog-tooltip-bg);
+  border-left-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    transition: none;
+  }
+}

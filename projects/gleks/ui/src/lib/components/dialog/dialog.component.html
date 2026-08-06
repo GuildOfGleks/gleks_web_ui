@@ -12,6 +12,7 @@
       class="gog-dialog__panel"
       [attr.data-dialog-id]="dialog.id"
       [style.--gog-dropdown-z]="panelZ(dialog) + 10"
+      [style.--gog-tooltip-z]="panelZ(dialog) + 20"
       [style.--gog-dialog-offset-x]="dialog.offsetX + 'px'"
       [style.--gog-dialog-offset-y]="dialog.offsetY + 'px'"
       [style.width]="dialog.config.width ?? 'auto'"

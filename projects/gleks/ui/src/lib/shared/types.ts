@@ -21,3 +21,10 @@ export type GogScrollSize = 'normal' | 'thin';
  *   affordances (rubber-banding, pull-to-refresh) for this instance.
  */
 export type GogScrollOverscrollBehavior = 'auto' | 'contain' | 'none';
+/**
+ * Which side of the trigger the tooltip bubble renders on. `'auto'` (the default) picks
+ * whichever of the four sides has room for the bubble, preferring top, then bottom, then
+ * right, then left — see `resolveTooltipPlacement` in `tooltip-position.ts`. An explicit
+ * side still flips to its opposite if the requested side has no room but the opposite does.
+ */
+export type GogTooltipPosition = 'auto' | 'top' | 'bottom' | 'left' | 'right';

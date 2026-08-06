@@ -1,0 +1,6 @@
+@if (templateContent(); as template) {
+  <ng-container [ngTemplateOutlet]="template"></ng-container>
+} @else {
+  {{ textContent() }}
+}
+<span class="gog-tooltip__arrow" aria-hidden="true"></span>

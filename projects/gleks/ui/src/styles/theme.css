@@ -820,7 +820,18 @@
   --gog-slider-track-height: 4px;
   --gog-slider-track-area-height: 20px;
   --gog-slider-track-radius: 0px;
-  --gog-slider-track-bg: var(--gog-accent-dim);
+  /*
+   * Deliberately NOT an accent-* token: --gog-accent-dim sits on the same hue ramp as
+   * --gog-slider-fill-bg (--gog-accent-color), so at a 4px track height the two used to
+   * read as one blob rather than "recessed groove + accent fill" — same problem in both
+   * themes, since the whole accent ramp is one hue. Mixing --gog-text-color into
+   * --gog-border-color instead gives a desaturated, theme-adaptive groove: it darkens
+   * toward black in the light theme (text-color is near-black there) and lightens toward
+   * parchment in the dark theme (text-color is near-white there), landing at a neutral
+   * warm gray in both — always visibly distinct from the saturated accent fill, and always
+   * legible against its own theme's surface.
+   */
+  --gog-slider-track-bg: color-mix(in srgb, var(--gog-text-color) 30%, var(--gog-border-color));
   --gog-slider-track-border-width: 1px;
   --gog-slider-track-border-style: solid;
   /* Transparent by default — same opt-in convention as --gog-btn-primary-border: the
@@ -1014,4 +1025,28 @@
   --gog-toast-stack-min-opacity: 0.4;
   --gog-toast-stack-opacity-step: 0.18;
   --gog-toast-stack-max-depth: 6;
+
+  /* ── Tooltip ──────────────────────────────────────────────────────────────── */
+  --gog-tooltip-font-family: var(--gog-font-body);
+  --gog-tooltip-font-size: var(--gog-text-xs);
+  --gog-tooltip-line-height: 1.4;
+  --gog-tooltip-padding: 6px 10px;
+  --gog-tooltip-radius: var(--gog-radius);
+  --gog-tooltip-max-width: 280px;
+  /* Same "floating panel" recipe as gog-dialog's panel and gog-select's dropdown — a
+     surface-colored box with a plain (not accent) border and the shared panel shadow —
+     rather than an inverted dark/light bubble, so it reads as part of this site instead of
+     a generic dark tooltip dropped on top of it. */
+  --gog-tooltip-bg: var(--gog-surface-color);
+  --gog-tooltip-color: var(--gog-text-color);
+  --gog-tooltip-border-width: var(--gog-panel-border-width);
+  --gog-tooltip-border-style: var(--gog-panel-border-style);
+  --gog-tooltip-border-color: var(--gog-border-color);
+  --gog-tooltip-shadow: var(--gog-panel-shadow);
+  --gog-tooltip-arrow-size: 5px;
+  /* Space kept between the trigger and the bubble. Read by the directive itself (not just
+     CSS) to feed the placement math — see `readPxToken` in `tooltip.directive.ts`. */
+  --gog-tooltip-gap: 8px;
+  --gog-tooltip-z: 400;
+  --gog-tooltip-transition-duration: var(--gog-duration-fast);
 }

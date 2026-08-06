@@ -179,9 +179,11 @@ Google Fonts) add `@guildofgleks/ui/styles/fonts.css` as well.
 ## Components
 
 `gog-accordion`, `gog-button`, `gog-checkbox`, `gog-chip`, `gog-collapsible`, `gog-dialog`,
-`gog-icon`, `gog-inputfield`, `gog-multiselect`, `gog-paginator`, `gog-select`,
-`gog-skeleton`, `gog-slider`, `gog-spinner`, `gog-spinner-overlay`, `gog-table`, `gog-tag`,
-`gog-textarea`, `gog-toast`.
+`gog-icon`, `gog-inputfield`, `gog-multiselect`, `gog-paginator`, `gog-radio-group`,
+`gog-scroll`, `gog-select`, `gog-skeleton`, `gog-slider`, `gog-spinner`, `gog-spinner-overlay`,
+`gog-table`, `gog-tag`, `gog-textarea`, `gog-toast`.
+
+Directives: `gogCollapsibleTrigger`, `gogCollapsibleContent`, `gogTooltip`.
 
 Services: `DialogService`, `ToastService`, `ThemeService`.
 
@@ -190,6 +192,14 @@ Project any element as the trigger via `gogCollapsibleTrigger` and any element a
 panel via `gogCollapsibleContent`; `[(open)]` is two-way bindable. Useful for anything
 that needs an inline expanding region without the overlay behavior of `gog-select`/
 `gog-multiselect` — e.g. a collapsible group of links in a nav sidebar.
+
+`gogTooltip` is a hover/focus tooltip directive, not a component — drop it on any element,
+a `gog-*` component's own host tag or a plain native one
+(`<button gogTooltip="Save changes">`, `<gog-chip [gogTooltip]="hint">`). Content is a
+string or a `TemplateRef`; `gogTooltipPosition` (`'auto'` default, or an explicit side),
+`gogTooltipShowDelay` (`300`ms default), `gogTooltipHideDelay` (`100`ms default) and
+`gogTooltipDisabled` inputs, the first three also configurable app-wide via
+`GOG_CONFIG.tooltip`.
 
 `gog-checkbox`, `gog-inputfield`, `gog-select`, `gog-multiselect`, `gog-slider` and
 `gog-textarea` implement `ControlValueAccessor` and are built for Reactive Forms — use
