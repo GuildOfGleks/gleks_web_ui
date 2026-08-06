@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
   ButtonComponent,
   GogTooltipDirective,
+  InputfieldComponent,
   ScrollComponent,
   provideGogConfig,
 } from '@guildofgleks/ui';
@@ -16,7 +17,7 @@ import {
  */
 @Component({
   selector: 'app-global-config-scope',
-  imports: [ButtonComponent, GogTooltipDirective, ScrollComponent],
+  imports: [ButtonComponent, GogTooltipDirective, InputfieldComponent, ScrollComponent],
   templateUrl: './global-config-scope.html',
   styleUrl: './global-config-scope.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,11 +26,13 @@ import {
       button: { debounce: 1500 },
       scroll: { autoHide: false },
       tooltip: { showDelay: 800, hideDelay: 400, position: 'bottom' },
+      floatLabel: { variant: 'in' },
     }),
   ],
 })
 export class GlobalConfigScopeComponent {
   protected readonly clickCount = signal(0);
+  protected readonly emailValue = signal('');
   protected readonly paragraphs = Array.from(
     { length: 8 },
     (_, i) => `Configured paragraph ${i + 1} — this scrollbar never auto-hides.`,

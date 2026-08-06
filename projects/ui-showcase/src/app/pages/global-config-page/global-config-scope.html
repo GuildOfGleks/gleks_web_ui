@@ -16,6 +16,13 @@
     </gog-button>
   </div>
 
+  <gog-inputfield
+    label="Email (configured)"
+    placeholder="you@example.com"
+    [(value)]="emailValue"
+    [fullWidth]="false"
+  />
+
   <gog-scroll class="scope-demo__scroll">
     @for (paragraph of paragraphs; track paragraph) {
       <p class="scope-demo__paragraph">{{ paragraph }}</p>

@@ -58,6 +58,38 @@
   </article>
 
   <article class="card">
+    <h3>Float label</h3>
+    <p class="lead">
+      <code>floatLabel</code> makes the label rest inside the trigger like a placeholder, then
+      float up on focus or once something's selected — <code>'in'</code> stays inside the
+      border, <code>'on'</code> floats to the border line, <code>'over'</code> floats fully
+      above it. <code>floatLabelShowPlaceholder</code> reveals <code>placeholder</code> once
+      floated (hidden the whole time otherwise). Both are also settable app-wide via
+      <code>GOG_CONFIG.floatLabel</code> — see the Global config page.
+    </p>
+    <div class="field-grid playground__controls">
+      <gog-select
+        label="Variant"
+        [options]="floatLabelOptions"
+        [value]="floatLabelVariant()"
+        (valueChange)="setFloatLabelVariant($event)"
+        [fullWidth]="false"
+      />
+      <gog-checkbox label="Show placeholder once floated" [(checked)]="floatLabelShowPlaceholder" />
+    </div>
+    <div class="field-grid">
+      <gog-select
+        label="Region"
+        placeholder="Pick a region"
+        [options]="regions"
+        [floatLabel]="floatLabelVariant()"
+        [floatLabelShowPlaceholder]="floatLabelShowPlaceholder()"
+        [(value)]="floatLabelDemoValue"
+      />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>States</h3>
     <div class="field-grid">
       <gog-select label="Disabled" [options]="frameworks" [value]="'angular'" [disabled]="true" />

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   CheckboxComponent,
+  GogFloatLabelVariant,
   GogSelectOption,
   GogSize,
   IconComponent,
@@ -83,4 +84,19 @@ export class SelectPage {
   protected readonly sortValue = signal<string | number | null>('newest');
 
   protected readonly ariaOnlyValue = signal<string | number | null>(null);
+
+  protected readonly floatLabelOptions: GogSelectOption[] = [
+    { id: 'none', name: 'None' },
+    { id: 'in', name: 'In' },
+    { id: 'on', name: 'On' },
+    { id: 'over', name: 'Over' },
+  ];
+  protected readonly floatLabelVariant = signal<GogFloatLabelVariant>('in');
+  protected readonly floatLabelShowPlaceholder = signal(false);
+  protected readonly floatLabelDemoValue = signal<string | number | null>(null);
+
+  protected setFloatLabelVariant(value: string | number | null): void {
+    if (value === null) return;
+    this.floatLabelVariant.set(value as GogFloatLabelVariant);
+  }
 }

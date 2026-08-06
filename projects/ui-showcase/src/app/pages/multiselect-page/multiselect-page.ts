@@ -2,15 +2,24 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   CheckboxComponent,
+  GogDropdownOption,
+  GogFloatLabelVariant,
   GogMultiselectOption,
   GogSize,
   IconComponent,
   MultiselectComponent,
+  SelectComponent,
 } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-multiselect-page',
-  imports: [MultiselectComponent, CheckboxComponent, IconComponent, ReactiveFormsModule],
+  imports: [
+    MultiselectComponent,
+    CheckboxComponent,
+    IconComponent,
+    ReactiveFormsModule,
+    SelectComponent,
+  ],
   templateUrl: './multiselect-page.html',
   styleUrl: './multiselect-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -79,4 +88,19 @@ export class MultiselectPage {
   protected readonly sortValue = signal<(string | number)[]>([]);
 
   protected readonly ariaOnlyValue = signal<(string | number)[]>([]);
+
+  protected readonly floatLabelOptions: GogDropdownOption[] = [
+    { id: 'none', name: 'None' },
+    { id: 'in', name: 'In' },
+    { id: 'on', name: 'On' },
+    { id: 'over', name: 'Over' },
+  ];
+  protected readonly floatLabelVariant = signal<GogFloatLabelVariant>('in');
+  protected readonly floatLabelShowPlaceholder = signal(false);
+  protected readonly floatLabelDemoValue = signal<(string | number)[]>([]);
+
+  protected setFloatLabelVariant(value: string | number | null): void {
+    if (value === null) return;
+    this.floatLabelVariant.set(value as GogFloatLabelVariant);
+  }
 }

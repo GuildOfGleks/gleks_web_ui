@@ -88,6 +88,45 @@
   </article>
 
   <article class="card">
+    <h3>Float label</h3>
+    <p class="lead">
+      <code>floatLabel</code> makes the label rest inside the field like a placeholder, then
+      float up on focus or once there's a value — <code>'in'</code> stays inside the border,
+      <code>'on'</code> floats to the border line, <code>'over'</code> floats fully above it.
+      <code>floatLabelShowPlaceholder</code> reveals the field's own <code>placeholder</code>
+      once floated (it's hidden the whole time otherwise). Both are also settable app-wide via
+      <code>GOG_CONFIG.floatLabel</code> — see the Global config page.
+    </p>
+    <div class="field-grid playground__controls">
+      <gog-select
+        label="Variant"
+        [options]="floatLabelOptions"
+        [value]="floatLabelVariant()"
+        (valueChange)="setFloatLabelVariant($event)"
+        [fullWidth]="false"
+      />
+      <gog-checkbox label="Show placeholder once floated" [(checked)]="floatLabelShowPlaceholder" />
+    </div>
+    <div class="field-grid">
+      <gog-inputfield
+        label="Email"
+        placeholder="you@example.com"
+        [floatLabel]="floatLabelVariant()"
+        [floatLabelShowPlaceholder]="floatLabelShowPlaceholder()"
+        [(value)]="floatLabelValue"
+      />
+      <gog-inputfield
+        label="Search"
+        iconStart="info"
+        placeholder="Search anything"
+        [floatLabel]="floatLabelVariant()"
+        [floatLabelShowPlaceholder]="floatLabelShowPlaceholder()"
+        [(value)]="floatLabelIconValue"
+      />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Reactive forms — automatic error timing</h3>
     <p class="lead">
       With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides for

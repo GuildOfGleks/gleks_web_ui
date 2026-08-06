@@ -1,16 +1,37 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TextareaComponent } from '@guildofgleks/ui';
+import {
+  CheckboxComponent,
+  GogDropdownOption,
+  GogFloatLabelVariant,
+  SelectComponent,
+  TextareaComponent,
+} from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-textarea-page',
-  imports: [TextareaComponent, ReactiveFormsModule],
+  imports: [CheckboxComponent, ReactiveFormsModule, SelectComponent, TextareaComponent],
   templateUrl: './textarea-page.html',
   styleUrl: './textarea-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextareaPage {
+  protected readonly floatLabelOptions: GogDropdownOption[] = [
+    { id: 'none', name: 'None' },
+    { id: 'in', name: 'In' },
+    { id: 'on', name: 'On' },
+    { id: 'over', name: 'Over' },
+  ];
+  protected readonly floatLabelVariant = signal<GogFloatLabelVariant>('in');
+  protected readonly floatLabelShowPlaceholder = signal(false);
+  protected readonly floatLabelValue = signal('');
+
+  protected setFloatLabelVariant(value: string | number | null): void {
+    if (value === null) return;
+    this.floatLabelVariant.set(value as GogFloatLabelVariant);
+  }
+
   protected readonly bio = signal(
     'Ada Lovelace wrote the first published algorithm intended for machine execution.',
   );

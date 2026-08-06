@@ -1,18 +1,40 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { InputfieldComponent } from '@guildofgleks/ui';
+import {
+  CheckboxComponent,
+  GogDropdownOption,
+  GogFloatLabelVariant,
+  InputfieldComponent,
+  SelectComponent,
+} from '@guildofgleks/ui';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 @Component({
   selector: 'app-inputfield-page',
-  imports: [InputfieldComponent, ReactiveFormsModule],
+  imports: [CheckboxComponent, InputfieldComponent, ReactiveFormsModule, SelectComponent],
   templateUrl: './inputfield-page.html',
   styleUrl: './inputfield-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputfieldPage {
+  protected readonly floatLabelOptions: GogDropdownOption[] = [
+    { id: 'none', name: 'None' },
+    { id: 'in', name: 'In' },
+    { id: 'on', name: 'On' },
+    { id: 'over', name: 'Over' },
+  ];
+  protected readonly floatLabelVariant = signal<GogFloatLabelVariant>('in');
+  protected readonly floatLabelShowPlaceholder = signal(false);
+  protected readonly floatLabelValue = signal('');
+  protected readonly floatLabelIconValue = signal('');
+
+  protected setFloatLabelVariant(value: string | number | null): void {
+    if (value === null) return;
+    this.floatLabelVariant.set(value as GogFloatLabelVariant);
+  }
+
   protected readonly name = signal('Ada Lovelace');
   protected readonly email = signal('');
   protected readonly emailError = computed(() => {
