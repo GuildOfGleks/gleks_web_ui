@@ -56,16 +56,21 @@
   position: absolute;
   inset-inline: 0;
   height: var(--gog-slider-track-height);
+  border: var(--gog-slider-track-border-width) var(--gog-slider-track-border-style)
+    var(--gog-slider-track-border-color);
   border-radius: var(--gog-slider-track-radius);
   overflow: hidden;
   background-color: var(--gog-slider-track-bg);
   pointer-events: none;
+  box-sizing: border-box;
 }
 
 .gog-slider__fill {
   width: 100%;
   height: 100%;
-  background-color: var(--gog-slider-fill-bg);
+  /* `background` (not `background-color`) so --gog-slider-fill-bg also accepts a
+     gradient, not just a solid color. */
+  background: var(--gog-slider-fill-bg);
   transform: scaleX(var(--fill-scale, 0));
   transform-origin: left center;
   will-change: transform;
@@ -122,4 +127,70 @@
   .gog-slider__thumb {
     will-change: auto;
   }
+}
+
+/*
+ * === Vertical orientation ===
+ * Full, self-contained rules per element rather than incremental overrides of the
+ * horizontal ones above — the axes are swapped enough (which dimension is "length" vs.
+ * "thickness", which edge is 0%) that patching individual properties would leave stray
+ * horizontal-only declarations in place. `--thumb-pos` / `--fill-scale` themselves are
+ * unchanged (see slider.component.ts) — only how this block *uses* them differs.
+ */
+.gog-slider--vertical {
+  /* The slider's own width is now its thickness, not its length — no content of its own
+     to shrink-wrap to (same reasoning as --gog-slider-auto-width), and `fullWidth` doesn't
+     apply here (see the input's doc comment). Children (header, track-container,
+     range-labels) keep the default `align-items: stretch`, so they stretch to whatever
+     width that resolves to — the header's label/value row included. */
+  width: fit-content;
+}
+
+.gog-slider--vertical .gog-slider__track-container {
+  /* track/thumb/input are all position: absolute (see below and the shared rules above),
+     so they don't participate in this container's flex layout — only its box size (the
+     vertical length, and the thickness inherited from the horizontal track-area-height
+     token) matters here. */
+  height: var(--gog-slider-vertical-length);
+  width: var(--gog-slider-track-area-height);
+}
+
+.gog-slider--vertical .gog-slider__track {
+  inset-inline: auto;
+  inset-block: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: var(--gog-slider-track-height);
+  height: 100%;
+}
+
+.gog-slider--vertical .gog-slider__fill {
+  transform: scaleY(var(--fill-scale, 0));
+  transform-origin: bottom center;
+}
+
+.gog-slider--vertical .gog-slider__thumb {
+  /* Value increases upward (min at the bottom), matching the native input's
+     writing-mode: vertical-lr + direction: rtl below and most vertical-slider
+     conventions (e.g. volume sliders). */
+  top: calc(100% - var(--thumb-pos, 0%));
+  left: 50%;
+}
+
+.gog-slider--vertical .gog-slider__input {
+  /* The modern, non-vendor-prefixed way to get a vertical range input: rotates its whole
+     layout (including native drag/keyboard handling) onto the block axis. `direction: rtl`
+     flips the value axis so it still increases upward instead of downward. */
+  writing-mode: vertical-lr;
+  direction: rtl;
+}
+
+.gog-slider--vertical .gog-slider__range-labels {
+  /* Not stretched to the track's length — this sits below it, not beside it, so matching
+     heights wouldn't align the labels with the track's ends anyway. column-reverse just
+     keeps the reading order consistent with the track's value direction: max (top of the
+     track) listed first, min (bottom) listed second. */
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 2px;
 }

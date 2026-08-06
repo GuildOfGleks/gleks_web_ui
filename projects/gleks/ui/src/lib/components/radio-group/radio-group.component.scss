@@ -1,0 +1,131 @@
+/* Every value resolves to a `--gog-radio-*` token declared in styles/theme.css. */
+:host {
+  display: block;
+}
+
+.gog-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-radio-group-gap);
+}
+
+.gog-radio-group__label {
+  font-family: var(--gog-radio-font-family);
+  font-size: var(--gog-radio-group-label-size);
+  color: var(--gog-radio-group-label-color);
+}
+
+.gog-radio-group__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-radio-group-option-gap);
+}
+
+.gog-radio-group--horizontal .gog-radio-group__options {
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: var(--gog-radio-group-option-gap-horizontal);
+}
+
+.gog-radio-group--disabled {
+  opacity: var(--gog-radio-disabled-opacity);
+  pointer-events: none;
+}
+
+.gog-radio-group__error {
+  font-family: var(--gog-radio-font-family);
+  font-size: var(--gog-radio-error-font-size);
+  color: var(--gog-radio-error-color);
+}
+
+/*
+ * Box/label size come from the `--gog-control-checkbox-*` scale via the shared
+ * checkable-control config, set on the host in radio-group.component.ts, and must NOT be
+ * redeclared here — a declaration on this element would always win over the value
+ * inherited from the host, pinning every group to the same size regardless of `size()`.
+ */
+.gog-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gog-radio-gap);
+  padding: var(--gog-radio-padding, var(--gog-control-checkbox-padding));
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.gog-radio--disabled {
+  opacity: var(--gog-radio-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.gog-radio__input {
+  position: absolute;
+  top: var(--gog-radio-padding, var(--gog-control-checkbox-padding));
+  left: var(--gog-radio-padding, var(--gog-control-checkbox-padding));
+  width: var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md));
+  height: var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md));
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.gog-radio__box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md));
+  height: var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md));
+  box-sizing: border-box;
+  border: var(--gog-radio-border-width) var(--gog-radio-border-style) var(--gog-radio-border-color);
+  border-radius: 50%;
+  background-color: var(--gog-radio-bg);
+  flex: 0 0 auto;
+  transition:
+    border-color var(--gog-radio-transition-duration) var(--gog-easing),
+    background-color var(--gog-radio-transition-duration) var(--gog-easing);
+}
+
+.gog-radio__box--checked {
+  border-color: var(--gog-radio-checked-border);
+  background-color: var(--gog-radio-checked-bg);
+}
+
+.gog-radio__dot {
+  width: calc(
+    var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md)) * var(--gog-radio-dot-size-ratio)
+  );
+  height: calc(
+    var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md)) * var(--gog-radio-dot-size-ratio)
+  );
+  border-radius: 50%;
+  background-color: var(--gog-radio-dot-color);
+  pointer-events: none;
+}
+
+.gog-radio__label {
+  font-family: var(--gog-radio-font-family);
+  font-size: var(--gog-radio-label-size, var(--gog-control-checkbox-label-size-md));
+  line-height: var(--gog-radio-label-line-height);
+  color: var(--gog-radio-label-color);
+}
+
+.gog-radio__input:focus-visible + .gog-radio__box {
+  outline: var(--gog-radio-focus-ring-width) solid var(--gog-radio-focus-ring);
+  outline-offset: var(--gog-radio-focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-radio__box {
+    transition: none;
+  }
+}
+
+/* === Full width === */
+:host(.gog-host--full-width) .gog-radio-group__options {
+  width: 100%;
+}
+
+:host(.gog-host--full-width) .gog-radio {
+  width: 100%;
+}

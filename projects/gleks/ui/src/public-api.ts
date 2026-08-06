@@ -8,6 +8,7 @@ export * from './lib/components/collapsible/collapsible.component';
 export * from './lib/components/collapsible/collapsible-trigger.directive';
 export * from './lib/components/collapsible/collapsible-content.directive';
 export * from './lib/components/checkbox/checkbox.component';
+export * from './lib/components/radio-group/radio-group.component';
 export * from './lib/components/dialog/confirmation-dialog/confirmation-dialog.component';
 export * from './lib/components/dialog/dialog.component';
 export * from './lib/components/dialog/dialog.tokens';

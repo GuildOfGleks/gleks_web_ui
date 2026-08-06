@@ -8,11 +8,39 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- `gog-slider`'s new `orientation` input (`'horizontal'` default / `'vertical'`) — the
+  developer picks per instance, no global default, since it's a layout decision rather than a
+  house style. The vertical variant is the same native `<input type="range">` rotated via
+  `writing-mode: vertical-lr` + `direction: rtl` (not a custom drag implementation), so
+  dragging, touch and keyboard (Up/Down as well as Left/Right) all keep working exactly as they
+  do horizontally; value increases upward, matching a volume-fader convention. New
+  `--gog-slider-vertical-length` token (default `160px`) sizes its length, the vertical
+  counterpart to `--gog-slider-auto-width`. `fullWidth` is ignored when vertical, since a
+  vertical slider's width is its thickness, not its length.
+- `gog-radio-group`: a new options-driven radio control (`GogRadioOption[]`), the radio
+  counterpart to `gog-checkbox`. Renders native `<input type="radio">`s sharing one
+  auto-generated (or explicit `name`) group name, so mutual exclusivity and arrow-key/Home/End
+  navigation between options come from the browser for free — no roving-focus code needed.
+  `ControlValueAccessor`-based, works with `formControl`/`formControlName`. `label`,
+  `ariaLabel`, `name`, `size`, `disabled` (group-level, plus per-option `disabled`),
+  `orientation` (`'vertical'` default / `'horizontal'`), `errorMessage`, `errorDisplay` and
+  `fullWidth` inputs; `[(value)]` two-way bindable. Reuses the `--gog-control-checkbox-*`
+  size scale via the shared checkable-control config, plus new `--gog-radio-*` tokens in
+  `theme.css`.
 - `gog-collapsible`'s `collapseOnFocusOut` input (`boolean`, default `false`): closes the
   panel once focus leaves both the trigger and the content — e.g. Tabbing past the last
   focusable element inside, or a click landing elsewhere on the page. Off by default, since
   plenty of consumers (an FAQ list, a settings section read top to bottom) want the panel to
   stay open regardless of where focus goes next.
+
+### Changed
+
+- `gog-slider`'s track now paints a border (new `--gog-slider-track-border-width`/`-style`/
+  `-color` tokens, transparent by default — same opt-in convention as `--gog-btn-primary-border`)
+  and its fill is bound via `background` instead of `background-color`, so
+  `--gog-slider-fill-bg` also accepts a gradient (e.g. `linear-gradient(...)`), not just a
+  solid color. The thumb ("handle") was already fully customizable via its existing
+  `--gog-slider-thumb-*` tokens (size, background, border, radius, glow) — no change there.
 
 ## [21.2.4] - 2026-08-05
 

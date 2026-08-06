@@ -6,6 +6,7 @@ export type GogTagShape = 'rounded' | 'pill';
 export type GogSkeletonShape = 'text' | 'circle' | 'rect';
 export type GogSkeletonAnimation = 'pulse' | 'wave' | 'none';
 export type GogPaginatorRangeMode = 'window' | 'ellipsis';
+export type GogSliderOrientation = 'horizontal' | 'vertical';
 export type GogScrollAxis = 'vertical' | 'horizontal' | 'both';
 export type GogScrollSize = 'normal' | 'thin';
 /**

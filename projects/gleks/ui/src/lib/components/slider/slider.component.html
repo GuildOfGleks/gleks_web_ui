@@ -2,6 +2,7 @@
   class="gog-slider gog-contained-layout"
   [class.gog-slider--disabled]="isDisabled()"
   [class.gog-slider--thumb-hidden]="!showThumb()"
+  [class.gog-slider--vertical]="isVertical()"
 >
   <div class="gog-slider__header">
     @if (label()) {
@@ -32,6 +33,7 @@
       [attr.aria-valuenow]="clampedValue()"
       [attr.aria-invalid]="hasError()"
       [attr.aria-describedby]="errorId()"
+      [attr.aria-orientation]="isVertical() ? 'vertical' : null"
       [min]="min()"
       [max]="max()"
       [step]="step()"

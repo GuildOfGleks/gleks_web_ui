@@ -72,6 +72,37 @@ describe('SliderComponent', () => {
     ).toBe(true);
   });
 
+  describe('orientation', () => {
+    it('defaults to horizontal, applying neither the vertical class nor aria-orientation', () => {
+      fixture.detectChanges();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(fixture.nativeElement.querySelector('.gog-slider--vertical')).toBeNull();
+      expect(input.hasAttribute('aria-orientation')).toBe(false);
+    });
+
+    it('applies the vertical class and aria-orientation when set to vertical', () => {
+      fixture.componentRef.setInput('orientation', 'vertical');
+      fixture.detectChanges();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(fixture.nativeElement.querySelector('.gog-slider--vertical')).toBeTruthy();
+      expect(input.getAttribute('aria-orientation')).toBe('vertical');
+    });
+
+    it('still updates value from the range input when vertical', () => {
+      fixture.componentRef.setInput('orientation', 'vertical');
+      fixture.detectChanges();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      input.value = '33';
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      expect(component.value()).toBe(33);
+    });
+  });
+
   describe('clamping', () => {
     it('clamps writeValue (CVA) to the min/max range', () => {
       fixture.componentRef.setInput('min', 0);

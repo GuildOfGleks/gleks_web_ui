@@ -11,6 +11,7 @@ import {
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
+import { GogSliderOrientation } from '../../shared/types';
 
 @Component({
   selector: 'gog-slider',
@@ -48,8 +49,21 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
    * `--gog-slider-auto-width` instead — a slider's track has no content of its own to
    * shrink-wrap to, so unlike the other field controls this needs an explicit fallback
    * width rather than `fit-content`.
+   *
+   * Ignored when `orientation` is `'vertical'`: a vertical slider's own width is its
+   * thickness, not its length, so it always sizes to fit its content. Its length instead
+   * comes from `--gog-slider-vertical-length` (default `160px`), same idea as
+   * `--gog-slider-auto-width` for the horizontal auto-width case.
    */
   readonly fullWidth = input(true);
+  /**
+   * `'horizontal'` (default) or `'vertical'`. The developer picks per instance — there is
+   * no global default for this, since it's a layout decision tied to where the slider sits,
+   * not a house style. Backed by a native `<input type="range">` rotated via `writing-mode`,
+   * so dragging, touch and keyboard (Up/Down as well as Left/Right) all keep working exactly
+   * as they do horizontally.
+   */
+  readonly orientation = input<GogSliderOrientation>('horizontal');
 
   /** Two-way bindable value: `[(value)]="signal"`. */
   readonly value = model<number>(0);
@@ -76,6 +90,7 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
 
   protected readonly thumbPos = computed(() => `${this.fillPercent()}%`);
   protected readonly fillScale = computed(() => this.fillPercent() / 100);
+  protected readonly isVertical = computed(() => this.orientation() === 'vertical');
   protected readonly hasError = this.errorState.hasError;
   protected readonly visibleError = this.errorState.visibleError;
   protected readonly errorId = computed(() => (this.hasError() ? `${this.inputId}-error` : null));
