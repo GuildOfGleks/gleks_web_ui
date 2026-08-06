@@ -86,6 +86,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/toast-page/toast-page').then((m) => m.ToastPage),
   },
   {
+    path: 'tooltip',
+    loadComponent: () => import('./pages/tooltip-page/tooltip-page').then((m) => m.TooltipPage),
+  },
+  {
     path: 'tag',
     loadComponent: () => import('./pages/tag-page/tag-page').then((m) => m.TagPage),
   },

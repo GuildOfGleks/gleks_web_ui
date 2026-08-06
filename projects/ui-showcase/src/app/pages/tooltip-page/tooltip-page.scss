@@ -1,0 +1,62 @@
+@use '../detail' as *;
+
+.playground {
+  padding: 24px;
+  border: 1px dashed var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  justify-content: center;
+}
+
+.playground__controls {
+  margin-top: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  align-items: end;
+}
+
+.sides-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+  padding: 48px 24px;
+  justify-content: center;
+}
+
+.rich-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.native-btn,
+.native-link,
+.native-disabled button {
+  font: inherit;
+  color: var(--gog-text-color);
+}
+
+.native-btn {
+  padding: 8px 14px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  cursor: pointer;
+}
+
+.native-hint {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: default;
+}
+
+.native-link {
+  color: var(--gog-accent-color);
+}
+
+.native-disabled button {
+  padding: 8px 14px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  opacity: var(--gog-disabled-opacity);
+  cursor: not-allowed;
+}

@@ -1,0 +1,221 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gogTooltip</p>
+    <h2>Tooltip</h2>
+    <p class="lead">
+      Not a component — an attribute directive you drop onto anything: a
+      <code>gog-*</code> component's own host tag, or a plain native element. It renders a
+      small hover/focus hint, appended to <code>document.body</code> so it's never clipped
+      by an ancestor's <code>overflow: hidden</code>.
+    </p>
+    <pre class="code-block"><code>&lt;button gogTooltip="Save changes"&gt;Save&lt;/button&gt;
+
+&lt;gog-chip [gogTooltip]="'Assigned to Aeliana'"&gt;AK&lt;/gog-chip&gt;</code></pre>
+  </div>
+
+  <article class="card">
+    <h3>Playground</h3>
+    <p class="lead">
+      <code>gogTooltipPosition</code>, <code>gogTooltipShowDelay</code>,
+      <code>gogTooltipHideDelay</code> and <code>gogTooltipDisabled</code> — hover or focus the
+      button below and adjust the controls to see each one take effect live.
+    </p>
+    <div class="action-row playground">
+      <gog-button
+        gogTooltip="A hint that respects whatever you set below"
+        [gogTooltipPosition]="playgroundPosition()"
+        [gogTooltipShowDelay]="playgroundShowDelay()"
+        [gogTooltipHideDelay]="playgroundHideDelay()"
+        [gogTooltipDisabled]="playgroundDisabled()"
+      >
+        Hover or focus me
+      </gog-button>
+    </div>
+    <div class="field-grid playground__controls">
+      <gog-select
+        label="Position"
+        [options]="positionOptions"
+        [value]="playgroundPosition()"
+        (valueChange)="setPlaygroundPosition($event)"
+        [fullWidth]="false"
+      />
+      <gog-slider
+        label="Show delay ({{ playgroundShowDelay() }}ms)"
+        [min]="0"
+        [max]="1500"
+        [step]="50"
+        [(value)]="playgroundShowDelay"
+      />
+      <gog-slider
+        label="Hide delay ({{ playgroundHideDelay() }}ms)"
+        [min]="0"
+        [max]="1500"
+        [step]="50"
+        [(value)]="playgroundHideDelay"
+      />
+      <gog-checkbox label="Disabled" [(checked)]="playgroundDisabled" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>All four sides, plus auto</h3>
+    <p class="lead">
+      An explicit <code>top</code>/<code>bottom</code>/<code>left</code>/<code>right</code>
+      flips to its opposite if it doesn't fit where requested (try this near a viewport edge).
+      <code>'auto'</code> — the default — just picks whichever side has room, top first.
+    </p>
+    <div class="sides-grid">
+      <gog-button variant="outline" gogTooltip="Pinned above" gogTooltipPosition="top">
+        top
+      </gog-button>
+      <gog-button variant="outline" gogTooltip="Pinned below" gogTooltipPosition="bottom">
+        bottom
+      </gog-button>
+      <gog-button variant="outline" gogTooltip="Pinned to the left" gogTooltipPosition="left">
+        left
+      </gog-button>
+      <gog-button variant="outline" gogTooltip="Pinned to the right" gogTooltipPosition="right">
+        right
+      </gog-button>
+      <gog-button variant="outline" gogTooltip="Whichever side fits" gogTooltipPosition="auto">
+        auto
+      </gog-button>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>On library components</h3>
+    <p class="lead">
+      <code>[gogTooltip]</code> lands on the component's own host tag — no wrapper element,
+      no extra markup, and it works whether or not the component projects content.
+    </p>
+    <div class="action-row">
+      <gog-button gogTooltip="Runs a full sync with the server">Sync now</gog-button>
+      <gog-tag variant="warning" iconName="warning" gogTooltip="3 items need review before shipping">
+        Needs review
+      </gog-tag>
+      <gog-chip ariaLabel="Aeliana Khost" gogTooltip="Aeliana Khost — workspace owner">
+        AK
+      </gog-chip>
+      <gog-icon name="info" gogTooltip="Synced 2 minutes ago" gogTooltipPosition="right" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>On native elements</h3>
+    <p class="lead">
+      Just as at home on markup the library never touches — a native button, a piece of
+      text, a link, or a disabled control (where the native <code>title</code> attribute is
+      the only other option and can't be styled or delayed at all).
+    </p>
+    <div class="action-row">
+      <button type="button" class="native-btn" gogTooltip="A completely native &lt;button&gt;">
+        Native button
+      </button>
+      <span class="native-hint" gogTooltip="Rendered exactly as typed, no markup of its own" tabindex="0">
+        Hover this text
+      </span>
+      <a href="#" class="native-link" gogTooltip="Links work the same way" (click)="$event.preventDefault()">
+        A link
+      </a>
+      <span
+        class="native-disabled"
+        gogTooltip="Disabled until the form is valid"
+        tabindex="0"
+      >
+        <button type="button" disabled>Disabled button</button>
+      </span>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Rich content</h3>
+    <p class="lead">
+      <code>[gogTooltip]</code> also accepts a <code>TemplateRef</code> instead of a plain
+      string, for a hint that needs its own markup.
+    </p>
+    <div class="action-row">
+      <gog-button variant="secondary" [gogTooltip]="richHint">With an icon</gog-button>
+    </div>
+    <ng-template #richHint>
+      <span class="rich-hint">
+        <gog-icon name="success" />
+        Deploys are green
+      </span>
+    </ng-template>
+  </article>
+
+  <article class="card">
+    <h3>Styling one instance</h3>
+    <p class="lead">
+      The bubble is appended straight to <code>document.body</code>, outside any component's
+      own view — so a <code>--gog-tooltip-*</code> override scoped to some wrapper around the
+      trigger (a page's own stylesheet, an <code>::ng-deep</code>) never reaches it, only a
+      <code>:root</code>-level one does. To restyle a single instance,
+      <code>gogTooltipClass</code> puts a class straight onto the bubble itself; the class
+      still has to live in an <em>unscoped</em> stylesheet (a global <code>styles.scss</code>,
+      not a component's own) for the same reason. See <code>.showcase-tooltip--brand</code>
+      in this app's <code>styles.scss</code>.
+    </p>
+    <div class="action-row">
+      <gog-button
+        variant="outline"
+        gogTooltip="Styled entirely via gogTooltipClass"
+        gogTooltipClass="showcase-tooltip--brand"
+      >
+        Custom styled
+      </gog-button>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Content &amp; sizing</h3>
+    <p class="lead">
+      No default cap on height — a hint is meant to read as a short paragraph, not a
+      scrollable panel, so it just wraps to <code>--gog-tooltip-max-width</code>
+      (<code>280px</code> by default) and grows as tall as it needs. A single unbroken run of
+      characters longer than the max-width still breaks mid-word instead of overflowing it.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" [gogTooltip]="longText">Long paragraph</gog-button>
+      <gog-button variant="outline" [gogTooltip]="unbreakableText">
+        One long unbroken word
+      </gog-button>
+      <gog-button variant="outline" gogTooltip="A narrower bubble" gogTooltipClass="showcase-tooltip--narrow">
+        Narrower max-width
+      </gog-button>
+      <gog-button
+        variant="outline"
+        [gogTooltip]="longCapped"
+        gogTooltipClass="showcase-tooltip--capped"
+      >
+        Capped height + scroll
+      </gog-button>
+    </div>
+    <p class="meta">
+      "Capped height + scroll" adds a plain <code>max-height</code> +
+      <code>overflow-y: auto</code> through the same <code>gogTooltipClass</code> mechanism —
+      not a library feature, since most hints shouldn't need it, but there's nothing stopping
+      a consumer who wants it for one unusually long tooltip.
+    </p>
+    <ng-template #longCapped>
+      <p>Every environment its own approval chain:</p>
+      <p>1. A merge to main queues a build and deploys to staging automatically.</p>
+      <p>2. Staging soak time is 30 minutes minimum before production is even offered.</p>
+      <p>3. Production requires sign-off from a workspace admin, logged with a reason.</p>
+      <p>4. Rollbacks go through the exact same approval step as a forward deploy.</p>
+    </ng-template>
+  </article>
+
+  <article class="card">
+    <h3>Global defaults</h3>
+    <p class="lead">
+      <code>gogTooltipPosition</code>, <code>gogTooltipShowDelay</code> and
+      <code>gogTooltipHideDelay</code> all fall back to <code>GOG_CONFIG.tooltip</code> when
+      left unset on an instance, the same as every other configurable input in the library —
+      see the <a routerLink="/global-config">Global Config</a> page. Without it connected,
+      as on this page, they use their own built-in defaults: <code>'auto'</code>,
+      <code>300ms</code> and <code>100ms</code>.
+    </p>
+  </article>
+</section>

@@ -61,6 +61,7 @@ export class App {
     { path: 'accordion', label: 'Accordion' },
     { path: 'collapsible', label: 'Collapsible' },
     { path: 'toast', label: 'Toast' },
+    { path: 'tooltip', label: 'Tooltip' },
     { path: 'tag', label: 'Tag' },
     { path: 'dialog', label: 'Dialog' },
   ];

@@ -494,3 +494,30 @@ body {
 * {
   box-sizing: border-box;
 }
+
+/*
+ * Styling demo for the Tooltip showcase page (`gogTooltipClass="showcase-tooltip--brand"`).
+ * A `gogTooltip` bubble is appended straight to `document.body`, outside any component's
+ * own view — a rule written in that page's own (emulated-encapsulation) stylesheet would be
+ * compiled with an attribute selector the bubble never carries, so it silently wouldn't
+ * match. Global, unscoped CSS like this file is the one place an override like this can
+ * actually reach it — see `--gog-tooltip-*` in `theme.css` for the full token list.
+ */
+.showcase-tooltip--brand {
+  --gog-tooltip-bg: var(--gog-accent-color);
+  --gog-tooltip-color: var(--gog-accent-text-color);
+  --gog-tooltip-border-color: var(--gog-accent-dim);
+  --gog-tooltip-radius: 999px;
+}
+
+.showcase-tooltip--narrow {
+  --gog-tooltip-max-width: 120px;
+}
+
+/* max-height/overflow aren't --gog-tooltip-* tokens (the library doesn't cap height by
+   default — see the Tooltip page's "Content & sizing" card) — plain CSS properties reach
+   the bubble through gogTooltipClass exactly the same way a token override does. */
+.showcase-tooltip--capped {
+  max-height: 90px;
+  overflow-y: auto;
+}
