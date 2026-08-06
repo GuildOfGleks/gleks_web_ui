@@ -99,6 +99,16 @@ export class GogTooltipDirective {
   private hideTimer: ReturnType<typeof setTimeout> | null = null;
   private repositionFrame: number | null = null;
   private readonly onReflow = () => this.scheduleReposition();
+  /**
+   * Bound to the bubble itself (see `show()`) so moving the pointer off the trigger and
+   * onto the bubble — to read more of it, or to scroll one tall enough to need it — cancels
+   * the pending hide instead of racing it; leaving the bubble then re-queues the same hide
+   * delay leaving the trigger would. WCAG 2.1 SC 1.4.13 "hoverable" requires exactly this:
+   * hover-triggered content has to stay visible while the pointer is over the content, not
+   * just the trigger.
+   */
+  private readonly onBubbleMouseEnter = () => this.cancelTimers();
+  private readonly onBubbleMouseLeave = () => this.queueHide();
 
   constructor() {
     this.destroyRef.onDestroy(() => this.cleanup());
@@ -165,6 +175,10 @@ export class GogTooltipDirective {
     const ref = this.overlay.attach(hostEl);
     this.activeRef = ref;
     this.isVisible.set(true);
+
+    const bubbleEl = this.overlay.bubbleElement;
+    bubbleEl?.addEventListener('mouseenter', this.onBubbleMouseEnter);
+    bubbleEl?.addEventListener('mouseleave', this.onBubbleMouseLeave);
 
     ref.setInput('bubbleId', this.uid);
     ref.setInput('content', content);

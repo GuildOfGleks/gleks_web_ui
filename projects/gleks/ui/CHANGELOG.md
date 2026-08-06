@@ -42,8 +42,11 @@ reached 1.0, so breaking changes may land in minor versions.
   `gogTooltipDisabled` inputs; the first three also read `GOG_CONFIG.tooltip` for an
   app-wide default the same way `gog-scroll`/`gog-button` already do, with an instance's own
   input always winning. Shown on both mouse hover and keyboard focus (`focusin`/`focusout`,
-  not `focus`/`blur`, so it stays replay-safe under SSR event replay) and dismissible with
-  Escape, per WCAG 2.1 SC 1.4.13. The bubble is appended to `document.body` (so it's never
+  not `focus`/`blur`, so it stays replay-safe under SSR event replay), dismissible with
+  Escape, and hoverable — moving the pointer from the trigger onto the bubble itself (e.g. to
+  read more of a long one, or scroll one taller than its `gogTooltipClass`-set `max-height`)
+  cancels the pending hide instead of racing it — per WCAG 2.1 SC 1.4.13. The bubble is
+  appended to `document.body` (so it's never
   clipped by an ancestor's `overflow: hidden`) via a new internal `GogTooltipOverlay`, built
   on `ViewContainerRef.createComponent` + relocating the node rather than
   `GogDropdownOverlay`'s `TemplateRef` approach, since a directive has no template of its

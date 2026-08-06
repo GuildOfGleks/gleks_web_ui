@@ -193,6 +193,42 @@ describe('GogTooltipDirective', () => {
     expect(trigger.getAttribute('aria-describedby')).toBeNull();
   });
 
+  it('stays open when the pointer moves onto the bubble before the hide delay elapses', () => {
+    vi.useFakeTimers();
+    trigger.dispatchEvent(new MouseEvent('mouseenter'));
+    vi.advanceTimersByTime(300);
+    fixture.detectChanges();
+    const shownBubble = bubble();
+    expect(shownBubble).not.toBeNull();
+
+    trigger.dispatchEvent(new MouseEvent('mouseleave'));
+    vi.advanceTimersByTime(50);
+    shownBubble!.dispatchEvent(new MouseEvent('mouseenter'));
+    vi.advanceTimersByTime(1000);
+    fixture.detectChanges();
+
+    expect(bubble()).not.toBeNull();
+  });
+
+  it('closes on the hide delay after the pointer leaves the bubble', () => {
+    vi.useFakeTimers();
+    trigger.dispatchEvent(new MouseEvent('mouseenter'));
+    vi.advanceTimersByTime(300);
+    fixture.detectChanges();
+    const shownBubble = bubble();
+
+    trigger.dispatchEvent(new MouseEvent('mouseleave'));
+    shownBubble!.dispatchEvent(new MouseEvent('mouseenter'));
+    shownBubble!.dispatchEvent(new MouseEvent('mouseleave'));
+    vi.advanceTimersByTime(99);
+    fixture.detectChanges();
+    expect(bubble()).not.toBeNull();
+
+    vi.advanceTimersByTime(1);
+    fixture.detectChanges();
+    expect(bubble()).toBeNull();
+  });
+
   it('removes the bubble from document.body when the host is destroyed while shown', () => {
     vi.useFakeTimers();
     trigger.dispatchEvent(new MouseEvent('mouseenter'));

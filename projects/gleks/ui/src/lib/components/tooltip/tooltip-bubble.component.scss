@@ -20,9 +20,12 @@
   font-size: var(--gog-tooltip-font-size);
   line-height: var(--gog-tooltip-line-height);
   box-shadow: var(--gog-tooltip-shadow);
-  /* Non-interactive by design — a short hint, not a panel with its own controls — so it
-     never intercepts the pointer on its way to whatever sits underneath. */
-  pointer-events: none;
+  /* Deliberately NOT pointer-events: none — the pointer needs to be able to reach the
+     bubble at all for the directive's mouseenter/mouseleave bridge (see
+     tooltip.directive.ts's bindBubbleHover) to keep it open while the pointer is over it,
+     e.g. to scroll a tall one. WCAG 2.1 SC 1.4.13 "hoverable" requires exactly this: content
+     shown on hover must stay visible while the pointer is over the content itself, not just
+     the trigger. */
   word-wrap: break-word;
   opacity: 0;
   transform: scale(0.96);
