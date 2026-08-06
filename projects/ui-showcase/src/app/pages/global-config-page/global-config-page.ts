@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ButtonComponent, ScrollComponent } from '@guildofgleks/ui';
+import { ButtonComponent, GogTooltipDirective, ScrollComponent } from '@guildofgleks/ui';
 
 import { GlobalConfigScopeComponent } from './global-config-scope';
 
 @Component({
   selector: 'app-global-config-page',
-  imports: [ButtonComponent, ScrollComponent, GlobalConfigScopeComponent],
+  imports: [ButtonComponent, GogTooltipDirective, ScrollComponent, GlobalConfigScopeComponent],
   templateUrl: './global-config-page.html',
   styleUrl: './global-config-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

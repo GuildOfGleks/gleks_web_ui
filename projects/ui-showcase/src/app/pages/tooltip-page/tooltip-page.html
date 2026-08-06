@@ -196,7 +196,11 @@
       "Capped height + scroll" adds a plain <code>max-height</code> +
       <code>overflow-y: auto</code> through the same <code>gogTooltipClass</code> mechanism —
       not a library feature, since most hints shouldn't need it, but there's nothing stopping
-      a consumer who wants it for one unusually long tooltip.
+      a consumer who wants it for one unusually long tooltip. To actually scroll it: move the
+      mouse from the button down into the bubble before it closes. The bubble is hoverable
+      (WCAG 2.1 SC 1.4.13) — moving the pointer onto it cancels the pending hide the same way
+      re-entering the trigger would, so it stays open (and scrollable) for as long as the
+      pointer is over either one.
     </p>
     <ng-template #longCapped>
       <p>Every environment its own approval chain:</p>

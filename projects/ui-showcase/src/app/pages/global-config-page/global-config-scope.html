@@ -1,7 +1,8 @@
 <div class="scope-demo">
   <p class="meta">
     <code>provideGogConfig(&#123; button: &#123; debounce: 1500 &#125;, scroll: &#123; autoHide:
-    false &#125; &#125;)</code>
+    false &#125;, tooltip: &#123; showDelay: 800, hideDelay: 400, position: 'bottom' &#125;
+    &#125;)</code>
     is in this component's own <code>providers</code> — nothing below was told about it
     explicitly.
   </p>
@@ -10,6 +11,9 @@
     <gog-button (gogClick)="onClick()">Click me fast</gog-button>
     <gog-button variant="ghost" size="sm" type="button" (gogClick)="reset()">Reset</gog-button>
     <span class="meta">Accepted clicks: {{ clickCount() }}</span>
+    <gog-button variant="outline" gogTooltip="Slower to appear, slower to leave, always below">
+      Hover me (configured)
+    </gog-button>
   </div>
 
   <gog-scroll class="scope-demo__scroll">

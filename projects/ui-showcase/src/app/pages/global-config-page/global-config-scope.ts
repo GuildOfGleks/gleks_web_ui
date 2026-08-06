@@ -1,5 +1,10 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ButtonComponent, ScrollComponent, provideGogConfig } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  GogTooltipDirective,
+  ScrollComponent,
+  provideGogConfig,
+} from '@guildofgleks/ui';
 
 /**
  * Everything under this component's own template reads `GOG_CONFIG` from an injector that
@@ -11,7 +16,7 @@ import { ButtonComponent, ScrollComponent, provideGogConfig } from '@guildofglek
  */
 @Component({
   selector: 'app-global-config-scope',
-  imports: [ButtonComponent, ScrollComponent],
+  imports: [ButtonComponent, GogTooltipDirective, ScrollComponent],
   templateUrl: './global-config-scope.html',
   styleUrl: './global-config-scope.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +24,7 @@ import { ButtonComponent, ScrollComponent, provideGogConfig } from '@guildofglek
     provideGogConfig({
       button: { debounce: 1500 },
       scroll: { autoHide: false },
+      tooltip: { showDelay: 800, hideDelay: 400, position: 'bottom' },
     }),
   ],
 })
