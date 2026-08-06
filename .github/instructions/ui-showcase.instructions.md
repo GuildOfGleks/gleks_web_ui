@@ -33,7 +33,16 @@ published:
    `.angular/cache/*/ui-showcase/vite`, and restart it.
 
 A real `npm publish` (the `release` script) is a separate, user-triggered step — never run it
-yourself; this local-copy trick is only for verifying a change before that happens.
+yourself; this local-copy trick is only for verifying a change before that happens. See
+`gleks-ui-library.instructions.md` for the full, non-negotiable "never publish" rule.
+
+**This node_modules is shared with `gleks-ui-lab`.** There is one root-level `node_modules`,
+so step 2 above also affects `gleks-ui-lab`'s resolved `@guildofgleks/ui` for as long as the
+swap is in place — and `gleks-ui-lab` is supposed to reflect the real published package, not
+an unreleased local build. Once you're done verifying here, restore it (`npm install` at the
+repo root is enough) rather than leaving the local build in place. Also stop the `ng serve
+ui-showcase` process you started once verification is complete — see
+`agent-workflow.instructions.md`.
 
 ## Consuming the library
 

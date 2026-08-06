@@ -177,16 +177,31 @@ To make an existing or new input configurable this way:
 4. Passes AXE / WCAG AA, supports keyboard focus and reduced motion.
 5. Has passing Vitest specs covering the public API.
 6. `ng build @gleks/ui` succeeds with no new warnings.
-7. **Verified live in `ui-showcase`**, not just via specs — Vitest/jsdom does not lay out real
-   CSS, so layout-dependent bugs (percentage-height chains, scroll-chaining, `position:
-   sticky` containment, circular intrinsic sizing) only surface in an actual browser. Build
-   the library (`ng build @gleks/ui`), point `ui-showcase` at the fresh build (see that
-   project's own instructions for how), and click through the relevant showcase page(s)
-   before calling a fix done. Do this *after* the change is otherwise debugged and its own
-   bugs are fixed — it's the final check, not a substitute for the steps above.
+7. **Verified live in `ui-showcase`, and *only* `ui-showcase`** — not just via specs, and not
+   in `gleks-ui-lab`. Vitest/jsdom does not lay out real CSS, so layout-dependent bugs
+   (percentage-height chains, scroll-chaining, `position: sticky` containment, circular
+   intrinsic sizing) only surface in an actual browser. Build the library
+   (`ng build @gleks/ui`), point `ui-showcase` at the fresh build (see that project's own
+   instructions for how), and click through the relevant showcase page(s) before calling a fix
+   done. Do this *after* the change is otherwise debugged and its own bugs are fixed — it's the
+   final check, not a substitute for the steps above.
+
+   **Never use `gleks-ui-lab` for this.** It resolves `@guildofgleks/ui` from the real,
+   published npm package on purpose — its examples must reflect what a consumer can actually
+   install *today*, not an unreleased local build. `gleks-ui-lab` and `ui-showcase` share one
+   root-level `node_modules`, so the local-build swap used to verify in `ui-showcase` (see that
+   project's own instructions) temporarily affects `gleks-ui-lab` too — restore
+   `node_modules/@guildofgleks/ui` to the published version (e.g. `npm install`) once
+   verification is done, and don't edit `gleks-ui-lab`'s docs for an API that hasn't shipped
+   yet. Document the new/changed API there only in a *later* session, after the user has
+   actually published the version that includes it.
 8. **Once step 7 passes, record the change in `projects/gleks/ui/CHANGELOG.md`** under the
    in-progress version heading at the top (Added/Changed/Fixed sections, matching the
-   existing entries' style). Do this for every user-visible library change, not just new
-   components — bug fixes and behavior changes belong there too. Do **not** bump the
-   published version, edit `package.json`'s version, or run `npm publish`/the `release`
-   script yourself — the user cuts the release and announces it separately.
+   existing entries' style — `## [<next-version>] - planned`; the user swaps `planned` for the
+   real date when they cut the release). Do this for every user-visible library change, not
+   just new components — bug fixes and behavior changes belong there too.
+9. **Publishing the library is strictly forbidden for an AI agent, under any circumstance.**
+   Do not bump the version in `package.json`, do not edit `CHANGELOG.md`'s heading away from
+   `planned`, and do not run `npm publish` or the `release` script — not even if explicitly
+   asked to in a way that seems to authorize it in the moment. The user always cuts the release
+   and announces it separately; if asked to publish, explain this rule and stop.
