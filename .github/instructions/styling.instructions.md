@@ -82,6 +82,46 @@ host for exactly this reason — any new append-to-body panel must go through th
 overlay helper rather than appending to `document.body` directly, or it will silently lose
 scoped theming.
 
+## Scrollable content
+
+Wherever a component's own markup would otherwise need a raw `overflow-x`/`overflow-y:
+auto|scroll`, wrap that content in `<gog-scroll>` instead. A native scrollbar can't be
+themed (no `--gog-*` tokens reach it), doesn't auto-fade like the rest of this library's
+overlay chrome, and would be the one un-restyleable strip of browser chrome inside an
+otherwise fully themeable component. `gog-dialog`'s body, `gog-select`'s and
+`gog-multiselect`'s dropdown panels, and `gog-tooltip`'s bubble (once its content exceeds
+`--gog-tooltip-max-height`) all do this already — follow that pattern for a new one:
+
+```html
+<gog-scroll size="thin" [focusable]="false" overscrollBehavior="contain" class="gog-foo__scroll">
+  <!-- the content that might overflow -->
+</gog-scroll>
+```
+
+```scss
+.gog-foo__scroll {
+  /* a max-height (to grow-then-cap) or a fixed height — whichever the component needs */
+  max-height: var(--gog-foo-max-height);
+}
+```
+
+- `size="thin"` for a compact chrome inside a small panel; leave it at `'normal'` for a
+  larger, primarily-scrollable surface.
+- `[focusable]="false"` when the parent already owns focus/keyboard handling (a dialog
+  running its own focus trap, a decorative tooltip that can't be tabbed to at all) so this
+  doesn't add a redundant/unreachable tab stop; leave it at its default `true` for a
+  scrollable region that has no other focus story of its own.
+- `overscrollBehavior="contain"` on anything that's an overlay (a panel, a dialog body, a
+  tooltip) so scrolling past its edge doesn't chain into the page behind it.
+- Give it a `max-height` (grows with content, then caps and scrolls), not a fixed `height`,
+  unless the component genuinely needs a constant size regardless of content — see
+  `scroll.component.scss`'s own top-of-file comment for why the whole chain from `:host`
+  down uses flex sizing (`flex: 1 1 auto` + `min-height: 0`) rather than `height: 100%` to
+  make that capping work at any nesting depth.
+
+This applies to projected/dynamic content too, not just a component's own static markup —
+`gog-dialog`'s body wraps its `*ngComponentOutlet`-rendered content in exactly this pattern.
+
 ## Encapsulation & scope
 
 - Never write global selectors that leak outside the component. Scope every rule under the
