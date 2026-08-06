@@ -2,13 +2,10 @@ import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/
 import {
   AccordionComponent,
   ButtonComponent,
-  CollapsibleComponent,
   GogAccordionChevronDirective,
   GogAccordionHeaderDirective,
   GogAccordionContentDirective,
   GogAccordionItem,
-  GogCollapsibleContentDirective,
-  GogCollapsibleTriggerDirective,
   GogIconName,
   GogSize,
   IconComponent,
@@ -55,12 +52,9 @@ interface MetricsHeaderItem extends GogAccordionItem {
   imports: [
     AccordionComponent,
     ButtonComponent,
-    CollapsibleComponent,
     GogAccordionChevronDirective,
     GogAccordionHeaderDirective,
     GogAccordionContentDirective,
-    GogCollapsibleContentDirective,
-    GogCollapsibleTriggerDirective,
     IconComponent,
     SpinnerOverlayComponent,
   ],
@@ -221,7 +215,6 @@ export class AccordionPage implements OnDestroy {
     },
   ];
 
-  protected readonly categoriesOpen = signal(false);
   protected readonly multi = signal(false);
   protected readonly loadingState = signal<Record<string, { loading: boolean; loaded: boolean }>>(
     {},

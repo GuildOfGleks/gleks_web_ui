@@ -1,0 +1,234 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-collapsible</p>
+    <h2>Collapsible</h2>
+    <p class="lead">
+      A headless expand/collapse primitive — inline, not a portal like <code>gog-select</code>'s
+      panel. It owns no markup: <code>gogCollapsibleTrigger</code> and
+      <code>gogCollapsibleContent</code> attach to whatever elements you project, so the trigger
+      can be a button, a whole header row, or nothing at all if you drive <code>[(open)]</code>
+      from outside.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Overview</h3>
+    <p class="meta">A plain button trigger and a list of links standing in for panel content.</p>
+    <gog-collapsible [(open)]="overviewOpen">
+      <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+        Categories ({{ overviewOpen() ? 'open' : 'closed' }})
+      </button>
+      <div gogCollapsibleContent class="collapsible-demo__panel">
+        <button class="collapsible-demo__link" type="button">Category A</button>
+        <button class="collapsible-demo__link" type="button">Category B</button>
+        <button class="collapsible-demo__link" type="button">Category C</button>
+      </div>
+    </gog-collapsible>
+  </article>
+
+  <article class="card">
+    <h3>States</h3>
+    <p class="meta">
+      Closed and open are just the starting value of <code>[(open)]</code> — both stay fully
+      interactive. <code>disabled</code> blocks the trigger's click handler entirely and marks it
+      <code>aria-disabled</code>.
+    </p>
+    <div class="states-row">
+      <div class="states-row__item">
+        <p class="states-row__label">Closed by default</p>
+        <gog-collapsible [(open)]="closedByDefault">
+          <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+            {{ closedByDefault() ? 'Hide' : 'Show' }} details
+          </button>
+          <p gogCollapsibleContent class="collapsible-demo__text">Ships in 2 business days.</p>
+        </gog-collapsible>
+      </div>
+
+      <div class="states-row__item">
+        <p class="states-row__label">Open by default</p>
+        <gog-collapsible [(open)]="openByDefault">
+          <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+            {{ openByDefault() ? 'Hide' : 'Show' }} details
+          </button>
+          <p gogCollapsibleContent class="collapsible-demo__text">Free returns within 30 days.</p>
+        </gog-collapsible>
+      </div>
+
+      <div class="states-row__item">
+        <p class="states-row__label">Disabled (non-interactive)</p>
+        <gog-collapsible [(open)]="disabledOpen" [disabled]="true">
+          <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+            Unavailable section
+          </button>
+          <p gogCollapsibleContent class="collapsible-demo__text">
+            You should never see this — the trigger is inert.
+          </p>
+        </gog-collapsible>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>collapseOnFocusOut</h3>
+    <p class="meta">
+      Open the panel, then Tab through its links. With <code>collapseOnFocusOut="true"</code>,
+      tabbing past the last link (or clicking the button below, outside the panel entirely)
+      closes it automatically. Tabbing between the trigger and the links — anywhere still
+      inside — leaves it open. Off by default, since plenty of consumers want the panel to stay
+      open regardless of where focus goes next.
+    </p>
+    <gog-collapsible [(open)]="focusOutOpen" [collapseOnFocusOut]="true">
+      <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+        Categories ({{ focusOutOpen() ? 'open' : 'closed' }})
+      </button>
+      <div gogCollapsibleContent class="collapsible-demo__panel">
+        <button class="collapsible-demo__link" type="button">Category A</button>
+        <button class="collapsible-demo__link" type="button">Category B</button>
+        <button class="collapsible-demo__link" type="button">Category C</button>
+      </div>
+    </gog-collapsible>
+    <div class="action-row">
+      <gog-button variant="outline" type="button">Outside focusable element</gog-button>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Customization — combined trigger</h3>
+    <p class="meta">
+      The trigger doesn't have to be a plain button — here a whole header row (label + chevron)
+      is the single clickable target, with the chevron itself purely decorative
+      (<code>gog-icon</code> defaults to <code>aria-hidden</code>) and rotated via the
+      <code>.gog-collapsible__trigger--open</code> class the directive already applies.
+    </p>
+    <gog-collapsible [(open)]="combinedTriggerOpen">
+      <div gogCollapsibleTrigger class="combined-trigger">
+        <span>Notifications</span>
+        <gog-icon name="chevron-down" class="combined-trigger__chevron" />
+      </div>
+      <div gogCollapsibleContent class="collapsible-demo__panel">
+        <button class="collapsible-demo__link" type="button">Email digests</button>
+        <button class="collapsible-demo__link" type="button">Push alerts</button>
+        <button class="collapsible-demo__link" type="button">Weekly summary</button>
+      </div>
+    </gog-collapsible>
+  </article>
+
+  <article class="card">
+    <h3>Customization — icon swap</h3>
+    <p class="meta">
+      Instead of relying on the CSS rotation above, a trigger can swap between two entirely
+      different icons based on <code>open()</code> — full control over the open/closed
+      presentation, no rotation transform involved.
+    </p>
+    <gog-collapsible [(open)]="iconSwapOpen">
+      <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+        <gog-icon [name]="iconSwapOpen() ? 'error' : 'info'" />
+        <span>{{ iconSwapOpen() ? 'Hide diagnostics' : 'Show diagnostics' }}</span>
+      </button>
+      <div gogCollapsibleContent class="collapsible-demo__text">
+        <p class="meta">Last check: all systems nominal, p99 latency 118ms.</p>
+      </div>
+    </gog-collapsible>
+  </article>
+
+  <article class="card">
+    <h3>Customization — rich content</h3>
+    <p class="meta">
+      The content slot accepts anything, not just links — here a small stat grid instead of a
+      plain list.
+    </p>
+    <gog-collapsible [(open)]="richContentOpen">
+      <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+        {{ richContentOpen() ? 'Hide' : 'Show' }} region stats
+      </button>
+      <div gogCollapsibleContent class="stat-grid">
+        <div class="stat-grid__cell">
+          <span class="stat-grid__label">Uptime</span>
+          <strong class="stat-grid__value">99.98%</strong>
+        </div>
+        <div class="stat-grid__cell">
+          <span class="stat-grid__label">Latency</span>
+          <strong class="stat-grid__value">42ms</strong>
+        </div>
+        <div class="stat-grid__cell">
+          <span class="stat-grid__label">Requests/s</span>
+          <strong class="stat-grid__value">3.2k</strong>
+        </div>
+      </div>
+    </gog-collapsible>
+  </article>
+
+  <article class="card">
+    <h3>Access control — disable vs. hide a child</h3>
+    <p class="meta">
+      <code>gog-collapsible</code> is headless, so per-item access control is just ordinary
+      bindings on the content you project — no special API needed. Flip the roles below to see
+      both patterns: <strong>Billing</strong> stays visible but <code>disabled</code> without
+      billing access (discoverable, but blocked); <strong>Delete workspace</strong> is removed
+      from the DOM entirely with <code>&#64;if</code> unless the current role is admin (not even
+      discoverable without permission).
+    </p>
+    <div class="action-row">
+      <gog-checkbox label="Has billing access" [(checked)]="hasBillingAccess" />
+      <gog-checkbox label="Is admin" [(checked)]="isAdmin" />
+    </div>
+    <p class="meta">Simulated role: {{ permissionSummary() }}</p>
+
+    <gog-collapsible [(open)]="permissionsOpen">
+      <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+        Admin settings ({{ permissionsOpen() ? 'open' : 'closed' }})
+      </button>
+      <div gogCollapsibleContent class="collapsible-demo__panel">
+        <button class="collapsible-demo__link" type="button">General settings</button>
+        <button
+          class="collapsible-demo__link"
+          type="button"
+          [disabled]="!hasBillingAccess()"
+          [attr.aria-disabled]="!hasBillingAccess() ? 'true' : null"
+        >
+          Billing {{ hasBillingAccess() ? '' : '(no access)' }}
+        </button>
+        @if (isAdmin()) {
+          <button class="collapsible-demo__link collapsible-demo__link--danger" type="button">
+            Delete workspace
+          </button>
+        }
+      </div>
+    </gog-collapsible>
+  </article>
+
+  <article class="card">
+    <h3>Controlled from outside</h3>
+    <p class="meta">
+      No <code>gogCollapsibleTrigger</code> anywhere — external buttons drive
+      <code>[(open)]</code> directly.
+    </p>
+    <div class="action-row">
+      <gog-button size="sm" (gogClick)="externalOpen.set(true)">Open</gog-button>
+      <gog-button size="sm" variant="ghost" (gogClick)="externalOpen.set(false)">Close</gog-button>
+    </div>
+    <gog-collapsible [(open)]="externalOpen">
+      <p gogCollapsibleContent class="collapsible-demo__text">
+        Driven entirely from outside — try the buttons above.
+      </p>
+    </gog-collapsible>
+  </article>
+
+  <article class="card">
+    <h3>Independent FAQ list</h3>
+    <p class="meta">
+      Each row owns its own <code>open</code> state in an array — unlike
+      <a routerLink="/accordion">gog-accordion</a>, nothing here closes a sibling when one opens.
+    </p>
+    <div class="faq-list">
+      @for (item of faqItems(); track item.id) {
+        <gog-collapsible [open]="item.open" (openChange)="setFaqOpen(item.id, $event)">
+          <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+            {{ item.question }}
+          </button>
+          <p gogCollapsibleContent class="collapsible-demo__text">{{ item.answer }}</p>
+        </gog-collapsible>
+      }
+    </div>
+  </article>
+</section>

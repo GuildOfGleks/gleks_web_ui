@@ -11,7 +11,15 @@ interface ShowcaseNavLink {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, ScrollComponent, SelectComponent],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    ScrollComponent,
+    SelectComponent,
+    ScrollComponent,
+    SelectComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,6 +57,7 @@ export class App {
     { path: 'spinner', label: 'Spinner' },
     { path: 'skeleton', label: 'Skeleton' },
     { path: 'accordion', label: 'Accordion' },
+    { path: 'collapsible', label: 'Collapsible' },
     { path: 'toast', label: 'Toast' },
     { path: 'tag', label: 'Tag' },
     { path: 'dialog', label: 'Dialog' },

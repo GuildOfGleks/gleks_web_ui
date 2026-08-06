@@ -67,6 +67,11 @@ export const routes: Routes = [
       import('./pages/accordion-page/accordion-page').then((m) => m.AccordionPage),
   },
   {
+    path: 'collapsible',
+    loadComponent: () =>
+      import('./pages/collapsible-page/collapsible-page').then((m) => m.CollapsiblePage),
+  },
+  {
     path: 'toast',
     loadComponent: () => import('./pages/toast-page/toast-page').then((m) => m.ToastPage),
   },
