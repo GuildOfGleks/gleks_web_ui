@@ -1033,6 +1033,11 @@
   --gog-tooltip-padding: 6px 10px;
   --gog-tooltip-radius: var(--gog-radius);
   --gog-tooltip-max-width: 280px;
+  /* Caps the gog-scroll wrapping the bubble's content — see tooltip-bubble.component.html.
+     A cap, not a fixed height: shorter content stays exactly as tall as it needs to be, this
+     only stops something unusually long (a multi-paragraph TemplateRef) from growing to
+     cover most of the viewport. */
+  --gog-tooltip-max-height: 220px;
   /* Same "floating panel" recipe as gog-dialog's panel and gog-select's dropdown — a
      surface-colored box with a plain (not accent) border and the shared panel shadow —
      rather than an inverted dark/light bubble, so it reads as part of this site instead of

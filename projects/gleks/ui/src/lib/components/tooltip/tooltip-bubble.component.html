@@ -1,6 +1,13 @@
-@if (templateContent(); as template) {
-  <ng-container [ngTemplateOutlet]="template"></ng-container>
-} @else {
-  {{ textContent() }}
-}
+<gog-scroll
+  class="gog-tooltip__scroll"
+  size="thin"
+  [focusable]="false"
+  overscrollBehavior="contain"
+>
+  @if (templateContent(); as template) {
+    <ng-container [ngTemplateOutlet]="template"></ng-container>
+  } @else {
+    {{ textContent() }}
+  }
+</gog-scroll>
 <span class="gog-tooltip__arrow" aria-hidden="true"></span>

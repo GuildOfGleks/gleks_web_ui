@@ -1,6 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, TemplateRef, computed, input } from '@angular/core';
 
+import { ScrollComponent } from '../scroll/scroll.component';
 import { GogTooltipSide } from '../../shared/tooltip-position';
 
 /**
@@ -8,10 +9,16 @@ import { GogTooltipSide } from '../../shared/tooltip-position';
  * Not exported from `public-api.ts` — `[gogTooltip]` is the only public surface; this is an
  * implementation detail of how it renders, same relationship as `gog-select`'s panel template
  * to `GogDropdownOverlay`.
+ *
+ * Content always renders inside `gog-scroll` (capped at `--gog-tooltip-max-height`), the same
+ * pattern `gog-dialog`'s body and `gog-select`'s panel already use — see
+ * `styling.instructions.md`'s "Scrollable content" for why every internal scroll region in
+ * this library goes through it instead of a raw `overflow: auto`. Content shorter than the
+ * cap is unaffected: `gog-scroll` only ever shows a track once its content actually overflows.
  */
 @Component({
   selector: 'gog-tooltip-bubble',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, ScrollComponent],
   templateUrl: './tooltip-bubble.component.html',
   styleUrl: './tooltip-bubble.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

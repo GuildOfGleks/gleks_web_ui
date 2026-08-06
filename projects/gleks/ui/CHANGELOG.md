@@ -44,23 +44,27 @@ reached 1.0, so breaking changes may land in minor versions.
   input always winning. Shown on both mouse hover and keyboard focus (`focusin`/`focusout`,
   not `focus`/`blur`, so it stays replay-safe under SSR event replay), dismissible with
   Escape, and hoverable — moving the pointer from the trigger onto the bubble itself (e.g. to
-  read more of a long one, or scroll one taller than its `gogTooltipClass`-set `max-height`)
-  cancels the pending hide instead of racing it — per WCAG 2.1 SC 1.4.13. The bubble is
-  appended to `document.body` (so it's never
-  clipped by an ancestor's `overflow: hidden`) via a new internal `GogTooltipOverlay`, built
-  on `ViewContainerRef.createComponent` + relocating the node rather than
-  `GogDropdownOverlay`'s `TemplateRef` approach, since a directive has no template of its
-  own to attach from. Visually it's the same "floating panel" recipe as `gog-dialog`'s panel
-  and `gog-select`'s dropdown (`--gog-surface-color` background, plain `--gog-border-color`
-  border, `--gog-panel-shadow`), not a bespoke inverted bubble, so it reads as part of a
-  themed app rather than a generic dark tooltip dropped on top of it. `gogTooltipClass`
-  applies a class straight to the bubble, for restyling one instance — needed because the
-  bubble sits outside any scoped ancestor's stylesheet once appended to `document.body`, the
-  same "Panels rendered outside the component subtree" limitation `gog-select`'s
-  `[appendToBody]` panel already has, so the class has to come from an unscoped (global)
-  stylesheet. New `--gog-tooltip-*` tokens in `theme.css`; `gog-dialog`'s panel now also
-  raises `--gog-tooltip-z` (mirroring the existing `--gog-dropdown-z` bump) so a tooltip
-  triggered inside a dialog stacks above it.
+  read more of a long one, or scroll one taller than `--gog-tooltip-max-height`) cancels the
+  pending hide instead of racing it — per WCAG 2.1 SC 1.4.13. The bubble is appended to
+  `document.body` (so it's never clipped by an ancestor's `overflow: hidden`) via a new
+  internal `GogTooltipOverlay`, built on `ViewContainerRef.createComponent` + relocating the
+  node rather than `GogDropdownOverlay`'s `TemplateRef` approach, since a directive has no
+  template of its own to attach from. Visually it's the same "floating panel" recipe as
+  `gog-dialog`'s panel and `gog-select`'s dropdown (`--gog-surface-color` background, plain
+  `--gog-border-color` border, `--gog-panel-shadow`), not a bespoke inverted bubble, so it
+  reads as part of a themed app rather than a generic dark tooltip dropped on top of it.
+  Content wraps to `--gog-tooltip-max-width` (`280px`) and is capped at
+  `--gog-tooltip-max-height` (`220px`) through an internal `gog-scroll` — content under the
+  cap renders at exactly its own height, content over it scrolls, using the same themeable
+  scrollbar every other overflowing panel in this library uses instead of a native one (see
+  `styling.instructions.md`'s new "Scrollable content" section for that convention).
+  `gogTooltipClass` applies a class straight to the bubble, for restyling (or resizing) one
+  instance — needed because the bubble sits outside any scoped ancestor's stylesheet once
+  appended to `document.body`, the same "Panels rendered outside the component subtree"
+  limitation `gog-select`'s `[appendToBody]` panel already has, so the class has to come from
+  an unscoped (global) stylesheet. New `--gog-tooltip-*` tokens in `theme.css`; `gog-dialog`'s
+  panel now also raises `--gog-tooltip-z` (mirroring the existing `--gog-dropdown-z` bump) so
+  a tooltip triggered inside a dialog stacks above it.
 
 ### Changed
 

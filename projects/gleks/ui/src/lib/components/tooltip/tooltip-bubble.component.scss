@@ -39,6 +39,13 @@
   transform: scale(1);
 }
 
+.gog-tooltip__scroll {
+  /* Only a cap, not a fixed height — gog-scroll's own flex chain (see its stylesheet) sizes
+     to content up to this and only then starts clipping/scrolling, so a short hint is
+     exactly as tall as its one line of text, never padded out to this max. */
+  max-height: var(--gog-tooltip-max-height);
+}
+
 .gog-tooltip__arrow {
   position: absolute;
   width: 0;
