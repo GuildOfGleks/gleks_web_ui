@@ -399,6 +399,7 @@ export type GogTokenName =
   | '--gog-input-radius'
   | '--gog-input-transition-duration'
   | '--gog-ms-actions-gap'
+  | '--gog-ms-actions-inset'
   | '--gog-ms-arrow-icon-ratio'
   | '--gog-ms-arrow-transition-duration'
   | '--gog-ms-border-color'
@@ -419,6 +420,9 @@ export type GogTokenName =
   | '--gog-ms-field-border-style'
   | '--gog-ms-field-border-width'
   | '--gog-ms-field-color'
+  | '--gog-ms-filter-border-color'
+  | '--gog-ms-filter-border-style'
+  | '--gog-ms-filter-border-width'
   | '--gog-ms-filter-empty-color'
   | '--gog-ms-filter-empty-padding'
   | '--gog-ms-filter-input-bg'
@@ -465,6 +469,7 @@ export type GogTokenName =
   | '--gog-ms-transition-duration'
   | '--gog-ms-value-color'
   | '--gog-multiselect-actions-gap'
+  | '--gog-multiselect-actions-inset'
   | '--gog-multiselect-arrow-icon-ratio'
   | '--gog-multiselect-arrow-transition-duration'
   | '--gog-multiselect-border-color'
@@ -485,6 +490,9 @@ export type GogTokenName =
   | '--gog-multiselect-field-border-style'
   | '--gog-multiselect-field-border-width'
   | '--gog-multiselect-field-color'
+  | '--gog-multiselect-filter-border-color'
+  | '--gog-multiselect-filter-border-style'
+  | '--gog-multiselect-filter-border-width'
   | '--gog-multiselect-filter-empty-color'
   | '--gog-multiselect-filter-empty-padding'
   | '--gog-multiselect-filter-input-bg'
@@ -609,6 +617,9 @@ export type GogTokenName =
   | '--gog-select-field-border-style'
   | '--gog-select-field-border-width'
   | '--gog-select-field-color'
+  | '--gog-select-filter-border-color'
+  | '--gog-select-filter-border-style'
+  | '--gog-select-filter-border-width'
   | '--gog-select-filter-empty-color'
   | '--gog-select-filter-empty-padding'
   | '--gog-select-filter-input-bg'
@@ -868,6 +879,8 @@ export type GogTokenName =
   | '--gog-text-sm'
   | '--gog-text-xl'
   | '--gog-text-xs'
+  | '--gog-textarea-clear-icon-ratio'
+  | '--gog-textarea-scrollbar-width'
   | '--gog-toast-accent-width'
   | '--gog-toast-action-font-size'
   | '--gog-toast-action-padding'
@@ -1480,6 +1493,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-input-placeholder-color',
       '--gog-input-radius',
       '--gog-input-transition-duration',
+      '--gog-textarea-clear-icon-ratio',
     ],
   },
   {
@@ -1487,6 +1501,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     layer: 'component',
     tokens: [
       '--gog-ms-actions-gap',
+      '--gog-ms-actions-inset',
       '--gog-ms-arrow-icon-ratio',
       '--gog-ms-arrow-transition-duration',
       '--gog-ms-border-color',
@@ -1507,6 +1522,9 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-ms-field-border-style',
       '--gog-ms-field-border-width',
       '--gog-ms-field-color',
+      '--gog-ms-filter-border-color',
+      '--gog-ms-filter-border-style',
+      '--gog-ms-filter-border-width',
       '--gog-ms-filter-empty-color',
       '--gog-ms-filter-empty-padding',
       '--gog-ms-filter-input-bg',
@@ -1553,6 +1571,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-ms-transition-duration',
       '--gog-ms-value-color',
       '--gog-multiselect-actions-gap',
+      '--gog-multiselect-actions-inset',
       '--gog-multiselect-arrow-icon-ratio',
       '--gog-multiselect-arrow-transition-duration',
       '--gog-multiselect-border-color',
@@ -1573,6 +1592,9 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-multiselect-field-border-style',
       '--gog-multiselect-field-border-width',
       '--gog-multiselect-field-color',
+      '--gog-multiselect-filter-border-color',
+      '--gog-multiselect-filter-border-style',
+      '--gog-multiselect-filter-border-width',
       '--gog-multiselect-filter-empty-color',
       '--gog-multiselect-filter-empty-padding',
       '--gog-multiselect-filter-input-bg',
@@ -1673,6 +1695,9 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-select-field-border-style',
       '--gog-select-field-border-width',
       '--gog-select-field-color',
+      '--gog-select-filter-border-color',
+      '--gog-select-filter-border-style',
+      '--gog-select-filter-border-width',
       '--gog-select-filter-empty-color',
       '--gog-select-filter-empty-padding',
       '--gog-select-filter-input-bg',
@@ -2052,6 +2077,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-tag-icon-size',
       '--gog-tag-padding-block',
       '--gog-tag-padding-inline',
+      '--gog-textarea-scrollbar-width',
     ],
   },
 ];

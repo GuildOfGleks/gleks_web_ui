@@ -139,6 +139,15 @@
   color: var(--gog-multiselect-placeholder-color);
 }
 
+/*
+ * Pinned to the same inset as gog-select's chevron and gog-inputfield's icons, rather than
+ * inheriting the trigger's horizontal padding — the trailing chrome of every field control
+ * should sit on one vertical line.
+ */
+.gog-ms {
+  padding-right: var(--gog-multiselect-actions-inset);
+}
+
 .gog-ms__actions {
   display: flex;
   align-items: center;
@@ -436,4 +445,17 @@
   );
   color: var(--gog-multiselect-filter-empty-color);
   text-align: center;
+}
+
+/* Divider on the side facing the option list, so the search box reads as chrome, not a row. */
+.gog-ms__filter--top {
+  border-bottom: var(--gog-multiselect-filter-border-width)
+    var(--gog-multiselect-filter-border-style) var(--gog-multiselect-filter-border-color);
+}
+
+.gog-ms__filter--bottom {
+  top: auto;
+  bottom: 0;
+  border-top: var(--gog-multiselect-filter-border-width) var(--gog-multiselect-filter-border-style)
+    var(--gog-multiselect-filter-border-color);
 }

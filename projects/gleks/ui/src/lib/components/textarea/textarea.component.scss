@@ -153,7 +153,12 @@
 .gog-textarea__clear {
   position: absolute;
   top: var(--gog-input-clear-inset);
-  right: var(--gog-input-clear-inset);
+  /*
+     Offset by the textarea's measured scrollbar width (see `scrollbarWidth` in the component):
+     inset alone puts the button inside the scrollbar track once the content overflows, where it
+     is half-covered and fights the thumb for clicks.
+  */
+  right: calc(var(--gog-input-clear-inset) + var(--gog-textarea-scrollbar-width, 0px));
   width: var(--gog-input-font, var(--gog-input-size-font-size, var(--gog-field-md-font-size)));
   height: var(--gog-input-font, var(--gog-input-size-font-size, var(--gog-field-md-font-size)));
   padding: 0;
@@ -178,6 +183,6 @@
 .gog-textarea__clear gog-icon {
   font-size: calc(
     var(--gog-input-font, var(--gog-input-size-font-size, var(--gog-field-md-font-size))) *
-      var(--gog-input-clear-icon-ratio)
+      var(--gog-textarea-clear-icon-ratio)
   );
 }

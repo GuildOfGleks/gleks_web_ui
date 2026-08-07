@@ -16,6 +16,7 @@
       }}</label>
     }
     <textarea
+      #field
       class="gog-input__field gog-textarea__field"
       [class.gog-input__field--error]="hasError()"
       [attr.id]="inputId() || null"
@@ -34,6 +35,7 @@
       <button
         type="button"
         class="gog-input__clear gog-textarea__clear gog-inline-center"
+        [style.--gog-textarea-scrollbar-width.px]="scrollbarWidth()"
         [attr.aria-label]="clearAriaLabel()"
         (click)="clearValue($event)"
       >

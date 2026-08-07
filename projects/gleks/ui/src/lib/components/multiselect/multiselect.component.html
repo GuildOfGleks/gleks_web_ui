@@ -52,6 +52,12 @@
     </span>
 
     <span class="gog-ms__actions">
+      <span class="gog-ms__arrow" [class.gog-ms__arrow--up]="isOpen()" aria-hidden="true">
+        <gog-icon
+          [template]="chevronSlot()?.templateRef ?? chevronTemplate()"
+          [name]="isOpen() ? 'chevron-up' : 'chevron-down'"
+        />
+      </span>
       @if (showClear()) {
         <button
           type="button"
@@ -62,12 +68,6 @@
           <gog-icon [template]="clearIconSlot()?.templateRef ?? clearIconTemplate()" name="close" />
         </button>
       }
-      <span class="gog-ms__arrow" [class.gog-ms__arrow--up]="isOpen()" aria-hidden="true">
-        <gog-icon
-          [template]="chevronSlot()?.templateRef ?? chevronTemplate()"
-          [name]="isOpen() ? 'chevron-up' : 'chevron-down'"
-        />
-      </span>
     </span>
   </div>
 
@@ -113,8 +113,8 @@
       scrolls the focused option into view natively — no separate keyboard-scroll target
       needed here.
     -->
-    @if (resolvedFilter()) {
-      <div class="gog-ms__filter">
+    @if (resolvedFilter() && resolvedFilterPosition() === 'top') {
+      <div class="gog-ms__filter gog-ms__filter--top">
         <input
           type="text"
           class="gog-ms__filter-input"
@@ -166,6 +166,19 @@
         }
       </div>
     </gog-scroll>
+    @if (resolvedFilter() && resolvedFilterPosition() === 'bottom') {
+      <div class="gog-ms__filter gog-ms__filter--bottom">
+        <input
+          type="text"
+          class="gog-ms__filter-input"
+          [placeholder]="filterPlaceholder()"
+          [value]="filterQuery()"
+          (input)="onFilterInput($event)"
+          (click)="$event.stopPropagation()"
+          (keydown.escape)="close(); focusTrigger()"
+        />
+      </div>
+    }
     @if (showControls() && controlsPosition() === 'bottom') {
       <ng-container [ngTemplateOutlet]="controlsRowTpl" />
     }

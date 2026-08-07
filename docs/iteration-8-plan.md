@@ -100,6 +100,31 @@ the API alone. Anything more aggressive starts crowding the floated label agains
 
 ---
 
+## Status — 2026-08-07
+
+| # | Item | State |
+| --- | --- | --- |
+| §2 | `gog-select` chevron alignment + clear takes the outer slot | ✅ done |
+| §1 | `gog-textarea` clear: scrollbar clearance + full-size glyph | ✅ done |
+| §4 | Float-label reserve default | ✅ done |
+| §3a/§3b | `filterPosition` + divider | ✅ done |
+| §3c | Lookup mode | ⏸ deferred by the user pending more data |
+
+### Verified in the browser, before → after
+
+| | Before | After | Reference |
+| --- | --- | --- | --- |
+| select chevron inset | 42px | **12px** | inputfield icon 10px |
+| multiselect arrow inset (with a selection) | 16px | **34px**, clear at 12px | clear is outermost |
+| select clear inset | — | **10px**, chevron at 34px | clear is outermost |
+| textarea clear glyph | 13.4px | **19.2px** | library icon size |
+| textarea clear vs 19px scrollbar | 8px — inside it | **27px** — clears it | — |
+| float-label field height (`in`) | 63px | **59px** | plain field 45px |
+| filter box | top only | sticky top **or** bottom, with a divider | — |
+
+476 specs. The lookup mode (§3c) is explicitly out of scope for now; typing in the trigger stays
+unsupported and the filter lives in the panel.
+
 ## Ordering
 
 1. §2 chevron alignment — the most visible, and it unblocks §3's trailing-chrome layout.

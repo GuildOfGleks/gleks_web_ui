@@ -32,6 +32,11 @@ reached 1.0, so breaking changes may land in minor versions.
   undo a choice. Also settable app-wide through `GOG_CONFIG.control.clearable`. Defaults to
   `false`, except `gog-multiselect`, which already had a clear button and keeps it. On a
   password field the built-in reveal toggle keeps the trailing slot.
+- `filterPosition` on `gog-select` / `gog-multiselect` (`'top'` | `'bottom'`, plus
+  `GOG_CONFIG.dropdown.filterPosition`) sticks the search box to either end of the panel, and it
+  now carries a divider on the side facing the list so it reads as chrome rather than a row. The
+  name matches `gog-multiselect`'s existing `controlsPosition` rather than inventing a second
+  vocabulary for the same idea.
 - **Filtering in `gog-select` and `gog-multiselect`** — `filter` puts a search box at the top of
   the panel, matching case-insensitively on the resolved `optionLabel`. `filterMatch` swaps that
   for your own predicate, `filterPlaceholder` and `filterEmptyMessage` cover the wording, and
@@ -79,6 +84,39 @@ reached 1.0, so breaking changes may land in minor versions.
   `aria-label` and `(click)`. This replaces six inputs (`icon{Start,End}{Template,Fn,Label}`)
   with two slots. On `type="password"` the built-in reveal toggle keeps the trailing slot, so a
   projected addon can never displace the only control that shows the value.
+
+### Fixed
+
+- **`gog-select`'s chevron sat 42px from the trigger's right edge.**
+  `--gog-select-chevron-inset` was applied as the trigger's `padding-right` while the chevron
+  itself was a flex child *inside* that padding, so the inset was counted twice. It now lands on
+  `--gog-control-icon-offset` (10px), the same line as `gog-inputfield`'s icons and
+  `gog-multiselect`'s arrow, which were at 10px and 16px — the three controls did not line up in
+  a form. The token keeps its name and now means what it says.
+- **`gog-textarea`'s clear button sat inside the scrollbar.** It was inset 8px from the border
+  box while a scrolling textarea's scrollbar is ~19px wide, so once the content overflowed the
+  button was half-covered and competed with the thumb for clicks. It is now offset by the
+  measured scrollbar width (`--gog-textarea-scrollbar-width`, written from
+  `offsetWidth - clientWidth`; `scrollbar-gutter: stable` was rejected because it reserves the
+  gutter even when the field isn't scrolling).
+- **`gog-textarea`'s clear glyph was 30% too small** — 13.4px against the library's 19.2px,
+  because it reused the dropdowns' 0.7 ratio, which suits their dense trigger and not a large
+  multi-line box. New `--gog-textarea-clear-icon-ratio` defaults to a full-size glyph.
+- Nine specs in `scroll.component.spec.ts` awaited a single animation frame after dispatching a
+  scroll, while `ScrollComponent` coalesces measurement into its own frame — if that frame fired
+  during `whenStable()`, the effect scheduled a second one *after* the test's, and the assertion
+  ran before the measurement. Intermittent by construction; replaced with a `settleMeasure()`
+  helper that covers both orderings.
+
+### Changed
+
+- The clear button now takes the **outermost** trailing position on `gog-select` and
+  `gog-multiselect`, with the chevron/arrow shifting inward when it appears. Previously
+  `gog-multiselect` had them the other way round. Keeps the trigger width stable and keeps the
+  destructive control off the very edge.
+- Float-label fields are less tall: `--gog-field-float-label-reserve` 18px → 14px and
+  `--gog-field-float-label-in-top` 8px → 6px, taking an `md` field from 63px to 59px (a plain one
+  is 45px). Both are tokens, so the old numbers are one declaration away.
 
 ### Deprecated
 

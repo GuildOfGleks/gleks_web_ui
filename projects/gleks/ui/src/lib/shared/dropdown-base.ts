@@ -32,7 +32,7 @@ import { GogErrorState, type GogErrorDisplay } from './error-state';
 import { type GogOptionAccessor, isSameOptionValue, readOption } from './option-accessor';
 import { GogFloatLabelState } from './float-label-state';
 import { handleRovingFocusKeydown } from './roving-focus';
-import { GogFloatLabelVariant, GogSize } from './types';
+import { GogDropdownFilterPosition, GogFloatLabelVariant, GogSize } from './types';
 
 /**
  * Custom markup for the trigger's chevron, on `gog-select` and `gog-multiselect`:
@@ -112,6 +112,7 @@ const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
 const DEFAULT_APPEND_TO_BODY = false;
 const DEFAULT_DROPDOWN_DIRECTION: GogDropdownDirection = 'auto';
 const DEFAULT_FILTER = false;
+const DEFAULT_FILTER_POSITION: GogDropdownFilterPosition = 'top';
 
 /**
  * Shared behaviour for the listbox-style controls: open/close, placement, the
@@ -168,6 +169,12 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    */
   readonly filter = input<boolean | undefined>(undefined);
   readonly filterPlaceholder = input('Search...');
+  /**
+   * Which end of the panel the search box sticks to. Named to match `gog-multiselect`'s
+   * `controlsPosition`, which is the same idea for its select-all row. Unset, falls back to
+   * `GOG_CONFIG.dropdown.filterPosition`, then to `'top'`.
+   */
+  readonly filterPosition = input<GogDropdownFilterPosition | undefined>(undefined);
   /** Shown in place of the list when the query matches nothing. */
   readonly filterEmptyMessage = input('No matches');
   /**
@@ -409,6 +416,13 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
 
   protected readonly resolvedFilter = computed(() =>
     resolveConfigured(this.filter(), this.globalConfig.dropdown?.filter, DEFAULT_FILTER),
+  );
+  protected readonly resolvedFilterPosition = computed(() =>
+    resolveConfigured(
+      this.filterPosition(),
+      this.globalConfig.dropdown?.filterPosition,
+      DEFAULT_FILTER_POSITION,
+    ),
   );
   /** Current search text. Cleared whenever the panel closes, so reopening starts fresh. */
   protected readonly filterQuery = signal('');

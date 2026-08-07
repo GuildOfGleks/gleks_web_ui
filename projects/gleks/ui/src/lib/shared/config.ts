@@ -11,6 +11,7 @@ import {
 // imported by nearly every component and must stay free of import cycles.
 import type { GogErrorDisplay } from './error-state';
 import type { GogDropdownDirection } from './dropdown-position';
+import type { GogDropdownFilterPosition } from './types';
 import type { ToastPosition } from '../services/toast-service/toast-service';
 
 /**
@@ -94,6 +95,8 @@ export interface GogGlobalConfig {
     direction?: GogDropdownDirection;
     /** Whether the panel shows a search box. Off by default. */
     filter?: boolean;
+    /** Which end of the panel the search box sticks to. `'top'` by default. */
+    filterPosition?: GogDropdownFilterPosition;
   };
   toast?: {
     position?: ToastPosition;

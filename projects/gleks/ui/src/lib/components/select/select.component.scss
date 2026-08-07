@@ -329,7 +329,8 @@
 .gog-select__clear {
   position: absolute;
   top: 50%;
-  right: calc(var(--gog-select-chevron-inset) + var(--gog-select-clear-gap));
+  /* Outermost: the clear button takes the trailing slot and pushes the chevron inward. */
+  right: var(--gog-select-chevron-inset);
   transform: translateY(-50%);
   width: var(
     --gog-select-control-font,
@@ -417,4 +418,17 @@
   );
   color: var(--gog-select-filter-empty-color);
   text-align: center;
+}
+
+/* Divider on the side facing the option list, so the search box reads as chrome, not a row. */
+.gog-select__filter--top {
+  border-bottom: var(--gog-select-filter-border-width) var(--gog-select-filter-border-style)
+    var(--gog-select-filter-border-color);
+}
+
+.gog-select__filter--bottom {
+  top: auto;
+  bottom: 0;
+  border-top: var(--gog-select-filter-border-width) var(--gog-select-filter-border-style)
+    var(--gog-select-filter-border-color);
 }

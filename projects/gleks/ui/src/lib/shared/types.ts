@@ -37,3 +37,9 @@ export type GogTooltipPosition = 'auto' | 'top' | 'bottom' | 'left' | 'right';
  * - `'over'` — floats all the way above the field, outside the border.
  */
 export type GogFloatLabelVariant = 'none' | 'in' | 'on' | 'over';
+
+/**
+ * Which end of a dropdown panel the search box sticks to. Matches `gog-multiselect`'s
+ * `controlsPosition` vocabulary — the same idea applied to its select-all row.
+ */
+export type GogDropdownFilterPosition = 'top' | 'bottom';

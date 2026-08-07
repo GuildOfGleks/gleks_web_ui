@@ -22,6 +22,7 @@ const FRUIT = [
       [options]="fruit"
       [filter]="true"
       [filterMatch]="match()"
+      [filterPosition]="position()"
       filterEmptyMessage="Nothing here"
       [(value)]="picked"
     />
@@ -31,6 +32,7 @@ class FilterSelectHost {
   readonly fruit = FRUIT;
   readonly picked = signal<string | number | null>(null);
   readonly match = signal<((o: { name: string }, q: string) => boolean) | null>(null);
+  readonly position = signal<'top' | 'bottom'>('top');
 }
 
 @Component({
@@ -100,6 +102,18 @@ describe('dropdown filter', () => {
       await type(fixture, '.gog-select__filter-input', 'ap');
 
       expect(labels(fixture, '.gog-select__option-label')).toEqual(['Apple']);
+    });
+
+    it('sticks the filter to the requested end of the panel', async () => {
+      const fixture = await open(FilterSelectHost, '.gog-select__control');
+      expect(fixture.debugElement.query(By.css('.gog-select__filter--top'))).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('.gog-select__filter--bottom'))).toBeNull();
+
+      fixture.componentInstance.position.set('bottom');
+      await fixture.whenStable();
+
+      expect(fixture.debugElement.query(By.css('.gog-select__filter--top'))).toBeNull();
+      expect(fixture.debugElement.query(By.css('.gog-select__filter--bottom'))).toBeTruthy();
     });
 
     it('forgets the query when the panel closes', async () => {

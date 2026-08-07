@@ -1,12 +1,15 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
+  afterRenderEffect,
   computed,
   DoCheck,
   inject,
   input,
   model,
   signal,
+  viewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -93,6 +96,17 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
   /** Set from `(focus)`/`(blur)` on the `<textarea>` — see `onFocus`/`onBlur`. */
   protected readonly isFocused = signal(false);
 
+  private readonly fieldRef = viewChild.required<ElementRef<HTMLTextAreaElement>>('field');
+  /**
+   * Width of the textarea's own scrollbar, published so the clear button can clear it.
+   *
+   * It has to be measured: the width is platform- and settings-dependent (0 on overlay
+   * scrollbars, ~15-19px on classic ones), and it only exists once the content overflows. The
+   * pure-CSS alternative, `scrollbar-gutter: stable`, reserves the gutter even when the field
+   * isn't scrolling, which shifts the resting layout of every textarea.
+   */
+  protected readonly scrollbarWidth = signal(0);
+
   /**
    * The single size modifier, replacing one `[class.gog-input-wrapper--<size>]` binding per size.
    * Empty for `'md'`: that is this component's default size and has no modifier rule of its own — every `gog-input-wrapper--*` chain bottoms out at it.
@@ -134,6 +148,15 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
   private _onTouched: () => void = () => {};
 
   constructor() {
+    // Re-measured after every render: the scrollbar appears and disappears as the content grows
+    // past the visible rows, and `rows`/`size` can change it too.
+    afterRenderEffect(() => {
+      const el = this.fieldRef().nativeElement;
+      // touch the value so this re-runs as the content changes
+      this.value();
+      this.scrollbarWidth.set(el.offsetWidth - el.clientWidth);
+    });
+
     // Registering through NgControl instead of NG_VALUE_ACCESSOR keeps `this.ngControl`
     // available for `hasError` — providing NG_VALUE_ACCESSOR on the component while also
     // injecting NgControl would be a dependency cycle.
