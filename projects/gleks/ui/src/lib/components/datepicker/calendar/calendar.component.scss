@@ -1,0 +1,242 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-calendar-day-size / -bg / …   per-instance overrides (layer 3, undeclared).
+ *   --gog-calendar-size-*               internal, set by the size classes on the host.
+ *   --gog-calendar-<name>               the actual values, all in styles/theme.css.
+ */
+:host {
+  display: block;
+  box-sizing: border-box;
+  padding: var(--gog-calendar-padding);
+  color: var(--gog-calendar-color);
+  font-family: var(--gog-calendar-font-family);
+  font-size: var(--gog-calendar-size-font-size, var(--gog-calendar-md-font-size));
+  contain: layout style;
+}
+
+.gog-calendar__header {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-calendar-header-gap);
+  margin-block-end: var(--gog-calendar-header-margin);
+}
+
+.gog-calendar__titles {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: space-around;
+  gap: var(--gog-calendar-header-gap);
+}
+
+.gog-calendar__title {
+  flex: 1 1 0;
+  color: var(--gog-calendar-title-color);
+  font-weight: var(--gog-calendar-title-font-weight);
+  text-align: center;
+}
+
+.gog-calendar__nav {
+  flex: 0 0 auto;
+  width: var(--gog-calendar-nav-size);
+  height: var(--gog-calendar-nav-size);
+  padding: 0;
+  border: 0;
+  border-radius: var(--gog-calendar-nav-radius);
+  background-color: var(--gog-calendar-nav-bg);
+  color: var(--gog-calendar-nav-color);
+  /* The double chevrons for year steps must not spill out of the button. */
+  font-size: var(--gog-calendar-nav-icon-size);
+  letter-spacing: var(--gog-calendar-nav-icon-overlap);
+  cursor: pointer;
+}
+
+.gog-calendar__nav:hover {
+  background-color: var(--gog-calendar-nav-hover-bg);
+  color: var(--gog-calendar-nav-hover-color);
+}
+
+.gog-calendar__nav:focus-visible,
+.gog-calendar__day:focus-visible,
+.gog-calendar__today:focus-visible,
+.gog-calendar__meridiem:focus-visible,
+.gog-calendar__time-input:focus-visible {
+  outline: var(--gog-calendar-focus-ring-width) solid var(--gog-calendar-focus-ring-color);
+  outline-offset: var(--gog-calendar-focus-ring-offset);
+}
+
+.gog-calendar__months {
+  display: flex;
+  gap: var(--gog-calendar-months-gap);
+}
+
+.gog-calendar__grid {
+  border-collapse: collapse;
+  /* Fixed so the columns cannot shuffle between a 30-day and a 31-day month. */
+  table-layout: fixed;
+}
+
+.gog-calendar__weekday {
+  padding: var(--gog-calendar-weekday-padding);
+  color: var(--gog-calendar-weekday-color);
+  font-size: var(--gog-calendar-weekday-font-size);
+  font-weight: var(--gog-calendar-weekday-font-weight);
+  text-align: center;
+  text-transform: var(--gog-calendar-weekday-text-transform);
+}
+
+.gog-calendar__cell {
+  padding: 0;
+}
+
+.gog-calendar__day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(
+    --gog-calendar-day-size,
+    var(--gog-calendar-size-day-size, var(--gog-calendar-md-day-size))
+  );
+  height: var(
+    --gog-calendar-day-size,
+    var(--gog-calendar-size-day-size, var(--gog-calendar-md-day-size))
+  );
+  border: var(--gog-calendar-day-border-width) var(--gog-calendar-day-border-style) transparent;
+  border-radius: var(--gog-calendar-day-radius);
+  background-color: var(--gog-calendar-day-bg, var(--gog-calendar-day-rest-bg));
+  color: var(--gog-calendar-day-color, var(--gog-calendar-day-rest-color));
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color var(--gog-calendar-transition-duration) var(--gog-easing),
+    color var(--gog-calendar-transition-duration) var(--gog-easing);
+}
+
+.gog-calendar__day:hover:not(:disabled) {
+  background-color: var(--gog-calendar-day-hover-bg);
+}
+
+/* Days spilling in from the neighbouring months stay pickable, just quieter. */
+.gog-calendar__day--outside {
+  color: var(--gog-calendar-day-outside-color);
+}
+
+.gog-calendar__day--today {
+  border-color: var(--gog-calendar-today-border-color);
+  font-weight: var(--gog-calendar-today-font-weight);
+}
+
+.gog-calendar__day--in-range {
+  border-radius: 0;
+  background-color: var(--gog-calendar-range-bg);
+  color: var(--gog-calendar-range-color);
+}
+
+.gog-calendar__day--range-start {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.gog-calendar__day--range-end {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+/* After the range rules, so the two ends stay solid against the wash between them. */
+.gog-calendar__day--selected {
+  background-color: var(--gog-calendar-selected-bg);
+  color: var(--gog-calendar-selected-color);
+  font-weight: var(--gog-calendar-selected-font-weight);
+}
+
+.gog-calendar__day:disabled {
+  opacity: var(--gog-calendar-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* === Time === */
+
+.gog-calendar__time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gog-calendar-time-gap);
+  margin-block-start: var(--gog-calendar-time-margin);
+  padding-block-start: var(--gog-calendar-time-margin);
+  border-block-start: var(--gog-calendar-divider-width) var(--gog-calendar-divider-style)
+    var(--gog-calendar-divider-color);
+}
+
+.gog-calendar__time-icon {
+  color: var(--gog-calendar-weekday-color);
+}
+
+.gog-calendar__time-input {
+  box-sizing: border-box;
+  width: var(--gog-calendar-time-input-width);
+  padding: var(--gog-calendar-time-input-padding);
+  border: var(--gog-calendar-day-border-width) var(--gog-calendar-day-border-style)
+    var(--gog-calendar-divider-color);
+  border-radius: var(--gog-calendar-day-radius);
+  background-color: var(--gog-calendar-time-input-bg);
+  color: var(--gog-calendar-color);
+  font: inherit;
+  text-align: center;
+}
+
+.gog-calendar__time-sep {
+  color: var(--gog-calendar-weekday-color);
+}
+
+.gog-calendar__meridiem,
+.gog-calendar__today {
+  padding: var(--gog-calendar-action-padding);
+  border: var(--gog-calendar-day-border-width) var(--gog-calendar-day-border-style)
+    var(--gog-calendar-divider-color);
+  border-radius: var(--gog-calendar-day-radius);
+  background-color: var(--gog-calendar-nav-bg);
+  color: var(--gog-calendar-nav-color);
+  font: inherit;
+  cursor: pointer;
+}
+
+.gog-calendar__meridiem:hover,
+.gog-calendar__today:hover {
+  background-color: var(--gog-calendar-nav-hover-bg);
+  color: var(--gog-calendar-nav-hover-color);
+}
+
+.gog-calendar__footer {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--gog-calendar-time-margin);
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chains above fall back to. */
+
+:host(.gog-calendar--xsm) {
+  --gog-calendar-size-font-size: var(--gog-calendar-xsm-font-size);
+  --gog-calendar-size-day-size: var(--gog-calendar-xsm-day-size);
+}
+
+:host(.gog-calendar--sm) {
+  --gog-calendar-size-font-size: var(--gog-calendar-sm-font-size);
+  --gog-calendar-size-day-size: var(--gog-calendar-sm-day-size);
+}
+
+:host(.gog-calendar--lg) {
+  --gog-calendar-size-font-size: var(--gog-calendar-lg-font-size);
+  --gog-calendar-size-day-size: var(--gog-calendar-lg-day-size);
+}
+
+:host(.gog-calendar--slg) {
+  --gog-calendar-size-font-size: var(--gog-calendar-slg-font-size);
+  --gog-calendar-size-day-size: var(--gog-calendar-slg-day-size);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-calendar__day {
+    transition: none;
+  }
+}

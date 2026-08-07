@@ -1,0 +1,45 @@
+<label [class.gog-toggle--disabled]="isDisabled()" class="gog-toggle gog-contained-layout">
+  <!--
+    A real checkbox with role="switch": the role changes only how it is announced, so the
+    space key, form registration and the :checked selector all keep working natively.
+  -->
+  <input
+    (blur)="onBlur()"
+    (change)="onInputChange($event)"
+    [attr.aria-label]="label() ? null : ariaLabel() || null"
+    [checked]="checked()"
+    [disabled]="isDisabled()"
+    class="gog-toggle__input"
+    role="switch"
+    type="checkbox"
+  />
+
+  <span [class.gog-toggle__track--on]="checked()" class="gog-toggle__track">
+    @if (hasTrackLabels()) {
+      <!--
+        Both labels are always in the DOM so the track's width is the wider of the two and
+        cannot jump as the switch flips; the inactive one is faded out, not removed.
+      -->
+      <span
+        [class.gog-toggle__state--active]="checked()"
+        class="gog-toggle__state gog-toggle__state--on"
+        aria-hidden="true"
+      >
+        {{ onLabel() }}
+      </span>
+      <span
+        [class.gog-toggle__state--active]="!checked()"
+        class="gog-toggle__state gog-toggle__state--off"
+        aria-hidden="true"
+      >
+        {{ offLabel() }}
+      </span>
+    }
+
+    <span class="gog-toggle__thumb" aria-hidden="true"></span>
+  </span>
+
+  @if (label()) {
+    <span class="gog-toggle__label">{{ label() }}</span>
+  }
+</label>

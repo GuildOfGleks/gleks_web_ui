@@ -1,0 +1,14 @@
+<!--
+  Eager content is projected straight through and merely hidden while inactive (see the host
+  `[hidden]` binding), which is what keeps its scroll position and unsaved input.
+
+  A projected `<ng-template gogTabContent>` renders nothing here — templates never do — so the
+  two paths coexist without a mode flag: whichever the consumer wrote is the one that shows.
+-->
+<ng-content></ng-content>
+
+@if (lazySlot(); as slot) {
+  @if (shouldRenderLazy()) {
+    <ng-container [ngTemplateOutlet]="slot.templateRef" />
+  }
+}

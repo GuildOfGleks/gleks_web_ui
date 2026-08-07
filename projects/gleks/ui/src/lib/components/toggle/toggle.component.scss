@@ -1,0 +1,233 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-toggle-track-bg / -thumb-bg / …   per-instance overrides (layer 3, undeclared).
+ *   --gog-toggle-size-*                     internal, set by the size classes on the host.
+ *   --gog-toggle-<name>                     the actual values, all in styles/theme.css.
+ *
+ * The size classes sit on the *host* rather than on `.gog-toggle`, so the sizing tokens are
+ * inherited into this stylesheet's elements instead of being declared next to their use —
+ * declaring them here would out-cascade the host and pin every toggle to one size, the same
+ * trap documented at the top of checkbox.component.scss.
+ */
+.gog-toggle {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  gap: var(--gog-toggle-gap);
+  padding: var(--gog-toggle-padding, var(--gog-control-checkbox-padding));
+  cursor: pointer;
+  user-select: none;
+}
+
+.gog-toggle--disabled {
+  opacity: var(--gog-toggle-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/*
+ * The native control stays in the layout — sized and stacked over the track — rather than
+ * being moved off-screen: that keeps the browser's own hit-testing, and keeps the focus ring
+ * anchored to something with real geometry.
+ */
+.gog-toggle__input {
+  position: absolute;
+  inset-inline-start: var(--gog-toggle-padding, var(--gog-control-checkbox-padding));
+  top: var(--gog-toggle-padding, var(--gog-control-checkbox-padding));
+  width: var(--gog-toggle-size-track-width, var(--gog-toggle-md-track-width));
+  height: var(--gog-toggle-size-track-height, var(--gog-toggle-md-track-height));
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.gog-toggle__track {
+  position: relative;
+  display: grid;
+  align-items: center;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-width: var(--gog-toggle-size-track-width, var(--gog-toggle-md-track-width));
+  height: var(--gog-toggle-size-track-height, var(--gog-toggle-md-track-height));
+  border: var(--gog-toggle-border-width) var(--gog-toggle-border-style)
+    var(--gog-toggle-border-color);
+  border-radius: var(--gog-toggle-radius);
+  background-color: var(--gog-toggle-track-bg, var(--gog-toggle-track-off-bg));
+  transition:
+    background-color var(--gog-toggle-transition-duration) var(--gog-easing),
+    border-color var(--gog-toggle-transition-duration) var(--gog-easing);
+}
+
+.gog-toggle__track--on {
+  border-color: var(--gog-toggle-on-border-color);
+  background-color: var(--gog-toggle-track-bg, var(--gog-toggle-track-on-bg));
+}
+
+.gog-toggle__thumb {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: var(--gog-toggle-thumb-inset);
+  width: var(--gog-toggle-size-thumb-size, var(--gog-toggle-md-thumb-size));
+  height: var(--gog-toggle-size-thumb-size, var(--gog-toggle-md-thumb-size));
+  border-radius: 50%;
+  background-color: var(--gog-toggle-thumb-bg, var(--gog-toggle-thumb-off-bg));
+  box-shadow: var(--gog-toggle-thumb-shadow);
+  transform: translateY(-50%);
+  /*
+   * `inset-inline-start` rather than a transform, because the track's width is not fixed once
+   * on/off labels widen it — a percentage translate resolves against the *thumb*, so it could
+   * not reach the far end of a track it doesn't know the width of. A percentage inset resolves
+   * against the track, which is exactly what's wanted, and animates just as smoothly.
+   */
+  transition:
+    inset-inline-start var(--gog-toggle-transition-duration) var(--gog-easing),
+    background-color var(--gog-toggle-transition-duration) var(--gog-easing);
+}
+
+.gog-toggle__track--on .gog-toggle__thumb {
+  inset-inline-start: calc(
+    100% - var(--gog-toggle-size-thumb-size, var(--gog-toggle-md-thumb-size)) - var(
+        --gog-toggle-thumb-inset
+      )
+  );
+  background-color: var(--gog-toggle-thumb-bg, var(--gog-toggle-thumb-on-bg));
+}
+
+/*
+ * Both state labels share one grid cell, so the track is as wide as the *wider* of the two
+ * and its width cannot jump when the switch flips. The inactive one fades rather than being
+ * removed, for the same reason.
+ */
+.gog-toggle__state {
+  grid-area: 1 / 1;
+  padding-inline: var(--gog-toggle-state-padding-inline);
+  color: var(--gog-toggle-state-color);
+  font-family: var(--gog-toggle-font-family);
+  font-size: var(--gog-toggle-size-state-font-size, var(--gog-toggle-md-state-font-size));
+  font-weight: var(--gog-toggle-state-font-weight);
+  letter-spacing: var(--gog-toggle-state-letter-spacing);
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity var(--gog-toggle-transition-duration) var(--gog-easing);
+}
+
+/* Each label sits opposite the thumb's resting position for that state. */
+.gog-toggle__state--on {
+  justify-self: start;
+  padding-inline-start: var(--gog-toggle-state-offset);
+}
+
+.gog-toggle__state--off {
+  justify-self: end;
+  padding-inline-end: var(--gog-toggle-state-offset);
+}
+
+.gog-toggle__state--active {
+  opacity: 1;
+}
+
+/*
+ * Room for the thumb at whichever end the labels don't occupy. The calc lives here rather
+ * than in theme.css on purpose: `--gog-toggle-size-thumb-size` is set by the size classes on
+ * the host, and a custom property's var() references resolve on the element that *declares*
+ * it — computing this at :root would freeze the clearance to the md thumb for every size.
+ */
+:host(.gog-toggle-host--track-labels) .gog-toggle__state--on {
+  padding-inline-end: calc(
+    var(--gog-toggle-size-thumb-size, var(--gog-toggle-md-thumb-size)) +
+      var(--gog-toggle-state-thumb-gap)
+  );
+}
+
+:host(.gog-toggle-host--track-labels) .gog-toggle__state--off {
+  padding-inline-start: calc(
+    var(--gog-toggle-size-thumb-size, var(--gog-toggle-md-thumb-size)) +
+      var(--gog-toggle-state-thumb-gap)
+  );
+}
+
+.gog-toggle__label {
+  color: var(--gog-toggle-label-color);
+  font-family: var(--gog-toggle-font-family);
+  font-size: var(--gog-toggle-size-label-size, var(--gog-toggle-md-label-size));
+  line-height: var(--gog-toggle-label-line-height);
+}
+
+/* === Focus ===
+   Ringed on the track, since the input itself is transparent. */
+
+.gog-toggle__input:focus-visible + .gog-toggle__track {
+  outline: var(--gog-toggle-focus-ring-width) solid var(--gog-toggle-focus-ring-color);
+  outline-offset: var(--gog-toggle-focus-ring-offset);
+}
+
+/* === Label position === */
+
+:host(.gog-toggle-host--label-start) .gog-toggle {
+  flex-direction: row-reverse;
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what every chain above falls back to. */
+
+:host(.gog-toggle-host--xsm) {
+  --gog-toggle-size-track-width: var(--gog-toggle-xsm-track-width);
+  --gog-toggle-size-track-height: var(--gog-toggle-xsm-track-height);
+  --gog-toggle-size-thumb-size: var(--gog-toggle-xsm-thumb-size);
+  --gog-toggle-size-label-size: var(--gog-toggle-xsm-label-size);
+  --gog-toggle-size-state-font-size: var(--gog-toggle-xsm-state-font-size);
+}
+
+:host(.gog-toggle-host--sm) {
+  --gog-toggle-size-track-width: var(--gog-toggle-sm-track-width);
+  --gog-toggle-size-track-height: var(--gog-toggle-sm-track-height);
+  --gog-toggle-size-thumb-size: var(--gog-toggle-sm-thumb-size);
+  --gog-toggle-size-label-size: var(--gog-toggle-sm-label-size);
+  --gog-toggle-size-state-font-size: var(--gog-toggle-sm-state-font-size);
+}
+
+:host(.gog-toggle-host--md) {
+  --gog-toggle-size-track-width: var(--gog-toggle-md-track-width);
+  --gog-toggle-size-track-height: var(--gog-toggle-md-track-height);
+  --gog-toggle-size-thumb-size: var(--gog-toggle-md-thumb-size);
+  --gog-toggle-size-label-size: var(--gog-toggle-md-label-size);
+  --gog-toggle-size-state-font-size: var(--gog-toggle-md-state-font-size);
+}
+
+:host(.gog-toggle-host--lg) {
+  --gog-toggle-size-track-width: var(--gog-toggle-lg-track-width);
+  --gog-toggle-size-track-height: var(--gog-toggle-lg-track-height);
+  --gog-toggle-size-thumb-size: var(--gog-toggle-lg-thumb-size);
+  --gog-toggle-size-label-size: var(--gog-toggle-lg-label-size);
+  --gog-toggle-size-state-font-size: var(--gog-toggle-lg-state-font-size);
+}
+
+:host(.gog-toggle-host--slg) {
+  --gog-toggle-size-track-width: var(--gog-toggle-slg-track-width);
+  --gog-toggle-size-track-height: var(--gog-toggle-slg-track-height);
+  --gog-toggle-size-thumb-size: var(--gog-toggle-slg-thumb-size);
+  --gog-toggle-size-label-size: var(--gog-toggle-slg-label-size);
+  --gog-toggle-size-state-font-size: var(--gog-toggle-slg-state-font-size);
+}
+
+/* === Full width === */
+
+:host(.gog-host--full-width) {
+  display: block;
+  width: 100%;
+}
+
+:host(.gog-host--full-width) .gog-toggle {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-toggle__track,
+  .gog-toggle__thumb,
+  .gog-toggle__state {
+    transition: none;
+  }
+}

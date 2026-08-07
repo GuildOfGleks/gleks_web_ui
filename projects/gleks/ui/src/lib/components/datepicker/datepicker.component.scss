@@ -1,0 +1,235 @@
+@use '../../styles/float-label' as float-label;
+
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-datepicker-bg / -color / -padding-*   per-instance overrides (layer 3, undeclared).
+ *   --gog-datepicker-size-*                     internal, set by the size classes.
+ *   --gog-datepicker-<name>                     the actual values, in styles/theme.css.
+ *
+ * Padding and font size reuse the shared `--gog-field-<size>-*` scale so this lines up with
+ * `gog-inputfield`, `gog-select` and `gog-autocomplete` in one form.
+ */
+:host {
+  display: block;
+}
+
+.gog-datepicker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-datepicker-gap);
+  width: 100%;
+}
+
+.gog-datepicker__label {
+  color: var(--gog-datepicker-label-color);
+  font-family: var(--gog-datepicker-label-font-family);
+  font-size: var(--gog-datepicker-label-font-size);
+  letter-spacing: var(--gog-datepicker-label-letter-spacing);
+  text-transform: var(--gog-datepicker-label-text-transform);
+}
+
+.gog-datepicker__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: var(--gog-datepicker-min-width);
+}
+
+.gog-datepicker__control {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(
+      --gog-datepicker-padding-y,
+      var(--gog-datepicker-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(--gog-datepicker-actions-reserve)
+    var(
+      --gog-datepicker-padding-y,
+      var(--gog-datepicker-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(
+      --gog-datepicker-padding-x,
+      var(--gog-datepicker-size-padding-x, var(--gog-field-md-padding-x))
+    );
+  border: var(--gog-datepicker-border-width) var(--gog-datepicker-border-style)
+    var(--gog-datepicker-border-color);
+  border-radius: var(--gog-datepicker-radius);
+  background-color: var(--gog-datepicker-bg, var(--gog-datepicker-field-bg));
+  color: var(--gog-datepicker-color, var(--gog-datepicker-text-color));
+  font-family: var(--gog-datepicker-font-family);
+  font-size: var(
+    --gog-datepicker-font-size,
+    var(--gog-datepicker-size-font-size, var(--gog-field-md-font-size))
+  );
+  line-height: var(--gog-datepicker-line-height);
+  transition: border-color var(--gog-datepicker-transition-duration) var(--gog-easing);
+}
+
+.gog-datepicker__control::placeholder {
+  color: var(--gog-datepicker-placeholder-color);
+}
+
+.gog-datepicker__control:hover:not(:disabled) {
+  border-color: var(--gog-datepicker-hover-border-color);
+}
+
+.gog-datepicker__control:focus-visible,
+.gog-datepicker__toggle:focus-visible,
+.gog-datepicker__clear:focus-visible {
+  outline: var(--gog-datepicker-focus-ring-width) solid var(--gog-datepicker-focus-ring-color);
+  outline-offset: var(--gog-datepicker-focus-ring-offset);
+}
+
+.gog-datepicker__control:disabled {
+  opacity: var(--gog-datepicker-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.gog-datepicker__control[aria-invalid='true'] {
+  border-color: var(--gog-datepicker-error-border-color);
+}
+
+/*
+ * Laid out end-first so the clear button is outermost, matching the arrangement the other
+ * dropdown-style controls settled on in iteration 8.
+ */
+.gog-datepicker__actions {
+  position: absolute;
+  inset-inline-end: var(--gog-datepicker-actions-inset);
+  display: inline-flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  gap: var(--gog-datepicker-actions-gap);
+}
+
+.gog-datepicker__toggle,
+.gog-datepicker__clear {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gog-datepicker-icon-color);
+  cursor: pointer;
+}
+
+.gog-datepicker__toggle {
+  font-size: var(--gog-datepicker-toggle-icon-size);
+}
+
+.gog-datepicker__clear {
+  color: var(--gog-datepicker-clear-color);
+  font-size: calc(var(--gog-icon-size) * var(--gog-datepicker-clear-icon-ratio));
+}
+
+.gog-datepicker__toggle:hover,
+.gog-datepicker__clear:hover {
+  color: var(--gog-datepicker-icon-hover-color);
+}
+
+.gog-datepicker__toggle:disabled {
+  opacity: var(--gog-datepicker-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.gog-datepicker__error {
+  color: var(--gog-datepicker-error-color);
+  font-family: var(--gog-datepicker-error-font-family);
+  font-size: var(--gog-datepicker-error-font-size);
+}
+
+/* === Panel === */
+
+.gog-datepicker__panel {
+  position: absolute;
+  inset-inline-start: 0;
+  top: calc(100% + var(--gog-datepicker-panel-gap));
+  z-index: var(--gog-dropdown-z);
+  width: max-content;
+  border: var(--gog-datepicker-panel-border-width) var(--gog-datepicker-panel-border-style)
+    var(--gog-datepicker-panel-border-color);
+  border-radius: var(--gog-datepicker-panel-radius);
+  background-color: var(--gog-datepicker-panel-bg);
+  box-shadow: var(--gog-datepicker-panel-shadow);
+}
+
+.gog-datepicker__panel--up {
+  top: auto;
+  bottom: calc(100% + var(--gog-datepicker-panel-gap));
+}
+
+/*
+ * Appended to <body>, the panel inherits nothing from the wrapper above — see
+ * styling.instructions.md. Only positioning changes here; every token the calendar reads is
+ * declared in theme.css rather than on this block, so it resolves the same either way.
+ */
+.gog-datepicker__panel--portal {
+  position: fixed;
+  top: 0;
+  inset-inline-start: 0;
+}
+
+.gog-datepicker__inline {
+  border: var(--gog-datepicker-panel-border-width) var(--gog-datepicker-panel-border-style)
+    var(--gog-datepicker-panel-border-color);
+  border-radius: var(--gog-datepicker-panel-radius);
+  background-color: var(--gog-datepicker-panel-bg);
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chains above fall back to. */
+
+.gog-datepicker--xsm {
+  --gog-datepicker-size-padding-y: var(--gog-field-xsm-padding-y);
+  --gog-datepicker-size-padding-x: var(--gog-field-xsm-padding-x);
+  --gog-datepicker-size-font-size: var(--gog-field-xsm-font-size);
+}
+
+.gog-datepicker--sm {
+  --gog-datepicker-size-padding-y: var(--gog-field-sm-padding-y);
+  --gog-datepicker-size-padding-x: var(--gog-field-sm-padding-x);
+  --gog-datepicker-size-font-size: var(--gog-field-sm-font-size);
+}
+
+.gog-datepicker--lg {
+  --gog-datepicker-size-padding-y: var(--gog-field-lg-padding-y);
+  --gog-datepicker-size-padding-x: var(--gog-field-lg-padding-x);
+  --gog-datepicker-size-font-size: var(--gog-field-lg-font-size);
+}
+
+.gog-datepicker--slg {
+  --gog-datepicker-size-padding-y: var(--gog-field-slg-padding-y);
+  --gog-datepicker-size-padding-x: var(--gog-field-slg-padding-x);
+  --gog-datepicker-size-font-size: var(--gog-field-slg-font-size);
+}
+
+/* === Auto width ===
+   Inverted from gog-button's full-width class: this control is full width by default, so the
+   class only appears once a consumer opts out. */
+
+:host(.gog-host--auto-width) .gog-datepicker,
+:host(.gog-host--auto-width) .gog-datepicker__field,
+:host(.gog-host--auto-width) .gog-datepicker__control {
+  width: auto;
+}
+
+/* === Float label === */
+
+@include float-label.variants(
+  $block: '.gog-datepicker',
+  $label: '.gog-datepicker__label--float',
+  $field: '.gog-datepicker__control',
+  $container: '.gog-datepicker__field',
+  $prefix: 'datepicker',
+  $pad-x:
+    'var(--gog-datepicker-padding-x, var(--gog-datepicker-size-padding-x, var(--gog-field-md-padding-x)))',
+  $pad-y:
+    'var(--gog-datepicker-padding-y, var(--gog-datepicker-size-padding-y, var(--gog-field-md-padding-y)))',
+  $max-width:
+    'calc(100% - 2 * var(--gog-datepicker-padding-x, var(--gog-datepicker-size-padding-x, var(--gog-field-md-padding-x))))'
+);
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-datepicker__control {
+    transition: none;
+  }
+}

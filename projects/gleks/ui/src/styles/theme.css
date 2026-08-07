@@ -465,6 +465,100 @@
   --gog-btn-ghost-hover-shadow: none;
   --gog-btn-ghost-spinner-color: var(--gog-accent-color);
 
+  /* ── Button toggle group ───────────────────────────────────────────────────
+     `--gog-button-toggle-bg`, `-color`, `-padding` and `-font-size` are intentionally NOT
+     declared — they are the per-instance escape hatch the size classes fall back through.
+     Padding/font-size reuse the `--gog-btn-<size>-*` scale so a toggle group and a
+     `<gog-button>` at the same `size` line up in a toolbar. */
+  --gog-button-toggle-font-family: var(--gog-font-heading);
+  --gog-button-toggle-font-weight: 700;
+  --gog-button-toggle-letter-spacing: 0.5px;
+  --gog-button-toggle-text-transform: uppercase;
+  --gog-button-toggle-line-height: 1;
+  --gog-button-toggle-gap: var(--gog-space-sm);
+  --gog-button-toggle-icon-size: 1.1em;
+  --gog-button-toggle-radius: var(--gog-radius);
+  --gog-button-toggle-border-width: var(--gog-control-border-width);
+  --gog-button-toggle-border-style: var(--gog-control-border-style);
+  --gog-button-toggle-border-color: var(--gog-border-color);
+  --gog-button-toggle-rest-bg: transparent;
+  --gog-button-toggle-rest-color: var(--gog-text-color);
+  --gog-button-toggle-hover-bg: var(--gog-hover-color);
+  --gog-button-toggle-hover-color: var(--gog-text-color);
+  --gog-button-toggle-selected-bg: var(--gog-accent-color);
+  --gog-button-toggle-selected-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-button-toggle-selected-border-color: var(--gog-accent-color);
+  --gog-button-toggle-separated-gap: var(--gog-space-sm);
+  --gog-button-toggle-transition-duration: var(--gog-duration-base);
+  --gog-button-toggle-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-button-toggle-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-button-toggle-focus-ring-offset: 2px;
+  --gog-button-toggle-focus-ring-color: var(--gog-accent-color);
+
+  /* ── Calendar (the month grid inside gog-datepicker, and gog-calendar on its own) ── */
+  --gog-calendar-font-family: var(--gog-font-body);
+  --gog-calendar-color: var(--gog-text-color);
+  --gog-calendar-padding: 12px;
+  --gog-calendar-header-gap: 4px;
+  --gog-calendar-header-margin: 8px;
+  --gog-calendar-months-gap: 16px;
+  --gog-calendar-title-color: var(--gog-text-color);
+  --gog-calendar-title-font-weight: 700;
+  --gog-calendar-nav-size: 28px;
+  --gog-calendar-nav-radius: 6px;
+  --gog-calendar-nav-bg: transparent;
+  --gog-calendar-nav-color: var(--gog-muted-text-color);
+  --gog-calendar-nav-hover-bg: var(--gog-hover-color);
+  --gog-calendar-nav-hover-color: var(--gog-text-color);
+  --gog-calendar-nav-icon-size: 0.8rem;
+  /* Pulls the two chevrons of a year step together so they read as one control. */
+  --gog-calendar-nav-icon-overlap: -0.35em;
+  --gog-calendar-weekday-padding: 4px 0;
+  --gog-calendar-weekday-color: var(--gog-muted-text-color);
+  --gog-calendar-weekday-font-size: var(--gog-text-xs);
+  --gog-calendar-weekday-font-weight: 600;
+  --gog-calendar-weekday-text-transform: uppercase;
+  --gog-calendar-day-radius: 6px;
+  --gog-calendar-day-border-width: 1px;
+  --gog-calendar-day-border-style: solid;
+  --gog-calendar-day-rest-bg: transparent;
+  --gog-calendar-day-rest-color: var(--gog-text-color);
+  --gog-calendar-day-hover-bg: var(--gog-hover-color);
+  --gog-calendar-day-outside-color: var(--gog-muted-text-color);
+  --gog-calendar-today-border-color: var(--gog-accent-color);
+  --gog-calendar-today-font-weight: 700;
+  --gog-calendar-selected-bg: var(--gog-accent-color);
+  --gog-calendar-selected-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-calendar-selected-font-weight: 700;
+  /* The wash between the two ends of a range: same hue, low enough to read as a band rather
+     than as a second selection. */
+  --gog-calendar-range-bg: color-mix(in srgb, var(--gog-accent-color) 16%, transparent);
+  --gog-calendar-range-color: var(--gog-text-color);
+  --gog-calendar-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-calendar-transition-duration: var(--gog-duration-fast);
+  --gog-calendar-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-calendar-focus-ring-offset: -2px;
+  --gog-calendar-focus-ring-color: var(--gog-accent-color);
+  --gog-calendar-divider-width: 1px;
+  --gog-calendar-divider-style: solid;
+  --gog-calendar-divider-color: var(--gog-border-color);
+  --gog-calendar-time-gap: 6px;
+  --gog-calendar-time-margin: 10px;
+  --gog-calendar-time-input-width: 3.5rem;
+  --gog-calendar-time-input-padding: 4px 6px;
+  --gog-calendar-time-input-bg: var(--gog-background-color);
+  --gog-calendar-action-padding: 4px 10px;
+  --gog-calendar-xsm-font-size: var(--gog-text-xs);
+  --gog-calendar-xsm-day-size: 24px;
+  --gog-calendar-sm-font-size: var(--gog-text-sm);
+  --gog-calendar-sm-day-size: 28px;
+  --gog-calendar-md-font-size: var(--gog-text-sm);
+  --gog-calendar-md-day-size: 34px;
+  --gog-calendar-lg-font-size: var(--gog-text-md);
+  --gog-calendar-lg-day-size: 40px;
+  --gog-calendar-slg-font-size: var(--gog-text-lg);
+  --gog-calendar-slg-day-size: 46px;
+
   /* ── Checkbox ──────────────────────────────────────────────────────────────
      Box/label/icon size and padding come from the `--gog-control-checkbox-*` scale;
      checkbox.component.ts maps the `size` input onto the host. */
@@ -623,6 +717,185 @@
   --gog-confirm-description-color: var(--gog-muted-text-color);
   --gog-confirm-actions-gap: var(--gog-space-sm);
   --gog-confirm-actions-offset: var(--gog-space-sm);
+
+  /* ── Autocomplete ──────────────────────────────────────────────────────────
+     A combobox whose trigger is a real text input. Padding/font-size reuse the shared
+     `--gog-field-<size>-*` scale, so it lines up with `gog-inputfield` and `gog-select` in a
+     form. `--gog-autocomplete-bg`, `-color`, `-font-size`, `-padding-x` and `-padding-y` are
+     intentionally NOT declared — they are the per-instance escape hatch the size classes fall
+     back through. */
+  --gog-autocomplete-font-family: var(--gog-font-body);
+  --gog-autocomplete-label-font-family: var(--gog-font-heading);
+  --gog-autocomplete-gap: 4px;
+  --gog-autocomplete-label-color: var(--gog-accent-color);
+  --gog-autocomplete-label-font-size: var(--gog-text-sm);
+  --gog-autocomplete-label-font-weight: 600;
+  --gog-autocomplete-label-letter-spacing: 1px;
+  --gog-autocomplete-label-text-transform: uppercase;
+  --gog-autocomplete-field-bg: var(--gog-surface-color);
+  --gog-autocomplete-text-color: var(--gog-text-color);
+  --gog-autocomplete-placeholder-color: var(--gog-muted-text-color);
+  --gog-autocomplete-border-width: var(--gog-control-border-width);
+  --gog-autocomplete-border-style: var(--gog-control-border-style);
+  --gog-autocomplete-border-color: var(--gog-accent-dim);
+  --gog-autocomplete-hover-border-color: var(--gog-accent-color);
+  --gog-autocomplete-radius: var(--gog-radius);
+  --gog-autocomplete-line-height: 1.4;
+  --gog-autocomplete-transition-duration: var(--gog-duration-base);
+  --gog-autocomplete-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-autocomplete-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-autocomplete-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-autocomplete-focus-ring-color: var(--gog-accent-color);
+  --gog-autocomplete-error-color: var(--gog-danger-color);
+  --gog-autocomplete-error-border-color: var(--gog-danger-color);
+  --gog-autocomplete-error-font-family: var(--gog-font-body);
+  --gog-autocomplete-error-font-size: var(--gog-text-xs);
+  /* Floor for an auto-width field, so [fullWidth]="false" cannot collapse it to its chrome. */
+  --gog-autocomplete-min-width: 120px;
+  /* Trailing chrome: spinner and clear button, clear outermost — the arrangement the other
+     dropdowns settled on, so all of them line up in a form. */
+  --gog-autocomplete-actions-inset: var(--gog-control-icon-offset);
+  --gog-autocomplete-actions-gap: 6px;
+  /* Right padding on the input, reserving room for the actions above. */
+  --gog-autocomplete-actions-reserve: 40px;
+  --gog-autocomplete-clear-color: var(--gog-autocomplete-placeholder-color);
+  --gog-autocomplete-clear-hover-color: var(--gog-autocomplete-label-color);
+  --gog-autocomplete-clear-icon-ratio: 0.7;
+  --gog-autocomplete-spinner-size: 0.875rem;
+  /* Panel */
+  --gog-autocomplete-panel-bg: var(--gog-surface-color);
+  --gog-autocomplete-panel-shadow: var(--gog-panel-shadow);
+  --gog-autocomplete-panel-border-width: var(--gog-panel-border-width);
+  --gog-autocomplete-panel-border-style: var(--gog-panel-border-style);
+  --gog-autocomplete-panel-border-color: var(--gog-border-color);
+  --gog-autocomplete-panel-radius: var(--gog-radius);
+  --gog-autocomplete-panel-gap: 2px;
+  --gog-autocomplete-panel-max-height: 260px;
+  /* Ceiling for a content-sized panel, so one very long option cannot span the viewport. */
+  --gog-autocomplete-panel-max-width: 420px;
+  --gog-autocomplete-options-padding: 4px;
+  --gog-autocomplete-option-padding: 8px 10px;
+  --gog-autocomplete-option-radius: 4px;
+  --gog-autocomplete-option-gap: 10px;
+  --gog-autocomplete-option-color: var(--gog-text-color);
+  --gog-autocomplete-option-hover-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
+  --gog-autocomplete-option-hover-color: var(--gog-text-color);
+  --gog-autocomplete-option-selected-bg: color-mix(
+    in srgb,
+    var(--gog-accent-color) 16%,
+    transparent
+  );
+  --gog-autocomplete-option-selected-color: var(--gog-accent-color);
+  /* Estimated row height fed into the panel's up/down placement math; not itself a real
+     layout property, so it has no effect unless the JS reads it. */
+  --gog-autocomplete-option-height: 36px;
+  --gog-autocomplete-empty-color: var(--gog-autocomplete-placeholder-color);
+  --gog-autocomplete-empty-font-size: var(--gog-text-sm);
+  --gog-autocomplete-float-label-reserve: var(--gog-field-float-label-reserve);
+  --gog-autocomplete-float-label-in-top: var(--gog-field-float-label-in-top);
+  --gog-autocomplete-float-label-over-gap: var(--gog-field-float-label-over-gap);
+  --gog-autocomplete-float-label-over-reserve: var(--gog-field-float-label-over-reserve);
+
+  /* ── Badge (the `gogBadge` directive; its classes live in utilities.css) ───── */
+  --gog-badge-font-family: var(--gog-font-body);
+  --gog-badge-font-size: var(--gog-text-xs);
+  --gog-badge-font-weight: 600;
+  --gog-badge-line-height: 1;
+  /* Min-width *and* height: a one-digit badge stays a circle, a three-digit one grows
+     sideways only. */
+  --gog-badge-size: 1.25rem;
+  --gog-badge-dot-size: 0.5rem;
+  --gog-badge-padding-inline: 5px;
+  --gog-badge-radius: 999px;
+  /* How far the badge hangs outside its host's corner. */
+  --gog-badge-offset: 6px;
+  --gog-badge-border-width: 0;
+  --gog-badge-border-style: solid;
+  --gog-badge-border-color: transparent;
+  /* Above the host's own chrome but below any overlay panel (--gog-dropdown-z is 300). */
+  --gog-badge-z: 1;
+  /* `--gog-accent-text-color` is the palette's "text on a filled surface" colour and flips
+     with the theme, which is why a red badge reads white on light and near-black on dark. */
+  --gog-badge-success-bg: var(--gog-success-color);
+  --gog-badge-success-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-danger-bg: var(--gog-danger-color);
+  --gog-badge-danger-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-warning-bg: var(--gog-warning-color);
+  --gog-badge-warning-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-info-bg: var(--gog-info-color);
+  --gog-badge-info-color: var(--gog-accent-text-color, var(--gog-primary-color));
+
+  /* ── Datepicker (the field; the grid inside it is themed by --gog-calendar-*) ───
+     `--gog-datepicker-bg`, `-color`, `-font-size`, `-padding-x` and `-padding-y` are
+     intentionally NOT declared — they are the per-instance escape hatch the size classes fall
+     back through. */
+  --gog-datepicker-font-family: var(--gog-font-body);
+  --gog-datepicker-label-font-family: var(--gog-font-heading);
+  --gog-datepicker-gap: 4px;
+  --gog-datepicker-label-color: var(--gog-accent-color);
+  --gog-datepicker-label-font-size: var(--gog-text-sm);
+  --gog-datepicker-label-letter-spacing: 1px;
+  --gog-datepicker-label-text-transform: uppercase;
+  --gog-datepicker-field-bg: var(--gog-surface-color);
+  --gog-datepicker-text-color: var(--gog-text-color);
+  --gog-datepicker-placeholder-color: var(--gog-muted-text-color);
+  --gog-datepicker-border-width: var(--gog-control-border-width);
+  --gog-datepicker-border-style: var(--gog-control-border-style);
+  --gog-datepicker-border-color: var(--gog-accent-dim);
+  --gog-datepicker-hover-border-color: var(--gog-accent-color);
+  --gog-datepicker-radius: var(--gog-radius);
+  --gog-datepicker-line-height: 1.4;
+  --gog-datepicker-transition-duration: var(--gog-duration-base);
+  --gog-datepicker-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-datepicker-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-datepicker-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-datepicker-focus-ring-color: var(--gog-accent-color);
+  --gog-datepicker-error-color: var(--gog-danger-color);
+  --gog-datepicker-error-border-color: var(--gog-danger-color);
+  --gog-datepicker-error-font-family: var(--gog-font-body);
+  --gog-datepicker-error-font-size: var(--gog-text-xs);
+  --gog-datepicker-min-width: 150px;
+  --gog-datepicker-actions-inset: var(--gog-control-icon-offset);
+  --gog-datepicker-actions-gap: 6px;
+  /* Right padding on the input, reserving room for the calendar and clear buttons. */
+  --gog-datepicker-actions-reserve: 40px;
+  --gog-datepicker-icon-color: var(--gog-accent-color);
+  --gog-datepicker-icon-hover-color: var(--gog-accent-bright);
+  --gog-datepicker-toggle-icon-size: 1rem;
+  --gog-datepicker-clear-color: var(--gog-datepicker-placeholder-color);
+  --gog-datepicker-clear-icon-ratio: 0.7;
+  --gog-datepicker-panel-bg: var(--gog-surface-color);
+  --gog-datepicker-panel-shadow: var(--gog-panel-shadow);
+  --gog-datepicker-panel-border-width: var(--gog-panel-border-width);
+  --gog-datepicker-panel-border-style: var(--gog-panel-border-style);
+  --gog-datepicker-panel-border-color: var(--gog-border-color);
+  --gog-datepicker-panel-radius: var(--gog-radius);
+  --gog-datepicker-panel-gap: 2px;
+  --gog-datepicker-float-label-reserve: var(--gog-field-float-label-reserve);
+  --gog-datepicker-float-label-in-top: var(--gog-field-float-label-in-top);
+  --gog-datepicker-float-label-over-gap: var(--gog-field-float-label-over-gap);
+  --gog-datepicker-float-label-over-reserve: var(--gog-field-float-label-over-reserve);
+
+  /* ── Divider ───────────────────────────────────────────────────────────────── */
+  --gog-divider-line-color: var(--gog-border-color);
+  --gog-divider-line-thickness: 1px;
+  /* The variant classes map onto these, so a theme can decide what "dashed" looks like
+     rather than the value being frozen into the component's stylesheet. */
+  --gog-divider-solid-style: solid;
+  --gog-divider-dashed-style: dashed;
+  --gog-divider-dotted-style: dotted;
+  --gog-divider-block-spacing: var(--gog-space-md);
+  --gog-divider-inline-spacing: var(--gog-space-md);
+  --gog-divider-inset-size: var(--gog-space-lg);
+  /* Floor for a vertical divider with nothing to stretch to — e.g. between two inline
+     buttons. In a flex/grid row it stretches to the row instead. */
+  --gog-divider-vertical-length: 1.5em;
+  --gog-divider-label-gap: var(--gog-space-sm);
+  --gog-divider-label-color: var(--gog-muted-text-color);
+  --gog-divider-label-font-family: var(--gog-font-body);
+  --gog-divider-label-font-size: var(--gog-text-sm);
+  --gog-divider-label-font-weight: 500;
+  --gog-divider-label-line-height: 1.4;
 
   /* ── Icon ──────────────────────────────────────────────────────────────────── */
   --gog-icon-fallback-size: 1em;
@@ -839,6 +1112,50 @@
   --gog-paginator-ellipsis-font-size: var(--gog-text-sm);
   --gog-paginator-ellipsis-font-family: var(--gog-font-body);
   --gog-paginator-ellipsis-min-width: 32px;
+
+  /* ── Progressbar ──────────────────────────────────────────────────────────── */
+  --gog-progressbar-track-base-bg: color-mix(
+    in srgb,
+    var(--gog-text-color) 20%,
+    var(--gog-border-color)
+  );
+  --gog-progressbar-radius: 999px;
+  --gog-progressbar-transition-duration: var(--gog-duration-slow);
+  --gog-progressbar-xsm-height: 2px;
+  --gog-progressbar-sm-height: 4px;
+  --gog-progressbar-md-height: 6px;
+  --gog-progressbar-lg-height: 10px;
+  --gog-progressbar-slg-height: 14px;
+  --gog-progressbar-value-gap: var(--gog-space-sm);
+  --gog-progressbar-value-min-width: 3ch;
+  --gog-progressbar-value-color: var(--gog-muted-text-color);
+  --gog-progressbar-value-font-family: var(--gog-font-body);
+  --gog-progressbar-value-font-size: var(--gog-text-sm);
+  --gog-progressbar-indeterminate-duration: 1.6s;
+  --gog-progressbar-indeterminate-easing: cubic-bezier(0.65, 0.05, 0.36, 1);
+  /* The reduced-motion stand-in for the indeterminate animation. */
+  --gog-progressbar-stripe-size: 6px;
+  --gog-progressbar-stripe-color: color-mix(in srgb, var(--gog-surface-color) 45%, transparent);
+  /* The buffer tier is the same hue at low opacity, so it reads as "ahead of the fill"
+     rather than as a second, competing colour. */
+  --gog-progressbar-accent-bg: var(--gog-accent-color);
+  --gog-progressbar-accent-buffer-bg: color-mix(in srgb, var(--gog-accent-color) 35%, transparent);
+  --gog-progressbar-success-bg: var(--gog-success-color);
+  --gog-progressbar-success-buffer-bg: color-mix(
+    in srgb,
+    var(--gog-success-color) 35%,
+    transparent
+  );
+  --gog-progressbar-danger-bg: var(--gog-danger-color);
+  --gog-progressbar-danger-buffer-bg: color-mix(in srgb, var(--gog-danger-color) 35%, transparent);
+  --gog-progressbar-warning-bg: var(--gog-warning-color);
+  --gog-progressbar-warning-buffer-bg: color-mix(
+    in srgb,
+    var(--gog-warning-color) 35%,
+    transparent
+  );
+  --gog-progressbar-info-bg: var(--gog-info-color);
+  --gog-progressbar-info-buffer-bg: color-mix(in srgb, var(--gog-info-color) 35%, transparent);
 
   /* ── Scroll ────────────────────────────────────────────────────────────────── */
   --gog-scroll-track-bg: transparent;
@@ -1104,6 +1421,47 @@
   --gog-table-slg-th-font-size: var(--gog-text-md);
   --gog-table-slg-td-font-size: var(--gog-text-lg);
 
+  /* ── Tabs ──────────────────────────────────────────────────────────────────
+     `--gog-tabs-tab-bg`, `-tab-color`, `-tab-padding` and `-tab-font-size` are intentionally
+     NOT declared — they are the per-instance escape hatch the size classes fall back through.
+     `--gog-tabs-indicator-offset` / `-length` are written as inline styles from the measured
+     header geometry, so they are not declared either. */
+  --gog-tabs-font-family: var(--gog-font-heading);
+  --gog-tabs-font-weight: 700;
+  --gog-tabs-letter-spacing: 0.4px;
+  --gog-tabs-text-transform: none;
+  --gog-tabs-line-height: 1.2;
+  --gog-tabs-gap: 0px;
+  --gog-tabs-tab-gap: var(--gog-space-sm);
+  --gog-tabs-icon-size: 1.1em;
+  --gog-tabs-rest-bg: transparent;
+  --gog-tabs-rest-color: var(--gog-muted-text-color);
+  --gog-tabs-hover-color: var(--gog-text-color);
+  --gog-tabs-active-color: var(--gog-accent-color);
+  --gog-tabs-header-border-width: 1px;
+  --gog-tabs-header-border-style: solid;
+  --gog-tabs-header-border-color: var(--gog-border-color);
+  --gog-tabs-indicator-color: var(--gog-accent-color);
+  --gog-tabs-indicator-thickness: 2px;
+  --gog-tabs-indicator-radius: 999px;
+  --gog-tabs-transition-duration: var(--gog-duration-base);
+  --gog-tabs-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-tabs-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-tabs-focus-ring-offset: -2px;
+  --gog-tabs-focus-ring-color: var(--gog-accent-color);
+  --gog-tabs-panel-padding: var(--gog-space-md);
+  --gog-tabs-panel-color: var(--gog-text-color);
+  --gog-tabs-xsm-padding: 0.375rem 0.625rem;
+  --gog-tabs-xsm-font-size: var(--gog-text-xs);
+  --gog-tabs-sm-padding: 0.5rem 0.875rem;
+  --gog-tabs-sm-font-size: var(--gog-text-sm);
+  --gog-tabs-md-padding: 0.75rem 1.125rem;
+  --gog-tabs-md-font-size: var(--gog-text-md);
+  --gog-tabs-lg-padding: 1rem 1.5rem;
+  --gog-tabs-lg-font-size: var(--gog-text-lg);
+  --gog-tabs-slg-padding: 1.25rem 1.75rem;
+  --gog-tabs-slg-font-size: var(--gog-text-xl);
+
   /* ── Tag ──────────────────────────────────────────────────────────────────
      Like the button, the unsuffixed `--gog-tag-bg`/`-border`/`-color`/`-font-size`
      and friends stay undeclared so variant and size classes can fall through them. */
@@ -1190,6 +1548,68 @@
   --gog-toast-stack-min-opacity: 0.4;
   --gog-toast-stack-opacity-step: 0.18;
   --gog-toast-stack-max-depth: 6;
+
+  /* ── Toggle ───────────────────────────────────────────────────────────────────
+     A switch, not a checkbox: it announces as "switch, on". The outer label size reuses
+     the `--gog-control-checkbox-*` scale so a toggle and a checkbox in the same form read
+     at the same weight; the track/thumb geometry is its own, since a switch is wider than
+     it is tall. */
+  --gog-toggle-font-family: var(--gog-font-body);
+  --gog-toggle-gap: var(--gog-space-sm);
+  --gog-toggle-radius: 999px;
+  --gog-toggle-border-width: 1px;
+  --gog-toggle-border-style: solid;
+  --gog-toggle-border-color: var(--gog-border-color);
+  --gog-toggle-on-border-color: var(--gog-accent-color);
+  --gog-toggle-track-off-bg: color-mix(in srgb, var(--gog-text-color) 18%, transparent);
+  --gog-toggle-track-on-bg: var(--gog-accent-color);
+  --gog-toggle-thumb-off-bg: var(--gog-surface-color);
+  --gog-toggle-thumb-on-bg: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-toggle-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --gog-toggle-thumb-inset: 2px;
+  --gog-toggle-transition-duration: var(--gog-duration-base);
+  --gog-toggle-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-toggle-label-color: var(--gog-text-color);
+  --gog-toggle-label-line-height: 1.4;
+  --gog-toggle-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-toggle-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-toggle-focus-ring-color: var(--gog-accent-color);
+  /* In-track on/off wording */
+  --gog-toggle-state-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-toggle-state-font-weight: 600;
+  --gog-toggle-state-letter-spacing: 0.04em;
+  --gog-toggle-state-padding-inline: 4px;
+  --gog-toggle-state-offset: 6px;
+  /* Gap between the wording and the thumb parked at the opposite end. The clearance itself
+     (thumb size + this) is computed in the component stylesheet, not here: a `var(` to a
+     size-class token is substituted where it is *declared*, so doing that calc on :root would
+     freeze it to the md thumb and stop it scaling with `size`. */
+  --gog-toggle-state-thumb-gap: 6px;
+  --gog-toggle-xsm-track-width: 24px;
+  --gog-toggle-xsm-track-height: 14px;
+  --gog-toggle-xsm-thumb-size: 10px;
+  --gog-toggle-xsm-label-size: var(--gog-control-checkbox-label-size-xsm);
+  --gog-toggle-xsm-state-font-size: 0.5rem;
+  --gog-toggle-sm-track-width: 32px;
+  --gog-toggle-sm-track-height: 18px;
+  --gog-toggle-sm-thumb-size: 14px;
+  --gog-toggle-sm-label-size: var(--gog-control-checkbox-label-size-sm);
+  --gog-toggle-sm-state-font-size: 0.5625rem;
+  --gog-toggle-md-track-width: 44px;
+  --gog-toggle-md-track-height: 24px;
+  --gog-toggle-md-thumb-size: 18px;
+  --gog-toggle-md-label-size: var(--gog-control-checkbox-label-size-md);
+  --gog-toggle-md-state-font-size: 0.625rem;
+  --gog-toggle-lg-track-width: 56px;
+  --gog-toggle-lg-track-height: 32px;
+  --gog-toggle-lg-thumb-size: 26px;
+  --gog-toggle-lg-label-size: var(--gog-control-checkbox-label-size-lg);
+  --gog-toggle-lg-state-font-size: 0.75rem;
+  --gog-toggle-slg-track-width: 68px;
+  --gog-toggle-slg-track-height: 40px;
+  --gog-toggle-slg-thumb-size: 34px;
+  --gog-toggle-slg-label-size: var(--gog-control-checkbox-label-size-slg);
+  --gog-toggle-slg-state-font-size: 0.8125rem;
 
   /* ── Tooltip ──────────────────────────────────────────────────────────────── */
   --gog-tooltip-font-family: var(--gog-font-body);

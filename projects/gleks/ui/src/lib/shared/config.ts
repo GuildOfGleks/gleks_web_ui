@@ -98,6 +98,29 @@ export interface GogGlobalConfig {
     /** Which end of the panel the search box sticks to. `'top'` by default. */
     filterPosition?: GogDropdownFilterPosition;
   };
+  /**
+   * Applies to `gog-datepicker` and `gog-calendar`. Every field here is something an app sets
+   * once rather than per field — a locale and a date format repeated on every date input is
+   * exactly the boilerplate this config exists to remove.
+   */
+  datepicker?: {
+    /** BCP-47 tag driving month and weekday names. */
+    locale?: string;
+    /** 0 = Sunday … 6 = Saturday. Unset, it comes from the locale. */
+    firstDayOfWeek?: number;
+    /** Display and parse pattern (`dd.MM.yyyy`, `yyyy-MM-dd`, …). */
+    format?: string;
+  };
+  /** Applies to `gog-autocomplete`. */
+  autocomplete?: {
+    /**
+     * Milliseconds to wait after the last keystroke before `gogSearch` fires. A whole app
+     * usually wants one answer here, tuned to its backend rather than to each field.
+     */
+    searchDebounce?: number;
+    /** How many characters before the panel opens at all. */
+    minLength?: number;
+  };
   toast?: {
     position?: ToastPosition;
     /** How long a non-sticky toast stays up, in ms. */

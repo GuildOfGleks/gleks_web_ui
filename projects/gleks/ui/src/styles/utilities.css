@@ -33,6 +33,107 @@
 }
 
 /*
+ * Present to assistive tech, invisible on screen. The clip-path/1px recipe rather than
+ * `display: none` or `visibility: hidden`, both of which remove the text from the
+ * accessibility tree along with the pixels.
+ */
+.gog-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/*
+ * `gogBadge`'s classes, global for the same reason as `gog-collapsible`'s below: the
+ * directive appends its badge into a *consumer's* element, which is light DOM belonging to
+ * that consumer's view, so a scoped stylesheet could never reach it.
+ */
+.gog-badge-host {
+  /* The badge is positioned against this element, so it has to be a containing block.
+     Harmless on an already-relative host; a host that is itself absolutely positioned
+     should set its own position after this class, which ordinary specificity allows. */
+  position: relative;
+}
+
+.gog-badge {
+  position: absolute;
+  z-index: var(--gog-badge-z);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--gog-badge-size);
+  height: var(--gog-badge-size);
+  padding-inline: var(--gog-badge-padding-inline);
+  border: var(--gog-badge-border-width) var(--gog-badge-border-style) var(--gog-badge-border-color);
+  border-radius: var(--gog-badge-radius);
+  background-color: var(--gog-badge-bg, var(--gog-badge-variant-bg, var(--gog-badge-danger-bg)));
+  color: var(--gog-badge-color, var(--gog-badge-variant-color, var(--gog-badge-danger-color)));
+  font-family: var(--gog-badge-font-family);
+  font-size: var(--gog-badge-font-size);
+  font-weight: var(--gog-badge-font-weight);
+  line-height: var(--gog-badge-line-height);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* A dot carries no text, so it collapses to a circle and drops its padding. */
+.gog-badge--dot {
+  min-width: var(--gog-badge-dot-size);
+  width: var(--gog-badge-dot-size);
+  height: var(--gog-badge-dot-size);
+  padding-inline: 0;
+  border-radius: 50%;
+}
+
+/* Logical insets rather than a translate, so the corners follow the writing direction. */
+.gog-badge--top-end {
+  top: calc(-1 * var(--gog-badge-offset));
+  inset-inline-end: calc(-1 * var(--gog-badge-offset));
+}
+
+.gog-badge--top-start {
+  top: calc(-1 * var(--gog-badge-offset));
+  inset-inline-start: calc(-1 * var(--gog-badge-offset));
+}
+
+.gog-badge--bottom-end {
+  bottom: calc(-1 * var(--gog-badge-offset));
+  inset-inline-end: calc(-1 * var(--gog-badge-offset));
+}
+
+.gog-badge--bottom-start {
+  bottom: calc(-1 * var(--gog-badge-offset));
+  inset-inline-start: calc(-1 * var(--gog-badge-offset));
+}
+
+.gog-badge--success {
+  --gog-badge-variant-bg: var(--gog-badge-success-bg);
+  --gog-badge-variant-color: var(--gog-badge-success-color);
+}
+
+.gog-badge--danger {
+  --gog-badge-variant-bg: var(--gog-badge-danger-bg);
+  --gog-badge-variant-color: var(--gog-badge-danger-color);
+}
+
+.gog-badge--warning {
+  --gog-badge-variant-bg: var(--gog-badge-warning-bg);
+  --gog-badge-variant-color: var(--gog-badge-warning-color);
+}
+
+.gog-badge--info {
+  --gog-badge-variant-bg: var(--gog-badge-info-bg);
+  --gog-badge-variant-color: var(--gog-badge-info-color);
+}
+
+/*
  * `gog-collapsible`'s trigger/content classes, global rather than component-scoped: both
  * are applied via `gogCollapsibleTrigger`/`gogCollapsibleContent` directives to elements a
  * *consumer* projects into `<gog-collapsible>` — light DOM that belongs to the consumer's

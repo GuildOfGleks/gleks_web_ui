@@ -1,0 +1,150 @@
+@if (inline()) {
+  <!--
+    Inline mode is literally `gog-calendar` with no field and no panel around it — which is why
+    the calendar is its own component rather than markup buried in this one.
+  -->
+  <gog-calendar
+    class="gog-datepicker__inline"
+    [value]="value()"
+    [selectionMode]="selectionMode()"
+    [min]="min()"
+    [max]="max()"
+    [disabledDates]="disabledDates()"
+    [locale]="resolvedLocale()"
+    [firstDayOfWeek]="resolvedFirstDayOfWeek()"
+    [defaultMonth]="defaultMonth()"
+    [numberOfMonths]="numberOfMonths()"
+    [showTime]="showTime()"
+    [hourFormat]="hourFormat()"
+    [minuteStep]="minuteStep()"
+    [showSeconds]="showSeconds()"
+    [showTodayButton]="showTodayButton()"
+    [size]="resolvedSize()"
+    (valueChange)="onCalendarValue($event)"
+    (gogDateSelect)="onCalendarSelect($event)"
+  />
+} @else {
+  <!--
+    Deliberately not `gog-contained-layout`: `contain: layout` makes this element a stacking
+    context, which traps the panel's z-index inside it.
+  -->
+  <div
+    class="gog-datepicker"
+    [class]="sizeClass()"
+    [class.gog-datepicker--clearable]="showClear()"
+    [class.gog-datepicker--disabled]="isDisabled()"
+    [class.gog-datepicker--open]="isOpen()"
+    [class.gog-datepicker--float-in]="resolvedFloatLabel() === 'in'"
+    [class.gog-datepicker--float-on]="resolvedFloatLabel() === 'on'"
+    [class.gog-datepicker--float-over]="resolvedFloatLabel() === 'over'"
+    [class.gog-datepicker--floated]="isFloatLabelFloated()"
+  >
+    @if (label() && resolvedFloatLabel() === 'none') {
+      <label class="gog-datepicker__label" [for]="triggerId()">{{ label() }}</label>
+    }
+
+    <div class="gog-datepicker__field">
+      @if (label() && isFloatLabelActive()) {
+        <label class="gog-datepicker__label gog-datepicker__label--float" [for]="triggerId()">{{
+          label()
+        }}</label>
+      }
+
+      <input
+        type="text"
+        class="gog-datepicker__control"
+        autocomplete="off"
+        [id]="triggerId()"
+        [disabled]="isDisabled()"
+        [readOnly]="!allowTextInput() || selectionMode() === 'range'"
+        [value]="text()"
+        [placeholder]="effectivePlaceholder()"
+        [attr.aria-label]="label() ? null : ariaLabel() || null"
+        [attr.aria-haspopup]="'dialog'"
+        [attr.aria-expanded]="isOpen()"
+        [attr.aria-controls]="panelId()"
+        [attr.aria-invalid]="hasError()"
+        [attr.aria-describedby]="errorId()"
+        (input)="onTextInput($event)"
+        (keydown)="onTriggerKeydown($event)"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+      />
+
+      <span class="gog-datepicker__actions">
+        <button
+          type="button"
+          class="gog-datepicker__toggle gog-inline-center"
+          [disabled]="isDisabled()"
+          [attr.aria-label]="openCalendarLabel()"
+          [attr.aria-expanded]="isOpen()"
+          [attr.aria-controls]="panelId()"
+          (click)="toggle()"
+        >
+          <gog-icon name="calendar" />
+        </button>
+
+        @if (showClear()) {
+          <button
+            type="button"
+            class="gog-datepicker__clear gog-inline-center"
+            [attr.aria-label]="clearAriaLabel()"
+            (click)="clearValue($event)"
+          >
+            <gog-icon name="close" />
+          </button>
+        }
+      </span>
+
+      @if (isOpen() && !resolvedAppendToBody()) {
+        <ng-container [ngTemplateOutlet]="panelTpl" />
+      }
+    </div>
+
+    @if (hasError()) {
+      <span class="gog-datepicker__error" [attr.id]="errorId()" role="alert">
+        {{ visibleError() }}
+      </span>
+    }
+  </div>
+}
+
+<!--
+  One template for both render modes — inline under the field, or stamped into <body> by the
+  overlay when `appendToBody` is set, which also copies any scoped `data-theme` across.
+-->
+<ng-template #panelTpl>
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events -- (click) here is housekeeping stopPropagation, not an interactive handler; the focusable, keyboard-operable elements are the calendar's own grid and buttons -->
+  <div
+    [id]="panelId()"
+    class="gog-datepicker__panel"
+    role="dialog"
+    [attr.aria-label]="label() || ariaLabel() || openCalendarLabel()"
+    [class.gog-datepicker__panel--up]="!resolvedAppendToBody() && directionState() === 'up'"
+    [class.gog-datepicker__panel--portal]="resolvedAppendToBody()"
+    [style.top.px]="resolvedAppendToBody() ? panelPlacement()?.top : null"
+    [style.left.px]="resolvedAppendToBody() ? panelPlacement()?.left : null"
+    [style.z-index]="dropdownZIndex()"
+    (click)="$event.stopPropagation()"
+  >
+    <gog-calendar
+      [value]="value()"
+      [selectionMode]="selectionMode()"
+      [min]="min()"
+      [max]="max()"
+      [disabledDates]="disabledDates()"
+      [locale]="resolvedLocale()"
+      [firstDayOfWeek]="resolvedFirstDayOfWeek()"
+      [defaultMonth]="defaultMonth()"
+      [numberOfMonths]="numberOfMonths()"
+      [showTime]="showTime()"
+      [hourFormat]="hourFormat()"
+      [minuteStep]="minuteStep()"
+      [showSeconds]="showSeconds()"
+      [showTodayButton]="showTodayButton()"
+      [size]="resolvedSize()"
+      (valueChange)="onCalendarValue($event)"
+      (gogDateSelect)="onCalendarSelect($event)"
+    />
+  </div>
+</ng-template>

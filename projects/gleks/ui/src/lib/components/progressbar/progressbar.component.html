@@ -1,0 +1,11 @@
+<div class="gog-progressbar__track" aria-hidden="true">
+  @if (mode() === 'buffer') {
+    <div class="gog-progressbar__buffer" [style.width.%]="clampedBuffer()"></div>
+  }
+
+  <div class="gog-progressbar__fill" [style.width.%]="fillPercent()"></div>
+</div>
+
+@if (showValue() && !isIndeterminate()) {
+  <span class="gog-progressbar__value">{{ displayValue() }}</span>
+}

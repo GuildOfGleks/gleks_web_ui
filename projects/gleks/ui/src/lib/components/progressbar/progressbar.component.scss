@@ -1,0 +1,151 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-progressbar-fill-bg / -track-bg / -height   per-instance overrides (layer 3).
+ *   --gog-progressbar-variant-*                       internal, set by the variant classes.
+ *   --gog-progressbar-size-height                     internal, set by the size classes.
+ *   --gog-progressbar-<name>                          the actual values, in styles/theme.css.
+ */
+:host {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  gap: var(--gog-progressbar-value-gap);
+  contain: layout style;
+}
+
+.gog-progressbar__track {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+  height: var(
+    --gog-progressbar-height,
+    var(--gog-progressbar-size-height, var(--gog-progressbar-md-height))
+  );
+  border-radius: var(--gog-progressbar-radius);
+  background-color: var(--gog-progressbar-track-bg, var(--gog-progressbar-track-base-bg));
+}
+
+.gog-progressbar__fill,
+.gog-progressbar__buffer {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  border-radius: inherit;
+  transition: width var(--gog-progressbar-transition-duration) var(--gog-easing);
+}
+
+.gog-progressbar__fill {
+  background-color: var(
+    --gog-progressbar-fill-bg,
+    var(--gog-progressbar-variant-bg, var(--gog-progressbar-accent-bg))
+  );
+}
+
+.gog-progressbar__buffer {
+  background-color: var(
+    --gog-progressbar-buffer-bg,
+    var(--gog-progressbar-variant-buffer-bg, var(--gog-progressbar-accent-buffer-bg))
+  );
+}
+
+.gog-progressbar__value {
+  flex: 0 0 auto;
+  min-width: var(--gog-progressbar-value-min-width);
+  color: var(--gog-progressbar-value-color);
+  font-family: var(--gog-progressbar-value-font-family);
+  font-size: var(--gog-progressbar-value-font-size);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+/* === Indeterminate ===
+   The fill is full-width and slid across the track, so the bar reads as "working" without
+   claiming a position. Two offset runs so the track is never empty for long. */
+
+:host(.gog-progressbar--indeterminate) .gog-progressbar__fill {
+  transform-origin: left center;
+  transition: none;
+  animation: gog-progressbar-indeterminate var(--gog-progressbar-indeterminate-duration)
+    var(--gog-progressbar-indeterminate-easing) infinite;
+}
+
+@keyframes gog-progressbar-indeterminate {
+  0% {
+    transform: translateX(-100%) scaleX(0.4);
+  }
+  50% {
+    transform: translateX(20%) scaleX(0.6);
+  }
+  100% {
+    transform: translateX(100%) scaleX(0.4);
+  }
+}
+
+/*
+ * A bar that never stops moving is exactly what this media query exists for. The static
+ * striped fill still reads as "in progress" without the motion.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :host(.gog-progressbar--indeterminate) .gog-progressbar__fill {
+    animation: none;
+    transform: none;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent 0 var(--gog-progressbar-stripe-size),
+      var(--gog-progressbar-stripe-color) var(--gog-progressbar-stripe-size)
+        calc(var(--gog-progressbar-stripe-size) * 2)
+    );
+  }
+
+  .gog-progressbar__fill,
+  .gog-progressbar__buffer {
+    transition: none;
+  }
+}
+
+/* === Variants ===
+   `accent` needs no block: it is what the chains above fall back to. */
+
+:host(.gog-progressbar--success) {
+  --gog-progressbar-variant-bg: var(--gog-progressbar-success-bg);
+  --gog-progressbar-variant-buffer-bg: var(--gog-progressbar-success-buffer-bg);
+}
+
+:host(.gog-progressbar--danger) {
+  --gog-progressbar-variant-bg: var(--gog-progressbar-danger-bg);
+  --gog-progressbar-variant-buffer-bg: var(--gog-progressbar-danger-buffer-bg);
+}
+
+:host(.gog-progressbar--warning) {
+  --gog-progressbar-variant-bg: var(--gog-progressbar-warning-bg);
+  --gog-progressbar-variant-buffer-bg: var(--gog-progressbar-warning-buffer-bg);
+}
+
+:host(.gog-progressbar--info) {
+  --gog-progressbar-variant-bg: var(--gog-progressbar-info-bg);
+  --gog-progressbar-variant-buffer-bg: var(--gog-progressbar-info-buffer-bg);
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the height chain falls back to. */
+
+:host(.gog-progressbar--xsm) {
+  --gog-progressbar-size-height: var(--gog-progressbar-xsm-height);
+}
+
+:host(.gog-progressbar--sm) {
+  --gog-progressbar-size-height: var(--gog-progressbar-sm-height);
+}
+
+:host(.gog-progressbar--md) {
+  --gog-progressbar-size-height: var(--gog-progressbar-md-height);
+}
+
+:host(.gog-progressbar--lg) {
+  --gog-progressbar-size-height: var(--gog-progressbar-lg-height);
+}
+
+:host(.gog-progressbar--slg) {
+  --gog-progressbar-size-height: var(--gog-progressbar-slg-height);
+}

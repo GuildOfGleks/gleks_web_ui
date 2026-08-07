@@ -1,0 +1,290 @@
+@use '../../styles/float-label' as float-label;
+
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-autocomplete-bg / -color / -padding-*   per-instance overrides (layer 3).
+ *   --gog-autocomplete-size-*                     internal, set by the size classes.
+ *   --gog-autocomplete-<name>                     the actual values, in styles/theme.css.
+ */
+:host {
+  display: block;
+}
+
+.gog-autocomplete {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-autocomplete-gap);
+  width: 100%;
+}
+
+.gog-autocomplete__label {
+  color: var(--gog-autocomplete-label-color);
+  font-family: var(--gog-autocomplete-label-font-family);
+  font-size: var(--gog-autocomplete-label-font-size);
+  font-weight: var(--gog-autocomplete-label-font-weight);
+  letter-spacing: var(--gog-autocomplete-label-letter-spacing);
+}
+
+/*
+ * `position: relative` for the inline panel and the trailing actions, both absolutely
+ * positioned against it.
+ */
+.gog-autocomplete__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: var(--gog-autocomplete-min-width);
+}
+
+.gog-autocomplete__control {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: var(--gog-autocomplete-min-width);
+  padding: var(
+      --gog-autocomplete-padding-y,
+      var(--gog-autocomplete-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(--gog-autocomplete-actions-reserve)
+    var(
+      --gog-autocomplete-padding-y,
+      var(--gog-autocomplete-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(
+      --gog-autocomplete-padding-x,
+      var(--gog-autocomplete-size-padding-x, var(--gog-field-md-padding-x))
+    );
+  border: var(--gog-autocomplete-border-width) var(--gog-autocomplete-border-style)
+    var(--gog-autocomplete-border-color);
+  border-radius: var(--gog-autocomplete-radius);
+  background-color: var(--gog-autocomplete-bg, var(--gog-autocomplete-field-bg));
+  color: var(--gog-autocomplete-color, var(--gog-autocomplete-text-color));
+  font-family: var(--gog-autocomplete-font-family);
+  font-size: var(
+    --gog-autocomplete-font-size,
+    var(--gog-autocomplete-size-font-size, var(--gog-field-md-font-size))
+  );
+  line-height: var(--gog-autocomplete-line-height);
+  transition:
+    border-color var(--gog-autocomplete-transition-duration) var(--gog-easing),
+    box-shadow var(--gog-autocomplete-transition-duration) var(--gog-easing);
+}
+
+.gog-autocomplete__control::placeholder {
+  color: var(--gog-autocomplete-placeholder-color);
+}
+
+.gog-autocomplete__control:hover:not(:disabled) {
+  border-color: var(--gog-autocomplete-hover-border-color);
+}
+
+.gog-autocomplete__control:focus-visible {
+  outline: var(--gog-autocomplete-focus-ring-width) solid var(--gog-autocomplete-focus-ring-color);
+  outline-offset: var(--gog-autocomplete-focus-ring-offset);
+}
+
+.gog-autocomplete__control:disabled {
+  opacity: var(--gog-autocomplete-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.gog-autocomplete--error .gog-autocomplete__control,
+.gog-autocomplete__control[aria-invalid='true'] {
+  border-color: var(--gog-autocomplete-error-border-color);
+}
+
+/*
+ * Trailing chrome, laid out end-first so the clear button is outermost — the same arrangement
+ * `gog-select` and `gog-multiselect` settled on in iteration 8, so all three line up in a form.
+ */
+.gog-autocomplete__actions {
+  position: absolute;
+  inset-inline-end: var(--gog-autocomplete-actions-inset);
+  display: inline-flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  gap: var(--gog-autocomplete-actions-gap);
+  pointer-events: none;
+}
+
+.gog-autocomplete__actions > * {
+  pointer-events: auto;
+}
+
+.gog-autocomplete__clear {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gog-autocomplete-clear-color);
+  font-size: calc(var(--gog-icon-size) * var(--gog-autocomplete-clear-icon-ratio));
+  cursor: pointer;
+}
+
+.gog-autocomplete__clear:hover {
+  color: var(--gog-autocomplete-clear-hover-color);
+}
+
+.gog-autocomplete__clear:focus-visible {
+  outline: var(--gog-autocomplete-focus-ring-width) solid var(--gog-autocomplete-focus-ring-color);
+  outline-offset: var(--gog-autocomplete-focus-ring-offset);
+}
+
+.gog-autocomplete__spinner {
+  font-size: var(--gog-autocomplete-spinner-size);
+}
+
+.gog-autocomplete__error {
+  color: var(--gog-autocomplete-error-color);
+  font-family: var(--gog-autocomplete-error-font-family);
+  font-size: var(--gog-autocomplete-error-font-size);
+}
+
+/* === Panel === */
+
+.gog-autocomplete__dropdown {
+  position: absolute;
+  inset-inline-start: 0;
+  top: calc(100% + var(--gog-autocomplete-panel-gap));
+  z-index: var(--gog-dropdown-z);
+  box-sizing: border-box;
+  width: max-content;
+  min-width: 100%;
+  max-width: var(--gog-autocomplete-panel-max-width);
+  max-height: var(--gog-autocomplete-panel-max-height);
+  padding: var(--gog-autocomplete-options-padding);
+  border: var(--gog-autocomplete-panel-border-width) var(--gog-autocomplete-panel-border-style)
+    var(--gog-autocomplete-panel-border-color);
+  border-radius: var(--gog-autocomplete-panel-radius);
+  background-color: var(--gog-autocomplete-panel-bg);
+  box-shadow: var(--gog-autocomplete-panel-shadow);
+}
+
+.gog-autocomplete__dropdown--up {
+  top: auto;
+  bottom: calc(100% + var(--gog-autocomplete-panel-gap));
+}
+
+/*
+ * Appended to <body>, the panel inherits none of the tokens declared on the wrapper above,
+ * so every one it reads has to be restated here — see styling.instructions.md.
+ */
+.gog-autocomplete__dropdown--portal {
+  position: fixed;
+  top: 0;
+  inset-inline-start: 0;
+  min-width: 0;
+}
+
+.gog-autocomplete__scroll {
+  display: block;
+  max-height: var(--gog-autocomplete-panel-max-height);
+}
+
+.gog-autocomplete__option {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-autocomplete-option-gap);
+  padding: var(--gog-autocomplete-option-padding);
+  border-radius: var(--gog-autocomplete-option-radius);
+  color: var(--gog-autocomplete-option-color);
+  font-family: var(--gog-autocomplete-font-family);
+  font-size: var(
+    --gog-autocomplete-font-size,
+    var(--gog-autocomplete-size-font-size, var(--gog-field-md-font-size))
+  );
+  cursor: pointer;
+}
+
+/*
+ * Hover and keyboard highlight paint the same way on purpose: with focus staying in the input,
+ * the highlighted row is the only thing telling the user what Enter will do, so it must not be
+ * weaker than the mouse affordance.
+ */
+.gog-autocomplete__option:hover:not([aria-disabled='true']),
+.gog-autocomplete__option--active {
+  background-color: var(--gog-autocomplete-option-hover-bg);
+  color: var(--gog-autocomplete-option-hover-color);
+}
+
+.gog-autocomplete__option--selected {
+  background-color: var(--gog-autocomplete-option-selected-bg);
+  color: var(--gog-autocomplete-option-selected-color);
+}
+
+.gog-autocomplete__option--disabled {
+  opacity: var(--gog-autocomplete-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.gog-autocomplete__option-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gog-autocomplete__empty {
+  margin: 0;
+  padding: var(--gog-autocomplete-option-padding);
+  color: var(--gog-autocomplete-empty-color);
+  font-family: var(--gog-autocomplete-font-family);
+  font-size: var(--gog-autocomplete-empty-font-size);
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chains above fall back to. */
+
+.gog-autocomplete--xsm {
+  --gog-autocomplete-size-padding-y: var(--gog-field-xsm-padding-y);
+  --gog-autocomplete-size-padding-x: var(--gog-field-xsm-padding-x);
+  --gog-autocomplete-size-font-size: var(--gog-field-xsm-font-size);
+}
+
+.gog-autocomplete--sm {
+  --gog-autocomplete-size-padding-y: var(--gog-field-sm-padding-y);
+  --gog-autocomplete-size-padding-x: var(--gog-field-sm-padding-x);
+  --gog-autocomplete-size-font-size: var(--gog-field-sm-font-size);
+}
+
+.gog-autocomplete--lg {
+  --gog-autocomplete-size-padding-y: var(--gog-field-lg-padding-y);
+  --gog-autocomplete-size-padding-x: var(--gog-field-lg-padding-x);
+  --gog-autocomplete-size-font-size: var(--gog-field-lg-font-size);
+}
+
+.gog-autocomplete--slg {
+  --gog-autocomplete-size-padding-y: var(--gog-field-slg-padding-y);
+  --gog-autocomplete-size-padding-x: var(--gog-field-slg-padding-x);
+  --gog-autocomplete-size-font-size: var(--gog-field-slg-font-size);
+}
+
+/* === Auto width ===
+   Inverted from the other controls: this one is full width unless the consumer opts out. */
+
+:host(.gog-host--auto-width) .gog-autocomplete,
+:host(.gog-host--auto-width) .gog-autocomplete__field,
+:host(.gog-host--auto-width) .gog-autocomplete__control {
+  width: auto;
+}
+
+/* === Float label === */
+
+@include float-label.variants(
+  $block: '.gog-autocomplete',
+  $label: '.gog-autocomplete__label--float',
+  $field: '.gog-autocomplete__control',
+  $container: '.gog-autocomplete__field',
+  $prefix: 'autocomplete',
+  $pad-x:
+    'var(--gog-autocomplete-padding-x, var(--gog-autocomplete-size-padding-x, var(--gog-field-md-padding-x)))',
+  $pad-y:
+    'var(--gog-autocomplete-padding-y, var(--gog-autocomplete-size-padding-y, var(--gog-field-md-padding-y)))',
+  $max-width:
+    'calc(100% - 2 * var(--gog-autocomplete-padding-x, var(--gog-autocomplete-size-padding-x, var(--gog-field-md-padding-x))))'
+);
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-autocomplete__control {
+    transition: none;
+  }
+}

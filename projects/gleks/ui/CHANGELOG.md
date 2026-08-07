@@ -8,6 +8,71 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **Eight new components**, the Angular Material set this library was missing:
+
+  - **`gog-datepicker`** — a date field with a calendar panel: single date, `selectionMode="range"`
+    (with `numberOfMonths` for a two-month view), and an optional clock via `showTime` /
+    `hourFormat` / `minuteStep` / `showSeconds`. `min`, `max` and a `disabledDates` **predicate**
+    (an array cannot express "weekends"), `inline` for an always-visible calendar, `allowTextInput`
+    with parsing, plus the usual `clearable` / `floatLabel` / `errorMessage` / `appendToBody`.
+
+    Native `Date`, **no date library and no adapter abstraction** — the package keeps its zero
+    runtime dependencies. `Intl` supplies month and weekday names; the display format is a token
+    pattern (`dd.MM.yyyy`, `yyyy-MM-dd`, …) used for *both* rendering and parsing, so what is
+    written can always be read back. `31.02.2026` is rejected rather than silently becoming
+    3 March. `locale`, `firstDayOfWeek` and `format` are also settable app-wide through
+    `GOG_CONFIG.datepicker`.
+  - **`gog-calendar`** — the month grid behind it, exported and usable on its own. Follows the
+    ARIA grid pattern: arrows by day, `PageUp`/`PageDown` by month, `Shift` + those by year,
+    `Home`/`End` to the week's ends, and one tab stop across all 42 cells. Always six weeks, so
+    the calendar's height never changes as you page through months.
+  - **`gog-autocomplete`** — a text field that suggests options as you type, on the same
+    `GogDropdownBase` as `gog-select` and taking the same `optionLabel` / `optionValue` /
+    `optionDisabled` accessors. The trigger is a real `<input>`, which is what makes it a separate
+    control rather than a mode of `gog-select`: focus never leaves the field and the highlighted
+    row is pointed at with `aria-activedescendant`. `gogSearch` is debounced (`searchDebounce`,
+    300 ms) for a server-backed source, and `[filterLocal]="false"` stops that server's answer
+    being filtered a second time. Plus `minLength`, `loading`, `emptyMessage` and
+    `forceSelection`.
+  - **`gog-tabs` / `gog-tab`** — a tablist over projected children, each tab declaring its own
+    `label`, `iconName` and `disabled`. Content written inside a tab renders eagerly and is
+    merely hidden while inactive, so scroll position and half-typed input survive a switch; an
+    `<ng-template gogTabContent>` is instead built on first activation and kept alive after.
+    Which you get is decided by whether that template is present. `gogTabHeader` replaces the
+    header button entirely. Overflowing headers scroll inside a `<gog-scroll>`, not a native
+    `overflow-x`.
+  - **`gog-button-toggle-group`** — a row of buttons where one, or with `multiple` several, can
+    be picked. Options-driven with the same accessors as the dropdowns, plus `optionIcon` and a
+    `gogButtonToggleOption` slot. Single and multiple are genuinely different widgets to
+    assistive tech and are exposed as such: `role="radiogroup"`/`aria-checked` with arrows that
+    move *and* select, versus `role="group"`/`aria-pressed` with arrows that only move.
+    `appearance` picks between one segmented control and discrete buttons.
+  - **`gog-toggle`** — an on/off switch. A native `<input type="checkbox">` carrying
+    `role="switch"`, so it announces as "switch, on" rather than "checkbox, checked" while the
+    platform keeps owning the keyboard and forms. `onLabel` / `offLabel` render *inside* the
+    track — the one thing a checkbox cannot do — and both stay in the DOM so the track's width
+    cannot jump as it flips. Shares `gog-checkbox`'s size scale.
+  - **`gog-progressbar`** — determinate, indeterminate and buffer modes, five sizes and the
+    semantic colour set. `value` and `buffer` are clamped to 0–100 rather than trusted.
+    Indeterminate reports **no** `aria-valuenow` at all, which is what marks it indeterminate,
+    and its animation is replaced by a static stripe under `prefers-reduced-motion`.
+  - **`gogBadge`** — a count or dot pinned to another element's corner. A directive, so it
+    decorates a button, icon or avatar without wrapping it. `badgePosition`, `badgeVariant`,
+    `badgeDot`, `badgeMax` (`99+` beyond it), `badgeHidden` and `badgeAriaLabel`. It renders
+    **nothing at all** for `0`, `null` or `''` — a badge reading "0" is the defining bug of this
+    component class, so it is not reachable.
+  - **`gog-divider`** — a rule between two regions, horizontal or vertical, solid/dashed/dotted,
+    with an optional projected label running through it and an `inset` variant for lists. No
+    `hasLabel` input: the two forms are told apart by whether anything was actually projected.
+
+- `GogOrientation` — one shared `'horizontal' | 'vertical'` type. `GogSliderOrientation` is now
+  an alias of it, so nothing changes for existing code.
+- `roving-focus.ts` gained an `orientation` (so a horizontal tablist leaves `ArrowDown` to the
+  page) and an optional predicate for skipping disabled items. Both default to the previous
+  behaviour, so `gog-select`, `gog-multiselect` and `gog-accordion` are unaffected.
+- Four icons: `calendar`, `clock`, `chevron-left`, `chevron-right`.
+- `.gog-visually-hidden` in `styles/utilities.css`.
+
 - `GogFloatLabelState` (exported) — the shared float-label state behind `gog-inputfield`,
   `gog-textarea`, `gog-select` and `gog-multiselect`, previously three near-identical copies of
   the same five `computed()`s. A plain composition class in the mould of `GogErrorState`, so it
@@ -87,6 +152,18 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **An auto-width dropdown clipped its own options.** With `[fullWidth]="false"` the trigger
+  sizes to the *current* selection, and the panel copied that width — so picking a short option
+  cut the longer ones off the list. The relationship is now inverted: the panel sizes to its own
+  content with the trigger's width as a **floor**, capped by
+  `--gog-{select,multiselect}-panel-max-width`. New `minWidth` input (any CSS length) plus
+  `--gog-{select,multiselect}-min-width` (120px) so an auto-width trigger cannot collapse to its
+  own chrome either.
+- **`gog-multiselect` now collapses a long selection into `+N`.** The trigger shows what fits on
+  one line and a count for the rest, with the full list in a tooltip. Measured with
+  `canvas.measureText` rather than by rendering candidates, and re-measured from a
+  `ResizeObserver` on the value element, since the space available changes when the *container*
+  resizes — something Angular never renders for.
 - **`gog-select`'s chevron sat 42px from the trigger's right edge.**
   `--gog-select-chevron-inset` was applied as the trigger's `padding-right` while the chevron
   itself was a flex child *inside* that padding, so the inset was counted twice. It now lands on

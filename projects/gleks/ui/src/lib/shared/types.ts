@@ -1,12 +1,18 @@
 ﻿export type GogSize = 'xsm' | 'sm' | 'md' | 'lg' | 'slg';
 export type GogVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+/**
+ * Which way a component lays its children out. Shared rather than re-declared per component:
+ * `gog-radio-group`, `gog-slider`, `gog-divider`, `gog-tabs` and `gog-button-toggle-group` all
+ * mean the same thing by it, and `roving-focus.ts` picks its arrow pair from this.
+ */
+export type GogOrientation = 'horizontal' | 'vertical';
 export type GogSpinnerVariant = 'runic' | 'ring' | 'custom';
 export type GogTagVariant = 'success' | 'danger' | 'warning' | 'info';
 export type GogTagShape = 'rounded' | 'pill';
 export type GogSkeletonShape = 'text' | 'circle' | 'rect';
 export type GogSkeletonAnimation = 'pulse' | 'wave' | 'none';
 export type GogPaginatorRangeMode = 'window' | 'ellipsis';
-export type GogSliderOrientation = 'horizontal' | 'vertical';
+export type GogSliderOrientation = GogOrientation;
 export type GogScrollAxis = 'vertical' | 'horizontal' | 'both';
 export type GogScrollSize = 'normal' | 'thin';
 /**
@@ -43,3 +49,42 @@ export type GogFloatLabelVariant = 'none' | 'in' | 'on' | 'over';
  * `controlsPosition` vocabulary — the same idea applied to its select-all row.
  */
 export type GogDropdownFilterPosition = 'top' | 'bottom';
+
+/** How `gog-divider` paints its rule. */
+export type GogDividerVariant = 'solid' | 'dashed' | 'dotted';
+
+/**
+ * Which corner of its host a `gogBadge` sits on. Named by block/inline edge rather than
+ * left/right so it follows the writing direction in an RTL layout.
+ */
+export type GogBadgePosition = 'top-end' | 'top-start' | 'bottom-end' | 'bottom-start';
+
+/**
+ * - `'determinate'` — the bar reflects `value`.
+ * - `'indeterminate'` — work of unknown length; the bar animates and reports no value to
+ *   assistive tech, which is what marks it indeterminate.
+ * - `'buffer'` — `value` plus a second, lighter `buffer` level ahead of it (streaming/preload).
+ */
+export type GogProgressbarMode = 'determinate' | 'indeterminate' | 'buffer';
+
+/**
+ * `gog-progressbar`'s colour. Wider than `GogTagVariant` by one: progress is usually just
+ * "the app is working", which is the accent colour rather than any of the four status hues —
+ * so `'accent'` is the default and the status names are the exception.
+ */
+export type GogProgressbarVariant = 'accent' | 'success' | 'danger' | 'warning' | 'info';
+
+/**
+ * - `'joined'` — one segmented control, buttons sharing borders (Material's look).
+ * - `'separated'` — discrete buttons with a gap between them.
+ */
+export type GogButtonToggleAppearance = 'joined' | 'separated';
+
+/** How the tab headers distribute along the tablist. `'stretch'` makes them share the width. */
+export type GogTabsAlign = 'start' | 'center' | 'end' | 'stretch';
+
+/** Whether `gog-datepicker` picks one day or a start/end pair. */
+export type GogDateSelectionMode = 'single' | 'range';
+
+/** Clock convention for `gog-datepicker`'s time section. */
+export type GogHourFormat = '12' | '24';

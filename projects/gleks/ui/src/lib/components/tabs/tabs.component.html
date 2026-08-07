@@ -1,0 +1,55 @@
+<div class="gog-tabs__header">
+  <!--
+    gog-scroll rather than a raw overflow-x: a native scrollbar carries no --gog-* tokens and
+    would be the one un-themeable strip inside an otherwise fully themeable component.
+    focusable=false because the tablist already owns the keyboard here.
+  -->
+  <gog-scroll
+    class="gog-tabs__scroll"
+    axis="horizontal"
+    size="thin"
+    [focusable]="false"
+    overscrollBehavior="contain"
+  >
+    <div
+      class="gog-tabs__list"
+      role="tablist"
+      [attr.aria-label]="ariaLabel() || null"
+      [attr.aria-orientation]="orientation()"
+    >
+      @for (tab of tabs(); track tab; let i = $index) {
+        <button
+          #tabHeader
+          type="button"
+          role="tab"
+          class="gog-tabs__tab"
+          [class.gog-tabs__tab--active]="i === resolvedIndex()"
+          [id]="tab.headerId"
+          [attr.aria-selected]="i === resolvedIndex()"
+          [attr.aria-controls]="tab.panelId"
+          [attr.aria-disabled]="tab.disabled() ? 'true' : null"
+          [disabled]="tab.disabled()"
+          [tabindex]="i === resolvedIndex() ? 0 : -1"
+          (click)="selectIndex(i)"
+          (keydown)="onHeaderKeydown($event)"
+        >
+          @if (headerSlot(); as slot) {
+            <ng-container
+              [ngTemplateOutlet]="slot.templateRef"
+              [ngTemplateOutletContext]="headerContext(tab, i)"
+            />
+          } @else {
+            @if (tab.iconName(); as icon) {
+              <gog-icon class="gog-tabs__icon" [name]="icon" [ariaHidden]="true" />
+            }
+            <span class="gog-tabs__label">{{ tab.label() }}</span>
+          }
+        </button>
+      }
+    </div>
+  </gog-scroll>
+</div>
+
+<div class="gog-tabs__panels">
+  <ng-content></ng-content>
+</div>

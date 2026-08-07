@@ -1,0 +1,29 @@
+@for (option of options(); track $index) {
+  <button
+    #toggleButton
+    type="button"
+    class="gog-button-toggle__button"
+    [class.gog-button-toggle__button--selected]="isSelected(option)"
+    [attr.role]="multiple() ? null : 'radio'"
+    [attr.aria-checked]="multiple() ? null : isSelected(option)"
+    [attr.aria-pressed]="multiple() ? isSelected(option) : null"
+    [attr.aria-disabled]="isOptionDisabled(option) ? 'true' : null"
+    [disabled]="isOptionDisabled(option)"
+    [tabindex]="$index === tabStopIndex() ? 0 : -1"
+    (click)="onOptionClick(option)"
+    (keydown)="onKeydown($event)"
+    (blur)="onBlur()"
+  >
+    @if (optionSlot(); as slot) {
+      <ng-container
+        [ngTemplateOutlet]="slot.templateRef"
+        [ngTemplateOutletContext]="optionContext(option)"
+      />
+    } @else {
+      @if (iconOf(option); as icon) {
+        <gog-icon class="gog-button-toggle__icon" [name]="icon" [ariaHidden]="true" />
+      }
+      <span class="gog-button-toggle__label">{{ labelOf(option) }}</span>
+    }
+  </button>
+}

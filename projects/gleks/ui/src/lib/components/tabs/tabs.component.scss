@@ -1,0 +1,189 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-tabs-tab-bg / -color / -padding   per-instance overrides (layer 3, undeclared).
+ *   --gog-tabs-size-*                       internal, set by the size classes on the host.
+ *   --gog-tabs-<name>                       the actual values, all in styles/theme.css.
+ */
+:host {
+  display: block;
+  box-sizing: border-box;
+}
+
+.gog-tabs__header {
+  position: relative;
+  border-block-end: var(--gog-tabs-header-border-width) var(--gog-tabs-header-border-style)
+    var(--gog-tabs-header-border-color);
+}
+
+.gog-tabs__list {
+  position: relative;
+  display: flex;
+  gap: var(--gog-tabs-gap);
+  min-width: max-content;
+}
+
+.gog-tabs__tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  gap: var(--gog-tabs-tab-gap);
+  padding: var(--gog-tabs-tab-padding, var(--gog-tabs-size-padding, var(--gog-tabs-md-padding)));
+  border: 0;
+  background-color: var(--gog-tabs-tab-bg, var(--gog-tabs-rest-bg));
+  color: var(--gog-tabs-tab-color, var(--gog-tabs-rest-color));
+  font-family: var(--gog-tabs-font-family);
+  font-size: var(
+    --gog-tabs-tab-font-size,
+    var(--gog-tabs-size-font-size, var(--gog-tabs-md-font-size))
+  );
+  font-weight: var(--gog-tabs-font-weight);
+  letter-spacing: var(--gog-tabs-letter-spacing);
+  line-height: var(--gog-tabs-line-height);
+  text-transform: var(--gog-tabs-text-transform);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--gog-tabs-transition-duration) var(--gog-easing);
+}
+
+.gog-tabs__tab:hover:not(:disabled) {
+  color: var(--gog-tabs-hover-color);
+}
+
+.gog-tabs__tab--active {
+  color: var(--gog-tabs-active-color);
+}
+
+.gog-tabs__tab:disabled {
+  opacity: var(--gog-tabs-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.gog-tabs__tab:focus-visible {
+  outline: var(--gog-tabs-focus-ring-width) solid var(--gog-tabs-focus-ring-color);
+  outline-offset: var(--gog-tabs-focus-ring-offset);
+}
+
+.gog-tabs__icon {
+  flex-shrink: 0;
+  font-size: var(--gog-tabs-icon-size);
+}
+
+/*
+ * The active-tab indicator is a pseudo-element on the active header rather than one element
+ * slid between positions.
+ *
+ * The sliding version needed the header's measured geometry, and measuring it here proved
+ * unreliable: the header row is projected into `<gog-scroll>`, which put it out of reach of the
+ * view queries the measurement depended on, and the indicator silently never appeared. A
+ * pseudo-element is always in the right place by construction, needs no JavaScript, and is
+ * correct during SSR — worth more than the slide.
+ */
+.gog-tabs__tab--active::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: calc(-1 * var(--gog-tabs-header-border-width));
+  height: var(--gog-tabs-indicator-thickness);
+  border-radius: var(--gog-tabs-indicator-radius);
+  background-color: var(--gog-tabs-indicator-color);
+}
+
+.gog-tabs__panels {
+  min-width: 0;
+}
+
+/* === Alignment ===
+   `start` needs no block: it is flex's own default. */
+
+:host(.gog-tabs--align-center) .gog-tabs__list {
+  justify-content: center;
+}
+
+:host(.gog-tabs--align-end) .gog-tabs__list {
+  justify-content: flex-end;
+}
+
+:host(.gog-tabs--align-stretch) .gog-tabs__list {
+  /* No max-content floor here: stretching means sharing the available width, which is the
+     opposite of letting the row grow past it. */
+  min-width: 0;
+}
+
+:host(.gog-tabs--align-stretch) .gog-tabs__tab {
+  flex: 1 1 0;
+}
+
+/* === Orientation === */
+
+:host(.gog-tabs--vertical) {
+  display: flex;
+  align-items: stretch;
+}
+
+:host(.gog-tabs--vertical) .gog-tabs__header {
+  border-block-end: 0;
+  border-inline-end: var(--gog-tabs-header-border-width) var(--gog-tabs-header-border-style)
+    var(--gog-tabs-header-border-color);
+}
+
+:host(.gog-tabs--vertical) .gog-tabs__list {
+  flex-direction: column;
+  min-width: 0;
+}
+
+:host(.gog-tabs--vertical) .gog-tabs__tab {
+  justify-content: flex-start;
+}
+
+:host(.gog-tabs--vertical) .gog-tabs__tab--active::after {
+  inset-inline: auto calc(-1 * var(--gog-tabs-header-border-width));
+  inset-block: 0;
+  width: var(--gog-tabs-indicator-thickness);
+  height: auto;
+}
+
+:host(.gog-tabs--vertical) .gog-tabs__panels {
+  flex: 1 1 auto;
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chains above fall back to. */
+
+:host(.gog-tabs--xsm) {
+  --gog-tabs-size-padding: var(--gog-tabs-xsm-padding);
+  --gog-tabs-size-font-size: var(--gog-tabs-xsm-font-size);
+}
+
+:host(.gog-tabs--sm) {
+  --gog-tabs-size-padding: var(--gog-tabs-sm-padding);
+  --gog-tabs-size-font-size: var(--gog-tabs-sm-font-size);
+}
+
+:host(.gog-tabs--md) {
+  --gog-tabs-size-padding: var(--gog-tabs-md-padding);
+  --gog-tabs-size-font-size: var(--gog-tabs-md-font-size);
+}
+
+:host(.gog-tabs--lg) {
+  --gog-tabs-size-padding: var(--gog-tabs-lg-padding);
+  --gog-tabs-size-font-size: var(--gog-tabs-lg-font-size);
+}
+
+:host(.gog-tabs--slg) {
+  --gog-tabs-size-padding: var(--gog-tabs-slg-padding);
+  --gog-tabs-size-font-size: var(--gog-tabs-slg-font-size);
+}
+
+/* === Full width === */
+
+:host(.gog-host--full-width) {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-tabs__tab {
+    transition: none;
+  }
+}

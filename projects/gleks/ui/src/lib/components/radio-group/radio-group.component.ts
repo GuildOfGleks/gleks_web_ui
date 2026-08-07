@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
-import { GogSize } from '../../shared/types';
+import { GogOrientation, GogSize } from '../../shared/types';
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 
@@ -55,7 +55,7 @@ export class RadioGroupComponent implements ControlValueAccessor {
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   readonly size = input<GogSize | undefined>(undefined);
   readonly disabled = input(false);
-  readonly orientation = input<'horizontal' | 'vertical'>('vertical');
+  readonly orientation = input<GogOrientation>('vertical');
   readonly errorMessage = input('');
   /** See `GogErrorDisplay`. Defaults to `'manual'`, matching every other control in the library. */
   /** Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to `'manual'`. */

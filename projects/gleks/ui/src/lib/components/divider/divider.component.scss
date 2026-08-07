@@ -1,0 +1,100 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-divider-color/-thickness/-spacing   per-instance overrides (layer 3, undeclared).
+ *   --gog-divider-variant-style               internal, set by the variant classes below.
+ *   --gog-divider-<name>                      the actual values, all in styles/theme.css.
+ *
+ * The label collapses itself when nothing was projected (`:empty`), which is what lets one
+ * template serve both `<gog-divider />` and `<gog-divider>ИЛИ</gog-divider>`: with the label
+ * gone the two rule halves sit flush and read as one continuous line. The spacing around a
+ * label is therefore the label's own padding, never a flex `gap` — a gap would survive the
+ * label's removal and leave a notch in the middle of a plain divider.
+ */
+:host {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--gog-divider-label-color);
+  font-family: var(--gog-divider-label-font-family);
+  font-size: var(--gog-divider-label-font-size);
+  font-weight: var(--gog-divider-label-font-weight);
+  line-height: var(--gog-divider-label-line-height);
+}
+
+.gog-divider__rule {
+  flex: 1 1 auto;
+  /* Zero-sized on its own axis: the whole rule is one border edge, so the thickness token is
+     the only thing that decides how heavy it looks. */
+  min-width: 0;
+  min-height: 0;
+}
+
+.gog-divider__label {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Nothing projected — remove it entirely so the two halves meet. */
+.gog-divider__label:empty {
+  display: none;
+}
+
+/* === Orientation === */
+
+:host(.gog-divider--horizontal) {
+  flex-direction: row;
+  width: 100%;
+  margin-block: var(--gog-divider-spacing, var(--gog-divider-block-spacing));
+}
+
+:host(.gog-divider--horizontal) .gog-divider__rule {
+  border-block-start: var(--gog-divider-thickness, var(--gog-divider-line-thickness))
+    var(--gog-divider-variant-style, var(--gog-divider-solid-style))
+    var(--gog-divider-color, var(--gog-divider-line-color));
+}
+
+:host(.gog-divider--horizontal) .gog-divider__label {
+  padding-inline: var(--gog-divider-label-gap);
+}
+
+:host(.gog-divider--vertical) {
+  flex-direction: column;
+  /* Stretches to a flex/grid parent's height; the token is the floor for when there is none
+     to stretch to, e.g. a divider between two inline buttons. */
+  align-self: stretch;
+  min-height: var(--gog-divider-vertical-length);
+  margin-inline: var(--gog-divider-spacing, var(--gog-divider-inline-spacing));
+}
+
+:host(.gog-divider--vertical) .gog-divider__rule {
+  border-inline-start: var(--gog-divider-thickness, var(--gog-divider-line-thickness))
+    var(--gog-divider-variant-style, var(--gog-divider-solid-style))
+    var(--gog-divider-color, var(--gog-divider-line-color));
+}
+
+:host(.gog-divider--vertical) .gog-divider__label {
+  padding-block: var(--gog-divider-label-gap);
+}
+
+/* === Variants ===
+   `solid` needs no block: it is what the chains above fall back to. */
+
+:host(.gog-divider--dashed) {
+  --gog-divider-variant-style: var(--gog-divider-dashed-style);
+}
+
+:host(.gog-divider--dotted) {
+  --gog-divider-variant-style: var(--gog-divider-dotted-style);
+}
+
+/* === Inset ===
+   Indents the leading edge only, so the rule lines up with the text of a list whose rows
+   start with an icon or avatar. */
+
+:host(.gog-divider--horizontal.gog-divider--inset) {
+  padding-inline-start: var(--gog-divider-inset-size);
+}
+
+:host(.gog-divider--vertical.gog-divider--inset) {
+  padding-block-start: var(--gog-divider-inset-size);
+}

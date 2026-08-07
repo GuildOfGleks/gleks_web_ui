@@ -1,0 +1,160 @@
+<div class="gog-calendar__header">
+  <button
+    type="button"
+    class="gog-calendar__nav gog-inline-center"
+    [attr.aria-label]="previousYearLabel()"
+    (click)="shiftViewYears(-1)"
+  >
+    <gog-icon name="chevron-left" />
+    <gog-icon name="chevron-left" />
+  </button>
+  <button
+    type="button"
+    class="gog-calendar__nav gog-inline-center"
+    [attr.aria-label]="previousMonthLabel()"
+    (click)="shiftView(-1)"
+  >
+    <gog-icon name="chevron-left" />
+  </button>
+
+  <div class="gog-calendar__titles">
+    @for (month of monthViews(); track $index) {
+      <span class="gog-calendar__title">{{ month.label }}</span>
+    }
+  </div>
+
+  <button
+    type="button"
+    class="gog-calendar__nav gog-inline-center"
+    [attr.aria-label]="nextMonthLabel()"
+    (click)="shiftView(1)"
+  >
+    <gog-icon name="chevron-right" />
+  </button>
+  <button
+    type="button"
+    class="gog-calendar__nav gog-inline-center"
+    [attr.aria-label]="nextYearLabel()"
+    (click)="shiftViewYears(1)"
+  >
+    <gog-icon name="chevron-right" />
+    <gog-icon name="chevron-right" />
+  </button>
+</div>
+
+<div class="gog-calendar__months" (mouseleave)="onGridLeave()">
+  @for (month of monthViews(); track $index) {
+    <!--
+      role="grid" rather than a list of buttons: a month is two-dimensional, and the arrow
+      keys have to mean "next day" and "next week" — which is what the grid role tells
+      assistive tech to expect. One keydown handler on the grid serves all 42 cells.
+    -->
+    <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- the keydown handler is delegated here so 42 cells don't each carry one; the real keyboard targets are the day buttons inside, which are focusable and carry the roving tabindex. The grid itself must not be a tab stop. -->
+    <table
+      class="gog-calendar__grid"
+      role="grid"
+      [attr.aria-label]="month.label"
+      (keydown)="onGridKeydown($event)"
+    >
+      <thead>
+        <tr class="gog-calendar__weekdays">
+          @for (weekday of weekdays(); track $index) {
+            <th class="gog-calendar__weekday" scope="col" [attr.abbr]="weekday">{{ weekday }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (week of month.weeks; track $index) {
+          <tr class="gog-calendar__week">
+            @for (day of week; track day.date.getTime()) {
+              <td class="gog-calendar__cell" role="gridcell" [attr.aria-selected]="day.selected">
+                <!--
+                  A roving tabindex across 42 cells: exactly one is tabbable, and the arrows
+                  move it. Tabbing through every day of the month instead would put 42 stops
+                  between the field and whatever follows it.
+                -->
+                <button
+                  type="button"
+                  class="gog-calendar__day"
+                  [class.gog-calendar__day--outside]="day.outside"
+                  [class.gog-calendar__day--today]="day.today"
+                  [class.gog-calendar__day--selected]="day.selected"
+                  [class.gog-calendar__day--range-start]="day.rangeStart"
+                  [class.gog-calendar__day--range-end]="day.rangeEnd"
+                  [class.gog-calendar__day--in-range]="day.inRange"
+                  [disabled]="day.disabled"
+                  [attr.aria-disabled]="day.disabled"
+                  [attr.aria-current]="day.today ? 'date' : null"
+                  [tabindex]="isFocusedDay(day.date) ? 0 : -1"
+                  (click)="onDayClick(day)"
+                  (mouseenter)="onDayHover(day)"
+                >
+                  {{ day.label }}
+                </button>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
+
+@if (showTime()) {
+  <div class="gog-calendar__time">
+    <gog-icon class="gog-calendar__time-icon" name="clock" [ariaHidden]="true" />
+
+    <input
+      type="number"
+      class="gog-calendar__time-input"
+      [min]="minHour()"
+      [max]="maxHour()"
+      [value]="hours()"
+      aria-label="Hours"
+      (input)="onHourInput($event)"
+    />
+    <span class="gog-calendar__time-sep" aria-hidden="true">:</span>
+    <input
+      type="number"
+      class="gog-calendar__time-input"
+      min="0"
+      max="59"
+      [step]="minuteStep()"
+      [value]="minutes()"
+      aria-label="Minutes"
+      (input)="onMinuteInput($event)"
+    />
+
+    @if (showSeconds()) {
+      <span class="gog-calendar__time-sep" aria-hidden="true">:</span>
+      <input
+        type="number"
+        class="gog-calendar__time-input"
+        min="0"
+        max="59"
+        [value]="seconds()"
+        aria-label="Seconds"
+        (input)="onSecondInput($event)"
+      />
+    }
+
+    @if (hourFormat() === '12') {
+      <button
+        type="button"
+        class="gog-calendar__meridiem"
+        [attr.aria-pressed]="isPm()"
+        (click)="toggleMeridiem()"
+      >
+        {{ isPm() ? 'PM' : 'AM' }}
+      </button>
+    }
+  </div>
+}
+
+@if (showTodayButton()) {
+  <div class="gog-calendar__footer">
+    <button type="button" class="gog-calendar__today" (click)="goToToday()">
+      {{ todayLabel() }}
+    </button>
+  </div>
+}

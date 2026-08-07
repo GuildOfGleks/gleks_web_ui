@@ -1,0 +1,155 @@
+<!--
+  Deliberately not `gog-contained-layout`: `contain: layout` makes this element a stacking
+  context, which traps the panel's z-index inside it and lets whatever follows on the page
+  paint over the open dropdown.
+-->
+<div
+  class="gog-autocomplete"
+  [class]="sizeClass()"
+  [class.gog-autocomplete--clearable]="showClear()"
+  [class.gog-autocomplete--disabled]="isDisabled()"
+  [class.gog-autocomplete--open]="isOpen()"
+  [class.gog-autocomplete--loading]="loading()"
+  [class.gog-autocomplete--float-in]="resolvedFloatLabel() === 'in'"
+  [class.gog-autocomplete--float-on]="resolvedFloatLabel() === 'on'"
+  [class.gog-autocomplete--float-over]="resolvedFloatLabel() === 'over'"
+  [class.gog-autocomplete--floated]="isFloatLabelFloated()"
+>
+  @if (label() && resolvedFloatLabel() === 'none') {
+    <label class="gog-autocomplete__label" [for]="triggerId()">{{ label() }}</label>
+  }
+
+  <div class="gog-autocomplete__field">
+    @if (label() && isFloatLabelActive()) {
+      <label class="gog-autocomplete__label gog-autocomplete__label--float" [for]="triggerId()">{{
+        label()
+      }}</label>
+    }
+
+    <!--
+      The input *is* the combobox — role, aria-autocomplete and aria-activedescendant all sit
+      here, and DOM focus never leaves it. That is the difference from gog-select, where the
+      trigger is a button and focus moves onto the option itself.
+    -->
+    <input
+      type="text"
+      class="gog-autocomplete__control"
+      autocomplete="off"
+      role="combobox"
+      aria-autocomplete="list"
+      [id]="triggerId()"
+      [disabled]="isDisabled()"
+      [value]="query()"
+      [placeholder]="effectivePlaceholder()"
+      [attr.aria-label]="label() ? null : ariaLabel() || placeholder() || null"
+      [attr.aria-controls]="listboxId()"
+      [attr.aria-expanded]="isOpen()"
+      [attr.aria-activedescendant]="activeOptionId()"
+      [attr.aria-invalid]="hasError()"
+      [attr.aria-describedby]="errorId()"
+      (input)="onInput($event)"
+      (keydown)="onInputKeydown($event)"
+      (focus)="onInputFocus()"
+      (blur)="onInputBlur()"
+    />
+
+    <span class="gog-autocomplete__actions">
+      @if (loading()) {
+        <gog-spinner class="gog-autocomplete__spinner" size="xsm" ariaLabel="Loading" />
+      }
+
+      @if (showClear()) {
+        <button
+          type="button"
+          class="gog-autocomplete__clear gog-inline-center"
+          [attr.aria-label]="clearAriaLabel()"
+          (mousedown)="onOptionMousedown($event)"
+          (click)="clearValue($event)"
+        >
+          <gog-icon name="close" />
+        </button>
+      }
+    </span>
+
+    @if (isOpen() && !resolvedAppendToBody()) {
+      <ng-container [ngTemplateOutlet]="panelTpl" />
+    }
+  </div>
+
+  @if (hasError()) {
+    <span class="gog-autocomplete__error" [attr.id]="errorId()" role="alert">
+      {{ visibleError() }}
+    </span>
+  }
+</div>
+
+<!--
+  One template for both render modes — inline, or stamped into <body> by the overlay when
+  `appendToBody` is set, which is why the portal modifier and the resolved coordinates are
+  applied conditionally.
+-->
+<ng-template #panelTpl>
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -- (click) below is housekeeping stopPropagation; the keyboard contract lives on the combobox input, which keeps focus and drives this list via aria-activedescendant -->
+  <div
+    [id]="listboxId()"
+    class="gog-autocomplete__dropdown"
+    [class.gog-autocomplete__dropdown--up]="
+      !resolvedAppendToBody() && dropdownDirectionState() === 'up'
+    "
+    [class.gog-autocomplete__dropdown--portal]="resolvedAppendToBody()"
+    [class]="panelSizeClass()"
+    [style.top.px]="resolvedAppendToBody() ? panelPlacement()?.top : null"
+    [style.left.px]="resolvedAppendToBody() ? panelPlacement()?.left : null"
+    [style.width]="resolvedAppendToBody() ? resolvedPanelWidth() : null"
+    [style.min-width]="resolvedAppendToBody() ? resolvedPanelMinWidth() : null"
+    [style.max-height]="resolvedAppendToBody() ? resolvedPanelMaxHeight() : null"
+    [style.z-index]="dropdownZIndex() ?? panelZIndex()"
+    role="listbox"
+    [attr.aria-label]="label() || ariaLabel() || null"
+    (click)="$event.stopPropagation()"
+  >
+    <gog-scroll
+      size="thin"
+      [focusable]="false"
+      overscrollBehavior="contain"
+      class="gog-autocomplete__scroll"
+    >
+      @if (visibleOptions().length === 0) {
+        <p class="gog-autocomplete__empty">{{ emptyMessage() }}</p>
+      }
+
+      @for (option of visibleOptions(); track valueOf(option); let i = $index) {
+        <!--
+          A div, not a button: focus stays in the input, so these rows are never focused and a
+          button would only add tab stops and a second Enter handler. The highlight is pointed
+          at with aria-activedescendant instead.
+
+          mousedown is prevented so clicking a row doesn't blur the input first — that blur
+          would close the panel and, under forceSelection, wipe the text before the click lands.
+        -->
+        <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -- this is the ARIA combobox pattern: the option is deliberately neither focusable nor a keyboard target, because focus stays in the input and the whole keyboard contract (arrows, Enter, Escape) is handled there and communicated through aria-activedescendant. Making these rows focusable would break the pattern rather than improve it. -->
+        <div
+          class="gog-autocomplete__option"
+          role="option"
+          [id]="optionId(i)"
+          [attr.aria-selected]="isSelected(option)"
+          [attr.aria-disabled]="isOptionDisabled(option)"
+          [class.gog-autocomplete__option--active]="i === activeIndex()"
+          [class.gog-autocomplete__option--selected]="isSelected(option)"
+          [class.gog-autocomplete__option--disabled]="isOptionDisabled(option)"
+          (mousedown)="onOptionMousedown($event)"
+          (click)="onOptionClick(option, $event)"
+        >
+          @if (optionSlot(); as slot) {
+            <ng-container
+              [ngTemplateOutlet]="slot.templateRef"
+              [ngTemplateOutletContext]="optionContext(option, isSelected(option))"
+            />
+          } @else {
+            <span class="gog-autocomplete__option-label">{{ labelOf(option) }}</span>
+          }
+        </div>
+      }
+    </gog-scroll>
+  </div>
+</ng-template>

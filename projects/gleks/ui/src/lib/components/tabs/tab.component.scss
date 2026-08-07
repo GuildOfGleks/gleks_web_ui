@@ -1,0 +1,27 @@
+/*
+ * The panel itself owns almost nothing: padding and the focus ring. Everything visual about a
+ * tab lives on its header button, which `gog-tabs` renders — see tabs.component.scss.
+ */
+:host {
+  display: block;
+  padding: var(--gog-tabs-panel-padding);
+  color: var(--gog-tabs-panel-color);
+}
+
+/*
+ * `[hidden]` is set by the host binding when the tab is inactive. Stated explicitly because
+ * `display: block` above would otherwise beat the UA stylesheet's `[hidden] { display: none }`
+ * and every panel would render at once — a silent, total failure of the component.
+ */
+:host([hidden]) {
+  display: none;
+}
+
+/*
+ * The active panel is a tab stop so keyboard users can leave the tablist and land in the
+ * content, per the ARIA tabs pattern. It gets a ring like any other focusable thing.
+ */
+:host(:focus-visible) {
+  outline: var(--gog-tabs-focus-ring-width) solid var(--gog-tabs-focus-ring-color);
+  outline-offset: var(--gog-tabs-focus-ring-offset);
+}

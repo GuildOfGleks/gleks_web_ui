@@ -1,0 +1,198 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-button-toggle-bg / -color / -padding / …   per-instance overrides (layer 3).
+ *   --gog-button-toggle-size-*                       internal, set by the size classes.
+ *   --gog-button-toggle-<name>                       the actual values, in styles/theme.css.
+ *
+ * Padding and font size reuse the `--gog-btn-<size>-*` scale so a toggle group and a
+ * `<gog-button>` at the same `size` line up in a toolbar.
+ */
+:host {
+  display: inline-flex;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.gog-button-toggle__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  gap: var(--gog-button-toggle-gap);
+  padding: var(
+    --gog-button-toggle-padding,
+    var(--gog-button-toggle-size-padding, var(--gog-btn-md-padding))
+  );
+  border: var(--gog-button-toggle-border-width) var(--gog-button-toggle-border-style)
+    var(--gog-button-toggle-border-color);
+  background-color: var(--gog-button-toggle-bg, var(--gog-button-toggle-rest-bg));
+  color: var(--gog-button-toggle-color, var(--gog-button-toggle-rest-color));
+  font-family: var(--gog-button-toggle-font-family);
+  font-size: var(
+    --gog-button-toggle-font-size,
+    var(--gog-button-toggle-size-font-size, var(--gog-btn-md-font-size))
+  );
+  font-weight: var(--gog-button-toggle-font-weight);
+  letter-spacing: var(--gog-button-toggle-letter-spacing);
+  line-height: var(--gog-button-toggle-line-height);
+  text-transform: var(--gog-button-toggle-text-transform);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color var(--gog-button-toggle-transition-duration) var(--gog-easing),
+    border-color var(--gog-button-toggle-transition-duration) var(--gog-easing),
+    color var(--gog-button-toggle-transition-duration) var(--gog-easing);
+}
+
+.gog-button-toggle__button:hover:not(:disabled):not(.gog-button-toggle__button--selected) {
+  background-color: var(--gog-button-toggle-hover-bg);
+  color: var(--gog-button-toggle-hover-color);
+}
+
+.gog-button-toggle__button--selected {
+  border-color: var(--gog-button-toggle-selected-border-color);
+  background-color: var(--gog-button-toggle-selected-bg);
+  color: var(--gog-button-toggle-selected-color);
+}
+
+.gog-button-toggle__button:disabled {
+  opacity: var(--gog-button-toggle-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.gog-button-toggle__button:focus-visible {
+  outline: var(--gog-button-toggle-focus-ring-width) solid var(--gog-button-toggle-focus-ring-color);
+  outline-offset: var(--gog-button-toggle-focus-ring-offset);
+  /* The selected button in a joined group overlaps its neighbours, so the ring has to come
+     forward or the next button's border paints over it. */
+  z-index: 1;
+}
+
+.gog-button-toggle__icon {
+  flex-shrink: 0;
+  font-size: var(--gog-button-toggle-icon-size);
+}
+
+.gog-button-toggle__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === Appearance: joined ===
+   One segmented control. Adjacent borders are collapsed with a negative margin rather than
+   removed, so a selected button in the middle still paints a full outline of its own. */
+
+:host(.gog-button-toggle--joined.gog-button-toggle--horizontal) .gog-button-toggle__button {
+  border-radius: 0;
+}
+
+:host(.gog-button-toggle--joined.gog-button-toggle--horizontal)
+  .gog-button-toggle__button:not(:first-of-type) {
+  margin-inline-start: calc(-1 * var(--gog-button-toggle-border-width));
+}
+
+:host(.gog-button-toggle--joined.gog-button-toggle--horizontal)
+  .gog-button-toggle__button:first-of-type {
+  border-start-start-radius: var(--gog-button-toggle-radius);
+  border-end-start-radius: var(--gog-button-toggle-radius);
+}
+
+:host(.gog-button-toggle--joined.gog-button-toggle--horizontal)
+  .gog-button-toggle__button:last-of-type {
+  border-start-end-radius: var(--gog-button-toggle-radius);
+  border-end-end-radius: var(--gog-button-toggle-radius);
+}
+
+:host(.gog-button-toggle--joined.gog-button-toggle--vertical) .gog-button-toggle__button {
+  border-radius: 0;
+}
+
+:host(.gog-button-toggle--joined.gog-button-toggle--vertical)
+  .gog-button-toggle__button:not(:first-of-type) {
+  margin-block-start: calc(-1 * var(--gog-button-toggle-border-width));
+}
+
+:host(.gog-button-toggle--joined.gog-button-toggle--vertical)
+  .gog-button-toggle__button:first-of-type {
+  border-start-start-radius: var(--gog-button-toggle-radius);
+  border-start-end-radius: var(--gog-button-toggle-radius);
+}
+
+:host(.gog-button-toggle--joined.gog-button-toggle--vertical)
+  .gog-button-toggle__button:last-of-type {
+  border-end-start-radius: var(--gog-button-toggle-radius);
+  border-end-end-radius: var(--gog-button-toggle-radius);
+}
+
+/* The selected segment's own border must win over its neighbour's overlapping edge. */
+:host(.gog-button-toggle--joined) .gog-button-toggle__button--selected {
+  z-index: 1;
+}
+
+/* === Appearance: separated === */
+
+:host(.gog-button-toggle--separated) {
+  gap: var(--gog-button-toggle-separated-gap);
+}
+
+:host(.gog-button-toggle--separated) .gog-button-toggle__button {
+  border-radius: var(--gog-button-toggle-radius);
+}
+
+/* === Orientation === */
+
+:host(.gog-button-toggle--horizontal) {
+  flex-direction: row;
+}
+
+:host(.gog-button-toggle--vertical) {
+  flex-direction: column;
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chains above fall back to. */
+
+:host(.gog-button-toggle--xsm) {
+  --gog-button-toggle-size-padding: var(--gog-btn-xsm-padding);
+  --gog-button-toggle-size-font-size: var(--gog-btn-xsm-font-size);
+}
+
+:host(.gog-button-toggle--sm) {
+  --gog-button-toggle-size-padding: var(--gog-btn-sm-padding);
+  --gog-button-toggle-size-font-size: var(--gog-btn-sm-font-size);
+}
+
+:host(.gog-button-toggle--md) {
+  --gog-button-toggle-size-padding: var(--gog-btn-md-padding);
+  --gog-button-toggle-size-font-size: var(--gog-btn-md-font-size);
+}
+
+:host(.gog-button-toggle--lg) {
+  --gog-button-toggle-size-padding: var(--gog-btn-lg-padding);
+  --gog-button-toggle-size-font-size: var(--gog-btn-lg-font-size);
+}
+
+:host(.gog-button-toggle--slg) {
+  --gog-button-toggle-size-padding: var(--gog-btn-slg-padding);
+  --gog-button-toggle-size-font-size: var(--gog-btn-slg-font-size);
+}
+
+/* === Full width ===
+   The buttons share the width equally, which is what makes this usable as a segmented
+   control across a form row. */
+
+:host(.gog-host--full-width) {
+  display: flex;
+  width: 100%;
+}
+
+:host(.gog-host--full-width) .gog-button-toggle__button {
+  flex: 1 1 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-button-toggle__button {
+    transition: none;
+  }
+}
