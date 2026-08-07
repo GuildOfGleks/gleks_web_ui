@@ -25,6 +25,16 @@ reached 1.0, so breaking changes may land in minor versions.
   `gog-accordion` and `gog-paginator` keep their own density defaults, as do `gog-spinner`,
   `gog-skeleton`, `gog-tag` and `gog-chip`. All stay per-instance overridable.
 
+- **The token catalogue is generated, not hand-copied.** `npm run generate:tokens` derives
+  `GogTokenName` (a union of every `--gog-*` the library declares or documents), the
+  `GOG_TOKEN_GROUPS` runtime metadata, and the README's theming table straight from
+  `theme.css`. `npm run check:tokens` fails when they are out of date, so a stylesheet edit
+  cannot silently leave the docs behind. `GOG_TOKEN_GROUPS` is exported so a theme editor can
+  enumerate real tokens instead of keeping its own copy.
+- `styles/presets/slate.css` — a second, importable preset (`data-theme="slate"`, cool/indigo).
+  It declares palette tokens only and still restyles everything, which is the theming contract
+  demonstrated rather than described.
+
 - **`gog-select` and `gog-multiselect` take your own objects.** `optionLabel`, `optionValue` and
   `optionDisabled` accept a property path (dot-paths included, `'profile.fullName'`) or a
   function, so a real DTO goes straight in — no mapping into `{ id, name }` first, and no losing
@@ -60,6 +70,9 @@ every symbol carries the same date and removal version, so `grep -rn "@deprecate
 the full set at any time.
 
 - `<column>` → `<gog-column>`, and the `Column` export → `GogColumn`.
+- All `--gog-ms-*` tokens → `--gog-multiselect-*`. Both spellings work for the whole window:
+  the `--gog-ms-*` name stays the *declared* one and the new name derives from it, so an
+  existing override of either still reaches the component. Verified in a browser both ways.
 - `<ng-template template="field" type="body|header">` inside `gog-table` → a `gogColumnBody` /
   `gogColumnHeader` template declared inside the column itself. The old form matched columns by
   a string the compiler cannot check, so a typo silently fell back to the default cell.

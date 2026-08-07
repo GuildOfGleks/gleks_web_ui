@@ -2,16 +2,16 @@
 
 /*
  * Token layering (see styles/theme.css):
- *   --gog-ms-padding-y, --gog-ms-padding-x, --gog-ms-font-size
+ *   --gog-multiselect-padding-y, --gog-multiselect-padding-x, --gog-multiselect-font-size
  *                            per-instance override, never declared here.
- *   --gog-ms-size-<prop>     internal, set by the size classes below.
+ *   --gog-multiselect-size-<prop>     internal, set by the size classes below.
  *   --field-<size>-<prop>    the shared field scale (input / select / multiselect).
  * `md` is the default size, so every chain bottoms out at --field-md-*.
  */
 .gog-ms-wrapper {
   display: flex;
   flex-direction: column;
-  gap: var(--gog-ms-gap);
+  gap: var(--gog-multiselect-gap);
   position: relative;
   width: 100%;
 }
@@ -35,38 +35,38 @@
    which sits outside this subtree and so inherits from :root instead. */
 .gog-ms-wrapper--xsm,
 .gog-ms__dropdown--xsm {
-  --gog-ms-size-padding-y: var(--gog-field-xsm-padding-y);
-  --gog-ms-size-padding-x: var(--gog-field-xsm-padding-x);
-  --gog-ms-size-font-size: var(--gog-field-xsm-font-size);
+  --gog-multiselect-size-padding-y: var(--gog-field-xsm-padding-y);
+  --gog-multiselect-size-padding-x: var(--gog-field-xsm-padding-x);
+  --gog-multiselect-size-font-size: var(--gog-field-xsm-font-size);
 }
 
 .gog-ms-wrapper--sm,
 .gog-ms__dropdown--sm {
-  --gog-ms-size-padding-y: var(--gog-field-sm-padding-y);
-  --gog-ms-size-padding-x: var(--gog-field-sm-padding-x);
-  --gog-ms-size-font-size: var(--gog-field-sm-font-size);
+  --gog-multiselect-size-padding-y: var(--gog-field-sm-padding-y);
+  --gog-multiselect-size-padding-x: var(--gog-field-sm-padding-x);
+  --gog-multiselect-size-font-size: var(--gog-field-sm-font-size);
 }
 
 .gog-ms-wrapper--lg,
 .gog-ms__dropdown--lg {
-  --gog-ms-size-padding-y: var(--gog-field-lg-padding-y);
-  --gog-ms-size-padding-x: var(--gog-field-lg-padding-x);
-  --gog-ms-size-font-size: var(--gog-field-lg-font-size);
+  --gog-multiselect-size-padding-y: var(--gog-field-lg-padding-y);
+  --gog-multiselect-size-padding-x: var(--gog-field-lg-padding-x);
+  --gog-multiselect-size-font-size: var(--gog-field-lg-font-size);
 }
 
 .gog-ms-wrapper--slg,
 .gog-ms__dropdown--slg {
-  --gog-ms-size-padding-y: var(--gog-field-slg-padding-y);
-  --gog-ms-size-padding-x: var(--gog-field-slg-padding-x);
-  --gog-ms-size-font-size: var(--gog-field-slg-font-size);
+  --gog-multiselect-size-padding-y: var(--gog-field-slg-padding-y);
+  --gog-multiselect-size-padding-x: var(--gog-field-slg-padding-x);
+  --gog-multiselect-size-font-size: var(--gog-field-slg-font-size);
 }
 
 .gog-ms__label {
-  font-family: var(--gog-ms-label-font-family);
-  font-size: var(--gog-ms-label-font-size);
-  color: var(--gog-ms-label-color);
-  text-transform: var(--gog-ms-label-text-transform);
-  letter-spacing: var(--gog-ms-label-letter-spacing);
+  font-family: var(--gog-multiselect-label-font-family);
+  font-size: var(--gog-multiselect-label-font-size);
+  color: var(--gog-multiselect-label-color);
+  text-transform: var(--gog-multiselect-label-text-transform);
+  letter-spacing: var(--gog-multiselect-label-letter-spacing);
   cursor: pointer;
 }
 
@@ -75,36 +75,42 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--gog-field-md-padding-y)))
-    var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x)));
-  background-color: var(--gog-ms-field-bg);
-  border: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
-    var(--gog-ms-field-border);
-  border-radius: var(--gog-ms-radius);
-  color: var(--gog-ms-field-color);
+  padding: var(
+      --gog-multiselect-padding-y,
+      var(--gog-multiselect-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(
+      --gog-multiselect-padding-x,
+      var(--gog-multiselect-size-padding-x, var(--gog-field-md-padding-x))
+    );
+  background-color: var(--gog-multiselect-field-bg);
+  border: var(--gog-multiselect-field-border-width) var(--gog-multiselect-field-border-style)
+    var(--gog-multiselect-field-border);
+  border-radius: var(--gog-multiselect-radius);
+  color: var(--gog-multiselect-field-color);
   cursor: pointer;
   user-select: none;
   transition:
-    border-color var(--gog-ms-transition-duration) var(--gog-easing),
-    box-shadow var(--gog-ms-transition-duration) var(--gog-easing);
+    border-color var(--gog-multiselect-transition-duration) var(--gog-easing),
+    box-shadow var(--gog-multiselect-transition-duration) var(--gog-easing);
 }
 
 .gog-ms:hover:not(.gog-ms--disabled) {
-  border-color: var(--gog-ms-focus-border);
+  border-color: var(--gog-multiselect-focus-border);
 }
 
 .gog-ms:focus-visible {
-  outline: var(--gog-ms-focus-ring-width) solid var(--gog-ms-focus-ring);
-  outline-offset: var(--gog-ms-focus-ring-offset);
+  outline: var(--gog-multiselect-focus-ring-width) solid var(--gog-multiselect-focus-ring);
+  outline-offset: var(--gog-multiselect-focus-ring-offset);
 }
 
 .gog-ms--open {
-  border-color: var(--gog-ms-border-color);
-  box-shadow: var(--gog-ms-focus-glow);
+  border-color: var(--gog-multiselect-border-color);
+  box-shadow: var(--gog-multiselect-focus-glow);
 }
 
 .gog-ms--disabled {
-  opacity: var(--gog-ms-disabled-opacity);
+  opacity: var(--gog-multiselect-disabled-opacity);
   cursor: not-allowed;
 }
 
@@ -113,73 +119,94 @@
 }
 
 .gog-ms--error {
-  border-color: var(--gog-ms-error-color);
+  border-color: var(--gog-multiselect-error-color);
 }
 
 .gog-ms__value {
-  font-family: var(--gog-ms-font-family);
-  font-size: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
+  font-family: var(--gog-multiselect-font-family);
+  font-size: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--gog-ms-value-color);
+  color: var(--gog-multiselect-value-color);
 }
 
 .gog-ms__value--placeholder {
-  color: var(--gog-ms-placeholder-color);
+  color: var(--gog-multiselect-placeholder-color);
 }
 
 .gog-ms__actions {
   display: flex;
   align-items: center;
-  gap: var(--gog-ms-actions-gap);
+  gap: var(--gog-multiselect-actions-gap);
   flex-shrink: 0;
 }
 
 .gog-ms__clear {
-  width: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
-  height: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
+  width: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
+  height: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
   padding: 0;
   border: 0;
-  border-radius: var(--gog-ms-clear-radius);
+  border-radius: var(--gog-multiselect-clear-radius);
   background: transparent;
-  color: var(--gog-ms-placeholder-color);
+  color: var(--gog-multiselect-placeholder-color);
   line-height: 1;
   cursor: pointer;
-  transition: color var(--gog-ms-transition-duration) var(--gog-easing);
+  transition: color var(--gog-multiselect-transition-duration) var(--gog-easing);
 }
 
 .gog-ms__clear gog-icon {
   font-size: calc(
-    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size))) *
-      var(--gog-ms-clear-icon-ratio)
+    var(
+        --gog-multiselect-font-size,
+        var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-multiselect-clear-icon-ratio)
   );
 }
 
 .gog-ms__clear:hover {
-  color: var(--gog-ms-field-color);
+  color: var(--gog-multiselect-field-color);
 }
 
 .gog-ms__clear:focus-visible {
-  outline: var(--gog-ms-focus-ring-width) solid var(--gog-ms-focus-ring);
-  outline-offset: var(--gog-ms-focus-ring-offset);
+  outline: var(--gog-multiselect-focus-ring-width) solid var(--gog-multiselect-focus-ring);
+  outline-offset: var(--gog-multiselect-focus-ring-offset);
 }
 
 .gog-ms__arrow {
-  color: var(--gog-ms-border-color);
-  transition: transform var(--gog-ms-arrow-transition-duration) var(--gog-easing);
+  color: var(--gog-multiselect-border-color);
+  transition: transform var(--gog-multiselect-arrow-transition-duration) var(--gog-easing);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
-  height: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
+  width: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
+  height: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
 }
 
 .gog-ms__arrow gog-icon {
   font-size: calc(
-    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size))) *
-      var(--gog-ms-arrow-icon-ratio)
+    var(
+        --gog-multiselect-font-size,
+        var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-multiselect-arrow-icon-ratio)
   );
 }
 
@@ -189,22 +216,22 @@
 
 .gog-ms__dropdown {
   position: absolute;
-  top: calc(100% + var(--gog-ms-panel-offset));
+  top: calc(100% + var(--gog-multiselect-panel-offset));
   left: 0;
   right: 0;
   z-index: var(--gog-dropdown-z);
   display: flex;
   flex-direction: column;
-  background-color: var(--gog-ms-panel-bg);
-  border: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
-    var(--gog-ms-panel-border);
-  border-radius: var(--gog-ms-radius);
-  max-height: var(--gog-ms-panel-max-height);
+  background-color: var(--gog-multiselect-panel-bg);
+  border: var(--gog-multiselect-field-border-width) var(--gog-multiselect-field-border-style)
+    var(--gog-multiselect-panel-border);
+  border-radius: var(--gog-multiselect-radius);
+  max-height: var(--gog-multiselect-panel-max-height);
   /* Defensive: gog-ms__scroll's own overlay clips its content correctly on its own, but
      this still keeps the panel visually masked (rounded corners, no bleed) for a frame
      before it has measured, or if a browser ever mis-sizes the flex chain below. */
   overflow: hidden;
-  box-shadow: var(--gog-ms-panel-shadow);
+  box-shadow: var(--gog-multiselect-panel-shadow);
 }
 
 .gog-ms__scroll {
@@ -216,7 +243,7 @@
 
 .gog-ms__dropdown--up {
   top: auto;
-  bottom: calc(100% + var(--gog-ms-panel-offset));
+  bottom: calc(100% + var(--gog-multiselect-panel-offset));
 }
 
 .gog-ms__dropdown--portal {
@@ -236,61 +263,70 @@
      scrollable options without needing position: sticky. */
   flex-shrink: 0;
   display: flex;
-  gap: var(--gog-ms-controls-gap);
-  padding: var(--gog-ms-controls-padding);
-  background-color: var(--gog-ms-panel-bg);
-  border-bottom: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
-    var(--gog-ms-field-border);
+  gap: var(--gog-multiselect-controls-gap);
+  padding: var(--gog-multiselect-controls-padding);
+  background-color: var(--gog-multiselect-panel-bg);
+  border-bottom: var(--gog-multiselect-field-border-width) var(--gog-multiselect-field-border-style)
+    var(--gog-multiselect-field-border);
 }
 
 .gog-ms__controls--bottom {
   border-bottom: 0;
-  border-top: var(--gog-ms-field-border-width) var(--gog-ms-field-border-style)
-    var(--gog-ms-field-border);
+  border-top: var(--gog-multiselect-field-border-width) var(--gog-multiselect-field-border-style)
+    var(--gog-multiselect-field-border);
 }
 
 .gog-ms__options {
   display: flex;
   flex-direction: column;
-  padding: var(--gog-ms-options-padding);
-  gap: var(--gog-ms-option-gap);
+  padding: var(--gog-multiselect-options-padding);
+  gap: var(--gog-multiselect-option-gap);
 }
 
 .gog-ms__option {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--gog-ms-option-gap-inline);
-  padding: var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--gog-field-md-padding-y)))
-    var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x)));
+  gap: var(--gog-multiselect-option-gap-inline);
+  padding: var(
+      --gog-multiselect-padding-y,
+      var(--gog-multiselect-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(
+      --gog-multiselect-padding-x,
+      var(--gog-multiselect-size-padding-x, var(--gog-field-md-padding-x))
+    );
   border: 0;
   background: transparent;
   text-align: left;
   font: inherit;
-  font-family: var(--gog-ms-font-family);
-  font-size: var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size)));
+  font-family: var(--gog-multiselect-font-family);
+  font-size: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
   cursor: pointer;
-  border-radius: var(--gog-ms-option-radius);
-  transition: background-color var(--gog-ms-option-transition-duration) var(--gog-easing);
-  color: var(--gog-ms-option-color);
+  border-radius: var(--gog-multiselect-option-radius);
+  transition: background-color var(--gog-multiselect-option-transition-duration) var(--gog-easing);
+  color: var(--gog-multiselect-option-color);
 }
 
 .gog-ms__option--disabled {
-  opacity: var(--gog-ms-option-disabled-opacity);
+  opacity: var(--gog-multiselect-option-disabled-opacity);
   cursor: not-allowed;
 }
 
 .gog-ms__option:hover {
-  background-color: var(--gog-ms-option-hover-bg);
+  background-color: var(--gog-multiselect-option-hover-bg);
 }
 
 .gog-ms__option--selected {
-  color: var(--gog-ms-border-color);
+  color: var(--gog-multiselect-border-color);
 }
 
 .gog-ms__option:focus-visible {
-  outline: var(--gog-ms-focus-ring-width) solid var(--gog-ms-focus-ring);
-  outline-offset: calc(var(--gog-ms-focus-ring-width) * -1);
+  outline: var(--gog-multiselect-focus-ring-width) solid var(--gog-multiselect-focus-ring);
+  outline-offset: calc(var(--gog-multiselect-focus-ring-width) * -1);
 }
 
 .gog-ms__option-mark {
@@ -298,30 +334,39 @@
   align-items: center;
   justify-content: center;
   width: calc(
-    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size))) *
-      var(--gog-ms-mark-size-ratio)
+    var(
+        --gog-multiselect-font-size,
+        var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-multiselect-mark-size-ratio)
   );
   height: calc(
-    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size))) *
-      var(--gog-ms-mark-size-ratio)
+    var(
+        --gog-multiselect-font-size,
+        var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-multiselect-mark-size-ratio)
   );
   flex-shrink: 0;
   font-size: calc(
-    var(--gog-ms-font-size, var(--gog-ms-size-font-size, var(--gog-field-md-font-size))) *
-      var(--gog-ms-mark-icon-ratio)
+    var(
+        --gog-multiselect-font-size,
+        var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-multiselect-mark-icon-ratio)
   );
-  color: var(--gog-ms-checkbox-border);
+  color: var(--gog-multiselect-checkbox-border);
 }
 
 .gog-ms__option--selected .gog-ms__option-mark {
-  color: var(--gog-ms-checkbox-checked-bg);
+  color: var(--gog-multiselect-checkbox-checked-bg);
 }
 
 .gog-ms__error {
-  font-family: var(--gog-ms-font-family);
-  font-size: var(--gog-ms-error-font-size);
-  color: var(--gog-ms-error-color);
-  margin-top: var(--gog-ms-error-offset);
+  font-family: var(--gog-multiselect-font-family);
+  font-size: var(--gog-multiselect-error-font-size);
+  color: var(--gog-multiselect-error-color);
+  margin-top: var(--gog-multiselect-error-offset);
 }
 
 /* Float label — see lib/styles/_float-label.scss for the mechanism. */
@@ -330,11 +375,13 @@
   $label: '.gog-ms__label--float',
   $field: '.gog-ms',
   $container: '.gog-ms',
-  $prefix: 'ms',
-  $pad-x: 'var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x)))',
-  $pad-y: 'var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--gog-field-md-padding-y)))',
+  $prefix: 'multiselect',
+  $pad-x:
+    'var(--gog-multiselect-padding-x, var(--gog-multiselect-size-padding-x, var(--gog-field-md-padding-x)))',
+  $pad-y:
+    'var(--gog-multiselect-padding-y, var(--gog-multiselect-size-padding-y, var(--gog-field-md-padding-y)))',
   $max-width:
-    'calc(100% - 2 * var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x))))',
+    'calc(100% - 2 * var(--gog-multiselect-padding-x, var(--gog-multiselect-size-padding-x, var(--gog-field-md-padding-x))))',
   $cursor: default
 );
 

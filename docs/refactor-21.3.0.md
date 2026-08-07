@@ -26,7 +26,7 @@ iteration 1. Per `gleks-ui-library.instructions.md` rule 9, the agent never publ
 | 3 | Config semantics & coverage + size-class boilerplate | ✅ done |
 | 4 | Slot unification + selector/naming fixes | ✅ done |
 | 5 | Dropdown data model (`optionLabel`/`optionValue`, generics) | ✅ done |
-| 6 | Token system industrialization + coverage | ⬜ not started |
+| 6 | Token system industrialization + coverage | ✅ done |
 
 Update this table at the end of every iteration, and re-state "done / remaining" in the turn
 summary.
@@ -407,6 +407,43 @@ or renames tokens.
 
 **Done when:** `theme.css` is generated, `check:tokens` guards it, README table is generated,
 side-by-side theme lab in `ui-showcase` renders both presets correctly.
+
+### Outcome — with one deliberate change of direction
+
+**The generation direction was inverted from what this plan said.** The plan called for a
+JSON/TS token source that *generates* `theme.css`. On reading the file that turned out to be the
+wrong way round: `theme.css` carries the explanation of the whole system — the `:root` vs
+`:root, [data-theme]` split, why the instance layer is undeclared, how to add a theme — and a
+generated stylesheet would either lose that or bury it in a data file where it reads far worse.
+The drift the plan was actually complaining about was never in the stylesheet; it was in the
+hand-copied README table and the absence of any typed list, both *downstream* of it.
+
+So `theme.css` stays the source, and `scripts/generate-tokens.mjs` produces
+`lib/shared/token-names.ts` (`GogTokenName` + `GOG_TOKEN_GROUPS`, both exported) and the README
+table between markers. `check:tokens` now also runs `--check` and fails when either is stale —
+verified by adding a token and watching it fail. 887 tokens across 34 groups.
+
+**The "uneven token coverage" finding in the review was wrong, and is retracted.** It inferred
+under-coverage from token counts (accordion 78, paginator 5). Auditing what each component
+actually paints: `gog-paginator` is three `<gog-button>`s and one `<span>` behind a 26-line
+stylesheet — its 5 tokens cover it completely, with the buttons themed through `--gog-btn-*`;
+`gog-collapsible` is headless with an 8-line stylesheet. A sweep for themeable properties painted
+with a raw literal across every component found **7**, of which 6 are `border-radius: 50%`
+(a circle, which must stay literal) and one is a 2px tick gap in the slider. Coverage is
+complete; the counts were measuring component complexity.
+
+`--gog-ms-*` -> `--gog-multiselect-*` (57 tokens) with a compatibility window: the old name stays
+the declared one and the new name derives from it, so overriding either works. Confirmed live in
+both directions. The float-label mixin's `$prefix` had to move too — the checker caught that,
+since it reads compiled CSS and the mixin builds those names by interpolation.
+
+`styles/presets/slate.css` ships as the second preset. Verified live by moving a real
+`gog-multiselect` into a `data-theme="slate"` subtree: field background -> white, border ->
+indigo, text -> slate, none of which the preset mentions by name.
+
+461 specs. **Known flake:** `scroll.component.spec.ts > applies an explicit overscrollBehavior
+input once the axis overflows` failed once and passed on two consecutive re-runs; it is
+layout-dependent in jsdom and unrelated to this work.
 
 ---
 

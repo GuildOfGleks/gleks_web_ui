@@ -1,0 +1,55 @@
+/*
+ * `slate` — an alternative preset, and a worked example of the whole theming contract.
+ *
+ * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *   @import '@guildofgleks/ui/styles/presets/slate.css';
+ *
+ *   <html data-theme="slate">
+ *
+ * Note what this file does *not* contain: no component tokens, no `--gog-btn-*`, no
+ * `--gog-table-*`. It declares the palette and nothing else. Every component token in
+ * `theme.css`'s derived layer is re-declared on `[data-theme]`, so it re-resolves against
+ * whichever palette is in scope — which is exactly why a theme this short can restyle the
+ * entire library. If you find yourself listing component tokens in a theme, something in the
+ * derived layer is missing instead.
+ *
+ * Both selectors are listed for the same reason `theme.css` lists both: `:root[data-theme]`
+ * themes the page, the bare `[data-theme]` themes any subtree, so several themes can render
+ * side by side.
+ */
+
+:root[data-theme='slate'],
+[data-theme='slate'] {
+  color-scheme: light;
+
+  /* Surfaces — cool neutrals rather than the house obsidian */
+  --gog-background-color: #f4f6f8;
+  --gog-surface-color: #ffffff;
+  --gog-hover-color: #e8edf2;
+  --gog-border-color: #cbd5e1;
+
+  /* Type */
+  --gog-text-color: #1e293b;
+  --gog-accent-text-color: #ffffff;
+  --gog-muted-text-color: #64748b;
+
+  /* Brand — indigo instead of gold, to make the swap unmistakable */
+  --gog-primary-color: #1e293b;
+  --gog-accent-color: #4f46e5;
+  --gog-accent-bright: #6366f1;
+  --gog-accent-dim: #4338ca;
+  --gog-accent-pale: #e0e7ff;
+  --gog-secondary-color: #0ea5e9;
+
+  /* Semantics */
+  --gog-success-color: #059669;
+  --gog-danger-color: #dc2626;
+  --gog-warning-color: #d97706;
+  --gog-info-color: #0284c7;
+
+  /* The two palette-shaped tokens that are not plain colours. */
+  --gog-panel-shadow: 0 10px 30px rgba(15, 23, 42, 0.12), 0 0 0 1px var(--gog-border-color);
+  --gog-spinner-overlay-bg: rgba(244, 246, 248, 0.85);
+}
