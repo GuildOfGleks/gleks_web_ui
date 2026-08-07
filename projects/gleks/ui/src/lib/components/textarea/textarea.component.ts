@@ -12,9 +12,8 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { GOG_CONFIG } from '../../shared/config';
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
+import { GogFloatLabelState } from '../../shared/float-label-state';
 import { GogFloatLabelVariant, GogSize } from '../../shared/types';
-
-const DEFAULT_FLOAT_LABEL_VARIANT: GogFloatLabelVariant = 'none';
 
 @Component({
   selector: 'gog-textarea',
@@ -70,27 +69,20 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
   protected readonly hasError = this.errorState.hasError;
   protected readonly visibleError = this.errorState.visibleError;
 
-  protected readonly resolvedFloatLabel = computed(
-    () => this.floatLabel() ?? this.globalConfig.floatLabel?.variant ?? DEFAULT_FLOAT_LABEL_VARIANT,
+  private readonly floatLabelState = new GogFloatLabelState(
+    this.floatLabel,
+    this.floatLabelShowPlaceholder,
+    this.placeholder,
+    this.isFocused,
+    // "Has content" for a textarea is simply a non-empty value.
+    computed(() => this.value() !== ''),
+    this.globalConfig,
   );
-  protected readonly resolvedFloatLabelShowPlaceholder = computed(
-    () =>
-      this.floatLabelShowPlaceholder() ?? this.globalConfig.floatLabel?.showPlaceholder ?? false,
-  );
-  protected readonly isFloatLabelActive = computed(() => this.resolvedFloatLabel() !== 'none');
-  protected readonly hasFloatValue = computed(() => this.value() !== '');
-  protected readonly isFloatLabelFloated = computed(() => this.isFocused() || this.hasFloatValue());
-  /**
-   * The field's own `placeholder`. While a float label is active the resting label already
-   * sits where this would, so it's suppressed unless the consumer opted into
-   * `floatLabelShowPlaceholder` — and even then, only once the label has floated out of
-   * the way.
-   */
-  protected readonly effectivePlaceholder = computed(() => {
-    if (!this.isFloatLabelActive()) return this.placeholder();
-    if (!this.resolvedFloatLabelShowPlaceholder()) return '';
-    return this.isFloatLabelFloated() ? this.placeholder() : '';
-  });
+
+  protected readonly resolvedFloatLabel = this.floatLabelState.variant;
+  protected readonly isFloatLabelActive = this.floatLabelState.isActive;
+  protected readonly isFloatLabelFloated = this.floatLabelState.isFloated;
+  protected readonly effectivePlaceholder = this.floatLabelState.effectivePlaceholder;
 
   private _onChange: (val: string) => void = () => {};
   private _onTouched: () => void = () => {};

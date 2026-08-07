@@ -27,10 +27,9 @@ import {
   resolveDropdownPlacement,
 } from './dropdown-position';
 import { GogErrorState, type GogErrorDisplay } from './error-state';
+import { GogFloatLabelState } from './float-label-state';
 import { handleRovingFocusKeydown } from './roving-focus';
 import { GogFloatLabelVariant, GogSize } from './types';
-
-const DEFAULT_FLOAT_LABEL_VARIANT: GogFloatLabelVariant = 'none';
 
 /** A single choice in any of the listbox-style controls (`gog-select`, `gog-multiselect`). */
 export interface GogDropdownOption {
@@ -187,26 +186,25 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
   protected readonly hasError = this.errorState.hasError;
   protected readonly visibleError = this.errorState.visibleError;
 
-  protected readonly resolvedFloatLabel = computed(
-    () => this.floatLabel() ?? this.globalConfig.floatLabel?.variant ?? DEFAULT_FLOAT_LABEL_VARIANT,
-  );
-  protected readonly resolvedFloatLabelShowPlaceholder = computed(
-    () =>
-      this.floatLabelShowPlaceholder() ?? this.globalConfig.floatLabel?.showPlaceholder ?? false,
-  );
-  protected readonly isFloatLabelActive = computed(() => this.resolvedFloatLabel() !== 'none');
-  protected readonly isFloatLabelFloated = computed(() => this.isFocused() || this.hasFloatValue());
   /**
-   * The text shown as the "nothing selected" fallback. While a float label is active the
-   * resting label already sits where this would, so it's suppressed unless the consumer
-   * opted into `floatLabelShowPlaceholder` — and even then, only once the label has floated
-   * out of the way.
+   * `hasFloatValue` is wrapped in a `computed` rather than passed straight through: these
+   * field initializers run before the *subclass's* do, so `this.hasFloatValue` is still
+   * undefined right here. The arrow defers the read until the signal is first evaluated, by
+   * which time the subclass has assigned it.
    */
-  protected readonly effectivePlaceholder = computed(() => {
-    if (!this.isFloatLabelActive()) return this.placeholder();
-    if (!this.resolvedFloatLabelShowPlaceholder()) return '';
-    return this.isFloatLabelFloated() ? this.placeholder() : '';
-  });
+  private readonly floatLabelState = new GogFloatLabelState(
+    this.floatLabel,
+    this.floatLabelShowPlaceholder,
+    this.placeholder,
+    this.isFocused,
+    computed(() => this.hasFloatValue()),
+    this.globalConfig,
+  );
+
+  protected readonly resolvedFloatLabel = this.floatLabelState.variant;
+  protected readonly isFloatLabelActive = this.floatLabelState.isActive;
+  protected readonly isFloatLabelFloated = this.floatLabelState.isFloated;
+  protected readonly effectivePlaceholder = this.floatLabelState.effectivePlaceholder;
 
   /** Measured once per open rather than per scroll tick — see `refreshPanelMetrics`. */
   private optionGap = 0;

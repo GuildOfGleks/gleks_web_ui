@@ -6,6 +6,18 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.3.0] - planned
 
+### Added
+
+- `GogFloatLabelState` (exported) — the shared float-label state behind `gog-inputfield`,
+  `gog-textarea`, `gog-select` and `gog-multiselect`, previously three near-identical copies of
+  the same five `computed()`s. A plain composition class in the mould of `GogErrorState`, so it
+  serves the two components that share no base class as well as `GogDropdownBase`, which is one.
+  Each control still supplies its own "has content" signal, since that genuinely differs
+  (non-empty string / non-null selection / non-empty selection array).
+- `resolveConfigured(instanceValue, configuredValue, fallback)` (exported) — the library's
+  input → `GOG_CONFIG` → built-in default precedence rule in one place, instead of the `??`
+  chain hand-written at each configurable input.
+
 ### Changed
 
 - Float label geometry is now themeable through `theme.css` instead of being hardcoded in the

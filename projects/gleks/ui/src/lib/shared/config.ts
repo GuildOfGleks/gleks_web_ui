@@ -81,3 +81,28 @@ export const GOG_CONFIG = new InjectionToken<GogGlobalConfig>('GOG_CONFIG', {
 export function provideGogConfig(config: GogGlobalConfig): Provider {
   return { provide: GOG_CONFIG, useValue: config };
 }
+
+/**
+ * The library's precedence rule for a configurable input, in one place: an instance's own
+ * input wins, then the app-wide `GOG_CONFIG` value, then the component's built-in default.
+ *
+ * Every configurable input resolves through this rather than repeating the `??` chain, so the
+ * order can't drift between components — a component that accidentally checked the config
+ * first would silently ignore the input on that one control only, which is close to invisible
+ * in review. Kept a plain function (no `inject`) so it works anywhere: inside a `computed`, in
+ * a composition class like `GogFloatLabelState`, and in unit tests without an injector.
+ *
+ * ```ts
+ * private readonly globalConfig = inject(GOG_CONFIG);
+ * protected readonly resolvedDebounce = computed(() =>
+ *   resolveConfigured(this.debounce(), this.globalConfig.button?.debounce, DEFAULT_DEBOUNCE),
+ * );
+ * ```
+ */
+export function resolveConfigured<T>(
+  instanceValue: T | undefined,
+  configuredValue: T | undefined,
+  fallback: T,
+): T {
+  return instanceValue ?? configuredValue ?? fallback;
+}

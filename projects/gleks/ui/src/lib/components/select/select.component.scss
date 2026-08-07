@@ -1,3 +1,5 @@
+@use '../../styles/float-label' as float-label;
+
 /*
  * Token layering (see styles/theme.css):
  *   --gog-select-control-<prop>  per-instance override, never declared here.
@@ -294,116 +296,21 @@
   color: var(--gog-select-error-color);
 }
 
-/*
- * Float label — see inputfield.component.scss for the full write-up of the mechanism
- * (one modifier picks the floated *target* position, `--floated` decides whether the
- * label is actually there or still resting like a placeholder).
- */
-.gog-select__label--float {
-  position: absolute;
-  left: var(
-    --gog-select-control-padding-x,
-    var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))
-  );
-  top: 50%;
-  transform: translateY(-50%);
-  max-width: calc(
-    100% - 2 *
-      var(
-        --gog-select-control-padding-x,
-        var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))
-      )
-  );
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  pointer-events: none;
-  cursor: default;
-  color: var(--gog-select-placeholder-color);
-  font-size: var(--gog-select-size-font-size, var(--gog-field-md-font-size));
-  text-transform: none;
-  letter-spacing: normal;
-  transition:
-    transform var(--gog-select-transition-duration) var(--gog-easing),
-    font-size var(--gog-select-transition-duration) var(--gog-easing),
-    color var(--gog-select-transition-duration) var(--gog-easing),
-    top var(--gog-select-transition-duration) var(--gog-easing),
-    background-color var(--gog-select-transition-duration) var(--gog-easing);
-}
-
-/*
- * 'in' and 'on' keep the label inside/on the border at all times, so — unlike 'over', which
- * floats fully clear of the box — they need genuine headroom above the value text the whole
- * time the variant is active, not only once floated. Without this the floated label
- * (font-size shrunk, pinned near the top) simply overlaps the vertically-centered value text
- * instead of clearing it. `padding-top` grows (not both edges), which pushes the value text
- * down within the (now taller) trigger; the resting label's `top` is pinned to that same
- * grown offset instead of the box's true center so it still lines up with the (now
- * off-center) value text at rest.
- */
-.gog-select--float-in,
-.gog-select--float-on {
-  --gog-select-float-top-padding: calc(
-    var(
-        --gog-select-control-padding-y,
-        var(--gog-select-size-padding-y, var(--gog-field-md-padding-y))
-      ) +
-      var(--gog-select-float-label-reserve)
-  );
-}
-
-.gog-select--float-in .gog-select__control,
-.gog-select--float-on .gog-select__control {
-  padding-top: var(--gog-select-float-top-padding);
-}
-
-.gog-select--float-in .gog-select__label--float,
-.gog-select--float-on .gog-select__label--float {
-  top: var(--gog-select-float-top-padding);
-  transform: none;
-}
-
-.gog-select--float-in.gog-select--floated .gog-select__label--float {
-  top: var(--gog-select-float-label-in-top);
-  transform: translateY(0);
-  font-size: var(--gog-select-label-font-size);
-  color: var(--gog-select-label-color);
-  text-transform: var(--gog-select-label-text-transform);
-  letter-spacing: var(--gog-select-label-letter-spacing);
-}
-
-.gog-select--float-on.gog-select--floated .gog-select__label--float {
-  top: 0;
-  transform: translateY(-50%);
-  font-size: var(--gog-select-label-font-size);
-  color: var(--gog-select-label-color);
-  text-transform: var(--gog-select-label-text-transform);
-  letter-spacing: var(--gog-select-label-letter-spacing);
-  background-color: var(--gog-select-float-label-on-bg, var(--gog-select-field-bg));
-  padding: 0 4px;
-  left: calc(
-    var(
-        --gog-select-control-padding-x,
-        var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))
-      ) -
-      4px
-  );
-}
-
-.gog-select--float-over.gog-select--floated .gog-select__label--float {
-  top: calc(-1 * var(--gog-select-float-label-over-gap));
-  transform: translateY(-100%);
-  font-size: var(--gog-select-label-font-size);
-  color: var(--gog-select-label-color);
-  text-transform: var(--gog-select-label-text-transform);
-  letter-spacing: var(--gog-select-label-letter-spacing);
-}
-
-/* Only 'over' floats fully outside the box, so only it needs permanently reserved space
-   above the field for the label to float into. */
-.gog-select--float-over .gog-select__field {
-  margin-top: var(--gog-select-float-label-over-reserve);
-}
+/* Float label — see lib/styles/_float-label.scss for the mechanism. */
+@include float-label.variants(
+  $block: '.gog-select',
+  $label: '.gog-select__label--float',
+  $field: '.gog-select__control',
+  $container: '.gog-select__field',
+  $prefix: 'select',
+  $pad-x:
+    'var(--gog-select-control-padding-x, var(--gog-select-size-padding-x, var(--gog-field-md-padding-x)))',
+  $pad-y:
+    'var(--gog-select-control-padding-y, var(--gog-select-size-padding-y, var(--gog-field-md-padding-y)))',
+  $max-width:
+    'calc(100% - 2 * var(--gog-select-control-padding-x, var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))))',
+  $cursor: default
+);
 
 @media (prefers-reduced-motion: reduce) {
   .gog-select__control,

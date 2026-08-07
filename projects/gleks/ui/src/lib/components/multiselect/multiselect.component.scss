@@ -1,3 +1,5 @@
+@use '../../styles/float-label' as float-label;
+
 /*
  * Token layering (see styles/theme.css):
  *   --gog-ms-padding-y, --gog-ms-padding-x, --gog-ms-font-size
@@ -322,102 +324,19 @@
   margin-top: var(--gog-ms-error-offset);
 }
 
-/*
- * Float label — see inputfield.component.scss for the full write-up of the mechanism
- * (one modifier picks the floated *target* position, `--floated` decides whether the
- * label is actually there or still resting like a placeholder).
- */
-.gog-ms__label--float {
-  position: absolute;
-  left: var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x)));
-  top: 50%;
-  transform: translateY(-50%);
-  max-width: calc(
-    100% - 2 * var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x)))
-  );
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  pointer-events: none;
-  cursor: default;
-  color: var(--gog-ms-placeholder-color);
-  font-size: var(--gog-ms-size-font-size, var(--gog-field-md-font-size));
-  text-transform: none;
-  letter-spacing: normal;
-  transition:
-    transform var(--gog-ms-transition-duration) var(--gog-easing),
-    font-size var(--gog-ms-transition-duration) var(--gog-easing),
-    color var(--gog-ms-transition-duration) var(--gog-easing),
-    top var(--gog-ms-transition-duration) var(--gog-easing),
-    background-color var(--gog-ms-transition-duration) var(--gog-easing);
-}
-
-/*
- * 'in' and 'on' keep the label inside/on the border at all times, so — unlike 'over', which
- * floats fully clear of the box — they need genuine headroom above the value text the whole
- * time the variant is active, not only once floated. Without this the floated label
- * (font-size shrunk, pinned near the top) simply overlaps the vertically-centered value text
- * instead of clearing it. `padding-top` grows (not both edges), which pushes the value text
- * down within the (now taller) trigger; the resting label's `top` is pinned to that same
- * grown offset instead of the box's true center so it still lines up with the (now
- * off-center) value text at rest.
- */
-.gog-ms-wrapper--float-in,
-.gog-ms-wrapper--float-on {
-  --gog-ms-float-top-padding: calc(
-    var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--gog-field-md-padding-y))) +
-      var(--gog-ms-float-label-reserve)
-  );
-}
-
-.gog-ms-wrapper--float-in .gog-ms,
-.gog-ms-wrapper--float-on .gog-ms {
-  padding-top: var(--gog-ms-float-top-padding);
-}
-
-.gog-ms-wrapper--float-in .gog-ms__label--float,
-.gog-ms-wrapper--float-on .gog-ms__label--float {
-  top: var(--gog-ms-float-top-padding);
-  transform: none;
-}
-
-.gog-ms-wrapper--float-in.gog-ms-wrapper--floated .gog-ms__label--float {
-  top: var(--gog-ms-float-label-in-top);
-  transform: translateY(0);
-  font-size: var(--gog-ms-label-font-size);
-  color: var(--gog-ms-label-color);
-  text-transform: var(--gog-ms-label-text-transform);
-  letter-spacing: var(--gog-ms-label-letter-spacing);
-}
-
-.gog-ms-wrapper--float-on.gog-ms-wrapper--floated .gog-ms__label--float {
-  top: 0;
-  transform: translateY(-50%);
-  font-size: var(--gog-ms-label-font-size);
-  color: var(--gog-ms-label-color);
-  text-transform: var(--gog-ms-label-text-transform);
-  letter-spacing: var(--gog-ms-label-letter-spacing);
-  background-color: var(--gog-ms-float-label-on-bg, var(--gog-ms-field-bg));
-  padding: 0 4px;
-  left: calc(
-    var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x))) - 4px
-  );
-}
-
-.gog-ms-wrapper--float-over.gog-ms-wrapper--floated .gog-ms__label--float {
-  top: calc(-1 * var(--gog-ms-float-label-over-gap));
-  transform: translateY(-100%);
-  font-size: var(--gog-ms-label-font-size);
-  color: var(--gog-ms-label-color);
-  text-transform: var(--gog-ms-label-text-transform);
-  letter-spacing: var(--gog-ms-label-letter-spacing);
-}
-
-/* Only 'over' floats fully outside the box, so only it needs permanently reserved space
-   above the field for the label to float into. */
-.gog-ms-wrapper--float-over .gog-ms {
-  margin-top: var(--gog-ms-float-label-over-reserve);
-}
+/* Float label — see lib/styles/_float-label.scss for the mechanism. */
+@include float-label.variants(
+  $block: '.gog-ms-wrapper',
+  $label: '.gog-ms__label--float',
+  $field: '.gog-ms',
+  $container: '.gog-ms',
+  $prefix: 'ms',
+  $pad-x: 'var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x)))',
+  $pad-y: 'var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--gog-field-md-padding-y)))',
+  $max-width:
+    'calc(100% - 2 * var(--gog-ms-padding-x, var(--gog-ms-size-padding-x, var(--gog-field-md-padding-x))))',
+  $cursor: default
+);
 
 @media (prefers-reduced-motion: reduce) {
   .gog-ms,

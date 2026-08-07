@@ -1,0 +1,143 @@
+////
+/// Float label — the shared rule set behind `floatLabel` on every field-style control.
+///
+/// `gog-inputfield`, `gog-textarea`, `gog-select` and `gog-multiselect` all render the same
+/// mechanism and differ only in their BEM names, their token prefix, and the exact `var()`
+/// chain each one uses for its own padding. Emitting it from one mixin keeps the four in step;
+/// as four hand-maintained copies they diverged silently, because nothing fails when only
+/// three of them get a fix.
+///
+/// The mechanism: one absolutely-positioned label, three variant modifiers picking a different
+/// floated *target*, and a `--floated` modifier deciding whether the label is at that target or
+/// still resting in the middle of the field like a placeholder.
+///
+///   `--float-in`   floats up but stays fully inside the field's border
+///   `--float-on`   ends up centered on the top border line, with a background patch masking it
+///   `--float-over` ends up fully above the field, outside the border
+///
+/// The label stays a real associated `<label>` throughout — only its CSS position changes — so
+/// `for` / `aria-labelledby` wiring is unaffected by which variant (if any) is active.
+////
+
+/// Emits the whole float-label rule set for one control.
+///
+/// @param {String} $block     block that carries the variant modifiers, e.g. '.gog-select'
+/// @param {String} $label     the floating label, e.g. '.gog-select__label--float'
+/// @param {String} $field     element whose `padding-top` grows, e.g. '.gog-select__control'
+/// @param {String} $container element reserving space above the field for the 'over' variant
+/// @param {String} $prefix    token namespace without `--gog-`, e.g. 'select'
+/// @param {String} $pad-x     full `var()` chain for the control's horizontal padding
+/// @param {String} $pad-y     full `var()` chain for the control's vertical padding
+/// @param {String} $max-width full expression capping the resting label's width
+/// @param {String} $cursor    `cursor` for the label; the dropdowns use `default`, inputs none
+/// @param {String} $rest-top  where the label sits at rest, before it floats
+/// @param {Bool} $rest-centered whether the resting label is vertically centred on `$rest-top`
+///
+/// `$rest-top` / `$rest-centered` exist for `gog-textarea`: a textarea's placeholder starts at
+/// the top of the box rather than being vertically centred like a single-line control's, so its
+/// resting label is pinned to the field's own top padding and needs no centring transform. Every
+/// other control leaves both at their defaults.
+@mixin variants(
+  $block,
+  $label,
+  $field,
+  $container,
+  $prefix,
+  $pad-x,
+  $pad-y,
+  $max-width,
+  $cursor: null,
+  $rest-top: 50%,
+  $rest-centered: true
+) {
+  #{$label} {
+    position: absolute;
+    left: #{$pad-x};
+    top: #{$rest-top};
+    @if $rest-centered {
+      transform: translateY(-50%);
+    }
+    max-width: #{$max-width};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    pointer-events: none;
+    cursor: $cursor;
+    color: var(--gog-#{$prefix}-placeholder-color);
+    font-size: var(--gog-#{$prefix}-size-font-size, var(--gog-field-md-font-size));
+    text-transform: none;
+    letter-spacing: normal;
+    transition:
+      transform var(--gog-#{$prefix}-transition-duration) var(--gog-easing),
+      font-size var(--gog-#{$prefix}-transition-duration) var(--gog-easing),
+      color var(--gog-#{$prefix}-transition-duration) var(--gog-easing),
+      top var(--gog-#{$prefix}-transition-duration) var(--gog-easing),
+      background-color var(--gog-#{$prefix}-transition-duration) var(--gog-easing);
+  }
+
+  /*
+   * 'in' and 'on' keep the label inside/on the border at all times, so — unlike 'over', which
+   * floats fully clear of the box — they need genuine headroom above the text the whole time
+   * the variant is active, not only once floated. Without this the floated label (font-size
+   * shrunk, pinned near the top) simply overlaps the vertically-centered text instead of
+   * clearing it. `padding-top` grows (not both edges) so the extra room lands above the text;
+   * the resting label's `top` is pinned to that same grown offset instead of the box's true
+   * center so it still lines up with the (now off-center) text at rest.
+   */
+  #{$block}--float-in,
+  #{$block}--float-on {
+    --gog-#{$prefix}-float-top-padding: calc(#{$pad-y} + var(--gog-#{$prefix}-float-label-reserve));
+  }
+
+  #{$block}--float-in #{$field},
+  #{$block}--float-on #{$field} {
+    padding-top: var(--gog-#{$prefix}-float-top-padding);
+  }
+
+  #{$block}--float-in #{$label},
+  #{$block}--float-on #{$label} {
+    top: var(--gog-#{$prefix}-float-top-padding);
+    @if $rest-centered {
+      transform: none;
+    }
+  }
+
+  #{$block}--float-in#{$block}--floated #{$label} {
+    top: var(--gog-#{$prefix}-float-label-in-top);
+    @if $rest-centered {
+      transform: translateY(0);
+    }
+    @include floated-typography($prefix);
+  }
+
+  #{$block}--float-on#{$block}--floated #{$label} {
+    top: 0;
+    transform: translateY(-50%);
+    @include floated-typography($prefix);
+    /* Patch masking the border line the label now sits on top of. */
+    background-color: var(--gog-#{$prefix}-float-label-on-bg, var(--gog-#{$prefix}-field-bg));
+    padding: 0 4px;
+    /* Pulled back by the padding above so the text still aligns with the field's own inset. */
+    left: calc(#{$pad-x} - 4px);
+  }
+
+  #{$block}--float-over#{$block}--floated #{$label} {
+    top: calc(-1 * var(--gog-#{$prefix}-float-label-over-gap));
+    transform: translateY(-100%);
+    @include floated-typography($prefix);
+  }
+
+  /* Only 'over' floats fully outside the box, so only it needs permanently reserved space
+     above the field for the label to float into. */
+  #{$block}--float-over #{$container} {
+    margin-top: var(--gog-#{$prefix}-float-label-over-reserve);
+  }
+}
+
+/// The type treatment a label picks up once floated — identical across all three variants.
+@mixin floated-typography($prefix) {
+  font-size: var(--gog-#{$prefix}-label-font-size);
+  color: var(--gog-#{$prefix}-label-color);
+  text-transform: var(--gog-#{$prefix}-label-text-transform);
+  letter-spacing: var(--gog-#{$prefix}-label-letter-spacing);
+}
