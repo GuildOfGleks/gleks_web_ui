@@ -150,13 +150,50 @@ check the new API against its neighbours:
   selector, not a precedent to follow;
 - block token prefix spelled out, not abbreviated (`--gog-multiselect-*`, not `--gog-ms-*`).
 
-## Breaking changes
+## Breaking changes & the deprecation lifecycle
 
 Pre-1.0, breaking changes are allowed in minor versions (`CHANGELOG.md` says so) — but the
-library is now public, so:
+library is public, so nothing disappears without notice, **and nothing stays deprecated
+forever**. Accumulated deprecated code is its own kind of debt: it doubles the API surface a
+newcomer has to read and quietly becomes load-bearing if it is never removed.
 
-- keep a **deprecated alias** for at least one minor whenever it is mechanical to do so
-  (`export type GogSelectOption = GogDropdownOption` is the model), marked `@deprecated` with
-  the replacement named in the message;
-- list every break under `### Changed` in `CHANGELOG.md` with a one-line migration note;
-- prefer making the *new* shape the default and the old one opt-in, over a hard swap.
+### The rule
+
+1. **Deprecate, don't delete.** When replacing a public symbol, input, selector or slot, keep
+   the old one working and mark it `@deprecated`.
+2. **Carry it for one or two minors, then delete it.** Removal happens on schedule, not "when
+   someone gets round to it". Two minors is the maximum, not the default — use one unless the
+   migration is genuinely awkward for consumers.
+3. **Every `@deprecated` tag records when it started and when it goes.** Without a date the
+   ratchet stops working and deprecations pile up invisibly.
+
+### The tag format — use this exactly
+
+```ts
+/**
+ * @deprecated since 21.3.0 (2026-08-07) — use `gog-column` instead. Removed in 21.5.0.
+ */
+```
+
+Four required parts, in this order: the version it was deprecated in, the **date** in
+`(YYYY-MM-DD)`, the replacement, and the version that removes it. Same format for a deprecated
+selector, input, type alias or exported function.
+
+The format is fixed so the whole set is greppable in one command — that is the point of the
+date:
+
+```bash
+grep -rn "@deprecated since" projects/gleks/ui/src
+```
+
+Before cutting a release, run it and delete everything whose "Removed in" version is at or
+below the version being cut. If a removal has to slip, edit the tag to say so rather than
+letting it drift silently.
+
+### Also required
+
+- List every deprecation under a `### Deprecated` heading in `CHANGELOG.md`, and every actual
+  removal under `### Removed`, each with a one-line migration note.
+- Prefer making the *new* shape the default and the old one opt-in, over a hard swap.
+- A deprecated symbol keeps working exactly as before. Do not "soften" it, change its behaviour,
+  or make it warn at runtime — a deprecation is a documentation event, not a behaviour change.
