@@ -25,7 +25,7 @@ iteration 1. Per `gleks-ui-library.instructions.md` rule 9, the agent never publ
 | 2 | Deduplicate float label (TS + SCSS) + config resolver | ✅ done |
 | 3 | Config semantics & coverage + size-class boilerplate | ✅ done |
 | 4 | Slot unification + selector/naming fixes | ✅ done |
-| 5 | Dropdown data model (`optionLabel`/`optionValue`, generics) | ⬜ not started |
+| 5 | Dropdown data model (`optionLabel`/`optionValue`, generics) | ✅ done |
 | 6 | Token system industrialization + coverage | ⬜ not started |
 
 Update this table at the end of every iteration, and re-state "done / remaining" in the turn
@@ -349,6 +349,34 @@ before 1.0.
 **Done when:** a showcase page drives a dropdown from a non-`{id,name}` DTO with no mapping;
 all existing showcase usages still work unchanged; spec suites for select/multiselect (842 +
 724 lines) pass with additions for the accessor paths.
+
+### Outcome ✅
+
+`GogDropdownBase<TValue, TOption = GogDropdownOption>` with three accessor inputs, each taking a
+property path or a function. `optionValue: null` emits the option object itself — verified by a
+spec asserting the emitted value is the *same reference* the consumer passed in, which is the
+whole point of the change.
+
+Backwards compatibility is the load-bearing part, and it held: defaults `'name'` / `'id'` /
+`'disabled'` mean the entire pre-existing select + multiselect suite passes untouched. Value
+matching keeps the old primitive leniency (`isSameOptionValue`: a `formControl` holding `'1'`
+still matches option value `1`) but switches to identity for objects, since coercing them would
+make every plain object equal to every other.
+
+`gog-table`'s private `getByPath` moved to `lib/shared/option-accessor.ts` and is now shared by
+both features rather than duplicated.
+
+461 specs (was 453). Live-verified on the select page against a `{ uuid, profile: { fullName,
+role }, suspended }` DTO: nested-path labels, `optionDisabled="suspended"` greying the right row
+(`aria-disabled` + modifier class), a `gogDropdownOption` row rendering `profile.role`, and
+`[optionValue]="null"` handing back the object.
+
+**Known ergonomic cost, accepted:** making the components generic means
+`TestBed.createComponent(SelectComponent)` (and any bare `viewChild(SelectComponent)`) infers
+`unknown` for both parameters — templates infer fine from bindings, but explicit TS references
+need an explicit type. The two existing spec files now declare `type DefaultSelect =
+SelectComponent<GogDropdownOption, string | number | null>` for this. Worth knowing before
+adding more TS-side references to these components.
 
 ---
 
