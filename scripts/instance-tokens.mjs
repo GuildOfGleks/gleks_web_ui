@@ -29,6 +29,32 @@ export const INSTANCE_TOKENS = new Set([
   '--gog-btn-hover-shadow',
   '--gog-btn-shadow',
   '--gog-btn-spinner-color',
+  // gog-autocomplete
+  '--gog-autocomplete-bg',
+  '--gog-autocomplete-color',
+  '--gog-autocomplete-float-label-on-bg',
+  '--gog-autocomplete-font-size',
+  '--gog-autocomplete-padding-x',
+  '--gog-autocomplete-padding-y',
+  // gogBadge — styled from utilities.css, since the badge lands in a consumer's element
+  '--gog-badge-bg',
+  '--gog-badge-color',
+  // gog-button-toggle-group
+  '--gog-button-toggle-bg',
+  '--gog-button-toggle-color',
+  '--gog-button-toggle-font-size',
+  '--gog-button-toggle-padding',
+  // gog-calendar
+  '--gog-calendar-day-bg',
+  '--gog-calendar-day-color',
+  '--gog-calendar-day-size',
+  // gog-datepicker
+  '--gog-datepicker-bg',
+  '--gog-datepicker-color',
+  '--gog-datepicker-float-label-on-bg',
+  '--gog-datepicker-font-size',
+  '--gog-datepicker-padding-x',
+  '--gog-datepicker-padding-y',
   // gog-checkbox
   '--gog-checkbox-box-size',
   '--gog-checkbox-icon-size',
@@ -45,18 +71,36 @@ export const INSTANCE_TOKENS = new Set([
   // gog-dialog — written as inline styles by the drag handler, not by a theme
   '--gog-dialog-offset-x',
   '--gog-dialog-offset-y',
+  // gog-divider
+  '--gog-divider-color',
+  '--gog-divider-spacing',
+  '--gog-divider-thickness',
   // gog-inputfield / gog-textarea (shared --gog-input-* block)
   '--gog-input-float-label-on-bg',
   '--gog-input-font',
   '--gog-input-padding-x',
   '--gog-input-padding-y',
+  // gog-tabs
+  '--gog-tabs-tab-bg',
+  '--gog-tabs-tab-color',
+  '--gog-tabs-tab-font-size',
+  '--gog-tabs-tab-padding',
   // gog-textarea — written as an inline style from the measured scrollbar width, not by a theme
   '--gog-textarea-scrollbar-width',
+  // gog-toggle
+  '--gog-toggle-padding',
+  '--gog-toggle-thumb-bg',
+  '--gog-toggle-track-bg',
   // gog-multiselect
   '--gog-multiselect-float-label-on-bg',
   '--gog-multiselect-font-size',
   '--gog-multiselect-padding-x',
   '--gog-multiselect-padding-y',
+  // gog-progressbar
+  '--gog-progressbar-buffer-bg',
+  '--gog-progressbar-fill-bg',
+  '--gog-progressbar-height',
+  '--gog-progressbar-track-bg',
   // gog-radio-group
   '--gog-radio-box-size',
   '--gog-radio-label-size',

@@ -160,6 +160,15 @@ async function main() {
   const themeDeclared = findDeclared(themeCss);
 
   const scssContent = await collectCompiledScss(path.join(uiSrc, 'lib'));
+
+  // `utilities.css` carries the classes for the parts that render into a *consumer's* DOM —
+  // `gog-collapsible`'s projected trigger/content and the `gogBadge` directive's badge. A
+  // scoped component stylesheet can't reach those, so the rules have to follow them here or
+  // that whole surface goes unchecked: a typo'd or undeclared token there fails silently, in
+  // the one place the token system is hardest to eyeball.
+  const utilitiesPath = path.join(uiSrc, 'styles/utilities.css');
+  scssContent.set(utilitiesPath, readFileSync(utilitiesPath, 'utf8'));
+
   const scssFiles = [...scssContent.keys()];
 
   const componentDeclared = new Set();
