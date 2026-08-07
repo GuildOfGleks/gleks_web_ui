@@ -23,7 +23,7 @@ iteration 1. Per `gleks-ui-library.instructions.md` rule 9, the agent never publ
 | 1b | CI made green (lint + workspace-wide format) | ✅ done |
 | 1c | Command-execution reliability (`running-commands`, `CLAUDE.md`) | ✅ done |
 | 2 | Deduplicate float label (TS + SCSS) + config resolver | ✅ done |
-| 3 | Config semantics & coverage + size-class boilerplate | ⬜ not started |
+| 3 | Config semantics & coverage + size-class boilerplate | ✅ done |
 | 4 | Slot unification + selector/naming fixes | ⬜ not started |
 | 5 | Dropdown data model (`optionLabel`/`optionValue`, generics) | ⬜ not started |
 | 6 | Token system industrialization + coverage | ⬜ not started |
@@ -236,6 +236,32 @@ trap doesn't catch the next person.
 **Done when:** nested-config specs pass; a `provideGogConfig` at a route no longer drops parent
 keys; existing size classes byte-identical in the rendered DOM (verify in `ui-showcase`, not
 just specs).
+
+### Outcome ✅
+
+1. **`provideGogConfig` merges.** `useFactory` + `inject(GOG_CONFIG, { skipSelf, optional })`
+   layers onto the parent injector's config, one level deep per component key. New
+   `config.spec.ts` (10 specs) pins it: sibling keys survive, fields merge within a key, it
+   layers through more than one level, and the parent's object is not mutated.
+2. **Config widened** to `control.size`, `control.errorDisplay`, `dropdown.appendToBody`,
+   `dropdown.direction`, `toast.position`, `toast.duration` — all routed through
+   `resolveConfigured`, all still per-instance overridable. `control.size` covers only the
+   interactive form controls; `gog-table` / `gog-accordion` / `gog-paginator` keep their own
+   density defaults (they differ: `lg`, `lg`, `sm`), as do the decorative components.
+3. **Size-class bindings collapsed** — 33 `[class.<block>--<size>]` bindings across 7 templates
+   became one `[class]="sizeClass()"` each, plus `panelSizeClass()` for the two append-to-body
+   panels. Each `sizeClass` encodes its own component's default size, which is why it can emit
+   nothing for that size exactly as the old bindings did.
+
+**The emitted DOM classes were verified, not assumed** — they are public API for consumers' CSS.
+Checked live for all seven: `gog-btn` emits all five sizes including `--md`; the field blocks
+and `gog-select`/`gog-ms-wrapper` emit `xsm/sm/lg/slg` and nothing for `md`; `gog-table` and
+`gog-accordion` emit nothing for `lg`. Static classes (`gog-contained-layout`) and sibling
+bindings (`--floated`, `--col-borders`, `--loading`, `--primary`) all survive alongside the
+`[class]` binding, and an append-to-body panel still gets `--portal` with no stray size
+modifier. The scoped-config demo on the Global config page still applies its subtree override.
+
+443 specs (was 433), clean build, lint/format/tokens green.
 
 ---
 
