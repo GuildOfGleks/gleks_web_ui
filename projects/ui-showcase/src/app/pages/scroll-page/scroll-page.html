@@ -28,8 +28,8 @@
   <article class="card">
     <h3>Sizes</h3>
     <p class="meta">
-      <code>size="normal"</code> (default) vs. <code>size="thin"</code> — thin suits compact
-      chrome like a dropdown panel or dialog body.
+      <code>size="normal"</code> (default) vs. <code>size="thin"</code> — thin suits compact chrome
+      like a dropdown panel or dialog body.
     </p>
     <div class="two-up">
       <div>
@@ -112,15 +112,18 @@
     <h3>Scroll chaining</h3>
     <p class="lead">
       <code>overscrollBehavior</code> controls what happens once a scroll gesture hits this
-      instance's edge. <code>"auto"</code> (the default) chains it to the next scrollable
-      ancestor — scroll to the end of the box below and keep scrolling with the same gesture:
-      the page itself keeps going, exactly like a native <code>overflow: auto</code> div.
+      instance's edge. <code>"auto"</code> (the default) chains it to the next scrollable ancestor —
+      scroll to the end of the box below and keep scrolling with the same gesture: the page itself
+      keeps going, exactly like a native <code>overflow: auto</code> div.
       <code>"contain"</code> stops the gesture dead at the edge instead — suited to overlay-style
-      panels (which is why <code>gog-select</code>'s option panel and <code>gog-dialog</code>'s
-      body set it explicitly). To change the app-wide default instead of setting the input on
-      every instance, call <code>provideGogConfig({{ '{' }} scroll: {{ '{' }} overscrollBehavior:
-      'contain' {{ '}' }} {{ '}' }})</code> in your app's providers — every unset
-      <code>gog-scroll</code> instance falls back to it.
+      panels (which is why <code>gog-select</code>'s option panel and <code>gog-dialog</code>'s body
+      set it explicitly). To change the app-wide default instead of setting the input on every
+      instance, call
+      <code
+        >provideGogConfig({{ '{' }} scroll: {{ '{' }} overscrollBehavior: 'contain' {{ '}' }}
+        {{ '}' }})</code
+      >
+      in your app's providers — every unset <code>gog-scroll</code> instance falls back to it.
     </p>
     <div class="two-up">
       <div>
@@ -145,9 +148,8 @@
   <article class="card">
     <h3>Reach events</h3>
     <p class="lead">
-      <code>gogReachEnd</code> / <code>gogReachStart</code> fire once per edge transition —
-      handy for a "load more" trigger or a chat log that should know when it's pinned to the
-      bottom.
+      <code>gogReachEnd</code> / <code>gogReachStart</code> fire once per edge transition — handy
+      for a "load more" trigger or a chat log that should know when it's pinned to the bottom.
     </p>
     <div class="field-grid">
       <gog-scroll
@@ -194,8 +196,8 @@
     <p class="lead">
       <code>gog-select</code> and <code>gog-multiselect</code> use it for their option panel,
       <code>gog-dialog</code> uses it for the body, and <code>gog-table</code> uses it for its
-      horizontal scroll — all with the native scrollbar hidden the same way as here. Nothing
-      about consuming those components changes; this is purely internal.
+      horizontal scroll — all with the native scrollbar hidden the same way as here. Nothing about
+      consuming those components changes; this is purely internal.
     </p>
     <p class="lead">
       You can also wrap any existing component in a <code>gog-scroll</code> yourself to cap its

@@ -3,8 +3,8 @@
     <p class="inputfield-doc__eyebrow">gog-inputfield</p>
     <h1 class="inputfield-doc__title font-heading">Input Field</h1>
     <p class="inputfield-doc__lead">
-      A text field with five sizes, leading/trailing icons that can double as buttons, a
-      built-in password reveal toggle, and full ControlValueAccessor support.
+      A text field with five sizes, leading/trailing icons that can double as buttons, a built-in
+      password reveal toggle, and full ControlValueAccessor support.
     </p>
   </header>
 
@@ -40,8 +40,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Password</h3>
       <p class="demo-card__meta">
-        <code>type="password"</code> gets a built-in show/hide toggle for free — the trailing
-        icon and its accessible label switch automatically.
+        <code>type="password"</code> gets a built-in show/hide toggle for free — the trailing icon
+        and its accessible label switch automatically.
       </p>
       <div class="demo-card__preview width-demo">
         <gog-inputfield label="Password" type="password" [(value)]="password" />
@@ -73,8 +73,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Error message</h3>
       <p class="demo-card__meta">
-        <code>errorDisplay="manual"</code> (the default) shows <code>errorMessage</code> for as
-        long as it's non-empty — you own the timing. Type fewer than 3 characters to see it.
+        <code>errorDisplay="manual"</code> (the default) shows <code>errorMessage</code> for as long
+        as it's non-empty — you own the timing. Type fewer than 3 characters to see it.
       </p>
       <div class="demo-card__preview width-demo">
         <gog-inputfield
@@ -94,8 +94,8 @@
       <h3 class="demo-card__title">Reactive Forms</h3>
       <p class="demo-card__meta">
         Wire it to a <code>FormControl</code> with <code>[formControl]</code> instead of
-        <code>[(value)]</code>. With <code>errorDisplay="auto"</code>, the error only shows
-        once the control has been touched and is invalid — blur the empty field to see it.
+        <code>[(value)]</code>. With <code>errorDisplay="auto"</code>, the error only shows once the
+        control has been touched and is invalid — blur the empty field to see it.
       </p>
       <div class="demo-card__preview width-demo">
         <gog-inputfield
@@ -112,9 +112,11 @@
       <h3 class="demo-card__title">Number and date</h3>
       <p class="demo-card__meta">
         <code>type="number"</code> accepts <code>min</code>/<code>max</code>/<code>step</code>;
-        wired to a <code>formControl</code>, its value is a real <code>number</code>
-        (<code>null</code> when empty) rather than the raw string <code>[(value)]</code> would
-        give you. <code>type="date"</code> renders the native date picker.
+        wired to a <code>formControl</code>, its value is a real <code>number</code> (<code
+          >null</code
+        >
+        when empty) rather than the raw string <code>[(value)]</code> would give you.
+        <code>type="date"</code> renders the native date picker.
       </p>
       <div class="demo-card__preview size-column">
         <gog-inputfield
@@ -128,7 +130,9 @@
         <gog-inputfield label="Delivery date" type="date" [(value)]="deliveryDate" />
       </div>
       <p class="demo-card__meta">
-        Quantity (number): {{ quantityControl.value }} — Delivery date (string): "{{ deliveryDate() }}"
+        Quantity (number): {{ quantityControl.value }} — Delivery date (string): "{{
+          deliveryDate()
+        }}"
       </p>
       <app-code-tabs [html]="numberDateHtml" [ts]="numberDateTs" />
     </article>
@@ -144,8 +148,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Auto width</h3>
       <p class="demo-card__meta">
-        Fields fill their container by default; <code>fullWidth="false"</code> shrinks the
-        field to fit its content instead.
+        Fields fill their container by default; <code>fullWidth="false"</code> shrinks the field to
+        fit its content instead.
       </p>
       <div class="demo-card__preview">
         <gog-inputfield label="Zip code" [fullWidth]="false" placeholder="00000" />
@@ -171,9 +175,15 @@
         <tbody>
           @for (row of apiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -187,8 +197,8 @@
     <p class="doc-section__intro">
       Every CSS custom property the input field paints with. Override any of them — on a single
       instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -201,7 +211,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

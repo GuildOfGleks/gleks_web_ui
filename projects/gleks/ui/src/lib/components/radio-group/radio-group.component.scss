@@ -93,10 +93,12 @@
 
 .gog-radio__dot {
   width: calc(
-    var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md)) * var(--gog-radio-dot-size-ratio)
+    var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md)) *
+      var(--gog-radio-dot-size-ratio)
   );
   height: calc(
-    var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md)) * var(--gog-radio-dot-size-ratio)
+    var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md)) *
+      var(--gog-radio-dot-size-ratio)
   );
   border-radius: 50%;
   background-color: var(--gog-radio-dot-color);

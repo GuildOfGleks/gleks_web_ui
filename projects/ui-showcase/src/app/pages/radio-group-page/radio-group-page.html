@@ -29,11 +29,7 @@
       <code>"horizontal"</code> lays them out in a row.
     </p>
     <div class="orientation-grid">
-      <gog-radio-group
-        label="Vertical"
-        [options]="sizeOptions"
-        [(value)]="orientationDemo"
-      />
+      <gog-radio-group label="Vertical" [options]="sizeOptions" [(value)]="orientationDemo" />
       <gog-radio-group
         label="Horizontal"
         orientation="horizontal"
@@ -65,8 +61,8 @@
     <p class="meta">
       Bound via <code>[formControl]</code> only — no <code>[(value)]</code> — proving the
       <code>ControlValueAccessor</code> wiring on its own. With <code>errorDisplay="auto"</code>,
-      the group decides for itself when to show the error (once touched and invalid) — pick
-      nothing, tab away, and it appears.
+      the group decides for itself when to show the error (once touched and invalid) — pick nothing,
+      tab away, and it appears.
     </p>
     <div class="action-row">
       <gog-radio-group

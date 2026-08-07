@@ -191,12 +191,11 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
     () => this.floatLabel() ?? this.globalConfig.floatLabel?.variant ?? DEFAULT_FLOAT_LABEL_VARIANT,
   );
   protected readonly resolvedFloatLabelShowPlaceholder = computed(
-    () => this.floatLabelShowPlaceholder() ?? this.globalConfig.floatLabel?.showPlaceholder ?? false,
+    () =>
+      this.floatLabelShowPlaceholder() ?? this.globalConfig.floatLabel?.showPlaceholder ?? false,
   );
   protected readonly isFloatLabelActive = computed(() => this.resolvedFloatLabel() !== 'none');
-  protected readonly isFloatLabelFloated = computed(
-    () => this.isFocused() || this.hasFloatValue(),
-  );
+  protected readonly isFloatLabelFloated = computed(() => this.isFocused() || this.hasFloatValue());
   /**
    * The text shown as the "nothing selected" fallback. While a float label is active the
    * resting label already sits where this would, so it's suppressed unless the consumer

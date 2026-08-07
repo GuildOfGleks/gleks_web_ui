@@ -65,30 +65,39 @@ const API_INPUTS: readonly ApiInputRow[] = [
     default: "'md'",
     description: 'Field height, padding, and font size.',
   },
-  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the trigger and closes the panel if it is open.' },
+  {
+    name: 'disabled',
+    type: 'boolean',
+    default: 'false',
+    description: 'Disables the trigger and closes the panel if it is open.',
+  },
   {
     name: 'fullWidth',
     type: 'boolean',
     default: 'true',
-    description: 'Fills its container by default. Set false to shrink to fit the selected label instead.',
+    description:
+      'Fills its container by default. Set false to shrink to fit the selected label instead.',
   },
   {
     name: 'dropdownDirection',
     type: "'auto' | 'up' | 'down'",
     default: "'auto'",
-    description: "Which side the panel opens on. 'auto' flips to whichever side has room in the viewport.",
+    description:
+      "Which side the panel opens on. 'auto' flips to whichever side has room in the viewport.",
   },
   {
     name: 'dropdownZIndex',
     type: 'number | null',
     default: 'null',
-    description: 'Explicit stacking order for the panel. Left unset it falls back to the --gog-dropdown-z token.',
+    description:
+      'Explicit stacking order for the panel. Left unset it falls back to the --gog-dropdown-z token.',
   },
   {
     name: 'dropdownWidth',
     type: 'string | null',
     default: 'null',
-    description: 'Fixed panel width, any CSS length. Applies only with appendToBody — otherwise the panel matches the trigger width.',
+    description:
+      'Fixed panel width, any CSS length. Applies only with appendToBody — otherwise the panel matches the trigger width.',
   },
   {
     name: 'dropdownMaxHeight',
@@ -100,7 +109,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'appendToBody',
     type: 'boolean',
     default: 'false',
-    description: "Portals the panel into document.body instead of rendering it inline — escapes an ancestor's scroll/overflow clipping.",
+    description:
+      "Portals the panel into document.body instead of rendering it inline — escapes an ancestor's scroll/overflow clipping.",
   },
   {
     name: 'chevronTemplate',
@@ -112,7 +122,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-select-doc-page',
-  imports: [SelectComponent, IconComponent, MarkdownComponent, CodeTabsComponent, RouterLink, ReactiveFormsModule],
+  imports: [
+    SelectComponent,
+    IconComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    ReactiveFormsModule,
+  ],
   templateUrl: './select-doc-page.html',
   styleUrl: './select-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -121,7 +138,8 @@ export class SelectDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly apiInputs = API_INPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'select')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'select')?.tokens ?? [];
 
   protected readonly framework = signal<string | number | null>(null);
   protected readonly frameworks: GogDropdownOption[] = [
@@ -199,7 +217,7 @@ export class SelectDocPage {
     '  template: `<gog-select label="Framework" [options]="frameworks" [(value)]="framework" />`,',
     '})',
     'export class ExampleComponent {',
-    "  protected readonly framework = signal<string | number | null>(null);",
+    '  protected readonly framework = signal<string | number | null>(null);',
     '  protected readonly frameworks: GogDropdownOption[] = [',
     "    { id: 'angular', name: 'Angular' },",
     "    { id: 'react', name: 'React' },",
@@ -242,7 +260,7 @@ export class SelectDocPage {
     '  label="Required plan"',
     '  placeholder="Choose a plan..."',
     '  [options]="plansWithDisabled"',
-    '  [errorMessage]="requiredValue() === null ? \'Please pick a plan.\' : \'\'"',
+    "  [errorMessage]=\"requiredValue() === null ? 'Please pick a plan.' : ''\"",
     '  [(value)]="requiredValue"',
     '/>',
   ].join('\n');
@@ -275,7 +293,7 @@ export class SelectDocPage {
     '  ];',
     "  protected readonly plan = signal<string | number | null>('free');",
     '  protected readonly requiredValue = signal<string | number | null>(null);',
-    "  protected readonly requiredError = computed(() =>",
+    '  protected readonly requiredError = computed(() =>',
     "    this.requiredValue() === null ? 'Please pick a plan.' : '',",
     '  );',
     '}',
@@ -339,7 +357,7 @@ export class SelectDocPage {
     '  `,',
     '})',
     'export class ExampleComponent {',
-    "  protected readonly fullWidthCountry = signal<string | number | null>(null);",
+    '  protected readonly fullWidthCountry = signal<string | number | null>(null);',
     "  protected readonly currency = signal<string | number | null>('usd');",
     '  protected readonly countries: GogDropdownOption[] = [/* ... */];',
     '  protected readonly currencies: GogDropdownOption[] = [/* ... */];',

@@ -3,8 +3,8 @@
     <p class="tag-doc__eyebrow">gog-tag</p>
     <h1 class="tag-doc__title font-heading">Tag</h1>
     <p class="tag-doc__lead">
-      An informational status label with four semantic variants, two shapes, five sizes, and
-      width that follows the text without wrapping by default.
+      An informational status label with four semantic variants, two shapes, five sizes, and width
+      that follows the text without wrapping by default.
     </p>
   </header>
 
@@ -61,7 +61,9 @@
 
     <article class="demo-card">
       <h3 class="demo-card__title">Custom icon template</h3>
-      <p class="demo-card__meta"><code>iconTemplate</code> takes priority over <code>iconName</code>.</p>
+      <p class="demo-card__meta">
+        <code>iconTemplate</code> takes priority over <code>iconName</code>.
+      </p>
       <ng-template #starIcon>
         <gog-icon name="checkbox-checked" />
       </ng-template>
@@ -102,9 +104,15 @@
         <tbody>
           @for (row of apiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -116,10 +124,10 @@
   <section class="doc-section">
     <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
     <p class="doc-section__intro">
-      Every CSS custom property the tag paints with. Override any of them — on a single
-      instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      Every CSS custom property the tag paints with. Override any of them — on a single instance, a
+      subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -132,7 +140,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

@@ -49,7 +49,12 @@ const API_INPUTS: readonly ApiInputRow[] = [
     default: "''",
     description: "id on the native textarea, and target of the label's for attribute.",
   },
-  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the native textarea.' },
+  {
+    name: 'disabled',
+    type: 'boolean',
+    default: 'false',
+    description: 'Disables the native textarea.',
+  },
   {
     name: 'size',
     type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'",
@@ -66,7 +71,13 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-textarea-doc-page',
-  imports: [TextareaComponent, MarkdownComponent, CodeTabsComponent, RouterLink, ReactiveFormsModule],
+  imports: [
+    TextareaComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    ReactiveFormsModule,
+  ],
   templateUrl: './textarea-doc-page.html',
   styleUrl: './textarea-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -146,7 +157,7 @@ export class TextareaDocPage {
     '<gog-textarea',
     '  label="Feedback"',
     '  [(value)]="manualErrorValue"',
-    '  [errorMessage]="manualErrorValue().length > 0 && manualErrorValue().length < 10 ? \'At least 10 characters\' : \'\'"',
+    "  [errorMessage]=\"manualErrorValue().length > 0 && manualErrorValue().length < 10 ? 'At least 10 characters' : ''\"",
     '/>',
   ].join('\n');
   protected readonly errorTs = [
@@ -160,7 +171,7 @@ export class TextareaDocPage {
     '    <gog-textarea',
     '      label="Feedback"',
     '      [(value)]="value"',
-    '      [errorMessage]="value().length > 0 && value().length < 10 ? \'At least 10 characters\' : \'\'"',
+    "      [errorMessage]=\"value().length > 0 && value().length < 10 ? 'At least 10 characters' : ''\"",
     '    />',
     '  `,',
     '})',
@@ -195,14 +206,15 @@ export class TextareaDocPage {
     '  `,',
     '})',
     'export class ExampleComponent {',
-    '  protected readonly commentControl = new FormControl(\'\', {',
+    "  protected readonly commentControl = new FormControl('', {",
     '    nonNullable: true,',
     '    validators: [Validators.required, Validators.minLength(10)],',
     '  });',
     '}',
   ].join('\n');
 
-  protected readonly disabledHtml = '<gog-textarea label="Disabled" [disabled]="true" value="Read only" />';
+  protected readonly disabledHtml =
+    '<gog-textarea label="Disabled" [disabled]="true" value="Read only" />';
   protected readonly disabledTs = [
     "import { Component } from '@angular/core';",
     "import { TextareaComponent } from '@guildofgleks/ui';",
@@ -215,7 +227,8 @@ export class TextareaDocPage {
     'export class ExampleComponent {}',
   ].join('\n');
 
-  protected readonly autoWidthHtml = '<gog-textarea label="Short note" [fullWidth]="false" [rows]="2" />';
+  protected readonly autoWidthHtml =
+    '<gog-textarea label="Short note" [fullWidth]="false" [rows]="2" />';
   protected readonly autoWidthTs = [
     "import { Component } from '@angular/core';",
     "import { TextareaComponent } from '@guildofgleks/ui';",

@@ -1,56 +1,56 @@
 <gog-scroll class="app-shell-scroll">
-<div class="app-shell">
-  <header class="app-shell__header">
-    <div class="app-shell__intro">
-      <p class="app-shell__eyebrow">&#64;gleks/ui</p>
-      <h1>{{ title() }}</h1>
-      <p class="app-shell__lead">
-        A live playground for the latest components, tokens, overlays, and radically different theme
-        systems.
-      </p>
-      <p class="app-shell__theme-copy">
-        <strong>{{ themeLabel() }}</strong>
-        <span>{{ themeSummary() }}</span>
-      </p>
-    </div>
+  <div class="app-shell">
+    <header class="app-shell__header">
+      <div class="app-shell__intro">
+        <p class="app-shell__eyebrow">&#64;gleks/ui</p>
+        <h1>{{ title() }}</h1>
+        <p class="app-shell__lead">
+          A live playground for the latest components, tokens, overlays, and radically different
+          theme systems.
+        </p>
+        <p class="app-shell__theme-copy">
+          <strong>{{ themeLabel() }}</strong>
+          <span>{{ themeSummary() }}</span>
+        </p>
+      </div>
 
-    <div class="app-shell__theme-switcher">
-      <gog-select
-        ariaLabel="Theme preset"
-        [options]="themeOptions"
-        [value]="activeTheme()"
-        [fullWidth]="false"
-        (valueChange)="setTheme($event)"
-      />
-    </div>
+      <div class="app-shell__theme-switcher">
+        <gog-select
+          ariaLabel="Theme preset"
+          [options]="themeOptions"
+          [value]="activeTheme()"
+          [fullWidth]="false"
+          (valueChange)="setTheme($event)"
+        />
+      </div>
 
-    <nav class="app-shell__nav" aria-label="Component showcase pages">
-      <span class="app-shell__nav-group-label">Components</span>
-      @for (link of navLinks; track link.path) {
-        <a
-          class="app-shell__nav-link"
-          [routerLink]="link.path"
-          routerLinkActive="app-shell__nav-link--active"
-        >
-          {{ link.label }}
-        </a>
-      }
-    </nav>
+      <nav class="app-shell__nav" aria-label="Component showcase pages">
+        <span class="app-shell__nav-group-label">Components</span>
+        @for (link of navLinks; track link.path) {
+          <a
+            class="app-shell__nav-link"
+            [routerLink]="link.path"
+            routerLinkActive="app-shell__nav-link--active"
+          >
+            {{ link.label }}
+          </a>
+        }
+      </nav>
 
-    <nav class="app-shell__nav" aria-label="Full page showcase examples">
-      <span class="app-shell__nav-group-label">Full pages</span>
-      @for (link of pageLinks; track link.path) {
-        <a
-          class="app-shell__nav-link"
-          [routerLink]="link.path"
-          routerLinkActive="app-shell__nav-link--active"
-        >
-          {{ link.label }}
-        </a>
-      }
-    </nav>
-  </header>
+      <nav class="app-shell__nav" aria-label="Full page showcase examples">
+        <span class="app-shell__nav-group-label">Full pages</span>
+        @for (link of pageLinks; track link.path) {
+          <a
+            class="app-shell__nav-link"
+            [routerLink]="link.path"
+            routerLinkActive="app-shell__nav-link--active"
+          >
+            {{ link.label }}
+          </a>
+        }
+      </nav>
+    </header>
 
-  <router-outlet />
-</div>
+    <router-outlet />
+  </div>
 </gog-scroll>

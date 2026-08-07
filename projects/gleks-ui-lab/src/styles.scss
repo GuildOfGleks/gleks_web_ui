@@ -43,8 +43,10 @@
   --gog-spinner-overlay-bg: rgba(248, 250, 252, 0.75);
 
   /* Fonts — PrimeNG doesn't split heading/body, one system sans everywhere */
-  --gog-font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --gog-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --gog-font-heading:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --gog-font-body:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --gog-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Structure — thinner borders, tighter focus ring, 6px radius everywhere

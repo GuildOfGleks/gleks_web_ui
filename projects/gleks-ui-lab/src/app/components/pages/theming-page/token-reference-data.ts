@@ -157,7 +157,8 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       },
       {
         name: '--gog-btn-bg / -color / -border / -padding / -font-size',
-        description: 'Undeclared by default — the escape hatch for styling a single button instance.',
+        description:
+          'Undeclared by default — the escape hatch for styling a single button instance.',
       },
     ],
   },
@@ -190,7 +191,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-chip-bg / -hover-bg', description: 'Background, default and hover.' },
       { name: '--gog-chip-border / -border-width / -style', description: 'Border.' },
       { name: '--gog-chip-color / -font-weight', description: 'Text color and weight.' },
-      { name: '--gog-chip-radius / -pill-radius', description: 'Corner radius, square and pill shape.' },
+      {
+        name: '--gog-chip-radius / -pill-radius',
+        description: 'Corner radius, square and pill shape.',
+      },
       {
         name: '--gog-chip-remove-color / -remove-hover-color',
         description: 'Remove (×) icon color.',
@@ -214,7 +218,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description:
           'Fixed cap the open content transitions toward (a CSS-only max-height animation can\'t target a measured "auto" height). Raise it per-instance if a panel\'s content can exceed 480px.',
       },
-      { name: '--gog-collapsible-disabled-opacity', description: 'Opacity applied to a disabled trigger.' },
+      {
+        name: '--gog-collapsible-disabled-opacity',
+        description: 'Opacity applied to a disabled trigger.',
+      },
     ],
   },
   {
@@ -313,15 +320,27 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     id: 'scroll',
     title: 'Scroll',
     tokens: [
-      { name: '--gog-scroll-track-bg / -track-radius', description: 'Track background and corner radius.' },
+      {
+        name: '--gog-scroll-track-bg / -track-radius',
+        description: 'Track background and corner radius.',
+      },
       {
         name: '--gog-scroll-thumb-bg / -thumb-hover-bg / -thumb-active-bg',
         description: 'Draggable thumb color, per interaction state.',
       },
-      { name: '--gog-scroll-thumb-radius / -thumb-inset', description: 'Thumb shape and inset from the track edges.' },
-      { name: '--gog-scroll-corner-bg', description: 'Background of the corner square where two tracks meet.' },
+      {
+        name: '--gog-scroll-thumb-radius / -thumb-inset',
+        description: 'Thumb shape and inset from the track edges.',
+      },
+      {
+        name: '--gog-scroll-corner-bg',
+        description: 'Background of the corner square where two tracks meet.',
+      },
       { name: '--gog-scroll-fade-duration', description: 'Auto-hide fade animation timing.' },
-      { name: '--gog-scroll-focus-ring / -focus-ring-width', description: 'Keyboard focus ring on the viewport.' },
+      {
+        name: '--gog-scroll-focus-ring / -focus-ring-width',
+        description: 'Keyboard focus ring on the viewport.',
+      },
       {
         name: '--gog-scroll-{normal|thin}-track-width / -thumb-min-size',
         description: 'Track width and minimum thumb length, per size step.',
@@ -430,7 +449,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-tag-bg-base / -color-base / -bg-mix / -color-mix',
         description: 'How the variant color is mixed into background and text.',
       },
-      { name: '--gog-tag-radius / -pill-radius', description: 'Corner radius, square and pill shape.' },
+      {
+        name: '--gog-tag-radius / -pill-radius',
+        description: 'Corner radius, square and pill shape.',
+      },
       {
         name: '--gog-tag-{size}-font-size / -padding-block / -padding-inline / -gap / -icon-size',
         description: 'Full sizing scale, per size step (xsm/sm/md/lg/slg).',

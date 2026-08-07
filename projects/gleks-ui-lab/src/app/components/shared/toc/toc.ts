@@ -74,7 +74,10 @@ export class TocComponent {
 
   private scheduleRescan(): void {
     if (this.rescanTimeoutId !== null) clearTimeout(this.rescanTimeoutId);
-    this.rescanTimeoutId = setTimeout(() => this.ngZone.run(() => this.rescan()), RESCAN_DEBOUNCE_MS);
+    this.rescanTimeoutId = setTimeout(
+      () => this.ngZone.run(() => this.rescan()),
+      RESCAN_DEBOUNCE_MS,
+    );
   }
 
   private rescan(): void {

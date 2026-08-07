@@ -59,8 +59,7 @@ export class TextareaPage {
     // same reasoning).
     this.feedbackValue();
     if (this.feedbackControl.hasError('required')) return 'Feedback is required.';
-    if (this.feedbackControl.hasError('minlength'))
-      return 'Please write at least 10 characters.';
+    if (this.feedbackControl.hasError('minlength')) return 'Please write at least 10 characters.';
     return '';
   });
 }

@@ -19,7 +19,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: 'string (model)',
     default: "''",
     description:
-      "Two-way bindable value via [(value)]. Always a string — even for type=\"number\" — since it mirrors the native input's raw text. Also the value Angular Forms drives through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel; there, a number field's value is a number (null when empty) instead.",
+      'Two-way bindable value via [(value)]. Always a string — even for type="number" — since it mirrors the native input\'s raw text. Also the value Angular Forms drives through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel; there, a number field\'s value is a number (null when empty) instead.',
   },
   { name: 'label', type: 'string', default: "''", description: 'Field label.' },
   { name: 'placeholder', type: 'string', default: "''", description: 'Native placeholder text.' },
@@ -33,13 +33,15 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'min / max / step',
     type: 'number | null',
     default: 'null',
-    description: 'Only applied when type="number" — forwarded to the native min/max/step attributes.',
+    description:
+      'Only applied when type="number" — forwarded to the native min/max/step attributes.',
   },
   {
     name: 'autocomplete',
     type: 'string',
     default: "''",
-    description: "Forwarded to the native input. Defaults to 'current-password' for password fields, 'off' otherwise, when left empty.",
+    description:
+      "Forwarded to the native input. Defaults to 'current-password' for password fields, 'off' otherwise, when left empty.",
   },
   {
     name: 'errorMessage',
@@ -59,9 +61,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'inputId',
     type: 'string',
     default: "''",
-    description: 'id on the native input, and target of the label\'s for attribute.',
+    description: "id on the native input, and target of the label's for attribute.",
   },
-  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the native input.' },
+  {
+    name: 'disabled',
+    type: 'boolean',
+    default: 'false',
+    description: 'Disables the native input.',
+  },
   {
     name: 'size',
     type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'",
@@ -76,7 +83,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
   {
     name: 'iconStart / iconEnd',
-    type: 'GogIconName | \'\'',
+    type: "GogIconName | ''",
     default: "''",
     description: 'Leading / trailing icon name.',
   },
@@ -108,7 +115,13 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-inputfield-doc-page',
-  imports: [InputfieldComponent, MarkdownComponent, CodeTabsComponent, RouterLink, ReactiveFormsModule],
+  imports: [
+    InputfieldComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    ReactiveFormsModule,
+  ],
   templateUrl: './inputfield-doc-page.html',
   styleUrl: './inputfield-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -136,7 +149,8 @@ export class InputfieldDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { InputfieldComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [InputfieldComponent],\n})\n```";
 
-  protected readonly overviewHtml = '<gog-inputfield label="Name" placeholder="Ada Lovelace" [(value)]="name" />';
+  protected readonly overviewHtml =
+    '<gog-inputfield label="Name" placeholder="Ada Lovelace" [(value)]="name" />';
   protected readonly overviewTs = [
     "import { Component, signal } from '@angular/core';",
     "import { InputfieldComponent } from '@guildofgleks/ui';",
@@ -233,7 +247,7 @@ export class InputfieldDocPage {
     '<gog-inputfield',
     '  label="Username"',
     '  [(value)]="manualErrorValue"',
-    '  [errorMessage]="manualErrorValue().length > 0 && manualErrorValue().length < 3 ? \'At least 3 characters\' : \'\'"',
+    "  [errorMessage]=\"manualErrorValue().length > 0 && manualErrorValue().length < 3 ? 'At least 3 characters' : ''\"",
     '/>',
   ].join('\n');
   protected readonly errorTs = [
@@ -247,7 +261,7 @@ export class InputfieldDocPage {
     '    <gog-inputfield',
     '      label="Username"',
     '      [(value)]="value"',
-    '      [errorMessage]="value().length > 0 && value().length < 3 ? \'At least 3 characters\' : \'\'"',
+    "      [errorMessage]=\"value().length > 0 && value().length < 3 ? 'At least 3 characters' : ''\"",
     '    />',
     '  `,',
     '})',
@@ -282,7 +296,7 @@ export class InputfieldDocPage {
     '  `,',
     '})',
     'export class ExampleComponent {',
-    '  protected readonly emailControl = new FormControl(\'\', {',
+    "  protected readonly emailControl = new FormControl('', {",
     '    nonNullable: true,',
     '    validators: [Validators.required, Validators.email],',
     '  });',
@@ -329,7 +343,8 @@ export class InputfieldDocPage {
     '}',
   ].join('\n');
 
-  protected readonly disabledHtml = '<gog-inputfield label="Disabled" [disabled]="true" value="Read only" />';
+  protected readonly disabledHtml =
+    '<gog-inputfield label="Disabled" [disabled]="true" value="Read only" />';
   protected readonly disabledTs = [
     "import { Component } from '@angular/core';",
     "import { InputfieldComponent } from '@guildofgleks/ui';",
@@ -342,7 +357,8 @@ export class InputfieldDocPage {
     'export class ExampleComponent {}',
   ].join('\n');
 
-  protected readonly autoWidthHtml = '<gog-inputfield label="Zip code" [fullWidth]="false" placeholder="00000" />';
+  protected readonly autoWidthHtml =
+    '<gog-inputfield label="Zip code" [fullWidth]="false" placeholder="00000" />';
   protected readonly autoWidthTs = [
     "import { Component } from '@angular/core';",
     "import { InputfieldComponent } from '@guildofgleks/ui';",

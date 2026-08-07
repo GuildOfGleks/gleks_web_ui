@@ -3,9 +3,8 @@
     <p class="skeleton-doc__eyebrow">gog-skeleton</p>
     <h1 class="skeleton-doc__title font-heading">Skeleton</h1>
     <p class="skeleton-doc__lead">
-      A placeholder bone that mirrors the shape of content still loading — text lines,
-      avatars, images, cards — so the layout holds still and the user never stares at a blank
-      screen.
+      A placeholder bone that mirrors the shape of content still loading — text lines, avatars,
+      images, cards — so the layout holds still and the user never stares at a blank screen.
     </p>
   </header>
 
@@ -52,8 +51,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Text lines</h3>
       <p class="demo-card__meta">
-        <code>lines</code> stacks several bars with the theme's spacing rhythm. Past one line,
-        the last bar renders shorter — the same silhouette a real paragraph leaves behind.
+        <code>lines</code> stacks several bars with the theme's spacing rhythm. Past one line, the
+        last bar renders shorter — the same silhouette a real paragraph leaves behind.
       </p>
       <div class="demo-card__preview skeleton-lines-demo">
         <div class="skeleton-lines-col">
@@ -75,8 +74,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Sizes</h3>
       <p class="demo-card__meta">
-        <code>size</code> follows the library's five-tier scale and controls line thickness,
-        circle diameter, and default rect height.
+        <code>size</code> follows the library's five-tier scale and controls line thickness, circle
+        diameter, and default rect height.
       </p>
       <div class="demo-card__preview skeleton-grid">
         @for (sizeOption of sizes; track sizeOption) {
@@ -92,10 +91,9 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Animations</h3>
       <p class="demo-card__meta">
-        <code>pulse</code> (default) fades opacity, <code>wave</code> sweeps a shimmer
-        highlight across the bone, and <code>none</code> holds a static tone — useful when
-        <code>prefers-reduced-motion</code> matters most, or the surrounding UI is already
-        busy.
+        <code>pulse</code> (default) fades opacity, <code>wave</code> sweeps a shimmer highlight
+        across the bone, and <code>none</code> holds a static tone — useful when
+        <code>prefers-reduced-motion</code> matters most, or the surrounding UI is already busy.
       </p>
       <div class="demo-card__preview skeleton-grid">
         @for (animationOption of animations; track animationOption) {
@@ -112,8 +110,8 @@
       <h3 class="demo-card__title">Custom dimensions &amp; corners</h3>
       <p class="demo-card__meta">
         <code>width</code>/<code>height</code> override the shape/size default outright, and
-        <code>rounded="false"</code> squares off the corners — handy for a banner image that
-        bleeds to the edge of its container.
+        <code>rounded="false"</code> squares off the corners — handy for a banner image that bleeds
+        to the edge of its container.
       </p>
       <div class="demo-card__preview skeleton-grid">
         <div class="skeleton-tile skeleton-tile--wide">
@@ -135,9 +133,9 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Composed: profile card</h3>
       <p class="demo-card__meta">
-        Real screens rarely load a single shape in isolation — a card is usually an avatar
-        plus a couple of text lines plus a media block, all resolving together. This one
-        re-loads on demand so you can see the swap from bones to content.
+        Real screens rarely load a single shape in isolation — a card is usually an avatar plus a
+        couple of text lines plus a media block, all resolving together. This one re-loads on demand
+        so you can see the swap from bones to content.
       </p>
       <div class="demo-card__preview">
         <gog-button variant="primary" type="button" (gogClick)="reloadProfile()">
@@ -168,8 +166,8 @@
             </div>
             <div class="profile-card__banner"></div>
             <p class="profile-card__bio">
-              Maya leads the design system team, focused on making complex flows feel simple
-              across web and mobile. Ten years in, still sweating the details.
+              Maya leads the design system team, focused on making complex flows feel simple across
+              web and mobile. Ten years in, still sweating the details.
             </p>
           }
         </div>
@@ -180,8 +178,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Composed: product grid</h3>
       <p class="demo-card__meta">
-        A product listing loads image, title, and price bones per card, all at once — a
-        different rhythm than a single profile: several identical composites side by side.
+        A product listing loads image, title, and price bones per card, all at once — a different
+        rhythm than a single profile: several identical composites side by side.
       </p>
       <div class="demo-card__preview">
         <gog-button variant="outline" type="button" (gogClick)="toggleProductsLoading()">
@@ -213,9 +211,9 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Composed: chat conversation</h3>
       <p class="demo-card__meta">
-        A less obvious case: message bubbles of varying width, alternating sides, an avatar
-        only on the other person's messages — <code>rect</code> bones stand in for the
-        bubbles themselves, sized per message instead of a fixed shape.
+        A less obvious case: message bubbles of varying width, alternating sides, an avatar only on
+        the other person's messages — <code>rect</code> bones stand in for the bubbles themselves,
+        sized per message instead of a fixed shape.
       </p>
       <div class="demo-card__preview">
         <gog-button variant="outline" type="button" (gogClick)="toggleChatLoading()">
@@ -264,9 +262,15 @@
         <tbody>
           @for (row of apiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -280,8 +284,8 @@
     <p class="doc-section__intro">
       Every CSS custom property the skeleton paints with. Override any of them — on a single
       instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -294,7 +298,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

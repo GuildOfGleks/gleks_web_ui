@@ -29,7 +29,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'disabled',
     type: 'boolean',
     default: 'false',
-    description: 'Fully non-interactive: excluded from tab order via the native disabled attribute.',
+    description:
+      'Fully non-interactive: excluded from tab order via the native disabled attribute.',
   },
   {
     name: 'fullWidth',
@@ -142,7 +143,8 @@ export class ButtonDocPage {
     'export class ExampleComponent {}',
   ].join('\n');
 
-  protected readonly disabledHtml = '<gog-button variant="primary" [disabled]="true">Primary</gog-button>';
+  protected readonly disabledHtml =
+    '<gog-button variant="primary" [disabled]="true">Primary</gog-button>';
   protected readonly disabledTs = [
     "import { Component } from '@angular/core';",
     "import { ButtonComponent } from '@guildofgleks/ui';",
@@ -191,7 +193,8 @@ export class ButtonDocPage {
     '}',
   ].join('\n');
 
-  protected readonly fullWidthHtml = '<gog-button variant="outline" [fullWidth]="true">Full width</gog-button>';
+  protected readonly fullWidthHtml =
+    '<gog-button variant="outline" [fullWidth]="true">Full width</gog-button>';
   protected readonly fullWidthTs = [
     "import { Component } from '@angular/core';",
     "import { ButtonComponent } from '@guildofgleks/ui';",

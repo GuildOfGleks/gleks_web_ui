@@ -3,8 +3,8 @@
     <p class="paginator-doc__eyebrow">gog-paginator</p>
     <h1 class="paginator-doc__title font-heading">Paginator</h1>
     <p class="paginator-doc__lead">
-      Page-number controls that only need a page count — no notion of rows or columns — so
-      they drop into a table, an accordion, a plain list, or anything else you page through.
+      Page-number controls that only need a page count — no notion of rows or columns — so they drop
+      into a table, an accordion, a plain list, or anything else you page through.
     </p>
   </header>
 
@@ -15,8 +15,8 @@
 
     <p class="doc-section__intro">
       <code>page</code> is a two-way bindable model — <code>[(page)]="mySignal"</code> — and
-      <code>totalPages</code> is the only other thing the paginator needs. By default it shows
-      a fixed, centered window of page buttons that slides as you navigate.
+      <code>totalPages</code> is the only other thing the paginator needs. By default it shows a
+      fixed, centered window of page buttons that slides as you navigate.
     </p>
     <div class="demo-card">
       <div class="demo-card__preview">
@@ -33,9 +33,9 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Range mode: window (default)</h3>
       <p class="demo-card__meta">
-        Keeps exactly <code>visiblePages</code> buttons on screen, centered on the current
-        page. <code>showFirstPage</code> / <code>showLastPage</code> pin the first/last page
-        with a "…" once it scrolls out of the window — click through to page 10+ to see it.
+        Keeps exactly <code>visiblePages</code> buttons on screen, centered on the current page.
+        <code>showFirstPage</code> / <code>showLastPage</code> pin the first/last page with a "…"
+        once it scrolls out of the window — click through to page 10+ to see it.
       </p>
       <div class="demo-card__preview">
         <gog-paginator
@@ -53,10 +53,9 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Range mode: ellipsis</h3>
       <p class="demo-card__meta">
-        The original behavior, kept as an opt-in for consumers already built around that
-        look (like <code>gog-table</code>): first and last page always pinned,
-        <code>siblingCount</code> pages kept around the current one, with a "…" filling the
-        gap.
+        The original behavior, kept as an opt-in for consumers already built around that look (like
+        <code>gog-table</code>): first and last page always pinned, <code>siblingCount</code> pages
+        kept around the current one, with a "…" filling the gap.
       </p>
       <div class="demo-card__preview">
         <gog-paginator
@@ -87,10 +86,9 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Full width</h3>
       <p class="demo-card__meta">
-        Full width of its container by default — the dashed outline below is the container,
-        not the paginator, so you can see the box claims the full row even though the buttons
-        don't fill it. <code>[fullWidth]="false"</code> shrinks the box to fit the buttons
-        instead.
+        Full width of its container by default — the dashed outline below is the container, not the
+        paginator, so you can see the box claims the full row even though the buttons don't fill it.
+        <code>[fullWidth]="false"</code> shrinks the box to fit the buttons instead.
       </p>
       <div class="demo-card__preview paginator-width-demo">
         <p class="demo-card__meta">fullWidth: true (default)</p>
@@ -119,8 +117,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Applied to a plain list</h3>
       <p class="demo-card__meta">
-        No table, no rows — just an array sliced by hand using <code>page</code> and a page
-        size the consumer owns.
+        No table, no rows — just an array sliced by hand using <code>page</code> and a page size the
+        consumer owns.
       </p>
       <div class="demo-card__preview">
         <ul class="fruit-list">
@@ -151,9 +149,15 @@
         <tbody>
           @for (row of apiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -167,8 +171,8 @@
     <p class="doc-section__intro">
       Every CSS custom property the paginator paints with. Override any of them — on a single
       instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -181,7 +185,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

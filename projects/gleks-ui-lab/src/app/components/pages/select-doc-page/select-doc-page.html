@@ -3,9 +3,9 @@
     <p class="select-doc__eyebrow">gog-select</p>
     <h1 class="select-doc__title font-heading">Select</h1>
     <p class="select-doc__lead">
-      A dropdown select with five sizes, disabled options, placement control, a
-      body-portaled panel, and full <code>ControlValueAccessor</code> support. Once open,
-      Arrow Up/Down move between options, Home/End jump to the first/last, and Escape closes.
+      A dropdown select with five sizes, disabled options, placement control, a body-portaled panel,
+      and full <code>ControlValueAccessor</code> support. Once open, Arrow Up/Down move between
+      options, Home/End jump to the first/last, and Escape closes.
     </p>
   </header>
 
@@ -46,15 +46,18 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Disabled option &amp; disabled field</h3>
       <p class="demo-card__meta">
-        A single option can be marked <code>disabled</code> without disabling the whole
-        field, or the trigger itself can be disabled with <code>[disabled]="true"</code>.
-        The last field shows an error computed entirely by the page — <code>gog-select</code>
-        just renders whatever <code>errorMessage</code> it's given, for as long as it's
-        non-empty.
+        A single option can be marked <code>disabled</code> without disabling the whole field, or
+        the trigger itself can be disabled with <code>[disabled]="true"</code>. The last field shows
+        an error computed entirely by the page — <code>gog-select</code> just renders whatever
+        <code>errorMessage</code> it's given, for as long as it's non-empty.
       </p>
       <div class="demo-card__preview size-column">
         <gog-select label="Disabled" [options]="frameworks" value="angular" [disabled]="true" />
-        <gog-select label="Plan (one option disabled)" [options]="plansWithDisabled" [(value)]="plan" />
+        <gog-select
+          label="Plan (one option disabled)"
+          [options]="plansWithDisabled"
+          [(value)]="plan"
+        />
         <gog-select
           label="Required plan"
           placeholder="Choose a plan..."
@@ -69,10 +72,10 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Reactive Forms — automatic error timing</h3>
       <p class="demo-card__meta">
-        With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field
-        decides for itself when to show the error — once the control has been touched and is
-        invalid — instead of the page computing that timing. Click the field, then click away
-        without choosing anything.
+        With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides
+        for itself when to show the error — once the control has been touched and is invalid —
+        instead of the page computing that timing. Click the field, then click away without choosing
+        anything.
       </p>
       <div class="demo-card__preview width-demo">
         <gog-select
@@ -91,14 +94,19 @@
       <h3 class="demo-card__title">Full width</h3>
       <p class="demo-card__meta">
         Full width of its container by default (see every field above).
-        <code>[fullWidth]="false"</code> shrinks the trigger to fit its selected label instead
-        — useful for a compact field alongside one that should keep growing.
+        <code>[fullWidth]="false"</code> shrinks the trigger to fit its selected label instead —
+        useful for a compact field alongside one that should keep growing.
       </p>
       <div class="demo-card__preview field-row">
         <div class="field-row__grow">
           <gog-select label="Country" [options]="countries" [(value)]="fullWidthCountry" />
         </div>
-        <gog-select label="Currency" [options]="currencies" [(value)]="currency" [fullWidth]="false" />
+        <gog-select
+          label="Currency"
+          [options]="currencies"
+          [(value)]="currency"
+          [fullWidth]="false"
+        />
       </div>
       <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
     </article>
@@ -106,8 +114,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Custom chevron &amp; label-less field</h3>
       <p class="demo-card__meta">
-        <code>chevronTemplate</code> swaps the trigger's icon. <code>ariaLabel</code> names a
-        field that has no visible <code>label</code> at all.
+        <code>chevronTemplate</code> swaps the trigger's icon. <code>ariaLabel</code> names a field
+        that has no visible <code>label</code> at all.
       </p>
       <ng-template #sortChevron>
         <gog-icon name="sort" />
@@ -127,12 +135,11 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Append to body &amp; custom panel size</h3>
       <p class="demo-card__meta">
-        <code>appendToBody</code> portals the panel into <code>document.body</code> —
-        useful inside scrollable or overflow-clipped containers, since the panel escapes the
-        clipping. <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> then take any
-        CSS length to override the trigger-derived size; both apply only with
-        <code>appendToBody</code>. The list below has 20 options, capped to 160px so it
-        scrolls internally.
+        <code>appendToBody</code> portals the panel into <code>document.body</code> — useful inside
+        scrollable or overflow-clipped containers, since the panel escapes the clipping.
+        <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> then take any CSS length to
+        override the trigger-derived size; both apply only with <code>appendToBody</code>. The list
+        below has 20 options, capped to 160px so it scrolls internally.
       </p>
       <div class="demo-card__preview width-demo">
         <gog-select
@@ -165,9 +172,15 @@
         <tbody>
           @for (row of apiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -179,10 +192,10 @@
   <section class="doc-section">
     <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
     <p class="doc-section__intro">
-      Every CSS custom property the select paints with. Override any of them — on a single
-      instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      Every CSS custom property the select paints with. Override any of them — on a single instance,
+      a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -195,7 +208,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

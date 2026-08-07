@@ -3,10 +3,9 @@
     <p class="scroll-doc__eyebrow">gog-scroll</p>
     <h1 class="scroll-doc__title font-heading">Scroll</h1>
     <p class="scroll-doc__lead">
-      A drop-in replacement for a native <code>overflow: auto</code> region. Content keeps
-      scrolling natively — wheel, touch, keyboard, focus-into-view all still work — only the
-      browser's own scrollbar chrome is hidden and replaced with a themeable, draggable overlay
-      thumb.
+      A drop-in replacement for a native <code>overflow: auto</code> region. Content keeps scrolling
+      natively — wheel, touch, keyboard, focus-into-view all still work — only the browser's own
+      scrollbar chrome is hidden and replaced with a themeable, draggable overlay thumb.
     </p>
   </header>
 
@@ -37,7 +36,11 @@
         scrolling on a disabled axis is left completely alone.
       </p>
       <div class="demo-card__preview">
-        <gog-scroll axis="horizontal" class="scroll-box scroll-box--wide" ariaLabel="Example columns">
+        <gog-scroll
+          axis="horizontal"
+          class="scroll-box scroll-box--wide"
+          ariaLabel="Example columns"
+        >
           <div class="scroll-row-flex">
             @for (item of wideItems; track item) {
               <span class="scroll-chip">{{ item }}</span>
@@ -51,11 +54,14 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Size and auto-hide</h3>
       <p class="demo-card__meta">
-        <code>size="thin"</code> shrinks the track/thumb; <code>autoHide="false"</code> keeps
-        the thumb always visible instead of fading out after <code>hideDelay</code> ms.
+        <code>size="thin"</code> shrinks the track/thumb; <code>autoHide="false"</code> keeps the
+        thumb always visible instead of fading out after <code>hideDelay</code> ms.
       </p>
       <div class="demo-card__preview action-row">
-        <gog-button size="sm" (gogClick)="sizeOption.set(sizeOption() === 'normal' ? 'thin' : 'normal')">
+        <gog-button
+          size="sm"
+          (gogClick)="sizeOption.set(sizeOption() === 'normal' ? 'thin' : 'normal')"
+        >
           Size: {{ sizeOption() }}
         </gog-button>
         <gog-button size="sm" (gogClick)="autoHide.set(!autoHide())">
@@ -63,7 +69,12 @@
         </gog-button>
       </div>
       <div class="demo-card__preview">
-        <gog-scroll [size]="sizeOption()" [autoHide]="autoHide()" class="scroll-box" ariaLabel="Example list">
+        <gog-scroll
+          [size]="sizeOption()"
+          [autoHide]="autoHide()"
+          class="scroll-box"
+          ariaLabel="Example list"
+        >
           @for (item of longItems; track item) {
             <p class="scroll-row">{{ item }}</p>
           }
@@ -126,10 +137,10 @@
       <h3 class="demo-card__title">Global defaults with GOG_CONFIG</h3>
       <p class="demo-card__meta">
         <code>size</code>, <code>autoHide</code>, <code>hideDelay</code> and
-        <code>overscrollBehavior</code> default to <code>undefined</code> so they can fall
-        through to an app-wide (or subtree-wide) default set once via
-        <code>provideGogConfig(...)</code>, instead of repeating the same inputs on every
-        instance. An instance's own input, when set, always wins.
+        <code>overscrollBehavior</code> default to <code>undefined</code> so they can fall through
+        to an app-wide (or subtree-wide) default set once via <code>provideGogConfig(...)</code>,
+        instead of repeating the same inputs on every instance. An instance's own input, when set,
+        always wins.
       </p>
       <app-code-tabs [html]="configHtml" [ts]="configTs" />
     </article>
@@ -152,9 +163,15 @@
         <tbody>
           @for (row of apiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -175,8 +192,12 @@
         <tbody>
           @for (row of apiOutputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.payload }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.payload }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -196,7 +217,9 @@
         <tbody>
           @for (row of apiMethods; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -210,8 +233,8 @@
     <p class="doc-section__intro">
       Every CSS custom property the scrollbar overlay paints with. Override any of them — on a
       single instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -224,7 +247,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

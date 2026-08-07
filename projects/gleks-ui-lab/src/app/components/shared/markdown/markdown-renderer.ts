@@ -34,11 +34,10 @@ function uniqueHeadingId(base: string): string {
 // The `On this page` TOC (see toc.ts) discovers sections by scanning the
 // rendered page for `h2[id]` elements — headings need a real, GitHub-style
 // slug id to be anchorable at all, which marked's default renderer omits.
-function renderHeading(this: { parser: { parseInline(tokens: Tokens.Heading['tokens']): string } }, {
-  tokens,
-  depth,
-  text,
-}: Tokens.Heading): string {
+function renderHeading(
+  this: { parser: { parseInline(tokens: Tokens.Heading['tokens']): string } },
+  { tokens, depth, text }: Tokens.Heading,
+): string {
   const id = uniqueHeadingId(slugify(text));
   return `<h${depth} id="${id}">${this.parser.parseInline(tokens)}</h${depth}>\n`;
 }

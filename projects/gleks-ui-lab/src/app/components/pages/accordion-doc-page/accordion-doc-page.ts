@@ -57,14 +57,15 @@ const API_INPUTS: readonly ApiRow[] = [
     name: 'multi',
     type: 'boolean',
     default: 'false',
-    description: 'Allows more than one item open at once. Off by default: opening an item closes the rest.',
+    description:
+      'Allows more than one item open at once. Off by default: opening an item closes the rest.',
   },
   {
     name: 'loading',
     type: 'boolean',
     default: 'false',
     description:
-      'Renders a shimmering skeleton row per item instead of real headers — for when the item list itself hasn\'t arrived yet.',
+      "Renders a shimmering skeleton row per item instead of real headers — for when the item list itself hasn't arrived yet.",
   },
   {
     name: 'showChevron',
@@ -83,7 +84,8 @@ const API_INPUTS: readonly ApiRow[] = [
     name: 'openIds',
     type: 'ReadonlySet<string | number>',
     default: 'new Set()',
-    description: 'Two-way bindable set of open item ids — drive the accordion externally with [(openIds)].',
+    description:
+      'Two-way bindable set of open item ids — drive the accordion externally with [(openIds)].',
   },
 ];
 
@@ -97,7 +99,8 @@ const CONTENT_SLOTS: readonly SlotRow[] = [
   {
     name: 'gogAccordionHeader',
     context: 'let-item; let-open="open"',
-    description: 'Replaces the header content (everything left of the chevron). Falls back to item.title.',
+    description:
+      'Replaces the header content (everything left of the chevron). Falls back to item.title.',
   },
   {
     name: 'gogAccordionChevron',
@@ -132,7 +135,11 @@ export class AccordionDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly basicItems: BasicItem[] = [
-    { id: 'shipping', title: 'Shipping', body: 'Ships within 2 business days via standard courier.' },
+    {
+      id: 'shipping',
+      title: 'Shipping',
+      body: 'Ships within 2 business days via standard courier.',
+    },
     { id: 'returns', title: 'Returns', body: 'Free returns within 30 days of delivery.' },
     {
       id: 'warranty',
@@ -149,7 +156,11 @@ export class AccordionDocPage {
   protected readonly multiItems: BasicItem[] = [
     { id: 'billing', title: 'Billing', body: 'Update your card or billing address.' },
     { id: 'notifications', title: 'Notifications', body: 'Choose which emails you receive.' },
-    { id: 'security', title: 'Security', body: 'Manage two-factor authentication and active sessions.' },
+    {
+      id: 'security',
+      title: 'Security',
+      body: 'Manage two-factor authentication and active sessions.',
+    },
   ];
 
   protected readonly statusItems: StatusItem[] = [

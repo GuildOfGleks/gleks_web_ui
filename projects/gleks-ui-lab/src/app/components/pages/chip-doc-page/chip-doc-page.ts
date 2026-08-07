@@ -29,13 +29,15 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'disabled',
     type: 'boolean',
     default: 'false',
-    description: 'Blocks click/keyboard activation and hides the remove button, regardless of removable.',
+    description:
+      'Blocks click/keyboard activation and hides the remove button, regardless of removable.',
   },
   {
     name: 'clickable',
     type: 'boolean',
     default: 'true',
-    description: 'Whether the chip responds to click/Enter/Space and exposes role="button". Set false for a static, non-interactive label.',
+    description:
+      'Whether the chip responds to click/Enter/Space and exposes role="button". Set false for a static, non-interactive label.',
   },
   {
     name: 'removable',
@@ -96,7 +98,8 @@ const API_OUTPUTS: readonly ApiOutputRow[] = [
   {
     name: 'gogRemove',
     type: 'EventEmitter<void>',
-    description: 'Emitted when the remove button is pressed. Stops the click from also reaching gogClick.',
+    description:
+      'Emitted when the remove button is pressed. Stops the click from also reaching gogClick.',
   },
 ];
 
@@ -113,7 +116,8 @@ export class ChipDocPage {
 
   protected readonly apiInputs = API_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'chip')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'chip')?.tokens ?? [];
 
   protected readonly lastClicked = signal('No chip clicked yet.');
 
@@ -134,7 +138,7 @@ export class ChipDocPage {
     '@Component({',
     "  selector: 'app-example',",
     '  imports: [ChipComponent],',
-    "  template: `<gog-chip (gogClick)=\"onClick('Design')\">Design</gog-chip>`,",
+    '  template: `<gog-chip (gogClick)="onClick(\'Design\')">Design</gog-chip>`,',
     '})',
     'export class ExampleComponent {',
     "  protected readonly lastClicked = signal('No chip clicked yet.');",

@@ -16,6 +16,8 @@ export function injectFullLibraryCss(): Signal<string | undefined> {
     const contents = resources.map(({ name, resource }) => ({ name, content: resource.value() }));
     if (contents.some(({ content }) => content === undefined)) return undefined;
 
-    return contents.map(({ name, content }) => `/* ==== ${name} ==== */\n\n${content}`).join('\n\n');
+    return contents
+      .map(({ name, content }) => `/* ==== ${name} ==== */\n\n${content}`)
+      .join('\n\n');
   });
 }

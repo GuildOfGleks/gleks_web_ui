@@ -78,30 +78,39 @@ const API_INPUTS: readonly ApiInputRow[] = [
     default: "'md'",
     description: 'Field height, padding, and font size.',
   },
-  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the trigger and closes the panel if it is open.' },
+  {
+    name: 'disabled',
+    type: 'boolean',
+    default: 'false',
+    description: 'Disables the trigger and closes the panel if it is open.',
+  },
   {
     name: 'fullWidth',
     type: 'boolean',
     default: 'true',
-    description: 'Fills its container by default. Set false to shrink to fit the selected summary instead.',
+    description:
+      'Fills its container by default. Set false to shrink to fit the selected summary instead.',
   },
   {
     name: 'dropdownDirection',
     type: "'auto' | 'up' | 'down'",
     default: "'auto'",
-    description: "Which side the panel opens on. 'auto' flips to whichever side has room in the viewport.",
+    description:
+      "Which side the panel opens on. 'auto' flips to whichever side has room in the viewport.",
   },
   {
     name: 'dropdownZIndex',
     type: 'number | null',
     default: 'null',
-    description: 'Explicit stacking order for the panel. Left unset it falls back to the --gog-dropdown-z token.',
+    description:
+      'Explicit stacking order for the panel. Left unset it falls back to the --gog-dropdown-z token.',
   },
   {
     name: 'dropdownWidth',
     type: 'string | null',
     default: 'null',
-    description: 'Fixed panel width, any CSS length. Applies only with appendToBody — otherwise the panel matches the trigger width.',
+    description:
+      'Fixed panel width, any CSS length. Applies only with appendToBody — otherwise the panel matches the trigger width.',
   },
   {
     name: 'dropdownMaxHeight',
@@ -113,7 +122,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'appendToBody',
     type: 'boolean',
     default: 'false',
-    description: "Portals the panel into document.body instead of rendering it inline — escapes an ancestor's scroll/overflow clipping.",
+    description:
+      "Portals the panel into document.body instead of rendering it inline — escapes an ancestor's scroll/overflow clipping.",
   },
   {
     name: 'chevronTemplate',
@@ -125,7 +135,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-multiselect-doc-page',
-  imports: [MultiselectComponent, IconComponent, MarkdownComponent, CodeTabsComponent, RouterLink, ReactiveFormsModule],
+  imports: [
+    MultiselectComponent,
+    IconComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    ReactiveFormsModule,
+  ],
   templateUrl: './multiselect-doc-page.html',
   styleUrl: './multiselect-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -134,7 +151,8 @@ export class MultiselectDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly apiInputs = API_INPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'multiselect')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'multiselect')?.tokens ?? [];
 
   protected readonly selectedFeatures = signal<(string | number)[]>([]);
   protected readonly features: GogDropdownOption[] = [

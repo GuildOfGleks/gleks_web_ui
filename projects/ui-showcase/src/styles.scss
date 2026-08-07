@@ -117,8 +117,7 @@
   --gog-dialog-body-padding: 16px;
   --gog-dialog-close-size: 1.75rem;
   --gog-dialog-shadow:
-    0 0 0 1px var(--gog-border-color),
-    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px var(--gog-border-color), 0 24px 60px rgba(0, 0, 0, 0.6),
     0 0 40px color-mix(in srgb, var(--gog-accent-color) 25%, transparent);
   --gog-toast-shadow:
     0 0 24px color-mix(in srgb, var(--gog-accent-color) 35%, transparent),
@@ -270,9 +269,7 @@
   --gog-dialog-body-padding: 22px;
   --gog-dialog-radius: 14px;
   --gog-dialog-close-size: 2.1rem;
-  --gog-dialog-shadow:
-    0 28px 60px rgba(10, 6, 2, 0.55),
-    0 0 0 3px var(--gog-border-color);
+  --gog-dialog-shadow: 0 28px 60px rgba(10, 6, 2, 0.55), 0 0 0 3px var(--gog-border-color);
   --gog-toast-shadow: 0 18px 36px rgba(10, 6, 2, 0.5);
   --gog-toast-radius: 6px;
   --gog-toast-padding: 14px 16px;
@@ -423,9 +420,7 @@
   --gog-dialog-body-padding: 16px;
   --gog-dialog-radius: 0px;
   --gog-dialog-close-size: 1.9rem;
-  --gog-dialog-shadow:
-    0 0 0 2px var(--gog-accent-color),
-    0 20px 46px rgba(0, 0, 0, 0.6);
+  --gog-dialog-shadow: 0 0 0 2px var(--gog-accent-color), 0 20px 46px rgba(0, 0, 0, 0.6);
   --gog-toast-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
   --gog-toast-radius: 0px;
   --gog-toast-padding: 10px 12px;

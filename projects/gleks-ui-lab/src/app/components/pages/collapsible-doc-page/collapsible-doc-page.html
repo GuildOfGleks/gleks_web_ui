@@ -3,9 +3,9 @@
     <p class="collapsible-doc__eyebrow">gog-collapsible</p>
     <h1 class="collapsible-doc__title font-heading">Collapsible</h1>
     <p class="collapsible-doc__lead">
-      A headless expand/collapse primitive — inline, not a portal. It owns no markup of its
-      own: project any element as the trigger with <code>gogCollapsibleTrigger</code> and any
-      element as the panel with <code>gogCollapsibleContent</code>.
+      A headless expand/collapse primitive — inline, not a portal. It owns no markup of its own:
+      project any element as the trigger with <code>gogCollapsibleTrigger</code> and any element as
+      the panel with <code>gogCollapsibleContent</code>.
     </p>
   </header>
 
@@ -39,8 +39,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Custom trigger element</h3>
       <p class="demo-card__meta">
-        <code>gogCollapsibleTrigger</code> works on anything clickable — here it's a whole
-        header row, not a <code>&lt;button&gt;</code>.
+        <code>gogCollapsibleTrigger</code> works on anything clickable — here it's a whole header
+        row, not a <code>&lt;button&gt;</code>.
       </p>
       <div class="demo-card__preview">
         <gog-collapsible [(open)]="controlledOpen">
@@ -83,7 +83,9 @@
       </p>
       <div class="demo-card__preview action-row">
         <gog-button size="sm" (gogClick)="controlledOpen.set(true)">Open</gog-button>
-        <gog-button size="sm" variant="ghost" (gogClick)="controlledOpen.set(false)">Close</gog-button>
+        <gog-button size="sm" variant="ghost" (gogClick)="controlledOpen.set(false)"
+          >Close</gog-button
+        >
       </div>
       <div class="demo-card__preview">
         <gog-collapsible [(open)]="controlledOpen">
@@ -99,8 +101,8 @@
       <h3 class="demo-card__title">Independent FAQ list</h3>
       <p class="demo-card__meta">
         Each row owns its own <code>open</code> state in an array — unlike
-        <a routerLink="/components/accordion">gog-accordion</a>, nothing here closes a sibling
-        when one opens.
+        <a routerLink="/components/accordion">gog-accordion</a>, nothing here closes a sibling when
+        one opens.
       </p>
       <div class="demo-card__preview faq-list">
         @for (item of faqItems(); track item.id) {
@@ -133,9 +135,15 @@
         <tbody>
           @for (row of apiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -156,8 +164,12 @@
         <tbody>
           @for (row of directives; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.selector }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.selector }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -171,8 +183,8 @@
     <p class="doc-section__intro">
       The component itself renders no box — <code>gogCollapsibleTrigger</code> and
       <code>gogCollapsibleContent</code> style the elements <em>you</em> project, via global
-      <code>.gog-collapsible__*</code> classes rather than a scoped stylesheet, since that
-      content sits outside <code>gog-collapsible</code>'s own view. See the
+      <code>.gog-collapsible__*</code> classes rather than a scoped stylesheet, since that content
+      sits outside <code>gog-collapsible</code>'s own view. See the
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model.
     </p>
     <div class="api-table-scroll">
@@ -186,7 +198,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

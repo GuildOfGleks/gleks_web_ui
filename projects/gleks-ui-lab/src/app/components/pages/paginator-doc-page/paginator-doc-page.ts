@@ -17,7 +17,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'page',
     type: 'number (model)',
     default: '1',
-    description: '1-based current page. Two-way bindable: [(page)]="myPageSignal". Self-clamps to [1, totalPages] whenever totalPages shrinks below it.',
+    description:
+      '1-based current page. Two-way bindable: [(page)]="myPageSignal". Self-clamps to [1, totalPages] whenever totalPages shrinks below it.',
   },
   { name: 'totalPages', type: 'number', default: '1', description: 'Total number of pages.' },
   {
@@ -37,19 +38,22 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'showFirstPage',
     type: 'boolean',
     default: 'false',
-    description: 'rangeMode="window" only: always keep page 1 reachable, with a "…" if it is not adjacent.',
+    description:
+      'rangeMode="window" only: always keep page 1 reachable, with a "…" if it is not adjacent.',
   },
   {
     name: 'showLastPage',
     type: 'boolean',
     default: 'false',
-    description: 'rangeMode="window" only: always keep the last page reachable, with a "…" if it is not adjacent.',
+    description:
+      'rangeMode="window" only: always keep the last page reachable, with a "…" if it is not adjacent.',
   },
   {
     name: 'siblingCount',
     type: 'number',
     default: '2',
-    description: 'rangeMode="ellipsis" only: how many page numbers to keep on each side of the current page.',
+    description:
+      'rangeMode="ellipsis" only: how many page numbers to keep on each side of the current page.',
   },
   {
     name: 'size',
@@ -61,10 +65,16 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'fullWidth',
     type: 'boolean',
     default: 'true',
-    description: 'Fills its container by default. Set false to shrink to fit the page buttons instead.',
+    description:
+      'Fills its container by default. Set false to shrink to fit the page buttons instead.',
   },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Freezes every control.' },
-  { name: 'ariaLabel', type: 'string', default: "'Pagination'", description: 'Accessible name for the navigation landmark.' },
+  {
+    name: 'ariaLabel',
+    type: 'string',
+    default: "'Pagination'",
+    description: 'Accessible name for the navigation landmark.',
+  },
 ];
 
 const FRUIT_ITEMS = [
@@ -92,7 +102,8 @@ export class PaginatorDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly apiInputs = API_INPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'paginator')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'paginator')?.tokens ?? [];
 
   protected readonly basicPage = signal(1);
   protected readonly basicTotalPages = signal(20);
@@ -242,7 +253,8 @@ export class PaginatorDocPage {
     'export class ExampleComponent {}',
   ].join('\n');
 
-  protected readonly disabledHtml = '<gog-paginator [(page)]="page" [totalPages]="8" [disabled]="true" />';
+  protected readonly disabledHtml =
+    '<gog-paginator [(page)]="page" [totalPages]="8" [disabled]="true" />';
   protected readonly disabledTs = [
     "import { Component, signal } from '@angular/core';",
     "import { PaginatorComponent } from '@guildofgleks/ui';",

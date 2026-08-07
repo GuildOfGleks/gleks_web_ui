@@ -25,9 +25,24 @@ const API_INPUTS: readonly ApiInputRow[] = [
   { name: 'label', type: 'string', default: "''", description: 'Field label.' },
   { name: 'min', type: 'number', default: '0', description: 'Minimum value.' },
   { name: 'max', type: 'number', default: '100', description: 'Maximum value.' },
-  { name: 'step', type: 'number', default: '1', description: 'Increment step, e.g. 0.01 for fine-grained values.' },
-  { name: 'showValue', type: 'boolean', default: 'true', description: 'Shows the current numeric value next to the label.' },
-  { name: 'showThumb', type: 'boolean', default: 'true', description: 'Set false to render a bare filled track — a range indicator with no drag handle.' },
+  {
+    name: 'step',
+    type: 'number',
+    default: '1',
+    description: 'Increment step, e.g. 0.01 for fine-grained values.',
+  },
+  {
+    name: 'showValue',
+    type: 'boolean',
+    default: 'true',
+    description: 'Shows the current numeric value next to the label.',
+  },
+  {
+    name: 'showThumb',
+    type: 'boolean',
+    default: 'true',
+    description: 'Set false to render a bare filled track — a range indicator with no drag handle.',
+  },
   {
     name: 'errorMessage',
     type: 'string',
@@ -41,8 +56,18 @@ const API_INPUTS: readonly ApiInputRow[] = [
     description:
       "'manual': shown for as long as errorMessage is non-empty — you decide the timing. 'auto': shown once the attached FormControl is touched and invalid; falls back to manual without one.",
   },
-  { name: 'ariaLabel', type: 'string', default: "''", description: 'Accessible name for the field when there is no visible label.' },
-  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables dragging and keyboard input.' },
+  {
+    name: 'ariaLabel',
+    type: 'string',
+    default: "''",
+    description: 'Accessible name for the field when there is no visible label.',
+  },
+  {
+    name: 'disabled',
+    type: 'boolean',
+    default: 'false',
+    description: 'Disables dragging and keyboard input.',
+  },
   {
     name: 'fullWidth',
     type: 'boolean',
@@ -54,14 +79,22 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-slider-doc-page',
-  imports: [SliderComponent, ButtonComponent, MarkdownComponent, CodeTabsComponent, RouterLink, ReactiveFormsModule],
+  imports: [
+    SliderComponent,
+    ButtonComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    ReactiveFormsModule,
+  ],
   templateUrl: './slider-doc-page.html',
   styleUrl: './slider-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SliderDocPage {
   protected readonly apiInputs = API_INPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'slider')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'slider')?.tokens ?? [];
 
   protected readonly volume = signal(45);
   protected readonly brightness = signal(70);
@@ -101,7 +134,8 @@ export class SliderDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { SliderComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SliderComponent],\n})\n```";
 
-  protected readonly overviewHtml = '<gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />';
+  protected readonly overviewHtml =
+    '<gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />';
   protected readonly overviewTs = [
     "import { Component, signal } from '@angular/core';",
     "import { SliderComponent } from '@guildofgleks/ui';",
@@ -183,7 +217,8 @@ export class SliderDocPage {
     '}',
   ].join('\n');
 
-  protected readonly fullWidthHtml = '<gog-slider label="Compact" [min]="0" [max]="100" [(value)]="compactValue" [fullWidth]="false" />';
+  protected readonly fullWidthHtml =
+    '<gog-slider label="Compact" [min]="0" [max]="100" [(value)]="compactValue" [fullWidth]="false" />';
   protected readonly fullWidthTs = [
     "import { Component, signal } from '@angular/core';",
     "import { SliderComponent } from '@guildofgleks/ui';",

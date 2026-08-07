@@ -29,7 +29,9 @@
   <div class="gog-select__field">
     @if (label() && isFloatLabelActive()) {
       <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -- associated via aria-labelledby above instead, see comment -->
-      <label class="gog-select__label gog-select__label--float" [id]="labelId()">{{ label() }}</label>
+      <label class="gog-select__label gog-select__label--float" [id]="labelId()">{{
+        label()
+      }}</label>
     }
     <button
       type="button"
@@ -105,7 +107,12 @@
       scrolls the focused option into view natively — no separate keyboard-scroll target
       needed here.
     -->
-    <gog-scroll size="thin" [focusable]="false" overscrollBehavior="contain" class="gog-select__scroll">
+    <gog-scroll
+      size="thin"
+      [focusable]="false"
+      overscrollBehavior="contain"
+      class="gog-select__scroll"
+    >
       @for (option of options(); track option.id) {
         <!--
           tabindex="-1" keeps the list to a single tab stop, as the listbox pattern expects:

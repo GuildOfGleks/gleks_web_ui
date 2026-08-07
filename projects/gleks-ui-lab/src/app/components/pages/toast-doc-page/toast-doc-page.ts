@@ -27,7 +27,8 @@ const CONFIG_OPTIONS: readonly ApiRow[] = [
     name: 'type',
     type: "'success' | 'error' | 'warning' | 'info'",
     default: "'info'",
-    description: 'Drives the accent color, default icon, and aria-live politeness (assertive for error/warning, polite otherwise).',
+    description:
+      'Drives the accent color, default icon, and aria-live politeness (assertive for error/warning, polite otherwise).',
   },
   {
     name: 'iconName',
@@ -45,13 +46,15 @@ const CONFIG_OPTIONS: readonly ApiRow[] = [
     name: 'actions',
     type: 'ToastAction[]',
     default: '[]',
-    description: 'Action buttons rendered in the toast: { label, onClick(toast), iconName?, iconTemplate? }.',
+    description:
+      'Action buttons rendered in the toast: { label, onClick(toast), iconName?, iconTemplate? }.',
   },
   {
     name: 'isSticky',
     type: 'boolean',
     default: 'false',
-    description: 'Disables auto-dismiss entirely — the toast stays until dismissed manually or via dismissAll().',
+    description:
+      'Disables auto-dismiss entirely — the toast stays until dismissed manually or via dismissAll().',
   },
   {
     name: 'duration',
@@ -63,7 +66,8 @@ const CONFIG_OPTIONS: readonly ApiRow[] = [
     name: 'position',
     type: "'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'",
     default: "'bottom-right'",
-    description: 'Which corner stack this toast joins. Each corner stacks and animates independently.',
+    description:
+      'Which corner stack this toast joins. Each corner stacks and animates independently.',
   },
   {
     name: 'dedupeKey',
@@ -106,7 +110,8 @@ const CONTAINER_INPUTS: readonly ApiRow[] = [
     name: 'maxVisiblePerPosition',
     type: 'number',
     default: '5',
-    description: 'Caps how many toasts stack at once per corner; the oldest (front of queue) stay visible first.',
+    description:
+      'Caps how many toasts stack at once per corner; the oldest (front of queue) stay visible first.',
   },
 ];
 
@@ -131,7 +136,8 @@ export class ToastDocPage {
   protected readonly configOptions = CONFIG_OPTIONS;
   protected readonly serviceMethods = SERVICE_METHODS;
   protected readonly containerInputs = CONTAINER_INPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'toast')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'toast')?.tokens ?? [];
 
   protected readonly toastMessage = signal('Saved successfully');
   protected readonly toastType = signal<string | number | null>('success');

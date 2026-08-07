@@ -19,19 +19,21 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: 'boolean (model)',
     default: 'false',
     description:
-      'Two-way bindable checked state via [(checked)]. Also the state Angular Forms drives through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel — don\'t wire both to the same instance.',
+      "Two-way bindable checked state via [(checked)]. Also the state Angular Forms drives through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel — don't wire both to the same instance.",
   },
   {
     name: 'label',
     type: 'string',
     default: "''",
-    description: 'Visible label rendered next to the box. Takes priority over ariaLabel when present.',
+    description:
+      'Visible label rendered next to the box. Takes priority over ariaLabel when present.',
   },
   {
     name: 'ariaLabel',
     type: 'string',
     default: "''",
-    description: 'Accessible name used only when label is empty — falls back onto the native input.',
+    description:
+      'Accessible name used only when label is empty — falls back onto the native input.',
   },
   {
     name: 'size',
@@ -50,7 +52,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'disabled',
     type: 'boolean',
     default: 'false',
-    description: 'Sets the native disabled attribute and blocks toggling. A FormControl.disable() has the same effect via setDisabledState.',
+    description:
+      'Sets the native disabled attribute and blocks toggling. A FormControl.disable() has the same effect via setDisabledState.',
   },
   {
     name: 'fullWidth',
@@ -68,7 +71,13 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-checkbox-doc-page',
-  imports: [CheckboxComponent, MarkdownComponent, CodeTabsComponent, RouterLink, ReactiveFormsModule],
+  imports: [
+    CheckboxComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    ReactiveFormsModule,
+  ],
   templateUrl: './checkbox-doc-page.html',
   styleUrl: './checkbox-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -93,9 +102,7 @@ export class CheckboxDocPage {
   protected readonly someChecked = computed(() =>
     this.subscriptions().some((item) => item.checked),
   );
-  protected readonly parentIndeterminate = computed(
-    () => this.someChecked() && !this.allChecked(),
-  );
+  protected readonly parentIndeterminate = computed(() => this.someChecked() && !this.allChecked());
 
   protected readonly formControl = new FormControl(false, { nonNullable: true });
 

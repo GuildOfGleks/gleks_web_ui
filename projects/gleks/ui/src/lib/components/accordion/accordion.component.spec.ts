@@ -297,9 +297,7 @@ describe('AccordionComponent', () => {
     fixture.componentRef.setInput('loading', true);
     await fixture.whenStable();
 
-    expect(fixture.nativeElement.querySelectorAll('.gog-accordion__item--skeleton').length).toBe(
-      3,
-    );
+    expect(fixture.nativeElement.querySelectorAll('.gog-accordion__item--skeleton').length).toBe(3);
   });
 
   it('should respect a custom skeletonCount while items is empty', async () => {
@@ -307,9 +305,7 @@ describe('AccordionComponent', () => {
     fixture.componentRef.setInput('skeletonCount', 5);
     await fixture.whenStable();
 
-    expect(fixture.nativeElement.querySelectorAll('.gog-accordion__item--skeleton').length).toBe(
-      5,
-    );
+    expect(fixture.nativeElement.querySelectorAll('.gog-accordion__item--skeleton').length).toBe(5);
   });
 
   it('should auto-rotate the default chevron but leave a custom chevron template alone', async () => {

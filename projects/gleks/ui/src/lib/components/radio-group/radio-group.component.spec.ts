@@ -82,9 +82,9 @@ describe('RadioGroupComponent', () => {
       ) as HTMLInputElement[];
       expect(inputs.every((input) => input.disabled)).toBe(true);
       expect(
-        fixture.nativeElement.querySelector('.gog-radio-group').classList.contains(
-          'gog-radio-group--disabled',
-        ),
+        fixture.nativeElement
+          .querySelector('.gog-radio-group')
+          .classList.contains('gog-radio-group--disabled'),
       ).toBe(true);
     });
   });

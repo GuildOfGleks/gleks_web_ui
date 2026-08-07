@@ -115,9 +115,7 @@ export const routes: Routes = [
   {
     path: 'components/spinner',
     loadComponent: () =>
-      import('./components/pages/spinner-doc-page/spinner-doc-page').then(
-        (m) => m.SpinnerDocPage,
-      ),
+      import('./components/pages/spinner-doc-page/spinner-doc-page').then((m) => m.SpinnerDocPage),
   },
   {
     path: 'components/table',

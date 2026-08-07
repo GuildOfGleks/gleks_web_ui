@@ -35,7 +35,10 @@
     ></textarea>
   </div>
   @if (visibleError()) {
-    <span class="gog-input__error" [attr.id]="inputId() ? inputId() + '-error' : null" role="alert"
+    <span
+      class="gog-input__error"
+      [attr.id]="inputId() ? inputId() + '-error' : null"
+      role="alert"
       >{{ visibleError() }}</span
     >
   }

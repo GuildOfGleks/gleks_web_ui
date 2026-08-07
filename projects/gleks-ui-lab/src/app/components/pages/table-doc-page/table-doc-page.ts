@@ -54,8 +54,18 @@ const TABLE_INPUTS: readonly ApiRow[] = [
     default: 'true',
     description: 'Fills its container by default. Set false to shrink to fit its columns instead.',
   },
-  { name: 'pageSize', type: 'number', default: '0', description: 'Rows per page. 0 disables pagination.' },
-  { name: 'showRowNumbers', type: 'boolean', default: 'true', description: 'Shows a leading row-number column.' },
+  {
+    name: 'pageSize',
+    type: 'number',
+    default: '0',
+    description: 'Rows per page. 0 disables pagination.',
+  },
+  {
+    name: 'showRowNumbers',
+    type: 'boolean',
+    default: 'true',
+    description: 'Shows a leading row-number column.',
+  },
   { name: 'showTotal', type: 'boolean', default: 'false', description: 'Shows a row-count label.' },
   {
     name: 'emptyPlaceholder',
@@ -73,10 +83,21 @@ const TABLE_INPUTS: readonly ApiRow[] = [
     name: 'totalPosition',
     type: "'left' | 'right' | 'opposite'",
     default: "'opposite'",
-    description: "Alignment of the total-count label (only with showTotal). 'opposite' picks whichever side paginatorPosition isn't on.",
+    description:
+      "Alignment of the total-count label (only with showTotal). 'opposite' picks whichever side paginatorPosition isn't on.",
   },
-  { name: 'loading', type: 'boolean', default: 'false', description: 'Shows a spinner in place of rows.' },
-  { name: 'showColumnBorders', type: 'boolean', default: 'false', description: 'Vertical borders between columns.' },
+  {
+    name: 'loading',
+    type: 'boolean',
+    default: 'false',
+    description: 'Shows a spinner in place of rows.',
+  },
+  {
+    name: 'showColumnBorders',
+    type: 'boolean',
+    default: 'false',
+    description: 'Vertical borders between columns.',
+  },
   {
     name: 'stickyHeader',
     type: 'boolean',
@@ -99,15 +120,26 @@ const COLUMN_INPUTS: readonly ApiRow[] = [
     description: 'Field name, or a dot-path into a nested property (e.g. "address.city").',
   },
   { name: 'header', type: 'string', default: "''", description: 'Header text.' },
-  { name: 'sortable', type: 'boolean', default: 'false', description: 'Enables click-to-sort on the header: asc → desc → unsorted.' },
-  { name: 'width', type: 'string', default: "''", description: 'Fixed width, e.g. "120px" or "20%".' },
+  {
+    name: 'sortable',
+    type: 'boolean',
+    default: 'false',
+    description: 'Enables click-to-sort on the header: asc → desc → unsorted.',
+  },
+  {
+    name: 'width',
+    type: 'string',
+    default: "''",
+    description: 'Fixed width, e.g. "120px" or "20%".',
+  },
   { name: 'minWidth', type: 'string', default: "''", description: 'Minimum width, e.g. "80px".' },
   { name: 'maxWidth', type: 'string', default: "''", description: 'Maximum width, e.g. "300px".' },
   {
     name: 'comparator',
     type: '((a: unknown, b: unknown) => number) | null',
     default: 'null',
-    description: 'Custom sort comparator for this column. Defaults to a locale-aware string compare, </> otherwise.',
+    description:
+      'Custom sort comparator for this column. Defaults to a locale-aware string compare, </> otherwise.',
   },
 ];
 
@@ -116,13 +148,14 @@ const TEMPLATE_DIRECTIVE_INPUTS: readonly ApiRow[] = [
     name: 'template',
     type: 'string',
     default: 'required',
-    description: 'The column field this template renders for — must match a <column>\'s field.',
+    description: "The column field this template renders for — must match a <column>'s field.",
   },
   {
     name: 'type',
     type: "'body' | 'header'",
     default: "'body'",
-    description: "'body' gets let-row (the row object) and let-index (its position). 'header' gets no context.",
+    description:
+      "'body' gets let-row (the row object) and let-index (its position). 'header' gets no context.",
   },
 ];
 
@@ -153,7 +186,8 @@ export class TableDocPage implements OnDestroy {
   protected readonly tableInputs = TABLE_INPUTS;
   protected readonly columnInputs = COLUMN_INPUTS;
   protected readonly templateDirectiveInputs = TEMPLATE_DIRECTIVE_INPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'table')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'table')?.tokens ?? [];
 
   protected readonly loading = signal(false);
   protected readonly showEmpty = signal(false);
@@ -382,7 +416,8 @@ export class TableDocPage implements OnDestroy {
     '}',
   ].join('\n');
 
-  protected readonly loadingHtml = '<gog-table [value]="rows" [loading]="loading()">...</gog-table>';
+  protected readonly loadingHtml =
+    '<gog-table [value]="rows" [loading]="loading()">...</gog-table>';
   protected readonly loadingTs = [
     "import { Component, signal } from '@angular/core';",
     "import { ButtonComponent, Column, TableComponent } from '@guildofgleks/ui';",

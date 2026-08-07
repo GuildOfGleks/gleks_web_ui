@@ -16,7 +16,13 @@ interface FullCssSection extends GogAccordionItem {
 
 @Component({
   selector: 'app-theming-page',
-  imports: [RouterLink, MarkdownComponent, AccordionComponent, GogAccordionContentDirective, ButtonComponent],
+  imports: [
+    RouterLink,
+    MarkdownComponent,
+    AccordionComponent,
+    GogAccordionContentDirective,
+    ButtonComponent,
+  ],
   templateUrl: './theming-page.html',
   styleUrl: './theming-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

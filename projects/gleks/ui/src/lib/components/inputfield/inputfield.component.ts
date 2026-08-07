@@ -117,13 +117,12 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     () => this.floatLabel() ?? this.globalConfig.floatLabel?.variant ?? DEFAULT_FLOAT_LABEL_VARIANT,
   );
   protected readonly resolvedFloatLabelShowPlaceholder = computed(
-    () => this.floatLabelShowPlaceholder() ?? this.globalConfig.floatLabel?.showPlaceholder ?? false,
+    () =>
+      this.floatLabelShowPlaceholder() ?? this.globalConfig.floatLabel?.showPlaceholder ?? false,
   );
   protected readonly isFloatLabelActive = computed(() => this.resolvedFloatLabel() !== 'none');
   protected readonly hasFloatValue = computed(() => this.value() !== '');
-  protected readonly isFloatLabelFloated = computed(
-    () => this.isFocused() || this.hasFloatValue(),
-  );
+  protected readonly isFloatLabelFloated = computed(() => this.isFocused() || this.hasFloatValue());
   /**
    * The field's own `placeholder`. While a float label is active the resting label already
    * sits where this would, so it's suppressed unless the consumer opted into

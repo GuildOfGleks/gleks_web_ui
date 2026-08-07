@@ -761,9 +761,9 @@ describe('SelectComponent', () => {
       providedFixture.componentRef.setInput('floatLabel', 'in');
       await providedFixture.whenStable();
 
-      expect(
-        providedFixture.nativeElement.querySelector('.gog-select').classList,
-      ).toContain('gog-select--float-in');
+      expect(providedFixture.nativeElement.querySelector('.gog-select').classList).toContain(
+        'gog-select--float-in',
+      );
     });
 
     it('falls back to GOG_CONFIG.floatLabel.variant when the instance input is unset', async () => {
@@ -777,9 +777,9 @@ describe('SelectComponent', () => {
       providedFixture.componentRef.setInput('label', 'Region');
       await providedFixture.whenStable();
 
-      expect(
-        providedFixture.nativeElement.querySelector('.gog-select').classList,
-      ).toContain('gog-select--float-on');
+      expect(providedFixture.nativeElement.querySelector('.gog-select').classList).toContain(
+        'gog-select--float-on',
+      );
     });
 
     it('marks the field as floated once a value is selected, even without focus', async () => {
@@ -823,9 +823,9 @@ describe('SelectComponent', () => {
         fixture.componentRef.setInput('floatLabelShowPlaceholder', true);
         await fixture.whenStable();
 
-        expect(
-          fixture.nativeElement.querySelector('.gog-select__value')?.textContent.trim(),
-        ).toBe('');
+        expect(fixture.nativeElement.querySelector('.gog-select__value')?.textContent.trim()).toBe(
+          '',
+        );
 
         const control = fixture.nativeElement.querySelector(
           '.gog-select__control',
@@ -833,9 +833,9 @@ describe('SelectComponent', () => {
         control.dispatchEvent(new Event('focus'));
         await fixture.whenStable();
 
-        expect(
-          fixture.nativeElement.querySelector('.gog-select__value')?.textContent.trim(),
-        ).toBe('Pick a region');
+        expect(fixture.nativeElement.querySelector('.gog-select__value')?.textContent.trim()).toBe(
+          'Pick a region',
+        );
       });
     });
   });

@@ -84,6 +84,8 @@ export class CollapsiblePage {
   });
 
   protected setFaqOpen(id: string, open: boolean): void {
-    this.faqItems.update((items) => items.map((item) => (item.id === id ? { ...item, open } : item)));
+    this.faqItems.update((items) =>
+      items.map((item) => (item.id === id ? { ...item, open } : item)),
+    );
   }
 }

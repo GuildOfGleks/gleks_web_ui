@@ -3,9 +3,9 @@
     <p class="spinner-doc__eyebrow">gog-spinner</p>
     <h1 class="spinner-doc__title font-heading">Spinner</h1>
     <p class="spinner-doc__lead">
-      A branded loading indicator with two built-in animated variants, fully custom-content
-      support, size variants, per-instance color and speed overrides, and both a
-      content-scoped and a full-screen overlay mode.
+      A branded loading indicator with two built-in animated variants, fully custom-content support,
+      size variants, per-instance color and speed overrides, and both a content-scoped and a
+      full-screen overlay mode.
     </p>
   </header>
 
@@ -50,7 +50,11 @@
       <div class="demo-card__preview spinner-grid">
         @for (variantOption of variants; track variantOption) {
           <div class="spinner-tile">
-            <gog-spinner [variant]="variantOption" size="lg" [ariaLabel]="'Loading, ' + variantOption + ' variant'" />
+            <gog-spinner
+              [variant]="variantOption"
+              size="lg"
+              [ariaLabel]="'Loading, ' + variantOption + ' variant'"
+            />
             <span class="spinner-tile__meta">{{ variantOption }}</span>
           </div>
         }
@@ -61,17 +65,25 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Animation speed</h3>
       <p class="demo-card__meta">
-        <code>--gog-spinner-spin-duration</code> (and <code>-pulse-duration</code> for the
-        rune glow) retime the built-in animations per instance, without swapping variant —
-        useful to signal urgency, or just to match a surrounding motion rhythm.
+        <code>--gog-spinner-spin-duration</code> (and <code>-pulse-duration</code> for the rune
+        glow) retime the built-in animations per instance, without swapping variant — useful to
+        signal urgency, or just to match a surrounding motion rhythm.
       </p>
       <div class="demo-card__preview spinner-grid">
         <div class="spinner-tile">
-          <gog-spinner size="lg" style="--gog-spinner-spin-duration: 2.4s" ariaLabel="Loading, slow" />
+          <gog-spinner
+            size="lg"
+            style="--gog-spinner-spin-duration: 2.4s"
+            ariaLabel="Loading, slow"
+          />
           <span class="spinner-tile__meta">slow (2.4s)</span>
         </div>
         <div class="spinner-tile">
-          <gog-spinner size="lg" style="--gog-spinner-spin-duration: 0.5s" ariaLabel="Loading, fast" />
+          <gog-spinner
+            size="lg"
+            style="--gog-spinner-spin-duration: 0.5s"
+            ariaLabel="Loading, fast"
+          />
           <span class="spinner-tile__meta">fast (0.5s)</span>
         </div>
       </div>
@@ -81,16 +93,14 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Custom variant</h3>
       <p class="demo-card__meta">
-        Need an animation entirely of your own? <code>variant="custom"</code> projects any
-        markup — it inherits the size wrapper and overlay behavior, and picks up
+        Need an animation entirely of your own? <code>variant="custom"</code> projects any markup —
+        it inherits the size wrapper and overlay behavior, and picks up
         <code>--gog-spinner-color</code> like the built-in presets, but the motion is yours.
       </p>
       <div class="demo-card__preview spinner-grid">
         <div class="spinner-tile">
           <gog-spinner variant="custom" size="lg" ariaLabel="Loading, custom variant">
-            <div class="dots-loader">
-              <span></span><span></span><span></span>
-            </div>
+            <div class="dots-loader"><span></span><span></span><span></span></div>
           </gog-spinner>
           <span class="spinner-tile__meta">custom</span>
         </div>
@@ -101,16 +111,22 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Custom color</h3>
       <p class="demo-card__meta">
-        Override <code>--gog-spinner-color</code> to recolor the spinner regardless of theme
-        — useful when it sits on a surface where the default accent color wouldn't read well.
+        Override <code>--gog-spinner-color</code> to recolor the spinner regardless of theme —
+        useful when it sits on a surface where the default accent color wouldn't read well.
       </p>
       <div class="demo-card__preview spinner-grid">
         <div class="spinner-tile">
-          <gog-spinner ariaLabel="Loading, danger color" style="--gog-spinner-color: var(--gog-danger-color)" />
+          <gog-spinner
+            ariaLabel="Loading, danger color"
+            style="--gog-spinner-color: var(--gog-danger-color)"
+          />
           <span class="spinner-tile__meta">danger</span>
         </div>
         <div class="spinner-tile">
-          <gog-spinner ariaLabel="Loading, success color" style="--gog-spinner-color: var(--gog-success-color)" />
+          <gog-spinner
+            ariaLabel="Loading, success color"
+            style="--gog-spinner-color: var(--gog-success-color)"
+          />
           <span class="spinner-tile__meta">success</span>
         </div>
       </div>
@@ -146,8 +162,8 @@
       <h3 class="demo-card__title">Full-screen overlay</h3>
       <p class="demo-card__meta">
         <code>gog-spinner</code> itself can render as a fixed, viewport-covering overlay via
-        <code>overlay="true"</code> — distinct from <code>gog-spinner-overlay</code> above,
-        which only covers its own content.
+        <code>overlay="true"</code> — distinct from <code>gog-spinner-overlay</code> above, which
+        only covers its own content.
       </p>
       <div class="demo-card__preview">
         <gog-button variant="primary" type="button" (gogClick)="previewFullscreenOverlay()">
@@ -178,9 +194,15 @@
         <tbody>
           @for (row of spinnerApiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -202,9 +224,15 @@
         <tbody>
           @for (row of spinnerOverlayApiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -218,8 +246,8 @@
     <p class="doc-section__intro">
       Every CSS custom property the spinner paints with. Override any of them — on a single
       instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -232,7 +260,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

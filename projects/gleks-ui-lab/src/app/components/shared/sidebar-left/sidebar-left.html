@@ -17,14 +17,19 @@
             </a>
             <div gogCollapsibleContent class="nav-list nav-list--nested">
               @for (child of item.children; track child.path) {
-                <a [routerLink]="'/' + child.path" routerLinkActive="active" class="nav-item nav-item--nested">{{
-                  child.label
-                }}</a>
+                <a
+                  [routerLink]="'/' + child.path"
+                  routerLinkActive="active"
+                  class="nav-item nav-item--nested"
+                  >{{ child.label }}</a
+                >
               }
             </div>
           </gog-collapsible>
         } @else {
-          <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{ item.label }}</a>
+          <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{
+            item.label
+          }}</a>
         }
       }
     </nav>

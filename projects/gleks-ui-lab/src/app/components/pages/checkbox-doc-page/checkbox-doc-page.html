@@ -3,8 +3,8 @@
     <p class="checkbox-doc__eyebrow">gog-checkbox</p>
     <h1 class="checkbox-doc__title font-heading">Checkbox</h1>
     <p class="checkbox-doc__lead">
-      A form-ready checkbox with five sizes, an indeterminate state, and full
-      ControlValueAccessor support for Angular Forms.
+      A form-ready checkbox with five sizes, an indeterminate state, and full ControlValueAccessor
+      support for Angular Forms.
     </p>
   </header>
 
@@ -40,9 +40,9 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Indeterminate — select all</h3>
       <p class="demo-card__meta">
-        <code>indeterminate</code> is purely presentational: a dash instead of the checkmark,
-        plus <code>aria-checked="mixed"</code>. Drive it yourself from the state of a group,
-        as a "select all" checkbox does here.
+        <code>indeterminate</code> is purely presentational: a dash instead of the checkmark, plus
+        <code>aria-checked="mixed"</code>. Drive it yourself from the state of a group, as a "select
+        all" checkbox does here.
       </p>
       <div class="demo-card__preview">
         <gog-checkbox
@@ -101,8 +101,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Reactive Forms</h3>
       <p class="demo-card__meta">
-        Works as a <code>ControlValueAccessor</code> — wire it to a <code>FormControl</code>
-        with <code>[formControl]</code> or <code>formControlName</code> instead of
+        Works as a <code>ControlValueAccessor</code> — wire it to a <code>FormControl</code> with
+        <code>[formControl]</code> or <code>formControlName</code> instead of
         <code>[(checked)]</code>. Don't bind both to the same instance.
       </p>
       <div class="demo-card__preview">
@@ -130,9 +130,15 @@
         <tbody>
           @for (row of apiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -146,8 +152,8 @@
     <p class="doc-section__intro">
       Every CSS custom property the checkbox paints with. Override any of them — on a single
       instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -160,7 +166,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

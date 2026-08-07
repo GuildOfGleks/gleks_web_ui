@@ -189,9 +189,9 @@ describe('TextareaComponent', () => {
       providedFixture.componentRef.setInput('floatLabel', 'in');
       await providedFixture.whenStable();
 
-      expect(
-        providedFixture.nativeElement.querySelector('.gog-input-wrapper').classList,
-      ).toContain('gog-input-wrapper--float-in');
+      expect(providedFixture.nativeElement.querySelector('.gog-input-wrapper').classList).toContain(
+        'gog-input-wrapper--float-in',
+      );
     });
 
     it('falls back to GOG_CONFIG.floatLabel.variant when the instance input is unset', async () => {
@@ -205,9 +205,9 @@ describe('TextareaComponent', () => {
       providedFixture.componentRef.setInput('label', 'Notes');
       await providedFixture.whenStable();
 
-      expect(
-        providedFixture.nativeElement.querySelector('.gog-input-wrapper').classList,
-      ).toContain('gog-input-wrapper--float-on');
+      expect(providedFixture.nativeElement.querySelector('.gog-input-wrapper').classList).toContain(
+        'gog-input-wrapper--float-on',
+      );
     });
 
     it('marks the field as floated once it has a value, even without focus', async () => {
@@ -216,9 +216,9 @@ describe('TextareaComponent', () => {
       fixture.componentRef.setInput('value', 'some text');
       await fixture.whenStable();
 
-      expect(
-        fixture.nativeElement.querySelector('.gog-input-wrapper').classList,
-      ).toContain('gog-input-wrapper--floated');
+      expect(fixture.nativeElement.querySelector('.gog-input-wrapper').classList).toContain(
+        'gog-input-wrapper--floated',
+      );
     });
 
     it('marks the field as floated on focus and unfloats on blur when still empty', async () => {
@@ -229,15 +229,15 @@ describe('TextareaComponent', () => {
       const textarea = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
       textarea.dispatchEvent(new Event('focus'));
       await fixture.whenStable();
-      expect(
-        fixture.nativeElement.querySelector('.gog-input-wrapper').classList,
-      ).toContain('gog-input-wrapper--floated');
+      expect(fixture.nativeElement.querySelector('.gog-input-wrapper').classList).toContain(
+        'gog-input-wrapper--floated',
+      );
 
       textarea.dispatchEvent(new Event('blur'));
       await fixture.whenStable();
-      expect(
-        fixture.nativeElement.querySelector('.gog-input-wrapper').classList,
-      ).not.toContain('gog-input-wrapper--floated');
+      expect(fixture.nativeElement.querySelector('.gog-input-wrapper').classList).not.toContain(
+        'gog-input-wrapper--floated',
+      );
     });
 
     describe('floatLabelShowPlaceholder', () => {

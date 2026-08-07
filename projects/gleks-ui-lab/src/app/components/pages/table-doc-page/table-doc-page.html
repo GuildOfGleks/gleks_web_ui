@@ -83,8 +83,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Sticky header</h3>
       <p class="demo-card__meta">
-        <code>stickyHeader</code> sticks the header row to the top of the nearest scrolling
-        ancestor — here that's a wrapper capped at 260px, so scroll inside the table to see it.
+        <code>stickyHeader</code> sticks the header row to the top of the nearest scrolling ancestor
+        — here that's a wrapper capped at 260px, so scroll inside the table to see it.
       </p>
       <div class="demo-card__preview table-scroll-demo">
         <gog-table [value]="rows" [stickyHeader]="true">
@@ -125,8 +125,8 @@
       <h3 class="demo-card__title">Full width</h3>
       <p class="demo-card__meta">
         Full width of its container by default (see every table above).
-        <code>[fullWidth]="false"</code> shrinks the table to fit its columns instead — useful
-        for a narrow, two-column table that shouldn't stretch to fill a wide page.
+        <code>[fullWidth]="false"</code> shrinks the table to fit its columns instead — useful for a
+        narrow, two-column table that shouldn't stretch to fill a wide page.
       </p>
       <div class="demo-card__preview">
         <gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">
@@ -139,7 +139,9 @@
 
     <article class="demo-card">
       <h3 class="demo-card__title">Loading state</h3>
-      <p class="demo-card__meta">Shows a spinner in place of rows while <code>loading</code> is true.</p>
+      <p class="demo-card__meta">
+        Shows a spinner in place of rows while <code>loading</code> is true.
+      </p>
       <div class="demo-card__preview">
         <gog-button variant="primary" type="button" (gogClick)="toggleLoading()">
           Toggle loading
@@ -155,7 +157,9 @@
 
     <article class="demo-card">
       <h3 class="demo-card__title">Empty state</h3>
-      <p class="demo-card__meta">An empty <code>value</code> array renders a built-in placeholder row.</p>
+      <p class="demo-card__meta">
+        An empty <code>value</code> array renders a built-in placeholder row.
+      </p>
       <div class="demo-card__preview">
         <gog-button variant="ghost" type="button" (gogClick)="toggleEmpty()">
           {{ showEmpty() ? 'Restore rows' : 'Clear rows' }}
@@ -186,9 +190,15 @@
         <tbody>
           @for (row of tableInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -197,7 +207,9 @@
     </div>
 
     <h3 class="doc-section__subtitle">&lt;column&gt; — Inputs</h3>
-    <p class="doc-section__intro">One per field, declared as content inside <code>&lt;gog-table&gt;</code>.</p>
+    <p class="doc-section__intro">
+      One per field, declared as content inside <code>&lt;gog-table&gt;</code>.
+    </p>
     <div class="api-table-scroll">
       <table class="api-table">
         <thead>
@@ -211,9 +223,15 @@
         <tbody>
           @for (row of columnInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -239,9 +257,15 @@
         <tbody>
           @for (row of templateDirectiveInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -253,10 +277,10 @@
   <section class="doc-section">
     <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
     <p class="doc-section__intro">
-      Every CSS custom property the table paints with. Override any of them — on a single
-      instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      Every CSS custom property the table paints with. Override any of them — on a single instance,
+      a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -269,7 +293,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

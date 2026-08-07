@@ -4,25 +4,27 @@
     <h1 class="toast-doc__title font-heading">Toast</h1>
     <p class="toast-doc__lead">
       Fire-and-forget notifications via <code>ToastService</code>, rendered by a positioned
-      <code>gog-toast-container</code> — with per-corner stacking, action buttons, sticky and
-      timed variants, and automatic deduping of repeated calls.
+      <code>gog-toast-container</code> — with per-corner stacking, action buttons, sticky and timed
+      variants, and automatic deduping of repeated calls.
     </p>
   </header>
 
   <section class="doc-section">
     <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
     <p class="doc-section__intro">
-      Import <code>ToastContainerComponent</code> and mount <code>&lt;gog-toast-container /&gt;</code>
-      once — typically near the root of your app. Every <code>ToastService</code> call renders
-      through that single outlet, so it only needs to exist once no matter how many places call
-      it.
+      Import <code>ToastContainerComponent</code> and mount
+      <code>&lt;gog-toast-container /&gt;</code> once — typically near the root of your app. Every
+      <code>ToastService</code> call renders through that single outlet, so it only needs to exist
+      once no matter how many places call it.
     </p>
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — inject the service, call a shorthand method:</p>
     <div class="demo-card">
       <div class="demo-card__preview action-row">
-        <gog-button variant="primary" type="button" (gogClick)="showToast()">Preview toast</gog-button>
+        <gog-button variant="primary" type="button" (gogClick)="showToast()"
+          >Preview toast</gog-button
+        >
       </div>
       <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
     </div>
@@ -34,12 +36,17 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Fully configurable</h3>
       <p class="demo-card__meta">
-        Every field below feeds a single <code>show()</code> call — message, type, and
-        position are all consumer-controlled.
+        Every field below feeds a single <code>show()</code> call — message, type, and position are
+        all consumer-controlled.
       </p>
       <div class="demo-card__preview field-grid">
         <gog-inputfield label="Message" inputId="toast-message" [(value)]="toastMessage" />
-        <gog-select label="Type" inputId="toast-type" [options]="toastTypes" [(value)]="toastType" />
+        <gog-select
+          label="Type"
+          inputId="toast-type"
+          [options]="toastTypes"
+          [(value)]="toastType"
+        />
         <gog-select
           label="Position"
           inputId="toast-position"
@@ -61,8 +68,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Types</h3>
       <p class="demo-card__meta">
-        Each type gets a default icon (success/error/warning/info) unless <code>iconName</code>
-        or <code>iconTemplate</code> overrides it.
+        Each type gets a default icon (success/error/warning/info) unless <code>iconName</code> or
+        <code>iconTemplate</code> overrides it.
       </p>
       <div class="demo-card__preview action-row">
         <gog-button variant="outline" type="button" (gogClick)="showOneOfEach()">
@@ -90,11 +97,13 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Sticky &amp; duration</h3>
       <p class="demo-card__meta">
-        <code>isSticky</code> disables auto-dismiss entirely; <code>duration</code> overrides
-        the 4s default.
+        <code>isSticky</code> disables auto-dismiss entirely; <code>duration</code> overrides the 4s
+        default.
       </p>
       <div class="demo-card__preview action-row">
-        <gog-button variant="outline" type="button" (gogClick)="showSticky()">Sticky toast</gog-button>
+        <gog-button variant="outline" type="button" (gogClick)="showSticky()"
+          >Sticky toast</gog-button
+        >
         <gog-button variant="outline" type="button" (gogClick)="showLongDuration()">
           10s duration
         </gog-button>
@@ -108,11 +117,12 @@
       <p class="demo-card__meta">
         Only the front toast in a corner counts down — the rest wait behind it with a frozen
         progress bar, so a burst of notifications never all expire at once.
-        <code>maxVisiblePerPosition</code> on the container caps how many stack visibly at a
-        time.
+        <code>maxVisiblePerPosition</code> on the container caps how many stack visibly at a time.
       </p>
       <div class="demo-card__preview action-row">
-        <gog-button variant="outline" type="button" (gogClick)="showBurst()">Queue 7 toasts</gog-button>
+        <gog-button variant="outline" type="button" (gogClick)="showBurst()"
+          >Queue 7 toasts</gog-button
+        >
       </div>
       <app-code-tabs [html]="burstHtml" [ts]="burstTs" />
     </article>
@@ -136,9 +146,15 @@
         <tbody>
           @for (row of configOptions; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -158,7 +174,9 @@
         <tbody>
           @for (row of serviceMethods; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -180,9 +198,15 @@
         <tbody>
           @for (row of containerInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -194,10 +218,10 @@
   <section class="doc-section">
     <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
     <p class="doc-section__intro">
-      Every CSS custom property the toast paints with. Override any of them — on a single
-      instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      Every CSS custom property the toast paints with. Override any of them — on a single instance,
+      a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -210,7 +234,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

@@ -3,8 +3,8 @@
     <p class="button-doc__eyebrow">gog-button</p>
     <h1 class="button-doc__title font-heading">Button</h1>
     <p class="button-doc__lead">
-      A debounced action button with four variants, five sizes, and built-in loading, disabled,
-      and full-width states.
+      A debounced action button with four variants, five sizes, and built-in loading, disabled, and
+      full-width states.
     </p>
   </header>
 
@@ -22,7 +22,7 @@
     </div>
     <p class="doc-section__meta">{{ lastClicked() }}</p>
   </section>
-  
+
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
@@ -60,8 +60,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Loading</h3>
       <p class="demo-card__meta">
-        Loading swaps the label for a spinner and blocks clicks (via <code>aria-disabled</code>,
-        not the native <code>disabled</code> attribute, so focus is preserved).
+        Loading swaps the label for a spinner and blocks clicks (via <code>aria-disabled</code>, not
+        the native <code>disabled</code> attribute, so focus is preserved).
       </p>
       <div class="demo-card__preview action-row">
         <gog-button variant="primary" [loading]="isLoading()" (gogClick)="simulateLoading()">
@@ -121,8 +121,8 @@
       <h3 class="demo-card__title">Debounce guard</h3>
       <p class="demo-card__meta">
         Clicks are throttled leading-edge: the first click fires immediately, further clicks are
-        dropped for <code>debounce</code> ms (default 300). Click rapidly and watch the counter
-        lag behind your clicks.
+        dropped for <code>debounce</code> ms (default 300). Click rapidly and watch the counter lag
+        behind your clicks.
       </p>
       <div class="demo-card__preview action-row">
         <gog-button variant="primary" (gogClick)="onSpamClick()">Click me fast</gog-button>
@@ -136,7 +136,11 @@
       <p class="demo-card__meta">
         <code>type</code> is forwarded to the native <code>&lt;button&gt;</code>.
       </p>
-      <form class="demo-card__preview action-row" (submit)="onFormSubmit($event)" (reset)="onFormReset()">
+      <form
+        class="demo-card__preview action-row"
+        (submit)="onFormSubmit($event)"
+        (reset)="onFormReset()"
+      >
         <gog-button variant="primary" type="submit">Submit</gog-button>
         <gog-button variant="outline" type="reset">Reset</gog-button>
       </form>
@@ -162,9 +166,15 @@
         <tbody>
           @for (row of apiInputs; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
-              <td><code>{{ row.type }}</code></td>
-              <td><code>{{ row.default }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }
@@ -196,10 +206,10 @@
   <section class="doc-section">
     <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
     <p class="doc-section__intro">
-      Every CSS custom property the button paints with. Override any of them — on a single
-      instance, a subtree, or a theme — to restyle it. See the
-      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or
-      the <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+      Every CSS custom property the button paints with. Override any of them — on a single instance,
+      a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -212,7 +222,9 @@
         <tbody>
           @for (row of styleTokens; track row.name) {
             <tr>
-              <td><code>{{ row.name }}</code></td>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
               <td>{{ row.description }}</td>
             </tr>
           }

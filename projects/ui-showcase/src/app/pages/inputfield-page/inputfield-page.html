@@ -75,9 +75,9 @@
     <h3>Full width</h3>
     <p class="meta">
       Full width of its container by default (see the fields above, each filling its own
-      <code>field-grid</code> cell). <code>[fullWidth]="false"</code> shrinks a field to fit its
-      own content instead — useful when a short field (like a ZIP code) shouldn't stretch to
-      match its neighbors.
+      <code>field-grid</code> cell). <code>[fullWidth]="false"</code> shrinks a field to fit its own
+      content instead — useful when a short field (like a ZIP code) shouldn't stretch to match its
+      neighbors.
     </p>
     <div class="field-row">
       <div class="field-row__grow">
@@ -90,8 +90,8 @@
   <article class="card">
     <h3>Float label</h3>
     <p class="lead">
-      <code>floatLabel</code> makes the label rest inside the field like a placeholder, then
-      float up on focus or once there's a value — <code>'in'</code> stays inside the border,
+      <code>floatLabel</code> makes the label rest inside the field like a placeholder, then float
+      up on focus or once there's a value — <code>'in'</code> stays inside the border,
       <code>'on'</code> floats to the border line, <code>'over'</code> floats fully above it.
       <code>floatLabelShowPlaceholder</code> reveals the field's own <code>placeholder</code>
       once floated (it's hidden the whole time otherwise). Both are also settable app-wide via
@@ -144,22 +144,24 @@
       />
     </div>
     <p class="meta">
-      The leading/trailing icon slots line up correctly at every variant — the label and the
-      field share the same icon-aware inset instead of the label falling back to the
-      unindented default.
+      The leading/trailing icon slots line up correctly at every variant — the label and the field
+      share the same icon-aware inset instead of the label falling back to the unindented default.
     </p>
   </article>
 
   <article class="card">
     <h3>Float label with a password field</h3>
     <p class="lead">
-      <code>type="password"</code> always renders the built-in show/hide toggle as a trailing
-      icon — the same icon-inset code path as <code>iconEnd</code> above. Side by side with
-      <code>floatLabel</code> off and on, to confirm the eye toggle lines up correctly either
-      way.
+      <code>type="password"</code> always renders the built-in show/hide toggle as a trailing icon —
+      the same icon-inset code path as <code>iconEnd</code> above. Side by side with
+      <code>floatLabel</code> off and on, to confirm the eye toggle lines up correctly either way.
     </p>
     <div class="field-grid">
-      <gog-inputfield label="Password (floatLabel off)" type="password" [(value)]="floatLabelPasswordOffValue" />
+      <gog-inputfield
+        label="Password (floatLabel off)"
+        type="password"
+        [(value)]="floatLabelPasswordOffValue"
+      />
       <gog-inputfield
         label="Password (floatLabel on)"
         type="password"

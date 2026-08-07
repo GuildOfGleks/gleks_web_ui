@@ -68,7 +68,8 @@ const ICON_NAMES: readonly GogIconName[] = [
 export class IconDocPage {
   protected readonly iconNames = ICON_NAMES;
   protected readonly apiInputs = API_INPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'icon')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'icon')?.tokens ?? [];
 
   protected readonly importSnippet =
     "```typescript\nimport { IconComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [IconComponent],\n})\n```";
@@ -133,7 +134,8 @@ export class IconDocPage {
     'export class ExampleComponent {}',
   ].join('\n');
 
-  protected readonly meaningfulHtml = '<gog-icon name="warning" [ariaHidden]="false" title="Warning" />';
+  protected readonly meaningfulHtml =
+    '<gog-icon name="warning" [ariaHidden]="false" title="Warning" />';
   protected readonly meaningfulTs = [
     "import { Component } from '@angular/core';",
     "import { IconComponent } from '@guildofgleks/ui';",

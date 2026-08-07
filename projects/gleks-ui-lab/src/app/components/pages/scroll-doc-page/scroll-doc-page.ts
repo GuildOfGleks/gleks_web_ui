@@ -18,7 +18,8 @@ const API_INPUTS: readonly ApiRow[] = [
     name: 'axis',
     type: "'vertical' | 'horizontal' | 'both'",
     default: "'vertical'",
-    description: 'Which axes get an overlay thumb. Native scrolling on the other axis is unaffected.',
+    description:
+      'Which axes get an overlay thumb. Native scrolling on the other axis is unaffected.',
   },
   {
     name: 'size',
@@ -43,7 +44,8 @@ const API_INPUTS: readonly ApiRow[] = [
     name: 'reachThreshold',
     type: 'number',
     default: '0',
-    description: 'Pixel distance from an edge that still counts as "reached" for gogReachStart/gogReachEnd.',
+    description:
+      'Pixel distance from an edge that still counts as "reached" for gogReachStart/gogReachEnd.',
   },
   {
     name: 'focusable',
@@ -56,14 +58,15 @@ const API_INPUTS: readonly ApiRow[] = [
     name: 'ariaLabel',
     type: 'string',
     default: "''",
-    description: 'Accessible name for the viewport when focusable is true and there is no visible label.',
+    description:
+      'Accessible name for the viewport when focusable is true and there is no visible label.',
   },
   {
     name: 'overscrollBehavior',
     type: "'auto' | 'contain' | 'none' | undefined",
     default: 'undefined',
     description:
-      'What happens when a scroll gesture reaches this instance\'s edge. Unset, falls back to GOG_CONFIG.scroll.overscrollBehavior, then to \'auto\' — chains to the next scrollable ancestor.',
+      "What happens when a scroll gesture reaches this instance's edge. Unset, falls back to GOG_CONFIG.scroll.overscrollBehavior, then to 'auto' — chains to the next scrollable ancestor.",
   },
 ];
 
@@ -71,7 +74,8 @@ const API_OUTPUTS: readonly { name: string; payload: string; description: string
   {
     name: 'gogScroll',
     payload: 'GogScrollMetrics',
-    description: 'Emits scrollTop/scrollLeft/scrollHeight/scrollWidth/clientHeight/clientWidth on every scroll/resize.',
+    description:
+      'Emits scrollTop/scrollLeft/scrollHeight/scrollWidth/clientHeight/clientWidth on every scroll/resize.',
   },
   {
     name: 'gogReachStart',
@@ -86,7 +90,10 @@ const API_OUTPUTS: readonly { name: string; payload: string; description: string
 ];
 
 const API_METHODS: readonly { name: string; description: string }[] = [
-  { name: 'scrollTo(options: ScrollToOptions)', description: "Forwards to the viewport's native Element.scrollTo." },
+  {
+    name: 'scrollTo(options: ScrollToOptions)',
+    description: "Forwards to the viewport's native Element.scrollTo.",
+  },
   { name: "scrollToTop(behavior = 'smooth')", description: 'Scrolls to the top.' },
   { name: "scrollToBottom(behavior = 'smooth')", description: 'Scrolls to the bottom.' },
   { name: "scrollToLeft(behavior = 'smooth')", description: 'Scrolls to the left edge.' },
@@ -95,7 +102,14 @@ const API_METHODS: readonly { name: string; description: string }[] = [
 
 @Component({
   selector: 'app-scroll-doc-page',
-  imports: [ScrollComponent, ButtonComponent, MarkdownComponent, CodeTabsComponent, RouterLink, DecimalPipe],
+  imports: [
+    ScrollComponent,
+    ButtonComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    DecimalPipe,
+  ],
   templateUrl: './scroll-doc-page.html',
   styleUrl: './scroll-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -113,7 +127,9 @@ export class ScrollDocPage {
   protected readonly sizeOption = signal<'normal' | 'thin'>('normal');
   protected readonly autoHide = signal(true);
 
-  protected readonly reachState = signal('Scroll to the edges to see gogReachStart / gogReachEnd fire.');
+  protected readonly reachState = signal(
+    'Scroll to the edges to see gogReachStart / gogReachEnd fire.',
+  );
   protected readonly lastMetrics = signal<GogScrollMetrics | null>(null);
 
   protected readonly importSnippet =
@@ -142,7 +158,7 @@ export class ScrollDocPage {
     '  `,',
     '})',
     'export class ExampleComponent {',
-    "  protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);",
+    '  protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);',
     '}',
   ].join('\n');
 
@@ -216,8 +232,8 @@ export class ScrollDocPage {
     '    <gog-scroll',
     '      style="height: 160px"',
     '      [reachThreshold]="8"',
-    "      (gogReachStart)=\"reachState.set('At the top')\"",
-    "      (gogReachEnd)=\"reachState.set('At the bottom')\"",
+    '      (gogReachStart)="reachState.set(\'At the top\')"',
+    '      (gogReachEnd)="reachState.set(\'At the bottom\')"',
     '      (gogScroll)="onScroll($event)"',
     '    >',
     '      …',
@@ -262,7 +278,7 @@ export class ScrollDocPage {
     '// app.config.ts',
     'providers: [',
     '  provideGogConfig({',
-    '    scroll: { size: \'thin\', hideDelay: 1200, overscrollBehavior: \'contain\' },',
+    "    scroll: { size: 'thin', hideDelay: 1200, overscrollBehavior: 'contain' },",
     '  }),',
     '],',
   ].join('\n');

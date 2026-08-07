@@ -3,8 +3,8 @@
   grid-template-columns: 180px 1fr 180px; /* Сайдбар слева | Контент | Панель справа */
   grid-template-rows: 60px 1fr;
   grid-template-areas:
-    "header  header  header"
-    "sidebar main    right";
+    'header  header  header'
+    'sidebar main    right';
   background-color: var(--gog-background-color);
   color: var(--gog-text-color);
 }
@@ -147,7 +147,9 @@
     a {
       color: var(--gog-muted-text-color);
       text-decoration: none;
-      &:hover { color: var(--gog-accent-color); }
+      &:hover {
+        color: var(--gog-accent-color);
+      }
     }
   }
 }
@@ -157,18 +159,22 @@
   .lab-layout {
     grid-template-columns: 180px 1fr;
     grid-template-areas:
-      "header  header"
-      "sidebar main";
+      'header  header'
+      'sidebar main';
   }
-  .lab-sidebar-right { display: none; }
+  .lab-sidebar-right {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
   .lab-layout {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "header"
-      "main";
+      'header'
+      'main';
   }
-  .lab-sidebar-left { display: none; }
+  .lab-sidebar-left {
+    display: none;
+  }
 }

@@ -400,7 +400,14 @@ export class ScrollComponent {
       this.thumbPosH.set(ratioH * (100 - sizePct));
     }
 
-    this.gogScroll.emit({ scrollTop, scrollLeft, scrollHeight, scrollWidth, clientHeight, clientWidth });
+    this.gogScroll.emit({
+      scrollTop,
+      scrollLeft,
+      scrollHeight,
+      scrollWidth,
+      clientHeight,
+      clientWidth,
+    });
     // Only for axes this instance actually scrolls — otherwise the disabled axis is
     // trivially "at both ends" on the very first measurement and fires once for free.
     if (canV) this.checkReach('vertical', scrollTop, scrollHeight, clientHeight, overflowV);

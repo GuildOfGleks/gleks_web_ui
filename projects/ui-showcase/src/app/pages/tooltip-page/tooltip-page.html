@@ -4,9 +4,9 @@
     <h2>Tooltip</h2>
     <p class="lead">
       Not a component — an attribute directive you drop onto anything: a
-      <code>gog-*</code> component's own host tag, or a plain native element. It renders a
-      small hover/focus hint, appended to <code>document.body</code> so it's never clipped
-      by an ancestor's <code>overflow: hidden</code>.
+      <code>gog-*</code> component's own host tag, or a plain native element. It renders a small
+      hover/focus hint, appended to <code>document.body</code> so it's never clipped by an
+      ancestor's <code>overflow: hidden</code>.
     </p>
     <pre class="code-block"><code>&lt;button gogTooltip="Save changes"&gt;Save&lt;/button&gt;
 
@@ -86,12 +86,16 @@
   <article class="card">
     <h3>On library components</h3>
     <p class="lead">
-      <code>[gogTooltip]</code> lands on the component's own host tag — no wrapper element,
-      no extra markup, and it works whether or not the component projects content.
+      <code>[gogTooltip]</code> lands on the component's own host tag — no wrapper element, no extra
+      markup, and it works whether or not the component projects content.
     </p>
     <div class="action-row">
       <gog-button gogTooltip="Runs a full sync with the server">Sync now</gog-button>
-      <gog-tag variant="warning" iconName="warning" gogTooltip="3 items need review before shipping">
+      <gog-tag
+        variant="warning"
+        iconName="warning"
+        gogTooltip="3 items need review before shipping"
+      >
         Needs review
       </gog-tag>
       <gog-chip ariaLabel="Aeliana Khost" gogTooltip="Aeliana Khost — workspace owner">
@@ -104,25 +108,30 @@
   <article class="card">
     <h3>On native elements</h3>
     <p class="lead">
-      Just as at home on markup the library never touches — a native button, a piece of
-      text, a link, or a disabled control (where the native <code>title</code> attribute is
-      the only other option and can't be styled or delayed at all).
+      Just as at home on markup the library never touches — a native button, a piece of text, a
+      link, or a disabled control (where the native <code>title</code> attribute is the only other
+      option and can't be styled or delayed at all).
     </p>
     <div class="action-row">
       <button type="button" class="native-btn" gogTooltip="A completely native &lt;button&gt;">
         Native button
       </button>
-      <span class="native-hint" gogTooltip="Rendered exactly as typed, no markup of its own" tabindex="0">
-        Hover this text
-      </span>
-      <a href="#" class="native-link" gogTooltip="Links work the same way" (click)="$event.preventDefault()">
-        A link
-      </a>
       <span
-        class="native-disabled"
-        gogTooltip="Disabled until the form is valid"
+        class="native-hint"
+        gogTooltip="Rendered exactly as typed, no markup of its own"
         tabindex="0"
       >
+        Hover this text
+      </span>
+      <a
+        href="#"
+        class="native-link"
+        gogTooltip="Links work the same way"
+        (click)="$event.preventDefault()"
+      >
+        A link
+      </a>
+      <span class="native-disabled" gogTooltip="Disabled until the form is valid" tabindex="0">
         <button type="button" disabled>Disabled button</button>
       </span>
     </div>
@@ -131,8 +140,8 @@
   <article class="card">
     <h3>Rich content</h3>
     <p class="lead">
-      <code>[gogTooltip]</code> also accepts a <code>TemplateRef</code> instead of a plain
-      string, for a hint that needs its own markup.
+      <code>[gogTooltip]</code> also accepts a <code>TemplateRef</code> instead of a plain string,
+      for a hint that needs its own markup.
     </p>
     <div class="action-row">
       <gog-button variant="secondary" [gogTooltip]="richHint">With an icon</gog-button>
@@ -148,14 +157,14 @@
   <article class="card">
     <h3>Styling one instance</h3>
     <p class="lead">
-      The bubble is appended straight to <code>document.body</code>, outside any component's
-      own view — so a <code>--gog-tooltip-*</code> override scoped to some wrapper around the
-      trigger (a page's own stylesheet, an <code>::ng-deep</code>) never reaches it, only a
+      The bubble is appended straight to <code>document.body</code>, outside any component's own
+      view — so a <code>--gog-tooltip-*</code> override scoped to some wrapper around the trigger (a
+      page's own stylesheet, an <code>::ng-deep</code>) never reaches it, only a
       <code>:root</code>-level one does. To restyle a single instance,
-      <code>gogTooltipClass</code> puts a class straight onto the bubble itself; the class
-      still has to live in an <em>unscoped</em> stylesheet (a global <code>styles.scss</code>,
-      not a component's own) for the same reason. See <code>.showcase-tooltip--brand</code>
-      in this app's <code>styles.scss</code>.
+      <code>gogTooltipClass</code> puts a class straight onto the bubble itself; the class still has
+      to live in an <em>unscoped</em> stylesheet (a global <code>styles.scss</code>, not a
+      component's own) for the same reason. See <code>.showcase-tooltip--brand</code> in this app's
+      <code>styles.scss</code>.
     </p>
     <div class="action-row">
       <gog-button
@@ -171,21 +180,24 @@
   <article class="card">
     <h3>Content &amp; sizing</h3>
     <p class="lead">
-      Text wraps to <code>--gog-tooltip-max-width</code> (<code>280px</code> by default) — a
-      single unbroken run of characters longer than that still breaks mid-word instead of
-      overflowing it. Height is capped separately, at <code>--gog-tooltip-max-height</code>
-      (<code>220px</code> by default): content under that renders at exactly its own height,
-      nothing padded out; content over it scrolls inside an internal <code>gog-scroll</code>,
-      the same themeable scrollbar every other overflowing panel in this library
-      (<code>gog-dialog</code>'s body, <code>gog-select</code>'s panel) uses instead of the
-      browser's own.
+      Text wraps to <code>--gog-tooltip-max-width</code> (<code>280px</code> by default) — a single
+      unbroken run of characters longer than that still breaks mid-word instead of overflowing it.
+      Height is capped separately, at <code>--gog-tooltip-max-height</code> (<code>220px</code> by
+      default): content under that renders at exactly its own height, nothing padded out; content
+      over it scrolls inside an internal <code>gog-scroll</code>, the same themeable scrollbar every
+      other overflowing panel in this library (<code>gog-dialog</code>'s body,
+      <code>gog-select</code>'s panel) uses instead of the browser's own.
     </p>
     <div class="action-row">
       <gog-button variant="outline" [gogTooltip]="longText">Long paragraph</gog-button>
       <gog-button variant="outline" [gogTooltip]="unbreakableText">
         One long unbroken word
       </gog-button>
-      <gog-button variant="outline" gogTooltip="A narrower bubble" gogTooltipClass="showcase-tooltip--narrow">
+      <gog-button
+        variant="outline"
+        gogTooltip="A narrower bubble"
+        gogTooltipClass="showcase-tooltip--narrow"
+      >
         Narrower max-width
       </gog-button>
       <gog-button variant="outline" [gogTooltip]="veryLongContent">
@@ -200,10 +212,10 @@
       </gog-button>
     </div>
     <p class="meta">
-      To actually scroll one: move the mouse from the button down into the bubble before it
-      closes. The bubble is hoverable (WCAG 2.1 SC 1.4.13) — moving the pointer onto it
-      cancels the pending hide the same way re-entering the trigger would, so it stays open
-      (and scrollable) for as long as the pointer is over either one.
+      To actually scroll one: move the mouse from the button down into the bubble before it closes.
+      The bubble is hoverable (WCAG 2.1 SC 1.4.13) — moving the pointer onto it cancels the pending
+      hide the same way re-entering the trigger would, so it stays open (and scrollable) for as long
+      as the pointer is over either one.
     </p>
     <ng-template #veryLongContent>
       <p>Every environment its own approval chain:</p>
@@ -227,11 +239,11 @@
     <h3>Global defaults</h3>
     <p class="lead">
       <code>gogTooltipPosition</code>, <code>gogTooltipShowDelay</code> and
-      <code>gogTooltipHideDelay</code> all fall back to <code>GOG_CONFIG.tooltip</code> when
-      left unset on an instance, the same as every other configurable input in the library —
-      see the <a routerLink="/global-config">Global Config</a> page. Without it connected,
-      as on this page, they use their own built-in defaults: <code>'auto'</code>,
-      <code>300ms</code> and <code>100ms</code>.
+      <code>gogTooltipHideDelay</code> all fall back to <code>GOG_CONFIG.tooltip</code> when left
+      unset on an instance, the same as every other configurable input in the library — see the
+      <a routerLink="/global-config">Global Config</a> page. Without it connected, as on this page,
+      they use their own built-in defaults: <code>'auto'</code>, <code>300ms</code> and
+      <code>100ms</code>.
     </p>
   </article>
 </section>

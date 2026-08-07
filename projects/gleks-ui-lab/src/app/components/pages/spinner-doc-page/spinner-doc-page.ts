@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ButtonComponent, GogSize, GogSpinnerVariant, SpinnerComponent, SpinnerOverlayComponent } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  GogSize,
+  GogSpinnerVariant,
+  SpinnerComponent,
+  SpinnerOverlayComponent,
+} from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -18,7 +24,7 @@ const SPINNER_API_INPUTS: readonly ApiInputRow[] = [
     type: "'runic' | 'ring' | 'custom'",
     default: "'runic'",
     description:
-      "runic and ring are built-in presets. custom renders your own markup via content projection — it inherits the size wrapper, overlay behavior, and --gog-spinner-color theming, but the visuals are yours.",
+      'runic and ring are built-in presets. custom renders your own markup via content projection — it inherits the size wrapper, overlay behavior, and --gog-spinner-color theming, but the visuals are yours.',
   },
   {
     name: 'size',
@@ -33,7 +39,12 @@ const SPINNER_API_INPUTS: readonly ApiInputRow[] = [
     description:
       'Renders as a fixed, viewport-covering overlay. Distinct from gog-spinner-overlay below, which only covers its own content.',
   },
-  { name: 'ariaLabel', type: 'string', default: "'Loading'", description: 'Accessible name announced to assistive tech.' },
+  {
+    name: 'ariaLabel',
+    type: 'string',
+    default: "'Loading'",
+    description: 'Accessible name announced to assistive tech.',
+  },
 ];
 
 const SPINNER_OVERLAY_API_INPUTS: readonly ApiInputRow[] = [
@@ -43,14 +54,36 @@ const SPINNER_OVERLAY_API_INPUTS: readonly ApiInputRow[] = [
     default: 'false',
     description: 'Shows a scrim + spinner over the projected content while true.',
   },
-  { name: 'variant', type: "'runic' | 'ring' | 'custom'", default: "'runic'", description: 'Forwarded to the inner gog-spinner.' },
-  { name: 'size', type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'", default: "'md'", description: 'Forwarded to the inner gog-spinner.' },
-  { name: 'ariaLabel', type: 'string', default: "'Loading'", description: 'Forwarded to the inner gog-spinner.' },
+  {
+    name: 'variant',
+    type: "'runic' | 'ring' | 'custom'",
+    default: "'runic'",
+    description: 'Forwarded to the inner gog-spinner.',
+  },
+  {
+    name: 'size',
+    type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'",
+    default: "'md'",
+    description: 'Forwarded to the inner gog-spinner.',
+  },
+  {
+    name: 'ariaLabel',
+    type: 'string',
+    default: "'Loading'",
+    description: 'Forwarded to the inner gog-spinner.',
+  },
 ];
 
 @Component({
   selector: 'app-spinner-doc-page',
-  imports: [SpinnerComponent, SpinnerOverlayComponent, ButtonComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [
+    SpinnerComponent,
+    SpinnerOverlayComponent,
+    ButtonComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+  ],
   templateUrl: './spinner-doc-page.html',
   styleUrl: './spinner-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,7 +94,8 @@ export class SpinnerDocPage implements OnDestroy {
 
   protected readonly spinnerApiInputs = SPINNER_API_INPUTS;
   protected readonly spinnerOverlayApiInputs = SPINNER_OVERLAY_API_INPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'spinner')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'spinner')?.tokens ?? [];
 
   protected readonly showOverlay = signal(false);
   protected readonly showFullscreenOverlay = signal(false);
@@ -230,7 +264,8 @@ export class SpinnerDocPage implements OnDestroy {
     '}',
   ].join('\n');
 
-  protected readonly fullscreenHtml = '@if (loading()) {\n  <gog-spinner [overlay]="true" size="lg" ariaLabel="Loading page" />\n}';
+  protected readonly fullscreenHtml =
+    '@if (loading()) {\n  <gog-spinner [overlay]="true" size="lg" ariaLabel="Loading page" />\n}';
   protected readonly fullscreenTs = [
     "import { Component, signal } from '@angular/core';",
     "import { SpinnerComponent } from '@guildofgleks/ui';",

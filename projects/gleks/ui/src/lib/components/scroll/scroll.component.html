@@ -28,7 +28,9 @@
   @if (showTrackV()) {
     <div
       class="gog-scroll__track gog-scroll__track--v"
-      [class.gog-scroll__track--visible]="!resolvedAutoHide() || interacting() || dragAxis() === 'vertical'"
+      [class.gog-scroll__track--visible]="
+        !resolvedAutoHide() || interacting() || dragAxis() === 'vertical'
+      "
       (pointerdown)="onTrackPointerDown($event, 'vertical')"
     >
       <div
@@ -47,7 +49,9 @@
   @if (showTrackH()) {
     <div
       class="gog-scroll__track gog-scroll__track--h"
-      [class.gog-scroll__track--visible]="!resolvedAutoHide() || interacting() || dragAxis() === 'horizontal'"
+      [class.gog-scroll__track--visible]="
+        !resolvedAutoHide() || interacting() || dragAxis() === 'horizontal'
+      "
       (pointerdown)="onTrackPointerDown($event, 'horizontal')"
     >
       <div

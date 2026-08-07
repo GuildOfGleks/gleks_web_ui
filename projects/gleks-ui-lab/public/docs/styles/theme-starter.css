@@ -241,7 +241,8 @@
   --gog-btn-primary-shadow: none;
   --gog-btn-primary-hover-bg: var(--gog-accent-bright);
   --gog-btn-primary-hover-color: var(--gog-btn-primary-color);
-  --gog-btn-primary-hover-shadow: 0 0 16px color-mix(in srgb, var(--gog-accent-bright) 45%, transparent);
+  --gog-btn-primary-hover-shadow: 0 0 16px
+    color-mix(in srgb, var(--gog-accent-bright) 45%, transparent);
   --gog-btn-primary-spinner-color: var(--gog-text-color);
   --gog-btn-secondary-bg: var(--gog-secondary-color);
   --gog-btn-secondary-color: var(--gog-accent-text-color, var(--gog-primary-color));

@@ -1,6 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { GogIconName, GogSize, GogTagShape, GogTagVariant, IconComponent, TagComponent } from '@guildofgleks/ui';
+import {
+  GogIconName,
+  GogSize,
+  GogTagShape,
+  GogTagVariant,
+  IconComponent,
+  TagComponent,
+} from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -47,7 +54,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'fullWidth',
     type: 'boolean',
     default: 'false',
-    description: 'By default the tag fits its text with no wrapping. Set true to stretch it to fill its container instead.',
+    description:
+      'By default the tag fits its text with no wrapping. Set true to stretch it to fill its container instead.',
   },
 ];
 
@@ -70,12 +78,14 @@ export class TagDocPage {
   };
 
   protected readonly apiInputs = API_INPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'tag')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'tag')?.tokens ?? [];
 
   protected readonly importSnippet =
     "```typescript\nimport { TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [TagComponent],\n})\n```";
 
-  protected readonly overviewHtml = '<gog-tag variant="success" iconName="check">In stock</gog-tag>';
+  protected readonly overviewHtml =
+    '<gog-tag variant="success" iconName="check">In stock</gog-tag>';
   protected readonly overviewTs = [
     "import { Component } from '@angular/core';",
     "import { TagComponent } from '@guildofgleks/ui';",
@@ -187,7 +197,8 @@ export class TagDocPage {
     'export class ExampleComponent {}',
   ].join('\n');
 
-  protected readonly fullWidthHtml = '<gog-tag variant="info" [fullWidth]="true">Full width</gog-tag>';
+  protected readonly fullWidthHtml =
+    '<gog-tag variant="info" [fullWidth]="true">Full width</gog-tag>';
   protected readonly fullWidthTs = [
     "import { Component } from '@angular/core';",
     "import { TagComponent } from '@guildofgleks/ui';",

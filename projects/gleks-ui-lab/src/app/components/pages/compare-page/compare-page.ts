@@ -64,7 +64,7 @@ interface GuidanceCard {
 const GUIDANCE: readonly GuidanceCard[] = [
   {
     library: 'Guild of Gleks UI',
-    text: "You want to ship fast, keep the bundle small, and restyle a component by setting a CSS variable — not by learning a theming API first.",
+    text: 'You want to ship fast, keep the bundle small, and restyle a component by setting a CSS variable — not by learning a theming API first.',
   },
   {
     library: 'Angular Material',
@@ -72,7 +72,7 @@ const GUIDANCE: readonly GuidanceCard[] = [
   },
   {
     library: 'PrimeNG',
-    text: 'Your product needs something this library — or Material — simply doesn\'t have: rich data grids, charts, org charts, or one of dozens of specialized widgets.',
+    text: "Your product needs something this library — or Material — simply doesn't have: rich data grids, charts, org charts, or one of dozens of specialized widgets.",
   },
 ];
 

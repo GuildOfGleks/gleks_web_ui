@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { GogDropdownOption, ScrollComponent, SelectComponent, ThemeService } from '@guildofgleks/ui';
+import {
+  GogDropdownOption,
+  ScrollComponent,
+  SelectComponent,
+  ThemeService,
+} from '@guildofgleks/ui';
 
 import { showcaseThemes, type ShowcaseThemeName } from './showcase-themes';
 

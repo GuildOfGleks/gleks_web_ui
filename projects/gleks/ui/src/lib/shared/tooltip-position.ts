@@ -55,7 +55,8 @@ function fits(
   gap: number,
   viewportPadding: number,
 ): boolean {
-  const needed = (side === 'top' || side === 'bottom' ? bubble.height : bubble.width) + gap + viewportPadding;
+  const needed =
+    (side === 'top' || side === 'bottom' ? bubble.height : bubble.width) + gap + viewportPadding;
   return spaceFor(side, target, viewport) >= needed;
 }
 
@@ -89,7 +90,9 @@ export function resolveTooltipSide(
   }
 
   const preferenceOrder: GogTooltipSide[] = ['top', 'bottom', 'right', 'left'];
-  const fitting = preferenceOrder.find((side) => fits(side, target, bubble, viewport, gap, viewportPadding));
+  const fitting = preferenceOrder.find((side) =>
+    fits(side, target, bubble, viewport, gap, viewportPadding),
+  );
   if (fitting) return fitting;
 
   return preferenceOrder.reduce((best, side) =>

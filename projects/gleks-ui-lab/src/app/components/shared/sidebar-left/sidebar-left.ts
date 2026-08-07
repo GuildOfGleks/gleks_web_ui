@@ -60,7 +60,9 @@ export class SidebarLeftComponent {
         for (const section of this.sections) {
           for (const item of section.items) {
             if (!item.open || !item.children?.length) continue;
-            if (item.children.some((child) => event.urlAfterRedirects.startsWith('/' + child.path))) {
+            if (
+              item.children.some((child) => event.urlAfterRedirects.startsWith('/' + child.path))
+            ) {
               item.open.set(true);
             }
           }

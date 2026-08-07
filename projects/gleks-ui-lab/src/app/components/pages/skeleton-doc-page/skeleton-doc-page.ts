@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ButtonComponent, GogSize, GogSkeletonAnimation, SkeletonComponent } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  GogSize,
+  GogSkeletonAnimation,
+  SkeletonComponent,
+} from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -30,7 +35,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: "'pulse' | 'wave' | 'none'",
     default: "'pulse'",
     description:
-      "pulse fades opacity, wave sweeps a shimmer highlight, none holds a static tone — useful under prefers-reduced-motion or when the surrounding UI is already busy.",
+      'pulse fades opacity, wave sweeps a shimmer highlight, none holds a static tone — useful under prefers-reduced-motion or when the surrounding UI is already busy.',
   },
   {
     name: 'width',
@@ -48,13 +53,15 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'lines',
     type: 'number',
     default: '1',
-    description: 'shape="text" only: number of stacked lines. Past one line, the last one renders shorter.',
+    description:
+      'shape="text" only: number of stacked lines. Past one line, the last one renders shorter.',
   },
   {
     name: 'rounded',
     type: 'boolean',
     default: 'true',
-    description: 'Set false to square off the corners — handy for a banner image that bleeds to the edge.',
+    description:
+      'Set false to square off the corners — handy for a banner image that bleeds to the edge.',
   },
   {
     name: 'ariaLabel',
@@ -104,7 +111,8 @@ export class SkeletonDocPage implements OnDestroy {
   protected readonly animations: GogSkeletonAnimation[] = ['pulse', 'wave', 'none'];
 
   protected readonly apiInputs = API_INPUTS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'skeleton')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'skeleton')?.tokens ?? [];
 
   protected readonly products = PRODUCTS;
   protected readonly chatMessages = CHAT_MESSAGES;
@@ -117,7 +125,8 @@ export class SkeletonDocPage implements OnDestroy {
   protected readonly importSnippet =
     "```typescript\nimport { SkeletonComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SkeletonComponent],\n})\n```";
 
-  protected readonly overviewHtml = '<gog-skeleton shape="text" [lines]="3" style="width: 220px" />';
+  protected readonly overviewHtml =
+    '<gog-skeleton shape="text" [lines]="3" style="width: 220px" />';
   protected readonly overviewTs = [
     "import { Component } from '@angular/core';",
     "import { SkeletonComponent } from '@guildofgleks/ui';",

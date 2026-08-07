@@ -100,7 +100,8 @@ const CONFIG_OPTIONS: readonly ApiRow[] = [
     name: 'modal',
     type: 'boolean',
     default: 'true',
-    description: 'Locks body scroll, traps Tab focus inside the panel, and restores focus to the trigger on close.',
+    description:
+      'Locks body scroll, traps Tab focus inside the panel, and restores focus to the trigger on close.',
   },
   {
     name: 'closable',
@@ -112,7 +113,8 @@ const CONFIG_OPTIONS: readonly ApiRow[] = [
     name: 'draggable',
     type: 'boolean',
     default: 'true',
-    description: 'Lets the header be dragged to reposition the panel. Only takes effect when a header renders.',
+    description:
+      'Lets the header be dragged to reposition the panel. Only takes effect when a header renders.',
   },
   {
     name: 'closeIconName',
@@ -176,19 +178,14 @@ const INJECTION_TOKENS: readonly ServiceRow[] = [
   },
   {
     signature: 'DIALOG_REF: InjectionToken<DialogRef<unknown>>',
-    description: 'Inject inside the body component to call close(result?) and dismiss the dialog from within.',
+    description:
+      'Inject inside the body component to call close(result?) and dismiss the dialog from within.',
   },
 ];
 
 @Component({
   selector: 'app-dialog-doc-page',
-  imports: [
-    ButtonComponent,
-    DialogComponent,
-    MarkdownComponent,
-    CodeTabsComponent,
-    RouterLink,
-  ],
+  imports: [ButtonComponent, DialogComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
   templateUrl: './dialog-doc-page.html',
   styleUrl: './dialog-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -199,7 +196,8 @@ export class DialogDocPage {
   protected readonly configOptions = CONFIG_OPTIONS;
   protected readonly serviceMethods = SERVICE_METHODS;
   protected readonly injectionTokens = INJECTION_TOKENS;
-  protected readonly styleTokens = TOKEN_SECTIONS.find((section) => section.id === 'dialog')?.tokens ?? [];
+  protected readonly styleTokens =
+    TOKEN_SECTIONS.find((section) => section.id === 'dialog')?.tokens ?? [];
 
   protected readonly lastResult = signal('No dialog closed yet.');
 
@@ -267,7 +265,7 @@ export class DialogDocPage {
     '  imports: [ButtonComponent],',
     '  template: `',
     '    <p>{{ data.message }}</p>',
-    "    <gog-button (gogClick)=\"ref.close('closed-from-body')\">Close</gog-button>",
+    '    <gog-button (gogClick)="ref.close(\'closed-from-body\')">Close</gog-button>',
     '  `,',
     '})',
     'export class DialogBodyComponent {',
@@ -408,7 +406,8 @@ export class DialogDocPage {
       component: DialogDemoContentComponent,
       modal: false,
       data: {
-        message: 'Background stays scrollable and interactive, and Tab is not trapped inside the panel.',
+        message:
+          'Background stays scrollable and interactive, and Tab is not trapped inside the panel.',
       },
     });
 

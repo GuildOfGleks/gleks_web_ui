@@ -31,7 +31,7 @@ const API_INPUTS: readonly ApiRow[] = [
     type: 'boolean',
     default: 'false',
     description:
-      'Blocks toggle() and the trigger\'s click handler. Programmatic [open] writes still work.',
+      "Blocks toggle() and the trigger's click handler. Programmatic [open] writes still work.",
   },
 ];
 
@@ -77,9 +77,24 @@ export class CollapsibleDocPage {
   protected readonly controlledOpen = signal(false);
 
   protected readonly faqItems = signal([
-    { id: 'shipping', question: 'How long does shipping take?', answer: 'Ships within 2 business days via standard courier.', open: false },
-    { id: 'returns', question: 'What is the return policy?', answer: 'Free returns within 30 days of delivery.', open: false },
-    { id: 'warranty', question: 'Is there a warranty?', answer: 'One year, covering manufacturing defects.', open: false },
+    {
+      id: 'shipping',
+      question: 'How long does shipping take?',
+      answer: 'Ships within 2 business days via standard courier.',
+      open: false,
+    },
+    {
+      id: 'returns',
+      question: 'What is the return policy?',
+      answer: 'Free returns within 30 days of delivery.',
+      open: false,
+    },
+    {
+      id: 'warranty',
+      question: 'Is there a warranty?',
+      answer: 'One year, covering manufacturing defects.',
+      open: false,
+    },
   ]);
 
   protected readonly importSnippet =
@@ -122,7 +137,7 @@ export class CollapsibleDocPage {
     '<gog-collapsible [(open)]="open">',
     '  <div class="card-header" gogCollapsibleTrigger>',
     '    <span>Order #4471</span>',
-    '    <gog-icon [name]="open() ? \'chevron-up\' : \'chevron-down\'" />',
+    "    <gog-icon [name]=\"open() ? 'chevron-up' : 'chevron-down'\" />",
     '  </div>',
     '  <div gogCollapsibleContent class="card-body">',
     '    <p>3 items — shipped Aug 4, arriving Aug 6.</p>',
@@ -150,7 +165,7 @@ export class CollapsibleDocPage {
     '    <gog-collapsible [(open)]="open">',
     '      <div class="card-header" gogCollapsibleTrigger>',
     '        <span>Order #4471</span>',
-    '        <gog-icon [name]="open() ? \'chevron-up\' : \'chevron-down\'" />',
+    "        <gog-icon [name]=\"open() ? 'chevron-up' : 'chevron-down'\" />",
     '      </div>',
     '      <div gogCollapsibleContent class="card-body">',
     '        <p>3 items — shipped Aug 4, arriving Aug 6.</p>',
@@ -271,6 +286,8 @@ export class CollapsibleDocPage {
   ].join('\n');
 
   protected setFaqOpen(id: string, open: boolean): void {
-    this.faqItems.update((items) => items.map((item) => (item.id === id ? { ...item, open } : item)));
+    this.faqItems.update((items) =>
+      items.map((item) => (item.id === id ? { ...item, open } : item)),
+    );
   }
 }

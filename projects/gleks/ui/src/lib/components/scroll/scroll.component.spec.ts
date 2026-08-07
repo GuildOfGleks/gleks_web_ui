@@ -171,7 +171,14 @@ describe('ScrollComponent', () => {
       await new Promise((resolve) => requestAnimationFrame(resolve));
 
       expect(emitted).toEqual([
-        { scrollTop: 50, scrollLeft: 0, scrollHeight: 400, scrollWidth: 100, clientHeight: 100, clientWidth: 100 },
+        {
+          scrollTop: 50,
+          scrollLeft: 0,
+          scrollHeight: 400,
+          scrollWidth: 100,
+          clientHeight: 100,
+          clientWidth: 100,
+        },
       ]);
     });
 
@@ -248,7 +255,9 @@ describe('ScrollComponent', () => {
       TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
         imports: [ScrollComponent],
-        providers: [{ provide: GOG_CONFIG, useValue: { scroll: { overscrollBehavior: 'contain' } } }],
+        providers: [
+          { provide: GOG_CONFIG, useValue: { scroll: { overscrollBehavior: 'contain' } } },
+        ],
       }).compileComponents();
 
       const providedFixture = TestBed.createComponent(ScrollComponent);
@@ -293,7 +302,11 @@ describe('ScrollComponent', () => {
       // clientHeight large enough that the thumb-min-size floor (32px / 200px = 16%)
       // stays below the raw 25% thumb size computed here.
       mockMetrics(viewport, { scrollHeight: 800, clientHeight: 200 });
-      Object.defineProperty(viewport, 'scrollTop', { value: 0, configurable: true, writable: true });
+      Object.defineProperty(viewport, 'scrollTop', {
+        value: 0,
+        configurable: true,
+        writable: true,
+      });
       viewport.dispatchEvent(new Event('scroll'));
       await fixture.whenStable();
       await new Promise((resolve) => requestAnimationFrame(resolve));

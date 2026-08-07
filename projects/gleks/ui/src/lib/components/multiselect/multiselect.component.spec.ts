@@ -649,9 +649,9 @@ describe('MultiselectComponent', () => {
       providedFixture.componentRef.setInput('floatLabel', 'in');
       await providedFixture.whenStable();
 
-      expect(
-        providedFixture.nativeElement.querySelector('.gog-ms-wrapper').classList,
-      ).toContain('gog-ms-wrapper--float-in');
+      expect(providedFixture.nativeElement.querySelector('.gog-ms-wrapper').classList).toContain(
+        'gog-ms-wrapper--float-in',
+      );
     });
 
     it('falls back to GOG_CONFIG.floatLabel.variant when the instance input is unset', async () => {
@@ -665,9 +665,9 @@ describe('MultiselectComponent', () => {
       providedFixture.componentRef.setInput('label', 'Tags');
       await providedFixture.whenStable();
 
-      expect(
-        providedFixture.nativeElement.querySelector('.gog-ms-wrapper').classList,
-      ).toContain('gog-ms-wrapper--float-on');
+      expect(providedFixture.nativeElement.querySelector('.gog-ms-wrapper').classList).toContain(
+        'gog-ms-wrapper--float-on',
+      );
     });
 
     it('marks the field as floated once a selection is made, even without focus', async () => {
@@ -677,9 +677,9 @@ describe('MultiselectComponent', () => {
       fixture.componentRef.setInput('value', ['a']);
       await fixture.whenStable();
 
-      expect(
-        fixture.nativeElement.querySelector('.gog-ms-wrapper').classList,
-      ).toContain('gog-ms-wrapper--floated');
+      expect(fixture.nativeElement.querySelector('.gog-ms-wrapper').classList).toContain(
+        'gog-ms-wrapper--floated',
+      );
     });
 
     it('marks the field as floated on focus and unfloats on blur when still empty', async () => {
@@ -690,15 +690,15 @@ describe('MultiselectComponent', () => {
       const trigger = fixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
       trigger.dispatchEvent(new Event('focus'));
       await fixture.whenStable();
-      expect(
-        fixture.nativeElement.querySelector('.gog-ms-wrapper').classList,
-      ).toContain('gog-ms-wrapper--floated');
+      expect(fixture.nativeElement.querySelector('.gog-ms-wrapper').classList).toContain(
+        'gog-ms-wrapper--floated',
+      );
 
       trigger.dispatchEvent(new Event('blur'));
       await fixture.whenStable();
-      expect(
-        fixture.nativeElement.querySelector('.gog-ms-wrapper').classList,
-      ).not.toContain('gog-ms-wrapper--floated');
+      expect(fixture.nativeElement.querySelector('.gog-ms-wrapper').classList).not.toContain(
+        'gog-ms-wrapper--floated',
+      );
     });
 
     describe('floatLabelShowPlaceholder', () => {

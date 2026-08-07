@@ -106,7 +106,9 @@ describe('GogTooltipDirective', () => {
     overrideFixture.componentInstance.showDelay = 50;
     overrideFixture.componentInstance.hideDelay = 20;
     overrideFixture.detectChanges();
-    const overrideTrigger = overrideFixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    const overrideTrigger = overrideFixture.nativeElement.querySelector(
+      'button',
+    ) as HTMLButtonElement;
 
     overrideTrigger.dispatchEvent(new MouseEvent('mouseenter'));
     vi.advanceTimersByTime(50);
@@ -150,7 +152,9 @@ describe('GogTooltipDirective', () => {
     const disabledFixture = TestBed.createComponent(HostComponent);
     disabledFixture.componentInstance.disabled = true;
     disabledFixture.detectChanges();
-    const disabledTrigger = disabledFixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    const disabledTrigger = disabledFixture.nativeElement.querySelector(
+      'button',
+    ) as HTMLButtonElement;
 
     disabledTrigger.dispatchEvent(new MouseEvent('mouseenter'));
     vi.advanceTimersByTime(300);
@@ -247,7 +251,9 @@ describe('GogTooltipDirective with GOG_CONFIG', () => {
     try {
       TestBed.configureTestingModule({
         imports: [HostComponent],
-        providers: [{ provide: GOG_CONFIG, useValue: { tooltip: { showDelay: 10, hideDelay: 5 } } }],
+        providers: [
+          { provide: GOG_CONFIG, useValue: { tooltip: { showDelay: 10, hideDelay: 5 } } },
+        ],
       });
       const fixture = TestBed.createComponent(HostComponent);
       fixture.detectChanges();

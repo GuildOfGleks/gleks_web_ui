@@ -57,8 +57,15 @@
           focusable would insert an extra stop ahead of that content and change which
           element the trap treats as "first".
         -->
-        <gog-scroll size="thin" [focusable]="false" overscrollBehavior="contain" class="gog-dialog__scroll">
-          <ng-container *ngComponentOutlet="dialog.config.component; injector: getInjector(dialog)" />
+        <gog-scroll
+          size="thin"
+          [focusable]="false"
+          overscrollBehavior="contain"
+          class="gog-dialog__scroll"
+        >
+          <ng-container
+            *ngComponentOutlet="dialog.config.component; injector: getInjector(dialog)"
+          />
         </gog-scroll>
       </div>
     </div>

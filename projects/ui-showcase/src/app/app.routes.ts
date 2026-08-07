@@ -25,8 +25,7 @@ export const routes: Routes = [
   },
   {
     path: 'textarea',
-    loadComponent: () =>
-      import('./pages/textarea-page/textarea-page').then((m) => m.TextareaPage),
+    loadComponent: () => import('./pages/textarea-page/textarea-page').then((m) => m.TextareaPage),
   },
   {
     path: 'radio-group',
