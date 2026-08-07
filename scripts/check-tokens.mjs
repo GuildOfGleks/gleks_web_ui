@@ -24,6 +24,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { glob } from 'node:fs/promises';
+import * as sass from 'sass';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uiSrc = path.join(rootDir, 'projects/gleks/ui/src');
@@ -124,12 +125,38 @@ const LITERAL_FALLBACK_ALLOWED = new Set([
 
 const DECLARATION_RE = /(--gog-[a-zA-Z0-9-]+)\s*:/g;
 
-async function collectScss(dir) {
-  const out = [];
+/**
+ * Component stylesheets are analysed **after** compiling them with sass, not as raw source.
+ *
+ * Token names are increasingly assembled by interpolation inside shared mixins
+ * (`var(--gog-#{$prefix}-float-label-on-bg, …)` in `lib/styles/_float-label.scss`), which a
+ * text scan of the `.scss` cannot resolve — it would report those tokens as never read and
+ * miss any violation hidden inside a mixin. Compiled CSS is the ground truth for what a
+ * component actually paints, so the rules below run against that and stay correct no matter
+ * how the SCSS is factored.
+ *
+ * Partials (`_name.scss`) are skipped: they emit nothing on their own and are compiled as part
+ * of whichever component stylesheet uses them.
+ */
+async function collectCompiledScss(dir) {
+  const files = [];
   for await (const entry of glob('**/*.scss', { cwd: dir, withFileTypes: true })) {
-    if (entry.isFile()) out.push(path.join(entry.parentPath ?? entry.path, entry.name));
+    if (entry.isFile() && !entry.name.startsWith('_')) {
+      files.push(path.join(entry.parentPath ?? entry.path, entry.name));
+    }
   }
-  return out.sort();
+  files.sort();
+
+  const compiled = new Map();
+  for (const file of files) {
+    try {
+      compiled.set(file, sass.compile(file, { style: 'expanded', sourceMap: false }).css);
+    } catch (error) {
+      console.error(`Failed to compile ${path.relative(rootDir, file)}:\n  ${error.message}`);
+      process.exit(1);
+    }
+  }
+  return compiled;
 }
 
 function findDeclared(content) {
@@ -210,8 +237,8 @@ async function main() {
   const themeCss = readFileSync(themePath, 'utf8');
   const themeDeclared = findDeclared(themeCss);
 
-  const scssFiles = await collectScss(path.join(uiSrc, 'lib'));
-  const scssContent = new Map(scssFiles.map((f) => [f, readFileSync(f, 'utf8')]));
+  const scssContent = await collectCompiledScss(path.join(uiSrc, 'lib'));
+  const scssFiles = [...scssContent.keys()];
 
   const componentDeclared = new Set();
   for (const content of scssContent.values()) {
@@ -225,7 +252,9 @@ async function main() {
   for (const [file, content] of scssContent) {
     for (const { token, fallback, index } of parseVarReads(content)) {
       readTokens.add(token);
-      const where = `${rel(file)}:${lineOf(content, index)}`;
+      // Line numbers are into the *compiled* CSS, so they don't map onto the .scss when the
+      // rule came from a mixin. The token name is the thing to grep for.
+      const where = `${rel(file)} (compiled, line ${lineOf(content, index)})`;
 
       // Rule A
       if (
