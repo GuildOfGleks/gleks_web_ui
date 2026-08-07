@@ -32,10 +32,12 @@ jobs:
       - name: Format check
         run: npm run format:check
 
-      # Every `var(--gog-x)` read with no fallback must resolve to something declared in
-      # theme.css, or it silently drops to `transparent`/`initial` (see the "Design-token
-      # contract" in styling.instructions.md).
-      - name: Token consistency check
+      # Enforces the four-rule design-token contract (see the header of
+      # scripts/check-tokens.mjs and "Theming via CSS custom properties" in
+      # styling.instructions.md): no real default hidden in a var() fallback, every token
+      # read resolves, theme.css's `:root` block stays literals-only, and the
+      # instance-layer allowlist matches the stylesheets.
+      - name: Design-token contract check
         run: npm run check:tokens
 
       # The library must build standalone, before anything that consumes it.

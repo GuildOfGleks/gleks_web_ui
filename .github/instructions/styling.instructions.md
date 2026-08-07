@@ -19,32 +19,48 @@ Every component `.scss` file follows the rules below. See
 - Drive modifiers from the template with `[class.gog-btn--lg]="size() === 'lg'"`
   bindings — never `ngClass`.
 
-## Theming via CSS custom properties
+## Theming via CSS custom properties — the three layers
 
-- Every themeable value is a **CSS custom property named `--gog-<component>-*`**.
-- Declare defaults on the block selector, then consume them:
+Every themeable value is a **CSS custom property named `--gog-<block>-*`**. Where it is
+*declared* is the whole design, so read this before adding one. The authoritative version
+of this model lives in the header comment of `src/styles/theme.css`; this is the short form.
+
+| Layer | Name shape | Declared in | Purpose |
+| --- | --- | --- | --- |
+| 1. Foundation | `--gog-accent-color`, `--gog-space-md`, `--gog-duration-base` | `theme.css` | palette / scale — restyles everything |
+| 2. Component | `--gog-btn-primary-bg`, `--gog-select-option-gap` | `theme.css` | the actual values, one block per component |
+| 3. Instance | `--gog-btn-bg`, `--gog-tag-accent` | **nowhere** | deliberately undeclared escape hatch |
+
+**A component stylesheet declares no `--gog-*` value of its own — ever.** It only *reads*
+tokens, falling through the layers with nested `var()`:
 
 ```scss
+/* button.component.scss — reads only, declares nothing */
 .gog-btn {
-  --gog-btn-bg: #fae000;
-  --gog-btn-color: #1a1208;
-  --gog-btn-radius: 0px;
-
-  background-color: var(--gog-btn-bg);
-  color: var(--gog-btn-color);
-  border-radius: var(--gog-btn-radius);
+  background-color: var(--gog-btn-bg, var(--gog-btn-variant-bg, var(--gog-btn-primary-bg)));
 }
 
-/* variants only re-map the custom properties */
+/* variants re-map the *internal* variant tier, never the instance tier */
 .gog-btn--outline {
-  --gog-btn-bg: transparent;
-  --gog-btn-color: var(--gog-accent-color);
+  --gog-btn-variant-bg: var(--gog-btn-outline-bg);
 }
 ```
 
-- This lets consumers re-skin components by overriding `--gog-*` without touching internals,
-  and lets a parent component theme a child (e.g. a button setting `--gog-spinner-color`).
-- When reading a shared design token, use a fallback: `var(--gog-spinner-color, var(--gog-accent-color))`.
+Why each rule matters:
+
+- **Layer 3 must stay undeclared.** `--gog-btn-bg` has no value anywhere, which is exactly
+  what lets `.my-form gog-button { --gog-btn-bg: red }` beat `.gog-btn--primary` without a
+  specificity fight or `::ng-deep`. Declare it once — even as a "harmless default" on the
+  block — and every button on the page is pinned to that value, because the block selector
+  out-cascades nothing but still wins over an inherited custom property. This is the single
+  most load-bearing property of the theming system; do not break it.
+- **No literal fallbacks in component SCSS.** `var(--gog-input-float-label-in-top, 8px)` puts
+  the real default in a file a theme cannot reach: a consumer can override the token, but
+  nobody can *discover* that `8px` without grepping the SCSS, and `theme.css` no longer
+  documents the component's full surface. The fallback chain must bottom out in a token that
+  `theme.css` declares, not in a number. `scripts/check-tokens.mjs` enforces this.
+- The only nested `var()` fallbacks allowed are **token-to-token** — the instance → variant →
+  component chain above, or a shared token (`var(--gog-spinner-color, var(--gog-accent-color))`).
 
 ## Design-token contract
 
@@ -58,10 +74,18 @@ Rules when touching tokens:
   consumed but never declared makes the whole declaration invalid at computed-value time —
   `background-color: var(--undefined)` silently becomes `transparent`, it does not fall
   back to the previous value.
-- Put **structural** tokens (sizing, spacing, typography) on `:root` and only the palette
-  in the `:root[data-theme='…']` blocks, so a theme inherits everything it doesn't
-  override. Declaring structural tokens inside a single theme block drops them for
-  every other theme.
+- **Which block in `theme.css` a new token goes in is decided by one question: does its
+  value contain `var()`?** A custom property's `var()` references are substituted on the
+  element that *declares* it, not where it is read — so a derived token declared only on
+  `:root` freezes to the root palette and will not follow a scoped `[data-theme]` subtree.
+  - value is a literal (`8px`, `#fae000`, `ease`) → the `:root` block;
+  - value reads another token (`var(--gog-accent-color)`, `color-mix(… var(…))`) → the
+    `:root, [data-theme]` block, so it re-derives per theme scope.
+  Getting this wrong produces a token that works on a full-page theme and silently breaks
+  in the showcase's side-by-side theme lab — a bug class that is very hard to spot locally.
+- A theme block declares only what that theme *changes* (normally just the palette). The
+  derived layer re-resolves from it automatically; re-listing component tokens per theme is
+  what makes themes drift apart.
 - Document any new app-level token in the README's theming table.
 - Do not hardcode brand colors when a token exists.
 
