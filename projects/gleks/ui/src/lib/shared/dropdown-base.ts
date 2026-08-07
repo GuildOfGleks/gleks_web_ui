@@ -17,7 +17,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
-import { GOG_CONFIG } from './config';
+import { GOG_CONFIG, resolveConfigured } from './config';
 import { GogDropdownOverlay } from './dropdown-overlay';
 import {
   type GogDropdownDirection,
@@ -49,6 +49,12 @@ const FALLBACK_OPTION_HEIGHT = 40;
 /** Must match the `var(--gog-dropdown-z, …)` fallback in the component stylesheets. */
 const DEFAULT_PANEL_Z_INDEX = 300;
 
+/** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
+const DEFAULT_SIZE: GogSize = 'md';
+const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
+const DEFAULT_APPEND_TO_BODY = false;
+const DEFAULT_DROPDOWN_DIRECTION: GogDropdownDirection = 'auto';
+
 /**
  * Shared behaviour for the listbox-style controls: open/close, placement, the
  * append-to-body overlay, click-outside, keyboard navigation and `ControlValueAccessor`
@@ -75,10 +81,15 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
   readonly placeholder = input('Select...');
   readonly options = input<GogDropdownOption[]>([]);
   readonly errorMessage = input('');
-  /** See `GogErrorDisplay`. Defaults to `'manual'`, matching every other control in the library. */
-  readonly errorDisplay = input<GogErrorDisplay>('manual');
-  readonly size = input<GogSize>('md');
-  readonly dropdownDirection = input<GogDropdownDirection>('auto');
+  /**
+   * See `GogErrorDisplay`. Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to
+   * `'manual'` — matching every other control in the library.
+   */
+  readonly errorDisplay = input<GogErrorDisplay | undefined>(undefined);
+  /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
+  readonly size = input<GogSize | undefined>(undefined);
+  /** Unset, falls back to `GOG_CONFIG.dropdown.direction`, then to `'auto'`. */
+  readonly dropdownDirection = input<GogDropdownDirection | undefined>(undefined);
   /**
    * Explicit stacking order for the panel. Left unset the panel falls back to the
    * stylesheet's `--gog-dropdown-z`, so the default lives in CSS where a consumer can
@@ -99,7 +110,8 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
    * viewport-derived, auto-flipping height.
    */
   readonly dropdownMaxHeight = input<string | null>(null);
-  readonly appendToBody = input(false);
+  /** Unset, falls back to `GOG_CONFIG.dropdown.appendToBody`, then to `false`. */
+  readonly appendToBody = input<boolean | undefined>(undefined);
   readonly disabled = input(false);
   readonly chevronTemplate = input<TemplateRef<unknown> | null>(null);
   /**
@@ -124,6 +136,13 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
   protected abstract readonly optionClass: string;
   /** BEM class of the focusable trigger. */
   protected abstract readonly triggerClass: string;
+  /**
+   * BEM block that carries the size modifier — `.gog-select` vs `.gog-ms-wrapper`. Separate
+   * from `triggerClass` because in `gog-multiselect` the two are different elements.
+   */
+  protected abstract readonly sizeBlockClass: string;
+  /** BEM block of the panel, which repeats the size modifier when appended to `<body>`. */
+  protected abstract readonly panelBlockClass: string;
   /** Whether the control currently has a selection — drives the float-label "filled" state. */
   protected abstract readonly hasFloatValue: Signal<boolean>;
   /**
@@ -152,10 +171,55 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
   /** Set from `(focus)`/`(blur)` on the trigger — see `onFocusIn`/`onFocusOut`. */
   protected readonly isFocused = signal(false);
 
+  /** Instance input → `GOG_CONFIG` → the component's own default. See `resolveConfigured`. */
+  protected readonly resolvedSize = computed(() =>
+    resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),
+  );
+  protected readonly resolvedErrorDisplay = computed(() =>
+    resolveConfigured(
+      this.errorDisplay(),
+      this.globalConfig.control?.errorDisplay,
+      DEFAULT_ERROR_DISPLAY,
+    ),
+  );
+  protected readonly resolvedAppendToBody = computed(() =>
+    resolveConfigured(
+      this.appendToBody(),
+      this.globalConfig.dropdown?.appendToBody,
+      DEFAULT_APPEND_TO_BODY,
+    ),
+  );
+  protected readonly resolvedDropdownDirection = computed(() =>
+    resolveConfigured(
+      this.dropdownDirection(),
+      this.globalConfig.dropdown?.direction,
+      DEFAULT_DROPDOWN_DIRECTION,
+    ),
+  );
+
+  /**
+   * The single size modifier for the wrapper, replacing one `[class.<block>--<size>]` binding
+   * per size. Empty for `'md'`: that is the default size and has no modifier rule of its own —
+   * every `--gog-<block>-size-*` chain bottoms out at the `md` tokens.
+   */
+  protected readonly sizeClass = computed(() =>
+    this.resolvedSize() === DEFAULT_SIZE ? '' : `${this.sizeBlockClass}--${this.resolvedSize()}`,
+  );
+  /**
+   * Same modifier repeated on the panel, but only when it is appended to `<body>` — outside
+   * the component's subtree the panel no longer inherits the wrapper's size tokens, so it has
+   * to carry them itself. See the `--portal` blocks in the component stylesheets.
+   */
+  protected readonly panelSizeClass = computed(() =>
+    this.resolvedAppendToBody() && this.resolvedSize() !== DEFAULT_SIZE
+      ? `${this.panelBlockClass}--${this.resolvedSize()}`
+      : '',
+  );
+
   private readonly cvaDisabled = signal(false);
   private readonly errorState = new GogErrorState(
     this.errorMessage,
-    this.errorDisplay,
+    this.resolvedErrorDisplay,
     this.ngControl,
   );
 
@@ -309,7 +373,7 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
     this.refreshPanelMetrics();
     this.updatePlacement();
 
-    if (this.appendToBody()) {
+    if (this.resolvedAppendToBody()) {
       this.attachOverlay();
     }
   }
@@ -449,7 +513,7 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
       styles.getPropertyValue(this.optionHeightToken),
       FALLBACK_OPTION_HEIGHT,
     );
-    this.panelZIndex.set(this.appendToBody() ? this.resolvePanelZIndex(styles) : null);
+    this.panelZIndex.set(this.resolvedAppendToBody() ? this.resolvePanelZIndex(styles) : null);
   }
 
   /**
@@ -506,7 +570,7 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
     if (!this.isBrowser) return;
 
     const placement = resolveDropdownPlacement(
-      this.dropdownDirection(),
+      this.resolvedDropdownDirection(),
       this.triggerRect(),
       this.estimatePanelHeight(),
       window.innerHeight,

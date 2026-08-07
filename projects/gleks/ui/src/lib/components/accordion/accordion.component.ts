@@ -78,6 +78,15 @@ export class GogAccordionChevronDirective {
 export class AccordionComponent {
   private static nextUid = 0;
   readonly items = input<GogAccordionItem[]>([]);
+
+  /**
+   * The single size modifier, replacing one `[class.gog-accordion--<size>]` binding per size.
+   * Empty for `'lg'`: that is this component's default size, and its tokens are what every
+   * `--gog-accordion-*` chain bottoms out at, so it has no modifier rule of its own.
+   */
+  protected readonly sizeClass = computed(() =>
+    this.size() === 'lg' ? '' : `gog-accordion--${this.size()}`,
+  );
   readonly size = input<GogSize>('lg');
   readonly expandFirst = input(false);
   readonly multi = input(false);

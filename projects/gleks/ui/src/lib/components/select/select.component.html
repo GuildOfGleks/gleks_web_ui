@@ -5,12 +5,9 @@
 -->
 <div
   class="gog-select"
+  [class]="sizeClass()"
   [class.gog-select--disabled]="isDisabled()"
   [class.gog-select--open]="isOpen()"
-  [class.gog-select--xsm]="size() === 'xsm'"
-  [class.gog-select--sm]="size() === 'sm'"
-  [class.gog-select--lg]="size() === 'lg'"
-  [class.gog-select--slg]="size() === 'slg'"
   [class.gog-select--float-in]="resolvedFloatLabel() === 'in'"
   [class.gog-select--float-on]="resolvedFloatLabel() === 'on'"
   [class.gog-select--float-over]="resolvedFloatLabel() === 'over'"
@@ -63,7 +60,7 @@
       </span>
     </button>
 
-    @if (isOpen() && !appendToBody()) {
+    @if (isOpen() && !resolvedAppendToBody()) {
       <ng-container [ngTemplateOutlet]="panelTpl" />
     }
   </div>
@@ -86,16 +83,13 @@
   <div
     [id]="listboxId()"
     class="gog-select__dropdown"
-    [class.gog-select__dropdown--up]="!appendToBody() && dropdownDirectionState() === 'up'"
-    [class.gog-select__dropdown--portal]="appendToBody()"
-    [class.gog-select__dropdown--xsm]="appendToBody() && size() === 'xsm'"
-    [class.gog-select__dropdown--sm]="appendToBody() && size() === 'sm'"
-    [class.gog-select__dropdown--lg]="appendToBody() && size() === 'lg'"
-    [class.gog-select__dropdown--slg]="appendToBody() && size() === 'slg'"
-    [style.top.px]="appendToBody() ? panelPlacement()?.top : null"
-    [style.left.px]="appendToBody() ? panelPlacement()?.left : null"
-    [style.width]="appendToBody() ? resolvedPanelWidth() : null"
-    [style.max-height]="appendToBody() ? resolvedPanelMaxHeight() : null"
+    [class.gog-select__dropdown--up]="!resolvedAppendToBody() && dropdownDirectionState() === 'up'"
+    [class.gog-select__dropdown--portal]="resolvedAppendToBody()"
+    [class]="panelSizeClass()"
+    [style.top.px]="resolvedAppendToBody() ? panelPlacement()?.top : null"
+    [style.left.px]="resolvedAppendToBody() ? panelPlacement()?.left : null"
+    [style.width]="resolvedAppendToBody() ? resolvedPanelWidth() : null"
+    [style.max-height]="resolvedAppendToBody() ? resolvedPanelMaxHeight() : null"
     [style.z-index]="dropdownZIndex() ?? panelZIndex()"
     role="listbox"
     [attr.aria-labelledby]="label() ? labelId() : null"

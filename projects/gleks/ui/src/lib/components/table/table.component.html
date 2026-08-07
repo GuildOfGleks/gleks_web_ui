@@ -2,13 +2,10 @@
   <gog-scroll axis="horizontal" class="gog-table-scroll">
     <table
       class="gog-table"
+      [class]="sizeClass()"
       [class.gog-table--col-borders]="showColumnBorders()"
       [class.gog-table--loading]="loading()"
-      [class.gog-table--slg]="size() === 'slg'"
-      [class.gog-table--md]="size() === 'md'"
       [class.gog-table--sticky-header]="stickyHeader()"
-      [class.gog-table--sm]="size() === 'sm'"
-      [class.gog-table--xsm]="size() === 'xsm'"
       [style.width]="fullWidth() ? '100%' : 'fit-content'"
     >
       <colgroup>

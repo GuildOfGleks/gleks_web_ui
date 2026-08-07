@@ -17,8 +17,23 @@ reached 1.0, so breaking changes may land in minor versions.
 - `resolveConfigured(instanceValue, configuredValue, fallback)` (exported) — the library's
   input → `GOG_CONFIG` → built-in default precedence rule in one place, instead of the `??`
   chain hand-written at each configurable input.
+- `GOG_CONFIG` now covers the settings an app otherwise repeats on every instance:
+  `control.size` and `control.errorDisplay` (the latter is what makes `errorDisplay="auto"` an
+  app-wide decision for a Reactive Forms app rather than per-field boilerplate),
+  `dropdown.appendToBody`, `dropdown.direction`, and `toast.position` / `toast.duration`.
+  `control.size` deliberately covers only the interactive form controls — `gog-table`,
+  `gog-accordion` and `gog-paginator` keep their own density defaults, as do `gog-spinner`,
+  `gog-skeleton`, `gog-tag` and `gog-chip`. All stay per-instance overridable.
 
 ### Changed
+
+- **`provideGogConfig(...)` now merges with the config from the parent injector instead of
+  replacing it.** Previously a nested call — in a route's or a component's `providers` —
+  silently dropped every key it did not restate, so a route setting only `{ tooltip: … }` lost
+  the app-wide `button.debounce` with no error anywhere. Merging is one level deep, per
+  component key, nearest provider winning field by field. If you were working around the old
+  behaviour by repeating the whole config at each level, those repeats are now redundant but
+  harmless.
 
 - Float label geometry is now themeable through `theme.css` instead of being hardcoded in the
   component stylesheets. `--gog-{input,select,ms}-float-label-{reserve,in-top,over-gap,over-reserve}`

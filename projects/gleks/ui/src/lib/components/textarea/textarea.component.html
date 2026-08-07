@@ -1,9 +1,6 @@
 <div
   class="gog-input-wrapper gog-contained-layout"
-  [class.gog-input-wrapper--xsm]="size() === 'xsm'"
-  [class.gog-input-wrapper--sm]="size() === 'sm'"
-  [class.gog-input-wrapper--lg]="size() === 'lg'"
-  [class.gog-input-wrapper--slg]="size() === 'slg'"
+  [class]="sizeClass()"
   [class.gog-input-wrapper--float-in]="resolvedFloatLabel() === 'in'"
   [class.gog-input-wrapper--float-on]="resolvedFloatLabel() === 'on'"
   [class.gog-input-wrapper--float-over]="resolvedFloatLabel() === 'over'"

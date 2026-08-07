@@ -1,11 +1,17 @@
-import { InjectionToken, Provider } from '@angular/core';
+import { InjectionToken, Provider, inject } from '@angular/core';
 
 import {
   GogFloatLabelVariant,
   GogScrollOverscrollBehavior,
   GogScrollSize,
+  GogSize,
   GogTooltipPosition,
 } from './types';
+// Type-only, so none of these pull a runtime dependency into this module — `config.ts` is
+// imported by nearly every component and must stay free of import cycles.
+import type { GogErrorDisplay } from './error-state';
+import type { GogDropdownDirection } from './dropdown-position';
+import type { ToastPosition } from '../services/toast-service/toast-service';
 
 /**
  * App-wide defaults for the handful of component inputs where that actually makes sense —
@@ -47,6 +53,42 @@ export interface GogGlobalConfig {
      */
     showPlaceholder?: boolean;
   };
+  /**
+   * Defaults for the interactive form controls — the two settings an app otherwise repeats on
+   * literally every one of them: a compact app writes `size="sm"` everywhere, and a
+   * Reactive-Forms app writes `errorDisplay="auto"` on every field.
+   *
+   * - `size` applies to `gog-button`, `gog-inputfield`, `gog-textarea`, `gog-select`,
+   *   `gog-multiselect`, `gog-checkbox` and `gog-radio-group`. Deliberately **not** to
+   *   `gog-table`, `gog-accordion` or `gog-paginator` (whose `size` means row/layout density
+   *   and whose defaults differ), nor to `gog-spinner`, `gog-skeleton`, `gog-tag` or
+   *   `gog-chip` (sized to fit whatever they sit next to, not to a form's density).
+   * - `errorDisplay` applies to every control that renders a validation message:
+   *   `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-radio-group`
+   *   and `gog-slider`.
+   *
+   * A component's own built-in default still applies when this is unset, so setting `size`
+   * here does not flatten the different defaults those excluded components have.
+   */
+  control?: {
+    size?: GogSize;
+    errorDisplay?: GogErrorDisplay;
+  };
+  /** Applies to `gog-select` and `gog-multiselect`. */
+  dropdown?: {
+    /**
+     * Whether the panel is rendered into `<body>` instead of inline. Worth setting app-wide
+     * for a layout whose dropdowns generally live inside scrollable or overflow-clipped
+     * containers, which is the case this exists for.
+     */
+    appendToBody?: boolean;
+    direction?: GogDropdownDirection;
+  };
+  toast?: {
+    position?: ToastPosition;
+    /** How long a non-sticky toast stays up, in ms. */
+    duration?: number;
+  };
 }
 
 /**
@@ -57,6 +99,33 @@ export const GOG_CONFIG = new InjectionToken<GogGlobalConfig>('GOG_CONFIG', {
   providedIn: 'root',
   factory: () => ({}),
 });
+
+/**
+ * Layers `override` onto `base`, one level deep: a component key present in both has its
+ * fields merged (so `{ tooltip: { showDelay } }` keeps the parent's `tooltip.position`), and a
+ * key present in only one is taken as-is.
+ *
+ * Deliberately not a deep merge — `GogGlobalConfig` is exactly two levels by design, and a
+ * recursive merge would start doing surprising things to any future field whose value is
+ * itself an object the consumer means to replace wholesale.
+ */
+function mergeGogConfig(base: GogGlobalConfig, override: GogGlobalConfig): GogGlobalConfig {
+  const merged: Record<string, unknown> = { ...base };
+
+  for (const [key, overrideValue] of Object.entries(override)) {
+    const baseValue = (base as Record<string, unknown>)[key];
+    merged[key] =
+      isPlainObject(baseValue) && isPlainObject(overrideValue)
+        ? { ...baseValue, ...overrideValue }
+        : overrideValue;
+  }
+
+  return merged as GogGlobalConfig;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
 
 /**
  * Sets app-wide (or subtree-wide, if placed in a route's or component's own `providers`
@@ -73,13 +142,28 @@ export const GOG_CONFIG = new InjectionToken<GogGlobalConfig>('GOG_CONFIG', {
  * ]
  * ```
  *
- * Providing this again further down the injector tree (a route, a single component's own
- * `providers`) replaces the whole object for that subtree rather than merging with the
- * parent's — pass everything you want in effect there, not just the one field you're
- * changing.
+ * **Providing this again further down the injector tree layers onto the parent's config
+ * rather than replacing it.** A route that only cares about tooltips can say so, and the
+ * app-wide `button.debounce` stays in effect inside it:
+ *
+ * ```ts
+ * // a route's providers — button.debounce from app.config.ts still applies here
+ * provideGogConfig({ tooltip: { showDelay: 0 } })
+ * ```
+ *
+ * Merging is one level deep, per component key: the nearest provider wins field by field, so
+ * `{ tooltip: { showDelay: 0 } }` overrides only `showDelay` and leaves a parent's
+ * `tooltip.position` alone. To drop an inherited value rather than change it, set it back to
+ * the component's own default explicitly — there is no "unset" marker.
  */
 export function provideGogConfig(config: GogGlobalConfig): Provider {
-  return { provide: GOG_CONFIG, useValue: config };
+  return {
+    provide: GOG_CONFIG,
+    // skipSelf so this reads the *parent* injector's config rather than recursing into the
+    // provider being defined here; optional because at the root there is no parent providing it.
+    useFactory: () =>
+      mergeGogConfig(inject(GOG_CONFIG, { skipSelf: true, optional: true }) ?? {}, config),
+  };
 }
 
 /**

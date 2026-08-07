@@ -5,11 +5,6 @@
   [attr.aria-label]="ariaLabel()"
   [attr.disabled]="isNativeDisabled() ? true : null"
   [class.gog-btn--ghost]="variant() === 'ghost'"
-  [class.gog-btn--xsm]="size() === 'xsm'"
-  [class.gog-btn--sm]="size() === 'sm'"
-  [class.gog-btn--md]="size() === 'md'"
-  [class.gog-btn--lg]="size() === 'lg'"
-  [class.gog-btn--slg]="size() === 'slg'"
   [class.gog-btn--loading]="loading()"
   [class.gog-btn--outline]="variant() === 'outline'"
   [class.gog-btn--primary]="variant() === 'primary'"
@@ -19,6 +14,7 @@
   [class.gog-cursor-wait]="loading()"
   [type]="type()"
   class="gog-btn gog-inline-center gog-contained-layout"
+  [class]="sizeClass()"
 >
   @if (loading()) {
     <gog-spinner [size]="spinnerSize()" aria-hidden="true" class="gog-btn__spinner" />

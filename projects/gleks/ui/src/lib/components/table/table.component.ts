@@ -50,6 +50,13 @@ interface SortState {
   },
 })
 export class TableComponent<T extends object> {
+  /**
+   * The single size modifier, replacing one `[class.gog-table--<size>]` binding per size.
+   * Empty for `'lg'`: that is this component's default size and has no modifier rule of its own — every `gog-table--*` chain bottoms out at it.
+   */
+  protected readonly sizeClass = computed(() =>
+    this.size() === 'lg' ? '' : `gog-table--${this.size()}`,
+  );
   readonly value = input<T[]>([]);
   /**
    * Full width of the container by default. Set to `false` to shrink the table to fit

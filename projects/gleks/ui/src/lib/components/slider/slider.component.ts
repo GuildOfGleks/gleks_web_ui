@@ -11,6 +11,10 @@ import {
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
+import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+
+/** Built-in default, used when neither the instance input nor `GOG_CONFIG` supplies one. */
+const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
 import { GogSliderOrientation } from '../../shared/types';
 
 @Component({
@@ -41,7 +45,8 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
   readonly showThumb = input(true);
   readonly errorMessage = input('');
   /** See `GogErrorDisplay`. Defaults to `'manual'`, matching every other control in the library. */
-  readonly errorDisplay = input<GogErrorDisplay>('manual');
+  /** Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to `'manual'`. */
+  readonly errorDisplay = input<GogErrorDisplay | undefined>(undefined);
   readonly ariaLabel = input('');
   readonly disabled = input(false);
   /**
@@ -70,9 +75,17 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
 
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cvaDisabled = signal(false);
+  private readonly globalConfig = inject(GOG_CONFIG);
+  private readonly resolvedErrorDisplay = computed(() =>
+    resolveConfigured(
+      this.errorDisplay(),
+      this.globalConfig.control?.errorDisplay,
+      DEFAULT_ERROR_DISPLAY,
+    ),
+  );
   private readonly errorState = new GogErrorState(
     this.errorMessage,
-    this.errorDisplay,
+    this.resolvedErrorDisplay,
     this.ngControl,
   );
 

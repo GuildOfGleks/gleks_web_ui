@@ -40,6 +40,8 @@ export class MultiselectComponent extends GogDropdownBase<(string | number)[]> {
   protected readonly emptyValue: (string | number)[] = [];
   protected readonly optionClass = 'gog-ms__option';
   protected readonly triggerClass = 'gog-ms';
+  protected readonly sizeBlockClass = 'gog-ms-wrapper';
+  protected readonly panelBlockClass = 'gog-ms__dropdown';
   protected override readonly optionGapToken = '--gog-ms-option-gap';
   protected override readonly optionsPaddingToken = '--gog-ms-options-padding';
   protected override readonly panelMaxHeightToken = '--gog-ms-panel-max-height';

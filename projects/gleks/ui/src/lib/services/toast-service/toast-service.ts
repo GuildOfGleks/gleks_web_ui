@@ -1,4 +1,6 @@
-import { Injectable, TemplateRef, signal } from '@angular/core';
+import { Injectable, TemplateRef, inject, signal } from '@angular/core';
+
+import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { GogIconName } from '../../components/icon/icon.component';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
@@ -44,6 +46,12 @@ const DEFAULT_POSITION: ToastPosition = 'bottom-right';
 export class ToastService {
   readonly toasts = signal<Toast[]>([]);
 
+  /**
+   * Read once at construction rather than per `show()` call: this is a root-provided singleton,
+   * so the config it resolves against cannot change over its lifetime anyway.
+   */
+  private readonly globalConfig = inject(GOG_CONFIG);
+
   private generateId(): string {
     if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
       return crypto.randomUUID();
@@ -53,6 +61,16 @@ export class ToastService {
 
   show(config: ToastConfig): string {
     const type = config.type ?? 'info';
+    const position = resolveConfigured(
+      config.position,
+      this.globalConfig.toast?.position,
+      DEFAULT_POSITION,
+    );
+    const duration = resolveConfigured(
+      config.duration,
+      this.globalConfig.toast?.duration,
+      DEFAULT_DURATION,
+    );
     const iconName = config.iconName ?? this.defaultIconName(type);
     const actions = config.actions ?? [];
     const dedupeKey =
@@ -61,7 +79,7 @@ export class ToastService {
         config.message,
         type,
         iconName,
-        config.position ?? DEFAULT_POSITION,
+        position,
         actions,
         config.iconTemplate ?? null,
       );
@@ -86,8 +104,8 @@ export class ToastService {
         iconTemplate: config.iconTemplate ?? null,
         actions,
         isSticky: config.isSticky ?? false,
-        duration: config.duration ?? DEFAULT_DURATION,
-        position: config.position ?? DEFAULT_POSITION,
+        duration,
+        position,
         dedupeKey,
         revision: existingIndex >= 0 ? list[existingIndex].revision + 1 : 0,
       };

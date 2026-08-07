@@ -13,10 +13,12 @@ import { throttle } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { GogSize, GogVariant } from '../../shared/types';
-import { GOG_CONFIG } from '../../shared/config';
+import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
 const DEFAULT_DEBOUNCE = 300;
+/** Built-in default, used when neither the instance input nor `GOG_CONFIG` supplies one. */
+const DEFAULT_SIZE: GogSize = 'md';
 
 @Component({
   selector: 'gog-button',
@@ -32,7 +34,8 @@ const DEFAULT_DEBOUNCE = 300;
 })
 export class ButtonComponent {
   variant = input<GogVariant>('primary');
-  size = input<GogSize>('md');
+  /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
+  size = input<GogSize | undefined>(undefined);
   disabled = input<boolean>(false);
   fullWidth = input<boolean>(false);
   type = input<'button' | 'submit' | 'reset'>('button');
@@ -69,14 +72,24 @@ export class ButtonComponent {
     lg: 'md',
     slg: 'md',
   };
+  private readonly globalConfig = inject(GOG_CONFIG);
+  /** Instance input → `GOG_CONFIG` → the component's own default. See `resolveConfigured`. */
+  protected readonly resolvedSize = computed(() =>
+    resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),
+  );
   protected spinnerSize = computed<GogSize>(
-    () => ButtonComponent.SPINNER_SIZE_BY_BUTTON_SIZE[this.size()],
+    () => ButtonComponent.SPINNER_SIZE_BY_BUTTON_SIZE[this.resolvedSize()],
   );
 
-  private readonly globalConfig = inject(GOG_CONFIG);
-  protected readonly resolvedDebounce = computed(
-    () => this.debounce() ?? this.globalConfig.button?.debounce ?? DEFAULT_DEBOUNCE,
+  protected readonly resolvedDebounce = computed(() =>
+    resolveConfigured(this.debounce(), this.globalConfig.button?.debounce, DEFAULT_DEBOUNCE),
   );
+
+  /**
+   * The single size modifier, replacing one `[class.gog-btn--<size>]` binding per size.
+   * Always emitted — `gog-btn` has a rule for every size, `md` included.
+   */
+  protected readonly sizeClass = computed(() => `gog-btn--${this.resolvedSize()}`);
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly click$ = new Subject<MouseEvent>();

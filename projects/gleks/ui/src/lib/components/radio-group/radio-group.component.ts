@@ -11,6 +11,11 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { GogSize } from '../../shared/types';
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
+import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+
+/** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
+const DEFAULT_SIZE: GogSize = 'md';
+const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
 import {
   GOG_CHECKABLE_CONTROL_PADDING,
   GOG_CHECKABLE_CONTROL_SIZE_MAP,
@@ -47,12 +52,14 @@ export class RadioGroupComponent implements ControlValueAccessor {
   readonly ariaLabel = input('');
   /** Shared `name` for the underlying native radios. Auto-generated per instance if unset. */
   readonly name = input('');
-  readonly size = input<GogSize>('md');
+  /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
+  readonly size = input<GogSize | undefined>(undefined);
   readonly disabled = input(false);
   readonly orientation = input<'horizontal' | 'vertical'>('vertical');
   readonly errorMessage = input('');
   /** See `GogErrorDisplay`. Defaults to `'manual'`, matching every other control in the library. */
-  readonly errorDisplay = input<GogErrorDisplay>('manual');
+  /** Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to `'manual'`. */
+  readonly errorDisplay = input<GogErrorDisplay | undefined>(undefined);
   readonly fullWidth = input(false);
 
   /** Two-way bindable selected option id: `[(value)]="signal"`. */
@@ -60,14 +67,28 @@ export class RadioGroupComponent implements ControlValueAccessor {
 
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cvaDisabled = signal(false);
+  private readonly globalConfig = inject(GOG_CONFIG);
+  /** Instance input → `GOG_CONFIG` → the component's own default. See `resolveConfigured`. */
+  protected readonly resolvedSize = computed(() =>
+    resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),
+  );
+  private readonly resolvedErrorDisplay = computed(() =>
+    resolveConfigured(
+      this.errorDisplay(),
+      this.globalConfig.control?.errorDisplay,
+      DEFAULT_ERROR_DISPLAY,
+    ),
+  );
   private readonly errorState = new GogErrorState(
     this.errorMessage,
-    this.errorDisplay,
+    this.resolvedErrorDisplay,
     this.ngControl,
   );
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
-  protected readonly controlSize = computed(() => GOG_CHECKABLE_CONTROL_SIZE_MAP[this.size()]);
+  protected readonly controlSize = computed(
+    () => GOG_CHECKABLE_CONTROL_SIZE_MAP[this.resolvedSize()],
+  );
   protected readonly boxSize = computed(() => this.controlSize().boxSize);
   protected readonly labelSize = computed(() => this.controlSize().labelSize);
   protected readonly radioPadding = GOG_CHECKABLE_CONTROL_PADDING;

@@ -11,10 +11,14 @@ import {
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { IconComponent } from '../icon/icon.component';
 import { GogSize } from '../../shared/types';
+import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import {
   GOG_CHECKABLE_CONTROL_PADDING,
   GOG_CHECKABLE_CONTROL_SIZE_MAP,
 } from '../../shared/checkable-control.config';
+
+/** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
+const DEFAULT_SIZE: GogSize = 'md';
 
 @Component({
   selector: 'gog-checkbox',
@@ -35,7 +39,8 @@ import {
 export class CheckboxComponent implements ControlValueAccessor {
   readonly label = input('');
   readonly ariaLabel = input('');
-  readonly size = input<GogSize>('md');
+  /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
+  readonly size = input<GogSize | undefined>(undefined);
   readonly indeterminate = input(false);
   readonly disabled = input(false);
   readonly fullWidth = input(false);
@@ -49,7 +54,14 @@ export class CheckboxComponent implements ControlValueAccessor {
    * pick one, otherwise you end up with two competing sources of truth.
    */
   readonly checked = model<boolean>(false);
-  protected readonly controlSize = computed(() => GOG_CHECKABLE_CONTROL_SIZE_MAP[this.size()]);
+  private readonly globalConfig = inject(GOG_CONFIG);
+  /** Instance input → `GOG_CONFIG` → the component's own default. See `resolveConfigured`. */
+  protected readonly resolvedSize = computed(() =>
+    resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),
+  );
+  protected readonly controlSize = computed(
+    () => GOG_CHECKABLE_CONTROL_SIZE_MAP[this.resolvedSize()],
+  );
   protected readonly boxSize = computed(() => this.controlSize().boxSize);
   protected readonly checkboxPadding = GOG_CHECKABLE_CONTROL_PADDING;
   protected readonly labelSize = computed(() => this.controlSize().labelSize);

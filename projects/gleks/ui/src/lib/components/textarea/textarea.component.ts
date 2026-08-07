@@ -10,10 +10,14 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
-import { GOG_CONFIG } from '../../shared/config';
+import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
 import { GogFloatLabelState } from '../../shared/float-label-state';
 import { GogFloatLabelVariant, GogSize } from '../../shared/types';
+
+/** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
+const DEFAULT_SIZE: GogSize = 'md';
+const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
 
 @Component({
   selector: 'gog-textarea',
@@ -33,12 +37,16 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
   readonly label = input('');
   readonly placeholder = input('');
   readonly errorMessage = input('');
-  /** See `GogErrorDisplay`. Defaults to `'manual'`, matching every other control in the library. */
-  readonly errorDisplay = input<GogErrorDisplay>('manual');
+  /**
+   * See `GogErrorDisplay`. Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to
+   * `'manual'` — matching every other control in the library.
+   */
+  readonly errorDisplay = input<GogErrorDisplay | undefined>(undefined);
   readonly name = input('');
   readonly inputId = input('');
   readonly disabled = input(false);
-  readonly size = input<GogSize>('md');
+  /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
+  readonly size = input<GogSize | undefined>(undefined);
   /** Native `rows` attribute, controlling the field's initial height. */
   readonly rows = input(4);
   /**
@@ -57,13 +65,32 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly globalConfig = inject(GOG_CONFIG);
   private readonly cvaDisabled = signal(false);
+  /** Instance input → `GOG_CONFIG` → the component's own default. See `resolveConfigured`. */
+  protected readonly resolvedSize = computed(() =>
+    resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),
+  );
+  private readonly resolvedErrorDisplay = computed(() =>
+    resolveConfigured(
+      this.errorDisplay(),
+      this.globalConfig.control?.errorDisplay,
+      DEFAULT_ERROR_DISPLAY,
+    ),
+  );
   private readonly errorState = new GogErrorState(
     this.errorMessage,
-    this.errorDisplay,
+    this.resolvedErrorDisplay,
     this.ngControl,
   );
   /** Set from `(focus)`/`(blur)` on the `<textarea>` — see `onFocus`/`onBlur`. */
   protected readonly isFocused = signal(false);
+
+  /**
+   * The single size modifier, replacing one `[class.gog-input-wrapper--<size>]` binding per size.
+   * Empty for `'md'`: that is this component's default size and has no modifier rule of its own — every `gog-input-wrapper--*` chain bottoms out at it.
+   */
+  protected readonly sizeClass = computed(() =>
+    this.resolvedSize() === 'md' ? '' : `gog-input-wrapper--${this.resolvedSize()}`,
+  );
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
   protected readonly hasError = this.errorState.hasError;

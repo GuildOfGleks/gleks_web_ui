@@ -33,6 +33,8 @@ export class SelectComponent extends GogDropdownBase<string | number | null> {
   protected readonly emptyValue = null;
   protected readonly optionClass = 'gog-select__option';
   protected readonly triggerClass = 'gog-select__control';
+  protected readonly sizeBlockClass = 'gog-select';
+  protected readonly panelBlockClass = 'gog-select__dropdown';
   protected override readonly optionGapToken = '--gog-select-option-gap';
   protected override readonly panelMaxHeightToken = '--gog-select-panel-max-height';
   protected override readonly optionHeightToken = '--gog-select-option-height';
