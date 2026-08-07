@@ -20,6 +20,22 @@ function mockMetrics(
   }
 }
 
+/**
+ * Waits for the component's coalesced measurement to land.
+ *
+ * `ScrollComponent.scheduleMeasure()` collapses a burst of scroll/resize events into one
+ * `requestAnimationFrame`. A test that dispatches a scroll and then awaits a *single* frame is
+ * racing: `dispatchScroll()` schedules frame A immediately, and if A fires while
+ * `whenStable()` is still awaiting, the effect that also calls `scheduleMeasure()` can register
+ * a second frame B — after the test's own frame, so the assertion runs before the measurement.
+ * Two frames cover both orderings. This was an intermittent failure in the overscroll specs.
+ */
+async function settleMeasure(fixture: { whenStable(): Promise<unknown> }): Promise<void> {
+  await fixture.whenStable();
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+}
+
 describe('ScrollComponent', () => {
   let component: ScrollComponent;
   let fixture: ComponentFixture<ScrollComponent>;
@@ -129,9 +145,7 @@ describe('ScrollComponent', () => {
       mockMetrics(viewport, { scrollHeight: 800, clientHeight: 200 });
       Object.defineProperty(viewport, 'scrollTop', { value: 300, configurable: true });
       dispatchScroll();
-      await fixture.whenStable();
-      // Metrics are read on the next animation frame.
-      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settleMeasure(fixture);
       fixture.detectChanges();
 
       const track = fixture.nativeElement.querySelector('.gog-scroll__track--v') as HTMLElement;
@@ -147,8 +161,7 @@ describe('ScrollComponent', () => {
     it('does not render a track when content does not overflow', async () => {
       mockMetrics(viewport, { scrollHeight: 100, clientHeight: 100 });
       dispatchScroll();
-      await fixture.whenStable();
-      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settleMeasure(fixture);
       fixture.detectChanges();
 
       expect(fixture.nativeElement.querySelector('.gog-scroll__track--v')).toBeNull();
@@ -167,8 +180,7 @@ describe('ScrollComponent', () => {
       Object.defineProperty(viewport, 'scrollTop', { value: 50, configurable: true });
       Object.defineProperty(viewport, 'scrollLeft', { value: 0, configurable: true });
       dispatchScroll();
-      await fixture.whenStable();
-      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settleMeasure(fixture);
 
       expect(emitted).toEqual([
         {
@@ -191,16 +203,14 @@ describe('ScrollComponent', () => {
       mockMetrics(viewport, { scrollHeight: 400, clientHeight: 100 });
       Object.defineProperty(viewport, 'scrollTop', { value: 300, configurable: true });
       dispatchScroll();
-      await fixture.whenStable();
-      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settleMeasure(fixture);
 
       expect(ends).toEqual(['vertical']);
       expect(starts).toEqual([]);
 
       Object.defineProperty(viewport, 'scrollTop', { value: 0, configurable: true });
       dispatchScroll();
-      await fixture.whenStable();
-      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settleMeasure(fixture);
 
       expect(starts).toEqual(['vertical']);
       // still just the one gogReachEnd from before — leaving the bottom doesn't re-fire it
@@ -222,8 +232,7 @@ describe('ScrollComponent', () => {
       mockMetrics(viewport, { scrollHeight: 800, clientHeight: 200 });
       Object.defineProperty(viewport, 'scrollTop', { value: 0, configurable: true });
       dispatchScroll();
-      await fixture.whenStable();
-      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settleMeasure(fixture);
 
       expect(viewport.style.overscrollBehaviorY).toBe('auto');
     });
@@ -233,8 +242,7 @@ describe('ScrollComponent', () => {
       mockMetrics(viewport, { scrollHeight: 800, clientHeight: 200 });
       Object.defineProperty(viewport, 'scrollTop', { value: 0, configurable: true });
       dispatchScroll();
-      await fixture.whenStable();
-      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settleMeasure(fixture);
 
       expect(viewport.style.overscrollBehaviorY).toBe('contain');
     });
@@ -243,8 +251,7 @@ describe('ScrollComponent', () => {
       fixture.componentRef.setInput('overscrollBehavior', 'contain');
       mockMetrics(viewport, { scrollHeight: 100, clientHeight: 100 });
       dispatchScroll();
-      await fixture.whenStable();
-      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settleMeasure(fixture);
 
       expect(viewport.style.overscrollBehaviorY).toBe('auto');
     });
@@ -308,8 +315,7 @@ describe('ScrollComponent', () => {
         writable: true,
       });
       viewport.dispatchEvent(new Event('scroll'));
-      await fixture.whenStable();
-      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settleMeasure(fixture);
       fixture.detectChanges();
     });
 

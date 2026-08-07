@@ -442,9 +442,7 @@ since it reads compiled CSS and the mixin builds those names by interpolation.
 `gog-multiselect` into a `data-theme="slate"` subtree: field background -> white, border ->
 indigo, text -> slate, none of which the preset mentions by name.
 
-461 specs. **Known flake:** `scroll.component.spec.ts > applies an explicit overscrollBehavior
-input once the axis overflows` failed once and passed on two consecutive re-runs; it is
-layout-dependent in jsdom and unrelated to this work.
+461 specs. **The flake is fixed** (see "Flake closed" below).
 
 ---
 
@@ -477,6 +475,18 @@ narrows and shows its empty message, the select's clear button appears only afte
 `right: 46px` with the trigger's padding growing 40px → 62px so the label can't run underneath,
 the textarea's clear button empties the field and then disappears, and both One themes drive
 component tokens they never mention (`--gog-btn-primary-bg` picks up `#61afef` / `#4078f2`).
+
+## Flake closed — `scroll.component.spec.ts`
+
+Root cause, not a retry: `ScrollComponent.scheduleMeasure()` coalesces scroll/resize bursts into
+one `requestAnimationFrame`, and the specs awaited a *single* frame. `dispatchScroll()` schedules
+frame A immediately; if A fires while `whenStable()` is still awaiting, the effect that also calls
+`scheduleMeasure()` registers a second frame B — which lands *after* the test's own frame, so the
+assertion ran before the measurement. Both orderings are legal, which is why it failed
+intermittently rather than never or always.
+
+Replaced the nine ad-hoc `whenStable()` + one-frame waits with a documented `settleMeasure()`
+helper that awaits two frames, covering both orderings. Three consecutive full runs: 475/475.
 
 ## Backlog — deliberately not in 21.3.0
 
