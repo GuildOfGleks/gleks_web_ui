@@ -154,7 +154,7 @@
 .gog-input-wrapper--float-on {
   --gog-input-float-top-padding: calc(
     var(--gog-input-padding-y, var(--gog-input-size-padding-y, var(--gog-field-md-padding-y))) +
-      var(--gog-input-float-label-reserve, 14px)
+      var(--gog-input-float-label-reserve, 18px)
   );
 }
 

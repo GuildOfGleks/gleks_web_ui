@@ -366,7 +366,7 @@
 .gog-ms-wrapper--float-on {
   --gog-ms-float-top-padding: calc(
     var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--gog-field-md-padding-y))) +
-      var(--gog-ms-float-label-reserve, 14px)
+      var(--gog-ms-float-label-reserve, 18px)
   );
 }
 

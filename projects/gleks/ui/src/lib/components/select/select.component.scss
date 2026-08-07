@@ -339,7 +339,7 @@
 .gog-select--float-on {
   --gog-select-float-top-padding: calc(
     var(--gog-select-control-padding-y, var(--gog-select-size-padding-y, var(--gog-field-md-padding-y))) +
-      var(--gog-select-float-label-reserve, 14px)
+      var(--gog-select-float-label-reserve, 18px)
   );
 }
 

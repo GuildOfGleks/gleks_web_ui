@@ -96,11 +96,18 @@
   --gog-input-size-icon-inset: var(--gog-field-slg-icon-inset);
 }
 
-/* Icon side padding overrides — an icon widens the field's inner gutter on that side. */
-.gog-input-wrapper--icon-start .gog-input__field {
+/*
+ * Icon side padding overrides — an icon widens the field's inner gutter on that side.
+ * Declared on the *container*, not the `<input>` itself: both the input and the floating
+ * label (an absolutely-positioned sibling inside that same container, see the float-label
+ * block below) read `--gog-input-pl`/`--gog-input-pr` for their own left offset, and a
+ * custom property set directly on the input never reaches its sibling — only descendants
+ * inherit it. Setting it here instead means both pick up the same value.
+ */
+.gog-input-wrapper--icon-start .gog-input__field-container {
   --gog-input-pl: var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset));
 }
-.gog-input-wrapper--icon-end .gog-input__field {
+.gog-input-wrapper--icon-end .gog-input__field-container {
   --gog-input-pr: var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset));
 }
 
@@ -221,7 +228,7 @@
 .gog-input-wrapper--float-on {
   --gog-input-float-top-padding: calc(
     var(--gog-input-padding-y, var(--gog-input-size-padding-y, var(--gog-field-md-padding-y))) +
-      var(--gog-input-float-label-reserve, 14px)
+      var(--gog-input-float-label-reserve, 18px)
   );
 }
 

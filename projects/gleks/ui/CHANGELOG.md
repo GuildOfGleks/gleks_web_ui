@@ -8,6 +8,21 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- Float label support for `gog-inputfield`, `gog-select`, `gog-multiselect` and
+  `gog-textarea`: a `floatLabel` input (`GogFloatLabelVariant`: `'none'` default, or
+  `'in'`/`'on'`/`'over'`, modeled on PrimeNG's own variant names) that rests the label inside
+  the field like a placeholder and floats it up on focus or once the field has content —
+  `'in'` stays fully inside the border, `'on'` ends up centered on the top border line (with
+  a background patch masking it), `'over'` floats fully above the field, outside the border.
+  A `floatLabelShowPlaceholder` input (`boolean`, default `false`) reveals the field's own
+  `placeholder` once the label has floated out of the way; left off, the placeholder stays
+  hidden the whole time a float label is active since the resting label already occupies that
+  space. Both are also settable app-wide via the new `GOG_CONFIG.floatLabel` (`variant` /
+  `showPlaceholder`), with the usual per-instance input taking priority. Implemented as a
+  style variant on each component (not a directive, unlike `gogTooltip`) since each control
+  already owns its label and has a different notion of "has content" (`value`,
+  `selectedOption`, selection length) that a directive sitting outside the component couldn't
+  see. New `--gog-{input,select,ms}-float-label-{in-top,on-bg,over-gap,over-reserve}` tokens.
 - `gog-slider`'s new `orientation` input (`'horizontal'` default / `'vertical'`) — the
   developer picks per instance, no global default, since it's a layout decision rather than a
   house style. The vertical variant is the same native `<input type="range">` rotated via
