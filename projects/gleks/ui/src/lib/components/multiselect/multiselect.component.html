@@ -22,6 +22,7 @@
   }
 
   <div
+    [gogTooltip]="summary().hidden > 0 ? selectedListTpl : null"
     class="gog-ms"
     role="combobox"
     [attr.tabindex]="isDisabled() ? -1 : 0"
@@ -47,9 +48,16 @@
       <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -- associated via aria-labelledby above instead, see comment -->
       <label class="gog-ms__label gog-ms__label--float" [id]="labelId()">{{ label() }}</label>
     }
-    <span class="gog-ms__value" [class.gog-ms__value--placeholder]="!selectedNames()">
-      {{ selectedNames() || effectivePlaceholder() }}
+    <span #valueEl class="gog-ms__value" [class.gog-ms__value--placeholder]="!selectedNames()">
+      {{ summary().text || effectivePlaceholder() }}
     </span>
+    <!--
+      Only what fits is shown; the rest is collapsed into a count. The tooltip is the way to read
+      the whole selection back, so it is bound only while something is actually hidden.
+    -->
+    @if (summary().hidden > 0) {
+      <span class="gog-ms__overflow" aria-hidden="true">+{{ summary().hidden }}</span>
+    }
 
     <span class="gog-ms__actions">
       <span class="gog-ms__arrow" [class.gog-ms__arrow--up]="isOpen()" aria-hidden="true">
@@ -97,6 +105,7 @@
     [style.top.px]="resolvedAppendToBody() ? panelPlacement()?.top : null"
     [style.left.px]="resolvedAppendToBody() ? panelPlacement()?.left : null"
     [style.width]="resolvedAppendToBody() ? resolvedPanelWidth() : null"
+    [style.min-width]="resolvedAppendToBody() ? resolvedPanelMinWidth() : null"
     [style.max-height]="resolvedAppendToBody() ? resolvedPanelMaxHeight() : null"
     [style.z-index]="dropdownZIndex() ?? panelZIndex()"
     role="listbox"
@@ -190,4 +199,13 @@
     <gog-button variant="ghost" size="sm" (click)="selectAll($event)">Select all</gog-button>
     <gog-button variant="ghost" size="sm" (click)="clearAll($event)">Clear</gog-button>
   </div>
+</ng-template>
+
+<!-- Full selection, shown as a tooltip when the trigger can only fit part of it. -->
+<ng-template #selectedListTpl>
+  <ul class="gog-ms__tooltip-list">
+    @for (label of selectedLabels(); track label) {
+      <li>{{ label }}</li>
+    }
+  </ul>
 </ng-template>

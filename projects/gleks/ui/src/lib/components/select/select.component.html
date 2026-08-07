@@ -109,6 +109,7 @@
     [style.top.px]="resolvedAppendToBody() ? panelPlacement()?.top : null"
     [style.left.px]="resolvedAppendToBody() ? panelPlacement()?.left : null"
     [style.width]="resolvedAppendToBody() ? resolvedPanelWidth() : null"
+    [style.min-width]="resolvedAppendToBody() ? resolvedPanelMinWidth() : null"
     [style.max-height]="resolvedAppendToBody() ? resolvedPanelMaxHeight() : null"
     [style.z-index]="dropdownZIndex() ?? panelZIndex()"
     role="listbox"

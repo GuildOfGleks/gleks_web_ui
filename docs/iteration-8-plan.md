@@ -139,3 +139,41 @@ Per `gleks-ui-library.instructions.md`: specs for each behavioural change, `chec
 (every new value a token, no literal fallbacks), and live verification in `ui-showcase` — with
 before/after measurements for §1, §2 and §4, since those are geometry changes that specs cannot
 meaningfully assert in jsdom.
+
+
+---
+
+## Follow-up — auto-width bug (reported from the running showcase)
+
+**Reproduced and measured.** On the select page's Float-label card, the `Variant` picker uses
+`[fullWidth]="false"`, so the trigger sizes to the *current* selection. The panel copied that
+width, so picking a short option clipped the longer ones out of the list: the panel's right edge
+was at 122.3px while the "None" label ran to 135.8px and "Over" to 130.7px.
+
+Fixed by inverting the relationship: **the trigger's width is now the panel's floor, not its
+width.** The panel sizes to its own content (`width: max-content` inline, `min-width` from the
+trigger rect when portalled), capped by `--gog-{select,multiselect}-panel-max-width`.
+
+Added `minWidth` (any CSS length, per instance) plus `--gog-{select,multiselect}-min-width`
+(120px) so an auto-width trigger cannot collapse to its chrome.
+
+Verified live: trigger 69.3px → **120px**, panel 69.3px → **120px**, zero clipped labels.
+
+Worth recording: the floor is applied to the host *and* the inner control. On the host alone the
+showcase's own `.field-grid > * { min-width: 0 }` out-specifies it — correct CSS (the app wins),
+but it means the floor needs to also sit on an element the app's descendant selectors don't
+reach.
+
+### Unfinished — `+N` overflow summary on `gog-multiselect`
+
+Implemented but **not yet activating**, and reported as such rather than as done:
+`summary()` falls back to the full joined list, so the rendered behaviour is exactly what it was
+before. Ruled out: the built bundle does carry the new template (`summary()`, `gog-ms__overflow`,
+`#valueEl` all present), and canvas measurement works in the page (1626.6px of text against
+254px of space). What has not been established is why `valueWidth` / `valueFont` are never set —
+the `afterNextRender` block that measures them appears not to run. Next step: check
+`afterNextRender` under this app's SSR/hydration setup, or move the measurement to a
+`viewChild` + `effect` pair instead.
+
+The tooltip listing the full selection is wired to the same `summary().hidden > 0` condition, so
+it is inert for the same reason.

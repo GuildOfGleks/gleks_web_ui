@@ -4,11 +4,15 @@ import {
   Component,
   Directive,
   TemplateRef,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
   computed,
   contentChild,
   inject,
   input,
   model,
+  signal,
   viewChild,
 } from '@angular/core';
 
@@ -16,6 +20,7 @@ import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-b
 import { ButtonComponent } from '../button/button.component';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
+import { GogTooltipDirective } from '../tooltip/tooltip.directive';
 
 /**
  * @deprecated since 21.2.2 (2026-07-30) — use `GogDropdownOption` instead. Removed in 21.4.0.
@@ -39,10 +44,14 @@ export class GogMultiselectClearIconDirective {
 
 @Component({
   selector: 'gog-multiselect',
-  imports: [ButtonComponent, IconComponent, NgTemplateOutlet, ScrollComponent],
+  imports: [ButtonComponent, IconComponent, NgTemplateOutlet, ScrollComponent, GogTooltipDirective],
   templateUrl: './multiselect.component.html',
   styleUrl: './multiselect.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    // Only bites when the control has opted out of full width; otherwise the container decides.
+    '[style.--gog-multiselect-min-width]': 'minWidth()',
+  },
 })
 export class MultiselectComponent<
   TOption = GogDropdownOption,
@@ -85,16 +94,56 @@ export class MultiselectComponent<
   protected readonly listboxId = computed(() => `gog-ms-listbox-${this.uid}`);
   protected readonly labelId = computed(() => `gog-ms-label-${this.uid}`);
 
-  /**
-   * Comma-joined labels of the current selection, driven off the selected *options* rather than
-   * the raw values so it works whatever `optionValue` resolves to.
-   */
-  readonly selectedNames = computed(() =>
+  /** Labels of the current selection, driven off the selected *options* so it works whatever
+   * `optionValue` resolves to. */
+  readonly selectedLabels = computed(() =>
     this.options()
       .filter((option) => this.isSelected(option))
-      .map((option) => this.labelOf(option))
-      .join(', '),
+      .map((option) => this.labelOf(option)),
   );
+
+  /** Comma-joined selection — the full text, before any overflow trimming. */
+  readonly selectedNames = computed(() => this.selectedLabels().join(', '));
+
+  private readonly valueRef = viewChild<ElementRef<HTMLElement>>('valueEl');
+  private readonly resizeDestroyRef = inject(DestroyRef);
+  /** Width available to the summary text, tracked so the split recomputes as the field resizes. */
+  private readonly valueWidth = signal(0);
+  private readonly valueFont = signal('');
+
+  /**
+   * Splits the selection into what fits on one line and a `+N` remainder.
+   *
+   * Measured with `canvas.measureText` rather than by rendering candidates and reading back
+   * layout: the greedy fit is O(n) over the labels and costs no reflow, where a DOM-based probe
+   * would thrash layout on every keystroke-sized change.
+   */
+  protected readonly summary = computed<{ text: string; hidden: number }>(() => {
+    const labels = this.selectedLabels();
+    const width = this.valueWidth();
+    const font = this.valueFont();
+    if (labels.length === 0) return { text: '', hidden: 0 };
+    if (!this.isBrowser || width === 0 || font === '') {
+      return { text: labels.join(', '), hidden: 0 };
+    }
+
+    const measure = measureWith(font);
+    // Room the "+N" badge will need; reserved up front so adding it can't cause a second overflow.
+    const reserve = labels.length > 1 ? measure(` +${labels.length}`) : 0;
+    let text = '';
+    let fitted = 0;
+    for (const label of labels) {
+      const next = fitted === 0 ? label : `${text}, ${label}`;
+      const budget = fitted === labels.length - 1 ? width : width - reserve;
+      if (fitted > 0 && measure(next) > budget) break;
+      text = next;
+      fitted += 1;
+    }
+
+    // Always show at least one label, even if it has to be ellipsised by CSS.
+    if (fitted === 0) return { text: labels[0], hidden: labels.length - 1 };
+    return { text, hidden: labels.length - fitted };
+  });
   protected readonly hasFloatValue = computed(() => this.value().length > 0);
 
   protected isSelected(option: TOption): boolean {
@@ -130,7 +179,39 @@ export class MultiselectComponent<
     this.commitValue([]);
   }
 
+  constructor() {
+    super();
+    // Measured entirely from a ResizeObserver rather than an after-render hook: the field is
+    // usually full width, so the space available to the summary changes when the *container*
+    // resizes — something Angular never renders for. `observe()` also fires once immediately,
+    // which covers the initial measurement, so one mechanism handles both.
+    afterNextRender(() => {
+      const el = this.valueRef()?.nativeElement;
+      if (!el || typeof ResizeObserver === 'undefined') return;
+
+      const read = () => {
+        this.valueWidth.set(el.clientWidth);
+        this.valueFont.set(getComputedStyle(el).font);
+      };
+      const observer = new ResizeObserver(read);
+      observer.observe(el);
+      read();
+      this.resizeDestroyRef.onDestroy(() => observer.disconnect());
+    });
+  }
+
   protected override extraPanelHeight(): number {
     return this.showControls() ? CONTROLS_ROW_HEIGHT : 0;
   }
+}
+
+/** One shared 2D context; creating a canvas per measurement is what makes this approach slow. */
+let measureContext: CanvasRenderingContext2D | null = null;
+
+function measureWith(font: string): (text: string) => number {
+  measureContext ??= document.createElement('canvas').getContext('2d');
+  const ctx = measureContext;
+  if (!ctx) return () => 0;
+  ctx.font = font;
+  return (text: string) => ctx.measureText(text).width;
 }

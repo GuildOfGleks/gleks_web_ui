@@ -164,6 +164,13 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   /** Accessible name for the clear button. */
   readonly clearAriaLabel = input('Clear selection');
   /**
+   * Smallest width the trigger may shrink to, as any CSS length. Only meaningful with
+   * `[fullWidth]="false"`, where the trigger otherwise sizes to whatever is currently selected
+   * and can collapse to almost nothing on a short option. Left unset it falls back to the
+   * `--gog-{select,multiselect}-min-width` token.
+   */
+  readonly minWidth = input<string | null>(null);
+  /**
    * Whether the panel shows a search box that narrows the option list. Unset, falls back to
    * `GOG_CONFIG.dropdown.filter`, then to `false`.
    */
@@ -382,10 +389,20 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    */
   protected readonly panelZIndex = signal<number | null>(null);
 
-  /** `dropdownWidth`, or the trigger-derived width from `panelPlacement`, as a CSS value. */
-  protected readonly resolvedPanelWidth = computed(() => {
+  /**
+   * Explicit panel width, or null to let it size to its own content.
+   *
+   * The panel used to be pinned to the trigger's width, which broke a trigger narrower than its
+   * options: with `[fullWidth]="false"` the trigger shrinks to the *current* selection, so
+   * picking a short option cut the longer ones off in the list. It now sizes to its content with
+   * the trigger width as a floor — see `resolvedPanelMinWidth`.
+   */
+  protected readonly resolvedPanelWidth = computed(() => this.dropdownWidth());
+
+  /** The trigger's width, used as the panel's minimum so it never renders narrower than it. */
+  protected readonly resolvedPanelMinWidth = computed(() => {
     const width = this.panelPlacement()?.width;
-    return this.dropdownWidth() ?? (width != null ? `${width}px` : null);
+    return width != null ? `${width}px` : null;
   });
   /** `dropdownMaxHeight`, or the viewport-derived max-height from `panelPlacement`. */
   protected readonly resolvedPanelMaxHeight = computed(() => {

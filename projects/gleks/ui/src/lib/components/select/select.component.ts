@@ -24,6 +24,10 @@ export type GogSelectOption = GogDropdownOption;
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    // Only bites when the control has opted out of full width; otherwise the container decides.
+    '[style.--gog-select-min-width]': 'minWidth()',
+  },
 })
 export class SelectComponent<
   TOption = GogDropdownOption,

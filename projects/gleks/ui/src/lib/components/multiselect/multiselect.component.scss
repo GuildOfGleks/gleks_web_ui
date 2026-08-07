@@ -227,7 +227,15 @@
   position: absolute;
   top: calc(100% + var(--gog-multiselect-panel-offset));
   left: 0;
-  right: 0;
+  /*
+   * Sized to its own content, with the trigger width as the floor rather than the fixed width.
+   * Pinning it to the trigger broke an auto-width trigger: it shrinks to whatever is selected,
+   * so picking a short option clipped the longer ones out of the list.
+   */
+  right: auto;
+  min-width: 100%;
+  width: max-content;
+  max-width: var(--gog-multiselect-panel-max-width);
   z-index: var(--gog-dropdown-z);
   display: flex;
   flex-direction: column;
@@ -458,4 +466,33 @@
   bottom: 0;
   border-top: var(--gog-multiselect-filter-border-width) var(--gog-multiselect-filter-border-style)
     var(--gog-multiselect-filter-border-color);
+}
+
+/*
+ * An auto-width control sizes to its current selection, which on a short option collapses it to
+ * little more than its chrome — and, before the panel became content-sized, took the option list
+ * down with it. This floor keeps it usable; `minWidth` overrides the token per instance.
+ */
+:host(.gog-host--auto-width),
+:host(.gog-host--auto-width) .gog-ms {
+  min-width: var(--gog-multiselect-min-width);
+}
+
+/* A portalled panel is sized in JS, so it needs the same ceiling the inline one gets in CSS. */
+.gog-ms__dropdown--portal {
+  max-width: var(--gog-multiselect-panel-max-width);
+}
+
+/* "+N" — the count of selected labels that did not fit; never shrinks, so it stays readable. */
+.gog-ms__overflow {
+  flex-shrink: 0;
+  margin-left: var(--gog-multiselect-overflow-gap);
+  font-size: var(--gog-multiselect-overflow-font-size);
+  color: var(--gog-multiselect-overflow-color);
+}
+
+.gog-ms__tooltip-list {
+  margin: 0;
+  padding-left: 1.1em;
+  text-align: left;
 }

@@ -794,6 +794,17 @@
   --gog-ms-filter-empty-color: var(--gog-multiselect-placeholder-color);
   --gog-multiselect-filter-empty-color: var(--gog-ms-filter-empty-color);
   /* Matches --gog-select-chevron-inset; see the note there. */
+  /* "+N" badge shown when the selection does not fit on one line. */
+  --gog-ms-overflow-color: var(--gog-multiselect-placeholder-color);
+  --gog-multiselect-overflow-color: var(--gog-ms-overflow-color);
+  --gog-ms-overflow-font-size: var(--gog-text-sm);
+  --gog-multiselect-overflow-font-size: var(--gog-ms-overflow-font-size);
+  --gog-ms-overflow-gap: 6px;
+  --gog-multiselect-overflow-gap: var(--gog-ms-overflow-gap);
+  --gog-ms-min-width: 120px;
+  --gog-multiselect-min-width: var(--gog-ms-min-width);
+  --gog-ms-panel-max-width: 420px;
+  --gog-multiselect-panel-max-width: var(--gog-ms-panel-max-width);
   --gog-ms-actions-inset: var(--gog-control-icon-offset);
   --gog-multiselect-actions-inset: var(--gog-ms-actions-inset);
   --gog-ms-clear-radius: 2px;
@@ -880,6 +891,10 @@
      and put the chevron 42px from the edge.
   */
   --gog-select-chevron-inset: var(--gog-control-icon-offset);
+  /* Floor for an auto-width trigger, so [fullWidth]="false" cannot collapse it to the chevron. */
+  --gog-select-min-width: 120px;
+  /* Ceiling for a content-sized panel, so one very long option cannot span the viewport. */
+  --gog-select-panel-max-width: 420px;
   /* Filter box — only rendered when `filter` is on. */
   --gog-select-filter-padding: 6px;
   --gog-select-filter-input-padding-y: 6px;

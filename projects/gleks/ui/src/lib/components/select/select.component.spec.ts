@@ -495,7 +495,10 @@ describe('SelectComponent', () => {
       // Coordinates are resolved in TS and written as inline styles; jsdom reports a
       // zero-sized trigger, so the assertion is only that they were applied at all.
       expect(panel.style.top).not.toBe('');
-      expect(panel.style.width).not.toBe('');
+      // The trigger's width is the panel's *floor*, not its width — the panel sizes to its own
+      // content so a narrow auto-width trigger cannot clip the longer options out of the list.
+      expect(panel.style.minWidth).not.toBe('');
+      expect(panel.style.width).toBe('');
     });
 
     it('lets dropdownWidth/dropdownMaxHeight override the computed panel size', async () => {
