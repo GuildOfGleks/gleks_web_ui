@@ -20,6 +20,8 @@ iteration 1. Per `gleks-ui-library.instructions.md` rule 9, the agent never publ
 | --- | --- | --- |
 | 0 | Guardrails: instruction files | ✅ done |
 | 1 | Token contract enforcement + float-label regression | ✅ done |
+| 1b | CI made green (lint + workspace-wide format) | ✅ done |
+| 1c | Command-execution reliability (`running-commands`, `CLAUDE.md`) | ✅ done |
 | 2 | Deduplicate float label (TS + SCSS) + config resolver | ⬜ not started |
 | 3 | Config semantics & coverage + size-class boilerplate | ⬜ not started |
 | 4 | Slot unification + selector/naming fixes | ⬜ not started |
@@ -81,15 +83,54 @@ library builds clean, and all three float variants were measured live in `ui-sho
 identical geometry (`in` 28px, `on` `top:0` + border mask `#16120e`, `over` −8px), including a
 scoped-`[data-theme]` override propagating to all three component blocks.
 
-**Blocker found, not fixed — needs a decision.** CI is already red on `master`, before any of
-this work: `npm run format:check` fails on 108 files in the library and 90 in `ui-showcase`,
-and `npm run lint` fails on one pre-existing error
-(`ui-showcase/src/app/pages/select-page/select-page.html:95`,
-`@angular-eslint/template/prefer-static-string-properties`). Because `ci.yml` orders the steps
-Lint → Format → Token check, **the new guardrail never executes in CI.** Iteration 1's value is
-only realised once those two steps are green. Options: (a) one mechanical
-`npm run format` + `ng lint --fix` commit, (b) move the token check above lint/format, (c) leave
-it and rely on running the check locally.
+### Iteration 1b — CI made green ✅
+
+CI was already red on `master` before any of this work, which meant the new guardrail never
+executed (`ci.yml` orders the steps Lint → Format → Token check, so it was unreachable). Fixed
+as a separate mechanical pass:
+
+- the one pre-existing lint error — `select-page.html:95` bound a constant with
+  `[value]="'angular'"`; changed to the static attribute `value="angular"`;
+- `npm run format` across all three projects — 294 files.
+
+**The format pass was verified to be behaviour-neutral rather than assumed to be.** Comparing
+every changed file against `HEAD` with formatting-only differences neutralised (whitespace and
+line wrapping, quote style, trailing commas, and backslash escaping inside template literals)
+leaves exactly two files, both intentional and both inert:
+
+- `ui-showcase/.../select-page.html` — the lint fix above;
+- `gleks-ui-lab/src/index.html` — prettier dropped a trailing `;` inside an inline `style`.
+
+**The library itself has zero semantic changes.** Worth knowing for next time: prettier formats
+embedded HTML inside Angular `template:` template literals, so it rewrote the escaping of the
+code samples in `gleks-ui-lab`'s doc pages (`\"` ⇄ `\'`). The resulting *strings* are identical —
+inside a template literal both escapes collapse to the same character — but it is why those
+files show up in a "formatting-only" diff at all.
+
+All seven CI steps now pass locally: lint, format:check, check:tokens, build:lib, test:lib
+(433 specs), build:showcase, plus build:lab (not a CI step, but 101 of its files changed —
+verified via its output marker, since that command never exits; see below).
+
+### Iteration 1c — command-execution reliability ✅
+
+Chasing the `build:lab` verification surfaced a workflow problem worth fixing permanently:
+one script in this workspace completes its work and then never terminates, which is
+indistinguishable from "slow" unless you know. Every script was measured:
+
+`check:tokens` ~1 s, `format:check` ~6 s, `build:lib` ~5–7 s, `lint` ~10 s, `test:lib` ~13 s,
+`build:showcase` ~11–15 s — all exit cleanly. **`build:lab` never exits** (work finishes in
+~8 s). Ruled out by direct experiment: the corporate proxy env vars, prerendering,
+`.angular/cache`, the `server.ts` entry, and the `npm run` wrapper. Root cause is an Angular CLI
+teardown issue specific to that project; it is not a CI step, so it rarely needs running.
+
+- `.github/instructions/running-commands.instructions.md` (new) — the measured table, the
+  `timeout N … ; echo exit=$?` rule (124 = hung), the marker-based recipe for `build:lab`, the
+  process-cleanup snippets, and the Windows/sandbox gotchas hit this session (`rm -rf` blocked,
+  `npm install` not restoring a same-version package, chained sleeps blocked, ANSI stripping).
+- `CLAUDE.md` (new) — **`.github/instructions/*.md` are Copilot-format files that Claude Code
+  does not auto-load**, so the whole rule set was invisible to it. `CLAUDE.md` is the entry
+  point that routes to them, plus the three rules that bite hardest (never publish; `build:lab`
+  hangs; verify in `ui-showcase` only).
 
 ---
 
