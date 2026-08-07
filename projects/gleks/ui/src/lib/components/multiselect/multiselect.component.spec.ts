@@ -3,18 +3,22 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MultiselectComponent } from './multiselect.component';
+import type { GogDropdownOption } from '../../shared/dropdown-base';
+
+/** See the note in select.component.spec.ts — generics have nothing to infer from here. */
+type DefaultMultiselect = MultiselectComponent<GogDropdownOption, string | number>;
 import { GOG_CONFIG } from '../../shared/config';
 
 describe('MultiselectComponent', () => {
-  let component: MultiselectComponent;
-  let fixture: ComponentFixture<MultiselectComponent>;
+  let component: DefaultMultiselect;
+  let fixture: ComponentFixture<DefaultMultiselect>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MultiselectComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MultiselectComponent);
+    fixture = TestBed.createComponent(MultiselectComponent) as ComponentFixture<DefaultMultiselect>;
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

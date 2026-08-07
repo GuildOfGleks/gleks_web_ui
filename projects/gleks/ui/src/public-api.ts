@@ -38,6 +38,7 @@ export * from './lib/shared/types';
 export * from './lib/shared/config';
 export * from './lib/shared/dropdown-base';
 export * from './lib/shared/float-label-state';
+export * from './lib/shared/option-accessor';
 export type { GogDropdownDirection } from './lib/shared/dropdown-position';
 export type { GogTooltipSide } from './lib/shared/tooltip-position';
 export type { GogIconName } from './lib/shared/icons';

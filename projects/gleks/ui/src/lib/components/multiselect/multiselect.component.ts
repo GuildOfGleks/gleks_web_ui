@@ -44,7 +44,10 @@ export class GogMultiselectClearIconDirective {
   styleUrl: './multiselect.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MultiselectComponent extends GogDropdownBase<(string | number)[]> {
+export class MultiselectComponent<
+  TOption = GogDropdownOption,
+  TValue = string | number,
+> extends GogDropdownBase<TValue[], TOption> {
   readonly showControls = input(false);
   /** Where the "select all"/"clear" row sits relative to the option list. Sticky either way. */
   readonly controlsPosition = input<'top' | 'bottom'>('top');
@@ -55,11 +58,16 @@ export class MultiselectComponent extends GogDropdownBase<(string | number)[]> {
   /** Projected `gogMultiselectClearIcon` template; wins over the deprecated `clearIconTemplate` input. */
   protected readonly clearIconSlot = contentChild(GogMultiselectClearIconDirective);
 
-  /** Two-way bindable selected ids: `[(value)]="signal"`. */
-  readonly value = model<(string | number)[]>([]);
+  /**
+   * Two-way bindable selection: `[(value)]="signal"`.
+   *
+   * Each entry is whatever `optionValue` resolves to — an id by default, or the option objects
+   * themselves when `optionValue` is `null`.
+   */
+  readonly value = model<TValue[]>([]);
 
   protected readonly panelTemplate = viewChild<TemplateRef<unknown>>('panelTpl');
-  protected readonly emptyValue: (string | number)[] = [];
+  protected readonly emptyValue: TValue[] = [];
   protected readonly optionClass = 'gog-ms__option';
   protected readonly triggerClass = 'gog-ms';
   protected readonly sizeBlockClass = 'gog-ms-wrapper';
@@ -72,27 +80,33 @@ export class MultiselectComponent extends GogDropdownBase<(string | number)[]> {
   protected readonly listboxId = computed(() => `gog-ms-listbox-${this.uid}`);
   protected readonly labelId = computed(() => `gog-ms-label-${this.uid}`);
 
+  /**
+   * Comma-joined labels of the current selection, driven off the selected *options* rather than
+   * the raw values so it works whatever `optionValue` resolves to.
+   */
   readonly selectedNames = computed(() =>
-    this.value()
-      .map((id) => this.options().find((option) => option.id === id)?.name)
-      .filter(Boolean)
+    this.options()
+      .filter((option) => this.isSelected(option))
+      .map((option) => this.labelOf(option))
       .join(', '),
   );
   protected readonly hasFloatValue = computed(() => this.value().length > 0);
 
-  protected isSelected(id: string | number): boolean {
-    return this.value().includes(id);
+  protected isSelected(option: TOption): boolean {
+    const target = this.valueOf(option);
+    return this.value().some((selected) => this.sameValue(selected, target));
   }
 
-  protected toggleOption(option: GogDropdownOption, event: MouseEvent): void {
+  protected toggleOption(option: TOption, event: MouseEvent): void {
     event.stopPropagation();
-    if (option.disabled) return;
+    if (this.isOptionDisabled(option)) return;
 
+    const target = this.valueOf(option);
     const current = this.value();
     this.commitValue(
-      this.isSelected(option.id)
-        ? current.filter((id) => id !== option.id)
-        : [...current, option.id],
+      this.isSelected(option)
+        ? current.filter((selected) => !this.sameValue(selected, target))
+        : [...current, target as TValue],
     );
   }
 
@@ -100,8 +114,8 @@ export class MultiselectComponent extends GogDropdownBase<(string | number)[]> {
     event.stopPropagation();
     this.commitValue(
       this.options()
-        .filter((option) => !option.disabled)
-        .map((option) => option.id),
+        .filter((option) => !this.isOptionDisabled(option))
+        .map((option) => this.valueOf(option) as TValue),
     );
   }
 

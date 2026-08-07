@@ -4,6 +4,14 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { vi } from 'vitest';
 
 import { SelectComponent } from './select.component';
+import type { GogDropdownOption } from '../../shared/dropdown-base';
+
+/**
+ * `SelectComponent` is generic over its option and value types. A template infers both from the
+ * bindings, but `TestBed.createComponent` has nothing to infer from and lands on `unknown`, so
+ * these specs pin the defaults explicitly.
+ */
+type DefaultSelect = SelectComponent<GogDropdownOption, string | number | null>;
 import { GOG_CONFIG } from '../../shared/config';
 
 function stubRect(target: Element, rect: Partial<DOMRect>): void {
@@ -22,15 +30,15 @@ function stubRect(target: Element, rect: Partial<DOMRect>): void {
 }
 
 describe('SelectComponent', () => {
-  let component: SelectComponent;
-  let fixture: ComponentFixture<SelectComponent>;
+  let component: DefaultSelect;
+  let fixture: ComponentFixture<DefaultSelect>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SelectComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SelectComponent);
+    fixture = TestBed.createComponent(SelectComponent) as ComponentFixture<DefaultSelect>;
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

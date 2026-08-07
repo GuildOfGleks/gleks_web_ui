@@ -25,14 +25,24 @@ export type GogSelectOption = GogDropdownOption;
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectComponent extends GogDropdownBase<string | number | null> {
+export class SelectComponent<
+  TOption = GogDropdownOption,
+  TValue = string | number | null,
+> extends GogDropdownBase<TValue, TOption> {
   readonly inputId = input('');
 
-  /** Two-way bindable selected value: `[(value)]="signal"`. */
-  readonly value = model<string | number | null>(null);
+  /**
+   * Two-way bindable selected value: `[(value)]="signal"`.
+   *
+   * Carries whatever `optionValue` resolves to — an id by default, or the option object itself
+   * when `optionValue` is `null`. `TValue` is inferred from the signal you bind, so a
+   * `WritableSignal<string | null>` keeps typing exactly as before.
+   */
+  readonly value = model<TValue>(null as TValue);
 
   protected readonly panelTemplate = viewChild<TemplateRef<unknown>>('panelTpl');
-  protected readonly emptyValue = null;
+  /** A cleared select is `null`, whatever `TValue` the consumer bound. */
+  protected readonly emptyValue = null as TValue;
   protected readonly optionClass = 'gog-select__option';
   protected readonly triggerClass = 'gog-select__control';
   protected readonly sizeBlockClass = 'gog-select';
@@ -49,21 +59,26 @@ export class SelectComponent extends GogDropdownBase<string | number | null> {
   );
 
   protected readonly selectedOption = computed(
-    () => this.options().find((option) => String(option.id) === String(this.value())) ?? null,
+    () =>
+      this.options().find((option) => this.sameValue(this.valueOf(option), this.value())) ?? null,
   );
-  protected readonly hasFloatValue = computed(() => this.value() !== null);
+  protected readonly selectedLabel = computed(() => {
+    const option = this.selectedOption();
+    return option === null ? '' : this.labelOf(option);
+  });
+  protected readonly hasFloatValue = computed(() => this.value() != null);
 
-  protected isSelected(id: string | number): boolean {
-    return this.selectedOption()?.id === id;
+  protected isSelected(option: TOption): boolean {
+    return this.sameValue(this.valueOf(option), this.value());
   }
 
-  protected selectOption(option: GogDropdownOption, event: MouseEvent): void {
+  protected selectOption(option: TOption, event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
 
-    if (option.disabled) return;
+    if (this.isOptionDisabled(option)) return;
 
-    this.commitValue(option.id);
+    this.commitValue(this.valueOf(option) as TValue);
     this.close();
   }
 }

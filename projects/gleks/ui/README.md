@@ -87,20 +87,20 @@ border, radius, shadow, spacing or duration of its own. There are three layers:
 Override these to restyle everything at once; the component tokens all derive from them,
 so a palette swap carries through without touching anything else.
 
-| Group | Tokens |
-| --- | --- |
-| Palette | `--gog-background-color`, `--gog-surface-color`, `--gog-text-color`, `--gog-accent-text-color`, `--gog-muted-text-color`, `--gog-primary-color`, `--gog-secondary-color`, `--gog-accent-color`, `--gog-accent-bright`, `--gog-accent-dim`, `--gog-accent-pale`, `--gog-border-color`, `--gog-hover-color` |
-| Status | `--gog-success-color`, `--gog-danger-color`, `--gog-warning-color`, `--gog-info-color` |
-| Type | `--gog-font-heading`, `--gog-font-body`, `--gog-font-mono`, `--gog-text-xs` … `--gog-text-3xl` |
-| Geometry | `--gog-radius`, `--gog-space-xs` … `--gog-space-2xl`, `--gog-panel-shadow`, `--gog-panel-radius`, `--gog-panel-border-width`, `--gog-panel-border-style` |
-| Motion | `--gog-duration-fast`, `--gog-duration-base`, `--gog-duration-slow`, `--gog-easing` |
-| Focus / state | `--gog-focus-ring-width`, `--gog-focus-ring-offset`, `--gog-disabled-opacity` |
-| Controls | `--gog-control-padding-y`, `--gog-control-padding-x`, `--gog-control-icon-offset`, `--gog-control-border-width`, `--gog-control-border-style` |
-| Fields | `--gog-field-{xsm,sm,md,lg,slg}-{padding-y,padding-x,font-size,icon-offset,icon-inset}` — shared by input, select and multiselect |
-| Float label | `--gog-field-float-label-{reserve,in-top,over-gap,over-reserve}` — one geometry scale for every field that can float its label |
-| Buttons | `--gog-btn-{xsm,sm,md,lg,slg}-padding`, `--gog-btn-{xsm,sm,md,lg,slg}-font-size` |
-| Checkables | `--gog-control-checkbox-padding`, `--gog-control-checkbox-box-size-{xsm…slg}`, `--gog-control-checkbox-label-size-{xsm…slg}`, `--gog-control-checkbox-icon-size-{xsm…slg}` |
-| Overlays | `--gog-dropdown-z`, `--gog-spinner-overlay-z` |
+| Group         | Tokens                                                                                                                                                                                                                                                                                                    |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Palette       | `--gog-background-color`, `--gog-surface-color`, `--gog-text-color`, `--gog-accent-text-color`, `--gog-muted-text-color`, `--gog-primary-color`, `--gog-secondary-color`, `--gog-accent-color`, `--gog-accent-bright`, `--gog-accent-dim`, `--gog-accent-pale`, `--gog-border-color`, `--gog-hover-color` |
+| Status        | `--gog-success-color`, `--gog-danger-color`, `--gog-warning-color`, `--gog-info-color`                                                                                                                                                                                                                    |
+| Type          | `--gog-font-heading`, `--gog-font-body`, `--gog-font-mono`, `--gog-text-xs` … `--gog-text-3xl`                                                                                                                                                                                                            |
+| Geometry      | `--gog-radius`, `--gog-space-xs` … `--gog-space-2xl`, `--gog-panel-shadow`, `--gog-panel-radius`, `--gog-panel-border-width`, `--gog-panel-border-style`                                                                                                                                                  |
+| Motion        | `--gog-duration-fast`, `--gog-duration-base`, `--gog-duration-slow`, `--gog-easing`                                                                                                                                                                                                                       |
+| Focus / state | `--gog-focus-ring-width`, `--gog-focus-ring-offset`, `--gog-disabled-opacity`                                                                                                                                                                                                                             |
+| Controls      | `--gog-control-padding-y`, `--gog-control-padding-x`, `--gog-control-icon-offset`, `--gog-control-border-width`, `--gog-control-border-style`                                                                                                                                                             |
+| Fields        | `--gog-field-{xsm,sm,md,lg,slg}-{padding-y,padding-x,font-size,icon-offset,icon-inset}` — shared by input, select and multiselect                                                                                                                                                                         |
+| Float label   | `--gog-field-float-label-{reserve,in-top,over-gap,over-reserve}` — one geometry scale for every field that can float its label                                                                                                                                                                            |
+| Buttons       | `--gog-btn-{xsm,sm,md,lg,slg}-padding`, `--gog-btn-{xsm,sm,md,lg,slg}-font-size`                                                                                                                                                                                                                          |
+| Checkables    | `--gog-control-checkbox-padding`, `--gog-control-checkbox-box-size-{xsm…slg}`, `--gog-control-checkbox-label-size-{xsm…slg}`, `--gog-control-checkbox-icon-size-{xsm…slg}`                                                                                                                                |
+| Overlays      | `--gog-dropdown-z`, `--gog-spinner-overlay-z`                                                                                                                                                                                                                                                             |
 
 **2. Component tokens** — `--gog-<block>-*`, one block per component in `theme.css`, for
 restyling a single component theme-wide. They cover every painted property, including
@@ -117,13 +117,13 @@ each component's font family, so a theme can decide that e.g. buttons use the bo
 }
 ```
 
-**3. Instance tokens** — a small set left deliberately *undeclared* so that setting them
+**3. Instance tokens** — a small set left deliberately _undeclared_ so that setting them
 anywhere always wins over the variant/size classes. This is the per-instance escape
 hatch:
 
 ```css
 .my-form gog-button {
-  --gog-btn-bg: rebeccapurple;   /* beats .gog-btn--primary, unlike a declared token */
+  --gog-btn-bg: rebeccapurple; /* beats .gog-btn--primary, unlike a declared token */
 }
 ```
 
@@ -141,7 +141,7 @@ stops being read, fails the build. That check also enforces the other half of th
 **no component stylesheet carries a default in a `var()` fallback**, so every value a
 component paints with really is discoverable in `theme.css`.
 
-The float label's *geometry* is not instance-layer — it is themeable per component
+The float label's _geometry_ is not instance-layer — it is themeable per component
 (`--gog-{input,select,ms}-float-label-{reserve,in-top,over-gap,over-reserve}`), and all three
 derive from the shared `--gog-field-float-label-*` scale above, so one declaration retunes
 every field at once while a single control can still be overridden on its own.
@@ -172,11 +172,11 @@ component without listing any of them:
 }
 ```
 
-The second selector is what lets a theme apply to a *subtree* rather than the whole page
+The second selector is what lets a theme apply to a _subtree_ rather than the whole page
 — put `data-theme="cyberpunk"` on any element and everything inside it re-derives from
 that palette, so one page can show several themes side by side (see the showcase's Theme
 lab). That works because `theme.css` re-declares its derived layer on `:root, [data-theme]`:
-a custom property's `var()` references are substituted where the property is *declared*,
+a custom property's `var()` references are substituted where the property is _declared_,
 so a derived token declared only on `:root` would freeze to the root palette.
 
 Corollary worth knowing when writing your own themes: **anything you declare that reads
@@ -205,6 +205,36 @@ Project any element as the trigger via `gogCollapsibleTrigger` and any element a
 panel via `gogCollapsibleContent`; `[(open)]` is two-way bindable. Useful for anything
 that needs an inline expanding region without the overlay behavior of `gog-select`/
 `gog-multiselect` — e.g. a collapsible group of links in a nav sidebar.
+
+### Options come from your own objects
+
+`gog-select` and `gog-multiselect` do not require a `{ id, name }` shape. `optionLabel`,
+`optionValue` and `optionDisabled` each take a property path — dot-paths included — or a
+function:
+
+```html
+<gog-select
+  [options]="members"
+  optionLabel="profile.fullName"
+  optionValue="uuid"
+  optionDisabled="suspended"
+  [(value)]="memberId"
+/>
+```
+
+Set `[optionValue]="null"` and the control emits the option object itself, so a selection round-trips
+without a lookup table:
+
+```html
+<gog-select [options]="members" [optionLabel]="nameOf" [optionValue]="null" [(value)]="member">
+  <ng-template gogDropdownOption let-m let-label="label">
+    {{ label }} — {{ $any(m).profile.role }}
+  </ng-template>
+</gog-select>
+```
+
+The defaults are `'name'` / `'id'` / `'disabled'`, which is what `GogDropdownOption` describes —
+so code written against that shape keeps working unchanged.
 
 `gogTooltip` is a hover/focus tooltip directive, not a component — drop it on any element,
 a `gog-*` component's own host tag or a plain native one

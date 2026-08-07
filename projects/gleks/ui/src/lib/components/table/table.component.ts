@@ -15,6 +15,7 @@ import { ScrollComponent } from '../scroll/scroll.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
 import { GogSize } from '../../shared/types';
+import { getByPath } from '../../shared/option-accessor';
 import {
   GogColumn,
   type GogColumnBodyContext,
@@ -22,18 +23,6 @@ import {
   defaultCompare,
 } from './column';
 import { TemplateDirective } from './template.directive';
-
-/** Resolves `field` against `row`, following dot-paths (e.g. `"address.city"`). */
-function getByPath(row: unknown, field: string): unknown {
-  if (!field.includes('.')) return (row as Record<string, unknown> | null)?.[field];
-
-  let value: unknown = row;
-  for (const key of field.split('.')) {
-    if (value == null) return undefined;
-    value = (value as Record<string, unknown>)[key];
-  }
-  return value;
-}
 
 export type SortDirection = 'asc' | 'desc' | null;
 

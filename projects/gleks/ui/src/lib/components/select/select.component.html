@@ -52,7 +52,7 @@
       (keydown.arrowup)="onTriggerArrowKeydown($event)"
     >
       <span class="gog-select__value" [class.gog-select__value--placeholder]="!selectedOption()">
-        {{ selectedOption()?.name || effectivePlaceholder() }}
+        {{ selectedLabel() || effectivePlaceholder() }}
       </span>
 
       <span class="gog-select__chevron" aria-hidden="true">
@@ -110,7 +110,7 @@
       overscrollBehavior="contain"
       class="gog-select__scroll"
     >
-      @for (option of options(); track option.id) {
+      @for (option of options(); track valueOf(option)) {
         <!--
           tabindex="-1" keeps the list to a single tab stop, as the listbox pattern expects:
           focus is moved between options with the arrow keys, not by tabbing through every
@@ -121,19 +121,28 @@
           class="gog-select__option"
           role="option"
           tabindex="-1"
-          [attr.aria-selected]="isSelected(option.id)"
-          [attr.aria-disabled]="option.disabled ?? false"
-          [class.gog-select__option--selected]="isSelected(option.id)"
-          [class.gog-select__option--disabled]="option.disabled ?? false"
+          [attr.aria-selected]="isSelected(option)"
+          [attr.aria-disabled]="isOptionDisabled(option)"
+          [class.gog-select__option--selected]="isSelected(option)"
+          [class.gog-select__option--disabled]="isOptionDisabled(option)"
           (click)="selectOption(option, $event)"
           (keydown)="onOptionKeydown($event)"
         >
-          <span class="gog-select__option-mark" aria-hidden="true">
-            @if (isSelected(option.id)) {
-              <gog-icon name="check" />
-            }
-          </span>
-          <span class="gog-select__option-label">{{ option.name }}</span>
+          @if (optionSlot(); as slot) {
+            <ng-container
+              *ngTemplateOutlet="
+                slot.templateRef;
+                context: optionContext(option, isSelected(option))
+              "
+            />
+          } @else {
+            <span class="gog-select__option-mark" aria-hidden="true">
+              @if (isSelected(option)) {
+                <gog-icon name="check" />
+              }
+            </span>
+            <span class="gog-select__option-label">{{ labelOf(option) }}</span>
+          }
         </button>
       }
     </gog-scroll>

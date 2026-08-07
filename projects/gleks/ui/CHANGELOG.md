@@ -25,6 +25,21 @@ reached 1.0, so breaking changes may land in minor versions.
   `gog-accordion` and `gog-paginator` keep their own density defaults, as do `gog-spinner`,
   `gog-skeleton`, `gog-tag` and `gog-chip`. All stay per-instance overridable.
 
+- **`gog-select` and `gog-multiselect` take your own objects.** `optionLabel`, `optionValue` and
+  `optionDisabled` accept a property path (dot-paths included, `'profile.fullName'`) or a
+  function, so a real DTO goes straight in — no mapping into `{ id, name }` first, and no losing
+  the original object on the way back out. Set `[optionValue]="null"` and the control emits the
+  **option object itself** instead of an id. Both controls are now generic over their option and
+  value types, inferred from the bindings.
+
+  Defaults are `'name'` / `'id'` / `'disabled'`, so **existing code is unaffected** — the whole
+  21.2.x select/multiselect spec suite passes unchanged. `GogDropdownOption` is no longer a
+  requirement, just the shape those default accessors expect.
+- `gogDropdownOption` — a projected template for one option row, with
+  `{ $implicit: option, selected, disabled, label }` as its context.
+- `getByPath`, `readOption`, `isSameOptionValue` and the `GogOptionAccessor<TOption, TResult>`
+  type are exported; `gog-table` now shares the same `getByPath` rather than keeping its own copy.
+
 - **One slot mechanism across the library.** Custom markup is now projected as content and
   picked up with `contentChild`, instead of a `TemplateRef` input per slot. New directives:
   `gogColumnBody` / `gogColumnHeader` (per column, replacing the string-keyed

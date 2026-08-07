@@ -28,6 +28,7 @@ import {
   resolveDropdownPlacement,
 } from './dropdown-position';
 import { GogErrorState, type GogErrorDisplay } from './error-state';
+import { type GogOptionAccessor, isSameOptionValue, readOption } from './option-accessor';
 import { GogFloatLabelState } from './float-label-state';
 import { handleRovingFocusKeydown } from './roving-focus';
 import { GogFloatLabelVariant, GogSize } from './types';
@@ -46,7 +47,47 @@ export class GogDropdownChevronDirective {
   readonly templateRef = inject<TemplateRef<unknown>>(TemplateRef);
 }
 
-/** A single choice in any of the listbox-style controls (`gog-select`, `gog-multiselect`). */
+/** Context handed to a `gogDropdownOption` template. */
+export interface GogDropdownOptionContext<TOption> {
+  /** The consumer's own option object, untouched. */
+  $implicit: TOption;
+  selected: boolean;
+  disabled: boolean;
+  /** The resolved label, so a custom row can decorate it rather than re-derive it. */
+  label: string;
+}
+
+/**
+ * Custom markup for one option row, on `gog-select` and `gog-multiselect`:
+ *
+ * ```html
+ * <gog-select [options]="users" optionLabel="fullName" optionValue="id" [(value)]="userId">
+ *   <ng-template gogDropdownOption let-user let-selected="selected">
+ *     <img [src]="user.avatar" alt="" /> {{ user.fullName }}
+ *   </ng-template>
+ * </gog-select>
+ * ```
+ */
+@Directive({ selector: '[gogDropdownOption]' })
+export class GogDropdownOptionDirective<TOption = unknown> {
+  readonly templateRef = inject<TemplateRef<GogDropdownOptionContext<TOption>>>(TemplateRef);
+
+  static ngTemplateContextGuard<TOption>(
+    _dir: GogDropdownOptionDirective<TOption>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used as a type guard
+    ctx: unknown,
+  ): ctx is GogDropdownOptionContext<TOption> {
+    return true;
+  }
+}
+
+/**
+ * The shape the listbox controls assume when their accessor inputs are left at their defaults.
+ *
+ * It is no longer required: `optionLabel` / `optionValue` / `optionDisabled` accept any property
+ * path or function, so a consumer can pass their own DTO straight through. This interface just
+ * describes what the *default* accessors (`'name'` / `'id'` / `'disabled'`) expect to find.
+ */
 export interface GogDropdownOption {
   id: string | number;
   name: string;
@@ -88,13 +129,30 @@ const DEFAULT_DROPDOWN_DIRECTION: GogDropdownDirection = 'auto';
     '[class.gog-host--auto-width]': '!fullWidth()',
   },
 })
-export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, DoCheck {
+export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
+  implements ControlValueAccessor, DoCheck
+{
   private static nextUid = 0;
 
   readonly label = input('');
   readonly ariaLabel = input('');
   readonly placeholder = input('Select...');
-  readonly options = input<GogDropdownOption[]>([]);
+  readonly options = input<TOption[]>([]);
+  /**
+   * How to read an option's visible text — a property path (`'name'`, `'profile.title'`) or a
+   * function. Defaults to `'name'`, matching `GogDropdownOption`.
+   */
+  readonly optionLabel = input<GogOptionAccessor<TOption, string>>('name');
+  /**
+   * How to read the value this control emits for an option. A property path or a function, or
+   * `null` to emit **the option object itself** — which is what lets a consumer keep their own
+   * DTO end to end instead of mapping ids back to objects on every change.
+   *
+   * Defaults to `'id'`, matching `GogDropdownOption`, so existing code is unaffected.
+   */
+  readonly optionValue = input<GogOptionAccessor<TOption, unknown> | null>('id');
+  /** How to read whether an option is disabled. Defaults to `'disabled'`. */
+  readonly optionDisabled = input<GogOptionAccessor<TOption, boolean>>('disabled');
   readonly errorMessage = input('');
   /**
    * See `GogErrorDisplay`. Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to
@@ -146,6 +204,43 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
   readonly floatLabelShowPlaceholder = input<boolean | undefined>(undefined);
 
   readonly isOpen = signal(false);
+
+  /** Projected `gogDropdownOption` template, if the consumer supplied one. */
+  protected readonly optionSlot = contentChild(GogDropdownOptionDirective);
+
+  /** An option's visible text, via `optionLabel`. */
+  protected labelOf(option: TOption): string {
+    return readOption(option, this.optionLabel());
+  }
+
+  /**
+   * The value this control emits for an option, via `optionValue` — or the option object
+   * itself when `optionValue` is `null`.
+   */
+  protected valueOf(option: TOption): unknown {
+    const accessor = this.optionValue();
+    return accessor === null ? option : readOption(option, accessor);
+  }
+
+  /** Whether an option is disabled, via `optionDisabled`. Anything falsy counts as enabled. */
+  protected isOptionDisabled(option: TOption): boolean {
+    return !!readOption(option, this.optionDisabled());
+  }
+
+  /** Context for a projected `gogDropdownOption` row. */
+  protected optionContext(option: TOption, selected: boolean): GogDropdownOptionContext<TOption> {
+    return {
+      $implicit: option,
+      selected,
+      disabled: this.isOptionDisabled(option),
+      label: this.labelOf(option),
+    };
+  }
+
+  /** Shared by both controls to match a resolved option value against the current value. */
+  protected sameValue(a: unknown, b: unknown): boolean {
+    return isSameOptionValue(a, b);
+  }
 
   /** The `<ng-template>` holding the panel markup, rendered inline or into `<body>`. */
   protected abstract readonly panelTemplate: Signal<TemplateRef<unknown> | undefined>;
