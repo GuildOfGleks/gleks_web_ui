@@ -132,15 +132,22 @@ reads in TypeScript, where a CSS token can't reach — a `setTimeout`/`timer` du
 RxJS `throttle` window. If an input's value only ever flows into the template as a bound
 style, it belongs in `theme.css`, not here.
 
+`provideGogConfig(...)` **merges down the injector tree** — a nested call layers onto the
+parent's config one level deep, per component key, rather than replacing it. Preserve that when
+touching `config.ts`; the replace-everything version silently dropped sibling keys, which is
+close to invisible in review. `config.spec.ts` pins the behaviour.
+
 To make an existing or new input configurable this way:
 
 1. Change the input to `input<T | undefined>(undefined)` (it no longer carries the
    component's default itself) and keep a `const DEFAULT_X = ...` near the top of the file
    for that default.
 2. `private readonly globalConfig = inject(GOG_CONFIG);`
-3. Add a `resolvedX = computed(() => this.x() ?? this.globalConfig.<component>?.x ?? DEFAULT_X)`
+3. Add `resolvedX = computed(() => resolveConfigured(this.x(), this.globalConfig.<component>?.x, DEFAULT_X))`
    and use `resolvedX()` everywhere internally (template and class) instead of the raw input.
-   An instance's own input, when set, always wins over the global config.
+   Use the `resolveConfigured` helper rather than an inline `??` chain, so the precedence can't
+   drift between components — and never `||`, since `0` and `false` are meaningful values for
+   `debounce`, `showDelay` and `appendToBody`.
 4. Add the field under that component's key in the `GogGlobalConfig` interface in
    `lib/shared/config.ts`, with a type matching the input.
 5. Don't add a field "for consistency" before some component actually reads it — an
