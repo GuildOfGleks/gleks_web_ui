@@ -1,6 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  Directive,
+  contentChild,
   computed,
   DoCheck,
   inject,
@@ -20,6 +22,38 @@ import { IconComponent, type GogIconName } from '../icon/icon.component';
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
 const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
+
+/**
+ * Arbitrary markup in the field's leading slot — an icon, a button, a prefix label:
+ *
+ * ```html
+ * <gog-inputfield label="Amount">
+ *   <span gogInputAddonStart>€</span>
+ * </gog-inputfield>
+ *
+ * <gog-inputfield label="Search">
+ *   <button gogInputAddonStart type="button" aria-label="Search" (click)="run()">
+ *     <gog-icon name="check" />
+ *   </button>
+ * </gog-inputfield>
+ * ```
+ *
+ * Unlike the deprecated `iconStartTemplate` / `iconStartFn` / `iconStartLabel` trio this
+ * replaces, the projected element is a normal DOM element: it carries its own `aria-label`,
+ * its own click handler, and its own disabled state, so the component needs no input per
+ * capability. `iconStart` — a bare icon name — stays, since that really is the common case.
+ */
+@Directive({ selector: '[gogInputAddonStart]' })
+export class GogInputAddonStartDirective {}
+
+/**
+ * Arbitrary markup in the field's trailing slot — see `GogInputAddonStartDirective`.
+ *
+ * On `type="password"` the built-in show/hide toggle owns this slot and a projected end addon
+ * is ignored, so the reveal control can never be accidentally replaced by a decorative one.
+ */
+@Directive({ selector: '[gogInputAddonEnd]' })
+export class GogInputAddonEndDirective {}
 
 @Component({
   selector: 'gog-inputfield',
@@ -67,17 +101,31 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly iconStart = input<GogIconName | ''>('');
   /** Default icon name for the trailing icon. */
   readonly iconEnd = input<GogIconName | ''>('');
-  /** Custom leading icon template. */
+  /**
+   * @deprecated since 21.3.0 (2026-08-07) — project a `<span gogInputAddonStart>` element instead. Removed in 21.5.0.
+   */
   readonly iconStartTemplate = input<TemplateRef<unknown> | null>(null);
-  /** Custom trailing icon template. */
+  /**
+   * @deprecated since 21.3.0 (2026-08-07) — project a `<span gogInputAddonEnd>` element instead. Removed in 21.5.0.
+   */
   readonly iconEndTemplate = input<TemplateRef<unknown> | null>(null);
-  /** When provided, the start icon becomes a clickable button invoking this fn */
+  /**
+   * @deprecated since 21.3.0 (2026-08-07) — project a `<button gogInputAddonStart>` element instead. Removed in 21.5.0. A projected button carries its own
+   * `(click)` handler, so no input is needed for it.
+   */
   readonly iconStartFn = input<(() => void) | null>(null);
-  /** When provided, the end icon becomes a clickable button invoking this fn */
+  /**
+   * @deprecated since 21.3.0 (2026-08-07) — project a `<button gogInputAddonEnd>` element instead. Removed in 21.5.0. A projected button carries its own
+   * `(click)` handler, so no input is needed for it.
+   */
   readonly iconEndFn = input<(() => void) | null>(null);
-  /** aria-label for the start icon button (required when iconStartFn is set) */
+  /**
+   * @deprecated since 21.3.0 (2026-08-07) — project a `<button gogInputAddonStart>` element instead. Removed in 21.5.0. Put `aria-label` on that button.
+   */
   readonly iconStartLabel = input('');
-  /** aria-label for the end icon button (required when iconEndFn is set) */
+  /**
+   * @deprecated since 21.3.0 (2026-08-07) — project a `<button gogInputAddonEnd>` element instead. Removed in 21.5.0. Put `aria-label` on that button.
+   */
   readonly iconEndLabel = input('');
   /** aria-label for the reveal-password button, shown when `type` is `'password'` */
   readonly showPasswordLabel = input('Show password');
@@ -154,8 +202,17 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   protected readonly isFloatLabelFloated = this.floatLabelState.isFloated;
   protected readonly effectivePlaceholder = this.floatLabelState.effectivePlaceholder;
 
+  /** Projected `gogInputAddonStart` element, if any. */
+  protected readonly addonStart = contentChild(GogInputAddonStartDirective);
+  /** Projected `gogInputAddonEnd` element, if any. */
+  protected readonly addonEnd = contentChild(GogInputAddonEndDirective);
+
+  /**
+   * Drives the wrapper's `--icon-start` class, which widens the field's leading gutter. Counts
+   * a projected addon as well as the legacy icon inputs, or the addon would overlap the text.
+   */
   protected readonly hasIconStart = computed(
-    () => !!this.iconStartTemplate() || !!this.iconStart(),
+    () => !!this.addonStart() || !!this.iconStartTemplate() || !!this.iconStart(),
   );
   protected readonly hasIconStartAction = computed(() => !!this.iconStartFn());
 
@@ -171,7 +228,7 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
       : this.iconEndLabel(),
   );
   protected readonly hasIconEnd = computed(
-    () => !!this.iconEndTemplate() || !!this.effectiveIconEnd(),
+    () => !!this.addonEnd() || !!this.iconEndTemplate() || !!this.effectiveIconEnd(),
   );
   protected readonly hasIconEndAction = computed(
     () => this.isPasswordField() || !!this.iconEndFn(),

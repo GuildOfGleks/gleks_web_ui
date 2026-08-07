@@ -59,12 +59,12 @@
           (click)="clearAll($event)"
           aria-label="Clear selection"
         >
-          <gog-icon [template]="clearIconTemplate()" name="close" />
+          <gog-icon [template]="clearIconSlot()?.templateRef ?? clearIconTemplate()" name="close" />
         </button>
       }
       <span class="gog-ms__arrow" [class.gog-ms__arrow--up]="isOpen()" aria-hidden="true">
         <gog-icon
-          [template]="chevronTemplate()"
+          [template]="chevronSlot()?.templateRef ?? chevronTemplate()"
           [name]="isOpen() ? 'chevron-up' : 'chevron-down'"
         />
       </span>

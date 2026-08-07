@@ -17,7 +17,11 @@
         label()
       }}</label>
     }
-    @if (hasIconStart()) {
+    @if (addonStart()) {
+      <span class="gog-input__icon gog-inline-center gog-input__icon--start gog-input__addon">
+        <ng-content select="[gogInputAddonStart]" />
+      </span>
+    } @else if (hasIconStart()) {
       @if (hasIconStartAction()) {
         <button
           type="button"
@@ -52,7 +56,15 @@
       (focus)="onFocus()"
       (blur)="onBlur()"
     />
-    @if (hasIconEnd()) {
+    <!--
+      A password field's built-in show/hide toggle owns the end slot: it is the only control
+      that reveals the value, so a projected addon must not be able to displace it.
+    -->
+    @if (addonEnd() && !isPasswordField()) {
+      <span class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__addon">
+        <ng-content select="[gogInputAddonEnd]" />
+      </span>
+    } @else if (hasIconEnd()) {
       @if (hasIconEndAction()) {
         <button
           type="button"

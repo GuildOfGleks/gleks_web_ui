@@ -1,12 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  Directive,
+  TemplateRef,
   computed,
+  contentChild,
   inject,
   input,
   model,
   signal,
-  TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { IconComponent } from '../icon/icon.component';
@@ -19,6 +21,18 @@ import {
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
+
+/**
+ * Custom markup for the checkbox's tick:
+ *
+ * ```html
+ * <ng-template gogCheckboxIcon><my-icon /></ng-template>
+ * ```
+ */
+@Directive({ selector: '[gogCheckboxIcon]' })
+export class GogCheckboxIconDirective {
+  readonly templateRef = inject<TemplateRef<unknown>>(TemplateRef);
+}
 
 @Component({
   selector: 'gog-checkbox',
@@ -44,7 +58,12 @@ export class CheckboxComponent implements ControlValueAccessor {
   readonly indeterminate = input(false);
   readonly disabled = input(false);
   readonly fullWidth = input(false);
+  /**
+   * @deprecated since 21.3.0 (2026-08-07) — project an `<ng-template gogCheckboxIcon>` into the component instead. Removed in 21.5.0.
+   */
   readonly checkIconTemplate = input<TemplateRef<unknown> | null>(null);
+  /** Projected `gogCheckboxIcon` template; wins over the deprecated `checkIconTemplate` input. */
+  protected readonly checkIconSlot = contentChild(GogCheckboxIconDirective);
 
   /**
    * Two-way bindable checked state: `[(checked)]="signal"`.

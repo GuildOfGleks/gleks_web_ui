@@ -10,14 +10,32 @@ export interface GogTableHeaderContext {
 }
 
 /**
- * Marks a <ng-template> inside <gog-table> with a field name and optional type.
+ * Marks a `<ng-template>` inside `<gog-table>` with a field name and optional type:
  *
- * Usage:
- *   <ng-template template="status" type="body" let-row>...</ng-template>
- *   <ng-template template="status" type="header">...</ng-template>
+ * ```html
+ * <ng-template template="status" type="body" let-row>…</ng-template>
+ * ```
+ *
+ * @deprecated since 21.3.0 (2026-08-07) — declare the template inside its own column with
+ * `gogColumnBody` / `gogColumnHeader` instead. Removed in 21.5.0.
+ *
+ * The field name here is a string the compiler cannot check, so a typo silently renders the
+ * default cell rather than failing; the column-scoped directives bind structurally and carry a
+ * typed context. Migration:
+ *
+ * ```html
+ * <!-- before -->
+ * <gog-column field="status" />
+ * <ng-template template="status" type="body" let-row>…</ng-template>
+ *
+ * <!-- after -->
+ * <gog-column field="status">
+ *   <ng-template gogColumnBody let-row>…</ng-template>
+ * </gog-column>
+ * ```
  */
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector -- deprecated legacy selector, see above
   selector: '[template]',
 })
 export class TemplateDirective {

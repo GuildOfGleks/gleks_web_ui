@@ -10,6 +10,7 @@ import {
   Signal,
   TemplateRef,
   computed,
+  contentChild,
   effect,
   inject,
   input,
@@ -30,6 +31,20 @@ import { GogErrorState, type GogErrorDisplay } from './error-state';
 import { GogFloatLabelState } from './float-label-state';
 import { handleRovingFocusKeydown } from './roving-focus';
 import { GogFloatLabelVariant, GogSize } from './types';
+
+/**
+ * Custom markup for the trigger's chevron, on `gog-select` and `gog-multiselect`:
+ *
+ * ```html
+ * <gog-select [options]="opts">
+ *   <ng-template gogDropdownChevron><gog-icon name="sort" /></ng-template>
+ * </gog-select>
+ * ```
+ */
+@Directive({ selector: '[gogDropdownChevron]' })
+export class GogDropdownChevronDirective {
+  readonly templateRef = inject<TemplateRef<unknown>>(TemplateRef);
+}
 
 /** A single choice in any of the listbox-style controls (`gog-select`, `gog-multiselect`). */
 export interface GogDropdownOption {
@@ -113,7 +128,13 @@ export abstract class GogDropdownBase<TValue> implements ControlValueAccessor, D
   /** Unset, falls back to `GOG_CONFIG.dropdown.appendToBody`, then to `false`. */
   readonly appendToBody = input<boolean | undefined>(undefined);
   readonly disabled = input(false);
+  /**
+   * @deprecated since 21.3.0 (2026-08-07) — project an `<ng-template gogDropdownChevron>` into
+   * the control instead. Removed in 21.5.0.
+   */
   readonly chevronTemplate = input<TemplateRef<unknown> | null>(null);
+  /** Projected `gogDropdownChevron` template; wins over the deprecated `chevronTemplate`. */
+  protected readonly chevronSlot = contentChild(GogDropdownChevronDirective);
   /**
    * Full width of the container by default, matching every other field-style control.
    * Set to `false` to shrink the trigger to fit its selected label instead.

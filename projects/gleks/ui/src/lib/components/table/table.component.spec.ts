@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { TableComponent } from './table.component';
-import { Column } from './column';
+import { Column, GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective } from './column';
 import { TemplateDirective } from './template.directive';
 
 interface Row {
@@ -278,5 +278,62 @@ describe('TableComponent with projected columns and templates', () => {
 
       expect(table.currentPage()).toBe(1);
     });
+  });
+});
+
+/**
+ * The host above deliberately keeps using the deprecated string-keyed
+ * `<ng-template template="…" type="…">` form, so the back-compat path stays covered until it is
+ * removed in 21.5.0. This host uses the replacement: templates declared inside their own column.
+ */
+@Component({
+  standalone: true,
+  imports: [TableComponent, GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective],
+  template: `
+    <gog-table [value]="rows">
+      <gog-column field="id" header="ID">
+        <ng-template gogColumnHeader let-header>
+          <em class="scoped-header">{{ header }}#</em>
+        </ng-template>
+      </gog-column>
+      <gog-column field="name" header="Name">
+        <ng-template gogColumnBody let-row let-value="value" let-i="index">
+          <strong class="scoped-body">{{ value }}/{{ i }}/{{ $any(row).id }}</strong>
+        </ng-template>
+      </gog-column>
+    </gog-table>
+  `,
+})
+class ScopedTemplateHostComponent {
+  readonly rows: Row[] = [{ id: 7, name: 'Delta' }];
+}
+
+describe('TableComponent — column-scoped templates', () => {
+  let fixture: ComponentFixture<ScopedTemplateHostComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ScopedTemplateHostComponent],
+    }).compileComponents();
+    fixture = TestBed.createComponent(ScopedTemplateHostComponent);
+    await fixture.whenStable();
+  });
+
+  it('renders a gogColumnHeader template with the column header as context', () => {
+    const header = fixture.debugElement.query(By.css('.scoped-header'));
+    expect(header.nativeElement.textContent.trim()).toBe('ID#');
+  });
+
+  it('renders a gogColumnBody template with row, resolved value and index', () => {
+    const cell = fixture.debugElement.query(By.css('.scoped-body'));
+    expect(cell.nativeElement.textContent.trim()).toBe('Delta/0/7');
+  });
+
+  it('leaves columns without a template on the default text rendering', () => {
+    // showRowNumbers defaults to true, so the first cell is the row number; `id` is the second.
+    const cells = fixture.debugElement.queryAll(By.css('.gog-table__td'));
+    expect(cells[0].nativeElement.textContent.trim()).toBe('1');
+    // the id column has only a header template, so its cell is still plain text
+    expect(cells[1].nativeElement.textContent.trim()).toBe('7');
   });
 });

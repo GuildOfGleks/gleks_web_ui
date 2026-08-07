@@ -2,8 +2,11 @@ import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  Directive,
   TemplateRef,
   computed,
+  contentChild,
+  inject,
   input,
   model,
   viewChild,
@@ -14,11 +17,25 @@ import { ButtonComponent } from '../button/button.component';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 
-/** @deprecated Prefer `GogDropdownOption`; kept as an alias so existing imports keep working. */
+/**
+ * @deprecated since 21.2.2 (2026-07-30) — use `GogDropdownOption` instead. Removed in 21.4.0.
+ */
 export type GogMultiselectOption = GogDropdownOption;
 
 /** Height of the select-all/clear row, included in the panel height estimate. */
 const CONTROLS_ROW_HEIGHT = 38;
+
+/**
+ * Custom markup for the multiselect's clear button:
+ *
+ * ```html
+ * <ng-template gogMultiselectClearIcon><my-icon /></ng-template>
+ * ```
+ */
+@Directive({ selector: '[gogMultiselectClearIcon]' })
+export class GogMultiselectClearIconDirective {
+  readonly templateRef = inject<TemplateRef<unknown>>(TemplateRef);
+}
 
 @Component({
   selector: 'gog-multiselect',
@@ -31,7 +48,12 @@ export class MultiselectComponent extends GogDropdownBase<(string | number)[]> {
   readonly showControls = input(false);
   /** Where the "select all"/"clear" row sits relative to the option list. Sticky either way. */
   readonly controlsPosition = input<'top' | 'bottom'>('top');
+  /**
+   * @deprecated since 21.3.0 (2026-08-07) — project an `<ng-template gogMultiselectClearIcon>` into the component instead. Removed in 21.5.0.
+   */
   readonly clearIconTemplate = input<TemplateRef<unknown> | null>(null);
+  /** Projected `gogMultiselectClearIcon` template; wins over the deprecated `clearIconTemplate` input. */
+  protected readonly clearIconSlot = contentChild(GogMultiselectClearIconDirective);
 
   /** Two-way bindable selected ids: `[(value)]="signal"`. */
   readonly value = model<(string | number)[]>([]);

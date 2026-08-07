@@ -56,7 +56,10 @@
       </span>
 
       <span class="gog-select__chevron" aria-hidden="true">
-        <gog-icon [template]="chevronTemplate()" name="chevron-down" />
+        <gog-icon
+          [template]="chevronSlot()?.templateRef ?? chevronTemplate()"
+          name="chevron-down"
+        />
       </span>
     </button>
 

@@ -15,7 +15,12 @@ import { ScrollComponent } from '../scroll/scroll.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
 import { GogSize } from '../../shared/types';
-import { Column, defaultCompare } from './column';
+import {
+  GogColumn,
+  type GogColumnBodyContext,
+  type GogColumnHeaderContext,
+  defaultCompare,
+} from './column';
 import { TemplateDirective } from './template.directive';
 
 /** Resolves `field` against `row`, following dot-paths (e.g. `"address.city"`). */
@@ -81,7 +86,7 @@ export class TableComponent<T extends object> {
   /** Row density: lg (default) / md (compact) / sm (dense) */
   readonly size = input<GogSize>('lg');
 
-  readonly columns = contentChildren(Column);
+  readonly columns = contentChildren(GogColumn);
   readonly templates = contentChildren(TemplateDirective);
 
   readonly sortState = signal<SortState>({ field: '', direction: null });
@@ -142,15 +147,37 @@ export class TableComponent<T extends object> {
 
   readonly emptyColspan = computed(() => this.columns().length + (this.showRowNumbers() ? 1 : 0));
 
-  getBodyTemplate(field: string): TemplateRef<unknown> | null {
-    return this.bodyTemplateMap().get(field) ?? null;
+  /**
+   * A `gogColumnBody` template declared inside the column wins; the string-keyed
+   * `<ng-template template="field" type="body">` is the deprecated fallback.
+   */
+  getBodyTemplate(col: GogColumn): TemplateRef<unknown> | null {
+    return (
+      (col.bodyTemplate()?.templateRef as TemplateRef<unknown> | undefined) ??
+      this.bodyTemplateMap().get(col.field()) ??
+      null
+    );
   }
 
-  getHeaderTemplate(field: string): TemplateRef<unknown> | null {
-    return this.headerTemplateMap().get(field) ?? null;
+  getHeaderTemplate(col: GogColumn): TemplateRef<unknown> | null {
+    return (
+      (col.headerTemplate()?.templateRef as TemplateRef<unknown> | undefined) ??
+      this.headerTemplateMap().get(col.field()) ??
+      null
+    );
   }
 
-  toggleSort(col: Column): void {
+  /** Context for a `gogColumnBody` template — see `GogColumnBodyContext`. */
+  bodyContext(row: T, col: GogColumn, index: number): GogColumnBodyContext<T> {
+    return { $implicit: row, row, index, value: this.getCellValue(row, col.field()) };
+  }
+
+  /** Context for a `gogColumnHeader` template — see `GogColumnHeaderContext`. */
+  headerContext(col: GogColumn): GogColumnHeaderContext {
+    return { $implicit: col.header(), field: col.field() };
+  }
+
+  toggleSort(col: GogColumn): void {
     if (!col.sortable()) return;
     const cur = this.sortState();
     const field = col.field();
@@ -175,7 +202,7 @@ export class TableComponent<T extends object> {
     return null;
   }
 
-  handleSortClick(col: Column): void {
+  handleSortClick(col: GogColumn): void {
     if (!this.loading()) this.toggleSort(col);
   }
 

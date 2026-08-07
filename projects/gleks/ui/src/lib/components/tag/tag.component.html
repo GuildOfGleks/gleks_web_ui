@@ -3,7 +3,7 @@
     class="gog-tag__icon"
     [ariaHidden]="true"
     [name]="iconName() ?? 'info'"
-    [template]="iconTemplate()"
+    [template]="iconSlot()?.templateRef ?? iconTemplate()"
   />
 }
 

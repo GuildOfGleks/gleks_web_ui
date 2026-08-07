@@ -25,6 +25,37 @@ reached 1.0, so breaking changes may land in minor versions.
   `gog-accordion` and `gog-paginator` keep their own density defaults, as do `gog-spinner`,
   `gog-skeleton`, `gog-tag` and `gog-chip`. All stay per-instance overridable.
 
+- **One slot mechanism across the library.** Custom markup is now projected as content and
+  picked up with `contentChild`, instead of a `TemplateRef` input per slot. New directives:
+  `gogColumnBody` / `gogColumnHeader` (per column, replacing the string-keyed
+  `<ng-template template="…" type="…">`), `gogCheckboxIcon`, `gogTagIcon`,
+  `gogMultiselectClearIcon`, `gogDropdownChevron`, and `gogInputAddonStart` /
+  `gogInputAddonEnd`. A projected slot always wins over the deprecated input it replaces, so a
+  codebase can migrate one call site at a time.
+- `GogColumn` with the `gog-column` selector — the library's last unprefixed element name.
+- `gog-inputfield` addon slots take arbitrary markup, including a real `<button>` with its own
+  `aria-label` and `(click)`. This replaces six inputs (`icon{Start,End}{Template,Fn,Label}`)
+  with two slots. On `type="password"` the built-in reveal toggle keeps the trailing slot, so a
+  projected addon can never displace the only control that shows the value.
+
+### Deprecated
+
+Each of these keeps working unchanged and is **removed in 21.5.0**; the `@deprecated` tag on
+every symbol carries the same date and removal version, so `grep -rn "@deprecated since"` lists
+the full set at any time.
+
+- `<column>` → `<gog-column>`, and the `Column` export → `GogColumn`.
+- `<ng-template template="field" type="body|header">` inside `gog-table` → a `gogColumnBody` /
+  `gogColumnHeader` template declared inside the column itself. The old form matched columns by
+  a string the compiler cannot check, so a typo silently fell back to the default cell.
+- `gog-checkbox`'s `checkIconTemplate` → `gogCheckboxIcon`.
+- `gog-tag`'s `iconTemplate` → `gogTagIcon`.
+- `gog-multiselect`'s `clearIconTemplate` → `gogMultiselectClearIcon`.
+- `gog-select` / `gog-multiselect` `chevronTemplate` → `gogDropdownChevron`.
+- `gog-inputfield`'s `iconStartTemplate`, `iconEndTemplate`, `iconStartFn`, `iconEndFn`,
+  `iconStartLabel`, `iconEndLabel` → `gogInputAddonStart` / `gogInputAddonEnd`. `iconStart` and
+  `iconEnd` (a bare icon name) stay — that is the genuinely common case.
+
 ### Changed
 
 - **`provideGogConfig(...)` now merges with the config from the parent injector instead of

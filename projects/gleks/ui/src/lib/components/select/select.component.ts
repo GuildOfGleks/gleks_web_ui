@@ -13,7 +13,9 @@ import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-b
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 
-/** @deprecated Prefer `GogDropdownOption`; kept as an alias so existing imports keep working. */
+/**
+ * @deprecated since 21.2.2 (2026-07-30) — use `GogDropdownOption` instead. Removed in 21.4.0.
+ */
 export type GogSelectOption = GogDropdownOption;
 
 @Component({

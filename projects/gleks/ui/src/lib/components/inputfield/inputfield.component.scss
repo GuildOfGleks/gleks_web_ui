@@ -145,6 +145,15 @@
   line-height: 1;
 }
 
+/*
+ * Projected addon slot. `.gog-input__icon` sets `pointer-events: none` so a decorative icon
+ * never swallows clicks meant for the input; an addon is the consumer's own markup and may
+ * well be a button, so it has to take events back.
+ */
+.gog-input__addon {
+  pointer-events: auto;
+}
+
 /* Clickable icon button resets */
 .gog-input__icon--action {
   padding: 0;

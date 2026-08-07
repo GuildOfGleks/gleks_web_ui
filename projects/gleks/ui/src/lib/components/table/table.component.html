@@ -37,8 +37,8 @@
               (keydown.enter)="handleSortClick(col)"
               (keydown.space)="handleSortClick(col); $event.preventDefault()"
             >
-              @if (getHeaderTemplate(col.field()); as headerTpl) {
-                <ng-container *ngTemplateOutlet="headerTpl" />
+              @if (getHeaderTemplate(col); as headerTpl) {
+                <ng-container *ngTemplateOutlet="headerTpl; context: headerContext(col)" />
               } @else {
                 <span class="gog-table__th-inner">
                   {{ col.header() || col.field() }}
@@ -78,10 +78,8 @@
               }
               @for (col of columns(); track col.field()) {
                 <td class="gog-table__td">
-                  @if (getBodyTemplate(col.field()); as bodyTpl) {
-                    <ng-container
-                      *ngTemplateOutlet="bodyTpl; context: { $implicit: row, index: i }"
-                    />
+                  @if (getBodyTemplate(col); as bodyTpl) {
+                    <ng-container *ngTemplateOutlet="bodyTpl; context: bodyContext(row, col, i)" />
                   } @else {
                     {{ formatCellValue(row, col.field()) }}
                   }
