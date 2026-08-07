@@ -26,90 +26,10 @@ import { fileURLToPath } from 'node:url';
 import { glob } from 'node:fs/promises';
 import * as sass from 'sass';
 
+import { INSTANCE_TOKENS } from './instance-tokens.mjs';
+
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uiSrc = path.join(rootDir, 'projects/gleks/ui/src');
-
-/**
- * Layer 3 of the token system: read by a component, declared *nowhere* on purpose, so that a
- * consumer setting one anywhere always out-cascades the variant/size classes. Declaring any
- * of these — even as a "harmless default" on the block — pins every instance to that value
- * and is the one change that breaks per-instance theming library-wide.
- *
- * This list is therefore the definition of that layer, not a suppression list. Adding an
- * entry is a public-API decision: it becomes a documented override point in the README.
- */
-const INSTANCE_TOKENS = new Set([
-  // gog-accordion
-  '--gog-accordion-body-font-size',
-  '--gog-accordion-body-padding-bottom',
-  '--gog-accordion-body-padding-top',
-  '--gog-accordion-chevron-font-size',
-  '--gog-accordion-chevron-size',
-  '--gog-accordion-content-gap',
-  '--gog-accordion-font-size',
-  '--gog-accordion-letter-spacing',
-  '--gog-accordion-padding-x',
-  '--gog-accordion-padding-y',
-  // gog-button
-  '--gog-btn-bg',
-  '--gog-btn-border',
-  '--gog-btn-color',
-  '--gog-btn-hover-bg',
-  '--gog-btn-hover-color',
-  '--gog-btn-hover-shadow',
-  '--gog-btn-shadow',
-  '--gog-btn-spinner-color',
-  // gog-checkbox
-  '--gog-checkbox-box-size',
-  '--gog-checkbox-icon-size',
-  '--gog-checkbox-label-size',
-  '--gog-checkbox-padding',
-  // gog-chip
-  '--gog-chip-avatar-size',
-  '--gog-chip-font-size',
-  '--gog-chip-gap',
-  '--gog-chip-icon-size',
-  '--gog-chip-padding-block',
-  '--gog-chip-padding-inline',
-  '--gog-chip-remove-size',
-  // gog-dialog — written as inline styles by the drag handler, not by a theme
-  '--gog-dialog-offset-x',
-  '--gog-dialog-offset-y',
-  // gog-inputfield / gog-textarea (shared --gog-input-* block)
-  '--gog-input-float-label-on-bg',
-  '--gog-input-font',
-  '--gog-input-padding-x',
-  '--gog-input-padding-y',
-  // gog-multiselect
-  '--gog-ms-float-label-on-bg',
-  '--gog-ms-font-size',
-  '--gog-ms-padding-x',
-  '--gog-ms-padding-y',
-  // gog-radio-group
-  '--gog-radio-box-size',
-  '--gog-radio-label-size',
-  '--gog-radio-padding',
-  // gog-select
-  '--gog-select-control-font',
-  '--gog-select-control-padding-x',
-  '--gog-select-control-padding-y',
-  '--gog-select-float-label-on-bg',
-  // gog-table
-  '--gog-table-td-font-size',
-  '--gog-table-td-padding-v',
-  '--gog-table-th-font-size',
-  '--gog-table-th-padding-v',
-  // gog-tag
-  '--gog-tag-accent',
-  '--gog-tag-bg',
-  '--gog-tag-border',
-  '--gog-tag-color',
-  '--gog-tag-font-size',
-  '--gog-tag-gap',
-  '--gog-tag-icon-size',
-  '--gog-tag-padding-block',
-  '--gog-tag-padding-inline',
-]);
 
 /**
  * Rule-A exceptions. A literal fallback is legitimate only when the token carries no theme

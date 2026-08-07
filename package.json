@@ -15,11 +15,12 @@
     "format": "prettier --write \"projects/**/*.{ts,html,scss,css}\"",
     "format:check": "prettier --check \"projects/**/*.{ts,html,scss,css}\"",
     "lint": "ng lint @gleks/ui && ng lint ui-showcase",
-    "check:tokens": "node scripts/check-tokens.mjs",
+    "check:tokens": "node scripts/check-tokens.mjs && node scripts/generate-tokens.mjs --check",
     "serve:ssr:ui-showcase": "node dist/ui-showcase/server/server.mjs",
     "buildLibAndStart": "npm run build:lib && ng serve ui-showcase",
     "release": "npm run build:lib && npm publish dist/gleks/ui --access public",
-    "serve:ssr:gleks-ui-lab": "node dist/gleks-ui-lab/server/server.mjs"
+    "serve:ssr:gleks-ui-lab": "node dist/gleks-ui-lab/server/server.mjs",
+    "generate:tokens": "node scripts/generate-tokens.mjs"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
