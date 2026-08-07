@@ -24,7 +24,7 @@ iteration 1. Per `gleks-ui-library.instructions.md` rule 9, the agent never publ
 | 1c | Command-execution reliability (`running-commands`, `CLAUDE.md`) | ✅ done |
 | 2 | Deduplicate float label (TS + SCSS) + config resolver | ✅ done |
 | 3 | Config semantics & coverage + size-class boilerplate | ✅ done |
-| 4 | Slot unification + selector/naming fixes | ⬜ not started |
+| 4 | Slot unification + selector/naming fixes | ✅ done |
 | 5 | Dropdown data model (`optionLabel`/`optionValue`, generics) | ⬜ not started |
 | 6 | Token system industrialization + coverage | ⬜ not started |
 
@@ -290,6 +290,37 @@ modifier. The scoped-config demo on the Global config page still applies its sub
 **Done when:** one slot mechanism documented in the README; every deprecated symbol has an
 `@deprecated` tag naming its replacement; showcase pages updated to the new API; `CHANGELOG.md`
 `### Changed` lists each break with a migration line.
+
+### Outcome ✅
+
+Everything now projects content and is picked up with `contentChild`; nothing new takes a
+`TemplateRef` input. Eight new directives: `gogColumnBody` / `gogColumnHeader`,
+`gogCheckboxIcon`, `gogTagIcon`, `gogMultiselectClearIcon`, `gogDropdownChevron`,
+`gogInputAddonStart` / `gogInputAddonEnd`. Plus `GogColumn` / `<gog-column>`, retiring the
+library's last unprefixed element selector.
+
+`gog-inputfield` went from 26 inputs to 20: the six-input icon family collapsed into two addon
+slots that take a real `<button>` with its own `aria-label` and `(click)`. The built-in password
+reveal toggle deliberately keeps the trailing slot, so it cannot be displaced.
+
+**A deprecation policy now backs this**, at the user's direction and written into
+`api-design.instructions.md`: deprecate → carry for one or two minors → **delete on schedule**,
+with a fixed `@deprecated since <version> (YYYY-MM-DD) — <replacement>. Removed in <version>.`
+tag so `grep -rn "@deprecated since"` lists the whole set before a release. All 21.3.0
+deprecations are dated 2026-08-07 and removed in 21.5.0; the two pre-existing option aliases
+were back-filled to the same format (21.2.2, removed in 21.4.0).
+
+Verified: 453 specs (was 446) including a new `content-slots.spec.ts` that pins every slot *and*
+that a projected slot beats the deprecated input it replaces — which is what lets a codebase
+migrate one call site at a time. Live checks in `ui-showcase`: the table renders its
+column-scoped tag cells and custom header, the projected clear button carries its own
+`aria-label` and clears the field, and a password field still toggles `password` ⇄ `text` with
+`Show password` ⇄ `Hide password`.
+
+One bug caught by the new specs rather than by review: `gog-tag` gates its icon on `hasIcon()`,
+which counted only `iconName`/`iconTemplate` — so a tag with nothing but a projected template
+rendered no icon at all. The spec now guards it. The showcase's onboarding page also lost its
+hand-rolled password toggle, which had been duplicating the built-in one.
 
 ---
 
