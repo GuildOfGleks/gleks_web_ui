@@ -3,6 +3,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   CheckboxComponent,
   GogDropdownChevronDirective,
+  GogDropdownOptionDirective,
   GogFloatLabelVariant,
   GogSelectOption,
   GogSize,
@@ -10,11 +11,18 @@ import {
   SelectComponent,
 } from '@guildofgleks/ui';
 
+interface Member {
+  uuid: string;
+  profile: { fullName: string; role: string };
+  suspended: boolean;
+}
+
 @Component({
   selector: 'app-select-page',
   imports: [
     CheckboxComponent,
     GogDropdownChevronDirective,
+    GogDropdownOptionDirective,
     IconComponent,
     ReactiveFormsModule,
     SelectComponent,
@@ -25,6 +33,17 @@ import {
 })
 export class SelectPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
+
+  /** A DTO with no `id`/`name` at all — the shape a real API actually returns. */
+  protected readonly members: Member[] = [
+    { uuid: 'u1', profile: { fullName: 'Ada Lovelace', role: 'Maintainer' }, suspended: false },
+    { uuid: 'u2', profile: { fullName: 'Alan Turing', role: 'Reviewer' }, suspended: false },
+    { uuid: 'u3', profile: { fullName: 'Grace Hopper', role: 'Admin' }, suspended: true },
+  ];
+  protected readonly memberId = signal<string | null>('u1');
+  /** With `[optionValue]="null"` the control hands back the object, not an id. */
+  protected readonly member = signal<Member | null>(null);
+  protected readonly memberLabel = (m: Member) => m.profile.fullName;
 
   protected readonly framework = signal<string | number | null>('angular');
   protected readonly frameworks: GogSelectOption[] = [

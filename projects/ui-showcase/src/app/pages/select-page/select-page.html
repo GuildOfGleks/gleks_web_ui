@@ -91,6 +91,44 @@
   </article>
 
   <article class="card">
+    <h3>Your own objects — no mapping</h3>
+    <p class="lead">
+      <code>optionLabel</code>, <code>optionValue</code> and <code>optionDisabled</code> take a
+      property path (dot-paths included) or a function, so a real DTO goes straight in. Set
+      <code>[optionValue]="null"</code> and the control hands the whole object back instead of an id
+      — no lookup table on the way out.
+    </p>
+    <div class="field-grid">
+      <gog-select
+        label="Reviewer (by uuid)"
+        [options]="members"
+        optionLabel="profile.fullName"
+        optionValue="uuid"
+        optionDisabled="suspended"
+        [(value)]="memberId"
+      />
+      <gog-select
+        label="Reviewer (whole object)"
+        placeholder="Pick someone"
+        [options]="members"
+        [optionLabel]="memberLabel"
+        [optionValue]="null"
+        [(value)]="member"
+      >
+        <ng-template gogDropdownOption let-m let-label="label">
+          <span class="member-row"
+            >{{ label }} — <em>{{ $any(m).profile.role }}</em></span
+          >
+        </ng-template>
+      </gog-select>
+    </div>
+    <p class="meta">
+      Selected uuid: {{ memberId() ?? '—' }} · Selected object:
+      {{ member() ? $any(member()).profile.fullName + ' (' + $any(member()).uuid + ')' : '—' }}
+    </p>
+  </article>
+
+  <article class="card">
     <h3>States</h3>
     <div class="field-grid">
       <gog-select label="Disabled" [options]="frameworks" value="angular" [disabled]="true" />
