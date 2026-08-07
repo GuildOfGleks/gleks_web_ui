@@ -29,6 +29,10 @@ export class InputfieldPage {
   protected readonly floatLabelShowPlaceholder = signal(false);
   protected readonly floatLabelValue = signal('');
   protected readonly floatLabelIconValue = signal('');
+  protected readonly floatLabelIconEndValue = signal('');
+  protected readonly floatLabelBothIconsValue = signal('');
+  protected readonly floatLabelPasswordOnValue = signal('');
+  protected readonly floatLabelPasswordOffValue = signal('');
 
   protected setFloatLabelVariant(value: string | number | null): void {
     if (value === null) return;

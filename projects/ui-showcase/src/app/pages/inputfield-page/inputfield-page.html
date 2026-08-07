@@ -123,6 +123,49 @@
         [floatLabelShowPlaceholder]="floatLabelShowPlaceholder()"
         [(value)]="floatLabelIconValue"
       />
+      <gog-inputfield
+        label="Website"
+        iconEnd="close"
+        [iconEndFn]="clearSearch.bind(this)"
+        iconEndLabel="Clear"
+        placeholder="https://example.com"
+        [floatLabel]="floatLabelVariant()"
+        [floatLabelShowPlaceholder]="floatLabelShowPlaceholder()"
+        [(value)]="floatLabelIconEndValue"
+      />
+      <gog-inputfield
+        label="Amount"
+        iconStart="info"
+        iconEnd="check"
+        placeholder="0.00"
+        [floatLabel]="floatLabelVariant()"
+        [floatLabelShowPlaceholder]="floatLabelShowPlaceholder()"
+        [(value)]="floatLabelBothIconsValue"
+      />
+    </div>
+    <p class="meta">
+      The leading/trailing icon slots line up correctly at every variant — the label and the
+      field share the same icon-aware inset instead of the label falling back to the
+      unindented default.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Float label with a password field</h3>
+    <p class="lead">
+      <code>type="password"</code> always renders the built-in show/hide toggle as a trailing
+      icon — the same icon-inset code path as <code>iconEnd</code> above. Side by side with
+      <code>floatLabel</code> off and on, to confirm the eye toggle lines up correctly either
+      way.
+    </p>
+    <div class="field-grid">
+      <gog-inputfield label="Password (floatLabel off)" type="password" [(value)]="floatLabelPasswordOffValue" />
+      <gog-inputfield
+        label="Password (floatLabel on)"
+        type="password"
+        floatLabel="in"
+        [(value)]="floatLabelPasswordOnValue"
+      />
     </div>
   </article>
 
