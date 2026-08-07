@@ -25,6 +25,23 @@ reached 1.0, so breaking changes may land in minor versions.
   `gog-accordion` and `gog-paginator` keep their own density defaults, as do `gog-spinner`,
   `gog-skeleton`, `gog-tag` and `gog-chip`. All stay per-instance overridable.
 
+- **A built-in clear button** on `gog-inputfield`, `gog-textarea`, `gog-select` and
+  `gog-multiselect`, via a `clearable` input (plus `clearAriaLabel`). It appears only once the
+  control has something to clear and disappears again when empty, so it adds no permanent
+  chrome — and it removes the need for a fake `"— not selected —"` option just to let someone
+  undo a choice. Also settable app-wide through `GOG_CONFIG.control.clearable`. Defaults to
+  `false`, except `gog-multiselect`, which already had a clear button and keeps it. On a
+  password field the built-in reveal toggle keeps the trailing slot.
+- **Filtering in `gog-select` and `gog-multiselect`** — `filter` puts a search box at the top of
+  the panel, matching case-insensitively on the resolved `optionLabel`. `filterMatch` swaps that
+  for your own predicate, `filterPlaceholder` and `filterEmptyMessage` cover the wording, and
+  `GOG_CONFIG.dropdown.filter` turns it on app-wide. The query resets when the panel closes, and
+  `gog-multiselect`'s "select all" deliberately takes only the *visible* options so it means what
+  it says while a filter is active.
+- `styles/presets/one-dark.css` and `styles/presets/one-light.css` — the Atom/JetBrains One
+  palettes, with the syntax hues mapped onto the library's semantic roles (blue is the accent,
+  green/red/yellow/cyan become success/danger/warning/info).
+
 - **The token catalogue is generated, not hand-copied.** `npm run generate:tokens` derives
   `GogTokenName` (a union of every `--gog-*` the library declares or documents), the
   `GOG_TOKEN_GROUPS` runtime metadata, and the README's theming table straight from

@@ -52,12 +52,12 @@
     </span>
 
     <span class="gog-ms__actions">
-      @if (selectedNames()) {
+      @if (showClear()) {
         <button
           type="button"
           class="gog-ms__clear gog-inline-center"
-          (click)="clearAll($event)"
-          aria-label="Clear selection"
+          (click)="clearValue($event)"
+          [attr.aria-label]="clearAriaLabel()"
         >
           <gog-icon [template]="clearIconSlot()?.templateRef ?? clearIconTemplate()" name="close" />
         </button>
@@ -113,9 +113,25 @@
       scrolls the focused option into view natively — no separate keyboard-scroll target
       needed here.
     -->
+    @if (resolvedFilter()) {
+      <div class="gog-ms__filter">
+        <input
+          type="text"
+          class="gog-ms__filter-input"
+          [placeholder]="filterPlaceholder()"
+          [value]="filterQuery()"
+          (input)="onFilterInput($event)"
+          (click)="$event.stopPropagation()"
+          (keydown.escape)="close(); focusTrigger()"
+        />
+      </div>
+    }
     <gog-scroll size="thin" [focusable]="false" overscrollBehavior="contain" class="gog-ms__scroll">
       <div class="gog-ms__options">
-        @for (option of options(); track valueOf(option)) {
+        @if (visibleOptions().length === 0) {
+          <p class="gog-ms__empty">{{ filterEmptyMessage() }}</p>
+        }
+        @for (option of visibleOptions(); track valueOf(option)) {
           <!--
             tabindex="-1" keeps the list to a single tab stop, as the listbox pattern
             expects: focus moves between options with the arrow keys, not by tabbing

@@ -5,6 +5,7 @@
 -->
 <div
   class="gog-select"
+  [class.gog-select--clearable]="showClear()"
   [class]="sizeClass()"
   [class.gog-select--disabled]="isDisabled()"
   [class.gog-select--open]="isOpen()"
@@ -63,6 +64,22 @@
       </span>
     </button>
 
+    <!--
+      A sibling of the trigger, not a child: `.gog-select__control` is a <button>, and nesting
+      one button inside another is invalid HTML. It is positioned over the trigger's right edge
+      by the stylesheet, which also reserves room for it so it never covers the value text.
+    -->
+    @if (showClear()) {
+      <button
+        type="button"
+        class="gog-select__clear gog-inline-center"
+        [attr.aria-label]="clearAriaLabel()"
+        (click)="clearValue($event)"
+      >
+        <gog-icon name="close" />
+      </button>
+    }
+
     @if (isOpen() && !resolvedAppendToBody()) {
       <ng-container [ngTemplateOutlet]="panelTpl" />
     }
@@ -104,13 +121,29 @@
       scrolls the focused option into view natively — no separate keyboard-scroll target
       needed here.
     -->
+    @if (resolvedFilter()) {
+      <div class="gog-select__filter">
+        <input
+          type="text"
+          class="gog-select__filter-input"
+          [placeholder]="filterPlaceholder()"
+          [value]="filterQuery()"
+          (input)="onFilterInput($event)"
+          (click)="$event.stopPropagation()"
+          (keydown.escape)="close(); focusTrigger()"
+        />
+      </div>
+    }
     <gog-scroll
       size="thin"
       [focusable]="false"
       overscrollBehavior="contain"
       class="gog-select__scroll"
     >
-      @for (option of options(); track valueOf(option)) {
+      @if (visibleOptions().length === 0) {
+        <p class="gog-select__empty">{{ filterEmptyMessage() }}</p>
+      }
+      @for (option of visibleOptions(); track valueOf(option)) {
         <!--
           tabindex="-1" keeps the list to a single tab stop, as the listbox pattern expects:
           focus is moved between options with the arrow keys, not by tabbing through every

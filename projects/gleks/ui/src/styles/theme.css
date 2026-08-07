@@ -657,6 +657,10 @@
   --gog-input-disabled-opacity: var(--gog-disabled-opacity);
   --gog-input-transition-duration: var(--gog-duration-base);
   /* Float label — also used by gog-textarea, which shares the --gog-input-* block. */
+  /* Clear button — only rendered once the field has text, see `clearable`. */
+  --gog-input-clear-radius: 2px;
+  --gog-input-clear-icon-ratio: 0.7;
+  --gog-input-clear-inset: 8px;
   --gog-input-float-label-reserve: var(--gog-field-float-label-reserve);
   --gog-input-float-label-in-top: var(--gog-field-float-label-in-top);
   --gog-input-float-label-over-gap: var(--gog-field-float-label-over-gap);
@@ -760,6 +764,24 @@
   --gog-multiselect-controls-padding: var(--gog-ms-controls-padding);
   --gog-ms-actions-gap: 6px;
   --gog-multiselect-actions-gap: var(--gog-ms-actions-gap);
+  --gog-ms-filter-padding: 6px;
+  --gog-multiselect-filter-padding: var(--gog-ms-filter-padding);
+  --gog-ms-filter-input-padding-y: 6px;
+  --gog-multiselect-filter-input-padding-y: var(--gog-ms-filter-input-padding-y);
+  --gog-ms-filter-input-padding-x: 8px;
+  --gog-multiselect-filter-input-padding-x: var(--gog-ms-filter-input-padding-x);
+  --gog-ms-filter-input-bg: var(--gog-background-color);
+  --gog-multiselect-filter-input-bg: var(--gog-ms-filter-input-bg);
+  --gog-ms-filter-input-color: var(--gog-multiselect-control-color);
+  --gog-multiselect-filter-input-color: var(--gog-ms-filter-input-color);
+  --gog-ms-filter-input-border: var(--gog-multiselect-control-border);
+  --gog-multiselect-filter-input-border: var(--gog-ms-filter-input-border);
+  --gog-ms-filter-input-radius: var(--gog-radius);
+  --gog-multiselect-filter-input-radius: var(--gog-ms-filter-input-radius);
+  --gog-ms-filter-empty-padding: 10px;
+  --gog-multiselect-filter-empty-padding: var(--gog-ms-filter-empty-padding);
+  --gog-ms-filter-empty-color: var(--gog-multiselect-placeholder-color);
+  --gog-multiselect-filter-empty-color: var(--gog-ms-filter-empty-color);
   --gog-ms-clear-radius: 2px;
   --gog-multiselect-clear-radius: var(--gog-ms-clear-radius);
   --gog-ms-disabled-opacity: var(--gog-disabled-opacity);
@@ -837,6 +859,22 @@
   --gog-select-error-font-size: var(--gog-text-xs);
   --gog-select-chevron-color: var(--gog-accent-color);
   --gog-select-chevron-inset: 40px;
+  /* Filter box — only rendered when `filter` is on. */
+  --gog-select-filter-padding: 6px;
+  --gog-select-filter-input-padding-y: 6px;
+  --gog-select-filter-input-padding-x: 8px;
+  --gog-select-filter-input-bg: var(--gog-background-color);
+  --gog-select-filter-input-color: var(--gog-select-control-color);
+  --gog-select-filter-input-border: var(--gog-select-control-border);
+  --gog-select-filter-input-radius: var(--gog-radius);
+  --gog-select-filter-empty-padding: 10px;
+  --gog-select-filter-empty-color: var(--gog-select-placeholder-color);
+  /* Clear button — only rendered once a value is selected, see `clearable`. */
+  --gog-select-clear-radius: 2px;
+  --gog-select-clear-icon-ratio: 0.7;
+  --gog-select-clear-gap: 6px;
+  --gog-select-clear-color: var(--gog-select-placeholder-color);
+  --gog-select-clear-hover-color: var(--gog-select-label-color);
   --gog-select-control-gap: 12px;
   --gog-select-panel-bg: var(--gog-surface-color);
   --gog-select-panel-shadow: var(--gog-panel-shadow);

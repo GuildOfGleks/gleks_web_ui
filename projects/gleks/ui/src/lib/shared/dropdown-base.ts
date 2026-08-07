@@ -27,6 +27,7 @@ import {
   resolveCssLengthPx,
   resolveDropdownPlacement,
 } from './dropdown-position';
+import { GogClearableState } from './clearable-state';
 import { GogErrorState, type GogErrorDisplay } from './error-state';
 import { type GogOptionAccessor, isSameOptionValue, readOption } from './option-accessor';
 import { GogFloatLabelState } from './float-label-state';
@@ -110,6 +111,7 @@ const DEFAULT_SIZE: GogSize = 'md';
 const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
 const DEFAULT_APPEND_TO_BODY = false;
 const DEFAULT_DROPDOWN_DIRECTION: GogDropdownDirection = 'auto';
+const DEFAULT_FILTER = false;
 
 /**
  * Shared behaviour for the listbox-style controls: open/close, placement, the
@@ -153,6 +155,27 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   readonly optionValue = input<GogOptionAccessor<TOption, unknown> | null>('id');
   /** How to read whether an option is disabled. Defaults to `'disabled'`. */
   readonly optionDisabled = input<GogOptionAccessor<TOption, boolean>>('disabled');
+  /**
+   * Whether to offer a clear button once something is selected. Unset, falls back to
+   * `GOG_CONFIG.control.clearable`, then to the control's own default.
+   */
+  readonly clearable = input<boolean | undefined>(undefined);
+  /** Accessible name for the clear button. */
+  readonly clearAriaLabel = input('Clear selection');
+  /**
+   * Whether the panel shows a search box that narrows the option list. Unset, falls back to
+   * `GOG_CONFIG.dropdown.filter`, then to `false`.
+   */
+  readonly filter = input<boolean | undefined>(undefined);
+  readonly filterPlaceholder = input('Search...');
+  /** Shown in place of the list when the query matches nothing. */
+  readonly filterEmptyMessage = input('No matches');
+  /**
+   * How an option is matched against the query. Left null, the resolved `optionLabel` is
+   * matched case-insensitively as a substring — pass a function to search other fields, match
+   * on a prefix, or plug in your own fuzzy matcher.
+   */
+  readonly filterMatch = input<((option: TOption, query: string) => boolean) | null>(null);
   readonly errorMessage = input('');
   /**
    * See `GogErrorDisplay`. Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to
@@ -367,6 +390,57 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   protected readonly visibleError = this.errorState.visibleError;
 
   /**
+   * Each control supplies its own default: `gog-multiselect` shipped a clear button before
+   * `clearable` existed, so it keeps one; `gog-select` opts in.
+   */
+  protected abstract readonly clearableByDefault: boolean;
+
+  private readonly clearableState = new GogClearableState(
+    this.clearable,
+    computed(() => this.hasFloatValue()),
+    this.isDisabled,
+    this.globalConfig,
+    // read lazily for the same field-initialisation-order reason as hasFloatValue below
+    () => this.clearableByDefault,
+  );
+
+  /** Whether to render the clear button right now — see `GogClearableState`. */
+  protected readonly showClear = this.clearableState.isVisible;
+
+  protected readonly resolvedFilter = computed(() =>
+    resolveConfigured(this.filter(), this.globalConfig.dropdown?.filter, DEFAULT_FILTER),
+  );
+  /** Current search text. Cleared whenever the panel closes, so reopening starts fresh. */
+  protected readonly filterQuery = signal('');
+
+  /**
+   * The options actually rendered. Everything downstream — the loops, the keyboard navigation
+   * target list, the panel height estimate, and multiselect's select-all — reads this rather
+   * than `options()`, so filtering stays consistent instead of only hiding rows visually.
+   */
+  protected readonly visibleOptions = computed(() => {
+    const query = this.filterQuery().trim();
+    if (!this.resolvedFilter() || query === '') return this.options();
+
+    const match = this.filterMatch();
+    if (match) return this.options().filter((option) => match(option, query));
+
+    const needle = query.toLowerCase();
+    return this.options().filter((option) => this.labelOf(option).toLowerCase().includes(needle));
+  });
+
+  protected onFilterInput(event: Event): void {
+    this.filterQuery.set((event.target as HTMLInputElement).value);
+  }
+
+  /** Resets the control to its empty value and notifies any attached form. */
+  protected clearValue(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.commitValue(this.emptyValue);
+  }
+
+  /**
    * `hasFloatValue` is wrapped in a `computed` rather than passed straight through: these
    * field initializers run before the *subclass's* do, so `this.hasFloatValue` is still
    * undefined right here. The arrow defers the read until the signal is first evaluated, by
@@ -498,6 +572,7 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
     if (!this.isOpen()) return;
 
     this.isOpen.set(false);
+    this.filterQuery.set('');
     this.overlay.detach();
     // Closing is this control's equivalent of a blur, which is when a form control is
     // conventionally considered touched.
@@ -645,7 +720,7 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
       if (resolved !== null) return resolved;
     }
 
-    const count = Math.max(this.options().length, 1);
+    const count = Math.max(this.visibleOptions().length, 1);
     const rows = count * this.optionHeight + Math.max(count - 1, 0) * this.optionGap;
     return Math.min(rows + this.optionsPadding * 2 + this.extraPanelHeight(), this.maxPanelHeight);
   }

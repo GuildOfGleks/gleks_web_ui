@@ -144,3 +144,40 @@
     transition: none;
   }
 }
+
+/*
+ * Clear button. A textarea has no icon slots, so this is pinned to the top-right of the field
+ * container rather than vertically centred like the single-line controls' — a centred button
+ * on a multi-line box lands in the middle of the text.
+ */
+.gog-textarea__clear {
+  position: absolute;
+  top: var(--gog-input-clear-inset);
+  right: var(--gog-input-clear-inset);
+  width: var(--gog-input-font, var(--gog-input-size-font-size, var(--gog-field-md-font-size)));
+  height: var(--gog-input-font, var(--gog-input-size-font-size, var(--gog-field-md-font-size)));
+  padding: 0;
+  border: 0;
+  border-radius: var(--gog-input-clear-radius);
+  background: transparent;
+  color: var(--gog-input-placeholder-color);
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--gog-input-transition-duration) var(--gog-easing);
+}
+
+.gog-textarea__clear:hover {
+  color: var(--gog-input-icon-hover-color);
+}
+
+.gog-textarea__clear:focus-visible {
+  outline: var(--gog-input-icon-focus-ring-width) solid var(--gog-input-icon-hover-color);
+  outline-offset: var(--gog-input-focus-ring-offset);
+}
+
+.gog-textarea__clear gog-icon {
+  font-size: calc(
+    var(--gog-input-font, var(--gog-input-size-font-size, var(--gog-field-md-font-size))) *
+      var(--gog-input-clear-icon-ratio)
+  );
+}

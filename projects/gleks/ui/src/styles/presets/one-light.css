@@ -1,0 +1,47 @@
+/*
+ * `one-light` — the Atom/JetBrains One Light palette, as a @guildofgleks/ui theme.
+ *
+ * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *   @import '@guildofgleks/ui/styles/presets/one-light.css';
+ *
+ *   <html data-theme="one-light">
+ *
+ * The light counterpart to `one-dark.css`, using the same hue roles: blue is the accent,
+ * green/red/yellow/cyan become success/danger/warning/info. Pair the two behind a toggle and
+ * `ThemeService.setTheme('one-dark' | 'one-light')` switches between them.
+ */
+
+:root[data-theme='one-light'],
+[data-theme='one-light'] {
+  color-scheme: light;
+
+  /* Editor chrome */
+  --gog-background-color: #fafafa;
+  --gog-surface-color: #ffffff;
+  --gog-hover-color: #eaeaeb;
+  --gog-border-color: #d3d3d4;
+
+  /* Type */
+  --gog-text-color: #383a42;
+  --gog-accent-text-color: #ffffff;
+  --gog-muted-text-color: #a0a1a7;
+
+  /* Brand — One Light's blue */
+  --gog-primary-color: #383a42;
+  --gog-accent-color: #4078f2;
+  --gog-accent-bright: #5b8dff;
+  --gog-accent-dim: #2f5fd0;
+  --gog-accent-pale: #dce7fd;
+  --gog-secondary-color: #a626a4;
+
+  /* Semantics — the syntax hues in their natural roles */
+  --gog-success-color: #50a14f;
+  --gog-danger-color: #e45649;
+  --gog-warning-color: #c18401;
+  --gog-info-color: #0184bc;
+
+  --gog-panel-shadow: 0 10px 30px rgba(56, 58, 66, 0.12), 0 0 0 1px var(--gog-border-color);
+  --gog-spinner-overlay-bg: rgba(250, 250, 250, 0.85);
+}

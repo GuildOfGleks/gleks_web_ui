@@ -319,3 +319,102 @@
     transition: none;
   }
 }
+
+/*
+ * Clear button. Absolutely positioned over the trigger rather than inside it, because
+ * `.gog-select__control` is a <button> and buttons cannot nest. It sits just left of the
+ * chevron, and `--clearable` widens the trigger's right padding by exactly the space it takes
+ * so the selected label never runs underneath it.
+ */
+.gog-select__clear {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--gog-select-chevron-inset) + var(--gog-select-clear-gap));
+  transform: translateY(-50%);
+  width: var(
+    --gog-select-control-font,
+    var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+  );
+  height: var(
+    --gog-select-control-font,
+    var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+  );
+  padding: 0;
+  border: 0;
+  border-radius: var(--gog-select-clear-radius);
+  background: transparent;
+  color: var(--gog-select-clear-color);
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--gog-select-transition-duration) var(--gog-easing);
+}
+
+.gog-select__clear:hover {
+  color: var(--gog-select-clear-hover-color);
+}
+
+.gog-select__clear:focus-visible {
+  outline: var(--gog-select-focus-ring-width) solid var(--gog-select-focus-border);
+  outline-offset: var(--gog-select-focus-ring-offset);
+}
+
+.gog-select__clear gog-icon {
+  font-size: calc(
+    var(
+        --gog-select-control-font,
+        var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-select-clear-icon-ratio)
+  );
+}
+
+.gog-select--clearable .gog-select__control {
+  padding-right: calc(
+    var(--gog-select-chevron-inset) + var(--gog-select-clear-gap) +
+      var(
+        --gog-select-control-font,
+        var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+      )
+  );
+}
+
+/* Filter box — sticky at the top of the panel so it stays reachable while the list scrolls. */
+.gog-select__filter {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: var(--gog-select-filter-padding);
+  background: var(--gog-select-panel-bg);
+}
+
+.gog-select__filter-input {
+  width: 100%;
+  padding: var(--gog-select-filter-input-padding-y) var(--gog-select-filter-input-padding-x);
+  font-family: var(--gog-select-font-family);
+  font-size: var(
+    --gog-select-control-font,
+    var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+  );
+  color: var(--gog-select-filter-input-color);
+  background: var(--gog-select-filter-input-bg);
+  border: var(--gog-control-border-width) var(--gog-control-border-style)
+    var(--gog-select-filter-input-border);
+  border-radius: var(--gog-select-filter-input-radius);
+  outline: none;
+}
+
+.gog-select__filter-input:focus {
+  border-color: var(--gog-select-focus-border);
+}
+
+.gog-select__empty {
+  margin: 0;
+  padding: var(--gog-select-filter-empty-padding);
+  font-family: var(--gog-select-font-family);
+  font-size: var(
+    --gog-select-control-font,
+    var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+  );
+  color: var(--gog-select-filter-empty-color);
+  text-align: center;
+}

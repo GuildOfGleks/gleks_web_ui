@@ -73,6 +73,15 @@ export interface GogGlobalConfig {
   control?: {
     size?: GogSize;
     errorDisplay?: GogErrorDisplay;
+    /**
+     * Whether `gog-inputfield`, `gog-textarea`, `gog-select` and `gog-multiselect` offer a
+     * clear button. The button only ever appears once the control actually has something to
+     * clear, so switching this on app-wide adds no permanent chrome.
+     *
+     * Component defaults are `false`, except `gog-multiselect`, which had a clear button
+     * before this input existed and keeps it.
+     */
+    clearable?: boolean;
   };
   /** Applies to `gog-select` and `gog-multiselect`. */
   dropdown?: {
@@ -83,6 +92,8 @@ export interface GogGlobalConfig {
      */
     appendToBody?: boolean;
     direction?: GogDropdownDirection;
+    /** Whether the panel shows a search box. Off by default. */
+    filter?: boolean;
   };
   toast?: {
     position?: ToastPosition;

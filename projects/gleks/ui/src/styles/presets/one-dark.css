@@ -1,0 +1,48 @@
+/*
+ * `one-dark` — the Atom/JetBrains One Dark palette, as a @guildofgleks/ui theme.
+ *
+ * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *   @import '@guildofgleks/ui/styles/presets/one-dark.css';
+ *
+ *   <html data-theme="one-dark">
+ *
+ * Like every preset here it declares palette tokens only — see `slate.css` for why that is
+ * enough to restyle the whole library. The syntax-highlighting hues map onto the library's
+ * semantic roles: One Dark's blue is the accent, its green/red/yellow/cyan become
+ * success/danger/warning/info.
+ */
+
+:root[data-theme='one-dark'],
+[data-theme='one-dark'] {
+  color-scheme: dark;
+
+  /* Editor chrome */
+  --gog-background-color: #282c34;
+  --gog-surface-color: #21252b;
+  --gog-hover-color: #2c313a;
+  --gog-border-color: #3e4451;
+
+  /* Type */
+  --gog-text-color: #abb2bf;
+  --gog-accent-text-color: #282c34;
+  --gog-muted-text-color: #5c6370;
+
+  /* Brand — One Dark's blue */
+  --gog-primary-color: #abb2bf;
+  --gog-accent-color: #61afef;
+  --gog-accent-bright: #8ac2f5;
+  --gog-accent-dim: #4b8fca;
+  --gog-accent-pale: #2d3a4a;
+  --gog-secondary-color: #c678dd;
+
+  /* Semantics — the syntax hues in their natural roles */
+  --gog-success-color: #98c379;
+  --gog-danger-color: #e06c75;
+  --gog-warning-color: #e5c07b;
+  --gog-info-color: #56b6c2;
+
+  --gog-panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--gog-border-color);
+  --gog-spinner-overlay-bg: rgba(40, 44, 52, 0.85);
+}

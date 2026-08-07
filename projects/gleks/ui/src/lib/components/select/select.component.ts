@@ -45,6 +45,8 @@ export class SelectComponent<
   protected readonly emptyValue = null as TValue;
   protected readonly optionClass = 'gog-select__option';
   protected readonly triggerClass = 'gog-select__control';
+  /** Opt-in: a select had no clear affordance before 21.3.0. */
+  protected readonly clearableByDefault = false;
   protected readonly sizeBlockClass = 'gog-select';
   protected readonly panelBlockClass = 'gog-select__dropdown';
   protected override readonly optionGapToken = '--gog-select-option-gap';

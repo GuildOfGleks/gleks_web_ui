@@ -15,6 +15,7 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
+import { GogClearableState } from '../../shared/clearable-state';
 import { GogFloatLabelState } from '../../shared/float-label-state';
 import { GogFloatLabelVariant, GogSize } from '../../shared/types';
 import { IconComponent, type GogIconName } from '../icon/icon.component';
@@ -131,6 +132,13 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly showPasswordLabel = input('Show password');
   /** aria-label for the hide-password button, shown once the password is revealed */
   readonly hidePasswordLabel = input('Hide password');
+  /**
+   * Whether to offer a clear button once the field has text. Unset, falls back to
+   * `GOG_CONFIG.control.clearable`, then to `false`.
+   */
+  readonly clearable = input<boolean | undefined>(undefined);
+  /** Accessible name for the clear button. */
+  readonly clearAriaLabel = input('Clear');
   /** Unset, falls back to `GOG_CONFIG.floatLabel.variant`, then to `'none'` (off). */
   readonly floatLabel = input<GogFloatLabelVariant | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.showPlaceholder`, then to `false`. */
@@ -197,6 +205,16 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     this.globalConfig,
   );
 
+  private readonly clearableState = new GogClearableState(
+    this.clearable,
+    computed(() => this.value() !== ''),
+    this.isDisabled,
+    this.globalConfig,
+    () => false,
+  );
+  /** Whether to render the clear button right now — see `GogClearableState`. */
+  protected readonly showClear = this.clearableState.isVisible;
+
   protected readonly resolvedFloatLabel = this.floatLabelState.variant;
   protected readonly isFloatLabelActive = this.floatLabelState.isActive;
   protected readonly isFloatLabelFloated = this.floatLabelState.isFloated;
@@ -228,7 +246,11 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
       : this.iconEndLabel(),
   );
   protected readonly hasIconEnd = computed(
-    () => !!this.addonEnd() || !!this.iconEndTemplate() || !!this.effectiveIconEnd(),
+    () =>
+      this.showClear() ||
+      !!this.addonEnd() ||
+      !!this.iconEndTemplate() ||
+      !!this.effectiveIconEnd(),
   );
   protected readonly hasIconEndAction = computed(
     () => this.isPasswordField() || !!this.iconEndFn(),
@@ -289,6 +311,15 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     }
 
     this._onChange(input.value);
+  }
+
+  /** Clears the field and notifies any attached form, then returns focus to the input. */
+  protected clearValue(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.value.set('');
+    this._onChange('');
+    this._onTouched();
   }
 
   onFocus(): void {

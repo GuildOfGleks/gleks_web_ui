@@ -395,3 +395,45 @@
     transition: none;
   }
 }
+
+/* Filter box — sticky at the top of the panel so it stays reachable while the list scrolls. */
+.gog-ms__filter {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: var(--gog-multiselect-filter-padding);
+  background: var(--gog-multiselect-panel-bg);
+}
+
+.gog-ms__filter-input {
+  width: 100%;
+  padding: var(--gog-multiselect-filter-input-padding-y)
+    var(--gog-multiselect-filter-input-padding-x);
+  font-family: var(--gog-multiselect-font-family);
+  font-size: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
+  color: var(--gog-multiselect-filter-input-color);
+  background: var(--gog-multiselect-filter-input-bg);
+  border: var(--gog-control-border-width) var(--gog-control-border-style)
+    var(--gog-multiselect-filter-input-border);
+  border-radius: var(--gog-multiselect-filter-input-radius);
+  outline: none;
+}
+
+.gog-ms__filter-input:focus {
+  border-color: var(--gog-multiselect-focus-border);
+}
+
+.gog-ms__empty {
+  margin: 0;
+  padding: var(--gog-multiselect-filter-empty-padding);
+  font-family: var(--gog-multiselect-font-family);
+  font-size: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
+  color: var(--gog-multiselect-filter-empty-color);
+  text-align: center;
+}

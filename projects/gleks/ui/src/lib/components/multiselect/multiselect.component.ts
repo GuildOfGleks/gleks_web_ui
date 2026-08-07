@@ -70,6 +70,11 @@ export class MultiselectComponent<
   protected readonly emptyValue: TValue[] = [];
   protected readonly optionClass = 'gog-ms__option';
   protected readonly triggerClass = 'gog-ms';
+  /**
+   * On by default: this control shipped a clear button before `clearable` existed, so the
+   * default preserves it. Set `[clearable]="false"` to drop it.
+   */
+  protected readonly clearableByDefault = true;
   protected readonly sizeBlockClass = 'gog-ms-wrapper';
   protected readonly panelBlockClass = 'gog-ms__dropdown';
   protected override readonly optionGapToken = '--gog-ms-option-gap';
@@ -110,10 +115,11 @@ export class MultiselectComponent<
     );
   }
 
+  /** Acts on the *visible* options, so "select all" under an active filter means what it says. */
   protected selectAll(event: MouseEvent): void {
     event.stopPropagation();
     this.commitValue(
-      this.options()
+      this.visibleOptions()
         .filter((option) => !this.isOptionDisabled(option))
         .map((option) => this.valueOf(option) as TValue),
     );

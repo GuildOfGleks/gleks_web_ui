@@ -60,7 +60,16 @@
       A password field's built-in show/hide toggle owns the end slot: it is the only control
       that reveals the value, so a projected addon must not be able to displace it.
     -->
-    @if (addonEnd() && !isPasswordField()) {
+    @if (showClear() && !isPasswordField()) {
+      <button
+        type="button"
+        class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action gog-input__clear"
+        [attr.aria-label]="clearAriaLabel()"
+        (click)="clearValue($event)"
+      >
+        <gog-icon name="close" />
+      </button>
+    } @else if (addonEnd() && !isPasswordField()) {
       <span class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__addon">
         <ng-content select="[gogInputAddonEnd]" />
       </span>

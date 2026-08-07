@@ -30,6 +30,16 @@
       (focus)="onFocus()"
       (blur)="onBlur()"
     ></textarea>
+    @if (showClear()) {
+      <button
+        type="button"
+        class="gog-input__clear gog-textarea__clear gog-inline-center"
+        [attr.aria-label]="clearAriaLabel()"
+        (click)="clearValue($event)"
+      >
+        <gog-icon name="close" />
+      </button>
+    }
   </div>
   @if (visibleError()) {
     <span
