@@ -22,7 +22,7 @@ iteration 1. Per `gleks-ui-library.instructions.md` rule 9, the agent never publ
 | 1 | Token contract enforcement + float-label regression | ✅ done |
 | 1b | CI made green (lint + workspace-wide format) | ✅ done |
 | 1c | Command-execution reliability (`running-commands`, `CLAUDE.md`) | ✅ done |
-| 2 | Deduplicate float label (TS + SCSS) + config resolver | ⬜ not started |
+| 2 | Deduplicate float label (TS + SCSS) + config resolver | ✅ done |
 | 3 | Config semantics & coverage + size-class boilerplate | ⬜ not started |
 | 4 | Slot unification + selector/naming fixes | ⬜ not started |
 | 5 | Dropdown data model (`optionLabel`/`optionValue`, generics) | ⬜ not started |
@@ -159,6 +159,46 @@ the same files around.
 **Done when:** no `resolvedFloatLabel` computed outside the shared class; float-label SCSS
 exists once; all four fields verified live in `ui-showcase` across all three variants
 (`in`/`on`/`over`) in both themes.
+
+### Outcome ✅
+
+- `lib/shared/float-label-state.ts` — `GogFloatLabelState` replaces the three copies in
+  `inputfield`, `textarea` and `dropdown-base`. In `GogDropdownBase` the subclass's
+  `hasFloatValue` is wrapped in a `computed()` rather than passed directly: base-class field
+  initializers run before the subclass's, so a direct reference is `undefined` at that point.
+- `lib/styles/_float-label.scss` — first shared SCSS partial in the library (nothing used
+  `@use` before). One `variants()` mixin replaces four ~90-line copies. `gog-textarea`'s real
+  difference is now explicit rather than accidental: `$rest-top` / `$rest-centered`, because a
+  textarea's placeholder starts at the top instead of being vertically centred.
+- `resolveConfigured()` in `config.ts`.
+
+**Behaviour-preservation was proven, not assumed.** Each of the four stylesheets was compiled
+with sass at `HEAD` and after the change, and the results compared both as normalised rule sets
+and as ordered selector lists — **identical on both counts for all four**, so the CSSOM and
+therefore the rendering cannot differ. Plus 433 specs, a clean build, and live checks in
+`ui-showcase`: `gog-inputfield` `in`-floated lands on 8px / 14px / accent / uppercase, and
+`gog-multiselect` picks up its `$cursor: default` and token chain correctly.
+
+**`check:tokens` now analyses compiled CSS instead of raw SCSS.** The mixin builds token names
+by interpolation (`var(--gog-#{$prefix}-float-label-on-bg, …)`), which a text scan cannot
+resolve — the checker correctly flagged three tokens as "no longer read", which was the tool
+being wrong rather than the code. Compiling first makes it robust to any SCSS factoring, and it
+is now strictly stronger: a literal fallback introduced *inside* the mixin is reported against
+every component that includes it, which the old text scan could not see at all.
+
+### Pre-existing bug found, deliberately not fixed here
+
+On `gog-textarea` with `floatLabel="in"`, the floated state never takes effect: with both
+`--float-in` and `--floated` on the wrapper, the label stays at `top: 28px` / `font-size: 16px`
+instead of moving to 8px / 14px. None of the floated rule's declarations apply, even though the
+rule matches the element (`Element.matches()` confirms it), carries higher specificity than the
+resting rule, and sits later in source order — and it still doesn't apply after neutralising the
+competing rule by hand. `gog-inputfield`, which shares the same class names, works correctly.
+
+This is **not** a regression from this iteration: the compiled CSS is byte-equivalent to `HEAD`
+in both content and order, and the wrapper classes are applied identically. Root cause not
+identified. It needs its own investigation and fix — folding a behaviour change into a
+refactor whose whole claim is "nothing renders differently" would be the wrong move.
 
 ---
 
