@@ -41,6 +41,8 @@ const LITERAL_FALLBACK_ALLOWED = new Set([
   // Written as an inline style by gog-dialog's drag handler; 0px means "not dragged".
   '--gog-dialog-offset-x',
   '--gog-dialog-offset-y',
+  // Written by gog-textarea from its measured scrollbar width; 0px means "no scrollbar".
+  '--gog-textarea-scrollbar-width',
 ]);
 
 const DECLARATION_RE = /(--gog-[a-zA-Z0-9-]+)\s*:/g;

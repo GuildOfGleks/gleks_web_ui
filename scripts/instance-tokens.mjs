@@ -50,6 +50,8 @@ export const INSTANCE_TOKENS = new Set([
   '--gog-input-font',
   '--gog-input-padding-x',
   '--gog-input-padding-y',
+  // gog-textarea — written as an inline style from the measured scrollbar width, not by a theme
+  '--gog-textarea-scrollbar-width',
   // gog-multiselect
   '--gog-multiselect-float-label-on-bg',
   '--gog-multiselect-font-size',
