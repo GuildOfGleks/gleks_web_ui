@@ -49,10 +49,7 @@
         />
         <gog-inputfield
           label="Password"
-          [type]="passwordFieldType()"
-          [iconEnd]="showPassword() ? 'chevron-up' : 'chevron-down'"
-          [iconEndFn]="togglePasswordVisibility.bind(this)"
-          iconEndLabel="Toggle password visibility"
+          type="password"
           [errorMessage]="loginPasswordError()"
           [(value)]="loginPassword"
         />
@@ -78,16 +75,13 @@
         />
         <gog-inputfield
           label="Password"
-          [type]="passwordFieldType()"
-          [iconEnd]="showPassword() ? 'chevron-up' : 'chevron-down'"
-          [iconEndFn]="togglePasswordVisibility.bind(this)"
-          iconEndLabel="Toggle password visibility"
+          type="password"
           [errorMessage]="registerPasswordError()"
           [(value)]="registerPassword"
         />
         <gog-inputfield
           label="Confirm password"
-          [type]="passwordFieldType()"
+          type="password"
           [errorMessage]="registerConfirmError()"
           [(value)]="registerConfirmPassword"
         />

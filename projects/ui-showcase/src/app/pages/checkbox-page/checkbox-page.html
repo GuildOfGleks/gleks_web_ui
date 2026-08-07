@@ -52,14 +52,15 @@
   <article class="card">
     <h3>Custom check icon</h3>
     <p class="meta">
-      <code>checkIconTemplate</code> replaces the default checkmark glyph — here it's swapped for a
-      star.
+      A <code>gogCheckboxIcon</code> template projected into the checkbox replaces the default
+      checkmark glyph — here it's swapped for a star.
     </p>
-    <ng-template #starIcon>
-      <gog-icon name="warning" />
-    </ng-template>
     <div class="action-row">
-      <gog-checkbox label="Custom icon" [checked]="true" [checkIconTemplate]="starIcon" />
+      <gog-checkbox label="Custom icon" [checked]="true">
+        <ng-template gogCheckboxIcon>
+          <gog-icon name="warning" />
+        </ng-template>
+      </gog-checkbox>
     </div>
   </article>
 

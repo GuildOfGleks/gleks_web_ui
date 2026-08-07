@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   CheckboxComponent,
+  GogDropdownChevronDirective,
   GogDropdownOption,
   GogFloatLabelVariant,
   GogMultiselectOption,
@@ -14,9 +15,10 @@ import {
 @Component({
   selector: 'app-multiselect-page',
   imports: [
-    MultiselectComponent,
     CheckboxComponent,
+    GogDropdownChevronDirective,
     IconComponent,
+    MultiselectComponent,
     ReactiveFormsModule,
     SelectComponent,
   ],

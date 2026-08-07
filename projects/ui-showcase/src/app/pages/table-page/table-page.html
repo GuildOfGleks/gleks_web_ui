@@ -25,33 +25,34 @@
       [showColumnBorders]="true"
       size="md"
     >
-      <column field="component" header="Component" [sortable]="true"></column>
-      <column field="status" header="Status" [sortable]="true"></column>
-      <column field="owner" header="Owner"></column>
-      <column field="updated" header="Updated"></column>
+      <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+      <gog-column field="status" header="Status" [sortable]="true"></gog-column>
+      <gog-column field="owner" header="Owner"></gog-column>
+      <gog-column field="updated" header="Updated"></gog-column>
     </gog-table>
   </article>
 
   <article class="card">
     <h3>Custom cell &amp; header templates</h3>
     <p class="lead">
-      Any column can swap its default text rendering for a projected `&lt;ng-template
-      template="field"&gt;` — here the status column renders a `gog-tag` instead of raw text.
+      Any column can swap its default text rendering for a template projected
+      <em>into that column</em> — <code>gogColumnBody</code> for cells,
+      <code>gogColumnHeader</code> for the header. The body context gives you
+      <code>let-row</code> (also <code>$implicit</code>), <code>let-value</code> for the
+      already-resolved cell value, and <code>let-i="index"</code>.
     </p>
 
     <gog-table [value]="rows" [showRowNumbers]="false" size="md">
-      <column field="component" header="Component" [sortable]="true"></column>
-      <column field="status" header="Status"></column>
-      <column field="owner" header="Owner"></column>
-
-      <ng-template template="status" type="header">
-        <span class="table-status-header">Status</span>
-      </ng-template>
-      <ng-template template="status" type="body" let-row>
-        <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{
-          $any(row).status
-        }}</gog-tag>
-      </ng-template>
+      <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+      <gog-column field="status" header="Status">
+        <ng-template gogColumnHeader>
+          <span class="table-status-header">Status</span>
+        </ng-template>
+        <ng-template gogColumnBody let-row let-value="value">
+          <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{ value }}</gog-tag>
+        </ng-template>
+      </gog-column>
+      <gog-column field="owner" header="Owner"></gog-column>
     </gog-table>
   </article>
 
@@ -96,9 +97,9 @@
         [stickyHeader]="stickyHeader()"
         [paginatorPosition]="paginatorPosition()"
       >
-        <column field="component" header="Component" [sortable]="true"></column>
-        <column field="status" header="Status" [sortable]="true"></column>
-        <column field="owner" header="Owner"></column>
+        <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+        <gog-column field="status" header="Status" [sortable]="true"></gog-column>
+        <gog-column field="owner" header="Owner"></gog-column>
       </gog-table>
     </div>
   </article>
@@ -113,15 +114,15 @@
       <div>
         <p class="meta">Default placeholder</p>
         <gog-table [value]="sparseRows" [showRowNumbers]="false" size="sm">
-          <column field="component" header="Component"></column>
-          <column field="owner" header="Owner"></column>
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
         </gog-table>
       </div>
       <div>
         <p class="meta">emptyPlaceholder="N/A"</p>
         <gog-table [value]="sparseRows" [showRowNumbers]="false" emptyPlaceholder="N/A" size="sm">
-          <column field="component" header="Component"></column>
-          <column field="owner" header="Owner"></column>
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
         </gog-table>
       </div>
     </div>
@@ -137,15 +138,15 @@
       <div>
         <p class="meta">totalPosition="left"</p>
         <gog-table [value]="rows" [pageSize]="3" [showTotal]="true" totalPosition="left" size="sm">
-          <column field="component" header="Component"></column>
-          <column field="status" header="Status"></column>
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
         </gog-table>
       </div>
       <div>
         <p class="meta">totalPosition="right"</p>
         <gog-table [value]="rows" [pageSize]="3" [showTotal]="true" totalPosition="right" size="sm">
-          <column field="component" header="Component"></column>
-          <column field="status" header="Status"></column>
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
         </gog-table>
       </div>
     </div>
@@ -159,8 +160,8 @@
       narrow, two-column table that shouldn't stretch to fill a wide page.
     </p>
     <gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">
-      <column field="component" header="Component"></column>
-      <column field="status" header="Status"></column>
+      <gog-column field="component" header="Component"></gog-column>
+      <gog-column field="status" header="Status"></gog-column>
     </gog-table>
   </article>
 
@@ -173,8 +174,8 @@
     </div>
 
     <gog-table [value]="showEmpty() ? [] : rows" size="sm">
-      <column field="component" header="Component"></column>
-      <column field="owner" header="Owner"></column>
+      <gog-column field="component" header="Component"></gog-column>
+      <gog-column field="owner" header="Owner"></gog-column>
     </gog-table>
   </article>
 </section>

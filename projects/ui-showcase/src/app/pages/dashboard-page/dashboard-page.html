@@ -32,11 +32,11 @@
 
   <div class="card">
     <gog-table [value]="filteredMembers()" [pageSize]="5" [showTotal]="true" size="md">
-      <column field="name" header="Name" [sortable]="true"></column>
-      <column field="role" header="Role" [sortable]="true"></column>
-      <column field="status" header="Status" [sortable]="true"></column>
-      <column field="teams" header="Teams"></column>
-      <column field="id" header="" width="110px"></column>
+      <gog-column field="name" header="Name" [sortable]="true"></gog-column>
+      <gog-column field="role" header="Role" [sortable]="true"></gog-column>
+      <gog-column field="status" header="Status" [sortable]="true"></gog-column>
+      <gog-column field="teams" header="Teams"></gog-column>
+      <gog-column field="id" header="" width="110px"></gog-column>
 
       <ng-template template="role" type="body" let-row>
         <span class="dash__role">{{ $any(row).role }}</span>

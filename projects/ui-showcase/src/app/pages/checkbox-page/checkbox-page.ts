@@ -1,11 +1,22 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonComponent, CheckboxComponent, IconComponent } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  CheckboxComponent,
+  GogCheckboxIconDirective,
+  IconComponent,
+} from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-checkbox-page',
-  imports: [ButtonComponent, CheckboxComponent, IconComponent, ReactiveFormsModule],
+  imports: [
+    ButtonComponent,
+    CheckboxComponent,
+    GogCheckboxIconDirective,
+    IconComponent,
+    ReactiveFormsModule,
+  ],
   templateUrl: './checkbox-page.html',
   styleUrl: './checkbox-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

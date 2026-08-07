@@ -38,12 +38,16 @@
 
   <article class="card">
     <h3>Custom icon template</h3>
-    <p class="meta"><code>iconTemplate</code> takes priority over <code>iconName</code>.</p>
-    <ng-template #starIcon>
-      <gog-icon name="checkbox-checked" />
-    </ng-template>
+    <p class="meta">
+      A projected <code>gogTagIcon</code> template takes priority over <code>iconName</code>.
+    </p>
     <div class="tag-grid">
-      <gog-tag variant="success" [iconTemplate]="starIcon">Featured</gog-tag>
+      <gog-tag variant="success">
+        <ng-template gogTagIcon>
+          <gog-icon name="checkbox-checked" />
+        </ng-template>
+        Featured
+      </gog-tag>
     </div>
   </article>
 

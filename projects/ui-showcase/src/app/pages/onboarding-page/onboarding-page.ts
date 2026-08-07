@@ -33,10 +33,6 @@ export class OnboardingPage implements OnDestroy {
   private submitTimer: ReturnType<typeof setTimeout> | null = null;
 
   // Shared password visibility
-  protected readonly showPassword = signal(false);
-  protected readonly passwordFieldType = computed(() =>
-    this.showPassword() ? 'text' : 'password',
-  );
 
   // Login
   protected readonly loginEmail = signal('');
@@ -91,10 +87,6 @@ export class OnboardingPage implements OnDestroy {
 
   protected setMode(mode: AuthMode): void {
     this.mode.set(mode);
-  }
-
-  protected togglePasswordVisibility(): void {
-    this.showPassword.update((visible) => !visible);
   }
 
   protected submitLogin(): void {

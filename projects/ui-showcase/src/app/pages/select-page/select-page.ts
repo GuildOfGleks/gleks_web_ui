@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   CheckboxComponent,
+  GogDropdownChevronDirective,
   GogFloatLabelVariant,
   GogSelectOption,
   GogSize,
@@ -11,7 +12,13 @@ import {
 
 @Component({
   selector: 'app-select-page',
-  imports: [SelectComponent, CheckboxComponent, IconComponent, ReactiveFormsModule],
+  imports: [
+    CheckboxComponent,
+    GogDropdownChevronDirective,
+    IconComponent,
+    ReactiveFormsModule,
+    SelectComponent,
+  ],
   templateUrl: './select-page.html',
   styleUrl: './select-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

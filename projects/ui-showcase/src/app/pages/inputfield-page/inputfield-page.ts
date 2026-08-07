@@ -5,6 +5,8 @@ import {
   CheckboxComponent,
   GogDropdownOption,
   GogFloatLabelVariant,
+  GogInputAddonEndDirective,
+  IconComponent,
   InputfieldComponent,
   SelectComponent,
 } from '@guildofgleks/ui';
@@ -13,7 +15,14 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 @Component({
   selector: 'app-inputfield-page',
-  imports: [CheckboxComponent, InputfieldComponent, ReactiveFormsModule, SelectComponent],
+  imports: [
+    CheckboxComponent,
+    GogInputAddonEndDirective,
+    IconComponent,
+    InputfieldComponent,
+    ReactiveFormsModule,
+    SelectComponent,
+  ],
   templateUrl: './inputfield-page.html',
   styleUrl: './inputfield-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import {
   ButtonComponent,
-  Column,
+  GogColumn,
+  GogColumnBodyDirective,
+  GogColumnHeaderDirective,
   GogSize,
   GogTagVariant,
   TableComponent,
   TagComponent,
-  TemplateDirective,
 } from '@guildofgleks/ui';
 
 interface DemoRow {
@@ -29,7 +30,14 @@ const STATUS_VARIANTS: Record<string, GogTagVariant> = {
 
 @Component({
   selector: 'app-table-page',
-  imports: [ButtonComponent, Column, TableComponent, TemplateDirective, TagComponent],
+  imports: [
+    ButtonComponent,
+    GogColumn,
+    GogColumnBodyDirective,
+    GogColumnHeaderDirective,
+    TableComponent,
+    TagComponent,
+  ],
   templateUrl: './table-page.html',
   styleUrl: './table-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

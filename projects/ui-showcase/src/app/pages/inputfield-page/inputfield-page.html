@@ -43,19 +43,17 @@
   <article class="card">
     <h3>Clickable icon action</h3>
     <p class="lead">
-      A trailing icon can act as a button via <code>iconEndFn</code> — combined here with a
-      decorative leading icon.
+      A projected <code>gogInputAddonEnd</code> puts your own control in the trailing slot — a real
+      <code>&lt;button&gt;</code> with its own <code>aria-label</code> and <code>(click)</code>, so
+      the field needs no input per capability. Combined here with a decorative leading icon set by
+      name.
     </p>
     <div class="field-grid">
-      <gog-inputfield
-        label="Search"
-        inputId="search"
-        iconStart="info"
-        iconEnd="close"
-        [iconEndFn]="clearSearch.bind(this)"
-        iconEndLabel="Clear search"
-        [(value)]="search"
-      />
+      <gog-inputfield label="Search" inputId="search" iconStart="info" [(value)]="search">
+        <button gogInputAddonEnd type="button" aria-label="Clear search" (click)="clearSearch()">
+          <gog-icon name="close" />
+        </button>
+      </gog-inputfield>
     </div>
   </article>
 
@@ -125,14 +123,15 @@
       />
       <gog-inputfield
         label="Website"
-        iconEnd="close"
-        [iconEndFn]="clearSearch.bind(this)"
-        iconEndLabel="Clear"
         placeholder="https://example.com"
         [floatLabel]="floatLabelVariant()"
         [floatLabelShowPlaceholder]="floatLabelShowPlaceholder()"
         [(value)]="floatLabelIconEndValue"
-      />
+      >
+        <button gogInputAddonEnd type="button" aria-label="Clear" (click)="clearSearch()">
+          <gog-icon name="close" />
+        </button>
+      </gog-inputfield>
       <gog-inputfield
         label="Amount"
         iconStart="info"

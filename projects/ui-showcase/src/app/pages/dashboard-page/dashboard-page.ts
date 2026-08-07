@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import {
   ButtonComponent,
-  Column,
+  GogColumn,
   ConfirmationDialogComponent,
   DialogComponent,
   DialogService,
@@ -13,7 +13,6 @@ import {
   SelectComponent,
   TableComponent,
   TagComponent,
-  TemplateDirective,
   ToastContainerComponent,
   ToastService,
 } from '@guildofgleks/ui';
@@ -61,14 +60,13 @@ const SEED_MEMBERS: Member[] = [
   selector: 'app-dashboard-page',
   imports: [
     ButtonComponent,
-    Column,
+    GogColumn,
     DialogComponent,
     InputfieldComponent,
     MultiselectComponent,
     SelectComponent,
     TableComponent,
     TagComponent,
-    TemplateDirective,
     ToastContainerComponent,
   ],
   templateUrl: './dashboard-page.html',
