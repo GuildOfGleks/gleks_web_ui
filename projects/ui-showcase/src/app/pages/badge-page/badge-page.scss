@@ -1,0 +1,29 @@
+@use '../detail' as *;
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+}
+
+.badge-row + .badge-row {
+  margin-block-start: 20px;
+}
+
+/* A plain host for the icon examples, so the badge has something with a size to sit on. */
+.badge-host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: var(--gog-surface-color);
+  color: var(--gog-accent-color);
+  font-size: 1.25rem;
+}
+
+.badge-note {
+  color: var(--gog-muted-text-color);
+}

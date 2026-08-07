@@ -1,0 +1,29 @@
+@use '../detail' as *;
+
+.dp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.dp-field {
+  max-width: 360px;
+}
+
+.dp-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* Clips its children, which is the case appendToBody exists for. */
+.dp-clipped {
+  max-width: 360px;
+  max-height: 120px;
+  margin-block-start: 24px;
+  padding: 16px;
+  border: 1px dashed var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  overflow: hidden;
+}

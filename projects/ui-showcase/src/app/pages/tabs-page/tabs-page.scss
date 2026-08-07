@@ -1,0 +1,35 @@
+@use '../detail' as *;
+
+.tabs-stack {
+  display: grid;
+  gap: 24px;
+}
+
+.tabs-label {
+  display: block;
+  margin-block-end: 6px;
+  color: var(--gog-muted-text-color);
+  text-transform: capitalize;
+}
+
+.tabs-field {
+  display: grid;
+  gap: 6px;
+  max-width: 320px;
+}
+
+.tabs-field input {
+  padding: 8px 10px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background-color: var(--gog-background-color);
+  color: var(--gog-text-color);
+  font: inherit;
+}
+
+/* Deliberately narrow, so the header row has to scroll. */
+.tabs-narrow {
+  max-width: 420px;
+  border: 1px dashed var(--gog-border-color);
+  border-radius: var(--gog-radius);
+}

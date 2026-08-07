@@ -1,0 +1,34 @@
+@use '../detail' as *;
+
+.bt-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.bt-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.bt-row__label {
+  min-width: 88px;
+  color: var(--gog-muted-text-color);
+  text-transform: capitalize;
+}
+
+.bt-columns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.bt-columns > *:last-child {
+  flex: 1 1 260px;
+}
+
+.bt-custom {
+  margin-block-start: 24px;
+}

@@ -97,6 +97,42 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dialog-page/dialog-page').then((m) => m.DialogPage),
   },
   {
+    path: 'autocomplete',
+    loadComponent: () =>
+      import('./pages/autocomplete-page/autocomplete-page').then((m) => m.AutocompletePage),
+  },
+  {
+    path: 'datepicker',
+    loadComponent: () =>
+      import('./pages/datepicker-page/datepicker-page').then((m) => m.DatepickerPage),
+  },
+  {
+    path: 'button-toggle',
+    loadComponent: () =>
+      import('./pages/button-toggle-page/button-toggle-page').then((m) => m.ButtonTogglePage),
+  },
+  {
+    path: 'toggle',
+    loadComponent: () => import('./pages/toggle-page/toggle-page').then((m) => m.TogglePage),
+  },
+  {
+    path: 'tabs',
+    loadComponent: () => import('./pages/tabs-page/tabs-page').then((m) => m.TabsPage),
+  },
+  {
+    path: 'progressbar',
+    loadComponent: () =>
+      import('./pages/progressbar-page/progressbar-page').then((m) => m.ProgressbarPage),
+  },
+  {
+    path: 'badge',
+    loadComponent: () => import('./pages/badge-page/badge-page').then((m) => m.BadgePage),
+  },
+  {
+    path: 'divider',
+    loadComponent: () => import('./pages/divider-page/divider-page').then((m) => m.DividerPage),
+  },
+  {
     path: 'global-config',
     loadComponent: () =>
       import('./pages/global-config-page/global-config-page').then((m) => m.GlobalConfigPage),

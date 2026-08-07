@@ -1,0 +1,78 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-divider</p>
+    <h2>Divider</h2>
+    <p class="lead">
+      A rule between two regions. Horizontal or vertical, three line styles, and an optional label
+      that runs through the middle — projected as content, so it can be text, an icon or a tag.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Line styles</h3>
+    <div class="divider-stack">
+      @for (variant of variants; track variant) {
+        <div class="divider-sample">
+          <span class="divider-sample__label">{{ variant }}</span>
+          <gog-divider [variant]="variant" />
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>With a label</h3>
+    <p class="hint">
+      Nothing projected renders one continuous line; anything projected splits it. The component has
+      no <code>hasLabel</code> input — the stylesheet keys off whether the label element is empty.
+    </p>
+    <div class="divider-stack">
+      <gog-divider />
+      <gog-divider>OR</gog-divider>
+      <gog-divider><gog-tag variant="info" size="xsm">New</gog-tag></gog-divider>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Vertical</h3>
+    <p class="hint">
+      Stretches to a flex row's height, with <code>--gog-divider-vertical-length</code> as the floor
+      when there is nothing to stretch to.
+    </p>
+    <div class="divider-row">
+      <gog-button variant="ghost">Copy</gog-button>
+      <gog-divider orientation="vertical" />
+      <gog-button variant="ghost">Move</gog-button>
+      <gog-divider orientation="vertical" variant="dashed" />
+      <gog-button variant="ghost">Delete</gog-button>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Inset</h3>
+    <p class="hint">
+      Indents the leading edge so the rule lines up with the text of a list whose rows start with an
+      avatar or icon, instead of cutting across the whole row.
+    </p>
+    <ul class="divider-list">
+      <li class="divider-list__row"><span class="divider-list__avatar">A</span> Alina</li>
+      <gog-divider [inset]="true" />
+      <li class="divider-list__row"><span class="divider-list__avatar">B</span> Borys</li>
+      <gog-divider [inset]="true" />
+      <li class="divider-list__row"><span class="divider-list__avatar">V</span> Vira</li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h3>Theming</h3>
+    <p class="hint">
+      <code>--gog-divider-color</code>, <code>--gog-divider-thickness</code> and
+      <code>--gog-divider-spacing</code> are instance-layer tokens: set them on one element to
+      restyle just that divider.
+    </p>
+    <div class="divider-stack divider-stack--themed">
+      <gog-divider />
+      <gog-divider>Accent</gog-divider>
+    </div>
+  </article>
+</section>

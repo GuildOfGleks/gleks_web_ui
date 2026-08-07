@@ -1,0 +1,53 @@
+@use '../detail' as *;
+
+.divider-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.divider-sample {
+  display: grid;
+  gap: 4px;
+}
+
+.divider-sample__label {
+  color: var(--gog-muted-text-color);
+  text-transform: capitalize;
+}
+
+.divider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.divider-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.divider-list__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 8px;
+}
+
+.divider-list__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--gog-accent-dim);
+  color: var(--gog-text-color);
+  font-size: 0.75rem;
+}
+
+/* Demonstrates the instance-layer tokens from the last card. */
+.divider-stack--themed {
+  --gog-divider-color: var(--gog-accent-color);
+  --gog-divider-thickness: 2px;
+}

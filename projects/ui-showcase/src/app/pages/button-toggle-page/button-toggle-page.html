@@ -1,0 +1,146 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-button-toggle-group</p>
+    <h2>Button toggle group</h2>
+    <p class="lead">
+      A row of buttons where one — or, with <code>multiple</code>, several — can be picked. Takes
+      your own objects through <code>optionLabel</code> / <code>optionValue</code> /
+      <code>optionDisabled</code>, the same accessors <code>gog-select</code> uses.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Single choice</h3>
+    <p class="hint">
+      A radio group to assistive tech: <code>role="radiogroup"</code> with
+      <code>aria-checked</code>, one tab stop, and the arrow keys both move <em>and</em> select —
+      which is what a radio group does. Map is disabled and gets skipped.
+    </p>
+    <gog-button-toggle-group
+      [options]="views"
+      optionLabel="title"
+      optionValue="key"
+      optionDisabled="locked"
+      optionIcon="glyph"
+      [(value)]="view"
+      ariaLabel="View mode"
+    />
+    <p class="hint">value: {{ view() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Multiple choice</h3>
+    <p class="hint">
+      A different widget, not a cosmetic switch: <code>role="group"</code> with
+      <code>aria-pressed</code>, arrows move only, and Space toggles.
+    </p>
+    <gog-button-toggle-group
+      [options]="tools"
+      [multiple]="true"
+      [(value)]="activeTools"
+      ariaLabel="Text style"
+    />
+    <p class="hint">value: {{ activeTools().join(', ') || '—' }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Appearance</h3>
+    <div class="bt-stack">
+      @for (appearance of appearances; track appearance) {
+        <div class="bt-row">
+          <span class="bt-row__label">{{ appearance }}</span>
+          <gog-button-toggle-group
+            [options]="tools"
+            [appearance]="appearance"
+            value="bold"
+            ariaLabel="Appearance sample"
+          />
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <div class="bt-stack">
+      @for (size of sizes; track size) {
+        <div class="bt-row">
+          <span class="bt-row__label">{{ size }}</span>
+          <gog-button-toggle-group
+            [options]="tools"
+            [size]="size"
+            value="italic"
+            ariaLabel="Size sample"
+          />
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Vertical, full width, and a custom option template</h3>
+    <div class="bt-columns">
+      <gog-button-toggle-group
+        [options]="tools"
+        orientation="vertical"
+        value="bold"
+        ariaLabel="Vertical sample"
+      />
+
+      <gog-button-toggle-group
+        [options]="tools"
+        [fullWidth]="true"
+        value="underline"
+        ariaLabel="Full width sample"
+      />
+    </div>
+
+    <gog-button-toggle-group
+      class="bt-custom"
+      [options]="views"
+      optionLabel="title"
+      optionValue="key"
+      optionDisabled="locked"
+      value="grid"
+      ariaLabel="Custom template"
+    >
+      <ng-template gogButtonToggleOption let-item let-selected="selected">
+        <gog-icon [name]="asView(item).glyph" />
+        <span>{{ asView(item).title }}</span>
+        @if (selected) {
+          <gog-icon name="check" />
+        }
+      </ng-template>
+    </gog-button-toggle-group>
+  </article>
+
+  <article class="card">
+    <h3>Your own object back</h3>
+    <p class="hint">
+      With <code>[optionValue]="null"</code> the group emits the option object itself, so a DTO
+      survives the round trip instead of being reduced to an id.
+    </p>
+    <gog-button-toggle-group
+      [options]="views"
+      optionLabel="title"
+      [optionValue]="null"
+      optionDisabled="locked"
+      [(value)]="viewObject"
+      ariaLabel="Object value"
+    />
+    <p class="hint">value: {{ viewObject()?.title ?? '—' }} (the object itself, not its key)</p>
+  </article>
+
+  <article class="card">
+    <h3>Reactive Forms</h3>
+    <gog-button-toggle-group
+      [options]="views"
+      optionLabel="title"
+      optionValue="key"
+      optionDisabled="locked"
+      [formControl]="formView"
+      ariaLabel="Form-bound view"
+    />
+    <p class="hint">control: {{ formView.value }} · touched: {{ formView.touched }}</p>
+  </article>
+</section>

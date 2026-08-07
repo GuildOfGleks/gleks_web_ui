@@ -1,0 +1,134 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-tabs / gog-tab</p>
+    <h2>Tabs</h2>
+    <p class="lead">
+      A tablist over projected <code>&lt;gog-tab&gt;</code> children. Each tab declares its own
+      label, icon and disabled state, so a tab is written in exactly one place — and the header row
+      is built from that.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Basic</h3>
+    <p class="hint">
+      One tab stop for the whole tablist; the arrows move and activate, Home/End jump to the first
+      and last enabled tab. Archive is disabled and gets skipped.
+    </p>
+    <gog-tabs
+      [(activeIndex)]="index"
+      ariaLabel="Account sections"
+      (gogTabChange)="lastChange.set($event)"
+    >
+      <gog-tab label="Profile">
+        <p>Name, avatar and contact details.</p>
+      </gog-tab>
+      <gog-tab label="Settings" iconName="info">
+        <p>Notification and privacy preferences.</p>
+      </gog-tab>
+      <gog-tab label="Archive" [disabled]="archiveDisabled()">
+        <p>Everything you have put away.</p>
+      </gog-tab>
+      <gog-tab label="History">
+        <p>Sign-ins and recent activity.</p>
+      </gog-tab>
+    </gog-tabs>
+    <p class="hint">
+      activeIndex: {{ index() }} · last gogTabChange: {{ lastChange() ?? '—' }}
+      <gog-button size="xsm" variant="ghost" (gogClick)="toggleArchive()">
+        {{ archiveDisabled() ? 'Enable' : 'Disable' }} Archive
+      </gog-button>
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Eager content keeps its state</h3>
+    <p class="hint">
+      Content written directly inside a tab renders immediately and is only hidden while inactive —
+      type below, switch tabs, and come back.
+    </p>
+    <gog-tabs ariaLabel="State demo">
+      <gog-tab label="Draft">
+        <label class="tabs-field">
+          Message
+          <input type="text" placeholder="Type something, then switch away" />
+        </label>
+      </gog-tab>
+      <gog-tab label="Preview">
+        <p>Switching here does not destroy the field next door.</p>
+      </gog-tab>
+    </gog-tabs>
+  </article>
+
+  <article class="card">
+    <h3>Lazy content</h3>
+    <p class="hint">
+      An <code>&lt;ng-template gogTabContent&gt;</code> is built on first activation and kept alive
+      afterwards. Which behaviour you get is decided by whether the template is there — there is no
+      <code>lazy</code> input to keep in sync.
+    </p>
+    <gog-tabs ariaLabel="Lazy demo">
+      <gog-tab label="Cheap">
+        <p>Rendered up front.</p>
+      </gog-tab>
+      <gog-tab label="Expensive">
+        <ng-template gogTabContent>
+          <app-lazy-panel />
+        </ng-template>
+      </gog-tab>
+    </gog-tabs>
+  </article>
+
+  <article class="card">
+    <h3>Alignment</h3>
+    <div class="tabs-stack">
+      @for (align of aligns; track align) {
+        <div>
+          <span class="tabs-label">{{ align }}</span>
+          <gog-tabs [align]="align" size="sm" ariaLabel="Alignment sample">
+            <gog-tab label="One"><p>One</p></gog-tab>
+            <gog-tab label="Two"><p>Two</p></gog-tab>
+            <gog-tab label="Three"><p>Three</p></gog-tab>
+          </gog-tabs>
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Overflow</h3>
+    <p class="hint">
+      Too many headers to fit scroll inside a <code>&lt;gog-scroll&gt;</code>, not a native
+      <code>overflow-x</code> — a native scrollbar is the one strip of chrome no
+      <code>--gog-*</code> token can reach.
+    </p>
+    <div class="tabs-narrow">
+      <gog-tabs size="sm" ariaLabel="Overflow sample">
+        @for (title of manyTabs; track title) {
+          <gog-tab [label]="title">
+            <p>{{ title }}</p>
+          </gog-tab>
+        }
+      </gog-tabs>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Custom headers</h3>
+    <p class="hint">
+      A <code>gogTabHeader</code> template replaces the whole header button, with the tab, its index
+      and whether it is active as typed context.
+    </p>
+    <gog-tabs ariaLabel="Custom headers">
+      <ng-template gogTabHeader let-tab let-active="active">
+        <span>{{ tab.label() }}</span>
+        @if (active) {
+          <gog-tag variant="success" size="xsm" shape="pill">live</gog-tag>
+        }
+      </ng-template>
+
+      <gog-tab label="Overview"><p>Overview</p></gog-tab>
+      <gog-tab label="Metrics"><p>Metrics</p></gog-tab>
+    </gog-tabs>
+  </article>
+</section>

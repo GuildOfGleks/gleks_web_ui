@@ -1,0 +1,33 @@
+@use '../detail' as *;
+
+.ac-field {
+  max-width: 360px;
+}
+
+.ac-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.ac-option {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ac-option__role {
+  color: var(--gog-muted-text-color);
+  font-size: 0.8125rem;
+}
+
+/* Clips its children, which is the case appendToBody exists for. */
+.ac-clipped {
+  max-width: 360px;
+  max-height: 120px;
+  padding: 16px;
+  border: 1px dashed var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  overflow: hidden;
+}

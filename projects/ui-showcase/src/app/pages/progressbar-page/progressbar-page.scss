@@ -1,0 +1,23 @@
+@use '../detail' as *;
+
+.progress-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.progress-row__label {
+  min-width: 72px;
+  color: var(--gog-muted-text-color);
+  text-transform: capitalize;
+}
+
+.progress-controls {
+  display: flex;
+  gap: 12px;
+}

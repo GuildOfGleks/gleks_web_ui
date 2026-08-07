@@ -1,0 +1,76 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gogBadge</p>
+    <h2>Badge</h2>
+    <p class="lead">
+      A count or status dot pinned to the corner of something else. A directive rather than a
+      component, so it decorates a button, an icon or an avatar without wrapping it and changing its
+      layout.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>On a button and on an icon</h3>
+    <div class="badge-row">
+      <gog-button gogBadge="12" badgeAriaLabel="12 unread">Inbox</gog-button>
+      <gog-button variant="outline" gogBadge="3" badgeVariant="info">Drafts</gog-button>
+      <span class="badge-host" gogBadge [badgeDot]="true" badgeAriaLabel="Unread messages">
+        <gog-icon name="info" />
+      </span>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>It disappears at zero</h3>
+    <p class="hint">
+      A badge reading “0” is the defining bug of this component, so it is not reachable:
+      <code>0</code>, <code>null</code> and an empty string all render nothing at all. Counts above
+      <code>badgeMax</code> render as <code>N+</code>.
+    </p>
+    <div class="badge-row">
+      <gog-button [gogBadge]="count()" badgeAriaLabel="{{ count() }} unread">
+        Notifications
+      </gog-button>
+      <gog-button variant="ghost" size="sm" (gogClick)="remove()">−</gog-button>
+      <gog-button variant="ghost" size="sm" (gogClick)="add()">+</gog-button>
+      <gog-button variant="outline" size="sm" (gogClick)="flood()">Set 150</gog-button>
+      <span class="badge-note">value: {{ count() }}</span>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Positions</h3>
+    <div class="badge-row">
+      @for (position of positions; track position) {
+        <gog-button variant="outline" gogBadge="9" [badgePosition]="position">
+          {{ position }}
+        </gog-button>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Variants and dots</h3>
+    <div class="badge-row">
+      @for (variant of variants; track variant) {
+        <gog-button variant="ghost" gogBadge="5" [badgeVariant]="variant">{{ variant }}</gog-button>
+      }
+    </div>
+    <div class="badge-row">
+      @for (variant of variants; track variant) {
+        <span class="badge-host" gogBadge [badgeDot]="true" [badgeVariant]="variant">
+          <gog-icon name="info" />
+        </span>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Non-numeric content</h3>
+    <p class="hint">Capping only applies to counts; a word passes through untouched.</p>
+    <div class="badge-row">
+      <gog-button variant="outline" gogBadge="NEW" badgeVariant="success">Feature</gog-button>
+      <gog-button variant="outline" gogBadge="beta" badgeVariant="warning">Editor</gog-button>
+    </div>
+  </article>
+</section>

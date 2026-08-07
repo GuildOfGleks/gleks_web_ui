@@ -1,0 +1,7 @@
+@use '../detail' as *;
+
+.toggle-stack {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}

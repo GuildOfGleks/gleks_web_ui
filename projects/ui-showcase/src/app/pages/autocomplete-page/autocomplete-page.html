@@ -1,0 +1,139 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-autocomplete</p>
+    <h2>Autocomplete</h2>
+    <p class="lead">
+      A text field that suggests options as you type. It shares its machinery with
+      <code>gog-select</code>, but the trigger is a real <code>&lt;input&gt;</code>: focus stays in
+      the field and the highlighted row is pointed at with <code>aria-activedescendant</code>, which
+      is the ARIA combobox pattern.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Local filtering</h3>
+    <p class="hint">
+      Type two letters. Arrows highlight without moving focus, Enter picks, Escape restores the last
+      selection.
+    </p>
+    <div class="ac-field">
+      <gog-autocomplete
+        label="City"
+        placeholder="Start typing…"
+        [options]="cities"
+        [(value)]="city"
+        [clearable]="true"
+      />
+    </div>
+    <p class="hint">value: {{ city() ?? '—' }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Server-backed</h3>
+    <p class="hint">
+      <code>gogSearch</code> is debounced (300&nbsp;ms by default) and
+      <code>[filterLocal]="false"</code> stops the returned list being filtered a second time — the
+      classic double-filtering bug, which silently drops rows the server matched on a field this
+      component cannot see.
+    </p>
+    <div class="ac-field">
+      <gog-autocomplete
+        label="City (remote)"
+        placeholder="Type to search"
+        [options]="remoteResults()"
+        [filterLocal]="false"
+        [loading]="remoteLoading()"
+        [minLength]="2"
+        (gogSearch)="search($event)"
+        [clearable]="true"
+      />
+    </div>
+    <p class="hint">
+      last query: “{{ lastQuery() }}” · results: {{ remoteResults().length }} · loading:
+      {{ remoteLoading() }}
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Your own DTO</h3>
+    <p class="hint">
+      Dot-path accessors read a nested object, <code>[optionValue]="null"</code> hands the object
+      itself back, and a <code>gogDropdownOption</code> template decorates the row. Vira is
+      suspended and cannot be picked.
+    </p>
+    <div class="ac-field">
+      <gog-autocomplete
+        label="Assignee"
+        placeholder="Search people"
+        [options]="employees"
+        optionLabel="profile.fullName"
+        [optionValue]="null"
+        optionDisabled="suspended"
+        [(value)]="employee"
+        [clearable]="true"
+      >
+        <ng-template gogDropdownOption let-person let-label="label">
+          <span class="ac-option">
+            <strong>{{ label }}</strong>
+            <span class="ac-option__role">{{ asEmployee(person).profile.role }}</span>
+          </span>
+        </ng-template>
+      </gog-autocomplete>
+    </div>
+    <p class="hint">value: {{ employee()?.profile?.fullName ?? '—' }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Free text</h3>
+    <p class="hint">
+      <code>[forceSelection]="false"</code> keeps what you typed on blur — for a create-as-you-type
+      flow, where the text itself is the answer. Read it from <code>gogSearch</code> rather than
+      from <code>value</code>.
+    </p>
+    <div class="ac-field">
+      <gog-autocomplete
+        label="Tag"
+        placeholder="Pick one or invent one"
+        [options]="cities"
+        [forceSelection]="false"
+      />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sizes, disabled and errors</h3>
+    <div class="ac-grid">
+      @for (size of sizes; track size) {
+        <gog-autocomplete [size]="size" [label]="size" [options]="cities" />
+      }
+      <gog-autocomplete label="Disabled" [options]="cities" [disabled]="true" />
+      <gog-autocomplete
+        label="With an error"
+        [options]="cities"
+        errorMessage="Pick a city from the list"
+      />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Reactive Forms and float label</h3>
+    <div class="ac-grid">
+      <gog-autocomplete label="Bound" [options]="cities" [formControl]="formCity" />
+      <gog-autocomplete label="Float in" [options]="cities" floatLabel="in" />
+      <gog-autocomplete label="Float on" [options]="cities" floatLabel="on" />
+      <gog-autocomplete label="Float over" [options]="cities" floatLabel="over" />
+    </div>
+    <p class="hint">control: {{ formCity.value ?? '—' }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Appended to body</h3>
+    <p class="hint">
+      For a field inside a scrollable or overflow-clipped container. The panel is stamped into
+      <code>&lt;body&gt;</code> and carries any scoped <code>data-theme</code> with it.
+    </p>
+    <div class="ac-clipped">
+      <gog-autocomplete label="Inside a clipped box" [options]="cities" [appendToBody]="true" />
+    </div>
+  </article>
+</section>

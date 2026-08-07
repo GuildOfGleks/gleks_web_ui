@@ -1,0 +1,80 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-progressbar</p>
+    <h2>Progressbar</h2>
+    <p class="lead">
+      A horizontal progress indicator with determinate, indeterminate and buffer modes. Values are
+      clamped to 0–100 rather than trusted, because a bar driven from
+      <code>loaded / total</code> overshoots on the last chunk often enough to matter.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Determinate</h3>
+    <div class="progress-stack">
+      <gog-progressbar [value]="progress()" [showValue]="true" ariaLabel="Upload" />
+      <div class="progress-controls">
+        <gog-button size="sm" (gogClick)="start()">Run</gog-button>
+        <gog-button size="sm" variant="outline" (gogClick)="stop()">Stop</gog-button>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Indeterminate</h3>
+    <p class="hint">
+      Reports no <code>aria-valuenow</code> at all — that omission is what marks it indeterminate to
+      assistive tech. The animation is replaced by a static stripe under
+      <code>prefers-reduced-motion</code>.
+    </p>
+    <gog-progressbar mode="indeterminate" ariaLabel="Loading" />
+  </article>
+
+  <article class="card">
+    <h3>Buffer</h3>
+    <p class="hint">A second, lighter level ahead of the fill — preloaded but not yet played.</p>
+    <gog-progressbar mode="buffer" [value]="progress()" [buffer]="buffer()" [showValue]="true" />
+  </article>
+
+  <article class="card">
+    <h3>Variants</h3>
+    <div class="progress-stack">
+      @for (variant of variants; track variant) {
+        <div class="progress-row">
+          <span class="progress-row__label">{{ variant }}</span>
+          <gog-progressbar [variant]="variant" [value]="64" />
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <div class="progress-stack">
+      @for (size of sizes; track size) {
+        <div class="progress-row">
+          <span class="progress-row__label">{{ size }}</span>
+          <gog-progressbar [size]="size" [value]="48" />
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Clamping</h3>
+    <p class="hint">
+      Values outside 0–100 are pulled in rather than overflowing the track, and a non-finite value
+      reads as zero.
+    </p>
+    <div class="progress-stack">
+      <div class="progress-row">
+        <span class="progress-row__label">140</span>
+        <gog-progressbar [value]="140" [showValue]="true" />
+      </div>
+      <div class="progress-row">
+        <span class="progress-row__label">−20</span>
+        <gog-progressbar [value]="-20" [showValue]="true" />
+      </div>
+    </div>
+  </article>
+</section>

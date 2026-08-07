@@ -69,6 +69,14 @@ export class App {
     { path: 'tooltip', label: 'Tooltip' },
     { path: 'tag', label: 'Tag' },
     { path: 'dialog', label: 'Dialog' },
+    { path: 'autocomplete', label: 'Autocomplete' },
+    { path: 'datepicker', label: 'Datepicker' },
+    { path: 'button-toggle', label: 'Button Toggle' },
+    { path: 'toggle', label: 'Toggle' },
+    { path: 'tabs', label: 'Tabs' },
+    { path: 'progressbar', label: 'Progressbar' },
+    { path: 'badge', label: 'Badge' },
+    { path: 'divider', label: 'Divider' },
   ];
 
   protected readonly pageLinks: ShowcaseNavLink[] = [

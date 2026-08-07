@@ -1,0 +1,122 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-datepicker / gog-calendar</p>
+    <h2>Datepicker</h2>
+    <p class="lead">
+      A date field with a calendar panel — single date, range, and an optional clock. Native
+      <code>Date</code>, no date library: <code>Intl</code> supplies month and weekday names, and
+      the display format is a token pattern so what is written can always be read back.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Single date</h3>
+    <div class="dp-grid">
+      <gog-datepicker label="Date" [(value)]="date" [clearable]="true" />
+      <gog-datepicker label="Not before today" [min]="today" />
+      <gog-datepicker label="This month only" [min]="monthStart" [max]="monthEnd" />
+      <gog-datepicker label="Weekdays only" [disabledDates]="noWeekends" />
+    </div>
+    <p class="hint">value: {{ show(date()) }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Range</h3>
+    <p class="hint">
+      Two months side by side is what makes a range picker usable. The panel stays open between the
+      two clicks, and hovering previews what the second click will produce.
+    </p>
+    <div class="dp-field">
+      <gog-datepicker
+        label="Stay"
+        selectionMode="range"
+        [numberOfMonths]="2"
+        [(value)]="range"
+        [clearable]="true"
+      />
+    </div>
+    <p class="hint">value: {{ showRange(range()) }}</p>
+  </article>
+
+  <article class="card">
+    <h3>With a time</h3>
+    <p class="hint">
+      The panel stays open after a day is picked, so the clock is reachable without reopening.
+      Changing the time never moves the day.
+    </p>
+    <div class="dp-grid">
+      <gog-datepicker label="24-hour" [showTime]="true" [(value)]="withTime" />
+      <gog-datepicker label="12-hour" [showTime]="true" hourFormat="12" />
+      <gog-datepicker label="With seconds" [showTime]="true" [showSeconds]="true" />
+    </div>
+    <p class="hint">value: {{ showDateTime(withTime()) }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Typing</h3>
+    <p class="hint">
+      Typed text is parsed against <code>format</code>. A half-typed date leaves the value alone
+      rather than firing a stream of nulls at an attached form, and an impossible date
+      (<code>31.02.2026</code>) is rejected instead of silently rolling over to 3 March.
+    </p>
+    <div class="dp-grid">
+      <gog-datepicker label="dd.MM.yyyy (default)" />
+      <gog-datepicker label="yyyy-MM-dd" format="yyyy-MM-dd" />
+      <gog-datepicker label="MM/dd/yyyy" format="MM/dd/yyyy" />
+      <gog-datepicker label="Pick only" [allowTextInput]="false" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Locales</h3>
+    <p class="hint">
+      Month and weekday names come from <code>Intl</code>, and the first day of the week from the
+      locale unless you override it. Both are also settable app-wide via
+      <code>GOG_CONFIG.datepicker</code>.
+    </p>
+    <div class="dp-grid">
+      <gog-datepicker label="en-US" locale="en-US" />
+      <gog-datepicker label="uk-UA" locale="uk-UA" />
+      <gog-datepicker label="de-DE" locale="de-DE" />
+      <gog-datepicker label="Sunday first" locale="en-US" [firstDayOfWeek]="0" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Inline</h3>
+    <p class="hint">
+      No field, no panel — literally <code>gog-calendar</code>, which is exported on its own for
+      exactly this.
+    </p>
+    <div class="dp-inline">
+      <gog-datepicker [inline]="true" [(value)]="inlineDate" />
+      <gog-calendar [value]="inlineDate()" [min]="today" size="sm" />
+    </div>
+    <p class="hint">value: {{ show(inlineDate()) }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Sizes, disabled and errors</h3>
+    <div class="dp-grid">
+      @for (size of sizes; track size) {
+        <gog-datepicker [size]="size" [label]="size" />
+      }
+      <gog-datepicker label="Disabled" [disabled]="true" [value]="today" />
+      <gog-datepicker label="With an error" errorMessage="Choose a date" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Reactive Forms, float label and append-to-body</h3>
+    <div class="dp-grid">
+      <gog-datepicker label="Bound" [formControl]="formDate" />
+      <gog-datepicker label="Float in" floatLabel="in" />
+      <gog-datepicker label="Float over" floatLabel="over" />
+    </div>
+    <p class="hint">control: {{ show(formDate.value) }}</p>
+
+    <div class="dp-clipped">
+      <gog-datepicker label="Inside a clipped box" [appendToBody]="true" />
+    </div>
+  </article>
+</section>
