@@ -24,6 +24,7 @@ export class TextareaPage {
     { id: 'over', name: 'Over' },
   ];
   protected readonly floatLabelVariant = signal<GogFloatLabelVariant>('in');
+  protected readonly clearableNotes = signal('Clear me');
   protected readonly floatLabelShowPlaceholder = signal(false);
   protected readonly floatLabelValue = signal('');
 

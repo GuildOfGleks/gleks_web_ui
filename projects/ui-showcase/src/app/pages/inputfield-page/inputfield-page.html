@@ -29,6 +29,25 @@
   </article>
 
   <article class="card">
+    <h3>Clearable</h3>
+    <p class="lead">
+      <code>clearable</code> adds a clear button that appears only once the field has text and
+      disappears again when it is empty — no permanent chrome. On a password field the built-in
+      reveal toggle keeps the trailing slot, so the two never fight over it. Settable app-wide via
+      <code>GOG_CONFIG.control.clearable</code>.
+    </p>
+    <div class="field-grid">
+      <gog-inputfield label="Search" [clearable]="true" [(value)]="clearableText" />
+      <gog-inputfield
+        label="With a leading icon"
+        iconStart="info"
+        [clearable]="true"
+        [(value)]="clearableWithIcon"
+      />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Password visibility toggle</h3>
     <p class="lead">
       Built in: any field with <code>type="password"</code> automatically gets a trailing eye /

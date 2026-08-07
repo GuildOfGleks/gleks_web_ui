@@ -30,6 +30,7 @@ export class MultiselectPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly selectedFeatures = signal<(string | number)[]>(['toast', 'dialog']);
+  protected readonly filterDemoValue = signal<(string | number)[]>([]);
   protected readonly features: GogMultiselectOption[] = [
     { id: 'toast', name: 'Toast' },
     { id: 'dialog', name: 'Dialog' },

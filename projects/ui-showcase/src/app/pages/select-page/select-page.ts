@@ -3,6 +3,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   CheckboxComponent,
   GogDropdownChevronDirective,
+  GogDropdownOption,
   GogDropdownOptionDirective,
   GogFloatLabelVariant,
   GogSelectOption,
@@ -44,6 +45,12 @@ export class SelectPage {
   /** With `[optionValue]="null"` the control hands back the object, not an id. */
   protected readonly member = signal<Member | null>(null);
   protected readonly memberLabel = (m: Member) => m.profile.fullName;
+
+  protected readonly filterDemoValue = signal<string | number | null>(null);
+  protected readonly prefixDemoValue = signal<string | number | null>(null);
+  /** Prefix matching instead of the default substring search. */
+  protected readonly prefixMatch = (option: GogDropdownOption, query: string) =>
+    option.name.toLowerCase().startsWith(query.toLowerCase());
 
   protected readonly framework = signal<string | number | null>('angular');
   protected readonly frameworks: GogSelectOption[] = [

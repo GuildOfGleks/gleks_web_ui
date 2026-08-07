@@ -29,6 +29,18 @@
   </article>
 
   <article class="card">
+    <h3>Clearable</h3>
+    <p class="lead">
+      Same <code>clearable</code> input as the other fields. On a multi-line box the button is
+      pinned to the top-right rather than vertically centred — centred would land it in the middle
+      of the text.
+    </p>
+    <div class="field-grid">
+      <gog-textarea label="Notes" [clearable]="true" [(value)]="clearableNotes" />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Rows</h3>
     <p class="lead">
       <code>rows</code> sets the native <code>rows</code> attribute, controlling the field's initial

@@ -24,6 +24,28 @@
   </article>
 
   <article class="card">
+    <h3>Filter</h3>
+    <p class="lead">
+      <code>filter</code> narrows the panel as you type. With <code>showControls</code> on,
+      &ldquo;select all&rdquo; deliberately takes only the <em>visible</em> options, so it means
+      what it says while a query is active. The clear button is on by default here — this control
+      always had one.
+    </p>
+    <div class="field-grid">
+      <gog-multiselect
+        label="Tags"
+        placeholder="Pick tags"
+        [options]="tags"
+        [filter]="true"
+        [showControls]="true"
+        filterPlaceholder="Type to search..."
+        [(value)]="filterDemoValue"
+      />
+    </div>
+    <p class="meta">Selected: {{ filterDemoValue().length }}</p>
+  </article>
+
+  <article class="card">
     <h3>Sizes</h3>
     <div class="field-grid">
       @for (size of sizes; track size) {

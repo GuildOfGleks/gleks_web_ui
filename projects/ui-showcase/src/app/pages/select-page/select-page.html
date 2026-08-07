@@ -129,6 +129,39 @@
   </article>
 
   <article class="card">
+    <h3>Filter &amp; clear</h3>
+    <p class="lead">
+      <code>filter</code> puts a search box at the top of the panel — it narrows on the resolved
+      <code>optionLabel</code>, case-insensitively, and <code>filterMatch</code> swaps that for your
+      own predicate. <code>clearable</code> adds a clear button that appears only once something is
+      selected, so you no longer need a fake <code>&ldquo;— not selected —&rdquo;</code> option to
+      let people undo a choice. Both are also settable app-wide via <code>GOG_CONFIG</code>.
+    </p>
+    <div class="field-grid">
+      <gog-select
+        label="Country (filter + clear)"
+        placeholder="Pick a country"
+        [options]="countries"
+        [filter]="true"
+        [clearable]="true"
+        filterPlaceholder="Type to search..."
+        [(value)]="filterDemoValue"
+      />
+      <gog-select
+        label="Country (prefix match only)"
+        placeholder="Pick a country"
+        [options]="countries"
+        [filter]="true"
+        [clearable]="true"
+        [filterMatch]="prefixMatch"
+        filterEmptyMessage="No country starts with that"
+        [(value)]="prefixDemoValue"
+      />
+    </div>
+    <p class="meta">Selected: {{ filterDemoValue() ?? '—' }} / {{ prefixDemoValue() ?? '—' }}</p>
+  </article>
+
+  <article class="card">
     <h3>States</h3>
     <div class="field-grid">
       <gog-select label="Disabled" [options]="frameworks" value="angular" [disabled]="true" />

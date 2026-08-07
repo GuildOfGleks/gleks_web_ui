@@ -35,6 +35,8 @@ export class InputfieldPage {
     { id: 'over', name: 'Over' },
   ];
   protected readonly floatLabelVariant = signal<GogFloatLabelVariant>('in');
+  protected readonly clearableText = signal('');
+  protected readonly clearableWithIcon = signal('Some text');
   protected readonly floatLabelShowPlaceholder = signal(false);
   protected readonly floatLabelValue = signal('');
   protected readonly floatLabelIconValue = signal('');
