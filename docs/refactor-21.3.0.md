@@ -175,9 +175,20 @@ exists once; all four fields verified live in `ui-showcase` across all three var
 **Behaviour-preservation was proven, not assumed.** Each of the four stylesheets was compiled
 with sass at `HEAD` and after the change, and the results compared both as normalised rule sets
 and as ordered selector lists — **identical on both counts for all four**, so the CSSOM and
-therefore the rendering cannot differ. Plus 433 specs, a clean build, and live checks in
-`ui-showcase`: `gog-inputfield` `in`-floated lands on 8px / 14px / accent / uppercase, and
-`gog-multiselect` picks up its `$cursor: default` and token chain correctly.
+therefore the rendering cannot differ. Plus 433 specs and a clean build.
+
+Live-verified in `ui-showcase` across the full matrix — 4 controls × 3 variants × resting/floated
+= 24 states, all correct. `in` floats to 8px/14px/accent-uppercase, `on` lands at `top: 0` with
+`translateY(-50%)` and the `#16120e` border mask at `left: 10px` (inset − 4px), `over` sits at
+−8px with `translateY(-100%)`. `gog-textarea` keeps `transform: none` where `$rest-centered:
+false` applies, and `gog-select`/`gog-multiselect` carry `cursor: default`.
+
+**Measurement note for whoever verifies float label next.** The label transitions `top`,
+`font-size`, `color` and `background-color` over `--gog-*-transition-duration`, so reading
+`getComputedStyle` right after flipping a class returns a mid-animation value — which reads
+exactly like "the floated rule isn't applying". Set `label.style.transition = 'none'` before
+toggling, and pick the element by `gog-textarea`/`gog-inputfield` host: the textarea page alone
+renders 15 wrappers and only one of them carries a float variant.
 
 **`check:tokens` now analyses compiled CSS instead of raw SCSS.** The mixin builds token names
 by interpolation (`var(--gog-#{$prefix}-float-label-on-bg, …)`), which a text scan cannot
@@ -186,19 +197,15 @@ being wrong rather than the code. Compiling first makes it robust to any SCSS fa
 is now strictly stronger: a literal fallback introduced *inside* the mixin is reported against
 every component that includes it, which the old text scan could not see at all.
 
-### Pre-existing bug found, deliberately not fixed here
+### Retracted: the "textarea float-label bug" was a measurement error
 
-On `gog-textarea` with `floatLabel="in"`, the floated state never takes effect: with both
-`--float-in` and `--floated` on the wrapper, the label stays at `top: 28px` / `font-size: 16px`
-instead of moving to 8px / 14px. None of the floated rule's declarations apply, even though the
-rule matches the element (`Element.matches()` confirms it), carries higher specificity than the
-resting rule, and sits later in source order — and it still doesn't apply after neutralising the
-competing rule by hand. `gog-inputfield`, which shares the same class names, works correctly.
-
-This is **not** a regression from this iteration: the compiled CSS is byte-equivalent to `HEAD`
-in both content and order, and the wrapper classes are applied identically. Root cause not
-identified. It needs its own investigation and fix — folding a behaviour change into a
-refactor whose whole claim is "nothing renders differently" would be the wrong move.
+An earlier pass through this iteration reported that `gog-textarea` with `floatLabel="in"` never
+applied its floated state. **That was wrong — there is no such bug**, and nothing was changed to
+"fix" it. Two mistakes compounded: the readings were taken while the label's 0.15 s transition
+was still running, and on a page with 15 `gog-textarea` instances the element being measured was
+not always the one carrying the float variant. Re-measured with transitions disabled and the host
+selected explicitly, all 24 states are correct. The measurement note above exists so the same
+trap doesn't catch the next person.
 
 ---
 
