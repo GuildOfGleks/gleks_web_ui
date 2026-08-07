@@ -4,7 +4,19 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [21.2.5] - planned
+## [21.3.0] - planned
+
+### Changed
+
+- Float label geometry is now themeable through `theme.css` instead of being hardcoded in the
+  component stylesheets. `--gog-{input,select,ms}-float-label-{reserve,in-top,over-gap,over-reserve}`
+  previously existed only as literal fallbacks (`18px`, `8px`, `1.4em`) inside four component
+  `.scss` files, so they were overridable but not discoverable, and `theme.css` did not describe
+  the components' full surface. They are now declared component tokens deriving from a new
+  shared `--gog-field-float-label-{reserve,in-top,over-gap,over-reserve}` scale, so one
+  declaration retunes every field at once while a single control can still be overridden.
+  No visual change — the defaults are identical. `--gog-{input,select,ms}-float-label-on-bg`
+  stays an instance-layer (undeclared) token as before.
 
 ### Added
 

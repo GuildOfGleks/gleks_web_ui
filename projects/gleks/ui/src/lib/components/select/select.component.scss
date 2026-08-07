@@ -301,12 +301,18 @@
  */
 .gog-select__label--float {
   position: absolute;
-  left: var(--gog-select-control-padding-x, var(--gog-select-size-padding-x, var(--gog-field-md-padding-x)));
+  left: var(
+    --gog-select-control-padding-x,
+    var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))
+  );
   top: 50%;
   transform: translateY(-50%);
   max-width: calc(
-    100% -
-      2 * var(--gog-select-control-padding-x, var(--gog-select-size-padding-x, var(--gog-field-md-padding-x)))
+    100% - 2 *
+      var(
+        --gog-select-control-padding-x,
+        var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))
+      )
   );
   overflow: hidden;
   text-overflow: ellipsis;
@@ -338,8 +344,11 @@
 .gog-select--float-in,
 .gog-select--float-on {
   --gog-select-float-top-padding: calc(
-    var(--gog-select-control-padding-y, var(--gog-select-size-padding-y, var(--gog-field-md-padding-y))) +
-      var(--gog-select-float-label-reserve, 18px)
+    var(
+        --gog-select-control-padding-y,
+        var(--gog-select-size-padding-y, var(--gog-field-md-padding-y))
+      ) +
+      var(--gog-select-float-label-reserve)
   );
 }
 
@@ -355,7 +364,7 @@
 }
 
 .gog-select--float-in.gog-select--floated .gog-select__label--float {
-  top: var(--gog-select-float-label-in-top, 8px);
+  top: var(--gog-select-float-label-in-top);
   transform: translateY(0);
   font-size: var(--gog-select-label-font-size);
   color: var(--gog-select-label-color);
@@ -373,12 +382,16 @@
   background-color: var(--gog-select-float-label-on-bg, var(--gog-select-field-bg));
   padding: 0 4px;
   left: calc(
-    var(--gog-select-control-padding-x, var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))) - 4px
+    var(
+        --gog-select-control-padding-x,
+        var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))
+      ) -
+      4px
   );
 }
 
 .gog-select--float-over.gog-select--floated .gog-select__label--float {
-  top: calc(-1 * var(--gog-select-float-label-over-gap, 8px));
+  top: calc(-1 * var(--gog-select-float-label-over-gap));
   transform: translateY(-100%);
   font-size: var(--gog-select-label-font-size);
   color: var(--gog-select-label-color);
@@ -389,7 +402,7 @@
 /* Only 'over' floats fully outside the box, so only it needs permanently reserved space
    above the field for the label to float into. */
 .gog-select--float-over .gog-select__field {
-  margin-top: var(--gog-select-float-label-over-reserve, 1.4em);
+  margin-top: var(--gog-select-float-label-over-reserve);
 }
 
 @media (prefers-reduced-motion: reduce) {

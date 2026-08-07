@@ -195,9 +195,10 @@
   top: 50%;
   transform: translateY(-50%);
   max-width: calc(
-    100% -
-      var(--gog-input-pl, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x))) -
-      var(--gog-input-pr, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x)))
+    100% - var(
+        --gog-input-pl,
+        var(--gog-input-size-padding-x, var(--gog-field-md-padding-x))
+      ) - var(--gog-input-pr, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x)))
   );
   overflow: hidden;
   text-overflow: ellipsis;
@@ -228,7 +229,7 @@
 .gog-input-wrapper--float-on {
   --gog-input-float-top-padding: calc(
     var(--gog-input-padding-y, var(--gog-input-size-padding-y, var(--gog-field-md-padding-y))) +
-      var(--gog-input-float-label-reserve, 18px)
+      var(--gog-input-float-label-reserve)
   );
 }
 
@@ -244,7 +245,7 @@
 }
 
 .gog-input-wrapper--float-in.gog-input-wrapper--floated .gog-input__label--float {
-  top: var(--gog-input-float-label-in-top, 8px);
+  top: var(--gog-input-float-label-in-top);
   transform: translateY(0);
   font-size: var(--gog-input-label-font-size);
   color: var(--gog-input-label-color);
@@ -267,7 +268,7 @@
 }
 
 .gog-input-wrapper--float-over.gog-input-wrapper--floated .gog-input__label--float {
-  top: calc(-1 * var(--gog-input-float-label-over-gap, 8px));
+  top: calc(-1 * var(--gog-input-float-label-over-gap));
   transform: translateY(-100%);
   font-size: var(--gog-input-label-font-size);
   color: var(--gog-input-label-color);
@@ -278,7 +279,7 @@
 /* Only 'over' floats fully outside the box, so only it needs permanently reserved space
    above the field for the label to float into. */
 .gog-input-wrapper--float-over .gog-input__field-container {
-  margin-top: var(--gog-input-float-label-over-reserve, 1.4em);
+  margin-top: var(--gog-input-float-label-over-reserve);
 }
 
 @media (prefers-reduced-motion: reduce) {

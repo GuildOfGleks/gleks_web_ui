@@ -366,7 +366,7 @@
 .gog-ms-wrapper--float-on {
   --gog-ms-float-top-padding: calc(
     var(--gog-ms-padding-y, var(--gog-ms-size-padding-y, var(--gog-field-md-padding-y))) +
-      var(--gog-ms-float-label-reserve, 18px)
+      var(--gog-ms-float-label-reserve)
   );
 }
 
@@ -382,7 +382,7 @@
 }
 
 .gog-ms-wrapper--float-in.gog-ms-wrapper--floated .gog-ms__label--float {
-  top: var(--gog-ms-float-label-in-top, 8px);
+  top: var(--gog-ms-float-label-in-top);
   transform: translateY(0);
   font-size: var(--gog-ms-label-font-size);
   color: var(--gog-ms-label-color);
@@ -405,7 +405,7 @@
 }
 
 .gog-ms-wrapper--float-over.gog-ms-wrapper--floated .gog-ms__label--float {
-  top: calc(-1 * var(--gog-ms-float-label-over-gap, 8px));
+  top: calc(-1 * var(--gog-ms-float-label-over-gap));
   transform: translateY(-100%);
   font-size: var(--gog-ms-label-font-size);
   color: var(--gog-ms-label-color);
@@ -416,7 +416,7 @@
 /* Only 'over' floats fully outside the box, so only it needs permanently reserved space
    above the field for the label to float into. */
 .gog-ms-wrapper--float-over .gog-ms {
-  margin-top: var(--gog-ms-float-label-over-reserve, 1.4em);
+  margin-top: var(--gog-ms-float-label-over-reserve);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -97,6 +97,7 @@ so a palette swap carries through without touching anything else.
 | Focus / state | `--gog-focus-ring-width`, `--gog-focus-ring-offset`, `--gog-disabled-opacity` |
 | Controls | `--gog-control-padding-y`, `--gog-control-padding-x`, `--gog-control-icon-offset`, `--gog-control-border-width`, `--gog-control-border-style` |
 | Fields | `--gog-field-{xsm,sm,md,lg,slg}-{padding-y,padding-x,font-size,icon-offset,icon-inset}` — shared by input, select and multiselect |
+| Float label | `--gog-field-float-label-{reserve,in-top,over-gap,over-reserve}` — one geometry scale for every field that can float its label |
 | Buttons | `--gog-btn-{xsm,sm,md,lg,slg}-padding`, `--gog-btn-{xsm,sm,md,lg,slg}-font-size` |
 | Checkables | `--gog-control-checkbox-padding`, `--gog-control-checkbox-box-size-{xsm…slg}`, `--gog-control-checkbox-label-size-{xsm…slg}`, `--gog-control-checkbox-icon-size-{xsm…slg}` |
 | Overlays | `--gog-dropdown-z`, `--gog-spinner-overlay-z` |
@@ -131,11 +132,19 @@ They are `--gog-btn-{bg,color,border,shadow,hover-bg,hover-color,hover-shadow,pa
 `--gog-chip-{font-size,gap,padding-block,padding-inline,avatar-size,icon-size,remove-size}`,
 the per-size field hooks (`--gog-input-padding-y`, `--gog-select-control-font`,
 `--gog-ms-font-size`, `--gog-table-td-padding-v`, `--gog-accordion-padding-y`, …),
-`--gog-spinner-color`, and the float label offsets — `--gog-{input,select,ms}-float-label-in-top`
-(distance from the top border for the `'in'` variant), `--gog-{input,select,ms}-float-label-on-bg`
-(the patch masking the border behind an `'on'` label), and
-`--gog-{input,select,ms}-float-label-over-{gap,reserve}` (space above the field for the
-`'over'` variant, both the gap to the floated label and the space permanently reserved for it).
+`--gog-spinner-color`, and `--gog-{input,select,ms}-float-label-on-bg` (the patch masking the
+border behind an `'on'` label).
+
+The full list is the `INSTANCE_TOKENS` set in `scripts/check-tokens.mjs`, which is verified
+against the stylesheets on every CI run — an instance token that gets declared anywhere, or
+stops being read, fails the build. That check also enforces the other half of the contract:
+**no component stylesheet carries a default in a `var()` fallback**, so every value a
+component paints with really is discoverable in `theme.css`.
+
+The float label's *geometry* is not instance-layer — it is themeable per component
+(`--gog-{input,select,ms}-float-label-{reserve,in-top,over-gap,over-reserve}`), and all three
+derive from the shared `--gog-field-float-label-*` scale above, so one declaration retunes
+every field at once while a single control can still be overridden on its own.
 
 ### Light and dark
 

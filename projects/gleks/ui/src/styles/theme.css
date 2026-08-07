@@ -143,6 +143,19 @@
   --gog-field-slg-icon-offset: 18px;
   --gog-field-slg-icon-inset: 52px;
 
+  /* ── Float label geometry (input / textarea / select / multiselect) ─────────
+     One scale for every field that can float its label. Each control reads these
+     through its own `--gog-<block>-float-label-*` token in the derived layer below,
+     so setting a value here retunes all of them at once while a single control can
+     still be tuned on its own. `reserve` is the headroom added inside the field for
+     the 'in'/'on' variants; `in-top` is where the label lands once floated for 'in';
+     `over-gap`/`over-reserve` are the gap above the border and the space permanently
+     kept clear for the 'over' variant. */
+  --gog-field-float-label-reserve: 18px;
+  --gog-field-float-label-in-top: 8px;
+  --gog-field-float-label-over-gap: 8px;
+  --gog-field-float-label-over-reserve: 1.4em;
+
   /* ── Icon & spinner ───────────────────────────────────────────────────────── */
   --gog-icon-size: 1.2em;
   --gog-icon-stroke-width: 2;
@@ -172,28 +185,28 @@
   color-scheme: light;
   /* Фоновые и поверхностные тона */
   --gog-background-color: #f7f3eb; /* Тёплый пергаментный фон страницы */
-  --gog-surface-color: #ffffff;    /* КИСЛО-БЕЛЫЙ ПЕРГАМЕНТ карточек (создает контраст со слоем 1!) */
-  --gog-hover-color: #f0e7d7;      /* Состояние наведения (мягкий воск) */
-  --gog-border-color: #d8c7ad;     /* Состаренная латунная рамка */
+  --gog-surface-color: #ffffff; /* КИСЛО-БЕЛЫЙ ПЕРГАМЕНТ карточек (создает контраст со слоем 1!) */
+  --gog-hover-color: #f0e7d7; /* Состояние наведения (мягкий воск) */
+  --gog-border-color: #d8c7ad; /* Состаренная латунная рамка */
 
   /* Типографика (Старинные дубовые чернила) */
-  --gog-text-color: #17120c;       /* Глубокие чернила (высокий контраст WCAG AAA) */
+  --gog-text-color: #17120c; /* Глубокие чернила (высокий контраст WCAG AAA) */
   --gog-accent-text-color: #ffffff;
   --gog-muted-text-color: #63503c; /* Приглушенные печные чернила */
 
   /* Бренд и акценты (Гильдейское Сусальное Золото) */
   --gog-primary-color: #17120c;
-  --gog-accent-color: #9e6f00;     /* Насыщенный благородный золотисто-бронзовый */
-  --gog-accent-bright: #c88e00;   /* Яркий отблеск золота */
-  --gog-accent-dim: #735100;      /* Темная бронза */
-  --gog-accent-pale: #f8f1df;     /* Светлая подложка под золото */
+  --gog-accent-color: #9e6f00; /* Насыщенный благородный золотисто-бронзовый */
+  --gog-accent-bright: #c88e00; /* Яркий отблеск золота */
+  --gog-accent-dim: #735100; /* Темная бронза */
+  --gog-accent-pale: #f8f1df; /* Светлая подложка под золото */
   --gog-secondary-color: #6b5328;
 
   /* Гармонизированная алхимическая семантика */
-  --gog-success-color: #216e4e;   /* Изумруд */
-  --gog-danger-color: #a7232b;    /* Рубин */
-  --gog-warning-color: #c45100;   /* Тёмный янтарь */
-  --gog-info-color: #2b5c8f;      /* Лазурит */
+  --gog-success-color: #216e4e; /* Изумруд */
+  --gog-danger-color: #a7232b; /* Рубин */
+  --gog-warning-color: #c45100; /* Тёмный янтарь */
+  --gog-info-color: #2b5c8f; /* Лазурит */
 
   /* Объёмная мягкая тень старой кожи */
   --gog-panel-shadow: 0 4px 20px rgba(23, 18, 12, 0.08), 0 1px 3px rgba(23, 18, 12, 0.04);
@@ -206,28 +219,28 @@
 
   /* Фоновые и поверхностные тона */
   --gog-background-color: #f7f3eb; /* Тёплый пергаментный фон страницы */
-  --gog-surface-color: #ffffff;    /* КИСЛО-БЕЛЫЙ ПЕРГАМЕНТ карточек (создает контраст со слоем 1!) */
-  --gog-hover-color: #f0e7d7;      /* Состояние наведения (мягкий воск) */
-  --gog-border-color: #d8c7ad;     /* Состаренная латунная рамка */
+  --gog-surface-color: #ffffff; /* КИСЛО-БЕЛЫЙ ПЕРГАМЕНТ карточек (создает контраст со слоем 1!) */
+  --gog-hover-color: #f0e7d7; /* Состояние наведения (мягкий воск) */
+  --gog-border-color: #d8c7ad; /* Состаренная латунная рамка */
 
   /* Типографика (Старинные дубовые чернила) */
-  --gog-text-color: #17120c;       /* Глубокие чернила (высокий контраст WCAG AAA) */
+  --gog-text-color: #17120c; /* Глубокие чернила (высокий контраст WCAG AAA) */
   --gog-accent-text-color: #ffffff;
   --gog-muted-text-color: #63503c; /* Приглушенные печные чернила */
 
   /* Бренд и акценты (Гильдейское Сусальное Золото) */
   --gog-primary-color: #17120c;
-  --gog-accent-color: #9e6f00;     /* Насыщенный благородный золотисто-бронзовый */
-  --gog-accent-bright: #c88e00;   /* Яркий отблеск золота */
-  --gog-accent-dim: #735100;      /* Темная бронза */
-  --gog-accent-pale: #f8f1df;     /* Светлая подложка под золото */
+  --gog-accent-color: #9e6f00; /* Насыщенный благородный золотисто-бронзовый */
+  --gog-accent-bright: #c88e00; /* Яркий отблеск золота */
+  --gog-accent-dim: #735100; /* Темная бронза */
+  --gog-accent-pale: #f8f1df; /* Светлая подложка под золото */
   --gog-secondary-color: #6b5328;
 
   /* Гармонизированная алхимическая семантика */
-  --gog-success-color: #216e4e;   /* Изумруд */
-  --gog-danger-color: #a7232b;    /* Рубин */
-  --gog-warning-color: #c45100;   /* Тёмный янтарь */
-  --gog-info-color: #2b5c8f;      /* Лазурит */
+  --gog-success-color: #216e4e; /* Изумруд */
+  --gog-danger-color: #a7232b; /* Рубин */
+  --gog-warning-color: #c45100; /* Тёмный янтарь */
+  --gog-info-color: #2b5c8f; /* Лазурит */
 
   /* Объёмная мягкая тень старой кожи */
   --gog-panel-shadow: 0 4px 20px rgba(23, 18, 12, 0.08), 0 1px 3px rgba(23, 18, 12, 0.04);
@@ -240,28 +253,28 @@
 
   /* Фоновые и поверхностные тона */
   --gog-background-color: #0d0b08; /* Глубокий кузнечный обсидиан */
-  --gog-surface-color: #16120e;    /* Тёмное обожженное железо (карточки) */
-  --gog-hover-color: #241d17;      /* Наведение на элементы */
-  --gog-border-color: #3d3122;     /* Состаренная чеканенная бронза */
+  --gog-surface-color: #16120e; /* Тёмное обожженное железо (карточки) */
+  --gog-hover-color: #241d17; /* Наведение на элементы */
+  --gog-border-color: #3d3122; /* Состаренная чеканенная бронза */
 
   /* Типографика (Светящаяся Слоновая Кость) */
-  --gog-text-color: #f3ebd8;       /* Мягкий светящийся пергамент */
+  --gog-text-color: #f3ebd8; /* Мягкий светящийся пергамент */
   --gog-accent-text-color: #0d0b08;
   --gog-muted-text-color: #9e8d76; /* Приглушенная бронза */
 
   /* Бренд и акценты (Светящееся Золото Алхимии) */
   --gog-primary-color: #f3ebd8;
-  --gog-accent-color: #fbbf24;     /* Плазменный янтарь */
-  --gog-accent-bright: #fde047;   /* Яркий золотой луч */
-  --gog-accent-dim: #b48310;      /* Приглушенное золото */
-  --gog-accent-pale: #2b210c;     /* Тёмный золотой отсвет */
+  --gog-accent-color: #fbbf24; /* Плазменный янтарь */
+  --gog-accent-bright: #fde047; /* Яркий золотой луч */
+  --gog-accent-dim: #b48310; /* Приглушенное золото */
+  --gog-accent-pale: #2b210c; /* Тёмный золотой отсвет */
   --gog-secondary-color: #d4a373;
 
   /* Семантика */
-  --gog-success-color: #34d399;   /* Светящийся изумруд */
-  --gog-danger-color: #f87171;    /* Светящийся рубин */
-  --gog-warning-color: #fbbf24;   /* Янтарь */
-  --gog-info-color: #38bdf8;      /* Сапфир */
+  --gog-success-color: #34d399; /* Светящийся изумруд */
+  --gog-danger-color: #f87171; /* Светящийся рубин */
+  --gog-warning-color: #fbbf24; /* Янтарь */
+  --gog-info-color: #38bdf8; /* Сапфир */
 
   --gog-panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--gog-border-color);
   --gog-spinner-overlay-bg: rgba(13, 11, 8, 0.85);
@@ -643,6 +656,11 @@
   --gog-input-icon-focus-ring-width: 2px;
   --gog-input-disabled-opacity: var(--gog-disabled-opacity);
   --gog-input-transition-duration: var(--gog-duration-base);
+  /* Float label — also used by gog-textarea, which shares the --gog-input-* block. */
+  --gog-input-float-label-reserve: var(--gog-field-float-label-reserve);
+  --gog-input-float-label-in-top: var(--gog-field-float-label-in-top);
+  --gog-input-float-label-over-gap: var(--gog-field-float-label-over-gap);
+  --gog-input-float-label-over-reserve: var(--gog-field-float-label-over-reserve);
 
   /* ── Multiselect ───────────────────────────────────────────────────────────── */
   --gog-ms-font-family: var(--gog-font-body);
@@ -695,6 +713,10 @@
   --gog-ms-clear-radius: 2px;
   --gog-ms-disabled-opacity: var(--gog-disabled-opacity);
   --gog-ms-transition-duration: var(--gog-duration-base);
+  --gog-ms-float-label-reserve: var(--gog-field-float-label-reserve);
+  --gog-ms-float-label-in-top: var(--gog-field-float-label-in-top);
+  --gog-ms-float-label-over-gap: var(--gog-field-float-label-over-gap);
+  --gog-ms-float-label-over-reserve: var(--gog-field-float-label-over-reserve);
   --gog-ms-arrow-transition-duration: var(--gog-duration-slow);
   /* Icon geometry, expressed as a ratio of the control's font size. */
   --gog-ms-clear-icon-ratio: 0.7;
@@ -773,6 +795,10 @@
   --gog-select-mark-icon-ratio: 0.875;
   --gog-select-disabled-opacity: var(--gog-disabled-opacity);
   --gog-select-transition-duration: var(--gog-duration-base);
+  --gog-select-float-label-reserve: var(--gog-field-float-label-reserve);
+  --gog-select-float-label-in-top: var(--gog-field-float-label-in-top);
+  --gog-select-float-label-over-gap: var(--gog-field-float-label-over-gap);
+  --gog-select-float-label-over-reserve: var(--gog-field-float-label-over-reserve);
 
   /* ── Skeleton ─────────────────────────────────────────────────────────────── */
   --gog-skeleton-base: color-mix(in srgb, var(--gog-border-color) 40%, var(--gog-surface-color));
