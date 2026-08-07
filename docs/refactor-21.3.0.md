@@ -27,6 +27,7 @@ iteration 1. Per `gleks-ui-library.instructions.md` rule 9, the agent never publ
 | 4 | Slot unification + selector/naming fixes | ✅ done |
 | 5 | Dropdown data model (`optionLabel`/`optionValue`, generics) | ✅ done |
 | 6 | Token system industrialization + coverage | ✅ done |
+| 7 | One Dark/One Light presets, dropdown filter, clearable controls | ✅ done |
 
 Update this table at the end of every iteration, and re-state "done / remaining" in the turn
 summary.
@@ -446,6 +447,36 @@ input once the axis overflows` failed once and passed on two consecutive re-runs
 layout-dependent in jsdom and unrelated to this work.
 
 ---
+
+## Iteration 7 — One themes, dropdown filter, clearable controls
+
+Requested directly rather than derived from the review.
+
+1. **`one-dark.css` / `one-light.css`** presets, mirroring `slate.css`: palette only, with the
+   editor syntax hues mapped onto the library's semantic roles (blue = accent, green/red/yellow/
+   cyan = success/danger/warning/info). Registered in the showcase's theme picker.
+2. **Filtering** in `gog-select` / `gog-multiselect`: `filter`, `filterPlaceholder`,
+   `filterEmptyMessage`, `filterMatch` (a predicate replacing the default case-insensitive
+   substring match on the resolved `optionLabel`), plus `GOG_CONFIG.dropdown.filter`. The query
+   resets on close, and `visibleOptions()` — not `options()` — feeds the loops, the keyboard
+   navigation targets, the panel height estimate, and multiselect's select-all, so "select all"
+   under an active filter takes only what the user can see.
+3. **`clearable`** on all four field controls, backed by `GogClearableState` (the fourth
+   composition class in the `GogErrorState` mould, added at exactly the "rule of three" point).
+   The button is value-driven: it appears when there is something to clear and vanishes when
+   there isn't, which is the point — it replaces the fake `"— not selected —"` option teams add
+   to make a choice undoable. `GOG_CONFIG.control.clearable` switches it on app-wide.
+
+   One asymmetry, deliberate: the default is `false` everywhere except `gog-multiselect`, which
+   shipped a clear button before this input existed. Defaulting it to `false` there would have
+   silently removed a control; defaulting it to `true` everywhere would have grown a button on
+   every existing inputfield.
+
+Verified: 475 specs (was 461) across three new spec files. Live in `ui-showcase` — filter
+narrows and shows its empty message, the select's clear button appears only after a selection at
+`right: 46px` with the trigger's padding growing 40px → 62px so the label can't run underneath,
+the textarea's clear button empties the field and then disappears, and both One themes drive
+component tokens they never mention (`--gog-btn-primary-bg` picks up `#61afef` / `#4078f2`).
 
 ## Backlog — deliberately not in 21.3.0
 
