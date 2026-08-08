@@ -12,7 +12,7 @@ value the library paints with can be overridden from plain CSS.
 2. **Component** — tokens scoped to one component (`--gog-btn-*`, `--gog-accordion-*`,
    `--gog-table-*`, …). Most derive from the foundation layer, so a palette swap already
    carries through; override a component token directly only when you need to restyle
-   *just* that component.
+   _just_ that component.
 3. **Instance** — a handful of tokens (`--gog-btn-bg`, `--gog-tag-bg`, …) are left
    undeclared on purpose, as an escape hatch for styling a single element without
    touching a theme at all:
@@ -32,6 +32,38 @@ attribute on any element (usually `<html>`):
 
 `data-theme` can also be scoped to a smaller subtree, so several themes can render
 side by side on the same page.
+
+## Ready-made presets
+
+Three additional palettes ship as importable stylesheets. Each one declares **palette tokens
+only** and still restyles every component — which is the theming contract demonstrated rather
+than described.
+
+| Preset                                | `data-theme` | Stylesheet                                      |
+| ------------------------------------- | ------------ | ----------------------------------------------- |
+| Slate — cool, indigo                  | `slate`      | `@guildofgleks/ui/src/styles/presets/slate.css` |
+| One Dark — the Atom/JetBrains palette | `one-dark`   | `.../presets/one-dark.css`                      |
+| One Light — its light counterpart     | `one-light`  | `.../presets/one-light.css`                     |
+
+Add the one you want to your global styles, then set the attribute:
+
+```json
+"styles": [
+  "node_modules/@guildofgleks/ui/src/styles/index.css",
+  "node_modules/@guildofgleks/ui/src/styles/presets/one-dark.css",
+  "src/styles.scss"
+]
+```
+
+```html
+<html data-theme="one-dark"></html>
+```
+
+The One presets map the editor's syntax hues onto the library's semantic roles — blue becomes the
+accent, and green / red / yellow / cyan become success / danger / warning / info. Neither preset
+mentions `--gog-btn-primary-bg` by name, yet buttons pick it up: that is the derived layer
+re-resolving, and it is why a preset can be a short list of colors rather than a fork of the whole
+stylesheet.
 
 ## Switching the theme from code
 
@@ -68,7 +100,7 @@ This is exactly what the theme switcher (the palette icon) in this site's header
 ## Building your own theme
 
 Declare a palette against a new `data-theme` value. List both selectors so the theme
-works at the document root *and* on any subtree:
+works at the document root _and_ on any subtree:
 
 ```css
 :root[data-theme='midnight'],

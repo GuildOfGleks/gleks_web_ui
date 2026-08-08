@@ -1,15 +1,15 @@
 # Full Technical Comparison
 
-*Looking for the short version? See [Compare with Material and PrimeNG](/general/compare)
+_Looking for the short version? See [Compare with Material and PrimeNG](/general/compare)
 for the quick, visual summary — this page is the exhaustive backing data: every
-number, every command, every source.*
+number, every command, every source._
 
 Angular Material and PrimeNG are both excellent, battle-tested libraries — this isn't
 about tearing them down. It's a straight, numbers-first comparison, built to answer the
 question every team asks before adopting a UI library: **what does it actually cost to
-bring in, and how much fighting does it take to make it look like *your* product?**
+bring in, and how much fighting does it take to make it look like _your_ product?**
 
-Guild of Gleks UI ships 16 components against PrimeNG's 90+ and Material's ~35. That's
+Guild of Gleks UI ships 30 components against PrimeNG's 90+ and Material's ~35. That's
 a real, honest tradeoff — see [What this library doesn't try to be](/general/compare-full#what-this-library-doesnt-try-to-be)
 below. What follows is everything else: bundle weight, dependency depth, legacy
 surface, and theming model, all measured against the two libraries' own published
@@ -17,25 +17,27 @@ npm packages.
 
 ## The short version
 
-| | Guild of Gleks UI | Angular Material | PrimeNG |
-|---|---|---|---|
-| Components | 16 | ~35 | 90+ |
-| Runtime dependencies | 1 (`tslib`) | 1 (`tslib`) + required `@angular/cdk` | 6 + `tslib` |
-| npm package size (unpacked) | 757 KB | 7.5 MB (+3.5 MB for CDK) | 13.4 MB |
-| Button + Select + Dialog + Table, gzipped | — | 154 KB | 332 KB |
-| **Entire library, gzipped** | **38.6 KB** | — | — |
-| Theming | Plain CSS custom properties, no build step | Sass mixins / M3 system tokens | JS preset system (`@primeuix/styled`) |
-| Ships pre-standalone/NgModule legacy API | No — standalone since day one | Yes | Yes |
+|                                           | Guild of Gleks UI                          | Angular Material                      | PrimeNG                               |
+| ----------------------------------------- | ------------------------------------------ | ------------------------------------- | ------------------------------------- |
+| Components                                | 30                                         | ~35                                   | 90+                                   |
+| Runtime dependencies                      | 1 (`tslib`)                                | 1 (`tslib`) + required `@angular/cdk` | 6 + `tslib`                           |
+| npm package size (unpacked)               | 2.35 MB                                    | 7.5 MB (+3.5 MB for CDK)              | 13.4 MB                               |
+| Button + Select + Dialog + Table, gzipped | —                                          | 154 KB                                | 332 KB                                |
+| **Entire library, gzipped**               | **92.8 KB**                                | —                                     | —                                     |
+| Theming                                   | Plain CSS custom properties, no build step | Sass mixins / M3 system tokens        | JS preset system (`@primeuix/styled`) |
+| Ships pre-standalone/NgModule legacy API  | No — standalone since day one              | Yes                                   | Yes                                   |
 
 That middle-to-last row is the one worth re-reading: the **whole** Guild of Gleks UI
-library — all 16 components, gzipped — is smaller than **four** Material components,
-and about a ninth the size of the same four PrimeNG components.
+library — all 30 components, gzipped — is still smaller than **four** Material
+components, and about a third the size of the same four PrimeNG components.
 
 ## Bundle weight, measured
 
 Numbers below are real, not marketing copy — each was produced by downloading the
 actual published npm tarball, bundling its real entry point with `esbuild --bundle
---minify`, and gzipping the result. `@angular/core`, `@angular/common`, `@angular/forms`,
+--minify`, and gzipping the result. The `@guildofgleks/ui` figures were re-measured
+against **21.3.0**; the Material and PrimeNG figures are from the original measurement
+and have not been re-taken since. `@angular/core`, `@angular/common`, `@angular/forms`,
 `@angular/platform-browser`, `rxjs` and `tslib` are treated as externals for all three
 libraries, since every Angular app already pays for those once — they're the framework,
 not the library. Everything else a library actually imports (including PrimeNG's own
@@ -50,11 +52,11 @@ independent subpackages with no combined entry point (their package.json `"."` e
 resolves to an empty stub file), so a "whole library" figure doesn't exist for them by
 design — you're expected to cherry-pick.
 
-| Library | Minified | Gzipped |
-|---|---|---|
-| **@guildofgleks/ui** (all 16 components + services) | 302.8 KB | **38.6 KB** |
-| @angular/material | *(no combined entry point)* | *(no combined entry point)* |
-| primeng | *(no combined entry point)* | *(no combined entry point)* |
+| Library                                             | Minified                    | Gzipped                     |
+| --------------------------------------------------- | --------------------------- | --------------------------- |
+| **@guildofgleks/ui** (all 30 components + services) | 693.6 KB                    | **92.8 KB**                 |
+| @angular/material                                   | _(no combined entry point)_ | _(no combined entry point)_ |
+| primeng                                             | _(no combined entry point)_ | _(no combined entry point)_ |
 
 ### A comparable slice: Button + Select + Dialog + Table
 
@@ -62,25 +64,26 @@ Since Material and PrimeNG only make sense measured per-component, here's the sa
 four components — the closest match across all three catalogues — bundled and
 gzipped individually, then summed:
 
-| Library | Minified (sum) | Gzipped (sum) |
-|---|---|---|
-| Angular Material (incl. required `@angular/cdk`) | 839 KB | 154 KB |
-| PrimeNG (incl. `@primeicons`, `@primeuix/*`, license manager) | 1.81 MB | 332 KB |
+| Library                                                       | Minified (sum) | Gzipped (sum) |
+| ------------------------------------------------------------- | -------------- | ------------- |
+| Angular Material (incl. required `@angular/cdk`)              | 839 KB         | 154 KB        |
+| PrimeNG (incl. `@primeicons`, `@primeuix/*`, license manager) | 1.81 MB        | 332 KB        |
 
 Summing four independently-bundled files slightly overstates the real number for an
 app using all four together — a production bundler dedupes shared internal chunks
 across them, so the true combined figure would be somewhat smaller than this sum, for
-both libraries. The gap is still enormous: PrimeNG's four components alone gzip to
-more than **8× the size of this library's entire catalogue**; Material's four are
-**4×** the size.
+both libraries. The gap is still large: PrimeNG's four components alone gzip to about
+**3.6× the size of this library's entire catalogue**; Material's four are **1.7×** the
+size. Both multiples shrank in 21.3.0, when nine new components roughly doubled this
+library's own weight — the number that moved is ours, not theirs.
 
 ## Dependency depth
 
-| Library | Direct runtime dependencies |
-|---|---|
-| **@guildofgleks/ui** | `tslib` — the standard TypeScript helper library nearly every compiled package (including Material and PrimeNG) also ships |
-| **@angular/material** | `tslib`, plus a **required** peer dependency on `@angular/cdk` (3.5 MB unpacked) — most components don't work without it |
-| **primeng** | `tslib`, `@primeicons/angular`, `@primeui/license-manager`, `@primeuix/styled`, `@primeuix/utils`, `@primeuix/styles`, `@primeuix/motion` — seven packages, including a cryptographic signature library (`@noble/ed25519`, `@noble/hashes`) pulled in transitively for license verification |
+| Library               | Direct runtime dependencies                                                                                                                                                                                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **@guildofgleks/ui**  | `tslib` — the standard TypeScript helper library nearly every compiled package (including Material and PrimeNG) also ships                                                                                                                                                                  |
+| **@angular/material** | `tslib`, plus a **required** peer dependency on `@angular/cdk` (3.5 MB unpacked) — most components don't work without it                                                                                                                                                                    |
+| **primeng**           | `tslib`, `@primeicons/angular`, `@primeui/license-manager`, `@primeuix/styled`, `@primeuix/utils`, `@primeuix/styles`, `@primeuix/motion` — seven packages, including a cryptographic signature library (`@noble/ed25519`, `@noble/hashes`) pulled in transitively for license verification |
 
 Guild of Gleks UI implements its own lightweight overlay positioning, focus trap and
 roving-focus primitives internally — there's no separate multi-megabyte utility
@@ -88,15 +91,15 @@ library sitting underneath it the way CDK sits underneath Material.
 
 ## Legacy surface
 
-All three libraries currently target recent Angular. The difference is what's *also*
+All three libraries currently target recent Angular. The difference is what's _also_
 still in the box. Counted directly from each package's own published type
 definitions, for the same four components:
 
-| Library | `@deprecated` API surface | Ships NgModule classes alongside the standalone API |
-|---|---|---|
-| **@guildofgleks/ui** | 2 *(intentional renamed-type aliases, kept for smooth migration)* | Never — no `NgModule` has ever existed in this library |
-| **@angular/material** | 36 | Yes, in every component |
-| **primeng** | 34 | Yes, in every component |
+| Library               | `@deprecated` API surface                                         | Ships NgModule classes alongside the standalone API    |
+| --------------------- | ----------------------------------------------------------------- | ------------------------------------------------------ |
+| **@guildofgleks/ui**  | 2 _(intentional renamed-type aliases, kept for smooth migration)_ | Never — no `NgModule` has ever existed in this library |
+| **@angular/material** | 36                                                                | Yes, in every component                                |
+| **primeng**           | 34                                                                | Yes, in every component                                |
 
 Material and PrimeNG both predate Angular's standalone-components era by years, and it
 shows in their type definitions: every sampled component still exports an `NgModule`
@@ -124,7 +127,7 @@ specificity.**
   mixins or `::ng-deep`.
 - **PrimeNG** — the newer versions ship a dedicated JS preset system
   (`@primeuix/styled`, `definePreset()`) as separate packages from the components
-  themselves. It's flexible, but it's a theming *engine* to learn, not a token you set
+  themselves. It's flexible, but it's a theming _engine_ to learn, not a token you set
   in plain CSS.
 
 ## What this library doesn't try to be
@@ -136,8 +139,8 @@ tree table out of the box, PrimeNG is the right tool, full stop. Material's ecos
 maturity and first-party CDK primitives (drag-drop, virtual scroll, portals) are also
 genuinely useful building blocks this library doesn't attempt to replace.
 
-Guild of Gleks UI covers the 16 components that show up in almost every product —
-buttons, forms, dialogs, tables, navigation and feedback — done with a small,
+Guild of Gleks UI covers the 30 components that show up in almost every product —
+buttons, forms, dates, dialogs, tables, navigation and feedback — done with a small,
 consistent, easily-restyled surface instead of a sprawling one. Pick the tool that
 matches what you're actually building.
 

@@ -33,8 +33,31 @@ import { ButtonComponent } from '@guildofgleks/ui';
 export class ExampleComponent {}
 ```
 
+## Set app-wide defaults (optional)
+
+Anything a whole app decides once — a compact size, automatic error timing, a date
+format — goes in one place instead of on every instance:
+
+```ts
+import { provideGogConfig } from '@guildofgleks/ui';
+
+bootstrapApplication(App, {
+  providers: [
+    provideGogConfig({
+      control: { size: 'sm', errorDisplay: 'auto' },
+      datepicker: { locale: 'de-DE', firstDayOfWeek: 1 },
+    }),
+  ],
+});
+```
+
+A component's own input always wins over this. See **Global Configuration** for the
+full list of keys.
+
 ## Next steps
 
 - Browse **Components** in the sidebar for the full catalogue, with every input,
   output and variant a component supports.
-- Read **Theming** to adapt colors, spacing and typography to your brand.
+- Read **Theming** to adapt colors, spacing and typography to your brand — or to drop
+  in one of the ready-made presets.
+- Read **Global Configuration** for everything you can set once, app-wide.
