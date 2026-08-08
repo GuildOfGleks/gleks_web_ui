@@ -42,10 +42,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/gleks/ui/**/*.ts",
-              "projects/gleks/ui/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/gleks/ui/**/*.ts", "projects/gleks/ui/**/*.html"],
             "eslintConfig": "projects/gleks/ui/eslint.config.js"
           }
         }
@@ -134,10 +131,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/ui-showcase/**/*.ts",
-              "projects/ui-showcase/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/ui-showcase/**/*.ts", "projects/ui-showcase/**/*.html"],
             "eslintConfig": "projects/ui-showcase/eslint.config.js"
           }
         }
@@ -169,10 +163,18 @@
                 "glob": "*.css",
                 "input": "node_modules/@guildofgleks/ui/src/styles",
                 "output": "docs/styles"
+              },
+              {
+                "glob": "*.css",
+                "input": "node_modules/@guildofgleks/ui/src/styles/presets",
+                "output": "docs/styles/presets"
               }
             ],
             "styles": [
               "node_modules/@guildofgleks/ui/src/styles/index.css",
+              "node_modules/@guildofgleks/ui/src/styles/presets/slate.css",
+              "node_modules/@guildofgleks/ui/src/styles/presets/one-dark.css",
+              "node_modules/@guildofgleks/ui/src/styles/presets/one-light.css",
               "projects/gleks-ui-lab/src/styles.scss"
             ],
             "server": "projects/gleks-ui-lab/src/main.server.ts",
