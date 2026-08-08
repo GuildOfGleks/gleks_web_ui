@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CalendarComponent, type GogDatepickerValue } from './calendar.component';
-import type { GogDateRange } from '../date-utils';
+import { isSameDay, type GogDateRange } from '../date-utils';
 
 /** A fixed month with no ambiguity: June 2026 starts on a Monday and has 30 days. */
 const JUNE_2026 = new Date(2026, 5, 15);
@@ -360,15 +360,88 @@ describe('CalendarComponent', () => {
     });
   });
 
-  it('should jump to today from the footer button', () => {
-    const todayButton = host().querySelector<HTMLButtonElement>('.gog-calendar__today')!;
-    todayButton.click();
-    fixture.detectChanges();
+  describe('footer buttons', () => {
+    function todayButton(): HTMLButtonElement | null {
+      return host().querySelector('.gog-calendar__today');
+    }
 
-    const now = new Date();
-    const expected = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(
-      now,
-    );
-    expect(title()).toBe(expected);
+    function thisMonthButton(): HTMLButtonElement | null {
+      return host().querySelector('.gog-calendar__action--this-month');
+    }
+
+    function currentMonthTitle(): string {
+      return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(
+        new Date(),
+      );
+    }
+
+    it('should show only "Today" by default', () => {
+      expect(todayButton()).toBeTruthy();
+      expect(thisMonthButton()).toBeNull();
+    });
+
+    it('should select today, not merely navigate to it', () => {
+      // The whole point of the split: this button commits a date. Navigating without selecting
+      // is what made a single "Today" button ambiguous.
+      const seen: GogDatepickerValue[] = [];
+      component.gogDateSelect.subscribe((value) => seen.push(value));
+
+      todayButton()!.click();
+      fixture.detectChanges();
+
+      expect(isSameDay(component.value() as Date, new Date())).toBe(true);
+      expect(seen.length).toBe(1);
+      // The view follows, because the selection is the anchor the calendar opens on.
+      expect(title()).toBe(currentMonthTitle());
+    });
+
+    it('should disable "Today" when today cannot be picked', () => {
+      fixture.componentRef.setInput('min', new Date(2099, 0, 1));
+      fixture.detectChanges();
+
+      expect(todayButton()!.disabled).toBe(true);
+
+      todayButton()!.click();
+      fixture.detectChanges();
+      expect(component.value()).toBeNull();
+    });
+
+    it('should disable "Today" when the predicate rejects it', () => {
+      fixture.componentRef.setInput('disabledDates', () => true);
+      fixture.detectChanges();
+
+      expect(todayButton()!.disabled).toBe(true);
+    });
+
+    it('should move the view without touching the selection from "This month"', () => {
+      fixture.componentRef.setInput('showThisMonthButton', true);
+      fixture.componentRef.setInput('value', new Date(2026, 5, 10));
+      fixture.detectChanges();
+      expect(title()).toBe('June 2026');
+
+      thisMonthButton()!.click();
+      fixture.detectChanges();
+
+      expect(title()).toBe(currentMonthTitle());
+      // The selection is deliberately untouched — that is what separates it from "Today".
+      expect(isSameDay(component.value() as Date, new Date(2026, 5, 10))).toBe(true);
+    });
+
+    it('should render neither button when both are off', () => {
+      fixture.componentRef.setInput('showTodayButton', false);
+      fixture.detectChanges();
+
+      expect(host().querySelector('.gog-calendar__footer')).toBeNull();
+    });
+
+    it('should render the footer for "This month" alone', () => {
+      fixture.componentRef.setInput('showTodayButton', false);
+      fixture.componentRef.setInput('showThisMonthButton', true);
+      fixture.detectChanges();
+
+      expect(host().querySelector('.gog-calendar__footer')).toBeTruthy();
+      expect(todayButton()).toBeNull();
+      expect(thisMonthButton()).toBeTruthy();
+    });
   });
 });

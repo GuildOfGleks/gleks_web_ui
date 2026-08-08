@@ -352,8 +352,13 @@ export class AutocompleteComponent<
 
     // The highlighted row is not focused, so nothing scrolls it into view for us.
     queueMicrotask(() => {
-      const scope = document.getElementById(this.optionId(index));
-      scope?.scrollIntoView({ block: 'nearest' });
+      const option = document.getElementById(this.optionId(index));
+      // Feature-detected rather than assumed: this runs in a microtask, so a host without
+      // `scrollIntoView` (jsdom, for one) would throw where nothing can catch it, and an
+      // unhandled rejection fails the whole test run rather than just this line.
+      if (typeof option?.scrollIntoView === 'function') {
+        option.scrollIntoView({ block: 'nearest' });
+      }
     });
   }
 

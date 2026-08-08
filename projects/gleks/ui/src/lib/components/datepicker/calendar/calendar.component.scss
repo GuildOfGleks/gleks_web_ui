@@ -57,7 +57,7 @@
 
 .gog-calendar__nav:focus-visible,
 .gog-calendar__day:focus-visible,
-.gog-calendar__today:focus-visible,
+.gog-calendar__action:focus-visible,
 .gog-calendar__meridiem:focus-visible,
 .gog-calendar__time-input:focus-visible {
   outline: var(--gog-calendar-focus-ring-width) solid var(--gog-calendar-focus-ring-color);
@@ -189,7 +189,7 @@
 }
 
 .gog-calendar__meridiem,
-.gog-calendar__today {
+.gog-calendar__action {
   padding: var(--gog-calendar-action-padding);
   border: var(--gog-calendar-day-border-width) var(--gog-calendar-day-border-style)
     var(--gog-calendar-divider-color);
@@ -200,8 +200,8 @@
   cursor: pointer;
 }
 
-.gog-calendar__meridiem:hover,
-.gog-calendar__today:hover {
+.gog-calendar__meridiem:hover:not(:disabled),
+.gog-calendar__action:hover:not(:disabled) {
   background-color: var(--gog-calendar-nav-hover-bg);
   color: var(--gog-calendar-nav-hover-color);
 }
@@ -209,7 +209,14 @@
 .gog-calendar__footer {
   display: flex;
   justify-content: center;
+  gap: var(--gog-calendar-footer-gap);
   margin-block-start: var(--gog-calendar-time-margin);
+}
+
+/* Today may be outside min/max or excluded by `disabledDates`. */
+.gog-calendar__action:disabled {
+  opacity: var(--gog-calendar-disabled-opacity);
+  cursor: not-allowed;
 }
 
 /* === Sizes ===

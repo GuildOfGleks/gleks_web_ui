@@ -238,6 +238,53 @@ describe('DatepickerComponent', () => {
     });
   });
 
+  describe('footer buttons', () => {
+    it('should fill the field and close when "Today" is pressed', async () => {
+      toggle().click();
+      fixture.detectChanges();
+
+      panel()!.querySelector<HTMLButtonElement>('.gog-calendar__today')!.click();
+      fixture.detectChanges();
+
+      expect(component.value()).toBeInstanceOf(Date);
+      expect(component.isOpen()).toBe(false);
+
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(field().value).not.toBe('');
+    });
+
+    it('should not offer "This month" unless asked, and keep the panel open when it is used', () => {
+      toggle().click();
+      fixture.detectChanges();
+      expect(panel()!.querySelector('.gog-calendar__action--this-month')).toBeNull();
+
+      fixture.componentRef.setInput('showThisMonthButton', true);
+      fixture.detectChanges();
+
+      const jump = panel()!.querySelector<HTMLButtonElement>('.gog-calendar__action--this-month')!;
+      jump.click();
+      fixture.detectChanges();
+
+      // It only moves the view, so there is nothing to commit and no reason to close.
+      expect(component.value()).toBeNull();
+      expect(component.isOpen()).toBe(true);
+    });
+
+    it('should pass the footer labels through', () => {
+      fixture.componentRef.setInput('todayLabel', 'Сегодня');
+      fixture.componentRef.setInput('showThisMonthButton', true);
+      fixture.componentRef.setInput('thisMonthLabel', 'Текущий месяц');
+      toggle().click();
+      fixture.detectChanges();
+
+      expect(panel()!.querySelector('.gog-calendar__today')?.textContent?.trim()).toBe('Сегодня');
+      expect(panel()!.querySelector('.gog-calendar__action--this-month')?.textContent?.trim()).toBe(
+        'Текущий месяц',
+      );
+    });
+  });
+
   it('should render the calendar with no field at all when inline', () => {
     fixture.componentRef.setInput('inline', true);
     fixture.detectChanges();

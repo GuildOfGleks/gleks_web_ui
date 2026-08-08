@@ -548,6 +548,7 @@
   --gog-calendar-time-input-padding: 4px 6px;
   --gog-calendar-time-input-bg: var(--gog-background-color);
   --gog-calendar-action-padding: 4px 10px;
+  --gog-calendar-footer-gap: 8px;
   --gog-calendar-xsm-font-size: var(--gog-text-xs);
   --gog-calendar-xsm-day-size: 24px;
   --gog-calendar-sm-font-size: var(--gog-text-sm);

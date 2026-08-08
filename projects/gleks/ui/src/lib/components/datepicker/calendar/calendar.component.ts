@@ -98,9 +98,24 @@ export class CalendarComponent {
   readonly hourFormat = input<GogHourFormat>('24');
   readonly minuteStep = input(1);
   readonly showSeconds = input(false);
+  /**
+   * The "Today" button, which **selects** today's date — the view follows, because the
+   * selection is what the calendar opens on.
+   *
+   * Kept separate from `showThisMonthButton` on purpose: one button that both selected and
+   * navigated read as "jump to today" to anyone who pressed it after paging away, and there is
+   * no wording that makes a single control unambiguous about which of the two it does.
+   */
   readonly showTodayButton = input(true);
+  /**
+   * The "This month" button, which only moves the *view* back to the current month and leaves
+   * the selection alone. Off by default — it is for browsing far from today without committing
+   * to anything, which is the rarer of the two needs.
+   */
+  readonly showThisMonthButton = input(false);
   readonly size = input<GogSize>('md');
   readonly todayLabel = input('Today');
+  readonly thisMonthLabel = input('This month');
   readonly previousMonthLabel = input('Previous month');
   readonly nextMonthLabel = input('Next month');
   readonly previousYearLabel = input('Previous year');
@@ -172,6 +187,15 @@ export class CalendarComponent {
       .join(' '),
   );
 
+  /**
+   * Whether today can actually be picked — `min`, `max` or `disabledDates` may rule it out, and
+   * a "Today" button that silently does nothing is worse than one that is visibly unavailable.
+   * The signal reads inside `isDayDisabled` are what make this follow those inputs.
+   */
+  protected readonly isTodaySelectable = computed(
+    () => !this.isDayDisabled(startOfDay(new Date())),
+  );
+
   // ── Time section ──────────────────────────────────────────────────────────────
   protected readonly timeSource = computed<Date | null>(() =>
     this.selectionMode() === 'range' ? this.range().start : this.singleDate(),
@@ -232,7 +256,20 @@ export class CalendarComponent {
     this.hoverDate.set(null);
   }
 
-  protected goToToday(): void {
+  /**
+   * Selects today. The view needs no separate nudge: the selection is the anchor the calendar
+   * opens on, so moving it there moves the month too.
+   */
+  protected selectToday(): void {
+    const today = startOfDay(new Date());
+    if (this.isDayDisabled(today)) return;
+
+    this.select(today);
+    this.focusedDate.set(today);
+  }
+
+  /** Moves the view back to the current month, leaving the selection untouched. */
+  protected goToThisMonth(): void {
     const today = startOfDay(new Date());
     this.viewMonth.set(today);
     this.focusedDate.set(today);

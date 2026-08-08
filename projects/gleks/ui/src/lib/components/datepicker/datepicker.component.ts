@@ -99,7 +99,15 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
   readonly hourFormat = input<GogHourFormat>('24');
   readonly minuteStep = input(1);
   readonly showSeconds = input(false);
+  /** The "Today" button in the panel's footer, which **selects** today's date. */
   readonly showTodayButton = input(true);
+  /**
+   * A second footer button that only moves the *view* back to the current month, leaving the
+   * selection alone. Off by default; see `gog-calendar` for why the two are separate controls.
+   */
+  readonly showThisMonthButton = input(false);
+  readonly todayLabel = input('Today');
+  readonly thisMonthLabel = input('This month');
   /**
    * Display and parse pattern (`dd.MM.yyyy`, `yyyy-MM-dd`, …). Left unset it is derived from
    * `showTime`, so switching the time section on does not also require restating the format.

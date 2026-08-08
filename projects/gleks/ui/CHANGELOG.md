@@ -16,12 +16,20 @@ reached 1.0, so breaking changes may land in minor versions.
     (an array cannot express "weekends"), `inline` for an always-visible calendar, `allowTextInput`
     with parsing, plus the usual `clearable` / `floatLabel` / `errorMessage` / `appendToBody`.
 
+    The panel's footer carries **two separate actions**, never one: `showTodayButton` (on by
+    default) _selects_ today, and `showThisMonthButton` (off by default) only moves the view back
+    to the current month. A single button doing both is ambiguous — after paging away, the same
+    label reads as "take me back" to one person and "set it to today" to another. "Today" is
+    disabled when `min`/`max` or `disabledDates` rule today out, rather than silently doing
+    nothing. Wording via `todayLabel` / `thisMonthLabel`.
+
     Native `Date`, **no date library and no adapter abstraction** — the package keeps its zero
     runtime dependencies. `Intl` supplies month and weekday names; the display format is a token
-    pattern (`dd.MM.yyyy`, `yyyy-MM-dd`, …) used for *both* rendering and parsing, so what is
+    pattern (`dd.MM.yyyy`, `yyyy-MM-dd`, …) used for _both_ rendering and parsing, so what is
     written can always be read back. `31.02.2026` is rejected rather than silently becoming
     3 March. `locale`, `firstDayOfWeek` and `format` are also settable app-wide through
     `GOG_CONFIG.datepicker`.
+
   - **`gog-calendar`** — the month grid behind it, exported and usable on its own. Follows the
     ARIA grid pattern: arrows by day, `PageUp`/`PageDown` by month, `Shift` + those by year,
     `Home`/`End` to the week's ends, and one tab stop across all 42 cells. Always six weeks, so
@@ -45,11 +53,11 @@ reached 1.0, so breaking changes may land in minor versions.
     be picked. Options-driven with the same accessors as the dropdowns, plus `optionIcon` and a
     `gogButtonToggleOption` slot. Single and multiple are genuinely different widgets to
     assistive tech and are exposed as such: `role="radiogroup"`/`aria-checked` with arrows that
-    move *and* select, versus `role="group"`/`aria-pressed` with arrows that only move.
+    move _and_ select, versus `role="group"`/`aria-pressed` with arrows that only move.
     `appearance` picks between one segmented control and discrete buttons.
   - **`gog-toggle`** — an on/off switch. A native `<input type="checkbox">` carrying
     `role="switch"`, so it announces as "switch, on" rather than "checkbox, checked" while the
-    platform keeps owning the keyboard and forms. `onLabel` / `offLabel` render *inside* the
+    platform keeps owning the keyboard and forms. `onLabel` / `offLabel` render _inside_ the
     track — the one thing a checkbox cannot do — and both stay in the DOM so the track's width
     cannot jump as it flips. Shares `gog-checkbox`'s size scale.
   - **`gog-progressbar`** — determinate, indeterminate and buffer modes, five sizes and the
@@ -106,7 +114,7 @@ reached 1.0, so breaking changes may land in minor versions.
   the panel, matching case-insensitively on the resolved `optionLabel`. `filterMatch` swaps that
   for your own predicate, `filterPlaceholder` and `filterEmptyMessage` cover the wording, and
   `GOG_CONFIG.dropdown.filter` turns it on app-wide. The query resets when the panel closes, and
-  `gog-multiselect`'s "select all" deliberately takes only the *visible* options so it means what
+  `gog-multiselect`'s "select all" deliberately takes only the _visible_ options so it means what
   it says while a filter is active.
 - `styles/presets/one-dark.css` and `styles/presets/one-light.css` — the Atom/JetBrains One
   palettes, with the syntax hues mapped onto the library's semantic roles (blue is the accent,
@@ -132,6 +140,7 @@ reached 1.0, so breaking changes may land in minor versions.
   Defaults are `'name'` / `'id'` / `'disabled'`, so **existing code is unaffected** — the whole
   21.2.x select/multiselect spec suite passes unchanged. `GogDropdownOption` is no longer a
   requirement, just the shape those default accessors expect.
+
 - `gogDropdownOption` — a projected template for one option row, with
   `{ $implicit: option, selected, disabled, label }` as its context.
 - `getByPath`, `readOption`, `isSameOptionValue` and the `GogOptionAccessor<TOption, TResult>`
@@ -153,7 +162,7 @@ reached 1.0, so breaking changes may land in minor versions.
 ### Fixed
 
 - **An auto-width dropdown clipped its own options.** With `[fullWidth]="false"` the trigger
-  sizes to the *current* selection, and the panel copied that width — so picking a short option
+  sizes to the _current_ selection, and the panel copied that width — so picking a short option
   cut the longer ones off the list. The relationship is now inverted: the panel sizes to its own
   content with the trigger's width as a **floor**, capped by
   `--gog-{select,multiselect}-panel-max-width`. New `minWidth` input (any CSS length) plus
@@ -162,11 +171,11 @@ reached 1.0, so breaking changes may land in minor versions.
 - **`gog-multiselect` now collapses a long selection into `+N`.** The trigger shows what fits on
   one line and a count for the rest, with the full list in a tooltip. Measured with
   `canvas.measureText` rather than by rendering candidates, and re-measured from a
-  `ResizeObserver` on the value element, since the space available changes when the *container*
+  `ResizeObserver` on the value element, since the space available changes when the _container_
   resizes — something Angular never renders for.
 - **`gog-select`'s chevron sat 42px from the trigger's right edge.**
   `--gog-select-chevron-inset` was applied as the trigger's `padding-right` while the chevron
-  itself was a flex child *inside* that padding, so the inset was counted twice. It now lands on
+  itself was a flex child _inside_ that padding, so the inset was counted twice. It now lands on
   `--gog-control-icon-offset` (10px), the same line as `gog-inputfield`'s icons and
   `gog-multiselect`'s arrow, which were at 10px and 16px — the three controls did not line up in
   a form. The token keeps its name and now means what it says.
@@ -181,7 +190,7 @@ reached 1.0, so breaking changes may land in minor versions.
   multi-line box. New `--gog-textarea-clear-icon-ratio` defaults to a full-size glyph.
 - Nine specs in `scroll.component.spec.ts` awaited a single animation frame after dispatching a
   scroll, while `ScrollComponent` coalesces measurement into its own frame — if that frame fired
-  during `whenStable()`, the effect scheduled a second one *after* the test's, and the assertion
+  during `whenStable()`, the effect scheduled a second one _after_ the test's, and the assertion
   ran before the measurement. Intermittent by construction; replaced with a `settleMeasure()`
   helper that covers both orderings.
 
@@ -203,7 +212,7 @@ the full set at any time.
 
 - `<column>` → `<gog-column>`, and the `Column` export → `GogColumn`.
 - All `--gog-ms-*` tokens → `--gog-multiselect-*`. Both spellings work for the whole window:
-  the `--gog-ms-*` name stays the *declared* one and the new name derives from it, so an
+  the `--gog-ms-*` name stays the _declared_ one and the new name derives from it, so an
   existing override of either still reaches the component. Verified in a browser both ways.
 - `<ng-template template="field" type="body|header">` inside `gog-table` → a `gogColumnBody` /
   `gogColumnHeader` template declared inside the column itself. The old form matched columns by
@@ -372,7 +381,7 @@ the full set at any time.
 - `GOG_CONFIG`/`GogGlobalConfig`/`provideGogConfig(...)`: one injection token
   for app-wide defaults across the library's component inputs, instead of a
   separate token per component per setting. Call `provideGogConfig({ scroll:
-  {...}, button: {...} })` once in your app's providers (or a route's/
+{...}, button: {...} })` once in your app's providers (or a route's/
   component's own `providers` for a subtree-scoped override); any instance
   that doesn't set the input itself falls back to the configured value, then
   to the component's own hardcoded default. `gog-scroll`'s `size`, `autoHide`,
@@ -428,7 +437,7 @@ the full set at any time.
   scrolling container, e.g. a `gog-scroll` capping its height. Both axes are
   now `visible` unless that specific axis is genuinely scrolling.
 
-## [21.2.3] - 2026-08-03 
+## [21.2.3] - 2026-08-03
 
 ### Added
 

@@ -151,10 +151,32 @@
   </div>
 }
 
-@if (showTodayButton()) {
+@if (showTodayButton() || showThisMonthButton()) {
+  <!--
+    Two distinct actions, never one: "Today" picks a date, "This month" only moves the view.
+    Collapsing them into a single button is what made the control ambiguous — after paging
+    away, the same label reads as "take me back" to one person and "set it to today" to another.
+  -->
   <div class="gog-calendar__footer">
-    <button type="button" class="gog-calendar__today" (click)="goToToday()">
-      {{ todayLabel() }}
-    </button>
+    @if (showThisMonthButton()) {
+      <button
+        type="button"
+        class="gog-calendar__action gog-calendar__action--this-month"
+        (click)="goToThisMonth()"
+      >
+        {{ thisMonthLabel() }}
+      </button>
+    }
+
+    @if (showTodayButton()) {
+      <button
+        type="button"
+        class="gog-calendar__action gog-calendar__today"
+        [disabled]="!isTodaySelectable()"
+        (click)="selectToday()"
+      >
+        {{ todayLabel() }}
+      </button>
+    }
   </div>
 }
