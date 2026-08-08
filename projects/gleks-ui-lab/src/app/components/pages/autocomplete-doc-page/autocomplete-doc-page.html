@@ -1,0 +1,306 @@
+<div class="autocomplete-doc">
+  <header class="autocomplete-doc__hero">
+    <p class="autocomplete-doc__eyebrow">gog-autocomplete</p>
+    <h1 class="autocomplete-doc__title font-heading">Autocomplete</h1>
+    <p class="autocomplete-doc__lead">
+      A text field that suggests options as you type. It shares
+      <code>GogDropdownBase</code> with <a routerLink="/components/select">Select</a> — the same
+      option accessors, placement, float label, error state and <code>ControlValueAccessor</code> —
+      but its trigger is a real <code>&lt;input&gt;</code>, which is what makes it a separate
+      control rather than a mode of the select.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the component and drop it into a template.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage — type a letter or two:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview autocomplete-demo__field">
+        <gog-autocomplete
+          label="City"
+          placeholder="Start typing…"
+          [options]="cities"
+          [(value)]="city"
+        />
+        <p class="doc-section__meta">value = {{ city() }}</p>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="server" class="doc-section__title font-heading">Server-backed suggestions</h2>
+    <p class="doc-section__intro">
+      <code>gogSearch</code> is debounced (<code>searchDebounce</code>, 300 ms by default), so a
+      lookup fires once the typing settles rather than on every keystroke. Set
+      <code>[filterLocal]="false"</code> alongside it: the server has already filtered, and
+      filtering its answer a second time against the same query is the classic double-filtering bug
+      — it silently drops rows the server matched on a field this component cannot see.
+    </p>
+    <div class="demo-card">
+      <p class="demo-card__meta">
+        This demo fakes a 400 ms round trip. It also matches on the country, which local filtering
+        would throw away — type <code>germany</code> to see it.
+      </p>
+      <div class="demo-card__preview autocomplete-demo__field">
+        <gog-autocomplete
+          label="City"
+          placeholder="Type at least 2 characters"
+          [options]="serverResults()"
+          [loading]="serverLoading()"
+          [filterLocal]="false"
+          [minLength]="2"
+          (gogSearch)="search($event)"
+          [(value)]="city"
+        />
+        <p class="doc-section__meta">
+          last query: "{{ lastQuery() }}" — {{ serverResults().length }} result(s)
+        </p>
+      </div>
+      <app-code-tabs [html]="serverHtml" [ts]="serverTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Your own objects</h3>
+      <p class="demo-card__meta">
+        <code>optionLabel</code>, <code>optionValue</code> and <code>optionDisabled</code> take a
+        property path (dot-paths included) or a function. Set <code>[optionValue]="null"</code> and
+        the control hands back the option <em>object</em> — the same reference you passed in —
+        instead of an id.
+      </p>
+      <div class="demo-card__preview autocomplete-demo__field">
+        <gog-autocomplete
+          label="City"
+          optionLabel="name"
+          [optionValue]="null"
+          [options]="cities"
+          [(value)]="cityObject"
+        />
+        <p class="doc-section__meta">
+          value = {{ cityObject() ? cityObject()!.name + ', ' + cityObject()!.country : 'null' }}
+        </p>
+      </div>
+      <app-code-tabs [html]="dtoHtml" [ts]="dtoTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom suggestion rows</h3>
+      <p class="demo-card__meta">
+        A <code>gogDropdownOption</code> template replaces one row, with the option itself plus
+        <code>selected</code>, <code>disabled</code> and the resolved <code>label</code> in its
+        context — so a custom row can decorate the label rather than re-derive it.
+      </p>
+      <div class="demo-card__preview autocomplete-demo__field">
+        <gog-autocomplete label="City" [options]="cities" [(value)]="slotCity">
+          <ng-template gogDropdownOption let-option let-label="label">
+            <span class="autocomplete-demo__row">
+              <strong>{{ label }}</strong>
+              <small>{{ asCity(option).country }}</small>
+            </span>
+          </ng-template>
+        </gog-autocomplete>
+      </div>
+      <app-code-tabs [html]="slotHtml" [ts]="slotTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Free text (<code>forceSelection</code>)</h3>
+      <p class="demo-card__meta">
+        On by default, the field always ends up reflecting a real selection: editing is treated as
+        transient, so <code>value</code> survives keystrokes and Escape or blur snaps the text back
+        to it. Turn it off for a create-as-you-type flow — the text is then left alone on blur and
+        <code>value</code> is dropped as soon as it stops matching, so the two never disagree. Read
+        what was typed from <code>gogSearch</code>, not from <code>value</code>.
+      </p>
+      <div class="demo-card__preview autocomplete-demo__field">
+        <gog-autocomplete
+          label="Tag"
+          placeholder="Type anything and click away"
+          [forceSelection]="false"
+          [options]="cities"
+          [(value)]="freeText"
+        />
+      </div>
+      <app-code-tabs [html]="freeTextHtml" [ts]="freeTextTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      The <code>&lt;input&gt;</code> keeps DOM focus the whole time and the highlighted suggestion
+      is pointed at with <code>aria-activedescendant</code> — where a listbox would move focus onto
+      the option itself. That is the difference that makes this a combobox rather than a select, and
+      it is why typing keeps working while the panel is open.
+    </p>
+    <p class="doc-section__intro">
+      Arrow keys move the highlight, Enter picks it, Escape closes the panel. Give the field a
+      <code>label</code> or an <code>ariaLabel</code>; use <code>inputId</code> if you are wiring
+      your own <code>&lt;label for="…"&gt;</code>.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs — autocomplete's own</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Inputs — shared with Select</h3>
+    <p class="doc-section__intro">
+      These come from <code>GogDropdownBase</code> and behave exactly as they do on
+      <a routerLink="/components/select">Select</a>. The one exception is <code>filter</code>: an
+      autocomplete's trigger already <em>is</em> the search box, so the panel never gets a second
+      one.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of sharedInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Outputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Payload</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiOutputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Content slots</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Directive</th>
+            <th>Context</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <code>gogDropdownOption</code>
+            </td>
+            <td>
+              <code>{{ '$' }}implicit, selected, disabled, label</code>
+            </td>
+            <td>Replaces one suggestion row.</td>
+          </tr>
+          <tr>
+            <td>
+              <code>gogDropdownChevron</code>
+            </td>
+            <td>—</td>
+            <td>Replaces the trailing chevron.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the autocomplete paints with. Override any of them — on a single
+      instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

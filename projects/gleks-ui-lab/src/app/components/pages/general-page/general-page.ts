@@ -14,7 +14,7 @@ import { map } from 'rxjs';
 import { GENERAL_NAV_ITEMS } from '../../shared/nav-data';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 
-const DOCUMENTED_SLUGS = new Set(['overview', 'getting-started', 'compare-full']);
+const DOCUMENTED_SLUGS = new Set(['overview', 'getting-started', 'global-config', 'compare-full']);
 
 @Component({
   selector: 'app-general-page',

@@ -1,0 +1,234 @@
+<div class="datepicker-doc">
+  <header class="datepicker-doc__hero">
+    <p class="datepicker-doc__eyebrow">gog-datepicker</p>
+    <h1 class="datepicker-doc__title font-heading">Datepicker</h1>
+    <p class="datepicker-doc__lead">
+      A date field with a calendar panel: a single date, a range, and an optional clock. Native
+      <code>Date</code>, <strong>no date library and no adapter abstraction</strong> — the package
+      keeps its zero runtime dependencies.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the component and drop it into a template.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview datepicker-demo__field">
+        <gog-datepicker label="Date of birth" [max]="today" [(value)]="birthday" />
+        <p class="doc-section__meta">value = {{ formatValue(birthday()) }}</p>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="format" class="doc-section__title font-heading">One pattern, both directions</h2>
+    <p class="doc-section__intro">
+      <code>format</code> is a token pattern — <code>yyyy</code>, <code>MM</code>, <code>dd</code>,
+      <code>HH</code>, <code>hh</code>, <code>mm</code>, <code>ss</code>, <code>a</code> — and it is
+      used for <em>both</em> rendering and parsing. That is what makes
+      <code>allowTextInput</code> safe: whatever the field displays can be typed back in.
+      <code>31.02.2026</code> is rejected rather than silently becoming 3 March, which is what a
+      naive <code>new Date(text)</code> would do.
+    </p>
+    <div class="demo-card">
+      <p class="demo-card__meta">
+        Type into this one — it renders and parses <code>yyyy-MM-dd</code>.
+      </p>
+      <div class="demo-card__preview datepicker-demo__field">
+        <gog-datepicker label="ISO" format="yyyy-MM-dd" [(value)]="isoDate" />
+        <p class="doc-section__meta">value = {{ formatValue(isoDate()) }}</p>
+      </div>
+      <app-code-tabs [html]="formatHtml" [ts]="formatTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Range</h3>
+      <p class="demo-card__meta">
+        <code>selectionMode="range"</code> makes the value a
+        <code>{{ '{' }} start, end {{ '}' }}</code> pair. Pair it with
+        <code>[numberOfMonths]="2"</code> — picking a range one month at a time is painful.
+      </p>
+      <div class="demo-card__preview datepicker-demo__field">
+        <gog-datepicker label="Stay" selectionMode="range" [numberOfMonths]="2" [(value)]="stay" />
+        <p class="doc-section__meta">value = {{ formatValue(stay()) }}</p>
+      </div>
+      <app-code-tabs [html]="rangeHtml" [ts]="rangeTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Date and time</h3>
+      <p class="demo-card__meta">
+        <code>showTime</code> adds the clock; remember to widen <code>format</code> to match, or the
+        field will render a time it cannot read back.
+      </p>
+      <div class="demo-card__preview datepicker-demo__field">
+        <gog-datepicker
+          label="Meeting"
+          format="dd.MM.yyyy HH:mm"
+          [showTime]="true"
+          hourFormat="24"
+          [minuteStep]="15"
+          [(value)]="meeting"
+        />
+        <p class="doc-section__meta">value = {{ formatValue(meeting()) }}</p>
+      </div>
+      <app-code-tabs [html]="timeHtml" [ts]="timeTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Inline</h3>
+      <p class="demo-card__meta">
+        <code>inline</code> drops the field and shows the calendar permanently. It is literally
+        <a routerLink="/components/calendar">gog-calendar</a> rendered without the field around it.
+      </p>
+      <div class="demo-card__preview">
+        <gog-datepicker [inline]="true" [(value)]="inlineDate" />
+        <p class="doc-section__meta">value = {{ formatValue(inlineDate()) }}</p>
+      </div>
+      <app-code-tabs [html]="inlineHtml" [ts]="inlineTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Forms, validation, disabled dates and clearing</h3>
+      <p class="demo-card__meta">
+        A <code>ControlValueAccessor</code>, so <code>formControl</code> /
+        <code>formControlName</code> work directly. <code>disabledDates</code> is a predicate — an
+        array cannot express "weekends". The clear button appears only once a date is set.
+      </p>
+      <div class="demo-card__preview datepicker-demo__field">
+        <gog-datepicker
+          label="Deadline"
+          errorDisplay="auto"
+          errorMessage="A deadline is required"
+          [clearable]="true"
+          [disabledDates]="weekends"
+          [formControl]="deadline"
+        />
+      </div>
+      <app-code-tabs [html]="formsHtml" [ts]="formsTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="footer-actions" class="doc-section__title font-heading">The two footer actions</h2>
+    <p class="doc-section__intro">
+      The panel's footer carries <strong>two separate actions, never one</strong>:
+      <code>showTodayButton</code> (on by default) <em>selects</em> today, and
+      <code>showThisMonthButton</code> (off by default) only moves the view back to the current
+      month. A single button doing both is ambiguous — after paging away, the same label reads as
+      "take me back" to one person and "set it to today" to another.
+    </p>
+    <p class="doc-section__intro">
+      "Today" is <em>disabled</em> when <code>min</code>/<code>max</code> or
+      <code>disabledDates</code> rule today out, rather than silently doing nothing when pressed.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="global-config" class="doc-section__title font-heading">App-wide defaults</h2>
+    <p class="doc-section__intro">
+      A locale and a date format repeated on every date input is exactly the boilerplate
+      <code>GOG_CONFIG</code> exists to remove. An instance's own input always wins.
+    </p>
+    <app-markdown [markdown]="configSnippet" />
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Outputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Payload</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiOutputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the field and its panel paint with. The grid inside the panel is
+      themed by <a routerLink="/components/calendar">gog-calendar</a>'s own
+      <code>--gog-calendar-*</code> tokens. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

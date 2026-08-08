@@ -1,0 +1,12 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('progressbar-doc');
+
+.progressbar-demo {
+  &__stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 520px;
+  }
+}

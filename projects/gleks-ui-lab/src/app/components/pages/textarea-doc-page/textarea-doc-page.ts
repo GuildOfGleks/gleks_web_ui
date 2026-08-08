@@ -38,9 +38,36 @@ const API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'errorDisplay',
     type: "'auto' | 'manual'",
-    default: "'manual'",
+    default: "GOG_CONFIG.control.errorDisplay ?? 'manual'",
     description:
-      "'manual': shown for as long as errorMessage is non-empty — you decide the timing. 'auto': shown once the attached FormControl is touched and invalid; falls back to manual without one.",
+      "'manual': shown for as long as errorMessage is non-empty — you decide the timing. 'auto': shown once the attached FormControl is touched and invalid; falls back to manual without one. Settable app-wide, which is what makes 'auto' one decision for a Reactive Forms app rather than per-field boilerplate.",
+  },
+  {
+    name: 'clearable',
+    type: 'boolean',
+    default: 'GOG_CONFIG.control.clearable ?? false',
+    description:
+      'Adds a clear button. It appears only once the field has something to clear and disappears again when empty, so it adds no permanent chrome.',
+  },
+  {
+    name: 'clearAriaLabel',
+    type: 'string',
+    default: "'Clear'",
+    description: 'Accessible name for that clear button.',
+  },
+  {
+    name: 'floatLabel',
+    type: "'none' | 'in' | 'on' | 'over'",
+    default: "GOG_CONFIG.floatLabel.variant ?? 'none'",
+    description:
+      "Rests the label inside the field like a placeholder and floats it up on focus or once the field has content. 'in' stays inside the border, 'on' centres on the top border line, 'over' floats fully above it. 'none' keeps the static label-above-the-field layout.",
+  },
+  {
+    name: 'floatLabelShowPlaceholder',
+    type: 'boolean',
+    default: 'GOG_CONFIG.floatLabel.showPlaceholder ?? false',
+    description:
+      'Reveals the field’s own placeholder once the label has floated out of the way. Off by default, since the resting label already occupies that space.',
   },
   { name: 'name', type: 'string', default: "''", description: 'Native name attribute.' },
   {
@@ -58,7 +85,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'size',
     type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'",
-    default: "'md'",
+    default: "GOG_CONFIG.control.size ?? 'md'",
     description: 'Field padding and font size — shares the scale with gog-inputfield.',
   },
   {
@@ -237,6 +264,42 @@ export class TextareaDocPage {
     "  selector: 'app-example',",
     '  imports: [TextareaComponent],',
     '  template: `<gog-textarea label="Short note" [fullWidth]="false" [rows]="2" />`,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+
+  protected readonly clearableValue = signal('');
+  protected readonly clearableHtml =
+    '<gog-textarea label="Notes" [clearable]="true" [(value)]="notes" />';
+  protected readonly clearableTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { TextareaComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TextareaComponent],',
+    '  template: `<gog-textarea label="Notes" [clearable]="true" [(value)]="notes" />`,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly notes = signal('');",
+    '}',
+  ].join('\n');
+
+  protected readonly floatLabelHtml = [
+    '<gog-textarea label="in" floatLabel="in" [rows]="2" />',
+    '<gog-textarea label="on" floatLabel="on" [rows]="2" />',
+    '<gog-textarea label="over" floatLabel="over" [rows]="2" />',
+  ].join('\n');
+  protected readonly floatLabelTs = [
+    "import { Component } from '@angular/core';",
+    "import { TextareaComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TextareaComponent],',
+    '  template: `',
+    '    <gog-textarea label="Message" floatLabel="on" [rows]="2" />',
+    '  `,',
     '})',
     'export class ExampleComponent {}',
   ].join('\n');

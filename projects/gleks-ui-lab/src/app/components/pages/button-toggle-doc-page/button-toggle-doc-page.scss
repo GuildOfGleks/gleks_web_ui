@@ -1,0 +1,12 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('button-toggle-doc');
+
+.button-toggle-demo {
+  &__stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}

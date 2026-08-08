@@ -68,6 +68,13 @@ const API_INPUTS: readonly ApiRow[] = [
       "Renders a shimmering skeleton row per item instead of real headers — for when the item list itself hasn't arrived yet.",
   },
   {
+    name: 'skeletonCount',
+    type: 'number',
+    default: '3',
+    description:
+      'How many skeleton rows to render while loading is true and items is still empty — the common case of "the list itself hasn\'t arrived yet", where there is no item count to derive a row count from. Ignored once items has entries: then one skeleton row is rendered per item, so the placeholder matches the eventual shape.',
+  },
+  {
     name: 'showChevron',
     type: 'boolean',
     default: 'true',

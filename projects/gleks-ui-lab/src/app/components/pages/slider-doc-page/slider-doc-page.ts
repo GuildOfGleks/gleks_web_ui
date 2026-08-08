@@ -73,7 +73,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: 'boolean',
     default: 'true',
     description:
-      'Fills its container by default. A track has no content of its own to shrink-wrap to, so [fullWidth]="false" instead sizes it to --gog-slider-auto-width (240px by default) — a fixed, themeable fallback rather than a content-derived one.',
+      'Fills its container by default. A track has no content of its own to shrink-wrap to, so [fullWidth]="false" instead sizes it to --gog-slider-auto-width (240px by default) — a fixed, themeable fallback rather than a content-derived one. Ignored when vertical, since a vertical slider’s width is its thickness, not its length.',
+  },
+  {
+    name: 'orientation',
+    type: "'horizontal' | 'vertical'",
+    default: "'horizontal'",
+    description:
+      'Which way the track runs. Picked per instance — it is a layout decision rather than a house style, so there is no global default for it. A vertical slider takes its length from --gog-slider-vertical-length (160px).',
   },
 ];
 
@@ -102,6 +109,38 @@ export class SliderDocPage {
   protected readonly hiddenValue = signal(60);
   protected readonly ariaOnlyValue = signal(50);
   protected readonly compactValue = signal(40);
+  protected readonly bass = signal(60);
+  protected readonly mid = signal(45);
+  protected readonly treble = signal(75);
+
+  protected readonly verticalHtml = [
+    '<gog-slider label="Bass" orientation="vertical" [min]="0" [max]="100" [(value)]="bass" />',
+    '<gog-slider label="Mid" orientation="vertical" [min]="0" [max]="100" [(value)]="mid" />',
+    '<gog-slider label="Treble" orientation="vertical" [min]="0" [max]="100" [(value)]="treble" />',
+  ].join('\n');
+  protected readonly verticalTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { SliderComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [SliderComponent],',
+    '  template: `',
+    '    <gog-slider label="Bass" orientation="vertical" [(value)]="bass" />',
+    '    <gog-slider label="Mid" orientation="vertical" [(value)]="mid" />',
+    '  `,',
+    '  styles: `',
+    '    :host {',
+    '      display: flex;',
+    '      gap: 24px;',
+    '    }',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly bass = signal(60);',
+    '  protected readonly mid = signal(45);',
+    '}',
+  ].join('\n');
 
   protected readonly summary = computed(
     () =>

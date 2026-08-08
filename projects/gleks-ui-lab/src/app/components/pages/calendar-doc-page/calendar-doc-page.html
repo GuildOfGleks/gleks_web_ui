@@ -1,0 +1,203 @@
+<div class="calendar-doc">
+  <header class="calendar-doc__hero">
+    <p class="calendar-doc__eyebrow">gog-calendar</p>
+    <h1 class="calendar-doc__title font-heading">Calendar</h1>
+    <p class="calendar-doc__lead">
+      The month grid behind <a routerLink="/components/datepicker">Datepicker</a>, exported and
+      usable on its own for an always-visible calendar. Native <code>Date</code> throughout — no
+      date library and no adapter abstraction, so the package keeps its zero runtime dependencies.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the component and drop it into a template.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-calendar [(value)]="day" />
+        <p class="doc-section__meta">value = {{ formatValue(day()) }}</p>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="height" class="doc-section__title font-heading">Six weeks, always</h2>
+    <p class="doc-section__intro">
+      The grid always renders six weeks, so its height never changes as you page through months. A
+      calendar that grows and shrinks by one row shifts whatever sits under it — and inside a
+      dropdown panel, moves the panel itself.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Range, two months</h3>
+      <p class="demo-card__meta">
+        In <code>range</code> mode the value is a <code>{{ '{' }} start, end {{ '}' }}</code> pair.
+        Two months side by side is what makes picking one practical.
+      </p>
+      <div class="demo-card__preview">
+        <gog-calendar selectionMode="range" [numberOfMonths]="2" [(value)]="range" />
+        <p class="doc-section__meta">value = {{ formatValue(range()) }}</p>
+      </div>
+      <app-code-tabs [html]="rangeHtml" [ts]="rangeTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled dates</h3>
+      <p class="demo-card__meta">
+        <code>disabledDates</code> is a <strong>predicate</strong>, not an array — "weekends" and
+        "public holidays" have no finite list a consumer could hand over without materialising every
+        date in range first. <code>min</code> and <code>max</code> cover the bounded case.
+      </p>
+      <div class="demo-card__preview">
+        <gog-calendar [disabledDates]="weekends" [(value)]="workday" />
+        <p class="doc-section__meta">value = {{ formatValue(workday()) }}</p>
+      </div>
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Time, and the two footer buttons</h3>
+      <p class="demo-card__meta">
+        <code>showTime</code> adds a clock under the grid. The footer carries
+        <strong>two separate actions, never one</strong>: "Today" <em>selects</em> today, and "This
+        month" only moves the view back. A single button doing both is ambiguous — after paging
+        away, the same label reads as "take me back" to one person and "set it to today" to another.
+        "Today" is disabled when <code>min</code>/<code>max</code> or
+        <code>disabledDates</code> rule today out, rather than silently doing nothing.
+      </p>
+      <div class="demo-card__preview">
+        <gog-calendar
+          [showTime]="true"
+          hourFormat="24"
+          [minuteStep]="15"
+          [showThisMonthButton]="true"
+          [(value)]="moment"
+        />
+        <p class="doc-section__meta">value = {{ formatValue(moment()) }}</p>
+      </div>
+      <app-code-tabs [html]="timeHtml" [ts]="timeTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Locale</h3>
+      <p class="demo-card__meta">
+        Month and weekday names come from <code>Intl</code>, so any BCP-47 tag works with no data to
+        ship. <code>firstDayOfWeek</code> overrides the locale's own choice. Both are also settable
+        app-wide through <code>GOG_CONFIG.datepicker</code>.
+      </p>
+      <div class="demo-card__preview calendar-demo__row">
+        <gog-calendar locale="de-DE" [firstDayOfWeek]="1" />
+        <gog-calendar locale="ja-JP" />
+      </div>
+      <app-code-tabs [html]="localeHtml" [ts]="localeTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      The grid follows the ARIA grid pattern: arrow keys move by day,
+      <code>PageUp</code>/<code>PageDown</code> by month, <kbd>Shift</kbd> with those by year, and
+      <code>Home</code>/<code>End</code> jump to the week's ends. All 42 cells share
+      <strong>one tab stop</strong>, so tabbing past the calendar does not mean 42 presses.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Outputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Payload</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiOutputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the calendar paints with. These also theme the grid inside
+      <a routerLink="/components/datepicker">gog-datepicker</a>'s panel. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

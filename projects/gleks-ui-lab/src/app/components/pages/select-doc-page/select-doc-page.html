@@ -114,14 +114,17 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Custom chevron &amp; label-less field</h3>
       <p class="demo-card__meta">
-        <code>chevronTemplate</code> swaps the trigger's icon. <code>ariaLabel</code> names a field
-        that has no visible <code>label</code> at all.
+        Project an <code>&lt;ng-template gogDropdownChevron&gt;</code> to swap the trigger's icon.
+        <code>ariaLabel</code> names a field that has no visible <code>label</code> at all. The
+        chevron slot replaces the <code>chevronTemplate</code> input, deprecated in 21.3.0 and
+        removed in 21.5.0.
       </p>
-      <ng-template #sortChevron>
-        <gog-icon name="sort" />
-      </ng-template>
       <div class="demo-card__preview size-column">
-        <gog-select [options]="sortOptions" [chevronTemplate]="sortChevron" [(value)]="sortValue" />
+        <gog-select [options]="sortOptions" [(value)]="sortValue">
+          <ng-template gogDropdownChevron>
+            <gog-icon name="sort" />
+          </ng-template>
+        </gog-select>
         <gog-select
           ariaLabel="Country (no visible label)"
           placeholder="Pick a country"
@@ -156,6 +159,130 @@
   </section>
 
   <section class="doc-section">
+    <h2 id="your-own-objects" class="doc-section__title font-heading">Your own objects</h2>
+    <p class="doc-section__intro">
+      <code>optionLabel</code>, <code>optionValue</code> and <code>optionDisabled</code> each take a
+      property path — dot-paths included — or a function. A real DTO goes straight in, with no
+      mapping into <code>{{ '{' }} id, name {{ '}' }}</code> first and nothing lost on the way back
+      out. The defaults are <code>'name'</code> / <code>'id'</code> / <code>'disabled'</code>, so
+      code written before 21.3.0 is unaffected; <code>GogDropdownOption</code> is no longer a
+      requirement, just the shape those defaults expect to find.
+    </p>
+    <p class="doc-section__intro">
+      Set <code>[optionValue]="null"</code> and the control emits the
+      <strong>option object itself</strong> — the same reference you passed in, not a copy.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview size-column">
+        <gog-select
+          label="Assignee"
+          optionLabel="profile.fullName"
+          optionValue="uuid"
+          optionDisabled="suspended"
+          [options]="users"
+          [(value)]="userId"
+        />
+        <gog-select
+          label="Assignee (object)"
+          optionLabel="profile.fullName"
+          [optionValue]="null"
+          [options]="users"
+          [(value)]="userObject"
+        />
+      </div>
+      <p class="demo-card__meta">
+        id = {{ userId() ?? 'null' }} · object =
+        {{ userObject() ? userObject()!.profile.fullName : 'null' }}
+      </p>
+      <app-code-tabs [html]="accessorsHtml" [ts]="accessorsTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="filtering" class="doc-section__title font-heading">Filtering</h2>
+    <p class="doc-section__intro">
+      <code>filter</code> puts a search box in the panel, matching case-insensitively on the
+      resolved <code>optionLabel</code>. The query resets when the panel closes, and
+      <code>filterPosition</code> sticks the box to either end of the list.
+      <code>filterMatch</code> swaps the default match for your own predicate — useful for searching
+      a field the label never shows.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview size-column">
+        <gog-select
+          label="Country (20 options)"
+          [filter]="true"
+          filterPlaceholder="Search countries…"
+          filterEmptyMessage="No country matches"
+          [options]="manyCountries"
+          [(value)]="filteredCountry"
+        />
+        <gog-select
+          label="Assignee — search by name or role"
+          optionLabel="profile.fullName"
+          optionValue="uuid"
+          [filter]="true"
+          [filterMatch]="matchNameOrRole"
+          filterPlaceholder="Try 'research'"
+          [options]="users"
+          [(value)]="userId"
+        />
+      </div>
+      <app-code-tabs [html]="filterHtml" [ts]="filterTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="clearable" class="doc-section__title font-heading">Clearable</h2>
+    <p class="doc-section__intro">
+      The clear button is value-driven: it appears once something is selected and vanishes when
+      nothing is. That is the point — it replaces the fake <code>"— not selected —"</code> option
+      teams add to make a choice undoable. It takes the outermost trailing position, with the
+      chevron shifting inward, so the trigger's width stays stable and the destructive control is
+      not on the very edge.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview size-column">
+        <gog-select
+          label="Plan"
+          [clearable]="true"
+          [options]="plansWithDisabled"
+          [(value)]="clearablePlan"
+        />
+      </div>
+      <app-code-tabs [html]="clearableHtml" [ts]="clearableTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="option-slot" class="doc-section__title font-heading">Custom option rows</h2>
+    <p class="doc-section__intro">
+      A <code>gogDropdownOption</code> template replaces one option row. Its context carries the
+      option itself plus <code>selected</code>, <code>disabled</code> and the already-resolved
+      <code>label</code> — so a custom row can decorate the label rather than re-derive it.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview size-column">
+        <gog-select
+          label="Assignee"
+          optionLabel="profile.fullName"
+          optionValue="uuid"
+          [options]="users"
+          [(value)]="slotUserId"
+        >
+          <ng-template gogDropdownOption let-user let-label="label">
+            <span class="option-row">
+              <strong>{{ label }}</strong>
+              <small>{{ asUser(user).profile.role }}</small>
+            </span>
+          </ng-template>
+        </gog-select>
+      </div>
+      <app-code-tabs [html]="optionSlotHtml" [ts]="optionSlotTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
@@ -184,6 +311,40 @@
               <td>{{ row.description }}</td>
             </tr>
           }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Content slots</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Directive</th>
+            <th>Context</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <code>gogDropdownOption</code>
+            </td>
+            <td>
+              <code>{{ '$' }}implicit, selected, disabled, label</code>
+            </td>
+            <td>Replaces one option row.</td>
+          </tr>
+          <tr>
+            <td>
+              <code>gogDropdownChevron</code>
+            </td>
+            <td>—</td>
+            <td>
+              Replaces the trigger's chevron. Wins over the deprecated
+              <code>chevronTemplate</code> input.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

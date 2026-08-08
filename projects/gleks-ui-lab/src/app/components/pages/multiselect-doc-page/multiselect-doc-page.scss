@@ -163,3 +163,21 @@
     border-bottom: none;
   }
 }
+
+.option-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+
+  small {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-xs);
+  }
+}
+
+.multiselect-demo {
+  // Deliberately narrow, so a multi-item selection has to collapse to "+N".
+  &__narrow {
+    max-width: 260px;
+  }
+}

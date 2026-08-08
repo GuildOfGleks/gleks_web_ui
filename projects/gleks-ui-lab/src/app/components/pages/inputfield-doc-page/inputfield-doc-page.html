@@ -52,22 +52,84 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Icons</h3>
       <p class="demo-card__meta">
-        A decorative icon with no function, and an action icon: setting
-        <code>iconEndFn</code> turns the trailing icon into a real button (requires
-        <code>iconEndLabel</code> for accessibility).
+        <code>iconStart</code> / <code>iconEnd</code> take a bare icon name — the genuinely common
+        case, and the whole API for a decorative icon.
       </p>
       <div class="demo-card__preview size-column">
         <gog-inputfield label="Search" iconStart="info" placeholder="Decorative start icon" />
-        <gog-inputfield
-          label="Clearable"
-          iconEnd="close"
-          iconEndLabel="Clear"
-          [iconEndFn]="clearSearch"
-          [(value)]="search"
-        />
+      </div>
+      <app-code-tabs [html]="iconsHtml" [ts]="iconsTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Addon slots</h3>
+      <p class="demo-card__meta">
+        For anything more than an icon name, project a
+        <code>gogInputAddonStart</code> or <code>gogInputAddonEnd</code> element. Because it takes
+        arbitrary markup, an actionable addon is a real <code>&lt;button&gt;</code> carrying its own
+        <code>aria-label</code> and <code>(click)</code> — nothing has to be threaded through the
+        field.
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-inputfield label="Amount" [(value)]="amount">
+          <span gogInputAddonStart class="addon-text">$</span>
+          <span gogInputAddonEnd class="addon-text">USD</span>
+        </gog-inputfield>
+
+        <gog-inputfield label="Search" [(value)]="search">
+          <button
+            type="button"
+            gogInputAddonEnd
+            class="addon-button"
+            aria-label="Clear search"
+            (click)="clearSearch()"
+          >
+            <gog-icon name="close" />
+          </button>
+        </gog-inputfield>
       </div>
       <p class="demo-card__meta">{{ lastIconAction() }}</p>
-      <app-code-tabs [html]="iconsHtml" [ts]="iconsTs" />
+      <app-code-tabs [html]="addonHtml" [ts]="addonTs" />
+
+      <p class="demo-card__meta">
+        These two slots replace six inputs —
+        <code>iconStartTemplate</code>, <code>iconEndTemplate</code>, <code>iconStartFn</code>,
+        <code>iconEndFn</code>, <code>iconStartLabel</code> and <code>iconEndLabel</code> — all
+        deprecated in 21.3.0 and removed in 21.5.0. <code>iconStart</code> and
+        <code>iconEnd</code> stay.
+      </p>
+      <app-markdown [markdown]="migrateAddonSnippet" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Clearable</h3>
+      <p class="demo-card__meta">
+        The built-in clear button is value-driven: it appears once there is something to clear and
+        vanishes when there isn't. It replaces the hand-rolled trailing-icon-plus-callback pattern
+        entirely. On a <code>type="password"</code> field the reveal toggle keeps the trailing slot,
+        so the only control that shows the value can never be displaced.
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-inputfield label="Search" [clearable]="true" [(value)]="clearableValue" />
+      </div>
+      <app-code-tabs [html]="clearableHtml" [ts]="clearableTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Float label</h3>
+      <p class="demo-card__meta">
+        <code>floatLabel</code> rests the label inside the field like a placeholder and floats it up
+        on focus or once the field has content. The three variants differ only in where it lands:
+        <code>in</code> stays inside the border, <code>on</code> centres on the top border line, and
+        <code>over</code> floats fully above it. Also settable app-wide through
+        <code>GOG_CONFIG.floatLabel</code>.
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-inputfield label="in" floatLabel="in" />
+        <gog-inputfield label="on" floatLabel="on" />
+        <gog-inputfield label="over" floatLabel="over" />
+      </div>
+      <app-code-tabs [html]="floatLabelHtml" [ts]="floatLabelTs" />
     </article>
 
     <article class="demo-card">
@@ -174,6 +236,74 @@
         </thead>
         <tbody>
           @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Content slots</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Slot</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <code>[gogInputAddonStart]</code>
+            </td>
+            <td>Arbitrary markup in the leading slot — text, an icon, or a real button.</td>
+          </tr>
+          <tr>
+            <td>
+              <code>[gogInputAddonEnd]</code>
+            </td>
+            <td>
+              The same in the trailing slot. On <code>type="password"</code> the built-in reveal
+              toggle keeps this slot, so a projected addon can never displace the only control that
+              shows the value.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="deprecations" class="doc-section__title font-heading">Deprecated in 21.3.0</h2>
+    <p class="doc-section__intro">
+      Six inputs collapsed into the two addon slots above. They keep working until they are removed
+      in 21.5.0, and a projected addon wins over them — so a codebase can migrate one field at a
+      time. <code>iconStart</code> and <code>iconEnd</code> are <em>not</em> deprecated: a bare icon
+      name is the genuinely common case.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of deprecatedIconInputs; track row.name) {
             <tr>
               <td>
                 <code>{{ row.name }}</code>

@@ -11,8 +11,8 @@
   <section class="doc-section">
     <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
     <p class="doc-section__intro">
-      Import <code>TableComponent</code> and <code>Column</code>, then declare one
-      <code>&lt;column&gt;</code> per field as content — <code>gog-table</code> reads them via
+      Import <code>TableComponent</code> and <code>GogColumn</code>, then declare one
+      <code>&lt;gog-column&gt;</code> per field as content — <code>gog-table</code> reads them via
       <code>contentChildren</code>, so the columns live in your template, not a config array.
     </p>
     <app-markdown [markdown]="importSnippet" />
@@ -23,10 +23,10 @@
     <div class="demo-card">
       <div class="demo-card__preview">
         <gog-table [value]="rows">
-          <column field="component" header="Component" [sortable]="true"></column>
-          <column field="status" header="Status" [sortable]="true"></column>
-          <column field="owner" header="Owner"></column>
-          <column field="updated" header="Updated"></column>
+          <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+          <gog-column field="status" header="Status" [sortable]="true"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+          <gog-column field="updated" header="Updated"></gog-column>
         </gog-table>
       </div>
       <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
@@ -37,29 +37,39 @@
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Custom cell &amp; header templates</h3>
+      <h3 class="demo-card__title">Custom cell &amp; header markup</h3>
       <p class="demo-card__meta">
-        Any column can swap its default text rendering for a projected
-        <code>&lt;ng-template template="field"&gt;</code> — here the status column renders a
-        <code>gog-tag</code> instead of raw text, and its header gets custom markup too.
+        A column can swap its default text rendering for a
+        <code>gogColumnBody</code> or <code>gogColumnHeader</code> template declared
+        <em>inside that column</em> — here the status column renders a <code>gog-tag</code> instead
+        of raw text, and decorates its header too. The body context carries the row, its index, and
+        the already-resolved cell <code>value</code>.
       </p>
       <div class="demo-card__preview">
         <gog-table [value]="rows" [showRowNumbers]="false">
-          <column field="component" header="Component" [sortable]="true"></column>
-          <column field="status" header="Status"></column>
-          <column field="owner" header="Owner"></column>
+          <gog-column field="component" header="Component" [sortable]="true"></gog-column>
 
-          <ng-template template="status" type="header">
-            <span class="status-header">Status</span>
-          </ng-template>
-          <ng-template template="status" type="body" let-row>
-            <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{
-              $any(row).status
-            }}</gog-tag>
-          </ng-template>
+          <gog-column field="status" header="Status">
+            <ng-template gogColumnHeader let-header>
+              <span class="status-header">{{ header }}</span>
+            </ng-template>
+            <ng-template gogColumnBody let-row let-value="value">
+              <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{ value }}</gog-tag>
+            </ng-template>
+          </gog-column>
+
+          <gog-column field="owner" header="Owner"></gog-column>
         </gog-table>
       </div>
       <app-code-tabs [html]="templatesHtml" [ts]="templatesTs" />
+
+      <p class="demo-card__meta">
+        This replaces the string-keyed
+        <code>&lt;ng-template template="field" type="body|header"&gt;</code>, deprecated in 21.3.0
+        and removed in 21.5.0. The old form matched columns by a string the compiler cannot check,
+        so a typo silently fell back to the default cell.
+      </p>
+      <app-markdown [markdown]="migrateTemplateSnippet" />
     </article>
 
     <article class="demo-card">
@@ -72,9 +82,9 @@
       </p>
       <div class="demo-card__preview">
         <gog-table [value]="rows" [pageSize]="3" [showTotal]="true" totalPosition="left">
-          <column field="component" header="Component" [sortable]="true"></column>
-          <column field="status" header="Status" [sortable]="true"></column>
-          <column field="owner" header="Owner"></column>
+          <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+          <gog-column field="status" header="Status" [sortable]="true"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
         </gog-table>
       </div>
       <app-code-tabs [html]="paginationHtml" [ts]="paginationTs" />
@@ -88,9 +98,9 @@
       </p>
       <div class="demo-card__preview table-scroll-demo">
         <gog-table [value]="rows" [stickyHeader]="true">
-          <column field="component" header="Component"></column>
-          <column field="status" header="Status"></column>
-          <column field="owner" header="Owner"></column>
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
         </gog-table>
       </div>
       <app-code-tabs [html]="stickyHtml" [ts]="stickyTs" />
@@ -106,15 +116,15 @@
         <div class="field-row__col">
           <p class="demo-card__meta">Default placeholder</p>
           <gog-table [value]="sparseRows" [showRowNumbers]="false" size="sm">
-            <column field="component" header="Component"></column>
-            <column field="owner" header="Owner"></column>
+            <gog-column field="component" header="Component"></gog-column>
+            <gog-column field="owner" header="Owner"></gog-column>
           </gog-table>
         </div>
         <div class="field-row__col">
           <p class="demo-card__meta">emptyPlaceholder="N/A"</p>
           <gog-table [value]="sparseRows" [showRowNumbers]="false" emptyPlaceholder="N/A" size="sm">
-            <column field="component" header="Component"></column>
-            <column field="owner" header="Owner"></column>
+            <gog-column field="component" header="Component"></gog-column>
+            <gog-column field="owner" header="Owner"></gog-column>
           </gog-table>
         </div>
       </div>
@@ -130,8 +140,8 @@
       </p>
       <div class="demo-card__preview">
         <gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">
-          <column field="component" header="Component"></column>
-          <column field="status" header="Status"></column>
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
         </gog-table>
       </div>
       <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
@@ -147,9 +157,9 @@
           Toggle loading
         </gog-button>
         <gog-table [value]="rows" [loading]="loading()" [pageSize]="3">
-          <column field="component" header="Component"></column>
-          <column field="status" header="Status"></column>
-          <column field="owner" header="Owner"></column>
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
         </gog-table>
       </div>
       <app-code-tabs [html]="loadingHtml" [ts]="loadingTs" />
@@ -165,8 +175,8 @@
           {{ showEmpty() ? 'Restore rows' : 'Clear rows' }}
         </gog-button>
         <gog-table [value]="showEmpty() ? [] : rows" size="sm">
-          <column field="component" header="Component"></column>
-          <column field="owner" header="Owner"></column>
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
         </gog-table>
       </div>
       <app-code-tabs [html]="emptyHtml" [ts]="emptyTs" />
@@ -206,7 +216,7 @@
       </table>
     </div>
 
-    <h3 class="doc-section__subtitle">&lt;column&gt; — Inputs</h3>
+    <h3 class="doc-section__subtitle">&lt;gog-column&gt; — Inputs</h3>
     <p class="doc-section__intro">
       One per field, declared as content inside <code>&lt;gog-table&gt;</code>.
     </p>
@@ -239,10 +249,53 @@
       </table>
     </div>
 
+    <h3 class="doc-section__subtitle">&lt;gog-column&gt; — Content slots</h3>
+    <p class="doc-section__intro">
+      Declared inside the column they belong to — see "Custom cell &amp; header markup" above.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Directive</th>
+            <th>Context</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of columnSlots; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.context }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="deprecations" class="doc-section__title font-heading">Deprecated in 21.3.0</h2>
+    <p class="doc-section__intro">
+      Both of these keep working until they are removed in 21.5.0, so a codebase can migrate one
+      table at a time.
+    </p>
+
+    <h3 class="doc-section__subtitle">&lt;column&gt; → &lt;gog-column&gt;</h3>
+    <p class="doc-section__intro">
+      <code>&lt;column&gt;</code> was the library's last unprefixed element name. The directive now
+      matches <code>gog-column, column</code>, and the <code>Column</code> export is aliased to
+      <code>GogColumn</code> — so the rename is a find-and-replace with no behaviour change.
+    </p>
+
     <h3 class="doc-section__subtitle">&lt;ng-template template="field"&gt; — Inputs</h3>
     <p class="doc-section__intro">
-      Marks a projected template as a custom renderer for one column's header or body cell — see
-      "Custom cell &amp; header templates" above.
+      Replaced by the <code>gogColumnBody</code> / <code>gogColumnHeader</code> slots above.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -255,7 +308,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (row of templateDirectiveInputs; track row.name) {
+          @for (row of deprecatedTemplateInputs; track row.name) {
             <tr>
               <td>
                 <code>{{ row.name }}</code>

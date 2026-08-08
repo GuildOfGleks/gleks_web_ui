@@ -60,17 +60,27 @@
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Custom icon template</h3>
+      <h3 class="demo-card__title">Custom icon</h3>
       <p class="demo-card__meta">
-        <code>iconTemplate</code> takes priority over <code>iconName</code>.
+        Project an <code>&lt;ng-template gogTagIcon&gt;</code> to replace the leading icon. It takes
+        priority over <code>iconName</code>.
       </p>
-      <ng-template #starIcon>
-        <gog-icon name="checkbox-checked" />
-      </ng-template>
       <div class="demo-card__preview">
-        <gog-tag variant="success" [iconTemplate]="starIcon">Featured</gog-tag>
+        <gog-tag variant="success">
+          <ng-template gogTagIcon>
+            <gog-icon name="checkbox-checked" />
+          </ng-template>
+          Featured
+        </gog-tag>
       </div>
       <app-code-tabs [html]="customIconHtml" [ts]="customIconTs" />
+
+      <p class="demo-card__meta">
+        This replaces the <code>iconTemplate</code> input, which is deprecated in 21.3.0 and removed
+        in 21.5.0. Both work meanwhile, and the projected slot wins when a call site has both —
+        which is what lets a codebase migrate one tag at a time.
+      </p>
+      <app-markdown [markdown]="migrateIconSnippet" />
     </article>
 
     <article class="demo-card">
@@ -116,6 +126,33 @@
               <td>{{ row.description }}</td>
             </tr>
           }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Content slots</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Slot</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>(default)</code></td>
+            <td>The tag's text.</td>
+          </tr>
+          <tr>
+            <td>
+              <code>&lt;ng-template gogTagIcon&gt;</code>
+            </td>
+            <td>
+              Replaces the leading icon. Wins over both <code>iconName</code> and the deprecated
+              <code>iconTemplate</code>.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

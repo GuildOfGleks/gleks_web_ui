@@ -1,7 +1,13 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GogSize, InputfieldComponent } from '@guildofgleks/ui';
+import {
+  GogInputAddonEndDirective,
+  GogInputAddonStartDirective,
+  GogSize,
+  IconComponent,
+  InputfieldComponent,
+} from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -88,22 +94,31 @@ const API_INPUTS: readonly ApiInputRow[] = [
     description: 'Leading / trailing icon name.',
   },
   {
-    name: 'iconStartTemplate / iconEndTemplate',
-    type: 'TemplateRef<unknown> | null',
-    default: 'null',
-    description: 'Custom leading / trailing icon, in place of iconStart / iconEnd.',
+    name: 'clearable',
+    type: 'boolean',
+    default: 'GOG_CONFIG.control.clearable ?? false',
+    description:
+      'Adds a clear button. It appears only once the field has something to clear and disappears again when empty, so it adds no permanent chrome. On a password field the built-in reveal toggle keeps the trailing slot.',
   },
   {
-    name: 'iconStartFn / iconEndFn',
-    type: '(() => void) | null',
-    default: 'null',
-    description: 'When set, the icon becomes a clickable button invoking this function.',
-  },
-  {
-    name: 'iconStartLabel / iconEndLabel',
+    name: 'clearAriaLabel',
     type: 'string',
-    default: "''",
-    description: 'Accessible label for the icon button — required when the matching *Fn is set.',
+    default: "'Clear'",
+    description: 'Accessible name for that clear button.',
+  },
+  {
+    name: 'floatLabel',
+    type: "'none' | 'in' | 'on' | 'over'",
+    default: "GOG_CONFIG.floatLabel.variant ?? 'none'",
+    description:
+      "Rests the label inside the field like a placeholder and floats it up on focus or once the field has content. 'in' stays inside the border, 'on' centres on the top border line, 'over' floats fully above it.",
+  },
+  {
+    name: 'floatLabelShowPlaceholder',
+    type: 'boolean',
+    default: 'GOG_CONFIG.floatLabel.showPlaceholder ?? false',
+    description:
+      'Reveals the field’s own placeholder once the label has floated out of the way. Off by default, since the resting label already occupies that space.',
   },
   {
     name: 'showPasswordLabel / hidePasswordLabel',
@@ -113,10 +128,34 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
 ];
 
+const DEPRECATED_ICON_INPUTS: readonly ApiInputRow[] = [
+  {
+    name: 'iconStartTemplate / iconEndTemplate',
+    type: 'TemplateRef<unknown> | null',
+    default: 'null',
+    description: 'Custom leading / trailing icon, in place of iconStart / iconEnd.',
+  },
+  {
+    name: 'iconStartFn / iconEndFn',
+    type: '(() => void) | null',
+    default: 'null',
+    description: 'When set, the icon became a clickable button invoking this function.',
+  },
+  {
+    name: 'iconStartLabel / iconEndLabel',
+    type: 'string',
+    default: "''",
+    description: 'Accessible label for that icon button — required when the matching *Fn was set.',
+  },
+];
+
 @Component({
   selector: 'app-inputfield-doc-page',
   imports: [
     InputfieldComponent,
+    GogInputAddonStartDirective,
+    GogInputAddonEndDirective,
+    IconComponent,
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
@@ -130,12 +169,14 @@ export class InputfieldDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly apiInputs = API_INPUTS;
+  protected readonly deprecatedIconInputs = DEPRECATED_ICON_INPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'input-field')?.tokens ?? [];
 
   protected readonly name = signal('');
   protected readonly password = signal('');
   protected readonly search = signal('');
+  protected readonly amount = signal('');
   protected readonly manualErrorValue = signal('');
   protected readonly lastIconAction = signal('No icon action yet.');
 
@@ -204,19 +245,10 @@ export class InputfieldDocPage {
     '}',
   ].join('\n');
 
-  protected readonly iconsHtml = [
-    '<gog-inputfield label="Search" iconStart="info" placeholder="Decorative start icon" />',
-    '',
-    '<gog-inputfield',
-    '  label="Clearable"',
-    '  iconEnd="close"',
-    '  iconEndLabel="Clear"',
-    '  [iconEndFn]="clearSearch"',
-    '  [(value)]="search"',
-    '/>',
-  ].join('\n');
+  protected readonly iconsHtml =
+    '<gog-inputfield label="Search" iconStart="info" placeholder="Decorative start icon" />';
   protected readonly iconsTs = [
-    "import { Component, signal } from '@angular/core';",
+    "import { Component } from '@angular/core';",
     "import { InputfieldComponent } from '@guildofgleks/ui';",
     '',
     '@Component({',
@@ -224,23 +256,124 @@ export class InputfieldDocPage {
     '  imports: [InputfieldComponent],',
     '  template: `',
     '    <gog-inputfield label="Search" iconStart="info" placeholder="Decorative start icon" />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+
+  protected readonly addonHtml = [
+    '<gog-inputfield label="Amount" [(value)]="amount">',
+    '  <span gogInputAddonStart>$</span>',
+    '  <span gogInputAddonEnd>USD</span>',
+    '</gog-inputfield>',
     '',
-    '    <gog-inputfield',
-    '      label="Clearable"',
-    '      iconEnd="close"',
-    '      iconEndLabel="Clear"',
-    '      [iconEndFn]="clearSearch"',
-    '      [(value)]="search"',
-    '    />',
+    '<gog-inputfield label="Search" [(value)]="search">',
+    '  <button type="button" gogInputAddonEnd aria-label="Clear search" (click)="clearSearch()">',
+    '    <gog-icon name="close" />',
+    '  </button>',
+    '</gog-inputfield>',
+  ].join('\n');
+  protected readonly addonTs = [
+    "import { Component, signal } from '@angular/core';",
+    'import {',
+    '  GogInputAddonEndDirective,',
+    '  GogInputAddonStartDirective,',
+    '  IconComponent,',
+    '  InputfieldComponent,',
+    "} from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [',
+    '    InputfieldComponent,',
+    '    GogInputAddonStartDirective,',
+    '    GogInputAddonEndDirective,',
+    '    IconComponent,',
+    '  ],',
+    '  template: `',
+    '    <gog-inputfield label="Amount" [(value)]="amount">',
+    '      <span gogInputAddonStart>$</span>',
+    '      <span gogInputAddonEnd>USD</span>',
+    '    </gog-inputfield>',
+    '',
+    '    <gog-inputfield label="Search" [(value)]="search">',
+    '      <button',
+    '        type="button"',
+    '        gogInputAddonEnd',
+    '        aria-label="Clear search"',
+    '        (click)="clearSearch()"',
+    '      >',
+    '        <gog-icon name="close" />',
+    '      </button>',
+    '    </gog-inputfield>',
     '  `,',
     '})',
     'export class ExampleComponent {',
+    "  protected readonly amount = signal('');",
     "  protected readonly search = signal('');",
     '',
-    '  protected clearSearch = (): void => {',
+    '  // A plain method on a real button — no callback threaded through the field.',
+    '  protected clearSearch(): void {',
     "    this.search.set('');",
-    '  };',
+    '  }',
     '}',
+  ].join('\n');
+
+  protected readonly migrateAddonSnippet = [
+    '```html',
+    '<!-- 21.2.x — three inputs to get one actionable trailing icon -->',
+    '<gog-inputfield',
+    '  label="Search"',
+    '  iconEnd="close"',
+    '  iconEndLabel="Clear search"',
+    '  [iconEndFn]="clearSearch"',
+    '  [(value)]="search"',
+    '/>',
+    '',
+    '<!-- 21.3.0 — a real button, with its own aria-label and (click) -->',
+    '<gog-inputfield label="Search" [(value)]="search">',
+    '  <button type="button" gogInputAddonEnd aria-label="Clear search" (click)="clearSearch()">',
+    '    <gog-icon name="close" />',
+    '  </button>',
+    '</gog-inputfield>',
+    '',
+    '<!-- …or just let the component do it -->',
+    '<gog-inputfield label="Search" [clearable]="true" [(value)]="search" />',
+    '```',
+  ].join('\n');
+
+  protected readonly clearableValue = signal('Clear me');
+  protected readonly clearableHtml =
+    '<gog-inputfield label="Search" [clearable]="true" [(value)]="search" />';
+  protected readonly clearableTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `<gog-inputfield label="Search" [clearable]="true" [(value)]="search" />`,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly search = signal('');",
+    '}',
+  ].join('\n');
+
+  protected readonly floatLabelHtml = [
+    '<gog-inputfield label="in" floatLabel="in" />',
+    '<gog-inputfield label="on" floatLabel="on" />',
+    '<gog-inputfield label="over" floatLabel="over" />',
+  ].join('\n');
+  protected readonly floatLabelTs = [
+    "import { Component } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `<gog-inputfield label="Email" floatLabel="on" />`,',
+    '})',
+    'export class ExampleComponent {}',
   ].join('\n');
 
   protected readonly errorHtml = [
@@ -371,8 +504,8 @@ export class InputfieldDocPage {
     'export class ExampleComponent {}',
   ].join('\n');
 
-  protected clearSearch = (): void => {
+  protected clearSearch(): void {
     this.search.set('');
     this.lastIconAction.set('Search cleared');
-  };
+  }
 }

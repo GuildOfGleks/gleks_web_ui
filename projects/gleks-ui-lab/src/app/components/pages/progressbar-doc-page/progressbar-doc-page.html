@@ -1,0 +1,180 @@
+<div class="progressbar-doc">
+  <header class="progressbar-doc__hero">
+    <p class="progressbar-doc__eyebrow">gog-progressbar</p>
+    <h1 class="progressbar-doc__title font-heading">Progress Bar</h1>
+    <p class="progressbar-doc__lead">
+      A horizontal progress indicator in three modes — determinate, indeterminate and buffer — five
+      sizes and the library's semantic color set.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the component and drop it into a template.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-progressbar [value]="42" ariaLabel="Upload progress" />
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Modes</h3>
+      <p class="demo-card__meta">
+        <code>determinate</code> reflects <code>value</code>. <code>indeterminate</code> is work of
+        unknown length. <code>buffer</code> draws a second, lighter level ahead of the fill — a
+        streaming or preload position.
+      </p>
+      <div class="demo-card__preview progressbar-demo__stack">
+        <div>
+          <p class="doc-section__meta">determinate</p>
+          <gog-progressbar [value]="42" ariaLabel="Upload" />
+        </div>
+        <div>
+          <p class="doc-section__meta">indeterminate</p>
+          <gog-progressbar mode="indeterminate" ariaLabel="Loading" />
+        </div>
+        <div>
+          <p class="doc-section__meta">buffer</p>
+          <gog-progressbar mode="buffer" [value]="42" [buffer]="70" ariaLabel="Playback" />
+        </div>
+      </div>
+      <app-code-tabs [html]="modesHtml" [ts]="modesTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Variants</h3>
+      <p class="demo-card__meta">
+        <code>accent</code> is the default — progress is usually just "the app is working", which is
+        not one of the four status hues.
+      </p>
+      <div class="demo-card__preview progressbar-demo__stack">
+        @for (variantOption of variants; track variantOption) {
+          <div>
+            <p class="doc-section__meta">{{ variantOption }}</p>
+            <gog-progressbar [variant]="variantOption" [value]="65" [ariaLabel]="variantOption" />
+          </div>
+        }
+      </div>
+      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">Five thickness steps, from a hairline to a chunky bar.</p>
+      <div class="demo-card__preview progressbar-demo__stack">
+        @for (sizeOption of sizes; track sizeOption) {
+          <div>
+            <p class="doc-section__meta">{{ sizeOption }}</p>
+            <gog-progressbar [size]="sizeOption" [value]="65" [ariaLabel]="sizeOption" />
+          </div>
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Showing the value, and clamping</h3>
+      <p class="demo-card__meta">
+        <code>showValue</code> renders the rounded percentage beside the bar. Push the value past
+        either end below: it is clamped to 0–100 rather than trusted, so a bar driven straight from
+        <code>loaded / total</code> cannot break the layout when the last chunk overshoots.
+      </p>
+      <div class="demo-card__preview progressbar-demo__stack">
+        <gog-progressbar [value]="uploaded()" [showValue]="true" ariaLabel="Upload progress" />
+        <div class="action-row">
+          <gog-button variant="outline" (gogClick)="step(-25)">−25</gog-button>
+          <gog-button variant="outline" (gogClick)="step(25)">+25</gog-button>
+          <span class="doc-section__meta">value = {{ uploaded() }}</span>
+        </div>
+      </div>
+      <app-code-tabs [html]="showValueHtml" [ts]="showValueTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      The host carries <code>role="progressbar"</code> with <code>aria-valuemin</code> /
+      <code>aria-valuemax</code> and, in determinate and buffer mode,
+      <code>aria-valuenow</code> plus a readable <code>aria-valuetext</code>.
+    </p>
+    <p class="doc-section__intro">
+      In indeterminate mode it reports <strong>no</strong> <code>aria-valuenow</code> at all — that
+      omission is precisely what marks it indeterminate. Reporting <code>0</code> instead would
+      announce "0 percent" forever. Its animation is also replaced by a static stripe under
+      <code>prefers-reduced-motion</code>.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the progress bar paints with. Override any of them — on a single
+      instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

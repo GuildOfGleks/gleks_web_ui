@@ -1,7 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GogDropdownOption, GogSize, IconComponent, MultiselectComponent } from '@guildofgleks/ui';
+import {
+  GogDropdownChevronDirective,
+  GogDropdownOption,
+  GogDropdownOptionDirective,
+  GogMultiselectClearIconDirective,
+  GogSize,
+  IconComponent,
+  MultiselectComponent,
+} from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -11,6 +19,13 @@ interface ApiInputRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+}
+
+/** A deliberately un-`GogDropdownOption`-shaped DTO, to show the accessors doing their job. */
+interface User {
+  readonly uuid: string;
+  readonly profile: { readonly fullName: string; readonly role: string };
+  readonly suspended: boolean;
 }
 
 const API_INPUTS: readonly ApiInputRow[] = [
@@ -36,9 +51,89 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
   {
     name: 'options',
-    type: 'GogDropdownOption[]',
+    type: 'TOption[]',
     default: '[]',
-    description: 'The list of choices: { id: string | number; name: string; disabled?: boolean }.',
+    description:
+      'The list of choices — your own objects. GogDropdownOption ({ id, name, disabled? }) is just the shape the default accessors expect, not a requirement.',
+  },
+  {
+    name: 'optionLabel',
+    type: 'string | ((o: TOption) => string)',
+    default: "'name'",
+    description:
+      'How an option turns into its visible text: a property path (dot-paths included) or a function.',
+  },
+  {
+    name: 'optionValue',
+    type: 'string | ((o: TOption) => unknown) | null',
+    default: "'id'",
+    description:
+      'How an option turns into an emitted value. Set it to null and the control emits the option OBJECTS themselves.',
+  },
+  {
+    name: 'optionDisabled',
+    type: 'string | ((o: TOption) => boolean)',
+    default: "'disabled'",
+    description: 'Which options cannot be picked.',
+  },
+  {
+    name: 'clearable',
+    type: 'boolean',
+    default: 'GOG_CONFIG.control.clearable ?? true',
+    description:
+      'Adds a clear button in the outermost trailing position. Deliberately the one control that defaults to true: gog-multiselect shipped a clear button before this input existed, and defaulting it to false would have silently removed it.',
+  },
+  {
+    name: 'clearAriaLabel',
+    type: 'string',
+    default: "'Clear selection'",
+    description: 'Accessible name for that clear button.',
+  },
+  {
+    name: 'filter',
+    type: 'boolean',
+    default: 'GOG_CONFIG.dropdown.filter ?? false',
+    description:
+      'Puts a search box in the panel, matching case-insensitively on the resolved optionLabel. "Select all" then takes only the VISIBLE options, so it means what it says while a filter is active.',
+  },
+  {
+    name: 'filterPosition',
+    type: "'top' | 'bottom'",
+    default: "GOG_CONFIG.dropdown.filterPosition ?? 'top'",
+    description:
+      'Which end of the panel the search box sticks to — the same vocabulary as controlsPosition, rather than a second one for the same idea.',
+  },
+  {
+    name: 'filterPlaceholder / filterEmptyMessage',
+    type: 'string',
+    default: "'Search...' / 'No matches'",
+    description: 'Wording for the search box and for the empty result.',
+  },
+  {
+    name: 'filterMatch',
+    type: '((option: TOption, query: string) => boolean) | null',
+    default: 'null',
+    description: 'Replaces the default case-insensitive substring match with your own predicate.',
+  },
+  {
+    name: 'floatLabel',
+    type: "'none' | 'in' | 'on' | 'over'",
+    default: "GOG_CONFIG.floatLabel.variant ?? 'none'",
+    description:
+      'Rests the label inside the field like a placeholder and floats it up once the selection is non-empty or the field has focus.',
+  },
+  {
+    name: 'floatLabelShowPlaceholder',
+    type: 'boolean',
+    default: 'GOG_CONFIG.floatLabel.showPlaceholder ?? false',
+    description: 'Reveals the placeholder once the label has floated out of the way.',
+  },
+  {
+    name: 'minWidth',
+    type: 'string | null',
+    default: 'null (--gog-multiselect-min-width, 120px)',
+    description:
+      'Floor for an auto-width trigger, any CSS length — so a short selection cannot collapse the field to its own chrome.',
   },
   {
     name: 'showControls',
@@ -57,7 +152,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'clearIconTemplate',
     type: 'TemplateRef<unknown> | null',
     default: 'null',
-    description: 'Custom icon for the "clear" control, in place of the default.',
+    description:
+      'Deprecated since 21.3.0, removed in 21.5.0 — project an <ng-template gogMultiselectClearIcon> instead. Still works, and the projected slot wins when both are present.',
   },
   {
     name: 'errorMessage',
@@ -68,14 +164,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'errorDisplay',
     type: "'auto' | 'manual'",
-    default: "'manual'",
+    default: "GOG_CONFIG.control.errorDisplay ?? 'manual'",
     description:
       "'manual': shown for as long as errorMessage is non-empty — you decide the timing. 'auto': shown once the attached FormControl is touched and invalid; falls back to manual without one.",
   },
   {
     name: 'size',
     type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'",
-    default: "'md'",
+    default: "GOG_CONFIG.control.size ?? 'md'",
     description: 'Field height, padding, and font size.',
   },
   {
@@ -94,7 +190,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'dropdownDirection',
     type: "'auto' | 'up' | 'down'",
-    default: "'auto'",
+    default: "GOG_CONFIG.dropdown.direction ?? 'auto'",
     description:
       "Which side the panel opens on. 'auto' flips to whichever side has room in the viewport.",
   },
@@ -110,7 +206,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: 'string | null',
     default: 'null',
     description:
-      'Fixed panel width, any CSS length. Applies only with appendToBody — otherwise the panel matches the trigger width.',
+      'Fixed panel width, any CSS length. Applies only with appendToBody. Left unset, the panel sizes to its own content with the trigger width as a floor, capped by --gog-{select,multiselect}-panel-max-width — so picking a short option no longer cuts the longer ones off the list.',
   },
   {
     name: 'dropdownMaxHeight',
@@ -121,7 +217,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'appendToBody',
     type: 'boolean',
-    default: 'false',
+    default: 'GOG_CONFIG.dropdown.appendToBody ?? false',
     description:
       "Portals the panel into document.body instead of rendering it inline — escapes an ancestor's scroll/overflow clipping.",
   },
@@ -129,7 +225,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'chevronTemplate',
     type: 'TemplateRef<unknown> | null',
     default: 'null',
-    description: 'Custom trigger icon, in place of the default chevron.',
+    description:
+      'Deprecated since 21.3.0, removed in 21.5.0 — project an <ng-template gogDropdownChevron> instead. Still works, and the projected slot wins when both are present.',
   },
 ];
 
@@ -137,6 +234,9 @@ const API_INPUTS: readonly ApiInputRow[] = [
   selector: 'app-multiselect-doc-page',
   imports: [
     MultiselectComponent,
+    GogDropdownOptionDirective,
+    GogDropdownChevronDirective,
+    GogMultiselectClearIconDirective,
     IconComponent,
     MarkdownComponent,
     CodeTabsComponent,
@@ -445,11 +545,14 @@ export class MultiselectDocPage {
   ].join('\n');
 
   protected readonly chevronHtml = [
-    '<ng-template #sortChevron>',
-    '  <gog-icon name="sort" />',
-    '</ng-template>',
-    '',
-    '<gog-multiselect [options]="sortOptions" [chevronTemplate]="sortChevron" [(value)]="sortValue" />',
+    '<gog-multiselect [options]="sortOptions" [(value)]="sortValue">',
+    '  <ng-template gogDropdownChevron>',
+    '    <gog-icon name="sort" />',
+    '  </ng-template>',
+    '  <ng-template gogMultiselectClearIcon>',
+    '    <gog-icon name="error" />',
+    '  </ng-template>',
+    '</gog-multiselect>',
     '',
     '<gog-multiselect',
     '  ariaLabel="Tags (no visible label)"',
@@ -460,17 +563,31 @@ export class MultiselectDocPage {
   ].join('\n');
   protected readonly chevronTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, IconComponent, MultiselectComponent } from '@guildofgleks/ui';",
+    'import {',
+    '  GogDropdownChevronDirective,',
+    '  GogDropdownOption,',
+    '  GogMultiselectClearIconDirective,',
+    '  IconComponent,',
+    '  MultiselectComponent,',
+    "} from '@guildofgleks/ui';",
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [MultiselectComponent, IconComponent],',
+    '  imports: [',
+    '    MultiselectComponent,',
+    '    GogDropdownChevronDirective,',
+    '    GogMultiselectClearIconDirective,',
+    '    IconComponent,',
+    '  ],',
     '  template: `',
-    '    <ng-template #sortChevron>',
-    '      <gog-icon name="sort" />',
-    '    </ng-template>',
-    '',
-    '    <gog-multiselect [options]="sortOptions" [chevronTemplate]="sortChevron" [(value)]="sortValue" />',
+    '    <gog-multiselect [options]="sortOptions" [(value)]="sortValue">',
+    '      <ng-template gogDropdownChevron>',
+    '        <gog-icon name="sort" />',
+    '      </ng-template>',
+    '      <ng-template gogMultiselectClearIcon>',
+    '        <gog-icon name="error" />',
+    '      </ng-template>',
+    '    </gog-multiselect>',
     '',
     '    <gog-multiselect',
     '      ariaLabel="Tags (no visible label)"',
@@ -526,4 +643,133 @@ export class MultiselectDocPage {
     '  protected readonly compactPanelValue = signal<(string | number)[]>([]);',
     '}',
   ].join('\n');
+
+  // ---- 21.3.0: option accessors, filtering, option slot -----------------------------------
+
+  protected readonly users: User[] = [
+    { uuid: 'u1', profile: { fullName: 'Ada Lovelace', role: 'Engineering' }, suspended: false },
+    { uuid: 'u2', profile: { fullName: 'Grace Hopper', role: 'Engineering' }, suspended: false },
+    { uuid: 'u3', profile: { fullName: 'Katherine Johnson', role: 'Research' }, suspended: false },
+    { uuid: 'u4', profile: { fullName: 'Radia Perlman', role: 'Networking' }, suspended: true },
+  ];
+  protected readonly reviewerIds = signal<(string | number)[]>([]);
+  protected readonly slotReviewerIds = signal<(string | number)[]>([]);
+  protected readonly filteredCountries = signal<(string | number)[]>([]);
+  protected readonly overflowCountries = signal<(string | number)[]>([]);
+
+  protected readonly accessorsHtml = [
+    '<gog-multiselect',
+    '  label="Reviewers"',
+    '  optionLabel="profile.fullName"',
+    '  optionValue="uuid"',
+    '  optionDisabled="suspended"',
+    '  [options]="users"',
+    '  [(value)]="reviewerIds"',
+    '/>',
+  ].join('\n');
+  protected readonly accessorsTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { MultiselectComponent } from '@guildofgleks/ui';",
+    '',
+    'interface User {',
+    '  uuid: string;',
+    '  profile: { fullName: string; role: string };',
+    '  suspended: boolean;',
+    '}',
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [MultiselectComponent],',
+    '  template: `',
+    '    <gog-multiselect',
+    '      label="Reviewers"',
+    '      optionLabel="profile.fullName"',
+    '      optionValue="uuid"',
+    '      optionDisabled="suspended"',
+    '      [options]="users"',
+    '      [(value)]="reviewerIds"',
+    '    />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly users: User[] = [/* straight from the API */];',
+    '  protected readonly reviewerIds = signal<(string | number)[]>([]);',
+    '}',
+  ].join('\n');
+
+  protected readonly filterHtml = [
+    '<gog-multiselect',
+    '  label="Country"',
+    '  [filter]="true"',
+    '  [showControls]="true"',
+    '  filterPlaceholder="Search countries…"',
+    '  filterEmptyMessage="No country matches"',
+    '  [options]="countries"',
+    '  [(value)]="selected"',
+    '/>',
+  ].join('\n');
+  protected readonly filterTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { MultiselectComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [MultiselectComponent],',
+    '  template: `',
+    '    <gog-multiselect',
+    '      label="Country"',
+    '      [filter]="true"',
+    '      [showControls]="true"',
+    '      [options]="countries"',
+    '      [(value)]="selected"',
+    '    />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  // With a filter active, "select all" takes only what is visible.',
+    '  protected readonly selected = signal<(string | number)[]>([]);',
+    '}',
+  ].join('\n');
+
+  protected readonly optionSlotHtml = [
+    '<gog-multiselect',
+    '  label="Reviewers"',
+    '  optionLabel="profile.fullName"',
+    '  optionValue="uuid"',
+    '  [options]="users"',
+    '  [(value)]="reviewerIds"',
+    '>',
+    '  <ng-template gogDropdownOption let-user let-label="label">',
+    '    <strong>{{ label }}</strong>',
+    '    <small>{{ user.profile.role }}</small>',
+    '  </ng-template>',
+    '</gog-multiselect>',
+  ].join('\n');
+  protected readonly optionSlotTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { GogDropdownOptionDirective, MultiselectComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [MultiselectComponent, GogDropdownOptionDirective],',
+    '  template: `',
+    '    <gog-multiselect optionLabel="profile.fullName" [options]="users" [(value)]="reviewerIds">',
+    '      <ng-template gogDropdownOption let-user let-label="label">',
+    '        <strong>{{ label }}</strong>',
+    '        <small>{{ asUser(user).profile.role }}</small>',
+    '      </ng-template>',
+    '    </gog-multiselect>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  // The slot hands the option back as `unknown`, so narrow it once here.',
+    '  protected asUser(option: unknown): User {',
+    '    return option as User;',
+    '  }',
+    '}',
+  ].join('\n');
+
+  protected asUser(option: unknown): User {
+    return option as User;
+  }
 }

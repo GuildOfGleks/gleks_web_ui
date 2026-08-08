@@ -107,6 +107,35 @@
       </div>
       <app-code-tabs [html]="autoWidthHtml" [ts]="autoWidthTs" />
     </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Clearable</h3>
+      <p class="demo-card__meta">
+        The clear button is value-driven: it appears once there is something to clear and vanishes
+        when there isn't, so it adds no permanent chrome. Type into the field below and watch it
+        appear. Also settable app-wide with <code>GOG_CONFIG.control.clearable</code>.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-textarea label="Notes" [clearable]="true" [(value)]="clearableValue" />
+      </div>
+      <app-code-tabs [html]="clearableHtml" [ts]="clearableTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Float label</h3>
+      <p class="demo-card__meta">
+        <code>floatLabel</code> rests the label inside the field like a placeholder and floats it up
+        on focus or once the field has content. The three variants differ only in where it lands:
+        <code>in</code> stays inside the border, <code>on</code> centres on the top border line, and
+        <code>over</code> floats fully above it. Click into each to see it move.
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-textarea label="in" floatLabel="in" [rows]="2" />
+        <gog-textarea label="on" floatLabel="on" [rows]="2" />
+        <gog-textarea label="over" floatLabel="over" [rows]="2" />
+      </div>
+      <app-code-tabs [html]="floatLabelHtml" [ts]="floatLabelTs" />
+    </article>
   </section>
 
   <section class="doc-section">

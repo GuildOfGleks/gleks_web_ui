@@ -116,6 +116,29 @@
       </div>
       <app-code-tabs [html]="faqHtml" [ts]="faqTs" />
     </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Close when focus leaves</h3>
+      <p class="demo-card__meta">
+        <code>collapseOnFocusOut</code> closes the panel once focus leaves both the trigger and the
+        content — Tab past the last field inside, or click elsewhere on the page. It is off by
+        default: an FAQ list or a settings section read top to bottom wants the panel to stay open
+        regardless of where focus goes next.
+      </p>
+      <div class="demo-card__preview">
+        <gog-collapsible [(open)]="focusOutOpen" [collapseOnFocusOut]="true">
+          <button type="button" gogCollapsibleTrigger class="doc-trigger">
+            Filters
+            <gog-icon [name]="focusOutOpen() ? 'chevron-up' : 'chevron-down'" />
+          </button>
+          <div gogCollapsibleContent class="doc-panel">
+            <p>Tab forward from here and the panel closes behind you.</p>
+            <gog-button variant="outline">A focusable control</gog-button>
+          </div>
+        </gog-collapsible>
+      </div>
+      <app-code-tabs [html]="focusOutHtml" [ts]="focusOutTs" />
+    </article>
   </section>
 
   <section class="doc-section">

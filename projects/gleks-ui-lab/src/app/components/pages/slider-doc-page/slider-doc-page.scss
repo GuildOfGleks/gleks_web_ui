@@ -151,3 +151,11 @@
     border-bottom: none;
   }
 }
+
+.slider-demo {
+  &__vertical {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+  }
+}

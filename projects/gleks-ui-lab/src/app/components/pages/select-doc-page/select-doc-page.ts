@@ -1,7 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GogDropdownOption, GogSize, IconComponent, SelectComponent } from '@guildofgleks/ui';
+import {
+  GogDropdownChevronDirective,
+  GogDropdownOption,
+  GogDropdownOptionDirective,
+  GogSize,
+  IconComponent,
+  SelectComponent,
+} from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -11,6 +18,13 @@ interface ApiInputRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+}
+
+/** A deliberately un-`GogDropdownOption`-shaped DTO, to show the accessors doing their job. */
+interface User {
+  readonly uuid: string;
+  readonly profile: { readonly fullName: string; readonly role: string };
+  readonly suspended: boolean;
 }
 
 const API_INPUTS: readonly ApiInputRow[] = [
@@ -42,9 +56,83 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
   {
     name: 'options',
-    type: 'GogDropdownOption[]',
+    type: 'TOption[]',
     default: '[]',
-    description: 'The list of choices: { id: string | number; name: string; disabled?: boolean }.',
+    description:
+      'The list of choices — your own objects. GogDropdownOption ({ id, name, disabled? }) is just the shape the default accessors expect, not a requirement.',
+  },
+  {
+    name: 'optionLabel',
+    type: 'string | ((o: TOption) => string)',
+    default: "'name'",
+    description:
+      'How an option turns into its visible text: a property path (dot-paths included, "profile.fullName") or a function.',
+  },
+  {
+    name: 'optionValue',
+    type: 'string | ((o: TOption) => unknown) | null',
+    default: "'id'",
+    description:
+      'How an option turns into the emitted value. Set it to null and the control emits the option OBJECT itself — the same reference you passed in.',
+  },
+  {
+    name: 'optionDisabled',
+    type: 'string | ((o: TOption) => boolean)',
+    default: "'disabled'",
+    description: 'Which options cannot be picked.',
+  },
+  {
+    name: 'clearable',
+    type: 'boolean',
+    default: 'GOG_CONFIG.control.clearable ?? false',
+    description:
+      'Adds a clear button in the outermost trailing position, with the chevron shifting inward when it appears. It shows only once something is selected — which is what removes the need for a fake "— not selected —" option just to make a choice undoable.',
+  },
+  {
+    name: 'clearAriaLabel',
+    type: 'string',
+    default: "'Clear selection'",
+    description: 'Accessible name for that clear button.',
+  },
+  {
+    name: 'filter',
+    type: 'boolean',
+    default: 'GOG_CONFIG.dropdown.filter ?? false',
+    description:
+      'Puts a search box in the panel, matching case-insensitively on the resolved optionLabel. The query resets when the panel closes.',
+  },
+  {
+    name: 'filterPosition',
+    type: "'top' | 'bottom'",
+    default: "GOG_CONFIG.dropdown.filterPosition ?? 'top'",
+    description:
+      'Which end of the panel the search box sticks to. It carries a divider on the side facing the list, so it reads as chrome rather than as a row.',
+  },
+  {
+    name: 'filterPlaceholder / filterEmptyMessage',
+    type: 'string',
+    default: "'Search...' / 'No matches'",
+    description: 'Wording for the search box and for the empty result.',
+  },
+  {
+    name: 'filterMatch',
+    type: '((option: TOption, query: string) => boolean) | null',
+    default: 'null',
+    description:
+      'Replaces the default case-insensitive substring match — for searching a field the label does not show, or for fuzzy matching.',
+  },
+  {
+    name: 'floatLabel',
+    type: "'none' | 'in' | 'on' | 'over'",
+    default: "GOG_CONFIG.floatLabel.variant ?? 'none'",
+    description:
+      'Rests the label inside the field like a placeholder and floats it up once something is selected or the field has focus.',
+  },
+  {
+    name: 'floatLabelShowPlaceholder',
+    type: 'boolean',
+    default: 'GOG_CONFIG.floatLabel.showPlaceholder ?? false',
+    description: 'Reveals the placeholder once the label has floated out of the way.',
   },
   {
     name: 'errorMessage',
@@ -55,14 +143,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'errorDisplay',
     type: "'auto' | 'manual'",
-    default: "'manual'",
+    default: "GOG_CONFIG.control.errorDisplay ?? 'manual'",
     description:
       "'manual': shown for as long as errorMessage is non-empty — you decide the timing. 'auto': shown once the attached FormControl is touched and invalid; falls back to manual without one.",
   },
   {
     name: 'size',
     type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'",
-    default: "'md'",
+    default: "GOG_CONFIG.control.size ?? 'md'",
     description: 'Field height, padding, and font size.',
   },
   {
@@ -79,9 +167,16 @@ const API_INPUTS: readonly ApiInputRow[] = [
       'Fills its container by default. Set false to shrink to fit the selected label instead.',
   },
   {
+    name: 'minWidth',
+    type: 'string | null',
+    default: 'null (--gog-select-min-width, 120px)',
+    description:
+      'Floor for an auto-width trigger, any CSS length — so a short selection cannot collapse the field to its own chrome.',
+  },
+  {
     name: 'dropdownDirection',
     type: "'auto' | 'up' | 'down'",
-    default: "'auto'",
+    default: "GOG_CONFIG.dropdown.direction ?? 'auto'",
     description:
       "Which side the panel opens on. 'auto' flips to whichever side has room in the viewport.",
   },
@@ -97,7 +192,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: 'string | null',
     default: 'null',
     description:
-      'Fixed panel width, any CSS length. Applies only with appendToBody — otherwise the panel matches the trigger width.',
+      'Fixed panel width, any CSS length. Applies only with appendToBody. Left unset, the panel sizes to its own content with the trigger width as a floor, capped by --gog-{select,multiselect}-panel-max-width — so picking a short option no longer cuts the longer ones off the list.',
   },
   {
     name: 'dropdownMaxHeight',
@@ -108,15 +203,16 @@ const API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'appendToBody',
     type: 'boolean',
-    default: 'false',
+    default: 'GOG_CONFIG.dropdown.appendToBody ?? false',
     description:
-      "Portals the panel into document.body instead of rendering it inline — escapes an ancestor's scroll/overflow clipping.",
+      "Portals the panel into document.body instead of rendering it inline — escapes an ancestor's scroll/overflow clipping. Worth setting app-wide for a layout whose dropdowns generally live inside scrollable containers.",
   },
   {
     name: 'chevronTemplate',
     type: 'TemplateRef<unknown> | null',
     default: 'null',
-    description: 'Custom trigger icon, in place of the default chevron.',
+    description:
+      'Deprecated since 21.3.0, removed in 21.5.0 — project an <ng-template gogDropdownChevron> instead. Still works, and the projected slot wins when both are present.',
   },
 ];
 
@@ -124,6 +220,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
   selector: 'app-select-doc-page',
   imports: [
     SelectComponent,
+    GogDropdownOptionDirective,
+    GogDropdownChevronDirective,
     IconComponent,
     MarkdownComponent,
     CodeTabsComponent,
@@ -365,11 +463,11 @@ export class SelectDocPage {
   ].join('\n');
 
   protected readonly chevronHtml = [
-    '<ng-template #sortChevron>',
-    '  <gog-icon name="sort" />',
-    '</ng-template>',
-    '',
-    '<gog-select [options]="sortOptions" [chevronTemplate]="sortChevron" [(value)]="sortValue" />',
+    '<gog-select [options]="sortOptions" [(value)]="sortValue">',
+    '  <ng-template gogDropdownChevron>',
+    '    <gog-icon name="sort" />',
+    '  </ng-template>',
+    '</gog-select>',
     '',
     '<gog-select',
     '  ariaLabel="Country (no visible label)"',
@@ -380,17 +478,22 @@ export class SelectDocPage {
   ].join('\n');
   protected readonly chevronTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, IconComponent, SelectComponent } from '@guildofgleks/ui';",
+    'import {',
+    '  GogDropdownChevronDirective,',
+    '  GogDropdownOption,',
+    '  IconComponent,',
+    '  SelectComponent,',
+    "} from '@guildofgleks/ui';",
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [SelectComponent, IconComponent],',
+    '  imports: [SelectComponent, GogDropdownChevronDirective, IconComponent],',
     '  template: `',
-    '    <ng-template #sortChevron>',
-    '      <gog-icon name="sort" />',
-    '    </ng-template>',
-    '',
-    '    <gog-select [options]="sortOptions" [chevronTemplate]="sortChevron" [(value)]="sortValue" />',
+    '    <gog-select [options]="sortOptions" [(value)]="sortValue">',
+    '      <ng-template gogDropdownChevron>',
+    '        <gog-icon name="sort" />',
+    '      </ng-template>',
+    '    </gog-select>',
     '',
     '    <gog-select',
     '      ariaLabel="Country (no visible label)"',
@@ -409,6 +512,202 @@ export class SelectDocPage {
     '  protected readonly ariaOnlyValue = signal<string | number | null>(null);',
     '}',
   ].join('\n');
+
+  // ---- 21.3.0: option accessors, filtering, clearable, option slot -------------------------
+
+  protected readonly users: User[] = [
+    { uuid: 'u1', profile: { fullName: 'Ada Lovelace', role: 'Engineering' }, suspended: false },
+    { uuid: 'u2', profile: { fullName: 'Grace Hopper', role: 'Engineering' }, suspended: false },
+    { uuid: 'u3', profile: { fullName: 'Katherine Johnson', role: 'Research' }, suspended: false },
+    { uuid: 'u4', profile: { fullName: 'Radia Perlman', role: 'Networking' }, suspended: true },
+  ];
+  protected readonly userId = signal<string | number | null>(null);
+  protected readonly userObject = signal<User | null>(null);
+  protected readonly slotUserId = signal<string | number | null>(null);
+  protected readonly filteredCountry = signal<string | number | null>(null);
+  protected readonly clearablePlan = signal<string | number | null>('pro');
+
+  protected readonly accessorsHtml = [
+    '<!-- A real DTO goes straight in: no mapping into { id, name } first. -->',
+    '<gog-select',
+    '  label="Assignee"',
+    '  optionLabel="profile.fullName"',
+    '  optionValue="uuid"',
+    '  optionDisabled="suspended"',
+    '  [options]="users"',
+    '  [(value)]="userId"',
+    '/>',
+    '',
+    '<!-- [optionValue]="null" hands back the option object itself. -->',
+    '<gog-select',
+    '  label="Assignee (object)"',
+    '  optionLabel="profile.fullName"',
+    '  [optionValue]="null"',
+    '  [options]="users"',
+    '  [(value)]="userObject"',
+    '/>',
+  ].join('\n');
+  protected readonly accessorsTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { SelectComponent } from '@guildofgleks/ui';",
+    '',
+    'interface User {',
+    '  uuid: string;',
+    '  profile: { fullName: string; role: string };',
+    '  suspended: boolean;',
+    '}',
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [SelectComponent],',
+    '  template: `',
+    '    <gog-select',
+    '      label="Assignee"',
+    '      optionLabel="profile.fullName"',
+    '      optionValue="uuid"',
+    '      optionDisabled="suspended"',
+    '      [options]="users"',
+    '      [(value)]="userId"',
+    '    />',
+    '',
+    '    <gog-select',
+    '      label="Assignee (object)"',
+    '      optionLabel="profile.fullName"',
+    '      [optionValue]="null"',
+    '      [options]="users"',
+    '      [(value)]="userObject"',
+    '    />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly users: User[] = [/* straight from the API */];',
+    '',
+    '  // An id…',
+    '  protected readonly userId = signal<string | number | null>(null);',
+    '  // …or the object itself, the same reference that went in.',
+    '  protected readonly userObject = signal<User | null>(null);',
+    '}',
+  ].join('\n');
+
+  protected readonly filterHtml = [
+    '<gog-select',
+    '  label="Country"',
+    '  [filter]="true"',
+    '  filterPlaceholder="Search countries…"',
+    '  filterEmptyMessage="No country matches"',
+    '  [options]="manyCountries"',
+    '  [(value)]="filteredCountry"',
+    '/>',
+    '',
+    '<!-- filterMatch replaces the default substring match on the label. -->',
+    '<gog-select',
+    '  label="Assignee"',
+    '  optionLabel="profile.fullName"',
+    '  optionValue="uuid"',
+    '  [filter]="true"',
+    '  [filterMatch]="matchNameOrRole"',
+    '  [options]="users"',
+    '  [(value)]="userId"',
+    '/>',
+  ].join('\n');
+  protected readonly filterTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { SelectComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [SelectComponent],',
+    '  template: `',
+    '    <gog-select',
+    '      label="Assignee"',
+    '      optionLabel="profile.fullName"',
+    '      [filter]="true"',
+    '      [filterMatch]="matchNameOrRole"',
+    '      [options]="users"',
+    '      [(value)]="userId"',
+    '    />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  // Searches a field the label never shows.',
+    '  protected readonly matchNameOrRole = (user: User, query: string): boolean => {',
+    '    const needle = query.toLowerCase();',
+    '    return (',
+    '      user.profile.fullName.toLowerCase().includes(needle) ||',
+    '      user.profile.role.toLowerCase().includes(needle)',
+    '    );',
+    '  };',
+    '}',
+  ].join('\n');
+
+  protected readonly clearableHtml = [
+    '<gog-select label="Plan" [clearable]="true" [options]="plansWithDisabled" [(value)]="plan" />',
+  ].join('\n');
+  protected readonly clearableTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { SelectComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [SelectComponent],',
+    '  template: `',
+    '    <gog-select label="Plan" [clearable]="true" [options]="plans" [(value)]="plan" />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly plan = signal<string | number | null>('pro');",
+    '}',
+  ].join('\n');
+
+  protected readonly optionSlotHtml = [
+    '<gog-select',
+    '  label="Assignee"',
+    '  optionLabel="profile.fullName"',
+    '  optionValue="uuid"',
+    '  [options]="users"',
+    '  [(value)]="slotUserId"',
+    '>',
+    '  <ng-template gogDropdownOption let-user let-label="label" let-selected="selected">',
+    '    <strong>{{ label }}</strong>',
+    '    <small>{{ user.profile.role }}</small>',
+    '  </ng-template>',
+    '</gog-select>',
+  ].join('\n');
+  protected readonly optionSlotTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { GogDropdownOptionDirective, SelectComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [SelectComponent, GogDropdownOptionDirective],',
+    '  template: `',
+    '    <gog-select optionLabel="profile.fullName" [options]="users" [(value)]="userId">',
+    '      <ng-template gogDropdownOption let-user let-label="label">',
+    '        <strong>{{ label }}</strong>',
+    '        <small>{{ asUser(user).profile.role }}</small>',
+    '      </ng-template>',
+    '    </gog-select>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  // The slot hands the option back as `unknown`, so narrow it once here.',
+    '  protected asUser(option: unknown): User {',
+    '    return option as User;',
+    '  }',
+    '}',
+  ].join('\n');
+
+  protected readonly matchNameOrRole = (user: unknown, query: string): boolean => {
+    const needle = query.toLowerCase();
+    const { profile } = user as User;
+    return (
+      profile.fullName.toLowerCase().includes(needle) || profile.role.toLowerCase().includes(needle)
+    );
+  };
+
+  protected asUser(option: unknown): User {
+    return option as User;
+  }
 
   protected readonly appendToBodyHtml = [
     '<gog-select',

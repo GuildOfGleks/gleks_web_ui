@@ -1,0 +1,12 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('badge-doc');
+
+.badge-demo {
+  // Badges overhang their host's corner, so a plain 12px gap lets them collide with the
+  // neighbouring control. Extra breathing room here rather than in the token.
+  &__row {
+    gap: 24px;
+    padding: 8px 4px;
+  }
+}

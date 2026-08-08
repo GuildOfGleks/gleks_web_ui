@@ -1,0 +1,183 @@
+<div class="badge-doc">
+  <header class="badge-doc__hero">
+    <p class="badge-doc__eyebrow">gogBadge</p>
+    <h1 class="badge-doc__title font-heading">Badge</h1>
+    <p class="badge-doc__lead">
+      A count or status dot pinned to the corner of another element. A
+      <strong>directive, not a component</strong> — it decorates a button, an icon or an avatar
+      without wrapping it, so the host's own layout is untouched.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the directive and put it on the element to decorate.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-button gogBadge="12" badgeAriaLabel="12 unread messages">Inbox</gog-button>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="zero" class="doc-section__title font-heading">It never renders "0"</h2>
+    <p class="doc-section__intro">
+      A badge reading <code>0</code> is the defining bug of this component class, so it is not
+      reachable: <code>0</code>, <code>null</code> and <code>''</code> render nothing at all. That
+      means a call site can bind a count straight from state without guarding it behind an
+      <code>&#64;if</code>.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview action-row">
+        <gog-button [gogBadge]="unread()" badgeAriaLabel="Unread messages">Inbox</gog-button>
+        <gog-button variant="outline" (gogClick)="addOne()">Add one</gog-button>
+        <gog-button variant="outline" (gogClick)="removeOne()">Remove one</gog-button>
+        <span class="doc-section__meta">count = {{ unread() }}</span>
+      </div>
+      <app-code-tabs [html]="zeroHtml" [ts]="zeroTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Variants</h3>
+      <p class="demo-card__meta">
+        The library's four semantic colors. <code>danger</code> is the default, since an unread
+        count is the common case.
+      </p>
+      <div class="demo-card__preview action-row badge-demo__row">
+        @for (variantOption of variants; track variantOption) {
+          <gog-button gogBadge="7" [badgeVariant]="variantOption">{{ variantOption }}</gog-button>
+        }
+      </div>
+      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Positions</h3>
+      <p class="demo-card__meta">
+        Named by block/inline edge rather than left/right, so the badge follows the writing
+        direction in an RTL layout.
+      </p>
+      <div class="demo-card__preview action-row badge-demo__row">
+        @for (position of positions; track position) {
+          <gog-button gogBadge="4" [badgePosition]="position">{{ position }}</gog-button>
+        }
+      </div>
+      <app-code-tabs [html]="positionsHtml" [ts]="positionsTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Dot</h3>
+      <p class="demo-card__meta">
+        <code>badgeDot</code> drops the text and leaves a mark — "something changed here", with no
+        count to give. A dot shows even with no value bound.
+      </p>
+      <div class="demo-card__preview action-row badge-demo__row">
+        <gog-icon name="info" gogBadge badgeDot badgeAriaLabel="Unread updates" />
+        <gog-button gogBadge badgeDot badgeVariant="success">Synced</gog-button>
+      </div>
+      <app-code-tabs [html]="dotHtml" [ts]="dotTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Caps and hiding</h3>
+      <p class="demo-card__meta">
+        Counts above <code>badgeMax</code> (99 by default) render as <code>N+</code>. Non-numeric
+        content passes through untouched, so <code>"NEW"</code> works as a label.
+        <code>badgeHidden</code> keeps the badge out of the DOM without removing the directive.
+      </p>
+      <div class="demo-card__preview action-row badge-demo__row">
+        <gog-button [gogBadge]="128">Default max</gog-button>
+        <gog-button [gogBadge]="128" [badgeMax]="999">badgeMax = 999</gog-button>
+        <gog-button gogBadge="NEW" badgeVariant="info">Text badge</gog-button>
+        <gog-button [gogBadge]="5" [badgeHidden]="true">Hidden</gog-button>
+      </div>
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      Left alone, the badge text is announced inline with the host's own label — "Inbox 12". Set
+      <code>badgeAriaLabel</code> and the visible badge becomes <code>aria-hidden</code> while your
+      wording is announced in its place, so the host reads as "Inbox, 12 unread messages" instead. A
+      dot has no text of its own, so it needs <code>badgeAriaLabel</code> to be announced at all.
+    </p>
+    <p class="doc-section__intro">
+      The badge node is created in the browser only. That is deliberate: a node the server renders
+      but the client's hydration walk knows nothing about is an <code>NG0500</code> mismatch, so it
+      costs one frame after hydration and buys a directive that is safe in an SSR app.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the badge paints with. Override any of them — on a single instance,
+      a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

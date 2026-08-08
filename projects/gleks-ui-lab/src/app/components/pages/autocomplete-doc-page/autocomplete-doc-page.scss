@@ -1,0 +1,20 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('autocomplete-doc');
+
+.autocomplete-demo {
+  &__field {
+    max-width: 360px;
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+
+    small {
+      color: var(--gog-muted-text-color);
+      font-size: var(--gog-text-xs);
+    }
+  }
+}

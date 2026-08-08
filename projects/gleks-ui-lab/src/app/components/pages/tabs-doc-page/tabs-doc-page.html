@@ -1,0 +1,345 @@
+<div class="tabs-doc">
+  <header class="tabs-doc__hero">
+    <p class="tabs-doc__eyebrow">gog-tabs / gog-tab</p>
+    <h1 class="tabs-doc__title font-heading">Tabs</h1>
+    <p class="tabs-doc__lead">
+      A tablist over projected <code>&lt;gog-tab&gt;</code> children. Each tab declares its own
+      header text, icon and disabled state, so a tab is defined in exactly one place rather than
+      split between a header array and a content block.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import both components and nest them.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-tabs ariaLabel="Account" [(activeIndex)]="activeIndex">
+          <gog-tab label="Profile">
+            <p class="tabs-demo__panel">Profile content.</p>
+          </gog-tab>
+          <gog-tab label="Settings" iconName="info">
+            <p class="tabs-demo__panel">Settings content.</p>
+          </gog-tab>
+          <gog-tab label="Billing" [disabled]="true">
+            <p class="tabs-demo__panel">Not available.</p>
+          </gog-tab>
+        </gog-tabs>
+        <p class="doc-section__meta">activeIndex = {{ activeIndex() }}</p>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="eager-vs-lazy" class="doc-section__title font-heading">Eager or lazy content</h2>
+    <p class="doc-section__intro">
+      Content written directly inside a <code>&lt;gog-tab&gt;</code> renders eagerly and is merely
+      <em>hidden</em> while inactive — which is what you want for cheap content, because scroll
+      position, un-submitted input and any state the DOM is holding all survive a switch. Wrap it in
+      an <code>&lt;ng-template gogTabContent&gt;</code> and it is instead built on first activation
+      and kept alive after.
+    </p>
+    <p class="doc-section__intro">
+      Which you get is decided by whether that template is present — there is no
+      <code>lazy</code> input to keep in sync with it.
+    </p>
+    <div class="demo-card">
+      <p class="demo-card__meta">
+        Type in the first tab, switch to the second and back: the text is still there. The third
+        tab's content is not in the DOM until you open it.
+      </p>
+      <div class="demo-card__preview">
+        <gog-tabs ariaLabel="Content strategy">
+          <gog-tab label="Eager">
+            <p class="tabs-demo__panel">
+              <input class="tabs-demo__input" placeholder="Type here, switch away, come back" />
+            </p>
+          </gog-tab>
+          <gog-tab label="Another">
+            <p class="tabs-demo__panel">Switch back to see the input still holds its text.</p>
+          </gog-tab>
+          <gog-tab label="Lazy">
+            <ng-template gogTabContent>
+              <p class="tabs-demo__panel">
+                Built on first activation, then kept alive. Nothing rendered this until you clicked
+                it.
+              </p>
+            </ng-template>
+          </gog-tab>
+        </gog-tabs>
+      </div>
+      <app-code-tabs [html]="lazyHtml" [ts]="lazyTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Alignment</h3>
+      <p class="demo-card__meta">
+        <code>stretch</code> makes the headers share the full width; the other three pack them to
+        one end or the middle.
+      </p>
+      <div class="demo-card__preview tabs-demo__stack">
+        @for (alignment of alignments; track alignment) {
+          <div>
+            <p class="doc-section__meta">{{ alignment }}</p>
+            <gog-tabs [align]="alignment" [ariaLabel]="alignment" [(activeIndex)]="alignIndex">
+              <gog-tab label="Overview">
+                <p class="tabs-demo__panel">Overview.</p>
+              </gog-tab>
+              <gog-tab label="Activity">
+                <p class="tabs-demo__panel">Activity.</p>
+              </gog-tab>
+              <gog-tab label="Members">
+                <p class="tabs-demo__panel">Members.</p>
+              </gog-tab>
+            </gog-tabs>
+          </div>
+        }
+      </div>
+      <app-code-tabs [html]="alignHtml" [ts]="alignTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Vertical</h3>
+      <p class="demo-card__meta">
+        The tablist runs down the side. Arrow keys follow the orientation, so
+        <code>ArrowDown</code> moves between tabs here and is left to the page when horizontal.
+      </p>
+      <div class="demo-card__preview">
+        <gog-tabs orientation="vertical" ariaLabel="Vertical example">
+          <gog-tab label="General">
+            <p class="tabs-demo__panel">General settings.</p>
+          </gog-tab>
+          <gog-tab label="Security">
+            <p class="tabs-demo__panel">Security settings.</p>
+          </gog-tab>
+          <gog-tab label="Advanced">
+            <p class="tabs-demo__panel">Advanced settings.</p>
+          </gog-tab>
+        </gog-tabs>
+      </div>
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Overflowing headers</h3>
+      <p class="demo-card__meta">
+        Too many headers to fit scroll inside a
+        <a routerLink="/components/scroll">gog-scroll</a> rather than a native
+        <code>overflow-x</code> — a native scrollbar is the one piece of chrome no
+        <code>--gog-*</code> token can reach.
+      </p>
+      <div class="demo-card__preview tabs-demo__narrow">
+        <gog-tabs ariaLabel="Many tabs">
+          <gog-tab label="Inbox"><p class="tabs-demo__panel">Inbox.</p></gog-tab>
+          <gog-tab label="Drafts"><p class="tabs-demo__panel">Drafts.</p></gog-tab>
+          <gog-tab label="Sent items"><p class="tabs-demo__panel">Sent.</p></gog-tab>
+          <gog-tab label="Archived"><p class="tabs-demo__panel">Archived.</p></gog-tab>
+          <gog-tab label="Spam"><p class="tabs-demo__panel">Spam.</p></gog-tab>
+          <gog-tab label="Deleted"><p class="tabs-demo__panel">Deleted.</p></gog-tab>
+        </gog-tabs>
+      </div>
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom headers</h3>
+      <p class="demo-card__meta">
+        A <code>gogTabHeader</code> template replaces the header button's content for every tab,
+        with the <code>gog-tab</code> itself plus <code>active</code>, <code>disabled</code> and
+        <code>index</code> in its context.
+      </p>
+      <div class="demo-card__preview">
+        <gog-tabs ariaLabel="Inbox">
+          <ng-template gogTabHeader let-tab let-active="active">
+            <span>{{ tab.label() }}</span>
+            @if (active) {
+              <gog-tag variant="info" size="xsm">now</gog-tag>
+            }
+          </ng-template>
+
+          <gog-tab label="Unread"><p class="tabs-demo__panel">Unread messages.</p></gog-tab>
+          <gog-tab label="Archived"><p class="tabs-demo__panel">Archived messages.</p></gog-tab>
+        </gog-tabs>
+      </div>
+      <app-code-tabs [html]="headerSlotHtml" [ts]="headerSlotTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      The headers form a real tablist: one tab stop for the whole row, arrow keys to move between
+      tabs (following <code>orientation</code>, so a horizontal tablist leaves
+      <code>ArrowDown</code> to the page), and Home/End to jump to the ends. Disabled tabs are
+      skipped rather than merely unclickable.
+    </p>
+    <p class="doc-section__intro">
+      Each panel is a <code>tabpanel</code> labelled by its header and is itself focusable, so
+      tabbing out of the tablist lands in the content. Set <code>ariaLabel</code> on
+      <code>&lt;gog-tabs&gt;</code> to name the set.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">gog-tabs — inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">gog-tabs — outputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Payload</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiOutputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">gog-tab — inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of tabInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Content slots</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Directive</th>
+            <th>Declared on</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <code>gogTabContent</code>
+            </td>
+            <td>
+              <code>gog-tab</code>
+            </td>
+            <td>Makes that tab's content lazy — built on first activation, kept alive after.</td>
+          </tr>
+          <tr>
+            <td>
+              <code>gogTabHeader</code>
+            </td>
+            <td>
+              <code>gog-tabs</code>
+            </td>
+            <td>
+              Replaces the header button's content. Context:
+              <code>{{ '$' }}implicit</code> (the tab), <code>active</code>, <code>disabled</code>,
+              <code>index</code>.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the tabs paint with. Override any of them — on a single instance, a
+      subtree, or a theme — to restyle them. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

@@ -33,9 +33,15 @@ export class App {
   private readonly themeService = inject(ThemeService);
   private readonly elRef = inject(ElementRef<HTMLElement>);
 
+  // The first two ship with the library itself; `slate` / `one-*` are its importable presets
+  // (see the Theming page); `primeng` / `material` are this site's own look-alikes, declared in
+  // styles.scss, for the comparison pages.
   protected readonly themeOptions: ThemeMenuOption[] = [
     { value: 'light', label: 'Light' },
     { value: 'dark', label: 'Dark' },
+    { value: 'slate', label: 'Slate' },
+    { value: 'one-dark', label: 'One Dark' },
+    { value: 'one-light', label: 'One Light' },
     { value: 'primeng', label: 'PrimeNG' },
     { value: 'material', label: 'Material' },
   ];

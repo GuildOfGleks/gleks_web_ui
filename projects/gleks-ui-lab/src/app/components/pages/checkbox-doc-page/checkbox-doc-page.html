@@ -111,6 +111,24 @@
       <p class="demo-card__meta">Control value: {{ formControl.value }}</p>
       <app-code-tabs [html]="formHtml" [ts]="formTs" />
     </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom check icon</h3>
+      <p class="demo-card__meta">
+        Project an <code>&lt;ng-template gogCheckboxIcon&gt;</code> to replace the checkmark drawn
+        inside the box. This replaces the <code>checkIconTemplate</code> input, deprecated in 21.3.0
+        and removed in 21.5.0 — both work meanwhile, and the projected slot wins when a call site
+        has both.
+      </p>
+      <div class="demo-card__preview">
+        <gog-checkbox label="Custom mark" [checked]="true">
+          <ng-template gogCheckboxIcon>
+            <gog-icon name="close" />
+          </ng-template>
+        </gog-checkbox>
+      </div>
+      <app-code-tabs [html]="checkIconHtml" [ts]="checkIconTs" />
+    </article>
   </section>
 
   <section class="doc-section">
@@ -142,6 +160,29 @@
               <td>{{ row.description }}</td>
             </tr>
           }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Content slots</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Slot</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <code>&lt;ng-template gogCheckboxIcon&gt;</code>
+            </td>
+            <td>
+              Replaces the checkmark drawn inside the box when checked. Wins over the deprecated
+              <code>checkIconTemplate</code> input.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

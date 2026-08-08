@@ -1,0 +1,31 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('tabs-doc');
+
+.tabs-demo {
+  &__panel {
+    margin: 0;
+    font-size: var(--gog-text-sm);
+    color: var(--gog-muted-text-color);
+  }
+
+  &__input {
+    font: inherit;
+    padding: 6px 10px;
+    border: 1px solid var(--gog-border-color);
+    border-radius: var(--gog-radius);
+    background: var(--gog-background-color);
+    color: var(--gog-text-color);
+  }
+
+  &__stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  // Deliberately narrow, so the header row has to overflow and scroll.
+  &__narrow {
+    max-width: 320px;
+  }
+}

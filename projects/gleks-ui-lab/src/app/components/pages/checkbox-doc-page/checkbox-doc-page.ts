@@ -1,7 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { CheckboxComponent, GogSize } from '@guildofgleks/ui';
+import {
+  CheckboxComponent,
+  GogCheckboxIconDirective,
+  GogSize,
+  IconComponent,
+} from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -65,7 +70,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'checkIconTemplate',
     type: 'TemplateRef<unknown> | null',
     default: 'null',
-    description: 'Replaces the default checkmark icon rendered inside the box when checked.',
+    description:
+      'Deprecated since 21.3.0, removed in 21.5.0 — project an <ng-template gogCheckboxIcon> instead. Still works, and the projected slot wins when both are present.',
   },
 ];
 
@@ -73,6 +79,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
   selector: 'app-checkbox-doc-page',
   imports: [
     CheckboxComponent,
+    GogCheckboxIconDirective,
+    IconComponent,
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
@@ -280,6 +288,35 @@ export class CheckboxDocPage {
     'export class ExampleComponent {',
     '  protected readonly control = new FormControl(false, { nonNullable: true });',
     '}',
+  ].join('\n');
+
+  protected readonly checkIconHtml = [
+    '<gog-checkbox label="Custom mark" [checked]="true">',
+    '  <ng-template gogCheckboxIcon>',
+    '    <gog-icon name="close" />',
+    '  </ng-template>',
+    '</gog-checkbox>',
+  ].join('\n');
+  protected readonly checkIconTs = [
+    "import { Component } from '@angular/core';",
+    'import {',
+    '  CheckboxComponent,',
+    '  GogCheckboxIconDirective,',
+    '  IconComponent,',
+    "} from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [CheckboxComponent, GogCheckboxIconDirective, IconComponent],',
+    '  template: `',
+    '    <gog-checkbox label="Custom mark" [checked]="true">',
+    '      <ng-template gogCheckboxIcon>',
+    '        <gog-icon name="close" />',
+    '      </ng-template>',
+    '    </gog-checkbox>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {}',
   ].join('\n');
 
   protected setAll(checked: boolean): void {

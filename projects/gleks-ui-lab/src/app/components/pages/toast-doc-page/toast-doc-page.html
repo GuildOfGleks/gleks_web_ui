@@ -129,6 +129,16 @@
   </section>
 
   <section class="doc-section">
+    <h2 id="global-config" class="doc-section__title font-heading">App-wide defaults</h2>
+    <p class="doc-section__intro">
+      The corner toasts appear in and how long they stay up were constants until 21.3.0; both are
+      now settable once, app-wide. An individual <code>show()</code> call still overrides them. See
+      <a routerLink="/general/global-config">Global Configuration</a> for the full set of keys.
+    </p>
+    <app-markdown [markdown]="configSnippet" />
+  </section>
+
+  <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">ToastConfig</h3>

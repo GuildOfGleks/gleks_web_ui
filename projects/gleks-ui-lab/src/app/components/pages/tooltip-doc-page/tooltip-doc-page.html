@@ -1,0 +1,198 @@
+<div class="tooltip-doc">
+  <header class="tooltip-doc__hero">
+    <p class="tooltip-doc__eyebrow">gogTooltip</p>
+    <h1 class="tooltip-doc__title font-heading">Tooltip</h1>
+    <p class="tooltip-doc__lead">
+      A hover/focus tooltip as a <strong>directive, not a component</strong> — drop it on any
+      element, a <code>gog-*</code> component's own host tag or a plain native one, and that element
+      needs to know nothing about it.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the directive and put it on the trigger.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage — hover or tab onto either of these:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview action-row">
+        <gog-button gogTooltip="Save changes">Save</gog-button>
+        <gog-chip gogTooltip="Not visible to anyone else yet">Draft</gog-chip>
+        <gog-icon name="info" gogTooltip="An icon works too" />
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Position</h3>
+      <p class="demo-card__meta">
+        <code>auto</code> (the default) picks whichever side has room, preferring top, then bottom,
+        then right, then left. An explicit side still flips to its opposite when the requested one
+        has no room but the opposite does — so a tooltip near the viewport edge stays readable
+        rather than being clipped.
+      </p>
+      <div class="demo-card__preview action-row tooltip-demo__row">
+        @for (position of positions; track position) {
+          <gog-button [gogTooltip]="'Rendered on the ' + position" [gogTooltipPosition]="position">
+            {{ position }}
+          </gog-button>
+        }
+      </div>
+      <app-code-tabs [html]="positionsHtml" [ts]="positionsTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Rich content</h3>
+      <p class="demo-card__meta">
+        Pass a <code>TemplateRef</code> instead of a string when the bubble needs real markup.
+      </p>
+      <ng-template #richHint>
+        <strong>Deployment blocked</strong>
+        <p class="tooltip-demo__hint">
+          Two checks are still running. <gog-tag variant="warning">CI</gog-tag>
+        </p>
+      </ng-template>
+      <div class="demo-card__preview">
+        <gog-button [gogTooltip]="richHint">Deploy</gog-button>
+      </div>
+      <app-code-tabs [html]="templateHtml" [ts]="templateTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Long content is hoverable and scrollable</h3>
+      <p class="demo-card__meta">
+        Content wraps at <code>--gog-tooltip-max-width</code> and scrolls past
+        <code>--gog-tooltip-max-height</code> inside an internal
+        <a routerLink="/components/scroll">gog-scroll</a>, so it uses the same themeable scrollbar
+        as every other overflowing panel here. Moving the pointer from the trigger onto the bubble
+        cancels the pending hide instead of racing it — per WCAG 2.1 SC 1.4.13.
+      </p>
+      <div class="demo-card__preview">
+        <gog-button [gogTooltip]="longText">Hover, then move onto the bubble</gog-button>
+      </div>
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Delays and disabling</h3>
+      <p class="demo-card__meta">
+        <code>gogTooltipShowDelay</code> defaults to 300 ms and <code>gogTooltipHideDelay</code> to
+        100 ms — the hide gap is what gives the pointer time to travel onto the bubble.
+        <code>gogTooltipDisabled</code> suppresses the tooltip without removing the directive.
+      </p>
+      <div class="demo-card__preview action-row">
+        <gog-button gogTooltip="Appears at once" [gogTooltipShowDelay]="0">No delay</gog-button>
+        <gog-button gogTooltip="Takes a second" [gogTooltipShowDelay]="1000">Slow</gog-button>
+        <gog-button gogTooltip="Never shown" [gogTooltipDisabled]="true">Disabled</gog-button>
+      </div>
+      <app-code-tabs [html]="delaysHtml" [ts]="delaysTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="global-config" class="doc-section__title font-heading">App-wide defaults</h2>
+    <p class="doc-section__intro">
+      Position and both delays read <code>GOG_CONFIG.tooltip</code>, so a house style is set once.
+      An instance's own input always wins.
+    </p>
+    <app-markdown [markdown]="configSnippet" />
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling-one-bubble" class="doc-section__title font-heading">Restyling one bubble</h2>
+    <p class="doc-section__intro">
+      The bubble is appended to <code>document.body</code>, so it is never clipped by an ancestor's
+      <code>overflow: hidden</code> — and so it sits outside any scoped component stylesheet. That
+      is the same limitation <code>gog-select</code>'s <code>[appendToBody]</code> panel has:
+      <code>gogTooltipClass</code> applies a class to the bubble, but the rules for that class have
+      to come from an unscoped (global) stylesheet.
+    </p>
+    <p class="doc-section__intro">
+      Visually the bubble is the same floating-panel recipe as a dialog panel or a dropdown —
+      surface background, plain border, panel shadow — rather than a bespoke inverted bubble, so it
+      reads as part of a themed app instead of something dropped on top of it.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      Shown on both mouse hover and keyboard focus, dismissible with Escape, and hoverable so a long
+      bubble can actually be read. Focus is tracked with <code>focusin</code> /
+      <code>focusout</code> rather than <code>focus</code> / <code>blur</code>, which keeps it
+      replay-safe under SSR event replay.
+    </p>
+    <p class="doc-section__intro">
+      A tooltip triggered inside a <a routerLink="/components/dialog">dialog</a> stacks above it —
+      the dialog panel raises <code>--gog-tooltip-z</code> the same way it raises the dropdown's.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the tooltip paints with. Override any of them — on a subtree or a
+      theme — to restyle it. See the <a routerLink="/general/theming">Theming</a> guide for the full
+      token-layering model, or the <a routerLink="/general/theme-generator">Theme Generator</a> to
+      tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

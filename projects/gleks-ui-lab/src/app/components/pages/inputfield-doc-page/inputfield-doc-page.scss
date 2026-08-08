@@ -144,3 +144,25 @@
     border-bottom: none;
   }
 }
+
+// Addon slots take arbitrary markup, so the demo supplies its own — the library styles the
+// slot's position, not what a consumer puts in it.
+.addon-text {
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}
+
+.addon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--gog-input-icon-color);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--gog-input-icon-hover-color);
+  }
+}

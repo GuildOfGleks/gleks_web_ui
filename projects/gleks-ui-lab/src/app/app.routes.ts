@@ -36,9 +36,35 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'components/autocomplete',
+    loadComponent: () =>
+      import('./components/pages/autocomplete-doc-page/autocomplete-doc-page').then(
+        (m) => m.AutocompleteDocPage,
+      ),
+  },
+  {
+    path: 'components/badge',
+    loadComponent: () =>
+      import('./components/pages/badge-doc-page/badge-doc-page').then((m) => m.BadgeDocPage),
+  },
+  {
     path: 'components/button',
     loadComponent: () =>
       import('./components/pages/button-doc-page/button-doc-page').then((m) => m.ButtonDocPage),
+  },
+  {
+    path: 'components/button-toggle',
+    loadComponent: () =>
+      import('./components/pages/button-toggle-doc-page/button-toggle-doc-page').then(
+        (m) => m.ButtonToggleDocPage,
+      ),
+  },
+  {
+    path: 'components/calendar',
+    loadComponent: () =>
+      import('./components/pages/calendar-doc-page/calendar-doc-page').then(
+        (m) => m.CalendarDocPage,
+      ),
   },
   {
     path: 'components/checkbox',
@@ -60,9 +86,21 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'components/datepicker',
+    loadComponent: () =>
+      import('./components/pages/datepicker-doc-page/datepicker-doc-page').then(
+        (m) => m.DatepickerDocPage,
+      ),
+  },
+  {
     path: 'components/dialog',
     loadComponent: () =>
       import('./components/pages/dialog-doc-page/dialog-doc-page').then((m) => m.DialogDocPage),
+  },
+  {
+    path: 'components/divider',
+    loadComponent: () =>
+      import('./components/pages/divider-doc-page/divider-doc-page').then((m) => m.DividerDocPage),
   },
   {
     path: 'components/icon',
@@ -88,6 +126,20 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/pages/paginator-doc-page/paginator-doc-page').then(
         (m) => m.PaginatorDocPage,
+      ),
+  },
+  {
+    path: 'components/progressbar',
+    loadComponent: () =>
+      import('./components/pages/progressbar-doc-page/progressbar-doc-page').then(
+        (m) => m.ProgressbarDocPage,
+      ),
+  },
+  {
+    path: 'components/radio-group',
+    loadComponent: () =>
+      import('./components/pages/radio-group-doc-page/radio-group-doc-page').then(
+        (m) => m.RadioGroupDocPage,
       ),
   },
   {
@@ -123,6 +175,11 @@ export const routes: Routes = [
       import('./components/pages/table-doc-page/table-doc-page').then((m) => m.TableDocPage),
   },
   {
+    path: 'components/tabs',
+    loadComponent: () =>
+      import('./components/pages/tabs-doc-page/tabs-doc-page').then((m) => m.TabsDocPage),
+  },
+  {
     path: 'components/tag',
     loadComponent: () =>
       import('./components/pages/tag-doc-page/tag-doc-page').then((m) => m.TagDocPage),
@@ -138,6 +195,16 @@ export const routes: Routes = [
     path: 'components/toast',
     loadComponent: () =>
       import('./components/pages/toast-doc-page/toast-doc-page').then((m) => m.ToastDocPage),
+  },
+  {
+    path: 'components/toggle',
+    loadComponent: () =>
+      import('./components/pages/toggle-doc-page/toggle-doc-page').then((m) => m.ToggleDocPage),
+  },
+  {
+    path: 'components/tooltip',
+    loadComponent: () =>
+      import('./components/pages/tooltip-doc-page/tooltip-doc-page').then((m) => m.TooltipDocPage),
   },
   {
     path: 'components/:name',

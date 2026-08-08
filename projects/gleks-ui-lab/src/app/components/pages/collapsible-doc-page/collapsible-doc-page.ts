@@ -33,6 +33,13 @@ const API_INPUTS: readonly ApiRow[] = [
     description:
       "Blocks toggle() and the trigger's click handler. Programmatic [open] writes still work.",
   },
+  {
+    name: 'collapseOnFocusOut',
+    type: 'boolean',
+    default: 'false',
+    description:
+      'Closes the panel once focus leaves both the trigger and the content — Tabbing past the last focusable element inside, or a click landing elsewhere on the page. Off by default, since plenty of consumers (an FAQ list, a settings section read top to bottom) want the panel to stay open regardless of where focus goes next.',
+  },
 ];
 
 const DIRECTIVES: readonly { name: string; selector: string; description: string }[] = [
@@ -75,6 +82,47 @@ export class CollapsibleDocPage {
   protected readonly basicOpen = signal(false);
   protected readonly disabledOpen = signal(false);
   protected readonly controlledOpen = signal(false);
+  protected readonly focusOutOpen = signal(false);
+
+  protected readonly focusOutHtml = [
+    '<gog-collapsible [(open)]="open" [collapseOnFocusOut]="true">',
+    '  <button type="button" gogCollapsibleTrigger>Filters</button>',
+    '  <div gogCollapsibleContent>',
+    '    <p>Tab forward from here and the panel closes behind you.</p>',
+    '    <gog-button variant="outline">A focusable control</gog-button>',
+    '  </div>',
+    '</gog-collapsible>',
+  ].join('\n');
+  protected readonly focusOutTs = [
+    "import { Component, signal } from '@angular/core';",
+    'import {',
+    '  ButtonComponent,',
+    '  CollapsibleComponent,',
+    '  GogCollapsibleContentDirective,',
+    '  GogCollapsibleTriggerDirective,',
+    "} from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [',
+    '    ButtonComponent,',
+    '    CollapsibleComponent,',
+    '    GogCollapsibleTriggerDirective,',
+    '    GogCollapsibleContentDirective,',
+    '  ],',
+    '  template: `',
+    '    <gog-collapsible [(open)]="open" [collapseOnFocusOut]="true">',
+    '      <button type="button" gogCollapsibleTrigger>Filters</button>',
+    '      <div gogCollapsibleContent>',
+    '        <gog-button variant="outline">A focusable control</gog-button>',
+    '      </div>',
+    '    </gog-collapsible>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly open = signal(false);',
+    '}',
+  ].join('\n');
 
   protected readonly faqItems = signal([
     {

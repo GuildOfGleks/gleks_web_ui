@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/
 import { RouterLink } from '@angular/router';
 import {
   ButtonComponent,
-  Column,
+  GogColumn,
+  GogColumnBodyDirective,
+  GogColumnHeaderDirective,
   GogTagVariant,
   TableComponent,
   TagComponent,
-  TemplateDirective,
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -143,19 +144,41 @@ const COLUMN_INPUTS: readonly ApiRow[] = [
   },
 ];
 
-const TEMPLATE_DIRECTIVE_INPUTS: readonly ApiRow[] = [
+interface SlotRow {
+  readonly name: string;
+  readonly context: string;
+  readonly description: string;
+}
+
+const COLUMN_SLOTS: readonly SlotRow[] = [
+  {
+    name: 'gogColumnBody',
+    context: '$implicit / row (the row object), index, value',
+    description:
+      "Custom cell markup for this column. value is the already-resolved cell value for the column's field, so a custom cell can decorate it rather than re-derive it. index is the position within the rendered page, not the whole data set.",
+  },
+  {
+    name: 'gogColumnHeader',
+    context: "$implicit (the column's own header text), field",
+    description:
+      'Custom header markup for this column. The header text is handed in so a custom header can decorate it rather than restate it.',
+  },
+];
+
+const DEPRECATED_TEMPLATE_INPUTS: readonly ApiRow[] = [
   {
     name: 'template',
     type: 'string',
     default: 'required',
-    description: "The column field this template renders for — must match a <column>'s field.",
+    description:
+      'The column field this template rendered for — a string the compiler cannot check, so a typo silently fell back to the default cell. That is why it was replaced.',
   },
   {
     name: 'type',
     type: "'body' | 'header'",
     default: "'body'",
     description:
-      "'body' gets let-row (the row object) and let-index (its position). 'header' gets no context.",
+      "'body' got let-row (the row object) and let-index (its position). 'header' got no context.",
   },
 ];
 
@@ -163,8 +186,9 @@ const TEMPLATE_DIRECTIVE_INPUTS: readonly ApiRow[] = [
   selector: 'app-table-doc-page',
   imports: [
     TableComponent,
-    Column,
-    TemplateDirective,
+    GogColumn,
+    GogColumnBodyDirective,
+    GogColumnHeaderDirective,
     TagComponent,
     ButtonComponent,
     MarkdownComponent,
@@ -185,7 +209,8 @@ export class TableDocPage implements OnDestroy {
 
   protected readonly tableInputs = TABLE_INPUTS;
   protected readonly columnInputs = COLUMN_INPUTS;
-  protected readonly templateDirectiveInputs = TEMPLATE_DIRECTIVE_INPUTS;
+  protected readonly columnSlots = COLUMN_SLOTS;
+  protected readonly deprecatedTemplateInputs = DEPRECATED_TEMPLATE_INPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'table')?.tokens ?? [];
 
@@ -194,7 +219,7 @@ export class TableDocPage implements OnDestroy {
   private loadingTimer: ReturnType<typeof setTimeout> | null = null;
 
   protected readonly importSnippet =
-    "```typescript\nimport { Column, TableComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [TableComponent, Column],\n})\n```";
+    "```typescript\nimport { GogColumn, TableComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [TableComponent, GogColumn],\n})\n```";
 
   protected statusVariant(status: string): GogTagVariant {
     return STATUS_VARIANTS[status] ?? 'info';
@@ -202,15 +227,15 @@ export class TableDocPage implements OnDestroy {
 
   protected readonly overviewHtml = [
     '<gog-table [value]="rows">',
-    '  <column field="component" header="Component" [sortable]="true"></column>',
-    '  <column field="status" header="Status" [sortable]="true"></column>',
-    '  <column field="owner" header="Owner"></column>',
-    '  <column field="updated" header="Updated"></column>',
+    '  <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '  <gog-column field="status" header="Status" [sortable]="true"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
+    '  <gog-column field="updated" header="Updated"></gog-column>',
     '</gog-table>',
   ].join('\n');
   protected readonly overviewTs = [
     "import { Component } from '@angular/core';",
-    "import { Column, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
     '',
     'interface Row {',
     '  component: string;',
@@ -221,13 +246,13 @@ export class TableDocPage implements OnDestroy {
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [TableComponent, Column],',
+    '  imports: [TableComponent, GogColumn],',
     '  template: `',
     '    <gog-table [value]="rows">',
-    '      <column field="component" header="Component" [sortable]="true"></column>',
-    '      <column field="status" header="Status" [sortable]="true"></column>',
-    '      <column field="owner" header="Owner"></column>',
-    '      <column field="updated" header="Updated"></column>',
+    '      <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '      <gog-column field="status" header="Status" [sortable]="true"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
+    '      <gog-column field="updated" header="Updated"></gog-column>',
     '    </gog-table>',
     '  `,',
     '})',
@@ -241,21 +266,30 @@ export class TableDocPage implements OnDestroy {
 
   protected readonly templatesHtml = [
     '<gog-table [value]="rows" [showRowNumbers]="false">',
-    '  <column field="component" header="Component" [sortable]="true"></column>',
-    '  <column field="status" header="Status"></column>',
-    '  <column field="owner" header="Owner"></column>',
+    '  <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
     '',
-    '  <ng-template template="status" type="header">',
-    '    <span class="status-header">Status</span>',
-    '  </ng-template>',
-    '  <ng-template template="status" type="body" let-row>',
-    '    <gog-tag [variant]="statusVariant(row.status)" size="sm">{{ row.status }}</gog-tag>',
-    '  </ng-template>',
+    '  <gog-column field="status" header="Status">',
+    '    <ng-template gogColumnHeader let-header>',
+    '      <span class="status-header">{{ header }}</span>',
+    '    </ng-template>',
+    '    <ng-template gogColumnBody let-row let-value="value">',
+    '      <gog-tag [variant]="statusVariant(row.status)" size="sm">{{ value }}</gog-tag>',
+    '    </ng-template>',
+    '  </gog-column>',
+    '',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
     '</gog-table>',
   ].join('\n');
   protected readonly templatesTs = [
     "import { Component } from '@angular/core';",
-    "import { Column, GogTagVariant, TableComponent, TagComponent, TemplateDirective } from '@guildofgleks/ui';",
+    'import {',
+    '  GogColumn,',
+    '  GogColumnBodyDirective,',
+    '  GogColumnHeaderDirective,',
+    '  GogTagVariant,',
+    '  TableComponent,',
+    '  TagComponent,',
+    "} from '@guildofgleks/ui';",
     '',
     'const STATUS_VARIANTS: Record<string, GogTagVariant> = {',
     "  Ready: 'success',",
@@ -265,24 +299,32 @@ export class TableDocPage implements OnDestroy {
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [TableComponent, Column, TemplateDirective, TagComponent],',
+    '  imports: [',
+    '    TableComponent,',
+    '    GogColumn,',
+    '    GogColumnBodyDirective,',
+    '    GogColumnHeaderDirective,',
+    '    TagComponent,',
+    '  ],',
     '  template: `',
     '    <gog-table [value]="rows" [showRowNumbers]="false">',
-    '      <column field="component" header="Component" [sortable]="true"></column>',
-    '      <column field="status" header="Status"></column>',
-    '      <column field="owner" header="Owner"></column>',
+    '      <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
     '',
-    '      <ng-template template="status" type="header">',
-    '        <span class="status-header">Status</span>',
-    '      </ng-template>',
-    '      <ng-template template="status" type="body" let-row>',
-    '        <gog-tag [variant]="statusVariant(row.status)" size="sm">{{ row.status }}</gog-tag>',
-    '      </ng-template>',
+    '      <gog-column field="status" header="Status">',
+    '        <ng-template gogColumnHeader let-header>',
+    '          <span class="status-header">{{ header }}</span>',
+    '        </ng-template>',
+    '        <ng-template gogColumnBody let-row let-value="value">',
+    '          <gog-tag [variant]="statusVariant(row.status)" size="sm">{{ value }}</gog-tag>',
+    '        </ng-template>',
+    '      </gog-column>',
+    '',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
     '    </gog-table>',
     '  `,',
     '})',
     'export class ExampleComponent {',
-    '  protected readonly rows = [/* ... */];',
+    '  protected readonly rows: Row[] = [/* ... */];',
     '',
     '  protected statusVariant(status: string): GogTagVariant {',
     "    return STATUS_VARIANTS[status] ?? 'info';",
@@ -290,25 +332,43 @@ export class TableDocPage implements OnDestroy {
     '}',
   ].join('\n');
 
+  protected readonly migrateTemplateSnippet = [
+    '```html',
+    '<!-- 21.2.x — the template matched its column by a string the compiler cannot check, -->',
+    '<!-- so a typo silently fell back to the default cell. -->',
+    '<gog-table [value]="rows">',
+    '  <column field="status" header="Status"></column>',
+    '  <ng-template template="status" type="body" let-row>…</ng-template>',
+    '</gog-table>',
+    '',
+    '<!-- 21.3.0 — the template lives inside the column it belongs to. -->',
+    '<gog-table [value]="rows">',
+    '  <gog-column field="status" header="Status">',
+    '    <ng-template gogColumnBody let-row let-value="value">…</ng-template>',
+    '  </gog-column>',
+    '</gog-table>',
+    '```',
+  ].join('\n');
+
   protected readonly paginationHtml = [
     '<gog-table [value]="rows" [pageSize]="3" [showTotal]="true" totalPosition="left">',
-    '  <column field="component" header="Component" [sortable]="true"></column>',
-    '  <column field="status" header="Status" [sortable]="true"></column>',
-    '  <column field="owner" header="Owner"></column>',
+    '  <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '  <gog-column field="status" header="Status" [sortable]="true"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
     '</gog-table>',
   ].join('\n');
   protected readonly paginationTs = [
     "import { Component } from '@angular/core';",
-    "import { Column, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [TableComponent, Column],',
+    '  imports: [TableComponent, GogColumn],',
     '  template: `',
     '    <gog-table [value]="rows" [pageSize]="3" [showTotal]="true" totalPosition="left">',
-    '      <column field="component" header="Component" [sortable]="true"></column>',
-    '      <column field="status" header="Status" [sortable]="true"></column>',
-    '      <column field="owner" header="Owner"></column>',
+    '      <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '      <gog-column field="status" header="Status" [sortable]="true"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
     '    </gog-table>',
     '  `,',
     '})',
@@ -320,25 +380,25 @@ export class TableDocPage implements OnDestroy {
   protected readonly stickyHtml = [
     '<div style="max-height: 260px; overflow-y: auto;">',
     '  <gog-table [value]="rows" [stickyHeader]="true">',
-    '    <column field="component" header="Component"></column>',
-    '    <column field="status" header="Status"></column>',
-    '    <column field="owner" header="Owner"></column>',
+    '    <gog-column field="component" header="Component"></gog-column>',
+    '    <gog-column field="status" header="Status"></gog-column>',
+    '    <gog-column field="owner" header="Owner"></gog-column>',
     '  </gog-table>',
     '</div>',
   ].join('\n');
   protected readonly stickyTs = [
     "import { Component } from '@angular/core';",
-    "import { Column, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [TableComponent, Column],',
+    '  imports: [TableComponent, GogColumn],',
     '  template: `',
     '    <div style="max-height: 260px; overflow-y: auto;">',
     '      <gog-table [value]="rows" [stickyHeader]="true">',
-    '        <column field="component" header="Component"></column>',
-    '        <column field="status" header="Status"></column>',
-    '        <column field="owner" header="Owner"></column>',
+    '        <gog-column field="component" header="Component"></gog-column>',
+    '        <gog-column field="status" header="Status"></gog-column>',
+    '        <gog-column field="owner" header="Owner"></gog-column>',
     '      </gog-table>',
     '    </div>',
     '  `,',
@@ -350,18 +410,18 @@ export class TableDocPage implements OnDestroy {
 
   protected readonly missingValuesHtml = [
     '<gog-table [value]="sparseRows" [showRowNumbers]="false" size="sm">',
-    '  <column field="component" header="Component"></column>',
-    '  <column field="owner" header="Owner"></column>',
+    '  <gog-column field="component" header="Component"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
     '</gog-table>',
     '',
     '<gog-table [value]="sparseRows" [showRowNumbers]="false" emptyPlaceholder="N/A" size="sm">',
-    '  <column field="component" header="Component"></column>',
-    '  <column field="owner" header="Owner"></column>',
+    '  <gog-column field="component" header="Component"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
     '</gog-table>',
   ].join('\n');
   protected readonly missingValuesTs = [
     "import { Component } from '@angular/core';",
-    "import { Column, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
     '',
     'interface SparseRow {',
     '  component: string;',
@@ -370,16 +430,16 @@ export class TableDocPage implements OnDestroy {
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [TableComponent, Column],',
+    '  imports: [TableComponent, GogColumn],',
     '  template: `',
     '    <gog-table [value]="sparseRows" [showRowNumbers]="false" size="sm">',
-    '      <column field="component" header="Component"></column>',
-    '      <column field="owner" header="Owner"></column>',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
     '    </gog-table>',
     '',
     '    <gog-table [value]="sparseRows" [showRowNumbers]="false" emptyPlaceholder="N/A" size="sm">',
-    '      <column field="component" header="Component"></column>',
-    '      <column field="owner" header="Owner"></column>',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
     '    </gog-table>',
     '  `,',
     '})',
@@ -393,21 +453,21 @@ export class TableDocPage implements OnDestroy {
 
   protected readonly fullWidthHtml = [
     '<gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">',
-    '  <column field="component" header="Component"></column>',
-    '  <column field="status" header="Status"></column>',
+    '  <gog-column field="component" header="Component"></gog-column>',
+    '  <gog-column field="status" header="Status"></gog-column>',
     '</gog-table>',
   ].join('\n');
   protected readonly fullWidthTs = [
     "import { Component } from '@angular/core';",
-    "import { Column, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [TableComponent, Column],',
+    '  imports: [TableComponent, GogColumn],',
     '  template: `',
     '    <gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">',
-    '      <column field="component" header="Component"></column>',
-    '      <column field="status" header="Status"></column>',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="status" header="Status"></gog-column>',
     '    </gog-table>',
     '  `,',
     '})',
@@ -420,16 +480,16 @@ export class TableDocPage implements OnDestroy {
     '<gog-table [value]="rows" [loading]="loading()">...</gog-table>';
   protected readonly loadingTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { ButtonComponent, Column, TableComponent } from '@guildofgleks/ui';",
+    "import { ButtonComponent, GogColumn, TableComponent } from '@guildofgleks/ui';",
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [TableComponent, Column, ButtonComponent],',
+    '  imports: [TableComponent, GogColumn, ButtonComponent],',
     '  template: `',
     '    <gog-button (gogClick)="toggleLoading()">Toggle loading</gog-button>',
     '    <gog-table [value]="rows" [loading]="loading()">',
-    '      <column field="component" header="Component"></column>',
-    '      <column field="status" header="Status"></column>',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="status" header="Status"></gog-column>',
     '    </gog-table>',
     '  `,',
     '})',
@@ -447,16 +507,16 @@ export class TableDocPage implements OnDestroy {
   protected readonly emptyHtml = '<gog-table [value]="showEmpty() ? [] : rows">...</gog-table>';
   protected readonly emptyTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { ButtonComponent, Column, TableComponent } from '@guildofgleks/ui';",
+    "import { ButtonComponent, GogColumn, TableComponent } from '@guildofgleks/ui';",
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [TableComponent, Column, ButtonComponent],',
+    '  imports: [TableComponent, GogColumn, ButtonComponent],',
     '  template: `',
     '    <gog-button (gogClick)="showEmpty.set(!showEmpty())">Toggle</gog-button>',
     '    <gog-table [value]="showEmpty() ? [] : rows">',
-    '      <column field="component" header="Component"></column>',
-    '      <column field="owner" header="Owner"></column>',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
     '    </gog-table>',
     '  `,',
     '})',

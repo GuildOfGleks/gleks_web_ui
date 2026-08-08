@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import {
   GogIconName,
   GogSize,
+  GogTagIconDirective,
   GogTagShape,
   GogTagVariant,
   IconComponent,
@@ -48,7 +49,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'iconTemplate',
     type: 'TemplateRef<unknown> | null',
     default: 'null',
-    description: 'Custom leading icon, taking priority over iconName when both are set.',
+    description:
+      'Deprecated since 21.3.0, removed in 21.5.0 — project an <ng-template gogTagIcon> instead. Still works, and the projected slot wins when both are present.',
   },
   {
     name: 'fullWidth',
@@ -61,7 +63,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-tag-doc-page',
-  imports: [TagComponent, IconComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [
+    TagComponent,
+    IconComponent,
+    GogTagIconDirective,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+  ],
   templateUrl: './tag-doc-page.html',
   styleUrl: './tag-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -173,28 +182,44 @@ export class TagDocPage {
   ].join('\n');
 
   protected readonly customIconHtml = [
-    '<ng-template #starIcon>',
-    '  <gog-icon name="checkbox-checked" />',
-    '</ng-template>',
-    '',
-    '<gog-tag variant="success" [iconTemplate]="starIcon">Featured</gog-tag>',
+    '<gog-tag variant="success">',
+    '  <ng-template gogTagIcon>',
+    '    <gog-icon name="checkbox-checked" />',
+    '  </ng-template>',
+    '  Featured',
+    '</gog-tag>',
   ].join('\n');
   protected readonly customIconTs = [
     "import { Component } from '@angular/core';",
-    "import { IconComponent, TagComponent } from '@guildofgleks/ui';",
+    "import { GogTagIconDirective, IconComponent, TagComponent } from '@guildofgleks/ui';",
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [TagComponent, IconComponent],',
+    '  imports: [TagComponent, IconComponent, GogTagIconDirective],',
     '  template: `',
-    '    <ng-template #starIcon>',
-    '      <gog-icon name="checkbox-checked" />',
-    '    </ng-template>',
-    '',
-    '    <gog-tag variant="success" [iconTemplate]="starIcon">Featured</gog-tag>',
+    '    <gog-tag variant="success">',
+    '      <ng-template gogTagIcon>',
+    '        <gog-icon name="checkbox-checked" />',
+    '      </ng-template>',
+    '      Featured',
+    '    </gog-tag>',
     '  `,',
     '})',
     'export class ExampleComponent {}',
+  ].join('\n');
+
+  protected readonly migrateIconSnippet = [
+    '```html',
+    '<!-- 21.2.x — an input taking a TemplateRef declared elsewhere -->',
+    '<ng-template #starIcon><gog-icon name="checkbox-checked" /></ng-template>',
+    '<gog-tag [iconTemplate]="starIcon">Featured</gog-tag>',
+    '',
+    '<!-- 21.3.0 — the markup lives where it is used -->',
+    '<gog-tag>',
+    '  <ng-template gogTagIcon><gog-icon name="checkbox-checked" /></ng-template>',
+    '  Featured',
+    '</gog-tag>',
+    '```',
   ].join('\n');
 
   protected readonly fullWidthHtml =

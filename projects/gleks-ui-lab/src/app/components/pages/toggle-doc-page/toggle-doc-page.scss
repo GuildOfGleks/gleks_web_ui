@@ -1,0 +1,9 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('toggle-doc');
+
+.toggle-demo {
+  &__rows {
+    max-width: 380px;
+  }
+}

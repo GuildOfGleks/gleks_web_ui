@@ -102,6 +102,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-control-checkbox-{size}-box-size / -label-size / -icon-size',
         description: 'Checkbox box, label and icon size, per size step (xsm/sm/md/lg/slg).',
       },
+      {
+        name: '--gog-field-float-label-reserve / -in-top / -over-gap / -over-reserve',
+        description:
+          'Float-label geometry shared by every field. Each control’s own --gog-{control}-float-label-* tokens derive from these, so one declaration retunes them all while a single control can still be overridden.',
+      },
     ],
   },
   {
@@ -137,6 +142,72 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    id: 'autocomplete',
+    title: 'Autocomplete',
+    tokens: [
+      { name: '--gog-autocomplete-label-color', description: 'Field label color.' },
+      {
+        name: '--gog-autocomplete-field-bg / -border-color / -text-color',
+        description: 'Field surface, border and text.',
+      },
+      {
+        name: '--gog-autocomplete-radius / -min-width',
+        description: 'Field corner radius and the floor an auto-width field cannot collapse past.',
+      },
+      {
+        name: '--gog-autocomplete-focus-ring-color / -focus-ring-width / -hover-border-color',
+        description: 'Focus and hover states.',
+      },
+      {
+        name: '--gog-autocomplete-panel-bg / -panel-border-color / -panel-shadow / -panel-max-height',
+        description: 'Suggestion panel surface and height cap.',
+      },
+      {
+        name: '--gog-autocomplete-option-hover-bg / -option-selected-bg / -option-height',
+        description: 'Suggestion row states and row height.',
+      },
+      {
+        name: '--gog-autocomplete-empty-color / -spinner-size',
+        description: 'The "nothing found" message and the loading spinner.',
+      },
+      {
+        name: '--gog-autocomplete-clear-color / -clear-hover-color / -actions-inset',
+        description: 'Clear button color and how far the trailing actions sit from the edge.',
+      },
+      {
+        name: '--gog-autocomplete-float-label-reserve / -in-top / -over-gap / -over-reserve',
+        description:
+          'Float-label geometry, derived from the shared --gog-field-float-label-* scale.',
+      },
+    ],
+  },
+  {
+    id: 'badge',
+    title: 'Badge',
+    tokens: [
+      {
+        name: '--gog-badge-success-bg / -danger-bg / -warning-bg / -info-bg (+ matching -color)',
+        description: 'Fill and text color per semantic variant.',
+      },
+      {
+        name: '--gog-badge-size / -dot-size / -padding-inline',
+        description: 'Badge height, the bare-dot diameter, and horizontal padding around a count.',
+      },
+      {
+        name: '--gog-badge-radius / -border-color / -border-width / -border-style',
+        description: 'Corner radius and the ring separating the badge from its host.',
+      },
+      {
+        name: '--gog-badge-font-family / -font-size / -font-weight / -line-height',
+        description: 'Count typography.',
+      },
+      {
+        name: '--gog-badge-offset / -z',
+        description: 'How far the badge overhangs its host corner, and its stacking order.',
+      },
+    ],
+  },
+  {
     id: 'button',
     title: 'Button',
     tokens: [
@@ -159,6 +230,82 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-btn-bg / -color / -border / -padding / -font-size',
         description:
           'Undeclared by default — the escape hatch for styling a single button instance.',
+      },
+    ],
+  },
+  {
+    id: 'button-toggle',
+    title: 'Button Toggle',
+    tokens: [
+      {
+        name: '--gog-button-toggle-rest-bg / -rest-color',
+        description: 'An unselected button.',
+      },
+      {
+        name: '--gog-button-toggle-selected-bg / -selected-color / -selected-border-color',
+        description: 'The selected button.',
+      },
+      {
+        name: '--gog-button-toggle-hover-bg / -hover-color',
+        description: 'Hover state.',
+      },
+      {
+        name: '--gog-button-toggle-border-color / -border-width / -border-style / -radius',
+        description: 'Group border and corner radius.',
+      },
+      {
+        name: '--gog-button-toggle-separated-gap',
+        description: 'Gap between buttons in the "separated" appearance. "joined" shares borders.',
+      },
+      {
+        name: '--gog-button-toggle-font-family / -font-weight / -letter-spacing / -text-transform / -icon-size',
+        description: 'Button typography and icon size.',
+      },
+      {
+        name: '--gog-button-toggle-focus-ring-color / -focus-ring-width / -focus-ring-offset',
+        description: 'Keyboard focus ring.',
+      },
+    ],
+  },
+  {
+    id: 'calendar',
+    title: 'Calendar',
+    tokens: [
+      {
+        name: '--gog-calendar-padding / -header-gap / -footer-gap / -months-gap',
+        description: 'Grid padding and the gaps between header, footer and side-by-side months.',
+      },
+      {
+        name: '--gog-calendar-day-size (per size step: xsm/sm/md/lg/slg) / -day-radius',
+        description: 'Day cell size and shape.',
+      },
+      {
+        name: '--gog-calendar-day-rest-bg / -day-hover-bg / -day-outside-color',
+        description: 'Day cell states, including days spilling in from the neighbouring month.',
+      },
+      {
+        name: '--gog-calendar-selected-bg / -selected-color / -selected-font-weight',
+        description: 'The selected day.',
+      },
+      {
+        name: '--gog-calendar-range-bg / -range-color',
+        description: 'Days between the two ends of a range selection.',
+      },
+      {
+        name: '--gog-calendar-today-border-color / -today-font-weight',
+        description: 'The ring marking today.',
+      },
+      {
+        name: '--gog-calendar-nav-bg / -nav-hover-bg / -nav-size / -nav-icon-size',
+        description: 'Previous/next month and year buttons.',
+      },
+      {
+        name: '--gog-calendar-weekday-color / -weekday-font-size / -weekday-text-transform',
+        description: 'Weekday header row.',
+      },
+      {
+        name: '--gog-calendar-time-input-bg / -time-input-width / -time-gap',
+        description: 'The clock section shown under the grid when showTime is on.',
       },
     ],
   },
@@ -225,6 +372,47 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    id: 'datepicker',
+    title: 'Datepicker',
+    tokens: [
+      { name: '--gog-datepicker-label-color', description: 'Field label color.' },
+      {
+        name: '--gog-datepicker-field-bg / -border-color / -text-color',
+        description: 'Field surface, border and text.',
+      },
+      {
+        name: '--gog-datepicker-radius / -min-width',
+        description: 'Field corner radius and minimum width.',
+      },
+      {
+        name: '--gog-datepicker-focus-ring-color / -focus-ring-width / -hover-border-color',
+        description: 'Focus and hover states.',
+      },
+      {
+        name: '--gog-datepicker-icon-color / -icon-hover-color / -toggle-icon-size',
+        description: 'The calendar toggle icon.',
+      },
+      {
+        name: '--gog-datepicker-panel-bg / -panel-border-color / -panel-shadow / -panel-radius',
+        description:
+          'The panel wrapping the calendar. The grid itself is themed by --gog-calendar-*.',
+      },
+      {
+        name: '--gog-datepicker-clear-color / -clear-icon-ratio / -actions-inset',
+        description: 'Clear button color, glyph size and inset.',
+      },
+      {
+        name: '--gog-datepicker-error-color / -error-border-color / -error-font-size',
+        description: 'Validation error message and border.',
+      },
+      {
+        name: '--gog-datepicker-float-label-reserve / -in-top / -over-gap / -over-reserve',
+        description:
+          'Float-label geometry, derived from the shared --gog-field-float-label-* scale.',
+      },
+    ],
+  },
+  {
     id: 'dialog',
     title: 'Dialog',
     tokens: [
@@ -247,6 +435,36 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-confirm-color / -description-color / -actions-gap',
         description: 'Confirmation dialog variant.',
+      },
+    ],
+  },
+  {
+    id: 'divider',
+    title: 'Divider',
+    tokens: [
+      {
+        name: '--gog-divider-line-color / -line-thickness',
+        description: 'The rule itself.',
+      },
+      {
+        name: '--gog-divider-solid-style / -dashed-style / -dotted-style',
+        description: 'The border-style each variant maps to.',
+      },
+      {
+        name: '--gog-divider-block-spacing / -inline-spacing',
+        description: 'Margin around a horizontal and a vertical divider respectively.',
+      },
+      {
+        name: '--gog-divider-vertical-length',
+        description: 'Fallback length for a vertical divider whose row has no height of its own.',
+      },
+      {
+        name: '--gog-divider-inset-size',
+        description: 'How far the inset variant is indented from the leading edge.',
+      },
+      {
+        name: '--gog-divider-label-color / -label-font-size / -label-font-weight / -label-gap',
+        description: 'The projected label and the gap punched in the rule around it.',
       },
     ],
   },
@@ -278,30 +496,60 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-input-icon-color / -icon-hover-color',
         description: 'Prefix / suffix icon color.',
       },
+      {
+        name: '--gog-input-float-label-reserve / -in-top / -on-bg / -over-gap / -over-reserve',
+        description:
+          'Float-label geometry, derived from the shared --gog-field-float-label-* scale. -on-bg is an instance-layer token (undeclared) — the patch that masks the border behind an "on" label.',
+      },
+      {
+        name: '--gog-textarea-clear-icon-ratio',
+        description:
+          'Size of gog-textarea’s clear glyph relative to the field. A textarea is a large multi-line box, so it takes a full-size glyph rather than the dropdowns’ denser 0.7 ratio.',
+      },
+      {
+        name: '--gog-textarea-scrollbar-width',
+        description:
+          'Instance-layer (undeclared): written by the component from its own measured scrollbar width, so a clear button on a scrolling textarea does not end up under the thumb.',
+      },
     ],
   },
   {
     id: 'multiselect',
     title: 'Multiselect',
     tokens: [
-      { name: '--gog-ms-label-color', description: 'Field label color.' },
       {
-        name: '--gog-ms-field-bg / -field-border',
+        name: '--gog-multiselect-* (was --gog-ms-*)',
+        description:
+          'Renamed in 21.3.0. Both spellings work for the whole deprecation window — the --gog-ms-* name stays the declared one and the new name derives from it, so an existing override of either still reaches the component. --gog-ms-* is removed in 21.5.0.',
+      },
+      { name: '--gog-multiselect-label-color', description: 'Field label color.' },
+      {
+        name: '--gog-multiselect-field-bg / -field-border',
         description: 'Field surface and border.',
       },
-      { name: '--gog-ms-radius', description: 'Field corner radius.' },
-      { name: '--gog-ms-focus-border / -focus-ring', description: 'Focus state.' },
       {
-        name: '--gog-ms-panel-bg / -panel-border / -panel-shadow',
-        description: 'Dropdown panel surface.',
+        name: '--gog-multiselect-radius / -min-width',
+        description:
+          'Field corner radius, and the floor an auto-width trigger cannot collapse past.',
+      },
+      { name: '--gog-multiselect-focus-border / -focus-ring', description: 'Focus state.' },
+      {
+        name: '--gog-multiselect-panel-bg / -panel-border / -panel-shadow / -panel-max-width',
+        description:
+          'Dropdown panel surface, and the cap on a panel that sizes to its own content rather than to the trigger.',
       },
       {
-        name: '--gog-ms-option-hover-bg / -option-color',
+        name: '--gog-multiselect-option-hover-bg / -option-color',
         description: 'Option row, default and hover.',
       },
       {
-        name: '--gog-ms-checkbox-bg / -checkbox-checked-bg',
+        name: '--gog-multiselect-checkbox-bg / -checkbox-checked-bg',
         description: 'Per-option selection checkbox.',
+      },
+      {
+        name: '--gog-multiselect-float-label-reserve / -in-top / -on-bg / -over-gap / -over-reserve',
+        description:
+          'Float-label geometry, derived from the shared --gog-field-float-label-* scale.',
       },
     ],
   },
@@ -313,6 +561,75 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-paginator-ellipsis-color / -ellipsis-font-size',
         description: 'The "…" truncation marker.',
+      },
+    ],
+  },
+  {
+    id: 'progressbar',
+    title: 'Progress Bar',
+    tokens: [
+      {
+        name: '--gog-progressbar-accent-bg / -success-bg / -danger-bg / -warning-bg / -info-bg',
+        description: 'Fill color per variant.',
+      },
+      {
+        name: '--gog-progressbar-{variant}-buffer-bg',
+        description: 'The lighter buffer level shown ahead of the fill in "buffer" mode.',
+      },
+      {
+        name: '--gog-progressbar-track-base-bg / -radius',
+        description: 'The unfilled track.',
+      },
+      {
+        name: '--gog-progressbar-{size}-height',
+        description: 'Bar thickness, per size step (xsm/sm/md/lg/slg).',
+      },
+      {
+        name: '--gog-progressbar-indeterminate-duration / -indeterminate-easing',
+        description:
+          'Indeterminate animation timing. Replaced by a static stripe under prefers-reduced-motion.',
+      },
+      {
+        name: '--gog-progressbar-stripe-color / -stripe-size',
+        description: 'The static stripe that stands in for the animation when motion is reduced.',
+      },
+      {
+        name: '--gog-progressbar-value-color / -value-font-size / -value-min-width / -value-gap',
+        description: 'The percentage readout rendered when showValue is on.',
+      },
+    ],
+  },
+  {
+    id: 'radio-group',
+    title: 'Radio Group',
+    tokens: [
+      {
+        name: '--gog-radio-bg / -border-color / -border-width / -border-style',
+        description: 'The circle, unchecked.',
+      },
+      {
+        name: '--gog-radio-checked-bg / -checked-border / -dot-color / -dot-size-ratio',
+        description: 'The circle and its dot once checked.',
+      },
+      {
+        name: '--gog-radio-label-color / -label-line-height / -gap',
+        description: 'Per-option label and the gap to its circle.',
+      },
+      {
+        name: '--gog-radio-group-label-color / -group-label-size / -group-gap',
+        description: 'The group’s own label.',
+      },
+      {
+        name: '--gog-radio-group-option-gap / -group-option-gap-horizontal',
+        description: 'Gap between options, vertical and horizontal orientation respectively.',
+      },
+      {
+        name: '--gog-radio-focus-ring / -focus-ring-width / -focus-ring-offset',
+        description: 'Keyboard focus ring.',
+      },
+      {
+        name: '--gog-radio-error-color / -error-font-size / -disabled-opacity',
+        description: 'Validation error message and the disabled state.',
       },
     ],
   },
@@ -359,13 +676,27 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-select-radius', description: 'Field corner radius.' },
       { name: '--gog-select-focus-border / -focus-ring', description: 'Focus state.' },
       {
-        name: '--gog-select-panel-bg / -panel-shadow',
-        description: 'Dropdown panel surface.',
+        name: '--gog-select-panel-bg / -panel-shadow / -panel-max-width',
+        description:
+          'Dropdown panel surface, and the cap on a panel that sizes to its own content rather than to the trigger.',
       },
-      { name: '--gog-select-chevron-color', description: 'Dropdown arrow color.' },
+      {
+        name: '--gog-select-min-width',
+        description: 'The floor an auto-width trigger cannot collapse past (120px).',
+      },
+      {
+        name: '--gog-select-chevron-color / -chevron-inset',
+        description:
+          'Dropdown arrow color and inset. Since 21.3.0 the inset lands on --gog-control-icon-offset, the same line as gog-inputfield’s icons — the three controls now line up in a form.',
+      },
       {
         name: '--gog-select-option-hover-bg / -option-selected-color',
         description: 'Option row states.',
+      },
+      {
+        name: '--gog-select-float-label-reserve / -in-top / -on-bg / -over-gap / -over-reserve',
+        description:
+          'Float-label geometry, derived from the shared --gog-field-float-label-* scale.',
       },
     ],
   },
@@ -389,10 +720,24 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     title: 'Slider',
     tokens: [
       { name: '--gog-slider-label-color / -value-color', description: 'Label and current value.' },
-      { name: '--gog-slider-track-bg / -fill-bg', description: 'Track, empty and filled.' },
+      {
+        name: '--gog-slider-track-bg / -fill-bg',
+        description:
+          'Track, empty and filled. The fill is applied as background rather than background-color, so -fill-bg also accepts a gradient.',
+      },
+      {
+        name: '--gog-slider-track-border-width / -track-border-style / -track-border-color',
+        description:
+          'An optional border on the track — transparent by default, the same opt-in convention as --gog-btn-primary-border.',
+      },
       {
         name: '--gog-slider-thumb-bg / -thumb-border / -thumb-shadow',
         description: 'Drag handle.',
+      },
+      {
+        name: '--gog-slider-auto-width / -vertical-length',
+        description:
+          'Size of a slider that does not fill its container: width when horizontal, length when vertical.',
       },
       { name: '--gog-slider-focus-ring', description: 'Keyboard focus ring.' },
     ],
@@ -438,6 +783,40 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    id: 'tabs',
+    title: 'Tabs',
+    tokens: [
+      {
+        name: '--gog-tabs-rest-color / -hover-color / -active-color',
+        description: 'Tab header label, per state.',
+      },
+      {
+        name: '--gog-tabs-indicator-color / -indicator-thickness / -indicator-radius',
+        description: 'The bar marking the active tab.',
+      },
+      {
+        name: '--gog-tabs-header-border-color / -header-border-width / -header-border-style',
+        description: 'The rule under the tablist.',
+      },
+      {
+        name: '--gog-tabs-{size}-font-size / -{size}-padding',
+        description: 'Header typography and padding, per size step (sm/md/lg/slg).',
+      },
+      {
+        name: '--gog-tabs-tab-gap / -gap / -icon-size',
+        description: 'Gap between headers, between a header’s icon and its label, and icon size.',
+      },
+      {
+        name: '--gog-tabs-panel-padding / -panel-color',
+        description: 'The content panel below the tablist.',
+      },
+      {
+        name: '--gog-tabs-focus-ring-color / -focus-ring-width / -focus-ring-offset / -disabled-opacity',
+        description: 'Keyboard focus ring and the disabled state.',
+      },
+    ],
+  },
+  {
     id: 'tag',
     title: 'Tag',
     tokens: [
@@ -472,6 +851,65 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-toast-stack-peek / -stack-scale-step / -stack-expanded-gap',
         description: 'Card-stack geometry when several toasts are visible at once.',
+      },
+    ],
+  },
+  {
+    id: 'toggle',
+    title: 'Toggle',
+    tokens: [
+      {
+        name: '--gog-toggle-track-off-bg / -track-on-bg / -on-border-color',
+        description: 'The track, off and on.',
+      },
+      {
+        name: '--gog-toggle-thumb-off-bg / -thumb-on-bg / -thumb-shadow / -thumb-inset',
+        description: 'The sliding thumb.',
+      },
+      {
+        name: '--gog-toggle-{size}-track-width / -track-height / -thumb-size / -label-size',
+        description: 'Full sizing scale, per size step (xsm/sm/md/lg/slg).',
+      },
+      {
+        name: '--gog-toggle-state-color / -state-font-weight / -state-padding-inline / -state-thumb-gap',
+        description: 'The onLabel / offLabel text rendered inside the track.',
+      },
+      {
+        name: '--gog-toggle-label-color / -gap / -radius',
+        description: 'The label next to the switch, its gap, and the track corner radius.',
+      },
+      {
+        name: '--gog-toggle-focus-ring-color / -focus-ring-width / -focus-ring-offset / -disabled-opacity',
+        description: 'Keyboard focus ring and the disabled state.',
+      },
+    ],
+  },
+  {
+    id: 'tooltip',
+    title: 'Tooltip',
+    tokens: [
+      {
+        name: '--gog-tooltip-bg / -color / -border-color / -shadow / -radius',
+        description:
+          'The bubble surface. Deliberately the same floating-panel recipe as a dialog or dropdown, not a bespoke inverted bubble.',
+      },
+      {
+        name: '--gog-tooltip-max-width / -max-height',
+        description:
+          'Content wraps at the width and scrolls past the height, inside an internal gog-scroll.',
+      },
+      {
+        name: '--gog-tooltip-padding / -gap / -arrow-size',
+        description: 'Bubble padding, its distance from the trigger, and the arrow.',
+      },
+      {
+        name: '--gog-tooltip-font-family / -font-size / -line-height',
+        description: 'Bubble typography.',
+      },
+      {
+        name: '--gog-tooltip-z / -transition-duration',
+        description:
+          'Stacking order (raised inside a dialog so a tooltip stacks above it) and fade timing.',
       },
     ],
   },

@@ -160,6 +160,23 @@ export class ToastDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { ToastContainerComponent, ToastService } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ToastContainerComponent],\n})\nexport class AppComponent {\n  // Mount <gog-toast-container /> once, near the root of your app.\n}\n```";
 
+  protected readonly configSnippet = [
+    '```typescript',
+    "import { provideGogConfig } from '@guildofgleks/ui';",
+    '',
+    'bootstrapApplication(App, {',
+    '  providers: [',
+    '    provideGogConfig({',
+    '      toast: {',
+    "        position: 'top-right',",
+    '        duration: 6000,',
+    '      },',
+    '    }),',
+    '  ],',
+    '});',
+    '```',
+  ].join('\n');
+
   protected readonly overviewHtml = [
     '<gog-button (gogClick)="showToast()">Preview toast</gog-button>',
     '<gog-toast-container />',

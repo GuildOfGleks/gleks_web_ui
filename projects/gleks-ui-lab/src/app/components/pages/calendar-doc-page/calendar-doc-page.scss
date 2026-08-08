@@ -1,0 +1,11 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('calendar-doc');
+
+.calendar-demo {
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+}

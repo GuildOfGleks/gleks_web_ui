@@ -89,6 +89,30 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">Vertical</h3>
+      <p class="demo-card__meta">
+        The vertical variant is the same native <code>&lt;input type="range"&gt;</code> rotated with
+        <code>writing-mode</code>, not a custom drag implementation — so dragging, touch and the
+        keyboard (Up/Down as well as Left/Right) all keep working exactly as they do horizontally.
+        The value increases upward, matching a volume-fader convention.
+        <code>--gog-slider-vertical-length</code> sizes its length; <code>fullWidth</code> is
+        ignored, since a vertical slider's width is its thickness.
+      </p>
+      <div class="demo-card__preview slider-demo__vertical">
+        <gog-slider label="Bass" orientation="vertical" [min]="0" [max]="100" [(value)]="bass" />
+        <gog-slider label="Mid" orientation="vertical" [min]="0" [max]="100" [(value)]="mid" />
+        <gog-slider
+          label="Treble"
+          orientation="vertical"
+          [min]="0"
+          [max]="100"
+          [(value)]="treble"
+        />
+      </div>
+      <app-code-tabs [html]="verticalHtml" [ts]="verticalTs" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Validation</h3>
       <p class="demo-card__meta">
         <code>errorMessage</code> is consumer-controlled: <code>gog-slider</code> just renders

@@ -1,0 +1,200 @@
+<div class="radio-group-doc">
+  <header class="radio-group-doc__hero">
+    <p class="radio-group-doc__eyebrow">gog-radio-group</p>
+    <h1 class="radio-group-doc__title font-heading">Radio Group</h1>
+    <p class="radio-group-doc__lead">
+      An options-driven radio control — the radio counterpart to
+      <a routerLink="/components/checkbox">Checkbox</a>. It renders native
+      <code>&lt;input type="radio"&gt;</code>s sharing one group name, so mutual exclusivity and
+      arrow-key navigation come from the browser rather than from roving-focus code.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">Import the component and drop it into a template.</p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">Basic usage:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-radio-group label="Delivery" [options]="deliveryOptions" [(value)]="delivery" />
+        <p class="doc-section__meta">Selected: {{ delivery() }}</p>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="options" class="doc-section__title font-heading">Options</h2>
+    <p class="doc-section__intro">
+      Each option is a <code>GogRadioOption</code>. <code>value</code> holds the selected option's
+      <code>id</code> rather than the object itself, since a radio group is a single-value control
+      bound straight to a form field.
+    </p>
+    <app-markdown [markdown]="optionInterface" />
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Orientation</h3>
+      <p class="demo-card__meta">
+        <code>vertical</code> by default; <code>horizontal</code> for two or three short options in
+        a row.
+      </p>
+      <div class="demo-card__preview radio-demo__row">
+        <gog-radio-group label="Vertical" [options]="planOptions" [(value)]="plan" />
+        <gog-radio-group
+          label="Horizontal"
+          orientation="horizontal"
+          [options]="planOptions"
+          [(value)]="plan"
+        />
+      </div>
+      <app-code-tabs [html]="orientationHtml" [ts]="orientationTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        Five steps, reusing <code>gog-checkbox</code>'s scale. Also settable app-wide through
+        <code>GOG_CONFIG.control.size</code>.
+      </p>
+      <div class="demo-card__preview radio-demo__stack">
+        @for (sizeOption of sizes; track sizeOption) {
+          <gog-radio-group
+            [label]="sizeOption"
+            [size]="sizeOption"
+            orientation="horizontal"
+            [options]="planOptions"
+            [(value)]="sizeValue"
+          />
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive forms and validation</h3>
+      <p class="demo-card__meta">
+        A <code>ControlValueAccessor</code>, so <code>formControl</code> /
+        <code>formControlName</code> work directly. With <code>errorDisplay="auto"</code> the
+        message appears once the control is invalid and touched — no <code>&#64;if</code> at the
+        call site. Focus the group and tab away to see it.
+      </p>
+      <div class="demo-card__preview">
+        <gog-radio-group
+          label="Shipping"
+          errorDisplay="auto"
+          errorMessage="Pick a shipping option"
+          [options]="deliveryOptions"
+          [formControl]="shipping"
+        />
+      </div>
+      <app-code-tabs [html]="formsHtml" [ts]="formsTs" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      The options are real radio inputs sharing one <code>name</code>, which is what makes the
+      browser treat them as one group: arrow keys move <em>and</em> select, Home/End jump to the
+      ends, and the group takes a single tab stop. That is also why there is no roving-focus code
+      here — the platform already does it. Give the group either a <code>label</code> or an
+      <code>ariaLabel</code>.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Outputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Payload</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiOutputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the radio group paints with. Override any of them — on a single
+      instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of styleTokens; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

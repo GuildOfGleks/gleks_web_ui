@@ -163,3 +163,14 @@
     border-bottom: none;
   }
 }
+
+.option-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+
+  small {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-xs);
+  }
+}

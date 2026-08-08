@@ -1,0 +1,187 @@
+// Shared chrome for every component documentation page.
+//
+// Each page is a scoped Angular stylesheet, so this is `@use`d per page rather than declared
+// once globally — the same trade the rest of this workspace makes. The 19 pages written before
+// this partial existed still carry their own copy of these rules; they are identical apart from
+// the two drifts unified here (the inline-`code` styling inside `__lead` / `__intro`, which only
+// 5 of them had).
+//
+// Usage:
+//
+//   @use '../doc-page' as doc;
+//   @include doc.hero('autocomplete-doc');
+//
+// The `hero` mixin takes the page's BEM block name because the markup names it per page
+// (`.autocomplete-doc__hero`). Everything below is block-independent and lands automatically.
+
+@mixin inline-code {
+  font-family: var(--gog-font-mono);
+  font-size: 0.9em;
+  background-color: var(--gog-hover-color);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+}
+
+/// Page header: eyebrow (the `gog-*` selector), title, and lead paragraph.
+@mixin hero($block) {
+  .#{$block} {
+    &__hero {
+      margin-bottom: 2em;
+    }
+
+    &__eyebrow {
+      margin: 0 0 0.4em;
+      font-family: var(--gog-font-mono);
+      font-size: var(--gog-text-xs);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gog-accent-color);
+    }
+
+    &__title {
+      margin: 0 0 0.4em;
+      font-size: var(--gog-text-2xl);
+    }
+
+    &__lead {
+      margin: 0;
+      max-width: 60ch;
+      color: var(--gog-muted-text-color);
+      line-height: 1.6;
+
+      a {
+        color: var(--gog-accent-color);
+      }
+
+      code {
+        @include inline-code;
+      }
+    }
+  }
+}
+
+.doc-section {
+  margin-top: 2.4em;
+
+  &__title {
+    font-size: var(--gog-text-xl);
+    color: var(--gog-accent-color);
+    border-bottom: 1px solid var(--gog-border-color);
+    padding-bottom: 0.3em;
+    margin: 0 0 0.6em;
+  }
+
+  &__subtitle {
+    font-size: var(--gog-text-md);
+    margin: 1.4em 0 0.6em;
+  }
+
+  &__intro {
+    color: var(--gog-text-color);
+    line-height: 1.6;
+    margin: 0 0 1em;
+
+    a {
+      color: var(--gog-accent-color);
+    }
+
+    code {
+      @include inline-code;
+    }
+  }
+
+  &__meta {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+    margin: 0.6em 0;
+  }
+}
+
+.demo-card {
+  margin-bottom: 1.6em;
+  padding: 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+
+  &__title {
+    margin: 0 0 0.4em;
+    font-size: var(--gog-text-md);
+  }
+
+  &__meta {
+    margin: 0 0 1em;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+
+    code {
+      @include inline-code;
+    }
+  }
+
+  &__preview {
+    margin-bottom: 1em;
+  }
+}
+
+/// A row of demo controls that wraps.
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+/// A column of demo controls, for stacking fields.
+.action-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.api-table-scroll {
+  overflow-x: auto;
+}
+
+.api-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--gog-text-sm);
+  margin-bottom: 1.2em;
+
+  th,
+  td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--gog-border-color);
+    vertical-align: top;
+  }
+
+  th {
+    font-size: var(--gog-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gog-muted-text-color);
+  }
+
+  td {
+    color: var(--gog-text-color);
+
+    &:last-child {
+      color: var(--gog-muted-text-color);
+    }
+  }
+
+  code {
+    font-family: var(--gog-font-mono);
+    font-size: 0.9em;
+    color: var(--gog-accent-color);
+    white-space: nowrap;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
