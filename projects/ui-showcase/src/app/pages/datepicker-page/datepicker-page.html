@@ -83,6 +83,33 @@
   </article>
 
   <article class="card">
+    <h3>Footer buttons</h3>
+    <p class="hint">
+      Two separate actions, deliberately not one. <strong>Today</strong> <em>selects</em> today's
+      date — the view follows, because the selection is what the calendar opens on.
+      <strong>This month</strong>
+      only moves the view back and leaves the selection alone, for browsing far from today without
+      committing to anything. One button doing both is what made the control ambiguous: after paging
+      away, the same label reads as "take me back" to one person and "set it to today" to another.
+    </p>
+    <div class="dp-grid">
+      <gog-datepicker label="Today only (default)" [(value)]="footerDate" />
+      <gog-datepicker label="Both buttons" [showThisMonthButton]="true" />
+      <gog-datepicker label="No footer" [showTodayButton]="false" />
+      <gog-datepicker
+        label="Today unavailable"
+        [min]="nextYear"
+        [showThisMonthButton]="true"
+        [defaultMonth]="nextYear"
+      />
+    </div>
+    <p class="hint">
+      value: {{ show(footerDate()) }} · the last one has <code>min</code> in the future, so
+      <strong>Today</strong> is disabled rather than silently doing nothing.
+    </p>
+  </article>
+
+  <article class="card">
     <h3>Inline</h3>
     <p class="hint">
       No field, no panel — literally <code>gog-calendar</code>, which is exported on its own for

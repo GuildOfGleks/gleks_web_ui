@@ -24,7 +24,11 @@ export class DatepickerPage {
   protected readonly monthStart = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
   protected readonly monthEnd = new Date(TODAY.getFullYear(), TODAY.getMonth() + 1, 0);
 
+  /** A year out, so the "Today" button has nothing it is allowed to pick. */
+  protected readonly nextYear = new Date(TODAY.getFullYear() + 1, TODAY.getMonth(), 1);
+
   protected readonly date = signal<Date | null>(null);
+  protected readonly footerDate = signal<Date | null>(null);
   protected readonly range = signal<GogDateRange | null>(null);
   protected readonly withTime = signal<Date | null>(null);
   protected readonly inlineDate = signal<Date | null>(null);
