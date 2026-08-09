@@ -1,0 +1,96 @@
+# =============================================================================
+# CD Pipeline — gleks-ui-lab (public docs site)
+# Trigger: manual only (workflow_dispatch). Never runs on push.
+# Invoke locally with: scripts/deploy-lab.ps1
+# =============================================================================
+
+name: Deploy gleks-ui-lab
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Docker tag to build and deploy"
+        required: false
+        default: "latest"
+      host_port:
+        description: "Port to expose on the server"
+        required: false
+        default: "4000"
+
+env:
+  DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/gleks-ui-lab
+  CONTAINER_NAME: gleks-ui-lab
+  CONTAINER_PORT: 4000
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      # See ci.yml: node 22.x bundles an npm whose resolver disagrees with the
+      # lock file's optional peer deps, so pin the npm version explicitly.
+      - name: Use pinned npm version
+        run: npm install -g npm@11.6.2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: projects/gleks-ui-lab/Dockerfile
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:${{ inputs.image_tag }}
+            ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          script: |
+            # Логинимся (если репозиторий приватный)
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+            echo "=== Pulling new image ==="
+            docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.image_tag }}
+
+            echo "=== Restarting container ==="
+            docker stop ${{ env.CONTAINER_NAME }} || true
+            docker rm ${{ env.CONTAINER_NAME }} || true
+
+            docker run -d \
+              --name ${{ env.CONTAINER_NAME }} \
+              --restart unless-stopped \
+              -p ${{ inputs.host_port }}:${{ env.CONTAINER_PORT }} \
+              ${{ env.DOCKER_IMAGE }}:${{ inputs.image_tag }}
+
+            docker image prune -af

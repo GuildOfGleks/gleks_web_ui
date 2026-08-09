@@ -45,5 +45,20 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
-.github/workflows/deploy-lab.yml
-scripts/deploy-lab.ps1
+
+# Секреты
+*.pem
+*.key
+.env
+secret.json
+
+# Node / Angular
+node_modules/
+/.angular
+
+# Логи
+npm-debug.log*
+yarn-error.log*
+
+# Docker
+.dockerignore (его пушить можно, но проверь, что в нём)
