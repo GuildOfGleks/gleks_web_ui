@@ -151,6 +151,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/gleks-ui-lab",
             "browser": "projects/gleks-ui-lab/src/main.ts",
             "tsConfig": "projects/gleks-ui-lab/tsconfig.app.json",
             "inlineStyleLanguage": "scss",

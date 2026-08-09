@@ -19,7 +19,7 @@ Measured on the reference machine (Windows, `npm@11.6.2`, Angular v21), cold `.a
 | `npm run lint` | ✅ | ~10 s |
 | `npm run test:lib` | ✅ | ~13 s |
 | `npm run build:showcase` | ✅ | ~11–15 s |
-| **`npm run build:lab`** | ❌ **never exits** | work done in ~8 s, then hangs forever |
+| `npm run build:lab` | ✅ (via wrapper, see below) | ~8–9 s |
 | `ng serve …` (any project) | ❌ by design | a dev server is supposed to keep running |
 
 ## The one rule
@@ -40,40 +40,45 @@ build just moves the stall somewhere you will notice it later — and a backgrou
 never exits reports no result at all, so you end up polling a log file to find out that it
 finished 4 minutes ago.
 
-## `build:lab` — the known hang
+## `build:lab` — the known hang, and why the script still exits
 
-`ng build gleks-ui-lab` **completes its work and then never exits.** The output is fully
-written — `Prerendered 1 static route`, `Application bundle generation complete`,
+`ng build gleks-ui-lab` run directly **completes its work and then never exits.** The output is
+fully written — `Prerendered 1 static route`, `Application bundle generation complete`,
 `Output location: …` — and `dist/gleks-ui-lab/` is correct and usable. The process simply does
 not terminate (single `ng` process, ~14 live threads, no open sockets).
 
-So judge it by its **output marker**, never by process exit — and keep the timeout tight, since
-the work is done in ~8 s and every extra second is dead waiting:
+Ruled out as causes, so don't re-investigate these: the corporate `HTTP_PROXY`/`HTTPS_PROXY`
+env vars (hangs identically with them unset), prerendering (hangs with `RenderMode.Prerender`
+swapped for `.Server`, and hangs identically with prerendering disabled entirely), a stale
+`.angular/cache` (hangs after a full cache wipe), the `server.ts` entry (byte-identical to
+`ui-showcase`, which exits fine), and the `npm run` wrapper (`npx ng build gleks-ui-lab` hangs
+the same way). The remaining difference from `ui-showcase` is that `gleks-ui-lab` pulls in
+FontAwesome as a CommonJS dependency and reads its assets/styles out of
+`node_modules/@guildofgleks/ui`. Root cause is unidentified; it is an Angular CLI teardown
+problem, not a project-config one — so don't chase it in application code (timers, intervals,
+`isPlatformBrowser` guards); it reproduces even in a page with none of that.
+
+`npm run build:lab` itself now runs `scripts/build-lab.mjs` instead of `ng build` directly: the
+wrapper spawns the real build, watches its stdout for the `Output location:` marker Angular CLI
+prints last, and force-kills the process once that lands — so the *script* exits 0 in ~8–9 s even
+though the underlying `ng` process still wouldn't on its own. This is also why `docker build` on
+`projects/gleks-ui-lab/Dockerfile` no longer hangs at `RUN npm run build:lab`.
+
+If you ever need to run the raw `ng build gleks-ui-lab` (bypassing the wrapper) for debugging,
+judge it by its **output marker**, never by process exit, and keep the timeout tight:
 
 ```bash
 LOG=<scratchpad>/lab-build.log
-timeout 30 npm run build:lab > "$LOG" 2>&1          # exit=124 is the expected result
+timeout 30 npx ng build gleks-ui-lab > "$LOG" 2>&1   # exit=124 is the expected result
 grep -q "Output location" "$LOG" && echo "BUILD OK" || echo "BUILD FAILED"
-grep -c "ERROR" "$LOG"                               # must be 0
+grep -c "ERROR" "$LOG"                                # must be 0
 ```
 
-`timeout 30` is deliberate: a 120 s timeout does not make the build more reliable, it just
-makes you sit through 112 s of nothing. If the marker is missing at 30 s, re-run with a longer
-timeout — but that means something genuinely changed, not that the machine is slow.
+Then kill the leftover process (see cleanup below) — the wrapper does this for you automatically,
+raw `ng build` does not.
 
-Then kill the leftover process (see cleanup below).
-
-Ruled out as causes, so don't re-investigate these: the corporate `HTTP_PROXY`/`HTTPS_PROXY`
-env vars (hangs identically with them unset), prerendering (hangs with `RenderMode.Prerender`
-swapped for `.Server`), a stale `.angular/cache` (hangs after a full cache wipe), the
-`server.ts` entry (byte-identical to `ui-showcase`, which exits fine), and the `npm run`
-wrapper (`npx ng build gleks-ui-lab` hangs the same way). The remaining difference from
-`ui-showcase` is that `gleks-ui-lab` pulls in FontAwesome as a CommonJS dependency and reads its
-assets/styles out of `node_modules/@guildofgleks/ui`. Root cause is unidentified; it is an
-Angular CLI teardown problem, not a project-config one.
-
-`build:lab` is **not a CI step** (CI builds `@gleks/ui` and `ui-showcase` only), so in most
-sessions you don't need to run it at all.
+`build:lab` is **not a CI step** (CI builds `@gleks/ui` and `ui-showcase` only); it does run as
+part of `projects/gleks-ui-lab/Dockerfile`'s image build.
 
 ## Never run two builds into the same `dist/` at once
 

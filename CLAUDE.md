@@ -31,8 +31,10 @@ files you are about to touch:
 1. **Never publish.** Do not bump the version, do not edit `CHANGELOG.md`'s `planned` heading,
    do not run `npm publish` or `npm run release` — not even when asked in a way that seems to
    authorise it. The user cuts every release. See `gleks-ui-library.instructions.md` rule 9.
-2. **`npm run build:lab` never exits** even though it succeeds. Every other script finishes in
-   under 15 s. Read `running-commands.instructions.md` before concluding something is "slow".
+2. **The raw `ng build gleks-ui-lab` never exits** even though it succeeds — `npm run build:lab`
+   works around this via `scripts/build-lab.mjs` (kills the process once it sees the completion
+   marker), so the *script* itself is safe to run. Every other script finishes in under 15 s.
+   Read `running-commands.instructions.md` before concluding something is "slow".
 3. **Verify library changes in `ui-showcase` only**, never in `gleks-ui-lab` — the two share one
    root `node_modules`, and the local-build swap must be undone afterwards.
 
