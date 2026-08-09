@@ -24,5 +24,7 @@
     </div>
     <button type="button" class="code-block__copy" (click)="onCopy()">{{ copyLabel() }}</button>
   </div>
-  <pre><code class="hljs" [innerHTML]="activeHighlighted()"></code></pre>
+  <gog-scroll class="code-block__scroll" size="thin" ariaLabel="Code sample">
+    <pre><code class="hljs" [innerHTML]="activeHighlighted()"></code></pre>
+  </gog-scroll>
 </div>

@@ -27,6 +27,12 @@
     align-items: center;
     gap: 12px;
 
+    .logo-icon {
+      display: block;
+      height: 32px;
+      width: auto;
+    }
+
     .logo-title {
       font-size: var(--gog-text-lg);
       font-weight: 700;

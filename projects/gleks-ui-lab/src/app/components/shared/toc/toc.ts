@@ -56,8 +56,21 @@ export class TocComponent {
 
   protected onLinkClick(event: MouseEvent, id: string): void {
     event.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // `behavior: 'smooth'` never actually moves this scroller — confirmed by hand: neither
+    // `scrollIntoView({behavior:'smooth'})` nor a direct `viewport.scrollTo({top, behavior:
+    // 'smooth'})` budge `scrollTop` at all here, while `'instant'` works immediately. Likely
+    // `.gog-scroll`'s own `contain: layout style` (see scroll.component.scss) interfering with
+    // the browser's smooth-scroll engine — not something to fix from the consuming app, so this
+    // jumps instead of animating.
+    document.getElementById(id)?.scrollIntoView({ behavior: 'instant', block: 'start' });
     history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${id}`);
+    // Set directly rather than waiting for the IntersectionObserver to catch up: on a jump this
+    // large, the observer only reports entries whose intersection state *changed* since the
+    // last check, and a previously-active heading can report "no longer intersecting" (which
+    // gets filtered out) without the newly-visible target ever registering in the same batch —
+    // leaving the old heading marked active indefinitely. A click is unambiguous user intent,
+    // so it wins immediately; natural scrolling after this still updates normally below.
+    this.activeId.set(id);
   }
 
   private watchContent(): void {

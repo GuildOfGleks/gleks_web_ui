@@ -305,11 +305,13 @@ h3[id] {
     }
   }
 
+  &__scroll {
+    max-height: var(--gleks-code-max-height);
+  }
+
   pre {
     margin: 0;
     padding: 14px 16px;
-    max-height: var(--gleks-code-max-height);
-    overflow: auto;
   }
 
   code {

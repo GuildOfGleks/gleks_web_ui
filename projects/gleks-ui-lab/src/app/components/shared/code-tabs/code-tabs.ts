@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ScrollComponent } from '@guildofgleks/ui';
 import { highlightCode } from '../code-highlight';
 
 const COPIED_LABEL_DURATION_MS = 1500;
@@ -14,6 +15,7 @@ type CodeTab = 'html' | 'ts';
  */
 @Component({
   selector: 'app-code-tabs',
+  imports: [ScrollComponent],
   templateUrl: './code-tabs.html',
   styleUrl: './code-tabs.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
