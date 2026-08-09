@@ -10,6 +10,7 @@
 /node_modules
 # ng-packagr drops one of these next to the library it builds
 /projects/*/*/node_modules
+/projects/*/*/package-lock.json
 npm-debug.log
 yarn-error.log
 
