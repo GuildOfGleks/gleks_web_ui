@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ButtonComponent, ThemeService } from '@guildofgleks/ui';
+import { ButtonComponent, ScrollComponent, ThemeService } from '@guildofgleks/ui';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faPalette } from '@fortawesome/free-solid-svg-icons';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
@@ -20,7 +20,14 @@ interface ThemeMenuOption {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FaIconComponent, ButtonComponent, SidebarLeftComponent, TocComponent],
+  imports: [
+    RouterOutlet,
+    FaIconComponent,
+    ButtonComponent,
+    ScrollComponent,
+    SidebarLeftComponent,
+    TocComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

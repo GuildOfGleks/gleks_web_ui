@@ -5,6 +5,8 @@
   grid-template-areas:
     'header  header  header'
     'sidebar main    right';
+  height: 100dvh; /* Fixed to the viewport — html/body no longer scroll (styles.scss);
+    each grid area below owns its own gog-scroll region instead. */
   background-color: var(--gog-background-color);
   color: var(--gog-text-color);
 }
@@ -12,8 +14,6 @@
 /* 1. Хедер */
 .lab-header {
   grid-area: header;
-  position: sticky;
-  top: 0;
   z-index: 200;
   display: flex;
   align-items: center;
@@ -93,13 +93,22 @@
 /* 2. Левый сайдбар (Список компонентов) */
 .lab-sidebar-left {
   grid-area: sidebar;
-  position: sticky;
-  top: 60px;
-  overflow-y: auto;
-  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* grid items default to min-height:auto, which would let content grow the row */
   padding: 0;
   background-color: var(--gog-surface-color);
   border-right: 1px solid var(--gog-border-color);
+
+  .lab-sidebar-left__inner {
+    /* app-sidebar-left splits itself internally into a fixed "General" block and a
+       scrolling "Components" gog-scroll (see sidebar-left.scss) — this just gives that
+       whole component a definite, shrinkable height to divide between the two. Not
+       height: 100% — see scroll.component.scss's header comment for why a flex-basis
+       chain is used instead of a percentage height here. */
+    flex: 1 1 auto;
+    min-height: 0;
+  }
 }
 
 /* 3. Центральная область (Контент + Футер) */
@@ -107,8 +116,13 @@
   grid-area: main;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   min-width: 0; /* предотвращает расползание flex-элементов */
+  min-height: 0;
+
+  .lab-main-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
 
   .content-container {
     box-sizing: border-box;
@@ -122,13 +136,17 @@
 /* 4. Правый сайдбар (Оглавление) */
 .lab-sidebar-right {
   grid-area: right;
-  position: sticky;
-  top: 60px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   padding: 0 16px;
-  height: calc(100vh - 60px);
-  overflow-y: auto;
   border-left: 1px solid var(--gog-border-color);
   background-color: var(--gog-surface-color);
+
+  .lab-sidebar-right__scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
 }
 
 /* 5. Футер */

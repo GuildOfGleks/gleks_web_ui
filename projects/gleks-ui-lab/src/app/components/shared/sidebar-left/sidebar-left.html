@@ -1,37 +1,64 @@
-@for (section of sections; track section.title) {
-  <div class="nav-section">
-    <div class="sidebar-title font-heading">{{ section.title }}</div>
-
-    <nav class="nav-list">
-      @for (item of section.items; track item.path) {
-        @if (item.open) {
-          <gog-collapsible [(open)]="item.open" class="nav-collapsible">
-            <a
-              [routerLink]="'/' + item.path"
-              routerLinkActive="active"
-              gogCollapsibleTrigger
-              class="nav-item nav-item--parent"
-            >
-              <span>{{ item.label }}</span>
-              <gog-icon name="chevron-down" class="nav-collapsible__chevron" />
-            </a>
-            <div gogCollapsibleContent class="nav-list nav-list--nested">
-              @for (child of item.children; track child.path) {
+<!-- Fixed: sections with a flat item list ("General") — never scrolls with the component list. -->
+<div class="nav-fixed">
+  @for (section of sections; track section.title) {
+    @if (section.items; as items) {
+      <div class="nav-section">
+        <div class="sidebar-title font-heading">{{ section.title }}</div>
+        <nav class="nav-list">
+          @for (item of items; track item.path) {
+            @if (item.open) {
+              <gog-collapsible [(open)]="item.open" class="nav-collapsible">
                 <a
-                  [routerLink]="'/' + child.path"
+                  [routerLink]="'/' + item.path"
                   routerLinkActive="active"
-                  class="nav-item nav-item--nested"
-                  >{{ child.label }}</a
+                  gogCollapsibleTrigger
+                  class="nav-item nav-item--parent"
                 >
-              }
-            </div>
-          </gog-collapsible>
-        } @else {
-          <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{
-            item.label
-          }}</a>
-        }
-      }
-    </nav>
-  </div>
-}
+                  <span>{{ item.label }}</span>
+                  <gog-icon name="chevron-down" class="nav-collapsible__chevron" />
+                </a>
+                <div gogCollapsibleContent class="nav-list nav-list--nested">
+                  @for (child of item.children; track child.path) {
+                    <a
+                      [routerLink]="'/' + child.path"
+                      routerLinkActive="active"
+                      class="nav-item nav-item--nested"
+                      >{{ child.label }}</a
+                    >
+                  }
+                </div>
+              </gog-collapsible>
+            } @else {
+              <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{
+                item.label
+              }}</a>
+            }
+          }
+        </nav>
+      </div>
+    }
+  }
+</div>
+
+<!-- Scrollable: sections with categorized groups ("Components") — one continuous list, groups
+     marked by a labeled divider rather than a collapsible, so every item stays reachable by
+     scrolling alone. -->
+<gog-scroll class="nav-scroll" size="thin" ariaLabel="Component navigation">
+  @for (section of sections; track section.title) {
+    @if (section.groups; as groups) {
+      <div class="nav-section">
+        <div class="sidebar-title font-heading">{{ section.title }}</div>
+        <nav class="nav-list">
+          @for (group of groups; track group.title) {
+            <gog-divider class="nav-divider">{{ group.title }}</gog-divider>
+            @for (item of group.items; track item.path) {
+              <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{
+                item.label
+              }}</a>
+            }
+          }
+        </nav>
+      </div>
+    }
+  }
+</gog-scroll>

@@ -96,6 +96,15 @@ export class TocComponent {
 
     // IntersectionObserver callbacks run outside Angular's zone by default.
     this.ngZone.runOutsideAngular(() => {
+      // `.content-container` scrolls inside `<gog-scroll class="lab-main-scroll">` (app.html),
+      // not the document, so `root` must be that scroller's actual viewport element — a bare
+      // `root: null` would measure intersection against the browser viewport, which no longer
+      // moves. `.gog-scroll__viewport` is the library's internal scrolling element (see
+      // scroll.component.html); found by ancestor search rather than a component API because
+      // ScrollComponent doesn't expose it publicly, matching the existing DOM-query approach
+      // this class already uses for `.content-container` itself.
+      const root = content?.closest<HTMLElement>('.gog-scroll__viewport') ?? null;
+
       this.intersectionObserver = new IntersectionObserver(
         (entries) => {
           const visible = entries.filter((entry) => entry.isIntersecting);
@@ -106,7 +115,7 @@ export class TocComponent {
           );
           this.ngZone.run(() => this.activeId.set((topMost.target as HTMLElement).id));
         },
-        { rootMargin: '0px 0px -70% 0px', threshold: 0 },
+        { root, rootMargin: '0px 0px -70% 0px', threshold: 0 },
       );
 
       for (const el of elements) {

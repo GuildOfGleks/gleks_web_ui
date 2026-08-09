@@ -17,6 +17,15 @@
  * gray, shadows).
  */
 
+/* Pins the viewport so the app shell (header/footer/sidebars) never moves — only the
+   individual `gog-scroll` regions inside `.lab-layout` (app.scss) scroll. Without this,
+   the document itself would grow past 100dvh and scroll natively underneath them. */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 /* ── PrimeNG (Aura, light, blue primary) ─────────────────────────────────── */
 [data-theme='primeng'] {
   color-scheme: light;
@@ -207,11 +216,12 @@
   --gog-toast-radius: 4px;
 }
 
-/* Keeps anchored/scrolled-to headings clear of the sticky 60px header
-   (see .lab-header in app.scss) when jumped to via the "On this page" TOC. */
+/* Small breathing room above a heading jumped to via the "On this page" TOC — the header
+   itself no longer overlaps scrolled content (it lives outside .lab-main-scroll's own
+   scroller, see app.scss), so this is just visual padding, not header-clearance math. */
 h2[id],
 h3[id] {
-  scroll-margin-top: 76px;
+  scroll-margin-top: 16px;
 }
 
 /*

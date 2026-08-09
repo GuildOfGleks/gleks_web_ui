@@ -1,7 +1,20 @@
 :host {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  min-height: 0;
+}
+
+/* Never scrolls — "General" stays put above the component list. */
+.nav-fixed {
+  flex: 0 0 auto;
+  margin-bottom: 24px;
+}
+
+/* The long part — see scroll.component.scss's header comment for why a flex-basis chain
+   (not height: 100%) is what actually lets this fill the remaining space correctly. */
+.nav-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .sidebar-title {
@@ -11,6 +24,16 @@
   color: var(--gog-muted-text-color);
   margin-bottom: 12px;
   padding-left: 8px;
+}
+
+.nav-collapsible__chevron {
+  flex-shrink: 0;
+  color: var(--gog-muted-text-color);
+  transition: transform var(--gog-duration-fast);
+}
+
+.gog-collapsible__trigger--open .nav-collapsible__chevron {
+  transform: rotate(180deg);
 }
 
 .nav-list {
@@ -47,16 +70,6 @@
     }
   }
 
-  .nav-collapsible__chevron {
-    flex-shrink: 0;
-    color: var(--gog-muted-text-color);
-    transition: transform var(--gog-duration-fast);
-  }
-
-  .nav-item--parent.gog-collapsible__trigger--open .nav-collapsible__chevron {
-    transform: rotate(180deg);
-  }
-
   &--nested {
     margin: 2px 0 4px;
     padding-left: 14px;
@@ -77,4 +90,21 @@
       border-left-width: 2px;
     }
   }
+}
+
+/* Categorized labels inside "Components" (e.g. "Actions" / "Forms & Inputs") — a rule with
+   the category name running through it, not a control: the list underneath stays one
+   continuous, always-scrollable run rather than something to expand first.
+   No [inset] and a smaller --gog-divider-label-font-size override: the label is
+   `white-space: nowrap` by design (it's built for a short inline word like "OR"), and the
+   component's own default label size (--gog-text-sm, 14px) clips a two-word category name
+   at this sidebar's 180px width — dropping the 24px inset and sizing the label down to
+   --gog-text-xs reclaims just enough room for the longest name ("Feedback & Overlays") to
+   fit on one line. */
+.nav-divider {
+  --gog-divider-label-font-size: var(--gog-text-xs);
+  --gog-divider-label-font-weight: 600;
+  margin-block: 20px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
