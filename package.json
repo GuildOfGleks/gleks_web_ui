@@ -11,7 +11,7 @@
     "test:lib": "ng test @gleks/ui",
     "build:showcase": "ng build ui-showcase",
     "start:lab": "ng serve gleks-ui-lab",
-    "build:lab": "ng build gleks-ui-lab",
+    "build:lab": "ng build gleks-ui-lab --no-prerender",
     "format": "prettier --write \"projects/**/*.{ts,html,scss,css}\"",
     "format:check": "prettier --check \"projects/**/*.{ts,html,scss,css}\"",
     "lint": "ng lint @gleks/ui && ng lint ui-showcase",
