@@ -317,4 +317,4 @@ per instance or app-wide via `GOG_CONFIG.floatLabel`.
 
 ## License
 
-MIT © Roman Malitskyi
+Apache-2.0 © Roman Malitskyi
