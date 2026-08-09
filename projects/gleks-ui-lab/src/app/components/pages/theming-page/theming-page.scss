@@ -58,15 +58,16 @@
 
 .token-table {
   width: 100%;
+  min-width: 560px;
   border-collapse: collapse;
   font-size: var(--gog-text-sm);
 
   th,
   td {
     text-align: left;
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--gog-border-color);
-    vertical-align: top;
+    vertical-align: middle;
   }
 
   th {
@@ -74,6 +75,14 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--gog-muted-text-color);
+
+    &:first-child {
+      width: 34%;
+    }
+
+    &:nth-child(2) {
+      width: 22%;
+    }
   }
 
   td {
@@ -81,6 +90,7 @@
 
     &:last-child {
       color: var(--gog-muted-text-color);
+      line-height: 1.5;
     }
   }
 
@@ -91,7 +101,36 @@
     white-space: nowrap;
   }
 
-  tr:last-child td {
-    border-bottom: none;
+  tbody tr {
+    transition: background-color var(--gog-duration-fast);
+
+    &:hover {
+      background-color: var(--gog-hover-color);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
   }
+}
+
+.token-table__value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 20px;
+
+  code {
+    color: var(--gog-muted-text-color);
+  }
+}
+
+.token-table__swatch {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--gog-border-color);
+  // Visible against a swatch that itself happens to match the surface color.
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gog-text-color) 8%, transparent) inset;
 }

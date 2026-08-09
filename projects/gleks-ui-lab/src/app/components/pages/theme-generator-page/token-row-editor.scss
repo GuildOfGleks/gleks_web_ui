@@ -1,0 +1,105 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--gog-border-color);
+}
+
+:host:last-of-type {
+  border-bottom: none;
+}
+
+.row__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--gog-font-mono);
+  font-size: var(--gog-text-xs);
+  color: var(--gog-accent-color);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: help;
+}
+
+.row__control {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.row__swatch {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--gog-border-color);
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 2px;
+  }
+
+  &::-webkit-color-swatch {
+    border: 0;
+    border-radius: 2px;
+  }
+}
+
+.row__range {
+  flex: 0 0 auto;
+  width: 100px;
+  accent-color: var(--gog-accent-color);
+}
+
+.row__unit {
+  flex: 0 0 auto;
+  font-family: var(--gog-font-mono);
+  font-size: var(--gog-text-xs);
+  color: var(--gog-muted-text-color);
+}
+
+.row__input {
+  flex: 0 0 auto;
+  width: 140px;
+  font-family: var(--gog-font-mono);
+  font-size: var(--gog-text-xs);
+  padding: 4px 8px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: 4px;
+  background-color: var(--gog-background-color);
+  color: var(--gog-text-color);
+
+  &--color {
+    width: 100px;
+  }
+
+  &--number {
+    width: 64px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gog-accent-color);
+    outline-offset: 1px;
+  }
+}
+
+.row__reset {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--gog-muted-text-color);
+  cursor: pointer;
+  line-height: 1;
+
+  &:hover {
+    color: var(--gog-danger-color);
+    background-color: var(--gog-hover-color);
+  }
+}

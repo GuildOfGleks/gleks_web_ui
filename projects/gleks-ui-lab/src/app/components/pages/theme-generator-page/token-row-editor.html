@@ -1,0 +1,60 @@
+<code class="row__name" [title]="name()">{{ name() }}</code>
+
+<div class="row__control">
+  @switch (control().kind) {
+    @case ('color') {
+      <input
+        type="color"
+        class="row__swatch"
+        [value]="value()"
+        (input)="onText($any($event.target).value)"
+      />
+      <input
+        type="text"
+        class="row__input row__input--color"
+        [value]="value()"
+        (input)="onText($any($event.target).value)"
+      />
+    }
+    @case ('range') {
+      <input
+        type="range"
+        class="row__range"
+        [min]="$any(control()).min"
+        [max]="$any(control()).max"
+        [step]="$any(control()).step"
+        [value]="currentNumeric()"
+        (input)="onRange($any($event.target).value)"
+      />
+      <input
+        type="number"
+        class="row__input row__input--number"
+        [min]="$any(control()).min"
+        [max]="$any(control()).max"
+        [step]="$any(control()).step"
+        [value]="currentNumeric()"
+        (input)="onRange($any($event.target).value)"
+      />
+      <span class="row__unit">{{ $any(control()).unit }}</span>
+    }
+    @default {
+      <input
+        type="text"
+        class="row__input"
+        [value]="value()"
+        (input)="onText($any($event.target).value)"
+      />
+    }
+  }
+</div>
+
+@if (overridden()) {
+  <button
+    type="button"
+    class="row__reset"
+    [attr.aria-label]="'Reset ' + name() + ' to default'"
+    (click)="reset.emit()"
+  >
+    ✕
+  </button>
+}

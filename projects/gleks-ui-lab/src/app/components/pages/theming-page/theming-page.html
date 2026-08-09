@@ -35,6 +35,7 @@
             <thead>
               <tr>
                 <th>Token</th>
+                <th>Value</th>
                 <th>Description</th>
               </tr>
             </thead>
@@ -43,6 +44,18 @@
                 <tr>
                   <td>
                     <code>{{ row.name }}</code>
+                  </td>
+                  <td>
+                    <span class="token-table__value">
+                      @if (isColor(row.name)) {
+                        <span
+                          class="token-table__swatch"
+                          [style.background-color]="valueOf(row.name)"
+                          aria-hidden="true"
+                        ></span>
+                      }
+                      <code>{{ valueOf(row.name) }}</code>
+                    </span>
                   </td>
                   <td>{{ row.description }}</td>
                 </tr>

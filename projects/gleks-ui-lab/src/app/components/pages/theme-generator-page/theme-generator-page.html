@@ -2,151 +2,309 @@
   <a routerLink="/general/theming" class="generator-header__back">← Back to Theming</a>
   <h1 class="generator-header__title font-heading">Theme Generator</h1>
   <p class="generator-header__intro">
-    Pick a component, edit any token below and watch the preview update live. Copy the result
-    whenever you like — nothing is saved, reloading the page resets everything.
+    Change a foundation token below and the whole gallery updates at once, live across the entire
+    site — not just this page. Hit Randomize for a fresh palette and fonts in one click, or
+    fine-tune a single component further down. Export the result when you're happy with it and paste
+    it into your own project; nothing here is saved, reloading the page resets everything.
   </p>
-
-  <gog-select
-    label="Component"
-    inputId="generator-component"
-    [options]="componentOptions"
-    [value]="selectedComponentId()"
-    (valueChange)="onComponentChange($event)"
-  />
+  <div class="generator-header__actions">
+    <gog-button variant="primary" (gogClick)="randomizeAll()">🎲 Randomize everything</gog-button>
+    <gog-button variant="outline" (gogClick)="resetAll()">Reset all overrides</gog-button>
+  </div>
 </div>
 
-<div class="generator-layout">
-  <div class="generator-preview">
-    <div class="generator-preview__label">Live preview</div>
-    <div #previewWrapper class="generator-preview__stage" [style]="previewStyle()">
-      @switch (selectedComponentId()) {
-        @case ('accordion') {
-          <gog-accordion [items]="accordionItems" [expandFirst]="true">
-            <ng-template gogAccordionContent let-item>
-              <p>{{ item.body }}</p>
-            </ng-template>
-          </gog-accordion>
-        }
-        @case ('button') {
-          <div class="generator-preview__row">
-            <gog-button variant="primary">Primary</gog-button>
-            <gog-button variant="secondary">Secondary</gog-button>
-            <gog-button variant="outline">Outline</gog-button>
-            <gog-button variant="ghost">Ghost</gog-button>
-          </div>
-        }
-        @case ('checkbox') {
-          <gog-checkbox label="Checked option" [checked]="true" />
-        }
-        @case ('chip') {
-          <div class="generator-preview__row">
-            <gog-chip>Angular</gog-chip>
-            <gog-chip iconName="info">Informational</gog-chip>
-          </div>
-        }
-        @case ('dialog') {
-          <gog-button variant="primary" type="button" (gogClick)="openDialogPreview()">
-            Open dialog
-          </gog-button>
-          <gog-dialog />
-        }
-        @case ('icon') {
-          <div class="generator-preview__row">
-            <gog-icon name="check" />
-            <gog-icon name="info" />
-            <gog-icon name="warning" />
-          </div>
-        }
-        @case ('inputfield') {
-          <gog-inputfield label="Name" inputId="preview-name" [value]="'Ada Lovelace'" />
-        }
-        @case ('multiselect') {
-          <gog-multiselect label="Features" [options]="multiselectOptions" [value]="['toast']" />
-        }
-        @case ('paginator') {
-          <gog-paginator [page]="2" [totalPages]="5" />
-        }
-        @case ('select') {
-          <gog-select
-            label="Framework"
-            inputId="preview-framework"
-            [options]="selectOptions"
-            [value]="'angular'"
-          />
-        }
-        @case ('skeleton') {
-          <gog-skeleton shape="text" [lines]="3" style="width: 220px" />
-        }
-        @case ('slider') {
-          <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [value]="45" />
-        }
-        @case ('spinner') {
-          <gog-spinner size="lg" ariaLabel="Loading" />
-        }
-        @case ('table') {
-          <gog-table [value]="tableRows" size="md">
-            <column field="component" header="Component" [sortable]="true"></column>
-            <column field="status" header="Status"></column>
-          </gog-table>
-        }
-        @case ('tag') {
-          <div class="generator-preview__row">
-            <gog-tag variant="success">Available</gog-tag>
-            <gog-tag variant="danger">Deprecated</gog-tag>
-            <gog-tag variant="warning">Beta</gog-tag>
-            <gog-tag variant="info">New</gog-tag>
-          </div>
-        }
-        @case ('toast') {
-          <gog-toast [toast]="previewToast" />
-        }
-      }
-    </div>
-  </div>
+<section class="foundation">
+  <h2 class="foundation__title font-heading">Foundation</h2>
+  <p class="foundation__intro">
+    Every component derives from these — palette, fonts, spacing, radius, motion. Change one and
+    watch the whole gallery below follow.
+  </p>
 
-  <div class="generator-editor">
-    <div class="generator-editor__header">
-      <h3 class="generator-editor__title">{{ selectedLabel() }} tokens</h3>
-      <button type="button" class="generator-editor__reset-all" (click)="resetAll()">
-        Reset all
-      </button>
-    </div>
-
-    @if (tokenNames().length === 0) {
-      <p class="generator-editor__loading">Loading tokens…</p>
-    } @else {
-      <div class="generator-editor__list">
-        @for (name of tokenNames(); track name) {
-          <div class="generator-editor__row">
-            <code class="generator-editor__name">{{ name }}</code>
-            <input
-              type="text"
-              class="generator-editor__input"
-              [value]="currentValue(name)"
-              (input)="onTokenInput(name, $any($event.target).value)"
+  <div class="foundation__groups">
+    @for (group of foundationGroups(); track group.title) {
+      <div class="foundation__group">
+        <h3 class="foundation__group-title">{{ group.title }}</h3>
+        <div class="foundation__rows">
+          @for (row of group.rows; track row.name) {
+            <app-token-row-editor
+              [name]="row.name"
+              [control]="row.control"
+              [value]="currentValue(row.name)"
+              [overridden]="isOverridden(row.name)"
+              (valueChange)="onTokenInput(row.name, $event)"
+              (reset)="resetToken(row.name)"
             />
-            @if (overrides()[name] !== undefined) {
-              <button
-                type="button"
-                class="generator-editor__row-reset"
-                [attr.aria-label]="'Reset ' + name + ' to default'"
-                (click)="resetToken(name)"
-              >
-                ✕
-              </button>
-            }
-          </div>
-        }
+          }
+        </div>
       </div>
     }
   </div>
-</div>
+</section>
+
+<section class="gallery">
+  <h2 class="gallery__title font-heading">Component Gallery</h2>
+  <p class="gallery__intro">
+    Every component the library ships, live, all at once — so a foundation change is visible
+    everywhere immediately instead of one dropdown selection at a time.
+  </p>
+
+  <div class="gallery__grid">
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Accordion</h3>
+      <gog-accordion [items]="accordionItems" [expandFirst]="true">
+        <ng-template gogAccordionContent let-item>
+          <p>{{ item.body }}</p>
+        </ng-template>
+      </gog-accordion>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Autocomplete</h3>
+      <gog-autocomplete
+        inputId="gallery-autocomplete"
+        label="City"
+        placeholder="Start typing…"
+        [options]="selectOptions"
+        [appendToBody]="true"
+      />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Badge</h3>
+      <gog-button gogBadge="3" badgeAriaLabel="3 unread">Inbox</gog-button>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Button</h3>
+      <div class="gallery__row">
+        <gog-button variant="primary">Primary</gog-button>
+        <gog-button variant="secondary">Secondary</gog-button>
+        <gog-button variant="outline">Outline</gog-button>
+        <gog-button variant="ghost">Ghost</gog-button>
+      </div>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Button Toggle</h3>
+      <gog-button-toggle-group ariaLabel="View" [options]="selectOptions" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Calendar</h3>
+      <gog-calendar />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Checkbox</h3>
+      <gog-checkbox label="Checked option" [checked]="true" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Chip</h3>
+      <div class="gallery__row">
+        <gog-chip>Angular</gog-chip>
+        <gog-chip iconName="info">Informational</gog-chip>
+      </div>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Datepicker</h3>
+      <gog-datepicker
+        inputId="gallery-datepicker"
+        label="Date of birth"
+        [max]="today"
+        [appendToBody]="true"
+      />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Dialog</h3>
+      <gog-button variant="primary" type="button" (gogClick)="openDialogPreview()">
+        Open dialog
+      </gog-button>
+      <gog-dialog />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Divider</h3>
+      <gog-divider>OR</gog-divider>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Icon</h3>
+      <div class="gallery__row">
+        <gog-icon name="check" />
+        <gog-icon name="info" />
+        <gog-icon name="warning" />
+      </div>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Input Field</h3>
+      <gog-inputfield inputId="gallery-inputfield" label="Name" [value]="'Ada Lovelace'" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Multiselect</h3>
+      <gog-multiselect
+        inputId="gallery-multiselect"
+        label="Features"
+        [options]="multiselectOptions"
+        [value]="['toast']"
+        [appendToBody]="true"
+      />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Paginator</h3>
+      <gog-paginator [page]="2" [totalPages]="5" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Progress Bar</h3>
+      <gog-progressbar [value]="42" ariaLabel="Upload progress" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Radio Group</h3>
+      <gog-radio-group label="Delivery" [options]="radioOptions" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Select</h3>
+      <gog-select
+        inputId="gallery-select"
+        label="Framework"
+        [options]="selectOptions"
+        [value]="'angular'"
+        [appendToBody]="true"
+      />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Skeleton</h3>
+      <gog-skeleton shape="text" [lines]="3" style="width: 220px" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Slider</h3>
+      <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [value]="45" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Spinner</h3>
+      <gog-spinner size="lg" ariaLabel="Loading" />
+    </article>
+
+    <article class="gallery__card gallery__card--wide">
+      <h3 class="gallery__card-title">Table</h3>
+      <gog-table [value]="tableRows" size="md">
+        <column field="component" header="Component" [sortable]="true"></column>
+        <column field="status" header="Status"></column>
+      </gog-table>
+    </article>
+
+    <article class="gallery__card gallery__card--wide">
+      <h3 class="gallery__card-title">Tabs</h3>
+      <gog-tabs ariaLabel="Account">
+        <gog-tab label="Profile">Profile content.</gog-tab>
+        <gog-tab label="Settings" iconName="info">Settings content.</gog-tab>
+        <gog-tab label="Billing" [disabled]="true">Not available.</gog-tab>
+      </gog-tabs>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Tag</h3>
+      <div class="gallery__row">
+        <gog-tag variant="success">Available</gog-tag>
+        <gog-tag variant="danger">Deprecated</gog-tag>
+        <gog-tag variant="warning">Beta</gog-tag>
+        <gog-tag variant="info">New</gog-tag>
+      </div>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Toast</h3>
+      <gog-toast [toast]="previewToast" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Toggle</h3>
+      <gog-toggle label="Notifications" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Tooltip</h3>
+      <gog-button variant="outline" gogTooltip="A themed tooltip">Hover me</gog-button>
+    </article>
+  </div>
+</section>
+
+<section class="fine-tune">
+  <h2 class="fine-tune__title font-heading">Fine-tune a single component</h2>
+  <p class="fine-tune__intro">
+    Every token for one component, individually — for when the foundation isn't granular enough and
+    one component genuinely needs to differ from the rest.
+  </p>
+
+  <gog-autocomplete
+    label="Component"
+    inputId="generator-component"
+    placeholder="Search components…"
+    [options]="componentOptions"
+    [value]="selectedComponentId()"
+    [appendToBody]="true"
+    (valueChange)="onComponentChange($event)"
+  />
+
+  <div class="fine-tune__editor">
+    <div class="fine-tune__editor-header">
+      <h3 class="fine-tune__editor-title">{{ selectedLabel() }} tokens</h3>
+    </div>
+
+    @if (tokenNames().length === 0) {
+      <p class="fine-tune__loading">Loading tokens…</p>
+    } @else {
+      <gog-scroll class="fine-tune__list" size="thin" ariaLabel="Component tokens">
+        @for (row of tokenRows(); track row.name) {
+          <app-token-row-editor
+            [name]="row.name"
+            [control]="row.control"
+            [value]="currentValue(row.name)"
+            [overridden]="isOverridden(row.name)"
+            (valueChange)="onTokenInput(row.name, $event)"
+            (reset)="resetToken(row.name)"
+          />
+        }
+      </gog-scroll>
+    }
+  </div>
+</section>
 
 <section class="generator-output">
-  <h3 class="generator-output__title">Copy this component's theme</h3>
-  @if (generatedCssMarkdown(); as css) {
-    <app-markdown [markdown]="css" />
-  } @else {
-    <p class="generator-editor__loading">Loading…</p>
-  }
+  <h2 class="generator-output__title font-heading">Export CSS</h2>
+  <p class="generator-output__intro">
+    Every foundation token's current value, ready to paste into your project after the library
+    import — plus a second block for anything fine-tuned individually above, if you used it. This
+    already reproduces the whole look: every other token in the library reads one of these through
+    <code>var(...)</code>, which is why changing 44 values here visibly changes far more than 44
+    things in the gallery above.
+  </p>
+  <app-markdown [markdown]="exportCssMarkdown()" />
+
+  <gog-accordion class="generator-output__full" [items]="fullyResolvedSections">
+    <ng-template gogAccordionContent>
+      <p class="generator-output__full-intro">
+        Every token the library ships (including the ones the block above only affects indirectly,
+        through <code>var(...)</code>), each with its current resolved value spelled out literally —
+        for double-checking, or for overriding one derived value directly instead of through the
+        foundation token it normally follows.
+      </p>
+      @if (fullyResolvedCssMarkdown(); as css) {
+        <app-markdown [markdown]="css" />
+      } @else {
+        <p class="generator-output__loading">Loading…</p>
+      }
+    </ng-template>
+  </gog-accordion>
 </section>
