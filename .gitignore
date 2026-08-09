@@ -45,3 +45,5 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+.github/workflows/deploy-lab.yml
+scripts/deploy-lab.ps1
