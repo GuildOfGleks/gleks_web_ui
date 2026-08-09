@@ -1,10 +1,4 @@
-# Build context is the repo root (this is an Angular workspace, not a standalone app):
-#   docker build -f projects/gleks-ui-lab/Dockerfile .
-
-# node:22-alpine bundles an npm whose dependency resolution disagrees on optional
-# peer deps (e.g. @napi-rs/wasm-runtime's @emnapi/* peers) with the lock file, which
-# makes `npm ci` reject it. Pin to the npm version from package.json's
-# "packageManager" field, same workaround as .github/workflows/ci.yml.
+# Стейдж 1: Билд
 FROM node:22-alpine AS build
 WORKDIR /app
 RUN npm install -g npm@11.6.2
@@ -13,14 +7,16 @@ RUN npm ci
 COPY . .
 RUN npm run build:lab
 
+# Стейдж 2: Рантайм
 FROM node:22-alpine AS runtime
 WORKDIR /app
-ENV NODE_ENV=production
-RUN npm install -g npm@11.6.2
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+
+# Копируем готовый билд (проверь пути!)
 COPY --from=build /app/dist/gleks-ui-lab ./dist/gleks-ui-lab
 
-ENV PORT=4000
-EXPOSE 4000
+# Настраиваем порт 80, как в твоем "хорошем" примере
+ENV PORT=80
+EXPOSE 80
+
+# Путь к серверу (убедись, что он такой после npm run build:lab)
 CMD ["node", "dist/gleks-ui-lab/server/server.mjs"]

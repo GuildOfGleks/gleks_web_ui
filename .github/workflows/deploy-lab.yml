@@ -16,12 +16,13 @@ on:
       host_port:
         description: "Port to expose on the server"
         required: false
-        default: "4000"
+        default: "80"
 
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/gleks-ui-lab
   CONTAINER_NAME: gleks-ui-lab
-  CONTAINER_PORT: 4000
+  HOST_PORT: 3001
+  CONTAINER_PORT: 80
 
 jobs:
   build-and-deploy:
