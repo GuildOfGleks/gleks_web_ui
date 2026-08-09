@@ -1,0 +1,90 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('overview');
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.feature-card {
+  padding: 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+
+  &__icon {
+    color: var(--gog-accent-color);
+    font-size: var(--gog-text-lg);
+  }
+
+  &__title {
+    margin: 0.6em 0 0.4em;
+    font-size: var(--gog-text-md);
+    font-weight: 600;
+  }
+
+  &__text {
+    margin: 0;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+    line-height: 1.5;
+  }
+}
+
+.next-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.next-card {
+  display: block;
+  padding: 16px 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  text-decoration: none;
+
+  &--link {
+    transition:
+      border-color var(--gog-duration-fast),
+      background-color var(--gog-duration-fast);
+
+    &:hover {
+      border-color: var(--gog-accent-color);
+      background: color-mix(in srgb, var(--gog-accent-color) 6%, var(--gog-surface-color));
+    }
+  }
+
+  &__title {
+    display: block;
+    margin-bottom: 0.3em;
+    font-weight: 600;
+    color: var(--gog-accent-color);
+  }
+
+  &__text {
+    margin: 0;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 860px) {
+  .feature-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .next-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}

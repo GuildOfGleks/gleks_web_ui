@@ -1,60 +1,71 @@
-<div class="theming-page__generator-cta">
-  <gog-button variant="primary" routerLink="/general/theme-generator">
-    Open Theme Generator
-  </gog-button>
-  <p class="theming-page__generator-hint">
-    Pick a component, tweak its tokens live and copy the result — no IDE guesswork.
-  </p>
-</div>
+<div class="theming-page">
+  <header class="theming-page__hero">
+    <p class="theming-page__eyebrow">--gog-*</p>
+    <h1 class="theming-page__title font-heading">Theming</h1>
+    <p class="theming-page__lead">
+      Every value the library paints with is a plain CSS custom property. No build step, no Sass
+      config, no JS theming API required to change how it looks.
+    </p>
+  </header>
 
-@if (hasMarkdown()) {
-  <app-markdown [markdown]="markdown()!" />
-}
+  <div class="theming-page__generator-cta">
+    <gog-button variant="primary" routerLink="/general/theme-generator">
+      Open Theme Generator
+    </gog-button>
+    <p class="theming-page__generator-hint">
+      Pick a component, tweak its tokens live and copy the result — no IDE guesswork.
+    </p>
+  </div>
 
-<section class="token-reference">
-  <h2 id="token-reference" class="token-reference__title font-heading">Token Reference</h2>
-  <p class="token-reference__intro">
-    Every CSS custom property a component paints with, grouped by area. Override any of them — on a
-    single instance, a subtree, or a theme — to restyle the library.
-  </p>
+  @if (hasMarkdown()) {
+    <app-markdown [markdown]="markdown()!" />
+  }
 
-  <gog-accordion [items]="tokenSections" [multi]="true" size="md">
-    <ng-template gogAccordionContent let-item>
-      <div class="token-table-scroll">
-        <table class="token-table">
-          <thead>
-            <tr>
-              <th>Token</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (row of $any(item.tokens); track row.name) {
+  <section class="token-reference">
+    <h2 id="token-reference" class="token-reference__title font-heading">Token Reference</h2>
+    <p class="token-reference__intro">
+      Every CSS custom property a component paints with, grouped by area. Override any of them — on
+      a single instance, a subtree, or a theme — to restyle the library.
+    </p>
+
+    <gog-accordion [items]="tokenSections" [multi]="true" size="md">
+      <ng-template gogAccordionContent let-item>
+        <div class="token-table-scroll">
+          <table class="token-table">
+            <thead>
               <tr>
-                <td>
-                  <code>{{ row.name }}</code>
-                </td>
-                <td>{{ row.description }}</td>
+                <th>Token</th>
+                <th>Description</th>
               </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    </ng-template>
-  </gog-accordion>
+            </thead>
+            <tbody>
+              @for (row of $any(item.tokens); track row.name) {
+                <tr>
+                  <td>
+                    <code>{{ row.name }}</code>
+                  </td>
+                  <td>{{ row.description }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+    </gog-accordion>
 
-  <p class="token-reference__full-intro">
-    Or copy this one block — every token worth overriding to build a fully custom theme, from fonts
-    through the palette to the component layer:
-  </p>
+    <p class="token-reference__full-intro">
+      Or copy this one block — every token worth overriding to build a fully custom theme, from
+      fonts through the palette to the component layer:
+    </p>
 
-  <gog-accordion class="token-reference__full" [items]="fullCssSections()" size="md">
-    <ng-template gogAccordionContent let-item>
-      @if ($any(item.markdown); as css) {
-        <app-markdown [markdown]="css" />
-      } @else {
-        <p class="token-reference__loading">Loading…</p>
-      }
-    </ng-template>
-  </gog-accordion>
-</section>
+    <gog-accordion class="token-reference__full" [items]="fullCssSections()" size="md">
+      <ng-template gogAccordionContent let-item>
+        @if ($any(item.markdown); as css) {
+          <app-markdown [markdown]="css" />
+        } @else {
+          <p class="token-reference__loading">Loading…</p>
+        }
+      </ng-template>
+    </gog-accordion>
+  </section>
+</div>

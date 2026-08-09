@@ -1,5 +1,3 @@
-# Theming
-
 Guild of Gleks UI is themed entirely through CSS custom properties (`--gog-*`). There is
 no build step, Sass config or JS theming API required to change how it looks — every
 value the library paints with can be overridden from plain CSS.

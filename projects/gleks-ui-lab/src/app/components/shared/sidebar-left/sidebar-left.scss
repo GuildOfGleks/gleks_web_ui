@@ -4,10 +4,14 @@
   min-height: 0;
 }
 
-/* Never scrolls — "General" stays put above the component list. */
+/* Never scrolls — "General" and the "Components" title both stay put; only the group list
+   inside .nav-scroll (below) actually scrolls. */
 .nav-fixed {
   flex: 0 0 auto;
-  margin-bottom: 24px;
+}
+
+.nav-fixed__components-title {
+  margin-top: 24px;
 }
 
 /* The long part — see scroll.component.scss's header comment for why a flex-basis chain

@@ -38,6 +38,16 @@
       </div>
     }
   }
+
+  <!-- "Components" title stays pinned with the rest of nav-fixed — only the list of groups
+       below it (inside nav-scroll) actually scrolls. -->
+  @for (section of sections; track section.title) {
+    @if (section.groups) {
+      <div class="sidebar-title font-heading nav-fixed__components-title">
+        {{ section.title }}
+      </div>
+    }
+  }
 </div>
 
 <!-- Scrollable: sections with categorized groups ("Components") — one continuous list, groups
@@ -46,19 +56,16 @@
 <gog-scroll class="nav-scroll" size="thin" ariaLabel="Component navigation">
   @for (section of sections; track section.title) {
     @if (section.groups; as groups) {
-      <div class="nav-section">
-        <div class="sidebar-title font-heading">{{ section.title }}</div>
-        <nav class="nav-list">
-          @for (group of groups; track group.title) {
-            <gog-divider class="nav-divider">{{ group.title }}</gog-divider>
-            @for (item of group.items; track item.path) {
-              <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{
-                item.label
-              }}</a>
-            }
+      <nav class="nav-list">
+        @for (group of groups; track group.title) {
+          <gog-divider class="nav-divider">{{ group.title }}</gog-divider>
+          @for (item of group.items; track item.path) {
+            <a [routerLink]="'/' + item.path" routerLinkActive="active" class="nav-item">{{
+              item.label
+            }}</a>
           }
-        </nav>
-      </div>
+        }
+      </nav>
     }
   }
 </gog-scroll>

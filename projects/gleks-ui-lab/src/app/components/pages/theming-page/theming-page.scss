@@ -1,3 +1,7 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('theming-page');
+
 .theming-page__generator-cta {
   display: flex;
   align-items: center;

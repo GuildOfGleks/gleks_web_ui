@@ -1,0 +1,54 @@
+<div class="overview">
+  <header class="overview__hero">
+    <p class="overview__eyebrow">@guildofgleks/ui</p>
+    <h1 class="overview__title font-heading">Overview</h1>
+    <p class="overview__lead">
+      Guild of Gleks UI is a component library for building consistent, accessible web interfaces
+      quickly — without fighting a heavyweight design system or writing every button and dialog from
+      scratch.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="what-it-gives-you" class="doc-section__title font-heading">What it gives you</h2>
+
+    <div class="feature-grid">
+      @for (feature of features; track feature.title) {
+        <article class="feature-card">
+          <fa-icon [icon]="feature.icon" class="feature-card__icon" />
+          <h3 class="feature-card__title">{{ feature.title }}</h3>
+          <p class="feature-card__text">{{ feature.text }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="who-its-for" class="doc-section__title font-heading">Who it's for</h2>
+    <p class="doc-section__intro">
+      Teams who want their product to look and feel like one coherent thing, without maintaining a
+      design system from scratch or adopting a large third-party framework just to get a button and
+      a dropdown.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="where-to-go-next" class="doc-section__title font-heading">Where to go next</h2>
+
+    <div class="next-grid">
+      @for (link of nextLinks; track link.title) {
+        @if (link.path; as path) {
+          <a [routerLink]="path" class="next-card next-card--link">
+            <span class="next-card__title">{{ link.title }}</span>
+            <p class="next-card__text">{{ link.text }}</p>
+          </a>
+        } @else {
+          <div class="next-card">
+            <span class="next-card__title">{{ link.title }}</span>
+            <p class="next-card__text">{{ link.text }}</p>
+          </div>
+        }
+      }
+    </div>
+  </section>
+</div>

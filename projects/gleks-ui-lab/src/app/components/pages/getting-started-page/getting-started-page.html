@@ -1,0 +1,57 @@
+<div class="getting-started">
+  <header class="getting-started__hero">
+    <p class="getting-started__eyebrow">guide</p>
+    <h1 class="getting-started__title font-heading">Getting Started</h1>
+    <p class="getting-started__lead">
+      Add the library, import its stylesheet once, and use any component standalone — no module
+      system, no build-time theming step.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="install" class="doc-section__title font-heading">Install</h2>
+    <app-markdown [markdown]="installSnippet" />
+  </section>
+
+  <section class="doc-section">
+    <h2 id="import-the-styles" class="doc-section__title font-heading">Import the styles</h2>
+    <p class="doc-section__intro">
+      Add the library stylesheet once, in your app's global styles (<code>angular.json</code>):
+    </p>
+    <app-markdown [markdown]="stylesSnippet" />
+  </section>
+
+  <section class="doc-section">
+    <h2 id="use-a-component" class="doc-section__title font-heading">Use a component</h2>
+    <p class="doc-section__intro">Every component is standalone — import only what you use.</p>
+    <app-markdown [markdown]="useSnippet" />
+  </section>
+
+  <section class="doc-section">
+    <h2 id="set-app-wide-defaults" class="doc-section__title font-heading">
+      Set app-wide defaults <span class="doc-section__optional">(optional)</span>
+    </h2>
+    <p class="doc-section__intro">
+      Anything a whole app decides once — a compact size, automatic error timing, a date format —
+      goes in one place instead of on every instance.
+    </p>
+    <app-markdown [markdown]="configSnippet" />
+    <p class="doc-section__intro">
+      A component's own input always wins over this. See
+      <a routerLink="/general/global-config">Global Configuration</a> for the full list of keys.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="next-steps" class="doc-section__title font-heading">Next steps</h2>
+
+    <div class="next-grid">
+      @for (link of nextLinks; track link.title) {
+        <a [routerLink]="link.path" class="next-card">
+          <span class="next-card__title">{{ link.title }}</span>
+          <p class="next-card__text">{{ link.text }}</p>
+        </a>
+      }
+    </div>
+  </section>
+</div>

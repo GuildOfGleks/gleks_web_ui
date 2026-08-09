@@ -1,0 +1,52 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('getting-started');
+
+.doc-section__optional {
+  color: var(--gog-muted-text-color);
+  font-weight: 400;
+  font-size: var(--gog-text-md);
+}
+
+.next-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.next-card {
+  display: block;
+  padding: 16px 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  text-decoration: none;
+  transition:
+    border-color var(--gog-duration-fast),
+    background-color var(--gog-duration-fast);
+
+  &:hover {
+    border-color: var(--gog-accent-color);
+    background: color-mix(in srgb, var(--gog-accent-color) 6%, var(--gog-surface-color));
+  }
+
+  &__title {
+    display: block;
+    margin-bottom: 0.3em;
+    font-weight: 600;
+    color: var(--gog-accent-color);
+  }
+
+  &__text {
+    margin: 0;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 860px) {
+  .next-grid {
+    grid-template-columns: 1fr;
+  }
+}

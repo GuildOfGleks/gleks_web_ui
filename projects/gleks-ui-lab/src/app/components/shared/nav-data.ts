@@ -2,9 +2,12 @@ import { NavGroup, NavItem, NavSection } from '../types/nav-item';
 
 export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Overview', path: 'general/overview' },
-  { label: 'Getting Started', path: 'general/getting-started' },
+  {
+    label: 'Getting Started',
+    path: 'general/getting-started',
+    children: [{ label: 'Global Configuration', path: 'general/global-config' }],
+  },
   { label: 'Theming', path: 'general/theming' },
-  { label: 'Global Configuration', path: 'general/global-config' },
   {
     label: 'Compare with Material and PrimeNG',
     path: 'general/compare',

@@ -7,6 +7,18 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'general/overview',
+    loadComponent: () =>
+      import('./components/pages/overview-page/overview-page').then((m) => m.OverviewPage),
+  },
+  {
+    path: 'general/getting-started',
+    loadComponent: () =>
+      import('./components/pages/getting-started-page/getting-started-page').then(
+        (m) => m.GettingStartedPage,
+      ),
+  },
+  {
     path: 'general/theming',
     loadComponent: () =>
       import('./components/pages/theming-page/theming-page').then((m) => m.ThemingPage),
