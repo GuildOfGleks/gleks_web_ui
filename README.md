@@ -1,59 +1,69 @@
-# GleksUiWorkspace
+# Gleks Web UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
+Angular v21 workspace holding the `@guildofgleks/ui` component library and the apps that
+consume it.
 
-## Development server
+| Project (CLI name) | Path | What it is |
+| --- | --- | --- |
+| `@gleks/ui` | `projects/gleks/ui` | the library — published to npm as [`@guildofgleks/ui`](https://www.npmjs.com/package/@guildofgleks/ui) |
+| `ui-showcase` | `projects/ui-showcase` | demo/validation app — the only place to verify local library changes live |
+| `gleks-ui-lab` | `projects/gleks-ui-lab` | public documentation site — tracks the **published** package, not local builds |
 
-To start a local development server, run:
+No CDK, no Material — the library's only runtime dependencies are `@angular/core`,
+`@angular/common` and `@angular/forms`. See [`projects/gleks/ui/README.md`](projects/gleks/ui/README.md)
+for the library's own docs (features, install, theming).
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Getting started
 
 ```bash
-ng generate --help
+npm install
+npm run buildLibAndStart   # builds @gleks/ui, then serves ui-showcase at http://localhost:4200/
 ```
+
+## Common scripts
+
+| Script | What it does |
+| --- | --- |
+| `npm run build:lib` | build `@gleks/ui` |
+| `npm run test:lib` | run the library's unit tests (Vitest) |
+| `npm run build:showcase` | build `ui-showcase` |
+| `npm start` | serve the root app (`ng serve`) |
+| `npm run start:lab` | serve `gleks-ui-lab` |
+| `npm run lint` | lint `@gleks/ui` and `ui-showcase` |
+| `npm run format` / `format:check` | Prettier over `projects/**` |
+| `npm run check:tokens` | validate the design-token contract |
+
+Every script above finishes in under 15 seconds — except `npm run build:lab`, which
+completes its work but never exits on its own; see
+[`running-commands.instructions.md`](.github/instructions/running-commands.instructions.md)
+before running it.
+
+## Working on this repo
+
+Start with [`CLAUDE.md`](CLAUDE.md) — it indexes the authoritative rules in
+[`.github/instructions/`](.github/instructions/) (Angular/TypeScript conventions, the
+library authoring guide, the styling token contract, API design rules, etc.) and points
+to [`docs/refactor-21.3.0.md`](docs/refactor-21.3.0.md), the live plan for the current
+pre-public cleanup.
 
 ## Building
-
-To build the project run:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Compiles the selected project and stores the build artifacts in `dist/`. By default the
+production build optimizes for performance and speed.
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Testing
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+Runs unit tests with the [Vitest](https://vitest.dev/) test runner. Angular CLI does not
+bundle an end-to-end framework; none is configured in this workspace.
 
-For end-to-end (e2e) testing, run:
+## License
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Apache-2.0. See [LICENSE](LICENSE).
