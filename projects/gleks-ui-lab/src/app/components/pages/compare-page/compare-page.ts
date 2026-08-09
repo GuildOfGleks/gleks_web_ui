@@ -20,14 +20,14 @@ const BUNDLE_BARS: readonly BundleBar[] = [
   {
     label: 'Angular Material',
     detail: 'Button + Select + Dialog + Table only',
-    value: '154 KB',
+    value: '153 KB',
     percent: 46,
     emphasis: false,
   },
   {
     label: 'PrimeNG',
     detail: 'Button + Select + Dialog + Table only',
-    value: '332 KB',
+    value: '329 KB',
     percent: 100,
     emphasis: false,
   },

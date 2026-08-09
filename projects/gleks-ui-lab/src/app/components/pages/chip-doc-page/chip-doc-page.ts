@@ -79,7 +79,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'iconName',
     type: 'GogIconName | null',
     default: 'null',
-    description: 'Leading icon, shown instead of the avatar when avatarUrl is not set.',
+    description:
+      'Leading icon. Renders independently of avatarUrl — if both are set, the avatar and icon both render.',
   },
 ];
 

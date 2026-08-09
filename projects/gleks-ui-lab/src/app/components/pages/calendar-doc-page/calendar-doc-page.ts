@@ -42,8 +42,9 @@ const API_INPUTS: readonly ApiRow[] = [
   {
     name: 'locale',
     type: 'string',
-    default: "GOG_CONFIG.datepicker.locale ?? 'en-US'",
-    description: 'BCP-47 tag driving month and weekday names, through Intl.',
+    default: "'en-US'",
+    description:
+      'BCP-47 tag driving month and weekday names, through Intl. Unlike gog-datepicker, gog-calendar does not read GOG_CONFIG — this default is fixed.',
   },
   {
     name: 'firstDayOfWeek',
@@ -114,7 +115,8 @@ const API_OUTPUTS: readonly ApiRow[] = [
     name: 'gogDateSelect',
     type: 'Date | GogDateRange | null',
     default: '—',
-    description: 'Emitted when a day is picked.',
+    description:
+      'Emitted when a selection is complete — a day in single mode, both ends of a range in range mode. Picking just the first end of a range does not emit.',
   },
   {
     name: 'valueChange',

@@ -98,6 +98,13 @@ const SHARED_INPUTS: readonly ApiRow[] = [
     description: 'Which suggestions cannot be picked.',
   },
   {
+    name: 'filterMatch',
+    type: '((option: TOption, query: string) => boolean) | null',
+    default: 'null',
+    description:
+      'How filterLocal matches an option against the typed text. Left null, the resolved optionLabel is matched case-insensitively as a substring.',
+  },
+  {
     name: 'label / placeholder / ariaLabel',
     type: 'string',
     default: "'' / 'Select...' / ''",

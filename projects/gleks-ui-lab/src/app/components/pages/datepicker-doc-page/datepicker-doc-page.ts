@@ -30,9 +30,9 @@ const API_INPUTS: readonly ApiRow[] = [
   {
     name: 'format',
     type: 'string | null',
-    default: "GOG_CONFIG.datepicker.format ?? 'dd.MM.yyyy'",
+    default: "GOG_CONFIG.datepicker.format ?? 'dd.MM.yyyy' (or '... HH:mm' when showTime is true)",
     description:
-      'A token pattern (yyyy, MM, dd, HH, hh, mm, ss, a) used for BOTH rendering and parsing, so what is written can always be read back.',
+      'A token pattern (yyyy, MM, dd, HH, hh, mm, ss, a) used for BOTH rendering and parsing, so what is written can always be read back. Left unset, it is derived from showTime automatically; an explicit value overrides that derivation, so widen it yourself if you set one and also turn showTime on.',
   },
   {
     name: 'locale',

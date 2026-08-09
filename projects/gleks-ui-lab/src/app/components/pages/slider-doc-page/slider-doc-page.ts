@@ -52,7 +52,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'errorDisplay',
     type: "'auto' | 'manual'",
-    default: "'manual'",
+    default: "GOG_CONFIG.control.errorDisplay ?? 'manual'",
     description:
       "'manual': shown for as long as errorMessage is non-empty — you decide the timing. 'auto': shown once the attached FormControl is touched and invalid; falls back to manual without one.",
   },

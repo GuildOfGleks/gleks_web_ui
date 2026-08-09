@@ -30,7 +30,7 @@ const API_INPUTS: readonly ApiRow[] = [
     name: 'label',
     type: 'string',
     default: "''",
-    description: 'The group’s own label, rendered above the options as the <fieldset> legend.',
+    description: 'The group’s own label, rendered above the options.',
   },
   {
     name: 'ariaLabel',

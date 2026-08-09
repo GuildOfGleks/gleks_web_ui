@@ -43,7 +43,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'size',
     type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'",
-    default: "'md'",
+    default: "GOG_CONFIG.control.size ?? 'md'",
     description: 'Box, label, and check-icon size.',
   },
   {

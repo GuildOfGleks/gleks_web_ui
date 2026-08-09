@@ -21,8 +21,8 @@ npm packages.
 | ----------------------------------------- | ------------------------------------------ | ------------------------------------- | ------------------------------------- |
 | Components                                | 30                                         | ~35                                   | 90+                                   |
 | Runtime dependencies                      | 1 (`tslib`)                                | 1 (`tslib`) + required `@angular/cdk` | 6 + `tslib`                           |
-| npm package size (unpacked)               | 2.35 MB                                    | 7.5 MB (+3.5 MB for CDK)              | 13.4 MB                               |
-| Button + Select + Dialog + Table, gzipped | —                                          | 154 KB                                | 332 KB                                |
+| npm package size (unpacked)               | 2.35 MB                                    | 7.7 MB (+3.6 MB for CDK)              | 14.0 MB                               |
+| Button + Select + Dialog + Table, gzipped | —                                          | 153 KB                                | 329 KB                                |
 | **Entire library, gzipped**               | **92.8 KB**                                | —                                     | —                                     |
 | Theming                                   | Plain CSS custom properties, no build step | Sass mixins / M3 system tokens        | JS preset system (`@primeuix/styled`) |
 | Ships pre-standalone/NgModule legacy API  | No — standalone since day one              | Yes                                   | Yes                                   |
@@ -33,11 +33,12 @@ components, and about a third the size of the same four PrimeNG components.
 
 ## Bundle weight, measured
 
-Numbers below are real, not marketing copy — each was produced by downloading the
-actual published npm tarball, bundling its real entry point with `esbuild --bundle
---minify`, and gzipping the result. The `@guildofgleks/ui` figures were re-measured
-against **21.3.0**; the Material and PrimeNG figures are from the original measurement
-and have not been re-taken since. `@angular/core`, `@angular/common`, `@angular/forms`,
+Numbers below are real, not marketing copy — each was produced by installing the
+actual published npm package, bundling its real entry point with `esbuild --bundle
+--minify`, and gzipping the result. All three libraries were re-measured together
+against their current npm-latest releases: `@guildofgleks/ui@21.3.0`,
+`@angular/material@22.1.1` (with `@angular/cdk@22.1.1`), and `primeng@22.0.0`.
+`@angular/core`, `@angular/common`, `@angular/forms`,
 `@angular/platform-browser`, `rxjs` and `tslib` are treated as externals for all three
 libraries, since every Angular app already pays for those once — they're the framework,
 not the library. Everything else a library actually imports (including PrimeNG's own
@@ -66,23 +67,22 @@ gzipped individually, then summed:
 
 | Library                                                       | Minified (sum) | Gzipped (sum) |
 | ------------------------------------------------------------- | -------------- | ------------- |
-| Angular Material (incl. required `@angular/cdk`)              | 839 KB         | 154 KB        |
-| PrimeNG (incl. `@primeicons`, `@primeuix/*`, license manager) | 1.81 MB        | 332 KB        |
+| Angular Material (incl. required `@angular/cdk`)              | 834 KB         | 153 KB        |
+| PrimeNG (incl. `@primeicons`, `@primeuix/*`, license manager) | 1.81 MB        | 329 KB        |
 
 Summing four independently-bundled files slightly overstates the real number for an
 app using all four together — a production bundler dedupes shared internal chunks
 across them, so the true combined figure would be somewhat smaller than this sum, for
 both libraries. The gap is still large: PrimeNG's four components alone gzip to about
-**3.6× the size of this library's entire catalogue**; Material's four are **1.7×** the
-size. Both multiples shrank in 21.3.0, when nine new components roughly doubled this
-library's own weight — the number that moved is ours, not theirs.
+**3.5× the size of this library's entire catalogue**; Material's four are **1.6×** the
+size.
 
 ## Dependency depth
 
 | Library               | Direct runtime dependencies                                                                                                                                                                                                                                                                 |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **@guildofgleks/ui**  | `tslib` — the standard TypeScript helper library nearly every compiled package (including Material and PrimeNG) also ships                                                                                                                                                                  |
-| **@angular/material** | `tslib`, plus a **required** peer dependency on `@angular/cdk` (3.5 MB unpacked) — most components don't work without it                                                                                                                                                                    |
+| **@angular/material** | `tslib`, plus a **required** peer dependency on `@angular/cdk` (3.6 MB unpacked) — most components don't work without it                                                                                                                                                                    |
 | **primeng**           | `tslib`, `@primeicons/angular`, `@primeui/license-manager`, `@primeuix/styled`, `@primeuix/utils`, `@primeuix/styles`, `@primeuix/motion` — seven packages, including a cryptographic signature library (`@noble/ed25519`, `@noble/hashes`) pulled in transitively for license verification |
 
 Guild of Gleks UI implements its own lightweight overlay positioning, focus trap and
@@ -95,18 +95,29 @@ All three libraries currently target recent Angular. The difference is what's _a
 still in the box. Counted directly from each package's own published type
 definitions, for the same four components:
 
-| Library               | `@deprecated` API surface                                         | Ships NgModule classes alongside the standalone API    |
-| --------------------- | ----------------------------------------------------------------- | ------------------------------------------------------ |
-| **@guildofgleks/ui**  | 2 _(intentional renamed-type aliases, kept for smooth migration)_ | Never — no `NgModule` has ever existed in this library |
-| **@angular/material** | 36                                                                | Yes, in every component                                |
-| **primeng**           | 34                                                                | Yes, in every component                                |
+| Library               | `@deprecated` API surface (this four-component slice)                                                                                             | Ships NgModule classes alongside the standalone API    |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **@guildofgleks/ui**  | 5 _(2 renamed-type aliases plus 3 template-projection migration shims, all added in 21.3.0 — Select and Table only; Button and Dialog have none)_ | Never — no `NgModule` has ever existed in this library |
+| **@angular/material** | 1                                                                                                                                                      | Yes, in every component                                |
+| **primeng**           | 5                                                                                                                                                      | Yes, in every component                                |
 
 Material and PrimeNG both predate Angular's standalone-components era by years, and it
-shows in their type definitions: every sampled component still exports an `NgModule`
-wrapper purely for backward compatibility, alongside the modern standalone API.
-Guild of Gleks UI started after that shift landed, so there was never a module system
-to carry forward — every component has been standalone, signal-based and `OnPush`
-since its very first commit.
+shows in their type definitions: every sampled component still ships an `NgModule`
+wrapper (`MatButtonModule`, `SelectModule`, and so on) purely for backward
+compatibility, alongside the modern standalone API — extra exported surface a
+tree-shaker has to prove is unused. Guild of Gleks UI started after that shift landed,
+so there was never a module system to carry forward — every component has been
+standalone, signal-based and `OnPush` since its very first commit.
+
+Raw `@deprecated` counts for just these four components come out small and close for
+all three libraries right now — Material and PrimeNG have clearly cleaned up a lot of
+legacy API surface in their current majors, at least for this slice. (Counted across
+*every* component, not just these four, the totals are much further apart — 36 for
+Material, 34 for PrimeNG, 15 for Guild of Gleks UI — but that's a different, less
+apples-to-apples number than the row above.) One real difference remains: Guild of
+Gleks UI's five are all dated, intentional migration shims with a stated removal
+version (`Removed in 21.5.0`); none of the sampled Material or PrimeNG `@deprecated`
+tags name a removal version.
 
 ## Theming
 
@@ -147,18 +158,85 @@ matches what you're actually building.
 ## Methodology & sources
 
 All figures were measured directly from each library's own published npm package —
-nothing here is copied from third-party benchmarking sites. For each library:
+nothing here is copied from third-party benchmarking sites. Every command below is the
+literal command used; copy-paste them to reproduce the numbers on this page (or against
+whatever versions are current when you run them).
 
-1. The exact package version was resolved from the public npm registry.
-2. The real tarball was downloaded and installed with its full dependency tree.
-3. Each entry point was bundled with `esbuild --bundle --minify`, treating
-   `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/platform-browser`,
-   `rxjs` and `tslib` as externals (framework/peer code every Angular app already
-   pays for), then gzipped.
-4. `@deprecated` counts and `NgModule` presence were grepped directly from each
-   package's shipped `.d.ts` files.
+**1. Resolve current versions:**
 
-Versions measured: `@guildofgleks/ui@21.2.3`, `@angular/material@22.1.0`,
-`@angular/cdk@22.1.0`, `primeng@22.0.0` — current latest releases as of this writing.
+```sh
+npm view @guildofgleks/ui version
+npm view @angular/material version
+npm view @angular/cdk version
+npm view primeng version
+```
+
+**2. Install each library with its real dependency tree, in its own folder.** A
+shared `node_modules` doesn't work here — `@guildofgleks/ui` peers on Angular 21 while
+current Material/PrimeNG peer on Angular 22, so npm's peer resolution conflicts if you
+try to install all three together:
+
+```sh
+mkdir bench && cd bench
+mkdir gleks material primeng
+
+(cd gleks     && npm init -y && npm install @guildofgleks/ui@21.3.0 esbuild)
+(cd material  && npm init -y && npm install @angular/material@22.1.1 @angular/cdk@22.1.1 esbuild)
+(cd primeng   && npm init -y && npm install primeng@22.0.0 esbuild)
+```
+
+**3. Bundle and gzip.** `@guildofgleks/ui` has one combined entry point; Material and
+PrimeNG don't, so each of the four components is bundled from its own real export path
+(check `node_modules/<pkg>/package.json` → `"exports"` — these change between majors)
+and the sizes are summed. Same `esbuild` invocation throughout, only the entry file and
+import specifier change:
+
+```sh
+# whole-library, from the gleks/ folder
+echo "export * from '@guildofgleks/ui';" > entry.mjs
+npx esbuild entry.mjs --bundle --minify --format=esm \
+  --external:@angular/core --external:@angular/common --external:@angular/forms \
+  --external:@angular/platform-browser --external:rxjs --external:tslib \
+  --outfile=out.min.js
+gzip -9 -k out.min.js
+wc -c out.min.js out.min.js.gz
+
+# one component, from the material/ folder (repeat for select, dialog, table)
+echo "export * from '@angular/material/button';" > entry-button.mjs
+npx esbuild entry-button.mjs --bundle --minify --format=esm \
+  --external:@angular/core --external:@angular/common --external:@angular/forms \
+  --external:@angular/platform-browser --external:rxjs --external:tslib \
+  --outfile=out-button.min.js
+gzip -9 -k out-button.min.js
+
+# same pattern from the primeng/ folder, e.g.:
+echo "export * from 'primeng/button';" > entry-button.mjs
+```
+
+**4. Package size:** `npm view <pkg>@<version> dist.unpackedSize` (bytes, as published
+to the registry).
+
+**5. `@deprecated` counts and `NgModule` presence**, scoped to Button + Select +
+Dialog + Table. Material and PrimeNG ship one `.d.ts` per component, so it's a direct
+grep:
+
+```sh
+grep -c '@deprecated' node_modules/@angular/material/types/{button,select,dialog,table}.d.ts
+grep -c '@deprecated' node_modules/primeng/types/primeng-{button,select,dialog,table}.d.ts
+grep -c 'declare class.*Module\b' node_modules/@angular/material/types/{button,select,dialog,table}.d.ts
+grep -c 'declare class.*Module\b' node_modules/primeng/types/primeng-{button,select,dialog,table}.d.ts
+```
+
+`@guildofgleks/ui` ships one bundled `.d.ts` (no per-component split), so its four
+components were isolated by hand: `grep -n '^declare class' node_modules/@guildofgleks/ui/types/guildofgleks-ui.d.ts`
+locates `ButtonComponent`, `SelectComponent` (plus its `GogSelectOption` alias and
+inherited `GogDropdownBase` members), `ConfirmationDialogComponent`/`DialogComponent`,
+and `TableComponent` (plus `GogColumn`/`Column`/`TemplateDirective`) — then
+`@deprecated` was counted within each block. `NgModule` presence for the whole package
+is one command: `grep -c 'NgModule\|declare class.*Module\b' node_modules/@guildofgleks/ui/types/guildofgleks-ui.d.ts`
+(returns 0).
+
+Versions measured: `@guildofgleks/ui@21.3.0`, `@angular/material@22.1.1`,
+`@angular/cdk@22.1.1`, `primeng@22.0.0` — current npm-latest as of 2026-08-09.
 Library authors regularly ship size and dependency changes; re-run the same steps
 against a newer release if you want to verify these numbers yourself.

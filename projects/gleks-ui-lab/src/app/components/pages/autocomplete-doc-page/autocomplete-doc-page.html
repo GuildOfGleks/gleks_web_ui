@@ -185,7 +185,8 @@
       These come from <code>GogDropdownBase</code> and behave exactly as they do on
       <a routerLink="/components/select">Select</a>. The one exception is <code>filter</code>: an
       autocomplete's trigger already <em>is</em> the search box, so the panel never gets a second
-      one.
+      one — <code>filterMatch</code> still applies, though, since it plugs into
+      <code>filterLocal</code>'s own matching rather than the panel's search box.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -261,13 +262,6 @@
               <code>{{ '$' }}implicit, selected, disabled, label</code>
             </td>
             <td>Replaces one suggestion row.</td>
-          </tr>
-          <tr>
-            <td>
-              <code>gogDropdownChevron</code>
-            </td>
-            <td>—</td>
-            <td>Replaces the trailing chevron.</td>
           </tr>
         </tbody>
       </table>

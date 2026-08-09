@@ -59,20 +59,20 @@ const CONFIG_OPTIONS: readonly ApiRow[] = [
   {
     name: 'duration',
     type: 'number',
-    default: '4000',
+    default: 'GOG_CONFIG.toast.duration ?? 4000',
     description: 'Auto-dismiss delay in ms. Ignored when isSticky is true.',
   },
   {
     name: 'position',
     type: "'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'",
-    default: "'bottom-right'",
+    default: "GOG_CONFIG.toast.position ?? 'bottom-right'",
     description:
       'Which corner stack this toast joins. Each corner stacks and animates independently.',
   },
   {
     name: 'dedupeKey',
     type: 'string',
-    default: 'derived from message/type/icon/position/actions',
+    default: 'derived from message/type/icon/iconTemplate/position/actions',
     description:
       "Toasts sharing a dedupe key collapse into one instance instead of stacking duplicates — calling show() again just bumps its revision and restarts the timer. Pass '' to opt a specific call out of deduping.",
   },
