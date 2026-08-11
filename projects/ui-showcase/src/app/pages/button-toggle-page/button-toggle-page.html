@@ -115,6 +115,21 @@
   </article>
 
   <article class="card">
+    <h3>Group disabled</h3>
+    <p class="hint">
+      <code>[disabled]="true"</code> on the group disables every option at once — different from
+      <code>optionDisabled</code>, which disables individual options (like "Map" above) while
+      leaving the rest of the group interactive.
+    </p>
+    <gog-button-toggle-group
+      [options]="tools"
+      [disabled]="true"
+      value="bold"
+      ariaLabel="Disabled group"
+    />
+  </article>
+
+  <article class="card">
     <h3>Your own object back</h3>
     <p class="hint">
       With <code>[optionValue]="null"</code> the group emits the option object itself, so a DTO

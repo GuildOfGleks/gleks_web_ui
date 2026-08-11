@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  TemplateRef,
+  viewChild,
+} from '@angular/core';
 import {
   ButtonComponent,
   ConfirmationDialogComponent,
@@ -22,6 +29,7 @@ import {
 export class DialogPage {
   private readonly dialogService = inject(DialogService);
   private readonly toastService = inject(ToastService);
+  private readonly customCloseIconTpl = viewChild.required<TemplateRef<unknown>>('customCloseIcon');
 
   protected readonly lastDialogResult = signal('No dialog opened yet.');
 
@@ -108,6 +116,46 @@ export class DialogPage {
     });
 
     void ref.afterClosed.then(() => this.lastDialogResult.set('Non-draggable dialog closed'));
+  }
+
+  protected openCustomCloseIconDialog(): void {
+    const ref = this.dialogService.open<boolean>({
+      title: 'closeIconName',
+      component: ConfirmationDialogComponent,
+      data: {
+        title: 'closeIconName',
+        description: 'The header close button is "info" instead of the default "close" glyph.',
+        confirmText: 'OK',
+        cancelText: 'Close',
+      },
+      modal: true,
+      closable: true,
+      closeIconName: 'info',
+      width: 'min(100%, 28rem)',
+    });
+
+    void ref.afterClosed.then(() => this.lastDialogResult.set('Custom-close-icon dialog closed'));
+  }
+
+  protected openCustomCloseTemplateDialog(): void {
+    const ref = this.dialogService.open<boolean>({
+      title: 'closeIconTemplate',
+      component: ConfirmationDialogComponent,
+      data: {
+        title: 'closeIconTemplate',
+        description: 'The close button projects arbitrary markup — "✕✕" here — instead of an icon.',
+        confirmText: 'OK',
+        cancelText: 'Close',
+      },
+      modal: true,
+      closable: true,
+      closeIconTemplate: this.customCloseIconTpl(),
+      width: 'min(100%, 28rem)',
+    });
+
+    void ref.afterClosed.then(() =>
+      this.lastDialogResult.set('Custom-close-template dialog closed'),
+    );
   }
 
   protected openStackedDialogs(): void {

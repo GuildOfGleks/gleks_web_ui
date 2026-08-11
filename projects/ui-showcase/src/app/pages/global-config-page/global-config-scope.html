@@ -29,4 +29,29 @@
       <p class="scope-demo__paragraph">{{ paragraph }}</p>
     }
   </gog-scroll>
+
+  <div class="scope-demo__fields">
+    <gog-select label="Role (configured)" [options]="roles" [(value)]="role" [fullWidth]="false" />
+    <gog-datepicker label="Date (configured)" [(value)]="date" [fullWidth]="false" />
+  </div>
+
+  <gog-autocomplete
+    label="City (configured) — 1s debounce, min 2 chars, no open-on-focus"
+    [options]="cities"
+    [(value)]="city"
+  />
+
+  <div class="scope-demo__fields">
+    <gog-inputfield
+      label="Amount (configured) — no custom spin buttons"
+      type="number"
+      [(value)]="amount"
+      [fullWidth]="false"
+    />
+    <gog-textarea
+      label="Notes (configured) — resizes both directions"
+      [(value)]="notes"
+      [fullWidth]="false"
+    />
+  </div>
 </div>

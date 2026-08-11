@@ -1,0 +1,81 @@
+@use '../detail' as *;
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 16px;
+}
+
+.icon-grid__cell {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--gog-border-color);
+}
+
+.icon-grid__label {
+  font-size: 0.75rem;
+  color: var(--gog-muted-text-color);
+  text-align: center;
+}
+
+.icon-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-row__sample--sm {
+  --gog-icon-size: 16px;
+}
+
+.icon-row__sample--md {
+  --gog-icon-size: 24px;
+}
+
+.icon-row__sample--lg {
+  --gog-icon-size: 40px;
+}
+
+.icon-row__sample--accent {
+  color: var(--gog-accent-color);
+}
+
+.icon-row__sample--danger {
+  color: var(--gog-danger-color);
+}
+
+.icon-page__arrow {
+  color: var(--gog-muted-text-color);
+}
+
+.icon-page__initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--gog-icon-size, var(--gog-icon-fallback-size));
+  height: var(--gog-icon-size, var(--gog-icon-fallback-size));
+  border-radius: 50%;
+  background: var(--gog-accent-dim);
+  font-size: 0.6em;
+  font-weight: 600;
+}
+
+.icon-page__icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--gog-border-color);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.icon-page__labelled {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

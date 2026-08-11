@@ -60,5 +60,34 @@
     </div>
   </article>
 
+  <article class="card">
+    <h3>Custom icon</h3>
+    <p class="meta">
+      <code>iconName</code> overrides the type's default icon (an <code>iconTemplate</code> works
+      the same way for an arbitrary <code>TemplateRef</code> instead of a built-in name).
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" type="button" (gogClick)="showCustomIcon()">
+        Custom icon toast
+      </gog-button>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3><code>dedupeKey</code></h3>
+    <p class="meta">
+      Two <code>show()</code> calls that share a <code>dedupeKey</code> collapse into one toast —
+      the message updates and its auto-dismiss timer restarts, instead of a new one stacking on top.
+      Click "Deduped" repeatedly and watch it stay a single toast; "Not deduped" stacks a new one
+      every time.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" type="button" (gogClick)="showDeduped()">Deduped</gog-button>
+      <gog-button variant="outline" type="button" (gogClick)="showNotDeduped()">
+        Not deduped
+      </gog-button>
+    </div>
+  </article>
+
   <gog-toast-container [maxVisiblePerPosition]="5" />
 </section>

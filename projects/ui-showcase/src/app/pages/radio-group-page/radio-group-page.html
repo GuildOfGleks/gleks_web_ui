@@ -57,6 +57,23 @@
   </article>
 
   <article class="card">
+    <h3>Full width &amp; label-less</h3>
+    <p class="lead">
+      <code>fullWidth</code> stretches the group (and, in horizontal orientation, spaces its
+      options) to fill its container instead of hugging its content. <code>ariaLabel</code> names a
+      group that has no visible <code>label</code> at all — same pattern as
+      <code>gog-select</code>/<code>gog-multiselect</code> elsewhere on this site.
+    </p>
+    <gog-radio-group
+      ariaLabel="Plan (no visible label)"
+      orientation="horizontal"
+      [fullWidth]="true"
+      [options]="planOptions"
+      [(value)]="plan"
+    />
+  </article>
+
+  <article class="card">
     <h3>Reactive forms</h3>
     <p class="meta">
       Bound via <code>[formControl]</code> only — no <code>[(value)]</code> — proving the

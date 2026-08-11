@@ -84,6 +84,8 @@ export class PaginatorPage {
   protected readonly demoVisiblePages = signal(5);
   protected readonly demoShowFirstPage = signal(false);
   protected readonly demoShowLastPage = signal(false);
+  protected readonly siblingCountOptions = [1, 2, 3];
+  protected readonly demoSiblingCount = signal(2);
   protected readonly demoPage = signal(10);
   protected readonly demoTotalPages = signal(20);
 

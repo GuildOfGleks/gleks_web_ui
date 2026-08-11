@@ -107,7 +107,9 @@
       where there's room — the same "show what's around the current position" idea
       <code>gog-paginator</code> uses for pages. Jump around with the buttons below, or arrow
       through the header row itself, and watch it scroll. Toggle it off to see the header stay put
-      instead.
+      instead. <code>showScrollTrack</code> shows the horizontal scroll thumb; unset, it defaults to
+      the opposite of <code>scrollActiveIntoView</code> — auto-scrolling and a visible track being
+      slightly redundant affordances for the same "where am I" question.
     </p>
     <div class="tabs-narrow">
       <gog-tabs
@@ -115,6 +117,7 @@
         ariaLabel="Overflow sample"
         [(activeIndex)]="overflowIndex"
         [scrollActiveIntoView]="overflowScrollActive()"
+        [showScrollTrack]="overflowShowScrollTrack()"
       >
         @for (title of manyTabs; track title) {
           <gog-tab [label]="title">
@@ -133,6 +136,10 @@
       </gog-button>
       <gog-button size="xsm" variant="ghost" (gogClick)="toggleOverflowScrollActive()">
         scrollActiveIntoView: {{ overflowScrollActive() ? 'on' : 'off' }}
+      </gog-button>
+      <gog-button size="xsm" variant="ghost" (gogClick)="cycleOverflowShowScrollTrack()">
+        showScrollTrack:
+        {{ overflowShowScrollTrack() === undefined ? 'unset' : overflowShowScrollTrack() }}
       </gog-button>
     </p>
   </article>

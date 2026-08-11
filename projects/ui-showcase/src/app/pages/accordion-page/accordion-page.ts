@@ -216,6 +216,7 @@ export class AccordionPage implements OnDestroy {
   ];
 
   protected readonly multi = signal(false);
+  protected readonly externalOpenIds = signal<ReadonlySet<string | number>>(new Set(['shipping']));
   protected readonly loadingState = signal<Record<string, { loading: boolean; loaded: boolean }>>(
     {},
   );
@@ -230,6 +231,14 @@ export class AccordionPage implements OnDestroy {
 
   protected toggleMulti(): void {
     this.multi.update((current) => !current);
+  }
+
+  protected openAllExternally(): void {
+    this.externalOpenIds.set(new Set(this.basicItems.map((item) => item.id)));
+  }
+
+  protected closeAllExternally(): void {
+    this.externalOpenIds.set(new Set());
   }
 
   protected simulateListFetch(): void {

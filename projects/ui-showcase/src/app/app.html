@@ -49,6 +49,20 @@
           </a>
         }
       </nav>
+
+      <nav class="app-shell__nav" aria-label="Performance benchmarks">
+        <span class="app-shell__nav-group-label">Benchmarks</span>
+        @for (link of benchmarkLinks; track link.path) {
+          <a
+            class="app-shell__nav-link"
+            [routerLink]="link.path"
+            routerLinkActive="app-shell__nav-link--active"
+            [routerLinkActiveOptions]="{ exact: link.path === 'benchmark' }"
+          >
+            {{ link.label }}
+          </a>
+        }
+      </nav>
     </header>
 
     <router-outlet />

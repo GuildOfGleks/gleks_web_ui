@@ -52,6 +52,33 @@
   </article>
 
   <article class="card">
+    <h3>Thumb hit area</h3>
+    <p class="lead">
+      The thumb's clickable/draggable region is larger than what's painted — especially useful once
+      the thumb itself shrinks to a sliver against a lot of content. <code>[autoHide]="false"</code>
+      here just keeps the thumb on screen so you can see it to grab it.
+    </p>
+    <div class="two-up">
+      <div>
+        <p class="meta">normal</p>
+        <gog-scroll [autoHide]="false" class="text-demo">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="text-demo__paragraph">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </div>
+      <div>
+        <p class="meta">thin</p>
+        <gog-scroll size="thin" [autoHide]="false" class="text-demo">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="text-demo__paragraph">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Axes</h3>
     <p class="meta">
       <code>axis</code> is <code>"vertical"</code> by default. <code>"horizontal"</code> disables
@@ -100,6 +127,35 @@
       <div>
         <p class="meta">[autoHide]="false"</p>
         <gog-scroll [autoHide]="false" class="text-demo text-demo--short">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="text-demo__paragraph">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3><code>showTrack</code> &amp; <code>focusable</code></h3>
+    <p class="meta">
+      <code>[showTrack]="false"</code> drops the overlay thumb/track entirely — scrolling itself
+      (wheel, touch, keyboard) is unaffected, only the visual affordance is gone. Also settable
+      app-wide via <code>GOG_CONFIG.scroll.showTrack</code>. <code>[focusable]="false"</code> takes
+      the viewport out of the tab order — for a <code>gog-scroll</code> nested inside another
+      focus-owning component (a dropdown panel, a dialog body) that already manages focus itself.
+    </p>
+    <div class="two-up">
+      <div>
+        <p class="meta">showTrack=false</p>
+        <gog-scroll [showTrack]="false" [autoHide]="false" class="text-demo text-demo--short">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="text-demo__paragraph">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </div>
+      <div>
+        <p class="meta">focusable=false (tab past it)</p>
+        <gog-scroll [focusable]="false" class="text-demo text-demo--short">
           @for (paragraph of paragraphs; track paragraph) {
             <p class="text-demo__paragraph">{{ paragraph }}</p>
           }

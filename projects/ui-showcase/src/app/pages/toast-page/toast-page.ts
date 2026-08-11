@@ -87,4 +87,31 @@ export class ToastPage {
   protected dismissAll(): void {
     this.toastService.dismissAll();
   }
+
+  protected showCustomIcon(): void {
+    this.toastService.show({
+      message: 'Custom icon — iconName overrides the type-based default.',
+      type: 'info',
+      iconName: 'copy',
+    });
+  }
+
+  private dedupeClicks = 0;
+
+  protected showDeduped(): void {
+    this.dedupeClicks += 1;
+    this.toastService.show({
+      message: `Deduped — click #${this.dedupeClicks} (same toast, same position)`,
+      type: 'info',
+      dedupeKey: 'demo-dedupe',
+    });
+  }
+
+  protected showNotDeduped(): void {
+    this.dedupeClicks += 1;
+    this.toastService.show({
+      message: `Not deduped — click #${this.dedupeClicks} (stacks up)`,
+      type: 'info',
+    });
+  }
 }

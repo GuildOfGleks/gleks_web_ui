@@ -185,6 +185,38 @@
   </article>
 
   <article class="card">
+    <h3>Custom option row &amp; clear icon</h3>
+    <p class="lead">
+      A <code>gogDropdownOption</code> template replaces each row entirely — here a colored dot
+      before the label. A <code>gogMultiselectClearIcon</code> template replaces the trigger's
+      clear-all glyph (the deprecated <code>[clearIconTemplate]</code> input does the same thing,
+      but this projected form is what's current). <code>[clearable]="false"</code> on the last field
+      drops the clear button even once something's selected.
+    </p>
+    <div class="field-grid">
+      <gog-multiselect label="Features" [options]="features" [(value)]="customOptionValue">
+        <ng-template gogDropdownOption let-feature let-selected="selected">
+          <span class="ms-option-dot" [class.ms-option-dot--selected]="selected"></span>
+          {{ asOption(feature).name }}
+        </ng-template>
+      </gog-multiselect>
+
+      <gog-multiselect label="Tags" [options]="tags" [(value)]="clearIconValue">
+        <ng-template gogMultiselectClearIcon>
+          <gog-icon name="close" />
+        </ng-template>
+      </gog-multiselect>
+
+      <gog-multiselect
+        label="Features (not clearable)"
+        [options]="features"
+        [clearable]="false"
+        [(value)]="notClearableValue"
+      />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Append to body</h3>
     <p class="lead">
       Useful inside scrollable or overflow-clipped containers — the panel escapes into

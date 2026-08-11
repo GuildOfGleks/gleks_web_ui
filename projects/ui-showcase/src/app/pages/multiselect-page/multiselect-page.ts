@@ -4,7 +4,9 @@ import {
   CheckboxComponent,
   GogDropdownChevronDirective,
   GogDropdownOption,
+  GogDropdownOptionDirective,
   GogFloatLabelVariant,
+  GogMultiselectClearIconDirective,
   GogMultiselectOption,
   GogSize,
   IconComponent,
@@ -17,6 +19,8 @@ import {
   imports: [
     CheckboxComponent,
     GogDropdownChevronDirective,
+    GogDropdownOptionDirective,
+    GogMultiselectClearIconDirective,
     IconComponent,
     MultiselectComponent,
     ReactiveFormsModule,
@@ -91,6 +95,19 @@ export class MultiselectPage {
   protected readonly sortValue = signal<(string | number)[]>([]);
 
   protected readonly ariaOnlyValue = signal<(string | number)[]>([]);
+
+  protected readonly customOptionValue = signal<(string | number)[]>(['toast']);
+  protected readonly clearIconValue = signal<(string | number)[]>(['bug']);
+  protected readonly notClearableValue = signal<(string | number)[]>(['toast']);
+
+  /**
+   * A `gogDropdownOption` template's context cannot infer `TOption` when the directive is
+   * declared standalone in a template — the documented cost of the component being generic.
+   * One cast at the boundary keeps the rest of the template typed.
+   */
+  protected asOption(option: unknown): GogMultiselectOption {
+    return option as GogMultiselectOption;
+  }
 
   protected readonly floatLabelOptions: GogDropdownOption[] = [
     { id: 'none', name: 'None' },

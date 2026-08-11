@@ -24,6 +24,11 @@ export class BadgePage {
   protected readonly variants: GogTagVariant[] = ['success', 'danger', 'warning', 'info'];
 
   protected readonly count = signal(3);
+  protected readonly hidden = signal(false);
+
+  protected toggleHidden(): void {
+    this.hidden.update((value) => !value);
+  }
 
   protected add(): void {
     this.count.update((value) => value + 1);

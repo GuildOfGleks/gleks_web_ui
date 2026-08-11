@@ -76,6 +76,21 @@
       </div>
     }
 
+    @if (demoRangeMode() === 'ellipsis') {
+      <div class="action-row">
+        @for (count of siblingCountOptions; track count) {
+          <gog-button
+            [variant]="demoSiblingCount() === count ? 'primary' : 'ghost'"
+            size="sm"
+            type="button"
+            (gogClick)="demoSiblingCount.set(count)"
+          >
+            siblingCount: {{ count }}
+          </gog-button>
+        }
+      </div>
+    }
+
     <gog-paginator
       [(page)]="demoPage"
       [totalPages]="demoTotalPages()"
@@ -83,6 +98,7 @@
       [visiblePages]="demoVisiblePages()"
       [showFirstPage]="demoShowFirstPage()"
       [showLastPage]="demoShowLastPage()"
+      [siblingCount]="demoSiblingCount()"
     />
     <p class="meta">Page {{ demoPage() }} of {{ demoTotalPages() }}</p>
   </article>

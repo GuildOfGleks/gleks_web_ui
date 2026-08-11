@@ -1,0 +1,87 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-icon</p>
+    <h2>Icon</h2>
+    <p class="lead">
+      Renders one of the library's built-in SVGs by <code>name</code>, or projects an arbitrary
+      <code>TemplateRef</code> in its place. Sized via <code>--gog-icon-size</code>, colored via
+      <code>currentColor</code> — most of the other components on this site already use it
+      internally (tag, chip, tooltip, inputfield addons, …); this page shows it standalone.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Built-in set</h3>
+    <p class="hint">Every <code>GogIconName</code> value. Color follows the surrounding text.</p>
+    <div class="icon-grid">
+      @for (name of iconNames; track name) {
+        <div class="icon-grid__cell">
+          <gog-icon [name]="name" />
+          <span class="icon-grid__label">{{ name }}</span>
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Size &amp; color</h3>
+    <p class="hint">
+      <code>--gog-icon-size</code> is the only sizing hook; color always inherits from the element's
+      own <code>color</code>.
+    </p>
+    <div class="icon-row">
+      <gog-icon name="warning" class="icon-row__sample icon-row__sample--sm" />
+      <gog-icon name="warning" class="icon-row__sample icon-row__sample--md" />
+      <gog-icon name="warning" class="icon-row__sample icon-row__sample--lg" />
+      <gog-icon
+        name="success"
+        class="icon-row__sample icon-row__sample--lg icon-row__sample--accent"
+      />
+      <gog-icon
+        name="error"
+        class="icon-row__sample icon-row__sample--lg icon-row__sample--danger"
+      />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Custom <code>template</code></h3>
+    <p class="hint">
+      When <code>template</code> is set it wins over <code>name</code> entirely — the built-in SVG
+      set is never consulted. Useful for a one-off glyph that doesn't belong in the shared catalog.
+    </p>
+    <ng-template #initialsTpl>
+      <span class="icon-page__initials">GG</span>
+    </ng-template>
+    <div class="icon-row">
+      <gog-icon name="close" class="icon-row__sample icon-row__sample--lg" />
+      <span class="icon-page__arrow">vs</span>
+      <gog-icon [template]="initialsTpl" class="icon-row__sample icon-row__sample--lg" />
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Decorative vs. meaningful</h3>
+    <p class="hint">
+      <code>ariaHidden</code> defaults to <code>true</code> — the icon is assumed decorative
+      (redundant with adjacent text, like the labelled buttons below) and stays invisible to screen
+      readers. Set it to <code>false</code> and give a <code>title</code> when the icon
+      <em>is</em> the label, as in an icon-only button.
+    </p>
+    <div class="icon-row">
+      <button type="button" class="icon-page__icon-button" aria-label="Copy to clipboard">
+        <gog-icon name="copy" [ariaHidden]="false" title="Copy to clipboard" />
+      </button>
+      <span class="meta">icon-only, ariaHidden=false + title — announced on its own</span>
+    </div>
+    <div class="icon-row">
+      <span class="icon-page__labelled">
+        <gog-icon name="copy" />
+        Copy
+      </span>
+      <span class="meta"
+        >next to visible text, default ariaHidden=true — announced once, via the text</span
+      >
+    </div>
+  </article>
+</section>

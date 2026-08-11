@@ -60,19 +60,68 @@
   </article>
 
   <article class="card">
+    <h3>Number spinners</h3>
+    <p class="lead">
+      <code>type="number"</code> gets styled increment/decrement buttons by default — the native
+      browser spinner is always hidden in favor of this pair. Settable app-wide via
+      <code>GOG_CONFIG.inputfield.showSpinButtons</code>, or per field with
+      <code>[showSpinButtons]</code>.
+    </p>
+    <div class="field-grid">
+      <gog-inputfield label="Quantity" inputId="quantity" type="number" [(value)]="quantity" />
+      <gog-inputfield
+        label="Price"
+        inputId="price"
+        type="number"
+        [step]="0.01"
+        [min]="0"
+        [showSpinButtons]="false"
+        [(value)]="price"
+      />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Clickable icon action</h3>
     <p class="lead">
       A projected <code>gogInputAddonEnd</code> puts your own control in the trailing slot — a real
       <code>&lt;button&gt;</code> with its own <code>aria-label</code> and <code>(click)</code>, so
-      the field needs no input per capability. Combined here with a decorative leading icon set by
-      name.
+      the field needs no built-in copy capability. The icon swaps to a checkmark for a moment after
+      copying.
     </p>
     <div class="field-grid">
-      <gog-inputfield label="Search" inputId="search" iconStart="info" [(value)]="search">
-        <button gogInputAddonEnd type="button" aria-label="Clear search" (click)="clearSearch()">
-          <gog-icon name="close" />
+      <gog-inputfield label="API key" inputId="api-key" [disabled]="true" [(value)]="apiKey">
+        <button
+          gogInputAddonEnd
+          type="button"
+          [attr.aria-label]="copyLabel()"
+          (click)="copyApiKey()"
+        >
+          <gog-icon [name]="copied() ? 'check' : 'copy'" />
         </button>
       </gog-inputfield>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Leading addon &amp; date</h3>
+    <p class="lead">
+      A projected <code>gogInputAddonStart</code> puts your own markup in the leading slot — a plain
+      <code>&lt;span&gt;</code> for a static prefix like a currency symbol, or a real
+      <code>&lt;button&gt;</code> the same way <code>gogInputAddonEnd</code> is used above.
+      <code>type="date"</code> is a plain native date input; no calendar panel — that's what
+      <code>gog-datepicker</code> is for.
+    </p>
+    <div class="field-grid">
+      <gog-inputfield label="Price" inputId="price-eur" [(value)]="priceEur">
+        <span gogInputAddonStart>€</span>
+      </gog-inputfield>
+      <gog-inputfield
+        label="Meeting date"
+        inputId="meeting-date"
+        type="date"
+        [(value)]="meetingDate"
+      />
     </div>
   </article>
 
@@ -147,7 +196,12 @@
         [floatLabelShowPlaceholder]="floatLabelShowPlaceholder()"
         [(value)]="floatLabelIconEndValue"
       >
-        <button gogInputAddonEnd type="button" aria-label="Clear" (click)="clearSearch()">
+        <button
+          gogInputAddonEnd
+          type="button"
+          aria-label="Clear"
+          (click)="floatLabelIconEndValue.set('')"
+        >
           <gog-icon name="close" />
         </button>
       </gog-inputfield>

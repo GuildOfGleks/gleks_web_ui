@@ -77,6 +77,7 @@ export class App {
     { path: 'progressbar', label: 'Progressbar' },
     { path: 'badge', label: 'Badge' },
     { path: 'divider', label: 'Divider' },
+    { path: 'icon', label: 'Icon' },
   ];
 
   protected readonly pageLinks: ShowcaseNavLink[] = [
@@ -85,6 +86,14 @@ export class App {
     { path: 'settings', label: 'Settings' },
     { path: 'catalog', label: 'Catalog' },
     { path: 'onboarding', label: 'Onboarding' },
+  ];
+
+  protected readonly benchmarkLinks: ShowcaseNavLink[] = [
+    { path: 'benchmark', label: 'Overview' },
+    { path: 'benchmark/table', label: 'Table' },
+    { path: 'benchmark/accordion', label: 'Accordion' },
+    { path: 'benchmark/dropdown', label: 'Select / Multiselect / Autocomplete' },
+    { path: 'benchmark/instances', label: 'Everything else' },
   ];
 
   protected setTheme(theme: string | number | null): void {

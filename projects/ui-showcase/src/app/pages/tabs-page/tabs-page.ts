@@ -55,6 +55,7 @@ export class TabsPage implements OnDestroy {
 
   protected readonly overflowIndex = signal(0);
   protected readonly overflowScrollActive = signal(true);
+  protected readonly overflowShowScrollTrack = signal<boolean | undefined>(undefined);
 
   /**
    * `null` until the first load and while a reload is in flight. `<gog-tabs>` stays mounted
@@ -78,6 +79,10 @@ export class TabsPage implements OnDestroy {
 
   protected toggleOverflowScrollActive(): void {
     this.overflowScrollActive.update((value) => !value);
+  }
+
+  protected cycleOverflowShowScrollTrack(): void {
+    this.overflowShowScrollTrack.update((value) => (value === undefined ? true : !value));
   }
 
   /** Stands in for an HTTP call for the section list itself. */

@@ -10,6 +10,13 @@
   flex-wrap: wrap;
 }
 
+.scope-demo__fields {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .scope-demo__scroll {
   height: 140px;
   border: 1px solid var(--gog-border-color);

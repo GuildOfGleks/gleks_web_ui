@@ -295,6 +295,36 @@
   </article>
 
   <article class="card">
+    <h3>Heading level &amp; external open control</h3>
+    <p class="meta">
+      <code>headingLevel</code> wraps each trigger in a real <code>&lt;h3&gt;</code>–<code
+        >&lt;h6&gt;</code
+      >
+      (unset by default — no heading element at all) so the accordion slots correctly into a page's
+      outline. <code>openIds</code> is a <code>model()</code>, so a set of ids can drive which
+      panels are open from outside the component instead of only <code>expandFirst</code>.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" type="button" (gogClick)="openAllExternally()">
+        Open all
+      </gog-button>
+      <gog-button variant="outline" type="button" (gogClick)="closeAllExternally()">
+        Close all
+      </gog-button>
+    </div>
+    <gog-accordion
+      [items]="basicItems"
+      [multi]="true"
+      [headingLevel]="3"
+      [(openIds)]="externalOpenIds"
+    >
+      <ng-template gogAccordionContent let-item>
+        <p class="meta">{{ item.body }}</p>
+      </ng-template>
+    </gog-accordion>
+  </article>
+
+  <article class="card">
     <h3>Loading skeleton — item count not known yet</h3>
     <p class="meta">
       The more common real case: <code>items</code> starts out empty because the list itself hasn't

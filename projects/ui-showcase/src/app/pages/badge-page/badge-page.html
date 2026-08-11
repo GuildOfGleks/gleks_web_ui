@@ -39,6 +39,22 @@
   </article>
 
   <article class="card">
+    <h3><code>badgeHidden</code></h3>
+    <p class="hint">
+      Hides the badge without removing the directive or losing its count — unlike a count of
+      <code>0</code>, the value underneath is preserved for whenever it toggles back.
+    </p>
+    <div class="badge-row">
+      <gog-button [gogBadge]="count()" [badgeHidden]="hidden()" badgeAriaLabel="Notifications">
+        Notifications
+      </gog-button>
+      <gog-button variant="outline" size="sm" (gogClick)="toggleHidden()">
+        badgeHidden: {{ hidden() }}
+      </gog-button>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Positions</h3>
     <div class="badge-row">
       @for (position of positions; track position) {

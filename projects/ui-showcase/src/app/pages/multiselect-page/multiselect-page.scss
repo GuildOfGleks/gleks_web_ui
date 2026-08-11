@@ -14,3 +14,16 @@
 .field-row__grow {
   flex: 1 1 240px;
 }
+
+.ms-option-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-inline-end: 8px;
+  border-radius: 50%;
+  background: var(--gog-border-color);
+
+  &--selected {
+    background: var(--gog-accent-color);
+  }
+}

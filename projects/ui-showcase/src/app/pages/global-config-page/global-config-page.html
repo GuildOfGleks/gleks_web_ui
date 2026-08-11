@@ -28,19 +28,28 @@ export const appConfig: ApplicationConfig = &#123;
       scroll: &#123; autoHide: false &#125;,
       tooltip: &#123; showDelay: 800, hideDelay: 400, position: 'bottom' &#125;,
       floatLabel: &#123; variant: 'in' &#125;,
+      control: &#123; size: 'lg', errorDisplay: 'auto', clearable: true &#125;,
+      dropdown: &#123; appendToBody: true, filter: true, filterPosition: 'bottom' &#125;,
+      datepicker: &#123; locale: 'ru-RU', firstDayOfWeek: 1, format: 'dd.MM.yyyy' &#125;,
+      autocomplete: &#123; searchDebounce: 1000, minLength: 2, openOnFocus: false &#125;,
+      inputfield: &#123; showSpinButtons: false &#125;,
+      textarea: &#123; resize: 'both' &#125;,
+      toast: &#123; position: 'top-left', duration: 1500 &#125;,
     &#125;),
     // ...your other providers
   ],
 &#125;;</code></pre>
     <p class="meta">
-      Every <code>gog-button</code>, <code>gog-scroll</code>, <code>gogTooltip</code> and
-      floating-label-capable field (<code>gog-inputfield</code>, <code>gog-select</code>,
-      <code>gog-multiselect</code>, <code>gog-textarea</code>) in the app then picks up those
-      defaults automatically — no per-instance inputs needed. An instance's own input, when set,
-      still always wins over the global config; this only fills in what the instance didn't specify
-      itself. Providing it again further down the tree (a route, a single component's own
-      <code>providers</code>, as the section below does) replaces the whole object for that subtree
-      instead of merging with the parent's.
+      Every <code>gog-button</code>, <code>gog-scroll</code>, <code>gogTooltip</code>, floating-
+      label-capable field, <code>gog-select</code>/<code>gog-multiselect</code>,
+      <code>gog-datepicker</code>, <code>gog-autocomplete</code>, <code>gog-inputfield</code> and
+      <code>gog-textarea</code> in the app then picks up those defaults automatically — no
+      per-instance inputs needed. An instance's own input, when set, still always wins over the
+      global config; this only fills in what the instance didn't specify itself. Providing it again
+      further down the tree (a route, a single component's own <code>providers</code>, as the
+      section below does) replaces the whole object for that subtree instead of merging with the
+      parent's. (<code>toast</code> is the one exception — see the dedicated section near the bottom
+      of this page.)
     </p>
   </article>
 
@@ -80,26 +89,78 @@ export const appConfig: ApplicationConfig = &#123;
           <p class="scope-demo__paragraph">{{ paragraph }}</p>
         }
       </gog-scroll>
+
+      <div class="scope-demo__fields">
+        <gog-select
+          label="Role (default)"
+          [options]="roles"
+          [(value)]="defaultRole"
+          [fullWidth]="false"
+        />
+        <gog-datepicker label="Date (default)" [(value)]="defaultDate" [fullWidth]="false" />
+      </div>
+
+      <gog-autocomplete
+        label="City (default) — opens on focus, 300ms debounce"
+        [options]="cities"
+        [(value)]="defaultCity"
+      />
+
+      <div class="scope-demo__fields">
+        <gog-inputfield
+          label="Amount (default) — custom spin buttons"
+          type="number"
+          [(value)]="defaultAmount"
+          [fullWidth]="false"
+        />
+        <gog-textarea
+          label="Notes (default) — vertical resize only"
+          [(value)]="defaultNotes"
+          [fullWidth]="false"
+        />
+      </div>
     </div>
   </article>
 
   <article class="card">
     <h3>With it connected</h3>
     <p class="lead">
-      <code>&lt;app-global-config-scope&gt;</code> below has
-      <code
-        >provideGogConfig(&#123; button: &#123; debounce: 1500 &#125;, scroll: &#123; autoHide:
-        false &#125;, tooltip: &#123; showDelay: 800, hideDelay: 400, position: 'bottom' &#125;,
-        floatLabel: &#123; variant: 'in' &#125; &#125;)</code
-      >
-      in its own component <code>providers</code> — the same call, just scoped to one subtree
+      <code>&lt;app-global-config-scope&gt;</code> below has the same call as the code sample above
+      (minus <code>toast</code>) in its own component <code>providers</code> — scoped to one subtree
       instead of the whole app, so this page can show both side by side. Click both buttons rapidly
       for a couple of seconds and compare the accepted-click counts; the scroll thumb here also
-      never fades, since <code>autoHide</code> is off; the tooltip button here takes noticeably
-      longer to show and hide, and always opens below regardless of available space; and the email
-      field's label rests inside the box and floats up on focus/once typed, instead of sitting
-      statically above it.
+      never fades; the tooltip button takes noticeably longer to show/hide and always opens below;
+      the email field's label floats instead of sitting statically above it; the role select is
+      bigger, offers a search box, and portals its panel to <code>&lt;body&gt;</code>; the date
+      field shows Russian month names, starts weeks on Monday, and formats as
+      <code>dd.MM.yyyy</code>; the city field waits a full second after you stop typing and needs
+      two characters before it searches, and no longer opens just from focusing it; the amount
+      field's custom spin buttons are gone; and the notes field's drag handle resizes in both
+      directions instead of only vertically.
     </p>
     <app-global-config-scope />
+  </article>
+
+  <article class="card">
+    <h3><code>toast</code> — the one section that can't be demoed the same way</h3>
+    <p class="lead">
+      <code>ToastService</code> is <code>providedIn: 'root'</code> and reads
+      <code>GOG_CONFIG</code> exactly once, at construction, from the root injector — a
+      component-scoped <code>provideGogConfig(&#123; toast: &#123;&#8230;&#125; &#125;)</code> the
+      way <code>&lt;app-global-config-scope&gt;</code> uses for everything else above would silently
+      never reach it, because the service instance already existed (and already resolved its config)
+      before that scoped provider was ever in the picture. <code>toast</code> can only be set where
+      a real app would set it: once, in the true root providers.
+    </p>
+    <p class="lead">
+      This showcase's root providers don't call <code>provideGogConfig</code> at all, so the button
+      below shows the library's own built-in default — <strong>bottom-right</strong>,
+      <strong>4000ms</strong>. A
+      <code>toast: &#123; position: 'top-left', duration: 1500 &#125;</code> in
+      <code>app.config.ts</code> would move and shorten every toast the whole app shows, this one
+      included.
+    </p>
+    <gog-button (gogClick)="showDefaultToast()">Show default toast</gog-button>
+    <gog-toast-container />
   </article>
 </section>

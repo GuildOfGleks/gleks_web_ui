@@ -133,6 +133,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/divider-page/divider-page').then((m) => m.DividerPage),
   },
   {
+    path: 'icon',
+    loadComponent: () => import('./pages/icon-page/icon-page').then((m) => m.IconPage),
+  },
+  {
     path: 'global-config',
     loadComponent: () =>
       import('./pages/global-config-page/global-config-page').then((m) => m.GlobalConfigPage),
@@ -154,6 +158,37 @@ export const routes: Routes = [
     path: 'onboarding',
     loadComponent: () =>
       import('./pages/onboarding-page/onboarding-page').then((m) => m.OnboardingPage),
+  },
+  {
+    path: 'benchmark',
+    loadComponent: () =>
+      import('./pages/benchmark-index-page/benchmark-index-page').then((m) => m.BenchmarkIndexPage),
+  },
+  {
+    path: 'benchmark/table',
+    loadComponent: () =>
+      import('./pages/benchmark-table-page/benchmark-table-page').then((m) => m.BenchmarkTablePage),
+  },
+  {
+    path: 'benchmark/accordion',
+    loadComponent: () =>
+      import('./pages/benchmark-accordion-page/benchmark-accordion-page').then(
+        (m) => m.BenchmarkAccordionPage,
+      ),
+  },
+  {
+    path: 'benchmark/dropdown',
+    loadComponent: () =>
+      import('./pages/benchmark-dropdown-page/benchmark-dropdown-page').then(
+        (m) => m.BenchmarkDropdownPage,
+      ),
+  },
+  {
+    path: 'benchmark/instances',
+    loadComponent: () =>
+      import('./pages/benchmark-instances-page/benchmark-instances-page').then(
+        (m) => m.BenchmarkInstancesPage,
+      ),
   },
   {
     path: '**',

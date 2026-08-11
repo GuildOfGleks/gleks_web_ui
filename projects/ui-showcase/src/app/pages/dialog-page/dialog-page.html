@@ -53,6 +53,25 @@
   </article>
 
   <article class="card">
+    <h3>Custom close icon</h3>
+    <p class="meta">
+      <code>closeIconName</code> swaps the header's close button to any built-in icon;
+      <code>closeIconTemplate</code> goes further and projects arbitrary markup in its place.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" type="button" (gogClick)="openCustomCloseIconDialog()">
+        closeIconName
+      </gog-button>
+      <gog-button variant="outline" type="button" (gogClick)="openCustomCloseTemplateDialog()">
+        closeIconTemplate
+      </gog-button>
+    </div>
+    <ng-template #customCloseIcon>
+      <span class="dialog-page__custom-close">✕✕</span>
+    </ng-template>
+  </article>
+
+  <article class="card">
     <h3>Stacked dialogs</h3>
     <p class="meta">
       Opening a dialog while one is already open stacks it on top with a higher z-index — each keeps
