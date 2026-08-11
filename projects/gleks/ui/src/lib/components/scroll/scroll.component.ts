@@ -39,6 +39,7 @@ const DEFAULT_SIZE: GogScrollSize = 'normal';
 const DEFAULT_AUTO_HIDE = true;
 const DEFAULT_HIDE_DELAY = 800;
 const DEFAULT_OVERSCROLL_BEHAVIOR: GogScrollOverscrollBehavior = 'auto';
+const DEFAULT_SHOW_TRACK = true;
 
 function readPx(raw: string, fallback: number): number {
   const parsed = Number.parseFloat(raw.trim());
@@ -92,6 +93,17 @@ export class ScrollComponent {
    * for what each value does.
    */
   readonly overscrollBehavior = input<GogScrollOverscrollBehavior | undefined>(undefined);
+  /**
+   * Whether the overlay thumb/track ever renders. Native scrolling — wheel, touch, keyboard,
+   * focus-into-view, and any programmatic `scrollTo`/`scrollIntoView` — keeps working exactly
+   * the same either way; this only controls the visual affordance, not `overflow` or scroll
+   * containment (see `viewportOverflowY`/`X`). Off suits a viewport whose *position* is already
+   * driven some other way — `gog-tabs`' `scrollActiveIntoView` is the case this exists for,
+   * where a second, independent scroll indicator next to the active-tab underline reads as two
+   * conflicting signals for the same thing. Unset, falls back to `GOG_CONFIG.scroll.showTrack`,
+   * then to `true`.
+   */
+  readonly showTrack = input<boolean | undefined>(undefined);
 
   readonly gogScroll = output<GogScrollMetrics>();
   readonly gogReachStart = output<GogScrollDirection>();
@@ -148,6 +160,9 @@ export class ScrollComponent {
       this.overscrollBehavior() ??
       this.globalConfig.scroll?.overscrollBehavior ??
       DEFAULT_OVERSCROLL_BEHAVIOR,
+  );
+  protected readonly resolvedShowTrack = computed(
+    () => this.showTrack() ?? this.globalConfig.scroll?.showTrack ?? DEFAULT_SHOW_TRACK,
   );
   /**
    * Only applies `resolvedOverscrollBehavior` on an axis that's actually acting as a scroll

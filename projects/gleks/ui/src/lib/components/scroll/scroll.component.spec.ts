@@ -167,6 +167,44 @@ describe('ScrollComponent', () => {
       expect(fixture.nativeElement.querySelector('.gog-scroll__track--v')).toBeNull();
     });
 
+    it('hides the track when showTrack is off, without touching overflow-y', async () => {
+      fixture.componentRef.setInput('showTrack', false);
+      mockMetrics(viewport, { scrollHeight: 800, clientHeight: 200 });
+      Object.defineProperty(viewport, 'scrollTop', { value: 300, configurable: true });
+      dispatchScroll();
+      await settleMeasure(fixture);
+      fixture.detectChanges();
+
+      // Still a real scroll container — showTrack only hides the visual affordance, native
+      // wheel/touch/keyboard scrolling and any programmatic scrollIntoView keep working.
+      expect(viewport.style.overflowY).toBe('auto');
+      expect(fixture.nativeElement.querySelector('.gog-scroll__track--v')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.gog-scroll__thumb--v')).toBeNull();
+    });
+
+    it('falls back to GOG_CONFIG.scroll.showTrack when the input is unset', async () => {
+      // The outer beforeEach already instantiated a TestBed environment (it created a
+      // fixture), so a differently-provided one has to start from a clean slate.
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [ScrollComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { scroll: { showTrack: false } } }],
+      }).compileComponents();
+
+      const configFixture = TestBed.createComponent(ScrollComponent);
+      await configFixture.whenStable();
+      const configViewport = configFixture.nativeElement.querySelector(
+        '.gog-scroll__viewport',
+      ) as HTMLElement;
+
+      mockMetrics(configViewport, { scrollHeight: 800, clientHeight: 200 });
+      configViewport.dispatchEvent(new Event('scroll'));
+      await settleMeasure(configFixture);
+      configFixture.detectChanges();
+
+      expect(configFixture.nativeElement.querySelector('.gog-scroll__track--v')).toBeNull();
+    });
+
     it('emits gogScroll with the current geometry', async () => {
       const emitted: unknown[] = [];
       component.gogScroll.subscribe((event) => emitted.push(event));

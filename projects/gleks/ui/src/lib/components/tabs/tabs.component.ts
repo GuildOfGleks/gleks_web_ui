@@ -1,13 +1,15 @@
-import { NgTemplateOutlet } from '@angular/common';
+import { isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   Directive,
   ElementRef,
+  PLATFORM_ID,
   TemplateRef,
   computed,
   contentChild,
   contentChildren,
+  effect,
   forwardRef,
   inject,
   input,
@@ -96,6 +98,26 @@ export class TabsComponent implements GogTabsState {
   readonly size = input<GogSize>('md');
   readonly fullWidth = input(false);
   readonly ariaLabel = input('');
+  /**
+   * Whether selecting a tab scrolls the (possibly overflowing) header row so the active tab
+   * stays in view — centered where there's room, so its neighbours on both sides stay visible
+   * too, the same "always show what's around the current position" idea `gog-paginator` uses
+   * for pages. Reacts to `activeIndex` however it changes: a click, the arrow keys, or a
+   * consumer setting it directly. On by default; turn it off for a header that never actually
+   * overflows, or to own the scroll position yourself.
+   */
+  readonly scrollActiveIntoView = input(true);
+  /**
+   * Whether the header row shows its own draggable scroll thumb/track. Native scrolling
+   * (wheel, touch, keyboard) works the same regardless; this is purely the visual affordance.
+   *
+   * Unset, it follows `scrollActiveIntoView`: hidden while that's on, since a second scroll
+   * indicator sitting right next to the active-tab underline reads as two conflicting signals
+   * for the same thing once selecting a tab already moves the row on its own; shown while it's
+   * off, since the track is then the only way to reach an off-screen tab without a keyboard.
+   * Set explicitly to pin it either way regardless of `scrollActiveIntoView`.
+   */
+  readonly showScrollTrack = input<boolean | undefined>(undefined);
 
   /** Emits the newly active index whenever it changes, including via keyboard. */
   readonly gogTabChange = output<number>();
@@ -126,6 +148,40 @@ export class TabsComponent implements GogTabsState {
     const index = this.resolvedIndex();
     return index === -1 ? null : (this.tabs()[index] ?? null);
   });
+
+  /** See `showScrollTrack`'s doc for why this defaults off precisely when the other is on. */
+  protected readonly resolvedShowScrollTrack = computed(
+    () => this.showScrollTrack() ?? !this.scrollActiveIntoView(),
+  );
+
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  /** Instant for the first scroll (page load shouldn't animate into place), smooth after. */
+  private hasScrolledOnce = false;
+
+  constructor() {
+    effect(() => {
+      const index = this.resolvedIndex();
+      const header = this.headerRefs()[index]?.nativeElement;
+      if (!this.isBrowser || !this.scrollActiveIntoView() || !header) return;
+
+      // Feature-detected: absent in jsdom (so: in unit tests) and in very old browsers, which
+      // then simply keep whatever scroll position they already had.
+      if (typeof header.scrollIntoView !== 'function') return;
+
+      header.scrollIntoView({
+        inline: 'center',
+        block: 'nearest',
+        behavior: this.hasScrolledOnce && !this.prefersReducedMotion() ? 'smooth' : 'auto',
+      });
+      this.hasScrolledOnce = true;
+    });
+  }
+
+  private prefersReducedMotion(): boolean {
+    return (
+      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+  }
 
   protected readonly hostClasses = computed(() =>
     [

@@ -18,6 +18,24 @@ reached 1.0, so breaking changes may land in minor versions.
   option list — the signal to fetch and append another page, instead of handing a huge or
   server-backed source over up front (500,000 rows loaded 20 at a time, not all at once).
   Forwarded from the panel's own `gog-scroll`.
+- **`gog-tabs`: `scrollActiveIntoView`.** With an overflowing header row, selecting a tab —
+  by click, the arrow keys, or a consumer setting `activeIndex` directly — now scrolls the
+  header so the active tab stays in view, centered where there's room so its neighbours on
+  both sides stay visible too. The same "show what's around the current position" idea
+  `gog-paginator` already uses for pages. On by default; instant on first render, smooth (or
+  instant under `prefers-reduced-motion`) after. Turn it off to own the scroll position
+  yourself.
+- **`gog-tabs`: `showScrollTrack`; `gog-scroll`: `showTrack`.** With `scrollActiveIntoView`
+  driving the header's scroll position, its own draggable thumb/track next to the active-tab
+  underline read as two conflicting position indicators for the same thing — confusing rather
+  than helpful, per feedback on the first cut of `scrollActiveIntoView`. `gog-tabs` now hides
+  the track by default while `scrollActiveIntoView` is on, and shows it by default once that's
+  off (the only way left to reach an off-screen tab by mouse); either can be pinned explicitly
+  with `showScrollTrack`, regardless of the other. Native scrolling — wheel, touch, keyboard,
+  and any programmatic `scrollTo`/`scrollIntoView` — is unaffected either way; only the visual
+  affordance is gone. The underlying toggle lives on `gog-scroll` itself as `showTrack`
+  (instance input, or app-wide via `GOG_CONFIG.scroll.showTrack`), so any other panel built on
+  it gets the same option.
 
 ### Fixed
 

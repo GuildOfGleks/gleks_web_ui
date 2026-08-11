@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  @if (showTrackV()) {
+  @if (resolvedShowTrack() && showTrackV()) {
     <div
       class="gog-scroll__track gog-scroll__track--v"
       [class.gog-scroll__track--visible]="
@@ -46,7 +46,7 @@
     </div>
   }
 
-  @if (showTrackH()) {
+  @if (resolvedShowTrack() && showTrackH()) {
     <div
       class="gog-scroll__track gog-scroll__track--h"
       [class.gog-scroll__track--visible]="
@@ -67,7 +67,7 @@
     </div>
   }
 
-  @if (axis() === 'both' && showTrackV() && showTrackH()) {
+  @if (resolvedShowTrack() && axis() === 'both' && showTrackV() && showTrackH()) {
     <div class="gog-scroll__corner" aria-hidden="true"></div>
   }
 </div>

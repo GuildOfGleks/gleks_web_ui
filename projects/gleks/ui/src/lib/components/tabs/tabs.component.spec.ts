@@ -1,13 +1,21 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { GogTabContentDirective, TabComponent } from './tab.component';
 import { GogTabHeaderDirective, TabsComponent } from './tabs.component';
+import { ScrollComponent } from '../scroll/scroll.component';
 
 @Component({
   imports: [TabsComponent, TabComponent],
   template: `
-    <gog-tabs [(activeIndex)]="index" [align]="align()" ariaLabel="Разделы">
+    <gog-tabs
+      [(activeIndex)]="index"
+      [align]="align()"
+      [scrollActiveIntoView]="scrollActiveIntoView()"
+      [showScrollTrack]="showScrollTrack()"
+      ariaLabel="Разделы"
+    >
       <gog-tab label="Профиль">профиль</gog-tab>
       <gog-tab label="Настройки" iconName="info">настройки</gog-tab>
       <gog-tab label="Архив" [disabled]="archiveDisabled()">архив</gog-tab>
@@ -19,6 +27,8 @@ class TabsHost {
   readonly index = signal(0);
   readonly align = signal<'start' | 'center' | 'end' | 'stretch'>('start');
   readonly archiveDisabled = signal(true);
+  readonly scrollActiveIntoView = signal(true);
+  readonly showScrollTrack = signal<boolean | undefined>(undefined);
 }
 
 describe('TabsComponent', () => {
@@ -186,6 +196,109 @@ describe('TabsComponent', () => {
     expect(root().querySelector('gog-tabs')?.classList.contains('gog-tabs--align-stretch')).toBe(
       true,
     );
+  });
+
+  describe('scrollActiveIntoView', () => {
+    let scrollIntoView: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+      // jsdom doesn't implement scrollIntoView at all; stub it so the feature-detect in
+      // TabsComponent takes the real branch instead of silently no-op'ing.
+      scrollIntoView = vi.fn();
+      HTMLElement.prototype.scrollIntoView = scrollIntoView as unknown as (
+        arg?: boolean | ScrollIntoViewOptions,
+      ) => void;
+      // jsdom doesn't implement matchMedia either; "no preference" is the default a real
+      // browser would report too.
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        configurable: true,
+        value: vi.fn().mockReturnValue({ matches: false }),
+      });
+    });
+
+    afterEach(() => {
+      // @ts-expect-error -- undoing the stub above, not a real optional property.
+      delete HTMLElement.prototype.scrollIntoView;
+      // @ts-expect-error -- same, for matchMedia.
+      delete window.matchMedia;
+    });
+
+    it('should center the newly active header when the selection changes', () => {
+      scrollIntoView.mockClear();
+
+      headers()[1].click();
+      fixture.detectChanges();
+
+      expect(scrollIntoView).toHaveBeenCalledWith(
+        expect.objectContaining({ inline: 'center', block: 'nearest' }),
+      );
+    });
+
+    it('should scroll smoothly once mounted, but not on the very first render', async () => {
+      // A second instance of the same already-configured host: the outer beforeEach's own
+      // fixture mounted before this describe's stub was installed, so its initial call was
+      // never recorded — this one is, from the moment it's created.
+      const freshFixture = TestBed.createComponent(TabsHost);
+      await freshFixture.whenStable();
+      freshFixture.detectChanges();
+
+      expect(scrollIntoView).toHaveBeenCalledTimes(1);
+      expect(scrollIntoView.mock.calls[0][0].behavior).toBe('auto');
+
+      const freshHeaders = Array.from(
+        (freshFixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
+          'button[role="tab"]',
+        ),
+      );
+      freshHeaders[1].click();
+      freshFixture.detectChanges();
+
+      expect(scrollIntoView).toHaveBeenCalledTimes(2);
+      expect(scrollIntoView.mock.calls[1][0].behavior).toBe('smooth');
+    });
+
+    it('should do nothing when switched off', () => {
+      host.scrollActiveIntoView.set(false);
+      fixture.detectChanges();
+      scrollIntoView.mockClear();
+
+      headers()[1].click();
+      fixture.detectChanges();
+
+      expect(scrollIntoView).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('showScrollTrack', () => {
+    function scrollComponent(): ScrollComponent {
+      return fixture.debugElement.query(By.directive(ScrollComponent))
+        .componentInstance as ScrollComponent;
+    }
+
+    it('should hide the header scroll track by default, since scrollActiveIntoView is on', () => {
+      // TabsComponent always passes its own resolved boolean down, so gog-scroll's `showTrack`
+      // input is never actually unset here — this is what it resolved to.
+      expect(scrollComponent().showTrack()).toBe(false);
+    });
+
+    it('should show it by default once scrollActiveIntoView is off', () => {
+      host.scrollActiveIntoView.set(false);
+      fixture.detectChanges();
+
+      expect(scrollComponent().showTrack()).toBe(true);
+    });
+
+    it('should let an explicit value win over the scrollActiveIntoView-based default', () => {
+      host.showScrollTrack.set(true);
+      fixture.detectChanges();
+      expect(scrollComponent().showTrack()).toBe(true);
+
+      host.scrollActiveIntoView.set(false);
+      host.showScrollTrack.set(false);
+      fixture.detectChanges();
+      expect(scrollComponent().showTrack()).toBe(false);
+    });
   });
 });
 

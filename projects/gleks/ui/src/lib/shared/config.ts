@@ -35,6 +35,11 @@ export interface GogGlobalConfig {
     hideDelay?: number;
     size?: GogScrollSize;
     overscrollBehavior?: GogScrollOverscrollBehavior;
+    /**
+     * Whether the overlay thumb/track ever renders. Scrolling itself is unaffected either way
+     * — this is purely the visual affordance. Defaults to `true`.
+     */
+    showTrack?: boolean;
   };
   button?: {
     debounce?: number;
