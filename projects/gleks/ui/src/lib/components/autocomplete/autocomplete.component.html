@@ -113,6 +113,7 @@
       [focusable]="false"
       overscrollBehavior="contain"
       class="gog-autocomplete__scroll"
+      (gogReachEnd)="gogLoadMore.emit()"
     >
       @if (visibleOptions().length === 0) {
         <p class="gog-autocomplete__empty">{{ emptyMessage() }}</p>

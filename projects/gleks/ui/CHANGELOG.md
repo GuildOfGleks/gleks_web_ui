@@ -4,6 +4,35 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.3.1] - planned
+
+### Added
+
+- **`gog-autocomplete`: `openOnFocus`.** Focusing the field now opens the panel immediately with
+  the full option list, ignoring `minLength` — the common "browse everything, then narrow it
+  down" pattern a plain type-ahead can't offer. On by default; turn it off (or set
+  `GOG_CONFIG.autocomplete.openOnFocus = false`) to keep the previous behaviour of nothing
+  showing until enough has been typed. The list stays unfiltered even when the field already
+  displays a previously-selected label, and normal filtering resumes on the first keystroke.
+- **`gog-autocomplete`: `gogLoadMore`.** Fires once the panel is scrolled to the end of the
+  option list — the signal to fetch and append another page, instead of handing a huge or
+  server-backed source over up front (500,000 rows loaded 20 at a time, not all at once).
+  Forwarded from the panel's own `gog-scroll`.
+
+### Fixed
+
+- **`gog-autocomplete`: option rows spilling out of the panel.** The panel's `.gog-scroll` was
+  never actually constrained to `--gog-autocomplete-panel-max-height` — a classic flexbox trap
+  where a `max-height`-only container doesn't give its flex-grow children a definite size to
+  shrink into, so the option list rendered at full content height and visibly overflowed past
+  the panel's own border into whatever sat below it. Most visible with `appendToBody` and a
+  longer list (typing narrowed it back under the cap, masking the issue until the panel was
+  reopened with more matches, which also made it look like "the panel closes on its own" — it
+  hadn't; the list had just spilled out from under it). Fixed by giving `.gog-autocomplete__dropdown`
+  the same `display: flex; flex-direction: column` + `.gog-autocomplete__scroll { flex: 1;
+  min-height: 0 }` chain `gog-select` and `gog-multiselect` already use, plus a defensive
+  `overflow: hidden` on the panel itself.
+
 ## [21.3.0] - 08.08.2026
 
 ### Added

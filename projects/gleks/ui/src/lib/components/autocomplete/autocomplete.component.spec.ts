@@ -82,6 +82,54 @@ describe('AutocompleteComponent', () => {
     expect(component.isOpen()).toBe(true);
   });
 
+  describe('openOnFocus', () => {
+    it('should open with the full list on focus by default, ignoring minLength', () => {
+      fixture.componentRef.setInput('minLength', 3);
+      fixture.detectChanges();
+
+      field().dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+
+      expect(component.isOpen()).toBe(true);
+      expect(options().length).toBe(OPTIONS.length);
+    });
+
+    it('should do nothing on focus when switched off', () => {
+      fixture.componentRef.setInput('openOnFocus', false);
+      fixture.detectChanges();
+
+      field().dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+
+      expect(component.isOpen()).toBe(false);
+    });
+
+    it('should show every option on focus even when the field already displays a selection', () => {
+      type('а');
+      keydown('ArrowDown');
+      keydown('Enter');
+      expect(field().value).toBe('Ангуляр');
+
+      field().dispatchEvent(new Event('blur'));
+      fixture.detectChanges();
+      field().dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+
+      // Without the browsingAll bypass this would filter down to just the one option whose
+      // label matches the text already sitting in the field.
+      expect(options().length).toBe(OPTIONS.length);
+    });
+
+    it('should resume normal filtering as soon as the user types', () => {
+      field().dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+      expect(options().length).toBe(OPTIONS.length);
+
+      type('ан');
+      expect(options().map((option) => option.textContent?.trim())).toEqual(['Ангуляр', 'Анимация']);
+    });
+  });
+
   it('should filter locally, case-insensitively', () => {
     type('ан');
     expect(options().map((option) => option.textContent?.trim())).toEqual(['Ангуляр', 'Анимация']);
@@ -320,6 +368,39 @@ describe('AutocompleteComponent', () => {
     });
   });
 
+  describe('gogLoadMore', () => {
+    /** jsdom never lays elements out, so scroll/client metrics are stubbed as needed. */
+    function mockMetrics(
+      el: HTMLElement,
+      metrics: Partial<{ scrollHeight: number; clientHeight: number }>,
+    ): void {
+      for (const [key, value] of Object.entries(metrics)) {
+        Object.defineProperty(el, key, { value, configurable: true });
+      }
+    }
+
+    async function settleMeasure(): Promise<void> {
+      await fixture.whenStable();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    }
+
+    it('should fire once the panel is scrolled to the end of the option list', async () => {
+      type('а');
+      const viewport = host().querySelector('.gog-autocomplete__scroll .gog-scroll__viewport')!;
+      mockMetrics(viewport as HTMLElement, { scrollHeight: 400, clientHeight: 100 });
+      Object.defineProperty(viewport, 'scrollTop', { value: 300, configurable: true });
+
+      const seen: void[] = [];
+      component.gogLoadMore.subscribe(() => seen.push(undefined));
+
+      viewport.dispatchEvent(new Event('scroll'));
+      await settleMeasure();
+
+      expect(seen.length).toBe(1);
+    });
+  });
+
   it('should show a spinner while loading', () => {
     expect(host().querySelector('gog-spinner')).toBeNull();
 
@@ -386,6 +467,24 @@ describe('AutocompleteComponent — GOG_CONFIG', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it('should take openOnFocus from the global config', async () => {
+    await TestBed.configureTestingModule({
+      imports: [AutocompleteComponent],
+      providers: [{ provide: GOG_CONFIG, useValue: { autocomplete: { openOnFocus: false } } }],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent<DefaultAutocomplete>(AutocompleteComponent);
+    fixture.componentRef.setInput('options', OPTIONS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const input = (fixture.nativeElement as HTMLElement).querySelector('input')!;
+    input.dispatchEvent(new Event('focus'));
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.isOpen()).toBe(false);
   });
 });
 

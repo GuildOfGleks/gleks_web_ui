@@ -147,6 +147,8 @@
   top: calc(100% + var(--gog-autocomplete-panel-gap));
   z-index: var(--gog-dropdown-z);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   width: max-content;
   min-width: 100%;
   max-width: var(--gog-autocomplete-panel-max-width);
@@ -157,6 +159,10 @@
   border-radius: var(--gog-autocomplete-panel-radius);
   background-color: var(--gog-autocomplete-panel-bg);
   box-shadow: var(--gog-autocomplete-panel-shadow);
+  /* Defensive: gog-autocomplete__scroll's own overlay clips its content correctly on its
+     own, but this still keeps the panel visually masked (rounded corners, no bleed) for a
+     frame before it has measured, or if a browser ever mis-sizes the flex chain below. */
+  overflow: hidden;
 }
 
 .gog-autocomplete__dropdown--up {
@@ -176,8 +182,10 @@
 }
 
 .gog-autocomplete__scroll {
-  display: block;
-  max-height: var(--gog-autocomplete-panel-max-height);
+  /* min-height: 0 overrides the flex-item default of auto, which would otherwise refuse
+     to shrink below the option list's full height and defeat the max-height above. */
+  flex: 1;
+  min-height: 0;
 }
 
 .gog-autocomplete__option {

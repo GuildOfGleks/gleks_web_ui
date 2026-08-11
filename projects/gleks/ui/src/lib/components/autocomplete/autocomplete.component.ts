@@ -23,6 +23,7 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SEARCH_DEBOUNCE = 300;
 const DEFAULT_MIN_LENGTH = 1;
+const DEFAULT_OPEN_ON_FOCUS = true;
 
 /**
  * A text field that suggests options as you type.
@@ -79,6 +80,13 @@ export class AutocompleteComponent<
   readonly filterLocal = input(true);
   /** How many characters before the panel opens at all. */
   readonly minLength = input<number | undefined>(undefined);
+  /**
+   * Whether focusing the field opens the panel immediately, showing the full option list —
+   * before `minLength` would otherwise have let anything through. Off, the field behaves as
+   * before: nothing opens until enough has been typed. Unset, falls back to
+   * `GOG_CONFIG.autocomplete.openOnFocus`, then to `true`.
+   */
+  readonly openOnFocus = input<boolean | undefined>(undefined);
   /** Milliseconds of quiet before `gogSearch` fires. `0` emits on every keystroke. */
   readonly searchDebounce = input<number | undefined>(undefined);
   /** Shows a spinner in the trailing slot — for a server-backed source that is still loading. */
@@ -100,6 +108,12 @@ export class AutocompleteComponent<
 
   /** The current query, debounced. Wire a server-side lookup to this. */
   readonly gogSearch = output<string>();
+  /**
+   * Fires when the panel is scrolled to the end of the option list — the signal to fetch and
+   * append another page of a large or server-backed source, rather than handing the whole
+   * thing over up front. Forwarded from the panel's own `gog-scroll`.
+   */
+  readonly gogLoadMore = output<void>();
 
   protected readonly panelTemplate = viewChild<TemplateRef<unknown>>('panelTpl');
   /** A cleared autocomplete is `null`, whatever `TValue` the consumer bound. */
@@ -137,9 +151,24 @@ export class AutocompleteComponent<
       DEFAULT_SEARCH_DEBOUNCE,
     ),
   );
+  protected readonly resolvedOpenOnFocus = computed(() =>
+    resolveConfigured(
+      this.openOnFocus(),
+      this.config.autocomplete?.openOnFocus,
+      DEFAULT_OPEN_ON_FOCUS,
+    ),
+  );
 
   /** What is actually in the `<input>`. Not the same thing as the committed `value`. */
   protected readonly query = signal('');
+  /**
+   * True right after `openOnFocus` opens the panel, until the user actually types. The field
+   * may already be showing a previously-selected label at that point — this keeps the panel's
+   * list unfiltered by it, so focusing shows every option rather than just the one that
+   * happens to match the current text. Cleared on the first keystroke, so filtering resumes
+   * exactly as before.
+   */
+  protected readonly browsingAll = signal(false);
   /**
    * Which option the arrows have highlighted. `-1` means none — Enter then does nothing rather
    * than committing whichever row happened to be first, which is what stops a fast typist from
@@ -164,7 +193,7 @@ export class AutocompleteComponent<
    * estimate all reading the same set.
    */
   protected override readonly visibleOptions = computed(() => {
-    const query = this.query().trim();
+    const query = this.browsingAll() ? '' : this.query().trim();
     if (!this.filterLocal() || query === '') return this.options();
 
     const match = this.filterMatch();
@@ -202,6 +231,7 @@ export class AutocompleteComponent<
 
   protected onInput(event: Event): void {
     const text = (event.target as HTMLInputElement).value;
+    this.browsingAll.set(false);
     this.query.set(text);
     this.activeIndex.set(-1);
 
@@ -291,6 +321,11 @@ export class AutocompleteComponent<
 
   protected onInputFocus(): void {
     this.onFocusIn();
+
+    if (this.resolvedOpenOnFocus() && !this.isOpen()) {
+      this.browsingAll.set(true);
+      this.open();
+    }
   }
 
   protected onInputBlur(): void {
@@ -305,6 +340,7 @@ export class AutocompleteComponent<
   protected override close(): void {
     super.close();
     this.activeIndex.set(-1);
+    this.browsingAll.set(false);
   }
 
   /** Clearing has to empty the *text* as well; the base only knows about the value. */

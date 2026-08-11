@@ -120,6 +120,11 @@ export interface GogGlobalConfig {
     searchDebounce?: number;
     /** How many characters before the panel opens at all. */
     minLength?: number;
+    /**
+     * Whether focusing the field opens the panel immediately, showing the full option list.
+     * Defaults to `true`.
+     */
+    openOnFocus?: boolean;
   };
   toast?: {
     position?: ToastPosition;
