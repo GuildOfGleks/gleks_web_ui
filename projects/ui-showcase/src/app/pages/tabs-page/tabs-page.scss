@@ -33,3 +33,9 @@
   border: 1px dashed var(--gog-border-color);
   border-radius: var(--gog-radius);
 }
+
+.tabs-loading-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

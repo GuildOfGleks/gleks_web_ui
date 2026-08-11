@@ -102,8 +102,20 @@
       <code>overflow-x</code> — a native scrollbar is the one strip of chrome no
       <code>--gog-*</code> token can reach.
     </p>
+    <p class="hint">
+      <code>scrollActiveIntoView</code> (on by default) keeps the active header in view, centered
+      where there's room — the same "show what's around the current position" idea
+      <code>gog-paginator</code> uses for pages. Jump around with the buttons below, or arrow
+      through the header row itself, and watch it scroll. Toggle it off to see the header stay put
+      instead.
+    </p>
     <div class="tabs-narrow">
-      <gog-tabs size="sm" ariaLabel="Overflow sample">
+      <gog-tabs
+        size="sm"
+        ariaLabel="Overflow sample"
+        [(activeIndex)]="overflowIndex"
+        [scrollActiveIntoView]="overflowScrollActive()"
+      >
         @for (title of manyTabs; track title) {
           <gog-tab [label]="title">
             <p>{{ title }}</p>
@@ -111,6 +123,57 @@
         }
       </gog-tabs>
     </div>
+    <p class="hint">
+      activeIndex: {{ overflowIndex() }}
+      <gog-button size="xsm" variant="ghost" (gogClick)="overflowIndex.set(0)">
+        Jump to first
+      </gog-button>
+      <gog-button size="xsm" variant="ghost" (gogClick)="overflowIndex.set(manyTabs.length - 1)">
+        Jump to last
+      </gog-button>
+      <gog-button size="xsm" variant="ghost" (gogClick)="toggleOverflowScrollActive()">
+        scrollActiveIntoView: {{ overflowScrollActive() ? 'on' : 'off' }}
+      </gog-button>
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Loaded from a backend</h3>
+    <p class="hint">
+      Both the tab list itself and each tab's own content arrive asynchronously — the shape of a
+      real app, where <code>&lt;gog-tab&gt;</code> comes from an <code>&#64;for</code> over a signal
+      a service fills in, and a <code>gogTabContent</code> template fetches its own data on first
+      activation. <code>&lt;gog-tabs&gt;</code> stays mounted the whole time with zero tabs at first
+      — nothing special to opt into, the header row and <code>activeIndex</code> just follow
+      whatever is currently projected.
+    </p>
+    <gog-tabs ariaLabel="Report sections" size="sm">
+      @for (section of remoteSections() ?? []; track section.id) {
+        <gog-tab [label]="section.label">
+          <ng-template gogTabContent>
+            <app-remote-tab-panel [sectionId]="section.id" [body]="section.body" />
+          </ng-template>
+        </gog-tab>
+      }
+    </gog-tabs>
+    @if (remoteLoading()) {
+      <p class="hint tabs-loading-row">
+        <gog-spinner size="sm" ariaLabel="Loading sections" />
+        Loading sections…
+      </p>
+    } @else if (!remoteSections()) {
+      <p class="hint">Not fetched yet.</p>
+    }
+    <p class="hint">
+      <gog-button
+        size="xsm"
+        variant="ghost"
+        [disabled]="remoteLoading()"
+        (gogClick)="loadRemoteSections()"
+      >
+        {{ remoteSections() ? 'Reload sections' : 'Load sections' }}
+      </gog-button>
+    </p>
   </article>
 
   <article class="card">
