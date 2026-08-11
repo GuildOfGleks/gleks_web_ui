@@ -1,0 +1,35 @@
+.bench-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.bench-panel__presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.bench-panel__custom {
+  min-width: 140px;
+}
+
+.bench-panel__warning {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--gog-warning-color);
+  border-radius: var(--gog-radius);
+  background: color-mix(in srgb, var(--gog-warning-color) 12%, transparent);
+  color: var(--gog-text-color);
+}
+
+.bench-panel__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.bench-panel__empty {
+  color: var(--gog-muted-text-color);
+}

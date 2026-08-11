@@ -1,0 +1,69 @@
+<div class="bench-panel">
+  <div class="bench-panel__presets">
+    @for (preset of presets(); track preset) {
+      <gog-button
+        size="sm"
+        [variant]="selectedPreset() === preset && !customCount() ? 'primary' : 'outline'"
+        type="button"
+        [disabled]="running()"
+        (gogClick)="selectPreset(preset)"
+      >
+        {{ numberFormat.format(preset) }}
+      </gog-button>
+    }
+    <div class="bench-panel__custom">
+      <gog-inputfield
+        label="Custom"
+        type="number"
+        [min]="1"
+        placeholder="Custom count"
+        size="sm"
+        [fullWidth]="false"
+        [disabled]="running()"
+        [value]="customCount()"
+        (valueChange)="onCustomCountChange($event)"
+      />
+    </div>
+  </div>
+
+  @if (needsConfirmation()) {
+    <p class="bench-panel__warning">
+      {{ numberFormat.format(effectiveCount()) }} {{ unitLabel() }} may freeze this tab for a while
+      — the whole point of measuring it, but there's no cancelling once it starts.
+      <gog-checkbox label="I understand, run it anyway" [(checked)]="confirmed" />
+    </p>
+  }
+
+  <div class="bench-panel__actions">
+    <gog-button
+      type="button"
+      [disabled]="running() || (needsConfirmation() && !confirmed())"
+      (gogClick)="requestRun()"
+    >
+      @if (running()) {
+        <gog-spinner size="xsm" ariaLabel="Running" />
+        Running…
+      } @else {
+        Run with {{ numberFormat.format(effectiveCount()) }} {{ unitLabel() }}
+      }
+    </gog-button>
+    <gog-button type="button" variant="ghost" [disabled]="running()" (gogClick)="requestReset()">
+      Clear
+    </gog-button>
+  </div>
+
+  @if (displayRows().length) {
+    <gog-table [value]="displayRows()" size="sm" [showRowNumbers]="false">
+      <gog-column field="count" header="Count" />
+      <gog-column field="prepMs" header="Prep (build the data)" />
+      <gog-column field="renderMs" header="Render (to next paint)" />
+      <gog-column field="totalMs" header="Total" />
+      <gog-column field="domNodes" header="DOM nodes" />
+      @if (hasMemoryColumn()) {
+        <gog-column field="heapDeltaMb" header="Heap Δ" />
+      }
+    </gog-table>
+  } @else {
+    <p class="bench-panel__empty">No runs yet.</p>
+  }
+</div>

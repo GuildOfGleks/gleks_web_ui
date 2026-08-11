@@ -1,0 +1,26 @@
+@use '../detail' as *;
+
+.bench-index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.bench-index-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--gog-duration-base) var(--gog-easing);
+}
+
+.bench-index-card:hover {
+  border-color: var(--gog-accent-color);
+}
+
+.bench-index-card h3 {
+  margin: 0 0 6px;
+}
+
+.bench-index-card .meta {
+  margin: 0;
+}

@@ -1,0 +1,22 @@
+@use '../detail' as *;
+
+.bench-instances-kind {
+  margin-bottom: 16px;
+}
+
+.bench-instances-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  max-height: 480px;
+  overflow: auto;
+}
+
+.bench-instances-badge-host {
+  position: relative;
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+}

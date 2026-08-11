@@ -1,0 +1,47 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">Benchmark</p>
+    <h2>gog-table</h2>
+    <p class="lead">
+      How <code>gog-table</code> handles a large <code>[value]</code> array — paginated (the
+      realistic shape: only <code>pageSize</code> rows are ever real DOM) and unpaginated (every row
+      becomes a real <code>&lt;tr&gt;</code>, which is the literal "500,000 rows" question). "Prep"
+      below is building the row array itself — the caller's own cost, not the table's; "Render" is
+      what the table actually does with it, from the moment it gets the array to the next real
+      paint.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Run</h3>
+    <p class="lead">
+      <gog-checkbox label="Paginate (50 rows/page)" [(checked)]="paginated" /> — off, every row in
+      the count below becomes a real DOM row. That's what the confirmation is for.
+    </p>
+    <app-benchmark-panel
+      unitLabel="rows"
+      [running]="running()"
+      [results]="results()"
+      (runRequested)="run($event)"
+      (resetRequested)="reset()"
+    />
+  </article>
+
+  <article class="card">
+    <h3>Live table ({{ rows().length | number }} rows loaded)</h3>
+    <div #container>
+      <gog-table
+        [value]="rows()"
+        [pageSize]="paginated() ? 50 : 0"
+        [stickyHeader]="true"
+        [showRowNumbers]="false"
+        size="sm"
+      >
+        <gog-column field="id" header="#" />
+        <gog-column field="name" header="Name" />
+        <gog-column field="status" header="Status" />
+        <gog-column field="value" header="Value" />
+      </gog-table>
+    </div>
+  </article>
+</section>

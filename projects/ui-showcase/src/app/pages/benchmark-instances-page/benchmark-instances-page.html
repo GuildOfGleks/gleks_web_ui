@@ -1,0 +1,86 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">Benchmark</p>
+    <h2>Everything else</h2>
+    <p class="lead">
+      N side-by-side instances of one simple control — the shape a heavy dashboard or a big form
+      actually takes, as opposed to one component holding N rows of data. Pick a component, pick a
+      count.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Run</h3>
+    <div class="bench-instances-kind">
+      <gog-radio-group
+        label="Component"
+        [options]="kindOptions"
+        orientation="horizontal"
+        [value]="kind()"
+        (valueChange)="setKind($event)"
+      />
+    </div>
+    <app-benchmark-panel
+      unitLabel="instances"
+      [running]="running()"
+      [results]="results()"
+      (runRequested)="run($event)"
+      (resetRequested)="reset()"
+    />
+  </article>
+
+  <article class="card">
+    <h3>Live instances ({{ indices().length | number }} loaded)</h3>
+    <div #container class="bench-instances-grid">
+      @switch (kind()) {
+        @case ('button') {
+          @for (i of indices(); track i) {
+            <gog-button size="sm" type="button" [fullWidth]="false">Item {{ i }}</gog-button>
+          }
+        }
+        @case ('checkbox') {
+          @for (i of indices(); track i) {
+            <gog-checkbox [label]="'Item ' + i" />
+          }
+        }
+        @case ('tag') {
+          @for (i of indices(); track i) {
+            <gog-tag variant="info">Item {{ i }}</gog-tag>
+          }
+        }
+        @case ('toggle') {
+          @for (i of indices(); track i) {
+            <gog-toggle [label]="'Item ' + i" />
+          }
+        }
+        @case ('inputfield') {
+          @for (i of indices(); track i) {
+            <gog-inputfield [label]="'Item ' + i" [fullWidth]="false" />
+          }
+        }
+        @case ('divider') {
+          @for (i of indices(); track i) {
+            <gog-divider />
+          }
+        }
+        @case ('skeleton') {
+          @for (i of indices(); track i) {
+            <gog-skeleton shape="text" />
+          }
+        }
+        @case ('spinner') {
+          @for (i of indices(); track i) {
+            <gog-spinner size="xsm" ariaLabel="Loading" />
+          }
+        }
+        @case ('badge') {
+          @for (i of indices(); track i) {
+            <span class="bench-instances-badge-host" [gogBadge]="i" [badgeAriaLabel]="i + ' unread'"
+              >Item</span
+            >
+          }
+        }
+      }
+    </div>
+  </article>
+</section>

@@ -1,0 +1,34 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">Benchmark</p>
+    <h2>gog-accordion</h2>
+    <p class="lead">
+      <code>gog-accordion</code> has no pagination or virtualization — every item in
+      <code>[items]</code> is always real DOM, collapsed or not. This is the literal "what if I
+      create 899,999 accordions" question: there's no cheaper mode to fall back to.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Run</h3>
+    <app-benchmark-panel
+      unitLabel="items"
+      [presets]="presets"
+      [running]="running()"
+      [results]="results()"
+      (runRequested)="run($event)"
+      (resetRequested)="reset()"
+    />
+  </article>
+
+  <article class="card">
+    <h3>Live accordion ({{ items().length | number }} items loaded)</h3>
+    <div #container>
+      <gog-accordion [items]="items()" size="sm">
+        <ng-template gogAccordionContent let-item>
+          <p class="meta">Content for {{ item.title }}.</p>
+        </ng-template>
+      </gog-accordion>
+    </div>
+  </article>
+</section>

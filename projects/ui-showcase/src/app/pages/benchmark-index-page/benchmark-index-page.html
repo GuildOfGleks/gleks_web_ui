@@ -1,0 +1,28 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">Benchmark</p>
+    <h2>Performance limits</h2>
+    <p class="lead">
+      How <code>&#64;guildofgleks/ui</code> actually behaves at scale — not "will it work", but
+      "what does 500,000 or 1,000,000 of this cost, in this browser, on this machine". Every page
+      here builds real data, hands it to a real component, and times from that hand-off to the next
+      actual paint (two <code>requestAnimationFrame</code> ticks, not a framework-internal counter)
+      — the same wall-clock delay a user would feel.
+    </p>
+    <p class="lead">
+      "Prep" is building the data itself — an array of plain objects, the caller's own cost, not the
+      library's. "Render" is what the component does with it. Large counts are gated behind an
+      explicit confirmation: this is deliberately trying to find the point where a tab freezes, and
+      there's no cancelling once a synchronous render that size has started.
+    </p>
+  </div>
+
+  <div class="bench-index-grid">
+    @for (link of links; track link.path) {
+      <a class="card bench-index-card" [routerLink]="link.path">
+        <h3>{{ link.title }}</h3>
+        <p class="meta">{{ link.description }}</p>
+      </a>
+    }
+  </div>
+</section>

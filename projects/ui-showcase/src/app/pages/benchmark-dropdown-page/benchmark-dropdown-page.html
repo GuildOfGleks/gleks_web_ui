@@ -1,0 +1,49 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">Benchmark</p>
+    <h2>gog-select / gog-multiselect / gog-autocomplete</h2>
+    <p class="lead">
+      None of the three dropdowns virtualize their option list — every option becomes a real row the
+      moment the panel opens. Setting <code>[options]</code> to a huge array is cheap on its own
+      (just a reference swap); "Render" below includes opening the panel too, so it captures the
+      cost that actually matters — all N rows getting stamped into the DOM at once.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Run</h3>
+    <div class="bench-dropdown-kind">
+      <gog-radio-group
+        label="Component"
+        [options]="kindOptions"
+        orientation="horizontal"
+        [value]="kind()"
+        (valueChange)="setKind($event)"
+      />
+    </div>
+    <app-benchmark-panel
+      unitLabel="options"
+      [running]="running()"
+      [results]="results()"
+      (runRequested)="run($event)"
+      (resetRequested)="reset()"
+    />
+  </article>
+
+  <article class="card">
+    <h3>Live component ({{ options().length | number }} options loaded)</h3>
+    <div #container class="bench-dropdown-field">
+      @switch (kind()) {
+        @case ('select') {
+          <gog-select label="Options" [options]="options()" />
+        }
+        @case ('multiselect') {
+          <gog-multiselect label="Options" [options]="options()" />
+        }
+        @case ('autocomplete') {
+          <gog-autocomplete label="Options" [options]="options()" />
+        }
+      }
+    </div>
+  </article>
+</section>
