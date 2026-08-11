@@ -47,6 +47,13 @@ const CITIES = [
   'Zagreb',
 ].map((name, index) => ({ id: index + 1, name }));
 
+/** Stands in for a dataset too large to hand over up front — 200 rows, loaded 20 at a time. */
+const HUGE_SOURCE = Array.from({ length: 200 }, (_, index) => ({
+  id: index + 1,
+  name: `Contact #${index + 1}`,
+}));
+const PAGE_SIZE = 20;
+
 @Component({
   selector: 'app-autocomplete-page',
   imports: [AutocompleteComponent, GogDropdownOptionDirective, ReactiveFormsModule],
@@ -68,6 +75,11 @@ export class AutocompletePage implements OnDestroy {
   protected readonly remoteLoading = signal(false);
   protected readonly lastQuery = signal('');
   private timer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Load-more demo: only one page of `HUGE_SOURCE` is ever handed to the component at once. */
+  protected readonly loadedContacts = signal(HUGE_SOURCE.slice(0, PAGE_SIZE));
+  protected readonly loadMoreLoading = signal(false);
+  private loadMoreTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** Stands in for an HTTP call: a deliberate 600 ms so the spinner is visible. */
   protected search(query: string): void {
@@ -96,7 +108,22 @@ export class AutocompletePage implements OnDestroy {
     return option as Employee;
   }
 
+  /** Appends the next page of `HUGE_SOURCE` — stands in for a paginated API call. */
+  protected loadMoreContacts(): void {
+    const loaded = this.loadedContacts().length;
+    if (loaded >= HUGE_SOURCE.length || this.loadMoreLoading()) return;
+
+    this.loadMoreLoading.set(true);
+    if (this.loadMoreTimer) clearTimeout(this.loadMoreTimer);
+    this.loadMoreTimer = setTimeout(() => {
+      this.loadedContacts.set(HUGE_SOURCE.slice(0, loaded + PAGE_SIZE));
+      this.loadMoreLoading.set(false);
+      this.loadMoreTimer = null;
+    }, 400);
+  }
+
   ngOnDestroy(): void {
     if (this.timer) clearTimeout(this.timer);
+    if (this.loadMoreTimer) clearTimeout(this.loadMoreTimer);
   }
 }

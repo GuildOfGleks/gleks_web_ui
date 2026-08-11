@@ -29,6 +29,28 @@
   </article>
 
   <article class="card">
+    <h3>Open on focus</h3>
+    <p class="hint">
+      On by default: focusing the field opens the panel immediately with every option, before
+      <code>minLength</code> would otherwise have let anything through. Tab or click into each
+      field below and compare.
+    </p>
+    <div class="ac-grid">
+      <div class="ac-field">
+        <gog-autocomplete label="Open on focus (default)" [options]="cities" [clearable]="true" />
+      </div>
+      <div class="ac-field">
+        <gog-autocomplete
+          label="openOnFocus off"
+          [options]="cities"
+          [openOnFocus]="false"
+          [clearable]="true"
+        />
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Server-backed</h3>
     <p class="hint">
       <code>gogSearch</code> is debounced (300&nbsp;ms by default) and
@@ -52,6 +74,25 @@
       last query: “{{ lastQuery() }}” · results: {{ remoteResults().length }} · loading:
       {{ remoteLoading() }}
     </p>
+  </article>
+
+  <article class="card">
+    <h3>Load more on scroll</h3>
+    <p class="hint">
+      <code>gogLoadMore</code> fires when the panel is scrolled to the end of the list — the
+      signal to fetch and append another page, instead of handing 200 rows over up front. Open
+      the panel and scroll to the bottom to load the next 20.
+    </p>
+    <div class="ac-field">
+      <gog-autocomplete
+        label="Contact"
+        placeholder="Scroll to load more"
+        [options]="loadedContacts()"
+        [loading]="loadMoreLoading()"
+        (gogLoadMore)="loadMoreContacts()"
+      />
+    </div>
+    <p class="hint">loaded: {{ loadedContacts().length }} / 200</p>
   </article>
 
   <article class="card">
