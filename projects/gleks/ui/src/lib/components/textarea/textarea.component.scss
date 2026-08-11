@@ -48,15 +48,78 @@
 }
 
 .gog-textarea__field {
-  resize: vertical;
+  /* A <textarea> defaults to inline-block, which leaves a few px of descender-line gap below
+     it inside .gog-input__field-container — invisible on its own, but it throws off anything
+     positioned against the container's own bottom edge (the resize grip below). */
+  display: block;
   min-height: 2.5em;
   line-height: 1.5;
+
+  /*
+   * The browser's own resize glyph is tiny and low-contrast (barely visible at a glance,
+   * per user feedback watching people actually use it) — `::-webkit-resizer` is blanked out
+   * here and replaced by `.gog-input__field-container--resizable::after` below, which draws
+   * one bigger, on-brand grip that works the same in every browser (Firefox never exposed a
+   * styling hook for its own native glyph, so this is the only cross-browser option). The
+   * drag itself stays entirely native — only the glyph is different.
+   */
+  &::-webkit-resizer {
+    background: transparent;
+  }
+}
+
+.gog-textarea__field--resize-vertical {
+  resize: vertical;
+}
+
+.gog-textarea__field--resize-horizontal {
+  resize: horizontal;
+}
+
+.gog-textarea__field--resize-both {
+  resize: both;
+}
+
+.gog-textarea__field--resize-none {
+  resize: none;
 }
 
 /* Only inputfield needs this for icon positioning today; a textarea has no icons, but the
    float label (see below) still needs a positioned ancestor to sit inside. */
 .gog-input__field-container {
   position: relative;
+}
+
+/*
+ * The custom resize grip — see the `::-webkit-resizer` comment above for why this exists
+ * instead of just restyling the native glyph. `pointer-events: none` so the drag itself still
+ * goes to the textarea's own native resize corner underneath; this is purely the glyph. Two
+ * parallel diagonal strokes, longer one closer to the corner, read as the same "drag from
+ * here" affordance as the native one — just bigger, and in the field's own border colour by
+ * default so it never clashes with the theme instead of a fixed muted grey.
+ *
+ * Anchored to the *container*, not the field itself — a <textarea> can't reliably host
+ * `::after`. `--gog-textarea-resize-inset-right/-bottom` (set from the component, via a
+ * ResizeObserver on the field) close the gap that opens up once the field has actually been
+ * dragged narrower/shorter than its container, so the grip stays glued to the field's own
+ * corner instead of sitting wherever the container's original one was.
+ */
+.gog-input__field-container--resizable::after {
+  content: '';
+  position: absolute;
+  right: calc(3px + var(--gog-textarea-resize-inset-right, 0px));
+  bottom: calc(3px + var(--gog-textarea-resize-inset-bottom, 0px));
+  width: var(--gog-textarea-resize-grip-size);
+  height: var(--gog-textarea-resize-grip-size);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 var(--gog-textarea-resize-grip-stripe-gap),
+    var(--gog-textarea-resize-grip-color) var(--gog-textarea-resize-grip-stripe-gap)
+      calc(var(--gog-textarea-resize-grip-stripe-gap) + var(--gog-textarea-resize-grip-stripe-width))
+  );
+  opacity: var(--gog-textarea-resize-grip-opacity);
+  pointer-events: none;
 }
 
 .gog-input-wrapper--xsm {

@@ -928,6 +928,9 @@
   --gog-input-icon-hover-color: var(--gog-accent-color);
   --gog-input-icon-action-radius: 4px;
   --gog-input-icon-focus-ring-width: 2px;
+  /* Number field's spin buttons — a subtle fill on hover, since they sit flush against the
+     field's own border rather than floating with their own padding like the other icons. */
+  --gog-input-spin-hover-bg: color-mix(in srgb, var(--gog-input-icon-hover-color) 12%, transparent);
   --gog-input-disabled-opacity: var(--gog-disabled-opacity);
   --gog-input-transition-duration: var(--gog-duration-base);
   /* Float label — also used by gog-textarea, which shares the --gog-input-* block. */
@@ -939,6 +942,15 @@
      single-line trigger of a dropdown; on a large multi-line box it reads as a speck.
   */
   --gog-textarea-clear-icon-ratio: 1;
+  /* Custom resize grip — see the `::-webkit-resizer` comment in textarea.component.scss for
+     why this replaces rather than restyles the native glyph. Colour follows the field's own
+     border by default, not a fixed muted grey, so it reads as part of the field rather than a
+     mismatched accent. */
+  --gog-textarea-resize-grip-size: 11px;
+  --gog-textarea-resize-grip-color: var(--gog-input-field-border);
+  --gog-textarea-resize-grip-opacity: 0.8;
+  --gog-textarea-resize-grip-stripe-width: 1.5px;
+  --gog-textarea-resize-grip-stripe-gap: 3px;
   --gog-input-clear-inset: 8px;
   --gog-input-float-label-reserve: var(--gog-field-float-label-reserve);
   --gog-input-float-label-in-top: var(--gog-field-float-label-in-top);
@@ -1177,6 +1189,12 @@
   --gog-scroll-thin-track-width: 6px;
   --gog-scroll-normal-thumb-min-size: 32px;
   --gog-scroll-thin-thumb-min-size: 24px;
+  /* Invisible pointer-target padding around the thumb (see .gog-scroll__thumb::before) — the
+     `thin` variant gets more of it since its 6px track leaves the least visible thumb to aim
+     at; both land the effective hit width in the ~22-24px range generally recommended for a
+     comfortable pointer target. */
+  --gog-scroll-normal-thumb-hit-padding: 6px;
+  --gog-scroll-thin-thumb-hit-padding: 9px;
 
   /* ── Select ────────────────────────────────────────────────────────────────── */
   --gog-select-font-family: var(--gog-font-body);

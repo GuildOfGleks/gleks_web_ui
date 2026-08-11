@@ -5,6 +5,7 @@ import {
   GogScrollOverscrollBehavior,
   GogScrollSize,
   GogSize,
+  GogTextareaResize,
   GogTooltipPosition,
 } from './types';
 // Type-only, so none of these pull a runtime dependency into this module — `config.ts` is
@@ -130,6 +131,22 @@ export interface GogGlobalConfig {
      * Defaults to `true`.
      */
     openOnFocus?: boolean;
+  };
+  /** Applies to `gog-inputfield`. */
+  inputfield?: {
+    /**
+     * Whether a `type="number"` field shows the library's own spin buttons in place of the
+     * browser's native ones. Defaults to `true`.
+     */
+    showSpinButtons?: boolean;
+  };
+  /** Applies to `gog-textarea`. */
+  textarea?: {
+    /**
+     * Which direction(s) the field's own drag handle resizes it in — matches the native CSS
+     * `resize` value space. Defaults to `'vertical'`.
+     */
+    resize?: GogTextareaResize;
   };
   toast?: {
     position?: ToastPosition;

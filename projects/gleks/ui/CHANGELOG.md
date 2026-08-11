@@ -36,9 +36,38 @@ reached 1.0, so breaking changes may land in minor versions.
   affordance is gone. The underlying toggle lives on `gog-scroll` itself as `showTrack`
   (instance input, or app-wide via `GOG_CONFIG.scroll.showTrack`), so any other panel built on
   it gets the same option.
+- **`gog-textarea`: `resize`.** Which direction(s) the field's own drag handle resizes it in —
+  `'vertical'` (the default, matching a plain `<textarea>`), `'horizontal'`, `'both'`, or
+  `'none'` to remove it entirely. Settable app-wide via `GOG_CONFIG.textarea.resize`. The
+  handle itself is also restyled: the browser's native glyph is barely visible at a glance, so
+  it's blanked out (`::-webkit-resizer`, where that's even stylable — Firefox never exposed a
+  hook for its own) and replaced with two short diagonal strokes in the field's own border
+  colour, sized and positioned to sit inside the border rather than past it. A `ResizeObserver`
+  on the field keeps the grip glued to its actual corner as it's dragged narrower/shorter than
+  its container (`'horizontal'`/`'both'`) — it's anchored to the container, not the field
+  itself, since a `<textarea>` can't reliably host `::after`. The drag stays entirely native;
+  only the glyph and its tracking are new.
+- **`gog-inputfield`: number spin buttons.** A `type="number"` field now gets the library's own
+  increment/decrement buttons instead of the browser's native ones, which render inconsistently
+  across Chromium/Firefox/Safari and were never themed. Flush against the field's own border as
+  one grouped stepper (a divider on each side), not floating loose in the icon gutter. Steps by
+  `step` (default `1`), clamps to `min`/`max`, and disables the button at whichever boundary is
+  reached. Arrow-key stepping on the focused field is untouched — that's native
+  `<input type="number">` behaviour, unrelated to which glyphs are visible. `showSpinButtons`
+  turns them off entirely (native glyphs never come back — off means no stepper UI at all);
+  settable app-wide via `GOG_CONFIG.inputfield.showSpinButtons`.
+- **`gog-icon`: `copy`.** A new glyph for the common "copy this field's value" trailing-action
+  pattern (see the inputfield showcase page for a full example built on `gogInputAddonEnd`).
 
 ### Fixed
 
+- **`gog-scroll`: thumb too small to reliably click, especially at `size="thin"`.** The
+  thumb's own visible box is exactly as wide as `size` says — that part is unchanged — but its
+  clickable/draggable _region_ now extends a few pixels past every edge
+  (`--gog-scroll-thumb-hit-padding`, bigger on `thin`, where the visible thumb was hardest to
+  land a cursor on), so a near-miss click still grabs the thumb instead of falling through to
+  the track, which pages the view rather than dragging. Purely an invisible hit-area change —
+  no new input, no behaviour change for the mouse wheel, which already worked fine.
 - **`gog-autocomplete`: option rows spilling out of the panel.** The panel's `.gog-scroll` was
   never actually constrained to `--gog-autocomplete-panel-max-height` — a classic flexbox trap
   where a `max-height`-only container doesn't give its flex-grow children a definite size to
@@ -46,10 +75,9 @@ reached 1.0, so breaking changes may land in minor versions.
   the panel's own border into whatever sat below it. Most visible with `appendToBody` and a
   longer list (typing narrowed it back under the cap, masking the issue until the panel was
   reopened with more matches, which also made it look like "the panel closes on its own" — it
-  hadn't; the list had just spilled out from under it). Fixed by giving `.gog-autocomplete__dropdown`
-  the same `display: flex; flex-direction: column` + `.gog-autocomplete__scroll { flex: 1;
-  min-height: 0 }` chain `gog-select` and `gog-multiselect` already use, plus a defensive
-  `overflow: hidden` on the panel itself.
+  hadn't; the list had just spilled out from under it). Fixed by giving the panel the same
+  `display: flex` + `flex: 1; min-height: 0` chain `gog-select` and `gog-multiselect` already
+  use, plus a defensive `overflow: hidden`.
 
 ## [21.3.0] - 08.08.2026
 

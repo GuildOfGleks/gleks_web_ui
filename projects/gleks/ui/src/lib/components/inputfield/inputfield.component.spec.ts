@@ -308,6 +308,117 @@ describe('InputfieldComponent', () => {
 
       expect(host.control.value).toBeNull();
     });
+
+    describe('spin buttons', () => {
+      function spinButtons(root: HTMLElement): { up: HTMLButtonElement; down: HTMLButtonElement } {
+        return {
+          up: root.querySelector('.gog-input__spin-btn--up')!,
+          down: root.querySelector('.gog-input__spin-btn--down')!,
+        };
+      }
+
+      it('should render by default and step the FormControl by `step`', async () => {
+        const hostFixture = TestBed.createComponent(NumberInputfieldFormHostComponent);
+        const host = hostFixture.componentInstance;
+        await hostFixture.whenStable();
+
+        const { up, down } = spinButtons(hostFixture.nativeElement);
+        expect(up).toBeTruthy();
+        expect(down).toBeTruthy();
+
+        up.click();
+        expect(host.control.value).toBe(6);
+
+        down.click();
+        down.click();
+        expect(host.control.value).toBe(4);
+      });
+
+      it('should clamp to min/max and disable the button at the boundary', async () => {
+        const hostFixture = TestBed.createComponent(NumberInputfieldFormHostComponent);
+        const host = hostFixture.componentInstance;
+        host.control.setValue(10);
+        await hostFixture.whenStable();
+        hostFixture.detectChanges();
+
+        const { up, down } = spinButtons(hostFixture.nativeElement);
+        expect(up.disabled).toBe(true);
+
+        up.click();
+        expect(host.control.value).toBe(10);
+
+        host.control.setValue(1);
+        await hostFixture.whenStable();
+        hostFixture.detectChanges();
+        expect(down.disabled).toBe(true);
+
+        down.click();
+        expect(host.control.value).toBe(1);
+      });
+
+      it('should step from 0 when the field starts empty and has no min', async () => {
+        fixture.componentRef.setInput('type', 'number');
+        fixture.detectChanges();
+
+        const { up } = spinButtons(fixture.nativeElement);
+        up.click();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('input').value).toBe('1');
+      });
+
+      it('should keep focus on the field instead of moving it to the button', () => {
+        fixture.componentRef.setInput('type', 'number');
+        fixture.detectChanges();
+
+        const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+        input.focus();
+
+        const { up } = spinButtons(fixture.nativeElement);
+        const event = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+        up.dispatchEvent(event);
+
+        expect(event.defaultPrevented).toBe(true);
+      });
+
+      it('should hide the native spin glyphs on the input regardless of showSpinButtons', () => {
+        fixture.componentRef.setInput('type', 'number');
+        fixture.componentRef.setInput('showSpinButtons', false);
+        fixture.detectChanges();
+
+        const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+        expect(input.classList.contains('gog-input__field--spin-hidden')).toBe(true);
+      });
+
+      it('should render neither button when switched off', () => {
+        fixture.componentRef.setInput('type', 'number');
+        fixture.componentRef.setInput('showSpinButtons', false);
+        fixture.detectChanges();
+
+        const { up, down } = spinButtons(fixture.nativeElement);
+        expect(up).toBeNull();
+        expect(down).toBeNull();
+      });
+
+      it('should fall back to GOG_CONFIG.inputfield.showSpinButtons when unset', async () => {
+        TestBed.resetTestingModule();
+        await TestBed.configureTestingModule({
+          imports: [InputfieldComponent],
+          providers: [
+            { provide: GOG_CONFIG, useValue: { inputfield: { showSpinButtons: false } } },
+          ],
+        }).compileComponents();
+
+        const configFixture = TestBed.createComponent(InputfieldComponent);
+        configFixture.componentRef.setInput('type', 'number');
+        await configFixture.whenStable();
+        configFixture.detectChanges();
+
+        const { up, down } = spinButtons(configFixture.nativeElement);
+        expect(up).toBeNull();
+        expect(down).toBeNull();
+      });
+    });
   });
 
   describe('type="date"', () => {

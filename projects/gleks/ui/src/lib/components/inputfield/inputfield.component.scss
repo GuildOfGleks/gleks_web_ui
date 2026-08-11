@@ -190,6 +190,93 @@
 }
 
 /*
+ * Always hidden on a number field, `showSpinButtons` or not: off means no stepper glyphs at
+ * all, not a fallback to the browser's own (inconsistently styled across Chromium/Firefox/
+ * Safari) ones. Arrow-key stepping on the focused field is untouched — that's native
+ * `<input type="number">` behaviour, unrelated to which glyphs are visible.
+ */
+.gog-input__field--spin-hidden {
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/*
+ * Custom up/down pair, replacing the native glyphs — see `.gog-input__field--spin-hidden`.
+ * Flush against the field's own right border rather than floating in the icon-slot gutter
+ * like a decorative icon: a divider on each side ties it visually to the field as one grouped
+ * "stepper" control (the shape every native OS spinner and most design systems use for this),
+ * instead of reading as two loose icons dropped on top of the field.
+ */
+.gog-input__spin {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  border-inline-start: var(--gog-input-field-border-width) var(--gog-input-field-border-style)
+    var(--gog-input-field-border);
+}
+
+.gog-input__spin-btn {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--gog-input-size-font-size, var(--gog-field-md-font-size)) * 1.35);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--gog-input-icon-color);
+  line-height: 0;
+  cursor: pointer;
+  transition:
+    color var(--gog-input-transition-duration) var(--gog-easing),
+    background-color var(--gog-input-transition-duration) var(--gog-easing);
+}
+
+/* Rounded to match the field's own corner, and a divider between the two halves — the same
+   detailing a grouped control gets everywhere else in this library (e.g. gog-button-toggle). */
+.gog-input__spin-btn--up {
+  border-start-end-radius: calc(var(--gog-input-radius) - var(--gog-input-field-border-width));
+  border-block-end: var(--gog-input-field-border-width) var(--gog-input-field-border-style)
+    var(--gog-input-field-border);
+}
+
+.gog-input__spin-btn--down {
+  border-end-end-radius: calc(var(--gog-input-radius) - var(--gog-input-field-border-width));
+}
+
+.gog-input__spin-btn gog-icon {
+  font-size: calc(
+    var(--gog-input-font, var(--gog-input-size-font-size, var(--gog-field-md-font-size))) * 0.7
+  );
+}
+
+.gog-input__spin-btn:hover:not(:disabled) {
+  color: var(--gog-input-icon-hover-color);
+  background-color: var(--gog-input-spin-hover-bg);
+}
+
+.gog-input__spin-btn:focus-visible {
+  outline: var(--gog-input-icon-focus-ring-width) solid var(--gog-input-icon-hover-color);
+  outline-offset: calc(-1 * var(--gog-input-icon-focus-ring-width));
+}
+
+.gog-input__spin-btn:disabled {
+  opacity: var(--gog-input-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/*
  * Float label — see lib/styles/_float-label.scss for the mechanism. This field is the only
  * one whose left and right insets are separate tokens (`--gog-input-pl` / `--gog-input-pr`,
  * which shift to make room for a leading/trailing icon), so its `max-width` subtracts the two

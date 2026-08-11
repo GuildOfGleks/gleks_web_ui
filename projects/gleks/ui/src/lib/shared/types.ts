@@ -88,3 +88,6 @@ export type GogDateSelectionMode = 'single' | 'range';
 
 /** Clock convention for `gog-datepicker`'s time section. */
 export type GogHourFormat = '12' | '24';
+
+/** Matches the native CSS `resize` value space, applied to `gog-textarea`'s field. */
+export type GogTextareaResize = 'vertical' | 'horizontal' | 'both' | 'none';

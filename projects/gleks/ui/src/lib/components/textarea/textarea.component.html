@@ -9,7 +9,12 @@
   @if (label() && resolvedFloatLabel() === 'none') {
     <label class="gog-input__label" [attr.for]="inputId() || null">{{ label() }}</label>
   }
-  <div class="gog-input__field-container">
+  <div
+    class="gog-input__field-container"
+    [class.gog-input__field-container--resizable]="resolvedResize() !== 'none' && !isDisabled()"
+    [style.--gog-textarea-resize-inset-right.px]="resizeInsetRight()"
+    [style.--gog-textarea-resize-inset-bottom.px]="resizeInsetBottom()"
+  >
     @if (label() && isFloatLabelActive()) {
       <label class="gog-input__label gog-input__label--float" [attr.for]="inputId() || null">{{
         label()
@@ -19,6 +24,10 @@
       #field
       class="gog-input__field gog-textarea__field"
       [class.gog-input__field--error]="hasError()"
+      [class.gog-textarea__field--resize-vertical]="resolvedResize() === 'vertical'"
+      [class.gog-textarea__field--resize-horizontal]="resolvedResize() === 'horizontal'"
+      [class.gog-textarea__field--resize-both]="resolvedResize() === 'both'"
+      [class.gog-textarea__field--resize-none]="resolvedResize() === 'none'"
       [attr.id]="inputId() || null"
       [attr.name]="name() || null"
       [placeholder]="effectivePlaceholder()"

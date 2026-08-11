@@ -2,7 +2,7 @@
   class="gog-input-wrapper gog-contained-layout"
   [class]="sizeClass()"
   [class.gog-input-wrapper--icon-start]="hasIconStart()"
-  [class.gog-input-wrapper--icon-end]="hasIconEnd()"
+  [class.gog-input-wrapper--icon-end]="hasIconEnd() || hasSpinButtons()"
   [class.gog-input-wrapper--float-in]="resolvedFloatLabel() === 'in'"
   [class.gog-input-wrapper--float-on]="resolvedFloatLabel() === 'on'"
   [class.gog-input-wrapper--float-over]="resolvedFloatLabel() === 'over'"
@@ -40,6 +40,7 @@
     <input
       class="gog-input__field"
       [class.gog-input__field--error]="hasError()"
+      [class.gog-input__field--spin-hidden]="isNumberField()"
       [attr.id]="inputId() || null"
       [type]="effectiveType()"
       [attr.name]="name() || null"
@@ -60,7 +61,32 @@
       A password field's built-in show/hide toggle owns the end slot: it is the only control
       that reveals the value, so a projected addon must not be able to displace it.
     -->
-    @if (showClear() && !isPasswordField()) {
+    @if (hasSpinButtons()) {
+      <span class="gog-input__spin">
+        <button
+          type="button"
+          class="gog-input__spin-btn gog-input__spin-btn--up"
+          tabindex="-1"
+          [attr.aria-label]="incrementLabel()"
+          [disabled]="isDisabled() || isAtMax()"
+          (mousedown)="$event.preventDefault()"
+          (click)="stepValue(1)"
+        >
+          <gog-icon name="chevron-up" />
+        </button>
+        <button
+          type="button"
+          class="gog-input__spin-btn gog-input__spin-btn--down"
+          tabindex="-1"
+          [attr.aria-label]="decrementLabel()"
+          [disabled]="isDisabled() || isAtMin()"
+          (mousedown)="$event.preventDefault()"
+          (click)="stepValue(-1)"
+        >
+          <gog-icon name="chevron-down" />
+        </button>
+      </span>
+    } @else if (showClear() && !isPasswordField()) {
       <button
         type="button"
         class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action gog-input__clear"

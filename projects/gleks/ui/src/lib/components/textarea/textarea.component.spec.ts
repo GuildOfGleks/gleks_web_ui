@@ -65,6 +65,164 @@ describe('TextareaComponent', () => {
     });
   });
 
+  describe('resize', () => {
+    function textarea(): HTMLTextAreaElement {
+      return fixture.nativeElement.querySelector('textarea');
+    }
+
+    function container(): HTMLElement {
+      return fixture.nativeElement.querySelector('.gog-input__field-container');
+    }
+
+    it('defaults to vertical, matching a plain <textarea>', () => {
+      fixture.detectChanges();
+
+      expect(textarea().classList.contains('gog-textarea__field--resize-vertical')).toBe(true);
+      expect(container().classList.contains('gog-input__field-container--resizable')).toBe(true);
+    });
+
+    it('applies the class matching each explicit value', async () => {
+      for (const value of ['horizontal', 'both', 'none'] as const) {
+        fixture.componentRef.setInput('resize', value);
+        await fixture.whenStable();
+
+        expect(textarea().classList.contains(`gog-textarea__field--resize-${value}`)).toBe(true);
+      }
+    });
+
+    it('drops the resizable-container class once resize is none', async () => {
+      fixture.componentRef.setInput('resize', 'none');
+      await fixture.whenStable();
+
+      expect(container().classList.contains('gog-input__field-container--resizable')).toBe(false);
+    });
+
+    it('drops the resizable-container class while disabled, even with resize still on', async () => {
+      fixture.componentRef.setInput('disabled', true);
+      await fixture.whenStable();
+
+      expect(container().classList.contains('gog-input__field-container--resizable')).toBe(false);
+    });
+
+    it('falls back to GOG_CONFIG.textarea.resize when the instance input is unset', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [TextareaComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { textarea: { resize: 'none' } } }],
+      }).compileComponents();
+
+      const configFixture = TestBed.createComponent(TextareaComponent);
+      await configFixture.whenStable();
+
+      const configTextarea = configFixture.nativeElement.querySelector('textarea');
+      expect(configTextarea.classList.contains('gog-textarea__field--resize-none')).toBe(true);
+    });
+
+    it('lets an explicit instance input win over GOG_CONFIG.textarea.resize', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [TextareaComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { textarea: { resize: 'none' } } }],
+      }).compileComponents();
+
+      const configFixture = TestBed.createComponent(TextareaComponent);
+      configFixture.componentRef.setInput('resize', 'both');
+      await configFixture.whenStable();
+
+      const configTextarea = configFixture.nativeElement.querySelector('textarea');
+      expect(configTextarea.classList.contains('gog-textarea__field--resize-both')).toBe(true);
+    });
+  });
+
+  describe('resize grip tracking (ResizeObserver)', () => {
+    // jsdom has no ResizeObserver at all, so the component's own is stubbed for this block —
+    // observe() just records what it was asked to watch, and the test drives the callback by
+    // hand to simulate the field having been dragged narrower/shorter than its container (a
+    // real drag can't be simulated in jsdom; this exercises the same code path directly).
+    class MockResizeObserver {
+      static instances: MockResizeObserver[] = [];
+      readonly observed: Element[] = [];
+
+      constructor(readonly callback: ResizeObserverCallback) {
+        MockResizeObserver.instances.push(this);
+      }
+
+      observe(el: Element): void {
+        this.observed.push(el);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-empty-function -- unused by the component
+      unobserve(): void {}
+      // eslint-disable-next-line @typescript-eslint/no-empty-function -- unused by the component
+      disconnect(): void {}
+    }
+
+    let originalResizeObserver: typeof ResizeObserver | undefined;
+
+    beforeEach(() => {
+      MockResizeObserver.instances = [];
+      originalResizeObserver = globalThis.ResizeObserver;
+      globalThis.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
+    });
+
+    afterEach(() => {
+      globalThis.ResizeObserver = originalResizeObserver as typeof ResizeObserver;
+    });
+
+    function mockSize(
+      el: HTMLElement,
+      metrics: Partial<{
+        clientWidth: number;
+        clientHeight: number;
+        offsetWidth: number;
+        offsetHeight: number;
+      }>,
+    ): void {
+      for (const [key, value] of Object.entries(metrics)) {
+        Object.defineProperty(el, key, { value, configurable: true });
+      }
+    }
+
+    it('keeps the resize grip glued to the field once it measures narrower/shorter than its container', async () => {
+      const freshFixture = TestBed.createComponent(TextareaComponent);
+      await freshFixture.whenStable();
+      freshFixture.detectChanges();
+
+      const field = freshFixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+      const container = field.parentElement as HTMLElement;
+      const observer = MockResizeObserver.instances.find((o) => o.observed.includes(field));
+      expect(observer).toBeTruthy();
+
+      mockSize(container, { clientWidth: 400, clientHeight: 100 });
+      mockSize(field, { offsetWidth: 300, offsetHeight: 80 });
+      observer!.callback([], observer as unknown as ResizeObserver);
+      freshFixture.detectChanges();
+
+      expect(freshFixture.componentInstance['resizeInsetRight']()).toBe(100);
+      expect(freshFixture.componentInstance['resizeInsetBottom']()).toBe(20);
+      expect(container.style.getPropertyValue('--gog-textarea-resize-inset-right')).toBe('100px');
+      expect(container.style.getPropertyValue('--gog-textarea-resize-inset-bottom')).toBe('20px');
+    });
+
+    it('never reports a negative inset if the field briefly measures larger than its container', async () => {
+      const freshFixture = TestBed.createComponent(TextareaComponent);
+      await freshFixture.whenStable();
+      freshFixture.detectChanges();
+
+      const field = freshFixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+      const container = field.parentElement as HTMLElement;
+      const observer = MockResizeObserver.instances.find((o) => o.observed.includes(field));
+
+      mockSize(container, { clientWidth: 300, clientHeight: 100 });
+      mockSize(field, { offsetWidth: 320, offsetHeight: 110 });
+      observer!.callback([], observer as unknown as ResizeObserver);
+      freshFixture.detectChanges();
+
+      expect(freshFixture.componentInstance['resizeInsetRight']()).toBe(0);
+      expect(freshFixture.componentInstance['resizeInsetBottom']()).toBe(0);
+    });
+  });
+
   describe('errorMessage', () => {
     it('shows the error as soon as errorMessage is non-empty', () => {
       fixture.componentRef.setInput('errorMessage', 'Notes are required');

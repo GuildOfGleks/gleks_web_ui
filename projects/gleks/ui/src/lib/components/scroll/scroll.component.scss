@@ -28,11 +28,13 @@
 
   --gog-scroll-track-width: var(--gog-scroll-normal-track-width);
   --gog-scroll-thumb-min-size: var(--gog-scroll-normal-thumb-min-size);
+  --gog-scroll-thumb-hit-padding: var(--gog-scroll-normal-thumb-hit-padding);
 }
 
 .gog-scroll--thin {
   --gog-scroll-track-width: var(--gog-scroll-thin-track-width);
   --gog-scroll-thumb-min-size: var(--gog-scroll-thin-thumb-min-size);
+  --gog-scroll-thumb-hit-padding: var(--gog-scroll-thin-thumb-hit-padding);
 }
 
 .gog-scroll__viewport {
@@ -110,6 +112,20 @@
   cursor: pointer;
   touch-action: none;
   transition: background-color var(--gog-scroll-fade-duration) var(--gog-easing);
+
+  /*
+   * Enlarges the draggable/clickable region without touching the thumb's own visible box: an
+   * invisible `::before` extends past every edge by `--gog-scroll-thumb-hit-padding`. At the
+   * `thin` track width (6px) the visible thumb alone is well under a comfortable pointer
+   * target, so a near-miss click lands on the track instead — which pages the view rather
+   * than grabbing the thumb. `onThumbPointerDown` reads `event.currentTarget`, not the exact
+   * hit point, so a click anywhere in this extended box still resolves to the thumb.
+   */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--gog-scroll-thumb-hit-padding));
+  }
 }
 
 /* top/height and left/width are set inline from JS as percentages of the track — the

@@ -23,6 +23,16 @@ import { IconComponent, type GogIconName } from '../icon/icon.component';
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
 const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
+const DEFAULT_SHOW_SPIN_BUTTONS = true;
+/** Native `stepUp()`/`stepDown()` default when `step` is left unset. */
+const DEFAULT_STEP = 1;
+
+/** Rounds to `step`'s own decimal precision, so e.g. repeated `0.1` steps don't drift to
+ * `0.30000000000000004`. */
+function roundToStep(value: number, step: number): number {
+  const decimals = (String(step).split('.')[1] ?? '').length;
+  return decimals === 0 ? Math.round(value) : Number(value.toFixed(decimals));
+}
 
 /**
  * Arbitrary markup in the field's leading slot — an icon, a button, a prefix label:
@@ -82,6 +92,20 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly max = input<number | null>(null);
   /** Only applied when `type="number"`. */
   readonly step = input<number | null>(null);
+  /**
+   * Whether a `type="number"` field shows the library's own increment/decrement buttons in
+   * place of the browser's native (and inconsistently-styled across platforms) spin glyphs.
+   * The native glyphs are always hidden on a number field regardless of this — off just means
+   * no stepper UI at all, not a fallback to the native one. Arrow-key stepping on the focused
+   * field keeps working either way; that's native `<input type="number">` behaviour, unrelated
+   * to which glyphs are visible. Unset, falls back to `GOG_CONFIG.inputfield.showSpinButtons`,
+   * then to `true`.
+   */
+  readonly showSpinButtons = input<boolean | undefined>(undefined);
+  /** aria-label for the number field's increment button. */
+  readonly incrementLabel = input('Increment');
+  /** aria-label for the number field's decrement button. */
+  readonly decrementLabel = input('Decrement');
   readonly errorMessage = input('');
   /**
    * See `GogErrorDisplay`. Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to
@@ -183,9 +207,32 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     this.resolvedSize() === 'md' ? '' : `gog-input-wrapper--${this.resolvedSize()}`,
   );
 
+  protected readonly resolvedShowSpinButtons = computed(() =>
+    resolveConfigured(
+      this.showSpinButtons(),
+      this.globalConfig.inputfield?.showSpinButtons,
+      DEFAULT_SHOW_SPIN_BUTTONS,
+    ),
+  );
+
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
   protected readonly isPasswordField = computed(() => this.type() === 'password');
   protected readonly isNumberField = computed(() => this.type() === 'number');
+  protected readonly hasSpinButtons = computed(
+    () => this.isNumberField() && this.resolvedShowSpinButtons(),
+  );
+  /** Current field value as a number, or `null` while empty. */
+  private readonly numericValue = computed(() => (this.value() === '' ? null : Number(this.value())));
+  protected readonly isAtMin = computed(() => {
+    const min = this.min();
+    const current = this.numericValue();
+    return min !== null && current !== null && current <= min;
+  });
+  protected readonly isAtMax = computed(() => {
+    const max = this.max();
+    const current = this.numericValue();
+    return max !== null && current !== null && current >= max;
+  });
   protected readonly effectiveType = computed(() =>
     this.isPasswordField() && this.passwordVisible() ? 'text' : this.type(),
   );
@@ -311,6 +358,23 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     }
 
     this._onChange(input.value);
+  }
+
+  /** Increments (`direction: 1`) or decrements (`direction: -1`) by `step`, clamped to min/max. */
+  protected stepValue(direction: 1 | -1): void {
+    if (this.isDisabled()) return;
+
+    const step = this.step() ?? DEFAULT_STEP;
+    const current = this.numericValue() ?? this.min() ?? 0;
+    let next = roundToStep(current + direction * step, step);
+
+    const min = this.min();
+    const max = this.max();
+    if (min !== null) next = Math.max(next, min);
+    if (max !== null) next = Math.min(next, max);
+
+    this.value.set(String(next));
+    this._onChange(next);
   }
 
   /** Clears the field and notifies any attached form, then returns focus to the input. */

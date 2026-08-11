@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
+  afterNextRender,
   afterRenderEffect,
   computed,
   DoCheck,
@@ -17,12 +19,14 @@ import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
 import { GogClearableState } from '../../shared/clearable-state';
 import { GogFloatLabelState } from '../../shared/float-label-state';
-import { GogFloatLabelVariant, GogSize } from '../../shared/types';
+import { GogFloatLabelVariant, GogSize, GogTextareaResize } from '../../shared/types';
 import { IconComponent } from '../icon/icon.component';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
 const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
+/** Matches the native `<textarea>`'s own out-of-the-box behaviour. */
+const DEFAULT_RESIZE: GogTextareaResize = 'vertical';
 
 @Component({
   selector: 'gog-textarea',
@@ -55,6 +59,14 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
   /** Native `rows` attribute, controlling the field's initial height. */
   readonly rows = input(4);
   /**
+   * Which direction(s) the field's own drag handle resizes it in — matches the native CSS
+   * `resize` value space (`'vertical'`, `'horizontal'`, `'both'`, `'none'`). Unset, falls back
+   * to `GOG_CONFIG.textarea.resize`, then to `'vertical'`, matching a plain `<textarea>`. The
+   * handle itself is restyled to be more visible than the browser's default glyph; `'none'`
+   * removes it entirely.
+   */
+  readonly resize = input<GogTextareaResize | undefined>(undefined);
+  /**
    * Full width of the container by default, matching every other field-style control.
    * Set to `false` to shrink the field to fit its content instead.
    */
@@ -76,10 +88,14 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
 
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly globalConfig = inject(GOG_CONFIG);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly cvaDisabled = signal(false);
   /** Instance input → `GOG_CONFIG` → the component's own default. See `resolveConfigured`. */
   protected readonly resolvedSize = computed(() =>
     resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),
+  );
+  protected readonly resolvedResize = computed(() =>
+    resolveConfigured(this.resize(), this.globalConfig.textarea?.resize, DEFAULT_RESIZE),
   );
   private readonly resolvedErrorDisplay = computed(() =>
     resolveConfigured(
@@ -106,6 +122,15 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
    * isn't scrolling, which shifts the resting layout of every textarea.
    */
   protected readonly scrollbarWidth = signal(0);
+  /**
+   * How far the field's own right/bottom edge currently sits from its container's — 0 unless
+   * the user has dragged the resize handle to make the field narrower/shorter than its
+   * container. The resize grip is anchored to the container (a `<textarea>` can't reliably
+   * host `::after`), so without this it stays put at the container's original corner instead
+   * of following the field's own as it's resized.
+   */
+  protected readonly resizeInsetRight = signal(0);
+  protected readonly resizeInsetBottom = signal(0);
 
   /**
    * The single size modifier, replacing one `[class.gog-input-wrapper--<size>]` binding per size.
@@ -155,6 +180,26 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
       // touch the value so this re-runs as the content changes
       this.value();
       this.scrollbarWidth.set(el.offsetWidth - el.clientWidth);
+    });
+
+    // Tracks manual drags of the resize handle — see `resizeInsetRight`/`resizeInsetBottom`.
+    // A plain `afterRenderEffect` can't see this: dragging the handle doesn't touch any
+    // Angular-owned state, so nothing would ever re-run it; a `ResizeObserver` is the only
+    // thing that actually notices the field's own box changing size.
+    afterNextRender(() => {
+      const el = this.fieldRef().nativeElement;
+      const container = el.parentElement as HTMLElement;
+      // Not implemented by jsdom (so: absent in unit tests) and by very old browsers, which
+      // then simply keep the field glued to the container's own corner, as before this input.
+      if (typeof ResizeObserver === 'undefined') return;
+
+      const measure = () => {
+        this.resizeInsetRight.set(Math.max(0, container.clientWidth - el.offsetWidth));
+        this.resizeInsetBottom.set(Math.max(0, container.clientHeight - el.offsetHeight));
+      };
+      const observer = new ResizeObserver(measure);
+      observer.observe(el);
+      this.destroyRef.onDestroy(() => observer.disconnect());
     });
 
     // Registering through NgControl instead of NG_VALUE_ACCESSOR keeps `this.ngControl`
