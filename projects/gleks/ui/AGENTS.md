@@ -1,0 +1,1034 @@
+# @guildofgleks/ui — AI agent guide
+
+This file is for an AI coding agent (Claude, Copilot, Cursor, etc.) helping a developer build
+an app that **consumes** the published `@guildofgleks/ui` npm package. It is not about
+authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
+`.github/instructions/*.md` instead.
+
+Everything below reflects the library's actual source as of `21.3.0`. Treat this file as more
+current than the package `README.md`, which lags behind (e.g. it undercounts components) — the
+`README.md`'s **Setup** and **Theming** sections are still accurate and are summarized, not
+repeated, below.
+
+## Quick facts
+
+- Angular **v21+** only (`peerDependencies` require `^21.2.0` for `@angular/core`,
+  `@angular/common`, `@angular/forms`). No support for older Angular.
+- No Angular CDK, no Material. Only runtime dependency is `tslib`.
+- Every component is **standalone**, `ChangeDetectionStrategy.OnPush`, and built with signals —
+  `input()` / `output()` / `model()`, never `@Input()`/`@Output()` decorators, never `ngClass`/
+  `ngStyle`.
+- **Reactive Forms only.** Every form control implements `ControlValueAccessor` and is built
+  and tested against `[formControl]` / `formControlName`. The library never imports
+  `FormsModule` and `[(ngModel)]` is untested — don't suggest it.
+- Theming is 100% CSS custom properties (`--gog-*`) — no Sass config, no JS theme objects, no
+  build step to restyle anything.
+- Tree-shakeable: `"sideEffects": false` and every component is a separate standalone import, so
+  importing `ButtonComponent` alone does not pull in the rest of the library.
+- SSR-safe: anything touching `window`/`document` is guarded with `isPlatformBrowser`/
+  `afterNextRender`.
+
+## Install & setup
+
+```bash
+npm install @guildofgleks/ui
+```
+
+Add the baseline stylesheet once — it carries every token the components read plus their
+utility classes, so without it components render unstyled:
+
+```jsonc
+// angular.json → projects.<app>.architect.build.options
+"styles": [
+  "node_modules/@guildofgleks/ui/styles/index.css",
+  "src/styles.scss", // your own styles, after the baseline so they win
+],
+```
+
+Import components where you use them — every one is standalone:
+
+```ts
+import { Component } from '@angular/core';
+import { ButtonComponent, SelectComponent } from '@guildofgleks/ui';
+
+@Component({
+  selector: 'app-example',
+  imports: [ButtonComponent, SelectComponent],
+  template: `
+    <gog-select label="Region" [options]="regions" [(value)]="region" />
+    <gog-button (gogClick)="save()">Save</gog-button>
+  `,
+})
+export class ExampleComponent {}
+```
+
+## Core conventions (read once, applies everywhere)
+
+These hold for essentially every component in the library. Knowing them means you can guess a
+new component's API correctly instead of guessing wrong and hallucinating an input that doesn't
+exist.
+
+- **Selector prefix `gog-`** for components (`gog-button`, `gog-select`, …), attribute selectors
+  for directives (`gogTooltip`, `[gogBadge]`).
+- **Outputs are prefixed `gog`** so they never collide with native DOM events —
+  `gogClick`, `gogToggle`, `gogSearch`, `gogTabChange`, `gogRemove`, `gogScroll`, `gogLoadMore`,
+  `gogDateSelect`. **Inputs keep their natural name** (`variant`, `size`, `disabled`).
+- **Two-way binding via `model()`.** Wherever a component holds a value the consumer drives, it's
+  a `model()` input — bind with `[(value)]="signal"` / `[(checked)]="signal"` /
+  `[(open)]="signal"` etc., or split into `[value]` + `(valueChange)`.
+- **Every input has a zero-config default.** Nothing requires configuration to render something
+  reasonable.
+- **`size` is `GogSize = 'xsm' | 'sm' | 'md' | 'lg' | 'slg'`**, shared by every sized component.
+  Default is `'md'` almost everywhere — exceptions: `gog-accordion` and `gog-table` default to
+  `'lg'` (their `size` means row/section density, not form-control size), `gog-paginator`
+  defaults to `'sm'`.
+- **`variant` is `GogVariant = 'primary' | 'secondary' | 'outline' | 'ghost'`** on `gog-button`.
+  Status-colored components (`gog-tag`, `gog-badge`) use a different, four-value
+  `GogTagVariant = 'success' | 'danger' | 'warning' | 'info'` instead — don't confuse the two.
+- **`errorDisplay: GogErrorDisplay = 'auto' | 'manual'`** (default `'manual'`) on every control
+  that shows a validation message (inputfield, textarea, select, multiselect, autocomplete,
+  radio-group, slider, datepicker). `'manual'`: the field shows `errorMessage` whenever it's
+  non-empty — you own the timing (`errorMessage="control.invalid && control.touched ? 'Required' : ''"`).
+  `'auto'`: shown once the attached `[formControl]`/`formControlName` is touched _and_ invalid —
+  you only supply the message text. `'auto'` silently behaves like `'manual'` if there's no real
+  form control attached.
+- **`floatLabel: GogFloatLabelVariant = 'none' | 'in' | 'on' | 'over'`** (default `'none'`) on
+  the six field controls: inputfield, textarea, select, multiselect, autocomplete, datepicker.
+  `'in'` floats up but stays inside the border, `'on'` floats to sit centered on the top border
+  line, `'over'` floats fully above the field. Pair with `floatLabelShowPlaceholder` (default
+  `false`) to reveal the field's own `placeholder` once the label has floated clear.
+- **`clearable`** (default varies) on inputfield, textarea, select, multiselect, autocomplete,
+  datepicker — shows a clear (×) button once the field has content. Off by default everywhere
+  except `gog-multiselect`, which had one before the input existed.
+- **Generic option accessors, not a fixed DTO.** Any collection-driven control (`gog-select`,
+  `gog-multiselect`, `gog-autocomplete`, `gog-button-toggle-group`) takes **your own object
+  shape** through `optionLabel` / `optionValue` / `optionDisabled` — each is a property path
+  (`'name'`, dot-paths like `'profile.title'` work) **or** a function
+  `(option: T) => TResult`. Defaults are `'name'` / `'id'` / `'disabled'`. Set
+  `[optionValue]="null"` to emit **the option object itself** instead of a plucked id — the
+  control then round-trips your own object with no lookup table needed:
+  ```html
+  <gog-select [options]="members" [optionLabel]="nameOf" [optionValue]="null" [(value)]="member" />
+  ```
+- **Global defaults via `GOG_CONFIG` / `provideGogConfig(...)`** — see its own section below.
+  Precedence is always: the instance's own input (if set) → `GOG_CONFIG` → the component's
+  built-in default.
+- **Don't bind both a `model()` and a form directive on the same instance.** Every CVA control
+  (checkbox, toggle, radio-group, inputfield, textarea, select, multiselect, autocomplete,
+  slider, datepicker) exposes its value as both a two-way `model()` (`[(checked)]`, `[(value)]`)
+  and, separately, `ControlValueAccessor` for `[formControl]`/`formControlName`. Pick one per
+  instance — wiring both gives the value two competing sources of truth.
+- **The custom-content slot pattern.** Wherever a component needs custom markup for a specific
+  part of itself, it's an attribute directive read with `contentChild()`, given a **typed**
+  context via `let-` variables — never a plain `TemplateRef` input, never a string-keyed lookup.
+  Recognize the shape:
+  ```html
+  <gog-accordion [items]="items">
+    <ng-template gogAccordionHeader let-item let-open="open">{{ item.title }}</ng-template>
+  </gog-accordion>
+  ```
+  See the per-component tables below for which slot directives exist on which component.
+- **Legacy `TemplateRef` inputs and string-keyed lookups still exist on a few components and
+  still work, but are `@deprecated` — do not use them in new code.** See
+  [Deprecated patterns — do not use in new code](#deprecated-patterns--do-not-use-in-new-code).
+- **Accessibility is built in**, not optional: keyboard navigation (roving tabindex, arrow keys,
+  Home/End), ARIA roles/states, `:focus-visible` styling, `prefers-reduced-motion` handling, and
+  WCAG AA contrast are already implemented — you don't need to add any of this yourself, just
+  supply `ariaLabel`/`label` inputs where a component has no visible text of its own (icon-only
+  buttons, `gog-progressbar`, `gog-scroll`).
+- **`aria-label` on the host tag does nothing.** Several components (`gog-button` chief among
+  them) render their real interactive element (a `<button>`) _inside_ the component's own host
+  tag. An `aria-label` attribute placed directly on `<gog-button>` in a template lands on the
+  custom element wrapper, not on the inner `<button>`, so assistive tech never sees it — always
+  use the component's own `ariaLabel` input instead.
+
+## Theming
+
+Full model is in `README.md`'s Theming section and `theming.md`; short version:
+
+- Every visual value (color, spacing, radius, shadow, duration) is a `--gog-*` CSS custom
+  property, layered **foundation** (`--gog-accent-color`, `--gog-space-md`, …, restyles
+  everything) → **component** (`--gog-btn-primary-bg`, …, one block per component) →
+  **instance** (`--gog-btn-bg`, …, deliberately undeclared escape hatch for one element).
+- Theme switch is a `data-theme` attribute, usually on `<html>`, toggled through the
+  `ThemeService` (`inject(ThemeService).setTheme('dark')` / `.toggleTheme()` / `.theme` signal).
+  Ships `light` and `dark`. Three more importable presets: `slate`, `one-dark`, `one-light`
+  (`@guildofgleks/ui/styles/presets/<name>.css`).
+- Restyle one instance without touching a theme: `<gog-button style="--gog-btn-bg: #ff4edb">`.
+- Build a custom theme by declaring a palette against a new `data-theme` value (see
+  `theming.md` for the full worked example) — component tokens re-derive automatically, you
+  don't restate them.
+
+## Global configuration — `GOG_CONFIG` / `provideGogConfig(...)`
+
+For the handful of inputs an app typically wants to set once (a size for every form control, a
+locale for every datepicker) rather than repeat on every instance:
+
+```ts
+import { provideGogConfig } from '@guildofgleks/ui';
+
+bootstrapApplication(App, {
+  providers: [
+    provideGogConfig({
+      control: { size: 'sm', errorDisplay: 'auto', clearable: true },
+      dropdown: { appendToBody: true, filter: true },
+      datepicker: { locale: 'de-DE', firstDayOfWeek: 1, format: 'dd.MM.yyyy' },
+      toast: { position: 'top-right', duration: 4000 },
+    }),
+  ],
+});
+```
+
+Precedence, always: **instance input → `GOG_CONFIG` → component's built-in default.** A nested
+`provideGogConfig(...)` (in a route's or component's own `providers`) **layers onto the
+parent's config**, one level deep per key — it does not replace it.
+
+| Key            | Fields                                                             | Applies to                                                                                                                                                                                                                                                                                                                                                                                                   |
+| -------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `control`      | `size`, `errorDisplay`, `clearable`                                | `size`: button, inputfield, textarea, select, multiselect, checkbox, radio-group, button-toggle-group, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, radio-group, slider, datepicker. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip/toggle. |
+| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`            | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text).                                                                                                                                                                                                                       |
+| `floatLabel`   | `variant`, `showPlaceholder`                                       | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                         |
+| `datepicker`   | `locale`, `firstDayOfWeek`, `format`                               | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                            |
+| `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                       | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                          |
+| `tooltip`      | `position`, `showDelay`, `hideDelay`                               | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                  |
+| `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack` | `gog-scroll` (and every component that uses one internally).                                                                                                                                                                                                                                                                                                                                                 |
+| `button`       | `debounce`                                                         | `gog-button`.                                                                                                                                                                                                                                                                                                                                                                                                |
+| `inputfield`   | `showSpinButtons`                                                  | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                            |
+| `textarea`     | `resize`                                                           | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `toast`        | `position`, `duration`                                             | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                              |
+
+Anything visual does **not** belong here — override the `--gog-*` token instead.
+
+## Services
+
+### `ThemeService`
+
+```ts
+private readonly theme = inject(ThemeService);
+this.theme.theme();          // Signal<string> — current data-theme, defaults to 'light'
+this.theme.setTheme('dark'); // any theme name, including a custom one you declared in CSS
+this.theme.toggleTheme();    // flips light ⇄ dark specifically
+```
+
+### `ToastService`
+
+Root-provided singleton. Requires a `<gog-toast-container />` placed once in your app (see
+[gog-toast](#gog-toast--gog-toast-container) below — it is **not** wired up automatically).
+
+```ts
+private readonly toast = inject(ToastService);
+
+this.toast.success('Saved');
+this.toast.error('Could not save', {
+  isSticky: true,
+  actions: [{ label: 'Retry', onClick: () => this.save() }],
+});
+// also: .warning(msg, config?), .info(msg, config?), .show(config), .dismiss(id), .dismissAll()
+```
+
+`ToastConfig`: `{ message, type?, iconName?, iconTemplate?, actions?, dedupeKey?, isSticky?, duration?, position? }`.
+Repeated calls with the same (explicit or inferred) `dedupeKey` replace the existing toast in
+place instead of stacking a duplicate.
+
+### `DialogService`
+
+Root-provided singleton, imperative dynamic-component dialogs. Requires a `<gog-dialog />`
+placed once in your app (see [gog-dialog](#gog-dialog) below — also **not** automatic).
+
+```ts
+private readonly dialogService = inject(DialogService);
+
+async confirmDelete(): Promise<void> {
+  const handle = this.dialogService.open<boolean>({
+    component: ConfirmationDialogComponent, // or your own component
+    title: 'Delete this item?',
+    role: 'alertdialog',
+    data: { message: 'This cannot be undone.' },
+  });
+  const confirmed = await handle.afterClosed; // boolean | undefined
+}
+```
+
+`DialogConfig`: `{ title?, component, data?, modal? (default true), closable?, draggable?, closeIconName?, closeIconTemplate?, width?, maxWidth?, role? ('dialog' default | 'alertdialog'), zIndex? }`.
+`open()` returns `{ close(result?), afterClosed: Promise<TResult | undefined> }`. Also:
+`closeAll(result?)`, `updatePosition(id, offsetX, offsetY)` (for `draggable` dialogs).
+
+The library ships a ready-made `ConfirmationDialogComponent` for yes/no prompts — pass it as
+`component` with `data: { title, description, confirmText, cancelText }`; it resolves the
+dialog's result to `true`/`false`.
+
+**Wiring a custom component into a dialog** — it reads its data via `DIALOG_DATA` and closes
+itself via `DIALOG_REF`:
+
+```ts
+import { Component, inject } from '@angular/core';
+import { DIALOG_DATA, DIALOG_REF } from '@guildofgleks/ui';
+
+@Component({ selector: 'app-edit-dialog', template: `…` })
+export class EditDialogComponent {
+  protected readonly data = inject<{ userId: string }>(DIALOG_DATA);
+  private readonly ref = inject(DIALOG_REF);
+
+  save(): void {
+    this.ref.close({ saved: true });
+  }
+}
+```
+
+---
+
+## Component reference
+
+Every component below is exported from `@guildofgleks/ui`'s root — `import { X } from '@guildofgleks/ui'`.
+"CVA" = implements `ControlValueAccessor` (works with `[formControl]`/`formControlName`).
+
+### Buttons & choices
+
+#### `gog-button`
+
+| Input       | Type                              | Default     | Notes                                                 |
+| ----------- | --------------------------------- | ----------- | ----------------------------------------------------- |
+| `variant`   | `GogVariant`                      | `'primary'` |                                                       |
+| `size`      | `GogSize \| undefined`            | `'md'`      | via `GOG_CONFIG.control.size`                         |
+| `disabled`  | `boolean`                         | `false`     |                                                       |
+| `fullWidth` | `boolean`                         | `false`     |                                                       |
+| `type`      | `'button' \| 'submit' \| 'reset'` | `'button'`  |                                                       |
+| `loading`   | `boolean`                         | `false`     | shows an inline `gog-spinner`, blocks clicks          |
+| `debounce`  | `number \| undefined`             | `300`       | ms; via `GOG_CONFIG.button.debounce` — see note below |
+| `ariaLabel` | `string \| null`                  | `null`      | **use this, not a raw `aria-label` attribute**        |
+
+Outputs: `gogClick: MouseEvent`.
+
+**`debounce` is a spam guard, not a delay before the first click.** The first click in a window
+fires immediately (leading edge); further clicks within `debounce` ms are silently dropped.
+
+```html
+<gog-button variant="primary" [loading]="saving()" (gogClick)="save()">Save</gog-button>
+<gog-button variant="ghost" ariaLabel="Close" (gogClick)="close()"
+  ><gog-icon name="close"
+/></gog-button>
+```
+
+#### `gog-button-toggle-group`
+
+A row of buttons, single- or multi-select, built from your own option objects.
+
+| Input                                | Type                                       | Default                | Notes                                 |
+| ------------------------------------ | ------------------------------------------ | ---------------------- | ------------------------------------- |
+| `options`                            | `TOption[]`                                | `[]`                   |                                       |
+| `optionLabel`                        | accessor                                   | `'name'`               |                                       |
+| `optionValue`                        | accessor \| `null`                         | `'id'`                 | `null` emits the option object        |
+| `optionDisabled`                     | accessor                                   | `'disabled'`           |                                       |
+| `optionIcon`                         | accessor → `GogIconName \| null` \| `null` | `null`                 | optional leading icon per option      |
+| `multiple`                           | `boolean`                                  | `false`                | changes ARIA role entirely — see note |
+| `appearance`                         | `'joined' \| 'separated'`                  | `'joined'`             |                                       |
+| `orientation`                        | `GogOrientation`                           | `'horizontal'`         |                                       |
+| `size`                               | `GogSize \| undefined`                     | `'md'`                 | via `GOG_CONFIG.control.size`         |
+| `disabled`, `fullWidth`, `ariaLabel` |                                            | `false`, `false`, `''` |                                       |
+
+Model: `value: TValue | TValue[] | null` (single value, or array in `multiple` mode). CVA: yes.
+Slot: `<ng-template gogButtonToggleOption let-opt let-selected="selected">` for custom button
+markup. **Single mode is a radio group** (`role="radiogroup"`, arrows move _and_ select);
+**multiple mode is a toolbar of independent toggles** (`role="group"`, arrows only move, Space
+toggles) — this is a real ARIA distinction, not cosmetic.
+
+```html
+<gog-button-toggle-group [options]="alignments" [(value)]="align" />
+<gog-button-toggle-group [options]="tools" [multiple]="true" [(value)]="activeTools" />
+```
+
+### Form fields
+
+#### `gog-inputfield`
+
+| Input                                     | Type                                                    | Default                             | Notes                                                                          |
+| ----------------------------------------- | ------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------ |
+| `label`, `placeholder`                    | `string`                                                | `''`                                |                                                                                |
+| `type`                                    | `'text' \| 'password' \| 'email' \| 'number' \| 'date'` | `'text'`                            |                                                                                |
+| `min`, `max`, `step`                      | `number \| null`                                        | `null`                              | `type="number"` only                                                           |
+| `showSpinButtons`                         | `boolean \| undefined`                                  | `true`                              | own +/- glyphs on `type="number"`; via `GOG_CONFIG.inputfield.showSpinButtons` |
+| `errorMessage`, `errorDisplay`            |                                                         | `''`, `'manual'`                    | see conventions                                                                |
+| `disabled`, `size`, `fullWidth`           |                                                         | `false`, `'md'`, `true`             |                                                                                |
+| `iconStart` / `iconEnd`                   | `GogIconName \| ''`                                     | `''`                                | bare leading/trailing icon                                                     |
+| `clearable`, `clearAriaLabel`             |                                                         | `false`, `'Clear'`                  |                                                                                |
+| `floatLabel`, `floatLabelShowPlaceholder` |                                                         | `'none'`, `false`                   |                                                                                |
+| `showPasswordLabel` / `hidePasswordLabel` | `string`                                                | `'Show password'`/`'Hide password'` | `type="password"` reveal toggle aria-labels                                    |
+
+Model: `value: string` (always a string, even for `type="number"` — the _form control_ value is
+`number | null`, but the `[(value)]` model mirrors the raw text). CVA: yes.
+
+Slots: project `<span gogInputAddonStart>`/`<span gogInputAddonEnd>` (or a `<button>`) for
+custom leading/trailing markup — a normal DOM element with its own `aria-label`, click handler
+and disabled state, not a component-managed slot. This is the **current, non-deprecated**
+replacement for the old icon-template/icon-fn/icon-label input quartet — see
+[Deprecated patterns](#deprecated-patterns--do-not-use-in-new-code).
+
+```html
+<gog-inputfield
+  label="Email"
+  type="email"
+  formControlName="email"
+  errorDisplay="auto"
+  errorMessage="Enter a valid email"
+  [clearable]="true"
+/>
+
+<gog-inputfield label="Amount" [fullWidth]="false">
+  <span gogInputAddonStart>€</span>
+</gog-inputfield>
+```
+
+#### `gog-textarea`
+
+| Input                                                                    | Type                                                                          | Default                                        |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | ---------------------------------------------- |
+| `label`, `placeholder`                                                   | `string`                                                                      | `''`                                           |
+| `rows`                                                                   | `number`                                                                      | `4`                                            |
+| `resize`                                                                 | `GogTextareaResize \| undefined` (`'vertical'\|'horizontal'\|'both'\|'none'`) | `'vertical'`; via `GOG_CONFIG.textarea.resize` |
+| `errorMessage`, `errorDisplay`, `disabled`, `size`, `fullWidth`          |                                                                               | same shape as inputfield                       |
+| `clearable`, `clearAriaLabel`, `floatLabel`, `floatLabelShowPlaceholder` |                                                                               | same shape as inputfield                       |
+
+Model: `value: string`. CVA: yes.
+
+```html
+<gog-textarea label="Notes" formControlName="notes" [rows]="6" resize="vertical" />
+```
+
+#### `gog-select`
+
+Extends the shared listbox behaviour (`GogDropdownBase`) that also backs `gog-multiselect` and
+partly `gog-autocomplete` — placement, the append-to-body overlay, click-outside, keyboard nav,
+and CVA all come from there. Full shared input surface (documented once, applies to both select
+and multiselect unless noted otherwise):
+
+| Input                                                  | Type                                    | Default                                                      | Notes                                                                               |
+| ------------------------------------------------------ | --------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `label`, `ariaLabel`, `placeholder`                    | `string`                                | `''`, `''`, `'Select...'`                                    |                                                                                     |
+| `options`                                              | `TOption[]`                             | `[]`                                                         | your own objects                                                                    |
+| `optionLabel`                                          | accessor                                | `'name'`                                                     | path or fn                                                                          |
+| `optionValue`                                          | accessor \| `null`                      | `'id'`                                                       | `null` = emit the option object                                                     |
+| `optionDisabled`                                       | accessor                                | `'disabled'`                                                 |                                                                                     |
+| `clearable`, `clearAriaLabel`                          |                                         | `false` (select) / `true` (multiselect), `'Clear selection'` |                                                                                     |
+| `minWidth`                                             | `string \| null`                        | `null`                                                       | only with `[fullWidth]="false"`                                                     |
+| `filter`                                               | `boolean \| undefined`                  | `false`                                                      | search box in the panel; via `GOG_CONFIG.dropdown.filter`                           |
+| `filterPlaceholder`, `filterEmptyMessage`              | `string`                                | `'Search...'`, `'No matches'`                                |                                                                                     |
+| `filterPosition`                                       | `'top' \| 'bottom' \| undefined`        | `'top'`                                                      | via `GOG_CONFIG.dropdown.filterPosition`                                            |
+| `filterMatch`                                          | `((option, query) => boolean) \| null`  | `null`                                                       | custom matcher, else case-insensitive substring on the resolved label               |
+| `errorMessage`, `errorDisplay`                         |                                         | `''`, `'manual'`                                             |                                                                                     |
+| `size`                                                 | `GogSize \| undefined`                  | `'md'`                                                       |                                                                                     |
+| `dropdownDirection`                                    | `'auto' \| 'up' \| 'down' \| undefined` | `'auto'`                                                     |                                                                                     |
+| `dropdownZIndex`, `dropdownWidth`, `dropdownMaxHeight` |                                         | `null`                                                       | only meaningful with `appendToBody`                                                 |
+| `appendToBody`                                         | `boolean \| undefined`                  | `false`                                                      | renders the panel into `<body>` — needed inside a scroll/overflow-clipped container |
+| `disabled`, `fullWidth`                                |                                         | `false`, `true`                                              |                                                                                     |
+| `floatLabel`, `floatLabelShowPlaceholder`              |                                         | `'none'`, `false`                                            |                                                                                     |
+| `inputId` (select/autocomplete only)                   | `string`                                | `''`                                                         |                                                                                     |
+
+`gog-select`-specific: `value: model<TValue>(null)`.
+`gog-multiselect`-specific additions: `value: model<TValue[]>([])`, `showControls: boolean` (default `false`, a select-all/clear row), `controlsPosition: 'top'|'bottom'` (default `'top'`).
+
+CVA: yes, both. Slots (shared): `<ng-template gogDropdownChevron>` (custom chevron markup),
+`<ng-template gogDropdownOption let-opt let-selected="selected" let-label="label">` (custom
+option row). Multiselect adds `<ng-template gogMultiselectClearIcon>`.
+
+```html
+<gog-select
+  label="Region"
+  [options]="regions"
+  optionLabel="title"
+  [(value)]="regionId"
+  [filter]="true"
+/>
+
+<gog-multiselect
+  label="Tags"
+  [options]="tags"
+  [(value)]="selectedTagIds"
+  [showControls]="true"
+  formControlName="tags"
+  errorDisplay="auto"
+/>
+```
+
+#### `gog-autocomplete`
+
+Shares `GogDropdownBase` too, but the trigger is a real `<input>` (combobox pattern,
+`aria-activedescendant`), not a listbox button — so it does **not** reuse the base's built-in
+panel-filter box; it filters/searches off what's typed in the field itself.
+
+| Input                                                                                                  | Type                   | Default        | Notes                                                                                                                                    |
+| ------------------------------------------------------------------------------------------------------ | ---------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| _(all the shared `GogDropdownBase` inputs above except `filter`/`filterPlaceholder`/`filterPosition`)_ |                        |                |                                                                                                                                          |
+| `filterLocal`                                                                                          | `boolean`              | `true`         | narrow `options` client-side as you type; turn **off** when `gogSearch` already returns a filtered server list (avoids double-filtering) |
+| `minLength`                                                                                            | `number \| undefined`  | `1`            | via `GOG_CONFIG.autocomplete.minLength`                                                                                                  |
+| `openOnFocus`                                                                                          | `boolean \| undefined` | `true`         | via `GOG_CONFIG.autocomplete.openOnFocus`                                                                                                |
+| `searchDebounce`                                                                                       | `number \| undefined`  | `300`          | ms before `gogSearch` fires; via `GOG_CONFIG.autocomplete.searchDebounce`                                                                |
+| `loading`                                                                                              | `boolean`              | `false`        | shows a spinner in the trailing slot                                                                                                     |
+| `emptyMessage`                                                                                         | `string`               | `'No matches'` |                                                                                                                                          |
+| `forceSelection`                                                                                       | `boolean`              | `true`         | see note below                                                                                                                           |
+
+Outputs: `gogSearch: string` (debounced query — wire your server lookup here),
+`gogLoadMore: void` (panel scrolled to the end — fetch the next page).
+
+Model: `value: TValue | null`. CVA: yes.
+
+**`forceSelection` matters.** On (default): the field always ends up reflecting a real
+selection — free-typed text that matches nothing snaps back on blur/Escape. Off: what the user
+typed is itself meaningful (a create-as-you-type flow) — read the typed text from `gogSearch`,
+not from `value`, since `value` clears the moment the text stops matching the selection.
+
+```html
+<gog-autocomplete
+  [options]="users"
+  optionLabel="profile.fullName"
+  [optionValue]="null"
+  [(value)]="user"
+  [loading]="searching()"
+  (gogSearch)="search($event)"
+/>
+```
+
+#### `gog-checkbox`
+
+| Input                                    | Type                   | Default |
+| ---------------------------------------- | ---------------------- | ------- |
+| `label`, `ariaLabel`                     | `string`               | `''`    |
+| `size`                                   | `GogSize \| undefined` | `'md'`  |
+| `indeterminate`, `disabled`, `fullWidth` | `boolean`              | `false` |
+
+Model: `checked: boolean`. CVA: yes. Slot: `<ng-template gogCheckboxIcon>` for a custom tick
+icon (replaces the deprecated `checkIconTemplate` input).
+
+```html
+<gog-checkbox label="I agree to the terms" formControlName="agree" />
+```
+
+#### `gog-toggle`
+
+An on/off switch (`role="switch"`) — semantically different from a checkbox ("is this setting
+on", not "is this one of the things you selected").
+
+| Input                   | Type                   | Default |
+| ----------------------- | ---------------------- | ------- |
+| `label`, `ariaLabel`    | `string`               | `''`    |
+| `size`                  | `GogSize \| undefined` | `'md'`  |
+| `disabled`, `fullWidth` | `boolean`              | `false` |
+| `labelPosition`         | `'start' \| 'end'`     | `'end'` |
+| `onLabel`, `offLabel`   | `string`               | `''`    | text rendered inside the track itself |
+
+Model: `checked: boolean`. CVA: yes.
+
+```html
+<gog-toggle label="Notifications" formControlName="notificationsOn" onLabel="ON" offLabel="OFF" />
+```
+
+#### `gog-radio-group`
+
+| Input                          | Type                                            | Default          |
+| ------------------------------ | ----------------------------------------------- | ---------------- |
+| `options`                      | `GogRadioOption[]` (`{ id, label, disabled? }`) | `[]`             |
+| `label`, `ariaLabel`, `name`   | `string`                                        | `''`             |
+| `size`                         | `GogSize \| undefined`                          | `'md'`           |
+| `disabled`, `fullWidth`        | `boolean`                                       | `false`          |
+| `orientation`                  | `GogOrientation`                                | `'vertical'`     |
+| `errorMessage`, `errorDisplay` |                                                 | `''`, `'manual'` |
+
+Model: `value: string | number | null`. CVA: yes. Fixed `{ id, label, disabled? }` shape (not
+a generic accessor, unlike select/multiselect/button-toggle).
+
+```html
+<gog-radio-group
+  [options]="[{id:'m',label:'Male'},{id:'f',label:'Female'}]"
+  formControlName="gender"
+/>
+```
+
+#### `gog-slider`
+
+| Input                          | Type                   | Default                                        |
+| ------------------------------ | ---------------------- | ---------------------------------------------- |
+| `label`, `ariaLabel`           | `string`               | `''`                                           |
+| `min`, `max`, `step`           | `number`               | `0`, `100`, `1`                                |
+| `showValue`, `showThumb`       | `boolean`              | `true`                                         |
+| `errorMessage`, `errorDisplay` |                        | `''`, `'manual'`                               |
+| `disabled`                     | `boolean`              | `false`                                        |
+| `fullWidth`                    | `boolean`              | `true` (ignored when `orientation="vertical"`) |
+| `orientation`                  | `GogSliderOrientation` | `'horizontal'`                                 |
+
+Model: `value: number`. CVA: yes. Backed by a real `<input type="range">` (rotated via
+`writing-mode` for vertical), so dragging/touch/keyboard all come from the platform.
+
+```html
+<gog-slider label="Volume" [min]="0" [max]="100" formControlName="volume" />
+```
+
+#### `gog-datepicker` / `gog-calendar`
+
+`gog-datepicker` is a field + panel; `gog-calendar` is the month grid alone (what `inline` mode
+renders). Native `Date` only — no date library, no adapter.
+
+| Input                                                 | Type                                         | Default                       | Notes                                                                        |
+| ----------------------------------------------------- | -------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------- |
+| `inputId`, `label`, `ariaLabel`, `placeholder`        | `string`                                     | `''`                          |                                                                              |
+| `selectionMode`                                       | `GogDateSelectionMode` (`'single'\|'range'`) | `'single'`                    |                                                                              |
+| `min`, `max`                                          | `Date \| null`                               | `null`                        |                                                                              |
+| `disabledDates`                                       | `((date: Date) => boolean) \| null`          | `null`                        | predicate, not a list                                                        |
+| `defaultMonth`                                        | `Date \| null`                               | `null`                        | which month opens when nothing is selected                                   |
+| `numberOfMonths`                                      | `number`                                     | `1`                           | `2` is what makes a range picker usable                                      |
+| `showTime`, `hourFormat`, `minuteStep`, `showSeconds` |                                              | `false`, `'24'`, `1`, `false` |                                                                              |
+| `showTodayButton`                                     | `boolean`                                    | `true`                        | **selects** today                                                            |
+| `showThisMonthButton`                                 | `boolean`                                    | `false`                       | only moves the _view_, leaves selection alone                                |
+| `format`                                              | `string \| null`                             | `null`                        | display/parse pattern (`'dd.MM.yyyy'`); derived from `showTime` when unset   |
+| `locale`                                              | `string \| undefined`                        | `'en-US'`                     | via `GOG_CONFIG.datepicker.locale`                                           |
+| `firstDayOfWeek`                                      | `number \| undefined`                        | locale's own                  | via `GOG_CONFIG.datepicker.firstDayOfWeek`                                   |
+| `allowTextInput`                                      | `boolean`                                    | `true`                        | typed text parsed against `format`; unparseable drafts don't clear the value |
+| `inline`                                              | `boolean`                                    | `false`                       | renders the calendar with no field/panel                                     |
+| `disabled`, `fullWidth`                               |                                              | `false`, `true`               |                                                                              |
+| `clearable`, `clearAriaLabel`                         |                                              | `false`, `'Clear date'`       |                                                                              |
+| `errorMessage`, `errorDisplay`, `size`                |                                              | `''`, `'manual'`, `'md'`      |                                                                              |
+| `floatLabel`, `floatLabelShowPlaceholder`             |                                              | `'none'`, `false`             |                                                                              |
+| `appendToBody`, `dropdownDirection`, `dropdownZIndex` |                                              | `false`, `'auto'`, `null`     |                                                                              |
+
+Model: `value: Date | GogDateRange | null` (`GogDateRange = { start: Date | null; end: Date | null }`).
+CVA: yes.
+
+`gog-calendar` (usable standalone) takes most of the same date/range/time inputs directly, plus
+`gogDateSelect: output<GogDatepickerValue>()` fired only on a _complete_ selection.
+
+Also exported for direct reuse: `formatDate(date, pattern)`, `parseDate(text, pattern)`, and a
+family of date-math helpers (`addDays`, `addMonths`, `isSameDay`, `isWithinBounds`, …) from
+`date-utils`.
+
+```html
+<gog-datepicker label="Birth date" [(value)]="birthDate" [max]="today" />
+<gog-datepicker selectionMode="range" [(value)]="stayRange" [numberOfMonths]="2" />
+```
+
+### Display, feedback & status
+
+#### `gog-icon`
+
+| Input        | Type                  | Default                                            |
+| ------------ | --------------------- | -------------------------------------------------- |
+| `name`       | `GogIconName`         | `'close'`                                          |
+| `template`   | `TemplateRef \| null` | `null` — custom markup instead of the built-in SVG |
+| `title`      | `string`              | `''`                                               |
+| `ariaHidden` | `boolean`             | `true`                                             |
+
+`GogIconName` is a **closed set of exactly 20 names**: `check`, `close`, `chevron-up`,
+`chevron-down`, `chevron-left`, `chevron-right`, `calendar`, `clock`, `sort`, `sort-up`,
+`sort-down`, `success`, `error`, `warning`, `info`, `checkbox`, `checkbox-checked`, `eye`,
+`eye-off`, `copy`. There is no way to pass an arbitrary SVG/URL as `name` — use the `template`
+input (or project your own `<svg>`/icon component elsewhere) for anything outside this set.
+
+```html
+<gog-icon name="calendar" />
+```
+
+#### `[gogBadge]` — directive, not a component
+
+Decorates an existing element (a button, an icon, an avatar) with a count/status dot — it never
+wraps its host.
+
+| Input            | Type                                                                        | Default                          |
+| ---------------- | --------------------------------------------------------------------------- | -------------------------------- |
+| `gogBadge`       | `string \| number \| null`                                                  | `null` — the content             |
+| `badgePosition`  | `GogBadgePosition` (`'top-end'\|'top-start'\|'bottom-end'\|'bottom-start'`) | `'top-end'`                      |
+| `badgeVariant`   | `GogTagVariant`                                                             | `'danger'`                       |
+| `badgeDot`       | `boolean`                                                                   | `false` — bare dot, no text      |
+| `badgeMax`       | `number`                                                                    | `99` — beyond this, renders `N+` |
+| `badgeHidden`    | `boolean`                                                                   | `false`                          |
+| `badgeAriaLabel` | `string`                                                                    | `''`                             |
+
+Renders **nothing** when the value is `0`, `null` or empty and `badgeDot` is off — "0" badges
+are impossible by design.
+
+```html
+<gog-button gogBadge="12" badgeAriaLabel="12 unread">Inbox</gog-button>
+<gog-icon name="info" gogBadge badgeDot />
+```
+
+#### `gog-chip`
+
+| Input                          | Type                                | Default               |
+| ------------------------------ | ----------------------------------- | --------------------- |
+| `size`                         | `GogSize`                           | `'md'`                |
+| `shape`                        | `GogTagShape` (`'rounded'\|'pill'`) | `'rounded'`           |
+| `disabled`, `clickable`        | `boolean`                           | `false`, `true`       |
+| `removable`                    | `boolean`                           | `false`               |
+| `fullWidth`                    | `boolean`                           | `false`               |
+| `ariaLabel`, `removeAriaLabel` | `string`                            | `''`, `'Remove chip'` |
+| `avatarUrl`, `avatarAlt`       | `string \| null` / `string`         | `null`, `''`          |
+| `iconName`                     | `GogIconName \| null`               | `null`                |
+
+Outputs: `gogClick: MouseEvent | KeyboardEvent`, `gogRemove: void`.
+
+```html
+<gog-chip [avatarUrl]="user.photo" [removable]="true" (gogRemove)="removeUser(user)"
+  >{{ user.name }}</gog-chip
+>
+```
+
+#### `gog-tag`
+
+| Input       | Type                  | Default     |
+| ----------- | --------------------- | ----------- |
+| `variant`   | `GogTagVariant`       | `'info'`    |
+| `size`      | `GogSize`             | `'md'`      |
+| `shape`     | `GogTagShape`         | `'rounded'` |
+| `iconName`  | `GogIconName \| null` | `null`      |
+| `fullWidth` | `boolean`             | `false`     |
+
+Slot: `<ng-template gogTagIcon>` for custom icon markup (replaces the deprecated `iconTemplate`).
+
+```html
+<gog-tag variant="success">Active</gog-tag>
+```
+
+#### `gog-spinner` / `gog-spinner-overlay`
+
+| Input                            | Type                                              | Default                                     |
+| -------------------------------- | ------------------------------------------------- | ------------------------------------------- |
+| `size`                           | `GogSize`                                         | `'md'`                                      |
+| `variant`                        | `GogSpinnerVariant` (`'runic'\|'ring'\|'custom'`) | `'runic'`                                   |
+| `ariaLabel`                      | `string`                                          | `'Loading'`                                 |
+| `overlay` (spinner only)         | `boolean`                                         | `false`                                     |
+| `loading` (spinner-overlay only) | `boolean`                                         | `false` — toggles the overlay + `aria-busy` |
+
+`variant="custom"` renders your own projected markup, still inheriting the size wrapper and
+`--gog-spinner-color` theming.
+
+```html
+<gog-spinner-overlay [loading]="isLoading()">
+  <app-content-that-loads />
+</gog-spinner-overlay>
+```
+
+#### `gog-skeleton`
+
+| Input             | Type                                               | Default                                              |
+| ----------------- | -------------------------------------------------- | ---------------------------------------------------- |
+| `shape`           | `GogSkeletonShape` (`'text'\|'circle'\|'rect'`)    | `'text'`                                             |
+| `size`            | `GogSize`                                          | `'md'`                                               |
+| `animation`       | `GogSkeletonAnimation` (`'pulse'\|'wave'\|'none'`) | `'pulse'`                                            |
+| `width`, `height` | `string \| null`                                   | `null`                                               |
+| `lines`           | `number`                                           | `1` — `shape="text"` only, last line renders shorter |
+| `rounded`         | `boolean`                                          | `true`                                               |
+| `ariaLabel`       | `string \| null`                                   | `null` — decorative (no `role`) unless set           |
+
+```html
+<gog-skeleton shape="text" [lines]="3" /> <gog-skeleton shape="circle" width="48px" />
+```
+
+#### `gog-progressbar`
+
+| Input             | Type                                                                         | Default         |
+| ----------------- | ---------------------------------------------------------------------------- | --------------- |
+| `value`, `buffer` | `number` (0–100, clamped)                                                    | `0`             |
+| `mode`            | `GogProgressbarMode` (`'determinate'\|'indeterminate'\|'buffer'`)            | `'determinate'` |
+| `variant`         | `GogProgressbarVariant` (`'accent'\|'success'\|'danger'\|'warning'\|'info'`) | `'accent'`      |
+| `size`            | `GogSize`                                                                    | `'md'`          |
+| `showValue`       | `boolean`                                                                    | `false`         |
+| `ariaLabel`       | `string`                                                                     | `''`            |
+
+```html
+<gog-progressbar mode="indeterminate" ariaLabel="Loading" />
+<gog-progressbar mode="buffer" [value]="42" [buffer]="70" />
+```
+
+#### `gog-divider`
+
+| Input         | Type                                                | Default        |
+| ------------- | --------------------------------------------------- | -------------- |
+| `orientation` | `GogOrientation`                                    | `'horizontal'` |
+| `variant`     | `GogDividerVariant` (`'solid'\|'dashed'\|'dotted'`) | `'solid'`      |
+| `inset`       | `boolean`                                           | `false`        |
+
+Label is projected content, not an input — put an icon or a `gog-tag` inside it if needed.
+
+```html
+<gog-divider>OR</gog-divider>
+```
+
+#### `gogTooltip` — directive, not a component
+
+Drop on any element — a `gog-*` component's host tag or a plain native one.
+
+| Input                 | Type                                                              | Default                                                            |
+| --------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `gogTooltip`          | `string \| TemplateRef \| null`                                   | `null` — content                                                   |
+| `gogTooltipPosition`  | `GogTooltipPosition` (`'auto'\|'top'\|'bottom'\|'left'\|'right'`) | `'auto'`; via `GOG_CONFIG.tooltip.position`                        |
+| `gogTooltipShowDelay` | `number \| undefined`                                             | `300`; via `GOG_CONFIG.tooltip.showDelay`                          |
+| `gogTooltipHideDelay` | `number \| undefined`                                             | `100`; via `GOG_CONFIG.tooltip.hideDelay`                          |
+| `gogTooltipDisabled`  | `boolean`                                                         | `false`                                                            |
+| `gogTooltipClass`     | `string`                                                          | `''` — class on the bubble itself, since it's portaled to `<body>` |
+
+```html
+<button gogTooltip="Save changes">💾</button> <gog-chip [gogTooltip]="hintTemplate">Beta</gog-chip>
+```
+
+### Layout & navigation
+
+#### `gog-accordion`
+
+| Input                             | Type                                                                      | Default                                                     |
+| --------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `items`                           | `GogAccordionItem[]` (`{ id, title, disabled?, [key: string]: unknown }`) | `[]`                                                        |
+| `size`                            | `GogSize`                                                                 | `'lg'` (not `'md'` — see conventions)                       |
+| `expandFirst`, `multi`, `loading` | `boolean`                                                                 | `false`                                                     |
+| `skeletonCount`                   | `number`                                                                  | `3` — rows shown while `loading` and `items` is still empty |
+| `showChevron`                     | `boolean`                                                                 | `true`                                                      |
+| `headingLevel`                    | `2\|3\|4\|5\|6 \| undefined`                                              | `undefined` — wraps headers in `role="heading"` when set    |
+
+Model: `openIds: ReadonlySet<string | number>`. Output: `gogToggle: { item, open }`.
+
+Slots: `<ng-template gogAccordionHeader let-item let-open="open">`,
+`<ng-template gogAccordionContent let-item>`, `<ng-template gogAccordionChevron let-item let-open="open">`.
+This is the library's canonical example of the slot pattern — copy its shape for anything similar.
+
+```html
+<gog-accordion [items]="faqItems" [multi]="true">
+  <ng-template gogAccordionContent let-item>{{ item.answer }}</ng-template>
+</gog-accordion>
+```
+
+#### `gog-collapsible` + `gogCollapsibleTrigger` / `gogCollapsibleContent`
+
+**Headless primitive** — owns no markup at all, just open/close state plus two attribute
+directives you place on your own elements. Use this when `gog-accordion`'s opinionated markup
+doesn't fit (e.g. a sidebar nav group).
+
+| Input (on `gog-collapsible`) | Type      | Default                                                    |
+| ---------------------------- | --------- | ---------------------------------------------------------- |
+| `disabled`                   | `boolean` | `false`                                                    |
+| `collapseOnFocusOut`         | `boolean` | `false` — close once focus leaves both trigger and content |
+
+Model: `open: boolean`.
+
+```html
+<gog-collapsible [(open)]="isOpen">
+  <button gogCollapsibleTrigger>Advanced options</button>
+  <div gogCollapsibleContent>
+    <!-- any markup -->
+  </div>
+</gog-collapsible>
+```
+
+#### `gog-tabs` + `gog-tab`
+
+| Input (on `gog-tabs`)    | Type                                                   | Default                                              |
+| ------------------------ | ------------------------------------------------------ | ---------------------------------------------------- |
+| `align`                  | `GogTabsAlign` (`'start'\|'center'\|'end'\|'stretch'`) | `'start'`                                            |
+| `orientation`            | `GogOrientation`                                       | `'horizontal'`                                       |
+| `size`                   | `GogSize`                                              | `'md'`                                               |
+| `fullWidth`, `ariaLabel` |                                                        | `false`, `''`                                        |
+| `scrollActiveIntoView`   | `boolean`                                              | `true`                                               |
+| `showScrollTrack`        | `boolean \| undefined`                                 | follows `scrollActiveIntoView` (hidden when it's on) |
+
+Model: `activeIndex: number`. Output: `gogTabChange: number`.
+
+| Input (on `gog-tab`) | Type                  | Default |
+| -------------------- | --------------------- | ------- |
+| `label`              | `string`              | `''`    |
+| `iconName`           | `GogIconName \| null` | `null`  |
+| `disabled`           | `boolean`             | `false` |
+
+Slots: `<ng-template gogTabHeader let-tab let-active="active">` on `gog-tabs` for custom header
+markup; `<ng-template gogTabContent>` **inside** a `gog-tab` to make that tab's content **lazy**
+(built on first activation, then kept alive) instead of the default (rendered immediately,
+hidden via `[hidden]` while inactive — preserves scroll/input state).
+
+```html
+<gog-tabs [(activeIndex)]="tabIndex">
+  <gog-tab label="Profile"><app-profile /></gog-tab>
+  <gog-tab label="Report" iconName="info">
+    <ng-template gogTabContent><app-expensive-report /></ng-template>
+  </gog-tab>
+</gog-tabs>
+```
+
+#### `gog-paginator`
+
+| Input                           | Type                                             | Default                        |
+| ------------------------------- | ------------------------------------------------ | ------------------------------ |
+| `fullWidth`, `totalPages`       | `boolean`, `number`                              | `true`, `1`                    |
+| `rangeMode`                     | `GogPaginatorRangeMode` (`'window'\|'ellipsis'`) | `'window'` — see note          |
+| `visiblePages`                  | `number`                                         | `5` — `'window'` mode only     |
+| `showFirstPage`, `showLastPage` | `boolean`                                        | `false` — `'window'` mode only |
+| `siblingCount`                  | `number`                                         | `2` — `'ellipsis'` mode only   |
+| `size`                          | `GogSize`                                        | `'sm'`                         |
+| `disabled`, `ariaLabel`         |                                                  | `false`, `'Pagination'`        |
+
+Model: `page: number` (1-based, self-clamps to `totalPages`).
+
+`'window'`: a fixed number of page buttons that slides to keep the current page centered.
+`'ellipsis'`: first/last pinned, `siblingCount` around the current page, "…" fills the gap
+(what `gog-table`'s built-in pagination uses).
+
+```html
+<gog-paginator [(page)]="page" [totalPages]="totalPages" />
+```
+
+#### `gog-table<T>`
+
+| Input                         | Type                          | Default                           |
+| ----------------------------- | ----------------------------- | --------------------------------- |
+| `value`                       | `T[]`                         | `[]`                              |
+| `fullWidth`                   | `boolean`                     | `true`                            |
+| `pageSize`                    | `number`                      | `0` (no pagination)               |
+| `showRowNumbers`, `showTotal` | `boolean`                     | `true`, `false`                   |
+| `emptyPlaceholder`            | `string`                      | `'-'`                             |
+| `paginatorPosition`           | `'left'\|'center'\|'right'`   | `'center'`                        |
+| `totalPosition`               | `'left'\|'right'\|'opposite'` | `'opposite'`                      |
+| `loading`                     | `boolean`                     | `false`                           |
+| `showColumnBorders`           | `boolean`                     | `false`                           |
+| `stickyHeader`                | `boolean`                     | `false`                           |
+| `size`                        | `GogSize`                     | `'lg'` (row density — not `'md'`) |
+
+Columns are declared as **projected `gog-column` children**, not an input array:
+
+```html
+<gog-table [value]="rows">
+  <gog-column field="name" header="Name" sortable="true" />
+  <gog-column field="email" header="Email" />
+  <gog-column field="status" header="Status">
+    <ng-template gogColumnBody let-row let-value="value">
+      <gog-tag [variant]="row.active ? 'success' : 'danger'">{{ value }}</gog-tag>
+    </ng-template>
+  </gog-column>
+</gog-table>
+```
+
+`gog-column` inputs: `field` (required, dot-paths ok), `header`, `sortable` (default `false`),
+`width`/`minWidth`/`maxWidth`, `comparator` (custom `(a, b) => number`, defaults to a
+locale-aware collator for strings). Slots inside a column: `<ng-template gogColumnBody let-row let-value="value" let-index="index">`,
+`<ng-template gogColumnHeader let-header let-field="field">`.
+
+**Sorting, empty/loading states and pagination are all built in** — sortable columns toggle
+asc → desc → unsorted on click, `loading` shows a spinner in place of rows, an empty `value`
+shows `emptyPlaceholder`, and `pageSize > 0` turns on the internal paginator automatically. You
+don't need to hand-roll any of this.
+
+There is **no typed row-selection API** in the current version — if you need it, track
+selection yourself (e.g. a `Set` keyed by row id) and render a `gogColumnBody` checkbox column.
+
+#### `gog-scroll`
+
+Drop-in replacement for `overflow: auto` — content still scrolls natively (wheel, touch,
+keyboard); only the browser's own scrollbar chrome is replaced with a themeable overlay thumb.
+Used internally by several other components (`gog-dialog`'s body, `gog-select`'s panel,
+`gog-tabs`' header row) and equally usable directly in your own markup for any scrollable
+region — the library's official recommendation over a raw `overflow-x`/`overflow-y`.
+
+| Input                | Type                                                                     | Default                                                                                 |
+| -------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| `axis`               | `GogScrollAxis` (`'vertical'\|'horizontal'\|'both'`)                     | `'vertical'`                                                                            |
+| `size`               | `GogScrollSize \| undefined` (`'normal'\|'thin'`)                        | `'normal'`; via `GOG_CONFIG.scroll.size`                                                |
+| `autoHide`           | `boolean \| undefined`                                                   | `true`; via `GOG_CONFIG.scroll.autoHide`                                                |
+| `hideDelay`          | `number \| undefined`                                                    | `800`; via `GOG_CONFIG.scroll.hideDelay`                                                |
+| `reachThreshold`     | `number`                                                                 | `0`                                                                                     |
+| `focusable`          | `boolean`                                                                | `true` — turn off when the parent already owns focus (a dialog with its own focus trap) |
+| `ariaLabel`          | `string`                                                                 | `''`                                                                                    |
+| `overscrollBehavior` | `GogScrollOverscrollBehavior \| undefined` (`'auto'\|'contain'\|'none'`) | `'auto'`; via `GOG_CONFIG.scroll.overscrollBehavior`                                    |
+| `showTrack`          | `boolean \| undefined`                                                   | `true`; via `GOG_CONFIG.scroll.showTrack`                                               |
+
+Outputs: `gogScroll: GogScrollMetrics`, `gogReachStart`/`gogReachEnd: 'vertical'|'horizontal'`.
+Methods (via template ref): `scrollTo(options)`, `scrollToTop()`, `scrollToBottom()`,
+`scrollToLeft()`, `scrollToRight()`.
+
+```html
+<gog-scroll size="thin" [focusable]="false" overscrollBehavior="contain" style="max-height: 320px">
+  <!-- content that might overflow -->
+</gog-scroll>
+```
+
+### Overlays
+
+#### `gog-dialog`
+
+A **single** `<gog-dialog />` renders **every** dialog `DialogService.open(...)` creates —
+place it once, typically in your root app component's template, not per-page and not per-dialog
+call:
+
+```html
+<!-- app.html -->
+<router-outlet />
+<gog-dialog />
+```
+
+It has no inputs of its own — everything is driven through `DialogService` (see
+[Services](#services) above). Supports nesting, dragging (when `draggable !== false` and the
+dialog has a title or close button), a focus trap for modal dialogs, `Escape` to close (when
+`closable !== false`), and click-outside-to-close on the backdrop.
+
+#### `gog-toast` / `gog-toast-container`
+
+Same pattern — place **one** `<gog-toast-container />`, typically in the root component:
+
+```html
+<gog-toast-container [maxVisiblePerPosition]="5" />
+```
+
+`maxVisiblePerPosition` (default `5`) caps how many toasts stack at once per corner; the rest
+queue. Individual `gog-toast` instances are rendered internally by the container from
+`ToastService.toasts()` — you don't place these yourself. Toasts auto-dismiss after their
+`duration` unless `isSticky`; hovering pauses the countdown (front-of-stack toast only).
+
+---
+
+## Deprecated patterns — do not use in new code
+
+These still work (nothing breaks if you use them), but are marked `@deprecated` and **will be
+removed** on the stated schedule. Don't generate new code using any of them — use the listed
+replacement instead.
+
+| Deprecated                                                                                                       | Removed in | Replacement                                                                                                     |
+| ---------------------------------------------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
+| `GogSelectOption`, `GogMultiselectOption` type aliases                                                           | `21.4.0`   | `GogDropdownOption`                                                                                             |
+| `gog-select`/`gog-multiselect` `chevronTemplate` input                                                           | `21.5.0`   | `<ng-template gogDropdownChevron>`                                                                              |
+| `gog-checkbox` `checkIconTemplate` input                                                                         | `21.5.0`   | `<ng-template gogCheckboxIcon>`                                                                                 |
+| `gog-tag` `iconTemplate` input                                                                                   | `21.5.0`   | `<ng-template gogTagIcon>`                                                                                      |
+| `gog-multiselect` `clearIconTemplate` input                                                                      | `21.5.0`   | `<ng-template gogMultiselectClearIcon>`                                                                         |
+| `gog-inputfield` `iconStartTemplate`/`iconEndTemplate`/`iconStartFn`/`iconEndFn`/`iconStartLabel`/`iconEndLabel` | `21.5.0`   | `<span gogInputAddonStart>`/`<span gogInputAddonEnd>` (or a `<button>` with its own handler)                    |
+| `gog-table`'s `[template]` attribute (`<ng-template template="field" type="body">`)                              | `21.5.0`   | `<ng-template gogColumnBody>` / `<ng-template gogColumnHeader>` declared **inside** the matching `<gog-column>` |
+| `<column>` selector / `Column` export                                                                            | `21.5.0`   | `<gog-column>` / `GogColumn`                                                                                    |
+
+The general rule they all follow: a `TemplateRef` **input** or a string-keyed lookup is the old
+shape; a **projected content directive with a typed context**, declared where it's used, is the
+current one. If you're about to write `fooTemplate` next to an existing `foo` input, or key
+something off a string that has to match another string elsewhere, that's this exact
+anti-pattern — reach for a slot directive instead.
+
+## Full type reference
+
+Shared enum-like types (`import type { ... } from '@guildofgleks/ui'`):
+
+| Type                          | Values                                                                                        |
+| ----------------------------- | --------------------------------------------------------------------------------------------- |
+| `GogSize`                     | `'xsm' \| 'sm' \| 'md' \| 'lg' \| 'slg'`                                                      |
+| `GogVariant`                  | `'primary' \| 'secondary' \| 'outline' \| 'ghost'`                                            |
+| `GogTagVariant`               | `'success' \| 'danger' \| 'warning' \| 'info'`                                                |
+| `GogOrientation`              | `'horizontal' \| 'vertical'`                                                                  |
+| `GogTagShape`                 | `'rounded' \| 'pill'`                                                                         |
+| `GogSpinnerVariant`           | `'runic' \| 'ring' \| 'custom'`                                                               |
+| `GogSkeletonShape`            | `'text' \| 'circle' \| 'rect'`                                                                |
+| `GogSkeletonAnimation`        | `'pulse' \| 'wave' \| 'none'`                                                                 |
+| `GogPaginatorRangeMode`       | `'window' \| 'ellipsis'`                                                                      |
+| `GogScrollAxis`               | `'vertical' \| 'horizontal' \| 'both'`                                                        |
+| `GogScrollSize`               | `'normal' \| 'thin'`                                                                          |
+| `GogScrollOverscrollBehavior` | `'auto' \| 'contain' \| 'none'`                                                               |
+| `GogTooltipPosition`          | `'auto' \| 'top' \| 'bottom' \| 'left' \| 'right'`                                            |
+| `GogFloatLabelVariant`        | `'none' \| 'in' \| 'on' \| 'over'`                                                            |
+| `GogDropdownFilterPosition`   | `'top' \| 'bottom'`                                                                           |
+| `GogDividerVariant`           | `'solid' \| 'dashed' \| 'dotted'`                                                             |
+| `GogBadgePosition`            | `'top-end' \| 'top-start' \| 'bottom-end' \| 'bottom-start'`                                  |
+| `GogProgressbarMode`          | `'determinate' \| 'indeterminate' \| 'buffer'`                                                |
+| `GogProgressbarVariant`       | `'accent' \| 'success' \| 'danger' \| 'warning' \| 'info'`                                    |
+| `GogButtonToggleAppearance`   | `'joined' \| 'separated'`                                                                     |
+| `GogTabsAlign`                | `'start' \| 'center' \| 'end' \| 'stretch'`                                                   |
+| `GogDateSelectionMode`        | `'single' \| 'range'`                                                                         |
+| `GogHourFormat`               | `'12' \| '24'`                                                                                |
+| `GogTextareaResize`           | `'vertical' \| 'horizontal' \| 'both' \| 'none'`                                              |
+| `GogErrorDisplay`             | `'auto' \| 'manual'`                                                                          |
+| `GogDropdownDirection`        | `'auto' \| 'up' \| 'down'`                                                                    |
+| `GogTooltipSide`              | `'top' \| 'bottom' \| 'left' \| 'right'` (resolved form of `GogTooltipPosition`, no `'auto'`) |
+| `GogIconName`                 | closed set of 20 — see [`gog-icon`](#gog-icon)                                                |

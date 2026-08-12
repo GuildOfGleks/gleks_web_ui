@@ -58,6 +58,11 @@ reached 1.0, so breaking changes may land in minor versions.
   settable app-wide via `GOG_CONFIG.inputfield.showSpinButtons`.
 - **`gog-icon`: `copy`.** A new glyph for the common "copy this field's value" trailing-action
   pattern (see the inputfield showcase page for a full example built on `gogInputAddonEnd`).
+- **`AGENTS.md`.** A consumer-facing reference for AI coding agents building apps against the
+  published package — conventions, theming/`GOG_CONFIG` summary, a full per-component API table
+  (inputs, outputs, slots, CVA status), and the deprecated-pattern list, all derived from the
+  library's actual source rather than the (currently lagging) `README.md`. Shipped alongside
+  `README.md`/`LICENSE` in the npm package via `ng-package.json`'s `assets`.
 
 ### Fixed
 
