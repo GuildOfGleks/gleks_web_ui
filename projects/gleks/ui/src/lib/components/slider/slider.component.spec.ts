@@ -181,6 +181,210 @@ describe('SliderComponent', () => {
     });
   });
 
+  describe('range', () => {
+    it('renders two thumbs and two native inputs instead of one', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelectorAll('.gog-slider__thumb').length).toBe(2);
+      expect(fixture.nativeElement.querySelectorAll('input[type="range"]').length).toBe(2);
+    });
+
+    it('defaults rangeValue to { start: 0, end: 100 }', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.detectChanges();
+
+      expect(component.rangeValue()).toEqual({ start: 0, end: 100 });
+    });
+
+    it('updates start from the start input, leaving end untouched', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('min', 0);
+      fixture.componentRef.setInput('max', 100);
+      fixture.componentRef.setInput('rangeValue', { start: 10, end: 60 });
+      fixture.detectChanges();
+
+      const startInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--start',
+      ) as HTMLInputElement;
+      startInput.value = '30';
+      startInput.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      expect(component.rangeValue()).toEqual({ start: 30, end: 60 });
+    });
+
+    it('updates end from the end input, leaving start untouched', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('rangeValue', { start: 10, end: 60 });
+      fixture.detectChanges();
+
+      const endInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--end',
+      ) as HTMLInputElement;
+      endInput.value = '80';
+      endInput.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      expect(component.rangeValue()).toEqual({ start: 10, end: 80 });
+    });
+
+    it("never lets the start thumb's value exceed the end thumb's", () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('rangeValue', { start: 10, end: 60 });
+      fixture.detectChanges();
+
+      const startInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--start',
+      ) as HTMLInputElement;
+      startInput.value = '90';
+      startInput.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      expect(component.rangeValue().start).toBe(60);
+    });
+
+    it("never lets the end thumb's value drop below the start thumb's", () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('rangeValue', { start: 10, end: 60 });
+      fixture.detectChanges();
+
+      const endInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--end',
+      ) as HTMLInputElement;
+      endInput.value = '5';
+      endInput.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      expect(component.rangeValue().end).toBe(10);
+    });
+
+    it('swaps a start > end value written externally (e.g. via writeValue)', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.detectChanges();
+
+      component.writeValue({ start: 80, end: 20 });
+      fixture.detectChanges();
+
+      expect(component.rangeValue()).toEqual({ start: 20, end: 80 });
+    });
+
+    it('shows "start – end" as the displayed value', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('rangeValue', { start: 10, end: 60 });
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.gog-slider__value')?.textContent).toContain(
+        '10 – 60',
+      );
+    });
+
+    it('defaults start/end thumb aria-labels to Minimum/Maximum', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.detectChanges();
+
+      const startInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--start',
+      ) as HTMLInputElement;
+      const endInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--end',
+      ) as HTMLInputElement;
+
+      expect(startInput.getAttribute('aria-label')).toBe('Minimum');
+      expect(endInput.getAttribute('aria-label')).toBe('Maximum');
+    });
+  });
+
+  describe('range: one-sided disable', () => {
+    it('startDisabled disables only the start input, leaving end interactive', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('startDisabled', true);
+      fixture.detectChanges();
+
+      const startInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--start',
+      ) as HTMLInputElement;
+      const endInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--end',
+      ) as HTMLInputElement;
+
+      expect(startInput.disabled).toBe(true);
+      expect(endInput.disabled).toBe(false);
+    });
+
+    it('endDisabled disables only the end input, leaving start interactive', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('endDisabled', true);
+      fixture.detectChanges();
+
+      const startInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--start',
+      ) as HTMLInputElement;
+      const endInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--end',
+      ) as HTMLInputElement;
+
+      expect(startInput.disabled).toBe(false);
+      expect(endInput.disabled).toBe(true);
+    });
+
+    it('marks only the disabled thumb with gog-slider__thumb--disabled', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('startDisabled', true);
+      fixture.detectChanges();
+
+      const thumbs = fixture.nativeElement.querySelectorAll('.gog-slider__thumb');
+      expect(thumbs[0].classList.contains('gog-slider__thumb--disabled')).toBe(true);
+      expect(thumbs[1].classList.contains('gog-slider__thumb--disabled')).toBe(false);
+    });
+
+    it('does not apply the whole-control disabled class when only one side is disabled', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('startDisabled', true);
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement
+          .querySelector('.gog-slider')
+          ?.classList.contains('gog-slider--disabled'),
+      ).toBe(false);
+    });
+
+    it('applies the whole-control disabled class once both sides are disabled', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('startDisabled', true);
+      fixture.componentRef.setInput('endDisabled', true);
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement
+          .querySelector('.gog-slider')
+          ?.classList.contains('gog-slider--disabled'),
+      ).toBe(true);
+    });
+
+    it('disabled still disables both thumbs together, same as before startDisabled/endDisabled existed', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('disabled', true);
+      fixture.detectChanges();
+
+      const startInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--start',
+      ) as HTMLInputElement;
+      const endInput = fixture.nativeElement.querySelector(
+        '.gog-slider__input--end',
+      ) as HTMLInputElement;
+
+      expect(startInput.disabled).toBe(true);
+      expect(endInput.disabled).toBe(true);
+      expect(
+        fixture.nativeElement
+          .querySelector('.gog-slider')
+          ?.classList.contains('gog-slider--disabled'),
+      ).toBe(true);
+    });
+  });
+
   describe('ControlValueAccessor / Reactive Forms integration', () => {
     @Component({
       imports: [SliderComponent, ReactiveFormsModule],

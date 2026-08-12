@@ -13,6 +13,11 @@ export type GogSkeletonShape = 'text' | 'circle' | 'rect';
 export type GogSkeletonAnimation = 'pulse' | 'wave' | 'none';
 export type GogPaginatorRangeMode = 'window' | 'ellipsis';
 export type GogSliderOrientation = GogOrientation;
+/** A `gog-slider`'s value pair when `range` is on. `start` is always kept ≤ `end`. */
+export interface GogSliderRange {
+  start: number;
+  end: number;
+}
 export type GogScrollAxis = 'vertical' | 'horizontal' | 'both';
 export type GogScrollSize = 'normal' | 'thin';
 /**

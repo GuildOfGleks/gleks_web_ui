@@ -38,9 +38,16 @@
 }
 
 .gog-slider__value {
-  min-width: var(--gog-slider-value-min-width);
+  /* `--value-chars` (see slider.component.ts's `valueDisplayChars`) reserves enough room
+     for the widest string this instance's min/max/step can ever print, so the span — and
+     with it, anything whose width depends on this row's natural content size — doesn't
+     resize as the value changes. `--gog-slider-value-min-width` is still respected as a
+     floor beneath that for consumers who want a wider, uniform column across several
+     sliders regardless of their individual ranges. */
+  min-width: max(var(--gog-slider-value-min-width), calc(var(--value-chars, 0) * 1ch));
   font-family: var(--gog-slider-value-font-family);
   font-size: var(--gog-slider-value-font-size);
+  font-variant-numeric: tabular-nums;
   color: var(--gog-slider-value-color);
   text-align: right;
 }
@@ -106,6 +113,64 @@
   opacity: 0;
   cursor: pointer;
   outline: none;
+}
+
+.gog-slider__input:disabled {
+  cursor: not-allowed;
+}
+
+/*
+ * === Range (two-thumb) mode ===
+ * Both native inputs stack on the same track, each spanning the slider's global min()/max()
+ * (see slider.component.html's comment on why that range can't be narrowed per thumb).
+ * Restricting pointer events to just the (invisible) native thumb — instead of the input's
+ * full inset:0 box, as in single-value mode — is what lets each one be grabbed independently
+ * regardless of which is painted on top; without this only the topmost input would ever
+ * receive a click/drag anywhere on the track. Crossing itself is prevented in
+ * onRangeStartInput/onRangeEndInput, not here.
+ */
+.gog-slider--range .gog-slider__input {
+  pointer-events: none;
+}
+
+.gog-slider--range .gog-slider__input::-webkit-slider-thumb {
+  pointer-events: auto;
+}
+
+.gog-slider--range .gog-slider__input::-moz-range-thumb {
+  pointer-events: auto;
+}
+
+.gog-slider--range .gog-slider__fill {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  transform: none;
+}
+
+.gog-slider--range:not(.gog-slider--vertical) .gog-slider__fill {
+  left: var(--range-start-pos, 0%);
+  right: calc(100% - var(--range-end-pos, 100%));
+}
+
+.gog-slider--range .gog-slider__thumb--start {
+  left: var(--range-start-pos, 0%);
+}
+
+.gog-slider--range .gog-slider__thumb--end {
+  left: var(--range-end-pos, 100%);
+}
+
+/*
+ * One-sided disable (`startDisabled`/`endDisabled`): only this one thumb dims. Unlike
+ * `.gog-slider--disabled` on the root element, this never touches `pointer-events` — the
+ * corresponding native input's own `disabled` attribute (see slider.component.html) is what
+ * actually takes it out of interaction, so the other thumb's input is untouched and stays
+ * fully draggable/focusable.
+ */
+.gog-slider__thumb--disabled {
+  opacity: var(--gog-slider-disabled-opacity);
 }
 
 .gog-slider__range-labels {
@@ -174,6 +239,30 @@
      writing-mode: vertical-lr + direction: rtl below and most vertical-slider
      conventions (e.g. volume sliders). */
   top: calc(100% - var(--thumb-pos, 0%));
+  left: 50%;
+}
+
+.gog-slider--vertical.gog-slider--range .gog-slider__fill {
+  /* Restated here (not just inherited from the plain `.gog-slider--range .gog-slider__fill`
+     rule above) because `.gog-slider--vertical .gog-slider__fill { transform: scaleY(...) }`
+     below has the same specificity (two classes each) and comes later in the file, so it
+     would otherwise win the cascade and collapse this fill to `scaleY(var(--fill-scale, 0))`
+     — a leftover single-value transform driven by `value`/`fillPercent`, which range mode
+     never touches (it stays at its default 0), rendering the whole fill invisible. */
+  transform: none;
+  top: calc(100% - var(--range-end-pos, 100%));
+  bottom: var(--range-start-pos, 0%);
+  left: 0;
+  right: 0;
+}
+
+.gog-slider--vertical.gog-slider--range .gog-slider__thumb--start {
+  top: calc(100% - var(--range-start-pos, 0%));
+  left: 50%;
+}
+
+.gog-slider--vertical.gog-slider--range .gog-slider__thumb--end {
+  top: calc(100% - var(--range-end-pos, 100%));
   left: 50%;
 }
 

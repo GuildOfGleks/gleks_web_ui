@@ -8,6 +8,32 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`gog-slider`: `range`.** Switches the slider to two independently focusable native
+  thumbs for picking a span instead of a single value — bind `[(rangeValue)]` (a
+  `GogSliderRange` `{ start, end }` pair) instead of `[(value)]`; the two are mutually
+  exclusive, and `writeValue`/the `ControlValueAccessor` follow whichever one `range` selects.
+  Neither thumb can be dragged, keyboard-nudged, or written past the other — crossing is
+  clamped in JS rather than through the native `min`/`max` attribute, since narrowing that
+  per thumb would desync the browser's own (invisible) thumb position from the custom
+  `--range-start-pos`/`--range-end-pos`-driven visuals. Works in both orientations and with
+  `showThumb`/`fullWidth`/`disabled`/error display exactly as the single-value mode does.
+  `startAriaLabel`/`endAriaLabel` (defaulting to `'Minimum'`/`'Maximum'`, prefixed with
+  `label()` when set) name the two thumbs for assistive tech, since a single `<label for>`
+  can't target both. The value readout (`showValue`) reserves stable width up front, sized
+  from `min()`/`max()`/`step()` rather than the live value, so it — and, in a `fit-content`
+  vertical slider, the whole control along with it — doesn't visibly resize on every drag.
+- **`gog-slider`: `startDisabled`/`endDisabled`.** Disable just one thumb in `range` mode —
+  e.g. pin a range's floor while leaving its ceiling adjustable, or vice versa — instead of
+  `disabled`, which still takes out both together. ORed with `disabled` rather than
+  overriding it, and ignored outside `range` mode (nothing to disable "one side" of there). A
+  one-sided disable only dims and disables that one thumb (its native input's own `disabled`
+  attribute takes it out of the tab order); the whole-control `.gog-slider--disabled` styling
+  (dimming + `pointer-events: none` over the whole track) only kicks in once *both* sides are
+  disabled, since applying it for just one would also block pointer input to the other,
+  still-enabled thumb. Reactive forms are unaffected by this addition: a `[formControl]`'s own
+  `.disable()`/`.enable()` still speaks for both thumbs at once, same as before — one
+  `FormControl` backs one `rangeValue` and has no way to target just one side of it.
+
 - **`gog-autocomplete`: `openOnFocus`.** Focusing the field now opens the panel immediately with
   the full option list, ignoring `minLength` — the common "browse everything, then narrow it
   down" pattern a plain type-ahead can't offer. On by default; turn it off (or set
