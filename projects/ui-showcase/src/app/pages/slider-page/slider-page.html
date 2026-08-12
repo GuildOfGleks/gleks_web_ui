@@ -88,6 +88,63 @@
   </article>
 
   <article class="card">
+    <h3>Range</h3>
+    <p class="lead">
+      <code>range</code> switches to two thumbs for picking a span instead of a single value — use
+      <code>[(rangeValue)]</code> (a <code>{{ '{ start, end }' }}</code> pair) instead of
+      <code>[(value)]</code>. Each thumb is a real, independently focusable
+      <code>&lt;input type="range"&gt;</code>, and neither can be dragged past the other.
+    </p>
+    <div class="field-grid">
+      <gog-slider
+        label="Price"
+        [range]="true"
+        [min]="0"
+        [max]="200"
+        [step]="5"
+        [(rangeValue)]="priceRange"
+      />
+      <gog-slider
+        label="Vertical range"
+        [range]="true"
+        orientation="vertical"
+        [min]="0"
+        [max]="100"
+        [(rangeValue)]="verticalRange"
+      />
+    </div>
+    <p class="meta">Price range is {{ priceRange().start }} – {{ priceRange().end }}.</p>
+  </article>
+
+  <article class="card">
+    <h3>Range — one-sided disable</h3>
+    <p class="lead">
+      <code>startDisabled</code>/<code>endDisabled</code> pin just one thumb while leaving the other
+      draggable — unlike <code>disabled</code>, which still turns off both together (that one's
+      unchanged; a single <code>[formControl]</code>'s own disable state still speaks for the whole
+      range, since one FormControl can't target just one thumb).
+    </p>
+    <div class="field-grid">
+      <gog-slider
+        label="Floor pinned"
+        [range]="true"
+        [startDisabled]="true"
+        [min]="0"
+        [max]="100"
+        [(rangeValue)]="floorPinnedRange"
+      />
+      <gog-slider
+        label="Ceiling pinned"
+        [range]="true"
+        [endDisabled]="true"
+        [min]="0"
+        [max]="100"
+        [(rangeValue)]="ceilingPinnedRange"
+      />
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Full width</h3>
     <p class="lead">
       Full width of its container by default (see every slider above). A slider's track has no

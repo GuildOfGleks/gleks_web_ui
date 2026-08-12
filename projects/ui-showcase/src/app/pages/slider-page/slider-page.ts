@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonComponent, SliderComponent } from '@guildofgleks/ui';
+import { ButtonComponent, SliderComponent, type GogSliderRange } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-slider-page',
@@ -19,6 +19,10 @@ export class SliderPage {
   protected readonly compactValue = signal(40);
   protected readonly orientationHorizontalValue = signal(30);
   protected readonly orientationVerticalValue = signal(65);
+  protected readonly priceRange = signal<GogSliderRange>({ start: 20, end: 80 });
+  protected readonly verticalRange = signal<GogSliderRange>({ start: 30, end: 70 });
+  protected readonly floorPinnedRange = signal<GogSliderRange>({ start: 20, end: 80 });
+  protected readonly ceilingPinnedRange = signal<GogSliderRange>({ start: 20, end: 80 });
 
   protected readonly summary = computed(
     () =>
