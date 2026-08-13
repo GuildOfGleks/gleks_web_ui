@@ -1,0 +1,390 @@
+# @guildofgleks/ui — consumer-DX refactor plan
+
+Working plan derived from the **consumer-perspective review of 2026-08-13** — the library read
+end-to-end as a web developer who runs `npm i @guildofgleks/ui` and builds a real site on it,
+rather than as its author. Complements `refactor-21.3.0.md`, which reviewed the library from the
+inside (architecture, token contract, API consistency). Everything here is about the seam
+between the package and the person consuming it.
+
+Unlike `refactor-21.3.0.md`, this one is **ordered by cost/benefit, not by review order**:
+iterations 1–4 are hours-to-a-day each and remove hard failures; 5–7 are real feature work.
+
+**Baseline measured on 2026-08-13:** `npm run build:lib` clean (5.8 s), `npm run test:lib`
+green (786 specs / 45 files), FESM 1 001 601 B raw / 158 856 B gzip, `theme.css` 92 596 B raw /
+16 817 B gzip.
+
+**Version:** iterations 1–4 are documentation, accessibility and bug fixes and fit the
+in-progress patch heading; 5–7 add public API and need a minor. Which release each lands in is
+the user's call — per `gleks-ui-library.instructions.md` rule 9 the agent never publishes, never
+bumps the version, and never edits `CHANGELOG.md`'s `planned` heading.
+
+## Status
+
+| # | Iteration | Kind | State |
+| --- | --- | --- | --- |
+| 1 | Onboarding blockers (README ↔ package reality) | docs | ✅ done |
+| 2 | Accessibility defaults (label association, live regions) | fix | ✅ done |
+| 3 | Native attribute passthrough on text controls | api | ✅ done |
+| 4 | Packaging correctness + small bugs | fix | ✅ done |
+| 5 | Icon registry | feature | ⬜ todo |
+| 6 | `gog-table`: outputs + lazy mode | feature | ⬜ todo |
+| 7 | Link-flavoured button | feature | ⬜ todo |
+
+Iterations 1–4 landed together under `CHANGELOG.md`'s `[21.3.2] - planned` heading; `[21.3.1]`
+was left untouched for the release the user cuts first. Per-iteration outcomes are recorded
+under each section below.
+
+Update this table at the end of every iteration, and re-state "done / remaining" in the turn
+summary.
+
+---
+
+## Iteration 1 — Onboarding blockers
+
+**Why first:** these are the only findings in the review that make a brand-new consumer fail
+outright, they are documentation-only, and they cost hours rather than days. Everything below
+this line is invisible to someone who never got the package to render.
+
+1. **Fix the stylesheet path.** `README.md:53` tells consumers to add
+   `node_modules/@guildofgleks/ui/styles/index.css` to `angular.json`. That path does not exist
+   in the published package: `ng-package.json:7` copies `assets: ["src/styles"]`, so the file
+   ships at `node_modules/@guildofgleks/ui/**src**/styles/index.css` — which is what
+   `angular.json:175` (the lab app, consuming the published package) actually uses, and what
+   `getting-started-page.ts:42` on the docs site documents. The npm README is the one place
+   that is wrong, and it is the only text people read before installing.
+
+   Two ways to close it; **prefer (b)**:
+   - (a) correct the three occurrences in `README.md` to `src/styles/…`;
+   - (b) change `ng-package.json` so the assets land at the package root (`styles/…`) and the
+     README becomes true as written. Then update `angular.json:165–178` (lab), the
+     `getting-started-page.ts` snippet and `src/styles/index.css`'s own header comment, which
+     already advertises the short `@guildofgleks/ui/styles/index.css` form.
+     Note that the short form does **not** resolve through the generated `exports` map (it lists
+     only `.` and `./package.json`), so if (b) is taken, also add a `"./styles/*"` entry —
+     otherwise a SCSS `@import '@guildofgleks/ui/styles/index.css'` keeps failing even though
+     the `angular.json` file path works.
+
+2. **Document the dialog and toast host elements.** `DialogService.open()` and
+   `ToastService.show()` render nothing until `<gog-dialog />` / `<gog-toast-container />` are
+   placed in a template — visible in `ui-showcase` (`catalog-page.html:82–83`) but absent from
+   the README. Add a "Services need a host" subsection to `## Setup` showing both in the app
+   root, and cross-reference it from the `DialogService`/`ToastService` mentions in
+   `## Components`.
+
+3. **Refresh the component inventory.** `README.md:14` claims "18 standalone components";
+   `README.md:249–252` lists 21; `src/lib/components/` holds 29. Undocumented today:
+   `gog-autocomplete`, `gogBadge`, `gog-button-toggle`, `gog-datepicker`, `gog-divider`,
+   `gog-progressbar`, `gog-tabs`, `gog-toggle`. Datepicker and tabs are among the first things
+   anyone looks for — their absence from the README reads as "not implemented".
+
+4. **Split the token table out of the README.** The built `README.md` is 231 927 B, nearly all
+   of it the generated `--gog-*` tables between `<!-- tokens:start -->` and its end marker. The
+   Setup section — the part that must be found in ten seconds on npmjs.com — is buried. Move
+   the generated tables to `TOKENS.md`, keep the three-layer explanation plus a link in the
+   README, and point the generator (`scripts/`) at the new file.
+
+**Done when:** a scratch Angular 21 app, wired only from the README with no other source of
+truth, renders a styled `gog-button`, opens a dialog and shows a toast on the first attempt.
+
+### Outcome ✅
+
+Option (b), without moving any source files: `ng-package.json` now carries a second asset
+pattern (`{ glob, input: "src/styles", output: "styles" }`) alongside the original, so the
+built package contains **both** `styles/` and `src/styles/`. Existing consumers — including
+`gleks-ui-lab`, which resolves the published package — keep working untouched; `src/styles/` is
+marked deprecated for removal in 21.5.0. Verified against the real build output, not just the
+config: `dist/gleks/ui/styles/index.css` exists, and ng-packagr merged the hand-written
+`exports` entries (`./styles/*`, `./src/styles/*`) ahead of its own generated ones.
+
+`gleks-ui-lab` and its docs were deliberately **not** updated — they describe the published
+21.3.0 package, where the short path genuinely does not exist yet. Everything the lab will need
+once 21.3.2 ships is recorded in [`lab-after-publish.md`](./lab-after-publish.md), including the
+two statements it currently makes that stop being true (`ThemeService.theme` as a
+`WritableSignal`, and `gog-calendar` not reading `GOG_CONFIG`).
+
+README: added a "Services need a host element" section with a runnable root-component example;
+replaced the stale "18 standalone components" claim and the 21-entry list with a grouped table
+covering all 27 components, both directives, and the 15 slot directives. Token tables moved to
+`TOKENS.md` (`generate-tokens.mjs` retargeted, marker mechanism unchanged), taking the README
+from 232 KB to 14 KB.
+
+**Out-of-plan fix, found on the way:** `npm run check:tokens` was already failing on `master` —
+`token-names.ts` was stale by 18 tokens, and `textarea.component.scss` carried two literal
+`var(--x, 0px)` fallbacks for tokens declared nowhere. Both fixed (see iteration 4's outcome);
+the check is green again.
+
+---
+
+## Iteration 2 — Accessibility defaults
+
+**Why here:** the package's own keywords and `README.md:28` promise "accessible by default",
+and the two defects below both fire in the default configuration — i.e. exactly for the
+consumer who trusted that line and wrote no extra attributes.
+
+1. **Auto-generate a field id.** `inputfield.component.html:44` binds
+   `[attr.id]="inputId() || null"` and lines 12/16 bind `[attr.for]="inputId() || null"`, so
+   with no `inputId` the `<input>` has no id at all: the label is not programmatically
+   associated (clicking it does not focus the field), and the `aria-describedby` → error link
+   on line 55 never materialises, so validation messages go unannounced.
+   `gog-select` already solves this — `select.component.ts:60` falls back to
+   `gog-select-${this.uid}`. Apply the same pattern to `gog-inputfield` and `gog-textarea`
+   (`textarea.component.ts:55` has the identical `inputId` input), keeping an explicitly passed
+   `inputId` authoritative. Audit `gog-checkbox` and `gog-radio-group` for the same gap while
+   in there.
+
+2. **Move `aria-live` to the toast container.** `toast.component.ts:25–27` puts
+   `role`/`aria-live`/`aria-atomic` on the toast host, which enters the DOM together with its
+   own text — screen readers routinely miss announcements from a live region created in the
+   same tick as its content. The region must pre-exist: declare it on the per-position wrapper
+   in `toast-container.component.html` and leave the individual toast as plain content. Keep
+   the existing `ariaRole`/`ariaLive` derivation (assertive for errors) by lifting it to the
+   group level, since a group is already per-position.
+
+**Done when:** in the showcase, clicking a `gog-inputfield`'s label focuses the field with no
+`inputId` set; an invalid touched field's message is reachable via `aria-describedby`; and a
+toast fires an announcement in a screen reader on the first show, not only on the second.
+
+### Outcome ✅
+
+Id generation extracted to `lib/shared/control-id.ts` (`nextGogControlId(prefix)`, per-prefix
+counters so ids stay stable per component type and hydration-safe) rather than copied a fourth
+and fifth time. `gog-inputfield` and `gog-textarea` now generate one; `gog-radio-group` and
+`gog-slider` were migrated to the shared helper with byte-identical output. `GogDropdownBase`
+deliberately keeps its numeric `uid` — it derives four ids (trigger, listbox, label, error)
+from one instance, so what it needs is the number, not a finished id. `gog-checkbox` needed
+nothing: it wraps its input in the `<label>`, which associates implicitly.
+
+`aria-describedby` was additionally re-keyed from `hasError()` to `visibleError()` — the two
+disagree under `errorDisplay="auto"` with an empty message, and it was pointing at an element
+that isn't in the DOM.
+
+Toast live regions: two permanently-mounted, visually-hidden regions on `gog-toast-container`
+(polite + assertive), fed from `groups()` so a toast queued beyond `maxVisiblePerPosition` is
+not announced before it is visible; keyed by `id:revision` so a deduped re-show re-announces.
+`gog-toast` lost its own `role`/`aria-live` to avoid double announcements — it is only ever
+rendered by the container, so nothing else depended on them.
+
+Verified live in `ui-showcase`: 25 of 25 inputfields have `for` matching their input id (mixed
+explicit and generated), clicking a label focuses its own field, a blurred invalid email links
+`aria-describedby` → `email-error`, and firing one toast of each type routes success/info to
+the polite region and error/warning to the assertive one while the toasts themselves carry no
+`role` or `aria-live`.
+
+---
+
+## Iteration 3 — Native attribute passthrough
+
+**Why:** the real `<input>`/`<textarea>` is sealed inside the component, so anything the
+component does not forward is unreachable — there is no escape hatch. The first ordinary form
+on a real site (a phone number, a length-capped bio, a read-only field) hits this.
+
+1. **Widen `gog-inputfield`'s `type`.** `inputfield.component.ts:86` allows
+   `text | password | email | number | date`. Add at least `tel`, `url`, `search`; consider
+   `time` and `datetime-local` alongside the existing `date`.
+2. **Forward the missing native attributes** on `gog-inputfield`: `readonly`, `maxlength`,
+   `minlength`, `pattern`, `inputmode`, `autofocus`, `spellcheck`. Mirror `readonly` and
+   `maxlength` onto `gog-textarea` (`textarea.component.ts:46–84` currently exposes only
+   `rows` beyond the shared field inputs).
+3. Decide and document the rule in `api-design.instructions.md`: *a wrapper around a native
+   control forwards the native attribute space of that control by default; anything it does not
+   forward is a deliberate, documented omission.* Without a stated rule this list is re-litigated
+   per field, one input at a time.
+4. `readonly` interacts with `clearable` and with the float-label state — a read-only field must
+   not offer a clear button. Cover both in specs.
+
+**Done when:** a `tel` field with `inputmode="tel"`, `maxlength` and `readonly` is expressible
+without touching the DOM directly, and `npm run test:lib` covers each new attribute.
+
+### Outcome ✅
+
+Landed as planned, with two deviations:
+
+- **`autofocus` was dropped, not added.** `@angular-eslint/template/no-autofocus` is on in this
+  repo and rejected it — the project already had a position on this, and it is the right one.
+  It is now the worked example of a *deliberate* omission in the new instruction-file rule,
+  which is exactly the distinction that rule exists to force.
+- **`GogClearableState`'s third parameter was renamed** `isDisabled` → `isNotEditable`, since
+  read-only now feeds it too. Dropdowns pass the same signal as before.
+
+`GogInputType` and `GogInputMode` added to `shared/types.ts` and the public API. The
+"wrapping a native control" rule was written into `api-design.instructions.md`, including the
+keep-the-native-name convention (`readonly`, not `isReadOnly`) and the requirement to model the
+interactions rather than just bind the attribute.
+
+**Found while writing the specs:** on a `type="number"` field the clear button never renders,
+because the spin buttons and the clear button share the field's end slot and the spin branch
+wins. Not fixed here — the end slot fits one control, so showing both is a layout decision, not
+a one-line change. Recorded in the backlog below.
+
+---
+
+## Iteration 4 — Packaging correctness and small bugs
+
+**Why here:** each item is small and independent; grouped so they do not each cost a release.
+
+1. **Declare `@angular/platform-browser` as a peer dependency.** `icon.component.ts:10` imports
+   `DomSanitizer`, but `package.json:20–24` lists only `@angular/common`, `@angular/core` and
+   `@angular/forms`. It resolves under npm's flat tree and breaks under strict pnpm — and it
+   makes the "three dependencies" claim in the README and the package description inaccurate.
+   Alternative worth weighing: drop the `DomSanitizer` dependency entirely by rendering the
+   built-in icons as real `<svg>` template markup instead of `bypassSecurityTrustHtml` over a
+   string blob (`icon.component.ts:45–47`) — which also removes an XSS-shaped API from the
+   component and pairs naturally with iteration 5.
+2. **Fix clear-on-number.** `inputfield.component.ts:381–387` (`clearValue`) calls
+   `_onChange('')`, while `onInput` for a number field calls `_onChange(null)` (line 356). The
+   clear button therefore writes an empty **string** into a `FormControl` typed as
+   `number | null`. Emit `null` for number fields; add a spec asserting the control value type
+   after clear for both `text` and `number`.
+3. **Harden `ThemeService`.** `theme.service.ts:8` exposes `theme` as a public *writable*
+   signal, so `themeService.theme.set('dark')` changes the signal without ever running
+   `applyTheme` — the DOM attribute and the signal silently diverge. Expose a readonly signal
+   plus `setTheme`/`toggleTheme`. While there, close the two gaps that force every consumer to
+   write a wrapper anyway: persistence (opt-in `localStorage` key) and initial resolution from
+   `prefers-color-scheme` when no `data-theme` is present. Both must stay SSR-safe — the
+   service currently touches `documentElement` in its constructor.
+4. **Make the remaining hardcoded English configurable.** `multiselect.component.html:199–200`
+   renders literal "Select all" / "Clear" with no input at all; `dialog.component.html:41`
+   ("Close dialog"), `toast.component.html:48` ("Close toast") and
+   `calendar.component.html:113/124/136` ("Hours"/"Minutes"/"Seconds") are hardcoded
+   `aria-label`s. The library already does this right elsewhere (`clearAriaLabel`,
+   `showPasswordLabel`, `paginator.ariaLabel`), so this is an inconsistency, not a missing
+   concept. Given the number of strings now involved, prefer a `GOG_CONFIG.labels` block over
+   one input per string, and state the choice in `api-design.instructions.md`.
+
+**Done when:** `npm run lint`, `npm run test:lib` and `npm run build:lib` are clean; the
+published `package.json` lists four peers; and a non-English app can relabel every
+user-visible string without forking a template.
+
+### Outcome ✅
+
+1. **Peer dependency declared** rather than removing `DomSanitizer`. The alternative in the plan
+   (render the built-ins as real SVG markup) is a breaking change — `ICON_DEFS` is a public
+   `Record<GogIconName, string>` — so it belongs with iteration 5's icon work, not here.
+2. **Clear-on-number fixed**, with specs pinning the control value type after clearing for both
+   `text` and `number`.
+3. **`ThemeService` rewritten**: `theme` is now `Signal<string>` off a private writable;
+   `GOG_CONFIG.theme` adds `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`,
+   `darkTheme`. Resolution order is document `data-theme` → stored → OS → default, with storage
+   access wrapped (Safari private mode and blocked site data both *throw* rather than degrade)
+   and `matchMedia`/`localStorage` behind `isPlatformBrowser`. **Everything is off by default**,
+   so an existing app's opening theme cannot change under it on upgrade. 12 specs, including
+   the read-only signal.
+4. **`GOG_CONFIG.labels`** covers all 23 fixed chrome strings. Existing per-instance label
+   inputs were folded into the same instance → config → default chain via `resolveConfigured`
+   rather than left as a second, inconsistent mechanism. `gog-datepicker` forwards
+   `todayLabel`/`thisMonthLabel` as `undefined` so `gog-calendar` resolves them itself instead
+   of receiving an English default that would shadow the app's config.
+
+   Deliberately excluded: content-shaped `ariaLabel` inputs (`gog-checkbox`, `gog-button`,
+   `gog-select`), which differ per instance and have no meaningful app-wide value; and
+   `gog-paginator`'s per-page labels ("Go to page 4"), which interpolate and need a function —
+   see the backlog.
+
+Verified live in `ui-showcase` after pointing it at the local build: default labels render
+everywhere they did before (`Clear`, `Increment`/`Decrement`, `Clear selection`, `Select all`/
+`Clear`, `Previous page`/`Next page`, `Pagination`, `Previous year`…`Next year`, `Today`,
+`Open calendar`, `Close toast`), the theme switcher still repaints the page through
+`setTheme('one-light')`, and the textarea resize grip sits at exactly the same 3px/3px as
+before the token change. The `node_modules` swap has been reverted to the published 21.3.0 and
+the dev server stopped.
+
+---
+
+## Iteration 5 — Icon registry
+
+**Why:** `icon.component.ts:36` types `name` as `GogIconName`, a closed union of 20 lucide
+glyphs (`shared/icons.ts:1–21`). A consumer's own icon can only be passed per instance as a
+`TemplateRef` via the `template` input — there is no way to register one by name. On a real
+site that means installing a second icon library, which is precisely the dependency the
+"no CDK, no Material" pitch exists to avoid.
+
+1. Add `provideGogIcons({ cart: '<svg …>' })`, merging down the injector tree the way
+   `provideGogConfig` already does (`shared/config.ts:223–231` is the model to copy, including
+   its `skipSelf` merge semantics).
+2. Keep `GogIconName` as the autocompleted set of built-ins while widening the input to
+   `GogIconName | (string & {})`, so the built-ins still autocomplete and a registered custom
+   name type-checks.
+3. Define the miss behaviour explicitly: render nothing and warn in dev mode, never throw.
+4. Sanitisation: registered SVG must go through the same path as the built-ins — decide it
+   together with 4.1, and document that the consumer's markup is trusted input.
+
+**Done when:** the showcase registers a custom icon in `app.config.ts` and uses it via
+`<gog-icon name="…">` in three unrelated components, with no `TemplateRef` in sight.
+
+---
+
+## Iteration 6 — `gog-table`: outputs and lazy mode
+
+**Why:** `table.component.ts` declares no `output()` at all — no row click, no sort change, no
+page change — and sorts (`:83`) and paginates (`:125`) purely in memory over `value` (`:54`).
+That is a fine data grid for a marketing page and unusable for anything backed by a server, so
+today it is the component most likely to be swapped out for a competitor's, taking the
+paginator and scroll with it.
+
+1. **Outputs first** (additive, no behaviour change): `gogRowClick`, `gogSortChange`,
+   `gogPageChange`. `sortState` (`:81`) and `currentPage` (`:117`) already hold exactly the
+   payloads.
+2. **Lazy mode:** a `lazy` input that stops the in-memory `sortedData`/`visibleRows` pipeline
+   and treats `value` as the current page as given, plus `totalRecords` to drive
+   `totalPages` (`:104`) instead of `value.length`. The `linkedSignal` page-clamping comment at
+   `:110–116` documents the invariant that has to keep holding in lazy mode.
+3. **Row selection** — single and multiple, `[(selection)]` as a `model()`, with the checkbox
+   column opt-in. Deliberately after 1 and 2: it is the largest piece and the one most likely
+   to want a design round of its own.
+4. Keep `gog-paginator` authoritative for pagination UI; the table must not grow a second
+   pagination implementation for the lazy path.
+
+**Done when:** the showcase drives a `gog-table` from a simulated paged/sorted endpoint, and
+the eager path's specs still pass untouched.
+
+---
+
+## Iteration 7 — Link-flavoured button
+
+**Why:** `button.component.html:1` always renders a native `<button>`. On a site, a large share
+of buttons are navigation (`routerLink`, `href`), and wrapping `<a>` around `<gog-button>` gives
+wrong semantics and a doubled focus target.
+
+Decide the mechanism before writing code — this is the one item here with a genuine
+architectural fork:
+
+- (a) an `as="a"` / `href` / `routerLink` input trio on `gog-button` — smallest change,
+  but the component starts brokering the router's whole input surface (`routerLinkActive`,
+  `queryParams`, `fragment`…) and will keep growing;
+- (b) a `gogButton` **directive** applying the same classes to a consumer-owned
+  `<a>`/`<button>` — no input brokering at all, the consumer keeps the native element and its
+  directives, and it matches the "headless primitive" axis `api-design.instructions.md` already
+  ranks above "add an input". Costs a second way to spell a button.
+
+Recommendation: (b), with `gog-button` kept as-is and re-documented as the convenience form.
+
+**Done when:** a `routerLink` CTA is expressible with correct semantics, one focusable element,
+and the same visuals as `<gog-button>` in all variants and sizes.
+
+---
+
+## Backlog — deliberately not in this plan
+
+- **`theme.css` payload.** 92 596 B / 16 817 B gzip is loaded whole even by an app importing
+  three components. Splitting it per component would break the "one stylesheet, one import"
+  setup story that iteration 1 is busy making work, and the gzip figure does not justify that
+  trade yet. Revisit only if the file keeps growing.
+- **Secondary entry points** (`@guildofgleks/ui/table`, …). The FESM bundle is a single 1 MB
+  file, but `sideEffects: false` plus ESM means consumers only pay for what they import, so
+  this buys build ergonomics rather than bytes.
+- **`(click)` vs `(gogClick)` on `gog-button`.** A native click bubbles from the inner
+  `<button>` to the host, so a consumer writing `(click)` silently bypasses the debounce guard.
+  Worth a README warning now; a real fix means stopping propagation, which is its own trap.
+- **RTL coverage.** Nine component stylesheets already use logical properties; a full audit is
+  its own piece of work with its own verification story.
+- **`DIALOG_DATA` typing.** `dialog.tokens.ts:3` is `InjectionToken<unknown>`, so every dialog
+  component casts on injection. A generic `DialogService.open<TData, TResult>()` threading the
+  type through would be nicer, but the cast is a one-liner and Material has the same wart.
+- **No clear button on a `type="number"` field.** The spin buttons and the clear button share
+  `gog-inputfield`'s end slot and the spin branch wins, so `clearable` is a no-op on a number
+  field unless `showSpinButtons` is off. Found while writing iteration 4's specs. Fixing it
+  means deciding how two controls share one slot — a layout change, not a binding change.
+- **`gog-paginator`'s per-page labels.** "Go to page 4" / "Page 4, current page" interpolate the
+  page number, so `GOG_CONFIG.labels` (plain strings) can't carry them. They need a function —
+  `(page: number, isCurrent: boolean) => string` — which is a different API shape and deserves
+  its own decision about whether the library takes format functions at all.

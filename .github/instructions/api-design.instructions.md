@@ -87,6 +87,36 @@ Only once 1–3 are ruled out. An input is right for a scalar that changes *beha
 - **Don't add an input for something a parent can already express.** Class/style forwarding,
   for instance, already works through the host element in Angular — no `styleClass` input.
 
+## Wrapping a native control: forward its attribute space
+
+A component that hides a native `<input>`, `<textarea>`, `<button>` or `<a>` inside its own
+template owns that element's entire API surface, because the consumer can no longer reach it.
+There is no escape hatch: an attribute the wrapper doesn't forward is simply unavailable.
+
+**The default is to forward the native attribute space of the wrapped element.** Anything left
+out is a deliberate, documented omission, not an oversight to be discovered by a consumer who
+needs `maxlength` and finds nothing. This is the one place where "add an input" is the right
+answer without walking the four axes first — these are not new API surface, they are the
+element's own, and a developer already knows their names and semantics.
+
+In practice, for a text control that means at least: `readonly`, `maxlength`, `minlength`,
+`pattern`, `inputmode`, `spellcheck` and the `type` values that render as a text field (see
+`GogInputType`).
+
+`autofocus` is the worked example of a deliberate omission: it is deliberately **not**
+forwarded, because moving focus without the user asking is disorienting for screen-reader and
+keyboard users — the same reason `@angular-eslint/template/no-autofocus` is on in this repo and
+would reject it anyway. An app that genuinely needs it can focus the element itself.
+
+Two rules that come with it:
+
+- **Model the interactions.** `readonly` and `disabled` both refuse edits, so both must
+  suppress every affordance that offers one — the clear button, a number field's spin buttons.
+  `GogClearableState`'s `isNotEditable` parameter exists for exactly this.
+- **Keep the native name.** `readonly`, not `isReadOnly`; `maxlength`, not `maxLength`. The
+  input's discoverability comes from already knowing the platform. (`inputMode` is the one
+  exception, matching the DOM property's own casing.)
+
 ## Data-shape inputs: never hardcode a DTO
 
 A component that accepts a collection must not dictate the object shape its consumer stores.

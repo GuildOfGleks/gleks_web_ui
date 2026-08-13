@@ -1,0 +1,121 @@
+# `gleks-ui-lab` — what to update after each publish
+
+`gleks-ui-lab` resolves `@guildofgleks/ui` from the **published npm package**, on purpose: its
+examples have to reflect what a consumer can install today, not an unreleased local build. That
+rule (see `gleks-ui-library.instructions.md` step 7) means lab edits are always *deferred* —
+work lands in the library first, and the lab catches up only once the version carrying it is
+actually on npm.
+
+This file is that backlog. It is a checklist, not a plan: tick items off after the matching
+release, and delete a section once its release is fully reflected.
+
+**Order matters for one item only** — the stylesheet path (§2.1) must not be changed until
+21.3.2 is published, because the short path does not exist in 21.3.0 or 21.3.1 and the lab
+build would break.
+
+---
+
+## 1. After publishing **21.3.1**
+
+Nothing in the lab breaks, but these are undocumented — `global-config.md`'s table and the
+per-component pages have not been touched since 21.3.0.
+
+### 1.1 `public/docs/global-config.md` — the config table is missing four fields
+
+| Key | Missing field | Applies to |
+| --- | --- | --- |
+| `autocomplete` | `openOnFocus` | `gog-autocomplete` |
+| `scroll` | `showTrack` | `gog-scroll` |
+| `textarea` | `resize` | `gog-textarea` |
+| `inputfield` | `showSpinButtons` | `gog-inputfield` |
+
+The `inputfield` key is missing from the table **entirely**, not just a field.
+
+### 1.2 Component pages with new API to document
+
+- **`gog-slider`** — `range` (two thumbs, `[(rangeValue)]` with a `GogSliderRange` pair,
+  mutually exclusive with `[(value)]`), `startDisabled`/`endDisabled`, `startAriaLabel`/
+  `endAriaLabel`.
+- **`gog-autocomplete`** — `openOnFocus` (on by default), `gogLoadMore` (paging a large or
+  server-backed option source).
+- **`gog-tabs`** — `scrollActiveIntoView` (on by default), `showScrollTrack`.
+- **`gog-scroll`** — `showTrack`.
+- **`gog-textarea`** — `resize`.
+- **`gog-inputfield`** — the built-in number spin buttons and `showSpinButtons`,
+  `incrementLabel`/`decrementLabel`.
+- **`gog-icon`** — the new `copy` glyph in the icon gallery.
+- Consider linking the shipped **`AGENTS.md`** from the getting-started page: it is a
+  consumer-facing reference for AI agents and nothing in the lab points at it.
+
+---
+
+## 2. After publishing **21.3.2**
+
+Everything in `docs/consumer-dx-plan.md` iterations 1–4. Two of these are *corrections* — the
+lab currently states things that stop being true.
+
+### 2.1 Stylesheet path — `src/styles/` → `styles/` ⚠️ do this only after 21.3.2 is on npm
+
+Both paths ship in 21.3.2, and `src/styles/` keeps working until **21.5.0**, so this is not
+urgent — but the lab is the reference a consumer copies from, and it should show the short
+form. Five places:
+
+| File | What to change |
+| --- | --- |
+| `angular.json` (root, `gleks-ui-lab` → `build`) | two asset globs (`input: node_modules/@guildofgleks/ui/src/styles`, `…/src/styles/presets`) and four entries in `styles[]` |
+| `…/getting-started-page/getting-started-page.ts:42` | the `"styles": [...]` snippet |
+| `public/docs/theming.md:42` | the preset path in the theme table |
+| `public/docs/theming.md:50–51` | the `"styles": [...]` snippet |
+| `…/shared/full-library-css.ts:5,8` | two comments naming `src/styles/` and the `docs/styles` asset glob |
+
+Worth mentioning in `theming.md` that `@guildofgleks/ui/styles/*` now also resolves from a SCSS
+`@import` (the package's `exports` map lists it), which the old path never did.
+
+### 2.2 Corrections — currently wrong after 21.3.2
+
+- **`…/theming-page` / `public/docs/theming.md:84`** — the `ThemeSwitcher` example annotates
+  `themeService.theme` as `// WritableSignal<string>`. It is now a read-only `Signal<string>`;
+  writing to it was the bug this fixed. Update the comment, and note that `setTheme`/
+  `toggleTheme` are the only way to change it.
+- **`…/calendar-doc-page/calendar-doc-page.html`** (~line 91) — says `gog-calendar` "does not
+  read `GOG_CONFIG` itself". It does now, for its **labels**. Still true for `locale` and
+  `firstDayOfWeek`, so the sentence needs narrowing rather than deleting — and `gog-calendar`
+  not honouring `GOG_CONFIG.datepicker.locale` while the config doc claims the key applies to
+  it is a real library inconsistency worth filing separately.
+
+### 2.3 New API to document
+
+- **`GOG_CONFIG.labels`** (23 keys) and **`GOG_CONFIG.theme`** (`storageKey`, `defaultTheme`,
+  `followSystem`, `lightTheme`, `darkTheme`) — both need rows in `global-config.md`'s table and
+  a worked example. `labels` is the answer to "how do I translate this library", which is a FAQ
+  entry too (`public/docs/faq.md`).
+- **`gog-inputfield`** — `readonly`, `maxlength`, `minlength`, `pattern`, `inputMode`,
+  `spellcheck`; the widened `type` list (`tel`, `url`, `search`, `time`, `datetime-local`) and
+  the exported `GogInputType` / `GogInputMode`. Worth stating explicitly that `autofocus` is
+  deliberately not forwarded, and why.
+- **`gog-textarea`** — `readonly`, `maxlength`, `minlength`, `spellcheck`.
+- **`gog-multiselect`** — `selectAllLabel`, `clearAllLabel`.
+- **Accessibility note, probably on the getting-started or FAQ page** — form controls now
+  generate their own `id`, so `inputId` is only needed when something outside the component has
+  to reference the field. Previously omitting it silently produced an unlabelled field.
+- **Toast** — announcements now come from two permanently-mounted live regions on
+  `gog-toast-container`; individual toasts carry no `role`/`aria-live`. Only matters to anyone
+  who was styling or querying those attributes.
+- **`TOKENS.md`** — the generated token catalogue moved out of the README. The lab's theming
+  page keeps its own `token-reference-data.ts`, so nothing breaks, but the "where is the full
+  list" pointer should name `TOKENS.md`.
+
+### 2.4 Peer dependency
+
+`@angular/platform-browser` is now a declared peer. Any "install" instructions that enumerate
+the peers (`getting-started-page`, `faq.md`) should say four, not three — and the "only three
+runtime dependencies" phrasing, wherever it appears, is now wrong.
+
+---
+
+## Checking your work
+
+`npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see
+`running-commands.instructions.md`). After a publish, `npm install` at the repo root first, so
+`node_modules/@guildofgleks/ui` is the new version rather than a stale one or a leftover local
+build.

@@ -40,5 +40,17 @@ files you are about to touch:
 
 ## Current work
 
-`docs/refactor-21.3.0.md` is the live plan for the 21.3.0 pre-public cleanup — iteration status,
-what each one covers, and what is deliberately out of scope. Update its status table as you go.
+Two live plans. Update the status table in whichever one you are working from, as you go.
+
+- `docs/consumer-dx-plan.md` — the **current** plan: the package as a consumer meets it
+  (onboarding, accessibility defaults, native attributes, packaging). Iterations 1–4 are done
+  and logged under `CHANGELOG.md`'s `[21.3.2] - planned`; 5–7 (icon registry, table
+  outputs/lazy mode, link-flavoured button) are open, along with a backlog of what is
+  deliberately excluded.
+- `docs/refactor-21.3.0.md` — the completed 21.3.0 pre-public cleanup (architecture, token
+  contract, API consistency). Kept as the record of why those decisions were made.
+
+`docs/lab-after-publish.md` is the deferred backlog for `gleks-ui-lab`. Because the lab tracks
+the **published** package, library work never updates it in the same session — anything the lab
+will need to say (or currently says wrongly) is recorded there instead, grouped by the release
+that unblocks it. Add to it whenever a library change would otherwise tempt you to edit the lab.
