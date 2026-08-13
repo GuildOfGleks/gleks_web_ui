@@ -99,6 +99,14 @@ made unreachable.
 - **README: `<gog-dialog />` and `<gog-toast-container />` are documented.** `DialogService.open()`
   and `ToastService.show()` render nothing until those host elements are in a template, which
   the README never said.
+- **README: a `## Global configuration` section.** `provideGogConfig` was never documented in the
+  README at all — only individual keys mentioned in passing — so the app-wide settings, and now
+  `labels` and `theme` with them, were undiscoverable to anyone reading the package page. Adds
+  the key list, the precedence rule, the injector-tree merge, and a translation example.
+- **README / `AGENTS.md`: the new API is documented.** Both ship inside the package. `AGENTS.md`
+  (the consumer-facing agent reference) has the native attributes, `GOG_CONFIG.labels` and
+  `.theme`, the read-only `ThemeService.theme`, generated field ids, the toast live regions, and
+  `GogInputType`/`GogInputMode` in its type table.
 - **README: the component list is complete again.** It advertised 18 components and listed 21,
   while omitting `gog-autocomplete`, `gogBadge`, `gog-button-toggle-group`, `gog-datepicker`,
   `gog-divider`, `gog-progressbar`, `gog-tabs` and `gog-toggle` entirely.

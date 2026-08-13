@@ -202,12 +202,17 @@ To make an existing or new input configurable this way:
    verification is done, and don't edit `gleks-ui-lab`'s docs for an API that hasn't shipped
    yet. Document the new/changed API there only in a *later* session, after the user has
    actually published the version that includes it.
-8. **Once step 7 passes, record the change in `projects/gleks/ui/CHANGELOG.md`** under the
+8. **Record anything `gleks-ui-lab` will need in `docs/lab-after-publish.md`** — and nowhere
+   else. A library change touches exactly two projects, this one and `ui-showcase`; see
+   `agent-workflow.instructions.md` for the rule and for the discipline of deleting entries
+   once they are done. New API, a lab statement the change makes untrue, a moved path: all of
+   it goes in that file, grouped under the release that unblocks it.
+9. **Once step 7 passes, record the change in `projects/gleks/ui/CHANGELOG.md`** under the
    in-progress version heading at the top (Added/Changed/Fixed sections, matching the
    existing entries' style — `## [<next-version>] - planned`; the user swaps `planned` for the
    real date when they cut the release). Do this for every user-visible library change, not
    just new components — bug fixes and behavior changes belong there too.
-9. **Publishing the library is strictly forbidden for an AI agent, under any circumstance.**
+10. **Publishing the library is strictly forbidden for an AI agent, under any circumstance.**
    Do not bump the version in `package.json`, do not edit `CHANGELOG.md`'s heading away from
    `planned`, and do not run `npm publish` or the `release` script — not even if explicitly
    asked to in a way that seems to authorize it in the moment. The user always cuts the release

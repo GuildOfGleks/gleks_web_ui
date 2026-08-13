@@ -13,7 +13,8 @@ repeated, below.
 ## Quick facts
 
 - Angular **v21+** only (`peerDependencies` require `^21.2.0` for `@angular/core`,
-  `@angular/common`, `@angular/forms`). No support for older Angular.
+  `@angular/common`, `@angular/forms`, `@angular/platform-browser`). No support for older
+  Angular.
 - No Angular CDK, no Material. Only runtime dependency is `tslib`.
 - Every component is **standalone**, `ChangeDetectionStrategy.OnPush`, and built with signals —
   `input()` / `output()` / `model()`, never `@Input()`/`@Output()` decorators, never `ngClass`/
@@ -92,6 +93,14 @@ exist.
   `'auto'`: shown once the attached `[formControl]`/`formControlName` is touched _and_ invalid —
   you only supply the message text. `'auto'` silently behaves like `'manual'` if there's no real
   form control attached.
+- **`inputId` is optional everywhere.** Every form control renders a real `id` — its own if you
+  pass one, a generated one otherwise — so the `<label for>` and the error message's
+  `aria-describedby` are always wired up. Pass `inputId` only when something outside the
+  component needs to reference the field by a known id; never pass one just to get a label.
+- **User-visible chrome strings come from `GOG_CONFIG.labels`**, not from an input per string —
+  "Clear", "Close dialog", "Go to page 4" and the rest. Per-instance label inputs exist where a
+  single control realistically differs and win over the config. See
+  [`labels`](#labels--translating-the-library).
 - **`floatLabel: GogFloatLabelVariant = 'none' | 'in' | 'on' | 'over'`** (default `'none'`) on
   the six field controls: inputfield, textarea, select, multiselect, autocomplete, datepicker.
   `'in'` floats up but stays inside the border, `'on'` floats to sit centered on the top border
@@ -196,8 +205,55 @@ parent's config**, one level deep per key — it does not replace it.
 | `inputfield`   | `showSpinButtons`                                                  | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                            |
 | `textarea`     | `resize`                                                           | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                              |
 | `toast`        | `position`, `duration`                                             | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme` | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                 |
+| `labels`       | every fixed string the library renders — see below                 | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                                    |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
+
+### `labels` — translating the library
+
+Every string a component renders that the consumer never writes markup for. An app that isn't
+in English sets these once rather than on every control:
+
+```ts
+provideGogConfig({
+  labels: {
+    clear: 'Очистить', // inputfield / textarea clear button
+    clearSelection: 'Очистить выбор', // select / multiselect / autocomplete
+    clearDate: 'Очистить дату', // datepicker
+    selectAll: 'Выбрать все', // multiselect panel
+    clearAll: 'Очистить', // multiselect panel
+    increment: 'Увеличить', // number spin buttons
+    decrement: 'Уменьшить',
+    showPassword: 'Показать пароль',
+    hidePassword: 'Скрыть пароль',
+    closeDialog: 'Закрыть',
+    closeToast: 'Закрыть',
+    pagination: 'Навигация по страницам',
+    previousPage: 'Предыдущая страница',
+    nextPage: 'Следующая страница',
+    openCalendar: 'Открыть календарь',
+    today: 'Сегодня',
+    thisMonth: 'Текущий месяц',
+    previousMonth: 'Предыдущий месяц',
+    nextMonth: 'Следующий месяц',
+    previousYear: 'Предыдущий год',
+    nextYear: 'Следующий год',
+    hours: 'Часы',
+    minutes: 'Минуты',
+    seconds: 'Секунды',
+    // The one non-string field: it interpolates the page number, and word order and
+    // agreement around a number vary by language, so it takes a formatter.
+    page: (page, isCurrent) =>
+      isCurrent ? `Страница ${page}, текущая` : `Перейти на страницу ${page}`,
+  },
+});
+```
+
+Strings that describe **one** control rather than library chrome — `gog-checkbox`'s `ariaLabel`,
+`gog-button`'s `ariaLabel`, any field's `label`/`placeholder` — are deliberately **not** here.
+Those stay per instance. Where a per-instance label input exists (`clearAriaLabel`, `todayLabel`,
+…) it still wins over the configured value.
 
 ## Services
 
@@ -205,10 +261,34 @@ Anything visual does **not** belong here — override the `--gog-*` token instea
 
 ```ts
 private readonly theme = inject(ThemeService);
-this.theme.theme();          // Signal<string> — current data-theme, defaults to 'light'
+this.theme.theme();          // Signal<string>, READ-ONLY — current data-theme
 this.theme.setTheme('dark'); // any theme name, including a custom one you declared in CSS
-this.theme.toggleTheme();    // flips light ⇄ dark specifically
+this.theme.toggleTheme();    // flips between the configured light and dark names
 ```
+
+`theme` is read-only on purpose: writing to it would move the signal without touching the
+`data-theme` attribute the styles actually read. Never suggest `theme.set(...)` — it does not
+exist.
+
+Zero-config behaviour: adopt whatever `data-theme` is already on `<html>`, else `'light'`.
+Persistence and following the OS setting are **opt-in**, so upgrading cannot change which theme
+an existing app opens in:
+
+```ts
+provideGogConfig({
+  theme: {
+    storageKey: 'app-theme', // persist the choice in localStorage; unset = no persistence
+    followSystem: true, // open in the OS prefers-color-scheme, and keep following it
+    // until the app calls setTheme/toggleTheme
+    lightTheme: 'light', // the two names followSystem maps to and toggleTheme alternates
+    darkTheme: 'cyberpunk', // between
+    defaultTheme: 'light', // used when nothing else decides
+  },
+});
+```
+
+Resolution order at startup: existing `data-theme` on the document → persisted value →
+OS setting (if `followSystem`) → `defaultTheme` → `'light'`.
 
 ### `ToastService`
 
@@ -344,15 +424,22 @@ toggles) — this is a real ARIA distinction, not cosmetic.
 | Input                                     | Type                                                    | Default                             | Notes                                                                          |
 | ----------------------------------------- | ------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------ |
 | `label`, `placeholder`                    | `string`                                                | `''`                                |                                                                                |
-| `type`                                    | `'text' \| 'password' \| 'email' \| 'number' \| 'date'` | `'text'`                            |                                                                                |
+| `type`                                    | `GogInputType`                                          | `'text'`                            | `text`/`password`/`email`/`number`/`search`/`tel`/`url`/`date`/`time`/`datetime-local` |
+| `readonly`                                | `boolean`                                               | `false`                             | value stays focusable and submitted, edits blocked; hides the clear button and stepper |
+| `maxlength`, `minlength`                  | `number \| null`                                        | `null`                              | native attributes                                                              |
+| `pattern`                                 | `string`                                                | `''`                                | native attribute, regex source                                                 |
+| `inputMode`                               | `GogInputMode \| null`                                  | `null`                              | on-screen keyboard hint (`numeric`, `tel`, …)                                  |
+| `spellcheck`                              | `boolean \| null`                                       | `null`                              | unset = browser default                                                        |
+| `inputId`                                 | `string`                                                | `''` → generated                    | a real id is always rendered; pass one only to reference the field externally  |
 | `min`, `max`, `step`                      | `number \| null`                                        | `null`                              | `type="number"` only                                                           |
 | `showSpinButtons`                         | `boolean \| undefined`                                  | `true`                              | own +/- glyphs on `type="number"`; via `GOG_CONFIG.inputfield.showSpinButtons` |
 | `errorMessage`, `errorDisplay`            |                                                         | `''`, `'manual'`                    | see conventions                                                                |
 | `disabled`, `size`, `fullWidth`           |                                                         | `false`, `'md'`, `true`             |                                                                                |
 | `iconStart` / `iconEnd`                   | `GogIconName \| ''`                                     | `''`                                | bare leading/trailing icon                                                     |
-| `clearable`, `clearAriaLabel`             |                                                         | `false`, `'Clear'`                  |                                                                                |
+| `clearable`, `clearAriaLabel`             |                                                         | `false`, `'Clear'`                  | on `type="number"` the clear button renders alongside the stepper             |
 | `floatLabel`, `floatLabelShowPlaceholder` |                                                         | `'none'`, `false`                   |                                                                                |
-| `showPasswordLabel` / `hidePasswordLabel` | `string`                                                | `'Show password'`/`'Hide password'` | `type="password"` reveal toggle aria-labels                                    |
+| `showPasswordLabel` / `hidePasswordLabel` | `string \| undefined`                                    | `'Show password'`/`'Hide password'` | `type="password"` reveal toggle aria-labels; via `GOG_CONFIG.labels`           |
+| `incrementLabel` / `decrementLabel`       | `string \| undefined`                                    | `'Increment'`/`'Decrement'`         | spin button aria-labels; via `GOG_CONFIG.labels`                               |
 
 Model: `value: string` (always a string, even for `type="number"` — the _form control_ value is
 `number | null`, but the `[(value)]` model mirrors the raw text). CVA: yes.
@@ -384,6 +471,10 @@ replacement for the old icon-template/icon-fn/icon-label input quartet — see
 | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | ---------------------------------------------- |
 | `label`, `placeholder`                                                   | `string`                                                                      | `''`                                           |
 | `rows`                                                                   | `number`                                                                      | `4`                                            |
+| `readonly`                                                               | `boolean`                                                                     | `false`                                        |
+| `maxlength`, `minlength`                                                 | `number \| null`                                                              | `null`                                         |
+| `spellcheck`                                                             | `boolean \| null`                                                             | `null`                                         |
+| `inputId`                                                                | `string`                                                                      | `''` → generated, same as inputfield           |
 | `resize`                                                                 | `GogTextareaResize \| undefined` (`'vertical'\|'horizontal'\|'both'\|'none'`) | `'vertical'`; via `GOG_CONFIG.textarea.resize` |
 | `errorMessage`, `errorDisplay`, `disabled`, `size`, `fullWidth`          |                                                                               | same shape as inputfield                       |
 | `clearable`, `clearAriaLabel`, `floatLabel`, `floatLabelShowPlaceholder` |                                                                               | same shape as inputfield                       |
@@ -424,7 +515,7 @@ and multiselect unless noted otherwise):
 | `inputId` (select/autocomplete only)                   | `string`                                | `''`                                                         |                                                                                     |
 
 `gog-select`-specific: `value: model<TValue>(null)`.
-`gog-multiselect`-specific additions: `value: model<TValue[]>([])`, `showControls: boolean` (default `false`, a select-all/clear row), `controlsPosition: 'top'|'bottom'` (default `'top'`).
+`gog-multiselect`-specific additions: `value: model<TValue[]>([])`, `showControls: boolean` (default `false`, a select-all/clear row), `controlsPosition: 'top'|'bottom'` (default `'top'`), and `selectAllLabel`/`clearAllLabel` for that row's two buttons (`'Select all'`/`'Clear'`, also via `GOG_CONFIG.labels`).
 
 CVA: yes, both. Slots (shared): `<ng-template gogDropdownChevron>` (custom chevron markup),
 `<ng-template gogDropdownOption let-opt let-selected="selected" let-label="label">` (custom
@@ -592,7 +683,12 @@ Model: `value: Date | GogDateRange | null` (`GogDateRange = { start: Date | null
 CVA: yes.
 
 `gog-calendar` (usable standalone) takes most of the same date/range/time inputs directly, plus
-`gogDateSelect: output<GogDatepickerValue>()` fired only on a _complete_ selection.
+`gogDateSelect: output<GogDatepickerValue>()` fired only on a _complete_ selection. It resolves
+`locale` and `firstDayOfWeek` from `GOG_CONFIG.datepicker` itself, so a standalone calendar
+honours an app-wide locale without being handed one; its navigation, shortcut and time labels
+(`todayLabel`, `thisMonthLabel`, `previousMonthLabel`, `nextMonthLabel`, `previousYearLabel`,
+`nextYearLabel`, `hoursLabel`, `minutesLabel`, `secondsLabel`) resolve through
+`GOG_CONFIG.labels` the same way.
 
 Also exported for direct reuse: `formatDate(date, pattern)`, `parseDate(text, pattern)`, and a
 family of date-math helpers (`addDays`, `addMonths`, `isSameDay`, `isWithinBounds`, …) from
@@ -858,6 +954,11 @@ hidden via `[hidden]` while inactive — preserves scroll/input state).
 | `size`                          | `GogSize`                                        | `'sm'`                         |
 | `disabled`, `ariaLabel`         |                                                  | `false`, `'Pagination'`        |
 
+The step buttons (`'Previous page'`/`'Next page'`) and the per-page names are configured, not
+input-driven: `GOG_CONFIG.labels.previousPage`/`nextPage`, and `labels.page`, a
+`(page: number, isCurrent: boolean) => string` formatter defaulting to
+`` `Page ${page}, current page` `` / `` `Go to page ${page}` ``.
+
 Model: `page: number` (1-based, self-clamps to `totalPages`).
 
 `'window'`: a fixed number of page buttons that slides to keep the current page centered.
@@ -973,6 +1074,11 @@ queue. Individual `gog-toast` instances are rendered internally by the container
 `ToastService.toasts()` — you don't place these yourself. Toasts auto-dismiss after their
 `duration` unless `isSticky`; hovering pauses the countdown (front-of-stack toast only).
 
+Announcements come from two permanently-mounted, visually-hidden live regions the container
+owns — polite, and assertive for `error`/`warning`. The toasts themselves carry no
+`role`/`aria-live`: a live region created in the same tick as its text is routinely skipped by
+screen readers, and a second region would announce everything twice. Don't add either back.
+
 ---
 
 ## Deprecated patterns — do not use in new code
@@ -1028,6 +1134,8 @@ Shared enum-like types (`import type { ... } from '@guildofgleks/ui'`):
 | `GogDateSelectionMode`        | `'single' \| 'range'`                                                                         |
 | `GogHourFormat`               | `'12' \| '24'`                                                                                |
 | `GogTextareaResize`           | `'vertical' \| 'horizontal' \| 'both' \| 'none'`                                              |
+| `GogInputType`                | `'text' \| 'password' \| 'email' \| 'number' \| 'search' \| 'tel' \| 'url' \| 'date' \| 'time' \| 'datetime-local'` |
+| `GogInputMode`                | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'`         |
 | `GogErrorDisplay`             | `'auto' \| 'manual'`                                                                          |
 | `GogDropdownDirection`        | `'auto' \| 'up' \| 'down'`                                                                    |
 | `GogTooltipSide`              | `'top' \| 'bottom' \| 'left' \| 'right'` (resolved form of `GogTooltipPosition`, no `'auto'`) |

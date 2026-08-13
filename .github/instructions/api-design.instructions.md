@@ -117,6 +117,33 @@ Two rules that come with it:
   input's discoverability comes from already knowing the platform. (`inputMode` is the one
   exception, matching the DOM property's own casing.)
 
+## User-visible strings: chrome goes in `GOG_CONFIG.labels`, content does not
+
+Every fixed string a component renders that the consumer never writes markup for — button text,
+an accessible name for a close/clear/step control — belongs in `GOG_CONFIG.labels`, not in one
+input per string. The test is the one the config section already uses: *would an app set this
+once, or per instance?* "Clear", "Close dialog", "Previous page" are set once, by an app that
+isn't in English; twenty inputs to say so is exactly the boilerplate this library exists to
+remove.
+
+Three rules that come with it:
+
+- **A per-instance input may exist as well, and wins.** `clearAriaLabel`, `todayLabel` and
+  friends resolve instance → config → default through `resolveConfigured`, like every other
+  configurable input. Add one only when a single instance realistically differs.
+- **Content is not chrome.** `gog-checkbox`'s `ariaLabel`, `gog-button`'s `ariaLabel`, a field's
+  `label` or `placeholder` describe *that* control and have no meaningful app-wide value. They
+  stay per-instance and out of `labels`.
+- **A string that interpolates takes a function, not a placeholder.** `GOG_CONFIG.labels.page`
+  is `(page, isCurrent) => string` rather than `'Go to page {0}'`. A `{0}` convention is a
+  second, weaker formatting language to learn, and it cannot express languages where the
+  number's position or the grammar agreeing with it depends on its value. Keep such fields rare
+  and document them where they sit.
+
+Never leave a rendered string unreachable. A hardcoded `aria-label` or button caption in a
+template is a bug for every consumer who does not ship in English, and it is invisible until
+one of them files it.
+
 ## Data-shape inputs: never hardcode a DTO
 
 A component that accepts a collection must not dictate the object shape its consumer stores.

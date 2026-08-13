@@ -177,6 +177,16 @@ manages it:
 private readonly theme = inject(ThemeService);
 this.theme.toggleTheme();         // light ⇄ dark
 this.theme.setTheme('cyberpunk'); // any custom theme name
+this.theme.theme();               // read-only signal — go through the two methods above
+```
+
+Out of the box it adopts whatever `data-theme` is already on the document, or `'light'`.
+Persisting the choice and following the OS setting are opt-in, through `GOG_CONFIG.theme`:
+
+```ts
+provideGogConfig({
+  theme: { storageKey: 'app-theme', followSystem: true, darkTheme: 'cyberpunk' },
+});
 ```
 
 To add a theme, copy a palette block from `styles/theme.css` and change the attribute
@@ -230,6 +240,57 @@ that the theme needs to be longer.
 `styles/index.css` intentionally leaves fonts alone — generic system stacks, no webfont
 download. For the showcase's typography (Cinzel / Inter / JetBrains Mono, pulled from
 Google Fonts) add `@guildofgleks/ui/styles/fonts.css` as well.
+
+## Global configuration
+
+Anything visual is a CSS token (above). For the rest — the handful of settings an app would
+otherwise repeat on every instance — there is one provider, not an injection token per
+component per setting:
+
+```ts
+// app.config.ts
+import { provideGogConfig } from '@guildofgleks/ui';
+
+providers: [
+  provideGogConfig({
+    control: { size: 'sm', errorDisplay: 'auto', clearable: true },
+    dropdown: { appendToBody: true },
+    datepicker: { locale: 'de-DE', format: 'dd.MM.yyyy' },
+    button: { debounce: 500 },
+  }),
+];
+```
+
+Keys: `control`, `dropdown`, `floatLabel`, `datepicker`, `autocomplete`, `inputfield`,
+`textarea`, `tooltip`, `scroll`, `button`, `toast`, `theme`, `labels`. Every field is optional,
+and an instance's own input always wins over the configured value. Providing it again lower in
+the injector tree (a route, a component) **layers onto** the parent's config one level deep
+rather than replacing it, so a route can override one field and inherit the rest.
+
+### Translating the library
+
+`labels` carries every fixed string the components render themselves — the ones you never write
+markup for. Set them once instead of on every control:
+
+```ts
+provideGogConfig({
+  labels: {
+    clear: 'Очистить',
+    clearSelection: 'Очистить выбор',
+    selectAll: 'Выбрать все',
+    closeDialog: 'Закрыть',
+    previousPage: 'Предыдущая страница',
+    today: 'Сегодня',
+    // interpolating labels take a function, since word order and agreement vary by language
+    page: (page, isCurrent) =>
+      isCurrent ? `Страница ${page}, текущая` : `Перейти на страницу ${page}`,
+  },
+});
+```
+
+The full key list is on `GogGlobalConfig['labels']`. Strings that describe *one* control rather
+than library chrome — a field's `label`, a button's `ariaLabel` — are deliberately not in here;
+those stay per instance.
 
 ## Components
 
@@ -299,6 +360,21 @@ string or a `TemplateRef`; `gogTooltipPosition` (`'auto'` default, or an explici
 `gogTooltipShowDelay` (`300`ms default), `gogTooltipHideDelay` (`100`ms default) and
 `gogTooltipDisabled` inputs, the first three also configurable app-wide via
 `GOG_CONFIG.tooltip`.
+
+`gog-inputfield` and `gog-textarea` forward the native attribute space of the element they
+wrap, so nothing is out of reach because it is hidden inside a component: `readonly`,
+`maxlength`, `minlength`, `spellcheck`, plus `pattern` and `inputMode` on the input, and the
+`type` values that render as a text field (`text`, `password`, `email`, `number`, `search`,
+`tel`, `url`, `date`, `time`, `datetime-local` — see `GogInputType`). `readonly` keeps the
+value focusable and submitted but blocks edits, so the clear button and a number field's
+stepper both stand down while it is on. `autofocus` is deliberately **not** forwarded: moving
+focus without the user asking is disorienting for keyboard and screen-reader users, and an app
+that genuinely needs it can focus the element itself.
+
+Every field also generates its own `id` when you don't pass `inputId`, so the label is always
+associated with the control and the error message is always reachable through
+`aria-describedby`. Pass `inputId` only when something outside the component has to reference
+the field by a known id.
 
 `gog-checkbox`, `gog-inputfield`, `gog-select`, `gog-multiselect`, `gog-slider` and
 `gog-textarea` implement `ControlValueAccessor` and are built for Reactive Forms — use

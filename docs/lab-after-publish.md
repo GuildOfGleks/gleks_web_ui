@@ -6,8 +6,16 @@ rule (see `gleks-ui-library.instructions.md` step 7) means lab edits are always 
 work lands in the library first, and the lab catches up only once the version carrying it is
 actually on npm.
 
-This file is that backlog. It is a checklist, not a plan: tick items off after the matching
-release, and delete a section once its release is fully reflected.
+This file is that backlog, and the rule that feeds it is in
+`.github/instructions/agent-workflow.instructions.md`: a library change touches the library and
+`ui-showcase`, and everything the lab will need lands here instead.
+
+**It is a live checklist, not an archive. Delete each entry the moment it is actually done in
+the lab** — do not tick it, strike it through, or move it to a "done" section. An entry that
+outlives the work sends the next reader to re-verify something already correct, and a file that
+does that twice stops being trusted. What is left in here is exactly the lab's outstanding
+debt, and it should reach zero after each release is documented; when a whole section empties,
+delete the section too.
 
 **Order matters for one item only** — the stylesheet path (§2.1) must not be changed until
 21.3.2 is published, because the short path does not exist in 21.3.0 or 21.3.1 and the lab
