@@ -32,7 +32,8 @@ bumps the version, and never edits `CHANGELOG.md`'s `planned` heading.
 
 Iterations 1–4 landed together under `CHANGELOG.md`'s `[21.3.2] - planned` heading; `[21.3.1]`
 was left untouched for the release the user cuts first. Per-iteration outcomes are recorded
-under each section below.
+under each section below, and the defects the work itself turned up — none of them planned —
+under [Follow-ups](#follow-ups--everything-iterations-14-turned-up-).
 
 Update this table at the end of every iteration, and re-state "done / remaining" in the turn
 summary.
@@ -290,6 +291,42 @@ the dev server stopped.
 
 ---
 
+## Follow-ups — everything iterations 1–4 turned up ✅
+
+Not planned work: four defects and one piece of pre-existing drift found *while* doing
+iterations 1–4, closed in the same release rather than left to rot in the backlog. All five are
+in `CHANGELOG.md`'s `[21.3.2]` section.
+
+1. **A `clearable` number field had no clear button.** The stepper and the clear button share
+   `gog-inputfield`'s end slot, and the stepper won the `@else if` chain outright — so
+   `clearable` was a silent no-op on `type="number"` unless `showSpinButtons` was also off.
+   Both now render. The geometry needed no invention: the stepper's own width became a token
+   (`--gog-input-spin-width`, previously a `calc()` inline in the stylesheet), and a
+   `--spin-clear` wrapper modifier offsets the clear button and widens the text gutter by
+   exactly that. Verified live: 8px gap between the two, gutter 57.6px with both and 36px with
+   the stepper alone, and the extra gutter appears and disappears with the clear button.
+2. **`gog-calendar` ignored `GOG_CONFIG.datepicker`.** The config doc has always said `locale`
+   and `firstDayOfWeek` apply to `gog-calendar` too; only `gog-datepicker` read them, so a
+   standalone calendar in a `uk-UA` app rendered in `en-US`. The calendar now resolves both
+   itself. Rendered through `gog-datepicker` nothing changes — it passes its own resolved
+   values, which win and resolve identically.
+3. **`gog-paginator`'s per-page names were unreachable.** Fixed with
+   `GOG_CONFIG.labels.page: (page, isCurrent) => string`. A function, and the only one in that
+   block: a `{0}`-style placeholder string would be a second, weaker formatting language, and
+   one that cannot express languages where the number's position or the surrounding grammar
+   depends on its value. Documented as such in `config.ts`.
+4. **`aria-describedby` pointing at an unrendered element** — folded into iteration 2, see there.
+5. **`npm run check:tokens` and `npm run format:check` were both red on `master`** before any of
+   this work: `token-names.ts` stale by 18 tokens, two literal `var()` fallbacks in
+   `textarea.component.scss`, and three files prettier wanted to rewrap. All fixed; CI's three
+   checks (lint → format → tokens) are green together for the first time in this branch's
+   history.
+
+`ui-showcase` gained a "Native attributes" card and a clearable number field on the inputfield
+page — the combination had no live example, which is why the slot collision went unnoticed.
+
+---
+
 ## Iteration 5 — Icon registry
 
 **Why:** `icon.component.ts:36` types `name` as `GogIconName`, a closed union of 20 lucide
@@ -380,11 +417,5 @@ and the same visuals as `<gog-button>` in all variants and sizes.
 - **`DIALOG_DATA` typing.** `dialog.tokens.ts:3` is `InjectionToken<unknown>`, so every dialog
   component casts on injection. A generic `DialogService.open<TData, TResult>()` threading the
   type through would be nicer, but the cast is a one-liner and Material has the same wart.
-- **No clear button on a `type="number"` field.** The spin buttons and the clear button share
-  `gog-inputfield`'s end slot and the spin branch wins, so `clearable` is a no-op on a number
-  field unless `showSpinButtons` is off. Found while writing iteration 4's specs. Fixing it
-  means deciding how two controls share one slot — a layout change, not a binding change.
-- **`gog-paginator`'s per-page labels.** "Go to page 4" / "Page 4, current page" interpolate the
-  page number, so `GOG_CONFIG.labels` (plain strings) can't carry them. They need a function —
-  `(page: number, isCurrent: boolean) => string` — which is a different API shape and deserves
-  its own decision about whether the library takes format functions at all.
+- ~~**No clear button on a `type="number"` field.**~~ Fixed — see "Follow-ups" below.
+- ~~**`gog-paginator`'s per-page labels.**~~ Fixed — see "Follow-ups" below.

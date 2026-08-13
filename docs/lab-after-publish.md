@@ -77,15 +77,17 @@ Worth mentioning in `theming.md` that `@guildofgleks/ui/styles/*` now also resol
   `themeService.theme` as `// WritableSignal<string>`. It is now a read-only `Signal<string>`;
   writing to it was the bug this fixed. Update the comment, and note that `setTheme`/
   `toggleTheme` are the only way to change it.
-- **`…/calendar-doc-page/calendar-doc-page.html`** (~line 91) — says `gog-calendar` "does not
-  read `GOG_CONFIG` itself". It does now, for its **labels**. Still true for `locale` and
-  `firstDayOfWeek`, so the sentence needs narrowing rather than deleting — and `gog-calendar`
-  not honouring `GOG_CONFIG.datepicker.locale` while the config doc claims the key applies to
-  it is a real library inconsistency worth filing separately.
+- **`…/calendar-doc-page/calendar-doc-page.html`** (~line 91) — a whole paragraph built on
+  `gog-calendar` "not reading `GOG_CONFIG` itself", telling the reader to set `locale` and
+  `firstDayOfWeek` per instance or resolve them from `GOG_CONFIG.datepicker` by hand. That was
+  the library bug, not a design choice, and 21.3.2 fixes it: the calendar now resolves both
+  itself, and its labels from `GOG_CONFIG.labels`. **Delete the caveat and replace it with the
+  ordinary instance → config → default sentence** the other component pages use — the advice as
+  written now tells people to do work the component does for them.
 
 ### 2.3 New API to document
 
-- **`GOG_CONFIG.labels`** (23 keys) and **`GOG_CONFIG.theme`** (`storageKey`, `defaultTheme`,
+- **`GOG_CONFIG.labels`** (24 keys) and **`GOG_CONFIG.theme`** (`storageKey`, `defaultTheme`,
   `followSystem`, `lightTheme`, `darkTheme`) — both need rows in `global-config.md`'s table and
   a worked example. `labels` is the answer to "how do I translate this library", which is a FAQ
   entry too (`public/docs/faq.md`).
@@ -95,6 +97,16 @@ Worth mentioning in `theming.md` that `@guildofgleks/ui/styles/*` now also resol
   deliberately not forwarded, and why.
 - **`gog-textarea`** — `readonly`, `maxlength`, `minlength`, `spellcheck`.
 - **`gog-multiselect`** — `selectAllLabel`, `clearAllLabel`.
+- **`gog-calendar`** — `hoursLabel` / `minutesLabel` / `secondsLabel`, and the fact that it now
+  resolves `locale` / `firstDayOfWeek` from `GOG_CONFIG.datepicker` on its own (see §2.2).
+- **`gog-inputfield`, number fields** — `clearable` and the stepper now coexist; the clear
+  button sits left of the stepper and the gutter widens for the pair. Previously `clearable`
+  was a no-op on `type="number"` unless `showSpinButtons` was off, so any lab example that
+  worked around that can be simplified. `ui-showcase`'s inputfield page has a worked example
+  (`Weight (clearable)`) to copy from.
+- **`gog-paginator`** — the per-page button names come from `GOG_CONFIG.labels.page`, a
+  `(page, isCurrent) => string` formatter. This is the one entry in `labels` that is not a
+  plain string, so it needs its own line in the config table rather than being lumped in.
 - **Accessibility note, probably on the getting-started or FAQ page** — form controls now
   generate their own `id`, so `inputId` is only needed when something outside the component has
   to reference the field. Previously omitting it silently produced an unlabelled field.
