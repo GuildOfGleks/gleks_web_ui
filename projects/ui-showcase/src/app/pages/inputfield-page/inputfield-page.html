@@ -78,6 +78,55 @@
         [showSpinButtons]="false"
         [(value)]="price"
       />
+      <gog-inputfield
+        label="Weight (clearable)"
+        inputId="weight"
+        type="number"
+        [clearable]="true"
+        [(value)]="weight"
+      />
+    </div>
+    <p class="hint">
+      The third field is both — the clear button appears left of the stepper once there is a value
+      to clear, and the field's text gutter widens to fit both. Clearing writes
+      <code>null</code> to an attached form control, matching what emptying the field by hand does.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Native attributes</h3>
+    <p class="lead">
+      The field forwards the native attribute space of the <code>&lt;input&gt;</code> it wraps:
+      <code>readonly</code>, <code>maxlength</code>, <code>minlength</code>, <code>pattern</code>,
+      <code>inputMode</code> and <code>spellcheck</code>, plus the <code>type</code> values that
+      render as a text field. <code>readonly</code> keeps the value focusable and submitted but
+      blocks edits — so the clear button and the stepper both stand down while it is on.
+    </p>
+    <div class="field-grid">
+      <gog-inputfield
+        label="Phone"
+        inputId="phone"
+        type="tel"
+        inputMode="tel"
+        placeholder="+7 900 000-00-00"
+        [(value)]="phone"
+      />
+      <gog-inputfield
+        label="Postcode"
+        inputId="postcode"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        [maxlength]="6"
+        [spellcheck]="false"
+        [(value)]="postcode"
+      />
+      <gog-inputfield
+        label="Account (read-only)"
+        inputId="account"
+        [readonly]="true"
+        [clearable]="true"
+        [(value)]="account"
+      />
     </div>
   </article>
 

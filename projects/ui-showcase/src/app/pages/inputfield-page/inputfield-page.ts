@@ -64,6 +64,10 @@ export class InputfieldPage implements OnDestroy {
 
   protected readonly quantity = signal('3');
   protected readonly price = signal('');
+  protected readonly weight = signal('12.5');
+  protected readonly phone = signal('');
+  protected readonly postcode = signal('');
+  protected readonly account = signal('40817810099910004312');
   protected readonly priceEur = signal('49.99');
   protected readonly meetingDate = signal('');
 
