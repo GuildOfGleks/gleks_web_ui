@@ -153,6 +153,88 @@ export interface GogGlobalConfig {
     /** How long a non-sticky toast stays up, in ms. */
     duration?: number;
   };
+  /**
+   * Every fixed, user-visible string the library renders — button text and accessible names for
+   * chrome the consumer never writes markup for.
+   *
+   * These are here rather than as one input per string because they are the definition of a
+   * setting an app states once: a Russian-language app relabels "Clear" once, not on all 340
+   * fields. Where a per-instance input already exists (`clearAriaLabel`, `todayLabel`, …) it
+   * still wins for that one control — the usual instance → config → default order.
+   *
+   * Deliberately excludes anything that is *content* rather than chrome: `gog-checkbox`'s
+   * `ariaLabel`, `gog-button`'s `ariaLabel`, a field's `label` or `placeholder`. Those differ
+   * per instance by definition and have no meaningful app-wide value.
+   */
+  labels?: {
+    /** Clear button on `gog-inputfield` / `gog-textarea`. */
+    clear?: string;
+    /**
+     * Clear button on `gog-select` / `gog-multiselect` / `gog-autocomplete`, which clears a
+     * selection rather than text.
+     */
+    clearSelection?: string;
+    /** Clear button on `gog-datepicker`. */
+    clearDate?: string;
+    /** `gog-multiselect`'s select-all / clear-all buttons — visible text, not just a label. */
+    selectAll?: string;
+    clearAll?: string;
+    /** `gog-inputfield`'s number spin buttons. */
+    increment?: string;
+    decrement?: string;
+    /** `gog-inputfield`'s password reveal toggle, in its two states. */
+    showPassword?: string;
+    hidePassword?: string;
+    /** Close buttons on the two service-driven overlays. */
+    closeDialog?: string;
+    closeToast?: string;
+    /**
+     * `gog-paginator`'s `<nav>` accessible name and its two step buttons.
+     *
+     * The per-page button labels ("Go to page 4") are **not** here: they interpolate the page
+     * number, so a translation needs a function, not a string — see the backlog note in
+     * `docs/consumer-dx-plan.md`.
+     */
+    pagination?: string;
+    previousPage?: string;
+    nextPage?: string;
+    /** `gog-datepicker`'s button that opens the calendar panel. */
+    openCalendar?: string;
+    /** `gog-calendar` navigation and shortcuts. */
+    today?: string;
+    thisMonth?: string;
+    previousMonth?: string;
+    nextMonth?: string;
+    previousYear?: string;
+    nextYear?: string;
+    /** `gog-calendar`'s time section. */
+    hours?: string;
+    minutes?: string;
+    seconds?: string;
+  };
+  /**
+   * Applies to `ThemeService`. Every field is off/neutral by default, so an app that configures
+   * nothing keeps the pre-21.3.2 behaviour: adopt whatever `data-theme` is already on `<html>`,
+   * else `'light'`.
+   */
+  theme?: {
+    /**
+     * `localStorage` key the chosen theme is written to and read back from. Unset, nothing is
+     * persisted and the theme resets on every load.
+     */
+    storageKey?: string | null;
+    /** Theme applied when nothing else decides. `'light'` by default. */
+    defaultTheme?: string;
+    /**
+     * Whether to fall back to the OS `prefers-color-scheme` setting — and to keep following it
+     * until the app calls `setTheme`/`toggleTheme`. Off by default: switching this on changes
+     * which theme an existing app opens in.
+     */
+    followSystem?: boolean;
+    /** Theme names `toggleTheme()` alternates between, and `followSystem` maps the OS setting to. */
+    lightTheme?: string;
+    darkTheme?: string;
+  };
 }
 
 /**

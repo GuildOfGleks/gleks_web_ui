@@ -8,9 +8,13 @@ import {
 } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { DIALOG_DATA, DIALOG_REF } from './dialog.tokens';
+import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { DialogService, OpenDialog } from '../../services/dialog-service/dialog.service';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
+
+/** Built-in default, used when neither `DialogConfig` nor `GOG_CONFIG.labels` supplies one. */
+const DEFAULT_CLOSE_LABEL = 'Close dialog';
 
 @Component({
   selector: 'gog-dialog',
@@ -21,6 +25,7 @@ import { ScrollComponent } from '../scroll/scroll.component';
 })
 export class DialogComponent {
   protected readonly dialogService = inject(DialogService);
+  private readonly globalConfig = inject(GOG_CONFIG);
   private readonly parentInjector = inject(Injector);
   private readonly host = inject(ElementRef<HTMLElement>);
 
@@ -69,6 +74,15 @@ export class DialogComponent {
       );
     }
     return this.injectorCache.get(dialog)!;
+  }
+
+  /** Per-dialog config → `GOG_CONFIG.labels` → the built-in English default. */
+  protected closeLabel(dialog: OpenDialog): string {
+    return resolveConfigured(
+      dialog.config.closeAriaLabel,
+      this.globalConfig.labels?.closeDialog,
+      DEFAULT_CLOSE_LABEL,
+    );
   }
 
   protected getTitleId(dialog: OpenDialog): string {

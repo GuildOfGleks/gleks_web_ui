@@ -38,7 +38,7 @@
             <button
               type="button"
               class="gog-dialog__close gog-inline-center"
-              aria-label="Close dialog"
+              [attr.aria-label]="closeLabel(dialog)"
               (click)="close(dialog)"
             >
               <gog-icon

@@ -1,7 +1,23 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  model,
+} from '@angular/core';
 
+import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { ButtonComponent } from '../button/button.component';
 import { GogPaginatorRangeMode, GogSize } from '../../shared/types';
+
+/** Built-in defaults, used when neither the instance input nor `GOG_CONFIG.labels` supplies one. */
+const DEFAULT_LABELS = {
+  pagination: 'Pagination',
+  previousPage: 'Previous page',
+  nextPage: 'Next page',
+} as const;
 
 @Component({
   selector: 'gog-paginator',
@@ -12,7 +28,7 @@ import { GogPaginatorRangeMode, GogSize } from '../../shared/types';
   host: {
     class: 'gog-paginator',
     role: 'navigation',
-    '[attr.aria-label]': 'ariaLabel()',
+    '[attr.aria-label]': 'resolvedAriaLabel()',
     // Drives the :host(.gog-host--auto-width) rule in the stylesheet — without this
     // binding the `fullWidth` input has no visible effect. Inverted from gog-button's
     // full-width class: this control is full width by default, so the class only
@@ -48,7 +64,36 @@ export class PaginatorComponent {
   readonly siblingCount = input(2);
   readonly size = input<GogSize>('sm');
   readonly disabled = input(false);
-  readonly ariaLabel = input('Pagination');
+  /**
+   * Accessible name of the `<nav>`. Unset, falls back to `GOG_CONFIG.labels.pagination`, then
+   * to `'Pagination'`.
+   */
+  readonly ariaLabel = input<string | undefined>(undefined);
+
+  private readonly globalConfig = inject(GOG_CONFIG);
+
+  /** Instance input → `GOG_CONFIG.labels` → the built-in English default. */
+  protected readonly resolvedAriaLabel = computed(() =>
+    resolveConfigured(
+      this.ariaLabel(),
+      this.globalConfig.labels?.pagination,
+      DEFAULT_LABELS.pagination,
+    ),
+  );
+  /**
+   * The two step buttons. Config-only: unlike the `<nav>` name, these say the same thing on
+   * every paginator in an app, so a per-instance input would be dead weight.
+   */
+  protected readonly resolvedPreviousLabel = computed(() =>
+    resolveConfigured(
+      undefined,
+      this.globalConfig.labels?.previousPage,
+      DEFAULT_LABELS.previousPage,
+    ),
+  );
+  protected readonly resolvedNextLabel = computed(() =>
+    resolveConfigured(undefined, this.globalConfig.labels?.nextPage, DEFAULT_LABELS.nextPage),
+  );
 
   protected readonly pageNumbers = computed(() => {
     const total = Math.max(1, this.totalPages());

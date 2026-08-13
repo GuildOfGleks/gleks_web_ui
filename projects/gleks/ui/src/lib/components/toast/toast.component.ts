@@ -1,5 +1,6 @@
 import {
   afterNextRender,
+  inject,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -14,6 +15,10 @@ import {
 import { ButtonComponent } from '../button/button.component';
 import { Toast, ToastAction } from '../../services/toast-service/toast-service';
 import { IconComponent } from '../icon/icon.component';
+import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+
+/** Built-in default, used when `GOG_CONFIG.labels.closeToast` is unset. */
+const DEFAULT_CLOSE_LABEL = 'Close toast';
 
 @Component({
   selector: 'gog-toast',
@@ -21,11 +26,14 @@ import { IconComponent } from '../icon/icon.component';
   templateUrl: './toast.component.html',
   styleUrl: './toast.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    '[attr.role]': 'ariaRole()',
-    '[attr.aria-live]': 'ariaLive()',
-    '[attr.aria-atomic]': 'true',
-  },
+  /*
+   * Deliberately carries no `role`/`aria-live` of its own. A live region has to be in the DOM
+   * *before* the content it announces lands inside it; this element is created together with
+   * its own text, which screen readers routinely skip. `gog-toast-container` owns two
+   * permanently-mounted regions instead (see `announcements` there), so what reaches assistive
+   * tech does not depend on the timing of a node insertion. Keeping a role here as well would
+   * announce every toast twice, once per region.
+   */
 })
 export class ToastComponent implements OnDestroy {
   readonly toast = input.required<Toast>();
@@ -42,15 +50,18 @@ export class ToastComponent implements OnDestroy {
 
   private readonly progressEl = viewChild<ElementRef<HTMLElement>>('progress');
 
+  private readonly globalConfig = inject(GOG_CONFIG);
+  /**
+   * `GOG_CONFIG.labels` → the built-in English default. No per-instance input: a toast is
+   * created through `ToastService`, and its close button says the same thing every time.
+   */
+  protected readonly closeLabel = resolveConfigured(
+    undefined,
+    this.globalConfig.labels?.closeToast,
+    DEFAULT_CLOSE_LABEL,
+  );
+
   protected readonly hasActions = computed(() => this.toast().actions.length > 0);
-
-  protected readonly ariaRole = computed(() =>
-    ['error', 'warning'].includes(this.toast().type) ? 'alert' : 'status',
-  );
-
-  protected readonly ariaLive = computed(() =>
-    ['error', 'warning'].includes(this.toast().type) ? 'assertive' : 'polite',
-  );
 
   constructor() {
     afterNextRender(() => this.visible.set(true));

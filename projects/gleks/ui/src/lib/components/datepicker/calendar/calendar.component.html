@@ -2,7 +2,7 @@
   <button
     type="button"
     class="gog-calendar__nav gog-inline-center"
-    [attr.aria-label]="previousYearLabel()"
+    [attr.aria-label]="resolvedLabels().previousYear"
     (click)="shiftViewYears(-1)"
   >
     <gog-icon name="chevron-left" />
@@ -11,7 +11,7 @@
   <button
     type="button"
     class="gog-calendar__nav gog-inline-center"
-    [attr.aria-label]="previousMonthLabel()"
+    [attr.aria-label]="resolvedLabels().previousMonth"
     (click)="shiftView(-1)"
   >
     <gog-icon name="chevron-left" />
@@ -26,7 +26,7 @@
   <button
     type="button"
     class="gog-calendar__nav gog-inline-center"
-    [attr.aria-label]="nextMonthLabel()"
+    [attr.aria-label]="resolvedLabels().nextMonth"
     (click)="shiftView(1)"
   >
     <gog-icon name="chevron-right" />
@@ -34,7 +34,7 @@
   <button
     type="button"
     class="gog-calendar__nav gog-inline-center"
-    [attr.aria-label]="nextYearLabel()"
+    [attr.aria-label]="resolvedLabels().nextYear"
     (click)="shiftViewYears(1)"
   >
     <gog-icon name="chevron-right" />
@@ -110,7 +110,7 @@
       [min]="minHour()"
       [max]="maxHour()"
       [value]="hours()"
-      aria-label="Hours"
+      [attr.aria-label]="resolvedLabels().hours"
       (input)="onHourInput($event)"
     />
     <span class="gog-calendar__time-sep" aria-hidden="true">:</span>
@@ -121,7 +121,7 @@
       max="59"
       [step]="minuteStep()"
       [value]="minutes()"
-      aria-label="Minutes"
+      [attr.aria-label]="resolvedLabels().minutes"
       (input)="onMinuteInput($event)"
     />
 
@@ -133,7 +133,7 @@
         min="0"
         max="59"
         [value]="seconds()"
-        aria-label="Seconds"
+        [attr.aria-label]="resolvedLabels().seconds"
         (input)="onSecondInput($event)"
       />
     }
@@ -164,7 +164,7 @@
         class="gog-calendar__action gog-calendar__action--this-month"
         (click)="goToThisMonth()"
       >
-        {{ thisMonthLabel() }}
+        {{ resolvedLabels().thisMonth }}
       </button>
     }
 
@@ -175,7 +175,7 @@
         [disabled]="!isTodaySelectable()"
         (click)="selectToday()"
       >
-        {{ todayLabel() }}
+        {{ resolvedLabels().today }}
       </button>
     }
   </div>

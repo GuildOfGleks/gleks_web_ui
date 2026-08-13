@@ -62,7 +62,7 @@
         <button
           type="button"
           class="gog-autocomplete__clear gog-inline-center"
-          [attr.aria-label]="clearAriaLabel()"
+          [attr.aria-label]="resolvedClearLabel()"
           (mousedown)="onOptionMousedown($event)"
           (click)="clearValue($event)"
         >

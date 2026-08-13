@@ -2,7 +2,7 @@
   variant="ghost"
   [size]="size()"
   [disabled]="disabled() || page() === 1"
-  ariaLabel="Previous page"
+  [ariaLabel]="resolvedPreviousLabel()"
   (gogClick)="prev()"
   >‹</gog-button
 >
@@ -26,7 +26,7 @@
   variant="ghost"
   [size]="size()"
   [disabled]="disabled() || page() === totalPages()"
-  ariaLabel="Next page"
+  [ariaLabel]="resolvedNextLabel()"
   (gogClick)="next()"
   >›</gog-button
 >

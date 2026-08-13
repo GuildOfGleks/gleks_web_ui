@@ -17,7 +17,9 @@ export class GogClearableState {
   /**
    * @param clearableInput the control's own `clearable` input (`undefined` when unset)
    * @param hasValue whether there is anything to clear
-   * @param isDisabled whether the control is disabled — a disabled field offers no clear button
+   * @param isNotEditable whether the control currently refuses edits — disabled, or (for the
+   *   text controls) read-only. Either way it offers no clear button: the affordance would
+   *   promise a change the control won't accept.
    * @param config the injected `GOG_CONFIG`
    * @param fallback the control's own default, read lazily — `GogDropdownBase` constructs this
    *   in a field initializer, before its subclass has assigned `clearableByDefault`. `false`
@@ -27,7 +29,7 @@ export class GogClearableState {
   constructor(
     private readonly clearableInput: Signal<boolean | undefined>,
     private readonly hasValue: Signal<boolean>,
-    private readonly isDisabled: Signal<boolean>,
+    private readonly isNotEditable: Signal<boolean>,
     private readonly config: GogGlobalConfig,
     private readonly fallback: () => boolean,
   ) {}
@@ -42,5 +44,5 @@ export class GogClearableState {
    * shows nothing to clear until there is something to clear, so the affordance appears with the
    * content rather than sitting there permanently as dead chrome.
    */
-  readonly isVisible = computed(() => this.enabled() && this.hasValue() && !this.isDisabled());
+  readonly isVisible = computed(() => this.enabled() && this.hasValue() && !this.isNotEditable());
 }

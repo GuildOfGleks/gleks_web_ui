@@ -73,7 +73,7 @@
       <button
         type="button"
         class="gog-select__clear gog-inline-center"
-        [attr.aria-label]="clearAriaLabel()"
+        [attr.aria-label]="resolvedClearLabel()"
         (click)="clearValue($event)"
       >
         <gog-icon name="close" />

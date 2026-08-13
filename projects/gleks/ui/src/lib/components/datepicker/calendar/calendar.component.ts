@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 
 import { IconComponent } from '../../icon/icon.component';
+import { GOG_CONFIG, resolveConfigured } from '../../../shared/config';
 import { GogDateSelectionMode, GogHourFormat, GogSize } from '../../../shared/types';
 import {
   type GogDateRange,
@@ -52,6 +53,23 @@ export interface GogCalendarDay {
 }
 
 const DEFAULT_LOCALE = 'en-US';
+
+/**
+ * Built-in defaults for every fixed string the grid renders, used when neither the matching
+ * input nor `GOG_CONFIG.labels` supplies one. Kept as one object so `resolvedLabels` stays a
+ * single `computed` instead of nine, and so the set is obvious at a glance.
+ */
+const DEFAULT_LABELS = {
+  today: 'Today',
+  thisMonth: 'This month',
+  previousMonth: 'Previous month',
+  nextMonth: 'Next month',
+  previousYear: 'Previous year',
+  nextYear: 'Next year',
+  hours: 'Hours',
+  minutes: 'Minutes',
+  seconds: 'Seconds',
+} as const;
 
 /**
  * The month grid behind `gog-datepicker`, usable on its own for an always-visible calendar.
@@ -114,17 +132,66 @@ export class CalendarComponent {
    */
   readonly showThisMonthButton = input(false);
   readonly size = input<GogSize>('md');
-  readonly todayLabel = input('Today');
-  readonly thisMonthLabel = input('This month');
-  readonly previousMonthLabel = input('Previous month');
-  readonly nextMonthLabel = input('Next month');
-  readonly previousYearLabel = input('Previous year');
-  readonly nextYearLabel = input('Next year');
+  /**
+   * Navigation, shortcut and time-section labels. Each falls back to the matching
+   * `GOG_CONFIG.labels` field when unset, then to the built-in English default — an app
+   * translating the calendar sets them once rather than on every field.
+   */
+  readonly todayLabel = input<string | undefined>(undefined);
+  readonly thisMonthLabel = input<string | undefined>(undefined);
+  readonly previousMonthLabel = input<string | undefined>(undefined);
+  readonly nextMonthLabel = input<string | undefined>(undefined);
+  readonly previousYearLabel = input<string | undefined>(undefined);
+  readonly nextYearLabel = input<string | undefined>(undefined);
+  readonly hoursLabel = input<string | undefined>(undefined);
+  readonly minutesLabel = input<string | undefined>(undefined);
+  readonly secondsLabel = input<string | undefined>(undefined);
 
   /** Emitted when a selection is *complete* — a day in single mode, both ends of a range. */
   readonly gogDateSelect = output<GogDatepickerValue>();
 
   private readonly elRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly globalConfig = inject(GOG_CONFIG);
+
+  /**
+   * Every rendered string, resolved instance input → `GOG_CONFIG.labels` → built-in default.
+   * `gog-datepicker` forwards its own `todayLabel`/`thisMonthLabel` as `undefined` when unset
+   * precisely so this resolution happens here, once, rather than being pre-empted upstream.
+   */
+  protected readonly resolvedLabels = computed(() => {
+    const configured = this.globalConfig.labels ?? {};
+    return {
+      today: resolveConfigured(this.todayLabel(), configured.today, DEFAULT_LABELS.today),
+      thisMonth: resolveConfigured(
+        this.thisMonthLabel(),
+        configured.thisMonth,
+        DEFAULT_LABELS.thisMonth,
+      ),
+      previousMonth: resolveConfigured(
+        this.previousMonthLabel(),
+        configured.previousMonth,
+        DEFAULT_LABELS.previousMonth,
+      ),
+      nextMonth: resolveConfigured(
+        this.nextMonthLabel(),
+        configured.nextMonth,
+        DEFAULT_LABELS.nextMonth,
+      ),
+      previousYear: resolveConfigured(
+        this.previousYearLabel(),
+        configured.previousYear,
+        DEFAULT_LABELS.previousYear,
+      ),
+      nextYear: resolveConfigured(
+        this.nextYearLabel(),
+        configured.nextYear,
+        DEFAULT_LABELS.nextYear,
+      ),
+      hours: resolveConfigured(this.hoursLabel(), configured.hours, DEFAULT_LABELS.hours),
+      minutes: resolveConfigured(this.minutesLabel(), configured.minutes, DEFAULT_LABELS.minutes),
+      seconds: resolveConfigured(this.secondsLabel(), configured.seconds, DEFAULT_LABELS.seconds),
+    };
+  });
 
   /** First of the leftmost visible month. */
   private readonly viewMonth = signal<Date>(startOfDay(new Date()));

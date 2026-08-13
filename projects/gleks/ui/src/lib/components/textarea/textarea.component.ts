@@ -16,6 +16,7 @@ import {
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+import { nextGogControlId } from '../../shared/control-id';
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
 import { GogClearableState } from '../../shared/clearable-state';
 import { GogFloatLabelState } from '../../shared/float-label-state';
@@ -27,6 +28,7 @@ const DEFAULT_SIZE: GogSize = 'md';
 const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
 /** Matches the native `<textarea>`'s own out-of-the-box behaviour. */
 const DEFAULT_RESIZE: GogTextareaResize = 'vertical';
+const DEFAULT_CLEAR_LABEL = 'Clear';
 
 @Component({
   selector: 'gog-textarea',
@@ -52,12 +54,27 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
    */
   readonly errorDisplay = input<GogErrorDisplay | undefined>(undefined);
   readonly name = input('');
+  /**
+   * The `<textarea>`'s `id`. Left unset, the field generates one — see
+   * `gog-inputfield`'s own `inputId` for why that is the default rather than an opt-in.
+   */
   readonly inputId = input('');
   readonly disabled = input(false);
+  /**
+   * Native `readonly` — see `gog-inputfield`'s own `readonly` for how it differs from
+   * `disabled`. Suppresses the clear button while on.
+   */
+  readonly readonly = input(false);
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   readonly size = input<GogSize | undefined>(undefined);
   /** Native `rows` attribute, controlling the field's initial height. */
   readonly rows = input(4);
+  /** Native `maxlength`. Unset (`null`), no limit is applied. */
+  readonly maxlength = input<number | null>(null);
+  /** Native `minlength`. Unset (`null`), no minimum is applied. */
+  readonly minlength = input<number | null>(null);
+  /** Native `spellcheck`. Unset (`null`), the browser's own default applies. */
+  readonly spellcheck = input<boolean | null>(null);
   /**
    * Which direction(s) the field's own drag handle resizes it in — matches the native CSS
    * `resize` value space (`'vertical'`, `'horizontal'`, `'both'`, `'none'`). Unset, falls back
@@ -76,8 +93,8 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
    * `GOG_CONFIG.control.clearable`, then to `false`.
    */
   readonly clearable = input<boolean | undefined>(undefined);
-  /** Accessible name for the clear button. */
-  readonly clearAriaLabel = input('Clear');
+  /** Accessible name for the clear button. Unset, falls back to `GOG_CONFIG.labels.clear`. */
+  readonly clearAriaLabel = input<string | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.variant`, then to `'none'` (off). */
   readonly floatLabel = input<GogFloatLabelVariant | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.showPlaceholder`, then to `false`. */
@@ -141,8 +158,23 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
   );
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
+  /** Disabled and read-only both refuse edits — see `gog-inputfield`. */
+  protected readonly isNotEditable = computed(() => this.isDisabled() || this.readonly());
+  /** Instance input → `GOG_CONFIG.labels` → the built-in English default. */
+  protected readonly resolvedClearLabel = computed(() =>
+    resolveConfigured(this.clearAriaLabel(), this.globalConfig.labels?.clear, DEFAULT_CLEAR_LABEL),
+  );
   protected readonly hasError = this.errorState.hasError;
   protected readonly visibleError = this.errorState.visibleError;
+
+  /** Fallback id, generated once per instance — see `resolvedInputId`. */
+  private readonly autoId = nextGogControlId('gog-textarea');
+  /** The consumer's `inputId` when given, otherwise the generated one. Never empty. */
+  protected readonly resolvedInputId = computed(() => this.inputId() || this.autoId);
+  /** Non-null only while the error element is actually rendered — see `gog-inputfield`. */
+  protected readonly errorId = computed(() =>
+    this.visibleError() ? `${this.resolvedInputId()}-error` : null,
+  );
 
   private readonly floatLabelState = new GogFloatLabelState(
     this.floatLabel,
@@ -157,7 +189,7 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
   private readonly clearableState = new GogClearableState(
     this.clearable,
     computed(() => this.value() !== ''),
-    this.isDisabled,
+    this.isNotEditable,
     this.globalConfig,
     () => false,
   );

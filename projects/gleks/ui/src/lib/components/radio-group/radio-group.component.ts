@@ -10,6 +10,7 @@ import {
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { GogOrientation, GogSize } from '../../shared/types';
+import { nextGogControlId } from '../../shared/control-id';
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 
@@ -44,8 +45,7 @@ export interface GogRadioOption {
   },
 })
 export class RadioGroupComponent implements ControlValueAccessor {
-  private static nextUid = 0;
-  protected readonly uid = `gog-radio-group-${++RadioGroupComponent.nextUid}`;
+  protected readonly uid = nextGogControlId('gog-radio-group');
 
   readonly options = input<GogRadioOption[]>([]);
   readonly label = input('');

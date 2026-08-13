@@ -951,6 +951,16 @@
   --gog-textarea-resize-grip-opacity: 0.8;
   --gog-textarea-resize-grip-stripe-width: 1.5px;
   --gog-textarea-resize-grip-stripe-gap: 3px;
+  --gog-textarea-resize-grip-offset: 3px;
+  /*
+     Both default to 0 and are overwritten per instance, as an inline style on the field, from
+     the component's own ResizeObserver — they close the gap that opens once the field has been
+     dragged narrower/shorter than its container. Declared here rather than left to a `var()`
+     fallback so the grip's resting geometry is discoverable in this file like everything else;
+     an inline style outranks this declaration, so the per-instance override still wins.
+  */
+  --gog-textarea-resize-inset-right: 0px;
+  --gog-textarea-resize-inset-bottom: 0px;
   --gog-input-clear-inset: 8px;
   --gog-input-float-label-reserve: var(--gog-field-float-label-reserve);
   --gog-input-float-label-in-top: var(--gog-field-float-label-in-top);

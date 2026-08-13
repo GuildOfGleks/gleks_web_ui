@@ -15,6 +15,11 @@ export interface DialogConfig {
   maxWidth?: string;
   /** ARIA role for the dialog panel. Use 'alertdialog' for confirmation prompts. Default: 'dialog' */
   role?: 'dialog' | 'alertdialog';
+  /**
+   * Accessible name for the close button. Unset, falls back to `GOG_CONFIG.labels.closeDialog`,
+   * then to `'Close dialog'`.
+   */
+  closeAriaLabel?: string;
   /** z-index of the dialog backdrop. Dropdowns inside get zIndex+10. Default: 1000 */
   zIndex?: number;
 }

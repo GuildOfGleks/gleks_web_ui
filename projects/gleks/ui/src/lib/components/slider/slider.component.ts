@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
+import { nextGogControlId } from '../../shared/control-id';
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 
@@ -57,8 +58,7 @@ function digitLength(value: number, decimals: number): number {
   },
 })
 export class SliderComponent implements ControlValueAccessor, DoCheck {
-  private static nextId = 0;
-  protected readonly inputId = `gog-slider-${++SliderComponent.nextId}`;
+  protected readonly inputId = nextGogControlId('gog-slider');
 
   readonly label = input('');
   readonly min = input(0);

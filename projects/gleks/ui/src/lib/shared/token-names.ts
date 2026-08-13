@@ -301,6 +301,7 @@ export type GogTokenName =
   | '--gog-calendar-focus-ring-offset'
   | '--gog-calendar-focus-ring-width'
   | '--gog-calendar-font-family'
+  | '--gog-calendar-footer-gap'
   | '--gog-calendar-header-gap'
   | '--gog-calendar-header-margin'
   | '--gog-calendar-lg-day-size'
@@ -644,6 +645,7 @@ export type GogTokenName =
   | '--gog-input-padding-y'
   | '--gog-input-placeholder-color'
   | '--gog-input-radius'
+  | '--gog-input-spin-hover-bg'
   | '--gog-input-transition-duration'
   | '--gog-ms-actions-gap'
   | '--gog-ms-actions-inset'
@@ -873,8 +875,10 @@ export type GogTokenName =
   | '--gog-scroll-fade-duration'
   | '--gog-scroll-focus-ring'
   | '--gog-scroll-focus-ring-width'
+  | '--gog-scroll-normal-thumb-hit-padding'
   | '--gog-scroll-normal-thumb-min-size'
   | '--gog-scroll-normal-track-width'
+  | '--gog-scroll-thin-thumb-hit-padding'
   | '--gog-scroll-thin-thumb-min-size'
   | '--gog-scroll-thin-track-width'
   | '--gog-scroll-thumb-active-bg'
@@ -1209,6 +1213,14 @@ export type GogTokenName =
   | '--gog-text-xl'
   | '--gog-text-xs'
   | '--gog-textarea-clear-icon-ratio'
+  | '--gog-textarea-resize-grip-color'
+  | '--gog-textarea-resize-grip-offset'
+  | '--gog-textarea-resize-grip-opacity'
+  | '--gog-textarea-resize-grip-size'
+  | '--gog-textarea-resize-grip-stripe-gap'
+  | '--gog-textarea-resize-grip-stripe-width'
+  | '--gog-textarea-resize-inset-bottom'
+  | '--gog-textarea-resize-inset-right'
   | '--gog-textarea-scrollbar-width'
   | '--gog-toast-accent-width'
   | '--gog-toast-action-font-size'
@@ -1724,6 +1736,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-calendar-focus-ring-offset',
       '--gog-calendar-focus-ring-width',
       '--gog-calendar-font-family',
+      '--gog-calendar-footer-gap',
       '--gog-calendar-header-gap',
       '--gog-calendar-header-margin',
       '--gog-calendar-lg-day-size',
@@ -2134,8 +2147,17 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-input-label-text-transform',
       '--gog-input-placeholder-color',
       '--gog-input-radius',
+      '--gog-input-spin-hover-bg',
       '--gog-input-transition-duration',
       '--gog-textarea-clear-icon-ratio',
+      '--gog-textarea-resize-grip-color',
+      '--gog-textarea-resize-grip-offset',
+      '--gog-textarea-resize-grip-opacity',
+      '--gog-textarea-resize-grip-size',
+      '--gog-textarea-resize-grip-stripe-gap',
+      '--gog-textarea-resize-grip-stripe-width',
+      '--gog-textarea-resize-inset-bottom',
+      '--gog-textarea-resize-inset-right',
     ],
   },
   {
@@ -2346,8 +2368,10 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-scroll-fade-duration',
       '--gog-scroll-focus-ring',
       '--gog-scroll-focus-ring-width',
+      '--gog-scroll-normal-thumb-hit-padding',
       '--gog-scroll-normal-thumb-min-size',
       '--gog-scroll-normal-track-width',
+      '--gog-scroll-thin-thumb-hit-padding',
       '--gog-scroll-thin-thumb-min-size',
       '--gog-scroll-thin-track-width',
       '--gog-scroll-thumb-active-bg',

@@ -96,3 +96,31 @@ export type GogHourFormat = '12' | '24';
 
 /** Matches the native CSS `resize` value space, applied to `gog-textarea`'s field. */
 export type GogTextareaResize = 'vertical' | 'horizontal' | 'both' | 'none';
+
+/**
+ * The `type`s `gog-inputfield` renders as a single-line text-entry field.
+ *
+ * Deliberately not the whole native list: `checkbox`, `radio`, `range`, `file`, `color`,
+ * `submit`, `hidden` and friends are different controls with different markup and different
+ * accessibility contracts — the library ships `gog-checkbox`, `gog-radio-group`, `gog-slider`
+ * and `gog-button` for those rather than making one component shape-shift.
+ */
+export type GogInputType =
+  | 'text'
+  | 'password'
+  | 'email'
+  | 'number'
+  | 'search'
+  | 'tel'
+  | 'url'
+  | 'date'
+  | 'time'
+  | 'datetime-local';
+
+/**
+ * Mirrors the native `inputmode` attribute — the hint that decides which on-screen keyboard a
+ * touch device brings up. Worth setting whenever `type` alone doesn't imply it: a postcode or a
+ * card number is `type="text"` (no browser validation wanted) but `inputmode="numeric"`.
+ */
+export type GogInputMode =
+  'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url';

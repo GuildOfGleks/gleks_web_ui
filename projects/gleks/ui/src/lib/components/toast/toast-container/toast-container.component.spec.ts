@@ -85,4 +85,82 @@ describe('ToastContainerComponent', () => {
     const group = component.groups().find((g) => g.position === 'top-right');
     expect(group?.toasts.map((t) => t.id)).toEqual(['a', 'b']);
   });
+
+  describe('live regions', () => {
+    const politeRegion = () => fixture.nativeElement.querySelector('[aria-live="polite"]');
+    const assertiveRegion = () => fixture.nativeElement.querySelector('[aria-live="assertive"]');
+
+    /** Clears the toast the outer `beforeEach` seeds, so each case starts from an empty stack. */
+    async function withToasts(...toasts: Parameters<ToastService['show']>[0][]): Promise<void> {
+      const service = TestBed.inject(ToastService);
+      service.toasts.set([]);
+      for (const toast of toasts) service.show(toast);
+      fixture.detectChanges();
+      await fixture.whenStable();
+    }
+
+    it('mounts both regions before any toast exists', async () => {
+      // The whole point: a live region added at the same moment as its text is routinely
+      // skipped by screen readers, so these have to be present while the stack is still empty.
+      await withToasts();
+
+      expect(politeRegion()).toBeTruthy();
+      expect(assertiveRegion()).toBeTruthy();
+      expect(politeRegion().textContent.trim()).toBe('');
+      expect(assertiveRegion().textContent.trim()).toBe('');
+    });
+
+    it('routes an informational toast to the polite region', async () => {
+      await withToasts({ message: 'Saved', type: 'success' });
+
+      expect(politeRegion().textContent).toContain('Saved');
+      expect(assertiveRegion().textContent).not.toContain('Saved');
+    });
+
+    it('routes errors and warnings to the assertive region', async () => {
+      await withToasts(
+        { message: 'Upload failed', type: 'error' },
+        { message: 'Low disk space', type: 'warning' },
+      );
+
+      expect(assertiveRegion().textContent).toContain('Upload failed');
+      expect(assertiveRegion().textContent).toContain('Low disk space');
+      expect(politeRegion().textContent.trim()).toBe('');
+    });
+
+    it('drops the announcement when the toast is dismissed', async () => {
+      const service = TestBed.inject(ToastService);
+      service.toasts.set([]);
+      const id = service.show({ message: 'Saved', type: 'success' });
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(politeRegion().textContent).toContain('Saved');
+
+      service.dismiss(id);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(politeRegion().textContent).not.toContain('Saved');
+    });
+
+    it('does not announce a toast queued beyond maxVisiblePerPosition', async () => {
+      fixture.componentRef.setInput('maxVisiblePerPosition', 1);
+      await withToasts(
+        { message: 'First', type: 'info', position: 'top-right' },
+        { message: 'Second', type: 'info', position: 'top-right' },
+      );
+
+      expect(politeRegion().textContent).toContain('First');
+      expect(politeRegion().textContent).not.toContain('Second');
+    });
+
+    it('leaves the individual toast without a live region of its own', async () => {
+      await withToasts({ message: 'Saved', type: 'success' });
+
+      const toast = fixture.nativeElement.querySelector('gog-toast') as HTMLElement;
+      expect(toast).toBeTruthy();
+      expect(toast.getAttribute('aria-live')).toBeNull();
+      expect(toast.getAttribute('role')).toBeNull();
+    });
+  });
 });

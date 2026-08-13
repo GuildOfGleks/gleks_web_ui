@@ -48,6 +48,8 @@ const DEFAULT_DIRECTION: GogDropdownDirection = 'auto';
 const DEFAULT_LOCALE = 'en-US';
 const DEFAULT_DATE_FORMAT = 'dd.MM.yyyy';
 const DEFAULT_TIME_FORMAT = 'HH:mm';
+const DEFAULT_CLEAR_DATE_LABEL = 'Clear date';
+const DEFAULT_OPEN_CALENDAR_LABEL = 'Open calendar';
 /** Rough panel height fed into the up/down placement math before it is on screen. */
 const ESTIMATED_PANEL_HEIGHT = 330;
 
@@ -106,8 +108,13 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
    * selection alone. Off by default; see `gog-calendar` for why the two are separate controls.
    */
   readonly showThisMonthButton = input(false);
-  readonly todayLabel = input('Today');
-  readonly thisMonthLabel = input('This month');
+  /**
+   * Forwarded to `gog-calendar`. Left unset they stay `undefined` all the way down, so the
+   * calendar resolves them against `GOG_CONFIG.labels` itself rather than receiving an English
+   * default from here that would shadow the app's own.
+   */
+  readonly todayLabel = input<string | undefined>(undefined);
+  readonly thisMonthLabel = input<string | undefined>(undefined);
   /**
    * Display and parse pattern (`dd.MM.yyyy`, `yyyy-MM-dd`, …). Left unset it is derived from
    * `showTime`, so switching the time section on does not also require restating the format.
@@ -128,7 +135,8 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
   readonly disabled = input(false);
   readonly fullWidth = input(true);
   readonly clearable = input<boolean | undefined>(undefined);
-  readonly clearAriaLabel = input('Clear date');
+  /** Unset, falls back to `GOG_CONFIG.labels.clearDate`, then to `'Clear date'`. */
+  readonly clearAriaLabel = input<string | undefined>(undefined);
   readonly errorMessage = input('');
   readonly errorDisplay = input<GogErrorDisplay | undefined>(undefined);
   readonly size = input<GogSize | undefined>(undefined);
@@ -137,7 +145,8 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
   readonly appendToBody = input<boolean | undefined>(undefined);
   readonly dropdownDirection = input<GogDropdownDirection | undefined>(undefined);
   readonly dropdownZIndex = input<number | null>(null);
-  readonly openCalendarLabel = input('Open calendar');
+  /** Unset, falls back to `GOG_CONFIG.labels.openCalendar`, then to `'Open calendar'`. */
+  readonly openCalendarLabel = input<string | undefined>(undefined);
 
   /** Two-way bindable value: a `Date` in `'single'` mode, a `GogDateRange` in `'range'`. */
   readonly value = model<GogDatepickerValue>(null);
@@ -170,6 +179,21 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
   private readonly isEditing = signal(false);
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
+  /** Instance input → `GOG_CONFIG.labels` → the built-in English default. */
+  protected readonly resolvedClearLabel = computed(() =>
+    resolveConfigured(
+      this.clearAriaLabel(),
+      this.globalConfig.labels?.clearDate,
+      DEFAULT_CLEAR_DATE_LABEL,
+    ),
+  );
+  protected readonly resolvedOpenCalendarLabel = computed(() =>
+    resolveConfigured(
+      this.openCalendarLabel(),
+      this.globalConfig.labels?.openCalendar,
+      DEFAULT_OPEN_CALENDAR_LABEL,
+    ),
+  );
   protected readonly resolvedSize = computed(() =>
     resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),
   );

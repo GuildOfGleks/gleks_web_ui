@@ -113,6 +113,7 @@ const DEFAULT_APPEND_TO_BODY = false;
 const DEFAULT_DROPDOWN_DIRECTION: GogDropdownDirection = 'auto';
 const DEFAULT_FILTER = false;
 const DEFAULT_FILTER_POSITION: GogDropdownFilterPosition = 'top';
+const DEFAULT_CLEAR_SELECTION_LABEL = 'Clear selection';
 
 /**
  * Shared behaviour for the listbox-style controls: open/close, placement, the
@@ -161,8 +162,19 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    * `GOG_CONFIG.control.clearable`, then to the control's own default.
    */
   readonly clearable = input<boolean | undefined>(undefined);
-  /** Accessible name for the clear button. */
-  readonly clearAriaLabel = input('Clear selection');
+  /**
+   * Accessible name for the clear button. Unset, falls back to
+   * `GOG_CONFIG.labels.clearSelection`, then to `'Clear selection'`.
+   */
+  readonly clearAriaLabel = input<string | undefined>(undefined);
+  /** Instance input → `GOG_CONFIG.labels` → the built-in English default. */
+  protected readonly resolvedClearLabel = computed(() =>
+    resolveConfigured(
+      this.clearAriaLabel(),
+      this.globalConfig.labels?.clearSelection,
+      DEFAULT_CLEAR_SELECTION_LABEL,
+    ),
+  );
   /**
    * Smallest width the trigger may shrink to, as any CSS length. Only meaningful with
    * `[fullWidth]="false"`, where the trigger otherwise sizes to whatever is currently selected
@@ -309,7 +321,13 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   /** Estimated row height fed into the placement math; not a real layout property. */
   protected readonly optionHeightToken: string = '--gog-dropdown-option-height';
 
-  /** Unique per-instance suffix, so several dropdowns on a page can't collide on DOM ids. */
+  /**
+   * Unique per-instance suffix, so several dropdowns on a page can't collide on DOM ids.
+   *
+   * Deliberately a bare number rather than `nextGogControlId()` (which the single-element
+   * controls use): each subclass derives *several* ids from this one instance — trigger,
+   * listbox, label, error — so what it needs is the instance number, not one finished id.
+   */
   protected readonly uid = ++GogDropdownBase.nextUid;
 
   protected readonly elRef = inject(ElementRef<HTMLElement>);
@@ -318,7 +336,8 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   private readonly appRef = inject(ApplicationRef);
   private readonly destroyRef = inject(DestroyRef);
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
-  private readonly globalConfig = inject(GOG_CONFIG);
+  /** `protected` so subclasses can resolve their own inputs against the same config object. */
+  protected readonly globalConfig = inject(GOG_CONFIG);
   private readonly overlay = new GogDropdownOverlay(this.appRef, this.document);
 
   /** Set from `(focus)`/`(blur)` on the trigger — see `onFocusIn`/`onFocusOut`. */

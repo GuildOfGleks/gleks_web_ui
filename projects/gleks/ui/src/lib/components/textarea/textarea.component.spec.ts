@@ -415,4 +415,65 @@ describe('TextareaComponent', () => {
       });
     });
   });
+
+  describe('generated id', () => {
+    it('labels the field with a generated id when inputId is not supplied', async () => {
+      fixture.componentRef.setInput('label', 'Bio');
+      await fixture.whenStable();
+
+      const field = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+      const label = fixture.nativeElement.querySelector('label') as HTMLLabelElement;
+
+      expect(field.id).toMatch(/^gog-textarea-\d+$/);
+      expect(label.getAttribute('for')).toBe(field.id);
+    });
+
+    it('points aria-describedby at the rendered error, with no inputId set', async () => {
+      fixture.componentRef.setInput('errorMessage', 'Too short');
+      await fixture.whenStable();
+
+      const field = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+      const error = fixture.nativeElement.querySelector('.gog-input__error') as HTMLElement;
+
+      expect(error.id).toBe(field.id + '-error');
+      expect(field.getAttribute('aria-describedby')).toBe(error.id);
+    });
+  });
+
+  describe('native attributes', () => {
+    it('forwards readonly, maxlength, minlength and spellcheck', async () => {
+      fixture.componentRef.setInput('readonly', true);
+      fixture.componentRef.setInput('maxlength', 500);
+      fixture.componentRef.setInput('minlength', 10);
+      fixture.componentRef.setInput('spellcheck', false);
+      await fixture.whenStable();
+
+      const field = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+      expect(field.readOnly).toBe(true);
+      expect(field.getAttribute('maxlength')).toBe('500');
+      expect(field.getAttribute('minlength')).toBe('10');
+      expect(field.getAttribute('spellcheck')).toBe('false');
+    });
+
+    it('leaves them off by default', async () => {
+      await fixture.whenStable();
+
+      const field = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+      expect(field.readOnly).toBe(false);
+      expect(field.getAttribute('maxlength')).toBeNull();
+      expect(field.getAttribute('minlength')).toBeNull();
+      expect(field.getAttribute('spellcheck')).toBeNull();
+    });
+
+    it('hides the clear button while readonly', async () => {
+      fixture.componentRef.setInput('clearable', true);
+      fixture.componentRef.setInput('value', 'text');
+      await fixture.whenStable();
+      expect(fixture.nativeElement.querySelector('.gog-textarea__clear')).toBeTruthy();
+
+      fixture.componentRef.setInput('readonly', true);
+      await fixture.whenStable();
+      expect(fixture.nativeElement.querySelector('.gog-textarea__clear')).toBeNull();
+    });
+  });
 });

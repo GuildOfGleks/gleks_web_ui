@@ -107,8 +107,8 @@
 .gog-input__field-container--resizable::after {
   content: '';
   position: absolute;
-  right: calc(3px + var(--gog-textarea-resize-inset-right, 0px));
-  bottom: calc(3px + var(--gog-textarea-resize-inset-bottom, 0px));
+  right: calc(var(--gog-textarea-resize-grip-offset) + var(--gog-textarea-resize-inset-right));
+  bottom: calc(var(--gog-textarea-resize-grip-offset) + var(--gog-textarea-resize-inset-bottom));
   width: var(--gog-textarea-resize-grip-size);
   height: var(--gog-textarea-resize-grip-size);
   clip-path: polygon(100% 0, 100% 100%, 0 100%);
@@ -116,7 +116,9 @@
     135deg,
     transparent 0 var(--gog-textarea-resize-grip-stripe-gap),
     var(--gog-textarea-resize-grip-color) var(--gog-textarea-resize-grip-stripe-gap)
-      calc(var(--gog-textarea-resize-grip-stripe-gap) + var(--gog-textarea-resize-grip-stripe-width))
+      calc(
+        var(--gog-textarea-resize-grip-stripe-gap) + var(--gog-textarea-resize-grip-stripe-width)
+      )
   );
   opacity: var(--gog-textarea-resize-grip-opacity);
   pointer-events: none;

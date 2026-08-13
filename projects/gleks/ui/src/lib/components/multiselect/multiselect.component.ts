@@ -16,6 +16,7 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { resolveConfigured } from '../../shared/config';
 import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-base';
 import { ButtonComponent } from '../button/button.component';
 import { IconComponent } from '../icon/icon.component';
@@ -29,6 +30,10 @@ export type GogMultiselectOption = GogDropdownOption;
 
 /** Height of the select-all/clear row, included in the panel height estimate. */
 const CONTROLS_ROW_HEIGHT = 38;
+
+/** Built-in defaults, used when neither the instance input nor `GOG_CONFIG.labels` supplies one. */
+const DEFAULT_SELECT_ALL_LABEL = 'Select all';
+const DEFAULT_CLEAR_ALL_LABEL = 'Clear';
 
 /**
  * Custom markup for the multiselect's clear button:
@@ -61,11 +66,38 @@ export class MultiselectComponent<
   /** Where the "select all"/"clear" row sits relative to the option list. Sticky either way. */
   readonly controlsPosition = input<'top' | 'bottom'>('top');
   /**
+   * Visible text of the select-all button. Unset, falls back to `GOG_CONFIG.labels.selectAll`,
+   * then to `'Select all'`.
+   */
+  readonly selectAllLabel = input<string | undefined>(undefined);
+  /**
+   * Visible text of the clear-all button — the one inside the panel, next to select-all. The
+   * trigger's own clear icon is `clearAriaLabel`. Unset, falls back to
+   * `GOG_CONFIG.labels.clearAll`, then to `'Clear'`.
+   */
+  readonly clearAllLabel = input<string | undefined>(undefined);
+  /**
    * @deprecated since 21.3.0 (2026-08-07) — project an `<ng-template gogMultiselectClearIcon>` into the component instead. Removed in 21.5.0.
    */
   readonly clearIconTemplate = input<TemplateRef<unknown> | null>(null);
   /** Projected `gogMultiselectClearIcon` template; wins over the deprecated `clearIconTemplate` input. */
   protected readonly clearIconSlot = contentChild(GogMultiselectClearIconDirective);
+
+  /** Instance input → `GOG_CONFIG.labels` → the built-in English default. */
+  protected readonly resolvedSelectAllLabel = computed(() =>
+    resolveConfigured(
+      this.selectAllLabel(),
+      this.globalConfig.labels?.selectAll,
+      DEFAULT_SELECT_ALL_LABEL,
+    ),
+  );
+  protected readonly resolvedClearAllLabel = computed(() =>
+    resolveConfigured(
+      this.clearAllLabel(),
+      this.globalConfig.labels?.clearAll,
+      DEFAULT_CLEAR_ALL_LABEL,
+    ),
+  );
 
   /**
    * Two-way bindable selection: `[(value)]="signal"`.

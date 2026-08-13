@@ -1,3 +1,19 @@
+<!--
+  Both regions stay mounted for the lifetime of the container, empty or not, so a screen reader
+  has already picked them up by the time a message lands inside one. `aria-atomic="false"` so
+  only the newly added line is read, not the whole open stack again on every arrival.
+-->
+<div class="gog-visually-hidden" aria-live="polite" aria-atomic="false">
+  @for (announcement of announcements().polite; track trackAnnouncement($index, announcement)) {
+    <p>{{ announcement.message }}</p>
+  }
+</div>
+<div class="gog-visually-hidden" aria-live="assertive" aria-atomic="false">
+  @for (announcement of announcements().assertive; track trackAnnouncement($index, announcement)) {
+    <p>{{ announcement.message }}</p>
+  }
+</div>
+
 @for (group of groups(); track trackGroup($index, group)) {
   <div class="gog-toast-container gog-toast-container--{{ group.position }}">
     @for (toast of group.toasts; track trackToast($index, toast); let toastIndex = $index) {

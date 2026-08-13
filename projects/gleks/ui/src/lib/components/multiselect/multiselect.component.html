@@ -71,7 +71,7 @@
           type="button"
           class="gog-ms__clear gog-inline-center"
           (click)="clearValue($event)"
-          [attr.aria-label]="clearAriaLabel()"
+          [attr.aria-label]="resolvedClearLabel()"
         >
           <gog-icon [template]="clearIconSlot()?.templateRef ?? clearIconTemplate()" name="close" />
         </button>
@@ -196,8 +196,12 @@
 
 <ng-template #controlsRowTpl>
   <div class="gog-ms__controls" [class.gog-ms__controls--bottom]="controlsPosition() === 'bottom'">
-    <gog-button variant="ghost" size="sm" (click)="selectAll($event)">Select all</gog-button>
-    <gog-button variant="ghost" size="sm" (click)="clearAll($event)">Clear</gog-button>
+    <gog-button variant="ghost" size="sm" (click)="selectAll($event)">{{
+      resolvedSelectAllLabel()
+    }}</gog-button>
+    <gog-button variant="ghost" size="sm" (click)="clearAll($event)">{{
+      resolvedClearAllLabel()
+    }}</gog-button>
   </div>
 </ng-template>
 

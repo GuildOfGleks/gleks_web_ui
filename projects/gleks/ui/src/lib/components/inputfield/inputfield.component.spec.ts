@@ -541,4 +541,204 @@ describe('InputfieldComponent', () => {
       });
     });
   });
+
+  describe('generated id', () => {
+    it('labels the field with a generated id when inputId is not supplied', async () => {
+      fixture.componentRef.setInput('label', 'Email');
+      await fixture.whenStable();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      const label = fixture.nativeElement.querySelector('label') as HTMLLabelElement;
+
+      expect(input.id).toMatch(/^gog-input-\d+$/);
+      expect(label.getAttribute('for')).toBe(input.id);
+    });
+
+    it('lets an explicit inputId win', async () => {
+      fixture.componentRef.setInput('label', 'Email');
+      fixture.componentRef.setInput('inputId', 'my-email');
+      await fixture.whenStable();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(input.id).toBe('my-email');
+      expect(fixture.nativeElement.querySelector('label')?.getAttribute('for')).toBe('my-email');
+    });
+
+    it('gives two instances different ids', async () => {
+      const second = TestBed.createComponent(InputfieldComponent);
+      await second.whenStable();
+      fixture.detectChanges();
+      second.detectChanges();
+
+      const first = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      const other = second.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(first.id).not.toBe(other.id);
+    });
+
+    it('points aria-describedby at the rendered error, with no inputId set', async () => {
+      fixture.componentRef.setInput('errorMessage', 'Required');
+      await fixture.whenStable();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      const error = fixture.nativeElement.querySelector('.gog-input__error') as HTMLElement;
+
+      expect(error.id).toBe(input.id + '-error');
+      expect(input.getAttribute('aria-describedby')).toBe(error.id);
+    });
+
+    it('drops aria-describedby when no error is rendered', async () => {
+      await fixture.whenStable();
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(input.getAttribute('aria-describedby')).toBeNull();
+    });
+  });
+
+  describe('native attributes', () => {
+    it('forwards readonly, maxlength, minlength, pattern, inputmode and spellcheck', async () => {
+      fixture.componentRef.setInput('readonly', true);
+      fixture.componentRef.setInput('maxlength', 10);
+      fixture.componentRef.setInput('minlength', 2);
+      fixture.componentRef.setInput('pattern', '[0-9]+');
+      fixture.componentRef.setInput('inputMode', 'numeric');
+      fixture.componentRef.setInput('spellcheck', false);
+      await fixture.whenStable();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(input.readOnly).toBe(true);
+      expect(input.getAttribute('maxlength')).toBe('10');
+      expect(input.getAttribute('minlength')).toBe('2');
+      expect(input.getAttribute('pattern')).toBe('[0-9]+');
+      expect(input.getAttribute('inputmode')).toBe('numeric');
+      expect(input.getAttribute('spellcheck')).toBe('false');
+    });
+
+    it('leaves every optional attribute off by default', async () => {
+      await fixture.whenStable();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      expect(input.readOnly).toBe(false);
+      expect(input.getAttribute('maxlength')).toBeNull();
+      expect(input.getAttribute('minlength')).toBeNull();
+      expect(input.getAttribute('pattern')).toBeNull();
+      expect(input.getAttribute('inputmode')).toBeNull();
+      expect(input.getAttribute('spellcheck')).toBeNull();
+    });
+
+    it('accepts the widened type list', async () => {
+      fixture.componentRef.setInput('type', 'tel');
+      await fixture.whenStable();
+
+      expect((fixture.nativeElement.querySelector('input') as HTMLInputElement).type).toBe('tel');
+    });
+
+    it('hides the clear button while readonly', async () => {
+      fixture.componentRef.setInput('clearable', true);
+      fixture.componentRef.setInput('value', 'text');
+      await fixture.whenStable();
+      expect(fixture.nativeElement.querySelector('.gog-input__clear')).toBeTruthy();
+
+      fixture.componentRef.setInput('readonly', true);
+      await fixture.whenStable();
+      expect(fixture.nativeElement.querySelector('.gog-input__clear')).toBeNull();
+    });
+
+    it('hides the number spin buttons while readonly', async () => {
+      fixture.componentRef.setInput('type', 'number');
+      await fixture.whenStable();
+      expect(fixture.nativeElement.querySelector('.gog-input__spin')).toBeTruthy();
+
+      fixture.componentRef.setInput('readonly', true);
+      await fixture.whenStable();
+      expect(fixture.nativeElement.querySelector('.gog-input__spin')).toBeNull();
+    });
+  });
+
+  describe('clear button and forms', () => {
+    it('writes null to a number control, matching what emptying the field by hand writes', async () => {
+      const control = new FormControl<number | null>(5);
+
+      // `showSpinButtons` off because the spin buttons and the clear button share the field's
+      // end slot, and the spin buttons win that branch — a number field only ever offers a
+      // clear button with them switched off.
+      @Component({
+        imports: [InputfieldComponent, ReactiveFormsModule],
+        template: `<gog-inputfield
+          type="number"
+          [clearable]="true"
+          [showSpinButtons]="false"
+          [formControl]="control"
+        />`,
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class NumberHost {
+        readonly control = control;
+      }
+
+      const host = TestBed.createComponent(NumberHost);
+      await host.whenStable();
+      host.detectChanges();
+
+      const clear = host.nativeElement.querySelector('.gog-input__clear') as HTMLButtonElement;
+      clear.click();
+      await host.whenStable();
+
+      expect(control.value).toBeNull();
+    });
+
+    it('writes an empty string to a text control', async () => {
+      const control = new FormControl<string | null>('hello');
+
+      @Component({
+        imports: [InputfieldComponent, ReactiveFormsModule],
+        template: '<gog-inputfield [clearable]="true" [formControl]="control" />',
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class TextHost {
+        readonly control = control;
+      }
+
+      const host = TestBed.createComponent(TextHost);
+      await host.whenStable();
+      host.detectChanges();
+
+      (host.nativeElement.querySelector('.gog-input__clear') as HTMLButtonElement).click();
+      await host.whenStable();
+
+      expect(control.value).toBe('');
+    });
+  });
+
+  describe('labels', () => {
+    async function configuredFixture(labels: Record<string, string>) {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [InputfieldComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { labels } }],
+      }).compileComponents();
+
+      const configured = TestBed.createComponent(InputfieldComponent);
+      configured.componentRef.setInput('clearable', true);
+      configured.componentRef.setInput('value', 'text');
+      return configured;
+    }
+
+    it('takes the clear button name from GOG_CONFIG.labels', async () => {
+      const configured = await configuredFixture({ clear: 'Wipe' });
+      await configured.whenStable();
+
+      expect(
+        configured.nativeElement.querySelector('.gog-input__clear')?.getAttribute('aria-label'),
+      ).toBe('Wipe');
+    });
+
+    it('lets the instance input win over the configured label', async () => {
+      const configured = await configuredFixture({ clear: 'Wipe' });
+      configured.componentRef.setInput('clearAriaLabel', 'Erase');
+      await configured.whenStable();
+
+      expect(
+        configured.nativeElement.querySelector('.gog-input__clear')?.getAttribute('aria-label'),
+      ).toBe('Erase');
+    });
+  });
 });

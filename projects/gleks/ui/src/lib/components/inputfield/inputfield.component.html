@@ -9,11 +9,11 @@
   [class.gog-input-wrapper--floated]="isFloatLabelFloated()"
 >
   @if (label() && resolvedFloatLabel() === 'none') {
-    <label class="gog-input__label" [attr.for]="inputId() || null">{{ label() }}</label>
+    <label class="gog-input__label" [attr.for]="resolvedInputId()">{{ label() }}</label>
   }
   <div class="gog-input__field-container">
     @if (label() && isFloatLabelActive()) {
-      <label class="gog-input__label gog-input__label--float" [attr.for]="inputId() || null">{{
+      <label class="gog-input__label gog-input__label--float" [attr.for]="resolvedInputId()">{{
         label()
       }}</label>
     }
@@ -41,18 +41,24 @@
       class="gog-input__field"
       [class.gog-input__field--error]="hasError()"
       [class.gog-input__field--spin-hidden]="isNumberField()"
-      [attr.id]="inputId() || null"
+      [attr.id]="resolvedInputId()"
       [type]="effectiveType()"
       [attr.name]="name() || null"
       [placeholder]="effectivePlaceholder()"
       [value]="value()"
       [disabled]="isDisabled()"
+      [readOnly]="readonly()"
       [autocomplete]="effectiveAutocomplete()"
       [attr.min]="min()"
       [attr.max]="max()"
       [attr.step]="step()"
+      [attr.maxlength]="maxlength()"
+      [attr.minlength]="minlength()"
+      [attr.pattern]="pattern() || null"
+      [attr.inputmode]="inputMode()"
+      [attr.spellcheck]="spellcheck()"
       [attr.aria-invalid]="hasError()"
-      [attr.aria-describedby]="hasError() && inputId() ? inputId() + '-error' : null"
+      [attr.aria-describedby]="errorId()"
       (input)="onInput($event)"
       (focus)="onFocus()"
       (blur)="onBlur()"
@@ -67,7 +73,7 @@
           type="button"
           class="gog-input__spin-btn gog-input__spin-btn--up"
           tabindex="-1"
-          [attr.aria-label]="incrementLabel()"
+          [attr.aria-label]="resolvedIncrementLabel()"
           [disabled]="isDisabled() || isAtMax()"
           (mousedown)="$event.preventDefault()"
           (click)="stepValue(1)"
@@ -78,7 +84,7 @@
           type="button"
           class="gog-input__spin-btn gog-input__spin-btn--down"
           tabindex="-1"
-          [attr.aria-label]="decrementLabel()"
+          [attr.aria-label]="resolvedDecrementLabel()"
           [disabled]="isDisabled() || isAtMin()"
           (mousedown)="$event.preventDefault()"
           (click)="stepValue(-1)"
@@ -90,7 +96,7 @@
       <button
         type="button"
         class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action gog-input__clear"
-        [attr.aria-label]="clearAriaLabel()"
+        [attr.aria-label]="resolvedClearLabel()"
         (click)="clearValue($event)"
       >
         <gog-icon name="close" />
@@ -117,11 +123,6 @@
     }
   </div>
   @if (visibleError()) {
-    <span
-      class="gog-input__error"
-      [attr.id]="inputId() ? inputId() + '-error' : null"
-      role="alert"
-      >{{ visibleError() }}</span
-    >
+    <span class="gog-input__error" [attr.id]="errorId()" role="alert">{{ visibleError() }}</span>
   }
 </div>

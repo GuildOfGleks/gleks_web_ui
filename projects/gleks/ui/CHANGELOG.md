@@ -4,6 +4,97 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.3.2] - planned
+
+First batch of the consumer-DX plan (`docs/consumer-dx-plan.md`, iterations 1–4): the seam
+between the package and the developer installing it — setup that failed on the documented
+path, accessibility that depended on optional inputs, and native attributes a wrapper component
+made unreachable.
+
+### Added
+
+- **The baseline stylesheet now also ships at `@guildofgleks/ui/styles/`.** This is the path the
+  README has always documented, and until now it did not exist in the package — the files were
+  only under `src/styles/`, so a setup copied from the README failed on a missing file and every
+  component rendered unstyled. Both paths ship for one deprecation window, and `package.json`'s
+  `exports` map now lists them, so `@import '@guildofgleks/ui/styles/index.css'` resolves from
+  SCSS as well as from `angular.json`.
+- **`gog-inputfield` / `gog-textarea`: the native attribute space.** `readonly`, `maxlength`,
+  `minlength`, `spellcheck`, plus `pattern` and `inputMode` on the input. `readonly` differs
+  from `disabled` in the usual way (still focusable, still submitted) and suppresses the clear
+  button and the number field's spin buttons, since both offer an edit the field would refuse.
+  `autofocus` is deliberately **not** forwarded — moving focus unasked is a documented a11y
+  problem and the repo's own lint rule rejects it.
+- **`gog-inputfield`: `tel`, `url`, `search`, `time` and `datetime-local` types**, via the new
+  exported `GogInputType`. The new `GogInputMode` types the `inputMode` input.
+- **`GOG_CONFIG.labels`.** App-wide defaults for every fixed string the library renders —
+  `clear`, `clearSelection`, `clearDate`, `selectAll`, `clearAll`, `increment`, `decrement`,
+  `showPassword`, `hidePassword`, `closeDialog`, `closeToast`, `pagination`, `previousPage`,
+  `nextPage`, `openCalendar`, `today`, `thisMonth`, `previousMonth`, `nextMonth`,
+  `previousYear`, `nextYear`, `hours`, `minutes`, `seconds`. A non-English app relabels the
+  library once instead of on every instance. Per-instance inputs still win where they exist.
+- **`gog-multiselect`: `selectAllLabel` / `clearAllLabel`.** The panel's two buttons rendered
+  literal `Select all` / `Clear` with no way to change them at all.
+- **`GOG_CONFIG.theme`.** `storageKey` persists the chosen theme in `localStorage`;
+  `followSystem` opens in the OS `prefers-color-scheme` setting and keeps following it until the
+  app calls `setTheme`; `defaultTheme`, `lightTheme` and `darkTheme` name the themes involved.
+  All off by default, so an app that configures nothing keeps today's behaviour exactly.
+- **`@angular/platform-browser` is now declared as a peer dependency.** `gog-icon` has always
+  imported `DomSanitizer` from it; the omission only worked because npm's flat tree hides it,
+  and broke under strict pnpm.
+
+### Fixed
+
+- **Form controls are labelled without an `inputId`.** `gog-inputfield` and `gog-textarea` now
+  generate an id when none is given, so the `<label for>` actually points at the field (clicking
+  the label focuses it, assistive tech gets a name) and the error message is reachable through
+  `aria-describedby`. Previously both were silently dropped unless the consumer happened to pass
+  `inputId` — the default configuration was inaccessible. `gog-select` already worked this way;
+  the id generator is now shared (`gog-radio-group` and `gog-slider` use it too, with unchanged
+  output).
+- **`aria-describedby` no longer points at an element that isn't rendered.** It was keyed off
+  `hasError()`, while the message element renders on `visibleError()` — with `errorDisplay="auto"`
+  and an empty `errorMessage` the two disagree.
+- **Toasts are announced reliably.** `aria-live` moved off the individual toast, which enters the
+  DOM together with its own text (a live region created at the same moment as its content is
+  routinely skipped by screen readers), onto two permanently-mounted regions in
+  `gog-toast-container` — polite, and assertive for `error`/`warning`. Individual toasts no longer
+  carry `role`/`aria-live`, so nothing is announced twice.
+- **`gog-inputfield`: the clear button on a number field wrote `''` instead of `null`.** A
+  `FormControl<number | null>` ended up holding a string, which then failed numeric validators
+  and round-tripped the wrong type. It now writes exactly what emptying the field by hand writes.
+- **`ThemeService.theme` is read-only.** It was a writable signal, so `theme.set(...)` moved the
+  signal without touching the `data-theme` attribute the styles read, leaving the two out of
+  sync. Use `setTheme`/`toggleTheme`.
+- **The textarea resize grip's offsets are real tokens.** `--gog-textarea-resize-grip-offset`
+  and `--gog-textarea-resize-inset-right`/`-bottom` are declared in `theme.css` instead of
+  living as literal `var()` fallbacks in the component stylesheet, which the token-contract
+  check (`npm run check:tokens`) had been failing on. Geometry is unchanged.
+
+### Changed
+
+- **The generated token catalogue moved from `README.md` to `TOKENS.md`.** It was ~200 KB of
+  reference table in the middle of the README, burying the Setup section that a new consumer has
+  to find within seconds on npm. The README keeps the three-layer explanation and links across;
+  the README itself is now ~14 KB. `GOG_TOKEN_GROUPS` is unaffected.
+- **README: `<gog-dialog />` and `<gog-toast-container />` are documented.** `DialogService.open()`
+  and `ToastService.show()` render nothing until those host elements are in a template, which
+  the README never said.
+- **README: the component list is complete again.** It advertised 18 components and listed 21,
+  while omitting `gog-autocomplete`, `gogBadge`, `gog-button-toggle-group`, `gog-datepicker`,
+  `gog-divider`, `gog-progressbar`, `gog-tabs` and `gog-toggle` entirely.
+- Label inputs that now resolve through `GOG_CONFIG.labels` changed their default from a literal
+  string to `undefined` (`clearAriaLabel`, `incrementLabel`, `decrementLabel`, `showPasswordLabel`,
+  `hidePasswordLabel`, `todayLabel`, `thisMonthLabel`, `previousMonthLabel`, `nextMonthLabel`,
+  `previousYearLabel`, `nextYearLabel`, `openCalendarLabel`, `gog-paginator`'s `ariaLabel`).
+  Rendered output is identical unless the app configures `labels`; only reading the input back
+  in TypeScript now yields `undefined` rather than the English default.
+
+### Deprecated
+
+- `@guildofgleks/ui/src/styles/…` — use `@guildofgleks/ui/styles/…`. Both ship until **21.5.0**,
+  when the `src/styles/` copy is removed.
+
 ## [21.3.1] - planned
 
 ### Added

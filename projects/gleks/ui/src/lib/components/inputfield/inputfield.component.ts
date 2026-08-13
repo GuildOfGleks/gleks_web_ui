@@ -14,16 +14,24 @@ import {
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+import { nextGogControlId } from '../../shared/control-id';
 import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
 import { GogClearableState } from '../../shared/clearable-state';
 import { GogFloatLabelState } from '../../shared/float-label-state';
-import { GogFloatLabelVariant, GogSize } from '../../shared/types';
+import { GogFloatLabelVariant, GogInputMode, GogInputType, GogSize } from '../../shared/types';
 import { IconComponent, type GogIconName } from '../icon/icon.component';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
 const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
 const DEFAULT_SHOW_SPIN_BUTTONS = true;
+const DEFAULT_LABELS = {
+  clear: 'Clear',
+  increment: 'Increment',
+  decrement: 'Decrement',
+  showPassword: 'Show password',
+  hidePassword: 'Hide password',
+} as const;
 /** Native `stepUp()`/`stepDown()` default when `step` is left unset. */
 const DEFAULT_STEP = 1;
 
@@ -83,9 +91,34 @@ export class GogInputAddonEndDirective {}
 export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly label = input('');
   readonly placeholder = input('');
-  readonly type = input<'text' | 'password' | 'email' | 'number' | 'date'>('text');
+  /** See `GogInputType` for why this is a subset of the native `type` list. */
+  readonly type = input<GogInputType>('text');
   /** Defaults to 'current-password' for password fields, 'off' otherwise */
   readonly autocomplete = input('');
+  /**
+   * Native `readonly`: the value is still selectable, focusable and submitted with the form, but
+   * cannot be edited. Distinct from `disabled`, which also takes the field out of the tab order,
+   * greys it out and drops it from form submission.
+   *
+   * Suppresses the clear button and the number field's spin buttons for as long as it is on —
+   * both promise an edit the field would refuse.
+   */
+  readonly readonly = input(false);
+  /** Native `maxlength`. Unset (`null`), no limit is applied. */
+  readonly maxlength = input<number | null>(null);
+  /** Native `minlength`. Unset (`null`), no minimum is applied. */
+  readonly minlength = input<number | null>(null);
+  /** Native `pattern`, as a regular-expression source string. Unset (`''`), nothing is applied. */
+  readonly pattern = input('');
+  /**
+   * Native `inputmode` — see `GogInputMode`. Unset, the browser infers a keyboard from `type`.
+   */
+  readonly inputMode = input<GogInputMode | null>(null);
+  /**
+   * Native `spellcheck`. Unset (`null`), the browser's own default applies; set `false` on
+   * fields holding names, codes or identifiers, where the red underline is noise.
+   */
+  readonly spellcheck = input<boolean | null>(null);
   /** Only applied when `type="number"`. */
   readonly min = input<number | null>(null);
   /** Only applied when `type="number"`. */
@@ -102,10 +135,10 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
    * then to `true`.
    */
   readonly showSpinButtons = input<boolean | undefined>(undefined);
-  /** aria-label for the number field's increment button. */
-  readonly incrementLabel = input('Increment');
-  /** aria-label for the number field's decrement button. */
-  readonly decrementLabel = input('Decrement');
+  /** aria-label for the number field's increment button. Unset, falls back to `GOG_CONFIG.labels.increment`. */
+  readonly incrementLabel = input<string | undefined>(undefined);
+  /** aria-label for the number field's decrement button. Unset, falls back to `GOG_CONFIG.labels.decrement`. */
+  readonly decrementLabel = input<string | undefined>(undefined);
   readonly errorMessage = input('');
   /**
    * See `GogErrorDisplay`. Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to
@@ -113,6 +146,12 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
    */
   readonly errorDisplay = input<GogErrorDisplay | undefined>(undefined);
   readonly name = input('');
+  /**
+   * The `<input>`'s `id`. Left unset, the field generates one — the label's `for` and the error
+   * message's `aria-describedby` both need a real id, and a field that is silently unlabelled
+   * without one is the wrong default. Set this only when something outside the component has to
+   * reference the input by a known id.
+   */
   readonly inputId = input('');
   readonly disabled = input(false);
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
@@ -152,17 +191,17 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
    * @deprecated since 21.3.0 (2026-08-07) — project a `<button gogInputAddonEnd>` element instead. Removed in 21.5.0. Put `aria-label` on that button.
    */
   readonly iconEndLabel = input('');
-  /** aria-label for the reveal-password button, shown when `type` is `'password'` */
-  readonly showPasswordLabel = input('Show password');
-  /** aria-label for the hide-password button, shown once the password is revealed */
-  readonly hidePasswordLabel = input('Hide password');
+  /** aria-label for the reveal-password button, shown when `type` is `'password'`. Unset, falls back to `GOG_CONFIG.labels.showPassword`. */
+  readonly showPasswordLabel = input<string | undefined>(undefined);
+  /** aria-label for the hide-password button, shown once the password is revealed. Unset, falls back to `GOG_CONFIG.labels.hidePassword`. */
+  readonly hidePasswordLabel = input<string | undefined>(undefined);
   /**
    * Whether to offer a clear button once the field has text. Unset, falls back to
    * `GOG_CONFIG.control.clearable`, then to `false`.
    */
   readonly clearable = input<boolean | undefined>(undefined);
-  /** Accessible name for the clear button. */
-  readonly clearAriaLabel = input('Clear');
+  /** Accessible name for the clear button. Unset, falls back to `GOG_CONFIG.labels.clear`. */
+  readonly clearAriaLabel = input<string | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.variant`, then to `'none'` (off). */
   readonly floatLabel = input<GogFloatLabelVariant | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.showPlaceholder`, then to `false`. */
@@ -207,6 +246,25 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     this.resolvedSize() === 'md' ? '' : `gog-input-wrapper--${this.resolvedSize()}`,
   );
 
+  /** Instance input → `GOG_CONFIG.labels` → the built-in English default. */
+  protected readonly resolvedClearLabel = computed(() =>
+    resolveConfigured(this.clearAriaLabel(), this.globalConfig.labels?.clear, DEFAULT_LABELS.clear),
+  );
+  protected readonly resolvedIncrementLabel = computed(() =>
+    resolveConfigured(
+      this.incrementLabel(),
+      this.globalConfig.labels?.increment,
+      DEFAULT_LABELS.increment,
+    ),
+  );
+  protected readonly resolvedDecrementLabel = computed(() =>
+    resolveConfigured(
+      this.decrementLabel(),
+      this.globalConfig.labels?.decrement,
+      DEFAULT_LABELS.decrement,
+    ),
+  );
+
   protected readonly resolvedShowSpinButtons = computed(() =>
     resolveConfigured(
       this.showSpinButtons(),
@@ -216,13 +274,17 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   );
 
   protected readonly isDisabled = computed(() => this.disabled() || this.cvaDisabled());
+  /** Disabled and read-only both refuse edits; the affordances that offer one key off this. */
+  protected readonly isNotEditable = computed(() => this.isDisabled() || this.readonly());
   protected readonly isPasswordField = computed(() => this.type() === 'password');
   protected readonly isNumberField = computed(() => this.type() === 'number');
   protected readonly hasSpinButtons = computed(
-    () => this.isNumberField() && this.resolvedShowSpinButtons(),
+    () => this.isNumberField() && this.resolvedShowSpinButtons() && !this.readonly(),
   );
   /** Current field value as a number, or `null` while empty. */
-  private readonly numericValue = computed(() => (this.value() === '' ? null : Number(this.value())));
+  private readonly numericValue = computed(() =>
+    this.value() === '' ? null : Number(this.value()),
+  );
   protected readonly isAtMin = computed(() => {
     const min = this.min();
     const current = this.numericValue();
@@ -242,6 +304,19 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   protected readonly hasError = this.errorState.hasError;
   protected readonly visibleError = this.errorState.visibleError;
 
+  /** Fallback id, generated once per instance — see `resolvedInputId`. */
+  private readonly autoId = nextGogControlId('gog-input');
+  /** The consumer's `inputId` when given, otherwise the generated one. Never empty. */
+  protected readonly resolvedInputId = computed(() => this.inputId() || this.autoId);
+  /**
+   * Only non-null while the error element is actually rendered — the template renders it on
+   * `visibleError()`, and an `aria-describedby` pointing at an id that isn't in the DOM is worse
+   * than none at all.
+   */
+  protected readonly errorId = computed(() =>
+    this.visibleError() ? `${this.resolvedInputId()}-error` : null,
+  );
+
   private readonly floatLabelState = new GogFloatLabelState(
     this.floatLabel,
     this.floatLabelShowPlaceholder,
@@ -255,7 +330,7 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   private readonly clearableState = new GogClearableState(
     this.clearable,
     computed(() => this.value() !== ''),
-    this.isDisabled,
+    this.isNotEditable,
     this.globalConfig,
     () => false,
   );
@@ -285,13 +360,20 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   protected readonly effectiveIconEnd = computed<GogIconName | ''>(() =>
     this.isPasswordField() ? (this.passwordVisible() ? 'eye-off' : 'eye') : this.iconEnd(),
   );
-  protected readonly effectiveIconEndLabel = computed(() =>
-    this.isPasswordField()
-      ? this.passwordVisible()
-        ? this.hidePasswordLabel()
-        : this.showPasswordLabel()
-      : this.iconEndLabel(),
-  );
+  protected readonly effectiveIconEndLabel = computed(() => {
+    if (!this.isPasswordField()) return this.iconEndLabel();
+    return this.passwordVisible()
+      ? resolveConfigured(
+          this.hidePasswordLabel(),
+          this.globalConfig.labels?.hidePassword,
+          DEFAULT_LABELS.hidePassword,
+        )
+      : resolveConfigured(
+          this.showPasswordLabel(),
+          this.globalConfig.labels?.showPassword,
+          DEFAULT_LABELS.showPassword,
+        );
+  });
   protected readonly hasIconEnd = computed(
     () =>
       this.showClear() ||
@@ -362,7 +444,7 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
 
   /** Increments (`direction: 1`) or decrements (`direction: -1`) by `step`, clamped to min/max. */
   protected stepValue(direction: 1 | -1): void {
-    if (this.isDisabled()) return;
+    if (this.isNotEditable()) return;
 
     const step = this.step() ?? DEFAULT_STEP;
     const current = this.numericValue() ?? this.min() ?? 0;
@@ -377,12 +459,19 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     this._onChange(next);
   }
 
-  /** Clears the field and notifies any attached form, then returns focus to the input. */
+  /**
+   * Clears the field and notifies any attached form.
+   *
+   * The value written to the form control has to match what `onInput` writes when the user
+   * empties the field by hand — `null` for a number field, `''` otherwise. Emitting `''` for a
+   * number field put a string into a control typed `number | null`, which then failed
+   * `Validators.min`-style checks and round-tripped the wrong type to the server.
+   */
   protected clearValue(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
     this.value.set('');
-    this._onChange('');
+    this._onChange(this.isNumberField() ? null : '');
     this._onTouched();
   }
 

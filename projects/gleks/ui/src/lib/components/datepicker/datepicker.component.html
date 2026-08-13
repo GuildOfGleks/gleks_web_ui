@@ -79,7 +79,7 @@
           type="button"
           class="gog-datepicker__toggle gog-inline-center"
           [disabled]="isDisabled()"
-          [attr.aria-label]="openCalendarLabel()"
+          [attr.aria-label]="resolvedOpenCalendarLabel()"
           [attr.aria-expanded]="isOpen()"
           [attr.aria-controls]="panelId()"
           (click)="toggle()"
@@ -91,7 +91,7 @@
           <button
             type="button"
             class="gog-datepicker__clear gog-inline-center"
-            [attr.aria-label]="clearAriaLabel()"
+            [attr.aria-label]="resolvedClearLabel()"
             (click)="clearValue($event)"
           >
             <gog-icon name="close" />
@@ -122,7 +122,7 @@
     [id]="panelId()"
     class="gog-datepicker__panel"
     role="dialog"
-    [attr.aria-label]="label() || ariaLabel() || openCalendarLabel()"
+    [attr.aria-label]="label() || ariaLabel() || resolvedOpenCalendarLabel()"
     [class.gog-datepicker__panel--up]="!resolvedAppendToBody() && directionState() === 'up'"
     [class.gog-datepicker__panel--portal]="resolvedAppendToBody()"
     [style.top.px]="resolvedAppendToBody() ? panelPlacement()?.top : null"
