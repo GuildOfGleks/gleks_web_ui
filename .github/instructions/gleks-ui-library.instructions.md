@@ -207,12 +207,30 @@ To make an existing or new input configurable this way:
    `agent-workflow.instructions.md` for the rule and for the discipline of deleting entries
    once they are done. New API, a lab statement the change makes untrue, a moved path: all of
    it goes in that file, grouped under the release that unblocks it.
-9. **Once step 7 passes, record the change in `projects/gleks/ui/CHANGELOG.md`** under the
+9. **Update the documentation that ships inside the package.** Three files are published to npm
+   alongside the code (`ng-package.json`'s `assets`; `CHANGELOG.md` is *not* among them and stays
+   in the repo), and a public API change is not done until they agree with it. They are not
+   interchangeable — each answers a different question:
+
+   | File | What it is | Update it when |
+   | --- | --- | --- |
+   | `README.md` | the npm landing page — install, setup, theming, global config, the shape of the library | setup changes, a concept appears (a new config key, a new cross-cutting behaviour), the component inventory moves |
+   | `AGENTS.md` | the per-component API reference an AI agent reads while building an app on the package | **any** input, output, slot, type, service method or default changes — this is the file that goes stale first and silently |
+   | `TOKENS.md` | the generated token catalogue | never by hand — run `npm run generate:tokens` after editing `theme.css` |
+
+   **`AGENTS.md` is the one to watch.** It is a large reference with per-component input tables,
+   so it is easy to finish a whole release without touching it — and an agent reading a stale
+   table will confidently write code against API that no longer exists, or miss the input that
+   solves the user's problem. Treat "I added/renamed/retyped an input" as "I edit AGENTS.md",
+   in the same change. Its header carries the version it was last verified against; move that
+   marker when you update it.
+
+10. **Once step 7 passes, record the change in `projects/gleks/ui/CHANGELOG.md`** under the
    in-progress version heading at the top (Added/Changed/Fixed sections, matching the
    existing entries' style — `## [<next-version>] - planned`; the user swaps `planned` for the
    real date when they cut the release). Do this for every user-visible library change, not
    just new components — bug fixes and behavior changes belong there too.
-10. **Publishing the library is strictly forbidden for an AI agent, under any circumstance.**
+11. **Publishing the library is strictly forbidden for an AI agent, under any circumstance.**
    Do not bump the version in `package.json`, do not edit `CHANGELOG.md`'s heading away from
    `planned`, and do not run `npm publish` or the `release` script — not even if explicitly
    asked to in a way that seems to authorize it in the moment. The user always cuts the release

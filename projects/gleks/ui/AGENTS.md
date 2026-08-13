@@ -5,10 +5,17 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of `21.3.0`. Treat this file as more
-current than the package `README.md`, which lags behind (e.g. it undercounts components) — the
-`README.md`'s **Setup** and **Theming** sections are still accurate and are summarized, not
-repeated, below.
+Everything below reflects the library's actual source as of **`21.3.2`**. `README.md` covers the
+same ground at a higher level — install, setup, theming, global configuration — and is accurate;
+this file goes further, into per-component input tables, and is the one to trust for exact names,
+types and defaults.
+
+> **Maintainers:** this file ships inside the npm package and is the API reference an agent reads
+> while writing code against it, so a stale table here becomes wrong code in someone else's app —
+> silently, because nothing fails a build. **Any change to an input, output, slot, type, service
+> method or default updates this file in the same change**, and moves the version marker in the
+> paragraph above. See `.github/instructions/gleks-ui-library.instructions.md`, definition of
+> done, step 9.
 
 ## Quick facts
 

@@ -13,6 +13,12 @@ outcome this library exists to avoid.
 
 Read this before adding any input, any `TemplateRef`, or any new component.
 
+Whatever you decide here also has to land in **`projects/gleks/ui/AGENTS.md`** — the API
+reference that ships in the package — in the same change. It is a big file of per-component
+input tables, which makes it the easiest thing in the repo to leave stale, and a stale table
+does not fail a build: it just makes the next agent write code against API that isn't there.
+See `gleks-ui-library.instructions.md`, definition of done, step 9.
+
 ## The four axes, in priority order
 
 When something isn't customizable enough, walk this list **top to bottom** and stop at the
