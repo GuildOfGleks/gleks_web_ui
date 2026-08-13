@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CalendarComponent, type GogDatepickerValue } from './calendar.component';
 import { isSameDay, type GogDateRange } from '../date-utils';
+import { GOG_CONFIG } from '../../../shared/config';
 
 /** A fixed month with no ambiguity: June 2026 starts on a Monday and has 30 days. */
 const JUNE_2026 = new Date(2026, 5, 15);
@@ -442,6 +443,60 @@ describe('CalendarComponent', () => {
       expect(host().querySelector('.gog-calendar__footer')).toBeTruthy();
       expect(todayButton()).toBeNull();
       expect(thisMonthButton()).toBeTruthy();
+    });
+  });
+
+  describe('GOG_CONFIG.datepicker', () => {
+    /**
+     * `gog-calendar` is exported and usable standalone, and the config key has always been
+     * documented as applying to it as well as to `gog-datepicker` — it just never read it.
+     */
+    async function configured(datepicker: Record<string, unknown>) {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [CalendarComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { datepicker } }],
+      }).compileComponents();
+
+      const configuredFixture = TestBed.createComponent(CalendarComponent);
+      configuredFixture.componentRef.setInput('value', new Date(2026, 7, 13));
+      await configuredFixture.whenStable();
+      configuredFixture.detectChanges();
+      return configuredFixture;
+    }
+
+    const weekdayRow = (f: ComponentFixture<CalendarComponent>) =>
+      [...f.nativeElement.querySelectorAll('.gog-calendar__weekday')].map((el) =>
+        (el as HTMLElement).textContent?.trim(),
+      );
+
+    it('takes the locale from the config when the input is unset', async () => {
+      const f = await configured({ locale: 'de-DE' });
+
+      expect(f.nativeElement.textContent).toContain('August');
+      expect(weekdayRow(f)[0]?.toLowerCase()).toContain('mo');
+    });
+
+    it('lets the instance input win over the configured locale', async () => {
+      const f = await configured({ locale: 'de-DE' });
+      f.componentRef.setInput('locale', 'en-US');
+      await f.whenStable();
+      f.detectChanges();
+
+      expect(f.nativeElement.textContent).toContain('August');
+      expect(weekdayRow(f)[0]?.toLowerCase()).toContain('su');
+    });
+
+    it('takes firstDayOfWeek from the config, overriding the locale default', async () => {
+      const f = await configured({ locale: 'en-US', firstDayOfWeek: 1 });
+
+      expect(weekdayRow(f)[0]?.toLowerCase()).toContain('mo');
+    });
+
+    it('falls back to the locale when neither input nor config sets firstDayOfWeek', async () => {
+      const f = await configured({ locale: 'en-US' });
+
+      expect(weekdayRow(f)[0]?.toLowerCase()).toContain('su');
     });
   });
 });

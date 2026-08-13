@@ -31,10 +31,13 @@ made unreachable.
   `clear`, `clearSelection`, `clearDate`, `selectAll`, `clearAll`, `increment`, `decrement`,
   `showPassword`, `hidePassword`, `closeDialog`, `closeToast`, `pagination`, `previousPage`,
   `nextPage`, `openCalendar`, `today`, `thisMonth`, `previousMonth`, `nextMonth`,
-  `previousYear`, `nextYear`, `hours`, `minutes`, `seconds`. A non-English app relabels the
-  library once instead of on every instance. Per-instance inputs still win where they exist.
+  `previousYear`, `nextYear`, `hours`, `minutes`, `seconds`, plus `page` (a formatter — see
+  Fixed). A non-English app relabels the library once instead of on every instance.
+  Per-instance inputs still win where they exist.
 - **`gog-multiselect`: `selectAllLabel` / `clearAllLabel`.** The panel's two buttons rendered
   literal `Select all` / `Clear` with no way to change them at all.
+- **`gog-calendar`: `hoursLabel` / `minutesLabel` / `secondsLabel`.** The time section's three
+  fields had hardcoded English `aria-label`s.
 - **`GOG_CONFIG.theme`.** `storageKey` persists the chosen theme in `localStorage`;
   `followSystem` opens in the OS `prefers-color-scheme` setting and keeps following it until the
   app calls `setTheme`; `defaultTheme`, `lightTheme` and `darkTheme` name the themes involved.
@@ -66,6 +69,22 @@ made unreachable.
 - **`ThemeService.theme` is read-only.** It was a writable signal, so `theme.set(...)` moved the
   signal without touching the `data-theme` attribute the styles read, leaving the two out of
   sync. Use `setTheme`/`toggleTheme`.
+- **`gog-inputfield`: a `clearable` number field had no clear button.** The stepper and the
+  clear button share the field's end slot, and the stepper won outright — so `clearable` was
+  silently a no-op on `type="number"` unless `showSpinButtons` was also off. Both now render:
+  the clear button sits one stepper-width further in, and the field's text gutter widens to fit
+  the pair (`--gog-input-spin-width`, new). It still disappears when there is nothing to clear,
+  taking the extra gutter with it.
+- **`gog-calendar` now reads `GOG_CONFIG.datepicker`.** `locale` and `firstDayOfWeek` were
+  documented as applying to `gog-calendar` as well as `gog-datepicker`, but the calendar only
+  ever honoured its own inputs — so a standalone `<gog-calendar>` in an app with an app-wide
+  locale silently rendered in `en-US`. Rendered through `gog-datepicker` nothing changes: that
+  component passes its own already-resolved values, which still win.
+- **`gog-paginator`: the per-page button names are translatable.** "Go to page 4" / "Page 4,
+  current page" were built by string concatenation in the template. They now come from
+  `GOG_CONFIG.labels.page`, a `(page, isCurrent) => string` formatter — a function rather than a
+  placeholder string, since the number's position and the grammar around it are language
+  dependent.
 - **The textarea resize grip's offsets are real tokens.** `--gog-textarea-resize-grip-offset`
   and `--gog-textarea-resize-inset-right`/`-bottom` are declared in `theme.css` instead of
   living as literal `var()` fallbacks in the component stylesheet, which the token-contract
@@ -88,7 +107,8 @@ made unreachable.
   `hidePasswordLabel`, `todayLabel`, `thisMonthLabel`, `previousMonthLabel`, `nextMonthLabel`,
   `previousYearLabel`, `nextYearLabel`, `openCalendarLabel`, `gog-paginator`'s `ariaLabel`).
   Rendered output is identical unless the app configures `labels`; only reading the input back
-  in TypeScript now yields `undefined` rather than the English default.
+  in TypeScript now yields `undefined` rather than the English default. `gog-calendar`'s
+  `locale` and `firstDayOfWeek` changed the same way, for the same reason.
 
 ### Deprecated
 

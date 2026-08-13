@@ -17,7 +17,9 @@ const DEFAULT_LABELS = {
   pagination: 'Pagination',
   previousPage: 'Previous page',
   nextPage: 'Next page',
-} as const;
+  page: (page: number, isCurrent: boolean) =>
+    isCurrent ? `Page ${page}, current page` : `Go to page ${page}`,
+};
 
 @Component({
   selector: 'gog-paginator',
@@ -94,6 +96,14 @@ export class PaginatorComponent {
   protected readonly resolvedNextLabel = computed(() =>
     resolveConfigured(undefined, this.globalConfig.labels?.nextPage, DEFAULT_LABELS.nextPage),
   );
+  /**
+   * Names one page button. A method rather than a `computed`, since it takes the page number —
+   * the formatter itself is resolved once and only re-read when the config object changes.
+   */
+  protected pageLabel(page: number): string {
+    const format = this.globalConfig.labels?.page ?? DEFAULT_LABELS.page;
+    return format(page, page === this.page());
+  }
 
   protected readonly pageNumbers = computed(() => {
     const total = Math.max(1, this.totalPages());

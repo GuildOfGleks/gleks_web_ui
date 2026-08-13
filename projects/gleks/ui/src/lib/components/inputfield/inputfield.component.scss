@@ -113,6 +113,24 @@
   --gog-input-pr: var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset));
 }
 
+/*
+ * A clearable number field shows both the stepper and the clear button. The stepper is flush
+ * against the field's right border, so the text gutter has to make room for both, and the
+ * clear button sits one stepper-width further in — otherwise the two land on top of each
+ * other. Only this combination needs it; every other end-slot control is alone in the slot.
+ */
+.gog-input-wrapper--spin-clear .gog-input__field-container {
+  --gog-input-pr: calc(
+    var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset)) + var(--gog-input-spin-width)
+  );
+}
+
+.gog-input-wrapper--spin-clear .gog-input__clear {
+  right: calc(
+    var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset)) + var(--gog-input-spin-width)
+  );
+}
+
 .gog-input__field::placeholder {
   color: var(--gog-input-placeholder-color);
 }
@@ -231,7 +249,7 @@
   flex: 1 1 0;
   align-items: center;
   justify-content: center;
-  width: calc(var(--gog-input-size-font-size, var(--gog-field-md-font-size)) * 1.35);
+  width: var(--gog-input-spin-width);
   padding: 0;
   border: none;
   background: none;

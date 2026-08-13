@@ -3,6 +3,7 @@
   [class]="sizeClass()"
   [class.gog-input-wrapper--icon-start]="hasIconStart()"
   [class.gog-input-wrapper--icon-end]="hasIconEnd() || hasSpinButtons()"
+  [class.gog-input-wrapper--spin-clear]="hasSpinAndClear()"
   [class.gog-input-wrapper--float-in]="resolvedFloatLabel() === 'in'"
   [class.gog-input-wrapper--float-on]="resolvedFloatLabel() === 'on'"
   [class.gog-input-wrapper--float-over]="resolvedFloatLabel() === 'over'"
@@ -92,7 +93,15 @@
           <gog-icon name="chevron-down" />
         </button>
       </span>
-    } @else if (showClear() && !isPasswordField()) {
+    }
+    <!--
+      The clear button sits outside the stepper's `@if` rather than in an `@else` branch: on a
+      number field the two have to coexist, and the stepper owns the field's right edge while
+      the clear button shifts left of it (`--spin-clear` on the wrapper widens the gutter). It
+      still outranks a projected addon or a decorative end icon — those share one slot with it
+      and only get it when there is nothing to clear.
+    -->
+    @if (showClear() && !isPasswordField()) {
       <button
         type="button"
         class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action gog-input__clear"
@@ -101,24 +110,26 @@
       >
         <gog-icon name="close" />
       </button>
-    } @else if (addonEnd() && !isPasswordField()) {
-      <span class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__addon">
-        <ng-content select="[gogInputAddonEnd]" />
-      </span>
-    } @else if (hasIconEnd()) {
-      @if (hasIconEndAction()) {
-        <button
-          type="button"
-          class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action"
-          [attr.aria-label]="effectiveIconEndLabel() || null"
-          (click)="onIconEndClick()"
-        >
-          <gog-icon [template]="iconEndTemplate()" [name]="effectiveIconEnd() || 'check'" />
-        </button>
-      } @else {
-        <span class="gog-input__icon gog-inline-center gog-input__icon--end" aria-hidden="true">
-          <gog-icon [template]="iconEndTemplate()" [name]="effectiveIconEnd() || 'check'" />
+    } @else if (!hasSpinButtons()) {
+      @if (addonEnd() && !isPasswordField()) {
+        <span class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__addon">
+          <ng-content select="[gogInputAddonEnd]" />
         </span>
+      } @else if (hasIconEnd()) {
+        @if (hasIconEndAction()) {
+          <button
+            type="button"
+            class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action"
+            [attr.aria-label]="effectiveIconEndLabel() || null"
+            (click)="onIconEndClick()"
+          >
+            <gog-icon [template]="iconEndTemplate()" [name]="effectiveIconEnd() || 'check'" />
+          </button>
+        } @else {
+          <span class="gog-input__icon gog-inline-center gog-input__icon--end" aria-hidden="true">
+            <gog-icon [template]="iconEndTemplate()" [name]="effectiveIconEnd() || 'check'" />
+          </span>
+        }
       }
     }
   </div>

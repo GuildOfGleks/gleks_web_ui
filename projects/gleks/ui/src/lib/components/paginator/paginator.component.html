@@ -13,7 +13,7 @@
       [size]="size()"
       [variant]="item === page() ? 'primary' : 'ghost'"
       [disabled]="disabled()"
-      [ariaLabel]="item === page() ? 'Page ' + item + ', current page' : 'Go to page ' + item"
+      [ariaLabel]="pageLabel(item)"
       (gogClick)="goTo(item)"
       >{{ item }}</gog-button
     >

@@ -188,16 +188,20 @@ export interface GogGlobalConfig {
     /** Close buttons on the two service-driven overlays. */
     closeDialog?: string;
     closeToast?: string;
-    /**
-     * `gog-paginator`'s `<nav>` accessible name and its two step buttons.
-     *
-     * The per-page button labels ("Go to page 4") are **not** here: they interpolate the page
-     * number, so a translation needs a function, not a string — see the backlog note in
-     * `docs/consumer-dx-plan.md`.
-     */
+    /** `gog-paginator`'s `<nav>` accessible name and its two step buttons. */
     pagination?: string;
     previousPage?: string;
     nextPage?: string;
+    /**
+     * `gog-paginator`'s per-page button names ("Go to page 4", "Page 4, current page").
+     *
+     * A function rather than a string, and the only one in this block: these interpolate the
+     * page number, and a template string with a `{0}` placeholder would be a second, weaker
+     * formatting language to learn — one that also can't express languages where the number's
+     * position or the surrounding grammar depends on its value. The default is
+     * `` (page, isCurrent) => isCurrent ? `Page ${page}, current page` : `Go to page ${page}` ``.
+     */
+    page?: (page: number, isCurrent: boolean) => string;
     /** `gog-datepicker`'s button that opens the calendar panel. */
     openCalendar?: string;
     /** `gog-calendar` navigation and shortcuts. */

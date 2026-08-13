@@ -126,7 +126,10 @@ describe('AutocompleteComponent', () => {
       expect(options().length).toBe(OPTIONS.length);
 
       type('ан');
-      expect(options().map((option) => option.textContent?.trim())).toEqual(['Ангуляр', 'Анимация']);
+      expect(options().map((option) => option.textContent?.trim())).toEqual([
+        'Ангуляр',
+        'Анимация',
+      ]);
     });
   });
 

@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { vi } from 'vitest';
 
-import { InputfieldComponent } from './inputfield.component';
+import { GogInputAddonEndDirective, InputfieldComponent } from './inputfield.component';
 import { GOG_CONFIG } from '../../shared/config';
 
 describe('InputfieldComponent', () => {
@@ -739,6 +739,87 @@ describe('InputfieldComponent', () => {
       expect(
         configured.nativeElement.querySelector('.gog-input__clear')?.getAttribute('aria-label'),
       ).toBe('Erase');
+    });
+  });
+
+  describe('clear button on a number field', () => {
+    /** Both affordances live in the field's end slot; before 21.3.2 the stepper won outright. */
+    it('shows the stepper and the clear button together once there is a value', async () => {
+      fixture.componentRef.setInput('type', 'number');
+      fixture.componentRef.setInput('clearable', true);
+      await fixture.whenStable();
+
+      // Nothing to clear yet — the stepper is alone in the slot.
+      expect(fixture.nativeElement.querySelector('.gog-input__spin')).toBeTruthy();
+      expect(fixture.nativeElement.querySelector('.gog-input__clear')).toBeNull();
+      expect(
+        fixture.nativeElement
+          .querySelector('.gog-input-wrapper')
+          .classList.contains('gog-input-wrapper--spin-clear'),
+      ).toBe(false);
+
+      fixture.componentRef.setInput('value', '42');
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-input__spin')).toBeTruthy();
+      expect(fixture.nativeElement.querySelector('.gog-input__clear')).toBeTruthy();
+      expect(
+        fixture.nativeElement
+          .querySelector('.gog-input-wrapper')
+          .classList.contains('gog-input-wrapper--spin-clear'),
+      ).toBe(true);
+    });
+
+    it('clears to null and drops back to the stepper alone', async () => {
+      const control = new FormControl<number | null>(7);
+
+      @Component({
+        imports: [InputfieldComponent, ReactiveFormsModule],
+        template: '<gog-inputfield type="number" [clearable]="true" [formControl]="control" />',
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class SpinClearHost {
+        readonly control = control;
+      }
+
+      const host = TestBed.createComponent(SpinClearHost);
+      await host.whenStable();
+      host.detectChanges();
+
+      const clear = host.nativeElement.querySelector('.gog-input__clear') as HTMLButtonElement;
+      expect(clear).toBeTruthy();
+      clear.click();
+      await host.whenStable();
+      host.detectChanges();
+
+      expect(control.value).toBeNull();
+      expect(host.nativeElement.querySelector('.gog-input__clear')).toBeNull();
+      expect(host.nativeElement.querySelector('.gog-input__spin')).toBeTruthy();
+    });
+
+    it('still lets the clear button displace a projected end addon on a text field', async () => {
+      @Component({
+        imports: [InputfieldComponent, GogInputAddonEndDirective],
+        template: `<gog-inputfield [clearable]="true" [value]="value()">
+          <span gogInputAddonEnd>kg</span>
+        </gog-inputfield>`,
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class AddonHost {
+        readonly value = signal('');
+      }
+
+      const host = TestBed.createComponent(AddonHost);
+      await host.whenStable();
+      host.detectChanges();
+      expect(host.nativeElement.querySelector('.gog-input__addon')).toBeTruthy();
+
+      host.componentInstance.value.set('x');
+      await host.whenStable();
+      host.detectChanges();
+
+      expect(host.nativeElement.querySelector('.gog-input__clear')).toBeTruthy();
+      expect(host.nativeElement.querySelector('.gog-input__addon')).toBeNull();
     });
   });
 });

@@ -337,6 +337,15 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   /** Whether to render the clear button right now — see `GogClearableState`. */
   protected readonly showClear = this.clearableState.isVisible;
 
+  /**
+   * Both the stepper and the clear button are on screen — only possible on a `clearable`
+   * number field with a value. Drives `.gog-input-wrapper--spin-clear`, which widens the end
+   * gutter and shifts the clear button clear of the stepper; without it the two overlap.
+   */
+  protected readonly hasSpinAndClear = computed(
+    () => this.hasSpinButtons() && this.showClear() && !this.isPasswordField(),
+  );
+
   protected readonly resolvedFloatLabel = this.floatLabelState.variant;
   protected readonly isFloatLabelActive = this.floatLabelState.isActive;
   protected readonly isFloatLabelFloated = this.floatLabelState.isFloated;

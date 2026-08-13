@@ -104,10 +104,16 @@ export class CalendarComponent {
    * or "public holidays" without the consumer materialising every date in range first.
    */
   readonly disabledDates = input<((date: Date) => boolean) | null>(null);
-  /** BCP-47 tag driving the month and weekday names. */
-  readonly locale = input(DEFAULT_LOCALE);
-  /** 0 = Sunday … 6 = Saturday. Unset, it comes from the locale. */
-  readonly firstDayOfWeek = input<number | null>(null);
+  /**
+   * BCP-47 tag driving the month and weekday names. Unset, falls back to
+   * `GOG_CONFIG.datepicker.locale`, then to `'en-US'`.
+   */
+  readonly locale = input<string | undefined>(undefined);
+  /**
+   * 0 = Sunday … 6 = Saturday. Unset, falls back to `GOG_CONFIG.datepicker.firstDayOfWeek`,
+   * then to the locale's own first day.
+   */
+  readonly firstDayOfWeek = input<number | null | undefined>(undefined);
   /** Which month to open on when there is no selection yet. */
   readonly defaultMonth = input<Date | null>(null);
   /** How many months to show side by side. Two is what makes a range picker usable. */
@@ -202,13 +208,28 @@ export class CalendarComponent {
   /** Whether a focus move should also pull the DOM focus over — only after a keypress. */
   private pendingFocus = false;
 
+  /**
+   * Instance input → `GOG_CONFIG.datepicker` → the built-in default.
+   *
+   * `gog-calendar` resolves these itself rather than relying on `gog-datepicker` to pass them
+   * down: it is exported and usable standalone, and `GOG_CONFIG.datepicker` has always been
+   * documented as applying to both. When it *is* rendered by `gog-datepicker`, that component
+   * passes its own already-resolved values, which win here — and resolve to the same thing,
+   * since both read the same config.
+   */
+  protected readonly resolvedLocale = computed(() =>
+    resolveConfigured(this.locale(), this.globalConfig.datepicker?.locale, DEFAULT_LOCALE),
+  );
   protected readonly resolvedFirstDayOfWeek = computed(
-    () => this.firstDayOfWeek() ?? localeFirstDayOfWeek(this.locale()),
+    () =>
+      this.firstDayOfWeek() ??
+      this.globalConfig.datepicker?.firstDayOfWeek ??
+      localeFirstDayOfWeek(this.resolvedLocale()),
   );
   protected readonly weekdays = computed(() =>
-    weekdayNames(this.locale(), this.resolvedFirstDayOfWeek()),
+    weekdayNames(this.resolvedLocale(), this.resolvedFirstDayOfWeek()),
   );
-  private readonly months = computed(() => monthNames(this.locale()));
+  private readonly months = computed(() => monthNames(this.resolvedLocale()));
 
   private readonly range = computed<GogDateRange>(() => {
     const current = this.value();

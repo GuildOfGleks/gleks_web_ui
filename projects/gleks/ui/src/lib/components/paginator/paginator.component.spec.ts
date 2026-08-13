@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PaginatorComponent } from './paginator.component';
+import { GOG_CONFIG } from '../../shared/config';
 
 describe('PaginatorComponent', () => {
   let component: PaginatorComponent;
@@ -239,6 +240,70 @@ describe('PaginatorComponent', () => {
       fixture.detectChanges();
 
       expect(pageNumberLabels()).toEqual(['1', '…', '9', '10', '11', '…', '20']);
+    });
+  });
+
+  describe('GOG_CONFIG.labels', () => {
+    async function configured(labels: Record<string, unknown>) {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [PaginatorComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { labels } }],
+      }).compileComponents();
+
+      const f = TestBed.createComponent(PaginatorComponent);
+      f.componentRef.setInput('totalPages', 5);
+      await f.whenStable();
+      f.detectChanges();
+      return f;
+    }
+
+    const buttonLabels = (f: ComponentFixture<PaginatorComponent>) =>
+      [...f.nativeElement.querySelectorAll('button[aria-label]')].map((b) =>
+        (b as HTMLElement).getAttribute('aria-label'),
+      );
+
+    it('uses the built-in English labels by default', async () => {
+      const f = await configured({});
+      const labels = buttonLabels(f);
+
+      expect(labels).toContain('Previous page');
+      expect(labels).toContain('Next page');
+      expect(labels).toContain('Page 1, current page');
+      expect(labels).toContain('Go to page 2');
+    });
+
+    it('takes the nav name and the step buttons from the config', async () => {
+      const f = await configured({
+        pagination: 'Seitennummerierung',
+        previousPage: 'Zurück',
+        nextPage: 'Weiter',
+      });
+
+      expect(f.nativeElement.getAttribute('aria-label')).toBe('Seitennummerierung');
+      expect(buttonLabels(f)).toContain('Zurück');
+      expect(buttonLabels(f)).toContain('Weiter');
+    });
+
+    it('formats the per-page names through the configured function', async () => {
+      // A function rather than a string: the page number is interpolated, and languages differ
+      // on where it goes and what agrees with it.
+      const f = await configured({
+        page: (page: number, isCurrent: boolean) =>
+          isCurrent ? `Seite ${page} von 5, aktuell` : `Zu Seite ${page}`,
+      });
+      const labels = buttonLabels(f);
+
+      expect(labels).toContain('Seite 1 von 5, aktuell');
+      expect(labels).toContain('Zu Seite 3');
+    });
+
+    it('lets the instance ariaLabel win over the configured nav name', async () => {
+      const f = await configured({ pagination: 'Seitennummerierung' });
+      f.componentRef.setInput('ariaLabel', 'Results pagination');
+      await f.whenStable();
+
+      expect(f.nativeElement.getAttribute('aria-label')).toBe('Results pagination');
     });
   });
 });
