@@ -63,17 +63,130 @@ explicitly.
 
 ## What you can configure
 
-| Key            | Fields                                                  | Applies to                                                                                                                                                                                                                                                   |
-| -------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `control`      | `size`, `errorDisplay`, `clearable`                     | Not every field applies to every control. `size`: button, input field, textarea, select, multiselect, checkbox, radio group, datepicker. `errorDisplay`: input field, textarea, select, multiselect, radio group, slider, datepicker (not button or checkbox). `clearable`: input field, textarea, select, multiselect, datepicker (not button, checkbox, radio group or slider). Deliberately **not** table, accordion or paginator, whose `size` means row density and whose defaults differ, nor spinner, skeleton, tag or chip. |
-| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition` | `gog-select` and `gog-multiselect`. `gog-datepicker` also honours `appendToBody` and `direction` for its calendar panel, but not `filter`/`filterPosition` (it has no search box).                                                                          |
-| `floatLabel`   | `variant`, `showPlaceholder`                            | The five field controls: input field, textarea, select, multiselect and datepicker.                                                                                                                                                                        |
-| `datepicker`   | `locale`, `firstDayOfWeek`, `format`                    | `gog-datepicker` and `gog-calendar`.                                                                                                                                                                                                                         |
-| `autocomplete` | `searchDebounce`, `minLength`                           | `gog-autocomplete`.                                                                                                                                                                                                                                          |
-| `tooltip`      | `position`, `showDelay`, `hideDelay`                    | The `gogTooltip` directive.                                                                                                                                                                                                                                  |
-| `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`   | `gog-scroll`.                                                                                                                                                                                                                                                |
-| `button`       | `debounce`                                              | `gog-button`.                                                                                                                                                                                                                                                |
-| `toast`        | `position`, `duration`                                  | `ToastService`.                                                                                                                                                                                                                                              |
+| Key            | Fields                                                                                                                        | Applies to                                                                                                                                                                                                                                                   |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `control`      | `size`, `errorDisplay`, `clearable`                                                                                           | Not every field applies to every control. `size`: button, input field, textarea, select, multiselect, checkbox, radio group, button toggle group, datepicker. `errorDisplay`: input field, textarea, select, multiselect, autocomplete, radio group, slider, datepicker (not button or checkbox). `clearable`: input field, textarea, select, multiselect, autocomplete, datepicker. Deliberately **not** table, accordion or paginator, whose `size` means row density and whose defaults differ, nor spinner, skeleton, tag, chip or toggle. |
+| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`                                                                       | `gog-select` and `gog-multiselect`. `gog-datepicker` and `gog-autocomplete` also honour `appendToBody` and `direction` for their panels, but not `filter`/`filterPosition` (neither has a separate search box).                                            |
+| `floatLabel`   | `variant`, `showPlaceholder`                                                                                                  | The field controls: input field, textarea, select, multiselect, autocomplete and datepicker.                                                                                                                                                               |
+| `datepicker`   | `locale`, `firstDayOfWeek`, `format`                                                                                          | `gog-datepicker` and `gog-calendar`. The calendar resolves these itself — it does not need them passed down from a datepicker.                                                                                                                              |
+| `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus` <span class="since" title="Added in 21.3.1">21.3.1</span>                        | `gog-autocomplete`. `openOnFocus` is on by default.                                                                                                                                                                                                          |
+| `tooltip`      | `position`, `showDelay`, `hideDelay`                                                                                          | The `gogTooltip` directive.                                                                                                                                                                                                                                  |
+| `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack` <span class="since" title="Added in 21.3.1">21.3.1</span>  | `gog-scroll`, and every component that uses one internally.                                                                                                                                                                                                  |
+| `button`       | `debounce`                                                                                                                    | `gog-button`, and the `[gogButton]` directive.                                                                                                                                                                                                               |
+| `inputfield` <span class="since" title="Added in 21.3.1">21.3.1</span> | `showSpinButtons`                                                                             | `gog-inputfield`. Whether a `type="number"` field shows the library's own spin buttons instead of the browser's. On by default.                                                                                                                             |
+| `textarea` <span class="since" title="Added in 21.3.1">21.3.1</span>   | `resize`                                                                                      | `gog-textarea`. Which direction(s) the drag handle resizes in — the native CSS `resize` value space. `'vertical'` by default.                                                                                                                               |
+| `paginator` <span class="since since--latest" title="Added in 21.4.0">21.4.0</span> | `showPageSizeSelect`, `pageSizeOptions`                                          | `gog-paginator`, and through it `gog-table`'s built-in pagination. The rows-per-page select is **off** by default; the options default to `[10, 20, 30, 40, 50]`.                                                                                          |
+| `toast`        | `position`, `duration`                                                                                                        | `ToastService`.                                                                                                                                                                                                                                              |
+| `labels` <span class="since" title="Added in 21.3.2">21.3.2</span>     | every fixed string the library renders — see below         | Input field, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, `DialogService`, `ToastService`.                                                                                                                          |
+| `theme` <span class="since" title="Added in 21.3.2">21.3.2</span>      | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme`                       | `ThemeService` — see below. Every field is off or neutral by default, so an app that configures nothing keeps the pre-21.3.2 behaviour.                                                                            |
+
+## `labels` — translating the library
+
+Every string a component renders that you never write markup for: a clear button's accessible
+name, the paginator's page buttons, the calendar's "Today". They live here rather than as one
+input per string for the reason this file exists at all — a Russian-language app relabels "Clear"
+once, not on all 340 fields.
+
+```ts
+provideGogConfig({
+  labels: {
+    clear: 'Очистить', // input field / textarea clear button
+    clearSelection: 'Очистить выбор', // select / multiselect / autocomplete
+    clearDate: 'Очистить дату', // datepicker
+    selectAll: 'Выбрать все', // multiselect panel — visible text, not just a label
+    clearAll: 'Очистить', // multiselect panel
+    increment: 'Увеличить', // number spin buttons
+    decrement: 'Уменьшить',
+    showPassword: 'Показать пароль',
+    hidePassword: 'Скрыть пароль',
+    closeDialog: 'Закрыть',
+    closeToast: 'Закрыть',
+    pagination: 'Навигация по страницам',
+    previousPage: 'Предыдущая страница',
+    nextPage: 'Следующая страница',
+    openCalendar: 'Открыть календарь',
+    rowsPerPage: 'Строк на странице', // gog-paginator's size select
+    total: 'Всего', // gog-table's row-count label
+    tablePagination: 'Навигация по таблице',
+    selectRow: 'Выбрать строку',
+    selectAllRows: 'Выбрать все строки на странице',
+    today: 'Сегодня',
+    thisMonth: 'Текущий месяц',
+    previousMonth: 'Предыдущий месяц',
+    nextMonth: 'Следующий месяц',
+    previousYear: 'Предыдущий год',
+    nextYear: 'Следующий год',
+    hours: 'Часы',
+    minutes: 'Минуты',
+    seconds: 'Секунды',
+  },
+});
+```
+
+Five of those — `rowsPerPage`, `total`, `tablePagination`, `selectRow`, `selectAllRows` — arrived
+with the table's selection and the paginator's size select
+<span class="since since--latest" title="Added in 21.4.0">21.4.0</span>.
+
+### `labels.page` takes a function, not a string
+
+The paginator's per-page button names ("Go to page 4", "Page 4, current page") interpolate the
+page number, so this one field is a formatter:
+
+```ts
+provideGogConfig({
+  labels: {
+    page: (page, isCurrent) =>
+      isCurrent ? `Страница ${page}, текущая` : `Перейти на страницу ${page}`,
+  },
+});
+```
+
+It is the only non-string field in `labels`, and deliberately so: a template string with a `{0}`
+placeholder would be a second, weaker formatting language to learn — one that also cannot express
+languages where the number's position or the grammar around it depends on its value.
+
+### What is _not_ in `labels`
+
+Strings that describe **one** control rather than library chrome: `gog-checkbox`'s `ariaLabel`,
+`gog-button`'s `ariaLabel`, any field's `label` or `placeholder`. Those differ per instance by
+definition and have no meaningful app-wide value.
+
+Where a per-instance label input exists (`clearAriaLabel`, `todayLabel`, `selectAllLabel`, …) it
+still wins for that one control — the usual instance → config → default order.
+
+## `theme` — persistence and the OS setting
+
+`ThemeService` reads its own key here. Everything is off or neutral by default: with nothing
+configured it adopts whatever `data-theme` is already on `<html>`, else `'light'`, and persists
+nothing.
+
+```ts
+provideGogConfig({
+  theme: {
+    storageKey: 'my-app-theme', // unset ⇒ nothing is persisted, the theme resets on reload
+    defaultTheme: 'light', // applied when nothing else decides
+    followSystem: true, // fall back to prefers-color-scheme, and keep following it
+    lightTheme: 'one-light', // what toggleTheme() alternates between, and what
+    darkTheme: 'one-dark', // followSystem maps the OS setting to
+  },
+});
+```
+
+`followSystem` keeps tracking the OS setting until the app calls `setTheme` or `toggleTheme` —
+an explicit choice ends the following. It is off by default because switching it on changes which
+theme an existing app opens in.
+
+## Icons are configured separately
+
+The icon registry is **not** part of `GOG_CONFIG`. `provideGogIcons(...)` is its own app-wide
+provider, so don't look for an `icons` key here:
+
+```ts
+providers: [provideGogConfig({ control: { size: 'sm' } }), provideGogIcons({ logo: '<svg …>' })];
+```
+
+See the [Icon](/components/icon) page for the registry, how a registered name overrides a built-in
+one, and the security rule for the SVG you pass in.
 
 ## What does _not_ belong here
 

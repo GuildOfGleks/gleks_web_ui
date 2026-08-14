@@ -12,6 +12,7 @@ import {
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiInputRow {
@@ -19,6 +20,7 @@ interface ApiInputRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 /** A deliberately un-`GogDropdownOption`-shaped DTO, to show the accessors doing their job. */
@@ -29,6 +31,21 @@ interface User {
 }
 
 const API_INPUTS: readonly ApiInputRow[] = [
+  {
+    name: 'selectAllLabel',
+    type: 'string | undefined',
+    default: "'Select all'",
+    description:
+      "Visible text of the panel's select-all button (shown when showControls is on). Also via GOG_CONFIG.labels.selectAll.",
+    since: '21.3.2',
+  },
+  {
+    name: 'clearAllLabel',
+    type: 'string | undefined',
+    default: "'Clear'",
+    description: 'The clear-all button next to it. Also via GOG_CONFIG.labels.clearAll.',
+    since: '21.3.2',
+  },
   {
     name: 'value',
     type: '(string | number)[] (model)',
@@ -242,6 +259,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
     CodeTabsComponent,
     RouterLink,
     ReactiveFormsModule,
+    SinceBadgeComponent,
   ],
   templateUrl: './multiselect-doc-page.html',
   styleUrl: './multiselect-doc-page.scss',

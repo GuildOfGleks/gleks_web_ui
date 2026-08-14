@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { GogSize, PaginatorComponent } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiInputRow {
@@ -10,6 +11,7 @@ interface ApiInputRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const API_INPUTS: readonly ApiInputRow[] = [
@@ -20,7 +22,44 @@ const API_INPUTS: readonly ApiInputRow[] = [
     description:
       '1-based current page. Two-way bindable: [(page)]="myPageSignal". Self-clamps to [1, totalPages] whenever totalPages shrinks below it.',
   },
-  { name: 'totalPages', type: 'number', default: '1', description: 'Total number of pages.' },
+  {
+    name: 'totalRecords',
+    type: 'number | null',
+    default: 'null',
+    description:
+      'How many rows exist. Given this, the paginator derives the page count from pageSize itself — which is what removes the Math.ceil(total / size) a consumer otherwise writes and keeps in sync. Wins over totalPages when both are set.',
+    since: '21.4.0',
+  },
+  {
+    name: 'pageSize',
+    type: 'number (model)',
+    default: '10',
+    description:
+      'Rows per page, two-way bindable. Changing it always returns to page 1 — "page 5" of 10-row pages is not "page 5" of 50-row ones.',
+    since: '21.4.0',
+  },
+  {
+    name: 'showPageSizeSelect',
+    type: 'boolean | undefined',
+    default: 'false',
+    description:
+      'Whether the rows-per-page select renders at all. Also settable app-wide via GOG_CONFIG.paginator.',
+    since: '21.4.0',
+  },
+  {
+    name: 'pageSizeOptions',
+    type: 'number[] | undefined',
+    default: '[10, 20, 30, 40, 50]',
+    description: 'The choices that select offers. Also settable app-wide via GOG_CONFIG.paginator.',
+    since: '21.4.0',
+  },
+  {
+    name: 'totalPages',
+    type: 'number',
+    default: '1',
+    description:
+      'Total number of pages. Still the right input when a server hands you a page count directly.',
+  },
   {
     name: 'rangeMode',
     type: "'window' | 'ellipsis'",
@@ -73,7 +112,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
     name: 'ariaLabel',
     type: 'string',
     default: "'Pagination'",
-    description: 'Accessible name for the navigation landmark.',
+    description:
+      'Accessible name for the navigation landmark. Its default now comes from GOG_CONFIG.labels.pagination.',
   },
 ];
 
@@ -93,7 +133,13 @@ const FRUIT_ITEMS = [
 
 @Component({
   selector: 'app-paginator-doc-page',
-  imports: [PaginatorComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [
+    PaginatorComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './paginator-doc-page.html',
   styleUrl: './paginator-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -118,6 +164,16 @@ export class PaginatorDocPage {
 
   protected readonly disabledPage = signal(3);
 
+  // ── totalRecords / rows-per-page demo ──────────────────────────────────────────────────────
+  protected readonly recordsPage = signal(1);
+  protected readonly recordsPageSize = signal(10);
+  protected readonly totalRecords = signal(137);
+  protected readonly recordsRange = computed(() => {
+    const size = this.recordsPageSize();
+    const start = (this.recordsPage() - 1) * size + 1;
+    return `${start}–${Math.min(start + size - 1, this.totalRecords())} of ${this.totalRecords()}`;
+  });
+
   private readonly listPageSize = 4;
   protected readonly listItems = FRUIT_ITEMS;
   protected readonly listPage = signal(1);
@@ -131,6 +187,34 @@ export class PaginatorDocPage {
 
   protected readonly importSnippet =
     "```typescript\nimport { PaginatorComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [PaginatorComponent],\n})\n```";
+
+  protected readonly recordsHtml = [
+    '<gog-paginator',
+    '  [(page)]="page"',
+    '  [(pageSize)]="pageSize"',
+    '  [totalRecords]="items().length"',
+    '  [showPageSizeSelect]="true"',
+    '  [pageSizeOptions]="[10, 20, 50]"',
+    '/>',
+  ].join('\n');
+  protected readonly recordsTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { PaginatorComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [PaginatorComponent],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly page = signal(1);',
+    '  protected readonly pageSize = signal(10);',
+    '  protected readonly items = signal<Item[]>([/* 137 of them */]);',
+    '',
+    '  // No `totalPages` computed to write, and none to keep in sync with the size select:',
+    '  // the paginator derives the page count from totalRecords and pageSize itself.',
+    '}',
+  ].join('\n');
 
   protected readonly overviewHtml = '<gog-paginator [(page)]="page" [totalPages]="totalPages()" />';
   protected readonly overviewTs = [

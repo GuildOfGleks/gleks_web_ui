@@ -12,6 +12,7 @@ import {
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiRow {
@@ -28,7 +29,7 @@ const CONFIG_OPTIONS: readonly ApiRow[] = [
     type: "'success' | 'error' | 'warning' | 'info'",
     default: "'info'",
     description:
-      'Drives the accent color, default icon, and aria-live politeness (assertive for error/warning, polite otherwise).',
+      'Drives the accent color, the default icon, and which live region announces the toast (assertive for error/warning, polite otherwise).',
   },
   {
     name: 'iconName',
@@ -125,6 +126,7 @@ const CONTAINER_INPUTS: readonly ApiRow[] = [
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './toast-doc-page.html',
   styleUrl: './toast-doc-page.scss',

@@ -56,6 +56,11 @@
       <p class="demo-card__meta">
         <code>size="thin"</code> shrinks the track/thumb; <code>autoHide="false"</code> keeps the
         thumb always visible instead of fading out after <code>hideDelay</code> ms.
+        <code>[showTrack]="false"</code> <app-since version="21.3.1" /> removes the visual
+        affordance altogether — scrolling itself (wheel, touch, keyboard) is unaffected either way,
+        which is what makes it safe for a region whose scrolling is driven for the user, the way
+        <a routerLink="/components/tabs">gog-tabs</a> drives its header row. Settable app-wide via
+        <code>GOG_CONFIG.scroll.showTrack</code>.
       </p>
       <div class="demo-card__preview action-row">
         <gog-button
@@ -165,6 +170,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>

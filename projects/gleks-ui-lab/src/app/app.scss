@@ -46,6 +46,11 @@
       border-radius: 4px;
       background: color-mix(in srgb, var(--gog-accent-color) 15%, transparent);
       color: var(--gog-accent-color);
+      text-decoration: none;
+
+      &:hover {
+        background: color-mix(in srgb, var(--gog-accent-color) 28%, transparent);
+      }
     }
   }
 

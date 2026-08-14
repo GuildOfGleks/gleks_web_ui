@@ -3,8 +3,9 @@
     <p class="paginator-doc__eyebrow">gog-paginator</p>
     <h1 class="paginator-doc__title font-heading">Paginator</h1>
     <p class="paginator-doc__lead">
-      Page-number controls that only need a page count — no notion of rows or columns — so they drop
-      into a table, an accordion, a plain list, or anything else you page through.
+      Page-number controls with no notion of rows or columns, so they drop into a table, an
+      accordion, a plain list, or anything else you page through. Hand it a row count and it works
+      out the pages itself; hand it a page count and it uses that.
     </p>
   </header>
 
@@ -25,6 +26,54 @@
       <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
     </div>
     <p class="doc-section__meta">Page {{ basicPage() }} of {{ basicTotalPages() }}</p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="total-records" class="doc-section__title font-heading">
+      Paging a row count — <code>totalRecords</code> <app-since version="21.4.0" />
+    </h2>
+    <p class="doc-section__intro">
+      Usually you know how many <em>rows</em> there are, not how many pages. Give the paginator
+      <code>totalRecords</code> and it derives the page count from <code>pageSize</code> itself —
+      which removes the <code>computed(() =&gt; Math.ceil(total / size))</code> you would otherwise
+      write <em>and</em> keep in sync with the rows-per-page select.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-paginator
+          [(page)]="recordsPage"
+          [(pageSize)]="recordsPageSize"
+          [totalRecords]="totalRecords()"
+          [showPageSizeSelect]="true"
+          [pageSizeOptions]="[10, 20, 50]"
+        />
+      </div>
+      <p class="demo-card__meta">Showing {{ recordsRange() }}</p>
+      <app-code-tabs [html]="recordsHtml" [ts]="recordsTs" />
+    </div>
+    <p class="doc-section__intro">
+      <code>totalPages</code> still works and is the right input when a server tells you a page
+      count directly; <code>totalRecords</code> wins when both are set.
+    </p>
+    <p class="doc-section__intro">
+      The rows-per-page select is <strong>off by default</strong> — turn it on per instance, or
+      app-wide through <code>GOG_CONFIG.paginator</code> (<code>showPageSizeSelect</code>,
+      <code>pageSizeOptions</code>), with <code>GOG_CONFIG.labels.rowsPerPage</code> for its
+      accessible name. See <a routerLink="/general/global-config">Global Configuration</a>.
+    </p>
+    <p class="doc-section__intro">
+      Changing the size always returns to page 1: "page 5" of 10-row pages is not "page 5" of 50-row
+      ones, so clamping alone would leave the user somewhere they never asked to be.
+    </p>
+    <p class="doc-section__intro">
+      <strong
+        ><code>pageSize</code> being a <code>model</code> on both the paginator and
+        <a routerLink="/components/table">the table</a> is what makes the two connect with no
+        go-between signal</strong
+      >
+      — the table binds its own model straight to the paginator's, and the select writes back
+      through it.
+    </p>
   </section>
 
   <section class="doc-section">
@@ -151,6 +200,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>

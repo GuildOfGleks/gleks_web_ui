@@ -166,3 +166,47 @@
     border-bottom: none;
   }
 }
+
+/* Newest-first log under the outputs demo, so the reader can see which event a click produced. */
+.event-log {
+  margin: 0 0 1em;
+  padding: 0;
+  list-style: none;
+  font-family: var(--gog-font-mono);
+  font-size: var(--gog-text-xs);
+
+  &__item {
+    padding: 4px 8px;
+    border-left: 2px solid var(--gog-accent-color);
+    background: var(--gog-hover-color);
+    color: var(--gog-text-color);
+
+    & + & {
+      margin-top: 4px;
+    }
+
+    &--empty {
+      border-left-color: var(--gog-border-color);
+      color: var(--gog-muted-text-color);
+    }
+  }
+}
+
+.table-doc__rules {
+  margin: 0 0 1em;
+  padding-left: 1.2em;
+  color: var(--gog-text-color);
+  line-height: 1.6;
+
+  li + li {
+    margin-top: 0.8em;
+  }
+
+  code {
+    font-family: var(--gog-font-mono);
+    font-size: 0.9em;
+    background-color: var(--gog-hover-color);
+    border-radius: 4px;
+    padding: 0.15em 0.4em;
+  }
+}

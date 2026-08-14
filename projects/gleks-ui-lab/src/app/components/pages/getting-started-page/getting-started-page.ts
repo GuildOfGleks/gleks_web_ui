@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 
 interface NextLink {
   readonly title: string;
@@ -28,7 +29,7 @@ const NEXT_LINKS: readonly NextLink[] = [
 
 @Component({
   selector: 'app-getting-started-page',
-  imports: [MarkdownComponent, RouterLink],
+  imports: [MarkdownComponent, RouterLink, SinceBadgeComponent],
   templateUrl: './getting-started-page.html',
   styleUrl: './getting-started-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,7 +40,7 @@ export class GettingStartedPage {
   protected readonly installSnippet = '```bash\nnpm install @guildofgleks/ui\n```';
 
   protected readonly stylesSnippet =
-    '```json\n"styles": [\n  "node_modules/@guildofgleks/ui/src/styles/index.css",\n  "src/styles.scss"\n]\n```';
+    '```json\n"styles": [\n  "node_modules/@guildofgleks/ui/styles/index.css",\n  "src/styles.scss"\n]\n```';
 
   protected readonly useSnippet = [
     '```typescript',

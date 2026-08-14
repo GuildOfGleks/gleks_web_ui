@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { ButtonComponent, GogScrollMetrics, ScrollComponent } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiRow {
@@ -11,6 +12,7 @@ interface ApiRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const API_INPUTS: readonly ApiRow[] = [
@@ -62,6 +64,14 @@ const API_INPUTS: readonly ApiRow[] = [
       'Accessible name for the viewport when focusable is true and there is no visible label.',
   },
   {
+    name: 'showTrack',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Whether the overlay thumb and track render at all. Scrolling itself is unaffected either way — this is purely the visual affordance. Unset, falls back to GOG_CONFIG.scroll.showTrack, then to true.',
+    since: '21.3.1',
+  },
+  {
     name: 'overscrollBehavior',
     type: "'auto' | 'contain' | 'none' | undefined",
     default: 'undefined',
@@ -109,6 +119,7 @@ const API_METHODS: readonly { name: string; description: string }[] = [
     CodeTabsComponent,
     RouterLink,
     DecimalPipe,
+    SinceBadgeComponent,
   ],
   templateUrl: './scroll-doc-page.html',
   styleUrl: './scroll-doc-page.scss',

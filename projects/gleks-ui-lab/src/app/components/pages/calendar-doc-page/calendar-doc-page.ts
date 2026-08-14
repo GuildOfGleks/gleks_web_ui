@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiRow {
@@ -10,6 +11,7 @@ interface ApiRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const API_INPUTS: readonly ApiRow[] = [
@@ -41,16 +43,17 @@ const API_INPUTS: readonly ApiRow[] = [
   },
   {
     name: 'locale',
-    type: 'string',
+    type: 'string | undefined',
     default: "'en-US'",
     description:
-      'BCP-47 tag driving month and weekday names, through Intl. Unlike gog-datepicker, gog-calendar does not read GOG_CONFIG — this default is fixed.',
+      'BCP-47 tag driving month and weekday names, through Intl. Unset, falls back to GOG_CONFIG.datepicker.locale — the calendar resolves it itself, with no datepicker involved.',
   },
   {
     name: 'firstDayOfWeek',
-    type: 'number | null',
-    default: 'null',
-    description: '0 = Sunday … 6 = Saturday. Unset, it comes from the locale.',
+    type: 'number | undefined',
+    default: "the locale's own",
+    description:
+      '0 = Sunday … 6 = Saturday. Unset, falls back to GOG_CONFIG.datepicker.firstDayOfWeek, then to the locale.',
   },
   {
     name: 'defaultMonth',
@@ -98,15 +101,25 @@ const API_INPUTS: readonly ApiRow[] = [
   },
   {
     name: 'todayLabel / thisMonthLabel',
-    type: 'string',
+    type: 'string | undefined',
     default: "'Today' / 'This month'",
-    description: 'Wording for the two footer actions.',
+    description:
+      'Wording for the two footer actions. Also settable app-wide via GOG_CONFIG.labels.',
   },
   {
     name: 'previousMonthLabel / nextMonthLabel / previousYearLabel / nextYearLabel',
-    type: 'string',
+    type: 'string | undefined',
     default: "'Previous month' / 'Next month' / 'Previous year' / 'Next year'",
-    description: 'Accessible names for the navigation buttons.',
+    description:
+      'Accessible names for the navigation buttons. Also settable app-wide via GOG_CONFIG.labels.',
+  },
+  {
+    name: 'hoursLabel / minutesLabel / secondsLabel',
+    type: 'string | undefined',
+    default: "'Hours' / 'Minutes' / 'Seconds'",
+    description:
+      "Accessible names for the time section's three spinners (with showTime). Also settable app-wide via GOG_CONFIG.labels.",
+    since: '21.3.2',
   },
 ];
 
@@ -128,7 +141,13 @@ const API_OUTPUTS: readonly ApiRow[] = [
 
 @Component({
   selector: 'app-calendar-doc-page',
-  imports: [CalendarComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [
+    CalendarComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './calendar-doc-page.html',
   styleUrl: './calendar-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

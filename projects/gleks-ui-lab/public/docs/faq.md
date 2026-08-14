@@ -14,7 +14,7 @@ into minors by hand and read the changelog first.
 ### Which Angular versions does it support?
 
 Angular 21 and newer only (`peerDependencies` require `^21.2.0` for `@angular/core`,
-`@angular/common` and `@angular/forms`). The library was built after standalone components,
+`@angular/common`, `@angular/forms` and `@angular/platform-browser`). The library was built after standalone components,
 signals and `OnPush`-by-default became the normal way to write Angular, so there was never a
 reason to also support the NgModule-era API surface older libraries still carry. If your app
 is on an older Angular version, upgrade first — there's no compatibility build.
@@ -32,6 +32,46 @@ weight.
 Just what you import. Every component is standalone and the package sets `"sideEffects":
 false`, so a production bundler tree-shakes out anything you don't reference — importing
 `ButtonComponent` alone doesn't pull in the other 29 components.
+
+### Does it pull in `@angular/router`?
+
+No, and deliberately not. A component library that imports the router forces it on apps that
+don't route. Where a link is genuinely the right element — a nav button, a "Back to list" — use
+the **`[gogButton]`** directive <span class="since since--latest" title="Added in 21.4.0">21.4.0</span>
+on your own `<a>` and keep whatever directives that anchor already has, `routerLink` included:
+
+```html
+<a gogButton variant="secondary" routerLink="/settings">Settings</a>
+```
+
+The directive applies the same classes `gog-button` renders; the styles for them live in the
+global `styles/button.css`, because Angular's emulated encapsulation could never reach an element
+declared in your template. Use the **component** when the button acts on the page (it has
+`loading`, `debounce` and `gogClick`), the **directive** when the element must be a link.
+
+### How do I translate the library into another language?
+
+`GOG_CONFIG.labels` <span class="since" title="Added in 21.3.2">21.3.2</span>. Every fixed string
+the library renders that you never write markup for — the clear buttons, the paginator's page
+names, the calendar's "Today", the table's selection checkboxes — is set once there rather than
+per instance. See [Global Configuration](/general/global-config) for the full list and the one
+field that takes a formatter instead of a string.
+
+### Do I have to give every field an `inputId`?
+
+No — since 21.3.2 <span class="since" title="Added in 21.3.2">21.3.2</span> every form control
+generates its own `id` and wires its `<label for>` to it. Set `inputId` only when something
+**outside** the component has to reference the field: your own `<label for>`, an
+`aria-describedby` on a sibling, or a test hook. Before this, omitting it produced a silently
+unlabelled field.
+
+### Can I use my own icons?
+
+Yes — register them once with `provideGogIcons(...)`
+<span class="since since--latest" title="Added in 21.4.0">21.4.0</span> and use the name anywhere
+a built-in one goes. A registered name also overrides a built-in of the same name, which is how
+you swap the library's glyph set for your own without touching call sites. See the
+[Icon](/components/icon) page — including the rule about what SVG is safe to register.
 
 ### Does it support server-side rendering (SSR)?
 

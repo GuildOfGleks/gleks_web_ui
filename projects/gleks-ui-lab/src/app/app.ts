@@ -12,6 +12,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faPalette } from '@fortawesome/free-solid-svg-icons';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
 import { TocComponent } from './components/shared/toc/toc';
+import { LIBRARY_NPM_URL, LIBRARY_VERSION } from './components/shared/library-version';
 
 interface ThemeMenuOption {
   value: string;
@@ -39,6 +40,11 @@ interface ThemeMenuOption {
 export class App {
   private readonly themeService = inject(ThemeService);
   private readonly elRef = inject(ElementRef<HTMLElement>);
+
+  // Read from the installed package rather than written here, so the badge cannot claim a
+  // version the site was not actually built against. See `library-version.ts`.
+  protected readonly libraryVersion = LIBRARY_VERSION;
+  protected readonly libraryNpmUrl = LIBRARY_NPM_URL;
 
   // The first two ship with the library itself; `slate` / `one-*` are its importable presets
   // (see the Theming page); `primeng` / `material` are this site's own look-alikes, declared in

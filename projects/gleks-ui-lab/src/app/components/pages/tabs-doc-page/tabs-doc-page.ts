@@ -10,6 +10,7 @@ import {
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiRow {
@@ -17,9 +18,26 @@ interface ApiRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const TABS_INPUTS: readonly ApiRow[] = [
+  {
+    name: 'scrollActiveIntoView',
+    type: 'boolean',
+    default: 'true',
+    description:
+      'With an overflowing header row, selecting a tab scrolls it into view — instantly on first render, smoothly afterwards (and instantly under prefers-reduced-motion).',
+    since: '21.3.1',
+  },
+  {
+    name: 'showScrollTrack',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Whether the header row shows a scrollbar track. Unset it follows scrollActiveIntoView: hidden while that is on (the scrolling is driven for you), shown once it is off, where the track is the only hint that there is more to reach.',
+    since: '21.3.1',
+  },
   {
     name: 'activeIndex',
     type: 'number',
@@ -107,6 +125,7 @@ const TAB_INPUTS: readonly ApiRow[] = [
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './tabs-doc-page.html',
   styleUrl: './tabs-doc-page.scss',

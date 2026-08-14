@@ -4,7 +4,24 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [21.4.1] - planned
+## [21.5.0] - planned
+
+### Changed
+
+- **`CHANGELOG.md` now ships inside the npm package**, alongside `README.md`, `AGENTS.md` and
+  `TOKENS.md`. It was repo-only, which meant the documentation site could not render release
+  notes for the exact version a reader has installed — the only source that cannot drift, since
+  it travels with the package rather than being copied next to it. Nothing changes for a
+  consumer who does not read it; the file adds a few KB to the tarball.
+
+### Fixed
+
+- **`AGENTS.md` was missing `gog-slider`'s range mode.** `range`, `rangeValue`
+  (`GogSliderRange`), `startDisabled`/`endDisabled` and `startAriaLabel`/`endAriaLabel` shipped
+  in 21.3.1 but never reached the agent reference, so an agent reading it would conclude the
+  slider cannot express a range and build a two-slider workaround.
+
+## [21.4.1] - 14.08.2026
 
 ### Fixed
 
@@ -24,7 +41,7 @@ reached 1.0, so breaking changes may land in minor versions.
   already does the work. Several themes rendered side by side in scoped subtrees keep working
   exactly as before.
 
-## [21.4.0] - planned
+## [21.4.0] - 14.08.2026
 
 A minor rather than a patch: this adds public API. Iterations 5 and 6 of the consumer-DX plan
 (`docs/consumer-dx-plan.md`).
@@ -188,7 +205,7 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
   whatever a consumer registers) silently ignored the token and fell back to the `stroke-width`
   attribute baked into its own markup. `ellipse` is covered too.
 
-## [21.3.2] - planned
+## [21.3.2] - 13.08.2026
 
 First batch of the consumer-DX plan (`docs/consumer-dx-plan.md`, iterations 1–4): the seam
 between the package and the developer installing it — setup that failed on the documented
@@ -307,7 +324,7 @@ made unreachable.
 - `@guildofgleks/ui/src/styles/…` — use `@guildofgleks/ui/styles/…`. Both ship until **21.5.0**,
   when the `src/styles/` copy is removed.
 
-## [21.3.1] - planned
+## [21.3.1] - 11.08.2026
 
 ### Added
 

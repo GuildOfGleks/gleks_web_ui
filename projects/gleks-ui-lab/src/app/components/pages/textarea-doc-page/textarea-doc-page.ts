@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { GogSize, TextareaComponent } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiInputRow {
@@ -11,9 +12,47 @@ interface ApiInputRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const API_INPUTS: readonly ApiInputRow[] = [
+  {
+    name: 'resize',
+    type: "'vertical' | 'horizontal' | 'both' | 'none' | undefined",
+    default: 'undefined',
+    description:
+      "Which direction(s) the field's own drag handle resizes it in — the native CSS resize value space, with 'none' removing the handle entirely. Unset, falls back to GOG_CONFIG.textarea.resize, then to 'vertical'.",
+    since: '21.3.1',
+  },
+  {
+    name: 'readonly',
+    type: 'boolean',
+    default: 'false',
+    description:
+      'Blocks edits while keeping the value focusable, selectable and submitted with the form. Also hides the clear button.',
+    since: '21.3.2',
+  },
+  {
+    name: 'maxlength',
+    type: 'number | null',
+    default: 'null',
+    description: 'Native maxlength attribute.',
+    since: '21.3.2',
+  },
+  {
+    name: 'minlength',
+    type: 'number | null',
+    default: 'null',
+    description: 'Native minlength attribute.',
+    since: '21.3.2',
+  },
+  {
+    name: 'spellcheck',
+    type: 'boolean | null',
+    default: 'null',
+    description: "Native spellcheck attribute. Unset leaves the browser's own default in place.",
+    since: '21.3.2',
+  },
   {
     name: 'value',
     type: 'string (model)',
@@ -104,6 +143,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
     CodeTabsComponent,
     RouterLink,
     ReactiveFormsModule,
+    SinceBadgeComponent,
   ],
   templateUrl: './textarea-doc-page.html',
   styleUrl: './textarea-doc-page.scss',
@@ -116,6 +156,26 @@ export class TextareaDocPage {
   // gog-textarea paints with the same --gog-input-* tokens as gog-inputfield — no separate section.
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'input-field')?.tokens ?? [];
+
+  protected readonly resizeHtml = [
+    '<gog-textarea label="Vertical (default)" [rows]="3" />',
+    '<gog-textarea label="Both axes" resize="both" [rows]="3" />',
+    '<gog-textarea label="Fixed size" resize="none" [rows]="3" />',
+  ].join('\n');
+  protected readonly resizeTs = [
+    "import { Component } from '@angular/core';",
+    "import { TextareaComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TextareaComponent],',
+    '  template: `',
+    '    <gog-textarea label="Both axes" resize="both" [rows]="3" />',
+    '    <gog-textarea label="Fixed size" resize="none" [rows]="3" />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
 
   protected readonly bio = signal('');
   protected readonly manualErrorValue = signal('');

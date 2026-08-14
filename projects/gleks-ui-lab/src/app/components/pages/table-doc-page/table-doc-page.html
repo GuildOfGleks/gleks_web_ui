@@ -4,7 +4,10 @@
     <h1 class="table-doc__title font-heading">Table</h1>
     <p class="table-doc__lead">
       A sortable, paginated data table with custom cell/header templates, size variants, sticky
-      headers, loading and empty states, and built-in row numbers.
+      headers, loading and empty states, and built-in row numbers. Since
+      <app-since version="21.4.0" /> it also reports what the user did (<code>gogSortChange</code>,
+      <code>gogPageChange</code>, <code>gogRowClick</code>), hands sorting and paging to a server
+      (<code>lazy</code>), and selects rows — so it is no longer a display-only grid.
     </p>
   </header>
 
@@ -184,6 +187,199 @@
   </section>
 
   <section class="doc-section">
+    <h2 id="outputs" class="doc-section__title font-heading">
+      Reacting to the user <app-since version="21.4.0" />
+    </h2>
+    <p class="doc-section__intro">
+      The table had no outputs at all before 21.4.0, which is what made it display-only. It now
+      reports the three things a consumer needs to know about: a new sort, a new page, and a click
+      on a row.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-table
+          [value]="rows"
+          [pageSize]="3"
+          [interactiveRows]="true"
+          (gogSortChange)="onSortChange($event)"
+          (gogPageChange)="onPageChange($event)"
+          (gogRowClick)="onRowClick($event)"
+        >
+          <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+          <gog-column field="status" header="Status" [sortable]="true"></gog-column>
+        </gog-table>
+      </div>
+      <p class="demo-card__meta">Sort a column, page through, click a row — newest event first:</p>
+      <ul class="event-log">
+        @for (entry of eventLog(); track $index) {
+          <li class="event-log__item">{{ entry }}</li>
+        } @empty {
+          <li class="event-log__item event-log__item--empty">No events yet.</li>
+        }
+      </ul>
+      <app-code-tabs [html]="outputsHtml" [ts]="outputsTs" />
+    </div>
+
+    <p class="doc-section__intro">
+      <strong><code>gogPageChange</code> is deliberately quiet twice.</strong> It does not fire on
+      the first render, and it does not fire for the reset to page 1 that a new sort causes — that
+      reset belongs to the sort. Without both rules a consumer refetching from each event would
+      issue two requests for one user action.
+    </p>
+    <p class="doc-section__intro">
+      <code>gogRowClick</code> alone is a mouse-only affordance: a <code>&lt;tr&gt;</code> is not
+      focusable. <code>interactiveRows</code> makes rows focusable and styles them as clickable, so
+      Enter and Space activate the focused one. If the action really is "open this one thing", a
+      link or button inside a cell beats a whole-row target.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="selection" class="doc-section__title font-heading">
+      Selection <app-since version="21.4.0" />
+    </h2>
+    <p class="doc-section__intro">
+      <code>selectionMode</code> turns it on; <code>[(selection)]</code> is
+      <strong>always a <code>T[]</code></strong
+      >, including in <code>'single'</code> mode where it holds zero or one row. One shape to read
+      beats a <code>T | T[] | null</code> union to narrow on every access.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-table
+          [value]="rows"
+          selectionMode="multiple"
+          [(selection)]="selection"
+          dataKey="component"
+          size="sm"
+        >
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+        </gog-table>
+      </div>
+      <p class="doc-section__meta">Selected: {{ selectionSummary() }}</p>
+      <app-code-tabs [html]="selectionHtml" [ts]="selectionTs" />
+    </div>
+
+    <p class="doc-section__intro">
+      Two rules worth stating outright, because both are silent when you get them wrong:
+    </p>
+    <ul class="table-doc__rules">
+      <li>
+        <strong>Set <code>dataKey</code>.</strong> Without it rows are matched by object identity,
+        so any refetch that produces new objects drops the selection with nothing to show for it. It
+        is also the <code>&#64;for</code> track key, which is what lets the rendered DOM survive a
+        refetch instead of being rebuilt.
+      </li>
+      <li>
+        <strong>Select-all covers the current page, not the whole data set.</strong> In
+        <code>lazy</code> mode the table has never seen the other pages, and a control that meant
+        different things in the two modes would be worse than either behaviour on its own.
+      </li>
+    </ul>
+    <p class="doc-section__intro">
+      The checkbox column appears on its own — <code>showSelectionColumn</code> turns it off, for a
+      table that selects by row click instead (pair that with <code>interactiveRows</code>). The
+      header select-all renders only in <code>'multiple'</code> mode.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="rows-per-page" class="doc-section__title font-heading">
+      Rows per page <app-since version="21.4.0" />
+    </h2>
+    <p class="doc-section__intro">
+      <code>pageSize</code> is a <strong><code>model</code></strong
+      >, not a plain input: <code>[pageSize]="20"</code> works exactly as before, and
+      <code>[(pageSize)]="size"</code>
+      became possible. That is the whole reason the rows-per-page select needs no wiring — the table
+      binds its own model straight to the paginator's, and the select writes back through it with no
+      intermediate signal to keep in sync in either direction.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-table
+          [value]="rows"
+          [(pageSize)]="rowsPerPage"
+          [showPageSizeSelect]="true"
+          [pageSizeOptions]="[2, 3, 6]"
+          size="sm"
+        >
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+        </gog-table>
+      </div>
+      <p class="doc-section__meta">pageSize: {{ rowsPerPage() }}</p>
+      <app-code-tabs [html]="rowsPerPageHtml" [ts]="rowsPerPageTs" />
+    </div>
+    <p class="doc-section__intro">
+      The select is <strong>off by default</strong>, per table or app-wide through
+      <code>GOG_CONFIG.paginator</code> — see
+      <a routerLink="/general/global-config">Global Configuration</a>. Changing the size returns to
+      page 1 and does <em>not</em> emit <code>gogPageChange</code>: you already know from
+      <code>pageSizeChange</code>, and firing both would make a lazy table fetch twice. The footer
+      stays visible at a single page whenever the select is on, so the user is never stranded on a
+      size with no control left to change it.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="lazy" class="doc-section__title font-heading">
+      Server-driven tables — <code>lazy</code> <app-since version="21.4.0" />
+    </h2>
+    <p class="doc-section__intro">
+      By default the table owns the whole data set: it sorts <code>value</code> and slices the page
+      itself. With <code>[lazy]="true"</code> it does neither — <code>value</code>
+      <strong>is</strong> the current page, already sorted, rendered exactly as handed over. Give it
+      <code>totalRecords</code> so it knows how many pages exist (without it, pagination stays
+      hidden and it warns in dev mode), then refetch from the outputs.
+    </p>
+    <div class="demo-card">
+      <p class="demo-card__meta">
+        137 rows that only ever leave the "server" one page at a time, with a 350&nbsp;ms delay so
+        the loading state is visible. Sorting and slicing happen in the fake endpoint — which is the
+        point: the table must not re-order or re-slice what it is given.
+      </p>
+      <div class="demo-card__preview">
+        <gog-table
+          [value]="serverRows()"
+          [lazy]="true"
+          [totalRecords]="serverTotal()"
+          [pageSize]="serverPageSize()"
+          [loading]="serverLoading()"
+          [showTotal]="true"
+          [showPageSizeSelect]="true"
+          [pageSizeOptions]="[10, 20, 50]"
+          dataKey="id"
+          size="sm"
+          (gogSortChange)="onServerSort($event)"
+          (gogPageChange)="onServerPage($event)"
+          (pageSizeChange)="onServerPageSize($event)"
+        >
+          <gog-column field="name" header="Name" [sortable]="true"></gog-column>
+          <gog-column field="team" header="Team" [sortable]="true"></gog-column>
+          <gog-column field="score" header="Score" [sortable]="true"></gog-column>
+        </gog-table>
+      </div>
+      <p class="doc-section__meta">Last request: {{ lastServerQuery() }}</p>
+      <app-code-tabs [html]="lazyHtml" [ts]="lazyTs" />
+    </div>
+    <p class="doc-section__intro">
+      Row numbers still count from the current page (<code>(page - 1) * pageSize + i + 1</code>),
+      and <code>showTotal</code> reports <code>totalRecords</code> rather than
+      <code>value.length</code>.
+      <strong>Do not sort or slice <code>value</code> yourself as well</strong> — that is exactly
+      what the flag turns off.
+    </p>
+    <p class="doc-section__intro">
+      In lazy mode <code>pageSizeChange</code> is the refetch signal for a new page size, so bind
+      <code>[pageSize]</code> + <code>(pageSizeChange)</code> rather than the banana-box when you
+      need to act on it.
+    </p>
+  </section>
+
+  <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">gog-table — Inputs</h3>
@@ -202,12 +398,44 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>
               </td>
               <td>
                 <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">gog-table — Outputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Payload</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of tableOutputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
               </td>
               <td>{{ row.description }}</td>
             </tr>

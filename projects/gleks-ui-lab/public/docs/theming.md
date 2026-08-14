@@ -19,6 +19,24 @@ value the library paints with can be overridden from plain CSS.
    <gog-button style="--gog-btn-bg: #ff4edb">One-off button</gog-button>
    ```
 
+## What `index.css` pulls in
+
+One import is the whole setup, and it is a thin wrapper over four files:
+
+| File              | What it carries                                                                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `theme.css`       | every `--gog-*` token the components read, in both the `light` and `dark` layers                                                                |
+| `typography.css`  | the `font-body` / `font-heading` helpers component templates apply to themselves                                                                |
+| `utilities.css`   | the utility classes those templates rely on (`gog-contained-layout`, …)                                                                          |
+| `button.css` <span class="since since--latest" title="Added in 21.4.0">21.4.0</span> | the `[gogButton]` directive's styles — global because that directive styles an element **you** wrote (an `<a>`), which no component stylesheet can reach |
+
+`fonts.css` is deliberately **not** among them: it pulls three families from Google Fonts, which a
+library has no business imposing. Import it explicitly if you want this site's typography.
+
+The full catalogue of tokens ships with the package as **`TOKENS.md`** — generated from
+`theme.css`, so it cannot drift. The Token Reference at the bottom of this page is the same data,
+browsable.
+
 ## Built-in themes
 
 The library ships two themes, `light` and `dark`, switched with a `data-theme`
@@ -37,21 +55,27 @@ Three additional palettes ship as importable stylesheets. Each one declares **pa
 only** and still restyles every component — which is the theming contract demonstrated rather
 than described.
 
-| Preset                                | `data-theme` | Stylesheet                                      |
-| ------------------------------------- | ------------ | ----------------------------------------------- |
-| Slate — cool, indigo                  | `slate`      | `@guildofgleks/ui/src/styles/presets/slate.css` |
-| One Dark — the Atom/JetBrains palette | `one-dark`   | `.../presets/one-dark.css`                      |
-| One Light — its light counterpart     | `one-light`  | `.../presets/one-light.css`                     |
+| Preset                                | `data-theme` | Stylesheet                                  |
+| ------------------------------------- | ------------ | ------------------------------------------- |
+| Slate — cool, indigo                  | `slate`      | `@guildofgleks/ui/styles/presets/slate.css` |
+| One Dark — the Atom/JetBrains palette | `one-dark`   | `.../presets/one-dark.css`                  |
+| One Light — its light counterpart     | `one-light`  | `.../presets/one-light.css`                 |
 
 Add the one you want to your global styles, then set the attribute:
 
 ```json
 "styles": [
-  "node_modules/@guildofgleks/ui/src/styles/index.css",
-  "node_modules/@guildofgleks/ui/src/styles/presets/one-dark.css",
+  "node_modules/@guildofgleks/ui/styles/index.css",
+  "node_modules/@guildofgleks/ui/styles/presets/one-dark.css",
   "src/styles.scss"
 ]
 ```
+
+> **The short path is new in 21.3.2** <span class="since" title="Added in 21.3.2">21.3.2</span>.
+> The old `@guildofgleks/ui/src/styles/…` still resolves and will keep working until **21.5.0**,
+> so this is a rename to make at your leisure — but the short form is the one to write in new
+> setups. It is also listed in the package's `exports` map, which means it resolves from a SCSS
+> `@import '@guildofgleks/ui/styles/theme.css'` as well; the old path never did.
 
 ```html
 <html data-theme="one-dark"></html>
@@ -81,7 +105,7 @@ import { ThemeService } from '@guildofgleks/ui';
 export class ThemeSwitcher {
   private readonly themeService = inject(ThemeService);
 
-  protected readonly theme = this.themeService.theme; // WritableSignal<string>
+  protected readonly theme = this.themeService.theme; // Signal<string> — read-only
 
   setDark(): void {
     this.themeService.setTheme('dark');
@@ -92,6 +116,16 @@ export class ThemeSwitcher {
   }
 }
 ```
+
+`theme` is a **read-only** `Signal`, so `setTheme` / `toggleTheme` are the only way to change it.
+That is the point: the service also writes the `data-theme` attribute and persists the choice, and
+a `.set()` straight onto the signal skipped both — the document kept its old theme while the signal
+claimed otherwise.
+
+Which theme it starts on, whether the choice survives a reload, and whether it follows the OS
+setting are all configured through `GOG_CONFIG.theme`
+<span class="since" title="Added in 21.3.2">21.3.2</span> — see
+[Global Configuration](/general/global-config).
 
 This is exactly what the theme switcher (the palette icon) in this site's header uses.
 
@@ -148,6 +182,12 @@ single component stylesheet.
   you get the whole library restyled for the price of one palette.
 - Don't hardcode colors in your app that duplicate a token — reference the token
   instead, so it keeps following theme switches.
-- A panel appended to `<body>` (dropdowns with `[appendToBody]`, toasts) inherits
-  `data-theme` from its trigger's nearest scoped ancestor, not from where it renders
-  in the DOM — no extra wiring needed on your side.
+- A panel appended to `<body>` (dropdowns with `[appendToBody]`, toasts, tooltips, the
+  datepicker's calendar) follows its trigger's theme, not the DOM position it renders at —
+  no extra wiring needed on your side. When the theme is **scoped** to a subtree the panel
+  gets a copy of that `data-theme`; when it sits on `<html>`, as it usually does, plain
+  inheritance already does the job.
+- **Custom properties set inline on `<html>` reach overlays too**, which is what makes a runtime
+  theme editor — like this site's [Theme Generator](/general/theme-generator) — work. Before
+  21.4.1 an overlay copied the document's `data-theme` onto itself and, in doing so, re-declared
+  every component token from the plain preset, discarding anything the page had set on the root.

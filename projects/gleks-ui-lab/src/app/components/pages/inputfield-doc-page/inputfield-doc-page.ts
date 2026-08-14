@@ -10,6 +10,7 @@ import {
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiInputRow {
@@ -17,9 +18,69 @@ interface ApiInputRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const API_INPUTS: readonly ApiInputRow[] = [
+  {
+    name: 'showSpinButtons',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Whether a type="number" field shows the library\'s own +/- glyphs in place of the browser\'s native ones. Off, the field still steps with the arrow keys and the mouse wheel — that is native behaviour, unrelated to which glyphs are visible. Unset, falls back to GOG_CONFIG.inputfield.showSpinButtons, then to true.',
+    since: '21.3.1',
+  },
+  {
+    name: 'incrementLabel / decrementLabel',
+    type: 'string | undefined',
+    default: "'Increment' / 'Decrement'",
+    description: 'Accessible names for the two spin buttons. Also via GOG_CONFIG.labels.',
+    since: '21.3.1',
+  },
+  {
+    name: 'readonly',
+    type: 'boolean',
+    default: 'false',
+    description:
+      'Blocks edits while keeping the value focusable, selectable and submitted with the form. Hides both the clear button and the stepper.',
+    since: '21.3.2',
+  },
+  {
+    name: 'maxlength',
+    type: 'number | null',
+    default: 'null',
+    description: 'Native maxlength attribute.',
+    since: '21.3.2',
+  },
+  {
+    name: 'minlength',
+    type: 'number | null',
+    default: 'null',
+    description: 'Native minlength attribute.',
+    since: '21.3.2',
+  },
+  {
+    name: 'pattern',
+    type: 'string',
+    default: "''",
+    description: 'Native pattern attribute — a regular expression source, not a literal.',
+    since: '21.3.2',
+  },
+  {
+    name: 'inputMode',
+    type: 'GogInputMode | null',
+    default: 'null',
+    description:
+      "On-screen keyboard hint ('numeric', 'tel', 'decimal', …). Worth setting on a numeric field so a phone offers the right keypad.",
+    since: '21.3.2',
+  },
+  {
+    name: 'spellcheck',
+    type: 'boolean | null',
+    default: 'null',
+    description: "Native spellcheck attribute. Unset leaves the browser's own default in place.",
+    since: '21.3.2',
+  },
   {
     name: 'value',
     type: 'string (model)',
@@ -160,6 +221,7 @@ const DEPRECATED_ICON_INPUTS: readonly ApiInputRow[] = [
     CodeTabsComponent,
     RouterLink,
     ReactiveFormsModule,
+    SinceBadgeComponent,
   ],
   templateUrl: './inputfield-doc-page.html',
   styleUrl: './inputfield-doc-page.scss',
@@ -185,6 +247,43 @@ export class InputfieldDocPage {
     validators: [Validators.required, Validators.email],
   });
   protected readonly quantityControl = new FormControl<number | null>(1);
+  protected readonly stepperValue = signal('3');
+  protected readonly weightValue = signal('72');
+
+  protected readonly spinButtonsHtml = [
+    '<gog-inputfield label="Quantity (stepper)" type="number" [min]="0" [(value)]="quantity" />',
+    '',
+    '<gog-inputfield',
+    '  label="Quantity (no stepper)"',
+    '  type="number"',
+    '  [min]="0"',
+    '  [showSpinButtons]="false"',
+    '  [(value)]="quantity"',
+    '/>',
+    '',
+    '<gog-inputfield',
+    '  label="Weight (clearable + stepper)"',
+    '  type="number"',
+    '  [min]="0"',
+    '  [clearable]="true"',
+    '  [(value)]="weight"',
+    '/>',
+  ].join('\n');
+  protected readonly spinButtonsTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly quantity = signal('3');",
+    "  protected readonly weight = signal('72');",
+    '}',
+  ].join('\n');
+
   protected readonly deliveryDate = signal('');
 
   protected readonly importSnippet =

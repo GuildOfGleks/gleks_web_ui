@@ -34,6 +34,20 @@
   <section class="doc-section">
     <h2 id="server" class="doc-section__title font-heading">Server-backed suggestions</h2>
     <p class="doc-section__intro">
+      Two things shape how the panel behaves before a query even runs.
+      <strong><code>openOnFocus</code></strong> <app-since version="21.3.1" /> — on by default —
+      opens the panel with the full option list the moment the field is focused, instead of waiting
+      for <code>minLength</code> characters: for a short, known list that is the difference between
+      a combobox and a text field the user has to guess at. Turn it off per instance, or app-wide
+      with <code>GOG_CONFIG.autocomplete.openOnFocus</code>, to keep the older behaviour of showing
+      nothing until something is typed.
+    </p>
+    <p class="doc-section__intro">
+      <strong><code>gogLoadMore</code></strong> <app-since version="21.3.1" /> fires when the panel
+      is scrolled to its end. Fetch the next page and append it to <code>options</code> — that is
+      how a large or server-backed source is paged, with no virtual scroller involved.
+    </p>
+    <p class="doc-section__intro">
       <code>gogSearch</code> is debounced (<code>searchDebounce</code>, 300 ms by default), so a
       lookup fires once the typing settles rather than on every keystroke. Set
       <code>[filterLocal]="false"</code> alongside it: the server has already filtered, and
@@ -166,6 +180,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>
@@ -203,6 +220,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>
@@ -232,6 +252,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>

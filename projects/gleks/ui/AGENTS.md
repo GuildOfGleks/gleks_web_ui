@@ -5,7 +5,7 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.4.0`**. `README.md` covers the
+Everything below reflects the library's actual source as of **`21.4.1`**. `README.md` covers the
 same ground at a higher level — install, setup, theming, global configuration — and is accurate;
 this file goes further, into per-component input tables, and is the one to trust for exact names,
 types and defaults.
@@ -648,22 +648,40 @@ a generic accessor, unlike select/multiselect/button-toggle).
 
 #### `gog-slider`
 
-| Input                          | Type                   | Default                                        |
-| ------------------------------ | ---------------------- | ---------------------------------------------- |
-| `label`, `ariaLabel`           | `string`               | `''`                                           |
-| `min`, `max`, `step`           | `number`               | `0`, `100`, `1`                                |
-| `showValue`, `showThumb`       | `boolean`              | `true`                                         |
-| `errorMessage`, `errorDisplay` |                        | `''`, `'manual'`                               |
-| `disabled`                     | `boolean`              | `false`                                        |
-| `fullWidth`                    | `boolean`              | `true` (ignored when `orientation="vertical"`) |
-| `orientation`                  | `GogSliderOrientation` | `'horizontal'`                                 |
+| Input                             | Type                   | Default                                        |
+| --------------------------------- | ---------------------- | ---------------------------------------------- |
+| `label`, `ariaLabel`              | `string`               | `''`                                           |
+| `min`, `max`, `step`              | `number`               | `0`, `100`, `1`                                |
+| `showValue`, `showThumb`          | `boolean`              | `true`                                         |
+| `errorMessage`, `errorDisplay`    |                        | `''`, `'manual'`                               |
+| `disabled`                        | `boolean`              | `false`                                        |
+| `fullWidth`                       | `boolean`              | `true` (ignored when `orientation="vertical"`) |
+| `orientation`                     | `GogSliderOrientation` | `'horizontal'`                                 |
+| `range`                           | `boolean`              | `false` — two thumbs; see below                |
+| `startDisabled`, `endDisabled`    | `boolean`              | `false` — `range` only                         |
+| `startAriaLabel`, `endAriaLabel`  | `string`               | `'Minimum'` / `'Maximum'`, prefixed by `label` |
 
-Model: `value: number`. CVA: yes. Backed by a real `<input type="range">` (rotated via
-`writing-mode` for vertical), so dragging/touch/keyboard all come from the platform.
+Models: `value: number`, and `rangeValue: GogSliderRange` (`{ start: number; end: number }`).
+CVA: yes. Backed by a real `<input type="range">` (rotated via `writing-mode` for vertical), so
+dragging/touch/keyboard all come from the platform.
 
 ```html
 <gog-slider label="Volume" [min]="0" [max]="100" formControlName="volume" />
 ```
+
+**Range mode.** `[range]="true"` puts a second thumb on the track and switches which model is
+live: bind `[(rangeValue)]` instead of `[(value)]`. The two are **mutually exclusive** — `value`
+(and a form control's `writeValue`) is ignored while `range` is on, and vice versa.
+
+```html
+<gog-slider label="Price" [range]="true" [(rangeValue)]="price" startAriaLabel="Lowest" />
+```
+
+Each thumb needs its own accessible name, because one `<label>` cannot be associated with two
+inputs through `for`; unset, they fall back to `'Minimum'`/`'Maximum'` prefixed with `label`
+(`'Price Minimum'`). `startDisabled`/`endDisabled` pin one end while the other stays movable —
+they are ORed with `disabled` rather than overriding it, and unlike it they do not dim the whole
+control or cut pointer events over the track, which would take the still-enabled thumb with them.
 
 #### `gog-datepicker` / `gog-calendar`
 

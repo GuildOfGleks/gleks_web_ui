@@ -1,8 +1,16 @@
 # Showing version-to-version change in `gleks-ui-lab`
 
-How the documentation site should communicate what changed between releases. Written up on
-2026-08-14 as a recommendation, not a decision — nothing here is implemented, and the open
-questions at the bottom are genuinely open.
+How the documentation site communicates what changed between releases. Written up on 2026-08-14
+as a recommendation; **layers 1 and 3 were implemented the same day**, layer 2 is half-built
+(library side done, lab side waiting on the release that carries it), and layer 4 is deferred to
+`hardening-21.5.0.md` iteration 3, which needs the same generator for a CI check.
+
+| Layer | State |
+| --- | --- |
+| 1 — version badge | **done** — `components/shared/library-version.ts`, rendered in `app.html` |
+| 2 — releases page | **half** — `CHANGELOG.md` now ships in `ng-package.json`'s `assets`; the lab half is the only entry left in `lab-after-publish.md` |
+| 3 — `since` markers | **done** — `components/shared/since-badge/`, plus a `.since` rule in `src/styles.scss` for the markdown docs; API rows from 21.3.1 onward carry one |
+| 4 — deprecation badges | **not started** — deliberately, see below |
 
 Companion to `lab-after-publish.md`, which tracks *what* the lab must say after each release. This
 file is about the *mechanism* for saying it.
@@ -40,6 +48,13 @@ the lab (`resolveJsonModule`) or have `scripts/` write it into a generated const
 **Cost.** Three lines. **Value.** Highest per byte in this document: a reader who cannot tell
 whether a page is ahead of their install or behind it cannot trust anything else on it.
 
+**As built.** `components/shared/library-version.ts` imports
+`@guildofgleks/ui/package.json` — the package's `exports` map lists `./package.json`, and
+`tsconfig.app.json` gained `resolveJsonModule` for it — and exports `LIBRARY_VERSION` plus an npm
+URL pinned to that version. The header badge in `app.html` renders both. The hardcoded
+`v21.3.0` it replaced had been wrong for four releases, which is the argument for reading it
+rather than writing it.
+
 ### Layer 2 — a `Releases` page rendering the package's own `CHANGELOG.md`
 
 Not a copy of it, and not a hand-written summary — the changelog **of the exact version
@@ -74,6 +89,20 @@ version if you do not want to.
 someone writes and then forgets to update.
 
 **Cost.** One attribute per new API entry. **Value.** The highest of the four for everyday use.
+
+**As built.** Two renderers needed the same chip, so the CSS lives once, globally, in
+`src/styles.scss` (`.since`, with a `--latest` modifier and the word "NEW" as a `::before`):
+
+- component doc pages use `<app-since version="21.4.0" />`
+  (`components/shared/since-badge/`), driven off an optional `since?: string` on each page's own
+  API-row interface;
+- the markdown docs under `public/docs/` write `<span class="since" title="Added in 21.3.2">21.3.2</span>`
+  by hand — they are parsed to raw HTML and never compiled by Angular, so no component-scoped
+  stylesheet could reach them.
+
+`--latest` is compared at **major.minor**, not exactly: a patch adds no API, so 21.4.0's
+additions are still "what's new" to someone on 21.4.1. Comparing full versions would
+un-highlight a whole feature set the moment a bug fix shipped.
 
 ### Layer 4 — deprecations, generated
 
@@ -156,10 +185,9 @@ halves become entries in `lab-after-publish.md` under that release, per
 
 ## Open questions
 
-- **Does layer 3 get backfilled?** Marking only new API from 21.5.0 onward is cheap and still
-  useful; backfilling every existing input to its introducing version means reading the whole
-  changelog history. Recommendation: do not backfill — an absent `since` reads as "has been there
-  a while", which is true and sufficient.
+- ~~**Does layer 3 get backfilled?**~~ **Decided: no.** Marked from **21.3.1** onward — the four
+  releases the lab was documenting at the time — and nothing earlier. An absent `since` reads as
+  "has been there a while", which is true and sufficient.
 - **Where does the deprecation manifest live in the package** — a generated `.ts` in the public
   API (importable, typed, tree-shakeable) or a plain `.json` asset (readable without pulling code
   in)? The `.ts` matches `token-names.ts`; the `.json` is friendlier to the lab's markdown-ish

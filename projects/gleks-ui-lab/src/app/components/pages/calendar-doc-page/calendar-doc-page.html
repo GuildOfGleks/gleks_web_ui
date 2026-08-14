@@ -90,10 +90,18 @@
       <h3 class="demo-card__title">Locale</h3>
       <p class="demo-card__meta">
         Month and weekday names come from <code>Intl</code>, so any BCP-47 tag works with no data to
-        ship. <code>firstDayOfWeek</code> overrides the locale's own choice. Unlike
-        <a routerLink="/components/datepicker">gog-datepicker</a>, <code>gog-calendar</code> does
-        not read <code>GOG_CONFIG</code> itself — set these per instance, or resolve them from
-        <code>GOG_CONFIG.datepicker</code> yourself before passing them down.
+        ship. <code>firstDayOfWeek</code> overrides the locale's own choice. Both resolve the usual
+        way — instance input, then <code>GOG_CONFIG.datepicker</code>, then the default
+        <app-since version="21.3.2" /> — so a standalone calendar honours an app-wide locale without
+        being handed one.
+      </p>
+      <p class="demo-card__meta">
+        Its navigation, shortcut and time labels (<code>todayLabel</code>,
+        <code>thisMonthLabel</code>, <code>previousMonthLabel</code>, <code>nextMonthLabel</code>,
+        <code>previousYearLabel</code>, <code>nextYearLabel</code>, <code>hoursLabel</code>,
+        <code>minutesLabel</code>, <code>secondsLabel</code>) resolve through
+        <code>GOG_CONFIG.labels</code> the same way — see
+        <a routerLink="/general/global-config">Global Configuration</a>.
       </p>
       <div class="demo-card__preview calendar-demo__row">
         <gog-calendar locale="de-DE" [firstDayOfWeek]="1" />
@@ -132,6 +140,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>
@@ -161,6 +172,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>

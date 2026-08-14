@@ -17,203 +17,35 @@ does that twice stops being trusted. What is left in here is exactly the lab's o
 debt, and it should reach zero after each release is documented; when a whole section empties,
 delete the section too.
 
-**Order matters for one item only** — the stylesheet path (§2.1) must not be changed until
-21.3.2 is published, because the short path does not exist in 21.3.0 or 21.3.1 and the lab
-build would break.
-
 ---
 
-## 1. After publishing **21.3.1**
+## 1. After publishing the release that ships `CHANGELOG.md`
 
-Nothing in the lab breaks, but these are undocumented — `global-config.md`'s table and the
-per-component pages have not been touched since 21.3.0.
+The changelog is now listed in `ng-package.json`'s `assets`, so from that release on it exists
+at `node_modules/@guildofgleks/ui/CHANGELOG.md`. That unblocks **layer 2 of
+`docs/lab-versioning.md`** — a Releases page rendering the notes for the exact version the site
+was built against, which is structurally incapable of drifting.
 
-### 1.1 `public/docs/global-config.md` — the config table is missing four fields
+None of this can be done before the release: the file is not in 21.4.1, so the asset glob would
+copy nothing and the route would render an empty page.
 
-| Key | Missing field | Applies to |
-| --- | --- | --- |
-| `autocomplete` | `openOnFocus` | `gog-autocomplete` |
-| `scroll` | `showTrack` | `gog-scroll` |
-| `textarea` | `resize` | `gog-textarea` |
-| `inputfield` | `showSpinButtons` | `gog-inputfield` |
+- **Asset glob** in `angular.json` (`gleks-ui-lab` → `build` → `assets`), the same pattern the
+  three stylesheet globs already use:
+  `{ "glob": "CHANGELOG.md", "input": "node_modules/@guildofgleks/ui", "output": "docs" }`.
+- **A route and page** rendering it with the existing `app-markdown` component — the same one
+  behind `public/docs/theming.md`. Fetch it the way `full-library-css.ts` fetches the
+  stylesheets (`httpResource.text('/docs/CHANGELOG.md')`), so it is not bundled into the app.
+- **Nav entry** in `components/shared/nav-data.ts`, under the General group next to the FAQ.
+- **Slugged anchors** on the version headings come free — `markdown-renderer.ts` already slugs
+  every heading, so `#21-4-0` works and a component page can link straight to a release.
+- **Link the version badge to it.** `app.html`'s badge currently points at the package's npm
+  page; the release notes for that exact version are the better destination, and
+  `library-version.ts` already exports what it needs.
 
-The `inputfield` key is missing from the table **entirely**, not just a field.
-
-### 1.2 Component pages with new API to document
-
-- **`gog-slider`** — `range` (two thumbs, `[(rangeValue)]` with a `GogSliderRange` pair,
-  mutually exclusive with `[(value)]`), `startDisabled`/`endDisabled`, `startAriaLabel`/
-  `endAriaLabel`.
-- **`gog-autocomplete`** — `openOnFocus` (on by default), `gogLoadMore` (paging a large or
-  server-backed option source).
-- **`gog-tabs`** — `scrollActiveIntoView` (on by default), `showScrollTrack`.
-- **`gog-scroll`** — `showTrack`.
-- **`gog-textarea`** — `resize`.
-- **`gog-inputfield`** — the built-in number spin buttons and `showSpinButtons`,
-  `incrementLabel`/`decrementLabel`.
-- **`gog-icon`** — the new `copy` glyph in the icon gallery.
-- Consider linking the shipped **`AGENTS.md`** from the getting-started page: it is a
-  consumer-facing reference for AI agents and nothing in the lab points at it.
-
----
-
-## 2. After publishing **21.3.2**
-
-Everything in `docs/consumer-dx-plan.md` iterations 1–4. Two of these are *corrections* — the
-lab currently states things that stop being true.
-
-### 2.1 Stylesheet path — `src/styles/` → `styles/` ⚠️ do this only after 21.3.2 is on npm
-
-Both paths ship in 21.3.2, and `src/styles/` keeps working until **21.5.0**, so this is not
-urgent — but the lab is the reference a consumer copies from, and it should show the short
-form. Five places:
-
-| File | What to change |
-| --- | --- |
-| `angular.json` (root, `gleks-ui-lab` → `build`) | two asset globs (`input: node_modules/@guildofgleks/ui/src/styles`, `…/src/styles/presets`) and four entries in `styles[]` |
-| `…/getting-started-page/getting-started-page.ts:42` | the `"styles": [...]` snippet |
-| `public/docs/theming.md:42` | the preset path in the theme table |
-| `public/docs/theming.md:50–51` | the `"styles": [...]` snippet |
-| `…/shared/full-library-css.ts:5,8` | two comments naming `src/styles/` and the `docs/styles` asset glob |
-
-Worth mentioning in `theming.md` that `@guildofgleks/ui/styles/*` now also resolves from a SCSS
-`@import` (the package's `exports` map lists it), which the old path never did.
-
-### 2.2 Corrections — currently wrong after 21.3.2
-
-- **`…/theming-page` / `public/docs/theming.md:84`** — the `ThemeSwitcher` example annotates
-  `themeService.theme` as `// WritableSignal<string>`. It is now a read-only `Signal<string>`;
-  writing to it was the bug this fixed. Update the comment, and note that `setTheme`/
-  `toggleTheme` are the only way to change it.
-- **`…/calendar-doc-page/calendar-doc-page.html`** (~line 91) — a whole paragraph built on
-  `gog-calendar` "not reading `GOG_CONFIG` itself", telling the reader to set `locale` and
-  `firstDayOfWeek` per instance or resolve them from `GOG_CONFIG.datepicker` by hand. That was
-  the library bug, not a design choice, and 21.3.2 fixes it: the calendar now resolves both
-  itself, and its labels from `GOG_CONFIG.labels`. **Delete the caveat and replace it with the
-  ordinary instance → config → default sentence** the other component pages use — the advice as
-  written now tells people to do work the component does for them.
-
-### 2.3 New API to document
-
-- **`GOG_CONFIG.labels`** (24 keys) and **`GOG_CONFIG.theme`** (`storageKey`, `defaultTheme`,
-  `followSystem`, `lightTheme`, `darkTheme`) — both need rows in `global-config.md`'s table and
-  a worked example. `labels` is the answer to "how do I translate this library", which is a FAQ
-  entry too (`public/docs/faq.md`).
-- **`gog-inputfield`** — `readonly`, `maxlength`, `minlength`, `pattern`, `inputMode`,
-  `spellcheck`; the widened `type` list (`tel`, `url`, `search`, `time`, `datetime-local`) and
-  the exported `GogInputType` / `GogInputMode`. Worth stating explicitly that `autofocus` is
-  deliberately not forwarded, and why.
-- **`gog-textarea`** — `readonly`, `maxlength`, `minlength`, `spellcheck`.
-- **`gog-multiselect`** — `selectAllLabel`, `clearAllLabel`.
-- **`gog-calendar`** — `hoursLabel` / `minutesLabel` / `secondsLabel`, and the fact that it now
-  resolves `locale` / `firstDayOfWeek` from `GOG_CONFIG.datepicker` on its own (see §2.2).
-- **`gog-inputfield`, number fields** — `clearable` and the stepper now coexist; the clear
-  button sits left of the stepper and the gutter widens for the pair. Previously `clearable`
-  was a no-op on `type="number"` unless `showSpinButtons` was off, so any lab example that
-  worked around that can be simplified. `ui-showcase`'s inputfield page has a worked example
-  (`Weight (clearable)`) to copy from.
-- **`gog-paginator`** — the per-page button names come from `GOG_CONFIG.labels.page`, a
-  `(page, isCurrent) => string` formatter. This is the one entry in `labels` that is not a
-  plain string, so it needs its own line in the config table rather than being lumped in.
-- **Accessibility note, probably on the getting-started or FAQ page** — form controls now
-  generate their own `id`, so `inputId` is only needed when something outside the component has
-  to reference the field. Previously omitting it silently produced an unlabelled field.
-- **Toast** — announcements now come from two permanently-mounted live regions on
-  `gog-toast-container`; individual toasts carry no `role`/`aria-live`. Only matters to anyone
-  who was styling or querying those attributes.
-- **`TOKENS.md`** — the generated token catalogue moved out of the README. The lab's theming
-  page keeps its own `token-reference-data.ts`, so nothing breaks, but the "where is the full
-  list" pointer should name `TOKENS.md`.
-
-### 2.4 Peer dependency
-
-`@angular/platform-browser` is now a declared peer. Any "install" instructions that enumerate
-the peers (`getting-started-page`, `faq.md`) should say four, not three — and the "only three
-runtime dependencies" phrasing, wherever it appears, is now wrong.
-
----
-
-## 3. After publishing **21.4.0** (icon registry)
-
-### 3.1 Corrections — currently wrong after 21.4.0
-
-- **`…/icon-doc-page`** — it documents `GogIconName` as a closed set of 20 with "no way to pass
-  an arbitrary SVG as `name`", which was the whole point of the iteration. The page needs the
-  registry as its headline: `provideGogIcons`, a registered name winning over a built-in,
-  injector-tree layering, and the dev-mode warning on an unknown name. The `template` input
-  drops to "for one-offs" rather than "the way to use your own icons".
-
-### 3.2 New API to document
-
-- **`provideGogIcons(...)` / `GOG_ICONS`** — needs its own section, and a row in
-  `global-config.md` alongside `provideGogConfig` (both are app-wide providers; the icon one is
-  not part of `GOG_CONFIG`, which is worth saying explicitly so nobody looks for it there).
-- **`GogBuiltinIconName` vs `GogIconName`** — the closed/open pair. Anything in the lab typed
-  `GogIconName[]` for an icon gallery should move to `GogBuiltinIconName[]` to stay exhaustive;
-  `ui-showcase`'s icon page has the pattern.
-- **The built-in set is 41 glyphs, not 20.** Any lab page that lists them by hand is now wrong by
-  21 entries — drive the gallery off `Object.keys(ICON_DEFS)` instead, the way the showcase now
-  does, so it cannot go stale again. Worth grouping them in the docs the way `AGENTS.md` does
-  (chevrons/arrows, status, sorting, actions, chrome, objects) rather than one flat wall.
-- **Icon attribution.** The glyphs are Lucide (ISC); the notice now ships in the package. The
-  lab's own pages should credit it too wherever they discuss the icon set.
-- The **security note** on registered SVG (`bypassSecurityTrustHtml`, static markup only) belongs
-  wherever the lab documents the registry — it is the one part a consumer can get wrong in a way
-  that matters.
-
-### 3.3 `gog-table` — the page needs a second half
-
-The table doc page currently describes a display-only grid, which it no longer is. Needs:
-
-- **Outputs** — `gogSortChange`, `gogPageChange`, `gogRowClick`, with the two suppression rules
-  spelled out (`gogPageChange` is silent on first render and on the sort's page reset). Anything
-  on the page saying the table has no outputs is now wrong.
-- **`lazy` + `totalRecords`** — probably its own section with a worked "server" example;
-  `ui-showcase`'s table page has one (a fake 137-row endpoint) to adapt.
-- **Selection** — `selectionMode`, `[(selection)]` always being `T[]`, `dataKey`,
-  `showSelectionColumn`, and the two rules worth stating outright: set `dataKey` or a refetch
-  drops the selection, and select-all covers the current page only.
-- **`interactiveRows`** — and why `gogRowClick` alone is mouse-only.
-- The four new `labels` keys (`total`, `tablePagination`, `selectRow`, `selectAllRows`) in the
-  config table, and the two new tokens (`--gog-table-selected-bg`,
-  `--gog-table-select-col-width`) wherever the lab lists table tokens.
-
-### 3.5 `[gogButton]` — new directive
-
-- The button doc page says `gog-button` is how you make a button; it now needs the second half:
-  **`[gogButton]` for links**, with the `routerLink` example. Worth stating the rule of thumb
-  outright — component for buttons that act on the page (`loading`, `debounce`, `gogClick`),
-  directive when the element must be a link or must keep directives of its own.
-- Mention in the FAQ/getting-started that this is why the package still has **no
-  `@angular/router` dependency** — it is a deliberate design point, not an omission.
-- `styles/button.css` is a new global stylesheet inside `index.css`. Nothing to change in a
-  consumer's setup, but the theming page's list of what `index.css` pulls in should name it.
-
-### 3.4 `gog-paginator` — rows-per-page
-
-- **New inputs**: `pageSize` (a `model`), `totalRecords`, `showPageSizeSelect`, `pageSizeOptions`.
-  The doc page should lead with `totalRecords`, since it is what removes the
-  `Math.ceil(total / size)` a consumer writes today — the existing examples all pass `totalPages`.
-- **New config key** `GOG_CONFIG.paginator` (`showPageSizeSelect`, `pageSizeOptions`) needs a row
-  in `global-config.md`, plus `labels.rowsPerPage`, plus the token
-  `--gog-paginator-page-size-min-width`.
-- Worth saying explicitly, because it is the question the API was designed around: **`pageSize`
-  being a `model` on both the paginator and the table is what makes them connect without a
-  go-between signal.**
-
----
-
-## 4. After publishing **21.4.1** (overlay theming fix)
-
-Nothing to document — it is a bug fix with no API change — but one thing to **verify**, because
-the lab is where it was found:
-
-- **The theming page's generator.** `ThemeGeneratorState` writes the generated `--gog-*` values
-  inline onto `document.documentElement`; before 21.4.1 every overlay rendered into `<body>`
-  (select and multiselect panels, autocomplete, datepicker, tooltips) ignored them and kept
-  painting the un-edited theme. Randomise a theme and open one of each — they should follow now.
-- If any lab copy tells the reader that overlays need a theme set on them, or works around this
-  by scoping `data-theme` closer to the trigger, it can go.
+**One thing to check first, and it is not a lab change:** the changelog's headings for
+21.3.1, 21.3.2, 21.4.0 and 21.4.1 still read `- planned` even though all four are published.
+Rendered on a Releases page that says "planned" to every reader. Only the user can change those
+(see `gleks-ui-library.instructions.md` rule 11), so raise it rather than editing it.
 
 ---
 

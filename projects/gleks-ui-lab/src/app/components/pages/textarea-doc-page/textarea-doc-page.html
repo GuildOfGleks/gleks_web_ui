@@ -51,6 +51,24 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">Resize handle <app-since version="21.3.1" /></h3>
+      <p class="demo-card__meta">
+        <code>resize</code> mirrors the native CSS <code>resize</code> value space —
+        <code>'vertical'</code> (the default), <code>'horizontal'</code>, <code>'both'</code>, or
+        <code>'none'</code> to remove the handle entirely. Set it app-wide with
+        <code>GOG_CONFIG.textarea.resize</code> if your forms want one answer everywhere. The grip
+        is drawn by the library rather than the browser, so it follows the theme instead of
+        appearing as a native corner triangle.
+      </p>
+      <div class="demo-card__preview action-column">
+        <gog-textarea label="Vertical (default)" [rows]="3" />
+        <gog-textarea label="Both axes" resize="both" [rows]="3" />
+        <gog-textarea label="Fixed size" resize="none" [rows]="3" />
+      </div>
+      <app-code-tabs [html]="resizeHtml" [ts]="resizeTs" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Error message</h3>
       <p class="demo-card__meta">
         <code>errorDisplay="manual"</code> (the default) shows <code>errorMessage</code> for as long
@@ -157,6 +175,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>

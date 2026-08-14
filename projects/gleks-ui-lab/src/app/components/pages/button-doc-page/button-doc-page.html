@@ -1,10 +1,11 @@
 <div class="button-doc">
   <header class="button-doc__hero">
-    <p class="button-doc__eyebrow">gog-button</p>
+    <p class="button-doc__eyebrow">gog-button &nbsp;·&nbsp; [gogButton]</p>
     <h1 class="button-doc__title font-heading">Button</h1>
     <p class="button-doc__lead">
       A debounced action button with four variants, five sizes, and built-in loading, disabled, and
-      full-width states.
+      full-width states — plus, since <app-since version="21.4.0" />, a
+      <code>[gogButton]</code> directive that gives the same look to a link you own.
     </p>
   </header>
 
@@ -147,6 +148,99 @@
       <p class="demo-card__meta">{{ formResult() }}</p>
       <app-code-tabs [html]="formHtml" [ts]="formTs" />
     </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="link-buttons" class="doc-section__title font-heading">
+      Links that look like buttons — <code>[gogButton]</code> <app-since version="21.4.0" />
+    </h2>
+    <p class="doc-section__intro">
+      <code>gog-button</code> renders its own <code>&lt;button&gt;</code>, so it can never
+      <em>be</em> a link. The directive inverts that: the element stays yours and
+      <code>[gogButton]</code> only gives it the look.
+    </p>
+    <app-markdown [markdown]="directiveImportSnippet" />
+
+    <div class="demo-card">
+      <div class="demo-card__preview action-row">
+        <a gogButton routerLink="/general/theming">See theming</a>
+        <a
+          gogButton
+          variant="ghost"
+          href="https://www.npmjs.com/package/@guildofgleks/ui"
+          target="_blank"
+          rel="noreferrer"
+          >Package on npm</a
+        >
+        <button gogButton variant="outline" size="sm" type="button">A real button</button>
+      </div>
+      <app-code-tabs [html]="directiveHtml" [ts]="directiveTs" />
+    </div>
+
+    <p class="doc-section__intro">
+      The selector is <code>a[gogButton], button[gogButton]</code> — deliberately not a bare
+      <code>[gogButton]</code>. On a <code>&lt;div&gt;</code> the result would look like a button
+      while being invisible to the keyboard and to assistive technology.
+    </p>
+
+    <h3 class="doc-section__subtitle">Which one to reach for</h3>
+    <p class="doc-section__intro">
+      <strong>The component</strong> when the button acts on the page: it owns
+      <code>loading</code> (a centred spinner it projects), <code>debounce</code> click throttling
+      and the <code>gogClick</code> output — none of which a bare element can provide.
+      <strong>The directive</strong> when the element must be a link, or must keep directives of its
+      own. <code>routerLink</code>, <code>href</code>, <code>target</code>, <code>download</code>,
+      <code>type="submit"</code> and the rest keep working because they were never brokered through
+      an input in the first place.
+    </p>
+    <p class="doc-section__intro">
+      That is also why the library still has
+      <strong>no <code>@angular/router</code> dependency</strong> — a design point, not an omission.
+      A component that took a <code>routerLink</code> input would force the router on every app that
+      installs the package.
+    </p>
+    <p class="doc-section__intro">
+      Two things the directive deliberately does not do: no <code>disabled</code> on an
+      <code>&lt;a&gt;</code> (there is no such thing — drop the <code>href</code> or render a real
+      <code>&lt;button&gt;</code>), and no loading state (the spinner is a projected child, which a
+      directive cannot add without taking over the element's content).
+    </p>
+    <p class="doc-section__intro">
+      Its styles live in the global <code>styles/button.css</code>, pulled in by
+      <code>index.css</code>, because Angular's emulated encapsulation could never reach an element
+      declared in <em>your</em> template. Nothing changes in your setup — see
+      <a routerLink="/general/theming">Theming</a>.
+    </p>
+
+    <h3 class="doc-section__subtitle">[gogButton] — Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of directiveInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section class="doc-section">

@@ -139,6 +139,24 @@
   </section>
 
   <section class="doc-section">
+    <h2 id="announcements" class="doc-section__title font-heading">
+      How a toast is announced <app-since version="21.3.2" />
+    </h2>
+    <p class="doc-section__intro">
+      Announcements come from <strong>two permanently-mounted live regions</strong> on
+      <code>gog-toast-container</code> — one <code>polite</code>, one <code>assertive</code> — and
+      the toast's <code>type</code> decides which one its text is written into (assertive for
+      <code>error</code> and <code>warning</code>, polite otherwise).
+    </p>
+    <p class="doc-section__intro">
+      Individual toasts therefore carry no <code>role</code> or <code>aria-live</code> of their own.
+      A live region has to exist <em>before</em> the text lands in it to be announced at all; one
+      created together with the toast is a region the screen reader has not been watching. This only
+      matters to you if you were styling or querying those attributes on a toast element.
+    </p>
+  </section>
+
+  <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">ToastConfig</h3>

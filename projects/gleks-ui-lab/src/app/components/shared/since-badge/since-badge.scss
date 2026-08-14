@@ -1,0 +1,8 @@
+// The `.since` rules themselves live in `src/styles.scss`, globally: the same badge has to
+// appear inside markdown docs (`public/docs/*.md`), which are rendered as raw HTML and never
+// compiled by Angular, so a component-scoped copy could not reach them. One definition, both
+// renderers — see the comment on that block.
+:host {
+  display: inline-block;
+  vertical-align: middle;
+}

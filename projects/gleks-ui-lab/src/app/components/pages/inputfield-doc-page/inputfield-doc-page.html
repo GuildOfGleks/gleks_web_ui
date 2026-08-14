@@ -200,6 +200,50 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">Number spin buttons <app-since version="21.3.1" /></h3>
+      <p class="demo-card__meta">
+        A <code>type="number"</code> field renders the library's own <code>+</code>/<code>−</code>
+        glyphs instead of the browser's, so they follow the theme and are the same size in every
+        browser. <code>[showSpinButtons]="false"</code> removes them — the field still steps with
+        the arrow keys and the mouse wheel, because that is native
+        <code>&lt;input type="number"&gt;</code> behaviour and unrelated to which glyphs are
+        visible. Set it app-wide with <code>GOG_CONFIG.inputfield.showSpinButtons</code>;
+        <code>incrementLabel</code>/<code>decrementLabel</code> (or <code>GOG_CONFIG.labels</code>)
+        name them for assistive tech.
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-inputfield
+          label="Quantity (stepper)"
+          type="number"
+          [min]="0"
+          [(value)]="stepperValue"
+        />
+        <gog-inputfield
+          label="Quantity (no stepper)"
+          type="number"
+          [min]="0"
+          [showSpinButtons]="false"
+          [(value)]="stepperValue"
+        />
+        <gog-inputfield
+          label="Weight (clearable + stepper)"
+          type="number"
+          [min]="0"
+          [clearable]="true"
+          [(value)]="weightValue"
+        />
+      </div>
+      <p class="demo-card__meta">
+        The third field is worth a look: <code>clearable</code> and the stepper now
+        <strong>coexist</strong> <app-since version="21.3.2" />. The clear button sits to the left
+        of the stepper and the gutter widens for the pair. Before that, <code>clearable</code> was
+        silently a no-op on <code>type="number"</code> unless <code>showSpinButtons</code> was also
+        off — so any workaround built around that can go.
+      </p>
+      <app-code-tabs [html]="spinButtonsHtml" [ts]="spinButtonsTs" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Disabled</h3>
       <div class="demo-card__preview width-demo">
         <gog-inputfield label="Disabled" [disabled]="true" value="Read only" />
@@ -239,6 +283,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>
@@ -307,6 +354,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>

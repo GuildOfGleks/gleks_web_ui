@@ -162,20 +162,20 @@
               },
               {
                 "glob": "*.css",
-                "input": "node_modules/@guildofgleks/ui/src/styles",
+                "input": "node_modules/@guildofgleks/ui/styles",
                 "output": "docs/styles"
               },
               {
                 "glob": "*.css",
-                "input": "node_modules/@guildofgleks/ui/src/styles/presets",
+                "input": "node_modules/@guildofgleks/ui/styles/presets",
                 "output": "docs/styles/presets"
               }
             ],
             "styles": [
-              "node_modules/@guildofgleks/ui/src/styles/index.css",
-              "node_modules/@guildofgleks/ui/src/styles/presets/slate.css",
-              "node_modules/@guildofgleks/ui/src/styles/presets/one-dark.css",
-              "node_modules/@guildofgleks/ui/src/styles/presets/one-light.css",
+              "node_modules/@guildofgleks/ui/styles/index.css",
+              "node_modules/@guildofgleks/ui/styles/presets/slate.css",
+              "node_modules/@guildofgleks/ui/styles/presets/one-dark.css",
+              "node_modules/@guildofgleks/ui/styles/presets/one-light.css",
               "projects/gleks-ui-lab/src/styles.scss"
             ],
             "server": "projects/gleks-ui-lab/src/main.server.ts",

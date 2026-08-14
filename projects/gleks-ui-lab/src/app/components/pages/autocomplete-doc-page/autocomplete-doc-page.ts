@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { AutocompleteComponent, GogDropdownOptionDirective } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiRow {
@@ -10,6 +11,7 @@ interface ApiRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 interface City {
@@ -19,6 +21,14 @@ interface City {
 }
 
 const OWN_INPUTS: readonly ApiRow[] = [
+  {
+    name: 'openOnFocus',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Whether focusing the field opens the panel immediately with the full option list, rather than waiting for minLength characters. Unset, falls back to GOG_CONFIG.autocomplete.openOnFocus, then to true.',
+    since: '21.3.1',
+  },
   {
     name: 'value',
     type: 'TValue',
@@ -151,6 +161,14 @@ const API_OUTPUTS: readonly ApiRow[] = [
     description: 'The current query, debounced. Wire a server-side lookup to this.',
   },
   {
+    name: 'gogLoadMore',
+    type: 'void',
+    default: '—',
+    description:
+      'The panel was scrolled to the end. Fetch the next page and append it to options — this is how a large or server-backed option source is paged without a virtual scroller.',
+    since: '21.3.1',
+  },
+  {
     name: 'valueChange',
     type: 'TValue',
     default: '—',
@@ -189,6 +207,7 @@ const CITIES: City[] = [
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './autocomplete-doc-page.html',
   styleUrl: './autocomplete-doc-page.scss',

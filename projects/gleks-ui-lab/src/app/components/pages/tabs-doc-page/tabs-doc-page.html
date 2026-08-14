@@ -128,12 +128,24 @@
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Overflowing headers</h3>
+      <h3 class="demo-card__title">Overflowing headers <app-since version="21.3.1" /></h3>
       <p class="demo-card__meta">
         Too many headers to fit scroll inside a
         <a routerLink="/components/scroll">gog-scroll</a> rather than a native
         <code>overflow-x</code> — a native scrollbar is the one piece of chrome no
         <code>--gog-*</code> token can reach.
+      </p>
+      <p class="demo-card__meta">
+        <code>scrollActiveIntoView</code> (on by default) then keeps the selected tab visible:
+        arrow-key through the headers and the row follows, instantly on first render and smoothly
+        afterwards — instantly again under <code>prefers-reduced-motion</code>. Before this, the
+        keyboard could move focus to a tab that stayed off-screen.
+      </p>
+      <p class="demo-card__meta">
+        <code>showScrollTrack</code> controls the track itself, and unset it
+        <strong>follows</strong> <code>scrollActiveIntoView</code>: hidden while that is on, because
+        a track the user never has to drag is chrome rather than help — and shown once it is off,
+        where it is the only hint that there is more to reach.
       </p>
       <div class="demo-card__preview tabs-demo__narrow">
         <gog-tabs ariaLabel="Many tabs">
@@ -205,6 +217,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>
@@ -234,6 +249,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>
@@ -261,6 +279,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>

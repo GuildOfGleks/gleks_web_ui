@@ -370,3 +370,51 @@ h3[id] {
 .hljs-deletion {
   color: var(--gog-danger-color);
 }
+
+/* ── `since` badge ───────────────────────────────────────────────────────────
+ *
+ * "NEW 21.4.0" next to a row in an API table, marking API a reader on an older
+ * install does not have yet. Two renderers need the same chip and only a global
+ * rule reaches both:
+ *
+ *   - `<app-since version="21.4.0" />` on the component doc pages (see
+ *     `components/shared/since-badge/`);
+ *   - `<span class="since" title="Added in 21.3.2">21.3.2</span>` written by hand
+ *     inside `public/docs/*.md`, which is parsed to raw HTML and never compiled
+ *     by Angular, so a component-scoped stylesheet could not apply to it.
+ *
+ * The "NEW" word is a `::before` rather than markup so the markdown form stays a
+ * single span — the badge appears inside table cells, where a three-element chip
+ * is unreadable in the source.
+ *
+ * `--latest` (filled rather than outlined) marks the newest published release —
+ * usually what a reader is scanning for. In markdown it is set by hand, so it
+ * moves with each release; the component derives it from the installed version.
+ */
+.since {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 1px 6px;
+  border: 1px solid color-mix(in srgb, var(--gog-accent-color) 40%, transparent);
+  border-radius: 999px;
+  font-family: var(--gog-font-mono), monospace;
+  font-size: var(--gog-text-xs);
+  line-height: 1.5;
+  white-space: nowrap;
+  color: var(--gog-accent-color);
+  background: transparent;
+  vertical-align: middle;
+
+  &::before {
+    content: 'NEW';
+    letter-spacing: 0.5px;
+    font-size: 0.85em;
+    opacity: 0.75;
+  }
+
+  &--latest {
+    background: color-mix(in srgb, var(--gog-accent-color) 16%, transparent);
+    border-color: color-mix(in srgb, var(--gog-accent-color) 55%, transparent);
+  }
+}

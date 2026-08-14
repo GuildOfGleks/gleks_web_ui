@@ -69,10 +69,13 @@ you go.
 when Angular 22 lands: `master` (new major) vs `v21` (fixes only), which changes go where, the
 npm dist-tag mechanics, and what must ship *before* the split. Decided, not yet in effect.
 
-`docs/lab-versioning.md` holds the recommendation for how the lab should communicate
-version-to-version change (version badge, a releases page fed by the package's own changelog,
-`since` markers, generated deprecation badges) plus the major-version branch/subdomain approach.
-A recommendation, not a decision — nothing in it is implemented.
+`docs/lab-versioning.md` covers how the lab communicates version-to-version change, in four
+layers. **Layers 1 (version badge, read from the installed package) and 3 (`since` chips on new
+API) are implemented**; layer 2 (a releases page fed by the package's own changelog) has its
+library half done — `CHANGELOG.md` now ships in the package — and its lab half waiting in
+`lab-after-publish.md`; layer 4 (generated deprecation badges) is deliberately deferred to
+`hardening-21.5.0.md` iteration 3, which needs the same generator. The file also records the
+major-version branch/subdomain approach, which is still only a recommendation.
 
 `docs/lab-after-publish.md` is the deferred backlog for `gleks-ui-lab`. Because the lab tracks
 the **published** package, library work never updates it in the same session — anything the lab

@@ -3,9 +3,10 @@
     <p class="icon-doc__eyebrow">gog-icon</p>
     <h1 class="icon-doc__title font-heading">Icon</h1>
     <p class="icon-doc__lead">
-      A thin wrapper around the library's built-in SVG set — or a slot for your own template. Small
-      on its own, but every other component that needs an icon (button, checkbox, dialog, input
-      field...) renders through it.
+      A thin wrapper around the library's built-in SVG set — and, since
+      <app-since version="21.4.0" />, around <strong>your own</strong> as well: register any SVG
+      under a name and it works everywhere a built-in one does. Small on its own, but every other
+      component that needs an icon (button, checkbox, dialog, input field…) renders through it.
     </p>
   </header>
 
@@ -28,15 +29,31 @@
 
     <article class="demo-card">
       <h3 class="demo-card__title">All icons</h3>
-      <p class="demo-card__meta">The complete built-in set.</p>
-      <div class="demo-card__preview icon-gallery">
-        @for (iconName of iconNames; track iconName) {
-          <div class="icon-gallery__item">
-            <gog-icon [name]="iconName" />
-            <span class="icon-gallery__label">{{ iconName }}</span>
-          </div>
-        }
-      </div>
+      <p class="demo-card__meta">
+        The complete built-in set — <strong>{{ iconCount }}</strong> glyphs, all from
+        <a href="https://lucide.dev" target="_blank" rel="noopener">Lucide</a> (ISC licence, notice
+        shipped in the package) and inlined, so the library keeps its single runtime dependency.
+        This gallery is driven off <code>Object.keys(ICON_DEFS)</code> rather than a hand-written
+        list, which is the only way it stays right.
+      </p>
+      @for (group of iconGroups; track group.title) {
+        <h4 class="icon-gallery__group">{{ group.title }}</h4>
+        <div class="demo-card__preview icon-gallery">
+          @for (iconName of group.names; track iconName) {
+            <div class="icon-gallery__item">
+              <gog-icon [name]="iconName" />
+              <span class="icon-gallery__label">{{ iconName }}</span>
+            </div>
+          }
+        </div>
+      }
+      <p class="demo-card__meta">
+        <code>star</code> / <code>star-filled</code> is the one outline/filled pair, for a rating or
+        favourite <em>toggle</em> — the same reason <code>checkbox</code> /
+        <code>checkbox-checked</code> exists. The set is otherwise outline-only on purpose: a solid
+        duplicate of every glyph would double the payload for a distinction almost nothing needs.
+        Register the filled variant you actually want instead.
+      </p>
       <app-code-tabs [html]="galleryHtml" [ts]="galleryTs" />
     </article>
 
@@ -71,9 +88,10 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Custom template</h3>
       <p class="demo-card__meta">
-        <code>template</code> replaces the built-in SVG entirely — the same mechanism other
-        components use for their own icon override inputs (e.g. checkbox's
-        <code>checkIconTemplate</code>).
+        <code>template</code> replaces the SVG entirely — the same mechanism other components use
+        for their own icon override inputs (e.g. checkbox's <code>checkIconTemplate</code>). It
+        costs an <code>&lt;ng-template&gt;</code> at every use site, so reach for it for
+        <em>one-offs</em>; for a whole icon set, register the names instead.
       </p>
       <div class="demo-card__preview action-row">
         <gog-icon [template]="customDot" />
@@ -83,6 +101,60 @@
       </div>
       <app-code-tabs [html]="customTemplateHtml" [ts]="customTemplateTs" />
     </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="your-own-icons" class="doc-section__title font-heading">
+      Your own icons <app-since version="21.4.0" />
+    </h2>
+    <p class="doc-section__intro">
+      <code>name</code> is not a closed list. It is typed
+      <code>GogIconName = GogBuiltinIconName | (string &amp; &#123;&#125;)</code>: the built-ins
+      autocomplete, and any name you have registered is accepted. Register once, at the root or in
+      any injector below it:
+    </p>
+    <app-markdown [markdown]="registerTs" />
+
+    <p class="doc-section__intro">
+      From then on the name works anywhere an icon <em>name</em> is taken — not just in
+      <code>gog-icon</code>:
+    </p>
+    <app-markdown [markdown]="registerUsageHtml" />
+
+    <h3 class="doc-section__subtitle">A registered name beats a built-in</h3>
+    <p class="doc-section__intro">
+      This is the point of the registry rather than a side effect: it is how you swap the library's
+      glyphs for your own across every component at once, without touching a single call site.
+    </p>
+    <app-markdown [markdown]="overrideTs" />
+
+    <h3 class="doc-section__subtitle">Rules worth knowing</h3>
+    <ul class="icon-doc__rules">
+      <li>
+        <strong>It layers down the injector tree.</strong> A nested
+        <code>provideGogIcons(...)</code> adds to the parent's set instead of replacing it — the
+        same as <a routerLink="/general/global-config">provideGogConfig</a> — so a lazy route can
+        register only the three icons it uses and still see the app-wide ones.
+      </li>
+      <li>
+        <strong>An unknown name renders nothing and warns in dev mode.</strong> It never throws: an
+        icon is decoration, and failing a render over a typo is the worse outcome.
+      </li>
+      <li>
+        <strong>Write the SVG for inheritance.</strong> Give it a <code>viewBox</code> and
+        <code>stroke="currentColor"</code> (or <code>fill</code>), and no width or height —
+        <code>gog-icon</code> drives size and stroke width from the <code>--gog-icon-*</code>
+        tokens, so a registered icon scales and colours exactly like a built-in.
+      </li>
+      <li>
+        <strong>Security — the one part that can actually bite.</strong> Registered markup is
+        inserted with <code>bypassSecurityTrustHtml</code>, because Angular's HTML sanitizer strips
+        SVG and would leave you with nothing. That is safe for static markup you authored or
+        imported at build time, and <strong>unsafe</strong> for anything derived from user input or
+        fetched at runtime. If you need remote icons, fetch them yourself, run them through a real
+        SVG sanitizer, and register the result.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
@@ -117,6 +189,51 @@
         </tbody>
       </table>
     </div>
+
+    <h3 class="doc-section__subtitle">Providers &amp; types</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of providerRows; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="doc-section__intro">
+      Two type names, and the difference matters when you are enumerating icons:
+      <code>GogBuiltinIconName</code> <app-since version="21.4.0" /> is the closed union of the
+      {{ iconCount }} glyphs that ship with the library — use it for a gallery or an icon picker,
+      where an exhaustive list is the point. <code>GogIconName</code> is the open one every input
+      takes, so a registered name type-checks.
+    </p>
+    <p class="doc-section__intro">
+      <code>provideGogIcons</code> is <strong>not</strong> part of <code>GOG_CONFIG</code> — it is
+      its own provider, so there is no <code>icons</code> key to look for on the
+      <a routerLink="/general/global-config">Global Configuration</a> page.
+    </p>
   </section>
 
   <section class="doc-section">

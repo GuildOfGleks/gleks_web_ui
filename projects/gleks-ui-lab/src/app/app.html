@@ -4,7 +4,14 @@
     <div class="header-left">
       <img src="/gleks_ui_logo.svg" alt="" class="logo-icon" width="28" height="32" />
       <span class="logo-title font-heading">GUILD OF GLEKS UI</span>
-      <span class="version-tag">v21.3.0</span>
+      <a
+        class="version-tag"
+        [href]="libraryNpmUrl"
+        target="_blank"
+        rel="noopener"
+        [title]="'This site documents @guildofgleks/ui ' + libraryVersion"
+        >v{{ libraryVersion }}</a
+      >
     </div>
 
     <div class="header-controls">

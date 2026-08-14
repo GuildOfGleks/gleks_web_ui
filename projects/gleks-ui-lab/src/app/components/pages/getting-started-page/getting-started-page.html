@@ -19,6 +19,17 @@
       Add the library stylesheet once, in your app's global styles (<code>angular.json</code>):
     </p>
     <app-markdown [markdown]="stylesSnippet" />
+    <p class="doc-section__intro">
+      That one file carries every <code>--gog-*</code> token the components read, the typography
+      helpers and the utility classes their templates apply to themselves — without it, components
+      render unstyled. See <a routerLink="/general/theming">Theming</a> for what it pulls in.
+    </p>
+    <p class="doc-section__intro">
+      The short <code>@guildofgleks/ui/styles/…</code> path arrived in
+      <app-since version="21.3.2" />. The older <code>@guildofgleks/ui/src/styles/…</code> still
+      resolves and keeps working until <strong>21.5.0</strong>, so an existing setup has time — but
+      write the short form in new ones.
+    </p>
   </section>
 
   <section class="doc-section">
@@ -39,6 +50,36 @@
     <p class="doc-section__intro">
       A component's own input always wins over this. See
       <a routerLink="/general/global-config">Global Configuration</a> for the full list of keys.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="building-with-an-ai-agent" class="doc-section__title font-heading">
+      Building with an AI agent
+    </h2>
+    <p class="doc-section__intro">
+      The package ships <code>AGENTS.md</code> — a per-component API reference written for the
+      coding agent, not for this site: exact input names, types and defaults, in one file it can
+      read in a single pass. It sits at <code>node_modules/&#64;guildofgleks/ui/AGENTS.md</code>,
+      and pointing an agent at it is usually the difference between generated code that compiles and
+      code written against inputs that never existed.
+    </p>
+    <p class="doc-section__intro">
+      Two more files ship alongside it: <code>README.md</code>, the same ground at a higher level,
+      and <code>TOKENS.md</code>, the generated catalogue of every theming token.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility-you-get-for-free" class="doc-section__title font-heading">
+      Accessibility you get for free
+    </h2>
+    <p class="doc-section__intro">
+      Every form control generates its own <code>id</code> and wires its label to it
+      <app-since version="21.3.2" />, so a field is labelled correctly without you doing anything.
+      Set <code>inputId</code> only when something <em>outside</em> the component has to reference
+      the field — your own <code>&lt;label for&gt;</code>, an <code>aria-describedby</code> on a
+      sibling, or a test hook.
     </p>
   </section>
 

@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { ButtonComponent, SliderComponent } from '@guildofgleks/ui';
+import { ButtonComponent, GogSliderRange, SliderComponent } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiInputRow {
@@ -12,6 +13,7 @@ interface ApiInputRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const API_INPUTS: readonly ApiInputRow[] = [
@@ -20,7 +22,52 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: 'number (model)',
     default: '0',
     description:
-      'Two-way bindable value via [(value)]. Also driven by Angular Forms through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel.',
+      'Two-way bindable value via [(value)]. Also driven by Angular Forms through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel. Ignored while range is true.',
+  },
+  {
+    name: 'range',
+    type: 'boolean',
+    default: 'false',
+    description:
+      'Switches to two-thumb mode for picking a range instead of a single value. Bind [(rangeValue)] instead of [(value)] — the two are mutually exclusive.',
+    since: '21.3.1',
+  },
+  {
+    name: 'rangeValue',
+    type: 'GogSliderRange (model)',
+    default: '{ start: 0, end: 100 }',
+    description: 'Two-way bindable { start, end } pair. Used only when range is true.',
+    since: '21.3.1',
+  },
+  {
+    name: 'startDisabled',
+    type: 'boolean',
+    default: 'false',
+    description:
+      'Disables only the lower thumb in range mode — pinning a floor while the ceiling stays movable. ORed with disabled, never overriding it, and it does not dim the whole control the way disabled does.',
+    since: '21.3.1',
+  },
+  {
+    name: 'endDisabled',
+    type: 'boolean',
+    default: 'false',
+    description: 'Disables only the upper thumb in range mode. Mirrors startDisabled.',
+    since: '21.3.1',
+  },
+  {
+    name: 'startAriaLabel',
+    type: 'string',
+    default: "'Minimum'",
+    description:
+      "Accessible name for the lower thumb, prefixed with label when one is set ('Price Minimum'). A shared <label> cannot be associated with two inputs via for, so each thumb needs its own name.",
+    since: '21.3.1',
+  },
+  {
+    name: 'endAriaLabel',
+    type: 'string',
+    default: "'Maximum'",
+    description: 'Accessible name for the upper thumb.',
+    since: '21.3.1',
   },
   { name: 'label', type: 'string', default: "''", description: 'Field label.' },
   { name: 'min', type: 'number', default: '0', description: 'Minimum value.' },
@@ -93,6 +140,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
     CodeTabsComponent,
     RouterLink,
     ReactiveFormsModule,
+    SinceBadgeComponent,
   ],
   templateUrl: './slider-doc-page.html',
   styleUrl: './slider-doc-page.scss',
@@ -112,6 +160,58 @@ export class SliderDocPage {
   protected readonly bass = signal(60);
   protected readonly mid = signal(45);
   protected readonly treble = signal(75);
+
+  protected readonly priceRange = signal<GogSliderRange>({ start: 20, end: 70 });
+  protected readonly cappedRange = signal<GogSliderRange>({ start: 0, end: 60 });
+
+  protected readonly rangeHtml = [
+    '<gog-slider',
+    '  label="Price"',
+    '  [range]="true"',
+    '  [(rangeValue)]="priceRange"',
+    '  [min]="0"',
+    '  [max]="100"',
+    '  startAriaLabel="Lowest price"',
+    '  endAriaLabel="Highest price"',
+    '/>',
+  ].join('\n');
+  protected readonly rangeTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { GogSliderRange, SliderComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [SliderComponent],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    '  // `range` and `[(value)]` are mutually exclusive — with range on, `value` is ignored.',
+    '  protected readonly priceRange = signal<GogSliderRange>({ start: 20, end: 70 });',
+    '}',
+  ].join('\n');
+
+  protected readonly oneSidedHtml = [
+    '<gog-slider',
+    '  label="Budget"',
+    '  [range]="true"',
+    '  [(rangeValue)]="cappedRange"',
+    '  [startDisabled]="true"',
+    '/>',
+  ].join('\n');
+  protected readonly oneSidedTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { GogSliderRange, SliderComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [SliderComponent],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    '  // The floor is pinned at 0; only the ceiling moves. `disabled` would freeze both.',
+    '  protected readonly cappedRange = signal<GogSliderRange>({ start: 0, end: 60 });',
+    '}',
+  ].join('\n');
 
   protected readonly verticalHtml = [
     '<gog-slider label="Bass" orientation="vertical" [min]="0" [max]="100" [(value)]="bass" />',

@@ -8,6 +8,7 @@
     { "glob": "**/*", "input": "src/styles", "output": "styles" },
     "src/styles",
     "TOKENS.md",
-    "AGENTS.md"
+    "AGENTS.md",
+    "CHANGELOG.md"
   ]
 }

@@ -1,8 +1,15 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ButtonComponent, GogSize, GogVariant, IconComponent } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  GogButtonDirective,
+  GogSize,
+  GogVariant,
+  IconComponent,
+} from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiInputRow {
@@ -67,9 +74,38 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
 ];
 
+const DIRECTIVE_INPUTS: readonly ApiInputRow[] = [
+  {
+    name: 'variant',
+    type: "'primary' | 'secondary' | 'outline' | 'ghost'",
+    default: "'primary'",
+    description: 'Visual style — the same four the component offers.',
+  },
+  {
+    name: 'size',
+    type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'",
+    default: "'md'",
+    description: 'Also settable app-wide via GOG_CONFIG.control.size.',
+  },
+  {
+    name: 'fullWidth',
+    type: 'boolean',
+    default: 'false',
+    description: 'Stretches the element to fill its container. A bare attribute works.',
+  },
+];
+
 @Component({
   selector: 'app-button-doc-page',
-  imports: [ButtonComponent, IconComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [
+    ButtonComponent,
+    GogButtonDirective,
+    IconComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './button-doc-page.html',
   styleUrl: './button-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -79,8 +115,36 @@ export class ButtonDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly apiInputs = API_INPUTS;
+  protected readonly directiveInputs = DIRECTIVE_INPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'button')?.tokens ?? [];
+
+  protected readonly directiveImportSnippet =
+    "```typescript\nimport { GogButtonDirective } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [GogButtonDirective],\n})\n```";
+
+  protected readonly directiveHtml = [
+    '<a gogButton routerLink="/general/theming">See theming</a>',
+    '<a gogButton variant="ghost" href="https://example.com" target="_blank" rel="noreferrer">',
+    '  Docs',
+    '</a>',
+    '<button gogButton variant="outline" size="sm" type="submit">Save</button>',
+    '<a gogButton fullWidth routerLink="/components/table">Checkout</a>',
+  ].join('\n');
+  protected readonly directiveTs = [
+    "import { Component } from '@angular/core';",
+    "import { RouterLink } from '@angular/router';",
+    "import { GogButtonDirective } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [GogButtonDirective, RouterLink],',
+    '  template: `',
+    '    <a gogButton routerLink="/pricing">See pricing</a>',
+    '    <button gogButton variant="outline" size="sm" type="submit">Save</button>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
 
   protected readonly isLoading = signal(false);
   protected readonly lastClicked = signal('No button clicked yet.');

@@ -209,16 +209,16 @@ To make an existing or new input configurable this way:
    `agent-workflow.instructions.md` for the rule and for the discipline of deleting entries
    once they are done. New API, a lab statement the change makes untrue, a moved path: all of
    it goes in that file, grouped under the release that unblocks it.
-9. **Update the documentation that ships inside the package.** Three files are published to npm
-   alongside the code (`ng-package.json`'s `assets`; `CHANGELOG.md` is *not* among them and stays
-   in the repo), and a public API change is not done until they agree with it. They are not
-   interchangeable — each answers a different question:
+9. **Update the documentation that ships inside the package.** Four files are published to npm
+   alongside the code (`ng-package.json`'s `assets`), and a public API change is not done until
+   they agree with it. They are not interchangeable — each answers a different question:
 
    | File | What it is | Update it when |
    | --- | --- | --- |
    | `README.md` | the npm landing page — install, setup, theming, global config, the shape of the library | setup changes, a concept appears (a new config key, a new cross-cutting behaviour), the component inventory moves |
    | `AGENTS.md` | the per-component API reference an AI agent reads while building an app on the package | **any** input, output, slot, type, service method or default changes — this is the file that goes stale first and silently |
    | `TOKENS.md` | the generated token catalogue | never by hand — run `npm run generate:tokens` after editing `theme.css` |
+   | `CHANGELOG.md` | the release history | per step 10 below — it ships so the docs site can render the notes for the exact version a reader installed, which is why its headings and wording are consumer-facing, not internal notes |
 
    **`AGENTS.md` is the one to watch.** It is a large reference with per-component input tables,
    so it is easy to finish a whole release without touching it — and an agent reading a stale
