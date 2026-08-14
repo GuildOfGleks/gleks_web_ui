@@ -3,7 +3,8 @@
     <p class="eyebrow">gog-icon</p>
     <h2>Icon</h2>
     <p class="lead">
-      Renders one of the library's built-in SVGs by <code>name</code>, or projects an arbitrary
+      Renders an SVG by <code>name</code> — one of the 20 built-ins, or any icon the app has
+      registered with <code>provideGogIcons</code> — or projects an arbitrary
       <code>TemplateRef</code> in its place. Sized via <code>--gog-icon-size</code>, colored via
       <code>currentColor</code> — most of the other components on this site already use it
       internally (tag, chip, tooltip, inputfield addons, …); this page shows it standalone.
@@ -12,7 +13,11 @@
 
   <article class="card">
     <h3>Built-in set</h3>
-    <p class="hint">Every <code>GogIconName</code> value. Color follows the surrounding text.</p>
+    <p class="hint">
+      Every <code>GogBuiltinIconName</code> — the closed set the package ships.
+      <code>GogIconName</code> is the open one an input takes: these plus anything registered. Color
+      follows the surrounding text.
+    </p>
     <div class="icon-grid">
       @for (name of iconNames; track name) {
         <div class="icon-grid__cell">
@@ -21,6 +26,46 @@
         </div>
       }
     </div>
+  </article>
+
+  <article class="card">
+    <h3>Your own icons</h3>
+    <p class="hint">
+      <code>provideGogIcons({{ '{' }} cart: '&lt;svg…&gt;' {{ '}' }})</code> in
+      <code>app.config.ts</code> registers icons by name — after that they behave exactly like a
+      built-in, including in every component that takes an icon <em>name</em> rather than a
+      template. This app registers three (see <code>custom-icons.ts</code>); the three rows below
+      are three unrelated components asking for the same registered glyph, with no
+      <code>&lt;ng-template&gt;</code> anywhere.
+    </p>
+    <div class="icon-grid">
+      <div class="icon-grid__cell">
+        <gog-icon name="cart" />
+        <span class="icon-grid__label">cart</span>
+      </div>
+      <div class="icon-grid__cell">
+        <gog-icon name="rocket" />
+        <span class="icon-grid__label">rocket</span>
+      </div>
+      <div class="icon-grid__cell">
+        <gog-icon name="copy" />
+        <span class="icon-grid__label">copy (overridden)</span>
+      </div>
+    </div>
+    <div class="icon-row">
+      <gog-tag variant="info" iconName="cart">In basket</gog-tag>
+      <gog-chip iconName="rocket">Deploying</gog-chip>
+    </div>
+    <p class="hint">
+      The third one shares its name with a built-in: a registration <strong>wins</strong> over the
+      library's own glyph, which is how you swap the whole set's checkmark or chevrons for yours
+      without touching a single component. Compare <code>copy</code> here with the one in the
+      built-in gallery above.
+    </p>
+    <p class="hint">
+      An unknown name renders nothing and warns in the console in dev mode — an icon is decoration,
+      and taking the app down over a typo in a glyph name would be the worse failure.
+    </p>
   </article>
 
   <article class="card">
