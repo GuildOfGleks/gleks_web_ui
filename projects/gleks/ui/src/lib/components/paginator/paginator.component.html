@@ -36,6 +36,15 @@
     Bound with `[(pageSize)]`'s writable half, so choosing a size writes straight back through the
     model the consumer bound — there is no intermediate state to keep in sync. `fullWidth` off so
     the select sizes to its content instead of stretching the paginator row.
+
+    A plain `@if`, not `@defer`, and that was measured rather than assumed: `@defer` does move
+    `SelectComponent` out of this component's static `dependencies` and into
+    `deferBlockDependencies`, but ng-packagr flattens the whole library into one FESM, so the
+    deferred reference compiles to `Promise.resolve().then(() => select_component)` — a binding in
+    the *same module*, not a dynamic `import()`. With no import boundary there is nothing for a
+    bundler to split on and nothing it may drop, so the consumer ships exactly the same bytes,
+    minus a placeholder and an SSR pop-in. Making this genuinely lazy needs secondary entry
+    points (`@guildofgleks/ui/select`), which is a packaging decision, not a template one.
   -->
   <gog-select
     class="gog-paginator__page-size"
