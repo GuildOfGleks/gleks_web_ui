@@ -54,5 +54,6 @@ export * from './lib/shared/option-accessor';
 export * from './lib/shared/token-names';
 export type { GogDropdownDirection } from './lib/shared/dropdown-position';
 export type { GogTooltipSide } from './lib/shared/tooltip-position';
-export type { GogIconName } from './lib/shared/icons';
+export type { GogIconName, GogBuiltinIconName } from './lib/shared/icons';
 export { ICON_DEFS } from './lib/shared/icons';
+export { GOG_ICONS, provideGogIcons } from './lib/shared/icon-registry';
