@@ -33,8 +33,29 @@ A minor rather than a patch: this adds public API. Iteration 5 of the consumer-D
   - Providing it again lower in the injector tree **layers onto** the parent set rather than
     replacing it, matching `provideGogConfig`.
   - The registry is also exposed as the `GOG_ICONS` injection token.
-- **`GogBuiltinIconName`** — the closed union of the 20 shipped glyphs, for code that wants
+- **`GogBuiltinIconName`** — the closed union of the shipped glyphs, for code that wants
   exhaustiveness (an icon gallery, a `Record` keyed by icon).
+- **21 more built-in icons, taking the set from 20 to 41.** The old set covered what the
+  library's own components needed and almost nothing an app needs: there was no `search` for a
+  field, no `trash` for a destructive action, no `more-vertical` for a table row menu. Added, all
+  Lucide, all on the same 24×24 / stroke-2 grid as the existing ones:
+  - actions — `search`, `plus`, `minus`, `trash`, `pencil`, `download`, `upload`, `refresh`,
+    `filter`, `external-link`;
+  - chrome — `menu`, `more-horizontal`, `more-vertical`, `settings`;
+  - navigation — `arrow-left`, `arrow-right` (distinct from the chevrons, which read as
+    disclosure rather than movement);
+  - objects and state — `user`, `lock`, `mail`, `star`, `star-filled`.
+
+  `star`/`star-filled` is the only outline/filled pair, for a rating or favourite **toggle** —
+  the same case `checkbox`/`checkbox-checked` already covers. The set stays outline-only
+  otherwise: a solid duplicate of every glyph would double the payload for a distinction almost
+  nothing needs, and `provideGogIcons` covers the exceptions.
+
+  Cost: `ICON_DEFS` is one object, so every consumer pays for all of it — it grew from 8.0 KB to
+  16.5 KB raw, **1.6 KB to 2.7 KB gzipped**.
+- **Attribution for the icons.** The glyphs were always Lucide but the package said so nowhere;
+  Lucide's ISC licence asks for the notice to travel with them. It is now at the top of
+  `icons.ts` and summarised in the README's licence section.
 
 ### Changed
 
@@ -45,6 +66,14 @@ A minor rather than a patch: this adds public API. Iteration 5 of the consumer-D
   in dev mode** (once per name) instead of throwing — an icon is decoration, and failing a render
   over a glyph name would be the worse failure. Code that relied on `GogIconName` being closed
   — an exhaustive `switch`, `Record<GogIconName, …>` — should move to `GogBuiltinIconName`.
+
+### Fixed
+
+- **`--gog-icon-stroke-width` now applies to every shape in an icon.** The rule listed only
+  `path`, `circle` and `rect` — which happened to be all the original 20 glyphs used, so the gap
+  was invisible. Any icon drawn with `line`, `polyline` or `polygon` (half the new ones, and
+  whatever a consumer registers) silently ignored the token and fell back to the `stroke-width`
+  attribute baked into its own markup. `ellipse` is covered too.
 
 ## [21.3.2] - planned
 

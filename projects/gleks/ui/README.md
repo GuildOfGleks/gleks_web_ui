@@ -269,8 +269,14 @@ rather than replacing it, so a route can override one field and inherit the rest
 
 ### Your own icons
 
-`gog-icon` ships 20 glyphs. Register your own by name and they behave like built-ins —
-including in every component that takes an icon *name* rather than a template:
+`gog-icon` ships 41 [Lucide](https://lucide.dev) glyphs — arrows and chevrons, check/close,
+the form-state set (success, error, warning, info), and the common actions (search, plus, minus,
+trash, pencil, download, upload, refresh, filter, external-link, copy), plus `menu`,
+`more-horizontal`/`more-vertical`, `user`, `settings`, `lock`, `mail`, `calendar`, `clock`, and
+`star`/`star-filled` for a rating or favourite toggle.
+
+Register your own by name and they behave like built-ins — including in every component that
+takes an icon *name* rather than a template:
 
 ```ts
 // app.config.ts
@@ -426,3 +432,8 @@ per instance or app-wide via `GOG_CONFIG.floatLabel`.
 ## License
 
 Apache-2.0 © Roman Malitskyi
+
+The built-in icons are [Lucide](https://lucide.dev) glyphs, inlined so the package keeps zero
+runtime dependencies. Lucide is ISC licensed; portions are held by Cole Bemis 2013–2022 as part
+of Feather (MIT), all others by Lucide Contributors 2022. The full notice is at the top of
+`src/lib/shared/icons.ts` in the source.

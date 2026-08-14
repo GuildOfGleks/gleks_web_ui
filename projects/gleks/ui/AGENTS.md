@@ -717,10 +717,27 @@ family of date-math helpers (`addDays`, `addMonths`, `isSameDay`, `isWithinBound
 | `title`      | `string`              | `''`                                               |
 | `ariaHidden` | `boolean`             | `true`                                             |
 
-The package ships 20 glyphs (`GogBuiltinIconName`): `check`, `close`, `chevron-up`,
-`chevron-down`, `chevron-left`, `chevron-right`, `calendar`, `clock`, `sort`, `sort-up`,
-`sort-down`, `success`, `error`, `warning`, `info`, `checkbox`, `checkbox-checked`, `eye`,
-`eye-off`, `copy`.
+The package ships **41** glyphs (`GogBuiltinIconName`), all from [Lucide](https://lucide.dev)
+and inlined so the package keeps zero runtime dependencies:
+
+| Group | Names |
+| --- | --- |
+| Chevrons & arrows | `chevron-up`, `chevron-down`, `chevron-left`, `chevron-right`, `arrow-left`, `arrow-right` |
+| Confirm & dismiss | `check`, `close`, `checkbox`, `checkbox-checked` |
+| Status | `success`, `error`, `warning`, `info` |
+| Sorting | `sort`, `sort-up`, `sort-down`, `filter` |
+| Actions | `search`, `plus`, `minus`, `trash`, `pencil`, `copy`, `download`, `upload`, `refresh`, `external-link` |
+| Chrome | `menu`, `more-horizontal`, `more-vertical`, `settings` |
+| Objects & state | `user`, `lock`, `mail`, `calendar`, `clock`, `eye`, `eye-off`, `star`, `star-filled` |
+
+`star` / `star-filled` is the one outline/filled pair, for a rating or favourite **toggle** —
+the same reason `checkbox` / `checkbox-checked` exists. The set is otherwise outline-only on
+purpose; a blanket solid duplicate of every glyph would double the payload for a distinction
+almost nothing needs. If you want a filled variant of something else, register it with
+`provideGogIcons`.
+
+`Object.keys(ICON_DEFS)` is the runtime list, if you need to enumerate them (an icon picker, a
+gallery). Do not hand-copy the names into an array — that is what goes stale.
 
 ```html
 <gog-icon name="calendar" />
