@@ -1,4 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
+import { scopedOverlayTheme } from './overlay-theme';
 
 import { GogTooltipBubbleComponent } from '../components/tooltip/tooltip-bubble.component';
 
@@ -35,11 +36,8 @@ export class GogTooltipOverlay {
     this.componentRef = this.viewContainerRef.createComponent(GogTooltipBubbleComponent);
     const el = this.componentRef.location.nativeElement as HTMLElement;
 
-    // See GogDropdownOverlay.attach — data-theme can be scoped to any subtree, not just
-    // :root, so it has to be copied from the trigger's nearest themed ancestor rather than
-    // assumed from the document.
-    const themedAncestor = themeSource?.closest('[data-theme]');
-    const theme = themedAncestor?.getAttribute('data-theme');
+    // Only for a genuinely scoped theme — see `scopedOverlayTheme`.
+    const theme = scopedOverlayTheme(themeSource, this.document.documentElement);
     if (theme) {
       el.setAttribute('data-theme', theme);
     }

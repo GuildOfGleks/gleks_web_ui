@@ -4,6 +4,26 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.4.1] - planned
+
+### Fixed
+
+- **Overlays ignored custom properties set on `:root`.** A select panel, tooltip or any other
+  overlay rendered into `<body>` copied the `data-theme` of its trigger's nearest themed
+  ancestor. When that ancestor is `<html>` — the usual case — the copy made the overlay match
+  `theme.css`'s derived layer (`:root, [data-theme]`) *locally*, re-declaring every component
+  token against the plain preset palette and discarding anything set on the root that the preset
+  does not itself declare.
+
+  Inline custom properties are what this hit: a page that overrides `--gog-*` on
+  `document.documentElement` — a live theme editor, or any runtime accent switch — saw the
+  document follow while every overlay kept rendering the un-edited theme.
+
+  The attribute is now copied only for a genuinely *scoped* theme, where the overlay would
+  otherwise pick up the document's; when the theme sits on the document element, inheritance
+  already does the work. Several themes rendered side by side in scoped subtrees keep working
+  exactly as before.
+
 ## [21.4.0] - planned
 
 A minor rather than a patch: this adds public API. Iterations 5 and 6 of the consumer-DX plan

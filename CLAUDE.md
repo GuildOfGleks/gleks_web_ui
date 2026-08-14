@@ -65,6 +65,10 @@ you go.
 - `docs/refactor-21.3.0.md` — the completed 21.3.0 pre-public cleanup (architecture, token
   contract, API consistency). Kept as the record of why those decisions were made.
 
+`docs/branching-and-support.md` records the branch-per-Angular-major model that takes effect
+when Angular 22 lands: `master` (new major) vs `v21` (fixes only), which changes go where, the
+npm dist-tag mechanics, and what must ship *before* the split. Decided, not yet in effect.
+
 `docs/lab-versioning.md` holds the recommendation for how the lab should communicate
 version-to-version change (version badge, a releases page fed by the package's own changelog,
 `since` markers, generated deprecation badges) plus the major-version branch/subdomain approach.

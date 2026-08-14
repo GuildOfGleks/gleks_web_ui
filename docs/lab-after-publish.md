@@ -203,6 +203,20 @@ The table doc page currently describes a display-only grid, which it no longer i
 
 ---
 
+## 4. After publishing **21.4.1** (overlay theming fix)
+
+Nothing to document — it is a bug fix with no API change — but one thing to **verify**, because
+the lab is where it was found:
+
+- **The theming page's generator.** `ThemeGeneratorState` writes the generated `--gog-*` values
+  inline onto `document.documentElement`; before 21.4.1 every overlay rendered into `<body>`
+  (select and multiselect panels, autocomplete, datepicker, tooltips) ignored them and kept
+  painting the un-edited theme. Randomise a theme and open one of each — they should follow now.
+- If any lab copy tells the reader that overlays need a theme set on them, or works around this
+  by scoping `data-theme` closer to the trigger, it can go.
+
+---
+
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see

@@ -1,5 +1,7 @@
 import { ApplicationRef, EmbeddedViewRef, TemplateRef } from '@angular/core';
 
+import { scopedOverlayTheme } from './overlay-theme';
+
 /**
  * Renders a template into `document.body` while keeping it wired to the declaring
  * component: the view is stamped with that component's style encapsulation and reads
@@ -34,11 +36,9 @@ export class GogDropdownOverlay {
     this.hostEl = this.document.createElement('div');
     this.hostEl.classList.add('gog-overlay-host');
 
-    // `data-theme` can be scoped to any subtree, not just `:root` (see the themes
-    // showcase page), so the host has to copy it from wherever the trigger actually
-    // sits rather than assume the document-wide theme applies.
-    const themedAncestor = themeSource?.closest('[data-theme]');
-    const theme = themedAncestor?.getAttribute('data-theme');
+    // Only for a genuinely scoped theme — see `scopedOverlayTheme` for why copying it when the
+    // theme sits on `<html>` breaks live-edited themes.
+    const theme = scopedOverlayTheme(themeSource, this.document.documentElement);
     if (theme) {
       this.hostEl.setAttribute('data-theme', theme);
     }
