@@ -1,6 +1,6 @@
 {
   "name": "@guildofgleks/ui",
-  "version": "21.3.0",
+  "version": "21.4.1",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -16,6 +16,7 @@
     "standalone",
     "accessible"
   ],
+  "homepage": "https://ui.guildofgleks.com/",
   "license": "Apache-2.0",
   "author": "Roman Malitskyi",
   "repository": {
@@ -23,7 +24,6 @@
     "url": "git+https://github.com/GuildOfGleks/gleks_web_ui.git",
     "directory": "projects/gleks/ui"
   },
-  "homepage": "https://github.com/GuildOfGleks/gleks_web_ui/tree/master/projects/gleks/ui#readme",
   "bugs": {
     "url": "https://github.com/GuildOfGleks/gleks_web_ui/issues"
   },
