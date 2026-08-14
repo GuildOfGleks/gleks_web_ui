@@ -808,6 +808,7 @@ export type GogTokenName =
   | '--gog-paginator-ellipsis-font-size'
   | '--gog-paginator-ellipsis-min-width'
   | '--gog-paginator-gap'
+  | '--gog-paginator-page-size-min-width'
   | '--gog-panel-border-style'
   | '--gog-panel-border-width'
   | '--gog-panel-radius'
@@ -2329,6 +2330,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-paginator-ellipsis-font-size',
       '--gog-paginator-ellipsis-min-width',
       '--gog-paginator-gap',
+      '--gog-paginator-page-size-min-width',
     ],
   },
   {

@@ -24,3 +24,14 @@
   font-size: var(--gog-paginator-ellipsis-font-size);
   user-select: none;
 }
+
+/*
+ * The rows-per-page select sits at the end of the row, pushed away from the page buttons so it
+ * reads as a separate control rather than as another page. `margin-inline-start: auto` rather
+ * than a fixed gap: in a full-width paginator that parks it against the trailing edge, and in a
+ * `fit-content` one it collapses to the normal row gap.
+ */
+.gog-paginator__page-size {
+  margin-inline-start: auto;
+  min-width: var(--gog-paginator-page-size-min-width);
+}

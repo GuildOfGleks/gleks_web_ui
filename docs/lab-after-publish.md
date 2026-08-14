@@ -178,6 +178,18 @@ The table doc page currently describes a display-only grid, which it no longer i
   config table, and the two new tokens (`--gog-table-selected-bg`,
   `--gog-table-select-col-width`) wherever the lab lists table tokens.
 
+### 3.4 `gog-paginator` — rows-per-page
+
+- **New inputs**: `pageSize` (a `model`), `totalRecords`, `showPageSizeSelect`, `pageSizeOptions`.
+  The doc page should lead with `totalRecords`, since it is what removes the
+  `Math.ceil(total / size)` a consumer writes today — the existing examples all pass `totalPages`.
+- **New config key** `GOG_CONFIG.paginator` (`showPageSizeSelect`, `pageSizeOptions`) needs a row
+  in `global-config.md`, plus `labels.rowsPerPage`, plus the token
+  `--gog-paginator-page-size-min-width`.
+- Worth saying explicitly, because it is the question the API was designed around: **`pageSize`
+  being a `model` on both the paginator and the table is what makes them connect without a
+  go-between signal.**
+
 ---
 
 ## Checking your work

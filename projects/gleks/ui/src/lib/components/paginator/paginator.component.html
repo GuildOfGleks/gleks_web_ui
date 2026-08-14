@@ -25,8 +25,26 @@
 <gog-button
   variant="ghost"
   [size]="size()"
-  [disabled]="disabled() || page() === totalPages()"
+  [disabled]="disabled() || page() === resolvedTotalPages()"
   [ariaLabel]="resolvedNextLabel()"
   (gogClick)="next()"
   >›</gog-button
 >
+
+@if (resolvedShowPageSizeSelect()) {
+  <!--
+    Bound with `[(pageSize)]`'s writable half, so choosing a size writes straight back through the
+    model the consumer bound — there is no intermediate state to keep in sync. `fullWidth` off so
+    the select sizes to its content instead of stretching the paginator row.
+  -->
+  <gog-select
+    class="gog-paginator__page-size"
+    [options]="resolvedPageSizeOptions()"
+    [value]="pageSize()"
+    [disabled]="disabled()"
+    [fullWidth]="false"
+    [size]="size()"
+    [ariaLabel]="resolvedRowsPerPageLabel()"
+    (valueChange)="onPageSizeChange($event)"
+  />
+}

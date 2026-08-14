@@ -306,4 +306,137 @@ describe('PaginatorComponent', () => {
       expect(f.nativeElement.getAttribute('aria-label')).toBe('Results pagination');
     });
   });
+
+  describe('page size', () => {
+    async function make(providers: unknown[] = []) {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [PaginatorComponent],
+        providers: providers as never[],
+      }).compileComponents();
+      const f = TestBed.createComponent(PaginatorComponent);
+      await f.whenStable();
+      f.detectChanges();
+      return f;
+    }
+
+    const select = (f: ComponentFixture<PaginatorComponent>) =>
+      f.nativeElement.querySelector('gog-select') as HTMLElement | null;
+    const pageButtons = (f: ComponentFixture<PaginatorComponent>) =>
+      [...f.nativeElement.querySelectorAll('button')]
+        .map((b) => (b as HTMLElement).textContent?.trim())
+        .filter((t) => t && /^\d+$/.test(t));
+
+    it('hides the select by default', async () => {
+      const f = await make();
+      f.componentRef.setInput('totalPages', 5);
+      await f.whenStable();
+
+      expect(select(f)).toBeNull();
+    });
+
+    it('shows it once asked, with the default 10/20/30/40/50', async () => {
+      const f = await make();
+      f.componentRef.setInput('showPageSizeSelect', true);
+      await f.whenStable();
+      f.detectChanges();
+
+      expect(select(f)).toBeTruthy();
+      expect(select(f)?.textContent).toContain('10');
+    });
+
+    it('takes both settings from GOG_CONFIG.paginator', async () => {
+      const f = await make([
+        {
+          provide: GOG_CONFIG,
+          useValue: { paginator: { showPageSizeSelect: true, pageSizeOptions: [5, 25] } },
+        },
+      ]);
+      f.componentRef.setInput('pageSize', 25);
+      await f.whenStable();
+      f.detectChanges();
+
+      expect(select(f)).toBeTruthy();
+      expect(select(f)?.textContent).toContain('25');
+    });
+
+    it('lets the instance input win over the configured value', async () => {
+      const f = await make([
+        { provide: GOG_CONFIG, useValue: { paginator: { showPageSizeSelect: true } } },
+      ]);
+      f.componentRef.setInput('showPageSizeSelect', false);
+      await f.whenStable();
+      f.detectChanges();
+
+      expect(select(f)).toBeNull();
+    });
+
+    describe('totalRecords', () => {
+      it('derives the page count from pageSize, so no computed() is needed outside', async () => {
+        const f = await make();
+        f.componentRef.setInput('totalRecords', 95);
+        f.componentRef.setInput('pageSize', 10);
+        f.componentRef.setInput('showLastPage', true);
+        await f.whenStable();
+        f.detectChanges();
+
+        expect(pageButtons(f)).toContain('10');
+
+        f.componentRef.setInput('pageSize', 50);
+        await f.whenStable();
+        f.detectChanges();
+
+        // 95 rows at 50 per page is 2 pages, and the old page 10 must be gone.
+        expect(pageButtons(f)).toContain('2');
+        expect(pageButtons(f)).not.toContain('10');
+      });
+
+      it('leaves the totalPages contract alone when it is not given', async () => {
+        const f = await make();
+        f.componentRef.setInput('totalPages', 3);
+        f.componentRef.setInput('pageSize', 50);
+        await f.whenStable();
+        f.detectChanges();
+
+        expect(pageButtons(f)).toEqual(['1', '2', '3']);
+      });
+    });
+
+    it('returns to page 1 when the size changes, since a page number no longer means the same rows', async () => {
+      const f = await make();
+      f.componentRef.setInput('totalRecords', 500);
+      f.componentRef.setInput('pageSize', 10);
+      await f.whenStable();
+      f.componentInstance.page.set(7);
+      await f.whenStable();
+      expect(f.componentInstance.page()).toBe(7);
+
+      f.componentRef.setInput('pageSize', 50);
+      await f.whenStable();
+
+      expect(f.componentInstance.page()).toBe(1);
+    });
+
+    it('does not disturb an initial page on first render', async () => {
+      const f = await make();
+      f.componentRef.setInput('totalPages', 9);
+      f.componentInstance.page.set(4);
+      await f.whenStable();
+      f.detectChanges();
+
+      expect(f.componentInstance.page()).toBe(4);
+    });
+
+    it('keeps a page size that is not one of the offered options visible', async () => {
+      const f = await make();
+      f.componentRef.setInput('showPageSizeSelect', true);
+      f.componentRef.setInput('pageSizeOptions', [10, 20]);
+      f.componentRef.setInput('pageSize', 15);
+      await f.whenStable();
+      f.detectChanges();
+
+      // Otherwise the trigger would render empty for a perfectly valid programmatic size.
+      expect(select(f)?.textContent).toContain('15');
+    });
+  });
 });

@@ -6,24 +6,32 @@ import {
   inject,
   input,
   model,
+  untracked,
 } from '@angular/core';
 
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { ButtonComponent } from '../button/button.component';
+import { SelectComponent } from '../select/select.component';
 import { GogPaginatorRangeMode, GogSize } from '../../shared/types';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG.labels` supplies one. */
+const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50];
+/** Off by default: a paginator that silently grew a control would change every existing layout. */
+const DEFAULT_SHOW_PAGE_SIZE_SELECT = false;
+
 const DEFAULT_LABELS = {
   pagination: 'Pagination',
   previousPage: 'Previous page',
   nextPage: 'Next page',
+  rowsPerPage: 'Rows per page',
   page: (page: number, isCurrent: boolean) =>
     isCurrent ? `Page ${page}, current page` : `Go to page ${page}`,
 };
 
 @Component({
   selector: 'gog-paginator',
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, SelectComponent],
   templateUrl: './paginator.component.html',
   styleUrl: './paginator.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,7 +54,35 @@ export class PaginatorComponent {
    * buttons instead.
    */
   readonly fullWidth = input(true);
+  /**
+   * How many pages there are. Ignored when `totalRecords` is given — see there.
+   */
   readonly totalPages = input(1);
+  /**
+   * How many rows exist in total. Given this, the paginator computes the page count itself from
+   * `pageSize`, which is what removes the `computed(() => Math.ceil(total / size))` a consumer
+   * would otherwise have to write and keep in sync with the select below.
+   *
+   * `null` (the default) keeps the old contract: you tell it `totalPages` directly.
+   */
+  readonly totalRecords = input<number | null>(null);
+  /**
+   * Rows per page. Two-way bindable — `[(pageSize)]="size"` — which is the whole point once
+   * `showPageSizeSelect` is on: the select writes back through this, and nothing has to be
+   * ferried between components by hand. `gog-table` binds its own `pageSize` model straight to
+   * this one.
+   */
+  readonly pageSize = model(DEFAULT_PAGE_SIZE);
+  /**
+   * Whether to offer the rows-per-page select. Unset, falls back to
+   * `GOG_CONFIG.paginator.showPageSizeSelect`, then to `false`.
+   */
+  readonly showPageSizeSelect = input<boolean | undefined>(undefined);
+  /**
+   * The choices the select offers. Unset, falls back to
+   * `GOG_CONFIG.paginator.pageSizeOptions`, then to `[10, 20, 30, 40, 50]`.
+   */
+  readonly pageSizeOptions = input<number[] | undefined>(undefined);
   /**
    * `window` (default): a fixed number of page buttons (`visiblePages`) that slides to keep
    * the current page centered, clamped at the edges — no ellipsis, no pinned boundaries
@@ -105,8 +141,45 @@ export class PaginatorComponent {
     return format(page, page === this.page());
   }
 
+  protected readonly resolvedShowPageSizeSelect = computed(() =>
+    resolveConfigured(
+      this.showPageSizeSelect(),
+      this.globalConfig.paginator?.showPageSizeSelect,
+      DEFAULT_SHOW_PAGE_SIZE_SELECT,
+    ),
+  );
+  protected readonly resolvedRowsPerPageLabel = computed(() =>
+    resolveConfigured(undefined, this.globalConfig.labels?.rowsPerPage, DEFAULT_LABELS.rowsPerPage),
+  );
+  /**
+   * The select takes `{ id, name }` objects because that is `GogDropdownOption`'s default shape —
+   * `optionLabel`/`optionValue` accessors for a list of plain numbers would be more API than the
+   * mapping saves. The current `pageSize` is included even when it is not one of the offered
+   * options, so a programmatic `[pageSize]="15"` shows 15 rather than an empty trigger.
+   */
+  protected readonly resolvedPageSizeOptions = computed(() => {
+    const options = resolveConfigured(
+      this.pageSizeOptions(),
+      this.globalConfig.paginator?.pageSizeOptions,
+      DEFAULT_PAGE_SIZE_OPTIONS,
+    );
+    const current = this.pageSize();
+    const all = options.includes(current) ? options : [...options, current].sort((a, b) => a - b);
+    return all.map((size) => ({ id: size, name: String(size) }));
+  });
+
+  /**
+   * `totalRecords` when supplied, `totalPages` otherwise — every internal read goes through this
+   * so the two inputs cannot disagree anywhere.
+   */
+  protected readonly resolvedTotalPages = computed(() => {
+    const records = this.totalRecords();
+    if (records === null) return Math.max(1, this.totalPages());
+    return Math.max(1, Math.ceil(Math.max(0, records) / Math.max(1, this.pageSize())));
+  });
+
   protected readonly pageNumbers = computed(() => {
-    const total = Math.max(1, this.totalPages());
+    const total = this.resolvedTotalPages();
     const current = this.page();
     return this.rangeMode() === 'ellipsis'
       ? this.ellipsisRange(total, current)
@@ -114,17 +187,37 @@ export class PaginatorComponent {
   });
 
   constructor() {
-    // Self-clamps whenever `totalPages` shrinks below the current page (or a consumer
+    // Self-clamps whenever the page count shrinks below the current page (or a consumer
     // passes an out-of-range value directly), so every consumer gets correct bounds for
     // free instead of reimplementing this per usage.
     effect(() => {
-      const total = Math.max(1, this.totalPages());
+      const total = this.resolvedTotalPages();
       const current = this.page();
       if (current > total) {
         this.page.set(total);
       } else if (current < 1) {
         this.page.set(1);
       }
+    });
+
+    /*
+     * A new page size invalidates the current page: "page 5" of 10-row pages is not "page 5" of
+     * 50-row ones, and clamping alone would leave the user somewhere they did not ask to be.
+     * Back to page 1, which is the only position that means the same thing at every size.
+     * `untracked` so this reacts to the size and not to its own write.
+     */
+    let previousSize: number | null = null;
+    effect(() => {
+      const size = this.pageSize();
+      // Guarded on an actual change, not on the effect running: the first run must leave an
+      // initial `[page]="3"` alone, and re-running for an unrelated dependency must not snap the
+      // user back to page 1.
+      if (previousSize !== null && previousSize !== size) {
+        untracked(() => {
+          if (this.page() !== 1) this.page.set(1);
+        });
+      }
+      previousSize = size;
     });
   }
 
@@ -167,7 +260,7 @@ export class PaginatorComponent {
   }
 
   protected goTo(target: number): void {
-    if (this.disabled() || target < 1 || target > this.totalPages()) return;
+    if (this.disabled() || target < 1 || target > this.resolvedTotalPages()) return;
     this.page.set(target);
   }
 
@@ -177,5 +270,9 @@ export class PaginatorComponent {
 
   protected next(): void {
     this.goTo(this.page() + 1);
+  }
+
+  protected onPageSizeChange(size: number | null): void {
+    if (size !== null) this.pageSize.set(size);
   }
 }

@@ -211,6 +211,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `button`       | `debounce`                                                         | `gog-button`.                                                                                                                                                                                                                                                                                                                                                                                                |
 | `inputfield`   | `showSpinButtons`                                                  | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                            |
 | `textarea`     | `resize`                                                           | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                            | `gog-paginator`, and through it `gog-table`'s built-in pagination.
 | `toast`        | `position`, `duration`                                             | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                              |
 | `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme` | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                 |
 | `labels`       | every fixed string the library renders — see below                 | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                                    |
@@ -240,6 +241,7 @@ provideGogConfig({
     previousPage: 'Предыдущая страница',
     nextPage: 'Следующая страница',
     openCalendar: 'Открыть календарь',
+    rowsPerPage: 'Строк на странице', // gog-paginator's size select
     total: 'Всего', // gog-table's row-count label
     tablePagination: 'Навигация по таблице',
     selectRow: 'Выбрать строку',
@@ -1018,13 +1020,36 @@ hidden via `[hidden]` while inactive — preserves scroll/input state).
 | `siblingCount`                  | `number`                                         | `2` — `'ellipsis'` mode only   |
 | `size`                          | `GogSize`                                        | `'sm'`                         |
 | `disabled`, `ariaLabel`         |                                                  | `false`, `'Pagination'`        |
+| `totalRecords`                  | `number \| null`                                 | `null` — see below             |
+| `pageSize`                      | `model<number>`                                  | `10` — two-way bindable        |
+| `showPageSizeSelect`            | `boolean \| undefined`                           | `false`; via `GOG_CONFIG.paginator` |
+| `pageSizeOptions`               | `number[] \| undefined`                          | `[10, 20, 30, 40, 50]`; via `GOG_CONFIG.paginator` |
 
 The step buttons (`'Previous page'`/`'Next page'`) and the per-page names are configured, not
 input-driven: `GOG_CONFIG.labels.previousPage`/`nextPage`, and `labels.page`, a
 `(page: number, isCurrent: boolean) => string` formatter defaulting to
 `` `Page ${page}, current page` `` / `` `Go to page ${page}` ``.
 
-Model: `page: number` (1-based, self-clamps to `totalPages`).
+Models: `page: number` (1-based, self-clamps) and `pageSize: number`.
+
+**Give it `totalRecords` instead of `totalPages` when you know the row count** — it then derives
+the page count from `pageSize` itself, which is what removes the
+`computed(() => Math.ceil(total / size))` a consumer would otherwise have to write *and* keep in
+sync with the rows-per-page select:
+
+```html
+<gog-paginator
+  [(page)]="page"
+  [(pageSize)]="size"
+  [totalRecords]="items().length"
+  [showPageSizeSelect]="true"
+/>
+```
+
+`totalPages` still works and is the right input when the server tells you a page count directly;
+`totalRecords` wins when both are set. Changing the page size always returns to page 1 — "page 5"
+of 10-row pages is not "page 5" of 50-row ones, so clamping alone would leave the user somewhere
+they never asked to be.
 
 `'window'`: a fixed number of page buttons that slides to keep the current page centered.
 `'ellipsis'`: first/last pinned, `siblingCount` around the current page, "…" fills the gap
@@ -1040,7 +1065,9 @@ Model: `page: number` (1-based, self-clamps to `totalPages`).
 | ----------------------------- | ----------------------------- | --------------------------------- |
 | `value`                       | `T[]`                         | `[]`                              |
 | `fullWidth`                   | `boolean`                     | `true`                            |
-| `pageSize`                    | `number`                      | `0` (no pagination)               |
+| `pageSize`                    | `model<number>`               | `0` (no pagination) — two-way     |
+| `showPageSizeSelect`          | `boolean \| undefined`        | `false`; forwarded to the paginator |
+| `pageSizeOptions`             | `number[] \| undefined`       | `[10, 20, 30, 40, 50]`; forwarded |
 | `showRowNumbers`, `showTotal` | `boolean`                     | `true`, `false`                   |
 | `emptyPlaceholder`            | `string`                      | `'-'`                             |
 | `paginatorPosition`           | `'left'\|'center'\|'right'`   | `'center'`                        |
@@ -1099,6 +1126,26 @@ exist, so pagination stays hidden and it warns in dev), then refetch from the tw
 Row numbers still count from the current page (`(page - 1) * pageSize + i + 1`), and `showTotal`
 reports `totalRecords` rather than `value.length`. **Do not** sort or slice `value` yourself in
 addition — that is what the flag turns off.
+
+##### Rows per page
+
+`pageSize` is a **`model`**, not an input: `[pageSize]="20"` works exactly as before, and
+`[(pageSize)]="size"` becomes possible. That is what makes the rows-per-page select work with no
+wiring — the table binds its own model straight to the paginator's, the select writes back
+through it, and there is no intermediate signal to keep in sync in either direction.
+
+```html
+<!-- off by default; turn it on per table, or app-wide via GOG_CONFIG.paginator -->
+<gog-table [value]="rows" [(pageSize)]="size" [showPageSizeSelect]="true" [pageSizeOptions]="[5, 10, 20]">
+```
+
+Changing the size returns to page 1 and does **not** emit `gogPageChange` — the consumer already
+knows from `pageSizeChange`, and firing both would make a lazy table fetch twice. In `lazy` mode
+`pageSizeChange` is the refetch signal; bind `[pageSize]` + `(pageSizeChange)` rather than the
+banana-box if you need to act on it.
+
+The footer stays visible at a single page whenever the select is on — hiding it would strand the
+user on whatever size produced that one page, with no control left to pick a smaller one.
 
 ##### Selection
 

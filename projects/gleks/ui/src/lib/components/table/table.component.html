@@ -144,11 +144,19 @@
       }
 
       @if (hasPagination()) {
+        <!--
+          `[(pageSize)]` straight through to the table's own model: the rows-per-page select
+          writes back here, and a consumer binding `[(pageSize)]` on the table sees it. No
+          intermediate signal, in either direction.
+        -->
         <gog-paginator
           class="gog-table__pagination"
           [style.grid-area]="paginatorGridArea()"
           [(page)]="currentPage"
+          [(pageSize)]="pageSize"
           [totalPages]="totalPages()"
+          [showPageSizeSelect]="showPageSizeSelect()"
+          [pageSizeOptions]="pageSizeOptions()"
           rangeMode="ellipsis"
           size="sm"
           [ariaLabel]="resolvedLabels().pagination"

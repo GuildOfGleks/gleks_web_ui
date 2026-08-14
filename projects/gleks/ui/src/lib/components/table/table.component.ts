@@ -103,8 +103,29 @@ export class TableComponent<T extends object> {
    * its columns' content instead.
    */
   readonly fullWidth = input(true);
-  /** 0 = no pagination */
-  readonly pageSize = input<number>(0);
+  /**
+   * Rows per page; `0` (the default) means no pagination at all.
+   *
+   * A **`model`**, not an input, so `[pageSize]="20"` still works exactly as before *and*
+   * `[(pageSize)]="size"` becomes possible. That is what lets `showPageSizeSelect` work without
+   * any wiring: the table binds this model straight to its own paginator's `pageSize`, the
+   * select writes back through it, and a consumer who wants to observe or persist the choice
+   * binds two-way. Nothing is ferried between the two components by hand.
+   *
+   * In `lazy` mode a change here is a refetch signal, same as `gogPageChange` — bind
+   * `[(pageSize)]` and reload from it. Changing the size always returns to page 1.
+   */
+  readonly pageSize = model<number>(0);
+  /**
+   * Whether the paginator offers a rows-per-page select. Forwarded straight to `gog-paginator`;
+   * unset, it falls back to `GOG_CONFIG.paginator.showPageSizeSelect`, then to `false`.
+   */
+  readonly showPageSizeSelect = input<boolean | undefined>(undefined);
+  /**
+   * The sizes that select offers. Forwarded to `gog-paginator`; unset, falls back to
+   * `GOG_CONFIG.paginator.pageSizeOptions`, then to `[10, 20, 30, 40, 50]`.
+   */
+  readonly pageSizeOptions = input<number[] | undefined>(undefined);
   /**
    * Hands sorting and paging to the server.
    *
@@ -256,10 +277,21 @@ export class TableComponent<T extends object> {
    * wherever the paginator navigated to. `gog-paginator`'s own `page` model additionally
    * self-clamps against `totalPages` on its own, so this only has to handle the reset case.
    */
-  readonly currentPage = linkedSignal<{ total: number; sortState: SortState }, number>({
-    source: () => ({ total: this.totalPages(), sortState: this.sortState() }),
+  readonly currentPage = linkedSignal<
+    { total: number; sortState: SortState; pageSize: number },
+    number
+  >({
+    source: () => ({
+      total: this.totalPages(),
+      sortState: this.sortState(),
+      pageSize: this.pageSize(),
+    }),
     computation: (src, previous) => {
-      if (!previous || previous.source.sortState !== src.sortState) return 1;
+      if (!previous) return 1;
+      // A new sort re-orders everything, and a new page size redraws the boundaries — in both
+      // cases the page the user was on no longer denotes the same rows.
+      if (previous.source.sortState !== src.sortState) return 1;
+      if (previous.source.pageSize !== src.pageSize) return 1;
       return Math.min(Math.max(1, previous.value), src.total);
     },
   });
@@ -273,8 +305,28 @@ export class TableComponent<T extends object> {
     return this.sortedData().slice(start, start + size);
   });
 
+  /**
+   * Resolved the same way `gog-paginator` resolves it, because the footer's own visibility
+   * depends on it — see `hasPagination`.
+   */
+  protected readonly showsPageSizeSelect = computed(() =>
+    resolveConfigured(
+      this.showPageSizeSelect(),
+      this.globalConfig.paginator?.showPageSizeSelect,
+      false,
+    ),
+  );
+
+  /**
+   * Normally the paginator only earns its space once there is more than one page — but the
+   * rows-per-page select lives inside it, and hiding the whole thing at one page would strand the
+   * user on whatever size produced that single page with no way back to a smaller one.
+   */
   readonly hasPagination = computed(
-    () => !this.loading() && this.pageSize() > 0 && this.totalPages() > 1,
+    () =>
+      !this.loading() &&
+      this.pageSize() > 0 &&
+      (this.totalPages() > 1 || this.showsPageSizeSelect()),
   );
 
   private readonly globalConfig = inject(GOG_CONFIG);
@@ -367,14 +419,16 @@ export class TableComponent<T extends object> {
      * refetching from both events would fire two requests for one user action. Detected by the
      * sort having changed in the same computation, and skipped.
      */
-    let previous: { page: number; sort: SortState } | null = null;
+    let previous: { page: number; sort: SortState; size: number } | null = null;
     effect(() => {
       const page = this.currentPage();
       const sort = this.sortState();
-      if (previous && previous.page !== page && previous.sort === sort) {
+      const size = this.pageSize();
+      const causedByOther = previous && (previous.sort !== sort || previous.size !== size);
+      if (previous && previous.page !== page && !causedByOther) {
         this.gogPageChange.emit(page);
       }
-      previous = { page, sort };
+      previous = { page, sort, size };
     });
 
     effect(() => {

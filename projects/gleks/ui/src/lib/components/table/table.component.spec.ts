@@ -11,6 +11,7 @@ import {
 } from './table.component';
 import { Column, GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective } from './column';
 import { TemplateDirective } from './template.directive';
+import { PaginatorComponent } from '../paginator/paginator.component';
 
 interface Row {
   id: number;
@@ -719,5 +720,126 @@ describe('TableComponent — outputs, lazy mode and selection', () => {
       expect(fixture.nativeElement.querySelector('.gog-table__td--select')).toBeNull();
       expect(fixture.nativeElement.querySelectorAll('tbody tr.gog-table__row').length).toBe(2);
     });
+  });
+});
+
+describe('TableComponent — page size', () => {
+  interface Person {
+    id: number;
+    name: string;
+  }
+
+  const ROWS: Person[] = Array.from({ length: 25 }, (_, i) => ({
+    id: i + 1,
+    name: `Person ${i + 1}`,
+  }));
+
+  @Component({
+    imports: [TableComponent, GogColumn],
+    template: `
+      <gog-table
+        [value]="ROWS"
+        [(pageSize)]="pageSize"
+        [showPageSizeSelect]="showSelect()"
+        [pageSizeOptions]="options()"
+        (gogPageChange)="pageEvents.push($event)"
+      >
+        <gog-column field="id" header="ID" [sortable]="true" />
+        <gog-column field="name" header="Name" />
+      </gog-table>
+    `,
+  })
+  class Host {
+    readonly ROWS = ROWS;
+    readonly pageSize = signal(10);
+    readonly showSelect = signal(true);
+    readonly options = signal<number[] | undefined>(undefined);
+    readonly pageEvents: number[] = [];
+  }
+
+  let fixture: ComponentFixture<Host>;
+  let host: Host;
+
+  const bodyRows = () => fixture.nativeElement.querySelectorAll('tbody tr.gog-table__row');
+  const settle = async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [Host] }).compileComponents();
+    fixture = TestBed.createComponent(Host);
+    host = fixture.componentInstance;
+    await settle();
+  });
+
+  it('renders the select inside its paginator', () => {
+    expect(fixture.nativeElement.querySelector('gog-paginator gog-select')).toBeTruthy();
+  });
+
+  it('slices to the bound page size, and follows it when the binding changes', async () => {
+    expect(bodyRows().length).toBe(10);
+
+    host.pageSize.set(20);
+    await settle();
+
+    expect(bodyRows().length).toBe(20);
+  });
+
+  it('writes a size chosen in the paginator back through the table model', async () => {
+    // The point of `pageSize` being a `model` rather than an `input`: no intermediate signal
+    // between the select and whatever the consumer bound.
+    const paginator = fixture.debugElement.query(By.directive(PaginatorComponent));
+    paginator.componentInstance.pageSize.set(20);
+    await settle();
+
+    expect(host.pageSize()).toBe(20);
+    expect(bodyRows().length).toBe(20);
+  });
+
+  it('returns to page 1 when the size changes, without reporting it as a page change', async () => {
+    const next = fixture.nativeElement.querySelector(
+      'gog-paginator button[aria-label="Next page"]',
+    ) as HTMLButtonElement;
+    next.click();
+    await settle();
+    expect(host.pageEvents).toEqual([2]);
+
+    host.pageSize.set(20);
+    await settle();
+
+    const firstCell = (bodyRows()[0] as HTMLElement).querySelector(
+      'td:nth-child(2)',
+    ) as HTMLElement;
+    expect(firstCell.textContent?.trim()).toBe('1');
+    // The reset belongs to the size change; the consumer already knows from `pageSizeChange`.
+    expect(host.pageEvents).toEqual([2]);
+  });
+
+  it('keeps the footer when a size leaves only one page, so the choice stays reversible', async () => {
+    host.pageSize.set(50);
+    await settle();
+
+    // 25 rows at 50 per page is a single page — without the select the paginator would hide and
+    // strand the user on 50.
+    expect(fixture.nativeElement.querySelector('gog-paginator')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('gog-paginator gog-select')).toBeTruthy();
+  });
+
+  it('hides the footer at one page when the select is off', async () => {
+    host.showSelect.set(false);
+    host.pageSize.set(50);
+    await settle();
+
+    expect(fixture.nativeElement.querySelector('gog-paginator')).toBeNull();
+  });
+
+  it('forwards custom options to the paginator', async () => {
+    host.options.set([5, 15]);
+    await settle();
+
+    const paginator = fixture.debugElement.query(By.directive(PaginatorComponent));
+    expect(paginator.componentInstance.pageSizeOptions()).toEqual([5, 15]);
   });
 });

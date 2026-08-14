@@ -42,6 +42,20 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
 - **`gog-table`: `interactiveRows`.** Makes rows focusable and styles them as clickable, with
   Enter and Space activating the focused row. `gogRowClick` fires on a click either way; this is
   what stops a whole-row target from being mouse-only.
+- **`gog-paginator`: a rows-per-page select.** `showPageSizeSelect` turns it on (**off by
+  default** — a paginator that silently grew a control would change every existing layout) and
+  `pageSizeOptions` sets the choices, defaulting to `[10, 20, 30, 40, 50]`. Both are also
+  settable app-wide through the new `GOG_CONFIG.paginator`, so one page can offer `5, 10, 20`
+  while the rest of the app uses the house default.
+- **`gog-paginator`: `pageSize` (a `model`) and `totalRecords`.** Given `totalRecords`, the
+  paginator derives the page count from `pageSize` itself — which removes the
+  `computed(() => Math.ceil(total / size))` a consumer would otherwise have to write *and* keep
+  in sync with the select. `totalPages` still works and is right when a server hands you a page
+  count directly; `totalRecords` wins if both are set. Changing the size returns to page 1:
+  "page 5" of 10-row pages is not "page 5" of 50-row ones, so clamping alone would leave the user
+  somewhere they never asked to be.
+- **`gog-table`: `showPageSizeSelect` / `pageSizeOptions`**, forwarded to its paginator, and
+  **`GOG_CONFIG.labels.rowsPerPage`** for the select's accessible name.
 - **`GOG_CONFIG.labels`: `total`, `tablePagination`, `selectRow`, `selectAllRows`.** The table's
   own chrome — the row-count label read `Total:` from a hardcoded string, and its paginator was
   labelled `Table pagination` with no way to change either.
@@ -94,6 +108,14 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
 
 ### Changed
 
+- **`gog-table`'s `pageSize` is a `model`, not an `input`.** `[pageSize]="20"` is unchanged;
+  `[(pageSize)]="size"` is now possible, and that is what lets the rows-per-page select work with
+  no wiring — the table binds its own model straight to the paginator's, so nothing is ferried
+  between the two by hand. `pageSizeChange` comes free from the model and is the refetch signal
+  in `lazy` mode.
+- **The table footer no longer hides at a single page while the size select is on.** Hiding it
+  would strand the user on whatever size produced that one page, with no control left to choose a
+  smaller one. With the select off, the old behaviour is unchanged.
 - **`GogIconName` is now open: `GogBuiltinIconName | (string & {})`.** The built-ins still
   autocomplete; a registered name is now accepted wherever an icon name is taken, with no change
   at any of the ten call sites that use the type. The trade is deliberate and comes with the

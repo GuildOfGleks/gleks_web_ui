@@ -415,6 +415,18 @@ refetch will drop the selection.
 </gog-table>
 ```
 
+`gog-paginator` can offer a rows-per-page select — off by default, on per instance with
+`showPageSizeSelect` or app-wide through `GOG_CONFIG.paginator`. Give it `totalRecords` rather
+than `totalPages` and it works out the page count from `pageSize` itself:
+
+```html
+<gog-paginator [(page)]="page" [(pageSize)]="size" [totalRecords]="items().length" [showPageSizeSelect]="true" />
+```
+
+`pageSize` is a two-way `model` on both `gog-paginator` and `gog-table`, which is what connects
+the two without a signal in between: the table binds its own model to the paginator's, so a size
+picked in the select lands directly on whatever you bound with `[(pageSize)]`.
+
 `gogTooltip` is a hover/focus tooltip directive, not a component — drop it on any element,
 a `gog-*` component's own host tag or a plain native one
 (`<button gogTooltip="Save changes">`, `<gog-chip [gogTooltip]="hint">`). Content is a

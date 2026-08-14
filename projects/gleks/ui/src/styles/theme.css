@@ -1144,6 +1144,8 @@
   --gog-paginator-ellipsis-color: var(--gog-muted-text-color);
   --gog-paginator-ellipsis-font-size: var(--gog-text-sm);
   --gog-paginator-ellipsis-font-family: var(--gog-font-body);
+  /* Enough for a three-digit page size plus the chevron, so the row doesn't shift on change. */
+  --gog-paginator-page-size-min-width: 5rem;
   --gog-paginator-ellipsis-min-width: 32px;
 
   /* ── Progressbar ──────────────────────────────────────────────────────────── */

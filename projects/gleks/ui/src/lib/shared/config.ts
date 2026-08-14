@@ -117,6 +117,20 @@ export interface GogGlobalConfig {
     /** Display and parse pattern (`dd.MM.yyyy`, `yyyy-MM-dd`, …). */
     format?: string;
   };
+  /**
+   * Applies to `gog-paginator`, and through it to `gog-table`'s built-in pagination.
+   *
+   * The page-size select is the one piece of paginator chrome an app decides once — either its
+   * tables offer the choice or they don't, and the option list is a house style. Both are still
+   * overridable per instance, for the page whose table genuinely needs `5, 10, 20` while the rest
+   * of the app uses `20, 50, 100`.
+   */
+  paginator?: {
+    /** Whether the rows-per-page select renders at all. **Off by default.** */
+    showPageSizeSelect?: boolean;
+    /** The choices it offers. Defaults to `[10, 20, 30, 40, 50]`. */
+    pageSizeOptions?: number[];
+  };
   /** Applies to `gog-autocomplete`. */
   autocomplete?: {
     /**
@@ -204,6 +218,8 @@ export interface GogGlobalConfig {
     page?: (page: number, isCurrent: boolean) => string;
     /** `gog-datepicker`'s button that opens the calendar panel. */
     openCalendar?: string;
+    /** `gog-paginator`'s rows-per-page select. */
+    rowsPerPage?: string;
     /** `gog-table`: the row-count label, its paginator, and the selection checkboxes. */
     total?: string;
     tablePagination?: string;
