@@ -19,6 +19,23 @@ interface ThemeMenuOption {
   label: string;
 }
 
+interface FooterLink {
+  readonly label: string;
+  readonly href: string;
+}
+
+// Every one of these leaves the site, so they all open in a new tab (see app.html). The old
+// `Documentation` entry pointed at `https://your-domain.com` — a placeholder that shipped, and
+// the reason this list is now declared rather than written inline.
+const FOOTER_LINKS: readonly FooterLink[] = [
+  { label: 'GitHub', href: 'https://github.com/GuildOfGleks/gleks_web_ui' },
+  { label: 'Report an issue', href: 'https://github.com/GuildOfGleks/gleks_web_ui/issues/new' },
+  { label: 'NPM Package', href: 'https://www.npmjs.com/package/@guildofgleks/ui' },
+  // The Patreon handle comes from `.github/FUNDING.yml`, which is the same one GitHub's
+  // Sponsor button uses — keep the two in step if it ever changes.
+  { label: 'Support on Patreon', href: 'https://www.patreon.com/chebureck77' },
+];
+
 @Component({
   selector: 'app-root',
   imports: [
@@ -45,6 +62,8 @@ export class App {
   // version the site was not actually built against. See `library-version.ts`.
   protected readonly libraryVersion = LIBRARY_VERSION;
   protected readonly libraryNpmUrl = LIBRARY_NPM_URL;
+
+  protected readonly footerLinks = FOOTER_LINKS;
 
   // The first two ship with the library itself; `slate` / `one-*` are its importable presets
   // (see the Theming page); `primeng` / `material` are this site's own look-alikes, declared in

@@ -59,8 +59,9 @@
     <footer class="lab-footer">
       <div class="footer-copy">© 2026 Guild of Gleks UI. Apache License 2.0.</div>
       <div class="footer-links">
-        <a href="https://your-domain.com">Documentation</a>
-        <a href="https://www.npmjs.com/package/@guildofgleks/ui">NPM Package</a>
+        @for (link of footerLinks; track link.href) {
+          <a [href]="link.href" target="_blank" rel="noopener">{{ link.label }}</a>
+        }
       </div>
     </footer>
   </main>

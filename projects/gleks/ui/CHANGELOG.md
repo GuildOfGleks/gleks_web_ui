@@ -19,7 +19,7 @@ reached 1.0, so breaking changes may land in minor versions.
 - **`AGENTS.md` was missing `gog-slider`'s range mode.** `range`, `rangeValue`
   (`GogSliderRange`), `startDisabled`/`endDisabled` and `startAriaLabel`/`endAriaLabel` shipped
   in 21.3.1 but never reached the agent reference, so an agent reading it would conclude the
-  slider cannot express a range and build a two-slider workaround.
+  slider cannot express a range and build a two-slider workaround. 
 
 ## [21.4.1] - 14.08.2026
 
