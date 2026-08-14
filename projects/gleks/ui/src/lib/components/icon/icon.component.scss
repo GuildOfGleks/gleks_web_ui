@@ -17,8 +17,16 @@
   color: currentColor;
 }
 
+/* Every stroked shape SVG can produce, not just the three the original 20 glyphs happened to
+   use: `line`, `polyline` and `polygon` appear in plenty of icons (download, menu, filter, star)
+   and in whatever a consumer registers through `provideGogIcons`. Listing only path/circle/rect
+   left `--gog-icon-stroke-width` silently not applying to those. */
 :host ::ng-deep svg path,
 :host ::ng-deep svg circle,
-:host ::ng-deep svg rect {
+:host ::ng-deep svg rect,
+:host ::ng-deep svg ellipse,
+:host ::ng-deep svg line,
+:host ::ng-deep svg polyline,
+:host ::ng-deep svg polygon {
   stroke-width: var(--gog-icon-stroke-width);
 }

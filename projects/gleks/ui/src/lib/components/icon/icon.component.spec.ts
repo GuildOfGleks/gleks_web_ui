@@ -4,6 +4,7 @@ import { vi } from 'vitest';
 
 import { IconComponent } from './icon.component';
 import { GOG_ICONS, provideGogIcons } from '../../shared/icon-registry';
+import { ICON_DEFS } from '../../shared/icons';
 
 const CART = '<svg viewBox="0 0 24 24" data-icon="cart"><path d="M1 1" /></svg>';
 const STAR = '<svg viewBox="0 0 24 24" data-icon="star"><path d="M2 2" /></svg>';
@@ -152,6 +153,50 @@ describe('IconComponent', () => {
       await fixture.whenStable();
 
       expect(fixture.nativeElement.getAttribute('aria-label')).toBe('check');
+    });
+  });
+
+  describe('the shipped set', () => {
+    const names = Object.keys(ICON_DEFS) as (keyof typeof ICON_DEFS)[];
+
+    it('renders every built-in without falling through to the unknown-name path', async () => {
+      // Catches a name added to `GogBuiltinIconName` with empty or malformed markup: the union
+      // makes `ICON_DEFS` exhaustive at compile time, but not non-empty.
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      for (const name of names) {
+        const f = TestBed.createComponent(IconComponent);
+        f.componentRef.setInput('name', name);
+        await f.whenStable();
+
+        const rendered = f.nativeElement.querySelector('svg') as SVGElement | null;
+        expect(rendered, `no <svg> rendered for "${name}"`).toBeTruthy();
+        expect(rendered?.children.length, `"${name}" has no shapes`).toBeGreaterThan(0);
+      }
+
+      expect(warn, 'a built-in fell through to the missing-icon warning').not.toHaveBeenCalled();
+      warn.mockRestore();
+    });
+
+    it('draws every glyph on the same 24×24 grid, so they line up at any size', () => {
+      for (const name of names) {
+        expect(ICON_DEFS[name], name).toContain('viewBox="0 0 24 24"');
+      }
+    });
+
+    it('inherits colour, so an icon takes the colour of whatever it sits in', () => {
+      for (const name of names) {
+        expect(ICON_DEFS[name], name).toContain('currentColor');
+      }
+    });
+
+    it('carries no hardcoded size that would beat the --gog-icon-size token', () => {
+      // The stylesheet drives width/height; the width/height attributes are only a fallback for
+      // an icon rendered outside the component, and must stay at the grid size.
+      for (const name of names) {
+        expect(ICON_DEFS[name], name).toContain('width="24"');
+        expect(ICON_DEFS[name], name).toContain('height="24"');
+      }
     });
   });
 });
