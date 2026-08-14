@@ -96,6 +96,13 @@
   color: var(--gog-table-muted-color);
 }
 
+.gog-table__th--select,
+.gog-table__td--select {
+  /* Sized to the checkbox, not to content: this column never grows. */
+  width: var(--gog-table-select-col-width);
+  text-align: center;
+}
+
 .gog-table__th--sortable {
   cursor: pointer;
   user-select: none;
@@ -168,8 +175,27 @@
   transition: background-color var(--gog-table-row-transition-duration) var(--gog-easing);
 }
 
+/*
+ * A selected row keeps its tint on hover, so hovering a selected row does not read as
+ * deselecting it. Declared before the hover rule for exactly that reason — see the `--selected`
+ * rule below, which wins on specificity.
+ */
+.gog-table__row--interactive {
+  cursor: pointer;
+}
+
+.gog-table__row--interactive:focus-visible {
+  outline: var(--gog-table-focus-ring-width) solid var(--gog-table-focus-ring);
+  outline-offset: calc(var(--gog-table-focus-ring-width) * -1);
+}
+
 .gog-table__row:hover {
   background-color: var(--gog-table-hover-bg);
+}
+
+.gog-table__row--selected,
+.gog-table__row--selected:hover {
+  background-color: var(--gog-table-selected-bg);
 }
 
 .gog-table__empty {

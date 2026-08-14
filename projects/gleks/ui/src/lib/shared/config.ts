@@ -204,6 +204,11 @@ export interface GogGlobalConfig {
     page?: (page: number, isCurrent: boolean) => string;
     /** `gog-datepicker`'s button that opens the calendar panel. */
     openCalendar?: string;
+    /** `gog-table`: the row-count label, its paginator, and the selection checkboxes. */
+    total?: string;
+    tablePagination?: string;
+    selectRow?: string;
+    selectAllRows?: string;
     /** `gog-calendar` navigation and shortcuts. */
     today?: string;
     thisMonth?: string;

@@ -1,8 +1,14 @@
-import { Component, input } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { vi } from 'vitest';
 
-import { TableComponent } from './table.component';
+import {
+  TableComponent,
+  type GogTableRowClickEvent,
+  type GogTableSelectionMode,
+  type GogTableSortEvent,
+} from './table.component';
 import { Column, GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective } from './column';
 import { TemplateDirective } from './template.directive';
 
@@ -335,5 +341,383 @@ describe('TableComponent — column-scoped templates', () => {
     expect(cells[0].nativeElement.textContent.trim()).toBe('1');
     // the id column has only a header template, so its cell is still plain text
     expect(cells[1].nativeElement.textContent.trim()).toBe('7');
+  });
+});
+
+describe('TableComponent — outputs, lazy mode and selection', () => {
+  interface Person {
+    id: number;
+    name: string;
+  }
+
+  const PAGE_1: Person[] = [
+    { id: 1, name: 'Alpha' },
+    { id: 2, name: 'Bravo' },
+  ];
+
+  @Component({
+    imports: [TableComponent, GogColumn],
+    template: `
+      <gog-table
+        [value]="rows()"
+        [pageSize]="pageSize()"
+        [lazy]="lazy()"
+        [totalRecords]="totalRecords()"
+        [interactiveRows]="interactiveRows()"
+        [selectionMode]="selectionMode()"
+        [showSelectionColumn]="showSelectionColumn()"
+        [dataKey]="dataKey()"
+        [(selection)]="selection"
+        [showTotal]="true"
+        (gogSortChange)="sortEvents.push($event)"
+        (gogPageChange)="pageEvents.push($event)"
+        (gogRowClick)="rowClicks.push($event)"
+      >
+        <gog-column field="id" header="ID" [sortable]="true" />
+        <gog-column field="name" header="Name" [sortable]="true" />
+      </gog-table>
+    `,
+  })
+  class Host {
+    readonly rows = signal<Person[]>(PAGE_1);
+    readonly pageSize = signal(0);
+    readonly lazy = signal(false);
+    readonly totalRecords = signal<number | null>(null);
+    readonly interactiveRows = signal(false);
+    readonly selectionMode = signal<GogTableSelectionMode>('none');
+    readonly showSelectionColumn = signal(true);
+    readonly dataKey = signal('');
+    readonly selection = signal<Person[]>([]);
+
+    readonly sortEvents: GogTableSortEvent[] = [];
+    readonly pageEvents: number[] = [];
+    readonly rowClicks: GogTableRowClickEvent<Person>[] = [];
+  }
+
+  let fixture: ComponentFixture<Host>;
+  let host: Host;
+
+  const rows = () => fixture.nativeElement.querySelectorAll('tbody tr.gog-table__row');
+  const headers = () => fixture.nativeElement.querySelectorAll('th.gog-table__th');
+  /**
+   * By label, not by index: the row-number and selection columns shift the positions around, and
+   * an index here silently starts clicking the wrong header the moment either is toggled.
+   */
+  const header = (label: string) =>
+    [...headers()].find((h) => (h as HTMLElement).textContent?.trim().startsWith(label)) as
+      HTMLElement | undefined;
+  const settle = async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [Host] }).compileComponents();
+    fixture = TestBed.createComponent(Host);
+    host = fixture.componentInstance;
+    await settle();
+  });
+
+  describe('gogSortChange', () => {
+    it('emits the asc → desc → cleared cycle', async () => {
+      const idHeader = header('ID')!;
+
+      idHeader.click();
+      await settle();
+      idHeader.click();
+      await settle();
+      idHeader.click();
+      await settle();
+
+      expect(host.sortEvents).toEqual([
+        { field: 'id', direction: 'asc' },
+        { field: 'id', direction: 'desc' },
+        { field: '', direction: null },
+      ]);
+    });
+
+    it('does not emit for a non-sortable column', async () => {
+      // Both columns here are sortable; assert the guard by clicking the row-number header,
+      // which is not a column at all.
+      const numHeader = fixture.nativeElement.querySelector('.gog-table__th--num') as HTMLElement;
+      numHeader?.click();
+      await settle();
+
+      expect(host.sortEvents).toEqual([]);
+    });
+  });
+
+  describe('gogPageChange', () => {
+    beforeEach(async () => {
+      host.rows.set([...PAGE_1, { id: 3, name: 'Charlie' }, { id: 4, name: 'Delta' }]);
+      host.pageSize.set(2);
+      await settle();
+    });
+
+    it('does not fire on the initial render', () => {
+      expect(host.pageEvents).toEqual([]);
+    });
+
+    it('fires with the new 1-based page when the paginator moves', async () => {
+      const next = fixture.nativeElement.querySelector(
+        'gog-paginator button[aria-label="Next page"]',
+      ) as HTMLButtonElement;
+      next.click();
+      await settle();
+
+      expect(host.pageEvents).toEqual([2]);
+    });
+
+    it('stays silent for the page reset that a new sort causes', async () => {
+      const next = fixture.nativeElement.querySelector(
+        'gog-paginator button[aria-label="Next page"]',
+      ) as HTMLButtonElement;
+      next.click();
+      await settle();
+      expect(host.pageEvents).toEqual([2]);
+
+      // Sorting resets to page 1. That reset belongs to the sort — emitting it as a page change
+      // too would make a lazy consumer fetch twice for one user action.
+      header('ID')!.click();
+      await settle();
+
+      expect(host.sortEvents.length).toBe(1);
+      expect(host.pageEvents).toEqual([2]);
+    });
+  });
+
+  describe('gogRowClick', () => {
+    it('emits the row, its index on the page, and the original event', async () => {
+      (rows()[1] as HTMLElement).click();
+      await settle();
+
+      expect(host.rowClicks.length).toBe(1);
+      expect(host.rowClicks[0].row).toEqual({ id: 2, name: 'Bravo' });
+      expect(host.rowClicks[0].index).toBe(1);
+      expect(host.rowClicks[0].originalEvent).toBeInstanceOf(MouseEvent);
+    });
+
+    it('leaves rows out of the tab order unless interactiveRows is on', async () => {
+      expect((rows()[0] as HTMLElement).getAttribute('tabindex')).toBeNull();
+
+      host.interactiveRows.set(true);
+      await settle();
+
+      expect((rows()[0] as HTMLElement).getAttribute('tabindex')).toBe('0');
+    });
+
+    it('activates on Enter and Space only when interactiveRows is on', async () => {
+      const row = rows()[0] as HTMLElement;
+
+      row.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      await settle();
+      expect(host.rowClicks).toEqual([]);
+
+      host.interactiveRows.set(true);
+      await settle();
+
+      row.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      row.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+      await settle();
+
+      expect(host.rowClicks.length).toBe(2);
+      expect(host.rowClicks[0].originalEvent).toBeInstanceOf(KeyboardEvent);
+    });
+  });
+
+  describe('lazy mode', () => {
+    beforeEach(async () => {
+      host.lazy.set(true);
+      host.pageSize.set(2);
+      host.totalRecords.set(10);
+      await settle();
+    });
+
+    it('renders value as given, without slicing it to the page size', async () => {
+      host.rows.set([...PAGE_1, { id: 3, name: 'Charlie' }]);
+      await settle();
+
+      // Eager mode would show 2 of 3 here; lazy trusts the server's page.
+      expect(rows().length).toBe(3);
+    });
+
+    it('never re-sorts the page it was handed', async () => {
+      host.rows.set([
+        { id: 9, name: 'Zulu' },
+        { id: 1, name: 'Alpha' },
+      ]);
+      await settle();
+
+      header('ID')!.click();
+      await settle();
+
+      const cells = [...fixture.nativeElement.querySelectorAll('tbody tr td:nth-child(2)')].map(
+        (c) => (c as HTMLElement).textContent?.trim(),
+      );
+      expect(cells).toEqual(['9', '1']);
+      expect(host.sortEvents).toEqual([{ field: 'id', direction: 'asc' }]);
+    });
+
+    it('drives the paginator from totalRecords, not from value.length', () => {
+      // 10 records at 2 per page = 5 pages, from a value holding only 2 rows.
+      const pageButtons = [...fixture.nativeElement.querySelectorAll('gog-paginator button')]
+        .map((b) => (b as HTMLElement).textContent?.trim())
+        .filter((t) => t && /^\d+$/.test(t));
+      expect(pageButtons).toContain('5');
+    });
+
+    it('reports totalRecords in the total label', () => {
+      const total = fixture.nativeElement.querySelector('.gog-table__total') as HTMLElement;
+      expect(total.textContent).toContain('10');
+    });
+
+    it('numbers rows against the current page', async () => {
+      const next = fixture.nativeElement.querySelector(
+        'gog-paginator button[aria-label="Next page"]',
+      ) as HTMLButtonElement;
+      next.click();
+      await settle();
+
+      const numbers = [...fixture.nativeElement.querySelectorAll('.gog-table__td--num')].map((c) =>
+        (c as HTMLElement).textContent?.trim(),
+      );
+      expect(numbers).toEqual(['3', '4']);
+    });
+
+    it('hides pagination when totalRecords is missing', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      host.totalRecords.set(null);
+      await settle();
+
+      expect(fixture.nativeElement.querySelector('gog-paginator')).toBeNull();
+      expect(warn).toHaveBeenCalled();
+      warn.mockRestore();
+    });
+  });
+
+  describe('selection', () => {
+    beforeEach(async () => {
+      host.selectionMode.set('multiple');
+      host.dataKey.set('id');
+      await settle();
+    });
+
+    it('adds a checkbox column, and none when selectionMode is none', async () => {
+      expect(fixture.nativeElement.querySelectorAll('.gog-table__td--select').length).toBe(2);
+
+      host.selectionMode.set('none');
+      await settle();
+      expect(fixture.nativeElement.querySelector('.gog-table__td--select')).toBeNull();
+    });
+
+    it('selects and deselects a row through its checkbox', async () => {
+      const box = fixture.nativeElement.querySelector(
+        '.gog-table__td--select input',
+      ) as HTMLInputElement;
+
+      box.click();
+      await settle();
+      expect(host.selection()).toEqual([{ id: 1, name: 'Alpha' }]);
+
+      box.click();
+      await settle();
+      expect(host.selection()).toEqual([]);
+    });
+
+    it('keeps at most one row in single mode', async () => {
+      host.selectionMode.set('single');
+      await settle();
+
+      const boxes = fixture.nativeElement.querySelectorAll('.gog-table__td--select input');
+      (boxes[0] as HTMLInputElement).click();
+      await settle();
+      (boxes[1] as HTMLInputElement).click();
+      await settle();
+
+      expect(host.selection()).toEqual([{ id: 2, name: 'Bravo' }]);
+    });
+
+    it('offers select-all only in multiple mode', async () => {
+      expect(fixture.nativeElement.querySelector('.gog-table__th--select input')).toBeTruthy();
+
+      host.selectionMode.set('single');
+      await settle();
+      expect(fixture.nativeElement.querySelector('.gog-table__th--select input')).toBeNull();
+    });
+
+    it('select-all covers the current page and leaves other pages alone', async () => {
+      host.rows.set([...PAGE_1, { id: 3, name: 'Charlie' }, { id: 4, name: 'Delta' }]);
+      host.pageSize.set(2);
+      host.selection.set([{ id: 4, name: 'Delta' }]);
+      await settle();
+
+      const all = fixture.nativeElement.querySelector(
+        '.gog-table__th--select input',
+      ) as HTMLInputElement;
+      all.click();
+      await settle();
+
+      // Delta is on page 2 and must survive; page 1's two rows join it.
+      expect(
+        host
+          .selection()
+          .map((r) => r.id)
+          .sort(),
+      ).toEqual([1, 2, 4]);
+    });
+
+    it('matches rows by dataKey, so a refetch of equal data keeps the selection', async () => {
+      const box = fixture.nativeElement.querySelector(
+        '.gog-table__td--select input',
+      ) as HTMLInputElement;
+      box.click();
+      await settle();
+
+      // New object identities, same ids — what a server refetch produces.
+      host.rows.set([
+        { id: 1, name: 'Alpha' },
+        { id: 2, name: 'Bravo' },
+      ]);
+      await settle();
+
+      expect(
+        (fixture.nativeElement.querySelector('.gog-table__td--select input') as HTMLInputElement)
+          .checked,
+      ).toBe(true);
+    });
+
+    it('marks selected rows for assistive tech and styling', async () => {
+      const box = fixture.nativeElement.querySelector(
+        '.gog-table__td--select input',
+      ) as HTMLInputElement;
+      box.click();
+      await settle();
+
+      const row = rows()[0] as HTMLElement;
+      expect(row.getAttribute('aria-selected')).toBe('true');
+      expect(row.classList.contains('gog-table__row--selected')).toBe(true);
+    });
+
+    it('does not let ticking the checkbox count as a row click', async () => {
+      host.interactiveRows.set(true);
+      await settle();
+
+      (
+        fixture.nativeElement.querySelector('.gog-table__td--select input') as HTMLInputElement
+      ).click();
+      await settle();
+
+      expect(host.selection().length).toBe(1);
+      expect(host.rowClicks).toEqual([]);
+    });
+
+    it('can hide the checkbox column while keeping selection on', async () => {
+      host.showSelectionColumn.set(false);
+      await settle();
+
+      expect(fixture.nativeElement.querySelector('.gog-table__td--select')).toBeNull();
+      expect(fixture.nativeElement.querySelectorAll('tbody tr.gog-table__row').length).toBe(2);
+    });
   });
 });

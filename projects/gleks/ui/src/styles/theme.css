@@ -1417,11 +1417,15 @@
   --gog-table-border-width: 2px;
   --gog-table-border-style: solid;
   --gog-table-row-border-width: 1px;
+  /* The selection column is sized to its checkbox and never grows with content. */
+  --gog-table-select-col-width: 44px;
   --gog-table-surface: var(--gog-surface-color);
   --gog-table-text-color: var(--gog-text-color);
   --gog-table-accent-color: var(--gog-accent-color);
   --gog-table-accent-bright: var(--gog-accent-bright);
   --gog-table-hover-bg: var(--gog-accent-pale);
+  /* Selected rows keep this tint through hover, so hovering one never reads as clearing it. */
+  --gog-table-selected-bg: var(--gog-accent-pale);
   --gog-table-muted-color: var(--gog-muted-text-color);
   --gog-table-focus-ring: var(--gog-accent-color);
   --gog-table-focus-ring-width: var(--gog-focus-ring-width);

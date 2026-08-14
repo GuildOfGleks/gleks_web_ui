@@ -161,6 +161,23 @@ runtime dependencies" phrasing, wherever it appears, is now wrong.
   wherever the lab documents the registry — it is the one part a consumer can get wrong in a way
   that matters.
 
+### 3.3 `gog-table` — the page needs a second half
+
+The table doc page currently describes a display-only grid, which it no longer is. Needs:
+
+- **Outputs** — `gogSortChange`, `gogPageChange`, `gogRowClick`, with the two suppression rules
+  spelled out (`gogPageChange` is silent on first render and on the sort's page reset). Anything
+  on the page saying the table has no outputs is now wrong.
+- **`lazy` + `totalRecords`** — probably its own section with a worked "server" example;
+  `ui-showcase`'s table page has one (a fake 137-row endpoint) to adapt.
+- **Selection** — `selectionMode`, `[(selection)]` always being `T[]`, `dataKey`,
+  `showSelectionColumn`, and the two rules worth stating outright: set `dataKey` or a refetch
+  drops the selection, and select-all covers the current page only.
+- **`interactiveRows`** — and why `gogRowClick` alone is mouse-only.
+- The four new `labels` keys (`total`, `tablePagination`, `selectRow`, `selectAllRows`) in the
+  config table, and the two new tokens (`--gog-table-selected-bg`,
+  `--gog-table-select-col-width`) wherever the lab lists table tokens.
+
 ---
 
 ## Checking your work

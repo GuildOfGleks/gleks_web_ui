@@ -213,7 +213,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `textarea`     | `resize`                                                           | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                              |
 | `toast`        | `position`, `duration`                                             | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                              |
 | `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme` | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                 |
-| `labels`       | every fixed string the library renders — see below                 | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                                    |
+| `labels`       | every fixed string the library renders — see below                 | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                                    |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
 
@@ -240,6 +240,10 @@ provideGogConfig({
     previousPage: 'Предыдущая страница',
     nextPage: 'Следующая страница',
     openCalendar: 'Открыть календарь',
+    total: 'Всего', // gog-table's row-count label
+    tablePagination: 'Навигация по таблице',
+    selectRow: 'Выбрать строку',
+    selectAllRows: 'Выбрать все строки на странице',
     today: 'Сегодня',
     thisMonth: 'Текущий месяц',
     previousMonth: 'Предыдущий месяц',
@@ -1045,6 +1049,18 @@ Model: `page: number` (1-based, self-clamps to `totalPages`).
 | `showColumnBorders`           | `boolean`                     | `false`                           |
 | `stickyHeader`                | `boolean`                     | `false`                           |
 | `size`                        | `GogSize`                     | `'lg'` (row density — not `'md'`) |
+| `lazy`                        | `boolean`                     | `false` — see below               |
+| `totalRecords`                | `number \| null`              | `null` — `lazy` only              |
+| `selectionMode`               | `GogTableSelectionMode`       | `'none'`                          |
+| `selection`                   | `model<T[]>`                  | `[]` — two-way bindable           |
+| `dataKey`                     | `string`                      | `''` — row identity field         |
+| `showSelectionColumn`         | `boolean`                     | `true` (once selection is on)     |
+| `interactiveRows`             | `boolean`                     | `false`                           |
+
+Outputs: `gogSortChange: GogTableSortEvent` (`{ field, direction }`, `{ field: '', direction:
+null }` when the third click clears it), `gogPageChange: number` (1-based; **does not fire** on
+first render, nor for the page reset a new sort causes — that reset belongs to the sort),
+`gogRowClick: GogTableRowClickEvent<T>` (`{ row, index, originalEvent }`).
 
 Columns are declared as **projected `gog-column` children**, not an input array:
 
@@ -1059,6 +1075,55 @@ Columns are declared as **projected `gog-column` children**, not an input array:
   </gog-column>
 </gog-table>
 ```
+
+##### Server-driven tables — `lazy`
+
+By default the table owns the whole data set: it sorts `value` and slices the page itself. With
+`[lazy]="true"` it does neither — `value` **is** the current page, already sorted, and the table
+renders it untouched. Supply `totalRecords` (without it the table cannot know how many pages
+exist, so pagination stays hidden and it warns in dev), then refetch from the two outputs:
+
+```html
+<gog-table
+  [value]="page()"
+  [lazy]="true"
+  [totalRecords]="total()"
+  [pageSize]="20"
+  [loading]="loading()"
+  dataKey="id"
+  (gogSortChange)="sort.set($event); reload()"
+  (gogPageChange)="pageNumber.set($event); reload()"
+>
+```
+
+Row numbers still count from the current page (`(page - 1) * pageSize + i + 1`), and `showTotal`
+reports `totalRecords` rather than `value.length`. **Do not** sort or slice `value` yourself in
+addition — that is what the flag turns off.
+
+##### Selection
+
+`selectionMode` turns it on; `[(selection)]` is always a `T[]`, including in `'single'` mode
+where it holds zero or one row — one shape rather than a union to narrow on every read.
+
+```html
+<gog-table [value]="rows" selectionMode="multiple" [(selection)]="selected" dataKey="id">
+```
+
+- **Set `dataKey`.** Without it rows are matched by object identity, so any refetch that produces
+  new objects silently drops the selection. It is also the `@for` track key, which is what lets
+  the DOM survive a refetch instead of being rebuilt.
+- The checkbox column renders automatically (`showSelectionColumn` to turn it off, e.g. for a
+  table that selects by row click — pair that with `interactiveRows`).
+- The header select-all appears only in `'multiple'` mode and covers **the current page**, never
+  the whole data set: in `lazy` mode the table has never seen the other pages, and a control that
+  behaved differently between the two modes would be worse than either.
+
+##### Clickable rows
+
+`gogRowClick` fires on a click regardless, but a `<tr>` is not focusable, so on its own that is a
+mouse-only affordance. `interactiveRows` makes rows focusable and styles them as clickable, and
+Enter/Space then activate the focused row. If the action is really "open this one thing", a link
+or button inside a cell is better than a whole-row target.
 
 `gog-column` inputs: `field` (required, dot-paths ok), `header`, `sortable` (default `false`),
 `width`/`minWidth`/`maxWidth`, `comparator` (custom `(a, b) => number`, defaults to a
@@ -1197,6 +1262,9 @@ Shared enum-like types (`import type { ... } from '@guildofgleks/ui'`):
 | `GogTextareaResize`           | `'vertical' \| 'horizontal' \| 'both' \| 'none'`                                              |
 | `GogInputType`                | `'text' \| 'password' \| 'email' \| 'number' \| 'search' \| 'tel' \| 'url' \| 'date' \| 'time' \| 'datetime-local'` |
 | `GogInputMode`                | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'`         |
+| `GogTableSelectionMode`       | `'none' \| 'single' \| 'multiple'`                                                            |
+| `GogTableSortEvent`           | `{ field: string; direction: SortDirection }`                                                 |
+| `GogTableRowClickEvent<T>`    | `{ row: T; index: number; originalEvent: MouseEvent \| KeyboardEvent }`                       |
 | `GogErrorDisplay`             | `'auto' \| 'manual'`                                                                          |
 | `GogDropdownDirection`        | `'auto' \| 'up' \| 'down'`                                                                    |
 | `GogTooltipSide`              | `'top' \| 'bottom' \| 'left' \| 'right'` (resolved form of `GogTooltipPosition`, no `'auto'`) |

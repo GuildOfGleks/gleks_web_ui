@@ -3,17 +3,24 @@ import {
   Component,
   computed,
   contentChildren,
+  effect,
+  inject,
   input,
+  isDevMode,
   linkedSignal,
+  model,
+  output,
   signal,
   TemplateRef,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { CheckboxComponent } from '../checkbox/checkbox.component';
 import { IconComponent } from '../icon/icon.component';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
+import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { GogSize } from '../../shared/types';
 import { getByPath } from '../../shared/option-accessor';
 import {
@@ -26,14 +33,53 @@ import { TemplateDirective } from './template.directive';
 
 export type SortDirection = 'asc' | 'desc' | null;
 
-interface SortState {
+/**
+ * The table's sort state. `field` is `''` and `direction` `null` when nothing is sorted — the
+ * third state of the header's asc → desc → none cycle.
+ */
+export interface GogTableSortEvent {
   field: string;
   direction: SortDirection;
 }
 
+/** Kept as the internal alias it has always been; `GogTableSortEvent` is the exported shape. */
+type SortState = GogTableSortEvent;
+
+export type GogTableSelectionMode = 'none' | 'single' | 'multiple';
+
+/** Built-in defaults, used when `GOG_CONFIG.labels` doesn't supply one. */
+const DEFAULT_LABELS = {
+  total: 'Total',
+  pagination: 'Table pagination',
+  selectRow: 'Select row',
+  selectAllRows: 'Select all rows on this page',
+} as const;
+
+/** Emitted by `gogRowClick`. */
+export interface GogTableRowClickEvent<T> {
+  row: T;
+  /**
+   * Index within the currently rendered page, not the whole data set — the same convention as
+   * `GogColumnBodyContext.index`. `gog-table` cannot know the absolute index in `lazy` mode.
+   */
+  index: number;
+  /**
+   * The click (or the `keydown` for a keyboard activation), so a handler can tell a click on the
+   * row from one on a button inside a cell — `event.target` is the element actually hit.
+   */
+  originalEvent: MouseEvent | KeyboardEvent;
+}
+
 @Component({
   selector: 'gog-table',
-  imports: [SpinnerComponent, PaginatorComponent, NgTemplateOutlet, IconComponent, ScrollComponent],
+  imports: [
+    SpinnerComponent,
+    PaginatorComponent,
+    NgTemplateOutlet,
+    IconComponent,
+    ScrollComponent,
+    CheckboxComponent,
+  ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,6 +105,73 @@ export class TableComponent<T extends object> {
   readonly fullWidth = input(true);
   /** 0 = no pagination */
   readonly pageSize = input<number>(0);
+  /**
+   * Hands sorting and paging to the server.
+   *
+   * Off (the default), the table owns the whole data set: it sorts and slices `value` itself, and
+   * `totalPages` comes from `value.length`. On, `value` is **the current page, already sorted** —
+   * the table renders it as given and never re-orders or re-slices it. Supply `totalRecords` so
+   * the paginator knows how many pages exist, and refetch in response to `gogSortChange` /
+   * `gogPageChange`.
+   *
+   * ```html
+   * <gog-table
+   *   [value]="page()"
+   *   [lazy]="true"
+   *   [totalRecords]="total()"
+   *   [pageSize]="20"
+   *   [loading]="loading()"
+   *   (gogSortChange)="sort.set($event); reload()"
+   *   (gogPageChange)="page$.set($event); reload()"
+   * />
+   * ```
+   */
+  readonly lazy = input(false);
+  /**
+   * How many rows exist on the server, across all pages. `lazy` only — without it the table
+   * cannot know how many pages to offer, and pagination is disabled. Ignored when `lazy` is off,
+   * where `value.length` is the truth.
+   */
+  readonly totalRecords = input<number | null>(null);
+  /**
+   * Makes rows focusable and styles them as clickable, for a table whose rows navigate or open
+   * something. `gogRowClick` fires on a plain click regardless; this is what makes that
+   * affordance **discoverable and reachable by keyboard** (Enter and Space activate the focused
+   * row), which a bare `(gogRowClick)` on a `<tr>` is not.
+   *
+   * If the row's action is better expressed as a control — a link to a detail page, a delete
+   * button — put that in a cell instead. This is for the whole-row-is-the-target case.
+   */
+  readonly interactiveRows = input(false);
+  /**
+   * Turns on row selection. `'single'` keeps at most one row selected, `'multiple'` any number.
+   *
+   * The selection itself is always a `T[]` (`[(selection)]`), including in `'single'` mode where
+   * it holds zero or one row — one shape rather than a `T | T[] | null` union the consumer has to
+   * narrow on every read.
+   */
+  readonly selectionMode = input<GogTableSelectionMode>('none');
+  /**
+   * Two-way bindable selected rows: `[(selection)]="selected"`.
+   *
+   * Rows are matched by `dataKey` when one is set, and by object identity otherwise — so with no
+   * `dataKey`, a refetch that produces new objects drops the selection. In `lazy` mode that is
+   * almost always the wrong behaviour: set `dataKey`.
+   */
+  readonly selection = model<T[]>([]);
+  /**
+   * Field name (or dot-path) uniquely identifying a row — `'id'` in most data sets.
+   *
+   * Used for selection identity and, when set, as the `@for` track key, which is what lets the
+   * DOM survive a re-fetch of the same page instead of being torn down and rebuilt.
+   */
+  readonly dataKey = input('');
+  /**
+   * Whether the checkbox column renders. On by default once `selectionMode` is set; turn it off
+   * for a table that selects by clicking the row itself, and pair it with `interactiveRows` so
+   * that stays reachable by keyboard.
+   */
+  readonly showSelectionColumn = input(true);
   readonly showRowNumbers = input<boolean>(true);
   readonly showTotal = input<boolean>(false);
   readonly emptyPlaceholder = input<string>('-');
@@ -75,12 +188,33 @@ export class TableComponent<T extends object> {
   /** Row density: lg (default) / md (compact) / sm (dense) */
   readonly size = input<GogSize>('lg');
 
+  /**
+   * Fires when a header cell changes the sort — including the third click that clears it, which
+   * emits `{ field: '', direction: null }`. In `lazy` mode this is the refetch signal; the table
+   * has already reset to page 1 by the time it fires.
+   */
+  readonly gogSortChange = output<GogTableSortEvent>();
+  /**
+   * Fires when the page changes, with the new 1-based page. Only ever fires for a *user* action
+   * or a clamp — not for the initial render.
+   */
+  readonly gogPageChange = output<number>();
+  /** Fires when a row is clicked, or activated with Enter/Space when `interactiveRows` is on. */
+  readonly gogRowClick = output<GogTableRowClickEvent<T>>();
+
   readonly columns = contentChildren(GogColumn);
   readonly templates = contentChildren(TemplateDirective);
 
   readonly sortState = signal<SortState>({ field: '', direction: null });
 
+  /**
+   * In `lazy` mode `value` is the server's answer — already sorted, already the right page — so
+   * both this and `visibleRows` become pass-throughs. Re-sorting it locally would reorder one
+   * page against a global ordering, which looks like corruption rather than a bug.
+   */
   readonly sortedData = computed(() => {
+    if (this.lazy()) return this.value();
+
     const { field, direction } = this.sortState();
     const rows = [...this.value()];
     if (!field || !direction) return rows;
@@ -101,10 +235,18 @@ export class TableComponent<T extends object> {
     });
   });
 
+  /**
+   * How many rows the paginator is dividing. `value.length` normally; `totalRecords` in `lazy`
+   * mode, where `value` is only the current page. Also what `showTotal` reports.
+   */
+  readonly rowCount = computed(() =>
+    this.lazy() ? Math.max(0, this.totalRecords() ?? 0) : this.value().length,
+  );
+
   readonly totalPages = computed(() => {
     const size = this.pageSize();
     if (!size) return 1;
-    return Math.max(1, Math.ceil(this.sortedData().length / size));
+    return Math.max(1, Math.ceil(this.rowCount() / size));
   });
 
   /**
@@ -122,9 +264,10 @@ export class TableComponent<T extends object> {
     },
   });
 
+  /** In `lazy` mode the server already sliced the page — see `sortedData`. */
   readonly visibleRows = computed(() => {
     const size = this.pageSize();
-    if (!size) return this.sortedData();
+    if (this.lazy() || !size) return this.sortedData();
     const page = this.currentPage();
     const start = (page - 1) * size;
     return this.sortedData().slice(start, start + size);
@@ -134,7 +277,115 @@ export class TableComponent<T extends object> {
     () => !this.loading() && this.pageSize() > 0 && this.totalPages() > 1,
   );
 
-  readonly emptyColspan = computed(() => this.columns().length + (this.showRowNumbers() ? 1 : 0));
+  private readonly globalConfig = inject(GOG_CONFIG);
+
+  /** `GOG_CONFIG.labels` → the built-in English defaults. No per-instance inputs: these name
+   * table chrome, and an app that relabels them does so once. */
+  protected readonly resolvedLabels = computed(() => {
+    const configured = this.globalConfig.labels ?? {};
+    return {
+      total: resolveConfigured(undefined, configured.total, DEFAULT_LABELS.total),
+      pagination: resolveConfigured(
+        undefined,
+        configured.tablePagination,
+        DEFAULT_LABELS.pagination,
+      ),
+      selectRow: resolveConfigured(undefined, configured.selectRow, DEFAULT_LABELS.selectRow),
+      selectAllRows: resolveConfigured(
+        undefined,
+        configured.selectAllRows,
+        DEFAULT_LABELS.selectAllRows,
+      ),
+    };
+  });
+
+  protected readonly hasSelection = computed(() => this.selectionMode() !== 'none');
+  protected readonly hasSelectionColumn = computed(
+    () => this.hasSelection() && this.showSelectionColumn(),
+  );
+
+  readonly emptyColspan = computed(
+    () =>
+      this.columns().length + (this.showRowNumbers() ? 1 : 0) + (this.hasSelectionColumn() ? 1 : 0),
+  );
+
+  /**
+   * Identity for selection and `@for` tracking. `dataKey`'s value when set, the row object
+   * otherwise — the object works for a static data set and breaks the moment rows are re-fetched,
+   * which is exactly what `dataKey` is for.
+   */
+  protected rowKey(row: T): unknown {
+    const key = this.dataKey();
+    return key ? getByPath(row, key) : row;
+  }
+
+  protected isSelected(row: T): boolean {
+    const key = this.rowKey(row);
+    return this.selection().some((selected) => this.rowKey(selected) === key);
+  }
+
+  /** All rows on the current page are selected — drives the header checkbox. */
+  protected readonly allPageRowsSelected = computed(() => {
+    const rows = this.visibleRows();
+    return rows.length > 0 && rows.every((row) => this.isSelected(row));
+  });
+
+  /** Some but not all — the header checkbox's indeterminate state. */
+  protected readonly somePageRowsSelected = computed(() => {
+    const rows = this.visibleRows();
+    return rows.some((row) => this.isSelected(row)) && !this.allPageRowsSelected();
+  });
+
+  protected toggleRowSelection(row: T, selected: boolean): void {
+    if (this.selectionMode() === 'single') {
+      this.selection.set(selected ? [row] : []);
+      return;
+    }
+
+    const key = this.rowKey(row);
+    const without = this.selection().filter((entry) => this.rowKey(entry) !== key);
+    this.selection.set(selected ? [...without, row] : without);
+  }
+
+  /**
+   * Header checkbox: selects or clears **the current page**, not the whole data set. Anything
+   * else would be a lie in `lazy` mode, where the table has never seen the other pages — and
+   * inconsistent between the two modes, which is worse than either behaviour alone.
+   */
+  protected toggleAllOnPage(selected: boolean): void {
+    const rows = this.visibleRows();
+    const pageKeys = new Set(rows.map((row) => this.rowKey(row)));
+    const offPage = this.selection().filter((entry) => !pageKeys.has(this.rowKey(entry)));
+
+    this.selection.set(selected ? [...offPage, ...rows] : offPage);
+  }
+
+  constructor() {
+    /*
+     * `gogPageChange` for user navigation and clamps, but *not* for the reset that follows a new
+     * sort: `currentPage` snapping back to 1 there is part of the sort, and a lazy consumer
+     * refetching from both events would fire two requests for one user action. Detected by the
+     * sort having changed in the same computation, and skipped.
+     */
+    let previous: { page: number; sort: SortState } | null = null;
+    effect(() => {
+      const page = this.currentPage();
+      const sort = this.sortState();
+      if (previous && previous.page !== page && previous.sort === sort) {
+        this.gogPageChange.emit(page);
+      }
+      previous = { page, sort };
+    });
+
+    effect(() => {
+      if (!isDevMode() || !this.lazy() || this.pageSize() <= 0) return;
+      if (this.totalRecords() === null) {
+        console.warn(
+          "[gog-table] `lazy` with a `pageSize` but no `totalRecords`: the table cannot know how many pages exist, so pagination stays hidden. Pass the server's total row count.",
+        );
+      }
+    });
+  }
 
   /**
    * A `gogColumnBody` template declared inside the column wins; the string-keyed
@@ -166,6 +417,10 @@ export class TableComponent<T extends object> {
     return { $implicit: col.header(), field: col.field() };
   }
 
+  /**
+   * Cycles the clicked column asc → desc → unsorted, and emits the result. The emit is last, so
+   * a `lazy` consumer refetching from it already sees `currentPage` reset to 1.
+   */
   toggleSort(col: GogColumn): void {
     if (!col.sortable()) return;
     const cur = this.sortState();
@@ -177,6 +432,20 @@ export class TableComponent<T extends object> {
     } else {
       this.sortState.set({ field: '', direction: null });
     }
+    this.gogSortChange.emit(this.sortState());
+  }
+
+  /** Click, or Enter/Space on a focused row when `interactiveRows` is on. */
+  protected emitRowClick(row: T, index: number, originalEvent: MouseEvent | KeyboardEvent): void {
+    this.gogRowClick.emit({ row, index, originalEvent });
+  }
+
+  /** Enter and Space activate the focused row; Space must not also scroll the page. */
+  protected onRowKeydown(row: T, index: number, event: KeyboardEvent): void {
+    if (!this.interactiveRows()) return;
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    this.emitRowClick(row, index, event);
   }
 
   getSortDirection(field: string): SortDirection {

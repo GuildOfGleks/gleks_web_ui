@@ -9,6 +9,9 @@
       [style.width]="fullWidth() ? '100%' : 'fit-content'"
     >
       <colgroup>
+        @if (hasSelectionColumn()) {
+          <col class="gog-table__col--select" />
+        }
         @if (showRowNumbers()) {
           <col class="gog-table__col--num" />
         }
@@ -22,6 +25,23 @@
       </colgroup>
       <thead>
         <tr>
+          @if (hasSelectionColumn()) {
+            <th class="gog-table__th gog-table__th--select" scope="col">
+              <!--
+                Only `multiple` gets a select-all: in `single` mode there is nothing to select
+                all of, and a checkbox that can only ever check one row is a lie.
+              -->
+              @if (selectionMode() === 'multiple') {
+                <gog-checkbox
+                  [checked]="allPageRowsSelected()"
+                  [indeterminate]="somePageRowsSelected()"
+                  [disabled]="loading() || visibleRows().length === 0"
+                  [ariaLabel]="resolvedLabels().selectAllRows"
+                  (checkedChange)="toggleAllOnPage($event)"
+                />
+              }
+            </th>
+          }
           @if (showRowNumbers()) {
             <th class="gog-table__th gog-table__th--num" scope="col">#</th>
           }
@@ -71,8 +91,31 @@
             <td class="gog-table__empty" [attr.colspan]="emptyColspan()">—</td>
           </tr>
         } @else {
-          @for (row of visibleRows(); track $index; let i = $index) {
-            <tr class="gog-table__row">
+          @for (row of visibleRows(); track rowKey(row); let i = $index) {
+            <tr
+              class="gog-table__row"
+              [class.gog-table__row--interactive]="interactiveRows()"
+              [class.gog-table__row--selected]="isSelected(row)"
+              [attr.tabindex]="interactiveRows() ? 0 : null"
+              [attr.aria-selected]="hasSelection() ? isSelected(row) : null"
+              (click)="emitRowClick(row, i, $event)"
+              (keydown)="onRowKeydown(row, i, $event)"
+            >
+              @if (hasSelectionColumn()) {
+                <td class="gog-table__td gog-table__td--select">
+                  <!--
+                    `$event.stopPropagation()` so ticking the box does not also count as a row
+                    click: with `interactiveRows` those are two different intents, and firing both
+                    from one gesture is how a "select" ends up navigating away.
+                  -->
+                  <gog-checkbox
+                    [checked]="isSelected(row)"
+                    [ariaLabel]="resolvedLabels().selectRow"
+                    (click)="$event.stopPropagation()"
+                    (checkedChange)="toggleRowSelection(row, $event)"
+                  />
+                </td>
+              }
               @if (showRowNumbers()) {
                 <td class="gog-table__td gog-table__td--num">{{ globalRowIndex(i) }}</td>
               }
@@ -96,7 +139,7 @@
     <div class="gog-table__footer">
       @if (showTotal()) {
         <span class="gog-table__total" [style.grid-area]="totalGridArea()">
-          Total: {{ value().length }}
+          {{ resolvedLabels().total }}: {{ rowCount() }}
         </span>
       }
 
@@ -108,7 +151,7 @@
           [totalPages]="totalPages()"
           rangeMode="ellipsis"
           size="sm"
-          ariaLabel="Table pagination"
+          [ariaLabel]="resolvedLabels().pagination"
         />
       }
     </div>

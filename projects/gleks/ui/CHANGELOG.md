@@ -6,10 +6,45 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.4.0] - planned
 
-A minor rather than a patch: this adds public API. Iteration 5 of the consumer-DX plan
+A minor rather than a patch: this adds public API. Iterations 5 and 6 of the consumer-DX plan
 (`docs/consumer-dx-plan.md`).
 
 ### Added
+
+- **`gog-table`: outputs.** The component had none at all, which is what made it a display-only
+  grid. `gogSortChange` (`{ field, direction }`, including the third click that clears the sort),
+  `gogPageChange` (the new 1-based page), and `gogRowClick`
+  (`{ row, index, originalEvent }`).
+
+  `gogPageChange` deliberately stays quiet in two cases: the initial render, and the reset to
+  page 1 that a new sort causes — that reset is part of the sort, and a consumer refetching from
+  both events would issue two requests for one user action.
+- **`gog-table`: `lazy` — server-driven sorting and paging.** With `[lazy]="true"` the table
+  stops sorting and slicing `value` and renders it exactly as handed over, treating it as the
+  current page; `totalRecords` tells the paginator how many pages exist, and the two outputs are
+  the refetch signals. Row numbering still counts from the current page, and `showTotal` reports
+  `totalRecords` rather than `value.length`. Without `totalRecords` pagination stays hidden and
+  the table warns in dev mode. Until now the table sorted and paged purely in memory, so anything
+  backed by a real endpoint had to be built on something else.
+- **`gog-table`: row selection.** `selectionMode` (`'none' | 'single' | 'multiple'`) plus a
+  two-way `[(selection)]`, always a `T[]` — in `'single'` mode it simply holds zero or one row,
+  which is one shape to read rather than a `T | T[] | null` union to narrow. A checkbox column
+  renders automatically (`showSelectionColumn` turns it off), and the header select-all appears
+  only in `'multiple'` mode.
+
+  **The select-all covers the current page, not the whole data set** — in `lazy` mode the table
+  has never seen the other pages, and a control that meant different things in the two modes
+  would be worse than either behaviour on its own.
+- **`gog-table`: `dataKey`.** The field (or dot-path) identifying a row. Selection matches on it
+  instead of object identity — without it a refetch producing new objects silently drops the
+  selection — and it becomes the `@for` track key, so the rendered DOM survives a refetch of the
+  same page instead of being torn down and rebuilt.
+- **`gog-table`: `interactiveRows`.** Makes rows focusable and styles them as clickable, with
+  Enter and Space activating the focused row. `gogRowClick` fires on a click either way; this is
+  what stops a whole-row target from being mouse-only.
+- **`GOG_CONFIG.labels`: `total`, `tablePagination`, `selectRow`, `selectAllRows`.** The table's
+  own chrome — the row-count label read `Total:` from a hardcoded string, and its paginator was
+  labelled `Table pagination` with no way to change either.
 
 - **`provideGogIcons(...)` — register your own icons by name.** `gog-icon` shipped a closed set
   of 20 glyphs, and the only way to render anything else was a `TemplateRef` per instance,

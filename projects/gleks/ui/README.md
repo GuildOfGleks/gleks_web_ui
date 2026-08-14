@@ -390,6 +390,31 @@ without a lookup table:
 The defaults are `'name'` / `'id'` / `'disabled'`, which is what `GogDropdownOption` describes —
 so code written against that shape keeps working unchanged.
 
+`gog-table` works two ways. By default it owns the data: give it `value` and it sorts and pages
+in memory. With `[lazy]="true"` it hands both to the server — `value` is the current page,
+already sorted, `totalRecords` says how many rows exist in total, and `gogSortChange` /
+`gogPageChange` are the refetch signals. Row selection is `selectionMode` plus a two-way
+`[(selection)]`; set `dataKey` so rows are matched by id rather than object identity, or a
+refetch will drop the selection.
+
+```html
+<gog-table
+  [value]="page()"
+  [lazy]="true"
+  [totalRecords]="total()"
+  [pageSize]="20"
+  [loading]="loading()"
+  selectionMode="multiple"
+  [(selection)]="selected"
+  dataKey="id"
+  (gogSortChange)="sort.set($event); reload()"
+  (gogPageChange)="pageNumber.set($event); reload()"
+>
+  <gog-column field="name" header="Name" [sortable]="true" />
+  <gog-column field="email" header="Email" />
+</gog-table>
+```
+
 `gogTooltip` is a hover/focus tooltip directive, not a component — drop it on any element,
 a `gog-*` component's own host tag or a plain native one
 (`<button gogTooltip="Save changes">`, `<gog-chip [gogTooltip]="hint">`). Content is a

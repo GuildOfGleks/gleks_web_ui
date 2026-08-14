@@ -27,7 +27,7 @@ bumps the version, and never edits `CHANGELOG.md`'s `planned` heading.
 | 3 | Native attribute passthrough on text controls | api | ✅ done |
 | 4 | Packaging correctness + small bugs | fix | ✅ done |
 | 5 | Icon registry | feature | ✅ done |
-| 6 | `gog-table`: outputs + lazy mode | feature | ⬜ todo |
+| 6 | `gog-table`: outputs + lazy mode | feature | ✅ done |
 | 7 | Link-flavoured button | feature | ⬜ todo |
 
 Iterations 1–4 landed together under `CHANGELOG.md`'s `[21.3.2] - planned` heading; `[21.3.1]`
@@ -435,6 +435,40 @@ paginator and scroll with it.
 
 **Done when:** the showcase drives a `gog-table` from a simulated paged/sorted endpoint, and
 the eager path's specs still pass untouched.
+
+### Outcome ✅
+
+All four steps, in the order the plan set. The eager path's 20 existing specs passed **untouched**
+throughout — the lazy branches are `if (this.lazy())` early exits in `sortedData`/`visibleRows`
+rather than a rewrite of the pipeline, so the in-memory behaviour is literally the same code.
+
+- **Outputs.** `gogSortChange`, `gogPageChange`, `gogRowClick`. The one non-obvious decision:
+  `gogPageChange` suppresses the page-1 reset that follows a sort. `currentPage` and `sortState`
+  both change in that computation, so the effect attributes the page move to the sort and stays
+  quiet — otherwise every sort on a lazy table fires two requests. `SortState` was promoted to
+  the exported `GogTableSortEvent`.
+- **Lazy.** `lazy` + `totalRecords`. `rowCount` (new) is the single place that answers "how many
+  rows are we paginating", which is what both `totalPages` and `showTotal` now read — they used
+  `value.length` in two places before. `globalRowIndex` needed no change: it was already computed
+  from `currentPage` and `pageSize`, which is correct in both modes.
+- **Selection.** `selectionMode` + `[(selection)]` as `T[]` in both modes, `dataKey` for identity,
+  `showSelectionColumn` to opt out of the checkbox column. `dataKey` also became the `@for` track
+  key, replacing `track $index` — with lazy refetches, index tracking rebuilds the whole page's
+  DOM on every response.
+- **`gog-paginator` stayed authoritative.** No second pagination implementation for the lazy
+  path: the table only changes what it feeds `totalPages`.
+
+Three things the work forced that the plan did not list: `interactiveRows` (a `<tr>` is not
+focusable, so shipping `gogRowClick` alone would have been a mouse-only feature — the library's
+own a11y bar rules that out), four new `GOG_CONFIG.labels` keys (the footer's `Total:` and the
+paginator's `Table pagination` were hardcoded English), and two tokens
+(`--gog-table-selected-bg`, `--gog-table-select-col-width`).
+
+Verified live against a fake 137-row endpoint on the showcase's table page: 14 pages from a
+`value` holding 10 rows, row numbers 11–13 on page 2, sorting by score asc → `1,1,2,3` and desc →
+`100,100,99,98` with the page reset to 1 and `aria-sort="descending"` on the header, and a
+selection made on page 1 still ticked after navigating away and back — i.e. surviving a refetch
+that produced entirely new objects. 23 new specs; suite at 869.
 
 ---
 
