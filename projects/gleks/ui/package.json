@@ -17,6 +17,16 @@
     "accessible"
   ],
   "license": "Apache-2.0",
+  "author": "Roman Malitskyi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GuildOfGleks/gleks_web_ui.git",
+    "directory": "projects/gleks/ui"
+  },
+  "homepage": "https://github.com/GuildOfGleks/gleks_web_ui/tree/master/projects/gleks/ui#readme",
+  "bugs": {
+    "url": "https://github.com/GuildOfGleks/gleks_web_ui/issues"
+  },
   "peerDependencies": {
     "@angular/common": "^21.2.0",
     "@angular/core": "^21.2.0",

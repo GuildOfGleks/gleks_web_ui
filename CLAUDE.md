@@ -52,15 +52,23 @@ an input, output, slot, type, service method or default edits it in the same cha
 
 ## Current work
 
-Two live plans. Update the status table in whichever one you are working from, as you go.
+One live plan, two finished ones. Update the status table in whichever you are working from, as
+you go.
 
-- `docs/consumer-dx-plan.md` — the **current** plan: the package as a consumer meets it
-  (onboarding, accessibility defaults, native attributes, packaging). Iterations 1–4 are done
-  and logged under `CHANGELOG.md`'s `[21.3.2] - planned`; 5–7 (icon registry, table
-  outputs/lazy mode, link-flavoured button) are open, along with a backlog of what is
-  deliberately excluded.
+- `docs/hardening-21.5.0.md` — the **current** plan: the library measured against itself
+  (coverage tooling, token-prefix consistency, the removals 21.5.0 already owes, RTL, thin specs,
+  `gog-menu`, version metadata for the docs site). All seven iterations are open — **on hold**
+  while the user verifies the already-tagged releases against a private consuming project.
+- `docs/consumer-dx-plan.md` — completed: the package as a consumer meets it (onboarding,
+  accessibility defaults, native attributes, packaging, icon registry, table outputs/lazy/
+  selection, link-flavoured button). Kept for its per-iteration outcomes and its backlog.
 - `docs/refactor-21.3.0.md` — the completed 21.3.0 pre-public cleanup (architecture, token
   contract, API consistency). Kept as the record of why those decisions were made.
+
+`docs/lab-versioning.md` holds the recommendation for how the lab should communicate
+version-to-version change (version badge, a releases page fed by the package's own changelog,
+`since` markers, generated deprecation badges) plus the major-version branch/subdomain approach.
+A recommendation, not a decision — nothing in it is implemented.
 
 `docs/lab-after-publish.md` is the deferred backlog for `gleks-ui-lab`. Because the lab tracks
 the **published** package, library work never updates it in the same session — anything the lab

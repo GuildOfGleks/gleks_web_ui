@@ -6,7 +6,7 @@
 
 The library hasn't reached 1.0 yet, which under [semantic versioning](https://semver.org/)
 means a breaking change can land in a minor release, not just a major one — every one that
-does is called out explicitly in the [Changelog](https://github.com/Balthazariy/gleks_web_ui/blob/master/projects/gleks/ui/CHANGELOG.md),
+does is called out explicitly in the [Changelog](https://github.com/GuildOfGleks/gleks_web_ui/blob/master/projects/gleks/ui/CHANGELOG.md),
 with a migration note. In practice that's been rare: most releases so far have been additive
 (new components, new inputs). Pin an exact version or a `~21.x.x` range if you'd rather opt
 into minors by hand and read the changelog first.
@@ -90,13 +90,13 @@ component doc pages call these out explicitly wherever they apply.
 
 ### I found a bug / want a feature — where do I go?
 
-Open an issue on [GitHub](https://github.com/Balthazariy/gleks_web_ui/issues). Include the
+Open an issue on [GitHub](https://github.com/GuildOfGleks/gleks_web_ui/issues). Include the
 library version, a minimal repro if you can, and — for a visual bug — which theme you were
 on.
 
 ### What license is it under?
 
-[Apache License 2.0](https://github.com/Balthazariy/gleks_web_ui/blob/master/LICENSE). Free
+[Apache License 2.0](https://github.com/GuildOfGleks/gleks_web_ui/blob/master/LICENSE). Free
 to use, modify and ship in commercial projects, with an explicit patent grant from every
 contributor to every user — the thing MIT doesn't spell out.
 
