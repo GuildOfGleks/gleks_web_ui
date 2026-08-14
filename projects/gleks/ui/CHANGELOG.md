@@ -729,7 +729,7 @@ the full set at any time.
   that range per theme), so it's always distinct from the accent-colored fill and legible
   against its own theme's surface.
 
-## [21.2.4] - 2026-08-05
+## [21.2.4] - 05.08.2026
 
 ### Added
 
@@ -826,7 +826,7 @@ the full set at any time.
   scrolling container, e.g. a `gog-scroll` capping its height. Both axes are
   now `visible` unless that specific axis is genuinely scrolling.
 
-## [21.2.3] - 2026-08-03
+## [21.2.3] - 03.08.2026
 
 ### Added
 
@@ -867,7 +867,7 @@ the full set at any time.
   open/closed presentation entirely, including bringing its own animation or
   swapping in a completely different icon.
 
-## [21.2.2] - 2026-07-30
+## [21.2.2] - 30.07.2026
 
 ### Added
 
