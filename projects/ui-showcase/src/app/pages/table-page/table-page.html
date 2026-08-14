@@ -166,6 +166,50 @@
   </article>
 
   <article class="card">
+    <h3>Server-driven (lazy) &amp; selection</h3>
+    <p class="lead">
+      <code>[lazy]="true"</code> hands sorting and paging to the server: the table renders
+      <code>value</code> exactly as given, never re-orders or re-slices it, and asks
+      <code>totalRecords</code> how many pages exist. Sorting a header or moving the paginator fires
+      <code>gogSortChange</code> / <code>gogPageChange</code> — those are the refetch signals. This
+      demo talks to a fake 137-row endpoint with a 350&nbsp;ms delay.
+    </p>
+    <p class="meta">
+      Last request: <code>{{ lastServerQuery() }}</code> · selected:
+      <code>{{ serverSelection().length }}</code>
+    </p>
+
+    <gog-table
+      [value]="serverRows()"
+      [lazy]="true"
+      [totalRecords]="serverTotal()"
+      [pageSize]="serverPageSize"
+      [loading]="serverLoading()"
+      selectionMode="multiple"
+      [(selection)]="serverSelection"
+      dataKey="id"
+      [interactiveRows]="true"
+      [showTotal]="true"
+      size="sm"
+      (gogSortChange)="onServerSort($event)"
+      (gogPageChange)="onServerPage($event)"
+      (gogRowClick)="onServerRowClick($event)"
+    >
+      <gog-column field="id" header="ID" [sortable]="true" width="80px"></gog-column>
+      <gog-column field="name" header="Name" [sortable]="true"></gog-column>
+      <gog-column field="team" header="Team" [sortable]="true"></gog-column>
+      <gog-column field="score" header="Score" [sortable]="true" width="100px"></gog-column>
+    </gog-table>
+
+    <p class="meta">
+      <code>dataKey="id"</code> is what keeps the selection alive across pages and refetches — the
+      table matches rows by that field instead of by object identity, so the boxes you ticked on
+      page 1 are still ticked when you come back to it. The header checkbox covers
+      <em>the current page</em>, never the pages the client has not seen.
+    </p>
+  </article>
+
+  <article class="card">
     <h3>Empty state</h3>
     <div class="action-row">
       <gog-button variant="ghost" type="button" (gogClick)="toggleEmpty()">

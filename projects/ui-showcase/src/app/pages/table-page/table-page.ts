@@ -5,6 +5,8 @@ import {
   GogColumnBodyDirective,
   GogColumnHeaderDirective,
   GogSize,
+  GogTableRowClickEvent,
+  GogTableSortEvent,
   GogTagVariant,
   TableComponent,
   TagComponent,
@@ -17,6 +19,14 @@ interface DemoRow {
   updated: string;
 }
 
+/** A row of the fake "server" data set behind the lazy demo. */
+interface ServerRow {
+  id: number;
+  name: string;
+  team: string;
+  score: number;
+}
+
 interface SparseRow {
   component: string;
   owner: string | null;
@@ -27,6 +37,18 @@ const STATUS_VARIANTS: Record<string, GogTagVariant> = {
   'In review': 'warning',
   Planned: 'info',
 };
+
+/**
+ * Stands in for a backend: 137 rows that only ever leave this module one page at a time. Sorting
+ * and slicing happen *here*, which is the point — `gog-table` in `lazy` mode must not re-order or
+ * re-slice what it is handed.
+ */
+const SERVER_ROWS: ServerRow[] = Array.from({ length: 137 }, (_, i) => ({
+  id: i + 1,
+  name: `Record ${String(i + 1).padStart(3, '0')}`,
+  team: ['Design', 'Forms', 'Data', 'Navigation'][i % 4],
+  score: ((i * 37) % 100) + 1,
+}));
 
 @Component({
   selector: 'app-table-page',
@@ -53,6 +75,65 @@ export class TablePage implements OnDestroy {
 
   protected readonly loading = signal(false);
   private loadingTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // ── Lazy demo ──────────────────────────────────────────────────────────────────────────────
+  protected readonly serverPageSize = 10;
+  protected readonly serverRows = signal<ServerRow[]>([]);
+  protected readonly serverTotal = signal(SERVER_ROWS.length);
+  protected readonly serverLoading = signal(false);
+  protected readonly serverSelection = signal<ServerRow[]>([]);
+  protected readonly lastServerQuery = signal('page 1, unsorted');
+  private serverPage = 1;
+  private serverSort: GogTableSortEvent = { field: '', direction: null };
+  private serverTimer: ReturnType<typeof setTimeout> | null = null;
+
+  constructor() {
+    this.fetchPage();
+  }
+
+  protected onServerSort(sort: GogTableSortEvent): void {
+    this.serverSort = sort;
+    // The table has already reset itself to page 1 by the time this fires.
+    this.serverPage = 1;
+    this.fetchPage();
+  }
+
+  protected onServerPage(page: number): void {
+    this.serverPage = page;
+    this.fetchPage();
+  }
+
+  protected onServerRowClick(event: GogTableRowClickEvent<ServerRow>): void {
+    this.lastServerQuery.set(`clicked ${event.row.name} (row ${event.index + 1} on this page)`);
+  }
+
+  /** The "request": sort the whole set, cut out the page, answer after a short delay. */
+  private fetchPage(): void {
+    this.serverLoading.set(true);
+    if (this.serverTimer) clearTimeout(this.serverTimer);
+
+    const { field, direction } = this.serverSort;
+    this.lastServerQuery.set(
+      `page ${this.serverPage}` + (direction ? `, sorted by ${field} ${direction}` : ', unsorted'),
+    );
+
+    this.serverTimer = setTimeout(() => {
+      const sorted = [...SERVER_ROWS];
+      if (field && direction) {
+        sorted.sort((a, b) => {
+          const av = a[field as keyof ServerRow];
+          const bv = b[field as keyof ServerRow];
+          const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+          return direction === 'asc' ? cmp : -cmp;
+        });
+      }
+
+      const start = (this.serverPage - 1) * this.serverPageSize;
+      this.serverRows.set(sorted.slice(start, start + this.serverPageSize));
+      this.serverTotal.set(sorted.length);
+      this.serverLoading.set(false);
+    }, 350);
+  }
 
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
   protected readonly size = signal<GogSize>('lg');
@@ -100,6 +181,9 @@ export class TablePage implements OnDestroy {
   ngOnDestroy(): void {
     if (this.loadingTimer) {
       clearTimeout(this.loadingTimer);
+    }
+    if (this.serverTimer) {
+      clearTimeout(this.serverTimer);
     }
   }
 }
