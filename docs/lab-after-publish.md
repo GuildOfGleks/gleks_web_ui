@@ -151,6 +151,12 @@ runtime dependencies" phrasing, wherever it appears, is now wrong.
 - **`GogBuiltinIconName` vs `GogIconName`** — the closed/open pair. Anything in the lab typed
   `GogIconName[]` for an icon gallery should move to `GogBuiltinIconName[]` to stay exhaustive;
   `ui-showcase`'s icon page has the pattern.
+- **The built-in set is 41 glyphs, not 20.** Any lab page that lists them by hand is now wrong by
+  21 entries — drive the gallery off `Object.keys(ICON_DEFS)` instead, the way the showcase now
+  does, so it cannot go stale again. Worth grouping them in the docs the way `AGENTS.md` does
+  (chevrons/arrows, status, sorting, actions, chrome, objects) rather than one flat wall.
+- **Icon attribution.** The glyphs are Lucide (ISC); the notice now ships in the package. The
+  lab's own pages should credit it too wherever they discuss the icon set.
 - The **security note** on registered SVG (`bypassSecurityTrustHtml`, static markup only) belongs
   wherever the lab documents the registry — it is the one part a consumer can get wrong in a way
   that matters.

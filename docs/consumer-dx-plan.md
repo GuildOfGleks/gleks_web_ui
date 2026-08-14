@@ -376,6 +376,29 @@ Verified in `ui-showcase`, which now registers three icons in `app.config.ts`
 in the server-rendered HTML the built-in lucide glyph is gone from the page entirely, which is
 the override working. 11 new specs, `gog-icon` having had none at all before.
 
+**Follow-on, at the user's request: the built-in set went from 20 glyphs to 41.** The registry
+makes any icon reachable, but a library whose built-ins cover only its own internals still sends
+every consumer looking for a second icon package on day one — there was no `search`, no `trash`,
+no `more-vertical`. Added 21 Lucide glyphs across actions, chrome, navigation and objects, plus
+`star`/`star-filled` as the single outline/filled pair (the `checkbox`/`checkbox-checked` case:
+a **toggle**, not decoration). Deliberately not a blanket solid duplicate of the set — that
+doubles the payload for a distinction almost nothing needs, and the registry covers exceptions.
+`ICON_DEFS` is one non-tree-shakeable object, so the cost is shared by everyone: 1.6 KB → 2.7 KB
+gzipped, which is the number to weigh before adding more.
+
+Two things surfaced while doing it:
+
+- **The glyphs are Lucide, not Heroicons** (every one carries `class="lucide …"`), and nothing in
+  the package said so — Lucide's ISC licence asks for the notice to travel with the copies. Notice
+  added to `icons.ts` and the README. Worth knowing before anyone adds a glyph from elsewhere:
+  Heroicons is drawn for `stroke-width` 1.5 against Lucide's 2, and mixing the two reads as uneven
+  weight in a row of icons.
+- **`--gog-icon-stroke-width` only reached `path`, `circle` and `rect`** — exactly the elements
+  the original 20 happened to use, which is why nothing looked wrong. Icons drawn with `line`,
+  `polyline` or `polygon` ignored the token entirely, including anything a consumer registers.
+  Selector extended; verified in the browser by overriding the token and watching a `polygon`
+  follow it from 2px to 4px.
+
 **Found on the way — `ui-showcase.instructions.md` was wrong about how the showcase resolves the
 library.** It claimed the showcase reads `@guildofgleks/ui` from `node_modules` "like any real
 consumer" and prescribed copying `dist/` over the installed package before every live check. The
