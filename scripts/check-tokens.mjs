@@ -161,13 +161,22 @@ async function main() {
 
   const scssContent = await collectCompiledScss(path.join(uiSrc, 'lib'));
 
-  // `utilities.css` carries the classes for the parts that render into a *consumer's* DOM —
-  // `gog-collapsible`'s projected trigger/content and the `gogBadge` directive's badge. A
-  // scoped component stylesheet can't reach those, so the rules have to follow them here or
-  // that whole surface goes unchecked: a typo'd or undeclared token there fails silently, in
-  // the one place the token system is hardest to eyeball.
-  const utilitiesPath = path.join(uiSrc, 'styles/utilities.css');
-  scssContent.set(utilitiesPath, readFileSync(utilitiesPath, 'utf8'));
+  // The global stylesheets carry the classes for everything that renders into a *consumer's*
+  // DOM — `gog-collapsible`'s projected trigger/content, the `gogBadge` directive's badge, the
+  // `.gog-btn` block that `[gogButton]` puts on a consumer's own `<a>`. A scoped component
+  // stylesheet can't reach those, so the rules have to live here or that whole surface goes
+  // unchecked: a typo'd or undeclared token there fails silently, in the one place the token
+  // system is hardest to eyeball.
+  //
+  // Scanned as a directory rather than a list of names, so a new global stylesheet is covered
+  // the moment it exists instead of whenever someone remembers to add it here. `theme.css` is
+  // excluded because it is the *declaration* source this check compares everything against, and
+  // `presets/` because a preset declares palette tokens and reads nothing.
+  for await (const entry of glob('*.css', { cwd: path.join(uiSrc, 'styles'), withFileTypes: true })) {
+    if (!entry.isFile() || entry.name === 'theme.css') continue;
+    const cssPath = path.join(entry.parentPath ?? entry.path, entry.name);
+    scssContent.set(cssPath, readFileSync(cssPath, 'utf8'));
+  }
 
   const scssFiles = [...scssContent.keys()];
 

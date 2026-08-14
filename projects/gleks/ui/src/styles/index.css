@@ -15,3 +15,5 @@
 @import './theme.css';
 @import './typography.css';
 @import './utilities.css';
+/* Global because `[gogButton]` styles a consumer's own element — see the file's own header. */
+@import './button.css';

@@ -1,9 +1,16 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ButtonComponent, GogSize, GogVariant, IconComponent } from '@guildofgleks/ui';
+import { RouterLink } from '@angular/router';
+import {
+  ButtonComponent,
+  GogButtonDirective,
+  GogSize,
+  GogVariant,
+  IconComponent,
+} from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-button-page',
-  imports: [ButtonComponent, IconComponent],
+  imports: [ButtonComponent, GogButtonDirective, IconComponent, RouterLink],
   templateUrl: './button-page.html',
   styleUrl: './button-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

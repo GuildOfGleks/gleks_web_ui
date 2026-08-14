@@ -787,6 +787,38 @@ providers: [
   strips SVG, so there is no alternative). That is fine for static icon markup you authored;
   **never** build a registered icon string from user input or fetch it at runtime unsanitized.
 
+#### `[gogButton]` — the link-flavoured button
+
+`gog-button` renders its own `<button>`, so it can never *be* a link. `[gogButton]` inverts that:
+the element stays yours and the directive only gives it the look.
+
+```html
+<a gogButton routerLink="/pricing">See pricing</a>
+<a gogButton variant="ghost" href="https://example.com" target="_blank" rel="noreferrer">Docs</a>
+<button gogButton variant="outline" size="sm" type="submit">Save</button>
+<a gogButton fullWidth routerLink="/checkout">Checkout</a>
+```
+
+| Input       | Type                    | Default                              |
+| ----------- | ----------------------- | ------------------------------------ |
+| `variant`   | `GogVariant`            | `'primary'`                          |
+| `size`      | `GogSize \| undefined`  | `'md'`; via `GOG_CONFIG.control.size` |
+| `fullWidth` | `boolean` (bare attr ok) | `false`                              |
+
+Selector is `a[gogButton], button[gogButton]` — deliberately not a bare `[gogButton]`, because on
+a `<div>` the result looks like a button and is invisible to the keyboard and to assistive tech.
+
+**Which to reach for.** `gog-button` for a button that acts on the page: it owns `loading` (a
+centred spinner it projects), `debounce` click throttling and the `gogClick` output, none of which
+a bare element can provide. `[gogButton]` when the element must be a link, or when you need to
+keep directives of your own on it — `routerLink`, `href`, `target`, `download`, `type="submit"`
+and anything else keep working because they were never brokered through an input in the first
+place. That is also why the library still has no `@angular/router` dependency.
+
+Two things it deliberately does not do: no `disabled` on an `<a>` (there is no such thing — drop
+the `href` or render a real `<button>`), and no loading state (the spinner is a projected child a
+directive cannot add without taking over the element's content).
+
 #### `[gogBadge]` — directive, not a component
 
 Decorates an existing element (a button, an icon, an avatar) with a count/status dot — it never

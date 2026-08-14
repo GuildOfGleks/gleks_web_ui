@@ -120,6 +120,42 @@
   </article>
 
   <article class="card">
+    <h3>Links that look like buttons — <code>[gogButton]</code></h3>
+    <p class="lead">
+      <code>gog-button</code> renders its own <code>&lt;button&gt;</code>, so it can never
+      <em>be</em> a link. <code>[gogButton]</code> inverts that: you keep your own
+      <code>&lt;a&gt;</code> or <code>&lt;button&gt;</code> and the directive gives it the button's
+      look. Nothing is brokered through an input, so <code>routerLink</code>, <code>href</code>,
+      <code>target</code>, <code>download</code> and any directive of your own keep working — they
+      were never taken away.
+    </p>
+    <div class="action-row">
+      <a gogButton routerLink="/table">Router link</a>
+      <a gogButton variant="outline" routerLink="/icon">Outline link</a>
+      <a
+        gogButton
+        variant="ghost"
+        href="https://angular.dev"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        External <gog-icon name="external-link" />
+      </a>
+      <button gogButton variant="secondary" size="sm" type="button">Plain button</button>
+    </div>
+    <p class="meta">
+      Same variants and sizes as the component, resolved the same way — including
+      <code>GOG_CONFIG.control.size</code>. What it deliberately does not do: no
+      <code>loading</code> spinner (that is a projected child only a component can add) and no fake
+      <code>disabled</code> on an anchor (there is no such thing — drop the <code>href</code> or use
+      a real <code>&lt;button&gt;</code>).
+    </p>
+    <div class="action-row">
+      <a gogButton fullWidth routerLink="/table">Full width, as a bare attribute</a>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Native type semantics</h3>
     <p class="meta"><code>type</code> is forwarded to the native <code>&lt;button&gt;</code>.</p>
     <form class="action-row" (submit)="onFormSubmit($event)" (reset)="onFormReset()">

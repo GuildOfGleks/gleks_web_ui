@@ -28,7 +28,7 @@ bumps the version, and never edits `CHANGELOG.md`'s `planned` heading.
 | 4 | Packaging correctness + small bugs | fix | ✅ done |
 | 5 | Icon registry | feature | ✅ done |
 | 6 | `gog-table`: outputs + lazy mode | feature | ✅ done |
-| 7 | Link-flavoured button | feature | ⬜ todo |
+| 7 | Link-flavoured button | feature | ✅ done |
 
 Iterations 1–4 landed together under `CHANGELOG.md`'s `[21.3.2] - planned` heading; `[21.3.1]`
 was left untouched for the release the user cuts first. Per-iteration outcomes are recorded
@@ -493,6 +493,42 @@ Recommendation: (b), with `gog-button` kept as-is and re-documented as the conve
 
 **Done when:** a `routerLink` CTA is expressible with correct semantics, one focusable element,
 and the same visuals as `<gog-button>` in all variants and sizes.
+
+### Outcome ✅
+
+Option **(b)**, the `[gogButton]` directive — and the fork turned out to be less balanced than the
+plan assumed. Option (a) does not just risk brokering the router's input surface: it *requires*
+`@angular/router` as a fifth peer dependency, which breaks every app without a router and
+contradicts the footprint the package advertises. That settled it.
+
+The mechanism has a precedent in the library that made it cheap: `gogBadge` is already a
+directive that styles a consumer's element, and its CSS already lives in the global
+`utilities.css` for exactly the reason encapsulation forces. So the work was:
+
+1. Move the `.gog-btn*` block out of `button.component.scss` into `styles/button.css`
+   (`index.css` imports it). The SCSS turned out to be plain CSS already — 184 lines, no nesting,
+   no literals, every value a token — so it moved verbatim. The component keeps only its two
+   `:host` rules, which the directive has no equivalent of.
+2. `GogButtonDirective` with `variant`, `size` (with the `GOG_CONFIG.control.size` fallback) and
+   `fullWidth` as a `booleanAttribute`. Selector `a[gogButton], button[gogButton]` rather than a
+   bare attribute — on a `<div>` the result would look clickable and be invisible to the keyboard.
+3. `--full-width` needed its own class: the component achieves it through `:host`, and the
+   directive has no wrapper.
+
+**A defect the move exposed:** `.gog-btn` never reset `text-decoration`, because a `<button>` has
+none. The moment the same block landed on an `<a>`, every link-button came out underlined. Fixed
+in `button.css`.
+
+**Also extended `check:tokens`.** Moving CSS to `styles/` would have taken the button out of the
+token contract, which only scanned `lib/**/*.scss` plus a hardcoded `utilities.css`. It now walks
+`styles/*.css` as a directory, so any future global stylesheet is covered automatically — 34
+stylesheets checked before, 38 now, and `utilities.css` stopped being a special case.
+
+Verified live: a `routerLink` anchor navigates in-app without a page load (`/buttons` → `/table`
+→ back), the external link keeps its `target`/`rel`, `text-decoration` computes to `none` on all
+four, and an isolated directive anchor measures exactly the component's 44 px. (An earlier 47 px
+reading was flex-stretch in the showcase row, which affected the real `<button gogButton>` in the
+same row identically — a measurement artefact, not a discrepancy.) 12 new specs; suite at 897.
 
 ---
 

@@ -42,6 +42,28 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
 - **`gog-table`: `interactiveRows`.** Makes rows focusable and styles them as clickable, with
   Enter and Space activating the focused row. `gogRowClick` fires on a click either way; this is
   what stops a whole-row target from being mouse-only.
+- **`[gogButton]` — a link that looks like a button.** `gog-button` renders its own `<button>`,
+  so it could never *be* a link, and a large share of buttons on a real site are navigation. The
+  directive inverts the relationship: the element stays the consumer's, and only the look is
+  applied.
+
+  ```html
+  <a gogButton routerLink="/pricing">See pricing</a>
+  <a gogButton variant="ghost" href="https://example.com" target="_blank" rel="noreferrer">Docs</a>
+  <button gogButton variant="outline" size="sm" type="submit">Save</button>
+  ```
+
+  Chosen over an `as="a"` / `routerLink` input trio on `gog-button` because that would mean
+  brokering the router's whole input surface through the component **and taking a dependency on
+  `@angular/router`** — a fifth peer, and one that would break every app without a router. With
+  the directive, `routerLink`, `href`, `target`, `download`, `type="submit"` and anything else
+  keep working because they were never taken away.
+
+  `variant`, `size` and `fullWidth` behave exactly as on the component, `size` included in its
+  `GOG_CONFIG.control.size` fallback. It deliberately has no `disabled` (there is no such thing
+  on an `<a>`) and no `loading` (the spinner is a projected child a directive cannot add). The
+  selector is `a[gogButton], button[gogButton]`, not a bare attribute, so it cannot be put on a
+  `<div>` and produce something that looks clickable and is invisible to the keyboard.
 - **`gog-paginator`: a rows-per-page select.** `showPageSizeSelect` turns it on (**off by
   default** — a paginator that silently grew a control would change every existing layout) and
   `pageSizeOptions` sets the choices, defaulting to `[10, 20, 30, 40, 50]`. Both are also
@@ -108,6 +130,17 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
 
 ### Changed
 
+- **The button's `.gog-btn*` block moved from the component stylesheet into
+  `styles/button.css`**, which `styles/index.css` imports. Angular's emulated encapsulation
+  would never let a component stylesheet reach an `<a>` declared in a consumer's template, so
+  `[gogButton]` needs the rules to be global — the same reason `gogBadge` and `gog-collapsible`
+  already keep theirs there. One source for both, no duplication. Costs about 1 KB gzipped in the
+  always-loaded stylesheet; nothing changes for anyone already importing `index.css`, which the
+  Setup section has always required.
+- **`npm run check:tokens` now covers the global stylesheets too.** It scanned `lib/**/*.scss`
+  plus a hardcoded `utilities.css`; it now walks `styles/*.css` as a directory, so a new global
+  stylesheet is under the token contract the moment it exists rather than whenever someone
+  remembers to add it. 34 stylesheets checked before, 38 now.
 - **`gog-table`'s `pageSize` is a `model`, not an `input`.** `[pageSize]="20"` is unchanged;
   `[(pageSize)]="size"` is now possible, and that is what lets the rows-per-page select work with
   no wiring — the table binds its own model straight to the paginator's, so nothing is ferried
@@ -126,6 +159,9 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
 
 ### Fixed
 
+- **Buttons no longer inherit the anchor underline.** `.gog-btn` never reset `text-decoration`,
+  because a `<button>` has none to reset — the moment the same block landed on an `<a>` via
+  `[gogButton]`, every link-button came out underlined.
 - **`--gog-icon-stroke-width` now applies to every shape in an icon.** The rule listed only
   `path`, `circle` and `rect` — which happened to be all the original 20 glyphs used, so the gap
   was invisible. Any icon drawn with `line`, `polyline` or `polygon` (half the new ones, and

@@ -178,6 +178,17 @@ The table doc page currently describes a display-only grid, which it no longer i
   config table, and the two new tokens (`--gog-table-selected-bg`,
   `--gog-table-select-col-width`) wherever the lab lists table tokens.
 
+### 3.5 `[gogButton]` — new directive
+
+- The button doc page says `gog-button` is how you make a button; it now needs the second half:
+  **`[gogButton]` for links**, with the `routerLink` example. Worth stating the rule of thumb
+  outright — component for buttons that act on the page (`loading`, `debounce`, `gogClick`),
+  directive when the element must be a link or must keep directives of its own.
+- Mention in the FAQ/getting-started that this is why the package still has **no
+  `@angular/router` dependency** — it is a deliberate design point, not an omission.
+- `styles/button.css` is a new global stylesheet inside `index.css`. Nothing to change in a
+  consumer's setup, but the theming page's list of what `index.css` pulls in should name it.
+
 ### 3.4 `gog-paginator` — rows-per-page
 
 - **New inputs**: `pageSize` (a `model`), `totalRecords`, `showPageSizeSelect`, `pageSizeOptions`.

@@ -11,7 +11,7 @@ dependencies are `@angular/core`, `@angular/common` and `@angular/forms`.
 
 ## Features
 
-- 27 standalone components and 2 directives — see [Components](#components) for the full
+- 27 standalone components and 3 directives — see [Components](#components) for the full
   list — plus `DialogService`, `ToastService` and `ThemeService`.
 - Signal-based API throughout: `input()` / `output()` / `model()`, `OnPush` change
   detection, no NgModules.
@@ -341,7 +341,7 @@ those stay per instance.
 | Feedback | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton` |
 | Content | `gog-icon` |
 
-Directives: `gogTooltip`, `gogBadge`, `gogCollapsibleTrigger`, `gogCollapsibleContent`.
+Directives: `gogButton`, `gogTooltip`, `gogBadge`, `gogCollapsibleTrigger`, `gogCollapsibleContent`.
 
 Slot directives, for replacing a component's markup rather than configuring it:
 `gogAccordionHeader`, `gogAccordionContent`, `gogAccordionChevron`, `gogButtonToggleOption`,
@@ -426,6 +426,20 @@ than `totalPages` and it works out the page count from `pageSize` itself:
 `pageSize` is a two-way `model` on both `gog-paginator` and `gog-table`, which is what connects
 the two without a signal in between: the table binds its own model to the paginator's, so a size
 picked in the select lands directly on whatever you bound with `[(pageSize)]`.
+
+`gog-button` renders its own `<button>`, so it can never *be* a link. For a call to action that
+navigates, use the `gogButton` directive on your own element instead — it applies the same look
+and nothing is brokered through an input, so `routerLink`, `href`, `target` and any directive of
+your own keep working:
+
+```html
+<a gogButton routerLink="/pricing">See pricing</a>
+<a gogButton variant="ghost" href="https://example.com" target="_blank" rel="noreferrer">Docs</a>
+```
+
+It is also why the package still needs no `@angular/router`. Keep `gog-button` for buttons that
+act on the page — `loading`, `debounce` and `gogClick` are its, and a bare element cannot offer
+them.
 
 `gogTooltip` is a hover/focus tooltip directive, not a component — drop it on any element,
 a `gog-*` component's own host tag or a plain native one
