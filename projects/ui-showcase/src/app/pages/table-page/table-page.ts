@@ -77,7 +77,8 @@ export class TablePage implements OnDestroy {
   private loadingTimer: ReturnType<typeof setTimeout> | null = null;
 
   // ── Lazy demo ──────────────────────────────────────────────────────────────────────────────
-  protected readonly serverPageSize = 10;
+  /** A `signal`, because the table's `pageSize` is a `model` the select writes back into. */
+  protected readonly serverPageSize = signal(10);
   protected readonly serverRows = signal<ServerRow[]>([]);
   protected readonly serverTotal = signal(SERVER_ROWS.length);
   protected readonly serverLoading = signal(false);
@@ -100,6 +101,16 @@ export class TablePage implements OnDestroy {
 
   protected onServerPage(page: number): void {
     this.serverPage = page;
+    this.fetchPage();
+  }
+
+  /**
+   * In lazy mode a new page size is a refetch, exactly like a new page. The table has already
+   * returned to page 1 by the time this fires, so there is no separate `gogPageChange` to handle.
+   */
+  protected onServerPageSize(size: number): void {
+    this.serverPageSize.set(size);
+    this.serverPage = 1;
     this.fetchPage();
   }
 
@@ -128,8 +139,9 @@ export class TablePage implements OnDestroy {
         });
       }
 
-      const start = (this.serverPage - 1) * this.serverPageSize;
-      this.serverRows.set(sorted.slice(start, start + this.serverPageSize));
+      const size = this.serverPageSize();
+      const start = (this.serverPage - 1) * size;
+      this.serverRows.set(sorted.slice(start, start + size));
       this.serverTotal.set(sorted.length);
       this.serverLoading.set(false);
     }, 350);
