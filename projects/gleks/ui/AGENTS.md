@@ -5,7 +5,7 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.3.2`**. `README.md` covers the
+Everything below reflects the library's actual source as of **`21.4.0`**. `README.md` covers the
 same ground at a higher level — install, setup, theming, global configuration — and is accurate;
 this file goes further, into per-component input tables, and is the one to trust for exact names,
 types and defaults.
@@ -717,15 +717,52 @@ family of date-math helpers (`addDays`, `addMonths`, `isSameDay`, `isWithinBound
 | `title`      | `string`              | `''`                                               |
 | `ariaHidden` | `boolean`             | `true`                                             |
 
-`GogIconName` is a **closed set of exactly 20 names**: `check`, `close`, `chevron-up`,
+The package ships 20 glyphs (`GogBuiltinIconName`): `check`, `close`, `chevron-up`,
 `chevron-down`, `chevron-left`, `chevron-right`, `calendar`, `clock`, `sort`, `sort-up`,
 `sort-down`, `success`, `error`, `warning`, `info`, `checkbox`, `checkbox-checked`, `eye`,
-`eye-off`, `copy`. There is no way to pass an arbitrary SVG/URL as `name` — use the `template`
-input (or project your own `<svg>`/icon component elsewhere) for anything outside this set.
+`eye-off`, `copy`.
 
 ```html
 <gog-icon name="calendar" />
 ```
+
+##### Registering your own icons — `provideGogIcons(...)`
+
+`name` is typed `GogIconName = GogBuiltinIconName | (string & {})`: the built-ins autocomplete,
+and any name you register is accepted. **This is the supported way to use your own icon set** —
+prefer it over the `template` input, which costs an `<ng-template>` at every use site and is for
+one-offs.
+
+```ts
+// app.config.ts
+import { provideGogIcons } from '@guildofgleks/ui';
+
+providers: [
+  provideGogIcons({
+    cart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">…</svg>',
+    rocket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">…</svg>',
+  }),
+];
+```
+
+```html
+<gog-icon name="cart" />
+<gog-tag iconName="cart">In basket</gog-tag>
+<!-- works anywhere an icon *name* is taken -->
+```
+
+- **Registered names win over built-ins of the same name** — that is how you replace the
+  library's checkmark or chevrons across every component at once, without touching any of them.
+- **Nested `provideGogIcons(...)` layers onto the parent set** rather than replacing it, the same
+  as `provideGogConfig`: a lazy route can register only what it uses.
+- **An unknown name renders nothing and warns in dev mode; it never throws.** An icon is
+  decoration — failing the render over a typo would be the worse outcome.
+- **Write the SVG for inheritance:** a `viewBox`, `stroke="currentColor"` (or `fill`), and no
+  width/height — `gog-icon` drives size and stroke width from the `--gog-icon-*` tokens, so a
+  registered icon scales and colours like a built-in.
+- **Security:** the markup is inserted with `bypassSecurityTrustHtml` (Angular's HTML sanitizer
+  strips SVG, so there is no alternative). That is fine for static icon markup you authored;
+  **never** build a registered icon string from user input or fetch it at runtime unsanitized.
 
 #### `[gogBadge]` — directive, not a component
 
@@ -1146,4 +1183,5 @@ Shared enum-like types (`import type { ... } from '@guildofgleks/ui'`):
 | `GogErrorDisplay`             | `'auto' \| 'manual'`                                                                          |
 | `GogDropdownDirection`        | `'auto' \| 'up' \| 'down'`                                                                    |
 | `GogTooltipSide`              | `'top' \| 'bottom' \| 'left' \| 'right'` (resolved form of `GogTooltipPosition`, no `'auto'`) |
-| `GogIconName`                 | closed set of 20 — see [`gog-icon`](#gog-icon)                                                |
+| `GogBuiltinIconName`          | the 20 glyphs the package ships — see [`gog-icon`](#gog-icon)                                 |
+| `GogIconName`                 | `GogBuiltinIconName \| (string & {})` — built-ins plus anything registered via `provideGogIcons` |

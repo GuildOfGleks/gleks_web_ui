@@ -4,6 +4,48 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.4.0] - planned
+
+A minor rather than a patch: this adds public API. Iteration 5 of the consumer-DX plan
+(`docs/consumer-dx-plan.md`).
+
+### Added
+
+- **`provideGogIcons(...)` — register your own icons by name.** `gog-icon` shipped a closed set
+  of 20 glyphs, and the only way to render anything else was a `TemplateRef` per instance,
+  which costs an `<ng-template>` at every use site and does not work at all for the components
+  that take an icon *name* (`gog-tag`, `gog-chip`, `gog-tabs`, `gog-button-toggle-group`,
+  `ToastService`, `DialogService`). In practice that meant installing a second icon library —
+  precisely the dependency the "no CDK, no Material" footprint exists to avoid.
+
+  ```ts
+  // app.config.ts
+  providers: [provideGogIcons({ cart: '<svg viewBox="0 0 24 24">…</svg>' })];
+  ```
+
+  ```html
+  <gog-icon name="cart" />
+  <gog-tag iconName="cart">In basket</gog-tag>
+  ```
+
+  - A registered name **overrides a built-in of the same name**, so an app can replace the
+    library's checkmark or chevrons everywhere without touching a single component.
+  - Providing it again lower in the injector tree **layers onto** the parent set rather than
+    replacing it, matching `provideGogConfig`.
+  - The registry is also exposed as the `GOG_ICONS` injection token.
+- **`GogBuiltinIconName`** — the closed union of the 20 shipped glyphs, for code that wants
+  exhaustiveness (an icon gallery, a `Record` keyed by icon).
+
+### Changed
+
+- **`GogIconName` is now open: `GogBuiltinIconName | (string & {})`.** The built-ins still
+  autocomplete; a registered name is now accepted wherever an icon name is taken, with no change
+  at any of the ten call sites that use the type. The trade is deliberate and comes with the
+  registry: a typo is no longer a compile error, so **an unknown name renders nothing and warns
+  in dev mode** (once per name) instead of throwing — an icon is decoration, and failing a render
+  over a glyph name would be the worse failure. Code that relied on `GogIconName` being closed
+  — an exhaustive `switch`, `Record<GogIconName, …>` — should move to `GogBuiltinIconName`.
+
 ## [21.3.2] - planned
 
 First batch of the consumer-DX plan (`docs/consumer-dx-plan.md`, iterations 1–4): the seam

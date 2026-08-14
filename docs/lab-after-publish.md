@@ -133,6 +133,30 @@ runtime dependencies" phrasing, wherever it appears, is now wrong.
 
 ---
 
+## 3. After publishing **21.4.0** (icon registry)
+
+### 3.1 Corrections — currently wrong after 21.4.0
+
+- **`…/icon-doc-page`** — it documents `GogIconName` as a closed set of 20 with "no way to pass
+  an arbitrary SVG as `name`", which was the whole point of the iteration. The page needs the
+  registry as its headline: `provideGogIcons`, a registered name winning over a built-in,
+  injector-tree layering, and the dev-mode warning on an unknown name. The `template` input
+  drops to "for one-offs" rather than "the way to use your own icons".
+
+### 3.2 New API to document
+
+- **`provideGogIcons(...)` / `GOG_ICONS`** — needs its own section, and a row in
+  `global-config.md` alongside `provideGogConfig` (both are app-wide providers; the icon one is
+  not part of `GOG_CONFIG`, which is worth saying explicitly so nobody looks for it there).
+- **`GogBuiltinIconName` vs `GogIconName`** — the closed/open pair. Anything in the lab typed
+  `GogIconName[]` for an icon gallery should move to `GogBuiltinIconName[]` to stay exhaustive;
+  `ui-showcase`'s icon page has the pattern.
+- The **security note** on registered SVG (`bypassSecurityTrustHtml`, static markup only) belongs
+  wherever the lab documents the registry — it is the one part a consumer can get wrong in a way
+  that matters.
+
+---
+
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see

@@ -267,6 +267,37 @@ and an instance's own input always wins over the configured value. Providing it 
 the injector tree (a route, a component) **layers onto** the parent's config one level deep
 rather than replacing it, so a route can override one field and inherit the rest.
 
+### Your own icons
+
+`gog-icon` ships 20 glyphs. Register your own by name and they behave like built-ins —
+including in every component that takes an icon *name* rather than a template:
+
+```ts
+// app.config.ts
+import { provideGogIcons } from '@guildofgleks/ui';
+
+providers: [
+  provideGogIcons({
+    cart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">…</svg>',
+  }),
+];
+```
+
+```html
+<gog-icon name="cart" />
+<gog-tag iconName="cart">In basket</gog-tag>
+```
+
+A registered name overrides a built-in of the same name, so you can swap the library's whole
+look — its checkmark, its chevrons — without touching a component. Nested calls layer onto the
+parent set. An unknown name renders nothing and warns in dev mode rather than throwing.
+
+Write the SVG with a `viewBox` and `currentColor`, and no width/height: sizing and stroke width
+come from the `--gog-icon-*` tokens, which is what makes a registered icon scale and colour like
+a built-in. The markup is inserted with `bypassSecurityTrustHtml` (Angular's sanitizer strips
+SVG outright), so register only static markup you authored — never a string built from user
+input.
+
 ### Translating the library
 
 `labels` carries every fixed string the components render themselves — the ones you never write

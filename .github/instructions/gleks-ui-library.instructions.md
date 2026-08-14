@@ -188,20 +188,22 @@ To make an existing or new input configurable this way:
    in `gleks-ui-lab`. Vitest/jsdom does not lay out real CSS, so layout-dependent bugs
    (percentage-height chains, scroll-chaining, `position: sticky` containment, circular
    intrinsic sizing) only surface in an actual browser. Build the library
-   (`ng build @gleks/ui`), point `ui-showcase` at the fresh build (see that project's own
-   instructions for how), and click through the relevant showcase page(s) before calling a fix
-   done. Do this *after* the change is otherwise debugged and its own bugs are fixed — it's the
-   final check, not a substitute for the steps above.
+   (`ng build @gleks/ui`), restart `ng serve ui-showcase`, and click through the relevant
+   showcase page(s) before calling a fix done. The showcase resolves `@guildofgleks/ui` straight
+   from `dist/gleks/ui` through the root tsconfig's `paths`, so a rebuild is all it takes — see
+   `ui-showcase.instructions.md`, and **do not** copy the build into `node_modules`. Do this
+   *after* the change is otherwise debugged and its own bugs are fixed — it's the final check,
+   not a substitute for the steps above.
+
+   If the change has no visible surface in the showcase yet, add the example that gives it one.
+   That is what the showcase is for, and an API with no live example is an API whose layout bugs
+   nobody will find.
 
    **Never use `gleks-ui-lab` for this.** It resolves `@guildofgleks/ui` from the real,
-   published npm package on purpose — its examples must reflect what a consumer can actually
-   install *today*, not an unreleased local build. `gleks-ui-lab` and `ui-showcase` share one
-   root-level `node_modules`, so the local-build swap used to verify in `ui-showcase` (see that
-   project's own instructions) temporarily affects `gleks-ui-lab` too — restore
-   `node_modules/@guildofgleks/ui` to the published version (e.g. `npm install`) once
-   verification is done, and don't edit `gleks-ui-lab`'s docs for an API that hasn't shipped
-   yet. Document the new/changed API there only in a *later* session, after the user has
-   actually published the version that includes it.
+   published npm package on purpose (its `tsconfig.app.json` clears `paths` to force that) —
+   its examples must reflect what a consumer can actually install *today*, not an unreleased
+   local build. Don't edit its docs for an API that hasn't shipped; record it per step 8 and
+   document it there only after the user has published the version that includes it.
 8. **Record anything `gleks-ui-lab` will need in `docs/lab-after-publish.md`** — and nowhere
    else. A library change touches exactly two projects, this one and `ui-showcase`; see
    `agent-workflow.instructions.md` for the rule and for the discipline of deleting entries

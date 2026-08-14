@@ -26,7 +26,7 @@ bumps the version, and never edits `CHANGELOG.md`'s `planned` heading.
 | 2 | Accessibility defaults (label association, live regions) | fix | ✅ done |
 | 3 | Native attribute passthrough on text controls | api | ✅ done |
 | 4 | Packaging correctness + small bugs | fix | ✅ done |
-| 5 | Icon registry | feature | ⬜ todo |
+| 5 | Icon registry | feature | ✅ done |
 | 6 | `gog-table`: outputs + lazy mode | feature | ⬜ todo |
 | 7 | Link-flavoured button | feature | ⬜ todo |
 
@@ -347,6 +347,45 @@ site that means installing a second icon library, which is precisely the depende
 
 **Done when:** the showcase registers a custom icon in `app.config.ts` and uses it via
 `<gog-icon name="…">` in three unrelated components, with no `TemplateRef` in sight.
+
+### Outcome ✅
+
+`shared/icon-registry.ts`: `GOG_ICONS` token + `provideGogIcons(...)`, copying
+`provideGogConfig`'s `skipSelf` layering so a nested registration adds to the parent set instead
+of replacing it. A registered name **wins over a built-in**, which turns the registry into the
+way to re-skin the library's own glyphs app-wide.
+
+Step 2 was done by **renaming rather than widening at the call sites**: the closed union became
+`GogBuiltinIconName`, and `GogIconName` is now `GogBuiltinIconName | (string & {})`. All ten
+places that already used `GogIconName` for an input or config field (`gog-tag`, `gog-chip`,
+`gog-tabs`, `gog-button-toggle-group`, `gog-inputfield`'s `iconStart`/`iconEnd`, `ToastConfig`,
+`DialogConfig`, …) therefore accept registered names with **no edit**, and `ICON_DEFS` keeps its
+exhaustive `Record<GogBuiltinIconName, string>` — a `Record` over the open type would have
+collapsed to an index signature and stopped catching a missing definition.
+
+Miss behaviour: renders nothing, warns once per name in dev mode (module-level `Set`, so a
+missing icon inside a `@for` logs once, not once per row), never throws. Sanitisation stays
+`bypassSecurityTrustHtml` for registered and built-in markup alike — Angular's HTML sanitizer
+strips SVG outright, so there is no "sanitize it properly" option; the doc comment says plainly
+that this is for static markup you authored. That also settles iteration 4's open question:
+dropping `DomSanitizer` is off the table for good, since arbitrary consumer SVG requires it.
+
+Verified in `ui-showcase`, which now registers three icons in `app.config.ts`
+(`custom-icons.ts`) and renders them through `gog-icon`, `gog-tag` and `gog-chip` with no
+`TemplateRef` anywhere. The third registered icon deliberately reuses the built-in name `copy`;
+in the server-rendered HTML the built-in lucide glyph is gone from the page entirely, which is
+the override working. 11 new specs, `gog-icon` having had none at all before.
+
+**Found on the way — `ui-showcase.instructions.md` was wrong about how the showcase resolves the
+library.** It claimed the showcase reads `@guildofgleks/ui` from `node_modules` "like any real
+consumer" and prescribed copying `dist/` over the installed package before every live check. The
+root `tsconfig.json` maps the name to `./dist/gleks/ui` and the showcase extends it unchanged —
+`paths: {}` is cleared in **`gleks-ui-lab`**'s tsconfig, not the showcase's, and the instruction
+had the two projects swapped. Proved it by serving the showcase with the published 21.3.0 in
+`node_modules` (no `provideGogIcons` in it) and watching the registry work. The prescribed swap
+was not merely useless: `node_modules` is shared with the lab, so it was the one thing that
+could point the lab at an unreleased build — the risk the same paragraph warned about. Corrected
+in `ui-showcase.instructions.md` and in the library guide's step 7.
 
 ---
 

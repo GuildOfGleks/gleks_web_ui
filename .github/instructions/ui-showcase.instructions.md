@@ -11,38 +11,31 @@ selector prefix `app` and `scss` styles. Follow `general.instructions.md` plus t
 
 ## Verifying local library changes (unpublished)
 
-`ui-showcase` resolves `@guildofgleks/ui` from `node_modules` like any real consumer would
-(`tsconfig.app.json` deliberately clears the workspace's `@guildofgleks/ui` → `dist/gleks/ui`
-path alias for this project — see that file's own comment). That means a rebuilt library
-does **not** show up here automatically; `node_modules/@guildofgleks/ui` still holds whatever
-was last actually `npm install`ed. To check an unreleased library change live, before it's
-published:
+**`ui-showcase` resolves `@guildofgleks/ui` from `dist/gleks/ui`, not from `node_modules`.**
+The root `tsconfig.json` maps both `@guildofgleks/ui` and `@gleks/ui` to the build output, and
+this project extends it unchanged. So verifying an unreleased change is just:
 
-1. `ng build @gleks/ui` to refresh `dist/gleks/ui`.
-2. Copy that build over the installed copy for local verification only — this is **not** a
-   publish, and `node_modules` is regenerable, so it's safe/reversible:
-   ```
-   rm -rf node_modules/@guildofgleks/ui && cp -r dist/gleks/ui node_modules/@guildofgleks/ui
-   ```
-3. Restart the `ng serve ui-showcase` dev server — it does not watch `dist/` or
-   `node_modules`, so an already-running server keeps serving the old code. If you rebuild
-   the library again while iterating, restart the dev server again each time.
-4. If the browser throws `Failed to fetch dynamically imported module` or an "outdated
-   pre-bundle" error after a library rebuild, that's Vite's dependency-optimizer cache
-   getting out of sync across restarts, not a real bug — stop the dev server, delete
+1. `ng build @gleks/ui` (or `npm run build:lib`) to refresh `dist/gleks/ui`.
+2. Restart `ng serve ui-showcase` — it does not watch `dist/`, so an already-running server
+   keeps serving the old build. Restart it after every library rebuild while iterating.
+3. If the browser throws `Failed to fetch dynamically imported module` or an "outdated
+   pre-bundle" error after a library rebuild, that's Vite's dependency-optimizer cache getting
+   out of sync across restarts, not a real bug — stop the dev server, delete
    `.angular/cache/*/ui-showcase/vite`, and restart it.
 
-A real `npm publish` (the `release` script) is a separate, user-triggered step — never run it
-yourself; this local-copy trick is only for verifying a change before that happens. See
-`gleks-ui-library.instructions.md` for the full, non-negotiable "never publish" rule.
+**Do not copy the build over `node_modules/@guildofgleks/ui`.** It achieves nothing here — the
+alias already points at `dist/` — and there is one root-level `node_modules` shared with
+`gleks-ui-lab`, which is a *real* consumer of the published package (`tsconfig.app.json` there
+clears `paths` on purpose, see its own comment). Swapping the folder therefore silently points
+the lab at an unreleased build, which is exactly what it must never track. If you find a
+swapped copy in place, `npm install` at the repo root restores it.
 
-**This node_modules is shared with `gleks-ui-lab`.** There is one root-level `node_modules`,
-so step 2 above also affects `gleks-ui-lab`'s resolved `@guildofgleks/ui` for as long as the
-swap is in place — and `gleks-ui-lab` is supposed to reflect the real published package, not
-an unreleased local build. Once you're done verifying here, restore it (`npm install` at the
-repo root is enough) rather than leaving the local build in place. Also stop the `ng serve
-ui-showcase` process you started once verification is complete — see
+Stop the `ng serve ui-showcase` process you started once verification is complete — see
 `agent-workflow.instructions.md`.
+
+A real `npm publish` (the `release` script) is a separate, user-triggered step — never run it
+yourself. See `gleks-ui-library.instructions.md` for the full, non-negotiable "never publish"
+rule.
 
 ## Consuming the library
 
