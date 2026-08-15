@@ -7,12 +7,25 @@
 // the completion marker Angular CLI prints last, and kills the process itself once the work is
 // actually done — so `npm run build:lab` behaves like every other script in this workspace.
 
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ngBin = path.join(rootDir, 'node_modules/@angular/cli/bin/ng.js');
+
+// The sitemap is derived from the sidebar's nav-data, so it is regenerated here rather than
+// maintained: every build — including the Dockerfile's — ships a sitemap that matches the
+// pages the site actually links to. It writes into `public/`, which is an asset input, so it
+// has to happen before the bundle is produced.
+const sitemap = spawnSync(process.execPath, [path.join(rootDir, 'scripts/generate-sitemap.mjs')], {
+  cwd: rootDir,
+  stdio: 'inherit',
+});
+if (sitemap.status !== 0) {
+  process.stderr.write('build-lab: sitemap generation failed — not starting the build.\n');
+  process.exit(sitemap.status ?? 1);
+}
 
 const SUCCESS_MARKER = /Output location:/;
 const MAX_WAIT_MS = 90_000;

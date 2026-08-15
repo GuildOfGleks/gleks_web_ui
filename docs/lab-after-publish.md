@@ -42,10 +42,10 @@ copy nothing and the route would render an empty page.
   page; the release notes for that exact version are the better destination, and
   `library-version.ts` already exports what it needs.
 
-**One thing to check first, and it is not a lab change:** the changelog's headings for
-21.3.1, 21.3.2, 21.4.0 and 21.4.1 still read `- planned` even though all four are published.
-Rendered on a Releases page that says "planned" to every reader. Only the user can change those
-(see `gleks-ui-library.instructions.md` rule 11), so raise it rather than editing it.
+**The prerequisite this section used to carry is done:** every published version's changelog
+heading now carries a real date (21.3.1 — 11.08.2026, 21.3.2 — 13.08.2026, 21.4.0 and 21.4.1 —
+14.08.2026, checked 2026-08-15), so the Releases page will not tell readers that shipped releases
+are "planned". Only `## [21.5.0] - planned` is undated, which is correct — it has not shipped.
 
 ---
 

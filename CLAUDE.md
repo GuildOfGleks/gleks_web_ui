@@ -57,8 +57,11 @@ you go.
 
 - `docs/hardening-21.5.0.md` — the **current** plan: the library measured against itself
   (coverage tooling, token-prefix consistency, the removals 21.5.0 already owes, RTL, thin specs,
-  `gog-menu`, version metadata for the docs site). All seven iterations are open — **on hold**
-  while the user verifies the already-tagged releases against a private consuming project.
+  `gog-menu`, version metadata for the docs site). Iterations 1–6 are open and iteration 7's first
+  step (shipping `CHANGELOG.md` in the package) is already done — **on hold** while the user
+  verifies the already-tagged releases against a private consuming project. Its
+  *Pre-iteration readiness check* section records the state the plan starts from: lint, format,
+  tokens, tests and all three builds green as of 2026-08-15.
 - `docs/consumer-dx-plan.md` — completed: the package as a consumer meets it (onboarding,
   accessibility defaults, native attributes, packaging, icon registry, table outputs/lazy/
   selection, link-flavoured button). Kept for its per-iteration outcomes and its backlog.
@@ -76,6 +79,12 @@ library half done — `CHANGELOG.md` now ships in the package — and its lab ha
 `lab-after-publish.md`; layer 4 (generated deprecation badges) is deliberately deferred to
 `hardening-21.5.0.md` iteration 3, which needs the same generator. The file also records the
 major-version branch/subdomain approach, which is still only a recommendation.
+
+`docs/lab-seo.md` covers the docs site's search-engine setup: per-page titles/descriptions
+(`seo-data.ts` + `SeoService`), canonicals, `noindex` on the router's catch-all routes, the
+generated `sitemap.xml`, and the SSR host allow-list in `server.ts` — **without which the site
+serves an empty client-side shell to crawlers**, which is how it was deployed until 2026-08-15.
+It also lists what only the site owner can do (Search Console, links).
 
 `docs/lab-after-publish.md` is the deferred backlog for `gleks-ui-lab`. Because the lab tracks
 the **published** package, library work never updates it in the same session — anything the lab

@@ -798,6 +798,11 @@ providers: [
   as `provideGogConfig`: a lazy route can register only what it uses.
 - **An unknown name renders nothing and warns in dev mode; it never throws.** An icon is
   decoration — failing the render over a typo would be the worse outcome.
+- **`GOG_ICONS`** is the `InjectionToken<Readonly<Record<string, string>>>` behind it, exported
+  for the one case `provideGogIcons` does not cover: reading the registered set back
+  (`inject(GOG_ICONS)`) to enumerate it in an icon picker. Provide it through
+  `provideGogIcons(...)` rather than directly — the helper is what layers a child injector's
+  icons onto the parent's instead of replacing them.
 - **Write the SVG for inheritance:** a `viewBox`, `stroke="currentColor"` (or `fill`), and no
   width/height — `gog-icon` drives size and stroke width from the `--gog-icon-*` tokens, so a
   registered icon scales and colours like a built-in.

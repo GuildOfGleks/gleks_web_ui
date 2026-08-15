@@ -2,17 +2,23 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  PLATFORM_ID,
   computed,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { ButtonComponent, ScrollComponent, ThemeService } from '@guildofgleks/ui';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faPalette } from '@fortawesome/free-solid-svg-icons';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
 import { TocComponent } from './components/shared/toc/toc';
 import { LIBRARY_NPM_URL, LIBRARY_VERSION } from './components/shared/library-version';
+import { SeoService } from './components/shared/seo';
 
 interface ThemeMenuOption {
   value: string;
@@ -57,6 +63,39 @@ const FOOTER_LINKS: readonly FooterLink[] = [
 export class App {
   private readonly themeService = inject(ThemeService);
   private readonly elRef = inject(ElementRef<HTMLElement>);
+  private readonly router = inject(Router);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
+  // The page does not scroll — `.lab-layout` is pinned to 100dvh and this `gog-scroll` owns the
+  // content's scroll position (app.scss). Angular's own `withInMemoryScrolling` only ever moves
+  // the *document*, so it cannot help here; the scroller has to be reset by hand.
+  private readonly mainScroll = viewChild<ScrollComponent>('mainScroll');
+
+  constructor() {
+    // Per-page title, description, canonical and social tags. Started here because nothing else
+    // injects it, and it must run on the server too — see the service's own header.
+    inject(SeoService).init();
+
+    // Without this, switching from halfway down one component page to another lands the reader
+    // mid-page on content they have not seen — the scroller keeps its offset because the routed
+    // component is swapped inside it rather than around it.
+    //
+    // `NavigationEnd` only, so a failed or cancelled navigation leaves the position alone, and
+    // 'instant' rather than the default 'smooth': a route change is a jump, and this scroller
+    // ignores smooth behaviour anyway (see toc.ts's note — `contain: layout style` on
+    // `.gog-scroll` stops the browser's smooth-scroll engine from moving it at all).
+    //
+    // The TOC's in-page links are not affected: they scroll by `scrollIntoView` + `replaceState`,
+    // which is not a router navigation, so nothing here fires for them.
+    if (this.isBrowser) {
+      this.router.events
+        .pipe(
+          filter((event) => event instanceof NavigationEnd),
+          takeUntilDestroyed(),
+        )
+        .subscribe(() => this.mainScroll()?.scrollTo({ top: 0, left: 0, behavior: 'instant' }));
+    }
+  }
 
   // Read from the installed package rather than written here, so the badge cannot claim a
   // version the site was not actually built against. See `library-version.ts`.

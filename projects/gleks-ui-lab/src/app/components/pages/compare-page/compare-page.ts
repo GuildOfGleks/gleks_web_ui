@@ -9,25 +9,29 @@ interface BundleBar {
   readonly emphasis: boolean;
 }
 
+// Re-measured 2026-08-15 against @guildofgleks/ui@21.4.1, @angular/material@22.1.2 (+cdk) and
+// primeng@22.0.0. `percent` is each bar's share of the largest one (PrimeNG) — keep the three in
+// step when the numbers are refreshed, and keep them equal to the figures in
+// `public/docs/compare-full.md`, which is where the commands that produced them live.
 const BUNDLE_BARS: readonly BundleBar[] = [
   {
     label: 'Guild of Gleks UI',
     detail: 'entire library — 30 components',
-    value: '92.8 KB',
-    percent: 28,
+    value: '103.8 KB',
+    percent: 31,
     emphasis: true,
   },
   {
     label: 'Angular Material',
     detail: 'Button + Select + Dialog + Table only',
-    value: '153 KB',
+    value: '153.5 KB',
     percent: 46,
     emphasis: false,
   },
   {
     label: 'PrimeNG',
     detail: 'Button + Select + Dialog + Table only',
-    value: '329 KB',
+    value: '330.6 KB',
     percent: 100,
     emphasis: false,
   },
@@ -49,10 +53,12 @@ const SPEC_ROWS: readonly SpecRow[] = [
     primeng: 'JS preset system',
   },
   {
+    // Package counts are what `npm ls --all` adds on top of Angular itself — see the
+    // "Dependency depth" section of the full comparison for the exact command and trees.
     label: 'Setup',
     gleks: 'npm install, import, done',
     material: '+ @angular/cdk, theme mixins',
-    primeng: '+ 6 runtime packages, a preset',
+    primeng: '+ 10 packages incl. CDK, a preset',
   },
 ];
 

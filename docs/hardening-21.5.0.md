@@ -22,17 +22,23 @@ iteration 3 step 4 — a check, not a reminder.
 That makes 21.5.0 a natural breaking-ish minor (pre-1.0, allowed), which is also the right home
 for the token-prefix rename — the one item here that consumers can notice.
 
-## Baseline measured on 2026-08-14
+## Baseline measured on 2026-08-14, re-verified 2026-08-15
 
-| | |
-| --- | --- |
-| Components | 29 folders — 27 components + `gogBadge`/`gogTooltip`, 33 element selectors |
-| Tests | 897 across 47 files; **every** component folder has a spec |
-| Line coverage | **unknown** — `@vitest/coverage-v8` is not installed, `ng test --coverage` refuses to run |
-| Tokens | 1239 in `theme.css`, 38 stylesheets under `check:tokens` |
-| Slots | 15 slot directives; `GOG_CONFIG` has 13 keys |
-| RTL | 63 physical `left`/`right` declarations across 13 components; 12 components use logical properties |
-| Reduced motion | honoured in 21 components plus the global stylesheets |
+| | | |
+| --- | --- | --- |
+| | 2026-08-14 | 2026-08-15 |
+| Components | 29 folders — 27 components + `gogBadge`/`gogTooltip`, 33 element selectors | unchanged |
+| Tests | 897 across 47 files; **every** component folder has a spec | **904 across 48 files** |
+| Line coverage | **unknown** — `@vitest/coverage-v8` is not installed, `ng test --coverage` refuses to run | still unknown — iteration 1 |
+| Tokens | 1239 in `theme.css`, 38 stylesheets under `check:tokens` | unchanged |
+| Token prefix breaches | 179 (`--gog-ms-*` 75, `--gog-btn-*` 66, `--gog-input-*` 38) | unchanged; `--gog-confirm-*` is 7 more |
+| Deprecations owed | 14 tagged `Removed in 21.5.0`, 2 overdue from 21.4.0 | unchanged — none removed yet |
+| Slots | 15 slot directives; `GOG_CONFIG` has 13 keys | unchanged |
+| RTL | 63 physical `left`/`right` declarations across 13 components; 12 components use logical properties | unchanged |
+| Reduced motion | honoured in 21 components plus the global stylesheets | unchanged |
+
+The test count moved because the library kept receiving fixes after the audit; nothing else did,
+which is the expected shape for a plan that has not started.
 
 ## Status
 
@@ -44,11 +50,50 @@ for the token-prefix rename — the one item here that consumers can notice.
 | 4 | RTL pass | fix | ⬜ todo |
 | 5 | Test depth where the audit found it thin | tests | ⬜ todo |
 | 6 | `gog-menu` | feature | ⬜ todo |
-| 7 | Version/deprecation metadata for the docs site | tooling | ⬜ todo |
+| 7 | Version/deprecation metadata for the docs site | tooling | 🟨 step 1 done — see below |
 
 Update this table at the end of every iteration, and re-state "done / remaining" in the turn
 summary. Per `gleks-ui-library.instructions.md` rule 11 the agent never publishes, never bumps
 the version, and never dates `CHANGELOG.md`'s heading.
+
+**Iteration 7 is half-landed already**, ahead of the plan being started: `CHANGELOG.md` is in
+`ng-package.json`'s `assets` and `dist/gleks/ui/CHANGELOG.md` is produced by `npm run build:lib`
+(verified 2026-08-15), with the entry written under `## [21.5.0] - planned`. That is step 1. Steps
+2–3 — the deprecation manifest and its `--check` — are still open, and are the ones iteration 3
+step 4 and `lab-versioning.md` layer 4 both wait on.
+
+---
+
+## Pre-iteration readiness check — 2026-08-15
+
+Run before starting iteration 1, to establish that what the plan measures against is actually
+green. **It is, with one tooling fix applied.**
+
+| Check | Result |
+| --- | --- |
+| `npm run lint` | ✅ both projects clean |
+| `npm run format:check` | ✅ clean |
+| `npm run check:tokens` | ✅ *after the fix below* — it was failing on every Windows checkout |
+| `npm run test:lib` | ✅ 904 passed / 48 files |
+| `npm run build:lib` | ✅ 4.6 s; package contains `README.md`, `AGENTS.md`, `TOKENS.md`, `CHANGELOG.md`, `styles/`, `src/styles/` |
+| `npm run build:showcase` | ✅ (pre-existing initial-bundle budget warning, showcase only) |
+| `npm run build:lab` | ✅ 21.4.1 from npm still builds — the lab is not ahead of the registry |
+| working tree | ✅ clean before this check; `node_modules/@guildofgleks/ui` is the real 21.4.1, not a local-build swap |
+
+**The one fix: `scripts/generate-tokens.mjs --check` compared raw bytes.** `.prettierrc` sets
+`endOfLine: "auto"`, so `TOKENS.md` (read from disk) keeps its CRLF while `token-names.ts`
+(rendered from a string) is always LF. With `core.autocrlf` on and no `.gitattributes`, every
+Windows checkout therefore reported `token-names.ts` as out of date, and `npm run generate:tokens`
+"fixed" it by rewriting the same content with different line endings — a failure that could not be
+acted on and that trains the reader to ignore the check. The comparison now normalises line
+endings, and the writer keeps the file's existing ones so the generator no longer dirties the
+working tree. This mattered *before* iteration 1 rather than during it: iteration 1 adds a second
+generated-artifact gate to CI, and a gate nobody trusts locally is worse than no gate.
+
+Everything else the plan needs is a plan item, not a prerequisite. **The remaining blocker is not
+technical:** iterations stay on hold until the user finishes verifying the tagged releases against
+the private consuming project and publishes, because iteration 7's lab-side half and the whole of
+`lab-after-publish.md` only unlock on a publish.
 
 ---
 
@@ -305,6 +350,15 @@ not re-file it.
 - **`gog-table`'s ceiling:** no column resize or reorder, no sticky columns, no expandable rows,
   no grouping. Possibly the right boundary for a lightweight library — but state it in the README
   rather than letting someone discover it mid-project.
+- **Incidental public exports.** `public-api.ts` re-exports two helper modules wholesale
+  (`export * from './lib/components/datepicker/date-utils'` and `'./lib/shared/option-accessor'`),
+  which puts ~20 free functions in the package's `.d.ts` — `buildMonthGrid`, `clampDate`,
+  `withTime`, `getByPath`, `readOption`, `isSameOptionValue`, `defaultCompare`, … Some are
+  deliberate (`AGENTS.md` advertises `formatDate`/`parseDate` and "a family of date-math helpers");
+  the rest are along for the ride because the module also exports a type the public API needs
+  (`GogDateRange`, `GogOptionAccessor`). Counted 2026-08-15. Nothing is broken by it, but every one
+  is API someone can depend on and nobody decided to support, so the fix is a named export list —
+  which is a breaking change and therefore needs its own deprecation window, not a slot in 21.5.0.
 - **Secondary entry points** (`@guildofgleks/ui/select`, …). Raised by the paginator's dependency
   on `gog-select`: ng-packagr flattens everything into one FESM, so `@defer` inside the library
   produces no code-split (measured — see `consumer-dx-plan.md` iteration 6's follow-ups). Entry

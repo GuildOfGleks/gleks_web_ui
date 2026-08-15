@@ -2,10 +2,62 @@
 <html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
-    <title>GleksUiLab</title>
+    <!--
+      Title and description are placeholders: SeoService (components/shared/seo.ts) replaces both
+      per route while the page is still being rendered on the server, so what a crawler receives
+      is always the current page's own. These values are what shows if that ever stops working —
+      keep them sane, and keep them matching FALLBACK_SEO in seo-data.ts.
+    -->
+    <title>Guild of Gleks UI — Angular UI Component Library</title>
+    <meta
+      name="description"
+      content="A lightweight Angular UI component library: 30 standalone, signal-based, OnPush components themed with plain CSS variables. No CDK, no Material, no Sass build step."
+    />
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Roman Malitskyi" />
+    <meta name="theme-color" content="#1a1a1a" />
     <link rel="icon" type="image/x-icon" href="gleks_ui_logo.ico" />
+    <link rel="apple-touch-icon" href="gleks_ui_logo.png" />
+
+    <!--
+      Structured data. `SoftwareApplication` is what a documentation site for a package can
+      honestly claim; `WebSite` carries the site-level name and description. Both are static:
+      anything version-specific would go stale the moment the package is published, and the
+      version already has an honest home in the header badge (library-version.ts).
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://ui.guildofgleks.com/#website",
+            "url": "https://ui.guildofgleks.com/",
+            "name": "Guild of Gleks UI",
+            "description": "Documentation for @guildofgleks/ui, a lightweight Angular UI component library.",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://ui.guildofgleks.com/#software",
+            "name": "@guildofgleks/ui",
+            "alternateName": "Guild of Gleks UI",
+            "applicationCategory": "DeveloperApplication",
+            "applicationSubCategory": "Angular UI component library",
+            "operatingSystem": "Web",
+            "url": "https://ui.guildofgleks.com/",
+            "downloadUrl": "https://www.npmjs.com/package/@guildofgleks/ui",
+            "codeRepository": "https://github.com/GuildOfGleks/gleks_web_ui",
+            "license": "https://www.apache.org/licenses/LICENSE-2.0",
+            "description": "An Angular component library: 30 standalone, signal-based, OnPush components with no CDK or Material dependency, themed entirely with CSS custom properties.",
+            "author": { "@type": "Person", "name": "Roman Malitskyi" },
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+          }
+        ]
+      }
+    </script>
   </head>
   <body style="margin: 0; padding: 0">
     <app-root></app-root>

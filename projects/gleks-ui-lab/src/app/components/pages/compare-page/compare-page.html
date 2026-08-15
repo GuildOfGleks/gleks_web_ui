@@ -27,14 +27,15 @@
               }}</span>
               <span class="bundle-row__detail">{{ bar.detail }}</span>
             </div>
-            <div class="bundle-row__track">
-              <div
-                class="bundle-row__fill"
-                [class.bundle-row__fill--emphasis]="bar.emphasis"
-                [style.width.%]="bar.percent"
-              >
-                <span class="bundle-row__value">{{ bar.value }}</span>
+            <div class="bundle-row__bar">
+              <div class="bundle-row__track">
+                <div
+                  class="bundle-row__fill"
+                  [class.bundle-row__fill--emphasis]="bar.emphasis"
+                  [style.width.%]="bar.percent"
+                ></div>
               </div>
+              <span class="bundle-row__value">{{ bar.value }}</span>
             </div>
           </div>
         }

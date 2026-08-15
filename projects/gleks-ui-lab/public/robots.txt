@@ -1,0 +1,12 @@
+# https://ui.guildofgleks.com — documentation site for @guildofgleks/ui
+#
+# Everything here is public documentation and meant to be indexed. The only pages kept out
+# of search are the ones with no content of their own: unknown component/doc slugs, which the
+# router still renders (see app.routes.ts's `components/:name` and `general/:slug` catch-alls).
+# Those are marked `noindex` per page by SeoService rather than blocked here, because a
+# Disallow would stop crawlers from ever seeing the tag.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://ui.guildofgleks.com/sitemap.xml
