@@ -36,6 +36,14 @@ const ALL_ROWS: ServerRow[] = Array.from({ length: 137 }, (_, index) => ({
       <gog-column field="team" header="Team" [sortable]="true" />
     </gog-table>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class TableLazyExample {
   protected readonly serverRows = signal<ServerRow[]>([]);

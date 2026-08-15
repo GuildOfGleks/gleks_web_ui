@@ -22,6 +22,14 @@ interface BasicItem extends GogAccordionItem {
       </ng-template>
     </gog-accordion>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class AccordionMultiExample {
   protected readonly multi = signal(false);

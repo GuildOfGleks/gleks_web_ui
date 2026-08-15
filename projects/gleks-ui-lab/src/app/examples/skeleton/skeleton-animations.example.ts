@@ -9,6 +9,15 @@ import { GogSkeletonAnimation, SkeletonComponent } from '@guildofgleks/ui';
       <gog-skeleton shape="rect" size="xsm" [animation]="animationOption" />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class SkeletonAnimationsExample {
   protected readonly animations: GogSkeletonAnimation[] = ['pulse', 'wave', 'none'];

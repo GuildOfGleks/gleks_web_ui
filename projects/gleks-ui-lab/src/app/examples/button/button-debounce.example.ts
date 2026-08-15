@@ -13,6 +13,14 @@ import { ButtonComponent } from '@guildofgleks/ui';
     </gog-button>
     <p>Accepted clicks: {{ accepted() }}</p>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class ButtonDebounceExample {
   protected readonly accepted = signal(0);

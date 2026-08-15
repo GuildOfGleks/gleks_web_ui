@@ -23,6 +23,15 @@ interface FaqItem {
       </gog-collapsible>
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class CollapsibleFaqExample {
   protected readonly faqItems = signal<FaqItem[]>([

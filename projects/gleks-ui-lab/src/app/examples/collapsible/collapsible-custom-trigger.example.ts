@@ -25,6 +25,26 @@ import {
       </div>
     </gog-collapsible>
   `,
+  styles: `
+    :host {
+      display: block;
+      max-width: 420px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--gog-border-color);
+      border-radius: var(--gog-radius);
+      background: var(--gog-surface-color);
+      cursor: pointer;
+    }
+    .card-body {
+      padding: 0 14px;
+    }
+  `,
 })
 export class CollapsibleCustomTriggerExample {
   protected readonly open = signal(false);

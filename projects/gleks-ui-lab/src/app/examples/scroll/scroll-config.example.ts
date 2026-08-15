@@ -20,6 +20,12 @@ import { ScrollComponent, provideGogConfig } from '@guildofgleks/ui';
     </gog-scroll>
   `,
   styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
     .box {
       display: block;
       height: 160px;

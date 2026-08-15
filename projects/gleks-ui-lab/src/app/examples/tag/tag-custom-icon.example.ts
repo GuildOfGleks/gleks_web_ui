@@ -12,5 +12,13 @@ import { GogTagIconDirective, IconComponent, TagComponent } from '@guildofgleks/
       Featured
     </gog-tag>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class TagCustomIconExample {}

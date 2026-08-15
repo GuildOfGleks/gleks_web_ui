@@ -12,5 +12,13 @@ import { ButtonComponent, GogTooltipDirective, TagComponent } from '@guildofglek
 
     <gog-button [gogTooltip]="richHint">Deploy</gog-button>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class TooltipTemplateExample {}

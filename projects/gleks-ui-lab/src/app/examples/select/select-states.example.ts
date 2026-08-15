@@ -17,6 +17,15 @@ import { GogDropdownOption, SelectComponent } from '@guildofgleks/ui';
       [(value)]="requiredValue"
     />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class SelectStatesExample {
   protected readonly frameworks: GogDropdownOption[] = [

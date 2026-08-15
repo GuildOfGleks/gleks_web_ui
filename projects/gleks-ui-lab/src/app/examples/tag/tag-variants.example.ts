@@ -11,6 +11,14 @@ import { GogTagVariant, TagComponent } from '@guildofgleks/ui';
       </gog-tag>
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class TagVariantsExample {
   protected readonly variants: GogTagVariant[] = ['success', 'danger', 'warning', 'info'];

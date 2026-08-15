@@ -12,6 +12,13 @@ import { DividerComponent } from '@guildofgleks/ui';
     </div>
   `,
   styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
     .toolbar {
       display: flex;
       align-items: center;

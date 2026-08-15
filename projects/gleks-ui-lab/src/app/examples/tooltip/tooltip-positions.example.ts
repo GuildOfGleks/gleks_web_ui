@@ -11,6 +11,14 @@ import { ButtonComponent, GogTooltipDirective, GogTooltipPosition } from '@guild
       </gog-button>
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class TooltipPositionsExample {
   protected readonly positions: GogTooltipPosition[] = ['top', 'bottom', 'left', 'right'];

@@ -13,6 +13,14 @@ import { GogSpinnerVariant, SpinnerComponent } from '@guildofgleks/ui';
       />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class SpinnerVariantsExample {
   protected readonly variants: GogSpinnerVariant[] = ['runic', 'ring'];

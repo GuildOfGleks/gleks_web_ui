@@ -9,6 +9,14 @@ import { ButtonComponent, GogBadgeDirective, GogBadgePosition } from '@guildofgl
       <gog-button gogBadge="4" [badgePosition]="position">{{ position }}</gog-button>
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class BadgePositionsExample {
   protected readonly positions: GogBadgePosition[] = [

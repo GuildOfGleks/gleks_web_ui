@@ -30,6 +30,14 @@ interface Row {
 
     <p>{{ lastEvent() }}</p>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class TableOutputsExample {
   protected readonly rows: Row[] = [

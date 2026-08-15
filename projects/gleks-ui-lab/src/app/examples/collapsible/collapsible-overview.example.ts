@@ -16,6 +16,15 @@ import {
       <p gogCollapsibleContent>Ships within 2 business days via standard courier.</p>
     </gog-collapsible>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class CollapsibleOverviewExample {
   protected readonly open = signal(false);

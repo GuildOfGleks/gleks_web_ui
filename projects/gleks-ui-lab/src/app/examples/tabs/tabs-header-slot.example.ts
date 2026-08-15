@@ -13,9 +13,17 @@ import { GogTabHeaderDirective, TabComponent, TabsComponent, TagComponent } from
         }
       </ng-template>
 
-      <gog-tab label="Unread">…</gog-tab>
-      <gog-tab label="Archived">…</gog-tab>
+      <gog-tab label="Unread">Two unread messages.</gog-tab>
+      <gog-tab label="Archived">Nothing archived yet.</gog-tab>
     </gog-tabs>
+  `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
   `,
 })
 export class TabsHeaderSlotExample {}

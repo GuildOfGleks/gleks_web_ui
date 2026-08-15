@@ -26,6 +26,14 @@ interface ViewOption {
       </ng-template>
     </gog-button-toggle-group>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class ButtonToggleSlotExample {
   protected readonly views: ViewOption[] = [

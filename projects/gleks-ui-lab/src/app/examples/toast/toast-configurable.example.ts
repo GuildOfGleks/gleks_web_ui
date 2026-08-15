@@ -18,6 +18,15 @@ import {
     <gog-select label="Position" [options]="positions" [(value)]="toastPosition" />
     <gog-button (gogClick)="showConfigured()">Preview toast</gog-button>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class ToastConfigurableExample {
   private readonly toastService = inject(ToastService);

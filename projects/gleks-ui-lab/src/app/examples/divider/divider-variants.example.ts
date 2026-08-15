@@ -9,6 +9,15 @@ import { DividerComponent, GogDividerVariant } from '@guildofgleks/ui';
       <gog-divider [variant]="variantOption" />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class DividerVariantsExample {
   protected readonly variants: GogDividerVariant[] = ['solid', 'dashed', 'dotted'];

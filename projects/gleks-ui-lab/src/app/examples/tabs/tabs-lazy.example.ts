@@ -21,5 +21,13 @@ import { GogTabContentDirective, TabComponent, TabsComponent } from '@guildofgle
       </gog-tab>
     </gog-tabs>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class TabsLazyExample {}

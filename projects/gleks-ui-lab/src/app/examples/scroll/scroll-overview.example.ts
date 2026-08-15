@@ -11,6 +11,14 @@ import { ScrollComponent } from '@guildofgleks/ui';
       }
     </gog-scroll>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class ScrollOverviewExample {
   protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);

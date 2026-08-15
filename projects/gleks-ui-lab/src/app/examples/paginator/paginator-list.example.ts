@@ -12,10 +12,29 @@ import { PaginatorComponent } from '@guildofgleks/ui';
     </ul>
     <gog-paginator [(page)]="page" [totalPages]="totalPages()" />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class PaginatorListExample {
   private readonly pageSize = 4;
-  private readonly items = ['Apple', 'Banana', 'Cherry' /* ... */];
+  private readonly items = [
+    'Apple',
+    'Banana',
+    'Cherry',
+    'Date',
+    'Elderberry',
+    'Fig',
+    'Grape',
+    'Honeydew',
+    'Kiwi',
+    'Lemon',
+  ];
   protected readonly page = signal(1);
   protected readonly totalPages = computed(() =>
     Math.max(1, Math.ceil(this.items.length / this.pageSize)),

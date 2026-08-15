@@ -9,6 +9,14 @@ import { ButtonComponent } from '@guildofgleks/ui';
     <gog-button variant="primary" (gogClick)="onClick()">Click me</gog-button>
     <p>{{ status() }}</p>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class ButtonBasicExample {
   protected readonly status = signal('No click yet.');

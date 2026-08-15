@@ -8,5 +8,13 @@ import { ButtonComponent, GogBadgeDirective, IconComponent } from '@guildofgleks
     <gog-icon name="info" gogBadge badgeDot badgeAriaLabel="Unread updates" />
     <gog-button gogBadge badgeDot badgeVariant="success">Synced</gog-button>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class BadgeDotExample {}

@@ -9,6 +9,14 @@ import { GogBuiltinIconName, ICON_DEFS, IconComponent } from '@guildofgleks/ui';
       <gog-icon [name]="iconName" />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class IconGalleryExample {
   // Read off the library, never hand-copied: this list grew from 19 to 41 in one release,

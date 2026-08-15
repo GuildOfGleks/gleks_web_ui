@@ -9,5 +9,14 @@ import { CheckboxComponent } from '@guildofgleks/ui';
     <gog-checkbox label="Disabled, checked" [checked]="true" [disabled]="true" />
     <gog-checkbox label="Disabled, indeterminate" [indeterminate]="true" [disabled]="true" />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class CheckboxDisabledExample {}

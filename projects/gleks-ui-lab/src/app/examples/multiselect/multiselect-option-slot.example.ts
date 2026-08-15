@@ -17,6 +17,15 @@ interface User {
       </ng-template>
     </gog-multiselect>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class MultiselectOptionSlotExample {
   protected readonly users: User[] = [

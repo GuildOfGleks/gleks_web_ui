@@ -19,6 +19,14 @@ interface Row {
       <gog-column field="updated" header="Updated"></gog-column>
     </gog-table>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class TableOverviewExample {
   protected readonly rows: Row[] = [

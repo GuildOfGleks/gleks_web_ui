@@ -21,6 +21,28 @@ interface ChatMessage {
       }
     </div>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+    .chat-thread {
+      display: grid;
+      gap: 10px;
+      max-width: 380px;
+    }
+    .chat-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .chat-row--mine {
+      justify-content: flex-end;
+    }
+  `,
 })
 export class SkeletonChatExample {
   protected readonly messages: ChatMessage[] = [

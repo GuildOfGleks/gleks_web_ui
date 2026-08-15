@@ -15,6 +15,14 @@ import { GogColumn, TableComponent } from '@guildofgleks/ui';
       <gog-column field="owner" header="Owner" />
     </gog-table>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class TableRowsPerPageExample {
   protected readonly rows = [

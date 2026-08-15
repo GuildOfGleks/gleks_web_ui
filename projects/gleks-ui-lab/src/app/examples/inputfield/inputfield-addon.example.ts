@@ -26,6 +26,15 @@ import {
       </button>
     </gog-inputfield>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class InputfieldAddonExample {
   protected readonly amount = signal('');

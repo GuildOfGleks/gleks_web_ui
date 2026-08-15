@@ -8,6 +8,14 @@ import { ChipComponent, GogTooltipDirective } from '@guildofgleks/ui';
     <button gogTooltip="Save changes">Save</button>
     <gog-chip [gogTooltip]="hint">Draft</gog-chip>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class TooltipOverviewExample {
   protected readonly hint = 'Not visible to anyone else yet';

@@ -14,5 +14,13 @@ import { SpinnerComponent } from '@guildofgleks/ui';
       style="--gog-spinner-color: var(--gog-success-color)"
     />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class SpinnerColorExample {}

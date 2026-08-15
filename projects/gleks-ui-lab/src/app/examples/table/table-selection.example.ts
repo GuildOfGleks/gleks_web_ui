@@ -24,6 +24,14 @@ interface Row {
 
     <p>Selected: {{ selection().length }}</p>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class TableSelectionExample {
   protected readonly rows: Row[] = [

@@ -14,11 +14,11 @@ import { IconSizingExample } from './icon-sizing.example';
 export const ICON_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<unknown, string>([
   [
     IconCustomTemplateExample,
-    "import { Component } from '@angular/core';\nimport { IconComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [IconComponent],\n  template: `\n    <gog-icon [template]=\"customDot\" />\n\n    <ng-template #customDot>\n      <span\n        style=\"width: 1em; height: 1em; border-radius: 50%; background: currentColor; display: block;\"\n      ></span>\n    </ng-template>\n  `,\n})\nexport class IconCustomTemplateExample {}",
+    "import { Component } from '@angular/core';\nimport { IconComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [IconComponent],\n  template: `\n    <gog-icon [template]=\"customDot\" />\n\n    <ng-template #customDot>\n      <span\n        style=\"width: 1em; height: 1em; border-radius: 50%; background: currentColor; display: block;\"\n      ></span>\n    </ng-template>\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-wrap: wrap;\n      align-items: center;\n      gap: 12px;\n    }\n  `,\n})\nexport class IconCustomTemplateExample {}",
   ],
   [
     IconGalleryExample,
-    "import { Component } from '@angular/core';\nimport { GogBuiltinIconName, ICON_DEFS, IconComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [IconComponent],\n  template: `\n    @for (iconName of iconNames; track iconName) {\n      <gog-icon [name]=\"iconName\" />\n    }\n  `,\n})\nexport class IconGalleryExample {\n  // Read off the library, never hand-copied: this list grew from 19 to 41 in one release,\n  // and a literal array would have gone stale without anything failing.\n  protected readonly iconNames = Object.keys(ICON_DEFS) as GogBuiltinIconName[];\n}",
+    "import { Component } from '@angular/core';\nimport { GogBuiltinIconName, ICON_DEFS, IconComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [IconComponent],\n  template: `\n    @for (iconName of iconNames; track iconName) {\n      <gog-icon [name]=\"iconName\" />\n    }\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-wrap: wrap;\n      align-items: center;\n      gap: 12px;\n    }\n  `,\n})\nexport class IconGalleryExample {\n  // Read off the library, never hand-copied: this list grew from 19 to 41 in one release,\n  // and a literal array would have gone stale without anything failing.\n  protected readonly iconNames = Object.keys(ICON_DEFS) as GogBuiltinIconName[];\n}",
   ],
   [
     IconMeaningfulExample,
@@ -38,6 +38,6 @@ export const ICON_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<unknow
   ],
   [
     IconSizingExample,
-    'import { Component } from \'@angular/core\';\nimport { IconComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [IconComponent],\n  template: `\n    <gog-icon name="success" style="--gog-icon-size: 16px" />\n    <gog-icon name="success" style="--gog-icon-size: 24px" />\n    <gog-icon name="success" style="--gog-icon-size: 40px" />\n  `,\n})\nexport class IconSizingExample {}',
+    'import { Component } from \'@angular/core\';\nimport { IconComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [IconComponent],\n  template: `\n    <gog-icon name="success" style="--gog-icon-size: 16px" />\n    <gog-icon name="success" style="--gog-icon-size: 24px" />\n    <gog-icon name="success" style="--gog-icon-size: 40px" />\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-wrap: wrap;\n      align-items: center;\n      gap: 12px;\n    }\n  `,\n})\nexport class IconSizingExample {}',
   ],
 ]);

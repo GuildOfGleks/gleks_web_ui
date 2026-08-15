@@ -164,15 +164,23 @@ export class TabsComponent implements GogTabsState {
       const header = this.headerRefs()[index]?.nativeElement;
       if (!this.isBrowser || !this.scrollActiveIntoView() || !header) return;
 
-      // Feature-detected: absent in jsdom (so: in unit tests) and in very old browsers, which
-      // then simply keep whatever scroll position they already had.
-      if (typeof header.scrollIntoView !== 'function') return;
+      const behavior: ScrollBehavior =
+        this.hasScrolledOnce && !this.prefersReducedMotion() ? 'smooth' : 'auto';
 
-      header.scrollIntoView({
-        inline: 'center',
-        block: 'nearest',
-        behavior: this.hasScrolledOnce && !this.prefersReducedMotion() ? 'smooth' : 'auto',
-      });
+      // The header strip only — never the page.
+      //
+      // This used to call `header.scrollIntoView({ inline: 'center', block: 'nearest' })`, and
+      // `scrollIntoView` walks up and scrolls *every* scrollable ancestor that needs to move.
+      // A `gog-tabs` sitting below the fold therefore dragged the whole page down to itself the
+      // moment it initialised — jarring in an app, and in a documentation page with several
+      // examples it jumped the reader to the last one. Scrolling the component's own viewport
+      // by hand keeps the behaviour (the active header centred) and touches nothing outside.
+      const viewport = header.closest<HTMLElement>('.gog-scroll__viewport');
+      if (!viewport || typeof viewport.scrollTo !== 'function') return;
+
+      const centred = header.offsetLeft - (viewport.clientWidth - header.offsetWidth) / 2;
+      const left = Math.max(0, Math.min(centred, viewport.scrollWidth - viewport.clientWidth));
+      viewport.scrollTo({ left, behavior });
       this.hasScrolledOnce = true;
     });
   }

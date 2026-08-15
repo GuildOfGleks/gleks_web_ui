@@ -11,6 +11,12 @@ import { ButtonComponent } from '@guildofgleks/ui';
     </div>
   `,
   styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
     .panel {
       max-width: 320px;
     }

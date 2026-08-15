@@ -13,5 +13,13 @@ import { IconComponent } from '@guildofgleks/ui';
       ></span>
     </ng-template>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class IconCustomTemplateExample {}

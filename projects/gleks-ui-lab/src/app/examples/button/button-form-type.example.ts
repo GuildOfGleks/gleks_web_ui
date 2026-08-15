@@ -15,6 +15,12 @@ import { ButtonComponent } from '@guildofgleks/ui';
     <p>{{ result() }}</p>
   `,
   styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
     form {
       display: flex;
       gap: 12px;

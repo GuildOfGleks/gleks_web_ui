@@ -41,6 +41,14 @@ interface StatusItem extends GogAccordionItem {
       </ng-template>
     </gog-accordion>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class AccordionCustomHeaderExample {
   protected readonly statusItems: StatusItem[] = [

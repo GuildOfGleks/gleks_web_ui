@@ -21,6 +21,15 @@ import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';
       [(value)]="requiredValue"
     />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class MultiselectStatesExample {
   protected readonly features: GogDropdownOption[] = [

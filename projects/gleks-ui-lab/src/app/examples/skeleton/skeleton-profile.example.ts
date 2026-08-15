@@ -19,6 +19,24 @@ import { SkeletonComponent } from '@guildofgleks/ui';
       <!-- real avatar, name, banner, bio -->
     }
   `,
+  styles: `
+    :host {
+      display: grid;
+      gap: 12px;
+      max-width: 420px;
+    }
+    .profile-card__header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .profile-card__header-text {
+      display: grid;
+      gap: 8px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+  `,
 })
 export class SkeletonProfileExample {
   protected readonly loading = signal(true);

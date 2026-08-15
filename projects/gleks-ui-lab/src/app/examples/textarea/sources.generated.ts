@@ -45,7 +45,7 @@ export const TEXTAREA_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<un
   ],
   [
     TextareaResizeExample,
-    'import { Component } from \'@angular/core\';\nimport { TextareaComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [TextareaComponent],\n  template: `\n    <gog-textarea label="Both axes" resize="both" [rows]="3" />\n    <gog-textarea label="Fixed size" resize="none" [rows]="3" />\n  `,\n})\nexport class TextareaResizeExample {}',
+    'import { Component } from \'@angular/core\';\nimport { TextareaComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [TextareaComponent],\n  template: `\n    <gog-textarea label="Both axes" resize="both" [rows]="3" />\n    <gog-textarea label="Fixed size" resize="none" [rows]="3" />\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-direction: column;\n      align-items: stretch;\n      gap: 12px;\n      max-width: 420px;\n    }\n  `,\n})\nexport class TextareaResizeExample {}',
   ],
   [
     TextareaRowsExample,
@@ -53,6 +53,6 @@ export const TEXTAREA_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<un
   ],
   [
     TextareaSizesExample,
-    "import { Component } from '@angular/core';\nimport { GogSize, TextareaComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TextareaComponent],\n  template: `\n    @for (sizeOption of sizes; track sizeOption) {\n      <gog-textarea [size]=\"sizeOption\" [label]=\"sizeOption\" [rows]=\"2\" />\n    }\n  `,\n})\nexport class TextareaSizesExample {\n  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];\n}",
+    "import { Component } from '@angular/core';\nimport { GogSize, TextareaComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TextareaComponent],\n  template: `\n    @for (sizeOption of sizes; track sizeOption) {\n      <gog-textarea [size]=\"sizeOption\" [label]=\"sizeOption\" [rows]=\"2\" />\n    }\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-direction: column;\n      align-items: stretch;\n      gap: 12px;\n      max-width: 420px;\n    }\n  `,\n})\nexport class TextareaSizesExample {\n  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];\n}",
   ],
 ]);

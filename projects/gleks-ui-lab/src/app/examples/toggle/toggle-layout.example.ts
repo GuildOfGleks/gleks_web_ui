@@ -13,8 +13,9 @@ import { ToggleComponent } from '@guildofgleks/ui';
     :host {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
       gap: 12px;
+      max-width: 420px;
     }
   `,
 })

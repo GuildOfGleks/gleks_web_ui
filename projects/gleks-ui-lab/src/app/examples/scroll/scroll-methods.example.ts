@@ -17,10 +17,15 @@ import { ButtonComponent, ScrollComponent } from '@guildofgleks/ui';
     </gog-scroll>
   `,
   styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
     .controls {
       display: flex;
       gap: 8px;
-      margin-bottom: 12px;
     }
     .box {
       display: block;

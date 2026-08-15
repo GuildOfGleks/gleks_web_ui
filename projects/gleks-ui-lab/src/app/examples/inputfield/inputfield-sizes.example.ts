@@ -9,6 +9,15 @@ import { GogSize, InputfieldComponent } from '@guildofgleks/ui';
       <gog-inputfield [size]="sizeOption" [label]="sizeOption" [placeholder]="sizeOption" />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class InputfieldSizesExample {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];

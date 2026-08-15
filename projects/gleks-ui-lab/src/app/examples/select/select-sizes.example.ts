@@ -14,6 +14,15 @@ import { GogDropdownOption, GogSize, SelectComponent } from '@guildofgleks/ui';
       />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class SelectSizesExample {
   protected readonly frameworks: GogDropdownOption[] = [

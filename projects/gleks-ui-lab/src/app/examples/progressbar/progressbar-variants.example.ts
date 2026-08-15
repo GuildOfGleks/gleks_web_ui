@@ -9,6 +9,15 @@ import { GogProgressbarVariant, ProgressbarComponent } from '@guildofgleks/ui';
       <gog-progressbar [variant]="variantOption" [value]="65" [ariaLabel]="variantOption" />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class ProgressbarVariantsExample {
   protected readonly variants: GogProgressbarVariant[] = [

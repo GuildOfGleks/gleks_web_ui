@@ -9,5 +9,14 @@ import { ProgressbarComponent } from '@guildofgleks/ui';
     <gog-progressbar mode="indeterminate" ariaLabel="Loading" />
     <gog-progressbar mode="buffer" [value]="42" [buffer]="70" ariaLabel="Playback" />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class ProgressbarModesExample {}

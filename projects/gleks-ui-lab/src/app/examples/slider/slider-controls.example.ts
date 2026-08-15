@@ -19,6 +19,15 @@ import { SliderComponent } from '@guildofgleks/ui';
     <gog-slider label="Disabled" [value]="25" [disabled]="true" [showThumb]="false" />
     <gog-slider label="Disabled (with thumb)" [value]="60" [disabled]="true" />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class SliderControlsExample {
   protected readonly volume = signal(45);

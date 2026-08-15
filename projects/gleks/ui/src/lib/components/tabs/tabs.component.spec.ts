@@ -199,12 +199,15 @@ describe('TabsComponent', () => {
   });
 
   describe('scrollActiveIntoView', () => {
+    let scrollTo: ReturnType<typeof vi.fn>;
     let scrollIntoView: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
-      // jsdom doesn't implement scrollIntoView at all; stub it so the feature-detect in
-      // TabsComponent takes the real branch instead of silently no-op'ing.
+      // jsdom implements neither; stub both so the component takes its real branch, and so the
+      // regression below (scrolling the page instead of the header strip) is observable.
+      scrollTo = vi.fn();
       scrollIntoView = vi.fn();
+      HTMLElement.prototype.scrollTo = scrollTo as unknown as HTMLElement['scrollTo'];
       HTMLElement.prototype.scrollIntoView = scrollIntoView as unknown as (
         arg?: boolean | ScrollIntoViewOptions,
       ) => void;
@@ -218,21 +221,34 @@ describe('TabsComponent', () => {
     });
 
     afterEach(() => {
-      // @ts-expect-error -- undoing the stub above, not a real optional property.
+      // @ts-expect-error -- undoing the stubs above, not real optional properties.
+      delete HTMLElement.prototype.scrollTo;
+      // @ts-expect-error -- same.
       delete HTMLElement.prototype.scrollIntoView;
       // @ts-expect-error -- same, for matchMedia.
       delete window.matchMedia;
     });
 
-    it('should center the newly active header when the selection changes', () => {
+    it('should scroll its own header viewport when the selection changes', () => {
+      scrollTo.mockClear();
+
+      headers()[1].click();
+      fixture.detectChanges();
+
+      expect(scrollTo).toHaveBeenCalledWith(
+        expect.objectContaining({ left: expect.any(Number) as unknown as number }),
+      );
+    });
+
+    it('should never scroll the page to reach the active header', () => {
+      // The regression this replaced: `scrollIntoView` moves every scrollable ancestor, so a
+      // `gog-tabs` below the fold dragged the whole page to itself as it initialised.
       scrollIntoView.mockClear();
 
       headers()[1].click();
       fixture.detectChanges();
 
-      expect(scrollIntoView).toHaveBeenCalledWith(
-        expect.objectContaining({ inline: 'center', block: 'nearest' }),
-      );
+      expect(scrollIntoView).not.toHaveBeenCalled();
     });
 
     it('should scroll smoothly once mounted, but not on the very first render', async () => {
@@ -243,8 +259,8 @@ describe('TabsComponent', () => {
       await freshFixture.whenStable();
       freshFixture.detectChanges();
 
-      expect(scrollIntoView).toHaveBeenCalledTimes(1);
-      expect(scrollIntoView.mock.calls[0][0].behavior).toBe('auto');
+      expect(scrollTo).toHaveBeenCalledTimes(1);
+      expect(scrollTo.mock.calls[0][0].behavior).toBe('auto');
 
       const freshHeaders = Array.from(
         (freshFixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
@@ -254,19 +270,19 @@ describe('TabsComponent', () => {
       freshHeaders[1].click();
       freshFixture.detectChanges();
 
-      expect(scrollIntoView).toHaveBeenCalledTimes(2);
-      expect(scrollIntoView.mock.calls[1][0].behavior).toBe('smooth');
+      expect(scrollTo).toHaveBeenCalledTimes(2);
+      expect(scrollTo.mock.calls[1][0].behavior).toBe('smooth');
     });
 
     it('should do nothing when switched off', () => {
       host.scrollActiveIntoView.set(false);
       fixture.detectChanges();
-      scrollIntoView.mockClear();
+      scrollTo.mockClear();
 
       headers()[1].click();
       fixture.detectChanges();
 
-      expect(scrollIntoView).not.toHaveBeenCalled();
+      expect(scrollTo).not.toHaveBeenCalled();
     });
   });
 

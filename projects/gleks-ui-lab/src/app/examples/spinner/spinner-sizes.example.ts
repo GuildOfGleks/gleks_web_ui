@@ -9,6 +9,14 @@ import { GogSize, SpinnerComponent } from '@guildofgleks/ui';
       <gog-spinner [size]="sizeOption" [ariaLabel]="'Loading ' + sizeOption" />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class SpinnerSizesExample {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];

@@ -3,7 +3,6 @@ import {
   ButtonComponent,
   DIALOG_DATA,
   DIALOG_REF,
-  DialogComponent,
   DialogRef,
   DialogService,
 } from '@guildofgleks/ui';
@@ -27,10 +26,20 @@ export class DialogBodyComponent {
 
 @Component({
   selector: 'app-example',
-  imports: [ButtonComponent, DialogComponent],
+  imports: [ButtonComponent],
   template: `
     <gog-button (gogClick)="openCustomContent()">Open custom dialog</gog-button>
-    <gog-dialog />
+    <!-- <gog-dialog /> is mounted once at the root of the app, not here — see the import
+         snippet above. This page mounts it in its own root component, and the StackBlitz
+         project this example opens in does the same. -->
+  `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
   `,
 })
 export class DialogCustomContentExample {

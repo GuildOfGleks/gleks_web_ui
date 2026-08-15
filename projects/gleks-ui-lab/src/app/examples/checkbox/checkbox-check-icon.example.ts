@@ -11,5 +11,14 @@ import { CheckboxComponent, GogCheckboxIconDirective, IconComponent } from '@gui
       </ng-template>
     </gog-checkbox>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class CheckboxCheckIconExample {}

@@ -39,6 +39,14 @@ export class StackedBodyComponent {
   selector: 'app-example',
   imports: [ButtonComponent],
   template: `<gog-button (gogClick)="open()">Open the first one</gog-button>`,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class DialogStackedExample {
   private readonly dialogService = inject(DialogService);

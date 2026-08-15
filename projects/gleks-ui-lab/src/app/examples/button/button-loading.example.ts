@@ -11,6 +11,14 @@ const REQUEST_MS = 1500;
     <gog-button variant="primary" [loading]="saving()" (gogClick)="save()">Save</gog-button>
     <p>{{ saving() ? 'Saving…' : 'Idle.' }}</p>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class ButtonLoadingExample {
   protected readonly saving = signal(false);

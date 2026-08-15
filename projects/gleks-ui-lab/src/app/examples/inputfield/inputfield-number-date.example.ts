@@ -17,6 +17,15 @@ import { InputfieldComponent } from '@guildofgleks/ui';
 
     <gog-inputfield label="Delivery date" type="date" [(value)]="deliveryDate" />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class InputfieldNumberDateExample {
   // formControl.value is a number here (null when empty) — [(value)] would stay the raw string.

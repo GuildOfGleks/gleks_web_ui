@@ -15,6 +15,25 @@ import { SkeletonComponent } from '@guildofgleks/ui';
       }
     </div>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+      max-width: 620px;
+    }
+    .product-card {
+      display: grid;
+      gap: 8px;
+    }
+  `,
 })
 export class SkeletonProductsExample {
   protected readonly loading = signal(true);

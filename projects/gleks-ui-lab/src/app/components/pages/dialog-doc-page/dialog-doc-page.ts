@@ -5,7 +5,6 @@ import {
   ConfirmationDialogComponent,
   DIALOG_DATA,
   DIALOG_REF,
-  DialogComponent,
   DialogRef,
   DialogService,
   type ConfirmDialogData,
@@ -192,7 +191,7 @@ const INJECTION_TOKENS: readonly ServiceRow[] = [
 
 @Component({
   selector: 'app-dialog-doc-page',
-  imports: [ExampleHostComponent, DialogComponent, MarkdownComponent, RouterLink],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink],
   providers: [provideExampleSources(DIALOG_EXAMPLE_SOURCES)],
   templateUrl: './dialog-doc-page.html',
   styleUrl: './dialog-doc-page.scss',

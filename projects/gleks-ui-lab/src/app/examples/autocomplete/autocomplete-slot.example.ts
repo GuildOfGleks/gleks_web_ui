@@ -18,6 +18,15 @@ interface City {
       </ng-template>
     </gog-autocomplete>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class AutocompleteSlotExample {
   protected readonly cities: City[] = [

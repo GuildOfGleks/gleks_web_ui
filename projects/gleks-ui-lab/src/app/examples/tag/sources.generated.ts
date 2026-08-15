@@ -13,7 +13,7 @@ import { TagVariantsExample } from './tag-variants.example';
 export const TAG_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<unknown, string>([
   [
     TagCustomIconExample,
-    "import { Component } from '@angular/core';\nimport { GogTagIconDirective, IconComponent, TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TagComponent, IconComponent, GogTagIconDirective],\n  template: `\n    <gog-tag variant=\"success\">\n      <ng-template gogTagIcon>\n        <gog-icon name=\"checkbox-checked\" />\n      </ng-template>\n      Featured\n    </gog-tag>\n  `,\n})\nexport class TagCustomIconExample {}",
+    "import { Component } from '@angular/core';\nimport { GogTagIconDirective, IconComponent, TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TagComponent, IconComponent, GogTagIconDirective],\n  template: `\n    <gog-tag variant=\"success\">\n      <ng-template gogTagIcon>\n        <gog-icon name=\"checkbox-checked\" />\n      </ng-template>\n      Featured\n    </gog-tag>\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-wrap: wrap;\n      align-items: center;\n      gap: 12px;\n    }\n  `,\n})\nexport class TagCustomIconExample {}",
   ],
   [
     TagFullWidthExample,
@@ -25,14 +25,14 @@ export const TAG_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<unknown
   ],
   [
     TagShapesExample,
-    'import { Component } from \'@angular/core\';\nimport { TagComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [TagComponent],\n  template: `\n    <gog-tag shape="rounded" variant="success" iconName="check">Available</gog-tag>\n    <gog-tag shape="pill" variant="success" iconName="check">Available</gog-tag>\n  `,\n})\nexport class TagShapesExample {}',
+    'import { Component } from \'@angular/core\';\nimport { TagComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [TagComponent],\n  template: `\n    <gog-tag shape="rounded" variant="success" iconName="check">Available</gog-tag>\n    <gog-tag shape="pill" variant="success" iconName="check">Available</gog-tag>\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-wrap: wrap;\n      align-items: center;\n      gap: 12px;\n    }\n  `,\n})\nexport class TagShapesExample {}',
   ],
   [
     TagSizesExample,
-    "import { Component } from '@angular/core';\nimport { GogSize, TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TagComponent],\n  template: `\n    @for (sizeOption of sizes; track sizeOption) {\n      <gog-tag [size]=\"sizeOption\" variant=\"success\">Available</gog-tag>\n    }\n  `,\n})\nexport class TagSizesExample {\n  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];\n}",
+    "import { Component } from '@angular/core';\nimport { GogSize, TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TagComponent],\n  template: `\n    @for (sizeOption of sizes; track sizeOption) {\n      <gog-tag [size]=\"sizeOption\" variant=\"success\">Available</gog-tag>\n    }\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-wrap: wrap;\n      align-items: center;\n      gap: 12px;\n    }\n  `,\n})\nexport class TagSizesExample {\n  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];\n}",
   ],
   [
     TagVariantsExample,
-    "import { Component } from '@angular/core';\nimport { GogTagVariant, TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TagComponent],\n  template: `\n    @for (variantOption of variants; track variantOption) {\n      <gog-tag [variant]=\"variantOption\" [iconName]=\"variantIcons[variantOption]\">\n        Example\n      </gog-tag>\n    }\n  `,\n})\nexport class TagVariantsExample {\n  protected readonly variants: GogTagVariant[] = ['success', 'danger', 'warning', 'info'];\n  protected readonly variantIcons: Record<GogTagVariant, string> = {\n    success: 'check',\n    danger: 'error',\n    warning: 'warning',\n    info: 'info',\n  };\n}",
+    "import { Component } from '@angular/core';\nimport { GogTagVariant, TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TagComponent],\n  template: `\n    @for (variantOption of variants; track variantOption) {\n      <gog-tag [variant]=\"variantOption\" [iconName]=\"variantIcons[variantOption]\">\n        Example\n      </gog-tag>\n    }\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-wrap: wrap;\n      align-items: center;\n      gap: 12px;\n    }\n  `,\n})\nexport class TagVariantsExample {\n  protected readonly variants: GogTagVariant[] = ['success', 'danger', 'warning', 'info'];\n  protected readonly variantIcons: Record<GogTagVariant, string> = {\n    success: 'check',\n    danger: 'error',\n    warning: 'warning',\n    info: 'info',\n  };\n}",
   ],
 ]);

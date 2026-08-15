@@ -16,6 +16,12 @@ import { ButtonComponent, GogSize, GogVariant } from '@guildofgleks/ui';
     }
   `,
   styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 4px;
+    }
     .row {
       display: flex;
       align-items: center;

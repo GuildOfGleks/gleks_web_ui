@@ -124,13 +124,7 @@ const CONTAINER_INPUTS: readonly ApiRow[] = [
 
 @Component({
   selector: 'app-toast-doc-page',
-  imports: [
-    ExampleHostComponent,
-    MarkdownComponent,
-    RouterLink,
-    SinceBadgeComponent,
-    ToastContainerComponent,
-  ],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink, SinceBadgeComponent],
   providers: [provideExampleSources(TOAST_EXAMPLE_SOURCES)],
   templateUrl: './toast-doc-page.html',
   styleUrl: './toast-doc-page.scss',

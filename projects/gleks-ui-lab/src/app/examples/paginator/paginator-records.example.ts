@@ -18,6 +18,14 @@ interface Item {
     />
     <p>Page {{ page() }}, {{ pageSize() }} per page, {{ items().length }} records.</p>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class PaginatorRecordsExample {
   protected readonly page = signal(1);

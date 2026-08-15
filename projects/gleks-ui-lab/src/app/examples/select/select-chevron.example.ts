@@ -23,6 +23,15 @@ import {
       [(value)]="ariaOnlyValue"
     />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class SelectChevronExample {
   protected readonly countries: GogDropdownOption[] = [

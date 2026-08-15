@@ -9,6 +9,15 @@ import { GogSize, TextareaComponent } from '@guildofgleks/ui';
       <gog-textarea [size]="sizeOption" [label]="sizeOption" [rows]="2" />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class TextareaSizesExample {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];

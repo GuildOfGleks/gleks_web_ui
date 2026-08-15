@@ -28,9 +28,22 @@ interface User {
       [(value)]="userObject"
     />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class SelectAccessorsExample {
-  protected readonly users: User[] = [/* straight from the API */];
+  protected readonly users: User[] = [
+    { uuid: 'u-1', profile: { fullName: 'Ada Lovelace', role: 'Engineering' }, suspended: false },
+    { uuid: 'u-2', profile: { fullName: 'Grace Hopper', role: 'Engineering' }, suspended: false },
+    { uuid: 'u-3', profile: { fullName: 'Katherine Johnson', role: 'Research' }, suspended: true },
+  ];
 
   // An id…
   protected readonly userId = signal<string | number | null>(null);

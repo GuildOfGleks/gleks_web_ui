@@ -9,6 +9,14 @@ import { GogSize, TagComponent } from '@guildofgleks/ui';
       <gog-tag [size]="sizeOption" variant="success">Available</gog-tag>
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class TagSizesExample {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];

@@ -9,6 +9,14 @@ import { ButtonComponent, ToastService } from '@guildofgleks/ui';
     <gog-button (gogClick)="showLongDuration()">10s duration</gog-button>
     <gog-button (gogClick)="dismissAll()">Dismiss all</gog-button>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class ToastStickyExample {
   private readonly toastService = inject(ToastService);

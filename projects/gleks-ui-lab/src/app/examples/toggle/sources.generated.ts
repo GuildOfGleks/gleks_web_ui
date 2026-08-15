@@ -21,7 +21,7 @@ export const TOGGLE_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<unkn
   ],
   [
     ToggleLayoutExample,
-    'import { Component, signal } from \'@angular/core\';\nimport { ToggleComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [ToggleComponent],\n  template: `\n    <gog-toggle label="Label after the switch" [(checked)]="compactMode" />\n    <gog-toggle label="Label before it" labelPosition="start" [(checked)]="labelStart" />\n    <gog-toggle label="Full width" [fullWidth]="true" [(checked)]="compactMode" />\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-direction: column;\n      align-items: flex-start;\n      gap: 12px;\n    }\n  `,\n})\nexport class ToggleLayoutExample {\n  protected readonly compactMode = signal(false);\n  protected readonly labelStart = signal(true);\n}',
+    'import { Component, signal } from \'@angular/core\';\nimport { ToggleComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [ToggleComponent],\n  template: `\n    <gog-toggle label="Label after the switch" [(checked)]="compactMode" />\n    <gog-toggle label="Label before it" labelPosition="start" [(checked)]="labelStart" />\n    <gog-toggle label="Full width" [fullWidth]="true" [(checked)]="compactMode" />\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-direction: column;\n      align-items: stretch;\n      gap: 12px;\n      max-width: 420px;\n    }\n  `,\n})\nexport class ToggleLayoutExample {\n  protected readonly compactMode = signal(false);\n  protected readonly labelStart = signal(true);\n}',
   ],
   [
     ToggleOverviewExample,

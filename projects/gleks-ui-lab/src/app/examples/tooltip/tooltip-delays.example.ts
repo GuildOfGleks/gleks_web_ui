@@ -8,5 +8,13 @@ import { ButtonComponent, GogTooltipDirective } from '@guildofgleks/ui';
     <gog-button gogTooltip="Appears at once" [gogTooltipShowDelay]="0">No delay</gog-button>
     <gog-button gogTooltip="Never shown" [gogTooltipDisabled]="true">Disabled</gog-button>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class TooltipDelaysExample {}

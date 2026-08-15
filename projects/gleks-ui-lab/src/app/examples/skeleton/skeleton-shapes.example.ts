@@ -9,5 +9,14 @@ import { SkeletonComponent } from '@guildofgleks/ui';
     <gog-skeleton shape="circle" size="lg" />
     <gog-skeleton shape="rect" size="sm" />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class SkeletonShapesExample {}

@@ -17,6 +17,15 @@ interface User {
       </ng-template>
     </gog-select>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class SelectOptionSlotExample {
   protected readonly users: User[] = [

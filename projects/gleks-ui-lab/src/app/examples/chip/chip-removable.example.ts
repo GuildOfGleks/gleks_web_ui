@@ -14,6 +14,14 @@ interface Tag {
       <gog-chip [removable]="true" (gogRemove)="removeTag(tag.id)">{{ tag.label }}</gog-chip>
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class ChipRemovableExample {
   protected readonly tags = signal<Tag[]>([

@@ -10,6 +10,12 @@ import { SpinnerComponent } from '@guildofgleks/ui';
     </gog-spinner>
   `,
   styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
     .dots-loader {
       display: flex;
       align-items: center;

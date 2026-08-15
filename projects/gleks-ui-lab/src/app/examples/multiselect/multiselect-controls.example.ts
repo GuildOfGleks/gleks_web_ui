@@ -20,9 +20,23 @@ import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';
       [(value)]="bottomControlsValue"
     />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class MultiselectControlsExample {
-  protected readonly countries: GogDropdownOption[] = [/* ... */];
+  protected readonly countries: GogDropdownOption[] = [
+    { id: 'de', name: 'Germany' },
+    { id: 'nl', name: 'Netherlands' },
+    { id: 'pt', name: 'Portugal' },
+    { id: 'ua', name: 'Ukraine' },
+  ];
   protected readonly topControlsValue = signal<(string | number)[]>([]);
   protected readonly bottomControlsValue = signal<(string | number)[]>([]);
 }

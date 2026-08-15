@@ -9,6 +9,14 @@ import { ChipComponent, GogSize } from '@guildofgleks/ui';
       <gog-chip [size]="sizeOption">{{ sizeOption }}</gog-chip>
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+  `,
 })
 export class ChipSizesExample {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];

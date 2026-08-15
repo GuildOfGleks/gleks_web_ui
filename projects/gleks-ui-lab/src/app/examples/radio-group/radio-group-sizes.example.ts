@@ -9,6 +9,15 @@ import { GogSize, RadioGroupComponent } from '@guildofgleks/ui';
       <gog-radio-group [size]="sizeOption" [options]="planOptions" [(value)]="sizeValue" />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class RadioGroupSizesExample {
   protected readonly planOptions = [

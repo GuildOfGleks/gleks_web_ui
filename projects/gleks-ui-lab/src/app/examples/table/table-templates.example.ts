@@ -45,6 +45,18 @@ interface Row {
       <gog-column field="owner" header="Owner"></gog-column>
     </gog-table>
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+    .status-header {
+      font-weight: 600;
+      color: var(--gog-accent-color);
+    }
+  `,
 })
 export class TableTemplatesExample {
   protected readonly rows: Row[] = [

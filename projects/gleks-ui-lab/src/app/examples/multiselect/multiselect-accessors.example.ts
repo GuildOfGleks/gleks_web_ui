@@ -22,6 +22,10 @@ interface User {
   `,
 })
 export class MultiselectAccessorsExample {
-  protected readonly users: User[] = [/* straight from the API */];
+  protected readonly users: User[] = [
+    { uuid: 'u-1', profile: { fullName: 'Ada Lovelace', role: 'Engineering' }, suspended: false },
+    { uuid: 'u-2', profile: { fullName: 'Grace Hopper', role: 'Engineering' }, suspended: false },
+    { uuid: 'u-3', profile: { fullName: 'Katherine Johnson', role: 'Research' }, suspended: true },
+  ];
   protected readonly reviewerIds = signal<(string | number)[]>([]);
 }

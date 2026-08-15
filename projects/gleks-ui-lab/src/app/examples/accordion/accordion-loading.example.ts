@@ -13,6 +13,14 @@ interface BasicItem extends GogAccordionItem {
 
     <gog-accordion [items]="items" [loading]="isAccordionLoading()" />
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  `,
 })
 export class AccordionLoadingExample {
   protected readonly isAccordionLoading = signal(false);

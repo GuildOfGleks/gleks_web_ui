@@ -14,6 +14,15 @@ import { GogDropdownOption, GogSize, MultiselectComponent } from '@guildofgleks/
       />
     }
   `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      max-width: 420px;
+    }
+  `,
 })
 export class MultiselectSizesExample {
   protected readonly features: GogDropdownOption[] = [
