@@ -16,7 +16,7 @@ Measured on the reference machine (Windows, `npm@11.6.2`, Angular v21), cold `.a
 | `npm run check:tokens` | ✅ | ~1 s |
 | `npm run format:check` / `npm run format` | ✅ | ~6 s |
 | `npm run build:lib` | ✅ | ~5–7 s |
-| `npm run lint` | ✅ | ~10 s |
+| `npm run lint` | ✅ | ~25 s (three projects: library, showcase, lab) |
 | `npm run test:lib` | ✅ | ~13 s |
 | `npm run build:showcase` | ✅ | ~11–15 s |
 | `npm run build:lab` | ✅ (via wrapper, see below) | ~8–9 s |

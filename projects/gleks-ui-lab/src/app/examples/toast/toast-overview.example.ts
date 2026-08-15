@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ButtonComponent, ToastContainerComponent, ToastService } from '@guildofgleks/ui';
+import { ButtonComponent, ToastService } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',

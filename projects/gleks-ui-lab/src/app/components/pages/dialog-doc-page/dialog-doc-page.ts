@@ -1,14 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  ButtonComponent,
-  ConfirmationDialogComponent,
-  DIALOG_DATA,
-  DIALOG_REF,
-  DialogRef,
-  DialogService,
-  type ConfirmDialogData,
-} from '@guildofgleks/ui';
+import { DialogService } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -19,62 +11,6 @@ import { DialogCustomContentExample } from '../../../examples/dialog/dialog-cust
 import { DialogOptionsExample } from '../../../examples/dialog/dialog-options.example';
 import { DialogStackedExample } from '../../../examples/dialog/dialog-stacked.example';
 import { DialogOverviewExample } from '../../../examples/dialog/dialog-overview.example';
-
-interface DemoDialogData {
-  readonly message: string;
-}
-
-@Component({
-  selector: 'app-dialog-demo-content',
-  imports: [ButtonComponent],
-  template: `
-    <div class="dialog-demo-content">
-      <p>{{ data.message }}</p>
-      <gog-button variant="primary" type="button" (gogClick)="ref.close('closed-from-body')">
-        Close
-      </gog-button>
-    </div>
-  `,
-  styles: [
-    '.dialog-demo-content { display: flex; flex-direction: column; gap: 12px; max-width: 40ch; }',
-  ],
-})
-class DialogDemoContentComponent {
-  protected readonly data = inject<DemoDialogData>(DIALOG_DATA);
-  protected readonly ref = inject<DialogRef<string>>(DIALOG_REF);
-}
-
-@Component({
-  selector: 'app-dialog-stacked-content',
-  imports: [ButtonComponent],
-  template: `
-    <div class="dialog-demo-content">
-      <p>{{ data.message }}</p>
-      <gog-button variant="secondary" type="button" (gogClick)="openAnother()">
-        Open another on top
-      </gog-button>
-      <gog-button variant="primary" type="button" (gogClick)="ref.close()">Close</gog-button>
-    </div>
-  `,
-  styles: [
-    '.dialog-demo-content { display: flex; flex-direction: column; gap: 12px; max-width: 40ch; }',
-  ],
-})
-class DialogStackedContentComponent {
-  private readonly dialogService = inject(DialogService);
-  protected readonly data = inject<DemoDialogData>(DIALOG_DATA);
-  protected readonly ref = inject<DialogRef<void>>(DIALOG_REF);
-  private static depth = 0;
-
-  protected openAnother(): void {
-    DialogStackedContentComponent.depth += 1;
-    this.dialogService.open({
-      title: `Stacked dialog #${DialogStackedContentComponent.depth}`,
-      component: DialogStackedContentComponent,
-      data: { message: 'Each open() call stacks on top with an increasing z-index.' },
-    });
-  }
-}
 
 interface ApiRow {
   readonly name: string;
@@ -206,88 +142,9 @@ export class DialogDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'dialog')?.tokens ?? [];
 
-  protected readonly lastResult = signal('No dialog closed yet.');
-
   protected readonly importSnippet =
     "```typescript\nimport { DialogComponent, DialogService } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [DialogComponent],\n})\nexport class AppComponent {\n  // Mount <gog-dialog /> once, near the root of your app.\n}\n```";
 
-  protected async openConfirm(): Promise<void> {
-    const handle = this.dialogService.open<boolean>({
-      title: 'Delete workspace?',
-      component: ConfirmationDialogComponent,
-      role: 'alertdialog',
-      data: {
-        title: 'Delete workspace?',
-        description: 'This action cannot be undone.',
-        confirmText: 'Delete',
-        cancelText: 'Cancel',
-      } satisfies ConfirmDialogData,
-    });
-
-    const confirmed = await handle.afterClosed;
-    this.lastResult.set(confirmed ? 'Confirmed' : 'Cancelled');
-  }
-
-  protected async openCustomContent(): Promise<void> {
-    const handle = this.dialogService.open<string>({
-      title: 'Custom content',
-      component: DialogDemoContentComponent,
-      data: { message: 'Any component can be the dialog body, with typed data passed in.' },
-    });
-
-    const result = await handle.afterClosed;
-    this.lastResult.set(result ?? 'Closed without a result');
-  }
-
-  protected async openNonClosable(): Promise<void> {
-    const handle = this.dialogService.open<string>({
-      title: 'Confirm before closing',
-      component: DialogDemoContentComponent,
-      closable: false,
-      data: {
-        message:
-          'No header close button, Escape and backdrop clicks are ignored. Close it from the body button.',
-      },
-    });
-
-    const result = await handle.afterClosed;
-    this.lastResult.set(result ?? 'Closed without a result');
-  }
-
-  protected async openNonModal(): Promise<void> {
-    const handle = this.dialogService.open<string>({
-      title: 'Non-modal',
-      component: DialogDemoContentComponent,
-      modal: false,
-      data: {
-        message:
-          'Background stays scrollable and interactive, and Tab is not trapped inside the panel.',
-      },
-    });
-
-    const result = await handle.afterClosed;
-    this.lastResult.set(result ?? 'Closed without a result');
-  }
-
-  protected async openCustomWidth(): Promise<void> {
-    const handle = this.dialogService.open<string>({
-      title: 'Custom width',
-      component: DialogDemoContentComponent,
-      width: '520px',
-      data: { message: 'width and maxWidth are plain CSS values applied to the panel.' },
-    });
-
-    const result = await handle.afterClosed;
-    this.lastResult.set(result ?? 'Closed without a result');
-  }
-
-  protected openStacked(): void {
-    this.dialogService.open({
-      title: 'Stacked dialog',
-      component: DialogStackedContentComponent,
-      data: { message: 'Each open() call stacks on top with an increasing z-index.' },
-    });
-  }
   /** Each example is a file under `src/app/examples/dialog/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     customContent: DialogCustomContentExample,

@@ -215,11 +215,7 @@ const CITIES: City[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AutocompleteDocPage {
-  protected readonly cities = CITIES;
-
   protected readonly city = signal<number | null>(null);
-  protected readonly cityObject = signal<City | null>(null);
-  protected readonly slotCity = signal<number | null>(null);
   protected readonly freeText = signal<number | null>(null);
   protected readonly lastQuery = signal('');
   protected readonly serverLoading = signal(false);
@@ -233,10 +229,6 @@ export class AutocompleteDocPage {
 
   protected readonly importSnippet =
     "```typescript\nimport { AutocompleteComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [AutocompleteComponent],\n})\n```";
-
-  protected asCity(option: unknown): City {
-    return option as City;
-  }
 
   /** Stands in for a server lookup so the demo can show `loading` and `filterLocal="false"`. */
   protected search(query: string): void {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GogSize, GogSpinnerVariant } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
@@ -87,7 +87,7 @@ const SPINNER_OVERLAY_API_INPUTS: readonly ApiInputRow[] = [
   styleUrl: './spinner-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SpinnerDocPage implements OnDestroy {
+export class SpinnerDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
   protected readonly variants: GogSpinnerVariant[] = ['runic', 'ring'];
 
@@ -96,46 +96,9 @@ export class SpinnerDocPage implements OnDestroy {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'spinner')?.tokens ?? [];
 
-  protected readonly showOverlay = signal(false);
-  protected readonly showFullscreenOverlay = signal(false);
-  private overlayTimer: ReturnType<typeof setTimeout> | null = null;
-  private fullscreenTimer: ReturnType<typeof setTimeout> | null = null;
-
   protected readonly importSnippet =
     "```typescript\nimport { } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SpinnerComponent],\n})\n```";
 
-  protected previewOverlay(): void {
-    if (this.overlayTimer) {
-      clearTimeout(this.overlayTimer);
-    }
-
-    this.showOverlay.set(true);
-    this.overlayTimer = setTimeout(() => {
-      this.showOverlay.set(false);
-      this.overlayTimer = null;
-    }, 1500);
-  }
-
-  protected previewFullscreenOverlay(): void {
-    if (this.fullscreenTimer) {
-      clearTimeout(this.fullscreenTimer);
-    }
-
-    this.showFullscreenOverlay.set(true);
-    this.fullscreenTimer = setTimeout(() => {
-      this.showFullscreenOverlay.set(false);
-      this.fullscreenTimer = null;
-    }, 1500);
-  }
-
-  ngOnDestroy(): void {
-    if (this.overlayTimer) {
-      clearTimeout(this.overlayTimer);
-    }
-    if (this.fullscreenTimer) {
-      clearTimeout(this.fullscreenTimer);
-    }
-  }
   /** Each example is a file under `src/app/examples/spinner/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     color: SpinnerColorExample,

@@ -14,7 +14,7 @@
     "build:lab": "node scripts/build-lab.mjs",
     "format": "prettier --write \"projects/**/*.{ts,html,scss,css}\"",
     "format:check": "prettier --check \"projects/**/*.{ts,html,scss,css}\"",
-    "lint": "ng lint @gleks/ui && ng lint ui-showcase",
+    "lint": "ng lint @gleks/ui && ng lint ui-showcase && ng lint gleks-ui-lab",
     "check:tokens": "node scripts/check-tokens.mjs && node scripts/generate-tokens.mjs --check",
     "serve:ssr:ui-showcase": "node dist/ui-showcase/server/server.mjs",
     "buildLibAndStart": "npm run build:lib && ng serve ui-showcase",

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GogSize, GogTagShape } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
@@ -133,24 +133,9 @@ export class ChipDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'chip')?.tokens ?? [];
 
-  protected readonly lastClicked = signal('No chip clicked yet.');
-
-  protected readonly tags = signal([
-    { id: 'angular', label: 'Angular' },
-    { id: 'typescript', label: 'TypeScript' },
-    { id: 'rxjs', label: 'RxJS' },
-  ]);
-
   protected readonly importSnippet =
     "```typescript\nimport { ChipComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ChipComponent],\n})\n```";
 
-  protected onClick(label: string): void {
-    this.lastClicked.set(`Clicked "${label}"`);
-  }
-
-  protected removeTag(id: string): void {
-    this.tags.update((current) => current.filter((tag) => tag.id !== id));
-  }
   /** Each example is a file under `src/app/examples/chip/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     avatar: ChipAvatarExample,

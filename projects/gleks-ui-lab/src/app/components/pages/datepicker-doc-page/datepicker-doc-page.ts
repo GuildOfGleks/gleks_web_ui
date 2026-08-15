@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GogDatepickerValue } from '@guildofgleks/ui';
+
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -175,13 +175,6 @@ const API_OUTPUTS: readonly ApiRow[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatepickerDocPage {
-  protected readonly birthday = signal<GogDatepickerValue>(null);
-  protected readonly stay = signal<GogDatepickerValue>(null);
-  protected readonly meeting = signal<GogDatepickerValue>(null);
-  protected readonly isoDate = signal<GogDatepickerValue>(null);
-  protected readonly inlineDate = signal<GogDatepickerValue>(null);
-  protected readonly deadline = new FormControl<Date | null>(null, Validators.required);
-
   protected readonly today = new Date();
   protected readonly weekends = (date: Date): boolean => {
     const weekday = date.getDay();
@@ -214,13 +207,6 @@ export class DatepickerDocPage {
     '```',
   ].join('\n');
 
-  protected formatValue(value: GogDatepickerValue): string {
-    if (value === null) return 'null';
-    if (value instanceof Date) return value.toString();
-    const start = value.start ? value.start.toDateString() : '—';
-    const end = value.end ? value.end.toDateString() : '—';
-    return `${start} → ${end}`;
-  }
   /** Each example is a file under `src/app/examples/datepicker/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     format: DatepickerFormatExample,

@@ -1,15 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  AccordionComponent,
-  GogAccordionChevronDirective,
-  GogAccordionContentDirective,
-  GogAccordionHeaderDirective,
-  GogAccordionItem,
-  GogAccordionToggleEvent,
-  GogIconName,
-  GogSize,
-} from '@guildofgleks/ui';
+import { GogSize } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -24,16 +15,6 @@ import { AccordionLoadingExample } from '../../../examples/accordion/accordion-l
 import { AccordionMultiExample } from '../../../examples/accordion/accordion-multi.example';
 import { AccordionOverviewExample } from '../../../examples/accordion/accordion-overview.example';
 import { AccordionSizesExample } from '../../../examples/accordion/accordion-sizes.example';
-
-interface BasicItem extends GogAccordionItem {
-  readonly body: string;
-}
-
-interface StatusItem extends GogAccordionItem {
-  readonly icon: GogIconName;
-  readonly subtitle: string;
-  readonly body: string;
-}
 
 interface ApiRow {
   readonly name: string;
@@ -141,91 +122,17 @@ const CONTENT_SLOTS: readonly SlotRow[] = [
 export class AccordionDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
-  protected readonly basicItems: BasicItem[] = [
-    {
-      id: 'shipping',
-      title: 'Shipping',
-      body: 'Ships within 2 business days via standard courier.',
-    },
-    { id: 'returns', title: 'Returns', body: 'Free returns within 30 days of delivery.' },
-    {
-      id: 'warranty',
-      title: 'Warranty (unavailable)',
-      body: 'Not offered on this item.',
-      disabled: true,
-    },
-  ];
-
-  protected readonly sizeDemoItems: BasicItem[] = [
-    { id: 'one', title: 'Sample section', body: 'Sample content for the size comparison.' },
-  ];
-
-  protected readonly multiItems: BasicItem[] = [
-    { id: 'billing', title: 'Billing', body: 'Update your card or billing address.' },
-    { id: 'notifications', title: 'Notifications', body: 'Choose which emails you receive.' },
-    {
-      id: 'security',
-      title: 'Security',
-      body: 'Manage two-factor authentication and active sessions.',
-    },
-  ];
-
-  protected readonly statusItems: StatusItem[] = [
-    {
-      id: 'api',
-      title: 'API',
-      icon: 'success',
-      subtitle: 'All endpoints responding normally',
-      body: 'p99 latency is 118ms across all regions.',
-    },
-    {
-      id: 'database',
-      title: 'Database',
-      icon: 'warning',
-      subtitle: 'Replica lag above threshold',
-      body: 'The eu-west read replica is 4.2s behind primary.',
-    },
-    {
-      id: 'cache',
-      title: 'Cache',
-      icon: 'error',
-      subtitle: 'Cluster unreachable',
-      body: 'Connection to the cache cluster timed out.',
-    },
-  ];
-
   protected readonly apiInputs = API_INPUTS;
   protected readonly contentSlots = CONTENT_SLOTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'accordion')?.tokens ?? [];
 
-  protected readonly lastToggled = signal('No item toggled yet.');
   protected readonly multi = signal(false);
-  protected readonly isAccordionLoading = signal(false);
   protected readonly openIds = signal<ReadonlySet<string | number>>(new Set());
 
   protected readonly importSnippet =
     "```typescript\nimport { AccordionComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [AccordionComponent],\n})\n```";
 
-  protected onToggle(event: GogAccordionToggleEvent): void {
-    this.lastToggled.set(`"${event.item.title}" ${event.open ? 'opened' : 'closed'}`);
-  }
-
-  protected toggleMulti(): void {
-    this.multi.update((current) => !current);
-  }
-
-  protected toggleLoading(): void {
-    this.isAccordionLoading.update((current) => !current);
-  }
-
-  protected expandAll(): void {
-    this.openIds.set(new Set(this.multiItems.map((item) => item.id)));
-  }
-
-  protected collapseAll(): void {
-    this.openIds.set(new Set());
-  }
   /** Each example is a file under `src/app/examples/accordion/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     controlled: AccordionControlledExample,

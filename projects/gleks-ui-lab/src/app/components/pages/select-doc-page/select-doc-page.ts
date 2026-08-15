@@ -1,12 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import {
-  GogDropdownChevronDirective,
-  GogDropdownOption,
-  GogDropdownOptionDirective,
-  GogSize,
-} from '@guildofgleks/ui';
+import { GogSize } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -243,95 +238,13 @@ export class SelectDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'select')?.tokens ?? [];
 
-  protected readonly framework = signal<string | number | null>(null);
-  protected readonly frameworks: GogDropdownOption[] = [
-    { id: 'angular', name: 'Angular' },
-    { id: 'react', name: 'React' },
-    { id: 'vue', name: 'Vue' },
-  ];
-  protected readonly selectionSummary = computed(
-    () => this.frameworks.find((option) => option.id === this.framework())?.name ?? 'None selected',
-  );
-
-  protected readonly sizeDemoValue = signal<string | number | null>('angular');
-
-  protected readonly plansWithDisabled: GogDropdownOption[] = [
-    { id: 'free', name: 'Free' },
-    { id: 'pro', name: 'Pro' },
-    { id: 'enterprise', name: 'Enterprise (contact sales)', disabled: true },
-  ];
-  protected readonly plan = signal<string | number | null>('free');
-  protected readonly requiredValue = signal<string | number | null>(null);
-  protected readonly requiredError = computed(() =>
-    this.requiredValue() === null ? 'Please pick a plan.' : '',
-  );
-
-  protected readonly billingCycles: GogDropdownOption[] = [
-    { id: 'monthly', name: 'Monthly' },
-    { id: 'yearly', name: 'Yearly (2 months free)' },
-  ];
-  protected readonly billingCycleControl = new FormControl<string | number | null>(
-    null,
-    Validators.required,
-  );
-
-  protected readonly countries: GogDropdownOption[] = [
-    { id: 'de', name: 'Germany' },
-    { id: 'fr', name: 'France' },
-    { id: 'es', name: 'Spain' },
-    { id: 'it', name: 'Italy' },
-    { id: 'pl', name: 'Poland' },
-  ];
-  protected readonly fullWidthCountry = signal<string | number | null>(null);
-  protected readonly currencies: GogDropdownOption[] = [
-    { id: 'usd', name: 'USD' },
-    { id: 'eur', name: 'EUR' },
-    { id: 'gbp', name: 'GBP' },
-  ];
-  protected readonly currency = signal<string | number | null>('usd');
-
-  protected readonly sortOptions: GogDropdownOption[] = [
-    { id: 'newest', name: 'Newest first' },
-    { id: 'oldest', name: 'Oldest first' },
-  ];
-  protected readonly sortValue = signal<string | number | null>('newest');
-  protected readonly ariaOnlyValue = signal<string | number | null>(null);
-
-  protected readonly manyCountries: GogDropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
-    id: `country-${i}`,
-    name: `Country ${i + 1}`,
-  }));
-  protected readonly compactPanelValue = signal<string | number | null>(null);
-
   protected readonly importSnippet =
     "```typescript\nimport { SelectComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SelectComponent],\n})\n```";
 
   // ---- 21.3.0: option accessors, filtering, clearable, option slot -------------------------
 
-  protected readonly users: User[] = [
-    { uuid: 'u1', profile: { fullName: 'Ada Lovelace', role: 'Engineering' }, suspended: false },
-    { uuid: 'u2', profile: { fullName: 'Grace Hopper', role: 'Engineering' }, suspended: false },
-    { uuid: 'u3', profile: { fullName: 'Katherine Johnson', role: 'Research' }, suspended: false },
-    { uuid: 'u4', profile: { fullName: 'Radia Perlman', role: 'Networking' }, suspended: true },
-  ];
   protected readonly userId = signal<string | number | null>(null);
   protected readonly userObject = signal<User | null>(null);
-  protected readonly slotUserId = signal<string | number | null>(null);
-  protected readonly filteredCountry = signal<string | number | null>(null);
-  protected readonly clearablePlan = signal<string | number | null>('pro');
-
-  protected readonly matchNameOrRole = (user: unknown, query: string): boolean => {
-    const needle = query.toLowerCase();
-    const { profile } = user as User;
-    return (
-      profile.fullName.toLowerCase().includes(needle) || profile.role.toLowerCase().includes(needle)
-    );
-  };
-
-  protected asUser(option: unknown): User {
-    return option as User;
-  }
-
   /** Each example is a file under `src/app/examples/select/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     accessors: SelectAccessorsExample,

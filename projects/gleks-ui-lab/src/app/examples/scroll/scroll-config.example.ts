@@ -26,8 +26,12 @@ import { ScrollComponent, provideGogConfig } from '@guildofgleks/ui';
       align-items: stretch;
       gap: 16px;
     }
+    gog-scroll p {
+      margin: 0;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gog-border-color);
+    }
     .box {
-      display: block;
       height: 160px;
       border: 1px solid var(--gog-border-color);
       border-radius: var(--gog-radius);

@@ -73,62 +73,11 @@ const PROVIDER_ROWS: readonly ApiRow[] = [
   },
 ];
 
-interface IconGroup {
-  readonly title: string;
-  readonly names: readonly GogBuiltinIconName[];
-}
-
 // Grouped by what a reader is looking for rather than alphabetically, matching the package's own
 // AGENTS.md. `ICON_DEFS` is the source of the *names* — hand-copying them into an array is what
 // let this page sit at 19 glyphs while the library shipped 41 — and `OTHER` catches anything a
 // future release adds that no group here mentions yet, so a new icon can never go missing.
-const GROUPED_NAMES: readonly IconGroup[] = [
-  {
-    title: 'Chevrons & arrows',
-    names: [
-      'chevron-up',
-      'chevron-down',
-      'chevron-left',
-      'chevron-right',
-      'arrow-left',
-      'arrow-right',
-    ],
-  },
-  { title: 'Confirm & dismiss', names: ['check', 'close', 'checkbox', 'checkbox-checked'] },
-  { title: 'Status', names: ['success', 'error', 'warning', 'info'] },
-  { title: 'Sorting', names: ['sort', 'sort-up', 'sort-down', 'filter'] },
-  {
-    title: 'Actions',
-    names: [
-      'search',
-      'plus',
-      'minus',
-      'trash',
-      'pencil',
-      'copy',
-      'download',
-      'upload',
-      'refresh',
-      'external-link',
-    ],
-  },
-  { title: 'Chrome', names: ['menu', 'more-horizontal', 'more-vertical', 'settings'] },
-  {
-    title: 'Objects & state',
-    names: ['user', 'lock', 'mail', 'calendar', 'clock', 'eye', 'eye-off', 'star', 'star-filled'],
-  },
-];
-
 const ALL_ICON_NAMES = Object.keys(ICON_DEFS) as GogBuiltinIconName[];
-
-function buildGroups(): readonly IconGroup[] {
-  const grouped = new Set(GROUPED_NAMES.flatMap((group) => group.names));
-  const ungrouped = ALL_ICON_NAMES.filter((name) => !grouped.has(name));
-
-  return ungrouped.length === 0
-    ? GROUPED_NAMES
-    : [...GROUPED_NAMES, { title: 'Other', names: ungrouped }];
-}
 
 @Component({
   selector: 'app-icon-doc-page',
@@ -139,7 +88,6 @@ function buildGroups(): readonly IconGroup[] {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IconDocPage {
-  protected readonly iconGroups = buildGroups();
   protected readonly iconCount = ALL_ICON_NAMES.length;
   protected readonly apiInputs = API_INPUTS;
   protected readonly providerRows = PROVIDER_ROWS;

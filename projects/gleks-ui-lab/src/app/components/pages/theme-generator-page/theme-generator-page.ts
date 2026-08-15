@@ -205,14 +205,6 @@ export class ThemeGeneratorPage {
     this.tokenNames().map((name) => ({ name, control: classifyToken(this.state.defaultOf(name)) })),
   );
 
-  protected readonly componentCssMarkdown = computed(() => {
-    const names = this.tokenNames();
-    if (names.length === 0) return undefined;
-
-    const lines = names.map((name) => `  ${name}: ${this.state.currentValue(name)};`);
-    return '```css\n:root {\n' + lines.join('\n') + '\n}\n```';
-  });
-
   // Preview fixtures for the component gallery.
   protected readonly accordionItems = PREVIEW_ACCORDION_ITEMS;
   protected readonly selectOptions = PREVIEW_SELECT_OPTIONS;

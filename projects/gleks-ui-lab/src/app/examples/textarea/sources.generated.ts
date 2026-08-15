@@ -41,7 +41,7 @@ export const TEXTAREA_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<un
   ],
   [
     TextareaOverviewExample,
-    "import { Component, signal } from '@angular/core';\nimport { TextareaComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TextareaComponent],\n  template: `<gog-textarea label=\"Bio\" placeholder=\"Tell us about yourself\" [(value)]=\"bio\" />`,\n})\nexport class TextareaOverviewExample {\n  protected readonly bio = signal('');\n}",
+    'import { Component, signal } from \'@angular/core\';\nimport { TextareaComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [TextareaComponent],\n  template: `\n    <gog-textarea label="Bio" placeholder="Tell us about yourself" [(value)]="bio" />\n    <p class="readout">Value: "{{ bio() }}"</p>\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-direction: column;\n      align-items: stretch;\n      gap: 12px;\n      max-width: 420px;\n    }\n    .readout {\n      margin: 0;\n      color: var(--gog-muted-text-color);\n      font-size: 0.9em;\n    }\n  `,\n})\nexport class TextareaOverviewExample {\n  protected readonly bio = signal(\'\');\n}',
   ],
   [
     TextareaResizeExample,

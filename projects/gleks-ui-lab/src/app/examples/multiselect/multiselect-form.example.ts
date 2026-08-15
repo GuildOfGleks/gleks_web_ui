@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';
+import { MultiselectComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',

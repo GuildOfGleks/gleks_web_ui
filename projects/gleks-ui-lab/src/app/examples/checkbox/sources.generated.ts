@@ -39,7 +39,7 @@ export const CHECKBOX_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<un
   ],
   [
     CheckboxOverviewExample,
-    "import { Component, signal } from '@angular/core';\nimport { CheckboxComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [CheckboxComponent],\n  template: `<gog-checkbox label=\"I agree\" [(checked)]=\"agreed\" />`,\n})\nexport class CheckboxOverviewExample {\n  protected readonly agreed = signal(false);\n}",
+    'import { Component, signal } from \'@angular/core\';\nimport { CheckboxComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [CheckboxComponent],\n  template: `\n    <gog-checkbox label="I agree" [(checked)]="agreed" />\n    <p class="readout">Checked: {{ agreed() }}</p>\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-direction: column;\n      align-items: flex-start;\n      gap: 12px;\n    }\n    .readout {\n      margin: 0;\n      color: var(--gog-muted-text-color);\n      font-size: 0.9em;\n    }\n  `,\n})\nexport class CheckboxOverviewExample {\n  protected readonly agreed = signal(false);\n}',
   ],
   [
     CheckboxSizesExample,

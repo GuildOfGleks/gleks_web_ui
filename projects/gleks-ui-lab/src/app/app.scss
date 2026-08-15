@@ -267,12 +267,18 @@
     }
   }
 
+  /* Кнопка, а не div: закрыть ящик тапом мимо него должно работать и с клавиатуры.
+     Поэтому же сбрасываем всё, что <button> приносит с собой. */
   .lab-nav-backdrop {
     display: block;
     position: fixed;
     inset: 60px 0 0;
     z-index: 140;
+    padding: 0;
+    border: 0;
+    appearance: none;
     background: color-mix(in srgb, var(--gog-background-color) 65%, transparent);
+    cursor: pointer;
   }
 
   .lab-main-content .content-container {

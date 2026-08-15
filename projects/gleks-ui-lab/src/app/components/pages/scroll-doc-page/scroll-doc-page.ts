@@ -1,7 +1,5 @@
-import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { GogScrollMetrics } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -121,7 +119,7 @@ const API_METHODS: readonly { name: string; description: string }[] = [
 
 @Component({
   selector: 'app-scroll-doc-page',
-  imports: [ExampleHostComponent, MarkdownComponent, RouterLink, DecimalPipe, SinceBadgeComponent],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink, SinceBadgeComponent],
   providers: [provideExampleSources(SCROLL_EXAMPLE_SOURCES)],
   templateUrl: './scroll-doc-page.html',
   styleUrl: './scroll-doc-page.scss',
@@ -134,23 +132,9 @@ export class ScrollDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'scroll')?.tokens ?? [];
 
-  protected readonly longItems = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);
-  protected readonly wideItems = Array.from({ length: 20 }, (_, i) => `Column ${i + 1}`);
-
-  protected readonly sizeOption = signal<'normal' | 'thin'>('normal');
-  protected readonly autoHide = signal(true);
-
-  protected readonly reachState = signal(
-    'Scroll to the edges to see gogReachStart / gogReachEnd fire.',
-  );
-  protected readonly lastMetrics = signal<GogScrollMetrics | null>(null);
-
   protected readonly importSnippet =
     "```typescript\nimport { ScrollComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ScrollComponent],\n})\n```";
 
-  protected onScroll(metrics: GogScrollMetrics): void {
-    this.lastMetrics.set(metrics);
-  }
   /** Each example is a file under `src/app/examples/scroll/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     axis: ScrollAxisExample,

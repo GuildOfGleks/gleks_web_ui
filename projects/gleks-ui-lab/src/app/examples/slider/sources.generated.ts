@@ -36,7 +36,7 @@ export const SLIDER_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<unkn
   ],
   [
     SliderOverviewExample,
-    'import { Component, signal } from \'@angular/core\';\nimport { SliderComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [SliderComponent],\n  template: `<gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />`,\n})\nexport class SliderOverviewExample {\n  protected readonly volume = signal(45);\n}',
+    'import { Component, signal } from \'@angular/core\';\nimport { SliderComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [SliderComponent],\n  template: `\n    <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />\n    <p class="readout">Value: {{ volume() }}</p>\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-direction: column;\n      align-items: stretch;\n      gap: 12px;\n      max-width: 420px;\n    }\n    .readout {\n      margin: 0;\n      color: var(--gog-muted-text-color);\n      font-size: 0.9em;\n    }\n  `,\n})\nexport class SliderOverviewExample {\n  protected readonly volume = signal(45);\n}',
   ],
   [
     SliderRangeExample,

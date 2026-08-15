@@ -128,20 +128,6 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
 ];
 
-const FRUIT_ITEMS = [
-  'Apple',
-  'Banana',
-  'Cherry',
-  'Date',
-  'Elderberry',
-  'Fig',
-  'Grape',
-  'Honeydew',
-  'Kiwi',
-  'Lemon',
-  'Mango',
-];
-
 @Component({
   selector: 'app-paginator-doc-page',
   imports: [ExampleHostComponent, MarkdownComponent, RouterLink, SinceBadgeComponent],
@@ -157,18 +143,11 @@ export class PaginatorDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'paginator')?.tokens ?? [];
 
-  protected readonly basicPage = signal(1);
-  protected readonly basicTotalPages = signal(20);
-
   protected readonly windowPage = signal(10);
   protected readonly windowTotalPages = signal(20);
 
   protected readonly ellipsisPage = signal(10);
   protected readonly ellipsisTotalPages = signal(20);
-
-  protected readonly sizeDemoPage = signal(2);
-
-  protected readonly disabledPage = signal(3);
 
   // ── totalRecords / rows-per-page demo ──────────────────────────────────────────────────────
   protected readonly recordsPage = signal(1);
@@ -181,16 +160,6 @@ export class PaginatorDocPage {
   });
 
   private readonly listPageSize = 4;
-  protected readonly listItems = FRUIT_ITEMS;
-  protected readonly listPage = signal(1);
-  protected readonly listTotalPages = computed(() =>
-    Math.max(1, Math.ceil(this.listItems.length / this.listPageSize)),
-  );
-  protected readonly visibleListItems = computed(() => {
-    const start = (this.listPage() - 1) * this.listPageSize;
-    return this.listItems.slice(start, start + this.listPageSize);
-  });
-
   protected readonly importSnippet =
     "```typescript\nimport { PaginatorComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [PaginatorComponent],\n})\n```";
 

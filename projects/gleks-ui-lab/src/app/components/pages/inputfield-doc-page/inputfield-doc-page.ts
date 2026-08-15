@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GogInputAddonEndDirective, GogInputAddonStartDirective, GogSize } from '@guildofgleks/ui';
+import { GogSize } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -245,18 +245,9 @@ export class InputfieldDocPage {
   protected readonly name = signal('');
   protected readonly password = signal('');
   protected readonly search = signal('');
-  protected readonly amount = signal('');
-  protected readonly manualErrorValue = signal('');
   protected readonly lastIconAction = signal('No icon action yet.');
 
-  protected readonly emailControl = new FormControl('', {
-    nonNullable: true,
-    validators: [Validators.required, Validators.email],
-  });
   protected readonly quantityControl = new FormControl<number | null>(1);
-  protected readonly stepperValue = signal('3');
-  protected readonly weightValue = signal('72');
-
   protected readonly deliveryDate = signal('');
 
   protected readonly importSnippet =
@@ -284,8 +275,6 @@ export class InputfieldDocPage {
     '<gog-inputfield label="Search" [clearable]="true" [(value)]="search" />',
     '```',
   ].join('\n');
-
-  protected readonly clearableValue = signal('Clear me');
 
   protected clearSearch(): void {
     this.search.set('');

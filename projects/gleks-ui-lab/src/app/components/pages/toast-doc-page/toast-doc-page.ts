@@ -1,12 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  GogDropdownOption,
-  ToastContainerComponent,
-  ToastPosition,
-  ToastService,
-  ToastType,
-} from '@guildofgleks/ui';
+import { ToastService } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -139,24 +133,6 @@ export class ToastDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'toast')?.tokens ?? [];
 
-  protected readonly toastMessage = signal('Saved successfully');
-  protected readonly toastType = signal<string | number | null>('success');
-  protected readonly toastPosition = signal<string | number | null>('bottom-right');
-
-  protected readonly toastTypes: GogDropdownOption[] = [
-    { id: 'success', name: 'Success' },
-    { id: 'error', name: 'Error' },
-    { id: 'warning', name: 'Warning' },
-    { id: 'info', name: 'Info' },
-  ];
-
-  protected readonly positions: GogDropdownOption[] = [
-    { id: 'top-left', name: 'Top left' },
-    { id: 'top-right', name: 'Top right' },
-    { id: 'bottom-left', name: 'Bottom left' },
-    { id: 'bottom-right', name: 'Bottom right' },
-  ];
-
   protected readonly importSnippet =
     "```typescript\nimport { ToastContainerComponent, ToastService } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ToastContainerComponent],\n})\nexport class AppComponent {\n  // Mount <gog-toast-container /> once, near the root of your app.\n}\n```";
 
@@ -176,66 +152,6 @@ export class ToastDocPage {
     '});',
     '```',
   ].join('\n');
-
-  protected showToast(): void {
-    this.toastService.success('Saved successfully');
-  }
-
-  protected showConfigured(): void {
-    this.toastService.show({
-      message: this.toastMessage(),
-      type: this.toastType() as ToastType,
-      position: this.toastPosition() as ToastPosition,
-      actions: [
-        {
-          label: 'Undo',
-          iconName: 'close',
-          onClick: () => {
-            this.toastService.info('Undo clicked');
-          },
-        },
-      ],
-    });
-  }
-
-  protected showWithAction(): void {
-    this.toastService.show({
-      message: 'File deleted',
-      type: 'info',
-      actions: [
-        { label: 'Undo', iconName: 'close', onClick: () => this.toastService.info('Undo clicked') },
-      ],
-    });
-  }
-
-  protected showOneOfEach(): void {
-    this.toastService.success('Success — saved successfully.');
-    this.toastService.error('Error — something went wrong.');
-    this.toastService.warning('Warning — check this before continuing.');
-    this.toastService.info('Info — just so you know.');
-  }
-
-  protected showSticky(): void {
-    this.toastService.show({
-      message: 'Stays until dismissed or dismissAll() is called.',
-      type: 'warning',
-      isSticky: true,
-    });
-  }
-
-  protected showLongDuration(): void {
-    this.toastService.show({
-      message: 'Auto-dismisses after 10s instead of the 4s default.',
-      type: 'info',
-      duration: 10000,
-    });
-  }
-
-  protected showBurst(): void {
-    for (let index = 1; index <= 7; index += 1) {
-      this.toastService.info(`Queued toast ${index}`, { position: 'top-right' });
-    }
-  }
 
   protected dismissAll(): void {
     this.toastService.dismissAll();

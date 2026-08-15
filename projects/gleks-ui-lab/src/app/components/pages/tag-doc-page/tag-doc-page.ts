@@ -1,12 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  GogIconName,
-  GogSize,
-  GogTagIconDirective,
-  GogTagShape,
-  GogTagVariant,
-} from '@guildofgleks/ui';
+import { GogSize, GogTagShape, GogTagVariant } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -80,13 +74,6 @@ export class TagDocPage {
   protected readonly variants: GogTagVariant[] = ['success', 'danger', 'warning', 'info'];
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
   protected readonly shapes: GogTagShape[] = ['rounded', 'pill'];
-  protected readonly variantIcons: Record<GogTagVariant, GogIconName> = {
-    success: 'check',
-    danger: 'error',
-    warning: 'warning',
-    info: 'info',
-  };
-
   protected readonly apiInputs = API_INPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'tag')?.tokens ?? [];

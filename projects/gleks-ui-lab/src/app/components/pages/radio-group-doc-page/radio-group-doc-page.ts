@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GogRadioOption, GogSize } from '@guildofgleks/ui';
+import { GogSize } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -101,18 +101,6 @@ const API_OUTPUTS: readonly ApiRow[] = [
   },
 ];
 
-const DELIVERY_OPTIONS: GogRadioOption[] = [
-  { id: 'standard', label: 'Standard — 3 to 5 days' },
-  { id: 'express', label: 'Express — next day' },
-  { id: 'pickup', label: 'Collect in store' },
-  { id: 'drone', label: 'Drone drop (unavailable in your area)', disabled: true },
-];
-
-const PLAN_OPTIONS: GogRadioOption[] = [
-  { id: 'monthly', label: 'Monthly' },
-  { id: 'yearly', label: 'Yearly' },
-];
-
 @Component({
   selector: 'app-radio-group-doc-page',
   imports: [ExampleHostComponent, ReactiveFormsModule, MarkdownComponent, RouterLink],
@@ -122,14 +110,7 @@ const PLAN_OPTIONS: GogRadioOption[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RadioGroupDocPage {
-  protected readonly deliveryOptions = DELIVERY_OPTIONS;
-  protected readonly planOptions = PLAN_OPTIONS;
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
-
-  protected readonly delivery = signal<string | number | null>('standard');
-  protected readonly plan = signal<string | number | null>('yearly');
-  protected readonly sizeValue = signal<string | number | null>('monthly');
-  protected readonly shipping = new FormControl<string | null>(null, Validators.required);
 
   protected readonly apiInputs = API_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;

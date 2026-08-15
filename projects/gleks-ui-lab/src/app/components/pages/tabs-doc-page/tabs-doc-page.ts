@@ -1,12 +1,6 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  GogTabContentDirective,
-  GogTabHeaderDirective,
-  GogTabsAlign,
-  TabComponent,
-  TabsComponent,
-} from '@guildofgleks/ui';
+import { TabComponent, TabsComponent } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -136,11 +130,6 @@ const TAB_INPUTS: readonly ApiRow[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabsDocPage {
-  protected readonly alignments: GogTabsAlign[] = ['start', 'center', 'end', 'stretch'];
-
-  protected readonly activeIndex = signal(0);
-  protected readonly alignIndex = signal(0);
-
   protected readonly apiInputs = TABS_INPUTS;
   protected readonly apiOutputs = TABS_OUTPUTS;
   protected readonly tabInputs = TAB_INPUTS;

@@ -99,14 +99,6 @@ export class BadgeDocPage {
 
   protected readonly unread = signal(3);
 
-  protected addOne(): void {
-    this.unread.update((count) => count + 1);
-  }
-
-  protected removeOne(): void {
-    this.unread.update((count) => Math.max(0, count - 1));
-  }
-
   protected readonly apiInputs = API_INPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'badge')?.tokens ?? [];

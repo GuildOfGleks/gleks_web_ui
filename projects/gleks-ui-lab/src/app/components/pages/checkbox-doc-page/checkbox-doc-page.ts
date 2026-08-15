@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GogCheckboxIconDirective, GogSize } from '@guildofgleks/ui';
+import { GogSize } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -96,35 +96,11 @@ export class CheckboxDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'checkbox')?.tokens ?? [];
 
-  protected readonly agreed = signal(false);
-
-  protected readonly subscriptions = signal([
-    { id: 'news', label: 'Newsletter', checked: true },
-    { id: 'offers', label: 'Special offers', checked: false },
-    { id: 'updates', label: 'Product updates', checked: true },
-  ]);
-  protected readonly allChecked = computed(() =>
-    this.subscriptions().every((item) => item.checked),
-  );
-  protected readonly someChecked = computed(() =>
-    this.subscriptions().some((item) => item.checked),
-  );
-  protected readonly parentIndeterminate = computed(() => this.someChecked() && !this.allChecked());
-
   protected readonly formControl = new FormControl(false, { nonNullable: true });
 
   protected readonly importSnippet =
     "```typescript\nimport { CheckboxComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [CheckboxComponent],\n})\n```";
 
-  protected setAll(checked: boolean): void {
-    this.subscriptions.update((items) => items.map((item) => ({ ...item, checked })));
-  }
-
-  protected setOne(id: string, checked: boolean): void {
-    this.subscriptions.update((items) =>
-      items.map((item) => (item.id === id ? { ...item, checked } : item)),
-    );
-  }
   /** Each example is a file under `src/app/examples/checkbox/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     checkIcon: CheckboxCheckIconExample,

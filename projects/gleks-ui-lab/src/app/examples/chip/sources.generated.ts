@@ -36,7 +36,7 @@ export const CHIP_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<unknow
   ],
   [
     ChipOverviewExample,
-    "import { Component, signal } from '@angular/core';\nimport { ChipComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ChipComponent],\n  template: `<gog-chip (gogClick)=\"onClick('Design')\">Design</gog-chip>`,\n})\nexport class ChipOverviewExample {\n  protected readonly lastClicked = signal('No chip clicked yet.');\n\n  protected onClick(label: string): void {\n    this.lastClicked.set(`Clicked \\\"${label}\\\"`);\n  }\n}",
+    "import { Component, signal } from '@angular/core';\nimport { ChipComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ChipComponent],\n  template: `\n    <gog-chip (gogClick)=\"onClick('Design')\">Design</gog-chip>\n    <p class=\"readout\">{{ lastClicked() }}</p>\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-direction: column;\n      align-items: flex-start;\n      gap: 12px;\n    }\n    .readout {\n      margin: 0;\n      color: var(--gog-muted-text-color);\n      font-size: 0.9em;\n    }\n  `,\n})\nexport class ChipOverviewExample {\n  protected readonly lastClicked = signal('No chip clicked yet.');\n\n  protected onClick(label: string): void {\n    this.lastClicked.set(`Clicked \"${label}\"`);\n  }\n}",
   ],
   [
     ChipRemovableExample,

@@ -42,7 +42,10 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["projects/gleks/ui/**/*.ts", "projects/gleks/ui/**/*.html"],
+            "lintFilePatterns": [
+              "projects/gleks/ui/**/*.ts",
+              "projects/gleks/ui/**/*.html"
+            ],
             "eslintConfig": "projects/gleks/ui/eslint.config.js"
           }
         }
@@ -131,7 +134,10 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["projects/ui-showcase/**/*.ts", "projects/ui-showcase/**/*.html"],
+            "lintFilePatterns": [
+              "projects/ui-showcase/**/*.ts",
+              "projects/ui-showcase/**/*.html"
+            ],
             "eslintConfig": "projects/ui-showcase/eslint.config.js"
           }
         }
@@ -229,6 +235,16 @@
         },
         "test": {
           "builder": "@angular/build:unit-test"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/gleks-ui-lab/**/*.ts",
+              "projects/gleks-ui-lab/**/*.html"
+            ],
+            "eslintConfig": "projects/gleks-ui-lab/eslint.config.js"
+          }
         }
       }
     }

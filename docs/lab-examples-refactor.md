@@ -123,3 +123,47 @@ fragment becomes an example file that *wraps* the fragment in a runnable compone
 opens the dialog, a page that provides the config), so the button appears on all of them. The
 gate then stops being "does this string look like a file" and becomes "does this example exist",
 which is a property of the repository rather than a guess about a string.
+
+## Iteration 8 — the tail the refactor left behind
+
+Moving every demo into its own file left three kinds of residue on the *pages*, none of which
+broke a build and one of which was visible to every reader.
+
+**1. Frozen readouts (visible).** Eleven pages kept a `<p class="doc-section__meta">` under the
+overview demo — `Checked: {{ agreed() }}`, `Page {{ basicPage() }} of {{ basicTotalPages() }}`,
+`Value: "{{ name() }}"`. The signal behind each still existed on the page class, so the template
+compiled; but the control the reader clicks now lives inside a child component, so the number
+never moved. A live-looking readout that is permanently `false` reads worse than no readout.
+
+Fixed by moving the readout into the example that owns the state, where it also travels to
+StackBlitz. The style is the same in every one:
+
+```
+.readout {
+  margin: 0;
+  color: var(--gog-muted-text-color);
+  font-size: 0.9em;
+}
+```
+
+**2. Lost prose (invisible).** Three deprecation-migration snippets — `migrateAddonSnippet`
+(input field), `migrateTemplateSnippet` (table), `migrateIconSnippet` (tag) — were still built by
+the page class but no longer rendered anywhere. These are the before/after blocks that tell a
+consumer how to get off an API that 21.5.0 removes, so losing them silently was the worst of the
+three. Restored to the end of each page's *Deprecated in 21.3.0* section.
+
+**3. Dead state (rot).** 177 class members, plus their backing constants and two whole dialog-body
+components, that no template referenced any more. Harmless to render, but they read as "this demo
+is wired to the page" to the next person editing, which is exactly the confusion that produced
+(1).
+
+### The check that would have caught all three
+
+The lab had **no lint target** — `npm run lint` covered `@gleks/ui` and `ui-showcase` only. It
+does now (`ng lint gleks-ui-lab`, config at `projects/gleks-ui-lab/eslint.config.js`, mirroring
+the showcase's), and `@typescript-eslint/no-unused-vars` finds residue of type (3) — which is the
+thread that leads to (1) and (2). The lab config exists mainly to relax the root's `gog` selector
+prefix to `app`: every example file is `app-example` on purpose, because the generated StackBlitz
+project mounts `<app-example />` as its root.
+
+Run it before calling any page-level refactor done.

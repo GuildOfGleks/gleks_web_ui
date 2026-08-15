@@ -21,7 +21,7 @@ export class TokenRowEditor {
   readonly overridden = input(false);
 
   readonly valueChange = output<string>();
-  readonly reset = output<void>();
+  readonly resetRequested = output<void>();
 
   protected currentNumeric(): number {
     const control = this.control();

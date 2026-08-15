@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import {
   AccordionComponent,
   GogAccordionContentDirective,
@@ -19,13 +19,19 @@ interface BasicItem extends GogAccordionItem {
         <p>{{ item.body }}</p>
       </ng-template>
     </gog-accordion>
+    <p class="readout">{{ lastToggled() }}</p>
   `,
   styles: `
     :host {
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      gap: 16px;
+      gap: 12px;
+    }
+    .readout {
+      margin: 0;
+      color: var(--gog-muted-text-color);
+      font-size: 0.9em;
     }
   `,
 })
@@ -39,7 +45,9 @@ export class AccordionOverviewExample {
     { id: 'returns', title: 'Returns', body: 'Free returns within 30 days of delivery.' },
   ];
 
+  protected readonly lastToggled = signal('No section toggled yet.');
+
   protected onToggle(event: GogAccordionToggleEvent): void {
-    console.log(event.item.title, event.open);
+    this.lastToggled.set(`${event.item.title} ${event.open ? 'opened' : 'closed'}`);
   }
 }

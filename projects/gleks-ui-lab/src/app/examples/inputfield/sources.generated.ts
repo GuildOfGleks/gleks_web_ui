@@ -56,7 +56,7 @@ export const INPUTFIELD_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<
   ],
   [
     InputfieldOverviewExample,
-    "import { Component, signal } from '@angular/core';\nimport { InputfieldComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [InputfieldComponent],\n  template: `<gog-inputfield label=\"Name\" placeholder=\"Ada Lovelace\" [(value)]=\"name\" />`,\n})\nexport class InputfieldOverviewExample {\n  protected readonly name = signal('');\n}",
+    'import { Component, signal } from \'@angular/core\';\nimport { InputfieldComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [InputfieldComponent],\n  template: `\n    <gog-inputfield label="Name" placeholder="Ada Lovelace" [(value)]="name" />\n    <p class="readout">Value: "{{ name() }}"</p>\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-direction: column;\n      align-items: stretch;\n      gap: 12px;\n      max-width: 420px;\n    }\n    .readout {\n      margin: 0;\n      color: var(--gog-muted-text-color);\n      font-size: 0.9em;\n    }\n  `,\n})\nexport class InputfieldOverviewExample {\n  protected readonly name = signal(\'\');\n}',
   ],
   [
     InputfieldPasswordExample,

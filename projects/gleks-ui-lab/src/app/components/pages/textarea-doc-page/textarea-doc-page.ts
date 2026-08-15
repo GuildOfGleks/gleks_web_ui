@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { GogSize } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
@@ -170,18 +170,8 @@ export class TextareaDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'input-field')?.tokens ?? [];
 
-  protected readonly bio = signal('');
-  protected readonly manualErrorValue = signal('');
-
-  protected readonly commentControl = new FormControl('', {
-    nonNullable: true,
-    validators: [Validators.required, Validators.minLength(10)],
-  });
-
   protected readonly importSnippet =
     "```typescript\nimport { TextareaComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [TextareaComponent],\n})\n```";
-
-  protected readonly clearableValue = signal('');
 
   /** Each example is a file under `src/app/examples/textarea/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {

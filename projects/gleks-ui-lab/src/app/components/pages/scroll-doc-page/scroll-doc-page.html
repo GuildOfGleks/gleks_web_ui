@@ -37,11 +37,8 @@
 
     <app-demo [component]="examples.reach" title="Reach events">
       <code>gogReachStart</code> / <code>gogReachEnd</code> fire once per crossing;
-      <code>gogScroll</code> emits live metrics on every scroll/resize.
-      {{ reachState() }}
-      @if (lastMetrics(); as metrics) {
-        — scrollTop: {{ metrics.scrollTop | number: '1.0-0' }}
-      }
+      <code>gogScroll</code> emits live metrics on every scroll/resize. Scroll the region to the top
+      or the bottom edge to see both fire.
     </app-demo>
 
     <app-demo [component]="examples.methods" title="Scroll methods">

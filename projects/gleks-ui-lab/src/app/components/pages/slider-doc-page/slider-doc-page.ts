@@ -165,24 +165,12 @@ export class SliderDocPage {
   protected readonly volume = signal(45);
   protected readonly brightness = signal(70);
   protected readonly precision = signal(0.45);
-  protected readonly hiddenValue = signal(60);
-  protected readonly ariaOnlyValue = signal(50);
-  protected readonly compactValue = signal(40);
-  protected readonly bass = signal(60);
-  protected readonly mid = signal(45);
-  protected readonly treble = signal(75);
-
   protected readonly priceRange = signal<GogSliderRange>({ start: 20, end: 70 });
   protected readonly cappedRange = signal<GogSliderRange>({ start: 0, end: 60 });
 
   protected readonly summary = computed(
     () =>
       `Volume is ${this.volume()}, brightness is ${this.brightness()}, and precision is ${this.precision()}.`,
-  );
-
-  protected readonly budget = signal(80);
-  protected readonly budgetError = computed(() =>
-    this.budget() > 70 ? 'Over the recommended budget for this tier.' : '',
   );
 
   protected readonly minimumControl = new FormControl<number>(10, {
@@ -192,17 +180,6 @@ export class SliderDocPage {
   private readonly minimumValue = toSignal(this.minimumControl.valueChanges, {
     initialValue: this.minimumControl.value,
   });
-  protected readonly minimumErrorMessage = computed(() => {
-    this.minimumValue();
-    return this.minimumControl.hasError('min') ? 'Must be at least 50.' : '';
-  });
-
-  protected reset(): void {
-    this.volume.set(45);
-    this.brightness.set(70);
-    this.precision.set(0.45);
-  }
-
   protected readonly importSnippet =
     "```typescript\nimport { SliderComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SliderComponent],\n})\n```";
 

@@ -1,14 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import {
-  GogDropdownChevronDirective,
-  GogDropdownOption,
-  GogDropdownOptionDirective,
-  GogMultiselectClearIconDirective,
-  GogSize,
-  MultiselectComponent,
-} from '@guildofgleks/ui';
+import { GogDropdownOption, GogSize, MultiselectComponent } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -38,12 +31,6 @@ interface ApiInputRow {
 }
 
 /** A deliberately un-`GogDropdownOption`-shaped DTO, to show the accessors doing their job. */
-interface User {
-  readonly uuid: string;
-  readonly profile: { readonly fullName: string; readonly role: string };
-  readonly suspended: boolean;
-}
-
 const API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'selectAllLabel',
@@ -283,86 +270,19 @@ export class MultiselectDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'multiselect')?.tokens ?? [];
 
-  protected readonly selectedFeatures = signal<(string | number)[]>([]);
-  protected readonly features: GogDropdownOption[] = [
-    { id: 'toast', name: 'Toast' },
-    { id: 'dialog', name: 'Dialog' },
-    { id: 'forms', name: 'Forms' },
-    { id: 'table', name: 'Table' },
-  ];
-  protected readonly featureSummary = computed(
-    () => this.selectedFeatures().join(', ') || 'None selected',
-  );
-
-  protected readonly sizeDemoValue = signal<(string | number)[]>(['toast']);
-
-  protected readonly permissionsWithDisabled: GogDropdownOption[] = [
-    { id: 'read', name: 'Read' },
-    { id: 'write', name: 'Write' },
-    { id: 'admin', name: 'Admin (contact owner)', disabled: true },
-  ];
-  protected readonly permissions = signal<(string | number)[]>(['read']);
-  protected readonly requiredValue = signal<(string | number)[]>([]);
-  protected readonly requiredError = computed(() =>
-    this.requiredValue().length === 0 ? 'Pick at least one option.' : '',
-  );
-
-  protected readonly permissionsFormControl = new FormControl<(string | number)[]>([], {
-    nonNullable: true,
-    validators: Validators.required,
-  });
-
-  protected readonly tags: GogDropdownOption[] = [
-    { id: 'urgent', name: 'Urgent' },
-    { id: 'bug', name: 'Bug' },
-    { id: 'feature', name: 'Feature' },
-    { id: 'docs', name: 'Docs' },
-  ];
-  protected readonly fullWidthTags = signal<(string | number)[]>(['bug']);
-  protected readonly fullWidthFeatures = signal<(string | number)[]>([]);
-
-  protected readonly countries: GogDropdownOption[] = [
-    { id: 'de', name: 'Germany' },
-    { id: 'fr', name: 'France' },
-    { id: 'es', name: 'Spain' },
-    { id: 'it', name: 'Italy' },
-    { id: 'pl', name: 'Poland' },
-  ];
-  protected readonly topControlsValue = signal<(string | number)[]>([]);
-  protected readonly bottomControlsValue = signal<(string | number)[]>([]);
-
-  protected readonly sortOptions: GogDropdownOption[] = [
-    { id: 'name', name: 'Name' },
-    { id: 'date', name: 'Date' },
-  ];
-  protected readonly sortValue = signal<(string | number)[]>([]);
-  protected readonly ariaOnlyValue = signal<(string | number)[]>([]);
-
   protected readonly manyCountries: GogDropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
     id: `country-${i}`,
     name: `Country ${i + 1}`,
   }));
-  protected readonly compactPanelValue = signal<(string | number)[]>([]);
-
   protected readonly importSnippet =
     "```typescript\nimport { MultiselectComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [MultiselectComponent],\n})\n```";
 
   // ---- 21.3.0: option accessors, filtering, option slot -----------------------------------
 
-  protected readonly users: User[] = [
-    { uuid: 'u1', profile: { fullName: 'Ada Lovelace', role: 'Engineering' }, suspended: false },
-    { uuid: 'u2', profile: { fullName: 'Grace Hopper', role: 'Engineering' }, suspended: false },
-    { uuid: 'u3', profile: { fullName: 'Katherine Johnson', role: 'Research' }, suspended: false },
-    { uuid: 'u4', profile: { fullName: 'Radia Perlman', role: 'Networking' }, suspended: true },
-  ];
   protected readonly reviewerIds = signal<(string | number)[]>([]);
-  protected readonly slotReviewerIds = signal<(string | number)[]>([]);
   protected readonly filteredCountries = signal<(string | number)[]>([]);
   protected readonly overflowCountries = signal<(string | number)[]>([]);
 
-  protected asUser(option: unknown): User {
-    return option as User;
-  }
   /** Each example is a file under `src/app/examples/multiselect/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     accessors: MultiselectAccessorsExample,

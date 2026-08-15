@@ -31,7 +31,7 @@ export const PAGINATOR_EXAMPLE_SOURCES: ReadonlyMap<unknown, string> = new Map<u
   ],
   [
     PaginatorOverviewExample,
-    "import { Component, signal } from '@angular/core';\nimport { PaginatorComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [PaginatorComponent],\n  template: `<gog-paginator [(page)]=\"page\" [totalPages]=\"totalPages()\" />`,\n})\nexport class PaginatorOverviewExample {\n  protected readonly page = signal(1);\n  protected readonly totalPages = signal(20);\n}",
+    'import { Component, signal } from \'@angular/core\';\nimport { PaginatorComponent } from \'@guildofgleks/ui\';\n\n@Component({\n  selector: \'app-example\',\n  imports: [PaginatorComponent],\n  template: `\n    <gog-paginator [(page)]="page" [totalPages]="totalPages()" />\n    <p class="readout">Page {{ page() }} of {{ totalPages() }}</p>\n  `,\n  styles: `\n    :host {\n      display: flex;\n      flex-direction: column;\n      align-items: flex-start;\n      gap: 12px;\n    }\n    .readout {\n      margin: 0;\n      color: var(--gog-muted-text-color);\n      font-size: 0.9em;\n    }\n  `,\n})\nexport class PaginatorOverviewExample {\n  protected readonly page = signal(1);\n  protected readonly totalPages = signal(20);\n}',
   ],
   [
     PaginatorRecordsExample,

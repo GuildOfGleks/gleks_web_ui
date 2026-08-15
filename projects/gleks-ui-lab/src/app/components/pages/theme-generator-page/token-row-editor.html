@@ -53,7 +53,7 @@
     type="button"
     class="row__reset"
     [attr.aria-label]="'Reset ' + name() + ' to default'"
-    (click)="reset.emit()"
+    (click)="resetRequested.emit()"
   >
     ✕
   </button>

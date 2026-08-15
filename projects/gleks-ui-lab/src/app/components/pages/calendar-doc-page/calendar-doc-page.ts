@@ -158,9 +158,6 @@ const API_OUTPUTS: readonly ApiRow[] = [
 export class CalendarDocPage {
   protected readonly day = signal<GogDatepickerValue>(new Date());
   protected readonly range = signal<GogDatepickerValue>(null);
-  protected readonly workday = signal<GogDatepickerValue>(null);
-  protected readonly moment = signal<GogDatepickerValue>(null);
-
   /** Weekends are the textbook case an array of dates cannot express. */
   protected readonly weekends = (date: Date): boolean => {
     const weekday = date.getDay();
@@ -175,13 +172,6 @@ export class CalendarDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { CalendarComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [CalendarComponent],\n})\n```";
 
-  protected formatValue(value: GogDatepickerValue): string {
-    if (value === null) return 'null';
-    if (value instanceof Date) return value.toDateString();
-    const start = value.start ? value.start.toDateString() : '—';
-    const end = value.end ? value.end.toDateString() : '—';
-    return `${start} → ${end}`;
-  }
   /** Each example is a file under `src/app/examples/calendar/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     disabled: CalendarDisabledExample,

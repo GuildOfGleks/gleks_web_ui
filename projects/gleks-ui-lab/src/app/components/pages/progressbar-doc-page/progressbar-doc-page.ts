@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GogProgressbarVariant, GogSize } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
@@ -88,8 +88,6 @@ export class ProgressbarDocPage {
   ];
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
-  protected readonly uploaded = signal(42);
-
   protected readonly apiInputs = API_INPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'progressbar')?.tokens ?? [];
@@ -97,9 +95,6 @@ export class ProgressbarDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ProgressbarComponent],\n})\n```";
 
-  protected step(delta: number): void {
-    this.uploaded.update((value) => Math.min(100, Math.max(0, value + delta)));
-  }
   /** Each example is a file under `src/app/examples/progressbar/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     modes: ProgressbarModesExample,

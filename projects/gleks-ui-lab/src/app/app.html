@@ -59,7 +59,12 @@
   <!-- Closes the drawer on a tap outside it. Rendered only while open, and only visible below the
        breakpoint, so it can never sit over the desktop layout. -->
   @if (isNavOpen()) {
-    <div class="lab-nav-backdrop" (click)="closeNav()"></div>
+    <button
+      type="button"
+      class="lab-nav-backdrop"
+      aria-label="Close navigation"
+      (click)="closeNav()"
+    ></button>
   }
 
   <aside id="lab-nav" class="lab-sidebar-left" [class.lab-sidebar-left--open]="isNavOpen()">

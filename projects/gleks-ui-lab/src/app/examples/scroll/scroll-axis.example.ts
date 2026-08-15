@@ -22,7 +22,6 @@ import { ScrollComponent } from '@guildofgleks/ui';
       gap: 16px;
     }
     .box {
-      display: block;
       height: 160px;
       width: 320px;
       border: 1px solid var(--gog-border-color);

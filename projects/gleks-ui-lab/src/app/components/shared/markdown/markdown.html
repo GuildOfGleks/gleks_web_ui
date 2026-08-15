@@ -1,1 +1,5 @@
+<!-- The click is delegated, not the container's own: the only thing `onClick` acts on is a
+     `.code-block__copy` <button> inside the rendered HTML, and a real button already answers
+     Enter and Space by firing a click. The container is a listening surface, not a control. -->
+<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
 <div class="markdown-body" [innerHTML]="html()" (click)="onClick($event)"></div>

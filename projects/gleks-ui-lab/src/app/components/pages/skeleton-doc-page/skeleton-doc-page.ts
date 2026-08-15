@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GogSize, GogSkeletonAnimation } from '@guildofgleks/ui';
 import { ExampleHostComponent } from '../../shared/example-host/example-host';
@@ -79,33 +79,6 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
 ];
 
-interface Product {
-  readonly name: string;
-  readonly price: string;
-  readonly color: string;
-}
-
-const PRODUCTS: readonly Product[] = [
-  { name: 'Aurora Desk Lamp', price: '$68', color: '#d4b483' },
-  { name: 'Trailblazer Jacket', price: '$142', color: '#7f9c96' },
-  { name: 'Nimbus Wireless Buds', price: '$89', color: '#8f8bd6' },
-  { name: 'Fieldnotes Journal', price: '$24', color: '#c97b63' },
-];
-
-interface ChatMessage {
-  readonly fromMe: boolean;
-  readonly width: string;
-  readonly text: string;
-}
-
-const CHAT_MESSAGES: readonly ChatMessage[] = [
-  { fromMe: false, width: '55%', text: 'Hey! Did you see the new release notes?' },
-  { fromMe: true, width: '38%', text: 'Just opened them now.' },
-  { fromMe: false, width: '68%', text: 'The multiselect keyboard nav fix is finally in 🎉' },
-  { fromMe: false, width: '32%', text: 'About time.' },
-  { fromMe: true, width: '50%', text: "I'll update the doc pages this week." },
-];
-
 @Component({
   selector: 'app-skeleton-doc-page',
   imports: [ExampleHostComponent, MarkdownComponent, RouterLink],
@@ -114,7 +87,7 @@ const CHAT_MESSAGES: readonly ChatMessage[] = [
   styleUrl: './skeleton-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SkeletonDocPage implements OnDestroy {
+export class SkeletonDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
   protected readonly animations: GogSkeletonAnimation[] = ['pulse', 'wave', 'none'];
 
@@ -122,42 +95,9 @@ export class SkeletonDocPage implements OnDestroy {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'skeleton')?.tokens ?? [];
 
-  protected readonly products = PRODUCTS;
-  protected readonly chatMessages = CHAT_MESSAGES;
-
-  protected readonly profileLoading = signal(false);
-  protected readonly productsLoading = signal(true);
-  protected readonly chatLoading = signal(true);
-  private profileTimer: ReturnType<typeof setTimeout> | null = null;
-
   protected readonly importSnippet =
     "```typescript\nimport { } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SkeletonComponent],\n})\n```";
 
-  protected reloadProfile(): void {
-    if (this.profileTimer) {
-      clearTimeout(this.profileTimer);
-    }
-
-    this.profileLoading.set(true);
-    this.profileTimer = setTimeout(() => {
-      this.profileLoading.set(false);
-      this.profileTimer = null;
-    }, 1800);
-  }
-
-  protected toggleProductsLoading(): void {
-    this.productsLoading.update((loading) => !loading);
-  }
-
-  protected toggleChatLoading(): void {
-    this.chatLoading.update((loading) => !loading);
-  }
-
-  ngOnDestroy(): void {
-    if (this.profileTimer) {
-      clearTimeout(this.profileTimer);
-    }
-  }
   /** Each example is a file under `src/app/examples/skeleton/` — see docs/lab-examples-refactor.md. */
   protected readonly examples = {
     animations: SkeletonAnimationsExample,

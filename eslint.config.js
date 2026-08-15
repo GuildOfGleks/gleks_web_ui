@@ -19,6 +19,17 @@ module.exports = defineConfig([
       // (`private onChange: (v) => void = () => {}`) throughout the library — a deliberate,
       // repeated pattern, not an accidental empty body.
       '@typescript-eslint/no-empty-function': ['error', { allow: ['arrowFunctions'] }],
+      // A leading underscore is how this codebase says "bound on purpose, not read" — a
+      // destructured discard, or a parameter kept for the signature it has to match.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
+      ],
       '@angular-eslint/directive-selector': [
         'error',
         {
