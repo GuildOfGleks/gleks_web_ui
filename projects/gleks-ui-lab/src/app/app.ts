@@ -14,7 +14,7 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { ButtonComponent, ScrollComponent, ThemeService } from '@guildofgleks/ui';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faPalette } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faPalette } from '@fortawesome/free-solid-svg-icons';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
 import { TocComponent } from './components/shared/toc/toc';
 import { LIBRARY_NPM_URL, LIBRARY_VERSION } from './components/shared/library-version';
@@ -57,7 +57,8 @@ const FOOTER_LINKS: readonly FooterLink[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(document:click)': 'onDocumentClick($event)',
-    '(document:keydown.escape)': 'closeThemeMenu()',
+    '(document:keydown.escape)': 'onEscape()',
+    '[class.lab--nav-open]': 'isNavOpen()',
   },
 })
 export class App {
@@ -93,7 +94,12 @@ export class App {
           filter((event) => event instanceof NavigationEnd),
           takeUntilDestroyed(),
         )
-        .subscribe(() => this.mainScroll()?.scrollTo({ top: 0, left: 0, behavior: 'instant' }));
+        .subscribe(() => {
+          this.mainScroll()?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          // Picking a page is the whole reason the drawer was opened, so it closes itself —
+          // otherwise a phone reader lands on the new page with the nav still covering it.
+          this.isNavOpen.set(false);
+        });
     }
   }
 
@@ -120,7 +126,23 @@ export class App {
   protected readonly activeTheme = computed(() => this.themeService.theme());
   protected readonly isThemeMenuOpen = signal(false);
 
+  /**
+   * The left sidebar as a drawer, below the layout's tablet breakpoint. Above it the sidebar is
+   * a permanent column and this is ignored — the same markup, positioned differently, so the
+   * navigation is never a second component that can drift from the real one.
+   */
+  protected readonly isNavOpen = signal(false);
+
+  protected readonly faBars = faBars;
   protected readonly faPalette = faPalette;
+
+  protected toggleNav(): void {
+    this.isNavOpen.update((open) => !open);
+  }
+
+  protected closeNav(): void {
+    this.isNavOpen.set(false);
+  }
 
   protected toggleThemeMenu(): void {
     this.isThemeMenuOpen.update((open) => !open);
@@ -142,5 +164,14 @@ export class App {
     if (switcher && !switcher.contains(event.target as Node)) {
       this.closeThemeMenu();
     }
+  }
+
+  /** Escape closes whichever overlay is open — the theme menu first, then the nav drawer. */
+  protected onEscape(): void {
+    if (this.isThemeMenuOpen()) {
+      this.closeThemeMenu();
+      return;
+    }
+    this.closeNav();
   }
 }

@@ -2,6 +2,17 @@
   <!-- 1. ХЕДЕР (Шапка сайта) -->
   <header class="lab-header">
     <div class="header-left">
+      <!-- Only below the tablet breakpoint, where the sidebar becomes a drawer (app.scss). -->
+      <button
+        type="button"
+        class="nav-toggle"
+        [attr.aria-expanded]="isNavOpen()"
+        aria-controls="lab-nav"
+        aria-label="Navigation"
+        (click)="toggleNav()"
+      >
+        <fa-icon [icon]="faBars" />
+      </button>
       <img src="/gleks_ui_logo.svg" alt="" class="logo-icon" width="28" height="32" />
       <span class="logo-title font-heading">GUILD OF GLEKS UI</span>
       <a
@@ -45,7 +56,13 @@
     </div>
   </header>
 
-  <aside class="lab-sidebar-left">
+  <!-- Closes the drawer on a tap outside it. Rendered only while open, and only visible below the
+       breakpoint, so it can never sit over the desktop layout. -->
+  @if (isNavOpen()) {
+    <div class="lab-nav-backdrop" (click)="closeNav()"></div>
+  }
+
+  <aside id="lab-nav" class="lab-sidebar-left" [class.lab-sidebar-left--open]="isNavOpen()">
     <app-sidebar-left class="lab-sidebar-left__inner" />
   </aside>
 

@@ -183,7 +183,47 @@
   }
 }
 
-/* Адаптив под планшеты и мобильные */
+/* 6. Кнопка меню — только на узких экранах, где сайдбар превращается в выдвижную панель */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-right: 4px;
+  padding: 0;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: transparent;
+  color: var(--gog-text-color);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--gog-accent-color);
+    border-color: var(--gog-accent-color);
+  }
+
+  &:focus-visible {
+    outline: var(--gog-focus-ring-width) solid var(--gog-focus-ring-color);
+    outline-offset: 2px;
+  }
+}
+
+.lab-nav-backdrop {
+  display: none;
+}
+
+/* ── Адаптив ────────────────────────────────────────────────────────────────
+ *
+ * Три ступени, а не две:
+ *
+ *   ≤1100px  прячем оглавление справа — оно дублирует заголовки самой страницы;
+ *   ≤900px   сайдбар становится выдвижным, контент занимает всю ширину;
+ *   ≤560px   ужимаем шапку и подвал под телефон.
+ *
+ * Раньше на ≤768px сайдбар просто скрывался, и по документации нельзя было ходить вообще:
+ * ни списка компонентов, ни ссылок — только та страница, на которую человек попал.
+ */
 @media (max-width: 1100px) {
   .lab-layout {
     grid-template-columns: 180px 1fr;
@@ -196,14 +236,85 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .lab-layout {
     grid-template-columns: 1fr;
     grid-template-areas:
       'header'
       'main';
   }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  /* Вне потока: панель выезжает поверх контента, а не раздвигает его. `100dvh` минус шапка —
+     на мобильных браузерах динамическая единица учитывает сворачивающуюся адресную строку. */
   .lab-sidebar-left {
-    display: none;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    z-index: 150;
+    width: min(280px, 85vw);
+    height: calc(100dvh - 60px);
+    border-right: 1px solid var(--gog-border-color);
+    box-shadow: var(--gog-panel-shadow);
+    transform: translateX(-100%);
+    transition: transform var(--gog-duration-base) var(--gog-easing);
+
+    &--open {
+      transform: translateX(0);
+    }
+  }
+
+  .lab-nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 60px 0 0;
+    z-index: 140;
+    background: color-mix(in srgb, var(--gog-background-color) 65%, transparent);
+  }
+
+  .lab-main-content .content-container {
+    padding: 24px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-sidebar-left {
+    transition: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .lab-header {
+    padding: 0 12px;
+
+    .header-left {
+      gap: 8px;
+      min-width: 0;
+    }
+
+    /* Название целиком не влезает рядом с бейджем версии и кнопкой меню — остаётся логотип,
+       который и так ведёт на главную страницу сайта. */
+    .logo-title {
+      display: none;
+    }
+  }
+
+  .lab-main-content .content-container {
+    padding: 20px 14px;
+  }
+
+  .lab-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 20px 14px;
+
+    .footer-links {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
   }
 }
