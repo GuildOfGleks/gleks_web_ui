@@ -28,10 +28,26 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
  */
 const ALLOWED_HOSTS = ['ui.guildofgleks.com', 'www.ui.guildofgleks.com', 'localhost', '127.0.0.1'];
 
+const allowedHosts =
+  process.env['NG_ALLOWED_HOSTS']?.split(',').map((host) => host.trim()) ?? ALLOWED_HOSTS;
+
 const app = express();
 const angularApp = new AngularNodeAppEngine({
-  allowedHosts:
-    process.env['NG_ALLOWED_HOSTS']?.split(',').map((host) => host.trim()) ?? ALLOWED_HOSTS,
+  allowedHosts,
+  /**
+   * **The allow-list is checked against the `Host` header the container actually receives, not
+   * the one in the address bar.** Behind nginx that is whatever `proxy_set_header Host` was set
+   * to — nginx's own default is the upstream (`localhost:3001`, a container name, an IP), none of
+   * which is the public domain. When it does not match, `handle()` quietly serves the empty
+   * `index.csr.html` shell instead of the rendered page, which is invisible in a browser and
+   * fatal for crawlers.
+   *
+   * With this on, the engine reads `X-Forwarded-Host` / `X-Forwarded-Proto` — which Cloudflare
+   * and nginx do set to the public values — and the allow-list above matches again. Safe here
+   * because the container is only reached through that proxy, and a forged header still has to
+   * name a host the list already permits.
+   */
+  trustProxyHeaders: true,
 });
 
 /**
@@ -59,8 +75,28 @@ app.use(
 
 /**
  * Handle all other requests by rendering the Angular application.
+ *
+ * A rejected host makes `handle()` fall back to the client-side shell rather than fail, so the
+ * only sign of a misconfigured deployment is a page that looks fine to a human and empty to a
+ * crawler. The header is logged once per distinct host to make that visible in `docker logs`:
+ * whatever it prints is what `NG_ALLOWED_HOSTS` has to contain.
  */
+const loggedHosts = new Set<string>();
+
 app.use((req, res, next) => {
+  const host = (req.headers['x-forwarded-host'] ?? req.headers.host ?? '') as string;
+  if (host && !loggedHosts.has(host)) {
+    loggedHosts.add(host);
+    const hostname = host.split(':')[0];
+    if (!allowedHosts.includes(hostname) && !allowedHosts.includes('*')) {
+      console.warn(
+        `[ssr] Host "${host}" is not in allowedHosts (${allowedHosts.join(', ')}) — ` +
+          'requests from it are served the client-side shell, not server-rendered HTML. ' +
+          'Add it to NG_ALLOWED_HOSTS.',
+      );
+    }
+  }
+
   angularApp
     .handle(req)
     .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))

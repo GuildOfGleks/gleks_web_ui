@@ -12,7 +12,7 @@ bare client-side shell. A crawler asking for `/components/table` received a page
 content, no per-page title and no description; whether it ever saw the real page depended on it
 choosing to execute the JavaScript.
 
-The trap is that `angular.json` *does* have a `security.allowedHosts` entry (set to `[]`) — but
+The trap is that `angular.json` _does_ have a `security.allowedHosts` entry (set to `[]`) — but
 that one configures the **dev-server**, not the SSR runtime. The runtime reads the engine options
 or the `NG_ALLOWED_HOSTS` environment variable, neither of which was set.
 
@@ -20,6 +20,19 @@ Fixed in `projects/gleks-ui-lab/src/server.ts`: the production domain, its `www`
 `localhost`/`127.0.0.1` (the container sits behind a reverse proxy that may forward its own
 `Host`, and the local check needs it) — with `NG_ALLOWED_HOSTS` still able to override the whole
 list at deploy time.
+
+**Two ways it goes wrong, and they look different:**
+
+| Symptom                                                              | Cause                                                                                                  |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 200 with an empty `<app-root></app-root>` and the generic site title | the allow-list is **empty** — an image built before this fix, so every request falls back to the shell |
+| 400 Bad Request                                                      | the list is set but the arriving `Host` is not in it                                                   |
+
+The second is the one a reverse proxy causes: nginx sends its _upstream_ host (`localhost:3001`, a
+container name, an IP), not the domain in the address bar. `trustProxyHeaders: true` makes the
+engine read `X-Forwarded-Host` instead, which Cloudflare and nginx do set — and any host that is
+still rejected is now logged once, so `docker logs gleks-ui-lab` names exactly what
+`NG_ALLOWED_HOSTS` needs.
 
 **Verify after every deploy**, because a silent CSR fallback looks fine in a browser:
 
@@ -38,17 +51,36 @@ curl -s -H "Host: ui.guildofgleks.com" http://localhost:4000/components/table | 
 
 ## What each piece does
 
-| Piece | Where | What it does |
-| --- | --- | --- |
-| Per-page title + description | `components/shared/seo-data.ts` | One entry per routed page — 38 of them. The table is the only place a page's search-result text lives. |
-| Applying them | `components/shared/seo.ts` (`SeoService`) | Sets title, description, canonical, Open Graph and Twitter tags on every `NavigationEnd` — **including the one that happens during server rendering**, which is what puts them in the HTML a crawler receives. Started from `App`'s constructor. |
-| `noindex` for catch-alls | same service | `app.routes.ts` ends in `components/:name` and `general/:slug`, which render for *any* slug. Anything not in `PAGE_SEO` is marked `noindex, follow`, so a mistyped or guessed URL cannot enter the index as a thin duplicate. |
-| Canonical URLs | same service | Always `https://ui.guildofgleks.com/<path>`, never carrying a query or `#fragment`; `/` and `/general/overview` both canonicalise to the latter, since `/` redirects there. |
-| Site-level defaults + structured data | `src/index.html` | Fallback title/description matching `FALLBACK_SEO`, plus JSON-LD (`WebSite` + `SoftwareApplication`) describing the package: category, licence, repository, npm URL, free. |
-| `FAQPage` structured data | `pages/faq-page/faq-page.ts` | Generated from `faq-data.ts` — the same source the page renders — and written into `<head>` on that page only, during server rendering included. It is what lets a result show the questions themselves. Answers stay in the DOM when a question is collapsed (`gogCollapsibleContent` hides with CSS and `inert`, it does not remove), so the markup a crawler receives carries all 25 answers in full; keep it that way if the FAQ is ever restructured again. |
-| `robots.txt` | `public/robots.txt` | Allows everything, points at the sitemap. Deliberately does **not** `Disallow` the catch-all routes — a blocked URL is never crawled, so the crawler would never see the `noindex` on it. |
-| `sitemap.xml` | generated | `scripts/generate-sitemap.mjs` derives it from `nav-data.ts`, so adding a page to the sidebar adds it to the sitemap. `scripts/build-lab.mjs` regenerates it before every build, including the Dockerfile's — a deployed sitemap cannot be stale. `npm run generate:sitemap` / `npm run check:sitemap` run it by hand. |
-| Home-page `H1` | `overview-page.html` | Says what the library *is* (`Angular UI Component Library`), not what the page is called. The sidebar entry is still "Overview". |
+| Piece                                 | Where                                     | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Per-page title + description          | `components/shared/seo-data.ts`           | One entry per routed page — 38 of them. The table is the only place a page's search-result text lives.                                                                                                                                                                                                                                                                                                                                                           |
+| Applying them                         | `components/shared/seo.ts` (`SeoService`) | Sets title, description, canonical, Open Graph and Twitter tags on every `NavigationEnd` — **including the one that happens during server rendering**, which is what puts them in the HTML a crawler receives. Started from `App`'s constructor.                                                                                                                                                                                                                 |
+| `noindex` for catch-alls              | same service                              | `app.routes.ts` ends in `components/:name` and `general/:slug`, which render for _any_ slug. Anything not in `PAGE_SEO` is marked `noindex, follow`, so a mistyped or guessed URL cannot enter the index as a thin duplicate.                                                                                                                                                                                                                                    |
+| Canonical URLs                        | same service                              | Always `https://ui.guildofgleks.com/<path>`, never carrying a query or `#fragment`; `/` and `/general/overview` both canonicalise to the latter, since `/` redirects there.                                                                                                                                                                                                                                                                                      |
+| Site-level defaults + structured data | `src/index.html`                          | Fallback title/description matching `FALLBACK_SEO`, plus JSON-LD (`WebSite` + `SoftwareApplication`) describing the package: category, licence, repository, npm URL, free.                                                                                                                                                                                                                                                                                       |
+| `FAQPage` structured data             | `pages/faq-page/faq-page.ts`              | Generated from `faq-data.ts` — the same source the page renders — and written into `<head>` on that page only, during server rendering included. It is what lets a result show the questions themselves. Answers stay in the DOM when a question is collapsed (`gogCollapsibleContent` hides with CSS and `inert`, it does not remove), so the markup a crawler receives carries all 25 answers in full; keep it that way if the FAQ is ever restructured again. |
+| `robots.txt`                          | `public/robots.txt`                       | Allows everything, points at the sitemap. Deliberately does **not** `Disallow` the catch-all routes — a blocked URL is never crawled, so the crawler would never see the `noindex` on it.                                                                                                                                                                                                                                                                        |
+| `sitemap.xml`                         | generated                                 | `scripts/generate-sitemap.mjs` derives it from `nav-data.ts`, so adding a page to the sidebar adds it to the sitemap. `scripts/build-lab.mjs` regenerates it before every build, including the Dockerfile's — a deployed sitemap cannot be stale. `npm run generate:sitemap` / `npm run check:sitemap` run it by hand.                                                                                                                                           |
+| Home-page `H1`                        | `overview-page.html`                      | Says what the library _is_ (`Angular UI Component Library`), not what the page is called. The sidebar entry is still "Overview".                                                                                                                                                                                                                                                                                                                                 |
+
+## Cloudflare rewrites `robots.txt` in flight
+
+The file served at `/robots.txt` is **not** the one in `public/`. Cloudflare's managed
+content block is prepended to it, so the live file is Cloudflare's rules first, ours second:
+
+- `Content-Signal: search=yes,ai-train=no,use=reference` — a Cloudflare/IETF-draft directive that
+  Googlebot does not know. Search Console flags it as _"a rule Googlebot ignores"_; that is
+  literally what it says — an unknown line is skipped, nothing is blocked, and the warning is
+  cosmetic. Turning it off is Cloudflare dashboard → the domain → **AI Audit / Bots → manage
+  robots.txt**, which also removes the AI-crawler `Disallow` rules that come with it.
+- `Disallow` for `GPTBot`, `ClaudeBot`, `CCBot`, `Google-Extended`, `Bytespider`, `Amazonbot`,
+  `Applebot-Extended`, `meta-externalagent`. **`Google-Extended` is not Googlebot** — it governs
+  Gemini/Vertex training only, and does not affect Search indexing, ranking or AI Overviews.
+- Two `User-agent: *` groups now exist (Cloudflare's and ours). Crawlers merge groups with the
+  same agent, both say `Allow: /`, and `Sitemap:` is file-global — so nothing conflicts.
+
+Worth re-reading `https://ui.guildofgleks.com/robots.txt` after any Cloudflare change: a managed
+block is edited by someone else's release schedule, not this repository's.
 
 ## What is deliberately not done
 
@@ -63,14 +95,14 @@ curl -s -H "Host: ui.guildofgleks.com" http://localhost:4000/components/table | 
 
 ## What only you can do
 
-Technical setup makes a site *indexable*. It does not make it rank — for a head term like
+Technical setup makes a site _indexable_. It does not make it rank — for a head term like
 "angular ui library" the results are Material, PrimeNG, NG-ZORRO and Nebular, all of which have
 years of links pointing at them. What actually moves that needle, in rough order of effect:
 
 1. **Google Search Console** — verify the domain (a DNS TXT record), submit
-   `https://ui.guildofgleks.com/sitemap.xml`, then use *URL inspection → Request indexing* on
+   `https://ui.guildofgleks.com/sitemap.xml`, then use _URL inspection → Request indexing_ on
    the home page once. This is also where you find out whether Google is seeing the rendered
-   page or the shell: *Inspect URL → View crawled page*.
+   page or the shell: _Inspect URL → View crawled page_.
 2. **Bing Webmaster Tools** — same, and it can import the Search Console setup.
 3. **Links from where Angular developers already are.** A package README linking to the docs
    site (it does), the npm page (it does), plus: a `Show HN`/Reddit `r/angular` post, a
