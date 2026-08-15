@@ -167,3 +167,31 @@ prefix to `app`: every example file is `app-example` on purpose, because the gen
 project mounts `<app-example />` as its root.
 
 Run it before calling any page-level refactor done.
+
+## Two authoring rules the collapsible page taught
+
+Both cost a whole page's credibility and neither breaks a build.
+
+**Never put margin or padding on the element carrying `gogCollapsibleContent`.** It collapses with
+`max-height: 0`, and its own box spacing survives the collapse as a visible empty strip under the
+trigger. A `<p gogCollapsibleContent>` is the easy way to hit this: the UA's default `margin: 16px 0`
+left 32px of dead space under every closed row on the collapsible page. Wrap the content in a
+plain element and put the spacing on that:
+
+```html
+<div gogCollapsibleContent class="panel">
+  <p>…</p>
+</div>
+```
+
+```
+.panel { margin: 0; }
+.panel p { margin: 0; padding: 12px 14px 0; }
+```
+
+**A bare `<button>` in an example is a bug, not a neutral default.** The library is headless where
+it can be — `gog-collapsible` renders no box at all — so an unstyled trigger falls back to the
+browser's grey OS control, which on this site's dark theme reads as "the demo is broken". Every
+projected trigger in an example carries the page's own trigger recipe: themed surface, hover,
+`:focus-visible` ring, and a chevron rotated off the `.gog-collapsible__trigger--open` class the
+directive already sets. The FAQ page (`faq-page.scss`) is the reference implementation.

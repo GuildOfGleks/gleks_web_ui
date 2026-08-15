@@ -376,3 +376,14 @@ not re-file it.
   will hit it wherever they nest an overlay inside their own transformed or contained wrapper.
   Worth one shared paragraph in `README.md`/`AGENTS.md` plus a line on each overlay input's
   TSDoc — a documentation change, which is why it is here rather than in an iteration.
+- **`gogCollapsibleTrigger` is silently keyboard-inaccessible on a non-focusable element.** The
+  directive's whole host block is `class`, three ARIA attributes and `(click)` — no `tabindex`, no
+  `role`, no key handling. Put it on a `<div>` (which its own TSDoc invites: "works on any
+  clickable element") and the trigger has no tab stop and does not respond to Enter or Space,
+  while still announcing `aria-expanded`/`aria-controls` — so it reads as an interactive control
+  to a screen reader and is unreachable by the keyboard that reader is using. The lab's
+  "Custom trigger element" example did exactly this until 2026-08-15. Two possible fixes: make
+  the directive add `tabindex="0"`, `role="button"` and Enter/Space handling when the host is not
+  natively focusable, or narrow the TSDoc to "must be a natively focusable element" and say so in
+  `AGENTS.md`. The first is the kinder default and is not a breaking change; either way it is a
+  library change, which is why it is recorded here.

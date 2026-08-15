@@ -24,13 +24,16 @@
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <app-demo [component]="examples.customTrigger" title="Custom trigger element">
-      <code>gogCollapsibleTrigger</code> works on anything clickable — here it's a whole header row,
-      not a <code>&lt;button&gt;</code>.
+      The trigger's <em>markup</em> is entirely yours — here a whole card header with a title, a
+      summary line and a chevron. Keep the directive on a natively focusable element, though:
+      <code>gogCollapsibleTrigger</code> wires <code>(click)</code> and the ARIA attributes and
+      nothing else, so on a <code>&lt;div&gt;</code> the trigger would have no tab stop and no
+      keyboard activation.
     </app-demo>
 
     <app-demo [component]="examples.disabled" title="Disabled">
       <code>disabled</code> blocks the trigger's click handler and sets <code>aria-disabled</code> —
-      a programmatic <code>[open]</code> write still works.
+      a programmatic <code>[open]</code> write still works, which the second button here does.
     </app-demo>
 
     <app-demo [component]="examples.controlled" title="Controlled from outside">

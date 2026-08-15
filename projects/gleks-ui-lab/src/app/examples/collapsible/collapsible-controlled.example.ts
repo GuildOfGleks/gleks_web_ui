@@ -9,22 +9,40 @@ import {
   selector: 'app-example',
   imports: [ButtonComponent, CollapsibleComponent, GogCollapsibleContentDirective],
   template: `
-    <gog-button (gogClick)="open.set(true)">Open</gog-button>
-    <gog-button (gogClick)="open.set(false)">Close</gog-button>
+    <div class="controls">
+      <gog-button size="sm" (gogClick)="open.set(true)">Open</gog-button>
+      <gog-button size="sm" variant="outline" (gogClick)="open.set(false)">Close</gog-button>
+    </div>
 
     <gog-collapsible [(open)]="open">
-      <p gogCollapsibleContent>
-        No gogCollapsibleTrigger anywhere — [open] is driven entirely from outside.
-      </p>
+      <div gogCollapsibleContent class="panel">
+        <p>No gogCollapsibleTrigger anywhere — [open] is driven entirely from outside.</p>
+      </div>
     </gog-collapsible>
   `,
   styles: `
     :host {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
       gap: 12px;
       max-width: 420px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    /* Spacing on the inner <p>, not on the collapsing element — see the overview example. */
+    .panel {
+      margin: 0;
+    }
+    .panel p {
+      margin: 0;
+      padding: 12px 14px;
+      border: 1px solid var(--gog-border-color);
+      border-radius: var(--gog-radius);
+      background: var(--gog-surface-color);
     }
   `,
 })
