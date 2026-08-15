@@ -13,7 +13,12 @@ function renderCodeBlock({ text, lang }: Tokens.Code): string {
   </div>`;
 }
 
-function slugify(text: string): string {
+/**
+ * Exported because the FAQ page builds the same ids for its collapsible questions without going
+ * through this renderer — those ids are linked to from elsewhere on the site, so the two have to
+ * agree on how a heading becomes an anchor.
+ */
+export function slugify(text: string): string {
   return text
     .toLowerCase()
     .trim()

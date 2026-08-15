@@ -1,0 +1,105 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('faq');
+
+.faq {
+  &__expand {
+    margin-top: 1em;
+    padding: 6px 12px;
+    border: 1px solid var(--gog-border-color);
+    border-radius: var(--gog-radius);
+    background: transparent;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+    cursor: pointer;
+    transition:
+      color var(--gog-duration-fast),
+      border-color var(--gog-duration-fast);
+
+    &:hover {
+      color: var(--gog-accent-color);
+      border-color: var(--gog-accent-color);
+    }
+  }
+}
+
+.faq-list {
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  overflow: hidden;
+}
+
+.faq-item {
+  display: block;
+
+  /* The library's shipped rule caps an open panel at `--gog-collapsible-max-height`, 480px by
+     default — enough for the paragraph a collapsible usually holds, and not for a nine-row
+     table of deprecations. Raised here on the instance rather than globally, which is what the
+     token's third layer is for. */
+  --gog-collapsible-max-height: 3000px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--gog-border-color);
+  }
+
+  &__heading {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  &__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    padding: 16px 20px;
+    border: 0;
+    background: transparent;
+    color: var(--gog-text-color);
+    font: inherit;
+    font-size: var(--gog-text-md);
+    font-weight: 600;
+    text-align: left;
+    transition: background-color var(--gog-duration-fast);
+
+    &:hover {
+      background-color: var(--gog-hover-color);
+    }
+
+    /* Keyboard users land on the question itself — the panel below is plain content, so this
+       ring is the only thing telling them where they are. */
+    &:focus-visible {
+      outline: var(--gog-focus-ring-width) solid var(--gog-focus-ring-color);
+      outline-offset: calc(var(--gog-focus-ring-width) * -1);
+    }
+  }
+
+  &__chevron {
+    flex: 0 0 auto;
+    color: var(--gog-muted-text-color);
+    transition: transform var(--gog-duration-base) var(--gog-easing);
+  }
+
+  /* `--open` is applied by `gogCollapsibleTrigger` itself; nothing here has to track state. */
+  .gog-collapsible__trigger--open &__chevron {
+    transform: rotate(180deg);
+    color: var(--gog-accent-color);
+  }
+
+  /* Padding goes on the inner element, never on the one carrying `gogCollapsibleContent`: that
+     one is collapsed with `max-height: 0`, and padding on it would leave a visible empty strip
+     under every closed question. */
+  &__answer app-markdown {
+    display: block;
+    padding: 2px 20px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-item__chevron {
+    transition: none;
+  }
+}

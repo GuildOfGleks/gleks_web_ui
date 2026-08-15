@@ -14,7 +14,9 @@ import { map } from 'rxjs';
 import { GENERAL_NAV_ITEMS } from '../../shared/nav-data';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 
-const DOCUMENTED_SLUGS = new Set(['global-config', 'compare-full', 'faq']);
+// `faq` used to be here; it is a routed component now (`faq-page`), so the router never
+// reaches this page for it.
+const DOCUMENTED_SLUGS = new Set(['global-config', 'compare-full']);
 
 @Component({
   selector: 'app-general-page',

@@ -1,0 +1,43 @@
+<div class="faq">
+  <header class="faq__hero">
+    <p class="faq__eyebrow">answers</p>
+    <h1 class="faq__title font-heading">FAQ</h1>
+    <p class="faq__lead">
+      What teams ask before adopting the library, and the honest answer — including the parts it
+      does not do. Every claim here is checked against the published package.
+    </p>
+    <button type="button" class="faq__expand" (click)="toggleAll()">
+      {{ allExpanded() ? 'Collapse all' : 'Expand all' }}
+    </button>
+  </header>
+
+  @for (section of sections; track section.id) {
+    <section class="doc-section">
+      <h2 [id]="section.id" class="doc-section__title font-heading">{{ section.title }}</h2>
+
+      <div class="faq-list">
+        @for (item of section.items; track item.id) {
+          <gog-collapsible
+            class="faq-item"
+            [open]="isOpen(item.id)"
+            (openChange)="setOpen(item.id, $event)"
+          >
+            <!-- The heading carries the anchor id, so `#question-slug` links keep resolving and a
+                 screen reader still gets a navigable list of questions — the collapsible only
+                 wires the button to the panel it controls. -->
+            <h3 [id]="item.id" class="faq-item__heading">
+              <button type="button" gogCollapsibleTrigger class="faq-item__question">
+                <span class="faq-item__text">{{ item.question }}</span>
+                <gog-icon name="chevron-down" class="faq-item__chevron" />
+              </button>
+            </h3>
+
+            <div gogCollapsibleContent class="faq-item__answer">
+              <app-markdown [markdown]="item.answer" />
+            </div>
+          </gog-collapsible>
+        }
+      </div>
+    </section>
+  }
+</div>

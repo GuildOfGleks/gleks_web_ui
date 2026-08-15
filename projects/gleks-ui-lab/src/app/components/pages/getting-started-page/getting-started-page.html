@@ -11,6 +11,13 @@
   <section class="doc-section">
     <h2 id="install" class="doc-section__title font-heading">Install</h2>
     <app-markdown [markdown]="installSnippet" />
+    <p class="doc-section__intro">
+      <strong>Requires Angular 21.2 or newer.</strong> The peer dependencies are
+      <code>&#64;angular/core</code>, <code>common</code>, <code>forms</code> and
+      <code>platform-browser</code> at <code>^21.2.0</code> — npm installs nothing else, since the
+      library's only runtime dependency is <code>tslib</code>. There is no build for older Angular
+      majors and no <code>&#64;angular/cdk</code> anywhere in the tree.
+    </p>
   </section>
 
   <section class="doc-section">
@@ -25,6 +32,12 @@
       render unstyled. See <a routerLink="/general/theming">Theming</a> for what it pulls in.
     </p>
     <p class="doc-section__intro">
+      It does <em>not</em> pull in fonts. <code>styles/fonts.css</code> exists and is what this site
+      uses, but it downloads three families from Google Fonts — a decision a component library
+      shouldn't make for you, so it is a separate import. Components inherit whatever typography
+      your app already has.
+    </p>
+    <p class="doc-section__intro">
       The short <code>@guildofgleks/ui/styles/…</code> path arrived in
       <app-since version="21.3.2" />. The older <code>@guildofgleks/ui/src/styles/…</code> still
       resolves and keeps working until <strong>21.5.0</strong>, so an existing setup has time — but
@@ -33,9 +46,48 @@
   </section>
 
   <section class="doc-section">
+    <h2 id="pick-a-theme" class="doc-section__title font-heading">Pick a theme</h2>
+    <p class="doc-section__intro">
+      Everything keys off one attribute on <code>&lt;html&gt;</code>. <code>theme.css</code> ships
+      <code>light</code> — which is also what you get with no attribute — and <code>dark</code>:
+    </p>
+    <app-markdown [markdown]="themeAttributeSnippet" />
+    <p class="doc-section__intro">
+      The three presets (<code>slate</code>, <code>one-dark</code>, <code>one-light</code>) are
+      separate stylesheets: add the one you want to <code>styles</code> for that name to resolve.
+    </p>
+    <app-markdown [markdown]="presetSnippet" />
+    <p class="doc-section__intro">
+      To switch at runtime, inject <code>ThemeService</code>. With no configuration it adopts
+      whatever <code>data-theme</code> is already on the document and otherwise uses
+      <code>light</code> —
+      <strong>remembering the choice and following the OS setting are both opt-in</strong>, so
+      nothing starts writing to <code>localStorage</code> behind your back.
+    </p>
+    <app-markdown [markdown]="themeServiceSnippet" />
+  </section>
+
+  <section class="doc-section">
     <h2 id="use-a-component" class="doc-section__title font-heading">Use a component</h2>
     <p class="doc-section__intro">Every component is standalone — import only what you use.</p>
     <app-markdown [markdown]="useSnippet" />
+  </section>
+
+  <section class="doc-section">
+    <h2 id="use-it-in-a-form" class="doc-section__title font-heading">Use it in a form</h2>
+    <p class="doc-section__intro">
+      Every control implements <code>ControlValueAccessor</code> — input field, textarea, select,
+      multiselect, autocomplete, checkbox, radio group, toggle, slider, datepicker and the
+      button-toggle group — so <code>formControlName</code>, <code>[formControl]</code> and
+      <code>[(ngModel)]</code> work with no adapter and no wrapper component.
+    </p>
+    <app-markdown [markdown]="formSnippet" />
+    <p class="doc-section__intro">
+      <code>errorDisplay="auto"</code> is the part worth knowing: with a form control attached, the
+      field shows <code>errorMessage</code> once the control is <em>touched and invalid</em>, so you
+      supply the text and not the timing. The default is <code>manual</code>, where the message
+      shows for as long as <code>errorMessage</code> is non-empty.
+    </p>
   </section>
 
   <section class="doc-section">

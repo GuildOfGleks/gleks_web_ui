@@ -56,6 +56,60 @@ export class GettingStartedPage {
     '```',
   ].join('\n');
 
+  protected readonly themeAttributeSnippet = [
+    '```html',
+    '<!-- index.html — or set it from your own code before the app boots -->',
+    '<html lang="en" data-theme="dark">',
+    '```',
+  ].join('\n');
+
+  protected readonly presetSnippet = [
+    '```json',
+    '"styles": [',
+    '  "node_modules/@guildofgleks/ui/styles/index.css",',
+    '  "node_modules/@guildofgleks/ui/styles/presets/slate.css",',
+    '  "src/styles.scss"',
+    ']',
+    '```',
+  ].join('\n');
+
+  protected readonly themeServiceSnippet = [
+    '```typescript',
+    "import { ThemeService, provideGogConfig } from '@guildofgleks/ui';",
+    '',
+    '// switching',
+    'private readonly theme = inject(ThemeService);',
+    '',
+    "this.theme.setTheme('dark');",
+    'this.theme.toggleTheme();',
+    'this.theme.theme(); //  a signal — read it in a template',
+    '',
+    '// opt in to persistence and following the OS setting',
+    'provideGogConfig({',
+    "  theme: { storageKey: 'app-theme', followSystem: true },",
+    '});',
+    '```',
+  ].join('\n');
+
+  protected readonly formSnippet = [
+    '```typescript',
+    'form = new FormGroup({',
+    "  email: new FormControl('', [Validators.required, Validators.email]),",
+    '});',
+    '```',
+    '',
+    '```html',
+    '<form [formGroup]="form">',
+    '  <gog-inputfield',
+    '    label="Email"',
+    '    formControlName="email"',
+    '    errorMessage="A valid email is required"',
+    '    errorDisplay="auto"',
+    '  />',
+    '</form>',
+    '```',
+  ].join('\n');
+
   protected readonly configSnippet = [
     '```typescript',
     "import { provideGogConfig } from '@guildofgleks/ui';",

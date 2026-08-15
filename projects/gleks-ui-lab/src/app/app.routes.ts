@@ -36,6 +36,12 @@ export const routes: Routes = [
       import('./components/pages/compare-page/compare-page').then((m) => m.ComparePage),
   },
   {
+    // Was a markdown doc under `general/:slug` until the answers moved into `gog-collapsible`
+    // items — must stay above that catch-all, which would otherwise match it and render nothing.
+    path: 'general/faq',
+    loadComponent: () => import('./components/pages/faq-page/faq-page').then((m) => m.FaqPage),
+  },
+  {
     path: 'general/:slug',
     loadComponent: () =>
       import('./components/pages/general-page/general-page').then((m) => m.GeneralPage),
