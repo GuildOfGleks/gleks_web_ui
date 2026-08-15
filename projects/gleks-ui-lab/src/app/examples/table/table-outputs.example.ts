@@ -28,7 +28,7 @@ interface Row {
       <gog-column field="status" header="Status" [sortable]="true" />
     </gog-table>
 
-    <p>{{ lastEvent() }}</p>
+    <p class="readout">{{ lastEvent() }}</p>
   `,
   styles: `
     :host {
@@ -36,6 +36,11 @@ interface Row {
       flex-direction: column;
       align-items: stretch;
       gap: 16px;
+    }
+    .readout {
+      margin: 0;
+      color: var(--gog-muted-text-color);
+      font-size: 0.9em;
     }
   `,
 })

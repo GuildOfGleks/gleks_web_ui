@@ -47,6 +47,19 @@ heading now carries a real date (21.3.1 — 11.08.2026, 21.3.2 — 13.08.2026, 2
 14.08.2026, checked 2026-08-15), so the Releases page will not tell readers that shipped releases
 are "planned". Only `## [21.5.0] - planned` is undated, which is correct — it has not shipped.
 
+## After the release that fixes gog-table stickyHeader
+
+The table page's "Sticky header" demo currently ends its description with a **Known defect in
+21.4.2** paragraph explaining that the header rides away because the table's own internal
+`gog-scroll` is the nearest scrollport (full diagnosis in `hardening-21.5.0.md`). **Delete that
+paragraph** once the fix ships, and check the demo actually holds its header while scrolling —
+the example itself needs no change, it already puts the table in a 260px `gog-scroll`.
+
+Same release, if it also fixes `[fullWidth]="false"` clipping the widest header: the "Full width"
+example states `width` on both columns and the description explains that fixed layout makes it
+necessary. Once the component switches to `table-layout: auto` in that mode, drop the widths and
+trim the explanation back to what `fullWidth` is for.
+
 ---
 
 ## Checking your work

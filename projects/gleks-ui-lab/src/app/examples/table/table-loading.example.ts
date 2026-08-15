@@ -1,39 +1,54 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 import { ButtonComponent, GogColumn, TableComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',
   imports: [TableComponent, GogColumn, ButtonComponent],
   template: `
-    <gog-button (gogClick)="toggleLoading()">Toggle loading</gog-button>
+    <gog-button size="sm" variant="outline" [disabled]="loading()" (gogClick)="reload()">
+      {{ loading() ? 'Loading…' : 'Reload' }}
+    </gog-button>
+
     <gog-table [value]="rows" [loading]="loading()">
-      <gog-column field="component" header="Component"></gog-column>
-      <gog-column field="status" header="Status"></gog-column>
+      <gog-column field="component" header="Component" />
+      <gog-column field="status" header="Status" />
     </gog-table>
   `,
   styles: `
     :host {
       display: flex;
       flex-direction: column;
-      align-items: stretch;
+      align-items: flex-start;
       gap: 16px;
+    }
+    gog-table {
+      align-self: stretch;
     }
   `,
 })
-export class TableLoadingExample {
+export class TableLoadingExample implements OnDestroy {
   protected readonly loading = signal(false);
+  private timer: ReturnType<typeof setTimeout> | null = null;
+
   protected readonly rows = [
-    { component: 'Buttons', status: 'Ready', owner: 'Design' },
-    { component: 'Checkbox', status: 'Ready', owner: 'Forms' },
-    { component: 'Table', status: 'In review', owner: 'Data' },
-    { component: 'Accordion', status: 'Planned', owner: 'Navigation' },
-    { component: 'Spinner', status: 'Ready', owner: 'Feedback' },
-    { component: 'Toast', status: 'Ready', owner: 'Feedback' },
-    { component: 'Tabs', status: 'In review', owner: 'Navigation' },
+    { component: 'Buttons', status: 'Ready' },
+    { component: 'Checkbox', status: 'Ready' },
+    { component: 'Table', status: 'In review' },
+    { component: 'Accordion', status: 'Planned' },
   ];
 
-  protected toggleLoading(): void {
+  /** Stands in for a refetch: in a real app `loading` is the request's in-flight flag. */
+  protected reload(): void {
+    if (this.timer) clearTimeout(this.timer);
+
     this.loading.set(true);
-    setTimeout(() => this.loading.set(false), 1200);
+    this.timer = setTimeout(() => {
+      this.loading.set(false);
+      this.timer = null;
+    }, 1200);
+  }
+
+  ngOnDestroy(): void {
+    if (this.timer) clearTimeout(this.timer);
   }
 }

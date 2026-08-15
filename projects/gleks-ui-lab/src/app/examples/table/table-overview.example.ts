@@ -13,10 +13,10 @@ interface Row {
   imports: [TableComponent, GogColumn],
   template: `
     <gog-table [value]="rows">
-      <gog-column field="component" header="Component" [sortable]="true"></gog-column>
-      <gog-column field="status" header="Status" [sortable]="true"></gog-column>
-      <gog-column field="owner" header="Owner"></gog-column>
-      <gog-column field="updated" header="Updated"></gog-column>
+      <gog-column field="component" header="Component" [sortable]="true" />
+      <gog-column field="status" header="Status" [sortable]="true" />
+      <gog-column field="owner" header="Owner" />
+      <gog-column field="updated" header="Updated" />
     </gog-table>
   `,
   styles: `
@@ -29,8 +29,13 @@ interface Row {
   `,
 })
 export class TableOverviewExample {
+  // Enough rows that clicking a sortable header visibly reorders something — two rows can be
+  // sorted, but not convincingly.
   protected readonly rows: Row[] = [
     { component: 'Buttons', status: 'Ready', owner: 'Design', updated: 'Today' },
+    { component: 'Checkbox', status: 'Ready', owner: 'Forms', updated: 'Yesterday' },
     { component: 'Table', status: 'In review', owner: 'Data', updated: '2 days ago' },
+    { component: 'Accordion', status: 'Planned', owner: 'Navigation', updated: 'This week' },
+    { component: 'Spinner', status: 'Ready', owner: 'Feedback', updated: 'This month' },
   ];
 }

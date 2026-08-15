@@ -10,22 +10,43 @@ interface SparseRow {
   selector: 'app-example',
   imports: [TableComponent, GogColumn],
   template: `
-    <gog-table [value]="sparseRows" [showRowNumbers]="false" size="sm">
-      <gog-column field="component" header="Component"></gog-column>
-      <gog-column field="owner" header="Owner"></gog-column>
-    </gog-table>
+    <div class="case">
+      <p class="case__label">Default — emptyPlaceholder is "-"</p>
+      <gog-table [value]="sparseRows" [showRowNumbers]="false" size="sm">
+        <gog-column field="component" header="Component" />
+        <gog-column field="owner" header="Owner" />
+      </gog-table>
+    </div>
 
-    <gog-table [value]="sparseRows" [showRowNumbers]="false" emptyPlaceholder="N/A" size="sm">
-      <gog-column field="component" header="Component"></gog-column>
-      <gog-column field="owner" header="Owner"></gog-column>
-    </gog-table>
+    <div class="case">
+      <p class="case__label">emptyPlaceholder="Unassigned"</p>
+      <gog-table
+        [value]="sparseRows"
+        [showRowNumbers]="false"
+        emptyPlaceholder="Unassigned"
+        size="sm"
+      >
+        <gog-column field="component" header="Component" />
+        <gog-column field="owner" header="Owner" />
+      </gog-table>
+    </div>
   `,
   styles: `
     :host {
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      gap: 16px;
+      gap: 20px;
+    }
+    .case {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .case__label {
+      margin: 0;
+      color: var(--gog-muted-text-color);
+      font-size: 0.9em;
     }
   `,
 })
@@ -33,5 +54,6 @@ export class TableMissingValuesExample {
   protected readonly sparseRows: SparseRow[] = [
     { component: 'Buttons', owner: 'Design' },
     { component: 'Checkbox', owner: null },
+    { component: 'Table', owner: 'Data' },
   ];
 }

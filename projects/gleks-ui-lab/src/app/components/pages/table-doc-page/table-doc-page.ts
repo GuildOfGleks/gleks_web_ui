@@ -4,6 +4,7 @@ import { ExampleHostComponent } from '../../shared/example-host/example-host';
 import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
+import { LIBRARY_VERSION } from '../../shared/library-version';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { TABLE_EXAMPLE_SOURCES } from '../../../examples/table/sources.generated';
@@ -287,6 +288,9 @@ const DEPRECATED_TEMPLATE_INPUTS: readonly ApiRow[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableDocPage {
+  // Read from the installed package so the defect note cannot claim the wrong version.
+  protected readonly libraryVersion = LIBRARY_VERSION;
+
   protected readonly tableInputs = TABLE_INPUTS;
   protected readonly tableOutputs = TABLE_OUTPUTS;
   protected readonly columnInputs = COLUMN_INPUTS;

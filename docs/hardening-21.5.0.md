@@ -387,3 +387,30 @@ not re-file it.
   natively focusable, or narrow the TSDoc to "must be a natively focusable element" and say so in
   `AGENTS.md`. The first is the kinder default and is not a breaking change; either way it is a
   library change, which is why it is recorded here.
+- **`gog-table`'s `stickyHeader` does not stick — the component overrides itself.** `stickyHeader`
+  sets `position: sticky; top: 0` on the header cells, which is correct, but a sticky element
+  resolves against its _nearest_ scrolling ancestor, and `gog-table` wraps its own markup in
+  `<gog-scroll class="gog-table-scroll">`. On a table that fits, that viewport computes to
+  `overflow: visible` and is harmless; but as soon as it activates — which is precisely what putting
+  a wide table in a narrow region does — it becomes the nearest scrollport and wins over whatever
+  region the consumer put the table in —
+  and because it is sized by the table's own content, it never scrolls vertically, so the header
+  simply rides up out of view. Measured on the lab against 21.4.2 on 2026-08-15: with the table in
+  a 260px `gog-scroll`, `th.closest('.gog-scroll__viewport')` is the table's internal one, and the
+  header leaves the viewport at `scrollTop: 200`; neutralising that inner viewport
+  (`overflow: visible`) makes the header stick correctly to the outer region. No consumer-side
+  arrangement fixes it — capping the `gog-table` host, or the inner `gog-scroll` host, leaves the
+  inner viewport at full content height either way. The likely fix is to make the internal
+  scroller horizontal-only (`overflow-y: visible`) so it stops being a vertical scrollport, with a
+  regression test that asserts the sticky header's scrollport is _not_ the table's own. The lab's
+  "Sticky header" demo currently documents the defect in its description; delete that paragraph in
+  the release that fixes it (recorded in `lab-after-publish.md`).
+- **`[fullWidth]="false"` clips the widest column's header.** The table is `table-layout: fixed`
+  and the host switches to `width: fit-content`, so the columns split that width evenly instead of
+  being measured against their content — a 195px two-column table gives each column 96px while
+  "Component" needs 100px, and `overflow: hidden` cuts the glyph. Measured on 2026-08-15; setting
+  `table-layout: auto` on the same table redistributes to 115px/78px and nothing clips. Fix is
+  probably exactly that: `table-layout: auto` whenever `fullWidth` is false, since fixed layout
+  only buys anything when the table's width is externally determined. The lab's "Full width"
+  example now states column widths explicitly and explains why, which works but should not be
+  necessary.

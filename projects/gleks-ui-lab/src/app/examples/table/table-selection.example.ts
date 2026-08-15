@@ -22,7 +22,7 @@ interface Row {
       <gog-column field="owner" header="Owner" />
     </gog-table>
 
-    <p>Selected: {{ selection().length }}</p>
+    <p class="readout">Selected: {{ selection().length }}</p>
   `,
   styles: `
     :host {
@@ -30,6 +30,11 @@ interface Row {
       flex-direction: column;
       align-items: stretch;
       gap: 16px;
+    }
+    .readout {
+      margin: 0;
+      color: var(--gog-muted-text-color);
+      font-size: 0.9em;
     }
   `,
 })

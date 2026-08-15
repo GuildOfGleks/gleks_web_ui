@@ -48,20 +48,36 @@
     </app-demo>
 
     <app-demo [component]="examples.sticky" title="Sticky header">
-      <code>stickyHeader</code> sticks the header row to the top of the nearest scrolling ancestor —
-      here that's a wrapper capped at 260px, so scroll inside the table to see it.
+      <code>stickyHeader</code> puts <code>position: sticky</code> on the header cells so the header
+      row holds at the top of the scrolling region while the rows move under it. The region here is
+      a <a routerLink="/components/scroll">gog-scroll</a> capped at 260px — a native
+      <code>overflow: auto</code> would bring back the one piece of chrome no <code>--gog-*</code>
+      token can reach.
+      <strong
+        >Known defect in {{ libraryVersion }}: the header scrolls away instead of holding.</strong
+      >
+      A sticky element resolves against its nearest scrolling ancestor. The table wraps its own
+      markup in a horizontal <code>gog-scroll</code>, and once that inner scroller activates — which
+      is exactly what putting a wide table in a narrow region does — its viewport becomes the
+      nearest one and wins over the region you placed the table in. It never scrolls vertically
+      itself, so the header simply rides up out of view. Capping the height of the
+      <code>gog-table</code> host, or of the inner scroller, does not help; the fix has to happen
+      inside the component.
     </app-demo>
 
     <app-demo [component]="examples.missingValues" title="Missing values">
-      A cell whose field is <code>null</code>/<code>undefined</code> falls back to
-      <code>emptyPlaceholder</code> — <code>"-"</code> by default, overridable per table. Default
-      placeholder emptyPlaceholder="N/A"
+      A cell whose field is <code>null</code> or <code>undefined</code> falls back to
+      <code>emptyPlaceholder</code> — <code>"-"</code> by default, overridable per table. Both
+      tables below hold the same rows; only the placeholder differs.
     </app-demo>
 
     <app-demo [component]="examples.fullWidth" title="Full width">
       Full width of its container by default (see every table above).
       <code>[fullWidth]="false"</code> shrinks the table to fit its columns instead — useful for a
-      narrow, two-column table that shouldn't stretch to fill a wide page.
+      narrow, two-column table that shouldn't stretch to fill a wide page. Give those columns a
+      <code>width</code> when you do: the table is <code>table-layout: fixed</code>, so it divides
+      whatever width it has evenly between columns rather than measuring the text, and a column left
+      to chance can end up narrower than its own header.
     </app-demo>
 
     <app-demo [component]="examples.loading" title="Loading state">
