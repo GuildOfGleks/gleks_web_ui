@@ -6,23 +6,40 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.5.0] - planned
 
-### Changed
+Nothing yet. What this release already owes is in the source: every
+`@deprecated … Removed in 21.5.0` tag — the six legacy icon inputs on `gog-inputfield`, the
+`checkIconTemplate` / `clearIconTemplate` / `iconTemplate` / `chevronTemplate` inputs, the
+`<column>` element with its `Column` const and type, the string-keyed `[template]` column slot,
+and the `GogSelectOption` / `GogMultiselectOption` aliases (those two overran their announced
+21.4.0 removal). Each names its replacement in the tag itself.
+
+## [21.4.2] - 15.08.2026
+
+Documentation only — no component, input, output or token changed, so upgrading from 21.4.1 is
+a version bump with nothing to migrate.
+
+### Added
 
 - **`CHANGELOG.md` now ships inside the npm package**, alongside `README.md`, `AGENTS.md` and
-  `TOKENS.md`. It was repo-only, which meant the documentation site could not render release
-  notes for the exact version a reader has installed — the only source that cannot drift, since
-  it travels with the package rather than being copied next to it. Nothing changes for a
-  consumer who does not read it; the file adds a few KB to the tarball.
+  `TOKENS.md`. It was repo-only, which meant nothing could show release notes for the exact
+  version a reader has installed — and this file is the only source that cannot drift from the
+  package, because it travels inside it. Read it at
+  `node_modules/@guildofgleks/ui/CHANGELOG.md`; it is also what the documentation site's releases
+  page will render. Costs ~68 KB in the tarball and nothing at runtime.
 
 ### Fixed
 
 - **`AGENTS.md` was missing `gog-slider`'s range mode.** `range`, `rangeValue`
   (`GogSliderRange`), `startDisabled`/`endDisabled` and `startAriaLabel`/`endAriaLabel` shipped
-  in 21.3.1 but never reached the agent reference, so an agent reading it would conclude the
-  slider cannot express a range and build a two-slider workaround.
+  in 21.3.1 but never reached the agent reference. An agent reading it concluded the slider
+  cannot express a range and built a two-slider workaround — the API was there all along.
 - **`AGENTS.md` did not mention the `GOG_ICONS` token.** `provideGogIcons(...)` was documented,
   but not the token it provides — which is what an app injects to read the registered set back
   (an icon picker enumerating it). Public since 21.4.0, undocumented until now.
+
+`AGENTS.md` is the file a coding agent reads to build against this package, so a gap in it
+produces code written against API that does not exist, or workarounds for API that does. Both
+entries above are that kind of gap, which is why a documentation-only patch was worth cutting.
 
 ## [21.4.1] - 14.08.2026
 
