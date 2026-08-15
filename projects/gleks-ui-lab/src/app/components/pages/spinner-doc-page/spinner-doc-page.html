@@ -58,7 +58,15 @@
     <app-demo [component]="examples.fullscreen" title="Full-screen overlay">
       <code>gog-spinner</code> itself can render as a fixed, viewport-covering overlay via
       <code>overlay="true"</code> — distinct from <code>gog-spinner-overlay</code> above, which only
-      covers its own content.
+      covers its own content. Put it behind a flag that ends on its own: it swallows every click
+      while it is up, so an always-on one takes the page hostage.
+      <strong>On this page it covers the article rather than the window</strong> — the overlay is
+      <code>position: fixed</code>, and any ancestor with a <code>contain</code>,
+      <code>transform</code>, <code>filter</code> or <code>backdrop-filter</code> becomes its
+      containing block instead of the viewport. This site's content area is a
+      <a routerLink="/components/scroll">gog-scroll</a>, which sets
+      <code>contain: layout style</code>. In an app without such an ancestor it covers the whole
+      window, and the same caveat applies to any fixed overlay, this library's or your own.
     </app-demo>
   </section>
 

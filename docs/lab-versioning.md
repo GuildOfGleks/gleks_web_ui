@@ -5,15 +5,15 @@ as a recommendation; **layers 1 and 3 were implemented the same day**, layer 2 i
 (library side done, lab side waiting on the release that carries it), and layer 4 is deferred to
 `hardening-21.5.0.md` iteration 3, which needs the same generator for a CI check.
 
-| Layer | State |
-| --- | --- |
-| 1 — version badge | **done** — `components/shared/library-version.ts`, rendered in `app.html` |
-| 2 — releases page | **half** — `CHANGELOG.md` now ships in `ng-package.json`'s `assets`; the lab half is the only entry left in `lab-after-publish.md` |
-| 3 — `since` markers | **done** — `components/shared/since-badge/`, plus a `.since` rule in `src/styles.scss` for the markdown docs; API rows from 21.3.1 onward carry one |
-| 4 — deprecation badges | **not started** — deliberately, see below |
+| Layer                  | State                                                                                                                                               |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — version badge      | **done** — `components/shared/library-version.ts`, rendered in `app.html`                                                                           |
+| 2 — releases page      | **half** — `CHANGELOG.md` now ships in `ng-package.json`'s `assets`; the lab half is the only entry left in `lab-after-publish.md`                  |
+| 3 — `since` markers    | **done** — `components/shared/since-badge/`, plus a `.since` rule in `src/styles.scss` for the markdown docs; API rows from 21.3.1 onward carry one |
+| 4 — deprecation badges | **not started** — deliberately, see below                                                                                                           |
 
-Companion to `lab-after-publish.md`, which tracks *what* the lab must say after each release. This
-file is about the *mechanism* for saying it.
+Companion to `lab-after-publish.md`, which tracks _what_ the lab must say after each release. This
+file is about the _mechanism_ for saying it.
 
 ## The three questions a reader actually has
 
@@ -27,7 +27,7 @@ Worth separating, because they want different answers and the third is the one u
    wrong. This is the one a changelog answers badly (you have to read every entry) and structured
    metadata answers well.
 
-"What's new in this release" — the thing a version-switcher is usually built for — is the *least*
+"What's new in this release" — the thing a version-switcher is usually built for — is the _least_
 useful of the four for a patch release. It matters for a major.
 
 ## Recommended: four layers, cheapest first
@@ -79,7 +79,7 @@ the quality of the changelog — currently high, and worth protecting.
 ### Layer 3 — `since` markers in the API tables
 
 A small `since="21.4.0"` chip next to a new input, output, component or config key. This answers
-question 2 *where the question is asked*, which a release-notes page cannot.
+question 2 _where the question is asked_, which a release-notes page cannot.
 
 **Mechanics.** Manual, and that is acceptable: the marker is added at the moment the API is being
 documented anyway, and only for **new** API — nothing needs backfilling beyond the current
@@ -107,7 +107,7 @@ un-highlight a whole feature set the moment a bug fix shipped.
 ### Layer 4 — deprecations, generated
 
 More valuable than "what's new": what will break. A badge on the affected API row —
-*deprecated in 21.3.0, removed in 21.5.0, use `gog-column`* — and optionally a single page listing
+_deprecated in 21.3.0, removed in 21.5.0, use `gog-column`_ — and optionally a single page listing
 everything currently deprecated with its removal version.
 
 **Mechanics.** The metadata already exists in the source, in a format strict enough to parse:
@@ -121,11 +121,11 @@ Four fixed parts in a fixed order, enforced by `api-design.instructions.md`. A g
 
 ```ts
 export interface GogDeprecation {
-  symbol: string;        // 'GogSelectOption' | 'gog-inputfield.iconStartFn' | '<column>'
-  since: string;         // '21.2.2'
-  date: string;          // '2026-07-30'
-  replacement: string;   // 'GogDropdownOption'
-  removedIn: string;     // '21.4.0'
+  symbol: string; // 'GogSelectOption' | 'gog-inputfield.iconStartFn' | '<column>'
+  since: string; // '21.2.2'
+  date: string; // '2026-07-30'
+  replacement: string; // 'GogDropdownOption'
+  removedIn: string; // '21.4.0'
 }
 ```
 
@@ -137,7 +137,7 @@ because it is generated it cannot rot — which is the whole difference between 
 docs updated" and the docs being updated.
 
 **Related.** The same manifest is what `hardening-21.5.0.md` iteration 3 wants for a CI check that
-*fails* when a removal is overdue. One generator, two consumers.
+_fails_ when a removal is overdue. One generator, two consumers.
 
 ## Major versions — branch and subdomain
 
@@ -145,7 +145,7 @@ The existing plan, recorded here so it is written down: a major (Angular 21 → 
 branch and its own deployment at a subdomain, leaving the previous major's site standing.
 
 This is the only case where a full documentation snapshot earns its cost, because a major is
-exactly when the *current* docs stop being true for people who have not upgraded.
+exactly when the _current_ docs stop being true for people who have not upgraded.
 
 **It fits the existing deploy setup.** `.github/workflows/deploy-lab.yml` is
 `workflow_dispatch`-triggered with `tag` and `port` inputs and builds a Docker image, so a second
@@ -172,12 +172,12 @@ will need adding:
 Layers 1 and 3 are lab-only and can happen at any time. Layers 2 and 4 need a library change
 first, so they are gated on a release:
 
-| Layer | Library side | Lab side |
-| --- | --- | --- |
-| 1 — version badge | — | read `version` from the installed `package.json` |
-| 2 — releases page | ship `CHANGELOG.md` in `assets` | asset glob + route + markdown render |
-| 3 — `since` markers | — | manual chips in the API tables |
-| 4 — deprecation badges | generator + ship the manifest | read manifest, render badges |
+| Layer                  | Library side                    | Lab side                                         |
+| ---------------------- | ------------------------------- | ------------------------------------------------ |
+| 1 — version badge      | —                               | read `version` from the installed `package.json` |
+| 2 — releases page      | ship `CHANGELOG.md` in `assets` | asset glob + route + markdown render             |
+| 3 — `since` markers    | —                               | manual chips in the API tables                   |
+| 4 — deprecation badges | generator + ship the manifest   | read manifest, render badges                     |
 
 Both library-side items are iteration 7 of `hardening-21.5.0.md`. Once they ship, the lab-side
 halves become entries in `lab-after-publish.md` under that release, per

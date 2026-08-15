@@ -2,7 +2,7 @@
 
 `gleks-ui-lab` resolves `@guildofgleks/ui` from the **published npm package**, on purpose: its
 examples have to reflect what a consumer can install today, not an unreleased local build. That
-rule (see `gleks-ui-library.instructions.md` step 7) means lab edits are always *deferred* —
+rule (see `gleks-ui-library.instructions.md` step 7) means lab edits are always _deferred_ —
 work lands in the library first, and the lab catches up only once the version carrying it is
 actually on npm.
 

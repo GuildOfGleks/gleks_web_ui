@@ -10,10 +10,10 @@ line.
 
 Two long-lived branches, one per Angular major:
 
-| Branch | Angular | Gets | npm dist-tag |
-| --- | --- | --- | --- |
-| `master` | 22 | everything — new components, features, fixes | `latest` |
-| `v21` | 21 | **bug fixes only** | `v21` |
+| Branch   | Angular | Gets                                         | npm dist-tag |
+| -------- | ------- | -------------------------------------------- | ------------ |
+| `master` | 22      | everything — new components, features, fixes | `latest`     |
+| `v21`    | 21      | **bug fixes only**                           | `v21`        |
 
 A third major repeats the pattern: `master` moves to 23, `v22` is cut from it, `v21` reaches
 end of life.
@@ -24,7 +24,7 @@ end of life.
   reverse; see [Direction of merges](#direction-of-merges).
 - **New components and features** — `master` only. A consumer on Angular 21 who needs a new
   component upgrades Angular; that is the deal, and it is why the component set is finished
-  *before* the split rather than after.
+  _before_ the split rather than after.
 - **Refactors, renames, deprecation removals** — **before the split, on the 21 line.** See below;
   this is the part that is easy to get backwards.
 
@@ -41,7 +41,7 @@ library already ships `more-horizontal`/`more-vertical` icons and a table built 
 with nothing to open.
 
 **2. The breaking cleanups — on 21, not on 22.** Anything that changes existing API belongs on the
-old line, so the major carries *only* the Angular upgrade.
+old line, so the major carries _only_ the Angular upgrade.
 
 The worked example is the token-prefix rename (`--gog-btn-*` → `--gog-button-*`, 179 tokens,
 `hardening-21.5.0.md` iteration 2). Done on 21 with aliases, it is absorbed before the major, and
@@ -96,7 +96,7 @@ reads:
 "release": "npm run build:lib && npm publish dist/gleks/ui --access public"
 ```
 
-On `v21` that script must carry `--tag v21`. Because the script lives *in the branch*, changing
+On `v21` that script must carry `--tag v21`. Because the script lives _in the branch_, changing
 it there makes the right thing automatic and the wrong thing impossible to do by habit — which
 matters more than remembering a flag on a release you cut twice a year.
 
@@ -117,7 +117,7 @@ After the split the 21 line takes **patch bumps only** (`21.5.1`, `21.5.2`, …)
 line would contradict "fixes only" and should be treated as a sign that a feature slipped in.
 
 Pre-1.0 the changelog allows breaking changes in minors; that stays true for `master`, and is
-another reason to spend those minors on the 21 line *before* the split rather than after.
+another reason to spend those minors on the 21 line _before_ the split rather than after.
 
 ## End of life for the 21 line
 

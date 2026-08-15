@@ -19,7 +19,7 @@ src/app/examples/button/button-basic.example.ts   →  export class ButtonBasicE
 ```
 
 - **The page renders that component** rather than re-typing its markup — `<app-example
-  [component]="ButtonBasicExample" title="Basic usage" />` mounts the real thing, shows its
+[component]="ButtonBasicExample" title="Basic usage" />` mounts the real thing, shows its
   source, and offers Copy / Open in StackBlitz.
 - **The source shown is the file's own text**, extracted by `scripts/generate-example-sources.mjs`
   into a generated map keyed by class name — the same generated-artifact pattern as
@@ -27,29 +27,29 @@ src/app/examples/button/button-basic.example.ts   →  export class ButtonBasicE
 - **The compiler checks every example.** A renamed input in the library breaks the build here,
   which is the entire point: today it would silently break only the prose.
 
-What this removes: the `html` snippet (the file *is* the source), the string arrays, and the
+What this removes: the `html` snippet (the file _is_ the source), the string arrays, and the
 possibility of the demo and the code disagreeing.
 
 ## What does not move
 
 Some demos are showcases rather than examples — the button page's grid of every variant × size,
 a live click log, a table wired to page-size controls. Those stay in the page template: they are
-documentation *about* the component, not a snippet anyone should paste. They keep using
+documentation _about_ the component, not a snippet anyone should paste. They keep using
 `app-code-tabs` with a hand-written snippet where a snippet is genuinely different from what is
 rendered, and that stays a deliberate, visible exception rather than the default.
 
 ## Status
 
-| # | Iteration | State |
-| --- | --- | --- |
-| 0 | Mechanism: `examples/` convention, generator + `--check`, `<app-demo>` host | ✅ done |
-| 1 | Pilot: `button` page converted end to end | ✅ done |
-| 2 | Forms & Inputs pages (10) | ✅ done |
-| 3 | Data Display pages (9) | ✅ done |
-| 4 | Layout & Navigation pages (4) | ✅ done |
-| 5 | Feedback & Overlays pages (4) | ✅ done |
-| 6 | Actions pages (2 remaining) + General pages' inline snippets | ✅ done (pages) |
-| 7 | **Every example openable in StackBlitz**, driven from the files | ✅ done |
+| #   | Iteration                                                                   | State           |
+| --- | --------------------------------------------------------------------------- | --------------- |
+| 0   | Mechanism: `examples/` convention, generator + `--check`, `<app-demo>` host | ✅ done         |
+| 1   | Pilot: `button` page converted end to end                                   | ✅ done         |
+| 2   | Forms & Inputs pages (10)                                                   | ✅ done         |
+| 3   | Data Display pages (9)                                                      | ✅ done         |
+| 4   | Layout & Navigation pages (4)                                               | ✅ done         |
+| 5   | Feedback & Overlays pages (4)                                               | ✅ done         |
+| 6   | Actions pages (2 remaining) + General pages' inline snippets                | ✅ done (pages) |
+| 7   | **Every example openable in StackBlitz**, driven from the files             | ✅ done         |
 
 Update this table at the end of every iteration.
 
@@ -57,12 +57,12 @@ Update this table at the end of every iteration.
 
 The `button` page, before and after:
 
-| | Before | After |
-| --- | --- | --- |
-| `button-doc-page.ts` | 382 lines, 24 snippet fields | **141 lines**, no snippets |
-| `button-doc-page.html` | 329 lines, 9 hand-built demo cards | **225 lines**, 9 `<app-demo>` tags |
-| `button-doc-page.scss` | 165 lines, incl. demo layout | **52 lines** (hero + API tables) |
-| Examples | 0 files, 3 copies of each example | **9 files**, one copy each, compiled |
+|                        | Before                             | After                                |
+| ---------------------- | ---------------------------------- | ------------------------------------ |
+| `button-doc-page.ts`   | 382 lines, 24 snippet fields       | **141 lines**, no snippets           |
+| `button-doc-page.html` | 329 lines, 9 hand-built demo cards | **225 lines**, 9 `<app-demo>` tags   |
+| `button-doc-page.scss` | 165 lines, incl. demo layout       | **52 lines** (hero + API tables)     |
+| Examples               | 0 files, 3 copies of each example  | **9 files**, one copy each, compiled |
 
 The pattern per page:
 
@@ -84,7 +84,7 @@ The old snippets were maintained carefully, but they were still only text. Once 
 to compile, the compiler found what no reviewer would have:
 
 - **~20 examples referenced data they never declared** — `views`, `users`, `countries`,
-  `planOptions` and friends lived on the *page*, not in the snippet, so anyone pasting one got
+  `planOptions` and friends lived on the _page_, not in the snippet, so anyone pasting one got
   `Property 'users' does not exist`. Each now carries its own data.
 - **Three examples had no template at all**: `template: '/* as in the HTML tab */'`, a
   cross-reference that only worked while an HTML tab existed next to it.
@@ -101,7 +101,7 @@ The `ts` snippet check that used to gate the button is gone: an example is a fil
 have one**. Two things made the last handful work:
 
 1. **The fragments became examples.** `provideGogConfig({ scroll: … })` and
-   `provideGogIcons({ … })` are now components that *provide* that config themselves — which is
+   `provideGogIcons({ … })` are now components that _provide_ that config themselves — which is
    also more honest than the fragment was, since it shows the scoping: a subtree can set its own
    defaults without touching the app. The dialog page's three option fragments collapsed into one
    runnable example with three buttons, and the stacked-dialog body became a second (non-`Example`)
@@ -119,14 +119,14 @@ happens to be a complete file, and skips the rest: configuration fragments
 no root to render.
 
 Once every example is a real file, those exceptions can be closed rather than skipped — a
-fragment becomes an example file that *wraps* the fragment in a runnable component (a button that
+fragment becomes an example file that _wraps_ the fragment in a runnable component (a button that
 opens the dialog, a page that provides the config), so the button appears on all of them. The
 gate then stops being "does this string look like a file" and becomes "does this example exist",
 which is a property of the repository rather than a guess about a string.
 
 ## Iteration 8 — the tail the refactor left behind
 
-Moving every demo into its own file left three kinds of residue on the *pages*, none of which
+Moving every demo into its own file left three kinds of residue on the _pages_, none of which
 broke a build and one of which was visible to every reader.
 
 **1. Frozen readouts (visible).** Eleven pages kept a `<p class="doc-section__meta">` under the
@@ -150,7 +150,7 @@ StackBlitz. The style is the same in every one:
 (input field), `migrateTemplateSnippet` (table), `migrateIconSnippet` (tag) — were still built by
 the page class but no longer rendered anywhere. These are the before/after blocks that tell a
 consumer how to get off an API that 21.5.0 removes, so losing them silently was the worst of the
-three. Restored to the end of each page's *Deprecated in 21.3.0* section.
+three. Restored to the end of each page's _Deprecated in 21.3.0_ section.
 
 **3. Dead state (rot).** 177 class members, plus their backing constants and two whole dialog-body
 components, that no template referenced any more. Harmless to render, but they read as "this demo
