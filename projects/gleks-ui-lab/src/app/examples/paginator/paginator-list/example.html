@@ -1,0 +1,8 @@
+<div class="example">
+  <ul>
+    @for (item of visibleItems(); track item) {
+      <li>{{ item }}</li>
+    }
+  </ul>
+  <gog-paginator [(page)]="page" [totalPages]="totalPages()" />
+</div>

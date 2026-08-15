@@ -9,19 +9,19 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { INPUTFIELD_EXAMPLE_SOURCES } from '../../../examples/inputfield/sources.generated';
-import { InputfieldAddonExample } from '../../../examples/inputfield/inputfield-addon.example';
-import { InputfieldAutoWidthExample } from '../../../examples/inputfield/inputfield-auto-width.example';
-import { InputfieldClearableExample } from '../../../examples/inputfield/inputfield-clearable.example';
-import { InputfieldDisabledExample } from '../../../examples/inputfield/inputfield-disabled.example';
-import { InputfieldErrorExample } from '../../../examples/inputfield/inputfield-error.example';
-import { InputfieldFloatLabelExample } from '../../../examples/inputfield/inputfield-float-label.example';
-import { InputfieldFormExample } from '../../../examples/inputfield/inputfield-form.example';
-import { InputfieldIconsExample } from '../../../examples/inputfield/inputfield-icons.example';
-import { InputfieldNumberDateExample } from '../../../examples/inputfield/inputfield-number-date.example';
-import { InputfieldOverviewExample } from '../../../examples/inputfield/inputfield-overview.example';
-import { InputfieldPasswordExample } from '../../../examples/inputfield/inputfield-password.example';
-import { InputfieldSizesExample } from '../../../examples/inputfield/inputfield-sizes.example';
-import { InputfieldSpinButtonsExample } from '../../../examples/inputfield/inputfield-spin-buttons.example';
+import { InputfieldAddonExample } from '../../../examples/inputfield/inputfield-addon/example';
+import { InputfieldAutoWidthExample } from '../../../examples/inputfield/inputfield-auto-width/example';
+import { InputfieldClearableExample } from '../../../examples/inputfield/inputfield-clearable/example';
+import { InputfieldDisabledExample } from '../../../examples/inputfield/inputfield-disabled/example';
+import { InputfieldErrorExample } from '../../../examples/inputfield/inputfield-error/example';
+import { InputfieldFloatLabelExample } from '../../../examples/inputfield/inputfield-float-label/example';
+import { InputfieldFormExample } from '../../../examples/inputfield/inputfield-form/example';
+import { InputfieldIconsExample } from '../../../examples/inputfield/inputfield-icons/example';
+import { InputfieldNumberDateExample } from '../../../examples/inputfield/inputfield-number-date/example';
+import { InputfieldOverviewExample } from '../../../examples/inputfield/inputfield-overview/example';
+import { InputfieldPasswordExample } from '../../../examples/inputfield/inputfield-password/example';
+import { InputfieldSizesExample } from '../../../examples/inputfield/inputfield-sizes/example';
+import { InputfieldSpinButtonsExample } from '../../../examples/inputfield/inputfield-spin-buttons/example';
 
 interface ApiInputRow {
   readonly name: string;

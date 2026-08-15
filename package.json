@@ -24,7 +24,7 @@
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "check:sitemap": "node scripts/generate-sitemap.mjs --check",
     "generate:examples": "node scripts/generate-example-sources.mjs",
-    "check:examples": "node scripts/generate-example-sources.mjs --check"
+    "check:examples": "node scripts/generate-example-sources.mjs --check && node scripts/check-lab-examples.mjs"
   },
   "private": true,
   "packageManager": "npm@11.6.2",

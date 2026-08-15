@@ -7,14 +7,14 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
-import { IconOverrideExample } from '../../../examples/icon/icon-override.example';
-import { IconRegisterExample } from '../../../examples/icon/icon-register.example';
+import { IconOverrideExample } from '../../../examples/icon/icon-override/example';
+import { IconRegisterExample } from '../../../examples/icon/icon-register/example';
 import { ICON_EXAMPLE_SOURCES } from '../../../examples/icon/sources.generated';
-import { IconCustomTemplateExample } from '../../../examples/icon/icon-custom-template.example';
-import { IconGalleryExample } from '../../../examples/icon/icon-gallery.example';
-import { IconMeaningfulExample } from '../../../examples/icon/icon-meaningful.example';
-import { IconOverviewExample } from '../../../examples/icon/icon-overview.example';
-import { IconSizingExample } from '../../../examples/icon/icon-sizing.example';
+import { IconCustomTemplateExample } from '../../../examples/icon/icon-custom-template/example';
+import { IconGalleryExample } from '../../../examples/icon/icon-gallery/example';
+import { IconMeaningfulExample } from '../../../examples/icon/icon-meaningful/example';
+import { IconOverviewExample } from '../../../examples/icon/icon-overview/example';
+import { IconSizingExample } from '../../../examples/icon/icon-sizing/example';
 
 interface ApiRow {
   readonly name: string;

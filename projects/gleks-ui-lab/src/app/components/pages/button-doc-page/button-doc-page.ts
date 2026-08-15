@@ -7,15 +7,15 @@ import { provideExampleSources } from '../../shared/example-sources';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { BUTTON_EXAMPLE_SOURCES } from '../../../examples/button/sources.generated';
-import { ButtonBasicExample } from '../../../examples/button/button-basic.example';
-import { ButtonDebounceExample } from '../../../examples/button/button-debounce.example';
-import { ButtonDisabledExample } from '../../../examples/button/button-disabled.example';
-import { ButtonFormTypeExample } from '../../../examples/button/button-form-type.example';
-import { ButtonFullWidthExample } from '../../../examples/button/button-full-width.example';
-import { ButtonIconOnlyExample } from '../../../examples/button/button-icon-only.example';
-import { ButtonLinkExample } from '../../../examples/button/button-link.example';
-import { ButtonLoadingExample } from '../../../examples/button/button-loading.example';
-import { ButtonVariantsExample } from '../../../examples/button/button-variants.example';
+import { ButtonBasicExample } from '../../../examples/button/button-basic/example';
+import { ButtonDebounceExample } from '../../../examples/button/button-debounce/example';
+import { ButtonDisabledExample } from '../../../examples/button/button-disabled/example';
+import { ButtonFormTypeExample } from '../../../examples/button/button-form-type/example';
+import { ButtonFullWidthExample } from '../../../examples/button/button-full-width/example';
+import { ButtonIconOnlyExample } from '../../../examples/button/button-icon-only/example';
+import { ButtonLinkExample } from '../../../examples/button/button-link/example';
+import { ButtonLoadingExample } from '../../../examples/button/button-loading/example';
+import { ButtonVariantsExample } from '../../../examples/button/button-variants/example';
 
 interface ApiInputRow {
   readonly name: string;

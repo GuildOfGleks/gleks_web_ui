@@ -1,0 +1,20 @@
+<div class="example">
+  <div class="controls">
+    <gog-button
+      size="sm"
+      variant="outline"
+      (gogClick)="size.set(size() === 'thin' ? 'normal' : 'thin')"
+    >
+      size: {{ size() }}
+    </gog-button>
+    <gog-button size="sm" variant="outline" (gogClick)="autoHide.set(!autoHide())">
+      autoHide: {{ autoHide() }}
+    </gog-button>
+  </div>
+
+  <gog-scroll [size]="size()" [autoHide]="autoHide()" class="box" ariaLabel="Rows">
+    @for (row of rows; track row) {
+      <p>{{ row }}</p>
+    }
+  </gog-scroll>
+</div>

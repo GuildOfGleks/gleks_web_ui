@@ -1,0 +1,8 @@
+<div class="example">
+  <gog-autocomplete label="City" [options]="cities" [(value)]="slotCity">
+    <ng-template gogDropdownOption let-option let-label="label">
+      <strong>{{ label }}</strong>
+      <small>{{ asCity(option).country }}</small>
+    </ng-template>
+  </gog-autocomplete>
+</div>

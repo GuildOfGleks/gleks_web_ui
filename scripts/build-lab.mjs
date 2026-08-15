@@ -19,7 +19,14 @@ const ngBin = path.join(rootDir, 'node_modules/@angular/cli/bin/ng.js');
 //
 //   - the sitemap, derived from the sidebar's nav-data (writes into `public/`, an asset input);
 //   - the example source maps, derived from `src/app/examples/**` (compiled into the app).
-for (const script of ['scripts/generate-sitemap.mjs', 'scripts/generate-example-sources.mjs']) {
+//
+// `check-lab-examples.mjs` runs with them, and fails the build rather than shipping a demo whose
+// markup and stylesheet have drifted apart — the failure mode that has no compiler behind it.
+for (const script of [
+  'scripts/generate-sitemap.mjs',
+  'scripts/generate-example-sources.mjs',
+  'scripts/check-lab-examples.mjs',
+]) {
   const result = spawnSync(process.execPath, [path.join(rootDir, script)], {
     cwd: rootDir,
     stdio: 'inherit',

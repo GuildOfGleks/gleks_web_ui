@@ -8,12 +8,12 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { TOAST_EXAMPLE_SOURCES } from '../../../examples/toast/sources.generated';
-import { ToastActionsExample } from '../../../examples/toast/toast-actions.example';
-import { ToastBurstExample } from '../../../examples/toast/toast-burst.example';
-import { ToastConfigurableExample } from '../../../examples/toast/toast-configurable.example';
-import { ToastOverviewExample } from '../../../examples/toast/toast-overview.example';
-import { ToastStickyExample } from '../../../examples/toast/toast-sticky.example';
-import { ToastTypesExample } from '../../../examples/toast/toast-types.example';
+import { ToastActionsExample } from '../../../examples/toast/toast-actions/example';
+import { ToastBurstExample } from '../../../examples/toast/toast-burst/example';
+import { ToastConfigurableExample } from '../../../examples/toast/toast-configurable/example';
+import { ToastOverviewExample } from '../../../examples/toast/toast-overview/example';
+import { ToastStickyExample } from '../../../examples/toast/toast-sticky/example';
+import { ToastTypesExample } from '../../../examples/toast/toast-types/example';
 
 interface ApiRow {
   readonly name: string;

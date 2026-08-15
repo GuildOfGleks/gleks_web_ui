@@ -1,0 +1,5 @@
+<div class="example">
+  @for (tag of tags(); track tag.id) {
+    <gog-chip [removable]="true" (gogRemove)="removeTag(tag.id)">{{ tag.label }}</gog-chip>
+  }
+</div>

@@ -414,3 +414,25 @@ not re-file it.
   only buys anything when the table's width is externally determined. The lab's "Full width"
   example now states column widths explicitly and explains why, which works but should not be
   necessary.
+- **The library's fields need the consumer's `box-sizing` reset to size correctly.** `.gog-input__field`
+  (shared by `gog-inputfield` and `gog-textarea`) is `width: 100%` plus horizontal padding plus a
+  border, and the package sets `box-sizing: border-box` on exactly one selector — `.gog-badge`, in
+  `styles/utilities.css`. Under the default `content-box` the field therefore overflows its own
+  container by padding + border: measured 20px at `xsm` rising to 48px at `slg` on 2026-08-15.
+  Two consequences, both real: the field spills out of whatever column the consumer put it in, and
+  `gog-textarea`'s resize grip — which is drawn on the _container_, 3px in from its right edge —
+  ends up ~50px inside the field's actual corner and reads as broken. The
+  `resizeInsetRight/Bottom` tracking is defeated too, since `container.clientWidth - el.offsetWidth`
+  goes negative and clamps to 0.
+
+  This stayed invisible for the whole life of the package because `ui-showcase` — the only place
+  library changes are verified — has carried `* { box-sizing: border-box }` since the start, while
+  `gleks-ui-lab` did not. The lab now has the same reset (its `styles.scss` says why), so the docs
+  site is correct again; but relying on the consumer's reset is not a property a component library
+  should have. The fix is `box-sizing: border-box` on the elements the library sizes itself —
+  fields first, then anything else combining `width: 100%` with padding. Worth an audit rather than
+  a one-line patch, and worth a line in `AGENTS.md` either way.
+
+  **This also means `ui-showcase` cannot catch a whole class of layout bug.** Verifying a library
+  change only there hides anything that a border-box reset papers over. Consider dropping the reset
+  from the showcase once the library no longer needs it.

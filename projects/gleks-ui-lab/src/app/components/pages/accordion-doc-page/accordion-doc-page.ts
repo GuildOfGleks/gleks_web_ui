@@ -7,14 +7,14 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { ACCORDION_EXAMPLE_SOURCES } from '../../../examples/accordion/sources.generated';
-import { AccordionControlledExample } from '../../../examples/accordion/accordion-controlled.example';
-import { AccordionCustomHeaderExample } from '../../../examples/accordion/accordion-custom-header.example';
-import { AccordionDisabledExample } from '../../../examples/accordion/accordion-disabled.example';
-import { AccordionHeadingLevelExample } from '../../../examples/accordion/accordion-heading-level.example';
-import { AccordionLoadingExample } from '../../../examples/accordion/accordion-loading.example';
-import { AccordionMultiExample } from '../../../examples/accordion/accordion-multi.example';
-import { AccordionOverviewExample } from '../../../examples/accordion/accordion-overview.example';
-import { AccordionSizesExample } from '../../../examples/accordion/accordion-sizes.example';
+import { AccordionControlledExample } from '../../../examples/accordion/accordion-controlled/example';
+import { AccordionCustomHeaderExample } from '../../../examples/accordion/accordion-custom-header/example';
+import { AccordionDisabledExample } from '../../../examples/accordion/accordion-disabled/example';
+import { AccordionHeadingLevelExample } from '../../../examples/accordion/accordion-heading-level/example';
+import { AccordionLoadingExample } from '../../../examples/accordion/accordion-loading/example';
+import { AccordionMultiExample } from '../../../examples/accordion/accordion-multi/example';
+import { AccordionOverviewExample } from '../../../examples/accordion/accordion-overview/example';
+import { AccordionSizesExample } from '../../../examples/accordion/accordion-sizes/example';
 
 interface ApiRow {
   readonly name: string;

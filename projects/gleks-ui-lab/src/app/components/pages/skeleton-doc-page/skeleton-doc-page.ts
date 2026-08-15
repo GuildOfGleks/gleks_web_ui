@@ -7,15 +7,15 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { SKELETON_EXAMPLE_SOURCES } from '../../../examples/skeleton/sources.generated';
-import { SkeletonAnimationsExample } from '../../../examples/skeleton/skeleton-animations.example';
-import { SkeletonChatExample } from '../../../examples/skeleton/skeleton-chat.example';
-import { SkeletonDimensionsExample } from '../../../examples/skeleton/skeleton-dimensions.example';
-import { SkeletonLinesExample } from '../../../examples/skeleton/skeleton-lines.example';
-import { SkeletonOverviewExample } from '../../../examples/skeleton/skeleton-overview.example';
-import { SkeletonProductsExample } from '../../../examples/skeleton/skeleton-products.example';
-import { SkeletonProfileExample } from '../../../examples/skeleton/skeleton-profile.example';
-import { SkeletonShapesExample } from '../../../examples/skeleton/skeleton-shapes.example';
-import { SkeletonSizesExample } from '../../../examples/skeleton/skeleton-sizes.example';
+import { SkeletonAnimationsExample } from '../../../examples/skeleton/skeleton-animations/example';
+import { SkeletonChatExample } from '../../../examples/skeleton/skeleton-chat/example';
+import { SkeletonDimensionsExample } from '../../../examples/skeleton/skeleton-dimensions/example';
+import { SkeletonLinesExample } from '../../../examples/skeleton/skeleton-lines/example';
+import { SkeletonOverviewExample } from '../../../examples/skeleton/skeleton-overview/example';
+import { SkeletonProductsExample } from '../../../examples/skeleton/skeleton-products/example';
+import { SkeletonProfileExample } from '../../../examples/skeleton/skeleton-profile/example';
+import { SkeletonShapesExample } from '../../../examples/skeleton/skeleton-shapes/example';
+import { SkeletonSizesExample } from '../../../examples/skeleton/skeleton-sizes/example';
 
 interface ApiInputRow {
   readonly name: string;

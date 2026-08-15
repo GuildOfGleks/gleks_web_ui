@@ -7,10 +7,10 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { DIALOG_EXAMPLE_SOURCES } from '../../../examples/dialog/sources.generated';
-import { DialogCustomContentExample } from '../../../examples/dialog/dialog-custom-content.example';
-import { DialogOptionsExample } from '../../../examples/dialog/dialog-options.example';
-import { DialogStackedExample } from '../../../examples/dialog/dialog-stacked.example';
-import { DialogOverviewExample } from '../../../examples/dialog/dialog-overview.example';
+import { DialogCustomContentExample } from '../../../examples/dialog/dialog-custom-content/example';
+import { DialogOptionsExample } from '../../../examples/dialog/dialog-options/example';
+import { DialogStackedExample } from '../../../examples/dialog/dialog-stacked/example';
+import { DialogOverviewExample } from '../../../examples/dialog/dialog-overview/example';
 
 interface ApiRow {
   readonly name: string;

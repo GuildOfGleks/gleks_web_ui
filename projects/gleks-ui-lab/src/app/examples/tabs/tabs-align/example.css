@@ -1,0 +1,10 @@
+.example {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.label {
+  margin: 0 0 4px;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}

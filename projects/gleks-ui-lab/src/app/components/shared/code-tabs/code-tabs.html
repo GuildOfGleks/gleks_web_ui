@@ -1,31 +1,19 @@
 <div class="code-block">
   <div class="code-block__toolbar">
-    @if (hasTabs()) {
-      <div class="code-block__tabs" role="tablist">
+    <div class="code-block__tabs" role="tablist">
+      @for (tab of tabs; track tab.id) {
         <button
           type="button"
           role="tab"
           class="code-block__tab"
-          [class.code-block__tab--active]="activeTab() === 'html'"
-          [attr.aria-selected]="activeTab() === 'html'"
-          (click)="selectTab('html')"
+          [class.code-block__tab--active]="activeTab() === tab.id"
+          [attr.aria-selected]="activeTab() === tab.id"
+          (click)="selectTab(tab.id)"
         >
-          HTML
+          {{ tab.label }}
         </button>
-        <button
-          type="button"
-          role="tab"
-          class="code-block__tab"
-          [class.code-block__tab--active]="activeTab() === 'ts'"
-          [attr.aria-selected]="activeTab() === 'ts'"
-          (click)="selectTab('ts')"
-        >
-          TS
-        </button>
-      </div>
-    } @else {
-      <span class="code-block__lang">typescript</span>
-    }
+      }
+    </div>
     <div class="code-block__actions">
       @if (canOpenInStackblitz()) {
         <button

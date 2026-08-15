@@ -1,0 +1,8 @@
+<div class="example">
+  <ng-template #richHint>
+    <strong>Deployment blocked</strong>
+    <p>Two checks are still running. <gog-tag variant="warning">CI</gog-tag></p>
+  </ng-template>
+
+  <gog-button [gogTooltip]="richHint">Deploy</gog-button>
+</div>

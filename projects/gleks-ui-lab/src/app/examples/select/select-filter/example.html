@@ -1,0 +1,10 @@
+<div class="example">
+  <gog-select
+    label="Assignee"
+    optionLabel="profile.fullName"
+    [filter]="true"
+    [filterMatch]="matchNameOrRole"
+    [options]="users"
+    [(value)]="userId"
+  />
+</div>

@@ -12,11 +12,11 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { BADGE_EXAMPLE_SOURCES } from '../../../examples/badge/sources.generated';
-import { BadgeDotExample } from '../../../examples/badge/badge-dot.example';
-import { BadgeOverviewExample } from '../../../examples/badge/badge-overview.example';
-import { BadgePositionsExample } from '../../../examples/badge/badge-positions.example';
-import { BadgeVariantsExample } from '../../../examples/badge/badge-variants.example';
-import { BadgeZeroExample } from '../../../examples/badge/badge-zero.example';
+import { BadgeDotExample } from '../../../examples/badge/badge-dot/example';
+import { BadgeOverviewExample } from '../../../examples/badge/badge-overview/example';
+import { BadgePositionsExample } from '../../../examples/badge/badge-positions/example';
+import { BadgeVariantsExample } from '../../../examples/badge/badge-variants/example';
+import { BadgeZeroExample } from '../../../examples/badge/badge-zero/example';
 
 interface ApiInputRow {
   readonly name: string;

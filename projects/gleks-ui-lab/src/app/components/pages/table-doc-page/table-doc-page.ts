@@ -8,18 +8,18 @@ import { LIBRARY_VERSION } from '../../shared/library-version';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { TABLE_EXAMPLE_SOURCES } from '../../../examples/table/sources.generated';
-import { TableEmptyExample } from '../../../examples/table/table-empty.example';
-import { TableFullWidthExample } from '../../../examples/table/table-full-width.example';
-import { TableLazyExample } from '../../../examples/table/table-lazy.example';
-import { TableLoadingExample } from '../../../examples/table/table-loading.example';
-import { TableMissingValuesExample } from '../../../examples/table/table-missing-values.example';
-import { TableOutputsExample } from '../../../examples/table/table-outputs.example';
-import { TableOverviewExample } from '../../../examples/table/table-overview.example';
-import { TablePaginationExample } from '../../../examples/table/table-pagination.example';
-import { TableRowsPerPageExample } from '../../../examples/table/table-rows-per-page.example';
-import { TableSelectionExample } from '../../../examples/table/table-selection.example';
-import { TableStickyExample } from '../../../examples/table/table-sticky.example';
-import { TableTemplatesExample } from '../../../examples/table/table-templates.example';
+import { TableEmptyExample } from '../../../examples/table/table-empty/example';
+import { TableFullWidthExample } from '../../../examples/table/table-full-width/example';
+import { TableLazyExample } from '../../../examples/table/table-lazy/example';
+import { TableLoadingExample } from '../../../examples/table/table-loading/example';
+import { TableMissingValuesExample } from '../../../examples/table/table-missing-values/example';
+import { TableOutputsExample } from '../../../examples/table/table-outputs/example';
+import { TableOverviewExample } from '../../../examples/table/table-overview/example';
+import { TablePaginationExample } from '../../../examples/table/table-pagination/example';
+import { TableRowsPerPageExample } from '../../../examples/table/table-rows-per-page/example';
+import { TableSelectionExample } from '../../../examples/table/table-selection/example';
+import { TableStickyExample } from '../../../examples/table/table-sticky/example';
+import { TableTemplatesExample } from '../../../examples/table/table-templates/example';
 
 interface ApiRow {
   readonly name: string;

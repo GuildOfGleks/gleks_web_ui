@@ -9,18 +9,18 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { MULTISELECT_EXAMPLE_SOURCES } from '../../../examples/multiselect/sources.generated';
-import { MultiselectAccessorsExample } from '../../../examples/multiselect/multiselect-accessors.example';
-import { MultiselectAppendToBodyExample } from '../../../examples/multiselect/multiselect-append-to-body.example';
-import { MultiselectChevronExample } from '../../../examples/multiselect/multiselect-chevron.example';
-import { MultiselectControlsExample } from '../../../examples/multiselect/multiselect-controls.example';
-import { MultiselectFilterExample } from '../../../examples/multiselect/multiselect-filter.example';
-import { MultiselectFormExample } from '../../../examples/multiselect/multiselect-form.example';
-import { MultiselectFullWidthExample } from '../../../examples/multiselect/multiselect-full-width.example';
-import { MultiselectOptionSlotExample } from '../../../examples/multiselect/multiselect-option-slot.example';
-import { MultiselectOverviewExample } from '../../../examples/multiselect/multiselect-overview.example';
-import { MultiselectSelectedNamesExample } from '../../../examples/multiselect/multiselect-selected-names.example';
-import { MultiselectSizesExample } from '../../../examples/multiselect/multiselect-sizes.example';
-import { MultiselectStatesExample } from '../../../examples/multiselect/multiselect-states.example';
+import { MultiselectAccessorsExample } from '../../../examples/multiselect/multiselect-accessors/example';
+import { MultiselectAppendToBodyExample } from '../../../examples/multiselect/multiselect-append-to-body/example';
+import { MultiselectChevronExample } from '../../../examples/multiselect/multiselect-chevron/example';
+import { MultiselectControlsExample } from '../../../examples/multiselect/multiselect-controls/example';
+import { MultiselectFilterExample } from '../../../examples/multiselect/multiselect-filter/example';
+import { MultiselectFormExample } from '../../../examples/multiselect/multiselect-form/example';
+import { MultiselectFullWidthExample } from '../../../examples/multiselect/multiselect-full-width/example';
+import { MultiselectOptionSlotExample } from '../../../examples/multiselect/multiselect-option-slot/example';
+import { MultiselectOverviewExample } from '../../../examples/multiselect/multiselect-overview/example';
+import { MultiselectSelectedNamesExample } from '../../../examples/multiselect/multiselect-selected-names/example';
+import { MultiselectSizesExample } from '../../../examples/multiselect/multiselect-sizes/example';
+import { MultiselectStatesExample } from '../../../examples/multiselect/multiselect-states/example';
 
 interface ApiInputRow {
   readonly name: string;

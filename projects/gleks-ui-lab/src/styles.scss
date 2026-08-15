@@ -17,6 +17,21 @@
  * gray, shadows).
  */
 
+/*
+ * The library styles its fields as `width: 100%` plus padding and a border, which only adds up
+ * to the container's width under a border-box reset. `ui-showcase` has had one since the start,
+ * so library work always looked right there; this app did not, and every `gog-inputfield` /
+ * `gog-textarea` on the docs site therefore overflowed its column by its own horizontal padding —
+ * 48px at `slg`. The textarea's resize grip is drawn on the container rather than the field, so
+ * it ended up floating ~50px inside the field's actual corner, which is what made it look broken.
+ *
+ * Matches `projects/ui-showcase/src/styles.scss`. See `docs/hardening-21.5.0.md` for the library
+ * side of this: a component library should not need the consumer's reset to size correctly.
+ */
+* {
+  box-sizing: border-box;
+}
+
 /* Pins the viewport so the app shell (header/footer/sidebars) never moves — only the
    individual `gog-scroll` regions inside `.lab-layout` (app.scss) scroll. Without this,
    the document itself would grow past 100dvh and scroll natively underneath them. */

@@ -1,0 +1,25 @@
+.example {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+.box {
+  height: 160px;
+  width: 320px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(8, 90px);
+  gap: 8px;
+  padding: 8px;
+}
+.cell {
+  padding: 12px 8px;
+  border-radius: var(--gog-radius);
+  background: var(--gog-hover-color);
+  font-size: var(--gog-text-sm);
+  text-align: center;
+}

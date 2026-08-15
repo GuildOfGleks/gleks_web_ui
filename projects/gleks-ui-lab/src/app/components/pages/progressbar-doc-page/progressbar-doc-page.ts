@@ -7,11 +7,11 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { PROGRESSBAR_EXAMPLE_SOURCES } from '../../../examples/progressbar/sources.generated';
-import { ProgressbarModesExample } from '../../../examples/progressbar/progressbar-modes.example';
-import { ProgressbarOverviewExample } from '../../../examples/progressbar/progressbar-overview.example';
-import { ProgressbarShowValueExample } from '../../../examples/progressbar/progressbar-show-value.example';
-import { ProgressbarSizesExample } from '../../../examples/progressbar/progressbar-sizes.example';
-import { ProgressbarVariantsExample } from '../../../examples/progressbar/progressbar-variants.example';
+import { ProgressbarModesExample } from '../../../examples/progressbar/progressbar-modes/example';
+import { ProgressbarOverviewExample } from '../../../examples/progressbar/progressbar-overview/example';
+import { ProgressbarShowValueExample } from '../../../examples/progressbar/progressbar-show-value/example';
+import { ProgressbarSizesExample } from '../../../examples/progressbar/progressbar-sizes/example';
+import { ProgressbarVariantsExample } from '../../../examples/progressbar/progressbar-variants/example';
 
 interface ApiInputRow {
   readonly name: string;

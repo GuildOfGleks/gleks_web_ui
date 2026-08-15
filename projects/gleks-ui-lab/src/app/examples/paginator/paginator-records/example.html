@@ -1,0 +1,10 @@
+<div class="example">
+  <gog-paginator
+    [(page)]="page"
+    [(pageSize)]="pageSize"
+    [totalRecords]="items().length"
+    [showPageSizeSelect]="true"
+    [pageSizeOptions]="[10, 20, 50]"
+  />
+  <p>Page {{ page() }}, {{ pageSize() }} per page, {{ items().length }} records.</p>
+</div>

@@ -1,0 +1,11 @@
+<div class="example">
+  <gog-table
+    [value]="rows"
+    [(pageSize)]="rowsPerPage"
+    [showPageSizeSelect]="true"
+    [pageSizeOptions]="[2, 3, 6]"
+  >
+    <gog-column field="component" header="Component" />
+    <gog-column field="owner" header="Owner" />
+  </gog-table>
+</div>

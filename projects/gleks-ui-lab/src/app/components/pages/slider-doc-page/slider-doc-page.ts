@@ -10,15 +10,15 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { SLIDER_EXAMPLE_SOURCES } from '../../../examples/slider/sources.generated';
-import { SliderControlsExample } from '../../../examples/slider/slider-controls.example';
-import { SliderFormExample } from '../../../examples/slider/slider-form.example';
-import { SliderFullWidthExample } from '../../../examples/slider/slider-full-width.example';
-import { SliderLabelingExample } from '../../../examples/slider/slider-labeling.example';
-import { SliderOneSidedExample } from '../../../examples/slider/slider-one-sided.example';
-import { SliderOverviewExample } from '../../../examples/slider/slider-overview.example';
-import { SliderRangeExample } from '../../../examples/slider/slider-range.example';
-import { SliderValidationExample } from '../../../examples/slider/slider-validation.example';
-import { SliderVerticalExample } from '../../../examples/slider/slider-vertical.example';
+import { SliderControlsExample } from '../../../examples/slider/slider-controls/example';
+import { SliderFormExample } from '../../../examples/slider/slider-form/example';
+import { SliderFullWidthExample } from '../../../examples/slider/slider-full-width/example';
+import { SliderLabelingExample } from '../../../examples/slider/slider-labeling/example';
+import { SliderOneSidedExample } from '../../../examples/slider/slider-one-sided/example';
+import { SliderOverviewExample } from '../../../examples/slider/slider-overview/example';
+import { SliderRangeExample } from '../../../examples/slider/slider-range/example';
+import { SliderValidationExample } from '../../../examples/slider/slider-validation/example';
+import { SliderVerticalExample } from '../../../examples/slider/slider-vertical/example';
 
 interface ApiInputRow {
   readonly name: string;

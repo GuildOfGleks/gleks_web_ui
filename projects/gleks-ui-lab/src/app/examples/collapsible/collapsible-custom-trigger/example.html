@@ -1,0 +1,17 @@
+<div class="example">
+  <gog-collapsible [(open)]="open">
+    <!-- Still a <button>, because gogCollapsibleTrigger only wires (click) and the ARIA
+         attributes — it adds no tabindex, no role and no key handling. On a <div> that
+         leaves the trigger unreachable by keyboard. Put the directive on a natively
+         focusable element and style that element however the design needs. -->
+    <button type="button" gogCollapsibleTrigger class="card-header">
+      <span class="card-header__title">Order #4471</span>
+      <span class="card-header__meta">3 items · $86.40</span>
+      <gog-icon [name]="open() ? 'chevron-up' : 'chevron-down'" />
+    </button>
+
+    <div gogCollapsibleContent class="card-body">
+      <p>Shipped Aug 4 by standard courier, arriving Aug 6.</p>
+    </div>
+  </gog-collapsible>
+</div>

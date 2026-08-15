@@ -1,0 +1,16 @@
+<div class="example">
+  <div class="list">
+    @for (item of faqItems(); track item.id) {
+      <gog-collapsible [open]="item.open" (openChange)="setOpen(item.id, $event)">
+        <button type="button" gogCollapsibleTrigger class="trigger">
+          <span>{{ item.question }}</span>
+          <gog-icon name="chevron-down" class="chevron" />
+        </button>
+
+        <div gogCollapsibleContent class="panel">
+          <p>{{ item.answer }}</p>
+        </div>
+      </gog-collapsible>
+    }
+  </div>
+</div>

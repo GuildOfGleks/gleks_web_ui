@@ -12,23 +12,50 @@ is paid on every edit. Ten more components would make it 40 pages and 300+ examp
 
 ## The shape it moves to
 
-One file per example, compiled like any other component:
+One **folder** per example, holding the three files any Angular component is written in:
 
 ```
-src/app/examples/button/button-basic.example.ts   →  export class ButtonBasicExample
+src/app/examples/button/button-basic/
+  example.ts     →  export class ButtonBasicExample
+  example.html   →  one root <div class="example">
+  example.css    →  styles for that root
 ```
 
 - **The page renders that component** rather than re-typing its markup — `<app-example
 [component]="ButtonBasicExample" title="Basic usage" />` mounts the real thing, shows its
-  source, and offers Copy / Open in StackBlitz.
-- **The source shown is the file's own text**, extracted by `scripts/generate-example-sources.mjs`
+  three files in a tab strip, and offers Copy / Open in StackBlitz.
+- **The source shown is the files' own text**, extracted by `scripts/generate-example-sources.mjs`
   into a generated map keyed by class name — the same generated-artifact pattern as
   `generate-tokens.mjs`, verified with `--check` so it cannot go stale.
 - **The compiler checks every example.** A renamed input in the library breaks the build here,
   which is the entire point: today it would silently break only the prose.
+- **`scripts/check-lab-examples.mjs` checks what the compiler cannot** — see
+  "The layout residue" below for the failure it exists to prevent.
 
-What this removes: the `html` snippet (the file _is_ the source), the string arrays, and the
+What this removes: the `html` snippet (the files _are_ the source), the string arrays, and the
 possibility of the demo and the code disagreeing.
+
+### Why three files and not one
+
+The first cut of this refactor put the template and the styles inline in the `.ts`, because
+StackBlitz needed "one complete, paste-and-run file" and that was the shortest way to give it one.
+It made every example a wall of backticked markup inside a decorator, and — worse — it put the
+demo's layout on `:host`, a selector that only means anything to Angular and that a reader cannot
+carry anywhere. Examples are the part of the docs a reader copies; they should look like the code
+they are copying into.
+
+So the layout root is a real element the markup declares, `<div class="example">`, and the CSS is
+ordinary CSS against that class. StackBlitz gained nothing to compensate for: the project writes
+`src/example.html` and `src/example.css` next to `src/example.ts`, under exactly the names the
+decorator already points at, so nothing is rewritten on the way out.
+
+Two consequences worth stating, because both are load-bearing:
+
+- **`example.css` always exists**, even for a one-element demo, where it says so in a comment. A
+  tab strip that changes shape from card to card makes a reader wonder whether a missing tab means
+  "empty" or "not shown".
+- **`:host` is banned in an example** and the check enforces it. Layout on the host is the same
+  trap the page-scoped `.action-row` was: a rule that lives outside the markup it arranges.
 
 ## What does not move
 
@@ -66,17 +93,17 @@ The `button` page, before and after:
 
 The pattern per page:
 
-1. `src/app/examples/<component>/<name>.example.ts` — a standalone component with
-   `selector: 'app-example'` (matching what the StackBlitz project's `index.html` mounts),
-   `OnPush`, its own `styles` where the demo needs layout, and **no imports from the lab** so it
-   stays copy-pasteable.
-2. `npm run generate:examples` (or any `build:lab`) writes that folder's `sources.generated.ts`.
+1. `src/app/examples/<component>/<name>/` — `example.ts`, a standalone `OnPush` component with
+   `selector: 'app-example'` (matching what the StackBlitz project's `index.html` mounts) and
+   **no imports from the lab** so it stays copy-pasteable; `example.html`, whose single root is
+   `<div class="example">`; and `example.css`, which styles that root.
+2. `npm run generate:examples` (or any `build:lab`) writes that folder's `sources.generated.ts`
+   and runs `check-lab-examples.mjs` over the result.
 3. The page provides the map once — `providers: [provideExampleSources(X_EXAMPLE_SOURCES)]` — and
    renders each example as `<app-demo [component]="examples.foo" title="…">context</app-demo>`.
 
-**One trap worth knowing:** an example's `template` is a backticked string, so a stray backtick
-inside it — an inline `` `code` `` in an HTML comment — silently ends the literal and produces a
-wall of unrelated TypeScript errors. Use plain quotes inside example templates.
+Adding an example is four steps: make the folder, write the three files, add one `<app-demo>` tag
+to the page, run `npm run generate:examples`.
 
 ## What the migration turned up
 
@@ -167,6 +194,51 @@ prefix to `app`: every example file is `app-example` on purpose, because the gen
 project mounts `<app-example />` as its root.
 
 Run it before calling any page-level refactor done.
+
+## The fourth residue — layout — and why it read as a broken library
+
+The three above are the ones that did not show. The one that did: **almost every demo on the site
+lost its layout**, and because the conversion landed in the same week as the 21.4.0 upgrade, it
+looked exactly like the published package had broken.
+
+It did not. A page used to own its demo layout in its own stylesheet:
+
+```html
+<div class="demo-card__preview action-row">…three buttons…</div>
+```
+
+`.action-row` / `.action-column` (flex, `gap: 12px`, wrap) live in `pages/_doc-page.scss`, which
+every page `@use`s into its **scoped** stylesheet. After the conversion the preview holds exactly
+one child — the example component's host — and the buttons are inside _its_ template, where a
+page-scoped rule cannot reach them. Host elements default to `display: inline`, so a demo that was
+a wrapped row of controls became a run of inline elements with no gaps.
+
+The fix is that each example owns its own layout, and that is not a workaround for the missing
+wrapper — it is the only version that survives the trip to StackBlitz, where there is no lab page
+to inherit anything from. It first landed as `:host` blocks inside the `.ts`; the three-file split
+above moved it to `.example` in a real stylesheet, where `check-lab-examples.mjs` can hold the
+markup and the CSS to each other.
+
+Two facts worth keeping, because both were checked against the registry rather than assumed
+(2026-08-15):
+
+- **`.gog-input__field`'s compiled CSS is byte-identical in 21.3.0, 21.4.0 and 21.4.2** — the
+  library did not regress. The one genuine 21.4.0 change in this area is the textarea's custom
+  resize grip (new tokens, `resize-grip` absent from the 21.3.0 bundle), which is drawn on the
+  container and therefore made the site's _pre-existing_ `box-sizing` overflow visible for the
+  first time. See the `box-sizing` entry in `hardening-21.5.0.md`.
+- **Nothing was stale or duplicated.** `node_modules/@guildofgleks/ui` is byte-identical to the
+  registry tarball for 21.4.2, `npm ls` shows a single copy, and the lab's `tsconfig.app.json`
+  still clears `paths`, so it resolves the package the way an outside consumer does. `ui-showcase`
+  resolves `@guildofgleks/ui` to `dist/gleks/ui` and keeps its own demo layout in
+  `pages/_detail.scss` — which is precisely why it kept looking right while the lab did not.
+
+**The lesson for the next page-level refactor:** moving markup across a component boundary moves it
+out of reach of every scoped rule that styled it, and nothing in the build says so. That lesson is
+now a script — `scripts/check-lab-examples.mjs`, run by `npm run check:examples` and by every
+`build:lab` — which fails when an example's markup uses a class its own stylesheet does not
+declare, when its stylesheet declares one the markup never uses, when the root `<div class="example">`
+is missing, or when layout hides on `:host` again.
 
 ## Two authoring rules the collapsible page taught
 

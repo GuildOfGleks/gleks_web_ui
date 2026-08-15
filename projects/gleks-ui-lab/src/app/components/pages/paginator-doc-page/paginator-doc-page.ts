@@ -8,14 +8,14 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { PAGINATOR_EXAMPLE_SOURCES } from '../../../examples/paginator/sources.generated';
-import { PaginatorDisabledExample } from '../../../examples/paginator/paginator-disabled.example';
-import { PaginatorEllipsisModeExample } from '../../../examples/paginator/paginator-ellipsis-mode.example';
-import { PaginatorFullWidthExample } from '../../../examples/paginator/paginator-full-width.example';
-import { PaginatorListExample } from '../../../examples/paginator/paginator-list.example';
-import { PaginatorOverviewExample } from '../../../examples/paginator/paginator-overview.example';
-import { PaginatorRecordsExample } from '../../../examples/paginator/paginator-records.example';
-import { PaginatorSizesExample } from '../../../examples/paginator/paginator-sizes.example';
-import { PaginatorWindowModeExample } from '../../../examples/paginator/paginator-window-mode.example';
+import { PaginatorDisabledExample } from '../../../examples/paginator/paginator-disabled/example';
+import { PaginatorEllipsisModeExample } from '../../../examples/paginator/paginator-ellipsis-mode/example';
+import { PaginatorFullWidthExample } from '../../../examples/paginator/paginator-full-width/example';
+import { PaginatorListExample } from '../../../examples/paginator/paginator-list/example';
+import { PaginatorOverviewExample } from '../../../examples/paginator/paginator-overview/example';
+import { PaginatorRecordsExample } from '../../../examples/paginator/paginator-records/example';
+import { PaginatorSizesExample } from '../../../examples/paginator/paginator-sizes/example';
+import { PaginatorWindowModeExample } from '../../../examples/paginator/paginator-window-mode/example';
 
 interface ApiInputRow {
   readonly name: string;

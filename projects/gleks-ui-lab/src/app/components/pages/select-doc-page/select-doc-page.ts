@@ -8,17 +8,17 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { SELECT_EXAMPLE_SOURCES } from '../../../examples/select/sources.generated';
-import { SelectAccessorsExample } from '../../../examples/select/select-accessors.example';
-import { SelectAppendToBodyExample } from '../../../examples/select/select-append-to-body.example';
-import { SelectChevronExample } from '../../../examples/select/select-chevron.example';
-import { SelectClearableExample } from '../../../examples/select/select-clearable.example';
-import { SelectFilterExample } from '../../../examples/select/select-filter.example';
-import { SelectFormExample } from '../../../examples/select/select-form.example';
-import { SelectFullWidthExample } from '../../../examples/select/select-full-width.example';
-import { SelectOptionSlotExample } from '../../../examples/select/select-option-slot.example';
-import { SelectOverviewExample } from '../../../examples/select/select-overview.example';
-import { SelectSizesExample } from '../../../examples/select/select-sizes.example';
-import { SelectStatesExample } from '../../../examples/select/select-states.example';
+import { SelectAccessorsExample } from '../../../examples/select/select-accessors/example';
+import { SelectAppendToBodyExample } from '../../../examples/select/select-append-to-body/example';
+import { SelectChevronExample } from '../../../examples/select/select-chevron/example';
+import { SelectClearableExample } from '../../../examples/select/select-clearable/example';
+import { SelectFilterExample } from '../../../examples/select/select-filter/example';
+import { SelectFormExample } from '../../../examples/select/select-form/example';
+import { SelectFullWidthExample } from '../../../examples/select/select-full-width/example';
+import { SelectOptionSlotExample } from '../../../examples/select/select-option-slot/example';
+import { SelectOverviewExample } from '../../../examples/select/select-overview/example';
+import { SelectSizesExample } from '../../../examples/select/select-sizes/example';
+import { SelectStatesExample } from '../../../examples/select/select-states/example';
 
 interface ApiInputRow {
   readonly name: string;

@@ -2,17 +2,20 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { DomSanitizer } from '@angular/platform-browser';
 import { ScrollComponent } from '@guildofgleks/ui';
 import { highlightCode } from '../code-highlight';
+import { ExampleSource } from '../example-sources';
 import { StackblitzService } from '../stackblitz';
 
 const COPIED_LABEL_DURATION_MS = 1500;
 
-type CodeTab = 'html' | 'ts';
+type CodeTab = keyof ExampleSource;
 
 /**
- * Paired HTML/TypeScript code display with a tab switcher, for docs where seeing the
- * template alone isn't enough to know how to wire a working example up. The `ts` input
- * must be a complete, paste-and-run file — full imports, `@Component` decorator, class
- * body — not just the fragment referenced by `html`.
+ * The three files of one example — `example.html`, `example.ts`, `example.css` — behind a tab
+ * strip, with copy and "open on StackBlitz" beside it.
+ *
+ * **The tab strip is the same shape on every card.** An example always has all three files (see
+ * `ExampleSource`), so a reader never has to work out whether a missing tab means the file is
+ * empty or merely not shown, and the toolbar does not change width as they move down the page.
  */
 @Component({
   selector: 'app-code-tabs',
@@ -25,57 +28,53 @@ export class CodeTabsComponent {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly stackblitz = inject(StackblitzService);
 
-  /**
-   * Optional. An example that lives in its own file (`<app-example>`) has no separate markup to
-   * show — the file *is* the source — so it renders as a single code block with no tab strip.
-   * The pages still passing both are the ones where the snippet is deliberately different from
-   * what is rendered; see `docs/lab-examples-refactor.md`.
-   */
-  readonly html = input<string | null>(null);
-  readonly ts = input.required<string>();
+  readonly source = input.required<ExampleSource>();
   /** Names the StackBlitz project. Left unset, the service derives one from the current route. */
   readonly title = input<string | null>(null);
 
-  private readonly requestedTab = signal<CodeTab>('html');
+  protected readonly tabs: readonly { id: CodeTab; label: string }[] = [
+    { id: 'html', label: 'HTML' },
+    { id: 'ts', label: 'TS' },
+    { id: 'css', label: 'CSS' },
+  ];
+
+  /** Markup first: it is the part a reader compares against what they see rendered above. */
+  protected readonly activeTab = signal<CodeTab>('html');
   protected readonly copyLabel = signal('Copy');
 
-  /** With no `html`, the TS source is the only thing there is to show. */
-  protected readonly hasTabs = computed(() => this.html() !== null);
-  protected readonly activeTab = computed<CodeTab>(() =>
-    this.hasTabs() ? this.requestedTab() : 'ts',
-  );
-
   /**
-   * The `ts` input is contractually a complete file, so almost every example can be booted — the
-   * handful that document a `provideGogConfig` call rather than a component cannot, and hide the
-   * button instead of opening a project that fails to compile.
+   * Whether the example can be booted as a project. The handful that document a
+   * `provideGogConfig` call rather than a component cannot, and hide the button instead of
+   * opening a project that fails to compile.
    */
-  protected readonly canOpenInStackblitz = computed(() => this.stackblitz.isRunnable(this.ts()));
+  protected readonly canOpenInStackblitz = computed(() =>
+    this.stackblitz.isRunnable(this.source()),
+  );
 
   protected openInStackblitz(): void {
-    this.stackblitz.open(this.ts(), this.title());
+    this.stackblitz.open(this.source(), this.title());
   }
 
-  private readonly highlightedHtml = computed(() =>
-    this.sanitizer.bypassSecurityTrustHtml(highlightCode(this.html() ?? '', 'html')),
-  );
-  private readonly highlightedTs = computed(() =>
-    this.sanitizer.bypassSecurityTrustHtml(highlightCode(this.ts(), 'typescript')),
-  );
+  private readonly language: Record<CodeTab, string> = {
+    html: 'html',
+    ts: 'typescript',
+    css: 'css',
+  };
 
-  protected readonly activeHighlighted = computed(() =>
-    this.activeTab() === 'html' ? this.highlightedHtml() : this.highlightedTs(),
-  );
+  protected readonly activeHighlighted = computed(() => {
+    const tab = this.activeTab();
+    return this.sanitizer.bypassSecurityTrustHtml(
+      highlightCode(this.source()[tab], this.language[tab]),
+    );
+  });
 
   protected selectTab(tab: CodeTab): void {
-    this.requestedTab.set(tab);
+    this.activeTab.set(tab);
     this.copyLabel.set('Copy');
   }
 
   protected onCopy(): void {
-    const source = (this.activeTab() === 'html' ? this.html() : this.ts()) ?? '';
-
-    navigator.clipboard.writeText(source).then(() => {
+    navigator.clipboard.writeText(this.source()[this.activeTab()]).then(() => {
       this.copyLabel.set('Copied!');
       setTimeout(() => this.copyLabel.set('Copy'), COPIED_LABEL_DURATION_MS);
     });

@@ -7,12 +7,12 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { COLLAPSIBLE_EXAMPLE_SOURCES } from '../../../examples/collapsible/sources.generated';
-import { CollapsibleControlledExample } from '../../../examples/collapsible/collapsible-controlled.example';
-import { CollapsibleCustomTriggerExample } from '../../../examples/collapsible/collapsible-custom-trigger.example';
-import { CollapsibleDisabledExample } from '../../../examples/collapsible/collapsible-disabled.example';
-import { CollapsibleFaqExample } from '../../../examples/collapsible/collapsible-faq.example';
-import { CollapsibleFocusOutExample } from '../../../examples/collapsible/collapsible-focus-out.example';
-import { CollapsibleOverviewExample } from '../../../examples/collapsible/collapsible-overview.example';
+import { CollapsibleControlledExample } from '../../../examples/collapsible/collapsible-controlled/example';
+import { CollapsibleCustomTriggerExample } from '../../../examples/collapsible/collapsible-custom-trigger/example';
+import { CollapsibleDisabledExample } from '../../../examples/collapsible/collapsible-disabled/example';
+import { CollapsibleFaqExample } from '../../../examples/collapsible/collapsible-faq/example';
+import { CollapsibleFocusOutExample } from '../../../examples/collapsible/collapsible-focus-out/example';
+import { CollapsibleOverviewExample } from '../../../examples/collapsible/collapsible-overview/example';
 
 interface ApiRow {
   readonly name: string;

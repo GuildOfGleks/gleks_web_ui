@@ -7,14 +7,14 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { SPINNER_EXAMPLE_SOURCES } from '../../../examples/spinner/sources.generated';
-import { SpinnerColorExample } from '../../../examples/spinner/spinner-color.example';
-import { SpinnerCustomVariantExample } from '../../../examples/spinner/spinner-custom-variant.example';
-import { SpinnerFullscreenExample } from '../../../examples/spinner/spinner-fullscreen.example';
-import { SpinnerOverlayExample } from '../../../examples/spinner/spinner-overlay.example';
-import { SpinnerOverviewExample } from '../../../examples/spinner/spinner-overview.example';
-import { SpinnerSizesExample } from '../../../examples/spinner/spinner-sizes.example';
-import { SpinnerSpeedExample } from '../../../examples/spinner/spinner-speed.example';
-import { SpinnerVariantsExample } from '../../../examples/spinner/spinner-variants.example';
+import { SpinnerColorExample } from '../../../examples/spinner/spinner-color/example';
+import { SpinnerCustomVariantExample } from '../../../examples/spinner/spinner-custom-variant/example';
+import { SpinnerFullscreenExample } from '../../../examples/spinner/spinner-fullscreen/example';
+import { SpinnerOverlayExample } from '../../../examples/spinner/spinner-overlay/example';
+import { SpinnerOverviewExample } from '../../../examples/spinner/spinner-overview/example';
+import { SpinnerSizesExample } from '../../../examples/spinner/spinner-sizes/example';
+import { SpinnerSpeedExample } from '../../../examples/spinner/spinner-speed/example';
+import { SpinnerVariantsExample } from '../../../examples/spinner/spinner-variants/example';
 
 interface ApiInputRow {
   readonly name: string;

@@ -1,0 +1,16 @@
+<div class="example">
+  <gog-checkbox
+    label="Select all"
+    [checked]="allChecked()"
+    [indeterminate]="someChecked() && !allChecked()"
+    (checkedChange)="setAll($event)"
+  />
+
+  @for (item of subscriptions(); track item.id) {
+    <gog-checkbox
+      [label]="item.label"
+      [checked]="item.checked"
+      (checkedChange)="setOne(item.id, $event)"
+    />
+  }
+</div>

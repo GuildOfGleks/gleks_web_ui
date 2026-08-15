@@ -1,0 +1,10 @@
+.example {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+form {
+  display: flex;
+  gap: 12px;
+}

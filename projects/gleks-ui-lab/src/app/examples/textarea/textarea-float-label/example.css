@@ -1,0 +1,9 @@
+.example {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  /* 'over' floats the label fully above the border, so the rows need room between them
+     or it lands on the field above. */
+  gap: 24px;
+  max-width: 420px;
+}

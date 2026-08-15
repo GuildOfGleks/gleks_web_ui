@@ -6,12 +6,12 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { BUTTON_TOGGLE_EXAMPLE_SOURCES } from '../../../examples/button-toggle/sources.generated';
-import { ButtonToggleAppearanceExample } from '../../../examples/button-toggle/button-toggle-appearance.example';
-import { ButtonToggleIconsExample } from '../../../examples/button-toggle/button-toggle-icons.example';
-import { ButtonToggleMultipleExample } from '../../../examples/button-toggle/button-toggle-multiple.example';
-import { ButtonToggleOverviewExample } from '../../../examples/button-toggle/button-toggle-overview.example';
-import { ButtonToggleSizesExample } from '../../../examples/button-toggle/button-toggle-sizes.example';
-import { ButtonToggleSlotExample } from '../../../examples/button-toggle/button-toggle-slot.example';
+import { ButtonToggleAppearanceExample } from '../../../examples/button-toggle/button-toggle-appearance/example';
+import { ButtonToggleIconsExample } from '../../../examples/button-toggle/button-toggle-icons/example';
+import { ButtonToggleMultipleExample } from '../../../examples/button-toggle/button-toggle-multiple/example';
+import { ButtonToggleOverviewExample } from '../../../examples/button-toggle/button-toggle-overview/example';
+import { ButtonToggleSizesExample } from '../../../examples/button-toggle/button-toggle-sizes/example';
+import { ButtonToggleSlotExample } from '../../../examples/button-toggle/button-toggle-slot/example';
 
 interface ApiRow {
   readonly name: string;

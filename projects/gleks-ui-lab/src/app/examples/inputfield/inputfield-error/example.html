@@ -1,0 +1,7 @@
+<div class="example">
+  <gog-inputfield
+    label="Username"
+    [(value)]="value"
+    [errorMessage]="value().length > 0 && value().length < 3 ? 'At least 3 characters' : ''"
+  />
+</div>

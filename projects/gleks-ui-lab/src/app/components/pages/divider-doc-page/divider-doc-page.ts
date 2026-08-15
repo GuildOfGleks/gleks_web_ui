@@ -7,11 +7,11 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { DIVIDER_EXAMPLE_SOURCES } from '../../../examples/divider/sources.generated';
-import { DividerInsetExample } from '../../../examples/divider/divider-inset.example';
-import { DividerLabelExample } from '../../../examples/divider/divider-label.example';
-import { DividerOverviewExample } from '../../../examples/divider/divider-overview.example';
-import { DividerVariantsExample } from '../../../examples/divider/divider-variants.example';
-import { DividerVerticalExample } from '../../../examples/divider/divider-vertical.example';
+import { DividerInsetExample } from '../../../examples/divider/divider-inset/example';
+import { DividerLabelExample } from '../../../examples/divider/divider-label/example';
+import { DividerOverviewExample } from '../../../examples/divider/divider-overview/example';
+import { DividerVariantsExample } from '../../../examples/divider/divider-variants/example';
+import { DividerVerticalExample } from '../../../examples/divider/divider-vertical/example';
 
 interface ApiInputRow {
   readonly name: string;

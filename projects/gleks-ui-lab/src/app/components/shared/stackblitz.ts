@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ThemeService } from '@guildofgleks/ui';
 import sdk from '@stackblitz/sdk';
 
+import { ExampleSource } from './example-sources';
 import { LIBRARY_VERSION } from './library-version';
 
 /**
@@ -15,11 +16,12 @@ import { LIBRARY_VERSION } from './library-version';
  * builds a project from files held in memory instead: nothing is committed anywhere, nothing has
  * to be kept in sync, and the project is assembled from the exact source the page is displaying.
  *
- * **The example source is used verbatim.** `app-code-tabs`'s `ts` input is contractually a
- * complete, paste-and-run file (see its header), which is what makes this possible without a
- * second copy of every example: the file the reader reads is the file the project runs. The six
- * snippets across the site that are configuration fragments rather than components are detected
- * by `isRunnable` and simply do not get the button.
+ * **The example's files are used verbatim.** An example is three real files on disk — the same
+ * three the card's tabs show — so the project is assembled by writing them out under the names
+ * the component's own `templateUrl`/`styleUrl` already point at. Nothing is rewritten on the way
+ * out, and there is no second copy of any example to keep in step. The handful of snippets across
+ * the site that are configuration fragments rather than components are detected by `isRunnable`
+ * and simply do not get the button.
  *
  * The project pins **the version this site documents**, so the playground cannot demonstrate API
  * that the reader's install does not have.
@@ -34,16 +36,16 @@ export class StackblitzService {
    * class carrying the conventional `app-example` selector. Everything else is a fragment
    * (a `provideGogConfig` call, a dialog options object) with nothing to run.
    */
-  isRunnable(source: string): boolean {
+  isRunnable(source: ExampleSource): boolean {
     return (
-      /^import /m.test(source) &&
-      source.includes("selector: 'app-example'") &&
-      this.bootstrapClass(source) !== null
+      /^import /m.test(source.ts) &&
+      source.ts.includes("selector: 'app-example'") &&
+      this.bootstrapClass(source.ts) !== null
     );
   }
 
-  open(source: string, title?: string | null): void {
-    const componentName = this.bootstrapClass(source);
+  open(source: ExampleSource, title?: string | null): void {
+    const componentName = this.bootstrapClass(source.ts);
     if (!componentName) return;
 
     sdk.openProject(
@@ -53,7 +55,7 @@ export class StackblitzService {
         template: 'node',
         files: this.files(source, componentName),
       },
-      { openFile: 'src/example.ts', newWindow: true },
+      { openFile: 'src/example.html,src/example.ts,src/example.css', newWindow: true },
     );
   }
 
@@ -75,7 +77,7 @@ export class StackblitzService {
     return /export class (\w+)/.exec(source.slice(selectorAt))?.[1] ?? null;
   }
 
-  private files(source: string, componentName: string): Record<string, string> {
+  private files(source: ExampleSource, componentName: string): Record<string, string> {
     return {
       'package.json': JSON.stringify(
         {
@@ -184,7 +186,12 @@ export class StackblitzService {
         '',
       ].join('\n'),
 
-      'src/example.ts': `${source}\n`,
+      // The example's own three files, under the names its decorator already points at, so the
+      // project runs the exact files the page is displaying — no rewriting of `templateUrl` or
+      // `styleUrl` on the way out.
+      'src/example.ts': `${source.ts}\n`,
+      'src/example.html': `${source.html}\n`,
+      'src/example.css': `${source.css}\n`,
 
       // The reader's current theme travels with them: landing in the light default after reading
       // the docs in One Dark reads as a broken example rather than a different page.

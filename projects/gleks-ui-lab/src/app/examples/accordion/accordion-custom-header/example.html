@@ -1,0 +1,17 @@
+<div class="example">
+  <gog-accordion [items]="statusItems">
+    <ng-template gogAccordionHeader let-item let-open="open">
+      <gog-icon [name]="item.icon" />
+      <span>{{ item.title }}</span>
+      <span>{{ open ? 'Expanded' : item.subtitle }}</span>
+    </ng-template>
+
+    <ng-template gogAccordionChevron let-open="open">
+      <gog-icon [name]="open ? 'chevron-up' : 'chevron-down'" />
+    </ng-template>
+
+    <ng-template gogAccordionContent let-item>
+      <p>{{ item.body }}</p>
+    </ng-template>
+  </gog-accordion>
+</div>

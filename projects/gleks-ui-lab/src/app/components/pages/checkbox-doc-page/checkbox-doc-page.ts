@@ -8,14 +8,14 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { CHECKBOX_EXAMPLE_SOURCES } from '../../../examples/checkbox/sources.generated';
-import { CheckboxCheckIconExample } from '../../../examples/checkbox/checkbox-check-icon.example';
-import { CheckboxDisabledExample } from '../../../examples/checkbox/checkbox-disabled.example';
-import { CheckboxFormExample } from '../../../examples/checkbox/checkbox-form.example';
-import { CheckboxFullWidthExample } from '../../../examples/checkbox/checkbox-full-width.example';
-import { CheckboxIndeterminateExample } from '../../../examples/checkbox/checkbox-indeterminate.example';
-import { CheckboxNoLabelExample } from '../../../examples/checkbox/checkbox-no-label.example';
-import { CheckboxOverviewExample } from '../../../examples/checkbox/checkbox-overview.example';
-import { CheckboxSizesExample } from '../../../examples/checkbox/checkbox-sizes.example';
+import { CheckboxCheckIconExample } from '../../../examples/checkbox/checkbox-check-icon/example';
+import { CheckboxDisabledExample } from '../../../examples/checkbox/checkbox-disabled/example';
+import { CheckboxFormExample } from '../../../examples/checkbox/checkbox-form/example';
+import { CheckboxFullWidthExample } from '../../../examples/checkbox/checkbox-full-width/example';
+import { CheckboxIndeterminateExample } from '../../../examples/checkbox/checkbox-indeterminate/example';
+import { CheckboxNoLabelExample } from '../../../examples/checkbox/checkbox-no-label/example';
+import { CheckboxOverviewExample } from '../../../examples/checkbox/checkbox-overview/example';
+import { CheckboxSizesExample } from '../../../examples/checkbox/checkbox-sizes/example';
 
 interface ApiInputRow {
   readonly name: string;

@@ -1,0 +1,10 @@
+<div class="example">
+  <gog-multiselect
+    label="Reviewers"
+    optionLabel="profile.fullName"
+    optionValue="uuid"
+    optionDisabled="suspended"
+    [options]="users"
+    [(value)]="reviewerIds"
+  />
+</div>

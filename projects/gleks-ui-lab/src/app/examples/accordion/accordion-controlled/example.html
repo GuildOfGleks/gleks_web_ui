@@ -1,0 +1,10 @@
+<div class="example">
+  <gog-button (gogClick)="expandAll()">Expand all</gog-button>
+  <gog-button (gogClick)="collapseAll()">Collapse all</gog-button>
+
+  <gog-accordion [items]="multiItems" [multi]="true" [(openIds)]="openIds">
+    <ng-template gogAccordionContent let-item>
+      <p>{{ item.body }}</p>
+    </ng-template>
+  </gog-accordion>
+</div>

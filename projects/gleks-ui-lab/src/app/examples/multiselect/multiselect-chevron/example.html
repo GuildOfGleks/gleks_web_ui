@@ -1,0 +1,17 @@
+<div class="example">
+  <gog-multiselect [options]="sortOptions" [(value)]="sortValue">
+    <ng-template gogDropdownChevron>
+      <gog-icon name="sort" />
+    </ng-template>
+    <ng-template gogMultiselectClearIcon>
+      <gog-icon name="error" />
+    </ng-template>
+  </gog-multiselect>
+
+  <gog-multiselect
+    ariaLabel="Tags (no visible label)"
+    placeholder="Pick tags"
+    [options]="tags"
+    [(value)]="ariaOnlyValue"
+  />
+</div>

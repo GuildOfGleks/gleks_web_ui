@@ -7,12 +7,12 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { TAG_EXAMPLE_SOURCES } from '../../../examples/tag/sources.generated';
-import { TagCustomIconExample } from '../../../examples/tag/tag-custom-icon.example';
-import { TagFullWidthExample } from '../../../examples/tag/tag-full-width.example';
-import { TagOverviewExample } from '../../../examples/tag/tag-overview.example';
-import { TagShapesExample } from '../../../examples/tag/tag-shapes.example';
-import { TagSizesExample } from '../../../examples/tag/tag-sizes.example';
-import { TagVariantsExample } from '../../../examples/tag/tag-variants.example';
+import { TagCustomIconExample } from '../../../examples/tag/tag-custom-icon/example';
+import { TagFullWidthExample } from '../../../examples/tag/tag-full-width/example';
+import { TagOverviewExample } from '../../../examples/tag/tag-overview/example';
+import { TagShapesExample } from '../../../examples/tag/tag-shapes/example';
+import { TagSizesExample } from '../../../examples/tag/tag-sizes/example';
+import { TagVariantsExample } from '../../../examples/tag/tag-variants/example';
 
 interface ApiInputRow {
   readonly name: string;

@@ -1,0 +1,10 @@
+<div class="example">
+  @for (sizeOption of sizes; track sizeOption) {
+    <gog-select
+      [label]="'Size: ' + sizeOption"
+      [size]="sizeOption"
+      [options]="frameworks"
+      [(value)]="sizeDemoValue"
+    />
+  }
+</div>

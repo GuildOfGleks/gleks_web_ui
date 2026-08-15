@@ -1,0 +1,16 @@
+<div class="example">
+  <gog-multiselect
+    label="Top (default)"
+    [options]="countries"
+    [showControls]="true"
+    [(value)]="topControlsValue"
+  />
+
+  <gog-multiselect
+    label="Bottom"
+    [options]="countries"
+    [showControls]="true"
+    controlsPosition="bottom"
+    [(value)]="bottomControlsValue"
+  />
+</div>

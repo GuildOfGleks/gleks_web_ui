@@ -7,10 +7,10 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { TOOLTIP_EXAMPLE_SOURCES } from '../../../examples/tooltip/sources.generated';
-import { TooltipDelaysExample } from '../../../examples/tooltip/tooltip-delays.example';
-import { TooltipOverviewExample } from '../../../examples/tooltip/tooltip-overview.example';
-import { TooltipPositionsExample } from '../../../examples/tooltip/tooltip-positions.example';
-import { TooltipTemplateExample } from '../../../examples/tooltip/tooltip-template.example';
+import { TooltipDelaysExample } from '../../../examples/tooltip/tooltip-delays/example';
+import { TooltipOverviewExample } from '../../../examples/tooltip/tooltip-overview/example';
+import { TooltipPositionsExample } from '../../../examples/tooltip/tooltip-positions/example';
+import { TooltipTemplateExample } from '../../../examples/tooltip/tooltip-template/example';
 
 interface ApiInputRow {
   readonly name: string;

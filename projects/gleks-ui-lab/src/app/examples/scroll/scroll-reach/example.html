@@ -1,0 +1,19 @@
+<div class="example">
+  <gog-scroll
+    class="box"
+    ariaLabel="Rows"
+    [reachThreshold]="8"
+    (gogReachStart)="reachState.set('At the top')"
+    (gogReachEnd)="reachState.set('At the bottom — this is where you would load more')"
+    (gogScroll)="onScroll($event)"
+  >
+    @for (row of rows; track row) {
+      <p>{{ row }}</p>
+    }
+  </gog-scroll>
+
+  <div class="readout">
+    <span>{{ reachState() }}</span>
+    <span>scrollTop: {{ scrollTop() }}</span>
+  </div>
+</div>

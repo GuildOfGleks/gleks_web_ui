@@ -1,0 +1,17 @@
+<div class="example">
+  <gog-multiselect label="Disabled" [options]="features" [value]="['toast']" [disabled]="true" />
+
+  <gog-multiselect
+    label="Permissions (one disabled)"
+    [options]="permissionsWithDisabled"
+    [(value)]="permissions"
+  />
+
+  <gog-multiselect
+    label="Required tags"
+    placeholder="Pick at least one..."
+    [options]="permissionsWithDisabled"
+    [errorMessage]="requiredError()"
+    [(value)]="requiredValue"
+  />
+</div>

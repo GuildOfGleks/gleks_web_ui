@@ -9,16 +9,16 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { TEXTAREA_EXAMPLE_SOURCES } from '../../../examples/textarea/sources.generated';
-import { TextareaAutoWidthExample } from '../../../examples/textarea/textarea-auto-width.example';
-import { TextareaClearableExample } from '../../../examples/textarea/textarea-clearable.example';
-import { TextareaDisabledExample } from '../../../examples/textarea/textarea-disabled.example';
-import { TextareaErrorExample } from '../../../examples/textarea/textarea-error.example';
-import { TextareaFloatLabelExample } from '../../../examples/textarea/textarea-float-label.example';
-import { TextareaFormExample } from '../../../examples/textarea/textarea-form.example';
-import { TextareaOverviewExample } from '../../../examples/textarea/textarea-overview.example';
-import { TextareaResizeExample } from '../../../examples/textarea/textarea-resize.example';
-import { TextareaRowsExample } from '../../../examples/textarea/textarea-rows.example';
-import { TextareaSizesExample } from '../../../examples/textarea/textarea-sizes.example';
+import { TextareaAutoWidthExample } from '../../../examples/textarea/textarea-auto-width/example';
+import { TextareaClearableExample } from '../../../examples/textarea/textarea-clearable/example';
+import { TextareaDisabledExample } from '../../../examples/textarea/textarea-disabled/example';
+import { TextareaErrorExample } from '../../../examples/textarea/textarea-error/example';
+import { TextareaFloatLabelExample } from '../../../examples/textarea/textarea-float-label/example';
+import { TextareaFormExample } from '../../../examples/textarea/textarea-form/example';
+import { TextareaOverviewExample } from '../../../examples/textarea/textarea-overview/example';
+import { TextareaResizeExample } from '../../../examples/textarea/textarea-resize/example';
+import { TextareaRowsExample } from '../../../examples/textarea/textarea-rows/example';
+import { TextareaSizesExample } from '../../../examples/textarea/textarea-sizes/example';
 
 interface ApiInputRow {
   readonly name: string;

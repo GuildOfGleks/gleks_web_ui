@@ -8,10 +8,10 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { RADIO_GROUP_EXAMPLE_SOURCES } from '../../../examples/radio-group/sources.generated';
-import { RadioGroupFormsExample } from '../../../examples/radio-group/radio-group-forms.example';
-import { RadioGroupOrientationExample } from '../../../examples/radio-group/radio-group-orientation.example';
-import { RadioGroupOverviewExample } from '../../../examples/radio-group/radio-group-overview.example';
-import { RadioGroupSizesExample } from '../../../examples/radio-group/radio-group-sizes.example';
+import { RadioGroupFormsExample } from '../../../examples/radio-group/radio-group-forms/example';
+import { RadioGroupOrientationExample } from '../../../examples/radio-group/radio-group-orientation/example';
+import { RadioGroupOverviewExample } from '../../../examples/radio-group/radio-group-overview/example';
+import { RadioGroupSizesExample } from '../../../examples/radio-group/radio-group-sizes/example';
 
 interface ApiRow {
   readonly name: string;

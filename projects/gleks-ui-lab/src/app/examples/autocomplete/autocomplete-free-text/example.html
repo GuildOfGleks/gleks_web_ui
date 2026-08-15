@@ -1,0 +1,8 @@
+<div class="example">
+  <gog-autocomplete
+    [forceSelection]="false"
+    [options]="cities"
+    (gogSearch)="draft.set($event)"
+    [(value)]="freeText"
+  />
+</div>

@@ -6,12 +6,12 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { TOGGLE_EXAMPLE_SOURCES } from '../../../examples/toggle/sources.generated';
-import { ToggleDisabledExample } from '../../../examples/toggle/toggle-disabled.example';
-import { ToggleFormsExample } from '../../../examples/toggle/toggle-forms.example';
-import { ToggleLayoutExample } from '../../../examples/toggle/toggle-layout.example';
-import { ToggleOverviewExample } from '../../../examples/toggle/toggle-overview.example';
-import { ToggleSizesExample } from '../../../examples/toggle/toggle-sizes.example';
-import { ToggleTrackLabelsExample } from '../../../examples/toggle/toggle-track-labels.example';
+import { ToggleDisabledExample } from '../../../examples/toggle/toggle-disabled/example';
+import { ToggleFormsExample } from '../../../examples/toggle/toggle-forms/example';
+import { ToggleLayoutExample } from '../../../examples/toggle/toggle-layout/example';
+import { ToggleOverviewExample } from '../../../examples/toggle/toggle-overview/example';
+import { ToggleSizesExample } from '../../../examples/toggle/toggle-sizes/example';
+import { ToggleTrackLabelsExample } from '../../../examples/toggle/toggle-track-labels/example';
 
 interface ApiRow {
   readonly name: string;

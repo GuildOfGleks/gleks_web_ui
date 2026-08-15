@@ -1,0 +1,44 @@
+import { Component, signal } from '@angular/core';
+import {
+  GogColumn,
+  GogTableRowClickEvent,
+  GogTableSortEvent,
+  TableComponent,
+} from '@guildofgleks/ui';
+
+interface Row {
+  readonly component: string;
+  readonly status: string;
+  readonly owner: string;
+}
+
+@Component({
+  selector: 'app-example',
+  templateUrl: './example.html',
+  styleUrl: './example.css',
+  imports: [TableComponent, GogColumn],
+})
+export class TableOutputsExample {
+  protected readonly rows: Row[] = [
+    { component: 'Buttons', status: 'Ready', owner: 'Design' },
+    { component: 'Checkbox', status: 'Ready', owner: 'Forms' },
+    { component: 'Table', status: 'In review', owner: 'Data' },
+    { component: 'Accordion', status: 'Planned', owner: 'Navigation' },
+  ];
+
+  protected readonly lastEvent = signal('No event yet.');
+
+  protected onSortChange(sort: GogTableSortEvent): void {
+    // The third click clears the sort: { field: '', direction: null }.
+    this.lastEvent.set(`sort: ${sort.field || '(cleared)'} ${sort.direction ?? ''}`);
+  }
+
+  protected onPageChange(page: number): void {
+    // 1-based. Never fires on first render, nor for the reset a new sort causes.
+    this.lastEvent.set(`page: ${page}`);
+  }
+
+  protected onRowClick(event: GogTableRowClickEvent<Row>): void {
+    this.lastEvent.set(`row click: ${event.row.component} (index ${event.index})`);
+  }
+}

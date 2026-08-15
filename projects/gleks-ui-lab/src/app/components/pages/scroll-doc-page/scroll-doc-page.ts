@@ -7,12 +7,12 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { SCROLL_EXAMPLE_SOURCES } from '../../../examples/scroll/sources.generated';
-import { ScrollAxisExample } from '../../../examples/scroll/scroll-axis.example';
-import { ScrollConfigExample } from '../../../examples/scroll/scroll-config.example';
-import { ScrollMethodsExample } from '../../../examples/scroll/scroll-methods.example';
-import { ScrollOverviewExample } from '../../../examples/scroll/scroll-overview.example';
-import { ScrollReachExample } from '../../../examples/scroll/scroll-reach.example';
-import { ScrollSizeAutoHideExample } from '../../../examples/scroll/scroll-size-auto-hide.example';
+import { ScrollAxisExample } from '../../../examples/scroll/scroll-axis/example';
+import { ScrollConfigExample } from '../../../examples/scroll/scroll-config/example';
+import { ScrollMethodsExample } from '../../../examples/scroll/scroll-methods/example';
+import { ScrollOverviewExample } from '../../../examples/scroll/scroll-overview/example';
+import { ScrollReachExample } from '../../../examples/scroll/scroll-reach/example';
+import { ScrollSizeAutoHideExample } from '../../../examples/scroll/scroll-size-auto-hide/example';
 
 interface ApiRow {
   readonly name: string;

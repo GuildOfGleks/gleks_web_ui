@@ -1,0 +1,19 @@
+<div class="example">
+  <gog-table
+    [value]="serverRows()"
+    [lazy]="true"
+    [totalRecords]="serverTotal()"
+    [(pageSize)]="serverPageSize"
+    [loading]="serverLoading()"
+    [showTotal]="true"
+    [showPageSizeSelect]="true"
+    [pageSizeOptions]="[10, 20, 50]"
+    dataKey="id"
+    (gogSortChange)="onServerSort($event)"
+    (gogPageChange)="onServerPage($event)"
+    (pageSizeChange)="onServerPageSize($event)"
+  >
+    <gog-column field="name" header="Name" [sortable]="true" />
+    <gog-column field="team" header="Team" [sortable]="true" />
+  </gog-table>
+</div>

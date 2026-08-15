@@ -1,0 +1,4 @@
+<div class="example">
+  <gog-button variant="primary" [loading]="saving()" (gogClick)="save()">Save</gog-button>
+  <p>{{ saving() ? 'Saving…' : 'Idle.' }}</p>
+</div>

@@ -1,0 +1,10 @@
+<div class="example">
+  <gog-scroll axis="both" class="box" ariaLabel="Grid">
+    <!-- Wider and taller than the box, so both bars have something to do. -->
+    <div class="grid">
+      @for (cell of cells; track cell) {
+        <span class="cell">{{ cell }}</span>
+      }
+    </div>
+  </gog-scroll>
+</div>

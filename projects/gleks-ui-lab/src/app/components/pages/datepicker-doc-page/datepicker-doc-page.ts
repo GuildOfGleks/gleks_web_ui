@@ -8,12 +8,12 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { DATEPICKER_EXAMPLE_SOURCES } from '../../../examples/datepicker/sources.generated';
-import { DatepickerFormatExample } from '../../../examples/datepicker/datepicker-format.example';
-import { DatepickerFormsExample } from '../../../examples/datepicker/datepicker-forms.example';
-import { DatepickerInlineExample } from '../../../examples/datepicker/datepicker-inline.example';
-import { DatepickerOverviewExample } from '../../../examples/datepicker/datepicker-overview.example';
-import { DatepickerRangeExample } from '../../../examples/datepicker/datepicker-range.example';
-import { DatepickerTimeExample } from '../../../examples/datepicker/datepicker-time.example';
+import { DatepickerFormatExample } from '../../../examples/datepicker/datepicker-format/example';
+import { DatepickerFormsExample } from '../../../examples/datepicker/datepicker-forms/example';
+import { DatepickerInlineExample } from '../../../examples/datepicker/datepicker-inline/example';
+import { DatepickerOverviewExample } from '../../../examples/datepicker/datepicker-overview/example';
+import { DatepickerRangeExample } from '../../../examples/datepicker/datepicker-range/example';
+import { DatepickerTimeExample } from '../../../examples/datepicker/datepicker-time/example';
 
 interface ApiRow {
   readonly name: string;

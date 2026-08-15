@@ -15,11 +15,18 @@
  * classes — so the file has to import every example it describes. One global map would therefore
  * drag all ~216 examples into whichever page imported it; per folder, a page pays for its own.
  *
- * Convention, enforced below:
- *   src/app/examples/<component>/<name>.example.ts   exporting exactly one `*Example` class.
+ * **Why three sources per example.** An example is a component written the way a consumer writes
+ * one — markup, class and styles in their own files — so the page shows the three files that
+ * exist rather than one string with a template embedded in it. The map therefore carries a
+ * `{ ts, html, css }` triple per example, which is also exactly what StackBlitz needs to write.
+ *
+ * Convention, enforced by `scripts/check-lab-examples.mjs`:
+ *   src/app/examples/<component>/<name>/example.ts     exporting exactly one `*Example` class
+ *   src/app/examples/<component>/<name>/example.html   one root `<div class="example">`
+ *   src/app/examples/<component>/<name>/example.css    styles for that root, no `:host`
  */
 
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as prettier from 'prettier';
@@ -72,41 +79,63 @@ function folders() {
   }
 }
 
+/** The example folders inside one component folder — those holding an `example.ts`. */
+function examplesIn(dir) {
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .filter((name) => existsSync(path.join(dir, name, 'example.ts')))
+    .sort();
+}
+
 /** One `{ path, content }` per folder that holds at least one example. */
 export function buildSourceMaps() {
   const outputs = [];
 
   for (const folder of folders()) {
     const dir = path.join(examplesDir, folder);
-    const files = readdirSync(dir)
-      .filter((name) => name.endsWith('.example.ts'))
-      .sort();
-    if (!files.length) continue;
+    const names = examplesIn(dir);
+    if (!names.length) continue;
 
-    const entries = files.map((name) => {
-      const source = readFileSync(path.join(dir, name), 'utf8');
+    const entries = names.map((name) => {
+      const file = path.join(dir, name, 'example.ts');
+      const ts = readFileSync(file, 'utf8');
       return {
         name,
-        className: exampleClassName(source, path.join(dir, name)),
-        source: displaySource(source),
+        className: exampleClassName(ts, file),
+        ts: displaySource(ts),
+        html: displaySource(readFileSync(path.join(dir, name, 'example.html'), 'utf8')),
+        css: displaySource(readFileSync(path.join(dir, name, 'example.css'), 'utf8')),
       };
     });
 
     const imports = entries
-      .map((e) => `import { ${e.className} } from './${e.name.replace(/\.ts$/, '')}';`)
+      .map((e) => `import { ${e.className} } from './${e.name}/example';`)
       .join('\n');
-    const pairs = entries.map((e) => `  [${e.className}, ${JSON.stringify(e.source)}],`).join('\n');
+    const pairs = entries
+      .map(
+        (e) =>
+          `  [${e.className}, { html: ${JSON.stringify(e.html)}, ts: ${JSON.stringify(
+            e.ts,
+          )}, css: ${JSON.stringify(e.css)} }],`,
+      )
+      .join('\n');
 
     outputs.push({
       path: path.join(dir, 'sources.generated.ts'),
       content: `// GENERATED FILE — do not edit by hand.
-// Run \`npm run generate:examples\` after adding or editing an *.example.ts file in this folder.
+// Run \`npm run generate:examples\` after adding or editing an example in this folder.
 // See scripts/generate-example-sources.mjs for why the source text is generated rather than imported.
+
+import type { ExampleSource } from '../../components/shared/example-sources';
 
 ${imports}
 
-/** Source text of this folder's examples, keyed by the example component itself. */
-export const ${mapConstName(folder)}: ReadonlyMap<unknown, string> = new Map<unknown, string>([
+/** The three files of each example in this folder, keyed by the example component itself. */
+export const ${mapConstName(folder)}: ReadonlyMap<unknown, ExampleSource> = new Map<
+  unknown,
+  ExampleSource
+>([
 ${pairs}
 ]);
 `,

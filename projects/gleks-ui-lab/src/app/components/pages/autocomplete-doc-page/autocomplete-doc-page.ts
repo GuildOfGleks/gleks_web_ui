@@ -7,11 +7,11 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { AUTOCOMPLETE_EXAMPLE_SOURCES } from '../../../examples/autocomplete/sources.generated';
-import { AutocompleteDtoExample } from '../../../examples/autocomplete/autocomplete-dto.example';
-import { AutocompleteFreeTextExample } from '../../../examples/autocomplete/autocomplete-free-text.example';
-import { AutocompleteOverviewExample } from '../../../examples/autocomplete/autocomplete-overview.example';
-import { AutocompleteServerExample } from '../../../examples/autocomplete/autocomplete-server.example';
-import { AutocompleteSlotExample } from '../../../examples/autocomplete/autocomplete-slot.example';
+import { AutocompleteDtoExample } from '../../../examples/autocomplete/autocomplete-dto/example';
+import { AutocompleteFreeTextExample } from '../../../examples/autocomplete/autocomplete-free-text/example';
+import { AutocompleteOverviewExample } from '../../../examples/autocomplete/autocomplete-overview/example';
+import { AutocompleteServerExample } from '../../../examples/autocomplete/autocomplete-server/example';
+import { AutocompleteSlotExample } from '../../../examples/autocomplete/autocomplete-slot/example';
 
 interface ApiRow {
   readonly name: string;

@@ -1,0 +1,17 @@
+<div class="example">
+  <gog-collapsible [(open)]="open" [disabled]="true">
+    <button type="button" gogCollapsibleTrigger class="trigger">
+      <span>Unavailable section</span>
+      <gog-icon name="chevron-down" class="chevron" />
+    </button>
+
+    <div gogCollapsibleContent class="panel">
+      <p>Opened from code, not by clicking the trigger.</p>
+    </div>
+  </gog-collapsible>
+
+  <!-- The other half of the point: disabled stops the trigger, not the state. -->
+  <gog-button size="sm" variant="outline" (gogClick)="open.set(!open())">
+    Toggle from code
+  </gog-button>
+</div>

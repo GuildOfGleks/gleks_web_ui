@@ -7,15 +7,15 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { CHIP_EXAMPLE_SOURCES } from '../../../examples/chip/sources.generated';
-import { ChipAvatarExample } from '../../../examples/chip/chip-avatar.example';
-import { ChipDisabledExample } from '../../../examples/chip/chip-disabled.example';
-import { ChipFullWidthExample } from '../../../examples/chip/chip-full-width.example';
-import { ChipIconExample } from '../../../examples/chip/chip-icon.example';
-import { ChipNonInteractiveExample } from '../../../examples/chip/chip-non-interactive.example';
-import { ChipOverviewExample } from '../../../examples/chip/chip-overview.example';
-import { ChipRemovableExample } from '../../../examples/chip/chip-removable.example';
-import { ChipShapesExample } from '../../../examples/chip/chip-shapes.example';
-import { ChipSizesExample } from '../../../examples/chip/chip-sizes.example';
+import { ChipAvatarExample } from '../../../examples/chip/chip-avatar/example';
+import { ChipDisabledExample } from '../../../examples/chip/chip-disabled/example';
+import { ChipFullWidthExample } from '../../../examples/chip/chip-full-width/example';
+import { ChipIconExample } from '../../../examples/chip/chip-icon/example';
+import { ChipNonInteractiveExample } from '../../../examples/chip/chip-non-interactive/example';
+import { ChipOverviewExample } from '../../../examples/chip/chip-overview/example';
+import { ChipRemovableExample } from '../../../examples/chip/chip-removable/example';
+import { ChipShapesExample } from '../../../examples/chip/chip-shapes/example';
+import { ChipSizesExample } from '../../../examples/chip/chip-sizes/example';
 
 interface ApiInputRow {
   readonly name: string;

@@ -1,0 +1,16 @@
+<div class="example">
+  <gog-table [value]="rows" [showRowNumbers]="false">
+    <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+
+    <gog-column field="status" header="Status">
+      <ng-template gogColumnHeader let-header>
+        <span class="status-header">{{ header }}</span>
+      </ng-template>
+      <ng-template gogColumnBody let-row let-value="value">
+        <gog-tag [variant]="statusVariant(asRow(row).status)" size="sm">{{ value }}</gog-tag>
+      </ng-template>
+    </gog-column>
+
+    <gog-column field="owner" header="Owner"></gog-column>
+  </gog-table>
+</div>

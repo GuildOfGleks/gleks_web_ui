@@ -1,0 +1,13 @@
+<div class="example">
+  <gog-tabs ariaLabel="Inbox">
+    <ng-template gogTabHeader let-tab let-active="active">
+      <span>{{ tab.label() }}</span>
+      @if (active) {
+        <gog-tag variant="info" size="xsm">now</gog-tag>
+      }
+    </ng-template>
+
+    <gog-tab label="Unread">Two unread messages.</gog-tab>
+    <gog-tab label="Archived">Nothing archived yet.</gog-tab>
+  </gog-tabs>
+</div>

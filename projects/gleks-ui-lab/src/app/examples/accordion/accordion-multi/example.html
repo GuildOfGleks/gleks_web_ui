@@ -1,0 +1,9 @@
+<div class="example">
+  <gog-button (gogClick)="toggleMulti()"> Multi-open: {{ multi() ? 'on' : 'off' }} </gog-button>
+
+  <gog-accordion [items]="multiItems" [multi]="multi()">
+    <ng-template gogAccordionContent let-item>
+      <p>{{ item.body }}</p>
+    </ng-template>
+  </gog-accordion>
+</div>

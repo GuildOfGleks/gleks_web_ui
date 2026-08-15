@@ -8,11 +8,11 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { CALENDAR_EXAMPLE_SOURCES } from '../../../examples/calendar/sources.generated';
-import { CalendarDisabledExample } from '../../../examples/calendar/calendar-disabled.example';
-import { CalendarLocaleExample } from '../../../examples/calendar/calendar-locale.example';
-import { CalendarOverviewExample } from '../../../examples/calendar/calendar-overview.example';
-import { CalendarRangeExample } from '../../../examples/calendar/calendar-range.example';
-import { CalendarTimeExample } from '../../../examples/calendar/calendar-time.example';
+import { CalendarDisabledExample } from '../../../examples/calendar/calendar-disabled/example';
+import { CalendarLocaleExample } from '../../../examples/calendar/calendar-locale/example';
+import { CalendarOverviewExample } from '../../../examples/calendar/calendar-overview/example';
+import { CalendarRangeExample } from '../../../examples/calendar/calendar-range/example';
+import { CalendarTimeExample } from '../../../examples/calendar/calendar-time/example';
 
 interface ApiRow {
   readonly name: string;

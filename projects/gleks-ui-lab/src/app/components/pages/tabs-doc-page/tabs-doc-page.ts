@@ -8,10 +8,10 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { TABS_EXAMPLE_SOURCES } from '../../../examples/tabs/sources.generated';
-import { TabsAlignExample } from '../../../examples/tabs/tabs-align.example';
-import { TabsHeaderSlotExample } from '../../../examples/tabs/tabs-header-slot.example';
-import { TabsLazyExample } from '../../../examples/tabs/tabs-lazy.example';
-import { TabsOverviewExample } from '../../../examples/tabs/tabs-overview.example';
+import { TabsAlignExample } from '../../../examples/tabs/tabs-align/example';
+import { TabsHeaderSlotExample } from '../../../examples/tabs/tabs-header-slot/example';
+import { TabsLazyExample } from '../../../examples/tabs/tabs-lazy/example';
+import { TabsOverviewExample } from '../../../examples/tabs/tabs-overview/example';
 
 interface ApiRow {
   readonly name: string;
