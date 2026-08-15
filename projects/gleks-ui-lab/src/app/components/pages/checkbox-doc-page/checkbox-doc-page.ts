@@ -1,15 +1,21 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import {
-  CheckboxComponent,
-  GogCheckboxIconDirective,
-  GogSize,
-  IconComponent,
-} from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GogCheckboxIconDirective, GogSize } from '@guildofgleks/ui';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { CHECKBOX_EXAMPLE_SOURCES } from '../../../examples/checkbox/sources.generated';
+import { CheckboxCheckIconExample } from '../../../examples/checkbox/checkbox-check-icon.example';
+import { CheckboxDisabledExample } from '../../../examples/checkbox/checkbox-disabled.example';
+import { CheckboxFormExample } from '../../../examples/checkbox/checkbox-form.example';
+import { CheckboxFullWidthExample } from '../../../examples/checkbox/checkbox-full-width.example';
+import { CheckboxIndeterminateExample } from '../../../examples/checkbox/checkbox-indeterminate.example';
+import { CheckboxNoLabelExample } from '../../../examples/checkbox/checkbox-no-label.example';
+import { CheckboxOverviewExample } from '../../../examples/checkbox/checkbox-overview.example';
+import { CheckboxSizesExample } from '../../../examples/checkbox/checkbox-sizes.example';
 
 interface ApiInputRow {
   readonly name: string;
@@ -77,15 +83,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-checkbox-doc-page',
-  imports: [
-    CheckboxComponent,
-    GogCheckboxIconDirective,
-    IconComponent,
-    MarkdownComponent,
-    CodeTabsComponent,
-    RouterLink,
-    ReactiveFormsModule,
-  ],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink, ReactiveFormsModule],
+  providers: [provideExampleSources(CHECKBOX_EXAMPLE_SOURCES)],
   templateUrl: './checkbox-doc-page.html',
   styleUrl: './checkbox-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -117,208 +116,6 @@ export class CheckboxDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { CheckboxComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [CheckboxComponent],\n})\n```";
 
-  protected readonly overviewHtml = '<gog-checkbox label="I agree" [(checked)]="agreed" />';
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CheckboxComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CheckboxComponent],',
-    '  template: `<gog-checkbox label="I agree" [(checked)]="agreed" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly agreed = signal(false);',
-    '}',
-  ].join('\n');
-
-  protected readonly sizesHtml = [
-    '@for (sizeOption of sizes; track sizeOption) {',
-    '  <gog-checkbox [size]="sizeOption" [label]="sizeOption" [checked]="true" />',
-    '}',
-  ].join('\n');
-  protected readonly sizesTs = [
-    "import { Component } from '@angular/core';",
-    "import { CheckboxComponent, GogSize } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CheckboxComponent],',
-    '  template: `',
-    '    @for (sizeOption of sizes; track sizeOption) {',
-    '      <gog-checkbox [size]="sizeOption" [label]="sizeOption" [checked]="true" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
-    '}',
-  ].join('\n');
-
-  protected readonly indeterminateHtml = [
-    '<gog-checkbox',
-    '  label="Select all"',
-    '  [checked]="allChecked()"',
-    '  [indeterminate]="someChecked() && !allChecked()"',
-    '  (checkedChange)="setAll($event)"',
-    '/>',
-    '',
-    '@for (item of subscriptions(); track item.id) {',
-    '  <gog-checkbox',
-    '    [label]="item.label"',
-    '    [checked]="item.checked"',
-    '    (checkedChange)="setOne(item.id, $event)"',
-    '  />',
-    '}',
-  ].join('\n');
-  protected readonly indeterminateTs = [
-    "import { Component, computed, signal } from '@angular/core';",
-    "import { CheckboxComponent } from '@guildofgleks/ui';",
-    '',
-    'interface Subscription {',
-    '  id: string;',
-    '  label: string;',
-    '  checked: boolean;',
-    '}',
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CheckboxComponent],',
-    '  template: `',
-    '    <gog-checkbox',
-    '      label="Select all"',
-    '      [checked]="allChecked()"',
-    '      [indeterminate]="someChecked() && !allChecked()"',
-    '      (checkedChange)="setAll($event)"',
-    '    />',
-    '',
-    '    @for (item of subscriptions(); track item.id) {',
-    '      <gog-checkbox',
-    '        [label]="item.label"',
-    '        [checked]="item.checked"',
-    '        (checkedChange)="setOne(item.id, $event)"',
-    '      />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly subscriptions = signal<Subscription[]>([',
-    "    { id: 'news', label: 'Newsletter', checked: true },",
-    "    { id: 'offers', label: 'Special offers', checked: false },",
-    '  ]);',
-    '  protected readonly allChecked = computed(() =>',
-    '    this.subscriptions().every((item) => item.checked),',
-    '  );',
-    '  protected readonly someChecked = computed(() =>',
-    '    this.subscriptions().some((item) => item.checked),',
-    '  );',
-    '',
-    '  protected setAll(checked: boolean): void {',
-    '    this.subscriptions.update((items) => items.map((item) => ({ ...item, checked })));',
-    '  }',
-    '',
-    '  protected setOne(id: string, checked: boolean): void {',
-    '    this.subscriptions.update((items) =>',
-    '      items.map((item) => (item.id === id ? { ...item, checked } : item)),',
-    '    );',
-    '  }',
-    '}',
-  ].join('\n');
-
-  protected readonly disabledHtml = [
-    '<gog-checkbox label="Disabled, unchecked" [disabled]="true" />',
-    '<gog-checkbox label="Disabled, checked" [checked]="true" [disabled]="true" />',
-    '<gog-checkbox label="Disabled, indeterminate" [indeterminate]="true" [disabled]="true" />',
-  ].join('\n');
-  protected readonly disabledTs = [
-    "import { Component } from '@angular/core';",
-    "import { CheckboxComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CheckboxComponent],',
-    '  template: `',
-    '    <gog-checkbox label="Disabled, unchecked" [disabled]="true" />',
-    '    <gog-checkbox label="Disabled, checked" [checked]="true" [disabled]="true" />',
-    '    <gog-checkbox label="Disabled, indeterminate" [indeterminate]="true" [disabled]="true" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly noLabelHtml = '<gog-checkbox ariaLabel="Select row" [(checked)]="agreed" />';
-  protected readonly noLabelTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CheckboxComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CheckboxComponent],',
-    '  template: `<gog-checkbox ariaLabel="Select row" [(checked)]="agreed" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly agreed = signal(false);',
-    '}',
-  ].join('\n');
-
-  protected readonly fullWidthHtml = '<gog-checkbox label="Full width row" [fullWidth]="true" />';
-  protected readonly fullWidthTs = [
-    "import { Component } from '@angular/core';",
-    "import { CheckboxComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CheckboxComponent],',
-    '  template: `<gog-checkbox label="Full width row" [fullWidth]="true" />`,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly formHtml = '<gog-checkbox label="Subscribe" [formControl]="control" />';
-  protected readonly formTs = [
-    "import { Component } from '@angular/core';",
-    "import { FormControl, ReactiveFormsModule } from '@angular/forms';",
-    "import { CheckboxComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CheckboxComponent, ReactiveFormsModule],',
-    '  template: `<gog-checkbox label="Subscribe" [formControl]="control" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly control = new FormControl(false, { nonNullable: true });',
-    '}',
-  ].join('\n');
-
-  protected readonly checkIconHtml = [
-    '<gog-checkbox label="Custom mark" [checked]="true">',
-    '  <ng-template gogCheckboxIcon>',
-    '    <gog-icon name="close" />',
-    '  </ng-template>',
-    '</gog-checkbox>',
-  ].join('\n');
-  protected readonly checkIconTs = [
-    "import { Component } from '@angular/core';",
-    'import {',
-    '  CheckboxComponent,',
-    '  GogCheckboxIconDirective,',
-    '  IconComponent,',
-    "} from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CheckboxComponent, GogCheckboxIconDirective, IconComponent],',
-    '  template: `',
-    '    <gog-checkbox label="Custom mark" [checked]="true">',
-    '      <ng-template gogCheckboxIcon>',
-    '        <gog-icon name="close" />',
-    '      </ng-template>',
-    '    </gog-checkbox>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
   protected setAll(checked: boolean): void {
     this.subscriptions.update((items) => items.map((item) => ({ ...item, checked })));
   }
@@ -328,4 +125,15 @@ export class CheckboxDocPage {
       items.map((item) => (item.id === id ? { ...item, checked } : item)),
     );
   }
+  /** Each example is a file under `src/app/examples/checkbox/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    checkIcon: CheckboxCheckIconExample,
+    disabled: CheckboxDisabledExample,
+    form: CheckboxFormExample,
+    fullWidth: CheckboxFullWidthExample,
+    indeterminate: CheckboxIndeterminateExample,
+    noLabel: CheckboxNoLabelExample,
+    overview: CheckboxOverviewExample,
+    sizes: CheckboxSizesExample,
+  };
 }

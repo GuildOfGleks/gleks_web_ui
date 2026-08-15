@@ -14,140 +14,50 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage — a primary button that reacts to a click:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-button variant="primary" (gogClick)="onClick('primary', 'md')">Click me</gog-button>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
-    <p class="doc-section__meta">{{ lastClicked() }}</p>
+    <app-demo [component]="examples.basic" title="Basic usage">
+      A primary button that reacts to a click. Every example on this page is a real file in the
+      repository — what you see running is the code shown below it, and
+      <strong>Open in StackBlitz</strong> boots exactly that.
+    </app-demo>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Variants &amp; sizes</h3>
-      <p class="demo-card__meta">Every combination of the four variants and five sizes.</p>
-      <div class="demo-card__preview variant-grid">
-        @for (variant of variants; track variant) {
-          <div class="variant-row">
-            <span class="variant-row__label">{{ variant }}</span>
-            @for (size of sizes; track size) {
-              <gog-button [variant]="variant" [size]="size" (gogClick)="onClick(variant, size)">
-                {{ size }}
-              </gog-button>
-            }
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
-    </article>
+    <app-demo [component]="examples.variants" title="Variants & sizes">
+      Every combination of the four variants and five sizes.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Disabled</h3>
-      <p class="demo-card__meta">
-        One disabled button per variant — disabled state must stay legible on every color.
-      </p>
-      <div class="demo-card__preview action-row">
-        @for (variant of variants; track variant) {
-          <gog-button [variant]="variant" [disabled]="true">{{ variant }}</gog-button>
-        }
-      </div>
-      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
-    </article>
+    <app-demo [component]="examples.disabled" title="Disabled">
+      One disabled button per variant — the disabled state must stay legible on every colour.
+      <code>disabled</code> uses the native attribute, so these are out of the tab order entirely.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Loading</h3>
-      <p class="demo-card__meta">
-        Loading swaps the label for a spinner and blocks clicks (via <code>aria-disabled</code>, not
-        the native <code>disabled</code> attribute, so focus is preserved).
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="primary" [loading]="isLoading()" (gogClick)="simulateLoading()">
-          Simulate loading
-        </gog-button>
-      </div>
+    <app-demo [component]="examples.loading" title="Loading">
+      Loading swaps the label for a spinner and blocks clicks via <code>aria-disabled</code>, not
+      the native <code>disabled</code> attribute, so the button keeps focus while the request runs.
+    </app-demo>
 
-      <p class="demo-card__meta">The spinner scales with the button size:</p>
-      <div class="demo-card__preview action-row">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-button
-            variant="secondary"
-            [size]="sizeOption"
-            [loading]="loadingBySize[sizeOption]()"
-            (gogClick)="simulateLoadingFor(sizeOption)"
-          >
-            {{ sizeOption }}
-          </gog-button>
-        }
-      </div>
-      <app-code-tabs [html]="loadingHtml" [ts]="loadingTs" />
-    </article>
+    <app-demo [component]="examples.fullWidth" title="Full width">
+      Stretches to fill its container; wrapped here in a narrower panel to show it.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Full width</h3>
-      <p class="demo-card__meta">
-        Stretches to fill its container; wrapped here in a narrower box to show it.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-button variant="outline" [fullWidth]="true">Full width</gog-button>
-      </div>
-      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
-    </article>
+    <app-demo [component]="examples.iconOnly" title="Icon-only">
+      No visible label, so <code>ariaLabel</code> is required — it targets the inner
+      <code>&lt;button&gt;</code>, unlike a plain <code>aria-label</code> attribute on
+      <code>&lt;gog-button&gt;</code> itself.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Icon-only</h3>
-      <p class="demo-card__meta">
-        No visible label, so <code>ariaLabel</code> is required — it targets the inner
-        <code>&lt;button&gt;</code>, unlike a plain <code>aria-label</code> attribute on
-        <code>&lt;gog-button&gt;</code> itself.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="primary" ariaLabel="Confirm">
-          <gog-icon name="check" />
-        </gog-button>
-        <gog-button variant="outline" ariaLabel="Dismiss">
-          <gog-icon name="close" />
-        </gog-button>
-        <gog-button variant="ghost" size="sm" ariaLabel="More info">
-          <gog-icon name="info" />
-        </gog-button>
-      </div>
-      <app-code-tabs [html]="iconOnlyHtml" [ts]="iconOnlyTs" />
-    </article>
+    <app-demo [component]="examples.debounce" title="Debounce guard">
+      Clicks are throttled leading-edge: the first fires immediately, further clicks are dropped for
+      <code>debounce</code> ms (default 300, raised here to make it visible). Click rapidly and
+      watch the counter lag behind.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Debounce guard</h3>
-      <p class="demo-card__meta">
-        Clicks are throttled leading-edge: the first click fires immediately, further clicks are
-        dropped for <code>debounce</code> ms (default 300). Click rapidly and watch the counter lag
-        behind your clicks.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="primary" (gogClick)="onSpamClick()">Click me fast</gog-button>
-      </div>
-      <p class="demo-card__meta">Accepted clicks: {{ clickCount() }}</p>
-      <app-code-tabs [html]="debounceHtml" [ts]="debounceTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Native type semantics</h3>
-      <p class="demo-card__meta">
-        <code>type</code> is forwarded to the native <code>&lt;button&gt;</code>.
-      </p>
-      <form
-        class="demo-card__preview action-row"
-        (submit)="onFormSubmit($event)"
-        (reset)="onFormReset()"
-      >
-        <gog-button variant="primary" type="submit">Submit</gog-button>
-        <gog-button variant="outline" type="reset">Reset</gog-button>
-      </form>
-      <p class="demo-card__meta">{{ formResult() }}</p>
-      <app-code-tabs [html]="formHtml" [ts]="formTs" />
-    </article>
+    <app-demo [component]="examples.formType" title="Native type semantics">
+      <code>type</code> is forwarded to the native <code>&lt;button&gt;</code>, so a form's own
+      submit and reset behaviour works without a click handler.
+    </app-demo>
   </section>
 
   <section class="doc-section">
@@ -161,21 +71,7 @@
     </p>
     <app-markdown [markdown]="directiveImportSnippet" />
 
-    <div class="demo-card">
-      <div class="demo-card__preview action-row">
-        <a gogButton routerLink="/general/theming">See theming</a>
-        <a
-          gogButton
-          variant="ghost"
-          href="https://www.npmjs.com/package/@guildofgleks/ui"
-          target="_blank"
-          rel="noreferrer"
-          >Package on npm</a
-        >
-        <button gogButton variant="outline" size="sm" type="button">A real button</button>
-      </div>
-      <app-code-tabs [html]="directiveHtml" [ts]="directiveTs" />
-    </div>
+    <app-demo [component]="examples.link" title="Links and real buttons" />
 
     <p class="doc-section__intro">
       The selector is <code>a[gogButton], button[gogButton]</code> — deliberately not a bare

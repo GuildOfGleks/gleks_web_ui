@@ -1,15 +1,20 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  ButtonComponent,
-  GogSize,
-  GogSpinnerVariant,
-  SpinnerComponent,
-  SpinnerOverlayComponent,
-} from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GogSize, GogSpinnerVariant } from '@guildofgleks/ui';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { SPINNER_EXAMPLE_SOURCES } from '../../../examples/spinner/sources.generated';
+import { SpinnerColorExample } from '../../../examples/spinner/spinner-color.example';
+import { SpinnerCustomVariantExample } from '../../../examples/spinner/spinner-custom-variant.example';
+import { SpinnerFullscreenExample } from '../../../examples/spinner/spinner-fullscreen.example';
+import { SpinnerOverlayExample } from '../../../examples/spinner/spinner-overlay.example';
+import { SpinnerOverviewExample } from '../../../examples/spinner/spinner-overview.example';
+import { SpinnerSizesExample } from '../../../examples/spinner/spinner-sizes.example';
+import { SpinnerSpeedExample } from '../../../examples/spinner/spinner-speed.example';
+import { SpinnerVariantsExample } from '../../../examples/spinner/spinner-variants.example';
 
 interface ApiInputRow {
   readonly name: string;
@@ -76,14 +81,8 @@ const SPINNER_OVERLAY_API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-spinner-doc-page',
-  imports: [
-    SpinnerComponent,
-    SpinnerOverlayComponent,
-    ButtonComponent,
-    MarkdownComponent,
-    CodeTabsComponent,
-    RouterLink,
-  ],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink],
+  providers: [provideExampleSources(SPINNER_EXAMPLE_SOURCES)],
   templateUrl: './spinner-doc-page.html',
   styleUrl: './spinner-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -103,186 +102,7 @@ export class SpinnerDocPage implements OnDestroy {
   private fullscreenTimer: ReturnType<typeof setTimeout> | null = null;
 
   protected readonly importSnippet =
-    "```typescript\nimport { SpinnerComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SpinnerComponent],\n})\n```";
-
-  protected readonly overviewHtml = '<gog-spinner ariaLabel="Loading" />';
-  protected readonly overviewTs = [
-    "import { Component } from '@angular/core';",
-    "import { SpinnerComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SpinnerComponent],',
-    '  template: `<gog-spinner ariaLabel="Loading" />`,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly sizesHtml = [
-    '@for (sizeOption of sizes; track sizeOption) {',
-    '  <gog-spinner [size]="sizeOption" [ariaLabel]="\'Loading \' + sizeOption" />',
-    '}',
-  ].join('\n');
-  protected readonly sizesTs = [
-    "import { Component } from '@angular/core';",
-    "import { GogSize, SpinnerComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SpinnerComponent],',
-    '  template: `',
-    '    @for (sizeOption of sizes; track sizeOption) {',
-    '      <gog-spinner [size]="sizeOption" [ariaLabel]="\'Loading \' + sizeOption" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
-    '}',
-  ].join('\n');
-
-  protected readonly variantsHtml = [
-    '@for (variantOption of variants; track variantOption) {',
-    '  <gog-spinner [variant]="variantOption" size="lg" [ariaLabel]="\'Loading, \' + variantOption + \' variant\'" />',
-    '}',
-  ].join('\n');
-  protected readonly variantsTs = [
-    "import { Component } from '@angular/core';",
-    "import { GogSpinnerVariant, SpinnerComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SpinnerComponent],',
-    '  template: `',
-    '    @for (variantOption of variants; track variantOption) {',
-    '      <gog-spinner [variant]="variantOption" size="lg" [ariaLabel]="\'Loading, \' + variantOption + \' variant\'" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly variants: GogSpinnerVariant[] = ['runic', 'ring'];",
-    '}',
-  ].join('\n');
-
-  protected readonly speedHtml = [
-    '<gog-spinner size="lg" style="--gog-spinner-spin-duration: 2.4s" ariaLabel="Loading, slow" />',
-    '<gog-spinner size="lg" style="--gog-spinner-spin-duration: 0.5s" ariaLabel="Loading, fast" />',
-  ].join('\n');
-  protected readonly speedTs = [
-    "import { Component } from '@angular/core';",
-    "import { SpinnerComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SpinnerComponent],',
-    '  template: `',
-    '    <gog-spinner size="lg" style="--gog-spinner-spin-duration: 2.4s" ariaLabel="Loading, slow" />',
-    '    <gog-spinner size="lg" style="--gog-spinner-spin-duration: 0.5s" ariaLabel="Loading, fast" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly customVariantHtml = [
-    '<gog-spinner variant="custom" size="lg" ariaLabel="Loading, custom variant">',
-    '  <div class="dots-loader">',
-    '    <span></span><span></span><span></span>',
-    '  </div>',
-    '</gog-spinner>',
-  ].join('\n');
-  protected readonly customVariantTs = [
-    "import { Component } from '@angular/core';",
-    "import { SpinnerComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SpinnerComponent],',
-    '  template: `',
-    '    <gog-spinner variant="custom" size="lg" ariaLabel="Loading, custom variant">',
-    '      <div class="dots-loader">',
-    '        <span></span><span></span><span></span>',
-    '      </div>',
-    '    </gog-spinner>',
-    '  `,',
-    '  styles: `',
-    '    .dots-loader { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 100%; }',
-    '    .dots-loader span {',
-    '      width: 22%; aspect-ratio: 1; border-radius: 50%;',
-    '      background: var(--gog-spinner-color, var(--gog-accent-color));',
-    '      animation: dots-bounce 0.9s ease-in-out infinite;',
-    '    }',
-    '    .dots-loader span:nth-child(2) { animation-delay: 0.15s; }',
-    '    .dots-loader span:nth-child(3) { animation-delay: 0.3s; }',
-    '    @keyframes dots-bounce {',
-    '      0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }',
-    '      40% { transform: scale(1); opacity: 1; }',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly colorHtml = [
-    '<gog-spinner ariaLabel="Loading, danger color" style="--gog-spinner-color: var(--gog-danger-color)" />',
-    '<gog-spinner ariaLabel="Loading, success color" style="--gog-spinner-color: var(--gog-success-color)" />',
-  ].join('\n');
-  protected readonly colorTs = [
-    "import { Component } from '@angular/core';",
-    "import { SpinnerComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SpinnerComponent],',
-    '  template: `',
-    '    <gog-spinner ariaLabel="Loading, danger color" style="--gog-spinner-color: var(--gog-danger-color)" />',
-    '    <gog-spinner ariaLabel="Loading, success color" style="--gog-spinner-color: var(--gog-success-color)" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly overlayHtml = [
-    '<gog-spinner-overlay [loading]="loading()" size="lg" variant="ring" ariaLabel="Loading content">',
-    '  <div class="panel"><!-- any content --></div>',
-    '</gog-spinner-overlay>',
-  ].join('\n');
-  protected readonly overlayTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SpinnerOverlayComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SpinnerOverlayComponent],',
-    '  template: `',
-    '    <gog-spinner-overlay [loading]="loading()" size="lg" variant="ring" ariaLabel="Loading content">',
-    '      <div class="panel"><!-- any content --></div>',
-    '    </gog-spinner-overlay>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly loading = signal(true);',
-    '}',
-  ].join('\n');
-
-  protected readonly fullscreenHtml =
-    '@if (loading()) {\n  <gog-spinner [overlay]="true" size="lg" ariaLabel="Loading page" />\n}';
-  protected readonly fullscreenTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SpinnerComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SpinnerComponent],',
-    '  template: `',
-    '    @if (loading()) {',
-    '      <gog-spinner [overlay]="true" size="lg" ariaLabel="Loading page" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly loading = signal(true);',
-    '}',
-  ].join('\n');
+    "```typescript\nimport { } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SpinnerComponent],\n})\n```";
 
   protected previewOverlay(): void {
     if (this.overlayTimer) {
@@ -316,4 +136,15 @@ export class SpinnerDocPage implements OnDestroy {
       clearTimeout(this.fullscreenTimer);
     }
   }
+  /** Each example is a file under `src/app/examples/spinner/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    color: SpinnerColorExample,
+    customVariant: SpinnerCustomVariantExample,
+    fullscreen: SpinnerFullscreenExample,
+    overlay: SpinnerOverlayExample,
+    overview: SpinnerOverviewExample,
+    sizes: SpinnerSizesExample,
+    speed: SpinnerSpeedExample,
+    variants: SpinnerVariantsExample,
+  };
 }

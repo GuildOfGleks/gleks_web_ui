@@ -14,195 +14,74 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — a labeled slider bound with [(value)]:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview width-demo">
-        <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
     <p class="doc-section__meta">Value: {{ volume() }}</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Controls</h3>
-      <p class="demo-card__meta">
-        <code>step</code> works at any scale, from whole numbers to fractional precision.
-        <code>[showThumb]="false"</code> renders a bare filled track — a range indicator with no
-        drag handle — and <code>disabled</code> combines with either.
-      </p>
-      <div class="demo-card__preview field-grid">
-        <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />
-        <gog-slider label="Brightness" [min]="0" [max]="100" [step]="10" [(value)]="brightness" />
-        <gog-slider label="Precision" [min]="0" [max]="1" [step]="0.01" [(value)]="precision" />
-        <gog-slider
-          label="Range only"
-          [min]="0"
-          [max]="100"
-          [step]="1"
-          [showThumb]="false"
-          [value]="35"
-        />
-        <gog-slider label="Disabled" [value]="25" [disabled]="true" [showThumb]="false" />
-        <gog-slider label="Disabled (with thumb)" [value]="60" [disabled]="true" />
-      </div>
-      <div class="demo-card__preview">
-        <gog-button variant="ghost" type="button" (gogClick)="reset()">Reset</gog-button>
-      </div>
-      <p class="demo-card__meta">{{ summary() }}</p>
-      <app-code-tabs [html]="controlsHtml" [ts]="controlsTs" />
-    </article>
+    <app-demo [component]="examples.controls" title="Controls">
+      <code>step</code> works at any scale, from whole numbers to fractional precision.
+      <code>[showThumb]="false"</code> renders a bare filled track — a range indicator with no drag
+      handle — and <code>disabled</code> combines with either.
+      {{ summary() }}
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Labeling</h3>
-      <p class="demo-card__meta">
-        <code>showValue="false"</code> hides the numeric readout. With no <code>label</code>, use
-        <code>ariaLabel</code> so assistive tech still gets a name.
-      </p>
-      <div class="demo-card__preview field-grid">
-        <gog-slider label="No value readout" [showValue]="false" [(value)]="hiddenValue" />
-        <gog-slider ariaLabel="Opacity (no visible label)" [(value)]="ariaOnlyValue" />
-      </div>
-      <app-code-tabs [html]="labelingHtml" [ts]="labelingTs" />
-    </article>
+    <app-demo [component]="examples.labeling" title="Labeling">
+      <code>showValue="false"</code> hides the numeric readout. With no <code>label</code>, use
+      <code>ariaLabel</code> so assistive tech still gets a name.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Full width</h3>
-      <p class="demo-card__meta">
-        Full width of its container by default (see every slider above). A slider's track has no
-        content of its own to shrink-wrap to, so <code>[fullWidth]="false"</code> instead sizes it
-        to <code>--gog-slider-auto-width</code> (240px by default) — a fixed, themeable fallback
-        rather than a content-derived one.
-      </p>
-      <div class="demo-card__preview">
-        <gog-slider
-          label="Compact"
-          [min]="0"
-          [max]="100"
-          [(value)]="compactValue"
-          [fullWidth]="false"
-        />
-      </div>
-      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
-    </article>
+    <app-demo [component]="examples.fullWidth" title="Full width">
+      Full width of its container by default (see every slider above). A slider's track has no
+      content of its own to shrink-wrap to, so <code>[fullWidth]="false"</code> instead sizes it to
+      <code>--gog-slider-auto-width</code> (240px by default) — a fixed, themeable fallback rather
+      than a content-derived one.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Vertical</h3>
-      <p class="demo-card__meta">
-        The vertical variant is the same native <code>&lt;input type="range"&gt;</code> rotated with
-        <code>writing-mode</code>, not a custom drag implementation — so dragging, touch and the
-        keyboard (Up/Down as well as Left/Right) all keep working exactly as they do horizontally.
-        The value increases upward, matching a volume-fader convention.
-        <code>--gog-slider-vertical-length</code> sizes its length; <code>fullWidth</code> is
-        ignored, since a vertical slider's width is its thickness.
-      </p>
-      <div class="demo-card__preview slider-demo__vertical">
-        <gog-slider label="Bass" orientation="vertical" [min]="0" [max]="100" [(value)]="bass" />
-        <gog-slider label="Mid" orientation="vertical" [min]="0" [max]="100" [(value)]="mid" />
-        <gog-slider
-          label="Treble"
-          orientation="vertical"
-          [min]="0"
-          [max]="100"
-          [(value)]="treble"
-        />
-      </div>
-      <app-code-tabs [html]="verticalHtml" [ts]="verticalTs" />
-    </article>
+    <app-demo [component]="examples.vertical" title="Vertical">
+      The vertical variant is the same native <code>&lt;input type="range"&gt;</code> rotated with
+      <code>writing-mode</code>, not a custom drag implementation — so dragging, touch and the
+      keyboard (Up/Down as well as Left/Right) all keep working exactly as they do horizontally. The
+      value increases upward, matching a volume-fader convention.
+      <code>--gog-slider-vertical-length</code> sizes its length; <code>fullWidth</code> is ignored,
+      since a vertical slider's width is its thickness.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Range — two thumbs <app-since version="21.3.1" /></h3>
-      <p class="demo-card__meta">
-        <code>[range]="true"</code> puts a second thumb on the track and switches the model from a
-        number to a <code>GogSliderRange</code> — a <code>&#123; start, end &#125;</code> pair bound
-        with <code>[(rangeValue)]</code>. The two models are <strong>mutually exclusive</strong>:
-        with <code>range</code> on, <code>value</code> (and a form control's
-        <code>writeValue</code>) is ignored, and vice versa.
-      </p>
-      <div class="demo-card__preview">
-        <gog-slider
-          label="Price"
-          [range]="true"
-          [(rangeValue)]="priceRange"
-          [min]="0"
-          [max]="100"
-          startAriaLabel="Lowest price"
-          endAriaLabel="Highest price"
-        />
-      </div>
-      <p class="demo-card__meta">Selected: {{ priceRange().start }} – {{ priceRange().end }}</p>
-      <p class="demo-card__meta">
-        Each thumb needs its own accessible name — a single <code>&lt;label&gt;</code> cannot be
-        associated with two inputs through <code>for</code>. Unset, they fall back to "Minimum" and
-        "Maximum", prefixed with <code>label</code> when there is one ("Price Minimum").
-      </p>
-      <app-code-tabs [html]="rangeHtml" [ts]="rangeTs" />
-    </article>
+    <app-demo [component]="examples.range" title="Range — two thumbs">
+      <app-since version="21.3.1" />
+      <code>[range]="true"</code> puts a second thumb on the track and switches the model from a
+      number to a <code>GogSliderRange</code> — a <code>&#123; start, end &#125;</code> pair bound
+      with <code>[(rangeValue)]</code>. The two models are <strong>mutually exclusive</strong>: with
+      <code>range</code> on, <code>value</code> (and a form control's <code>writeValue</code>) is
+      ignored, and vice versa. Selected: {{ priceRange().start }} – {{ priceRange().end }} Each
+      thumb needs its own accessible name — a single <code>&lt;label&gt;</code> cannot be associated
+      with two inputs through <code>for</code>. Unset, they fall back to "Minimum" and "Maximum",
+      prefixed with <code>label</code> when there is one ("Price Minimum").
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Disabling one thumb <app-since version="21.3.1" /></h3>
-      <p class="demo-card__meta">
-        <code>startDisabled</code> / <code>endDisabled</code> pin one end of a range while the other
-        stays movable. They are ORed with <code>disabled</code> rather than overriding it —
-        <code>disabled</code> still means "both thumbs off" — and, unlike it, they do not dim the
-        whole control or cut pointer events over the track, which would take the
-        <em>enabled</em> thumb down with them.
-      </p>
-      <div class="demo-card__preview">
-        <gog-slider
-          label="Budget"
-          [range]="true"
-          [(rangeValue)]="cappedRange"
-          [startDisabled]="true"
-        />
-      </div>
-      <p class="demo-card__meta">
-        Floor pinned at {{ cappedRange().start }}; ceiling at {{ cappedRange().end }}.
-      </p>
-      <app-code-tabs [html]="oneSidedHtml" [ts]="oneSidedTs" />
-    </article>
+    <app-demo [component]="examples.oneSided" title="Disabling one thumb">
+      <app-since version="21.3.1" />
+      <code>startDisabled</code> / <code>endDisabled</code> pin one end of a range while the other
+      stays movable. They are ORed with <code>disabled</code> rather than overriding it —
+      <code>disabled</code> still means "both thumbs off" — and, unlike it, they do not dim the
+      whole control or cut pointer events over the track, which would take the
+      <em>enabled</em> thumb down with them. Floor pinned at {{ cappedRange().start }}; ceiling at
+      {{ cappedRange().end }}.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Validation</h3>
-      <p class="demo-card__meta">
-        <code>errorMessage</code> is consumer-controlled: <code>gog-slider</code> just renders
-        whatever it's given, for as long as it's non-empty — this page recomputes it every time the
-        value changes. Drag past 70 to see it.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-slider
-          label="Monthly budget"
-          [min]="0"
-          [max]="100"
-          [step]="5"
-          [errorMessage]="budgetError()"
-          [(value)]="budget"
-        />
-      </div>
-      <app-code-tabs [html]="validationHtml" [ts]="validationTs" />
-    </article>
+    <app-demo [component]="examples.validation" title="Validation">
+      <code>errorMessage</code> is consumer-controlled: <code>gog-slider</code> just renders
+      whatever it's given, for as long as it's non-empty — this page recomputes it every time the
+      value changes. Drag past 70 to see it.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Reactive Forms — automatic error timing</h3>
-      <p class="demo-card__meta">
-        With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the slider shows the
-        error once it's been touched (drag it, then click elsewhere) and is invalid, instead of the
-        page computing that timing.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-slider
-          label="Minimum threshold"
-          [min]="0"
-          [max]="100"
-          [formControl]="minimumControl"
-          errorDisplay="auto"
-          [errorMessage]="minimumErrorMessage()"
-        />
-      </div>
-      <app-code-tabs [html]="formHtml" [ts]="formTs" />
-    </article>
+    <app-demo [component]="examples.form" title="Reactive Forms — automatic error timing">
+      With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the slider shows the
+      error once it's been touched (drag it, then click elsewhere) and is invalid, instead of the
+      page computing that timing.
+    </app-demo>
   </section>
 
   <section class="doc-section">

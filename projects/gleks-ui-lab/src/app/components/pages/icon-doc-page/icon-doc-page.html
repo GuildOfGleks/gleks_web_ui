@@ -16,91 +16,42 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — render one of the built-in icons by name:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-icon name="check" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">All icons</h3>
-      <p class="demo-card__meta">
-        The complete built-in set — <strong>{{ iconCount }}</strong> glyphs, all from
-        <a href="https://lucide.dev" target="_blank" rel="noopener">Lucide</a> (ISC licence, notice
-        shipped in the package) and inlined, so the library keeps its single runtime dependency.
-        This gallery is driven off <code>Object.keys(ICON_DEFS)</code> rather than a hand-written
-        list, which is the only way it stays right.
-      </p>
-      @for (group of iconGroups; track group.title) {
-        <h4 class="icon-gallery__group">{{ group.title }}</h4>
-        <div class="demo-card__preview icon-gallery">
-          @for (iconName of group.names; track iconName) {
-            <div class="icon-gallery__item">
-              <gog-icon [name]="iconName" />
-              <span class="icon-gallery__label">{{ iconName }}</span>
-            </div>
-          }
-        </div>
-      }
-      <p class="demo-card__meta">
-        <code>star</code> / <code>star-filled</code> is the one outline/filled pair, for a rating or
-        favourite <em>toggle</em> — the same reason <code>checkbox</code> /
-        <code>checkbox-checked</code> exists. The set is otherwise outline-only on purpose: a solid
-        duplicate of every glyph would double the payload for a distinction almost nothing needs.
-        Register the filled variant you actually want instead.
-      </p>
-      <app-code-tabs [html]="galleryHtml" [ts]="galleryTs" />
-    </article>
+    <app-demo [component]="examples.gallery" title="All icons">
+      The complete built-in set — <strong>{{ iconCount }}</strong> glyphs, all from
+      <a href="https://lucide.dev" target="_blank" rel="noopener">Lucide</a> (ISC licence, notice
+      shipped in the package) and inlined, so the library keeps its single runtime dependency. This
+      gallery is driven off <code>Object.keys(ICON_DEFS)</code> rather than a hand-written list,
+      which is the only way it stays right. <code>star</code> / <code>star-filled</code> is the one
+      outline/filled pair, for a rating or favourite <em>toggle</em> — the same reason
+      <code>checkbox</code> / <code>checkbox-checked</code> exists. The set is otherwise
+      outline-only on purpose: a solid duplicate of every glyph would double the payload for a
+      distinction almost nothing needs. Register the filled variant you actually want instead.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Sizing</h3>
-      <p class="demo-card__meta">
-        There is no <code>size</code> input — icons are sized purely through the
-        <code>--gog-icon-size</code> CSS custom property, settable per-instance or globally through
-        a theme.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-icon name="success" style="--gog-icon-size: 16px" />
-        <gog-icon name="success" style="--gog-icon-size: 24px" />
-        <gog-icon name="success" style="--gog-icon-size: 40px" />
-      </div>
-      <app-code-tabs [html]="sizingHtml" [ts]="sizingTs" />
-    </article>
+    <app-demo [component]="examples.sizing" title="Sizing">
+      There is no <code>size</code> input — icons are sized purely through the
+      <code>--gog-icon-size</code> CSS custom property, settable per-instance or globally through a
+      theme.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Meaningful icon</h3>
-      <p class="demo-card__meta">
-        Icons are <code>aria-hidden</code> by default, since they're almost always paired with a
-        visible text label. For a standalone icon that carries meaning on its own, set
-        <code>ariaHidden</code> to <code>false</code> and supply <code>title</code>.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-icon name="warning" [ariaHidden]="false" title="Warning" />
-      </div>
-      <app-code-tabs [html]="meaningfulHtml" [ts]="meaningfulTs" />
-    </article>
+    <app-demo [component]="examples.meaningful" title="Meaningful icon">
+      Icons are <code>aria-hidden</code> by default, since they're almost always paired with a
+      visible text label. For a standalone icon that carries meaning on its own, set
+      <code>ariaHidden</code> to <code>false</code> and supply <code>title</code>.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Custom template</h3>
-      <p class="demo-card__meta">
-        <code>template</code> replaces the SVG entirely — the same mechanism other components use
-        for their own icon override inputs (e.g. checkbox's <code>checkIconTemplate</code>). It
-        costs an <code>&lt;ng-template&gt;</code> at every use site, so reach for it for
-        <em>one-offs</em>; for a whole icon set, register the names instead.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-icon [template]="customDot" />
-        <ng-template #customDot>
-          <span class="icon-doc__dot"></span>
-        </ng-template>
-      </div>
-      <app-code-tabs [html]="customTemplateHtml" [ts]="customTemplateTs" />
-    </article>
+    <app-demo [component]="examples.customTemplate" title="Custom template">
+      <code>template</code> replaces the SVG entirely — the same mechanism other components use for
+      their own icon override inputs (e.g. checkbox's <code>checkIconTemplate</code>). It costs an
+      <code>&lt;ng-template&gt;</code> at every use site, so reach for it for <em>one-offs</em>; for
+      a whole icon set, register the names instead.
+    </app-demo>
   </section>
 
   <section class="doc-section">
@@ -113,20 +64,20 @@
       autocomplete, and any name you have registered is accepted. Register once, at the root or in
       any injector below it:
     </p>
-    <app-markdown [markdown]="registerTs" />
+    <app-demo [component]="examples.register" title="Registering your own" />
 
     <p class="doc-section__intro">
       From then on the name works anywhere an icon <em>name</em> is taken — not just in
-      <code>gog-icon</code>:
+      <code>gog-icon</code>: <code>iconStart</code> on a field, <code>iconName</code> on a tag or a
+      chip, <code>optionIcon</code> on a button-toggle group.
     </p>
-    <app-markdown [markdown]="registerUsageHtml" />
 
     <h3 class="doc-section__subtitle">A registered name beats a built-in</h3>
     <p class="doc-section__intro">
       This is the point of the registry rather than a side effect: it is how you swap the library's
       glyphs for your own across every component at once, without touching a single call site.
     </p>
-    <app-markdown [markdown]="overrideTs" />
+    <app-demo [component]="examples.override" title="Overriding a built-in" />
 
     <h3 class="doc-section__subtitle">Rules worth knowing</h3>
     <ul class="icon-doc__rules">

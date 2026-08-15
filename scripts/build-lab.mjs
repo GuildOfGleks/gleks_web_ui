@@ -14,17 +14,20 @@ import { fileURLToPath } from 'node:url';
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ngBin = path.join(rootDir, 'node_modules/@angular/cli/bin/ng.js');
 
-// The sitemap is derived from the sidebar's nav-data, so it is regenerated here rather than
-// maintained: every build — including the Dockerfile's — ships a sitemap that matches the
-// pages the site actually links to. It writes into `public/`, which is an asset input, so it
-// has to happen before the bundle is produced.
-const sitemap = spawnSync(process.execPath, [path.join(rootDir, 'scripts/generate-sitemap.mjs')], {
-  cwd: rootDir,
-  stdio: 'inherit',
-});
-if (sitemap.status !== 0) {
-  process.stderr.write('build-lab: sitemap generation failed — not starting the build.\n');
-  process.exit(sitemap.status ?? 1);
+// Generated inputs, refreshed before every build — including the Dockerfile's — so a deploy can
+// never ship a stale one:
+//
+//   - the sitemap, derived from the sidebar's nav-data (writes into `public/`, an asset input);
+//   - the example source maps, derived from `src/app/examples/**` (compiled into the app).
+for (const script of ['scripts/generate-sitemap.mjs', 'scripts/generate-example-sources.mjs']) {
+  const result = spawnSync(process.execPath, [path.join(rootDir, script)], {
+    cwd: rootDir,
+    stdio: 'inherit',
+  });
+  if (result.status !== 0) {
+    process.stderr.write(`build-lab: ${script} failed — not starting the build.\n`);
+    process.exit(result.status ?? 1);
+  }
 }
 
 const SUCCESS_MARKER = /Output location:/;

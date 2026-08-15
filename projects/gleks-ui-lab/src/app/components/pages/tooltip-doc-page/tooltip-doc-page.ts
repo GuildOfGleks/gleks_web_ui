@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  ButtonComponent,
-  ChipComponent,
-  GogTooltipDirective,
-  GogTooltipPosition,
-  IconComponent,
-  TagComponent,
-} from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { ButtonComponent, GogTooltipDirective, GogTooltipPosition } from '@guildofgleks/ui';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { TOOLTIP_EXAMPLE_SOURCES } from '../../../examples/tooltip/sources.generated';
+import { TooltipDelaysExample } from '../../../examples/tooltip/tooltip-delays.example';
+import { TooltipOverviewExample } from '../../../examples/tooltip/tooltip-overview.example';
+import { TooltipPositionsExample } from '../../../examples/tooltip/tooltip-positions.example';
+import { TooltipTemplateExample } from '../../../examples/tooltip/tooltip-template.example';
 
 interface ApiInputRow {
   readonly name: string;
@@ -65,15 +65,13 @@ const API_INPUTS: readonly ApiInputRow[] = [
 @Component({
   selector: 'app-tooltip-doc-page',
   imports: [
+    ExampleHostComponent,
     GogTooltipDirective,
     ButtonComponent,
-    ChipComponent,
-    IconComponent,
-    TagComponent,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
   ],
+  providers: [provideExampleSources(TOOLTIP_EXAMPLE_SOURCES)],
   templateUrl: './tooltip-doc-page.html',
   styleUrl: './tooltip-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -95,102 +93,6 @@ export class TooltipDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { GogTooltipDirective } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [GogTooltipDirective],\n})\n```";
 
-  protected readonly overviewHtml = [
-    '<button gogTooltip="Save changes">Save</button>',
-    '',
-    '<!-- Or on a gog-* component’s own host tag — it needs to know nothing about it. -->',
-    '<gog-chip [gogTooltip]="hint">Draft</gog-chip>',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component } from '@angular/core';",
-    "import { ChipComponent, GogTooltipDirective } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent, GogTooltipDirective],',
-    '  template: `',
-    '    <button gogTooltip="Save changes">Save</button>',
-    '    <gog-chip [gogTooltip]="hint">Draft</gog-chip>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly hint = 'Not visible to anyone else yet';",
-    '}',
-  ].join('\n');
-
-  protected readonly positionsHtml = [
-    '<gog-button gogTooltip="Above" gogTooltipPosition="top">top</gog-button>',
-    '<gog-button gogTooltip="Below" gogTooltipPosition="bottom">bottom</gog-button>',
-    '<gog-button gogTooltip="To the left" gogTooltipPosition="left">left</gog-button>',
-    '<gog-button gogTooltip="To the right" gogTooltipPosition="right">right</gog-button>',
-  ].join('\n');
-  protected readonly positionsTs = [
-    "import { Component } from '@angular/core';",
-    "import { ButtonComponent, GogTooltipDirective, GogTooltipPosition } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent, GogTooltipDirective],',
-    '  template: `',
-    '    @for (position of positions; track position) {',
-    '      <gog-button [gogTooltip]="position" [gogTooltipPosition]="position">',
-    '        {{ position }}',
-    '      </gog-button>',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly positions: GogTooltipPosition[] = ['top', 'bottom', 'left', 'right'];",
-    '}',
-  ].join('\n');
-
-  protected readonly templateHtml = [
-    '<ng-template #richHint>',
-    '  <strong>Deployment blocked</strong>',
-    '  <p>Two checks are still running. <gog-tag variant="warning">CI</gog-tag></p>',
-    '</ng-template>',
-    '',
-    '<gog-button [gogTooltip]="richHint">Deploy</gog-button>',
-  ].join('\n');
-  protected readonly templateTs = [
-    "import { Component } from '@angular/core';",
-    "import { ButtonComponent, GogTooltipDirective, TagComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent, TagComponent, GogTooltipDirective],',
-    '  template: `',
-    '    <ng-template #richHint>',
-    '      <strong>Deployment blocked</strong>',
-    '      <p>Two checks are still running. <gog-tag variant="warning">CI</gog-tag></p>',
-    '    </ng-template>',
-    '',
-    '    <gog-button [gogTooltip]="richHint">Deploy</gog-button>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly delaysHtml = [
-    '<gog-button gogTooltip="Appears at once" [gogTooltipShowDelay]="0">No delay</gog-button>',
-    '<gog-button gogTooltip="Takes a second" [gogTooltipShowDelay]="1000">Slow</gog-button>',
-    '<gog-button gogTooltip="Never shown" [gogTooltipDisabled]="true">Disabled</gog-button>',
-  ].join('\n');
-  protected readonly delaysTs = [
-    "import { Component } from '@angular/core';",
-    "import { ButtonComponent, GogTooltipDirective } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent, GogTooltipDirective],',
-    '  template: `',
-    '    <gog-button gogTooltip="Appears at once" [gogTooltipShowDelay]="0">No delay</gog-button>',
-    '    <gog-button gogTooltip="Never shown" [gogTooltipDisabled]="true">Disabled</gog-button>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
   protected readonly configSnippet = [
     '```typescript',
     "import { provideGogConfig } from '@guildofgleks/ui';",
@@ -208,4 +110,11 @@ export class TooltipDocPage {
     '});',
     '```',
   ].join('\n');
+  /** Each example is a file under `src/app/examples/tooltip/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    delays: TooltipDelaysExample,
+    overview: TooltipOverviewExample,
+    positions: TooltipPositionsExample,
+    template: TooltipTemplateExample,
+  };
 }

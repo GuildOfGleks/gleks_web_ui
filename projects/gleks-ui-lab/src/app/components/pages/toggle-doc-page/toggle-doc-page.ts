@@ -1,10 +1,17 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { GogSize, ToggleComponent } from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { TOGGLE_EXAMPLE_SOURCES } from '../../../examples/toggle/sources.generated';
+import { ToggleDisabledExample } from '../../../examples/toggle/toggle-disabled.example';
+import { ToggleFormsExample } from '../../../examples/toggle/toggle-forms.example';
+import { ToggleLayoutExample } from '../../../examples/toggle/toggle-layout.example';
+import { ToggleOverviewExample } from '../../../examples/toggle/toggle-overview.example';
+import { ToggleSizesExample } from '../../../examples/toggle/toggle-sizes.example';
+import { ToggleTrackLabelsExample } from '../../../examples/toggle/toggle-track-labels.example';
 
 interface ApiRow {
   readonly name: string;
@@ -78,21 +85,13 @@ const API_OUTPUTS: readonly ApiRow[] = [
 
 @Component({
   selector: 'app-toggle-doc-page',
-  imports: [ToggleComponent, ReactiveFormsModule, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink],
+  providers: [provideExampleSources(TOGGLE_EXAMPLE_SOURCES)],
   templateUrl: './toggle-doc-page.html',
   styleUrl: './toggle-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToggleDocPage {
-  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
-
-  protected readonly notifications = signal(true);
-  protected readonly analytics = signal(false);
-  protected readonly compactMode = signal(false);
-  protected readonly labelStart = signal(true);
-  protected readonly sizeState = signal(true);
-  protected readonly darkMode = new FormControl(true);
-
   protected readonly apiInputs = API_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
   protected readonly styleTokens =
@@ -101,123 +100,13 @@ export class ToggleDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { ToggleComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ToggleComponent],\n})\n```";
 
-  protected readonly overviewHtml =
-    '<gog-toggle label="Notifications" [(checked)]="notifications" />';
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ToggleComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ToggleComponent],',
-    '  template: `<gog-toggle label="Notifications" [(checked)]="notifications" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly notifications = signal(true);',
-    '}',
-  ].join('\n');
-
-  protected readonly trackLabelsHtml = [
-    '<gog-toggle label="Analytics" onLabel="ON" offLabel="OFF" [(checked)]="analytics" />',
-  ].join('\n');
-  protected readonly trackLabelsTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ToggleComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ToggleComponent],',
-    '  template: `',
-    '    <gog-toggle label="Analytics" onLabel="ON" offLabel="OFF" [(checked)]="analytics" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly analytics = signal(false);',
-    '}',
-  ].join('\n');
-
-  protected readonly sizesHtml = [
-    '@for (sizeOption of sizes; track sizeOption) {',
-    '  <gog-toggle [size]="sizeOption" [label]="sizeOption" [(checked)]="sizeState" />',
-    '}',
-  ].join('\n');
-  protected readonly sizesTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogSize, ToggleComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ToggleComponent],',
-    '  template: `',
-    '    @for (sizeOption of sizes; track sizeOption) {',
-    '      <gog-toggle [size]="sizeOption" [label]="sizeOption" [(checked)]="sizeState" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
-    '  protected readonly sizeState = signal(true);',
-    '}',
-  ].join('\n');
-
-  protected readonly layoutHtml = [
-    '<gog-toggle label="Label after the switch" [(checked)]="compactMode" />',
-    '<gog-toggle label="Label before it" labelPosition="start" [(checked)]="labelStart" />',
-    '',
-    '<!-- The settings-row layout: the switch is pushed to the far edge. -->',
-    '<gog-toggle label="Full width" [fullWidth]="true" [(checked)]="compactMode" />',
-  ].join('\n');
-  protected readonly layoutTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ToggleComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ToggleComponent],',
-    '  template: `',
-    '    <gog-toggle label="Label after the switch" [(checked)]="compactMode" />',
-    '    <gog-toggle label="Label before it" labelPosition="start" [(checked)]="labelStart" />',
-    '    <gog-toggle label="Full width" [fullWidth]="true" [(checked)]="compactMode" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly compactMode = signal(false);',
-    '  protected readonly labelStart = signal(true);',
-    '}',
-  ].join('\n');
-
-  protected readonly formsHtml = '<gog-toggle label="Dark mode" [formControl]="darkMode" />';
-  protected readonly formsTs = [
-    "import { Component } from '@angular/core';",
-    "import { FormControl, ReactiveFormsModule } from '@angular/forms';",
-    "import { ToggleComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ToggleComponent, ReactiveFormsModule],',
-    '  template: `<gog-toggle label="Dark mode" [formControl]="darkMode" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly darkMode = new FormControl(true);',
-    '}',
-  ].join('\n');
-
-  protected readonly disabledHtml = [
-    '<gog-toggle label="Disabled, off" [disabled]="true" />',
-    '<gog-toggle label="Disabled, on" [disabled]="true" [checked]="true" />',
-  ].join('\n');
-  protected readonly disabledTs = [
-    "import { Component } from '@angular/core';",
-    "import { ToggleComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ToggleComponent],',
-    '  template: `',
-    '    <gog-toggle label="Disabled, off" [disabled]="true" />',
-    '    <gog-toggle label="Disabled, on" [disabled]="true" [checked]="true" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
+  /** Each example is a file under `src/app/examples/toggle/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    overview: ToggleOverviewExample,
+    trackLabels: ToggleTrackLabelsExample,
+    sizes: ToggleSizesExample,
+    layout: ToggleLayoutExample,
+    forms: ToggleFormsExample,
+    disabled: ToggleDisabledExample,
+  };
 }

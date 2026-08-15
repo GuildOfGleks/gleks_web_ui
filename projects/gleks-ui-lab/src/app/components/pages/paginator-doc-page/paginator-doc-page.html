@@ -19,12 +19,7 @@
       <code>totalPages</code> is the only other thing the paginator needs. By default it shows a
       fixed, centered window of page buttons that slides as you navigate.
     </p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-paginator [(page)]="basicPage" [totalPages]="basicTotalPages()" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
     <p class="doc-section__meta">Page {{ basicPage() }} of {{ basicTotalPages() }}</p>
   </section>
 
@@ -38,19 +33,7 @@
       which removes the <code>computed(() =&gt; Math.ceil(total / size))</code> you would otherwise
       write <em>and</em> keep in sync with the rows-per-page select.
     </p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-paginator
-          [(page)]="recordsPage"
-          [(pageSize)]="recordsPageSize"
-          [totalRecords]="totalRecords()"
-          [showPageSizeSelect]="true"
-          [pageSizeOptions]="[10, 20, 50]"
-        />
-      </div>
-      <p class="demo-card__meta">Showing {{ recordsRange() }}</p>
-      <app-code-tabs [html]="recordsHtml" [ts]="recordsTs" />
-    </div>
+    <app-demo [component]="examples.records"> Showing {{ recordsRange() }} </app-demo>
     <p class="doc-section__intro">
       <code>totalPages</code> still works and is the right input when a server tells you a page
       count directly; <code>totalRecords</code> wins when both are set.
@@ -79,106 +62,39 @@
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Range mode: window (default)</h3>
-      <p class="demo-card__meta">
-        Keeps exactly <code>visiblePages</code> buttons on screen, centered on the current page.
-        <code>showFirstPage</code> / <code>showLastPage</code> pin the first/last page with a "…"
-        once it scrolls out of the window — click through to page 10+ to see it.
-      </p>
-      <div class="demo-card__preview">
-        <gog-paginator
-          [(page)]="windowPage"
-          [totalPages]="windowTotalPages()"
-          [visiblePages]="5"
-          [showFirstPage]="true"
-          [showLastPage]="true"
-        />
-      </div>
-      <p class="demo-card__meta">Page {{ windowPage() }} of {{ windowTotalPages() }}</p>
-      <app-code-tabs [html]="windowModeHtml" [ts]="windowModeTs" />
-    </article>
+    <app-demo [component]="examples.windowMode" title="Range mode: window (default)">
+      Keeps exactly <code>visiblePages</code> buttons on screen, centered on the current page.
+      <code>showFirstPage</code> / <code>showLastPage</code> pin the first/last page with a "…" once
+      it scrolls out of the window — click through to page 10+ to see it. Page {{ windowPage() }} of
+      {{ windowTotalPages() }}
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Range mode: ellipsis</h3>
-      <p class="demo-card__meta">
-        The original behavior, kept as an opt-in for consumers already built around that look (like
-        <code>gog-table</code>): first and last page always pinned, <code>siblingCount</code> pages
-        kept around the current one, with a "…" filling the gap.
-      </p>
-      <div class="demo-card__preview">
-        <gog-paginator
-          [(page)]="ellipsisPage"
-          [totalPages]="ellipsisTotalPages()"
-          rangeMode="ellipsis"
-          [siblingCount]="1"
-        />
-      </div>
-      <p class="demo-card__meta">Page {{ ellipsisPage() }} of {{ ellipsisTotalPages() }}</p>
-      <app-code-tabs [html]="ellipsisModeHtml" [ts]="ellipsisModeTs" />
-    </article>
+    <app-demo [component]="examples.ellipsisMode" title="Range mode: ellipsis">
+      The original behavior, kept as an opt-in for consumers already built around that look (like
+      <code>gog-table</code>): first and last page always pinned, <code>siblingCount</code> pages
+      kept around the current one, with a "…" filling the gap. Page {{ ellipsisPage() }} of
+      {{ ellipsisTotalPages() }}
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
-      <div class="demo-card__preview paginator-size-stack">
-        @for (sizeOption of sizes; track sizeOption) {
-          <div class="paginator-size-stack__row">
-            <span class="paginator-size-stack__label">{{ sizeOption }}</span>
-            <gog-paginator [totalPages]="5" [page]="sizeDemoPage()" [size]="sizeOption" />
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
-    </article>
+    <app-demo [component]="examples.sizes" title="Sizes">
+      Five size steps, from xsm to slg.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Full width</h3>
-      <p class="demo-card__meta">
-        Full width of its container by default — the dashed outline below is the container, not the
-        paginator, so you can see the box claims the full row even though the buttons don't fill it.
-        <code>[fullWidth]="false"</code> shrinks the box to fit the buttons instead.
-      </p>
-      <div class="demo-card__preview paginator-width-demo">
-        <p class="demo-card__meta">fullWidth: true (default)</p>
-        <div class="paginator-width-demo__box">
-          <gog-paginator [totalPages]="5" [page]="2" />
-        </div>
-        <p class="demo-card__meta">fullWidth: false</p>
-        <div class="paginator-width-demo__box">
-          <gog-paginator [totalPages]="5" [page]="2" [fullWidth]="false" />
-        </div>
-      </div>
-      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
-    </article>
+    <app-demo [component]="examples.fullWidth" title="Full width">
+      Full width of its container by default — the dashed outline below is the container, not the
+      paginator, so you can see the box claims the full row even though the buttons don't fill it.
+      <code>[fullWidth]="false"</code> shrinks the box to fit the buttons instead. fullWidth: true
+      (default) fullWidth: false
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Disabled</h3>
-      <p class="demo-card__meta">
-        Freezes every control — useful while the page it navigates is itself loading.
-      </p>
-      <div class="demo-card__preview">
-        <gog-paginator [(page)]="disabledPage" [totalPages]="8" [disabled]="true" />
-      </div>
-      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
-    </article>
+    <app-demo [component]="examples.disabled" title="Disabled">
+      Freezes every control — useful while the page it navigates is itself loading.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Applied to a plain list</h3>
-      <p class="demo-card__meta">
-        No table, no rows — just an array sliced by hand using <code>page</code> and a page size the
-        consumer owns.
-      </p>
-      <div class="demo-card__preview">
-        <ul class="fruit-list">
-          @for (item of visibleListItems(); track item) {
-            <li class="fruit-list__item">{{ item }}</li>
-          }
-        </ul>
-        <gog-paginator [(page)]="listPage" [totalPages]="listTotalPages()" />
-      </div>
-      <app-code-tabs [html]="listHtml" [ts]="listTs" />
-    </article>
+    <app-demo [component]="examples.list" title="Applied to a plain list">
+      No table, no rows — just an array sliced by hand using <code>page</code> and a page size the
+      consumer owns.
+    </app-demo>
   </section>
 
   <section class="doc-section">

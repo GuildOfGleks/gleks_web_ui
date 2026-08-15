@@ -15,166 +15,51 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-spinner ariaLabel="Loading" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
-      <div class="demo-card__preview spinner-grid">
-        @for (sizeOption of sizes; track sizeOption) {
-          <div class="spinner-tile">
-            <gog-spinner [size]="sizeOption" [ariaLabel]="'Loading ' + sizeOption" />
-            <span class="spinner-tile__meta">{{ sizeOption }}</span>
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
-    </article>
+    <app-demo [component]="examples.sizes" title="Sizes">
+      Five size steps, from xsm to slg.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Variants</h3>
-      <p class="demo-card__meta">
-        Two built-in animations ship with <code>gog-spinner</code> — pick one via
-        <code>variant</code>. <code>runic</code> is the original branded spin-and-glow;
-        <code>ring</code> is a plain tapered ring for a more neutral look.
-      </p>
-      <div class="demo-card__preview spinner-grid">
-        @for (variantOption of variants; track variantOption) {
-          <div class="spinner-tile">
-            <gog-spinner
-              [variant]="variantOption"
-              size="lg"
-              [ariaLabel]="'Loading, ' + variantOption + ' variant'"
-            />
-            <span class="spinner-tile__meta">{{ variantOption }}</span>
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
-    </article>
+    <app-demo [component]="examples.variants" title="Variants">
+      Two built-in animations ship with <code>gog-spinner</code> — pick one via
+      <code>variant</code>. <code>runic</code> is the original branded spin-and-glow;
+      <code>ring</code> is a plain tapered ring for a more neutral look.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Animation speed</h3>
-      <p class="demo-card__meta">
-        <code>--gog-spinner-spin-duration</code> (and <code>-pulse-duration</code> for the rune
-        glow) retime the built-in animations per instance, without swapping variant — useful to
-        signal urgency, or just to match a surrounding motion rhythm.
-      </p>
-      <div class="demo-card__preview spinner-grid">
-        <div class="spinner-tile">
-          <gog-spinner
-            size="lg"
-            style="--gog-spinner-spin-duration: 2.4s"
-            ariaLabel="Loading, slow"
-          />
-          <span class="spinner-tile__meta">slow (2.4s)</span>
-        </div>
-        <div class="spinner-tile">
-          <gog-spinner
-            size="lg"
-            style="--gog-spinner-spin-duration: 0.5s"
-            ariaLabel="Loading, fast"
-          />
-          <span class="spinner-tile__meta">fast (0.5s)</span>
-        </div>
-      </div>
-      <app-code-tabs [html]="speedHtml" [ts]="speedTs" />
-    </article>
+    <app-demo [component]="examples.speed" title="Animation speed">
+      <code>--gog-spinner-spin-duration</code> (and <code>-pulse-duration</code> for the rune glow)
+      retime the built-in animations per instance, without swapping variant — useful to signal
+      urgency, or just to match a surrounding motion rhythm.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Custom variant</h3>
-      <p class="demo-card__meta">
-        Need an animation entirely of your own? <code>variant="custom"</code> projects any markup —
-        it inherits the size wrapper and overlay behavior, and picks up
-        <code>--gog-spinner-color</code> like the built-in presets, but the motion is yours.
-      </p>
-      <div class="demo-card__preview spinner-grid">
-        <div class="spinner-tile">
-          <gog-spinner variant="custom" size="lg" ariaLabel="Loading, custom variant">
-            <div class="dots-loader"><span></span><span></span><span></span></div>
-          </gog-spinner>
-          <span class="spinner-tile__meta">custom</span>
-        </div>
-      </div>
-      <app-code-tabs [html]="customVariantHtml" [ts]="customVariantTs" />
-    </article>
+    <app-demo [component]="examples.customVariant" title="Custom variant">
+      Need an animation entirely of your own? <code>variant="custom"</code> projects any markup — it
+      inherits the size wrapper and overlay behavior, and picks up
+      <code>--gog-spinner-color</code> like the built-in presets, but the motion is yours.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Custom color</h3>
-      <p class="demo-card__meta">
-        Override <code>--gog-spinner-color</code> to recolor the spinner regardless of theme —
-        useful when it sits on a surface where the default accent color wouldn't read well.
-      </p>
-      <div class="demo-card__preview spinner-grid">
-        <div class="spinner-tile">
-          <gog-spinner
-            ariaLabel="Loading, danger color"
-            style="--gog-spinner-color: var(--gog-danger-color)"
-          />
-          <span class="spinner-tile__meta">danger</span>
-        </div>
-        <div class="spinner-tile">
-          <gog-spinner
-            ariaLabel="Loading, success color"
-            style="--gog-spinner-color: var(--gog-success-color)"
-          />
-          <span class="spinner-tile__meta">success</span>
-        </div>
-      </div>
-      <app-code-tabs [html]="colorHtml" [ts]="colorTs" />
-    </article>
+    <app-demo [component]="examples.color" title="Custom color">
+      Override <code>--gog-spinner-color</code> to recolor the spinner regardless of theme — useful
+      when it sits on a surface where the default accent color wouldn't read well.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Overlay mode — gog-spinner-overlay</h3>
-      <p class="demo-card__meta">
-        Wrap any section to block interaction while it loads. A companion component,
-        <code>gog-spinner-overlay</code>, forwards <code>variant</code>/<code>size</code>/
-        <code>ariaLabel</code> straight to the inner <code>gog-spinner</code>.
-      </p>
-      <div class="demo-card__preview">
-        <gog-button variant="primary" type="button" (gogClick)="previewOverlay()">
-          Preview overlay
-        </gog-button>
-        <gog-spinner-overlay
-          [loading]="showOverlay()"
-          size="lg"
-          variant="ring"
-          ariaLabel="Loading content"
-        >
-          <div class="overlay-panel">
-            <p class="demo-card__meta">This area can be a card, a sidebar, or any section.</p>
-          </div>
-        </gog-spinner-overlay>
-      </div>
-      <app-code-tabs [html]="overlayHtml" [ts]="overlayTs" />
-    </article>
+    <app-demo [component]="examples.overlay" title="Overlay mode — gog-spinner-overlay">
+      Wrap any section to block interaction while it loads. A companion component,
+      <code>gog-spinner-overlay</code>, forwards <code>variant</code>/<code>size</code>/
+      <code>ariaLabel</code> straight to the inner <code>gog-spinner</code>. This area can be a
+      card, a sidebar, or any section.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Full-screen overlay</h3>
-      <p class="demo-card__meta">
-        <code>gog-spinner</code> itself can render as a fixed, viewport-covering overlay via
-        <code>overlay="true"</code> — distinct from <code>gog-spinner-overlay</code> above, which
-        only covers its own content.
-      </p>
-      <div class="demo-card__preview">
-        <gog-button variant="primary" type="button" (gogClick)="previewFullscreenOverlay()">
-          Preview full-screen overlay
-        </gog-button>
-        @if (showFullscreenOverlay()) {
-          <gog-spinner [overlay]="true" size="lg" ariaLabel="Loading page" />
-        }
-      </div>
-      <app-code-tabs [html]="fullscreenHtml" [ts]="fullscreenTs" />
-    </article>
+    <app-demo [component]="examples.fullscreen" title="Full-screen overlay">
+      <code>gog-spinner</code> itself can render as a fixed, viewport-covering overlay via
+      <code>overlay="true"</code> — distinct from <code>gog-spinner-overlay</code> above, which only
+      covers its own content.
+    </app-demo>
   </section>
 
   <section class="doc-section">

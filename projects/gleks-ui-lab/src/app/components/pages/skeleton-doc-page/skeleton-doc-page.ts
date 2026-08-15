@@ -1,14 +1,21 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  ButtonComponent,
-  GogSize,
-  GogSkeletonAnimation,
-  SkeletonComponent,
-} from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GogSize, GogSkeletonAnimation } from '@guildofgleks/ui';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { SKELETON_EXAMPLE_SOURCES } from '../../../examples/skeleton/sources.generated';
+import { SkeletonAnimationsExample } from '../../../examples/skeleton/skeleton-animations.example';
+import { SkeletonChatExample } from '../../../examples/skeleton/skeleton-chat.example';
+import { SkeletonDimensionsExample } from '../../../examples/skeleton/skeleton-dimensions.example';
+import { SkeletonLinesExample } from '../../../examples/skeleton/skeleton-lines.example';
+import { SkeletonOverviewExample } from '../../../examples/skeleton/skeleton-overview.example';
+import { SkeletonProductsExample } from '../../../examples/skeleton/skeleton-products.example';
+import { SkeletonProfileExample } from '../../../examples/skeleton/skeleton-profile.example';
+import { SkeletonShapesExample } from '../../../examples/skeleton/skeleton-shapes.example';
+import { SkeletonSizesExample } from '../../../examples/skeleton/skeleton-sizes.example';
 
 interface ApiInputRow {
   readonly name: string;
@@ -101,7 +108,8 @@ const CHAT_MESSAGES: readonly ChatMessage[] = [
 
 @Component({
   selector: 'app-skeleton-doc-page',
-  imports: [SkeletonComponent, ButtonComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink],
+  providers: [provideExampleSources(SKELETON_EXAMPLE_SOURCES)],
   templateUrl: './skeleton-doc-page.html',
   styleUrl: './skeleton-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -123,254 +131,7 @@ export class SkeletonDocPage implements OnDestroy {
   private profileTimer: ReturnType<typeof setTimeout> | null = null;
 
   protected readonly importSnippet =
-    "```typescript\nimport { SkeletonComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SkeletonComponent],\n})\n```";
-
-  protected readonly overviewHtml =
-    '<gog-skeleton shape="text" [lines]="3" style="width: 220px" />';
-  protected readonly overviewTs = [
-    "import { Component } from '@angular/core';",
-    "import { SkeletonComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SkeletonComponent],',
-    '  template: `<gog-skeleton shape="text" [lines]="3" style="width: 220px" />`,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly shapesHtml = [
-    '<gog-skeleton shape="text" [lines]="3" style="width: 220px" />',
-    '<gog-skeleton shape="circle" size="lg" />',
-    '<gog-skeleton shape="rect" size="sm" />',
-  ].join('\n');
-  protected readonly shapesTs = [
-    "import { Component } from '@angular/core';",
-    "import { SkeletonComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SkeletonComponent],',
-    '  template: `',
-    '    <gog-skeleton shape="text" [lines]="3" style="width: 220px" />',
-    '    <gog-skeleton shape="circle" size="lg" />',
-    '    <gog-skeleton shape="rect" size="sm" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly linesHtml = [
-    '<gog-skeleton shape="text" [lines]="1" />',
-    '<gog-skeleton shape="text" [lines]="3" />',
-    '<gog-skeleton shape="text" [lines]="5" size="sm" />',
-  ].join('\n');
-  protected readonly linesTs = [
-    "import { Component } from '@angular/core';",
-    "import { SkeletonComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SkeletonComponent],',
-    '  template: `',
-    '    <gog-skeleton shape="text" [lines]="1" />',
-    '    <gog-skeleton shape="text" [lines]="3" />',
-    '    <gog-skeleton shape="text" [lines]="5" size="sm" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly sizesHtml = [
-    '@for (sizeOption of sizes; track sizeOption) {',
-    '  <gog-skeleton shape="circle" [size]="sizeOption" />',
-    '}',
-  ].join('\n');
-  protected readonly sizesTs = [
-    "import { Component } from '@angular/core';",
-    "import { GogSize, SkeletonComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SkeletonComponent],',
-    '  template: `',
-    '    @for (sizeOption of sizes; track sizeOption) {',
-    '      <gog-skeleton shape="circle" [size]="sizeOption" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
-    '}',
-  ].join('\n');
-
-  protected readonly animationsHtml = [
-    '@for (animationOption of animations; track animationOption) {',
-    '  <gog-skeleton shape="rect" size="xsm" [animation]="animationOption" />',
-    '}',
-  ].join('\n');
-  protected readonly animationsTs = [
-    "import { Component } from '@angular/core';",
-    "import { GogSkeletonAnimation, SkeletonComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SkeletonComponent],',
-    '  template: `',
-    '    @for (animationOption of animations; track animationOption) {',
-    '      <gog-skeleton shape="rect" size="xsm" [animation]="animationOption" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly animations: GogSkeletonAnimation[] = ['pulse', 'wave', 'none'];",
-    '}',
-  ].join('\n');
-
-  protected readonly dimensionsHtml = [
-    '<gog-skeleton shape="rect" width="100%" height="64px" />',
-    '<gog-skeleton shape="circle" width="56px" />',
-    '<gog-skeleton shape="rect" [rounded]="false" />',
-  ].join('\n');
-  protected readonly dimensionsTs = [
-    "import { Component } from '@angular/core';",
-    "import { SkeletonComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SkeletonComponent],',
-    '  template: `',
-    '    <gog-skeleton shape="rect" width="100%" height="64px" />',
-    '    <gog-skeleton shape="circle" width="56px" />',
-    '    <gog-skeleton shape="rect" [rounded]="false" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly profileHtml = [
-    '@if (loading()) {',
-    '  <div class="profile-card__header">',
-    '    <gog-skeleton shape="circle" size="lg" ariaLabel="Loading profile" />',
-    '    <div class="profile-card__header-text">',
-    '      <gog-skeleton shape="text" width="65%" />',
-    '      <gog-skeleton shape="text" width="40%" size="sm" />',
-    '    </div>',
-    '  </div>',
-    '  <gog-skeleton shape="rect" size="md" />',
-    '  <gog-skeleton shape="text" [lines]="3" />',
-    '} @else {',
-    '  <!-- real avatar, name, banner, bio -->',
-    '}',
-  ].join('\n');
-  protected readonly profileTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SkeletonComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SkeletonComponent],',
-    '  template: `',
-    '    @if (loading()) {',
-    '      <div class="profile-card__header">',
-    '        <gog-skeleton shape="circle" size="lg" ariaLabel="Loading profile" />',
-    '        <div class="profile-card__header-text">',
-    '          <gog-skeleton shape="text" width="65%" />',
-    '          <gog-skeleton shape="text" width="40%" size="sm" />',
-    '        </div>',
-    '      </div>',
-    '      <gog-skeleton shape="rect" size="md" />',
-    '      <gog-skeleton shape="text" [lines]="3" />',
-    '    } @else {',
-    '      <!-- real avatar, name, banner, bio -->',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly loading = signal(true);',
-    '}',
-  ].join('\n');
-
-  protected readonly productsHtml = [
-    '<div class="product-grid">',
-    '  @for (placeholder of [0, 1, 2, 3]; track placeholder) {',
-    '    <div class="product-card">',
-    '      <gog-skeleton shape="rect" height="120px" />',
-    '      <gog-skeleton shape="text" width="80%" />',
-    '      <gog-skeleton shape="text" width="30%" size="sm" />',
-    '    </div>',
-    '  }',
-    '</div>',
-  ].join('\n');
-  protected readonly productsTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SkeletonComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SkeletonComponent],',
-    '  template: `',
-    '    <div class="product-grid">',
-    '      @for (placeholder of [0, 1, 2, 3]; track placeholder) {',
-    '        <div class="product-card">',
-    '          <gog-skeleton shape="rect" height="120px" />',
-    '          <gog-skeleton shape="text" width="80%" />',
-    '          <gog-skeleton shape="text" width="30%" size="sm" />',
-    '        </div>',
-    '      }',
-    '    </div>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly loading = signal(true);',
-    '}',
-  ].join('\n');
-
-  protected readonly chatHtml = [
-    '<div class="chat-thread">',
-    '  @for (message of messages; track $index) {',
-    '    <div class="chat-row" [class.chat-row--mine]="message.fromMe">',
-    '      @if (!message.fromMe) {',
-    '        <gog-skeleton shape="circle" size="xsm" />',
-    '      }',
-    '      <gog-skeleton shape="rect" size="sm" [width]="message.width" />',
-    '    </div>',
-    '  }',
-    '</div>',
-  ].join('\n');
-  protected readonly chatTs = [
-    "import { Component } from '@angular/core';",
-    "import { SkeletonComponent } from '@guildofgleks/ui';",
-    '',
-    'interface ChatMessage {',
-    '  fromMe: boolean;',
-    '  width: string;',
-    '}',
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SkeletonComponent],',
-    '  template: `',
-    '    <div class="chat-thread">',
-    '      @for (message of messages; track $index) {',
-    '        <div class="chat-row" [class.chat-row--mine]="message.fromMe">',
-    '          @if (!message.fromMe) {',
-    '            <gog-skeleton shape="circle" size="xsm" />',
-    '          }',
-    '          <gog-skeleton shape="rect" size="sm" [width]="message.width" />',
-    '        </div>',
-    '      }',
-    '    </div>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly messages: ChatMessage[] = [',
-    "    { fromMe: false, width: '55%' },",
-    "    { fromMe: true, width: '38%' },",
-    "    { fromMe: false, width: '68%' },",
-    '  ];',
-    '}',
-  ].join('\n');
+    "```typescript\nimport { } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SkeletonComponent],\n})\n```";
 
   protected reloadProfile(): void {
     if (this.profileTimer) {
@@ -397,4 +158,16 @@ export class SkeletonDocPage implements OnDestroy {
       clearTimeout(this.profileTimer);
     }
   }
+  /** Each example is a file under `src/app/examples/skeleton/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    animations: SkeletonAnimationsExample,
+    chat: SkeletonChatExample,
+    dimensions: SkeletonDimensionsExample,
+    lines: SkeletonLinesExample,
+    overview: SkeletonOverviewExample,
+    products: SkeletonProductsExample,
+    profile: SkeletonProfileExample,
+    shapes: SkeletonShapesExample,
+    sizes: SkeletonSizesExample,
+  };
 }

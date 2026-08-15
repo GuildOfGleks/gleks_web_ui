@@ -1,0 +1,47 @@
+@use '../../pages/doc-page' as doc;
+
+/*
+ * The card chrome is declared here rather than inherited from the page.
+ *
+ * `.demo-card` and friends live in `pages/_doc-page.scss`, which every page `@use`s into its own
+ * *scoped* stylesheet — and a page's scoped styles cannot reach this component's template. So the
+ * host owns its own copy, which is also what makes it droppable into any page without that page
+ * having to style it.
+ */
+:host {
+  display: block;
+}
+
+.demo-card {
+  margin-bottom: 1.6em;
+  padding: 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+
+  &__title {
+    margin: 0 0 0.4em;
+    font-size: var(--gog-text-md);
+  }
+
+  /* The projected note above the demo. Empty when a page passes no content — and an empty
+     element with a bottom margin is a gap nobody asked for. */
+  &__meta {
+    margin: 0 0 1em;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+    line-height: 1.6;
+
+    &:empty {
+      display: none;
+    }
+
+    code {
+      @include doc.inline-code;
+    }
+  }
+
+  &__preview {
+    margin-bottom: 1em;
+  }
+}

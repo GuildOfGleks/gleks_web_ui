@@ -14,254 +14,97 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — a labeled field bound with [(value)]:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview width-demo">
-        <gog-inputfield label="Name" placeholder="Ada Lovelace" [(value)]="name" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
     <p class="doc-section__meta">Value: "{{ name() }}"</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
-      <div class="demo-card__preview size-column">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-inputfield [size]="sizeOption" [label]="sizeOption" [placeholder]="sizeOption" />
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
-    </article>
+    <app-demo [component]="examples.sizes" title="Sizes">
+      Five size steps, from xsm to slg.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Password</h3>
-      <p class="demo-card__meta">
-        <code>type="password"</code> gets a built-in show/hide toggle for free — the trailing icon
-        and its accessible label switch automatically.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-inputfield label="Password" type="password" [(value)]="password" />
-      </div>
-      <app-code-tabs [html]="passwordHtml" [ts]="passwordTs" />
-    </article>
+    <app-demo [component]="examples.password" title="Password">
+      <code>type="password"</code> gets a built-in show/hide toggle for free — the trailing icon and
+      its accessible label switch automatically.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Icons</h3>
-      <p class="demo-card__meta">
-        <code>iconStart</code> / <code>iconEnd</code> take a bare icon name — the genuinely common
-        case, and the whole API for a decorative icon.
-      </p>
-      <div class="demo-card__preview size-column">
-        <gog-inputfield label="Search" iconStart="info" placeholder="Decorative start icon" />
-      </div>
-      <app-code-tabs [html]="iconsHtml" [ts]="iconsTs" />
-    </article>
+    <app-demo [component]="examples.icons" title="Icons">
+      <code>iconStart</code> / <code>iconEnd</code> take a bare icon name — the genuinely common
+      case, and the whole API for a decorative icon.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Addon slots</h3>
-      <p class="demo-card__meta">
-        For anything more than an icon name, project a
-        <code>gogInputAddonStart</code> or <code>gogInputAddonEnd</code> element. Because it takes
-        arbitrary markup, an actionable addon is a real <code>&lt;button&gt;</code> carrying its own
-        <code>aria-label</code> and <code>(click)</code> — nothing has to be threaded through the
-        field.
-      </p>
-      <div class="demo-card__preview size-column">
-        <gog-inputfield label="Amount" [(value)]="amount">
-          <span gogInputAddonStart class="addon-text">$</span>
-          <span gogInputAddonEnd class="addon-text">USD</span>
-        </gog-inputfield>
+    <app-demo [component]="examples.addon" title="Addon slots">
+      For anything more than an icon name, project a
+      <code>gogInputAddonStart</code> or <code>gogInputAddonEnd</code> element. Because it takes
+      arbitrary markup, an actionable addon is a real <code>&lt;button&gt;</code> carrying its own
+      <code>aria-label</code> and <code>(click)</code> — nothing has to be threaded through the
+      field.
+      {{ lastIconAction() }}
+      These two slots replace six inputs —
+      <code>iconStartTemplate</code>, <code>iconEndTemplate</code>, <code>iconStartFn</code>,
+      <code>iconEndFn</code>, <code>iconStartLabel</code> and <code>iconEndLabel</code> — all
+      deprecated in 21.3.0 and removed in 21.5.0. <code>iconStart</code> and
+      <code>iconEnd</code> stay.
+    </app-demo>
 
-        <gog-inputfield label="Search" [(value)]="search">
-          <button
-            type="button"
-            gogInputAddonEnd
-            class="addon-button"
-            aria-label="Clear search"
-            (click)="clearSearch()"
-          >
-            <gog-icon name="close" />
-          </button>
-        </gog-inputfield>
-      </div>
-      <p class="demo-card__meta">{{ lastIconAction() }}</p>
-      <app-code-tabs [html]="addonHtml" [ts]="addonTs" />
+    <app-demo [component]="examples.clearable" title="Clearable">
+      The built-in clear button is value-driven: it appears once there is something to clear and
+      vanishes when there isn't. It replaces the hand-rolled trailing-icon-plus-callback pattern
+      entirely. On a <code>type="password"</code> field the reveal toggle keeps the trailing slot,
+      so the only control that shows the value can never be displaced.
+    </app-demo>
 
-      <p class="demo-card__meta">
-        These two slots replace six inputs —
-        <code>iconStartTemplate</code>, <code>iconEndTemplate</code>, <code>iconStartFn</code>,
-        <code>iconEndFn</code>, <code>iconStartLabel</code> and <code>iconEndLabel</code> — all
-        deprecated in 21.3.0 and removed in 21.5.0. <code>iconStart</code> and
-        <code>iconEnd</code> stay.
-      </p>
-      <app-markdown [markdown]="migrateAddonSnippet" />
-    </article>
+    <app-demo [component]="examples.floatLabel" title="Float label">
+      <code>floatLabel</code> rests the label inside the field like a placeholder and floats it up
+      on focus or once the field has content. The three variants differ only in where it lands:
+      <code>in</code> stays inside the border, <code>on</code> centres on the top border line, and
+      <code>over</code> floats fully above it. Also settable app-wide through
+      <code>GOG_CONFIG.floatLabel</code>.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Clearable</h3>
-      <p class="demo-card__meta">
-        The built-in clear button is value-driven: it appears once there is something to clear and
-        vanishes when there isn't. It replaces the hand-rolled trailing-icon-plus-callback pattern
-        entirely. On a <code>type="password"</code> field the reveal toggle keeps the trailing slot,
-        so the only control that shows the value can never be displaced.
-      </p>
-      <div class="demo-card__preview size-column">
-        <gog-inputfield label="Search" [clearable]="true" [(value)]="clearableValue" />
-      </div>
-      <app-code-tabs [html]="clearableHtml" [ts]="clearableTs" />
-    </article>
+    <app-demo [component]="examples.error" title="Error message">
+      <code>errorDisplay="manual"</code> (the default) shows <code>errorMessage</code> for as long
+      as it's non-empty — you own the timing. Type fewer than 3 characters to see it.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Float label</h3>
-      <p class="demo-card__meta">
-        <code>floatLabel</code> rests the label inside the field like a placeholder and floats it up
-        on focus or once the field has content. The three variants differ only in where it lands:
-        <code>in</code> stays inside the border, <code>on</code> centres on the top border line, and
-        <code>over</code> floats fully above it. Also settable app-wide through
-        <code>GOG_CONFIG.floatLabel</code>.
-      </p>
-      <div class="demo-card__preview size-column">
-        <gog-inputfield label="in" floatLabel="in" />
-        <gog-inputfield label="on" floatLabel="on" />
-        <gog-inputfield label="over" floatLabel="over" />
-      </div>
-      <app-code-tabs [html]="floatLabelHtml" [ts]="floatLabelTs" />
-    </article>
+    <app-demo [component]="examples.form" title="Reactive Forms">
+      Wire it to a <code>FormControl</code> with <code>[formControl]</code> instead of
+      <code>[(value)]</code>. With <code>errorDisplay="auto"</code>, the error only shows once the
+      control has been touched and is invalid — blur the empty field to see it.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Error message</h3>
-      <p class="demo-card__meta">
-        <code>errorDisplay="manual"</code> (the default) shows <code>errorMessage</code> for as long
-        as it's non-empty — you own the timing. Type fewer than 3 characters to see it.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-inputfield
-          label="Username"
-          [(value)]="manualErrorValue"
-          [errorMessage]="
-            manualErrorValue().length > 0 && manualErrorValue().length < 3
-              ? 'At least 3 characters'
-              : ''
-          "
-        />
-      </div>
-      <app-code-tabs [html]="errorHtml" [ts]="errorTs" />
-    </article>
+    <app-demo [component]="examples.numberDate" title="Number and date">
+      <code>type="number"</code> accepts <code>min</code>/<code>max</code>/<code>step</code>; wired
+      to a <code>formControl</code>, its value is a real <code>number</code> (<code>null</code> when
+      empty) rather than the raw string <code>[(value)]</code> would give you.
+      <code>type="date"</code> renders the native date picker. Quantity (number):
+      {{ quantityControl.value }} — Delivery date (string): "{{ deliveryDate() }}"
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Reactive Forms</h3>
-      <p class="demo-card__meta">
-        Wire it to a <code>FormControl</code> with <code>[formControl]</code> instead of
-        <code>[(value)]</code>. With <code>errorDisplay="auto"</code>, the error only shows once the
-        control has been touched and is invalid — blur the empty field to see it.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-inputfield
-          label="Email"
-          [formControl]="emailControl"
-          errorMessage="Enter a valid email"
-          errorDisplay="auto"
-        />
-      </div>
-      <app-code-tabs [html]="formHtml" [ts]="formTs" />
-    </article>
+    <app-demo [component]="examples.spinButtons" title="Number spin buttons">
+      <app-since version="21.3.1" />
+      A <code>type="number"</code> field renders the library's own <code>+</code>/<code>−</code>
+      glyphs instead of the browser's, so they follow the theme and are the same size in every
+      browser. <code>[showSpinButtons]="false"</code> removes them — the field still steps with the
+      arrow keys and the mouse wheel, because that is native
+      <code>&lt;input type="number"&gt;</code> behaviour and unrelated to which glyphs are visible.
+      Set it app-wide with <code>GOG_CONFIG.inputfield.showSpinButtons</code>;
+      <code>incrementLabel</code>/<code>decrementLabel</code> (or <code>GOG_CONFIG.labels</code>)
+      name them for assistive tech. The third field is worth a look: <code>clearable</code> and the
+      stepper now <strong>coexist</strong> <app-since version="21.3.2" />. The clear button sits to
+      the left of the stepper and the gutter widens for the pair. Before that,
+      <code>clearable</code> was silently a no-op on <code>type="number"</code> unless
+      <code>showSpinButtons</code> was also off — so any workaround built around that can go.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Number and date</h3>
-      <p class="demo-card__meta">
-        <code>type="number"</code> accepts <code>min</code>/<code>max</code>/<code>step</code>;
-        wired to a <code>formControl</code>, its value is a real <code>number</code> (<code
-          >null</code
-        >
-        when empty) rather than the raw string <code>[(value)]</code> would give you.
-        <code>type="date"</code> renders the native date picker.
-      </p>
-      <div class="demo-card__preview size-column">
-        <gog-inputfield
-          label="Quantity"
-          type="number"
-          [min]="1"
-          [max]="10"
-          [step]="1"
-          [formControl]="quantityControl"
-        />
-        <gog-inputfield label="Delivery date" type="date" [(value)]="deliveryDate" />
-      </div>
-      <p class="demo-card__meta">
-        Quantity (number): {{ quantityControl.value }} — Delivery date (string): "{{
-          deliveryDate()
-        }}"
-      </p>
-      <app-code-tabs [html]="numberDateHtml" [ts]="numberDateTs" />
-    </article>
+    <app-demo [component]="examples.disabled" title="Disabled" />
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Number spin buttons <app-since version="21.3.1" /></h3>
-      <p class="demo-card__meta">
-        A <code>type="number"</code> field renders the library's own <code>+</code>/<code>−</code>
-        glyphs instead of the browser's, so they follow the theme and are the same size in every
-        browser. <code>[showSpinButtons]="false"</code> removes them — the field still steps with
-        the arrow keys and the mouse wheel, because that is native
-        <code>&lt;input type="number"&gt;</code> behaviour and unrelated to which glyphs are
-        visible. Set it app-wide with <code>GOG_CONFIG.inputfield.showSpinButtons</code>;
-        <code>incrementLabel</code>/<code>decrementLabel</code> (or <code>GOG_CONFIG.labels</code>)
-        name them for assistive tech.
-      </p>
-      <div class="demo-card__preview size-column">
-        <gog-inputfield
-          label="Quantity (stepper)"
-          type="number"
-          [min]="0"
-          [(value)]="stepperValue"
-        />
-        <gog-inputfield
-          label="Quantity (no stepper)"
-          type="number"
-          [min]="0"
-          [showSpinButtons]="false"
-          [(value)]="stepperValue"
-        />
-        <gog-inputfield
-          label="Weight (clearable + stepper)"
-          type="number"
-          [min]="0"
-          [clearable]="true"
-          [(value)]="weightValue"
-        />
-      </div>
-      <p class="demo-card__meta">
-        The third field is worth a look: <code>clearable</code> and the stepper now
-        <strong>coexist</strong> <app-since version="21.3.2" />. The clear button sits to the left
-        of the stepper and the gutter widens for the pair. Before that, <code>clearable</code> was
-        silently a no-op on <code>type="number"</code> unless <code>showSpinButtons</code> was also
-        off — so any workaround built around that can go.
-      </p>
-      <app-code-tabs [html]="spinButtonsHtml" [ts]="spinButtonsTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Disabled</h3>
-      <div class="demo-card__preview width-demo">
-        <gog-inputfield label="Disabled" [disabled]="true" value="Read only" />
-      </div>
-      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Auto width</h3>
-      <p class="demo-card__meta">
-        Fields fill their container by default; <code>fullWidth="false"</code> shrinks the field to
-        fit its content instead.
-      </p>
-      <div class="demo-card__preview">
-        <gog-inputfield label="Zip code" [fullWidth]="false" placeholder="00000" />
-      </div>
-      <app-code-tabs [html]="autoWidthHtml" [ts]="autoWidthTs" />
-    </article>
+    <app-demo [component]="examples.autoWidth" title="Auto width">
+      Fields fill their container by default; <code>fullWidth="false"</code> shrinks the field to
+      fit its content instead.
+    </app-demo>
   </section>
 
   <section class="doc-section">

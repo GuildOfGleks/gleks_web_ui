@@ -15,23 +15,7 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-tabs ariaLabel="Account" [(activeIndex)]="activeIndex">
-          <gog-tab label="Profile">
-            <p class="tabs-demo__panel">Profile content.</p>
-          </gog-tab>
-          <gog-tab label="Settings" iconName="info">
-            <p class="tabs-demo__panel">Settings content.</p>
-          </gog-tab>
-          <gog-tab label="Billing" [disabled]="true">
-            <p class="tabs-demo__panel">Not available.</p>
-          </gog-tab>
-        </gog-tabs>
-        <p class="doc-section__meta">activeIndex = {{ activeIndex() }}</p>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
   </section>
 
   <section class="doc-section">
@@ -47,64 +31,19 @@
       Which you get is decided by whether that template is present — there is no
       <code>lazy</code> input to keep in sync with it.
     </p>
-    <div class="demo-card">
-      <p class="demo-card__meta">
-        Type in the first tab, switch to the second and back: the text is still there. The third
-        tab's content is not in the DOM until you open it.
-      </p>
-      <div class="demo-card__preview">
-        <gog-tabs ariaLabel="Content strategy">
-          <gog-tab label="Eager">
-            <p class="tabs-demo__panel">
-              <input class="tabs-demo__input" placeholder="Type here, switch away, come back" />
-            </p>
-          </gog-tab>
-          <gog-tab label="Another">
-            <p class="tabs-demo__panel">Switch back to see the input still holds its text.</p>
-          </gog-tab>
-          <gog-tab label="Lazy">
-            <ng-template gogTabContent>
-              <p class="tabs-demo__panel">
-                Built on first activation, then kept alive. Nothing rendered this until you clicked
-                it.
-              </p>
-            </ng-template>
-          </gog-tab>
-        </gog-tabs>
-      </div>
-      <app-code-tabs [html]="lazyHtml" [ts]="lazyTs" />
-    </div>
+    <app-demo [component]="examples.lazy">
+      Type in the first tab, switch to the second and back: the text is still there. The third tab's
+      content is not in the DOM until you open it.
+    </app-demo>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Alignment</h3>
-      <p class="demo-card__meta">
-        <code>stretch</code> makes the headers share the full width; the other three pack them to
-        one end or the middle.
-      </p>
-      <div class="demo-card__preview tabs-demo__stack">
-        @for (alignment of alignments; track alignment) {
-          <div>
-            <p class="doc-section__meta">{{ alignment }}</p>
-            <gog-tabs [align]="alignment" [ariaLabel]="alignment" [(activeIndex)]="alignIndex">
-              <gog-tab label="Overview">
-                <p class="tabs-demo__panel">Overview.</p>
-              </gog-tab>
-              <gog-tab label="Activity">
-                <p class="tabs-demo__panel">Activity.</p>
-              </gog-tab>
-              <gog-tab label="Members">
-                <p class="tabs-demo__panel">Members.</p>
-              </gog-tab>
-            </gog-tabs>
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="alignHtml" [ts]="alignTs" />
-    </article>
+    <app-demo [component]="examples.align" title="Alignment">
+      <code>stretch</code> makes the headers share the full width; the other three pack them to one
+      end or the middle.
+    </app-demo>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Vertical</h3>
@@ -159,28 +98,11 @@
       </div>
     </article>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Custom headers</h3>
-      <p class="demo-card__meta">
-        A <code>gogTabHeader</code> template replaces the header button's content for every tab,
-        with the <code>gog-tab</code> itself plus <code>active</code>, <code>disabled</code> and
-        <code>index</code> in its context.
-      </p>
-      <div class="demo-card__preview">
-        <gog-tabs ariaLabel="Inbox">
-          <ng-template gogTabHeader let-tab let-active="active">
-            <span>{{ tab.label() }}</span>
-            @if (active) {
-              <gog-tag variant="info" size="xsm">now</gog-tag>
-            }
-          </ng-template>
-
-          <gog-tab label="Unread"><p class="tabs-demo__panel">Unread messages.</p></gog-tab>
-          <gog-tab label="Archived"><p class="tabs-demo__panel">Archived messages.</p></gog-tab>
-        </gog-tabs>
-      </div>
-      <app-code-tabs [html]="headerSlotHtml" [ts]="headerSlotTs" />
-    </article>
+    <app-demo [component]="examples.headerSlot" title="Custom headers">
+      A <code>gogTabHeader</code> template replaces the header button's content for every tab, with
+      the <code>gog-tab</code> itself plus <code>active</code>, <code>disabled</code> and
+      <code>index</code> in its context.
+    </app-demo>
   </section>
 
   <section class="doc-section">

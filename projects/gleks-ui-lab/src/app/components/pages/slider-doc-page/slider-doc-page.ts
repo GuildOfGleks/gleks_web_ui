@@ -2,11 +2,23 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { ButtonComponent, GogSliderRange, SliderComponent } from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GogSliderRange } from '@guildofgleks/ui';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { SLIDER_EXAMPLE_SOURCES } from '../../../examples/slider/sources.generated';
+import { SliderControlsExample } from '../../../examples/slider/slider-controls.example';
+import { SliderFormExample } from '../../../examples/slider/slider-form.example';
+import { SliderFullWidthExample } from '../../../examples/slider/slider-full-width.example';
+import { SliderLabelingExample } from '../../../examples/slider/slider-labeling.example';
+import { SliderOneSidedExample } from '../../../examples/slider/slider-one-sided.example';
+import { SliderOverviewExample } from '../../../examples/slider/slider-overview.example';
+import { SliderRangeExample } from '../../../examples/slider/slider-range.example';
+import { SliderValidationExample } from '../../../examples/slider/slider-validation.example';
+import { SliderVerticalExample } from '../../../examples/slider/slider-vertical.example';
 
 interface ApiInputRow {
   readonly name: string;
@@ -134,14 +146,13 @@ const API_INPUTS: readonly ApiInputRow[] = [
 @Component({
   selector: 'app-slider-doc-page',
   imports: [
-    SliderComponent,
-    ButtonComponent,
+    ExampleHostComponent,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
     ReactiveFormsModule,
     SinceBadgeComponent,
   ],
+  providers: [provideExampleSources(SLIDER_EXAMPLE_SOURCES)],
   templateUrl: './slider-doc-page.html',
   styleUrl: './slider-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -163,84 +174,6 @@ export class SliderDocPage {
 
   protected readonly priceRange = signal<GogSliderRange>({ start: 20, end: 70 });
   protected readonly cappedRange = signal<GogSliderRange>({ start: 0, end: 60 });
-
-  protected readonly rangeHtml = [
-    '<gog-slider',
-    '  label="Price"',
-    '  [range]="true"',
-    '  [(rangeValue)]="priceRange"',
-    '  [min]="0"',
-    '  [max]="100"',
-    '  startAriaLabel="Lowest price"',
-    '  endAriaLabel="Highest price"',
-    '/>',
-  ].join('\n');
-  protected readonly rangeTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogSliderRange, SliderComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SliderComponent],',
-    '  template: `/* as in the HTML tab */`,',
-    '})',
-    'export class ExampleComponent {',
-    '  // `range` and `[(value)]` are mutually exclusive — with range on, `value` is ignored.',
-    '  protected readonly priceRange = signal<GogSliderRange>({ start: 20, end: 70 });',
-    '}',
-  ].join('\n');
-
-  protected readonly oneSidedHtml = [
-    '<gog-slider',
-    '  label="Budget"',
-    '  [range]="true"',
-    '  [(rangeValue)]="cappedRange"',
-    '  [startDisabled]="true"',
-    '/>',
-  ].join('\n');
-  protected readonly oneSidedTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogSliderRange, SliderComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SliderComponent],',
-    '  template: `/* as in the HTML tab */`,',
-    '})',
-    'export class ExampleComponent {',
-    '  // The floor is pinned at 0; only the ceiling moves. `disabled` would freeze both.',
-    '  protected readonly cappedRange = signal<GogSliderRange>({ start: 0, end: 60 });',
-    '}',
-  ].join('\n');
-
-  protected readonly verticalHtml = [
-    '<gog-slider label="Bass" orientation="vertical" [min]="0" [max]="100" [(value)]="bass" />',
-    '<gog-slider label="Mid" orientation="vertical" [min]="0" [max]="100" [(value)]="mid" />',
-    '<gog-slider label="Treble" orientation="vertical" [min]="0" [max]="100" [(value)]="treble" />',
-  ].join('\n');
-  protected readonly verticalTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SliderComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SliderComponent],',
-    '  template: `',
-    '    <gog-slider label="Bass" orientation="vertical" [(value)]="bass" />',
-    '    <gog-slider label="Mid" orientation="vertical" [(value)]="mid" />',
-    '  `,',
-    '  styles: `',
-    '    :host {',
-    '      display: flex;',
-    '      gap: 24px;',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly bass = signal(60);',
-    '  protected readonly mid = signal(45);',
-    '}',
-  ].join('\n');
 
   protected readonly summary = computed(
     () =>
@@ -273,183 +206,16 @@ export class SliderDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { SliderComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SliderComponent],\n})\n```";
 
-  protected readonly overviewHtml =
-    '<gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />';
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SliderComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SliderComponent],',
-    '  template: `<gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly volume = signal(45);',
-    '}',
-  ].join('\n');
-
-  protected readonly controlsHtml = [
-    '<gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />',
-    '<gog-slider label="Brightness" [min]="0" [max]="100" [step]="10" [(value)]="brightness" />',
-    '<gog-slider label="Precision" [min]="0" [max]="1" [step]="0.01" [(value)]="precision" />',
-    '<gog-slider',
-    '  label="Range only"',
-    '  [min]="0"',
-    '  [max]="100"',
-    '  [step]="1"',
-    '  [showThumb]="false"',
-    '  [value]="35"',
-    '/>',
-    '<gog-slider label="Disabled" [value]="25" [disabled]="true" [showThumb]="false" />',
-    '<gog-slider label="Disabled (with thumb)" [value]="60" [disabled]="true" />',
-  ].join('\n');
-  protected readonly controlsTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SliderComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SliderComponent],',
-    '  template: `',
-    '    <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />',
-    '    <gog-slider label="Brightness" [min]="0" [max]="100" [step]="10" [(value)]="brightness" />',
-    '    <gog-slider label="Precision" [min]="0" [max]="1" [step]="0.01" [(value)]="precision" />',
-    '    <gog-slider',
-    '      label="Range only"',
-    '      [min]="0"',
-    '      [max]="100"',
-    '      [step]="1"',
-    '      [showThumb]="false"',
-    '      [value]="35"',
-    '    />',
-    '    <gog-slider label="Disabled" [value]="25" [disabled]="true" [showThumb]="false" />',
-    '    <gog-slider label="Disabled (with thumb)" [value]="60" [disabled]="true" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly volume = signal(45);',
-    '  protected readonly brightness = signal(70);',
-    '  protected readonly precision = signal(0.45);',
-    '}',
-  ].join('\n');
-
-  protected readonly labelingHtml = [
-    '<gog-slider label="No value readout" [showValue]="false" [(value)]="hiddenValue" />',
-    '<gog-slider ariaLabel="Opacity (no visible label)" [(value)]="ariaOnlyValue" />',
-  ].join('\n');
-  protected readonly labelingTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SliderComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SliderComponent],',
-    '  template: `',
-    '    <gog-slider label="No value readout" [showValue]="false" [(value)]="hiddenValue" />',
-    '    <gog-slider ariaLabel="Opacity (no visible label)" [(value)]="ariaOnlyValue" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly hiddenValue = signal(60);',
-    '  protected readonly ariaOnlyValue = signal(50);',
-    '}',
-  ].join('\n');
-
-  protected readonly fullWidthHtml =
-    '<gog-slider label="Compact" [min]="0" [max]="100" [(value)]="compactValue" [fullWidth]="false" />';
-  protected readonly fullWidthTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SliderComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SliderComponent],',
-    '  template: `<gog-slider label="Compact" [min]="0" [max]="100" [(value)]="compactValue" [fullWidth]="false" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly compactValue = signal(40);',
-    '}',
-  ].join('\n');
-
-  protected readonly validationHtml = [
-    '<gog-slider',
-    '  label="Monthly budget"',
-    '  [min]="0"',
-    '  [max]="100"',
-    '  [step]="5"',
-    '  [errorMessage]="budgetError()"',
-    '  [(value)]="budget"',
-    '/>',
-  ].join('\n');
-  protected readonly validationTs = [
-    "import { Component, computed, signal } from '@angular/core';",
-    "import { SliderComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SliderComponent],',
-    '  template: `',
-    '    <gog-slider',
-    '      label="Monthly budget"',
-    '      [min]="0"',
-    '      [max]="100"',
-    '      [step]="5"',
-    '      [errorMessage]="budgetError()"',
-    '      [(value)]="budget"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly budget = signal(80);',
-    '  protected readonly budgetError = computed(() =>',
-    "    this.budget() > 70 ? 'Over the recommended budget for this tier.' : '',",
-    '  );',
-    '}',
-  ].join('\n');
-
-  protected readonly formHtml = [
-    '<gog-slider',
-    '  label="Minimum threshold"',
-    '  [min]="0"',
-    '  [max]="100"',
-    '  [formControl]="minimumControl"',
-    '  errorDisplay="auto"',
-    '  [errorMessage]="minimumErrorMessage()"',
-    '/>',
-  ].join('\n');
-  protected readonly formTs = [
-    "import { Component, computed } from '@angular/core';",
-    "import { toSignal } from '@angular/core/rxjs-interop';",
-    "import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';",
-    "import { SliderComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SliderComponent, ReactiveFormsModule],',
-    '  template: `',
-    '    <gog-slider',
-    '      label="Minimum threshold"',
-    '      [min]="0"',
-    '      [max]="100"',
-    '      [formControl]="minimumControl"',
-    '      errorDisplay="auto"',
-    '      [errorMessage]="minimumErrorMessage()"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly minimumControl = new FormControl<number>(10, {',
-    '    nonNullable: true,',
-    '    validators: Validators.min(50),',
-    '  });',
-    '  private readonly minimumValue = toSignal(this.minimumControl.valueChanges, {',
-    '    initialValue: this.minimumControl.value,',
-    '  });',
-    '  protected readonly minimumErrorMessage = computed(() => {',
-    '    this.minimumValue();',
-    "    return this.minimumControl.hasError('min') ? 'Must be at least 50.' : '';",
-    '  });',
-    '}',
-  ].join('\n');
+  /** Each example is a file under `src/app/examples/slider/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    controls: SliderControlsExample,
+    form: SliderFormExample,
+    fullWidth: SliderFullWidthExample,
+    labeling: SliderLabelingExample,
+    oneSided: SliderOneSidedExample,
+    overview: SliderOverviewExample,
+    range: SliderRangeExample,
+    validation: SliderValidationExample,
+    vertical: SliderVerticalExample,
+  };
 }

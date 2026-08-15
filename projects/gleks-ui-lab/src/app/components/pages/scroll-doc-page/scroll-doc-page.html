@@ -14,141 +14,49 @@
     <p class="doc-section__intro">Import the component and give it a height (or width).</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-scroll class="scroll-box" ariaLabel="Example list">
-          @for (item of longItems; track item) {
-            <p class="scroll-row">{{ item }}</p>
-          }
-        </gog-scroll>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Axis</h3>
-      <p class="demo-card__meta">
-        <code>vertical</code> (default), <code>horizontal</code>, or <code>both</code>. Native
-        scrolling on a disabled axis is left completely alone.
-      </p>
-      <div class="demo-card__preview">
-        <gog-scroll
-          axis="horizontal"
-          class="scroll-box scroll-box--wide"
-          ariaLabel="Example columns"
-        >
-          <div class="scroll-row-flex">
-            @for (item of wideItems; track item) {
-              <span class="scroll-chip">{{ item }}</span>
-            }
-          </div>
-        </gog-scroll>
-      </div>
-      <app-code-tabs [html]="axisHtml" [ts]="axisTs" />
-    </article>
+    <app-demo [component]="examples.axis" title="Axis">
+      <code>vertical</code> (default), <code>horizontal</code>, or <code>both</code>. Native
+      scrolling on a disabled axis is left completely alone.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Size and auto-hide</h3>
-      <p class="demo-card__meta">
-        <code>size="thin"</code> shrinks the track/thumb; <code>autoHide="false"</code> keeps the
-        thumb always visible instead of fading out after <code>hideDelay</code> ms.
-        <code>[showTrack]="false"</code> <app-since version="21.3.1" /> removes the visual
-        affordance altogether — scrolling itself (wheel, touch, keyboard) is unaffected either way,
-        which is what makes it safe for a region whose scrolling is driven for the user, the way
-        <a routerLink="/components/tabs">gog-tabs</a> drives its header row. Settable app-wide via
-        <code>GOG_CONFIG.scroll.showTrack</code>.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button
-          size="sm"
-          (gogClick)="sizeOption.set(sizeOption() === 'normal' ? 'thin' : 'normal')"
-        >
-          Size: {{ sizeOption() }}
-        </gog-button>
-        <gog-button size="sm" (gogClick)="autoHide.set(!autoHide())">
-          Auto-hide: {{ autoHide() ? 'on' : 'off' }}
-        </gog-button>
-      </div>
-      <div class="demo-card__preview">
-        <gog-scroll
-          [size]="sizeOption()"
-          [autoHide]="autoHide()"
-          class="scroll-box"
-          ariaLabel="Example list"
-        >
-          @for (item of longItems; track item) {
-            <p class="scroll-row">{{ item }}</p>
-          }
-        </gog-scroll>
-      </div>
-      <app-code-tabs [html]="sizeAutoHideHtml" [ts]="sizeAutoHideTs" />
-    </article>
+    <app-demo [component]="examples.sizeAutoHide" title="Size and auto-hide">
+      <code>size="thin"</code> shrinks the track/thumb; <code>autoHide="false"</code> keeps the
+      thumb always visible instead of fading out after <code>hideDelay</code> ms.
+      <code>[showTrack]="false"</code> <app-since version="21.3.1" /> removes the visual affordance
+      altogether — scrolling itself (wheel, touch, keyboard) is unaffected either way, which is what
+      makes it safe for a region whose scrolling is driven for the user, the way
+      <a routerLink="/components/tabs">gog-tabs</a> drives its header row. Settable app-wide via
+      <code>GOG_CONFIG.scroll.showTrack</code>.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Reach events</h3>
-      <p class="demo-card__meta">
-        <code>gogReachStart</code> / <code>gogReachEnd</code> fire once per crossing;
-        <code>gogScroll</code> emits live metrics on every scroll/resize.
-      </p>
-      <div class="demo-card__preview">
-        <gog-scroll
-          class="scroll-box"
-          ariaLabel="Example list"
-          [reachThreshold]="8"
-          (gogReachStart)="reachState.set('At the top')"
-          (gogReachEnd)="reachState.set('At the bottom')"
-          (gogScroll)="onScroll($event)"
-        >
-          @for (item of longItems; track item) {
-            <p class="scroll-row">{{ item }}</p>
-          }
-        </gog-scroll>
-      </div>
-      <p class="demo-card__meta">
-        {{ reachState() }}
-        @if (lastMetrics(); as metrics) {
-          — scrollTop: {{ metrics.scrollTop | number: '1.0-0' }}
-        }
-      </p>
-      <app-code-tabs [html]="reachHtml" [ts]="reachTs" />
-    </article>
+    <app-demo [component]="examples.reach" title="Reach events">
+      <code>gogReachStart</code> / <code>gogReachEnd</code> fire once per crossing;
+      <code>gogScroll</code> emits live metrics on every scroll/resize.
+      {{ reachState() }}
+      @if (lastMetrics(); as metrics) {
+        — scrollTop: {{ metrics.scrollTop | number: '1.0-0' }}
+      }
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Scroll methods</h3>
-      <p class="demo-card__meta">
-        Grab the instance with <code>viewChild</code> and call <code>scrollToTop</code> /
-        <code>scrollToBottom</code> / <code>scrollToLeft</code> / <code>scrollToRight</code> /
-        <code>scrollTo</code> directly.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button size="sm" (gogClick)="methodsScroll.scrollToTop()">To top</gog-button>
-        <gog-button size="sm" (gogClick)="methodsScroll.scrollToBottom()">To bottom</gog-button>
-      </div>
-      <div class="demo-card__preview">
-        <gog-scroll #methodsScroll class="scroll-box" ariaLabel="Example list">
-          @for (item of longItems; track item) {
-            <p class="scroll-row">{{ item }}</p>
-          }
-        </gog-scroll>
-      </div>
-      <app-code-tabs [html]="methodsHtml" [ts]="methodsTs" />
-    </article>
+    <app-demo [component]="examples.methods" title="Scroll methods">
+      Grab the instance with <code>viewChild</code> and call <code>scrollToTop</code> /
+      <code>scrollToBottom</code> / <code>scrollToLeft</code> / <code>scrollToRight</code> /
+      <code>scrollTo</code> directly.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Global defaults with GOG_CONFIG</h3>
-      <p class="demo-card__meta">
-        <code>size</code>, <code>autoHide</code>, <code>hideDelay</code> and
-        <code>overscrollBehavior</code> default to <code>undefined</code> so they can fall through
-        to an app-wide (or subtree-wide) default set once via <code>provideGogConfig(...)</code>,
-        instead of repeating the same inputs on every instance. An instance's own input, when set,
-        always wins.
-      </p>
-      <app-code-tabs [html]="configHtml" [ts]="configTs" />
-    </article>
+    <app-demo [component]="examples.config" title="Global defaults with GOG_CONFIG">
+      <code>size</code>, <code>autoHide</code>, <code>hideDelay</code> and
+      <code>overscrollBehavior</code> default to <code>undefined</code> so they can fall through to
+      an app-wide (or subtree-wide) default set once via <code>provideGogConfig(...)</code>, instead
+      of repeating the same inputs on every instance. An instance's own input, when set, always
+      wins.
+    </app-demo>
   </section>
 
   <section class="doc-section">

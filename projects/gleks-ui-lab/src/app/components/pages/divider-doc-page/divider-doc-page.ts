@@ -1,9 +1,17 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DividerComponent, GogDividerVariant, IconComponent, TagComponent } from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GogDividerVariant } from '@guildofgleks/ui';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { DIVIDER_EXAMPLE_SOURCES } from '../../../examples/divider/sources.generated';
+import { DividerInsetExample } from '../../../examples/divider/divider-inset.example';
+import { DividerLabelExample } from '../../../examples/divider/divider-label.example';
+import { DividerOverviewExample } from '../../../examples/divider/divider-overview.example';
+import { DividerVariantsExample } from '../../../examples/divider/divider-variants.example';
+import { DividerVerticalExample } from '../../../examples/divider/divider-vertical.example';
 
 interface ApiInputRow {
   readonly name: string;
@@ -37,14 +45,8 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-divider-doc-page',
-  imports: [
-    DividerComponent,
-    IconComponent,
-    TagComponent,
-    MarkdownComponent,
-    CodeTabsComponent,
-    RouterLink,
-  ],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink],
+  providers: [provideExampleSources(DIVIDER_EXAMPLE_SOURCES)],
   templateUrl: './divider-doc-page.html',
   styleUrl: './divider-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,140 +61,12 @@ export class DividerDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { DividerComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [DividerComponent],\n})\n```";
 
-  protected readonly overviewHtml = [
-    '<p>Above the rule.</p>',
-    '<gog-divider />',
-    '<p>Below it.</p>',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component } from '@angular/core';",
-    "import { DividerComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DividerComponent],',
-    '  template: `',
-    '    <p>Above the rule.</p>',
-    '    <gog-divider />',
-    '    <p>Below it.</p>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly variantsHtml = [
-    '<gog-divider variant="solid" />',
-    '<gog-divider variant="dashed" />',
-    '<gog-divider variant="dotted" />',
-  ].join('\n');
-  protected readonly variantsTs = [
-    "import { Component } from '@angular/core';",
-    "import { DividerComponent, GogDividerVariant } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DividerComponent],',
-    '  template: `',
-    '    @for (variantOption of variants; track variantOption) {',
-    '      <gog-divider [variant]="variantOption" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly variants: GogDividerVariant[] = ['solid', 'dashed', 'dotted'];",
-    '}',
-  ].join('\n');
-
-  protected readonly labelHtml = [
-    '<gog-divider>OR</gog-divider>',
-    '',
-    '<!-- The label is projected content, so it takes markup, not just text. -->',
-    '<gog-divider>',
-    '  <gog-icon name="info" />',
-    '  Shipping details',
-    '</gog-divider>',
-    '',
-    '<gog-divider><gog-tag variant="warning">Draft</gog-tag></gog-divider>',
-  ].join('\n');
-  protected readonly labelTs = [
-    "import { Component } from '@angular/core';",
-    "import { DividerComponent, IconComponent, TagComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DividerComponent, IconComponent, TagComponent],',
-    '  template: `',
-    '    <gog-divider>OR</gog-divider>',
-    '',
-    '    <gog-divider>',
-    '      <gog-icon name="info" />',
-    '      Shipping details',
-    '    </gog-divider>',
-    '',
-    '    <gog-divider><gog-tag variant="warning">Draft</gog-tag></gog-divider>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly verticalHtml = [
-    '<div class="toolbar">',
-    '  <button>Cut</button>',
-    '  <gog-divider orientation="vertical" />',
-    '  <button>Copy</button>',
-    '  <gog-divider orientation="vertical" />',
-    '  <button>Paste</button>',
-    '</div>',
-  ].join('\n');
-  protected readonly verticalTs = [
-    "import { Component } from '@angular/core';",
-    "import { DividerComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DividerComponent],',
-    '  template: `',
-    '    <div class="toolbar">',
-    '      <button>Cut</button>',
-    '      <gog-divider orientation="vertical" />',
-    '      <button>Copy</button>',
-    '    </div>',
-    '  `,',
-    '  styles: `',
-    '    .toolbar {',
-    '      display: flex;',
-    '      align-items: center;',
-    '      /* A vertical divider stretches to the row when the row defines a height, */',
-    '      /* otherwise it falls back to --gog-divider-vertical-length. */',
-    '      height: 32px;',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly insetHtml = [
-    '<ul class="event-list">',
-    '  <li><gog-icon name="success" /> Order placed</li>',
-    '  <gog-divider [inset]="true" />',
-    '  <li><gog-icon name="clock" /> Awaiting payment</li>',
-    '</ul>',
-  ].join('\n');
-  protected readonly insetTs = [
-    "import { Component } from '@angular/core';",
-    "import { DividerComponent, IconComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DividerComponent, IconComponent],',
-    '  template: `',
-    '    <ul class="event-list">',
-    '      <li><gog-icon name="success" /> Order placed</li>',
-    '      <gog-divider [inset]="true" />',
-    '      <li><gog-icon name="clock" /> Awaiting payment</li>',
-    '    </ul>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
+  /** Each example is a file under `src/app/examples/divider/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    inset: DividerInsetExample,
+    label: DividerLabelExample,
+    overview: DividerOverviewExample,
+    variants: DividerVariantsExample,
+    vertical: DividerVerticalExample,
+  };
 }

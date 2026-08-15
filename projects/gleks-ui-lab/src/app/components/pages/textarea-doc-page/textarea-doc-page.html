@@ -14,146 +14,61 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — a labeled field bound with [(value)]:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview width-demo">
-        <gog-textarea label="Bio" placeholder="Tell us about yourself" [(value)]="bio" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
     <p class="doc-section__meta">Value: "{{ bio() }}"</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">
-        Five size steps, from xsm to slg — the same scale as gog-inputfield.
-      </p>
-      <div class="demo-card__preview size-column">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-textarea [size]="sizeOption" [label]="sizeOption" [rows]="2" />
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
-    </article>
+    <app-demo [component]="examples.sizes" title="Sizes">
+      Five size steps, from xsm to slg — the same scale as gog-inputfield.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Rows</h3>
-      <p class="demo-card__meta">
-        <code>rows</code> sets the native attribute controlling the field's initial height.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-textarea label="Notes" [rows]="8" />
-      </div>
-      <app-code-tabs [html]="rowsHtml" [ts]="rowsTs" />
-    </article>
+    <app-demo [component]="examples.rows" title="Rows">
+      <code>rows</code> sets the native attribute controlling the field's initial height.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Resize handle <app-since version="21.3.1" /></h3>
-      <p class="demo-card__meta">
-        <code>resize</code> mirrors the native CSS <code>resize</code> value space —
-        <code>'vertical'</code> (the default), <code>'horizontal'</code>, <code>'both'</code>, or
-        <code>'none'</code> to remove the handle entirely. Set it app-wide with
-        <code>GOG_CONFIG.textarea.resize</code> if your forms want one answer everywhere. The grip
-        is drawn by the library rather than the browser, so it follows the theme instead of
-        appearing as a native corner triangle.
-      </p>
-      <div class="demo-card__preview action-column">
-        <gog-textarea label="Vertical (default)" [rows]="3" />
-        <gog-textarea label="Both axes" resize="both" [rows]="3" />
-        <gog-textarea label="Fixed size" resize="none" [rows]="3" />
-      </div>
-      <app-code-tabs [html]="resizeHtml" [ts]="resizeTs" />
-    </article>
+    <app-demo [component]="examples.resize" title="Resize handle">
+      <app-since version="21.3.1" />
+      <code>resize</code> mirrors the native CSS <code>resize</code> value space —
+      <code>'vertical'</code> (the default), <code>'horizontal'</code>, <code>'both'</code>, or
+      <code>'none'</code> to remove the handle entirely. Set it app-wide with
+      <code>GOG_CONFIG.textarea.resize</code> if your forms want one answer everywhere. The grip is
+      drawn by the library rather than the browser, so it follows the theme instead of appearing as
+      a native corner triangle.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Error message</h3>
-      <p class="demo-card__meta">
-        <code>errorDisplay="manual"</code> (the default) shows <code>errorMessage</code> for as long
-        as it's non-empty. Type fewer than 10 characters to see it.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-textarea
-          label="Feedback"
-          [(value)]="manualErrorValue"
-          [errorMessage]="
-            manualErrorValue().length > 0 && manualErrorValue().length < 10
-              ? 'At least 10 characters'
-              : ''
-          "
-        />
-      </div>
-      <app-code-tabs [html]="errorHtml" [ts]="errorTs" />
-    </article>
+    <app-demo [component]="examples.error" title="Error message">
+      <code>errorDisplay="manual"</code> (the default) shows <code>errorMessage</code> for as long
+      as it's non-empty. Type fewer than 10 characters to see it.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Reactive Forms</h3>
-      <p class="demo-card__meta">
-        Wire it to a <code>FormControl</code> with <code>[formControl]</code> instead of
-        <code>[(value)]</code>. With <code>errorDisplay="auto"</code>, the error only shows once the
-        control has been touched and is invalid — blur the empty field to see it.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-textarea
-          label="Comment"
-          [formControl]="commentControl"
-          errorMessage="At least 10 characters"
-          errorDisplay="auto"
-        />
-      </div>
-      <app-code-tabs [html]="formHtml" [ts]="formTs" />
-    </article>
+    <app-demo [component]="examples.form" title="Reactive Forms">
+      Wire it to a <code>FormControl</code> with <code>[formControl]</code> instead of
+      <code>[(value)]</code>. With <code>errorDisplay="auto"</code>, the error only shows once the
+      control has been touched and is invalid — blur the empty field to see it.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Disabled</h3>
-      <div class="demo-card__preview width-demo">
-        <gog-textarea label="Disabled" [disabled]="true" value="Read only" />
-      </div>
-      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
-    </article>
+    <app-demo [component]="examples.disabled" title="Disabled" />
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Auto width</h3>
-      <p class="demo-card__meta">
-        Fields fill their container by default; <code>fullWidth="false"</code> shrinks the field to
-        fit its content instead.
-      </p>
-      <div class="demo-card__preview">
-        <gog-textarea label="Short note" [fullWidth]="false" [rows]="2" />
-      </div>
-      <app-code-tabs [html]="autoWidthHtml" [ts]="autoWidthTs" />
-    </article>
+    <app-demo [component]="examples.autoWidth" title="Auto width">
+      Fields fill their container by default; <code>fullWidth="false"</code> shrinks the field to
+      fit its content instead.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Clearable</h3>
-      <p class="demo-card__meta">
-        The clear button is value-driven: it appears once there is something to clear and vanishes
-        when there isn't, so it adds no permanent chrome. Type into the field below and watch it
-        appear. Also settable app-wide with <code>GOG_CONFIG.control.clearable</code>.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-textarea label="Notes" [clearable]="true" [(value)]="clearableValue" />
-      </div>
-      <app-code-tabs [html]="clearableHtml" [ts]="clearableTs" />
-    </article>
+    <app-demo [component]="examples.clearable" title="Clearable">
+      The clear button is value-driven: it appears once there is something to clear and vanishes
+      when there isn't, so it adds no permanent chrome. Type into the field below and watch it
+      appear. Also settable app-wide with <code>GOG_CONFIG.control.clearable</code>.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Float label</h3>
-      <p class="demo-card__meta">
-        <code>floatLabel</code> rests the label inside the field like a placeholder and floats it up
-        on focus or once the field has content. The three variants differ only in where it lands:
-        <code>in</code> stays inside the border, <code>on</code> centres on the top border line, and
-        <code>over</code> floats fully above it. Click into each to see it move.
-      </p>
-      <div class="demo-card__preview size-column">
-        <gog-textarea label="in" floatLabel="in" [rows]="2" />
-        <gog-textarea label="on" floatLabel="on" [rows]="2" />
-        <gog-textarea label="over" floatLabel="over" [rows]="2" />
-      </div>
-      <app-code-tabs [html]="floatLabelHtml" [ts]="floatLabelTs" />
-    </article>
+    <app-demo [component]="examples.floatLabel" title="Float label">
+      <code>floatLabel</code> rests the label inside the field like a placeholder and floats it up
+      on focus or once the field has content. The three variants differ only in where it lands:
+      <code>in</code> stays inside the border, <code>on</code> centres on the top border line, and
+      <code>over</code> floats fully above it. Click into each to see it move.
+    </app-demo>
   </section>
 
   <section class="doc-section">

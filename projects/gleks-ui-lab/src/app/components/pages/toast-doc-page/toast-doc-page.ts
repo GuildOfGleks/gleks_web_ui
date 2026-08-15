@@ -1,19 +1,25 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
-  ButtonComponent,
   GogDropdownOption,
-  InputfieldComponent,
-  SelectComponent,
   ToastContainerComponent,
   ToastPosition,
   ToastService,
   ToastType,
 } from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { TOAST_EXAMPLE_SOURCES } from '../../../examples/toast/sources.generated';
+import { ToastActionsExample } from '../../../examples/toast/toast-actions.example';
+import { ToastBurstExample } from '../../../examples/toast/toast-burst.example';
+import { ToastConfigurableExample } from '../../../examples/toast/toast-configurable.example';
+import { ToastOverviewExample } from '../../../examples/toast/toast-overview.example';
+import { ToastStickyExample } from '../../../examples/toast/toast-sticky.example';
+import { ToastTypesExample } from '../../../examples/toast/toast-types.example';
 
 interface ApiRow {
   readonly name: string;
@@ -119,15 +125,13 @@ const CONTAINER_INPUTS: readonly ApiRow[] = [
 @Component({
   selector: 'app-toast-doc-page',
   imports: [
-    ButtonComponent,
-    InputfieldComponent,
-    SelectComponent,
-    ToastContainerComponent,
+    ExampleHostComponent,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
     SinceBadgeComponent,
+    ToastContainerComponent,
   ],
+  providers: [provideExampleSources(TOAST_EXAMPLE_SOURCES)],
   templateUrl: './toast-doc-page.html',
   styleUrl: './toast-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -177,223 +181,6 @@ export class ToastDocPage {
     '  ],',
     '});',
     '```',
-  ].join('\n');
-
-  protected readonly overviewHtml = [
-    '<gog-button (gogClick)="showToast()">Preview toast</gog-button>',
-    '<gog-toast-container />',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component, inject } from '@angular/core';",
-    "import { ButtonComponent, ToastContainerComponent, ToastService } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent, ToastContainerComponent],',
-    '  template: `',
-    '    <gog-button (gogClick)="showToast()">Preview toast</gog-button>',
-    '    <gog-toast-container />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  private readonly toastService = inject(ToastService);',
-    '',
-    '  protected showToast(): void {',
-    "    this.toastService.success('Saved successfully');",
-    '  }',
-    '}',
-  ].join('\n');
-
-  protected readonly configurableHtml = [
-    '<gog-inputfield label="Message" [(value)]="toastMessage" />',
-    '<gog-select label="Type" [options]="toastTypes" [(value)]="toastType" />',
-    '<gog-select label="Position" [options]="positions" [(value)]="toastPosition" />',
-    '<gog-button (gogClick)="showConfigured()">Preview toast</gog-button>',
-  ].join('\n');
-  protected readonly configurableTs = [
-    "import { Component, inject, signal } from '@angular/core';",
-    'import {',
-    '  ButtonComponent,',
-    '  GogDropdownOption,',
-    '  InputfieldComponent,',
-    '  SelectComponent,',
-    '  ToastPosition,',
-    '  ToastService,',
-    '  ToastType,',
-    "} from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent, InputfieldComponent, SelectComponent],',
-    '  template: `',
-    '    <gog-inputfield label="Message" [(value)]="toastMessage" />',
-    '    <gog-select label="Type" [options]="toastTypes" [(value)]="toastType" />',
-    '    <gog-select label="Position" [options]="positions" [(value)]="toastPosition" />',
-    '    <gog-button (gogClick)="showConfigured()">Preview toast</gog-button>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  private readonly toastService = inject(ToastService);',
-    "  protected readonly toastMessage = signal('Saved successfully');",
-    "  protected readonly toastType = signal<string | number | null>('success');",
-    "  protected readonly toastPosition = signal<string | number | null>('bottom-right');",
-    '  protected readonly toastTypes: GogDropdownOption[] = [',
-    "    { id: 'success', name: 'Success' },",
-    "    { id: 'error', name: 'Error' },",
-    "    { id: 'warning', name: 'Warning' },",
-    "    { id: 'info', name: 'Info' },",
-    '  ];',
-    '  protected readonly positions: GogDropdownOption[] = [',
-    "    { id: 'top-left', name: 'Top left' },",
-    "    { id: 'top-right', name: 'Top right' },",
-    "    { id: 'bottom-left', name: 'Bottom left' },",
-    "    { id: 'bottom-right', name: 'Bottom right' },",
-    '  ];',
-    '',
-    '  protected showConfigured(): void {',
-    '    this.toastService.show({',
-    '      message: this.toastMessage(),',
-    '      type: this.toastType() as ToastType,',
-    '      position: this.toastPosition() as ToastPosition,',
-    '    });',
-    '  }',
-    '}',
-  ].join('\n');
-
-  protected readonly actionsHtml = [
-    'this.toastService.show({',
-    "  message: 'File deleted',",
-    "  type: 'info',",
-    '  actions: [',
-    "    { label: 'Undo', iconName: 'close', onClick: () => this.restoreFile() },",
-    '  ],',
-    '});',
-  ].join('\n');
-  protected readonly actionsTs = [
-    "import { Component, inject } from '@angular/core';",
-    "import { ButtonComponent, ToastService } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent],',
-    '  template: `<gog-button (gogClick)="showWithAction()">Delete file</gog-button>`,',
-    '})',
-    'export class ExampleComponent {',
-    '  private readonly toastService = inject(ToastService);',
-    '',
-    '  protected showWithAction(): void {',
-    '    this.toastService.show({',
-    "      message: 'File deleted',",
-    "      type: 'info',",
-    '      actions: [',
-    "        { label: 'Undo', iconName: 'close', onClick: () => this.toastService.info('Undo clicked') },",
-    '      ],',
-    '    });',
-    '  }',
-    '}',
-  ].join('\n');
-
-  protected readonly typesHtml = [
-    "this.toastService.success('Success — saved successfully.');",
-    "this.toastService.error('Error — something went wrong.');",
-    "this.toastService.warning('Warning — check this before continuing.');",
-    "this.toastService.info('Info — just so you know.');",
-  ].join('\n');
-  protected readonly typesTs = [
-    "import { Component, inject } from '@angular/core';",
-    "import { ButtonComponent, ToastService } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent],',
-    '  template: `<gog-button (gogClick)="showOneOfEach()">Fire one of each type</gog-button>`,',
-    '})',
-    'export class ExampleComponent {',
-    '  private readonly toastService = inject(ToastService);',
-    '',
-    '  protected showOneOfEach(): void {',
-    "    this.toastService.success('Success — saved successfully.');",
-    "    this.toastService.error('Error — something went wrong.');",
-    "    this.toastService.warning('Warning — check this before continuing.');",
-    "    this.toastService.info('Info — just so you know.');",
-    '  }',
-    '}',
-  ].join('\n');
-
-  protected readonly stickyHtml = [
-    'this.toastService.show({',
-    "  message: 'Stays until dismissed or dismissAll() is called.',",
-    "  type: 'warning',",
-    '  isSticky: true,',
-    '});',
-    '',
-    'this.toastService.show({',
-    "  message: 'Auto-dismisses after 10s instead of the 4s default.',",
-    "  type: 'info',",
-    '  duration: 10000,',
-    '});',
-  ].join('\n');
-  protected readonly stickyTs = [
-    "import { Component, inject } from '@angular/core';",
-    "import { ButtonComponent, ToastService } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent],',
-    '  template: `',
-    '    <gog-button (gogClick)="showSticky()">Sticky toast</gog-button>',
-    '    <gog-button (gogClick)="showLongDuration()">10s duration</gog-button>',
-    '    <gog-button (gogClick)="dismissAll()">Dismiss all</gog-button>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  private readonly toastService = inject(ToastService);',
-    '',
-    '  protected showSticky(): void {',
-    '    this.toastService.show({',
-    "      message: 'Stays until dismissed or dismissAll() is called.',",
-    "      type: 'warning',",
-    '      isSticky: true,',
-    '    });',
-    '  }',
-    '',
-    '  protected showLongDuration(): void {',
-    '    this.toastService.show({',
-    "      message: 'Auto-dismisses after 10s instead of the 4s default.',",
-    "      type: 'info',",
-    '      duration: 10000,',
-    '    });',
-    '  }',
-    '',
-    '  protected dismissAll(): void {',
-    '    this.toastService.dismissAll();',
-    '  }',
-    '}',
-  ].join('\n');
-
-  protected readonly burstHtml = [
-    'for (let index = 1; index <= 7; index += 1) {',
-    "  this.toastService.info(`Queued toast ${index}`, { position: 'top-right' });",
-    '}',
-  ].join('\n');
-  protected readonly burstTs = [
-    "import { Component, inject } from '@angular/core';",
-    "import { ButtonComponent, ToastService } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent],',
-    '  template: `<gog-button (gogClick)="showBurst()">Queue 7 toasts</gog-button>`,',
-    '})',
-    'export class ExampleComponent {',
-    '  private readonly toastService = inject(ToastService);',
-    '',
-    '  protected showBurst(): void {',
-    '    for (let index = 1; index <= 7; index += 1) {',
-    "      this.toastService.info(`Queued toast ${index}`, { position: 'top-right' });",
-    '    }',
-    '  }',
-    '}',
   ].join('\n');
 
   protected showToast(): void {
@@ -459,4 +246,13 @@ export class ToastDocPage {
   protected dismissAll(): void {
     this.toastService.dismissAll();
   }
+  /** Each example is a file under `src/app/examples/toast/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    actions: ToastActionsExample,
+    burst: ToastBurstExample,
+    configurable: ToastConfigurableExample,
+    overview: ToastOverviewExample,
+    sticky: ToastStickyExample,
+    types: ToastTypesExample,
+  };
 }

@@ -14,110 +14,48 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — a clickable chip with projected content:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-chip (gogClick)="onClick('Design')">Design</gog-chip>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
     <p class="doc-section__meta">{{ lastClicked() }}</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
-      <div class="demo-card__preview action-row">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-chip [size]="sizeOption">{{ sizeOption }}</gog-chip>
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
-    </article>
+    <app-demo [component]="examples.sizes" title="Sizes">
+      Five size steps, from xsm to slg.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Shapes</h3>
-      <p class="demo-card__meta">Square-ish rounded corners, or a fully rounded pill.</p>
-      <div class="demo-card__preview action-row">
-        <gog-chip shape="rounded">Rounded</gog-chip>
-        <gog-chip shape="pill">Pill</gog-chip>
-      </div>
-      <app-code-tabs [html]="shapesHtml" [ts]="shapesTs" />
-    </article>
+    <app-demo [component]="examples.shapes" title="Shapes">
+      Square-ish rounded corners, or a fully rounded pill.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Removable</h3>
-      <p class="demo-card__meta">
-        <code>removable</code> adds a trailing (×) button that emits <code>gogRemove</code> and
-        stops the click from also reaching <code>gogClick</code>.
-      </p>
-      <div class="demo-card__preview action-row">
-        @for (tag of tags(); track tag.id) {
-          <gog-chip [removable]="true" (gogRemove)="removeTag(tag.id)">{{ tag.label }}</gog-chip>
-        }
-      </div>
-      <app-code-tabs [html]="removableHtml" [ts]="removableTs" />
-    </article>
+    <app-demo [component]="examples.removable" title="Removable">
+      <code>removable</code> adds a trailing (×) button that emits <code>gogRemove</code> and stops
+      the click from also reaching <code>gogClick</code>.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Non-interactive</h3>
-      <p class="demo-card__meta">
-        <code>clickable="false"</code> drops the <code>role="button"</code>, tab stop, and pointer
-        cursor — for a chip that's a static label, not a control.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-chip [clickable]="false">Read only</gog-chip>
-      </div>
-      <app-code-tabs [html]="nonInteractiveHtml" [ts]="nonInteractiveTs" />
-    </article>
+    <app-demo [component]="examples.nonInteractive" title="Non-interactive">
+      <code>clickable="false"</code> drops the <code>role="button"</code>, tab stop, and pointer
+      cursor — for a chip that's a static label, not a control.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Disabled</h3>
-      <p class="demo-card__meta">
-        Blocks click and keyboard activation, and hides the remove button even if
-        <code>removable</code> is set.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-chip [disabled]="true">Disabled</gog-chip>
-      </div>
-      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
-    </article>
+    <app-demo [component]="examples.disabled" title="Disabled">
+      Blocks click and keyboard activation, and hides the remove button even if
+      <code>removable</code> is set.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Leading icon</h3>
-      <p class="demo-card__meta">Shown when <code>avatarUrl</code> is not set.</p>
-      <div class="demo-card__preview action-row">
-        <gog-chip iconName="info">Info</gog-chip>
-        <gog-chip iconName="success">Success</gog-chip>
-        <gog-chip iconName="warning">Warning</gog-chip>
-      </div>
-      <app-code-tabs [html]="iconHtml" [ts]="iconTs" />
-    </article>
+    <app-demo [component]="examples.icon" title="Leading icon">
+      Shown when <code>avatarUrl</code> is not set.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Leading avatar</h3>
-      <p class="demo-card__meta">
-        Renders independently of <code>iconName</code> — if both are set, the avatar and icon both
-        render.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-chip avatarUrl="https://i.pravatar.cc/64" avatarAlt="Jane Doe">Jane Doe</gog-chip>
-      </div>
-      <app-code-tabs [html]="avatarHtml" [ts]="avatarTs" />
-    </article>
+    <app-demo [component]="examples.avatar" title="Leading avatar">
+      Renders independently of <code>iconName</code> — if both are set, the avatar and icon both
+      render.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Full width</h3>
-      <p class="demo-card__meta">
-        Stretches to fill its container; wrapped here in a narrower box to show it.
-      </p>
-      <div class="demo-card__preview width-demo">
-        <gog-chip [fullWidth]="true">Full width</gog-chip>
-      </div>
-      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
-    </article>
+    <app-demo [component]="examples.fullWidth" title="Full width">
+      Stretches to fill its container; wrapped here in a narrower box to show it.
+    </app-demo>
   </section>
 
   <section class="doc-section">

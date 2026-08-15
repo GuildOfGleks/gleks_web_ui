@@ -20,112 +20,38 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — inject the service, call a shorthand method:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview action-row">
-        <gog-button variant="primary" type="button" (gogClick)="showToast()"
-          >Preview toast</gog-button
-        >
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Fully configurable</h3>
-      <p class="demo-card__meta">
-        Every field below feeds a single <code>show()</code> call — message, type, and position are
-        all consumer-controlled.
-      </p>
-      <div class="demo-card__preview field-grid">
-        <gog-inputfield label="Message" inputId="toast-message" [(value)]="toastMessage" />
-        <gog-select
-          label="Type"
-          inputId="toast-type"
-          [options]="toastTypes"
-          [(value)]="toastType"
-        />
-        <gog-select
-          label="Position"
-          inputId="toast-position"
-          [options]="positions"
-          [(value)]="toastPosition"
-        />
-      </div>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="primary" type="button" (gogClick)="showConfigured()">
-          Preview toast
-        </gog-button>
-        <gog-button variant="ghost" type="button" (gogClick)="showBurst()">
-          Queue 7 toasts
-        </gog-button>
-      </div>
-      <app-code-tabs [html]="configurableHtml" [ts]="configurableTs" />
-    </article>
+    <app-demo [component]="examples.configurable" title="Fully configurable">
+      Every field below feeds a single <code>show()</code> call — message, type, and position are
+      all consumer-controlled.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Types</h3>
-      <p class="demo-card__meta">
-        Each type gets a default icon (success/error/warning/info) unless <code>iconName</code> or
-        <code>iconTemplate</code> overrides it.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" type="button" (gogClick)="showOneOfEach()">
-          Fire one of each type
-        </gog-button>
-      </div>
-      <app-code-tabs [html]="typesHtml" [ts]="typesTs" />
-    </article>
+    <app-demo [component]="examples.types" title="Types">
+      Each type gets a default icon (success/error/warning/info) unless <code>iconName</code> or
+      <code>iconTemplate</code> overrides it.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Action buttons</h3>
-      <p class="demo-card__meta">
-        <code>actions</code> renders buttons inside the toast — each gets the full
-        <code>Toast</code> object in its <code>onClick</code>, so it can read back the message,
-        type, or id it belongs to.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" type="button" (gogClick)="showWithAction()">
-          Delete file
-        </gog-button>
-      </div>
-      <app-code-tabs [html]="actionsHtml" [ts]="actionsTs" />
-    </article>
+    <app-demo [component]="examples.actions" title="Action buttons">
+      <code>actions</code> renders buttons inside the toast — each gets the full
+      <code>Toast</code> object in its <code>onClick</code>, so it can read back the message, type,
+      or id it belongs to.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Sticky &amp; duration</h3>
-      <p class="demo-card__meta">
-        <code>isSticky</code> disables auto-dismiss entirely; <code>duration</code> overrides the 4s
-        default.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" type="button" (gogClick)="showSticky()"
-          >Sticky toast</gog-button
-        >
-        <gog-button variant="outline" type="button" (gogClick)="showLongDuration()">
-          10s duration
-        </gog-button>
-        <gog-button variant="ghost" type="button" (gogClick)="dismissAll()">Dismiss all</gog-button>
-      </div>
-      <app-code-tabs [html]="stickyHtml" [ts]="stickyTs" />
-    </article>
+    <app-demo [component]="examples.sticky" title="Sticky &amp; duration">
+      <code>isSticky</code> disables auto-dismiss entirely; <code>duration</code> overrides the 4s
+      default.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Queueing &amp; stacking</h3>
-      <p class="demo-card__meta">
-        Only the front toast in a corner counts down — the rest wait behind it with a frozen
-        progress bar, so a burst of notifications never all expire at once.
-        <code>maxVisiblePerPosition</code> on the container caps how many stack visibly at a time.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" type="button" (gogClick)="showBurst()"
-          >Queue 7 toasts</gog-button
-        >
-      </div>
-      <app-code-tabs [html]="burstHtml" [ts]="burstTs" />
-    </article>
+    <app-demo [component]="examples.burst" title="Queueing &amp; stacking">
+      Only the front toast in a corner counts down — the rest wait behind it with a frozen progress
+      bar, so a burst of notifications never all expire at once.
+      <code>maxVisiblePerPosition</code> on the container caps how many stack visibly at a time.
+    </app-demo>
   </section>
 
   <section class="doc-section">

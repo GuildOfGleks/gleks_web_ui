@@ -1,10 +1,18 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GogDatepickerValue } from '@guildofgleks/ui';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { CALENDAR_EXAMPLE_SOURCES } from '../../../examples/calendar/sources.generated';
+import { CalendarDisabledExample } from '../../../examples/calendar/calendar-disabled.example';
+import { CalendarLocaleExample } from '../../../examples/calendar/calendar-locale.example';
+import { CalendarOverviewExample } from '../../../examples/calendar/calendar-overview.example';
+import { CalendarRangeExample } from '../../../examples/calendar/calendar-range.example';
+import { CalendarTimeExample } from '../../../examples/calendar/calendar-time.example';
 
 interface ApiRow {
   readonly name: string;
@@ -141,13 +149,8 @@ const API_OUTPUTS: readonly ApiRow[] = [
 
 @Component({
   selector: 'app-calendar-doc-page',
-  imports: [
-    CalendarComponent,
-    MarkdownComponent,
-    CodeTabsComponent,
-    RouterLink,
-    SinceBadgeComponent,
-  ],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink, SinceBadgeComponent],
+  providers: [provideExampleSources(CALENDAR_EXAMPLE_SOURCES)],
   templateUrl: './calendar-doc-page.html',
   styleUrl: './calendar-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -172,113 +175,6 @@ export class CalendarDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { CalendarComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [CalendarComponent],\n})\n```";
 
-  protected readonly overviewHtml = '<gog-calendar [(value)]="day" />';
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CalendarComponent],',
-    '  template: `<gog-calendar [(value)]="day" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly day = signal<GogDatepickerValue>(new Date());',
-    '}',
-  ].join('\n');
-
-  protected readonly rangeHtml = [
-    '<gog-calendar selectionMode="range" [numberOfMonths]="2" [(value)]="range" />',
-  ].join('\n');
-  protected readonly rangeTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CalendarComponent],',
-    '  template: `',
-    '    <gog-calendar selectionMode="range" [numberOfMonths]="2" [(value)]="range" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  // In range mode the value is a { start, end } pair.',
-    '  protected readonly range = signal<GogDatepickerValue>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly disabledHtml = [
-    '<gog-calendar [disabledDates]="weekends" [(value)]="workday" />',
-  ].join('\n');
-  protected readonly disabledTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CalendarComponent],',
-    '  template: `<gog-calendar [disabledDates]="weekends" [(value)]="workday" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly workday = signal<GogDatepickerValue>(null);',
-    '',
-    '  // A predicate, not an array — "weekends" has no finite list.',
-    '  protected readonly weekends = (date: Date): boolean => {',
-    '    const weekday = date.getDay();',
-    '    return weekday === 0 || weekday === 6;',
-    '  };',
-    '}',
-  ].join('\n');
-
-  protected readonly timeHtml = [
-    '<gog-calendar',
-    '  [showTime]="true"',
-    '  hourFormat="24"',
-    '  [minuteStep]="15"',
-    '  [showThisMonthButton]="true"',
-    '  [(value)]="moment"',
-    '/>',
-  ].join('\n');
-  protected readonly timeTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CalendarComponent],',
-    '  template: `',
-    '    <gog-calendar',
-    '      [showTime]="true"',
-    '      hourFormat="24"',
-    '      [minuteStep]="15"',
-    '      [showThisMonthButton]="true"',
-    '      [(value)]="moment"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly moment = signal<GogDatepickerValue>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly localeHtml = [
-    '<gog-calendar locale="de-DE" [firstDayOfWeek]="1" />',
-    '<gog-calendar locale="ja-JP" />',
-  ].join('\n');
-  protected readonly localeTs = [
-    "import { Component } from '@angular/core';",
-    "import { CalendarComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CalendarComponent],',
-    '  template: `',
-    '    <gog-calendar locale="de-DE" [firstDayOfWeek]="1" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
   protected formatValue(value: GogDatepickerValue): string {
     if (value === null) return 'null';
     if (value instanceof Date) return value.toDateString();
@@ -286,4 +182,12 @@ export class CalendarDocPage {
     const end = value.end ? value.end.toDateString() : '—';
     return `${start} → ${end}`;
   }
+  /** Each example is a file under `src/app/examples/calendar/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    disabled: CalendarDisabledExample,
+    locale: CalendarLocaleExample,
+    overview: CalendarOverviewExample,
+    range: CalendarRangeExample,
+    time: CalendarTimeExample,
+  };
 }

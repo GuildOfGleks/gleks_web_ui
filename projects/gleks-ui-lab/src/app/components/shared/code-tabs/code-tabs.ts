@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { DomSanitizer } from '@angular/platform-browser';
 import { ScrollComponent } from '@guildofgleks/ui';
 import { highlightCode } from '../code-highlight';
+import { StackblitzService } from '../stackblitz';
 
 const COPIED_LABEL_DURATION_MS = 1500;
 
@@ -22,15 +23,41 @@ type CodeTab = 'html' | 'ts';
 })
 export class CodeTabsComponent {
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly stackblitz = inject(StackblitzService);
 
-  readonly html = input.required<string>();
+  /**
+   * Optional. An example that lives in its own file (`<app-example>`) has no separate markup to
+   * show — the file *is* the source — so it renders as a single code block with no tab strip.
+   * The pages still passing both are the ones where the snippet is deliberately different from
+   * what is rendered; see `docs/lab-examples-refactor.md`.
+   */
+  readonly html = input<string | null>(null);
   readonly ts = input.required<string>();
+  /** Names the StackBlitz project. Left unset, the service derives one from the current route. */
+  readonly title = input<string | null>(null);
 
-  protected readonly activeTab = signal<CodeTab>('html');
+  private readonly requestedTab = signal<CodeTab>('html');
   protected readonly copyLabel = signal('Copy');
 
+  /** With no `html`, the TS source is the only thing there is to show. */
+  protected readonly hasTabs = computed(() => this.html() !== null);
+  protected readonly activeTab = computed<CodeTab>(() =>
+    this.hasTabs() ? this.requestedTab() : 'ts',
+  );
+
+  /**
+   * The `ts` input is contractually a complete file, so almost every example can be booted — the
+   * handful that document a `provideGogConfig` call rather than a component cannot, and hide the
+   * button instead of opening a project that fails to compile.
+   */
+  protected readonly canOpenInStackblitz = computed(() => this.stackblitz.isRunnable(this.ts()));
+
+  protected openInStackblitz(): void {
+    this.stackblitz.open(this.ts(), this.title());
+  }
+
   private readonly highlightedHtml = computed(() =>
-    this.sanitizer.bypassSecurityTrustHtml(highlightCode(this.html(), 'html')),
+    this.sanitizer.bypassSecurityTrustHtml(highlightCode(this.html() ?? '', 'html')),
   );
   private readonly highlightedTs = computed(() =>
     this.sanitizer.bypassSecurityTrustHtml(highlightCode(this.ts(), 'typescript')),
@@ -41,12 +68,12 @@ export class CodeTabsComponent {
   );
 
   protected selectTab(tab: CodeTab): void {
-    this.activeTab.set(tab);
+    this.requestedTab.set(tab);
     this.copyLabel.set('Copy');
   }
 
   protected onCopy(): void {
-    const source = this.activeTab() === 'html' ? this.html() : this.ts();
+    const source = (this.activeTab() === 'html' ? this.html() : this.ts()) ?? '';
 
     navigator.clipboard.writeText(source).then(() => {
       this.copyLabel.set('Copied!');

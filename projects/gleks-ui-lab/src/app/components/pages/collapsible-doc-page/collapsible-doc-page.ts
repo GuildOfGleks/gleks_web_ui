@@ -1,15 +1,22 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
-  ButtonComponent,
   CollapsibleComponent,
   GogCollapsibleContentDirective,
   GogCollapsibleTriggerDirective,
-  IconComponent,
 } from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { COLLAPSIBLE_EXAMPLE_SOURCES } from '../../../examples/collapsible/sources.generated';
+import { CollapsibleControlledExample } from '../../../examples/collapsible/collapsible-controlled.example';
+import { CollapsibleCustomTriggerExample } from '../../../examples/collapsible/collapsible-custom-trigger.example';
+import { CollapsibleDisabledExample } from '../../../examples/collapsible/collapsible-disabled.example';
+import { CollapsibleFaqExample } from '../../../examples/collapsible/collapsible-faq.example';
+import { CollapsibleFocusOutExample } from '../../../examples/collapsible/collapsible-focus-out.example';
+import { CollapsibleOverviewExample } from '../../../examples/collapsible/collapsible-overview.example';
 
 interface ApiRow {
   readonly name: string;
@@ -59,16 +66,8 @@ const DIRECTIVES: readonly { name: string; selector: string; description: string
 
 @Component({
   selector: 'app-collapsible-doc-page',
-  imports: [
-    ButtonComponent,
-    CollapsibleComponent,
-    GogCollapsibleTriggerDirective,
-    GogCollapsibleContentDirective,
-    IconComponent,
-    MarkdownComponent,
-    CodeTabsComponent,
-    RouterLink,
-  ],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink],
+  providers: [provideExampleSources(COLLAPSIBLE_EXAMPLE_SOURCES)],
   templateUrl: './collapsible-doc-page.html',
   styleUrl: './collapsible-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -83,46 +82,6 @@ export class CollapsibleDocPage {
   protected readonly disabledOpen = signal(false);
   protected readonly controlledOpen = signal(false);
   protected readonly focusOutOpen = signal(false);
-
-  protected readonly focusOutHtml = [
-    '<gog-collapsible [(open)]="open" [collapseOnFocusOut]="true">',
-    '  <button type="button" gogCollapsibleTrigger>Filters</button>',
-    '  <div gogCollapsibleContent>',
-    '    <p>Tab forward from here and the panel closes behind you.</p>',
-    '    <gog-button variant="outline">A focusable control</gog-button>',
-    '  </div>',
-    '</gog-collapsible>',
-  ].join('\n');
-  protected readonly focusOutTs = [
-    "import { Component, signal } from '@angular/core';",
-    'import {',
-    '  ButtonComponent,',
-    '  CollapsibleComponent,',
-    '  GogCollapsibleContentDirective,',
-    '  GogCollapsibleTriggerDirective,',
-    "} from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [',
-    '    ButtonComponent,',
-    '    CollapsibleComponent,',
-    '    GogCollapsibleTriggerDirective,',
-    '    GogCollapsibleContentDirective,',
-    '  ],',
-    '  template: `',
-    '    <gog-collapsible [(open)]="open" [collapseOnFocusOut]="true">',
-    '      <button type="button" gogCollapsibleTrigger>Filters</button>',
-    '      <div gogCollapsibleContent>',
-    '        <gog-button variant="outline">A focusable control</gog-button>',
-    '      </div>',
-    '    </gog-collapsible>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly open = signal(false);',
-    '}',
-  ].join('\n');
 
   protected readonly faqItems = signal([
     {
@@ -148,194 +107,18 @@ export class CollapsibleDocPage {
   protected readonly importSnippet =
     "```typescript\nimport {\n  CollapsibleComponent,\n  GogCollapsibleTriggerDirective,\n  GogCollapsibleContentDirective,\n} from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [CollapsibleComponent, GogCollapsibleTriggerDirective, GogCollapsibleContentDirective],\n})\n```";
 
-  protected readonly overviewHtml = [
-    '<gog-collapsible [(open)]="open">',
-    '  <button type="button" gogCollapsibleTrigger>',
-    "    {{ open() ? 'Hide details' : 'Show details' }}",
-    '  </button>',
-    '  <p gogCollapsibleContent>Ships within 2 business days via standard courier.</p>',
-    '</gog-collapsible>',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    'import {',
-    '  CollapsibleComponent,',
-    '  GogCollapsibleTriggerDirective,',
-    '  GogCollapsibleContentDirective,',
-    "} from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CollapsibleComponent, GogCollapsibleTriggerDirective, GogCollapsibleContentDirective],',
-    '  template: `',
-    '    <gog-collapsible [(open)]="open">',
-    '      <button type="button" gogCollapsibleTrigger>',
-    "        {{ open() ? 'Hide details' : 'Show details' }}",
-    '      </button>',
-    '      <p gogCollapsibleContent>Ships within 2 business days via standard courier.</p>',
-    '    </gog-collapsible>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly open = signal(false);',
-    '}',
-  ].join('\n');
-
-  protected readonly customTriggerHtml = [
-    '<gog-collapsible [(open)]="open">',
-    '  <div class="card-header" gogCollapsibleTrigger>',
-    '    <span>Order #4471</span>',
-    "    <gog-icon [name]=\"open() ? 'chevron-up' : 'chevron-down'\" />",
-    '  </div>',
-    '  <div gogCollapsibleContent class="card-body">',
-    '    <p>3 items — shipped Aug 4, arriving Aug 6.</p>',
-    '  </div>',
-    '</gog-collapsible>',
-  ].join('\n');
-  protected readonly customTriggerTs = [
-    "import { Component, signal } from '@angular/core';",
-    'import {',
-    '  CollapsibleComponent,',
-    '  GogCollapsibleTriggerDirective,',
-    '  GogCollapsibleContentDirective,',
-    '  IconComponent,',
-    "} from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [',
-    '    CollapsibleComponent,',
-    '    GogCollapsibleTriggerDirective,',
-    '    GogCollapsibleContentDirective,',
-    '    IconComponent,',
-    '  ],',
-    '  template: `',
-    '    <gog-collapsible [(open)]="open">',
-    '      <div class="card-header" gogCollapsibleTrigger>',
-    '        <span>Order #4471</span>',
-    "        <gog-icon [name]=\"open() ? 'chevron-up' : 'chevron-down'\" />",
-    '      </div>',
-    '      <div gogCollapsibleContent class="card-body">',
-    '        <p>3 items — shipped Aug 4, arriving Aug 6.</p>',
-    '      </div>',
-    '    </gog-collapsible>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly open = signal(false);',
-    '}',
-  ].join('\n');
-
-  protected readonly disabledHtml = [
-    '<gog-collapsible [(open)]="open" [disabled]="true">',
-    '  <button type="button" gogCollapsibleTrigger>Unavailable section</button>',
-    '  <p gogCollapsibleContent>You should never see this — the trigger is inert.</p>',
-    '</gog-collapsible>',
-  ].join('\n');
-  protected readonly disabledTs = [
-    "import { Component, signal } from '@angular/core';",
-    'import {',
-    '  CollapsibleComponent,',
-    '  GogCollapsibleTriggerDirective,',
-    '  GogCollapsibleContentDirective,',
-    "} from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CollapsibleComponent, GogCollapsibleTriggerDirective, GogCollapsibleContentDirective],',
-    '  template: `',
-    '    <gog-collapsible [(open)]="open" [disabled]="true">',
-    '      <button type="button" gogCollapsibleTrigger>Unavailable section</button>',
-    '      <p gogCollapsibleContent>You should never see this — the trigger is inert.</p>',
-    '    </gog-collapsible>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly open = signal(false);',
-    '}',
-  ].join('\n');
-
-  protected readonly controlledHtml = [
-    '<gog-button (gogClick)="open.set(true)">Open</gog-button>',
-    '<gog-button (gogClick)="open.set(false)">Close</gog-button>',
-    '',
-    '<gog-collapsible [(open)]="open">',
-    '  <p gogCollapsibleContent>No gogCollapsibleTrigger anywhere — [open] is driven entirely from outside.</p>',
-    '</gog-collapsible>',
-  ].join('\n');
-  protected readonly controlledTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ButtonComponent, CollapsibleComponent, GogCollapsibleContentDirective } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent, CollapsibleComponent, GogCollapsibleContentDirective],',
-    '  template: `',
-    '    <gog-button (gogClick)="open.set(true)">Open</gog-button>',
-    '    <gog-button (gogClick)="open.set(false)">Close</gog-button>',
-    '',
-    '    <gog-collapsible [(open)]="open">',
-    '      <p gogCollapsibleContent>No gogCollapsibleTrigger anywhere — [open] is driven entirely from outside.</p>',
-    '    </gog-collapsible>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly open = signal(false);',
-    '}',
-  ].join('\n');
-
-  protected readonly faqHtml = [
-    '@for (item of faqItems(); track item.id) {',
-    '  <gog-collapsible [open]="item.open" (openChange)="setFaqOpen(item.id, $event)">',
-    '    <button type="button" gogCollapsibleTrigger>{{ item.question }}</button>',
-    '    <p gogCollapsibleContent>{{ item.answer }}</p>',
-    '  </gog-collapsible>',
-    '}',
-  ].join('\n');
-  protected readonly faqTs = [
-    "import { Component, signal } from '@angular/core';",
-    'import {',
-    '  CollapsibleComponent,',
-    '  GogCollapsibleTriggerDirective,',
-    '  GogCollapsibleContentDirective,',
-    "} from '@guildofgleks/ui';",
-    '',
-    'interface FaqItem {',
-    '  id: string;',
-    '  question: string;',
-    '  answer: string;',
-    '  open: boolean;',
-    '}',
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CollapsibleComponent, GogCollapsibleTriggerDirective, GogCollapsibleContentDirective],',
-    '  template: `',
-    '    @for (item of faqItems(); track item.id) {',
-    '      <gog-collapsible [open]="item.open" (openChange)="setOpen(item.id, $event)">',
-    '        <button type="button" gogCollapsibleTrigger>{{ item.question }}</button>',
-    '        <p gogCollapsibleContent>{{ item.answer }}</p>',
-    '      </gog-collapsible>',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly faqItems = signal<FaqItem[]>([',
-    "    { id: 'shipping', question: 'How long does shipping take?', answer: '2 business days.', open: false },",
-    "    { id: 'returns', question: 'What is the return policy?', answer: '30 days, free.', open: false },",
-    '  ]);',
-    '',
-    '  protected setOpen(id: string, open: boolean): void {',
-    '    this.faqItems.update((items) =>',
-    '      items.map((item) => (item.id === id ? { ...item, open } : item)),',
-    '    );',
-    '  }',
-    '}',
-  ].join('\n');
-
   protected setFaqOpen(id: string, open: boolean): void {
     this.faqItems.update((items) =>
       items.map((item) => (item.id === id ? { ...item, open } : item)),
     );
   }
+  /** Each example is a file under `src/app/examples/collapsible/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    controlled: CollapsibleControlledExample,
+    customTrigger: CollapsibleCustomTriggerExample,
+    disabled: CollapsibleDisabledExample,
+    faq: CollapsibleFaqExample,
+    focusOut: CollapsibleFocusOutExample,
+    overview: CollapsibleOverviewExample,
+  };
 }

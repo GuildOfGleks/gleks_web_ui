@@ -1,11 +1,24 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GogSize, TextareaComponent } from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GogSize } from '@guildofgleks/ui';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { TEXTAREA_EXAMPLE_SOURCES } from '../../../examples/textarea/sources.generated';
+import { TextareaAutoWidthExample } from '../../../examples/textarea/textarea-auto-width.example';
+import { TextareaClearableExample } from '../../../examples/textarea/textarea-clearable.example';
+import { TextareaDisabledExample } from '../../../examples/textarea/textarea-disabled.example';
+import { TextareaErrorExample } from '../../../examples/textarea/textarea-error.example';
+import { TextareaFloatLabelExample } from '../../../examples/textarea/textarea-float-label.example';
+import { TextareaFormExample } from '../../../examples/textarea/textarea-form.example';
+import { TextareaOverviewExample } from '../../../examples/textarea/textarea-overview.example';
+import { TextareaResizeExample } from '../../../examples/textarea/textarea-resize.example';
+import { TextareaRowsExample } from '../../../examples/textarea/textarea-rows.example';
+import { TextareaSizesExample } from '../../../examples/textarea/textarea-sizes.example';
 
 interface ApiInputRow {
   readonly name: string;
@@ -138,13 +151,13 @@ const API_INPUTS: readonly ApiInputRow[] = [
 @Component({
   selector: 'app-textarea-doc-page',
   imports: [
-    TextareaComponent,
+    ExampleHostComponent,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
     ReactiveFormsModule,
     SinceBadgeComponent,
   ],
+  providers: [provideExampleSources(TEXTAREA_EXAMPLE_SOURCES)],
   templateUrl: './textarea-doc-page.html',
   styleUrl: './textarea-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -157,26 +170,6 @@ export class TextareaDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'input-field')?.tokens ?? [];
 
-  protected readonly resizeHtml = [
-    '<gog-textarea label="Vertical (default)" [rows]="3" />',
-    '<gog-textarea label="Both axes" resize="both" [rows]="3" />',
-    '<gog-textarea label="Fixed size" resize="none" [rows]="3" />',
-  ].join('\n');
-  protected readonly resizeTs = [
-    "import { Component } from '@angular/core';",
-    "import { TextareaComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TextareaComponent],',
-    '  template: `',
-    '    <gog-textarea label="Both axes" resize="both" [rows]="3" />',
-    '    <gog-textarea label="Fixed size" resize="none" [rows]="3" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
   protected readonly bio = signal('');
   protected readonly manualErrorValue = signal('');
 
@@ -188,179 +181,19 @@ export class TextareaDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { TextareaComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [TextareaComponent],\n})\n```";
 
-  protected readonly overviewHtml =
-    '<gog-textarea label="Bio" placeholder="Tell us about yourself" [(value)]="bio" />';
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { TextareaComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TextareaComponent],',
-    '  template: `<gog-textarea label="Bio" placeholder="Tell us about yourself" [(value)]="bio" />`,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly bio = signal('');",
-    '}',
-  ].join('\n');
-
-  protected readonly sizesHtml = [
-    '@for (sizeOption of sizes; track sizeOption) {',
-    '  <gog-textarea [size]="sizeOption" [label]="sizeOption" [rows]="2" />',
-    '}',
-  ].join('\n');
-  protected readonly sizesTs = [
-    "import { Component } from '@angular/core';",
-    "import { GogSize, TextareaComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TextareaComponent],',
-    '  template: `',
-    '    @for (sizeOption of sizes; track sizeOption) {',
-    '      <gog-textarea [size]="sizeOption" [label]="sizeOption" [rows]="2" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
-    '}',
-  ].join('\n');
-
-  protected readonly rowsHtml = '<gog-textarea label="Notes" [rows]="8" />';
-  protected readonly rowsTs = [
-    "import { Component } from '@angular/core';",
-    "import { TextareaComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TextareaComponent],',
-    '  template: `<gog-textarea label="Notes" [rows]="8" />`,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly errorHtml = [
-    '<gog-textarea',
-    '  label="Feedback"',
-    '  [(value)]="manualErrorValue"',
-    "  [errorMessage]=\"manualErrorValue().length > 0 && manualErrorValue().length < 10 ? 'At least 10 characters' : ''\"",
-    '/>',
-  ].join('\n');
-  protected readonly errorTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { TextareaComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TextareaComponent],',
-    '  template: `',
-    '    <gog-textarea',
-    '      label="Feedback"',
-    '      [(value)]="value"',
-    "      [errorMessage]=\"value().length > 0 && value().length < 10 ? 'At least 10 characters' : ''\"",
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly value = signal('');",
-    '}',
-  ].join('\n');
-
-  protected readonly formHtml = [
-    '<gog-textarea',
-    '  label="Comment"',
-    '  [formControl]="commentControl"',
-    '  errorMessage="At least 10 characters"',
-    '  errorDisplay="auto"',
-    '/>',
-  ].join('\n');
-  protected readonly formTs = [
-    "import { Component } from '@angular/core';",
-    "import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';",
-    "import { TextareaComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TextareaComponent, ReactiveFormsModule],',
-    '  template: `',
-    '    <gog-textarea',
-    '      label="Comment"',
-    '      [formControl]="commentControl"',
-    '      errorMessage="At least 10 characters"',
-    '      errorDisplay="auto"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly commentControl = new FormControl('', {",
-    '    nonNullable: true,',
-    '    validators: [Validators.required, Validators.minLength(10)],',
-    '  });',
-    '}',
-  ].join('\n');
-
-  protected readonly disabledHtml =
-    '<gog-textarea label="Disabled" [disabled]="true" value="Read only" />';
-  protected readonly disabledTs = [
-    "import { Component } from '@angular/core';",
-    "import { TextareaComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TextareaComponent],',
-    '  template: `<gog-textarea label="Disabled" [disabled]="true" value="Read only" />`,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly autoWidthHtml =
-    '<gog-textarea label="Short note" [fullWidth]="false" [rows]="2" />';
-  protected readonly autoWidthTs = [
-    "import { Component } from '@angular/core';",
-    "import { TextareaComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TextareaComponent],',
-    '  template: `<gog-textarea label="Short note" [fullWidth]="false" [rows]="2" />`,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
   protected readonly clearableValue = signal('');
-  protected readonly clearableHtml =
-    '<gog-textarea label="Notes" [clearable]="true" [(value)]="notes" />';
-  protected readonly clearableTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { TextareaComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TextareaComponent],',
-    '  template: `<gog-textarea label="Notes" [clearable]="true" [(value)]="notes" />`,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly notes = signal('');",
-    '}',
-  ].join('\n');
 
-  protected readonly floatLabelHtml = [
-    '<gog-textarea label="in" floatLabel="in" [rows]="2" />',
-    '<gog-textarea label="on" floatLabel="on" [rows]="2" />',
-    '<gog-textarea label="over" floatLabel="over" [rows]="2" />',
-  ].join('\n');
-  protected readonly floatLabelTs = [
-    "import { Component } from '@angular/core';",
-    "import { TextareaComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TextareaComponent],',
-    '  template: `',
-    '    <gog-textarea label="Message" floatLabel="on" [rows]="2" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
+  /** Each example is a file under `src/app/examples/textarea/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    autoWidth: TextareaAutoWidthExample,
+    clearable: TextareaClearableExample,
+    disabled: TextareaDisabledExample,
+    error: TextareaErrorExample,
+    floatLabel: TextareaFloatLabelExample,
+    form: TextareaFormExample,
+    overview: TextareaOverviewExample,
+    resize: TextareaResizeExample,
+    rows: TextareaRowsExample,
+    sizes: TextareaSizesExample,
+  };
 }

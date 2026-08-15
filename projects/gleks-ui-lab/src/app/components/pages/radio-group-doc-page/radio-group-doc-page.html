@@ -16,13 +16,7 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-radio-group label="Delivery" [options]="deliveryOptions" [(value)]="delivery" />
-        <p class="doc-section__meta">Selected: {{ delivery() }}</p>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
   </section>
 
   <section class="doc-section">
@@ -38,63 +32,22 @@
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Orientation</h3>
-      <p class="demo-card__meta">
-        <code>vertical</code> by default; <code>horizontal</code> for two or three short options in
-        a row.
-      </p>
-      <div class="demo-card__preview radio-demo__row">
-        <gog-radio-group label="Vertical" [options]="planOptions" [(value)]="plan" />
-        <gog-radio-group
-          label="Horizontal"
-          orientation="horizontal"
-          [options]="planOptions"
-          [(value)]="plan"
-        />
-      </div>
-      <app-code-tabs [html]="orientationHtml" [ts]="orientationTs" />
-    </article>
+    <app-demo [component]="examples.orientation" title="Orientation">
+      <code>vertical</code> by default; <code>horizontal</code> for two or three short options in a
+      row.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">
-        Five steps, reusing <code>gog-checkbox</code>'s scale. Also settable app-wide through
-        <code>GOG_CONFIG.control.size</code>.
-      </p>
-      <div class="demo-card__preview radio-demo__stack">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-radio-group
-            [label]="sizeOption"
-            [size]="sizeOption"
-            orientation="horizontal"
-            [options]="planOptions"
-            [(value)]="sizeValue"
-          />
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
-    </article>
+    <app-demo [component]="examples.sizes" title="Sizes">
+      Five steps, reusing <code>gog-checkbox</code>'s scale. Also settable app-wide through
+      <code>GOG_CONFIG.control.size</code>.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Reactive forms and validation</h3>
-      <p class="demo-card__meta">
-        A <code>ControlValueAccessor</code>, so <code>formControl</code> /
-        <code>formControlName</code> work directly. With <code>errorDisplay="auto"</code> the
-        message appears once the control is invalid and touched — no <code>&#64;if</code> at the
-        call site. Focus the group and tab away to see it.
-      </p>
-      <div class="demo-card__preview">
-        <gog-radio-group
-          label="Shipping"
-          errorDisplay="auto"
-          errorMessage="Pick a shipping option"
-          [options]="deliveryOptions"
-          [formControl]="shipping"
-        />
-      </div>
-      <app-code-tabs [html]="formsHtml" [ts]="formsTs" />
-    </article>
+    <app-demo [component]="examples.forms" title="Reactive forms and validation">
+      A <code>ControlValueAccessor</code>, so <code>formControl</code> /
+      <code>formControlName</code> work directly. With <code>errorDisplay="auto"</code> the message
+      appears once the control is invalid and touched — no <code>&#64;if</code> at the call site.
+      Focus the group and tab away to see it.
+    </app-demo>
   </section>
 
   <section class="doc-section">

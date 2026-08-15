@@ -22,80 +22,31 @@
       Basic usage — the library ships a ready-made <code>ConfirmationDialogComponent</code> for
       confirm/cancel prompts:
     </p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-button (gogClick)="openConfirm()">Delete workspace</gog-button>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
+    <app-demo [component]="examples.overview" />
     <p class="doc-section__meta">Last result: {{ lastResult() }}</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Custom content</h3>
-      <p class="demo-card__meta">
-        Any component can be the dialog body. Inject <code>DIALOG_DATA</code> to read the data
-        passed to <code>open()</code>, and <code>DIALOG_REF</code> to close the dialog and resolve
-        <code>afterClosed</code> from inside the body itself.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button (gogClick)="openCustomContent()">Open custom dialog</gog-button>
-      </div>
-      <app-code-tabs [html]="customContentHtml" [ts]="customContentTs" />
-    </article>
+    <app-demo [component]="examples.customContent" title="Custom content">
+      Any component can be the dialog body. Inject <code>DIALOG_DATA</code> to read the data passed
+      to <code>open()</code>, and <code>DIALOG_REF</code> to close the dialog and resolve
+      <code>afterClosed</code> from inside the body itself.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Non-closable</h3>
-      <p class="demo-card__meta">
-        <code>closable: false</code> hides the header close button and ignores Escape and backdrop
-        clicks — the only way out is a control inside the body.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" (gogClick)="openNonClosable()">
-          Open non-closable dialog
-        </gog-button>
-      </div>
-      <app-code-tabs [html]="nonClosableHtml" [ts]="nonClosableTs" />
-    </article>
+    <app-demo [component]="examples.options" title="Not closable, non-modal, custom width">
+      <code>closable: false</code> hides the header close button and ignores Escape and backdrop
+      clicks — the only way out is a control inside the body. <code>modal: false</code> leaves the
+      page behind scrollable and interactive and drops the Tab focus trap. <code>width</code> and
+      <code>maxWidth</code> are plain CSS values forwarded to the panel.
+    </app-demo>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Non-modal</h3>
-      <p class="demo-card__meta">
-        <code>modal: false</code> leaves the page behind it scrollable and interactive, and drops
-        the Tab focus trap — useful for a lightweight panel rather than a blocking prompt.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" (gogClick)="openNonModal()">Open non-modal dialog</gog-button>
-      </div>
-      <app-code-tabs [html]="nonModalHtml" [ts]="nonModalTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Custom width</h3>
-      <p class="demo-card__meta">
-        <code>width</code> and <code>maxWidth</code> are plain CSS values forwarded to the panel.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" (gogClick)="openCustomWidth()">Open wide dialog</gog-button>
-      </div>
-      <app-code-tabs [html]="widthHtml" [ts]="widthTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Stacked dialogs</h3>
-      <p class="demo-card__meta">
-        Calling <code>open()</code> again from inside a dialog's body stacks a new one on top, each
-        with an increasing z-index — the body component can inject
-        <code>DialogService</code> itself, same as any other consumer.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" (gogClick)="openStacked()">Open stacked dialogs</gog-button>
-      </div>
-      <app-code-tabs [html]="stackedHtml" [ts]="stackedTs" />
-    </article>
+    <app-demo [component]="examples.stacked" title="Stacked dialogs">
+      Calling <code>open()</code> again from inside a dialog's body stacks a new one on top, each
+      with an increasing z-index — the body component can inject <code>DialogService</code> itself,
+      same as any other consumer.
+    </app-demo>
   </section>
 
   <section class="doc-section">

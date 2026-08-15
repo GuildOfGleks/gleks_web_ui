@@ -1,9 +1,21 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ChipComponent, GogSize, GogTagShape } from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GogSize, GogTagShape } from '@guildofgleks/ui';
+import { ExampleHostComponent } from '../../shared/example-host/example-host';
+import { provideExampleSources } from '../../shared/example-sources';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { CHIP_EXAMPLE_SOURCES } from '../../../examples/chip/sources.generated';
+import { ChipAvatarExample } from '../../../examples/chip/chip-avatar.example';
+import { ChipDisabledExample } from '../../../examples/chip/chip-disabled.example';
+import { ChipFullWidthExample } from '../../../examples/chip/chip-full-width.example';
+import { ChipIconExample } from '../../../examples/chip/chip-icon.example';
+import { ChipNonInteractiveExample } from '../../../examples/chip/chip-non-interactive.example';
+import { ChipOverviewExample } from '../../../examples/chip/chip-overview.example';
+import { ChipRemovableExample } from '../../../examples/chip/chip-removable.example';
+import { ChipShapesExample } from '../../../examples/chip/chip-shapes.example';
+import { ChipSizesExample } from '../../../examples/chip/chip-sizes.example';
 
 interface ApiInputRow {
   readonly name: string;
@@ -106,7 +118,8 @@ const API_OUTPUTS: readonly ApiOutputRow[] = [
 
 @Component({
   selector: 'app-chip-doc-page',
-  imports: [ChipComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [ExampleHostComponent, MarkdownComponent, RouterLink],
+  providers: [provideExampleSources(CHIP_EXAMPLE_SOURCES)],
   templateUrl: './chip-doc-page.html',
   styleUrl: './chip-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -131,170 +144,6 @@ export class ChipDocPage {
   protected readonly importSnippet =
     "```typescript\nimport { ChipComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ChipComponent],\n})\n```";
 
-  protected readonly overviewHtml = '<gog-chip (gogClick)="onClick(\'Design\')">Design</gog-chip>';
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ChipComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent],',
-    '  template: `<gog-chip (gogClick)="onClick(\'Design\')">Design</gog-chip>`,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly lastClicked = signal('No chip clicked yet.');",
-    '',
-    '  protected onClick(label: string): void {',
-    '    this.lastClicked.set(`Clicked \"${label}\"`);',
-    '  }',
-    '}',
-  ].join('\n');
-
-  protected readonly sizesHtml = [
-    '@for (sizeOption of sizes; track sizeOption) {',
-    '  <gog-chip [size]="sizeOption">{{ sizeOption }}</gog-chip>',
-    '}',
-  ].join('\n');
-  protected readonly sizesTs = [
-    "import { Component } from '@angular/core';",
-    "import { ChipComponent, GogSize } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent],',
-    '  template: `',
-    '    @for (sizeOption of sizes; track sizeOption) {',
-    '      <gog-chip [size]="sizeOption">{{ sizeOption }}</gog-chip>',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
-    '}',
-  ].join('\n');
-
-  protected readonly shapesHtml = [
-    '<gog-chip shape="rounded">Rounded</gog-chip>',
-    '<gog-chip shape="pill">Pill</gog-chip>',
-  ].join('\n');
-  protected readonly shapesTs = [
-    "import { Component } from '@angular/core';",
-    "import { ChipComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent],',
-    '  template: `',
-    '    <gog-chip shape="rounded">Rounded</gog-chip>',
-    '    <gog-chip shape="pill">Pill</gog-chip>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly removableHtml = [
-    '@for (tag of tags(); track tag.id) {',
-    '  <gog-chip [removable]="true" (gogRemove)="removeTag(tag.id)">{{ tag.label }}</gog-chip>',
-    '}',
-  ].join('\n');
-  protected readonly removableTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ChipComponent } from '@guildofgleks/ui';",
-    '',
-    'interface Tag {',
-    '  id: string;',
-    '  label: string;',
-    '}',
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent],',
-    '  template: `',
-    '    @for (tag of tags(); track tag.id) {',
-    '      <gog-chip [removable]="true" (gogRemove)="removeTag(tag.id)">{{ tag.label }}</gog-chip>',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly tags = signal<Tag[]>([',
-    "    { id: 'angular', label: 'Angular' },",
-    "    { id: 'typescript', label: 'TypeScript' },",
-    '  ]);',
-    '',
-    '  protected removeTag(id: string): void {',
-    '    this.tags.update((current) => current.filter((tag) => tag.id !== id));',
-    '  }',
-    '}',
-  ].join('\n');
-
-  protected readonly nonInteractiveHtml = '<gog-chip [clickable]="false">Read only</gog-chip>';
-  protected readonly nonInteractiveTs = [
-    "import { Component } from '@angular/core';",
-    "import { ChipComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent],',
-    '  template: `<gog-chip [clickable]="false">Read only</gog-chip>`,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly disabledHtml = '<gog-chip [disabled]="true">Disabled</gog-chip>';
-  protected readonly disabledTs = [
-    "import { Component } from '@angular/core';",
-    "import { ChipComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent],',
-    '  template: `<gog-chip [disabled]="true">Disabled</gog-chip>`,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly iconHtml = '<gog-chip iconName="info">Info</gog-chip>';
-  protected readonly iconTs = [
-    "import { Component } from '@angular/core';",
-    "import { ChipComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent],',
-    '  template: `<gog-chip iconName="info">Info</gog-chip>`,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly avatarHtml =
-    '<gog-chip avatarUrl="https://i.pravatar.cc/64" avatarAlt="Jane Doe">Jane Doe</gog-chip>';
-  protected readonly avatarTs = [
-    "import { Component } from '@angular/core';",
-    "import { ChipComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent],',
-    '  template: `',
-    '    <gog-chip avatarUrl="https://i.pravatar.cc/64" avatarAlt="Jane Doe">Jane Doe</gog-chip>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly fullWidthHtml = '<gog-chip [fullWidth]="true">Full width</gog-chip>';
-  protected readonly fullWidthTs = [
-    "import { Component } from '@angular/core';",
-    "import { ChipComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent],',
-    '  template: `<gog-chip [fullWidth]="true">Full width</gog-chip>`,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
   protected onClick(label: string): void {
     this.lastClicked.set(`Clicked "${label}"`);
   }
@@ -302,4 +151,16 @@ export class ChipDocPage {
   protected removeTag(id: string): void {
     this.tags.update((current) => current.filter((tag) => tag.id !== id));
   }
+  /** Each example is a file under `src/app/examples/chip/` — see docs/lab-examples-refactor.md. */
+  protected readonly examples = {
+    avatar: ChipAvatarExample,
+    disabled: ChipDisabledExample,
+    fullWidth: ChipFullWidthExample,
+    icon: ChipIconExample,
+    nonInteractive: ChipNonInteractiveExample,
+    overview: ChipOverviewExample,
+    removable: ChipRemovableExample,
+    shapes: ChipShapesExample,
+    sizes: ChipSizesExample,
+  };
 }
