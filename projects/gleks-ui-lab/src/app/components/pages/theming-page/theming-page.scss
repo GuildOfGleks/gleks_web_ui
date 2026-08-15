@@ -98,7 +98,15 @@
     font-family: var(--gog-font-mono);
     font-size: 0.9em;
     color: var(--gog-accent-color);
-    white-space: nowrap;
+    /* Was `nowrap`, which is what pushed a type like
+       `string | ((o: TOption) => GogIconName | null) | null` past the page edge and turned the
+       whole table into a horizontal scroller. `anywhere` rather than `break-word` because a
+       token name like `--gog-multiselect-panel-max-height` has no space to break at — but
+       `break-word` first, so a column is only broken mid-token when the token alone cannot fit,
+       instead of `anywhere`, which lets the browser shrink the column to nothing and hyphenate
+       words that had room. */
+    white-space: normal;
+    overflow-wrap: break-word;
   }
 
   tbody tr {

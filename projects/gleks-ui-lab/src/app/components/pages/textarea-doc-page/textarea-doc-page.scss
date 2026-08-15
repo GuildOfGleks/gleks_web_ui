@@ -127,6 +127,9 @@
     padding: 8px 12px;
     border-bottom: 1px solid var(--gog-border-color);
     vertical-align: top;
+    /* Wrap rather than widen: a table that overflows sideways hides the column the reader came
+       for, and these are read far more often than they are skimmed. */
+    overflow-wrap: break-word;
   }
 
   th {
@@ -148,10 +151,38 @@
     font-family: var(--gog-font-mono);
     font-size: 0.9em;
     color: var(--gog-accent-color);
-    white-space: nowrap;
+    /* Was `nowrap`, which is what pushed a type like
+       `string | ((o: TOption) => GogIconName | null) | null` past the page edge and turned the
+       whole table into a horizontal scroller. `anywhere` rather than `break-word` because a
+       token name like `--gog-multiselect-panel-max-height` has no space to break at — but
+       `break-word` first, so a column is only broken mid-token when the token alone cannot fit,
+       instead of `anywhere`, which lets the browser shrink the column to nothing and hyphenate
+       words that had room. */
+    white-space: normal;
+    overflow-wrap: break-word;
   }
 
   tr:last-child td {
     border-bottom: none;
+  }
+}
+
+/* Narrow screens: the same tables, tighter, and breaking mid-token where a column can no longer
+   hold a word. Ugly beats a sideways scroll here — on a phone the horizontal scrollbar is the
+   thing that makes the description column effectively invisible. The .api-table-scroll wrapper
+   stays as the last resort for the few tables even this cannot squeeze. */
+@media (max-width: 900px) {
+  .api-table {
+    font-size: var(--gog-text-xs);
+  }
+
+  .api-table th,
+  .api-table td {
+    padding: 6px 8px;
+    overflow-wrap: anywhere;
+  }
+
+  .api-table code {
+    overflow-wrap: anywhere;
   }
 }
