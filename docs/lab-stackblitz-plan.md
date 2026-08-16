@@ -72,6 +72,11 @@ project is visible and fixes nothing else.
 
 ### Phase 1, step by step
 
+0. **Done, 2026-08-16: `lab-appearance-baseline.md`.** Geometry and text of all 233 demo previews
+   across the 30 pages, captured against 21.4.3 before anything moved, with the snippet that
+   reproduces it. This is what makes "did not break the look" a comparison rather than a promise,
+   and it is the piece the first attempt never had. Re-capture the page you just converted and
+   diff its line; an unexplained difference on a page nobody touched is the alarm.
 1. **Write the checks first, against the current hand-written strings.** They must be able to fail
    on today's code before anything moves.
    - `check:examples` — every `<app-code-tabs>` HTML sample parses, and every class it references
