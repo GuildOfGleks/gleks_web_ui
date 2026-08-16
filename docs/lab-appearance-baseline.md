@@ -50,6 +50,19 @@ trusting it.
 table of contents both visible, which is what puts the content column at 1110px. A different
 window width changes every number on every line without anything being wrong.
 
+## Known limitation — it measures the container, not what is inside it
+
+The entry is the geometry of `.demo-card__preview`, which is the page's box, not the demo's. The
+`scroll` conversion proved how much that misses: the example's region **collapsed from 420px wide
+to about 60px**, and the fingerprint did not move at all — the container was still 1110×200 and
+the text was unchanged, because the rows were all still there, just in a sliver.
+
+So this file is a net for a specific class of change (a preview that grew, shrank, gained or lost
+content), not a substitute for opening the page. **Look at the page too.** Where a converted
+example has one obviously load-bearing element, measure it as well — the scroll pilot appended
+`/box<width>` by adding `e.querySelector('.scroll-box')` to the snippet, and that is what turned
+the collapse into a number.
+
 ## Interpreting a difference
 
 A changed line is not automatically a regression — some of these previews *should* change as
@@ -84,7 +97,8 @@ page nobody touched is the signal this file exists for.
 /components/tag 1110x31/8/v3kajm 1110x31/27/1avsovt 1110x40/49/e8d7lo 1110x31/19/iytm6d 1110x31/8/6iyl91 320x28/10/jemzgw
 /components/accordion 1110x241/157/c41jrb 1110x788/291/1aszqdz 1110x215/170/daw2tl 1110x274/233/v6mfgm 1110x155/157/c41jrb 1110x215/54/1oqwa8d 1110x215/178/a3u4dd
 /components/collapsible 1110x71/63/1qvhgk5 1110x71/52/6zdk5e 1110x71/69/11q9e0u 1110x34/10/1acf8ef 1110x28/53/a8iac6 1110x263/210/6p48nu 1110x73/82/leu99y
-/components/scroll 1110x200/200/1bpzyd3 1110x62/190/1tsqk9j 1110x34/26/2w7jlc 1110x200/200/1bpzyd3 1110x200/200/1bpzyd3 1110x34/16/i0bqtd 1110x200/200/1bpzyd3
+# converted 2026-08-16 — 7 previews became 5, see the note below
+/components/scroll 1110x200/200/1bpzyd3 1110x62/190/1tsqk9j 1110x248/227/1txlqxu 1110x228/261/1lvzhkm 1110x248/217/vralo3
 /components/tabs 1110x127/57/c0o443 1110x106/18/sfigqc 1110x560/168/1somqq6 1110x130/43/9cdt3a 320x92/52/1m4bllv 1110x92/36/96n403
 /components/dialog 1110x44/16/1inj4ex 1110x44/18/19jdc96 1110x44/24/8d41eq 1110x44/21/1t0acts 1110x44/16/dic8cm 1110x44/20/cl1g91
 /components/spinner 1110x48/1/3m2r 1110x169/26/ntxmm9 1110x121/12/1o0eafm 1110x121/27/1yd716p 1110x121/6/19ps3p2 1110x73/18/g0x7jx 1110x204/67/pwmge5 1110x44/27/1mq3f6v
@@ -92,4 +106,14 @@ page nobody touched is the signal this file exists for.
 /components/tooltip 1110x44/10/11yd0xt 1110x60/21/1mr8obe 1110x44/6/16aygmm 1110x44/32/b0afp0 1110x44/22/1wj99za
 ```
 
-30 pages, 233 previews, 216 examples.
+30 pages, 231 previews, 216 examples.
+
+### `scroll`, converted 2026-08-16
+
+Its line was re-taken after the conversion, and the difference is expected rather than a
+regression. **Seven previews became five**, because two examples used to be split across two
+`.demo-card__preview` blocks each — a row of controls, then the region they drove — and an
+extracted example owns both, so each is now one preview. The `reach` example likewise absorbed
+the status line the page used to render under it. The two previews nothing touched, `overview`
+and `axis`, are byte-identical to their old entries, which is the reassurance that the rest of
+the page did not move.

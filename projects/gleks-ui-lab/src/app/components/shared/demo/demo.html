@@ -1,0 +1,6 @@
+@if (component(); as example) {
+  <div class="demo-card__preview">
+    <ng-container *ngComponentOutlet="example" />
+  </div>
+}
+<app-code-tabs [html]="source().html" [ts]="source().ts" [css]="source().css" />

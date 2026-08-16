@@ -66,6 +66,23 @@ export class CodeTabsComponent {
   /** Drives both the placeholder and hiding Copy, so they can never disagree. */
   protected readonly isEmpty = computed(() => this.activeSource().trim() === '');
 
+  /**
+   * What an empty tab says. Per tab, because the three empty cases mean different things: an
+   * example with no stylesheet is ordinary, while an example with no template is one that
+   * documents configuration rather than markup — and "no styles" printed over a missing template
+   * would just read as a bug.
+   */
+  protected readonly emptyMessage = computed(() => {
+    switch (this.activeTab()) {
+      case 'css':
+        return 'This example needs no styles of its own.';
+      case 'html':
+        return 'This example has no template — it is configuration, not markup.';
+      default:
+        return 'Nothing to show for this file.';
+    }
+  });
+
   protected readonly activeHighlighted = computed(() => {
     const tab = this.activeTab();
     return this.sanitizer.bypassSecurityTrustHtml(

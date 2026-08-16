@@ -15,14 +15,7 @@
     <app-markdown [markdown]="importSnippet" />
 
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-scroll class="scroll-box" ariaLabel="Example list">
-          @for (item of longItems; track item) {
-            <p class="scroll-row">{{ item }}</p>
-          }
-        </gog-scroll>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.scrollOverview" />
     </div>
   </section>
 
@@ -35,20 +28,7 @@
         <code>vertical</code> (default), <code>horizontal</code>, or <code>both</code>. Native
         scrolling on a disabled axis is left completely alone.
       </p>
-      <div class="demo-card__preview">
-        <gog-scroll
-          axis="horizontal"
-          class="scroll-box scroll-box--wide"
-          ariaLabel="Example columns"
-        >
-          <div class="scroll-row-flex">
-            @for (item of wideItems; track item) {
-              <span class="scroll-chip">{{ item }}</span>
-            }
-          </div>
-        </gog-scroll>
-      </div>
-      <app-code-tabs [html]="axisHtml" [ts]="axisTs" />
+      <app-demo [component]="examples.axis" [source]="sources.scrollAxis" />
     </article>
 
     <article class="demo-card">
@@ -62,30 +42,7 @@
         <a routerLink="/components/tabs">gog-tabs</a> drives its header row. Settable app-wide via
         <code>GOG_CONFIG.scroll.showTrack</code>.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button
-          size="sm"
-          (gogClick)="sizeOption.set(sizeOption() === 'normal' ? 'thin' : 'normal')"
-        >
-          Size: {{ sizeOption() }}
-        </gog-button>
-        <gog-button size="sm" (gogClick)="autoHide.set(!autoHide())">
-          Auto-hide: {{ autoHide() ? 'on' : 'off' }}
-        </gog-button>
-      </div>
-      <div class="demo-card__preview">
-        <gog-scroll
-          [size]="sizeOption()"
-          [autoHide]="autoHide()"
-          class="scroll-box"
-          ariaLabel="Example list"
-        >
-          @for (item of longItems; track item) {
-            <p class="scroll-row">{{ item }}</p>
-          }
-        </gog-scroll>
-      </div>
-      <app-code-tabs [html]="sizeAutoHideHtml" [ts]="sizeAutoHideTs" />
+      <app-demo [component]="examples.sizeAutoHide" [source]="sources.scrollSizeAutoHide" />
     </article>
 
     <article class="demo-card">
@@ -94,27 +51,7 @@
         <code>gogReachStart</code> / <code>gogReachEnd</code> fire once per crossing;
         <code>gogScroll</code> emits live metrics on every scroll/resize.
       </p>
-      <div class="demo-card__preview">
-        <gog-scroll
-          class="scroll-box"
-          ariaLabel="Example list"
-          [reachThreshold]="8"
-          (gogReachStart)="reachState.set('At the top')"
-          (gogReachEnd)="reachState.set('At the bottom')"
-          (gogScroll)="onScroll($event)"
-        >
-          @for (item of longItems; track item) {
-            <p class="scroll-row">{{ item }}</p>
-          }
-        </gog-scroll>
-      </div>
-      <p class="demo-card__meta">
-        {{ reachState() }}
-        @if (lastMetrics(); as metrics) {
-          — scrollTop: {{ metrics.scrollTop | number: '1.0-0' }}
-        }
-      </p>
-      <app-code-tabs [html]="reachHtml" [ts]="reachTs" />
+      <app-demo [component]="examples.reach" [source]="sources.scrollReach" />
     </article>
 
     <article class="demo-card">
@@ -124,18 +61,7 @@
         <code>scrollToBottom</code> / <code>scrollToLeft</code> / <code>scrollToRight</code> /
         <code>scrollTo</code> directly.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button size="sm" (gogClick)="methodsScroll.scrollToTop()">To top</gog-button>
-        <gog-button size="sm" (gogClick)="methodsScroll.scrollToBottom()">To bottom</gog-button>
-      </div>
-      <div class="demo-card__preview">
-        <gog-scroll #methodsScroll class="scroll-box" ariaLabel="Example list">
-          @for (item of longItems; track item) {
-            <p class="scroll-row">{{ item }}</p>
-          }
-        </gog-scroll>
-      </div>
-      <app-code-tabs [html]="methodsHtml" [ts]="methodsTs" />
+      <app-demo [component]="examples.methods" [source]="sources.scrollMethods" />
     </article>
 
     <article class="demo-card">
@@ -147,7 +73,7 @@
         instead of repeating the same inputs on every instance. An instance's own input, when set,
         always wins.
       </p>
-      <app-code-tabs [html]="configHtml" [ts]="configTs" />
+      <app-demo [source]="sources.scrollGlobalConfig" />
     </article>
   </section>
 

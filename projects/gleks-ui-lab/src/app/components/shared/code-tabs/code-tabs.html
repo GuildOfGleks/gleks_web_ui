@@ -19,7 +19,7 @@
     }
   </div>
   @if (isEmpty()) {
-    <p class="code-block__empty">This example needs no styles of its own.</p>
+    <p class="code-block__empty">{{ emptyMessage() }}</p>
   } @else {
     <gog-scroll class="code-block__scroll" size="thin" ariaLabel="Code sample">
       <pre><code class="hljs" [innerHTML]="activeHighlighted()"></code></pre>

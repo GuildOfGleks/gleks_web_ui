@@ -1,11 +1,16 @@
-import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ButtonComponent, GogScrollMetrics, ScrollComponent } from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { DemoComponent } from '../../shared/demo/demo';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+
+import { SCROLL_EXAMPLES } from '../../../examples/scroll/sources.generated';
+import { ScrollAxisExample } from '../../../examples/scroll/scroll-axis/example';
+import { ScrollMethodsExample } from '../../../examples/scroll/scroll-methods/example';
+import { ScrollOverviewExample } from '../../../examples/scroll/scroll-overview/example';
+import { ScrollReachExample } from '../../../examples/scroll/scroll-reach/example';
+import { ScrollSizeAutoHideExample } from '../../../examples/scroll/scroll-size-auto-hide/example';
 
 interface ApiRow {
   readonly name: string;
@@ -112,15 +117,7 @@ const API_METHODS: readonly { name: string; description: string }[] = [
 
 @Component({
   selector: 'app-scroll-doc-page',
-  imports: [
-    ScrollComponent,
-    ButtonComponent,
-    MarkdownComponent,
-    CodeTabsComponent,
-    RouterLink,
-    DecimalPipe,
-    SinceBadgeComponent,
-  ],
+  imports: [DemoComponent, MarkdownComponent, RouterLink, SinceBadgeComponent],
   templateUrl: './scroll-doc-page.html',
   styleUrl: './scroll-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -132,181 +129,31 @@ export class ScrollDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'scroll')?.tokens ?? [];
 
-  protected readonly longItems = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);
-  protected readonly wideItems = Array.from({ length: 20 }, (_, i) => `Column ${i + 1}`);
-
-  protected readonly sizeOption = signal<'normal' | 'thin'>('normal');
-  protected readonly autoHide = signal(true);
-
-  protected readonly reachState = signal(
-    'Scroll to the edges to see gogReachStart / gogReachEnd fire.',
-  );
-  protected readonly lastMetrics = signal<GogScrollMetrics | null>(null);
-
-  protected readonly importSnippet =
-    "```typescript\nimport { ScrollComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ScrollComponent],\n})\n```";
-
-  protected readonly overviewHtml = [
-    '<gog-scroll style="height: 200px" ariaLabel="Example list">',
-    '  @for (item of items; track item) {',
-    '    <p>{{ item }}</p>',
-    '  }',
-    '</gog-scroll>',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component } from '@angular/core';",
+  protected readonly importSnippet = [
+    '```typescript',
     "import { ScrollComponent } from '@guildofgleks/ui';",
     '',
     '@Component({',
-    "  selector: 'app-example',",
+    '  // ...',
     '  imports: [ScrollComponent],',
-    '  template: `',
-    '    <gog-scroll style="height: 200px" ariaLabel="Example list">',
-    '      @for (item of items; track item) {',
-    '        <p>{{ item }}</p>',
-    '      }',
-    '    </gog-scroll>',
-    '  `,',
     '})',
-    'export class ExampleComponent {',
-    '  protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);',
-    '}',
+    '```',
   ].join('\n');
 
-  protected readonly axisHtml = [
-    '<!-- vertical (default) -->',
-    '<gog-scroll style="height: 160px">…</gog-scroll>',
-    '',
-    '<!-- horizontal -->',
-    '<gog-scroll axis="horizontal" style="width: 320px">',
-    '  <div style="display: flex; gap: 8px;">…</div>',
-    '</gog-scroll>',
-    '',
-    '<!-- both -->',
-    '<gog-scroll axis="both" style="height: 160px; width: 320px">',
-    '  <div style="width: 600px;">…</div>',
-    '</gog-scroll>',
-  ].join('\n');
-  protected readonly axisTs = [
-    "import { Component } from '@angular/core';",
-    "import { ScrollComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ScrollComponent],',
-    '  template: `',
-    '    <gog-scroll axis="both" style="height: 160px; width: 320px">',
-    '      <div style="width: 600px;">…</div>',
-    '    </gog-scroll>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly sizeAutoHideHtml = [
-    '<gog-scroll [size]="size" [autoHide]="autoHide" style="height: 160px">…</gog-scroll>',
-  ].join('\n');
-  protected readonly sizeAutoHideTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ScrollComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ScrollComponent],',
-    '  template: `<gog-scroll [size]="size()" [autoHide]="autoHide()" style="height: 160px">…</gog-scroll>`,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly size = signal<'normal' | 'thin'>('normal');",
-    '  protected readonly autoHide = signal(true);',
-    '}',
-  ].join('\n');
-
-  protected readonly reachHtml = [
-    '<gog-scroll',
-    '  style="height: 160px"',
-    '  [reachThreshold]="8"',
-    '  (gogReachStart)="reachState.set(\'At the top\')"',
-    '  (gogReachEnd)="reachState.set(\'At the bottom\')"',
-    '  (gogScroll)="onScroll($event)"',
-    '>',
-    '  …',
-    '</gog-scroll>',
-  ].join('\n');
-  protected readonly reachTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogScrollMetrics, ScrollComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ScrollComponent],',
-    '  template: `',
-    '    <gog-scroll',
-    '      style="height: 160px"',
-    '      [reachThreshold]="8"',
-    '      (gogReachStart)="reachState.set(\'At the top\')"',
-    '      (gogReachEnd)="reachState.set(\'At the bottom\')"',
-    '      (gogScroll)="onScroll($event)"',
-    '    >',
-    '      …',
-    '    </gog-scroll>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly reachState = signal('Scroll to see it fire.');",
-    '',
-    '  protected onScroll(metrics: GogScrollMetrics): void {',
-    '    console.log(metrics.scrollTop, metrics.scrollHeight);',
-    '  }',
-    '}',
-  ].join('\n');
-
-  protected readonly methodsHtml = [
-    '<gog-button size="sm" (gogClick)="scroller.scrollToTop()">To top</gog-button>',
-    '<gog-button size="sm" (gogClick)="scroller.scrollToBottom()">To bottom</gog-button>',
-    '',
-    '<gog-scroll #scroller style="height: 160px">…</gog-scroll>',
-  ].join('\n');
-  protected readonly methodsTs = [
-    "import { Component, viewChild } from '@angular/core';",
-    "import { ButtonComponent, ScrollComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent, ScrollComponent],',
-    '  template: `',
-    '    <gog-button size="sm" (gogClick)="scroller()?.scrollToTop()">To top</gog-button>',
-    '    <gog-button size="sm" (gogClick)="scroller()?.scrollToBottom()">To bottom</gog-button>',
-    '',
-    '    <gog-scroll #scroller style="height: 160px">…</gog-scroll>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly scroller = viewChild<ScrollComponent>('scroller');",
-    '}',
-  ].join('\n');
-
-  protected readonly configHtml = [
-    '// app.config.ts',
-    'providers: [',
-    '  provideGogConfig({',
-    "    scroll: { size: 'thin', hideDelay: 1200, overscrollBehavior: 'contain' },",
-    '  }),',
-    '],',
-  ].join('\n');
-  protected readonly configTs = [
-    "import { ApplicationConfig } from '@angular/core';",
-    "import { provideGogConfig } from '@guildofgleks/ui';",
-    '',
-    'export const appConfig: ApplicationConfig = {',
-    '  providers: [',
-    '    provideGogConfig({',
-    "      scroll: { size: 'thin', hideDelay: 1200, overscrollBehavior: 'contain' },",
-    '    }),',
-    '  ],',
-    '};',
-  ].join('\n');
-
-  protected onScroll(metrics: GogScrollMetrics): void {
-    this.lastMetrics.set(metrics);
-  }
+  /**
+   * The example components, and the text of the files they are built from.
+   *
+   * Nothing about an example lives on this page any more — no demo markup, no state driving it,
+   * no hand-written copy of its source. It is `src/app/examples/scroll/<name>/`, and
+   * `sources.generated.ts` is that folder read back by the generator, so the card cannot show
+   * something the demo above it does not do.
+   */
+  protected readonly sources = SCROLL_EXAMPLES;
+  protected readonly examples = {
+    overview: ScrollOverviewExample,
+    axis: ScrollAxisExample,
+    sizeAutoHide: ScrollSizeAutoHideExample,
+    reach: ScrollReachExample,
+    methods: ScrollMethodsExample,
+  };
 }

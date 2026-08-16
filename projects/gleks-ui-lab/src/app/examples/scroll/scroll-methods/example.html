@@ -1,0 +1,13 @@
+<div class="controls">
+  <gog-button size="sm" (gogClick)="scroller()?.scrollToTop()">To top</gog-button>
+  <gog-button size="sm" (gogClick)="scroller()?.scrollToBottom()">To bottom</gog-button>
+</div>
+
+<!-- The reference is `scrollRegion`, not `scroller`: a template reference variable shadows a
+     class member of the same name, so `scroller()` would resolve to the component instance
+     rather than to the viewChild signal, and the call would not compile. -->
+<gog-scroll #scrollRegion class="scroll-box" ariaLabel="Example list">
+  @for (item of items; track item) {
+    <p class="scroll-row">{{ item }}</p>
+  }
+</gog-scroll>

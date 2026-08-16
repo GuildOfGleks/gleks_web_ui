@@ -33,53 +33,6 @@
   }
 }
 
-.scroll-box {
-  height: 200px;
-  width: 100%;
-  max-width: 420px;
-  border: 1px solid var(--gog-border-color);
-  border-radius: var(--gog-radius);
-  background: var(--gog-background-color);
-
-  &--wide {
-    height: auto;
-    max-width: 100%;
-  }
-}
-
-.scroll-row {
-  margin: 0;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--gog-border-color);
-  color: var(--gog-text-color);
-  font-size: var(--gog-text-sm);
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.scroll-row-flex {
-  display: flex;
-  gap: 8px;
-  padding: 14px;
-}
-
-.scroll-chip {
-  flex: 0 0 auto;
-  padding: 8px 14px;
-  border-radius: var(--gog-radius);
-  background: var(--gog-hover-color);
-  color: var(--gog-text-color);
-  font-size: var(--gog-text-sm);
-  white-space: nowrap;
-}
-
-.action-row {
-  display: flex;
-  gap: 10px;
-}
-
 .doc-section {
   margin-top: 2.4em;
 

@@ -1,0 +1,35 @@
+/* The example is mounted as a component, so it owns its own box. Without an explicit
+   display it is an inline element, and `width: 100%` on the region inside then resolves
+   against a shrink-to-fit parent — circular, and the region collapses. */
+:host {
+  display: block;
+  width: 100%;
+}
+
+.scroll-box {
+  height: 200px;
+  width: 100%;
+  max-width: 420px;
+  margin-inline: auto;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-background-color);
+}
+
+.scroll-row {
+  margin: 0;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--gog-border-color);
+  color: var(--gog-text-color);
+  font-size: var(--gog-text-sm);
+}
+
+.scroll-row:last-child {
+  border-bottom: none;
+}
+
+.status {
+  margin: 12px 0 0;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}

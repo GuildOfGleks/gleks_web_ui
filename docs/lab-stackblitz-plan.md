@@ -87,6 +87,28 @@ project is visible and fixes nothing else.
    to files, regenerate, `npm run build:lab`, **open that page in the browser and compare it to
    the deployed site**, commit. A page that fights back gets reverted on its own, not as part of a
    thirty-page rollback.
+
+   **`scroll` is done (2026-08-16) and settled the shape.** One folder per example holding
+   `example.ts` / `example.html` / `example.css`; the TS carries `templateUrl` and `styleUrl`, so
+   the HTML tab is the whole template and the CSS tab the whole stylesheet, with nothing inlined
+   into the component decorator. Every example's selector is `app-example` and the page renders it
+   through `NgComponentOutlet` — six components cannot share a selector in one template, and the
+   outlet never looks at the selector. `<app-demo [component] [source]>` owns the preview and the
+   tabs; the card's heading and prose stay in the page, because they are documentation *about* the
+   example rather than part of it. An example with nothing to render (`provideGogConfig`) omits
+   `component` and gets tabs alone.
+
+   Three things it cost, all of which will recur:
+
+   - **The example host needs `:host { display: block; width: 100% }`.** Mounted through an
+     outlet it is an unknown inline element inside a centring flex container, so a `width: 100%`
+     region inside resolves against a shrink-to-fit parent — circular, and the region collapses to
+     a sliver. It rendered, it scrolled, and it was 60px wide.
+   - **A template reference variable shadows a class member of the same name.** `#scroller` plus
+     `scroller = viewChild(...)` compiles to a call on the component instance. Renaming the
+     reference is the fix.
+   - **The generator has to pick quotes the way Prettier does**, or `check:examples` passes while
+     `format:check` fails on the same file.
 3. **Start with the smallest page, not the most important one.** `divider` or `badge` — few
    examples, no layout tricks, no overlays. The first conversion is where the shape of the folder,
    the generator's output and the `<app-demo>` API get decided; make those decisions on a page

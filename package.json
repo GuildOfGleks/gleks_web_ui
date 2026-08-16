@@ -11,7 +11,7 @@
     "test:lib": "ng test @gleks/ui",
     "build:showcase": "ng build ui-showcase",
     "start:lab": "ng serve gleks-ui-lab",
-    "build:lab": "node scripts/build-lab.mjs",
+    "build:lab": "node scripts/generate-example-sources.mjs --check && node scripts/build-lab.mjs",
     "format": "prettier --write \"projects/**/*.{ts,html,scss,css}\"",
     "format:check": "prettier --check \"projects/**/*.{ts,html,scss,css}\"",
     "lint": "ng lint @gleks/ui && ng lint ui-showcase && ng lint gleks-ui-lab",
@@ -22,7 +22,9 @@
     "serve:ssr:gleks-ui-lab": "node dist/gleks-ui-lab/server/server.mjs",
     "generate:tokens": "node scripts/generate-tokens.mjs",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
-    "check:sitemap": "node scripts/generate-sitemap.mjs --check"
+    "check:sitemap": "node scripts/generate-sitemap.mjs --check",
+    "generate:examples": "node scripts/generate-example-sources.mjs",
+    "check:examples": "node scripts/generate-example-sources.mjs --check"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
