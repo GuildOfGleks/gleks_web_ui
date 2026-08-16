@@ -303,16 +303,7 @@ h3[id] {
     color: var(--gog-accent-color);
   }
 
-  /* Both toolbar buttons share one look; the StackBlitz one carries its mark and sits first,
-     because "run it" is the action a reader wants before "copy it". */
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  &__copy,
-  &__stackblitz {
+  &__copy {
     font-family: var(--gog-font-body);
     font-size: var(--gog-text-xs);
     padding: 3px 10px;
@@ -326,16 +317,6 @@ h3[id] {
     &:hover {
       color: var(--gog-accent-color);
       border-color: var(--gog-accent-color);
-    }
-  }
-
-  &__stackblitz {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-
-    svg {
-      display: block;
     }
   }
 

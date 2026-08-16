@@ -8,12 +8,8 @@ module.exports = defineConfig([
     files: ['**/*.ts'],
     rules: {
       // The lab is a consumer of the library, not part of it, so the `gog` prefix that guards the
-      // published package's namespace does not apply here.
-      //
-      // Its example files lean on this hardest: every one of them is `app-example`, on purpose.
-      // The StackBlitz project an example opens in mounts `<app-example />` as its root, so the
-      // selector is part of the contract with the generated project rather than a free choice —
-      // see `docs/lab-examples-refactor.md`.
+      // published package's namespace does not apply here — its own components are `app-*`, the
+      // same convention `ui-showcase` uses.
       '@angular-eslint/directive-selector': [
         'error',
         {

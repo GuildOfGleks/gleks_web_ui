@@ -14,32 +14,89 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage:</p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-progressbar [value]="42" ariaLabel="Upload progress" />
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.modes" title="Modes">
-      <code>determinate</code> reflects <code>value</code>. <code>indeterminate</code> is work of
-      unknown length. <code>buffer</code> draws a second, lighter level ahead of the fill — a
-      streaming or preload position.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Modes</h3>
+      <p class="demo-card__meta">
+        <code>determinate</code> reflects <code>value</code>. <code>indeterminate</code> is work of
+        unknown length. <code>buffer</code> draws a second, lighter level ahead of the fill — a
+        streaming or preload position.
+      </p>
+      <div class="demo-card__preview progressbar-demo__stack">
+        <div>
+          <p class="doc-section__meta">determinate</p>
+          <gog-progressbar [value]="42" ariaLabel="Upload" />
+        </div>
+        <div>
+          <p class="doc-section__meta">indeterminate</p>
+          <gog-progressbar mode="indeterminate" ariaLabel="Loading" />
+        </div>
+        <div>
+          <p class="doc-section__meta">buffer</p>
+          <gog-progressbar mode="buffer" [value]="42" [buffer]="70" ariaLabel="Playback" />
+        </div>
+      </div>
+      <app-code-tabs [html]="modesHtml" [ts]="modesTs" />
+    </article>
 
-    <app-demo [component]="examples.variants" title="Variants">
-      <code>accent</code> is the default — progress is usually just "the app is working", which is
-      not one of the four status hues.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Variants</h3>
+      <p class="demo-card__meta">
+        <code>accent</code> is the default — progress is usually just "the app is working", which is
+        not one of the four status hues.
+      </p>
+      <div class="demo-card__preview progressbar-demo__stack">
+        @for (variantOption of variants; track variantOption) {
+          <div>
+            <p class="doc-section__meta">{{ variantOption }}</p>
+            <gog-progressbar [variant]="variantOption" [value]="65" [ariaLabel]="variantOption" />
+          </div>
+        }
+      </div>
+      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
+    </article>
 
-    <app-demo [component]="examples.sizes" title="Sizes">
-      Five thickness steps, from a hairline to a chunky bar.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">Five thickness steps, from a hairline to a chunky bar.</p>
+      <div class="demo-card__preview progressbar-demo__stack">
+        @for (sizeOption of sizes; track sizeOption) {
+          <div>
+            <p class="doc-section__meta">{{ sizeOption }}</p>
+            <gog-progressbar [size]="sizeOption" [value]="65" [ariaLabel]="sizeOption" />
+          </div>
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
 
-    <app-demo [component]="examples.showValue" title="Showing the value, and clamping">
-      <code>showValue</code> renders the rounded percentage beside the bar. Push the value past
-      either end below: it is clamped to 0–100 rather than trusted, so a bar driven straight from
-      <code>loaded / total</code> cannot break the layout when the last chunk overshoots.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Showing the value, and clamping</h3>
+      <p class="demo-card__meta">
+        <code>showValue</code> renders the rounded percentage beside the bar. Push the value past
+        either end below: it is clamped to 0–100 rather than trusted, so a bar driven straight from
+        <code>loaded / total</code> cannot break the layout when the last chunk overshoots.
+      </p>
+      <div class="demo-card__preview progressbar-demo__stack">
+        <gog-progressbar [value]="uploaded()" [showValue]="true" ariaLabel="Upload progress" />
+        <div class="action-row">
+          <gog-button variant="outline" (gogClick)="step(-25)">−25</gog-button>
+          <gog-button variant="outline" (gogClick)="step(25)">+25</gog-button>
+          <span class="doc-section__meta">value = {{ uploaded() }}</span>
+        </div>
+      </div>
+      <app-code-tabs [html]="showValueHtml" [ts]="showValueTs" />
+    </article>
   </section>
 
   <section class="doc-section">

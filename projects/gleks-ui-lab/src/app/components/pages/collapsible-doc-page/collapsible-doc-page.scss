@@ -62,8 +62,12 @@
   line-height: 1.6;
 }
 
+/* A <button>, so the trigger has a tab stop and answers Enter/Space — the directive supplies
+   neither. Which is why everything a <button> brings with it is reset here: nothing about this
+   should look like one. */
 .doc-card-header {
   display: flex;
+  width: 100%;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
@@ -72,10 +76,18 @@
   border-radius: var(--gog-radius);
   background: var(--gog-surface-color);
   color: var(--gog-text-color);
+  font-family: inherit;
+  font-size: inherit;
   font-weight: 600;
+  text-align: left;
 
   &:hover {
     color: var(--gog-accent-color);
+  }
+
+  &:focus-visible {
+    outline: var(--gog-focus-ring-width) solid var(--gog-focus-ring-color);
+    outline-offset: 2px;
   }
 }
 

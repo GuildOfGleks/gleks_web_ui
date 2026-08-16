@@ -15,7 +15,12 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage:</p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-button gogBadge="12" badgeAriaLabel="12 unread messages">Inbox</gog-button>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
   </section>
 
   <section class="doc-section">
@@ -26,26 +31,60 @@
       means a call site can bind a count straight from state without guarding it behind an
       <code>&#64;if</code>.
     </p>
-    <app-demo [component]="examples.zero" />
+    <div class="demo-card">
+      <div class="demo-card__preview action-row">
+        <gog-button [gogBadge]="unread()" badgeAriaLabel="Unread messages">Inbox</gog-button>
+        <gog-button variant="outline" (gogClick)="addOne()">Add one</gog-button>
+        <gog-button variant="outline" (gogClick)="removeOne()">Remove one</gog-button>
+        <span class="doc-section__meta">count = {{ unread() }}</span>
+      </div>
+      <app-code-tabs [html]="zeroHtml" [ts]="zeroTs" />
+    </div>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.variants" title="Variants">
-      The library's four semantic colors. <code>danger</code> is the default, since an unread count
-      is the common case.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Variants</h3>
+      <p class="demo-card__meta">
+        The library's four semantic colors. <code>danger</code> is the default, since an unread
+        count is the common case.
+      </p>
+      <div class="demo-card__preview action-row badge-demo__row">
+        @for (variantOption of variants; track variantOption) {
+          <gog-button gogBadge="7" [badgeVariant]="variantOption">{{ variantOption }}</gog-button>
+        }
+      </div>
+      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
+    </article>
 
-    <app-demo [component]="examples.positions" title="Positions">
-      Named by block/inline edge rather than left/right, so the badge follows the writing direction
-      in an RTL layout.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Positions</h3>
+      <p class="demo-card__meta">
+        Named by block/inline edge rather than left/right, so the badge follows the writing
+        direction in an RTL layout.
+      </p>
+      <div class="demo-card__preview action-row badge-demo__row">
+        @for (position of positions; track position) {
+          <gog-button gogBadge="4" [badgePosition]="position">{{ position }}</gog-button>
+        }
+      </div>
+      <app-code-tabs [html]="positionsHtml" [ts]="positionsTs" />
+    </article>
 
-    <app-demo [component]="examples.dot" title="Dot">
-      <code>badgeDot</code> drops the text and leaves a mark — "something changed here", with no
-      count to give. A dot shows even with no value bound.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Dot</h3>
+      <p class="demo-card__meta">
+        <code>badgeDot</code> drops the text and leaves a mark — "something changed here", with no
+        count to give. A dot shows even with no value bound.
+      </p>
+      <div class="demo-card__preview action-row badge-demo__row">
+        <gog-icon name="info" gogBadge badgeDot badgeAriaLabel="Unread updates" />
+        <gog-button gogBadge badgeDot badgeVariant="success">Synced</gog-button>
+      </div>
+      <app-code-tabs [html]="dotHtml" [ts]="dotTs" />
+    </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Caps and hiding</h3>

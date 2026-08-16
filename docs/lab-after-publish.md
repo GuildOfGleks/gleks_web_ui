@@ -2,7 +2,7 @@
 
 `gleks-ui-lab` resolves `@guildofgleks/ui` from the **published npm package**, on purpose: its
 examples have to reflect what a consumer can install today, not an unreleased local build. That
-rule (see `gleks-ui-library.instructions.md` step 7) means lab edits are always _deferred_ —
+rule (see `gleks-ui-library.instructions.md` step 7) means lab edits are always *deferred* —
 work lands in the library first, and the lab catches up only once the version carrying it is
 actually on npm.
 
@@ -53,10 +53,10 @@ The table page's "Sticky header" demo currently ends its description with a **Kn
 21.4.2** paragraph explaining that the header rides away because the table's own internal
 `gog-scroll` is the nearest scrollport (full diagnosis in `hardening-21.5.0.md`). **Delete that
 paragraph** once the fix ships, and check the demo actually holds its header while scrolling —
-the example itself needs no change, it already puts the table in a 260px `gog-scroll`.
+the demo itself needs no change, it already puts the table in a 260px scrolling wrapper.
 
 Same release, if it also fixes `[fullWidth]="false"` clipping the widest header: the "Full width"
-example states `width` on both columns and the description explains that fixed layout makes it
+demo states `width` on both columns and the description explains that fixed layout makes it
 necessary. Once the component switches to `table-layout: auto` in that mode, drop the widths and
 trim the explanation back to what `fullWidth` is for.
 

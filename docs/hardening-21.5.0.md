@@ -3,7 +3,7 @@
 Derived from the **all-components audit of 2026-08-14** — the library measured against itself
 across four axes (tests, styles, customization, functionality) rather than from a consumer's
 first-run experience. `consumer-dx-plan.md` closed the gaps a newcomer trips over; this closes the
-ones a _maintainer_ can only see by counting.
+ones a *maintainer* can only see by counting.
 
 Ordered by cost/benefit, except item 3, whose timing is not negotiable — see below.
 
@@ -24,33 +24,33 @@ for the token-prefix rename — the one item here that consumers can notice.
 
 ## Baseline measured on 2026-08-14, re-verified 2026-08-15
 
-|                       |                                                                                                    |                                        |
-| --------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------- |
-|                       | 2026-08-14                                                                                         | 2026-08-15                             |
-| Components            | 29 folders — 27 components + `gogBadge`/`gogTooltip`, 33 element selectors                         | unchanged                              |
-| Tests                 | 897 across 47 files; **every** component folder has a spec                                         | **904 across 48 files**                |
-| Line coverage         | **unknown** — `@vitest/coverage-v8` is not installed, `ng test --coverage` refuses to run          | still unknown — iteration 1            |
-| Tokens                | 1239 in `theme.css`, 38 stylesheets under `check:tokens`                                           | unchanged                              |
-| Token prefix breaches | 179 (`--gog-ms-*` 75, `--gog-btn-*` 66, `--gog-input-*` 38)                                        | unchanged; `--gog-confirm-*` is 7 more |
-| Deprecations owed     | 14 tagged `Removed in 21.5.0`, 2 overdue from 21.4.0                                               | unchanged — none removed yet           |
-| Slots                 | 15 slot directives; `GOG_CONFIG` has 13 keys                                                       | unchanged                              |
-| RTL                   | 63 physical `left`/`right` declarations across 13 components; 12 components use logical properties | unchanged                              |
-| Reduced motion        | honoured in 21 components plus the global stylesheets                                              | unchanged                              |
+| | | |
+| --- | --- | --- |
+| | 2026-08-14 | 2026-08-15 |
+| Components | 29 folders — 27 components + `gogBadge`/`gogTooltip`, 33 element selectors | unchanged |
+| Tests | 897 across 47 files; **every** component folder has a spec | **904 across 48 files** |
+| Line coverage | **unknown** — `@vitest/coverage-v8` is not installed, `ng test --coverage` refuses to run | still unknown — iteration 1 |
+| Tokens | 1239 in `theme.css`, 38 stylesheets under `check:tokens` | unchanged |
+| Token prefix breaches | 179 (`--gog-ms-*` 75, `--gog-btn-*` 66, `--gog-input-*` 38) | unchanged; `--gog-confirm-*` is 7 more |
+| Deprecations owed | 14 tagged `Removed in 21.5.0`, 2 overdue from 21.4.0 | unchanged — none removed yet |
+| Slots | 15 slot directives; `GOG_CONFIG` has 13 keys | unchanged |
+| RTL | 63 physical `left`/`right` declarations across 13 components; 12 components use logical properties | unchanged |
+| Reduced motion | honoured in 21 components plus the global stylesheets | unchanged |
 
 The test count moved because the library kept receiving fixes after the audit; nothing else did,
 which is the expected shape for a plan that has not started.
 
 ## Status
 
-| #   | Iteration                                           | Kind    | State                      |
-| --- | --------------------------------------------------- | ------- | -------------------------- |
-| 1   | Coverage measurement + CI gate                      | tooling | ⬜ todo                    |
-| 2   | Token prefix consistency (179 tokens)               | api     | ⬜ todo                    |
-| 3   | The scheduled removals + a check that enforces them | api     | ⬜ todo                    |
-| 4   | RTL pass                                            | fix     | ⬜ todo                    |
-| 5   | Test depth where the audit found it thin            | tests   | ⬜ todo                    |
-| 6   | `gog-menu`                                          | feature | ⬜ todo                    |
-| 7   | Version/deprecation metadata for the docs site      | tooling | 🟨 step 1 done — see below |
+| # | Iteration | Kind | State |
+| --- | --- | --- | --- |
+| 1 | Coverage measurement + CI gate | tooling | ⬜ todo |
+| 2 | Token prefix consistency (179 tokens) | api | ⬜ todo |
+| 3 | The scheduled removals + a check that enforces them | api | ⬜ todo |
+| 4 | RTL pass | fix | ⬜ todo |
+| 5 | Test depth where the audit found it thin | tests | ⬜ todo |
+| 6 | `gog-menu` | feature | ⬜ todo |
+| 7 | Version/deprecation metadata for the docs site | tooling | 🟨 step 1 done — see below |
 
 Update this table at the end of every iteration, and re-state "done / remaining" in the turn
 summary. Per `gleks-ui-library.instructions.md` rule 11 the agent never publishes, never bumps
@@ -69,16 +69,16 @@ step 4 and `lab-versioning.md` layer 4 both wait on.
 Run before starting iteration 1, to establish that what the plan measures against is actually
 green. **It is, with one tooling fix applied.**
 
-| Check                    | Result                                                                                                     |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------- |
-| `npm run lint`           | ✅ both projects clean                                                                                     |
-| `npm run format:check`   | ✅ clean                                                                                                   |
-| `npm run check:tokens`   | ✅ _after the fix below_ — it was failing on every Windows checkout                                        |
-| `npm run test:lib`       | ✅ 904 passed / 48 files                                                                                   |
-| `npm run build:lib`      | ✅ 4.6 s; package contains `README.md`, `AGENTS.md`, `TOKENS.md`, `CHANGELOG.md`, `styles/`, `src/styles/` |
-| `npm run build:showcase` | ✅ (pre-existing initial-bundle budget warning, showcase only)                                             |
-| `npm run build:lab`      | ✅ 21.4.1 from npm still builds — the lab is not ahead of the registry                                     |
-| working tree             | ✅ clean before this check; `node_modules/@guildofgleks/ui` is the real 21.4.1, not a local-build swap     |
+| Check | Result |
+| --- | --- |
+| `npm run lint` | ✅ both projects clean |
+| `npm run format:check` | ✅ clean |
+| `npm run check:tokens` | ✅ *after the fix below* — it was failing on every Windows checkout |
+| `npm run test:lib` | ✅ 904 passed / 48 files |
+| `npm run build:lib` | ✅ 4.6 s; package contains `README.md`, `AGENTS.md`, `TOKENS.md`, `CHANGELOG.md`, `styles/`, `src/styles/` |
+| `npm run build:showcase` | ✅ (pre-existing initial-bundle budget warning, showcase only) |
+| `npm run build:lab` | ✅ 21.4.1 from npm still builds — the lab is not ahead of the registry |
+| working tree | ✅ clean before this check; `node_modules/@guildofgleks/ui` is the real 21.4.1, not a local-build swap |
 
 **The one fix: `scripts/generate-tokens.mjs --check` compared raw bytes.** `.prettierrc` sets
 `endOfLine: "auto"`, so `TOKENS.md` (read from disk) keeps its CRLF while `token-names.ts`
@@ -87,7 +87,7 @@ Windows checkout therefore reported `token-names.ts` as out of date, and `npm ru
 "fixed" it by rewriting the same content with different line endings — a failure that could not be
 acted on and that trains the reader to ignore the check. The comparison now normalises line
 endings, and the writer keeps the file's existing ones so the generator no longer dirties the
-working tree. This mattered _before_ iteration 1 rather than during it: iteration 1 adds a second
+working tree. This mattered *before* iteration 1 rather than during it: iteration 1 adds a second
 generated-artifact gate to CI, and a gate nobody trusts locally is worse than no gate.
 
 Everything else the plan needs is a plan item, not a prerequisite. **The remaining blocker is not
@@ -125,11 +125,11 @@ and the baseline is written down here.
 **Why:** `api-design.instructions.md` states the rule outright — "block token prefix spelled out,
 not abbreviated (`--gog-multiselect-*`, not `--gog-ms-*`)" — and **179 tokens break it**:
 
-| Prefix          | Tokens | Component         |
-| --------------- | ------ | ----------------- |
-| `--gog-ms-*`    | 75     | `gog-multiselect` |
-| `--gog-btn-*`   | 66     | `gog-button`      |
-| `--gog-input-*` | 38     | `gog-inputfield`  |
+| Prefix | Tokens | Component |
+| --- | --- | --- |
+| `--gog-ms-*` | 75 | `gog-multiselect` |
+| `--gog-btn-*` | 66 | `gog-button` |
+| `--gog-input-*` | 38 | `gog-inputfield` |
 
 This is the most-used customization surface in the library, and it fails the guess a consumer
 makes first. Someone writing `--gog-button-bg` or `--gog-multiselect-bg` gets no effect and no
@@ -161,15 +161,15 @@ silently is how a deprecation list becomes permanent API.
 Fourteen `@deprecated … Removed in 21.5.0` tags, plus two that are **already overdue** — see
 step 3. By file:
 
-| Where                             | What goes                                                                                                                                   |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `inputfield.component.ts` (6)     | `iconStartTemplate`, `iconEndTemplate`, `iconStartFn`, `iconEndFn`, `iconStartLabel`, `iconEndLabel` → projected `gogInputAddonStart`/`End` |
-| `table/column.ts` (3)             | `<column>` selector, `Column` const, `Column` type → `gog-column` / `GogColumn`                                                             |
-| `table/template.directive.ts` (1) | the string-keyed `[template]` slot → `gogColumnBody` / `gogColumnHeader`                                                                    |
-| `checkbox.component.ts` (1)       | `checkIconTemplate` → `gogCheckboxIcon`                                                                                                     |
-| `multiselect.component.ts` (1)    | `clearIconTemplate` → `gogMultiselectClearIcon`                                                                                             |
-| `tag.component.ts` (1)            | `iconTemplate` → `gogTagIcon`                                                                                                               |
-| `dropdown-base.ts` (1)            | `chevronTemplate` → `gogDropdownChevron`                                                                                                    |
+| Where | What goes |
+| --- | --- |
+| `inputfield.component.ts` (6) | `iconStartTemplate`, `iconEndTemplate`, `iconStartFn`, `iconEndFn`, `iconStartLabel`, `iconEndLabel` → projected `gogInputAddonStart`/`End` |
+| `table/column.ts` (3) | `<column>` selector, `Column` const, `Column` type → `gog-column` / `GogColumn` |
+| `table/template.directive.ts` (1) | the string-keyed `[template]` slot → `gogColumnBody` / `gogColumnHeader` |
+| `checkbox.component.ts` (1) | `checkIconTemplate` → `gogCheckboxIcon` |
+| `multiselect.component.ts` (1) | `clearIconTemplate` → `gogMultiselectClearIcon` |
+| `tag.component.ts` (1) | `iconTemplate` → `gogTagIcon` |
+| `dropdown-base.ts` (1) | `chevronTemplate` → `gogDropdownChevron` |
 
 Plus, from 21.3.2: **the `src/styles/` asset copy** in `ng-package.json` — `styles/` has been the
 documented path since then.
@@ -201,20 +201,20 @@ non-deprecated shapes.
 
 ## Iteration 4 — RTL
 
-**Why:** this is the only item in the plan that is a _break_, not a shortfall. 63 physical
+**Why:** this is the only item in the plan that is a *break*, not a shortfall. 63 physical
 `left`/`right`/`margin-left`-style declarations across 13 components, concentrated exactly where
 it shows worst:
 
-| Component                                                       | Physical properties |
-| --------------------------------------------------------------- | ------------------- |
-| `slider`                                                        | 11                  |
-| `multiselect`                                                   | 7                   |
-| `scroll`                                                        | 7                   |
-| `toast`                                                         | 7                   |
-| `select`                                                        | 6                   |
-| `tooltip`                                                       | 5                   |
-| `inputfield`                                                    | 4                   |
-| chip / textarea / checkbox / radio-group / table / `lib/styles` | 1–2 each            |
+| Component | Physical properties |
+| --- | --- |
+| `slider` | 11 |
+| `multiselect` | 7 |
+| `scroll` | 7 |
+| `toast` | 7 |
+| `select` | 6 |
+| `tooltip` | 5 |
+| `inputfield` | 4 |
+| chip / textarea / checkbox / radio-group / table / `lib/styles` | 1–2 each |
 
 The overlay components are the problem: `dropdown-position.ts` and `tooltip-position.ts` compute
 placement in JavaScript with no notion of writing direction, so in an RTL layout a dropdown or
@@ -244,21 +244,21 @@ have RTL specs, and the README states the support level.
 instead of a list of my suspicions. The audit's candidates, by `aria`+keyboard assertions in the
 spec against public surface:
 
-| Component | Tests | Surface                               | Note                                                                     |
-| --------- | ----- | ------------------------------------- | ------------------------------------------------------------------------ |
-| `tag`     | 9     | 6 inputs + 1 slot                     | 1 aria assertion; variants/shape/icon slot barely pinned                 |
-| `divider` | 8     | 3 inputs                              | thin, but genuinely simple                                               |
-| `chip`    | 14    | 11 inputs + 2 outputs                 | removable/clickable states, 1 aria assertion                             |
-| `toast`   | 14    | timers, hover-pause, dedupe, stacking | the most behaviour per test in the library                               |
-| `dialog`  | 15    | focus trap covered                    | **0** aria assertions — `role`, `aria-modal`, `aria-labelledby` unpinned |
-| `toggle`  | 17    | a switch                              | 3 aria, 0 keyboard                                                       |
-| `scroll`  | 23    | 9 inputs + 3 outputs                  | 0 keyboard, 3 aria                                                       |
+| Component | Tests | Surface | Note |
+| --- | --- | --- | --- |
+| `tag` | 9 | 6 inputs + 1 slot | 1 aria assertion; variants/shape/icon slot barely pinned |
+| `divider` | 8 | 3 inputs | thin, but genuinely simple |
+| `chip` | 14 | 11 inputs + 2 outputs | removable/clickable states, 1 aria assertion |
+| `toast` | 14 | timers, hover-pause, dedupe, stacking | the most behaviour per test in the library |
+| `dialog` | 15 | focus trap covered | **0** aria assertions — `role`, `aria-modal`, `aria-labelledby` unpinned |
+| `toggle` | 17 | a switch | 3 aria, 0 keyboard |
+| `scroll` | 23 | 9 inputs + 3 outputs | 0 keyboard, 3 aria |
 
 Two things the audit checked and **cleared** — do not "fix" them:
 
 - `radio-group` has 0 keyboard tests and that is correct: it renders native
   `<input type="radio">` sharing a `name`, so arrow-key navigation is the browser's. Its
-  `role="radiogroup"` and aria wiring are implemented; only the _test_ is missing.
+  `role="radiogroup"` and aria wiring are implemented; only the *test* is missing.
 - `select`/`multiselect` do implement `ControlValueAccessor` — in `GogDropdownBase`, which is why
   a per-folder scan misses it.
 
@@ -277,7 +277,6 @@ overlay positioning, all four of which already exist in this library as reusable
 (`roving-focus.ts`, `GogDropdownOverlay`, `dropdown-position.ts`).
 
 Design notes before code:
-
 - Trigger as a **directive on the consumer's own button** (`gogMenuTrigger`), matching the
   `[gogButton]` decision — a menu button is frequently an icon button the consumer already styled.
 - `role="menu"` / `menuitem`, Escape to close and restore focus, arrow keys via `roving-focus.ts`.
@@ -299,9 +298,9 @@ extracting. See "Showing version-to-version change in the lab" below for the sha
 
 1. **Ship `CHANGELOG.md` in the package.** One entry in `ng-package.json`'s `assets`. Today it
    stays in the repo, so the lab cannot read the changelog of the version it documents; with it
-   shipped, the lab renders the _installed_ version's changelog and cannot drift.
+   shipped, the lab renders the *installed* version's changelog and cannot drift.
 2. **Generate deprecation metadata.** The `@deprecated since <version> (<date>) — <replacement>.
-Removed in <version>.` format is already strict and greppable — 14 instances parse cleanly.
+   Removed in <version>.` format is already strict and greppable — 14 instances parse cleanly.
    Emit a JSON (or a typed const, like `token-names.ts`) listing symbol, since, replacement and
    removal version, and ship it. This is what lets the lab put a "deprecated, removed in 21.7.0"
    badge on an API row without anyone maintaining a second list.
@@ -367,15 +366,15 @@ not re-file it.
   own deprecation cycle and their own decision.
 - **The `position: fixed` containing-block caveat, documented once.** Every fixed overlay the
   library renders — `gog-spinner [overlay]`, `gog-dialog`'s backdrop, `gog-toast-container` — is
-  positioned against the viewport _only if no ancestor establishes a containing block_. A
+  positioned against the viewport *only if no ancestor establishes a containing block*. A
   `contain`, `transform`, `filter` or `backdrop-filter` anywhere above it silently retargets the
   overlay to that ancestor's box. This is not hypothetical for this library specifically:
   `gog-scroll` sets `contain: layout style`, so a dialog opened from inside one covers the
-  scroller rather than the window. The lab hit it twice (the dialog outlets had to be hoisted to
-  the app root; the spinner's "full-screen" demo covers the article, and now says so). Consumers
-  will hit it wherever they nest an overlay inside their own transformed or contained wrapper.
-  Worth one shared paragraph in `README.md`/`AGENTS.md` plus a line on each overlay input's
-  TSDoc — a documentation change, which is why it is here rather than in an iteration.
+  scroller rather than the window. The lab hit it twice (the dialog and toast outlets had to be
+  hoisted to the app root; the spinner's "full-screen" demo covers the article, and now says so).
+  Consumers will hit it wherever they nest an overlay inside their own transformed or contained
+  wrapper. Worth one shared paragraph in `README.md`/`AGENTS.md` plus a line on each overlay
+  input's TSDoc — a documentation change, which is why it is here rather than in an iteration.
 - **`gogCollapsibleTrigger` is silently keyboard-inaccessible on a non-focusable element.** The
   directive's whole host block is `class`, three ARIA attributes and `(click)` — no `tabindex`, no
   `role`, no key handling. Put it on a `<div>` (which its own TSDoc invites: "works on any
@@ -389,22 +388,22 @@ not re-file it.
   library change, which is why it is recorded here.
 - **`gog-table`'s `stickyHeader` does not stick — the component overrides itself.** `stickyHeader`
   sets `position: sticky; top: 0` on the header cells, which is correct, but a sticky element
-  resolves against its _nearest_ scrolling ancestor, and `gog-table` wraps its own markup in
+  resolves against its *nearest* scrolling ancestor, and `gog-table` wraps its own markup in
   `<gog-scroll class="gog-table-scroll">`. On a table that fits, that viewport computes to
   `overflow: visible` and is harmless; but as soon as it activates — which is precisely what putting
   a wide table in a narrow region does — it becomes the nearest scrollport and wins over whatever
-  region the consumer put the table in —
-  and because it is sized by the table's own content, it never scrolls vertically, so the header
-  simply rides up out of view. Measured on the lab against 21.4.2 on 2026-08-15: with the table in
-  a 260px `gog-scroll`, `th.closest('.gog-scroll__viewport')` is the table's internal one, and the
-  header leaves the viewport at `scrollTop: 200`; neutralising that inner viewport
-  (`overflow: visible`) makes the header stick correctly to the outer region. No consumer-side
-  arrangement fixes it — capping the `gog-table` host, or the inner `gog-scroll` host, leaves the
-  inner viewport at full content height either way. The likely fix is to make the internal
-  scroller horizontal-only (`overflow-y: visible`) so it stops being a vertical scrollport, with a
-  regression test that asserts the sticky header's scrollport is _not_ the table's own. The lab's
-  "Sticky header" demo currently documents the defect in its description; delete that paragraph in
-  the release that fixes it (recorded in `lab-after-publish.md`).
+  region the consumer put the table in — and because it is sized by the table's own content, it
+  never scrolls vertically, so the header simply rides up out of view. Measured on the lab against
+  21.4.2 on 2026-08-15: with the table in a 260px scrolling wrapper,
+  `th.closest('.gog-scroll__viewport')` is the table's internal one, and the header leaves the
+  viewport at `scrollTop: 200`; neutralising that inner viewport (`overflow: visible`) makes the
+  header stick correctly to the outer region. No consumer-side arrangement fixes it — capping the
+  `gog-table` host, or the inner `gog-scroll` host, leaves the inner viewport at full content
+  height either way. The likely fix is to make the internal scroller horizontal-only
+  (`overflow-y: visible`) so it stops being a vertical scrollport, with a regression test that
+  asserts the sticky header's scrollport is *not* the table's own. The lab's "Sticky header" demo
+  currently documents the defect in its description; delete that paragraph in the release that
+  fixes it (recorded in `lab-after-publish.md`).
 - **`[fullWidth]="false"` clips the widest column's header.** The table is `table-layout: fixed`
   and the host switches to `width: fit-content`, so the columns split that width evenly instead of
   being measured against their content — a 195px two-column table gives each column 96px while
@@ -414,14 +413,14 @@ not re-file it.
   only buys anything when the table's width is externally determined. The lab's "Full width"
   example now states column widths explicitly and explains why, which works but should not be
   necessary.
-- **The library's fields need the consumer's `box-sizing` reset to size correctly.** `.gog-input__field`
-  (shared by `gog-inputfield` and `gog-textarea`) is `width: 100%` plus horizontal padding plus a
-  border, and the package sets `box-sizing: border-box` on exactly one selector — `.gog-badge`, in
-  `styles/utilities.css`. Under the default `content-box` the field therefore overflows its own
-  container by padding + border: measured 20px at `xsm` rising to 48px at `slg` on 2026-08-15.
-  Two consequences, both real: the field spills out of whatever column the consumer put it in, and
-  `gog-textarea`'s resize grip — which is drawn on the _container_, 3px in from its right edge —
-  ends up ~50px inside the field's actual corner and reads as broken. The
+- **The library's fields need the consumer's `box-sizing` reset to size correctly.**
+  `.gog-input__field` (shared by `gog-inputfield` and `gog-textarea`) is `width: 100%` plus
+  horizontal padding plus a border, and the package sets `box-sizing: border-box` on exactly one
+  selector — `.gog-badge`, in `styles/utilities.css`. Under the default `content-box` the field
+  therefore overflows its own container by padding + border: measured 20px at `xsm` rising to 48px
+  at `slg` on 2026-08-15. Two consequences, both real: the field spills out of whatever column the
+  consumer put it in, and `gog-textarea`'s resize grip — which is drawn on the *container*, 3px in
+  from its right edge — ends up ~50px inside the field's actual corner and reads as broken. The
   `resizeInsetRight/Bottom` tracking is defeated too, since `container.clientWidth - el.offsetWidth`
   goes negative and clamps to 0.
 

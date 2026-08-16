@@ -17,42 +17,134 @@
     <p class="doc-section__intro">
       A trigger and a panel, both projected in — <code>[(open)]</code> is two-way bindable:
     </p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-collapsible [(open)]="basicOpen">
+          <button type="button" gogCollapsibleTrigger class="doc-trigger">
+            {{ basicOpen() ? 'Hide details' : 'Show details' }}
+          </button>
+          <p gogCollapsibleContent class="doc-panel">
+            Ships within 2 business days via standard courier.
+          </p>
+        </gog-collapsible>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+    <p class="doc-section__meta">Open: {{ basicOpen() }}</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.customTrigger" title="Custom trigger element">
-      The trigger's <em>markup</em> is entirely yours — here a whole card header with a title, a
-      summary line and a chevron. Keep the directive on a natively focusable element, though:
-      <code>gogCollapsibleTrigger</code> wires <code>(click)</code> and the ARIA attributes and
-      nothing else, so on a <code>&lt;div&gt;</code> the trigger would have no tab stop and no
-      keyboard activation.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom trigger element</h3>
+      <p class="demo-card__meta">
+        The trigger's <em>markup</em> is entirely yours — here a whole header row rather than
+        anything that looks like a button. Keep the directive on a natively focusable element,
+        though: <code>gogCollapsibleTrigger</code> wires <code>(click)</code> and the ARIA
+        attributes and nothing else, so on a <code>&lt;div&gt;</code> the trigger would have no tab
+        stop and no keyboard activation.
+      </p>
+      <div class="demo-card__preview">
+        <gog-collapsible [(open)]="controlledOpen">
+          <!-- Still a <button>, because gogCollapsibleTrigger only wires (click) and the ARIA
+               attributes — it adds no tabindex, no role and no key handling. On a <div> that
+               leaves the trigger unreachable by keyboard. -->
+          <button type="button" class="doc-card-header" gogCollapsibleTrigger>
+            <span>Order #4471</span>
+            <gog-icon [name]="controlledOpen() ? 'chevron-up' : 'chevron-down'" />
+          </button>
+          <div gogCollapsibleContent class="doc-card-body">
+            <p>3 items — shipped Aug 4, arriving Aug 6.</p>
+          </div>
+        </gog-collapsible>
+      </div>
+      <app-code-tabs [html]="customTriggerHtml" [ts]="customTriggerTs" />
+    </article>
 
-    <app-demo [component]="examples.disabled" title="Disabled">
-      <code>disabled</code> blocks the trigger's click handler and sets <code>aria-disabled</code> —
-      a programmatic <code>[open]</code> write still works, which the second button here does.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled</h3>
+      <p class="demo-card__meta">
+        <code>disabled</code> blocks the trigger's click handler and sets
+        <code>aria-disabled</code> — a programmatic <code>[open]</code> write still works.
+      </p>
+      <div class="demo-card__preview">
+        <gog-collapsible [(open)]="disabledOpen" [disabled]="true">
+          <button type="button" gogCollapsibleTrigger class="doc-trigger">
+            Unavailable section
+          </button>
+          <p gogCollapsibleContent class="doc-panel">
+            You should never see this — the trigger is inert.
+          </p>
+        </gog-collapsible>
+      </div>
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+    </article>
 
-    <app-demo [component]="examples.controlled" title="Controlled from outside">
-      No <code>gogCollapsibleTrigger</code> anywhere — external buttons drive
-      <code>[(open)]</code> directly.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Controlled from outside</h3>
+      <p class="demo-card__meta">
+        No <code>gogCollapsibleTrigger</code> anywhere — external buttons drive
+        <code>[(open)]</code> directly.
+      </p>
+      <div class="demo-card__preview action-row">
+        <gog-button size="sm" (gogClick)="controlledOpen.set(true)">Open</gog-button>
+        <gog-button size="sm" variant="ghost" (gogClick)="controlledOpen.set(false)"
+          >Close</gog-button
+        >
+      </div>
+      <div class="demo-card__preview">
+        <gog-collapsible [(open)]="controlledOpen">
+          <p gogCollapsibleContent class="doc-panel">
+            Driven entirely from outside — try the buttons above.
+          </p>
+        </gog-collapsible>
+      </div>
+      <app-code-tabs [html]="controlledHtml" [ts]="controlledTs" />
+    </article>
 
-    <app-demo [component]="examples.faq" title="Independent FAQ list">
-      Each row owns its own <code>open</code> state in an array — unlike
-      <a routerLink="/components/accordion">gog-accordion</a>, nothing here closes a sibling when
-      one opens.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Independent FAQ list</h3>
+      <p class="demo-card__meta">
+        Each row owns its own <code>open</code> state in an array — unlike
+        <a routerLink="/components/accordion">gog-accordion</a>, nothing here closes a sibling when
+        one opens.
+      </p>
+      <div class="demo-card__preview faq-list">
+        @for (item of faqItems(); track item.id) {
+          <gog-collapsible [open]="item.open" (openChange)="setFaqOpen(item.id, $event)">
+            <button type="button" gogCollapsibleTrigger class="doc-trigger">
+              {{ item.question }}
+            </button>
+            <p gogCollapsibleContent class="doc-panel">{{ item.answer }}</p>
+          </gog-collapsible>
+        }
+      </div>
+      <app-code-tabs [html]="faqHtml" [ts]="faqTs" />
+    </article>
 
-    <app-demo [component]="examples.focusOut" title="Close when focus leaves">
-      <code>collapseOnFocusOut</code> closes the panel once focus leaves both the trigger and the
-      content — Tab past the last field inside, or click elsewhere on the page. It is off by
-      default: an FAQ list or a settings section read top to bottom wants the panel to stay open
-      regardless of where focus goes next.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Close when focus leaves</h3>
+      <p class="demo-card__meta">
+        <code>collapseOnFocusOut</code> closes the panel once focus leaves both the trigger and the
+        content — Tab past the last field inside, or click elsewhere on the page. It is off by
+        default: an FAQ list or a settings section read top to bottom wants the panel to stay open
+        regardless of where focus goes next.
+      </p>
+      <div class="demo-card__preview">
+        <gog-collapsible [(open)]="focusOutOpen" [collapseOnFocusOut]="true">
+          <button type="button" gogCollapsibleTrigger class="doc-trigger">
+            Filters
+            <gog-icon [name]="focusOutOpen() ? 'chevron-up' : 'chevron-down'" />
+          </button>
+          <div gogCollapsibleContent class="doc-panel">
+            <p>Tab forward from here and the panel closes behind you.</p>
+            <gog-button variant="outline">A focusable control</gog-button>
+          </div>
+        </gog-collapsible>
+      </div>
+      <app-code-tabs [html]="focusOutHtml" [ts]="focusOutTs" />
+    </article>
   </section>
 
   <section class="doc-section">

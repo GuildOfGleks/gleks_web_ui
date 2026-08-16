@@ -267,8 +267,8 @@
     }
   }
 
-  /* Кнопка, а не div: закрыть ящик тапом мимо него должно работать и с клавиатуры.
-     Поэтому же сбрасываем всё, что <button> приносит с собой. */
+  /* A <button>, not a <div>: dismissing the drawer by tapping outside it has to work from the
+     keyboard too. Which is also why everything a <button> brings with it is reset here. */
   .lab-nav-backdrop {
     display: block;
     position: fixed;

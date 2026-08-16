@@ -17,7 +17,18 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — type a letter or two:</p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview autocomplete-demo__field">
+        <gog-autocomplete
+          label="City"
+          placeholder="Start typing…"
+          [options]="cities"
+          [(value)]="city"
+        />
+        <p class="doc-section__meta">value = {{ city() }}</p>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
   </section>
 
   <section class="doc-section">
@@ -43,35 +54,96 @@
       filtering its answer a second time against the same query is the classic double-filtering bug
       — it silently drops rows the server matched on a field this component cannot see.
     </p>
-    <app-demo [component]="examples.server">
-      This demo fakes a 400 ms round trip. It also matches on the country, which local filtering
-      would throw away — type <code>germany</code> to see it.
-    </app-demo>
+    <div class="demo-card">
+      <p class="demo-card__meta">
+        This demo fakes a 400 ms round trip. It also matches on the country, which local filtering
+        would throw away — type <code>germany</code> to see it.
+      </p>
+      <div class="demo-card__preview autocomplete-demo__field">
+        <gog-autocomplete
+          label="City"
+          placeholder="Type at least 2 characters"
+          [options]="serverResults()"
+          [loading]="serverLoading()"
+          [filterLocal]="false"
+          [minLength]="2"
+          (gogSearch)="search($event)"
+          [(value)]="city"
+        />
+        <p class="doc-section__meta">
+          last query: "{{ lastQuery() }}" — {{ serverResults().length }} result(s)
+        </p>
+      </div>
+      <app-code-tabs [html]="serverHtml" [ts]="serverTs" />
+    </div>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.dto" title="Your own objects">
-      <code>optionLabel</code>, <code>optionValue</code> and <code>optionDisabled</code> take a
-      property path (dot-paths included) or a function. Set <code>[optionValue]="null"</code> and
-      the control hands back the option <em>object</em> — the same reference you passed in — instead
-      of an id.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Your own objects</h3>
+      <p class="demo-card__meta">
+        <code>optionLabel</code>, <code>optionValue</code> and <code>optionDisabled</code> take a
+        property path (dot-paths included) or a function. Set <code>[optionValue]="null"</code> and
+        the control hands back the option <em>object</em> — the same reference you passed in —
+        instead of an id.
+      </p>
+      <div class="demo-card__preview autocomplete-demo__field">
+        <gog-autocomplete
+          label="City"
+          optionLabel="name"
+          [optionValue]="null"
+          [options]="cities"
+          [(value)]="cityObject"
+        />
+        <p class="doc-section__meta">
+          value = {{ cityObject() ? cityObject()!.name + ', ' + cityObject()!.country : 'null' }}
+        </p>
+      </div>
+      <app-code-tabs [html]="dtoHtml" [ts]="dtoTs" />
+    </article>
 
-    <app-demo [component]="examples.slot" title="Custom suggestion rows">
-      A <code>gogDropdownOption</code> template replaces one row, with the option itself plus
-      <code>selected</code>, <code>disabled</code> and the resolved <code>label</code> in its
-      context — so a custom row can decorate the label rather than re-derive it.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom suggestion rows</h3>
+      <p class="demo-card__meta">
+        A <code>gogDropdownOption</code> template replaces one row, with the option itself plus
+        <code>selected</code>, <code>disabled</code> and the resolved <code>label</code> in its
+        context — so a custom row can decorate the label rather than re-derive it.
+      </p>
+      <div class="demo-card__preview autocomplete-demo__field">
+        <gog-autocomplete label="City" [options]="cities" [(value)]="slotCity">
+          <ng-template gogDropdownOption let-option let-label="label">
+            <span class="autocomplete-demo__row">
+              <strong>{{ label }}</strong>
+              <small>{{ asCity(option).country }}</small>
+            </span>
+          </ng-template>
+        </gog-autocomplete>
+      </div>
+      <app-code-tabs [html]="slotHtml" [ts]="slotTs" />
+    </article>
 
-    <app-demo [component]="examples.freeText" title="Free text — forceSelection">
-      On by default, the field always ends up reflecting a real selection: editing is treated as
-      transient, so <code>value</code> survives keystrokes and Escape or blur snaps the text back to
-      it. Turn it off for a create-as-you-type flow — the text is then left alone on blur and
-      <code>value</code> is dropped as soon as it stops matching, so the two never disagree. Read
-      what was typed from <code>gogSearch</code>, not from <code>value</code>.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Free text (<code>forceSelection</code>)</h3>
+      <p class="demo-card__meta">
+        On by default, the field always ends up reflecting a real selection: editing is treated as
+        transient, so <code>value</code> survives keystrokes and Escape or blur snaps the text back
+        to it. Turn it off for a create-as-you-type flow — the text is then left alone on blur and
+        <code>value</code> is dropped as soon as it stops matching, so the two never disagree. Read
+        what was typed from <code>gogSearch</code>, not from <code>value</code>.
+      </p>
+      <div class="demo-card__preview autocomplete-demo__field">
+        <gog-autocomplete
+          label="Tag"
+          placeholder="Type anything and click away"
+          [forceSelection]="false"
+          [options]="cities"
+          [(value)]="freeText"
+        />
+      </div>
+      <app-code-tabs [html]="freeTextHtml" [ts]="freeTextTs" />
+    </article>
   </section>
 
   <section class="doc-section">

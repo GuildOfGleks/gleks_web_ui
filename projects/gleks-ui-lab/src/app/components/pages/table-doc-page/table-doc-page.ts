@@ -1,25 +1,71 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ExampleHostComponent } from '../../shared/example-host/example-host';
-import { provideExampleSources } from '../../shared/example-sources';
+import {
+  ButtonComponent,
+  GogColumn,
+  GogColumnBodyDirective,
+  GogColumnHeaderDirective,
+  GogTableRowClickEvent,
+  GogTableSortEvent,
+  GogTagVariant,
+  TableComponent,
+  TagComponent,
+} from '@guildofgleks/ui';
+import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { LIBRARY_VERSION } from '../../shared/library-version';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
-import { TABLE_EXAMPLE_SOURCES } from '../../../examples/table/sources.generated';
-import { TableEmptyExample } from '../../../examples/table/table-empty/example';
-import { TableFullWidthExample } from '../../../examples/table/table-full-width/example';
-import { TableLazyExample } from '../../../examples/table/table-lazy/example';
-import { TableLoadingExample } from '../../../examples/table/table-loading/example';
-import { TableMissingValuesExample } from '../../../examples/table/table-missing-values/example';
-import { TableOutputsExample } from '../../../examples/table/table-outputs/example';
-import { TableOverviewExample } from '../../../examples/table/table-overview/example';
-import { TablePaginationExample } from '../../../examples/table/table-pagination/example';
-import { TableRowsPerPageExample } from '../../../examples/table/table-rows-per-page/example';
-import { TableSelectionExample } from '../../../examples/table/table-selection/example';
-import { TableStickyExample } from '../../../examples/table/table-sticky/example';
-import { TableTemplatesExample } from '../../../examples/table/table-templates/example';
+interface DemoRow {
+  component: string;
+  status: string;
+  owner: string;
+  updated: string;
+}
+
+interface SparseRow {
+  component: string;
+  owner: string | null;
+}
+
+/** A row of the fake "server" data set behind the lazy demo. */
+interface ServerRow {
+  id: number;
+  name: string;
+  team: string;
+  score: number;
+}
+
+/**
+ * Stands in for a backend: 137 rows that only ever leave this constant one page at a time.
+ * Sorting and slicing happen *here*, which is the whole point — a table in `lazy` mode must not
+ * re-order or re-slice what it is handed.
+ */
+const SERVER_ROWS: ServerRow[] = Array.from({ length: 137 }, (_, i) => ({
+  id: i + 1,
+  name: `Record ${String(i + 1).padStart(3, '0')}`,
+  team: ['Design', 'Forms', 'Data', 'Navigation'][i % 4],
+  score: ((i * 37) % 100) + 1,
+}));
+
+const SERVER_REQUEST_DELAY_MS = 350;
+const EVENT_LOG_LIMIT = 6;
+
+const STATUS_VARIANTS: Record<string, GogTagVariant> = {
+  Ready: 'success',
+  'In review': 'warning',
+  Planned: 'info',
+};
+
+const ROWS: DemoRow[] = [
+  { component: 'Buttons', status: 'Ready', owner: 'Design', updated: 'Today' },
+  { component: 'Checkbox', status: 'Ready', owner: 'Forms', updated: 'Yesterday' },
+  { component: 'Table', status: 'In review', owner: 'Data', updated: '2 days ago' },
+  { component: 'Accordion', status: 'Planned', owner: 'Navigation', updated: 'This week' },
+  { component: 'Spinner', status: 'Ready', owner: 'Feedback', updated: 'This month' },
+  { component: 'Toast', status: 'Ready', owner: 'Feedback', updated: 'This month' },
+];
 
 interface ApiRow {
   readonly name: string;
@@ -281,15 +327,32 @@ const DEPRECATED_TEMPLATE_INPUTS: readonly ApiRow[] = [
 
 @Component({
   selector: 'app-table-doc-page',
-  imports: [ExampleHostComponent, MarkdownComponent, RouterLink, SinceBadgeComponent],
-  providers: [provideExampleSources(TABLE_EXAMPLE_SOURCES)],
+  imports: [
+    TableComponent,
+    GogColumn,
+    GogColumnBodyDirective,
+    GogColumnHeaderDirective,
+    TagComponent,
+    ButtonComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './table-doc-page.html',
   styleUrl: './table-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableDocPage {
+export class TableDocPage implements OnDestroy {
   // Read from the installed package so the defect note cannot claim the wrong version.
   protected readonly libraryVersion = LIBRARY_VERSION;
+
+  protected readonly rows = ROWS;
+  protected readonly sparseRows: SparseRow[] = [
+    { component: 'Buttons', owner: 'Design' },
+    { component: 'Checkbox', owner: null },
+    { component: 'Table', owner: null },
+  ];
 
   protected readonly tableInputs = TABLE_INPUTS;
   protected readonly tableOutputs = TABLE_OUTPUTS;
@@ -299,8 +362,225 @@ export class TableDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'table')?.tokens ?? [];
 
+  protected readonly loading = signal(false);
+  protected readonly showEmpty = signal(false);
+  private loadingTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // ── Outputs demo ───────────────────────────────────────────────────────────────────────────
+  protected readonly eventLog = signal<readonly string[]>([]);
+
+  // ── Selection demo ─────────────────────────────────────────────────────────────────────────
+  protected readonly selection = signal<DemoRow[]>([]);
+  protected readonly selectionSummary = computed(() =>
+    this.selection().length === 0
+      ? 'Nothing selected'
+      : this.selection()
+          .map((row) => row.component)
+          .join(', '),
+  );
+
+  // ── Rows-per-page demo ─────────────────────────────────────────────────────────────────────
+  /** A `signal`, because `pageSize` is a `model` the select writes back into. */
+  protected readonly rowsPerPage = signal(2);
+
+  // ── Lazy demo ──────────────────────────────────────────────────────────────────────────────
+  protected readonly serverPageSize = signal(10);
+  protected readonly serverRows = signal<ServerRow[]>([]);
+  protected readonly serverTotal = signal(SERVER_ROWS.length);
+  protected readonly serverLoading = signal(false);
+  protected readonly lastServerQuery = signal('page 1, unsorted');
+  private serverPage = 1;
+  private serverSort: GogTableSortEvent = { field: '', direction: null };
+  private serverTimer: ReturnType<typeof setTimeout> | null = null;
+
+  constructor() {
+    this.fetchPage();
+  }
+
+  protected logEvent(message: string): void {
+    this.eventLog.update((log) => [message, ...log].slice(0, EVENT_LOG_LIMIT));
+  }
+
+  protected onSortChange(sort: GogTableSortEvent): void {
+    this.logEvent(
+      sort.direction
+        ? `gogSortChange → ${sort.field} ${sort.direction}`
+        : 'gogSortChange → cleared',
+    );
+  }
+
+  protected onPageChange(page: number): void {
+    this.logEvent(`gogPageChange → ${page}`);
+  }
+
+  protected onRowClick(event: GogTableRowClickEvent<DemoRow>): void {
+    this.logEvent(`gogRowClick → ${event.row.component} (row ${event.index + 1})`);
+  }
+
+  protected onServerSort(sort: GogTableSortEvent): void {
+    this.serverSort = sort;
+    // The table has already reset itself to page 1 by the time this fires.
+    this.serverPage = 1;
+    this.fetchPage();
+  }
+
+  protected onServerPage(page: number): void {
+    this.serverPage = page;
+    this.fetchPage();
+  }
+
+  /**
+   * In lazy mode a new page size is a refetch, exactly like a new page. The table has already
+   * returned to page 1 by the time this fires, so there is no separate `gogPageChange` to handle.
+   */
+  protected onServerPageSize(size: number): void {
+    this.serverPageSize.set(size);
+    this.serverPage = 1;
+    this.fetchPage();
+  }
+
+  /** The "request": sort the whole set, cut out the page, answer after a short delay. */
+  private fetchPage(): void {
+    this.serverLoading.set(true);
+    if (this.serverTimer) clearTimeout(this.serverTimer);
+
+    const { field, direction } = this.serverSort;
+    this.lastServerQuery.set(
+      `page ${this.serverPage}` + (direction ? `, sorted by ${field} ${direction}` : ', unsorted'),
+    );
+
+    this.serverTimer = setTimeout(() => {
+      const sorted = [...SERVER_ROWS];
+      if (field && direction) {
+        sorted.sort((a, b) => {
+          const av = a[field as keyof ServerRow];
+          const bv = b[field as keyof ServerRow];
+          const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+          return direction === 'asc' ? cmp : -cmp;
+        });
+      }
+
+      const size = this.serverPageSize();
+      const start = (this.serverPage - 1) * size;
+      this.serverRows.set(sorted.slice(start, start + size));
+      this.serverTotal.set(sorted.length);
+      this.serverLoading.set(false);
+    }, SERVER_REQUEST_DELAY_MS);
+  }
+
   protected readonly importSnippet =
-    "```typescript\nimport { GogColumn } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [TableComponent, GogColumn],\n})\n```";
+    "```typescript\nimport { GogColumn, TableComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [TableComponent, GogColumn],\n})\n```";
+
+  protected statusVariant(status: string): GogTagVariant {
+    return STATUS_VARIANTS[status] ?? 'info';
+  }
+
+  protected readonly overviewHtml = [
+    '<gog-table [value]="rows">',
+    '  <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '  <gog-column field="status" header="Status" [sortable]="true"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
+    '  <gog-column field="updated" header="Updated"></gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly overviewTs = [
+    "import { Component } from '@angular/core';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    '',
+    'interface Row {',
+    '  component: string;',
+    '  status: string;',
+    '  owner: string;',
+    '  updated: string;',
+    '}',
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn],',
+    '  template: `',
+    '    <gog-table [value]="rows">',
+    '      <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '      <gog-column field="status" header="Status" [sortable]="true"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
+    '      <gog-column field="updated" header="Updated"></gog-column>',
+    '    </gog-table>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly rows: Row[] = [',
+    "    { component: 'Buttons', status: 'Ready', owner: 'Design', updated: 'Today' },",
+    "    { component: 'Table', status: 'In review', owner: 'Data', updated: '2 days ago' },",
+    '  ];',
+    '}',
+  ].join('\n');
+
+  protected readonly templatesHtml = [
+    '<gog-table [value]="rows" [showRowNumbers]="false">',
+    '  <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '',
+    '  <gog-column field="status" header="Status">',
+    '    <ng-template gogColumnHeader let-header>',
+    '      <span class="status-header">{{ header }}</span>',
+    '    </ng-template>',
+    '    <ng-template gogColumnBody let-row let-value="value">',
+    '      <gog-tag [variant]="statusVariant(row.status)" size="sm">{{ value }}</gog-tag>',
+    '    </ng-template>',
+    '  </gog-column>',
+    '',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly templatesTs = [
+    "import { Component } from '@angular/core';",
+    'import {',
+    '  GogColumn,',
+    '  GogColumnBodyDirective,',
+    '  GogColumnHeaderDirective,',
+    '  GogTagVariant,',
+    '  TableComponent,',
+    '  TagComponent,',
+    "} from '@guildofgleks/ui';",
+    '',
+    'const STATUS_VARIANTS: Record<string, GogTagVariant> = {',
+    "  Ready: 'success',",
+    "  'In review': 'warning',",
+    "  Planned: 'info',",
+    '};',
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [',
+    '    TableComponent,',
+    '    GogColumn,',
+    '    GogColumnBodyDirective,',
+    '    GogColumnHeaderDirective,',
+    '    TagComponent,',
+    '  ],',
+    '  template: `',
+    '    <gog-table [value]="rows" [showRowNumbers]="false">',
+    '      <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '',
+    '      <gog-column field="status" header="Status">',
+    '        <ng-template gogColumnHeader let-header>',
+    '          <span class="status-header">{{ header }}</span>',
+    '        </ng-template>',
+    '        <ng-template gogColumnBody let-row let-value="value">',
+    '          <gog-tag [variant]="statusVariant(row.status)" size="sm">{{ value }}</gog-tag>',
+    '        </ng-template>',
+    '      </gog-column>',
+    '',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
+    '    </gog-table>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly rows: Row[] = [/* ... */];',
+    '',
+    '  protected statusVariant(status: string): GogTagVariant {',
+    "    return STATUS_VARIANTS[status] ?? 'info';",
+    '  }',
+    '}',
+  ].join('\n');
 
   protected readonly migrateTemplateSnippet = [
     '```html',
@@ -320,21 +600,385 @@ export class TableDocPage {
     '```',
   ].join('\n');
 
+  protected readonly paginationHtml = [
+    '<gog-table [value]="rows" [pageSize]="3" [showTotal]="true" totalPosition="left">',
+    '  <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '  <gog-column field="status" header="Status" [sortable]="true"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly paginationTs = [
+    "import { Component } from '@angular/core';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn],',
+    '  template: `',
+    '    <gog-table [value]="rows" [pageSize]="3" [showTotal]="true" totalPosition="left">',
+    '      <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '      <gog-column field="status" header="Status" [sortable]="true"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
+    '    </gog-table>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly rows = [/* ... */];',
+    '}',
+  ].join('\n');
+
+  protected readonly stickyHtml = [
+    '<div style="max-height: 260px; overflow-y: auto;">',
+    '  <gog-table [value]="rows" [stickyHeader]="true">',
+    '    <gog-column field="component" header="Component"></gog-column>',
+    '    <gog-column field="status" header="Status"></gog-column>',
+    '    <gog-column field="owner" header="Owner"></gog-column>',
+    '  </gog-table>',
+    '</div>',
+  ].join('\n');
+  protected readonly stickyTs = [
+    "import { Component } from '@angular/core';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn],',
+    '  template: `',
+    '    <div style="max-height: 260px; overflow-y: auto;">',
+    '      <gog-table [value]="rows" [stickyHeader]="true">',
+    '        <gog-column field="component" header="Component"></gog-column>',
+    '        <gog-column field="status" header="Status"></gog-column>',
+    '        <gog-column field="owner" header="Owner"></gog-column>',
+    '      </gog-table>',
+    '    </div>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly rows = [/* six or more rows, so the container actually scrolls */];',
+    '}',
+  ].join('\n');
+
+  protected readonly missingValuesHtml = [
+    '<gog-table [value]="sparseRows" [showRowNumbers]="false" size="sm">',
+    '  <gog-column field="component" header="Component"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
+    '</gog-table>',
+    '',
+    '<gog-table [value]="sparseRows" [showRowNumbers]="false" emptyPlaceholder="N/A" size="sm">',
+    '  <gog-column field="component" header="Component"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly missingValuesTs = [
+    "import { Component } from '@angular/core';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    '',
+    'interface SparseRow {',
+    '  component: string;',
+    '  owner: string | null;',
+    '}',
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn],',
+    '  template: `',
+    '    <gog-table [value]="sparseRows" [showRowNumbers]="false" size="sm">',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
+    '    </gog-table>',
+    '',
+    '    <gog-table [value]="sparseRows" [showRowNumbers]="false" emptyPlaceholder="N/A" size="sm">',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
+    '    </gog-table>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly sparseRows: SparseRow[] = [',
+    "    { component: 'Buttons', owner: 'Design' },",
+    "    { component: 'Checkbox', owner: null },",
+    '  ];',
+    '}',
+  ].join('\n');
+
+  protected readonly fullWidthHtml = [
+    '<gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">',
+    '  <gog-column field="component" header="Component" width="115px"></gog-column>',
+    '  <gog-column field="status" header="Status" width="80px"></gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly fullWidthTs = [
+    "import { Component } from '@angular/core';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn],',
+    '  template: `',
+    '    <gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="status" header="Status"></gog-column>',
+    '    </gog-table>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly rows = [/* ... */];',
+    '}',
+  ].join('\n');
+
+  protected readonly loadingHtml =
+    '<gog-table [value]="rows" [loading]="loading()">...</gog-table>';
+  protected readonly loadingTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { ButtonComponent, GogColumn, TableComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn, ButtonComponent],',
+    '  template: `',
+    '    <gog-button (gogClick)="toggleLoading()">Toggle loading</gog-button>',
+    '    <gog-table [value]="rows" [loading]="loading()">',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="status" header="Status"></gog-column>',
+    '    </gog-table>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly loading = signal(false);',
+    '  protected readonly rows = [/* ... */];',
+    '',
+    '  protected toggleLoading(): void {',
+    '    this.loading.set(true);',
+    '    setTimeout(() => this.loading.set(false), 1200);',
+    '  }',
+    '}',
+  ].join('\n');
+
+  protected readonly emptyHtml = '<gog-table [value]="showEmpty() ? [] : rows">...</gog-table>';
+  protected readonly emptyTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { ButtonComponent, GogColumn, TableComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn, ButtonComponent],',
+    '  template: `',
+    '    <gog-button (gogClick)="showEmpty.set(!showEmpty())">Toggle</gog-button>',
+    '    <gog-table [value]="showEmpty() ? [] : rows">',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
+    '    </gog-table>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly showEmpty = signal(false);',
+    '  protected readonly rows = [/* ... */];',
+    '}',
+  ].join('\n');
+
+  protected toggleLoading(): void {
+    if (this.loadingTimer) {
+      clearTimeout(this.loadingTimer);
+    }
+
+    this.loading.set(true);
+    this.loadingTimer = setTimeout(() => {
+      this.loading.set(false);
+      this.loadingTimer = null;
+    }, 1200);
+  }
+
+  protected toggleEmpty(): void {
+    this.showEmpty.update((value) => !value);
+  }
+
+  ngOnDestroy(): void {
+    if (this.loadingTimer) {
+      clearTimeout(this.loadingTimer);
+    }
+    if (this.serverTimer) {
+      clearTimeout(this.serverTimer);
+    }
+  }
+
   // ── Snippets for the 21.4.0 sections ───────────────────────────────────────────────────────
 
-  /** Each example is a file under `src/app/examples/table/` — see docs/lab-examples-refactor.md. */
-  protected readonly examples = {
-    empty: TableEmptyExample,
-    fullWidth: TableFullWidthExample,
-    lazy: TableLazyExample,
-    loading: TableLoadingExample,
-    missingValues: TableMissingValuesExample,
-    outputs: TableOutputsExample,
-    overview: TableOverviewExample,
-    pagination: TablePaginationExample,
-    rowsPerPage: TableRowsPerPageExample,
-    selection: TableSelectionExample,
-    sticky: TableStickyExample,
-    templates: TableTemplatesExample,
-  };
+  protected readonly outputsHtml = [
+    '<gog-table',
+    '  [value]="rows"',
+    '  [pageSize]="3"',
+    '  [interactiveRows]="true"',
+    '  (gogSortChange)="onSortChange($event)"',
+    '  (gogPageChange)="onPageChange($event)"',
+    '  (gogRowClick)="onRowClick($event)"',
+    '>',
+    '  <gog-column field="component" header="Component" [sortable]="true"></gog-column>',
+    '  <gog-column field="status" header="Status" [sortable]="true"></gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly outputsTs = [
+    "import { Component, signal } from '@angular/core';",
+    'import {',
+    '  GogColumn,',
+    '  GogTableRowClickEvent,',
+    '  GogTableSortEvent,',
+    '  TableComponent,',
+    "} from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly rows = [/* ... */];',
+    '',
+    '  protected onSortChange(sort: GogTableSortEvent): void {',
+    '    // The third click clears the sort: { field: "", direction: null }.',
+    '    console.log(sort.field, sort.direction);',
+    '  }',
+    '',
+    '  protected onPageChange(page: number): void {',
+    '    // 1-based. Never fires on first render, nor for the reset a new sort causes.',
+    '    console.log(page);',
+    '  }',
+    '',
+    '  protected onRowClick(event: GogTableRowClickEvent<Row>): void {',
+    '    console.log(event.row, event.index, event.originalEvent);',
+    '  }',
+    '}',
+  ].join('\n');
+
+  protected readonly selectionHtml = [
+    '<gog-table',
+    '  [value]="rows"',
+    '  selectionMode="multiple"',
+    '  [(selection)]="selection"',
+    '  dataKey="component"',
+    '>',
+    '  <gog-column field="component" header="Component"></gog-column>',
+    '  <gog-column field="status" header="Status"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly selectionTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly rows: Row[] = [/* ... */];',
+    '',
+    '  // Always an array — in "single" mode it simply holds zero or one row, so there is',
+    '  // one shape to read rather than a T | T[] | null union to narrow on every access.',
+    '  protected readonly selection = signal<Row[]>([]);',
+    '}',
+  ].join('\n');
+
+  protected readonly rowsPerPageHtml = [
+    '<gog-table',
+    '  [value]="rows"',
+    '  [(pageSize)]="rowsPerPage"',
+    '  [showPageSizeSelect]="true"',
+    '  [pageSizeOptions]="[2, 3, 6]"',
+    '>',
+    '  <gog-column field="component" header="Component"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly rowsPerPageTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly rows = [/* ... */];',
+    '',
+    '  // `pageSize` is a model on both the table and the paginator, which is exactly what lets',
+    '  // the select write back through the table without a go-between signal.',
+    '  protected readonly rowsPerPage = signal(2);',
+    '}',
+  ].join('\n');
+
+  protected readonly lazyHtml = [
+    '<gog-table',
+    '  [value]="serverRows()"',
+    '  [lazy]="true"',
+    '  [totalRecords]="serverTotal()"',
+    '  [(pageSize)]="serverPageSize"',
+    '  [loading]="serverLoading()"',
+    '  [showTotal]="true"',
+    '  [showPageSizeSelect]="true"',
+    '  [pageSizeOptions]="[10, 20, 50]"',
+    '  dataKey="id"',
+    '  (gogSortChange)="onServerSort($event)"',
+    '  (gogPageChange)="onServerPage($event)"',
+    '  (pageSizeChange)="onServerPageSize($event)"',
+    '>',
+    '  <gog-column field="name" header="Name" [sortable]="true"></gog-column>',
+    '  <gog-column field="team" header="Team" [sortable]="true"></gog-column>',
+    '  <gog-column field="score" header="Score" [sortable]="true"></gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly lazyTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { GogColumn, GogTableSortEvent, TableComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly serverRows = signal<ServerRow[]>([]);',
+    '  protected readonly serverTotal = signal(0);',
+    '  protected readonly serverPageSize = signal(10);',
+    '  protected readonly serverLoading = signal(false);',
+    '',
+    '  private page = 1;',
+    "  private sort: GogTableSortEvent = { field: '', direction: null };",
+    '',
+    '  constructor() {',
+    '    this.fetchPage();',
+    '  }',
+    '',
+    '  protected onServerSort(sort: GogTableSortEvent): void {',
+    '    this.sort = sort;',
+    '    // The table has already reset itself to page 1 — that reset is part of the sort,',
+    '    // which is why gogPageChange stays quiet for it.',
+    '    this.page = 1;',
+    '    this.fetchPage();',
+    '  }',
+    '',
+    '  protected onServerPage(page: number): void {',
+    '    this.page = page;',
+    '    this.fetchPage();',
+    '  }',
+    '',
+    '  protected onServerPageSize(size: number): void {',
+    '    this.serverPageSize.set(size);',
+    '    this.page = 1;',
+    '    this.fetchPage();',
+    '  }',
+    '',
+    '  private fetchPage(): void {',
+    '    this.serverLoading.set(true);',
+    '    this.api.list({ page: this.page, size: this.serverPageSize(), sort: this.sort }).subscribe({',
+    '      next: ({ rows, total }) => {',
+    '        this.serverRows.set(rows); // already sorted and sliced by the server',
+    '        this.serverTotal.set(total);',
+    '        this.serverLoading.set(false);',
+    '      },',
+    '    });',
+    '  }',
+    '}',
+  ].join('\n');
 }

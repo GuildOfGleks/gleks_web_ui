@@ -15,7 +15,13 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage:</p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-calendar [(value)]="day" />
+        <p class="doc-section__meta">value = {{ formatValue(day()) }}</p>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
   </section>
 
   <section class="doc-section">
@@ -30,38 +36,79 @@
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.range" title="Range, two months">
-      In <code>range</code> mode the value is a <code>{{ '{' }} start, end {{ '}' }}</code> pair.
-      Two months side by side is what makes picking one practical.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Range, two months</h3>
+      <p class="demo-card__meta">
+        In <code>range</code> mode the value is a <code>{{ '{' }} start, end {{ '}' }}</code> pair.
+        Two months side by side is what makes picking one practical.
+      </p>
+      <div class="demo-card__preview">
+        <gog-calendar selectionMode="range" [numberOfMonths]="2" [(value)]="range" />
+        <p class="doc-section__meta">value = {{ formatValue(range()) }}</p>
+      </div>
+      <app-code-tabs [html]="rangeHtml" [ts]="rangeTs" />
+    </article>
 
-    <app-demo [component]="examples.disabled" title="Disabled dates">
-      <code>disabledDates</code> is a <strong>predicate</strong>, not an array — "weekends" and
-      "public holidays" have no finite list a consumer could hand over without materialising every
-      date in range first. <code>min</code> and <code>max</code> cover the bounded case.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled dates</h3>
+      <p class="demo-card__meta">
+        <code>disabledDates</code> is a <strong>predicate</strong>, not an array — "weekends" and
+        "public holidays" have no finite list a consumer could hand over without materialising every
+        date in range first. <code>min</code> and <code>max</code> cover the bounded case.
+      </p>
+      <div class="demo-card__preview">
+        <gog-calendar [disabledDates]="weekends" [(value)]="workday" />
+        <p class="doc-section__meta">value = {{ formatValue(workday()) }}</p>
+      </div>
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+    </article>
 
-    <app-demo [component]="examples.time" title="Time, and the two footer buttons">
-      <code>showTime</code> adds a clock under the grid. The footer carries
-      <strong>two separate actions, never one</strong>: "Today" <em>selects</em> today, and "This
-      month" only moves the view back. A single button doing both is ambiguous — after paging away,
-      the same label reads as "take me back" to one person and "set it to today" to another. "Today"
-      is disabled when <code>min</code>/<code>max</code> or <code>disabledDates</code> rule today
-      out, rather than silently doing nothing.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Time, and the two footer buttons</h3>
+      <p class="demo-card__meta">
+        <code>showTime</code> adds a clock under the grid. The footer carries
+        <strong>two separate actions, never one</strong>: "Today" <em>selects</em> today, and "This
+        month" only moves the view back. A single button doing both is ambiguous — after paging
+        away, the same label reads as "take me back" to one person and "set it to today" to another.
+        "Today" is disabled when <code>min</code>/<code>max</code> or
+        <code>disabledDates</code> rule today out, rather than silently doing nothing.
+      </p>
+      <div class="demo-card__preview">
+        <gog-calendar
+          [showTime]="true"
+          hourFormat="24"
+          [minuteStep]="15"
+          [showThisMonthButton]="true"
+          [(value)]="moment"
+        />
+        <p class="doc-section__meta">value = {{ formatValue(moment()) }}</p>
+      </div>
+      <app-code-tabs [html]="timeHtml" [ts]="timeTs" />
+    </article>
 
-    <app-demo [component]="examples.locale" title="Locale">
-      Month and weekday names come from <code>Intl</code>, so any BCP-47 tag works with no data to
-      ship. <code>firstDayOfWeek</code> overrides the locale's own choice. Both resolve the usual
-      way — instance input, then <code>GOG_CONFIG.datepicker</code>, then the default
-      <app-since version="21.3.2" /> — so a standalone calendar honours an app-wide locale without
-      being handed one. Its navigation, shortcut and time labels (<code>todayLabel</code>,
-      <code>thisMonthLabel</code>, <code>previousMonthLabel</code>, <code>nextMonthLabel</code>,
-      <code>previousYearLabel</code>, <code>nextYearLabel</code>, <code>hoursLabel</code>,
-      <code>minutesLabel</code>, <code>secondsLabel</code>) resolve through
-      <code>GOG_CONFIG.labels</code> the same way — see
-      <a routerLink="/general/global-config">Global Configuration</a>.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Locale</h3>
+      <p class="demo-card__meta">
+        Month and weekday names come from <code>Intl</code>, so any BCP-47 tag works with no data to
+        ship. <code>firstDayOfWeek</code> overrides the locale's own choice. Both resolve the usual
+        way — instance input, then <code>GOG_CONFIG.datepicker</code>, then the default
+        <app-since version="21.3.2" /> — so a standalone calendar honours an app-wide locale without
+        being handed one.
+      </p>
+      <p class="demo-card__meta">
+        Its navigation, shortcut and time labels (<code>todayLabel</code>,
+        <code>thisMonthLabel</code>, <code>previousMonthLabel</code>, <code>nextMonthLabel</code>,
+        <code>previousYearLabel</code>, <code>nextYearLabel</code>, <code>hoursLabel</code>,
+        <code>minutesLabel</code>, <code>secondsLabel</code>) resolve through
+        <code>GOG_CONFIG.labels</code> the same way — see
+        <a routerLink="/general/global-config">Global Configuration</a>.
+      </p>
+      <div class="demo-card__preview calendar-demo__row">
+        <gog-calendar locale="de-DE" [firstDayOfWeek]="1" />
+        <gog-calendar locale="ja-JP" />
+      </div>
+      <app-code-tabs [html]="localeHtml" [ts]="localeTs" />
+    </article>
   </section>
 
   <section class="doc-section">

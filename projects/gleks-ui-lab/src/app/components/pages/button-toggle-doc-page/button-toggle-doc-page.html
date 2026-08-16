@@ -15,7 +15,14 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <app-demo [component]="examples.overview" title="Basic usage" />
+    <p class="doc-section__intro">Basic usage:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-button-toggle-group ariaLabel="View" [options]="views" [(value)]="view" />
+        <p class="doc-section__meta">Selected: {{ view() }}</p>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
   </section>
 
   <section class="doc-section">
@@ -30,32 +37,111 @@
       <code>aria-pressed</code>, arrows only move, and Space toggles. Getting this backwards is the
       usual defect in this component; here it follows from the input.
     </p>
-    <app-demo [component]="examples.multiple" title="Multiple" />
+    <div class="demo-card">
+      <h3 class="demo-card__title">Multiple</h3>
+      <div class="demo-card__preview">
+        <gog-button-toggle-group
+          ariaLabel="Text formatting"
+          [options]="formats"
+          [multiple]="true"
+          [(value)]="activeFormats"
+        />
+        <p class="doc-section__meta">Active: {{ activeFormats() }}</p>
+      </div>
+      <app-code-tabs [html]="multipleHtml" [ts]="multipleTs" />
+    </div>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.appearance" title="Appearance and orientation">
-      <code>joined</code> is one segmented control sharing borders; <code>separated</code> is
-      discrete buttons with a gap. Either works vertically.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Appearance and orientation</h3>
+      <p class="demo-card__meta">
+        <code>joined</code> is one segmented control sharing borders; <code>separated</code> is
+        discrete buttons with a gap. Either works vertically.
+      </p>
+      <div class="demo-card__preview button-toggle-demo__stack">
+        @for (option of appearances; track option) {
+          <div>
+            <p class="doc-section__meta">{{ option }}</p>
+            <gog-button-toggle-group
+              [appearance]="option"
+              ariaLabel="View"
+              [options]="views"
+              [(value)]="appearanceView"
+            />
+          </div>
+        }
+        <div>
+          <p class="doc-section__meta">vertical</p>
+          <gog-button-toggle-group
+            orientation="vertical"
+            ariaLabel="View"
+            [options]="views"
+            [(value)]="appearanceView"
+          />
+        </div>
+      </div>
+      <app-code-tabs [html]="appearanceHtml" [ts]="appearanceTs" />
+    </article>
 
-    <app-demo [component]="examples.icons" title="Icons">
-      <code>optionIcon</code> takes the same accessor shape as the other option inputs — a property
-      path or a function.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Icons</h3>
+      <p class="demo-card__meta">
+        <code>optionIcon</code> takes the same accessor shape as the other option inputs — a
+        property path or a function.
+      </p>
+      <div class="demo-card__preview">
+        <gog-button-toggle-group
+          ariaLabel="View"
+          optionIcon="icon"
+          [options]="views"
+          [(value)]="iconView"
+        />
+      </div>
+      <app-code-tabs [html]="iconsHtml" [ts]="iconsTs" />
+    </article>
 
-    <app-demo [component]="examples.slot" title="Custom button markup">
-      A <code>gogButtonToggleOption</code> template replaces the button's content, with
-      <code>{{ '$' }}implicit</code>, <code>selected</code> and <code>disabled</code> in its
-      context. The template's option arrives as <code>unknown</code> — the directive cannot see the
-      group's <code>TOption</code> — so narrow it with a one-line helper, as below.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom button markup</h3>
+      <p class="demo-card__meta">
+        A <code>gogButtonToggleOption</code> template replaces the button's content, with
+        <code>{{ '$' }}implicit</code>, <code>selected</code> and <code>disabled</code> in its
+        context. The template's option arrives as <code>unknown</code> — the directive cannot see
+        the group's <code>TOption</code> — so narrow it with a one-line helper, as below.
+      </p>
+      <div class="demo-card__preview">
+        <gog-button-toggle-group ariaLabel="View" [options]="views" [(value)]="slotView">
+          <ng-template gogButtonToggleOption let-option let-selected="selected">
+            <gog-icon [name]="asView(option).icon" />
+            <span>{{ asView(option).name }}</span>
+            @if (selected) {
+              <gog-icon name="check" />
+            }
+          </ng-template>
+        </gog-button-toggle-group>
+      </div>
+      <app-code-tabs [html]="slotHtml" [ts]="slotTs" />
+    </article>
 
-    <app-demo [component]="examples.sizes" title="Sizes">
-      Five steps, also settable app-wide through <code>GOG_CONFIG.control.size</code>.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        Five steps, also settable app-wide through <code>GOG_CONFIG.control.size</code>.
+      </p>
+      <div class="demo-card__preview button-toggle-demo__stack">
+        @for (sizeOption of sizes; track sizeOption) {
+          <gog-button-toggle-group
+            [size]="sizeOption"
+            [ariaLabel]="sizeOption"
+            [options]="views"
+            [(value)]="sizeView"
+          />
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
   </section>
 
   <section class="doc-section">

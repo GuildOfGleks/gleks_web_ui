@@ -15,22 +15,53 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — hover or tab onto either of these:</p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview action-row">
+        <gog-button gogTooltip="Save changes">Save</gog-button>
+        <gog-chip gogTooltip="Not visible to anyone else yet">Draft</gog-chip>
+        <gog-icon name="info" gogTooltip="An icon works too" />
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.positions" title="Position">
-      <code>auto</code> (the default) picks whichever side has room, preferring top, then bottom,
-      then right, then left. An explicit side still flips to its opposite when the requested one has
-      no room but the opposite does — so a tooltip near the viewport edge stays readable rather than
-      being clipped.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Position</h3>
+      <p class="demo-card__meta">
+        <code>auto</code> (the default) picks whichever side has room, preferring top, then bottom,
+        then right, then left. An explicit side still flips to its opposite when the requested one
+        has no room but the opposite does — so a tooltip near the viewport edge stays readable
+        rather than being clipped.
+      </p>
+      <div class="demo-card__preview action-row tooltip-demo__row">
+        @for (position of positions; track position) {
+          <gog-button [gogTooltip]="'Rendered on the ' + position" [gogTooltipPosition]="position">
+            {{ position }}
+          </gog-button>
+        }
+      </div>
+      <app-code-tabs [html]="positionsHtml" [ts]="positionsTs" />
+    </article>
 
-    <app-demo [component]="examples.template" title="Rich content">
-      Pass a <code>TemplateRef</code> instead of a string when the bubble needs real markup.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Rich content</h3>
+      <p class="demo-card__meta">
+        Pass a <code>TemplateRef</code> instead of a string when the bubble needs real markup.
+      </p>
+      <ng-template #richHint>
+        <strong>Deployment blocked</strong>
+        <p class="tooltip-demo__hint">
+          Two checks are still running. <gog-tag variant="warning">CI</gog-tag>
+        </p>
+      </ng-template>
+      <div class="demo-card__preview">
+        <gog-button [gogTooltip]="richHint">Deploy</gog-button>
+      </div>
+      <app-code-tabs [html]="templateHtml" [ts]="templateTs" />
+    </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Long content is hoverable and scrollable</h3>
@@ -46,11 +77,20 @@
       </div>
     </article>
 
-    <app-demo [component]="examples.delays" title="Delays and disabling">
-      <code>gogTooltipShowDelay</code> defaults to 300 ms and <code>gogTooltipHideDelay</code> to
-      100 ms — the hide gap is what gives the pointer time to travel onto the bubble.
-      <code>gogTooltipDisabled</code> suppresses the tooltip without removing the directive.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Delays and disabling</h3>
+      <p class="demo-card__meta">
+        <code>gogTooltipShowDelay</code> defaults to 300 ms and <code>gogTooltipHideDelay</code> to
+        100 ms — the hide gap is what gives the pointer time to travel onto the bubble.
+        <code>gogTooltipDisabled</code> suppresses the tooltip without removing the directive.
+      </p>
+      <div class="demo-card__preview action-row">
+        <gog-button gogTooltip="Appears at once" [gogTooltipShowDelay]="0">No delay</gog-button>
+        <gog-button gogTooltip="Takes a second" [gogTooltipShowDelay]="1000">Slow</gog-button>
+        <gog-button gogTooltip="Never shown" [gogTooltipDisabled]="true">Disabled</gog-button>
+      </div>
+      <app-code-tabs [html]="delaysHtml" [ts]="delaysTs" />
+    </article>
   </section>
 
   <section class="doc-section">

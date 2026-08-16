@@ -1,17 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { GogProgressbarVariant, GogSize } from '@guildofgleks/ui';
-import { ExampleHostComponent } from '../../shared/example-host/example-host';
-import { provideExampleSources } from '../../shared/example-sources';
+import {
+  ButtonComponent,
+  GogProgressbarVariant,
+  GogSize,
+  ProgressbarComponent,
+} from '@guildofgleks/ui';
+import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
-import { PROGRESSBAR_EXAMPLE_SOURCES } from '../../../examples/progressbar/sources.generated';
-import { ProgressbarModesExample } from '../../../examples/progressbar/progressbar-modes/example';
-import { ProgressbarOverviewExample } from '../../../examples/progressbar/progressbar-overview/example';
-import { ProgressbarShowValueExample } from '../../../examples/progressbar/progressbar-show-value/example';
-import { ProgressbarSizesExample } from '../../../examples/progressbar/progressbar-sizes/example';
-import { ProgressbarVariantsExample } from '../../../examples/progressbar/progressbar-variants/example';
 
 interface ApiInputRow {
   readonly name: string;
@@ -72,8 +69,13 @@ const API_INPUTS: readonly ApiInputRow[] = [
 
 @Component({
   selector: 'app-progressbar-doc-page',
-  imports: [ExampleHostComponent, MarkdownComponent, RouterLink],
-  providers: [provideExampleSources(PROGRESSBAR_EXAMPLE_SOURCES)],
+  imports: [
+    ProgressbarComponent,
+    ButtonComponent,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+  ],
   templateUrl: './progressbar-doc-page.html',
   styleUrl: './progressbar-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,19 +90,121 @@ export class ProgressbarDocPage {
   ];
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
+  protected readonly uploaded = signal(42);
+
   protected readonly apiInputs = API_INPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'progressbar')?.tokens ?? [];
 
   protected readonly importSnippet =
-    "```typescript\nimport { } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ProgressbarComponent],\n})\n```";
+    "```typescript\nimport { ProgressbarComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ProgressbarComponent],\n})\n```";
 
-  /** Each example is a file under `src/app/examples/progressbar/` — see docs/lab-examples-refactor.md. */
-  protected readonly examples = {
-    modes: ProgressbarModesExample,
-    overview: ProgressbarOverviewExample,
-    showValue: ProgressbarShowValueExample,
-    sizes: ProgressbarSizesExample,
-    variants: ProgressbarVariantsExample,
-  };
+  protected readonly overviewHtml = '<gog-progressbar [value]="42" ariaLabel="Upload progress" />';
+  protected readonly overviewTs = [
+    "import { Component } from '@angular/core';",
+    "import { ProgressbarComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ProgressbarComponent],',
+    '  template: `<gog-progressbar [value]="42" ariaLabel="Upload progress" />`,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+
+  protected readonly modesHtml = [
+    '<gog-progressbar [value]="42" ariaLabel="Upload" />',
+    '<gog-progressbar mode="indeterminate" ariaLabel="Loading" />',
+    '<gog-progressbar mode="buffer" [value]="42" [buffer]="70" ariaLabel="Playback" />',
+  ].join('\n');
+  protected readonly modesTs = [
+    "import { Component } from '@angular/core';",
+    "import { ProgressbarComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ProgressbarComponent],',
+    '  template: `',
+    '    <gog-progressbar [value]="42" ariaLabel="Upload" />',
+    '    <gog-progressbar mode="indeterminate" ariaLabel="Loading" />',
+    '    <gog-progressbar mode="buffer" [value]="42" [buffer]="70" ariaLabel="Playback" />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+
+  protected readonly variantsHtml = [
+    '@for (variantOption of variants; track variantOption) {',
+    '  <gog-progressbar [variant]="variantOption" [value]="65" [ariaLabel]="variantOption" />',
+    '}',
+  ].join('\n');
+  protected readonly variantsTs = [
+    "import { Component } from '@angular/core';",
+    "import { GogProgressbarVariant, ProgressbarComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ProgressbarComponent],',
+    '  template: `',
+    '    @for (variantOption of variants; track variantOption) {',
+    '      <gog-progressbar [variant]="variantOption" [value]="65" [ariaLabel]="variantOption" />',
+    '    }',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly variants: GogProgressbarVariant[] = [',
+    "    'accent',",
+    "    'success',",
+    "    'danger',",
+    "    'warning',",
+    "    'info',",
+    '  ];',
+    '}',
+  ].join('\n');
+
+  protected readonly sizesHtml = [
+    '@for (sizeOption of sizes; track sizeOption) {',
+    '  <gog-progressbar [size]="sizeOption" [value]="65" [ariaLabel]="sizeOption" />',
+    '}',
+  ].join('\n');
+  protected readonly sizesTs = [
+    "import { Component } from '@angular/core';",
+    "import { GogSize, ProgressbarComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ProgressbarComponent],',
+    '  template: `',
+    '    @for (sizeOption of sizes; track sizeOption) {',
+    '      <gog-progressbar [size]="sizeOption" [value]="65" [ariaLabel]="sizeOption" />',
+    '    }',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
+    '}',
+  ].join('\n');
+
+  protected readonly showValueHtml = [
+    '<gog-progressbar [value]="uploaded()" [showValue]="true" ariaLabel="Upload progress" />',
+  ].join('\n');
+  protected readonly showValueTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { ProgressbarComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ProgressbarComponent],',
+    '  template: `',
+    '    <gog-progressbar [value]="uploaded()" [showValue]="true" ariaLabel="Upload progress" />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly uploaded = signal(42);',
+    '}',
+  ].join('\n');
+
+  protected step(delta: number): void {
+    this.uploaded.update((value) => Math.min(100, Math.max(0, value + delta)));
+  }
 }

@@ -14,7 +14,13 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <app-demo [component]="examples.overview" title="Basic usage" />
+    <p class="doc-section__intro">Basic usage:</p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-toggle label="Notifications" [(checked)]="notifications" />
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
   </section>
 
   <section class="doc-section">
@@ -30,29 +36,70 @@
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.trackLabels" title="Labels inside the track">
-      <code>onLabel</code> / <code>offLabel</code> render inside the track itself. Both stay in the
-      DOM and the track sizes to the wider of the two, so its width cannot jump as the switch flips.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Labels inside the track</h3>
+      <p class="demo-card__meta">
+        <code>onLabel</code> / <code>offLabel</code> render inside the track itself. Both stay in
+        the DOM and the track sizes to the wider of the two, so its width cannot jump as the switch
+        flips.
+      </p>
+      <div class="demo-card__preview action-column">
+        <gog-toggle label="Analytics" onLabel="ON" offLabel="OFF" [(checked)]="analytics" />
+      </div>
+      <app-code-tabs [html]="trackLabelsHtml" [ts]="trackLabelsTs" />
+    </article>
 
-    <app-demo [component]="examples.sizes" title="Sizes">
-      Five steps, shared with <code>gog-checkbox</code>. Also settable app-wide through
-      <code>GOG_CONFIG.control.size</code>.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        Five steps, shared with <code>gog-checkbox</code>. Also settable app-wide through
+        <code>GOG_CONFIG.control.size</code>.
+      </p>
+      <div class="demo-card__preview action-column">
+        @for (sizeOption of sizes; track sizeOption) {
+          <gog-toggle [size]="sizeOption" [label]="sizeOption" [(checked)]="sizeState" />
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
 
-    <app-demo [component]="examples.layout" title="Label placement and full width">
-      <code>labelPosition</code> moves the label to the other side. <code>fullWidth</code>
-      stretches the row so the switch lands on the far edge — the usual settings-list layout.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Label placement and full width</h3>
+      <p class="demo-card__meta">
+        <code>labelPosition</code> moves the label to the other side.
+        <code>fullWidth</code> stretches the row so the switch lands on the far edge — the usual
+        settings-list layout.
+      </p>
+      <div class="demo-card__preview action-column toggle-demo__rows">
+        <gog-toggle label="Label after the switch" [(checked)]="compactMode" />
+        <gog-toggle label="Label before it" labelPosition="start" [(checked)]="labelStart" />
+        <gog-toggle label="Full width" [fullWidth]="true" [(checked)]="compactMode" />
+      </div>
+      <app-code-tabs [html]="layoutHtml" [ts]="layoutTs" />
+    </article>
 
-    <app-demo [component]="examples.forms" title="Reactive forms">
-      A <code>ControlValueAccessor</code>, so <code>formControl</code> /
-      <code>formControlName</code> work directly — including the control's own disabled state.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive forms</h3>
+      <p class="demo-card__meta">
+        A <code>ControlValueAccessor</code>, so <code>formControl</code> /
+        <code>formControlName</code> work directly — including the control's own disabled state.
+      </p>
+      <div class="demo-card__preview action-column">
+        <gog-toggle label="Dark mode" [formControl]="darkMode" />
+        <p class="doc-section__meta">Control value: {{ darkMode.value }}</p>
+      </div>
+      <app-code-tabs [html]="formsHtml" [ts]="formsTs" />
+    </article>
 
-    <app-demo [component]="examples.disabled" title="Disabled">
-      Both states stay legible while non-interactive.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled</h3>
+      <p class="demo-card__meta">Both states stay legible while non-interactive.</p>
+      <div class="demo-card__preview action-column">
+        <gog-toggle label="Disabled, off" [disabled]="true" />
+        <gog-toggle label="Disabled, on" [disabled]="true" [checked]="true" />
+      </div>
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+    </article>
   </section>
 
   <section class="doc-section">

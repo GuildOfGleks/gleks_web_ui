@@ -14,48 +14,121 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — a labeled checkbox bound with [(checked)]:</p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-checkbox label="I agree" [(checked)]="agreed" />
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+    <p class="doc-section__meta">Checked: {{ agreed() }}</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.sizes" title="Sizes">
-      Five size steps, from xsm to slg.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
+      <div class="demo-card__preview size-row">
+        @for (sizeOption of sizes; track sizeOption) {
+          <gog-checkbox [size]="sizeOption" [label]="sizeOption" [checked]="true" />
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
 
-    <app-demo [component]="examples.indeterminate" title="Indeterminate — select all">
-      <code>indeterminate</code> is purely presentational: a dash instead of the checkmark, plus
-      <code>aria-checked="mixed"</code>. Drive it yourself from the state of a group, as a "select
-      all" checkbox does here.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Indeterminate — select all</h3>
+      <p class="demo-card__meta">
+        <code>indeterminate</code> is purely presentational: a dash instead of the checkmark, plus
+        <code>aria-checked="mixed"</code>. Drive it yourself from the state of a group, as a "select
+        all" checkbox does here.
+      </p>
+      <div class="demo-card__preview">
+        <gog-checkbox
+          label="Select all"
+          [checked]="allChecked()"
+          [indeterminate]="parentIndeterminate()"
+          (checkedChange)="setAll($event)"
+        />
+        <div class="checkbox-doc__group">
+          @for (item of subscriptions(); track item.id) {
+            <gog-checkbox
+              [label]="item.label"
+              [checked]="item.checked"
+              (checkedChange)="setOne(item.id, $event)"
+            />
+          }
+        </div>
+      </div>
+      <app-code-tabs [html]="indeterminateHtml" [ts]="indeterminateTs" />
+    </article>
 
-    <app-demo [component]="examples.disabled" title="Disabled">
-      Disabled blocks toggling in every check state.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled</h3>
+      <p class="demo-card__meta">Disabled blocks toggling in every check state.</p>
+      <div class="demo-card__preview action-column">
+        <gog-checkbox label="Disabled, unchecked" [disabled]="true" />
+        <gog-checkbox label="Disabled, checked" [checked]="true" [disabled]="true" />
+        <gog-checkbox label="Disabled, indeterminate" [indeterminate]="true" [disabled]="true" />
+      </div>
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+    </article>
 
-    <app-demo [component]="examples.noLabel" title="No visible label">
-      Without <code>label</code>, set <code>ariaLabel</code> so the checkbox still has an accessible
-      name — for example a row-selection checkbox in a table.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">No visible label</h3>
+      <p class="demo-card__meta">
+        Without <code>label</code>, set <code>ariaLabel</code> so the checkbox still has an
+        accessible name — for example a row-selection checkbox in a table.
+      </p>
+      <div class="demo-card__preview">
+        <gog-checkbox ariaLabel="Select row" [(checked)]="agreed" />
+      </div>
+      <app-code-tabs [html]="noLabelHtml" [ts]="noLabelTs" />
+    </article>
 
-    <app-demo [component]="examples.fullWidth" title="Full width">
-      Stretches the row to fill its container; wrapped here in a narrower box to show it.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Full width</h3>
+      <p class="demo-card__meta">
+        Stretches the row to fill its container; wrapped here in a narrower box to show it.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-checkbox label="Full width row" [fullWidth]="true" />
+      </div>
+      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
+    </article>
 
-    <app-demo [component]="examples.form" title="Reactive Forms">
-      Works as a <code>ControlValueAccessor</code> — wire it to a <code>FormControl</code> with
-      <code>[formControl]</code> or <code>formControlName</code> instead of
-      <code>[(checked)]</code>. Don't bind both to the same instance. Control value:
-      {{ formControl.value }}
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive Forms</h3>
+      <p class="demo-card__meta">
+        Works as a <code>ControlValueAccessor</code> — wire it to a <code>FormControl</code> with
+        <code>[formControl]</code> or <code>formControlName</code> instead of
+        <code>[(checked)]</code>. Don't bind both to the same instance.
+      </p>
+      <div class="demo-card__preview">
+        <gog-checkbox label="Subscribe" [formControl]="formControl" />
+      </div>
+      <p class="demo-card__meta">Control value: {{ formControl.value }}</p>
+      <app-code-tabs [html]="formHtml" [ts]="formTs" />
+    </article>
 
-    <app-demo [component]="examples.checkIcon" title="Custom check icon">
-      Project an <code>&lt;ng-template gogCheckboxIcon&gt;</code> to replace the checkmark drawn
-      inside the box. This replaces the <code>checkIconTemplate</code> input, deprecated in 21.3.0
-      and removed in 21.5.0 — both work meanwhile, and the projected slot wins when a call site has
-      both.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom check icon</h3>
+      <p class="demo-card__meta">
+        Project an <code>&lt;ng-template gogCheckboxIcon&gt;</code> to replace the checkmark drawn
+        inside the box. This replaces the <code>checkIconTemplate</code> input, deprecated in 21.3.0
+        and removed in 21.5.0 — both work meanwhile, and the projected slot wins when a call site
+        has both.
+      </p>
+      <div class="demo-card__preview">
+        <gog-checkbox label="Custom mark" [checked]="true">
+          <ng-template gogCheckboxIcon>
+            <gog-icon name="close" />
+          </ng-template>
+        </gog-checkbox>
+      </div>
+      <app-code-tabs [html]="checkIconHtml" [ts]="checkIconTs" />
+    </article>
   </section>
 
   <section class="doc-section">

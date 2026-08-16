@@ -1,27 +1,17 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GogSize } from '@guildofgleks/ui';
-import { ExampleHostComponent } from '../../shared/example-host/example-host';
-import { provideExampleSources } from '../../shared/example-sources';
+import {
+  GogInputAddonEndDirective,
+  GogInputAddonStartDirective,
+  GogSize,
+  IconComponent,
+  InputfieldComponent,
+} from '@guildofgleks/ui';
+import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
-import { INPUTFIELD_EXAMPLE_SOURCES } from '../../../examples/inputfield/sources.generated';
-import { InputfieldAddonExample } from '../../../examples/inputfield/inputfield-addon/example';
-import { InputfieldAutoWidthExample } from '../../../examples/inputfield/inputfield-auto-width/example';
-import { InputfieldClearableExample } from '../../../examples/inputfield/inputfield-clearable/example';
-import { InputfieldDisabledExample } from '../../../examples/inputfield/inputfield-disabled/example';
-import { InputfieldErrorExample } from '../../../examples/inputfield/inputfield-error/example';
-import { InputfieldFloatLabelExample } from '../../../examples/inputfield/inputfield-float-label/example';
-import { InputfieldFormExample } from '../../../examples/inputfield/inputfield-form/example';
-import { InputfieldIconsExample } from '../../../examples/inputfield/inputfield-icons/example';
-import { InputfieldNumberDateExample } from '../../../examples/inputfield/inputfield-number-date/example';
-import { InputfieldOverviewExample } from '../../../examples/inputfield/inputfield-overview/example';
-import { InputfieldPasswordExample } from '../../../examples/inputfield/inputfield-password/example';
-import { InputfieldSizesExample } from '../../../examples/inputfield/inputfield-sizes/example';
-import { InputfieldSpinButtonsExample } from '../../../examples/inputfield/inputfield-spin-buttons/example';
 
 interface ApiInputRow {
   readonly name: string;
@@ -223,13 +213,16 @@ const DEPRECATED_ICON_INPUTS: readonly ApiInputRow[] = [
 @Component({
   selector: 'app-inputfield-doc-page',
   imports: [
-    ExampleHostComponent,
+    InputfieldComponent,
+    GogInputAddonStartDirective,
+    GogInputAddonEndDirective,
+    IconComponent,
     MarkdownComponent,
+    CodeTabsComponent,
     RouterLink,
     ReactiveFormsModule,
     SinceBadgeComponent,
   ],
-  providers: [provideExampleSources(INPUTFIELD_EXAMPLE_SOURCES)],
   templateUrl: './inputfield-doc-page.html',
   styleUrl: './inputfield-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -245,13 +238,185 @@ export class InputfieldDocPage {
   protected readonly name = signal('');
   protected readonly password = signal('');
   protected readonly search = signal('');
+  protected readonly amount = signal('');
+  protected readonly manualErrorValue = signal('');
   protected readonly lastIconAction = signal('No icon action yet.');
 
+  protected readonly emailControl = new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.email],
+  });
   protected readonly quantityControl = new FormControl<number | null>(1);
+  protected readonly stepperValue = signal('3');
+  protected readonly weightValue = signal('72');
+
+  protected readonly spinButtonsHtml = [
+    '<gog-inputfield label="Quantity (stepper)" type="number" [min]="0" [(value)]="quantity" />',
+    '',
+    '<gog-inputfield',
+    '  label="Quantity (no stepper)"',
+    '  type="number"',
+    '  [min]="0"',
+    '  [showSpinButtons]="false"',
+    '  [(value)]="quantity"',
+    '/>',
+    '',
+    '<gog-inputfield',
+    '  label="Weight (clearable + stepper)"',
+    '  type="number"',
+    '  [min]="0"',
+    '  [clearable]="true"',
+    '  [(value)]="weight"',
+    '/>',
+  ].join('\n');
+  protected readonly spinButtonsTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly quantity = signal('3');",
+    "  protected readonly weight = signal('72');",
+    '}',
+  ].join('\n');
+
   protected readonly deliveryDate = signal('');
 
   protected readonly importSnippet =
     "```typescript\nimport { InputfieldComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [InputfieldComponent],\n})\n```";
+
+  protected readonly overviewHtml =
+    '<gog-inputfield label="Name" placeholder="Ada Lovelace" [(value)]="name" />';
+  protected readonly overviewTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `<gog-inputfield label="Name" placeholder="Ada Lovelace" [(value)]="name" />`,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly name = signal('');",
+    '}',
+  ].join('\n');
+
+  protected readonly sizesHtml = [
+    '@for (sizeOption of sizes; track sizeOption) {',
+    '  <gog-inputfield [size]="sizeOption" [label]="sizeOption" [placeholder]="sizeOption" />',
+    '}',
+  ].join('\n');
+  protected readonly sizesTs = [
+    "import { Component } from '@angular/core';",
+    "import { GogSize, InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `',
+    '    @for (sizeOption of sizes; track sizeOption) {',
+    '      <gog-inputfield [size]="sizeOption" [label]="sizeOption" [placeholder]="sizeOption" />',
+    '    }',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
+    '}',
+  ].join('\n');
+
+  protected readonly passwordHtml =
+    '<gog-inputfield label="Password" type="password" [(value)]="password" />';
+  protected readonly passwordTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `<gog-inputfield label="Password" type="password" [(value)]="password" />`,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly password = signal('');",
+    '}',
+  ].join('\n');
+
+  protected readonly iconsHtml =
+    '<gog-inputfield label="Search" iconStart="info" placeholder="Decorative start icon" />';
+  protected readonly iconsTs = [
+    "import { Component } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `',
+    '    <gog-inputfield label="Search" iconStart="info" placeholder="Decorative start icon" />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+
+  protected readonly addonHtml = [
+    '<gog-inputfield label="Amount" [(value)]="amount">',
+    '  <span gogInputAddonStart>$</span>',
+    '  <span gogInputAddonEnd>USD</span>',
+    '</gog-inputfield>',
+    '',
+    '<gog-inputfield label="Search" [(value)]="search">',
+    '  <button type="button" gogInputAddonEnd aria-label="Clear search" (click)="clearSearch()">',
+    '    <gog-icon name="close" />',
+    '  </button>',
+    '</gog-inputfield>',
+  ].join('\n');
+  protected readonly addonTs = [
+    "import { Component, signal } from '@angular/core';",
+    'import {',
+    '  GogInputAddonEndDirective,',
+    '  GogInputAddonStartDirective,',
+    '  IconComponent,',
+    '  InputfieldComponent,',
+    "} from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [',
+    '    InputfieldComponent,',
+    '    GogInputAddonStartDirective,',
+    '    GogInputAddonEndDirective,',
+    '    IconComponent,',
+    '  ],',
+    '  template: `',
+    '    <gog-inputfield label="Amount" [(value)]="amount">',
+    '      <span gogInputAddonStart>$</span>',
+    '      <span gogInputAddonEnd>USD</span>',
+    '    </gog-inputfield>',
+    '',
+    '    <gog-inputfield label="Search" [(value)]="search">',
+    '      <button',
+    '        type="button"',
+    '        gogInputAddonEnd',
+    '        aria-label="Clear search"',
+    '        (click)="clearSearch()"',
+    '      >',
+    '        <gog-icon name="close" />',
+    '      </button>',
+    '    </gog-inputfield>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly amount = signal('');",
+    "  protected readonly search = signal('');",
+    '',
+    '  // A plain method on a real button — no callback threaded through the field.',
+    '  protected clearSearch(): void {',
+    "    this.search.set('');",
+    '  }',
+    '}',
+  ].join('\n');
 
   protected readonly migrateAddonSnippet = [
     '```html',
@@ -276,24 +441,170 @@ export class InputfieldDocPage {
     '```',
   ].join('\n');
 
+  protected readonly clearableValue = signal('Clear me');
+  protected readonly clearableHtml =
+    '<gog-inputfield label="Search" [clearable]="true" [(value)]="search" />';
+  protected readonly clearableTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `<gog-inputfield label="Search" [clearable]="true" [(value)]="search" />`,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly search = signal('');",
+    '}',
+  ].join('\n');
+
+  protected readonly floatLabelHtml = [
+    '<gog-inputfield label="in" floatLabel="in" />',
+    '<gog-inputfield label="on" floatLabel="on" />',
+    '<gog-inputfield label="over" floatLabel="over" />',
+  ].join('\n');
+  protected readonly floatLabelTs = [
+    "import { Component } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `<gog-inputfield label="Email" floatLabel="on" />`,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+
+  protected readonly errorHtml = [
+    '<gog-inputfield',
+    '  label="Username"',
+    '  [(value)]="manualErrorValue"',
+    "  [errorMessage]=\"manualErrorValue().length > 0 && manualErrorValue().length < 3 ? 'At least 3 characters' : ''\"",
+    '/>',
+  ].join('\n');
+  protected readonly errorTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `',
+    '    <gog-inputfield',
+    '      label="Username"',
+    '      [(value)]="value"',
+    "      [errorMessage]=\"value().length > 0 && value().length < 3 ? 'At least 3 characters' : ''\"",
+    '    />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly value = signal('');",
+    '}',
+  ].join('\n');
+
+  protected readonly formHtml = [
+    '<gog-inputfield',
+    '  label="Email"',
+    '  [formControl]="emailControl"',
+    '  errorMessage="Enter a valid email"',
+    '  errorDisplay="auto"',
+    '/>',
+  ].join('\n');
+  protected readonly formTs = [
+    "import { Component } from '@angular/core';",
+    "import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent, ReactiveFormsModule],',
+    '  template: `',
+    '    <gog-inputfield',
+    '      label="Email"',
+    '      [formControl]="emailControl"',
+    '      errorMessage="Enter a valid email"',
+    '      errorDisplay="auto"',
+    '    />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly emailControl = new FormControl('', {",
+    '    nonNullable: true,',
+    '    validators: [Validators.required, Validators.email],',
+    '  });',
+    '}',
+  ].join('\n');
+
+  protected readonly numberDateHtml = [
+    '<gog-inputfield',
+    '  label="Quantity"',
+    '  type="number"',
+    '  [min]="1"',
+    '  [max]="10"',
+    '  [step]="1"',
+    '  [formControl]="quantityControl"',
+    '/>',
+    '',
+    '<gog-inputfield label="Delivery date" type="date" [(value)]="deliveryDate" />',
+  ].join('\n');
+  protected readonly numberDateTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { FormControl, ReactiveFormsModule } from '@angular/forms';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent, ReactiveFormsModule],',
+    '  template: `',
+    '    <gog-inputfield',
+    '      label="Quantity"',
+    '      type="number"',
+    '      [min]="1"',
+    '      [max]="10"',
+    '      [step]="1"',
+    '      [formControl]="quantityControl"',
+    '    />',
+    '',
+    '    <gog-inputfield label="Delivery date" type="date" [(value)]="deliveryDate" />',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  // formControl.value is a number here (null when empty) — [(value)] would stay the raw string.',
+    '  protected readonly quantityControl = new FormControl<number | null>(1);',
+    "  protected readonly deliveryDate = signal('');",
+    '}',
+  ].join('\n');
+
+  protected readonly disabledHtml =
+    '<gog-inputfield label="Disabled" [disabled]="true" value="Read only" />';
+  protected readonly disabledTs = [
+    "import { Component } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `<gog-inputfield label="Disabled" [disabled]="true" value="Read only" />`,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+
+  protected readonly autoWidthHtml =
+    '<gog-inputfield label="Zip code" [fullWidth]="false" placeholder="00000" />';
+  protected readonly autoWidthTs = [
+    "import { Component } from '@angular/core';",
+    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [InputfieldComponent],',
+    '  template: `<gog-inputfield label="Zip code" [fullWidth]="false" placeholder="00000" />`,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+
   protected clearSearch(): void {
     this.search.set('');
     this.lastIconAction.set('Search cleared');
   }
-  /** Each example is a file under `src/app/examples/inputfield/` — see docs/lab-examples-refactor.md. */
-  protected readonly examples = {
-    addon: InputfieldAddonExample,
-    autoWidth: InputfieldAutoWidthExample,
-    clearable: InputfieldClearableExample,
-    disabled: InputfieldDisabledExample,
-    error: InputfieldErrorExample,
-    floatLabel: InputfieldFloatLabelExample,
-    form: InputfieldFormExample,
-    icons: InputfieldIconsExample,
-    numberDate: InputfieldNumberDateExample,
-    overview: InputfieldOverviewExample,
-    password: InputfieldPasswordExample,
-    sizes: InputfieldSizesExample,
-    spinButtons: InputfieldSpinButtonsExample,
-  };
 }

@@ -15,61 +15,193 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage — a labeled field bound with [(value)]:</p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview width-demo">
+        <gog-multiselect label="Features" [options]="features" [(value)]="selectedFeatures" />
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+    <p class="doc-section__meta">Selected: {{ featureSummary() }}</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.selectedNames" title="Selected names">
-      The component also exposes a public <code>selectedNames</code> signal — the joined display
-      names of the current selection — reachable straight off a template reference variable, with no
-      summary computed by hand.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Selected names</h3>
+      <p class="demo-card__meta">
+        The component also exposes a public <code>selectedNames</code> signal — the joined display
+        names of the current selection — reachable straight off a template reference variable, with
+        no summary computed by hand.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-multiselect #ms label="Tags" [options]="tags" [(value)]="fullWidthTags" />
+        <p class="demo-card__meta">Selected: {{ ms.selectedNames() }}</p>
+      </div>
+      <app-code-tabs [html]="selectedNamesHtml" [ts]="selectedNamesTs" />
+    </article>
 
-    <app-demo [component]="examples.sizes" title="Sizes">
-      Five size steps, from xsm to slg.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
+      <div class="demo-card__preview size-column">
+        @for (sizeOption of sizes; track sizeOption) {
+          <gog-multiselect
+            [label]="'Size: ' + sizeOption"
+            [size]="sizeOption"
+            [options]="features"
+            [(value)]="sizeDemoValue"
+          />
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
 
-    <app-demo [component]="examples.controls" title='"Select all" / "Clear" controls'>
-      <code>showControls</code> adds a select-all/clear row; <code>controlsPosition</code>
-      puts it above or below the option list — either way it's pinned with
-      <code>position: sticky</code>, so it stays visible while a long list scrolls.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">"Select all" / "Clear" controls</h3>
+      <p class="demo-card__meta">
+        <code>showControls</code> adds a select-all/clear row; <code>controlsPosition</code>
+        puts it above or below the option list — either way it's pinned with
+        <code>position: sticky</code>, so it stays visible while a long list scrolls.
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-multiselect
+          label="Top (default)"
+          [options]="countries"
+          [showControls]="true"
+          [(value)]="topControlsValue"
+        />
+        <gog-multiselect
+          label="Bottom"
+          [options]="countries"
+          [showControls]="true"
+          controlsPosition="bottom"
+          [(value)]="bottomControlsValue"
+        />
+      </div>
+      <app-code-tabs [html]="controlsHtml" [ts]="controlsTs" />
+    </article>
 
-    <app-demo [component]="examples.states" title="Disabled option &amp; disabled field">
-      A single option can be marked <code>disabled</code> without disabling the whole field, or the
-      trigger itself can be disabled with <code>[disabled]="true"</code>. The last field shows an
-      error computed entirely by the page — <code>gog-multiselect</code> just renders whatever
-      <code>errorMessage</code> it's given, for as long as it's non-empty.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled option &amp; disabled field</h3>
+      <p class="demo-card__meta">
+        A single option can be marked <code>disabled</code> without disabling the whole field, or
+        the trigger itself can be disabled with <code>[disabled]="true"</code>. The last field shows
+        an error computed entirely by the page — <code>gog-multiselect</code> just renders whatever
+        <code>errorMessage</code> it's given, for as long as it's non-empty.
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-multiselect
+          label="Disabled"
+          [options]="features"
+          [value]="['toast']"
+          [disabled]="true"
+        />
+        <gog-multiselect
+          label="Permissions (one disabled)"
+          [options]="permissionsWithDisabled"
+          [(value)]="permissions"
+        />
+        <gog-multiselect
+          label="Required tags"
+          placeholder="Pick at least one..."
+          [options]="permissionsWithDisabled"
+          [errorMessage]="requiredError()"
+          [(value)]="requiredValue"
+        />
+      </div>
+      <app-code-tabs [html]="statesHtml" [ts]="statesTs" />
+    </article>
 
-    <app-demo [component]="examples.form" title="Reactive Forms — automatic error timing">
-      Same idea as <code>gog-select</code>: <code>errorDisplay="auto"</code> shows the error once
-      the attached <code>[formControl]</code> has been touched and is invalid, with no manual error
-      computation on this page's side.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive Forms — automatic error timing</h3>
+      <p class="demo-card__meta">
+        Same idea as <code>gog-select</code>: <code>errorDisplay="auto"</code> shows the error once
+        the attached <code>[formControl]</code> has been touched and is invalid, with no manual
+        error computation on this page's side.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-multiselect
+          label="Permissions"
+          placeholder="Pick at least one..."
+          [options]="permissionsWithDisabled"
+          [formControl]="permissionsFormControl"
+          errorMessage="Pick at least one permission."
+          errorDisplay="auto"
+        />
+      </div>
+      <app-code-tabs [html]="formHtml" [ts]="formTs" />
+    </article>
 
-    <app-demo [component]="examples.fullWidth" title="Full width">
-      Full width of its container by default (see every field above).
-      <code>[fullWidth]="false"</code> shrinks the trigger to fit its selected summary instead.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Full width</h3>
+      <p class="demo-card__meta">
+        Full width of its container by default (see every field above).
+        <code>[fullWidth]="false"</code> shrinks the trigger to fit its selected summary instead.
+      </p>
+      <div class="demo-card__preview field-row">
+        <div class="field-row__grow">
+          <gog-multiselect label="Features" [options]="features" [(value)]="fullWidthFeatures" />
+        </div>
+        <gog-multiselect
+          label="Tags"
+          [options]="tags"
+          [(value)]="fullWidthTags"
+          [fullWidth]="false"
+        />
+      </div>
+      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
+    </article>
 
-    <app-demo [component]="examples.chevron" title="Custom chevron &amp; label-less field">
-      Project an <code>&lt;ng-template gogDropdownChevron&gt;</code> to swap the trigger's icon, and
-      <code>&lt;ng-template gogMultiselectClearIcon&gt;</code> to swap the clear control's.
-      <code>ariaLabel</code> names a field that has no visible <code>label</code> at all. Both slots
-      replace inputs deprecated in 21.3.0 and removed in 21.5.0 — <code>chevronTemplate</code> and
-      <code>clearIconTemplate</code>.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom chevron &amp; label-less field</h3>
+      <p class="demo-card__meta">
+        Project an <code>&lt;ng-template gogDropdownChevron&gt;</code> to swap the trigger's icon,
+        and <code>&lt;ng-template gogMultiselectClearIcon&gt;</code> to swap the clear control's.
+        <code>ariaLabel</code> names a field that has no visible <code>label</code> at all. Both
+        slots replace inputs deprecated in 21.3.0 and removed in 21.5.0 —
+        <code>chevronTemplate</code> and <code>clearIconTemplate</code>.
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-multiselect [options]="sortOptions" [(value)]="sortValue">
+          <ng-template gogDropdownChevron>
+            <gog-icon name="sort" />
+          </ng-template>
+          <ng-template gogMultiselectClearIcon>
+            <gog-icon name="error" />
+          </ng-template>
+        </gog-multiselect>
+        <gog-multiselect
+          ariaLabel="Tags (no visible label)"
+          placeholder="Pick tags"
+          [options]="tags"
+          [(value)]="ariaOnlyValue"
+        />
+      </div>
+      <app-code-tabs [html]="chevronHtml" [ts]="chevronTs" />
+    </article>
 
-    <app-demo [component]="examples.appendToBody" title="Append to body &amp; custom panel size">
-      <code>appendToBody</code> portals the panel into <code>document.body</code> — useful inside
-      scrollable or overflow-clipped containers, since the panel escapes the clipping.
-      <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> then take any CSS length to
-      override the trigger-derived size; both apply only with <code>appendToBody</code>. The list
-      below has 20 options, capped to 160px so it scrolls internally.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Append to body &amp; custom panel size</h3>
+      <p class="demo-card__meta">
+        <code>appendToBody</code> portals the panel into <code>document.body</code> — useful inside
+        scrollable or overflow-clipped containers, since the panel escapes the clipping.
+        <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> then take any CSS length to
+        override the trigger-derived size; both apply only with <code>appendToBody</code>. The list
+        below has 20 options, capped to 160px so it scrolls internally.
+      </p>
+      <div class="demo-card__preview width-demo">
+        <gog-multiselect
+          label="Country (fixed 240px / 160px)"
+          [options]="manyCountries"
+          [appendToBody]="true"
+          dropdownWidth="240px"
+          dropdownMaxHeight="160px"
+          [(value)]="compactPanelValue"
+        />
+      </div>
+      <app-code-tabs [html]="appendToBodyHtml" [ts]="appendToBodyTs" />
+    </article>
   </section>
 
   <section class="doc-section">
@@ -82,9 +214,20 @@
       <strong>objects</strong> themselves. Defaults are <code>'name'</code> / <code>'id'</code> /
       <code>'disabled'</code>, so pre-21.3.0 code is unaffected.
     </p>
-    <app-demo [component]="examples.accessors">
-      value = {{ reviewerIds().join(', ') || '(empty)' }}
-    </app-demo>
+    <div class="demo-card">
+      <div class="demo-card__preview size-column">
+        <gog-multiselect
+          label="Reviewers"
+          optionLabel="profile.fullName"
+          optionValue="uuid"
+          optionDisabled="suspended"
+          [options]="users"
+          [(value)]="reviewerIds"
+        />
+      </div>
+      <p class="demo-card__meta">value = {{ reviewerIds().join(', ') || '(empty)' }}</p>
+      <app-code-tabs [html]="accessorsHtml" [ts]="accessorsTs" />
+    </div>
   </section>
 
   <section class="doc-section">
@@ -95,7 +238,21 @@
       it says while a filter is active rather than quietly selecting the whole list. The query
       resets when the panel closes.
     </p>
-    <app-demo [component]="examples.filter"> {{ filteredCountries().length }} selected </app-demo>
+    <div class="demo-card">
+      <div class="demo-card__preview size-column">
+        <gog-multiselect
+          label="Country (20 options)"
+          [filter]="true"
+          [showControls]="true"
+          filterPlaceholder="Search countries…"
+          filterEmptyMessage="No country matches"
+          [options]="manyCountries"
+          [(value)]="filteredCountries"
+        />
+      </div>
+      <p class="demo-card__meta">{{ filteredCountries().length }} selected</p>
+      <app-code-tabs [html]="filterHtml" [ts]="filterTs" />
+    </div>
   </section>
 
   <section class="doc-section">
@@ -127,7 +284,25 @@
       context. The per-option checkbox stays — it is the control's affordance, not part of the row's
       content.
     </p>
-    <app-demo [component]="examples.optionSlot" />
+    <div class="demo-card">
+      <div class="demo-card__preview size-column">
+        <gog-multiselect
+          label="Reviewers"
+          optionLabel="profile.fullName"
+          optionValue="uuid"
+          [options]="users"
+          [(value)]="slotReviewerIds"
+        >
+          <ng-template gogDropdownOption let-user let-label="label">
+            <span class="option-row">
+              <strong>{{ label }}</strong>
+              <small>{{ asUser(user).profile.role }}</small>
+            </span>
+          </ng-template>
+        </gog-multiselect>
+      </div>
+      <app-code-tabs [html]="optionSlotHtml" [ts]="optionSlotTs" />
+    </div>
   </section>
 
   <section class="doc-section">

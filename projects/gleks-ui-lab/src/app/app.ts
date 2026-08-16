@@ -103,7 +103,7 @@ export class App {
           takeUntilDestroyed(),
         )
         .subscribe(() => {
-          this.resetScroll();
+          this.mainScroll()?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
           // Picking a page is the whole reason the drawer was opened, so it closes itself —
           // otherwise a phone reader lands on the new page with the nav still covering it.
           this.isNavOpen.set(false);
@@ -143,41 +143,6 @@ export class App {
 
   protected readonly faBars = faBars;
   protected readonly faPalette = faPalette;
-
-  /**
-   * Puts the content scroller back at the top after a route change — and keeps it there for a
-   * moment.
-   *
-   * One reset is not enough. A component further down the new page can scroll *itself* into view
-   * as it initialises, and `Element.scrollIntoView()` walks up and scrolls every scrollable
-   * ancestor, this scroller included. `gog-tabs` does exactly that to keep its active header
-   * visible (see its `scrollActiveIntoView` input), so opening the Tabs page used to land the
-   * reader ~3200px down, at the last tabs demo on the page.
-   *
-   * So the reset is re-asserted over the next few frames, and abandoned the moment the reader
-   * scrolls on purpose — a wheel, a touch or a key is intent, and intent wins over housekeeping.
-   */
-  private resetScroll(): void {
-    const scroller = this.mainScroll();
-    if (!scroller) return;
-
-    let cancelled = false;
-    const cancel = () => (cancelled = true);
-    const events: (keyof WindowEventMap)[] = ['wheel', 'touchstart', 'keydown'];
-    for (const type of events) window.addEventListener(type, cancel, { passive: true, once: true });
-
-    const settle = () => {
-      if (!cancelled) scroller.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    };
-
-    settle();
-    requestAnimationFrame(settle);
-    setTimeout(settle, 120);
-    setTimeout(() => {
-      settle();
-      for (const type of events) window.removeEventListener(type, cancel);
-    }, 320);
-  }
 
   protected toggleNav(): void {
     this.isNavOpen.update((open) => !open);

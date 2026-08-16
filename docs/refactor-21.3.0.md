@@ -4,7 +4,7 @@ Working plan for the pre-public cleanup. Derived from the architecture review of
 (2026-08-07), and ordered **top-down in the order the review raised the issues**, not by
 priority — sections 1 → 4 of the review map onto iterations 1 → 6 below.
 
-Scope note: the review's section 4 also listed _missing features_ (filter/virtual scroll in
+Scope note: the review's section 4 also listed *missing features* (filter/virtual scroll in
 dropdowns, server-side table, row selection). Those are new capability, not fixes to existing
 design, and they are parked in the [Backlog](#backlog--deliberately-not-in-2130) at the bottom
 — with one exception (`optionLabel`/`optionValue`), which is in scope because it is a breaking
@@ -16,18 +16,18 @@ iteration 1. Per `gleks-ui-library.instructions.md` rule 9, the agent never publ
 
 ## Status
 
-| #   | Iteration                                                       | State   |
-| --- | --------------------------------------------------------------- | ------- |
-| 0   | Guardrails: instruction files                                   | ✅ done |
-| 1   | Token contract enforcement + float-label regression             | ✅ done |
-| 1b  | CI made green (lint + workspace-wide format)                    | ✅ done |
-| 1c  | Command-execution reliability (`running-commands`, `CLAUDE.md`) | ✅ done |
-| 2   | Deduplicate float label (TS + SCSS) + config resolver           | ✅ done |
-| 3   | Config semantics & coverage + size-class boilerplate            | ✅ done |
-| 4   | Slot unification + selector/naming fixes                        | ✅ done |
-| 5   | Dropdown data model (`optionLabel`/`optionValue`, generics)     | ✅ done |
-| 6   | Token system industrialization + coverage                       | ✅ done |
-| 7   | One Dark/One Light presets, dropdown filter, clearable controls | ✅ done |
+| # | Iteration | State |
+| --- | --- | --- |
+| 0 | Guardrails: instruction files | ✅ done |
+| 1 | Token contract enforcement + float-label regression | ✅ done |
+| 1b | CI made green (lint + workspace-wide format) | ✅ done |
+| 1c | Command-execution reliability (`running-commands`, `CLAUDE.md`) | ✅ done |
+| 2 | Deduplicate float label (TS + SCSS) + config resolver | ✅ done |
+| 3 | Config semantics & coverage + size-class boilerplate | ✅ done |
+| 4 | Slot unification + selector/naming fixes | ✅ done |
+| 5 | Dropdown data model (`optionLabel`/`optionValue`, generics) | ✅ done |
+| 6 | Token system industrialization + coverage | ✅ done |
+| 7 | One Dark/One Light presets, dropdown filter, clearable controls | ✅ done |
 
 Update this table at the end of every iteration, and re-state "done / remaining" in the turn
 summary.
@@ -60,7 +60,7 @@ churn cannot re-introduce what iteration 0 just documented.
    and via `npm run check:tokens`:
    - fail on a literal fallback in any component SCSS — `var(--gog-x, 8px)` — while allowing
      token-to-token chains `var(--gog-x, var(--gog-y))`;
-   - fail on a `--gog-*` token that a component _reads_ but `theme.css` never declares, except
+   - fail on a `--gog-*` token that a component *reads* but `theme.css` never declares, except
      the documented instance-layer names (needs an explicit allowlist of layer-3 tokens, which
      doubles as their documentation);
    - fail on a token declared in the `:root` literals block whose value contains `var(`.
@@ -104,7 +104,7 @@ leaves exactly two files, both intentional and both inert:
 
 **The library itself has zero semantic changes.** Worth knowing for next time: prettier formats
 embedded HTML inside Angular `template:` template literals, so it rewrote the escaping of the
-code samples in `gleks-ui-lab`'s doc pages (`\"` ⇄ `\'`). The resulting _strings_ are identical —
+code samples in `gleks-ui-lab`'s doc pages (`\"` ⇄ `\'`). The resulting *strings* are identical —
 inside a template literal both escapes collapse to the same character — but it is why those
 files show up in a "formatting-only" diff at all.
 
@@ -195,7 +195,7 @@ renders 15 wrappers and only one of them carries a float variant.
 by interpolation (`var(--gog-#{$prefix}-float-label-on-bg, …)`), which a text scan cannot
 resolve — the checker correctly flagged three tokens as "no longer read", which was the tool
 being wrong rather than the code. Compiling first makes it robust to any SCSS factoring, and it
-is now strictly stronger: a literal fallback introduced _inside_ the mixin is reported against
+is now strictly stronger: a literal fallback introduced *inside* the mixin is reported against
 every component that includes it, which the old text scan could not see at all.
 
 ### Retracted: the "textarea float-label bug" was a measurement error
@@ -226,8 +226,8 @@ trap doesn't catch the next person.
    - `size` (a compact app writes `size="sm"` on every control);
    - `appendToBody` + `dropdownDirection` for the dropdown family;
    - `toast.position` / `toast.duration` (currently constants in `toast-service.ts:40-41`).
-     Every one of these needs the input's default moved to `undefined` + a `DEFAULT_X` const, per
-     the recipe — via the iteration-2 resolver.
+   Every one of these needs the input's default moved to `undefined` + a `DEFAULT_X` const, per
+   the recipe — via the iteration-2 resolver.
 3. **Collapse the manual size-class bindings.** Seven templates carry 4–8 lines of
    `[class.gog-x--sm]="size() === 'sm'"` (`select` and `multiselect` have 8 each). Replace with
    a single computed class binding per component. Keep the emitted class names identical —
@@ -285,7 +285,7 @@ modifier. The scoped-config demo on the Global config page still applies its sub
    reveal keeps working untouched.
 4. **Convert the remaining `input<TemplateRef>` slots** to directives where they are real slots:
    `checkbox.checkIconTemplate`, `multiselect.clearIconTemplate`, `tag.iconTemplate`.
-   `gog-icon`'s own `template` input stays — there the template _is_ the component's data.
+   `gog-icon`'s own `template` input stays — there the template *is* the component's data.
    `chevronTemplate` on the dropdown base moves to a `gogDropdownChevron` directive.
 
 **Done when:** one slot mechanism documented in the README; every deprecated symbol has an
@@ -311,7 +311,7 @@ tag so `grep -rn "@deprecated since"` lists the whole set before a release. All 
 deprecations are dated 2026-08-07 and removed in 21.5.0; the two pre-existing option aliases
 were back-filled to the same format (21.2.2, removed in 21.4.0).
 
-Verified: 453 specs (was 446) including a new `content-slots.spec.ts` that pins every slot _and_
+Verified: 453 specs (was 446) including a new `content-slots.spec.ts` that pins every slot *and*
 that a projected slot beats the deprecated input it replaces — which is what lets a codebase
 migrate one call site at a time. Live checks in `ui-showcase`: the table renders its
 column-scoped tag cells and custom header, the projected clear button carries its own
@@ -335,12 +335,12 @@ before 1.0.
    - `optionValue: string | ((o: TOption) => unknown) | null` (default `null` = the option
      object itself; `'id'` reproduces today's behaviour),
    - `optionDisabled: string | ((o: TOption) => boolean)` (default `'disabled'`).
-     Shared resolver in `lib/shared/` (dot-path support can reuse `table`'s `getByPath`, which
-     should move to `lib/shared/` in the process — it is currently private to the table).
+   Shared resolver in `lib/shared/` (dot-path support can reuse `table`'s `getByPath`, which
+   should move to `lib/shared/` in the process — it is currently private to the table).
 2. **Migrate `select` and `multiselect`**, including the `--portal` panel and the
    `hasFloatValue` / `selectedOption` computeds.
 3. **Option template slot** — `gogDropdownOption` directive with `{ $implicit: TOption;
-selected: boolean; disabled: boolean }`.
+   selected: boolean; disabled: boolean }`.
 4. **Defaults chosen so existing `{id, name}` code keeps compiling**: `optionLabel` defaults to
    `'name'`, and `optionValue` defaults must reproduce today's `option.id` semantics for the
    `GogDropdownOption` case. `GogSelectOption` stays deprecated-aliased.
@@ -355,7 +355,7 @@ all existing showcase usages still work unchanged; spec suites for select/multis
 
 `GogDropdownBase<TValue, TOption = GogDropdownOption>` with three accessor inputs, each taking a
 property path or a function. `optionValue: null` emits the option object itself — verified by a
-spec asserting the emitted value is the _same reference_ the consumer passed in, which is the
+spec asserting the emitted value is the *same reference* the consumer passed in, which is the
 whole point of the change.
 
 Backwards compatibility is the load-bearing part, and it held: defaults `'name'` / `'id'` /
@@ -395,8 +395,8 @@ or renames tokens.
    - a `GogTokenName` union type shipped in the public API, so tooling/consumers get
      autocomplete;
    - the README theming table, which is currently hand-written and already drifting.
-     `check:tokens` then verifies the generated file matches the source (CI fails on a manual
-     edit to the generated CSS).
+   `check:tokens` then verifies the generated file matches the source (CI fails on a manual
+   edit to the generated CSS).
 2. **Token coverage pass.** Coverage is uneven — accordion 78, chip 54, but paginator 5 and
    `collapsible` 3. Audit every block against what it actually paints; paginator especially.
 3. **Block naming.** `--gog-ms-*` → `--gog-multiselect-*`, `--gog-btn-*` → keep (`btn` is
@@ -412,12 +412,12 @@ side-by-side theme lab in `ui-showcase` renders both presets correctly.
 ### Outcome — with one deliberate change of direction
 
 **The generation direction was inverted from what this plan said.** The plan called for a
-JSON/TS token source that _generates_ `theme.css`. On reading the file that turned out to be the
+JSON/TS token source that *generates* `theme.css`. On reading the file that turned out to be the
 wrong way round: `theme.css` carries the explanation of the whole system — the `:root` vs
 `:root, [data-theme]` split, why the instance layer is undeclared, how to add a theme — and a
 generated stylesheet would either lose that or bury it in a data file where it reads far worse.
 The drift the plan was actually complaining about was never in the stylesheet; it was in the
-hand-copied README table and the absence of any typed list, both _downstream_ of it.
+hand-copied README table and the absence of any typed list, both *downstream* of it.
 
 So `theme.css` stays the source, and `scripts/generate-tokens.mjs` produces
 `lib/shared/token-names.ts` (`GogTokenName` + `GOG_TOKEN_GROUPS`, both exported) and the README
@@ -479,9 +479,9 @@ component tokens they never mention (`--gog-btn-primary-bg` picks up `#61afef` /
 ## Flake closed — `scroll.component.spec.ts`
 
 Root cause, not a retry: `ScrollComponent.scheduleMeasure()` coalesces scroll/resize bursts into
-one `requestAnimationFrame`, and the specs awaited a _single_ frame. `dispatchScroll()` schedules
+one `requestAnimationFrame`, and the specs awaited a *single* frame. `dispatchScroll()` schedules
 frame A immediately; if A fires while `whenStable()` is still awaiting, the effect that also calls
-`scheduleMeasure()` registers a second frame B — which lands _after_ the test's own frame, so the
+`scheduleMeasure()` registers a second frame B — which lands *after* the test's own frame, so the
 assertion ran before the measurement. Both orderings are legal, which is why it failed
 intermittently rather than never or always.
 
@@ -500,5 +500,5 @@ design, and none get more expensive by waiting (they are additive):
   `*-position` helpers, per axis 3 of `api-design.instructions.md`.
 
 `gleks-ui-lab` (the public documentation site) is also out of scope here: per
-`gleks-ui-library.instructions.md`, it documents the _published_ API and must only be updated
+`gleks-ui-library.instructions.md`, it documents the *published* API and must only be updated
 after the release actually ships.

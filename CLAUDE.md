@@ -80,16 +80,6 @@ library half done — `CHANGELOG.md` now ships in the package — and its lab ha
 `hardening-21.5.0.md` iteration 3, which needs the same generator. The file also records the
 major-version branch/subdomain approach, which is still only a recommendation.
 
-`docs/lab-examples-refactor.md` records how the lab's examples work now: **one folder per example**
-under `src/app/examples/<component>/<name>/`, holding `example.ts`, `example.html` (single root
-`<div class="example">`) and `example.css` (no `:host`), rendered live *and* shown as a three-tab
-source card by `<app-demo>`, with the text produced by `scripts/generate-example-sources.mjs`.
-`npm run check:examples` runs that generator's `--check` **and**
-`scripts/check-lab-examples.mjs`, which fails when an example's markup and stylesheet drift apart
-— the failure no compiler catches; every `build:lab` runs both. All 30 component pages and 216
-examples are converted, and every example opens in StackBlitz as those same three files. Adding an
-example = one folder of three files + one `<app-demo>` tag.
-
 `docs/lab-seo.md` covers the docs site's search-engine setup: per-page titles/descriptions
 (`seo-data.ts` + `SeoService`), canonicals, `noindex` on the router's catch-all routes, the
 generated `sitemap.xml`, and the SSR host allow-list in `server.ts` — **without which the site

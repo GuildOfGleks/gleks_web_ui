@@ -58,7 +58,7 @@ entries above are that kind of gap, which is why a documentation-only patch was 
 - **Overlays ignored custom properties set on `:root`.** A select panel, tooltip or any other
   overlay rendered into `<body>` copied the `data-theme` of its trigger's nearest themed
   ancestor. When that ancestor is `<html>` — the usual case — the copy made the overlay match
-  `theme.css`'s derived layer (`:root, [data-theme]`) _locally_, re-declaring every component
+  `theme.css`'s derived layer (`:root, [data-theme]`) *locally*, re-declaring every component
   token against the plain preset palette and discarding anything set on the root that the preset
   does not itself declare.
 
@@ -66,7 +66,7 @@ entries above are that kind of gap, which is why a documentation-only patch was 
   `document.documentElement` — a live theme editor, or any runtime accent switch — saw the
   document follow while every overlay kept rendering the un-edited theme.
 
-  The attribute is now copied only for a genuinely _scoped_ theme, where the overlay would
+  The attribute is now copied only for a genuinely *scoped* theme, where the overlay would
   otherwise pick up the document's; when the theme sits on the document element, inheritance
   already does the work. Several themes rendered side by side in scoped subtrees keep working
   exactly as before.
@@ -77,7 +77,7 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
 (`docs/consumer-dx-plan.md`).
 
 ### Added
- 
+
 - **`gog-table`: outputs.** The component had none at all, which is what made it a display-only
   grid. `gogSortChange` (`{ field, direction }`, including the third click that clears the sort),
   `gogPageChange` (the new 1-based page), and `gogRowClick`
@@ -86,7 +86,6 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
   `gogPageChange` deliberately stays quiet in two cases: the initial render, and the reset to
   page 1 that a new sort causes — that reset is part of the sort, and a consumer refetching from
   both events would issue two requests for one user action.
-
 - **`gog-table`: `lazy` — server-driven sorting and paging.** With `[lazy]="true"` the table
   stops sorting and slicing `value` and renders it exactly as handed over, treating it as the
   current page; `totalRecords` tells the paginator how many pages exist, and the two outputs are
@@ -103,7 +102,6 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
   **The select-all covers the current page, not the whole data set** — in `lazy` mode the table
   has never seen the other pages, and a control that meant different things in the two modes
   would be worse than either behaviour on its own.
-
 - **`gog-table`: `dataKey`.** The field (or dot-path) identifying a row. Selection matches on it
   instead of object identity — without it a refetch producing new objects silently drops the
   selection — and it becomes the `@for` track key, so the rendered DOM survives a refetch of the
@@ -112,7 +110,7 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
   Enter and Space activating the focused row. `gogRowClick` fires on a click either way; this is
   what stops a whole-row target from being mouse-only.
 - **`[gogButton]` — a link that looks like a button.** `gog-button` renders its own `<button>`,
-  so it could never _be_ a link, and a large share of buttons on a real site are navigation. The
+  so it could never *be* a link, and a large share of buttons on a real site are navigation. The
   directive inverts the relationship: the element stays the consumer's, and only the look is
   applied.
 
@@ -133,7 +131,6 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
   on an `<a>`) and no `loading` (the spinner is a projected child a directive cannot add). The
   selector is `a[gogButton], button[gogButton]`, not a bare attribute, so it cannot be put on a
   `<div>` and produce something that looks clickable and is invisible to the keyboard.
-
 - **`gog-paginator`: a rows-per-page select.** `showPageSizeSelect` turns it on (**off by
   default** — a paginator that silently grew a control would change every existing layout) and
   `pageSizeOptions` sets the choices, defaulting to `[10, 20, 30, 40, 50]`. Both are also
@@ -141,7 +138,7 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
   while the rest of the app uses the house default.
 - **`gog-paginator`: `pageSize` (a `model`) and `totalRecords`.** Given `totalRecords`, the
   paginator derives the page count from `pageSize` itself — which removes the
-  `computed(() => Math.ceil(total / size))` a consumer would otherwise have to write _and_ keep
+  `computed(() => Math.ceil(total / size))` a consumer would otherwise have to write *and* keep
   in sync with the select. `totalPages` still works and is right when a server hands you a page
   count directly; `totalRecords` wins if both are set. Changing the size returns to page 1:
   "page 5" of 10-row pages is not "page 5" of 50-row ones, so clamping alone would leave the user
@@ -155,7 +152,7 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
 - **`provideGogIcons(...)` — register your own icons by name.** `gog-icon` shipped a closed set
   of 20 glyphs, and the only way to render anything else was a `TemplateRef` per instance,
   which costs an `<ng-template>` at every use site and does not work at all for the components
-  that take an icon _name_ (`gog-tag`, `gog-chip`, `gog-tabs`, `gog-button-toggle-group`,
+  that take an icon *name* (`gog-tag`, `gog-chip`, `gog-tabs`, `gog-button-toggle-group`,
   `ToastService`, `DialogService`). In practice that meant installing a second icon library —
   precisely the dependency the "no CDK, no Material" footprint exists to avoid.
 
@@ -165,7 +162,8 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
   ```
 
   ```html
-  <gog-icon name="cart" /> <gog-tag iconName="cart">In basket</gog-tag>
+  <gog-icon name="cart" />
+  <gog-tag iconName="cart">In basket</gog-tag>
   ```
 
   - A registered name **overrides a built-in of the same name**, so an app can replace the
@@ -173,7 +171,6 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
   - Providing it again lower in the injector tree **layers onto** the parent set rather than
     replacing it, matching `provideGogConfig`.
   - The registry is also exposed as the `GOG_ICONS` injection token.
-
 - **`GogBuiltinIconName`** — the closed union of the shipped glyphs, for code that wants
   exhaustiveness (an icon gallery, a `Record` keyed by icon).
 - **21 more built-in icons, taking the set from 20 to 41.** The old set covered what the
@@ -194,7 +191,6 @@ A minor rather than a patch: this adds public API. Iterations 5 and 6 of the con
 
   Cost: `ICON_DEFS` is one object, so every consumer pays for all of it — it grew from 8.0 KB to
   16.5 KB raw, **1.6 KB to 2.7 KB gzipped**.
-
 - **Attribution for the icons.** The glyphs were always Lucide but the package said so nowhere;
   Lucide's ISC licence asks for the notice to travel with them. It is now at the top of
   `icons.ts` and summarised in the README's licence section.
@@ -382,7 +378,7 @@ made unreachable.
   overriding it, and ignored outside `range` mode (nothing to disable "one side" of there). A
   one-sided disable only dims and disables that one thumb (its native input's own `disabled`
   attribute takes it out of the tab order); the whole-control `.gog-slider--disabled` styling
-  (dimming + `pointer-events: none` over the whole track) only kicks in once _both_ sides are
+  (dimming + `pointer-events: none` over the whole track) only kicks in once *both* sides are
   disabled, since applying it for just one would also block pointer input to the other,
   still-enabled thumb. Reactive forms are unaffected by this addition: a `[formControl]`'s own
   `.disable()`/`.enable()` still speaks for both thumbs at once, same as before — one

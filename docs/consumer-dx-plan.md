@@ -20,15 +20,15 @@ bumps the version, and never edits `CHANGELOG.md`'s `planned` heading.
 
 ## Status
 
-| #   | Iteration                                                | Kind    | State   |
-| --- | -------------------------------------------------------- | ------- | ------- |
-| 1   | Onboarding blockers (README ↔ package reality)           | docs    | ✅ done |
-| 2   | Accessibility defaults (label association, live regions) | fix     | ✅ done |
-| 3   | Native attribute passthrough on text controls            | api     | ✅ done |
-| 4   | Packaging correctness + small bugs                       | fix     | ✅ done |
-| 5   | Icon registry                                            | feature | ✅ done |
-| 6   | `gog-table`: outputs + lazy mode                         | feature | ✅ done |
-| 7   | Link-flavoured button                                    | feature | ✅ done |
+| # | Iteration | Kind | State |
+| --- | --- | --- | --- |
+| 1 | Onboarding blockers (README ↔ package reality) | docs | ✅ done |
+| 2 | Accessibility defaults (label association, live regions) | fix | ✅ done |
+| 3 | Native attribute passthrough on text controls | api | ✅ done |
+| 4 | Packaging correctness + small bugs | fix | ✅ done |
+| 5 | Icon registry | feature | ✅ done |
+| 6 | `gog-table`: outputs + lazy mode | feature | ✅ done |
+| 7 | Link-flavoured button | feature | ✅ done |
 
 Iterations 1–4 landed together under `CHANGELOG.md`'s `[21.3.2] - planned` heading; `[21.3.1]`
 was left untouched for the release the user cuts first. Per-iteration outcomes are recorded
@@ -186,9 +186,9 @@ on a real site (a phone number, a length-capped bio, a read-only field) hits thi
    `minlength`, `pattern`, `inputmode`, `autofocus`, `spellcheck`. Mirror `readonly` and
    `maxlength` onto `gog-textarea` (`textarea.component.ts:46–84` currently exposes only
    `rows` beyond the shared field inputs).
-3. Decide and document the rule in `api-design.instructions.md`: _a wrapper around a native
+3. Decide and document the rule in `api-design.instructions.md`: *a wrapper around a native
    control forwards the native attribute space of that control by default; anything it does not
-   forward is a deliberate, documented omission._ Without a stated rule this list is re-litigated
+   forward is a deliberate, documented omission.* Without a stated rule this list is re-litigated
    per field, one input at a time.
 4. `readonly` interacts with `clearable` and with the float-label state — a read-only field must
    not offer a clear button. Cover both in specs.
@@ -202,7 +202,7 @@ Landed as planned, with two deviations:
 
 - **`autofocus` was dropped, not added.** `@angular-eslint/template/no-autofocus` is on in this
   repo and rejected it — the project already had a position on this, and it is the right one.
-  It is now the worked example of a _deliberate_ omission in the new instruction-file rule,
+  It is now the worked example of a *deliberate* omission in the new instruction-file rule,
   which is exactly the distinction that rule exists to force.
 - **`GogClearableState`'s third parameter was renamed** `isDisabled` → `isNotEditable`, since
   read-only now feeds it too. Dropdowns pass the same signal as before.
@@ -236,7 +236,7 @@ a one-line change. Recorded in the backlog below.
    clear button therefore writes an empty **string** into a `FormControl` typed as
    `number | null`. Emit `null` for number fields; add a spec asserting the control value type
    after clear for both `text` and `number`.
-3. **Harden `ThemeService`.** `theme.service.ts:8` exposes `theme` as a public _writable_
+3. **Harden `ThemeService`.** `theme.service.ts:8` exposes `theme` as a public *writable*
    signal, so `themeService.theme.set('dark')` changes the signal without ever running
    `applyTheme` — the DOM attribute and the signal silently diverge. Expose a readonly signal
    plus `setTheme`/`toggleTheme`. While there, close the two gaps that force every consumer to
@@ -266,7 +266,7 @@ user-visible string without forking a template.
 3. **`ThemeService` rewritten**: `theme` is now `Signal<string>` off a private writable;
    `GOG_CONFIG.theme` adds `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`,
    `darkTheme`. Resolution order is document `data-theme` → stored → OS → default, with storage
-   access wrapped (Safari private mode and blocked site data both _throw_ rather than degrade)
+   access wrapped (Safari private mode and blocked site data both *throw* rather than degrade)
    and `matchMedia`/`localStorage` behind `isPlatformBrowser`. **Everything is off by default**,
    so an existing app's opening theme cannot change under it on upgrade. 12 specs, including
    the read-only signal.
@@ -293,7 +293,7 @@ the dev server stopped.
 
 ## Follow-ups — everything iterations 1–4 turned up ✅
 
-Not planned work: four defects and one piece of pre-existing drift found _while_ doing
+Not planned work: four defects and one piece of pre-existing drift found *while* doing
 iterations 1–4, closed in the same release rather than left to rot in the backlog. All five are
 in `CHANGELOG.md`'s `[21.3.2]` section.
 
@@ -497,7 +497,7 @@ and the same visuals as `<gog-button>` in all variants and sizes.
 ### Outcome ✅
 
 Option **(b)**, the `[gogButton]` directive — and the fork turned out to be less balanced than the
-plan assumed. Option (a) does not just risk brokering the router's input surface: it _requires_
+plan assumed. Option (a) does not just risk brokering the router's input surface: it *requires*
 `@angular/router` as a fifth peer dependency, which breaks every app without a router and
 contradicts the footprint the package advertises. That settled it.
 

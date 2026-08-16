@@ -23,70 +23,182 @@
     <p class="doc-section__intro">
       Basic usage — <code>sortable</code> columns cycle asc → desc → unsorted on click:
     </p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-table [value]="rows">
+          <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+          <gog-column field="status" header="Status" [sortable]="true"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+          <gog-column field="updated" header="Updated"></gog-column>
+        </gog-table>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.templates" title="Custom cell &amp; header markup">
-      A column can swap its default text rendering for a
-      <code>gogColumnBody</code> or <code>gogColumnHeader</code> template declared
-      <em>inside that column</em> — here the status column renders a <code>gog-tag</code> instead of
-      raw text, and decorates its header too. The body context carries the row, its index, and the
-      already-resolved cell <code>value</code>. This replaces the string-keyed
-      <code>&lt;ng-template template="field" type="body|header"&gt;</code>, deprecated in 21.3.0 and
-      removed in 21.5.0. The old form matched columns by a string the compiler cannot check, so a
-      typo silently fell back to the default cell.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom cell &amp; header markup</h3>
+      <p class="demo-card__meta">
+        A column can swap its default text rendering for a
+        <code>gogColumnBody</code> or <code>gogColumnHeader</code> template declared
+        <em>inside that column</em> — here the status column renders a <code>gog-tag</code> instead
+        of raw text, and decorates its header too. The body context carries the row, its index, and
+        the already-resolved cell <code>value</code>.
+      </p>
+      <div class="demo-card__preview">
+        <gog-table [value]="rows" [showRowNumbers]="false">
+          <gog-column field="component" header="Component" [sortable]="true"></gog-column>
 
-    <app-demo [component]="examples.pagination" title="Pagination &amp; total count">
-      <code>pageSize</code> turns on pagination (0 disables it), rendered with the same
-      <code>gog-paginator</code> documented separately. <code>showTotal</code> adds a row-count
-      label; <code>totalPosition</code> places it left, right, or opposite the paginator (the
-      default).
-    </app-demo>
+          <gog-column field="status" header="Status">
+            <ng-template gogColumnHeader let-header>
+              <span class="status-header">{{ header }}</span>
+            </ng-template>
+            <ng-template gogColumnBody let-row let-value="value">
+              <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{ value }}</gog-tag>
+            </ng-template>
+          </gog-column>
 
-    <app-demo [component]="examples.sticky" title="Sticky header">
-      <code>stickyHeader</code> puts <code>position: sticky</code> on the header cells so the header
-      row holds at the top of the scrolling region while the rows move under it. The region here is
-      a <a routerLink="/components/scroll">gog-scroll</a> capped at 260px — a native
-      <code>overflow: auto</code> would bring back the one piece of chrome no <code>--gog-*</code>
-      token can reach.
-      <strong
-        >Known defect in {{ libraryVersion }}: the header scrolls away instead of holding.</strong
-      >
-      A sticky element resolves against its nearest scrolling ancestor. The table wraps its own
-      markup in a horizontal <code>gog-scroll</code>, and once that inner scroller activates — which
-      is exactly what putting a wide table in a narrow region does — its viewport becomes the
-      nearest one and wins over the region you placed the table in. It never scrolls vertically
-      itself, so the header simply rides up out of view. Capping the height of the
-      <code>gog-table</code> host, or of the inner scroller, does not help; the fix has to happen
-      inside the component.
-    </app-demo>
+          <gog-column field="owner" header="Owner"></gog-column>
+        </gog-table>
+      </div>
+      <app-code-tabs [html]="templatesHtml" [ts]="templatesTs" />
 
-    <app-demo [component]="examples.missingValues" title="Missing values">
-      A cell whose field is <code>null</code> or <code>undefined</code> falls back to
-      <code>emptyPlaceholder</code> — <code>"-"</code> by default, overridable per table. Both
-      tables below hold the same rows; only the placeholder differs.
-    </app-demo>
+      <p class="demo-card__meta">
+        This replaces the string-keyed
+        <code>&lt;ng-template template="field" type="body|header"&gt;</code>, deprecated in 21.3.0
+        and removed in 21.5.0. The old form matched columns by a string the compiler cannot check,
+        so a typo silently fell back to the default cell.
+      </p>
+      <app-markdown [markdown]="migrateTemplateSnippet" />
+    </article>
 
-    <app-demo [component]="examples.fullWidth" title="Full width">
-      Full width of its container by default (see every table above).
-      <code>[fullWidth]="false"</code> shrinks the table to fit its columns instead — useful for a
-      narrow, two-column table that shouldn't stretch to fill a wide page. Give those columns a
-      <code>width</code> when you do: the table is <code>table-layout: fixed</code>, so it divides
-      whatever width it has evenly between columns rather than measuring the text, and a column left
-      to chance can end up narrower than its own header.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Pagination &amp; total count</h3>
+      <p class="demo-card__meta">
+        <code>pageSize</code> turns on pagination (0 disables it), rendered with the same
+        <code>gog-paginator</code> documented separately. <code>showTotal</code> adds a row-count
+        label; <code>totalPosition</code> places it left, right, or opposite the paginator (the
+        default).
+      </p>
+      <div class="demo-card__preview">
+        <gog-table [value]="rows" [pageSize]="3" [showTotal]="true" totalPosition="left">
+          <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+          <gog-column field="status" header="Status" [sortable]="true"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+        </gog-table>
+      </div>
+      <app-code-tabs [html]="paginationHtml" [ts]="paginationTs" />
+    </article>
 
-    <app-demo [component]="examples.loading" title="Loading state">
-      Shows a spinner in place of rows while <code>loading</code> is true.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sticky header</h3>
+      <p class="demo-card__meta">
+        <code>stickyHeader</code> puts <code>position: sticky</code> on the header cells so the
+        header row holds at the top of the scrolling region while the rows move under it. The region
+        here is a wrapper capped at 260px.
+        <strong
+          >Known defect in {{ libraryVersion }}: the header scrolls away instead of holding.</strong
+        >
+        A sticky element resolves against its nearest scrolling ancestor. The table wraps its own
+        markup in a horizontal <a routerLink="/components/scroll">gog-scroll</a>, and once that
+        inner scroller activates — which is exactly what putting a wide table in a narrow region
+        does — its viewport becomes the nearest one and wins over the region you placed the table
+        in. It never scrolls vertically itself, so the header simply rides up out of view. Capping
+        the height of the <code>gog-table</code> host, or of the inner scroller, does not help; the
+        fix has to happen inside the component.
+      </p>
+      <div class="demo-card__preview table-scroll-demo">
+        <gog-table [value]="rows" [stickyHeader]="true">
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+        </gog-table>
+      </div>
+      <app-code-tabs [html]="stickyHtml" [ts]="stickyTs" />
+    </article>
 
-    <app-demo [component]="examples.empty" title="Empty state">
-      An empty <code>value</code> array renders a built-in placeholder row.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Missing values</h3>
+      <p class="demo-card__meta">
+        A cell whose field is <code>null</code> or <code>undefined</code> falls back to
+        <code>emptyPlaceholder</code> — <code>"-"</code> by default, overridable per table. Both
+        tables below hold the same rows; only the placeholder differs.
+      </p>
+      <div class="demo-card__preview field-row">
+        <div class="field-row__col">
+          <p class="demo-card__meta">Default placeholder</p>
+          <gog-table [value]="sparseRows" [showRowNumbers]="false" size="sm">
+            <gog-column field="component" header="Component"></gog-column>
+            <gog-column field="owner" header="Owner"></gog-column>
+          </gog-table>
+        </div>
+        <div class="field-row__col">
+          <p class="demo-card__meta">emptyPlaceholder="N/A"</p>
+          <gog-table [value]="sparseRows" [showRowNumbers]="false" emptyPlaceholder="N/A" size="sm">
+            <gog-column field="component" header="Component"></gog-column>
+            <gog-column field="owner" header="Owner"></gog-column>
+          </gog-table>
+        </div>
+      </div>
+      <app-code-tabs [html]="missingValuesHtml" [ts]="missingValuesTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Full width</h3>
+      <p class="demo-card__meta">
+        Full width of its container by default (see every table above).
+        <code>[fullWidth]="false"</code> shrinks the table to fit its columns instead — useful for a
+        narrow, two-column table that shouldn't stretch to fill a wide page. Give those columns a
+        <code>width</code> when you do: the table is <code>table-layout: fixed</code>, so it divides
+        whatever width it has evenly between columns rather than measuring the text, and a column
+        left to chance can end up narrower than its own header.
+      </p>
+      <div class="demo-card__preview">
+        <gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">
+          <gog-column field="component" header="Component" width="115px"></gog-column>
+          <gog-column field="status" header="Status" width="80px"></gog-column>
+        </gog-table>
+      </div>
+      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Loading state</h3>
+      <p class="demo-card__meta">
+        Shows a spinner in place of rows while <code>loading</code> is true.
+      </p>
+      <div class="demo-card__preview">
+        <gog-button variant="primary" type="button" (gogClick)="toggleLoading()">
+          Toggle loading
+        </gog-button>
+        <gog-table [value]="rows" [loading]="loading()" [pageSize]="3">
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+        </gog-table>
+      </div>
+      <app-code-tabs [html]="loadingHtml" [ts]="loadingTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Empty state</h3>
+      <p class="demo-card__meta">
+        An empty <code>value</code> array renders a built-in placeholder row.
+      </p>
+      <div class="demo-card__preview">
+        <gog-button variant="ghost" type="button" (gogClick)="toggleEmpty()">
+          {{ showEmpty() ? 'Restore rows' : 'Clear rows' }}
+        </gog-button>
+        <gog-table [value]="showEmpty() ? [] : rows" size="sm">
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+        </gog-table>
+      </div>
+      <app-code-tabs [html]="emptyHtml" [ts]="emptyTs" />
+    </article>
   </section>
 
   <section class="doc-section">
@@ -98,9 +210,30 @@
       reports the three things a consumer needs to know about: a new sort, a new page, and a click
       on a row.
     </p>
-    <app-demo [component]="examples.outputs">
-      Sort a column, page through, click a row — newest event first:
-    </app-demo>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-table
+          [value]="rows"
+          [pageSize]="3"
+          [interactiveRows]="true"
+          (gogSortChange)="onSortChange($event)"
+          (gogPageChange)="onPageChange($event)"
+          (gogRowClick)="onRowClick($event)"
+        >
+          <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+          <gog-column field="status" header="Status" [sortable]="true"></gog-column>
+        </gog-table>
+      </div>
+      <p class="demo-card__meta">Sort a column, page through, click a row — newest event first:</p>
+      <ul class="event-log">
+        @for (entry of eventLog(); track $index) {
+          <li class="event-log__item">{{ entry }}</li>
+        } @empty {
+          <li class="event-log__item event-log__item--empty">No events yet.</li>
+        }
+      </ul>
+      <app-code-tabs [html]="outputsHtml" [ts]="outputsTs" />
+    </div>
 
     <p class="doc-section__intro">
       <strong><code>gogPageChange</code> is deliberately quiet twice.</strong> It does not fire on
@@ -126,7 +259,23 @@
       >, including in <code>'single'</code> mode where it holds zero or one row. One shape to read
       beats a <code>T | T[] | null</code> union to narrow on every access.
     </p>
-    <app-demo [component]="examples.selection" />
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-table
+          [value]="rows"
+          selectionMode="multiple"
+          [(selection)]="selection"
+          dataKey="component"
+          size="sm"
+        >
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+        </gog-table>
+      </div>
+      <p class="doc-section__meta">Selected: {{ selectionSummary() }}</p>
+      <app-code-tabs [html]="selectionHtml" [ts]="selectionTs" />
+    </div>
 
     <p class="doc-section__intro">
       Two rules worth stating outright, because both are silent when you get them wrong:
@@ -163,7 +312,22 @@
       binds its own model straight to the paginator's, and the select writes back through it with no
       intermediate signal to keep in sync in either direction.
     </p>
-    <app-demo [component]="examples.rowsPerPage" />
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-table
+          [value]="rows"
+          [(pageSize)]="rowsPerPage"
+          [showPageSizeSelect]="true"
+          [pageSizeOptions]="[2, 3, 6]"
+          size="sm"
+        >
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+        </gog-table>
+      </div>
+      <p class="doc-section__meta">pageSize: {{ rowsPerPage() }}</p>
+      <app-code-tabs [html]="rowsPerPageHtml" [ts]="rowsPerPageTs" />
+    </div>
     <p class="doc-section__intro">
       The select is <strong>off by default</strong>, per table or app-wide through
       <code>GOG_CONFIG.paginator</code> — see
@@ -186,11 +350,36 @@
       <code>totalRecords</code> so it knows how many pages exist (without it, pagination stays
       hidden and it warns in dev mode), then refetch from the outputs.
     </p>
-    <app-demo [component]="examples.lazy">
-      137 rows that only ever leave the "server" one page at a time, with a 350&nbsp;ms delay so the
-      loading state is visible. Sorting and slicing happen in the fake endpoint — which is the
-      point: the table must not re-order or re-slice what it is given.
-    </app-demo>
+    <div class="demo-card">
+      <p class="demo-card__meta">
+        137 rows that only ever leave the "server" one page at a time, with a 350&nbsp;ms delay so
+        the loading state is visible. Sorting and slicing happen in the fake endpoint — which is the
+        point: the table must not re-order or re-slice what it is given.
+      </p>
+      <div class="demo-card__preview">
+        <gog-table
+          [value]="serverRows()"
+          [lazy]="true"
+          [totalRecords]="serverTotal()"
+          [pageSize]="serverPageSize()"
+          [loading]="serverLoading()"
+          [showTotal]="true"
+          [showPageSizeSelect]="true"
+          [pageSizeOptions]="[10, 20, 50]"
+          dataKey="id"
+          size="sm"
+          (gogSortChange)="onServerSort($event)"
+          (gogPageChange)="onServerPage($event)"
+          (pageSizeChange)="onServerPageSize($event)"
+        >
+          <gog-column field="name" header="Name" [sortable]="true"></gog-column>
+          <gog-column field="team" header="Team" [sortable]="true"></gog-column>
+          <gog-column field="score" header="Score" [sortable]="true"></gog-column>
+        </gog-table>
+      </div>
+      <p class="doc-section__meta">Last request: {{ lastServerQuery() }}</p>
+      <app-code-tabs [html]="lazyHtml" [ts]="lazyTs" />
+    </div>
     <p class="doc-section__intro">
       Row numbers still count from the current page (<code>(page - 1) * pageSize + i + 1</code>),
       and <code>showTotal</code> reports <code>totalRecords</code> rather than
@@ -379,8 +568,6 @@
         </tbody>
       </table>
     </div>
-
-    <app-markdown [markdown]="migrateTemplateSnippet" />
   </section>
 
   <section class="doc-section">

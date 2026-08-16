@@ -17,45 +17,153 @@
       Basic usage — three sections, one disabled, the first expanded on load. The body comes from
       the <code>gogAccordionContent</code> template, which receives the item back.
     </p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-accordion [items]="basicItems" [expandFirst]="true" (gogToggle)="onToggle($event)">
+          <ng-template gogAccordionContent let-item>
+            <p>{{ item.body }}</p>
+          </ng-template>
+        </gog-accordion>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
+    <p class="doc-section__meta">{{ lastToggled() }}</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.sizes" title="Sizes">
-      Every size, from <code>xsm</code> through <code>slg</code>.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">Every size, from <code>xsm</code> through <code>slg</code>.</p>
+      <div class="demo-card__preview size-grid">
+        @for (sizeOption of sizes; track sizeOption) {
+          <div class="size-grid__cell">
+            <span class="size-grid__label">{{ sizeOption }}</span>
+            <gog-accordion [items]="sizeDemoItems" [size]="sizeOption" [expandFirst]="true">
+              <ng-template gogAccordionContent let-item>
+                <p>{{ item.body }}</p>
+              </ng-template>
+            </gog-accordion>
+          </div>
+        }
+      </div>
+      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+    </article>
 
-    <app-demo [component]="examples.multi" title="Single vs. multi-open">
-      By default opening one item closes the rest. <code>multi</code> lifts that restriction.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Single vs. multi-open</h3>
+      <p class="demo-card__meta">
+        By default opening one item closes the rest. <code>multi</code> lifts that restriction.
+      </p>
+      <div class="demo-card__preview">
+        <div class="action-row">
+          <gog-button variant="outline" (gogClick)="toggleMulti()">
+            Multi-open: {{ multi() ? 'on' : 'off' }}
+          </gog-button>
+        </div>
+        <gog-accordion [items]="multiItems" [multi]="multi()">
+          <ng-template gogAccordionContent let-item>
+            <p>{{ item.body }}</p>
+          </ng-template>
+        </gog-accordion>
+      </div>
+      <app-code-tabs [html]="multiHtml" [ts]="multiTs" />
+    </article>
 
-    <app-demo [component]="examples.disabled" title="Disabled item">
-      A disabled item's header is non-interactive and skipped by keyboard navigation — see
-      "Warranty" above.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled item</h3>
+      <p class="demo-card__meta">
+        A disabled item's header is non-interactive and skipped by keyboard navigation — see
+        "Warranty" above.
+      </p>
+      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+    </article>
 
-    <app-demo [component]="examples.customHeader" title="Custom header &amp; chevron">
-      <code>gogAccordionHeader</code> and <code>gogAccordionChevron</code> both receive the item
-      plus the current <code>open</code> state, so either can react to it.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Custom header &amp; chevron</h3>
+      <p class="demo-card__meta">
+        <code>gogAccordionHeader</code> and <code>gogAccordionChevron</code> both receive the item
+        plus the current <code>open</code> state, so either can react to it.
+      </p>
+      <div class="demo-card__preview">
+        <gog-accordion [items]="statusItems">
+          <ng-template gogAccordionHeader let-item let-open="open">
+            <gog-icon
+              [name]="item.icon"
+              class="status-header__icon status-header__icon--{{ item.icon }}"
+            />
+            <span class="status-header__text">
+              <span class="status-header__title">{{ item.title }}</span>
+              <span class="status-header__subtitle">
+                {{ open ? 'Expanded' : item.subtitle }}
+              </span>
+            </span>
+          </ng-template>
 
-    <app-demo [component]="examples.headingLevel" title="Heading level">
-      <code>headingLevel</code> wraps each header in <code>role="heading"</code> at that
-      <code>aria-level</code>, so screen-reader users can jump straight to a section. Leave it unset
-      when the accordion isn't part of the page outline (e.g. nested in a card).
-    </app-demo>
+          <ng-template gogAccordionChevron let-open="open">
+            <gog-icon [name]="open ? 'chevron-up' : 'chevron-down'" />
+          </ng-template>
 
-    <app-demo [component]="examples.loading" title="Loading skeleton">
-      For when the item list itself hasn't arrived yet — every item is replaced by a shimmering
-      placeholder row.
-    </app-demo>
+          <ng-template gogAccordionContent let-item>
+            <p>{{ item.body }}</p>
+          </ng-template>
+        </gog-accordion>
+      </div>
+      <app-code-tabs [html]="customHeaderHtml" [ts]="customHeaderTs" />
+    </article>
 
-    <app-demo [component]="examples.controlled" title="Controlled open state">
-      <code>openIds</code> is a model, so it can be driven from outside the component — here two
-      buttons expand or collapse every item.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Heading level</h3>
+      <p class="demo-card__meta">
+        <code>headingLevel</code> wraps each header in <code>role="heading"</code> at that
+        <code>aria-level</code>, so screen-reader users can jump straight to a section. Leave it
+        unset when the accordion isn't part of the page outline (e.g. nested in a card).
+      </p>
+      <div class="demo-card__preview">
+        <gog-accordion [items]="basicItems" [headingLevel]="3">
+          <ng-template gogAccordionContent let-item>
+            <p>{{ item.body }}</p>
+          </ng-template>
+        </gog-accordion>
+      </div>
+      <app-code-tabs [html]="headingLevelHtml" [ts]="headingLevelTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Loading skeleton</h3>
+      <p class="demo-card__meta">
+        For when the item list itself hasn't arrived yet — every item is replaced by a shimmering
+        placeholder row.
+      </p>
+      <div class="demo-card__preview">
+        <div class="action-row">
+          <gog-button variant="outline" (gogClick)="toggleLoading()">Toggle loading</gog-button>
+        </div>
+        <gog-accordion [items]="basicItems" [loading]="isAccordionLoading()" />
+      </div>
+      <app-code-tabs [html]="loadingHtml" [ts]="loadingTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Controlled open state</h3>
+      <p class="demo-card__meta">
+        <code>openIds</code> is a model, so it can be driven from outside the component — here two
+        buttons expand or collapse every item.
+      </p>
+      <div class="demo-card__preview">
+        <div class="action-row">
+          <gog-button variant="outline" (gogClick)="expandAll()">Expand all</gog-button>
+          <gog-button variant="outline" (gogClick)="collapseAll()">Collapse all</gog-button>
+        </div>
+        <gog-accordion [items]="multiItems" [multi]="true" [(openIds)]="openIds">
+          <ng-template gogAccordionContent let-item>
+            <p>{{ item.body }}</p>
+          </ng-template>
+        </gog-accordion>
+      </div>
+      <app-code-tabs [html]="controlledHtml" [ts]="controlledTs" />
+    </article>
   </section>
 
   <section class="doc-section">

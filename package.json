@@ -22,9 +22,7 @@
     "serve:ssr:gleks-ui-lab": "node dist/gleks-ui-lab/server/server.mjs",
     "generate:tokens": "node scripts/generate-tokens.mjs",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
-    "check:sitemap": "node scripts/generate-sitemap.mjs --check",
-    "generate:examples": "node scripts/generate-example-sources.mjs",
-    "check:examples": "node scripts/generate-example-sources.mjs --check && node scripts/check-lab-examples.mjs"
+    "check:sitemap": "node scripts/generate-sitemap.mjs --check"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
@@ -41,7 +39,6 @@
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
     "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@guildofgleks/ui": "^21.4.2",
-    "@stackblitz/sdk": "^1.11.1",
     "express": "^5.1.0",
     "highlight.js": "^11.11.1",
     "marked": "^18.0.7",

@@ -1,35 +1,28 @@
 <div class="code-block">
   <div class="code-block__toolbar">
     <div class="code-block__tabs" role="tablist">
-      @for (tab of tabs; track tab.id) {
-        <button
-          type="button"
-          role="tab"
-          class="code-block__tab"
-          [class.code-block__tab--active]="activeTab() === tab.id"
-          [attr.aria-selected]="activeTab() === tab.id"
-          (click)="selectTab(tab.id)"
-        >
-          {{ tab.label }}
-        </button>
-      }
+      <button
+        type="button"
+        role="tab"
+        class="code-block__tab"
+        [class.code-block__tab--active]="activeTab() === 'html'"
+        [attr.aria-selected]="activeTab() === 'html'"
+        (click)="selectTab('html')"
+      >
+        HTML
+      </button>
+      <button
+        type="button"
+        role="tab"
+        class="code-block__tab"
+        [class.code-block__tab--active]="activeTab() === 'ts'"
+        [attr.aria-selected]="activeTab() === 'ts'"
+        (click)="selectTab('ts')"
+      >
+        TS
+      </button>
     </div>
-    <div class="code-block__actions">
-      @if (canOpenInStackblitz()) {
-        <button
-          type="button"
-          class="code-block__stackblitz"
-          (click)="openInStackblitz()"
-          title="Open this example as a runnable Angular project on StackBlitz"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="12" height="12">
-            <path fill="currentColor" d="M13.8 10.4h7L9.7 24l1.5-10.4h-7L15.3 0z" />
-          </svg>
-          StackBlitz
-        </button>
-      }
-      <button type="button" class="code-block__copy" (click)="onCopy()">{{ copyLabel() }}</button>
-    </div>
+    <button type="button" class="code-block__copy" (click)="onCopy()">{{ copyLabel() }}</button>
   </div>
   <gog-scroll class="code-block__scroll" size="thin" ariaLabel="Code sample">
     <pre><code class="hljs" [innerHTML]="activeHighlighted()"></code></pre>

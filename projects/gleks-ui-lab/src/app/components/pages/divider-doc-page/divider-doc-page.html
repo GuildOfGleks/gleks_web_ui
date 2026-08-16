@@ -15,33 +15,86 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage:</p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <p class="divider-demo__text">Above the rule.</p>
+        <gog-divider />
+        <p class="divider-demo__text">Below it.</p>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.variants" title="Variants">
-      <code>solid</code> is the default; <code>dashed</code> and <code>dotted</code> read as weaker
-      separations.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Variants</h3>
+      <p class="demo-card__meta">
+        <code>solid</code> is the default; <code>dashed</code> and <code>dotted</code> read as
+        weaker separations.
+      </p>
+      <div class="demo-card__preview">
+        @for (variantOption of variants; track variantOption) {
+          <p class="divider-demo__text">{{ variantOption }}</p>
+          <gog-divider [variant]="variantOption" />
+        }
+      </div>
+      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
+    </article>
 
-    <app-demo [component]="examples.label" title="With a label">
-      Anything projected into the divider becomes its label and the rule splits around it. Because
-      it is content rather than a <code>label</code> input, it takes markup — an icon, a
-      <code>&lt;gog-tag&gt;</code>, whatever the case needs.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">With a label</h3>
+      <p class="demo-card__meta">
+        Anything projected into the divider becomes its label and the rule splits around it. Because
+        it is content rather than a <code>label</code> input, it takes markup — an icon, a
+        <code>&lt;gog-tag&gt;</code>, whatever the case needs.
+      </p>
+      <div class="demo-card__preview">
+        <gog-divider>OR</gog-divider>
+        <gog-divider>
+          <gog-icon name="info" />
+          Shipping details
+        </gog-divider>
+        <gog-divider><gog-tag variant="warning">Draft</gog-tag></gog-divider>
+      </div>
+      <app-code-tabs [html]="labelHtml" [ts]="labelTs" />
+    </article>
 
-    <app-demo [component]="examples.vertical" title="Vertical">
-      Separates items along a row instead of stacking regions. It stretches to a row that has a
-      height of its own and otherwise falls back to
-      <code>--gog-divider-vertical-length</code>.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Vertical</h3>
+      <p class="demo-card__meta">
+        Separates items along a row instead of stacking regions. It stretches to a row that has a
+        height of its own and otherwise falls back to
+        <code>--gog-divider-vertical-length</code>.
+      </p>
+      <div class="demo-card__preview divider-demo__toolbar">
+        <span>Cut</span>
+        <gog-divider orientation="vertical" />
+        <span>Copy</span>
+        <gog-divider orientation="vertical" />
+        <span>Paste</span>
+      </div>
+      <app-code-tabs [html]="verticalHtml" [ts]="verticalTs" />
+    </article>
 
-    <app-demo [component]="examples.inset" title="Inset">
-      Indents the rule from the leading edge so it starts under the text of a list whose rows begin
-      with an icon, rather than cutting across the whole row.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Inset</h3>
+      <p class="demo-card__meta">
+        Indents the rule from the leading edge so it starts under the text of a list whose rows
+        begin with an icon, rather than cutting across the whole row.
+      </p>
+      <div class="demo-card__preview">
+        <ul class="divider-demo__list">
+          <li><gog-icon name="success" /> Order placed</li>
+          <gog-divider [inset]="true" />
+          <li><gog-icon name="clock" /> Awaiting payment</li>
+          <gog-divider [inset]="true" />
+          <li><gog-icon name="info" /> Preparing shipment</li>
+        </ul>
+      </div>
+      <app-code-tabs [html]="insetHtml" [ts]="insetTs" />
+    </article>
   </section>
 
   <section class="doc-section">

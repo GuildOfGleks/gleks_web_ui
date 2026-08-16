@@ -15,7 +15,13 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">Basic usage:</p>
-    <app-demo [component]="examples.overview" />
+    <div class="demo-card">
+      <div class="demo-card__preview datepicker-demo__field">
+        <gog-datepicker label="Date of birth" [max]="today" [(value)]="birthday" />
+        <p class="doc-section__meta">value = {{ formatValue(birthday()) }}</p>
+      </div>
+      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+    </div>
   </section>
 
   <section class="doc-section">
@@ -28,36 +34,88 @@
       <code>31.02.2026</code> is rejected rather than silently becoming 3 March, which is what a
       naive <code>new Date(text)</code> would do.
     </p>
-    <app-demo [component]="examples.format">
-      Type into this one — it renders and parses <code>yyyy-MM-dd</code>.
-    </app-demo>
+    <div class="demo-card">
+      <p class="demo-card__meta">
+        Type into this one — it renders and parses <code>yyyy-MM-dd</code>.
+      </p>
+      <div class="demo-card__preview datepicker-demo__field">
+        <gog-datepicker label="ISO" format="yyyy-MM-dd" [(value)]="isoDate" />
+        <p class="doc-section__meta">value = {{ formatValue(isoDate()) }}</p>
+      </div>
+      <app-code-tabs [html]="formatHtml" [ts]="formatTs" />
+    </div>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
-    <app-demo [component]="examples.range" title="Range">
-      <code>selectionMode="range"</code> makes the value a
-      <code>{{ '{' }} start, end {{ '}' }}</code> pair. Pair it with
-      <code>[numberOfMonths]="2"</code> — picking a range one month at a time is painful.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Range</h3>
+      <p class="demo-card__meta">
+        <code>selectionMode="range"</code> makes the value a
+        <code>{{ '{' }} start, end {{ '}' }}</code> pair. Pair it with
+        <code>[numberOfMonths]="2"</code> — picking a range one month at a time is painful.
+      </p>
+      <div class="demo-card__preview datepicker-demo__field">
+        <gog-datepicker label="Stay" selectionMode="range" [numberOfMonths]="2" [(value)]="stay" />
+        <p class="doc-section__meta">value = {{ formatValue(stay()) }}</p>
+      </div>
+      <app-code-tabs [html]="rangeHtml" [ts]="rangeTs" />
+    </article>
 
-    <app-demo [component]="examples.time" title="Date and time">
-      <code>showTime</code> adds the clock. Leave <code>format</code> unset and it widens to include
-      <code>HH:mm</code> automatically; if you set <code>format</code> explicitly, widen it yourself
-      to match, or the field will render a time it cannot read back.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Date and time</h3>
+      <p class="demo-card__meta">
+        <code>showTime</code> adds the clock. Leave <code>format</code> unset and it widens to
+        include <code>HH:mm</code> automatically; if you set <code>format</code> explicitly, widen
+        it yourself to match, or the field will render a time it cannot read back.
+      </p>
+      <div class="demo-card__preview datepicker-demo__field">
+        <gog-datepicker
+          label="Meeting"
+          format="dd.MM.yyyy HH:mm"
+          [showTime]="true"
+          hourFormat="24"
+          [minuteStep]="15"
+          [(value)]="meeting"
+        />
+        <p class="doc-section__meta">value = {{ formatValue(meeting()) }}</p>
+      </div>
+      <app-code-tabs [html]="timeHtml" [ts]="timeTs" />
+    </article>
 
-    <app-demo [component]="examples.inline" title="Inline">
-      <code>inline</code> drops the field and shows the calendar permanently. It is literally
-      <a routerLink="/components/calendar">gog-calendar</a> rendered without the field around it.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Inline</h3>
+      <p class="demo-card__meta">
+        <code>inline</code> drops the field and shows the calendar permanently. It is literally
+        <a routerLink="/components/calendar">gog-calendar</a> rendered without the field around it.
+      </p>
+      <div class="demo-card__preview">
+        <gog-datepicker [inline]="true" [(value)]="inlineDate" />
+        <p class="doc-section__meta">value = {{ formatValue(inlineDate()) }}</p>
+      </div>
+      <app-code-tabs [html]="inlineHtml" [ts]="inlineTs" />
+    </article>
 
-    <app-demo [component]="examples.forms" title="Forms, validation, disabled dates and clearing">
-      A <code>ControlValueAccessor</code>, so <code>formControl</code> /
-      <code>formControlName</code> work directly. <code>disabledDates</code> is a predicate — an
-      array cannot express "weekends". The clear button appears only once a date is set.
-    </app-demo>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Forms, validation, disabled dates and clearing</h3>
+      <p class="demo-card__meta">
+        A <code>ControlValueAccessor</code>, so <code>formControl</code> /
+        <code>formControlName</code> work directly. <code>disabledDates</code> is a predicate — an
+        array cannot express "weekends". The clear button appears only once a date is set.
+      </p>
+      <div class="demo-card__preview datepicker-demo__field">
+        <gog-datepicker
+          label="Deadline"
+          errorDisplay="auto"
+          errorMessage="A deadline is required"
+          [clearable]="true"
+          [disabledDates]="weekends"
+          [formControl]="deadline"
+        />
+      </div>
+      <app-code-tabs [html]="formsHtml" [ts]="formsTs" />
+    </article>
   </section>
 
   <section class="doc-section">

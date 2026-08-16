@@ -1,8 +1,0 @@
-<div class="example">
-  <gog-multiselect optionLabel="profile.fullName" [options]="users" [(value)]="reviewerIds">
-    <ng-template gogDropdownOption let-user let-label="label">
-      <strong>{{ label }}</strong>
-      <small>{{ asUser(user).profile.role }}</small>
-    </ng-template>
-  </gog-multiselect>
-</div>
