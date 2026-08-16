@@ -13,7 +13,7 @@ Nothing yet. What this release already owes is in the source: every
 and the `GogSelectOption` / `GogMultiselectOption` aliases (those two overran their announced
 21.4.0 removal). Each names its replacement in the tag itself.
 
-## [21.4.3] - planned
+## [21.4.3] - 16.08.2026
 
 Two components stopped fighting their container. Nothing was added or removed from any public
 API, but **`gog-calendar` and `gog-datepicker [inline]` are narrower than they were** — see the
