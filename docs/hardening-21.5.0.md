@@ -435,3 +435,53 @@ not re-file it.
   **This also means `ui-showcase` cannot catch a whole class of layout bug.** Verifying a library
   change only there hides anything that a border-box reset papers over. Consider dropping the reset
   from the showcase once the library no longer needs it.
+
+---
+
+## Requested for 21.5.0 (2026-08-16)
+
+Filed from use, not from the audit. Recorded here verbatim in intent; none is started.
+**Nine items, and they are not one release's worth** — items 3, 4 and 6 are each their own piece
+of engineering. Sequence them; do not open them together.
+
+### Bugs — cheap, and they make the library look broken
+
+1. **`gog-autocomplete`: text cannot be erased.** Deleting characters re-inserts the previous
+   value instead of clearing, so the field fights the user. Suspect the value written back on
+   each keystroke racing the control's own draft state — the same shape as the "unparseable
+   drafts don't clear the value" rule the datepicker has. Reproduce first, then decide whether the
+   fix is in the accessor or in the input handler.
+9. **`gogCollapsibleTrigger` shows a clickable cursor while disabled.** The directive's host block
+   is `class`, three ARIA attributes and `(click)` — confirmed 2026-08-16 — so it sets
+   `aria-disabled` and nothing else; whatever `cursor: pointer` the consumer put on the trigger
+   stays. It should carry `cursor: default` (and the trigger's own hover styling should be
+   suppressible) when disabled. Related to the keyboard-accessibility entry above: both come from
+   that directive doing too little to the element it is placed on.
+8. **`gog-accordion`'s loading state is unsatisfying.** Recorded as dissatisfaction rather than a
+   defect — decide what it *should* look like before changing it. Worth comparing against
+   `gog-table`'s loading treatment, which replaces content with a spinner rather than dimming it.
+
+### Features — each needs its own decision
+
+2. **A filter box in `gog-multiselect`, matching `gog-select`.** Note the two share
+   `GogDropdownBase` and neither declares a `filter` input on its own component class today, so
+   check where select's filtering actually lives before assuming it can be lifted across.
+   `AGENTS.md` lists `filter`/`filterPosition` under the `dropdown` config group for both, so the
+   gap may be smaller than it looks.
+3. **Virtual scrolling in `gog-select` and `gog-multiselect`.**
+4. **Virtual scrolling in `gog-table`.**
+
+   3 and 4 are the same primitive twice. `hardening-21.5.0.md`'s own backlog already says the DOM
+   half of large-list performance "needs a windowing primitive, which is a genuine piece of
+   engineering and its own plan" — that is this. Build it once, in `lib/shared`, and adopt it in
+   the dropdowns first (a fixed row height) before the table (variable rows, sticky header,
+   selection column). Do not start it as a table feature.
+5. **A time zone setting for datepicker and calendar in `GOG_CONFIG`.** Today
+   `GOG_CONFIG.datepicker` carries `locale` and `firstDayOfWeek`. Note the library is deliberately
+   native-`Date`-only with no adapter, and `Date` has no time zone — so this is a design decision
+   about what a zone even means here (formatting only? parsing too? `Intl.DateTimeFormat`'s
+   `timeZone` option?), not a config key to add. Write the decision down before the code.
+6. **More icons.** Cheap per icon, but it is the registry's size and the tree-shaking story that
+   matter — check what `provideGogIcons` costs a consumer who wants three of them before growing
+   the built-in set.
+7. **More `gog-progressbar` variants (animations).** Smallest of the features; a good warm-up.
