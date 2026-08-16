@@ -13,9 +13,13 @@
   @if (releases().length > 0) {
     <nav class="releases__index" aria-label="Releases">
       <ul class="releases__index-list">
-        @for (release of releases(); track release.id) {
+        @for (release of recentReleases(); track release.id) {
           <li>
-            <a class="releases__index-link" [href]="'#' + release.id">
+            <a
+              class="releases__index-link"
+              href="{{ currentPath() }}#{{ release.id }}"
+              (click)="onJump($event, release.id)"
+            >
               <span class="releases__index-version">{{ release.version }}</span>
               <span
                 class="releases__index-date"
@@ -26,6 +30,28 @@
           </li>
         }
       </ul>
+
+      @if (olderReleases().length > 0) {
+        <gog-collapsible class="releases__older">
+          <button type="button" gogCollapsibleTrigger class="releases__older-trigger">
+            Older versions ({{ olderReleases().length }})
+          </button>
+          <ul gogCollapsibleContent class="releases__index-list releases__index-list--older">
+            @for (release of olderReleases(); track release.id) {
+              <li>
+                <a
+                  class="releases__index-link"
+                  href="{{ currentPath() }}#{{ release.id }}"
+                  (click)="onJump($event, release.id)"
+                >
+                  <span class="releases__index-version">{{ release.version }}</span>
+                  <span class="releases__index-date">{{ release.date }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        </gog-collapsible>
+      }
     </nav>
   }
 

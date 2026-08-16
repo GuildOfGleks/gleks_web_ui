@@ -1,5 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  afterNextRender,
+  computed,
+  signal,
+} from '@angular/core';
 import { httpResource } from '@angular/common/http';
+import {
+  CollapsibleComponent,
+  GogCollapsibleContentDirective,
+  GogCollapsibleTriggerDirective,
+} from '@guildofgleks/ui';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { slugify } from '../../shared/markdown/markdown-renderer';
 import { LIBRARY_NPM_URL, LIBRARY_VERSION } from '../../shared/library-version';
@@ -19,9 +30,17 @@ interface ReleaseLink {
   readonly unreleased: boolean;
 }
 
+/** How many releases stay in the open row before the rest fold away. */
+const RECENT_COUNT = 3;
+
 @Component({
   selector: 'app-releases-page',
-  imports: [MarkdownComponent],
+  imports: [
+    MarkdownComponent,
+    CollapsibleComponent,
+    GogCollapsibleTriggerDirective,
+    GogCollapsibleContentDirective,
+  ],
   templateUrl: './releases-page.html',
   styleUrl: './releases-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -73,4 +92,35 @@ export class ReleasesPage {
       unreleased: date.trim() === 'planned',
     }));
   });
+
+  /**
+   * The changelog is newest-first, so the head of the list is what almost every visit is after —
+   * "what changed in the version I am on, or the one above it". The tail is history, and eleven
+   * badges of it pushed the notes themselves below the fold.
+   */
+  protected readonly recentReleases = computed(() => this.releases().slice(0, RECENT_COUNT));
+  protected readonly olderReleases = computed(() => this.releases().slice(RECENT_COUNT));
+
+  /**
+   * `index.html` declares `<base href="/">`, which the browser uses to resolve bare fragment
+   * hrefs too — so `href="#2143---16082026"` resolves against the *root*, and clicking one
+   * navigated away from this page and reloaded it. The same trap is documented in `toc.ts`;
+   * the fix is the same, an absolute-path href plus a handler that scrolls instead.
+   */
+  protected readonly currentPath = signal('');
+
+  constructor() {
+    afterNextRender(() => {
+      this.currentPath.set(`${window.location.pathname}${window.location.search}`);
+    });
+  }
+
+  protected onJump(event: MouseEvent, id: string): void {
+    event.preventDefault();
+    // `behavior: 'instant'`, not `'smooth'` — the content area is a `gog-scroll`, whose
+    // `contain: layout style` stops the browser's smooth-scroll engine moving it at all. Same
+    // finding, and the same choice, as `toc.ts`.
+    document.getElementById(id)?.scrollIntoView({ behavior: 'instant', block: 'start' });
+    history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${id}`);
+  }
 }

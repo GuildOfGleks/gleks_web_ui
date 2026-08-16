@@ -18,6 +18,37 @@
     margin: 0;
     padding: 0;
     list-style: none;
+
+    &--older {
+      margin-top: 10px;
+    }
+  }
+
+  &__older {
+    display: block;
+    margin-top: 12px;
+  }
+
+  /* Reset the <button>: it has to be one so the disclosure is reachable by keyboard —
+     `gogCollapsibleTrigger` wires the click and the ARIA and nothing else — but it should read
+     as a quiet piece of text, not as an action competing with the version badges above it. */
+  &__older-trigger {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--gog-muted-text-color);
+    font-family: inherit;
+    font-size: var(--gog-text-sm);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--gog-accent-color);
+    }
+
+    &:focus-visible {
+      outline: var(--gog-focus-ring-width) solid var(--gog-focus-ring-color);
+      outline-offset: 2px;
+    }
   }
 
   &__index-link {
