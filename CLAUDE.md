@@ -79,6 +79,11 @@ implemented**; layer 4 (generated deprecation badges) is deliberately deferred t
 `hardening-21.5.0.md` iteration 3, which needs the same generator. The file also records the
 major-version branch/subdomain approach, which is still only a recommendation.
 
+`docs/lab-examples-handoff.md` is the **running state** of that refactor — which pages are
+converted, the folder shape settled by the pilot, the traps already paid for, and what the next
+page needs. Read it first if you are continuing the work; it is short and it is the file that
+goes stale, so update it as you go.
+
 `docs/lab-stackblitz-plan.md` is the post-mortem of the reverted StackBlitz refactor
 (`b6dc543`, undone by `fca14ba`) and the plan that replaces it. **Read it before touching the
 lab's examples in bulk.** Its two load-bearing conclusions: extraction and StackBlitz are separate
