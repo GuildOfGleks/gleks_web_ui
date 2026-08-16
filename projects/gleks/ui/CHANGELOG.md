@@ -6,7 +6,23 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.5.0] - planned
 
-Nothing yet. What this release already owes is in the source: every
+### Fixed
+
+- **`gog-button`'s loading spinner was painted with the page's text colour.**
+  `--gog-btn-primary-spinner-color` and `--gog-btn-secondary-spinner-color` resolved to
+  `--gog-text-color` — the colour of text on the page background — while the label beside the
+  spinner used `--gog-accent-text-color`, the colour meant to sit on the button's fill. On the two
+  filled variants those are opposite ends of the palette, so the spinner came out washed out: on
+  the dark theme, `#f3ebd8` parchment on a `#fbbf24` amber button, next to a near-black label.
+  Both now resolve to the variant's own label colour, so a spinner reads exactly as strongly as
+  the text it replaced and follows any re-theming of the button's foreground. `outline` and
+  `ghost` were already correct and are untouched.
+
+  Only the two tokens' values changed; no token was added or removed. A theme that sets either
+  one explicitly is unaffected. Note the button as a whole still dims to
+  `--gog-btn-loading-opacity` (0.7) while loading — that is deliberate and separate from this.
+
+What this release already owes beyond that is in the source: every
 `@deprecated … Removed in 21.5.0` tag — the six legacy icon inputs on `gog-inputfield`, the
 `checkIconTemplate` / `clearIconTemplate` / `iconTemplate` / `chevronTemplate` inputs, the
 `<column>` element with its `Column` const and type, the string-keyed `[template]` column slot,

@@ -74,6 +74,20 @@
         </gog-button>
       }
     </div>
+
+    <p class="meta">
+      Held loading, one per variant, so the spinner can actually be looked at. It takes the
+      variant's <em>label</em> colour — the two filled variants used to paint it with the page's
+      text colour instead, which on a bright accent fill read as a washed-out spinner sitting beside
+      a high-contrast label.
+    </p>
+    <div class="action-row">
+      @for (variantOption of variants; track variantOption) {
+        <gog-button [variant]="variantOption" type="button" [loading]="true">
+          {{ variantOption }}
+        </gog-button>
+      }
+    </div>
   </article>
 
   <article class="card">
