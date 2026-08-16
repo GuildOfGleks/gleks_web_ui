@@ -79,6 +79,13 @@ implemented**; layer 4 (generated deprecation badges) is deliberately deferred t
 `hardening-21.5.0.md` iteration 3, which needs the same generator. The file also records the
 major-version branch/subdomain approach, which is still only a recommendation.
 
+`docs/lab-stackblitz-plan.md` is the post-mortem of the reverted StackBlitz refactor
+(`b6dc543`, undone by `fca14ba`) and the plan that replaces it. **Read it before touching the
+lab's examples in bulk.** Its two load-bearing conclusions: extraction and StackBlitz are separate
+projects and must not share a commit, and no commit converts more than one component page. It also
+records the reason extraction is still worth doing — the source panels are hand-typed copies of
+the rendered demo, and one of them had already drifted.
+
 `docs/lab-seo.md` covers the docs site's search-engine setup: per-page titles/descriptions
 (`seo-data.ts` + `SeoService`), canonicals, `noindex` on the router's catch-all routes, the
 generated `sitemap.xml`, and the SSR host allow-list in `server.ts` — **without which the site
