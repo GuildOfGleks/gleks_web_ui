@@ -433,3 +433,42 @@ h3[id] {
     border-color: color-mix(in srgb, var(--gog-accent-color) 55%, transparent);
   }
 }
+
+/*
+ * Centres the demo previews on every documentation page.
+ *
+ * Global rather than per page on purpose. The doc-page chrome is duplicated: 19 pages predate
+ * `_doc-page.scss` and still carry their own copy of `.demo-card`, while the rest `@use` the
+ * partial — so a rule added to the partial would reach barely half of them. `.code-block` is
+ * already here for the same reason.
+ *
+ * Left-aligned, a narrow component — a calendar, a single field — sat against the edge of a card
+ * as wide as the article, with the rest of the card empty.
+ */
+
+/* Safe everywhere, because it moves the preview box and never its layout: a preview that caps
+   itself (`.width-demo` and `.size-column` are `max-width: 320px`) is otherwise pinned to the
+   left edge of a card three times its width. A full-width preview is unaffected. */
+.demo-card__preview {
+  margin-inline: auto;
+}
+
+/* Contents centred only where the preview has no layout of its own — the attribute selector
+   matches `class="demo-card__preview"` and nothing else. About a third of the previews carry a
+   second class that *is* a layout (`.action-row`, `.size-column`, `.skeleton-grid`,
+   `.spinner-grid`, …), and those are designed arrangements: setting `align-items` /
+   `justify-content` on a grid re-places its tracks, which turned the skeleton "Shapes" demo into
+   a tall sparse column pushed to the right. Centre those case by case, below. */
+[class='demo-card__preview'] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A wrapping row of controls — buttons, chips, toggles. The one shared layout helper that reads
+   badly against the left edge, and centring it cannot disturb anything: it is a single-axis flex
+   row that was already `align-items: center`. */
+.demo-card__preview.action-row {
+  justify-content: center;
+}

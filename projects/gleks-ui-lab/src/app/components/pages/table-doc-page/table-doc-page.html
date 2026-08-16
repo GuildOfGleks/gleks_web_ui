@@ -98,7 +98,9 @@
       <p class="demo-card__meta">
         <code>stickyHeader</code> puts <code>position: sticky</code> on the header cells so the
         header row holds at the top of the scrolling region while the rows move under it. The region
-        here is a wrapper capped at 260px.
+        here is a <a routerLink="/components/scroll">gog-scroll</a> capped at 260px — a native
+        <code>overflow: auto</code> would bring back the one piece of chrome no
+        <code>--gog-*</code> token can reach.
         <strong
           >Known defect in {{ libraryVersion }}: the header scrolls away instead of holding.</strong
         >
@@ -110,12 +112,14 @@
         the height of the <code>gog-table</code> host, or of the inner scroller, does not help; the
         fix has to happen inside the component.
       </p>
-      <div class="demo-card__preview table-scroll-demo">
-        <gog-table [value]="rows" [stickyHeader]="true">
-          <gog-column field="component" header="Component"></gog-column>
-          <gog-column field="status" header="Status"></gog-column>
-          <gog-column field="owner" header="Owner"></gog-column>
-        </gog-table>
+      <div class="demo-card__preview">
+        <gog-scroll class="table-scroll-demo" ariaLabel="Table rows">
+          <gog-table [value]="rows" [stickyHeader]="true">
+            <gog-column field="component" header="Component"></gog-column>
+            <gog-column field="status" header="Status"></gog-column>
+            <gog-column field="owner" header="Owner"></gog-column>
+          </gog-table>
+        </gog-scroll>
       </div>
       <app-code-tabs [html]="stickyHtml" [ts]="stickyTs" />
     </article>
