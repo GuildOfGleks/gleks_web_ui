@@ -1,0 +1,70 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('releases');
+
+.releases {
+  /* A wrapping row rather than a sidebar: the list is short, it grows by one entry per release,
+     and the page already has the right-hand table of contents. */
+  &__index {
+    margin-bottom: 2.4em;
+    padding-bottom: 1.4em;
+    border-bottom: 1px solid var(--gog-border-color);
+  }
+
+  &__index-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__index-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 12px;
+    border: 1px solid var(--gog-border-color);
+    border-radius: var(--gog-radius);
+    color: var(--gog-text-color);
+    text-decoration: none;
+    transition:
+      color var(--gog-duration-fast),
+      border-color var(--gog-duration-fast);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--gog-accent-color);
+      border-color: var(--gog-accent-color);
+    }
+  }
+
+  &__index-version {
+    font-family: var(--gog-font-mono);
+    font-size: var(--gog-text-sm);
+    font-weight: 600;
+  }
+
+  &__index-date {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-xs);
+
+    /* `planned` is not a date, and a reader scanning this row should be able to tell at a glance
+       which entries they cannot install yet. */
+    &--unreleased {
+      color: var(--gog-accent-color);
+      font-style: italic;
+    }
+  }
+
+  &__error {
+    max-width: 60ch;
+    color: var(--gog-muted-text-color);
+    line-height: 1.6;
+
+    a {
+      color: var(--gog-accent-color);
+    }
+  }
+}

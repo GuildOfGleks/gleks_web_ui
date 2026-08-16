@@ -183,6 +183,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://ui.guildofgleks.com/general/releases</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://ui.guildofgleks.com/general/theme-generator</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

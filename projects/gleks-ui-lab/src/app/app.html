@@ -15,12 +15,12 @@
       </button>
       <img src="/gleks_ui_logo.svg" alt="" class="logo-icon" width="28" height="32" />
       <span class="logo-title font-heading">GUILD OF GLEKS UI</span>
+      <!-- Points at the Releases page, not npm: the badge answers "which version is this?", and
+           the next question is always "what changed in it?" — which npm's page does not show. -->
       <a
         class="version-tag"
-        [href]="libraryNpmUrl"
-        target="_blank"
-        rel="noopener"
-        [title]="'This site documents @guildofgleks/ui ' + libraryVersion"
+        routerLink="/general/releases"
+        [title]="'This site documents @guildofgleks/ui ' + libraryVersion + ' — see what changed'"
         >v{{ libraryVersion }}</a
       >
     </div>

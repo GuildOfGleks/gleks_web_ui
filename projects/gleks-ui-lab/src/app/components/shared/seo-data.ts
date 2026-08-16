@@ -93,6 +93,12 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
       'Answers to the questions asked before adopting Guild of Gleks UI: browser support, form ' +
       'integration, accessibility, SSR, bundle size and how it relates to Material and PrimeNG.',
   },
+  'general/releases': {
+    title: `Releases and Changelog — Angular UI Library`,
+    description:
+      'Every release of @guildofgleks/ui, an Angular component library: what changed, what was ' +
+      'fixed and what is deprecated, read from the changelog shipped inside the package itself.',
+  },
 
   'components/accordion': component(
     'Accordion',

@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import {
   ButtonComponent,
@@ -23,7 +23,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faBars, faPalette } from '@fortawesome/free-solid-svg-icons';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
 import { TocComponent } from './components/shared/toc/toc';
-import { LIBRARY_NPM_URL, LIBRARY_VERSION } from './components/shared/library-version';
+import { LIBRARY_VERSION } from './components/shared/library-version';
 import { SeoService } from './components/shared/seo';
 
 interface ThemeMenuOption {
@@ -52,6 +52,7 @@ const FOOTER_LINKS: readonly FooterLink[] = [
   selector: 'app-root',
   imports: [
     RouterOutlet,
+    RouterLink,
     FaIconComponent,
     ButtonComponent,
     ScrollComponent,
@@ -114,7 +115,6 @@ export class App {
   // Read from the installed package rather than written here, so the badge cannot claim a
   // version the site was not actually built against. See `library-version.ts`.
   protected readonly libraryVersion = LIBRARY_VERSION;
-  protected readonly libraryNpmUrl = LIBRARY_NPM_URL;
 
   protected readonly footerLinks = FOOTER_LINKS;
 

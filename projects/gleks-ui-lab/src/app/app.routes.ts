@@ -42,6 +42,13 @@ export const routes: Routes = [
     loadComponent: () => import('./components/pages/faq-page/faq-page').then((m) => m.FaqPage),
   },
   {
+    // Renders the package's own CHANGELOG.md, not a markdown doc of ours — so it is a routed
+    // component and, like `faq`, has to stay above the `general/:slug` catch-all.
+    path: 'general/releases',
+    loadComponent: () =>
+      import('./components/pages/releases-page/releases-page').then((m) => m.ReleasesPage),
+  },
+  {
     path: 'general/:slug',
     loadComponent: () =>
       import('./components/pages/general-page/general-page').then((m) => m.GeneralPage),

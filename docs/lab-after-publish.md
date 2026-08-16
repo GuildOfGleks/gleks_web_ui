@@ -19,57 +19,13 @@ delete the section too.
 
 ---
 
-## 1. After publishing the release that ships `CHANGELOG.md`
-
-The changelog is now listed in `ng-package.json`'s `assets`, so from that release on it exists
-at `node_modules/@guildofgleks/ui/CHANGELOG.md`. That unblocks **layer 2 of
-`docs/lab-versioning.md`** — a Releases page rendering the notes for the exact version the site
-was built against, which is structurally incapable of drifting.
-
-None of this can be done before the release: the file is not in 21.4.1, so the asset glob would
-copy nothing and the route would render an empty page.
-
-- **Asset glob** in `angular.json` (`gleks-ui-lab` → `build` → `assets`), the same pattern the
-  three stylesheet globs already use:
-  `{ "glob": "CHANGELOG.md", "input": "node_modules/@guildofgleks/ui", "output": "docs" }`.
-- **A route and page** rendering it with the existing `app-markdown` component — the same one
-  behind `public/docs/theming.md`. Fetch it the way `full-library-css.ts` fetches the
-  stylesheets (`httpResource.text('/docs/CHANGELOG.md')`), so it is not bundled into the app.
-- **Nav entry** in `components/shared/nav-data.ts`, under the General group next to the FAQ.
-- **Slugged anchors** on the version headings come free — `markdown-renderer.ts` already slugs
-  every heading, so `#21-4-0` works and a component page can link straight to a release.
-- **Link the version badge to it.** `app.html`'s badge currently points at the package's npm
-  page; the release notes for that exact version are the better destination, and
-  `library-version.ts` already exports what it needs.
-
-**The prerequisite this section used to carry is done:** every published version's changelog
-heading now carries a real date (21.3.1 — 11.08.2026, 21.3.2 — 13.08.2026, 21.4.0 and 21.4.1 —
-14.08.2026, checked 2026-08-15), so the Releases page will not tell readers that shipped releases
-are "planned". The only undated headings are `## [21.4.3] - planned` and `## [21.5.0] - planned`,
-which is correct — neither has shipped. **Two undated headings at once is normal here** and the
-releases page has to tolerate it: an imminent patch and the next minor can both be open, as they
-are now. Do not assume there is exactly one.
-
-## After the release that caps gog-calendar's width
-
-`gog-calendar`'s host gains `max-width: var(--gog-calendar-max-width)`, default `max-content`,
-which also sizes `gog-datepicker [inline]`. Two things to do once it ships:
-
-- **Document the two new tokens** on the Calendar and Datepicker pages' Styling Tokens tables:
-  `--gog-calendar-max-width` and `--gog-datepicker-panel-width`. The tables are generated from
-  `token-reference-data.ts`, so regenerate rather than hand-editing.
-- **Re-check the demo previews on both pages.** The lab centres preview contents from
-  `styles.scss`, which is what currently makes those calendars look right; once the component
-  caps itself the centring is doing less work, and a preview that looked fine only because of it
-  may now read differently. Nothing should break — this is a look-at-it check, not a fix.
-
 ## After the release that fixes gog-table stickyHeader
 
 The table page's "Sticky header" demo currently ends its description with a **Known defect in
 &lt;installed version&gt;** paragraph — the version is interpolated from `library-version.ts`, so
-it follows the package and does not need editing — explaining that the header rides away
-because the table's own internal
-`gog-scroll` is the nearest scrollport (full diagnosis in `hardening-21.5.0.md`). **Delete that
+it follows the package and does not need editing — explaining that the header rides away because
+the table's own internal `gog-scroll` is the nearest scrollport (full diagnosis in
+`hardening-21.5.0.md`). **Delete that
 paragraph** once the fix ships, and check the demo actually holds its header while scrolling —
 the demo itself needs no change, it already puts the table in a 260px scrolling wrapper.
 

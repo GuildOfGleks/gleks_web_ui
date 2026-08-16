@@ -73,10 +73,9 @@ when Angular 22 lands: `master` (new major) vs `v21` (fixes only), which changes
 npm dist-tag mechanics, and what must ship *before* the split. Decided, not yet in effect.
 
 `docs/lab-versioning.md` covers how the lab communicates version-to-version change, in four
-layers. **Layers 1 (version badge, read from the installed package) and 3 (`since` chips on new
-API) are implemented**; layer 2 (a releases page fed by the package's own changelog) has its
-library half done — `CHANGELOG.md` now ships in the package — and its lab half waiting in
-`lab-after-publish.md`; layer 4 (generated deprecation badges) is deliberately deferred to
+layers. **Layers 1 (version badge), 2 (the `general/releases` page, which renders the
+`CHANGELOG.md` shipped inside the installed package) and 3 (`since` chips on new API) are
+implemented**; layer 4 (generated deprecation badges) is deliberately deferred to
 `hardening-21.5.0.md` iteration 3, which needs the same generator. The file also records the
 major-version branch/subdomain approach, which is still only a recommendation.
 

@@ -14,6 +14,7 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
     children: [{ label: 'Full Technical Comparison', path: 'general/compare-full' }],
   },
   { label: 'FAQ', path: 'general/faq' },
+  { label: 'Releases', path: 'general/releases' },
 ];
 
 // 30 components, grouped by what they're for rather than one long alphabetical run —

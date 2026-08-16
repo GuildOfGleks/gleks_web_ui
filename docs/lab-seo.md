@@ -85,7 +85,7 @@ block is edited by someone else's release schedule, not this repository's.
 ## What is deliberately not done
 
 - **No `lastmod` in the sitemap.** An honest value needs per-page git history; a generated
-  "today" on all 38 URLs at once is a lie crawlers learn to discount.
+  "today" on all 39 URLs at once is a lie crawlers learn to discount.
 - **No prerendering of the component pages.** They are server-rendered per request, which is
   equivalent for a crawler. Prerendering would need `getPrerenderParams` plus a build-time fetch
   for the markdown-backed pages — worth doing for TTFB, not for indexing.

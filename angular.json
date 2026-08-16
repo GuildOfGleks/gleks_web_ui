@@ -175,6 +175,11 @@
                 "glob": "*.css",
                 "input": "node_modules/@guildofgleks/ui/styles/presets",
                 "output": "docs/styles/presets"
+              },
+              {
+                "glob": "CHANGELOG.md",
+                "input": "node_modules/@guildofgleks/ui",
+                "output": "docs"
               }
             ],
             "styles": [

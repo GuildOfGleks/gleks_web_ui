@@ -1,14 +1,14 @@
 # Showing version-to-version change in `gleks-ui-lab`
 
 How the documentation site communicates what changed between releases. Written up on 2026-08-14
-as a recommendation; **layers 1 and 3 were implemented the same day**, layer 2 is half-built
-(library side done, lab side waiting on the release that carries it), and layer 4 is deferred to
+as a recommendation; **layers 1, 2 and 3 are implemented** — 1 and 3 the same day, 2 once 21.4.3
+put a package on npm that carries `CHANGELOG.md` — and layer 4 is deferred to
 `hardening-21.5.0.md` iteration 3, which needs the same generator for a CI check.
 
 | Layer | State |
 | --- | --- |
 | 1 — version badge | **done** — `components/shared/library-version.ts`, rendered in `app.html` |
-| 2 — releases page | **half** — `CHANGELOG.md` now ships in `ng-package.json`'s `assets`; the lab half is the only entry left in `lab-after-publish.md` |
+| 2 — releases page | **done** — `CHANGELOG.md` ships in `ng-package.json`'s `assets`, an asset glob copies it to `docs/`, and `components/pages/releases-page/` renders it at `general/releases` |
 | 3 — `since` markers | **done** — `components/shared/since-badge/`, plus a `.since` rule in `src/styles.scss` for the markdown docs; API rows from 21.3.1 onward carry one |
 | 4 — deprecation badges | **not started** — deliberately, see below |
 
@@ -69,8 +69,18 @@ installed**, so it is structurally incapable of drifting.
    `angular.json` already uses to copy that package's stylesheets into `docs/styles`.
 3. A route rendering it with the existing markdown component — the same one behind
    `public/docs/theming.md` and friends.
-4. Slugged anchors on the version headings (`#21-4-0`) so a release can be linked directly from a
-   component page or a GitHub issue.
+4. Slugged anchors on the version headings so a release can be linked directly from a component
+   page or a GitHub issue.
+
+**How step 4 actually turned out.** The anchors are not `#21-4-0`: `slugify()` strips `[`, `]`
+and `.`, so `## [21.4.3] - 16.08.2026` becomes `#2143---16082026`. Rather than change the shared
+renderer for one page, the releases page builds its own index row by running that same `slugify`
+over the same heading text — the anchor format stays an implementation detail and cannot drift
+from what the renderer emits. **Do not hand-write a version anchor anywhere**; import `slugify`.
+
+The page also drops the changelog's own leading `# Changelog` heading, because it supplies its
+own `<h1>`, and marks any `planned` heading in the index — two of them can be open at once (an
+imminent patch and the next minor), which is normal rather than a bug to fix.
 
 **Cost.** One line in the library, a route and a glob in the lab. Zero ongoing maintenance.
 **Caveat.** It shows only what the changelog says, which means the quality of this page is exactly

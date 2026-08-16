@@ -272,6 +272,14 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     title: 'Calendar',
     tokens: [
       {
+        name: '--gog-calendar-max-width',
+        description:
+          'How wide the calendar may get. Defaults to max-content, which caps it at its own ' +
+          'month grid and follows the size steps, numberOfMonths and showTime on its own — ' +
+          'set it to 100% for a calendar that fills its container instead. Also sizes ' +
+          'gog-datepicker in inline mode, which renders this component.',
+      },
+      {
         name: '--gog-calendar-padding / -header-gap / -footer-gap / -months-gap',
         description: 'Grid padding and the gaps between header, footer and side-by-side months.',
       },
@@ -396,6 +404,12 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-datepicker-panel-bg / -panel-border-color / -panel-shadow / -panel-radius',
         description:
           'The panel wrapping the calendar. The grid itself is themed by --gog-calendar-*.',
+      },
+      {
+        name: '--gog-datepicker-panel-width',
+        description:
+          'Width of the dropdown panel, max-content by default. Inline mode has no panel — it ' +
+          'is gog-calendar on its own, so it sizes from --gog-calendar-max-width.',
       },
       {
         name: '--gog-datepicker-clear-color / -clear-icon-ratio / -actions-inset',

@@ -1,0 +1,42 @@
+<div class="releases">
+  <header class="releases__hero">
+    <p class="releases__eyebrow">&#64;guildofgleks/ui</p>
+    <h1 class="releases__title font-heading">Releases</h1>
+    <p class="releases__lead">
+      The changelog shipped inside the package this site was built against —
+      <a [href]="libraryNpmUrl" target="_blank" rel="noopener">v{{ libraryVersion }}</a
+      >. It is read from <code>node_modules</code> at build time rather than copied here, so it
+      cannot describe a version different from the one documented on every other page.
+    </p>
+  </header>
+
+  @if (releases().length > 0) {
+    <nav class="releases__index" aria-label="Releases">
+      <ul class="releases__index-list">
+        @for (release of releases(); track release.id) {
+          <li>
+            <a class="releases__index-link" [href]="'#' + release.id">
+              <span class="releases__index-version">{{ release.version }}</span>
+              <span
+                class="releases__index-date"
+                [class.releases__index-date--unreleased]="release.unreleased"
+                >{{ release.date }}</span
+              >
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  }
+
+  @if (hasContent()) {
+    <app-markdown [markdown]="markdown()!" />
+  } @else if (failed()) {
+    <p class="releases__error">
+      The changelog could not be loaded. It ships inside the package, so this usually means the
+      build did not copy <code>CHANGELOG.md</code> out of <code>node_modules</code> — see the asset
+      globs for <code>gleks-ui-lab</code> in <code>angular.json</code>. Meanwhile the release
+      history is on <a [href]="libraryNpmUrl" target="_blank" rel="noopener">npm</a>.
+    </p>
+  }
+</div>
