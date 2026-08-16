@@ -144,7 +144,10 @@
   inset-inline-start: 0;
   top: calc(100% + var(--gog-datepicker-panel-gap));
   z-index: var(--gog-dropdown-z);
-  width: max-content;
+  /* Was a hardcoded `max-content`. Same default, but themeable now — the inline surface is
+     `gog-calendar` itself and caps via `--gog-calendar-max-width`, so without this the dropdown
+     was the one of the two render modes a consumer could not size. */
+  width: var(--gog-datepicker-panel-width);
   border: var(--gog-datepicker-panel-border-width) var(--gog-datepicker-panel-border-style)
     var(--gog-datepicker-panel-border-color);
   border-radius: var(--gog-datepicker-panel-radius);

@@ -306,6 +306,7 @@ export type GogTokenName =
   | '--gog-calendar-header-margin'
   | '--gog-calendar-lg-day-size'
   | '--gog-calendar-lg-font-size'
+  | '--gog-calendar-max-width'
   | '--gog-calendar-md-day-size'
   | '--gog-calendar-md-font-size'
   | '--gog-calendar-months-gap'
@@ -507,6 +508,7 @@ export type GogTokenName =
   | '--gog-datepicker-panel-gap'
   | '--gog-datepicker-panel-radius'
   | '--gog-datepicker-panel-shadow'
+  | '--gog-datepicker-panel-width'
   | '--gog-datepicker-placeholder-color'
   | '--gog-datepicker-radius'
   | '--gog-datepicker-text-color'
@@ -1745,6 +1747,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-calendar-header-margin',
       '--gog-calendar-lg-day-size',
       '--gog-calendar-lg-font-size',
+      '--gog-calendar-max-width',
       '--gog-calendar-md-day-size',
       '--gog-calendar-md-font-size',
       '--gog-calendar-months-gap',
@@ -2080,6 +2083,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-datepicker-panel-gap',
       '--gog-datepicker-panel-radius',
       '--gog-datepicker-panel-shadow',
+      '--gog-datepicker-panel-width',
       '--gog-datepicker-placeholder-color',
       '--gog-datepicker-radius',
       '--gog-datepicker-text-color',

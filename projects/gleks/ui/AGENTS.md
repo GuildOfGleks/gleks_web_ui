@@ -725,6 +725,13 @@ Also exported for direct reuse: `formatDate(date, pattern)`, `parseDate(text, pa
 family of date-math helpers (`addDays`, `addMonths`, `isSameDay`, `isWithinBounds`, …) from
 `date-utils`.
 
+**Sizing.** `gog-calendar` caps itself at its own month grid — you do not need to give it a
+width. `--gog-calendar-max-width` (default `max-content`) is the cap, and it covers the size
+variants, `numberOfMonths`, `showTime` and wider locales on its own; set it to `100%` for a
+calendar that fills its container. This is also what sizes `inline` mode, because `inline` is
+`gog-calendar` with a border and nothing else. The dropdown panel is separate:
+`--gog-datepicker-panel-width`, also `max-content`.
+
 ```html
 <gog-datepicker label="Birth date" [(value)]="birthDate" [max]="today" />
 <gog-datepicker selectionMode="range" [(value)]="stayRange" [numberOfMonths]="2" />

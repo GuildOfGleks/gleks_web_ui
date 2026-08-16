@@ -498,6 +498,9 @@
   /* ── Calendar (the month grid inside gog-datepicker, and gog-calendar on its own) ── */
   --gog-calendar-font-family: var(--gog-font-body);
   --gog-calendar-color: var(--gog-text-color);
+  /* Caps the host at its month grid instead of letting the header spread to the container.
+     `100%` restores the pre-21.5.0 full-width behaviour. */
+  --gog-calendar-max-width: max-content;
   --gog-calendar-padding: 12px;
   --gog-calendar-header-gap: 4px;
   --gog-calendar-header-margin: 8px;
@@ -872,6 +875,9 @@
   --gog-datepicker-panel-border-color: var(--gog-border-color);
   --gog-datepicker-panel-radius: var(--gog-radius);
   --gog-datepicker-panel-gap: 2px;
+  /* The dropdown surface. Inline mode is `gog-calendar` itself, so it sizes from
+     `--gog-calendar-max-width` rather than from this. */
+  --gog-datepicker-panel-width: max-content;
   --gog-datepicker-float-label-reserve: var(--gog-field-float-label-reserve);
   --gog-datepicker-float-label-in-top: var(--gog-field-float-label-in-top);
   --gog-datepicker-float-label-over-gap: var(--gog-field-float-label-over-gap);

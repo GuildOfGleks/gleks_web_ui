@@ -7,6 +7,20 @@
 :host {
   display: block;
   box-sizing: border-box;
+  /*
+   * The month grid is intrinsically sized — a fixed-layout table of 7 columns, each one
+   * `--gog-calendar-day-size` wide — but the header above it is a flex row that spreads to
+   * whatever width the host has. In a block-level host with no cap that meant a title and its
+   * nav chevrons strung across the full width of the container with the grid huddled at the
+   * start of it, which is wrong at any container width a consumer did not pick by hand.
+   *
+   * `max-content` rather than a length: it is already the right answer for every size variant,
+   * for `range` (two months plus the gap), for `showTime`, and for a locale whose weekday
+   * abbreviations are wider than English's — none of which a number could track. It caps, so a
+   * narrower container still constrains the host; set `--gog-calendar-max-width: 100%` to get
+   * the old full-width behaviour back.
+   */
+  max-width: var(--gog-calendar-max-width);
   padding: var(--gog-calendar-padding);
   color: var(--gog-calendar-color);
   font-family: var(--gog-calendar-font-family);

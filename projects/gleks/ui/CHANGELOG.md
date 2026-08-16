@@ -6,6 +6,22 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.5.0] - planned
 
+### Changed
+
+- **`gog-calendar` caps itself at its own month grid.** Its host was a block with no width, so
+  in any container wider than the grid the header — a flex row carrying the title and its six
+  nav chevrons — stretched the full width while the days huddled at the start. Every consumer
+  placing a calendar in a plain container had to write a width by hand to get a calendar that
+  looked like one. The new `--gog-calendar-max-width` (default `max-content`) does it once:
+  `max-content` needs no numbers and already tracks the size variants, `numberOfMonths`,
+  `showTime` and locales whose weekday abbreviations run wider than English's. It is a cap, so
+  a narrower container still constrains the host.
+
+  This sizes `inline` mode too — `[inline]="true"` renders `gog-calendar` with a border and
+  nothing else. **Set `--gog-calendar-max-width: 100%` to keep the old full-width behaviour.**
+- **`--gog-datepicker-panel-width`** (default `max-content`) exposes the dropdown panel's width,
+  which was hardcoded. Same value as before; nothing changes unless you set it.
+
 ### Fixed
 
 - **`gog-tabs` no longer scrolls the page to reach its active header.** It centred the active

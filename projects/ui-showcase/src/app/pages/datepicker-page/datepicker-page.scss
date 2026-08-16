@@ -27,3 +27,20 @@
   border-radius: var(--gog-radius);
   overflow: hidden;
 }
+
+/* A plain block container, deliberately: the `.dp-inline` flex row above shrink-wraps its
+   children, which is exactly why a calendar that spreads to its container looked fine there. */
+.dp-block {
+  display: block;
+  padding: 16px;
+  border: 1px dashed var(--gog-border-color);
+  border-radius: var(--gog-radius);
+
+  &__stretched {
+    --gog-calendar-max-width: 100%;
+  }
+
+  &__wide-panel {
+    --gog-datepicker-panel-width: 420px;
+  }
+}

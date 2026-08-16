@@ -146,4 +146,35 @@
       <gog-datepicker label="Inside a clipped box" [appendToBody]="true" />
     </div>
   </article>
+
+  <article class="card">
+    <h3>Width in a block container</h3>
+    <p class="hint">
+      The case the flex row above hides. Each calendar below is the only child of a plain full-width
+      block: the grid is intrinsically sized, so without a cap the header spread the whole way
+      across while the days huddled at the start.
+      <code>--gog-calendar-max-width</code> is <code>max-content</code> by default, and tracks
+      <code>numberOfMonths</code>, <code>showTime</code> and the size variants on its own.
+    </p>
+    <div class="dp-block">
+      <p class="hint">default</p>
+      <gog-calendar [value]="inlineDate()" />
+
+      <p class="hint">two months + time — same cap, no numbers involved</p>
+      <gog-calendar [numberOfMonths]="2" [showTime]="true" />
+
+      <p class="hint">
+        <code>--gog-calendar-max-width: 100%</code> — the opt-out, for a calendar that should fill
+        its container
+      </p>
+      <gog-calendar class="dp-block__stretched" />
+    </div>
+
+    <p class="hint">
+      The dropdown panel has its own knob, <code>--gog-datepicker-panel-width</code>:
+    </p>
+    <div class="dp-block">
+      <gog-datepicker label="Wide panel" class="dp-block__wide-panel" />
+    </div>
+  </article>
 </section>

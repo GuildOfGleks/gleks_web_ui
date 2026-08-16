@@ -47,6 +47,19 @@ heading now carries a real date (21.3.1 — 11.08.2026, 21.3.2 — 13.08.2026, 2
 14.08.2026, checked 2026-08-15), so the Releases page will not tell readers that shipped releases
 are "planned". Only `## [21.5.0] - planned` is undated, which is correct — it has not shipped.
 
+## After the release that caps gog-calendar's width
+
+`gog-calendar`'s host gains `max-width: var(--gog-calendar-max-width)`, default `max-content`,
+which also sizes `gog-datepicker [inline]`. Two things to do once it ships:
+
+- **Document the two new tokens** on the Calendar and Datepicker pages' Styling Tokens tables:
+  `--gog-calendar-max-width` and `--gog-datepicker-panel-width`. The tables are generated from
+  `token-reference-data.ts`, so regenerate rather than hand-editing.
+- **Re-check the demo previews on both pages.** The lab centres preview contents from
+  `styles.scss`, which is what currently makes those calendars look right; once the component
+  caps itself the centring is doing less work, and a preview that looked fine only because of it
+  may now read differently. Nothing should break — this is a look-at-it check, not a fix.
+
 ## After the release that fixes gog-table stickyHeader
 
 The table page's "Sticky header" demo currently ends its description with a **Known defect in
