@@ -229,16 +229,18 @@ export class SliderDocPage {
     '    <gog-slider label="Bass" orientation="vertical" [(value)]="bass" />',
     '    <gog-slider label="Mid" orientation="vertical" [(value)]="mid" />',
     '  `,',
-    '  styles: `',
-    '    :host {',
-    '      display: flex;',
-    '      gap: 24px;',
-    '    }',
-    '  `,',
     '})',
     'export class ExampleComponent {',
     '  protected readonly bass = signal(60);',
     '  protected readonly mid = signal(45);',
+    '}',
+  ].join('\n');
+  protected readonly verticalCss = [
+    '/* Vertical sliders are block-level like the horizontal ones, so a row is the consumer’s',
+    '   job — the component does not assume one. */',
+    ':host {',
+    '  display: flex;',
+    '  gap: 24px;',
     '}',
   ].join('\n');
 

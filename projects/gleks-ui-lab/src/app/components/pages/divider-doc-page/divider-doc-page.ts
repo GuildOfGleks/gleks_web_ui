@@ -158,17 +158,18 @@ export class DividerDocPage {
     '      <button>Copy</button>',
     '    </div>',
     '  `,',
-    '  styles: `',
-    '    .toolbar {',
-    '      display: flex;',
-    '      align-items: center;',
-    '      /* A vertical divider stretches to the row when the row defines a height, */',
-    '      /* otherwise it falls back to --gog-divider-vertical-length. */',
-    '      height: 32px;',
-    '    }',
-    '  `,',
     '})',
     'export class ExampleComponent {}',
+  ].join('\n');
+  protected readonly verticalCss = [
+    '.toolbar {',
+    '  display: flex;',
+    '  align-items: center;',
+    '  gap: 12px;',
+    '  /* A vertical divider stretches to the row when the row defines a height; without one',
+    '     it falls back to --gog-divider-vertical-length. */',
+    '  height: 32px;',
+    '}',
   ].join('\n');
 
   protected readonly insetHtml = [
@@ -194,5 +195,19 @@ export class DividerDocPage {
     '  `,',
     '})',
     'export class ExampleComponent {}',
+  ].join('\n');
+  protected readonly insetCss = [
+    '.event-list {',
+    '  margin: 0;',
+    '  padding: 0;',
+    '  list-style: none;',
+    '}',
+    '',
+    '.event-list li {',
+    '  display: flex;',
+    '  align-items: center;',
+    '  gap: 8px;',
+    '  padding: 6px 0;',
+    '}',
   ].join('\n');
 }

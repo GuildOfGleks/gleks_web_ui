@@ -1,30 +1,28 @@
 <div class="code-block">
   <div class="code-block__toolbar">
     <div class="code-block__tabs" role="tablist">
-      <button
-        type="button"
-        role="tab"
-        class="code-block__tab"
-        [class.code-block__tab--active]="activeTab() === 'html'"
-        [attr.aria-selected]="activeTab() === 'html'"
-        (click)="selectTab('html')"
-      >
-        HTML
-      </button>
-      <button
-        type="button"
-        role="tab"
-        class="code-block__tab"
-        [class.code-block__tab--active]="activeTab() === 'ts'"
-        [attr.aria-selected]="activeTab() === 'ts'"
-        (click)="selectTab('ts')"
-      >
-        TS
-      </button>
+      @for (tab of tabs; track tab.id) {
+        <button
+          type="button"
+          role="tab"
+          class="code-block__tab"
+          [class.code-block__tab--active]="activeTab() === tab.id"
+          [attr.aria-selected]="activeTab() === tab.id"
+          (click)="selectTab(tab.id)"
+        >
+          {{ tab.label }}
+        </button>
+      }
     </div>
-    <button type="button" class="code-block__copy" (click)="onCopy()">{{ copyLabel() }}</button>
+    @if (!isEmpty()) {
+      <button type="button" class="code-block__copy" (click)="onCopy()">{{ copyLabel() }}</button>
+    }
   </div>
-  <gog-scroll class="code-block__scroll" size="thin" ariaLabel="Code sample">
-    <pre><code class="hljs" [innerHTML]="activeHighlighted()"></code></pre>
-  </gog-scroll>
+  @if (isEmpty()) {
+    <p class="code-block__empty">This example needs no styles of its own.</p>
+  } @else {
+    <gog-scroll class="code-block__scroll" size="thin" ariaLabel="Code sample">
+      <pre><code class="hljs" [innerHTML]="activeHighlighted()"></code></pre>
+    </gog-scroll>
+  }
 </div>

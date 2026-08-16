@@ -263,6 +263,23 @@ export class SkeletonDocPage implements OnDestroy {
     '  <!-- real avatar, name, banner, bio -->',
     '}',
   ].join('\n');
+  protected readonly profileCss = [
+    '/* The placeholder borrows the real card’s layout, which is the whole trick: swapping',
+    '   skeletons for content must not move anything. */',
+    '.profile-card__header {',
+    '  display: flex;',
+    '  align-items: center;',
+    '  gap: 14px;',
+    '}',
+    '',
+    '.profile-card__header-text {',
+    '  display: grid;',
+    '  gap: 8px;',
+    '  flex: 1 1 auto;',
+    '  /* Lets the text column shrink instead of forcing the row wider than its container. */',
+    '  min-width: 0;',
+    '}',
+  ].join('\n');
   protected readonly profileTs = [
     "import { Component, signal } from '@angular/core';",
     "import { SkeletonComponent } from '@guildofgleks/ui';",
@@ -302,6 +319,20 @@ export class SkeletonDocPage implements OnDestroy {
     '  }',
     '</div>',
   ].join('\n');
+  protected readonly productsCss = [
+    '.product-grid {',
+    '  display: grid;',
+    '  /* auto-fill, so the placeholder grid reflows exactly like the real one and the reader',
+    '     never sees the column count change when the data lands. */',
+    '  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));',
+    '  gap: 16px;',
+    '}',
+    '',
+    '.product-card {',
+    '  display: grid;',
+    '  gap: 8px;',
+    '}',
+  ].join('\n');
   protected readonly productsTs = [
     "import { Component, signal } from '@angular/core';",
     "import { SkeletonComponent } from '@guildofgleks/ui';",
@@ -337,6 +368,25 @@ export class SkeletonDocPage implements OnDestroy {
     '    </div>',
     '  }',
     '</div>',
+  ].join('\n');
+  protected readonly chatCss = [
+    '.chat-thread {',
+    '  display: grid;',
+    '  gap: 10px;',
+    '  max-width: 380px;',
+    '}',
+    '',
+    '/* flex-end, so a bubble taller than the avatar keeps the two bottom-aligned — the same',
+    '   rule the real thread uses. */',
+    '.chat-row {',
+    '  display: flex;',
+    '  align-items: flex-end;',
+    '  gap: 10px;',
+    '}',
+    '',
+    '.chat-row--mine {',
+    '  justify-content: flex-end;',
+    '}',
   ].join('\n');
   protected readonly chatTs = [
     "import { Component } from '@angular/core';",

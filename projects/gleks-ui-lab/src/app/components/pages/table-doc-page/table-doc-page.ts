@@ -583,6 +583,14 @@ export class TableDocPage implements OnDestroy {
     '  }',
     '}',
   ].join('\n');
+  protected readonly templatesCss = [
+    '/* The header template only decorates the text — everything else about the header cell',
+    '   still comes from the table. */',
+    '.status-header {',
+    '  color: var(--gog-accent-color);',
+    '  font-weight: 600;',
+    '}',
+  ].join('\n');
 
   protected readonly migrateTemplateSnippet = [
     '```html',
