@@ -6,6 +6,19 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.5.0] - planned
 
+Nothing yet. What this release already owes is in the source: every
+`@deprecated … Removed in 21.5.0` tag — the six legacy icon inputs on `gog-inputfield`, the
+`checkIconTemplate` / `clearIconTemplate` / `iconTemplate` / `chevronTemplate` inputs, the
+`<column>` element with its `Column` const and type, the string-keyed `[template]` column slot,
+and the `GogSelectOption` / `GogMultiselectOption` aliases (those two overran their announced
+21.4.0 removal). Each names its replacement in the tag itself.
+
+## [21.4.3] - planned
+
+Two components stopped fighting their container. Nothing was added or removed from any public
+API, but **`gog-calendar` and `gog-datepicker [inline]` are narrower than they were** — see the
+first entry if you were relying on a calendar filling its container.
+
 ### Changed
 
 - **`gog-calendar` caps itself at its own month grid.** Its host was a block with no width, so
@@ -31,13 +44,6 @@ reached 1.0, so breaking changes may land in minor versions.
   its own header viewport directly: the active header still centres, nothing outside the
   component moves. No API change; `scrollActiveIntoView` behaves as documented, only without the
   side effect.
-
-What this release already owes beyond that is in the source: every
-`@deprecated … Removed in 21.5.0` tag — the six legacy icon inputs on `gog-inputfield`, the
-`checkIconTemplate` / `clearIconTemplate` / `iconTemplate` / `chevronTemplate` inputs, the
-`<column>` element with its `Column` const and type, the string-keyed `[template]` column slot,
-and the `GogSelectOption` / `GogMultiselectOption` aliases (those two overran their announced
-21.4.0 removal). Each names its replacement in the tag itself.
 
 ## [21.4.2] - 15.08.2026
 

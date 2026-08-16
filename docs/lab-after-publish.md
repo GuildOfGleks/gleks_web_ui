@@ -45,7 +45,10 @@ copy nothing and the route would render an empty page.
 **The prerequisite this section used to carry is done:** every published version's changelog
 heading now carries a real date (21.3.1 — 11.08.2026, 21.3.2 — 13.08.2026, 21.4.0 and 21.4.1 —
 14.08.2026, checked 2026-08-15), so the Releases page will not tell readers that shipped releases
-are "planned". Only `## [21.5.0] - planned` is undated, which is correct — it has not shipped.
+are "planned". The only undated headings are `## [21.4.3] - planned` and `## [21.5.0] - planned`,
+which is correct — neither has shipped. **Two undated headings at once is normal here** and the
+releases page has to tolerate it: an imminent patch and the next minor can both be open, as they
+are now. Do not assume there is exactly one.
 
 ## After the release that caps gog-calendar's width
 
@@ -63,7 +66,9 @@ which also sizes `gog-datepicker [inline]`. Two things to do once it ships:
 ## After the release that fixes gog-table stickyHeader
 
 The table page's "Sticky header" demo currently ends its description with a **Known defect in
-21.4.2** paragraph explaining that the header rides away because the table's own internal
+&lt;installed version&gt;** paragraph — the version is interpolated from `library-version.ts`, so
+it follows the package and does not need editing — explaining that the header rides away
+because the table's own internal
 `gog-scroll` is the nearest scrollport (full diagnosis in `hardening-21.5.0.md`). **Delete that
 paragraph** once the fix ships, and check the demo actually holds its header while scrolling —
 the demo itself needs no change, it already puts the table in a 260px scrolling wrapper.
