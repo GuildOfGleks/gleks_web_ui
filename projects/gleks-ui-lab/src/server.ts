@@ -37,7 +37,7 @@ const angularApp = new AngularNodeAppEngine({
   /**
    * **The allow-list is checked against the `Host` header the container actually receives, not
    * the one in the address bar.** Behind nginx that is whatever `proxy_set_header Host` was set
-   * to — nginx's own default is the upstream (`localhost:3001`, a container name, an IP), none of
+   * to — nginx's own default is the upstream (`localhost:9001`, a container name, an IP), none of
    * which is the public domain. When it does not match, `handle()` quietly serves the empty
    * `index.csr.html` shell instead of the rendered page, which is invisible in a browser and
    * fatal for crawlers.
