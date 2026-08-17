@@ -5,7 +5,7 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.5.0`**. `README.md` covers the
+Everything below reflects the library's actual source as of **`21.4.4`**. `README.md` covers the
 same ground at a higher level — install, setup, theming, global configuration — and is accurate;
 this file goes further, into per-component input tables, and is the one to trust for exact names,
 types and defaults.
@@ -1044,7 +1044,7 @@ Model: `open: boolean`.
 
 An open panel is as tall as its content — `--gog-collapsible-max-height` defaults to
 `max-content`. Set it to a length on an instance to cap one deliberately; the panel is
-`overflow: hidden`, so a cap **clips** rather than scrolls. (Before 21.5.0 that default was
+`overflow: hidden`, so a cap **clips** rather than scrolls. (Before 21.4.4 that default was
 `480px`, which clipped taller panels silently.)
 
 #### `gog-tabs` + `gog-tab`
