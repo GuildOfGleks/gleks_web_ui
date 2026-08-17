@@ -6,12 +6,47 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.5.0] - planned
 
+**The breaking release** — the one version consumers have to read before upgrading into. It
+carries the removals below and, per `docs/hardening-21.5.0.md`, the token-prefix rename
+(`--gog-ms-*`, `--gog-btn-*`, `--gog-input-*` spelled out in full). Everything non-breaking that
+is ready today ships in 21.4.4 instead, so a reader upgrading to 21.4.4 has nothing to migrate
+and a reader upgrading to 21.5.0 has one list to work through rather than one buried among fixes.
+
+### Removed
+
+Not done yet — this section records what the version owes. Fourteen public symbols carry an
+`@deprecated … Removed in 21.5.0` tag naming its own replacement:
+
+- the six legacy icon inputs on `gog-inputfield`;
+- the `checkIconTemplate` / `clearIconTemplate` / `iconTemplate` / `chevronTemplate` inputs;
+- the `<column>` element, with its `Column` const and type;
+- the string-keyed `[template]` column slot;
+- the `GogSelectOption` / `GogMultiselectOption` aliases — **these two overran their announced
+  21.4.0 removal**, which is the reason the date on this list is not moved again.
+
+One more is promised in prose rather than by a tag, so it has no `@deprecated` to grep for and is
+the one most likely to be missed:
+
+- the **`./src/styles/*` export** in `package.json`. Stylesheets moved to `./styles/*` in 21.3.2
+  and the README says the old path "keeps working until 21.5.0". Removing it breaks anyone still
+  importing `@guildofgleks/ui/src/styles/…`, and the README paragraph promising it goes too.
+
+## [21.4.4] - planned
+
+Everything that is ready. Two defects and one addition, none of which changes an existing
+signature, so upgrading from 21.4.3 needs no migration — see the `gog-collapsible` entry only if
+you were relying on a panel being capped at 480px.
+
 ### Added
 
 - **`ng add @guildofgleks/ui` now works.** It installs the latest version and adds
   `node_modules/@guildofgleks/ui/styles/index.css` to your project's `angular.json` styles —
   the one setup step that's pure mechanical JSON editing. Importing components and placing
   `<gog-dialog />` / `<gog-toast-container />` are still manual; see the README.
+
+  In a patch rather than a minor because it is purely additive — it adds a way to install the
+  package and touches no existing API — the same reasoning that put "`CHANGELOG.md` now ships
+  inside the package" in 21.4.2.
 
 ### Fixed
 
@@ -43,13 +78,6 @@ reached 1.0, so breaking changes may land in minor versions.
   Only the two tokens' values changed; no token was added or removed. A theme that sets either
   one explicitly is unaffected. Note the button as a whole still dims to
   `--gog-btn-loading-opacity` (0.7) while loading — that is deliberate and separate from this.
-
-What this release already owes beyond that is in the source: every
-`@deprecated … Removed in 21.5.0` tag — the six legacy icon inputs on `gog-inputfield`, the
-`checkIconTemplate` / `clearIconTemplate` / `iconTemplate` / `chevronTemplate` inputs, the
-`<column>` element with its `Column` const and type, the string-keyed `[template]` column slot,
-and the `GogSelectOption` / `GogMultiselectOption` aliases (those two overran their announced
-21.4.0 removal). Each names its replacement in the tag itself.
 
 ## [21.4.3] - 16.08.2026
 
