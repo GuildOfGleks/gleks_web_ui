@@ -126,13 +126,37 @@ app.use((req, res, next) => {
  */
 if (isMainModule(import.meta.url) || process.env['pm_id']) {
   const port = process.env['PORT'] || 4000;
-  app.listen(port, (error) => {
+  const server = app.listen(port, (error) => {
     if (error) {
       throw error;
     }
 
     console.log(`Node Express server listening on http://localhost:${port}`);
   });
+
+  /**
+   * Shut down when the container is asked to stop.
+   *
+   * `docker stop` sends `SIGTERM` and then waits out a grace period — 10 seconds by default —
+   * before `SIGKILL`. **Node does not exit on `SIGTERM` unless something asks it to**, so
+   * without this the process sat there for the whole grace period on every deploy, and every
+   * second of it was nginx answering `502` with no upstream. That is the most plausible source
+   * of the 5xx Search Console recorded for `/components/inputfield`.
+   *
+   * `server.close()` stops accepting connections and lets in-flight requests finish, so a
+   * reader mid-navigation is not cut off. The timer is the backstop: an idle keep-alive
+   * connection can hold `close()` open indefinitely, and a shutdown that outlives the grace
+   * period is just the original problem with extra steps. `unref()` so the timer itself never
+   * keeps the process alive.
+   */
+  const shutdown = (signal: NodeJS.Signals): void => {
+    console.log(`[ssr] ${signal} received — closing server.`);
+    server.close(() => process.exit(0));
+    setTimeout(() => process.exit(0), 5000).unref();
+  };
+
+  process.once('SIGTERM', shutdown);
+  process.once('SIGINT', shutdown);
 }
 
 /**
