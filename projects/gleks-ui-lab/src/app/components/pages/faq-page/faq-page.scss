@@ -33,12 +33,6 @@
 .faq-item {
   display: block;
 
-  /* The library's shipped rule caps an open panel at `--gog-collapsible-max-height`, 480px by
-     default — enough for the paragraph a collapsible usually holds, and not for a nine-row
-     table of deprecations. Raised here on the instance rather than globally, which is what the
-     token's third layer is for. */
-  --gog-collapsible-max-height: 3000px;
-
   &:not(:last-child) {
     border-bottom: 1px solid var(--gog-border-color);
   }

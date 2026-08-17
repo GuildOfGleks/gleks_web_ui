@@ -371,7 +371,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-collapsible-max-height',
         description:
-          'Fixed cap the open content transitions toward (a CSS-only max-height animation can\'t target a measured "auto" height). Raise it per-instance if a panel\'s content can exceed 480px.',
+          'Height an open panel transitions toward. Defaults to max-content, so a panel is as tall as its content and never truncates it. Set a length to cap one deliberately — the panel is overflow: hidden, so a cap clips rather than scrolls.',
       },
       {
         name: '--gog-collapsible-disabled-opacity',
