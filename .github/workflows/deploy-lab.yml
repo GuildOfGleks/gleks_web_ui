@@ -14,14 +14,17 @@ on:
         required: false
         default: "latest"
       host_port:
-        description: "Port to expose on the server"
+        # The port nginx proxies to on the server. Getting this wrong takes the site down:
+        # the deploy step stops and removes the running container *before* starting the new
+        # one, so a mismatched port leaves nginx proxying to nothing. Keep it in step with
+        # scripts/deploy-lab.ps1's own default.
+        description: "Port to expose on the server (must match what nginx proxies to)"
         required: false
-        default: "80"
+        default: "9001"
 
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/gleks-ui-lab
   CONTAINER_NAME: gleks-ui-lab
-  HOST_PORT: 3001
   CONTAINER_PORT: 80
 
 jobs:

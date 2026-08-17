@@ -28,7 +28,7 @@ list at deploy time.
 | 200 with an empty `<app-root></app-root>` and the generic site title | the allow-list is **empty** — an image built before this fix, so every request falls back to the shell |
 | 400 Bad Request                                                      | the list is set but the arriving `Host` is not in it                                                   |
 
-The second is the one a reverse proxy causes: nginx sends its _upstream_ host (`localhost:3001`, a
+The second is the one a reverse proxy causes: nginx sends its _upstream_ host (`localhost:9001`, a
 container name, an IP), not the domain in the address bar. `trustProxyHeaders: true` makes the
 engine read `X-Forwarded-Host` instead, which Cloudflare and nginx do set — and any host that is
 still rejected is now logged once, so `docker logs gleks-ui-lab` names exactly what
