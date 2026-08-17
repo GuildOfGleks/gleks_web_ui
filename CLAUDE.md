@@ -52,9 +52,16 @@ an input, output, slot, type, service method or default edits it in the same cha
 
 ## Current work
 
-Two live plans, two finished ones. Update the status table in whichever you are working from, as
+Three live plans, two finished ones. Update the status table in whichever you are working from, as
 you go.
 
+- `docs/themes-21.7.0.md` — a **future** plan, nothing started, queued behind the ripple: presets
+  become full visual identities (radii, borders, shadows, density, typography) instead of palettes,
+  and then a catalogue across eras. Its load-bearing measurement is that **510 of 1127 component
+  token declarations in `theme.css` are literals**, 26 of them radii — which is why the lab's
+  `material`/`primeng` themes had to name component tokens one at a time. Iteration 1 introduces a
+  character layer so a theme sets ~25 foundation tokens instead, and new components inherit every
+  theme's character for free.
 - `docs/ripple-21.6.0.md` — a **future** plan, nothing started: a from-scratch pointer ripple
   (there is no CDK here and will not be), scoped to 21.6.0 rather than 21.5.0 because 21.5.0 is
   deliberately the breaking release and a feature there re-creates the pile the changelog was
