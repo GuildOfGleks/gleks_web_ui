@@ -84,20 +84,104 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_PORT }}
           script: |
-            # Логинимся (если репозиторий приватный)
+            set -e
+
+            IMAGE="${{ env.DOCKER_IMAGE }}:${{ inputs.image_tag }}"
+            NAME="${{ env.CONTAINER_NAME }}"
+            PORT="${{ inputs.host_port }}"
+            CPORT="${{ env.CONTAINER_PORT }}"
+            SMOKE_NAME="$NAME-smoke"
+            SMOKE_PORT=9099
+
+            # A page whose server-rendered title differs from the one in index.html. Checking the
+            # title rather than the status code is deliberate: when SSR host validation fails the
+            # engine serves the empty index.csr.html shell with a 200 and the *fallback* title, so
+            # a status-only check passes while crawlers get a blank page. That exact failure shipped
+            # to production once already — see docs/lab-seo.md.
+            PROBE_PATH="/components/table"
+            PROBE_TITLE="Angular Table Component"
+
+            # Answers 200 with the server-rendered marker, or fails. $1 = port.
+            probe() {
+              curl -sf --max-time 10 "http://127.0.0.1:$1$PROBE_PATH" 2>/dev/null | grep -q "$PROBE_TITLE"
+            }
+
+            # Polls probe() for ~45s. $1 = port, $2 = label.
+            wait_healthy() {
+              i=0
+              while [ "$i" -lt 45 ]; do
+                if probe "$1"; then
+                  echo "  $2 healthy after ${i}s"
+                  return 0
+                fi
+                i=$((i + 1))
+                sleep 1
+              done
+              return 1
+            }
+
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-            echo "=== Pulling new image ==="
-            docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.image_tag }}
+            echo "=== Pulling $IMAGE ==="
+            docker pull "$IMAGE"
 
-            echo "=== Restarting container ==="
-            docker stop ${{ env.CONTAINER_NAME }} || true
-            docker rm ${{ env.CONTAINER_NAME }} || true
+            # Recorded before anything is touched, so a bad deploy can go back to exactly what
+            # was serving a minute ago. Empty on the very first deploy, which is handled below.
+            PREVIOUS_IMAGE="$(docker inspect --format '{{.Image}}' "$NAME" 2>/dev/null || true)"
+
+            # --- 1. Prove the new image works BEFORE the live container is touched -------------
+            # The old script destroyed the running container first and only then found out whether
+            # the replacement could start. A broken build therefore took the site down until a
+            # human noticed. This runs the candidate on a throwaway port bound to loopback only.
+            echo "=== Smoke-testing the new image on :$SMOKE_PORT ==="
+            docker rm -f "$SMOKE_NAME" >/dev/null 2>&1 || true
+            docker run -d --name "$SMOKE_NAME" -p "127.0.0.1:$SMOKE_PORT:$CPORT" "$IMAGE" >/dev/null
+
+            if ! wait_healthy "$SMOKE_PORT" "candidate"; then
+              echo "!!! New image failed its smoke test. The live site was NOT touched."
+              docker logs --tail 60 "$SMOKE_NAME" || true
+              docker rm -f "$SMOKE_NAME" >/dev/null 2>&1 || true
+              exit 1
+            fi
+            docker rm -f "$SMOKE_NAME" >/dev/null 2>&1 || true
+
+            # --- 2. Swap ----------------------------------------------------------------------
+            # `-t 20` is an upper bound, not a wait: server.ts closes on SIGTERM, so this returns
+            # in milliseconds once in-flight requests drain. Without that handler Docker sat out
+            # its full default grace period on every single deploy, and every second of it was a
+            # 502 from nginx -- which is the most likely source of the 5xx Search Console recorded.
+            echo "=== Swapping in the new container ==="
+            docker stop -t 20 "$NAME" || true
+            docker rm "$NAME" || true
 
             docker run -d \
-              --name ${{ env.CONTAINER_NAME }} \
+              --name "$NAME" \
               --restart unless-stopped \
-              -p ${{ inputs.host_port }}:${{ env.CONTAINER_PORT }} \
-              ${{ env.DOCKER_IMAGE }}:${{ inputs.image_tag }}
+              -p "$PORT:$CPORT" \
+              "$IMAGE"
 
-            docker image prune -af
+            # --- 3. Verify live, and roll back if it never comes up ---------------------------
+            if wait_healthy "$PORT" "live"; then
+              echo "=== Deploy OK ==="
+            else
+              echo "!!! New container did not become healthy on :$PORT."
+              docker logs --tail 60 "$NAME" || true
+
+              if [ -n "$PREVIOUS_IMAGE" ]; then
+                echo "=== Rolling back to the previous image ==="
+                docker rm -f "$NAME" >/dev/null 2>&1 || true
+                docker run -d \
+                  --name "$NAME" \
+                  --restart unless-stopped \
+                  -p "$PORT:$CPORT" \
+                  "$PREVIOUS_IMAGE"
+                wait_healthy "$PORT" "rolled-back" || echo "!!! Rollback also unhealthy -- the site is DOWN."
+              else
+                echo "!!! No previous image recorded (first deploy?) -- nothing to roll back to."
+              fi
+              exit 1
+            fi
+
+            # Dangling layers only. The old `-a` deleted every image not currently running,
+            # including the previous release -- which is precisely the thing a rollback needs.
+            docker image prune -f
