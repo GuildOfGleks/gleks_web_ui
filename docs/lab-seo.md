@@ -55,32 +55,47 @@ curl -s -H "Host: ui.guildofgleks.com" http://localhost:4000/components/table | 
 | ------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Per-page title + description          | `components/shared/seo-data.ts`           | One entry per routed page — 38 of them. The table is the only place a page's search-result text lives.                                                                                                                                                                                                                                                                                                                                                           |
 | Applying them                         | `components/shared/seo.ts` (`SeoService`) | Sets title, description, canonical, Open Graph and Twitter tags on every `NavigationEnd` — **including the one that happens during server rendering**, which is what puts them in the HTML a crawler receives. Started from `App`'s constructor.                                                                                                                                                                                                                 |
-| `noindex` for catch-alls              | same service                              | `app.routes.ts` ends in `components/:name` and `general/:slug`, which render for _any_ slug. Anything not in `PAGE_SEO` is marked `noindex, follow`, so a mistyped or guessed URL cannot enter the index as a thin duplicate.                                                                                                                                                                                                                                    |
+| `noindex` for catch-alls              | same service                              | `app.routes.ts` ends in `components/:name` and `general/:slug`, which render for _any_ slug and answer **200** — that is correct, they render real chrome around an unknown name. Anything not in `PAGE_SEO` is marked `noindex, follow`, so a mistyped or guessed URL cannot enter the index as a thin duplicate.                                                                                                                                               |
 | Canonical URLs                        | same service                              | Always `https://ui.guildofgleks.com/<path>`, never carrying a query or `#fragment`; `/` and `/general/overview` both canonicalise to the latter, since `/` redirects there.                                                                                                                                                                                                                                                                                      |
+| `301` on `/`                          | `src/server.ts`                           | Express answers `/` with a **permanent** redirect to `general/overview`, ahead of `angularApp.handle`. The router's own `redirectTo` renders as a `302` under SSR, which tells a crawler to keep the original URL and never consolidates the links people write onto the page that holds the content. The status is an HTTP property, so it cannot be expressed in the router.                                                                                   |
+| Real `404`                            | `pages/not-found-page/` + server routes   | `app.routes.ts`'s `**` renders `NotFoundPage`, and `app.routes.server.ts` gives the matching `**` server route `status: 404`. It used to `redirectTo: 'general/overview'`, so every typo and stale link answered `200` on an indexable page — a soft 404. `status` is only available on `RenderMode.Server`, which is why that route is not prerendered; the `''` route is listed separately so it still is.                                                     |
 | Site-level defaults + structured data | `src/index.html`                          | Fallback title/description matching `FALLBACK_SEO`, plus JSON-LD (`WebSite` + `SoftwareApplication`) describing the package: category, licence, repository, npm URL, free.                                                                                                                                                                                                                                                                                       |
 | `FAQPage` structured data             | `pages/faq-page/faq-page.ts`              | Generated from `faq-data.ts` — the same source the page renders — and written into `<head>` on that page only, during server rendering included. It is what lets a result show the questions themselves. Answers stay in the DOM when a question is collapsed (`gogCollapsibleContent` hides with CSS and `inert`, it does not remove), so the markup a crawler receives carries all 25 answers in full; keep it that way if the FAQ is ever restructured again. |
 | `robots.txt`                          | `public/robots.txt`                       | Allows everything, points at the sitemap. Deliberately does **not** `Disallow` the catch-all routes — a blocked URL is never crawled, so the crawler would never see the `noindex` on it.                                                                                                                                                                                                                                                                        |
 | `sitemap.xml`                         | generated                                 | `scripts/generate-sitemap.mjs` derives it from `nav-data.ts`, so adding a page to the sidebar adds it to the sitemap. `scripts/build-lab.mjs` regenerates it before every build, including the Dockerfile's — a deployed sitemap cannot be stale. `npm run generate:sitemap` / `npm run check:sitemap` run it by hand.                                                                                                                                           |
 | Home-page `H1`                        | `overview-page.html`                      | Says what the library _is_ (`Angular UI Component Library`), not what the page is called. The sidebar entry is still "Overview".                                                                                                                                                                                                                                                                                                                                 |
 
-## Cloudflare rewrites `robots.txt` in flight
+## Cloudflare: the managed block is off, and `robots.txt` never told the whole story
 
-The file served at `/robots.txt` is **not** the one in `public/`. Cloudflare's managed
-content block is prepended to it, so the live file is Cloudflare's rules first, ours second:
+Until 2026-08-17 Cloudflare prepended its managed content block to `/robots.txt`, so the served
+file was Cloudflare's rules first and `public/robots.txt` second. **Both of the settings behind
+that were turned off on 2026-08-17** — _AI Crawl Control → Manage robots.txt → off_, and
+_Security → Bot Traffic → Allow_ — and `/robots.txt` now serves this repository's file alone.
 
-- `Content-Signal: search=yes,ai-train=no,use=reference` — a Cloudflare/IETF-draft directive that
-  Googlebot does not know. Search Console flags it as _"a rule Googlebot ignores"_; that is
-  literally what it says — an unknown line is skipped, nothing is blocked, and the warning is
-  cosmetic. Turning it off is Cloudflare dashboard → the domain → **AI Audit / Bots → manage
-  robots.txt**, which also removes the AI-crawler `Disallow` rules that come with it.
-- `Disallow` for `GPTBot`, `ClaudeBot`, `CCBot`, `Google-Extended`, `Bytespider`, `Amazonbot`,
-  `Applebot-Extended`, `meta-externalagent`. **`Google-Extended` is not Googlebot** — it governs
-  Gemini/Vertex training only, and does not affect Search indexing, ranking or AI Overviews.
-- Two `User-agent: *` groups now exist (Cloudflare's and ours). Crawlers merge groups with the
-  same agent, both say `Allow: /`, and `Sitemap:` is file-global — so nothing conflicts.
+An earlier version of this section concluded that the managed block was cosmetic and that
+nothing was actually blocked. **That was wrong in two ways, and both are worth remembering:**
 
-Worth re-reading `https://ui.guildofgleks.com/robots.txt` after any Cloudflare change: a managed
-block is edited by someone else's release schedule, not this repository's.
+- **The site was answering `403` to automated requests.** `/` and `/sitemap.xml` both refused
+  while `/robots.txt` was served normally — Bot Fight Mode / AI-crawler blocking at the edge,
+  which is a separate control from the managed `robots.txt` and is **invisible from the robots
+  file**. Reading `robots.txt` will never reveal it. Check the **status code**, not just the
+  file.
+- **`Google-Extended: Disallow: /` did have a real effect.** It is correctly not Googlebot and
+  does not touch Search indexing or ranking — but grounding an AI answer is exactly what it
+  governs, and "Gemini says it cannot read the site" was the original complaint that started
+  this investigation.
+
+So: after **any** Cloudflare change, re-check the file _and_ the status code. The managed block
+is edited on someone else's release schedule, not this repository's, and it can come back.
+
+```sh
+curl -s https://ui.guildofgleks.com/robots.txt                             # our file only
+curl -s -o /dev/null -w "%{http_code}\n" https://ui.guildofgleks.com/sitemap.xml   # 200, not 403
+```
+
+Verified on 2026-08-17 after the change: `robots.txt` serves only the repo's file, `/` is fully
+server-rendered, and title, description, canonical, Open Graph and `robots: index, follow` are
+all present in the delivered HTML.
 
 ## What is deliberately not done
 

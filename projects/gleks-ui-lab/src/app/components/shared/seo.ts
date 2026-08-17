@@ -8,6 +8,7 @@ import { filter } from 'rxjs';
 import {
   FALLBACK_SEO,
   HOME_PATH,
+  NOT_FOUND_SEO,
   PAGE_SEO,
   SITE_NAME,
   SITE_URL,
@@ -58,7 +59,7 @@ export class SeoService {
     // them into the canonical is how one page becomes several in an index.
     const path = url.split(/[?#]/)[0].replace(/^\/+|\/+$/g, '');
     const page: PageSeo | undefined = PAGE_SEO[path];
-    const seo = page ?? FALLBACK_SEO;
+    const seo = page ?? (this.isNotFound() ? NOT_FOUND_SEO : FALLBACK_SEO);
 
     // The home page is reached at `/` (which redirects) as well as at its own path; both must
     // point at one canonical URL or they compete with each other for the same content.
@@ -81,6 +82,24 @@ export class SeoService {
     this.setName('twitter:title', seo.title);
     this.setName('twitter:description', seo.description);
     this.setName('twitter:image', SOCIAL_IMAGE);
+  }
+
+  /**
+   * Whether the navigation landed on `app.routes.ts`'s `**` route, which flags itself with
+   * `data: { notFound: true }`. Read from the resolved route rather than guessed from the path,
+   * so the service does not carry a second copy of the routing rules.
+   *
+   * Walks to the deepest activated child because `data` is not inherited upward and the routed
+   * page is a leaf. Returns `false` when the router state is not yet populated — that only
+   * happens on the `init()` call made before the first navigation completes, which the
+   * `NavigationEnd` subscription immediately supersedes.
+   */
+  private isNotFound(): boolean {
+    let route = this.router.routerState.snapshot.root;
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    return route.data['notFound'] === true;
   }
 
   private setName(name: string, content: string): void {

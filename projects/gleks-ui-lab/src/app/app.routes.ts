@@ -239,7 +239,17 @@ export const routes: Routes = [
       ),
   },
   {
+    // Renders a real not-found page rather than redirecting to the overview. The redirect made
+    // every unknown URL answer `200` on an indexable page — a soft 404, which turns each typo
+    // and stale inbound link into another duplicate entry point. The **404 status** that goes
+    // with this lives in `app.routes.server.ts`; without it the page is cosmetic.
     path: '**',
-    redirectTo: 'general/overview',
+    loadComponent: () =>
+      import('./components/pages/not-found-page/not-found-page').then((m) => m.NotFoundPage),
+    // Read by `SeoService`, which is otherwise driven purely by the path table in `seo-data.ts`.
+    // A flag on the route rather than a path pattern in the service: this is the only place that
+    // knows which URLs are unmatched, and duplicating that as "not `general/x` or `components/x`"
+    // would be a second copy of the routing rules, in a file that has no reason to hold them.
+    data: { notFound: true },
   },
 ];

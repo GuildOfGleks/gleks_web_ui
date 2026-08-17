@@ -150,6 +150,21 @@
 }
 
 .gog-collapsible__content {
+  /*
+   * Lets the `max-height` transition below run to `max-content` — the default of
+   * `--gog-collapsible-max-height` — instead of refusing to animate to an intrinsic keyword.
+   * That default is what keeps an open panel from clipping its content at an arbitrary
+   * number; this property is only what makes the same value animate.
+   *
+   * Declared here rather than on `:root`: the property is inherited, and a component library
+   * has no business switching keyword interpolation on for a consumer's whole document. It
+   * does inherit into this panel's own descendants, which is harmless — it changes nothing
+   * for an element that is not animating to or from an intrinsic size.
+   *
+   * Unsupported browsers ignore it and the panel snaps open, exactly as it does when a
+   * consumer sets `--gog-collapsible-max-height: none`.
+   */
+  interpolate-size: allow-keywords;
   max-height: 0;
   opacity: 0;
   overflow: hidden;

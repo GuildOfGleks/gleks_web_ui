@@ -5,7 +5,7 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.4.1`**. `README.md` covers the
+Everything below reflects the library's actual source as of **`21.5.0`**. `README.md` covers the
 same ground at a higher level — install, setup, theming, global configuration — and is accurate;
 this file goes further, into per-component input tables, and is the one to trust for exact names,
 types and defaults.
@@ -203,22 +203,22 @@ Precedence, always: **instance input → `GOG_CONFIG` → component's built-in d
 `provideGogConfig(...)` (in a route's or component's own `providers`) **layers onto the
 parent's config**, one level deep per key — it does not replace it.
 
-| Key            | Fields                                                             | Applies to                                                                                                                                                                                                                                                                                                                                                                                                   |
-| -------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `control`      | `size`, `errorDisplay`, `clearable`                                | `size`: button, inputfield, textarea, select, multiselect, checkbox, radio-group, button-toggle-group, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, radio-group, slider, datepicker. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip/toggle. |
-| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`            | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text).                                                                                                                                                                                                                       |
-| `floatLabel`   | `variant`, `showPlaceholder`                                       | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                         |
-| `datepicker`   | `locale`, `firstDayOfWeek`, `format`                               | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                            |
-| `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                       | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                          |
-| `tooltip`      | `position`, `showDelay`, `hideDelay`                               | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                  |
-| `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack` | `gog-scroll` (and every component that uses one internally).                                                                                                                                                                                                                                                                                                                                                 |
-| `button`       | `debounce`                                                         | `gog-button`.                                                                                                                                                                                                                                                                                                                                                                                                |
-| `inputfield`   | `showSpinButtons`                                                  | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                            |
-| `textarea`     | `resize`                                                           | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                              |
-| `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                            | `gog-paginator`, and through it `gog-table`'s built-in pagination.
-| `toast`        | `position`, `duration`                                             | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                              |
-| `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme` | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                 |
-| `labels`       | every fixed string the library renders — see below                 | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                                    |
+| Key            | Fields                                                                  | Applies to                                                                                                                                                                                                                                                                                                                                                                                                   |
+| -------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `control`      | `size`, `errorDisplay`, `clearable`                                     | `size`: button, inputfield, textarea, select, multiselect, checkbox, radio-group, button-toggle-group, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, radio-group, slider, datepicker. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip/toggle. |
+| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`                 | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text).                                                                                                                                                                                                                       |
+| `floatLabel`   | `variant`, `showPlaceholder`                                            | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                         |
+| `datepicker`   | `locale`, `firstDayOfWeek`, `format`                                    | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                            |
+| `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                            | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                          |
+| `tooltip`      | `position`, `showDelay`, `hideDelay`                                    | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                  |
+| `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack`      | `gog-scroll` (and every component that uses one internally).                                                                                                                                                                                                                                                                                                                                                 |
+| `button`       | `debounce`                                                              | `gog-button`.                                                                                                                                                                                                                                                                                                                                                                                                |
+| `inputfield`   | `showSpinButtons`                                                       | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                            |
+| `textarea`     | `resize`                                                                | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                 | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                           |
+| `toast`        | `position`, `duration`                                                  | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme` | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                      |
+| `labels`       | every fixed string the library renders — see below                      | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                            |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
 
@@ -438,25 +438,25 @@ toggles) — this is a real ARIA distinction, not cosmetic.
 
 #### `gog-inputfield`
 
-| Input                                     | Type                                                    | Default                             | Notes                                                                          |
-| ----------------------------------------- | ------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------ |
-| `label`, `placeholder`                    | `string`                                                | `''`                                |                                                                                |
-| `type`                                    | `GogInputType`                                          | `'text'`                            | `text`/`password`/`email`/`number`/`search`/`tel`/`url`/`date`/`time`/`datetime-local` |
-| `readonly`                                | `boolean`                                               | `false`                             | value stays focusable and submitted, edits blocked; hides the clear button and stepper |
-| `maxlength`, `minlength`                  | `number \| null`                                        | `null`                              | native attributes                                                              |
-| `pattern`                                 | `string`                                                | `''`                                | native attribute, regex source                                                 |
-| `inputMode`                               | `GogInputMode \| null`                                  | `null`                              | on-screen keyboard hint (`numeric`, `tel`, …)                                  |
-| `spellcheck`                              | `boolean \| null`                                       | `null`                              | unset = browser default                                                        |
-| `inputId`                                 | `string`                                                | `''` → generated                    | a real id is always rendered; pass one only to reference the field externally  |
-| `min`, `max`, `step`                      | `number \| null`                                        | `null`                              | `type="number"` only                                                           |
-| `showSpinButtons`                         | `boolean \| undefined`                                  | `true`                              | own +/- glyphs on `type="number"`; via `GOG_CONFIG.inputfield.showSpinButtons` |
-| `errorMessage`, `errorDisplay`            |                                                         | `''`, `'manual'`                    | see conventions                                                                |
-| `disabled`, `size`, `fullWidth`           |                                                         | `false`, `'md'`, `true`             |                                                                                |
-| `iconStart` / `iconEnd`                   | `GogIconName \| ''`                                     | `''`                                | bare leading/trailing icon                                                     |
-| `clearable`, `clearAriaLabel`             |                                                         | `false`, `'Clear'`                  | on `type="number"` the clear button renders alongside the stepper             |
-| `floatLabel`, `floatLabelShowPlaceholder` |                                                         | `'none'`, `false`                   |                                                                                |
-| `showPasswordLabel` / `hidePasswordLabel` | `string \| undefined`                                    | `'Show password'`/`'Hide password'` | `type="password"` reveal toggle aria-labels; via `GOG_CONFIG.labels`           |
-| `incrementLabel` / `decrementLabel`       | `string \| undefined`                                    | `'Increment'`/`'Decrement'`         | spin button aria-labels; via `GOG_CONFIG.labels`                               |
+| Input                                     | Type                   | Default                             | Notes                                                                                  |
+| ----------------------------------------- | ---------------------- | ----------------------------------- | -------------------------------------------------------------------------------------- |
+| `label`, `placeholder`                    | `string`               | `''`                                |                                                                                        |
+| `type`                                    | `GogInputType`         | `'text'`                            | `text`/`password`/`email`/`number`/`search`/`tel`/`url`/`date`/`time`/`datetime-local` |
+| `readonly`                                | `boolean`              | `false`                             | value stays focusable and submitted, edits blocked; hides the clear button and stepper |
+| `maxlength`, `minlength`                  | `number \| null`       | `null`                              | native attributes                                                                      |
+| `pattern`                                 | `string`               | `''`                                | native attribute, regex source                                                         |
+| `inputMode`                               | `GogInputMode \| null` | `null`                              | on-screen keyboard hint (`numeric`, `tel`, …)                                          |
+| `spellcheck`                              | `boolean \| null`      | `null`                              | unset = browser default                                                                |
+| `inputId`                                 | `string`               | `''` → generated                    | a real id is always rendered; pass one only to reference the field externally          |
+| `min`, `max`, `step`                      | `number \| null`       | `null`                              | `type="number"` only                                                                   |
+| `showSpinButtons`                         | `boolean \| undefined` | `true`                              | own +/- glyphs on `type="number"`; via `GOG_CONFIG.inputfield.showSpinButtons`         |
+| `errorMessage`, `errorDisplay`            |                        | `''`, `'manual'`                    | see conventions                                                                        |
+| `disabled`, `size`, `fullWidth`           |                        | `false`, `'md'`, `true`             |                                                                                        |
+| `iconStart` / `iconEnd`                   | `GogIconName \| ''`    | `''`                                | bare leading/trailing icon                                                             |
+| `clearable`, `clearAriaLabel`             |                        | `false`, `'Clear'`                  | on `type="number"` the clear button renders alongside the stepper                      |
+| `floatLabel`, `floatLabelShowPlaceholder` |                        | `'none'`, `false`                   |                                                                                        |
+| `showPasswordLabel` / `hidePasswordLabel` | `string \| undefined`  | `'Show password'`/`'Hide password'` | `type="password"` reveal toggle aria-labels; via `GOG_CONFIG.labels`                   |
+| `incrementLabel` / `decrementLabel`       | `string \| undefined`  | `'Increment'`/`'Decrement'`         | spin button aria-labels; via `GOG_CONFIG.labels`                                       |
 
 Model: `value: string` (always a string, even for `type="number"` — the _form control_ value is
 `number | null`, but the `[(value)]` model mirrors the raw text). CVA: yes.
@@ -652,18 +652,18 @@ a generic accessor, unlike select/multiselect/button-toggle).
 
 #### `gog-slider`
 
-| Input                             | Type                   | Default                                        |
-| --------------------------------- | ---------------------- | ---------------------------------------------- |
-| `label`, `ariaLabel`              | `string`               | `''`                                           |
-| `min`, `max`, `step`              | `number`               | `0`, `100`, `1`                                |
-| `showValue`, `showThumb`          | `boolean`              | `true`                                         |
-| `errorMessage`, `errorDisplay`    |                        | `''`, `'manual'`                               |
-| `disabled`                        | `boolean`              | `false`                                        |
-| `fullWidth`                       | `boolean`              | `true` (ignored when `orientation="vertical"`) |
-| `orientation`                     | `GogSliderOrientation` | `'horizontal'`                                 |
-| `range`                           | `boolean`              | `false` — two thumbs; see below                |
-| `startDisabled`, `endDisabled`    | `boolean`              | `false` — `range` only                         |
-| `startAriaLabel`, `endAriaLabel`  | `string`               | `'Minimum'` / `'Maximum'`, prefixed by `label` |
+| Input                            | Type                   | Default                                        |
+| -------------------------------- | ---------------------- | ---------------------------------------------- |
+| `label`, `ariaLabel`             | `string`               | `''`                                           |
+| `min`, `max`, `step`             | `number`               | `0`, `100`, `1`                                |
+| `showValue`, `showThumb`         | `boolean`              | `true`                                         |
+| `errorMessage`, `errorDisplay`   |                        | `''`, `'manual'`                               |
+| `disabled`                       | `boolean`              | `false`                                        |
+| `fullWidth`                      | `boolean`              | `true` (ignored when `orientation="vertical"`) |
+| `orientation`                    | `GogSliderOrientation` | `'horizontal'`                                 |
+| `range`                          | `boolean`              | `false` — two thumbs; see below                |
+| `startDisabled`, `endDisabled`   | `boolean`              | `false` — `range` only                         |
+| `startAriaLabel`, `endAriaLabel` | `string`               | `'Minimum'` / `'Maximum'`, prefixed by `label` |
 
 Models: `value: number`, and `rangeValue: GogSliderRange` (`{ start: number; end: number }`).
 CVA: yes. Backed by a real `<input type="range">` (rotated via `writing-mode` for vertical), so
@@ -755,15 +755,15 @@ calendar that fills its container. This is also what sizes `inline` mode, becaus
 The package ships **41** glyphs (`GogBuiltinIconName`), all from [Lucide](https://lucide.dev)
 and inlined so the package keeps zero runtime dependencies:
 
-| Group | Names |
-| --- | --- |
-| Chevrons & arrows | `chevron-up`, `chevron-down`, `chevron-left`, `chevron-right`, `arrow-left`, `arrow-right` |
-| Confirm & dismiss | `check`, `close`, `checkbox`, `checkbox-checked` |
-| Status | `success`, `error`, `warning`, `info` |
-| Sorting | `sort`, `sort-up`, `sort-down`, `filter` |
-| Actions | `search`, `plus`, `minus`, `trash`, `pencil`, `copy`, `download`, `upload`, `refresh`, `external-link` |
-| Chrome | `menu`, `more-horizontal`, `more-vertical`, `settings` |
-| Objects & state | `user`, `lock`, `mail`, `calendar`, `clock`, `eye`, `eye-off`, `star`, `star-filled` |
+| Group             | Names                                                                                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------------ |
+| Chevrons & arrows | `chevron-up`, `chevron-down`, `chevron-left`, `chevron-right`, `arrow-left`, `arrow-right`             |
+| Confirm & dismiss | `check`, `close`, `checkbox`, `checkbox-checked`                                                       |
+| Status            | `success`, `error`, `warning`, `info`                                                                  |
+| Sorting           | `sort`, `sort-up`, `sort-down`, `filter`                                                               |
+| Actions           | `search`, `plus`, `minus`, `trash`, `pencil`, `copy`, `download`, `upload`, `refresh`, `external-link` |
+| Chrome            | `menu`, `more-horizontal`, `more-vertical`, `settings`                                                 |
+| Objects & state   | `user`, `lock`, `mail`, `calendar`, `clock`, `eye`, `eye-off`, `star`, `star-filled`                   |
 
 `star` / `star-filled` is the one outline/filled pair, for a rating or favourite **toggle** —
 the same reason `checkbox` / `checkbox-checked` exists. The set is otherwise outline-only on
@@ -823,7 +823,7 @@ providers: [
 
 #### `[gogButton]` — the link-flavoured button
 
-`gog-button` renders its own `<button>`, so it can never *be* a link. `[gogButton]` inverts that:
+`gog-button` renders its own `<button>`, so it can never _be_ a link. `[gogButton]` inverts that:
 the element stays yours and the directive only gives it the look.
 
 ```html
@@ -833,11 +833,11 @@ the element stays yours and the directive only gives it the look.
 <a gogButton fullWidth routerLink="/checkout">Checkout</a>
 ```
 
-| Input       | Type                    | Default                              |
-| ----------- | ----------------------- | ------------------------------------ |
-| `variant`   | `GogVariant`            | `'primary'`                          |
-| `size`      | `GogSize \| undefined`  | `'md'`; via `GOG_CONFIG.control.size` |
-| `fullWidth` | `boolean` (bare attr ok) | `false`                              |
+| Input       | Type                     | Default                               |
+| ----------- | ------------------------ | ------------------------------------- |
+| `variant`   | `GogVariant`             | `'primary'`                           |
+| `size`      | `GogSize \| undefined`   | `'md'`; via `GOG_CONFIG.control.size` |
+| `fullWidth` | `boolean` (bare attr ok) | `false`                               |
 
 Selector is `a[gogButton], button[gogButton]` — deliberately not a bare `[gogButton]`, because on
 a `<div>` the result looks like a button and is invisible to the keyboard and to assistive tech.
@@ -1042,6 +1042,11 @@ Model: `open: boolean`.
 </gog-collapsible>
 ```
 
+An open panel is as tall as its content — `--gog-collapsible-max-height` defaults to
+`max-content`. Set it to a length on an instance to cap one deliberately; the panel is
+`overflow: hidden`, so a cap **clips** rather than scrolls. (Before 21.5.0 that default was
+`480px`, which clipped taller panels silently.)
+
 #### `gog-tabs` + `gog-tab`
 
 | Input (on `gog-tabs`)    | Type                                                   | Default                                              |
@@ -1077,18 +1082,18 @@ hidden via `[hidden]` while inactive — preserves scroll/input state).
 
 #### `gog-paginator`
 
-| Input                           | Type                                             | Default                        |
-| ------------------------------- | ------------------------------------------------ | ------------------------------ |
-| `fullWidth`, `totalPages`       | `boolean`, `number`                              | `true`, `1`                    |
-| `rangeMode`                     | `GogPaginatorRangeMode` (`'window'\|'ellipsis'`) | `'window'` — see note          |
-| `visiblePages`                  | `number`                                         | `5` — `'window'` mode only     |
-| `showFirstPage`, `showLastPage` | `boolean`                                        | `false` — `'window'` mode only |
-| `siblingCount`                  | `number`                                         | `2` — `'ellipsis'` mode only   |
-| `size`                          | `GogSize`                                        | `'sm'`                         |
-| `disabled`, `ariaLabel`         |                                                  | `false`, `'Pagination'`        |
-| `totalRecords`                  | `number \| null`                                 | `null` — see below             |
-| `pageSize`                      | `model<number>`                                  | `10` — two-way bindable        |
-| `showPageSizeSelect`            | `boolean \| undefined`                           | `false`; via `GOG_CONFIG.paginator` |
+| Input                           | Type                                             | Default                                            |
+| ------------------------------- | ------------------------------------------------ | -------------------------------------------------- |
+| `fullWidth`, `totalPages`       | `boolean`, `number`                              | `true`, `1`                                        |
+| `rangeMode`                     | `GogPaginatorRangeMode` (`'window'\|'ellipsis'`) | `'window'` — see note                              |
+| `visiblePages`                  | `number`                                         | `5` — `'window'` mode only                         |
+| `showFirstPage`, `showLastPage` | `boolean`                                        | `false` — `'window'` mode only                     |
+| `siblingCount`                  | `number`                                         | `2` — `'ellipsis'` mode only                       |
+| `size`                          | `GogSize`                                        | `'sm'`                                             |
+| `disabled`, `ariaLabel`         |                                                  | `false`, `'Pagination'`                            |
+| `totalRecords`                  | `number \| null`                                 | `null` — see below                                 |
+| `pageSize`                      | `model<number>`                                  | `10` — two-way bindable                            |
+| `showPageSizeSelect`            | `boolean \| undefined`                           | `false`; via `GOG_CONFIG.paginator`                |
 | `pageSizeOptions`               | `number[] \| undefined`                          | `[10, 20, 30, 40, 50]`; via `GOG_CONFIG.paginator` |
 
 The step buttons (`'Previous page'`/`'Next page'`) and the per-page names are configured, not
@@ -1100,7 +1105,7 @@ Models: `page: number` (1-based, self-clamps) and `pageSize: number`.
 
 **Give it `totalRecords` instead of `totalPages` when you know the row count** — it then derives
 the page count from `pageSize` itself, which is what removes the
-`computed(() => Math.ceil(total / size))` a consumer would otherwise have to write *and* keep in
+`computed(() => Math.ceil(total / size))` a consumer would otherwise have to write _and_ keep in
 sync with the rows-per-page select:
 
 ```html
@@ -1127,28 +1132,28 @@ they never asked to be.
 
 #### `gog-table<T>`
 
-| Input                         | Type                          | Default                           |
-| ----------------------------- | ----------------------------- | --------------------------------- |
-| `value`                       | `T[]`                         | `[]`                              |
-| `fullWidth`                   | `boolean`                     | `true`                            |
-| `pageSize`                    | `model<number>`               | `0` (no pagination) — two-way     |
+| Input                         | Type                          | Default                             |
+| ----------------------------- | ----------------------------- | ----------------------------------- |
+| `value`                       | `T[]`                         | `[]`                                |
+| `fullWidth`                   | `boolean`                     | `true`                              |
+| `pageSize`                    | `model<number>`               | `0` (no pagination) — two-way       |
 | `showPageSizeSelect`          | `boolean \| undefined`        | `false`; forwarded to the paginator |
-| `pageSizeOptions`             | `number[] \| undefined`       | `[10, 20, 30, 40, 50]`; forwarded |
-| `showRowNumbers`, `showTotal` | `boolean`                     | `true`, `false`                   |
-| `emptyPlaceholder`            | `string`                      | `'-'`                             |
-| `paginatorPosition`           | `'left'\|'center'\|'right'`   | `'center'`                        |
-| `totalPosition`               | `'left'\|'right'\|'opposite'` | `'opposite'`                      |
-| `loading`                     | `boolean`                     | `false`                           |
-| `showColumnBorders`           | `boolean`                     | `false`                           |
-| `stickyHeader`                | `boolean`                     | `false`                           |
-| `size`                        | `GogSize`                     | `'lg'` (row density — not `'md'`) |
-| `lazy`                        | `boolean`                     | `false` — see below               |
-| `totalRecords`                | `number \| null`              | `null` — `lazy` only              |
-| `selectionMode`               | `GogTableSelectionMode`       | `'none'`                          |
-| `selection`                   | `model<T[]>`                  | `[]` — two-way bindable           |
-| `dataKey`                     | `string`                      | `''` — row identity field         |
-| `showSelectionColumn`         | `boolean`                     | `true` (once selection is on)     |
-| `interactiveRows`             | `boolean`                     | `false`                           |
+| `pageSizeOptions`             | `number[] \| undefined`       | `[10, 20, 30, 40, 50]`; forwarded   |
+| `showRowNumbers`, `showTotal` | `boolean`                     | `true`, `false`                     |
+| `emptyPlaceholder`            | `string`                      | `'-'`                               |
+| `paginatorPosition`           | `'left'\|'center'\|'right'`   | `'center'`                          |
+| `totalPosition`               | `'left'\|'right'\|'opposite'` | `'opposite'`                        |
+| `loading`                     | `boolean`                     | `false`                             |
+| `showColumnBorders`           | `boolean`                     | `false`                             |
+| `stickyHeader`                | `boolean`                     | `false`                             |
+| `size`                        | `GogSize`                     | `'lg'` (row density — not `'md'`)   |
+| `lazy`                        | `boolean`                     | `false` — see below                 |
+| `totalRecords`                | `number \| null`              | `null` — `lazy` only                |
+| `selectionMode`               | `GogTableSelectionMode`       | `'none'`                            |
+| `selection`                   | `model<T[]>`                  | `[]` — two-way bindable             |
+| `dataKey`                     | `string`                      | `''` — row identity field           |
+| `showSelectionColumn`         | `boolean`                     | `true` (once selection is on)       |
+| `interactiveRows`             | `boolean`                     | `false`                             |
 
 Outputs: `gogSortChange: GogTableSortEvent` (`{ field, direction }`, `{ field: '', direction:
 null }` when the third click clears it), `gogPageChange: number` (1-based; **does not fire** on
@@ -1186,7 +1191,7 @@ exist, so pagination stays hidden and it warns in dev), then refetch from the tw
   dataKey="id"
   (gogSortChange)="sort.set($event); reload()"
   (gogPageChange)="pageNumber.set($event); reload()"
->
+></gog-table>
 ```
 
 Row numbers still count from the current page (`(page - 1) * pageSize + i + 1`), and `showTotal`
@@ -1202,7 +1207,12 @@ through it, and there is no intermediate signal to keep in sync in either direct
 
 ```html
 <!-- off by default; turn it on per table, or app-wide via GOG_CONFIG.paginator -->
-<gog-table [value]="rows" [(pageSize)]="size" [showPageSizeSelect]="true" [pageSizeOptions]="[5, 10, 20]">
+<gog-table
+  [value]="rows"
+  [(pageSize)]="size"
+  [showPageSizeSelect]="true"
+  [pageSizeOptions]="[5, 10, 20]"
+></gog-table>
 ```
 
 Changing the size returns to page 1 and does **not** emit `gogPageChange` — the consumer already
@@ -1219,7 +1229,12 @@ user on whatever size produced that one page, with no control left to pick a sma
 where it holds zero or one row — one shape rather than a union to narrow on every read.
 
 ```html
-<gog-table [value]="rows" selectionMode="multiple" [(selection)]="selected" dataKey="id">
+<gog-table
+  [value]="rows"
+  selectionMode="multiple"
+  [(selection)]="selected"
+  dataKey="id"
+></gog-table>
 ```
 
 - **Set `dataKey`.** Without it rows are matched by object identity, so any refetch that produces
@@ -1347,39 +1362,39 @@ anti-pattern — reach for a slot directive instead.
 
 Shared enum-like types (`import type { ... } from '@guildofgleks/ui'`):
 
-| Type                          | Values                                                                                        |
-| ----------------------------- | --------------------------------------------------------------------------------------------- |
-| `GogSize`                     | `'xsm' \| 'sm' \| 'md' \| 'lg' \| 'slg'`                                                      |
-| `GogVariant`                  | `'primary' \| 'secondary' \| 'outline' \| 'ghost'`                                            |
-| `GogTagVariant`               | `'success' \| 'danger' \| 'warning' \| 'info'`                                                |
-| `GogOrientation`              | `'horizontal' \| 'vertical'`                                                                  |
-| `GogTagShape`                 | `'rounded' \| 'pill'`                                                                         |
-| `GogSpinnerVariant`           | `'runic' \| 'ring' \| 'custom'`                                                               |
-| `GogSkeletonShape`            | `'text' \| 'circle' \| 'rect'`                                                                |
-| `GogSkeletonAnimation`        | `'pulse' \| 'wave' \| 'none'`                                                                 |
-| `GogPaginatorRangeMode`       | `'window' \| 'ellipsis'`                                                                      |
-| `GogScrollAxis`               | `'vertical' \| 'horizontal' \| 'both'`                                                        |
-| `GogScrollSize`               | `'normal' \| 'thin'`                                                                          |
-| `GogScrollOverscrollBehavior` | `'auto' \| 'contain' \| 'none'`                                                               |
-| `GogTooltipPosition`          | `'auto' \| 'top' \| 'bottom' \| 'left' \| 'right'`                                            |
-| `GogFloatLabelVariant`        | `'none' \| 'in' \| 'on' \| 'over'`                                                            |
-| `GogDropdownFilterPosition`   | `'top' \| 'bottom'`                                                                           |
-| `GogDividerVariant`           | `'solid' \| 'dashed' \| 'dotted'`                                                             |
-| `GogBadgePosition`            | `'top-end' \| 'top-start' \| 'bottom-end' \| 'bottom-start'`                                  |
-| `GogProgressbarMode`          | `'determinate' \| 'indeterminate' \| 'buffer'`                                                |
-| `GogProgressbarVariant`       | `'accent' \| 'success' \| 'danger' \| 'warning' \| 'info'`                                    |
-| `GogButtonToggleAppearance`   | `'joined' \| 'separated'`                                                                     |
-| `GogTabsAlign`                | `'start' \| 'center' \| 'end' \| 'stretch'`                                                   |
-| `GogDateSelectionMode`        | `'single' \| 'range'`                                                                         |
-| `GogHourFormat`               | `'12' \| '24'`                                                                                |
-| `GogTextareaResize`           | `'vertical' \| 'horizontal' \| 'both' \| 'none'`                                              |
+| Type                          | Values                                                                                                              |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `GogSize`                     | `'xsm' \| 'sm' \| 'md' \| 'lg' \| 'slg'`                                                                            |
+| `GogVariant`                  | `'primary' \| 'secondary' \| 'outline' \| 'ghost'`                                                                  |
+| `GogTagVariant`               | `'success' \| 'danger' \| 'warning' \| 'info'`                                                                      |
+| `GogOrientation`              | `'horizontal' \| 'vertical'`                                                                                        |
+| `GogTagShape`                 | `'rounded' \| 'pill'`                                                                                               |
+| `GogSpinnerVariant`           | `'runic' \| 'ring' \| 'custom'`                                                                                     |
+| `GogSkeletonShape`            | `'text' \| 'circle' \| 'rect'`                                                                                      |
+| `GogSkeletonAnimation`        | `'pulse' \| 'wave' \| 'none'`                                                                                       |
+| `GogPaginatorRangeMode`       | `'window' \| 'ellipsis'`                                                                                            |
+| `GogScrollAxis`               | `'vertical' \| 'horizontal' \| 'both'`                                                                              |
+| `GogScrollSize`               | `'normal' \| 'thin'`                                                                                                |
+| `GogScrollOverscrollBehavior` | `'auto' \| 'contain' \| 'none'`                                                                                     |
+| `GogTooltipPosition`          | `'auto' \| 'top' \| 'bottom' \| 'left' \| 'right'`                                                                  |
+| `GogFloatLabelVariant`        | `'none' \| 'in' \| 'on' \| 'over'`                                                                                  |
+| `GogDropdownFilterPosition`   | `'top' \| 'bottom'`                                                                                                 |
+| `GogDividerVariant`           | `'solid' \| 'dashed' \| 'dotted'`                                                                                   |
+| `GogBadgePosition`            | `'top-end' \| 'top-start' \| 'bottom-end' \| 'bottom-start'`                                                        |
+| `GogProgressbarMode`          | `'determinate' \| 'indeterminate' \| 'buffer'`                                                                      |
+| `GogProgressbarVariant`       | `'accent' \| 'success' \| 'danger' \| 'warning' \| 'info'`                                                          |
+| `GogButtonToggleAppearance`   | `'joined' \| 'separated'`                                                                                           |
+| `GogTabsAlign`                | `'start' \| 'center' \| 'end' \| 'stretch'`                                                                         |
+| `GogDateSelectionMode`        | `'single' \| 'range'`                                                                                               |
+| `GogHourFormat`               | `'12' \| '24'`                                                                                                      |
+| `GogTextareaResize`           | `'vertical' \| 'horizontal' \| 'both' \| 'none'`                                                                    |
 | `GogInputType`                | `'text' \| 'password' \| 'email' \| 'number' \| 'search' \| 'tel' \| 'url' \| 'date' \| 'time' \| 'datetime-local'` |
-| `GogInputMode`                | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'`         |
-| `GogTableSelectionMode`       | `'none' \| 'single' \| 'multiple'`                                                            |
-| `GogTableSortEvent`           | `{ field: string; direction: SortDirection }`                                                 |
-| `GogTableRowClickEvent<T>`    | `{ row: T; index: number; originalEvent: MouseEvent \| KeyboardEvent }`                       |
-| `GogErrorDisplay`             | `'auto' \| 'manual'`                                                                          |
-| `GogDropdownDirection`        | `'auto' \| 'up' \| 'down'`                                                                    |
-| `GogTooltipSide`              | `'top' \| 'bottom' \| 'left' \| 'right'` (resolved form of `GogTooltipPosition`, no `'auto'`) |
-| `GogBuiltinIconName`          | the 20 glyphs the package ships — see [`gog-icon`](#gog-icon)                                 |
-| `GogIconName`                 | `GogBuiltinIconName \| (string & {})` — built-ins plus anything registered via `provideGogIcons` |
+| `GogInputMode`                | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'`                               |
+| `GogTableSelectionMode`       | `'none' \| 'single' \| 'multiple'`                                                                                  |
+| `GogTableSortEvent`           | `{ field: string; direction: SortDirection }`                                                                       |
+| `GogTableRowClickEvent<T>`    | `{ row: T; index: number; originalEvent: MouseEvent \| KeyboardEvent }`                                             |
+| `GogErrorDisplay`             | `'auto' \| 'manual'`                                                                                                |
+| `GogDropdownDirection`        | `'auto' \| 'up' \| 'down'`                                                                                          |
+| `GogTooltipSide`              | `'top' \| 'bottom' \| 'left' \| 'right'` (resolved form of `GogTooltipPosition`, no `'auto'`)                       |
+| `GogBuiltinIconName`          | the 20 glyphs the package ships — see [`gog-icon`](#gog-icon)                                                       |
+| `GogIconName`                 | `GogBuiltinIconName \| (string & {})` — built-ins plus anything registered via `provideGogIcons`                    |

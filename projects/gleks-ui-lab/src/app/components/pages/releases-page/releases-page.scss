@@ -3,35 +3,60 @@
 @include doc.hero('releases');
 
 .releases {
-  /* A wrapping row rather than a sidebar: the list is short, it grows by one entry per release,
-     and the page already has the right-hand table of contents. */
-  &__index {
-    margin-bottom: 2.4em;
+  /* The "not yet 1.0" note describes the file, not a release, so it reads as page copy rather
+     than as the first tab's content. */
+  &__intro {
+    display: block;
+    margin-bottom: 1.6em;
     padding-bottom: 1.4em;
     border-bottom: 1px solid var(--gog-border-color);
   }
 
-  &__index-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  &__tabs {
+    display: block;
+  }
 
-    &--older {
-      margin-top: 10px;
+  /* The release date, which used to sit under the version in the jump-link row. The tab header
+     carries the version alone — twelve headers with a date each would make the older-versions
+     row scroll for no gain — so the date moves to the top of the panel it belongs to. */
+  &__date {
+    margin: 0 0 1.2em;
+    color: var(--gog-muted-text-color);
+    font-family: var(--gog-font-mono);
+    font-size: var(--gog-text-xs);
+
+    /* `planned` is not a date, and a reader should be able to tell at a glance that this is a
+       release they cannot install yet. */
+    &--unreleased {
+      color: var(--gog-accent-color);
+      font-style: italic;
     }
   }
 
   &__older {
     display: block;
-    margin-top: 12px;
+    margin-top: 2em;
+    padding-top: 1.4em;
+    border-top: 1px solid var(--gog-border-color);
+
+    /* The library caps an open panel at `--gog-collapsible-max-height` (480px) and hides the
+       overflow, so without this the older-versions panel silently truncated its taller
+       releases — 21.3.0 is 335 lines of changelog, and the reader saw part of `Added` and no
+       `Fixed` or `Deprecated` at all, with nothing to scroll.
+
+       `none` rather than a bigger number, which is what the FAQ page's instance does with
+       3000px: the content here is a whole tab group whose height changes with every tab the
+       reader picks, and no cap can be right for all twelve — the next release to grow past it
+       would truncate again, invisibly, exactly as this one did. The cost is the open/close
+       transition, which cannot animate to `none` and so snaps. That is the better trade for a
+       disclosure this large; an animation from 0 to several thousand pixels was never going to
+       read as one anyway. */
+    --gog-collapsible-max-height: none;
   }
 
   /* Reset the <button>: it has to be one so the disclosure is reachable by keyboard —
      `gogCollapsibleTrigger` wires the click and the ARIA and nothing else — but it should read
-     as a quiet piece of text, not as an action competing with the version badges above it. */
+     as a quiet piece of text, not as an action competing with the tabs above it. */
   &__older-trigger {
     padding: 0;
     border: 0;
@@ -48,44 +73,6 @@
     &:focus-visible {
       outline: var(--gog-focus-ring-width) solid var(--gog-focus-ring-color);
       outline-offset: 2px;
-    }
-  }
-
-  &__index-link {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 6px 12px;
-    border: 1px solid var(--gog-border-color);
-    border-radius: var(--gog-radius);
-    color: var(--gog-text-color);
-    text-decoration: none;
-    transition:
-      color var(--gog-duration-fast),
-      border-color var(--gog-duration-fast);
-
-    &:hover,
-    &:focus-visible {
-      color: var(--gog-accent-color);
-      border-color: var(--gog-accent-color);
-    }
-  }
-
-  &__index-version {
-    font-family: var(--gog-font-mono);
-    font-size: var(--gog-text-sm);
-    font-weight: 600;
-  }
-
-  &__index-date {
-    color: var(--gog-muted-text-color);
-    font-size: var(--gog-text-xs);
-
-    /* `planned` is not a date, and a reader scanning this row should be able to tell at a glance
-       which entries they cannot install yet. */
-    &--unreleased {
-      color: var(--gog-accent-color);
-      font-style: italic;
     }
   }
 

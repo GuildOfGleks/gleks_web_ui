@@ -10,53 +10,54 @@
     </p>
   </header>
 
-  @if (releases().length > 0) {
-    <nav class="releases__index" aria-label="Releases">
-      <ul class="releases__index-list">
-        @for (release of recentReleases(); track release.id) {
-          <li>
-            <a
-              class="releases__index-link"
-              href="{{ currentPath() }}#{{ release.id }}"
-              (click)="onJump($event, release.id)"
-            >
-              <span class="releases__index-version">{{ release.version }}</span>
-              <span
-                class="releases__index-date"
-                [class.releases__index-date--unreleased]="release.unreleased"
-                >{{ release.date }}</span
-              >
-            </a>
-          </li>
-        }
-      </ul>
-
-      @if (olderReleases().length > 0) {
-        <gog-collapsible class="releases__older">
-          <button type="button" gogCollapsibleTrigger class="releases__older-trigger">
-            Older versions ({{ olderReleases().length }})
-          </button>
-          <ul gogCollapsibleContent class="releases__index-list releases__index-list--older">
-            @for (release of olderReleases(); track release.id) {
-              <li>
-                <a
-                  class="releases__index-link"
-                  href="{{ currentPath() }}#{{ release.id }}"
-                  (click)="onJump($event, release.id)"
-                >
-                  <span class="releases__index-version">{{ release.version }}</span>
-                  <span class="releases__index-date">{{ release.date }}</span>
-                </a>
-              </li>
-            }
-          </ul>
-        </gog-collapsible>
-      }
-    </nav>
-  }
-
   @if (hasContent()) {
-    <app-markdown [markdown]="markdown()!" />
+    @if (intro()) {
+      <app-markdown class="releases__intro" [markdown]="intro()" />
+    }
+
+    <!-- Content sits directly inside each `gog-tab` rather than behind a `gogTabContent`
+         template, so every release renders eagerly and an inactive panel is only `hidden`.
+         That is deliberate: this page is server-rendered, and a lazily built panel would keep
+         the release notes out of the HTML a crawler receives. -->
+    @if (recentReleases().length > 0) {
+      <gog-tabs
+        class="releases__tabs"
+        [(activeIndex)]="recentIndex"
+        ariaLabel="Recent releases"
+        size="sm"
+      >
+        @for (release of recentReleases(); track release.version) {
+          <gog-tab [label]="release.version">
+            @if (release.date) {
+              <p class="releases__date" [class.releases__date--unreleased]="release.unreleased">
+                {{ release.date }}
+              </p>
+            }
+            <app-markdown [markdown]="release.notes" />
+          </gog-tab>
+        }
+      </gog-tabs>
+    }
+
+    @if (olderReleases().length > 0) {
+      <gog-collapsible class="releases__older">
+        <button type="button" gogCollapsibleTrigger class="releases__older-trigger">
+          Older versions ({{ olderReleases().length }})
+        </button>
+        <div gogCollapsibleContent>
+          <gog-tabs class="releases__tabs" ariaLabel="Older releases" size="sm">
+            @for (release of olderReleases(); track release.version) {
+              <gog-tab [label]="release.version">
+                @if (release.date) {
+                  <p class="releases__date">{{ release.date }}</p>
+                }
+                <app-markdown [markdown]="release.notes" />
+              </gog-tab>
+            }
+          </gog-tabs>
+        </div>
+      </gog-collapsible>
+    }
   } @else if (failed()) {
     <p class="releases__error">
       The changelog could not be loaded. It ships inside the package, so this usually means the

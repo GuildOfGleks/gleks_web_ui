@@ -32,6 +32,18 @@ export interface PageSeo {
   readonly description: string;
 }
 
+/**
+ * The `**` route's tags. Separate from `FALLBACK_SEO` because the two cases are different:
+ * `components/<typo>` renders real chrome around an unknown name and honestly describes the
+ * site, while this page describes nothing. Both are `noindex`; only this one answers a 404
+ * (`app.routes.server.ts`), and a browser tab reading "Angular UI Component Library" over a
+ * not-found page is simply wrong.
+ */
+export const NOT_FOUND_SEO: PageSeo = {
+  title: `Page not found — ${SITE_NAME}`,
+  description: 'This URL does not match any page in the Guild of Gleks UI documentation.',
+};
+
 export const FALLBACK_SEO: PageSeo = {
   title: `${SITE_NAME} — Angular UI Component Library`,
   description:
