@@ -38,20 +38,6 @@
     margin-top: 2em;
     padding-top: 1.4em;
     border-top: 1px solid var(--gog-border-color);
-
-    /* The library caps an open panel at `--gog-collapsible-max-height` (480px) and hides the
-       overflow, so without this the older-versions panel silently truncated its taller
-       releases — 21.3.0 is 335 lines of changelog, and the reader saw part of `Added` and no
-       `Fixed` or `Deprecated` at all, with nothing to scroll.
-
-       `none` rather than a bigger number, which is what the FAQ page's instance does with
-       3000px: the content here is a whole tab group whose height changes with every tab the
-       reader picks, and no cap can be right for all twelve — the next release to grow past it
-       would truncate again, invisibly, exactly as this one did. The cost is the open/close
-       transition, which cannot animate to `none` and so snaps. That is the better trade for a
-       disclosure this large; an animation from 0 to several thousand pixels was never going to
-       read as one anyway. */
-    --gog-collapsible-max-height: none;
   }
 
   /* Reset the <button>: it has to be one so the disclosure is reachable by keyboard —

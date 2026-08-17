@@ -36,31 +36,6 @@ trim the explanation back to what `fullWidth` is for.
 
 ---
 
-## After the release that defaults `--gog-collapsible-max-height` to `max-content`
-
-The lab carries **two per-instance overrides of that token that exist only to dodge the old
-`480px` cap**. Once the release carrying the new default is installed, both are dead weight and
-should be deleted — the library now does the right thing on its own:
-
-- `pages/faq-page/faq-page.scss` — `.faq-item { --gog-collapsible-max-height: 3000px }`, with a
-  comment explaining the 480px cap. Delete the declaration and the comment. (The tallest FAQ
-  answer measured 617px, so nothing there was actually being clipped; the override was
-  precautionary.)
-- `pages/releases-page/releases-page.scss` — `.releases__older` sets the same token to `none`,
-  with a long comment about why a finite cap could not be right for a tab group whose height
-  changes per tab. Delete both. This one _was_ clipping: the 21.3.0 panel is 5880px, so roughly
-  92% of that release was unreachable behind the old default.
-
-Both deletions are verifiable the same way — open the panel and check
-`scrollHeight === clientHeight` on `.gog-collapsible__content`.
-
-Also worth a look while there: the collapsible doc page (`components/collapsible`) says nothing
-about panel height in either direction, so it needs no edit — but if a "tall content" example is
-ever added there, mirror the one now in `ui-showcase`'s collapsible page rather than writing a
-second version of it.
-
----
-
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see
