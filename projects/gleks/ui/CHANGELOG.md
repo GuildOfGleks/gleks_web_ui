@@ -31,7 +31,7 @@ the one most likely to be missed:
   and the README says the old path "keeps working until 21.5.0". Removing it breaks anyone still
   importing `@guildofgleks/ui/src/styles/…`, and the README paragraph promising it goes too.
 
-## [21.4.4] - planned
+## [21.4.4] - 17.08.2026
 
 Everything that is ready. Two defects and one addition, none of which changes an existing
 signature, so upgrading from 21.4.3 needs no migration — see the `gog-collapsible` entry only if
