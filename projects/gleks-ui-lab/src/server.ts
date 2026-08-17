@@ -63,6 +63,23 @@ const angularApp = new AngularNodeAppEngine({
  */
 
 /**
+ * `/` answers with a permanent redirect to the home page's own URL.
+ *
+ * The router's `{ path: '', redirectTo: 'general/overview' }` is what a browser follows, but
+ * Angular's SSR renders a router redirect as a **302** — "temporary, keep asking for the
+ * original URL" — so the links people write (and `/` is the URL people write) never consolidate
+ * onto the page that holds the content. A `301` transfers them. Handled here, ahead of
+ * `angularApp.handle`, because the status is a property of the HTTP response, not of anything
+ * the router can express.
+ *
+ * `HOME_PATH` in `components/shared/seo-data.ts` and `scripts/generate-sitemap.mjs` name the
+ * same page; if it ever moves, all three change together.
+ */
+app.get('/', (_req, res) => {
+  res.redirect(301, '/general/overview');
+});
+
+/**
  * Serve static files from /browser
  */
 app.use(

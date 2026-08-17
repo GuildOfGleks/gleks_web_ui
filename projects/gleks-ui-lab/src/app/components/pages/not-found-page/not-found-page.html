@@ -1,0 +1,16 @@
+<div class="not-found">
+  <header class="not-found__hero">
+    <p class="not-found__eyebrow">404</p>
+    <h1 class="not-found__title font-heading">Page not found</h1>
+    <p class="not-found__lead">
+      This URL does not match any page on the site. It may have been renamed, or the link that
+      brought you here may be out of date.
+    </p>
+  </header>
+
+  <nav class="not-found__links" aria-label="Suggested pages">
+    @for (link of suggestions; track link.path) {
+      <a class="not-found__link" [routerLink]="link.path">{{ link.label }}</a>
+    }
+  </nav>
+</div>
