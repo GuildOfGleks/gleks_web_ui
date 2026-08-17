@@ -6,6 +6,13 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.5.0] - planned
 
+### Added
+
+- **`ng add @guildofgleks/ui` now works.** It installs the latest version and adds
+  `node_modules/@guildofgleks/ui/styles/index.css` to your project's `angular.json` styles —
+  the one setup step that's pure mechanical JSON editing. Importing components and placing
+  `<gog-dialog />` / `<gog-toast-container />` are still manual; see the README.
+
 ### Fixed
 
 - **`gog-button`'s loading spinner was painted with the page's text colour.**

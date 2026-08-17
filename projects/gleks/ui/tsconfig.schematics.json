@@ -1,0 +1,14 @@
+/* Compiles the ng-add schematic (plain Node/CommonJS, not part of the Angular library build). */
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../out-tsc/schematics",
+    "rootDir": "schematics",
+    "module": "commonjs",
+    "target": "es2020",
+    "declaration": false,
+    "types": ["node"],
+    "esModuleInterop": true
+  },
+  "include": ["schematics/**/*.cts"]
+}

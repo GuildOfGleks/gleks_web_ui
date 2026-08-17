@@ -37,6 +37,7 @@
     "tslib": "^2.3.0"
   },
   "sideEffects": false,
+  "schematics": "./schematics/collection.json",
   "exports": {
     "./styles/*": {
       "default": "./styles/*"

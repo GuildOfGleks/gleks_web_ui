@@ -31,6 +31,20 @@ npm install @guildofgleks/ui
 
 ## Setup
 
+Install it with whichever package manager you use — or with `ng add`, which installs it and does
+step 1 for you:
+
+```bash
+npm install @guildofgleks/ui
+# or
+yarn add @guildofgleks/ui
+# or — also does step 1 below
+ng add @guildofgleks/ui
+```
+
+Steps 2 and 3 are yours either way: a schematic can't know where in your app you want components
+or dialog and toast hosts.
+
 **1. Add the stylesheet.** It carries the baseline theme and the utility classes the components
 use — without it they render unstyled.
 

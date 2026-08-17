@@ -40,6 +40,10 @@ types and defaults.
 
 ```bash
 npm install @guildofgleks/ui
+# or
+yarn add @guildofgleks/ui
+# or — installs it and adds the stylesheet below to angular.json automatically
+ng add @guildofgleks/ui
 ```
 
 Add the baseline stylesheet once — it carries every token the components read plus their
