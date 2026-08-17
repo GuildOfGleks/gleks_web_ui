@@ -24,6 +24,7 @@
     "generate:tokens": "node scripts/generate-tokens.mjs",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "check:sitemap": "node scripts/generate-sitemap.mjs --check",
+    "ping:indexnow": "node scripts/ping-indexnow.mjs",
     "generate:examples": "node scripts/generate-example-sources.mjs",
     "check:examples": "node scripts/generate-example-sources.mjs --check"
   },
