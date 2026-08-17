@@ -2,7 +2,7 @@
 
 `gleks-ui-lab` resolves `@guildofgleks/ui` from the **published npm package**, on purpose: its
 examples have to reflect what a consumer can install today, not an unreleased local build. That
-rule (see `gleks-ui-library.instructions.md` step 7) means lab edits are always *deferred* —
+rule (see `gleks-ui-library.instructions.md` step 7) means lab edits are always _deferred_ —
 work lands in the library first, and the lab catches up only once the version carrying it is
 actually on npm.
 
@@ -33,6 +33,31 @@ Same release, if it also fixes `[fullWidth]="false"` clipping the widest header:
 demo states `width` on both columns and the description explains that fixed layout makes it
 necessary. Once the component switches to `table-layout: auto` in that mode, drop the widths and
 trim the explanation back to what `fullWidth` is for.
+
+---
+
+## After the release that defaults `--gog-collapsible-max-height` to `max-content`
+
+The lab carries **two per-instance overrides of that token that exist only to dodge the old
+`480px` cap**. Once the release carrying the new default is installed, both are dead weight and
+should be deleted — the library now does the right thing on its own:
+
+- `pages/faq-page/faq-page.scss` — `.faq-item { --gog-collapsible-max-height: 3000px }`, with a
+  comment explaining the 480px cap. Delete the declaration and the comment. (The tallest FAQ
+  answer measured 617px, so nothing there was actually being clipped; the override was
+  precautionary.)
+- `pages/releases-page/releases-page.scss` — `.releases__older` sets the same token to `none`,
+  with a long comment about why a finite cap could not be right for a tab group whose height
+  changes per tab. Delete both. This one _was_ clipping: the 21.3.0 panel is 5880px, so roughly
+  92% of that release was unreachable behind the old default.
+
+Both deletions are verifiable the same way — open the panel and check
+`scrollHeight === clientHeight` on `.gog-collapsible__content`.
+
+Also worth a look while there: the collapsible doc page (`components/collapsible`) says nothing
+about panel height in either direction, so it needs no edit — but if a "tall content" example is
+ever added there, mirror the one now in `ui-showcase`'s collapsible page rather than writing a
+second version of it.
 
 ---
 

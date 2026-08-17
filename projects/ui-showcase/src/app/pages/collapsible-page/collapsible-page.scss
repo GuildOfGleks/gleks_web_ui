@@ -27,6 +27,12 @@
   border-left: 1px solid var(--gog-border-color);
 }
 
+/* The instance layer of the token contract: set on one panel, it caps only that panel. The
+   library's default is `max-content`, so this is the deliberate opt-in to clipping. */
+.collapsible-demo__panel--capped {
+  --gog-collapsible-max-height: 200px;
+}
+
 .collapsible-demo__link {
   padding: 6px 12px;
   border: none;

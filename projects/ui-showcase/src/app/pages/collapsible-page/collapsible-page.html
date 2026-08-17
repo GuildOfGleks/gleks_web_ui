@@ -159,6 +159,51 @@
   </article>
 
   <article class="card">
+    <h3>Tall content</h3>
+    <p class="meta">
+      An open panel is as tall as whatever it holds —
+      <code>--gog-collapsible-max-height</code> defaults to <code>max-content</code>. Both panels
+      below carry the same {{ tallRows().length }} rows, well past the <code>480px</code> this token
+      used to default to. The left one grows to fit; the right one sets the token to a length on
+      that instance, which caps it — and because the panel is <code>overflow: hidden</code>, a cap
+      <strong>clips</strong>: no scrollbar, no ellipsis, no sign the rest is there. That is worth
+      seeing, because it is what every panel taller than 480px used to do by default.
+    </p>
+    <div class="states-row">
+      <div class="states-row__item">
+        <p class="states-row__label">Default — grows to fit</p>
+        <gog-collapsible [(open)]="tallOpen">
+          <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+            {{ tallOpen() ? 'Hide' : 'Show' }} all regions
+          </button>
+          <div gogCollapsibleContent class="collapsible-demo__panel">
+            @for (row of tallRows(); track row) {
+              <button class="collapsible-demo__link" type="button">{{ row }}</button>
+            }
+          </div>
+        </gog-collapsible>
+      </div>
+
+      <div class="states-row__item">
+        <p class="states-row__label">Capped at 200px on this instance</p>
+        <gog-collapsible [(open)]="cappedOpen">
+          <button gogCollapsibleTrigger class="collapsible-demo__trigger" type="button">
+            {{ cappedOpen() ? 'Hide' : 'Show' }} all regions
+          </button>
+          <div
+            gogCollapsibleContent
+            class="collapsible-demo__panel collapsible-demo__panel--capped"
+          >
+            @for (row of tallRows(); track row) {
+              <button class="collapsible-demo__link" type="button">{{ row }}</button>
+            }
+          </div>
+        </gog-collapsible>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Access control — disable vs. hide a child</h3>
     <p class="meta">
       <code>gog-collapsible</code> is headless, so per-item access control is just ordinary bindings

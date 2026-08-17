@@ -46,6 +46,13 @@ export class CollapsiblePage {
   protected readonly iconSwapOpen = signal(false);
   protected readonly richContentOpen = signal(false);
 
+  // Tall content — the case `--gog-collapsible-max-height: 480px` used to clip silently.
+  protected readonly tallOpen = signal(true);
+  protected readonly cappedOpen = signal(true);
+  protected readonly tallRows = signal(
+    Array.from({ length: 24 }, (_, index) => `Region ${String(index + 1).padStart(2, '0')}`),
+  );
+
   // Permissions / access control
   protected readonly hasBillingAccess = signal(false);
   protected readonly isAdmin = signal(false);

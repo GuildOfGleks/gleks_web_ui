@@ -400,10 +400,15 @@
      rules (they style content this component's consumer projects, which sits outside
      `gog-collapsible`'s own view and can't be reached by its scoped stylesheet). */
   --gog-collapsible-transition-duration: var(--gog-duration-slow);
-  /* Generous fixed cap rather than a measured height: the CSS-only max-height transition
-     trades exact timing for arbitrary content (any number of children) without JS. Override
-     per-instance if a particular panel's content can exceed this. */
-  --gog-collapsible-max-height: 480px;
+  /* The panel's natural height, so an open panel never truncates whatever it holds. This was
+     a fixed `480px` cap, which bought the CSS-only transition an animatable target but paid
+     for it by silently clipping any taller content — `overflow: hidden` means no scrollbar
+     and no other sign that the rest of the panel is missing. `max-content` still animates,
+     via `interpolate-size: allow-keywords` on the content element (see utilities.css); where
+     that is unsupported the panel snaps open instead of easing, which is the right way round
+     for the trade — losing an animation is visible and harmless, losing content is neither.
+     Set a length here to cap a particular panel on purpose; it will clip, as before. */
+  --gog-collapsible-max-height: max-content;
   --gog-collapsible-disabled-opacity: var(--gog-disabled-opacity);
 
   /* ── Button ────────────────────────────────────────────────────────────────
