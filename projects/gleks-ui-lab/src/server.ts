@@ -80,13 +80,41 @@ app.get('/', (_req, res) => {
 });
 
 /**
- * Serve static files from /browser
+ * Angular's content-hashed build output — `main-TBE7GO4X.js`, `styles-XKQ3M7RA.css`. The hash is
+ * derived from the contents, so a changed file gets a new URL and the old one can never be
+ * wrong: exactly the case a one-year `immutable` cache is designed for.
+ */
+const HASHED_ASSET = /-[A-Z0-9]{8}\.(?:js|css)$/;
+
+/**
+ * Serve static files from /browser.
+ *
+ * **Cache lifetime is decided per file, not globally.** This used to be a flat `maxAge: '1y'`,
+ * which is right for the 54 hashed bundles and wrong for everything else in the directory —
+ * because everything else keeps a *stable* URL while its contents change:
+ *
+ * - `docs/CHANGELOG.md`, fetched by the releases page, replaced on every library release;
+ * - `docs/*.md` — `compare-full`, `global-config`, `theming` — the markdown behind those pages,
+ *   replaced whenever the text is edited;
+ * - `docs/styles/*.css`, copied out of the installed package and read by the theming page;
+ * - `sitemap.xml`, `robots.txt`, the IndexNow key file.
+ *
+ * A year of `max-age` on those means a returning reader is served the *old* copy without the
+ * browser asking us anything — which is how a freshly deployed 21.4.4 release section stayed
+ * invisible to anyone who had opened the page before. `no-cache` does not mean "do not store";
+ * it means "revalidate before reuse", and `express.static` already sends `ETag` and
+ * `Last-Modified`, so the common case is a 304 with no body rather than a refetch.
  */
 app.use(
   express.static(browserDistFolder, {
-    maxAge: '1y',
     index: false,
     redirect: false,
+    setHeaders: (res, filePath) => {
+      res.setHeader(
+        'Cache-Control',
+        HASHED_ASSET.test(filePath) ? 'public, max-age=31536000, immutable' : 'no-cache',
+      );
+    },
   }),
 );
 
