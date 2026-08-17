@@ -86,6 +86,7 @@ Bing tag: all five as expected, plus `<title>Page not found — Guild of Gleks U
 | `FAQPage` structured data             | `pages/faq-page/faq-page.ts`              | Generated from `faq-data.ts` — the same source the page renders — and written into `<head>` on that page only, during server rendering included. It is what lets a result show the questions themselves. Answers stay in the DOM when a question is collapsed (`gogCollapsibleContent` hides with CSS and `inert`, it does not remove), so the markup a crawler receives carries all 25 answers in full; keep it that way if the FAQ is ever restructured again. |
 | `robots.txt`                          | `public/robots.txt`                       | Allows everything, points at the sitemap. Deliberately does **not** `Disallow` the catch-all routes — a blocked URL is never crawled, so the crawler would never see the `noindex` on it.                                                                                                                                                                                                                                                                        |
 | `sitemap.xml`                         | generated                                 | `scripts/generate-sitemap.mjs` derives it from `nav-data.ts`, so adding a page to the sidebar adds it to the sitemap. `scripts/build-lab.mjs` regenerates it before every build, including the Dockerfile's — a deployed sitemap cannot be stale. `npm run generate:sitemap` / `npm run check:sitemap` run it by hand.                                                                                                                                           |
+| IndexNow ping                         | `scripts/ping-indexnow.mjs`               | Announces the sitemap's URLs to Bing (and Yandex/Seznam) after every successful deploy, instead of waiting to be crawled. Ownership is proved by `public/<key>.txt`, which is public by construction — see the section below.                                                                                                                                                                                                                                    |
 | Home-page `H1`                        | `overview-page.html`                      | Says what the library _is_ (`Angular UI Component Library`), not what the page is called. The sidebar entry is still "Overview".                                                                                                                                                                                                                                                                                                                                 |
 
 ## Cloudflare: the managed block is off, and `robots.txt` never told the whole story
@@ -119,6 +120,37 @@ curl -s -o /dev/null -w "%{http_code}\n" https://ui.guildofgleks.com/sitemap.xml
 Verified on 2026-08-17 after the change: `robots.txt` serves only the repo's file, `/` is fully
 server-rendered, and title, description, canonical, Open Graph and `robots: index, follow` are
 all present in the delivered HTML.
+
+## IndexNow — telling Bing instead of waiting for it
+
+A new domain with no inbound links is discovered slowly, and there is no lever for that from
+the outside: Bing's URL inspector reported `general/overview` as _"known to Bing but has some
+issues which are preventing indexation"_ on the day the sitemap was submitted — its generic
+wording for a URL it has discovered and not yet crawled, not a fault report. Everything
+checkable was healthy at the time: `200` to bingbot in 0.4s, real `<h1>` and body text in the
+delivered HTML, correct title/description/canonical, `robots: index, follow`, no Cloudflare
+challenge.
+
+IndexNow inverts the direction — the site declares which URLs changed and the engine comes to
+fetch them. `deploy-lab.yml` runs `scripts/ping-indexnow.mjs` **after** the health check passes,
+so only a deploy that actually came up is announced.
+
+**The key is public on purpose.** `public/7d22960d75bad291fda7e1e64064d410.txt` contains that
+string and nothing else, and the engine fetches it at `https://ui.guildofgleks.com/<key>.txt` to
+confirm whoever submitted controls the host. Anyone can read it there, so committing it exposes
+nothing that is not already served — which is why it is not a GitHub secret. If it ever needs
+rotating, change `KEY` in the script and rename the file; the two must agree or the submission
+comes back `403`.
+
+Reading the response codes: `200` accepted, `202` accepted with key validation still pending
+(normal on a first submission), `403` key mismatch or key file unreachable, `422` a URL outside
+the declared host, `429` submitting too often. The step is `continue-on-error`, so a failed ping
+shows red without failing a deploy that has already succeeded.
+
+`npm run ping:indexnow -- --dry-run` prints the payload and sends nothing.
+
+**This is only for Bing's family — Google does not consume IndexNow** and still discovers pages
+by crawling the sitemap and following links.
 
 ## What is deliberately not done
 

@@ -185,3 +185,20 @@ jobs:
             # Dangling layers only. The old `-a` deleted every image not currently running,
             # including the previous release -- which is precisely the thing a rollback needs.
             docker image prune -f
+
+      # Runs only if the step above succeeded, which means the site is live and answered a
+      # server-rendered probe. Announcing a deploy that did not come up would invite a crawl of
+      # an error page. `continue-on-error` because a search-engine ping must never turn a
+      # finished, healthy deploy red -- it still shows as failed in the UI if the key or the
+      # payload is wrong, which is the part worth noticing. See scripts/ping-indexnow.mjs.
+      #
+      # The sitemap is regenerated first rather than read straight from the checkout. Both it and
+      # the image derive from `nav-data.ts`, but at different times: `scripts/build-lab.mjs`
+      # regenerates it *inside* the Docker build, while the copy on the runner is whatever was
+      # committed — and `check:sitemap` is not part of ci.yml, so that copy can be stale. Running
+      # the generator here makes the announced list identical to the one in the image.
+      - name: Announce URLs to IndexNow (Bing)
+        continue-on-error: true
+        run: |
+          npm run generate:sitemap
+          node scripts/ping-indexnow.mjs
