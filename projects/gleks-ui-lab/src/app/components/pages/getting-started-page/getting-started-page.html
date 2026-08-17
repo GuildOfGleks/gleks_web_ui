@@ -10,7 +10,22 @@
 
   <section class="doc-section">
     <h2 id="install" class="doc-section__title font-heading">Install</h2>
+    <p class="doc-section__intro">
+      Three ways in, and they differ only in how much they do for you:
+    </p>
     <app-markdown [markdown]="installSnippet" />
+    <p class="doc-section__intro">
+      <strong><code>ng add</code></strong> <app-since version="21.4.4" /> installs the package
+      <em>and</em> writes the stylesheet into your <code>angular.json</code>, so the next section is
+      already done when it finishes. <code>npm</code> and <code>yarn</code> only fetch the package —
+      identical results, pick whichever your project already uses — and leave that one step to you.
+    </p>
+    <p class="doc-section__intro">
+      Nothing else is automated in any of the three. Importing components where you use them, and
+      placing <code>&lt;gog-dialog /&gt;</code> and <code>&lt;gog-toast-container /&gt;</code>, stay
+      manual on purpose: a schematic cannot know which components you want or where those hosts
+      belong in your layout.
+    </p>
     <p class="doc-section__intro">
       <strong>Requires Angular 21.2 or newer.</strong> The peer dependencies are
       <code>&#64;angular/core</code>, <code>common</code>, <code>forms</code> and
@@ -23,7 +38,9 @@
   <section class="doc-section">
     <h2 id="import-the-styles" class="doc-section__title font-heading">Import the styles</h2>
     <p class="doc-section__intro">
-      Add the library stylesheet once, in your app's global styles (<code>angular.json</code>):
+      <strong>Skip this if you used <code>ng add</code></strong> — it wrote exactly this entry
+      already. Otherwise add the library stylesheet once, in your app's global styles
+      (<code>angular.json</code>):
     </p>
     <app-markdown [markdown]="stylesSnippet" />
     <p class="doc-section__intro">
