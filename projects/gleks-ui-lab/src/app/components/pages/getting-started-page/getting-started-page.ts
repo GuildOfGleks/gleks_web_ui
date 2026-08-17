@@ -37,7 +37,16 @@ const NEXT_LINKS: readonly NextLink[] = [
 export class GettingStartedPage {
   protected readonly nextLinks = NEXT_LINKS;
 
-  protected readonly installSnippet = '```bash\nnpm install @guildofgleks/ui\n```';
+  protected readonly installSnippet = [
+    '```bash',
+    '# Installs the package and adds the stylesheet to angular.json for you.',
+    'ng add @guildofgleks/ui',
+    '',
+    '# Or install it yourself, then follow "Import the styles" below.',
+    'npm install @guildofgleks/ui',
+    'yarn add @guildofgleks/ui',
+    '```',
+  ].join('\n');
 
   protected readonly stylesSnippet =
     '```json\n"styles": [\n  "node_modules/@guildofgleks/ui/styles/index.css",\n  "src/styles.scss"\n]\n```';
