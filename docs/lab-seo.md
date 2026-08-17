@@ -49,6 +49,29 @@ npm run build:lab && npm run serve:ssr:gleks-ui-lab
 curl -s -H "Host: ui.guildofgleks.com" http://localhost:4000/components/table | grep -o '<title>[^<]*</title>'
 ```
 
+## The rest of the post-deploy check
+
+Status codes, which the title check above cannot see. Note `-o /dev/null` **without** `-L`:
+following a redirect hides the very status being checked.
+
+```sh
+B=https://ui.guildofgleks.com
+curl -s -o /dev/null -w "%{http_code}\n" $B/                              # 301 → /general/overview
+curl -s -o /dev/null -w "%{http_code}\n" $B/nope-12345                    # 404, the not-found page
+curl -s -o /dev/null -w "%{http_code}\n" $B/components/does-not-exist-xyz # 200 — must NOT be 404
+curl -s -o /dev/null -w "%{http_code}\n" $B/sitemap.xml                   # 200 — a 403 means Cloudflare
+curl -s $B/robots.txt                                                     # our file only, no managed block
+```
+
+The third line is the one to watch. `components/:name` and `general/:slug` render real chrome
+around an unknown slug and are `200` + `noindex, follow` **on purpose** — if a change to the
+404 route ever turns those into 404s, every mistyped component URL stops rendering the site's
+navigation, and that is a regression the other four checks would not catch.
+
+Last run green on **2026-08-17**, against the deploy carrying the `301`, the real `404` and the
+Bing tag: all five as expected, plus `<title>Page not found — Guild of Gleks UI</title>` with
+`noindex, follow` on the 404 and the per-page title on `/components/table`.
+
 ## What each piece does
 
 | Piece                                 | Where                                     | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
@@ -118,7 +141,14 @@ years of links pointing at them. What actually moves that needle, in rough order
    `https://ui.guildofgleks.com/sitemap.xml`, then use _URL inspection → Request indexing_ on
    the home page once. This is also where you find out whether Google is seeing the rendered
    page or the shell: _Inspect URL → View crawled page_.
-2. **Bing Webmaster Tools** — same, and it can import the Search Console setup.
+2. **Bing Webmaster Tools** — same, and it can import the Search Console setup. The
+   `msvalidate.01` tag is already in `src/index.html` and live, so the meta-tag method will
+   pass; Bing accepts any one of file / meta tag / CNAME, which makes the DNS record redundant.
+   If a verification `CNAME` is kept anyway, it must be **DNS-only (grey cloud)** on
+   Cloudflare — proxied, Cloudflare answers with its own addresses and the verifier never
+   reaches `verify.bing.com`.
+   **Verify only against a deployed build.** The tag ships in the image, not the repo, so
+   submitting before a deploy fails the check and the property has to be re-submitted.
 3. **Links from where Angular developers already are.** A package README linking to the docs
    site (it does), the npm page (it does), plus: a `Show HN`/Reddit `r/angular` post, a
    dev.to/Medium write-up, an entry in `awesome-angular`-style lists, and answers on Stack
