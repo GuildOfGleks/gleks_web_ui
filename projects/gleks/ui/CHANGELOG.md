@@ -31,6 +31,15 @@ the one most likely to be missed:
   and the README says the old path "keeps working until 21.5.0". Removing it breaks anyone still
   importing `@guildofgleks/ui/src/styles/…`, and the README paragraph promising it goes too.
 
+### Changed
+
+- **`peerDependencies` now accept Angular 22** (`^21.2.0 || ^22.0.0` for `@angular/common`,
+  `@angular/core`, `@angular/forms`, `@angular/platform-browser`) instead of `^21.2.0` alone.
+  The library ships partial-compiled (Ivy partial mode), which is forward-compatible with the
+  next major without a rebuild — the strict `^21.2.0` peer range was blocking installation into
+  an Angular 22 app that otherwise built and ran fine, forcing every such consumer to reach for
+  `overrides`/`resolutions` as a workaround.
+
 ## [21.4.4] - 17.08.2026
 
 Everything that is ready. Two defects and one addition, none of which changes an existing
