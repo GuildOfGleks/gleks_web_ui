@@ -1,3 +1,30 @@
+/*
+ * Direction primitives, for the handful of properties CSS gives no logical form of:
+ * `transform-origin`, `translate`, `transform`. Everything else uses real logical
+ * properties (`inset-inline-start`, `padding-inline-end`, `text-align: start`, …) and needs
+ * none of this.
+ *
+ *   --gog-inline-start-side / --gog-inline-end-side  `left`/`right` keywords, swapped in RTL.
+ *                                                    For `transform-origin`.
+ *   --gog-direction-sign                             `1` / `-1`. Multiply the X part of a
+ *                                                    translate by it when the element is
+ *                                                    placed with `inset-inline-start`.
+ *
+ * Declared on `:root` and flipped by `[dir='rtl']`, so a subtree can be RTL on its own — an
+ * RTL panel inside an LTR page follows the nearest `dir`, like every other RTL behaviour.
+ */
+:root {
+  --gog-inline-start-side: left;
+  --gog-inline-end-side: right;
+  --gog-direction-sign: 1;
+}
+
+[dir='rtl'] {
+  --gog-inline-start-side: right;
+  --gog-inline-end-side: left;
+  --gog-direction-sign: -1;
+}
+
 .gog-inline-center {
   display: inline-flex;
   align-items: center;

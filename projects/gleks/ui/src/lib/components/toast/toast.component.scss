@@ -54,7 +54,7 @@
   display: block;
   padding: var(--gog-toast-padding);
   background: var(--gog-toast-bg);
-  border-left: var(--gog-toast-accent-width) solid var(--toast-border);
+  border-inline-start: var(--gog-toast-accent-width) solid var(--toast-border);
   border-radius: var(--gog-toast-radius);
   color: var(--gog-toast-color);
   font-family: var(--gog-toast-font-family);
@@ -158,16 +158,17 @@
 
 .gog-toast__progress {
   position: absolute;
-  right: 0;
+  inset-inline: 0;
   bottom: 0;
-  left: 0;
   height: var(--gog-toast-progress-height);
   background: color-mix(
     in srgb,
     var(--toast-progress-color) var(--gog-toast-progress-opacity),
     transparent
   );
-  transform-origin: left center;
+  /* Drains away from the inline start, so it reads as time running out in either direction.
+     `transform-origin` has no logical form — hence the keyword token from utilities.css. */
+  transform-origin: var(--gog-inline-start-side) center;
   animation: gog-toast-progress var(--toast-duration) linear forwards;
 }
 

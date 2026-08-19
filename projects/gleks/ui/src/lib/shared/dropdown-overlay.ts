@@ -1,5 +1,6 @@
 import { ApplicationRef, EmbeddedViewRef, TemplateRef } from '@angular/core';
 
+import { scopedOverlayDirection } from './overlay-direction';
 import { scopedOverlayTheme } from './overlay-theme';
 
 /**
@@ -41,6 +42,12 @@ export class GogDropdownOverlay {
     const theme = scopedOverlayTheme(themeSource, this.document.documentElement);
     if (theme) {
       this.hostEl.setAttribute('data-theme', theme);
+    }
+
+    // Same reasoning for the writing direction — see `scopedOverlayDirection`.
+    const direction = scopedOverlayDirection(themeSource, this.document.documentElement);
+    if (direction) {
+      this.hostEl.setAttribute('dir', direction);
     }
 
     this.document.body.appendChild(this.hostEl);

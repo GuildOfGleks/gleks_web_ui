@@ -64,7 +64,10 @@
    claiming a position. Two offset runs so the track is never empty for long. */
 
 :host(.gog-progressbar--indeterminate) .gog-progressbar__fill {
-  transform-origin: left center;
+  /* The run travels from the inline start, like the determinate fill's width does. Neither
+     `transform-origin` nor `translateX` has a logical form, hence the two direction tokens
+     from utilities.css. */
+  transform-origin: var(--gog-inline-start-side) center;
   transition: none;
   animation: gog-progressbar-indeterminate var(--gog-progressbar-indeterminate-duration)
     var(--gog-progressbar-indeterminate-easing) infinite;
@@ -72,13 +75,13 @@
 
 @keyframes gog-progressbar-indeterminate {
   0% {
-    transform: translateX(-100%) scaleX(0.4);
+    transform: translateX(calc(-100% * var(--gog-direction-sign))) scaleX(0.4);
   }
   50% {
-    transform: translateX(20%) scaleX(0.6);
+    transform: translateX(calc(20% * var(--gog-direction-sign))) scaleX(0.6);
   }
   100% {
-    transform: translateX(100%) scaleX(0.4);
+    transform: translateX(calc(100% * var(--gog-direction-sign))) scaleX(0.4);
   }
 }
 

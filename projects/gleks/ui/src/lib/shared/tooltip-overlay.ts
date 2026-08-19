@@ -1,4 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
+import { scopedOverlayDirection } from './overlay-direction';
 import { scopedOverlayTheme } from './overlay-theme';
 
 import { GogTooltipBubbleComponent } from '../components/tooltip/tooltip-bubble.component';
@@ -40,6 +41,12 @@ export class GogTooltipOverlay {
     const theme = scopedOverlayTheme(themeSource, this.document.documentElement);
     if (theme) {
       el.setAttribute('data-theme', theme);
+    }
+
+    // Same for a scoped writing direction — see `scopedOverlayDirection`.
+    const direction = scopedOverlayDirection(themeSource, this.document.documentElement);
+    if (direction) {
+      el.setAttribute('dir', direction);
     }
 
     this.document.body.appendChild(el);

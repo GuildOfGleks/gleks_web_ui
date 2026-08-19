@@ -136,7 +136,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-align: left;
+  text-align: start;
 }
 
 .gog-select__value--placeholder {
@@ -173,13 +173,13 @@
 .gog-select__dropdown {
   position: absolute;
   top: calc(100% + var(--gog-select-panel-offset));
-  left: 0;
+  inset-inline-start: 0;
   /*
    * Sized to its own content, with the trigger width as the floor rather than the fixed width.
    * Pinning it to the trigger broke an auto-width trigger: it shrinks to whatever is selected,
    * so picking a short option clipped the longer ones out of the list.
    */
-  right: auto;
+  inset-inline-end: auto;
   min-width: 100%;
   width: max-content;
   max-width: var(--gog-select-panel-max-width);
@@ -218,8 +218,7 @@
   position: fixed;
   top: unset;
   bottom: unset;
-  left: unset;
-  right: unset;
+  inset-inline: unset;
 }
 
 .gog-select__option {
@@ -237,7 +236,7 @@
     );
   border: 0;
   background: transparent;
-  text-align: left;
+  text-align: start;
   font: inherit;
   font-family: var(--gog-select-font-family);
   font-size: var(
@@ -338,7 +337,7 @@
   position: absolute;
   top: 50%;
   /* Outermost: the clear button takes the trailing slot and pushes the chevron inward. */
-  right: var(--gog-select-chevron-inset);
+  inset-inline-end: var(--gog-select-chevron-inset);
   transform: translateY(-50%);
   width: var(
     --gog-select-control-font,
@@ -378,7 +377,7 @@
 }
 
 .gog-select--clearable .gog-select__control {
-  padding-right: calc(
+  padding-inline-end: calc(
     var(--gog-select-chevron-inset) + var(--gog-select-clear-gap) +
       var(
         --gog-select-control-font,

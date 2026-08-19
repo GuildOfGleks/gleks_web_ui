@@ -93,6 +93,18 @@ export class App {}
 One `<gog-dialog />` hosts every dialog (they stack); one `<gog-toast-container />` hosts all
 four toast corners.
 
+## Right-to-left
+
+**RTL is supported.** Set `dir="rtl"` on `<html>` (or on any subtree) and every component
+mirrors: stylesheets use logical properties, portaled panels and tooltip bubbles copy a scoped
+`dir` onto themselves, a tooltip's `position="auto"` prefers the mirrored horizontal side, and
+the calendar's month arrows turn around.
+
+Two things stay physical on purpose, because they are physical words in the API: a tooltip's
+explicit `position="left"`/`"right"`, and a toast's `top-left`/`top-right`/`bottom-left`/
+`bottom-right` corner. `"auto"` is the direction-aware tooltip placement; pick the corner you
+want for a toast.
+
 ## Theming
 
 Every value the components paint with lives in `styles/theme.css`, in three layers:

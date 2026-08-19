@@ -98,6 +98,24 @@ in 21.3.2, with the old path documented as working until 21.5.0. The package no 
 duplicate copy, and the `./src/styles/*` export is gone — if your `angular.json` still names the
 long path, drop the `src/` segment.
 
+### Added
+
+- **Right-to-left support.** `dir="rtl"` on `<html>` — or on any subtree — now mirrors every
+  component, with nothing to set per component. What changed under it: physical `left`/`right`
+  declarations became logical properties across 16 stylesheets; the select/multiselect panel and
+  the tooltip bubble copy a _scoped_ `dir` onto their portaled host, so an RTL region inside an
+  LTR page renders correctly; a tooltip's `position="auto"` prefers the mirrored horizontal side;
+  the calendar's month/year arrows turn around; and the slider fill, toast progress bar and
+  indeterminate progressbar run from the inline start.
+
+  Physical by design, because they are physical words in the API: a tooltip's explicit
+  `position="left"`/`"right"`, and a toast's `top-left`/`top-right`/`bottom-left`/`bottom-right`.
+
+  Three CSS custom properties are declared for the handful of properties with no logical form
+  (`transform-origin`, `translate`): `--gog-inline-start-side`, `--gog-inline-end-side` (the
+  `left`/`right` keywords) and `--gog-direction-sign` (`1`/`-1`). They flip on `[dir='rtl']` and
+  are available to your own styles.
+
 ### Changed
 
 - **Component token prefixes are spelled out.** Three families were abbreviations of a

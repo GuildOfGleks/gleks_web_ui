@@ -187,6 +187,16 @@ Full model is in `README.md`'s Theming section and `theming.md`; short version:
   `theming.md` for the full worked example) — component tokens re-derive automatically, you
   don't restate them.
 
+## Right-to-left
+
+Supported since 21.5.0. `dir="rtl"` on `<html>` or on any wrapper mirrors every component —
+you write nothing per component. Portaled overlays (select/multiselect panels, tooltip bubbles)
+copy a _scoped_ `dir` onto themselves, so an RTL region inside an LTR page works too.
+
+Physical by design, in both directions: `gogTooltip [position]="'left' | 'right'"` and
+`ToastConfig.position` (`'top-right'`, …). Use the tooltip's `'auto'` for direction-aware
+placement; a toast corner is a deliberate choice, so it is not mirrored.
+
 ## Global configuration — `GOG_CONFIG` / `provideGogConfig(...)`
 
 For the handful of inputs an app typically wants to set once (a size for every form control, a

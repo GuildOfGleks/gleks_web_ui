@@ -251,6 +251,9 @@ export class GogTooltipDirective {
       viewport,
       gap,
       VIEWPORT_PADDING,
+      // Read from the target rather than the document: a tooltip on a trigger inside an RTL
+      // region of an LTR page has to mirror with that region, not with the page.
+      getComputedStyle(hostEl).direction === 'rtl' ? 'rtl' : 'ltr',
     );
 
     ref.setInput('side', placement.side);

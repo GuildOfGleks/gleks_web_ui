@@ -29,6 +29,41 @@ describe('resolveTooltipSide', () => {
     expect(resolveTooltipSide('auto', target, bubble, viewport)).toBe('right');
   });
 
+  describe('in RTL', () => {
+    // Only the horizontal half of the `auto` preference mirrors; top-first is a convention,
+    // not a direction, and an explicit side is a physical request the caller made on purpose.
+    it('prefers left over right when neither top nor bottom fit', () => {
+      const target = { top: 4, bottom: 596, left: 350, right: 400, width: 50, height: 592 };
+      expect(resolveTooltipSide('auto', target, bubble, viewport, 8, 8, 'rtl')).toBe('left');
+      expect(resolveTooltipSide('auto', target, bubble, viewport, 8, 8, 'ltr')).toBe('right');
+    });
+
+    it('still prefers top when there is room', () => {
+      const target = { top: 300, bottom: 320, left: 350, right: 400, width: 50, height: 20 };
+      expect(resolveTooltipSide('auto', target, bubble, viewport, 8, 8, 'rtl')).toBe('top');
+    });
+
+    it('does not mirror an explicit side', () => {
+      const target = { top: 300, bottom: 320, left: 350, right: 400, width: 50, height: 20 };
+      expect(resolveTooltipSide('right', target, bubble, viewport, 8, 8, 'rtl')).toBe('right');
+      expect(resolveTooltipSide('left', target, bubble, viewport, 8, 8, 'rtl')).toBe('left');
+    });
+
+    it('falls back to the roomiest side, mirrored, when nothing fits', () => {
+      // Mirror of the LTR "most room" case: the left side has the space here.
+      const target = { top: 4, bottom: 596, left: 700, right: 796, width: 96, height: 592 };
+      expect(resolveTooltipSide('auto', target, bubble, viewport, 8, 8, 'rtl')).toBe('left');
+    });
+
+    it('places the bubble on the resolved side', () => {
+      const target = { top: 4, bottom: 596, left: 350, right: 400, width: 50, height: 592 };
+      const placement = resolveTooltipPlacement('auto', target, bubble, viewport, 8, 8, 'rtl');
+
+      expect(placement.side).toBe('left');
+      expect(placement.left).toBe(350 - 8 - bubble.width);
+    });
+  });
+
   it('honours an explicit side when it fits', () => {
     const target = { top: 300, bottom: 320, left: 350, right: 400, width: 50, height: 20 };
     expect(resolveTooltipSide('bottom', target, bubble, viewport)).toBe('bottom');

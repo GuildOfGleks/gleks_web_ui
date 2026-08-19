@@ -183,7 +183,7 @@
 }
 
 :host(.gog-chip--has-avatar) .gog-chip__surface {
-  padding-left: calc(
+  padding-inline-start: calc(
     var(
         --gog-chip-padding-inline,
         var(--gog-chip-size-padding-inline, var(--gog-chip-md-padding-inline))
@@ -193,7 +193,7 @@
 }
 
 :host(.gog-chip--removable) .gog-chip__surface {
-  padding-right: calc(
+  padding-inline-end: calc(
     var(
         --gog-chip-padding-inline,
         var(--gog-chip-size-padding-inline, var(--gog-chip-md-padding-inline))

@@ -64,6 +64,15 @@
   cursor: pointer;
 }
 
+/*
+ * "Previous" points towards the start of the line, which is the right in RTL — so the arrows
+ * mirror while everything else about the button stays put. The month grid itself needs no
+ * flipping: it is laid out with logical properties and the weekday order follows `dir`.
+ */
+:host-context([dir='rtl']) .gog-calendar__nav gog-icon {
+  transform: scaleX(-1);
+}
+
 .gog-calendar__nav:hover {
   background-color: var(--gog-calendar-nav-hover-bg);
   color: var(--gog-calendar-nav-hover-color);

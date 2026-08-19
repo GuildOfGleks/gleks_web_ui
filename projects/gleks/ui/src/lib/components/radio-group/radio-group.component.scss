@@ -62,7 +62,7 @@
 .gog-radio__input {
   position: absolute;
   top: var(--gog-radio-padding, var(--gog-control-checkbox-padding));
-  left: var(--gog-radio-padding, var(--gog-control-checkbox-padding));
+  inset-inline-start: var(--gog-radio-padding, var(--gog-control-checkbox-padding));
   width: var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md));
   height: var(--gog-radio-box-size, var(--gog-control-checkbox-box-size-md));
   margin: 0;

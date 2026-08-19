@@ -47,7 +47,7 @@ which is the expected shape for a plan that has not started.
 | 1 | Coverage measurement + CI gate | tooling | ✅ done 2026-08-19 — baseline below |
 | 2 | Token prefix consistency (179 tokens) | api | ✅ done 2026-08-19 — 154 renamed, `--gog-input-*` kept with a reason |
 | 3 | The scheduled removals + a check that enforces them | api | ✅ done 2026-08-19 — every tagged removal plus the `src/styles/` path; `check:deprecations` reports 0 tags |
-| 4 | RTL pass | fix | ⬜ todo |
+| 4 | RTL pass | fix | ✅ done 2026-08-19 — supported, verified live under `dir="rtl"` |
 | 5 | Test depth where the audit found it thin | tests | ⬜ todo |
 | 6 | `gog-menu` | feature | ⬜ todo |
 | 7 | Version/deprecation metadata for the docs site | tooling | 🟨 step 1 done — see below |
@@ -386,6 +386,47 @@ tooltip opens on the wrong side and a toast anchors to the wrong corner. The pac
 
 **Done when:** every component renders correctly with `dir="rtl"`, the two placement resolvers
 have RTL specs, and the README states the support level.
+
+### Outcome — 2026-08-19
+
+**Decision: RTL is supported**, and the README and `AGENTS.md` say so.
+
+- **Stylesheets.** 16 files moved to logical properties. Three kinds of site stayed physical, and
+  each now carries a comment saying why: centring (`left: 50%` with a −50% translate is *not*
+  the same as `inset-inline-start: 50%` in RTL), coordinates JavaScript writes from a measured
+  rect (the tooltip bubble, the portaled panel), and the physically-named public API.
+- **Three primitives in `utilities.css`** for the properties CSS gives no logical form:
+  `--gog-inline-start-side` / `--gog-inline-end-side` (keywords for `transform-origin`) and
+  `--gog-direction-sign` (`1`/`-1`, for the X half of a `translate`). They flip on `[dir='rtl']`
+  and are what let the slider thumb, the slider fill, the toast progress bar and the
+  indeterminate progressbar mirror without a `:host-context` rule each.
+- **`resolveDropdownPlacement` needed no change** — the panel is written at the trigger's own
+  `left`/`width`, so it overlays the trigger's box identically in both directions. The plan
+  assumed work here; measuring the code showed there was none.
+- **`resolveTooltipSide` takes a `direction`.** Only the horizontal half of the `'auto'`
+  preference mirrors; an explicit `'left'`/`'right'` is honoured as written, because those are
+  physical words a consumer chose. Five specs pin it, and the directive reads
+  `getComputedStyle(target).direction` per open, so a trigger inside an RTL region mirrors with
+  the region rather than with the page.
+- **`scopedOverlayDirection()`** (new, with 8 specs) is `scopedOverlayTheme`'s sibling: a portaled
+  panel or bubble carries a *scoped* `dir` onto its host, and inherits when the direction sits on
+  `<html>`. Without it, an overlay opened inside an RTL region of an LTR page renders LTR.
+- **The calendar's arrows** flip through `:host-context([dir='rtl'])`; the month grid needed
+  nothing, since the weekday order follows `dir` on its own.
+- **The showcase carries an RTL toggle** next to the theme switcher — a permanent check rather
+  than a session of DevTools edits.
+
+**Verified live** at `localhost:4200` under `dir="rtl"`: inputfield (leading icon and clear
+button swap, labels right-aligned), slider (fill grows from the right, thumb mirrored, min/max
+swapped), select (chevron left, panel aligned to the trigger's inline start, ticks right),
+datepicker (grid mirrored, SUN on the right, prev/next arrows turned around), toast (accent edge
+on the right, close on the left), table (columns and headers mirrored, paginator arrows mirrored
+by Unicode's own bidi mirroring), and the whole app shell.
+
+**One thing worth knowing for the next live check:** `ui-showcase` resolves the library through
+`dist/gleks/ui`, and Vite pre-bundles it — so a component-stylesheet change needs
+`npm run build:lib` **and a dev-server restart**, not just a reload. Two rounds of "the fix did
+not apply" here were that, not the CSS.
 
 ---
 

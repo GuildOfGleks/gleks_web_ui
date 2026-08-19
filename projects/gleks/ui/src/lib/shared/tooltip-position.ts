@@ -2,6 +2,9 @@ import { GogTooltipPosition } from './types';
 
 export type GogTooltipSide = 'top' | 'bottom' | 'left' | 'right';
 
+/** Writing direction of the element a placement is resolved against. */
+export type GogWritingDirection = 'ltr' | 'rtl';
+
 export interface GogTooltipTargetRect {
   top: number;
   bottom: number;
@@ -68,12 +71,19 @@ const OPPOSITE: Record<GogTooltipSide, GogTooltipSide> = {
 };
 
 /**
- * Picks which side the bubble renders on. `'auto'` tries top, bottom, right, left in that
- * order — top-first matches the conventional tooltip default — and falls back to whichever
+ * Picks which side the bubble renders on. `'auto'` tries top, bottom, then the two horizontal
+ * sides — top-first matches the conventional tooltip default — and falls back to whichever
  * side has the most room if the bubble doesn't fully fit anywhere. An explicit side flips to
  * its opposite when it has no room but the opposite does, same as `resolveDropdownDirection`
  * does for up/down; unlike that helper, a request for a specific side is honoured as-is
  * (no flip) whenever it fits, since the caller asked for that side deliberately.
+ *
+ * **`direction` mirrors the horizontal preference only.** In RTL, `'auto'` prefers the left
+ * side where LTR prefers the right, so a tooltip opens away from the text it belongs to in the
+ * same way in both. An explicit `'left'`/`'right'` is *not* mirrored: those are physical words
+ * in a physical API, and a consumer who wrote `position="right"` meant the right of the screen.
+ * `'start'`/`'end'` would be the logical spelling, and there is deliberately no such value —
+ * `'auto'` already does the right thing for a direction-aware layout.
  */
 export function resolveTooltipSide(
   position: GogTooltipPosition,
@@ -82,6 +92,7 @@ export function resolveTooltipSide(
   viewport: GogTooltipViewport,
   gap = DEFAULT_GAP,
   viewportPadding = DEFAULT_VIEWPORT_PADDING,
+  direction: GogWritingDirection = 'ltr',
 ): GogTooltipSide {
   if (position !== 'auto') {
     if (fits(position, target, bubble, viewport, gap, viewportPadding)) return position;
@@ -89,7 +100,8 @@ export function resolveTooltipSide(
     return fits(opposite, target, bubble, viewport, gap, viewportPadding) ? opposite : position;
   }
 
-  const preferenceOrder: GogTooltipSide[] = ['top', 'bottom', 'right', 'left'];
+  const preferenceOrder: GogTooltipSide[] =
+    direction === 'rtl' ? ['top', 'bottom', 'left', 'right'] : ['top', 'bottom', 'right', 'left'];
   const fitting = preferenceOrder.find((side) =>
     fits(side, target, bubble, viewport, gap, viewportPadding),
   );
@@ -112,8 +124,17 @@ export function resolveTooltipPlacement(
   viewport: GogTooltipViewport,
   gap = DEFAULT_GAP,
   viewportPadding = DEFAULT_VIEWPORT_PADDING,
+  direction: GogWritingDirection = 'ltr',
 ): GogTooltipPlacement {
-  const side = resolveTooltipSide(position, target, bubble, viewport, gap, viewportPadding);
+  const side = resolveTooltipSide(
+    position,
+    target,
+    bubble,
+    viewport,
+    gap,
+    viewportPadding,
+    direction,
+  );
 
   const centerX = target.left + target.width / 2;
   const centerY = target.top + target.height / 2;

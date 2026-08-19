@@ -69,6 +69,8 @@ const FOUNDATION_NAMESPACES = new Set([
   'disabled', 'duration', 'easing', 'focus', 'font', 'radius', 'space',
   // shared tiers several components read
   'control', 'field', 'panel',
+  // writing direction, for the few properties with no logical form (utilities.css)
+  'direction', 'inline',
 ]);
 
 /**

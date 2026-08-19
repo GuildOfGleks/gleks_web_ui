@@ -24,7 +24,7 @@
 .gog-checkbox__input {
   position: absolute;
   top: var(--gog-checkbox-padding, var(--gog-control-checkbox-padding));
-  left: var(--gog-checkbox-padding, var(--gog-control-checkbox-padding));
+  inset-inline-start: var(--gog-checkbox-padding, var(--gog-control-checkbox-padding));
   width: var(--gog-checkbox-box-size, var(--gog-control-checkbox-box-size-md));
   height: var(--gog-checkbox-box-size, var(--gog-control-checkbox-box-size-md));
   margin: 0;
