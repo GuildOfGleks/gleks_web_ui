@@ -6,11 +6,12 @@
  *
  * ── The three layers ─────────────────────────────────────────────────────────────
  *   1. Foundation  — palette, type scale, spacing, motion, focus. Restyles everything.
- *   2. Component   — `--gog-<block>-*`. Every colour, font, border, radius, shadow,
- *                    padding and duration each component paints with lives here, so a
- *                    theme can restyle one component without touching its stylesheet.
- *   3. Instance    — a handful of deliberately UNDECLARED tokens (`--gog-btn-bg`,
- *                    `--gog-btn-padding`, `--gog-tag-bg`, …) that variant/size classes
+ *   2. Component   — `--gog-<component>-*`, spelled out as the component's own element
+ *                    name. Every colour, font, border, radius, shadow, padding and
+ *                    duration each component paints with lives here, so a theme can
+ *                    restyle one component without touching its stylesheet.
+ *   3. Instance    — a handful of deliberately UNDECLARED tokens (`--gog-button-bg`,
+ *                    `--gog-button-padding`, `--gog-tag-bg`, …) that variant/size classes
  *                    fall back through. Left unset on purpose: a value declared here
  *                    would out-cascade the variant classes and pin every button to one
  *                    look. Set them on an element to override a single instance.
@@ -18,9 +19,28 @@
  * No component stylesheet declares a `--gog-*` default of its own — everything a
  * component paints resolves to a token below.
  *
+ * ── The pre-21.5.0 spellings, and why they sit in a fallback ─────────────────────
+ * Three prefixes were abbreviations of a component's name, which is the one thing a
+ * consumer cannot guess: `--gog-btn-*`, `--gog-ms-*`, `--gog-confirm-*`. 21.5.0 spells them
+ * out — `--gog-button-*`, `--gog-multiselect-*`, `--gog-confirmation-dialog-*` — and keeps
+ * the old ones working by putting each one in its replacement's fallback:
+ *
+ *     --gog-button-md-padding: var(--gog-btn-md-padding, 0.75rem 1.25rem);
+ *
+ * The spelled-out name is the declaration; the old name is declared nowhere, so a consumer
+ * who set it still feeds the component from wherever they set it, in every scope. Do not
+ * "simplify" this into an alias declared beside the original (`--gog-button-x: var(--gog-btn-x)`):
+ * the derived block re-declares itself inside every nested `[data-theme]`, so that shape
+ * silently discards a root-level override of the *new* name inside any themed subtree. That
+ * was measured, not theorised.
+ *
+ * @deprecated since 21.5.0 (2026-08-19) — use the spelled-out prefixes. Removed in 21.7.0.
+ * Removing them is deleting the `var(--gog-btn-…, )` wrapper from each declaration below;
+ * nothing else moves.
+ *
  * ── Why there are two blocks, and which one to add a token to ────────────────────
  * A custom property's `var()` references are substituted on the element that *declares*
- * it, not where it is read. So `--gog-btn-primary-bg: var(--gog-accent-color)` declared on
+ * it, not where it is read. So `--gog-button-primary-bg: var(--gog-accent-color)` declared on
  * `:root` freezes to the root palette: a `data-theme` scope further down the tree could
  * change `--gog-accent-color` and buttons inside it would not follow.
  *
@@ -108,16 +128,6 @@
   --gog-control-checkbox-icon-size-slg: 22px;
 
   /* ── Button sizing ─────────────────────────────────────────────────────────── */
-  --gog-btn-xsm-padding: 0.25rem 0.5rem;
-  --gog-btn-sm-padding: 0.5rem 0.875rem;
-  --gog-btn-md-padding: 0.75rem 1.25rem;
-  --gog-btn-lg-padding: 1rem 1.5rem;
-  --gog-btn-slg-padding: 1.25rem 1.75rem;
-  --gog-btn-xsm-font-size: 0.75rem;
-  --gog-btn-sm-font-size: 0.875rem;
-  --gog-btn-md-font-size: 1rem;
-  --gog-btn-lg-font-size: 1.125rem;
-  --gog-btn-slg-font-size: 1.25rem;
 
   /* ── Field sizing (input / select / multiselect share one scale) ───────────── */
   --gog-field-xsm-padding-y: 4px;
@@ -412,67 +422,106 @@
   --gog-collapsible-disabled-opacity: var(--gog-disabled-opacity);
 
   /* ── Button ────────────────────────────────────────────────────────────────
-     `--gog-btn-bg`, `--gog-btn-color`, `--gog-btn-border`, `--gog-btn-shadow`,
-     `--gog-btn-hover-bg`, `--gog-btn-hover-shadow`, `--gog-btn-padding` and
-     `--gog-btn-font-size` are intentionally NOT declared — they are the per-instance
-     escape hatch the variant/size classes fall back through. */
-  --gog-btn-font-family: var(--gog-font-heading);
-  --gog-btn-font-weight: 900;
-  --gog-btn-letter-spacing: 1px;
-  --gog-btn-text-transform: uppercase;
-  --gog-btn-line-height: 1;
-  --gog-btn-gap: var(--gog-space-sm);
-  --gog-btn-radius: var(--gog-radius);
-  --gog-btn-border-width: var(--gog-control-border-width);
-  --gog-btn-border-style: var(--gog-control-border-style);
-  --gog-btn-transition-duration: var(--gog-duration-base);
-  --gog-btn-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-btn-focus-ring-offset: 3px;
-  --gog-btn-active-scale: 0.97;
-  --gog-btn-disabled-opacity: var(--gog-disabled-opacity);
-  --gog-btn-loading-opacity: 0.7;
-  --gog-btn-spinner-max-size: 70%;
+     `--gog-button-bg`, `--gog-button-color`, `--gog-button-border`, `--gog-button-shadow`,
+     `--gog-button-hover-bg`, `--gog-button-hover-shadow`, `--gog-button-padding` and
+     `--gog-button-font-size` are intentionally NOT declared — they are the per-instance
+     escape hatch the variant/size classes fall back through. Their `--gog-btn-*` spellings
+     are honoured by button.css's own fallback chain until 21.7.0, which is why they are the
+     only `--gog-btn-*` names that do not appear below. */
+  /* The size scale, moved out of the literals-only `:root` block by 21.5.0's rename: each
+     now carries its pre-21.5.0 spelling as a fallback, and a value containing var() has to
+     live here. The literals themselves have not changed. */
+  --gog-button-xsm-padding: var(--gog-btn-xsm-padding, 0.25rem 0.5rem);
+  --gog-button-sm-padding: var(--gog-btn-sm-padding, 0.5rem 0.875rem);
+  --gog-button-md-padding: var(--gog-btn-md-padding, 0.75rem 1.25rem);
+  --gog-button-lg-padding: var(--gog-btn-lg-padding, 1rem 1.5rem);
+  --gog-button-slg-padding: var(--gog-btn-slg-padding, 1.25rem 1.75rem);
+  --gog-button-xsm-font-size: var(--gog-btn-xsm-font-size, 0.75rem);
+  --gog-button-sm-font-size: var(--gog-btn-sm-font-size, 0.875rem);
+  --gog-button-md-font-size: var(--gog-btn-md-font-size, 1rem);
+  --gog-button-lg-font-size: var(--gog-btn-lg-font-size, 1.125rem);
+  --gog-button-slg-font-size: var(--gog-btn-slg-font-size, 1.25rem);
 
-  --gog-btn-primary-bg: var(--gog-accent-color);
-  --gog-btn-primary-color: var(--gog-accent-text-color, var(--gog-primary-color));
-  --gog-btn-primary-border: transparent;
-  --gog-btn-primary-shadow: none;
-  --gog-btn-primary-hover-bg: var(--gog-accent-bright);
-  --gog-btn-primary-hover-color: var(--gog-btn-primary-color);
-  --gog-btn-primary-hover-shadow: 0 0 16px
-    color-mix(in srgb, var(--gog-accent-bright) 45%, transparent);
+  --gog-button-font-family: var(--gog-btn-font-family, var(--gog-font-heading));
+  --gog-button-font-weight: var(--gog-btn-font-weight, 900);
+  --gog-button-letter-spacing: var(--gog-btn-letter-spacing, 1px);
+  --gog-button-text-transform: var(--gog-btn-text-transform, uppercase);
+  --gog-button-line-height: var(--gog-btn-line-height, 1);
+  --gog-button-gap: var(--gog-btn-gap, var(--gog-space-sm));
+  --gog-button-radius: var(--gog-btn-radius, var(--gog-radius));
+  --gog-button-border-width: var(--gog-btn-border-width, var(--gog-control-border-width));
+  --gog-button-border-style: var(--gog-btn-border-style, var(--gog-control-border-style));
+  --gog-button-transition-duration: var(--gog-btn-transition-duration, var(--gog-duration-base));
+  --gog-button-focus-ring-width: var(--gog-btn-focus-ring-width, var(--gog-focus-ring-width));
+  --gog-button-focus-ring-offset: var(--gog-btn-focus-ring-offset, 3px);
+  --gog-button-active-scale: var(--gog-btn-active-scale, 0.97);
+  --gog-button-disabled-opacity: var(--gog-btn-disabled-opacity, var(--gog-disabled-opacity));
+  --gog-button-loading-opacity: var(--gog-btn-loading-opacity, 0.7);
+  --gog-button-spinner-max-size: var(--gog-btn-spinner-max-size, 70%);
+
+  --gog-button-primary-bg: var(--gog-btn-primary-bg, var(--gog-accent-color));
+  --gog-button-primary-color: var(
+    --gog-btn-primary-color,
+    var(--gog-accent-text-color, var(--gog-primary-color))
+  );
+  --gog-button-primary-border: var(--gog-btn-primary-border, transparent);
+  --gog-button-primary-shadow: var(--gog-btn-primary-shadow, none);
+  --gog-button-primary-hover-bg: var(--gog-btn-primary-hover-bg, var(--gog-accent-bright));
+  --gog-button-primary-hover-color: var(
+    --gog-btn-primary-hover-color,
+    var(--gog-button-primary-color)
+  );
+  --gog-button-primary-hover-shadow: var(
+    --gog-btn-primary-hover-shadow,
+    0 0 16px color-mix(in srgb, var(--gog-accent-bright) 45%, transparent)
+  );
   /* The label's colour, not the page's. `--gog-text-color` is the colour of text on the page
      background, and a filled button is not the page background — on the dark theme that put pale
      parchment on bright amber, which read as a washed-out spinner beside a near-black label. */
-  --gog-btn-primary-spinner-color: var(--gog-btn-primary-color);
+  --gog-button-primary-spinner-color: var(
+    --gog-btn-primary-spinner-color,
+    var(--gog-button-primary-color)
+  );
 
-  --gog-btn-secondary-bg: var(--gog-secondary-color);
-  --gog-btn-secondary-color: var(--gog-accent-text-color, var(--gog-primary-color));
-  --gog-btn-secondary-border: transparent;
-  --gog-btn-secondary-shadow: none;
-  --gog-btn-secondary-hover-bg: var(--gog-accent-color);
-  --gog-btn-secondary-hover-color: var(--gog-btn-secondary-color);
-  --gog-btn-secondary-hover-shadow: none;
+  --gog-button-secondary-bg: var(--gog-btn-secondary-bg, var(--gog-secondary-color));
+  --gog-button-secondary-color: var(
+    --gog-btn-secondary-color,
+    var(--gog-accent-text-color, var(--gog-primary-color))
+  );
+  --gog-button-secondary-border: var(--gog-btn-secondary-border, transparent);
+  --gog-button-secondary-shadow: var(--gog-btn-secondary-shadow, none);
+  --gog-button-secondary-hover-bg: var(--gog-btn-secondary-hover-bg, var(--gog-accent-color));
+  --gog-button-secondary-hover-color: var(
+    --gog-btn-secondary-hover-color,
+    var(--gog-button-secondary-color)
+  );
+  --gog-button-secondary-hover-shadow: var(--gog-btn-secondary-hover-shadow, none);
   /* Same reasoning as primary: the other filled variant, the same mismatch. */
-  --gog-btn-secondary-spinner-color: var(--gog-btn-secondary-color);
+  --gog-button-secondary-spinner-color: var(
+    --gog-btn-secondary-spinner-color,
+    var(--gog-button-secondary-color)
+  );
 
-  --gog-btn-outline-bg: transparent;
-  --gog-btn-outline-color: var(--gog-accent-color);
-  --gog-btn-outline-border: var(--gog-accent-color);
-  --gog-btn-outline-shadow: none;
-  --gog-btn-outline-hover-bg: var(--gog-accent-color);
-  --gog-btn-outline-hover-color: var(--gog-primary-color);
-  --gog-btn-outline-hover-shadow: none;
-  --gog-btn-outline-spinner-color: var(--gog-accent-color);
+  --gog-button-outline-bg: var(--gog-btn-outline-bg, transparent);
+  --gog-button-outline-color: var(--gog-btn-outline-color, var(--gog-accent-color));
+  --gog-button-outline-border: var(--gog-btn-outline-border, var(--gog-accent-color));
+  --gog-button-outline-shadow: var(--gog-btn-outline-shadow, none);
+  --gog-button-outline-hover-bg: var(--gog-btn-outline-hover-bg, var(--gog-accent-color));
+  --gog-button-outline-hover-color: var(--gog-btn-outline-hover-color, var(--gog-primary-color));
+  --gog-button-outline-hover-shadow: var(--gog-btn-outline-hover-shadow, none);
+  --gog-button-outline-spinner-color: var(--gog-btn-outline-spinner-color, var(--gog-accent-color));
 
-  --gog-btn-ghost-bg: transparent;
-  --gog-btn-ghost-color: var(--gog-accent-color);
-  --gog-btn-ghost-border: transparent;
-  --gog-btn-ghost-shadow: none;
-  --gog-btn-ghost-hover-bg: color-mix(in srgb, var(--gog-accent-color) 12%, transparent);
-  --gog-btn-ghost-hover-color: var(--gog-btn-ghost-color);
-  --gog-btn-ghost-hover-shadow: none;
-  --gog-btn-ghost-spinner-color: var(--gog-accent-color);
+  --gog-button-ghost-bg: var(--gog-btn-ghost-bg, transparent);
+  --gog-button-ghost-color: var(--gog-btn-ghost-color, var(--gog-accent-color));
+  --gog-button-ghost-border: var(--gog-btn-ghost-border, transparent);
+  --gog-button-ghost-shadow: var(--gog-btn-ghost-shadow, none);
+  --gog-button-ghost-hover-bg: var(
+    --gog-btn-ghost-hover-bg,
+    color-mix(in srgb, var(--gog-accent-color) 12%, transparent)
+  );
+  --gog-button-ghost-hover-color: var(--gog-btn-ghost-hover-color, var(--gog-button-ghost-color));
+  --gog-button-ghost-hover-shadow: var(--gog-btn-ghost-hover-shadow, none);
+  --gog-button-ghost-spinner-color: var(--gog-btn-ghost-spinner-color, var(--gog-accent-color));
 
   /* ── Button toggle group ───────────────────────────────────────────────────
      `--gog-button-toggle-bg`, `-color`, `-padding` and `-font-size` are intentionally NOT
@@ -723,13 +772,16 @@
   --gog-dialog-close-focus-ring-offset: var(--gog-focus-ring-offset);
 
   /* Confirmation dialog */
-  --gog-confirm-gap: 12px;
-  --gog-confirm-min-width: 320px;
-  --gog-confirm-max-width: 440px;
-  --gog-confirm-color: var(--gog-text-color);
-  --gog-confirm-description-color: var(--gog-muted-text-color);
-  --gog-confirm-actions-gap: var(--gog-space-sm);
-  --gog-confirm-actions-offset: var(--gog-space-sm);
+  --gog-confirmation-dialog-gap: var(--gog-confirm-gap, 12px);
+  --gog-confirmation-dialog-min-width: var(--gog-confirm-min-width, 320px);
+  --gog-confirmation-dialog-max-width: var(--gog-confirm-max-width, 440px);
+  --gog-confirmation-dialog-color: var(--gog-confirm-color, var(--gog-text-color));
+  --gog-confirmation-dialog-description-color: var(
+    --gog-confirm-description-color,
+    var(--gog-muted-text-color)
+  );
+  --gog-confirmation-dialog-actions-gap: var(--gog-confirm-actions-gap, var(--gog-space-sm));
+  --gog-confirmation-dialog-actions-offset: var(--gog-confirm-actions-offset, var(--gog-space-sm));
 
   /* ── Autocomplete ──────────────────────────────────────────────────────────
      A combobox whose trigger is a real text input. Padding/font-size reuse the shared
@@ -993,166 +1045,148 @@
   --gog-input-float-label-over-reserve: var(--gog-field-float-label-over-reserve);
 
   /* ── Multiselect ─────────────────────────────────────────────────────────────
-     Each token is declared twice on purpose: the `--gog-ms-*` name is the pre-21.3.0
-     spelling and stays the *declared* one so an existing override of it still feeds the
-     component, while `--gog-multiselect-*` — what the stylesheet actually reads — derives
-     from it. Overriding either name works for the whole 21.3.0/21.4.0 window.
-     @deprecated since 21.3.0 (2026-08-07) — use `--gog-multiselect-*`. Removed in 21.5.0. */
-  --gog-ms-font-family: var(--gog-font-body);
-  --gog-multiselect-font-family: var(--gog-ms-font-family);
-  --gog-ms-label-font-family: var(--gog-font-heading);
-  --gog-multiselect-label-font-family: var(--gog-ms-label-font-family);
-  --gog-ms-gap: 4px;
-  --gog-multiselect-gap: var(--gog-ms-gap);
-  --gog-ms-option-gap: 4px;
-  --gog-multiselect-option-gap: var(--gog-ms-option-gap);
-  --gog-ms-options-padding: 4px;
-  --gog-multiselect-options-padding: var(--gog-ms-options-padding);
-  --gog-ms-label-color: var(--gog-accent-color);
-  --gog-multiselect-label-color: var(--gog-ms-label-color);
-  --gog-ms-label-font-size: var(--gog-text-sm);
-  --gog-multiselect-label-font-size: var(--gog-ms-label-font-size);
-  --gog-ms-label-letter-spacing: 1px;
-  --gog-multiselect-label-letter-spacing: var(--gog-ms-label-letter-spacing);
-  --gog-ms-label-text-transform: uppercase;
-  --gog-multiselect-label-text-transform: var(--gog-ms-label-text-transform);
-  --gog-ms-field-bg: var(--gog-surface-color);
-  --gog-multiselect-field-bg: var(--gog-ms-field-bg);
-  --gog-ms-field-border: var(--gog-accent-dim);
-  --gog-multiselect-field-border: var(--gog-ms-field-border);
-  --gog-ms-field-border-width: var(--gog-control-border-width);
-  --gog-multiselect-field-border-width: var(--gog-ms-field-border-width);
-  --gog-ms-field-border-style: var(--gog-control-border-style);
-  --gog-multiselect-field-border-style: var(--gog-ms-field-border-style);
-  --gog-ms-radius: var(--gog-radius);
-  --gog-multiselect-radius: var(--gog-ms-radius);
-  --gog-ms-field-color: var(--gog-text-color);
-  --gog-multiselect-field-color: var(--gog-ms-field-color);
-  --gog-ms-value-color: var(--gog-text-color);
-  --gog-multiselect-value-color: var(--gog-ms-value-color);
-  --gog-ms-placeholder-color: var(--gog-muted-text-color);
-  --gog-multiselect-placeholder-color: var(--gog-ms-placeholder-color);
-  --gog-ms-focus-border: var(--gog-accent-color);
-  --gog-multiselect-focus-border: var(--gog-ms-focus-border);
-  --gog-ms-focus-ring: color-mix(in srgb, var(--gog-accent-color) 25%, transparent);
-  --gog-multiselect-focus-ring: var(--gog-ms-focus-ring);
-  --gog-ms-focus-glow: 0 0 8px var(--gog-ms-focus-ring);
-  --gog-multiselect-focus-glow: var(--gog-ms-focus-glow);
-  --gog-ms-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-multiselect-focus-ring-width: var(--gog-ms-focus-ring-width);
-  --gog-ms-focus-ring-offset: var(--gog-focus-ring-offset);
-  --gog-multiselect-focus-ring-offset: var(--gog-ms-focus-ring-offset);
-  --gog-ms-error-color: var(--gog-danger-color);
-  --gog-multiselect-error-color: var(--gog-ms-error-color);
-  --gog-ms-error-font-size: var(--gog-text-xs);
-  --gog-multiselect-error-font-size: var(--gog-ms-error-font-size);
-  --gog-ms-error-offset: 2px;
-  --gog-multiselect-error-offset: var(--gog-ms-error-offset);
-  --gog-ms-border-color: var(--gog-accent-color);
-  --gog-multiselect-border-color: var(--gog-ms-border-color);
-  --gog-ms-panel-bg: var(--gog-surface-color);
-  --gog-multiselect-panel-bg: var(--gog-ms-panel-bg);
-  --gog-ms-panel-border: var(--gog-accent-color);
-  --gog-multiselect-panel-border: var(--gog-ms-panel-border);
-  --gog-ms-panel-shadow: var(--gog-panel-shadow);
-  --gog-multiselect-panel-shadow: var(--gog-ms-panel-shadow);
-  --gog-ms-panel-max-height: 260px;
-  --gog-multiselect-panel-max-height: var(--gog-ms-panel-max-height);
-  --gog-ms-panel-offset: 2px;
-  --gog-multiselect-panel-offset: var(--gog-ms-panel-offset);
-  --gog-ms-option-hover-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
-  --gog-multiselect-option-hover-bg: var(--gog-ms-option-hover-bg);
-  --gog-ms-option-color: var(--gog-text-color);
-  --gog-multiselect-option-color: var(--gog-ms-option-color);
-  --gog-ms-option-gap-inline: 10px;
-  --gog-multiselect-option-gap-inline: var(--gog-ms-option-gap-inline);
+     `--gog-ms-*` was the pre-21.3.0 spelling and sits in each token's fallback, so an
+     existing override of it still feeds the component — see the header's note on the
+     pre-21.5.0 spellings for why it is a fallback rather than a second declaration.
+     Until 21.5.0 these were two declarations per token, which had that bug.
+     @deprecated since 21.3.0 (2026-08-07) — use `--gog-multiselect-*`. Removed in 21.7.0. */
+  --gog-multiselect-font-family: var(--gog-ms-font-family, var(--gog-font-body));
+  --gog-multiselect-label-font-family: var(--gog-ms-label-font-family, var(--gog-font-heading));
+  --gog-multiselect-gap: var(--gog-ms-gap, 4px);
+  --gog-multiselect-option-gap: var(--gog-ms-option-gap, 4px);
+  --gog-multiselect-options-padding: var(--gog-ms-options-padding, 4px);
+  --gog-multiselect-label-color: var(--gog-ms-label-color, var(--gog-accent-color));
+  --gog-multiselect-label-font-size: var(--gog-ms-label-font-size, var(--gog-text-sm));
+  --gog-multiselect-label-letter-spacing: var(--gog-ms-label-letter-spacing, 1px);
+  --gog-multiselect-label-text-transform: var(--gog-ms-label-text-transform, uppercase);
+  --gog-multiselect-field-bg: var(--gog-ms-field-bg, var(--gog-surface-color));
+  --gog-multiselect-field-border: var(--gog-ms-field-border, var(--gog-accent-dim));
+  --gog-multiselect-field-border-width: var(
+    --gog-ms-field-border-width,
+    var(--gog-control-border-width)
+  );
+  --gog-multiselect-field-border-style: var(
+    --gog-ms-field-border-style,
+    var(--gog-control-border-style)
+  );
+  --gog-multiselect-radius: var(--gog-ms-radius, var(--gog-radius));
+  --gog-multiselect-field-color: var(--gog-ms-field-color, var(--gog-text-color));
+  --gog-multiselect-value-color: var(--gog-ms-value-color, var(--gog-text-color));
+  --gog-multiselect-placeholder-color: var(--gog-ms-placeholder-color, var(--gog-muted-text-color));
+  --gog-multiselect-focus-border: var(--gog-ms-focus-border, var(--gog-accent-color));
+  --gog-multiselect-focus-ring: var(
+    --gog-ms-focus-ring,
+    color-mix(in srgb, var(--gog-accent-color) 25%, transparent)
+  );
+  --gog-multiselect-focus-glow: var(--gog-ms-focus-glow, 0 0 8px var(--gog-ms-focus-ring));
+  --gog-multiselect-focus-ring-width: var(--gog-ms-focus-ring-width, var(--gog-focus-ring-width));
+  --gog-multiselect-focus-ring-offset: var(
+    --gog-ms-focus-ring-offset,
+    var(--gog-focus-ring-offset)
+  );
+  --gog-multiselect-error-color: var(--gog-ms-error-color, var(--gog-danger-color));
+  --gog-multiselect-error-font-size: var(--gog-ms-error-font-size, var(--gog-text-xs));
+  --gog-multiselect-error-offset: var(--gog-ms-error-offset, 2px);
+  --gog-multiselect-border-color: var(--gog-ms-border-color, var(--gog-accent-color));
+  --gog-multiselect-panel-bg: var(--gog-ms-panel-bg, var(--gog-surface-color));
+  --gog-multiselect-panel-border: var(--gog-ms-panel-border, var(--gog-accent-color));
+  --gog-multiselect-panel-shadow: var(--gog-ms-panel-shadow, var(--gog-panel-shadow));
+  --gog-multiselect-panel-max-height: var(--gog-ms-panel-max-height, 260px);
+  --gog-multiselect-panel-offset: var(--gog-ms-panel-offset, 2px);
+  --gog-multiselect-option-hover-bg: var(
+    --gog-ms-option-hover-bg,
+    color-mix(in srgb, var(--gog-accent-color) 10%, transparent)
+  );
+  --gog-multiselect-option-color: var(--gog-ms-option-color, var(--gog-text-color));
+  --gog-multiselect-option-gap-inline: var(--gog-ms-option-gap-inline, 10px);
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
-  --gog-ms-option-height: 40px;
-  --gog-multiselect-option-height: var(--gog-ms-option-height);
-  --gog-ms-option-radius: calc(var(--gog-radius) - 2px);
-  --gog-multiselect-option-radius: var(--gog-ms-option-radius);
-  --gog-ms-option-disabled-opacity: 0.5;
-  --gog-multiselect-option-disabled-opacity: var(--gog-ms-option-disabled-opacity);
-  --gog-ms-option-transition-duration: var(--gog-duration-fast);
-  --gog-multiselect-option-transition-duration: var(--gog-ms-option-transition-duration);
-  --gog-ms-checkbox-border: var(--gog-accent-dim);
-  --gog-multiselect-checkbox-border: var(--gog-ms-checkbox-border);
-  --gog-ms-checkbox-bg: var(--gog-background-color);
-  --gog-multiselect-checkbox-bg: var(--gog-ms-checkbox-bg);
-  --gog-ms-checkbox-checked-bg: var(--gog-accent-color);
-  --gog-multiselect-checkbox-checked-bg: var(--gog-ms-checkbox-checked-bg);
-  --gog-ms-checkbox-checked-color: var(--gog-primary-color);
-  --gog-multiselect-checkbox-checked-color: var(--gog-ms-checkbox-checked-color);
-  --gog-ms-controls-gap: 4px;
-  --gog-multiselect-controls-gap: var(--gog-ms-controls-gap);
-  --gog-ms-controls-padding: 6px 10px;
-  --gog-multiselect-controls-padding: var(--gog-ms-controls-padding);
-  --gog-ms-actions-gap: 6px;
-  --gog-multiselect-actions-gap: var(--gog-ms-actions-gap);
-  --gog-ms-filter-padding: 6px;
-  --gog-multiselect-filter-padding: var(--gog-ms-filter-padding);
-  --gog-ms-filter-input-padding-y: 6px;
-  --gog-multiselect-filter-input-padding-y: var(--gog-ms-filter-input-padding-y);
-  --gog-ms-filter-input-padding-x: 8px;
-  --gog-multiselect-filter-input-padding-x: var(--gog-ms-filter-input-padding-x);
-  --gog-ms-filter-input-bg: var(--gog-background-color);
-  --gog-multiselect-filter-input-bg: var(--gog-ms-filter-input-bg);
-  --gog-ms-filter-input-color: var(--gog-multiselect-control-color);
-  --gog-multiselect-filter-input-color: var(--gog-ms-filter-input-color);
-  --gog-ms-filter-input-border: var(--gog-multiselect-control-border);
-  --gog-multiselect-filter-input-border: var(--gog-ms-filter-input-border);
-  --gog-ms-filter-input-radius: var(--gog-radius);
-  --gog-multiselect-filter-input-radius: var(--gog-ms-filter-input-radius);
-  --gog-ms-filter-border-width: var(--gog-panel-border-width);
-  --gog-multiselect-filter-border-width: var(--gog-ms-filter-border-width);
-  --gog-ms-filter-border-style: var(--gog-panel-border-style);
-  --gog-multiselect-filter-border-style: var(--gog-ms-filter-border-style);
-  --gog-ms-filter-border-color: var(--gog-border-color);
-  --gog-multiselect-filter-border-color: var(--gog-ms-filter-border-color);
-  --gog-ms-filter-empty-padding: 10px;
-  --gog-multiselect-filter-empty-padding: var(--gog-ms-filter-empty-padding);
-  --gog-ms-filter-empty-color: var(--gog-multiselect-placeholder-color);
-  --gog-multiselect-filter-empty-color: var(--gog-ms-filter-empty-color);
+  --gog-multiselect-option-height: var(--gog-ms-option-height, 40px);
+  --gog-multiselect-option-radius: var(--gog-ms-option-radius, calc(var(--gog-radius) - 2px));
+  --gog-multiselect-option-disabled-opacity: var(--gog-ms-option-disabled-opacity, 0.5);
+  --gog-multiselect-option-transition-duration: var(
+    --gog-ms-option-transition-duration,
+    var(--gog-duration-fast)
+  );
+  --gog-multiselect-checkbox-border: var(--gog-ms-checkbox-border, var(--gog-accent-dim));
+  --gog-multiselect-checkbox-bg: var(--gog-ms-checkbox-bg, var(--gog-background-color));
+  --gog-multiselect-checkbox-checked-bg: var(--gog-ms-checkbox-checked-bg, var(--gog-accent-color));
+  --gog-multiselect-checkbox-checked-color: var(
+    --gog-ms-checkbox-checked-color,
+    var(--gog-primary-color)
+  );
+  --gog-multiselect-controls-gap: var(--gog-ms-controls-gap, 4px);
+  --gog-multiselect-controls-padding: var(--gog-ms-controls-padding, 6px 10px);
+  --gog-multiselect-actions-gap: var(--gog-ms-actions-gap, 6px);
+  --gog-multiselect-filter-padding: var(--gog-ms-filter-padding, 6px);
+  --gog-multiselect-filter-input-padding-y: var(--gog-ms-filter-input-padding-y, 6px);
+  --gog-multiselect-filter-input-padding-x: var(--gog-ms-filter-input-padding-x, 8px);
+  --gog-multiselect-filter-input-bg: var(--gog-ms-filter-input-bg, var(--gog-background-color));
+  --gog-multiselect-filter-input-color: var(
+    --gog-ms-filter-input-color,
+    var(--gog-multiselect-control-color)
+  );
+  --gog-multiselect-filter-input-border: var(
+    --gog-ms-filter-input-border,
+    var(--gog-multiselect-control-border)
+  );
+  --gog-multiselect-filter-input-radius: var(--gog-ms-filter-input-radius, var(--gog-radius));
+  --gog-multiselect-filter-border-width: var(
+    --gog-ms-filter-border-width,
+    var(--gog-panel-border-width)
+  );
+  --gog-multiselect-filter-border-style: var(
+    --gog-ms-filter-border-style,
+    var(--gog-panel-border-style)
+  );
+  --gog-multiselect-filter-border-color: var(--gog-ms-filter-border-color, var(--gog-border-color));
+  --gog-multiselect-filter-empty-padding: var(--gog-ms-filter-empty-padding, 10px);
+  --gog-multiselect-filter-empty-color: var(
+    --gog-ms-filter-empty-color,
+    var(--gog-multiselect-placeholder-color)
+  );
   /* Matches --gog-select-chevron-inset; see the note there. */
   /* "+N" badge shown when the selection does not fit on one line. */
-  --gog-ms-overflow-color: var(--gog-multiselect-placeholder-color);
-  --gog-multiselect-overflow-color: var(--gog-ms-overflow-color);
-  --gog-ms-overflow-font-size: var(--gog-text-sm);
-  --gog-multiselect-overflow-font-size: var(--gog-ms-overflow-font-size);
-  --gog-ms-overflow-gap: 6px;
-  --gog-multiselect-overflow-gap: var(--gog-ms-overflow-gap);
-  --gog-ms-min-width: 120px;
-  --gog-multiselect-min-width: var(--gog-ms-min-width);
-  --gog-ms-panel-max-width: 420px;
-  --gog-multiselect-panel-max-width: var(--gog-ms-panel-max-width);
-  --gog-ms-actions-inset: var(--gog-control-icon-offset);
-  --gog-multiselect-actions-inset: var(--gog-ms-actions-inset);
-  --gog-ms-clear-radius: 2px;
-  --gog-multiselect-clear-radius: var(--gog-ms-clear-radius);
-  --gog-ms-disabled-opacity: var(--gog-disabled-opacity);
-  --gog-multiselect-disabled-opacity: var(--gog-ms-disabled-opacity);
-  --gog-ms-transition-duration: var(--gog-duration-base);
-  --gog-multiselect-transition-duration: var(--gog-ms-transition-duration);
-  --gog-ms-float-label-reserve: var(--gog-field-float-label-reserve);
-  --gog-multiselect-float-label-reserve: var(--gog-ms-float-label-reserve);
-  --gog-ms-float-label-in-top: var(--gog-field-float-label-in-top);
-  --gog-multiselect-float-label-in-top: var(--gog-ms-float-label-in-top);
-  --gog-ms-float-label-over-gap: var(--gog-field-float-label-over-gap);
-  --gog-multiselect-float-label-over-gap: var(--gog-ms-float-label-over-gap);
-  --gog-ms-float-label-over-reserve: var(--gog-field-float-label-over-reserve);
-  --gog-multiselect-float-label-over-reserve: var(--gog-ms-float-label-over-reserve);
-  --gog-ms-arrow-transition-duration: var(--gog-duration-slow);
-  --gog-multiselect-arrow-transition-duration: var(--gog-ms-arrow-transition-duration);
+  --gog-multiselect-overflow-color: var(
+    --gog-ms-overflow-color,
+    var(--gog-multiselect-placeholder-color)
+  );
+  --gog-multiselect-overflow-font-size: var(--gog-ms-overflow-font-size, var(--gog-text-sm));
+  --gog-multiselect-overflow-gap: var(--gog-ms-overflow-gap, 6px);
+  --gog-multiselect-min-width: var(--gog-ms-min-width, 120px);
+  --gog-multiselect-panel-max-width: var(--gog-ms-panel-max-width, 420px);
+  --gog-multiselect-actions-inset: var(--gog-ms-actions-inset, var(--gog-control-icon-offset));
+  --gog-multiselect-clear-radius: var(--gog-ms-clear-radius, 2px);
+  --gog-multiselect-disabled-opacity: var(--gog-ms-disabled-opacity, var(--gog-disabled-opacity));
+  --gog-multiselect-transition-duration: var(
+    --gog-ms-transition-duration,
+    var(--gog-duration-base)
+  );
+  --gog-multiselect-float-label-reserve: var(
+    --gog-ms-float-label-reserve,
+    var(--gog-field-float-label-reserve)
+  );
+  --gog-multiselect-float-label-in-top: var(
+    --gog-ms-float-label-in-top,
+    var(--gog-field-float-label-in-top)
+  );
+  --gog-multiselect-float-label-over-gap: var(
+    --gog-ms-float-label-over-gap,
+    var(--gog-field-float-label-over-gap)
+  );
+  --gog-multiselect-float-label-over-reserve: var(
+    --gog-ms-float-label-over-reserve,
+    var(--gog-field-float-label-over-reserve)
+  );
+  --gog-multiselect-arrow-transition-duration: var(
+    --gog-ms-arrow-transition-duration,
+    var(--gog-duration-slow)
+  );
   /* Icon geometry, expressed as a ratio of the control's font size. */
-  --gog-ms-clear-icon-ratio: 0.7;
-  --gog-multiselect-clear-icon-ratio: var(--gog-ms-clear-icon-ratio);
-  --gog-ms-arrow-icon-ratio: 0.875;
-  --gog-multiselect-arrow-icon-ratio: var(--gog-ms-arrow-icon-ratio);
-  --gog-ms-mark-size-ratio: 1.2375;
-  --gog-multiselect-mark-size-ratio: var(--gog-ms-mark-size-ratio);
-  --gog-ms-mark-icon-ratio: 1.125;
-  --gog-multiselect-mark-icon-ratio: var(--gog-ms-mark-icon-ratio);
+  --gog-multiselect-clear-icon-ratio: var(--gog-ms-clear-icon-ratio, 0.7);
+  --gog-multiselect-arrow-icon-ratio: var(--gog-ms-arrow-icon-ratio, 0.875);
+  --gog-multiselect-mark-size-ratio: var(--gog-ms-mark-size-ratio, 1.2375);
+  --gog-multiselect-mark-icon-ratio: var(--gog-ms-mark-icon-ratio, 1.125);
 
   /* ── Paginator ─────────────────────────────────────────────────────────────── */
   --gog-paginator-gap: 4px;

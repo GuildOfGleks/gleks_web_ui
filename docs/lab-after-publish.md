@@ -36,6 +36,34 @@ trim the explanation back to what `fullWidth` is for.
 
 ---
 
+## After 21.5.0 — the token prefixes the lab spells short
+
+21.5.0 spells three component token prefixes out and keeps the old ones working until 21.7.0
+(`--gog-btn-*` → `--gog-button-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`,
+`--gog-ms-*` → `--gog-multiselect-*`). **Nothing in the lab breaks** — every old spelling still
+resolves — but the lab is where a reader copies token names from, so it teaches the deprecated
+ones until these are updated. Five files, `grep -rn -- "--gog-btn-\|--gog-ms-\|--gog-confirm-"`:
+
+- `src/styles.scss` — the `material` and `primeng` compare themes set 22 of them
+  (`--gog-btn-radius`, `--gog-btn-text-transform`, …). Renaming is mechanical and the pages must
+  look unchanged afterwards; that is the check.
+- `src/app/components/pages/theming-page/token-reference-data.ts` — the token reference a reader
+  browses. Any row still naming a short prefix is teaching a name that goes away in 21.7.0.
+- `src/app/components/pages/theme-generator-page/generator-catalog.ts` — the generator emits token
+  names into a CSS block the reader pastes into their own app, so a short name here becomes a
+  short name in someone's codebase.
+- `public/docs/styles/theme-starter.css` — the file consumers copy wholesale. Regenerate or
+  rename; it should carry only current names.
+- `public/docs/theming.md` — prose examples.
+
+Worth adding while there: a short note that the old spellings work until 21.7.0, so a reader who
+already has them does not think their theme is broken. The changelog entry on `general/releases`
+covers the detail; the theming page only needs the pointer.
+
+**One thing the lab should *not* copy:** `--gog-input-*` is not an abbreviation and is not being
+renamed — it names the text-field block `gog-inputfield` and `gog-textarea` share. If the theming
+page groups it under "inputfield", relabel it as the shared field block.
+
 ## After 21.5.0 — the deprecated API the lab still shows, and one page that breaks
 
 **Read this before running `npm install` on the lab after 21.5.0 publishes.** 21.5.0 removes

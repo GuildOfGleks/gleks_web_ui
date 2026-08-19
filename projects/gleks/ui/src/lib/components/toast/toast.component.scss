@@ -137,8 +137,8 @@
 }
 
 .gog-toast__action {
-  --gog-btn-padding: var(--gog-toast-action-padding);
-  --gog-btn-font-size: var(--gog-toast-action-font-size);
+  --gog-button-padding: var(--gog-toast-action-padding);
+  --gog-button-font-size: var(--gog-toast-action-font-size);
 }
 
 .gog-toast__action gog-icon {
@@ -148,8 +148,8 @@
 .gog-toast__close {
   align-self: flex-start;
   flex-shrink: 0;
-  --gog-btn-padding: var(--gog-toast-close-padding);
-  --gog-btn-font-size: var(--gog-toast-close-font-size);
+  --gog-button-padding: var(--gog-toast-close-padding);
+  --gog-button-font-size: var(--gog-toast-close-font-size);
 }
 
 .gog-toast__close gog-icon {

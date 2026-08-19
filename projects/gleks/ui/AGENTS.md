@@ -170,13 +170,19 @@ Full model is in `README.md`'s Theming section and `theming.md`; short version:
 
 - Every visual value (color, spacing, radius, shadow, duration) is a `--gog-*` CSS custom
   property, layered **foundation** (`--gog-accent-color`, `--gog-space-md`, …, restyles
-  everything) → **component** (`--gog-btn-primary-bg`, …, one block per component) →
-  **instance** (`--gog-btn-bg`, …, deliberately undeclared escape hatch for one element).
+  everything) → **component** (`--gog-button-primary-bg`, …, one block per component, named after
+  the component's own element) → **instance** (`--gog-button-bg`, …, deliberately undeclared
+  escape hatch for one element).
+- **Component prefixes are spelled out** since 21.5.0: `--gog-button-*`, `--gog-multiselect-*`,
+  `--gog-confirmation-dialog-*`. The abbreviated `--gog-btn-*`, `--gog-ms-*` and `--gog-confirm-*`
+  still resolve and are removed in 21.7.0 — don't write new code with them. The exception is
+  `--gog-input-*`, which is not an abbreviation: it is the shared text-field block that
+  `gog-inputfield` and `gog-textarea` both render, and it keeps that name.
 - Theme switch is a `data-theme` attribute, usually on `<html>`, toggled through the
   `ThemeService` (`inject(ThemeService).setTheme('dark')` / `.toggleTheme()` / `.theme` signal).
   Ships `light` and `dark`. Three more importable presets: `slate`, `one-dark`, `one-light`
   (`@guildofgleks/ui/styles/presets/<name>.css`).
-- Restyle one instance without touching a theme: `<gog-button style="--gog-btn-bg: #ff4edb">`.
+- Restyle one instance without touching a theme: `<gog-button style="--gog-button-bg: #ff4edb">`.
 - Build a custom theme by declaring a palette against a new `data-theme` value (see
   `theming.md` for the full worked example) — component tokens re-derive automatically, you
   don't restate them.

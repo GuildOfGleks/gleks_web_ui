@@ -1,4 +1,4 @@
-/* Every value resolves to a `--gog-confirm-*` token declared in styles/theme.css. */
+/* Every value resolves to a `--gog-confirmation-dialog-*` token declared in styles/theme.css. */
 :host {
   display: block;
   contain: layout style;
@@ -7,10 +7,10 @@
 .confirm-dialog {
   display: flex;
   flex-direction: column;
-  gap: var(--gog-confirm-gap);
-  min-width: var(--gog-confirm-min-width);
-  max-width: var(--gog-confirm-max-width);
-  color: var(--gog-confirm-color);
+  gap: var(--gog-confirmation-dialog-gap);
+  min-width: var(--gog-confirmation-dialog-min-width);
+  max-width: var(--gog-confirmation-dialog-max-width);
+  color: var(--gog-confirmation-dialog-color);
 }
 
 .confirm-dialog__title {
@@ -19,12 +19,12 @@
 
 .confirm-dialog__description {
   margin: 0;
-  color: var(--gog-confirm-description-color);
+  color: var(--gog-confirmation-dialog-description-color);
 }
 
 .confirm-dialog__actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--gog-confirm-actions-gap);
-  margin-top: var(--gog-confirm-actions-offset);
+  gap: var(--gog-confirmation-dialog-actions-gap);
+  margin-top: var(--gog-confirmation-dialog-actions-offset);
 }

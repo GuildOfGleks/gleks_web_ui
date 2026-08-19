@@ -100,13 +100,13 @@ Every value the components paint with lives in `styles/theme.css`, in three laye
 **Foundation** — palette, type scale, spacing, motion. Override these to restyle everything at
 once; component tokens derive from them, so a palette swap carries through on its own.
 
-**Component** — `--gog-<block>-*`, one block per component, to restyle a single component
-app-wide:
+**Component** — `--gog-<component>-*`, one block per component, named after the component you
+write in markup (`gog-button` → `--gog-button-*`), to restyle a single component app-wide:
 
 ```css
 :root[data-theme='mine'] {
-  --gog-btn-font-family: var(--gog-font-body);
-  --gog-btn-ghost-hover-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
+  --gog-button-font-family: var(--gog-font-body);
+  --gog-button-ghost-hover-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
   --gog-table-hover-bg: var(--gog-hover-color);
 }
 ```
@@ -116,9 +116,20 @@ variant and size classes:
 
 ```css
 .my-form gog-button {
-  --gog-btn-bg: rebeccapurple; /* wins over .gog-btn--primary */
+  --gog-button-bg: rebeccapurple; /* wins over .gog-btn--primary */
 }
 ```
+
+> **Renamed in 21.5.0.** Three prefixes were abbreviated and are now spelled out:
+> `--gog-btn-*` → `--gog-button-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`, and
+> `--gog-ms-*` → `--gog-multiselect-*` (that one since 21.3.0). **The old spellings still work**
+> — every new name derives from its old twin — and are **removed in 21.7.0**. A CSS override that
+> stops being read fails silently, which is why the window is two minors rather than one.
+>
+> One prefix that looks abbreviated and is not: **`--gog-input-*`**. It names the shared
+> text-field block that both `gog-inputfield` and `gog-textarea` render (`.gog-input__field`), not
+> the `gog-inputfield` component — the two are meant to restyle together from one token set, so
+> there is no `--gog-inputfield-*` and there will not be one.
 
 Every group and token name is in **[`TOKENS.md`](./TOKENS.md)**, generated from `theme.css` so it
 cannot drift, and available at runtime as `GOG_TOKEN_GROUPS`.

@@ -100,6 +100,30 @@ long path, drop the `src/` segment.
 
 ### Changed
 
+- **Component token prefixes are spelled out.** Three families were abbreviations of a
+  component's name — the one thing a consumer cannot guess — and now read as the component does:
+
+  | Was               | Is                                                           |
+  | ----------------- | ------------------------------------------------------------ |
+  | `--gog-btn-*`     | `--gog-button-*`                                             |
+  | `--gog-confirm-*` | `--gog-confirmation-dialog-*`                                |
+  | `--gog-ms-*`      | `--gog-multiselect-*` (since 21.3.0; the removal moved here) |
+
+  **Nothing breaks now.** Every old spelling still feeds the component: each replacement declares
+  it in its own fallback (`--gog-button-md-padding: var(--gog-btn-md-padding, 0.75rem 1.25rem)`),
+  and the per-instance names (`--gog-btn-bg`, `--gog-btn-padding`, …) are still read by the
+  button's own fallback chain. Override either spelling, at any scope, and it applies —
+  verified in a browser rather than reasoned about, for a theme block, a nested `[data-theme]`
+  subtree and an inline instance override.
+
+  **They are removed in 21.7.0** — two minors rather than one, because a CSS custom property that
+  nothing reads fails silently: no error, no warning, just a value that stops applying. Migration
+  is a find-and-replace on those three prefixes. `TOKENS.md` lists only the current names.
+
+  One prefix that looks abbreviated and is staying: **`--gog-input-*`**. It names the text-field
+  block that `gog-inputfield` and `gog-textarea` both render, not the `gog-inputfield` component —
+  the two restyle together from one token set on purpose, so there is no `--gog-inputfield-*`.
+
 - **`peerDependencies` now accept Angular 22** (`^21.2.0 || ^22.0.0` for `@angular/common`,
   `@angular/core`, `@angular/forms`, `@angular/platform-browser`) instead of `^21.2.0` alone.
   The library ships partial-compiled (Ivy partial mode), which is forward-compatible with the

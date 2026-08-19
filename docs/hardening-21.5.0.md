@@ -45,7 +45,7 @@ which is the expected shape for a plan that has not started.
 | # | Iteration | Kind | State |
 | --- | --- | --- | --- |
 | 1 | Coverage measurement + CI gate | tooling | ✅ done 2026-08-19 — baseline below |
-| 2 | Token prefix consistency (179 tokens) | api | ⬜ todo |
+| 2 | Token prefix consistency (179 tokens) | api | ✅ done 2026-08-19 — 154 renamed, `--gog-input-*` kept with a reason |
 | 3 | The scheduled removals + a check that enforces them | api | ✅ done 2026-08-19 — every tagged removal plus the `src/styles/` path; `check:deprecations` reports 0 tags |
 | 4 | RTL pass | fix | ⬜ todo |
 | 5 | Test depth where the audit found it thin | tests | ⬜ todo |
@@ -180,6 +180,68 @@ error — a CSS custom property that nothing reads is silent by design.
 
 **Done when:** both spellings work, `check:tokens` rejects a newly-added abbreviation, and
 `TOKENS.md` lists the long names as primary.
+
+### Outcome — 2026-08-19
+
+Done, with **two deviations from the plan above, both from reading the code rather than the
+count.**
+
+**Deviation 1 — `--gog-input-*` is not an abbreviation, and stays.** The plan counted its 38
+tokens as a breach of "spell the component out". They are not `gog-inputfield`'s tokens:
+`textarea.component.scss` reads 57 of them, and both components render the same `.gog-input__field`
+markup, sharing one token set on purpose so a text field and a textarea restyle together. Renaming
+to `--gog-inputfield-*` would have made `gog-textarea` read another component's tokens — worse than
+the abbreviation. It is registered in `check-tokens.mjs` as a shared block, with that reason, and
+the README says there will be no `--gog-inputfield-*`.
+
+**Deviation 2 — the alias direction in the plan is wrong, and the browser proved it.** The plan
+said to declare `--gog-btn-bg: var(--gog-button-bg)` beside the original. Implemented that way
+first; a probe on the showcase's themes page showed a theme setting the **new** name having no
+effect. The reason is the derived layer: `:root, [data-theme]` re-declares every token it holds
+inside *every* themed subtree, so an alias whose value reads the old name resets itself in each
+scope and discards an ancestor's override of the new name. What ships instead puts the deprecated
+spelling in the replacement's fallback:
+
+```css
+--gog-button-md-padding: var(--gog-btn-md-padding, 0.75rem 1.25rem);
+```
+
+The spelled-out name is the declaration; the old name is declared nowhere, so it behaves like the
+instance layer — set it anywhere and it applies everywhere below, in any scope. It also means
+`TOKENS.md` lists **only** the current names (the plan's third done-criterion) instead of both,
+and 21.7.0's removal is "delete the `var(--gog-btn-…, )` wrapper", nothing else. theme.css's header
+carries this reasoning so the next person does not "simplify" it back.
+
+| | |
+| --- | --- |
+| Renamed | `--gog-btn-*` → `--gog-button-*` (64 declarations + 10 instance-layer names), `--gog-confirm-*` → `--gog-confirmation-dialog-*` (7), `--gog-ms-*` → `--gog-multiselect-*` (75, collapsed from twin declarations into the fallback shape) |
+| Deprecated spellings still resolving | 154, counted by `check:tokens` on every run |
+| Removal | 21.7.0, which is also where `--gog-ms-*` moved to — one migration instead of two |
+| theme.css tokens | 1239 → 1168; the drop is the 75 multiselect twins becoming one declaration each |
+
+**The new rule: `check-tokens.mjs` rule E, `known-prefix`.** Every token's namespace must be a
+component folder name (read from `lib/components/`, so a new component needs no edit), a
+foundation family, or a shared block with a written reason. It found a case the audit had not:
+`--gog-radio-*`. That one is **not** a breach — `gog-radio-group` declares `--gog-radio-group-*`
+for the container and `--gog-radio-*` for one control inside it, and aliasing the second onto the
+first collides with real tokens (`--gog-radio-group-label-size` already exists and means something
+else). Recorded in the script; the attempted rename was reverted.
+
+**Verified in a browser, not by reasoning** — this is the one item here a spec cannot cover, since
+jsdom does not resolve custom properties through the cascade:
+
+| Case | Result |
+| --- | --- |
+| theme block sets the deprecated spelling (`--gog-btn-md-padding`, showcase's `cyberpunk`) | applies — 19.2px |
+| theme block sets the current spelling (`warcraft`, `red-alert-3`) | applies — 20.8px / 18.4px |
+| inline instance override, deprecated name (`--gog-btn-bg`, `--gog-btn-padding`) | applies |
+| inline instance override, current name (`--gog-button-bg`, `--gog-button-padding`) | applies |
+| both set on one element | current name wins |
+| `--gog-confirm-min-width` / `--gog-ms-gap` set at `:root` | feed `--gog-confirmation-dialog-min-width` / `--gog-multiselect-gap` |
+
+`ui-showcase`'s `cyberpunk` theme deliberately keeps the deprecated spelling, with a comment
+saying so: it is the live regression check for the whole migration window, and the other two
+themes use the current names.
 
 ---
 

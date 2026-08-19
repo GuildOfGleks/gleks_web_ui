@@ -4,7 +4,7 @@
  *   --gog-button-toggle-size-*                       internal, set by the size classes.
  *   --gog-button-toggle-<name>                       the actual values, in styles/theme.css.
  *
- * Padding and font size reuse the `--gog-btn-<size>-*` scale so a toggle group and a
+ * Padding and font size reuse the `--gog-button-<size>-*` scale so a toggle group and a
  * `<gog-button>` at the same `size` line up in a toolbar.
  */
 :host {
@@ -21,7 +21,7 @@
   gap: var(--gog-button-toggle-gap);
   padding: var(
     --gog-button-toggle-padding,
-    var(--gog-button-toggle-size-padding, var(--gog-btn-md-padding))
+    var(--gog-button-toggle-size-padding, var(--gog-button-md-padding))
   );
   border: var(--gog-button-toggle-border-width) var(--gog-button-toggle-border-style)
     var(--gog-button-toggle-border-color);
@@ -30,7 +30,7 @@
   font-family: var(--gog-button-toggle-font-family);
   font-size: var(
     --gog-button-toggle-font-size,
-    var(--gog-button-toggle-size-font-size, var(--gog-btn-md-font-size))
+    var(--gog-button-toggle-size-font-size, var(--gog-button-md-font-size))
   );
   font-weight: var(--gog-button-toggle-font-weight);
   letter-spacing: var(--gog-button-toggle-letter-spacing);
@@ -154,28 +154,28 @@
    `md` needs no block: it is what the chains above fall back to. */
 
 :host(.gog-button-toggle--xsm) {
-  --gog-button-toggle-size-padding: var(--gog-btn-xsm-padding);
-  --gog-button-toggle-size-font-size: var(--gog-btn-xsm-font-size);
+  --gog-button-toggle-size-padding: var(--gog-button-xsm-padding);
+  --gog-button-toggle-size-font-size: var(--gog-button-xsm-font-size);
 }
 
 :host(.gog-button-toggle--sm) {
-  --gog-button-toggle-size-padding: var(--gog-btn-sm-padding);
-  --gog-button-toggle-size-font-size: var(--gog-btn-sm-font-size);
+  --gog-button-toggle-size-padding: var(--gog-button-sm-padding);
+  --gog-button-toggle-size-font-size: var(--gog-button-sm-font-size);
 }
 
 :host(.gog-button-toggle--md) {
-  --gog-button-toggle-size-padding: var(--gog-btn-md-padding);
-  --gog-button-toggle-size-font-size: var(--gog-btn-md-font-size);
+  --gog-button-toggle-size-padding: var(--gog-button-md-padding);
+  --gog-button-toggle-size-font-size: var(--gog-button-md-font-size);
 }
 
 :host(.gog-button-toggle--lg) {
-  --gog-button-toggle-size-padding: var(--gog-btn-lg-padding);
-  --gog-button-toggle-size-font-size: var(--gog-btn-lg-font-size);
+  --gog-button-toggle-size-padding: var(--gog-button-lg-padding);
+  --gog-button-toggle-size-font-size: var(--gog-button-lg-font-size);
 }
 
 :host(.gog-button-toggle--slg) {
-  --gog-button-toggle-size-padding: var(--gog-btn-slg-padding);
-  --gog-button-toggle-size-font-size: var(--gog-btn-slg-font-size);
+  --gog-button-toggle-size-padding: var(--gog-button-slg-padding);
+  --gog-button-toggle-size-font-size: var(--gog-button-slg-font-size);
 }
 
 /* === Full width ===
