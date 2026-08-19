@@ -47,12 +47,26 @@ jobs:
       - name: Design-token contract check
         run: npm run check:tokens
 
+      # Enforces the deprecation lifecycle from api-design.instructions.md: every
+      # `@deprecated` tag carries all four parts, and none names a removal version the
+      # library has already reached. `GogSelectOption`/`GogMultiselectOption` overran
+      # their announced 21.4.0 removal by a whole minor before this step existed.
+      - name: Deprecation ratchet check
+        run: npm run check:deprecations
+
       # The library must build standalone, before anything that consumes it.
       - name: Build @gleks/ui
         run: npm run build:lib
 
       - name: Test @gleks/ui
         run: npm run test:lib
+
+      # Runs the same suite again with v8 coverage and the thresholds in angular.json's
+      # `coverage` configuration. Kept separate from the step above so a failure here reads
+      # as "coverage dropped", not "tests broke". Baseline and the reason the floor sits
+      # where it does: docs/hardening-21.5.0.md, iteration 1.
+      - name: Coverage @gleks/ui
+        run: npm run test:lib:coverage
 
       # Catches breaking changes to the library's public API: the showcase is the
       # only real consumer, so a compile error here means a consumer-facing break.

@@ -6,7 +6,6 @@ import {
   GogDropdownOption,
   GogDropdownOptionDirective,
   GogFloatLabelVariant,
-  GogSelectOption,
   GogSize,
   IconComponent,
   SelectComponent,
@@ -53,7 +52,7 @@ export class SelectPage {
     option.name.toLowerCase().startsWith(query.toLowerCase());
 
   protected readonly framework = signal<string | number | null>('angular');
-  protected readonly frameworks: GogSelectOption[] = [
+  protected readonly frameworks: GogDropdownOption[] = [
     { id: 'angular', name: 'Angular' },
     { id: 'react', name: 'React' },
     { id: 'vue', name: 'Vue' },
@@ -64,7 +63,7 @@ export class SelectPage {
 
   protected readonly sizeDemoValue = signal<string | number | null>('md');
 
-  protected readonly plansWithDisabled: GogSelectOption[] = [
+  protected readonly plansWithDisabled: GogDropdownOption[] = [
     { id: 'free', name: 'Free' },
     { id: 'pro', name: 'Pro' },
     { id: 'enterprise', name: 'Enterprise (contact sales)', disabled: true },
@@ -77,7 +76,7 @@ export class SelectPage {
     this.requireSelection() && this.requiredValue() === null ? 'Please pick a plan.' : '',
   );
 
-  protected readonly regions: GogSelectOption[] = [
+  protected readonly regions: GogDropdownOption[] = [
     { id: 'eu', name: 'Europe' },
     { id: 'us', name: 'United States' },
     { id: 'apac', name: 'Asia Pacific' },
@@ -86,7 +85,7 @@ export class SelectPage {
 
   /** `errorDisplay="auto"`: no manually computed error string, the field follows the
    * FormControl's own touched/invalid state instead. */
-  protected readonly billingCycles: GogSelectOption[] = [
+  protected readonly billingCycles: GogDropdownOption[] = [
     { id: 'monthly', name: 'Monthly' },
     { id: 'yearly', name: 'Yearly (2 months free)' },
   ];
@@ -95,7 +94,7 @@ export class SelectPage {
     Validators.required,
   );
 
-  protected readonly countries: GogSelectOption[] = Array.from({ length: 20 }, (_, i) => ({
+  protected readonly countries: GogDropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
     id: `country-${i}`,
     name: `Country ${i + 1}`,
   }));
@@ -103,14 +102,14 @@ export class SelectPage {
   protected readonly bottomOfPageValue = signal<string | number | null>(null);
 
   protected readonly fullWidthCountry = signal<string | number | null>(null);
-  protected readonly currencies: GogSelectOption[] = [
+  protected readonly currencies: GogDropdownOption[] = [
     { id: 'usd', name: 'USD' },
     { id: 'eur', name: 'EUR' },
     { id: 'gbp', name: 'GBP' },
   ];
   protected readonly currency = signal<string | number | null>('usd');
 
-  protected readonly sortOptions: GogSelectOption[] = [
+  protected readonly sortOptions: GogDropdownOption[] = [
     { id: 'newest', name: 'Newest first' },
     { id: 'oldest', name: 'Oldest first' },
   ];
@@ -118,7 +117,7 @@ export class SelectPage {
 
   protected readonly ariaOnlyValue = signal<string | number | null>(null);
 
-  protected readonly floatLabelOptions: GogSelectOption[] = [
+  protected readonly floatLabelOptions: GogDropdownOption[] = [
     { id: 'none', name: 'None' },
     { id: 'in', name: 'In' },
     { id: 'on', name: 'On' },

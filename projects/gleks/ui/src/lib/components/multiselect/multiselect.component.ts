@@ -23,11 +23,6 @@ import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { GogTooltipDirective } from '../tooltip/tooltip.directive';
 
-/**
- * @deprecated since 21.2.2 (2026-07-30) — use `GogDropdownOption` instead. Removed in 21.4.0.
- */
-export type GogMultiselectOption = GogDropdownOption;
-
 /** Height of the select-all/clear row, included in the panel height estimate. */
 const CONTROLS_ROW_HEIGHT = 38;
 

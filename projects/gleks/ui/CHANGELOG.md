@@ -14,15 +14,23 @@ and a reader upgrading to 21.5.0 has one list to work through rather than one bu
 
 ### Removed
 
-Not done yet — this section records what the version owes. Fourteen public symbols carry an
-`@deprecated … Removed in 21.5.0` tag naming its own replacement:
+- **The `GogSelectOption` and `GogMultiselectOption` type aliases.** Use `GogDropdownOption` —
+  it is the same type; both were aliases of it since 21.2.2. Migration is a rename in your
+  imports and type annotations, nothing else.
+
+  These two were announced for removal in **21.4.0** and overran it by a minor: 21.4.0, 21.4.1,
+  21.4.2, 21.4.3 and 21.4.4 all shipped with them still exported. Recorded here rather than
+  quietly re-dated, and `npm run check:deprecations` now fails the build on any
+  `@deprecated … Removed in <version>` tag whose version has already been reached, so a
+  deprecation cannot overrun its date again.
+
+Still owed by this version — fourteen public symbols carry an `@deprecated … Removed in
+21.5.0` tag naming its own replacement:
 
 - the six legacy icon inputs on `gog-inputfield`;
 - the `checkIconTemplate` / `clearIconTemplate` / `iconTemplate` / `chevronTemplate` inputs;
 - the `<column>` element, with its `Column` const and type;
-- the string-keyed `[template]` column slot;
-- the `GogSelectOption` / `GogMultiselectOption` aliases — **these two overran their announced
-  21.4.0 removal**, which is the reason the date on this list is not moved again.
+- the string-keyed `[template]` column slot.
 
 One more is promised in prose rather than by a tag, so it has no `@deprecated` to grep for and is
 the one most likely to be missed:

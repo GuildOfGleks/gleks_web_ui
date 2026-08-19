@@ -5,8 +5,7 @@ import {
   ConfirmationDialogComponent,
   DialogComponent,
   DialogService,
-  GogMultiselectOption,
-  GogSelectOption,
+  GogDropdownOption,
   GogTagVariant,
   InputfieldComponent,
   MultiselectComponent,
@@ -83,13 +82,13 @@ export class DashboardPage {
   protected readonly roleFilter = signal<string | number | null>(null);
   protected readonly teamFilter = signal<(string | number)[]>([]);
 
-  protected readonly roleOptions: GogSelectOption[] = [
+  protected readonly roleOptions: GogDropdownOption[] = [
     { id: 'admin', name: 'Admin' },
     { id: 'editor', name: 'Editor' },
     { id: 'viewer', name: 'Viewer' },
   ];
 
-  protected readonly teamOptions: GogMultiselectOption[] = [
+  protected readonly teamOptions: GogDropdownOption[] = [
     { id: 'engineering', name: 'Engineering' },
     { id: 'design', name: 'Design' },
     { id: 'sales', name: 'Sales' },

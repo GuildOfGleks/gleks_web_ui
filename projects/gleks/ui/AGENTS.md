@@ -5,8 +5,10 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.4.4`**. `README.md` covers the
-same ground at a higher level — install, setup, theming, global configuration — and is accurate;
+Everything below reflects the library's actual source as of **`21.4.4`**, plus the removals
+already landed for the unreleased `21.5.0` (the `GogSelectOption` / `GogMultiselectOption` type
+aliases — use `GogDropdownOption`); see `CHANGELOG.md`. `README.md` covers the same ground at a
+higher level — install, setup, theming, global configuration — and is accurate;
 this file goes further, into per-component input tables, and is the one to trust for exact names,
 types and defaults.
 
@@ -1343,7 +1345,6 @@ replacement instead.
 
 | Deprecated                                                                                                       | Removed in | Replacement                                                                                                     |
 | ---------------------------------------------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
-| `GogSelectOption`, `GogMultiselectOption` type aliases                                                           | `21.4.0`   | `GogDropdownOption`                                                                                             |
 | `gog-select`/`gog-multiselect` `chevronTemplate` input                                                           | `21.5.0`   | `<ng-template gogDropdownChevron>`                                                                              |
 | `gog-checkbox` `checkIconTemplate` input                                                                         | `21.5.0`   | `<ng-template gogCheckboxIcon>`                                                                                 |
 | `gog-tag` `iconTemplate` input                                                                                   | `21.5.0`   | `<ng-template gogTagIcon>`                                                                                      |

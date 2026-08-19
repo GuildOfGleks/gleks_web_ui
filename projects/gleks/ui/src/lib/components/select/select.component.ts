@@ -13,11 +13,6 @@ import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-b
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 
-/**
- * @deprecated since 21.2.2 (2026-07-30) — use `GogDropdownOption` instead. Removed in 21.4.0.
- */
-export type GogSelectOption = GogDropdownOption;
-
 @Component({
   selector: 'gog-select',
   imports: [IconComponent, NgTemplateOutlet, ScrollComponent],

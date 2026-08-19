@@ -44,9 +44,9 @@ which is the expected shape for a plan that has not started.
 
 | # | Iteration | Kind | State |
 | --- | --- | --- | --- |
-| 1 | Coverage measurement + CI gate | tooling | ⬜ todo |
+| 1 | Coverage measurement + CI gate | tooling | ✅ done 2026-08-19 — baseline below |
 | 2 | Token prefix consistency (179 tokens) | api | ⬜ todo |
-| 3 | The scheduled removals + a check that enforces them | api | ⬜ todo |
+| 3 | The scheduled removals + a check that enforces them | api | 🟨 steps 3–4 done 2026-08-19 — the overdue pair and the ratchet check; steps 1–2, 5–6 open |
 | 4 | RTL pass | fix | ⬜ todo |
 | 5 | Test depth where the audit found it thin | tests | ⬜ todo |
 | 6 | `gog-menu` | feature | ⬜ todo |
@@ -117,6 +117,36 @@ of at my eyeballing.
 
 **Done when:** `npm run test:lib:coverage` prints per-file numbers, CI fails on a deliberate drop,
 and the baseline is written down here.
+
+### Outcome — 2026-08-19
+
+Done. `@vitest/coverage-v8` is a devDependency, `npm run test:lib:coverage` runs the suite through
+the `coverage` configuration added to `@gleks/ui`'s `test` target in `angular.json`, and CI runs it
+as its own step after `Test @gleks/ui` — separate on purpose, so a red build reads as "coverage
+dropped" rather than "tests broke".
+
+**The baseline, measured on 905 tests across 48 files:**
+
+| Metric | Measured | Threshold set |
+| --- | --- | --- |
+| Statements | 93.02% (3470/3730) | 92% |
+| Branches | 90.34% (2564/2838) | 89% |
+| Functions | 92.93% (829/892) | 92% |
+| Lines | 95.14% (2899/3047) | 94% |
+
+The floors sit ~1 point under today's numbers: close enough to catch a real regression, loose
+enough that a single refactor moving a few uncovered lines doesn't fail a build nobody broke. They
+are a ratchet — **raise them after iteration 5**, don't leave them at 21.5.0's level forever.
+
+What counts: all 63 non-spec `.ts` files under `projects/gleks/ui/src`, which is every source file
+except the two excluded by name (`public-api.ts`, generated `token-names.ts`). Verified by diffing
+the `SF:` entries in `coverage/@gleks/ui/lcov.info` against the file list — nothing from the
+showcase, the lab or `node_modules` leaks in, so the percentages are the library's own. Reporters
+are `text` (the per-file table) and `lcovonly` (for any future upload); `coverage/` is already
+gitignored.
+
+The gate was verified by raising every threshold to 99% and confirming the run exits 1 with four
+`ERROR: Coverage for … does not meet global threshold` lines, then restoring it.
 
 ---
 
@@ -196,6 +226,37 @@ documented path since then.
 **Done when:** `grep -rn "Removed in 21"` returns nothing at or below the current version, the new
 check fails on a deliberately overdue tag, the suite passes, and the showcase demonstrates only
 non-deprecated shapes.
+
+### Partial outcome — 2026-08-19: steps 3 and 4
+
+**Steps 1, 2, 5 and 6 are still open** — the fourteen `Removed in 21.5.0` symbols are untouched.
+What landed is the pair that was already overdue, and the check that makes the next slip impossible.
+
+- **Step 3 — the overdue pair is gone.** `GogSelectOption` and `GogMultiselectOption` (aliases of
+  `GogDropdownOption` since 21.2.2, tagged for removal in 21.4.0, still exported through 21.4.4)
+  are deleted from `select.component.ts` and `multiselect.component.ts`. `ui-showcase` used them in
+  six pages and now names `GogDropdownOption` directly; `AGENTS.md`'s deprecation table loses the
+  row; `CHANGELOG.md`'s `### Removed` records the removal *and* the overrun, rather than re-dating
+  it quietly.
+- **Step 4 — `scripts/check-deprecations.mjs`**, wired as `npm run check:deprecations` and as its
+  own CI step next to `check:tokens`. Two rules: every `@deprecated` tag parses into all four
+  required parts (since-version, `(YYYY-MM-DD)`, replacement, `Removed in <version>.`), and no tag
+  may name a removal version at or below `projects/gleks/ui/package.json`'s current version. It
+  reads the tag across line wraps and handles the one tag that lives in a `//` comment inside
+  `column.ts`'s decorator, so all 16 tags parsed on the first run — the two overdue ones were the
+  only failures.
+
+  Verified negatively as well as positively: a tag edited to `Removed in 21.4.4`, one with the
+  removal sentence deleted, and one with the date removed each fail with the expected category.
+  Current output: `14 tag(s) in 113 source file(s), library at 21.4.4. Due: 21.5.0 (14)`.
+
+**This check fires the moment the version is bumped.** At 21.4.4 the fourteen remaining tags are
+fine; the first commit that sets `package.json` to 21.5.0 makes CI red until steps 1–2 and 5–6 are
+done. That is the intended shape — the removals now block the release instead of being remembered
+during it — but it is worth knowing before the bump rather than after.
+
+What it cannot see: a removal promised in prose (the `./src/styles/*` export, promised in the
+README for 21.5.0) has no tag to grep. Step 2's list is still the source for those.
 
 ---
 

@@ -36,6 +36,32 @@ trim the explanation back to what `fullWidth` is for.
 
 ---
 
+## After 21.5.0 — the removed option aliases and the deprecation check
+
+`GogSelectOption` / `GogMultiselectOption` are **gone** in 21.5.0 (removed 2026-08-19; they were
+aliases of `GogDropdownOption`, tagged for removal in 21.4.0 and overran it by a minor). Two lab
+files describe them as still-present deprecations and both become wrong the moment 21.5.0 is on
+npm:
+
+- `projects/gleks-ui-lab/src/app/components/pages/faq-page/faq-data.ts` — the deprecation table
+  around line 334 has a `GogSelectOption / GogMultiselectOption types` row: **delete the row**.
+  The paragraph right after it ("One row is worth calling out … still exported in 21.4.1")
+  describes the overrun in the present tense: rewrite it in the past tense as the reason the
+  build check below exists, or drop it — the migration note it gives is already covered by the
+  table's remaining rows.
+- `projects/gleks-ui-lab/public/docs/compare-full.md`, "On removal discipline" (~line 286) —
+  says "**two of them have overrun their date too** … still exported in 21.4.1". In 21.5.0 both
+  are removed and the check is real, so this becomes the strongest row in that comparison rather
+  than a caveat: the count drops from 15 deprecations to 14, and the sentence should say the
+  overrun was caught and closed, with `npm run check:deprecations` failing the build on any tag
+  whose removal version has been reached. Check the count with the `grep -o 'Removed in …'`
+  one-liner already printed in that section before writing a new number.
+
+Do not touch either file until 21.5.0 is actually published — the lab installs from npm, and
+21.4.x still exports both aliases.
+
+---
+
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see

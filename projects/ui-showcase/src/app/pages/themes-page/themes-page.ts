@@ -4,7 +4,7 @@ import {
   ButtonComponent,
   CheckboxComponent,
   ChipComponent,
-  GogSelectOption,
+  GogDropdownOption,
   IconComponent,
   InputfieldComponent,
   SelectComponent,
@@ -40,7 +40,7 @@ export class ThemesPage {
   protected readonly intensity = signal(72);
   protected readonly search = signal('Neon pulse');
   protected readonly mode = signal<string | number | null>('recon');
-  protected readonly modes: GogSelectOption[] = [
+  protected readonly modes: GogDropdownOption[] = [
     { id: 'recon', name: 'Recon mode' },
     { id: 'siege', name: 'Siege mode' },
     { id: 'command', name: 'Command mode' },
