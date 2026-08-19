@@ -41,7 +41,6 @@ export * from './lib/components/scroll/scroll.component';
 export * from './lib/components/spinner/spinner-overlay/spinner-overlay.component';
 export * from './lib/components/table/column';
 export * from './lib/components/table/table.component';
-export * from './lib/components/table/template.directive';
 export * from './lib/components/spinner/spinner.component';
 export * from './lib/components/tooltip/tooltip.directive';
 export * from './lib/services/dialog-service/dialog.service';

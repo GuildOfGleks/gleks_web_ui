@@ -5,10 +5,10 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.4.4`**, plus the removals
-already landed for the unreleased `21.5.0` (the `GogSelectOption` / `GogMultiselectOption` type
-aliases — use `GogDropdownOption`); see `CHANGELOG.md`. `README.md` covers the same ground at a
-higher level — install, setup, theming, global configuration — and is accurate;
+Everything below reflects the library's actual source as of **`21.4.4`** plus the removals
+already landed for the unreleased `21.5.0` — see **Removed in 21.5.0** near the end of this file,
+and `CHANGELOG.md`. `README.md` covers the same ground at a higher level — install, setup,
+theming, global configuration — and is accurate;
 this file goes further, into per-component input tables, and is the one to trust for exact names,
 types and defaults.
 
@@ -606,7 +606,7 @@ not from `value`, since `value` clears the moment the text stops matching the se
 | `indeterminate`, `disabled`, `fullWidth` | `boolean`              | `false` |
 
 Model: `checked: boolean`. CVA: yes. Slot: `<ng-template gogCheckboxIcon>` for a custom tick
-icon (replaces the deprecated `checkIconTemplate` input).
+icon.
 
 ```html
 <gog-checkbox label="I agree to the terms" formControlName="agree" />
@@ -909,7 +909,7 @@ Outputs: `gogClick: MouseEvent | KeyboardEvent`, `gogRemove: void`.
 | `iconName`  | `GogIconName \| null` | `null`      |
 | `fullWidth` | `boolean`             | `false`     |
 
-Slot: `<ng-template gogTagIcon>` for custom icon markup (replaces the deprecated `iconTemplate`).
+Slot: `<ng-template gogTagIcon>` for custom icon markup.
 
 ```html
 <gog-tag variant="success">Active</gog-tag>
@@ -1337,23 +1337,26 @@ screen readers, and a second region would announce everything twice. Don't add e
 
 ---
 
-## Deprecated patterns — do not use in new code
+## Removed in 21.5.0
 
-These still work (nothing breaks if you use them), but are marked `@deprecated` and **will be
-removed** on the stated schedule. Don't generate new code using any of them — use the listed
-replacement instead.
+**Nothing in this table exists any more.** It is here so that code written against 21.4.x — or
+generated from a stale copy of this file — can be migrated: each row names what a call site must
+become. If you are writing new code, ignore this section entirely and use the right-hand column,
+which is documented in full above.
 
-| Deprecated                                                                                                       | Removed in | Replacement                                                                                                     |
-| ---------------------------------------------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
-| `gog-select`/`gog-multiselect` `chevronTemplate` input                                                           | `21.5.0`   | `<ng-template gogDropdownChevron>`                                                                              |
-| `gog-checkbox` `checkIconTemplate` input                                                                         | `21.5.0`   | `<ng-template gogCheckboxIcon>`                                                                                 |
-| `gog-tag` `iconTemplate` input                                                                                   | `21.5.0`   | `<ng-template gogTagIcon>`                                                                                      |
-| `gog-multiselect` `clearIconTemplate` input                                                                      | `21.5.0`   | `<ng-template gogMultiselectClearIcon>`                                                                         |
-| `gog-inputfield` `iconStartTemplate`/`iconEndTemplate`/`iconStartFn`/`iconEndFn`/`iconStartLabel`/`iconEndLabel` | `21.5.0`   | `<span gogInputAddonStart>`/`<span gogInputAddonEnd>` (or a `<button>` with its own handler)                    |
-| `gog-table`'s `[template]` attribute (`<ng-template template="field" type="body">`)                              | `21.5.0`   | `<ng-template gogColumnBody>` / `<ng-template gogColumnHeader>` declared **inside** the matching `<gog-column>` |
-| `<column>` selector / `Column` export                                                                            | `21.5.0`   | `<gog-column>` / `GogColumn`                                                                                    |
+| Removed                                                                                                          | Replacement                                                                                                     |
+| ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `gog-select`/`gog-multiselect` `chevronTemplate` input                                                           | `<ng-template gogDropdownChevron>`                                                                              |
+| `gog-checkbox` `checkIconTemplate` input                                                                         | `<ng-template gogCheckboxIcon>`                                                                                 |
+| `gog-tag` `iconTemplate` input                                                                                   | `<ng-template gogTagIcon>`                                                                                      |
+| `gog-multiselect` `clearIconTemplate` input                                                                      | `<ng-template gogMultiselectClearIcon>`                                                                         |
+| `gog-inputfield` `iconStartTemplate`/`iconEndTemplate`/`iconStartFn`/`iconEndFn`/`iconStartLabel`/`iconEndLabel` | `<span gogInputAddonStart>`/`<span gogInputAddonEnd>` (or a `<button>` with its own handler)                    |
+| `gog-table`'s `[template]` attribute (`<ng-template template="field" type="body">`)                              | `<ng-template gogColumnBody>` / `<ng-template gogColumnHeader>` declared **inside** the matching `<gog-column>` |
+| `<column>` selector / `Column` export                                                                            | `<gog-column>` / `GogColumn`                                                                                    |
+| `GogSelectOption` / `GogMultiselectOption` types                                                                 | `GogDropdownOption` (the same type — they were aliases of it)                                                   |
+| `@guildofgleks/ui/src/styles/…` asset path                                                                       | `@guildofgleks/ui/styles/…`                                                                                     |
 
-The general rule they all follow: a `TemplateRef` **input** or a string-keyed lookup is the old
+The general rule they all followed: a `TemplateRef` **input** or a string-keyed lookup was the old
 shape; a **projected content directive with a typed context**, declared where it's used, is the
 current one. If you're about to write `fooTemplate` next to an existing `foo` input, or key
 something off a string that has to match another string elsewhere, that's this exact

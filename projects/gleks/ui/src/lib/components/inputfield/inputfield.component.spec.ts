@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { vi } from 'vitest';
 
 import { GogInputAddonEndDirective, InputfieldComponent } from './inputfield.component';
 import { GOG_CONFIG } from '../../shared/config';
@@ -72,38 +71,24 @@ describe('InputfieldComponent', () => {
     });
   });
 
-  describe('icon actions', () => {
-    it('invokes iconStartFn when the leading icon button is clicked', () => {
-      const onStart = vi.fn();
+  // Since 21.5.0 `iconStart`/`iconEnd` are decorative only — an interactive leading or
+  // trailing control is a projected `gogInputAddonStart`/`gogInputAddonEnd` button, which
+  // carries its own handler and label. The only action button the component still renders
+  // for itself is the password toggle (covered under 'password').
+  describe('icon slots', () => {
+    it('renders a non-interactive span for a leading icon name', () => {
       fixture.componentRef.setInput('iconStart', 'check');
-      fixture.componentRef.setInput('iconStartFn', onStart);
-      fixture.componentRef.setInput('iconStartLabel', 'Start action');
       fixture.detectChanges();
 
-      const button = fixture.nativeElement.querySelector(
-        '.gog-input__icon--start.gog-input__icon--action',
-      ) as HTMLButtonElement;
-      button.click();
-
-      expect(onStart).toHaveBeenCalledTimes(1);
+      expect(
+        fixture.nativeElement.querySelector('.gog-input__icon--start.gog-input__icon--action'),
+      ).toBeNull();
+      const icon = fixture.nativeElement.querySelector('.gog-input__icon--start');
+      expect(icon).toBeTruthy();
+      expect(icon.getAttribute('aria-hidden')).toBe('true');
     });
 
-    it('invokes iconEndFn when the trailing icon button is clicked', () => {
-      const onEnd = vi.fn();
-      fixture.componentRef.setInput('iconEnd', 'check');
-      fixture.componentRef.setInput('iconEndFn', onEnd);
-      fixture.componentRef.setInput('iconEndLabel', 'End action');
-      fixture.detectChanges();
-
-      const button = fixture.nativeElement.querySelector(
-        '.gog-input__icon--end.gog-input__icon--action',
-      ) as HTMLButtonElement;
-      button.click();
-
-      expect(onEnd).toHaveBeenCalledTimes(1);
-    });
-
-    it('renders a non-interactive icon span when no action fn is provided', () => {
+    it('renders a non-interactive span for a trailing icon name', () => {
       fixture.componentRef.setInput('iconEnd', 'check');
       fixture.detectChanges();
 

@@ -41,9 +41,6 @@
   "exports": {
     "./styles/*": {
       "default": "./styles/*"
-    },
-    "./src/styles/*": {
-      "default": "./src/styles/*"
     }
   }
 }

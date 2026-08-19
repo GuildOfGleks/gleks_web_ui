@@ -8,7 +8,6 @@ import {
   inject,
   input,
   model,
-  TemplateRef,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
@@ -57,10 +56,11 @@ function roundToStep(value: number, step: number): number {
  * </gog-inputfield>
  * ```
  *
- * Unlike the deprecated `iconStartTemplate` / `iconStartFn` / `iconStartLabel` trio this
- * replaces, the projected element is a normal DOM element: it carries its own `aria-label`,
- * its own click handler, and its own disabled state, so the component needs no input per
- * capability. `iconStart` — a bare icon name — stays, since that really is the common case.
+ * The projected element is a normal DOM element: it carries its own `aria-label`, its own
+ * click handler, and its own disabled state, so the component needs no input per capability —
+ * which is why the `iconStartTemplate` / `iconStartFn` / `iconStartLabel` trio this replaced
+ * could go in 21.5.0. `iconStart` — a bare icon name — stays, since that really is the common
+ * case.
  */
 @Directive({ selector: '[gogInputAddonStart]' })
 export class GogInputAddonStartDirective {}
@@ -165,32 +165,6 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly iconStart = input<GogIconName | ''>('');
   /** Default icon name for the trailing icon. */
   readonly iconEnd = input<GogIconName | ''>('');
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project a `<span gogInputAddonStart>` element instead. Removed in 21.5.0.
-   */
-  readonly iconStartTemplate = input<TemplateRef<unknown> | null>(null);
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project a `<span gogInputAddonEnd>` element instead. Removed in 21.5.0.
-   */
-  readonly iconEndTemplate = input<TemplateRef<unknown> | null>(null);
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project a `<button gogInputAddonStart>` element instead. Removed in 21.5.0. A projected button carries its own
-   * `(click)` handler, so no input is needed for it.
-   */
-  readonly iconStartFn = input<(() => void) | null>(null);
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project a `<button gogInputAddonEnd>` element instead. Removed in 21.5.0. A projected button carries its own
-   * `(click)` handler, so no input is needed for it.
-   */
-  readonly iconEndFn = input<(() => void) | null>(null);
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project a `<button gogInputAddonStart>` element instead. Removed in 21.5.0. Put `aria-label` on that button.
-   */
-  readonly iconStartLabel = input('');
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project a `<button gogInputAddonEnd>` element instead. Removed in 21.5.0. Put `aria-label` on that button.
-   */
-  readonly iconEndLabel = input('');
   /** aria-label for the reveal-password button, shown when `type` is `'password'`. Unset, falls back to `GOG_CONFIG.labels.showPassword`. */
   readonly showPasswordLabel = input<string | undefined>(undefined);
   /** aria-label for the hide-password button, shown once the password is revealed. Unset, falls back to `GOG_CONFIG.labels.hidePassword`. */
@@ -358,19 +332,20 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
 
   /**
    * Drives the wrapper's `--icon-start` class, which widens the field's leading gutter. Counts
-   * a projected addon as well as the legacy icon inputs, or the addon would overlap the text.
+   * a projected addon as well as `iconStart`, or the addon would overlap the text.
    */
-  protected readonly hasIconStart = computed(
-    () => !!this.addonStart() || !!this.iconStartTemplate() || !!this.iconStart(),
-  );
-  protected readonly hasIconStartAction = computed(() => !!this.iconStartFn());
+  protected readonly hasIconStart = computed(() => !!this.addonStart() || !!this.iconStart());
 
   /** For password fields the trailing icon is always the built-in show/hide toggle. */
   protected readonly effectiveIconEnd = computed<GogIconName | ''>(() =>
     this.isPasswordField() ? (this.passwordVisible() ? 'eye-off' : 'eye') : this.iconEnd(),
   );
+  /**
+   * The end slot's only self-labelling control is the password toggle: a projected addon
+   * carries its own `aria-label`, and a bare `iconEnd` is decorative.
+   */
   protected readonly effectiveIconEndLabel = computed(() => {
-    if (!this.isPasswordField()) return this.iconEndLabel();
+    if (!this.isPasswordField()) return '';
     return this.passwordVisible()
       ? resolveConfigured(
           this.hidePasswordLabel(),
@@ -384,14 +359,7 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
         );
   });
   protected readonly hasIconEnd = computed(
-    () =>
-      this.showClear() ||
-      !!this.addonEnd() ||
-      !!this.iconEndTemplate() ||
-      !!this.effectiveIconEnd(),
-  );
-  protected readonly hasIconEndAction = computed(
-    () => this.isPasswordField() || !!this.iconEndFn(),
+    () => this.showClear() || !!this.addonEnd() || !!this.effectiveIconEnd(),
   );
 
   /** `number` for a `type="number"` field (`null` when empty), `string` otherwise. */
@@ -427,16 +395,8 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     this.cvaDisabled.set(isDisabled);
   }
 
-  protected onIconStartClick(): void {
-    this.iconStartFn()?.();
-  }
-
-  protected onIconEndClick(): void {
-    if (this.isPasswordField()) {
-      this.passwordVisible.update((visible) => !visible);
-      return;
-    }
-    this.iconEndFn()?.();
+  protected togglePasswordVisibility(): void {
+    this.passwordVisible.update((visible) => !visible);
   }
 
   onInput(event: Event): void {

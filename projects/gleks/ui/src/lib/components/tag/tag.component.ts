@@ -40,17 +40,11 @@ export class TagComponent {
   readonly size = input<GogSize>('md');
   readonly shape = input<GogTagShape>('rounded');
   readonly iconName = input<GogIconName | null>(null);
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project an `<ng-template gogTagIcon>` into the component instead. Removed in 21.5.0.
-   */
-  readonly iconTemplate = input<TemplateRef<unknown> | null>(null);
-  /** Projected `gogTagIcon` template; wins over the deprecated `iconTemplate` input. */
+  /** Projected `gogTagIcon` template, shown in place of `iconName`. */
   protected readonly iconSlot = contentChild(GogTagIconDirective);
   readonly fullWidth = input(false);
 
-  protected readonly hasIcon = computed(
-    () => !!this.iconSlot() || this.iconTemplate() !== null || this.iconName() !== null,
-  );
+  protected readonly hasIcon = computed(() => !!this.iconSlot() || this.iconName() !== null);
 
   protected readonly hostClasses = computed(() =>
     [

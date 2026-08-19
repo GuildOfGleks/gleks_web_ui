@@ -19,7 +19,7 @@
     @if (indeterminate()) {
       <span class="gog-checkbox__dash" aria-hidden="true"></span>
     } @else if (checked()) {
-      <gog-icon [template]="checkIconSlot()?.templateRef ?? checkIconTemplate()" name="check" />
+      <gog-icon [template]="checkIconSlot()?.templateRef ?? null" name="check" />
     }
   </span>
 

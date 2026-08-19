@@ -75,12 +75,10 @@ export class GogColumnHeaderDirective {
  * structural rather than looked up by a matching string.
  */
 @Directive({
-  // Deliberately element selectors, not attributes: a column is a structural child of the
+  // Deliberately an element selector, not an attribute: a column is a structural child of the
   // table, and `<gog-column field="x">` reads as markup rather than as a decorated element.
-  // `column` is the pre-21.3.0 name, kept working for one migration window.
-  // @deprecated since 21.3.0 (2026-08-07) — use `gog-column` instead. Removed in 21.5.0.
   // eslint-disable-next-line @angular-eslint/directive-selector -- see above
-  selector: 'gog-column, column',
+  selector: 'gog-column',
 })
 export class GogColumn {
   /** Field name, or a dot-path into a nested property (e.g. `"address.city"`). */
@@ -99,13 +97,3 @@ export class GogColumn {
   readonly bodyTemplate = contentChild(GogColumnBodyDirective);
   readonly headerTemplate = contentChild(GogColumnHeaderDirective);
 }
-
-/**
- * @deprecated since 21.3.0 (2026-08-07) — use `GogColumn` instead. Removed in 21.5.0.
- * The same class under its old, unprefixed name.
- */
-export const Column = GogColumn;
-/**
- * @deprecated since 21.3.0 (2026-08-07) — use `GogColumn` instead. Removed in 21.5.0.
- */
-export type Column = GogColumn;

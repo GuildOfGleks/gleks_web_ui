@@ -14,30 +14,89 @@ and a reader upgrading to 21.5.0 has one list to work through rather than one bu
 
 ### Removed
 
-- **The `GogSelectOption` and `GogMultiselectOption` type aliases.** Use `GogDropdownOption` —
-  it is the same type; both were aliases of it since 21.2.2. Migration is a rename in your
-  imports and type annotations, nothing else.
+Everything deprecated for this version is gone. **All of it was announced with a replacement in
+21.3.0 or earlier**, and every replacement has shipped since then, so each item below is a
+mechanical edit at the call site rather than a redesign. If you are on 21.4.x, your editor has
+been striking these through already.
 
-  These two were announced for removal in **21.4.0** and overran it by a minor: 21.4.0, 21.4.1,
-  21.4.2, 21.4.3 and 21.4.4 all shipped with them still exported. Recorded here rather than
-  quietly re-dated, and `npm run check:deprecations` now fails the build on any
-  `@deprecated … Removed in <version>` tag whose version has already been reached, so a
-  deprecation cannot overrun its date again.
+**Per-slot `TemplateRef` inputs → projected slot directives.** Declare the template where it is
+used; it no longer has to be wired through an input, and it carries a typed context.
 
-Still owed by this version — fourteen public symbols carry an `@deprecated … Removed in
-21.5.0` tag naming its own replacement:
+| Removed input                                        | Replacement                             |
+| ---------------------------------------------------- | --------------------------------------- |
+| `gog-checkbox` `[checkIconTemplate]`                 | `<ng-template gogCheckboxIcon>`         |
+| `gog-tag` `[iconTemplate]`                           | `<ng-template gogTagIcon>`              |
+| `gog-multiselect` `[clearIconTemplate]`              | `<ng-template gogMultiselectClearIcon>` |
+| `gog-select` / `gog-multiselect` `[chevronTemplate]` | `<ng-template gogDropdownChevron>`      |
 
-- the six legacy icon inputs on `gog-inputfield`;
-- the `checkIconTemplate` / `clearIconTemplate` / `iconTemplate` / `chevronTemplate` inputs;
-- the `<column>` element, with its `Column` const and type;
-- the string-keyed `[template]` column slot.
+```html
+<!-- before -->
+<gog-tag [iconTemplate]="star">Featured</gog-tag>
+<ng-template #star><gog-icon name="check" /></ng-template>
 
-One more is promised in prose rather than by a tag, so it has no `@deprecated` to grep for and is
-the one most likely to be missed:
+<!-- after -->
+<gog-tag>
+  <ng-template gogTagIcon><gog-icon name="check" /></ng-template>
+  Featured
+</gog-tag>
+```
 
-- the **`./src/styles/*` export** in `package.json`. Stylesheets moved to `./styles/*` in 21.3.2
-  and the README says the old path "keeps working until 21.5.0". Removing it breaks anyone still
-  importing `@guildofgleks/ui/src/styles/…`, and the README paragraph promising it goes too.
+**`gog-inputfield`'s six legacy icon inputs** — `iconStartTemplate`, `iconEndTemplate`,
+`iconStartFn`, `iconEndFn`, `iconStartLabel`, `iconEndLabel` — replaced by projecting a real
+element into the field's leading or trailing slot. A projected `<button gogInputAddonEnd>` carries
+its own click handler, its own `aria-label` and its own disabled state, which is why six inputs
+collapse into none:
+
+```html
+<!-- before -->
+<gog-inputfield label="Search" iconEnd="check" [iconEndFn]="run" iconEndLabel="Search" />
+
+<!-- after -->
+<gog-inputfield label="Search">
+  <button gogInputAddonEnd type="button" aria-label="Search" (click)="run()">
+    <gog-icon name="check" />
+  </button>
+</gog-inputfield>
+```
+
+`iconStart` / `iconEnd` stay, and are now unambiguously **decorative**: they render an
+`aria-hidden` span, never a button. The only action button `gog-inputfield` still renders for
+itself is the password reveal toggle, whose labels remain `showPasswordLabel` /
+`hidePasswordLabel`.
+
+**`gog-table`'s string-keyed template slot.** `<ng-template template="field" type="body">` matched
+a column by a string the compiler could not check — a typo silently rendered the default cell.
+Declare the template inside the column it belongs to instead:
+
+```html
+<!-- before -->
+<gog-column field="status" />
+<ng-template template="status" type="body" let-row>…</ng-template>
+
+<!-- after -->
+<gog-column field="status">
+  <ng-template gogColumnBody let-row let-value="value">…</ng-template>
+</gog-column>
+```
+
+The `TemplateDirective` export goes with it, along with the `GogTableBodyContext` /
+`GogTableHeaderContext` types it carried — `GogColumnBodyContext` / `GogColumnHeaderContext` are
+the typed replacements, and they are what the column-scoped templates have always used.
+
+**The unprefixed table column names.** The `<column>` element selector and the `Column` const and
+type are gone; use `<gog-column>` and `GogColumn`.
+
+**The `GogSelectOption` and `GogMultiselectOption` type aliases.** Use `GogDropdownOption` — the
+same type; both were aliases of it since 21.2.2. These two were announced for removal in **21.4.0**
+and overran it by a minor: 21.4.0 through 21.4.4 all shipped with them still exported. Recorded
+here rather than quietly re-dated, and `npm run check:deprecations` now fails the build on any
+`@deprecated … Removed in <version>` tag whose version has already been reached, so no deprecation
+can overrun its date again.
+
+**The `@guildofgleks/ui/src/styles/…` asset path.** Stylesheets moved to `@guildofgleks/ui/styles/…`
+in 21.3.2, with the old path documented as working until 21.5.0. The package no longer ships the
+duplicate copy, and the `./src/styles/*` export is gone — if your `angular.json` still names the
+long path, drop the `src/` segment.
 
 ### Changed
 

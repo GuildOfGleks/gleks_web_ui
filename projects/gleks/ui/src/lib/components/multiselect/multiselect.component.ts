@@ -71,11 +71,7 @@ export class MultiselectComponent<
    * `GOG_CONFIG.labels.clearAll`, then to `'Clear'`.
    */
   readonly clearAllLabel = input<string | undefined>(undefined);
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project an `<ng-template gogMultiselectClearIcon>` into the component instead. Removed in 21.5.0.
-   */
-  readonly clearIconTemplate = input<TemplateRef<unknown> | null>(null);
-  /** Projected `gogMultiselectClearIcon` template; wins over the deprecated `clearIconTemplate` input. */
+  /** Projected `gogMultiselectClearIcon` template, replacing the clear-all glyph. */
   protected readonly clearIconSlot = contentChild(GogMultiselectClearIconDirective);
 
   /** Instance input → `GOG_CONFIG.labels` → the built-in English default. */

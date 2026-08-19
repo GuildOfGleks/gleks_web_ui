@@ -29,7 +29,6 @@ import {
   type GogColumnHeaderContext,
   defaultCompare,
 } from './column';
-import { TemplateDirective } from './template.directive';
 
 export type SortDirection = 'asc' | 'desc' | null;
 
@@ -224,7 +223,6 @@ export class TableComponent<T extends object> {
   readonly gogRowClick = output<GogTableRowClickEvent<T>>();
 
   readonly columns = contentChildren(GogColumn);
-  readonly templates = contentChildren(TemplateDirective);
 
   readonly sortState = signal<SortState>({ field: '', direction: null });
 
@@ -441,24 +439,14 @@ export class TableComponent<T extends object> {
     });
   }
 
-  /**
-   * A `gogColumnBody` template declared inside the column wins; the string-keyed
-   * `<ng-template template="field" type="body">` is the deprecated fallback.
-   */
+  /** The `gogColumnBody` template declared inside the column, if it has one. */
   getBodyTemplate(col: GogColumn): TemplateRef<unknown> | null {
-    return (
-      (col.bodyTemplate()?.templateRef as TemplateRef<unknown> | undefined) ??
-      this.bodyTemplateMap().get(col.field()) ??
-      null
-    );
+    return (col.bodyTemplate()?.templateRef as TemplateRef<unknown> | undefined) ?? null;
   }
 
+  /** The `gogColumnHeader` template declared inside the column, if it has one. */
   getHeaderTemplate(col: GogColumn): TemplateRef<unknown> | null {
-    return (
-      (col.headerTemplate()?.templateRef as TemplateRef<unknown> | undefined) ??
-      this.headerTemplateMap().get(col.field()) ??
-      null
-    );
+    return (col.headerTemplate()?.templateRef as TemplateRef<unknown> | undefined) ?? null;
   }
 
   /** Context for a `gogColumnBody` template — see `GogColumnBodyContext`. */
@@ -543,20 +531,4 @@ export class TableComponent<T extends object> {
 
   /** CSS grid-area for the pagination block */
   readonly paginatorGridArea = computed(() => this.paginatorPosition());
-
-  private readonly bodyTemplateMap = computed(() => {
-    const map = new Map<string, TemplateRef<unknown>>();
-    for (const t of this.templates()) {
-      if (t.type() === 'body') map.set(t.template(), t.templateRef);
-    }
-    return map;
-  });
-
-  private readonly headerTemplateMap = computed(() => {
-    const map = new Map<string, TemplateRef<unknown>>();
-    for (const t of this.templates()) {
-      if (t.type() === 'header') map.set(t.template(), t.templateRef);
-    }
-    return map;
-  });
 }

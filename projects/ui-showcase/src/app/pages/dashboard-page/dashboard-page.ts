@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import {
   ButtonComponent,
   GogColumn,
+  GogColumnBodyDirective,
+  GogColumnHeaderDirective,
   ConfirmationDialogComponent,
   DialogComponent,
   DialogService,
@@ -60,6 +62,8 @@ const SEED_MEMBERS: Member[] = [
   imports: [
     ButtonComponent,
     GogColumn,
+    GogColumnBodyDirective,
+    GogColumnHeaderDirective,
     DialogComponent,
     InputfieldComponent,
     MultiselectComponent,

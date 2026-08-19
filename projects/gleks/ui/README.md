@@ -56,9 +56,6 @@ use — without it they render unstyled.
 ]
 ```
 
-> Up to 21.3.1 these files shipped under `@guildofgleks/ui/src/styles/…`. That path keeps working
-> until 21.5.0; new setups should use the shorter one.
-
 **2. Import components where you use them** — each is standalone:
 
 ```ts
@@ -188,15 +185,15 @@ provideGogIcons({ cart: '<svg viewBox="0 0 24 24">…</svg>' });
 
 ## Components
 
-| Group | Components |
-| --- | --- |
-| Form controls | `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`, `gog-checkbox`, `gog-radio-group`, `gog-toggle`, `gog-slider`, `gog-datepicker`, `gog-calendar`, `gog-button-toggle-group` |
-| Actions | `gog-button`, `gog-chip` |
-| Data | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag` |
-| Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-divider`, `gog-scroll` |
-| Overlays | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`) |
-| Feedback | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton` |
-| Content | `gog-icon` |
+| Group               | Components                                                                                                                                                                                                        |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Form controls       | `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`, `gog-checkbox`, `gog-radio-group`, `gog-toggle`, `gog-slider`, `gog-datepicker`, `gog-calendar`, `gog-button-toggle-group` |
+| Actions             | `gog-button`, `gog-chip`                                                                                                                                                                                          |
+| Data                | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag`                                                                                                                                                          |
+| Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-divider`, `gog-scroll`                                                                                                                         |
+| Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`)                                                                                                                                    |
+| Feedback            | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton`                                                                                                                                           |
+| Content             | `gog-icon`                                                                                                                                                                                                        |
 
 **Directives:** `gogButton` (a link that looks like a button), `gogTooltip`, `gogBadge`,
 `gogCollapsibleTrigger`, `gogCollapsibleContent`.
@@ -223,11 +220,11 @@ A few things worth knowing before you reach for a workaround:
 
 ## Documentation
 
-| | |
-| --- | --- |
-| **[`AGENTS.md`](./AGENTS.md)** | the full API reference — every input, output, slot, type and default, per component. Ships in this package. |
-| **[`TOKENS.md`](./TOKENS.md)** | every `--gog-*` token, generated from `theme.css` |
-| [CHANGELOG](https://github.com/GuildOfGleks/gleks_web_ui/blob/master/projects/gleks/ui/CHANGELOG.md) | release history |
+|                                                                                                      |                                                                                                             |
+| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **[`AGENTS.md`](./AGENTS.md)**                                                                       | the full API reference — every input, output, slot, type and default, per component. Ships in this package. |
+| **[`TOKENS.md`](./TOKENS.md)**                                                                       | every `--gog-*` token, generated from `theme.css`                                                           |
+| [CHANGELOG](https://github.com/GuildOfGleks/gleks_web_ui/blob/master/projects/gleks/ui/CHANGELOG.md) | release history                                                                                             |
 
 `AGENTS.md` is written for an AI coding assistant working in your project, but it is the most
 complete API reference either way — point your assistant at it and it will stop guessing.

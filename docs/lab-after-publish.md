@@ -36,6 +36,45 @@ trim the explanation back to what `fullWidth` is for.
 
 ---
 
+## After 21.5.0 — the deprecated API the lab still shows, and one page that breaks
+
+**Read this before running `npm install` on the lab after 21.5.0 publishes.** 21.5.0 removes
+everything that was deprecated in 21.3.0, and the lab documents most of it as "deprecated, use
+this instead" — accurate today, wrong the moment the package updates. One page does not merely
+describe the old API, it *uses* it.
+
+**The breakage, first.** `theme-generator-page.html` (~lines 202–203) renders its component table
+with the removed `<column>` element:
+
+```html
+<column field="component" header="Component" [sortable]="true"></column>
+<column field="status" header="Status"></column>
+```
+
+With 21.5.0 installed, `<column>` matches no directive, so the table renders with **no columns
+at all** — and nothing fails the build, because an unmatched element is legal HTML. Rename both
+to `<gog-column>`. Check the whole lab for others with
+`grep -rn "<column" projects/gleks-ui-lab/src` before assuming this page is the only one.
+
+**Then the documentation.** Each of these describes a removed member as a live, deprecated input.
+The API tables are the load-bearing part — a reader copies from those:
+
+| File | What to do |
+| --- | --- |
+| `inputfield-doc-page.ts` (~194–210, 427) | drop the `iconStartTemplate / iconEndTemplate`, `iconStartFn / iconEndFn`, `iconStartLabel / iconEndLabel` API rows; the code sample at ~427 still passes `iconEndLabel` — rewrite it as a projected `<button gogInputAddonEnd>` |
+| `inputfield-doc-page.html` (~96) | the paragraph naming all six inputs becomes a past-tense note, or goes |
+| `checkbox-doc-page.ts` (~70) / `.html` (~119, 183) | drop the `checkIconTemplate` row; the slot description no longer needs "this replaces the deprecated input" |
+| `multiselect-doc-page.ts` (~169, 242) / `.html` (~163, 371, 381) | same for `clearIconTemplate` and `chevronTemplate` |
+| `select-doc-page.ts` (~211) / `.html` (~119, 345) | same for `chevronTemplate` |
+| `tag-doc-page.ts` (~215) | the sample `<gog-tag [iconTemplate]="starIcon">` must become the `gogTagIcon` slot |
+| `table-doc-page.ts` (~600–601) / `.html` (~71, 543) | the `<column>` + `<ng-template template="…">` sample and the whole `<ng-template template="field"> — Inputs` section go; the column-scoped slots are the only form left |
+| `icon-doc-page.html` (~92) | names `checkIconTemplate` as an example of a component's icon-override input — point at `gogCheckboxIcon` instead |
+
+**The version badge does this half-automatically.** Anything phrased as "deprecated in 21.3.0,
+removed in 21.5.0" is *still true as history* — the judgement call per site is whether the reader
+needs the history at all. Prefer deleting: `general/releases` renders the changelog, which is where
+the migration story belongs.
+
 ## After 21.5.0 — the removed option aliases and the deprecation check
 
 `GogSelectOption` / `GogMultiselectOption` are **gone** in 21.5.0 (removed 2026-08-19; they were

@@ -189,9 +189,8 @@
     <p class="lead">
       A <code>gogDropdownOption</code> template replaces each row entirely — here a colored dot
       before the label. A <code>gogMultiselectClearIcon</code> template replaces the trigger's
-      clear-all glyph (the deprecated <code>[clearIconTemplate]</code> input does the same thing,
-      but this projected form is what's current). <code>[clearable]="false"</code> on the last field
-      drops the clear button even once something's selected.
+      clear-all glyph. <code>[clearable]="false"</code> on the last field drops the clear button
+      even once something's selected.
     </p>
     <div class="field-grid">
       <gog-multiselect label="Features" [options]="features" [(value)]="customOptionValue">

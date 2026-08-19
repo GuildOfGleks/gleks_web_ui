@@ -46,7 +46,7 @@ which is the expected shape for a plan that has not started.
 | --- | --- | --- | --- |
 | 1 | Coverage measurement + CI gate | tooling | ✅ done 2026-08-19 — baseline below |
 | 2 | Token prefix consistency (179 tokens) | api | ⬜ todo |
-| 3 | The scheduled removals + a check that enforces them | api | 🟨 steps 3–4 done 2026-08-19 — the overdue pair and the ratchet check; steps 1–2, 5–6 open |
+| 3 | The scheduled removals + a check that enforces them | api | ✅ done 2026-08-19 — every tagged removal plus the `src/styles/` path; `check:deprecations` reports 0 tags |
 | 4 | RTL pass | fix | ⬜ todo |
 | 5 | Test depth where the audit found it thin | tests | ⬜ todo |
 | 6 | `gog-menu` | feature | ⬜ todo |
@@ -227,10 +227,10 @@ documented path since then.
 check fails on a deliberately overdue tag, the suite passes, and the showcase demonstrates only
 non-deprecated shapes.
 
-### Partial outcome — 2026-08-19: steps 3 and 4
+### Outcome — 2026-08-19
 
-**Steps 1, 2, 5 and 6 are still open** — the fourteen `Removed in 21.5.0` symbols are untouched.
-What landed is the pair that was already overdue, and the check that makes the next slip impossible.
+**Done, all six steps.** `npm run check:deprecations` now reports `0 tag(s) in 112 source
+file(s)` — the library carries no deprecated API at all for the first time since 21.2.2.
 
 - **Step 3 — the overdue pair is gone.** `GogSelectOption` and `GogMultiselectOption` (aliases of
   `GogDropdownOption` since 21.2.2, tagged for removal in 21.4.0, still exported through 21.4.4)
@@ -250,13 +250,41 @@ What landed is the pair that was already overdue, and the check that makes the n
   removal sentence deleted, and one with the date removed each fail with the expected category.
   Current output: `14 tag(s) in 113 source file(s), library at 21.4.4. Due: 21.5.0 (14)`.
 
-**This check fires the moment the version is bumped.** At 21.4.4 the fourteen remaining tags are
-fine; the first commit that sets `package.json` to 21.5.0 makes CI red until steps 1–2 and 5–6 are
-done. That is the intended shape — the removals now block the release instead of being remembered
-during it — but it is worth knowing before the bump rather than after.
+**Steps 1, 2, 5 and 6 — the fourteen tagged removals, plus the prose-only one.** Taken from
+what `grep -rn "@deprecated since"` printed, not from the table above:
 
-What it cannot see: a removal promised in prose (the `./src/styles/*` export, promised in the
-README for 21.5.0) has no tag to grep. Step 2's list is still the source for those.
+| Removed | Notes |
+| --- | --- |
+| `gog-inputfield`'s six legacy icon inputs | the simplification the plan predicted: `hasIconStartAction`, `hasIconEndAction` and `onIconStartClick` are gone with them, `effectiveIconEndLabel` collapses to the password toggle's own label, and both template branches lose a level of nesting — `iconStart`/`iconEnd` are now unambiguously decorative, and the only action button the field renders for itself is the password toggle |
+| `checkIconTemplate`, `clearIconTemplate`, `iconTemplate`, `chevronTemplate` | each was `slot()?.templateRef ?? input()`; now just the slot |
+| `<column>` selector, `Column` const and type | `gog-column` / `GogColumn` only |
+| the string-keyed `[template]` column slot | `template.directive.ts` deleted, with `TemplateDirective`, `GogTableBodyContext` and `GogTableHeaderContext`; `table.component.ts` loses `templates`, `bodyTemplateMap` and `headerTemplateMap`, and the two template getters become one-liners |
+| the `src/styles/` asset copy (21.3.2's promise) | out of `ng-package.json`'s assets, the `./src/styles/*` export out of `package.json`, and the README paragraph that promised it until 21.5.0 |
+
+Specs: the two `iconStartFn`/`iconEndFn` cases became two that pin the decorative-only contract,
+`content-slots.spec.ts` drops its "beats the deprecated input" assertions (there is no input left
+to beat), and `table.component.spec.ts`'s first host moves to `gog-column` with column-scoped
+templates. 904 tests, all passing.
+
+`ui-showcase`: the dashboard's five-column table moves to `gogColumnBody` / `gogColumnHeader`, and
+the multiselect page's prose stops describing `[clearIconTemplate]` as a live alternative.
+**Verified live** at `localhost:4200` — the dashboard table renders every custom cell (role text,
+status tags, team chips, Remove buttons) and its blank `id` header; the select page's
+`gogDropdownChevron` and the multiselect page's `gogMultiselectClearIcon` still render; the
+inputfield page's leading icons render as decorative spans and the password toggle still reveals.
+No console errors.
+
+**A flake fixed on the way, not in the plan.** `overlay-theme.spec.ts`'s "returns null when nothing
+is themed at all" failed once during this iteration and passed on re-run: its stub root was
+appended to `document.body`, so `closest('[data-theme]')` escaped it and found whatever
+`theme.service.spec.ts` had left on the real `documentElement` — order-dependent across files
+sharing a worker. Both ends fixed: the stub tree stays detached, and the theme-service spec cleans
+up after itself. Worth doing now because iteration 1 just added a *second* full suite run to CI,
+which doubles the exposure to it.
+
+**What the check cannot see:** a removal promised in prose has no tag to grep. The `src/styles/`
+one was caught here because the changelog listed it; the next one will only be caught the same
+way, so keep writing prose promises into `CHANGELOG.md`'s owed list.
 
 ---
 
