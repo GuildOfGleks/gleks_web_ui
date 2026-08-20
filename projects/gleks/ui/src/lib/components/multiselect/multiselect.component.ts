@@ -1,3 +1,4 @@
+import { fitLabels, type GogMultiselectSummary } from './fit-labels';
 import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -141,7 +142,7 @@ export class MultiselectComponent<
    * layout: the greedy fit is O(n) over the labels and costs no reflow, where a DOM-based probe
    * would thrash layout on every keystroke-sized change.
    */
-  protected readonly summary = computed<{ text: string; hidden: number }>(() => {
+  protected readonly summary = computed<GogMultiselectSummary>(() => {
     const labels = this.selectedLabels();
     const width = this.valueWidth();
     const font = this.valueFont();
@@ -150,22 +151,7 @@ export class MultiselectComponent<
       return { text: labels.join(', '), hidden: 0 };
     }
 
-    const measure = measureWith(font);
-    // Room the "+N" badge will need; reserved up front so adding it can't cause a second overflow.
-    const reserve = labels.length > 1 ? measure(` +${labels.length}`) : 0;
-    let text = '';
-    let fitted = 0;
-    for (const label of labels) {
-      const next = fitted === 0 ? label : `${text}, ${label}`;
-      const budget = fitted === labels.length - 1 ? width : width - reserve;
-      if (fitted > 0 && measure(next) > budget) break;
-      text = next;
-      fitted += 1;
-    }
-
-    // Always show at least one label, even if it has to be ellipsised by CSS.
-    if (fitted === 0) return { text: labels[0], hidden: labels.length - 1 };
-    return { text, hidden: labels.length - fitted };
+    return fitLabels(labels, width, measureWith(font));
   });
   protected readonly hasFloatValue = computed(() => this.value().length > 0);
 

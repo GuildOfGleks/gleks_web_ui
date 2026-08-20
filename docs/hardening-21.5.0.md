@@ -48,7 +48,7 @@ which is the expected shape for a plan that has not started.
 | 2 | Token prefix consistency (179 tokens) | api | ✅ done 2026-08-19 — 154 renamed, `--gog-input-*` kept with a reason |
 | 3 | The scheduled removals + a check that enforces them | api | ✅ done 2026-08-19 — every tagged removal plus the `src/styles/` path; `check:deprecations` reports 0 tags |
 | 4 | RTL pass | fix | ✅ done 2026-08-19 — supported, verified live under `dir="rtl"` |
-| 5 | Test depth where the audit found it thin | tests | ⬜ todo |
+| 5 | Test depth where the audit found it thin | tests | ✅ done 2026-08-20 — 917 → 965 tests, thresholds raised |
 | 6 | `gog-menu` | feature | ⬜ todo |
 | 7 | Version/deprecation metadata for the docs site | tooling | 🟨 step 1 done — see below |
 
@@ -456,6 +456,57 @@ Two things the audit checked and **cleared** — do not "fix" them:
 
 **Done when:** coverage clears the threshold set in iteration 1 with the gate on, and `dialog`'s
 ARIA contract in particular is pinned by a test.
+
+### Outcome — 2026-08-20
+
+**917 → 965 tests**, and the gate moved with them: **93 / 90 / 92 / 95** (from 92 / 89 / 92 / 94),
+about a point under the measured 93.92 / 91.17 / 93.23 / 96.12.
+
+| | Before | After |
+| --- | --- | --- |
+| Statements | 93.05% | **93.92%** |
+| Branches | 90.21% | **91.17%** |
+| Functions | 92.88% | **93.23%** |
+| Lines | 95.20% | **96.12%** |
+
+Aimed at the uncovered lines rather than at the audit's counts, which changed what was worth
+writing:
+
+- **`gog-dialog`'s ARIA contract**, the plan's named done-criterion: `role`, `aria-modal`,
+  `aria-labelledby` pointing at the real title id, a per-dialog id when two are stacked, the
+  `alertdialog` override, no dangling `aria-labelledby` on a titleless dialog, and the close
+  button's name. Also the two paths the focus trap has that nothing reached: a dialog with
+  **nothing focusable inside it** (Tab must stay on the panel) and the `DIALOG_DATA` /
+  `DIALOG_REF` a projected component injects.
+- **`gog-multiselect` was the worst-covered file in the library (74%)** and the reason was
+  structural: the trigger's "which labels fit, and +N for the rest" fit is measured with
+  `canvas.measureText`, which jsdom does not implement, so every test fell through the
+  "everything fits" early return. Split into `fit-labels.ts` — its own file, because
+  `public-api.ts` re-exports the component module wholesale and a helper exported there would
+  have become public API nobody decided to support — and tested with a one-unit-per-character
+  measurer. **74% → 82% statements, 72% → 89% branches.**
+- **`gog-scroll` had 23 tests and no pointer ones**, for a component whose whole reason to exist
+  is a custom scrollbar: track paging up and down, a track press that actually landed on the
+  thumb (must not page), a thumb drag that scrolls and then stops tracking after release. jsdom
+  reports zero for every layout read, so the geometry is stubbed — including the track's own
+  `clientHeight`, which the drag maths divides by. **81% → 87%.**
+- **`gog-toast`'s close animation**: `dismissed` fires on the transition the close actually uses,
+  and not on a bubbled `transitionend` from a child or on an unrelated property.
+- **`gog-tag` and `gog-chip`** got the surface a consumer sets: every variant/size/shape class,
+  the decorative icon, and for the chip the interactive/disabled/removable triangle —
+  `role="button"` with a tab stop only when clickable, Enter and Space, silence while disabled,
+  the remove button's name, no remove button on a disabled chip, and remove not firing the chip's
+  own click underneath it.
+
+**One audit finding rejected, with the same reasoning the audit itself used for `radio-group`.**
+`gog-toggle` was listed as "17 tests, 3 aria, **0 keyboard**". It renders a real
+`<input type="checkbox" role="switch">`, so Space is the browser's — a synthetic `keydown` test
+would assert that jsdom dispatches events, not that the component works. What went in instead is
+the **native contract that earns the exemption**: it is an `<input type="checkbox">`, it is
+wrapped by its label, `role="switch"`, `checked`/`disabled` land on the input itself, the
+`aria-label` yields to a visible label, and the on/off track text is `aria-hidden`. Those break
+the day someone swaps the input for a styled `<div>`, which is exactly when the missing keyboard
+support would become real.
 
 ---
 

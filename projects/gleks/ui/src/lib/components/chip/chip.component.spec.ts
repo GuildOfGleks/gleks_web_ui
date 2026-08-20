@@ -155,4 +155,105 @@ describe('ChipComponent', () => {
     const host = fixture.nativeElement as HTMLElement;
     expect(host.classList.contains('gog-chip--pill')).toBe(true);
   });
+
+  // 11 inputs, 2 outputs and one aria assertion in the audit. What a keyboard or screen-reader
+  // user meets is the interactive/disabled/removable triangle, so that is what these pin.
+  describe('interactive, disabled and removable states', () => {
+    function surface(): HTMLElement {
+      return fixture.nativeElement.querySelector('.gog-chip__surface') as HTMLElement;
+    }
+
+    it('exposes a clickable chip as a focusable button to assistive tech', async () => {
+      fixture.componentRef.setInput('clickable', true);
+      await fixture.whenStable();
+
+      expect(surface().getAttribute('role')).toBe('button');
+      expect(surface().getAttribute('tabindex')).toBe('0');
+      expect(surface().getAttribute('aria-disabled')).toBeNull();
+    });
+
+    it('is neither a button nor a tab stop when it is not clickable', async () => {
+      fixture.componentRef.setInput('clickable', false);
+      await fixture.whenStable();
+
+      expect(surface().getAttribute('role')).toBeNull();
+      expect(surface().getAttribute('tabindex')).toBeNull();
+    });
+
+    it('announces a disabled chip as disabled and takes it out of the tab order', async () => {
+      fixture.componentRef.setInput('disabled', true);
+      await fixture.whenStable();
+
+      expect(surface().getAttribute('aria-disabled')).toBe('true');
+      expect(surface().getAttribute('tabindex')).toBeNull();
+      expect(fixture.nativeElement.className).toContain('gog-chip--disabled');
+    });
+
+    it('emits gogClick from Enter and Space, the keys a role=button owes', async () => {
+      const clicks: (MouseEvent | KeyboardEvent)[] = [];
+      component.gogClick.subscribe((event) => clicks.push(event));
+      fixture.componentRef.setInput('clickable', true);
+      await fixture.whenStable();
+
+      surface().dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      surface().dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+
+      expect(clicks).toHaveLength(2);
+    });
+
+    it('stays silent on a key that is not an activation key', async () => {
+      const clicks: unknown[] = [];
+      component.gogClick.subscribe((event) => clicks.push(event));
+      fixture.componentRef.setInput('clickable', true);
+      await fixture.whenStable();
+
+      surface().dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
+
+      expect(clicks).toHaveLength(0);
+    });
+
+    it('emits nothing at all while disabled, by pointer or by key', async () => {
+      const clicks: unknown[] = [];
+      component.gogClick.subscribe((event) => clicks.push(event));
+      fixture.componentRef.setInput('disabled', true);
+      await fixture.whenStable();
+
+      surface().click();
+      surface().dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+
+      expect(clicks).toHaveLength(0);
+    });
+
+    it('names the remove button, which is an icon with no text', async () => {
+      fixture.componentRef.setInput('removable', true);
+      fixture.componentRef.setInput('removeAriaLabel', 'Remove Angular');
+      await fixture.whenStable();
+
+      const remove = fixture.nativeElement.querySelector('.gog-chip__remove') as HTMLElement;
+      expect(remove.getAttribute('aria-label')).toBe('Remove Angular');
+    });
+
+    it('hides the remove button on a disabled chip rather than offering a dead control', async () => {
+      fixture.componentRef.setInput('removable', true);
+      fixture.componentRef.setInput('disabled', true);
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-chip__remove')).toBeNull();
+    });
+
+    it('removes without also firing the chip click underneath it', async () => {
+      const removes: unknown[] = [];
+      const clicks: unknown[] = [];
+      component.gogRemove.subscribe(() => removes.push('removed'));
+      component.gogClick.subscribe(() => clicks.push('clicked'));
+      fixture.componentRef.setInput('removable', true);
+      fixture.componentRef.setInput('clickable', true);
+      await fixture.whenStable();
+
+      (fixture.nativeElement.querySelector('.gog-chip__remove') as HTMLElement).click();
+
+      expect(removes).toHaveLength(1);
+      expect(clicks).toHaveLength(0);
+    });
+  });
 });

@@ -57,6 +57,129 @@ describe('ScrollComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  /**
+   * The custom scrollbar's pointer surface — paging by clicking the track, and dragging the
+   * thumb. Both are why this component exists rather than `overflow: auto`, and neither was
+   * covered before 21.5.0's test-depth pass: the audit counted 23 tests and no pointer ones.
+   *
+   * jsdom lays nothing out, so the geometry is stubbed: `mockMetrics` for the viewport's own
+   * scroll/client sizes, and a fixed rect on the track. The track only renders once a measure
+   * has found an overflow, so every case measures first and queries afterwards.
+   */
+  describe('the scrollbar as a pointer surface', () => {
+    /** 100px of viewport over 400px of content, with a 100px-tall track at the top. */
+    async function overflowing(): Promise<{
+      track: HTMLElement;
+      thumb: HTMLElement;
+      scrollBy: ReturnType<typeof vi.fn>;
+    }> {
+      mockMetrics(viewport, { scrollHeight: 400, clientHeight: 100 });
+      viewport.dispatchEvent(new Event('scroll'));
+      await settleMeasure(fixture);
+      fixture.detectChanges();
+
+      const track = fixture.nativeElement.querySelector('.gog-scroll__track--v') as HTMLElement;
+      const thumb = fixture.nativeElement.querySelector('.gog-scroll__thumb--v') as HTMLElement;
+      const scrollBy = vi.fn();
+      viewport.scrollBy = scrollBy as unknown as HTMLElement['scrollBy'];
+
+      for (const el of [track, thumb]) {
+        vi.spyOn(el, 'getBoundingClientRect').mockReturnValue({
+          top: 0,
+          bottom: 100,
+          height: 100,
+          left: 0,
+          right: 10,
+          width: 10,
+          x: 0,
+          y: 0,
+          toJSON: () => '',
+        } as DOMRect);
+      }
+      thumb.setPointerCapture = vi.fn();
+      thumb.releasePointerCapture = vi.fn();
+      thumb.hasPointerCapture = vi.fn().mockReturnValue(true);
+      // The drag maths reads the track's own layout height, which jsdom reports as 0 — that
+      // would divide the pointer delta by zero and move the viewport nowhere.
+      mockMetrics(track, { clientHeight: 100 });
+
+      return { track, thumb, scrollBy };
+    }
+
+    function pointer(type: string, init: MouseEventInit): Event {
+      return new MouseEvent(type, { bubbles: true, ...init });
+    }
+
+    it('renders a vertical track once the content overflows', async () => {
+      const { track, thumb } = await overflowing();
+      expect(track).toBeTruthy();
+      expect(thumb).toBeTruthy();
+    });
+
+    it('pages down when the track is clicked below the thumb', async () => {
+      const { track, scrollBy } = await overflowing();
+
+      track.dispatchEvent(pointer('pointerdown', { clientY: 95, clientX: 5 }));
+
+      expect(scrollBy).toHaveBeenCalledTimes(1);
+      const [{ top, behavior }] = scrollBy.mock.calls[0] as [ScrollToOptions];
+      expect(top).toBeGreaterThan(0);
+      expect(behavior).toBe('smooth');
+    });
+
+    it('pages up when the track is clicked above the thumb', async () => {
+      const { track, scrollBy } = await overflowing();
+      viewport.scrollTop = 300;
+      viewport.dispatchEvent(new Event('scroll'));
+      await settleMeasure(fixture);
+
+      track.dispatchEvent(pointer('pointerdown', { clientY: 2, clientX: 5 }));
+
+      const [{ top }] = scrollBy.mock.calls[0] as [ScrollToOptions];
+      expect(top).toBeLessThan(0);
+    });
+
+    it('ignores a track pointerdown that actually landed on the thumb', async () => {
+      const { thumb, scrollBy } = await overflowing();
+
+      thumb.dispatchEvent(pointer('pointerdown', { clientY: 10, clientX: 5 }));
+
+      expect(scrollBy).not.toHaveBeenCalled();
+    });
+
+    it('drags the thumb, and stops tracking the pointer once it is released', async () => {
+      const { thumb } = await overflowing();
+
+      thumb.dispatchEvent(pointer('pointerdown', { clientY: 10, clientX: 5 }));
+      await fixture.whenStable();
+      expect(component['dragAxis']()).toBe('vertical');
+
+      thumb.dispatchEvent(pointer('pointermove', { clientY: 40, clientX: 5 }));
+      expect(viewport.scrollTop).toBeGreaterThan(0);
+
+      const scrolledTo = viewport.scrollTop;
+      thumb.dispatchEvent(pointer('pointerup', { clientY: 40, clientX: 5 }));
+      await fixture.whenStable();
+      expect(component['dragAxis']()).toBeNull();
+
+      // A move after release must not keep scrolling the viewport.
+      thumb.dispatchEvent(pointer('pointermove', { clientY: 90, clientX: 5 }));
+      expect(viewport.scrollTop).toBe(scrolledTo);
+    });
+
+    it('keeps the scrollbar visible for as long as the drag lasts', async () => {
+      const { thumb } = await overflowing();
+
+      thumb.dispatchEvent(pointer('pointerdown', { clientY: 10, clientX: 5 }));
+      await fixture.whenStable();
+      expect(component['interacting']()).toBe(true);
+      expect(component['dragAxis']()).toBe('vertical');
+
+      thumb.dispatchEvent(pointer('pointerup', { clientY: 10, clientX: 5 }));
+      await fixture.whenStable();
+      expect(component['dragAxis']()).toBeNull();
+    });
+  });
   it('defaults to a vertical, non-thin, auto-hiding, focusable viewport', () => {
     expect(component.axis()).toBe('vertical');
     expect(component.size()).toBeUndefined();
