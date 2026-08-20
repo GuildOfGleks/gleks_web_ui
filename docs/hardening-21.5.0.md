@@ -49,7 +49,7 @@ which is the expected shape for a plan that has not started.
 | 3 | The scheduled removals + a check that enforces them | api | ✅ done 2026-08-19 — every tagged removal plus the `src/styles/` path; `check:deprecations` reports 0 tags |
 | 4 | RTL pass | fix | ✅ done 2026-08-19 — supported, verified live under `dir="rtl"` |
 | 5 | Test depth where the audit found it thin | tests | ✅ done 2026-08-20 — 917 → 965 tests, thresholds raised |
-| 6 | `gog-menu` | feature | ⬜ todo |
+| 6 | `gog-menu` | feature | ✅ done 2026-08-20 — row-actions menu, verified live |
 | 7 | Version/deprecation metadata for the docs site | tooling | 🟨 step 1 done — see below |
 
 Update this table at the end of every iteration, and re-state "done / remaining" in the turn
@@ -529,6 +529,49 @@ Design notes before code:
 
 **Done when:** a table row's `more-vertical` button opens a keyboard-navigable menu in the
 showcase, and Escape returns focus to the trigger.
+
+### Outcome — 2026-08-20
+
+Done, to the letter of that criterion: the dashboard's table has a `more-vertical` button per row
+that opens with **Edit member** focused, ArrowDown steps over the disabled **Transfer ownership**
+onto **Remove from team**, and Escape closes and puts focus back on the button — measured in the
+browser, not inferred.
+
+Built from the pieces the plan pointed at, and one it did not:
+
+- **`[gogMenuTrigger]` on the consumer's own button**, `gogMenuItem` on their own items — the
+  `[gogButton]` decision applied twice. A menu item is markup (icon, label, shortcut hint), so a
+  component wrapper would have meant an input per piece.
+- **`GogDropdownOverlay`** for `appendToBody`, so stacking and scoped-theme/`dir` copying behave
+  exactly as the dropdowns' panels do.
+- **`roving-focus.ts`**, but through its *lower-level* exports. `handleRovingFocusKeydown` reads
+  `event.currentTarget`, which needs the handler bound per item; a menu's items belong to the
+  consumer, so the panel binds one handler and resolves the index from `document.activeElement`
+  with `isRovingFocusKey` + `nextRovingFocusIndex`. Those two are exported for exactly this.
+- **`resolveMenuPlacement`** (new, 8 specs) rather than `resolveDropdownPlacement`. A dropdown
+  panel is the width of its control and lines up edge to edge; a menu is sized by its longest
+  label and shares only its inline-start edge. It also mirrors in RTL and clamps into the
+  viewport — without which a menu in the last table column opened half off-screen, which is what
+  the first live check showed.
+
+**Three defects the work surfaced, each worth recording because none was visible in a screenshot:**
+
+1. **A menu must prefer to drop *down*.** `resolveDropdownDirection` picks the side with more
+   room, which is right for a listbox and wrong for a menu: with a trigger mid-viewport the first
+   version opened *upwards*. It is now asked only when the menu genuinely does not fit below.
+2. **Focus never entered a portaled panel.** `afterNextRender` runs while the overlay's view is
+   still detached, and `focus()` on a detached element is a silent no-op — the menu opened
+   looking right and keyboard users got nothing. Focus is now applied immediately after
+   `overlay.attach()`, where the panel is in the document. The spec that caught it exists because
+   the first round of tests covered focus-on-open for the *inline* panel only.
+3. **The attach effect re-triggered itself.** `attach()` re-creates the panel's view, which
+   changes the content-query result the effect had read as a dependency — an infinite loop that
+   crashed the Vitest worker instead of failing an assertion. Fixed with an `untracked` boundary
+   around the whole side-effecting body.
+
+The panel is measured twice on open — an estimate first, then the rendered element in the same
+task — because its real width is what makes the viewport clamp meaningful, and a menu's width is
+its content's, not its trigger's.
 
 ---
 

@@ -1316,6 +1316,44 @@ Methods (via template ref): `scrollTo(options)`, `scrollToTop()`, `scrollToBotto
 
 ### Overlays
 
+#### `gog-menu` + `gogMenuTrigger` / `gogMenuItem`
+
+A command menu. The trigger is a directive on **your own button** — usually the icon button you
+already styled — and the items are your own buttons too, so an item can hold an icon, a label and
+a shortcut hint without an input per piece:
+
+```html
+<button gogButton variant="ghost" [gogMenuTrigger]="rowMenu" aria-label="Row actions">
+  <gog-icon name="more-vertical" />
+</button>
+
+<gog-menu #rowMenu [appendToBody]="true" ariaLabel="Row actions">
+  <button gogMenuItem (click)="edit(row)"><gog-icon name="check" /> Edit</button>
+  <button gogMenuItem disabled>Transfer ownership</button>
+  <button gogMenuItem (click)="remove(row)"><gog-icon name="close" /> Remove</button>
+</gog-menu>
+```
+
+| Input          | Type                       | Default  | Notes                                                                                                                                   |
+| -------------- | -------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `appendToBody` | `boolean`                  | `false`  | Renders into `<body>`. Use it inside `gog-scroll`, `gog-table` or any `overflow: hidden` ancestor, which would otherwise clip the panel |
+| `direction`    | `'auto' \| 'up' \| 'down'` | `'auto'` | `'auto'` drops down whenever the panel fits and flips up only when it cannot                                                            |
+| `ariaLabel`    | `string`                   | `''`     | Names the panel itself                                                                                                                  |
+
+Output: `gogClosed` — fires after every close, whatever caused it.
+
+Public methods, for driving it yourself: `open(trigger, 'first' | 'last')`, `close(restoreFocus?)`,
+`toggle(trigger)`, and the `isOpen` signal.
+
+**Keyboard**, the WAI-ARIA menu button pattern: Enter/Space/ArrowDown open with the first item
+focused, ArrowUp opens with the last, arrows and Home/End move between items and step over
+disabled ones, Escape closes and returns focus to the trigger, Tab closes and lets focus move on.
+A press outside closes without pulling focus back.
+
+Mark a disabled item with the native `disabled` attribute — navigation skips it, and no extra
+input is involved. A closed menu renders nothing at all, so its commands are not in the
+accessibility tree until it opens.
+
 #### `gog-dialog`
 
 A **single** `<gog-dialog />` renders **every** dialog `DialogService.open(...)` creates —

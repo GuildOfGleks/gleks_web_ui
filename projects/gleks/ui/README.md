@@ -214,7 +214,7 @@ provideGogIcons({ cart: '<svg viewBox="0 0 24 24">…</svg>' });
 | Actions             | `gog-button`, `gog-chip`                                                                                                                                                                                          |
 | Data                | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag`                                                                                                                                                          |
 | Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-divider`, `gog-scroll`                                                                                                                         |
-| Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`)                                                                                                                                    |
+| Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`), `gog-menu` (+ `gogMenuTrigger` / `gogMenuItem`)                                                                                   |
 | Feedback            | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton`                                                                                                                                           |
 | Content             | `gog-icon`                                                                                                                                                                                                        |
 

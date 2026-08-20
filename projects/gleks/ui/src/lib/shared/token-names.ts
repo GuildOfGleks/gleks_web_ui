@@ -660,6 +660,31 @@ export type GogTokenName =
   | '--gog-input-spin-hover-bg'
   | '--gog-input-spin-width'
   | '--gog-input-transition-duration'
+  | '--gog-menu-bg'
+  | '--gog-menu-border-color'
+  | '--gog-menu-border-style'
+  | '--gog-menu-border-width'
+  | '--gog-menu-focus-ring'
+  | '--gog-menu-focus-ring-width'
+  | '--gog-menu-font-family'
+  | '--gog-menu-gap'
+  | '--gog-menu-item-color'
+  | '--gog-menu-item-disabled-opacity'
+  | '--gog-menu-item-font-size'
+  | '--gog-menu-item-gap'
+  | '--gog-menu-item-hover-bg'
+  | '--gog-menu-item-hover-color'
+  | '--gog-menu-item-padding'
+  | '--gog-menu-item-radius'
+  | '--gog-menu-max-height'
+  | '--gog-menu-max-width'
+  | '--gog-menu-min-width'
+  | '--gog-menu-offset'
+  | '--gog-menu-padding'
+  | '--gog-menu-radius'
+  | '--gog-menu-shadow'
+  | '--gog-menu-transition-duration'
+  | '--gog-menu-z'
   | '--gog-multiselect-actions-gap'
   | '--gog-multiselect-actions-inset'
   | '--gog-multiselect-arrow-icon-ratio'
@@ -2177,6 +2202,37 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-multiselect-radius',
       '--gog-multiselect-transition-duration',
       '--gog-multiselect-value-color',
+    ],
+  },
+  {
+    section: 'Menu',
+    layer: 'component',
+    tokens: [
+      '--gog-menu-bg',
+      '--gog-menu-border-color',
+      '--gog-menu-border-style',
+      '--gog-menu-border-width',
+      '--gog-menu-focus-ring',
+      '--gog-menu-focus-ring-width',
+      '--gog-menu-font-family',
+      '--gog-menu-gap',
+      '--gog-menu-item-color',
+      '--gog-menu-item-disabled-opacity',
+      '--gog-menu-item-font-size',
+      '--gog-menu-item-gap',
+      '--gog-menu-item-hover-bg',
+      '--gog-menu-item-hover-color',
+      '--gog-menu-item-padding',
+      '--gog-menu-item-radius',
+      '--gog-menu-max-height',
+      '--gog-menu-max-width',
+      '--gog-menu-min-width',
+      '--gog-menu-offset',
+      '--gog-menu-padding',
+      '--gog-menu-radius',
+      '--gog-menu-shadow',
+      '--gog-menu-transition-duration',
+      '--gog-menu-z',
     ],
   },
   {

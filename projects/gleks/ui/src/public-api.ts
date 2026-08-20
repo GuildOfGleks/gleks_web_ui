@@ -33,6 +33,7 @@ export * from './lib/components/textarea/textarea.component';
 export * from './lib/components/chip/chip.component';
 export * from './lib/components/tag/tag.component';
 export * from './lib/components/select/select.component';
+export * from './lib/components/menu/menu.component';
 export * from './lib/components/multiselect/multiselect.component';
 export * from './lib/components/slider/slider.component';
 export * from './lib/components/skeleton/skeleton.component';

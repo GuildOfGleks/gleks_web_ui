@@ -58,13 +58,44 @@
         </ng-template>
       </gog-column>
 
-      <gog-column field="id" header="" width="110px">
+      <gog-column field="id" header="" width="72px">
         <ng-template gogColumnHeader></ng-template>
         <ng-template gogColumnBody let-row>
           <span class="dash__row-action">
-            <gog-button variant="ghost" size="sm" type="button" (gogClick)="removeMember($any(row))"
-              >Remove</gog-button
+            <!--
+              The row-actions pattern gog-menu exists for: an icon button the page already
+              styled, with the menu declared next to it. `appendToBody` because the table wraps
+              itself in a gog-scroll, which would otherwise clip the panel.
+            -->
+            <button
+              gogButton
+              variant="ghost"
+              size="sm"
+              type="button"
+              [gogMenuTrigger]="rowMenu"
+              [attr.aria-label]="'Actions for ' + $any(row).name"
             >
+              <gog-icon name="more-vertical" />
+            </button>
+
+            <gog-menu
+              #rowMenu
+              [appendToBody]="true"
+              [attr.aria-label]="'Actions for ' + $any(row).name"
+            >
+              <button gogMenuItem type="button" (click)="notifyEdit($any(row))">
+                <gog-icon name="check" />
+                Edit member
+              </button>
+              <button gogMenuItem type="button" disabled>
+                <gog-icon name="info" />
+                Transfer ownership
+              </button>
+              <button gogMenuItem type="button" (click)="removeMember($any(row))">
+                <gog-icon name="close" />
+                Remove from team
+              </button>
+            </gog-menu>
           </span>
         </ng-template>
       </gog-column>

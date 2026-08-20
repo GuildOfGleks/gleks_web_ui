@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import {
   ButtonComponent,
+  GogButtonDirective,
   GogColumn,
   GogColumnBodyDirective,
   GogColumnHeaderDirective,
@@ -10,6 +11,10 @@ import {
   GogDropdownOption,
   GogTagVariant,
   InputfieldComponent,
+  GogMenuItemDirective,
+  GogMenuTriggerDirective,
+  IconComponent,
+  MenuComponent,
   MultiselectComponent,
   SelectComponent,
   TableComponent,
@@ -61,9 +66,14 @@ const SEED_MEMBERS: Member[] = [
   selector: 'app-dashboard-page',
   imports: [
     ButtonComponent,
+    GogButtonDirective,
     GogColumn,
     GogColumnBodyDirective,
     GogColumnHeaderDirective,
+    GogMenuItemDirective,
+    GogMenuTriggerDirective,
+    IconComponent,
+    MenuComponent,
     DialogComponent,
     InputfieldComponent,
     MultiselectComponent,
@@ -119,6 +129,10 @@ export class DashboardPage {
 
   protected teamLabel(id: string): string {
     return this.teamOptions.find((option) => option.id === id)?.name ?? id;
+  }
+
+  protected notifyEdit(member: Member): void {
+    this.toastService.show({ message: `Editing ${member.name}`, type: 'info' });
   }
 
   protected removeMember(member: Member): void {

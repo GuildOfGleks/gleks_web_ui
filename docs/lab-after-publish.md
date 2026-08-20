@@ -36,6 +36,23 @@ trim the explanation back to what `fullWidth` is for.
 
 ---
 
+## After 21.5.0 — document `gog-menu`
+
+21.5.0 adds a component the lab has no page for: **`gog-menu`**, with `[gogMenuTrigger]` on the
+consumer's own button and `gogMenuItem` on the items. It needs the usual component page —
+overview, API table, keyboard section — and two demos worth having specifically:
+
+- **row actions**, the case it was built for: a `more-vertical` icon button in a table row, with
+  `[appendToBody]="true"` because the table wraps itself in a `gog-scroll` that would clip the
+  panel. `ui-showcase`'s dashboard page has this exact demo to copy from.
+- **keyboard**, which is most of the value: Enter/Space/ArrowDown open with the first item
+  focused, ArrowUp with the last, arrows and Home/End skip disabled items, Escape closes and
+  returns focus to the trigger. Worth a written list on the page, since none of it is visible in
+  a screenshot.
+
+The nav/sidebar needs the new entry too, and `general/releases` will render the changelog entry on
+its own once the version is installed.
+
 ## After 21.5.0 — the token prefixes the lab spells short
 
 21.5.0 spells three component token prefixes out and keeps the old ones working until 21.7.0

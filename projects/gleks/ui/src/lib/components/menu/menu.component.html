@@ -1,0 +1,31 @@
+<!--
+  The panel lives in a template so the same markup serves both modes: stamped in place, or
+  handed to `GogDropdownOverlay` and rendered into `<body>`. One declaration means the two
+  cannot drift, which is the same reason `gog-select` builds its panel this way.
+
+  `<ng-content>` sits inside the template on purpose: the consumer's items exist as soon as
+  their own view does, and stamping the panel is what attaches them — so a closed menu puts
+  nothing in the accessibility tree, rather than hiding it with CSS.
+-->
+<ng-template #panelTpl>
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- the panel is the menu container, not a control: its (keydown) drives roving focus between the items, and they are the focusable elements -->
+  <div
+    [id]="menuId"
+    class="gog-menu"
+    [class.gog-menu--portal]="isPortaled()"
+    [class.gog-menu--up]="placement()?.direction === 'up'"
+    [style.top.px]="isPortaled() ? placement()?.top : null"
+    [style.left.px]="isPortaled() ? placement()?.left : null"
+    [style.max-height.px]="isPortaled() ? placement()?.maxHeight : null"
+    role="menu"
+    [attr.aria-label]="ariaLabel() || null"
+    (keydown)="onPanelKeydown($event)"
+    (click)="onPanelClick($event)"
+  >
+    <ng-content />
+  </div>
+</ng-template>
+
+@if (isOpen() && !isPortaled()) {
+  <ng-container [ngTemplateOutlet]="panelTpl" />
+}

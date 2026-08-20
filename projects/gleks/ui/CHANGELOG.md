@@ -100,6 +100,30 @@ long path, drop the `src/` segment.
 
 ### Added
 
+- **`gog-menu` — a command menu**, with `[gogMenuTrigger]` on your own button and `gogMenuItem` on
+  your own items:
+
+  ```html
+  <button gogButton variant="ghost" [gogMenuTrigger]="rowMenu" aria-label="Row actions">
+    <gog-icon name="more-vertical" />
+  </button>
+
+  <gog-menu #rowMenu [appendToBody]="true">
+    <button gogMenuItem (click)="edit(row)">Edit</button>
+    <button gogMenuItem disabled>Transfer ownership</button>
+  </gog-menu>
+  ```
+
+  The library created this gap itself: 21.4.0 added `more-horizontal`/`more-vertical` icons and a
+  table built for row actions, with nothing to open with them. Everything else a consumer can
+  assemble from what already ships; an accessible menu cannot be — it needs focus management,
+  roving focus and overlay placement at once.
+
+  Keyboard follows the WAI-ARIA menu button pattern: Enter/Space/ArrowDown open with the first
+  item focused, ArrowUp with the last, arrows and Home/End move and skip disabled items, Escape
+  closes and restores focus to the trigger, Tab closes and moves on. `appendToBody` renders into
+  `<body>` for a menu inside a scroller or a table. Themed by `--gog-menu-*`.
+
 - **Right-to-left support.** `dir="rtl"` on `<html>` — or on any subtree — now mirrors every
   component, with nothing to set per component. What changed under it: physical `left`/`right`
   declarations became logical properties across 16 stylesheets; the select/multiselect panel and

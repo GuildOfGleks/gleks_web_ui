@@ -1188,6 +1188,35 @@
   --gog-multiselect-mark-size-ratio: var(--gog-ms-mark-size-ratio, 1.2375);
   --gog-multiselect-mark-icon-ratio: var(--gog-ms-mark-icon-ratio, 1.125);
 
+  /* ── Menu ──────────────────────────────────────────────────────────────────
+     The command menu opened by `[gogMenuTrigger]`. Metrics follow the dropdown panel's, so a
+     menu and a select opened from the same toolbar read as the same surface. */
+  --gog-menu-z: var(--gog-dropdown-z);
+  --gog-menu-bg: var(--gog-surface-color);
+  --gog-menu-border-color: var(--gog-border-color);
+  --gog-menu-border-width: var(--gog-control-border-width);
+  --gog-menu-border-style: var(--gog-control-border-style);
+  --gog-menu-radius: var(--gog-panel-radius);
+  --gog-menu-shadow: var(--gog-dialog-shadow);
+  --gog-menu-font-family: var(--gog-font-body);
+  --gog-menu-padding: 4px;
+  --gog-menu-gap: 2px;
+  --gog-menu-offset: 4px;
+  --gog-menu-min-width: 180px;
+  --gog-menu-max-width: 320px;
+  --gog-menu-max-height: 320px;
+  --gog-menu-transition-duration: var(--gog-duration-base);
+  --gog-menu-focus-ring: var(--gog-accent-color);
+  --gog-menu-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-menu-item-color: var(--gog-text-color);
+  --gog-menu-item-hover-bg: var(--gog-hover-color);
+  --gog-menu-item-hover-color: var(--gog-text-color);
+  --gog-menu-item-font-size: var(--gog-text-sm);
+  --gog-menu-item-padding: 8px 12px;
+  --gog-menu-item-radius: var(--gog-radius);
+  --gog-menu-item-gap: var(--gog-space-sm);
+  --gog-menu-item-disabled-opacity: var(--gog-disabled-opacity);
+
   /* ── Paginator ─────────────────────────────────────────────────────────────── */
   --gog-paginator-gap: 4px;
   --gog-paginator-ellipsis-color: var(--gog-muted-text-color);
