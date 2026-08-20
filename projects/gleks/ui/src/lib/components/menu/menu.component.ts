@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   afterNextRender,
   ApplicationRef,
@@ -6,7 +6,6 @@ import {
   Component,
   DestroyRef,
   Directive,
-  DOCUMENT,
   ElementRef,
   Injector,
   PLATFORM_ID,
