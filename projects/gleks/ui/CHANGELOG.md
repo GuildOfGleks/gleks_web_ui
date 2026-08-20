@@ -100,6 +100,25 @@ long path, drop the `src/` segment.
 
 ### Added
 
+- **`GOG_DEPRECATIONS` — the deprecation manifest**, generated from the library's own source and
+  shipped in the public API:
+
+  ```ts
+  import { GOG_DEPRECATIONS } from '@guildofgleks/ui';
+
+  // → { kind: 'token', name: '--gog-btn-radius', replacement: '--gog-button-radius',
+  //     since: '21.5.0', sinceDate: '2026-08-19', removedIn: '21.7.0' }
+  ```
+
+  It answers "is this still supported, and until when?" for tooling that has to mark an API row —
+  a docs site, an editor plugin, a codemod — without anyone maintaining a second list. Symbols
+  come from their `@deprecated` tags and tokens from the stylesheets that still resolve them, so
+  it cannot drift from the code.
+
+  In this release it holds **154 tokens and no symbols**: 21.5.0 removed every deprecated symbol
+  the library had, and its deprecations are the three abbreviated token prefixes above. An empty
+  symbol half is the healthy state, not a broken generator.
+
 - **`gog-menu` — a command menu**, with `[gogMenuTrigger]` on your own button and `gogMenuItem` on
   your own items:
 

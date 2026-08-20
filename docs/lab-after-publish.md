@@ -36,6 +36,30 @@ trim the explanation back to what `fullWidth` is for.
 
 ---
 
+- **row actions**, the case it was built for: a `more-vertical` icon button in a table row. No
+  configuration needed — the panel always renders into `<body>`, so the table's own `gog-scroll`
+  cannot clip it. `ui-showcase` has a whole `/menu` page to copy from, plus the dashboard's
+  in-context version.
+- **disabled items**, the question a reader asks second: the native `disabled` attribute on their
+  own button, static or bound to state. The showcase page demonstrates both, with a toggle.
+- **a long menu**, which scrolls inside the panel with `gog-scroll` past `--gog-menu-max-height`.
+
+## After 21.5.0 — layer 4 of lab-versioning.md is unblocked
+
+21.5.0 ships **`GOG_DEPRECATIONS`**: every deprecated symbol and token in the installed version,
+with `since`, `sinceDate`, `replacement` and `removedIn`. That is the data `lab-versioning.md`'s
+layer 4 was waiting for — a generated "deprecated, removed in 21.7.0" badge on an API or token
+row, with nobody maintaining a second list.
+
+Two things to know before building it:
+
+- **In 21.5.0 the manifest is all tokens** (154 of them, the three abbreviated prefixes) and **no
+  symbols** — iteration 3 removed every deprecated symbol. So the first useful badge belongs on
+  the theming page's token rows, not on component API rows. Write the lookup so an empty symbol
+  half is normal rather than an error state.
+- It is read from the **installed** package, so the badge answers for the version the reader has.
+  Do not hard-code 21.7.0 anywhere; take it from `removedIn`.
+
 ## After 21.5.0 — document `gog-menu`
 
 21.5.0 adds a component the lab has no page for: **`gog-menu`**, with `[gogMenuTrigger]` on the
@@ -77,7 +101,7 @@ Worth adding while there: a short note that the old spellings work until 21.7.0,
 already has them does not think their theme is broken. The changelog entry on `general/releases`
 covers the detail; the theming page only needs the pointer.
 
-**One thing the lab should *not* copy:** `--gog-input-*` is not an abbreviation and is not being
+**One thing the lab should _not_ copy:** `--gog-input-*` is not an abbreviation and is not being
 renamed — it names the text-field block `gog-inputfield` and `gog-textarea` share. If the theming
 page groups it under "inputfield", relabel it as the shared field block.
 
@@ -86,7 +110,7 @@ page groups it under "inputfield", relabel it as the shared field block.
 **Read this before running `npm install` on the lab after 21.5.0 publishes.** 21.5.0 removes
 everything that was deprecated in 21.3.0, and the lab documents most of it as "deprecated, use
 this instead" — accurate today, wrong the moment the package updates. One page does not merely
-describe the old API, it *uses* it.
+describe the old API, it _uses_ it.
 
 **The breakage, first.** `theme-generator-page.html` (~lines 202–203) renders its component table
 with the removed `<column>` element:
@@ -104,19 +128,19 @@ to `<gog-column>`. Check the whole lab for others with
 **Then the documentation.** Each of these describes a removed member as a live, deprecated input.
 The API tables are the load-bearing part — a reader copies from those:
 
-| File | What to do |
-| --- | --- |
-| `inputfield-doc-page.ts` (~194–210, 427) | drop the `iconStartTemplate / iconEndTemplate`, `iconStartFn / iconEndFn`, `iconStartLabel / iconEndLabel` API rows; the code sample at ~427 still passes `iconEndLabel` — rewrite it as a projected `<button gogInputAddonEnd>` |
-| `inputfield-doc-page.html` (~96) | the paragraph naming all six inputs becomes a past-tense note, or goes |
-| `checkbox-doc-page.ts` (~70) / `.html` (~119, 183) | drop the `checkIconTemplate` row; the slot description no longer needs "this replaces the deprecated input" |
-| `multiselect-doc-page.ts` (~169, 242) / `.html` (~163, 371, 381) | same for `clearIconTemplate` and `chevronTemplate` |
-| `select-doc-page.ts` (~211) / `.html` (~119, 345) | same for `chevronTemplate` |
-| `tag-doc-page.ts` (~215) | the sample `<gog-tag [iconTemplate]="starIcon">` must become the `gogTagIcon` slot |
-| `table-doc-page.ts` (~600–601) / `.html` (~71, 543) | the `<column>` + `<ng-template template="…">` sample and the whole `<ng-template template="field"> — Inputs` section go; the column-scoped slots are the only form left |
-| `icon-doc-page.html` (~92) | names `checkIconTemplate` as an example of a component's icon-override input — point at `gogCheckboxIcon` instead |
+| File                                                             | What to do                                                                                                                                                                                                                       |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `inputfield-doc-page.ts` (~194–210, 427)                         | drop the `iconStartTemplate / iconEndTemplate`, `iconStartFn / iconEndFn`, `iconStartLabel / iconEndLabel` API rows; the code sample at ~427 still passes `iconEndLabel` — rewrite it as a projected `<button gogInputAddonEnd>` |
+| `inputfield-doc-page.html` (~96)                                 | the paragraph naming all six inputs becomes a past-tense note, or goes                                                                                                                                                           |
+| `checkbox-doc-page.ts` (~70) / `.html` (~119, 183)               | drop the `checkIconTemplate` row; the slot description no longer needs "this replaces the deprecated input"                                                                                                                      |
+| `multiselect-doc-page.ts` (~169, 242) / `.html` (~163, 371, 381) | same for `clearIconTemplate` and `chevronTemplate`                                                                                                                                                                               |
+| `select-doc-page.ts` (~211) / `.html` (~119, 345)                | same for `chevronTemplate`                                                                                                                                                                                                       |
+| `tag-doc-page.ts` (~215)                                         | the sample `<gog-tag [iconTemplate]="starIcon">` must become the `gogTagIcon` slot                                                                                                                                               |
+| `table-doc-page.ts` (~600–601) / `.html` (~71, 543)              | the `<column>` + `<ng-template template="…">` sample and the whole `<ng-template template="field"> — Inputs` section go; the column-scoped slots are the only form left                                                          |
+| `icon-doc-page.html` (~92)                                       | names `checkIconTemplate` as an example of a component's icon-override input — point at `gogCheckboxIcon` instead                                                                                                                |
 
 **The version badge does this half-automatically.** Anything phrased as "deprecated in 21.3.0,
-removed in 21.5.0" is *still true as history* — the judgement call per site is whether the reader
+removed in 21.5.0" is _still true as history_ — the judgement call per site is whether the reader
 needs the history at all. Prefer deleting: `general/releases` renders the changelog, which is where
 the migration story belongs.
 

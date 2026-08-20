@@ -35,6 +35,7 @@ import { fileURLToPath } from 'node:url';
 import { glob } from 'node:fs/promises';
 import * as sass from 'sass';
 
+import { DEPRECATED_NAMESPACES } from './deprecations.mjs';
 import { INSTANCE_TOKENS } from './instance-tokens.mjs';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -63,14 +64,34 @@ const DECLARATION_RE = /(--gog-[a-zA-Z0-9-]+)\s*:/g;
  */
 const FOUNDATION_NAMESPACES = new Set([
   // palette
-  'accent', 'background', 'border', 'danger', 'hover', 'info', 'muted', 'primary', 'secondary',
-  'success', 'surface', 'text', 'warning',
+  'accent',
+  'background',
+  'border',
+  'danger',
+  'hover',
+  'info',
+  'muted',
+  'primary',
+  'secondary',
+  'success',
+  'surface',
+  'text',
+  'warning',
   // type, metrics, motion, state
-  'disabled', 'duration', 'easing', 'focus', 'font', 'radius', 'space',
+  'disabled',
+  'duration',
+  'easing',
+  'focus',
+  'font',
+  'radius',
+  'space',
   // shared tiers several components read
-  'control', 'field', 'panel',
+  'control',
+  'field',
+  'panel',
   // writing direction, for the few properties with no logical form (utilities.css)
-  'direction', 'inline',
+  'direction',
+  'inline',
 ]);
 
 /**
@@ -88,16 +109,8 @@ const SHARED_BLOCK_NAMESPACES = new Map([
   ['radio', 'one radio control inside `gog-radio-group`, which owns `--gog-radio-group-*` too'],
 ]);
 
-/**
- * The abbreviations that predate the rule. Each still resolves — theme.css declares the short
- * name and derives the spelled-out one from it — and each goes in 21.7.0. Nothing may be added
- * to this map: it is a countdown, not an escape hatch.
- */
-const DEPRECATED_NAMESPACES = new Map([
-  ['btn', '--gog-button-*'],
-  ['ms', '--gog-multiselect-*'],
-  ['confirm', '--gog-confirmation-dialog-*'],
-]);
+// The abbreviations that predate the rule live in `deprecations.mjs`, together with the dates
+// they carry — one list, read here by rule E and expanded by the manifest generator.
 
 /**
  * Component stylesheets are analysed **after** compiling them with sass, not as raw source.
@@ -237,7 +250,10 @@ async function main() {
   // the moment it exists instead of whenever someone remembers to add it here. `theme.css` is
   // excluded because it is the *declaration* source this check compares everything against, and
   // `presets/` because a preset declares palette tokens and reads nothing.
-  for await (const entry of glob('*.css', { cwd: path.join(uiSrc, 'styles'), withFileTypes: true })) {
+  for await (const entry of glob('*.css', {
+    cwd: path.join(uiSrc, 'styles'),
+    withFileTypes: true,
+  })) {
     if (!entry.isFile() || entry.name === 'theme.css') continue;
     const cssPath = path.join(entry.parentPath ?? entry.path, entry.name);
     scssContent.set(cssPath, readFileSync(cssPath, 'utf8'));
@@ -371,15 +387,17 @@ async function main() {
   );
   if (deprecatedSpellings.size > 0) {
     const byNamespace = [...DEPRECATED_NAMESPACES.entries()]
-      .map(([short, replacement]) => {
+      .map(([short, meta]) => {
         const count = [...deprecatedSpellings].filter((t) =>
           t.startsWith(`--gog-${short}-`),
         ).length;
-        return count > 0 ? `--gog-${short}-* → ${replacement} (${count})` : null;
+        return count > 0 ? `--gog-${short}-* → ${meta.replacementPrefix}* (${count})` : null;
       })
       .filter(Boolean)
       .join(', ');
-    console.log(`  ${deprecatedSpellings.size} on a deprecated prefix, removed in 21.7.0: ${byNamespace}`);
+    console.log(
+      `  ${deprecatedSpellings.size} on a deprecated prefix, removed in 21.7.0: ${byNamespace}`,
+    );
   }
 }
 

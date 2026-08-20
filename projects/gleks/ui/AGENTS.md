@@ -1410,6 +1410,25 @@ screen readers, and a second region would announce everything twice. Don't add e
 
 ---
 
+## Reading the deprecations at runtime — `GOG_DEPRECATIONS`
+
+Everything the package currently deprecates, as data:
+
+```ts
+import { GOG_DEPRECATIONS, type GogDeprecation } from '@guildofgleks/ui';
+
+GOG_DEPRECATIONS.filter((entry) => entry.removedIn === '21.7.0');
+// { kind: 'token', name: '--gog-btn-bg', replacement: '--gog-button-bg',
+//   since: '21.5.0', sinceDate: '2026-08-19', removedIn: '21.7.0' }
+```
+
+`kind` is `'symbol'` for an export or input and `'token'` for a `--gog-*` custom property. The
+list is generated from the library's source — tags for symbols, stylesheets for tokens — so it
+matches what actually still resolves in the version you installed.
+
+**In 21.5.0 it holds 154 tokens and no symbols.** Nothing in the TypeScript API is deprecated
+right now; the three abbreviated token prefixes are, until 21.7.0.
+
 ## Removed in 21.5.0
 
 **Nothing in this table exists any more.** It is here so that code written against 21.4.x — or

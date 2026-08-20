@@ -36,69 +36,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { glob } from 'node:fs/promises';
 
+import { compareVersions, parseTag, readContext, readTag } from './deprecations.mjs';
+
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uiRoot = path.join(rootDir, 'projects/gleks/ui');
 const uiSrc = path.join(uiRoot, 'src');
 
-/** `since <version> (<date>) — <replacement>. Removed in <version>.` */
-const TAG_HEAD_RE = /^since\s+(\d+\.\d+\.\d+)\s+\((\d{4}-\d{2}-\d{2})\)\s+—\s+(.+)$/s;
-const REMOVAL_RE = /Removed in\s+(\d+\.\d+\.\d+)\./;
-
-function compareVersions(a, b) {
-  const left = a.split('.').map(Number);
-  const right = b.split('.').map(Number);
-  for (let i = 0; i < 3; i++) {
-    if (left[i] !== right[i]) return left[i] < right[i] ? -1 : 1;
-  }
-  return 0;
-}
-
-/**
- * Reads a tag's text starting at the line holding `@deprecated`.
- *
- * A tag runs to the end of its own paragraph, not to the end of the comment: several blocks
- * here continue with migration prose after the tag, and one (`column.ts`) puts the tag in a
- * `//` comment inside a decorator. So collection stops at the next JSDoc tag, a blank comment
- * line, the end of the block, or the first line that is not a comment at all.
- */
-function readTag(lines, startIndex) {
-  const parts = [];
-  for (let i = startIndex; i < lines.length; i++) {
-    const raw = lines[i];
-    const isBlockLine = /^\s*\*/.test(raw);
-    const isLineComment = /^\s*\/\//.test(raw);
-    if (i > startIndex && !isBlockLine && !isLineComment) break;
-
-    let text = raw
-      .replace(/^\s*\/\*+/, '')
-      .replace(/^\s*\/\//, '')
-      .replace(/^\s*\*(?!\/)/, '')
-      .replace(/\*\/\s*$/, '')
-      .trim();
-
-    if (i === startIndex) {
-      text = text.slice(text.indexOf('@deprecated') + '@deprecated'.length).trim();
-    } else {
-      if (text === '' || text.startsWith('@')) break;
-    }
-
-    parts.push(text);
-    if (/\*\/\s*$/.test(raw)) break;
-  }
-  return parts.join(' ').replace(/\s+/g, ' ').trim();
-}
-
-/** The first line of real code after the tag — enough to name what the tag is on. */
-function readContext(lines, startIndex) {
-  for (let i = startIndex + 1; i < lines.length; i++) {
-    const raw = lines[i].trim();
-    if (raw === '' || raw.startsWith('*') || raw.startsWith('//') || raw.startsWith('/*')) {
-      continue;
-    }
-    return raw.length > 90 ? `${raw.slice(0, 87)}…` : raw;
-  }
-  return '';
-}
+/** Written by `generate-deprecations.mjs`; a record of tags, not a tag. */
+const GENERATED_MANIFEST = 'deprecations.ts';
 
 async function main() {
   const currentVersion = JSON.parse(
@@ -107,7 +52,11 @@ async function main() {
 
   const files = [];
   for await (const entry of glob('**/*.ts', { cwd: uiSrc, withFileTypes: true })) {
-    if (entry.isFile()) files.push(path.join(entry.parentPath ?? entry.path, entry.name));
+    // The generated manifest *describes* deprecations, so its prose says "@deprecated" without
+    // being one. Scanning it would have this check fail on the artifact it feeds.
+    if (entry.isFile() && entry.name !== GENERATED_MANIFEST) {
+      files.push(path.join(entry.parentPath ?? entry.path, entry.name));
+    }
   }
   files.sort();
 
@@ -124,42 +73,15 @@ async function main() {
       const at = `${where}:${i + 1}`;
       const context = readContext(lines, i);
       const label = context ? `${at}\n      on: ${context}` : at;
-      const text = readTag(lines, i);
-      const head = TAG_HEAD_RE.exec(text);
-
-      if (!head) {
-        problems.push(
-          `[format] ${label}\n      @deprecated ${text}\n      does not match \`@deprecated since <version> (<YYYY-MM-DD>) — <replacement>. Removed in <version>.\``,
-        );
+      const parsed = parseTag(readTag(lines, i));
+      if (!parsed.ok) {
+        problems.push(`[format] ${label}
+      ${parsed.problem}`);
         continue;
       }
 
-      const [, since, date, rest] = head;
-      const removal = REMOVAL_RE.exec(rest);
-      if (!removal) {
-        problems.push(
-          `[format] ${label}\n      no \`Removed in <version>.\` — a deprecation without a removal version never comes due`,
-        );
-        continue;
-      }
-
-      const replacement = rest.slice(0, removal.index).trim();
-      if (replacement === '') {
-        problems.push(
-          `[format] ${label}\n      names no replacement between the date and the removal version`,
-        );
-        continue;
-      }
-
-      const removedIn = removal[1];
-      if (compareVersions(removedIn, since) <= 0) {
-        problems.push(
-          `[format] ${label}\n      removal version ${removedIn} is not after the deprecation version ${since}`,
-        );
-        continue;
-      }
-
-      tags.push({ at: label, since, date, removedIn });
+      const { since, sinceDate, removedIn } = parsed.tag;
+      tags.push({ at: label, since, sinceDate, removedIn });
 
       if (compareVersions(removedIn, currentVersion) <= 0) {
         problems.push(

@@ -52,6 +52,7 @@ export * from './lib/shared/config';
 export * from './lib/shared/dropdown-base';
 export * from './lib/shared/float-label-state';
 export * from './lib/shared/option-accessor';
+export * from './lib/shared/deprecations';
 export * from './lib/shared/token-names';
 export type { GogDropdownDirection } from './lib/shared/dropdown-position';
 export type { GogTooltipSide } from './lib/shared/tooltip-position';

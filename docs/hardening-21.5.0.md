@@ -50,7 +50,7 @@ which is the expected shape for a plan that has not started.
 | 4 | RTL pass | fix | ✅ done 2026-08-19 — supported, verified live under `dir="rtl"` |
 | 5 | Test depth where the audit found it thin | tests | ✅ done 2026-08-20 — 917 → 965 tests, thresholds raised |
 | 6 | `gog-menu` | feature | ✅ done 2026-08-20 — row-actions menu, verified live |
-| 7 | Version/deprecation metadata for the docs site | tooling | 🟨 step 1 done — see below |
+| 7 | Version/deprecation metadata for the docs site | tooling | ✅ done 2026-08-20 — `GOG_DEPRECATIONS`, generated and gated |
 
 Update this table at the end of every iteration, and re-state "done / remaining" in the turn
 summary. Per `gleks-ui-library.instructions.md` rule 11 the agent never publishes, never bumps
@@ -614,6 +614,36 @@ extracting. See "Showing version-to-version change in the lab" below for the sha
 
 **Done when:** the built package contains `CHANGELOG.md` and the deprecation manifest, and
 `npm run check:tokens`-style verification covers the new generated file.
+
+### Outcome — 2026-08-20
+
+Done. `scripts/generate-deprecations.mjs` writes `lib/shared/deprecations.ts`, exported as
+`GOG_DEPRECATIONS`; `npm run check:deprecations` now runs the ratchet **and** `--check` on the
+manifest, so CI needs no new step and a stale manifest fails the build (verified by editing one
+entry).
+
+**The question this iteration had to answer first: what goes in it?** The plan assumed
+`@deprecated` tags — and iteration 3 removed all sixteen, so a manifest of tags would have been an
+empty file. What 21.5.0 actually deprecates is **154 CSS token spellings**, and those cannot carry
+a tag a tool can attach to a name: a token is a string in a stylesheet, not a declaration a
+compiler sees. So the manifest covers both kinds:
+
+- **symbols** — parsed from their tags, exactly as `check-deprecations.mjs` does. Zero today, and
+  the file says so in its own doc comment rather than looking broken;
+- **tokens** — the three abbreviated prefixes, *expanded against the stylesheets*. The metadata
+  (since, date, removal) lives once in `scripts/deprecations.mjs`; the names come from scanning
+  the CSS for what still resolves, so the list cannot drift from the code the way a hand-kept one
+  would.
+
+`scripts/deprecations.mjs` is the shared module that made this honest: `check-tokens.mjs`'s rule E,
+`check-deprecations.mjs` and the generator now read one namespace map and one tag parser instead of
+three copies. The refactor immediately caught a self-inflicted bug — the generated manifest's own
+prose contains the word `@deprecated`, so the ratchet parsed the artifact it feeds and failed. The
+generated file is now excluded by name, with the reason written next to it.
+
+**What the lab can build on it:** `lab-versioning.md`'s layer 4 — a "deprecated, removed in 21.7.0"
+badge on an API or token row — now has its data source, and it ships inside the package, so the
+badge reflects the version the reader installed rather than the repo's HEAD.
 
 ---
 
