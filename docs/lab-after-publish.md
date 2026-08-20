@@ -77,6 +77,13 @@ overview, API table, keyboard section — and two demos worth having specificall
 The nav/sidebar needs the new entry too, and `general/releases` will render the changelog entry on
 its own once the version is installed.
 
+**And the counts move with it.** The lab says "28 components" (plus the two directives, 30 entries
+in the nav) in five places — `compare-page.html`, `compare-page.ts` (the detail line and the
+`Components & directives` row), `faq-data.ts`, `seo-data.ts` and `index.html`'s meta description
+and JSON-LD. `gog-menu` makes that **29 components, 31 entries**. The bundle sizes quoted next to
+them (`103.8 KB gzipped`) were measured before the menu existed, so re-measure rather than
+re-typing the old number.
+
 ## After 21.5.0 — the token prefixes the lab spells short
 
 21.5.0 spells three component token prefixes out and keeps the old ones working until 21.7.0

@@ -17,7 +17,8 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Releases', path: 'general/releases' },
 ];
 
-// 30 components, grouped by what they're for rather than one long alphabetical run —
+// 30 entries — 28 components and the two directives — grouped by what they're for rather
+// than one long alphabetical run —
 // alphabetical within each group.
 const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
   {

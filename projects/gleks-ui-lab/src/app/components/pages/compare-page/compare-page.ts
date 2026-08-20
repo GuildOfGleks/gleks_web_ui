@@ -16,7 +16,7 @@ interface BundleBar {
 const BUNDLE_BARS: readonly BundleBar[] = [
   {
     label: 'Guild of Gleks UI',
-    detail: 'entire library — 30 components',
+    detail: 'entire library — 28 components + 2 directives',
     value: '103.8 KB',
     percent: 31,
     emphasis: true,
@@ -45,7 +45,7 @@ interface SpecRow {
 }
 
 const SPEC_ROWS: readonly SpecRow[] = [
-  { label: 'Components', gleks: '30', material: '~35', primeng: '90+' },
+  { label: 'Components & directives', gleks: '30', material: '~35', primeng: '90+' },
   {
     label: 'Theming',
     gleks: 'Plain CSS variables',

@@ -4,7 +4,7 @@
   "engines": {
     "node": ">=20.19.0"
   },
-  "description": "A lightweight Angular 21 component library — standalone, signal-based, OnPush, with no CDK or Material dependency.",
+  "description": "A lightweight component library for Angular 21 and 22 \u2014 standalone, signal-based, OnPush, RTL-ready, with no CDK or Material dependency.",
   "keywords": [
     "angular",
     "angular21",
@@ -14,7 +14,9 @@
     "design-system",
     "signals",
     "standalone",
-    "accessible"
+    "accessible",
+    "a11y",
+    "rtl"
   ],
   "homepage": "https://ui.guildofgleks.com/",
   "license": "Apache-2.0",
