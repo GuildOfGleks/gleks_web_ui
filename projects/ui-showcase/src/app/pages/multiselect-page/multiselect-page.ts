@@ -7,7 +7,6 @@ import {
   GogDropdownOptionDirective,
   GogFloatLabelVariant,
   GogMultiselectClearIconDirective,
-  GogMultiselectOption,
   GogSize,
   IconComponent,
   MultiselectComponent,
@@ -35,7 +34,7 @@ export class MultiselectPage {
 
   protected readonly selectedFeatures = signal<(string | number)[]>(['toast', 'dialog']);
   protected readonly filterDemoValue = signal<(string | number)[]>([]);
-  protected readonly features: GogMultiselectOption[] = [
+  protected readonly features: GogDropdownOption[] = [
     { id: 'toast', name: 'Toast' },
     { id: 'dialog', name: 'Dialog' },
     { id: 'forms', name: 'Forms' },
@@ -47,7 +46,7 @@ export class MultiselectPage {
 
   protected readonly sizeDemoValue = signal<(string | number)[]>(['toast']);
 
-  protected readonly permissionsWithDisabled: GogMultiselectOption[] = [
+  protected readonly permissionsWithDisabled: GogDropdownOption[] = [
     { id: 'read', name: 'Read' },
     { id: 'write', name: 'Write' },
     { id: 'admin', name: 'Admin (contact owner)', disabled: true },
@@ -60,7 +59,7 @@ export class MultiselectPage {
     this.requireSelection() && this.requiredValue().length === 0 ? 'Pick at least one option.' : '',
   );
 
-  protected readonly tags: GogMultiselectOption[] = [
+  protected readonly tags: GogDropdownOption[] = [
     { id: 'urgent', name: 'Urgent' },
     { id: 'bug', name: 'Bug' },
     { id: 'feature', name: 'Feature' },
@@ -75,7 +74,7 @@ export class MultiselectPage {
     validators: Validators.required,
   });
 
-  protected readonly countries: GogMultiselectOption[] = Array.from({ length: 20 }, (_, i) => ({
+  protected readonly countries: GogDropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
     id: `country-${i}`,
     name: `Country ${i + 1}`,
   }));
@@ -88,7 +87,7 @@ export class MultiselectPage {
   protected readonly fullWidthFeatures = signal<(string | number)[]>([]);
   protected readonly fullWidthTags = signal<(string | number)[]>(['bug']);
 
-  protected readonly sortOptions: GogMultiselectOption[] = [
+  protected readonly sortOptions: GogDropdownOption[] = [
     { id: 'name', name: 'Name' },
     { id: 'date', name: 'Date' },
   ];
@@ -105,8 +104,8 @@ export class MultiselectPage {
    * declared standalone in a template — the documented cost of the component being generic.
    * One cast at the boundary keeps the rest of the template typed.
    */
-  protected asOption(option: unknown): GogMultiselectOption {
-    return option as GogMultiselectOption;
+  protected asOption(option: unknown): GogDropdownOption {
+    return option as GogDropdownOption;
   }
 
   protected readonly floatLabelOptions: GogDropdownOption[] = [

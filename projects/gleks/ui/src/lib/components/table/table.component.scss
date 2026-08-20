@@ -68,7 +68,7 @@
       var(--gog-table-size-th-padding-v, var(--gog-table-lg-padding-v))
     )
     var(--gog-table-padding-h);
-  text-align: left;
+  text-align: start;
   font-family: var(--gog-table-header-font-family);
   font-size: var(
     --gog-table-th-font-size,
@@ -217,7 +217,7 @@
 
 .gog-table--col-borders .gog-table__th:not(:last-child),
 .gog-table--col-borders .gog-table__td:not(:last-child) {
-  border-right: var(--gog-table-row-border-width) var(--gog-table-border-style)
+  border-inline-end: var(--gog-table-row-border-width) var(--gog-table-border-style)
     var(--gog-table-border-color);
 }
 
@@ -239,7 +239,7 @@
 }
 
 .gog-table__total[style*='grid-area: right'] {
-  text-align: right;
+  text-align: end;
 }
 
 .gog-table__pagination[style*='grid-area: left'] {

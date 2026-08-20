@@ -83,6 +83,10 @@
   --gog-spinner-rune-size: 18px;
   --gog-spinner-spin-duration: 1s;
   --gog-spinner-pulse-duration: 2s;
+  /* Deliberately the pre-21.5.0 spelling: this theme is the live check that an
+     override written as `--gog-btn-*` still reaches the button through the
+     `--gog-button-*` alias, for the whole window that ends in 21.7.0. The other two
+     themes below use the current spelling. */
   --gog-btn-sm-padding: 0.45rem 0.85rem;
   --gog-btn-md-padding: 0.75rem 1.2rem;
   --gog-btn-lg-padding: 1rem 1.45rem;
@@ -235,9 +239,9 @@
   --gog-spinner-rune-size: 22px;
   --gog-spinner-spin-duration: 1.8s;
   --gog-spinner-pulse-duration: 3.4s;
-  --gog-btn-sm-padding: 0.5rem 0.95rem;
-  --gog-btn-md-padding: 0.8rem 1.3rem;
-  --gog-btn-lg-padding: 1rem 1.55rem;
+  --gog-button-sm-padding: 0.5rem 0.95rem;
+  --gog-button-md-padding: 0.8rem 1.3rem;
+  --gog-button-lg-padding: 1rem 1.55rem;
   --gog-control-padding-y: 11px;
   --gog-control-padding-x: 16px;
   --gog-control-icon-offset: 12px;
@@ -386,9 +390,9 @@
   --gog-spinner-rune-size: 19px;
   --gog-spinner-spin-duration: 1.1s;
   --gog-spinner-pulse-duration: 2.4s;
-  --gog-btn-sm-padding: 0.45rem 0.9rem;
-  --gog-btn-md-padding: 0.7rem 1.15rem;
-  --gog-btn-lg-padding: 0.95rem 1.45rem;
+  --gog-button-sm-padding: 0.45rem 0.9rem;
+  --gog-button-md-padding: 0.7rem 1.15rem;
+  --gog-button-lg-padding: 0.95rem 1.45rem;
   --gog-control-padding-y: 7px;
   --gog-control-padding-x: 12px;
   --gog-control-icon-offset: 8px;

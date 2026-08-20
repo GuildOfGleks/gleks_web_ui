@@ -20,7 +20,16 @@ export const INSTANCE_TOKENS = new Set([
   '--gog-accordion-letter-spacing',
   '--gog-accordion-padding-x',
   '--gog-accordion-padding-y',
-  // gog-button
+  // gog-button — the spelled-out names are the current ones; each `--gog-btn-*` twin below is
+  // the deprecated spelling button.css still falls through to (removed in 21.7.0).
+  '--gog-button-bg',
+  '--gog-button-border',
+  '--gog-button-color',
+  '--gog-button-hover-bg',
+  '--gog-button-hover-color',
+  '--gog-button-hover-shadow',
+  '--gog-button-shadow',
+  '--gog-button-spinner-color',
   '--gog-btn-bg',
   '--gog-btn-border',
   '--gog-btn-color',
@@ -29,6 +38,11 @@ export const INSTANCE_TOKENS = new Set([
   '--gog-btn-hover-shadow',
   '--gog-btn-shadow',
   '--gog-btn-spinner-color',
+  // Padding and font-size are the same escape hatch; they are only listed under the
+  // deprecated spelling because `--gog-button-padding`/`-font-size` are written (as instance
+  // overrides) by gog-toast's own stylesheet, which counts as a declaration to rule B.
+  '--gog-btn-font-size',
+  '--gog-btn-padding',
   // gog-autocomplete
   '--gog-autocomplete-bg',
   '--gog-autocomplete-color',

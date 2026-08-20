@@ -1,3 +1,4 @@
+import { fitLabels, type GogMultiselectSummary } from './fit-labels';
 import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -22,11 +23,6 @@ import { ButtonComponent } from '../button/button.component';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { GogTooltipDirective } from '../tooltip/tooltip.directive';
-
-/**
- * @deprecated since 21.2.2 (2026-07-30) — use `GogDropdownOption` instead. Removed in 21.4.0.
- */
-export type GogMultiselectOption = GogDropdownOption;
 
 /** Height of the select-all/clear row, included in the panel height estimate. */
 const CONTROLS_ROW_HEIGHT = 38;
@@ -76,11 +72,7 @@ export class MultiselectComponent<
    * `GOG_CONFIG.labels.clearAll`, then to `'Clear'`.
    */
   readonly clearAllLabel = input<string | undefined>(undefined);
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project an `<ng-template gogMultiselectClearIcon>` into the component instead. Removed in 21.5.0.
-   */
-  readonly clearIconTemplate = input<TemplateRef<unknown> | null>(null);
-  /** Projected `gogMultiselectClearIcon` template; wins over the deprecated `clearIconTemplate` input. */
+  /** Projected `gogMultiselectClearIcon` template, replacing the clear-all glyph. */
   protected readonly clearIconSlot = contentChild(GogMultiselectClearIconDirective);
 
   /** Instance input → `GOG_CONFIG.labels` → the built-in English default. */
@@ -150,7 +142,7 @@ export class MultiselectComponent<
    * layout: the greedy fit is O(n) over the labels and costs no reflow, where a DOM-based probe
    * would thrash layout on every keystroke-sized change.
    */
-  protected readonly summary = computed<{ text: string; hidden: number }>(() => {
+  protected readonly summary = computed<GogMultiselectSummary>(() => {
     const labels = this.selectedLabels();
     const width = this.valueWidth();
     const font = this.valueFont();
@@ -159,22 +151,7 @@ export class MultiselectComponent<
       return { text: labels.join(', '), hidden: 0 };
     }
 
-    const measure = measureWith(font);
-    // Room the "+N" badge will need; reserved up front so adding it can't cause a second overflow.
-    const reserve = labels.length > 1 ? measure(` +${labels.length}`) : 0;
-    let text = '';
-    let fitted = 0;
-    for (const label of labels) {
-      const next = fitted === 0 ? label : `${text}, ${label}`;
-      const budget = fitted === labels.length - 1 ? width : width - reserve;
-      if (fitted > 0 && measure(next) > budget) break;
-      text = next;
-      fitted += 1;
-    }
-
-    // Always show at least one label, even if it has to be ellipsised by CSS.
-    if (fitted === 0) return { text: labels[0], hidden: labels.length - 1 };
-    return { text, hidden: labels.length - fitted };
+    return fitLabels(labels, width, measureWith(font));
   });
   protected readonly hasFloatValue = computed(() => this.value().length > 0);
 

@@ -32,6 +32,79 @@ describe('ToggleComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  /**
+   * The audit read "0 keyboard tests" as a gap. It is not one: the toggle renders a real
+   * `<input type="checkbox" role="switch">`, so Space is the browser's, exactly as arrow-key
+   * navigation is the browser's for `gog-radio-group`. Faking `keydown` here would assert that
+   * jsdom dispatches events, not that the component works.
+   *
+   * What is worth pinning is the native contract that earns that — because the day someone
+   * replaces the input with a styled `<div>`, every one of these breaks.
+   */
+  describe('the native switch contract', () => {
+    function input(): HTMLInputElement {
+      return fixture.nativeElement.querySelector('.gog-toggle__input') as HTMLInputElement;
+    }
+
+    it('is a real checkbox, so space and form registration stay native', () => {
+      expect(input().tagName).toBe('INPUT');
+      expect(input().type).toBe('checkbox');
+    });
+
+    it('announces as a switch rather than a checkbox', () => {
+      expect(input().getAttribute('role')).toBe('switch');
+    });
+
+    it('is wrapped by its label, so the visible text is the accessible name', () => {
+      expect(input().closest('label')).toBeTruthy();
+    });
+
+    it('reflects checked state on the native input, which drives :checked in CSS', async () => {
+      fixture.componentRef.setInput('checked', true);
+      await fixture.whenStable();
+      expect(input().checked).toBe(true);
+
+      fixture.componentRef.setInput('checked', false);
+      await fixture.whenStable();
+      expect(input().checked).toBe(false);
+    });
+
+    it('disables the input itself, so the browser skips it in the tab order', async () => {
+      fixture.componentRef.setInput('disabled', true);
+      await fixture.whenStable();
+
+      expect(input().disabled).toBe(true);
+    });
+
+    it('leaves aria-label off when a visible label already names it', async () => {
+      fixture.componentRef.setInput('ariaLabel', 'Notifications');
+      fixture.componentRef.setInput('label', 'Notifications');
+      await fixture.whenStable();
+
+      expect(input().getAttribute('aria-label')).toBeNull();
+    });
+
+    it('falls back to aria-label when there is no visible label', async () => {
+      fixture.componentRef.setInput('label', '');
+      fixture.componentRef.setInput('ariaLabel', 'Notifications');
+      await fixture.whenStable();
+
+      expect(input().getAttribute('aria-label')).toBe('Notifications');
+    });
+
+    it('hides the on/off track text from assistive tech, which already hears the state', async () => {
+      fixture.componentRef.setInput('onLabel', 'ON');
+      fixture.componentRef.setInput('offLabel', 'OFF');
+      await fixture.whenStable();
+
+      const states = [...fixture.nativeElement.querySelectorAll('.gog-toggle__state')];
+      expect(states).toHaveLength(2);
+      for (const state of states) {
+        expect((state as HTMLElement).getAttribute('aria-hidden')).toBe('true');
+      }
+    });
+  });
+
   it('should render a native checkbox carrying role="switch"', () => {
     // The role is the whole reason this exists next to gog-checkbox: it announces as
     // "switch, on" rather than "checkbox, checked", while the platform still owns the

@@ -85,7 +85,7 @@
 
 .gog-scroll__track--v {
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
   width: var(--gog-scroll-track-width);
 }
@@ -95,14 +95,13 @@
 }
 
 .gog-scroll__track--h {
-  left: 0;
-  right: 0;
+  inset-inline: 0;
   bottom: 0;
   height: var(--gog-scroll-track-width);
 }
 
 .gog-scroll--both .gog-scroll__track--h {
-  right: var(--gog-scroll-track-width);
+  inset-inline-end: var(--gog-scroll-track-width);
 }
 
 .gog-scroll__thumb {
@@ -132,8 +131,7 @@
    thumb's *containing block* (not its own box, unlike a transform), so no px math needed
    here to keep them in sync with the track's actual rendered size. */
 .gog-scroll__thumb--v {
-  left: var(--gog-scroll-thumb-inset);
-  right: var(--gog-scroll-thumb-inset);
+  inset-inline: var(--gog-scroll-thumb-inset);
   min-height: var(--gog-scroll-thumb-min-size);
 }
 
@@ -153,7 +151,7 @@
 
 .gog-scroll__corner {
   position: absolute;
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
   z-index: 1;
   width: var(--gog-scroll-track-width);

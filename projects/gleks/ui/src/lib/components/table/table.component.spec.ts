@@ -9,8 +9,7 @@ import {
   type GogTableSelectionMode,
   type GogTableSortEvent,
 } from './table.component';
-import { Column, GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective } from './column';
-import { TemplateDirective } from './template.directive';
+import { GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective } from './column';
 import { PaginatorComponent } from '../paginator/paginator.component';
 
 interface Row {
@@ -26,7 +25,7 @@ const DEFAULT_ROWS: Row[] = [
 
 @Component({
   standalone: true,
-  imports: [TableComponent, Column, TemplateDirective],
+  imports: [TableComponent, GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective],
   template: `
     <gog-table
       [value]="rows()"
@@ -35,12 +34,14 @@ const DEFAULT_ROWS: Row[] = [
       [showRowNumbers]="showRowNumbers()"
       [emptyPlaceholder]="emptyPlaceholder()"
     >
-      <column field="id" header="ID" [sortable]="true"></column>
-      <column field="name" header="Name" [sortable]="true"></column>
-      <ng-template template="id" type="header"><em class="custom-header">ID#</em></ng-template>
-      <ng-template template="name" type="body" let-row
-        ><strong class="custom-body">{{ $any(row).name }}</strong></ng-template
-      >
+      <gog-column field="id" header="ID" [sortable]="true">
+        <ng-template gogColumnHeader><em class="custom-header">ID#</em></ng-template>
+      </gog-column>
+      <gog-column field="name" header="Name" [sortable]="true">
+        <ng-template gogColumnBody let-row
+          ><strong class="custom-body">{{ $any(row).name }}</strong></ng-template
+        >
+      </gog-column>
     </gog-table>
   `,
 })
@@ -138,10 +139,10 @@ describe('TableComponent', () => {
 describe('TableComponent with a custom column comparator', () => {
   @Component({
     standalone: true,
-    imports: [TableComponent, Column],
+    imports: [TableComponent, GogColumn],
     template: `
       <gog-table [value]="rows">
-        <column field="name" [sortable]="true" [comparator]="reverseAlpha"></column>
+        <gog-column field="name" [sortable]="true" [comparator]="reverseAlpha"></gog-column>
       </gog-table>
     `,
   })
@@ -289,9 +290,8 @@ describe('TableComponent with projected columns and templates', () => {
 });
 
 /**
- * The host above deliberately keeps using the deprecated string-keyed
- * `<ng-template template="…" type="…">` form, so the back-compat path stays covered until it is
- * removed in 21.5.0. This host uses the replacement: templates declared inside their own column.
+ * A second host for the column-scoped templates, exercising the typed context (`row`, `value`,
+ * `index`) that the host above does not read.
  */
 @Component({
   standalone: true,

@@ -33,37 +33,68 @@
   <div class="card">
     <gog-table [value]="filteredMembers()" [pageSize]="5" [showTotal]="true" size="md">
       <gog-column field="name" header="Name" [sortable]="true"></gog-column>
-      <gog-column field="role" header="Role" [sortable]="true"></gog-column>
-      <gog-column field="status" header="Status" [sortable]="true"></gog-column>
-      <gog-column field="teams" header="Teams"></gog-column>
-      <gog-column field="id" header="" width="110px"></gog-column>
 
-      <ng-template template="role" type="body" let-row>
-        <span class="dash__role">{{ $any(row).role }}</span>
-      </ng-template>
+      <gog-column field="role" header="Role" [sortable]="true">
+        <ng-template gogColumnBody let-row>
+          <span class="dash__role">{{ $any(row).role }}</span>
+        </ng-template>
+      </gog-column>
 
-      <ng-template template="status" type="body" let-row>
-        <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{
-          $any(row).status
-        }}</gog-tag>
-      </ng-template>
+      <gog-column field="status" header="Status" [sortable]="true">
+        <ng-template gogColumnBody let-row>
+          <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{
+            $any(row).status
+          }}</gog-tag>
+        </ng-template>
+      </gog-column>
 
-      <ng-template template="teams" type="body" let-row>
-        <span class="dash__teams">
-          @for (team of $any(row).teams; track team) {
-            <span class="dash__team-chip">{{ teamLabel(team) }}</span>
-          }
-        </span>
-      </ng-template>
+      <gog-column field="teams" header="Teams">
+        <ng-template gogColumnBody let-row>
+          <span class="dash__teams">
+            @for (team of $any(row).teams; track team) {
+              <span class="dash__team-chip">{{ teamLabel(team) }}</span>
+            }
+          </span>
+        </ng-template>
+      </gog-column>
 
-      <ng-template template="id" type="header"></ng-template>
-      <ng-template template="id" type="body" let-row>
-        <span class="dash__row-action">
-          <gog-button variant="ghost" size="sm" type="button" (gogClick)="removeMember($any(row))"
-            >Remove</gog-button
-          >
-        </span>
-      </ng-template>
+      <gog-column field="id" header="" width="72px">
+        <ng-template gogColumnHeader></ng-template>
+        <ng-template gogColumnBody let-row>
+          <span class="dash__row-action">
+            <!--
+              The row-actions pattern gog-menu exists for: an icon button the page already
+              styled, with the menu declared next to it. `appendToBody` because the table wraps
+              itself in a gog-scroll, which would otherwise clip the panel.
+            -->
+            <button
+              gogButton
+              variant="ghost"
+              size="sm"
+              type="button"
+              [gogMenuTrigger]="rowMenu"
+              [attr.aria-label]="'Actions for ' + $any(row).name"
+            >
+              <gog-icon name="more-vertical" />
+            </button>
+
+            <gog-menu #rowMenu [attr.aria-label]="'Actions for ' + $any(row).name">
+              <button gogMenuItem type="button" (click)="notifyEdit($any(row))">
+                <gog-icon name="check" />
+                Edit member
+              </button>
+              <button gogMenuItem type="button" disabled>
+                <gog-icon name="info" />
+                Transfer ownership
+              </button>
+              <button gogMenuItem type="button" (click)="removeMember($any(row))">
+                <gog-icon name="close" />
+                Remove from team
+              </button>
+            </gog-menu>
+          </span>
+        </ng-template>
+      </gog-column>
     </gog-table>
   </div>
 </section>

@@ -35,6 +35,72 @@ describe('ToastComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('the end of the countdown', () => {
+    /** The template renders the host; the component's own handlers are what the container drives. */
+    function host(): HTMLElement {
+      return fixture.nativeElement as HTMLElement;
+    }
+
+    beforeEach(() => {
+      // `close()` asks whether motion is reduced; jsdom ships no matchMedia. `matches: false`
+      // keeps the transition path — the one these tests are about — rather than the instant
+      // close covered further down.
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        configurable: true,
+        value: vi.fn().mockReturnValue({ matches: false }),
+      });
+    });
+
+    it('emits dismissed once the closing transition finishes', async () => {
+      const dismissed = vi.fn();
+      component.dismissed.subscribe(dismissed);
+
+      component.visible.set(true);
+      component.close();
+      await fixture.whenStable();
+
+      const toast = host().querySelector('.gog-toast') as HTMLElement;
+      toast.dispatchEvent(
+        new TransitionEvent('transitionend', { propertyName: 'opacity', bubbles: false }),
+      );
+
+      expect(dismissed).toHaveBeenCalledWith('toast-1');
+    });
+
+    it('ignores a transitionend that bubbled up from something inside the toast', async () => {
+      const dismissed = vi.fn();
+      component.dismissed.subscribe(dismissed);
+
+      component.visible.set(true);
+      component.close();
+      await fixture.whenStable();
+
+      const inner = host().querySelector('.gog-toast__message') as HTMLElement;
+      inner.dispatchEvent(
+        new TransitionEvent('transitionend', { propertyName: 'opacity', bubbles: true }),
+      );
+
+      expect(dismissed).not.toHaveBeenCalled();
+    });
+
+    it('ignores a transitionend for a property the close animation does not use', async () => {
+      const dismissed = vi.fn();
+      component.dismissed.subscribe(dismissed);
+
+      component.visible.set(true);
+      component.close();
+      await fixture.whenStable();
+
+      const toast = host().querySelector('.gog-toast') as HTMLElement;
+      toast.dispatchEvent(
+        new TransitionEvent('transitionend', { propertyName: 'background-color' }),
+      );
+
+      expect(dismissed).not.toHaveBeenCalled();
+    });
+  });
+
   it('should restart the progress bar animation without throwing when a toast is refreshed', async () => {
     fixture.componentRef.setInput('toast', {
       id: 'toast-2',

@@ -235,12 +235,7 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   /** Unset, falls back to `GOG_CONFIG.dropdown.appendToBody`, then to `false`. */
   readonly appendToBody = input<boolean | undefined>(undefined);
   readonly disabled = input(false);
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project an `<ng-template gogDropdownChevron>` into
-   * the control instead. Removed in 21.5.0.
-   */
-  readonly chevronTemplate = input<TemplateRef<unknown> | null>(null);
-  /** Projected `gogDropdownChevron` template; wins over the deprecated `chevronTemplate`. */
+  /** Projected `gogDropdownChevron` template, replacing the built-in chevron. */
   protected readonly chevronSlot = contentChild(GogDropdownChevronDirective);
   /**
    * Full width of the container by default, matching every other field-style control.

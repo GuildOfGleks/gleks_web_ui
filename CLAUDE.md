@@ -52,8 +52,8 @@ an input, output, slot, type, service method or default edits it in the same cha
 
 ## Current work
 
-Three live plans, two finished ones. Update the status table in whichever you are working from, as
-you go.
+Three future plans, three finished ones. Update the status table in whichever you are working
+from, as you go.
 
 - `docs/themes-21.7.0.md` — a **future** plan, nothing started, queued behind the ripple: presets
   become full visual identities (radii, borders, shadows, density, typography) instead of palettes,
@@ -62,19 +62,28 @@ you go.
   `material`/`primeng` themes had to name component tokens one at a time. Iteration 1 introduces a
   character layer so a theme sets ~25 foundation tokens instead, and new components inherit every
   theme's character for free.
+- `docs/panel-card-21.6.0.md` — a **future** plan, nothing started: `gog-card` and `gog-panel`.
+  Read its opening section before writing a line of it — the plan exists to answer whether these
+  should be components at all, since a surface that only paints a background is a class (the
+  showcase's own hand-rolled `.card` is five declarations across 37 templates). What justifies
+  them is what a class cannot do: naming the region for a screen reader from a projected header,
+  making an interactive card a real button/link rather than the `div (click)` trap 21.5.0 just
+  fixed elsewhere, and folding in loading/disabled. Its first iteration is a decision — one
+  component with a `size` input, or two — and it flags the `--gog-panel-*` collision with the
+  existing foundation tokens.
 - `docs/ripple-21.6.0.md` — a **future** plan, nothing started: a from-scratch pointer ripple
   (there is no CDK here and will not be), scoped to 21.6.0 rather than 21.5.0 because 21.5.0 is
   deliberately the breaking release and a feature there re-creates the pile the changelog was
   split to undo. Read its _What makes this harder than the animation_ section before estimating
   it — the animation is the cheap part; `gogBadge` overflows its host on purpose, which is what
   stops a ripple simply clipping the host's box.
-- `docs/hardening-21.5.0.md` — the **current** plan: the library measured against itself
-  (coverage tooling, token-prefix consistency, the removals 21.5.0 already owes, RTL, thin specs,
-  `gog-menu`, version metadata for the docs site). Iterations 1–6 are open and iteration 7's first
-  step (shipping `CHANGELOG.md` in the package) is already done — **on hold** while the user
-  verifies the already-tagged releases against a private consuming project. Its
-  _Pre-iteration readiness check_ section records the state the plan starts from: lint, format,
-  tokens, tests and all three builds green as of 2026-08-15.
+- `docs/hardening-21.5.0.md` — **completed 2026-08-20**, all seven iterations: coverage measurement
+  with a CI gate, the token-prefix rename (`--gog-btn-*`/`--gog-ms-*`/`--gog-confirm-*` spelled
+  out, old spellings alive until 21.7.0), every removal 21.5.0 owed plus a ratchet that fails the
+  build on an overdue tag, RTL support, test depth (917 → 1000 tests), `gog-menu`, and
+  `GOG_DEPRECATIONS`. Kept for its per-iteration outcomes — several record defects that only
+  surfaced in a browser — and its backlog, which is where the remaining known issues live
+  (`gog-table`'s `stickyHeader`, incidental public exports, the `position: fixed` caveat).
 - `docs/consumer-dx-plan.md` — completed: the package as a consumer meets it (onboarding,
   accessibility defaults, native attributes, packaging, icon registry, table outputs/lazy/
   selection, link-flavoured button). Kept for its per-iteration outcomes and its backlog.

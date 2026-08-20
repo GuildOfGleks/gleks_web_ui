@@ -58,11 +58,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   readonly indeterminate = input(false);
   readonly disabled = input(false);
   readonly fullWidth = input(false);
-  /**
-   * @deprecated since 21.3.0 (2026-08-07) — project an `<ng-template gogCheckboxIcon>` into the component instead. Removed in 21.5.0.
-   */
-  readonly checkIconTemplate = input<TemplateRef<unknown> | null>(null);
-  /** Projected `gogCheckboxIcon` template; wins over the deprecated `checkIconTemplate` input. */
+  /** Projected `gogCheckboxIcon` template, replacing the built-in tick. */
   protected readonly checkIconSlot = contentChild(GogCheckboxIconDirective);
 
   /**

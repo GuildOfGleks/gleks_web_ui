@@ -1,14 +1,20 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import {
   ButtonComponent,
+  GogButtonDirective,
   GogColumn,
+  GogColumnBodyDirective,
+  GogColumnHeaderDirective,
   ConfirmationDialogComponent,
   DialogComponent,
   DialogService,
-  GogMultiselectOption,
-  GogSelectOption,
+  GogDropdownOption,
   GogTagVariant,
   InputfieldComponent,
+  GogMenuItemDirective,
+  GogMenuTriggerDirective,
+  IconComponent,
+  MenuComponent,
   MultiselectComponent,
   SelectComponent,
   TableComponent,
@@ -60,7 +66,14 @@ const SEED_MEMBERS: Member[] = [
   selector: 'app-dashboard-page',
   imports: [
     ButtonComponent,
+    GogButtonDirective,
     GogColumn,
+    GogColumnBodyDirective,
+    GogColumnHeaderDirective,
+    GogMenuItemDirective,
+    GogMenuTriggerDirective,
+    IconComponent,
+    MenuComponent,
     DialogComponent,
     InputfieldComponent,
     MultiselectComponent,
@@ -83,13 +96,13 @@ export class DashboardPage {
   protected readonly roleFilter = signal<string | number | null>(null);
   protected readonly teamFilter = signal<(string | number)[]>([]);
 
-  protected readonly roleOptions: GogSelectOption[] = [
+  protected readonly roleOptions: GogDropdownOption[] = [
     { id: 'admin', name: 'Admin' },
     { id: 'editor', name: 'Editor' },
     { id: 'viewer', name: 'Viewer' },
   ];
 
-  protected readonly teamOptions: GogMultiselectOption[] = [
+  protected readonly teamOptions: GogDropdownOption[] = [
     { id: 'engineering', name: 'Engineering' },
     { id: 'design', name: 'Design' },
     { id: 'sales', name: 'Sales' },
@@ -116,6 +129,10 @@ export class DashboardPage {
 
   protected teamLabel(id: string): string {
     return this.teamOptions.find((option) => option.id === id)?.name ?? id;
+  }
+
+  protected notifyEdit(member: Member): void {
+    this.toastService.show({ message: `Editing ${member.name}`, type: 'info' });
   }
 
   protected removeMember(member: Member): void {

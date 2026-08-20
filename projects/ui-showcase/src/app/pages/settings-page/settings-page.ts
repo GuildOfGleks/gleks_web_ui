@@ -13,7 +13,7 @@ import {
   ChipComponent,
   GogAccordionContentDirective,
   GogAccordionItem,
-  GogSelectOption,
+  GogDropdownOption,
   InputfieldComponent,
   SelectComponent,
   SliderComponent,
@@ -66,7 +66,7 @@ export class SettingsPage implements OnDestroy {
   });
 
   // Preferences
-  protected readonly themeOptions: GogSelectOption[] = [
+  protected readonly themeOptions: GogDropdownOption[] = [
     { id: 'system', name: 'Match system' },
     { id: 'light', name: 'Light' },
     { id: 'dark', name: 'Dark' },

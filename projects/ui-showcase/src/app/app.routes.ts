@@ -46,6 +46,10 @@ export const routes: Routes = [
       import('./pages/multiselect-page/multiselect-page').then((m) => m.MultiselectPage),
   },
   {
+    path: 'menu',
+    loadComponent: () => import('./pages/menu-page/menu-page').then((m) => m.MenuPage),
+  },
+  {
     path: 'table',
     loadComponent: () => import('./pages/table-page/table-page').then((m) => m.TablePage),
   },

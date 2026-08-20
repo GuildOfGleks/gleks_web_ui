@@ -7,31 +7,202 @@ reached 1.0, so breaking changes may land in minor versions.
 ## [21.5.0] - planned
 
 **The breaking release** — the one version consumers have to read before upgrading into. It
-carries the removals below and, per `docs/hardening-21.5.0.md`, the token-prefix rename
-(`--gog-ms-*`, `--gog-btn-*`, `--gog-input-*` spelled out in full). Everything non-breaking that
-is ready today ships in 21.4.4 instead, so a reader upgrading to 21.4.4 has nothing to migrate
-and a reader upgrading to 21.5.0 has one list to work through rather than one buried among fixes.
+carries the removals below and the token-prefix rename (`--gog-btn-*`, `--gog-ms-*` and
+`--gog-confirm-*` spelled out; the old spellings keep working until 21.7.0). Everything
+non-breaking that was ready earlier shipped in 21.4.4 instead, so a reader upgrading to 21.4.4 has
+nothing to migrate and a reader upgrading to 21.5.0 has one list to work through rather than one
+buried among fixes.
 
 ### Removed
 
-Not done yet — this section records what the version owes. Fourteen public symbols carry an
-`@deprecated … Removed in 21.5.0` tag naming its own replacement:
+Everything deprecated for this version is gone. **All of it was announced with a replacement in
+21.3.0 or earlier**, and every replacement has shipped since then, so each item below is a
+mechanical edit at the call site rather than a redesign. If you are on 21.4.x, your editor has
+been striking these through already.
 
-- the six legacy icon inputs on `gog-inputfield`;
-- the `checkIconTemplate` / `clearIconTemplate` / `iconTemplate` / `chevronTemplate` inputs;
-- the `<column>` element, with its `Column` const and type;
-- the string-keyed `[template]` column slot;
-- the `GogSelectOption` / `GogMultiselectOption` aliases — **these two overran their announced
-  21.4.0 removal**, which is the reason the date on this list is not moved again.
+**Per-slot `TemplateRef` inputs → projected slot directives.** Declare the template where it is
+used; it no longer has to be wired through an input, and it carries a typed context.
 
-One more is promised in prose rather than by a tag, so it has no `@deprecated` to grep for and is
-the one most likely to be missed:
+| Removed input                                        | Replacement                             |
+| ---------------------------------------------------- | --------------------------------------- |
+| `gog-checkbox` `[checkIconTemplate]`                 | `<ng-template gogCheckboxIcon>`         |
+| `gog-tag` `[iconTemplate]`                           | `<ng-template gogTagIcon>`              |
+| `gog-multiselect` `[clearIconTemplate]`              | `<ng-template gogMultiselectClearIcon>` |
+| `gog-select` / `gog-multiselect` `[chevronTemplate]` | `<ng-template gogDropdownChevron>`      |
 
-- the **`./src/styles/*` export** in `package.json`. Stylesheets moved to `./styles/*` in 21.3.2
-  and the README says the old path "keeps working until 21.5.0". Removing it breaks anyone still
-  importing `@guildofgleks/ui/src/styles/…`, and the README paragraph promising it goes too.
+```html
+<!-- before -->
+<gog-tag [iconTemplate]="star">Featured</gog-tag>
+<ng-template #star><gog-icon name="check" /></ng-template>
+
+<!-- after -->
+<gog-tag>
+  <ng-template gogTagIcon><gog-icon name="check" /></ng-template>
+  Featured
+</gog-tag>
+```
+
+**`gog-inputfield`'s six legacy icon inputs** — `iconStartTemplate`, `iconEndTemplate`,
+`iconStartFn`, `iconEndFn`, `iconStartLabel`, `iconEndLabel` — replaced by projecting a real
+element into the field's leading or trailing slot. A projected `<button gogInputAddonEnd>` carries
+its own click handler, its own `aria-label` and its own disabled state, which is why six inputs
+collapse into none:
+
+```html
+<!-- before -->
+<gog-inputfield label="Search" iconEnd="check" [iconEndFn]="run" iconEndLabel="Search" />
+
+<!-- after -->
+<gog-inputfield label="Search">
+  <button gogInputAddonEnd type="button" aria-label="Search" (click)="run()">
+    <gog-icon name="check" />
+  </button>
+</gog-inputfield>
+```
+
+`iconStart` / `iconEnd` stay, and are now unambiguously **decorative**: they render an
+`aria-hidden` span, never a button. The only action button `gog-inputfield` still renders for
+itself is the password reveal toggle, whose labels remain `showPasswordLabel` /
+`hidePasswordLabel`.
+
+**`gog-table`'s string-keyed template slot.** `<ng-template template="field" type="body">` matched
+a column by a string the compiler could not check — a typo silently rendered the default cell.
+Declare the template inside the column it belongs to instead:
+
+```html
+<!-- before -->
+<gog-column field="status" />
+<ng-template template="status" type="body" let-row>…</ng-template>
+
+<!-- after -->
+<gog-column field="status">
+  <ng-template gogColumnBody let-row let-value="value">…</ng-template>
+</gog-column>
+```
+
+The `TemplateDirective` export goes with it, along with the `GogTableBodyContext` /
+`GogTableHeaderContext` types it carried — `GogColumnBodyContext` / `GogColumnHeaderContext` are
+the typed replacements, and they are what the column-scoped templates have always used.
+
+**The unprefixed table column names.** The `<column>` element selector and the `Column` const and
+type are gone; use `<gog-column>` and `GogColumn`.
+
+**The `GogSelectOption` and `GogMultiselectOption` type aliases.** Use `GogDropdownOption` — the
+same type; both were aliases of it since 21.2.2. These two were announced for removal in **21.4.0**
+and overran it by a minor: 21.4.0 through 21.4.4 all shipped with them still exported. Recorded
+here rather than quietly re-dated, and `npm run check:deprecations` now fails the build on any
+`@deprecated … Removed in <version>` tag whose version has already been reached, so no deprecation
+can overrun its date again.
+
+**The `@guildofgleks/ui/src/styles/…` asset path.** Stylesheets moved to `@guildofgleks/ui/styles/…`
+in 21.3.2, with the old path documented as working until 21.5.0. The package no longer ships the
+duplicate copy, and the `./src/styles/*` export is gone — if your `angular.json` still names the
+long path, drop the `src/` segment.
+
+### Fixed
+
+- **`gogCollapsibleTrigger` is reachable by keyboard on any element.** Its own documentation
+  invites a non-focusable host ("works on any clickable element"), and on one it used to apply
+  `aria-expanded`/`aria-controls` and nothing else: a control that announces itself to a screen
+  reader, with no tab stop and no response to Enter or Space — the one combination that strands
+  the person relying on that announcement.
+
+  On a host that is not natively operable the directive now also supplies `role="button"`,
+  `tabindex="0"` (`-1` while disabled) and Enter/Space. A `<button>` or `<a href>` is untouched,
+  since a second key handler would toggle twice in one press, and a `role`/`tabindex` you set
+  yourself is respected rather than overwritten.
+
+### Added
+
+- **`GOG_DEPRECATIONS` — the deprecation manifest**, generated from the library's own source and
+  shipped in the public API:
+
+  ```ts
+  import { GOG_DEPRECATIONS } from '@guildofgleks/ui';
+
+  // → { kind: 'token', name: '--gog-btn-radius', replacement: '--gog-button-radius',
+  //     since: '21.5.0', sinceDate: '2026-08-19', removedIn: '21.7.0' }
+  ```
+
+  It answers "is this still supported, and until when?" for tooling that has to mark an API row —
+  a docs site, an editor plugin, a codemod — without anyone maintaining a second list. Symbols
+  come from their `@deprecated` tags and tokens from the stylesheets that still resolve them, so
+  it cannot drift from the code.
+
+  In this release it holds **154 tokens and no symbols**: 21.5.0 removed every deprecated symbol
+  the library had, and its deprecations are the three abbreviated token prefixes above. An empty
+  symbol half is the healthy state, not a broken generator.
+
+- **`gog-menu` — a command menu**, with `[gogMenuTrigger]` on your own button and `gogMenuItem` on
+  your own items:
+
+  ```html
+  <button gogButton variant="ghost" [gogMenuTrigger]="rowMenu" aria-label="Row actions">
+    <gog-icon name="more-vertical" />
+  </button>
+
+  <gog-menu #rowMenu>
+    <button gogMenuItem (click)="edit(row)">Edit</button>
+    <button gogMenuItem disabled>Transfer ownership</button>
+  </gog-menu>
+  ```
+
+  The library created this gap itself: 21.4.0 added `more-horizontal`/`more-vertical` icons and a
+  table built for row actions, with nothing to open with them. Everything else a consumer can
+  assemble from what already ships; an accessible menu cannot be — it needs focus management,
+  roving focus and overlay placement at once.
+
+  Keyboard follows the WAI-ARIA menu button pattern: Enter/Space/ArrowDown open with the first
+  item focused, ArrowUp with the last, arrows and Home/End move and skip disabled items, Escape
+  closes and restores focus to the trigger, Tab closes and moves on.
+
+  Disable an item with the native `disabled` attribute on your own button — the arrow keys step
+  over it. The panel always renders into `<body>`, placed from the trigger's measured rect, so a
+  menu inside `gog-scroll`, `gog-table` or any clipping ancestor needs no configuration; it takes
+  the `--gog-dropdown-z` its trigger inherits, so a menu inside a dialog stacks above it. Past
+  `--gog-menu-max-height` the panel scrolls with `gog-scroll`. Themed by `--gog-menu-*`.
+
+- **Right-to-left support.** `dir="rtl"` on `<html>` — or on any subtree — now mirrors every
+  component, with nothing to set per component. What changed under it: physical `left`/`right`
+  declarations became logical properties across 16 stylesheets; the select/multiselect panel and
+  the tooltip bubble copy a _scoped_ `dir` onto their portaled host, so an RTL region inside an
+  LTR page renders correctly; a tooltip's `position="auto"` prefers the mirrored horizontal side;
+  the calendar's month/year arrows turn around; and the slider fill, toast progress bar and
+  indeterminate progressbar run from the inline start.
+
+  Physical by design, because they are physical words in the API: a tooltip's explicit
+  `position="left"`/`"right"`, and a toast's `top-left`/`top-right`/`bottom-left`/`bottom-right`.
+
+  Three CSS custom properties are declared for the handful of properties with no logical form
+  (`transform-origin`, `translate`): `--gog-inline-start-side`, `--gog-inline-end-side` (the
+  `left`/`right` keywords) and `--gog-direction-sign` (`1`/`-1`). They flip on `[dir='rtl']` and
+  are available to your own styles.
 
 ### Changed
+
+- **Component token prefixes are spelled out.** Three families were abbreviations of a
+  component's name — the one thing a consumer cannot guess — and now read as the component does:
+
+  | Was               | Is                                                           |
+  | ----------------- | ------------------------------------------------------------ |
+  | `--gog-btn-*`     | `--gog-button-*`                                             |
+  | `--gog-confirm-*` | `--gog-confirmation-dialog-*`                                |
+  | `--gog-ms-*`      | `--gog-multiselect-*` (since 21.3.0; the removal moved here) |
+
+  **Nothing breaks now.** Every old spelling still feeds the component: each replacement declares
+  it in its own fallback (`--gog-button-md-padding: var(--gog-btn-md-padding, 0.75rem 1.25rem)`),
+  and the per-instance names (`--gog-btn-bg`, `--gog-btn-padding`, …) are still read by the
+  button's own fallback chain. Override either spelling, at any scope, and it applies —
+  verified in a browser rather than reasoned about, for a theme block, a nested `[data-theme]`
+  subtree and an inline instance override.
+
+  **They are removed in 21.7.0** — two minors rather than one, because a CSS custom property that
+  nothing reads fails silently: no error, no warning, just a value that stops applying. Migration
+  is a find-and-replace on those three prefixes. `TOKENS.md` lists only the current names.
+
+  One prefix that looks abbreviated and is staying: **`--gog-input-*`**. It names the text-field
+  block that `gog-inputfield` and `gog-textarea` both render, not the `gog-inputfield` component —
+  the two restyle together from one token set on purpose, so there is no `--gog-inputfield-*`.
 
 - **`peerDependencies` now accept Angular 22** (`^21.2.0 || ^22.0.0` for `@angular/common`,
   `@angular/core`, `@angular/forms`, `@angular/platform-browser`) instead of `^21.2.0` alone.

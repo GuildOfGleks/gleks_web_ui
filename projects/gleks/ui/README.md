@@ -56,9 +56,6 @@ use — without it they render unstyled.
 ]
 ```
 
-> Up to 21.3.1 these files shipped under `@guildofgleks/ui/src/styles/…`. That path keeps working
-> until 21.5.0; new setups should use the shorter one.
-
 **2. Import components where you use them** — each is standalone:
 
 ```ts
@@ -96,6 +93,18 @@ export class App {}
 One `<gog-dialog />` hosts every dialog (they stack); one `<gog-toast-container />` hosts all
 four toast corners.
 
+## Right-to-left
+
+**RTL is supported.** Set `dir="rtl"` on `<html>` (or on any subtree) and every component
+mirrors: stylesheets use logical properties, portaled panels and tooltip bubbles copy a scoped
+`dir` onto themselves, a tooltip's `position="auto"` prefers the mirrored horizontal side, and
+the calendar's month arrows turn around.
+
+Two things stay physical on purpose, because they are physical words in the API: a tooltip's
+explicit `position="left"`/`"right"`, and a toast's `top-left`/`top-right`/`bottom-left`/
+`bottom-right` corner. `"auto"` is the direction-aware tooltip placement; pick the corner you
+want for a toast.
+
 ## Theming
 
 Every value the components paint with lives in `styles/theme.css`, in three layers:
@@ -103,13 +112,13 @@ Every value the components paint with lives in `styles/theme.css`, in three laye
 **Foundation** — palette, type scale, spacing, motion. Override these to restyle everything at
 once; component tokens derive from them, so a palette swap carries through on its own.
 
-**Component** — `--gog-<block>-*`, one block per component, to restyle a single component
-app-wide:
+**Component** — `--gog-<component>-*`, one block per component, named after the component you
+write in markup (`gog-button` → `--gog-button-*`), to restyle a single component app-wide:
 
 ```css
 :root[data-theme='mine'] {
-  --gog-btn-font-family: var(--gog-font-body);
-  --gog-btn-ghost-hover-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
+  --gog-button-font-family: var(--gog-font-body);
+  --gog-button-ghost-hover-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
   --gog-table-hover-bg: var(--gog-hover-color);
 }
 ```
@@ -119,9 +128,20 @@ variant and size classes:
 
 ```css
 .my-form gog-button {
-  --gog-btn-bg: rebeccapurple; /* wins over .gog-btn--primary */
+  --gog-button-bg: rebeccapurple; /* wins over .gog-btn--primary */
 }
 ```
+
+> **Renamed in 21.5.0.** Three prefixes were abbreviated and are now spelled out:
+> `--gog-btn-*` → `--gog-button-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`, and
+> `--gog-ms-*` → `--gog-multiselect-*` (that one since 21.3.0). **The old spellings still work**
+> — every new name derives from its old twin — and are **removed in 21.7.0**. A CSS override that
+> stops being read fails silently, which is why the window is two minors rather than one.
+>
+> One prefix that looks abbreviated and is not: **`--gog-input-*`**. It names the shared
+> text-field block that both `gog-inputfield` and `gog-textarea` render (`.gog-input__field`), not
+> the `gog-inputfield` component — the two are meant to restyle together from one token set, so
+> there is no `--gog-inputfield-*` and there will not be one.
 
 Every group and token name is in **[`TOKENS.md`](./TOKENS.md)**, generated from `theme.css` so it
 cannot drift, and available at runtime as `GOG_TOKEN_GROUPS`.
@@ -188,15 +208,15 @@ provideGogIcons({ cart: '<svg viewBox="0 0 24 24">…</svg>' });
 
 ## Components
 
-| Group | Components |
-| --- | --- |
-| Form controls | `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`, `gog-checkbox`, `gog-radio-group`, `gog-toggle`, `gog-slider`, `gog-datepicker`, `gog-calendar`, `gog-button-toggle-group` |
-| Actions | `gog-button`, `gog-chip` |
-| Data | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag` |
-| Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-divider`, `gog-scroll` |
-| Overlays | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`) |
-| Feedback | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton` |
-| Content | `gog-icon` |
+| Group               | Components                                                                                                                                                                                                        |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Form controls       | `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`, `gog-checkbox`, `gog-radio-group`, `gog-toggle`, `gog-slider`, `gog-datepicker`, `gog-calendar`, `gog-button-toggle-group` |
+| Actions             | `gog-button`, `gog-chip`                                                                                                                                                                                          |
+| Data                | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag`                                                                                                                                                          |
+| Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-divider`, `gog-scroll`                                                                                                                         |
+| Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`), `gog-menu` (+ `gogMenuTrigger` / `gogMenuItem`)                                                                                   |
+| Feedback            | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton`                                                                                                                                           |
+| Content             | `gog-icon`                                                                                                                                                                                                        |
 
 **Directives:** `gogButton` (a link that looks like a button), `gogTooltip`, `gogBadge`,
 `gogCollapsibleTrigger`, `gogCollapsibleContent`.
@@ -223,11 +243,11 @@ A few things worth knowing before you reach for a workaround:
 
 ## Documentation
 
-| | |
-| --- | --- |
-| **[`AGENTS.md`](./AGENTS.md)** | the full API reference — every input, output, slot, type and default, per component. Ships in this package. |
-| **[`TOKENS.md`](./TOKENS.md)** | every `--gog-*` token, generated from `theme.css` |
-| [CHANGELOG](https://github.com/GuildOfGleks/gleks_web_ui/blob/master/projects/gleks/ui/CHANGELOG.md) | release history |
+|                                                                                                      |                                                                                                             |
+| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **[`AGENTS.md`](./AGENTS.md)**                                                                       | the full API reference — every input, output, slot, type and default, per component. Ships in this package. |
+| **[`TOKENS.md`](./TOKENS.md)**                                                                       | every `--gog-*` token, generated from `theme.css`                                                           |
+| [CHANGELOG](https://github.com/GuildOfGleks/gleks_web_ui/blob/master/projects/gleks/ui/CHANGELOG.md) | release history                                                                                             |
 
 `AGENTS.md` is written for an AI coding assistant working in your project, but it is the most
 complete API reference either way — point your assistant at it and it will stop guessing.

@@ -126,7 +126,7 @@
 }
 
 .gog-input-wrapper--spin-clear .gog-input__clear {
-  right: calc(
+  inset-inline-end: calc(
     var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset)) + var(--gog-input-spin-width)
   );
 }
@@ -194,10 +194,10 @@
 }
 
 .gog-input__icon--start {
-  left: var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset));
+  inset-inline-start: var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset));
 }
 .gog-input__icon--end {
-  right: var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset));
+  inset-inline-end: var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset));
 }
 
 .gog-input__error {
@@ -236,7 +236,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  right: 0;
+  inset-inline-end: 0;
   display: flex;
   flex-direction: column;
   pointer-events: auto;

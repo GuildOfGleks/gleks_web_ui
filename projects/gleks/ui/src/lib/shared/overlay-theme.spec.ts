@@ -5,9 +5,12 @@ describe('scopedOverlayTheme', () => {
   let created: HTMLElement[];
 
   beforeEach(() => {
+    // Deliberately not appended to `document.body`: `scopedOverlayTheme` walks up with
+    // `closest()`, which would escape this stub root and find whatever `data-theme` another
+    // spec file left on the real `documentElement`. Detached, the walk stops here — and the
+    // function reads nothing that needs layout.
     root = document.createElement('html-stub');
     created = [root];
-    document.body.appendChild(root);
   });
 
   afterEach(() => {

@@ -52,7 +52,7 @@
 ) {
   #{$label} {
     position: absolute;
-    left: #{$pad-x};
+    inset-inline-start: #{$pad-x};
     top: #{$rest-top};
     @if $rest-centered {
       transform: translateY(-50%);
@@ -118,7 +118,7 @@
     background-color: var(--gog-#{$prefix}-float-label-on-bg, var(--gog-#{$prefix}-field-bg));
     padding: 0 4px;
     /* Pulled back by the padding above so the text still aligns with the field's own inset. */
-    left: calc(#{$pad-x} - 4px);
+    inset-inline-start: calc(#{$pad-x} - 4px);
   }
 
   #{$block}--float-over#{$block}--floated #{$label} {

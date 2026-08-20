@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   ButtonComponent,
-  GogSelectOption,
+  GogDropdownOption,
   InputfieldComponent,
   SelectComponent,
   ToastContainerComponent,
@@ -24,14 +24,14 @@ export class ToastPage {
   protected readonly toastType = signal<string | number | null>('success');
   protected readonly toastPosition = signal<string | number | null>('bottom-right');
 
-  protected readonly toastTypes: GogSelectOption[] = [
+  protected readonly toastTypes: GogDropdownOption[] = [
     { id: 'success', name: 'Success' },
     { id: 'error', name: 'Error' },
     { id: 'warning', name: 'Warning' },
     { id: 'info', name: 'Info' },
   ];
 
-  protected readonly positions: GogSelectOption[] = [
+  protected readonly positions: GogDropdownOption[] = [
     { id: 'top-left', name: 'Top left' },
     { id: 'top-right', name: 'Top right' },
     { id: 'bottom-left', name: 'Bottom left' },

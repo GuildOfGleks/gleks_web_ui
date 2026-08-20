@@ -1,0 +1,191 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-menu</p>
+    <h2>Menu</h2>
+    <p class="lead">
+      A command menu opened from a button you own. <code>[gogMenuTrigger]</code> goes on your
+      button, <code>gogMenuItem</code> on your items — so an item can carry an icon, a label and a
+      shortcut hint without an input per piece. A closed menu renders nothing at all, and an open
+      one renders into <code>&lt;body&gt;</code>, so nothing above it can clip it.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Playground</h3>
+    <p class="meta">
+      Open it, then use the keyboard: <kbd>↑</kbd>/<kbd>↓</kbd> move and step over the disabled
+      item, <kbd>Home</kbd>/<kbd>End</kbd> jump to the ends, <kbd>Enter</kbd> runs one,
+      <kbd>Esc</kbd> closes and puts focus back on the button.
+    </p>
+
+    <div class="menu-row">
+      <gog-button variant="outline" type="button" [gogMenuTrigger]="basicMenu"
+        >Document actions</gog-button
+      >
+
+      <gog-menu #basicMenu ariaLabel="Document actions" (gogClosed)="onClosed()">
+        <button gogMenuItem type="button" (click)="run('Rename')">
+          <gog-icon name="pencil" />
+          Rename
+        </button>
+        <button gogMenuItem type="button" (click)="run('Duplicate')">
+          <gog-icon name="copy" />
+          Duplicate
+        </button>
+        <button gogMenuItem type="button" disabled>
+          <gog-icon name="lock" />
+          Transfer ownership
+        </button>
+        <button gogMenuItem type="button" (click)="run('Delete')">
+          <gog-icon name="trash" />
+          Delete
+        </button>
+      </gog-menu>
+    </div>
+
+    <p class="meta">
+      Last action: <strong>{{ lastAction() }}</strong> · closes:
+      <strong>{{ closes() }}</strong> (<code>gogClosed</code> fires however the menu closed — item,
+      Esc, Tab or a click outside).
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Disabled items</h3>
+    <p class="meta">
+      An item is your own <code>&lt;button&gt;</code>, so you disable it the way you disable a
+      button: the native <code>disabled</code> attribute — there is no input for it. A disabled item
+      stays in the list (removing it would shift everything else under the pointer), the arrow keys
+      step over it, and clicking it does nothing.
+    </p>
+
+    <div class="menu-row">
+      <gog-button variant="outline" type="button" [gogMenuTrigger]="staticDisabledMenu"
+        >Statically disabled</gog-button
+      >
+      <gog-menu #staticDisabledMenu ariaLabel="Statically disabled items">
+        <button gogMenuItem type="button" (click)="run('Publish')">Publish</button>
+        <button gogMenuItem type="button" disabled>Publish to production</button>
+        <button gogMenuItem type="button" disabled>Delete permanently</button>
+        <button gogMenuItem type="button" (click)="run('Duplicate')">Duplicate</button>
+      </gog-menu>
+
+      <gog-button variant="outline" type="button" [gogMenuTrigger]="boundDisabledMenu"
+        >Bound to state</gog-button
+      >
+      <gog-menu #boundDisabledMenu ariaLabel="Items disabled by state">
+        <button gogMenuItem type="button" (click)="run('Open')">Open</button>
+        <button gogMenuItem type="button" [disabled]="isLocked()" (click)="run('Edit')">
+          Edit
+        </button>
+        <button gogMenuItem type="button" [disabled]="isLocked()" (click)="run('Delete')">
+          Delete
+        </button>
+      </gog-menu>
+
+      <gog-toggle label="Locked" size="sm" [(checked)]="isLocked" />
+    </div>
+
+    <p class="meta">
+      With <strong>Locked</strong> on, the second menu leaves only <em>Open</em> reachable —
+      <kbd>↓</kbd> from it wraps back to itself instead of landing on a dead command.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>A long menu scrolls itself</h3>
+    <p class="meta">
+      Past <code>--gog-menu-max-height</code> the panel scrolls with <code>gog-scroll</code>, the
+      same scroller the rest of the library uses: thin, auto-hiding, and it keeps the wheel to
+      itself when the list ends instead of handing it to the page. Arrowing past the last visible
+      item scrolls it into view.
+    </p>
+
+    <div class="menu-row">
+      <gog-button variant="outline" type="button" [gogMenuTrigger]="longMenu"
+        >Move to branch…</gog-button
+      >
+      <gog-menu #longMenu ariaLabel="Move to branch">
+        @for (branch of branches; track branch) {
+          <button gogMenuItem type="button" (click)="run('Move to ' + branch)">{{ branch }}</button>
+        }
+      </gog-menu>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Row actions</h3>
+    <p class="meta">
+      What the component was built for: an icon button per row. The table wraps itself in a
+      <code>gog-scroll</code>, and the panel still escapes it — that is why the menu always renders
+      into <code>&lt;body&gt;</code> rather than offering a mode to get this wrong in.
+    </p>
+
+    <gog-table [value]="documents" size="sm">
+      <gog-column field="name" header="Document"></gog-column>
+      <gog-column field="owner" header="Owner"></gog-column>
+      <gog-column field="id" header="" width="72px">
+        <ng-template gogColumnBody let-row>
+          <span class="menu-row__actions">
+            <button
+              gogButton
+              variant="ghost"
+              size="sm"
+              type="button"
+              [gogMenuTrigger]="rowMenu"
+              [attr.aria-label]="'Actions for ' + $any(row).name"
+            >
+              <gog-icon name="more-vertical" />
+            </button>
+
+            <gog-menu #rowMenu ariaLabel="Row actions">
+              <button gogMenuItem type="button" (click)="run('Open ' + $any(row).name)">
+                <gog-icon name="eye" />
+                Open
+              </button>
+              <button gogMenuItem type="button" (click)="run('Share ' + $any(row).name)">
+                <gog-icon name="external-link" />
+                Share
+              </button>
+              <button gogMenuItem type="button" disabled>
+                <gog-icon name="lock" />
+                Transfer ownership
+              </button>
+              <button gogMenuItem type="button" (click)="run('Archive ' + $any(row).name)">
+                <gog-icon name="download" />
+                Archive
+              </button>
+            </gog-menu>
+          </span>
+        </ng-template>
+      </gog-column>
+    </gog-table>
+  </article>
+
+  <article class="card">
+    <h3>Direction</h3>
+    <p class="meta">
+      <code>direction</code> is <code>'auto'</code> by default: the panel drops down whenever it
+      fits and flips up only when it cannot — unlike a select's listbox, which takes whichever side
+      has more room. Force it with <code>'up'</code> or <code>'down'</code>.
+    </p>
+
+    <div class="menu-row">
+      <gog-button variant="outline" size="sm" type="button" [gogMenuTrigger]="autoMenu"
+        >auto</gog-button
+      >
+      <gog-menu #autoMenu ariaLabel="Auto direction">
+        <button gogMenuItem type="button" (click)="run('auto')">Item</button>
+        <button gogMenuItem type="button" (click)="run('auto')">Item</button>
+      </gog-menu>
+
+      <gog-button variant="outline" size="sm" type="button" [gogMenuTrigger]="upMenu"
+        >up</gog-button
+      >
+      <gog-menu #upMenu direction="up" ariaLabel="Upwards menu">
+        <button gogMenuItem type="button" (click)="run('up')">Item</button>
+        <button gogMenuItem type="button" (click)="run('up')">Item</button>
+      </gog-menu>
+    </div>
+  </article>
+</section>

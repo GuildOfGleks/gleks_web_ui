@@ -19,6 +19,15 @@
 //   D. allowlist-fresh       INSTANCE_TOKENS below must match reality — an entry that is
 //                            now declared, or no longer read, is stale and fails the check.
 //                            This is what keeps the list usable as documentation.
+//
+//   E. known-prefix          Every token's prefix is a component's own name, a shared block,
+//                            or a foundation family — see NAMESPACES below. A consumer guesses
+//                            a token name from the component they wrote in markup, so
+//                            `--gog-dlg-bg` next to `<gog-dialog>` is a token nobody finds.
+//                            api-design.instructions.md states the rule ("block token prefix
+//                            spelled out, not abbreviated"); this is what stops the next
+//                            abbreviation landing, since the four that exist were all added
+//                            while the rule was already written down.
 
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -26,6 +35,7 @@ import { fileURLToPath } from 'node:url';
 import { glob } from 'node:fs/promises';
 import * as sass from 'sass';
 
+import { DEPRECATED_NAMESPACES } from './deprecations.mjs';
 import { INSTANCE_TOKENS } from './instance-tokens.mjs';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -46,6 +56,61 @@ const LITERAL_FALLBACK_ALLOWED = new Set([
 ]);
 
 const DECLARATION_RE = /(--gog-[a-zA-Z0-9-]+)\s*:/g;
+
+/**
+ * Rule E's allowlist. A token is `--gog-<namespace>-<rest>`, and the namespace has to be one
+ * of these — component names come from the folder list, so a new component needs no edit here;
+ * everything else is a deliberate decision someone made once.
+ */
+const FOUNDATION_NAMESPACES = new Set([
+  // palette
+  'accent',
+  'background',
+  'border',
+  'danger',
+  'hover',
+  'info',
+  'muted',
+  'primary',
+  'secondary',
+  'success',
+  'surface',
+  'text',
+  'warning',
+  // type, metrics, motion, state
+  'disabled',
+  'duration',
+  'easing',
+  'focus',
+  'font',
+  'radius',
+  'space',
+  // shared tiers several components read
+  'control',
+  'field',
+  'panel',
+  // writing direction, for the few properties with no logical form (utilities.css)
+  'direction',
+  'inline',
+]);
+
+/**
+ * Blocks that are not a single component's name, and why. Each of these is read by more than
+ * one component on purpose, so naming it after either one would be worse than the shared name.
+ */
+const SHARED_BLOCK_NAMESPACES = new Map([
+  ['input', 'the text-field block `gog-inputfield` and `gog-textarea` both render'],
+  ['dropdown', 'the panel `gog-select`, `gog-multiselect` and `gog-autocomplete` share'],
+  ['calendar', 'the month grid, rendered standalone and inside `gog-datepicker`'],
+  // Checked when rule E first flagged it: `gog-radio-group` declares BOTH families on purpose —
+  // `--gog-radio-group-*` for the container (gap, legend text, option spacing) and `--gog-radio-*`
+  // for one radio control inside it. Aliasing the second onto the first collides with real
+  // tokens: `--gog-radio-group-label-size` already exists and means something else.
+  ['radio', 'one radio control inside `gog-radio-group`, which owns `--gog-radio-group-*` too'],
+]);
+
+// The abbreviations that predate the rule live in `deprecations.mjs`, together with the dates
+// they carry — one list, read here by rule E and expanded by the manifest generator.
 
 /**
  * Component stylesheets are analysed **after** compiling them with sass, not as raw source.
@@ -148,6 +213,19 @@ function lineOf(content, index) {
   return content.slice(0, index).split('\n').length;
 }
 
+/**
+ * Component names, from the folder layout — `lib/components/<name>/`, plus nested ones like
+ * `dialog/confirmation-dialog`. Reading the filesystem rather than a hand-kept list is what
+ * makes rule E free for a new component: add the folder, its tokens validate.
+ */
+async function collectComponentNames(dir) {
+  const names = new Set();
+  for await (const entry of glob('**/', { cwd: dir, withFileTypes: true })) {
+    names.add(entry.name);
+  }
+  return names;
+}
+
 /** theme.css's plain `:root { … }` block — the literals-only tier. */
 function extractRootLiteralBlock(themeCss) {
   const match = themeCss.match(/\n:root\s*\{([\s\S]*?)\n\}/);
@@ -172,7 +250,10 @@ async function main() {
   // the moment it exists instead of whenever someone remembers to add it here. `theme.css` is
   // excluded because it is the *declaration* source this check compares everything against, and
   // `presets/` because a preset declares palette tokens and reads nothing.
-  for await (const entry of glob('*.css', { cwd: path.join(uiSrc, 'styles'), withFileTypes: true })) {
+  for await (const entry of glob('*.css', {
+    cwd: path.join(uiSrc, 'styles'),
+    withFileTypes: true,
+  })) {
     if (!entry.isFile() || entry.name === 'theme.css') continue;
     const cssPath = path.join(entry.parentPath ?? entry.path, entry.name);
     scssContent.set(cssPath, readFileSync(cssPath, 'utf8'));
@@ -188,6 +269,8 @@ async function main() {
   const problems = [];
   const rel = (f) => path.relative(rootDir, f).replace(/\\/g, '/');
   const readTokens = new Set();
+  /** Rule E: tokens still using a pre-21.5.0 abbreviated prefix. Reported, not failed. */
+  const deprecatedSpellings = new Set();
 
   for (const [file, content] of scssContent) {
     for (const { token, fallback, index } of parseVarReads(content)) {
@@ -251,6 +334,44 @@ async function main() {
     }
   }
 
+  // Rule E
+  const componentNames = await collectComponentNames(path.join(uiSrc, 'lib/components'));
+  const knownNamespace = (token) => {
+    const rest = token.slice('--gog-'.length);
+    const matches = (name) => rest === name || rest.startsWith(name + '-');
+    for (const name of componentNames) if (matches(name)) return 'component';
+    for (const name of FOUNDATION_NAMESPACES) if (matches(name)) return 'foundation';
+    for (const name of SHARED_BLOCK_NAMESPACES.keys()) if (matches(name)) return 'shared';
+    for (const name of DEPRECATED_NAMESPACES.keys()) if (matches(name)) return name;
+    return null;
+  };
+
+  // theme.css keeps each deprecated spelling inside its replacement's fallback
+  // (`--gog-button-md-padding: var(--gog-btn-md-padding, …)`), where it is read but never
+  // declared — so it has to be counted from the source text, not from the declaration sets.
+  for (const match of themeCss.matchAll(/--gog-[a-zA-Z0-9-]+/g)) {
+    for (const short of DEPRECATED_NAMESPACES.keys()) {
+      if (match[0].startsWith(`--gog-${short}-`)) deprecatedSpellings.add(match[0]);
+    }
+  }
+
+  const allTokens = new Set([...themeDeclared, ...componentDeclared, ...readTokens]);
+  for (const token of [...allTokens].sort()) {
+    const namespace = knownNamespace(token);
+    if (namespace === null) {
+      problems.push(
+        `[known-prefix] ${token} starts with no namespace this library has\n` +
+          `      a component's own name (lib/components/<name>/), a foundation family or a shared block —\n` +
+          `      spell the component out (\`--gog-multiselect-*\`, not \`--gog-ms-*\`), or add the namespace to\n` +
+          `      FOUNDATION_NAMESPACES / SHARED_BLOCK_NAMESPACES in this script with the reason`,
+      );
+    } else if (DEPRECATED_NAMESPACES.has(namespace)) {
+      // Not a failure — these are the pre-rule spellings, kept resolving until 21.7.0. Counted
+      // so the number is visible in the summary rather than quietly growing.
+      deprecatedSpellings.add(token);
+    }
+  }
+
   if (problems.length > 0) {
     console.error('Design-token contract check FAILED\n');
     for (const problem of problems) console.error(`  ${problem}\n`);
@@ -264,6 +385,20 @@ async function main() {
     `Design-token contract check passed — ${themeDeclared.size} tokens in theme.css, ` +
       `${INSTANCE_TOKENS.size} instance-layer tokens, ${scssFiles.length} component stylesheets scanned.`,
   );
+  if (deprecatedSpellings.size > 0) {
+    const byNamespace = [...DEPRECATED_NAMESPACES.entries()]
+      .map(([short, meta]) => {
+        const count = [...deprecatedSpellings].filter((t) =>
+          t.startsWith(`--gog-${short}-`),
+        ).length;
+        return count > 0 ? `--gog-${short}-* → ${meta.replacementPrefix}* (${count})` : null;
+      })
+      .filter(Boolean)
+      .join(', ');
+    console.log(
+      `  ${deprecatedSpellings.size} on a deprecated prefix, removed in 21.7.0: ${byNamespace}`,
+    );
+  }
 }
 
 main();

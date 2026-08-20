@@ -20,6 +20,13 @@ describe('ThemeService', () => {
     window.localStorage.removeItem(storageKey);
   });
 
+  // This spec writes to the real `document.documentElement`, which every other spec file in
+  // the same worker shares. Leaving a theme on it is invisible here and fails somebody else.
+  afterEach(() => {
+    document.documentElement.removeAttribute('data-theme');
+    window.localStorage.removeItem(storageKey);
+  });
+
   it('should initialize and switch themes', () => {
     const service = createService();
 

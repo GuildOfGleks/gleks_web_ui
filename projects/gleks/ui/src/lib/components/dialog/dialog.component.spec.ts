@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 
 import { DialogComponent } from './dialog.component';
+import { DIALOG_DATA, DIALOG_REF, type DialogRef } from './dialog.tokens';
 import { DialogService } from '../../services/dialog-service/dialog.service';
 
 @Component({
@@ -12,6 +13,20 @@ import { DialogService } from '../../services/dialog-service/dialog.service';
     </button>`,
 })
 class DialogContentComponent {}
+
+/** Reads what the dialog injects, so the contract a consumer's content depends on is pinned. */
+@Component({
+  standalone: true,
+  template: `<p class="injected">{{ data.label }}</p>`,
+})
+class InjectingContentComponent {
+  readonly data = inject<{ label: string }>(DIALOG_DATA);
+  readonly ref = inject<DialogRef>(DIALOG_REF);
+}
+
+/** No focusable child at all — the focus trap has nowhere to send Tab. */
+@Component({ standalone: true, template: `<p class="static-text">Nothing to focus</p>` })
+class StaticContentComponent {}
 
 describe('DialogComponent', () => {
   let component: DialogComponent;
@@ -53,6 +68,121 @@ describe('DialogComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  // The audit that produced docs/hardening-21.5.0.md found the focus trap covered and the
+  // ARIA contract not covered at all — which is the half a screen-reader user actually meets.
+  describe('the ARIA contract', () => {
+    it('marks the panel as a modal dialog labelled by its own title', async () => {
+      dialogService.open({ component: DialogContentComponent, title: 'My dialog' });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = fixture.nativeElement.querySelector('.gog-dialog__panel') as HTMLElement;
+      const title = fixture.nativeElement.querySelector('.gog-dialog__title') as HTMLElement;
+
+      expect(panel.getAttribute('role')).toBe('dialog');
+      expect(panel.getAttribute('aria-modal')).toBe('true');
+      expect(panel.getAttribute('aria-labelledby')).toBe(title.id);
+      expect(title.id).toBeTruthy();
+    });
+
+    it('drops aria-modal for a non-modal dialog, which does not trap the page', async () => {
+      dialogService.open({ component: DialogContentComponent, title: 'Inline', modal: false });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = fixture.nativeElement.querySelector('.gog-dialog__panel') as HTMLElement;
+      expect(panel.getAttribute('aria-modal')).toBeNull();
+      expect(panel.getAttribute('role')).toBe('dialog');
+    });
+
+    it('honours an explicit role, so an alert dialog announces as one', async () => {
+      dialogService.open({
+        component: DialogContentComponent,
+        title: 'Careful',
+        role: 'alertdialog',
+      });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = fixture.nativeElement.querySelector('.gog-dialog__panel') as HTMLElement;
+      expect(panel.getAttribute('role')).toBe('alertdialog');
+    });
+
+    it('leaves aria-labelledby off a titleless dialog rather than pointing at nothing', async () => {
+      dialogService.open({ component: DialogContentComponent });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = fixture.nativeElement.querySelector('.gog-dialog__panel') as HTMLElement;
+      expect(panel.getAttribute('aria-labelledby')).toBeNull();
+    });
+
+    it('gives each open dialog its own title id', async () => {
+      dialogService.open({ component: DialogContentComponent, title: 'First' });
+      dialogService.open({ component: DialogContentComponent, title: 'Second' });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panels = [
+        ...fixture.nativeElement.querySelectorAll('.gog-dialog__panel'),
+      ] as HTMLElement[];
+      const ids = panels.map((panel) => panel.getAttribute('aria-labelledby'));
+
+      expect(ids).toHaveLength(2);
+      expect(new Set(ids).size).toBe(2);
+    });
+
+    it('names the close button, since its icon carries no text', async () => {
+      dialogService.open({ component: DialogContentComponent, title: 'My dialog' });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const close = fixture.nativeElement.querySelector('.gog-dialog__close') as HTMLElement;
+      expect(close.getAttribute('aria-label')).toBeTruthy();
+    });
+  });
+
+  describe('what the projected component can inject', () => {
+    it('provides DIALOG_DATA and a DIALOG_REF that closes with a result', async () => {
+      const handle = dialogService.open<string>({
+        component: InjectingContentComponent,
+        data: { label: 'from the caller' },
+      });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const rendered = fixture.nativeElement.querySelector('.injected') as HTMLElement;
+      expect(rendered.textContent).toContain('from the caller');
+
+      // Closing through the injected ref is the path a consumer's own content uses.
+      const content = fixture.debugElement.query(
+        (node) => node.componentInstance instanceof InjectingContentComponent,
+      );
+      content.componentInstance.ref.close('done');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      await expect(handle.afterClosed).resolves.toBe('done');
+      expect(dialogService.dialogs()).toHaveLength(0);
+    });
+  });
+
+  it('keeps focus on the panel when the dialog has nothing focusable inside it', async () => {
+    dialogService.open({ component: StaticContentComponent, closable: false });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const panel = fixture.nativeElement.querySelector('.gog-dialog__panel') as HTMLElement;
+    const focusSpy = vi.spyOn(panel, 'focus');
+    const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
+    const preventDefault = vi.spyOn(event, 'preventDefault');
+
+    panel.dispatchEvent(event);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(focusSpy).toHaveBeenCalled();
   });
 
   it('renders the configured component and title when a dialog opens', async () => {

@@ -5,8 +5,10 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.4.4`**. `README.md` covers the
-same ground at a higher level — install, setup, theming, global configuration — and is accurate;
+Everything below reflects the library's actual source as of **`21.4.4`** plus the removals
+already landed for the unreleased `21.5.0` — see **Removed in 21.5.0** near the end of this file,
+and `CHANGELOG.md`. `README.md` covers the same ground at a higher level — install, setup,
+theming, global configuration — and is accurate;
 this file goes further, into per-component input tables, and is the one to trust for exact names,
 types and defaults.
 
@@ -168,16 +170,32 @@ Full model is in `README.md`'s Theming section and `theming.md`; short version:
 
 - Every visual value (color, spacing, radius, shadow, duration) is a `--gog-*` CSS custom
   property, layered **foundation** (`--gog-accent-color`, `--gog-space-md`, …, restyles
-  everything) → **component** (`--gog-btn-primary-bg`, …, one block per component) →
-  **instance** (`--gog-btn-bg`, …, deliberately undeclared escape hatch for one element).
+  everything) → **component** (`--gog-button-primary-bg`, …, one block per component, named after
+  the component's own element) → **instance** (`--gog-button-bg`, …, deliberately undeclared
+  escape hatch for one element).
+- **Component prefixes are spelled out** since 21.5.0: `--gog-button-*`, `--gog-multiselect-*`,
+  `--gog-confirmation-dialog-*`. The abbreviated `--gog-btn-*`, `--gog-ms-*` and `--gog-confirm-*`
+  still resolve and are removed in 21.7.0 — don't write new code with them. The exception is
+  `--gog-input-*`, which is not an abbreviation: it is the shared text-field block that
+  `gog-inputfield` and `gog-textarea` both render, and it keeps that name.
 - Theme switch is a `data-theme` attribute, usually on `<html>`, toggled through the
   `ThemeService` (`inject(ThemeService).setTheme('dark')` / `.toggleTheme()` / `.theme` signal).
   Ships `light` and `dark`. Three more importable presets: `slate`, `one-dark`, `one-light`
   (`@guildofgleks/ui/styles/presets/<name>.css`).
-- Restyle one instance without touching a theme: `<gog-button style="--gog-btn-bg: #ff4edb">`.
+- Restyle one instance without touching a theme: `<gog-button style="--gog-button-bg: #ff4edb">`.
 - Build a custom theme by declaring a palette against a new `data-theme` value (see
   `theming.md` for the full worked example) — component tokens re-derive automatically, you
   don't restate them.
+
+## Right-to-left
+
+Supported since 21.5.0. `dir="rtl"` on `<html>` or on any wrapper mirrors every component —
+you write nothing per component. Portaled overlays (select/multiselect panels, tooltip bubbles)
+copy a _scoped_ `dir` onto themselves, so an RTL region inside an LTR page works too.
+
+Physical by design, in both directions: `gogTooltip [position]="'left' | 'right'"` and
+`ToastConfig.position` (`'top-right'`, …). Use the tooltip's `'auto'` for direction-aware
+placement; a toast corner is a deliberate choice, so it is not mirrored.
 
 ## Global configuration — `GOG_CONFIG` / `provideGogConfig(...)`
 
@@ -604,7 +622,7 @@ not from `value`, since `value` clears the moment the text stops matching the se
 | `indeterminate`, `disabled`, `fullWidth` | `boolean`              | `false` |
 
 Model: `checked: boolean`. CVA: yes. Slot: `<ng-template gogCheckboxIcon>` for a custom tick
-icon (replaces the deprecated `checkIconTemplate` input).
+icon.
 
 ```html
 <gog-checkbox label="I agree to the terms" formControlName="agree" />
@@ -907,7 +925,7 @@ Outputs: `gogClick: MouseEvent | KeyboardEvent`, `gogRemove: void`.
 | `iconName`  | `GogIconName \| null` | `null`      |
 | `fullWidth` | `boolean`             | `false`     |
 
-Slot: `<ng-template gogTagIcon>` for custom icon markup (replaces the deprecated `iconTemplate`).
+Slot: `<ng-template gogTagIcon>` for custom icon markup.
 
 ```html
 <gog-tag variant="success">Active</gog-tag>
@@ -1041,6 +1059,12 @@ Model: `open: boolean`.
   </div>
 </gog-collapsible>
 ```
+
+**The trigger can be any element.** On a `<button>` or `<a href>` the directive adds only the
+ARIA wiring, because the browser already handles focus and keys. On anything else — a `<div>`, a
+`<span>` — it also supplies `role="button"`, `tabindex="0"` and Enter/Space, so the control it
+announces is one a keyboard can actually reach. If you set `role` or `tabindex` yourself, the
+directive leaves both alone: you have said what the element is.
 
 An open panel is as tall as its content — `--gog-collapsible-max-height` defaults to
 `max-content`. Set it to a length on an instance to cap one deliberately; the panel is
@@ -1298,6 +1322,63 @@ Methods (via template ref): `scrollTo(options)`, `scrollToTop()`, `scrollToBotto
 
 ### Overlays
 
+#### `gog-menu` + `gogMenuTrigger` / `gogMenuItem`
+
+A command menu. The trigger is a directive on **your own button** — usually the icon button you
+already styled — and the items are your own buttons too, so an item can hold an icon, a label and
+a shortcut hint without an input per piece:
+
+```html
+<button gogButton variant="ghost" [gogMenuTrigger]="rowMenu" aria-label="Row actions">
+  <gog-icon name="more-vertical" />
+</button>
+
+<gog-menu #rowMenu ariaLabel="Row actions">
+  <button gogMenuItem (click)="edit(row)"><gog-icon name="check" /> Edit</button>
+  <button gogMenuItem disabled>Transfer ownership</button>
+  <button gogMenuItem (click)="remove(row)"><gog-icon name="close" /> Remove</button>
+</gog-menu>
+```
+
+| Input       | Type                       | Default  | Notes                                                                        |
+| ----------- | -------------------------- | -------- | ---------------------------------------------------------------------------- |
+| `direction` | `'auto' \| 'up' \| 'down'` | `'auto'` | `'auto'` drops down whenever the panel fits and flips up only when it cannot |
+| `ariaLabel` | `string`                   | `''`     | Names the panel itself                                                       |
+
+**There is no `appendToBody`.** The panel always renders into `<body>` and is placed from the
+trigger's measured rect, so a menu inside `gog-scroll`, `gog-table` or any `overflow: hidden`
+ancestor is not clipped and needs no configuration. It also takes the `--gog-dropdown-z` its
+trigger inherits, so a menu opened inside a `gog-dialog` stacks above the dialog.
+
+Output: `gogClosed` — fires after every close, whatever caused it.
+
+Public methods, for driving it yourself: `open(trigger, 'first' | 'last')`, `close(restoreFocus?)`,
+`toggle(trigger)`, and the `isOpen` signal.
+
+**Keyboard**, the WAI-ARIA menu button pattern: Enter/Space/ArrowDown open with the first item
+focused, ArrowUp opens with the last, arrows and Home/End move between items and step over
+disabled ones, Escape closes and returns focus to the trigger, Tab closes and lets focus move on.
+A press outside closes without pulling focus back.
+
+**Disabling an item** is the native `disabled` attribute on your own button — static or bound,
+there is no input for it:
+
+```html
+<button gogMenuItem disabled>Transfer ownership</button>
+<button gogMenuItem [disabled]="isLocked()" (click)="edit()">Edit</button>
+```
+
+A disabled item stays in the list rather than disappearing (removing it would shift the others
+under the pointer), the arrow keys step over it, and clicking it does nothing.
+
+**A long menu scrolls itself** past `--gog-menu-max-height`, using `gog-scroll` — the same thin,
+auto-hiding scroller as everywhere else in the package, with `overscrollBehavior="contain"` so a
+wheel at the end of the list does not scroll the page behind it. Arrowing past the last visible
+item scrolls it into view.
+
+A closed menu renders nothing at all, so its commands are not in the accessibility tree until it
+opens.
+
 #### `gog-dialog`
 
 A **single** `<gog-dialog />` renders **every** dialog `DialogService.open(...)` creates —
@@ -1335,24 +1416,45 @@ screen readers, and a second region would announce everything twice. Don't add e
 
 ---
 
-## Deprecated patterns — do not use in new code
+## Reading the deprecations at runtime — `GOG_DEPRECATIONS`
 
-These still work (nothing breaks if you use them), but are marked `@deprecated` and **will be
-removed** on the stated schedule. Don't generate new code using any of them — use the listed
-replacement instead.
+Everything the package currently deprecates, as data:
 
-| Deprecated                                                                                                       | Removed in | Replacement                                                                                                     |
-| ---------------------------------------------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
-| `GogSelectOption`, `GogMultiselectOption` type aliases                                                           | `21.4.0`   | `GogDropdownOption`                                                                                             |
-| `gog-select`/`gog-multiselect` `chevronTemplate` input                                                           | `21.5.0`   | `<ng-template gogDropdownChevron>`                                                                              |
-| `gog-checkbox` `checkIconTemplate` input                                                                         | `21.5.0`   | `<ng-template gogCheckboxIcon>`                                                                                 |
-| `gog-tag` `iconTemplate` input                                                                                   | `21.5.0`   | `<ng-template gogTagIcon>`                                                                                      |
-| `gog-multiselect` `clearIconTemplate` input                                                                      | `21.5.0`   | `<ng-template gogMultiselectClearIcon>`                                                                         |
-| `gog-inputfield` `iconStartTemplate`/`iconEndTemplate`/`iconStartFn`/`iconEndFn`/`iconStartLabel`/`iconEndLabel` | `21.5.0`   | `<span gogInputAddonStart>`/`<span gogInputAddonEnd>` (or a `<button>` with its own handler)                    |
-| `gog-table`'s `[template]` attribute (`<ng-template template="field" type="body">`)                              | `21.5.0`   | `<ng-template gogColumnBody>` / `<ng-template gogColumnHeader>` declared **inside** the matching `<gog-column>` |
-| `<column>` selector / `Column` export                                                                            | `21.5.0`   | `<gog-column>` / `GogColumn`                                                                                    |
+```ts
+import { GOG_DEPRECATIONS, type GogDeprecation } from '@guildofgleks/ui';
 
-The general rule they all follow: a `TemplateRef` **input** or a string-keyed lookup is the old
+GOG_DEPRECATIONS.filter((entry) => entry.removedIn === '21.7.0');
+// { kind: 'token', name: '--gog-btn-bg', replacement: '--gog-button-bg',
+//   since: '21.5.0', sinceDate: '2026-08-19', removedIn: '21.7.0' }
+```
+
+`kind` is `'symbol'` for an export or input and `'token'` for a `--gog-*` custom property. The
+list is generated from the library's source — tags for symbols, stylesheets for tokens — so it
+matches what actually still resolves in the version you installed.
+
+**In 21.5.0 it holds 154 tokens and no symbols.** Nothing in the TypeScript API is deprecated
+right now; the three abbreviated token prefixes are, until 21.7.0.
+
+## Removed in 21.5.0
+
+**Nothing in this table exists any more.** It is here so that code written against 21.4.x — or
+generated from a stale copy of this file — can be migrated: each row names what a call site must
+become. If you are writing new code, ignore this section entirely and use the right-hand column,
+which is documented in full above.
+
+| Removed                                                                                                          | Replacement                                                                                                     |
+| ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `gog-select`/`gog-multiselect` `chevronTemplate` input                                                           | `<ng-template gogDropdownChevron>`                                                                              |
+| `gog-checkbox` `checkIconTemplate` input                                                                         | `<ng-template gogCheckboxIcon>`                                                                                 |
+| `gog-tag` `iconTemplate` input                                                                                   | `<ng-template gogTagIcon>`                                                                                      |
+| `gog-multiselect` `clearIconTemplate` input                                                                      | `<ng-template gogMultiselectClearIcon>`                                                                         |
+| `gog-inputfield` `iconStartTemplate`/`iconEndTemplate`/`iconStartFn`/`iconEndFn`/`iconStartLabel`/`iconEndLabel` | `<span gogInputAddonStart>`/`<span gogInputAddonEnd>` (or a `<button>` with its own handler)                    |
+| `gog-table`'s `[template]` attribute (`<ng-template template="field" type="body">`)                              | `<ng-template gogColumnBody>` / `<ng-template gogColumnHeader>` declared **inside** the matching `<gog-column>` |
+| `<column>` selector / `Column` export                                                                            | `<gog-column>` / `GogColumn`                                                                                    |
+| `GogSelectOption` / `GogMultiselectOption` types                                                                 | `GogDropdownOption` (the same type — they were aliases of it)                                                   |
+| `@guildofgleks/ui/src/styles/…` asset path                                                                       | `@guildofgleks/ui/styles/…`                                                                                     |
+
+The general rule they all followed: a `TemplateRef` **input** or a string-keyed lookup was the old
 shape; a **projected content directive with a typed context**, declared where it's used, is the
 current one. If you're about to write `fooTemplate` next to an existing `foo` input, or key
 something off a string that has to match another string elsewhere, that's this exact

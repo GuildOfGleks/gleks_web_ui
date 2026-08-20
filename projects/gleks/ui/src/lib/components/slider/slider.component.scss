@@ -49,7 +49,7 @@
   font-size: var(--gog-slider-value-font-size);
   font-variant-numeric: tabular-nums;
   color: var(--gog-slider-value-color);
-  text-align: right;
+  text-align: end;
 }
 
 .gog-slider__track-container {
@@ -79,21 +79,26 @@
      gradient, not just a solid color. */
   background: var(--gog-slider-fill-bg);
   transform: scaleX(var(--fill-scale, 0));
-  transform-origin: left center;
+  /* Grows from the inline start, so the filled part is always the side the values count up
+     from. `transform-origin` has no logical form — hence the keyword token (utilities.css). */
+  transform-origin: var(--gog-inline-start-side) center;
   will-change: transform;
 }
 
 .gog-slider__thumb {
   position: absolute;
   top: 50%;
-  left: var(--thumb-pos, 0%);
+  /* The thumb is centred on its own position, so the X half of the translate mirrors with
+     the direction — `inset-inline-start` alone would put the thumb's edge, not its centre,
+     on the value. */
+  inset-inline-start: var(--thumb-pos, 0%);
   width: var(--gog-slider-thumb-size);
   height: var(--gog-slider-thumb-size);
   border: var(--gog-slider-thumb-border-width) solid var(--gog-slider-thumb-border);
   border-radius: var(--gog-slider-thumb-radius);
   background-color: var(--gog-slider-thumb-bg);
   pointer-events: none;
-  translate: -50% -50%;
+  translate: calc(-50% * var(--gog-direction-sign)) -50%;
   will-change: translate;
   box-shadow: 0 0 var(--gog-slider-thumb-glow-size) var(--gog-slider-thumb-shadow);
 }
@@ -150,16 +155,16 @@
 }
 
 .gog-slider--range:not(.gog-slider--vertical) .gog-slider__fill {
-  left: var(--range-start-pos, 0%);
-  right: calc(100% - var(--range-end-pos, 100%));
+  inset-inline-start: var(--range-start-pos, 0%);
+  inset-inline-end: calc(100% - var(--range-end-pos, 100%));
 }
 
 .gog-slider--range .gog-slider__thumb--start {
-  left: var(--range-start-pos, 0%);
+  inset-inline-start: var(--range-start-pos, 0%);
 }
 
 .gog-slider--range .gog-slider__thumb--end {
-  left: var(--range-end-pos, 100%);
+  inset-inline-start: var(--range-end-pos, 100%);
 }
 
 /*
@@ -252,8 +257,7 @@
   transform: none;
   top: calc(100% - var(--range-end-pos, 100%));
   bottom: var(--range-start-pos, 0%);
-  left: 0;
-  right: 0;
+  inset-inline: 0;
 }
 
 .gog-slider--vertical.gog-slider--range .gog-slider__thumb--start {

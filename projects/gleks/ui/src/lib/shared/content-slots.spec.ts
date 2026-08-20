@@ -20,10 +20,10 @@ import {
 import { GogDropdownChevronDirective } from './dropdown-base';
 
 /**
- * The projected-template slots introduced in 21.3.0, which replace the per-slot
- * `input<TemplateRef>` pairs deprecated at the same time. Each case asserts two things: the
- * projected template renders, and it wins over the deprecated input when both are supplied —
- * that precedence is what lets a consumer migrate one call site at a time.
+ * The projected-template slots introduced in 21.3.0. They replaced the per-slot
+ * `input<TemplateRef>` pairs deprecated at the same time, which were removed in 21.5.0 — so
+ * these are now the only way to substitute a component's built-in glyph, and each case asserts
+ * the projected template actually reaches the slot it names.
  */
 
 const MARKER = '.slot-marker';
@@ -32,10 +32,9 @@ const MARKER = '.slot-marker';
   standalone: true,
   imports: [CheckboxComponent, GogCheckboxIconDirective],
   template: `
-    <gog-checkbox [checked]="true" [checkIconTemplate]="legacy">
+    <gog-checkbox [checked]="true">
       <ng-template gogCheckboxIcon><i class="slot-marker">projected</i></ng-template>
     </gog-checkbox>
-    <ng-template #legacy><i class="legacy-marker">legacy</i></ng-template>
   `,
 })
 class CheckboxSlotHost {}
@@ -56,10 +55,9 @@ class TagSlotHost {}
   standalone: true,
   imports: [SelectComponent, GogDropdownChevronDirective],
   template: `
-    <gog-select [options]="[]" [chevronTemplate]="legacy">
+    <gog-select [options]="[]">
       <ng-template gogDropdownChevron><i class="slot-marker">projected</i></ng-template>
     </gog-select>
-    <ng-template #legacy><i class="legacy-marker">legacy</i></ng-template>
   `,
 })
 class SelectChevronHost {}
@@ -99,23 +97,21 @@ async function render<T>(host: new () => T): Promise<ComponentFixture<T>> {
 }
 
 describe('projected content slots', () => {
-  it('gogCheckboxIcon renders and beats the deprecated checkIconTemplate', async () => {
+  it('gogCheckboxIcon renders in place of the built-in tick', async () => {
     const fixture = await render(CheckboxSlotHost);
     expect(fixture.debugElement.query(By.css(MARKER))).toBeTruthy();
-    expect(fixture.debugElement.query(By.css('.legacy-marker'))).toBeNull();
   });
 
   it('gogTagIcon renders — and opens the icon slot, which is gated on hasIcon()', async () => {
-    // Regression guard: `hasIcon` originally only counted `iconName`/`iconTemplate`, so a tag
-    // with nothing but a projected template rendered no icon at all.
+    // Regression guard: `hasIcon` originally only counted `iconName`, so a tag with nothing
+    // but a projected template rendered no icon at all.
     const fixture = await render(TagSlotHost);
     expect(fixture.debugElement.query(By.css(MARKER))).toBeTruthy();
   });
 
-  it('gogDropdownChevron renders on gog-select and beats the deprecated chevronTemplate', async () => {
+  it('gogDropdownChevron renders on gog-select in place of the built-in chevron', async () => {
     const fixture = await render(SelectChevronHost);
     expect(fixture.debugElement.query(By.css(MARKER))).toBeTruthy();
-    expect(fixture.debugElement.query(By.css('.legacy-marker'))).toBeNull();
   });
 
   it('gogMultiselectClearIcon renders inside the clear button', async () => {

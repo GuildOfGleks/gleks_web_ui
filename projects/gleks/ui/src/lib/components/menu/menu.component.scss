@@ -1,0 +1,13 @@
+/*
+ * The menu's `.gog-menu*` block lives in `styles/menu.css` — global, because `gogMenuItem`
+ * marks a consumer's own `<button>` and an encapsulated stylesheet could never reach it. The
+ * same arrangement as `.gog-btn` for `[gogButton]`.
+ *
+ * What stays here is the host, which the directive has no equivalent of: `display: contents`
+ * keeps this component out of the consumer's layout entirely. A menu declared next to a table
+ * row's button must add no box to that row, in either mode — the panel is stamped inside this
+ * host or portaled into `<body>`, and neither should reserve space where the menu was written.
+ */
+:host {
+  display: contents;
+}

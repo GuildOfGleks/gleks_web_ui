@@ -44,13 +44,13 @@ which is the expected shape for a plan that has not started.
 
 | # | Iteration | Kind | State |
 | --- | --- | --- | --- |
-| 1 | Coverage measurement + CI gate | tooling | ⬜ todo |
-| 2 | Token prefix consistency (179 tokens) | api | ⬜ todo |
-| 3 | The scheduled removals + a check that enforces them | api | ⬜ todo |
-| 4 | RTL pass | fix | ⬜ todo |
-| 5 | Test depth where the audit found it thin | tests | ⬜ todo |
-| 6 | `gog-menu` | feature | ⬜ todo |
-| 7 | Version/deprecation metadata for the docs site | tooling | 🟨 step 1 done — see below |
+| 1 | Coverage measurement + CI gate | tooling | ✅ done 2026-08-19 — baseline below |
+| 2 | Token prefix consistency (179 tokens) | api | ✅ done 2026-08-19 — 154 renamed, `--gog-input-*` kept with a reason |
+| 3 | The scheduled removals + a check that enforces them | api | ✅ done 2026-08-19 — every tagged removal plus the `src/styles/` path; `check:deprecations` reports 0 tags |
+| 4 | RTL pass | fix | ✅ done 2026-08-19 — supported, verified live under `dir="rtl"` |
+| 5 | Test depth where the audit found it thin | tests | ✅ done 2026-08-20 — 917 → 965 tests, thresholds raised |
+| 6 | `gog-menu` | feature | ✅ done 2026-08-20 — row-actions menu, verified live |
+| 7 | Version/deprecation metadata for the docs site | tooling | ✅ done 2026-08-20 — `GOG_DEPRECATIONS`, generated and gated |
 
 Update this table at the end of every iteration, and re-state "done / remaining" in the turn
 summary. Per `gleks-ui-library.instructions.md` rule 11 the agent never publishes, never bumps
@@ -90,10 +90,13 @@ endings, and the writer keeps the file's existing ones so the generator no longe
 working tree. This mattered *before* iteration 1 rather than during it: iteration 1 adds a second
 generated-artifact gate to CI, and a gate nobody trusts locally is worse than no gate.
 
-Everything else the plan needs is a plan item, not a prerequisite. **The remaining blocker is not
-technical:** iterations stay on hold until the user finishes verifying the tagged releases against
-the private consuming project and publishes, because iteration 7's lab-side half and the whole of
-`lab-after-publish.md` only unlock on a publish.
+Everything else the plan needs is a plan item, not a prerequisite.
+
+**Superseded on 2026-08-20.** This section used to end by putting the iterations on hold until the
+tagged releases were verified and published, because the lab-side work unlocks only on a publish.
+All seven iterations are done; what still waits on the publish is `lab-after-publish.md`, which is
+where the lab-side half was recorded instead of being done early. The library half needed no
+publish and no longer waits for one.
 
 ---
 
@@ -117,6 +120,36 @@ of at my eyeballing.
 
 **Done when:** `npm run test:lib:coverage` prints per-file numbers, CI fails on a deliberate drop,
 and the baseline is written down here.
+
+### Outcome — 2026-08-19
+
+Done. `@vitest/coverage-v8` is a devDependency, `npm run test:lib:coverage` runs the suite through
+the `coverage` configuration added to `@gleks/ui`'s `test` target in `angular.json`, and CI runs it
+as its own step after `Test @gleks/ui` — separate on purpose, so a red build reads as "coverage
+dropped" rather than "tests broke".
+
+**The baseline, measured on 905 tests across 48 files:**
+
+| Metric | Measured | Threshold set |
+| --- | --- | --- |
+| Statements | 93.02% (3470/3730) | 92% |
+| Branches | 90.34% (2564/2838) | 89% |
+| Functions | 92.93% (829/892) | 92% |
+| Lines | 95.14% (2899/3047) | 94% |
+
+The floors sit ~1 point under today's numbers: close enough to catch a real regression, loose
+enough that a single refactor moving a few uncovered lines doesn't fail a build nobody broke. They
+are a ratchet — **raise them after iteration 5**, don't leave them at 21.5.0's level forever.
+
+What counts: all 63 non-spec `.ts` files under `projects/gleks/ui/src`, which is every source file
+except the two excluded by name (`public-api.ts`, generated `token-names.ts`). Verified by diffing
+the `SF:` entries in `coverage/@gleks/ui/lcov.info` against the file list — nothing from the
+showcase, the lab or `node_modules` leaks in, so the percentages are the library's own. Reporters
+are `text` (the per-file table) and `lcovonly` (for any future upload); `coverage/` is already
+gitignored.
+
+The gate was verified by raising every threshold to 99% and confirming the run exits 1 with four
+`ERROR: Coverage for … does not meet global threshold` lines, then restoring it.
 
 ---
 
@@ -150,6 +183,68 @@ error — a CSS custom property that nothing reads is silent by design.
 
 **Done when:** both spellings work, `check:tokens` rejects a newly-added abbreviation, and
 `TOKENS.md` lists the long names as primary.
+
+### Outcome — 2026-08-19
+
+Done, with **two deviations from the plan above, both from reading the code rather than the
+count.**
+
+**Deviation 1 — `--gog-input-*` is not an abbreviation, and stays.** The plan counted its 38
+tokens as a breach of "spell the component out". They are not `gog-inputfield`'s tokens:
+`textarea.component.scss` reads 57 of them, and both components render the same `.gog-input__field`
+markup, sharing one token set on purpose so a text field and a textarea restyle together. Renaming
+to `--gog-inputfield-*` would have made `gog-textarea` read another component's tokens — worse than
+the abbreviation. It is registered in `check-tokens.mjs` as a shared block, with that reason, and
+the README says there will be no `--gog-inputfield-*`.
+
+**Deviation 2 — the alias direction in the plan is wrong, and the browser proved it.** The plan
+said to declare `--gog-btn-bg: var(--gog-button-bg)` beside the original. Implemented that way
+first; a probe on the showcase's themes page showed a theme setting the **new** name having no
+effect. The reason is the derived layer: `:root, [data-theme]` re-declares every token it holds
+inside *every* themed subtree, so an alias whose value reads the old name resets itself in each
+scope and discards an ancestor's override of the new name. What ships instead puts the deprecated
+spelling in the replacement's fallback:
+
+```css
+--gog-button-md-padding: var(--gog-btn-md-padding, 0.75rem 1.25rem);
+```
+
+The spelled-out name is the declaration; the old name is declared nowhere, so it behaves like the
+instance layer — set it anywhere and it applies everywhere below, in any scope. It also means
+`TOKENS.md` lists **only** the current names (the plan's third done-criterion) instead of both,
+and 21.7.0's removal is "delete the `var(--gog-btn-…, )` wrapper", nothing else. theme.css's header
+carries this reasoning so the next person does not "simplify" it back.
+
+| | |
+| --- | --- |
+| Renamed | `--gog-btn-*` → `--gog-button-*` (64 declarations + 10 instance-layer names), `--gog-confirm-*` → `--gog-confirmation-dialog-*` (7), `--gog-ms-*` → `--gog-multiselect-*` (75, collapsed from twin declarations into the fallback shape) |
+| Deprecated spellings still resolving | 154, counted by `check:tokens` on every run |
+| Removal | 21.7.0, which is also where `--gog-ms-*` moved to — one migration instead of two |
+| theme.css tokens | 1239 → 1168; the drop is the 75 multiselect twins becoming one declaration each |
+
+**The new rule: `check-tokens.mjs` rule E, `known-prefix`.** Every token's namespace must be a
+component folder name (read from `lib/components/`, so a new component needs no edit), a
+foundation family, or a shared block with a written reason. It found a case the audit had not:
+`--gog-radio-*`. That one is **not** a breach — `gog-radio-group` declares `--gog-radio-group-*`
+for the container and `--gog-radio-*` for one control inside it, and aliasing the second onto the
+first collides with real tokens (`--gog-radio-group-label-size` already exists and means something
+else). Recorded in the script; the attempted rename was reverted.
+
+**Verified in a browser, not by reasoning** — this is the one item here a spec cannot cover, since
+jsdom does not resolve custom properties through the cascade:
+
+| Case | Result |
+| --- | --- |
+| theme block sets the deprecated spelling (`--gog-btn-md-padding`, showcase's `cyberpunk`) | applies — 19.2px |
+| theme block sets the current spelling (`warcraft`, `red-alert-3`) | applies — 20.8px / 18.4px |
+| inline instance override, deprecated name (`--gog-btn-bg`, `--gog-btn-padding`) | applies |
+| inline instance override, current name (`--gog-button-bg`, `--gog-button-padding`) | applies |
+| both set on one element | current name wins |
+| `--gog-confirm-min-width` / `--gog-ms-gap` set at `:root` | feed `--gog-confirmation-dialog-min-width` / `--gog-multiselect-gap` |
+
+`ui-showcase`'s `cyberpunk` theme deliberately keeps the deprecated spelling, with a comment
+saying so: it is the live regression check for the whole migration window, and the other two
+themes use the current names.
 
 ---
 
@@ -197,6 +292,65 @@ documented path since then.
 check fails on a deliberately overdue tag, the suite passes, and the showcase demonstrates only
 non-deprecated shapes.
 
+### Outcome — 2026-08-19
+
+**Done, all six steps.** `npm run check:deprecations` now reports `0 tag(s) in 112 source
+file(s)` — the library carries no deprecated API at all for the first time since 21.2.2.
+
+- **Step 3 — the overdue pair is gone.** `GogSelectOption` and `GogMultiselectOption` (aliases of
+  `GogDropdownOption` since 21.2.2, tagged for removal in 21.4.0, still exported through 21.4.4)
+  are deleted from `select.component.ts` and `multiselect.component.ts`. `ui-showcase` used them in
+  six pages and now names `GogDropdownOption` directly; `AGENTS.md`'s deprecation table loses the
+  row; `CHANGELOG.md`'s `### Removed` records the removal *and* the overrun, rather than re-dating
+  it quietly.
+- **Step 4 — `scripts/check-deprecations.mjs`**, wired as `npm run check:deprecations` and as its
+  own CI step next to `check:tokens`. Two rules: every `@deprecated` tag parses into all four
+  required parts (since-version, `(YYYY-MM-DD)`, replacement, `Removed in <version>.`), and no tag
+  may name a removal version at or below `projects/gleks/ui/package.json`'s current version. It
+  reads the tag across line wraps and handles the one tag that lives in a `//` comment inside
+  `column.ts`'s decorator, so all 16 tags parsed on the first run — the two overdue ones were the
+  only failures.
+
+  Verified negatively as well as positively: a tag edited to `Removed in 21.4.4`, one with the
+  removal sentence deleted, and one with the date removed each fail with the expected category.
+  Current output: `14 tag(s) in 113 source file(s), library at 21.4.4. Due: 21.5.0 (14)`.
+
+**Steps 1, 2, 5 and 6 — the fourteen tagged removals, plus the prose-only one.** Taken from
+what `grep -rn "@deprecated since"` printed, not from the table above:
+
+| Removed | Notes |
+| --- | --- |
+| `gog-inputfield`'s six legacy icon inputs | the simplification the plan predicted: `hasIconStartAction`, `hasIconEndAction` and `onIconStartClick` are gone with them, `effectiveIconEndLabel` collapses to the password toggle's own label, and both template branches lose a level of nesting — `iconStart`/`iconEnd` are now unambiguously decorative, and the only action button the field renders for itself is the password toggle |
+| `checkIconTemplate`, `clearIconTemplate`, `iconTemplate`, `chevronTemplate` | each was `slot()?.templateRef ?? input()`; now just the slot |
+| `<column>` selector, `Column` const and type | `gog-column` / `GogColumn` only |
+| the string-keyed `[template]` column slot | `template.directive.ts` deleted, with `TemplateDirective`, `GogTableBodyContext` and `GogTableHeaderContext`; `table.component.ts` loses `templates`, `bodyTemplateMap` and `headerTemplateMap`, and the two template getters become one-liners |
+| the `src/styles/` asset copy (21.3.2's promise) | out of `ng-package.json`'s assets, the `./src/styles/*` export out of `package.json`, and the README paragraph that promised it until 21.5.0 |
+
+Specs: the two `iconStartFn`/`iconEndFn` cases became two that pin the decorative-only contract,
+`content-slots.spec.ts` drops its "beats the deprecated input" assertions (there is no input left
+to beat), and `table.component.spec.ts`'s first host moves to `gog-column` with column-scoped
+templates. 904 tests, all passing.
+
+`ui-showcase`: the dashboard's five-column table moves to `gogColumnBody` / `gogColumnHeader`, and
+the multiselect page's prose stops describing `[clearIconTemplate]` as a live alternative.
+**Verified live** at `localhost:4200` — the dashboard table renders every custom cell (role text,
+status tags, team chips, Remove buttons) and its blank `id` header; the select page's
+`gogDropdownChevron` and the multiselect page's `gogMultiselectClearIcon` still render; the
+inputfield page's leading icons render as decorative spans and the password toggle still reveals.
+No console errors.
+
+**A flake fixed on the way, not in the plan.** `overlay-theme.spec.ts`'s "returns null when nothing
+is themed at all" failed once during this iteration and passed on re-run: its stub root was
+appended to `document.body`, so `closest('[data-theme]')` escaped it and found whatever
+`theme.service.spec.ts` had left on the real `documentElement` — order-dependent across files
+sharing a worker. Both ends fixed: the stub tree stays detached, and the theme-service spec cleans
+up after itself. Worth doing now because iteration 1 just added a *second* full suite run to CI,
+which doubles the exposure to it.
+
+**What the check cannot see:** a removal promised in prose has no tag to grep. The `src/styles/`
+one was caught here because the changelog listed it; the next one will only be caught the same
+way, so keep writing prose promises into `CHANGELOG.md`'s owed list.
+
 ---
 
 ## Iteration 4 — RTL
@@ -236,6 +390,47 @@ tooltip opens on the wrong side and a toast anchors to the wrong corner. The pac
 **Done when:** every component renders correctly with `dir="rtl"`, the two placement resolvers
 have RTL specs, and the README states the support level.
 
+### Outcome — 2026-08-19
+
+**Decision: RTL is supported**, and the README and `AGENTS.md` say so.
+
+- **Stylesheets.** 16 files moved to logical properties. Three kinds of site stayed physical, and
+  each now carries a comment saying why: centring (`left: 50%` with a −50% translate is *not*
+  the same as `inset-inline-start: 50%` in RTL), coordinates JavaScript writes from a measured
+  rect (the tooltip bubble, the portaled panel), and the physically-named public API.
+- **Three primitives in `utilities.css`** for the properties CSS gives no logical form:
+  `--gog-inline-start-side` / `--gog-inline-end-side` (keywords for `transform-origin`) and
+  `--gog-direction-sign` (`1`/`-1`, for the X half of a `translate`). They flip on `[dir='rtl']`
+  and are what let the slider thumb, the slider fill, the toast progress bar and the
+  indeterminate progressbar mirror without a `:host-context` rule each.
+- **`resolveDropdownPlacement` needed no change** — the panel is written at the trigger's own
+  `left`/`width`, so it overlays the trigger's box identically in both directions. The plan
+  assumed work here; measuring the code showed there was none.
+- **`resolveTooltipSide` takes a `direction`.** Only the horizontal half of the `'auto'`
+  preference mirrors; an explicit `'left'`/`'right'` is honoured as written, because those are
+  physical words a consumer chose. Five specs pin it, and the directive reads
+  `getComputedStyle(target).direction` per open, so a trigger inside an RTL region mirrors with
+  the region rather than with the page.
+- **`scopedOverlayDirection()`** (new, with 8 specs) is `scopedOverlayTheme`'s sibling: a portaled
+  panel or bubble carries a *scoped* `dir` onto its host, and inherits when the direction sits on
+  `<html>`. Without it, an overlay opened inside an RTL region of an LTR page renders LTR.
+- **The calendar's arrows** flip through `:host-context([dir='rtl'])`; the month grid needed
+  nothing, since the weekday order follows `dir` on its own.
+- **The showcase carries an RTL toggle** next to the theme switcher — a permanent check rather
+  than a session of DevTools edits.
+
+**Verified live** at `localhost:4200` under `dir="rtl"`: inputfield (leading icon and clear
+button swap, labels right-aligned), slider (fill grows from the right, thumb mirrored, min/max
+swapped), select (chevron left, panel aligned to the trigger's inline start, ticks right),
+datepicker (grid mirrored, SUN on the right, prev/next arrows turned around), toast (accent edge
+on the right, close on the left), table (columns and headers mirrored, paginator arrows mirrored
+by Unicode's own bidi mirroring), and the whole app shell.
+
+**One thing worth knowing for the next live check:** `ui-showcase` resolves the library through
+`dist/gleks/ui`, and Vite pre-bundles it — so a component-stylesheet change needs
+`npm run build:lib` **and a dev-server restart**, not just a reload. Two rounds of "the fix did
+not apply" here were that, not the CSS.
+
 ---
 
 ## Iteration 5 — Test depth where the audit found it thin
@@ -265,6 +460,57 @@ Two things the audit checked and **cleared** — do not "fix" them:
 **Done when:** coverage clears the threshold set in iteration 1 with the gate on, and `dialog`'s
 ARIA contract in particular is pinned by a test.
 
+### Outcome — 2026-08-20
+
+**917 → 965 tests**, and the gate moved with them: **93 / 90 / 92 / 95** (from 92 / 89 / 92 / 94),
+about a point under the measured 93.92 / 91.17 / 93.23 / 96.12.
+
+| | Before | After |
+| --- | --- | --- |
+| Statements | 93.05% | **93.92%** |
+| Branches | 90.21% | **91.17%** |
+| Functions | 92.88% | **93.23%** |
+| Lines | 95.20% | **96.12%** |
+
+Aimed at the uncovered lines rather than at the audit's counts, which changed what was worth
+writing:
+
+- **`gog-dialog`'s ARIA contract**, the plan's named done-criterion: `role`, `aria-modal`,
+  `aria-labelledby` pointing at the real title id, a per-dialog id when two are stacked, the
+  `alertdialog` override, no dangling `aria-labelledby` on a titleless dialog, and the close
+  button's name. Also the two paths the focus trap has that nothing reached: a dialog with
+  **nothing focusable inside it** (Tab must stay on the panel) and the `DIALOG_DATA` /
+  `DIALOG_REF` a projected component injects.
+- **`gog-multiselect` was the worst-covered file in the library (74%)** and the reason was
+  structural: the trigger's "which labels fit, and +N for the rest" fit is measured with
+  `canvas.measureText`, which jsdom does not implement, so every test fell through the
+  "everything fits" early return. Split into `fit-labels.ts` — its own file, because
+  `public-api.ts` re-exports the component module wholesale and a helper exported there would
+  have become public API nobody decided to support — and tested with a one-unit-per-character
+  measurer. **74% → 82% statements, 72% → 89% branches.**
+- **`gog-scroll` had 23 tests and no pointer ones**, for a component whose whole reason to exist
+  is a custom scrollbar: track paging up and down, a track press that actually landed on the
+  thumb (must not page), a thumb drag that scrolls and then stops tracking after release. jsdom
+  reports zero for every layout read, so the geometry is stubbed — including the track's own
+  `clientHeight`, which the drag maths divides by. **81% → 87%.**
+- **`gog-toast`'s close animation**: `dismissed` fires on the transition the close actually uses,
+  and not on a bubbled `transitionend` from a child or on an unrelated property.
+- **`gog-tag` and `gog-chip`** got the surface a consumer sets: every variant/size/shape class,
+  the decorative icon, and for the chip the interactive/disabled/removable triangle —
+  `role="button"` with a tab stop only when clickable, Enter and Space, silence while disabled,
+  the remove button's name, no remove button on a disabled chip, and remove not firing the chip's
+  own click underneath it.
+
+**One audit finding rejected, with the same reasoning the audit itself used for `radio-group`.**
+`gog-toggle` was listed as "17 tests, 3 aria, **0 keyboard**". It renders a real
+`<input type="checkbox" role="switch">`, so Space is the browser's — a synthetic `keydown` test
+would assert that jsdom dispatches events, not that the component works. What went in instead is
+the **native contract that earns the exemption**: it is an `<input type="checkbox">`, it is
+wrapped by its label, `role="switch"`, `checked`/`disabled` land on the input itself, the
+`aria-label` yields to a visible label, and the on/off track text is `aria-hidden`. Those break
+the day someone swaps the input for a styled `<div>`, which is exactly when the missing keyboard
+support would become real.
+
 ---
 
 ## Iteration 6 — `gog-menu`
@@ -286,6 +532,68 @@ Design notes before code:
 
 **Done when:** a table row's `more-vertical` button opens a keyboard-navigable menu in the
 showcase, and Escape returns focus to the trigger.
+
+### Outcome — 2026-08-20
+
+Done, to the letter of that criterion: the dashboard's table has a `more-vertical` button per row
+that opens with **Edit member** focused, ArrowDown steps over the disabled **Transfer ownership**
+onto **Remove from team**, and Escape closes and puts focus back on the button — measured in the
+browser, not inferred.
+
+Built from the pieces the plan pointed at, and one it did not:
+
+- **`[gogMenuTrigger]` on the consumer's own button**, `gogMenuItem` on their own items — the
+  `[gogButton]` decision applied twice. A menu item is markup (icon, label, shortcut hint), so a
+  component wrapper would have meant an input per piece.
+- **`GogDropdownOverlay`** for `appendToBody`, so stacking and scoped-theme/`dir` copying behave
+  exactly as the dropdowns' panels do.
+- **`roving-focus.ts`**, but through its *lower-level* exports. `handleRovingFocusKeydown` reads
+  `event.currentTarget`, which needs the handler bound per item; a menu's items belong to the
+  consumer, so the panel binds one handler and resolves the index from `document.activeElement`
+  with `isRovingFocusKey` + `nextRovingFocusIndex`. Those two are exported for exactly this.
+- **`resolveMenuPlacement`** (new, 8 specs) rather than `resolveDropdownPlacement`. A dropdown
+  panel is the width of its control and lines up edge to edge; a menu is sized by its longest
+  label and shares only its inline-start edge. It also mirrors in RTL and clamps into the
+  viewport — without which a menu in the last table column opened half off-screen, which is what
+  the first live check showed.
+
+**Five defects the work surfaced. The first three were invisible in a screenshot; the last two
+were only visible in one, which is why they survived a green test suite:**
+
+1. **A menu must prefer to drop *down*.** `resolveDropdownDirection` picks the side with more
+   room, which is right for a listbox and wrong for a menu: with a trigger mid-viewport the first
+   version opened *upwards*. It is now asked only when the menu genuinely does not fit below.
+2. **Focus never entered a portaled panel.** `afterNextRender` runs while the overlay's view is
+   still detached, and `focus()` on a detached element is a silent no-op — the menu opened
+   looking right and keyboard users got nothing. Focus is now applied immediately after
+   `overlay.attach()`, where the panel is in the document. The spec that caught it exists because
+   the first round of tests covered focus-on-open for the *inline* panel only.
+3. **The attach effect re-triggered itself.** `attach()` re-creates the panel's view, which
+   changes the content-query result the effect had read as a dependency — an infinite loop that
+   crashed the Vitest worker instead of failing an assertion. Fixed with an `untracked` boundary
+   around the whole side-effecting body.
+
+4. **The item styles never reached the items.** `.gog-menu__item` was written in the component's
+   own `menu.component.scss`, so it was scoped with the component's encapsulation attribute —
+   while `gogMenuItem` marks a button declared in the *consumer's* template, which carries theirs.
+   Every menu opened full of plain browser buttons. Moved to a global `styles/menu.css`, imported
+   by `styles/index.css`, which is the arrangement `.gog-btn` and `gogBadge` already use and the
+   header of `button.css` already explains. **Any future component whose directive styles a
+   consumer's element has this trap**, and no test catches it: the classes are applied, the
+   markup is right, only the CSS never matches.
+5. **An inline panel had nothing to position against.** The host is `display: contents` so that
+   declaring a menu adds no box to the consumer's layout — which also means `position: absolute`
+   on the panel resolved against the nearest positioned ancestor, dropping the menu in a corner
+   of the page. Both modes now place the panel from the trigger's measured rect, so `appendToBody`
+   changes only *where the node lives* — stacking and clipping — which is all it was ever about.
+
+The panel is measured twice on open — an estimate first, then the rendered element in the same
+task — because its real width is what makes the viewport clamp meaningful, and a menu's width is
+its content's, not its trigger's.
+
+**`ui-showcase` has a page of its own** (`/menu`): a keyboard playground, the row-actions table,
+an inline-vs-`appendToBody` pair inside a `gog-scroll` that shows exactly what the input is for,
+and the `direction` pair. The dashboard keeps its row menu as the in-context example.
 
 ---
 
@@ -309,6 +617,36 @@ extracting. See "Showing version-to-version change in the lab" below for the sha
 
 **Done when:** the built package contains `CHANGELOG.md` and the deprecation manifest, and
 `npm run check:tokens`-style verification covers the new generated file.
+
+### Outcome — 2026-08-20
+
+Done. `scripts/generate-deprecations.mjs` writes `lib/shared/deprecations.ts`, exported as
+`GOG_DEPRECATIONS`; `npm run check:deprecations` now runs the ratchet **and** `--check` on the
+manifest, so CI needs no new step and a stale manifest fails the build (verified by editing one
+entry).
+
+**The question this iteration had to answer first: what goes in it?** The plan assumed
+`@deprecated` tags — and iteration 3 removed all sixteen, so a manifest of tags would have been an
+empty file. What 21.5.0 actually deprecates is **154 CSS token spellings**, and those cannot carry
+a tag a tool can attach to a name: a token is a string in a stylesheet, not a declaration a
+compiler sees. So the manifest covers both kinds:
+
+- **symbols** — parsed from their tags, exactly as `check-deprecations.mjs` does. Zero today, and
+  the file says so in its own doc comment rather than looking broken;
+- **tokens** — the three abbreviated prefixes, *expanded against the stylesheets*. The metadata
+  (since, date, removal) lives once in `scripts/deprecations.mjs`; the names come from scanning
+  the CSS for what still resolves, so the list cannot drift from the code the way a hand-kept one
+  would.
+
+`scripts/deprecations.mjs` is the shared module that made this honest: `check-tokens.mjs`'s rule E,
+`check-deprecations.mjs` and the generator now read one namespace map and one tag parser instead of
+three copies. The refactor immediately caught a self-inflicted bug — the generated manifest's own
+prose contains the word `@deprecated`, so the ratchet parsed the artifact it feeds and failed. The
+generated file is now excluded by name, with the reason written next to it.
+
+**What the lab can build on it:** `lab-versioning.md`'s layer 4 — a "deprecated, removed in 21.7.0"
+badge on an API or token row — now has its data source, and it ships inside the package, so the
+badge reflects the version the reader installed rather than the repo's HEAD.
 
 ---
 
@@ -375,7 +713,15 @@ not re-file it.
   Consumers will hit it wherever they nest an overlay inside their own transformed or contained
   wrapper. Worth one shared paragraph in `README.md`/`AGENTS.md` plus a line on each overlay
   input's TSDoc — a documentation change, which is why it is here rather than in an iteration.
-- **`gogCollapsibleTrigger` is silently keyboard-inaccessible on a non-focusable element.** The
+- ~~**`gogCollapsibleTrigger` is silently keyboard-inaccessible on a non-focusable element.**~~
+  **Fixed in 21.5.0** (2026-08-20), taking the first of the two options below: the directive
+  supplies `role="button"`, `tabindex="0"` and Enter/Space when the host is not natively operable,
+  and stands down entirely on a `<button>`/`<a href>` or where the consumer set `role`/`tabindex`.
+  Standing down had its own trap, caught by a spec: a host binding evaluating to `null` *removes*
+  the attribute, so the first version deleted the very `role` a consumer had written. The original
+  entry, for the reasoning:
+
+  The
   directive's whole host block is `class`, three ARIA attributes and `(click)` — no `tabindex`, no
   `role`, no key handling. Put it on a `<div>` (which its own TSDoc invites: "works on any
   clickable element") and the trigger has no tab stop and does not respond to Enter or Space,

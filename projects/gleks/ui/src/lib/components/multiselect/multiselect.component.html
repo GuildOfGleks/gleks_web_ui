@@ -62,7 +62,7 @@
     <span class="gog-ms__actions">
       <span class="gog-ms__arrow" [class.gog-ms__arrow--up]="isOpen()" aria-hidden="true">
         <gog-icon
-          [template]="chevronSlot()?.templateRef ?? chevronTemplate()"
+          [template]="chevronSlot()?.templateRef ?? null"
           [name]="isOpen() ? 'chevron-up' : 'chevron-down'"
         />
       </span>
@@ -73,7 +73,7 @@
           (click)="clearValue($event)"
           [attr.aria-label]="resolvedClearLabel()"
         >
-          <gog-icon [template]="clearIconSlot()?.templateRef ?? clearIconTemplate()" name="close" />
+          <gog-icon [template]="clearIconSlot()?.templateRef ?? null" name="close" />
         </button>
       }
     </span>

@@ -1,10 +1,19 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DOCUMENT,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import {
   GogDropdownOption,
   ScrollComponent,
   SelectComponent,
   ThemeService,
+  ToggleComponent,
 } from '@guildofgleks/ui';
 
 import { showcaseThemes, type ShowcaseThemeName } from './showcase-themes';
@@ -22,8 +31,7 @@ interface ShowcaseNavLink {
     RouterLinkActive,
     ScrollComponent,
     SelectComponent,
-    ScrollComponent,
-    SelectComponent,
+    ToggleComponent,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -31,8 +39,24 @@ interface ShowcaseNavLink {
 })
 export class App {
   private readonly themeService = inject(ThemeService);
+  private readonly document = inject(DOCUMENT);
 
   protected readonly title = signal('Gleks UI Showcase');
+
+  /**
+   * Flips `dir` on `<html>` for the whole showcase. Every component is meant to mirror off that
+   * one attribute — logical properties in the stylesheets, `dir` copied onto portaled overlays,
+   * the tooltip's `auto` side, the calendar's arrows — so this toggle exercises all of it at
+   * once, and keeps doing so after the change that introduced it. A one-off check in DevTools
+   * would not survive the next component.
+   */
+  protected readonly isRtl = signal(false);
+
+  constructor() {
+    effect(() => {
+      this.document.documentElement.setAttribute('dir', this.isRtl() ? 'rtl' : 'ltr');
+    });
+  }
   protected readonly themes = showcaseThemes;
   protected readonly themeOptions: GogDropdownOption[] = showcaseThemes.map((theme) => ({
     id: theme.name,
@@ -57,6 +81,7 @@ export class App {
     { path: 'chip', label: 'Chip' },
     { path: 'select', label: 'Select' },
     { path: 'multiselect', label: 'Multiselect' },
+    { path: 'menu', label: 'Menu' },
     { path: 'table', label: 'Table' },
     { path: 'scroll', label: 'Scroll' },
     { path: 'paginator', label: 'Paginator' },

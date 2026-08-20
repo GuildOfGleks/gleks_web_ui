@@ -22,21 +22,10 @@
       <span class="gog-input__icon gog-inline-center gog-input__icon--start gog-input__addon">
         <ng-content select="[gogInputAddonStart]" />
       </span>
-    } @else if (hasIconStart()) {
-      @if (hasIconStartAction()) {
-        <button
-          type="button"
-          class="gog-input__icon gog-inline-center gog-input__icon--start gog-input__icon--action"
-          [attr.aria-label]="iconStartLabel() || null"
-          (click)="onIconStartClick()"
-        >
-          <gog-icon [template]="iconStartTemplate()" [name]="iconStart() || 'check'" />
-        </button>
-      } @else {
-        <span class="gog-input__icon gog-inline-center gog-input__icon--start" aria-hidden="true">
-          <gog-icon [template]="iconStartTemplate()" [name]="iconStart() || 'check'" />
-        </span>
-      }
+    } @else if (iconStart(); as iconStartName) {
+      <span class="gog-input__icon gog-inline-center gog-input__icon--start" aria-hidden="true">
+        <gog-icon [name]="iconStartName" />
+      </span>
     }
     <input
       class="gog-input__field"
@@ -115,19 +104,19 @@
         <span class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__addon">
           <ng-content select="[gogInputAddonEnd]" />
         </span>
-      } @else if (hasIconEnd()) {
-        @if (hasIconEndAction()) {
+      } @else if (effectiveIconEnd(); as iconEndName) {
+        @if (isPasswordField()) {
           <button
             type="button"
             class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action"
             [attr.aria-label]="effectiveIconEndLabel() || null"
-            (click)="onIconEndClick()"
+            (click)="togglePasswordVisibility()"
           >
-            <gog-icon [template]="iconEndTemplate()" [name]="effectiveIconEnd() || 'check'" />
+            <gog-icon [name]="iconEndName" />
           </button>
         } @else {
           <span class="gog-input__icon gog-inline-center gog-input__icon--end" aria-hidden="true">
-            <gog-icon [template]="iconEndTemplate()" [name]="effectiveIconEnd() || 'check'" />
+            <gog-icon [name]="iconEndName" />
           </span>
         }
       }

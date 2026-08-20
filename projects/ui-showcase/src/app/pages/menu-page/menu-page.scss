@@ -1,0 +1,29 @@
+@use '../detail' as *;
+
+.menu-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-row__actions {
+  display: inline-flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+/* Deliberately short, so the clipping the inline menu suffers is visible without scrolling far. */
+.menu-scroller {
+  height: 140px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+}
+
+.menu-scroller__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  min-height: 260px;
+}
