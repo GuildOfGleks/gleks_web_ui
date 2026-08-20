@@ -14,6 +14,15 @@ import { GogSize, GogSpinnerVariant } from '../../shared/types';
 })
 export class SpinnerComponent {
   readonly size = input<GogSize>('md');
+  /**
+   * Covers the viewport with a backdrop while it spins.
+   *
+   * "The viewport" holds only while no ancestor establishes a containing block: `contain`,
+   * `transform`, `filter`, `backdrop-filter` or `will-change` on anything above it retargets
+   * the overlay to that element's box instead — including `gog-scroll`, which sets
+   * `contain: layout style`. Render it from your app's root, or expect it to cover the
+   * contained ancestor. See README's "Overlays and the viewport".
+   */
   readonly overlay = input(false);
   readonly ariaLabel = input('Loading');
   /**

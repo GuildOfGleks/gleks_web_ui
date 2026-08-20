@@ -4,6 +4,23 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.5.1] - planned
+
+Documentation only — no component, input, output or token changed, so upgrading from 21.5.0 is a
+version bump with nothing to migrate.
+
+### Fixed
+
+- **Documented the `position: fixed` containing-block caveat**, in one place plus a line on each
+  overlay it affects. `gog-dialog`'s backdrop, `gog-toast-container` and
+  `gog-spinner [overlay]` cover the viewport only while no ancestor establishes a containing
+  block — `contain`, `transform`, `filter`, `backdrop-filter` or `will-change` above them
+  retargets the overlay to that element's box, with no error and no warning. `gog-scroll` sets
+  `contain: layout style`, so this library can trigger it on its own: a dialog opened inside a
+  scroller dims the scroller. Nothing changed in behaviour; what changed is that the behaviour is
+  now written down where you meet it — README's "Overlays and the viewport", `AGENTS.md`, and the
+  TSDoc of each overlay.
+
 ## [21.5.0] - planned
 
 **The breaking release** — the one version consumers have to read before upgrading into. It

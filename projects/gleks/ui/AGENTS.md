@@ -1322,6 +1322,14 @@ Methods (via template ref): `scrollTo(options)`, `scrollToTop()`, `scrollToBotto
 
 ### Overlays
 
+**Overlays and the viewport — the caveat that bites once per project.** `gog-dialog`'s backdrop,
+`gog-toast-container` and `gog-spinner [overlay]` are `position: fixed`, which covers the viewport
+only while no ancestor establishes a containing block. `contain`, `transform`, `filter`,
+`backdrop-filter` or `will-change` anywhere above retargets them to that element's box — and
+**`gog-scroll` sets `contain: layout style`**, so a dialog opened inside a scroller dims the
+scroller rather than the page. Place the dialog and toast outlets in the root component. The
+dropdown panels and `gog-menu` sidestep it by rendering into `<body>`.
+
 #### `gog-menu` + `gogMenuTrigger` / `gogMenuItem`
 
 A command menu. The trigger is a directive on **your own button** — usually the icon button you

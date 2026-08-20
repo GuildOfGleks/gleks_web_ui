@@ -16,6 +16,17 @@ import { ScrollComponent } from '../scroll/scroll.component';
 /** Built-in default, used when neither `DialogConfig` nor `GOG_CONFIG.labels` supplies one. */
 const DEFAULT_CLOSE_LABEL = 'Close dialog';
 
+/**
+ * The single outlet every `DialogService.open(...)` renders into. Place one, typically in the
+ * root component's template.
+ *
+ * **Place it at the root, not inside a section.** The backdrop is `position: fixed`, which
+ * covers the viewport only while no ancestor establishes a containing block — `contain`,
+ * `transform`, `filter`, `backdrop-filter` or `will-change` above it retargets the backdrop to
+ * that element's box, and `gog-scroll` sets `contain: layout style`. Nested inside one, a modal
+ * dims the scroller and leaves the rest of the page live. See README's "Overlays and the
+ * viewport".
+ */
 @Component({
   selector: 'gog-dialog',
   imports: [NgComponentOutlet, IconComponent, ScrollComponent],

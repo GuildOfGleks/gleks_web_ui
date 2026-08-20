@@ -206,6 +206,29 @@ provideGogIcons({ cart: '<svg viewBox="0 0 24 24">…</svg>' });
 <gog-icon name="cart" /> <gog-tag iconName="cart">In basket</gog-tag>
 ```
 
+## Overlays and the viewport
+
+Three things this library renders cover the **viewport** with `position: fixed`:
+`<gog-dialog />`'s backdrop, `<gog-toast-container />`, and `<gog-spinner [overlay]="true" />`.
+
+That is true only while nothing above them establishes a containing block. `contain`,
+`transform`, `filter`, `backdrop-filter` and `will-change` on **any** ancestor silently retarget
+a fixed element to that ancestor's box — a CSS rule with no error and no warning, and the usual
+first sighting is "my modal only dims half the page".
+
+It is not hypothetical here: **`gog-scroll` sets `contain: layout style`**, so a dialog opened
+from inside a scroller dims the scroller, and a toast container nested in one corners its toasts
+against the scroller. Two rules keep it simple:
+
+- **Place the dialog and toast outlets in your root component**, not inside the section that
+  happens to use them. They are singletons anyway — one of each renders everything.
+- **A spinner overlay covers whatever contains it**, which is often what you want inside a card.
+  For a genuinely full-screen one, render it at the root too.
+
+The dropdown panels (`gog-select`, `gog-multiselect`, `gog-autocomplete`, `gog-datepicker`) and
+`gog-menu` avoid the whole question by rendering into `<body>` — `appendToBody` for the
+dropdowns, always for the menu.
+
 ## Components
 
 | Group               | Components                                                                                                                                                                                                        |

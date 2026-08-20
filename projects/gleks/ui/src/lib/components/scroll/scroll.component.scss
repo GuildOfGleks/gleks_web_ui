@@ -24,6 +24,12 @@
   flex-direction: column;
   position: relative;
   width: 100%;
+  /*
+   * Scopes reflow to this subtree — and, as a side effect worth knowing about, makes this
+   * element the containing block for any `position: fixed` descendant. A full-screen overlay
+   * rendered *inside* a gog-scroll therefore covers the scroller, not the window. That is the
+   * one caveat the overlays' own docs point back at; see README's "Overlays and the viewport".
+   */
   contain: layout style;
 
   --gog-scroll-track-width: var(--gog-scroll-normal-track-width);

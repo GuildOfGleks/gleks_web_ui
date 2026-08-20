@@ -15,6 +15,16 @@ interface ToastAnnouncement {
   message: string;
 }
 
+/**
+ * The single host every toast renders into. Place one, typically in the root component.
+ *
+ * **Where you place it decides what it anchors to.** The container is `position: fixed`, which
+ * pins it to the viewport only while no ancestor establishes a containing block — `contain`,
+ * `transform`, `filter`, `backdrop-filter` or `will-change` above it retargets it to that
+ * element's box, and `gog-scroll` sets `contain: layout style`. A container nested inside one
+ * corners its toasts against the scroller rather than the window. See README's "Overlays and
+ * the viewport".
+ */
 @Component({
   selector: 'gog-toast-container',
   imports: [ToastComponent],
