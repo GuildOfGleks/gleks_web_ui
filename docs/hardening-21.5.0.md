@@ -713,7 +713,15 @@ not re-file it.
   Consumers will hit it wherever they nest an overlay inside their own transformed or contained
   wrapper. Worth one shared paragraph in `README.md`/`AGENTS.md` plus a line on each overlay
   input's TSDoc — a documentation change, which is why it is here rather than in an iteration.
-- **`gogCollapsibleTrigger` is silently keyboard-inaccessible on a non-focusable element.** The
+- ~~**`gogCollapsibleTrigger` is silently keyboard-inaccessible on a non-focusable element.**~~
+  **Fixed in 21.5.0** (2026-08-20), taking the first of the two options below: the directive
+  supplies `role="button"`, `tabindex="0"` and Enter/Space when the host is not natively operable,
+  and stands down entirely on a `<button>`/`<a href>` or where the consumer set `role`/`tabindex`.
+  Standing down had its own trap, caught by a spec: a host binding evaluating to `null` *removes*
+  the attribute, so the first version deleted the very `role` a consumer had written. The original
+  entry, for the reasoning:
+
+  The
   directive's whole host block is `class`, three ARIA attributes and `(click)` — no `tabindex`, no
   `role`, no key handling. Put it on a `<div>` (which its own TSDoc invites: "works on any
   clickable element") and the trigger has no tab stop and does not respond to Enter or Space,

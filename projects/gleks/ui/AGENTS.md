@@ -1060,6 +1060,12 @@ Model: `open: boolean`.
 </gog-collapsible>
 ```
 
+**The trigger can be any element.** On a `<button>` or `<a href>` the directive adds only the
+ARIA wiring, because the browser already handles focus and keys. On anything else — a `<div>`, a
+`<span>` — it also supplies `role="button"`, `tabindex="0"` and Enter/Space, so the control it
+announces is one a keyboard can actually reach. If you set `role` or `tabindex` yourself, the
+directive leaves both alone: you have said what the element is.
+
 An open panel is as tall as its content — `--gog-collapsible-max-height` defaults to
 `max-content`. Set it to a length on an instance to cap one deliberately; the panel is
 `overflow: hidden`, so a cap **clips** rather than scrolls. (Before 21.4.4 that default was

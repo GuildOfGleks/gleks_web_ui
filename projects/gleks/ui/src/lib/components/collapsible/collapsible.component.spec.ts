@@ -29,6 +29,34 @@ class CollapsibleHostComponent {
   readonly collapseOnFocusOut = signal(false);
 }
 
+@Component({
+  imports: [CollapsibleComponent, GogCollapsibleTriggerDirective, GogCollapsibleContentDirective],
+  template: `
+    <gog-collapsible [(open)]="open" [disabled]="disabled()">
+      <div gogCollapsibleTrigger>Categories</div>
+      <div gogCollapsibleContent>Panel</div>
+    </gog-collapsible>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class DivTriggerHostComponent {
+  readonly open = signal(false);
+  readonly disabled = signal(false);
+}
+
+/** The consumer said what the element is; the directive must not overrule them. */
+@Component({
+  imports: [CollapsibleComponent, GogCollapsibleTriggerDirective, GogCollapsibleContentDirective],
+  template: `
+    <gog-collapsible>
+      <div gogCollapsibleTrigger role="link" tabindex="-1">Categories</div>
+      <div gogCollapsibleContent>Panel</div>
+    </gog-collapsible>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class OwnRoleHostComponent {}
+
 describe('CollapsibleComponent', () => {
   let fixture: ComponentFixture<CollapsibleHostComponent>;
   let host: CollapsibleHostComponent;
@@ -159,5 +187,110 @@ describe('CollapsibleComponent', () => {
 
       expect(host.open()).toBe(false);
     });
+  });
+});
+
+/**
+ * The directive's own TSDoc invites a non-focusable host ("works on any element"), and until
+ * 21.5.0 that produced a control announcing `aria-expanded` with no tab stop and no keys — the
+ * one combination that strands the person relying on the announcement.
+ */
+describe('gogCollapsibleTrigger on a non-focusable element', () => {
+  let fixture: ComponentFixture<DivTriggerHostComponent>;
+  let host: DivTriggerHostComponent;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [DivTriggerHostComponent],
+    }).compileComponents();
+    fixture = TestBed.createComponent(DivTriggerHostComponent);
+    host = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+  });
+
+  function trigger(): HTMLElement {
+    return fixture.nativeElement.querySelector('[gogCollapsibleTrigger]') as HTMLElement;
+  }
+
+  async function press(key: string): Promise<void> {
+    trigger().dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+  }
+
+  it('supplies the button semantics the element does not have', () => {
+    expect(trigger().getAttribute('role')).toBe('button');
+    expect(trigger().getAttribute('tabindex')).toBe('0');
+  });
+
+  it('toggles on Enter', async () => {
+    await press('Enter');
+    expect(host.open()).toBe(true);
+
+    await press('Enter');
+    expect(host.open()).toBe(false);
+  });
+
+  it('toggles on Space, and swallows the page scroll that key would cause', async () => {
+    const event = new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
+    trigger().dispatchEvent(event);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(host.open()).toBe(true);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
+  it('ignores keys that do not activate a button', async () => {
+    await press('a');
+    await press('ArrowDown');
+
+    expect(host.open()).toBe(false);
+  });
+
+  it('drops out of the tab order while disabled, and does not toggle', async () => {
+    host.disabled.set(true);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(trigger().getAttribute('tabindex')).toBe('-1');
+
+    await press('Enter');
+    expect(host.open()).toBe(false);
+  });
+});
+
+describe('gogCollapsibleTrigger on an element that already has semantics', () => {
+  it('leaves a native button alone, so Enter does not toggle twice', async () => {
+    await TestBed.configureTestingModule({
+      imports: [CollapsibleHostComponent],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(CollapsibleHostComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const button = fixture.nativeElement.querySelector('[gogCollapsibleTrigger]') as HTMLElement;
+    expect(button.getAttribute('role')).toBeNull();
+    expect(button.getAttribute('tabindex')).toBeNull();
+
+    // The browser turns Enter into a click on a real button; the directive must not also react,
+    // or the panel opens and closes in one press.
+    button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.open()).toBe(false);
+  });
+
+  it('respects a role and tabindex the consumer set themselves', async () => {
+    await TestBed.configureTestingModule({ imports: [OwnRoleHostComponent] }).compileComponents();
+    const fixture = TestBed.createComponent(OwnRoleHostComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const trigger = fixture.nativeElement.querySelector('[gogCollapsibleTrigger]') as HTMLElement;
+    expect(trigger.getAttribute('role')).toBe('link');
+    expect(trigger.getAttribute('tabindex')).toBe('-1');
   });
 });

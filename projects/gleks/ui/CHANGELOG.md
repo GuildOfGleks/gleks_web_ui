@@ -99,6 +99,19 @@ in 21.3.2, with the old path documented as working until 21.5.0. The package no 
 duplicate copy, and the `./src/styles/*` export is gone — if your `angular.json` still names the
 long path, drop the `src/` segment.
 
+### Fixed
+
+- **`gogCollapsibleTrigger` is reachable by keyboard on any element.** Its own documentation
+  invites a non-focusable host ("works on any clickable element"), and on one it used to apply
+  `aria-expanded`/`aria-controls` and nothing else: a control that announces itself to a screen
+  reader, with no tab stop and no response to Enter or Space — the one combination that strands
+  the person relying on that announcement.
+
+  On a host that is not natively operable the directive now also supplies `role="button"`,
+  `tabindex="0"` (`-1` while disabled) and Enter/Space. A `<button>` or `<a href>` is untouched,
+  since a second key handler would toggle twice in one press, and a `role`/`tabindex` you set
+  yourself is respected rather than overwritten.
+
 ### Added
 
 - **`GOG_DEPRECATIONS` — the deprecation manifest**, generated from the library's own source and
