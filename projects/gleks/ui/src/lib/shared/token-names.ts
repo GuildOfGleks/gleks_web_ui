@@ -669,11 +669,14 @@ export type GogTokenName =
   | '--gog-menu-font-family'
   | '--gog-menu-gap'
   | '--gog-menu-item-color'
+  | '--gog-menu-item-disabled-color'
   | '--gog-menu-item-disabled-opacity'
   | '--gog-menu-item-font-size'
   | '--gog-menu-item-gap'
   | '--gog-menu-item-hover-bg'
   | '--gog-menu-item-hover-color'
+  | '--gog-menu-item-icon-size'
+  | '--gog-menu-item-line-height'
   | '--gog-menu-item-padding'
   | '--gog-menu-item-radius'
   | '--gog-menu-max-height'
@@ -2217,11 +2220,14 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-menu-font-family',
       '--gog-menu-gap',
       '--gog-menu-item-color',
+      '--gog-menu-item-disabled-color',
       '--gog-menu-item-disabled-opacity',
       '--gog-menu-item-font-size',
       '--gog-menu-item-gap',
       '--gog-menu-item-hover-bg',
       '--gog-menu-item-hover-color',
+      '--gog-menu-item-icon-size',
+      '--gog-menu-item-line-height',
       '--gog-menu-item-padding',
       '--gog-menu-item-radius',
       '--gog-menu-max-height',

@@ -1,0 +1,84 @@
+/*
+ * The menu's visual block, in a **global** stylesheet rather than the component's own.
+ *
+ * `gogMenuItem` goes on a consumer's own `<button>`, declared in the consumer's template — so
+ * the element carries *their* encapsulation attribute, and a rule written in
+ * `menu.component.scss` never reaches it. That is the same reason `.gog-btn` lives in
+ * `button.css` and `gogBadge` in `utilities.css`; the first version of this component had the
+ * item rules scoped to the component, and every menu opened with plain browser buttons in it.
+ *
+ * The panel is here too, rather than split across two files: it is portaled into `<body>` for
+ * `appendToBody`, and keeping the whole block in one place is what stops the two halves drifting.
+ *
+ * Nothing in this file is a literal: every colour, metric and duration resolves to a
+ * `--gog-menu-*` token in theme.css, so a theme can restyle the menu without touching it.
+ */
+/*
+ * `fixed`, in both modes: the panel is placed from the trigger's measured rect (see
+ * `measure()`), because an inline panel has no positioned ancestor to hang from — the menu's
+ * host is `display: contents` so that declaring a menu adds no box to the consumer's layout.
+ */
+.gog-menu {
+  position: fixed;
+  z-index: var(--gog-menu-z);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-menu-gap);
+  min-width: var(--gog-menu-min-width);
+  max-width: var(--gog-menu-max-width);
+  max-height: var(--gog-menu-max-height);
+  overflow-y: auto;
+  padding: var(--gog-menu-padding);
+  border: var(--gog-menu-border-width) var(--gog-menu-border-style) var(--gog-menu-border-color);
+  border-radius: var(--gog-menu-radius);
+  background-color: var(--gog-menu-bg);
+  box-shadow: var(--gog-menu-shadow);
+  font-family: var(--gog-menu-font-family);
+}
+
+.gog-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-menu-item-gap);
+  width: 100%;
+  padding: var(--gog-menu-item-padding);
+  border: 0;
+  border-radius: var(--gog-menu-item-radius);
+  background: transparent;
+  color: var(--gog-menu-item-color);
+  font-family: var(--gog-menu-font-family);
+  font-size: var(--gog-menu-item-font-size);
+  line-height: var(--gog-menu-item-line-height);
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--gog-menu-transition-duration) var(--gog-easing);
+}
+
+.gog-menu__item:hover:not(:disabled),
+.gog-menu__item:focus-visible {
+  background-color: var(--gog-menu-item-hover-bg);
+  color: var(--gog-menu-item-hover-color);
+}
+
+.gog-menu__item:focus-visible {
+  outline: var(--gog-menu-focus-ring-width) solid var(--gog-menu-focus-ring);
+  outline-offset: calc(var(--gog-menu-focus-ring-width) * -1);
+}
+
+.gog-menu__item:disabled {
+  color: var(--gog-menu-item-disabled-color);
+  opacity: var(--gog-menu-item-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* An icon inside an item is decorative next to the label, and must not push it around. */
+.gog-menu__item gog-icon {
+  flex-shrink: 0;
+  font-size: var(--gog-menu-item-icon-size);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-menu__item {
+    transition: none;
+  }
+}

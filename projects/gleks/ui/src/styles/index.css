@@ -17,3 +17,5 @@
 @import './utilities.css';
 /* Global because `[gogButton]` styles a consumer's own element — see the file's own header. */
 @import './button.css';
+/* Same reason: `gogMenuItem` marks a consumer's own <button>. */
+@import './menu.css';

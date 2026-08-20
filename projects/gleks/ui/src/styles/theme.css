@@ -1216,6 +1216,9 @@
   --gog-menu-item-radius: var(--gog-radius);
   --gog-menu-item-gap: var(--gog-space-sm);
   --gog-menu-item-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-menu-item-disabled-color: var(--gog-muted-text-color);
+  --gog-menu-item-line-height: 1.4;
+  --gog-menu-item-icon-size: 1em;
 
   /* ── Paginator ─────────────────────────────────────────────────────────────── */
   --gog-paginator-gap: 4px;

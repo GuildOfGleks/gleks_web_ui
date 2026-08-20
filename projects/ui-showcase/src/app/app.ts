@@ -81,6 +81,7 @@ export class App {
     { path: 'chip', label: 'Chip' },
     { path: 'select', label: 'Select' },
     { path: 'multiselect', label: 'Multiselect' },
+    { path: 'menu', label: 'Menu' },
     { path: 'table', label: 'Table' },
     { path: 'scroll', label: 'Scroll' },
     { path: 'paginator', label: 'Paginator' },

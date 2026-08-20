@@ -301,14 +301,19 @@ export class MenuComponent {
   }
 
   /**
-   * Places the panel. `panel` is null on the first pass — before it exists — and the rendered
-   * element on the second, which is the pass whose numbers are real.
+   * Places the panel against the trigger's measured rect, in **both** modes.
+   *
+   * An inline panel cannot be positioned by CSS alone: the host is `display: contents`, so it
+   * has no box to be `position: absolute` against, and the panel fell back to the nearest
+   * positioned ancestor — in practice a corner of the page. Measuring makes the two modes differ
+   * only in *where the DOM node lives*, which is all `appendToBody` was ever about: stacking and
+   * clipping, not placement.
+   *
+   * `panel` is null on the first pass — before it exists — and the rendered element on the
+   * second, which is the pass whose numbers are real.
    */
   private measure(trigger: HTMLElement, panel: HTMLElement | null): void {
-    if (!this.isPortaled()) {
-      this.placement.set(null);
-      return;
-    }
+    if (!this.isBrowser) return;
 
     const rect = trigger.getBoundingClientRect();
     const written = scopedOverlayDirection(trigger, this.document.documentElement);

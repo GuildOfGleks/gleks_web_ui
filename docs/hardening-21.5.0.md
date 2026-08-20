@@ -554,7 +554,8 @@ Built from the pieces the plan pointed at, and one it did not:
   viewport — without which a menu in the last table column opened half off-screen, which is what
   the first live check showed.
 
-**Three defects the work surfaced, each worth recording because none was visible in a screenshot:**
+**Five defects the work surfaced. The first three were invisible in a screenshot; the last two
+were only visible in one, which is why they survived a green test suite:**
 
 1. **A menu must prefer to drop *down*.** `resolveDropdownDirection` picks the side with more
    room, which is right for a listbox and wrong for a menu: with a trigger mid-viewport the first
@@ -569,9 +570,27 @@ Built from the pieces the plan pointed at, and one it did not:
    crashed the Vitest worker instead of failing an assertion. Fixed with an `untracked` boundary
    around the whole side-effecting body.
 
+4. **The item styles never reached the items.** `.gog-menu__item` was written in the component's
+   own `menu.component.scss`, so it was scoped with the component's encapsulation attribute —
+   while `gogMenuItem` marks a button declared in the *consumer's* template, which carries theirs.
+   Every menu opened full of plain browser buttons. Moved to a global `styles/menu.css`, imported
+   by `styles/index.css`, which is the arrangement `.gog-btn` and `gogBadge` already use and the
+   header of `button.css` already explains. **Any future component whose directive styles a
+   consumer's element has this trap**, and no test catches it: the classes are applied, the
+   markup is right, only the CSS never matches.
+5. **An inline panel had nothing to position against.** The host is `display: contents` so that
+   declaring a menu adds no box to the consumer's layout — which also means `position: absolute`
+   on the panel resolved against the nearest positioned ancestor, dropping the menu in a corner
+   of the page. Both modes now place the panel from the trigger's measured rect, so `appendToBody`
+   changes only *where the node lives* — stacking and clipping — which is all it was ever about.
+
 The panel is measured twice on open — an estimate first, then the rendered element in the same
 task — because its real width is what makes the viewport clamp meaningful, and a menu's width is
 its content's, not its trigger's.
+
+**`ui-showcase` has a page of its own** (`/menu`): a keyboard playground, the row-actions table,
+an inline-vs-`appendToBody` pair inside a `gog-scroll` that shows exactly what the input is for,
+and the `direction` pair. The dashboard keeps its row menu as the in-context example.
 
 ---
 

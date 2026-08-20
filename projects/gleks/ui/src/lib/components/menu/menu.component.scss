@@ -1,87 +1,13 @@
 /*
- * Every value resolves to a `--gog-menu-*` token declared in styles/theme.css.
+ * The menu's `.gog-menu*` block lives in `styles/menu.css` — global, because `gogMenuItem`
+ * marks a consumer's own `<button>` and an encapsulated stylesheet could never reach it. The
+ * same arrangement as `.gog-btn` for `[gogButton]`.
  *
- * `:host` is a zero-size anchor: the component renders nothing of its own, and the panel is
- * either stamped inside this host (inline mode) or portaled into `<body>`. `display: contents`
- * keeps the host out of the consumer's layout either way — a menu declared next to a table row's
- * button must not add a box to that row.
+ * What stays here is the host, which the directive has no equivalent of: `display: contents`
+ * keeps this component out of the consumer's layout entirely. A menu declared next to a table
+ * row's button must add no box to that row, in either mode — the panel is stamped inside this
+ * host or portaled into `<body>`, and neither should reserve space where the menu was written.
  */
 :host {
   display: contents;
-}
-
-.gog-menu {
-  position: absolute;
-  z-index: var(--gog-menu-z);
-  display: flex;
-  flex-direction: column;
-  gap: var(--gog-menu-gap);
-  min-width: var(--gog-menu-min-width);
-  max-width: var(--gog-menu-max-width);
-  max-height: var(--gog-menu-max-height);
-  overflow-y: auto;
-  padding: var(--gog-menu-padding);
-  border: var(--gog-menu-border-width) var(--gog-menu-border-style) var(--gog-menu-border-color);
-  border-radius: var(--gog-menu-radius);
-  background-color: var(--gog-menu-bg);
-  box-shadow: var(--gog-menu-shadow);
-  font-family: var(--gog-menu-font-family);
-}
-
-/* Inline mode: hangs from the trigger's own box, which the consumer positions. */
-.gog-menu:not(.gog-menu--portal) {
-  inset-inline-start: 0;
-  margin-block-start: var(--gog-menu-offset);
-}
-
-.gog-menu--portal {
-  position: fixed;
-}
-
-.gog-menu--up:not(.gog-menu--portal) {
-  bottom: 100%;
-  margin-block: 0 var(--gog-menu-offset);
-}
-
-/*
- * The item is the consumer's own `<button>`, so this styles what the directive marks rather
- * than a element the library controls — same arrangement as `[gogButton]`.
- */
-.gog-menu__item {
-  display: flex;
-  align-items: center;
-  gap: var(--gog-menu-item-gap);
-  width: 100%;
-  padding: var(--gog-menu-item-padding);
-  border: 0;
-  border-radius: var(--gog-menu-item-radius);
-  background: transparent;
-  color: var(--gog-menu-item-color);
-  font: inherit;
-  font-size: var(--gog-menu-item-font-size);
-  text-align: start;
-  cursor: pointer;
-  transition: background-color var(--gog-menu-transition-duration) var(--gog-easing);
-}
-
-.gog-menu__item:hover:not(:disabled),
-.gog-menu__item:focus-visible {
-  background-color: var(--gog-menu-item-hover-bg);
-  color: var(--gog-menu-item-hover-color);
-}
-
-.gog-menu__item:focus-visible {
-  outline: var(--gog-menu-focus-ring-width) solid var(--gog-menu-focus-ring);
-  outline-offset: calc(var(--gog-menu-focus-ring-width) * -1);
-}
-
-.gog-menu__item:disabled {
-  opacity: var(--gog-menu-item-disabled-opacity);
-  cursor: not-allowed;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .gog-menu__item {
-    transition: none;
-  }
 }
