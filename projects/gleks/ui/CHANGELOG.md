@@ -7,10 +7,11 @@ reached 1.0, so breaking changes may land in minor versions.
 ## [21.5.0] - planned
 
 **The breaking release** — the one version consumers have to read before upgrading into. It
-carries the removals below and, per `docs/hardening-21.5.0.md`, the token-prefix rename
-(`--gog-ms-*`, `--gog-btn-*`, `--gog-input-*` spelled out in full). Everything non-breaking that
-is ready today ships in 21.4.4 instead, so a reader upgrading to 21.4.4 has nothing to migrate
-and a reader upgrading to 21.5.0 has one list to work through rather than one buried among fixes.
+carries the removals below and the token-prefix rename (`--gog-btn-*`, `--gog-ms-*` and
+`--gog-confirm-*` spelled out; the old spellings keep working until 21.7.0). Everything
+non-breaking that was ready earlier shipped in 21.4.4 instead, so a reader upgrading to 21.4.4 has
+nothing to migrate and a reader upgrading to 21.5.0 has one list to work through rather than one
+buried among fixes.
 
 ### Removed
 

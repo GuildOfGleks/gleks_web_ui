@@ -90,10 +90,13 @@ endings, and the writer keeps the file's existing ones so the generator no longe
 working tree. This mattered *before* iteration 1 rather than during it: iteration 1 adds a second
 generated-artifact gate to CI, and a gate nobody trusts locally is worse than no gate.
 
-Everything else the plan needs is a plan item, not a prerequisite. **The remaining blocker is not
-technical:** iterations stay on hold until the user finishes verifying the tagged releases against
-the private consuming project and publishes, because iteration 7's lab-side half and the whole of
-`lab-after-publish.md` only unlock on a publish.
+Everything else the plan needs is a plan item, not a prerequisite.
+
+**Superseded on 2026-08-20.** This section used to end by putting the iterations on hold until the
+tagged releases were verified and published, because the lab-side work unlocks only on a publish.
+All seven iterations are done; what still waits on the publish is `lab-after-publish.md`, which is
+where the lab-side half was recorded instead of being done early. The library half needed no
+publish and no longer waits for one.
 
 ---
 
