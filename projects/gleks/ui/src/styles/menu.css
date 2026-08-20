@@ -14,9 +14,9 @@
  * `--gog-menu-*` token in theme.css, so a theme can restyle the menu without touching it.
  */
 /*
- * `fixed`, in both modes: the panel is placed from the trigger's measured rect (see
- * `measure()`), because an inline panel has no positioned ancestor to hang from — the menu's
- * host is `display: contents` so that declaring a menu adds no box to the consumer's layout.
+ * `fixed`, placed from the trigger's measured rect (see `measure()`). The panel always lives in
+ * `<body>`, so nothing above it can clip it and there is no second positioning model to keep in
+ * step.
  */
 .gog-menu {
   position: fixed;
@@ -27,13 +27,24 @@
   min-width: var(--gog-menu-min-width);
   max-width: var(--gog-menu-max-width);
   max-height: var(--gog-menu-max-height);
-  overflow-y: auto;
+  /* The panel masks its own corners; the scrolling happens in `.gog-menu__scroll` inside it. */
+  overflow: hidden;
   padding: var(--gog-menu-padding);
   border: var(--gog-menu-border-width) var(--gog-menu-border-style) var(--gog-menu-border-color);
   border-radius: var(--gog-menu-radius);
   background-color: var(--gog-menu-bg);
   box-shadow: var(--gog-menu-shadow);
   font-family: var(--gog-menu-font-family);
+}
+
+/*
+ * `min-height: 0` overrides the flex-item default of `auto`, which would otherwise refuse to
+ * shrink below the item list's full height and defeat the panel's max-height — the same note
+ * `.gog-select__scroll` carries, for the same reason.
+ */
+.gog-menu__scroll {
+  flex: 1;
+  min-height: 0;
 }
 
 .gog-menu__item {

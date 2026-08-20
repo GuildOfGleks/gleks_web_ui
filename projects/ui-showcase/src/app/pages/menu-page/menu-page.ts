@@ -8,8 +8,8 @@ import {
   GogMenuTriggerDirective,
   IconComponent,
   MenuComponent,
-  ScrollComponent,
   TableComponent,
+  ToggleComponent,
 } from '@guildofgleks/ui';
 
 interface Document {
@@ -29,8 +29,8 @@ interface Document {
     GogMenuTriggerDirective,
     IconComponent,
     MenuComponent,
-    ScrollComponent,
     TableComponent,
+    ToggleComponent,
   ],
   templateUrl: './menu-page.html',
   styleUrl: './menu-page.scss',
@@ -39,6 +39,22 @@ interface Document {
 export class MenuPage {
   protected readonly lastAction = signal('—');
   protected readonly closes = signal(0);
+  /** Drives the bound-disabled demo: one toggle, two items that follow it. */
+  protected readonly isLocked = signal(true);
+
+  /** Long enough to overflow --gog-menu-max-height, which is what the scroller demo needs. */
+  protected readonly branches: string[] = [
+    'main',
+    'develop',
+    'release/21.5.0',
+    'release/21.4.4',
+    'feature/menu',
+    'feature/rtl',
+    'feature/tokens',
+    'hotfix/scroll-clipping',
+    'experiment/virtualisation',
+    'archive/2025',
+  ];
 
   protected readonly documents: Document[] = [
     { id: 1, name: 'Q3 roadmap', owner: 'Ada Lovelace' },

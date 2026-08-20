@@ -78,11 +78,7 @@
               <gog-icon name="more-vertical" />
             </button>
 
-            <gog-menu
-              #rowMenu
-              [appendToBody]="true"
-              [attr.aria-label]="'Actions for ' + $any(row).name"
-            >
+            <gog-menu #rowMenu [attr.aria-label]="'Actions for ' + $any(row).name">
               <button gogMenuItem type="button" (click)="notifyEdit($any(row))">
                 <gog-icon name="check" />
                 Edit member

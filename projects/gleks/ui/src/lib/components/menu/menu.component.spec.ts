@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 
@@ -10,7 +10,7 @@ import { GogMenuItemDirective, GogMenuTriggerDirective, MenuComponent } from './
   template: `
     <button class="trigger" [gogMenuTrigger]="rowMenu" aria-label="Row actions">Actions</button>
 
-    <gog-menu #rowMenu ariaLabel="Row actions" [appendToBody]="portaled()">
+    <gog-menu #rowMenu ariaLabel="Row actions">
       <button gogMenuItem class="item-edit" (click)="ran.push('edit')">Edit</button>
       <button gogMenuItem class="item-archive" disabled (click)="ran.push('archive')">
         Archive
@@ -22,7 +22,6 @@ import { GogMenuItemDirective, GogMenuTriggerDirective, MenuComponent } from './
   `,
 })
 class MenuHostComponent {
-  readonly portaled = signal(false);
   readonly ran: string[] = [];
 }
 
@@ -216,12 +215,12 @@ describe('MenuComponent', () => {
     });
   });
 
-  describe('appendToBody', () => {
-    it('renders the panel into the body instead of in place', async () => {
-      host.portaled.set(true);
-      fixture.detectChanges();
-      await fixture.whenStable();
-
+  describe('where the panel renders', () => {
+    // Always `<body>`, never in place: the host is `display: contents`, so an in-place panel has
+    // nothing to position against, and `position: fixed` inside a `contain`/`transform` ancestor
+    // — which `gog-scroll` is — resolves against that ancestor rather than the viewport. A menu
+    // inside a scroller landed nowhere at all, which is what removed the mode.
+    it('renders into the overlay host, outside the component that declared it', async () => {
       await openByClick();
 
       const rendered = panel();
@@ -230,26 +229,29 @@ describe('MenuComponent', () => {
       expect(fixture.nativeElement.contains(rendered)).toBe(false);
     });
 
-    it('focuses the first item of a portaled panel, like an inline one', async () => {
-      host.portaled.set(true);
-      fixture.detectChanges();
-      await fixture.whenStable();
-
+    it('scrolls its items with gog-scroll rather than the browser default', async () => {
       await openByClick();
 
-      expect(document.activeElement).toBe(items()[0]);
+      const scroller = panel()?.querySelector('gog-scroll');
+      expect(scroller).toBeTruthy();
+      // Every item lives inside it, so a long menu scrolls the panel and not the page.
+      for (const item of items()) {
+        expect(scroller?.contains(item)).toBe(true);
+      }
     });
 
-    it('still closes and restores focus from a portaled panel', async () => {
-      host.portaled.set(true);
-      fixture.detectChanges();
-      await fixture.whenStable();
+    it('takes the stacking order the trigger inherits, so a menu in a dialog stays on top', async () => {
+      trigger().style.setProperty('--gog-dropdown-z', '1310');
 
       await openByClick();
-      await key(items()[0], 'Escape');
 
-      expect(panel()).toBeNull();
-      expect(document.activeElement).toBe(trigger());
+      expect(panel()?.style.zIndex).toBe('1310');
+    });
+
+    it('leaves the z-index to CSS when nothing above it sets one', async () => {
+      await openByClick();
+
+      expect(panel()?.style.zIndex).toBe('');
     });
   });
 });

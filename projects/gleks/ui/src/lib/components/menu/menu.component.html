@@ -1,9 +1,8 @@
 <!--
-  The panel lives in a template so the same markup serves both modes: stamped in place, or
-  handed to `GogDropdownOverlay` and rendered into `<body>`. One declaration means the two
-  cannot drift, which is the same reason `gog-select` builds its panel this way.
+  The panel lives in a template because `GogDropdownOverlay` stamps it into `<body>`, never in
+  place — see the class comment for why a menu has no in-place mode.
 
-  `<ng-content>` sits inside the template on purpose: the consumer's items exist as soon as
+  `<ng-content>` sits inside that template on purpose: the consumer's items exist as soon as
   their own view does, and stamping the panel is what attaches them — so a closed menu puts
   nothing in the accessibility tree, rather than hiding it with CSS.
 -->
@@ -12,20 +11,30 @@
   <div
     [id]="menuId"
     class="gog-menu"
-    [class.gog-menu--portal]="isPortaled()"
     [class.gog-menu--up]="placement()?.direction === 'up'"
     [style.top.px]="placement()?.top"
     [style.left.px]="placement()?.left"
     [style.max-height.px]="placement()?.maxHeight"
+    [style.z-index]="panelZIndex()"
     role="menu"
     [attr.aria-label]="ariaLabel() || null"
     (keydown)="onPanelKeydown($event)"
     (click)="onPanelClick($event)"
   >
-    <ng-content />
+    <!--
+      The library's own scroller rather than `overflow: auto`: a menu long enough to scroll gets
+      the same thin, auto-hiding scrollbar as every other scrollable surface in the package, and
+      `overscrollBehavior="contain"` stops a wheel at the end of the list from scrolling the page
+      behind the menu. `focusable` is off because the menu's only tab stop is its trigger — items
+      are reached with the arrow keys, and `focusElement()` scrolls them into view.
+    -->
+    <gog-scroll
+      class="gog-menu__scroll"
+      size="thin"
+      [focusable]="false"
+      overscrollBehavior="contain"
+    >
+      <ng-content />
+    </gog-scroll>
   </div>
 </ng-template>
-
-@if (isOpen() && !isPortaled()) {
-  <ng-container [ngTemplateOutlet]="panelTpl" />
-}

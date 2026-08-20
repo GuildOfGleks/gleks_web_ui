@@ -5,7 +5,8 @@
     <p class="lead">
       A command menu opened from a button you own. <code>[gogMenuTrigger]</code> goes on your
       button, <code>gogMenuItem</code> on your items — so an item can carry an icon, a label and a
-      shortcut hint without an input per piece. A closed menu renders nothing at all.
+      shortcut hint without an input per piece. A closed menu renders nothing at all, and an open
+      one renders into <code>&lt;body&gt;</code>, so nothing above it can clip it.
     </p>
   </div>
 
@@ -50,12 +51,74 @@
   </article>
 
   <article class="card">
+    <h3>Disabled items</h3>
+    <p class="meta">
+      An item is your own <code>&lt;button&gt;</code>, so you disable it the way you disable a
+      button: the native <code>disabled</code> attribute — there is no input for it. A disabled item
+      stays in the list (removing it would shift everything else under the pointer), the arrow keys
+      step over it, and clicking it does nothing.
+    </p>
+
+    <div class="menu-row">
+      <gog-button variant="outline" type="button" [gogMenuTrigger]="staticDisabledMenu"
+        >Statically disabled</gog-button
+      >
+      <gog-menu #staticDisabledMenu ariaLabel="Statically disabled items">
+        <button gogMenuItem type="button" (click)="run('Publish')">Publish</button>
+        <button gogMenuItem type="button" disabled>Publish to production</button>
+        <button gogMenuItem type="button" disabled>Delete permanently</button>
+        <button gogMenuItem type="button" (click)="run('Duplicate')">Duplicate</button>
+      </gog-menu>
+
+      <gog-button variant="outline" type="button" [gogMenuTrigger]="boundDisabledMenu"
+        >Bound to state</gog-button
+      >
+      <gog-menu #boundDisabledMenu ariaLabel="Items disabled by state">
+        <button gogMenuItem type="button" (click)="run('Open')">Open</button>
+        <button gogMenuItem type="button" [disabled]="isLocked()" (click)="run('Edit')">
+          Edit
+        </button>
+        <button gogMenuItem type="button" [disabled]="isLocked()" (click)="run('Delete')">
+          Delete
+        </button>
+      </gog-menu>
+
+      <gog-toggle label="Locked" size="sm" [(checked)]="isLocked" />
+    </div>
+
+    <p class="meta">
+      With <strong>Locked</strong> on, the second menu leaves only <em>Open</em> reachable —
+      <kbd>↓</kbd> from it wraps back to itself instead of landing on a dead command.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>A long menu scrolls itself</h3>
+    <p class="meta">
+      Past <code>--gog-menu-max-height</code> the panel scrolls with <code>gog-scroll</code>, the
+      same scroller the rest of the library uses: thin, auto-hiding, and it keeps the wheel to
+      itself when the list ends instead of handing it to the page. Arrowing past the last visible
+      item scrolls it into view.
+    </p>
+
+    <div class="menu-row">
+      <gog-button variant="outline" type="button" [gogMenuTrigger]="longMenu"
+        >Move to branch…</gog-button
+      >
+      <gog-menu #longMenu ariaLabel="Move to branch">
+        @for (branch of branches; track branch) {
+          <button gogMenuItem type="button" (click)="run('Move to ' + branch)">{{ branch }}</button>
+        }
+      </gog-menu>
+    </div>
+  </article>
+
+  <article class="card">
     <h3>Row actions</h3>
     <p class="meta">
-      What the component was built for: an icon button per row.
-      <code>[appendToBody]="true"</code> because <code>gog-table</code> wraps itself in a
-      <code>gog-scroll</code>, which would otherwise clip the panel — the same reason the dropdowns
-      have that input.
+      What the component was built for: an icon button per row. The table wraps itself in a
+      <code>gog-scroll</code>, and the panel still escapes it — that is why the menu always renders
+      into <code>&lt;body&gt;</code> rather than offering a mode to get this wrong in.
     </p>
 
     <gog-table [value]="documents" size="sm">
@@ -75,7 +138,7 @@
               <gog-icon name="more-vertical" />
             </button>
 
-            <gog-menu #rowMenu [appendToBody]="true" ariaLabel="Row actions">
+            <gog-menu #rowMenu ariaLabel="Row actions">
               <button gogMenuItem type="button" (click)="run('Open ' + $any(row).name)">
                 <gog-icon name="eye" />
                 Open
@@ -83,6 +146,10 @@
               <button gogMenuItem type="button" (click)="run('Share ' + $any(row).name)">
                 <gog-icon name="external-link" />
                 Share
+              </button>
+              <button gogMenuItem type="button" disabled>
+                <gog-icon name="lock" />
+                Transfer ownership
               </button>
               <button gogMenuItem type="button" (click)="run('Archive ' + $any(row).name)">
                 <gog-icon name="download" />
@@ -96,45 +163,10 @@
   </article>
 
   <article class="card">
-    <h3>Inside a scroller, with and without appendToBody</h3>
-    <p class="meta">
-      The left menu is inline: it is clipped by the scroller's own box, which is what
-      <code>overflow</code> does to any absolutely positioned child. The right one is portaled and
-      escapes. Scroll the strip to see the difference — this is the one input to reach for when a
-      menu appears cut off.
-    </p>
-
-    <gog-scroll class="menu-scroller" axis="vertical">
-      <div class="menu-scroller__content">
-        <div class="menu-row">
-          <gog-button variant="outline" size="sm" type="button" [gogMenuTrigger]="clippedMenu"
-            >Inline (clipped)</gog-button
-          >
-          <gog-menu #clippedMenu ariaLabel="Inline menu">
-            <button gogMenuItem type="button" (click)="run('Inline item')">First</button>
-            <button gogMenuItem type="button" (click)="run('Inline item')">Second</button>
-            <button gogMenuItem type="button" (click)="run('Inline item')">Third</button>
-          </gog-menu>
-
-          <gog-button variant="outline" size="sm" type="button" [gogMenuTrigger]="portaledMenu"
-            >appendToBody</gog-button
-          >
-          <gog-menu #portaledMenu [appendToBody]="true" ariaLabel="Portaled menu">
-            <button gogMenuItem type="button" (click)="run('Portaled item')">First</button>
-            <button gogMenuItem type="button" (click)="run('Portaled item')">Second</button>
-            <button gogMenuItem type="button" (click)="run('Portaled item')">Third</button>
-          </gog-menu>
-        </div>
-        <p class="meta">Scroll me — the strip is deliberately short.</p>
-      </div>
-    </gog-scroll>
-  </article>
-
-  <article class="card">
     <h3>Direction</h3>
     <p class="meta">
       <code>direction</code> is <code>'auto'</code> by default: the panel drops down whenever it
-      fits and flips up only when it cannot — unlike a select's listbox, which picks whichever side
+      fits and flips up only when it cannot — unlike a select's listbox, which takes whichever side
       has more room. Force it with <code>'up'</code> or <code>'down'</code>.
     </p>
 

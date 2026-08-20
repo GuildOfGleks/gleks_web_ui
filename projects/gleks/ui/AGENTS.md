@@ -1327,18 +1327,22 @@ a shortcut hint without an input per piece:
   <gog-icon name="more-vertical" />
 </button>
 
-<gog-menu #rowMenu [appendToBody]="true" ariaLabel="Row actions">
+<gog-menu #rowMenu ariaLabel="Row actions">
   <button gogMenuItem (click)="edit(row)"><gog-icon name="check" /> Edit</button>
   <button gogMenuItem disabled>Transfer ownership</button>
   <button gogMenuItem (click)="remove(row)"><gog-icon name="close" /> Remove</button>
 </gog-menu>
 ```
 
-| Input          | Type                       | Default  | Notes                                                                                                                                   |
-| -------------- | -------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `appendToBody` | `boolean`                  | `false`  | Renders into `<body>`. Use it inside `gog-scroll`, `gog-table` or any `overflow: hidden` ancestor, which would otherwise clip the panel |
-| `direction`    | `'auto' \| 'up' \| 'down'` | `'auto'` | `'auto'` drops down whenever the panel fits and flips up only when it cannot                                                            |
-| `ariaLabel`    | `string`                   | `''`     | Names the panel itself                                                                                                                  |
+| Input       | Type                       | Default  | Notes                                                                        |
+| ----------- | -------------------------- | -------- | ---------------------------------------------------------------------------- |
+| `direction` | `'auto' \| 'up' \| 'down'` | `'auto'` | `'auto'` drops down whenever the panel fits and flips up only when it cannot |
+| `ariaLabel` | `string`                   | `''`     | Names the panel itself                                                       |
+
+**There is no `appendToBody`.** The panel always renders into `<body>` and is placed from the
+trigger's measured rect, so a menu inside `gog-scroll`, `gog-table` or any `overflow: hidden`
+ancestor is not clipped and needs no configuration. It also takes the `--gog-dropdown-z` its
+trigger inherits, so a menu opened inside a `gog-dialog` stacks above the dialog.
 
 Output: `gogClosed` — fires after every close, whatever caused it.
 
@@ -1350,9 +1354,24 @@ focused, ArrowUp opens with the last, arrows and Home/End move between items and
 disabled ones, Escape closes and returns focus to the trigger, Tab closes and lets focus move on.
 A press outside closes without pulling focus back.
 
-Mark a disabled item with the native `disabled` attribute — navigation skips it, and no extra
-input is involved. A closed menu renders nothing at all, so its commands are not in the
-accessibility tree until it opens.
+**Disabling an item** is the native `disabled` attribute on your own button — static or bound,
+there is no input for it:
+
+```html
+<button gogMenuItem disabled>Transfer ownership</button>
+<button gogMenuItem [disabled]="isLocked()" (click)="edit()">Edit</button>
+```
+
+A disabled item stays in the list rather than disappearing (removing it would shift the others
+under the pointer), the arrow keys step over it, and clicking it does nothing.
+
+**A long menu scrolls itself** past `--gog-menu-max-height`, using `gog-scroll` — the same thin,
+auto-hiding scroller as everywhere else in the package, with `overscrollBehavior="contain"` so a
+wheel at the end of the list does not scroll the page behind it. Arrowing past the last visible
+item scrolls it into view.
+
+A closed menu renders nothing at all, so its commands are not in the accessibility tree until it
+opens.
 
 #### `gog-dialog`
 

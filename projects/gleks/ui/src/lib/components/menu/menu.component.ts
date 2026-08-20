@@ -1,4 +1,4 @@
-import { isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {
   afterNextRender,
   ApplicationRef,
@@ -27,6 +27,7 @@ import { nextGogControlId } from '../../shared/control-id';
 import { isRovingFocusKey, nextRovingFocusIndex } from '../../shared/roving-focus';
 import { scopedOverlayDirection } from '../../shared/overlay-direction';
 import type { GogDropdownDirection } from '../../shared/dropdown-position';
+import { ScrollComponent } from '../scroll/scroll.component';
 import { resolveMenuPlacement, type GogMenuPlacement } from './menu-position';
 
 /**
@@ -87,14 +88,24 @@ export class GogMenuItemDirective {
  */
 @Component({
   selector: 'gog-menu',
-  imports: [NgTemplateOutlet],
+  imports: [ScrollComponent],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuComponent {
-  /** Renders into `<body>` instead of in place — escapes an `overflow: hidden` ancestor. */
-  readonly appendToBody = input(false);
+  /*
+   * There is no `appendToBody` input: the panel is *always* rendered into `<body>`.
+   *
+   * A dropdown has that input because its panel is a child of its own component and inherits
+   * the size tokens from that wrapper, so rendering in place is genuinely useful. A menu's
+   * panel has neither property, and an in-place one cannot even be positioned: this component's
+   * host is `display: contents` (so declaring a menu adds no box to the consumer's layout),
+   * which leaves nothing for `position: absolute` to resolve against — and `position: fixed`
+   * resolves against the nearest ancestor with `contain`/`transform`, which `gog-scroll` is.
+   * A menu inside a scroller therefore landed nowhere at all. One mode, always correct.
+   */
+
   /** `'auto'` flips the panel above the trigger when there is no room below. */
   readonly direction = input<GogDropdownDirection>('auto');
   /** Accessible name for the panel itself, announced when the menu opens. */
@@ -120,7 +131,12 @@ export class MenuComponent {
   private pendingFocus: 'first' | 'last' | null = null;
 
   protected readonly placement = signal<GogMenuPlacement | null>(null);
-  protected readonly isPortaled = computed(() => this.appendToBody() && this.isBrowser);
+  /**
+   * The stacking order the panel would have had where it was declared. `gog-dialog` sets
+   * `--gog-dropdown-z` on its own panel for exactly this, so a menu opened inside a dialog
+   * stacks above it rather than behind — the same mechanism the dropdowns use.
+   */
+  protected readonly panelZIndex = signal<number | null>(null);
 
   readonly isOpen = this.openState.asReadonly();
 
@@ -128,7 +144,6 @@ export class MenuComponent {
     effect(() => {
       if (!this.isBrowser) return;
       const isOpen = this.openState();
-      const isPortaled = this.isPortaled();
 
       /*
        * Everything below is deliberately untracked. `attach()` re-creates the panel's view,
@@ -142,7 +157,7 @@ export class MenuComponent {
           this.overlay.detach();
           return;
         }
-        if (!isPortaled || this.overlay.isAttached) return;
+        if (this.overlay.isAttached) return;
 
         this.overlay.attach(this.panelTemplate(), this.triggerEl);
         // The panel is in the document as of this line — the earliest its placement can be
@@ -171,6 +186,24 @@ export class MenuComponent {
 
       this.document.addEventListener('pointerdown', onPointerDown, true);
       onCleanup(() => this.document.removeEventListener('pointerdown', onPointerDown, true));
+    });
+
+    // A fixed panel does not travel with its trigger: scroll the page and it would hang in
+    // mid-air. Re-measuring is cheaper than it looks — two rects and a clamp — and keeps the
+    // menu attached to the button it belongs to, which closing on scroll would not.
+    effect((onCleanup) => {
+      if (!this.isBrowser || !this.openState()) return;
+
+      const reposition = () => {
+        if (this.triggerEl) this.measure(this.triggerEl, this.panelElement());
+      };
+
+      this.document.addEventListener('scroll', reposition, true);
+      window.addEventListener('resize', reposition);
+      onCleanup(() => {
+        this.document.removeEventListener('scroll', reposition, true);
+        window.removeEventListener('resize', reposition);
+      });
     });
 
     this.destroyRef.onDestroy(() => this.overlay.detach());
@@ -269,7 +302,21 @@ export class MenuComponent {
       elements.length,
       (index) => !(this.items()[index]?.isDisabled ?? false),
     );
-    elements[nextIndex]?.focus({ preventScroll: true });
+    const next = elements[nextIndex];
+    if (next) this.focusElement(next);
+  }
+
+  /**
+   * `preventScroll` keeps the *page* still — a portaled panel must not make the document jump —
+   * and `scrollIntoView({ block: 'nearest' })` then scrolls the panel's own viewport by the
+   * minimum needed. Without the second half, arrowing down a menu long enough to scroll moves
+   * focus to an item nobody can see.
+   */
+  private focusElement(element: HTMLElement): void {
+    element.focus({ preventScroll: true });
+    // Optional call: jsdom does not implement `scrollIntoView`, and it is an affordance rather
+    // than part of the contract — the item is focused either way.
+    element.scrollIntoView?.({ block: 'nearest' });
   }
 
   /** An item was chosen: close first so focus lands back on the trigger, then let it run. */
@@ -296,7 +343,7 @@ export class MenuComponent {
     const item = this.pendingFocus === 'first' ? enabled.at(0) : enabled.at(-1);
     if (!item) return;
 
-    item.elementRef.nativeElement.focus({ preventScroll: true });
+    this.focusElement(item.elementRef.nativeElement);
     this.pendingFocus = null;
   }
 
@@ -316,8 +363,12 @@ export class MenuComponent {
     if (!this.isBrowser) return;
 
     const rect = trigger.getBoundingClientRect();
+    const styles = getComputedStyle(trigger);
     const written = scopedOverlayDirection(trigger, this.document.documentElement);
-    const direction = written ?? (getComputedStyle(trigger).direction === 'rtl' ? 'rtl' : 'ltr');
+    const direction = written ?? (styles.direction === 'rtl' ? 'rtl' : 'ltr');
+
+    const inheritedZ = styles.getPropertyValue('--gog-dropdown-z').trim();
+    this.panelZIndex.set(inheritedZ ? (Number.parseFloat(inheritedZ) ?? null) : null);
 
     const size = panel
       ? { width: panel.offsetWidth, height: panel.scrollHeight }

@@ -108,7 +108,7 @@ long path, drop the `src/` segment.
     <gog-icon name="more-vertical" />
   </button>
 
-  <gog-menu #rowMenu [appendToBody]="true">
+  <gog-menu #rowMenu>
     <button gogMenuItem (click)="edit(row)">Edit</button>
     <button gogMenuItem disabled>Transfer ownership</button>
   </gog-menu>
@@ -121,8 +121,13 @@ long path, drop the `src/` segment.
 
   Keyboard follows the WAI-ARIA menu button pattern: Enter/Space/ArrowDown open with the first
   item focused, ArrowUp with the last, arrows and Home/End move and skip disabled items, Escape
-  closes and restores focus to the trigger, Tab closes and moves on. `appendToBody` renders into
-  `<body>` for a menu inside a scroller or a table. Themed by `--gog-menu-*`.
+  closes and restores focus to the trigger, Tab closes and moves on.
+
+  Disable an item with the native `disabled` attribute on your own button — the arrow keys step
+  over it. The panel always renders into `<body>`, placed from the trigger's measured rect, so a
+  menu inside `gog-scroll`, `gog-table` or any clipping ancestor needs no configuration; it takes
+  the `--gog-dropdown-z` its trigger inherits, so a menu inside a dialog stacks above it. Past
+  `--gog-menu-max-height` the panel scrolls with `gog-scroll`. Themed by `--gog-menu-*`.
 
 - **Right-to-left support.** `dir="rtl"` on `<html>` — or on any subtree — now mirrors every
   component, with nothing to set per component. What changed under it: physical `left`/`right`
