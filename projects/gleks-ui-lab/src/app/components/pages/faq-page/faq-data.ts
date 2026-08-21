@@ -56,12 +56,19 @@ rather opt into minors by hand and read the changelog first.
     item(
       'Which Angular versions does it support?',
       `
-Angular 21 and newer only (\`peerDependencies\` require \`^21.2.0\` for \`@angular/core\`,
-\`@angular/common\`, \`@angular/forms\` and \`@angular/platform-browser\`). The library was built
-after standalone components, signals and \`OnPush\`-by-default became the normal way to write
-Angular, so there was never a reason to also support the NgModule-era API surface older
-libraries still carry. If your app is on an older Angular version, upgrade first — there's no
-compatibility build.
+**Angular 21.2 and 22**, from one package — \`peerDependencies\` are \`^21.2.0 || ^22.0.0\` for
+\`@angular/core\`, \`@angular/common\`, \`@angular/forms\` and \`@angular/platform-browser\`. The
+library ships partial-compiled (Ivy partial mode), which is forward-compatible with the next
+major without a separate build.
+
+The \`|| ^22.0.0\` half arrived in **21.5.0**. Before it, the range was \`^21.2.0\` alone and npm
+refused to install into an Angular 22 app that would otherwise have built and run fine, so every
+such consumer needed an \`overrides\` / \`resolutions\` entry. If you have one, delete it.
+
+Nothing older than 21.2. The library was built after standalone components, signals and
+\`OnPush\`-by-default became the normal way to write Angular, so there was never a reason to also
+support the NgModule-era API surface older libraries still carry. If your app is on an older
+Angular version, upgrade first — there's no compatibility build.
 `,
     ),
     item(

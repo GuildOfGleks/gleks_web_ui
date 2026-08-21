@@ -31,6 +31,12 @@ export const routes: Routes = [
       ),
   },
   {
+    // Above the `general/:slug` catch-all, like `faq` and `releases`: it is a routed component
+    // with a live demo, not a markdown doc.
+    path: 'general/rtl',
+    loadComponent: () => import('./components/pages/rtl-page/rtl-page').then((m) => m.RtlPage),
+  },
+  {
     path: 'general/compare',
     loadComponent: () =>
       import('./components/pages/compare-page/compare-page').then((m) => m.ComparePage),

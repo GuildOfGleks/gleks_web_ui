@@ -36,6 +36,13 @@ trim the explanation back to what `fullWidth` is for.
 
 ---
 
+## After the release that fixes `gog-inputfield`'s RTL icon padding
+
+`general/rtl`'s demo card ends with a **Known defect in &lt;installed version&gt;** paragraph —
+the version interpolates from `library-version.ts` — about the icon reserve staying on the
+physical left. **Delete that paragraph** once the fix ships, and check the Search field in the
+demo renders with its text clear of the icon in `dir="rtl"`; the demo itself needs no change.
+
 ## After the release that fixes `--gog-menu-max-height`
 
 The menu page's "A long menu scrolls itself" card ends with a **Known defect in &lt;installed

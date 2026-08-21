@@ -182,6 +182,12 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     'Angular text input with floating labels, prefix and suffix add-ons, a clear button, ' +
       'validation states and every native attribute passed straight through.',
   ),
+  'general/rtl': {
+    title: 'Right-to-left — Guild of Gleks UI',
+    description:
+      'Angular RTL support with no per-component configuration: dir="rtl" on the document or ' +
+      'any region mirrors every component, portaled overlays included.',
+  },
   'components/menu': component(
     'Menu',
     'An accessible Angular command menu — the trigger and the items are your own buttons, ' +

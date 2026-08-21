@@ -1,0 +1,144 @@
+<div class="rtl-doc">
+  <header class="rtl-doc__hero">
+    <p class="rtl-doc__eyebrow">dir="rtl"</p>
+    <h1 class="rtl-doc__title font-heading">Right-to-left <app-since version="21.5.0" /></h1>
+    <p class="rtl-doc__lead">
+      Set <code>dir="rtl"</code> on <code>&lt;html&gt;</code> — or on any wrapper — and every
+      component mirrors. There is nothing to configure per component, no separate stylesheet to
+      import and no RTL build of the package.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="use-it" class="doc-section__title font-heading">Use it</h2>
+    <app-markdown [markdown]="htmlSnippet" />
+    <p class="doc-section__intro">
+      That is the whole API. The demo below puts <code>dir</code> on a region rather than on the
+      document so you can flip it and compare — watch the field label and its icon change ends, the
+      checkbox move to the other side of its text, and the slider and progress bar fill from the
+      opposite edge. Open the select: its panel renders into <code>&lt;body&gt;</code> and still
+      mirrors with the region, not with the page around it.
+    </p>
+
+    <div class="demo-card">
+      <app-demo [component]="examples.overview" [source]="sources.rtlOverview" />
+      <p class="demo-card__meta">
+        <strong
+          >Known defect in {{ libraryVersion }}: a <code>gog-inputfield</code> icon overlaps its own
+          text in RTL.</strong
+        >
+        The icon itself mirrors correctly — it is placed with
+        <code>inset-inline-start</code> — but the space reserved for it in the input is still a
+        physical <code>padding-left</code>, driven by <code>--gog-input-pl</code>. So in RTL the
+        icon sits at the right edge while the 36px reserve stays at the left, and the text starts
+        underneath the icon. The Search field above shows it; flip to <code>dir="ltr"</code> to see
+        the same field render correctly. It affects <code>iconStart</code>, <code>iconEnd</code>
+        and the trailing controls that share that slot (<code>clearable</code>, the password
+        toggle). The fix is the same rule in logical form; nothing about the API changes.
+      </p>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="what-mirrors" class="doc-section__title font-heading">What mirrors</h2>
+    <p class="doc-section__intro">
+      Mostly this is CSS logical properties doing the work, which is why it costs nothing at runtime
+      and nothing in bundle size. A few places needed real decisions:
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Where</th>
+            <th>What happens</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of mirrored; track row.area) {
+            <tr>
+              <td>{{ row.area }}</td>
+              <td>{{ row.what }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="what-does-not" class="doc-section__title font-heading">What stays physical</h2>
+    <p class="doc-section__intro">
+      Two APIs name a side in words, and those words keep meaning that side. Mirroring them would
+      make a call site say one thing and do another.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>API</th>
+            <th>Values</th>
+            <th>Why it is not mirrored</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of physical; track row.api) {
+            <tr>
+              <td>
+                <code>{{ row.api }}</code>
+              </td>
+              <td>
+                <code>{{ row.values }}</code>
+              </td>
+              <td>{{ row.why }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="your-own-styles" class="doc-section__title font-heading">In your own styles</h2>
+    <p class="doc-section__intro">
+      Write logical properties (<code>margin-inline-start</code>, <code>inset-inline-end</code>,
+      <code>text-align: start</code>) and your own CSS mirrors along with the library's. For the
+      handful of properties that have no logical form — <code>transform-origin</code> and
+      <code>translate</code> — the library declares three custom properties that flip on
+      <code>[dir='rtl']</code>, and they are yours to use:
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>LTR</th>
+            <th>RTL</th>
+            <th>What it is for</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of directionProperties; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>
+                <code>{{ row.ltr }}</code>
+              </td>
+              <td>
+                <code>{{ row.rtl }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-markdown [markdown]="signSnippet" />
+    <p class="doc-section__meta">
+      They are ordinary custom properties on the same cascade as everything else on the
+      <a routerLink="/general/theming">Theming</a> page — a nested <code>dir</code> re-declares them
+      for its own subtree, the way a nested <code>data-theme</code> re-declares a palette.
+    </p>
+  </section>
+</div>

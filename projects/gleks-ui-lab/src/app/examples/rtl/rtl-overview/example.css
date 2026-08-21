@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.rtl-controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+/* The region is what carries `dir`. It keeps a border so the mirrored side is visible at a
+   glance — labels, icons and the slider fill all swap to the other edge of this box. */
+.rtl-region {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 420px;
+  margin-inline: auto;
+  padding: 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-background-color);
+}
+
+.rtl-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

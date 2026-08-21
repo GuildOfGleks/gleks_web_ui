@@ -8,6 +8,7 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
     children: [{ label: 'Global Configuration', path: 'general/global-config' }],
   },
   { label: 'Theming', path: 'general/theming' },
+  { label: 'Right-to-left', path: 'general/rtl' },
   {
     label: 'Compare with Material and PrimeNG',
     path: 'general/compare',
