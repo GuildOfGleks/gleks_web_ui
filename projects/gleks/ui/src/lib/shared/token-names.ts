@@ -660,6 +660,7 @@ export type GogTokenName =
   | '--gog-input-spin-hover-bg'
   | '--gog-input-spin-width'
   | '--gog-input-transition-duration'
+  | '--gog-menu-available-height'
   | '--gog-menu-bg'
   | '--gog-menu-border-color'
   | '--gog-menu-border-style'
@@ -2824,6 +2825,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-input-font',
       '--gog-input-padding-x',
       '--gog-input-padding-y',
+      '--gog-menu-available-height',
       '--gog-multiselect-float-label-on-bg',
       '--gog-multiselect-font-size',
       '--gog-multiselect-padding-x',

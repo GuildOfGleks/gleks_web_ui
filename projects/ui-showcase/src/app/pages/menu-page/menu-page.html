@@ -98,7 +98,9 @@
       Past <code>--gog-menu-max-height</code> the panel scrolls with <code>gog-scroll</code>, the
       same scroller the rest of the library uses: thin, auto-hiding, and it keeps the wheel to
       itself when the list ends instead of handing it to the page. Arrowing past the last visible
-      item scrolls it into view.
+      item scrolls it into view. The panel's height is the smallest of three — its content, that
+      token, and the room between the trigger and the viewport edge; in 21.5.0 the token was
+      overridden by the measurement and did nothing.
     </p>
 
     <div class="menu-row">

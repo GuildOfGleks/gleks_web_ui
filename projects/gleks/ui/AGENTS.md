@@ -1379,10 +1379,14 @@ there is no input for it:
 A disabled item stays in the list rather than disappearing (removing it would shift the others
 under the pointer), the arrow keys step over it, and clicking it does nothing.
 
-**A long menu scrolls itself** past `--gog-menu-max-height`, using `gog-scroll` — the same thin,
-auto-hiding scroller as everywhere else in the package, with `overscrollBehavior="contain"` so a
-wheel at the end of the list does not scroll the page behind it. Arrowing past the last visible
-item scrolls it into view.
+**A long menu scrolls itself**, using `gog-scroll` — the same thin, auto-hiding scroller as
+everywhere else in the package, with `overscrollBehavior="contain"` so a wheel at the end of the
+list does not scroll the page behind it. Arrowing past the last visible item scrolls it into view.
+
+The panel's height is the smallest of three: its own content, `--gog-menu-max-height` (320px by
+default), and the room between the trigger and the viewport edge. Lower the token to make a menu
+scroll sooner. **In 21.5.0 the token did nothing** — the measured room was written onto the panel
+as an inline `max-height`, which beat it; fixed in 21.5.1.
 
 A closed menu renders nothing at all, so its commands are not in the accessibility tree until it
 opens.

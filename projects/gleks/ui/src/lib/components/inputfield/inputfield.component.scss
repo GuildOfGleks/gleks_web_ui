@@ -45,13 +45,22 @@
 
 .gog-input__field {
   width: 100%;
-  padding: var(
-      --gog-input-padding-y,
-      var(--gog-input-size-padding-y, var(--gog-field-md-padding-y))
+  /*
+   * Logical, not the four-value `padding` shorthand this used to be. The gutter that makes room
+   * for an icon has to sit on the same side the icon does, and the icon is placed with
+   * `inset-inline-start`/`-end` — so in RTL a physical `padding-left` reserve left the text
+   * running underneath the icon at the field's inline start, with the reserve stranded at the
+   * far end. `--gog-input-ps`/`-pe` are named for the sides they now mean.
+   */
+  padding-block: var(
+    --gog-input-padding-y,
+    var(--gog-input-size-padding-y, var(--gog-field-md-padding-y))
+  );
+  padding-inline: var(
+      --gog-input-ps,
+      var(--gog-input-size-padding-x, var(--gog-field-md-padding-x))
     )
-    var(--gog-input-pr, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x)))
-    var(--gog-input-padding-y, var(--gog-input-size-padding-y, var(--gog-field-md-padding-y)))
-    var(--gog-input-pl, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x)));
+    var(--gog-input-pe, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x)));
   font-family: var(--gog-input-font-family);
   font-size: var(--gog-input-font, var(--gog-input-size-font-size, var(--gog-field-md-font-size)));
   color: var(--gog-input-field-color);
@@ -102,15 +111,18 @@
  * Icon side padding overrides — an icon widens the field's inner gutter on that side.
  * Declared on the *container*, not the `<input>` itself: both the input and the floating
  * label (an absolutely-positioned sibling inside that same container, see the float-label
- * block below) read `--gog-input-pl`/`--gog-input-pr` for their own left offset, and a
+ * block below) read `--gog-input-ps`/`--gog-input-pe` for their own inline offset, and a
  * custom property set directly on the input never reaches its sibling — only descendants
  * inherit it. Setting it here instead means both pick up the same value.
+ *
+ * The two are inline **start** and **end**, matching the slot names and the icons' own
+ * `inset-inline-*` placement, so the whole field mirrors as one under `dir="rtl"`.
  */
 .gog-input-wrapper--icon-start .gog-input__field-container {
-  --gog-input-pl: var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset));
+  --gog-input-ps: var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset));
 }
 .gog-input-wrapper--icon-end .gog-input__field-container {
-  --gog-input-pr: var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset));
+  --gog-input-pe: var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset));
 }
 
 /*
@@ -120,7 +132,7 @@
  * other. Only this combination needs it; every other end-slot control is alone in the slot.
  */
 .gog-input-wrapper--spin-clear .gog-input__field-container {
-  --gog-input-pr: calc(
+  --gog-input-pe: calc(
     var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset)) + var(--gog-input-spin-width)
   );
 }
@@ -296,9 +308,13 @@
 
 /*
  * Float label — see lib/styles/_float-label.scss for the mechanism. This field is the only
- * one whose left and right insets are separate tokens (`--gog-input-pl` / `--gog-input-pr`,
- * which shift to make room for a leading/trailing icon), so its `max-width` subtracts the two
- * individually rather than doubling one.
+ * one whose inline-start and inline-end insets are separate properties (`--gog-input-ps` /
+ * `--gog-input-pe`, which shift to make room for a leading/trailing icon), so its `max-width`
+ * subtracts the two individually rather than doubling one.
+ *
+ * The mixin positions the label with `inset-inline-start: $pad-x`, so `$pad-x` has to be the
+ * *start* gutter. It was `--gog-input-pl`, which meant a floating label in RTL offset itself by
+ * the padding at the other end of the field.
  */
 @include float-label.variants(
   $block: '.gog-input-wrapper',
@@ -306,11 +322,11 @@
   $field: '.gog-input__field',
   $container: '.gog-input__field-container',
   $prefix: 'input',
-  $pad-x: 'var(--gog-input-pl, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x)))',
+  $pad-x: 'var(--gog-input-ps, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x)))',
   $pad-y:
     'var(--gog-input-padding-y, var(--gog-input-size-padding-y, var(--gog-field-md-padding-y)))',
   $max-width:
-    'calc(100% - var(--gog-input-pl, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x))) - var(--gog-input-pr, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x))))'
+    'calc(100% - var(--gog-input-ps, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x))) - var(--gog-input-pe, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x))))'
 );
 
 @media (prefers-reduced-motion: reduce) {

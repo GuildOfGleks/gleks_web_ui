@@ -6,10 +6,47 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.5.1] - planned
 
-Documentation only — no component, input, output or token changed, so upgrading from 21.5.0 is a
-version bump with nothing to migrate.
+Two defects 21.5.0 shipped, both of the same shape: correct-looking CSS whose effect was cancelled
+by something else in the box model, and neither visible to a test suite that runs without a style
+engine. Both were found by opening the components in a browser while writing the documentation
+site's pages for them. No input, output, type or public token changed, so upgrading from 21.5.0 is
+a version bump with nothing to migrate.
 
 ### Fixed
+
+- **`--gog-menu-max-height` now caps the panel.** It never did: `gog-menu` measured the room
+  between its trigger and the viewport edge and wrote that onto the panel as an inline
+  `max-height`, which beats the stylesheet rule the token feeds. Setting
+  `--gog-menu-max-height: 150px` on a page with 500px of room changed nothing, and a menu of any
+  length simply grew until it ran out of screen.
+
+  The measured room is now handed to CSS as `--gog-menu-available-height` and `menu.css` takes the
+  smaller of the two, so a panel's height is the least of its content, the token, and the room
+  available. Lower the token to make a menu start scrolling sooner.
+
+  A menu that flips **up** is now anchored by its `bottom` rather than by a `top` computed from
+  its expected height. That is what makes the cap safe: with the old arithmetic, a panel the token
+  cut short would have floated away from its trigger by exactly the height it did not take.
+
+- **Text no longer runs underneath a field's own icon in RTL.** `gog-inputfield`, `gog-select`,
+  `gog-autocomplete` and `gog-datepicker` each reserve a gutter for their leading or trailing
+  chrome. The chrome is placed with `inset-inline-start` / `inset-inline-end` — logical — but the
+  gutter was a physical `padding-left`/`padding-right`, so under `dir="rtl"` the two ended up on
+  opposite sides: the icon at one edge, the space kept for it stranded at the other, and the value
+  or placeholder rendering under the icon. A floating label offset itself by the wrong gutter for
+  the same reason, and a clearable `gog-select` was padded on both sides at once.
+
+  All four now use `padding-block` + `padding-inline`. `gog-inputfield`'s two internal properties
+  are renamed to match what they now mean — `--gog-input-pl`/`-pr` became `--gog-input-ps`/`-pe`
+  (inline **start** / **end**). Neither was ever public: they are not in `GogTokenName`, not in
+  `TOKENS.md` and not declared in `theme.css`, so nothing a consumer can have written changes.
+  Left-to-right rendering is byte-for-byte what it was.
+
+  **`npm run check:logical-properties` now fails the build** on a `padding`, `margin`,
+  `border-width` or `border-radius` shorthand that sets the two horizontal sides differently.
+  21.5.0 converted 16 stylesheets to logical properties and still missed these four, because the
+  sidedness lives in a value's *position inside a shorthand* rather than in a `left`/`right`
+  keyword — invisible to a grep, and invisible to a unit test with no style engine.
 
 - **Documented the `position: fixed` containing-block caveat**, in one place plus a line on each
   overlay it affects. `gog-dialog`'s backdrop, `gog-toast-container` and

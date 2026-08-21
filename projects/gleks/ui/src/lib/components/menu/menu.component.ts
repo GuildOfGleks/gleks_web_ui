@@ -130,6 +130,22 @@ export class MenuComponent {
   private pendingFocus: 'first' | 'last' | null = null;
 
   protected readonly placement = signal<GogMenuPlacement | null>(null);
+
+  /**
+   * The room measured between the trigger and the viewport edge, handed to CSS as a length so
+   * `menu.css` can take the smaller of it and `--gog-menu-max-height`. Written as a custom
+   * property rather than as the panel's `max-height`, because an inline `max-height` would beat
+   * the token's own rule and make it inert — which is exactly what it did until 21.5.1.
+   *
+   * The unit is appended here rather than through a `[style....px]` binding: the `.px` suffix
+   * is not applied to a custom-property binding, so the value would arrive unitless and be
+   * dropped by `min()`.
+   */
+  protected readonly availableHeight = computed(() => {
+    const placement = this.placement();
+    return placement ? `${placement.availableHeight}px` : null;
+  });
+
   /**
    * The stacking order the panel would have had where it was declared. `gog-dialog` sets
    * `--gog-dropdown-z` on its own panel for exactly this, so a menu opened inside a dialog

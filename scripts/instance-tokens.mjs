@@ -99,6 +99,11 @@ export const INSTANCE_TOKENS = new Set([
   '--gog-tabs-tab-color',
   '--gog-tabs-tab-font-size',
   '--gog-tabs-tab-padding',
+  // gog-menu — written as an inline style from the room measured between the trigger and the
+  // viewport edge, not by a theme. `menu.css` takes the smaller of it and
+  // `--gog-menu-max-height`; before 21.5.1 the measurement was written straight onto the
+  // panel's `max-height`, where it beat the token instead of combining with it.
+  '--gog-menu-available-height',
   // gog-textarea — written as an inline style from the measured scrollbar width, not by a theme
   '--gog-textarea-scrollbar-width',
   // gog-toggle

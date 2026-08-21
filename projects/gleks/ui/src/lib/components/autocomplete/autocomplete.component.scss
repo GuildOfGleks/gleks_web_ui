@@ -41,19 +41,20 @@
   box-sizing: border-box;
   width: 100%;
   min-width: var(--gog-autocomplete-min-width);
-  padding: var(
-      --gog-autocomplete-padding-y,
-      var(--gog-autocomplete-size-padding-y, var(--gog-field-md-padding-y))
-    )
-    var(--gog-autocomplete-actions-reserve)
-    var(
-      --gog-autocomplete-padding-y,
-      var(--gog-autocomplete-size-padding-y, var(--gog-field-md-padding-y))
-    )
-    var(
+  /*
+   * Logical: the trailing gutter reserves room for the action buttons, which are placed with
+   * `inset-inline-end`. A physical `padding-right` put the reserve on the opposite side from
+   * them under `dir="rtl"`.
+   */
+  padding-block: var(
+    --gog-autocomplete-padding-y,
+    var(--gog-autocomplete-size-padding-y, var(--gog-field-md-padding-y))
+  );
+  padding-inline: var(
       --gog-autocomplete-padding-x,
       var(--gog-autocomplete-size-padding-x, var(--gog-field-md-padding-x))
-    );
+    )
+    var(--gog-autocomplete-actions-reserve);
   border: var(--gog-autocomplete-border-width) var(--gog-autocomplete-border-style)
     var(--gog-autocomplete-border-color);
   border-radius: var(--gog-autocomplete-radius);
