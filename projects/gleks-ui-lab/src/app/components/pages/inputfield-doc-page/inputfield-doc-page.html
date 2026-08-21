@@ -92,13 +92,11 @@
       <app-code-tabs [html]="addonHtml" [ts]="addonTs" />
 
       <p class="demo-card__meta">
-        These two slots replace six inputs —
-        <code>iconStartTemplate</code>, <code>iconEndTemplate</code>, <code>iconStartFn</code>,
-        <code>iconEndFn</code>, <code>iconStartLabel</code> and <code>iconEndLabel</code> — all
-        deprecated in 21.3.0 and removed in 21.5.0. <code>iconStart</code> and
-        <code>iconEnd</code> stay.
+        A projected addon carries its own <code>aria-label</code>, its own <code>(click)</code> and
+        its own disabled state, which is why the field needs no input per capability.
+        <code>iconStart</code> and <code>iconEnd</code> stay, and are unambiguously decorative: they
+        render an <code>aria-hidden</code> span, never a button.
       </p>
-      <app-markdown [markdown]="migrateAddonSnippet" />
     </article>
 
     <article class="demo-card">
@@ -326,47 +324,6 @@
               shows the value.
             </td>
           </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="deprecations" class="doc-section__title font-heading">Deprecated in 21.3.0</h2>
-    <p class="doc-section__intro">
-      Six inputs collapsed into the two addon slots above. They keep working until they are removed
-      in 21.5.0, and a projected addon wins over them — so a codebase can migrate one field at a
-      time. <code>iconStart</code> and <code>iconEnd</code> are <em>not</em> deprecated: a bare icon
-      name is the genuinely common case.
-    </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of deprecatedIconInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
         </tbody>
       </table>
     </div>

@@ -309,23 +309,6 @@ const COLUMN_SLOTS: readonly SlotRow[] = [
   },
 ];
 
-const DEPRECATED_TEMPLATE_INPUTS: readonly ApiRow[] = [
-  {
-    name: 'template',
-    type: 'string',
-    default: 'required',
-    description:
-      'The column field this template rendered for — a string the compiler cannot check, so a typo silently fell back to the default cell. That is why it was replaced.',
-  },
-  {
-    name: 'type',
-    type: "'body' | 'header'",
-    default: "'body'",
-    description:
-      "'body' got let-row (the row object) and let-index (its position). 'header' got no context.",
-  },
-];
-
 @Component({
   selector: 'app-table-doc-page',
   imports: [
@@ -360,7 +343,6 @@ export class TableDocPage implements OnDestroy {
   protected readonly tableOutputs = TABLE_OUTPUTS;
   protected readonly columnInputs = COLUMN_INPUTS;
   protected readonly columnSlots = COLUMN_SLOTS;
-  protected readonly deprecatedTemplateInputs = DEPRECATED_TEMPLATE_INPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'table')?.tokens ?? [];
 
@@ -590,24 +572,6 @@ export class TableDocPage implements OnDestroy {
     '  color: var(--gog-accent-color);',
     '  font-weight: 600;',
     '}',
-  ].join('\n');
-
-  protected readonly migrateTemplateSnippet = [
-    '```html',
-    '<!-- 21.2.x — the template matched its column by a string the compiler cannot check, -->',
-    '<!-- so a typo silently fell back to the default cell. -->',
-    '<gog-table [value]="rows">',
-    '  <column field="status" header="Status"></column>',
-    '  <ng-template template="status" type="body" let-row>…</ng-template>',
-    '</gog-table>',
-    '',
-    '<!-- 21.3.0 — the template lives inside the column it belongs to. -->',
-    '<gog-table [value]="rows">',
-    '  <gog-column field="status" header="Status">',
-    '    <ng-template gogColumnBody let-row let-value="value">…</ng-template>',
-    '  </gog-column>',
-    '</gog-table>',
-    '```',
   ].join('\n');
 
   protected readonly paginationHtml = [

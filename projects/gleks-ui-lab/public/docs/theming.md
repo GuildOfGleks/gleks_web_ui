@@ -71,10 +71,10 @@ Add the one you want to your global styles, then set the attribute:
 ]
 ```
 
-> **The short path is new in 21.3.2** <span class="since" title="Added in 21.3.2">21.3.2</span>.
-> The old `@guildofgleks/ui/src/styles/…` still resolves and will keep working until **21.5.0**,
-> so this is a rename to make at your leisure — but the short form is the one to write in new
-> setups. It is also listed in the package's `exports` map, which means it resolves from a SCSS
+> **The short path arrived in 21.3.2** <span class="since" title="Added in 21.3.2">21.3.2</span>
+> and is the only one from **21.5.0**, which dropped the duplicate `./src/styles/*` export. If
+> your `angular.json` still names `@guildofgleks/ui/src/styles/…`, drop the `src/` segment. The
+> short path is listed in the package's `exports` map, which means it resolves from a SCSS
 > `@import '@guildofgleks/ui/styles/theme.css'` as well; the old path never did.
 
 ```html

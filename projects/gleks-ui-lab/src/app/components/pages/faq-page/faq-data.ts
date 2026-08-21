@@ -319,27 +319,33 @@ component doc pages call these out explicitly wherever they apply.
     item(
       "What's deprecated right now, and when does it go?",
       `
-Everything currently deprecated is scheduled for **21.5.0**, and all of it is one migration:
-API that took a \`TemplateRef\` through an input became content you project instead. If your
-editor is showing strikethrough on any of these, this is the replacement:
+**No symbol is deprecated.** 21.5.0 removed every deprecated input, element, type alias and
+asset path the library had — the full list is in the
+[release notes](/general/releases), and each one fails to compile rather than failing quietly,
+so the compiler is the migration checklist.
+
+What is deprecated is three **CSS custom property prefixes**, which were abbreviations of a
+component's name — the one thing you cannot guess:
 
 | Deprecated | Use instead |
 | --- | --- |
-| \`iconStartTemplate\` / \`iconEndTemplate\` / \`iconStartFn\` / \`iconEndFn\` / \`iconStartLabel\` / \`iconEndLabel\` on \`gog-inputfield\` | a projected \`<span gogInputAddonStart>\` / \`<button gogInputAddonEnd>\` |
-| \`checkIconTemplate\` on \`gog-checkbox\` | \`<ng-template gogCheckboxIcon>\` |
-| \`clearIconTemplate\` on \`gog-multiselect\` | \`<ng-template gogMultiselectClearIcon>\` |
-| \`iconTemplate\` on \`gog-tag\` | \`<ng-template gogTagIcon>\` |
-| \`chevronTemplate\` on the dropdowns | \`<ng-template gogDropdownChevron>\` |
-| \`<column>\` element, \`Column\` const and type | \`<gog-column>\` and \`GogColumn\` |
-| the string-keyed \`[template]\` slot on a column | \`<ng-template gogColumnBody>\` / \`gogColumnHeader\` |
-| \`GogSelectOption\` / \`GogMultiselectOption\` types | \`GogDropdownOption\` |
-| the \`@guildofgleks/ui/src/styles/…\` asset path | \`@guildofgleks/ui/styles/…\` |
+| \`--gog-btn-*\` | \`--gog-button-*\` |
+| \`--gog-confirm-*\` | \`--gog-confirmation-dialog-*\` |
+| \`--gog-ms-*\` | \`--gog-multiselect-*\` |
 
-One row is worth calling out: \`GogSelectOption\` / \`GogMultiselectOption\` were announced for
-removal in **21.4.0** and are still exported in 21.4.1 — they overran by a minor and come out
-with everything else in 21.5.0. Migrate before you upgrade to it and the upgrade is a version
-bump; migrate after and the compiler will point at every call site, which is the whole reason
-the deprecation cycle exists.
+**Nothing breaks yet.** Every old spelling still feeds the component — each new name declares
+the old one in its own fallback — so a theme written against either applies. They come out in
+**21.7.0**, two minors rather than one, because a custom property nothing reads fails silently:
+no error, no warning, just a value that stops applying. Migration is a find-and-replace on
+those three prefixes.
+
+\`--gog-input-*\` looks like a fourth and is not: it names the text-field block that
+\`gog-inputfield\` and \`gog-textarea\` both render, not the \`gog-inputfield\` component. It stays.
+
+You can read the whole list from the package itself rather than from this page — 21.5.0 exports
+\`GOG_DEPRECATIONS\`, generated from the library's own source, with \`since\`, \`sinceDate\`,
+\`replacement\` and \`removedIn\` for every deprecated token and symbol in the version you have
+installed.
 `,
     ),
   ]),

@@ -261,7 +261,12 @@ counted from each package's own published type definitions:
 ```sh
 grep -rc '@deprecated' node_modules/@angular/material/types | awk -F: '{s+=$2} END {print s}'   # 36
 grep -rc '@deprecated' node_modules/primeng/types          | awk -F: '{s+=$2} END {print s}'   # 34
-grep -c  '@deprecated' node_modules/@guildofgleks/ui/types/guildofgleks-ui.d.ts                # 15
+grep -c  '@deprecated' node_modules/@guildofgleks/ui/types/guildofgleks-ui.d.ts                # 1
+
+# that single hit is prose, not a tag — it is the sentence describing the deprecation manifest.
+# The real counts are in the manifest itself, and it states them:
+grep -o 'currently deprecates: .*' node_modules/@guildofgleks/ui/types/guildofgleks-ui.d.ts
+# → currently deprecates: 0 symbol(s) and 154 token(s).
 
 grep -rh 'declare class.*Module\b' node_modules/@angular/material/types | wc -l                # 43
 grep -rh 'declare class.*Module\b' node_modules/primeng/types          | wc -l                 # 113
@@ -270,27 +275,37 @@ grep -c  'NgModule\|declare class.*Module\b' node_modules/@guildofgleks/ui/types
 
 | | Guild of Gleks UI | Angular Material | PrimeNG |
 | --- | --- | --- | --- |
-| `@deprecated` symbols | 15 | 36 | 34 |
-| Tags naming when the API disappears | 15 (`Removed in <version>`) | 42 `@breaking-change` tags | 0 |
+| `@deprecated` symbols | 0 | 36 | 34 |
+| Deprecations naming when they disappear | all of them (154 tokens, `removedIn`) | 42 `@breaking-change` tags | 0 |
 | `NgModule` classes | 0 | 43 | 113 |
 
-Restricted to the four-component slice the bundle section uses, the deprecation counts are
-small and close for all three — Material 1 (`table`), PrimeNG 5 (`button`), and this
-library 5. Nobody wins that row; the differences are in the two around it.
+Restricted to the four-component slice the bundle section uses: Material 1 (`table`),
+PrimeNG 5 (`button`), and this library 0 — it has no deprecated symbol anywhere, in that
+slice or outside it.
 
 **On removal discipline.** Material annotates deprecations with `@breaking-change <major>`,
 which is a real schedule and better than nothing — but 40 of its 42 tags name a major at
 or below the current one (ten of them say `@breaking-change 8`), so the API is still
-shipping years past its own removal date. PrimeNG's 34 deprecations name no version at
-all. This library's 15 all carry `@deprecated since <version> (<date>) — <replacement>.
-Removed in <version>.`, and **two of them have overrun their date too**: `GogSelectOption`
-and `GogMultiselectOption` were marked for removal in 21.4.0 and are still exported in
-21.4.1. They are scheduled for removal in 21.5.0, together with a build check that fails
-when a removal version goes past — because a deprecation schedule nobody enforces is
-exactly what the other two rows are made of.
+shipping years past its own removal date. PrimeNG's 34 deprecations name no version at all.
+
+This library had 15, all carrying `@deprecated since <version> (<date>) — <replacement>.
+Removed in <version>.` **Two had overrun that date** — `GogSelectOption` and
+`GogMultiselectOption` were marked for removal in 21.4.0 and were still exported through
+21.4.4. 21.5.0 removed all 15, the two overdue ones included, and added
+`npm run check:deprecations` to the build: it fails on any tag whose removal version has
+already been reached, so a deprecation cannot overrun its date again. The overrun is
+recorded in the changelog rather than quietly re-dated.
+
+What is still deprecated is 154 CSS custom properties — three abbreviated prefixes
+(`--gog-btn-*`, `--gog-confirm-*`, `--gog-ms-*`) spelled out, with every old name still
+resolving until 21.7.0. They get two minors rather than one precisely because a custom
+property nothing reads fails silently, which no compiler can catch for you. All 154 are
+readable at runtime from the exported `GOG_DEPRECATIONS` manifest, with `since`,
+`sinceDate`, `replacement` and `removedIn`, generated from the library's own source.
 
 ```sh
 grep -o 'Removed in [0-9.]*' node_modules/@guildofgleks/ui/types/guildofgleks-ui.d.ts | sort | uniq -c
+# → nothing: no symbol is deprecated
 grep -rho '@breaking-change [0-9]*' node_modules/@angular/material/types | sort | uniq -c
 ```
 

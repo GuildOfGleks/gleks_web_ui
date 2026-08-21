@@ -116,9 +116,8 @@
       <h3 class="demo-card__title">Custom check icon</h3>
       <p class="demo-card__meta">
         Project an <code>&lt;ng-template gogCheckboxIcon&gt;</code> to replace the checkmark drawn
-        inside the box. This replaces the <code>checkIconTemplate</code> input, deprecated in 21.3.0
-        and removed in 21.5.0 — both work meanwhile, and the projected slot wins when a call site
-        has both.
+        inside the box. The template is declared where it is used and carries a typed context, so
+        nothing has to be wired through an input.
       </p>
       <div class="demo-card__preview">
         <gog-checkbox label="Custom mark" [checked]="true">
@@ -178,10 +177,7 @@
             <td>
               <code>&lt;ng-template gogCheckboxIcon&gt;</code>
             </td>
-            <td>
-              Replaces the checkmark drawn inside the box when checked. Wins over the deprecated
-              <code>checkIconTemplate</code> input.
-            </td>
+            <td>Replaces the checkmark drawn inside the box when checked.</td>
           </tr>
         </tbody>
       </table>

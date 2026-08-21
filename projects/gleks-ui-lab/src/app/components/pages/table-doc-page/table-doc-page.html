@@ -67,12 +67,10 @@
       <app-code-tabs [html]="templatesHtml" [ts]="templatesTs" [css]="templatesCss" />
 
       <p class="demo-card__meta">
-        This replaces the string-keyed
-        <code>&lt;ng-template template="field" type="body|header"&gt;</code>, deprecated in 21.3.0
-        and removed in 21.5.0. The old form matched columns by a string the compiler cannot check,
-        so a typo silently fell back to the default cell.
+        The template is scoped to the column it belongs to, so the compiler checks the pairing and
+        the context is typed — <code>let-row</code> is the row, <code>let-value="value"</code> the
+        cell's own value.
       </p>
-      <app-markdown [markdown]="migrateTemplateSnippet" />
     </article>
 
     <article class="demo-card">
@@ -517,54 +515,6 @@
               </td>
               <td>
                 <code>{{ row.context }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="deprecations" class="doc-section__title font-heading">Deprecated in 21.3.0</h2>
-    <p class="doc-section__intro">
-      Both of these keep working until they are removed in 21.5.0, so a codebase can migrate one
-      table at a time.
-    </p>
-
-    <h3 class="doc-section__subtitle">&lt;column&gt; → &lt;gog-column&gt;</h3>
-    <p class="doc-section__intro">
-      <code>&lt;column&gt;</code> was the library's last unprefixed element name. The directive now
-      matches <code>gog-column, column</code>, and the <code>Column</code> export is aliased to
-      <code>GogColumn</code> — so the rename is a find-and-replace with no behaviour change.
-    </p>
-
-    <h3 class="doc-section__subtitle">&lt;ng-template template="field"&gt; — Inputs</h3>
-    <p class="doc-section__intro">
-      Replaced by the <code>gogColumnBody</code> / <code>gogColumnHeader</code> slots above.
-    </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of deprecatedTemplateInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
               </td>
               <td>{{ row.description }}</td>
             </tr>
