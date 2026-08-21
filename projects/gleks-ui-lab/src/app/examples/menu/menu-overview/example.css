@@ -1,0 +1,20 @@
+/* The example is mounted as a component, so it owns its own box. Without an explicit
+   display it is an inline element, and the centring flex parent then shrink-wraps it. */
+:host {
+  display: block;
+  width: 100%;
+}
+
+.menu-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.menu-status {
+  margin: 14px 0 0;
+  text-align: center;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}

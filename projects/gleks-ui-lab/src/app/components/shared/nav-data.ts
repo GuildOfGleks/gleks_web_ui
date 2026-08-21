@@ -8,6 +8,7 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
     children: [{ label: 'Global Configuration', path: 'general/global-config' }],
   },
   { label: 'Theming', path: 'general/theming' },
+  { label: 'Right-to-left', path: 'general/rtl' },
   {
     label: 'Compare with Material and PrimeNG',
     path: 'general/compare',
@@ -17,7 +18,7 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Releases', path: 'general/releases' },
 ];
 
-// 30 entries — 28 components and the two directives — grouped by what they're for rather
+// 31 entries — 29 components and the two directives — grouped by what they're for rather
 // than one long alphabetical run —
 // alphabetical within each group.
 const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
@@ -26,6 +27,7 @@ const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { label: 'Button', path: 'components/button' },
       { label: 'Button Toggle', path: 'components/button-toggle' },
+      { label: 'Menu', path: 'components/menu' },
       { label: 'Toggle', path: 'components/toggle' },
     ],
   },

@@ -677,6 +677,53 @@ not re-file it.
 
 ## Backlog — deliberately not in 21.5.0
 
+- **`gog-inputfield` reserves its icon space on the wrong side in RTL.** Found 2026-08-21, in a
+  browser, on the published 21.5.0 — the same session as the item below, and the more visible of
+  the two: the placeholder or value runs underneath the icon.
+
+  The icon is placed correctly (`.gog-input__icon--start { inset-inline-start: … }`), but the
+  space the input reserves for it is still physical: `.gog-input__field` writes
+  `padding: … var(--gog-input-pr, …) … var(--gog-input-pl, …)` and
+  `.gog-input-wrapper--icon-start` sets `--gog-input-pl`. A **logical** slot name driving a
+  **physical** reserve is the whole bug. Measured in RTL: the icon sits at the right edge of the
+  field while computed padding is `10px 14px 10px 36px` — 36px kept at the far left, 14px where
+  the icon actually is.
+
+  Affects `iconStart`, `iconEnd`, and every control sharing the trailing slot — `clearable` and
+  the password reveal toggle — so it is most of the component's icon surface. The fix is the
+  same rule in logical form (`padding-inline-start` / `-end`, with the two custom properties
+  renamed to match); no API changes. Iteration 4 converted 16 stylesheets to logical properties
+  and this pair was missed because they are custom-property *names*, not declarations a search
+  for `left:`/`right:` would find — worth grepping for `--gog-*-p[lr]\b` and similar before
+  calling the RTL conversion complete.
+
+  The lab's `general/rtl` page shows it in its live demo and says so; `lab-after-publish.md`
+  carries the entry that deletes the note once it ships.
+
+- **`--gog-menu-max-height` does not cap the panel.** Found 2026-08-21, in a browser, while
+  writing the lab's menu page against the published 21.5.0 — so it shipped. `.gog-menu` carries
+  `max-height: var(--gog-menu-max-height)` (default `320px`) from the stylesheet, and
+  `resolveMenuPlacement` then writes the *measured available space* onto the panel as an inline
+  `max-height`. Inline wins over any stylesheet rule, so the token applies only when it is larger
+  than the space — which is never the case the consumer is trying to hit. Measured: a 24-item menu
+  with 534px of room above it renders 534px tall, and setting `--gog-menu-max-height: 150px` on
+  `documentElement` changes nothing (computed `max-height` stays `534px`).
+
+  The panel does still scroll — it is capped by the viewport, and `gog-scroll` takes over past
+  that — so nothing overflows the screen. What a consumer cannot do is choose the height at which
+  scrolling starts, which is the entire purpose of the token, and both `README.md` and `AGENTS.md`
+  describe it as working ("A long menu scrolls itself past `--gog-menu-max-height`").
+
+  The fix is one line in the placement result — `Math.min(available, token)`, or writing the
+  inline value as `min(<available>px, var(--gog-menu-max-height))` so the cascade resolves it —
+  plus a spec pinning that a token smaller than the available space wins. It needs a browser check
+  rather than a unit test alone, since the bug is a cascade interaction that jsdom will not
+  reproduce faithfully. Same shape as the `stickyHeader` defect below: correct-looking code whose
+  effect is cancelled by something else in the box model.
+
+  The lab documents it as a **Known defect in &lt;installed version&gt;** on the menu page and in
+  the token reference; `lab-after-publish.md` carries the entry that deletes both once it ships.
+
 - **Missing components**, in rough order of how often a real site wants them: `alert`/`banner` (a
   persistent in-flow message — `gog-toast` is transient and cannot serve this), `avatar`,
   `breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`, `card`. Each is additive and

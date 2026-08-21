@@ -189,27 +189,6 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
 ];
 
-const DEPRECATED_ICON_INPUTS: readonly ApiInputRow[] = [
-  {
-    name: 'iconStartTemplate / iconEndTemplate',
-    type: 'TemplateRef<unknown> | null',
-    default: 'null',
-    description: 'Custom leading / trailing icon, in place of iconStart / iconEnd.',
-  },
-  {
-    name: 'iconStartFn / iconEndFn',
-    type: '(() => void) | null',
-    default: 'null',
-    description: 'When set, the icon became a clickable button invoking this function.',
-  },
-  {
-    name: 'iconStartLabel / iconEndLabel',
-    type: 'string',
-    default: "''",
-    description: 'Accessible label for that icon button — required when the matching *Fn was set.',
-  },
-];
-
 @Component({
   selector: 'app-inputfield-doc-page',
   imports: [
@@ -231,7 +210,6 @@ export class InputfieldDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly apiInputs = API_INPUTS;
-  protected readonly deprecatedIconInputs = DEPRECATED_ICON_INPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'input-field')?.tokens ?? [];
 
@@ -416,29 +394,6 @@ export class InputfieldDocPage {
     "    this.search.set('');",
     '  }',
     '}',
-  ].join('\n');
-
-  protected readonly migrateAddonSnippet = [
-    '```html',
-    '<!-- 21.2.x — three inputs to get one actionable trailing icon -->',
-    '<gog-inputfield',
-    '  label="Search"',
-    '  iconEnd="close"',
-    '  iconEndLabel="Clear search"',
-    '  [iconEndFn]="clearSearch"',
-    '  [(value)]="search"',
-    '/>',
-    '',
-    '<!-- 21.3.0 — a real button, with its own aria-label and (click) -->',
-    '<gog-inputfield label="Search" [(value)]="search">',
-    '  <button type="button" gogInputAddonEnd aria-label="Clear search" (click)="clearSearch()">',
-    '    <gog-icon name="close" />',
-    '  </button>',
-    '</gog-inputfield>',
-    '',
-    '<!-- …or just let the component do it -->',
-    '<gog-inputfield label="Search" [clearable]="true" [(value)]="search" />',
-    '```',
   ].join('\n');
 
   protected readonly clearableValue = signal('Clear me');

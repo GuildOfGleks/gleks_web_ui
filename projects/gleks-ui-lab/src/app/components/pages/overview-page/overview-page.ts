@@ -20,8 +20,8 @@ interface FeatureCard {
 const FEATURES: readonly FeatureCard[] = [
   {
     icon: faLayerGroup,
-    title: '30 building blocks',
-    text: 'Buttons, form controls, date pickers, dialogs, tables, tabs, navigation and feedback components — ready-made.',
+    title: '31 building blocks',
+    text: 'Buttons, form controls, date pickers, dialogs, tables, tabs, menus, navigation and feedback components — ready-made.',
   },
   {
     icon: faPalette,
@@ -41,7 +41,7 @@ const FEATURES: readonly FeatureCard[] = [
   {
     icon: faUniversalAccess,
     title: 'Accessible by default',
-    text: 'Keyboard navigation, focus states and screen-reader support are built in, not bolted on.',
+    text: 'Keyboard navigation, focus states, screen-reader support and right-to-left layouts are built in, not bolted on.',
   },
   {
     icon: faBoxOpen,

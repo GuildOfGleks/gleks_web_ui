@@ -46,13 +46,6 @@ const API_INPUTS: readonly ApiInputRow[] = [
     description: 'Leading icon.',
   },
   {
-    name: 'iconTemplate',
-    type: 'TemplateRef<unknown> | null',
-    default: 'null',
-    description:
-      'Deprecated since 21.3.0, removed in 21.5.0 — project an <ng-template gogTagIcon> instead. Still works, and the projected slot wins when both are present.',
-  },
-  {
     name: 'fullWidth',
     type: 'boolean',
     default: 'false',
@@ -206,20 +199,6 @@ export class TagDocPage {
     '  `,',
     '})',
     'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly migrateIconSnippet = [
-    '```html',
-    '<!-- 21.2.x — an input taking a TemplateRef declared elsewhere -->',
-    '<ng-template #starIcon><gog-icon name="checkbox-checked" /></ng-template>',
-    '<gog-tag [iconTemplate]="starIcon">Featured</gog-tag>',
-    '',
-    '<!-- 21.3.0 — the markup lives where it is used -->',
-    '<gog-tag>',
-    '  <ng-template gogTagIcon><gog-icon name="checkbox-checked" /></ng-template>',
-    '  Featured',
-    '</gog-tag>',
-    '```',
   ].join('\n');
 
   protected readonly fullWidthHtml =

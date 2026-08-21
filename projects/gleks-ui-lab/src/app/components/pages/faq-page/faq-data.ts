@@ -56,12 +56,19 @@ rather opt into minors by hand and read the changelog first.
     item(
       'Which Angular versions does it support?',
       `
-Angular 21 and newer only (\`peerDependencies\` require \`^21.2.0\` for \`@angular/core\`,
-\`@angular/common\`, \`@angular/forms\` and \`@angular/platform-browser\`). The library was built
-after standalone components, signals and \`OnPush\`-by-default became the normal way to write
-Angular, so there was never a reason to also support the NgModule-era API surface older
-libraries still carry. If your app is on an older Angular version, upgrade first — there's no
-compatibility build.
+**Angular 21.2 and 22**, from one package — \`peerDependencies\` are \`^21.2.0 || ^22.0.0\` for
+\`@angular/core\`, \`@angular/common\`, \`@angular/forms\` and \`@angular/platform-browser\`. The
+library ships partial-compiled (Ivy partial mode), which is forward-compatible with the next
+major without a separate build.
+
+The \`|| ^22.0.0\` half arrived in **21.5.0**. Before it, the range was \`^21.2.0\` alone and npm
+refused to install into an Angular 22 app that would otherwise have built and run fine, so every
+such consumer needed an \`overrides\` / \`resolutions\` entry. If you have one, delete it.
+
+Nothing older than 21.2. The library was built after standalone components, signals and
+\`OnPush\`-by-default became the normal way to write Angular, so there was never a reason to also
+support the NgModule-era API surface older libraries still carry. If your app is on an older
+Angular version, upgrade first — there's no compatibility build.
 `,
     ),
     item(
@@ -79,7 +86,7 @@ weight.
       `
 Just what you import. Every component is standalone and the package sets \`"sideEffects":
 false\`, so a production bundler tree-shakes out anything you don't reference — importing
-\`ButtonComponent\` alone doesn't pull in the other 29 components.
+\`ButtonComponent\` alone doesn't pull in the other 30 components.
 
 One structural difference from Material and PrimeNG worth knowing: this package has a **single
 entry point**. There is no \`@guildofgleks/ui/button\` to import from — everything comes from
@@ -202,8 +209,8 @@ don't pick this library for an RTL product.
     item(
       'How much does it add to my bundle?',
       `
-The whole library — 28 components plus the \`gogBadge\` and \`gogTooltip\` directives — is
-**103.8 KB gzipped** of JavaScript, plus a 16.9 KB
+The whole library — 29 components plus the \`gogBadge\` and \`gogTooltip\` directives — is
+**106.8 KB gzipped** of JavaScript, plus a 23.1 KB
 gzipped stylesheet that carries every theming token. An app using a handful of components pays
 a fraction of the first number, since the rest is tree-shaken; the stylesheet is loaded whole
 either way. For context, four Angular Material components gzip to 153.5 KB and the same four
@@ -319,27 +326,33 @@ component doc pages call these out explicitly wherever they apply.
     item(
       "What's deprecated right now, and when does it go?",
       `
-Everything currently deprecated is scheduled for **21.5.0**, and all of it is one migration:
-API that took a \`TemplateRef\` through an input became content you project instead. If your
-editor is showing strikethrough on any of these, this is the replacement:
+**No symbol is deprecated.** 21.5.0 removed every deprecated input, element, type alias and
+asset path the library had — the full list is in the
+[release notes](/general/releases), and each one fails to compile rather than failing quietly,
+so the compiler is the migration checklist.
+
+What is deprecated is three **CSS custom property prefixes**, which were abbreviations of a
+component's name — the one thing you cannot guess:
 
 | Deprecated | Use instead |
 | --- | --- |
-| \`iconStartTemplate\` / \`iconEndTemplate\` / \`iconStartFn\` / \`iconEndFn\` / \`iconStartLabel\` / \`iconEndLabel\` on \`gog-inputfield\` | a projected \`<span gogInputAddonStart>\` / \`<button gogInputAddonEnd>\` |
-| \`checkIconTemplate\` on \`gog-checkbox\` | \`<ng-template gogCheckboxIcon>\` |
-| \`clearIconTemplate\` on \`gog-multiselect\` | \`<ng-template gogMultiselectClearIcon>\` |
-| \`iconTemplate\` on \`gog-tag\` | \`<ng-template gogTagIcon>\` |
-| \`chevronTemplate\` on the dropdowns | \`<ng-template gogDropdownChevron>\` |
-| \`<column>\` element, \`Column\` const and type | \`<gog-column>\` and \`GogColumn\` |
-| the string-keyed \`[template]\` slot on a column | \`<ng-template gogColumnBody>\` / \`gogColumnHeader\` |
-| \`GogSelectOption\` / \`GogMultiselectOption\` types | \`GogDropdownOption\` |
-| the \`@guildofgleks/ui/src/styles/…\` asset path | \`@guildofgleks/ui/styles/…\` |
+| \`--gog-btn-*\` | \`--gog-button-*\` |
+| \`--gog-confirm-*\` | \`--gog-confirmation-dialog-*\` |
+| \`--gog-ms-*\` | \`--gog-multiselect-*\` |
 
-One row is worth calling out: \`GogSelectOption\` / \`GogMultiselectOption\` were announced for
-removal in **21.4.0** and are still exported in 21.4.1 — they overran by a minor and come out
-with everything else in 21.5.0. Migrate before you upgrade to it and the upgrade is a version
-bump; migrate after and the compiler will point at every call site, which is the whole reason
-the deprecation cycle exists.
+**Nothing breaks yet.** Every old spelling still feeds the component — each new name declares
+the old one in its own fallback — so a theme written against either applies. They come out in
+**21.7.0**, two minors rather than one, because a custom property nothing reads fails silently:
+no error, no warning, just a value that stops applying. Migration is a find-and-replace on
+those three prefixes.
+
+\`--gog-input-*\` looks like a fourth and is not: it names the text-field block that
+\`gog-inputfield\` and \`gog-textarea\` both render, not the \`gog-inputfield\` component. It stays.
+
+You can read the whole list from the package itself rather than from this page — 21.5.0 exports
+\`GOG_DEPRECATIONS\`, generated from the library's own source, with \`since\`, \`sinceDate\`,
+\`replacement\` and \`removedIn\` for every deprecated token and symbol in the version you have
+installed.
 `,
     ),
   ]),

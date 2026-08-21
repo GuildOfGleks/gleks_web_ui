@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.menu-row {
+  display: flex;
+  justify-content: center;
+}
+
+.menu-status {
+  margin: 14px 0 0;
+  text-align: center;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}

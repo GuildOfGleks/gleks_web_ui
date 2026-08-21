@@ -7,16 +7,16 @@ value the library paints with can be overridden from plain CSS.
 1. **Foundation** — the base palette, type scale, spacing and motion tokens
    (`--gog-accent-color`, `--gog-background-color`, `--gog-text-xs`, `--gog-radius`, …).
    Overriding these restyles the whole library at once.
-2. **Component** — tokens scoped to one component (`--gog-btn-*`, `--gog-accordion-*`,
+2. **Component** — tokens scoped to one component (`--gog-button-*`, `--gog-accordion-*`,
    `--gog-table-*`, …). Most derive from the foundation layer, so a palette swap already
    carries through; override a component token directly only when you need to restyle
    _just_ that component.
-3. **Instance** — a handful of tokens (`--gog-btn-bg`, `--gog-tag-bg`, …) are left
+3. **Instance** — a handful of tokens (`--gog-button-bg`, `--gog-tag-bg`, …) are left
    undeclared on purpose, as an escape hatch for styling a single element without
    touching a theme at all:
 
    ```html
-   <gog-button style="--gog-btn-bg: #ff4edb">One-off button</gog-button>
+   <gog-button style="--gog-button-bg: #ff4edb">One-off button</gog-button>
    ```
 
 ## What `index.css` pulls in
@@ -71,10 +71,10 @@ Add the one you want to your global styles, then set the attribute:
 ]
 ```
 
-> **The short path is new in 21.3.2** <span class="since" title="Added in 21.3.2">21.3.2</span>.
-> The old `@guildofgleks/ui/src/styles/…` still resolves and will keep working until **21.5.0**,
-> so this is a rename to make at your leisure — but the short form is the one to write in new
-> setups. It is also listed in the package's `exports` map, which means it resolves from a SCSS
+> **The short path arrived in 21.3.2** <span class="since" title="Added in 21.3.2">21.3.2</span>
+> and is the only one from **21.5.0**, which dropped the duplicate `./src/styles/*` export. If
+> your `angular.json` still names `@guildofgleks/ui/src/styles/…`, drop the `src/` segment. The
+> short path is listed in the package's `exports` map, which means it resolves from a SCSS
 > `@import '@guildofgleks/ui/styles/theme.css'` as well; the old path never did.
 
 ```html
@@ -83,7 +83,7 @@ Add the one you want to your global styles, then set the attribute:
 
 The One presets map the editor's syntax hues onto the library's semantic roles — blue becomes the
 accent, and green / red / yellow / cyan become success / danger / warning / info. Neither preset
-mentions `--gog-btn-primary-bg` by name, yet buttons pick it up: that is the derived layer
+mentions `--gog-button-primary-bg` by name, yet buttons pick it up: that is the derived layer
 re-resolving, and it is why a preset can be a short list of colors rather than a fork of the whole
 stylesheet.
 

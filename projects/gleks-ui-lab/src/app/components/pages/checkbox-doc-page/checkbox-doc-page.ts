@@ -66,13 +66,6 @@ const API_INPUTS: readonly ApiInputRow[] = [
     default: 'false',
     description: 'Stretches the checkbox row to fill its container.',
   },
-  {
-    name: 'checkIconTemplate',
-    type: 'TemplateRef<unknown> | null',
-    default: 'null',
-    description:
-      'Deprecated since 21.3.0, removed in 21.5.0 — project an <ng-template gogCheckboxIcon> instead. Still works, and the projected slot wins when both are present.',
-  },
 ];
 
 @Component({

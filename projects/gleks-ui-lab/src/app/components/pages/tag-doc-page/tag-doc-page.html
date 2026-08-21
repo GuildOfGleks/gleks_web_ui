@@ -74,13 +74,6 @@
         </gog-tag>
       </div>
       <app-code-tabs [html]="customIconHtml" [ts]="customIconTs" />
-
-      <p class="demo-card__meta">
-        This replaces the <code>iconTemplate</code> input, which is deprecated in 21.3.0 and removed
-        in 21.5.0. Both work meanwhile, and the projected slot wins when a call site has both —
-        which is what lets a codebase migrate one tag at a time.
-      </p>
-      <app-markdown [markdown]="migrateIconSnippet" />
     </article>
 
     <article class="demo-card">
@@ -148,10 +141,7 @@
             <td>
               <code>&lt;ng-template gogTagIcon&gt;</code>
             </td>
-            <td>
-              Replaces the leading icon. Wins over both <code>iconName</code> and the deprecated
-              <code>iconTemplate</code>.
-            </td>
+            <td>Replaces the leading icon. Wins over <code>iconName</code>.</td>
           </tr>
         </tbody>
       </table>

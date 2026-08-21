@@ -27,6 +27,15 @@
       Every CSS custom property a component paints with, grouped by area. Override any of them — on
       a single instance, a subtree, or a theme — to restyle the library.
     </p>
+    <p class="token-reference__intro">
+      Three prefixes were spelled out in <app-since version="21.5.0" />: <code>--gog-btn-*</code> →
+      <code>--gog-button-*</code>, <code>--gog-confirm-*</code> →
+      <code>--gog-confirmation-dialog-*</code>, <code>--gog-ms-*</code> →
+      <code>--gog-multiselect-*</code>. The names below are the current ones. If your theme uses the
+      old spellings it still applies — each new name declares the old one in its own fallback — but
+      they are removed in <strong>21.7.0</strong>, and a custom property nothing reads fails
+      silently, so this is a find-and-replace worth doing before then.
+    </p>
 
     <gog-accordion [items]="tokenSections" [multi]="true" size="md">
       <ng-template gogAccordionContent let-item>

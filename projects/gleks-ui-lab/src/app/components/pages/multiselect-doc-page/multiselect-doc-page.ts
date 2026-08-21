@@ -166,13 +166,6 @@ const API_INPUTS: readonly ApiInputRow[] = [
       'Where the select-all/clear row sits relative to the option list. Sticky either way, so it stays visible while a long list scrolls.',
   },
   {
-    name: 'clearIconTemplate',
-    type: 'TemplateRef<unknown> | null',
-    default: 'null',
-    description:
-      'Deprecated since 21.3.0, removed in 21.5.0 — project an <ng-template gogMultiselectClearIcon> instead. Still works, and the projected slot wins when both are present.',
-  },
-  {
     name: 'errorMessage',
     type: 'string',
     default: "''",
@@ -237,13 +230,6 @@ const API_INPUTS: readonly ApiInputRow[] = [
     default: 'GOG_CONFIG.dropdown.appendToBody ?? false',
     description:
       "Portals the panel into document.body instead of rendering it inline — escapes an ancestor's scroll/overflow clipping.",
-  },
-  {
-    name: 'chevronTemplate',
-    type: 'TemplateRef<unknown> | null',
-    default: 'null',
-    description:
-      'Deprecated since 21.3.0, removed in 21.5.0 — project an <ng-template gogDropdownChevron> instead. Still works, and the projected slot wins when both are present.',
   },
 ];
 

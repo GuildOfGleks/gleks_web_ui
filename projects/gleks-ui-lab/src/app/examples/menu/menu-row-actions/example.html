@@ -1,0 +1,45 @@
+<gog-table [value]="documents" size="sm">
+  <gog-column field="name" header="Document"></gog-column>
+  <gog-column field="owner" header="Owner"></gog-column>
+  <!-- A real header rather than an empty one: gog-column falls back to the field name when
+       `header` is blank, so `header=""` on a field="id" column renders "ID" above a menu button. -->
+  <gog-column field="id" header="Actions" width="88px">
+    <ng-template gogColumnBody let-row>
+      <span class="row-actions">
+        <button
+          gogButton
+          variant="ghost"
+          size="sm"
+          type="button"
+          [gogMenuTrigger]="rowMenu"
+          [attr.aria-label]="'Actions for ' + $any(row).name"
+        >
+          <gog-icon name="more-vertical" />
+        </button>
+
+        <gog-menu #rowMenu ariaLabel="Row actions">
+          <button gogMenuItem type="button" (click)="run('Open ' + $any(row).name)">
+            <gog-icon name="eye" />
+            Open
+          </button>
+          <button gogMenuItem type="button" (click)="run('Share ' + $any(row).name)">
+            <gog-icon name="external-link" />
+            Share
+          </button>
+          <button gogMenuItem type="button" disabled>
+            <gog-icon name="lock" />
+            Transfer ownership
+          </button>
+          <button gogMenuItem type="button" (click)="run('Archive ' + $any(row).name)">
+            <gog-icon name="download" />
+            Archive
+          </button>
+        </gog-menu>
+      </span>
+    </ng-template>
+  </gog-column>
+</gog-table>
+
+<p class="menu-status">
+  Last action: <strong>{{ lastAction() }}</strong>
+</p>

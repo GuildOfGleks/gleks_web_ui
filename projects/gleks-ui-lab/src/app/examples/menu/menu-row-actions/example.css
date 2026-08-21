@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* The trigger and its <gog-menu> are siblings inside the cell; the menu itself renders nothing
+   until it opens, and then into <body>, so this span only has to hold the button. */
+.row-actions {
+  display: inline-flex;
+}
+
+.menu-status {
+  margin: 14px 0 0;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}

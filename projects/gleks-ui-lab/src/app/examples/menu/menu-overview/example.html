@@ -1,0 +1,28 @@
+<div class="menu-row">
+  <gog-button variant="outline" type="button" [gogMenuTrigger]="documentMenu">
+    Document actions
+  </gog-button>
+
+  <gog-menu #documentMenu ariaLabel="Document actions" (gogClosed)="closes.set(closes() + 1)">
+    <button gogMenuItem type="button" (click)="run('Rename')">
+      <gog-icon name="pencil" />
+      Rename
+    </button>
+    <button gogMenuItem type="button" (click)="run('Duplicate')">
+      <gog-icon name="copy" />
+      Duplicate
+    </button>
+    <button gogMenuItem type="button" disabled>
+      <gog-icon name="lock" />
+      Transfer ownership
+    </button>
+    <button gogMenuItem type="button" (click)="run('Delete')">
+      <gog-icon name="trash" />
+      Delete
+    </button>
+  </gog-menu>
+</div>
+
+<p class="menu-status">
+  Last action: <strong>{{ lastAction() }}</strong> · closes: <strong>{{ closes() }}</strong>
+</p>

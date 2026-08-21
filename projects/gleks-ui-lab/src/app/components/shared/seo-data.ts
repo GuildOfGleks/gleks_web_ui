@@ -47,8 +47,8 @@ export const NOT_FOUND_SEO: PageSeo = {
 export const FALLBACK_SEO: PageSeo = {
   title: `${SITE_NAME} — Angular UI Component Library`,
   description:
-    'Documentation for @guildofgleks/ui, a lightweight Angular 21 component library: standalone, ' +
-    'signal-based components themed with plain CSS custom properties.',
+    'Documentation for @guildofgleks/ui, a lightweight Angular 21 and 22 component library: ' +
+    'standalone, signal-based components themed with plain CSS custom properties.',
 };
 
 const component = (name: string, description: string): PageSeo => ({
@@ -60,14 +60,15 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
   [HOME_PATH]: {
     title: `${SITE_NAME} — Angular UI Component Library`,
     description:
-      'A lightweight Angular UI component library: 28 standalone, signal-based, OnPush components ' +
+      'A lightweight Angular UI component library: 29 standalone, signal-based, OnPush components ' +
       'themed with plain CSS variables. No CDK, no Material, no Sass build step.',
   },
   'general/getting-started': {
     title: `Getting Started — Angular UI Library Setup`,
     description:
-      'Install @guildofgleks/ui in an Angular 21 app: one npm package, one stylesheet import, and ' +
-      'standalone components you import where you use them. No module, no theme compiler.',
+      'Install @guildofgleks/ui in an Angular 21 or 22 app: one npm package, one stylesheet ' +
+      'import, and standalone components you import where you use them. No module, no theme ' +
+      'compiler.',
   },
   'general/global-config': {
     title: `Global Configuration — provideGogConfig`,
@@ -181,6 +182,17 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     'Input Field',
     'Angular text input with floating labels, prefix and suffix add-ons, a clear button, ' +
       'validation states and every native attribute passed straight through.',
+  ),
+  'general/rtl': {
+    title: 'Right-to-left — Guild of Gleks UI',
+    description:
+      'Angular RTL support with no per-component configuration: dir="rtl" on the document or ' +
+      'any region mirrors every component, portaled overlays included.',
+  },
+  'components/menu': component(
+    'Menu',
+    'An accessible Angular command menu — the trigger and the items are your own buttons, ' +
+      'with full WAI-ARIA menu-button keyboard support and a panel nothing can clip.',
   ),
   'components/multiselect': component(
     'Multiselect',

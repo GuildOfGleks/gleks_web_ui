@@ -1,0 +1,36 @@
+<div class="rtl-controls">
+  <gog-button-toggle-group
+    [options]="directions"
+    [(value)]="dir"
+    ariaLabel="Text direction"
+    size="sm"
+  />
+</div>
+
+<!--
+  `dir` on a wrapper rather than on <html>: the point is that a scoped region mirrors on its own,
+  including panels that render into <body> — the select below copies this dir onto its portaled
+  host, which is why its own list mirrors with the region rather than with the page.
+-->
+<section class="rtl-region" [attr.dir]="dir()">
+  <gog-inputfield label="Search" iconStart="search" placeholder="Type here" [(value)]="query" />
+
+  <gog-select
+    [options]="branches"
+    [(value)]="branch"
+    label="Branch"
+    [appendToBody]="true"
+    placeholder="Pick one"
+  />
+
+  <gog-checkbox label="Notify the reviewers" [(checked)]="notify" />
+
+  <gog-slider [(value)]="progress" [min]="0" [max]="100" ariaLabel="Completion" />
+
+  <gog-progressbar [value]="progress()" />
+
+  <div class="rtl-row">
+    <gog-tag iconName="check" variant="success">Passing</gog-tag>
+    <gog-button variant="outline" size="sm" gogTooltip="Runs the whole suite">Re-run</gog-button>
+  </div>
+</section>
