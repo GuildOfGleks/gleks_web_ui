@@ -1,0 +1,27 @@
+<div class="menu-row">
+  <gog-button variant="outline" size="sm" type="button" [gogMenuTrigger]="autoMenu">
+    auto
+  </gog-button>
+  <gog-menu #autoMenu ariaLabel="Auto direction">
+    <button gogMenuItem type="button" (click)="picked.set('auto')">Item</button>
+    <button gogMenuItem type="button" (click)="picked.set('auto')">Item</button>
+  </gog-menu>
+
+  <gog-button variant="outline" size="sm" type="button" [gogMenuTrigger]="downMenu">
+    down
+  </gog-button>
+  <gog-menu #downMenu direction="down" ariaLabel="Downwards menu">
+    <button gogMenuItem type="button" (click)="picked.set('down')">Item</button>
+    <button gogMenuItem type="button" (click)="picked.set('down')">Item</button>
+  </gog-menu>
+
+  <gog-button variant="outline" size="sm" type="button" [gogMenuTrigger]="upMenu">up</gog-button>
+  <gog-menu #upMenu direction="up" ariaLabel="Upwards menu">
+    <button gogMenuItem type="button" (click)="picked.set('up')">Item</button>
+    <button gogMenuItem type="button" (click)="picked.set('up')">Item</button>
+  </gog-menu>
+</div>
+
+<p class="menu-status">
+  Picked from: <strong>{{ picked() }}</strong>
+</p>

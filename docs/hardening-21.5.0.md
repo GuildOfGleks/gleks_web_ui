@@ -677,6 +677,30 @@ not re-file it.
 
 ## Backlog — deliberately not in 21.5.0
 
+- **`--gog-menu-max-height` does not cap the panel.** Found 2026-08-21, in a browser, while
+  writing the lab's menu page against the published 21.5.0 — so it shipped. `.gog-menu` carries
+  `max-height: var(--gog-menu-max-height)` (default `320px`) from the stylesheet, and
+  `resolveMenuPlacement` then writes the *measured available space* onto the panel as an inline
+  `max-height`. Inline wins over any stylesheet rule, so the token applies only when it is larger
+  than the space — which is never the case the consumer is trying to hit. Measured: a 24-item menu
+  with 534px of room above it renders 534px tall, and setting `--gog-menu-max-height: 150px` on
+  `documentElement` changes nothing (computed `max-height` stays `534px`).
+
+  The panel does still scroll — it is capped by the viewport, and `gog-scroll` takes over past
+  that — so nothing overflows the screen. What a consumer cannot do is choose the height at which
+  scrolling starts, which is the entire purpose of the token, and both `README.md` and `AGENTS.md`
+  describe it as working ("A long menu scrolls itself past `--gog-menu-max-height`").
+
+  The fix is one line in the placement result — `Math.min(available, token)`, or writing the
+  inline value as `min(<available>px, var(--gog-menu-max-height))` so the cascade resolves it —
+  plus a spec pinning that a token smaller than the available space wins. It needs a browser check
+  rather than a unit test alone, since the bug is a cascade interaction that jsdom will not
+  reproduce faithfully. Same shape as the `stickyHeader` defect below: correct-looking code whose
+  effect is cancelled by something else in the box model.
+
+  The lab documents it as a **Known defect in &lt;installed version&gt;** on the menu page and in
+  the token reference; `lab-after-publish.md` carries the entry that deletes both once it ships.
+
 - **Missing components**, in rough order of how often a real site wants them: `alert`/`banner` (a
   persistent in-flow message — `gog-toast` is transient and cannot serve this), `avatar`,
   `breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`, `card`. Each is additive and

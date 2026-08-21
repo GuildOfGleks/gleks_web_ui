@@ -1,0 +1,28 @@
+<div class="menu-row">
+  <gog-button variant="outline" type="button" [gogMenuTrigger]="staticMenu">
+    Statically disabled
+  </gog-button>
+  <gog-menu #staticMenu ariaLabel="Statically disabled items">
+    <button gogMenuItem type="button" (click)="run('Publish')">Publish</button>
+    <button gogMenuItem type="button" disabled>Publish to production</button>
+    <button gogMenuItem type="button" disabled>Delete permanently</button>
+    <button gogMenuItem type="button" (click)="run('Duplicate')">Duplicate</button>
+  </gog-menu>
+
+  <gog-button variant="outline" type="button" [gogMenuTrigger]="boundMenu">
+    Bound to state
+  </gog-button>
+  <gog-menu #boundMenu ariaLabel="Items disabled by state">
+    <button gogMenuItem type="button" (click)="run('Open')">Open</button>
+    <button gogMenuItem type="button" [disabled]="isLocked()" (click)="run('Edit')">Edit</button>
+    <button gogMenuItem type="button" [disabled]="isLocked()" (click)="run('Delete')">
+      Delete
+    </button>
+  </gog-menu>
+
+  <gog-toggle label="Locked" size="sm" [(checked)]="isLocked" />
+</div>
+
+<p class="menu-status">
+  Last action: <strong>{{ lastAction() }}</strong>
+</p>

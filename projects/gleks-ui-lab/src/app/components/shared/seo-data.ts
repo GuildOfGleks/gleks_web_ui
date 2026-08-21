@@ -182,6 +182,11 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     'Angular text input with floating labels, prefix and suffix add-ons, a clear button, ' +
       'validation states and every native attribute passed straight through.',
   ),
+  'components/menu': component(
+    'Menu',
+    'An accessible Angular command menu — the trigger and the items are your own buttons, ' +
+      'with full WAI-ARIA menu-button keyboard support and a panel nothing can clip.',
+  ),
   'components/multiselect': component(
     'Multiselect',
     'Angular multi-select with chips, a filter, select-all, custom option templates and overlay ' +

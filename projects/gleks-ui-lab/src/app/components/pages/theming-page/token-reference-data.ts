@@ -534,6 +534,60 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    id: 'menu',
+    title: 'Menu',
+    tokens: [
+      {
+        name: '--gog-menu-z',
+        description:
+          'Stacking order of the portaled panel. Defaults to --gog-dropdown-z, and the panel takes the value its trigger inherits — which is how a menu opened inside a dialog stacks above it.',
+      },
+      { name: '--gog-menu-bg', description: 'Panel background.' },
+      {
+        name: '--gog-menu-border-color / -border-width / -border-style',
+        description: 'Panel border.',
+      },
+      { name: '--gog-menu-radius', description: 'Panel corner radius.' },
+      { name: '--gog-menu-shadow', description: "Panel shadow. Defaults to the dialog's." },
+      { name: '--gog-menu-font-family', description: 'Panel font family.' },
+      { name: '--gog-menu-padding', description: 'Space between the panel edge and its items.' },
+      { name: '--gog-menu-gap', description: 'Space between items.' },
+      { name: '--gog-menu-offset', description: 'Gap between the trigger and the panel.' },
+      {
+        name: '--gog-menu-min-width / -max-width',
+        description:
+          'Panel width bounds. The panel sizes to its widest item between them, never to the trigger.',
+      },
+      {
+        name: '--gog-menu-max-height',
+        description:
+          'Intended as the height past which the panel scrolls itself instead of growing. Does not currently apply: the component writes the measured available space onto the panel as an inline max-height, which beats the rule this token feeds. The panel is capped by the room between its trigger and the viewport edge either way.',
+      },
+      { name: '--gog-menu-transition-duration', description: 'Open/close transition.' },
+      {
+        name: '--gog-menu-focus-ring / -focus-ring-width',
+        description: 'Focus ring on the item the arrow keys landed on.',
+      },
+      {
+        name: '--gog-menu-item-color / -hover-bg / -hover-color',
+        description: 'Item foreground, and the pair it swaps to under the pointer or focus.',
+      },
+      {
+        name: '--gog-menu-item-font-size / -line-height / -padding / -radius',
+        description: 'Item metrics.',
+      },
+      { name: '--gog-menu-item-gap', description: "Space between an item's icon and its label." },
+      {
+        name: '--gog-menu-item-icon-size',
+        description: "Size of an icon projected into an item, relative to the item's own text.",
+      },
+      {
+        name: '--gog-menu-item-disabled-opacity / -disabled-color',
+        description: 'How a disabled item reads. It stays in the list rather than disappearing.',
+      },
+    ],
+  },
+  {
     id: 'multiselect',
     title: 'Multiselect',
     tokens: [

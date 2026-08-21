@@ -140,6 +140,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'components/menu',
+    loadComponent: () =>
+      import('./components/pages/menu-doc-page/menu-doc-page').then((m) => m.MenuDocPage),
+  },
+  {
     path: 'components/multiselect',
     loadComponent: () =>
       import('./components/pages/multiselect-doc-page/multiselect-doc-page').then(

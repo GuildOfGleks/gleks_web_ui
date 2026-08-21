@@ -36,13 +36,13 @@ trim the explanation back to what `fullWidth` is for.
 
 ---
 
-- **row actions**, the case it was built for: a `more-vertical` icon button in a table row. No
-  configuration needed — the panel always renders into `<body>`, so the table's own `gog-scroll`
-  cannot clip it. `ui-showcase` has a whole `/menu` page to copy from, plus the dashboard's
-  in-context version.
-- **disabled items**, the question a reader asks second: the native `disabled` attribute on their
-  own button, static or bound to state. The showcase page demonstrates both, with a toggle.
-- **a long menu**, which scrolls inside the panel with `gog-scroll` past `--gog-menu-max-height`.
+## After the release that fixes `--gog-menu-max-height`
+
+The menu page's "A long menu scrolls itself" card ends with a **Known defect in &lt;installed
+version&gt;** paragraph — the version interpolates from `library-version.ts`, so it follows the
+package — saying the token does not cap the panel. **Delete that paragraph** once the fix ships,
+and put `--gog-menu-max-height` back into the card's first sentence as the cap. The token's row
+in `theming-page/token-reference-data.ts` carries the same caveat and shrinks back to one line.
 
 ## After 21.5.0 — layer 4 of lab-versioning.md is unblocked
 
@@ -59,30 +59,6 @@ Two things to know before building it:
   half is normal rather than an error state.
 - It is read from the **installed** package, so the badge answers for the version the reader has.
   Do not hard-code 21.7.0 anywhere; take it from `removedIn`.
-
-## After 21.5.0 — document `gog-menu`
-
-21.5.0 adds a component the lab has no page for: **`gog-menu`**, with `[gogMenuTrigger]` on the
-consumer's own button and `gogMenuItem` on the items. It needs the usual component page —
-overview, API table, keyboard section — and two demos worth having specifically:
-
-- **row actions**, the case it was built for: a `more-vertical` icon button in a table row, with
-  `[appendToBody]="true"` because the table wraps itself in a `gog-scroll` that would clip the
-  panel. `ui-showcase`'s dashboard page has this exact demo to copy from.
-- **keyboard**, which is most of the value: Enter/Space/ArrowDown open with the first item
-  focused, ArrowUp with the last, arrows and Home/End skip disabled items, Escape closes and
-  returns focus to the trigger. Worth a written list on the page, since none of it is visible in
-  a screenshot.
-
-The nav/sidebar needs the new entry too, and `general/releases` will render the changelog entry on
-its own once the version is installed.
-
-**And the counts move with it.** The lab says "28 components" (plus the two directives, 30 entries
-in the nav) in five places — `compare-page.html`, `compare-page.ts` (the detail line and the
-`Components & directives` row), `faq-data.ts`, `seo-data.ts` and `index.html`'s meta description
-and JSON-LD. `gog-menu` makes that **29 components, 31 entries**. The bundle sizes quoted next to
-them (`103.8 KB gzipped`) were measured before the menu existed, so re-measure rather than
-re-typing the old number.
 
 ## Checking your work
 

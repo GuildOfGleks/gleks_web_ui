@@ -1,0 +1,15 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('menu-doc');
+
+.keyboard-table {
+  kbd {
+    font-family: var(--gog-font-mono);
+    font-size: 0.85em;
+    padding: 0.15em 0.45em;
+    border: 1px solid var(--gog-border-color);
+    border-radius: 4px;
+    background: var(--gog-hover-color);
+    white-space: nowrap;
+  }
+}
