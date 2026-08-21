@@ -54,6 +54,14 @@ jobs:
       - name: Deprecation ratchet check
         run: npm run check:deprecations
 
+      # RTL guard. A `padding`/`margin` shorthand that sets the two horizontal sides
+      # differently is physical, so it does not mirror under `dir="rtl"` — and because the
+      # sidedness lives in a value's *position* rather than in a `left`/`right` keyword, no
+      # grep and no style-less unit test can see it. Four components shipped 21.5.0 with the
+      # gutter for their trailing chrome on the opposite side from the chrome itself.
+      - name: Logical-property check
+        run: npm run check:logical-properties
+
       # The library must build standalone, before anything that consumes it.
       - name: Build @gleks/ui
         run: npm run build:lib

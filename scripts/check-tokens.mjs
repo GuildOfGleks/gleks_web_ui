@@ -53,6 +53,9 @@ const LITERAL_FALLBACK_ALLOWED = new Set([
   '--gog-dialog-offset-y',
   // Written by gog-textarea from its measured scrollbar width; 0px means "no scrollbar".
   '--gog-textarea-scrollbar-width',
+  // Written by gog-menu from the room measured beside its trigger; 100vh means "not measured
+  // yet", which is the frame before the first placement and every server-rendered pass.
+  '--gog-menu-available-height',
 ]);
 
 const DECLARATION_RE = /(--gog-[a-zA-Z0-9-]+)\s*:/g;

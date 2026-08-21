@@ -78,19 +78,22 @@
 
 .gog-select__control {
   width: 100%;
-  padding: var(
-      --gog-select-control-padding-y,
-      var(--gog-select-size-padding-y, var(--gog-field-md-padding-y))
-    )
-    var(--gog-select-chevron-inset)
-    var(
-      --gog-select-control-padding-y,
-      var(--gog-select-size-padding-y, var(--gog-field-md-padding-y))
-    )
-    var(
+  /*
+   * Logical: the trailing gutter reserves room for the chevron, and the chevron is placed with
+   * `inset-inline-end`. As a physical `padding-right` the two came apart under `dir="rtl"` —
+   * chevron on the left, reserve on the right, the value running under it. `.gog-select--clearable`
+   * below already overrode `padding-inline-end`, which in RTL left the control padded on both
+   * sides at once.
+   */
+  padding-block: var(
+    --gog-select-control-padding-y,
+    var(--gog-select-size-padding-y, var(--gog-field-md-padding-y))
+  );
+  padding-inline: var(
       --gog-select-control-padding-x,
       var(--gog-select-size-padding-x, var(--gog-field-md-padding-x))
-    );
+    )
+    var(--gog-select-chevron-inset);
   display: flex;
   align-items: center;
   justify-content: space-between;

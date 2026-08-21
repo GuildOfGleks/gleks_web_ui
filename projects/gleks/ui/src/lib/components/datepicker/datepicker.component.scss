@@ -39,19 +39,20 @@
 .gog-datepicker__control {
   box-sizing: border-box;
   width: 100%;
-  padding: var(
-      --gog-datepicker-padding-y,
-      var(--gog-datepicker-size-padding-y, var(--gog-field-md-padding-y))
-    )
-    var(--gog-datepicker-actions-reserve)
-    var(
-      --gog-datepicker-padding-y,
-      var(--gog-datepicker-size-padding-y, var(--gog-field-md-padding-y))
-    )
-    var(
+  /*
+   * Logical: the trailing gutter reserves room for the calendar/clear buttons, which are placed
+   * with `inset-inline-end`. A physical `padding-right` put the reserve on the opposite side
+   * from them under `dir="rtl"`.
+   */
+  padding-block: var(
+    --gog-datepicker-padding-y,
+    var(--gog-datepicker-size-padding-y, var(--gog-field-md-padding-y))
+  );
+  padding-inline: var(
       --gog-datepicker-padding-x,
       var(--gog-datepicker-size-padding-x, var(--gog-field-md-padding-x))
-    );
+    )
+    var(--gog-datepicker-actions-reserve);
   border: var(--gog-datepicker-border-width) var(--gog-datepicker-border-style)
     var(--gog-datepicker-border-color);
   border-radius: var(--gog-datepicker-radius);

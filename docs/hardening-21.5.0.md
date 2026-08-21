@@ -677,7 +677,16 @@ not re-file it.
 
 ## Backlog — deliberately not in 21.5.0
 
-- **`gog-inputfield` reserves its icon space on the wrong side in RTL.** Found 2026-08-21, in a
+- ~~**`gog-inputfield` reserves its icon space on the wrong side in RTL.**~~ **Fixed in 21.5.1**
+  (2026-08-21), and it was not one component but four — `gog-select`, `gog-autocomplete` and
+  `gog-datepicker` had the identical shorthand. All four now use `padding-block` +
+  `padding-inline`, `--gog-input-pl`/`-pr` are renamed `-ps`/`-pe` (neither was public), and
+  `npm run check:logical-properties` fails the build on any `padding`/`margin`/`border-width`/
+  `border-radius` shorthand that sets the two horizontal sides differently — the guard this
+  class of bug needed, since it is invisible to both a `left:`/`right:` grep and a unit test
+  with no style engine. Verified in a browser across all four, LTR and RTL. The original entry:
+
+  Found 2026-08-21, in a
   browser, on the published 21.5.0 — the same session as the item below, and the more visible of
   the two: the placeholder or value runs underneath the icon.
 
@@ -700,7 +709,16 @@ not re-file it.
   The lab's `general/rtl` page shows it in its live demo and says so; `lab-after-publish.md`
   carries the entry that deletes the note once it ships.
 
-- **`--gog-menu-max-height` does not cap the panel.** Found 2026-08-21, in a browser, while
+- ~~**`--gog-menu-max-height` does not cap the panel.**~~ **Fixed in 21.5.1** (2026-08-21). The
+  measured room is handed to CSS as `--gog-menu-available-height` and `menu.css` takes the
+  smaller of it and the token, so the panel is the least of its content, the token and the room
+  available. The fix needed a second change nobody would have predicted from the symptom: an
+  up-menu is now anchored by its `bottom` instead of by a `top` derived from its expected
+  height, because a panel the token cuts short would otherwise float away from its trigger by
+  exactly the height it did not take. Both halves are pinned by specs, and the up-with-a-cap
+  case was measured in a browser (48px panel, still 4px from its trigger). The original entry:
+
+  Found 2026-08-21, in a browser, while
   writing the lab's menu page against the published 21.5.0 — so it shipped. `.gog-menu` carries
   `max-height: var(--gog-menu-max-height)` (default `320px`) from the stylesheet, and
   `resolveMenuPlacement` then writes the *measured available space* onto the panel as an inline

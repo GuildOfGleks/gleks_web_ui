@@ -43,17 +43,30 @@ export class MenuPage {
   protected readonly isLocked = signal(true);
 
   /** Long enough to overflow --gog-menu-max-height, which is what the scroller demo needs. */
+  /*
+   * Long enough to actually pass `--gog-menu-max-height` (320px by default, about ten items).
+   * The list was ten, so the card claiming "a long menu scrolls itself" demonstrated a panel
+   * that fitted — which is also why nobody noticed the token was doing nothing until 21.5.1.
+   */
   protected readonly branches: string[] = [
     'main',
     'develop',
     'release/21.5.0',
     'release/21.4.4',
+    'release/21.4.3',
+    'release/21.3.2',
     'feature/menu',
     'feature/rtl',
     'feature/tokens',
+    'feature/panel',
+    'feature/ripple',
     'hotfix/scroll-clipping',
+    'hotfix/input-rtl-padding',
     'experiment/virtualisation',
+    'experiment/entry-points',
     'archive/2025',
+    'archive/2024',
+    'sandbox/roman',
   ];
 
   protected readonly documents: Document[] = [

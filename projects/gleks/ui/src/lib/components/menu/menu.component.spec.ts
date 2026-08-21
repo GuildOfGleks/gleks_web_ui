@@ -253,5 +253,27 @@ describe('MenuComponent', () => {
 
       expect(panel()?.style.zIndex).toBe('');
     });
+
+    /*
+     * The panel used to carry the measured room as an inline `max-height`, which beats any
+     * stylesheet rule and left `--gog-menu-max-height` doing nothing at all. The room is now a
+     * custom property, so `menu.css` can take whichever of the two is smaller. Pinned at this
+     * level rather than in `menu-position.spec.ts` because the defect was in *how* the number
+     * reached the element, not in the number.
+     */
+    it('hands the measured room to CSS instead of overriding max-height with it', async () => {
+      await openByClick();
+
+      expect(panel()?.style.maxHeight).toBe('');
+      expect(panel()?.style.getPropertyValue('--gog-menu-available-height')).toMatch(/^\d+px$/);
+    });
+
+    it('anchors a menu by one edge only, so it is never stretched between top and bottom', async () => {
+      await openByClick();
+
+      const style = panel()!.style;
+      const anchored = [style.top, style.bottom].filter((value) => value !== '');
+      expect(anchored).toHaveLength(1);
+    });
   });
 });

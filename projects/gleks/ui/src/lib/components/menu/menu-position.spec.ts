@@ -21,6 +21,7 @@ describe('resolveMenuPlacement', () => {
 
     expect(placement.direction).toBe('down');
     expect(placement.top).toBe(332 + 4);
+    expect(placement.bottom).toBeNull();
     expect(placement.left).toBe(400);
   });
 
@@ -28,7 +29,38 @@ describe('resolveMenuPlacement', () => {
     const placement = resolveMenuPlacement(trigger({ top: 520, bottom: 552 }), menu, viewport);
 
     expect(placement.direction).toBe('up');
-    expect(placement.top).toBe(520 - 4 - placement.maxHeight);
+    expect(placement.top).toBeNull();
+    // Anchored by its bottom edge, one gap above the trigger's top: 600 - 520 + 4.
+    expect(placement.bottom).toBe(84);
+  });
+
+  /*
+   * The regression this shape exists for. An up-menu used to be positioned by a `top` derived
+   * from the height it was assumed to take; a panel capped shorter by `--gog-menu-max-height`
+   * then floated away from its trigger by the difference. A `bottom` anchor cannot drift,
+   * because it does not depend on the height at all.
+   */
+  it('anchors an up-menu to the trigger regardless of the height it settles on', () => {
+    const short = resolveMenuPlacement(trigger({ top: 520, bottom: 552 }), menu, viewport);
+    const tall = resolveMenuPlacement(
+      trigger({ top: 520, bottom: 552 }),
+      { width: 200, height: 5000 },
+      viewport,
+    );
+
+    expect(short.bottom).toBe(tall.bottom);
+  });
+
+  it('never reports a zero-height panel for a direction forced against the viewport edge', () => {
+    const placement = resolveMenuPlacement(
+      trigger({ top: 6, bottom: 38 }),
+      menu,
+      viewport,
+      'ltr',
+      'up',
+    );
+
+    expect(placement.availableHeight).toBeGreaterThan(0);
   });
 
   it('honours an explicit direction even where the other side has more room', () => {
@@ -55,23 +87,24 @@ describe('resolveMenuPlacement', () => {
     expect(placement.left).toBe(8);
   });
 
-  it('caps the height to the room below, so a long menu scrolls instead of overflowing', () => {
+  it('reports only the room available, so a long menu scrolls instead of overflowing', () => {
     const tall = { width: 200, height: 900 };
     const placement = resolveMenuPlacement(trigger(), tall, viewport);
 
     expect(placement.direction).toBe('up');
-    expect(placement.maxHeight).toBeLessThanOrEqual(300);
+    // The room above a trigger at y=300, less the gap and the viewport padding.
+    expect(placement.availableHeight).toBe(300 - 4 - 8);
   });
 
-  it('never places the panel above the viewport padding', () => {
+  it('leaves the viewport padding below an up-menu that reaches the bottom of the screen', () => {
     const placement = resolveMenuPlacement(
-      trigger({ top: 10, bottom: 42 }),
+      trigger({ top: 598, bottom: 630 }),
       { width: 200, height: 900 },
       viewport,
       'ltr',
       'up',
     );
 
-    expect(placement.top).toBeGreaterThanOrEqual(8);
+    expect(placement.bottom).toBeGreaterThanOrEqual(8);
   });
 });

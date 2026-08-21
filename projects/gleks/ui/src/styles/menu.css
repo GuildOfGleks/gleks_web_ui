@@ -26,7 +26,16 @@
   gap: var(--gog-menu-gap);
   min-width: var(--gog-menu-min-width);
   max-width: var(--gog-menu-max-width);
-  max-height: var(--gog-menu-max-height);
+  /*
+   * Two caps, whichever is smaller: the room the component measured between the trigger and the
+   * viewport edge, and the theme's own `--gog-menu-max-height`. Resolved here rather than in the
+   * component because an inline `max-height` beats any stylesheet rule — writing the measured
+   * room straight onto the element is what used to make `--gog-menu-max-height` inert.
+   * `--gog-menu-available-height` is written by `gog-menu`; the `100vh` fallback covers the
+   * frame before the first measurement and server-side rendering, where there is no viewport
+   * to measure.
+   */
+  max-height: min(var(--gog-menu-available-height, 100vh), var(--gog-menu-max-height));
   /* The panel masks its own corners; the scrolling happens in `.gog-menu__scroll` inside it. */
   overflow: hidden;
   padding: var(--gog-menu-padding);
