@@ -17,6 +17,7 @@ import {
   type GogAccordionItem,
 } from '@guildofgleks/ui';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { isColorValue } from '../../shared/token-value';
 import { TOKEN_SECTIONS } from './token-reference-data';
 
@@ -32,6 +33,7 @@ interface FullCssSection extends GogAccordionItem {
     AccordionComponent,
     GogAccordionContentDirective,
     ButtonComponent,
+    SinceBadgeComponent,
   ],
   templateUrl: './theming-page.html',
   styleUrl: './theming-page.scss',

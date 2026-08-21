@@ -212,22 +212,25 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     title: 'Button',
     tokens: [
       {
-        name: '--gog-btn-font-family / -font-weight / -letter-spacing / -text-transform',
+        name: '--gog-button-font-family / -font-weight / -letter-spacing / -text-transform',
         description: 'Label typography.',
       },
-      { name: '--gog-btn-radius', description: 'Corner radius.' },
-      { name: '--gog-btn-border-width / -style', description: 'Border.' },
-      { name: '--gog-btn-transition-duration', description: 'Hover / active transition timing.' },
+      { name: '--gog-button-radius', description: 'Corner radius.' },
+      { name: '--gog-button-border-width / -style', description: 'Border.' },
       {
-        name: '--gog-btn-{variant}-bg / -color / -border / -shadow',
+        name: '--gog-button-transition-duration',
+        description: 'Hover / active transition timing.',
+      },
+      {
+        name: '--gog-button-{variant}-bg / -color / -border / -shadow',
         description: 'Fill, text, border and shadow per variant (primary/secondary/outline/ghost).',
       },
       {
-        name: '--gog-btn-{variant}-hover-bg / -hover-color / -hover-shadow',
+        name: '--gog-button-{variant}-hover-bg / -hover-color / -hover-shadow',
         description: 'Hover state per variant.',
       },
       {
-        name: '--gog-btn-bg / -color / -border / -padding / -font-size',
+        name: '--gog-button-bg / -color / -border / -padding / -font-size',
         description:
           'Undeclared by default — the escape hatch for styling a single button instance.',
       },
@@ -447,7 +450,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Close button.',
       },
       {
-        name: '--gog-confirm-color / -description-color / -actions-gap',
+        name: '--gog-confirmation-dialog-color / -description-color / -actions-gap',
         description: 'Confirmation dialog variant.',
       },
     ],
@@ -493,7 +496,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
   },
   {
     id: 'input-field',
-    title: 'Input Field',
+    // --gog-input-* names the text-field block that gog-inputfield and gog-textarea both
+    // render — not the gog-inputfield component. The two restyle together from one token
+    // set on purpose, which is why there is no --gog-inputfield-*.
+    title: 'Input Field & Text Area — the shared field block',
     tokens: [
       { name: '--gog-input-label-color', description: 'Field label color.' },
       {
@@ -532,9 +538,9 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     title: 'Multiselect',
     tokens: [
       {
-        name: '--gog-multiselect-* (was --gog-ms-*)',
+        name: '--gog-multiselect-* (was --gog-multiselect-*)',
         description:
-          'Renamed in 21.3.0. Both spellings work for the whole deprecation window — the --gog-ms-* name stays the declared one and the new name derives from it, so an existing override of either still reaches the component. --gog-ms-* is removed in 21.5.0.',
+          'Renamed in 21.3.0. Both spellings work for the whole deprecation window — the --gog-multiselect-* name stays the declared one and the new name derives from it, so an existing override of either still reaches the component. --gog-multiselect-* is removed in 21.5.0.',
       },
       { name: '--gog-multiselect-label-color', description: 'Field label color.' },
       {
@@ -742,7 +748,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-slider-track-border-width / -track-border-style / -track-border-color',
         description:
-          'An optional border on the track — transparent by default, the same opt-in convention as --gog-btn-primary-border.',
+          'An optional border on the track — transparent by default, the same opt-in convention as --gog-button-primary-border.',
       },
       {
         name: '--gog-slider-thumb-bg / -thumb-border / -thumb-shadow',

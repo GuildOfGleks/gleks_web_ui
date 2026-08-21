@@ -10,22 +10,22 @@ export const GENERATOR_COMPONENTS: readonly GeneratorComponentDef[] = [
   { id: 'accordion', label: 'Accordion', prefixes: ['--gog-accordion-'] },
   { id: 'autocomplete', label: 'Autocomplete', prefixes: ['--gog-autocomplete-'] },
   { id: 'badge', label: 'Badge', prefixes: ['--gog-badge-'] },
-  { id: 'button', label: 'Button', prefixes: ['--gog-btn-'] },
+  { id: 'button', label: 'Button', prefixes: ['--gog-button-'] },
   { id: 'button-toggle', label: 'Button Toggle', prefixes: ['--gog-button-toggle-'] },
   { id: 'calendar', label: 'Calendar', prefixes: ['--gog-calendar-'] },
   { id: 'checkbox', label: 'Checkbox', prefixes: ['--gog-checkbox-', '--gog-control-checkbox-'] },
   { id: 'chip', label: 'Chip', prefixes: ['--gog-chip-'] },
   { id: 'datepicker', label: 'Datepicker', prefixes: ['--gog-datepicker-'] },
-  { id: 'dialog', label: 'Dialog', prefixes: ['--gog-dialog-', '--gog-confirm-'] },
+  { id: 'dialog', label: 'Dialog', prefixes: ['--gog-dialog-', '--gog-confirmation-dialog-'] },
   { id: 'divider', label: 'Divider', prefixes: ['--gog-divider-'] },
   { id: 'icon', label: 'Icon', prefixes: ['--gog-icon-'] },
   { id: 'inputfield', label: 'Input Field', prefixes: ['--gog-input-', '--gog-textarea-'] },
-  // `--gog-ms-*` is the still-declared spelling; `--gog-multiselect-*` derives from it until
+  // `--gog-multiselect-*` is the still-declared spelling; `--gog-multiselect-*` derives from it until
   // the old name is removed in 21.5.0, so both are listed to keep the generator complete.
   {
     id: 'multiselect',
     label: 'Multiselect',
-    prefixes: ['--gog-ms-', '--gog-multiselect-'],
+    prefixes: ['--gog-multiselect-', '--gog-multiselect-'],
   },
   { id: 'paginator', label: 'Paginator', prefixes: ['--gog-paginator-'] },
   { id: 'progressbar', label: 'Progress Bar', prefixes: ['--gog-progressbar-'] },

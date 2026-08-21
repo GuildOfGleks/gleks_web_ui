@@ -9,7 +9,7 @@
  *
  * `--gog-radius`, `--gog-control-border-width` and `--gog-focus-ring-*` are
  * foundation tokens that most component tokens already derive from (see
- * `--gog-btn-radius: var(--gog-radius)` etc. in theme.css), so re-declaring
+ * `--gog-button-radius: var(--gog-radius)` etc. in theme.css), so re-declaring
  * just those three cascades into buttons, fields, checkboxes and dialogs at
  * once — the rest of the overrides below are only for the handful of tokens
  * each library hardcodes independently (accordion/toast radius, label
@@ -81,10 +81,10 @@ body {
   --gog-focus-ring-offset: 2px;
 
   /* Button — no uppercase/letter-spacing, medium weight, body font */
-  --gog-btn-font-family: var(--gog-font-body);
-  --gog-btn-font-weight: 500;
-  --gog-btn-letter-spacing: normal;
-  --gog-btn-text-transform: none;
+  --gog-button-font-family: var(--gog-font-body);
+  --gog-button-font-weight: 500;
+  --gog-button-letter-spacing: normal;
+  --gog-button-text-transform: none;
 
   /* Field labels — muted gray, not accent-colored caps */
   --gog-input-label-color: var(--gog-muted-text-color);
@@ -97,12 +97,12 @@ body {
   --gog-select-label-letter-spacing: normal;
   --gog-select-label-text-transform: none;
   --gog-select-field-border: var(--gog-border-color);
-  --gog-ms-label-color: var(--gog-muted-text-color);
-  --gog-ms-label-font-family: var(--gog-font-body);
-  --gog-ms-label-letter-spacing: normal;
-  --gog-ms-label-text-transform: none;
-  --gog-ms-field-border: var(--gog-border-color);
-  --gog-ms-checkbox-border: var(--gog-border-color);
+  --gog-multiselect-label-color: var(--gog-muted-text-color);
+  --gog-multiselect-label-font-family: var(--gog-font-body);
+  --gog-multiselect-label-letter-spacing: normal;
+  --gog-multiselect-label-text-transform: none;
+  --gog-multiselect-field-border: var(--gog-border-color);
+  --gog-multiselect-checkbox-border: var(--gog-border-color);
 
   /* Checkbox */
   --gog-checkbox-border-color: var(--gog-border-color);
@@ -174,11 +174,11 @@ body {
   --gog-focus-ring-offset: 2px;
 
   /* Button — pill-shaped, no uppercase, medium weight, body font */
-  --gog-btn-font-family: var(--gog-font-body);
-  --gog-btn-font-weight: 500;
-  --gog-btn-letter-spacing: normal;
-  --gog-btn-text-transform: none;
-  --gog-btn-radius: 20px;
+  --gog-button-font-family: var(--gog-font-body);
+  --gog-button-font-weight: 500;
+  --gog-button-letter-spacing: normal;
+  --gog-button-text-transform: none;
+  --gog-button-radius: 20px;
 
   /* Field labels — on-surface-variant gray, not accent-colored caps */
   --gog-input-label-color: var(--gog-muted-text-color);
@@ -191,12 +191,12 @@ body {
   --gog-select-label-letter-spacing: normal;
   --gog-select-label-text-transform: none;
   --gog-select-field-border: var(--gog-border-color);
-  --gog-ms-label-color: var(--gog-muted-text-color);
-  --gog-ms-label-font-family: var(--gog-font-body);
-  --gog-ms-label-letter-spacing: normal;
-  --gog-ms-label-text-transform: none;
-  --gog-ms-field-border: var(--gog-border-color);
-  --gog-ms-checkbox-border: var(--gog-border-color);
+  --gog-multiselect-label-color: var(--gog-muted-text-color);
+  --gog-multiselect-label-font-family: var(--gog-font-body);
+  --gog-multiselect-label-letter-spacing: normal;
+  --gog-multiselect-label-text-transform: none;
+  --gog-multiselect-field-border: var(--gog-border-color);
+  --gog-multiselect-checkbox-border: var(--gog-border-color);
 
   /* Checkbox — small square radius, on-surface-variant border */
   --gog-checkbox-radius: 2px;
