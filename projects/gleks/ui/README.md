@@ -6,8 +6,9 @@
 
 # @guildofgleks/ui
 
-An Angular 21 component library with **no CDK and no Material**. 27 components, 5 directives and
-3 services, all standalone, all signal-based, themed entirely through CSS custom properties.
+An Angular 21 and 22 component library with **no CDK and no Material**. 29 components, 5
+directives and 3 services, all standalone, all signal-based, themed entirely through CSS custom
+properties.
 
 ```bash
 npm install @guildofgleks/ui
@@ -28,6 +29,8 @@ npm install @guildofgleks/ui
   (`optionLabel="profile.fullName"`), not a mandated `{ id, name }` DTO.
 - **Accessible by default.** Keyboard navigation, ARIA wiring and generated label associations
   come with the components rather than with extra attributes.
+- **Right-to-left included.** `dir="rtl"` on `<html>` or on any wrapper mirrors every component,
+  portaled overlays included. Nothing to configure per component, no second stylesheet.
 
 ## Setup
 
@@ -245,8 +248,9 @@ dropdowns, always for the menu.
 `gogCollapsibleTrigger`, `gogCollapsibleContent`.
 **Services:** `DialogService`, `ToastService`, `ThemeService`.
 
-Fifteen more slot directives replace a component's markup rather than configuring it —
-`gogColumnBody`, `gogInputAddonStart`, `gogDropdownOption` and friends.
+Seventeen more directives go on markup you own rather than configuring a component through an
+input — slots like `gogColumnBody`, `gogInputAddonStart` and `gogDropdownOption`, and the menu's
+`gogMenuTrigger` / `gogMenuItem`.
 
 A few things worth knowing before you reach for a workaround:
 

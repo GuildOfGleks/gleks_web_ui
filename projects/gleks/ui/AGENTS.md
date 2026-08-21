@@ -5,10 +5,10 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.4.4`** plus the removals
-already landed for the unreleased `21.5.0` — see **Removed in 21.5.0** near the end of this file,
-and `CHANGELOG.md`. `README.md` covers the same ground at a higher level — install, setup,
-theming, global configuration — and is accurate;
+Everything below reflects the library's actual source as of **`21.5.1`**. 21.5.0 removed a batch
+of deprecated API — see **Removed in 21.5.0** near the end of this file, which exists so code
+written against 21.4.x can be migrated — and `CHANGELOG.md` has the rest. `README.md` covers the
+same ground at a higher level — install, setup, theming, global configuration — and is accurate;
 this file goes further, into per-component input tables, and is the one to trust for exact names,
 types and defaults.
 

@@ -156,7 +156,7 @@ exists:
 
 | Library | Minified | Gzipped |
 | --- | --- | --- |
-| **@guildofgleks/ui** — all 33 components, 3 services, 24 directives | 803 361 B (784.5 KB) | **109 394 B (106.8 KB)** |
+| **@guildofgleks/ui** — all 33 components, 3 services, 23 directives | 803 361 B (784.5 KB) | **109 394 B (106.8 KB)** |
 | @angular/material | _(no combined entry point)_ | _(no combined entry point)_ |
 | primeng | _(no combined entry point)_ | _(no combined entry point)_ |
 
@@ -338,7 +338,7 @@ console.log(Object.keys(e).filter(k=>k!=='.'&&!k.includes('*')&&!k.endsWith('.cs
 | --- | --- | --- | --- |
 | Documented components (pages on this site) | 31 | ~35 | 90+ |
 | Component selectors in the type definitions | 33 | 90 | 187 |
-| Directive selectors | 24 | 99 | 69 |
+| Directive selectors | 23 | 99 | 69 |
 | Code entry points | 1 | 36 | 282 |
 
 The selector counts are the honest raw numbers and they flatter nobody: 33 for this
