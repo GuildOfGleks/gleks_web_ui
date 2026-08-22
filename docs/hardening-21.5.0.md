@@ -925,12 +925,30 @@ of engineering. Sequence them; do not open them together.
    each keystroke racing the control's own draft state — the same shape as the "unparseable
    drafts don't clear the value" rule the datepicker has. Reproduce first, then decide whether the
    fix is in the accessor or in the input handler.
-2. **`gogCollapsibleTrigger` shows a clickable cursor while disabled.** The directive's host block
-   is `class`, three ARIA attributes and `(click)` — confirmed 2026-08-16 — so it sets
-   `aria-disabled` and nothing else; whatever `cursor: pointer` the consumer put on the trigger
-   stays. It should carry `cursor: default` (and the trigger's own hover styling should be
-   suppressible) when disabled. Related to the keyboard-accessibility entry above: both come from
-   that directive doing too little to the element it is placed on.
+2. ~~**`gogCollapsibleTrigger` shows a clickable cursor while disabled.**~~ **Fixed in 21.6.0**
+   (2026-08-22). The diagnosis had gone half stale: the directive does add
+   `.gog-collapsible__trigger`, and `utilities.css` does give it `cursor: not-allowed` at
+   `[aria-disabled='true']`. What was still true is the conclusion — the consumer's
+   `cursor: pointer` wins. Measured in the showcase: disabled trigger reading `cursor: pointer`
+   while the same rule's `opacity: 0.4` applied.
+
+   **The reason generalises and is worth remembering.** The trigger is the consumer's own
+   element, and Angular's emulated encapsulation stamps `[_ngcontent-…]` onto every rule in a
+   component stylesheet — so an ordinary `.my-trigger { cursor: pointer }` is (0,2,0), ties the
+   library's `.gog-collapsible__trigger[aria-disabled='true']`, and wins on source order because
+   the package's stylesheet loads first. The rule is now scoped through the host
+   (`gog-collapsible .gog-collapsible__trigger[aria-disabled='true']`) for the one point that
+   settles it.
+
+   **Every other global rule the library puts on a consumer's element has the same shape**, and
+   none has been checked: `.gog-btn:disabled` (0,1,1) and `.gog-menu__item:disabled` (0,1,1) are
+   *weaker* still, so any consumer component style on those elements beats them. Worth a sweep of
+   `styles/*.css` for state rules that a consumer can defeat by accident — a disabled state the
+   consumer has to know to opt out of is not a disabled state.
+
+   The showcase's own demo also restated `cursor: pointer` on a trigger that the directive
+   already styles, which is what made this visible there; that is deleted, since it is the
+   mistake a reader would copy.
 3. **`gog-accordion`'s loading state is unsatisfying.** Recorded as dissatisfaction rather than a
    defect — decide what it _should_ look like before changing it. Worth comparing against
    `gog-table`'s loading treatment, which replaces content with a spinner rather than dimming it.
