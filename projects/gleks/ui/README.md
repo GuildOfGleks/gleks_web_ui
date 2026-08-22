@@ -59,6 +59,10 @@ use — without it they render unstyled.
 ]
 ```
 
+It brings its own `box-sizing: border-box`, scoped to the elements the library renders, so the
+components size correctly whether or not your app has a global reset — since 21.6.0. Your own
+reset is untouched either way, and a single class of specificity means your own styles still win.
+
 **2. Import components where you use them** — each is standalone:
 
 ```ts

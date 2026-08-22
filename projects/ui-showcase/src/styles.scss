@@ -490,7 +490,20 @@ body {
   font-family: var(--gog-font-body), sans-serif;
 }
 
-* {
+/*
+ * Deliberately NOT `* { box-sizing: border-box }`.
+ *
+ * This app is where library changes are verified, and a global reset here hides a whole class of
+ * layout bug in the library — it papers over any component that sizes itself `width: 100%` plus
+ * padding without saying `border-box`. `.gog-input__field` did exactly that for the life of the
+ * package and nobody saw it, because this file made it look right. The library now sets
+ * border-box on everything it renders (`styles/utilities.css`), so it does not need help.
+ *
+ * The reset is kept for this app's *own* markup, which does rely on it, scoped so it cannot
+ * reach a `gog-*` element and mask the next one.
+ */
+.app-shell,
+.app-shell *:not([class^='gog-']):not([class*=' gog-']) {
   box-sizing: border-box;
 }
 

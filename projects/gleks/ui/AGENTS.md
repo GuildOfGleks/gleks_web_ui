@@ -178,6 +178,10 @@ Full model is in `README.md`'s Theming section and `theming.md`; short version:
   still resolve and are removed in 21.7.0 — don't write new code with them. The exception is
   `--gog-input-*`, which is not an abbreviation: it is the shared text-field block that
   `gog-inputfield` and `gog-textarea` both render, and it keeps that name.
+- **The package does not need the app's `box-sizing` reset** (since 21.6.0): `utilities.css`
+  sets `border-box` on every element carrying a `gog-*` class, including the ones the library
+  puts on a consumer's own element. Do not add a reset "so the components line up" — they
+  already do, and a `* { box-sizing: content-box }` in an app is the only thing that undoes it.
 - Theme switch is a `data-theme` attribute, usually on `<html>`, toggled through the
   `ThemeService` (`inject(ThemeService).setTheme('dark')` / `.toggleTheme()` / `.theme` signal).
   Ships `light` and `dark`. Three more importable presets: `slate`, `one-dark`, `one-light`
