@@ -807,7 +807,26 @@ not re-file it.
   `AGENTS.md`. The first is the kinder default and is not a breaking change; either way it is a
   library change, which is why it is recorded here.
 
-- **`gog-table`'s `stickyHeader` does not stick — the component overrides itself.** `stickyHeader`
+- ~~**`gog-table`'s `stickyHeader` does not stick — the component overrides itself.**~~ **Fixed in
+  21.6.0** (2026-08-22) by `maxHeight`, an input that caps the table's own viewport so there is a
+  vertical scrollport for the header to pin to. Verified in the showcase with both axes scrolling
+  at once. The route there is worth keeping, because the fix this entry originally proposed is
+  impossible and the obvious second attempt regresses the case that already worked:
+
+  1. `overflow-y: visible` on the internal scroller — what this entry proposed, and what
+     `gog-scroll` already does for `axis="horizontal"`. CSS coerces it to `auto` beside a
+     scrolling `overflow-x`. Measured: header 147px out of view.
+  2. `overflow-y: clip` — coerces to `hidden`, also a scroll container. Same 147px.
+  3. Enabling the vertical axis for *every* table, so a `--gog-table-max-height` token could do
+     the work. This makes an uncapped table a scroll container too, which pulls the consumer's
+     own scrolling region out of its descendants' sticky chain — the case that worked before
+     started failing by the same 147px. This is also why `maxHeight` is an input and not a
+     token: it decides behaviour (which axes scroll), not just a length.
+  4. Cap the viewport, only when asked. Works, both axes.
+
+  The original entry:
+
+  `stickyHeader`
   sets `position: sticky; top: 0` on the header cells, which is correct, but a sticky element
   resolves against its _nearest_ scrolling ancestor, and `gog-table` wraps its own markup in
   `<gog-scroll class="gog-table-scroll">`. On a table that fits, that viewport computes to

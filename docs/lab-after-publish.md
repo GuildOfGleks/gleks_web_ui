@@ -19,15 +19,19 @@ delete the section too.
 
 ---
 
-## After the release that fixes gog-table stickyHeader
+## After 21.6.0 — gog-table's sticky header works, and needs `maxHeight`
 
-The table page's "Sticky header" demo currently ends its description with a **Known defect in
-&lt;installed version&gt;** paragraph — the version is interpolated from `library-version.ts`, so
-it follows the package and does not need editing — explaining that the header rides away because
-the table's own internal `gog-scroll` is the nearest scrollport (full diagnosis in
-`hardening-21.5.0.md`). **Delete that
-paragraph** once the fix ships, and check the demo actually holds its header while scrolling —
-the demo itself needs no change, it already puts the table in a 260px scrolling wrapper.
+The table page's "Sticky header" demo ends its description with a **Known defect in &lt;installed
+version&gt;** paragraph — the version interpolates from `library-version.ts` — explaining that the
+header rides away. **Delete that paragraph.**
+
+The demo itself **does** need a change this time, unlike what this entry used to say: it puts the
+table in a 260px scrolling wrapper of its own, and that is exactly the arrangement that cannot
+work. Move the cap onto the table — `maxHeight="260px"` — and drop the wrapper. Then check the
+header holds while scrolling down *and* sideways.
+
+The API table gains `maxHeight` (`string | null`, default `null`), and `stickyHeader`'s row should
+point at it: the two only make sense together. `ui-showcase`'s table page has a demo to copy from.
 
 ---
 

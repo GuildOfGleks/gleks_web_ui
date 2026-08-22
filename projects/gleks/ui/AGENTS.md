@@ -1169,7 +1169,8 @@ they never asked to be.
 | `totalPosition`               | `'left'\|'right'\|'opposite'` | `'opposite'`                        |
 | `loading`                     | `boolean`                     | `false`                             |
 | `showColumnBorders`           | `boolean`                     | `false`                             |
-| `stickyHeader`                | `boolean`                     | `false`                             |
+| `stickyHeader`                | `boolean`                     | `false` — pair with `maxHeight`     |
+| `maxHeight`                   | `string \| null`              | `null` — any CSS length             |
 | `size`                        | `GogSize`                     | `'lg'` (row density — not `'md'`)   |
 | `lazy`                        | `boolean`                     | `false` — see below                 |
 | `totalRecords`                | `number \| null`              | `null` — `lazy` only                |
@@ -1191,12 +1192,21 @@ total evenly. Before 21.6.0 that split clipped the widest header, and a `width` 
 the workaround — under auto layout a stated `width` is a suggestion weighed against content
 rather than a hard split, so those can usually go.
 
-**`stickyHeader` holds only while the table is not scrolling sideways.** The table wraps itself
-in a horizontal `gog-scroll`, and once that starts scrolling it is a scroll container on both
-axes — CSS gives no way to scroll one axis and stay out of the sticky chain on the other — so
-the header pins to the table's own viewport, which never scrolls vertically, and rides out of
-view. It behaves as documented whenever the table fits its container horizontally. Tracked in
-`docs/hardening-21.5.0.md`.
+**`stickyHeader` needs `maxHeight`** (both since 21.6.0 for the pairing). A sticky element
+resolves against its nearest scroll container, and the table wraps itself in a `gog-scroll`;
+once that scroller moves on either axis it is a scroll container on *both*, because CSS coerces
+`overflow-y: visible` to `auto` beside a scrolling `overflow-x` (and `clip` to `hidden`). So the
+header can only ever stick to something inside the table — and without `maxHeight` that viewport
+is exactly as tall as its content and never scrolls, so there is nothing to stick to.
+
+```html
+<gog-table [value]="rows" maxHeight="260px" [stickyHeader]="true">…</gog-table>
+```
+
+`maxHeight` takes any CSS length and is what makes the table own its vertical scrolling. Left
+`null`, the table grows to its content and an ancestor scrolls it — the header then follows that
+ancestor's scroll like everything else, which is the pre-21.6.0 behaviour and is fine as long as
+you are not asking for a sticky header.
 
 Columns are declared as **projected `gog-column` children**, not an input array:
 

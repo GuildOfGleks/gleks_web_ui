@@ -105,6 +105,36 @@
   </article>
 
   <article class="card">
+    <h3>Sticky header, for real — <code>maxHeight</code></h3>
+    <p class="meta">
+      <code>stickyHeader</code> pins the header to the table's own scroll viewport, and
+      <code>maxHeight</code> is what gives that viewport a height to scroll inside. Without it the
+      viewport is exactly as tall as its content, so there is nothing for the header to stick
+      against and it rides away with the rest of the page — which is what this component did in
+      every version before 21.6.0.
+    </p>
+    <p class="meta">
+      Scroll this table <strong>down</strong> and the header holds; scroll it
+      <strong>sideways</strong> and it still holds. That second half is the case CSS makes awkward:
+      once a scroller moves on one axis it is a scroll container on both, so the header can only
+      ever stick to something inside the table.
+    </p>
+
+    <gog-table
+      [value]="tallRows"
+      maxHeight="260px"
+      [stickyHeader]="true"
+      [fullWidth]="false"
+      size="sm"
+    >
+      <gog-column field="component" header="Component" [sortable]="true"></gog-column>
+      <gog-column field="status" header="Status" [sortable]="true"></gog-column>
+      <gog-column field="owner" header="Owner"></gog-column>
+      <gog-column field="updated" header="Updated"></gog-column>
+    </gog-table>
+  </article>
+
+  <article class="card">
     <h3>Missing values</h3>
     <p class="lead">
       A cell whose field is <code>null</code>/<code>undefined</code> falls back to

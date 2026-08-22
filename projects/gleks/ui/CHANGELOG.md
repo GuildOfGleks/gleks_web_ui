@@ -6,6 +6,36 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.6.0] - planned
 
+### Added
+
+- **`gog-table`: `maxHeight`** — any CSS length (`'420px'`, `'60vh'`), capping the table's own
+  scroll viewport so the table owns its vertical scrolling. **This is what makes `stickyHeader`
+  work**, and the two are meant to be used together:
+
+  ```html
+  <gog-table [value]="rows" maxHeight="260px" [stickyHeader]="true">…</gog-table>
+  ```
+
+  `stickyHeader` has never held while the table scrolled sideways. A sticky element resolves
+  against its nearest scroll container; the table wraps itself in a `gog-scroll`, and the moment
+  that scroller moves on one axis it is a scroll container on **both**, because CSS coerces
+  `overflow-y: visible` to `auto` next to a scrolling `overflow-x` — and `clip` to `hidden`, which
+  is also a scroll container. Measured in a browser: a header 147px out of view, with the
+  component's own `overflow-y: visible` showing as a computed `auto`.
+
+  So the header cannot be made to stick to anything outside the table, and the fix is to give the
+  inside something to stick to. With `maxHeight` set the viewport is the vertical scrollport and
+  the header pins to it — verified with both axes scrolling at once.
+
+  An input rather than a `--gog-table-*` token, even though the value only lands in CSS, because
+  it also decides whether the internal scroller handles the vertical axis. It has to for a capped
+  table; it must **not** for an uncapped one, or every table becomes a scroll container and takes
+  the consumer's own scrolling region out of its descendants' sticky chain — measured at 147px
+  when tried that way. That is behaviour, not appearance.
+
+  **Nothing changes for a table without it.** `maxHeight` defaults to `null`, the viewport stays
+  at content height and its vertical axis stays inert.
+
 ### Fixed
 
 - **`[fullWidth]="false"` no longer clips the widest column's header.** The table is

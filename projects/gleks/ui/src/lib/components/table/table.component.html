@@ -1,5 +1,15 @@
 <div class="gog-table-wrapper gog-contained-layout">
-  <gog-scroll axis="horizontal" class="gog-table-scroll">
+  <!--
+    The vertical axis is enabled only when the table has been capped. Left on for an uncapped
+    table, `gog-scroll` would make this viewport a scroll container on both axes, which puts it
+    in the sticky chain of everything inside it and takes the consumer's own scrolling region
+    out of it — measured: a header that used to pin to that region rode away by 147px.
+  -->
+  <gog-scroll
+    [axis]="maxHeight() ? 'both' : 'horizontal'"
+    [style.max-height]="maxHeight()"
+    class="gog-table-scroll"
+  >
     <table
       class="gog-table"
       [class]="sizeClass()"
