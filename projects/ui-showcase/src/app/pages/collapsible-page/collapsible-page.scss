@@ -10,7 +10,8 @@
   background: var(--gog-surface-color);
   color: var(--gog-text-color);
   font: inherit;
-  cursor: pointer;
+  /* No `cursor: pointer` — `gogCollapsibleTrigger` already sets it, and restating it here is
+     what used to leave a *disabled* trigger showing a clickable cursor. */
 }
 
 .collapsible-demo__trigger:hover {

@@ -171,7 +171,18 @@
   cursor: pointer;
 }
 
-.gog-collapsible__trigger[aria-disabled='true'] {
+/*
+ * Scoped through the host on purpose, for one point of specificity the plain
+ * `.gog-collapsible__trigger[aria-disabled='true']` (0,2,0) does not have.
+ *
+ * The trigger is the *consumer's* element, and Angular's emulated encapsulation stamps
+ * `[_ngcontent-…]` onto every rule in a component stylesheet — so an ordinary
+ * `.my-trigger { cursor: pointer }` in the consumer's own component is also (0,2,0) and wins on
+ * source order, since this file loads before their app's styles. Measured: a disabled trigger
+ * reading `cursor: pointer` while this rule's `opacity` applied, in the showcase's own demo.
+ * A disabled state the consumer has to know to opt out of is not a disabled state.
+ */
+gog-collapsible .gog-collapsible__trigger[aria-disabled='true'] {
   cursor: not-allowed;
   opacity: var(--gog-collapsible-disabled-opacity);
 }

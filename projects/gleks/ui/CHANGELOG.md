@@ -8,6 +8,16 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A disabled `gogCollapsibleTrigger` shows a disabled cursor.** It carried whatever cursor the
+  consumer had put on the element — usually `pointer`, since the trigger is their own button.
+  The library's `cursor: not-allowed` was there, and losing: an ordinary
+  `.my-trigger { cursor: pointer }` in a consumer's component stylesheet is the same specificity
+  once Angular stamps `[_ngcontent-…]` onto it, and it comes later in the cascade. The rule is
+  now scoped through `gog-collapsible`, which settles it without `!important`.
+
+  If you added a `cursor` to your own trigger, you can drop it — the directive has set
+  `cursor: pointer` since it started applying `.gog-collapsible__trigger`.
+
 - **`gog-autocomplete`: the text can be erased again.** With a selection held, backspacing could
   not clear the field — nine backspaces on "Amsterdam" left "Amsterdam". Deleting the last
   character takes the text under `minLength`, which closes the panel; the effect that keeps the
