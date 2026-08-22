@@ -20,6 +20,9 @@ import { handleRovingFocusKeydown } from '../../shared/roving-focus';
 import { IconComponent } from '../icon/icon.component';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
 
+/** Cycled by `skeletonWidth()` — see there for why these are fixed rather than random. */
+const SKELETON_WIDTHS = ['62%', '45%', '71%', '53%'] as const;
+
 export interface GogAccordionItem {
   id: string | number;
   title: string;
@@ -73,6 +76,13 @@ export class GogAccordionChevronDirective {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'gog-accordion-host',
+    /*
+     * The skeleton rows are `aria-hidden`, and the real headers are not rendered while loading —
+     * so without this the whole component is simply *empty* to a screen reader, which reads as
+     * "there is nothing here" rather than "this is coming". `gog-button` and `gog-spinner-overlay`
+     * already do this; see the loading-state rule in `api-design.instructions.md`.
+     */
+    '[attr.aria-busy]': 'loading() ? "true" : null',
   },
 })
 export class AccordionComponent {
@@ -137,6 +147,18 @@ export class AccordionComponent {
     const count = this.items().length || this.skeletonCount();
     return Array.from({ length: count }, (_, index) => index);
   });
+
+  /**
+   * Placeholder title widths, cycled by row index.
+   *
+   * Every bar used to be 55%, which reads as a repeating progress artifact rather than as text
+   * that has not arrived — real titles are not all the same length. Cycled rather than random:
+   * a random width would differ between the server-rendered pass and hydration, and would make
+   * every snapshot of this component unstable.
+   */
+  protected skeletonWidth(index: number): string {
+    return SKELETON_WIDTHS[index % SKELETON_WIDTHS.length];
+  }
 
   constructor() {
     effect(() => {

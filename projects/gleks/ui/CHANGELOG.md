@@ -8,6 +8,24 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A loading `gog-accordion` announces itself.** It sets `aria-busy="true"` while `loading` is
+  on. Its skeleton bars are `aria-hidden` and the real headers are not rendered, so without it the
+  component was not "loading" to a screen reader — it was **empty**, which reads as "there is
+  nothing here" rather than "this is coming".
+
+  The placeholder rows also gained the shape they were missing: **a chevron placeholder**, so the
+  silhouette is the one that arrives instead of the chevron appearing out of nowhere, and
+  **varying title widths** instead of every bar at a flat 55%, which read as a repeating progress
+  artifact rather than as titles of differing length. Widths cycle by row index rather than
+  randomising, so a server-rendered pass and its hydration agree.
+
+  The geometry was already correct and is unchanged — measured at the same `size`, the skeleton
+  header is 46px against the real 47px.
+
+  **`gog-table` and `gog-autocomplete` still do not set `aria-busy`.** The rule is now written
+  down in the repo's API guide along with which loading treatment belongs to which kind of
+  component; those two are its known violations and are tracked.
+
 - **The library no longer needs your `box-sizing` reset.** Everything it renders now sizes itself
   `border-box`, set once in `styles/utilities.css` on any element carrying a `gog-*` class.
 
