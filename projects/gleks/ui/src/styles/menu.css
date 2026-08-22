@@ -74,18 +74,28 @@
   transition: background-color var(--gog-menu-transition-duration) var(--gog-easing);
 }
 
+/*
+ * Doubled class on the `:focus-visible` and `:disabled` rules, for the reason spelled out in
+ * `button.css`: a menu item is the consumer's own `<button>`, so an ordinary single-class rule
+ * in their component stylesheet ties these at (0,2,0) and wins on source order. The `:hover`
+ * selector is already (0,3,0) through its `:not(:disabled)` and is left alone.
+ *
+ * It matters more here than for a button. The arrow keys step over a disabled item, so an item
+ * that has lost its disabled styling is one the pointer can still see as ordinary while the
+ * keyboard refuses to reach it — the two input methods disagreeing about what exists.
+ */
 .gog-menu__item:hover:not(:disabled),
-.gog-menu__item:focus-visible {
+.gog-menu__item.gog-menu__item:focus-visible {
   background-color: var(--gog-menu-item-hover-bg);
   color: var(--gog-menu-item-hover-color);
 }
 
-.gog-menu__item:focus-visible {
+.gog-menu__item.gog-menu__item:focus-visible {
   outline: var(--gog-menu-focus-ring-width) solid var(--gog-menu-focus-ring);
   outline-offset: calc(var(--gog-menu-focus-ring-width) * -1);
 }
 
-.gog-menu__item:disabled {
+.gog-menu__item.gog-menu__item:disabled {
   color: var(--gog-menu-item-disabled-color);
   opacity: var(--gog-menu-item-disabled-opacity);
   cursor: not-allowed;
