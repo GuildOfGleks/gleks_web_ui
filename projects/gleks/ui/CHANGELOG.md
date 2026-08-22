@@ -6,6 +6,23 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.6.0] - planned
 
+### Fixed
+
+- **`gog-autocomplete`: the text can be erased again.** With a selection held, backspacing could
+  not clear the field — nine backspaces on "Amsterdam" left "Amsterdam". Deleting the last
+  character takes the text under `minLength`, which closes the panel; the effect that keeps the
+  field showing its selection used `!isOpen()` to mean "the user is not mid-edit", so closing the
+  panel made it write the selected label straight back into the input.
+
+  The panel closes for reasons that are not "the user finished" — text under `minLength`, Escape,
+  Tab — so editing is now tracked directly instead of inferred from it. The effect keeps its real
+  job, which is syncing a value the component did not set: a form writing one in, or the options
+  arriving after the value did.
+
+  **`forceSelection` is unaffected.** It still snaps the field back to the selection on blur and
+  on Escape, which is where that was always meant to happen; what stopped is the snap-back firing
+  mid-keystroke.
+
 ### Added
 
 - **`gog-table`: `maxHeight`** — any CSS length (`'420px'`, `'60vh'`), capping the table's own
