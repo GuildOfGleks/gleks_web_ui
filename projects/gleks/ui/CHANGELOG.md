@@ -4,6 +4,27 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.5.2] - planned
+
+Documentation only, and specifically the copy of this file that ships inside the package: 21.5.0
+and 21.5.1 were both published while their headings still read `planned`, so the changelog in the
+tarball described two live releases as unreleased. Nothing in the code changed — there is no
+reason to upgrade from 21.5.1 except to get a changelog that reads correctly.
+
+### Fixed
+
+- **21.5.0 and 21.5.1 carry their real release dates** (21.08.2026 and 22.08.2026, from the npm
+  registry) instead of `planned`. This file is the only source that cannot drift from the package
+  it documents, because it travels inside it — which is exactly why a wrong date in it is worth a
+  patch. It is also what the documentation site renders on its releases page: that page reads
+  `node_modules/@guildofgleks/ui/CHANGELOG.md` at build time rather than any copy of its own, so
+  until this ships it shows "planned" beside the version its reader is running.
+
+  `npm run release` now refuses to publish when the top heading's version does not match
+  `package.json` or its date still says `planned`. Swapping that word for the date is a manual
+  step at the end of a long list, which is a step that gets missed — twice, here — and nothing
+  downstream could tell the difference.
+
 ## [21.5.1] - 22.08.2026
 
 Two defects 21.5.0 shipped, both of the same shape: correct-looking CSS whose effect was cancelled
