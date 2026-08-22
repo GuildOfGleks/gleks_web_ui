@@ -1184,6 +1184,20 @@ null }` when the third click clears it), `gogPageChange: number` (1-based; **doe
 first render, nor for the page reset a new sort causes — that reset belongs to the sort),
 `gogRowClick: GogTableRowClickEvent<T>` (`{ row, index, originalEvent }`).
 
+**`fullWidth` also picks the layout algorithm.** Left at its default the table is `100%` wide with
+`table-layout: fixed`; since 21.6.0 `[fullWidth]="false"` makes it `fit-content` with
+`table-layout: auto`, so the columns are measured against their content instead of splitting the
+total evenly. Before 21.6.0 that split clipped the widest header, and a `width` on the column was
+the workaround — under auto layout a stated `width` is a suggestion weighed against content
+rather than a hard split, so those can usually go.
+
+**`stickyHeader` holds only while the table is not scrolling sideways.** The table wraps itself
+in a horizontal `gog-scroll`, and once that starts scrolling it is a scroll container on both
+axes — CSS gives no way to scroll one axis and stay out of the sticky chain on the other — so
+the header pins to the table's own viewport, which never scrolls vertically, and rides out of
+view. It behaves as documented whenever the table fits its container horizontally. Tracked in
+`docs/hardening-21.5.0.md`.
+
 Columns are declared as **projected `gog-column` children**, not an input array:
 
 ```html

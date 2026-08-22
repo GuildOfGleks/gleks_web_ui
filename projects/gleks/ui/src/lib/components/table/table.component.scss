@@ -27,6 +27,21 @@
   table-layout: fixed;
 }
 
+/*
+ * `fullWidth="false"` sizes the table to `fit-content`, and under `table-layout: fixed` that
+ * width is then split evenly across the columns rather than measured against them — so the
+ * widest header is cut off by the `overflow: hidden` on the cell. Measured on a five-column
+ * table: "Component" got 100px of the 448px total while needing 119px; with `auto` it gets 133px
+ * of 454px and nothing clips.
+ *
+ * Fixed layout only buys anything when the table's width comes from outside — it lets the
+ * browser lay the table out from the first row instead of measuring every cell. At
+ * `fit-content` the width comes from the content anyway, so there is nothing to buy.
+ */
+.gog-table--auto-layout {
+  table-layout: auto;
+}
+
 /* === Sizes ===
    `lg` needs no block: it is what every chain below falls back to. */
 
