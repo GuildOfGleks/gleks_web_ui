@@ -29,10 +29,19 @@ the table's own internal `gog-scroll` is the nearest scrollport (full diagnosis 
 paragraph** once the fix ships, and check the demo actually holds its header while scrolling —
 the demo itself needs no change, it already puts the table in a 260px scrolling wrapper.
 
-Same release, if it also fixes `[fullWidth]="false"` clipping the widest header: the "Full width"
-demo states `width` on both columns and the description explains that fixed layout makes it
-necessary. Once the component switches to `table-layout: auto` in that mode, drop the widths and
-trim the explanation back to what `fullWidth` is for.
+---
+
+## After 21.6.0 — the table's "Full width" demo can drop its column widths
+
+**21.6.0 fixes `[fullWidth]="false"` clipping the widest header** — the table switches to
+`table-layout: auto` in that mode. The "Full width" demo states `width` on both columns and the
+description explains that fixed layout makes it necessary; **drop both widths and trim the
+explanation back to what `fullWidth` is for**, then check nothing clips (it redistributes to
+about 115px/78px on that two-column table).
+
+Note this is a *different* release from the `stickyHeader` entry above, which it used to be
+bundled with. The two looked like one job and are not: `fullWidth` was the one-line fix its
+diagnosis predicted, while `stickyHeader` turned out to need new API and is still open.
 
 ---
 

@@ -817,15 +817,40 @@ not re-file it.
   never scrolls vertically, so the header simply rides up out of view. Measured on the lab against
   21.4.2 on 2026-08-15: with the table in a 260px scrolling wrapper,
   `th.closest('.gog-scroll__viewport')` is the table's internal one, and the header leaves the
-  viewport at `scrollTop: 200`; neutralising that inner viewport (`overflow: visible`) makes the
-  header stick correctly to the outer region. No consumer-side arrangement fixes it — capping the
-  `gog-table` host, or the inner `gog-scroll` host, leaves the inner viewport at full content
-  height either way. The likely fix is to make the internal scroller horizontal-only
-  (`overflow-y: visible`) so it stops being a vertical scrollport, with a regression test that
-  asserts the sticky header's scrollport is _not_ the table's own. The lab's "Sticky header" demo
-  currently documents the defect in its description; delete that paragraph in the release that
-  fixes it (recorded in `lab-after-publish.md`).
-- **`[fullWidth]="false"` clips the widest column's header.** The table is `table-layout: fixed`
+  viewport at `scrollTop: 200`. The lab's "Sticky header" demo documents the defect in its
+  description; delete that paragraph in the release that fixes it (recorded in
+  `lab-after-publish.md`).
+
+  **The fix this entry used to propose — `overflow-y: visible` on the internal scroller — cannot
+  work, and `gog-scroll` already tries it.** `viewportOverflowY` returns `visible` whenever
+  `axis="horizontal"`, and its comment names this exact defect as the reason. Re-measured
+  2026-08-22 against 21.5.2, in a browser: the inline style really is `overflow: auto visible`,
+  and the *computed* style is `auto / auto`. CSS coerces it — a `visible` paired with a
+  non-`visible`, non-`clip` value on the other axis computes to `auto`. `clip` does not save it
+  either: paired with a scrolling axis it computes to `hidden`, which is also a scroll container.
+  Measured both; the header rode away by 147px in each case.
+
+  So there is no overflow value that makes one axis scroll while the other stays out of the
+  sticky chain. The table cannot both scroll horizontally *and* let a sticky header resolve
+  against something outside it.
+
+  **What does work, measured the same session:** give the table's own viewport a `max-height`, so
+  it becomes the vertical scrollport the header is supposed to stick to — the header then pins to
+  the table's own top edge with both axes scrolling. That is the pattern every real data grid
+  uses, and it is a new input (`scrollHeight` / `maxHeight`) plus a redefinition of what
+  `stickyHeader` promises: the table owns its vertical scroll, rather than sticking to whatever
+  region the consumer wrapped it in. **New public API, so it needs a decision, not a patch** —
+  which is why it is still here rather than fixed alongside `fullWidth` in 21.6.0.
+
+  The alternative, if that input is unwanted: narrow the documented contract to "works while the
+  table does not scroll horizontally", which is true today and is what the demo shows.
+- ~~**`[fullWidth]="false"` clips the widest column's header.**~~ **Fixed in 21.6.0**
+  (2026-08-22), exactly as predicted: `.gog-table--auto-layout` sets `table-layout: auto` whenever
+  `fullWidth` is false. The showcase's own demo now redistributes to the 115px/78px this entry
+  forecast, with nothing clipped, and the nine `fullWidth` tables on that page stay `fixed` and
+  unchanged. The original entry:
+
+  The table is `table-layout: fixed`
   and the host switches to `width: fit-content`, so the columns split that width evenly instead of
   being measured against their content — a 195px two-column table gives each column 96px while
   "Component" needs 100px, and `overflow: hidden` cuts the glyph. Measured on 2026-08-15; setting

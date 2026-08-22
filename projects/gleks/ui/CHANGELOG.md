@@ -4,6 +4,24 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.6.0] - planned
+
+### Fixed
+
+- **`[fullWidth]="false"` no longer clips the widest column's header.** The table is
+  `table-layout: fixed` and switches to `width: fit-content` in this mode, so the browser split
+  that width evenly across the columns instead of measuring them against their content — and
+  `overflow: hidden` on the cell cut whatever did not fit. Measured on a five-column table:
+  "Component" was given 100px of 448px while needing 119px.
+
+  It now lays out with `table-layout: auto` whenever `fullWidth` is false. Fixed layout only buys
+  anything when the width comes from outside the table; at `fit-content` it comes from the content
+  anyway, so there was nothing to trade away. The same table now gives "Component" 133px of 454px.
+
+  **`fullWidth` left at its default is untouched** and still uses fixed layout. If you set `width`
+  on a `gog-column` purely to work around the clipping, you can drop it — under auto layout a
+  stated width becomes a suggestion the browser weighs against content, rather than a hard split.
+
 ## [21.5.2] - 22.08.2026
 
 Documentation only, and specifically the copy of this file that ships inside the package: 21.5.0

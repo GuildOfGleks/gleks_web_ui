@@ -96,6 +96,23 @@ describe('TableComponent', () => {
 
       expect(table.style.width).toBe('fit-content');
     });
+
+    /*
+     * jsdom does not lay a table out, so the clipping itself cannot be asserted here — the
+     * measurement is in the showcase and in the commit message. What a spec *can* pin is the
+     * pairing, which is the part that was wrong: `fit-content` and `table-layout: fixed`
+     * together split the width evenly instead of measuring the columns, and cut the widest
+     * header off.
+     */
+    it('should lay columns out automatically when it is not full width', async () => {
+      const table = fixture.nativeElement.querySelector('table.gog-table') as HTMLTableElement;
+      expect(table.classList.contains('gog-table--auto-layout')).toBe(false);
+
+      fixture.componentRef.setInput('fullWidth', false);
+      await fixture.whenStable();
+
+      expect(table.classList.contains('gog-table--auto-layout')).toBe(true);
+    });
   });
 
   it('should sort rows by the configured field', () => {
