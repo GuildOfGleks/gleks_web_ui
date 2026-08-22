@@ -22,20 +22,6 @@
 
     <div class="demo-card">
       <app-demo [component]="examples.overview" [source]="sources.rtlOverview" />
-      <p class="demo-card__meta">
-        <strong
-          >Known defect in {{ libraryVersion }}: a <code>gog-inputfield</code> icon overlaps its own
-          text in RTL.</strong
-        >
-        The icon itself mirrors correctly — it is placed with
-        <code>inset-inline-start</code> — but the space reserved for it in the input is still a
-        physical <code>padding-left</code>, driven by <code>--gog-input-pl</code>. So in RTL the
-        icon sits at the right edge while the 36px reserve stays at the left, and the text starts
-        underneath the icon. The Search field above shows it; flip to <code>dir="ltr"</code> to see
-        the same field render correctly. It affects <code>iconStart</code>, <code>iconEnd</code>
-        and the trailing controls that share that slot (<code>clearable</code>, the password
-        toggle). The fix is the same rule in logical form; nothing about the API changes.
-      </p>
     </div>
   </section>
 

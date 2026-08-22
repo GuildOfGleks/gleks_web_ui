@@ -101,22 +101,19 @@
     <article class="demo-card">
       <h3 class="demo-card__title">A long menu scrolls itself</h3>
       <p class="demo-card__meta">
-        A panel taller than the room between its trigger and the viewport edge scrolls with
+        The panel's height is the smallest of three: its own content,
+        <code>--gog-menu-max-height</code> (<code>320px</code> by default), and the room between the
+        trigger and the viewport edge. Past that it scrolls with
         <a routerLink="/components/scroll">gog-scroll</a> — the same thin, auto-hiding scroller as
         everywhere else in the package, with <code>overscrollBehavior="contain"</code> so a wheel at
         the end of the list does not scroll the page behind it. Arrowing past the last visible item
-        scrolls it into view. Shrink the window and reopen this menu to see it.
+        scrolls it into view.
       </p>
       <p class="demo-card__meta">
-        <strong
-          >Known defect in {{ libraryVersion }}: <code>--gog-menu-max-height</code> does not cap the
-          panel.</strong
-        >
-        The component measures the space available and writes that height onto the panel as an
-        inline <code>max-height</code>, which beats the stylesheet rule the token feeds — so the
-        token applies only when it happens to be larger than the space, i.e. never usefully. Setting
-        it to <code>150px</code> on a page with 500px of room changes nothing. The panel still
-        scrolls; what you cannot currently do is choose the height it starts scrolling at.
+        Lower the token to make a menu start scrolling sooner — that is the knob, and it is the one
+        thing about this component that did not work in 21.5.0
+        <app-since version="21.5.1" />: the measured room was written onto the panel as an inline
+        <code>max-height</code>, which beat the rule the token feeds.
       </p>
       <app-demo [component]="examples.long" [source]="sources.menuLong" />
     </article>
