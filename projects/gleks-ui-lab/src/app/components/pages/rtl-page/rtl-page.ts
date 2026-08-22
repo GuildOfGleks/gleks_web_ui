@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 import { DemoComponent } from '../../shared/demo/demo';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
-import { LIBRARY_VERSION } from '../../shared/library-version';
 
 import { RTL_EXAMPLES } from '../../../examples/rtl/sources.generated';
 import { RtlOverviewExample } from '../../../examples/rtl/rtl-overview/example';
@@ -86,7 +85,6 @@ export class RtlPage {
   protected readonly directionProperties = DIRECTION_PROPERTIES;
   protected readonly mirrored = MIRRORED;
   protected readonly physical = PHYSICAL;
-  protected readonly libraryVersion = LIBRARY_VERSION;
 
   protected readonly sources = RTL_EXAMPLES;
   protected readonly examples = { overview: RtlOverviewExample };

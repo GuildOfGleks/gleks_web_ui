@@ -561,7 +561,12 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-menu-max-height',
         description:
-          'Intended as the height past which the panel scrolls itself instead of growing. Does not currently apply: the component writes the measured available space onto the panel as an inline max-height, which beats the rule this token feeds. The panel is capped by the room between its trigger and the viewport edge either way.',
+          'Height past which the panel scrolls itself with gog-scroll instead of growing. The panel takes the smallest of this, its own content, and the room between its trigger and the viewport edge.',
+      },
+      {
+        name: '--gog-menu-available-height',
+        description:
+          'Instance-layer (undeclared): written by the component from the room it measured beside the trigger. Listed because it is the other half of the min() above, not because you would set it.',
       },
       { name: '--gog-menu-transition-duration', description: 'Open/close transition.' },
       {
