@@ -4,7 +4,7 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [21.5.1] - planned
+## [21.5.1] - 22.08.2026
 
 Two defects 21.5.0 shipped, both of the same shape: correct-looking CSS whose effect was cancelled
 by something else in the box model, and neither visible to a test suite that runs without a style
@@ -58,7 +58,15 @@ a version bump with nothing to migrate.
   now written down where you meet it — README's "Overlays and the viewport", `AGENTS.md`, and the
   TSDoc of each overlay.
 
-## [21.5.0] - planned
+- **The package's own front page was two releases stale.** `README.md` opened with "An Angular 21
+  component library … 27 components", while `package.json`'s description had said Angular 21 and
+  22 since 21.5.0 — two files in one tarball contradicting each other. It now says 21 and 22, 29
+  components and 17 (not fifteen) directives beyond the five named ones, and mentions RTL, which
+  it never did. `AGENTS.md`'s version marker still read `21.4.4` "plus the removals already landed
+  for the unreleased 21.5.0"; it now reads 21.5.1, with the **Removed in 21.5.0** section framed as
+  what it is — a migration table for code written against 21.4.x.
+
+## [21.5.0] - 21.08.2026
 
 **The breaking release** — the one version consumers have to read before upgrading into. It
 carries the removals below and the token-prefix rename (`--gog-btn-*`, `--gog-ms-*` and
