@@ -8,6 +8,19 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **The library no longer needs your `box-sizing` reset.** Everything it renders now sizes itself
+  `border-box`, set once in `styles/utilities.css` on any element carrying a `gog-*` class.
+
+  Without a reset the components quietly stopped honouring their own size tokens:
+  `--gog-select-min-width` is `120px`, and a `gog-select` measured **148px**; its inner control
+  went from 120px to 176px, and `gog-toggle__track` and `gog-checkbox__box` inflated the same way.
+  Measured across four showcase pages, 12–16 elements per page came out a different size. Nothing
+  looked broken, which is why it went unreported — a consumer without a reset simply got a
+  differently-proportioned library.
+
+  **If your app has `* { box-sizing: border-box }`, nothing changes**; the library was already
+  rendering under it. The rule is a single class in specificity, so your own styles still win.
+
 - **A disabled `gogCollapsibleTrigger` shows a disabled cursor.** It carried whatever cursor the
   consumer had put on the element — usually `pointer`, since the trigger is their own button.
   The library's `cursor: not-allowed` was there, and losing: an ordinary

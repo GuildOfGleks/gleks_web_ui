@@ -19,6 +19,31 @@
   --gog-direction-sign: 1;
 }
 
+/*
+ * Every element the library renders sizes itself border-box, so the package does not depend on
+ * the consumer having a `* { box-sizing: border-box }` reset.
+ *
+ * It used to. `.gog-input__field` is `width: 100%` plus horizontal padding plus a border, so
+ * under the CSS default of `content-box` it overflowed its own container by exactly that much —
+ * measured 20px at `xsm` rising to 48px at `slg`. It stayed invisible for the life of the
+ * package because both apps that render it (`ui-showcase`, and `gleks-ui-lab` since later) carry
+ * a global reset of their own, so the library was only ever *looked at* under border-box.
+ *
+ * Matched on the class prefix rather than by listing elements, because the set that needs it is
+ * exactly "things the library painted" — including the ones that live on a consumer's own
+ * element (`.gog-btn`, `.gog-menu__item`, `.gog-collapsible__trigger`) and would be missed by a
+ * `gog-*` tag list. A consumer's own elements are untouched.
+ *
+ * Specificity is a single class, deliberately: this is a default the library needs, not a
+ * decision it should win. `:where()` would drop it to zero and lose to the UA's own
+ * `content-box`… which is not a thing, but it would also lose to a consumer's `*` reset setting
+ * `content-box` back, and matching that intent is right.
+ */
+[class^='gog-'],
+[class*=' gog-'] {
+  box-sizing: border-box;
+}
+
 [dir='rtl'] {
   --gog-inline-start-side: right;
   --gog-inline-end-side: left;

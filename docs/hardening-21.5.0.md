@@ -878,7 +878,32 @@ not re-file it.
   only buys anything when the table's width is externally determined. The lab's "Full width"
   example now states column widths explicitly and explains why, which works but should not be
   necessary.
-- **The library's fields need the consumer's `box-sizing` reset to size correctly.**
+- ~~**The library's fields need the consumer's `box-sizing` reset to size correctly.**~~ **Fixed
+  in 21.6.0** (2026-08-22): `styles/utilities.css` sets `box-sizing: border-box` on every element
+  carrying a `gog-*` class, so the package no longer depends on the consumer having a reset.
+  Matched on the class prefix rather than a tag list, because the set that needs it includes the
+  classes the library puts on a *consumer's* element — `.gog-btn`, `.gog-menu__item`,
+  `.gog-collapsible__trigger`.
+
+  **The symptom below did not reproduce, and the entry is wrong about it.** Re-measured
+  2026-08-22 with the showcase's global reset removed: the field does not spill. Its container
+  (`.gog-input__field-container`) is `display: flex` and the field is `flex-shrink: 1`, so the
+  extra padding+border is absorbed by flex shrinking rather than overflowing. Either the
+  container became flex after 2026-08-15, or the original 20–48px was measured on something else.
+
+  **What does happen is worse in a quieter way: the components stop honouring their own size
+  tokens.** Measured on four pages, 12–16 classes change size per page with the reset gone and
+  the new rule disabled. The clearest: `--gog-select-min-width` is `120px`, and a content-box
+  `gog-select` renders **148px** — the token says one thing and the control is another. The
+  `gog-select__control` inside it goes 120px → 176px. `gog-toggle__track` and `gog-checkbox__box`
+  inflate the same way. A consumer without a reset was getting a differently-proportioned library,
+  not a broken one, which is exactly why nobody reported it.
+
+  **`ui-showcase`'s global reset is gone**, per this entry's own closing note — it is scoped to
+  the app's own markup and explicitly excluded from `gog-*` elements, so this class of bug can be
+  seen there in future instead of being papered over. The original entry:
+
+  **The library's fields need the consumer's `box-sizing` reset to size correctly.**
   `.gog-input__field` (shared by `gog-inputfield` and `gog-textarea`) is `width: 100%` plus
   horizontal padding plus a border, and the package sets `box-sizing: border-box` on exactly one
   selector — `.gog-badge`, in `styles/utilities.css`. Under the default `content-box` the field
