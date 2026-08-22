@@ -4,7 +4,7 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [21.5.2] - planned
+## [21.5.2] - 22.08.2026
 
 Documentation only, and specifically the copy of this file that ships inside the package: 21.5.0
 and 21.5.1 were both published while their headings still read `planned`, so the changelog in the
