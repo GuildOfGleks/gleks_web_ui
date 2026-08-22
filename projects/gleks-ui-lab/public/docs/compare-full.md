@@ -41,9 +41,14 @@ Roughly two minutes end to end, most of it npm. Nothing here needs an Angular wo
 each library is installed on its own, bundled from its real published entry points, and
 measured.
 
-**1. Set up three isolated folders.** A shared `node_modules` does not work —
-`@guildofgleks/ui` peers on Angular 21 while current Material and PrimeNG peer on Angular
-22, so npm's peer resolution conflicts if you install all three together:
+**1. Set up three isolated folders.** Each library has to be measured against exactly the
+dependencies it brings: installed together, npm dedupes what they share and the bundles stop
+reflecting what adding one library to *your* app would actually cost.
+
+(Until 21.5.0 there was a harder reason — `@guildofgleks/ui` peered on Angular 21 alone while
+current Material and PrimeNG peer on 22, so npm's peer resolution refused the shared install
+outright. Its range is `^21.2.0 || ^22.0.0` now, so that conflict is gone; the folders stay
+separate for the measurement, not for the installer.)
 
 ```sh
 mkdir bench && cd bench
