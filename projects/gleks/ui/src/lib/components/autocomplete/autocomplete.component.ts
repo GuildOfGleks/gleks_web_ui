@@ -209,6 +209,18 @@ export class AutocompleteComponent<
   });
 
   private searchTimer: ReturnType<typeof setTimeout> | null = null;
+  /**
+   * True from the first keystroke until the edit is resolved — by blur, Escape, picking an
+   * option, or the clear button. Deliberately a plain field, not a signal: the sync effect below
+   * must not re-run when it changes, only consult it.
+   *
+   * It exists because the effect used to use `!isOpen()` to mean "the user is not mid-edit", and
+   * the panel closes for reasons that are not that. Backspacing the last character takes the text
+   * under `minLength`, which closes the panel — so the effect fired and wrote the selected label
+   * straight back into the field. Nine backspaces on "Amsterdam" left "Amsterdam": the field
+   * could not be cleared at all while a selection was held.
+   */
+  private editing = false;
 
   constructor() {
     super();
@@ -216,10 +228,12 @@ export class AutocompleteComponent<
 
     // Keep the field showing the selection whenever the user is not mid-edit. Covers a value
     // written by a form, a `[(value)]` set from outside, and the options arriving after the
-    // value did — which is the normal order for a server-backed control.
+    // value did — which is the normal order for a server-backed control. All three change
+    // `selectedLabel()`, which is the only signal this reads, so it runs when the *value* moves
+    // and never merely because the panel opened or closed.
     effect(() => {
       const label = this.selectedLabel();
-      if (!this.isOpen() && label !== '') {
+      if (label !== '' && !this.editing) {
         this.query.set(label);
       }
     });
@@ -231,6 +245,7 @@ export class AutocompleteComponent<
 
   protected onInput(event: Event): void {
     const text = (event.target as HTMLInputElement).value;
+    this.editing = true;
     this.browsingAll.set(false);
     this.query.set(text);
     this.activeIndex.set(-1);
@@ -294,6 +309,7 @@ export class AutocompleteComponent<
         if (!this.isOpen()) return;
         event.preventDefault();
         this.close();
+        this.editing = false;
         this.restoreSelectedText();
         return;
       }
@@ -331,6 +347,7 @@ export class AutocompleteComponent<
   protected onInputBlur(): void {
     this.onFocusOut();
     this.close();
+    this.editing = false;
 
     if (this.forceSelection()) {
       this.restoreSelectedText();
@@ -346,6 +363,7 @@ export class AutocompleteComponent<
   /** Clearing has to empty the *text* as well; the base only knows about the value. */
   protected override clearValue(event: Event): void {
     super.clearValue(event);
+    this.editing = false;
     this.query.set('');
     this.cancelPendingSearch();
     this.gogSearch.emit('');
@@ -354,6 +372,7 @@ export class AutocompleteComponent<
   private pick(option: TOption): void {
     if (this.isOptionDisabled(option)) return;
 
+    this.editing = false;
     this.commitValue(this.valueOf(option) as TValue);
     this.query.set(this.labelOf(option));
     this.close();

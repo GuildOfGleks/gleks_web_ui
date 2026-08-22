@@ -321,6 +321,43 @@ describe('AutocompleteComponent', () => {
     });
   });
 
+  describe('erasing the field', () => {
+    /*
+     * The field could not be cleared at all while it held a selection: nine backspaces on
+     * "Amsterdam" left "Amsterdam". Deleting the last character takes the text under `minLength`,
+     * which closes the panel — and the effect that keeps the field showing the selection used
+     * `!isOpen()` to mean "the user is not mid-edit", so it fired and wrote the label straight
+     * back. Reproduced in the showcase with real keystrokes before this was changed.
+     */
+    it('should let the text be erased while a selection is held', () => {
+      type('а');
+      keydown('ArrowDown');
+      keydown('Enter');
+      expect(field().value).toBe('Ангуляр');
+
+      type('Ангуля');
+      type('');
+
+      expect(field().value).toBe('');
+      // The value survives the edit — that is what `forceSelection` means, and blur restores it.
+      expect(component.value()).not.toBeNull();
+    });
+
+    /*
+     * The other half: the effect still exists to sync a value the *component* did not set —
+     * a form writing one in, or the options arriving after the value did. Its trigger is
+     * `selectedLabel()` changing, which is what this asserts; if it had been made to depend on
+     * the edit flag instead, this would keep passing while the erase test above broke again.
+     */
+    it('should still show a value written from outside', async () => {
+      fixture.componentRef.setInput('value', 2);
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(field().value).toBe('Анимация');
+    });
+  });
+
   describe('gogSearch', () => {
     // Only `setTimeout`/`clearTimeout` are faked, and only here. Faking the whole clock breaks
     // Angular's own scheduler — the fixture's `ApplicationRef` is then torn down before the

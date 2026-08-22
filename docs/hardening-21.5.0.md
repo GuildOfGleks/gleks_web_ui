@@ -911,7 +911,16 @@ of engineering. Sequence them; do not open them together.
 
 ### Bugs — cheap, and they make the library look broken
 
-1. **`gog-autocomplete`: text cannot be erased.** Deleting characters re-inserts the previous
+1. ~~**`gog-autocomplete`: text cannot be erased.**~~ **Fixed in 21.6.0** (2026-08-22). Neither
+   suspect below was it — the accessor and the input handler are both fine. The culprit is the
+   effect that keeps the field showing its selection: it used `!isOpen()` to mean "the user is not
+   mid-edit", and deleting the last character takes the text under `minLength`, which closes the
+   panel. So the final backspace fired the effect and it wrote the label straight back. Reproduced
+   in the showcase with real keystrokes: nine backspaces on "Amsterdam", field still "Amsterdam".
+   Editing is now tracked directly rather than inferred from the panel; `forceSelection`'s
+   snap-back on blur and Escape is unchanged. The original entry:
+
+   Deleting characters re-inserts the previous
    value instead of clearing, so the field fights the user. Suspect the value written back on
    each keystroke racing the control's own draft state — the same shape as the "unparseable
    drafts don't clear the value" rule the datepicker has. Reproduce first, then decide whether the
