@@ -73,6 +73,17 @@ export class TablePage implements OnDestroy {
     { component: 'Spinner', status: 'Ready', owner: 'Feedback', updated: 'This month' },
   ];
 
+  /**
+   * Long enough that a capped table has something to scroll, and wide enough that the horizontal
+   * scroller activates — which is the combination `stickyHeader` used to fail on.
+   */
+  protected readonly tallRows: DemoRow[] = Array.from({ length: 24 }, (_, i) => ({
+    component: `Component ${i + 1} with a deliberately long name`,
+    status: i % 3 === 0 ? 'Ready' : i % 3 === 1 ? 'In review' : 'Planned',
+    owner: ['Design', 'Forms', 'Data', 'Navigation', 'Feedback'][i % 5],
+    updated: `${i + 1} days ago`,
+  }));
+
   protected readonly loading = signal(false);
   private loadingTimer: ReturnType<typeof setTimeout> | null = null;
 

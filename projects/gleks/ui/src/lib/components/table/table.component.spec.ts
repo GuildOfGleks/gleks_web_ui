@@ -11,6 +11,7 @@ import {
 } from './table.component';
 import { GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective } from './column';
 import { PaginatorComponent } from '../paginator/paginator.component';
+import { ScrollComponent } from '../scroll/scroll.component';
 
 interface Row {
   id: number;
@@ -112,6 +113,38 @@ describe('TableComponent', () => {
       await fixture.whenStable();
 
       expect(table.classList.contains('gog-table--auto-layout')).toBe(true);
+    });
+  });
+
+  describe('maxHeight', () => {
+    /** `axis` is a signal input, so it is read off the instance — it never lands in the DOM. */
+    function scroller(): { axis: string; maxHeight: string } {
+      const debugEl = fixture.debugElement.query(By.directive(ScrollComponent));
+      return {
+        axis: (debugEl.componentInstance as ScrollComponent).axis(),
+        maxHeight: (debugEl.nativeElement as HTMLElement).style.maxHeight,
+      };
+    }
+
+    /*
+     * jsdom does not lay out or resolve `position: sticky`, so what the header actually does is
+     * verified in the showcase (both axes scrolling, measured). What a spec can hold onto is the
+     * pairing that makes it possible — and the half that is easy to regress is the *negative*
+     * one: an uncapped table must leave its vertical axis alone, or every table becomes a scroll
+     * container and takes the consumer's own scrolling region out of its descendants' sticky
+     * chain. That regression was measured at 147px during this fix.
+     */
+    it('should leave the vertical axis alone until it has been capped', () => {
+      expect(scroller().axis).toBe('horizontal');
+      expect(scroller().maxHeight).toBe('');
+    });
+
+    it('should own its vertical scrolling once maxHeight is set', async () => {
+      fixture.componentRef.setInput('maxHeight', '260px');
+      await fixture.whenStable();
+
+      expect(scroller().axis).toBe('both');
+      expect(scroller().maxHeight).toBe('260px');
     });
   });
 

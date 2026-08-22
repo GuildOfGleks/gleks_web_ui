@@ -203,8 +203,34 @@ export class TableComponent<T extends object> {
   readonly loading = input<boolean>(false);
   /** Show vertical borders between columns */
   readonly showColumnBorders = input<boolean>(false);
-  /** Stick header row to the top of the viewport while scrolling */
+  /**
+   * Stick the header row to the top of the table's own scroll viewport.
+   *
+   * **Needs `maxHeight` to be reliable.** A sticky element resolves against its nearest scroll
+   * container, and the table wraps itself in a `gog-scroll`; the moment that scroller starts
+   * scrolling sideways it is a scroll container on both axes — CSS coerces `overflow-y: visible`
+   * to `auto` beside a scrolling `overflow-x`, and `clip` to `hidden`, so there is no value that
+   * scrolls one axis and stays out of the sticky chain on the other. Without `maxHeight` that
+   * viewport is exactly as tall as its content and never scrolls vertically, so a header pinned
+   * to it rides out of view along with everything else.
+   *
+   * With `maxHeight` set the viewport is the vertical scrollport, and the header pins to it.
+   */
   readonly stickyHeader = input<boolean>(false);
+  /**
+   * Caps the table's own scroll viewport, in any CSS length — `'420px'`, `'60vh'`. The table then
+   * owns its vertical scrolling instead of growing to its content and letting an ancestor scroll
+   * it, which is what makes `stickyHeader` work (see above).
+   *
+   * An input rather than a `--gog-table-*` token, even though the value only ever lands in CSS:
+   * it also decides whether the internal scroller handles the vertical axis at all. A capped
+   * viewport has to scroll vertically; an uncapped one must *not* become a scroll container,
+   * because that would put every table in the sticky chain of its own descendants and take the
+   * consumer's own scrolling region out of it. That is behaviour, not appearance.
+   *
+   * `null` leaves the table exactly as it was: viewport at content height, vertical axis inert.
+   */
+  readonly maxHeight = input<string | null>(null);
   /** Row density: lg (default) / md (compact) / sm (dense) */
   readonly size = input<GogSize>('lg');
 
