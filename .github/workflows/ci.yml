@@ -62,6 +62,13 @@ jobs:
       - name: Logical-property check
         run: npm run check:logical-properties
 
+      # The three global stylesheets land on elements the *consumer* owns, and Angular stamps
+      # `[_ngcontent-…]` onto every rule in a component stylesheet — so an app's plainest
+      # one-class rule ties `.gog-btn:disabled` and wins on source order. Five state rules
+      # shipped that way; a disabled button rendered `cursor: pointer` at full opacity.
+      - name: State-specificity check
+        run: npm run check:state-specificity
+
       # The library must build standalone, before anything that consumes it.
       - name: Build @gleks/ui
         run: npm run build:lib

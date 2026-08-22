@@ -21,6 +21,23 @@ reached 1.0, so breaking changes may land in minor versions.
   **If your app has `* { box-sizing: border-box }`, nothing changes**; the library was already
   rendering under it. The rule is a single class in specificity, so your own styles still win.
 
+- **Disabled and focus styling can no longer be lost to an ordinary app stylesheet.** `[gogButton]`
+  and `gogMenuItem` are applied to *your* element, which is the element you style — and a plain
+  `.my-button { cursor: pointer }` in an Angular component stylesheet is the same specificity as
+  the library's `.gog-btn:disabled` once `[_ngcontent-…]` is stamped on it, so it won on source
+  order. Measured: a disabled button reading `cursor: pointer` at full opacity — enabled-looking
+  and enabled-feeling while disabled. For a menu item it is worse, because the arrow keys step
+  over a disabled item: the pointer and the keyboard disagreed about what was there.
+
+  Five rules across `styles/button.css` and `styles/menu.css` — the `:disabled` and
+  `:focus-visible` pairs — now carry one more point of specificity. `:hover` and `:active` needed
+  nothing; their `:not(:disabled)` already had it.
+
+  **Restyling these is still yours**, it just has to be deliberate now: any selector of your own
+  with two classes wins, as before. The base `.gog-btn` look is untouched and as overridable as
+  it ever was — what is defended is state and focus visibility, where losing silently is a
+  correctness and accessibility bug rather than a difference of taste.
+
 - **A disabled `gogCollapsibleTrigger` shows a disabled cursor.** It carried whatever cursor the
   consumer had put on the element — usually `pointer`, since the trigger is their own button.
   The library's `cursor: not-allowed` was there, and losing: an ordinary

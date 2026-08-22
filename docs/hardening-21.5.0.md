@@ -965,11 +965,17 @@ of engineering. Sequence them; do not open them together.
    (`gog-collapsible .gog-collapsible__trigger[aria-disabled='true']`) for the one point that
    settles it.
 
-   **Every other global rule the library puts on a consumer's element has the same shape**, and
-   none has been checked: `.gog-btn:disabled` (0,1,1) and `.gog-menu__item:disabled` (0,1,1) are
-   *weaker* still, so any consumer component style on those elements beats them. Worth a sweep of
-   `styles/*.css` for state rules that a consumer can defeat by accident — a disabled state the
-   consumer has to know to opt out of is not a disabled state.
+   **The sweep this asked for happened the same day, in 21.6.0.** It also corrects the arithmetic
+   above: `:disabled` is a pseudo-class and counts as a class, so `.gog-btn:disabled` is (0,2,0),
+   not (0,1,1) — a *tie* with an ordinary consumer rule, and a tie loses on source order. Five
+   rules across `button.css` and `menu.css` were in that position and are now doubled-class;
+   `:hover` and `:active` were already safe, since their `:not(:disabled)` carries the extra
+   point. Nothing in `utilities.css` was affected beyond the collapsible rule below.
+
+   Verified in the showcase rather than counted: a disabled `.gog-btn` under a single-class
+   consumer rule went from `not-allowed`/`0.4` to `pointer`/`1` — enabled-looking and
+   enabled-feeling while disabled — and holds after the change, while a deliberate two-class
+   override still wins.
 
    The showcase's own demo also restated `cursor: pointer` on a trigger that the directive
    already styles, which is what made this visible there; that is deleted, since it is the

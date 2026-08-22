@@ -27,6 +27,7 @@
     "generate:deprecations": "node scripts/generate-deprecations.mjs",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "check:logical-properties": "node scripts/check-logical-properties.mjs",
+    "check:state-specificity": "node scripts/check-state-specificity.mjs",
     "check:release": "node scripts/check-release.mjs",
     "check:sitemap": "node scripts/generate-sitemap.mjs --check",
     "ping:indexnow": "node scripts/ping-indexnow.mjs",

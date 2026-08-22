@@ -67,7 +67,24 @@
     color var(--gog-button-transition-duration) var(--gog-easing);
 }
 
-.gog-btn:focus-visible {
+/*
+ * The doubled class on this rule and the disabled one below is deliberate, and the only two
+ * rules in this file that need it.
+ *
+ * `[gogButton]` goes on the *consumer's* own element, which is the element they style — and
+ * Angular's emulated encapsulation stamps `[_ngcontent-…]` onto every rule in a component
+ * stylesheet, so an ordinary `.my-btn { cursor: pointer }` is (0,2,0). That exactly ties
+ * `.gog-btn:disabled` and wins on source order, because this file loads before the app's own
+ * styles. Measured in the showcase: a disabled button went from `not-allowed`/`0.4` to
+ * `pointer`/`1` under a single-class consumer rule — it looked and felt enabled while disabled.
+ *
+ * `:hover` and `:active` below need no help: their `:not(:disabled)` already makes them (0,3,0).
+ * The base `.gog-btn` is left beatable on purpose — restyling the look is the consumer's call.
+ * These two are not look, they are state and focus visibility, and losing them silently is a
+ * correctness and accessibility regression rather than a taste one. A consumer who genuinely
+ * wants to restyle them can still do it by being specific about it.
+ */
+.gog-btn.gog-btn:focus-visible {
   outline: var(--gog-button-focus-ring-width) solid
     var(
       --gog-button-hover-bg,
@@ -114,7 +131,7 @@
   }
 }
 
-.gog-btn:disabled {
+.gog-btn.gog-btn:disabled {
   opacity: var(--gog-button-disabled-opacity);
   cursor: not-allowed;
 }
