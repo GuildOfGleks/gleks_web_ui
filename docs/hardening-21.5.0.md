@@ -980,9 +980,31 @@ of engineering. Sequence them; do not open them together.
    The showcase's own demo also restated `cursor: pointer` on a trigger that the directive
    already styles, which is what made this visible there; that is deleted, since it is the
    mistake a reader would copy.
-3. **`gog-accordion`'s loading state is unsatisfying.** Recorded as dissatisfaction rather than a
-   defect — decide what it _should_ look like before changing it. Worth comparing against
-   `gog-table`'s loading treatment, which replaces content with a spinner rather than dimming it.
+3. ~~**`gog-accordion`'s loading state is unsatisfying.**~~ **Fixed in 21.6.0** (2026-08-22), and
+   the dissatisfaction turned out to be covering a real accessibility defect rather than a
+   matter of taste.
+
+   Measured first, so the taste part could be separated from the rest. The **geometry was already
+   right**: at the same `size`, the skeleton header is 46px against the real 47px — the demo's
+   claim that "the placeholder already matches the eventual shape" held. Two things did not:
+   the skeleton had **no chevron placeholder** while every real row has one, so the silhouette was
+   wrong and the chevron appeared out of nowhere; and every bar was **55% wide**, which reads as a
+   repeating progress artifact rather than as titles of differing length.
+
+   **The defect underneath: no `aria-busy` anywhere.** The skeleton bars are `aria-hidden`, the
+   real headers are not rendered while loading, and there is no live region — so a loading
+   accordion was not "loading" to a screen reader, it was *empty*. Fixed on the host.
+
+   **And it is not an accordion problem.** Of the five components with a `loading` input,
+   `gog-button` and `gog-spinner-overlay` set `aria-busy` (both with specs); `gog-accordion`,
+   `gog-table` and `gog-autocomplete` did not. The rule is now written down —
+   `api-design.instructions.md`, "Loading states" — along with which treatment belongs to which
+   kind of component.
+
+   **`gog-table` and `gog-autocomplete` still have no `aria-busy`**, left deliberately: the scope
+   agreed was the accordion plus the written rule. They are the rule's two known violations and
+   the next thing to close under it. Worth doing together, and worth considering a check that
+   every component with a `loading` input sets it, once there is nothing left to allowlist.
 
 ### Features — each needs its own decision
 

@@ -201,6 +201,32 @@ rules that belong here:
   is supposed to remove. This does not override the CSS-token rule: if the value only reaches
   CSS, it is still a token, not a config field.
 
+## Loading states
+
+A `loading` input has one required part and one choice.
+
+**Required: `aria-busy="true"` on the host while loading.** Not optional, and not something the
+consumer should have to add. A loading component usually replaces its content with skeletons or a
+spinner, and those are `aria-hidden` — so without `aria-busy` the component is not "loading" to a
+screen reader, it is *empty*. `gog-button` and `gog-spinner-overlay` have always done this;
+`gog-accordion` gained it in 21.6.0.
+
+**The choice is between two treatments, and it follows from what the component is:**
+
+- **A component that owns a region** — accordion, table, list — shows **placeholders shaped like
+  the content that is coming**: one per row, matching the real row's silhouette including its
+  chrome. The point is that nothing moves when the data lands. If a real row has a chevron, the
+  placeholder has one; if titles vary in length, the placeholder widths vary too (cycled by
+  index, never random — random breaks hydration and makes snapshots unstable).
+- **A control** — button, field, dropdown — shows an **inline spinner in its own chrome** and
+  keeps its box. There is no shape to preview; the useful signal is "this control is working".
+
+Whichever it is, the loading state must be non-interactive: `pointer-events: none` or a real
+`disabled`, and anything focusable taken out of the tab order.
+
+**Known violations, deliberately not fixed yet:** `gog-table` and `gog-autocomplete` set no
+`aria-busy`. Recorded in `docs/hardening-21.5.0.md`.
+
 ## Consistency is itself a feature
 
 A developer who has learned one component must be able to guess the next one. Before shipping,

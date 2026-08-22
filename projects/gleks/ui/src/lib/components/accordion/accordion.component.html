@@ -7,7 +7,23 @@
     @for (row of skeletonRows(); track row) {
       <div class="gog-accordion__item gog-accordion__item--skeleton">
         <div class="gog-accordion__header gog-accordion__header--skeleton">
-          <gog-skeleton shape="text" [size]="size()" width="55%" />
+          <gog-skeleton shape="text" [size]="size()" [width]="skeletonWidth(row)" />
+          <!--
+            The chevron gets a placeholder too, so the row's silhouette is the one that arrives.
+            Without it the right-hand side is empty while loading and the chevron appears out of
+            nowhere — the shape-matching placeholder failing at the one thing it is for.
+          -->
+          @if (showChevron()) {
+            <span class="gog-accordion__chevron" aria-hidden="true">
+              <!--
+                `width="100%"` rather than `[size]`: a skeleton's `size` is its *text* line
+                height, so a circle given one came out 18px wide and 64px tall and streaked down
+                the row. A circle takes its diameter from `width` and keeps itself round, so
+                filling the chevron's own box is what matches it.
+              -->
+              <gog-skeleton shape="circle" width="100%" />
+            </span>
+          }
         </div>
       </div>
     }

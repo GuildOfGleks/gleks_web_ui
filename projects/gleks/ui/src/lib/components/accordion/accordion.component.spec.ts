@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+
+import { SkeletonComponent } from '../skeleton/skeleton.component';
 
 import {
   AccordionComponent,
@@ -290,7 +293,66 @@ describe('AccordionComponent', () => {
         '.gog-accordion__header:not(.gog-accordion__header--skeleton)',
       ),
     ).toBeNull();
-    expect(fixture.nativeElement.querySelectorAll('gog-skeleton').length).toBe(2);
+    // One title bar per row, plus one chevron placeholder per row.
+    expect(fixture.nativeElement.querySelectorAll('gog-skeleton[shape="text"]').length).toBe(2);
+    expect(fixture.nativeElement.querySelectorAll('gog-skeleton[shape="circle"]').length).toBe(2);
+  });
+
+  /*
+   * The skeleton bars are `aria-hidden` and the real headers are not rendered while loading, so
+   * without `aria-busy` the component is not "loading" to a screen reader — it is *empty*. See
+   * the "Loading states" rule in `api-design.instructions.md`.
+   */
+  it('should mark itself busy while loading', async () => {
+    expect((fixture.nativeElement as HTMLElement).hasAttribute('aria-busy')).toBe(false);
+
+    fixture.componentRef.setInput('loading', true);
+    await fixture.whenStable();
+
+    expect((fixture.nativeElement as HTMLElement).getAttribute('aria-busy')).toBe('true');
+
+    fixture.componentRef.setInput('loading', false);
+    await fixture.whenStable();
+
+    expect((fixture.nativeElement as HTMLElement).hasAttribute('aria-busy')).toBe(false);
+  });
+
+  /*
+   * The placeholder exists to hold the shape the content will take. A row whose chevron only
+   * appears once the data lands is the one thing it is supposed to prevent — and the widths are
+   * cycled rather than uniform because titles are not all one length.
+   */
+  it('should give the placeholder rows the silhouette the real rows have', async () => {
+    fixture.componentRef.setInput('items', [
+      { id: 1, title: 'First' },
+      { id: 2, title: 'Second' },
+    ]);
+    fixture.componentRef.setInput('loading', true);
+    await fixture.whenStable();
+
+    const chevrons = fixture.nativeElement.querySelectorAll(
+      '.gog-accordion__header--skeleton .gog-accordion__chevron',
+    );
+    expect(chevrons.length).toBe(2);
+
+    // `width` is a signal input, so it is read off the instance — it never lands in the DOM.
+    // Filtered to the title bars: the chevron placeholders are circles at a flat `100%`.
+    const widths = fixture.debugElement
+      .queryAll(By.directive(SkeletonComponent))
+      .map((bar) => bar.componentInstance as SkeletonComponent)
+      .filter((bar) => bar.shape() === 'text')
+      .map((bar) => bar.width());
+
+    expect(widths.length).toBe(2);
+    expect(new Set(widths).size).toBe(widths.length);
+  });
+
+  it('should leave the chevron placeholder out when showChevron is off', async () => {
+    fixture.componentRef.setInput('showChevron', false);
+    fixture.componentRef.setInput('loading', true);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('gog-skeleton[shape="circle"]')).toBeNull();
   });
 
   it('should fall back to skeletonCount rows while loading when items is still empty', async () => {
