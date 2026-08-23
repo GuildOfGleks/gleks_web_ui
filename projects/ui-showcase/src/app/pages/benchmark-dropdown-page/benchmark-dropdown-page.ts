@@ -10,8 +10,10 @@ import {
 import {
   AutocompleteComponent,
   GogDropdownOption,
+  GogPanelHeaderDirective,
   GogRadioOption,
   MultiselectComponent,
+  PanelComponent,
   RadioGroupComponent,
   SelectComponent,
 } from '@guildofgleks/ui';
@@ -41,7 +43,9 @@ function buildOptions(count: number): GogDropdownOption[] {
     AutocompleteComponent,
     BenchmarkPanel,
     DecimalPipe,
+    GogPanelHeaderDirective,
     MultiselectComponent,
+    PanelComponent,
     RadioGroupComponent,
     SelectComponent,
   ],

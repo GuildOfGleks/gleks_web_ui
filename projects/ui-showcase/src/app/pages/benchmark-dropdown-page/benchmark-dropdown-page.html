@@ -10,8 +10,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Run</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Run</h3>
     <div class="bench-dropdown-kind">
       <gog-radio-group
         label="Component"
@@ -28,10 +28,10 @@
       (runRequested)="run($event)"
       (resetRequested)="reset()"
     />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Live component ({{ options().length | number }} options loaded)</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Live component ({{ options().length | number }} options loaded)</h3>
     <div #container class="bench-dropdown-field">
       @switch (kind()) {
         @case ('select') {
@@ -45,5 +45,5 @@
         }
       }
     </div>
-  </article>
+  </gog-panel>
 </section>
