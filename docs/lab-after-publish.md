@@ -19,36 +19,6 @@ delete the section too.
 
 ---
 
-## After 21.6.0 — gog-table's sticky header works, and needs `maxHeight`
-
-The table page's "Sticky header" demo ends its description with a **Known defect in &lt;installed
-version&gt;** paragraph — the version interpolates from `library-version.ts` — explaining that the
-header rides away. **Delete that paragraph.**
-
-The demo itself **does** need a change this time, unlike what this entry used to say: it puts the
-table in a 260px scrolling wrapper of its own, and that is exactly the arrangement that cannot
-work. Move the cap onto the table — `maxHeight="260px"` — and drop the wrapper. Then check the
-header holds while scrolling down *and* sideways.
-
-The API table gains `maxHeight` (`string | null`, default `null`), and `stickyHeader`'s row should
-point at it: the two only make sense together. `ui-showcase`'s table page has a demo to copy from.
-
----
-
-## After 21.6.0 — the table's "Full width" demo can drop its column widths
-
-**21.6.0 fixes `[fullWidth]="false"` clipping the widest header** — the table switches to
-`table-layout: auto` in that mode. The "Full width" demo states `width` on both columns and the
-description explains that fixed layout makes it necessary; **drop both widths and trim the
-explanation back to what `fullWidth` is for**, then check nothing clips (it redistributes to
-about 115px/78px on that two-column table).
-
-Note this is a *different* release from the `stickyHeader` entry above, which it used to be
-bundled with. The two looked like one job and are not: `fullWidth` was the one-line fix its
-diagnosis predicted, while `stickyHeader` turned out to need new API and is still open.
-
----
-
 ## After 21.5.0 — layer 4 of lab-versioning.md is unblocked
 
 21.5.0 ships **`GOG_DEPRECATIONS`**: every deprecated symbol and token in the installed version,

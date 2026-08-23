@@ -8,7 +8,6 @@ import {
   GogTableRowClickEvent,
   GogTableSortEvent,
   GogTagVariant,
-  ScrollComponent,
   TableComponent,
   TagComponent,
 } from '@guildofgleks/ui';
@@ -208,7 +207,16 @@ const TABLE_INPUTS: readonly ApiRow[] = [
     name: 'stickyHeader',
     type: 'boolean',
     default: 'false',
-    description: 'Sticks the header row to the top of the nearest scrolling ancestor.',
+    description:
+      "Holds the header row at the top of the table's own scroll viewport. Needs maxHeight — without it the viewport is content-height and never scrolls, so there is nothing to hold against.",
+  },
+  {
+    name: 'maxHeight',
+    type: 'string | null',
+    default: 'null',
+    description:
+      "Any CSS length ('420px', '60vh'). Caps the table's own scroll viewport, so the table owns its vertical scrolling instead of growing to its content and letting an ancestor scroll it. This is what makes stickyHeader work.",
+    since: '21.6.0',
   },
   {
     name: 'size',
@@ -318,7 +326,6 @@ const COLUMN_SLOTS: readonly SlotRow[] = [
     GogColumnHeaderDirective,
     TagComponent,
     ButtonComponent,
-    ScrollComponent,
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
@@ -602,33 +609,30 @@ export class TableDocPage implements OnDestroy {
   ].join('\n');
 
   protected readonly stickyHtml = [
-    '<gog-scroll style="height: 260px;" ariaLabel="Table rows">',
-    '  <gog-table [value]="rows" [stickyHeader]="true">',
-    '    <gog-column field="component" header="Component"></gog-column>',
-    '    <gog-column field="status" header="Status"></gog-column>',
-    '    <gog-column field="owner" header="Owner"></gog-column>',
-    '  </gog-table>',
-    '</gog-scroll>',
+    "<!-- `maxHeight` caps the table's own viewport, which is what the header sticks to. -->",
+    '<gog-table [value]="rows" maxHeight="260px" [stickyHeader]="true">',
+    '  <gog-column field="component" header="Component"></gog-column>',
+    '  <gog-column field="status" header="Status"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
+    '</gog-table>',
   ].join('\n');
   protected readonly stickyTs = [
     "import { Component } from '@angular/core';",
-    "import { GogColumn, ScrollComponent, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [TableComponent, GogColumn, ScrollComponent],',
+    '  imports: [TableComponent, GogColumn],',
     '  template: `',
-    '    <gog-scroll style="height: 260px;" ariaLabel="Table rows">',
-    '      <gog-table [value]="rows" [stickyHeader]="true">',
-    '        <gog-column field="component" header="Component"></gog-column>',
-    '        <gog-column field="status" header="Status"></gog-column>',
-    '        <gog-column field="owner" header="Owner"></gog-column>',
-    '      </gog-table>',
-    '    </gog-scroll>',
+    '    <gog-table [value]="rows" maxHeight="260px" [stickyHeader]="true">',
+    '      <gog-column field="component" header="Component"></gog-column>',
+    '      <gog-column field="status" header="Status"></gog-column>',
+    '      <gog-column field="owner" header="Owner"></gog-column>',
+    '    </gog-table>',
     '  `,',
     '})',
     'export class ExampleComponent {',
-    '  protected readonly rows = [/* six or more rows, so the container actually scrolls */];',
+    '  protected readonly rows = [/* six or more rows, so the table actually scrolls */];',
     '}',
   ].join('\n');
 
@@ -677,8 +681,8 @@ export class TableDocPage implements OnDestroy {
 
   protected readonly fullWidthHtml = [
     '<gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">',
-    '  <gog-column field="component" header="Component" width="115px"></gog-column>',
-    '  <gog-column field="status" header="Status" width="80px"></gog-column>',
+    '  <gog-column field="component" header="Component"></gog-column>',
+    '  <gog-column field="status" header="Status"></gog-column>',
     '</gog-table>',
   ].join('\n');
   protected readonly fullWidthTs = [

@@ -107,20 +107,6 @@
   font-weight: 600;
 }
 
-/* A `gog-scroll`, not a native `overflow-y: auto` wrapper: this is the one demo on the site that
-   puts a table inside a scrolling region, and a native scrollbar here would be the only piece of
-   OS chrome on a page otherwise drawn entirely from `--gog-*` tokens. The height has to come from
-   here — `gog-scroll` takes its bounds from its host.
-
-   Do not set `display` on it: the component's own `:host` is `display: flex; flex-direction:
-   column`, and its viewport is `flex: 1 1 auto; min-height: 0` inside that. Overriding the host to
-   `block` breaks the chain, the viewport grows to its content instead of to the host, and the
-   region silently stops clipping — the table just spills out of the card. */
-.table-scroll-demo {
-  height: 260px;
-  width: 100%;
-}
-
 .field-row {
   display: flex;
   flex-wrap: wrap;
