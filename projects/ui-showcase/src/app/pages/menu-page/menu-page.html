@@ -10,8 +10,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Playground</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Playground</h3>
     <p class="meta">
       Open it, then use the keyboard: <kbd>↑</kbd>/<kbd>↓</kbd> move and step over the disabled
       item, <kbd>Home</kbd>/<kbd>End</kbd> jump to the ends, <kbd>Enter</kbd> runs one,
@@ -48,10 +48,10 @@
       <strong>{{ closes() }}</strong> (<code>gogClosed</code> fires however the menu closed — item,
       Esc, Tab or a click outside).
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Disabled items</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Disabled items</h3>
     <p class="meta">
       An item is your own <code>&lt;button&gt;</code>, so you disable it the way you disable a
       button: the native <code>disabled</code> attribute — there is no input for it. A disabled item
@@ -90,10 +90,10 @@
       With <strong>Locked</strong> on, the second menu leaves only <em>Open</em> reachable —
       <kbd>↓</kbd> from it wraps back to itself instead of landing on a dead command.
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>A long menu scrolls itself</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>A long menu scrolls itself</h3>
     <p class="meta">
       Past <code>--gog-menu-max-height</code> the panel scrolls with <code>gog-scroll</code>, the
       same scroller the rest of the library uses: thin, auto-hiding, and it keeps the wheel to
@@ -113,10 +113,10 @@
         }
       </gog-menu>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Row actions</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Row actions</h3>
     <p class="meta">
       What the component was built for: an icon button per row. The table wraps itself in a
       <code>gog-scroll</code>, and the panel still escapes it — that is why the menu always renders
@@ -162,10 +162,10 @@
         </ng-template>
       </gog-column>
     </gog-table>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Direction</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Direction</h3>
     <p class="meta">
       <code>direction</code> is <code>'auto'</code> by default: the panel drops down whenever it
       fits and flips up only when it cannot — unlike a select's listbox, which takes whichever side
@@ -189,5 +189,5 @@
         <button gogMenuItem type="button" (click)="run('up')">Item</button>
       </gog-menu>
     </div>
-  </article>
+  </gog-panel>
 </section>
