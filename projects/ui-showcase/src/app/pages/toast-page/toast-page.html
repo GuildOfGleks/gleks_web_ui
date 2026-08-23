@@ -8,8 +8,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Toast API</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Toast API</h3>
     <div class="field-grid">
       <gog-inputfield label="Message" inputId="toast-message" [(value)]="toastMessage" />
       <gog-select label="Type" inputId="toast-type" [options]="toastTypes" [(value)]="toastType" />
@@ -29,10 +29,10 @@
         >Queue 7 toasts</gog-button
       >
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Types</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Types</h3>
     <p class="meta">
       Each type gets a default icon (success/error/warning/info) unless overridden.
     </p>
@@ -41,10 +41,10 @@
         Fire one of each type
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sticky &amp; duration</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sticky &amp; duration</h3>
     <p class="meta">
       <code>isSticky</code> disables auto-dismiss entirely; <code>duration</code> overrides the 4s
       default.
@@ -58,10 +58,10 @@
       >
       <gog-button variant="ghost" type="button" (gogClick)="dismissAll()">Dismiss all</gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom icon</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom icon</h3>
     <p class="meta">
       <code>iconName</code> overrides the type's default icon (an <code>iconTemplate</code> works
       the same way for an arbitrary <code>TemplateRef</code> instead of a built-in name).
@@ -71,10 +71,10 @@
         Custom icon toast
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3><code>dedupeKey</code></h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader><code>dedupeKey</code></h3>
     <p class="meta">
       Two <code>show()</code> calls that share a <code>dedupeKey</code> collapse into one toast —
       the message updates and its auto-dismiss timer restarts, instead of a new one stacking on top.
@@ -87,7 +87,7 @@
         Not deduped
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
   <gog-toast-container [maxVisiblePerPosition]="5" />
 </section>

@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import {
   ButtonComponent,
   GogDropdownOption,
+  GogPanelHeaderDirective,
   InputfieldComponent,
+  PanelComponent,
   SelectComponent,
   ToastContainerComponent,
   ToastPosition,
@@ -12,7 +14,14 @@ import {
 
 @Component({
   selector: 'app-toast-page',
-  imports: [ButtonComponent, InputfieldComponent, SelectComponent, ToastContainerComponent],
+  imports: [
+    ButtonComponent,
+    GogPanelHeaderDirective,
+    InputfieldComponent,
+    PanelComponent,
+    SelectComponent,
+    ToastContainerComponent,
+  ],
   templateUrl: './toast-page.html',
   styleUrl: './toast-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

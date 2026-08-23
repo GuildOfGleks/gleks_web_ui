@@ -323,7 +323,7 @@ to them.
 | 14    | `panel-page`               | 5           | ✅                       |
 | 15    | `radio-group-page`         | 5           | ✅                       |
 | 16    | `tag-page`                 | 5           | ✅                       |
-| 17    | `toast-page`               | 5           | ⬜                       |
+| 17    | `toast-page`               | 5           | ✅                       |
 | 18    | `badge-page`               | 6           | ⬜                       |
 | 19    | `progressbar-page`         | 6           | ⬜                       |
 | 20    | `spinner-page`             | 6           | ⬜                       |
