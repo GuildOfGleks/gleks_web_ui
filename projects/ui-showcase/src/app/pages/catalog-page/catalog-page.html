@@ -10,8 +10,8 @@
   </header>
 
   <div class="catalog__layout">
-    <aside class="card catalog__filters">
-      <h3>Filters</h3>
+    <gog-panel size="md" class="catalog__filters">
+      <h3 gogPanelHeader>Filters</h3>
       <gog-accordion [items]="filterSections" [multi]="true" [expandFirst]="true" size="sm">
         <ng-template gogAccordionContent let-item>
           @switch (item.id) {
@@ -44,7 +44,7 @@
           >Apply filters</gog-button
         >
       </div>
-    </aside>
+    </gog-panel>
 
     <div class="catalog__results">
       <gog-spinner-overlay [loading]="loading()" ariaLabel="Loading products">
