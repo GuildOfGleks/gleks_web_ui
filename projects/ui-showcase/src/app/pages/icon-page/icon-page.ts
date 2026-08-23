@@ -2,14 +2,16 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   ChipComponent,
   GogBuiltinIconName,
+  GogPanelHeaderDirective,
   ICON_DEFS,
   IconComponent,
+  PanelComponent,
   TagComponent,
 } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-icon-page',
-  imports: [IconComponent, TagComponent, ChipComponent],
+  imports: [IconComponent, TagComponent, ChipComponent, GogPanelHeaderDirective, PanelComponent],
   templateUrl: './icon-page.html',
   styleUrl: './icon-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

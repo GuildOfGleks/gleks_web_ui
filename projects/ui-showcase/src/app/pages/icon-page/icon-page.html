@@ -11,8 +11,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Built-in set</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Built-in set</h3>
     <p class="hint">
       Every <code>GogBuiltinIconName</code> — the closed set the package ships.
       <code>GogIconName</code> is the open one an input takes: these plus anything registered. Color
@@ -26,10 +26,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Your own icons</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Your own icons</h3>
     <p class="hint">
       <code>provideGogIcons({{ '{' }} cart: '&lt;svg…&gt;' {{ '}' }})</code> in
       <code>app.config.ts</code> registers icons by name — after that they behave exactly like a
@@ -66,10 +66,10 @@
       An unknown name renders nothing and warns in the console in dev mode — an icon is decoration,
       and taking the app down over a typo in a glyph name would be the worse failure.
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Size &amp; color</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Size &amp; color</h3>
     <p class="hint">
       <code>--gog-icon-size</code> is the only sizing hook; color always inherits from the element's
       own <code>color</code>.
@@ -87,10 +87,10 @@
         class="icon-row__sample icon-row__sample--lg icon-row__sample--danger"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom <code>template</code></h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom <code>template</code></h3>
     <p class="hint">
       When <code>template</code> is set it wins over <code>name</code> entirely — the built-in SVG
       set is never consulted. Useful for a one-off glyph that doesn't belong in the shared catalog.
@@ -103,10 +103,10 @@
       <span class="icon-page__arrow">vs</span>
       <gog-icon [template]="initialsTpl" class="icon-row__sample icon-row__sample--lg" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Decorative vs. meaningful</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Decorative vs. meaningful</h3>
     <p class="hint">
       <code>ariaHidden</code> defaults to <code>true</code> — the icon is assumed decorative
       (redundant with adjacent text, like the labelled buttons below) and stays invisible to screen
@@ -128,5 +128,5 @@
         >next to visible text, default ariaHidden=true — announced once, via the text</span
       >
     </div>
-  </article>
+  </gog-panel>
 </section>
