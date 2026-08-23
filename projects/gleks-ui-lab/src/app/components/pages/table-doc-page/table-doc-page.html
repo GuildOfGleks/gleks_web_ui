@@ -94,30 +94,30 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Sticky header</h3>
       <p class="demo-card__meta">
-        <code>stickyHeader</code> puts <code>position: sticky</code> on the header cells so the
-        header row holds at the top of the scrolling region while the rows move under it. The region
-        here is a <a routerLink="/components/scroll">gog-scroll</a> capped at 260px — a native
-        <code>overflow: auto</code> would bring back the one piece of chrome no
-        <code>--gog-*</code> token can reach.
-        <strong
-          >Known defect in {{ libraryVersion }}: the header scrolls away instead of holding.</strong
-        >
-        A sticky element resolves against its nearest scrolling ancestor. The table wraps its own
-        markup in a horizontal <a routerLink="/components/scroll">gog-scroll</a>, and once that
-        inner scroller activates — which is exactly what putting a wide table in a narrow region
-        does — its viewport becomes the nearest one and wins over the region you placed the table
-        in. It never scrolls vertically itself, so the header simply rides up out of view. Capping
-        the height of the <code>gog-table</code> host, or of the inner scroller, does not help; the
-        fix has to happen inside the component.
+        <code>stickyHeader</code> puts <code>position: sticky</code> on the header cells, and
+        <code>maxHeight</code> <app-since version="21.6.0" /> is what gives them something to stick
+        to: it caps the table's own scroll viewport, so the table owns its vertical scrolling
+        instead of growing to its content. <strong>The two go together</strong> — without the cap
+        the viewport is exactly as tall as its content and never scrolls, so a header pinned to it
+        rides away with everything else.
+      </p>
+      <p class="demo-card__meta">
+        It has to be the table's own viewport rather than a region you wrap it in, and that is not a
+        preference. A sticky element resolves against its nearest scroll container; the table wraps
+        its markup in a horizontal
+        <a routerLink="/components/scroll">gog-scroll</a>, and the moment that scroller moves on one
+        axis it is a scroll container on <em>both</em> — CSS coerces
+        <code>overflow-y: visible</code> to <code>auto</code> beside a scrolling
+        <code>overflow-x</code>, and <code>clip</code> to <code>hidden</code>. So nothing outside
+        the table can ever be the header's scrollport. Scroll this one down and sideways: it holds
+        either way.
       </p>
       <div class="demo-card__preview">
-        <gog-scroll class="table-scroll-demo" ariaLabel="Table rows">
-          <gog-table [value]="rows" [stickyHeader]="true">
-            <gog-column field="component" header="Component"></gog-column>
-            <gog-column field="status" header="Status"></gog-column>
-            <gog-column field="owner" header="Owner"></gog-column>
-          </gog-table>
-        </gog-scroll>
+        <gog-table [value]="rows" maxHeight="260px" [stickyHeader]="true">
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+        </gog-table>
       </div>
       <app-code-tabs [html]="stickyHtml" [ts]="stickyTs" />
     </article>
@@ -153,15 +153,15 @@
       <p class="demo-card__meta">
         Full width of its container by default (see every table above).
         <code>[fullWidth]="false"</code> shrinks the table to fit its columns instead — useful for a
-        narrow, two-column table that shouldn't stretch to fill a wide page. Give those columns a
-        <code>width</code> when you do: the table is <code>table-layout: fixed</code>, so it divides
-        whatever width it has evenly between columns rather than measuring the text, and a column
-        left to chance can end up narrower than its own header.
+        narrow, two-column table that shouldn't stretch to fill a wide page. The columns are
+        measured against their content in this mode <app-since version="21.6.0" />, so they need no
+        <code>width</code> of their own; before that the table divided its width evenly whatever the
+        text was, and the widest header was cut off.
       </p>
       <div class="demo-card__preview">
         <gog-table [value]="rows" [showRowNumbers]="false" [fullWidth]="false" size="sm">
-          <gog-column field="component" header="Component" width="115px"></gog-column>
-          <gog-column field="status" header="Status" width="80px"></gog-column>
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="status" header="Status"></gog-column>
         </gog-table>
       </div>
       <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
