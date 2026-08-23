@@ -8,8 +8,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Variants &amp; sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Variants &amp; sizes</h3>
     <p class="meta">Every combination of the four variants and five sizes.</p>
     <div class="variant-grid">
       @for (variant of variants; track variant) {
@@ -29,10 +29,10 @@
       }
     </div>
     <p class="meta">{{ lastClicked() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Disabled</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Disabled</h3>
     <p class="meta">
       One disabled button per variant — disabled state must stay legible on every color.
     </p>
@@ -41,10 +41,10 @@
         <gog-button [variant]="variant" type="button" [disabled]="true">{{ variant }}</gog-button>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Loading</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Loading</h3>
     <p class="meta">
       Loading swaps the label for a spinner and blocks clicks (via <code>aria-disabled</code>, not
       the native <code>disabled</code> attribute, so focus is preserved).
@@ -88,18 +88,18 @@
         </gog-button>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="meta">Stretches to fill its container; wrapped here in a narrower box to show it.</p>
     <div class="width-demo">
       <gog-button variant="outline" type="button" [fullWidth]="true">Full width</gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Icon-only</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Icon-only</h3>
     <p class="meta">
       No visible label, so <code>ariaLabel</code> is required — it targets the inner
       <code>&lt;button&gt;</code>, unlike a plain <code>aria-label</code> attribute on
@@ -116,10 +116,10 @@
         <gog-icon name="info" />
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Debounce guard</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Debounce guard</h3>
     <p class="meta">
       Clicks are throttled leading-edge: the first click fires immediately, further clicks are
       dropped for <code>debounce</code> ms (default 300). Click rapidly and watch the counter lag
@@ -131,10 +131,10 @@
       >
     </div>
     <p class="meta">Accepted clicks: {{ clickCount() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Links that look like buttons — <code>[gogButton]</code></h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Links that look like buttons — <code>[gogButton]</code></h3>
     <p class="lead">
       <code>gog-button</code> renders its own <code>&lt;button&gt;</code>, so it can never
       <em>be</em> a link. <code>[gogButton]</code> inverts that: you keep your own
@@ -167,15 +167,15 @@
     <div class="action-row">
       <a gogButton fullWidth routerLink="/table">Full width, as a bare attribute</a>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Native type semantics</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Native type semantics</h3>
     <p class="meta"><code>type</code> is forwarded to the native <code>&lt;button&gt;</code>.</p>
     <form class="action-row" (submit)="onFormSubmit($event)" (reset)="onFormReset()">
       <gog-button variant="primary" type="submit">Submit</gog-button>
       <gog-button variant="outline" type="reset">Reset</gog-button>
     </form>
     <p class="meta">{{ formResult() }}</p>
-  </article>
+  </gog-panel>
 </section>

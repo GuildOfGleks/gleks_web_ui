@@ -3,14 +3,23 @@ import { RouterLink } from '@angular/router';
 import {
   ButtonComponent,
   GogButtonDirective,
+  GogPanelHeaderDirective,
   GogSize,
   GogVariant,
   IconComponent,
+  PanelComponent,
 } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-button-page',
-  imports: [ButtonComponent, GogButtonDirective, IconComponent, RouterLink],
+  imports: [
+    ButtonComponent,
+    GogButtonDirective,
+    GogPanelHeaderDirective,
+    IconComponent,
+    PanelComponent,
+    RouterLink,
+  ],
   templateUrl: './button-page.html',
   styleUrl: './button-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
