@@ -9,8 +9,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>On a button and on an icon</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>On a button and on an icon</h3>
     <div class="badge-row">
       <gog-button gogBadge="12" badgeAriaLabel="12 unread">Inbox</gog-button>
       <gog-button variant="outline" gogBadge="3" badgeVariant="info">Drafts</gog-button>
@@ -18,10 +18,10 @@
         <gog-icon name="info" />
       </span>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>It disappears at zero</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>It disappears at zero</h3>
     <p class="hint">
       A badge reading “0” is the defining bug of this component, so it is not reachable:
       <code>0</code>, <code>null</code> and an empty string all render nothing at all. Counts above
@@ -36,10 +36,10 @@
       <gog-button variant="outline" size="sm" (gogClick)="flood()">Set 150</gog-button>
       <span class="badge-note">value: {{ count() }}</span>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3><code>badgeHidden</code></h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader><code>badgeHidden</code></h3>
     <p class="hint">
       Hides the badge without removing the directive or losing its count — unlike a count of
       <code>0</code>, the value underneath is preserved for whenever it toggles back.
@@ -52,10 +52,10 @@
         badgeHidden: {{ hidden() }}
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Positions</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Positions</h3>
     <div class="badge-row">
       @for (position of positions; track position) {
         <gog-button variant="outline" gogBadge="9" [badgePosition]="position">
@@ -63,10 +63,10 @@
         </gog-button>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Variants and dots</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Variants and dots</h3>
     <div class="badge-row">
       @for (variant of variants; track variant) {
         <gog-button variant="ghost" gogBadge="5" [badgeVariant]="variant">{{ variant }}</gog-button>
@@ -79,14 +79,14 @@
         </span>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Non-numeric content</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Non-numeric content</h3>
     <p class="hint">Capping only applies to counts; a word passes through untouched.</p>
     <div class="badge-row">
       <gog-button variant="outline" gogBadge="NEW" badgeVariant="success">Feature</gog-button>
       <gog-button variant="outline" gogBadge="beta" badgeVariant="warning">Editor</gog-button>
     </div>
-  </article>
+  </gog-panel>
 </section>

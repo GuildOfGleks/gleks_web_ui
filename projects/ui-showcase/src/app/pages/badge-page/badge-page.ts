@@ -3,13 +3,21 @@ import {
   ButtonComponent,
   GogBadgeDirective,
   GogBadgePosition,
+  GogPanelHeaderDirective,
   GogTagVariant,
   IconComponent,
+  PanelComponent,
 } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-badge-page',
-  imports: [ButtonComponent, GogBadgeDirective, IconComponent],
+  imports: [
+    ButtonComponent,
+    GogBadgeDirective,
+    GogPanelHeaderDirective,
+    IconComponent,
+    PanelComponent,
+  ],
   templateUrl: './badge-page.html',
   styleUrl: './badge-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
