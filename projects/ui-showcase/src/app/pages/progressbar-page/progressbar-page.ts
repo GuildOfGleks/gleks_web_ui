@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import {
   ButtonComponent,
+  GogPanelHeaderDirective,
   GogProgressbarVariant,
   GogSize,
+  PanelComponent,
   ProgressbarComponent,
 } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-progressbar-page',
-  imports: [ButtonComponent, ProgressbarComponent],
+  imports: [ButtonComponent, GogPanelHeaderDirective, PanelComponent, ProgressbarComponent],
   templateUrl: './progressbar-page.html',
   styleUrl: './progressbar-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

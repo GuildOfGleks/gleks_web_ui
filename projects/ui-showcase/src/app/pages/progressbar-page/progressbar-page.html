@@ -9,8 +9,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Determinate</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Determinate</h3>
     <div class="progress-stack">
       <gog-progressbar [value]="progress()" [showValue]="true" ariaLabel="Upload" />
       <div class="progress-controls">
@@ -18,26 +18,26 @@
         <gog-button size="sm" variant="outline" (gogClick)="stop()">Stop</gog-button>
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Indeterminate</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Indeterminate</h3>
     <p class="hint">
       Reports no <code>aria-valuenow</code> at all — that omission is what marks it indeterminate to
       assistive tech. The animation is replaced by a static stripe under
       <code>prefers-reduced-motion</code>.
     </p>
     <gog-progressbar mode="indeterminate" ariaLabel="Loading" />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Buffer</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Buffer</h3>
     <p class="hint">A second, lighter level ahead of the fill — preloaded but not yet played.</p>
     <gog-progressbar mode="buffer" [value]="progress()" [buffer]="buffer()" [showValue]="true" />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Variants</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Variants</h3>
     <div class="progress-stack">
       @for (variant of variants; track variant) {
         <div class="progress-row">
@@ -46,10 +46,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <div class="progress-stack">
       @for (size of sizes; track size) {
         <div class="progress-row">
@@ -58,10 +58,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Clamping</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Clamping</h3>
     <p class="hint">
       Values outside 0–100 are pulled in rather than overflowing the track, and a non-finite value
       reads as zero.
@@ -76,5 +76,5 @@
         <gog-progressbar [value]="-20" [showValue]="true" />
       </div>
     </div>
-  </article>
+  </gog-panel>
 </section>
