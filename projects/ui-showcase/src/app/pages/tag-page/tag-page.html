@@ -8,8 +8,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Semantic variants</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Semantic variants</h3>
     <div class="tag-grid">
       @for (variant of variants; track variant) {
         <div class="tag-row">
@@ -20,10 +20,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <div class="tag-grid">
       @for (size of sizes; track size) {
         <div class="tag-row">
@@ -34,10 +34,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom icon template</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom icon template</h3>
     <p class="meta">
       A projected <code>gogTagIcon</code> template takes priority over <code>iconName</code>.
     </p>
@@ -49,10 +49,10 @@
         Featured
       </gog-tag>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="meta">
       <code>fullWidth</code> opts out of the default content-fitted sizing. Wrapped here in a
       narrower box to show it.
@@ -60,10 +60,10 @@
     <div class="width-demo">
       <gog-tag variant="info" [fullWidth]="true">Full width</gog-tag>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Shapes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Shapes</h3>
     <div class="tag-grid">
       @for (shape of shapes; track shape) {
         <div class="tag-row">
@@ -73,5 +73,5 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 </section>
