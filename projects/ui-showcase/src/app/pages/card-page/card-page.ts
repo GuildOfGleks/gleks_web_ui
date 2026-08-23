@@ -7,8 +7,10 @@ import {
   GogCardHeaderDirective,
   GogCardLinkDirective,
   GogCardMediaDirective,
+  GogPanelHeaderDirective,
   GogSize,
   GogSurfaceVariant,
+  PanelComponent,
   TagComponent,
 } from '@guildofgleks/ui';
 
@@ -28,6 +30,8 @@ interface Person {
     GogCardHeaderDirective,
     GogCardLinkDirective,
     GogCardMediaDirective,
+    GogPanelHeaderDirective,
+    PanelComponent,
     RouterLink,
     TagComponent,
   ],

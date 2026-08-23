@@ -11,8 +11,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Variants</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Variants</h3>
     <p class="meta">
       <code>outlined</code> is the default: a border and no shadow, which is what a grid of many
       wants. <code>elevated</code> takes the shared surface shadow — the same one dialogs and
@@ -28,10 +28,10 @@
         </gog-card>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <p class="meta">
       <code>size</code> drives padding and the gap between the card's rows, on the same five-tier
       scale as every control.
@@ -44,10 +44,10 @@
         </gog-card>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Interactive — the whole surface activates one real link</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Interactive — the whole surface activates one real link</h3>
     <p class="meta">
       No <code>interactive</code> input: the card becomes interactive because it holds a
       <code>gogCardLink</code>. The link below is an ordinary <code>routerLink</code>, so
@@ -73,10 +73,10 @@
       }
     </div>
     <p class="meta">Footer clicks that reached their own button: {{ footerClicks() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Loading and disabled</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Loading and disabled</h3>
     <p class="meta">
       <code>loading</code> swaps the content for placeholders shaped like a title and body copy, and
       marks the host <code>aria-busy</code> — the region treatment, not a spinner.
@@ -110,10 +110,10 @@
         </gog-card>
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Theming</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Theming</h3>
     <p class="meta">
       Every value comes from a <code>--gog-card-*</code> token, and the instance tier
       (<code>--gog-card-bg</code>, <code>--gog-card-border-color</code>,
@@ -130,5 +130,5 @@
         </p>
       </gog-card>
     </div>
-  </article>
+  </gog-panel>
 </section>
