@@ -7,7 +7,13 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { CheckboxComponent, GogColumn, TableComponent } from '@guildofgleks/ui';
+import {
+  CheckboxComponent,
+  GogColumn,
+  GogPanelHeaderDirective,
+  PanelComponent,
+  TableComponent,
+} from '@guildofgleks/ui';
 
 import { BenchmarkPanel } from '../../benchmark/benchmark-panel/benchmark-panel';
 import { BenchmarkResult, BenchmarkRunner } from '../../benchmark/benchmark-runner';
@@ -36,7 +42,15 @@ function buildRows(count: number): BenchRow[] {
 
 @Component({
   selector: 'app-benchmark-table-page',
-  imports: [BenchmarkPanel, CheckboxComponent, DecimalPipe, GogColumn, TableComponent],
+  imports: [
+    BenchmarkPanel,
+    CheckboxComponent,
+    DecimalPipe,
+    GogColumn,
+    GogPanelHeaderDirective,
+    PanelComponent,
+    TableComponent,
+  ],
   templateUrl: './benchmark-table-page.html',
   styleUrl: './benchmark-table-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
