@@ -11,6 +11,8 @@ import {
   ConfirmationDialogComponent,
   DialogComponent,
   DialogService,
+  GogPanelHeaderDirective,
+  PanelComponent,
   ToastService,
 } from '@guildofgleks/ui';
 import { LoadingInventoryDialogComponent } from './loading-inventory-dialog.component';
@@ -21,7 +23,7 @@ import {
 
 @Component({
   selector: 'app-dialog-page',
-  imports: [ButtonComponent, DialogComponent],
+  imports: [ButtonComponent, DialogComponent, GogPanelHeaderDirective, PanelComponent],
   templateUrl: './dialog-page.html',
   styleUrl: './dialog-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

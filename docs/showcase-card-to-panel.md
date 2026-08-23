@@ -317,7 +317,7 @@ to them.
 | 8     | `global-config-page`       | 4           | ✅                       |
 | 9     | `card-page`                | 5           | ✅                       |
 | 10    | `checkbox-page`            | 5           | ✅                       |
-| 11    | `dialog-page`              | 5           | ⬜                       |
+| 11    | `dialog-page`              | 5           | ✅                       |
 | 12    | `icon-page`                | 5           | ⬜                       |
 | 13    | `menu-page`                | 5           | ⬜                       |
 | 14    | `panel-page`               | 5           | ⬜                       |

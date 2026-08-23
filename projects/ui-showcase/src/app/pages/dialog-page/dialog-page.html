@@ -8,8 +8,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Overlay</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Overlay</h3>
     <p class="meta">Last dialog result: {{ lastDialogResult() }}</p>
     <div class="action-row">
       <gog-button variant="primary" type="button" (gogClick)="openConfirmDialog()">
@@ -22,18 +22,18 @@
         Open warehouse form
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom examples</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom examples</h3>
     <p class="meta">
       The loading dialog fakes an inventory request, and the warehouse form uses `FormBuilder`,
       validation, and `getRawValue()` before showing a toast on save.
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Modal, closable &amp; draggable toggles</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Modal, closable &amp; draggable toggles</h3>
     <p class="meta">
       Every example above uses <code>modal</code>, <code>closable</code>, and
       <code>draggable</code> all <code>true</code> (the defaults). Here's what turning each one off
@@ -50,10 +50,10 @@
         draggable="false"
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom close icon</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom close icon</h3>
     <p class="meta">
       <code>closeIconName</code> swaps the header's close button to any built-in icon;
       <code>closeIconTemplate</code> goes further and projects arbitrary markup in its place.
@@ -69,10 +69,10 @@
     <ng-template #customCloseIcon>
       <span class="dialog-page__custom-close">✕✕</span>
     </ng-template>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Stacked dialogs</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Stacked dialogs</h3>
     <p class="meta">
       Opening a dialog while one is already open stacks it on top with a higher z-index — each keeps
       its own drag position.
@@ -82,7 +82,7 @@
         Open two stacked dialogs
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
   <gog-dialog />
 </section>
