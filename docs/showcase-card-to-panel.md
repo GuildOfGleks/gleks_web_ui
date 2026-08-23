@@ -308,7 +308,7 @@ to them.
 | ----- | -------------------------- | ----------- | ------------------------ |
 | —     | `divider-page`             | —           | ✅ the pilot             |
 | 1     | `catalog-page`             | 1           | ✅                       |
-| 2     | `settings-page`            | 1           | ⬜                       |
+| 2     | `settings-page`            | 1           | ✅                       |
 | 3     | `benchmark-accordion-page` | 2           | ⬜                       |
 | 4     | `benchmark-dropdown-page`  | 2           | ⬜                       |
 | 5     | `benchmark-instances-page` | 2           | ⬜                       |

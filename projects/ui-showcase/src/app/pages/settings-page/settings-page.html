@@ -9,7 +9,7 @@
     </p>
   </header>
 
-  <div class="card">
+  <gog-panel size="md">
     <gog-accordion [items]="sections" [multi]="true" [expandFirst]="true" size="md">
       <ng-template gogAccordionContent let-item>
         @switch (item.id) {
@@ -59,7 +59,7 @@
         }
       </ng-template>
     </gog-accordion>
-  </div>
+  </gog-panel>
 
   <div class="action-row">
     <gog-button
