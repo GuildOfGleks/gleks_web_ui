@@ -9,7 +9,7 @@
     </p>
   </header>
 
-  <div class="card dash__filters">
+  <gog-panel size="md" class="dash__filters">
     <gog-inputfield
       label="Search"
       placeholder="Filter by name..."
@@ -28,9 +28,9 @@
       [options]="teamOptions"
       [(value)]="teamFilter"
     />
-  </div>
+  </gog-panel>
 
-  <div class="card">
+  <gog-panel size="md">
     <gog-table [value]="filteredMembers()" [pageSize]="5" [showTotal]="true" size="md">
       <gog-column field="name" header="Name" [sortable]="true"></gog-column>
 
@@ -96,7 +96,7 @@
         </ng-template>
       </gog-column>
     </gog-table>
-  </div>
+  </gog-panel>
 </section>
 
 <gog-dialog />

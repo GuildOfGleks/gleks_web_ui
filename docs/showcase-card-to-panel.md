@@ -313,7 +313,7 @@ to them.
 | 4     | `benchmark-dropdown-page`  | 2           | ✅                       |
 | 5     | `benchmark-instances-page` | 2           | ✅                       |
 | 6     | `benchmark-table-page`     | 2           | ✅                       |
-| 7     | `dashboard-page`           | 2           | ⬜                       |
+| 7     | `dashboard-page`           | 2           | ✅                       |
 | 8     | `global-config-page`       | 4           | ⬜                       |
 | 9     | `card-page`                | 5           | ⬜                       |
 | 10    | `checkbox-page`            | 5           | ⬜                       |
