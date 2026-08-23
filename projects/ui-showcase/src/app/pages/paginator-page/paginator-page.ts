@@ -5,8 +5,10 @@ import {
   GogAccordionContentDirective,
   GogAccordionItem,
   GogPaginatorRangeMode,
+  GogPanelHeaderDirective,
   GogSize,
   PaginatorComponent,
+  PanelComponent,
 } from '@guildofgleks/ui';
 
 interface FaqItem extends GogAccordionItem {
@@ -67,7 +69,14 @@ const FRUIT_ITEMS = [
 
 @Component({
   selector: 'app-paginator-page',
-  imports: [AccordionComponent, ButtonComponent, GogAccordionContentDirective, PaginatorComponent],
+  imports: [
+    AccordionComponent,
+    ButtonComponent,
+    GogAccordionContentDirective,
+    GogPanelHeaderDirective,
+    PaginatorComponent,
+    PanelComponent,
+  ],
   templateUrl: './paginator-page.html',
   styleUrl: './paginator-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

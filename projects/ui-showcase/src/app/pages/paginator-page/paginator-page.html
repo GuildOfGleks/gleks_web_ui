@@ -9,8 +9,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Basic usage</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Basic usage</h3>
     <p class="lead">
       <code>page</code> is a two-way bindable model — <code>[(page)]="mySignal"</code> — and
       <code>totalPages</code> is the only other thing the paginator needs to know. By default it
@@ -19,10 +19,10 @@
     </p>
     <gog-paginator [(page)]="basicPage" [totalPages]="basicTotalPages()" />
     <p class="meta">Page {{ basicPage() }} of {{ basicTotalPages() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Flexible page-range settings</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Flexible page-range settings</h3>
     <p class="lead">
       <code>rangeMode="window"</code> (the default) keeps exactly <code>visiblePages</code>
       buttons on screen, centered on the current page, with no ellipsis unless
@@ -101,10 +101,10 @@
       [siblingCount]="demoSiblingCount()"
     />
     <p class="meta">Page {{ demoPage() }} of {{ demoTotalPages() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <div class="paginator-size-stack">
       @for (size of sizes; track size) {
         <div class="paginator-size-stack__row">
@@ -113,10 +113,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="lead">
       Full width of its container by default — the dashed outline below is the container, not the
       paginator, so you can see the component's own box claims the full row even though the buttons
@@ -132,19 +132,19 @@
         <gog-paginator [totalPages]="5" [page]="2" [fullWidth]="false" />
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Disabled</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Disabled</h3>
     <p class="lead">
       <code>disabled</code> freezes every control — useful while the page it navigates is itself
       loading.
     </p>
     <gog-paginator [(page)]="disabledPage" [totalPages]="8" [disabled]="true" />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Applied to a plain list</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Applied to a plain list</h3>
     <p class="lead">
       No table, no rows — just an array sliced by hand using <code>page</code> and a page size the
       consumer owns.
@@ -155,10 +155,10 @@
       }
     </ul>
     <gog-paginator [(page)]="listPage" [totalPages]="listTotalPages()" />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Applied to an accordion</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Applied to an accordion</h3>
     <p class="lead">
       The same component pages through a <code>gog-accordion</code>'s items — only the current
       page's FAQ entries are passed into <code>[items]</code>.
@@ -169,14 +169,14 @@
       </ng-template>
     </gog-accordion>
     <gog-paginator [(page)]="faqPage" [totalPages]="faqTotalPages()" />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Applied to a table</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Applied to a table</h3>
     <p class="lead">
       <code>gog-table</code>'s own pagination is now composed from this same
       <code>gog-paginator</code>, wired with <code>rangeMode="ellipsis"</code> to keep its
       established look — see the "Table" page in the nav for it wired up against real rows.
     </p>
-  </article>
+  </gog-panel>
 </section>
