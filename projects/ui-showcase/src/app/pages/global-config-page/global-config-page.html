@@ -11,8 +11,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Connecting it</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Connecting it</h3>
     <p class="lead">
       Call <code>provideGogConfig(...)</code> once, in your app's root providers — typically
       <code>app.config.ts</code>:
@@ -52,10 +52,10 @@ export const appConfig: ApplicationConfig = &#123;
       parent's. (<code>toast</code> is the one exception — see the dedicated section near the bottom
       of this page.)
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Without it connected — library defaults</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Without it connected — library defaults</h3>
     <p class="lead">
       This showcase app's own <code>app.config.ts</code> does not call
       <code>provideGogConfig</code> anywhere, so everything on this page falls back to each
@@ -121,10 +121,10 @@ export const appConfig: ApplicationConfig = &#123;
         />
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>With it connected</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>With it connected</h3>
     <p class="lead">
       <code>&lt;app-global-config-scope&gt;</code> below has the same call as the code sample above
       (minus <code>toast</code>) in its own component <code>providers</code> — scoped to one subtree
@@ -140,10 +140,10 @@ export const appConfig: ApplicationConfig = &#123;
       directions instead of only vertically.
     </p>
     <app-global-config-scope />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3><code>toast</code> — the one section that can't be demoed the same way</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader><code>toast</code> — the one section that can't be demoed the same way</h3>
     <p class="lead">
       <code>ToastService</code> is <code>providedIn: 'root'</code> and reads
       <code>GOG_CONFIG</code> exactly once, at construction, from the root injector — a
@@ -163,5 +163,5 @@ export const appConfig: ApplicationConfig = &#123;
     </p>
     <gog-button (gogClick)="showDefaultToast()">Show default toast</gog-button>
     <gog-toast-container />
-  </article>
+  </gog-panel>
 </section>
