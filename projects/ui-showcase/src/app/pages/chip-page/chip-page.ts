@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ChipComponent } from '@guildofgleks/ui';
+import { ChipComponent, GogPanelHeaderDirective, PanelComponent } from '@guildofgleks/ui';
 
 interface ChipPerson {
   name: string;
@@ -8,7 +8,7 @@ interface ChipPerson {
 
 @Component({
   selector: 'app-chip-page',
-  imports: [ChipComponent],
+  imports: [ChipComponent, GogPanelHeaderDirective, PanelComponent],
   templateUrl: './chip-page.html',
   styleUrl: './chip-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

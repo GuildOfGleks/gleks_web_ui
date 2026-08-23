@@ -8,8 +8,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>People (avatar, clickable)</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>People (avatar, clickable)</h3>
     <div class="chip-grid">
       @for (person of people; track person.name) {
         <gog-chip
@@ -21,10 +21,10 @@
         </gog-chip>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Active filters (removable)</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Active filters (removable)</h3>
     <div class="chip-grid">
       @for (filter of filters(); track filter) {
         <gog-chip
@@ -38,10 +38,10 @@
       }
     </div>
     <p class="meta">{{ lastAction() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Avatar + removable</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Avatar + removable</h3>
     <p class="meta">The two features compose — an avatar chip can also be removable.</p>
     <div class="chip-grid">
       @for (member of team(); track member.name) {
@@ -59,10 +59,10 @@
         <p class="meta">All team chips removed.</p>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <div class="chip-grid">
       <gog-chip size="xsm">Extra small</gog-chip>
       <gog-chip size="sm">Small</gog-chip>
@@ -70,37 +70,37 @@
       <gog-chip size="lg">Large</gog-chip>
       <gog-chip size="slg">Extra large</gog-chip>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Shapes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Shapes</h3>
     <div class="chip-grid">
       <gog-chip shape="rounded">Rounded</gog-chip>
       <gog-chip shape="pill">Pill</gog-chip>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Icon</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Icon</h3>
     <div class="chip-grid">
       <gog-chip iconName="info">Informational</gog-chip>
       <gog-chip iconName="success">Verified</gog-chip>
       <gog-chip iconName="warning" [removable]="true">With icon &amp; remove</gog-chip>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="meta">
       Stretches the chip surface to fill its container. Wrapped here in a narrower box to show it.
     </p>
     <div class="width-demo">
       <gog-chip [fullWidth]="true" iconName="info">Storage nearly full — 92% used</gog-chip>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Disabled &amp; non-clickable</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Disabled &amp; non-clickable</h3>
     <p class="meta">
       <code>disabled</code> dims the chip and disables its remove button too.
       <code>clickable="false"</code> keeps it fully opaque but drops the button role/cursor — for a
@@ -111,5 +111,5 @@
       <gog-chip [disabled]="true" [removable]="true">Disabled removable</gog-chip>
       <gog-chip [clickable]="false">Not clickable</gog-chip>
     </div>
-  </article>
+  </gog-panel>
 </section>
