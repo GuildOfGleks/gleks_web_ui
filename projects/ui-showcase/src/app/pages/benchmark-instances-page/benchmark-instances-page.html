@@ -9,8 +9,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Run</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Run</h3>
     <div class="bench-instances-kind">
       <gog-radio-group
         label="Component"
@@ -27,10 +27,10 @@
       (runRequested)="run($event)"
       (resetRequested)="reset()"
     />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Live instances ({{ indices().length | number }} loaded)</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Live instances ({{ indices().length | number }} loaded)</h3>
     <div #container class="bench-instances-grid">
       @switch (kind()) {
         @case ('button') {
@@ -82,5 +82,5 @@
         }
       }
     </div>
-  </article>
+  </gog-panel>
 </section>
