@@ -320,7 +320,7 @@ to them.
 | 11    | `dialog-page`              | 5           | ✅                       |
 | 12    | `icon-page`                | 5           | ✅                       |
 | 13    | `menu-page`                | 5           | ✅                       |
-| 14    | `panel-page`               | 5           | ⬜                       |
+| 14    | `panel-page`               | 5           | ✅                       |
 | 15    | `radio-group-page`         | 5           | ⬜                       |
 | 16    | `tag-page`                 | 5           | ⬜                       |
 | 17    | `toast-page`               | 5           | ⬜                       |

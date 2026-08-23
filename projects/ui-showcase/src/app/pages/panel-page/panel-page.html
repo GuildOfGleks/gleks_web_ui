@@ -10,8 +10,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Variants and sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Variants and sizes</h3>
     <p class="meta">
       Same three variants as <code>gog-card</code>, from the shared
       <code>GogSurfaceVariant</code> type — <code>elevated</code> is the default here, because a
@@ -36,10 +36,10 @@
         </gog-panel>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Collapsible</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Collapsible</h3>
     <p class="meta">
       <code>collapsible</code> adds the toggle and composes <code>gog-collapsible</code> under it —
       the open/close state, the id wiring and the animation are the library's existing ones. The
@@ -70,10 +70,10 @@
         </p>
       </gog-panel>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>A panel that holds an overlay</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>A panel that holds an overlay</h3>
     <p class="meta">
       A non-collapsible panel undoes the collapse geometry it inherits, <code>overflow</code>
       included — so a dropdown opened inside one is not clipped. Open the select below: its panel
@@ -83,10 +83,10 @@
       <h4 gogPanelHeader>Regional</h4>
       <gog-select label="Time zone" [options]="timezones" [(value)]="timezone" />
     </gog-panel>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Loading</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Loading</h3>
     <p class="meta">
       The heading stays — a page section is titled before its content arrives — and only the body is
       replaced with placeholder lines. The footer stays too, so its actions remain usable.
@@ -103,10 +103,10 @@
       </p>
       <div gogPanelFooter><gog-button size="xsm" variant="ghost">Export</gog-button></div>
     </gog-panel>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Theming</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Theming</h3>
     <p class="meta">
       <code>gog-panel</code> shares its token prefix with the foundation surface tier on purpose:
       <code>--gog-panel-radius</code>, <code>--gog-panel-shadow</code> and the border pair are the
@@ -120,5 +120,5 @@
         Three tokens set from one class on the element, no <code>::ng-deep</code> in sight.
       </p>
     </gog-panel>
-  </article>
+  </gog-panel>
 </section>
