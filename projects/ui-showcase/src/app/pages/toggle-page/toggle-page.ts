@@ -1,10 +1,22 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { CheckboxComponent, GogSize, ToggleComponent } from '@guildofgleks/ui';
+import {
+  CheckboxComponent,
+  GogPanelHeaderDirective,
+  GogSize,
+  PanelComponent,
+  ToggleComponent,
+} from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-toggle-page',
-  imports: [CheckboxComponent, ReactiveFormsModule, ToggleComponent],
+  imports: [
+    CheckboxComponent,
+    GogPanelHeaderDirective,
+    PanelComponent,
+    ReactiveFormsModule,
+    ToggleComponent,
+  ],
   templateUrl: './toggle-page.html',
   styleUrl: './toggle-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

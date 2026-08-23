@@ -10,8 +10,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Basic</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Basic</h3>
     <div class="toggle-stack">
       <gog-toggle label="Notifications" [(checked)]="notifications" />
       <gog-toggle label="Share analytics" [(checked)]="analytics" />
@@ -19,10 +19,10 @@
       <gog-toggle label="Disabled, off" [disabled]="true" />
     </div>
     <p class="hint">notifications: {{ notifications() }} · analytics: {{ analytics() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Next to a checkbox</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Next to a checkbox</h3>
     <p class="hint">
       Same size scale, so the two line up in one form — the label size comes from the shared
       <code>--gog-control-checkbox-*</code> tier.
@@ -31,19 +31,19 @@
       <gog-checkbox label="Checkbox at md" />
       <gog-toggle label="Toggle at md" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <div class="toggle-stack">
       @for (size of sizes; track size) {
         <gog-toggle [size]="size" [label]="size" [checked]="true" />
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Labels inside the track</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Labels inside the track</h3>
     <p class="hint">
       The one thing a checkbox genuinely cannot do. Both words stay in the DOM so the track is as
       wide as the wider of the two and cannot jump as the switch flips.
@@ -52,23 +52,23 @@
       <gog-toggle label="Maintenance mode" onLabel="ON" offLabel="OFF" />
       <gog-toggle size="lg" label="Verbose logging" onLabel="YES" offLabel="NO" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Label position and full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Label position and full width</h3>
     <div class="toggle-stack">
       <gog-toggle label="Label at the end (default)" />
       <gog-toggle label="Label at the start" labelPosition="start" />
       <gog-toggle label="Full width, pushed apart" [fullWidth]="true" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive Forms</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive Forms</h3>
     <div class="toggle-stack">
       <gog-toggle label="Dark mode" [formControl]="darkMode" />
       <gog-toggle label="Locked by the control" [formControl]="locked" />
     </div>
     <p class="hint">darkMode: {{ darkMode.value }} · touched: {{ darkMode.touched }}</p>
-  </article>
+  </gog-panel>
 </section>
