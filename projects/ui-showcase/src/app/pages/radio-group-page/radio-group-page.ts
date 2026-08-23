@@ -1,7 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonComponent, GogRadioOption, RadioGroupComponent } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  GogPanelHeaderDirective,
+  GogRadioOption,
+  PanelComponent,
+  RadioGroupComponent,
+} from '@guildofgleks/ui';
 
 const PLAN_OPTIONS: GogRadioOption[] = [
   { id: 'free', label: 'Free' },
@@ -17,7 +23,13 @@ const SIZE_OPTIONS: GogRadioOption[] = [
 
 @Component({
   selector: 'app-radio-group-page',
-  imports: [ButtonComponent, RadioGroupComponent, ReactiveFormsModule],
+  imports: [
+    ButtonComponent,
+    GogPanelHeaderDirective,
+    PanelComponent,
+    RadioGroupComponent,
+    ReactiveFormsModule,
+  ],
   templateUrl: './radio-group-page.html',
   styleUrl: './radio-group-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

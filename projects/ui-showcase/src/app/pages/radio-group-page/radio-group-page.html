@@ -10,8 +10,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Playground</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Playground</h3>
     <div class="action-row">
       <gog-radio-group label="Plan" [options]="planOptions" [(value)]="plan" />
     </div>
@@ -20,10 +20,10 @@
       "Enterprise" is disabled at the option level (<code>disabled: true</code> on that option),
       independent of the group's own <code>disabled</code> input.
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Orientation</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Orientation</h3>
     <p class="lead">
       <code>orientation="vertical"</code> (default) stacks options in a column;
       <code>"horizontal"</code> lays them out in a row.
@@ -37,10 +37,10 @@
         [(value)]="orientationDemo"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes &amp; disabled</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes &amp; disabled</h3>
     <div class="size-grid">
       <gog-radio-group label="Extra small" size="xsm" [options]="sizeOptions" value="sm" />
       <gog-radio-group label="Small" size="sm" [options]="sizeOptions" value="md" />
@@ -54,10 +54,10 @@
         [(value)]="disabledGroupValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width &amp; label-less</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width &amp; label-less</h3>
     <p class="lead">
       <code>fullWidth</code> stretches the group (and, in horizontal orientation, spaces its
       options) to fill its container instead of hugging its content. <code>ariaLabel</code> names a
@@ -71,10 +71,10 @@
       [options]="planOptions"
       [(value)]="plan"
     />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive forms</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive forms</h3>
     <p class="meta">
       Bound via <code>[formControl]</code> only — no <code>[(value)]</code> — proving the
       <code>ControlValueAccessor</code> wiring on its own. With <code>errorDisplay="auto"</code>,
@@ -94,5 +94,5 @@
       </gog-button>
     </div>
     <p class="meta">{{ requiredSummary() }}</p>
-  </article>
+  </gog-panel>
 </section>
