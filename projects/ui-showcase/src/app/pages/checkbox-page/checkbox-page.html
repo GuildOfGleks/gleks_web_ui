@@ -8,8 +8,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>States, disabled &amp; sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>States, disabled &amp; sizes</h3>
     <div class="checkbox-grid">
       <div class="checkbox-group">
         <h4 class="checkbox-group__title">Default</h4>
@@ -35,10 +35,10 @@
       </div>
     </div>
     <p class="meta">{{ summary() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Labeling</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Labeling</h3>
     <p class="meta">
       With no <code>label</code>, nothing renders next to the box — use <code>ariaLabel</code>
       so assistive tech still gets a name. Hover/inspect to confirm there's no visible text.
@@ -47,10 +47,10 @@
       <gog-checkbox label="Visible label" [(checked)]="starred" />
       <gog-checkbox ariaLabel="Star this item (no visible label)" [(checked)]="starred" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom check icon</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom check icon</h3>
     <p class="meta">
       A <code>gogCheckboxIcon</code> template projected into the checkbox replaces the default
       checkmark glyph — here it's swapped for a star.
@@ -62,10 +62,10 @@
         </ng-template>
       </gog-checkbox>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="meta">
       Stretches the clickable row to fill its container — handy for settings-style rows. Wrapped
       here in a narrower box to show it.
@@ -73,10 +73,10 @@
     <div class="width-demo">
       <gog-checkbox label="Enable notifications for this project" [fullWidth]="true" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive forms</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive forms</h3>
     <p class="meta">
       Bound via <code>[formControl]</code> only — no <code>[(checked)]</code> — proving the
       <code>ControlValueAccessor</code> wiring on its own.
@@ -88,5 +88,5 @@
       </gog-button>
     </div>
     <p class="meta">{{ requiredSummary() }}</p>
-  </article>
+  </gog-panel>
 </section>

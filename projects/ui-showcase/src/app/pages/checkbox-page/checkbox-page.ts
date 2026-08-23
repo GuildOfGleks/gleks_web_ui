@@ -5,7 +5,9 @@ import {
   ButtonComponent,
   CheckboxComponent,
   GogCheckboxIconDirective,
+  GogPanelHeaderDirective,
   IconComponent,
+  PanelComponent,
 } from '@guildofgleks/ui';
 
 @Component({
@@ -14,7 +16,9 @@ import {
     ButtonComponent,
     CheckboxComponent,
     GogCheckboxIconDirective,
+    GogPanelHeaderDirective,
     IconComponent,
+    PanelComponent,
     ReactiveFormsModule,
   ],
   templateUrl: './checkbox-page.html',

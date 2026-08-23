@@ -316,7 +316,7 @@ to them.
 | 7     | `dashboard-page`           | 2           | ✅                       |
 | 8     | `global-config-page`       | 4           | ✅                       |
 | 9     | `card-page`                | 5           | ✅                       |
-| 10    | `checkbox-page`            | 5           | ⬜                       |
+| 10    | `checkbox-page`            | 5           | ✅                       |
 | 11    | `dialog-page`              | 5           | ⬜                       |
 | 12    | `icon-page`                | 5           | ⬜                       |
 | 13    | `menu-page`                | 5           | ⬜                       |
