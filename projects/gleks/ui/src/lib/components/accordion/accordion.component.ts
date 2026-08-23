@@ -17,8 +17,11 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { GogSize } from '../../shared/types';
 import { handleRovingFocusKeydown } from '../../shared/roving-focus';
+import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
+import { GOG_CONFIG } from '../../shared/config';
+import { resolveRipple } from '../../shared/ripple-state';
 
 /** Cycled by `skeletonWidth()` — see there for why these are fixed rather than random. */
 const SKELETON_WIDTHS = ['62%', '45%', '71%', '53%'] as const;
@@ -70,7 +73,7 @@ export class GogAccordionChevronDirective {
 
 @Component({
   selector: 'gog-accordion',
-  imports: [NgTemplateOutlet, IconComponent, SkeletonComponent],
+  imports: [GogRippleDirective, NgTemplateOutlet, IconComponent, SkeletonComponent],
   templateUrl: './accordion.component.html',
   styleUrl: './accordion.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -98,6 +101,14 @@ export class AccordionComponent {
     this.size() === 'lg' ? '' : `gog-accordion--${this.size()}`,
   );
   readonly size = input<GogSize>('lg');
+  /**
+   * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
+   * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
+   */
+  readonly ripple = input<boolean | undefined>(undefined);
+  /** Declared after the input it reads: field initialisers run in source order. */
+  protected readonly rippleEnabled = resolveRipple(this.ripple, inject(GOG_CONFIG));
+
   readonly expandFirst = input(false);
   readonly multi = input(false);
   readonly loading = input(false);

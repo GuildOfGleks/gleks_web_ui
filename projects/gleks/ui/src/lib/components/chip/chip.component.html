@@ -7,6 +7,8 @@
   [style.cursor]="isInteractive() ? 'pointer' : 'default'"
   (click)="onChipClick($event)"
   (keydown)="onKeydown($event)"
+  gogRipple
+  [rippleDisabled]="!rippleEnabled()"
 >
   @if (avatarUrl()) {
     <img class="gog-chip__avatar" [src]="avatarUrl()" [alt]="avatarAlt()" />

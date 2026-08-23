@@ -21,7 +21,10 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { GOG_CONFIG } from '../../shared/config';
 import { GogDropdownOverlay } from '../../shared/dropdown-overlay';
+import { resolveRipple } from '../../shared/ripple-state';
+import { bindRipple } from '../ripple/ripple-controller';
 import { nextGogControlId } from '../../shared/control-id';
 import { isRovingFocusKey, nextRovingFocusIndex } from '../../shared/roving-focus';
 import { scopedOverlayDirection } from '../../shared/overlay-direction';
@@ -54,7 +57,15 @@ import { resolveMenuPlacement, type GogMenuPlacement } from './menu-position';
   },
 })
 export class GogMenuItemDirective {
+  /**
+   * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
+   * `[ripple]="false"` opts one item out of an app that turned it on everywhere.
+   */
+  readonly ripple = input<boolean | undefined>(undefined);
+
   readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly rippleEnabled = resolveRipple(this.ripple, inject(GOG_CONFIG));
+  private readonly rippleControl = bindRipple(this.rippleEnabled);
 
   /** Native `disabled` on the host button — read so navigation can step over it. */
   get isDisabled(): boolean {

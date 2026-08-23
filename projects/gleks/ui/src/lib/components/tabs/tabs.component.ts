@@ -18,8 +18,11 @@ import {
   viewChildren,
 } from '@angular/core';
 
+import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
+import { GOG_CONFIG } from '../../shared/config';
+import { resolveRipple } from '../../shared/ripple-state';
 import { handleRovingFocusKeydown } from '../../shared/roving-focus';
 import { GogOrientation, GogSize, GogTabsAlign } from '../../shared/types';
 import { GOG_TABS_STATE, type GogTabsState } from './tabs-state';
@@ -76,7 +79,7 @@ export class GogTabHeaderDirective {
  */
 @Component({
   selector: 'gog-tabs',
-  imports: [IconComponent, NgTemplateOutlet, ScrollComponent],
+  imports: [GogRippleDirective, IconComponent, NgTemplateOutlet, ScrollComponent],
   templateUrl: './tabs.component.html',
   styleUrl: './tabs.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -98,6 +101,14 @@ export class TabsComponent implements GogTabsState {
   readonly size = input<GogSize>('md');
   readonly fullWidth = input(false);
   readonly ariaLabel = input('');
+  /**
+   * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
+   * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
+   */
+  readonly ripple = input<boolean | undefined>(undefined);
+  /** Declared after the input it reads: field initialisers run in source order. */
+  protected readonly rippleEnabled = resolveRipple(this.ripple, inject(GOG_CONFIG));
+
   /**
    * Whether selecting a tab scrolls the (possibly overflowing) header row so the active tab
    * stays in view — centered where there's room, so its neighbours on both sides stay visible

@@ -13,6 +13,8 @@
     (click)="onOptionClick(option)"
     (keydown)="onKeydown($event)"
     (blur)="onBlur()"
+    gogRipple
+    [rippleDisabled]="!rippleEnabled()"
   >
     @if (optionSlot(); as slot) {
       <ng-container

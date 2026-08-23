@@ -1,0 +1,70 @@
+@use '../detail' as *;
+
+.ripple-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.ripple-row + .ripple-row {
+  margin-block-start: 20px;
+}
+
+/*
+ * Deliberately the page's own markup rather than a library component: the point of this page is
+ * that `gogRipple` works on whatever a consumer already has.
+ */
+.ripple-surface {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  padding: 12px 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background-color: var(--gog-surface-color);
+  color: var(--gog-text-color);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ripple-surface[disabled],
+.ripple-surface[aria-disabled='true'] {
+  opacity: var(--gog-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.ripple-surface--pill {
+  border-radius: 999px;
+}
+
+.ripple-surface--square {
+  border-radius: 0;
+}
+
+.ripple-surface--tile {
+  min-width: 260px;
+  min-height: 120px;
+  padding: 24px;
+}
+
+/* A wrapper with no radius of its own — the caveat the last panel is about. */
+.ripple-wrapper {
+  display: inline-flex;
+}
+
+.ripple-surface--accent {
+  --gog-ripple-color: var(--gog-accent-color);
+}
+
+.ripple-surface--strong {
+  --gog-ripple-opacity: 0.45;
+}
+
+.ripple-surface--slow {
+  --gog-ripple-enter-duration: 1.2s;
+  --gog-ripple-exit-duration: 0.6s;
+}

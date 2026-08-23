@@ -35,11 +35,11 @@ Two things to know before building it:
 - It is read from the **installed** package, so the badge answers for the version the reader has.
   Do not hard-code 21.7.0 anywhere; take it from `removedIn`.
 
-## After 21.6.1 — two new components to document
+## After 21.6.1 — two new components and a directive to document
 
 21.6.1 adds **`gog-card`** and **`gog-panel`** (plus `GogSurfaceVariant`, the
 `gogCardHeader`/`gogCardMedia`/`gogCardFooter`/`gogCardLink` and `gogPanelHeader`/`gogPanelFooter`
-slot directives, and `GOG_CONFIG.labels.togglePanel`). The lab needs:
+slot directives, and `GOG_CONFIG.labels.togglePanel`), and **`gogRipple`**. The lab needs:
 
 - **Two component pages**, under the layout group next to `gog-collapsible`. `ui-showcase`'s
   `card-page` and `panel-page` are the working demos to lift examples from — including the two
@@ -49,11 +49,35 @@ slot directives, and `GOG_CONFIG.labels.togglePanel`). The lab needs:
   listed above.
 - **A theming-page note that `--gog-panel-*` names two things.** `--gog-panel-radius`,
   `--gog-panel-shadow`, `--gog-panel-border-width` and `--gog-panel-border-style` are the
-  foundation surface tier *and* the `gog-panel` component's chrome, on purpose. Whatever the
+  foundation surface tier _and_ the `gog-panel` component's chrome, on purpose. Whatever the
   theming page currently says about that prefix is now incomplete rather than wrong.
 - **The "no card component" statement, wherever the lab makes one.** Grep for `card` in the lab's
   prose before writing the pages — the component inventory and any "what the library does not
   have yet" copy both move.
+
+- **A `gogRipple` page**, next to the other directives (`gogTooltip`, `gogBadge`). Lift the six
+  panels from `ui-showcase`'s `ripple-page` — and keep two of them in particular, because they
+  are the ones that stop a reader misusing it: the badged surfaces (the reason the host is never
+  clipped) and the wrapper-versus-surface pair (the wash squares off when the directive sits on a
+  wrapper whose child paints the radius).
+- **`since` chips reading 21.6.1** on `gogRipple`, `rippleDisabled` and `rippleCentred`.
+- **Five new rows on the theming page**: `--gog-ripple-color`, `--gog-ripple-opacity`,
+  `--gog-ripple-enter-duration`, `--gog-ripple-exit-duration`, `--gog-ripple-easing`. Worth a
+  sentence that the colour defaults to `currentColor` rather than to a palette token — it is the
+  only token in the catalogue that does, and it is why the ripple needs no per-variant tier.
+- **Say plainly that it is off by default.** 21.6.1 wires the ripple into nine components but
+  ships it switched off, so a reader who copies an example and sees nothing has not made a
+  mistake. One line at the top of the page — `provideGogConfig({ ripple: { enabled: true } })` —
+  is the whole answer.
+- **`GOG_CONFIG.ripple.enabled` on the global-config page**, and in whatever list of config keys
+  the lab keeps. It is the first _visual_ default in `GOG_CONFIG` rather than in `theme.css`, and
+  the page already explains that boundary — so that explanation now needs its exception: a token
+  can hide the wash but still pays for the node, the listeners and the frames, and a real off has
+  to reach the TypeScript.
+- **A `ripple` input row** on `gog-button`, `[gogButton]`, `gog-button-toggle-group`, `gog-chip`,
+  `gog-tabs`, `gog-accordion`, `gogCollapsibleTrigger`, `gogMenuItem` and the shared
+  select/multiselect/autocomplete table, each with a 21.6.1 `since` chip. Default `false`, via
+  `GOG_CONFIG.ripple.enabled`.
 
 ## Checking your work
 

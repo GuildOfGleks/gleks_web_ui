@@ -1,0 +1,146 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gogRipple</p>
+    <h2>Ripple</h2>
+    <p class="lead">
+      A pointer-position wash that grows from where you pressed. A directive, so it goes on any
+      element you already have — no wrapper, no layout change. Built from scratch: there is no CDK
+      in this library.
+    </p>
+  </div>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>On anything you already wrote</h3>
+    <p class="hint">
+      Press and hold: the wave grows and stays until you let go. Every surface below is the demo
+      page's own markup with <code>gogRipple</code> added and nothing else changed.
+    </p>
+    <div class="ripple-row">
+      <button class="ripple-surface" gogRipple>Plain button</button>
+      <div class="ripple-surface ripple-surface--pill" gogRipple>A pill</div>
+      <div class="ripple-surface ripple-surface--square" gogRipple>Square corners</div>
+      <div class="ripple-surface ripple-surface--tile" gogRipple>
+        A larger tile, so the wave has room to travel
+      </div>
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>It does not clip a badge</h3>
+    <p class="hint">
+      The reason the ripple is not simply <code>overflow: hidden</code> on the host.
+      <code>gogBadge</code> pins its badge <em>outside</em> the host's box with negative insets, so
+      a host that clips its overflow clips the badge with it. The wash lives in its own layer that
+      clips itself instead — press this and the badge stays whole.
+    </p>
+    <div class="ripple-row">
+      <button class="ripple-surface" gogRipple gogBadge="8" badgeAriaLabel="8 unread">Inbox</button>
+      <button class="ripple-surface ripple-surface--pill" gogRipple gogBadge badgeDot>
+        Dot, top-end
+      </button>
+      <button
+        class="ripple-surface"
+        gogRipple
+        gogBadge="99+"
+        badgePosition="bottom-start"
+        badgeVariant="info"
+      >
+        Bottom-start
+      </button>
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader><code>rippleCentred</code> and <code>rippleDisabled</code></h3>
+    <p class="hint">
+      Keyboard activation is always centred — <kbd>Enter</kbd> and <kbd>Space</kbd> carry no
+      coordinates — so tab to the first button and hold a key to see what centred looks like.
+      <code>rippleCentred</code> makes the pointer behave the same way.
+    </p>
+    <div class="ripple-row">
+      <button class="ripple-surface" gogRipple [rippleCentred]="centred()">
+        centred: {{ centred() }}
+      </button>
+      <gog-button variant="outline" size="sm" (gogClick)="toggleCentred()">
+        Toggle rippleCentred
+      </gog-button>
+    </div>
+    <div class="ripple-row">
+      <button class="ripple-surface" gogRipple [rippleDisabled]="disabled()">
+        rippleDisabled: {{ disabled() }}
+      </button>
+      <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+        Toggle rippleDisabled
+      </gog-button>
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Suppressed where a press means nothing</h3>
+    <p class="hint">
+      A host that is <code>disabled</code> or <code>aria-disabled="true"</code> gets no ripple
+      without you having to say so twice — answering a press the control will not act on is worse
+      than staying still. Reduced motion suppresses it outright rather than shortening it: turn on
+      your OS's “reduce motion” setting and none of these produce anything at all.
+    </p>
+    <div class="ripple-row">
+      <button class="ripple-surface" gogRipple disabled>disabled</button>
+      <div class="ripple-surface" gogRipple aria-disabled="true">aria-disabled</div>
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>The library's own components</h3>
+    <p class="hint">
+      You do not add <code>gogRipple</code> to a <code>gog-*</code> component — each one already
+      owns the element that paints its surface, so it wires its own. What you do is turn it on:
+      <code>provideGogConfig(&#123; ripple: &#123; enabled: true &#125; &#125;)</code> once, and
+      every surface below answers a press. <strong>Off by default</strong>, so adding the ripple to
+      the library changed the look of nothing.
+    </p>
+    <p class="hint">
+      Everything in this box — and only in this box — is inside a scoped
+      <code>provideGogConfig</code>, which is why the rest of the showcase is still still. Each
+      component also takes a <code>ripple</code> input that wins over the app-wide setting in both
+      directions.
+    </p>
+    <app-ripple-scope />
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Put it on the element that paints the surface</h3>
+    <p class="hint">
+      The layer takes its corner radius from its host through <code>border-radius: inherit</code>,
+      which is exact and free — and is also the one thing to know. On a wrapper whose child paints
+      the rounded background, the layer inherits the <em>wrapper's</em> radius, so the wash squares
+      off at the corners. Both buttons below are ripple-wrapped; only the second one has the
+      directive on the element that actually has the radius.
+    </p>
+    <div class="ripple-row">
+      <span class="ripple-wrapper" gogRipple>
+        <button class="ripple-surface ripple-surface--pill">On the wrapper</button>
+      </span>
+      <span class="ripple-wrapper">
+        <button class="ripple-surface ripple-surface--pill" gogRipple>On the surface</button>
+      </span>
+    </div>
+    <p class="hint">
+      Library components never make a consumer think about this: each one opts its own inner element
+      in. The rule only applies to markup you wrote yourself.
+    </p>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Theming</h3>
+    <p class="hint">
+      Five tokens, and the colour is <code>currentColor</code> by default, so the wash reads as the
+      surface's own foreground on a filled surface and on a ghost one alike. Every one of them is an
+      ordinary inherited custom property — set it on the element, or on anything above it.
+    </p>
+    <div class="ripple-row">
+      <div class="ripple-surface ripple-surface--accent" gogRipple>Accent-coloured wash</div>
+      <div class="ripple-surface ripple-surface--strong" gogRipple>Higher opacity</div>
+      <div class="ripple-surface ripple-surface--slow" gogRipple>Slower</div>
+    </div>
+  </gog-panel>
+</section>

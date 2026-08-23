@@ -5,10 +5,11 @@
  *
  * ## Why only the global stylesheets
  *
- * `styles/button.css`, `styles/menu.css`, `styles/surfaces.css` and `styles/utilities.css` are
+ * `styles/button.css`, `styles/menu.css`, `styles/ripple.css`, `styles/surfaces.css` and
+ * `styles/utilities.css` are
  * the files whose rules land on elements the **consumer owns** — `[gogButton]` on their `<a>`,
- * `gogMenuItem` on their `<button>`, `gogCardHeader` on their `<h3>`, `gogCollapsibleTrigger`
- * and `gogBadge` on whatever they wrote. Everything
+ * `gogMenuItem` on their `<button>`, `gogCardHeader` on their `<h3>`, `gogCollapsibleTrigger`,
+ * `gogRipple` and `gogBadge` on whatever they wrote. Everything
  * else in the library is a component stylesheet, scoped by Angular's emulated encapsulation to
  * markup the consumer cannot select into anyway.
  *
@@ -42,6 +43,7 @@ import { readFileSync } from 'node:fs';
 const SHEETS = [
   'projects/gleks/ui/src/styles/button.css',
   'projects/gleks/ui/src/styles/menu.css',
+  'projects/gleks/ui/src/styles/ripple.css',
   'projects/gleks/ui/src/styles/surfaces.css',
   'projects/gleks/ui/src/styles/utilities.css',
 ];

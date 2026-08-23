@@ -47,6 +47,8 @@
             (click)="toggle(item)"
             (keydown)="onHeaderKeydown($event)"
             type="button"
+            gogRipple
+            [rippleDisabled]="!rippleEnabled()"
           >
             <span class="gog-accordion__header-content">
               @if (headerTpl(); as tpl) {

@@ -138,6 +138,8 @@
           [class.gog-autocomplete__option--active]="i === activeIndex()"
           [class.gog-autocomplete__option--selected]="isSelected(option)"
           [class.gog-autocomplete__option--disabled]="isOptionDisabled(option)"
+          gogRipple
+          [rippleDisabled]="!rippleEnabled()"
           (mousedown)="onOptionMousedown($event)"
           (click)="onOptionClick(option, $event)"
         >

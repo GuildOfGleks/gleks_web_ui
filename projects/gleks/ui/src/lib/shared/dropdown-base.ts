@@ -28,6 +28,7 @@ import {
   resolveDropdownPlacement,
 } from './dropdown-position';
 import { GogClearableState } from './clearable-state';
+import { resolveRipple } from './ripple-state';
 import { GogErrorState, type GogErrorDisplay } from './error-state';
 import { type GogOptionAccessor, isSameOptionValue, readOption } from './option-accessor';
 import { GogFloatLabelState } from './float-label-state';
@@ -246,6 +247,11 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   readonly floatLabel = input<GogFloatLabelVariant | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.showPlaceholder`, then to `false`. */
   readonly floatLabelShowPlaceholder = input<boolean | undefined>(undefined);
+  /**
+   * Press ripple on the panel's options. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then
+   * to `false`. The trigger itself never ripples — it is a field, not a button.
+   */
+  readonly ripple = input<boolean | undefined>(undefined);
 
   readonly isOpen = signal(false);
 
@@ -342,6 +348,7 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   protected readonly resolvedSize = computed(() =>
     resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),
   );
+  protected readonly rippleEnabled = resolveRipple(this.ripple, this.globalConfig);
   protected readonly resolvedErrorDisplay = computed(() =>
     resolveConfigured(
       this.errorDisplay(),

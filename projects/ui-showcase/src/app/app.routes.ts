@@ -137,6 +137,10 @@ export const routes: Routes = [
       import('./pages/progressbar-page/progressbar-page').then((m) => m.ProgressbarPage),
   },
   {
+    path: 'ripple',
+    loadComponent: () => import('./pages/ripple-page/ripple-page').then((m) => m.RipplePage),
+  },
+  {
     path: 'badge',
     loadComponent: () => import('./pages/badge-page/badge-page').then((m) => m.BadgePage),
   },

@@ -22,3 +22,5 @@
 /* Same reason again: `gogCardHeader`, `gogCardMedia`, `gogCardFooter`, `gogCardLink`,
    `gogPanelHeader` and `gogPanelFooter` all mark a consumer's own element. */
 @import './surfaces.css';
+/* Same reason once more: `gogRipple` paints into a consumer's own element. */
+@import './ripple.css';

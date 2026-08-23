@@ -5,8 +5,8 @@ is one page in and open. The filename still carries no version: it was `panel-ca
 until 21.6.0 shipped without it, and renaming it now buys nothing, since the line above says where
 the work landed.
 
-**Two of iteration 1's answers came out differently from the sketch below.** Read *Iteration 1, as
-resolved* before treating any code block further down as the API.
+**Two of iteration 1's answers came out differently from the sketch below.** Read _Iteration 1, as
+resolved_ before treating any code block further down as the API.
 
 Two surface components: a **card** (a small, self-contained block — a product tile, a summary, a
 list item that has grown up) and a **panel** (a large region — a settings section, a dashboard
@@ -104,8 +104,8 @@ screen reader's landmark list, which is worse than none.
 
 **`interactive` / `interactiveAs` / `href` do not exist. `gogCardLink` does.** The sketch had
 `<gog-card [interactive]="true" (gogClick)>` render a `<button>` or an `<a>` of its own, inferring
-which from `href`. That went once the open question — *copy whatever `gog-button`'s link flavour
-did* — was actually answered: what it did was **not render the element at all**. It made
+which from `href`. That went once the open question — _copy whatever `gog-button`'s link flavour
+did_ — was actually answered: what it did was **not render the element at all**. It made
 `[gogButton]` a directive on the consumer's own `<a>`, precisely so the router's input surface did
 not have to be brokered through a component. The same answer applies here, and three things fall
 out of it that the component-rendered version could not have had:
@@ -126,13 +126,13 @@ tokens (`--gog-panel-radius`, `-shadow`, `-border-width`, `-border-style`) stay 
 are, and the component reads them as its own surface chrome. The alternative — renaming the tier
 to `--gog-surface-*` and keeping the old names alive in a fallback — is a real deprecation cycle
 (35 reads across the library plus ~20 in `theme.css`) bought for a distinction nobody asked for: a
-panel *is* the surface that tier describes. It also points the same way as `themes.md`, whose
+panel _is_ the surface that tier describes. It also points the same way as `themes.md`, whose
 whole argument is that radius, border and shadow should be foundation character rather than
 per-component literals. Rule E never fired, because `panel` is already a foundation namespace.
 
 The one wart it leaves: the elevated variant has no separate instance-tier token for its shadow,
 because `--gog-panel-shadow` is taken. It does not need one — the variant class declares
-`--gog-panel-variant-shadow` *on the host*, so a `var()` inside it resolves against that element,
+`--gog-panel-variant-shadow` _on the host_, so a `var()` inside it resolves against that element,
 and setting `--gog-panel-shadow` on a single panel already changes only that panel. Written into
 `theme.css`'s Panel block, because it is not guessable.
 
@@ -140,7 +140,7 @@ and setting `--gog-panel-shadow` on a single panel already changes only that pan
 an `<h2>`, and `role="button"` on the heading deletes it from the heading list — so the collapse
 toggle is its own button, named by the heading through `aria-labelledby`, with its hit area
 stretched across the header row. The pointer still gets "click the title"; the screen reader gets
-a heading *and* a named expandable button. `gogCollapsibleTrigger`'s div-with-`role="button"` path
+a heading _and_ a named expandable button. `gogCollapsibleTrigger`'s div-with-`role="button"` path
 would have been simpler, and is what Material does; it was rejected for exactly the heading it
 eats.
 
@@ -155,12 +155,12 @@ of its own there, and reads intentionally flatter in light.
 with `<h3 gogPanelHeader>`. Three findings, all of which the remaining 36 templates will hit:
 
 - **The swap is mechanical and the template gets no shorter.** One attribute on the heading, one
-  import pair on the page class, same nesting. What changes is what the page *means*: five named
+  import pair on the page class, same nesting. What changes is what the page _means_: five named
   regions instead of five anonymous `<article>`s.
-- **The hero does not convert.** `.detail__hero` puts an eyebrow `<p>` *above* its `<h2>`, and a
+- **The hero does not convert.** `.detail__hero` puts an eyebrow `<p>` _above_ its `<h2>`, and a
   panel always renders the header slot first. Either the hero keeps the hand-rolled class, or the
   component grows a slot above the header — do not add one for this alone.
-- **`.card` is border *and* shadow, which is not any one variant.** `outlined` drops the shadow,
+- **`.card` is border _and_ shadow, which is not any one variant.** `outlined` drops the shadow,
   `elevated` drops the border. In the dark theme the difference is invisible (the shadow carries
   its own ring); in light, `elevated` reads flatter than the old class. Nothing is broken, but the
   conversion is not pixel-identical, and whoever does the other 36 should expect that.
@@ -169,6 +169,12 @@ The rest is deliberately left. The point of the iteration was to find out whethe
 pleasant to use, and one page answered it; converting the remainder is bulk work with a
 visual-regression tail, and `lab-stackblitz-plan.md`'s one-page-per-commit rule applies to the
 showcase for the same reason.
+
+**The remainder is written out step by step in `docs/showcase-card-to-panel.md`** — the counts
+(250 plain `class="card"` across 38 files, 40 heroes that do not convert, one composite class), the
+nine-step recipe for one page, the page order smallest-first, the verification, and what to do
+when it goes wrong. It is a separate file because it is a checklist to follow rather than a design
+to argue with, and this document is the latter.
 
 ### Iteration 1 — the API, on paper, before any file
 

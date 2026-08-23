@@ -20,6 +20,7 @@ import {
 import { resolveConfigured } from '../../shared/config';
 import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-base';
 import { ButtonComponent } from '../button/button.component';
+import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { GogTooltipDirective } from '../tooltip/tooltip.directive';
@@ -45,7 +46,14 @@ export class GogMultiselectClearIconDirective {
 
 @Component({
   selector: 'gog-multiselect',
-  imports: [ButtonComponent, IconComponent, NgTemplateOutlet, ScrollComponent, GogTooltipDirective],
+  imports: [
+    ButtonComponent,
+    GogRippleDirective,
+    IconComponent,
+    NgTemplateOutlet,
+    ScrollComponent,
+    GogTooltipDirective,
+  ],
   templateUrl: './multiselect.component.html',
   styleUrl: './multiselect.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

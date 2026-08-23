@@ -152,7 +152,7 @@ variant and size classes:
 >
 > And one prefix that means two things on purpose: **`--gog-panel-*`**. Four of them —
 > `--gog-panel-radius`, `--gog-panel-shadow`, `--gog-panel-border-width`,
-> `--gog-panel-border-style` — are the *foundation* surface tier that dialogs, dropdown panels and
+> `--gog-panel-border-style` — are the _foundation_ surface tier that dialogs, dropdown panels and
 > tooltips read, and the `gog-panel` component reads them too rather than owning a fourth copy of
 > "what a raised surface looks like here". Change one and every raised surface follows, which is
 > the intent; the rest of `--gog-panel-*` belongs to the component alone.
@@ -201,14 +201,20 @@ provideGogConfig({
   control: { size: 'sm', errorDisplay: 'auto', clearable: true },
   dropdown: { appendToBody: true },
   datepicker: { locale: 'de-DE', format: 'dd.MM.yyyy' },
+  ripple: { enabled: true }, // press feedback on every interactive surface at once
   labels: { clear: 'Очистить', selectAll: 'Выбрать все' }, // translate the library once
 });
 ```
 
 Keys: `control`, `dropdown`, `floatLabel`, `datepicker`, `autocomplete`, `inputfield`, `textarea`,
-`tooltip`, `scroll`, `button`, `paginator`, `toast`, `theme`, `labels`. An instance's own input
-always wins, and providing the config again lower in the injector tree layers onto the parent
-rather than replacing it.
+`tooltip`, `scroll`, `button`, `ripple`, `paginator`, `toast`, `theme`, `labels`. An instance's own
+input always wins, and providing the config again lower in the injector tree layers onto the
+parent rather than replacing it.
+
+`ripple` is the one visual default that is not a token, and the exception is deliberate:
+`--gog-ripple-opacity: 0` would hide the wash but still pay for the DOM node, the listeners and
+the animation frames, so a real off has to reach the TypeScript. It is **off by default**, and
+every rippling component takes a `ripple` input that beats it in both directions.
 
 Icons work the same way — 41 Lucide glyphs ship with the package, and your own register by name:
 
@@ -250,13 +256,14 @@ dropdowns, always for the menu.
 | Form controls       | `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`, `gog-checkbox`, `gog-radio-group`, `gog-toggle`, `gog-slider`, `gog-datepicker`, `gog-calendar`, `gog-button-toggle-group` |
 | Actions             | `gog-button`, `gog-chip`                                                                                                                                                                                          |
 | Data                | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag`                                                                                                                                                          |
-| Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-card`, `gog-panel`, `gog-divider`, `gog-scroll`                                                                                              |
+| Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-card`, `gog-panel`, `gog-divider`, `gog-scroll`                                                                                                |
 | Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`), `gog-menu` (+ `gogMenuTrigger` / `gogMenuItem`)                                                                                   |
 | Feedback            | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton`                                                                                                                                           |
 | Content             | `gog-icon`                                                                                                                                                                                                        |
 
 **Directives:** `gogButton` (a link that looks like a button), `gogTooltip`, `gogBadge`,
-`gogCollapsibleTrigger`, `gogCollapsibleContent`, `gogCardLink` (a link the whole card activates).
+`gogRipple` (a press wash on any element), `gogCollapsibleTrigger`, `gogCollapsibleContent`,
+`gogCardLink` (a link the whole card activates).
 **Services:** `DialogService`, `ToastService`, `ThemeService`.
 
 Seventeen more directives go on markup you own rather than configuring a component through an

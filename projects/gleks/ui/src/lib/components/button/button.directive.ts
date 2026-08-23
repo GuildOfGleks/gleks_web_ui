@@ -1,6 +1,8 @@
 import { Directive, booleanAttribute, computed, inject, input } from '@angular/core';
 
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+import { resolveRipple } from '../../shared/ripple-state';
+import { bindRipple } from '../ripple/ripple-controller';
 import { GogSize, GogVariant } from '../../shared/types';
 
 /** Built-in default, used when neither the instance input nor `GOG_CONFIG` supplies one. */
@@ -64,9 +66,16 @@ export class GogButtonDirective {
    * Stretches the element to its container's width. A bare attribute is enough:
    * `<a gogButton fullWidth>`.
    */
+  /**
+   * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
+   * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
+   */
+  readonly ripple = input<boolean | undefined>(undefined);
   readonly fullWidth = input(false, { transform: booleanAttribute });
 
   private readonly globalConfig = inject(GOG_CONFIG);
+  private readonly rippleEnabled = resolveRipple(this.ripple, this.globalConfig);
+  private readonly rippleControl = bindRipple(this.rippleEnabled);
 
   private readonly resolvedSize = computed(() =>
     resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),

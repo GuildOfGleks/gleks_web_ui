@@ -938,6 +938,11 @@ export type GogTokenName =
   | '--gog-radio-padding'
   | '--gog-radio-transition-duration'
   | '--gog-radius'
+  | '--gog-ripple-color'
+  | '--gog-ripple-easing'
+  | '--gog-ripple-enter-duration'
+  | '--gog-ripple-exit-duration'
+  | '--gog-ripple-opacity'
   | '--gog-scroll-corner-bg'
   | '--gog-scroll-fade-duration'
   | '--gog-scroll-focus-ring'
@@ -2484,6 +2489,17 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-progressbar-warning-bg',
       '--gog-progressbar-warning-buffer-bg',
       '--gog-progressbar-xsm-height',
+    ],
+  },
+  {
+    section: 'Ripple (the `gogRipple` directive; its classes live in ripple.css)',
+    layer: 'component',
+    tokens: [
+      '--gog-ripple-color',
+      '--gog-ripple-easing',
+      '--gog-ripple-enter-duration',
+      '--gog-ripple-exit-duration',
+      '--gog-ripple-opacity',
     ],
   },
   {
