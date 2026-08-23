@@ -27,9 +27,12 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
 
 - **Missing components**, in rough order of how often a real site wants them: `alert`/`banner` (a
   persistent in-flow message — `gog-toast` is transient and cannot serve this), `avatar`,
-  `breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`, `card`. Each is additive and
+  `breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`. Each is additive and
   independent; none blocks anything else. `gog-menu` is pulled forward into iteration 6 only
-  because the library already ships the icons for it.
+  because the library already ships the icons for it. **`card` came off this list in 21.6.1**,
+  together with `gog-panel` — see `docs/panel-card.md`. `empty state` is the next one with a plan
+  waiting to be written, and that plan is the same argument as the card's: it has to own something
+  a class cannot.
 
 - **`gog-table`'s ceiling:** no column resize or reorder, no sticky columns, no expandable rows,
   no grouping. Possibly the right boundary for a lightweight library — but state it in the README

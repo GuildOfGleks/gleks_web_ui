@@ -149,6 +149,13 @@ variant and size classes:
 > text-field block that both `gog-inputfield` and `gog-textarea` render (`.gog-input__field`), not
 > the `gog-inputfield` component — the two are meant to restyle together from one token set, so
 > there is no `--gog-inputfield-*` and there will not be one.
+>
+> And one prefix that means two things on purpose: **`--gog-panel-*`**. Four of them —
+> `--gog-panel-radius`, `--gog-panel-shadow`, `--gog-panel-border-width`,
+> `--gog-panel-border-style` — are the *foundation* surface tier that dialogs, dropdown panels and
+> tooltips read, and the `gog-panel` component reads them too rather than owning a fourth copy of
+> "what a raised surface looks like here". Change one and every raised surface follows, which is
+> the intent; the rest of `--gog-panel-*` belongs to the component alone.
 
 Every group and token name is in **[`TOKENS.md`](./TOKENS.md)**, generated from `theme.css` so it
 cannot drift, and available at runtime as `GOG_TOKEN_GROUPS`.
@@ -243,13 +250,13 @@ dropdowns, always for the menu.
 | Form controls       | `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`, `gog-checkbox`, `gog-radio-group`, `gog-toggle`, `gog-slider`, `gog-datepicker`, `gog-calendar`, `gog-button-toggle-group` |
 | Actions             | `gog-button`, `gog-chip`                                                                                                                                                                                          |
 | Data                | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag`                                                                                                                                                          |
-| Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-divider`, `gog-scroll`                                                                                                                         |
+| Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-card`, `gog-panel`, `gog-divider`, `gog-scroll`                                                                                              |
 | Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`), `gog-menu` (+ `gogMenuTrigger` / `gogMenuItem`)                                                                                   |
 | Feedback            | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton`                                                                                                                                           |
 | Content             | `gog-icon`                                                                                                                                                                                                        |
 
 **Directives:** `gogButton` (a link that looks like a button), `gogTooltip`, `gogBadge`,
-`gogCollapsibleTrigger`, `gogCollapsibleContent`.
+`gogCollapsibleTrigger`, `gogCollapsibleContent`, `gogCardLink` (a link the whole card activates).
 **Services:** `DialogService`, `ToastService`, `ThemeService`.
 
 Seventeen more directives go on markup you own rather than configuring a component through an
@@ -270,6 +277,14 @@ A few things worth knowing before you reach for a workaround:
   They also generate their own `id`, so labels and error messages are wired up without `inputId`.
 - **`gog-collapsible` is headless** — no markup of its own. Project any element as the trigger and
   any element as the panel.
+- **A clickable `gog-card` has no `interactive` input.** Put `gogCardLink` on the `<a>` the card is
+  about — usually the one in its heading — and the whole surface activates that link, keyboard,
+  middle-click and `routerLink` included. Same reasoning as `gog-button` above: the element stays
+  yours. Anything else focusable in the card keeps receiving its own clicks.
+- **`gog-panel` shares the `--gog-panel-*` prefix with the foundation surface tier.**
+  `--gog-panel-radius`, `--gog-panel-shadow` and the border pair are the tokens dialogs and
+  dropdown panels already read, so a theme's idea of a raised surface reaches the component for
+  free. Its own family (background, padding, heading, toggle, footer) sits alongside them.
 - **`[(ngModel)]` is untested.** The library never imports `FormsModule`; use Reactive Forms.
 
 ## Documentation

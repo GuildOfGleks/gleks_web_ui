@@ -90,6 +90,8 @@ export class App {
     { path: 'skeleton', label: 'Skeleton' },
     { path: 'accordion', label: 'Accordion' },
     { path: 'collapsible', label: 'Collapsible' },
+    { path: 'card', label: 'Card' },
+    { path: 'panel', label: 'Panel' },
     { path: 'toast', label: 'Toast' },
     { path: 'tooltip', label: 'Tooltip' },
     { path: 'tag', label: 'Tag' },

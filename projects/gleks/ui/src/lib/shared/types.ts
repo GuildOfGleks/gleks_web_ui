@@ -1,6 +1,13 @@
 ﻿export type GogSize = 'xsm' | 'sm' | 'md' | 'lg' | 'slg';
 export type GogVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 /**
+ * How a surface paints itself, shared by `gog-card` and `gog-panel` so the two agree:
+ * - `'outlined'` — a border, no shadow. The quietest, and right for a grid of many.
+ * - `'elevated'` — the shared surface shadow (`--gog-panel-shadow`), no border.
+ * - `'filled'` — a tinted background, neither border nor shadow.
+ */
+export type GogSurfaceVariant = 'outlined' | 'elevated' | 'filled';
+/**
  * Which way a component lays its children out. Shared rather than re-declared per component:
  * `gog-radio-group`, `gog-slider`, `gog-divider`, `gog-tabs` and `gog-button-toggle-group` all
  * mean the same thing by it, and `roving-focus.ts` picks its arrow pair from this.

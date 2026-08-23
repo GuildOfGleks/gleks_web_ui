@@ -5,7 +5,7 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.5.1`**. 21.5.0 removed a batch
+Everything below reflects the library's actual source as of **`21.6.1`**. 21.5.0 removed a batch
 of deprecated API — see **Removed in 21.5.0** near the end of this file, which exists so code
 written against 21.4.x can be migrated — and `CHANGELOG.md` has the rest. `README.md` covers the
 same ground at a higher level — install, setup, theming, global configuration — and is accurate;
@@ -267,6 +267,7 @@ provideGogConfig({
     previousPage: 'Предыдущая страница',
     nextPage: 'Следующая страница',
     openCalendar: 'Открыть календарь',
+    togglePanel: 'Свернуть раздел', // gog-panel's toggle, only when it has no heading
     rowsPerPage: 'Строк на странице', // gog-paginator's size select
     total: 'Всего', // gog-table's row-count label
     tablePagination: 'Навигация по таблице',
@@ -1108,6 +1109,92 @@ hidden via `[hidden]` while inactive — preserves scroll/input state).
 </gog-tabs>
 ```
 
+#### `gog-card` + `gogCardHeader` / `gogCardMedia` / `gogCardFooter` / `gogCardLink`
+
+A surface for one self-contained thing — a product tile, a summary, a search result.
+
+| Input           | Type                                                | Default                                        |
+| --------------- | --------------------------------------------------- | ---------------------------------------------- |
+| `variant`       | `GogSurfaceVariant` (`'outlined'\|'elevated'\|'filled'`) | `'outlined'`                              |
+| `size`          | `GogSize`                                           | `'md'` — drives padding and the row gap        |
+| `disabled`      | `boolean` (bare attribute works)                    | `false`                                        |
+| `loading`       | `boolean` (bare attribute works)                    | `false`                                        |
+| `skeletonLines` | `number`                                            | `2` — body lines shown while `loading`         |
+
+No outputs. Slots, all **attribute** directives on your own elements (not `ng-template`):
+`gogCardHeader`, `gogCardMedia`, `gogCardFooter`, `gogCardLink`. Layout order is fixed by the
+component — media, heading, body (the default slot), footer — not by the order you write them.
+
+```html
+<gog-card>
+  <img gogCardMedia [src]="person.photo" alt="" />
+  <h3 gogCardHeader><a gogCardLink [routerLink]="['/people', person.id]">{{ person.name }}</a></h3>
+  <p>{{ person.role }}</p>
+  <div gogCardFooter><gog-button size="xsm" (gogClick)="shortlist(person)">Shortlist</gog-button></div>
+</gog-card>
+```
+
+- **`gogCardHeader` names the card.** The card reads that element's `id` (minting one if it has
+  none) and points its own `aria-labelledby` at it, with `role="group"`. A card with no header
+  gets neither — an unnamed group is noise, not structure. The heading level is yours; the visual
+  size comes from `--gog-card-heading-font-size` regardless of it.
+- **There is no `interactive` input, and no `gogClick` output.** A card becomes interactive by
+  *containing* a `gogCardLink`, which stretches that link's hit area over the whole surface. The
+  link stays yours: `routerLink`, `href`, `target`, middle-click, "open in new tab" and Enter all
+  behave normally, and the focus ring is drawn around the card. `gogCardLink` only applies to
+  `<a>` and `<button>` — on a `<div>` it does nothing, deliberately.
+- **Other controls inside an interactive card still get their own clicks.** A footer button, a
+  checkbox, a second link: each sits above the stretched hit area automatically.
+- Two costs of the pattern, inherent to it: text in the card cannot be selected by dragging, and
+  a second link is reachable by keyboard but not by clicking the surface around it.
+- **`loading`** replaces the content with a title bar plus `skeletonLines` text lines and sets
+  `aria-busy`; **`disabled`** dims the card, sets `aria-disabled`, and takes the card link out of
+  the tab order. Both make the link non-clickable. For a *refresh* of a card that already has
+  content, project a `gog-spinner-overlay` instead — `loading` is the first-paint treatment.
+- `gogCardMedia` runs full-bleed to the card's edges, and rounds into its top corners when it is
+  the first element in the card.
+
+#### `gog-panel` + `gogPanelHeader` / `gogPanelFooter`
+
+A titled region of a page — a settings section, a dashboard area, a form group.
+
+| Input           | Type                                                | Default                                        |
+| --------------- | --------------------------------------------------- | ---------------------------------------------- |
+| `variant`       | `GogSurfaceVariant`                                 | `'elevated'`                                   |
+| `size`          | `GogSize`                                           | `'lg'`                                         |
+| `collapsible`   | `boolean` (bare attribute works)                    | `false`                                        |
+| `disabled`      | `boolean` (bare attribute works)                    | `false`                                        |
+| `loading`       | `boolean` (bare attribute works)                    | `false`                                        |
+| `skeletonLines` | `number`                                            | `3`                                            |
+
+Model: `open: boolean` (default `true`, ignored while `collapsible` is off). No outputs beyond
+`openChange`. Slots: `gogPanelHeader`, `gogPanelFooter` — attribute directives on your elements.
+
+```html
+<gog-panel [collapsible]="true" [(open)]="notificationsOpen">
+  <h2 gogPanelHeader>Notifications</h2>
+  <gog-checkbox label="Email digest" [(checked)]="emailDigest" />
+  <div gogPanelFooter><gog-button size="xsm">Save</gog-button></div>
+</gog-panel>
+```
+
+- **It is a landmark.** With a `gogPanelHeader` it renders `role="region"` named by that heading —
+  which is why the panel gets one and `gog-card` gets `role="group"`: a handful of named regions
+  is how a page is navigated, a landmark per card would bury that list.
+- **Collapsing composes `gog-collapsible`**, so the state, the id wiring and the animation are the
+  library's existing ones. The heading stays a heading: the toggle is a separate `<button>` named
+  by it through `aria-labelledby`, with its hit area stretched across the header row so clicking
+  the title works for the pointer. Without a header the toggle falls back to
+  `GOG_CONFIG.labels.togglePanel` (default `'Toggle section'`).
+- **A non-collapsible panel does not clip.** It undoes the collapse geometry it inherits,
+  `overflow` included, so a dropdown or menu opened inside it escapes the panel's box. A
+  *collapsible* one does clip while animating, exactly like `gog-collapsible` — prefer
+  `[appendToBody]` for an overlay inside one.
+- **`loading` keeps the heading and the footer** and replaces only the body: a page section is
+  titled before its content arrives, and blanking the title would move the layout twice.
+- **The surface is never itself a link** — there is no `gogPanelLink`. Controls live inside a
+  panel, and a region that is a link cannot hold them. Use `gog-card` for that.
+
 #### `gog-paginator`
 
 | Input                           | Type                                             | Default                                            |
@@ -1508,6 +1595,7 @@ Shared enum-like types (`import type { ... } from '@guildofgleks/ui'`):
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `GogSize`                     | `'xsm' \| 'sm' \| 'md' \| 'lg' \| 'slg'`                                                                            |
 | `GogVariant`                  | `'primary' \| 'secondary' \| 'outline' \| 'ghost'`                                                                  |
+| `GogSurfaceVariant`           | `'outlined' \| 'elevated' \| 'filled'` — `gog-card` and `gog-panel`                                                |
 | `GogTagVariant`               | `'success' \| 'danger' \| 'warning' \| 'info'`                                                                      |
 | `GogOrientation`              | `'horizontal' \| 'vertical'`                                                                                        |
 | `GogTagShape`                 | `'rounded' \| 'pill'`                                                                                               |

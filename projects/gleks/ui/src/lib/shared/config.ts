@@ -218,6 +218,12 @@ export interface GogGlobalConfig {
     page?: (page: number, isCurrent: boolean) => string;
     /** `gog-datepicker`'s button that opens the calendar panel. */
     openCalendar?: string;
+    /**
+     * `gog-panel`'s collapse toggle, used **only** when the panel has no `gogPanelHeader` to
+     * borrow a name from. A panel with a heading names its toggle after that heading, which is
+     * both more useful and per-instance by definition.
+     */
+    togglePanel?: string;
     /** `gog-paginator`'s rows-per-page select. */
     rowsPerPage?: string;
     /** `gog-table`: the row-count label, its paginator, and the selection checkboxes. */

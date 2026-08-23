@@ -1,0 +1,136 @@
+/*
+ * `gog-card` paints its own host element — there is no wrapper `<div>` inside it, so a card in a
+ * CSS grid is a grid item and a card in a flex row is a flex item, with no extra box in between.
+ *
+ * The classes for the three *projected* pieces (`gogCardHeader`, `gogCardMedia`, `gogCardFooter`)
+ * and for `gogCardLink` are NOT here: those elements belong to the consumer's view, which a
+ * scoped stylesheet cannot reach. They live in `styles/surfaces.css`, global for the same reason
+ * `gog-collapsible`'s trigger/content classes are.
+ */
+:host {
+  /* The containing block for `gogCardLink`'s stretched hit area. */
+  position: relative;
+  display: block;
+  padding: var(--gog-card-padding-y, var(--gog-card-size-padding-y, var(--gog-card-md-padding-y)))
+    var(--gog-card-padding-x, var(--gog-card-size-padding-x, var(--gog-card-md-padding-x)));
+  border: var(--gog-card-border-width) var(--gog-card-border-style)
+    var(
+      --gog-card-border-color,
+      var(--gog-card-variant-border-color, var(--gog-card-outlined-border-color))
+    );
+  border-radius: var(--gog-card-radius);
+  background: var(--gog-card-bg, var(--gog-card-variant-bg, var(--gog-card-outlined-bg)));
+  box-shadow: var(
+    --gog-card-shadow,
+    var(--gog-card-variant-shadow, var(--gog-card-outlined-shadow))
+  );
+  color: var(--gog-card-color);
+  font-family: var(--gog-card-font-family);
+  transition:
+    border-color var(--gog-card-transition-duration) var(--gog-easing),
+    box-shadow var(--gog-card-transition-duration) var(--gog-easing);
+}
+
+/* ── Variants ──────────────────────────────────────────────────────────────────
+   Each re-maps the *variant* tier only. The instance tier above it stays undeclared
+   so an instance-level `--gog-card-bg` (set on the element) still wins over any of these. */
+:host(.gog-card--outlined) {
+  --gog-card-variant-bg: var(--gog-card-outlined-bg);
+  --gog-card-variant-border-color: var(--gog-card-outlined-border-color);
+  --gog-card-variant-shadow: var(--gog-card-outlined-shadow);
+}
+
+:host(.gog-card--elevated) {
+  --gog-card-variant-bg: var(--gog-card-elevated-bg);
+  --gog-card-variant-border-color: var(--gog-card-elevated-border-color);
+  --gog-card-variant-shadow: var(--gog-card-elevated-shadow);
+}
+
+:host(.gog-card--filled) {
+  --gog-card-variant-bg: var(--gog-card-filled-bg);
+  --gog-card-variant-border-color: var(--gog-card-filled-border-color);
+  --gog-card-variant-shadow: var(--gog-card-filled-shadow);
+}
+
+/* ── Sizes ─────────────────────────────────────────────────────────────────── */
+:host(.gog-card--xsm) {
+  --gog-card-size-padding-y: var(--gog-card-xsm-padding-y);
+  --gog-card-size-padding-x: var(--gog-card-xsm-padding-x);
+  --gog-card-size-gap: var(--gog-card-xsm-gap);
+}
+
+:host(.gog-card--sm) {
+  --gog-card-size-padding-y: var(--gog-card-sm-padding-y);
+  --gog-card-size-padding-x: var(--gog-card-sm-padding-x);
+  --gog-card-size-gap: var(--gog-card-sm-gap);
+}
+
+:host(.gog-card--md) {
+  --gog-card-size-padding-y: var(--gog-card-md-padding-y);
+  --gog-card-size-padding-x: var(--gog-card-md-padding-x);
+  --gog-card-size-gap: var(--gog-card-md-gap);
+}
+
+:host(.gog-card--lg) {
+  --gog-card-size-padding-y: var(--gog-card-lg-padding-y);
+  --gog-card-size-padding-x: var(--gog-card-lg-padding-x);
+  --gog-card-size-gap: var(--gog-card-lg-gap);
+}
+
+:host(.gog-card--slg) {
+  --gog-card-size-padding-y: var(--gog-card-slg-padding-y);
+  --gog-card-size-padding-x: var(--gog-card-slg-padding-x);
+  --gog-card-size-gap: var(--gog-card-slg-gap);
+}
+
+/* ── Interactive ───────────────────────────────────────────────────────────────
+   Driven by the presence of a `gogCardLink`, never by an input. The focus ring is not
+   here but on that link's stretched pseudo-element (surfaces.css): `:focus-within` would
+   also ring the card when focus is on a button in its footer, which says the wrong thing. */
+:host(.gog-card--interactive) {
+  cursor: pointer;
+}
+
+:host(.gog-card--interactive:hover) {
+  border-color: var(--gog-card-hover-border-color);
+  box-shadow: var(--gog-card-hover-shadow);
+}
+
+:host(.gog-card--disabled) {
+  cursor: not-allowed;
+  opacity: var(--gog-card-disabled-opacity);
+}
+
+.gog-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-card-gap, var(--gog-card-size-gap, var(--gog-card-md-gap)));
+}
+
+/* `display: none` rather than `visibility: hidden`: the card collapses to the height of its
+   placeholder instead of reserving the height of content nobody can see yet. */
+.gog-card__content--hidden {
+  display: none;
+}
+
+.gog-card__body {
+  min-width: 0;
+}
+
+/* Nothing projected into the default slot — without this the flex gap would still reserve a row
+   for it, e.g. on a card that is only a heading and a footer. */
+.gog-card__body:empty {
+  display: none;
+}
+
+.gog-card__placeholder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-card-gap, var(--gog-card-size-gap, var(--gog-card-md-gap)));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    transition: none;
+  }
+}

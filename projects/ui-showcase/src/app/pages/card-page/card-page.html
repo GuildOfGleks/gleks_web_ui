@@ -1,0 +1,134 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-card</p>
+    <h2>Card</h2>
+    <p class="lead">
+      A surface for one self-contained thing. What it adds over a <code>.card</code> class of your
+      own is what a class cannot do: it takes its accessible name from the projected
+      <code>gogCardHeader</code> heading, it folds in <code>loading</code> and
+      <code>disabled</code>, and <code>gogCardLink</code> makes the whole surface activate a real
+      link — your <code>&lt;a&gt;</code>, with your <code>routerLink</code> still on it.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Variants</h3>
+    <p class="meta">
+      <code>outlined</code> is the default: a border and no shadow, which is what a grid of many
+      wants. <code>elevated</code> takes the shared surface shadow — the same one dialogs and
+      dropdown panels use. <code>filled</code> is a tint, neither border nor shadow.
+    </p>
+    <div class="card-demo__grid">
+      @for (variant of variants; track variant) {
+        <gog-card [variant]="variant">
+          <h4 gogCardHeader>{{ variant }}</h4>
+          <p class="card-demo__text">
+            Three sentences of body copy, projected as-is into the default slot.
+          </p>
+        </gog-card>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Sizes</h3>
+    <p class="meta">
+      <code>size</code> drives padding and the gap between the card's rows, on the same five-tier
+      scale as every control.
+    </p>
+    <div class="card-demo__grid">
+      @for (size of sizes; track size) {
+        <gog-card [size]="size">
+          <h4 gogCardHeader>{{ size }}</h4>
+          <p class="card-demo__text">Padding and row gap follow the size.</p>
+        </gog-card>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Interactive — the whole surface activates one real link</h3>
+    <p class="meta">
+      No <code>interactive</code> input: the card becomes interactive because it holds a
+      <code>gogCardLink</code>. The link below is an ordinary <code>routerLink</code>, so
+      middle-click, "open in new tab" and the keyboard all behave the way they do anywhere else —
+      and the footer button still receives its own clicks instead of the card's link swallowing
+      them.
+    </p>
+    <div class="card-demo__grid">
+      @for (person of people; track person.id) {
+        <gog-card>
+          <img [src]="mediaSrc" gogCardMedia alt="" height="120" />
+          <h4 gogCardHeader>
+            <a gogCardLink routerLink="/catalog" [fragment]="person.id">{{ person.name }}</a>
+          </h4>
+          <p class="card-demo__text">{{ person.role }} · {{ person.years }}</p>
+          <div gogCardFooter>
+            <gog-tag variant="info">Profile</gog-tag>
+            <gog-button size="xsm" variant="ghost" (gogClick)="footerClicks.set(footerClicks() + 1)"
+              >Shortlist</gog-button
+            >
+          </div>
+        </gog-card>
+      }
+    </div>
+    <p class="meta">Footer clicks that reached their own button: {{ footerClicks() }}</p>
+  </article>
+
+  <article class="card">
+    <h3>Loading and disabled</h3>
+    <p class="meta">
+      <code>loading</code> swaps the content for placeholders shaped like a title and body copy, and
+      marks the host <code>aria-busy</code> — the region treatment, not a spinner.
+      <code>disabled</code> dims the card and takes its link out of the tab order: Tab past the pair
+      below and only the enabled one stops.
+    </p>
+    <div class="states-row">
+      <div class="states-row__item">
+        <p class="states-row__label">
+          <gog-button size="xsm" variant="outline" (gogClick)="loading.set(!loading())">
+            {{ loading() ? 'Finish loading' : 'Load again' }}
+          </gog-button>
+        </p>
+        <gog-card [loading]="loading()" [skeletonLines]="3">
+          <h4 gogCardHeader>Quarterly summary</h4>
+          <p class="card-demo__text">
+            Revenue is up 12% on the quarter, driven mostly by renewals rather than new business.
+          </p>
+        </gog-card>
+      </div>
+
+      <div class="states-row__item">
+        <p class="states-row__label">
+          <gog-button size="xsm" variant="outline" (gogClick)="disabled.set(!disabled())">
+            {{ disabled() ? 'Enable' : 'Disable' }}
+          </gog-button>
+        </p>
+        <gog-card [disabled]="disabled()">
+          <h4 gogCardHeader><a gogCardLink routerLink="/catalog">Archived report</a></h4>
+          <p class="card-demo__text">Read-only once the quarter closes.</p>
+        </gog-card>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Theming</h3>
+    <p class="meta">
+      Every value comes from a <code>--gog-card-*</code> token, and the instance tier
+      (<code>--gog-card-bg</code>, <code>--gog-card-border-color</code>,
+      <code>--gog-card-shadow</code>, <code>--gog-card-padding-y</code>,
+      <code>--gog-card-padding-x</code>, <code>--gog-card-gap</code>) is undeclared on purpose, so
+      setting one on an element beats the variant and size classes without a specificity fight.
+    </p>
+    <div class="card-demo__grid card-demo__grid--themed">
+      <gog-card class="card-demo__themed">
+        <h4 gogCardHeader>Overridden per instance</h4>
+        <p class="card-demo__text">
+          One class in this page's stylesheet sets three instance tokens. No
+          <code>::ng-deep</code>.
+        </p>
+      </gog-card>
+    </div>
+  </article>
+</section>

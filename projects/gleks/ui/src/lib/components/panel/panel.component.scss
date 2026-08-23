@@ -1,0 +1,204 @@
+/*
+ * `gog-panel` paints its own host element. The classes for the two *projected* pieces
+ * (`gogPanelHeader`, `gogPanelFooter`) are in `styles/surfaces.css` instead: those elements
+ * belong to the consumer's view, which a scoped stylesheet cannot reach.
+ *
+ * On the `--gog-panel-*` prefix: `--gog-panel-radius`, `--gog-panel-shadow`,
+ * `--gog-panel-border-width` and `--gog-panel-border-style` already existed as the *foundation*
+ * surface tier that dropdown panels, dialogs and tooltips read. This component adopts them as
+ * its own rather than taking a different family name or renaming the tier — a panel is the
+ * canonical thing that tier describes, and a theme that sets a house radius for raised surfaces
+ * should get it here too. That is also the direction `docs/themes.md` is taking the token model.
+ * Everything else below is this component's own, and none of it collides.
+ */
+:host {
+  display: block;
+  padding: var(
+      --gog-panel-padding-y,
+      var(--gog-panel-size-padding-y, var(--gog-panel-lg-padding-y))
+    )
+    var(--gog-panel-padding-x, var(--gog-panel-size-padding-x, var(--gog-panel-lg-padding-x)));
+  border: var(--gog-panel-border-width) var(--gog-panel-border-style)
+    var(
+      --gog-panel-border-color,
+      var(--gog-panel-variant-border-color, var(--gog-panel-elevated-border-color))
+    );
+  border-radius: var(--gog-panel-radius);
+  background: var(--gog-panel-bg, var(--gog-panel-variant-bg, var(--gog-panel-elevated-bg)));
+  /*
+   * The one token with no separate instance tier, because the name it would take is already
+   * the foundation one. It does not need one: each variant below declares
+   * `--gog-panel-variant-shadow` *on the host*, so a `var()` inside it resolves against this
+   * element — set `--gog-panel-shadow` on a single `gog-panel` and only that panel changes.
+   */
+  box-shadow: var(--gog-panel-variant-shadow, var(--gog-panel-shadow));
+  color: var(--gog-panel-color);
+  font-family: var(--gog-panel-font-family);
+}
+
+/* ── Variants ─────────────────────────────────────────────────────────────────
+   Each re-maps the variant tier only; the instance tier above stays undeclared so a
+   consumer setting `--gog-panel-bg` on the element still wins. */
+:host(.gog-panel--outlined) {
+  --gog-panel-variant-bg: var(--gog-panel-outlined-bg);
+  --gog-panel-variant-border-color: var(--gog-panel-outlined-border-color);
+  --gog-panel-variant-shadow: var(--gog-panel-outlined-shadow);
+}
+
+:host(.gog-panel--elevated) {
+  --gog-panel-variant-bg: var(--gog-panel-elevated-bg);
+  --gog-panel-variant-border-color: var(--gog-panel-elevated-border-color);
+  /* The foundation surface shadow itself, not a component copy of it — see the file header. */
+  --gog-panel-variant-shadow: var(--gog-panel-shadow);
+}
+
+:host(.gog-panel--filled) {
+  --gog-panel-variant-bg: var(--gog-panel-filled-bg);
+  --gog-panel-variant-border-color: var(--gog-panel-filled-border-color);
+  --gog-panel-variant-shadow: var(--gog-panel-filled-shadow);
+}
+
+/* ── Sizes ─────────────────────────────────────────────────────────────────── */
+:host(.gog-panel--xsm) {
+  --gog-panel-size-padding-y: var(--gog-panel-xsm-padding-y);
+  --gog-panel-size-padding-x: var(--gog-panel-xsm-padding-x);
+  --gog-panel-size-gap: var(--gog-panel-xsm-gap);
+}
+
+:host(.gog-panel--sm) {
+  --gog-panel-size-padding-y: var(--gog-panel-sm-padding-y);
+  --gog-panel-size-padding-x: var(--gog-panel-sm-padding-x);
+  --gog-panel-size-gap: var(--gog-panel-sm-gap);
+}
+
+:host(.gog-panel--md) {
+  --gog-panel-size-padding-y: var(--gog-panel-md-padding-y);
+  --gog-panel-size-padding-x: var(--gog-panel-md-padding-x);
+  --gog-panel-size-gap: var(--gog-panel-md-gap);
+}
+
+:host(.gog-panel--lg) {
+  --gog-panel-size-padding-y: var(--gog-panel-lg-padding-y);
+  --gog-panel-size-padding-x: var(--gog-panel-lg-padding-x);
+  --gog-panel-size-gap: var(--gog-panel-lg-gap);
+}
+
+:host(.gog-panel--slg) {
+  --gog-panel-size-padding-y: var(--gog-panel-slg-padding-y);
+  --gog-panel-size-padding-x: var(--gog-panel-slg-padding-x);
+  --gog-panel-size-gap: var(--gog-panel-slg-gap);
+}
+
+:host(.gog-panel--disabled) {
+  opacity: var(--gog-panel-disabled-opacity);
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────────
+   `position: relative` is what the toggle's stretched hit area is measured against. */
+.gog-panel__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gog-panel-header-gap);
+  margin-block-end: var(--gog-panel-gap, var(--gog-panel-size-gap, var(--gog-panel-lg-gap)));
+}
+
+/* A closed panel's header is the whole panel: the margin below it would be padding nobody
+   can see the point of. */
+:host(.gog-panel--closed) .gog-panel__header {
+  margin-block-end: 0;
+}
+
+.gog-panel__toggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--gog-panel-toggle-size);
+  height: var(--gog-panel-toggle-size);
+  padding: 0;
+  border: none;
+  border-radius: var(--gog-panel-toggle-radius);
+  background: none;
+  color: var(--gog-panel-toggle-color);
+}
+
+/*
+ * The hit area. A header row is what a pointer aims at to collapse a section, but the row
+ * itself must not be the control — the heading in it has to stay a heading. So the real
+ * `<button>` keeps its own semantics and only grows a stretched pseudo-element over the row.
+ * Anything else focusable in the header sits above it (see surfaces.css).
+ */
+.gog-panel__toggle::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+}
+
+.gog-panel__toggle:hover {
+  background: var(--gog-panel-toggle-hover-bg);
+}
+
+.gog-panel__toggle:focus-visible {
+  outline: none;
+}
+
+/* The ring is drawn around the whole header row, because that is the whole hit area. */
+.gog-panel__toggle:focus-visible::after {
+  border-radius: var(--gog-panel-toggle-radius);
+  outline: var(--gog-panel-focus-ring-width) solid var(--gog-panel-focus-ring);
+  outline-offset: var(--gog-panel-focus-ring-offset);
+}
+
+.gog-panel__chevron {
+  width: var(--gog-panel-chevron-size);
+  height: var(--gog-panel-chevron-size);
+  transition: transform var(--gog-panel-transition-duration) var(--gog-easing);
+}
+
+/* Points down when open, along the reading direction when closed — hence the direction sign
+   rather than a fixed -90deg, which would point away from the text in an RTL layout. */
+:host(.gog-panel--closed) .gog-panel__chevron {
+  transform: rotate(calc(var(--gog-direction-sign) * -90deg));
+}
+
+/* ── Body ─────────────────────────────────────────────────────────────────── */
+.gog-panel__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-panel-gap, var(--gog-panel-size-gap, var(--gog-panel-lg-gap)));
+}
+
+/*
+ * Undoes `.gog-collapsible__content`'s closed-state geometry for a panel that cannot collapse.
+ * `overflow` is the one that matters beyond looks: the shared class hides it so the height
+ * animation has something to clip, and left in place it would cut off any dropdown, tooltip or
+ * menu opened inside a panel that was never going to move.
+ */
+.gog-panel__content--static {
+  max-height: none;
+  overflow: visible;
+  opacity: 1;
+  transition: none;
+}
+
+.gog-panel__body {
+  min-width: 0;
+}
+
+/* Nothing projected into the default slot — without this the flex gap would still reserve a row
+   for it, e.g. on a panel that is only a heading and a footer. */
+.gog-panel__body:empty {
+  display: none;
+}
+
+.gog-panel__body--hidden {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-panel__chevron {
+    transition: none;
+  }
+}

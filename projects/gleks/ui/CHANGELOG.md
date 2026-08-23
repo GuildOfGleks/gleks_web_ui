@@ -6,6 +6,60 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.6.1] - planned
 
+### Added
+
+- **`gog-card` — a surface for one self-contained thing.** A product tile, a summary, a search
+  result. It paints a background, a border and a radius, which a CSS class of your own could also
+  do; what it adds is what a class cannot:
+
+  - **It names itself.** The heading you project as `gogCardHeader` becomes the card's accessible
+    name — the card takes that element's id (minting one if it has none), points its own
+    `aria-labelledby` at it and announces itself as a group. `role="group"` rather than `region`
+    on purpose: a grid of twenty cards would put twenty landmarks in a screen reader's landmark
+    list, which is worse than none.
+  - **The whole surface can activate a link, without the card inventing a control.** There is no
+    `interactive` input and no `gogClick` output. Put `gogCardLink` on the `<a>` the card is about
+    — usually the one in its heading — and its hit area stretches over the card, with the focus
+    ring drawn around the surface. The link stays yours, so `routerLink`, `href`, `target`,
+    middle-click, "open in new tab" and Enter all keep working, and anything else focusable in the
+    card still receives its own clicks. A card rendering its own `<button>` instead could hold no
+    other control (a button may not contain one), could not navigate the way an app navigates, and
+    would announce the card's entire text as its name.
+  - **`loading` and `disabled` are folded in**, including `aria-busy`, the placeholder shaped like
+    a title and body copy, and taking the card's link out of the tab order.
+
+  Slots: `gogCardHeader`, `gogCardMedia` (full-bleed, rounds into the top corners), `gogCardFooter`.
+  Tokens: `--gog-card-*`, with `--gog-card-bg`, `--gog-card-border-color`, `--gog-card-shadow`,
+  `--gog-card-padding-y`, `--gog-card-padding-x` and `--gog-card-gap` left undeclared as the
+  per-instance escape hatch.
+
+- **`gog-panel` — a titled region of a page.** A settings section, a dashboard area, a form group.
+  It differs from `gog-card` in behaviour, not only in size: it is a real landmark
+  (`role="region"` named by its `gogPanelHeader` heading), it can **collapse**, and its surface is
+  never itself a link, because controls live inside a panel.
+
+  Collapsing **composes `gog-collapsible`** rather than repeating it, so the open/close state, the
+  id wiring and the animation are the ones the rest of the library already uses. The heading stays
+  a heading: the toggle is a separate `<button>` named by it through `aria-labelledby`, with its
+  hit area stretched across the header row — so the pointer still gets "click the title to
+  collapse", while a screen reader gets a heading *and* a named expandable button instead of a
+  heading swallowed by `role="button"`. A panel that cannot collapse undoes the collapse geometry
+  it inherits, `overflow` included, so a dropdown opened inside one is not clipped.
+
+  `loading` keeps the heading and the footer and replaces only the body — a page section is titled
+  before its content arrives. Slots: `gogPanelHeader`, `gogPanelFooter`. New label:
+  `GOG_CONFIG.labels.togglePanel`, used only by a collapsible panel with no heading to be named by.
+
+  **`--gog-panel-*` now means two things, deliberately.** `--gog-panel-radius`,
+  `--gog-panel-shadow`, `--gog-panel-border-width` and `--gog-panel-border-style` were already the
+  foundation surface tier that dialogs, dropdown panels and tooltips read; the component adopts
+  them instead of owning a fourth definition of "raised surface", so a theme's house radius and
+  shadow reach it for free. The rest of `--gog-panel-*` is the component's own. Nothing was
+  renamed and no existing override changes meaning.
+
+- **`GogSurfaceVariant`** (`'outlined' | 'elevated' | 'filled'`), shared by both, so the two agree
+  on what each word looks like.
+
 ### Fixed
 
 - **A loading `gog-table` and `gog-autocomplete` announce themselves.** Both now set

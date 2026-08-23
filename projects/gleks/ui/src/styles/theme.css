@@ -621,6 +621,63 @@
   --gog-calendar-slg-font-size: var(--gog-text-lg);
   --gog-calendar-slg-day-size: 46px;
 
+  /* ── Card ──────────────────────────────────────────────────────────────────
+     `--gog-card-bg`, `--gog-card-border-color`, `--gog-card-shadow`, `--gog-card-padding-y`,
+     `--gog-card-padding-x` and `--gog-card-gap` are intentionally NOT declared — they are the
+     per-instance escape hatch the variant and size classes fall back through. */
+  --gog-card-font-family: var(--gog-font-body);
+  --gog-card-color: var(--gog-text-color);
+  --gog-card-radius: var(--gog-radius);
+  --gog-card-border-width: var(--gog-panel-border-width);
+  --gog-card-border-style: var(--gog-panel-border-style);
+  --gog-card-transition-duration: var(--gog-duration-base);
+
+  --gog-card-heading-color: var(--gog-text-color);
+  --gog-card-heading-font-family: var(--gog-font-heading);
+  --gog-card-heading-font-size: var(--gog-text-lg);
+  --gog-card-heading-font-weight: 600;
+  --gog-card-heading-line-height: 1.3;
+
+  --gog-card-outlined-bg: var(--gog-surface-color);
+  --gog-card-outlined-border-color: var(--gog-border-color);
+  --gog-card-outlined-shadow: none;
+  --gog-card-elevated-bg: var(--gog-surface-color);
+  --gog-card-elevated-border-color: transparent;
+  /* The shared surface shadow, so a card sits at the same elevation as a dialog or a
+     dropdown panel instead of inventing a second house style for "raised". */
+  --gog-card-elevated-shadow: var(--gog-panel-shadow);
+  --gog-card-filled-bg: color-mix(in srgb, var(--gog-accent-dim) 8%, var(--gog-surface-color));
+  --gog-card-filled-border-color: transparent;
+  --gog-card-filled-shadow: none;
+
+  /* Hover and focus only ever show on a card that holds a `gogCardLink`. */
+  --gog-card-hover-border-color: color-mix(in srgb, var(--gog-accent-color) 45%, transparent);
+  --gog-card-hover-shadow: var(--gog-panel-shadow);
+  --gog-card-focus-ring: var(--gog-accent-color);
+  --gog-card-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-card-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-card-disabled-opacity: var(--gog-disabled-opacity);
+
+  --gog-card-footer-border-color: var(--gog-border-color);
+  --gog-card-footer-gap: var(--gog-space-sm);
+  --gog-card-footer-padding-top: var(--gog-space-sm);
+
+  --gog-card-xsm-padding-y: 8px;
+  --gog-card-xsm-padding-x: 10px;
+  --gog-card-xsm-gap: 6px;
+  --gog-card-sm-padding-y: 12px;
+  --gog-card-sm-padding-x: 14px;
+  --gog-card-sm-gap: var(--gog-space-sm);
+  --gog-card-md-padding-y: var(--gog-space-md);
+  --gog-card-md-padding-x: 20px;
+  --gog-card-md-gap: 12px;
+  --gog-card-lg-padding-y: 20px;
+  --gog-card-lg-padding-x: var(--gog-space-lg);
+  --gog-card-lg-gap: 14px;
+  --gog-card-slg-padding-y: 28px;
+  --gog-card-slg-padding-x: 32px;
+  --gog-card-slg-gap: var(--gog-space-md);
+
   /* ── Checkbox ──────────────────────────────────────────────────────────────
      Box/label/icon size and padding come from the `--gog-control-checkbox-*` scale;
      checkbox.component.ts maps the `size` input onto the host. */
@@ -1228,6 +1285,67 @@
   /* Enough for a three-digit page size plus the chevron, so the row doesn't shift on change. */
   --gog-paginator-page-size-min-width: 5rem;
   --gog-paginator-ellipsis-min-width: 32px;
+
+  /* ── Panel ─────────────────────────────────────────────────────────────────
+     The `gog-panel` component, which shares its prefix with the foundation surface tier
+     above (`--gog-panel-radius`, `--gog-panel-shadow`, `--gog-panel-border-width`,
+     `--gog-panel-border-style`) deliberately: a panel is the surface those describe, and a
+     theme that sets a house radius for raised surfaces should get it here too.
+
+     `--gog-panel-bg`, `--gog-panel-border-color`, `--gog-panel-padding-y`,
+     `--gog-panel-padding-x` and `--gog-panel-gap` are intentionally NOT declared — the
+     per-instance escape hatch. There is no `--gog-panel-*-shadow` twin of that hatch for the
+     elevated variant: it reads `--gog-panel-shadow` from a declaration the component makes on
+     its own host, so setting that token on one panel already changes only that panel. */
+  --gog-panel-font-family: var(--gog-font-body);
+  --gog-panel-color: var(--gog-text-color);
+  --gog-panel-transition-duration: var(--gog-duration-base);
+
+  --gog-panel-heading-color: var(--gog-text-color);
+  --gog-panel-heading-font-family: var(--gog-font-heading);
+  --gog-panel-heading-font-size: var(--gog-text-xl);
+  --gog-panel-heading-font-weight: 600;
+  --gog-panel-heading-line-height: 1.25;
+
+  --gog-panel-outlined-bg: var(--gog-surface-color);
+  --gog-panel-outlined-border-color: var(--gog-border-color);
+  --gog-panel-outlined-shadow: none;
+  --gog-panel-elevated-bg: var(--gog-surface-color);
+  --gog-panel-elevated-border-color: transparent;
+  --gog-panel-filled-bg: color-mix(in srgb, var(--gog-accent-dim) 8%, var(--gog-surface-color));
+  --gog-panel-filled-border-color: transparent;
+  --gog-panel-filled-shadow: none;
+
+  --gog-panel-header-gap: var(--gog-space-sm);
+  --gog-panel-toggle-size: 2rem;
+  --gog-panel-toggle-radius: var(--gog-radius);
+  --gog-panel-toggle-color: var(--gog-muted-text-color);
+  --gog-panel-toggle-hover-bg: color-mix(in srgb, var(--gog-hover-color) 70%, transparent);
+  --gog-panel-chevron-size: 1rem;
+  --gog-panel-focus-ring: var(--gog-accent-color);
+  --gog-panel-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-panel-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-panel-disabled-opacity: var(--gog-disabled-opacity);
+
+  --gog-panel-footer-border-color: var(--gog-border-color);
+  --gog-panel-footer-gap: var(--gog-space-sm);
+  --gog-panel-footer-padding-top: var(--gog-space-sm);
+
+  --gog-panel-xsm-padding-y: 10px;
+  --gog-panel-xsm-padding-x: 12px;
+  --gog-panel-xsm-gap: var(--gog-space-sm);
+  --gog-panel-sm-padding-y: 14px;
+  --gog-panel-sm-padding-x: var(--gog-space-md);
+  --gog-panel-sm-gap: 10px;
+  --gog-panel-md-padding-y: 18px;
+  --gog-panel-md-padding-x: 20px;
+  --gog-panel-md-gap: 12px;
+  --gog-panel-lg-padding-y: var(--gog-space-lg);
+  --gog-panel-lg-padding-x: 28px;
+  --gog-panel-lg-gap: var(--gog-space-md);
+  --gog-panel-slg-padding-y: 32px;
+  --gog-panel-slg-padding-x: 36px;
+  --gog-panel-slg-gap: 20px;
 
   /* ── Progressbar ──────────────────────────────────────────────────────────── */
   --gog-progressbar-track-base-bg: color-mix(

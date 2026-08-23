@@ -4,12 +4,20 @@ import {
   DividerComponent,
   GogDividerVariant,
   GogOrientation,
+  GogPanelHeaderDirective,
+  PanelComponent,
   TagComponent,
 } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-divider-page',
-  imports: [ButtonComponent, DividerComponent, TagComponent],
+  imports: [
+    ButtonComponent,
+    DividerComponent,
+    GogPanelHeaderDirective,
+    PanelComponent,
+    TagComponent,
+  ],
   templateUrl: './divider-page.html',
   styleUrl: './divider-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
