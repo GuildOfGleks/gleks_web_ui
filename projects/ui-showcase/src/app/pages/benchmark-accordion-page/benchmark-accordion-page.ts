@@ -11,6 +11,8 @@ import {
   AccordionComponent,
   GogAccordionContentDirective,
   GogAccordionItem,
+  GogPanelHeaderDirective,
+  PanelComponent,
 } from '@guildofgleks/ui';
 
 import { BenchmarkPanel } from '../../benchmark/benchmark-panel/benchmark-panel';
@@ -26,7 +28,14 @@ function buildItems(count: number): GogAccordionItem[] {
 
 @Component({
   selector: 'app-benchmark-accordion-page',
-  imports: [AccordionComponent, BenchmarkPanel, DecimalPipe, GogAccordionContentDirective],
+  imports: [
+    AccordionComponent,
+    BenchmarkPanel,
+    DecimalPipe,
+    GogAccordionContentDirective,
+    GogPanelHeaderDirective,
+    PanelComponent,
+  ],
   templateUrl: './benchmark-accordion-page.html',
   styleUrl: './benchmark-accordion-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
