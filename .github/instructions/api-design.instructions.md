@@ -225,7 +225,7 @@ Whichever it is, the loading state must be non-interactive: `pointer-events: non
 `disabled`, and anything focusable taken out of the tab order.
 
 **Known violations, deliberately not fixed yet:** `gog-table` and `gog-autocomplete` set no
-`aria-busy`. Recorded in `docs/hardening-21.5.0.md`.
+`aria-busy`. Recorded in `docs/backlog.md`.
 
 ## Consistency is itself a feature
 

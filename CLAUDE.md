@@ -52,8 +52,18 @@ an input, output, slot, type, service method or default edits it in the same cha
 
 ## Current work
 
-Three future plans, three finished ones. Update the status table in whichever you are working
-from, as you go.
+**`docs/backlog.md` is the live list** — everything known to be worth doing and not yet done, in
+one file. Read it before proposing what to work on. It replaced two separate backlog sections
+buried in completed plan documents, one of which had been carrying an item that shipped two
+minors earlier without anyone noticing.
+
+**The order it comes off the list is fixed: fixes and polish of what already ships, before
+anything new.** A defect is something a consumer is hitting today; an unbuilt component is only
+an absence.
+
+Three future plans, three finished ones. A plan is not a backlog item — it is a decision already
+taken about how something gets built. Update the status table in whichever you are working from,
+as you go.
 
 - `docs/themes-21.7.0.md` — a **future** plan, nothing started, queued behind the ripple: presets
   become full visual identities (radii, borders, shadows, density, typography) instead of palettes,
@@ -81,9 +91,9 @@ from, as you go.
   with a CI gate, the token-prefix rename (`--gog-btn-*`/`--gog-ms-*`/`--gog-confirm-*` spelled
   out, old spellings alive until 21.7.0), every removal 21.5.0 owed plus a ratchet that fails the
   build on an overdue tag, RTL support, test depth (917 → 1000 tests), `gog-menu`, and
-  `GOG_DEPRECATIONS`. Kept for its per-iteration outcomes — several record defects that only
-  surfaced in a browser — and its backlog, which is where the remaining known issues live
-  (`gog-table`'s `stickyHeader`, incidental public exports, the `position: fixed` caveat).
+  `GOG_DEPRECATIONS`. **History, not a to-do list** — read it to find out why something is the way
+  it is. Kept for its per-iteration outcomes and for the write-ups of everything its backlog
+  produced, several of which record a hypothesis that measurement disproved.
 - `docs/consumer-dx-plan.md` — completed: the package as a consumer meets it (onboarding,
   accessibility defaults, native attributes, packaging, icon registry, table outputs/lazy/
   selection, link-flavoured button). Kept for its per-iteration outcomes and its backlog.

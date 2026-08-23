@@ -1,11 +1,23 @@
-# @guildofgleks/ui — 21.5.0 hardening plan
+# @guildofgleks/ui — 21.5.0 hardening plan, and what came out of it
+
+**Completed.** Two things live here, both history:
+
+1. **The 21.5.0 plan** — seven iterations, each with the outcome recorded against it. Several
+   outcomes are worth more than their iteration, because they record defects that only surfaced
+   in a browser.
+2. **What its backlog produced** — the write-ups of every item that has since been closed,
+   including the ones fixed in 21.5.1 and 21.6.0. Kept for the measurements and for the three
+   hypotheses that turned out to be wrong.
+
+**Nothing here is open.** The live list is `docs/backlog.md`; this file is what to read when you
+want to know why something is the way it is, not what to do next.
 
 Derived from the **all-components audit of 2026-08-14** — the library measured against itself
 across four axes (tests, styles, customization, functionality) rather than from a consumer's
-first-run experience. `consumer-dx-plan.md` closed the gaps a newcomer trips over; this closes the
+first-run experience. `consumer-dx-plan.md` closed the gaps a newcomer trips over; this closed the
 ones a _maintainer_ can only see by counting.
 
-Ordered by cost/benefit, except item 3, whose timing is not negotiable — see below.
+Ordered by cost/benefit, except item 3, whose timing was not negotiable — see below.
 
 ## Why 21.5.0 specifically
 
@@ -675,7 +687,19 @@ not re-file it.
 
 ---
 
-## Backlog — deliberately not in 21.5.0
+## What the backlog produced
+
+This section used to be the project's live to-do list. It is not any more — **the open items
+moved to `docs/backlog.md`**, which exists so there is one place to look instead of a list two
+thirds of the way down a plan document.
+
+What stays here is the write-up of everything that came *off* that list, because several of them
+are worth more than the fix was: they record what was measured, and in three cases a hypothesis
+that turned out to be wrong. The pattern across all of them is the same, and it is why
+`ui-showcase` is now checked before anything is called done — every one was invisible to a test
+suite that runs without a style engine, and obvious in a browser within minutes.
+
+### Closed from the backlog
 
 - ~~**`gog-inputfield` reserves its icon space on the wrong side in RTL.**~~ **Fixed in 21.5.1**
   (2026-08-21), and it was not one component but four — `gog-select`, `gog-autocomplete` and
@@ -742,32 +766,6 @@ not re-file it.
   The lab documents it as a **Known defect in &lt;installed version&gt;** on the menu page and in
   the token reference; `lab-after-publish.md` carries the entry that deletes both once it ships.
 
-- **Missing components**, in rough order of how often a real site wants them: `alert`/`banner` (a
-  persistent in-flow message — `gog-toast` is transient and cannot serve this), `avatar`,
-  `breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`, `card`. Each is additive and
-  independent; none blocks anything else. `gog-menu` is pulled forward into iteration 6 only
-  because the library already ships the icons for it.
-- **Virtualization.** Nothing in the library virtualizes: a 10 000-option `gog-select` and a
-  10 000-row eager `gog-table` will both crawl. `gog-autocomplete`'s `gogLoadMore` covers the
-  fetch half of the problem; `lazy` covers it for the table. The DOM half needs a windowing
-  primitive, which is a genuine piece of engineering and its own plan.
-- **`gog-table`'s ceiling:** no column resize or reorder, no sticky columns, no expandable rows,
-  no grouping. Possibly the right boundary for a lightweight library — but state it in the README
-  rather than letting someone discover it mid-project.
-- **Incidental public exports.** `public-api.ts` re-exports two helper modules wholesale
-  (`export * from './lib/components/datepicker/date-utils'` and `'./lib/shared/option-accessor'`),
-  which puts ~20 free functions in the package's `.d.ts` — `buildMonthGrid`, `clampDate`,
-  `withTime`, `getByPath`, `readOption`, `isSameOptionValue`, `defaultCompare`, … Some are
-  deliberate (`AGENTS.md` advertises `formatDate`/`parseDate` and "a family of date-math helpers");
-  the rest are along for the ride because the module also exports a type the public API needs
-  (`GogDateRange`, `GogOptionAccessor`). Counted 2026-08-15. Nothing is broken by it, but every one
-  is API someone can depend on and nobody decided to support, so the fix is a named export list —
-  which is a breaking change and therefore needs its own deprecation window, not a slot in 21.5.0.
-- **Secondary entry points** (`@guildofgleks/ui/select`, …). Raised by the paginator's dependency
-  on `gog-select`: ng-packagr flattens everything into one FESM, so `@defer` inside the library
-  produces no code-split (measured — see `consumer-dx-plan.md` iteration 6's follow-ups). Entry
-  points are the only real fix, and they change every consumer's import paths, so they need their
-  own deprecation cycle and their own decision.
 - ~~**The `position: fixed` containing-block caveat, documented once.**~~ **Done 2026-08-20**, in
   21.5.1 (21.5.0 had already shipped): README gained an "Overlays and the viewport" section,
   `AGENTS.md` a paragraph, and `gog-dialog`, `gog-toast-container` and `gog-spinner [overlay]`
@@ -863,6 +861,7 @@ not re-file it.
 
   The alternative, if that input is unwanted: narrow the documented contract to "works while the
   table does not scroll horizontally", which is true today and is what the demo shows.
+
 - ~~**`[fullWidth]="false"` clips the widest column's header.**~~ **Fixed in 21.6.0**
   (2026-08-22), exactly as predicted: `.gog-table--auto-layout` sets `table-layout: auto` whenever
   `fullWidth` is false. The showcase's own demo now redistributes to the 115px/78px this entry
@@ -878,6 +877,7 @@ not re-file it.
   only buys anything when the table's width is externally determined. The lab's "Full width"
   example now states column widths explicitly and explains why, which works but should not be
   necessary.
+
 - ~~**The library's fields need the consumer's `box-sizing` reset to size correctly.**~~ **Fixed
   in 21.6.0** (2026-08-22): `styles/utilities.css` sets `box-sizing: border-box` on every element
   carrying a `gog-*` class, so the package no longer depends on the consumer having a reset.
@@ -928,13 +928,10 @@ not re-file it.
 
 ---
 
-## Requested for 21.5.0 (2026-08-16)
+### Closed from the 2026-08-16 request list
 
-Filed from use, not from the audit. Recorded here verbatim in intent; none is started.
-**Nine items, and they are not one release's worth** — items 3, 4 and 6 are each their own piece
-of engineering. Sequence them; do not open them together.
-
-### Bugs — cheap, and they make the library look broken
+Three bugs, filed from use rather than from the audit. The features from the same list are open
+and live in `docs/backlog.md`.
 
 1. ~~**`gog-autocomplete`: text cannot be erased.**~~ **Fixed in 21.6.0** (2026-08-22). Neither
    suspect below was it — the accessor and the input handler are both fine. The culprit is the
@@ -1005,29 +1002,3 @@ of engineering. Sequence them; do not open them together.
    agreed was the accordion plus the written rule. They are the rule's two known violations and
    the next thing to close under it. Worth doing together, and worth considering a check that
    every component with a `loading` input sets it, once there is nothing left to allowlist.
-
-### Features — each needs its own decision
-
-2. **A filter box in `gog-multiselect`, matching `gog-select`.** Note the two share
-   `GogDropdownBase` and neither declares a `filter` input on its own component class today, so
-   check where select's filtering actually lives before assuming it can be lifted across.
-   `AGENTS.md` lists `filter`/`filterPosition` under the `dropdown` config group for both, so the
-   gap may be smaller than it looks.
-3. **Virtual scrolling in `gog-select` and `gog-multiselect`.**
-4. **Virtual scrolling in `gog-table`.**
-
-   3 and 4 are the same primitive twice. `hardening-21.5.0.md`'s own backlog already says the DOM
-   half of large-list performance "needs a windowing primitive, which is a genuine piece of
-   engineering and its own plan" — that is this. Build it once, in `lib/shared`, and adopt it in
-   the dropdowns first (a fixed row height) before the table (variable rows, sticky header,
-   selection column). Do not start it as a table feature.
-
-5. **A time zone setting for datepicker and calendar in `GOG_CONFIG`.** Today
-   `GOG_CONFIG.datepicker` carries `locale` and `firstDayOfWeek`. Note the library is deliberately
-   native-`Date`-only with no adapter, and `Date` has no time zone — so this is a design decision
-   about what a zone even means here (formatting only? parsing too? `Intl.DateTimeFormat`'s
-   `timeZone` option?), not a config key to add. Write the decision down before the code.
-6. **More icons.** Cheap per icon, but it is the registry's size and the tree-shaking story that
-   matter — check what `provideGogIcons` costs a consumer who wants three of them before growing
-   the built-in set.
-7. **More `gog-progressbar` variants (animations).** Smallest of the features; a good warm-up.

@@ -36,7 +36,7 @@ Two things, and the second is the non-obvious one.
 receiving features. The criterion is not "everything most sites need" — that list has no bottom —
 but **what unblocks the project the releases are verified against.** That turns an infinite
 backlog into a finite one and gets each component battle-tested before it freezes into public API.
-`docs/hardening-21.5.0.md`'s backlog lists the candidates; `gog-menu` is first, because the
+`docs/backlog.md` lists the candidates; `gog-menu` was first, because the
 library already ships `more-horizontal`/`more-vertical` icons and a table built for row actions
 with nothing to open.
 

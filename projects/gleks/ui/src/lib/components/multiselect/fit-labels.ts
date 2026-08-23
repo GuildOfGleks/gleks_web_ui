@@ -3,7 +3,7 @@
  *
  * Its own file rather than a member of `multiselect.component.ts`, because `public-api.ts`
  * re-exports that module wholesale — a helper exported there becomes public API nobody decided
- * to support (see docs/hardening-21.5.0.md's backlog on incidental exports). Here it stays
+ * to support (see docs/backlog.md, "Incidental public exports"). Here it stays
  * internal and still testable.
  */
 /** What the trigger shows: the labels that fit on one line, and how many did not. */

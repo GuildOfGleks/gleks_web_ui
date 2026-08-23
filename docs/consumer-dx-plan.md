@@ -532,22 +532,20 @@ same row identically — a measurement artefact, not a discrepancy.) 12 new spec
 
 ---
 
-## Backlog — deliberately not in this plan
+## Backlog — moved to `docs/backlog.md`
 
-- **`theme.css` payload.** 92 596 B / 16 817 B gzip is loaded whole even by an app importing
-  three components. Splitting it per component would break the "one stylesheet, one import"
-  setup story that iteration 1 is busy making work, and the gzip figure does not justify that
-  trade yet. Revisit only if the file keeps growing.
-- **Secondary entry points** (`@guildofgleks/ui/table`, …). The FESM bundle is a single 1 MB
-  file, but `sideEffects: false` plus ESM means consumers only pay for what they import, so
-  this buys build ergonomics rather than bytes.
-- **`(click)` vs `(gogClick)` on `gog-button`.** A native click bubbles from the inner
-  `<button>` to the host, so a consumer writing `(click)` silently bypasses the debounce guard.
-  Worth a README warning now; a real fix means stopping propagation, which is its own trap.
-- **RTL coverage.** Nine component stylesheets already use logical properties; a full audit is
-  its own piece of work with its own verification story.
-- **`DIALOG_DATA` typing.** `dialog.tokens.ts:3` is `InjectionToken<unknown>`, so every dialog
-  component casts on injection. A generic `DialogService.open<TData, TResult>()` threading the
-  type through would be nicer, but the cast is a one-liner and Material has the same wart.
+This section used to hold five open items. It was the project's *second* live backlog, which is
+one more than a project can have and still expect either to be read — they are now in
+`docs/backlog.md` with everything else, on 2026-08-23.
+
+One of the five did not survive the move, and that is the argument for making it: **RTL coverage**
+was filed here as "a full audit is its own piece of work" and had been done since 21.5.0, which
+shipped RTL support across all 16 stylesheets. It sat here looking open for two minors. A second
+was a duplicate — **secondary entry points** was filed in `hardening-21.5.0.md`'s backlog too,
+in more detail.
+
+The three that carried over: `theme.css`'s payload, `(click)` vs `(gogClick)` on `gog-button`,
+and `DIALOG_DATA`'s typing.
+
 - ~~**No clear button on a `type="number"` field.**~~ Fixed — see "Follow-ups" below.
 - ~~**`gog-paginator`'s per-page labels.**~~ Fixed — see "Follow-ups" below.
