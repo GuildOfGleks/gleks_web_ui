@@ -55,6 +55,13 @@ const DEFAULT_OPEN_ON_FOCUS = true;
   host: {
     // Only bites when the control has opted out of full width; otherwise the container decides.
     '[style.--gog-autocomplete-min-width]': 'minWidth()',
+    /*
+     * The spinner in the actions slot is `aria-hidden`, so a field fetching its suggestions
+     * looked idle to a screen reader — the one case where the wait is not the user's own doing
+     * and they have no way to tell. Required of every `loading` input; see the loading-state
+     * rule in `api-design.instructions.md`.
+     */
+    '[attr.aria-busy]': 'loading() ? "true" : null',
   },
 })
 export class AutocompleteComponent<

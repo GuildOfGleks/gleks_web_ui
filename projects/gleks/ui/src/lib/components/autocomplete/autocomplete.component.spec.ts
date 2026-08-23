@@ -358,6 +358,25 @@ describe('AutocompleteComponent', () => {
     });
   });
 
+  /*
+   * The spinner in the actions slot is `aria-hidden`, so a field fetching its suggestions looked
+   * idle — and unlike a button the user pressed, this wait is not something they started, so
+   * there is nothing else to infer it from. The rule is in `api-design.instructions.md`;
+   * `gog-autocomplete` was one of its two known violations until 21.6.0.
+   */
+  it('should mark itself busy while loading', async () => {
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.hasAttribute('aria-busy')).toBe(false);
+
+    fixture.componentRef.setInput('loading', true);
+    await fixture.whenStable();
+    expect(element.getAttribute('aria-busy')).toBe('true');
+
+    fixture.componentRef.setInput('loading', false);
+    await fixture.whenStable();
+    expect(element.hasAttribute('aria-busy')).toBe(false);
+  });
+
   describe('gogSearch', () => {
     // Only `setTimeout`/`clearTimeout` are faked, and only here. Faking the whole clock breaks
     // Angular's own scheduler — the fixture's `ApplicationRef` is then torn down before the
