@@ -16,12 +16,8 @@ not worth carrying here.
 
 ## Defects — first
 
-- **`gog-table` and `gog-autocomplete` do not set `aria-busy` while loading.** The two known
-  violations of the loading-state rule in `api-design.instructions.md`, which requires it of every
-  component with a `loading` input: a component whose content is replaced by `aria-hidden`
-  skeletons or a spinner is *empty* to a screen reader without it, not busy. `gog-button`,
-  `gog-spinner-overlay` and `gog-accordion` already comply. Small, and it closes a rule the library
-  currently breaks itself. Worth a mechanical check once there is nothing left to allowlist.
+Nothing open. The last two — `gog-table` and `gog-autocomplete` not setting `aria-busy` while
+loading — were closed in 21.6.0, along with a check that stops the rule being broken again.
 
 ---
 

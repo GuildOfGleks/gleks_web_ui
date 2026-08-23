@@ -224,8 +224,10 @@ screen reader, it is *empty*. `gog-button` and `gog-spinner-overlay` have always
 Whichever it is, the loading state must be non-interactive: `pointer-events: none` or a real
 `disabled`, and anything focusable taken out of the tab order.
 
-**Known violations, deliberately not fixed yet:** `gog-table` and `gog-autocomplete` set no
-`aria-busy`. Recorded in `docs/backlog.md`.
+**`npm run check:loading-aria` enforces the `aria-busy` half**, in CI. It has no allowlist: it
+was added the moment the last of the five components complied, so an exception could only mean a
+regression. The attribute may sit on the host or on a control the component renders itself —
+`gog-button` puts it on its own `<button>`, which is what the screen reader is focused on.
 
 ## Consistency is itself a feature
 

@@ -86,6 +86,12 @@ export interface GogTableRowClickEvent<T> {
     class: 'gog-table-host',
     '[style.display]': '"block"',
     '[style.width]': 'fullWidth() ? "100%" : "fit-content"',
+    /*
+     * While loading, the body is a single cell holding a spinner and the header is dimmed and
+     * inert — so the table has no rows to announce and nothing saying more are coming. Required
+     * of every `loading` input; see the loading-state rule in `api-design.instructions.md`.
+     */
+    '[attr.aria-busy]': 'loading() ? "true" : null',
   },
 })
 export class TableComponent<T extends object> {

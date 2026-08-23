@@ -8,6 +8,14 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A loading `gog-table` and `gog-autocomplete` announce themselves.** Both now set
+  `aria-busy="true"` while `loading` is on, which every component with a `loading` input is
+  supposed to do. A loading table replaces its rows with a single spinner cell and dims its
+  header; the autocomplete's spinner sits in its actions slot and is `aria-hidden`. Neither had
+  anything to tell a screen reader that a wait was in progress — the table read as a table with
+  no rows, and the field as idle. The autocomplete is the worse of the two, because unlike a
+  button the user pressed, that wait is not something they started.
+
 - **A loading `gog-accordion` announces itself.** It sets `aria-busy="true"` while `loading` is
   on. Its skeleton bars are `aria-hidden` and the real headers are not rendered, so without it the
   component was not "loading" to a screen reader — it was **empty**, which reads as "there is

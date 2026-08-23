@@ -116,6 +116,24 @@ describe('TableComponent', () => {
     });
   });
 
+  /*
+   * A loading table replaces its rows with one spinner cell and dims its header, so without this
+   * it announces neither rows nor a reason there are none. The rule is in
+   * `api-design.instructions.md`; `gog-table` was one of its two known violations until 21.6.0.
+   */
+  it('should mark itself busy while loading', async () => {
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.hasAttribute('aria-busy')).toBe(false);
+
+    fixture.componentRef.setInput('loading', true);
+    await fixture.whenStable();
+    expect(host.getAttribute('aria-busy')).toBe('true');
+
+    fixture.componentRef.setInput('loading', false);
+    await fixture.whenStable();
+    expect(host.hasAttribute('aria-busy')).toBe(false);
+  });
+
   describe('maxHeight', () => {
     /** `axis` is a signal input, so it is read off the instance — it never lands in the DOM. */
     function scroller(): { axis: string; maxHeight: string } {

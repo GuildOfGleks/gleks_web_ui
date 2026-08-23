@@ -69,6 +69,13 @@ jobs:
       - name: State-specificity check
         run: npm run check:state-specificity
 
+      # A loading component hides its content behind `aria-hidden` placeholders, so without
+      # `aria-busy` it reads as empty rather than busy. Three of the five components with a
+      # `loading` input shipped without it; this was added the moment the last was fixed, so
+      # there is nothing to allowlist and an exception would only mean a regression.
+      - name: Loading-state aria check
+        run: npm run check:loading-aria
+
       # The library must build standalone, before anything that consumes it.
       - name: Build @gleks/ui
         run: npm run build:lib
