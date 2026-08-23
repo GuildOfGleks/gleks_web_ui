@@ -1,15 +1,23 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import {
   ButtonComponent,
+  GogPanelHeaderDirective,
   GogSize,
   GogSpinnerVariant,
+  PanelComponent,
   SpinnerComponent,
   SpinnerOverlayComponent,
 } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-spinner-page',
-  imports: [ButtonComponent, SpinnerComponent, SpinnerOverlayComponent],
+  imports: [
+    ButtonComponent,
+    GogPanelHeaderDirective,
+    PanelComponent,
+    SpinnerComponent,
+    SpinnerOverlayComponent,
+  ],
   templateUrl: './spinner-page.html',
   styleUrl: './spinner-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

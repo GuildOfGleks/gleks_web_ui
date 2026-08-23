@@ -326,7 +326,7 @@ to them.
 | 17    | `toast-page`               | 5           | ✅                       |
 | 18    | `badge-page`               | 6           | ✅                       |
 | 19    | `progressbar-page`         | 6           | ✅                       |
-| 20    | `spinner-page`             | 6           | ⬜                       |
+| 20    | `spinner-page`             | 6           | ✅                       |
 | 21    | `toggle-page`              | 6           | ⬜                       |
 | 22    | `skeleton-page`            | 7           | ⬜                       |
 | 23    | `tabs-page`                | 7           | ⬜                       |
