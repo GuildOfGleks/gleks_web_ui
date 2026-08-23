@@ -9,8 +9,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Single choice</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Single choice</h3>
     <p class="hint">
       A radio group to assistive tech: <code>role="radiogroup"</code> with
       <code>aria-checked</code>, one tab stop, and the arrow keys both move <em>and</em> select —
@@ -26,10 +26,10 @@
       ariaLabel="View mode"
     />
     <p class="hint">value: {{ view() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Multiple choice</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Multiple choice</h3>
     <p class="hint">
       A different widget, not a cosmetic switch: <code>role="group"</code> with
       <code>aria-pressed</code>, arrows move only, and Space toggles.
@@ -41,10 +41,10 @@
       ariaLabel="Text style"
     />
     <p class="hint">value: {{ activeTools().join(', ') || '—' }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Appearance</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Appearance</h3>
     <div class="bt-stack">
       @for (appearance of appearances; track appearance) {
         <div class="bt-row">
@@ -58,10 +58,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <div class="bt-stack">
       @for (size of sizes; track size) {
         <div class="bt-row">
@@ -75,10 +75,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Vertical, full width, and a custom option template</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Vertical, full width, and a custom option template</h3>
     <div class="bt-columns">
       <gog-button-toggle-group
         [options]="tools"
@@ -112,10 +112,10 @@
         }
       </ng-template>
     </gog-button-toggle-group>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Group disabled</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Group disabled</h3>
     <p class="hint">
       <code>[disabled]="true"</code> on the group disables every option at once — different from
       <code>optionDisabled</code>, which disables individual options (like "Map" above) while
@@ -127,10 +127,10 @@
       value="bold"
       ariaLabel="Disabled group"
     />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Your own object back</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Your own object back</h3>
     <p class="hint">
       With <code>[optionValue]="null"</code> the group emits the option object itself, so a DTO
       survives the round trip instead of being reduced to an id.
@@ -144,10 +144,10 @@
       ariaLabel="Object value"
     />
     <p class="hint">value: {{ viewObject()?.title ?? '—' }} (the object itself, not its key)</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive Forms</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive Forms</h3>
     <gog-button-toggle-group
       [options]="views"
       optionLabel="title"
@@ -157,5 +157,5 @@
       ariaLabel="Form-bound view"
     />
     <p class="hint">control: {{ formView.value }} · touched: {{ formView.touched }}</p>
-  </article>
+  </gog-panel>
 </section>

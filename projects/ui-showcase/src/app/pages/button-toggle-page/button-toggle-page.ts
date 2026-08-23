@@ -5,8 +5,10 @@ import {
   GogButtonToggleAppearance,
   GogButtonToggleOptionDirective,
   GogIconName,
+  GogPanelHeaderDirective,
   GogSize,
   IconComponent,
+  PanelComponent,
 } from '@guildofgleks/ui';
 
 /** A consumer's own DTO — deliberately not `{ id, name }`, to exercise the accessors. */
@@ -35,7 +37,9 @@ const TOOLS = [
   imports: [
     ButtonToggleGroupComponent,
     GogButtonToggleOptionDirective,
+    GogPanelHeaderDirective,
     IconComponent,
+    PanelComponent,
     ReactiveFormsModule,
   ],
   templateUrl: './button-toggle-page.html',
