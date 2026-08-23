@@ -30,23 +30,50 @@ demonstrates is the weakest possible argument for the library.
 
 ### The numbers, counted on 2026-08-23
 
-Count them again yourself before you start — `grep -ro 'class="card"' projects/ui-showcase/src
---include=*.html | wc -l` — because the number moves whenever someone adds a page.
+**Correction, same day:** the first count used `grep -c 'class="card"'`, an exact string match,
+and missed every block whose `class` attribute puts `card` next to a page-local class
+(`class="card dash__filters"`, `class="catalog__header card"`, in either order). Two pages,
+`catalog-page` and `onboarding-page`, were entirely missing from Part 4's table because of it;
+`dashboard-page`'s count was short by one. Recount with the class list split on whitespace, not
+the raw attribute string — the numbers below already are:
 
-| What                            | How many                            | What to do with it                        |
-| ------------------------------- | ----------------------------------- | ----------------------------------------- |
-| `class="card"` on its own       | **250**, across **38** files        | **convert these.** This is the job.       |
-| `class="detail__hero card"`     | **40**, one per page                | **leave alone.** See Part 2, finding 2.   |
-| `class="card bench-index-card"` | **1** (`benchmark-index-page.html`) | leave for last; see Part 5.               |
-| pages already converted         | **1** (`divider-page`)              | the worked example — open it and copy it. |
+```bash
+python3 - <<'EOF'
+import re, glob, os
+for f in sorted(glob.glob('projects/ui-showcase/src/app/pages/**/*.html', recursive=True)):
+    text = open(f, encoding='utf-8').read()
+    plain = hero = 0
+    other = []
+    for m in re.finditer(r'class="([^"]*)"', text):
+        c = m.group(1).split()
+        if 'card' not in c: continue
+        rest = [x for x in c if x != 'card']
+        if not rest: plain += 1
+        elif len(rest) == 1 and (rest[0] == 'detail__hero' or rest[0].endswith('__header')): hero += 1
+        else: other.append(c)
+    if plain or hero or other:
+        print(os.path.basename(os.path.dirname(f)), plain, hero, other)
+EOF
+```
+
+| What                                                                                                            | How many                                                          | What to do with it                                                                                                                                                              |
+| ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `class="card"` on its own                                                                                       | **250**, across **38** files                                     | **convert these.** This is the job.                                                                                                                                              |
+| `card` + a page-local class, non-hero order                                                                    | **3** — `dash__filters`, `catalog__filters`, `onboarding__panel` | **convert these too**, same treatment as the plain ones — the page-local class rides along on the new `<gog-panel>` unchanged (except `onboarding__panel`, see below).       |
+| `class="detail__hero card"`, plus the 3 renamed heroes (`dash__header`, `settings__header`, `catalog__header`) | **43**, one per page                                              | **leave alone.** See Part 2, finding 2 — same shape, different page-local name.                                                                                              |
+| `class="card bench-index-card"`                                                                                | **1** (`benchmark-index-page.html`)                               | leave for last; see Part 5.                                                                                                                                                       |
+| `class="card onboarding__panel"`                                                                               | **1** (`onboarding-page.html`)                                    | **leave alone, whole block** — its eyebrow, heading and entire form share one element; there is no separate header to peel off. Hero-shaped, not a filters-style composite.  |
+| pages already converted                                                                                        | **1** (`divider-page`)                                            | the worked example — open it and copy it.                                                                                                                                     |
 
 `panel-page` and `ripple-page` use `gog-panel` too, but they were written that way; only
 `divider-page` was converted from `.card`, and it is the one to imitate.
 
 ### What "done" looks like
 
-- `grep -r 'class="card"' projects/ui-showcase/src --include=*.html` returns **only** the 40
-  `detail__hero card` lines.
+- The recount script above prints `plain=0` and `other=[]` for **every** page except
+  `onboarding-page`, whose one `other` block (`['card', 'onboarding__panel']`) is the deliberate
+  leftover from the row above, and `benchmark-index-page`, whose `bench-index-card` is retired
+  per Part 5 rather than left as `other`.
 - Every page looks the same as before, modulo the one deliberate difference in Part 2, finding 3.
 - `_detail.scss`'s `.card` rule is gone, renamed to `.detail__hero` (Part 5).
 
@@ -259,7 +286,7 @@ header slot first and the hero's eyebrow sits above the title.
 
 **One page per commit.** This is not a style preference: `docs/lab-stackblitz-plan.md` is the
 post-mortem of a bulk conversion that had to be reverted wholesale, and its conclusion — no
-commit converts more than one page — applies here for the same reason. A 38-page commit is a
+commit converts more than one page — applies here for the same reason. A 39-page commit is a
 diff nobody can review and a revert nobody can aim.
 
 Then update the row in Part 4's table, and go back to Step 1 with the next page.
@@ -270,54 +297,64 @@ Then update the row in Part 4's table, and go back to Step 1 with the next page.
 
 **Smallest first.** The first three are practice; by the fourth you will not need Part 3 any more.
 
-Counts are plain `class="card"` occurrences on 2026-08-23, hero excluded.
+Counts are `plain` + `other` blocks from the recount script above, on 2026-08-23, hero excluded.
+**40 rows, not 39** — `catalog-page` was missing from the first version of this table (see the
+correction in Part 1); `dashboard-page`'s count was 1, now corrected to 2.
+`onboarding-page` and `themes-page` carry **no** row: both are hero-only (0 convertible blocks —
+see Part 1's table for why `onboarding-page` stays whole), so there is nothing for Part 3 to do
+to them.
 
 | Order | Page                       | Blocks      | Done?                    |
 | ----- | -------------------------- | ----------- | ------------------------ |
 | —     | `divider-page`             | —           | ✅ the pilot             |
-| 1     | `dashboard-page`           | 1           | ⬜                       |
+| 1     | `catalog-page`             | 1           | ⬜                       |
 | 2     | `settings-page`            | 1           | ⬜                       |
 | 3     | `benchmark-accordion-page` | 2           | ⬜                       |
 | 4     | `benchmark-dropdown-page`  | 2           | ⬜                       |
 | 5     | `benchmark-instances-page` | 2           | ⬜                       |
 | 6     | `benchmark-table-page`     | 2           | ⬜                       |
-| 7     | `global-config-page`       | 4           | ⬜                       |
-| 8     | `card-page`                | 5           | ⬜                       |
-| 9     | `checkbox-page`            | 5           | ⬜                       |
-| 10    | `dialog-page`              | 5           | ⬜                       |
-| 11    | `icon-page`                | 5           | ⬜                       |
-| 12    | `menu-page`                | 5           | ⬜                       |
-| 13    | `panel-page`               | 5           | ⬜                       |
-| 14    | `radio-group-page`         | 5           | ⬜                       |
-| 15    | `tag-page`                 | 5           | ⬜                       |
-| 16    | `toast-page`               | 5           | ⬜                       |
-| 17    | `badge-page`               | 6           | ⬜                       |
-| 18    | `progressbar-page`         | 6           | ⬜                       |
-| 19    | `spinner-page`             | 6           | ⬜                       |
-| 20    | `toggle-page`              | 6           | ⬜                       |
-| 21    | `skeleton-page`            | 7           | ⬜                       |
-| 22    | `tabs-page`                | 7           | ⬜                       |
-| 23    | `button-page`              | 8           | ⬜                       |
-| 24    | `button-toggle-page`       | 8           | ⬜                       |
-| 25    | `chip-page`                | 8           | ⬜                       |
-| 26    | `paginator-page`           | 8           | ⬜                       |
-| 27    | `slider-page`              | 8           | ⬜                       |
-| 28    | `textarea-page`            | 8           | ⬜                       |
-| 29    | `tooltip-page`             | 8           | ⬜                       |
-| 30    | `autocomplete-page`        | 9           | ⬜                       |
-| 31    | `table-page`               | 9           | ⬜                       |
-| 32    | `collapsible-page`         | 10          | ⬜                       |
-| 33    | `datepicker-page`          | 10          | ⬜                       |
-| 34    | `scroll-page`              | 10          | ⬜                       |
-| 35    | `accordion-page`           | 12          | ⬜                       |
-| 36    | `inputfield-page`          | 12          | ⬜                       |
-| 37    | `select-page`              | 12          | ⬜                       |
-| 38    | `multiselect-page`         | 13          | ⬜                       |
-| 39    | `benchmark-index-page`     | 1 composite | ⬜ **read Part 5 first** |
+| 7     | `dashboard-page`           | 2           | ⬜                       |
+| 8     | `global-config-page`       | 4           | ⬜                       |
+| 9     | `card-page`                | 5           | ⬜                       |
+| 10    | `checkbox-page`            | 5           | ⬜                       |
+| 11    | `dialog-page`              | 5           | ⬜                       |
+| 12    | `icon-page`                | 5           | ⬜                       |
+| 13    | `menu-page`                | 5           | ⬜                       |
+| 14    | `panel-page`               | 5           | ⬜                       |
+| 15    | `radio-group-page`         | 5           | ⬜                       |
+| 16    | `tag-page`                 | 5           | ⬜                       |
+| 17    | `toast-page`               | 5           | ⬜                       |
+| 18    | `badge-page`               | 6           | ⬜                       |
+| 19    | `progressbar-page`         | 6           | ⬜                       |
+| 20    | `spinner-page`             | 6           | ⬜                       |
+| 21    | `toggle-page`              | 6           | ⬜                       |
+| 22    | `skeleton-page`            | 7           | ⬜                       |
+| 23    | `tabs-page`                | 7           | ⬜                       |
+| 24    | `button-page`              | 8           | ⬜                       |
+| 25    | `button-toggle-page`       | 8           | ⬜                       |
+| 26    | `chip-page`                | 8           | ⬜                       |
+| 27    | `paginator-page`           | 8           | ⬜                       |
+| 28    | `slider-page`              | 8           | ⬜                       |
+| 29    | `textarea-page`            | 8           | ⬜                       |
+| 30    | `tooltip-page`             | 8           | ⬜                       |
+| 31    | `autocomplete-page`        | 9           | ⬜                       |
+| 32    | `table-page`               | 9           | ⬜                       |
+| 33    | `collapsible-page`         | 10          | ⬜                       |
+| 34    | `datepicker-page`          | 10          | ⬜                       |
+| 35    | `scroll-page`              | 10          | ⬜                       |
+| 36    | `accordion-page`           | 12          | ⬜                       |
+| 37    | `inputfield-page`          | 12          | ⬜                       |
+| 38    | `select-page`              | 12          | ⬜                       |
+| 39    | `multiselect-page`         | 13          | ⬜                       |
+| 40    | `benchmark-index-page`     | 1 composite | ⬜ **read Part 5 first** |
 
 Tick the rows as you go. A table that lies about where the work is is worse than no table.
 
-Two pages on that list deserve a moment's care, and neither is hard:
+Two pages on that list deserve a moment's care, and neither is hard. `catalog-page` (order 1) is
+a third, of a different kind: its one block is `class="card catalog__filters"` — Step 2's rule
+about `<article>`/`<div>`/`<section>` applies to the tag, and the extra class `catalog__filters`
+travels onto `<gog-panel size="md" class="catalog__filters">` exactly as Part 5 describes for
+`bench-index-card`.
 
 - **`collapsible-page` and `accordion-page`** put a collapsible inside a box. A `gog-panel` can
   itself collapse, and it would be tempting to merge the two. **Do not.** The page is
@@ -328,7 +365,7 @@ Two pages on that list deserve a moment's care, and neither is hard:
 
 ---
 
-## Part 5 — The last two things, after all 38 pages
+## Part 5 — The last two things, after all 39 pages
 
 ### `benchmark-index-page`'s composite class
 
@@ -349,7 +386,7 @@ appearance comes from the `card` sitting beside it — so in
 `projects/ui-showcase/src/app/pages/_detail.scss` you rename the rule rather than merging two:
 
 ```scss
-/* was `.card`, when 38 pages still used it as a generic box */
+/* was `.card`, when 39 pages still used it as a generic box */
 .detail__hero {
   padding: 20px;
   border: 1px solid var(--gog-border-color);
@@ -371,7 +408,7 @@ Build, look at two or three pages, and commit that as its own final change.
 
 In `docs/panel-card.md`, change iteration 4's row in the status table to ✅ and replace the
 _Iteration 4, as far as it got_ section with what actually happened — in particular, whether
-finding 1 held up over 38 pages, because that is the honest verdict on whether `gog-panel`'s API
+finding 1 held up over 39 pages, because that is the honest verdict on whether `gog-panel`'s API
 is any good, and it is the only reason this iteration exists.
 
 ---
