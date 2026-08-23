@@ -21,6 +21,12 @@
  * Deliberately not checked: whether the entry's *content* describes the change. No script can
  * know that, and pretending to check it would make the ones above look weaker than they are.
  *
+ * **What this cannot catch, and did not:** content added to an entry that has *already shipped*.
+ * A fix written into the released `## [21.6.0] - 23.08.2026` section passes every rule here —
+ * version matches, date is real — while claiming the tarball on npm contains something it does
+ * not. Caught by eye, not by this. The habit that avoids it is to open a new `- planned` heading
+ * the moment a release goes out, rather than when the next change arrives.
+ *
  * Wired into `npm run release`, ahead of the build. Run it on its own with
  * `npm run check:release`.
  */

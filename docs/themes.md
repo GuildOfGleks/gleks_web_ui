@@ -1,4 +1,8 @@
-# @guildofgleks/ui — 21.7.0 theme presets plan
+# @guildofgleks/ui — theme presets plan
+
+**Not started. Target: 21.7.0, alongside that version's mandatory token-prefix removal** — both
+touch `theme.css`'s component-token layer, and iteration 1 here rewrites 510 of its literals, so
+doing them in one pass is much cheaper than twice. See the release sequence in `CLAUDE.md`.
 
 Turn a preset from a colour palette into a **complete visual identity**: radii, border weights,
 shadow depth, density, typography and letter-spacing character, not just eleven colours. Then ship

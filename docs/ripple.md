@@ -1,4 +1,7 @@
-# @guildofgleks/ui — 21.6.0 ripple plan
+# @guildofgleks/ui — ripple plan
+
+**Not started. Target: 21.7.0 or later — unscheduled.** Was `ripple-21.6.0.md` until 21.6.0
+shipped without it; a future plan's filename does not carry a version any more.
 
 A pointer-position ripple on the library's interactive surfaces, built from scratch: there is no
 `@angular/cdk` in this tree and there will not be, so Material's `MatRipple` is a reference for

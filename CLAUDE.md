@@ -50,29 +50,51 @@ an input, output, slot, type, service method or default edits it in the same cha
    root `node_modules`, and the local-build swap must be undone afterwards. Full rule in
    `agent-workflow.instructions.md`.
 
-## Current work
+## Where the project is
+
+**Latest release: 21.6.0 (2026-08-23).** `projects/gleks/ui/CHANGELOG.md` is the authority and
+ships inside the package; its top entry is always the version being worked on.
+
+### The release sequence
+
+| Version | State | What it must carry |
+| --- | --- | --- |
+| 21.6.0 | **released** | seven fixes and `gog-table`'s `maxHeight` |
+| 21.6.1 | **unreleased, has content** | `aria-busy` on `gog-table` and `gog-autocomplete`, plus `check:loading-aria`. Ready to cut whenever. |
+| **21.7.0** | **not started, and has a mandatory payload** | **the three deprecated token prefixes come out** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`. 152 references in `theme.css`. Announced in 21.5.0, and `npm run check:deprecations` **fails the build** once `package.json` reaches 21.7.0 with any of them still there, so this is not optional and not deferrable. |
+| 22.x | when Angular 22 lands | the branch split — see `docs/branching-and-support.md` |
+
+**Nothing else is scheduled.** The three future plans below are unscheduled; `themes.md` is
+written to ride along with 21.7.0's removal because both rewrite the same layer of `theme.css`.
+
+**A future plan's filename carries no version** — `panel-card.md` and `ripple.md`
+were both named for a release that shipped without them, which is what that always becomes. A
+*completed* plan keeps its version, because there it is a fact. Each future plan states its target
+in its own first paragraph, where it can be changed.
+
+## What to work on
 
 **`docs/backlog.md` is the live list** — everything known to be worth doing and not yet done, in
-one file. Read it before proposing what to work on. It replaced two separate backlog sections
-buried in completed plan documents, one of which had been carrying an item that shipped two
-minors earlier without anyone noticing.
+one file. Read it before proposing anything. It replaced two separate backlog sections buried in
+completed plan documents, one of which had been carrying an item that shipped two minors earlier
+without anyone noticing.
 
 **The order it comes off the list is fixed: fixes and polish of what already ships, before
 anything new.** A defect is something a consumer is hitting today; an unbuilt component is only
-an absence.
+an absence. As of 21.6.0 the backlog's defects section is empty, so the next thing is a choice
+rather than an obligation — until 21.7.0 is opened, which starts with its removal.
 
-Three future plans, three finished ones. A plan is not a backlog item — it is a decision already
-taken about how something gets built. Update the status table in whichever you are working from,
-as you go.
+A plan is not a backlog item — it is a decision already taken about how something gets built.
+Update the status table in whichever you are working from, as you go.
 
-- `docs/themes-21.7.0.md` — a **future** plan, nothing started, queued behind the ripple: presets
+- `docs/themes.md` — a **future** plan, nothing started, queued behind the ripple: presets
   become full visual identities (radii, borders, shadows, density, typography) instead of palettes,
   and then a catalogue across eras. Its load-bearing measurement is that **510 of 1127 component
   token declarations in `theme.css` are literals**, 26 of them radii — which is why the lab's
   `material`/`primeng` themes had to name component tokens one at a time. Iteration 1 introduces a
   character layer so a theme sets ~25 foundation tokens instead, and new components inherit every
   theme's character for free.
-- `docs/panel-card-21.6.0.md` — a **future** plan, nothing started: `gog-card` and `gog-panel`.
+- `docs/panel-card.md` — a **future** plan, nothing started: `gog-card` and `gog-panel`.
   Read its opening section before writing a line of it — the plan exists to answer whether these
   should be components at all, since a surface that only paints a background is a class (the
   showcase's own hand-rolled `.card` is five declarations across 37 templates). What justifies
@@ -81,7 +103,7 @@ as you go.
   fixed elsewhere, and folding in loading/disabled. Its first iteration is a decision — one
   component with a `size` input, or two — and it flags the `--gog-panel-*` collision with the
   existing foundation tokens.
-- `docs/ripple-21.6.0.md` — a **future** plan, nothing started: a from-scratch pointer ripple
+- `docs/ripple.md` — a **future** plan, nothing started: a from-scratch pointer ripple
   (there is no CDK here and will not be), scoped to 21.6.0 rather than 21.5.0 because 21.5.0 is
   deliberately the breaking release and a feature there re-creates the pile the changelog was
   split to undo. Read its _What makes this harder than the animation_ section before estimating
@@ -96,9 +118,16 @@ as you go.
   produced, several of which record a hypothesis that measurement disproved.
 - `docs/consumer-dx-plan.md` — completed: the package as a consumer meets it (onboarding,
   accessibility defaults, native attributes, packaging, icon registry, table outputs/lazy/
-  selection, link-flavoured button). Kept for its per-iteration outcomes and its backlog.
+  selection, link-flavoured button). Kept for its per-iteration outcomes; its backlog moved to
+  `docs/backlog.md`.
 - `docs/refactor-21.3.0.md` — the completed 21.3.0 pre-public cleanup (architecture, token
   contract, API consistency). Kept as the record of why those decisions were made.
+- `docs/iteration-8-plan.md` and `docs/iteration-9-plan.md` — both **completed for 21.3.0** and
+  every row of their status tables is ✅. Iteration 8 is field chrome (icon insets, clear-button
+  placement, float-label reserve), measured in a browser at `size="md"`; iteration 9 is the eight
+  components added at once, with the shape chosen for each and the alternative that was rejected.
+  Listed here because they were listed nowhere: a reader who found them had no way to tell they
+  were finished.
 
 `docs/branching-and-support.md` records the branch-per-Angular-major model that takes effect
 when Angular 22 lands: `master` (new major) vs `v21` (fixes only), which changes go where, the

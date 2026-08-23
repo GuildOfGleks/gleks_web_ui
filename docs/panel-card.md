@@ -1,4 +1,9 @@
-# `gog-panel` and `gog-card` — 21.6.0 plan
+# `gog-panel` and `gog-card`
+
+**Not started. Target: 21.7.0 or later — unscheduled.** The filename carries no version on
+purpose: this was `panel-card-21.6.0.md` until 21.6.0 shipped without it, which is what a version
+in a *future* plan's name always ends up meaning. Completed plans keep theirs, because there it is
+a fact rather than a guess.
 
 Two surface components: a **card** (a small, self-contained block — a product tile, a summary, a
 list item that has grown up) and a **panel** (a large region — a settings section, a dashboard
@@ -161,7 +166,7 @@ Both components are additive, so they _could_ have gone in 21.5.0. Two reasons t
 
 1. **21.5.0 was scoped as "one version to read before upgrading, one migration list."** New
    components break nothing but dilute exactly the property the version was assembled for.
-2. **`themes-21.7.0.md` is about the 510 literal component-token declarations** that force every
+2. **`themes.md` is about the 510 literal component-token declarations** that force every
    theme to name tokens per component. Two new surfaces would add two more families to that count
    today; after the character layer lands they inherit a theme's radius, border, shadow and
    density for free. Shipping them into the _current_ token model means writing them twice.

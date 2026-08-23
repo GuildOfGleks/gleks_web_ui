@@ -4,7 +4,7 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [21.6.0] - 23.08.2026
+## [21.6.1] - planned
 
 ### Fixed
 
@@ -15,6 +15,10 @@ reached 1.0, so breaking changes may land in minor versions.
   anything to tell a screen reader that a wait was in progress — the table read as a table with
   no rows, and the field as idle. The autocomplete is the worse of the two, because unlike a
   button the user pressed, that wait is not something they started.
+
+## [21.6.0] - 23.08.2026
+
+### Fixed
 
 - **A loading `gog-accordion` announces itself.** It sets `aria-busy="true"` while `loading` is
   on. Its skeleton bars are `aria-hidden` and the real headers are not rendered, so without it the

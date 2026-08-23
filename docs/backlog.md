@@ -127,8 +127,8 @@ filing's, kept so the request stays recognisable; item 1 of the list was a bug a
 - **The lab's deferred work** lives in `docs/lab-after-publish.md`, because it is keyed to
   releases rather than to effort: the docs site tracks the published package, so its debt is
   always "what to change once version X ships".
-- **Planned work that already has a design** has its own document — `docs/panel-card-21.6.0.md`,
-  `docs/ripple-21.6.0.md`, `docs/themes-21.7.0.md`. A plan is not a backlog item; it is a decision
+- **Planned work that already has a design** has its own document — `docs/panel-card.md`,
+  `docs/ripple.md`, `docs/themes.md`. A plan is not a backlog item; it is a decision
   already taken about how something gets built.
 - **Anything closed.** An entry that outlives its work sends the next reader to re-verify
   something already correct.
