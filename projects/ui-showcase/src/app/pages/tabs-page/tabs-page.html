@@ -9,8 +9,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Basic</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Basic</h3>
     <p class="hint">
       One tab stop for the whole tablist; the arrows move and activate, Home/End jump to the first
       and last enabled tab. Archive is disabled and gets skipped.
@@ -39,10 +39,10 @@
         {{ archiveDisabled() ? 'Enable' : 'Disable' }} Archive
       </gog-button>
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Eager content keeps its state</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Eager content keeps its state</h3>
     <p class="hint">
       Content written directly inside a tab renders immediately and is only hidden while inactive —
       type below, switch tabs, and come back.
@@ -58,10 +58,10 @@
         <p>Switching here does not destroy the field next door.</p>
       </gog-tab>
     </gog-tabs>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Lazy content</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Lazy content</h3>
     <p class="hint">
       An <code>&lt;ng-template gogTabContent&gt;</code> is built on first activation and kept alive
       afterwards. Which behaviour you get is decided by whether the template is there — there is no
@@ -77,10 +77,10 @@
         </ng-template>
       </gog-tab>
     </gog-tabs>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Alignment</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Alignment</h3>
     <div class="tabs-stack">
       @for (align of aligns; track align) {
         <div>
@@ -93,10 +93,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Overflow</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Overflow</h3>
     <p class="hint">
       Too many headers to fit scroll inside a <code>&lt;gog-scroll&gt;</code>, not a native
       <code>overflow-x</code> — a native scrollbar is the one strip of chrome no
@@ -142,10 +142,10 @@
         {{ overflowShowScrollTrack() === undefined ? 'unset' : overflowShowScrollTrack() }}
       </gog-button>
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Loaded from a backend</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Loaded from a backend</h3>
     <p class="hint">
       Both the tab list itself and each tab's own content arrive asynchronously — the shape of a
       real app, where <code>&lt;gog-tab&gt;</code> comes from an <code>&#64;for</code> over a signal
@@ -181,10 +181,10 @@
         {{ remoteSections() ? 'Reload sections' : 'Load sections' }}
       </gog-button>
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom headers</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom headers</h3>
     <p class="hint">
       A <code>gogTabHeader</code> template replaces the whole header button, with the tab, its index
       and whether it is active as typed context.
@@ -200,5 +200,5 @@
       <gog-tab label="Overview"><p>Overview</p></gog-tab>
       <gog-tab label="Metrics"><p>Metrics</p></gog-tab>
     </gog-tabs>
-  </article>
+  </gog-panel>
 </section>

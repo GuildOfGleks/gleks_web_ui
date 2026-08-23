@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import {
   ButtonComponent,
+  GogPanelHeaderDirective,
   GogTabContentDirective,
   GogTabHeaderDirective,
   GogTabsAlign,
+  PanelComponent,
   SpinnerComponent,
   TabComponent,
   TabsComponent,
@@ -32,9 +34,11 @@ const REMOTE_SECTIONS: RemoteSection[] = [
   selector: 'app-tabs-page',
   imports: [
     ButtonComponent,
+    GogPanelHeaderDirective,
     GogTabContentDirective,
     GogTabHeaderDirective,
     LazyPanel,
+    PanelComponent,
     RemoteTabPanel,
     SpinnerComponent,
     TabComponent,
