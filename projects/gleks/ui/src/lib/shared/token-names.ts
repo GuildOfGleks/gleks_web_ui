@@ -355,6 +355,56 @@ export type GogTokenName =
   | '--gog-calendar-weekday-text-transform'
   | '--gog-calendar-xsm-day-size'
   | '--gog-calendar-xsm-font-size'
+  | '--gog-card-bg'
+  | '--gog-card-border-color'
+  | '--gog-card-border-style'
+  | '--gog-card-border-width'
+  | '--gog-card-color'
+  | '--gog-card-disabled-opacity'
+  | '--gog-card-elevated-bg'
+  | '--gog-card-elevated-border-color'
+  | '--gog-card-elevated-shadow'
+  | '--gog-card-filled-bg'
+  | '--gog-card-filled-border-color'
+  | '--gog-card-filled-shadow'
+  | '--gog-card-focus-ring'
+  | '--gog-card-focus-ring-offset'
+  | '--gog-card-focus-ring-width'
+  | '--gog-card-font-family'
+  | '--gog-card-footer-border-color'
+  | '--gog-card-footer-gap'
+  | '--gog-card-footer-padding-top'
+  | '--gog-card-gap'
+  | '--gog-card-heading-color'
+  | '--gog-card-heading-font-family'
+  | '--gog-card-heading-font-size'
+  | '--gog-card-heading-font-weight'
+  | '--gog-card-heading-line-height'
+  | '--gog-card-hover-border-color'
+  | '--gog-card-hover-shadow'
+  | '--gog-card-lg-gap'
+  | '--gog-card-lg-padding-x'
+  | '--gog-card-lg-padding-y'
+  | '--gog-card-md-gap'
+  | '--gog-card-md-padding-x'
+  | '--gog-card-md-padding-y'
+  | '--gog-card-outlined-bg'
+  | '--gog-card-outlined-border-color'
+  | '--gog-card-outlined-shadow'
+  | '--gog-card-padding-x'
+  | '--gog-card-padding-y'
+  | '--gog-card-radius'
+  | '--gog-card-shadow'
+  | '--gog-card-slg-gap'
+  | '--gog-card-slg-padding-x'
+  | '--gog-card-slg-padding-y'
+  | '--gog-card-sm-gap'
+  | '--gog-card-sm-padding-x'
+  | '--gog-card-sm-padding-y'
+  | '--gog-card-transition-duration'
+  | '--gog-card-xsm-gap'
+  | '--gog-card-xsm-padding-x'
+  | '--gog-card-xsm-padding-y'
   | '--gog-checkbox-bg'
   | '--gog-checkbox-border-color'
   | '--gog-checkbox-border-style'
@@ -775,10 +825,59 @@ export type GogTokenName =
   | '--gog-paginator-ellipsis-min-width'
   | '--gog-paginator-gap'
   | '--gog-paginator-page-size-min-width'
+  | '--gog-panel-bg'
+  | '--gog-panel-border-color'
   | '--gog-panel-border-style'
   | '--gog-panel-border-width'
+  | '--gog-panel-chevron-size'
+  | '--gog-panel-color'
+  | '--gog-panel-disabled-opacity'
+  | '--gog-panel-elevated-bg'
+  | '--gog-panel-elevated-border-color'
+  | '--gog-panel-filled-bg'
+  | '--gog-panel-filled-border-color'
+  | '--gog-panel-filled-shadow'
+  | '--gog-panel-focus-ring'
+  | '--gog-panel-focus-ring-offset'
+  | '--gog-panel-focus-ring-width'
+  | '--gog-panel-font-family'
+  | '--gog-panel-footer-border-color'
+  | '--gog-panel-footer-gap'
+  | '--gog-panel-footer-padding-top'
+  | '--gog-panel-gap'
+  | '--gog-panel-header-gap'
+  | '--gog-panel-heading-color'
+  | '--gog-panel-heading-font-family'
+  | '--gog-panel-heading-font-size'
+  | '--gog-panel-heading-font-weight'
+  | '--gog-panel-heading-line-height'
+  | '--gog-panel-lg-gap'
+  | '--gog-panel-lg-padding-x'
+  | '--gog-panel-lg-padding-y'
+  | '--gog-panel-md-gap'
+  | '--gog-panel-md-padding-x'
+  | '--gog-panel-md-padding-y'
+  | '--gog-panel-outlined-bg'
+  | '--gog-panel-outlined-border-color'
+  | '--gog-panel-outlined-shadow'
+  | '--gog-panel-padding-x'
+  | '--gog-panel-padding-y'
   | '--gog-panel-radius'
   | '--gog-panel-shadow'
+  | '--gog-panel-slg-gap'
+  | '--gog-panel-slg-padding-x'
+  | '--gog-panel-slg-padding-y'
+  | '--gog-panel-sm-gap'
+  | '--gog-panel-sm-padding-x'
+  | '--gog-panel-sm-padding-y'
+  | '--gog-panel-toggle-color'
+  | '--gog-panel-toggle-hover-bg'
+  | '--gog-panel-toggle-radius'
+  | '--gog-panel-toggle-size'
+  | '--gog-panel-transition-duration'
+  | '--gog-panel-xsm-gap'
+  | '--gog-panel-xsm-padding-x'
+  | '--gog-panel-xsm-padding-y'
   | '--gog-primary-color'
   | '--gog-progressbar-accent-bg'
   | '--gog-progressbar-accent-buffer-bg'
@@ -1747,6 +1846,56 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     ],
   },
   {
+    section: 'Card',
+    layer: 'component',
+    tokens: [
+      '--gog-card-border-style',
+      '--gog-card-border-width',
+      '--gog-card-color',
+      '--gog-card-disabled-opacity',
+      '--gog-card-elevated-bg',
+      '--gog-card-elevated-border-color',
+      '--gog-card-elevated-shadow',
+      '--gog-card-filled-bg',
+      '--gog-card-filled-border-color',
+      '--gog-card-filled-shadow',
+      '--gog-card-focus-ring',
+      '--gog-card-focus-ring-offset',
+      '--gog-card-focus-ring-width',
+      '--gog-card-font-family',
+      '--gog-card-footer-border-color',
+      '--gog-card-footer-gap',
+      '--gog-card-footer-padding-top',
+      '--gog-card-heading-color',
+      '--gog-card-heading-font-family',
+      '--gog-card-heading-font-size',
+      '--gog-card-heading-font-weight',
+      '--gog-card-heading-line-height',
+      '--gog-card-hover-border-color',
+      '--gog-card-hover-shadow',
+      '--gog-card-lg-gap',
+      '--gog-card-lg-padding-x',
+      '--gog-card-lg-padding-y',
+      '--gog-card-md-gap',
+      '--gog-card-md-padding-x',
+      '--gog-card-md-padding-y',
+      '--gog-card-outlined-bg',
+      '--gog-card-outlined-border-color',
+      '--gog-card-outlined-shadow',
+      '--gog-card-radius',
+      '--gog-card-slg-gap',
+      '--gog-card-slg-padding-x',
+      '--gog-card-slg-padding-y',
+      '--gog-card-sm-gap',
+      '--gog-card-sm-padding-x',
+      '--gog-card-sm-padding-y',
+      '--gog-card-transition-duration',
+      '--gog-card-xsm-gap',
+      '--gog-card-xsm-padding-x',
+      '--gog-card-xsm-padding-y',
+    ],
+  },
+  {
     section: 'Checkbox',
     layer: 'component',
     tokens: [
@@ -2252,6 +2401,56 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-paginator-ellipsis-min-width',
       '--gog-paginator-gap',
       '--gog-paginator-page-size-min-width',
+    ],
+  },
+  {
+    section: 'Panel',
+    layer: 'component',
+    tokens: [
+      '--gog-panel-chevron-size',
+      '--gog-panel-color',
+      '--gog-panel-disabled-opacity',
+      '--gog-panel-elevated-bg',
+      '--gog-panel-elevated-border-color',
+      '--gog-panel-filled-bg',
+      '--gog-panel-filled-border-color',
+      '--gog-panel-filled-shadow',
+      '--gog-panel-focus-ring',
+      '--gog-panel-focus-ring-offset',
+      '--gog-panel-focus-ring-width',
+      '--gog-panel-font-family',
+      '--gog-panel-footer-border-color',
+      '--gog-panel-footer-gap',
+      '--gog-panel-footer-padding-top',
+      '--gog-panel-header-gap',
+      '--gog-panel-heading-color',
+      '--gog-panel-heading-font-family',
+      '--gog-panel-heading-font-size',
+      '--gog-panel-heading-font-weight',
+      '--gog-panel-heading-line-height',
+      '--gog-panel-lg-gap',
+      '--gog-panel-lg-padding-x',
+      '--gog-panel-lg-padding-y',
+      '--gog-panel-md-gap',
+      '--gog-panel-md-padding-x',
+      '--gog-panel-md-padding-y',
+      '--gog-panel-outlined-bg',
+      '--gog-panel-outlined-border-color',
+      '--gog-panel-outlined-shadow',
+      '--gog-panel-slg-gap',
+      '--gog-panel-slg-padding-x',
+      '--gog-panel-slg-padding-y',
+      '--gog-panel-sm-gap',
+      '--gog-panel-sm-padding-x',
+      '--gog-panel-sm-padding-y',
+      '--gog-panel-toggle-color',
+      '--gog-panel-toggle-hover-bg',
+      '--gog-panel-toggle-radius',
+      '--gog-panel-toggle-size',
+      '--gog-panel-transition-duration',
+      '--gog-panel-xsm-gap',
+      '--gog-panel-xsm-padding-x',
+      '--gog-panel-xsm-padding-y',
     ],
   },
   {
@@ -2799,6 +2998,12 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-calendar-day-bg',
       '--gog-calendar-day-color',
       '--gog-calendar-day-size',
+      '--gog-card-bg',
+      '--gog-card-border-color',
+      '--gog-card-gap',
+      '--gog-card-padding-x',
+      '--gog-card-padding-y',
+      '--gog-card-shadow',
       '--gog-checkbox-box-size',
       '--gog-checkbox-icon-size',
       '--gog-checkbox-label-size',
@@ -2830,6 +3035,11 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-multiselect-font-size',
       '--gog-multiselect-padding-x',
       '--gog-multiselect-padding-y',
+      '--gog-panel-bg',
+      '--gog-panel-border-color',
+      '--gog-panel-gap',
+      '--gog-panel-padding-x',
+      '--gog-panel-padding-y',
       '--gog-progressbar-buffer-bg',
       '--gog-progressbar-fill-bg',
       '--gog-progressbar-height',

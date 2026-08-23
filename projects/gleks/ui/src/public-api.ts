@@ -14,6 +14,8 @@ export * from './lib/components/button-toggle/button-toggle.component';
 export * from './lib/components/tabs/tab.component';
 export * from './lib/components/tabs/tabs.component';
 export * from './lib/components/tabs/tabs-state';
+export * from './lib/components/card/card.component';
+export * from './lib/components/panel/panel.component';
 export * from './lib/components/checkbox/checkbox.component';
 export * from './lib/components/datepicker/calendar/calendar.component';
 export * from './lib/components/datepicker/datepicker.component';

@@ -1,0 +1,28 @@
+@use '../detail' as *;
+
+.panel-demo__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+  align-items: start;
+}
+
+.panel-demo__stack {
+  display: grid;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.panel-demo__text {
+  margin: 0;
+  color: var(--gog-muted-text-color);
+  font-size: 0.9rem;
+}
+
+.panel-demo__themed {
+  --gog-panel-bg: color-mix(in srgb, var(--gog-accent-color) 10%, var(--gog-surface-color));
+  --gog-panel-shadow: none;
+  --gog-panel-border-color: var(--gog-accent-color);
+  margin-top: 12px;
+}

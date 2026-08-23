@@ -1,0 +1,124 @@
+<section class="detail">
+  <div class="detail__hero card">
+    <p class="eyebrow">gog-panel</p>
+    <h2>Panel</h2>
+    <p class="lead">
+      A titled region of a page — a settings section, a dashboard area, a form group. Unlike
+      <code>gog-card</code> it is a real landmark (<code>role="region"</code> named by its heading),
+      it can collapse through the existing <code>gog-collapsible</code> primitive, and its surface
+      is never itself a link: controls live inside a panel.
+    </p>
+  </div>
+
+  <article class="card">
+    <h3>Variants and sizes</h3>
+    <p class="meta">
+      Same three variants as <code>gog-card</code>, from the shared
+      <code>GogSurfaceVariant</code> type — <code>elevated</code> is the default here, because a
+      page region is usually the raised thing on the page.
+    </p>
+    <div class="panel-demo__row">
+      @for (variant of variants; track variant) {
+        <gog-panel [variant]="variant" size="md">
+          <h4 gogPanelHeader>{{ variant }}</h4>
+          <p class="panel-demo__text">
+            The body is projected as-is. Padding and the gap between rows follow
+            <code>size</code>.
+          </p>
+        </gog-panel>
+      }
+    </div>
+    <div class="panel-demo__row">
+      @for (size of sizes; track size) {
+        <gog-panel [size]="size" variant="outlined">
+          <h4 gogPanelHeader>{{ size }}</h4>
+          <p class="panel-demo__text">Five tiers, same scale as the controls.</p>
+        </gog-panel>
+      }
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Collapsible</h3>
+    <p class="meta">
+      <code>collapsible</code> adds the toggle and composes <code>gog-collapsible</code> under it —
+      the open/close state, the id wiring and the animation are the library's existing ones. The
+      heading stays a heading: the toggle is its own button, named by the heading through
+      <code>aria-labelledby</code>, with its hit area stretched across the header row so clicking
+      the title still works.
+    </p>
+    <div class="panel-demo__stack">
+      <gog-panel [collapsible]="true" [(open)]="notificationsOpen" size="md">
+        <h4 gogPanelHeader>Notifications</h4>
+        <gog-checkbox label="Email digest" [(checked)]="emailDigest" />
+        <gog-checkbox label="Push alerts" [(checked)]="pushAlerts" />
+        <div gogPanelFooter>
+          <gog-button size="xsm" variant="outline">Reset</gog-button>
+          <gog-button size="xsm">Save</gog-button>
+        </div>
+      </gog-panel>
+
+      <gog-panel [collapsible]="true" [(open)]="securityOpen" size="md" variant="outlined">
+        <h4 gogPanelHeader>Security</h4>
+        <gog-inputfield label="Display name" [(value)]="displayName" />
+      </gog-panel>
+
+      <gog-panel [collapsible]="true" [(open)]="disabledOpen" [disabled]="true" size="md">
+        <h4 gogPanelHeader>Billing (disabled)</h4>
+        <p class="panel-demo__text">
+          The toggle is <code>aria-disabled</code> and does nothing; the content stays readable.
+        </p>
+      </gog-panel>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>A panel that holds an overlay</h3>
+    <p class="meta">
+      A non-collapsible panel undoes the collapse geometry it inherits, <code>overflow</code>
+      included — so a dropdown opened inside one is not clipped. Open the select below: its panel
+      must escape the region's box.
+    </p>
+    <gog-panel size="md" variant="outlined">
+      <h4 gogPanelHeader>Regional</h4>
+      <gog-select label="Time zone" [options]="timezones" [(value)]="timezone" />
+    </gog-panel>
+  </article>
+
+  <article class="card">
+    <h3>Loading</h3>
+    <p class="meta">
+      The heading stays — a page section is titled before its content arrives — and only the body is
+      replaced with placeholder lines. The footer stays too, so its actions remain usable.
+    </p>
+    <p class="states-row__label">
+      <gog-button size="xsm" variant="outline" (gogClick)="loading.set(!loading())">
+        {{ loading() ? 'Finish loading' : 'Load again' }}
+      </gog-button>
+    </p>
+    <gog-panel [loading]="loading()" [skeletonLines]="4" size="md">
+      <h4 gogPanelHeader>Activity</h4>
+      <p class="panel-demo__text">
+        Sixteen events since Tuesday, most of them from the nightly import.
+      </p>
+      <div gogPanelFooter><gog-button size="xsm" variant="ghost">Export</gog-button></div>
+    </gog-panel>
+  </article>
+
+  <article class="card">
+    <h3>Theming</h3>
+    <p class="meta">
+      <code>gog-panel</code> shares its token prefix with the foundation surface tier on purpose:
+      <code>--gog-panel-radius</code>, <code>--gog-panel-shadow</code> and the border pair are the
+      same tokens dialogs and dropdown panels read, so a theme's idea of a raised surface reaches
+      this component for free. Everything else — background, padding, heading, toggle, footer — is
+      the component's own <code>--gog-panel-*</code> family.
+    </p>
+    <gog-panel class="panel-demo__themed" size="md">
+      <h4 gogPanelHeader>Overridden per instance</h4>
+      <p class="panel-demo__text">
+        Three tokens set from one class on the element, no <code>::ng-deep</code> in sight.
+      </p>
+    </gog-panel>
+  </article>
+</section>

@@ -1,0 +1,151 @@
+/*
+ * The projected pieces of `gog-card` and `gog-panel`.
+ *
+ * Global for the same reason `gog-collapsible`'s trigger/content classes and `[gogButton]`'s
+ * `.gog-btn` are: every class below lands on an element the *consumer* wrote — their `<h3>`,
+ * their `<img>`, their `<a>` — which is light DOM belonging to the consumer's own view. A
+ * component's scoped stylesheet can never reach it, so these rules have to live here or the
+ * slots would come out unstyled with no way to fix them from inside the library.
+ *
+ * Everything each component paints on *itself* stays in its own `.scss`.
+ */
+
+/* ── gog-card ───────────────────────────────────────────────────────────────── */
+
+.gog-card__header {
+  margin: 0;
+  color: var(--gog-card-heading-color);
+  font-family: var(--gog-card-heading-font-family);
+  font-size: var(--gog-card-heading-font-size);
+  font-weight: var(--gog-card-heading-font-weight);
+  line-height: var(--gog-card-heading-line-height);
+}
+
+/*
+ * Media runs to the card's edges rather than sitting inside its padding — that is the whole
+ * difference between `gogCardMedia` and an `<img>` a consumer drops in the body, and it is why
+ * the negative margins repeat the card's own padding chain instead of a fixed number.
+ */
+.gog-card__media {
+  display: block;
+  inline-size: calc(
+    100% + 2 *
+      var(--gog-card-padding-x, var(--gog-card-size-padding-x, var(--gog-card-md-padding-x)))
+  );
+  margin-inline: calc(
+    -1 * var(--gog-card-padding-x, var(--gog-card-size-padding-x, var(--gog-card-md-padding-x)))
+  );
+  object-fit: cover;
+}
+
+/* Only a first child can round into the card's own top corners; anywhere else it is a band. */
+.gog-card__media:first-child {
+  margin-block-start: calc(
+    -1 * var(--gog-card-padding-y, var(--gog-card-size-padding-y, var(--gog-card-md-padding-y)))
+  );
+  border-start-end-radius: calc(var(--gog-card-radius) - var(--gog-card-border-width));
+  border-start-start-radius: calc(var(--gog-card-radius) - var(--gog-card-border-width));
+}
+
+.gog-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-card-footer-gap);
+  padding-block-start: var(--gog-card-footer-padding-top);
+  border-block-start: var(--gog-card-border-width) var(--gog-card-border-style)
+    var(--gog-card-footer-border-color);
+}
+
+/*
+ * `gogCardLink` — the whole card activates this one link.
+ *
+ * The link keeps every bit of its own behaviour (href, Enter, middle-click, "open in new tab");
+ * only its hit area grows, as a pseudo-element stretched over the card. The card is the
+ * containing block for it (`position: relative` on `gog-card`), so this element itself must NOT
+ * be positioned — that is also why the escape rule below excludes it.
+ */
+.gog-card__link {
+  /*
+   * The card is the affordance — its cursor, its hover elevation and its focus ring all say
+   * "this activates". A link rendered in the browser's blue-and-underlined inside that reads as
+   * a second, separate control sitting on the surface, which is exactly what it is not. One
+   * class of specificity, so a consumer who wants their own link colour simply writes it.
+   */
+  color: inherit;
+  text-decoration: none;
+}
+
+.gog-card__link::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+}
+
+/* The usual "this row is a link" hint, moved to the whole card since the whole card is one. */
+.gog-card--interactive:hover .gog-card__link {
+  text-decoration: underline;
+}
+
+.gog-card__link.gog-card__link:focus-visible {
+  outline: none;
+}
+
+/* The ring belongs around the card, because the card is what the link's hit area covers. */
+.gog-card__link.gog-card__link:focus-visible::after {
+  border-radius: var(--gog-card-radius);
+  outline: var(--gog-card-focus-ring-width) solid var(--gog-card-focus-ring);
+  outline-offset: var(--gog-card-focus-ring-offset);
+}
+
+/*
+ * Doubled class for one point of specificity over a consumer's plainest rule — see
+ * `scripts/check-state-specificity.mjs`. A disabled card whose link still swallowed clicks
+ * would be the same defect the disabled-button rules were hardened against.
+ */
+.gog-card--disabled.gog-card--disabled .gog-card__link,
+.gog-card--loading.gog-card--loading .gog-card__link {
+  pointer-events: none;
+}
+
+/*
+ * Anything *else* interactive inside an interactive card or a collapsible panel header sits
+ * above the stretched hit area, instead of being covered by it — a footer button in a clickable
+ * card is the common case, and having it silently activate the card's link instead would be the
+ * pattern's classic trap.
+ *
+ * The two elements that own a stretched hit area are excluded: positioning them would make each
+ * one its own containing block, and the pseudo-element would then cover the control instead of
+ * the surface — the exact thing it exists to spread across.
+ *
+ * Written entirely in `:where()` so it carries zero specificity: it is a default that must never
+ * win against a consumer positioning their own element.
+ */
+:where(.gog-card--interactive, .gog-panel__header)
+  :where(a, button, input, select, textarea, summary, [tabindex]):where(
+    :not(.gog-card__link, .gog-panel__toggle)
+  ) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── gog-panel ──────────────────────────────────────────────────────────────── */
+
+.gog-panel__heading {
+  margin: 0;
+  color: var(--gog-panel-heading-color);
+  font-family: var(--gog-panel-heading-font-family);
+  font-size: var(--gog-panel-heading-font-size);
+  font-weight: var(--gog-panel-heading-font-weight);
+  line-height: var(--gog-panel-heading-line-height);
+}
+
+.gog-panel__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-panel-footer-gap);
+  padding-block-start: var(--gog-panel-footer-padding-top);
+  border-block-start: var(--gog-panel-border-width) var(--gog-panel-border-style)
+    var(--gog-panel-footer-border-color);
+}

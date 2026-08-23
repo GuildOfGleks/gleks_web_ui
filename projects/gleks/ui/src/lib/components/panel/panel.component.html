@@ -1,0 +1,54 @@
+<!--
+  `gog-collapsible` wraps the whole panel even when `collapsible` is off: it is `display:
+  contents`, so it adds no box, and keeping it unconditional is what lets the body carry
+  `gogCollapsibleContent` in one place instead of duplicating every `<ng-content>` across two
+  branches. A non-collapsible panel is simply always open, and `--static` undoes the closed-state
+  geometry the shared class brings with it.
+-->
+<gog-collapsible
+  [open]="effectiveOpen()"
+  (openChange)="onOpenChange($event)"
+  [disabled]="disabled()"
+>
+  @if (labelledBy() || collapsible()) {
+    <div class="gog-panel__header">
+      <ng-content select="[gogPanelHeader]" />
+
+      @if (collapsible()) {
+        <!--
+          Named by the heading rather than wrapping it. A `<button>` may not contain an `<h2>`,
+          and giving the heading `role="button"` instead would delete it from the heading list —
+          so the button is its own element, and its hit area is stretched across the header row
+          in the stylesheet to keep "click the title" working for the pointer.
+        -->
+        <button
+          gogCollapsibleTrigger
+          class="gog-panel__toggle"
+          type="button"
+          [attr.aria-labelledby]="labelledBy()"
+          [attr.aria-label]="labelledBy() ? null : toggleLabel()"
+        >
+          <gog-icon class="gog-panel__chevron" name="chevron-down" />
+        </button>
+      }
+    </div>
+  }
+
+  <div
+    gogCollapsibleContent
+    class="gog-panel__content"
+    [class.gog-panel__content--static]="!collapsible()"
+  >
+    @if (loading()) {
+      <div class="gog-panel__placeholder" aria-hidden="true">
+        <gog-skeleton shape="text" [size]="size()" [lines]="skeletonLines()" />
+      </div>
+    }
+
+    <div class="gog-panel__body" [class.gog-panel__body--hidden]="loading()">
+      <ng-content />
+    </div>
+
+    <ng-content select="[gogPanelFooter]" />
+  </div>
+</gog-collapsible>

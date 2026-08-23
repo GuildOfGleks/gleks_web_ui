@@ -19,3 +19,6 @@
 @import './button.css';
 /* Same reason: `gogMenuItem` marks a consumer's own <button>. */
 @import './menu.css';
+/* Same reason again: `gogCardHeader`, `gogCardMedia`, `gogCardFooter`, `gogCardLink`,
+   `gogPanelHeader` and `gogPanelFooter` all mark a consumer's own element. */
+@import './surfaces.css';

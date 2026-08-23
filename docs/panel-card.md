@@ -1,15 +1,18 @@
 # `gog-panel` and `gog-card`
 
-**Not started. Target: 21.7.0 or later — unscheduled.** The filename carries no version on
-purpose: this was `panel-card-21.6.0.md` until 21.6.0 shipped without it, which is what a version
-in a *future* plan's name always ends up meaning. Completed plans keep theirs, because there it is
-a fact rather than a guess.
+**Built 2026-08-23, in 21.6.1** — iterations 1, 2 and 3 are done and in the changelog; iteration 4
+is one page in and open. The filename still carries no version: it was `panel-card-21.6.0.md`
+until 21.6.0 shipped without it, and renaming it now buys nothing, since the line above says where
+the work landed.
+
+**Two of iteration 1's answers came out differently from the sketch below.** Read *Iteration 1, as
+resolved* before treating any code block further down as the API.
 
 Two surface components: a **card** (a small, self-contained block — a product tile, a summary, a
 list item that has grown up) and a **panel** (a large region — a settings section, a dashboard
 area, a form group with a heading).
 
-Written 2026-08-20, after 21.5.0 closed. Nothing started.
+Written 2026-08-20, after 21.5.0 closed. Built 2026-08-23.
 
 ## The question this plan exists to answer
 
@@ -84,12 +87,88 @@ any code is written.
 
 ## Iterations
 
-| #   | Iteration                                 | Kind    | State   |
-| --- | ----------------------------------------- | ------- | ------- |
-| 1   | Decide one-or-two, and write the API down | api     | ⬜ todo |
-| 2   | `gog-card`                                | feature | ⬜ todo |
-| 3   | `gog-panel`                               | feature | ⬜ todo |
-| 4   | The showcase's own `.card` goes away      | fix     | ⬜ todo |
+| #   | Iteration                                 | Kind    | State                           |
+| --- | ----------------------------------------- | ------- | ------------------------------- |
+| 1   | Decide one-or-two, and write the API down | api     | ✅ done — two, see below        |
+| 2   | `gog-card`                                | feature | ✅ done (21.6.1)                |
+| 3   | `gog-panel`                               | feature | ✅ done (21.6.1)                |
+| 4   | The showcase's own `.card` goes away      | fix     | 🟡 one page converted, 36 to go |
+
+### Iteration 1, as resolved
+
+**Two components.** Both halves of the plan's own test came true: the card got the interactive
+surface, the panel got collapsing. They diverged in a third way the sketch did not anticipate —
+`role="region"` for the panel, `role="group"` for the card — which is the strongest of the three
+arguments for keeping them apart. A grid of twenty cards would otherwise put twenty landmarks in a
+screen reader's landmark list, which is worse than none.
+
+**`interactive` / `interactiveAs` / `href` do not exist. `gogCardLink` does.** The sketch had
+`<gog-card [interactive]="true" (gogClick)>` render a `<button>` or an `<a>` of its own, inferring
+which from `href`. That went once the open question — *copy whatever `gog-button`'s link flavour
+did* — was actually answered: what it did was **not render the element at all**. It made
+`[gogButton]` a directive on the consumer's own `<a>`, precisely so the router's input surface did
+not have to be brokered through a component. The same answer applies here, and three things fall
+out of it that the component-rendered version could not have had:
+
+1. **A card can hold other controls.** A `<button>` may not contain a button or a link, so the
+   sketch's interactive card and its own footer actions were mutually exclusive — in a component
+   whose footer slot exists for actions.
+2. **`routerLink` keeps working**, along with `target`, `download`, middle-click and "open in new
+   tab", because the element was never taken away.
+3. **The accessible name is the link's text**, not the card's entire contents.
+
+The cost is the stretched-hit-area pattern's two inherent ones, documented in `AGENTS.md`: text in
+the card cannot be drag-selected, and a second link is keyboard-reachable but not clickable
+through the surface around it. Both are smaller than any of the three above.
+
+**The `--gog-panel-*` collision resolved by adoption, not by renaming.** The four foundation
+tokens (`--gog-panel-radius`, `-shadow`, `-border-width`, `-border-style`) stay exactly where they
+are, and the component reads them as its own surface chrome. The alternative — renaming the tier
+to `--gog-surface-*` and keeping the old names alive in a fallback — is a real deprecation cycle
+(35 reads across the library plus ~20 in `theme.css`) bought for a distinction nobody asked for: a
+panel *is* the surface that tier describes. It also points the same way as `themes.md`, whose
+whole argument is that radius, border and shadow should be foundation character rather than
+per-component literals. Rule E never fired, because `panel` is already a foundation namespace.
+
+The one wart it leaves: the elevated variant has no separate instance-tier token for its shadow,
+because `--gog-panel-shadow` is taken. It does not need one — the variant class declares
+`--gog-panel-variant-shadow` *on the host*, so a `var()` inside it resolves against that element,
+and setting `--gog-panel-shadow` on a single panel already changes only that panel. Written into
+`theme.css`'s Panel block, because it is not guessable.
+
+**Header as a slot, and the toggle beside it rather than around it.** A `<button>` may not contain
+an `<h2>`, and `role="button"` on the heading deletes it from the heading list — so the collapse
+toggle is its own button, named by the heading through `aria-labelledby`, with its hit area
+stretched across the header row. The pointer still gets "click the title"; the screen reader gets
+a heading *and* a named expandable button. `gogCollapsibleTrigger`'s div-with-`role="button"` path
+would have been simpler, and is what Material does; it was rejected for exactly the heading it
+eats.
+
+**Three variants, shared.** `GogSurfaceVariant` = `outlined | elevated | filled`, one type for
+both components so the two agree on what each word means. `elevated` reads the shared
+`--gog-panel-shadow`, which in the dark theme already carries a 1px ring — so it needs no border
+of its own there, and reads intentionally flatter in light.
+
+### Iteration 4, as far as it got
+
+`divider-page` is converted: its five `<article class="card">` sections are `<gog-panel size="md">`
+with `<h3 gogPanelHeader>`. Three findings, all of which the remaining 36 templates will hit:
+
+- **The swap is mechanical and the template gets no shorter.** One attribute on the heading, one
+  import pair on the page class, same nesting. What changes is what the page *means*: five named
+  regions instead of five anonymous `<article>`s.
+- **The hero does not convert.** `.detail__hero` puts an eyebrow `<p>` *above* its `<h2>`, and a
+  panel always renders the header slot first. Either the hero keeps the hand-rolled class, or the
+  component grows a slot above the header — do not add one for this alone.
+- **`.card` is border *and* shadow, which is not any one variant.** `outlined` drops the shadow,
+  `elevated` drops the border. In the dark theme the difference is invisible (the shadow carries
+  its own ring); in light, `elevated` reads flatter than the old class. Nothing is broken, but the
+  conversion is not pixel-identical, and whoever does the other 36 should expect that.
+
+The rest is deliberately left. The point of the iteration was to find out whether the API is
+pleasant to use, and one page answered it; converting the remainder is bulk work with a
+visual-regression tail, and `lab-stackblitz-plan.md`'s one-page-per-commit rule applies to the
+showcase for the same reason.
 
 ### Iteration 1 — the API, on paper, before any file
 
@@ -161,6 +240,10 @@ API is right. If a page needs `::ng-deep` or a wrapper div to get its old look b
 wrong and iteration 1 was too optimistic.
 
 ## Why 21.6.0 and not 21.5.0
+
+> Written before the work, and kept because its second argument is what decided the token design
+> above. They landed in 21.6.1 rather than 21.6.0 — that release went out first, carrying seven
+> fixes and nothing new.
 
 Both components are additive, so they _could_ have gone in 21.5.0. Two reasons they did not:
 

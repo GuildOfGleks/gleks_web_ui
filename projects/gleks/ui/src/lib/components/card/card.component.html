@@ -1,0 +1,27 @@
+@if (loading()) {
+  <!--
+    Shaped like the content that is coming — a title bar and a few text lines — rather than a
+    spinner: a card owns a region, and the point of a region's placeholder is that nothing moves
+    when the data lands. `aria-hidden` because the host already says `aria-busy`.
+  -->
+  <div class="gog-card__placeholder" aria-hidden="true">
+    <gog-skeleton shape="text" [size]="size()" width="60%" />
+    @if (skeletonLines() > 0) {
+      <gog-skeleton shape="text" [size]="size()" [lines]="skeletonLines()" />
+    }
+  </div>
+}
+
+<div class="gog-card__content" [class.gog-card__content--hidden]="loading()">
+  <ng-content select="[gogCardMedia]" />
+  <ng-content select="[gogCardHeader]" />
+
+  <!--
+    The default slot gets a wrapper of its own so the card's row gap separates media, heading,
+    body and footer — and nothing else. Without it every element a consumer projects would become
+    a flex item and be spaced by that same gap, which quietly overrides their own layout.
+  -->
+  <div class="gog-card__body"><ng-content /></div>
+
+  <ng-content select="[gogCardFooter]" />
+</div>

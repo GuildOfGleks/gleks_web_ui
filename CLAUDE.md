@@ -60,7 +60,7 @@ ships inside the package; its top entry is always the version being worked on.
 | Version | State | What it must carry |
 | --- | --- | --- |
 | 21.6.0 | **released** | seven fixes and `gog-table`'s `maxHeight` |
-| 21.6.1 | **unreleased, has content** | `aria-busy` on `gog-table` and `gog-autocomplete`, plus `check:loading-aria`. Ready to cut whenever. |
+| 21.6.1 | **unreleased, has content** | `aria-busy` on `gog-table` and `gog-autocomplete` plus `check:loading-aria`, **and `gog-card` + `gog-panel`** (`docs/panel-card.md`, iterations 1–3). Ready to cut whenever. |
 | **21.7.0** | **not started, and has a mandatory payload** | **the three deprecated token prefixes come out** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`. 152 references in `theme.css`. Announced in 21.5.0, and `npm run check:deprecations` **fails the build** once `package.json` reaches 21.7.0 with any of them still there, so this is not optional and not deferrable. |
 | 22.x | when Angular 22 lands | the branch split — see `docs/branching-and-support.md` |
 
@@ -94,15 +94,14 @@ Update the status table in whichever you are working from, as you go.
   `material`/`primeng` themes had to name component tokens one at a time. Iteration 1 introduces a
   character layer so a theme sets ~25 foundation tokens instead, and new components inherit every
   theme's character for free.
-- `docs/panel-card.md` — a **future** plan, nothing started: `gog-card` and `gog-panel`.
-  Read its opening section before writing a line of it — the plan exists to answer whether these
-  should be components at all, since a surface that only paints a background is a class (the
-  showcase's own hand-rolled `.card` is five declarations across 37 templates). What justifies
-  them is what a class cannot do: naming the region for a screen reader from a projected header,
-  making an interactive card a real button/link rather than the `div (click)` trap 21.5.0 just
-  fixed elsewhere, and folding in loading/disabled. Its first iteration is a decision — one
-  component with a `size` input, or two — and it flags the `--gog-panel-*` collision with the
-  existing foundation tokens.
+- `docs/panel-card.md` — **built 2026-08-23 into 21.6.1**: `gog-card` and `gog-panel`, iterations
+  1–3 done. Read its _Iteration 1, as resolved_ section rather than the sketch above it: two of the
+  answers came out differently from the plan. There is no `interactive` input — a card becomes
+  interactive by containing a `gogCardLink`, a directive on the consumer's own `<a>`, for the same
+  reason `[gogButton]` is one — and the `--gog-panel-*` collision resolved by the component
+  *adopting* the foundation surface tier rather than either side renaming. Iteration 4 (the
+  showcase's own `.card` goes away, 37 templates) is **one page in and open**, with the three
+  findings that conversion produced written down there.
 - `docs/ripple.md` — a **future** plan, nothing started: a from-scratch pointer ripple
   (there is no CDK here and will not be), scoped to 21.6.0 rather than 21.5.0 because 21.5.0 is
   deliberately the breaking release and a feature there re-creates the pile the changelog was

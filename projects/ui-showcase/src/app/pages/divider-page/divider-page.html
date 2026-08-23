@@ -8,8 +8,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Line styles</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Line styles</h3>
     <div class="divider-stack">
       @for (variant of variants; track variant) {
         <div class="divider-sample">
@@ -18,10 +18,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>With a label</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>With a label</h3>
     <p class="hint">
       Nothing projected renders one continuous line; anything projected splits it. The component has
       no <code>hasLabel</code> input — the stylesheet keys off whether the label element is empty.
@@ -31,10 +31,10 @@
       <gog-divider>OR</gog-divider>
       <gog-divider><gog-tag variant="info" size="xsm">New</gog-tag></gog-divider>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Vertical</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Vertical</h3>
     <p class="hint">
       Stretches to a flex row's height, with <code>--gog-divider-vertical-length</code> as the floor
       when there is nothing to stretch to.
@@ -46,10 +46,10 @@
       <gog-divider orientation="vertical" variant="dashed" />
       <gog-button variant="ghost">Delete</gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Inset</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Inset</h3>
     <p class="hint">
       Indents the leading edge so the rule lines up with the text of a list whose rows start with an
       avatar or icon, instead of cutting across the whole row.
@@ -61,10 +61,10 @@
       <gog-divider [inset]="true" />
       <li class="divider-list__row"><span class="divider-list__avatar">V</span> Vira</li>
     </ul>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Theming</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Theming</h3>
     <p class="hint">
       <code>--gog-divider-color</code>, <code>--gog-divider-thickness</code> and
       <code>--gog-divider-spacing</code> are instance-layer tokens: set them on one element to
@@ -74,5 +74,5 @@
       <gog-divider />
       <gog-divider>Accent</gog-divider>
     </div>
-  </article>
+  </gog-panel>
 </section>

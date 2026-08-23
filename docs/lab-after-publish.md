@@ -35,6 +35,26 @@ Two things to know before building it:
 - It is read from the **installed** package, so the badge answers for the version the reader has.
   Do not hard-code 21.7.0 anywhere; take it from `removedIn`.
 
+## After 21.6.1 — two new components to document
+
+21.6.1 adds **`gog-card`** and **`gog-panel`** (plus `GogSurfaceVariant`, the
+`gogCardHeader`/`gogCardMedia`/`gogCardFooter`/`gogCardLink` and `gogPanelHeader`/`gogPanelFooter`
+slot directives, and `GOG_CONFIG.labels.togglePanel`). The lab needs:
+
+- **Two component pages**, under the layout group next to `gog-collapsible`. `ui-showcase`'s
+  `card-page` and `panel-page` are the working demos to lift examples from — including the two
+  that carry the argument: an interactive card whose footer button still receives its own clicks,
+  and a non-collapsible panel holding an open `gog-select` (the dropdown escapes the panel's box).
+- **`since` chips (layer 3 of `lab-versioning.md`) reading 21.6.1** on every input, slot and type
+  listed above.
+- **A theming-page note that `--gog-panel-*` names two things.** `--gog-panel-radius`,
+  `--gog-panel-shadow`, `--gog-panel-border-width` and `--gog-panel-border-style` are the
+  foundation surface tier *and* the `gog-panel` component's chrome, on purpose. Whatever the
+  theming page currently says about that prefix is now incomplete rather than wrong.
+- **The "no card component" statement, wherever the lab makes one.** Grep for `card` in the lab's
+  prose before writing the pages — the component inventory and any "what the library does not
+  have yet" copy both move.
+
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see

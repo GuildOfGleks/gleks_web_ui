@@ -58,6 +58,21 @@ export const INSTANCE_TOKENS = new Set([
   '--gog-button-toggle-color',
   '--gog-button-toggle-font-size',
   '--gog-button-toggle-padding',
+  // gog-card
+  '--gog-card-bg',
+  '--gog-card-border-color',
+  '--gog-card-gap',
+  '--gog-card-padding-x',
+  '--gog-card-padding-y',
+  '--gog-card-shadow',
+  // gog-panel. No shadow entry: the elevated variant reads the foundation
+  // `--gog-panel-shadow` from a declaration the component makes on its own host, which already
+  // resolves per instance — see theme.css's Panel block.
+  '--gog-panel-bg',
+  '--gog-panel-border-color',
+  '--gog-panel-gap',
+  '--gog-panel-padding-x',
+  '--gog-panel-padding-y',
   // gog-calendar
   '--gog-calendar-day-bg',
   '--gog-calendar-day-color',
