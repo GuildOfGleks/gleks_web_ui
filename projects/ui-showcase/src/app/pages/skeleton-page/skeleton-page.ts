@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import {
   ButtonComponent,
+  GogPanelHeaderDirective,
   GogSize,
   GogSkeletonAnimation,
+  PanelComponent,
   SkeletonComponent,
 } from '@guildofgleks/ui';
 
@@ -20,7 +22,7 @@ const ROWS: CatalogRow[] = [
 
 @Component({
   selector: 'app-skeleton-page',
-  imports: [ButtonComponent, SkeletonComponent],
+  imports: [ButtonComponent, GogPanelHeaderDirective, PanelComponent, SkeletonComponent],
   templateUrl: './skeleton-page.html',
   styleUrl: './skeleton-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

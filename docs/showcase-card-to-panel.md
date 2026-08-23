@@ -328,7 +328,7 @@ to them.
 | 19    | `progressbar-page`         | 6           | ✅                       |
 | 20    | `spinner-page`             | 6           | ✅                       |
 | 21    | `toggle-page`              | 6           | ✅                       |
-| 22    | `skeleton-page`            | 7           | ⬜                       |
+| 22    | `skeleton-page`            | 7           | ✅                       |
 | 23    | `tabs-page`                | 7           | ⬜                       |
 | 24    | `button-page`              | 8           | ⬜                       |
 | 25    | `button-toggle-page`       | 8           | ⬜                       |
