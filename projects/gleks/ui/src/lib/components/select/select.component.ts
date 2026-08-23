@@ -10,12 +10,13 @@ import {
 } from '@angular/core';
 
 import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-base';
+import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 
 @Component({
   selector: 'gog-select',
-  imports: [IconComponent, NgTemplateOutlet, ScrollComponent],
+  imports: [GogRippleDirective, IconComponent, NgTemplateOutlet, ScrollComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -16,6 +16,7 @@ import {
 
 import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-base';
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
@@ -48,7 +49,7 @@ const DEFAULT_OPEN_ON_FOCUS = true;
  */
 @Component({
   selector: 'gog-autocomplete',
-  imports: [IconComponent, NgTemplateOutlet, ScrollComponent, SpinnerComponent],
+  imports: [GogRippleDirective, IconComponent, NgTemplateOutlet, ScrollComponent, SpinnerComponent],
   templateUrl: './autocomplete.component.html',
   styleUrl: './autocomplete.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

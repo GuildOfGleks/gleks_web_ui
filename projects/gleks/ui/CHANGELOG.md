@@ -42,7 +42,7 @@ reached 1.0, so breaking changes may land in minor versions.
   id wiring and the animation are the ones the rest of the library already uses. The heading stays
   a heading: the toggle is a separate `<button>` named by it through `aria-labelledby`, with its
   hit area stretched across the header row — so the pointer still gets "click the title to
-  collapse", while a screen reader gets a heading *and* a named expandable button instead of a
+  collapse", while a screen reader gets a heading _and_ a named expandable button instead of a
   heading swallowed by `role="button"`. A panel that cannot collapse undoes the collapse geometry
   it inherits, `overflow` included, so a dropdown opened inside one is not clipped.
 
@@ -56,6 +56,48 @@ reached 1.0, so breaking changes may land in minor versions.
   them instead of owning a fourth definition of "raised surface", so a theme's house radius and
   shadow reach it for free. The rest of `--gog-panel-*` is the component's own. Nothing was
   renamed and no existing override changes meaning.
+
+- **`gogRipple` — a press wash for any element.** `<button gogRipple>`, `<div gogRipple>`, a
+  `gog-*` host tag: a directive, so it adds no wrapper and changes no layout. Built from scratch —
+  there is no `@angular/cdk` in this package and there will not be.
+
+  The interesting part is not the animation. A ripple normally clips its host, and `gogBadge`
+  pins its badge **outside** the host's box on purpose — so the first ordinary pairing anyone
+  tries, a badged button, loses its badge the moment the ripple is installed. This one never
+  clips the host: the wash lives in its own layer that clips itself, and that layer takes the
+  host's corner radius through `border-radius: inherit`, per instance and per theme, with no
+  token to set. The one thing to know follows from it — **put the directive on the element that
+  paints the surface**, since a wrapper whose child paints the rounded background passes on the
+  wrapper's radius (usually `0`) and the wash squares off.
+
+  Inputs: `rippleDisabled`, `rippleCentred`. Suppressed with no wiring on a host that is
+  `disabled` or `aria-disabled="true"`, and under `prefers-reduced-motion: reduce` — suppressed
+  outright there, not merely shortened. Keyboard activation is centred, since `Enter` and `Space`
+  carry no coordinates. Tokens: `--gog-ripple-color` (defaults to `currentColor`, so one value
+  works on a filled surface and a ghost one), `--gog-ripple-opacity`,
+  `--gog-ripple-enter-duration`, `--gog-ripple-exit-duration`, `--gog-ripple-easing`.
+
+- **Every interactive surface in the library can ripple, from one switch.**
+  `provideGogConfig({ ripple: { enabled: true } })` turns it on for `gog-button`, `[gogButton]`,
+  `gog-button-toggle-group`, `gog-chip`, `gog-tabs` headers, `gog-accordion` headers,
+  `gogCollapsibleTrigger`, `gogMenuItem` and the options inside `gog-select`, `gog-multiselect`
+  and `gog-autocomplete` — `gog-paginator` follows, because its page buttons are `gog-button`s.
+
+  **Off by default**, so this release changes the appearance of nothing. Each of those components
+  also takes a **`ripple`** input that beats the app-wide setting in both directions:
+  `[ripple]="false"` opts one control out of an app that turned it on, `[ripple]="true"` opts one
+  in without switching the app over.
+
+  `ripple` is the first visual default in `GOG_CONFIG` rather than in `theme.css`, and the
+  exception is deliberate: `--gog-ripple-opacity: 0` hides the wash but still pays for the DOM
+  node, the pointer listeners and the animation frames. A real off has to reach the TypeScript —
+  and it does: a disabled ripple attaches no listeners and adds no class to its host.
+
+  Two surfaces are deliberately left out, with `gogRipple` available if you disagree: **`gog-table`
+  rows** and **`gogCardLink`**. Both are hundreds of pixels wide, so the wave has to cross the
+  whole surface and reads as a flash rather than as feedback where you pressed — and a table
+  installs one directive per row, with no virtualization in the library yet. A `gog-chip` that is
+  not `clickable`, or is `disabled`, never ripples whatever the config says.
 
 - **`GogSurfaceVariant`** (`'outlined' | 'elevated' | 'filled'`), shared by both, so the two agree
   on what each word looks like.
@@ -106,7 +148,7 @@ reached 1.0, so breaking changes may land in minor versions.
   rendering under it. The rule is a single class in specificity, so your own styles still win.
 
 - **Disabled and focus styling can no longer be lost to an ordinary app stylesheet.** `[gogButton]`
-  and `gogMenuItem` are applied to *your* element, which is the element you style — and a plain
+  and `gogMenuItem` are applied to _your_ element, which is the element you style — and a plain
   `.my-button { cursor: pointer }` in an Angular component stylesheet is the same specificity as
   the library's `.gog-btn:disabled` once `[_ngcontent-…]` is stamped on it, so it won on source
   order. Measured: a disabled button reading `cursor: pointer` at full opacity — enabled-looking
@@ -255,7 +297,7 @@ a version bump with nothing to migrate.
   **`npm run check:logical-properties` now fails the build** on a `padding`, `margin`,
   `border-width` or `border-radius` shorthand that sets the two horizontal sides differently.
   21.5.0 converted 16 stylesheets to logical properties and still missed these four, because the
-  sidedness lives in a value's *position inside a shorthand* rather than in a `left`/`right`
+  sidedness lives in a value's _position inside a shorthand_ rather than in a `left`/`right`
   keyword — invisible to a grep, and invisible to a unit test with no style engine.
 
 - **Documented the `position: fixed` containing-block caveat**, in one place plus a line on each

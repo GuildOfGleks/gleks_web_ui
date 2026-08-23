@@ -235,6 +235,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `tooltip`      | `position`, `showDelay`, `hideDelay`                                    | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                  |
 | `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack`      | `gog-scroll` (and every component that uses one internally).                                                                                                                                                                                                                                                                                                                                                 |
 | `button`       | `debounce`                                                              | `gog-button`.                                                                                                                                                                                                                                                                                                                                                                                                |
+| `ripple`       | `enabled`                                                               | the press ripple on `gog-button`, `[gogButton]`, `gog-button-toggle-group`, `gog-chip`, `gog-tabs`, `gog-accordion`, `gogCollapsibleTrigger`, `gogMenuItem` and the `gog-select`/`gog-multiselect`/`gog-autocomplete` options. **Off by default.** Each of those takes a `ripple` input that wins over it. Not the `gogRipple` directive — writing that attribute is already the per-element decision.       |
 | `inputfield`   | `showSpinButtons`                                                       | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                            |
 | `textarea`     | `resize`                                                                | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                              |
 | `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                 | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                           |
@@ -416,6 +417,7 @@ Every component below is exported from `@guildofgleks/ui`'s root — `import { X
 | `loading`   | `boolean`                         | `false`     | shows an inline `gog-spinner`, blocks clicks          |
 | `debounce`  | `number \| undefined`             | `300`       | ms; via `GOG_CONFIG.button.debounce` — see note below |
 | `ariaLabel` | `string \| null`                  | `null`      | **use this, not a raw `aria-label` attribute**        |
+| `ripple`    | `boolean \| undefined`            | `false`     | press ripple; via `GOG_CONFIG.ripple.enabled`         |
 
 Outputs: `gogClick: MouseEvent`.
 
@@ -433,18 +435,19 @@ fires immediately (leading edge); further clicks within `debounce` ms are silent
 
 A row of buttons, single- or multi-select, built from your own option objects.
 
-| Input                                | Type                                       | Default                | Notes                                 |
-| ------------------------------------ | ------------------------------------------ | ---------------------- | ------------------------------------- |
-| `options`                            | `TOption[]`                                | `[]`                   |                                       |
-| `optionLabel`                        | accessor                                   | `'name'`               |                                       |
-| `optionValue`                        | accessor \| `null`                         | `'id'`                 | `null` emits the option object        |
-| `optionDisabled`                     | accessor                                   | `'disabled'`           |                                       |
-| `optionIcon`                         | accessor → `GogIconName \| null` \| `null` | `null`                 | optional leading icon per option      |
-| `multiple`                           | `boolean`                                  | `false`                | changes ARIA role entirely — see note |
-| `appearance`                         | `'joined' \| 'separated'`                  | `'joined'`             |                                       |
-| `orientation`                        | `GogOrientation`                           | `'horizontal'`         |                                       |
-| `size`                               | `GogSize \| undefined`                     | `'md'`                 | via `GOG_CONFIG.control.size`         |
-| `disabled`, `fullWidth`, `ariaLabel` |                                            | `false`, `false`, `''` |                                       |
+| Input                                | Type                                       | Default                | Notes                                         |
+| ------------------------------------ | ------------------------------------------ | ---------------------- | --------------------------------------------- |
+| `options`                            | `TOption[]`                                | `[]`                   |                                               |
+| `optionLabel`                        | accessor                                   | `'name'`               |                                               |
+| `optionValue`                        | accessor \| `null`                         | `'id'`                 | `null` emits the option object                |
+| `optionDisabled`                     | accessor                                   | `'disabled'`           |                                               |
+| `optionIcon`                         | accessor → `GogIconName \| null` \| `null` | `null`                 | optional leading icon per option              |
+| `multiple`                           | `boolean`                                  | `false`                | changes ARIA role entirely — see note         |
+| `appearance`                         | `'joined' \| 'separated'`                  | `'joined'`             |                                               |
+| `orientation`                        | `GogOrientation`                           | `'horizontal'`         |                                               |
+| `size`                               | `GogSize \| undefined`                     | `'md'`                 | via `GOG_CONFIG.control.size`                 |
+| `disabled`, `fullWidth`, `ariaLabel` |                                            | `false`, `false`, `''` |                                               |
+| `ripple`                             | `boolean \| undefined`                     | `false`                | press ripple; via `GOG_CONFIG.ripple.enabled` |
 
 Model: `value: TValue | TValue[] | null` (single value, or array in `multiple` mode). CVA: yes.
 Slot: `<ng-template gogButtonToggleOption let-opt let-selected="selected">` for custom button
@@ -553,6 +556,7 @@ and multiselect unless noted otherwise):
 | `disabled`, `fullWidth`                                |                                         | `false`, `true`                                              |                                                                                     |
 | `floatLabel`, `floatLabelShowPlaceholder`              |                                         | `'none'`, `false`                                            |                                                                                     |
 | `inputId` (select/autocomplete only)                   | `string`                                | `''`                                                         |                                                                                     |
+| `ripple`                                               | `boolean \| undefined`                  | `false`                                                      | press ripple; via `GOG_CONFIG.ripple.enabled`                                       |
 
 `gog-select`-specific: `value: model<TValue>(null)`.
 `gog-multiselect`-specific additions: `value: model<TValue[]>([])`, `showControls: boolean` (default `false`, a select-all/clear row), `controlsPosition: 'top'|'bottom'` (default `'top'`), and `selectAllLabel`/`clearAllLabel` for that row's two buttons (`'Select all'`/`'Clear'`, also via `GOG_CONFIG.labels`).
@@ -596,6 +600,7 @@ panel-filter box; it filters/searches off what's typed in the field itself.
 | `loading`                                                                                              | `boolean`              | `false`        | shows a spinner in the trailing slot                                                                                                     |
 | `emptyMessage`                                                                                         | `string`               | `'No matches'` |                                                                                                                                          |
 | `forceSelection`                                                                                       | `boolean`              | `true`         | see note below                                                                                                                           |
+| `ripple`                                                                                               | `boolean \| undefined` | `false`        | press ripple; via `GOG_CONFIG.ripple.enabled`                                                                                            |
 
 Outputs: `gogSearch: string` (debounced query — wire your server lookup here),
 `gogLoadMore: void` (panel scrolled to the end — fetch the next page).
@@ -856,11 +861,12 @@ the element stays yours and the directive only gives it the look.
 <a gogButton fullWidth routerLink="/checkout">Checkout</a>
 ```
 
-| Input       | Type                     | Default                               |
-| ----------- | ------------------------ | ------------------------------------- |
-| `variant`   | `GogVariant`             | `'primary'`                           |
-| `size`      | `GogSize \| undefined`   | `'md'`; via `GOG_CONFIG.control.size` |
-| `fullWidth` | `boolean` (bare attr ok) | `false`                               |
+| Input       | Type                     | Default                                  |
+| ----------- | ------------------------ | ---------------------------------------- |
+| `variant`   | `GogVariant`             | `'primary'`                              |
+| `size`      | `GogSize \| undefined`   | `'md'`; via `GOG_CONFIG.control.size`    |
+| `fullWidth` | `boolean` (bare attr ok) | `false`                                  |
+| `ripple`    | `boolean \| undefined`   | `false`; via `GOG_CONFIG.ripple.enabled` |
 
 Selector is `a[gogButton], button[gogButton]` — deliberately not a bare `[gogButton]`, because on
 a `<div>` the result looks like a button and is invisible to the keyboard and to assistive tech.
@@ -901,16 +907,17 @@ are impossible by design.
 
 #### `gog-chip`
 
-| Input                          | Type                                | Default               |
-| ------------------------------ | ----------------------------------- | --------------------- |
-| `size`                         | `GogSize`                           | `'md'`                |
-| `shape`                        | `GogTagShape` (`'rounded'\|'pill'`) | `'rounded'`           |
-| `disabled`, `clickable`        | `boolean`                           | `false`, `true`       |
-| `removable`                    | `boolean`                           | `false`               |
-| `fullWidth`                    | `boolean`                           | `false`               |
-| `ariaLabel`, `removeAriaLabel` | `string`                            | `''`, `'Remove chip'` |
-| `avatarUrl`, `avatarAlt`       | `string \| null` / `string`         | `null`, `''`          |
-| `iconName`                     | `GogIconName \| null`               | `null`                |
+| Input                          | Type                                | Default                                  |
+| ------------------------------ | ----------------------------------- | ---------------------------------------- |
+| `size`                         | `GogSize`                           | `'md'`                                   |
+| `shape`                        | `GogTagShape` (`'rounded'\|'pill'`) | `'rounded'`                              |
+| `disabled`, `clickable`        | `boolean`                           | `false`, `true`                          |
+| `removable`                    | `boolean`                           | `false`                                  |
+| `fullWidth`                    | `boolean`                           | `false`                                  |
+| `ariaLabel`, `removeAriaLabel` | `string`                            | `''`, `'Remove chip'`                    |
+| `avatarUrl`, `avatarAlt`       | `string \| null` / `string`         | `null`, `''`                             |
+| `iconName`                     | `GogIconName \| null`               | `null`                                   |
+| `ripple`                       | `boolean \| undefined`              | `false`; via `GOG_CONFIG.ripple.enabled` |
 
 Outputs: `gogClick: MouseEvent | KeyboardEvent`, `gogRemove: void`.
 
@@ -1001,6 +1008,63 @@ Label is projected content, not an input — put an icon or a `gog-tag` inside i
 <gog-divider>OR</gog-divider>
 ```
 
+#### `gogRipple` — directive, not a component
+
+A pointer-position wash that grows from where you pressed and fades when you let go. Drop it on
+any element you already have — it adds no wrapper and changes no layout.
+
+| Input            | Type      | Default                                                     |
+| ---------------- | --------- | ----------------------------------------------------------- |
+| `rippleDisabled` | `boolean` | `false`                                                     |
+| `rippleCentred`  | `boolean` | `false` — start from the middle instead of from the pointer |
+
+```html
+<button gogRipple>Press me</button>
+<div gogRipple rippleCentred class="tile">A tile</div>
+```
+
+Four things suppress it, none of which you have to wire up: `rippleDisabled`, a host carrying
+`disabled`, a host carrying `aria-disabled="true"`, and `prefers-reduced-motion: reduce` — the
+last one **suppressed outright, not shortened**. Keyboard activation (`Enter`/`Space`) is always
+centred, because a key press carries no coordinates.
+
+**Put it on the element that paints the surface.** The wash lives in its own layer that clips
+itself — the host is never given `overflow: hidden`, so a `gogBadge` on the same element is not
+clipped — and that layer takes its corner radius from its host with `border-radius: inherit`. On a
+wrapper whose _child_ paints the rounded background, the layer inherits the wrapper's radius (very
+often `0`) and the wash squares off at the corners.
+
+Tokens: `--gog-ripple-color` (`currentColor`, so the wash reads as the surface's own foreground on
+a filled surface and a ghost one alike), `--gog-ripple-opacity`, `--gog-ripple-enter-duration`,
+`--gog-ripple-exit-duration`, `--gog-ripple-easing`. All five are ordinary inherited custom
+properties, so setting one anywhere above the host is the per-instance override.
+
+#### Turning the ripple on for the library's own components
+
+You do **not** add `gogRipple` to a `gog-*` component: each one already owns the element that
+paints its surface, so it wires its own. What you do is switch it on, once:
+
+```ts
+provideGogConfig({ ripple: { enabled: true } });
+```
+
+That covers `gog-button`, `[gogButton]`, `gog-button-toggle-group`, `gog-chip`, `gog-tabs`
+headers, `gog-accordion` headers, `gogCollapsibleTrigger`, `gogMenuItem`, and the options inside
+`gog-select` / `gog-multiselect` / `gog-autocomplete`. `gog-paginator` follows because its page
+buttons are `gog-button`s.
+
+**Off by default**, so adding the ripple to the library changed the look of nothing. Every one of
+those takes a `ripple` input that beats the config in both directions: `[ripple]="false"` opts one
+control out of an app-wide on, `[ripple]="true"` opts one in without switching the app over.
+
+Not covered, and deliberately: `gog-table` rows and `gogCardLink`. A row and a card are hundreds
+of pixels wide, so the wave has to travel the whole surface and reads as a flash rather than as
+feedback at the point you pressed — and a table renders one directive per row, with no
+virtualization in this library yet. Put `gogRipple` on them yourself if you disagree.
+
+A chip that is not `clickable`, or is `disabled`, never ripples whatever the config says: a label
+answering a press is a promise it cannot keep.
+
 #### `gogTooltip` — directive, not a component
 
 Drop on any element — a `gog-*` component's host tag or a plain native one.
@@ -1030,6 +1094,7 @@ Drop on any element — a `gog-*` component's host tag or a plain native one.
 | `skeletonCount`                   | `number`                                                                  | `3` — rows shown while `loading` and `items` is still empty |
 | `showChevron`                     | `boolean`                                                                 | `true`                                                      |
 | `headingLevel`                    | `2\|3\|4\|5\|6 \| undefined`                                              | `undefined` — wraps headers in `role="heading"` when set    |
+| `ripple`                          | `boolean \| undefined`                                                    | `false`; via `GOG_CONFIG.ripple.enabled`                    |
 
 Model: `openIds: ReadonlySet<string | number>`. Output: `gogToggle: { item, open }`.
 
@@ -1071,6 +1136,10 @@ ARIA wiring, because the browser already handles focus and keys. On anything els
 announces is one a keyboard can actually reach. If you set `role` or `tabindex` yourself, the
 directive leaves both alone: you have said what the element is.
 
+`gogCollapsibleTrigger` takes a **`ripple`** input of its own (`boolean | undefined`, `false`, via
+`GOG_CONFIG.ripple.enabled`) — the trigger is your element, but the directive owns the ripple so
+you do not have to add `gogRipple` beside it.
+
 An open panel is as tall as its content — `--gog-collapsible-max-height` defaults to
 `max-content`. Set it to a length on an instance to cap one deliberately; the panel is
 `overflow: hidden`, so a cap **clips** rather than scrolls. (Before 21.4.4 that default was
@@ -1086,6 +1155,7 @@ An open panel is as tall as its content — `--gog-collapsible-max-height` defau
 | `fullWidth`, `ariaLabel` |                                                        | `false`, `''`                                        |
 | `scrollActiveIntoView`   | `boolean`                                              | `true`                                               |
 | `showScrollTrack`        | `boolean \| undefined`                                 | follows `scrollActiveIntoView` (hidden when it's on) |
+| `ripple`                 | `boolean \| undefined`                                 | `false`; via `GOG_CONFIG.ripple.enabled`             |
 
 Model: `activeIndex: number`. Output: `gogTabChange: number`.
 
@@ -1113,13 +1183,13 @@ hidden via `[hidden]` while inactive — preserves scroll/input state).
 
 A surface for one self-contained thing — a product tile, a summary, a search result.
 
-| Input           | Type                                                | Default                                        |
-| --------------- | --------------------------------------------------- | ---------------------------------------------- |
-| `variant`       | `GogSurfaceVariant` (`'outlined'\|'elevated'\|'filled'`) | `'outlined'`                              |
-| `size`          | `GogSize`                                           | `'md'` — drives padding and the row gap        |
-| `disabled`      | `boolean` (bare attribute works)                    | `false`                                        |
-| `loading`       | `boolean` (bare attribute works)                    | `false`                                        |
-| `skeletonLines` | `number`                                            | `2` — body lines shown while `loading`         |
+| Input           | Type                                                     | Default                                 |
+| --------------- | -------------------------------------------------------- | --------------------------------------- |
+| `variant`       | `GogSurfaceVariant` (`'outlined'\|'elevated'\|'filled'`) | `'outlined'`                            |
+| `size`          | `GogSize`                                                | `'md'` — drives padding and the row gap |
+| `disabled`      | `boolean` (bare attribute works)                         | `false`                                 |
+| `loading`       | `boolean` (bare attribute works)                         | `false`                                 |
+| `skeletonLines` | `number`                                                 | `2` — body lines shown while `loading`  |
 
 No outputs. Slots, all **attribute** directives on your own elements (not `ng-template`):
 `gogCardHeader`, `gogCardMedia`, `gogCardFooter`, `gogCardLink`. Layout order is fixed by the
@@ -1130,7 +1200,9 @@ component — media, heading, body (the default slot), footer — not by the ord
   <img gogCardMedia [src]="person.photo" alt="" />
   <h3 gogCardHeader><a gogCardLink [routerLink]="['/people', person.id]">{{ person.name }}</a></h3>
   <p>{{ person.role }}</p>
-  <div gogCardFooter><gog-button size="xsm" (gogClick)="shortlist(person)">Shortlist</gog-button></div>
+  <div gogCardFooter>
+    <gog-button size="xsm" (gogClick)="shortlist(person)">Shortlist</gog-button>
+  </div>
 </gog-card>
 ```
 
@@ -1139,7 +1211,7 @@ component — media, heading, body (the default slot), footer — not by the ord
   gets neither — an unnamed group is noise, not structure. The heading level is yours; the visual
   size comes from `--gog-card-heading-font-size` regardless of it.
 - **There is no `interactive` input, and no `gogClick` output.** A card becomes interactive by
-  *containing* a `gogCardLink`, which stretches that link's hit area over the whole surface. The
+  _containing_ a `gogCardLink`, which stretches that link's hit area over the whole surface. The
   link stays yours: `routerLink`, `href`, `target`, middle-click, "open in new tab" and Enter all
   behave normally, and the focus ring is drawn around the card. `gogCardLink` only applies to
   `<a>` and `<button>` — on a `<div>` it does nothing, deliberately.
@@ -1149,7 +1221,7 @@ component — media, heading, body (the default slot), footer — not by the ord
   a second link is reachable by keyboard but not by clicking the surface around it.
 - **`loading`** replaces the content with a title bar plus `skeletonLines` text lines and sets
   `aria-busy`; **`disabled`** dims the card, sets `aria-disabled`, and takes the card link out of
-  the tab order. Both make the link non-clickable. For a *refresh* of a card that already has
+  the tab order. Both make the link non-clickable. For a _refresh_ of a card that already has
   content, project a `gog-spinner-overlay` instead — `loading` is the first-paint treatment.
 - `gogCardMedia` runs full-bleed to the card's edges, and rounds into its top corners when it is
   the first element in the card.
@@ -1158,14 +1230,14 @@ component — media, heading, body (the default slot), footer — not by the ord
 
 A titled region of a page — a settings section, a dashboard area, a form group.
 
-| Input           | Type                                                | Default                                        |
-| --------------- | --------------------------------------------------- | ---------------------------------------------- |
-| `variant`       | `GogSurfaceVariant`                                 | `'elevated'`                                   |
-| `size`          | `GogSize`                                           | `'lg'`                                         |
-| `collapsible`   | `boolean` (bare attribute works)                    | `false`                                        |
-| `disabled`      | `boolean` (bare attribute works)                    | `false`                                        |
-| `loading`       | `boolean` (bare attribute works)                    | `false`                                        |
-| `skeletonLines` | `number`                                            | `3`                                            |
+| Input           | Type                             | Default      |
+| --------------- | -------------------------------- | ------------ |
+| `variant`       | `GogSurfaceVariant`              | `'elevated'` |
+| `size`          | `GogSize`                        | `'lg'`       |
+| `collapsible`   | `boolean` (bare attribute works) | `false`      |
+| `disabled`      | `boolean` (bare attribute works) | `false`      |
+| `loading`       | `boolean` (bare attribute works) | `false`      |
+| `skeletonLines` | `number`                         | `3`          |
 
 Model: `open: boolean` (default `true`, ignored while `collapsible` is off). No outputs beyond
 `openChange`. Slots: `gogPanelHeader`, `gogPanelFooter` — attribute directives on your elements.
@@ -1188,7 +1260,7 @@ Model: `open: boolean` (default `true`, ignored while `collapsible` is off). No 
   `GOG_CONFIG.labels.togglePanel` (default `'Toggle section'`).
 - **A non-collapsible panel does not clip.** It undoes the collapse geometry it inherits,
   `overflow` included, so a dropdown or menu opened inside it escapes the panel's box. A
-  *collapsible* one does clip while animating, exactly like `gog-collapsible` — prefer
+  _collapsible_ one does clip while animating, exactly like `gog-collapsible` — prefer
   `[appendToBody]` for an overlay inside one.
 - **`loading` keeps the heading and the footer** and replaces only the body: a page section is
   titled before its content arrives, and blanking the title would move the layout twice.
@@ -1285,7 +1357,7 @@ rather than a hard split, so those can usually go.
 
 **`stickyHeader` needs `maxHeight`** (both since 21.6.0 for the pairing). A sticky element
 resolves against its nearest scroll container, and the table wraps itself in a `gog-scroll`;
-once that scroller moves on either axis it is a scroll container on *both*, because CSS coerces
+once that scroller moves on either axis it is a scroll container on _both_, because CSS coerces
 `overflow-y: visible` to `auto` beside a scrolling `overflow-x` (and `clip` to `hidden`). So the
 header can only ever stick to something inside the table — and without `maxHeight` that viewport
 is exactly as tall as its content and never scrolls, so there is nothing to stick to.
@@ -1473,6 +1545,10 @@ trigger's measured rect, so a menu inside `gog-scroll`, `gog-table` or any `over
 ancestor is not clipped and needs no configuration. It also takes the `--gog-dropdown-z` its
 trigger inherits, so a menu opened inside a `gog-dialog` stacks above the dialog.
 
+`gogMenuItem` takes a **`ripple`** input (`boolean | undefined`, `false`, via
+`GOG_CONFIG.ripple.enabled`). The item is your own `<button>`, but the directive owns the ripple,
+so there is no `gogRipple` to add.
+
 Output: `gogClosed` — fires after every close, whatever caused it.
 
 Public methods, for driving it yourself: `open(trigger, 'first' | 'last')`, `close(restoreFocus?)`,
@@ -1595,7 +1671,7 @@ Shared enum-like types (`import type { ... } from '@guildofgleks/ui'`):
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `GogSize`                     | `'xsm' \| 'sm' \| 'md' \| 'lg' \| 'slg'`                                                                            |
 | `GogVariant`                  | `'primary' \| 'secondary' \| 'outline' \| 'ghost'`                                                                  |
-| `GogSurfaceVariant`           | `'outlined' \| 'elevated' \| 'filled'` — `gog-card` and `gog-panel`                                                |
+| `GogSurfaceVariant`           | `'outlined' \| 'elevated' \| 'filled'` — `gog-card` and `gog-panel`                                                 |
 | `GogTagVariant`               | `'success' \| 'danger' \| 'warning' \| 'info'`                                                                      |
 | `GogOrientation`              | `'horizontal' \| 'vertical'`                                                                                        |
 | `GogTagShape`                 | `'rounded' \| 'pill'`                                                                                               |

@@ -103,6 +103,7 @@ export class App {
     { path: 'tabs', label: 'Tabs' },
     { path: 'progressbar', label: 'Progressbar' },
     { path: 'badge', label: 'Badge' },
+    { path: 'ripple', label: 'Ripple' },
     { path: 'divider', label: 'Divider' },
     { path: 'icon', label: 'Icon' },
   ];

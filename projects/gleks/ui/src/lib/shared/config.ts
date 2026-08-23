@@ -45,6 +45,26 @@ export interface GogGlobalConfig {
   button?: {
     debounce?: number;
   };
+  /**
+   * Whether the library's own interactive surfaces show a press ripple: `gog-button`,
+   * `[gogButton]`, `gog-button-toggle`, `gog-chip`, `gog-tabs`, `gog-accordion`,
+   * `gog-collapsible`, `gog-menu` and the three dropdowns' options. **Off by default**, so the
+   * effect is additive and nothing changes appearance until an app asks for it.
+   *
+   * This is the one visual default that is *not* expressible as a CSS token, which is why it is
+   * here at all: `--gog-ripple-opacity: 0` would hide the wash but still pay for the DOM node,
+   * the pointer listeners and the animation frames on every press. A real off has to reach the
+   * TypeScript.
+   *
+   * Per-instance: every component listed above takes a `ripple` input that wins over this, so
+   * `[ripple]="false"` opts one control out of an app-wide `true` (and `[ripple]="true"` opts one
+   * in without switching the app over). The `[gogRipple]` directive on your **own** element is
+   * not covered — writing the attribute is already the per-element decision, the same way
+   * `[filter]="true"` on one `gog-select` is; `rippleDisabled` turns that one off.
+   */
+  ripple?: {
+    enabled?: boolean;
+  };
   tooltip?: {
     showDelay?: number;
     hideDelay?: number;

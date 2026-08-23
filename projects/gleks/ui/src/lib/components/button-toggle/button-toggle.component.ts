@@ -18,6 +18,8 @@ import { NgTemplateOutlet } from '@angular/common';
 
 import { IconComponent, type GogIconName } from '../icon/icon.component';
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+import { resolveRipple } from '../../shared/ripple-state';
+import { GogRippleDirective } from '../ripple/ripple.directive';
 import {
   type GogOptionAccessor,
   isSameOptionValue,
@@ -82,7 +84,7 @@ export class GogButtonToggleOptionDirective<TOption = unknown> {
  */
 @Component({
   selector: 'gog-button-toggle-group',
-  imports: [IconComponent, NgTemplateOutlet],
+  imports: [GogRippleDirective, IconComponent, NgTemplateOutlet],
   templateUrl: './button-toggle.component.html',
   styleUrl: './button-toggle.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -113,6 +115,11 @@ export class ButtonToggleGroupComponent<
   readonly multiple = input(false);
   readonly appearance = input<GogButtonToggleAppearance>('joined');
   readonly orientation = input<GogOrientation>('horizontal');
+  /**
+   * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
+   * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
+   */
+  readonly ripple = input<boolean | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   readonly size = input<GogSize | undefined>(undefined);
   readonly disabled = input(false);
@@ -131,6 +138,7 @@ export class ButtonToggleGroupComponent<
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cvaDisabled = signal(false);
   private readonly globalConfig = inject(GOG_CONFIG);
+  protected readonly rippleEnabled = resolveRipple(this.ripple, this.globalConfig);
 
   /** Instance input → `GOG_CONFIG` → the component's own default. See `resolveConfigured`. */
   protected readonly resolvedSize = computed(() =>

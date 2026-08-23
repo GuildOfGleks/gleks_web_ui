@@ -158,6 +158,8 @@
           [class.gog-select__option--disabled]="isOptionDisabled(option)"
           (click)="selectOption(option, $event)"
           (keydown)="onOptionKeydown($event)"
+          gogRipple
+          [rippleDisabled]="!rippleEnabled()"
         >
           @if (optionSlot(); as slot) {
             <ng-container

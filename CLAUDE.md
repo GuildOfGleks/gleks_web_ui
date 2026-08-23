@@ -57,19 +57,19 @@ ships inside the package; its top entry is always the version being worked on.
 
 ### The release sequence
 
-| Version | State | What it must carry |
-| --- | --- | --- |
-| 21.6.0 | **released** | seven fixes and `gog-table`'s `maxHeight` |
-| 21.6.1 | **unreleased, has content** | `aria-busy` on `gog-table` and `gog-autocomplete` plus `check:loading-aria`, **and `gog-card` + `gog-panel`** (`docs/panel-card.md`, iterations 1–3). Ready to cut whenever. |
+| Version    | State                                        | What it must carry                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 21.6.0     | **released**                                 | seven fixes and `gog-table`'s `maxHeight`                                                                                                                                                                                                                                                                                                                                                           |
+| 21.6.1     | **unreleased, has content**                  | `aria-busy` on `gog-table` and `gog-autocomplete` plus `check:loading-aria`, **`gog-card` + `gog-panel`** (`docs/panel-card.md`, iterations 1–3), **and the ripple, complete** (`docs/ripple.md`, all four iterations: `gogRipple`, nine components wired, `GOG_CONFIG.ripple.enabled`, off by default). Ready to cut whenever.                                                                     |
 | **21.7.0** | **not started, and has a mandatory payload** | **the three deprecated token prefixes come out** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`. 152 references in `theme.css`. Announced in 21.5.0, and `npm run check:deprecations` **fails the build** once `package.json` reaches 21.7.0 with any of them still there, so this is not optional and not deferrable. |
-| 22.x | when Angular 22 lands | the branch split — see `docs/branching-and-support.md` |
+| 22.x       | when Angular 22 lands                        | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                              |
 
 **Nothing else is scheduled.** The three future plans below are unscheduled; `themes.md` is
 written to ride along with 21.7.0's removal because both rewrite the same layer of `theme.css`.
 
 **A future plan's filename carries no version** — `panel-card.md` and `ripple.md`
 were both named for a release that shipped without them, which is what that always becomes. A
-*completed* plan keeps its version, because there it is a fact. Each future plan states its target
+_completed_ plan keeps its version, because there it is a fact. Each future plan states its target
 in its own first paragraph, where it can be changed.
 
 ## What to work on
@@ -99,15 +99,28 @@ Update the status table in whichever you are working from, as you go.
   answers came out differently from the plan. There is no `interactive` input — a card becomes
   interactive by containing a `gogCardLink`, a directive on the consumer's own `<a>`, for the same
   reason `[gogButton]` is one — and the `--gog-panel-*` collision resolved by the component
-  *adopting* the foundation surface tier rather than either side renaming. Iteration 4 (the
-  showcase's own `.card` goes away, 37 templates) is **one page in and open**, with the three
-  findings that conversion produced written down there.
-- `docs/ripple.md` — a **future** plan, nothing started: a from-scratch pointer ripple
-  (there is no CDK here and will not be), scoped to 21.6.0 rather than 21.5.0 because 21.5.0 is
-  deliberately the breaking release and a feature there re-creates the pile the changelog was
-  split to undo. Read its _What makes this harder than the animation_ section before estimating
-  it — the animation is the cheap part; `gogBadge` overflows its host on purpose, which is what
-  stops a ripple simply clipping the host's box.
+  _adopting_ the foundation surface tier rather than either side renaming. Iteration 4 (the
+  showcase's own `.card` goes away) is **one page in and open**, with the three findings that
+  conversion produced written down there — and the remaining work moved into its own file, below.
+- `docs/showcase-card-to-panel.md` — **the checklist for that iteration 4**, split out because it
+  is bulk work with a fixed recipe rather than a design to argue with. Measured 2026-08-23: 250
+  plain `class="card"` across 38 showcase templates, 40 `detail__hero card` that deliberately do
+  **not** convert (a panel renders its header slot first and the hero's eyebrow sits above the
+  title), and one composite `card bench-index-card`. Nine numbered steps per page, the page order
+  smallest-first with a tick box each, and a symptom→cause→fix table. **One page per commit**, for
+  the reason `lab-stackblitz-plan.md` records.
+- `docs/ripple.md` — **built 2026-08-23 into 21.6.1, all four iterations**: `[gogRipple]` for
+  markup a consumer owns, plus the ripple wired into nine of the library's own components and one
+  app-wide switch, `GOG_CONFIG.ripple.enabled`, **off by default**. Three of its findings matter to
+  anyone touching this code: the self-clipping layer _is_ how the directive renders anything (which
+  is what keeps `gogBadge`, deliberately overflowing its host, from being clipped); the engine
+  lives in `GogRippleController` rather than in the directive, because
+  `[gogButton]`/`gogMenuItem`/`gogCollapsibleTrigger` cannot reach it through `hostDirectives`; and
+  a disabled ripple attaches no listeners and adds no class, which is the whole argument for a
+  config key over a `--gog-ripple-opacity: 0` token. Two surfaces are deliberately left out with
+  reasons recorded — `gog-table` rows and `gogCardLink`. **Verification trap, not a bug:** a
+  background Chrome tab pauses CSS animations, so a scripted press produces a node that never
+  animates.
 - `docs/hardening-21.5.0.md` — **completed 2026-08-20**, all seven iterations: coverage measurement
   with a CI gate, the token-prefix rename (`--gog-btn-*`/`--gog-ms-*`/`--gog-confirm-*` spelled
   out, old spellings alive until 21.7.0), every removal 21.5.0 owed plus a ratchet that fails the

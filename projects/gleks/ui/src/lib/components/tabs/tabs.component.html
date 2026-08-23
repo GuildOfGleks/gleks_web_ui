@@ -33,6 +33,8 @@
           [tabindex]="i === resolvedIndex() ? 0 : -1"
           (click)="selectIndex(i)"
           (keydown)="onHeaderKeydown($event)"
+          gogRipple
+          [rippleDisabled]="!rippleEnabled()"
         >
           @if (headerSlot(); as slot) {
             <ng-container

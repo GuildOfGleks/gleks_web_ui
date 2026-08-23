@@ -1391,6 +1391,20 @@
   --gog-progressbar-info-bg: var(--gog-info-color);
   --gog-progressbar-info-buffer-bg: color-mix(in srgb, var(--gog-info-color) 35%, transparent);
 
+  /* ── Ripple (the `gogRipple` directive; its classes live in ripple.css) ────
+     `currentColor` rather than a fixed colour on purpose: the wash then reads as the host's
+     own foreground, so one value works on a filled button and on a ghost one without a
+     per-variant tier. The property is inherited, so `--gog-ripple-color` set anywhere above
+     the host reaches it — which is the per-instance override, no undeclared tier needed. */
+  --gog-ripple-color: currentColor;
+  --gog-ripple-opacity: 0.16;
+  /* Longer than any other motion in the library, deliberately: a ripple held to the house 0.2s
+     is over before the eye has followed it across the surface. Still expressed in the
+     foundation scale, so setting the durations to 0s still flattens it theme-wide. */
+  --gog-ripple-enter-duration: calc(var(--gog-duration-slow) * 2);
+  --gog-ripple-exit-duration: var(--gog-duration-slow);
+  --gog-ripple-easing: var(--gog-easing);
+
   /* ── Scroll ────────────────────────────────────────────────────────────────── */
   --gog-scroll-track-bg: transparent;
   --gog-scroll-track-radius: var(--gog-radius);

@@ -1,0 +1,61 @@
+<div class="ripple-scope">
+  <div class="ripple-scope__row">
+    <gog-button>Primary</gog-button>
+    <gog-button variant="secondary">Secondary</gog-button>
+    <gog-button variant="outline">Outline</gog-button>
+    <gog-button variant="ghost">Ghost</gog-button>
+    <gog-button [disabled]="true">Disabled</gog-button>
+    <gog-button [loading]="true">Loading</gog-button>
+    <a gogButton variant="outline" href="#ripple-scope">A link, via [gogButton]</a>
+  </div>
+
+  <div class="ripple-scope__row">
+    <gog-button [ripple]="false">[ripple]="false" — opted out</gog-button>
+    <span class="ripple-scope__note">
+      Everything else on this row is rippling because the app said so; this one is not.
+    </span>
+  </div>
+
+  <div class="ripple-scope__row">
+    <gog-chip>Chip</gog-chip>
+    <gog-chip iconName="check">With an icon</gog-chip>
+    <gog-chip [clickable]="false">Not clickable — no wave</gog-chip>
+    <gog-chip [disabled]="true">Disabled</gog-chip>
+  </div>
+
+  <div class="ripple-scope__row">
+    <gog-button-toggle-group
+      [options]="densities"
+      optionLabel="name"
+      optionValue="id"
+      [(value)]="density"
+    />
+    <gog-select [options]="cities" [(value)]="city" label="City" [fullWidth]="false" />
+    <gog-button variant="outline" type="button" [gogMenuTrigger]="scopeMenu">Actions</gog-button>
+    <gog-menu #scopeMenu ariaLabel="Actions">
+      <button gogMenuItem type="button">Duplicate</button>
+      <button gogMenuItem type="button">Rename</button>
+      <button gogMenuItem type="button" disabled>Archive</button>
+    </gog-menu>
+  </div>
+
+  <gog-tabs>
+    <gog-tab label="Overview">The tab headers ripple; the panel underneath does not.</gog-tab>
+    <gog-tab label="Activity">Second panel.</gog-tab>
+    <gog-tab label="Locked" [disabled]="true">Never reached.</gog-tab>
+  </gog-tabs>
+
+  <gog-accordion [items]="sections" [expandFirst]="true">
+    <p>Accordion headers ripple. The disabled one does not.</p>
+  </gog-accordion>
+
+  <gog-collapsible>
+    <button gogCollapsibleTrigger type="button" class="ripple-scope__trigger">
+      A gogCollapsibleTrigger on my own button
+    </button>
+    <div gogCollapsibleContent>
+      The trigger is the consumer's element, and it still ripples — the directive owns a ripple
+      controller of its own rather than making you add <code>gogRipple</code> next to it.
+    </div>
+  </gog-collapsible>
+</div>

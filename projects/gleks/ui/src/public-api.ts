@@ -22,6 +22,7 @@ export * from './lib/components/datepicker/datepicker.component';
 export * from './lib/components/datepicker/date-utils';
 export * from './lib/components/divider/divider.component';
 export * from './lib/components/progressbar/progressbar.component';
+export * from './lib/components/ripple/ripple.directive';
 export * from './lib/components/toggle/toggle.component';
 export * from './lib/components/radio-group/radio-group.component';
 export * from './lib/components/dialog/confirmation-dialog/confirmation-dialog.component';

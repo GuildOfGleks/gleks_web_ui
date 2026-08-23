@@ -1,0 +1,94 @@
+/*
+ * `[gogRipple]`'s classes, in a **global** stylesheet for the same reason as `gogBadge`'s and
+ * `.gog-btn`'s: the directive appends its nodes into a *consumer's* own element, which is light
+ * DOM belonging to that consumer's view, so a component-scoped stylesheet could never reach it.
+ *
+ * ── Why the layer exists at all ─────────────────────────────────────────────────
+ * The obvious ripple gives the host `overflow: hidden` and paints inside it. That breaks the
+ * first ordinary pairing anyone tries: `gogBadge` pins its badge with **negative** insets so it
+ * sits outside the host's box on purpose (see utilities.css), and a host that clips its overflow
+ * clips the badge too. So the host is never clipped — `.gog-ripple-layer` is, and it is the only
+ * thing that is.
+ *
+ * ── How the layer learns the host's corner radius ───────────────────────────────
+ * `border-radius` set to `inherit`. It is not an inherited property, but the explicit
+ * keyword takes the parent's computed value — so the layer matches whatever radius the host
+ * ended up with, per instance, per theme, with no token to declare and nothing for a host
+ * component to remember to set. The plan expected a token here; this is exact and free.
+ *
+ * ── Why the wash paints over the host's content ─────────────────────────────────
+ * The layer is a positioned child with no `z-index`, so it paints above the host's text. The
+ * alternative — `z-index: -1` inside an `isolation: isolate` host, which paints it between the
+ * background and the text — is prettier where it works, and silently invisible where it does
+ * not: on a wrapper host like `<gog-button gogRipple>` the inner `.gog-btn`'s own background
+ * would cover it, and "the ripple just does not appear" is a far worse failure than a low-alpha
+ * wash crossing a label. Material makes the same call, at a similar opacity.
+ */
+.gog-ripple-host {
+  /* The layer is positioned against this element, so it has to be a containing block. Harmless
+     on an already-relative host; a host that is itself absolutely positioned should set its own
+     position after this class, which ordinary specificity allows. */
+  position: relative;
+}
+
+.gog-ripple-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.gog-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--gog-ripple-color);
+  /* Both animations are `forwards`, so these are only the pre-first-frame values. */
+  opacity: 0;
+  transform: scale(0);
+}
+
+.gog-ripple--entering {
+  animation: gog-ripple-enter var(--gog-ripple-enter-duration) var(--gog-ripple-easing) forwards;
+}
+
+.gog-ripple--leaving {
+  animation: gog-ripple-exit var(--gog-ripple-exit-duration) var(--gog-ripple-easing) forwards;
+}
+
+@keyframes gog-ripple-enter {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: var(--gog-ripple-opacity);
+    transform: scale(1);
+  }
+}
+
+/* The scale is held at 1 through the fade — without it the node snaps back to the base rule's
+   `scale(0)` and the wave collapses inwards instead of dissolving. */
+@keyframes gog-ripple-exit {
+  from {
+    opacity: var(--gog-ripple-opacity);
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/*
+ * Suppressed, not shortened. The directive already refuses to create a node when the preference
+ * is set, so this rule only covers a preference switched on while a ripple is mid-flight — and
+ * documents the intent in the one file a reader checks for it.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .gog-ripple-layer {
+    display: none;
+  }
+}

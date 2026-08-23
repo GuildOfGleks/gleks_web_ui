@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 
 import { type GogIconName, IconComponent } from '../icon/icon.component';
 import { GogSize, GogTagShape } from '../../shared/types';
+import { GOG_CONFIG } from '../../shared/config';
+import { resolveRipple } from '../../shared/ripple-state';
+import { GogRippleDirective } from '../ripple/ripple.directive';
 
 @Component({
   selector: 'gog-chip',
-  imports: [IconComponent],
+  imports: [GogRippleDirective, IconComponent],
   templateUrl: './chip.component.html',
   styleUrl: './chip.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +28,11 @@ export class ChipComponent {
   readonly avatarUrl = input<string | null>(null);
   readonly avatarAlt = input('');
   readonly iconName = input<GogIconName | null>(null);
+  /**
+   * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
+   * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
+   */
+  readonly ripple = input<boolean | undefined>(undefined);
 
   readonly gogClick = output<MouseEvent | KeyboardEvent>();
   readonly gogRemove = output<void>();
@@ -45,6 +53,14 @@ export class ChipComponent {
       .join(' '),
   );
   protected readonly isInteractive = computed(() => this.clickable() && !this.disabled());
+  private readonly rippleConfigured = resolveRipple(this.ripple, inject(GOG_CONFIG));
+  /**
+   * A chip that is not interactive is a label, and a label answering a press with a wave is a
+   * promise it cannot keep — so the ripple follows `isInteractive`, not just the input.
+   */
+  protected readonly rippleEnabled = computed(
+    () => this.rippleConfigured() && this.isInteractive(),
+  );
 
   protected onChipClick(event: MouseEvent): void {
     if (this.disabled()) return;

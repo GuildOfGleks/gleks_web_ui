@@ -1,5 +1,8 @@
-import { Directive, ElementRef, inject } from '@angular/core';
+import { Directive, ElementRef, inject, input } from '@angular/core';
 
+import { GOG_CONFIG } from '../../shared/config';
+import { resolveRipple } from '../../shared/ripple-state';
+import { bindRipple } from '../ripple/ripple-controller';
 import { CollapsibleComponent } from './collapsible.component';
 
 /**
@@ -42,7 +45,15 @@ const NATIVELY_OPERABLE = ['button', 'input', 'select', 'textarea', 'summary'];
   },
 })
 export class GogCollapsibleTriggerDirective {
+  /**
+   * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
+   * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
+   */
+  readonly ripple = input<boolean | undefined>(undefined);
+
   protected readonly collapsible = inject(CollapsibleComponent);
+  private readonly rippleEnabled = resolveRipple(this.ripple, inject(GOG_CONFIG));
+  private readonly rippleControl = bindRipple(this.rippleEnabled);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   /**

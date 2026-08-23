@@ -14,6 +14,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { GogSize, GogVariant } from '../../shared/types';
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+import { resolveRipple } from '../../shared/ripple-state';
+import { GogRippleDirective } from '../ripple/ripple.directive';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
 const DEFAULT_DEBOUNCE = 300;
@@ -22,7 +24,7 @@ const DEFAULT_SIZE: GogSize = 'md';
 
 @Component({
   selector: 'gog-button',
-  imports: [SpinnerComponent],
+  imports: [GogRippleDirective, SpinnerComponent],
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +42,11 @@ export class ButtonComponent {
   fullWidth = input<boolean>(false);
   type = input<'button' | 'submit' | 'reset'>('button');
   loading = input<boolean>(false);
+  /**
+   * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
+   * `[ripple]="false"` is how one button opts out of an app that turned it on everywhere.
+   */
+  ripple = input<boolean | undefined>(undefined);
 
   /**
    * Minimum time, in ms, between accepted clicks. This is a spam/double-click
@@ -73,6 +80,7 @@ export class ButtonComponent {
     slg: 'md',
   };
   private readonly globalConfig = inject(GOG_CONFIG);
+  protected readonly rippleEnabled = resolveRipple(this.ripple, this.globalConfig);
   /** Instance input → `GOG_CONFIG` → the component's own default. See `resolveConfigured`. */
   protected readonly resolvedSize = computed(() =>
     resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),

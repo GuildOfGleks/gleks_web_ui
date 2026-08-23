@@ -1,0 +1,25 @@
+.ripple-scope {
+  display: grid;
+  gap: 20px;
+}
+
+.ripple-scope__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.ripple-scope__note {
+  color: var(--gog-muted-text-color);
+}
+
+/* A trigger the consumer styled themselves — the point being that it ripples anyway. */
+.ripple-scope__trigger {
+  padding: 10px 16px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background-color: var(--gog-surface-color);
+  color: var(--gog-text-color);
+  font: inherit;
+}
