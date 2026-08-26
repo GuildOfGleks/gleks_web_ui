@@ -341,7 +341,7 @@ to them.
 | 32    | `table-page`               | 9           | ✅                       |
 | 33    | `collapsible-page`         | 10          | ✅                       |
 | 34    | `datepicker-page`          | 10          | ✅                       |
-| 35    | `scroll-page`              | 10          | ⬜                       |
+| 35    | `scroll-page`              | 10          | ✅                       |
 | 36    | `accordion-page`           | 12          | ⬜                       |
 | 37    | `inputfield-page`          | 12          | ⬜                       |
 | 38    | `select-page`              | 12          | ⬜                       |

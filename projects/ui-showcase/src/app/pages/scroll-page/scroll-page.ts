@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ButtonComponent, GogColumn, ScrollComponent, TableComponent } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  GogColumn,
+  GogPanelHeaderDirective,
+  PanelComponent,
+  ScrollComponent,
+  TableComponent,
+} from '@guildofgleks/ui';
 
 interface DemoRow {
   component: string;
@@ -22,7 +29,14 @@ const PARAGRAPHS: readonly string[] = [
 
 @Component({
   selector: 'app-scroll-page',
-  imports: [ScrollComponent, ButtonComponent, TableComponent, GogColumn],
+  imports: [
+    ScrollComponent,
+    ButtonComponent,
+    GogPanelHeaderDirective,
+    PanelComponent,
+    TableComponent,
+    GogColumn,
+  ],
   templateUrl: './scroll-page.html',
   styleUrl: './scroll-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

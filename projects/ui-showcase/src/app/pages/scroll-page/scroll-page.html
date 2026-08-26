@@ -10,8 +10,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Plain content — a lot of text</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Plain content — a lot of text</h3>
     <p class="lead">
       The most common case: wrap anything that might overflow in <code>&lt;gog-scroll&gt;</code>
       and give it a height. No other markup changes.
@@ -23,10 +23,10 @@
         }
       </gog-scroll>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <p class="meta">
       <code>size="normal"</code> (default) vs. <code>size="thin"</code> — thin suits compact chrome
       like a dropdown panel or dialog body.
@@ -49,10 +49,10 @@
         </gog-scroll>
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Thumb hit area</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Thumb hit area</h3>
     <p class="lead">
       The thumb's clickable/draggable region is larger than what's painted — especially useful once
       the thumb itself shrinks to a sliver against a lot of content. <code>[autoHide]="false"</code>
@@ -76,10 +76,10 @@
         </gog-scroll>
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Axes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Axes</h3>
     <p class="meta">
       <code>axis</code> is <code>"vertical"</code> by default. <code>"horizontal"</code> disables
       vertical scrolling and lets content grow to its natural width instead of wrapping;
@@ -107,10 +107,10 @@
         </gog-scroll>
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Auto-hide vs. always visible</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Auto-hide vs. always visible</h3>
     <p class="meta">
       By default the thumb fades in on hover/scroll and fades back out after
       <code>hideDelay</code> ms idle. <code>[autoHide]="false"</code> keeps it always on screen.
@@ -133,10 +133,10 @@
         </gog-scroll>
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3><code>showTrack</code> &amp; <code>focusable</code></h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader><code>showTrack</code> &amp; <code>focusable</code></h3>
     <p class="meta">
       <code>[showTrack]="false"</code> drops the overlay thumb/track entirely — scrolling itself
       (wheel, touch, keyboard) is unaffected, only the visual affordance is gone. Also settable
@@ -162,10 +162,10 @@
         </gog-scroll>
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Scroll chaining</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Scroll chaining</h3>
     <p class="lead">
       <code>overscrollBehavior</code> controls what happens once a scroll gesture hits this
       instance's edge. <code>"auto"</code> (the default) chains it to the next scrollable ancestor —
@@ -199,10 +199,10 @@
         </gog-scroll>
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reach events</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reach events</h3>
     <p class="lead">
       <code>gogReachEnd</code> / <code>gogReachStart</code> fire once per edge transition — handy
       for a "load more" trigger or a chat log that should know when it's pinned to the bottom.
@@ -221,10 +221,10 @@
     <p class="meta">
       {{ reachedEnd() ? 'Reached the bottom.' : 'Scroll down to the last paragraph…' }}
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Programmatic scrolling</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Programmatic scrolling</h3>
     <p class="lead">
       The component instance exposes <code>scrollTo</code>, <code>scrollToTop</code>,
       <code>scrollToBottom</code>, <code>scrollToLeft</code> and <code>scrollToRight</code> — a
@@ -245,10 +245,10 @@
         To bottom
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Already used inside existing components</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Already used inside existing components</h3>
     <p class="lead">
       <code>gog-select</code> and <code>gog-multiselect</code> use it for their option panel,
       <code>gog-dialog</code> uses it for the body, and <code>gog-table</code> uses it for its
@@ -268,5 +268,5 @@
         </gog-table>
       </gog-scroll>
     </div>
-  </article>
+  </gog-panel>
 </section>
