@@ -7,8 +7,10 @@ import {
   GogFloatLabelVariant,
   GogInputAddonEndDirective,
   GogInputAddonStartDirective,
+  GogPanelHeaderDirective,
   IconComponent,
   InputfieldComponent,
+  PanelComponent,
   SelectComponent,
 } from '@guildofgleks/ui';
 
@@ -20,8 +22,10 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     CheckboxComponent,
     GogInputAddonEndDirective,
     GogInputAddonStartDirective,
+    GogPanelHeaderDirective,
     IconComponent,
     InputfieldComponent,
+    PanelComponent,
     ReactiveFormsModule,
     SelectComponent,
   ],

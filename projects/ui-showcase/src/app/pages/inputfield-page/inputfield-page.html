@@ -8,8 +8,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Playground</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Playground</h3>
     <div class="field-grid">
       <gog-inputfield label="Name" inputId="name" iconStart="check" [(value)]="name" />
 
@@ -26,10 +26,10 @@
       The email error is computed by this page from the current value — `gog-inputfield` only
       renders whatever `errorMessage` it's given (`errorDisplay="manual"`, the default).
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Clearable</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Clearable</h3>
     <p class="lead">
       <code>clearable</code> adds a clear button that appears only once the field has text and
       disappears again when it is empty — no permanent chrome. On a password field the built-in
@@ -45,10 +45,10 @@
         [(value)]="clearableWithIcon"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Password visibility toggle</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Password visibility toggle</h3>
     <p class="lead">
       Built in: any field with <code>type="password"</code> automatically gets a trailing eye /
       eye-off button that swaps the native input type between <code>password</code> and
@@ -57,10 +57,10 @@
     <div class="field-grid">
       <gog-inputfield label="Password" inputId="password" type="password" [(value)]="password" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Number spinners</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Number spinners</h3>
     <p class="lead">
       <code>type="number"</code> gets styled increment/decrement buttons by default — the native
       browser spinner is always hidden in favor of this pair. Settable app-wide via
@@ -91,10 +91,10 @@
       to clear, and the field's text gutter widens to fit both. Clearing writes
       <code>null</code> to an attached form control, matching what emptying the field by hand does.
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Native attributes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Native attributes</h3>
     <p class="lead">
       The field forwards the native attribute space of the <code>&lt;input&gt;</code> it wraps:
       <code>readonly</code>, <code>maxlength</code>, <code>minlength</code>, <code>pattern</code>,
@@ -128,10 +128,10 @@
         [(value)]="account"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Clickable icon action</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Clickable icon action</h3>
     <p class="lead">
       A projected <code>gogInputAddonEnd</code> puts your own control in the trailing slot — a real
       <code>&lt;button&gt;</code> with its own <code>aria-label</code> and <code>(click)</code>, so
@@ -150,10 +150,10 @@
         </button>
       </gog-inputfield>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Leading addon &amp; date</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Leading addon &amp; date</h3>
     <p class="lead">
       A projected <code>gogInputAddonStart</code> puts your own markup in the leading slot — a plain
       <code>&lt;span&gt;</code> for a static prefix like a currency symbol, or a real
@@ -172,10 +172,10 @@
         [(value)]="meetingDate"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes &amp; disabled</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes &amp; disabled</h3>
     <div class="field-grid">
       <gog-inputfield label="Extra small" size="xsm" placeholder="Extra small field" />
       <gog-inputfield label="Small" size="sm" placeholder="Small field" />
@@ -184,10 +184,10 @@
       <gog-inputfield label="Extra large" size="slg" placeholder="Extra large field" />
       <gog-inputfield label="Disabled" [disabled]="true" [(value)]="disabledValue" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="meta">
       Full width of its container by default (see the fields above, each filling its own
       <code>field-grid</code> cell). <code>[fullWidth]="false"</code> shrinks a field to fit its own
@@ -200,10 +200,10 @@
       </div>
       <gog-inputfield label="ZIP" placeholder="ZIP" [fullWidth]="false" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Float label</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Float label</h3>
     <p class="lead">
       <code>floatLabel</code> makes the label rest inside the field like a placeholder, then float
       up on focus or once there's a value — <code>'in'</code> stays inside the border,
@@ -268,10 +268,10 @@
       The leading/trailing icon slots line up correctly at every variant — the label and the field
       share the same icon-aware inset instead of the label falling back to the unindented default.
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Float label with a password field</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Float label with a password field</h3>
     <p class="lead">
       <code>type="password"</code> always renders the built-in show/hide toggle as a trailing icon —
       the same icon-inset code path as <code>iconEnd</code> above. Side by side with
@@ -290,10 +290,10 @@
         [(value)]="floatLabelPasswordOnValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive forms — automatic error timing</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive forms — automatic error timing</h3>
     <p class="lead">
       With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides for
       itself when to show the error — once the control has been touched and is invalid — instead of
@@ -308,5 +308,5 @@
         [errorMessage]="usernameErrorMessage()"
       />
     </div>
-  </article>
+  </gog-panel>
 </section>
