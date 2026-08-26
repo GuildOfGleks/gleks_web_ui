@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { AutocompleteComponent, GogDropdownOptionDirective, GogSize } from '@guildofgleks/ui';
+import {
+  AutocompleteComponent,
+  GogDropdownOptionDirective,
+  GogPanelHeaderDirective,
+  GogSize,
+  PanelComponent,
+} from '@guildofgleks/ui';
 
 /** A consumer's own DTO, nested on purpose — the accessors read it with a dot-path. */
 interface Employee {
@@ -56,7 +62,13 @@ const PAGE_SIZE = 20;
 
 @Component({
   selector: 'app-autocomplete-page',
-  imports: [AutocompleteComponent, GogDropdownOptionDirective, ReactiveFormsModule],
+  imports: [
+    AutocompleteComponent,
+    GogDropdownOptionDirective,
+    GogPanelHeaderDirective,
+    PanelComponent,
+    ReactiveFormsModule,
+  ],
   templateUrl: './autocomplete-page.html',
   styleUrl: './autocomplete-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

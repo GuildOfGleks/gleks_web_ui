@@ -10,8 +10,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Local filtering</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Local filtering</h3>
     <p class="hint">
       Type two letters. Arrows highlight without moving focus, Enter picks, Escape restores the last
       selection.
@@ -26,10 +26,10 @@
       />
     </div>
     <p class="hint">value: {{ city() ?? '—' }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Open on focus</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Open on focus</h3>
     <p class="hint">
       On by default: focusing the field opens the panel immediately with every option, before
       <code>minLength</code> would otherwise have let anything through. Tab or click into each field
@@ -48,10 +48,10 @@
         />
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Server-backed</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Server-backed</h3>
     <p class="hint">
       <code>gogSearch</code> is debounced (300&nbsp;ms by default) and
       <code>[filterLocal]="false"</code> stops the returned list being filtered a second time — the
@@ -74,10 +74,10 @@
       last query: “{{ lastQuery() }}” · results: {{ remoteResults().length }} · loading:
       {{ remoteLoading() }}
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Load more on scroll</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Load more on scroll</h3>
     <p class="hint">
       <code>gogLoadMore</code> fires when the panel is scrolled to the end of the list — the signal
       to fetch and append another page, instead of handing 200 rows over up front. Open the panel
@@ -93,10 +93,10 @@
       />
     </div>
     <p class="hint">loaded: {{ loadedContacts().length }} / 200</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Your own DTO</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Your own DTO</h3>
     <p class="hint">
       Dot-path accessors read a nested object, <code>[optionValue]="null"</code> hands the object
       itself back, and a <code>gogDropdownOption</code> template decorates the row. Vira is
@@ -122,10 +122,10 @@
       </gog-autocomplete>
     </div>
     <p class="hint">value: {{ employee()?.profile?.fullName ?? '—' }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Free text</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Free text</h3>
     <p class="hint">
       <code>[forceSelection]="false"</code> keeps what you typed on blur — for a create-as-you-type
       flow, where the text itself is the answer. Read it from <code>gogSearch</code> rather than
@@ -139,10 +139,10 @@
         [forceSelection]="false"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes, disabled and errors</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes, disabled and errors</h3>
     <div class="ac-grid">
       @for (size of sizes; track size) {
         <gog-autocomplete [size]="size" [label]="size" [options]="cities" />
@@ -154,10 +154,10 @@
         errorMessage="Pick a city from the list"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive Forms and float label</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive Forms and float label</h3>
     <div class="ac-grid">
       <gog-autocomplete label="Bound" [options]="cities" [formControl]="formCity" />
       <gog-autocomplete label="Float in" [options]="cities" floatLabel="in" />
@@ -165,10 +165,10 @@
       <gog-autocomplete label="Float over" [options]="cities" floatLabel="over" />
     </div>
     <p class="hint">control: {{ formCity.value ?? '—' }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Appended to body</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Appended to body</h3>
     <p class="hint">
       For a field inside a scrollable or overflow-clipped container. The panel is stamped into
       <code>&lt;body&gt;</code> and carries any scoped <code>data-theme</code> with it.
@@ -176,5 +176,5 @@
     <div class="ac-clipped">
       <gog-autocomplete label="Inside a clipped box" [options]="cities" [appendToBody]="true" />
     </div>
-  </article>
+  </gog-panel>
 </section>
