@@ -4,7 +4,9 @@ import {
   CalendarComponent,
   DatepickerComponent,
   GogDateRange,
+  GogPanelHeaderDirective,
   GogSize,
+  PanelComponent,
   formatDate,
 } from '@guildofgleks/ui';
 
@@ -12,7 +14,13 @@ const TODAY = new Date();
 
 @Component({
   selector: 'app-datepicker-page',
-  imports: [CalendarComponent, DatepickerComponent, ReactiveFormsModule],
+  imports: [
+    CalendarComponent,
+    DatepickerComponent,
+    GogPanelHeaderDirective,
+    PanelComponent,
+    ReactiveFormsModule,
+  ],
   templateUrl: './datepicker-page.html',
   styleUrl: './datepicker-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

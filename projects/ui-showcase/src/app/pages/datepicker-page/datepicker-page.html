@@ -9,8 +9,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Single date</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Single date</h3>
     <div class="dp-grid">
       <gog-datepicker label="Date" [(value)]="date" [clearable]="true" />
       <gog-datepicker label="Not before today" [min]="today" />
@@ -18,10 +18,10 @@
       <gog-datepicker label="Weekdays only" [disabledDates]="noWeekends" />
     </div>
     <p class="hint">value: {{ show(date()) }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Range</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Range</h3>
     <p class="hint">
       Two months side by side is what makes a range picker usable. The panel stays open between the
       two clicks, and hovering previews what the second click will produce.
@@ -36,10 +36,10 @@
       />
     </div>
     <p class="hint">value: {{ showRange(range()) }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>With a time</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>With a time</h3>
     <p class="hint">
       The panel stays open after a day is picked, so the clock is reachable without reopening.
       Changing the time never moves the day.
@@ -50,10 +50,10 @@
       <gog-datepicker label="With seconds" [showTime]="true" [showSeconds]="true" />
     </div>
     <p class="hint">value: {{ showDateTime(withTime()) }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Typing</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Typing</h3>
     <p class="hint">
       Typed text is parsed against <code>format</code>. A half-typed date leaves the value alone
       rather than firing a stream of nulls at an attached form, and an impossible date
@@ -65,10 +65,10 @@
       <gog-datepicker label="MM/dd/yyyy" format="MM/dd/yyyy" />
       <gog-datepicker label="Pick only" [allowTextInput]="false" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Locales</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Locales</h3>
     <p class="hint">
       Month and weekday names come from <code>Intl</code>, and the first day of the week from the
       locale unless you override it. Both are also settable app-wide via
@@ -80,10 +80,10 @@
       <gog-datepicker label="de-DE" locale="de-DE" />
       <gog-datepicker label="Sunday first" locale="en-US" [firstDayOfWeek]="0" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Footer buttons</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Footer buttons</h3>
     <p class="hint">
       Two separate actions, deliberately not one. <strong>Today</strong> <em>selects</em> today's
       date — the view follows, because the selection is what the calendar opens on.
@@ -107,10 +107,10 @@
       value: {{ show(footerDate()) }} · the last one has <code>min</code> in the future, so
       <strong>Today</strong> is disabled rather than silently doing nothing.
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Inline</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Inline</h3>
     <p class="hint">
       No field, no panel — literally <code>gog-calendar</code>, which is exported on its own for
       exactly this.
@@ -120,10 +120,10 @@
       <gog-calendar [value]="inlineDate()" [min]="today" size="sm" />
     </div>
     <p class="hint">value: {{ show(inlineDate()) }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes, disabled and errors</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes, disabled and errors</h3>
     <div class="dp-grid">
       @for (size of sizes; track size) {
         <gog-datepicker [size]="size" [label]="size" />
@@ -131,10 +131,10 @@
       <gog-datepicker label="Disabled" [disabled]="true" [value]="today" />
       <gog-datepicker label="With an error" errorMessage="Choose a date" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive Forms, float label and append-to-body</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive Forms, float label and append-to-body</h3>
     <div class="dp-grid">
       <gog-datepicker label="Bound" [formControl]="formDate" />
       <gog-datepicker label="Float in" floatLabel="in" />
@@ -145,10 +145,10 @@
     <div class="dp-clipped">
       <gog-datepicker label="Inside a clipped box" [appendToBody]="true" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Width in a block container</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Width in a block container</h3>
     <p class="hint">
       The case the flex row above hides. Each calendar below is the only child of a plain full-width
       block: the grid is intrinsically sized, so without a cap the header spread the whole way
@@ -176,5 +176,5 @@
     <div class="dp-block">
       <gog-datepicker label="Wide panel" class="dp-block__wide-panel" />
     </div>
-  </article>
+  </gog-panel>
 </section>
