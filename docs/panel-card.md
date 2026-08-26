@@ -1,7 +1,8 @@
 # `gog-panel` and `gog-card`
 
-**Built 2026-08-23, in 21.6.1** — iterations 1, 2 and 3 are done and in the changelog; iteration 4
-is one page in and open. The filename still carries no version: it was `panel-card-21.6.0.md`
+**Built 2026-08-23, in 21.6.1; finished 2026-08-26.** All four iterations are done — 1, 2 and 3 are
+in the changelog, and iteration 4 (the showcase's own `.card` goes away) converted all 40 pages and
+retired the class. The filename still carries no version: it was `panel-card-21.6.0.md`
 until 21.6.0 shipped without it, and renaming it now buys nothing, since the line above says where
 the work landed.
 
@@ -92,7 +93,7 @@ any code is written.
 | 1   | Decide one-or-two, and write the API down | api     | ✅ done — two, see below        |
 | 2   | `gog-card`                                | feature | ✅ done (21.6.1)                |
 | 3   | `gog-panel`                               | feature | ✅ done (21.6.1)                |
-| 4   | The showcase's own `.card` goes away      | fix     | 🟡 one page converted, 36 to go |
+| 4   | The showcase's own `.card` goes away      | fix     | ✅ done — 2026-08-26, all 40    |
 
 ### Iteration 1, as resolved
 
@@ -149,32 +150,43 @@ both components so the two agree on what each word means. `elevated` reads the s
 `--gog-panel-shadow`, which in the dark theme already carries a 1px ring — so it needs no border
 of its own there, and reads intentionally flatter in light.
 
-### Iteration 4, as far as it got
+### Iteration 4, as it finished
 
-`divider-page` is converted: its five `<article class="card">` sections are `<gog-panel size="md">`
-with `<h3 gogPanelHeader>`. Three findings, all of which the remaining 36 templates will hit:
+**Done 2026-08-26.** All 40 pages converted, one commit each, plus a final commit retiring `.card`
+itself. `grep` for a `card` class token in `ui-showcase` now returns nothing.
 
-- **The swap is mechanical and the template gets no shorter.** One attribute on the heading, one
-  import pair on the page class, same nesting. What changes is what the page _means_: five named
-  regions instead of five anonymous `<article>`s.
-- **The hero does not convert.** `.detail__hero` puts an eyebrow `<p>` _above_ its `<h2>`, and a
-  panel always renders the header slot first. Either the hero keeps the hand-rolled class, or the
-  component grows a slot above the header — do not add one for this alone.
-- **`.card` is border _and_ shadow, which is not any one variant.** `outlined` drops the shadow,
-  `elevated` drops the border. In the dark theme the difference is invisible (the shadow carries
-  its own ring); in light, `elevated` reads flatter than the old class. Nothing is broken, but the
-  conversion is not pixel-identical, and whoever does the other 36 should expect that.
+**Finding 1 held up over all 40 pages, and that is the verdict this iteration existed for.** The
+swap stayed exactly as mechanical as the pilot said: `<article class="card">` → `<gog-panel
+size="md">`, `gogPanelHeader` on the heading, two imports on the page class. Not once was a wrapper
+`<div>` needed, and `::ng-deep` was never reached for — the tripwire the recipe set for "the API is
+wrong" never fired. Nine of the last twelve pages were converted by a three-line
+string-replace script and needed no hand-editing at all, which is about as strong a statement as
+"the API is pleasant" can get.
 
-The rest is deliberately left. The point of the iteration was to find out whether the API is
-pleasant to use, and one page answered it; converting the remainder is bulk work with a
-visual-regression tail, and `lab-stackblitz-plan.md`'s one-page-per-commit rule applies to the
-showcase for the same reason.
+Findings 2 and 3 also held: the hero never converted (44 of them, see below), and the light-theme
+flattening was visible, expected, and not worth chasing.
 
-**The remainder is written out step by step in `docs/showcase-card-to-panel.md`** — the counts
-(250 plain `class="card"` across 38 files, 40 heroes that do not convert, one composite class), the
-nine-step recipe for one page, the page order smallest-first, the verification, and what to do
-when it goes wrong. It is a separate file because it is a checklist to follow rather than a design
-to argue with, and this document is the latter.
+**Two things the plan did not anticipate, both worth keeping:**
+
+- **The original count was wrong, and the way it was wrong is instructive.** It used
+  `grep -c 'class="card"'` — an exact string match — so every block whose `class` attribute put
+  `card` next to a page-local name was invisible to it: `class="card dash__filters"`,
+  `class="catalog__header card"`. Two whole pages (`catalog-page`, `onboarding-page`) were missing
+  from the checklist, and the table said 39 rows when it was 40. **Count class _tokens_, split on
+  whitespace, not attribute substrings.**
+- **The last block was not a panel at all.** `benchmark-index-page`'s tiles were
+  `<a class="card bench-index-card" routerLink>` — the whole tile _is_ a link, and a `gog-panel`
+  is never a link by design. It became a `gog-card` with a `gogCardLink`, which is precisely the
+  shape iteration 1 argued that pairing into existence. That the one block in 250 that resisted
+  `gog-panel` turned out to be the exact case `gog-card` was built for is the best evidence the
+  two-component split of iteration 1 was the right call.
+
+`.card` itself is gone from `_detail.scss`, renamed to `.detail__hero`, and the four full-page
+examples now carry `detail__hero` next to their own layout class (`.dash__header` and friends) so
+all 44 heroes are spelled one way.
+
+`docs/showcase-card-to-panel.md` is the record of how it was done — the corrected counts, the
+nine-step recipe, the page order, and the Part 5 write-up of the `gog-card` finding above.
 
 ### Iteration 1 — the API, on paper, before any file
 

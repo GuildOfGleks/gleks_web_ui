@@ -94,21 +94,26 @@ Update the status table in whichever you are working from, as you go.
   `material`/`primeng` themes had to name component tokens one at a time. Iteration 1 introduces a
   character layer so a theme sets ~25 foundation tokens instead, and new components inherit every
   theme's character for free.
-- `docs/panel-card.md` — **built 2026-08-23 into 21.6.1**: `gog-card` and `gog-panel`, iterations
-  1–3 done. Read its _Iteration 1, as resolved_ section rather than the sketch above it: two of the
-  answers came out differently from the plan. There is no `interactive` input — a card becomes
-  interactive by containing a `gogCardLink`, a directive on the consumer's own `<a>`, for the same
-  reason `[gogButton]` is one — and the `--gog-panel-*` collision resolved by the component
-  _adopting_ the foundation surface tier rather than either side renaming. Iteration 4 (the
-  showcase's own `.card` goes away) is **one page in and open**, with the three findings that
-  conversion produced written down there — and the remaining work moved into its own file, below.
-- `docs/showcase-card-to-panel.md` — **the checklist for that iteration 4**, split out because it
-  is bulk work with a fixed recipe rather than a design to argue with. Measured 2026-08-23: 250
-  plain `class="card"` across 38 showcase templates, 40 `detail__hero card` that deliberately do
-  **not** convert (a panel renders its header slot first and the hero's eyebrow sits above the
-  title), and one composite `card bench-index-card`. Nine numbered steps per page, the page order
-  smallest-first with a tick box each, and a symptom→cause→fix table. **One page per commit**, for
-  the reason `lab-stackblitz-plan.md` records.
+- `docs/panel-card.md` — **built 2026-08-23 into 21.6.1, finished 2026-08-26**: `gog-card` and
+  `gog-panel`, all four iterations done. Read its _Iteration 1, as resolved_ section rather than the
+  sketch above it: two of the answers came out differently from the plan. There is no `interactive`
+  input — a card becomes interactive by containing a `gogCardLink`, a directive on the consumer's
+  own `<a>`, for the same reason `[gogButton]` is one — and the `--gog-panel-*` collision resolved
+  by the component _adopting_ the foundation surface tier rather than either side renaming.
+  **Iteration 4 (the showcase's own `.card` goes away) is done**: all 40 pages converted and the
+  class retired. Its _as it finished_ section carries the verdict the iteration existed for —
+  the swap stayed mechanical across every page, no wrapper `<div>` and no `::ng-deep` ever needed —
+  plus the two things the plan did not anticipate, both worth reading before any similar bulk job.
+- `docs/showcase-card-to-panel.md` — **the record of that iteration 4, now complete**. Kept for two
+  findings that outlive it. **The first count was wrong in an instructive way:** it used
+  `grep -c 'class="card"'`, an exact substring match, so every block pairing `card` with a
+  page-local class was invisible — two whole pages were missing from the checklist. Count class
+  _tokens_, split on whitespace. **And the last block was not a panel:** `benchmark-index-page`'s
+  tiles were `<a class="card …" routerLink>`, and a panel is never a link, so they became a
+  `gog-card` with a `gogCardLink` — the one block in 250 that resisted `gog-panel` turned out to be
+  exactly what `gog-card` was built for. The nine-step recipe and symptom→cause→fix table are still
+  there if a comparable conversion ever comes up. **One page per commit**, for the reason
+  `lab-stackblitz-plan.md` records.
 - `docs/ripple.md` — **built 2026-08-23 into 21.6.1, all four iterations**: `[gogRipple]` for
   markup a consumer owns, plus the ripple wired into nine of the library's own components and one
   app-wide switch, `GOG_CONFIG.ripple.enabled`, **off by default**. Three of its findings matter to
