@@ -1,11 +1,23 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonComponent, SliderComponent, type GogSliderRange } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  GogPanelHeaderDirective,
+  PanelComponent,
+  SliderComponent,
+  type GogSliderRange,
+} from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-slider-page',
-  imports: [ButtonComponent, SliderComponent, ReactiveFormsModule],
+  imports: [
+    ButtonComponent,
+    GogPanelHeaderDirective,
+    PanelComponent,
+    SliderComponent,
+    ReactiveFormsModule,
+  ],
   templateUrl: './slider-page.html',
   styleUrl: './slider-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

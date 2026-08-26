@@ -7,8 +7,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Controls</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Controls</h3>
     <div class="field-grid">
       <gog-slider label="Volume" [min]="0" [max]="100" [step]="5" [(value)]="volume" />
       <gog-slider label="Brightness" [min]="0" [max]="100" [step]="10" [(value)]="brightness" />
@@ -30,10 +30,10 @@
     </div>
 
     <p class="meta">{{ summary() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Labeling</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Labeling</h3>
     <p class="lead">
       <code>showValue="false"</code> hides the numeric readout. With no <code>label</code>, use
       <code>ariaLabel</code> so assistive tech still gets a name.
@@ -42,10 +42,10 @@
       <gog-slider label="No value readout" [showValue]="false" [(value)]="hiddenValue" />
       <gog-slider ariaLabel="Opacity (no visible label)" [(value)]="ariaOnlyValue" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Orientation</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Orientation</h3>
     <p class="lead">
       <code>orientation="horizontal"</code> (default, used everywhere above) or
       <code>"vertical"</code> — the developer picks per instance, there's no global default for this
@@ -85,10 +85,10 @@
         [disabled]="true"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Range</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Range</h3>
     <p class="lead">
       <code>range</code> switches to two thumbs for picking a span instead of a single value — use
       <code>[(rangeValue)]</code> (a <code>{{ '{ start, end }' }}</code> pair) instead of
@@ -114,10 +114,10 @@
       />
     </div>
     <p class="meta">Price range is {{ priceRange().start }} – {{ priceRange().end }}.</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Range — one-sided disable</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Range — one-sided disable</h3>
     <p class="lead">
       <code>startDisabled</code>/<code>endDisabled</code> pin just one thumb while leaving the other
       draggable — unlike <code>disabled</code>, which still turns off both together (that one's
@@ -142,10 +142,10 @@
         [(rangeValue)]="ceilingPinnedRange"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="lead">
       Full width of its container by default (see every slider above). A slider's track has no
       content of its own to shrink-wrap to, so <code>[fullWidth]="false"</code> instead sizes it to
@@ -159,10 +159,10 @@
       [(value)]="compactValue"
       [fullWidth]="false"
     />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Validation</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Validation</h3>
     <p class="lead">
       `errorMessage` is consumer-controlled: `gog-slider` just renders whatever it's given, for as
       long as it's non-empty — this page recomputes it every time the value changes.
@@ -177,10 +177,10 @@
         [(value)]="budget"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive forms — automatic error timing</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive forms — automatic error timing</h3>
     <p class="lead">
       With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the slider shows the
       error once it's been touched (drag it, then click elsewhere) and is invalid, instead of the
@@ -196,5 +196,5 @@
         [errorMessage]="minimumErrorMessage()"
       />
     </div>
-  </article>
+  </gog-panel>
 </section>
