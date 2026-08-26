@@ -3,20 +3,34 @@
   width: 100%;
 }
 
-.row {
+/* Variants: same size on each, so equal columns are the fair comparison —
+   the only thing changing is the surface treatment. */
+.variants {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/*
+ * Sizes: deliberately NOT stretched. `size` drives padding and row gap, so a row of
+ * equal-width panels shows that difference only as reflowed text — five boxes that read
+ * as the same size. Letting each one hug its own content makes the padding the thing
+ * that sets the box's width, which is the point of the demo.
+ */
+.sizes {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-}
-
-.row + .row {
+  align-items: flex-start;
   margin-top: 16px;
 }
 
-.row > * {
-  flex: 1 1 200px;
+.sizes > * {
+  flex: 0 0 auto;
 }
 
 p {
   margin: 0;
+  white-space: nowrap;
 }

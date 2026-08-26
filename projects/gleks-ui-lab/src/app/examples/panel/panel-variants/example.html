@@ -1,4 +1,4 @@
-<div class="row">
+<div class="variants">
   @for (variant of variants; track variant) {
     <gog-panel [variant]="variant" size="md">
       <h4 gogPanelHeader>{{ variant }}</h4>
@@ -7,11 +7,11 @@
   }
 </div>
 
-<div class="row">
+<div class="sizes">
   @for (size of sizes; track size) {
     <gog-panel [size]="size" variant="outlined">
       <h4 gogPanelHeader>{{ size }}</h4>
-      <p>Five tiers, the same scale as every control.</p>
+      <p>Same copy, every tier.</p>
     </gog-panel>
   }
 </div>
