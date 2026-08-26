@@ -8,7 +8,12 @@
   gap: 24px;
 }
 
-.card {
+/* Was `.card`, back when 39 pages used it as a generic box for every demo. Those are all
+   `gog-panel` now, and the one thing left that cannot be — the hero, whose eyebrow sits above
+   its title while a panel renders its header slot first — is what this rule is for. The four
+   full-page examples name their hero after themselves for layout (`.dash__header` and friends)
+   and carry this class alongside it for the surface. */
+.detail__hero {
   padding: 20px;
   border: 1px solid var(--gog-border-color);
   background: color-mix(in srgb, var(--gog-surface-color) 92%, transparent);
