@@ -7,7 +7,9 @@ import {
   GogDropdownOptionDirective,
   GogFloatLabelVariant,
   GogSize,
+  GogPanelHeaderDirective,
   IconComponent,
+  PanelComponent,
   SelectComponent,
 } from '@guildofgleks/ui';
 
@@ -23,7 +25,9 @@ interface Member {
     CheckboxComponent,
     GogDropdownChevronDirective,
     GogDropdownOptionDirective,
+    GogPanelHeaderDirective,
     IconComponent,
+    PanelComponent,
     ReactiveFormsModule,
     SelectComponent,
   ],

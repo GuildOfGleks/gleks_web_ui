@@ -9,8 +9,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Playground</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Playground</h3>
     <div class="field-grid">
       <gog-select
         label="Framework"
@@ -21,10 +21,10 @@
       />
     </div>
     <p class="meta">Selected: {{ selectionSummary() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <div class="field-grid">
       @for (size of sizes; track size) {
         <gog-select
@@ -35,10 +35,10 @@
         />
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="meta">
       Full width of its container by default (see every field above).
       <code>[fullWidth]="false"</code>
@@ -56,10 +56,10 @@
         [fullWidth]="false"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Float label</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Float label</h3>
     <p class="lead">
       <code>floatLabel</code> makes the label rest inside the trigger like a placeholder, then float
       up on focus or once something's selected — <code>'in'</code> stays inside the border,
@@ -88,10 +88,10 @@
         [(value)]="floatLabelDemoValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Your own objects — no mapping</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Your own objects — no mapping</h3>
     <p class="lead">
       <code>optionLabel</code>, <code>optionValue</code> and <code>optionDisabled</code> take a
       property path (dot-paths included) or a function, so a real DTO goes straight in. Set
@@ -126,10 +126,10 @@
       Selected uuid: {{ memberId() ?? '—' }} · Selected object:
       {{ member() ? $any(member()).profile.fullName + ' (' + $any(member()).uuid + ')' : '—' }}
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Filter &amp; clear</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Filter &amp; clear</h3>
     <p class="lead">
       <code>filter</code> puts a search box at the top of the panel — it narrows on the resolved
       <code>optionLabel</code>, case-insensitively, and <code>filterMatch</code> swaps that for your
@@ -159,10 +159,10 @@
       />
     </div>
     <p class="meta">Selected: {{ filterDemoValue() ?? '—' }} / {{ prefixDemoValue() ?? '—' }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>States</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>States</h3>
     <div class="field-grid">
       <gog-select label="Disabled" [options]="frameworks" value="angular" [disabled]="true" />
 
@@ -187,10 +187,10 @@
       The error above is entirely computed by this page — `gog-select` just renders whatever
       `errorMessage` it's given, for as long as it's non-empty.
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive Forms — automatic error timing</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive Forms — automatic error timing</h3>
     <p class="lead">
       With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides for
       itself when to show the error — once the control has been touched and is invalid — instead of
@@ -206,10 +206,10 @@
         errorDisplay="auto"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom chevron &amp; label-less field</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom chevron &amp; label-less field</h3>
     <p class="lead">
       A <code>gogDropdownChevron</code> template swaps the trigger's icon.
       <code>ariaLabel</code> names a field that has no visible <code>label</code> at all.
@@ -227,10 +227,10 @@
         [(value)]="ariaOnlyValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Append to body</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Append to body</h3>
     <p class="lead">
       Useful inside scrollable or overflow-clipped containers — the panel escapes into
       `document.body` instead of getting clipped.
@@ -244,10 +244,10 @@
         [(value)]="region"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom panel size</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom panel size</h3>
     <p class="lead">
       <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and override
       the trigger-derived size — useful when the panel needs to be narrower/wider or shorter than
@@ -264,12 +264,12 @@
         [(value)]="compactPanelValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
   <div class="detail__spacer" aria-hidden="true"></div>
 
-  <article class="card">
-    <h3>Opening near the bottom of the page</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Opening near the bottom of the page</h3>
     <p class="lead">
       Scroll down to reach this one. With <code>appendToBody</code>, the panel flips upward
       automatically and is positioned against the trigger itself — not the whole field — so it never
@@ -284,5 +284,5 @@
         [(value)]="bottomOfPageValue"
       />
     </div>
-  </article>
+  </gog-panel>
 </section>
