@@ -189,6 +189,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'components/ripple',
+    loadComponent: () =>
+      import('./components/pages/ripple-doc-page/ripple-doc-page').then((m) => m.RippleDocPage),
+  },
+  {
     path: 'components/scroll',
     loadComponent: () =>
       import('./components/pages/scroll-doc-page/scroll-doc-page').then((m) => m.ScrollDocPage),

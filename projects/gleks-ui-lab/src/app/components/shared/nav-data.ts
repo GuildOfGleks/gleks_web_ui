@@ -18,7 +18,7 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Releases', path: 'general/releases' },
 ];
 
-// 33 entries — 31 components and the two directives — grouped by what they're for rather
+// 34 entries — 31 components and the three directives (gogBadge, gogTooltip, gogRipple) — grouped by what they're for rather
 // than one long alphabetical run —
 // alphabetical within each group.
 const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
@@ -55,6 +55,7 @@ const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
       { label: 'Icon', path: 'components/icon' },
       { label: 'Paginator', path: 'components/paginator' },
       { label: 'Progress Bar', path: 'components/progressbar' },
+      { label: 'Ripple', path: 'components/ripple' },
       { label: 'Skeleton', path: 'components/skeleton' },
       { label: 'Table', path: 'components/table' },
       { label: 'Tag', path: 'components/tag' },

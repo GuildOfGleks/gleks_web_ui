@@ -823,6 +823,27 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    id: 'ripple',
+    title: 'Ripple',
+    tokens: [
+      {
+        name: '--gog-ripple-color',
+        description:
+          'The wash. Defaults to currentColor rather than a palette token — the only token in this catalogue that does — so it reads as the surface’s own foreground on a filled surface and a ghost one alike, which is why the ripple needs no per-variant tier.',
+      },
+      { name: '--gog-ripple-opacity', description: 'Peak opacity of the wash.' },
+      {
+        name: '--gog-ripple-enter-duration',
+        description: 'How long the wave takes to expand from the press point.',
+      },
+      {
+        name: '--gog-ripple-exit-duration',
+        description: 'How long it fades once the pointer is released.',
+      },
+      { name: '--gog-ripple-easing', description: 'Easing curve for both phases.' },
+    ],
+  },
+  {
     id: 'scroll',
     title: 'Scroll',
     tokens: [

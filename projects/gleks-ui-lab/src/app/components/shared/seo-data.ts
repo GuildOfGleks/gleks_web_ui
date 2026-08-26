@@ -224,6 +224,11 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     'An Angular radio group built on native inputs, so arrow-key navigation is the browser’s — ' +
       'with proper role, labelling and form integration on top.',
   ),
+  'components/ripple': component(
+    'Ripple',
+    'A pointer-position press ripple for Angular, as a directive rather than a component: no ' +
+      'wrapper, no layout change, and off by default until you switch it on.',
+  ),
   'components/scroll': component(
     'Scroll',
     'A drop-in replacement for overflow: auto with a themeable overlay scrollbar — native ' +

@@ -1,0 +1,40 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.surface {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 170px;
+  padding: 12px 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* All five tokens are ordinary inherited custom properties, so setting one on the element —
+   or on anything above it — is the per-instance override. No ::ng-deep, no variant tier. */
+.surface--accent {
+  --gog-ripple-color: var(--gog-accent-color);
+}
+
+.surface--strong {
+  --gog-ripple-opacity: 0.55;
+}
+
+.surface--slow {
+  --gog-ripple-enter-duration: 900ms;
+  --gog-ripple-exit-duration: 700ms;
+}

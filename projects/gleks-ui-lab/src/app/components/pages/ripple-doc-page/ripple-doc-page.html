@@ -1,0 +1,214 @@
+<div class="ripple-doc">
+  <header class="ripple-doc__hero">
+    <p class="ripple-doc__eyebrow">gogRipple</p>
+    <h1 class="ripple-doc__title font-heading">Ripple <app-since version="21.6.1" /></h1>
+    <p class="ripple-doc__lead">
+      A pointer-position wash that grows from where you pressed and fades when you let go. A
+      directive, not a component, so it goes on any element you already have — no wrapper, no layout
+      change. Built from scratch: there is no CDK in this library.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="off-by-default" class="doc-section__title font-heading">It is off by default</h2>
+    <p class="doc-section__intro">
+      <strong
+        >21.6.1 wires the ripple into nine of the library's own components and ships it switched
+        off.</strong
+      >
+      If you copy an example from this page onto a <code>gog-button</code> and see nothing happen,
+      you have not made a mistake — the app-wide switch is off. Turn it on once:
+    </p>
+    <app-markdown [markdown]="enableSnippet" />
+    <p class="doc-section__intro">
+      Adding the ripple to the library therefore changed the look of nothing. The demos on this page
+      are the <code>gogRipple</code> directive on the page's own markup, which is always explicit
+      and needs no switch.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">
+      Import the directive and put it on the element you want pressed. Press and hold: the wave
+      grows and stays until you let go.
+    </p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <div class="demo-card">
+      <app-demo [component]="examples.overview" [source]="sources.rippleOverview" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Put it on the element that paints the surface</h3>
+      <p class="demo-card__meta">
+        <strong>The one sharp edge in this API.</strong> The wash lives in its own layer, and that
+        layer takes its corner radius from its host with <code>border-radius: inherit</code> —
+        exact, per instance, per theme, with no token to declare. The cost is that on a
+        <em>wrapper</em> whose child paints the rounded background, the layer inherits the wrapper's
+        radius — very often <code>0</code> — and the wash squares off at the corners.
+      </p>
+      <p class="demo-card__meta">
+        Both buttons below are ripple-wrapped; only the second has the directive on the element that
+        actually has the radius. Press each and watch the corners.
+      </p>
+      <app-demo [component]="examples.surfaceVsWrapper" [source]="sources.rippleSurfaceVsWrapper" />
+      <p class="demo-card__meta">
+        The library's own components never make you think about this — each opts its own inner
+        element in. The rule applies only to markup you wrote yourself.
+      </p>
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">It does not clip a badge</h3>
+      <p class="demo-card__meta">
+        This is the reason the ripple is not simply <code>overflow: hidden</code> on the host.
+        <a routerLink="/components/badge">gogBadge</a> pins its badge <em>outside</em> the host's
+        box with negative insets, so a host that clips its overflow clips the badge with it. The
+        wash lives in a layer that clips <em>itself</em> instead, and the host is never given
+        <code>overflow: hidden</code> at all — press these and the badge stays whole.
+      </p>
+      <app-demo [component]="examples.badge" [source]="sources.rippleBadge" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title"><code>rippleCentred</code> and <code>rippleDisabled</code></h3>
+      <p class="demo-card__meta">
+        Keyboard activation is always centred — <kbd>Enter</kbd> and <kbd>Space</kbd> carry no
+        coordinates — so tab to a button and hold a key to see what centred looks like.
+        <code>rippleCentred</code> makes the pointer behave the same way.
+        <code>rippleDisabled</code> detaches the listeners and drops the host class rather than
+        ignoring events, so a switched-off ripple costs nothing at all.
+      </p>
+      <app-demo [component]="examples.options" [source]="sources.rippleOptions" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Suppressed where a press means nothing</h3>
+      <p class="demo-card__meta">
+        Four things suppress it, none of which you wire up: <code>rippleDisabled</code>, a host
+        carrying <code>disabled</code>, a host carrying <code>aria-disabled="true"</code>, and
+        <code>prefers-reduced-motion: reduce</code>. Answering a press the control will not act on
+        is worse than staying still.
+      </p>
+      <p class="demo-card__meta">
+        Reduced motion suppresses it <strong>outright rather than shortening it</strong> — turn on
+        your system's "reduce motion" setting and none of the demos on this page produce anything.
+      </p>
+      <app-demo [component]="examples.suppressed" [source]="sources.rippleSuppressed" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Theming</h3>
+      <p class="demo-card__meta">
+        Five tokens, and all five are ordinary <em>inherited</em> custom properties — so setting one
+        on the element, or on anything above it, is the per-instance override. There is no variant
+        tier and no <code>::ng-deep</code>.
+      </p>
+      <p class="demo-card__meta">
+        <code>--gog-ripple-color</code> defaults to <code>currentColor</code> rather than to a
+        palette token. It is the only token in the catalogue that does, and it is why no per-variant
+        tier is needed: the wash reads as the surface's own foreground on a filled button and a
+        ghost one alike, in every theme.
+      </p>
+      <app-demo [component]="examples.theming" [source]="sources.rippleTheming" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="library-components" class="doc-section__title font-heading">
+      The library's own components
+    </h2>
+    <p class="doc-section__intro">
+      You do <strong>not</strong> put <code>gogRipple</code> on a <code>gog-*</code> component: each
+      one already owns the element that paints its surface, so it wires its own. Turning on
+      <code>GOG_CONFIG.ripple.enabled</code> gives all nine at once:
+    </p>
+    <ul class="doc-section__intro">
+      @for (surface of wiredSurfaces; track surface) {
+        <li>
+          <code>{{ surface }}</code>
+        </li>
+      }
+    </ul>
+    <p class="doc-section__intro">
+      Each also takes a <code>ripple</code> input <app-since version="21.6.1" /> that wins over the
+      app-wide setting in both directions — one instance can opt out of an app-wide on, or opt in
+      without the app switching over.
+    </p>
+    <p class="doc-section__intro">
+      This is the first <em>visual</em> default that lives in <code>GOG_CONFIG</code> rather than in
+      <a routerLink="/theming">theme.css</a>, which is a deliberate exception to that boundary: a
+      token could hide the wash, but the element, its listeners and its frames would still be paid
+      for. A real "off" has to reach the TypeScript.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="doc-section__meta">
+      No outputs. Nothing renders on the server, and nothing renders at all until the first press.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="tokens" class="doc-section__title font-heading">Style tokens</h2>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (token of styleTokens; track token.name) {
+            <tr>
+              <td>
+                <code>{{ token.name }}</code>
+              </td>
+              <td>{{ token.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

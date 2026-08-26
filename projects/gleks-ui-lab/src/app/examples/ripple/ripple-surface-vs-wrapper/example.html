@@ -1,0 +1,11 @@
+<div class="row">
+  <!-- Wrong: the wrapper has no radius, so the layer inherits 0 and the wash squares off. -->
+  <span class="wrapper" gogRipple>
+    <button class="surface surface--pill">On the wrapper</button>
+  </span>
+
+  <!-- Right: the directive sits on the element that actually paints the rounded background. -->
+  <span class="wrapper">
+    <button class="surface surface--pill" gogRipple>On the surface</button>
+  </span>
+</div>

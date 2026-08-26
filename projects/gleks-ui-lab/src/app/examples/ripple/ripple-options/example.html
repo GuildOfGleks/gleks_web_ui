@@ -1,0 +1,17 @@
+<div class="row">
+  <button class="surface" gogRipple [rippleCentred]="centred()">
+    rippleCentred: {{ centred() }}
+  </button>
+  <gog-button variant="outline" size="sm" (gogClick)="toggleCentred()">
+    Toggle rippleCentred
+  </gog-button>
+</div>
+
+<div class="row">
+  <button class="surface" gogRipple [rippleDisabled]="disabled()">
+    rippleDisabled: {{ disabled() }}
+  </button>
+  <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+    Toggle rippleDisabled
+  </gog-button>
+</div>

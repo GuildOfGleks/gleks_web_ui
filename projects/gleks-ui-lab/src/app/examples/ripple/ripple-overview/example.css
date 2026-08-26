@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Ordinary markup of your own — the directive adds no wrapper and changes no layout. */
+.surface {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  padding: 12px 20px;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  user-select: none;
+}
+
+.surface--pill {
+  border-radius: 999px;
+}
+
+.surface--square {
+  border-radius: 0;
+}
+
+.surface--tile {
+  min-width: 260px;
+  min-height: 96px;
+  text-align: center;
+}
