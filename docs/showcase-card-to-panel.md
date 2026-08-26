@@ -335,7 +335,7 @@ to them.
 | 26    | `chip-page`                | 8           | ✅                       |
 | 27    | `paginator-page`           | 8           | ✅                       |
 | 28    | `slider-page`              | 8           | ✅                       |
-| 29    | `textarea-page`            | 8           | ⬜                       |
+| 29    | `textarea-page`            | 8           | ✅                       |
 | 30    | `tooltip-page`             | 8           | ⬜                       |
 | 31    | `autocomplete-page`        | 9           | ⬜                       |
 | 32    | `table-page`               | 9           | ⬜                       |

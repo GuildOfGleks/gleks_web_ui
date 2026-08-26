@@ -9,8 +9,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Playground</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Playground</h3>
     <div class="field-grid">
       <gog-textarea label="Bio" inputId="bio" [(value)]="bio" />
 
@@ -26,10 +26,10 @@
       The notes error is computed by this page from the current value — `gog-textarea` only renders
       whatever `errorMessage` it's given (`errorDisplay="manual"`, the default).
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Clearable</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Clearable</h3>
     <p class="lead">
       Same <code>clearable</code> input as the other fields. On a multi-line box the button is
       pinned to the top-right rather than vertically centred — centred would land it in the middle
@@ -38,10 +38,10 @@
     <div class="field-grid">
       <gog-textarea label="Notes" [clearable]="true" [(value)]="clearableNotes" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Rows</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Rows</h3>
     <p class="lead">
       <code>rows</code> sets the native <code>rows</code> attribute, controlling the field's initial
       height before the user resizes it.
@@ -51,10 +51,10 @@
       <gog-textarea label="Default (4 rows)" placeholder="Default field" />
       <gog-textarea label="Tall (8 rows)" [rows]="8" placeholder="Tall field" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Resize</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Resize</h3>
     <p class="lead">
       <code>resize</code> controls the native resize handle's axis —
       <code>"vertical"</code> (default), <code>"horizontal"</code>, <code>"both"</code>, or
@@ -67,10 +67,10 @@
       <gog-textarea label="Both" resize="both" placeholder="Drag either edge" />
       <gog-textarea label="None" resize="none" placeholder="Fixed size" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes &amp; disabled</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes &amp; disabled</h3>
     <div class="field-grid">
       <gog-textarea label="Extra small" size="xsm" placeholder="Extra small field" />
       <gog-textarea label="Small" size="sm" placeholder="Small field" />
@@ -79,10 +79,10 @@
       <gog-textarea label="Extra large" size="slg" placeholder="Extra large field" />
       <gog-textarea label="Disabled" [disabled]="true" [(value)]="disabledValue" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="meta">
       Full width of its container by default. <code>[fullWidth]="false"</code> shrinks the field to
       fit its content instead, matching every other field-style control in the library.
@@ -93,10 +93,10 @@
       </div>
       <gog-textarea label="Code" placeholder="Auto width" [fullWidth]="false" [rows]="2" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Float label</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Float label</h3>
     <p class="lead">
       <code>floatLabel</code> makes the label rest inside the field like a placeholder, then float
       up on focus or once there's a value — <code>'in'</code> stays inside the border,
@@ -124,10 +124,10 @@
         [(value)]="floatLabelValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive forms — automatic error timing</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive forms — automatic error timing</h3>
     <p class="lead">
       With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides for
       itself when to show the error — once the control has been touched and is invalid — instead of
@@ -143,5 +143,5 @@
         [errorMessage]="feedbackErrorMessage()"
       />
     </div>
-  </article>
+  </gog-panel>
 </section>

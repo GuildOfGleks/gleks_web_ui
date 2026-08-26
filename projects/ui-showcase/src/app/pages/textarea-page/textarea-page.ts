@@ -5,13 +5,22 @@ import {
   CheckboxComponent,
   GogDropdownOption,
   GogFloatLabelVariant,
+  GogPanelHeaderDirective,
+  PanelComponent,
   SelectComponent,
   TextareaComponent,
 } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-textarea-page',
-  imports: [CheckboxComponent, ReactiveFormsModule, SelectComponent, TextareaComponent],
+  imports: [
+    CheckboxComponent,
+    GogPanelHeaderDirective,
+    PanelComponent,
+    ReactiveFormsModule,
+    SelectComponent,
+    TextareaComponent,
+  ],
   templateUrl: './textarea-page.html',
   styleUrl: './textarea-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
