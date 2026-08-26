@@ -342,10 +342,10 @@ to them.
 | 33    | `collapsible-page`         | 10          | ✅                       |
 | 34    | `datepicker-page`          | 10          | ✅                       |
 | 35    | `scroll-page`              | 10          | ✅                       |
-| 36    | `accordion-page`           | 12          | ⬜                       |
-| 37    | `inputfield-page`          | 12          | ⬜                       |
-| 38    | `select-page`              | 12          | ⬜                       |
-| 39    | `multiselect-page`         | 13          | ⬜                       |
+| 36    | `accordion-page`           | 12          | ✅                       |
+| 37    | `inputfield-page`          | 12          | ✅                       |
+| 38    | `select-page`              | 12          | ✅                       |
+| 39    | `multiselect-page`         | 13          | ✅                       |
 | 40    | `benchmark-index-page`     | 1 composite | ⬜ **read Part 5 first** |
 
 Tick the rows as you go. A table that lies about where the work is is worse than no table.

@@ -8,8 +8,10 @@ import {
   GogFloatLabelVariant,
   GogMultiselectClearIconDirective,
   GogSize,
+  GogPanelHeaderDirective,
   IconComponent,
   MultiselectComponent,
+  PanelComponent,
   SelectComponent,
 } from '@guildofgleks/ui';
 
@@ -20,8 +22,10 @@ import {
     GogDropdownChevronDirective,
     GogDropdownOptionDirective,
     GogMultiselectClearIconDirective,
+    GogPanelHeaderDirective,
     IconComponent,
     MultiselectComponent,
+    PanelComponent,
     ReactiveFormsModule,
     SelectComponent,
   ],

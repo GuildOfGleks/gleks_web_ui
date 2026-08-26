@@ -9,8 +9,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Playground</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Playground</h3>
     <div class="field-grid">
       <gog-multiselect
         label="Features"
@@ -21,10 +21,10 @@
       />
     </div>
     <p class="meta">Selected features: {{ featureSummary() }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Filter</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Filter</h3>
     <p class="lead">
       <code>filter</code> narrows the panel as you type. With <code>showControls</code> on,
       &ldquo;select all&rdquo; deliberately takes only the <em>visible</em> options, so it means
@@ -43,10 +43,10 @@
       />
     </div>
     <p class="meta">Selected: {{ filterDemoValue().length }}</p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <div class="field-grid">
       @for (size of sizes; track size) {
         <gog-multiselect
@@ -57,10 +57,10 @@
         />
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>States</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>States</h3>
     <div class="field-grid">
       <gog-multiselect
         label="Disabled"
@@ -90,10 +90,10 @@
       The error above is entirely computed by this page — `gog-multiselect` just renders whatever
       `errorMessage` it's given, for as long as it's non-empty.
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="meta">
       Full width of its container by default (see every field above).
       <code>[fullWidth]="false"</code>
@@ -110,10 +110,10 @@
         [fullWidth]="false"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Float label</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Float label</h3>
     <p class="lead">
       <code>floatLabel</code> makes the label rest inside the trigger like a placeholder, then float
       up on focus or once something's selected — <code>'in'</code> stays inside the border,
@@ -142,10 +142,10 @@
         [(value)]="floatLabelDemoValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Reactive Forms — automatic error timing</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Reactive Forms — automatic error timing</h3>
     <p class="lead">
       Same idea as <code>gog-select</code>: <code>errorDisplay="auto"</code> shows the error once
       the attached <code>[formControl]</code> has been touched and is invalid, with no manual error
@@ -161,10 +161,10 @@
         errorDisplay="auto"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom chevron &amp; label-less field</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom chevron &amp; label-less field</h3>
     <p class="lead">
       A <code>gogDropdownChevron</code> template swaps the trigger's icon.
       <code>ariaLabel</code> names a field that has no visible <code>label</code> at all.
@@ -182,10 +182,10 @@
         [(value)]="ariaOnlyValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom option row &amp; clear icon</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom option row &amp; clear icon</h3>
     <p class="lead">
       A <code>gogDropdownOption</code> template replaces each row entirely — here a colored dot
       before the label. A <code>gogMultiselectClearIcon</code> template replaces the trigger's
@@ -213,10 +213,10 @@
         [(value)]="notClearableValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Append to body</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Append to body</h3>
     <p class="lead">
       Useful inside scrollable or overflow-clipped containers — the panel escapes into
       `document.body` instead of getting clipped.
@@ -231,10 +231,10 @@
         [(value)]="selectedTags"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>"Select all" / "Clear" position</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>"Select all" / "Clear" position</h3>
     <p class="lead">
       <code>controlsPosition</code> puts the control row above or below the option list — either way
       it's pinned in place with <code>position: sticky</code>, so it stays visible instead of
@@ -259,10 +259,10 @@
         [(value)]="bottomControlsValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom panel size</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom panel size</h3>
     <p class="lead">
       <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and override
       the trigger-derived size. Applies only with <code>appendToBody</code>; the list below has 20
@@ -278,12 +278,12 @@
         [(value)]="compactPanelValue"
       />
     </div>
-  </article>
+  </gog-panel>
 
   <div class="detail__spacer" aria-hidden="true"></div>
 
-  <article class="card">
-    <h3>Opening near the bottom of the page</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Opening near the bottom of the page</h3>
     <p class="lead">
       Scroll down to reach this one. With <code>appendToBody</code>, the panel flips upward
       automatically and is positioned against the trigger itself — not the whole field — so it never
@@ -299,5 +299,5 @@
         [(value)]="bottomOfPageValue"
       />
     </div>
-  </article>
+  </gog-panel>
 </section>
