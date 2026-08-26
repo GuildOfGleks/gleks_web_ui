@@ -6,7 +6,9 @@ import {
   CollapsibleComponent,
   GogCollapsibleContentDirective,
   GogCollapsibleTriggerDirective,
+  GogPanelHeaderDirective,
   IconComponent,
+  PanelComponent,
 } from '@guildofgleks/ui';
 
 interface FaqItem {
@@ -24,7 +26,9 @@ interface FaqItem {
     CollapsibleComponent,
     GogCollapsibleContentDirective,
     GogCollapsibleTriggerDirective,
+    GogPanelHeaderDirective,
     IconComponent,
+    PanelComponent,
     RouterLink,
   ],
   templateUrl: './collapsible-page.html',
