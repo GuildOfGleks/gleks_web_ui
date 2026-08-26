@@ -338,7 +338,7 @@ to them.
 | 29    | `textarea-page`            | 8           | ✅                       |
 | 30    | `tooltip-page`             | 8           | ✅                       |
 | 31    | `autocomplete-page`        | 9           | ✅                       |
-| 32    | `table-page`               | 9           | ⬜                       |
+| 32    | `table-page`               | 9           | ✅                       |
 | 33    | `collapsible-page`         | 10          | ⬜                       |
 | 34    | `datepicker-page`          | 10          | ⬜                       |
 | 35    | `scroll-page`              | 10          | ⬜                       |

@@ -8,8 +8,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Showcase</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Showcase</h3>
     <div class="action-row">
       <gog-button variant="primary" type="button" (gogClick)="toggleLoading()">
         Toggle loading
@@ -30,10 +30,10 @@
       <gog-column field="owner" header="Owner"></gog-column>
       <gog-column field="updated" header="Updated"></gog-column>
     </gog-table>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom cell &amp; header templates</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom cell &amp; header templates</h3>
     <p class="lead">
       Any column can swap its default text rendering for a template projected
       <em>into that column</em> — <code>gogColumnBody</code> for cells,
@@ -54,10 +54,10 @@
       </gog-column>
       <gog-column field="owner" header="Owner"></gog-column>
     </gog-table>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Size, sticky header &amp; paginator position</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Size, sticky header &amp; paginator position</h3>
     <div class="action-row">
       @for (option of sizes; track option) {
         <gog-button
@@ -102,10 +102,10 @@
         <gog-column field="owner" header="Owner"></gog-column>
       </gog-table>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Sticky header, for real — <code>maxHeight</code></h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sticky header, for real — <code>maxHeight</code></h3>
     <p class="meta">
       <code>stickyHeader</code> pins the header to the table's own scroll viewport, and
       <code>maxHeight</code> is what gives that viewport a height to scroll inside. Without it the
@@ -132,10 +132,10 @@
       <gog-column field="owner" header="Owner"></gog-column>
       <gog-column field="updated" header="Updated"></gog-column>
     </gog-table>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Missing values</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Missing values</h3>
     <p class="lead">
       A cell whose field is <code>null</code>/<code>undefined</code> falls back to
       <code>emptyPlaceholder</code> — <code>"-"</code> by default, overridable per table.
@@ -156,10 +156,10 @@
         </gog-table>
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Total count position</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Total count position</h3>
     <p class="lead">
       <code>showTotal</code> renders a row count; <code>totalPosition</code> places it left, right,
       or opposite the paginator (the default).
@@ -180,10 +180,10 @@
         </gog-table>
       </div>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Full width</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Full width</h3>
     <p class="meta">
       Full width of its container by default (see every table above).
       <code>[fullWidth]="false"</code> shrinks the table to fit its columns instead — useful for a
@@ -193,10 +193,10 @@
       <gog-column field="component" header="Component"></gog-column>
       <gog-column field="status" header="Status"></gog-column>
     </gog-table>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Server-driven (lazy) &amp; selection</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Server-driven (lazy) &amp; selection</h3>
     <p class="lead">
       <code>[lazy]="true"</code> hands sorting and paging to the server: the table renders
       <code>value</code> exactly as given, never re-orders or re-slices it, and asks
@@ -240,10 +240,10 @@
       page 1 are still ticked when you come back to it. The header checkbox covers
       <em>the current page</em>, never the pages the client has not seen.
     </p>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Empty state</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Empty state</h3>
     <div class="action-row">
       <gog-button variant="ghost" type="button" (gogClick)="toggleEmpty()">
         {{ showEmpty() ? 'Restore rows' : 'Clear rows' }}
@@ -254,5 +254,5 @@
       <gog-column field="component" header="Component"></gog-column>
       <gog-column field="owner" header="Owner"></gog-column>
     </gog-table>
-  </article>
+  </gog-panel>
 </section>
