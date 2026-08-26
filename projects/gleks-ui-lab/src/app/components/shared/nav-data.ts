@@ -65,6 +65,7 @@ const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { label: 'Accordion', path: 'components/accordion' },
       { label: 'Collapsible', path: 'components/collapsible' },
+      { label: 'Panel', path: 'components/panel' },
       { label: 'Scroll', path: 'components/scroll' },
       { label: 'Tabs', path: 'components/tabs' },
     ],

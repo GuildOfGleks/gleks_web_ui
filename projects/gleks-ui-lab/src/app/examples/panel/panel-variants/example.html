@@ -1,0 +1,17 @@
+<div class="row">
+  @for (variant of variants; track variant) {
+    <gog-panel [variant]="variant" size="md">
+      <h4 gogPanelHeader>{{ variant }}</h4>
+      <p>Padding and the gap between rows follow <code>size</code>.</p>
+    </gog-panel>
+  }
+</div>
+
+<div class="row">
+  @for (size of sizes; track size) {
+    <gog-panel [size]="size" variant="outlined">
+      <h4 gogPanelHeader>{{ size }}</h4>
+      <p>Five tiers, the same scale as every control.</p>
+    </gog-panel>
+  }
+</div>

@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* The instance tier: setting a token on the element beats the variant and size
+   classes without a specificity fight. */
+.themed {
+  --gog-panel-elevated-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
+  --gog-panel-radius: 14px;
+  --gog-panel-heading-color: var(--gog-accent-color);
+}
+
+p {
+  margin: 0;
+}

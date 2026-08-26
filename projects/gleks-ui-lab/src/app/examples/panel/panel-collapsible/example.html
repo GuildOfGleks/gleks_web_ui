@@ -1,0 +1,21 @@
+<div class="stack">
+  <gog-panel [collapsible]="true" [(open)]="notificationsOpen" size="md">
+    <h4 gogPanelHeader>Notifications</h4>
+    <gog-checkbox label="Email digest" [(checked)]="emailDigest" />
+    <gog-checkbox label="Push alerts" [(checked)]="pushAlerts" />
+    <div gogPanelFooter>
+      <gog-button size="xsm" variant="outline">Reset</gog-button>
+      <gog-button size="xsm">Save</gog-button>
+    </div>
+  </gog-panel>
+
+  <gog-panel [collapsible]="true" [(open)]="securityOpen" size="md" variant="outlined">
+    <h4 gogPanelHeader>Security</h4>
+    <p>Closed to begin with — <code>open</code> is a model, so it binds both ways.</p>
+  </gog-panel>
+
+  <gog-panel [collapsible]="true" [(open)]="billingOpen" [disabled]="true" size="md">
+    <h4 gogPanelHeader>Billing (disabled)</h4>
+    <p>The toggle is <code>aria-disabled</code> and does nothing; the content stays readable.</p>
+  </gog-panel>
+</div>

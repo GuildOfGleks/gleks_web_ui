@@ -41,18 +41,24 @@ Two things to know before building it:
 `gogCardHeader`/`gogCardMedia`/`gogCardFooter`/`gogCardLink` and `gogPanelHeader`/`gogPanelFooter`
 slot directives, and `GOG_CONFIG.labels.togglePanel`), and **`gogRipple`**. The lab needs:
 
-- **Two component pages**, under the layout group next to `gog-collapsible`. `ui-showcase`'s
-  `card-page` and `panel-page` are the working demos to lift examples from — including the two
-  that carry the argument: an interactive card whose footer button still receives its own clicks,
-  and a non-collapsible panel holding an open `gog-select` (the dropdown escapes the panel's box).
+- **The `gog-card` page**, under the layout group beside the new `panel` one. `ui-showcase`'s
+  `card-page` is the working demo to lift from — including the example that carries the argument:
+  an interactive card whose footer button still receives its own clicks. `benchmark-index-page` is
+  the better `gogCardLink` example (see below).
 
-- **Answer "card or panel?" on both pages, with the test that settled it.** This is the question a
-  reader arrives with, and 2026-08-26 produced a one-line answer worth quoting: **is the whole
-  surface a link?** If yes it is a `gog-card` with a `gogCardLink`; a `gog-panel` is never a link,
-  because controls live _inside_ a panel. Converting all 40 showcase pages found exactly one block
-  in 250 that refused to become a panel, and it was a navigation tile — the `gog-card` case. The
-  secondary test, for non-links: a panel is a titled **region** of a page (a landmark, collapsible),
-  a card is one self-contained **thing** in a grid of them.
+  **`gog-panel` is done** — `components/panel`, six examples in the extracted shape
+  (`src/app/examples/panel/`), API/model/slot tables, and its own `Style tokens` section.
+
+- **Answer "card or panel?" on the card page too.** The panel page already carries it; the card
+  page is where the other half of the audience arrives. The test, verified in the browser on
+  2026-08-26: **is the whole surface a link?** If yes it is a `gog-card` with a `gogCardLink`; a
+  `gog-panel` is never a link, because controls live _inside_ a panel. Converting all 40 showcase
+  pages found exactly one block in 250 that refused to become a panel, and it was a navigation
+  tile — the `gog-card` case. Secondary test, for non-links: a panel is a titled **region** (a
+  landmark, collapsible), a card is one self-contained **thing** in a grid of them.
+
+  **The panel page links to `/components/card`, which 404s to the noindexed catch-all until that
+  page lands.** That is the one loose end this step leaves.
 
 - **`benchmark-index-page` is now the honest `gogCardLink` example** — a real grid of navigation
   tiles where clicking anywhere in the tile navigates, not a contrived demo. Worth lifting over
@@ -60,12 +66,8 @@ slot directives, and `GOG_CONFIG.labels.togglePanel`), and **`gogRipple`**. The 
   the reader recognises. Note its one page-local rule survived the conversion as
   `--gog-card-border-color` on `:hover` rather than a raw `border-color`, which is itself the
   instance-token story the theming page makes.
-- **`since` chips (layer 3 of `lab-versioning.md`) reading 21.6.1** on every input, slot and type
-  listed above.
-- **A theming-page note that `--gog-panel-*` names two things.** `--gog-panel-radius`,
-  `--gog-panel-shadow`, `--gog-panel-border-width` and `--gog-panel-border-style` are the
-  foundation surface tier _and_ the `gog-panel` component's chrome, on purpose. Whatever the
-  theming page currently says about that prefix is now incomplete rather than wrong.
+- **`since` chips (layer 3 of `lab-versioning.md`) reading 21.6.1** on every card input, slot and
+  type. The panel's are done.
 - **The "no card component" statement, wherever the lab makes one.** Grep for `card` in the lab's
   prose before writing the pages — the component inventory and any "what the library does not
   have yet" copy both move. **Grep for the class token, not the substring:** `class="card"` as a

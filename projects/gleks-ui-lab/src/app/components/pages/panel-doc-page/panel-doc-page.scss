@@ -1,0 +1,3 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('panel-doc');

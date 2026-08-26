@@ -158,6 +158,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'components/panel',
+    loadComponent: () =>
+      import('./components/pages/panel-doc-page/panel-doc-page').then((m) => m.PanelDocPage),
+  },
+  {
     path: 'components/paginator',
     loadComponent: () =>
       import('./components/pages/paginator-doc-page/paginator-doc-page').then(

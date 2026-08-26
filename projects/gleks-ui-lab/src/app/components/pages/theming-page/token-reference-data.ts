@@ -39,7 +39,8 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-info-color', description: 'Semantic info color.' },
       {
         name: '--gog-panel-shadow',
-        description: 'Drop shadow for elevated panels (dialogs, dropdowns).',
+        description:
+          'Drop shadow for elevated panels (dialogs, dropdowns) — and the gog-panel component’s own chrome, which reads the same token.',
       },
     ],
   },
@@ -61,11 +62,13 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-radius', description: 'Base corner radius used across most components.' },
       {
         name: '--gog-panel-radius',
-        description: 'Corner radius for larger panels — derived from --gog-radius.',
+        description:
+          'Corner radius for larger panels, derived from --gog-radius — and the gog-panel component’s own, which reads the same token.',
       },
       {
         name: '--gog-panel-border-width / --gog-panel-border-style',
-        description: 'Border width and style for elevated panels.',
+        description:
+          'Border width and style for elevated panels — and for the gog-panel component, which reads the same pair.',
       },
     ],
   },
@@ -640,6 +643,61 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-paginator-ellipsis-color / -ellipsis-font-size',
         description: 'The "…" truncation marker.',
+      },
+    ],
+  },
+  {
+    id: 'panel',
+    title: 'Panel',
+    tokens: [
+      {
+        name: '--gog-panel-radius / --gog-panel-shadow / --gog-panel-border-width / --gog-panel-border-style',
+        description:
+          'Shared with the foundation surface tier — the same four tokens dialogs and dropdown panels read, so a theme’s idea of a raised surface reaches gog-panel for free. Setting them here restyles those surfaces too.',
+      },
+      {
+        name: '--gog-panel-outlined-bg / -outlined-border-color / -outlined-shadow',
+        description: 'The outlined variant: a border, no shadow.',
+      },
+      {
+        name: '--gog-panel-elevated-bg / -elevated-border-color',
+        description: 'The elevated variant (the default) — takes the shared surface shadow above.',
+      },
+      {
+        name: '--gog-panel-filled-bg / -filled-border-color / -filled-shadow',
+        description: 'The filled variant: a tint, neither border nor shadow.',
+      },
+      {
+        name: '--gog-panel-color / --gog-panel-font-family',
+        description: 'Body text color and font stack.',
+      },
+      {
+        name: '--gog-panel-heading-color / -heading-font-family / -heading-font-size / -heading-font-weight / -heading-line-height',
+        description: 'The projected gogPanelHeader heading.',
+      },
+      {
+        name: '--gog-panel-header-gap',
+        description: 'Gap between the heading and the collapse toggle.',
+      },
+      {
+        name: '--gog-panel-toggle-size / -toggle-color / -toggle-hover-bg / -toggle-radius / --gog-panel-chevron-size',
+        description: 'The collapse toggle button and its chevron.',
+      },
+      {
+        name: '--gog-panel-footer-border-color / -footer-gap / -footer-padding-top',
+        description: 'The projected gogPanelFooter row and the rule above it.',
+      },
+      {
+        name: '--gog-panel-xsm-padding-y … --gog-panel-slg-padding-y (and -padding-x, -gap)',
+        description: 'Padding and row gap per size tier, xsm through slg.',
+      },
+      {
+        name: '--gog-panel-focus-ring / -focus-ring-width / -focus-ring-offset',
+        description: 'Focus ring on the collapse toggle.',
+      },
+      {
+        name: '--gog-panel-disabled-opacity / --gog-panel-transition-duration',
+        description: 'Disabled dimming, and the collapse/hover transition.',
       },
     ],
   },

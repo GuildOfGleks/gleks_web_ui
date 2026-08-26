@@ -1,0 +1,13 @@
+<div class="stack">
+  <gog-button size="xsm" variant="outline" (gogClick)="toggle()">
+    {{ loading() ? 'Finish loading' : 'Load again' }}
+  </gog-button>
+
+  <gog-panel [loading]="loading()" [skeletonLines]="4" size="md">
+    <h4 gogPanelHeader>Activity</h4>
+    <p>Sixteen events since Tuesday, most of them from the nightly import.</p>
+    <div gogPanelFooter>
+      <gog-button size="xsm" variant="ghost">Export</gog-button>
+    </div>
+  </gog-panel>
+</div>

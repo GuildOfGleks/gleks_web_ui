@@ -1,0 +1,246 @@
+<div class="panel-doc">
+  <header class="panel-doc__hero">
+    <p class="panel-doc__eyebrow">gog-panel</p>
+    <h1 class="panel-doc__title font-heading">Panel <app-since version="21.6.1" /></h1>
+    <p class="panel-doc__lead">
+      A titled region of a page — a settings section, a dashboard area, a form group. Unlike
+      <a routerLink="/components/card">gog-card</a> it is a real landmark (<code
+        >role="region"</code
+      >
+      named by its heading), it can collapse through the existing
+      <a routerLink="/components/collapsible">gog-collapsible</a> primitive, and its surface is
+      never itself a link: controls live inside a panel.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">
+      Import the component and the slot directives you use, then project a heading. The heading is
+      what names the region — without one the panel is still a panel, it just has no accessible
+      name.
+    </p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <div class="demo-card">
+      <app-demo [component]="examples.overview" [source]="sources.panelOverview" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="card-or-panel" class="doc-section__title font-heading">Panel or card?</h2>
+    <p class="doc-section__intro">
+      Both paint a surface, and the library ships them as two components because they answer
+      different questions. The quickest test is about links:
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Is the whole surface a link?</strong> Then it is a
+        <a routerLink="/components/card">gog-card</a> with a <code>gogCardLink</code>. A panel is
+        never a link — there is no <code>gogPanelLink</code>, because a region that is a link cannot
+        hold the controls a panel exists to hold.
+      </li>
+      <li>
+        <strong>Otherwise:</strong> a panel is a titled <em>region</em> of a page — a landmark, one
+        of a handful, and it can collapse. A card is one self-contained <em>thing</em>, usually one
+        of many in a grid, and announces as <code>role="group"</code> so twenty of them do not bury
+        the landmark list.
+      </li>
+    </ul>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Variants and sizes</h3>
+      <p class="demo-card__meta">
+        The same three variants as <code>gog-card</code>, from the shared
+        <code>GogSurfaceVariant</code> type — but <code>elevated</code> is the default here, because
+        a page region is usually the raised thing on the page. <code>size</code> drives padding and
+        the gap between rows on the same five-tier scale as every control.
+      </p>
+      <app-demo [component]="examples.variants" [source]="sources.panelVariants" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Collapsible</h3>
+      <p class="demo-card__meta">
+        <code>collapsible</code> adds the toggle and composes
+        <a routerLink="/components/collapsible">gog-collapsible</a> underneath, so the open/close
+        state, the id wiring and the animation are the library's existing ones. The heading stays a
+        heading: the toggle is a separate <code>&lt;button&gt;</code> named by it through
+        <code>aria-labelledby</code>, with its hit area stretched across the header row — so the
+        pointer still gets "click the title to collapse", while a screen reader gets a heading
+        <em>and</em> a named expandable button rather than a heading swallowed by
+        <code>role="button"</code>. Without a header the toggle falls back to
+        <code>GOG_CONFIG.labels.togglePanel</code>.
+      </p>
+      <app-demo [component]="examples.collapsible" [source]="sources.panelCollapsible" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A panel that holds an overlay</h3>
+      <p class="demo-card__meta">
+        A <strong>non-collapsible</strong> panel undoes the collapse geometry it inherits,
+        <code>overflow</code> included, so a dropdown or menu opened inside one escapes the panel's
+        box with nothing extra asked of you — the first select below.
+      </p>
+      <p class="demo-card__meta">
+        A <strong>collapsible</strong> one <em>does</em> clip while it animates, exactly like
+        <code>gog-collapsible</code>. That is the one trap on this page: reach for
+        <code>[appendToBody]</code> on the overlay, as the second select does, and it renders into
+        <code>&lt;body&gt;</code> instead of inside the clipped box.
+      </p>
+      <app-demo [component]="examples.overlay" [source]="sources.panelOverlay" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Loading</h3>
+      <p class="demo-card__meta">
+        The heading stays — a page section is titled before its content arrives, and blanking the
+        title would move the layout twice — and only the body is replaced with
+        <code>skeletonLines</code> placeholder lines. The footer stays too, so its actions remain
+        usable. The host is marked <code>aria-busy</code> while it lasts.
+      </p>
+      <app-demo [component]="examples.loading" [source]="sources.panelLoading" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Theming</h3>
+      <p class="demo-card__meta">
+        Every value comes from a <code>--gog-panel-*</code> token, and the instance tier is
+        undeclared on purpose — setting one on an element beats the variant and size classes without
+        a specificity fight, and without <code>::ng-deep</code>. See
+        <a routerLink="/theming">Theming</a> for the full list, and the note there about this prefix
+        naming two different things.
+      </p>
+      <app-demo [component]="examples.theming" [source]="sources.panelTheming" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">Inputs</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiInputs; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Models</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiModels; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
+              </td>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="doc-section__subtitle">Slots</h3>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of apiSlots; track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
+              </td>
+              <td>{{ row.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="tokens" class="doc-section__title font-heading">Style tokens</h2>
+    <p class="doc-section__intro">
+      <code>gog-panel</code> shares its token prefix with the foundation surface tier on purpose:
+      <code>--gog-panel-radius</code>, <code>--gog-panel-shadow</code> and the border pair are the
+      same tokens dialogs and dropdown panels read, so a theme's idea of a raised surface reaches
+      this component for free. Everything else below is the component's own family.
+    </p>
+    <div class="api-table-scroll">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (token of styleTokens; track token.name) {
+            <tr>
+              <td>
+                <code>{{ token.name }}</code>
+              </td>
+              <td>{{ token.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

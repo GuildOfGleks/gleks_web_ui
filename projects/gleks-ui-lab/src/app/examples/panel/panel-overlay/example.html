@@ -1,0 +1,24 @@
+<div class="stack">
+  <!--
+    Not collapsible: the panel undoes the collapse geometry it inherits, `overflow` included,
+    so this dropdown escapes the panel's box with nothing extra asked of you.
+  -->
+  <gog-panel size="md" variant="outlined">
+    <h4 gogPanelHeader>Regional</h4>
+    <gog-select label="Time zone" [options]="timezones" [(value)]="plain" />
+  </gog-panel>
+
+  <!--
+    Collapsible: this one *does* clip while it animates, exactly like gog-collapsible.
+    `appendToBody` renders the panel into <body>, which is what keeps it whole.
+  -->
+  <gog-panel [collapsible]="true" [(open)]="regionalOpen" size="md" variant="outlined">
+    <h4 gogPanelHeader>Regional, collapsible</h4>
+    <gog-select
+      label="Time zone"
+      [options]="timezones"
+      [appendToBody]="true"
+      [(value)]="inCollapsible"
+    />
+  </gog-panel>
+</div>

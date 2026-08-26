@@ -93,6 +93,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://ui.guildofgleks.com/components/panel</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ui.guildofgleks.com/components/progressbar</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

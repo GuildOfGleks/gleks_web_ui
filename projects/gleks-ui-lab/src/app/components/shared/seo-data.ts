@@ -158,6 +158,11 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     'A minimal Angular show/hide primitive: a trigger directive and a content directive, animated ' +
       'height, and no opinion about how either one looks.',
   ),
+  'components/panel': component(
+    'Panel',
+    'A titled region of an Angular page: a real landmark named by its heading, optional ' +
+      'collapsing built on gog-collapsible, and a loading state that keeps the title.',
+  ),
   'components/datepicker': component(
     'Datepicker',
     'Angular datepicker with range and time selection, min/max bounds, keyboard navigation, ' +

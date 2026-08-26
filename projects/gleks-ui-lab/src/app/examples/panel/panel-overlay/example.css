@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.stack {
+  display: grid;
+  gap: 12px;
+}
