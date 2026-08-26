@@ -231,6 +231,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
     description:
       "Portals the panel into document.body instead of rendering it inline — escapes an ancestor's scroll/overflow clipping.",
   },
+  {
+    name: 'ripple',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Press ripple on each option row in the panel. Unset, falls back to GOG_CONFIG.ripple.enabled, which is off by default; setting it here wins over the app-wide value in both directions.',
+    since: '21.6.1',
+  },
 ];
 
 @Component({

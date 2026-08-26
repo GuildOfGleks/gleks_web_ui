@@ -17,6 +17,7 @@ interface ApiInputRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const API_INPUTS: readonly ApiInputRow[] = [
@@ -71,6 +72,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
     default: 'null',
     description:
       'Accessible name forwarded to the native <button>. Required for icon-only buttons — a plain aria-label attribute on <gog-button> lands on the host element, not the inner button, so assistive tech never sees it.',
+  },
+  {
+    name: 'ripple',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Press ripple on the inner <button>. Unset, falls back to GOG_CONFIG.ripple.enabled, which is off by default; setting it here wins over the app-wide value in both directions.',
+    since: '21.6.1',
   },
 ];
 

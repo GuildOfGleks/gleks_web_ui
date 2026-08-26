@@ -75,6 +75,14 @@ const TABS_INPUTS: readonly ApiRow[] = [
     default: "''",
     description: 'Accessible name for the tablist.',
   },
+  {
+    name: 'ripple',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Press ripple on each tab header. Unset, falls back to GOG_CONFIG.ripple.enabled, which is off by default; setting it here wins over the app-wide value in both directions.',
+    since: '21.6.1',
+  },
 ];
 
 const TABS_OUTPUTS: readonly ApiRow[] = [

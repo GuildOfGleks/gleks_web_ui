@@ -39,32 +39,46 @@ Two things to know before building it:
 
 **All three pages are done** — `components/card`, `components/panel` and `components/ripple`, each
 in the extracted example shape with API tables, `since` chips and its own token section. What is
-left is the tail: two places the ripple still has to be mentioned outside its own page, and one
-measurement this release invalidated.
+left is one measurement this release invalidated — the ripple is now documented everywhere it
+needed to be: its own page, the `ripple` row on all ten component pages that take the input, and
+`global-config.md` (the `ripple` group, the `labels.togglePanel` string, and the note that
+`ripple.enabled` is the one *visual* default that has to live in TypeScript rather than a token).
 
 - **Re-measure the bundle bench for 21.6.1, then fix the counts that hang off it.**
-  `public/docs/compare-full.md` is hand-maintained (there is no script) and was measured before
-  21.6.1: 110 186 B / 107.6 KB gzipped for the library and 25 302 B / 24.7 KB for the stylesheet.
-  `theme.css` alone grew ~6 % in this release, and `gog-card`, `gog-panel` and the ripple all add
-  JavaScript, so both numbers are low.
+  `public/docs/compare-full.md` is hand-maintained (there is no script). Half of it is now solved;
+  the numbers below were taken on 2026-08-26 against the installed 21.6.1.
 
-  **The count and the weight are one claim, so move them together.** `compare-page.html`,
-  `compare-page.ts` and `faq-data.ts` each say "29 components" beside the pre-21.6.1 KB figure;
-  the nav now holds 31 components and 3 directives (its own comment has been corrected). Bumping
-  the count without re-measuring would assert that 31 components weigh what 29 did, which is worse
-  than leaving the pair consistently stale — so re-measure first. Note `compare-full.md` counts on
-  a different convention again ("all 33 components, 3 services, 23 directives"); reconcile or state
-  which convention each number uses.
+  **The JavaScript recipe is recovered and reproduces.** The bench's "minified / gzipped" pair is
+  esbuild's minifier over the shipped FESM, then gzip:
 
-- **`GOG_CONFIG.ripple.enabled` on the global-config page**, and in whatever list of config keys
-  the lab keeps. It is the first _visual_ default in `GOG_CONFIG` rather than in `theme.css`, and
-  the page already explains that boundary — so that explanation now needs its exception: a token
-  can hide the wash but still pays for the node, the listeners and the frames, and a real off has
-  to reach the TypeScript.
-- **A `ripple` input row** on `gog-button`, `[gogButton]`, `gog-button-toggle-group`, `gog-chip`,
-  `gog-tabs`, `gog-accordion`, `gogCollapsibleTrigger`, `gogMenuItem` and the shared
-  select/multiselect/autocomplete table, each with a 21.6.1 `since` chip. Default `false`, via
-  `GOG_CONFIG.ripple.enabled`.
+  ```sh
+  npx esbuild node_modules/@guildofgleks/ui/fesm2022/guildofgleks-ui.mjs     --minify --format=esm --target=es2022 --outfile=/tmp/gog.min.mjs
+  wc -c /tmp/gog.min.mjs && gzip -9 -c /tmp/gog.min.mjs | wc -c
+  ```
+
+  | | pre-21.6.1 (in the doc) | 21.6.1 (measured) | delta |
+  | --- | --- | --- | --- |
+  | minified | 806 623 B | **852 051 B** | +5.6 % |
+  | gzipped | 110 186 B | **116 650 B** | +5.9 % |
+
+  That is the shape two components and a directive should add, which is what makes the recipe
+  credible. **Write the recipe into `compare-full.md` when you update it** — it was not recorded
+  anywhere, and recovering it cost more than the measurement did.
+
+  **The stylesheet row is still unresolved, so do not guess it.** The doc says 25 302 B gzipped;
+  neither obvious reading of "required stylesheet" reproduces it against 21.6.1 — all of
+  `styles/*.css` concatenated is **30 298 B** gzipped, and the same minified first is **12 134 B**.
+  The middle figure is the plausible successor, but until the original selection is known it is not
+  comparable to the Material and PrimeNG cells beside it, and a comparison table whose columns were
+  measured differently is worse than one that is openly stale. Settle what was measured first.
+
+  **Then, and only then, the counts.** `compare-page.html`, `compare-page.ts` and `faq-data.ts`
+  each say "29 components" beside the pre-21.6.1 KB figure; the nav now holds 31 components and
+  3 directives (its own comment is corrected, and `compare-full.md`'s own "Documented components:
+  31" row is already right). The count and the weight are one claim — moving the count alone
+  asserts that 31 components weigh what 29 did. `compare-full.md` also counts on a third
+  convention ("all 33 components, 3 services, 23 directives"); reconcile or label each.
+
 
 ## Checking your work
 

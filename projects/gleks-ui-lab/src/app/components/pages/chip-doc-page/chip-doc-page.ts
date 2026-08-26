@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ChipComponent, GogSize, GogTagShape } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -10,6 +11,7 @@ interface ApiInputRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const API_INPUTS: readonly ApiInputRow[] = [
@@ -82,6 +84,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
     description:
       'Leading icon. Renders independently of avatarUrl — if both are set, the avatar and icon both render.',
   },
+  {
+    name: 'ripple',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Press ripple on the chip surface. Unset, falls back to GOG_CONFIG.ripple.enabled, which is off by default; setting it here wins over the app-wide value in both directions.',
+    since: '21.6.1',
+  },
 ];
 
 interface ApiOutputRow {
@@ -106,7 +116,7 @@ const API_OUTPUTS: readonly ApiOutputRow[] = [
 
 @Component({
   selector: 'app-chip-doc-page',
-  imports: [ChipComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [ChipComponent, MarkdownComponent, CodeTabsComponent, RouterLink, SinceBadgeComponent],
   templateUrl: './chip-doc-page.html',
   styleUrl: './chip-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

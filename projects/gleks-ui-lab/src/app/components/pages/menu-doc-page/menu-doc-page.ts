@@ -38,6 +38,14 @@ const API_INPUTS: readonly ApiRow[] = [
       'Names the panel itself, announced when the menu opens. The trigger keeps its own accessible name — usually an aria-label, since a row-actions trigger is an icon button with no text.',
     since: '21.5.0',
   },
+  {
+    name: 'ripple',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Press ripple on each gogMenuItem. Unset, falls back to GOG_CONFIG.ripple.enabled, which is off by default; setting it here wins over the app-wide value in both directions.',
+    since: '21.6.1',
+  },
 ];
 
 const API_OUTPUTS: readonly { name: string; payload: string; description: string }[] = [

@@ -10,6 +10,7 @@ import {
   SelectComponent,
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -18,6 +19,7 @@ interface ApiInputRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 /** A deliberately un-`GogDropdownOption`-shaped DTO, to show the accessors doing their job. */
@@ -207,6 +209,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
     description:
       "Portals the panel into document.body instead of rendering it inline — escapes an ancestor's scroll/overflow clipping. Worth setting app-wide for a layout whose dropdowns generally live inside scrollable containers.",
   },
+  {
+    name: 'ripple',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Press ripple on each option row in the panel. Unset, falls back to GOG_CONFIG.ripple.enabled, which is off by default; setting it here wins over the app-wide value in both directions.',
+    since: '21.6.1',
+  },
 ];
 
 @Component({
@@ -220,6 +230,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
     CodeTabsComponent,
     RouterLink,
     ReactiveFormsModule,
+    SinceBadgeComponent,
   ],
   templateUrl: './select-doc-page.html',
   styleUrl: './select-doc-page.scss',

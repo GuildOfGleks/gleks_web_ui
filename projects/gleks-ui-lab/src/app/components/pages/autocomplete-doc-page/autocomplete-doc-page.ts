@@ -80,6 +80,14 @@ const OWN_INPUTS: readonly ApiRow[] = [
     default: "''",
     description: 'id for the inner <input>, for an external <label for="…">.',
   },
+  {
+    name: 'ripple',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Press ripple on each option row in the panel. Unset, falls back to GOG_CONFIG.ripple.enabled, which is off by default; setting it here wins over the app-wide value in both directions.',
+    since: '21.6.1',
+  },
 ];
 
 const SHARED_INPUTS: readonly ApiRow[] = [

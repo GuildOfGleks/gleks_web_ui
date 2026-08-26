@@ -8,6 +8,7 @@ import {
   IconComponent,
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -16,6 +17,7 @@ interface ApiRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const API_INPUTS: readonly ApiRow[] = [
@@ -39,6 +41,14 @@ const API_INPUTS: readonly ApiRow[] = [
     default: 'false',
     description:
       'Closes the panel once focus leaves both the trigger and the content — Tabbing past the last focusable element inside, or a click landing elsewhere on the page. Off by default, since plenty of consumers (an FAQ list, a settings section read top to bottom) want the panel to stay open regardless of where focus goes next.',
+  },
+  {
+    name: 'ripple',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Press ripple on the gogCollapsibleTrigger element. Unset, falls back to GOG_CONFIG.ripple.enabled, which is off by default; setting it here wins over the app-wide value in both directions.',
+    since: '21.6.1',
   },
 ];
 
@@ -68,6 +78,7 @@ const DIRECTIVES: readonly { name: string; selector: string; description: string
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './collapsible-doc-page.html',
   styleUrl: './collapsible-doc-page.scss',

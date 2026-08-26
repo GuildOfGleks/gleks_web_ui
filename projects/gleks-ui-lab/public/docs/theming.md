@@ -23,12 +23,12 @@ value the library paints with can be overridden from plain CSS.
 
 One import is the whole setup, and it is a thin wrapper over four files:
 
-| File              | What it carries                                                                                                                                 |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `theme.css`       | every `--gog-*` token the components read, in both the `light` and `dark` layers                                                                |
-| `typography.css`  | the `font-body` / `font-heading` helpers component templates apply to themselves                                                                |
-| `utilities.css`   | the utility classes those templates rely on (`gog-contained-layout`, …)                                                                          |
-| `button.css` <span class="since since--latest" title="Added in 21.4.0">21.4.0</span> | the `[gogButton]` directive's styles — global because that directive styles an element **you** wrote (an `<a>`), which no component stylesheet can reach |
+| File                                                                   | What it carries                                                                                                                                          |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `theme.css`                                                            | every `--gog-*` token the components read, in both the `light` and `dark` layers                                                                         |
+| `typography.css`                                                       | the `font-body` / `font-heading` helpers component templates apply to themselves                                                                         |
+| `utilities.css`                                                        | the utility classes those templates rely on (`gog-contained-layout`, …)                                                                                  |
+| `button.css` <span class="since" title="Added in 21.4.0">21.4.0</span> | the `[gogButton]` directive's styles — global because that directive styles an element **you** wrote (an `<a>`), which no component stylesheet can reach |
 
 `fonts.css` is deliberately **not** among them: it pulls three families from Google Fonts, which a
 library has no business imposing. Import it explicitly if you want this site's typography.

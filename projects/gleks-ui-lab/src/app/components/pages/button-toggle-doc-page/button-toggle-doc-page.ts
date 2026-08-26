@@ -9,6 +9,7 @@ import {
   IconComponent,
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -17,6 +18,7 @@ interface ApiRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 interface ViewOption {
@@ -111,6 +113,14 @@ const API_INPUTS: readonly ApiRow[] = [
     description:
       'Accessible name for the group. Worth setting — the buttons alone rarely say what the group is for.',
   },
+  {
+    name: 'ripple',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Press ripple on each toggle in the group. Unset, falls back to GOG_CONFIG.ripple.enabled, which is off by default; setting it here wins over the app-wide value in both directions.',
+    since: '21.6.1',
+  },
 ];
 
 const API_OUTPUTS: readonly ApiRow[] = [
@@ -144,6 +154,7 @@ const FORMATS: ViewOption[] = [
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './button-toggle-doc-page.html',
   styleUrl: './button-toggle-doc-page.scss',
