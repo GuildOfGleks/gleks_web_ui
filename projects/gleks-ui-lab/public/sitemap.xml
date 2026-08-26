@@ -38,6 +38,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://ui.guildofgleks.com/components/card</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ui.guildofgleks.com/components/checkbox</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

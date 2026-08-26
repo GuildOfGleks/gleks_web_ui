@@ -1,0 +1,17 @@
+<div class="variants">
+  @for (variant of variants; track variant) {
+    <gog-card [variant]="variant">
+      <h4 gogCardHeader>{{ variant }}</h4>
+      <p>Outlined is the default — a border and no shadow, which is what a grid of many wants.</p>
+    </gog-card>
+  }
+</div>
+
+<div class="sizes">
+  @for (size of sizes; track size) {
+    <gog-card [size]="size">
+      <h4 gogCardHeader>{{ size }}</h4>
+      <p>Same copy, every tier.</p>
+    </gog-card>
+  }
+</div>

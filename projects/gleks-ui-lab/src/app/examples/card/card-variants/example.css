@@ -1,0 +1,34 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Variants: one size throughout, so equal columns are the fair comparison. */
+.variants {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/* Sizes: each card hugs its content, so the padding `size` drives is what sets the box.
+   Stretched to equal widths the difference shows only as reflowed text. */
+.sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+
+.sizes > * {
+  flex: 0 0 auto;
+}
+
+.sizes p {
+  white-space: nowrap;
+}
+
+p {
+  margin: 0;
+}

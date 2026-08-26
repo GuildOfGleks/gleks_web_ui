@@ -1,0 +1,18 @@
+<div class="grid">
+  @for (person of people; track person.id) {
+    <gog-card>
+      <h4 gogCardHeader>
+        <a gogCardLink routerLink="/components/card" [fragment]="person.id">{{ person.name }}</a>
+      </h4>
+      <p>{{ person.role }}</p>
+      <div gogCardFooter>
+        <gog-tag variant="info" size="xsm">Profile</gog-tag>
+        <gog-button size="xsm" variant="ghost" (gogClick)="shortlist()">Shortlist</gog-button>
+      </div>
+    </gog-card>
+  }
+</div>
+
+<p class="tally">
+  Footer clicks that reached their own button: <strong>{{ footerClicks() }}</strong>
+</p>

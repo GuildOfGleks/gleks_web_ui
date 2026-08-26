@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/*
+ * Deliberately no `width: 100%` on the image. `gog-card__media` bleeds itself with
+ * `inline-size: calc(100% + 2 * padding-x)` and a negative inline margin; a `width: 100%`
+ * here overrides that calc and the picture ends one padding short of the card's right
+ * edge while still starting flush at its left.
+ */
+p {
+  margin: 0;
+}

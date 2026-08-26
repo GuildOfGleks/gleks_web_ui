@@ -1,0 +1,16 @@
+<div class="grid">
+  <gog-card>
+    <img [src]="mediaSrc" gogCardMedia alt="" height="120" />
+    <h4 gogCardHeader>Media written first</h4>
+    <p>Full-bleed to the card's edges, rounded into its top corners.</p>
+  </gog-card>
+
+  <gog-card>
+    <h4 gogCardHeader>Media written last</h4>
+    <p>
+      Authored after the heading and the body — and rendered identically to the card beside it. The
+      component fixes the slot order, so the write order never leaks into the layout.
+    </p>
+    <img [src]="mediaSrc" gogCardMedia alt="" height="120" />
+  </gog-card>
+</div>

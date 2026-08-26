@@ -18,7 +18,7 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Releases', path: 'general/releases' },
 ];
 
-// 31 entries — 29 components and the two directives — grouped by what they're for rather
+// 33 entries — 31 components and the two directives — grouped by what they're for rather
 // than one long alphabetical run —
 // alphabetical within each group.
 const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
@@ -64,6 +64,7 @@ const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
     title: 'Layout & Navigation',
     items: [
       { label: 'Accordion', path: 'components/accordion' },
+      { label: 'Card', path: 'components/card' },
       { label: 'Collapsible', path: 'components/collapsible' },
       { label: 'Panel', path: 'components/panel' },
       { label: 'Scroll', path: 'components/scroll' },

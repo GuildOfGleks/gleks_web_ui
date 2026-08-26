@@ -98,6 +98,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'components/card',
+    loadComponent: () =>
+      import('./components/pages/card-doc-page/card-doc-page').then((m) => m.CardDocPage),
+  },
+  {
     path: 'components/checkbox',
     loadComponent: () =>
       import('./components/pages/checkbox-doc-page/checkbox-doc-page').then(

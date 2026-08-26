@@ -158,6 +158,11 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     'A minimal Angular show/hide primitive: a trigger directive and a content directive, animated ' +
       'height, and no opinion about how either one looks.',
   ),
+  'components/card': component(
+    'Card',
+    'A surface for one self-contained thing in Angular: named by its own heading, with an ' +
+      'optional link that activates the whole surface without swallowing the controls inside it.',
+  ),
   'components/panel': component(
     'Panel',
     'A titled region of an Angular page: a real landmark named by its heading, optional ' +

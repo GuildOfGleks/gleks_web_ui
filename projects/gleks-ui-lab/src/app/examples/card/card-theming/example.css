@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* The instance tier — --gog-card-bg, -border-color, -shadow, -padding-*, -gap — is left
+   undeclared by the library on purpose, so setting one here beats the variant and size
+   classes without a specificity fight. */
+.themed {
+  --gog-card-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
+  --gog-card-border-color: var(--gog-accent-color);
+  --gog-card-heading-color: var(--gog-accent-color);
+  max-width: 420px;
+}
+
+p {
+  margin: 0;
+}

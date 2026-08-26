@@ -1,0 +1,23 @@
+<div class="grid">
+  <div class="cell">
+    <gog-button size="xsm" variant="outline" (gogClick)="toggleLoading()">
+      {{ loading() ? 'Finish loading' : 'Load again' }}
+    </gog-button>
+    <gog-card [loading]="loading()" [skeletonLines]="3">
+      <h4 gogCardHeader>Quarterly summary</h4>
+      <p>Revenue is up 12% on the quarter, driven mostly by renewals rather than new business.</p>
+    </gog-card>
+  </div>
+
+  <div class="cell">
+    <gog-button size="xsm" variant="outline" (gogClick)="toggleDisabled()">
+      {{ disabled() ? 'Enable' : 'Disable' }}
+    </gog-button>
+    <gog-card [disabled]="disabled()">
+      <h4 gogCardHeader>
+        <a gogCardLink routerLink="/components/card">Archived report</a>
+      </h4>
+      <p>Tab through the pair: only the enabled card's link stops.</p>
+    </gog-card>
+  </div>
+</div>

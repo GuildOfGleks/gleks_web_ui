@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+p {
+  margin: 0;
+}
+
+.tally {
+  margin-top: 12px;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}

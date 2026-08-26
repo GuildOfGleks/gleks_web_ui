@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.cell {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.cell > gog-card {
+  justify-self: stretch;
+}
+
+p {
+  margin: 0;
+}

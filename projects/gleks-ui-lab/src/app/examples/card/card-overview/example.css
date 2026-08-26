@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+gog-card {
+  max-width: 420px;
+}
+
+p {
+  margin: 0;
+}

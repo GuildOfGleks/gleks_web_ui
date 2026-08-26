@@ -324,6 +324,58 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    id: 'card',
+    title: 'Card',
+    tokens: [
+      {
+        name: '--gog-card-bg / -border-color / -shadow / -padding-y / -padding-x / -gap',
+        description:
+          'The instance tier — left undeclared by the library on purpose, so setting one on an element beats the variant and size classes without a specificity fight.',
+      },
+      {
+        name: '--gog-card-outlined-bg / -outlined-border-color / -outlined-shadow',
+        description: 'The outlined variant (the default): a border, no shadow.',
+      },
+      {
+        name: '--gog-card-elevated-bg / -elevated-border-color / -elevated-shadow',
+        description: 'The elevated variant: the shared surface shadow, no border.',
+      },
+      {
+        name: '--gog-card-filled-bg / -filled-border-color / -filled-shadow',
+        description: 'The filled variant: a tint, neither border nor shadow.',
+      },
+      {
+        name: '--gog-card-color / --gog-card-font-family / --gog-card-radius',
+        description: 'Body text color, font stack and corner radius.',
+      },
+      {
+        name: '--gog-card-heading-color / -heading-font-family / -heading-font-size / -heading-font-weight / -heading-line-height',
+        description:
+          'The projected gogCardHeader. The visual size comes from these regardless of which heading level you use.',
+      },
+      {
+        name: '--gog-card-footer-border-color / -footer-gap / -footer-padding-top',
+        description: 'The projected gogCardFooter row and the rule above it.',
+      },
+      {
+        name: '--gog-card-hover-border-color / --gog-card-hover-shadow',
+        description: 'Hover treatment, which only appears on a card holding a gogCardLink.',
+      },
+      {
+        name: '--gog-card-focus-ring / -focus-ring-width / -focus-ring-offset',
+        description: 'The ring drawn around the whole card when its stretched link takes focus.',
+      },
+      {
+        name: '--gog-card-xsm-padding-y … --gog-card-slg-padding-y (and -padding-x, -gap)',
+        description: 'Padding and row gap per size tier, xsm through slg.',
+      },
+      {
+        name: '--gog-card-disabled-opacity / --gog-card-transition-duration',
+        description: 'Disabled dimming, and the hover/focus transition.',
+      },
+    ],
+  },
+  {
     id: 'checkbox',
     title: 'Checkbox',
     tokens: [

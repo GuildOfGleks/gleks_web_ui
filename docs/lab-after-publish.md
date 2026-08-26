@@ -35,45 +35,25 @@ Two things to know before building it:
 - It is read from the **installed** package, so the badge answers for the version the reader has.
   Do not hard-code 21.7.0 anywhere; take it from `removedIn`.
 
-## After 21.6.1 — two new components and a directive to document
+## After 21.6.1 — the ripple still to document
 
-21.6.1 adds **`gog-card`** and **`gog-panel`** (plus `GogSurfaceVariant`, the
-`gogCardHeader`/`gogCardMedia`/`gogCardFooter`/`gogCardLink` and `gogPanelHeader`/`gogPanelFooter`
-slot directives, and `GOG_CONFIG.labels.togglePanel`), and **`gogRipple`**. The lab needs:
+`gog-card` and `gog-panel` are **done** — `components/card` and `components/panel`, both in the
+extracted example shape, with API/slot tables, `since` chips and their own token sections. What is
+left of 21.6.1 is `gogRipple`, plus one measurement the two new components invalidated:
 
-- **The `gog-card` page**, under the layout group beside the new `panel` one. `ui-showcase`'s
-  `card-page` is the working demo to lift from — including the example that carries the argument:
-  an interactive card whose footer button still receives its own clicks. `benchmark-index-page` is
-  the better `gogCardLink` example (see below).
+- **Re-measure the bundle bench for 21.6.1, then fix the counts that hang off it.**
+  `public/docs/compare-full.md` is hand-maintained (there is no script) and was measured before
+  21.6.1: 110 186 B / 107.6 KB gzipped for the library and 25 302 B / 24.7 KB for the stylesheet.
+  `theme.css` alone grew ~6 % in this release, and `gog-card`, `gog-panel` and the ripple all add
+  JavaScript, so both numbers are low.
 
-  **`gog-panel` is done** — `components/panel`, six examples in the extracted shape
-  (`src/app/examples/panel/`), API/model/slot tables, and its own `Style tokens` section.
-
-- **Answer "card or panel?" on the card page too.** The panel page already carries it; the card
-  page is where the other half of the audience arrives. The test, verified in the browser on
-  2026-08-26: **is the whole surface a link?** If yes it is a `gog-card` with a `gogCardLink`; a
-  `gog-panel` is never a link, because controls live _inside_ a panel. Converting all 40 showcase
-  pages found exactly one block in 250 that refused to become a panel, and it was a navigation
-  tile — the `gog-card` case. Secondary test, for non-links: a panel is a titled **region** (a
-  landmark, collapsible), a card is one self-contained **thing** in a grid of them.
-
-  **The panel page links to `/components/card`, which 404s to the noindexed catch-all until that
-  page lands.** That is the one loose end this step leaves.
-
-- **`benchmark-index-page` is now the honest `gogCardLink` example** — a real grid of navigation
-  tiles where clicking anywhere in the tile navigates, not a contrived demo. Worth lifting over
-  `card-page`'s people-grid if the page needs only one, because it shows the directive doing a job
-  the reader recognises. Note its one page-local rule survived the conversion as
-  `--gog-card-border-color` on `:hover` rather than a raw `border-color`, which is itself the
-  instance-token story the theming page makes.
-- **`since` chips (layer 3 of `lab-versioning.md`) reading 21.6.1** on every card input, slot and
-  type. The panel's are done.
-- **The "no card component" statement, wherever the lab makes one.** Grep for `card` in the lab's
-  prose before writing the pages — the component inventory and any "what the library does not
-  have yet" copy both move. **Grep for the class token, not the substring:** `class="card"` as a
-  substring misses `class="card foo"` and `class="foo card"`. That exact mistake undercounted the
-  showcase's own conversion and hid two whole pages from its checklist; the lab's prose is likelier
-  to hide a `card` mention the same way.
+  **The count and the weight are one claim, so move them together.** `compare-page.html`,
+  `compare-page.ts` and `faq-data.ts` each say "29 components" beside the pre-21.6.1 KB figure;
+  the nav now holds 31 components and 2 directives (its own comment has been corrected). Bumping
+  the count without re-measuring would assert that 31 components weigh what 29 did, which is worse
+  than leaving the pair consistently stale — so re-measure first. Note `compare-full.md` counts on
+  a different convention again ("all 33 components, 3 services, 23 directives"); reconcile or state
+  which convention each number uses.
 
 - **A `gogRipple` page**, next to the other directives (`gogTooltip`, `gogBadge`). Lift the six
   panels from `ui-showcase`'s `ripple-page` — and keep two of them in particular, because they
