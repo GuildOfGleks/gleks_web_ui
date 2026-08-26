@@ -346,7 +346,7 @@ to them.
 | 37    | `inputfield-page`          | 12          | ✅                       |
 | 38    | `select-page`              | 12          | ✅                       |
 | 39    | `multiselect-page`         | 13          | ✅                       |
-| 40    | `benchmark-index-page`     | 1 composite | ⬜ **read Part 5 first** |
+| 40    | `benchmark-index-page`     | 1 composite | ✅ became a `gog-card`   |
 
 Tick the rows as you go. A table that lies about where the work is is worse than no table.
 
@@ -367,10 +367,37 @@ travels onto `<gog-panel size="md" class="catalog__filters">` exactly as Part 5 
 
 ## Part 5 — The last two things, after all 39 pages
 
-### `benchmark-index-page`'s composite class
+### `benchmark-index-page`'s composite class — **and it is not a panel**
 
-One block is `class="card bench-index-card"` — the shared class plus a page-local one. Open
-`benchmark-index-page.scss`, look at what `.bench-index-card` adds, and:
+**Done 2026-08-26, and it went differently from the two options below.** Both of them assumed the
+block was a box. It is not: it is an `<a routerLink>` — the whole tile _is_ a link. A `gog-panel`
+can never be that (its surface is never itself a link, because controls live inside a panel), so
+converting it to one would have been a downgrade, not a conversion.
+
+The right shape was the other component 21.6.1 shipped:
+
+```html
+<gog-card class="bench-index-card" size="md">
+  <h3 gogCardHeader><a gogCardLink [routerLink]="link.path">{{ link.title }}</a></h3>
+  <p class="meta">{{ link.description }}</p>
+</gog-card>
+```
+
+`gogCardLink` stretches the anchor's hit area over the whole card, which is exactly what the
+hand-rolled `<a class="card">` was doing by being the box itself — except now the card names
+itself from its heading and the link stays an ordinary `routerLink`. Verified in a browser:
+clicking the description text, well away from the title, still navigates.
+
+`.bench-index-card` shrank rather than moved: `display`, `color` and `text-decoration` were the
+`<a>`-being-a-box's business and the card and directive own that now. What stayed is the one thing
+neither provides — the accent border on hover — restated as
+`--gog-card-border-color` on `:hover`, the instance token, instead of a raw `border-color`
+that would have lost to the component's own rule.
+
+**The general lesson, for anything like this later: check whether the block is an `<a>` before
+reaching for `gog-panel`.** A link-shaped surface is a `gog-card` with a `gogCardLink`; only a
+non-interactive region is a panel. The original two options are kept below because they are still
+right for a composite class on a genuine box:
 
 - if it only adds layout (grid, gap, width), convert to `<gog-panel size="md"
 class="bench-index-card">` — a class on a component host works normally;

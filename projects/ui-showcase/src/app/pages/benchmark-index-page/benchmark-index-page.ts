@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { CardComponent, GogCardHeaderDirective, GogCardLinkDirective } from '@guildofgleks/ui';
 
 interface BenchmarkLink {
   path: string;
@@ -33,7 +34,7 @@ const LINKS: BenchmarkLink[] = [
 
 @Component({
   selector: 'app-benchmark-index-page',
-  imports: [RouterLink],
+  imports: [CardComponent, GogCardHeaderDirective, GogCardLinkDirective, RouterLink],
   templateUrl: './benchmark-index-page.html',
   styleUrl: './benchmark-index-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

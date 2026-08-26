@@ -19,10 +19,12 @@
 
   <div class="bench-index-grid">
     @for (link of links; track link.path) {
-      <a class="card bench-index-card" [routerLink]="link.path">
-        <h3>{{ link.title }}</h3>
+      <gog-card class="bench-index-card" size="md">
+        <h3 gogCardHeader>
+          <a gogCardLink [routerLink]="link.path">{{ link.title }}</a>
+        </h3>
         <p class="meta">{{ link.description }}</p>
-      </a>
+      </gog-card>
     }
   </div>
 </section>
