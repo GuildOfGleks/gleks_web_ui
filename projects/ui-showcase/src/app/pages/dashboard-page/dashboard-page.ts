@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import {
-  ButtonComponent,
   GogButtonDirective,
   GogColumn,
   GogColumnBodyDirective,
@@ -66,7 +65,6 @@ const SEED_MEMBERS: Member[] = [
 @Component({
   selector: 'app-dashboard-page',
   imports: [
-    ButtonComponent,
     GogButtonDirective,
     GogColumn,
     GogColumnBodyDirective,
