@@ -13,8 +13,8 @@
 &lt;gog-chip [gogTooltip]="'Assigned to Aeliana'"&gt;AK&lt;/gog-chip&gt;</code></pre>
   </div>
 
-  <article class="card">
-    <h3>Playground</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Playground</h3>
     <p class="lead">
       <code>gogTooltipPosition</code>, <code>gogTooltipShowDelay</code>,
       <code>gogTooltipHideDelay</code> and <code>gogTooltipDisabled</code> — hover or focus the
@@ -55,10 +55,10 @@
       />
       <gog-checkbox label="Disabled" [(checked)]="playgroundDisabled" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>All four sides, plus auto</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>All four sides, plus auto</h3>
     <p class="lead">
       An explicit <code>top</code>/<code>bottom</code>/<code>left</code>/<code>right</code>
       flips to its opposite if it doesn't fit where requested (try this near a viewport edge).
@@ -81,10 +81,10 @@
         auto
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>On library components</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>On library components</h3>
     <p class="lead">
       <code>[gogTooltip]</code> lands on the component's own host tag — no wrapper element, no extra
       markup, and it works whether or not the component projects content.
@@ -103,10 +103,10 @@
       </gog-chip>
       <gog-icon name="info" gogTooltip="Synced 2 minutes ago" gogTooltipPosition="right" />
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>On native elements</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>On native elements</h3>
     <p class="lead">
       Just as at home on markup the library never touches — a native button, a piece of text, a
       link, or a disabled control (where the native <code>title</code> attribute is the only other
@@ -135,10 +135,10 @@
         <button type="button" disabled>Disabled button</button>
       </span>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Rich content</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Rich content</h3>
     <p class="lead">
       <code>[gogTooltip]</code> also accepts a <code>TemplateRef</code> instead of a plain string,
       for a hint that needs its own markup.
@@ -152,10 +152,10 @@
         Deploys are green
       </span>
     </ng-template>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Styling one instance</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Styling one instance</h3>
     <p class="lead">
       The bubble is appended straight to <code>document.body</code>, outside any component's own
       view — so a <code>--gog-tooltip-*</code> override scoped to some wrapper around the trigger (a
@@ -175,10 +175,10 @@
         Custom styled
       </gog-button>
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Content &amp; sizing</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Content &amp; sizing</h3>
     <p class="lead">
       Text wraps to <code>--gog-tooltip-max-width</code> (<code>280px</code> by default) — a single
       unbroken run of characters longer than that still breaks mid-word instead of overflowing it.
@@ -233,10 +233,10 @@
       <p>3. Production requires sign-off from a workspace admin, logged with a reason.</p>
       <p>4. Rollbacks go through the exact same approval step as a forward deploy.</p>
     </ng-template>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Global defaults</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Global defaults</h3>
     <p class="lead">
       <code>gogTooltipPosition</code>, <code>gogTooltipShowDelay</code> and
       <code>gogTooltipHideDelay</code> all fall back to <code>GOG_CONFIG.tooltip</code> when left
@@ -245,5 +245,5 @@
       they use their own built-in defaults: <code>'auto'</code>, <code>300ms</code> and
       <code>100ms</code>.
     </p>
-  </article>
+  </gog-panel>
 </section>
