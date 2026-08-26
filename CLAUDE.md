@@ -60,12 +60,25 @@ ships inside the package; its top entry is always the version being worked on.
 | Version    | State                                        | What it must carry                                                                                                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 21.6.0     | **released**                                 | seven fixes and `gog-table`'s `maxHeight`                                                                                                                                                                                                                                                                                                                                                           |
-| 21.6.1     | **unreleased, has content**                  | `aria-busy` on `gog-table` and `gog-autocomplete` plus `check:loading-aria`, **`gog-card` + `gog-panel`** (`docs/panel-card.md`, iterations 1–3), **and the ripple, complete** (`docs/ripple.md`, all four iterations: `gogRipple`, nine components wired, `GOG_CONFIG.ripple.enabled`, off by default). Ready to cut whenever.                                                                     |
-| **21.7.0** | **not started, and has a mandatory payload** | **the three deprecated token prefixes come out** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`. 152 references in `theme.css`. Announced in 21.5.0, and `npm run check:deprecations` **fails the build** once `package.json` reaches 21.7.0 with any of them still there, so this is not optional and not deferrable. |
+| 21.6.1     | **unreleased, content complete**             | `aria-busy` on `gog-table` and `gog-autocomplete` plus `check:loading-aria`, **`gog-card` + `gog-panel`** (`docs/panel-card.md`, **all four iterations** — iteration 4 converted all 40 showcase pages and retired the app's own `.card`, 2026-08-26), **and the ripple, complete** (`docs/ripple.md`, all four iterations: `gogRipple`, nine components wired, `GOG_CONFIG.ripple.enabled`, off by default). AGENTS.md, README.md, TOKENS.md and the CHANGELOG all carry it; every `check:*` passes except `check:release`, which fails **by design** on exactly the two things the release itself does (see below). |
+| **21.7.0** | **not started, and has a mandatory payload** | **the three deprecated token prefixes come out** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`. **154** references in `theme.css` (70 + 76 + 8, measured 2026-08-26 — do not trust a number here, run `npm run check:tokens`, which prints the live count and the per-prefix split). Announced in 21.5.0, and `npm run check:deprecations` **fails the build** once `package.json` reaches 21.7.0 with any of them still there, so this is not optional and not deferrable. |
 | 22.x       | when Angular 22 lands                        | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                              |
 
 **Nothing else is scheduled.** The three future plans below are unscheduled; `themes.md` is
 written to ride along with 21.7.0's removal because both rewrite the same layer of `theme.css`.
+
+### What cutting 21.6.1 takes — and why an agent does none of it
+
+`npm run check:release` currently exits 1 with two problems, and **both are the release, not
+defects**: `projects/gleks/ui/package.json` is still at `21.6.0` while the changelog's top entry is
+`[21.6.1]`, and that heading still reads `planned` instead of a date. Bumping the version and
+dating the heading _are_ cutting the release, which is rule 1's territory: **the user cuts every
+release.** Do not "fix" the check by doing either. A clean `check:release` means the release is
+already cut. Its failing on an unreleased-but-finished version is the check working.
+
+Once it is published: `npm install` at the repo root, then work through
+`docs/lab-after-publish.md`'s _After 21.6.1_ section — two component pages, a `gogRipple` page,
+`since` chips and the theming rows. That file is a live checklist; delete each entry as it lands.
 
 **A future plan's filename carries no version** — `panel-card.md` and `ripple.md`
 were both named for a release that shipped without them, which is what that always becomes. A

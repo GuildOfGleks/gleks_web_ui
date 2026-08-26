@@ -28,11 +28,14 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
 - **Missing components**, in rough order of how often a real site wants them: `alert`/`banner` (a
   persistent in-flow message — `gog-toast` is transient and cannot serve this), `avatar`,
   `breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`. Each is additive and
-  independent; none blocks anything else. `gog-menu` is pulled forward into iteration 6 only
-  because the library already ships the icons for it. **`card` came off this list in 21.6.1**,
-  together with `gog-panel` — see `docs/panel-card.md`. `empty state` is the next one with a plan
-  waiting to be written, and that plan is the same argument as the card's: it has to own something
-  a class cannot.
+  independent; none blocks anything else. **`card` and `gog-panel` came off this list in 21.6.1**
+  — see `docs/panel-card.md`. `empty state` is the next one with a plan waiting to be written, and
+  that plan is the same argument as the card's: it has to own something a class cannot.
+
+  When you write that plan, `panel-card.md`'s _Iteration 4, as it finished_ is the shape to copy:
+  the card/panel split earned itself when the one showcase block in 250 that refused to become a
+  `gog-panel` turned out to be exactly what `gog-card` was for. An `empty state` that cannot
+  survive the same question — what does it own that a `<div>` and a class do not — is not ready.
 
 - **`gog-table`'s ceiling:** no column resize or reorder, no sticky columns, no expandable rows,
   no grouping. Possibly the right boundary for a lightweight library — but state it in the README
@@ -55,11 +58,18 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
-- **`theme.css` payload.** Loaded whole even by an app importing three components — 99 492 B /
-  19 070 B gzip as of 21.6.0, up from the 92 596 B / 16 817 B this was filed against. Splitting it
-  per component would break the "one stylesheet, one import" setup story, and the gzip figure
-  still does not justify that trade. Revisit if it keeps growing; the number is now measured on
-  the bench in `gleks-ui-lab/public/docs/compare-full.md`, so the growth is visible.
+- **`theme.css` payload.** Loaded whole even by an app importing three components — **106 521 B /
+  20 227 B gzip in 21.6.1** (measured 2026-08-26), up from 99 492 B / 19 070 B at 21.6.0 and from
+  the 92 596 B / 16 817 B this was filed against. 21.6.1's +7.1 % raw / +6.1 % gzip is `gog-card`,
+  `gog-panel` and the ripple's tokens; it is the second consecutive release to add ~6–7 %.
+  Splitting per component would break the "one stylesheet, one import" setup story, and 20 KB gzip
+  still does not justify that trade — but this entry now has three data points trending one way,
+  so the next component-shaped release is the point to re-argue it rather than re-measure it. The
+  bench in `gleks-ui-lab/public/docs/compare-full.md` tracks the published figure.
+
+  Note `themes.md` iteration 1 pulls the other way and is the cheaper lever: 510 of 1127 component
+  token declarations are literals, and a character layer replaces per-component literals with
+  inherited foundation tokens. Doing that first may make this entry moot.
 - **`(click)` vs `(gogClick)` on `gog-button`.** A native click bubbles from the inner `<button>`
   to the host, so a consumer writing `(click)` silently bypasses the debounce guard. Worth a
   README warning now; a real fix means stopping propagation, which is its own trap.

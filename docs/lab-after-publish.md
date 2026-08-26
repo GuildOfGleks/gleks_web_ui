@@ -45,6 +45,21 @@ slot directives, and `GOG_CONFIG.labels.togglePanel`), and **`gogRipple`**. The 
   `card-page` and `panel-page` are the working demos to lift examples from — including the two
   that carry the argument: an interactive card whose footer button still receives its own clicks,
   and a non-collapsible panel holding an open `gog-select` (the dropdown escapes the panel's box).
+
+- **Answer "card or panel?" on both pages, with the test that settled it.** This is the question a
+  reader arrives with, and 2026-08-26 produced a one-line answer worth quoting: **is the whole
+  surface a link?** If yes it is a `gog-card` with a `gogCardLink`; a `gog-panel` is never a link,
+  because controls live _inside_ a panel. Converting all 40 showcase pages found exactly one block
+  in 250 that refused to become a panel, and it was a navigation tile — the `gog-card` case. The
+  secondary test, for non-links: a panel is a titled **region** of a page (a landmark, collapsible),
+  a card is one self-contained **thing** in a grid of them.
+
+- **`benchmark-index-page` is now the honest `gogCardLink` example** — a real grid of navigation
+  tiles where clicking anywhere in the tile navigates, not a contrived demo. Worth lifting over
+  `card-page`'s people-grid if the page needs only one, because it shows the directive doing a job
+  the reader recognises. Note its one page-local rule survived the conversion as
+  `--gog-card-border-color` on `:hover` rather than a raw `border-color`, which is itself the
+  instance-token story the theming page makes.
 - **`since` chips (layer 3 of `lab-versioning.md`) reading 21.6.1** on every input, slot and type
   listed above.
 - **A theming-page note that `--gog-panel-*` names two things.** `--gog-panel-radius`,
@@ -53,7 +68,10 @@ slot directives, and `GOG_CONFIG.labels.togglePanel`), and **`gogRipple`**. The 
   theming page currently says about that prefix is now incomplete rather than wrong.
 - **The "no card component" statement, wherever the lab makes one.** Grep for `card` in the lab's
   prose before writing the pages — the component inventory and any "what the library does not
-  have yet" copy both move.
+  have yet" copy both move. **Grep for the class token, not the substring:** `class="card"` as a
+  substring misses `class="card foo"` and `class="foo card"`. That exact mistake undercounted the
+  showcase's own conversion and hid two whole pages from its checklist; the lab's prose is likelier
+  to hide a `card` mention the same way.
 
 - **A `gogRipple` page**, next to the other directives (`gogTooltip`, `gogBadge`). Lift the six
   panels from `ui-showcase`'s `ripple-page` — and keep two of them in particular, because they
