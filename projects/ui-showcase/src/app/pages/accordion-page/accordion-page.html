@@ -8,8 +8,8 @@
     </p>
   </div>
 
-  <article class="card">
-    <h3>Sizes</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes</h3>
     <div class="accordion-size-grid">
       @for (sizeOption of sizes; track sizeOption) {
         <div>
@@ -22,10 +22,10 @@
         </div>
       }
     </div>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Basic usage</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Basic usage</h3>
     <p class="meta">
       Default rendering (no custom header/chevron templates), default <code>lg</code> size,
       <code>expandFirst</code>, single-open, and a disabled item.
@@ -35,20 +35,20 @@
         <p class="meta">{{ item.body }}</p>
       </ng-template>
     </gog-accordion>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>No chevron</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>No chevron</h3>
     <p class="meta"><code>showChevron="false"</code> drops the trailing icon entirely.</p>
     <gog-accordion [items]="basicItems" [showChevron]="false" size="md">
       <ng-template gogAccordionContent let-item>
         <p class="meta">{{ item.body }}</p>
       </ng-template>
     </gog-accordion>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Remote content with custom headers</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Remote content with custom headers</h3>
     <div class="action-row">
       <gog-button variant="primary" type="button" (gogClick)="toggleMulti()">
         Multi-open: {{ multi() ? 'on' : 'off' }}
@@ -125,10 +125,10 @@
         }
       </ng-template>
     </gog-accordion>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Chevron template</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Chevron template</h3>
     <p class="meta">
       The trigger keeps button semantics, while the chevron itself can be themed or replaced.
     </p>
@@ -174,10 +174,10 @@
         }
       </ng-template>
     </gog-accordion>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Chevron icon swap</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Chevron icon swap</h3>
     <p class="meta">
       A chevron template that swaps between two icons based on <code>open</code> instead of relying
       on the library's built-in rotation. The wrapper only auto-rotates the default chevron — a
@@ -193,10 +193,10 @@
         <p class="meta">{{ item.body }}</p>
       </ng-template>
     </gog-accordion>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Long content</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Long content</h3>
     <p class="meta">
       One panel with enough content to grow the page when opened, and a second whose body caps its
       own height and scrolls internally — the accordion doesn't need to know about either, it just
@@ -217,10 +217,10 @@
         }
       </ng-template>
     </gog-accordion>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom headers — icon + status</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom headers — icon + status</h3>
     <p class="meta">
       The header slot accepts any markup, so a status icon and a second line of text sit comfortably
       next to the title.
@@ -243,10 +243,10 @@
         <p class="meta">{{ item.body }}</p>
       </ng-template>
     </gog-accordion>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Custom headers — mini table</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Custom headers — mini table</h3>
     <p class="meta">
       Since the header template gets the full item, it can render structured data — here a small
       metrics table — instead of a plain title.
@@ -283,19 +283,19 @@
         <p class="meta">{{ item.body }}</p>
       </ng-template>
     </gog-accordion>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Loading skeleton — known item count</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Loading skeleton — known item count</h3>
     <p class="meta">
       <code>loading="true"</code> replaces every item with a <code>gog-skeleton</code> placeholder
       row — one row per item, so the placeholder already matches the eventual shape.
     </p>
     <gog-accordion [items]="basicItems" [loading]="true" />
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Heading level &amp; external open control</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Heading level &amp; external open control</h3>
     <p class="meta">
       <code>headingLevel</code> wraps each trigger in a real <code>&lt;h3&gt;</code>–<code
         >&lt;h6&gt;</code
@@ -322,10 +322,10 @@
         <p class="meta">{{ item.body }}</p>
       </ng-template>
     </gog-accordion>
-  </article>
+  </gog-panel>
 
-  <article class="card">
-    <h3>Loading skeleton — item count not known yet</h3>
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Loading skeleton — item count not known yet</h3>
     <p class="meta">
       The more common real case: <code>items</code> starts out empty because the list itself hasn't
       arrived. With no items to count, the skeleton falls back to <code>skeletonCount</code> rows
@@ -341,5 +341,5 @@
         <p class="meta">{{ item.body }}</p>
       </ng-template>
     </gog-accordion>
-  </article>
+  </gog-panel>
 </section>
