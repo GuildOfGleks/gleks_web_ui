@@ -79,6 +79,26 @@ needed to be: its own page, the `ripple` row on all ten component pages that tak
   asserts that 31 components weigh what 29 did. `compare-full.md` also counts on a third
   convention ("all 33 components, 3 services, 23 directives"); reconcile or label each.
 
+## After 21.7.0 — the removal's prose goes stale
+
+21.7.0 deletes the three abbreviated token prefixes (`docs/token-prefix-removal.md` has the full
+per-file list). Two lab pages describe them as *currently working, removed later* — both need to
+flip to past tense once that ships:
+
+- **`theming-page.html`'s token-reference intro** (the paragraph starting "Three prefixes were
+  spelled out in `<app-since version="21.5.0" />`") says "the old spellings still apply... but
+  they are removed in **21.7.0**". After the release, the old spellings no longer apply — reword
+  to something like "were removed in 21.7.0" and drop the "find-and-replace worth doing before
+  then" framing, which no longer makes sense in the past tense.
+- **`faq-page/faq-data.ts`'s deprecation answer** has the same shape: "**Nothing breaks yet** ...
+  They come out in **21.7.0**". Once 21.7.0 is the installed version, this needs to say the
+  prefixes are gone, not upcoming — and, if `GOG_DEPRECATIONS`' token half is now empty (see the
+  layer-4 entry above), the answer's table has nothing left to show either; check whether the
+  question still needs its own FAQ entry or can fold into a shorter "removed in 21.7.0, see the
+  changelog" line.
+
+Both are prose-only edits — no example or demo needs touching, since neither page renders a live
+token whose value would change.
 
 ## Checking your work
 
