@@ -1,31 +1,149 @@
-# The 21.7.0 token-prefix removal — a per-file list
+# 21.7.0 — the token-prefix removal
 
-**Target: 21.7.0.** Not a plan in the `panel-card.md`/`ripple.md`/`themes.md` sense — there is no
-design decision left to make, only a mechanical removal that touches more files than `CLAUDE.md`'s
-one-line summary suggests. This file is that list, so the work is a checklist rather than a re-read
-of `theme.css` from scratch. Written 2026-08-28, against 21.6.1.
+**Target: 21.7.0. Not started.** This is the release's mandatory payload: the three abbreviated
+custom-property prefixes deprecated in 21.5.0 come out, and the one consumer this repo has
+(`ui-showcase`) migrates in the same release.
+
+Written 2026-08-28 against 21.6.1, as a per-file list. **Promoted to a plan the same day**, because
+the survey that produced the list turned up three things that are decisions rather than typing:
+a class of dead token reference the removal walks straight past, a ratchet that does not actually
+ratchet, and a generator that has never emitted an empty list. Those are iterations 0, 2 and 3
+below; the mechanical removal is iteration 1.
+
+## Status
+
+| #   | Iteration                                              | Kind    | State   |
+| --- | ------------------------------------------------------ | ------- | ------- |
+| 0   | The dead references the survey found — fix them first   | fix     | ✅ done |
+| 1   | The removal itself: library, then `ui-showcase`         | api     | ⬜ todo |
+| 2   | Make the ratchet cover CSS, not just TypeScript         | tooling | ⬜ todo |
+| 3   | The generated artifacts, at zero                        | tooling | ⬜ todo |
+| 4   | The three documents that ship inside the package        | docs    | ⬜ todo |
+| 5   | Verification, and the browser pass that is not optional | check   | ⬜ todo |
+
+**Order matters between 0 and 1 only.** Iteration 0's fixes are three-line edits to lines that
+iteration 1 also rewrites; doing them second means writing the same lines twice and, worse, means
+the mechanical un-wrap rule silently preserves a bug it was standing on top of. Everything from 2
+onwards can happen in any order once 1 lands.
+
+---
 
 ## What is being removed
 
 Three abbreviated custom-property prefixes, deprecated in 21.5.0 (2026-08-19), each honoured today
 by a `var(--gog-<new>-x, var(--gog-<old>-x, <value>))` fallback wrapper in `theme.css`:
 
-| Old | New |
-| --- | --- |
-| `--gog-btn-*` | `--gog-button-*` |
-| `--gog-ms-*` | `--gog-multiselect-*` |
-| `--gog-confirm-*` | `--gog-confirmation-dialog-*` |
+| Old               | New                           | Deprecated in |
+| ----------------- | ----------------------------- | ------------- |
+| `--gog-btn-*`     | `--gog-button-*`              | 21.5.0        |
+| `--gog-ms-*`      | `--gog-multiselect-*`         | 21.3.0        |
+| `--gog-confirm-*` | `--gog-confirmation-dialog-*` | 21.5.0        |
 
 Run `npm run check:tokens` for the live count and per-prefix split — **151** at last measurement
 (69 + 75 + 7), but that number moves with every token added or removed, so don't cite it without
 re-running the command. (Both scanners briefly over-counted by 3 — a bare `--gog-btn-`/`--gog-ms-`/
 `--gog-confirm-` each, one per prefix, matched out of `theme.css`'s own header comment rather than
-a real declaration; fixed 2026-08-28 in `scripts/deprecations.mjs` and `scripts/check-tokens.mjs`.) The mechanism and the reason (aliasing instead of wrapping would silently
-discard a themed override — see `theme.css`'s own header comment above the deprecation tag) are
-already documented in `theme.css` itself; this file is the removal's blast radius, not a repeat of
-its reasoning.
+a real declaration; fixed 2026-08-28 in `scripts/deprecations.mjs` and `scripts/check-tokens.mjs`.)
+The mechanism and the reason (aliasing instead of wrapping would silently discard a themed
+override — see `theme.css`'s own header comment above the deprecation tag) are already documented
+in `theme.css` itself; this file is the removal's blast radius, not a repeat of its reasoning.
 
-## Removing the wrapper — the mechanical part
+---
+
+## Iteration 0 — the dead references, first
+
+The survey for this removal ran one scan the project had never run: **every `var(--gog-…)` in
+`theme.css` that has no fallback and names a property nothing declares.** A `var()` like that is
+not a soft failure. It makes the custom property that contains it _guaranteed-invalid_, and then
+the declaration that reads it is invalid at computed-value time — so the property falls back to
+inherited-or-initial and the styling is simply absent. No build fails. Nothing logs.
+
+Five hits, one of them prose inside a comment. The other four are live, and three of them are the
+same mistake made twice:
+
+| `theme.css` | Declaration                                                                                     | What actually happens                                                                                                                                                                                                                                                                                                                                              |
+| ----------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1138        | `--gog-multiselect-focus-glow: var(--gog-ms-focus-glow, 0 0 8px var(--gog-ms-focus-ring));`      | `--gog-ms-focus-ring` is a _deprecated_ name — declared nowhere, only ever read inside another token's fallback. So the default glow is invalid, and `box-shadow: var(--gog-multiselect-focus-glow)` (`multiselect.component.scss:109`) computes to `none`. **The multiselect's focus glow has never rendered.** Compare `--gog-input-focus-glow` (1045) and `--gog-select-focus-glow` (1451): both read their own declared `-focus-ring`. |
+| 1184        | `--gog-multiselect-filter-input-color: var(--gog-ms-filter-input-color, var(--gog-multiselect-control-color));` | `--gog-multiselect-control-color` does not exist. The intended name is `--gog-multiselect-field-color` (1130). `color` is inherited, so the filter input silently inherits instead — visually survivable, but not what the token says.                                                                                                                                |
+| 1188        | `--gog-multiselect-filter-input-border: var(--gog-ms-filter-input-border, var(--gog-multiselect-control-border));` | `--gog-multiselect-control-border` does not exist; intended `--gog-multiselect-field-border` (1120). The read site is a `border:` **shorthand** (`multiselect.component.scss:436`), so one invalid part kills the whole declaration and `border-style` goes to `none`. **The filter box inside the multiselect panel has no border.**                                  |
+| 1474–1475   | `--gog-select-filter-input-color: var(--gog-select-control-color);` and `-border: var(--gog-select-control-border);` | The same pair, the same non-existent `-control-` names, intended `--gog-select-field-color` (1447) / `--gog-select-field-border` (1443). Same shorthand at `select.component.scss:412`. **The filter box inside the select panel has no border either.**                                                                                                              |
+
+**This is the third instance of the same family in one month.** The first was `gog-multiselect`'s
+JS-computed panel height reading `--gog-ms-*` names `theme.css` never declares (closed 2026-08-28,
+see `docs/backlog.md`). All three share a shape: a token name that looks right, is never declared,
+resolves to nothing, and is invisible to every check in the repo and to a jsdom suite that does not
+lay out CSS. The project has a mantra for exactly this — **verify in a real browser** — and it is
+the only thing that has ever caught one.
+
+**Why this iteration comes before the removal.** Iteration 1's rule is "delete the
+`var(--gog-ms-x, ` wrapper and its matching `)`; nothing else moves." Applied mechanically to line
+1138 that produces
+
+```css
+--gog-multiselect-focus-glow: 0 0 8px var(--gog-ms-focus-ring);
+```
+
+— a reference to a name the same release just deleted, preserved verbatim by a rule that is correct
+for the other 148 lines. Fixing it first keeps iteration 1 mechanical everywhere.
+
+**The work:**
+
+1. Fix all five declarations (1138, 1184, 1188, 1474, 1475) to name tokens that exist:
+   `--gog-multiselect-focus-ring`, `--gog-multiselect-field-color`, `--gog-multiselect-field-border`,
+   `--gog-select-field-color`, `--gog-select-field-border`.
+2. Verify each in a browser against `ui-showcase` **before** the fix and after — the before-picture
+   is the point. Multiselect focus glow: focus the field, look for the ring. Filter boxes: open a
+   `gog-select` and a `gog-multiselect` with filtering on, look for the border.
+3. **Regression coverage is rule F below, not a component spec.** The panel-height bug this
+   resembles had a JS-side read (`getComputedStyle().getPropertyValue()`) to pin with a spec; these
+   three don't — nothing in the component's TypeScript reads `--gog-multiselect-focus-glow` or the
+   two filter-input tokens, only the compiled SCSS does, through a `box-shadow`/`border` shorthand.
+   jsdom does not implement the CSS cascade or `var()` resolution against an external stylesheet
+   (it reflects only literal, directly-set style values), so a spec asserting a rendered
+   `box-shadow` or `border` here would not exercise the real bug and could pass or fail for reasons
+   unrelated to it. The static scan is the correct regression mechanism for a pure-CSS
+   dead-reference bug, which is exactly what rule F below is — confirmed by reverting these five
+   fixes and re-running `check:tokens`: it failed on all five, at their exact lines, and nothing
+   else.
+4. File all three defects in `docs/backlog.md` under **Defects**, and close them there as they
+   land — the backlog is the project's list of what a consumer is hitting today, and these qualify.
+5. CHANGELOG: these are `### Fixed`, separate from the removal's `### Removed`. A consumer who
+   overrode `--gog-multiselect-focus-glow` to work around the missing glow will now get _both_,
+   which is a visible change worth its own line.
+
+**Then generalise it.** The scan that found these is five lines of Node and belongs in
+`check-tokens.mjs` as a new rule, so that the fourth instance fails a build instead of waiting a
+month — **done, as rule F**, added and verified the same way:
+
+> **Rule F — no dead reads.** A `var(--gog-…)` with no fallback, naming a property that neither
+> `theme.css` nor any component stylesheet declares and that is not on the instance-layer
+> allowlist (`scripts/instance-tokens.mjs`), is a failure.
+
+The allowlist exemption is what makes the rule correct rather than merely strict: the instance
+layer is _deliberately_ undeclared, and every one of its members is a `var()` read of a name
+nothing declares. The difference is that those are always read _with_ a fallback, so the
+no-fallback condition alone was sufficient — implemented as written above, no allowlist-specific
+carve-out needed against the 117 instance tokens.
+
+**Iteration 0, as it finished (2026-08-28).** All five fixed in `theme.css`
+(1138/1184/1188/1474/1475); the two `ui-showcase` ingredient reads at the multiselect
+`--gog-ms-focus-glow` lines (157/308/457) fixed alongside, since they carried the identical bug one
+level up. Verified live in `ui-showcase`'s `cyberpunk` theme: `getComputedStyle` on the multiselect
+trigger and the select/multiselect filter inputs now resolves real values instead of `''`/invalid,
+`:focus-visible` on the multiselect trigger renders an actual `box-shadow` (screenshotted), and the
+select's filter input renders a real border (screenshotted) instead of none. `check:tokens`,
+`check:deprecations`, `lint`, `format:check` and `test:lib` (1059 tests) all pass unchanged.
+Rule F sanity-checked by reverting `theme.css` to its pre-fix state and re-running `check:tokens`:
+it failed at exactly the five known lines and nothing else, then passed clean once restored.
+`docs/backlog.md`'s three entries updated to closed, matching how the panel-height defect was
+recorded the same day its fix landed — a backlog defect closes when the code is fixed, not when
+the release ships; the CHANGELOG entry (iteration 4) is the separate, release-gated record.
+
+---
+
+## Iteration 1 — the removal
+
+### The mechanical part
 
 For every declaration of the shape
 
@@ -40,79 +158,220 @@ delete the `var(--gog-btn-md-padding, ` wrapper and its matching `)`, leaving
 ```
 
 Nothing else about the declaration moves — same property name, same final value, same position in
-the cascade. `theme.css`'s own `@deprecated` comment says this already; it's restated here because
-it's the instruction that applies to every one of the ~149 lines below, not just the one it's
-attached to.
+the cascade. `theme.css`'s own `@deprecated` comment says this already; it is restated here because
+it applies to every one of the ~149 lines, not just the one it is attached to. **After iteration 0
+there are no exceptions to it.**
 
-## Per-file list
+Several declarations span multiple lines only because prettier wrapped them; un-wrapping usually
+lets them collapse back to one. Run `npm run format` at the end rather than hand-reflowing.
 
-Measured with `grep -rn -- "--gog-btn-\|--gog-ms-\|--gog-confirm-" projects/gleks/ui/src`, then
-read file by file so this list says what kind of change each file needs, not just a line count.
+### Per-file list — the library
 
-| File | Lines | What it is | What changes |
-| --- | --- | --- | --- |
-| `styles/theme.css` | ~149 | The three-line header comment (deprecation rationale) plus every `var(--gog-button-x, var(--gog-btn-x, …))`-shaped declaration | Delete the header comment's own deprecation block (or fold it into a "removed in 21.7.0" note in the CHANGELOG instead — see below); mechanically un-wrap every declaration per the pattern above |
-| `styles/button.css` | 11 | The **instance-layer** fallback chains — `--gog-button-bg`, `-color`, `-border`, `-padding`, `-font-size`, `-shadow`, `-hover-bg`, `-hover-color`, `-hover-shadow`, `-spinner-color` are deliberately undeclared in `theme.css` (the per-instance escape hatch), so their `--gog-btn-*` fallback lives here instead, one level deeper in each chain | Same un-wrap, e.g. `var(--gog-button-bg, var(--gog-btn-bg, var(--gog-button-variant-bg, …)))` → `var(--gog-button-bg, var(--gog-button-variant-bg, …))` |
-| `lib/shared/token-names.ts` | 20 | **Generated** — `// GENERATED FILE — do not edit by hand` | Nothing manual. Regenerates via `npm run generate:tokens` once `theme.css` no longer declares the old names |
-| `lib/shared/deprecations.ts` | 151 | **Generated** — the `GOG_DEPRECATIONS` manifest | Nothing manual. Regenerates via `npm run generate:deprecations`; the token half goes to empty, same as the symbol half already is (see `lab-versioning.md` layer 4) |
-| `lib/components/multiselect/multiselect.component.ts` | 0 (fixed 2026-08-28) | **Was not a fallback — was a live bug, unrelated to this removal.** `optionGapToken`/`optionsPaddingToken`/`panelMaxHeightToken`/`optionHeightToken` were overridden with the *old* names, which were never declared as real properties anywhere (only referenced inside another token's fallback), so `getComputedStyle(...).getPropertyValue(...)` on them always returned `''` | **Already fixed, independently of this removal** — the four constants now spell out `--gog-multiselect-*`, matching `select.component.ts`. Mentioned here only so a reader of this table doesn't mistake the old four-line entry for still-open work; see `docs/backlog.md`'s closed-defects note for the fix and its verification. |
-| `styles/presets/slate.css` | 1 | A comment noting what the preset does *not* contain (`no --gog-btn-*`) | Reword the comment to say `--gog-button-*` (or drop the aside — the deprecation it's referencing will no longer exist) |
-| `lib/components/button/button.directive.ts` | 1 | A comment: "its own stylesheet bottoms out at `--gog-btn-md-*`" | Reword to `--gog-button-md-*` |
+Measured with `grep -rn -- "--gog-btn-\|--gog-ms-\|--gog-confirm-" projects/gleks/ui/src`, then read
+file by file, so this list says what kind of change each file needs rather than a line count.
 
-## The consumer this repo already has: `ui-showcase`
+| File                                                    | Lines           | What it is                                                                                                                                                                                                                                                                                              | What changes                                                                                                                                                          |
+| ------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `styles/theme.css`                                      | ~149            | The header comment's deprecation block, plus every `var(--gog-button-x, var(--gog-btn-x, …))`-shaped declaration                                                                                                                                                                                          | Delete the header comment's "pre-21.5.0 spellings" section (the CHANGELOG carries the history from then on); un-wrap every declaration per the pattern above            |
+| `styles/button.css`                                     | 11              | The **instance-layer** fallback chains. `--gog-button-bg`, `-color`, `-border`, `-padding`, `-font-size`, `-shadow`, `-hover-bg`, `-hover-color`, `-hover-shadow`, `-spinner-color` are deliberately undeclared in `theme.css` (the per-instance escape hatch), so their `--gog-btn-*` fallback lives here | Same un-wrap: `var(--gog-button-bg, var(--gog-btn-bg, var(--gog-button-variant-bg, …)))` → `var(--gog-button-bg, var(--gog-button-variant-bg, …))`                       |
+| `lib/shared/token-names.ts`                             | 20              | **Generated** — `// GENERATED FILE — do not edit by hand`                                                                                                                                                                                                                                                | Nothing manual; see iteration 3                                                                                                                                        |
+| `lib/shared/deprecations.ts`                            | 151             | **Generated** — the `GOG_DEPRECATIONS` manifest                                                                                                                                                                                                                                                         | Nothing manual; see iteration 3                                                                                                                                        |
+| `styles/presets/slate.css`                              | 1 (line 11)     | A comment listing what the preset does _not_ contain (`no --gog-btn-*`)                                                                                                                                                                                                                                  | Reword to `--gog-button-*`, or drop the aside — the prefix it names will not exist                                                                                      |
+| `lib/components/button/button.directive.ts`             | 1 (line 87)     | A comment: "its own stylesheet bottoms out at `--gog-btn-md-*`"                                                                                                                                                                                                                                          | Reword to `--gog-button-md-*`                                                                                                                                          |
+| `lib/components/multiselect/multiselect.component.spec.ts` | 2 (lines 525, 533) | The panel-height regression test's comment and title, which name `--gog-ms-*` as the wrong-name-that-was-read                                                                                                                                                                                             | **Leave the test alone**, but check the wording still reads correctly once the names are gone. It is the one place in the suite that mentions them, and as history      |
+
+`multiselect.component.ts` used to be on this list and is not any more: its four `GogDropdownBase`
+token overrides named the old prefixes, which was **not a fallback but a live bug** — those names
+are never declared as real properties, so `getComputedStyle().getPropertyValue()` always returned
+`''`. Fixed independently on 2026-08-28. Mentioned here only so a reader does not mistake its
+absence for an oversight.
+
+### The consumer this repo already has — `ui-showcase`
 
 `projects/ui-showcase/src/styles.scss` sets the abbreviated names directly, across three theme
-blocks — this is exactly the "a consumer who set the old name keeps working" case the fallback
-wrapper exists for, and exactly what breaks the day the wrapper is deleted, silently, with no
-build error, because these are CSS custom properties: an unresolved `var()` doesn't fail a build,
-it just stops matching anything.
+blocks. This is exactly the "a consumer who set the old name keeps working" case the fallback
+wrapper exists for, and exactly what breaks the day the wrapper is deleted — silently, with no
+build error, because an unresolved `var()` does not fail a build, it just stops matching anything.
 
-| Lines | Property | What to rename it to |
-| --- | --- | --- |
-| 90–92 | `--gog-btn-sm-padding`, `--gog-btn-md-padding`, `--gog-btn-lg-padding` | `--gog-button-sm-padding`, `--gog-button-md-padding`, `--gog-button-lg-padding` |
-| 151, 302, 451 | `--gog-ms-gap` (one per theme block) | `--gog-multiselect-gap` |
-| 154, 305, 454 | `--gog-ms-label-letter-spacing` | `--gog-multiselect-label-letter-spacing` |
-| 157, 308, 457 | `--gog-ms-focus-glow` | `--gog-multiselect-focus-glow` |
+| Lines         | Property                                                                | Becomes                                                        |
+| ------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 90–92         | `--gog-btn-sm-padding`, `--gog-btn-md-padding`, `--gog-btn-lg-padding`  | `--gog-button-{sm,md,lg}-padding`                              |
+| 151, 302, 451 | `--gog-ms-gap` (one per theme block)                                     | `--gog-multiselect-gap`                                        |
+| 154, 305, 454 | `--gog-ms-label-letter-spacing`                                          | `--gog-multiselect-label-letter-spacing`                       |
+| 157, 308, 457 | `--gog-ms-focus-glow`                                                    | `--gog-multiselect-focus-glow` — **and its ingredient**, below |
 
-**One of the three is not a pure rename.** Line 157 (and its siblings at 308, 457) reads
-`--gog-ms-focus-glow: 0 0 12px var(--gog-ms-focus-ring);` — it uses `--gog-ms-focus-ring` as an
-*ingredient*, not just as the property being set. `--gog-ms-focus-ring` is never declared by either
-the library or the showcase (only `--gog-multiselect-focus-ring` is, in `theme.css`), so that
-`var()` has always resolved to nothing here, with no fallback to catch it — the showcase's own
-custom focus glow on multiselect fields has likely never rendered correctly. Renaming both the
-property and its ingredient to `--gog-multiselect-focus-glow` / `var(--gog-multiselect-focus-ring)`
-fixes the rename **and** this latent bug in the same edit — worth a look in a real browser
-before and after, per this project's usual rule for anything CSS.
+**Two of these are not pure renames.**
 
-This table is the reason `--gog-ms-*`/`--gog-btn-*`/`--gog-confirm-*` cannot be deleted from
-`theme.css` in isolation: **the showcase migration is part of the same release**, not a follow-up,
-because `ui-showcase` is the one place library changes get verified live (`CLAUDE.md` rule 3) —
-verifying 21.7.0 against a showcase still speaking the old token names would not catch the removal
-breaking anything.
+- **Lines 87–89 are a comment that becomes false.** The `--gog-btn-*` paddings are deliberate: the
+  comment says this theme "is the live check that an override written as `--gog-btn-*` still
+  reaches the button through the `--gog-button-*` alias, for the whole window that ends in 21.7.0."
+  That window ends in this release. Rename the properties **and delete the comment** — leaving it
+  would tell the next reader the file is testing something it no longer tests.
 
-## What this removal does *not* need to touch
+- **Lines 157/308/457 carry the same dead-reference bug as iteration 0.** They read
+  `--gog-ms-focus-glow: 0 0 12px var(--gog-ms-focus-ring);` — a deprecated name used as an
+  _ingredient_, with no fallback. `--gog-ms-focus-ring` is declared by nobody, so the showcase's
+  custom multiselect focus glow has never rendered in any of its three themes, for the same reason
+  the library's default never did. Rename both halves:
+  `--gog-multiselect-focus-glow: 0 0 12px var(--gog-multiselect-focus-ring);`. Worth a
+  before-and-after look in a browser alongside iteration 0's library-side fix — the two are the
+  same bug at two levels, and fixing only one still leaves the showcase overriding the library's
+  now-working default with a broken value.
 
-- **`gleks-ui-lab`** — per `CLAUDE.md` rule 3, a library change never touches the lab in the same
-  session. Its two mentions of the abbreviated prefixes (`faq-data.ts`, `theming-page.html`) are
-  prose describing the deprecation as a historical fact ("spelled out in 21.5.0... until
-  21.7.0"), not live token usage. Once 21.7.0 is out, that prose needs a follow-up edit — tracked
-  in `docs/lab-after-publish.md`'s _After 21.7.0_ section, not here.
-- **`token-names.ts` and `deprecations.ts`** — generated, see the table above.
-- **Any component `.spec.ts`** — none of the library's tests reference the abbreviated names
-  directly (checked 2026-08-28); the fallback is a pure-CSS mechanism the test suite never had a
-  reason to exercise, which is also why the multiselect bug above went uncaught.
+This table is why the three prefixes cannot be deleted from `theme.css` in isolation: **the
+showcase migration is part of the same release**, not a follow-up, because `ui-showcase` is the one
+place library changes get verified live (`CLAUDE.md` rule 3). Verifying 21.7.0 against a showcase
+still speaking the old names would not catch the removal breaking anything — it would be verifying
+the wrong build.
 
-## Verification
+---
+
+## Iteration 2 — make the ratchet actually ratchet
+
+**`CLAUDE.md` says `npm run check:deprecations` "fails the build once `package.json` reaches 21.7.0
+with any of them still there". It does not.** `scripts/check-deprecations.mjs` globs `**/*.ts` and
+parses `@deprecated` tags; the library currently has **zero** of them (`Deprecation ratchet check
+passed — 0 tag(s) in 129 source file(s) … Due: nothing deprecated.`). The three CSS prefixes live in
+`scripts/deprecations.mjs`'s `DEPRECATED_NAMESPACES` map, which `check-deprecations.mjs` never
+imports. So the promise that this removal cannot be deferred is enforced by nothing: 21.7.0 could
+ship with all 151 in place and every check would pass.
+
+That is the same failure the ratchet was built for after `GogSelectOption` shipped past its
+`Removed in 21.4.0` tag (`docs/hardening-21.5.0.md`, iteration 3) — a promise nothing checks is
+decoration. It slipped once for symbols, the check was written for symbols only, and the CSS half
+inherited the gap.
+
+**The work:** `check-deprecations.mjs` imports `DEPRECATED_NAMESPACES` and applies its existing
+on-time rule (rule B) to each entry's `removedIn` against the library version, failing when a
+namespace is at or below the current version _and_ still present in the stylesheets. Reuse
+`collectDeprecatedTokens` from `deprecations.mjs` so "still present" means what the CSS actually
+contains, not what the map claims.
+
+Note the ordering trap: once iteration 1 lands and `DEPRECATED_NAMESPACES` is emptied, the new rule
+has nothing to check and passes vacuously. **Write it before emptying the map**, run it against the
+current 21.6.1 tree (it must pass — 21.7.0 > 21.6.1), then again with a scratch bump to 21.7.0 to
+watch it fail. Do that bump in a throwaway copy of `package.json`, never in a commit: bumping the
+version is cutting the release, which is `CLAUDE.md` rule 1's territory.
+
+Also correct `CLAUDE.md`'s release-sequence row, which states the enforcement as fact.
+
+---
+
+## Iteration 3 — the generated artifacts, at zero
+
+Neither generator has ever produced an empty list, and both feed files that ship.
+
+| Artifact                     | Command                        | After the removal                                                                                    |
+| ---------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `lib/shared/token-names.ts`  | `npm run generate:tokens`      | 20 names leave the `GogTokenName` union and their entries leave `GOG_TOKEN_GROUPS`. Also writes `TOKENS.md` |
+| `lib/shared/deprecations.ts` | `npm run generate:deprecations` | `GOG_DEPRECATIONS` becomes `[]` — 0 symbols and 0 tokens                                              |
+
+Three things to check rather than assume:
+
+1. **`GogTokenName` losing 20 members is a breaking type change** for anyone who annotated a
+   variable with it. Intended — it is exactly what the release announces — but it belongs in the
+   CHANGELOG's `### Removed` in those words, because it is the one part of the removal a consumer's
+   build _will_ catch, unlike the CSS.
+2. **The empty-array output.** The template interpolates `${rows}` between `[` and `];`, so an empty
+   list emits a blank line inside the brackets. `npm run format:check` covers `projects/**/*.ts`, so
+   a prettier-illegal shape fails CI. Give the generator an empty-list branch (`= [];`) and adjust
+   the doc comment above it, which today explains only why the _symbol_ half is empty.
+3. **`check:deprecations` runs `generate-deprecations.mjs --check`**, so a stale manifest fails.
+   Regenerate in the same commit as the CSS change, not after.
+
+The lab's layer-4 deprecation badges (`theming-page`, `deprecated-token-groups.ts`) read
+`GOG_DEPRECATIONS` from the **published** package and already guard on
+`deprecatedTokenGroups.length > 0`, so they degrade to nothing on their own. That is a
+`lab-after-publish.md` concern, not this release's.
+
+---
+
+## Iteration 4 — the documents that ship inside the package
+
+Three of the four published files describe the deprecation as live. All of them ship to npm, so
+they are part of the library, not notes about it (`CLAUDE.md`, and
+`gleks-ui-library.instructions.md` step 9).
+
+| File           | Where          | What it says now                                                                                                                                                     | What it must say                                                                                                                                                                                       |
+| -------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `README.md`    | ~143–145       | A blockquote: "**The old spellings still work** — every new name derives from its old twin — and are **removed in 21.7.0**."                                          | Past tense, or delete. The surrounding notes on `--gog-input-*` and `--gog-panel-*` stay — they explain prefixes that _look_ abbreviated and are not, which is more useful once the real ones are gone   |
+| `AGENTS.md`    | ~175–178       | "The abbreviated `--gog-btn-*`, `--gog-ms-*` and `--gog-confirm-*` still resolve and are removed in 21.7.0 — don't write new code with them."                          | "were removed in 21.7.0" — an agent reading this file is precisely the reader who would otherwise emit a dead override                                                                                    |
+| `AGENTS.md`    | ~1622–1636     | The `GOG_DEPRECATIONS` section's worked example filters `removedIn === '21.7.0'` and shows a `--gog-btn-bg` row; the prose says "**In 21.5.0 it holds 154 tokens…**"    | Both go wrong the moment the list empties. Rewrite the example against an empty list and say the list is empty — the section still earns its place, because "is anything deprecated?" is a real question |
+| `TOKENS.md`    | generated      | —                                                                                                                                                                     | Never by hand; falls out of `npm run generate:tokens`                                                                                                                                                   |
+| `CHANGELOG.md` | new top entry  | —                                                                                                                                                                     | `## [21.7.0] - planned`, with `### Removed`, `### Fixed` (iteration 0) and `### Changed` as warranted. **Leave the heading as `planned`** — swapping it for a date is cutting the release                 |
+
+Add a migration note to `### Removed` in the shape 21.5.0's entry used: the three old→new rows, plus
+the one instruction that matters — a global find-and-replace across the consumer's own stylesheets,
+because nothing else will tell them.
+
+---
+
+## Iteration 5 — verification
 
 ```bash
-npm run check:tokens          # count of deprecated-prefix tokens must be 0
-npm run check:deprecations    # manifest regenerates with an empty token half
+npm run check:tokens          # deprecated-prefix count must be 0; rule F must pass
+npm run check:deprecations    # the new CSS rule from iteration 2, and an empty manifest
+npm run check:release         # must still FAIL on the version/heading — see below
+npm run lint
+npm run format:check
 npm run test:lib
 npm run build:lib
-npm run build:showcase        # after the styles.scss migration above
+npm run build:showcase
 ```
 
-Then a real-browser pass over `ui-showcase` — at minimum the button and multiselect pages across
-all three theme blocks the renamed properties live in (default, and whichever two the 151/302/451
-line numbers belong to) — because the failure mode here is a token silently resolving to nothing,
-which no automated check in this repo catches.
+`check:release` is expected to fail for the whole of this work: `package.json` says 21.6.1 while the
+changelog's top entry says 21.7.0. That is the correct state for a version being worked on. **Do
+not "fix" it** — bumping the version or dating the heading is cutting the release.
+
+Then the browser pass, which is the only part of this that catches what the removal actually risks,
+since the failure mode is a token silently resolving to nothing:
+
+1. `npm run build:lib`, restart `ng serve ui-showcase`.
+2. **Buttons**, in all three showcase themes: the sm/md/lg paddings came from `--gog-btn-*-padding`
+   and now come from `--gog-button-*-padding`. If the migration missed one, the button falls back to
+   the library default and gets visibly roomier or tighter. Compare against a shot taken _before_.
+3. **Multiselect**, in all three themes: field gap, label letter-spacing, and the focus glow — which
+   should now appear for the first time (iteration 0 plus the showcase-side ingredient fix). A glow
+   still absent means one of the two halves was missed.
+4. **The filter box** inside both `gog-select` and `gog-multiselect`: it should have a border.
+5. **Confirmation dialog**: only 7 tokens and the showcase overrides none of them, so this is a spot
+   check that the un-wrap dropped no value — open one and look at its gaps and widths.
+
+Take the before-shots first. `docs/lab-appearance-baseline.md` is the precedent: that file exists
+because "looks right" is not a check unless there is a picture to be right against.
+
+---
+
+## What this release does _not_ touch
+
+- **`gleks-ui-lab`.** `CLAUDE.md` rule 3: a library change never touches the lab in the same
+  session, because the lab tracks the published package. Its mentions of the abbreviated prefixes
+  (`faq-data.ts`, `theming-page.html`, `deprecated-token-groups.ts`) are prose and tooling about the
+  deprecation as a live fact; all of it flips to past tense **after** 21.7.0 is on npm. Already
+  tracked in `docs/lab-after-publish.md`'s _After 21.7.0_ section — add the layer-4 empty-state
+  check to it if iteration 3 turns anything up.
+- **The instance-layer escape hatch.** `--gog-button-bg` and its nine siblings stay undeclared and
+  stay working; only their `--gog-btn-*` twin goes.
+- **`--gog-input-*`.** Not an abbreviation — it is the shared text-field block that `gog-inputfield`
+  and `gog-textarea` both render. It keeps its name, and the README/AGENTS notes saying so stay.
+
+## Does `themes.md` ride along?
+
+`docs/themes.md` names 21.7.0 as its target "alongside that version's mandatory token-prefix
+removal", on the argument that both rewrite `theme.css`'s component-token layer and one pass is
+cheaper than two. `CLAUDE.md` lists it as unscheduled.
+
+**Recommendation: no — ship the removal on its own, and open `themes.md` iteration 1 immediately
+after.** The shared-cost argument is real but small: the removal edits the _left_ side of ~149
+declarations (delete a wrapper), while the character layer edits the _right_ side of 510 (replace a
+literal with a `var()`). The overlap is the file, not the lines. What is not small is the
+verification. The removal's whole risk is "a value silently stopped arriving", and its browser pass
+works by diffing against a before-picture in which **nothing should have changed**. The character
+layer's iteration 1 has the same acceptance criterion — "no computed default changed" — so stacking
+them means a pixel that moved has two candidate causes and no clean bisect. The removal is also
+_mandatory_ and dated, while the character layer is a 510-declaration refactor with an open audit
+step in front of it; binding a deadline to an unscoped job is how the deadline slips.
+
+If the user wants them in one release anyway, the safe order is: land iterations 0–5 here in full,
+verify, **then** start `themes.md` iteration 1 in the same version — so that any pixel that moves
+during the character-layer work has exactly one suspect.

@@ -4,6 +4,33 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.7.0] - planned
+
+### Fixed
+
+- **Four tokens that resolved to nothing, found while surveying this release's removal below.**
+  Each was a `var(--gog-…)` with no fallback, naming a custom property nothing declares — which
+  makes the token holding it guaranteed-invalid, so the declaration reading it silently computes to
+  nothing. No build error, nothing to see except the missing style:
+
+  - **`gog-multiselect`'s focus glow never rendered.** Its default read the deprecated
+    `--gog-ms-focus-ring`, declared nowhere — now reads its own `--gog-multiselect-focus-ring`,
+    matching `gog-input` and `gog-select`.
+  - **The filter box inside `gog-select` and `gog-multiselect` had no border and the wrong text
+    colour.** Both read a `--gog-{select,multiselect}-control-*` pair that was never declared
+    anywhere in the library — now read `--gog-{select,multiselect}-field-*`, the tokens that were
+    actually meant. The border loss was total (`border` is a shorthand, so one invalid part drops
+    the whole declaration); the colour loss was invisible, because `color` just inherited instead.
+  - **`gog-multiselect`'s JS-computed panel height silently used hardcoded defaults instead of the
+    themed metrics.** Its `GogDropdownBase` token overrides named the deprecated `--gog-ms-*`
+    prefix, which `theme.css` has never declared as a real property — so
+    `getComputedStyle().getPropertyValue()` always read `''`. Now reads `--gog-multiselect-*`,
+    matching the pattern `gog-select` already used correctly.
+
+  A consumer who set `--gog-multiselect-focus-glow`, `--gog-select-filter-input-color/-border` or
+  their `gog-multiselect` counterparts directly, to work around any of the first two being missing,
+  keeps working exactly as before — an explicit override still wins over the (now real) default.
+
 ## [21.6.1] - 26.08.2026
 
 ### Added

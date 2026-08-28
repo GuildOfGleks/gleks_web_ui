@@ -1135,7 +1135,7 @@
     --gog-ms-focus-ring,
     color-mix(in srgb, var(--gog-accent-color) 25%, transparent)
   );
-  --gog-multiselect-focus-glow: var(--gog-ms-focus-glow, 0 0 8px var(--gog-ms-focus-ring));
+  --gog-multiselect-focus-glow: var(--gog-ms-focus-glow, 0 0 8px var(--gog-multiselect-focus-ring));
   --gog-multiselect-focus-ring-width: var(--gog-ms-focus-ring-width, var(--gog-focus-ring-width));
   --gog-multiselect-focus-ring-offset: var(
     --gog-ms-focus-ring-offset,
@@ -1181,11 +1181,11 @@
   --gog-multiselect-filter-input-bg: var(--gog-ms-filter-input-bg, var(--gog-background-color));
   --gog-multiselect-filter-input-color: var(
     --gog-ms-filter-input-color,
-    var(--gog-multiselect-control-color)
+    var(--gog-multiselect-field-color)
   );
   --gog-multiselect-filter-input-border: var(
     --gog-ms-filter-input-border,
-    var(--gog-multiselect-control-border)
+    var(--gog-multiselect-field-border)
   );
   --gog-multiselect-filter-input-radius: var(--gog-ms-filter-input-radius, var(--gog-radius));
   --gog-multiselect-filter-border-width: var(
@@ -1471,8 +1471,8 @@
   --gog-select-filter-input-padding-y: 6px;
   --gog-select-filter-input-padding-x: 8px;
   --gog-select-filter-input-bg: var(--gog-background-color);
-  --gog-select-filter-input-color: var(--gog-select-control-color);
-  --gog-select-filter-input-border: var(--gog-select-control-border);
+  --gog-select-filter-input-color: var(--gog-select-field-color);
+  --gog-select-filter-input-border: var(--gog-select-field-border);
   --gog-select-filter-input-radius: var(--gog-radius);
   --gog-select-filter-border-width: var(--gog-panel-border-width);
   --gog-select-filter-border-style: var(--gog-panel-border-style);

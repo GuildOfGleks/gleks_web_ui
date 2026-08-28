@@ -16,14 +16,21 @@ not worth carrying here.
 
 ## Defects — first
 
-Nothing open. The last one — `gog-multiselect`'s JS-computed panel height reading token names
+Nothing open. **Four closed 2026-08-28, all the same family** — a `var(--gog-…)` with no fallback
+naming a property nothing declares, which makes the token holding it guaranteed-invalid so the
+declaration reading it computes to nothing, silently, in every consumer. Three were found while
+surveying 21.7.0's token-prefix removal (`gog-multiselect`'s focus glow had never rendered; the
+filter box inside both `gog-select` and `gog-multiselect` had no border and the wrong text colour)
+and fixed the same day as iteration 0 of `docs/token-prefix-removal.md`, which has the full detail
+and the before/after browser verification. The fourth, closed earlier that day, was the one that
+led to finding the other three: `gog-multiselect`'s JS-computed panel height reading token names
 (`--gog-ms-*`) that `theme.css` never declares, silently falling back to `0` for the option gap
-and options padding on every open since the 21.5.0 rename — was closed 2026-08-28: the four
-`GogDropdownBase` token overrides in `multiselect.component.ts` now spell out
-`--gog-multiselect-*`, matching the pattern `select.component.ts` already used correctly. Covered
-by a regression test in `multiselect.component.spec.ts` (forces `dropdownDirection="up"` with a
-huge available space so the rendered `max-height` is a direct readout of which token name was
-read) and confirmed in a real browser against `ui-showcase` — `getComputedStyle` on a live
+and options padding on every open since the 21.5.0 rename. Fixed in `multiselect.component.ts`,
+its four `GogDropdownBase` token overrides now spell out `--gog-multiselect-*`, matching the
+pattern `select.component.ts` already used correctly. Covered by a regression test in
+`multiselect.component.spec.ts` (forces `dropdownDirection="up"` with a huge available space so
+the rendered `max-height` is a direct readout of which token name was read) and confirmed in a
+real browser against `ui-showcase` — `getComputedStyle` on a live
 `gog-multiselect` showed the new names resolving to `4px`/`4px`/`260px`/`40px` and the old names
 resolving to `''`, exactly as diagnosed.
 

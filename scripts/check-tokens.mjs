@@ -28,6 +28,19 @@
 //                            spelled out, not abbreviated"); this is what stops the next
 //                            abbreviation landing, since the four that exist were all added
 //                            while the rule was already written down.
+//
+//   F. no-dead-read          A `var(--gog-x)` inside theme.css itself, with no fallback, must
+//                            name a token something declares (or a known instance-layer token).
+//                            Unlike rule B, this reads theme.css's *own* text, because a token
+//                            can use another token as an ingredient one level inside its own
+//                            fallback chain (`--gog-x-glow: var(--gog-x-glow, 0 0 8px
+//                            var(--gog-x-ring))` — the inner read has no fallback of its own)
+//                            and rule B never scans theme.css against itself. A dead read here
+//                            is not a soft failure: it makes the *outer* property
+//                            guaranteed-invalid, so the declaration reading it computes to
+//                            nothing, silently, in every consumer — found 2026-08-28 in three
+//                            multiselect/select tokens that had never painted. See
+//                            docs/token-prefix-removal.md, iteration 0.
 
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -217,6 +230,17 @@ function lineOf(content, index) {
 }
 
 /**
+ * Blanks every `/* ... *\/` comment to spaces, preserving line breaks and every other
+ * character's offset — so a regex run against the result still reports correct line numbers
+ * via `lineOf`. Needed because theme.css's own header comment writes real-looking
+ * `var(--gog-x, --gog-y)` examples in prose, which would otherwise read as declarations or
+ * reads to a token scanner that only sees text.
+ */
+function stripComments(css) {
+  return css.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '));
+}
+
+/**
  * Component names, from the folder layout — `lib/components/<name>/`, plus nested ones like
  * `dialog/confirmation-dialog`. Reading the filesystem rather than a hand-kept list is what
  * makes rule E free for a new component: add the folder, its tokens validate.
@@ -361,6 +385,22 @@ async function main() {
       if (match[0].startsWith(prefix) && match[0].length > prefix.length) {
         deprecatedSpellings.add(match[0]);
       }
+    }
+  }
+
+  // Rule F — scanned with comments blanked out, so the header's prose example
+  // (`var(--gog-btn-x)`) doesn't read as a dead reference; line numbers still match themeCss.
+  for (const { token, fallback, index } of parseVarReads(stripComments(themeCss))) {
+    if (
+      fallback === null &&
+      !themeDeclared.has(token) &&
+      !componentDeclared.has(token) &&
+      !INSTANCE_TOKENS.has(token)
+    ) {
+      const line = lineOf(themeCss, index);
+      problems.push(
+        `[no-dead-read] styles/theme.css:${line}\n      var(${token}) has no fallback and ${token} is declared nowhere — this reference always resolves to nothing`,
+      );
     }
   }
 

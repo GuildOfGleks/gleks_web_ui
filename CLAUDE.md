@@ -61,11 +61,14 @@ ships inside the package; its top entry is always the version being worked on.
 | ---------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 21.6.0     | **released**                                 | seven fixes and `gog-table`'s `maxHeight`                                                                                                                                                                                                                                                                                                                                                           |
 | 21.6.1     | **released (2026-08-26)**                    | `aria-busy` on `gog-table` and `gog-autocomplete` plus `check:loading-aria`, **`gog-card` + `gog-panel`** (`docs/panel-card.md`, **all four iterations** — iteration 4 converted all 40 showcase pages and retired the app's own `.card`, 2026-08-26), **and the ripple, complete** (`docs/ripple.md`, all four iterations: `gogRipple`, nine components wired, `GOG_CONFIG.ripple.enabled`, off by default). AGENTS.md, README.md, TOKENS.md and the CHANGELOG all carry it; `npm view @guildofgleks/ui version` confirms it on the registry. |
-| **21.7.0** | **not started, and has a mandatory payload** | **the three deprecated token prefixes come out** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`. **151** references in `theme.css` (69 + 75 + 7, measured 2026-08-28 — do not trust a number here, run `npm run check:tokens`, which prints the live count and the per-prefix split), plus **12 live overrides in `projects/ui-showcase/src/styles.scss`** that read the abbreviated names and go dead silently once the fallback wrapper is deleted — see `docs/token-prefix-removal.md` for the full per-file list. Announced in 21.5.0, and `npm run check:deprecations` **fails the build** once `package.json` reaches 21.7.0 with any of them still there, so this is not optional and not deferrable. |
+| **21.7.0** | **not started, and has a mandatory payload** | **the three deprecated token prefixes come out** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`. **151** references in `theme.css` (69 + 75 + 7, measured 2026-08-28 — do not trust a number here, run `npm run check:tokens`, which prints the live count and the per-prefix split), plus **12 live overrides in `projects/ui-showcase/src/styles.scss`** that read the abbreviated names and go dead silently once the fallback wrapper is deleted — see `docs/token-prefix-removal.md` for the full per-file list. Announced in 21.5.0 with a dated promise, so this is not optional and not deferrable — but note that **nothing currently enforces it**: `check:deprecations` only scans `@deprecated` tags in `.ts`, of which the library has zero, and never reads the CSS namespace map. Closing that gap is iteration 2 of `docs/token-prefix-removal.md`. |
 | 22.x       | when Angular 22 lands                        | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                              |
 
 **Nothing else is scheduled.** The three future plans below are unscheduled; `themes.md` is
 written to ride along with 21.7.0's removal because both rewrite the same layer of `theme.css`.
+**`token-prefix-removal.md` now argues against that**, on verification grounds rather than cost —
+both jobs are accepted by the same test ("no computed default changed"), so sharing a release
+leaves a moved pixel with two suspects. Read its closing section before deciding.
 
 ### Cutting a release — why an agent does none of it
 
@@ -97,22 +100,27 @@ without anyone noticing.
 
 **The order it comes off the list is fixed: fixes and polish of what already ships, before
 anything new.** A defect is something a consumer is hitting today; an unbuilt component is only
-an absence. As of 2026-08-28 the backlog's defects section is empty again — `gog-multiselect`'s
-JS-computed panel height reading a token name `theme.css` never declared (found while surveying
-21.7.0's removal) was fixed the same day — so the next thing is a choice rather than an
-obligation, until 21.7.0 is opened, which starts with its removal.
+an absence. As of 2026-08-28 the backlog's defects section is empty again — three found while
+planning 21.7.0 (a `var(--gog-…)` with no fallback naming a property nothing declares, which
+silently drops the whole declaration) were fixed and closed the same day, as iteration 0 of
+`docs/token-prefix-removal.md`, ahead of the removal itself — the removal's mechanical rule would
+otherwise have copied one of them forward verbatim. That iteration also added a permanent check
+for the family (`check-tokens.mjs` rule F), so the next instance fails a build instead of waiting
+a month, and see `docs/backlog.md` for the fourth, related defect it was found alongside.
 
 A plan is not a backlog item — it is a decision already taken about how something gets built.
 Update the status table in whichever you are working from, as you go.
 
-- `docs/token-prefix-removal.md` — **the per-file checklist for 21.7.0's mandatory payload**, not
-  a design plan (there is no decision left to make, only a mechanical removal touching more files
-  than the release-sequence table's one line suggests): every file with a `--gog-btn-*`/`--gog-ms-*`/
-  `--gog-confirm-*` reference in the library, what kind of change each needs, and the 12 live
-  overrides in `ui-showcase` that must migrate in the same release or go dead silently. Also notes
-  that `gog-multiselect`'s panel-height defect (closed 2026-08-28, see `docs/backlog.md`) looked
-  related to this removal — same tokens — but was an independent bug with an independent fix that
-  this removal would not have touched either way.
+- `docs/token-prefix-removal.md` — **the plan for 21.7.0's mandatory payload**, in six iterations
+  with a status table. It began as a pure per-file checklist on the view that a mechanical removal
+  leaves no decision to make; the survey that produced the list disproved that, so it is now a plan.
+  It still carries the checklist — every file with a `--gog-btn-*`/`--gog-ms-*`/`--gog-confirm-*`
+  reference, what kind of change each needs, and the 12 live overrides in `ui-showcase` that must
+  migrate in the same release or go dead silently — plus the three things that are decisions:
+  **iteration 0**, three dead-token-reference defects the removal would otherwise carry forward
+  (`docs/backlog.md`); **iteration 2**, the ratchet that does not cover CSS; **iteration 3**, two
+  generators that have never emitted an empty list. It also records why `docs/themes.md` should
+  _not_ ride along despite naming the same version.
 - `docs/themes.md` — a **future** plan, nothing started, queued behind the ripple: presets
   become full visual identities (radii, borders, shadows, density, typography) instead of palettes,
   and then a catalogue across eras. Its load-bearing measurement is that **510 of 1127 component
