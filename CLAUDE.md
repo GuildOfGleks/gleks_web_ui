@@ -97,10 +97,10 @@ without anyone noticing.
 
 **The order it comes off the list is fixed: fixes and polish of what already ships, before
 anything new.** A defect is something a consumer is hitting today; an unbuilt component is only
-an absence. **One defect is open as of 2026-08-28** — `gog-multiselect`'s JS-computed panel height
-reads a token name that is never declared, found while surveying 21.7.0's removal; see
-`docs/backlog.md`. Otherwise the next thing is a choice rather than an obligation — until 21.7.0
-is opened, which starts with its removal.
+an absence. As of 2026-08-28 the backlog's defects section is empty again — `gog-multiselect`'s
+JS-computed panel height reading a token name `theme.css` never declared (found while surveying
+21.7.0's removal) was fixed the same day — so the next thing is a choice rather than an
+obligation, until 21.7.0 is opened, which starts with its removal.
 
 A plan is not a backlog item — it is a decision already taken about how something gets built.
 Update the status table in whichever you are working from, as you go.
@@ -109,9 +109,10 @@ Update the status table in whichever you are working from, as you go.
   a design plan (there is no decision left to make, only a mechanical removal touching more files
   than the release-sequence table's one line suggests): every file with a `--gog-btn-*`/`--gog-ms-*`/
   `--gog-confirm-*` reference in the library, what kind of change each needs, and the 12 live
-  overrides in `ui-showcase` that must migrate in the same release or go dead silently. Also
-  records why the removal does **not** fix `gog-multiselect`'s panel-height defect above — the two
-  look related (same tokens) but are independent bugs with independent fixes.
+  overrides in `ui-showcase` that must migrate in the same release or go dead silently. Also notes
+  that `gog-multiselect`'s panel-height defect (closed 2026-08-28, see `docs/backlog.md`) looked
+  related to this removal — same tokens — but was an independent bug with an independent fix that
+  this removal would not have touched either way.
 - `docs/themes.md` — a **future** plan, nothing started, queued behind the ripple: presets
   become full visual identities (radii, borders, shadows, density, typography) instead of palettes,
   and then a catalogue across eras. Its load-bearing measurement is that **510 of 1127 component

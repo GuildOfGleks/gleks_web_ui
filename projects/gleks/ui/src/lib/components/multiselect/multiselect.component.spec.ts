@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { vi } from 'vitest';
 
 import { MultiselectComponent } from './multiselect.component';
 import type { GogDropdownOption } from '../../shared/dropdown-base';
@@ -8,6 +9,22 @@ import type { GogDropdownOption } from '../../shared/dropdown-base';
 /** See the note in select.component.spec.ts — generics have nothing to infer from here. */
 type DefaultMultiselect = MultiselectComponent<GogDropdownOption, string | number>;
 import { GOG_CONFIG } from '../../shared/config';
+
+/** See the identical helper in select.component.spec.ts. */
+function stubRect(target: Element, rect: Partial<DOMRect>): void {
+  vi.spyOn(target, 'getBoundingClientRect').mockReturnValue({
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+    toJSON: () => {},
+    ...rect,
+  } as DOMRect);
+}
 
 describe('MultiselectComponent', () => {
   let component: DefaultMultiselect;
@@ -501,6 +518,43 @@ describe('MultiselectComponent', () => {
       const options = panel.querySelectorAll('.gog-ms__option');
       expect(options[0].getAttribute('aria-selected')).toBe('true');
       expect(options[1].getAttribute('aria-selected')).toBe('false');
+    });
+
+    // Regression: the four panel-metrics tokens (optionGapToken, optionsPaddingToken,
+    // panelMaxHeightToken, optionHeightToken) used to be overridden with the deprecated
+    // --gog-ms-* names, which theme.css never declares as a real property (only as another
+    // token's fallback) — so getComputedStyle always read '', and the panel's estimated
+    // height silently used the hardcoded JS defaults (0, 0, 260, 40) regardless of what the
+    // real --gog-multiselect-* tokens resolved to. Forcing 'up' with a huge availableSpace
+    // makes resolveDropdownPlacement's `actualHeight` equal the raw estimate exactly, so the
+    // rendered max-height is a direct readout of which token name was actually read:
+    // rows = 2 options * 50px + 1 gap * 10px = 110; + 2 * 5px padding = 120. Reading the old
+    // names instead would silently produce 80 (2 * 40 + 2 * 0) from the JS-side fallbacks.
+    it('reads its own --gog-multiselect-* tokens for the panel-height estimate, not --gog-ms-*', async () => {
+      fixture.componentRef.setInput('options', [
+        { id: 'a', name: 'Alpha' },
+        { id: 'b', name: 'Beta' },
+      ]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.componentRef.setInput('dropdownDirection', 'up');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const host = fixture.nativeElement as HTMLElement;
+      host.style.setProperty('--gog-multiselect-option-height', '50px');
+      host.style.setProperty('--gog-multiselect-option-gap', '10px');
+      host.style.setProperty('--gog-multiselect-options-padding', '5px');
+      host.style.setProperty('--gog-multiselect-panel-max-height', '500px');
+
+      const trigger = host.querySelector('.gog-ms') as HTMLElement;
+      stubRect(trigger, { top: 1000, bottom: 1020, left: 20, width: 200 });
+
+      trigger.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      expect(panel.style.maxHeight).toBe('120px');
     });
   });
 

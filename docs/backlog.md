@@ -16,23 +16,16 @@ not worth carrying here.
 
 ## Defects — first
 
-- **`gog-multiselect`'s JS-computed panel height reads tokens that are never declared.**
-  `multiselect.component.ts` overrides `GogDropdownBase`'s `optionGapToken`,
-  `optionsPaddingToken`, `panelMaxHeightToken` and `optionHeightToken` with the *old* abbreviated
-  names (`--gog-ms-option-gap`, `--gog-ms-options-padding`, `--gog-ms-panel-max-height`,
-  `--gog-ms-option-height`) — found 2026-08-28 while surveying the 21.7.0 token-prefix removal.
-  `theme.css` only ever *declares* the spelled-out names; the abbreviated ones exist solely inside
-  a `var(--gog-multiselect-x, var(--gog-ms-x, …))` fallback, so they are never a real property on
-  any element. `getComputedStyle(...).getPropertyValue('--gog-ms-option-gap')` therefore always
-  returns `''`, and `dropdown-base.ts:749-750`'s `readPx(…, 0)` silently falls back to `0` for both
-  the option gap and the options padding on every open, for every consumer, since the 21.5.0
-  rename — `select.component.ts` reads the correct `--gog-select-option-gap` and does not have
-  this bug. Effect: multiselect's auto-sized panel height is computed a few px shorter than what it
-  actually renders (`rows = count * optionHeight + (count-1) * optionGap`, both terms wrong).
-  No test catches it — `getPropertyValue` isn't exercised in the JSDOM specs; see
-  `docs/token-prefix-removal.md` for why the 21.7.0 removal doesn't fix this on its own. The fix is
-  a one-line-per-token rename in `multiselect.component.ts` to the spelled-out names, plus a
-  regression test and a browser check (per verify-in-a-real-browser).
+Nothing open. The last one — `gog-multiselect`'s JS-computed panel height reading token names
+(`--gog-ms-*`) that `theme.css` never declares, silently falling back to `0` for the option gap
+and options padding on every open since the 21.5.0 rename — was closed 2026-08-28: the four
+`GogDropdownBase` token overrides in `multiselect.component.ts` now spell out
+`--gog-multiselect-*`, matching the pattern `select.component.ts` already used correctly. Covered
+by a regression test in `multiselect.component.spec.ts` (forces `dropdownDirection="up"` with a
+huge available space so the rendered `max-height` is a direct readout of which token name was
+read) and confirmed in a real browser against `ui-showcase` — `getComputedStyle` on a live
+`gog-multiselect` showed the new names resolving to `4px`/`4px`/`260px`/`40px` and the old names
+resolving to `''`, exactly as diagnosed.
 
 ---
 

@@ -118,10 +118,10 @@ export class MultiselectComponent<
   protected readonly clearableByDefault = true;
   protected readonly sizeBlockClass = 'gog-ms-wrapper';
   protected readonly panelBlockClass = 'gog-ms__dropdown';
-  protected override readonly optionGapToken = '--gog-ms-option-gap';
-  protected override readonly optionsPaddingToken = '--gog-ms-options-padding';
-  protected override readonly panelMaxHeightToken = '--gog-ms-panel-max-height';
-  protected override readonly optionHeightToken = '--gog-ms-option-height';
+  protected override readonly optionGapToken = '--gog-multiselect-option-gap';
+  protected override readonly optionsPaddingToken = '--gog-multiselect-options-padding';
+  protected override readonly panelMaxHeightToken = '--gog-multiselect-panel-max-height';
+  protected override readonly optionHeightToken = '--gog-multiselect-option-height';
 
   protected readonly listboxId = computed(() => `gog-ms-listbox-${this.uid}`);
   protected readonly labelId = computed(() => `gog-ms-label-${this.uid}`);
