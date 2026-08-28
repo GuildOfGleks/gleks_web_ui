@@ -16,7 +16,7 @@ below; the mechanical removal is iteration 1.
 | --- | ------------------------------------------------------ | ------- | ------- |
 | 0   | The dead references the survey found — fix them first   | fix     | ✅ done |
 | 1   | The removal itself: library, then `ui-showcase`         | api     | ✅ done |
-| 2   | Make the ratchet cover CSS, not just TypeScript         | tooling | ⬜ todo |
+| 2   | Make the ratchet cover CSS, not just TypeScript         | tooling | ✅ done |
 | 3   | The generated artifacts, at zero                        | tooling | ✅ done |
 | 4   | The three documents that ship inside the package        | docs    | ⬜ todo |
 | 5   | Verification, and the browser pass that is not optional | check   | 🟡 partial |
@@ -289,6 +289,24 @@ watch it fail. Do that bump in a throwaway copy of `package.json`, never in a co
 version is cutting the release, which is `CLAUDE.md` rule 1's territory.
 
 Also correct `CLAUDE.md`'s release-sequence row, which states the enforcement as fact.
+
+**Iteration 2, as it finished (2026-08-28).** Landed as rule C in `check-deprecations.mjs`,
+implemented as the plan describes — but the ordering trap didn't bite, because iteration 1 never
+emptied `DEPRECATED_NAMESPACES` (it isn't on that iteration's per-file list; only the CSS
+references it describes were removed). The map still lists all three namespaces at `removedIn:
+'21.7.0'`, so rule C has real namespaces to check on every run, not zero. Verified both directions
+without ever touching a real file's committed state: saved the current (fixed) `theme.css` and
+`package.json` aside, restored the pre-iteration-1 `theme.css` (still holding all 149 deprecated
+references) and bumped a working copy of `package.json` to `21.7.0`, and confirmed the check fails
+with `[css-overdue]` naming every surviving token under all three prefixes; restored both files
+from the saved copies and confirmed `git diff` was empty and the check passes clean again at
+21.6.1. `CLAUDE.md`'s release-sequence row corrected to describe what actually enforces this now.
+
+**Left open on purpose:** whether `DEPRECATED_NAMESPACES` itself should now be emptied, since the
+CSS it describes no longer exists anywhere. Left populated — it still correctly documents what was
+deprecated and when, `check:tokens`/`generate-deprecations.mjs` degrade harmlessly to reporting
+zero matches against it, and emptying it is a decision about when the deprecation is officially
+"over" that arguably belongs with the actual version bump (`CLAUDE.md` rule 1), not before it.
 
 ---
 
