@@ -83,13 +83,9 @@
   --gog-spinner-rune-size: 18px;
   --gog-spinner-spin-duration: 1s;
   --gog-spinner-pulse-duration: 2s;
-  /* Deliberately the pre-21.5.0 spelling: this theme is the live check that an
-     override written as `--gog-btn-*` still reaches the button through the
-     `--gog-button-*` alias, for the whole window that ends in 21.7.0. The other two
-     themes below use the current spelling. */
-  --gog-btn-sm-padding: 0.45rem 0.85rem;
-  --gog-btn-md-padding: 0.75rem 1.2rem;
-  --gog-btn-lg-padding: 1rem 1.45rem;
+  --gog-button-sm-padding: 0.45rem 0.85rem;
+  --gog-button-md-padding: 0.75rem 1.2rem;
+  --gog-button-lg-padding: 1rem 1.45rem;
   --gog-control-padding-y: 8px;
   --gog-control-padding-x: 12px;
   --gog-control-icon-offset: 8px;
@@ -148,13 +144,13 @@
   /* Input / select / multiselect (also textarea, which shares --gog-input-*) */
   --gog-input-gap: 3px;
   --gog-select-gap: 3px;
-  --gog-ms-gap: 3px;
+  --gog-multiselect-gap: 3px;
   --gog-input-label-letter-spacing: 2px;
   --gog-select-label-letter-spacing: 2px;
-  --gog-ms-label-letter-spacing: 2px;
+  --gog-multiselect-label-letter-spacing: 2px;
   --gog-input-focus-glow: 0 0 12px var(--gog-input-focus-ring);
   --gog-select-focus-glow: 0 0 12px var(--gog-select-focus-ring);
-  --gog-ms-focus-glow: 0 0 12px var(--gog-multiselect-focus-ring);
+  --gog-multiselect-focus-glow: 0 0 12px var(--gog-multiselect-focus-ring);
   --gog-input-icon-action-radius: 0px;
 
   /* Chip / tag */
@@ -299,13 +295,13 @@
   /* Input / select / multiselect (also textarea) */
   --gog-input-gap: 6px;
   --gog-select-gap: 6px;
-  --gog-ms-gap: 6px;
+  --gog-multiselect-gap: 6px;
   --gog-input-label-letter-spacing: 1.4px;
   --gog-select-label-letter-spacing: 1.4px;
-  --gog-ms-label-letter-spacing: 1.4px;
+  --gog-multiselect-label-letter-spacing: 1.4px;
   --gog-input-focus-glow: 0 0 10px var(--gog-input-focus-ring);
   --gog-select-focus-glow: 0 0 10px var(--gog-select-focus-ring);
-  --gog-ms-focus-glow: 0 0 10px var(--gog-multiselect-focus-ring);
+  --gog-multiselect-focus-glow: 0 0 10px var(--gog-multiselect-focus-ring);
   --gog-input-icon-action-radius: 6px;
 
   /* Chip / tag */
@@ -448,13 +444,13 @@
   /* Input / select / multiselect (also textarea) */
   --gog-input-gap: 4px;
   --gog-select-gap: 4px;
-  --gog-ms-gap: 4px;
+  --gog-multiselect-gap: 4px;
   --gog-input-label-letter-spacing: 1.6px;
   --gog-select-label-letter-spacing: 1.6px;
-  --gog-ms-label-letter-spacing: 1.6px;
+  --gog-multiselect-label-letter-spacing: 1.6px;
   --gog-input-focus-glow: 0 0 6px var(--gog-input-focus-ring);
   --gog-select-focus-glow: 0 0 6px var(--gog-select-focus-ring);
-  --gog-ms-focus-glow: 0 0 6px var(--gog-multiselect-focus-ring);
+  --gog-multiselect-focus-glow: 0 0 6px var(--gog-multiselect-focus-ring);
   --gog-input-icon-action-radius: 0px;
 
   /* Chip / tag */

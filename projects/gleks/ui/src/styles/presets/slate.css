@@ -8,7 +8,7 @@
  *
  *   <html data-theme="slate">
  *
- * Note what this file does *not* contain: no component tokens, no `--gog-btn-*`, no
+ * Note what this file does *not* contain: no component tokens, no `--gog-button-*`, no
  * `--gog-table-*`. It declares the palette and nothing else. Every component token in
  * `theme.css`'s derived layer is re-declared on `[data-theme]`, so it re-resolves against
  * whichever palette is in scope — which is exactly why a theme this short can restyle the

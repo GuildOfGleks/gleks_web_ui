@@ -15,11 +15,11 @@ below; the mechanical removal is iteration 1.
 | #   | Iteration                                              | Kind    | State   |
 | --- | ------------------------------------------------------ | ------- | ------- |
 | 0   | The dead references the survey found — fix them first   | fix     | ✅ done |
-| 1   | The removal itself: library, then `ui-showcase`         | api     | ⬜ todo |
+| 1   | The removal itself: library, then `ui-showcase`         | api     | ✅ done |
 | 2   | Make the ratchet cover CSS, not just TypeScript         | tooling | ⬜ todo |
-| 3   | The generated artifacts, at zero                        | tooling | ⬜ todo |
+| 3   | The generated artifacts, at zero                        | tooling | ✅ done |
 | 4   | The three documents that ship inside the package        | docs    | ⬜ todo |
-| 5   | Verification, and the browser pass that is not optional | check   | ⬜ todo |
+| 5   | Verification, and the browser pass that is not optional | check   | 🟡 partial |
 
 **Order matters between 0 and 1 only.** Iteration 0's fixes are three-line edits to lines that
 iteration 1 also rewrites; doing them second means writing the same lines twice and, worse, means
@@ -224,6 +224,41 @@ place library changes get verified live (`CLAUDE.md` rule 3). Verifying 21.7.0 a
 still speaking the old names would not catch the removal breaking anything — it would be verifying
 the wrong build.
 
+**Iteration 1, as it finished (2026-08-28).** The mechanical un-wrap ran as a script (find every
+`var(--gog-{btn,ms,confirm}-x, FALLBACK)`, replace the whole call with `FALLBACK`, repeat) rather
+than by hand — 140 removed from `theme.css`, 11 from `button.css`, both formatted with prettier
+afterward and diff-reviewed; every hunk is a pure wrapper removal, no value changed. Before running
+it, the header's "pre-21.5.0 spellings" comment block was deleted by hand (the script would
+otherwise have mangled its `var(--gog-btn-md-padding, …)` prose example), and four more prose spots
+(the button and button-toggle instance-hatch comments, the multiselect section header's own
+deprecation blurb, one slider comment) were reworded or dropped by hand for the same reason —
+they don't match `var(` so the script left them alone, but they'd have gone stale.
+
+**One thing the original per-file list missed, that the check caught:** `scripts/instance-tokens.mjs`
+carried 10 `--gog-btn-*` entries, added because `button.css`'s fallback chain used to read them.
+Once `button.css` no longer does, `check:tokens`' rule D (`allowlist-fresh`) failed on all 10 as
+stale — removed, along with the now-inapplicable comment explaining why they were there. Not in the
+plan's table because the survey that produced the table never ran the checker against a
+post-removal tree; this is exactly the kind of gap rule-based verification exists to catch instead
+of a human re-reading 149 lines.
+
+`ui-showcase`'s migration matched the table exactly: 12 renames, the dead comment at lines 87–89
+deleted, and the two ingredient-only fixes from iteration 0 confirmed still in place after the
+mechanical pass touched the same file. `check:tokens`, `check:deprecations`, `lint`, `format:check`,
+`test:lib` (1059 tests), `build:lib` and `build:showcase` all pass. Verified live in `ui-showcase`
+under all three custom themes (`cyberpunk`/`warcraft`/`red-alert-3`): every renamed token's computed
+value on `document.documentElement` matches what the showcase source declares, for buttons,
+multiselect (gap/letter-spacing/focus-ring/focus-glow) and the confirmation dialog (spot-checked,
+unchanged since `ui-showcase` never overrides it) — screenshotted the button page's five-size scale
+and an open confirmation dialog under `cyberpunk`, both rendering correctly with no missing padding
+or dropped border. Dev server stopped afterward.
+
+**Not done as part of this iteration, and out of scope for it:** iterations 2 (the ratchet), 4 (the
+published docs — README/AGENTS.md/CHANGELOG migration note beyond the `### Fixed` entry already
+added in iteration 0) remain. Iteration 5's checklist above has been run once, against iteration 1
+alone — it needs a final re-run once 2 and 4 land, which is why its status is partial rather than
+done.
+
 ---
 
 ## Iteration 2 — make the ratchet actually ratchet
@@ -272,10 +307,13 @@ Three things to check rather than assume:
    variable with it. Intended — it is exactly what the release announces — but it belongs in the
    CHANGELOG's `### Removed` in those words, because it is the one part of the removal a consumer's
    build _will_ catch, unlike the CSS.
-2. **The empty-array output.** The template interpolates `${rows}` between `[` and `];`, so an empty
-   list emits a blank line inside the brackets. `npm run format:check` covers `projects/**/*.ts`, so
-   a prettier-illegal shape fails CI. Give the generator an empty-list branch (`= [];`) and adjust
-   the doc comment above it, which today explains only why the _symbol_ half is empty.
+2. **The empty-array output turned out fine, unlike the plan's original worry.** The template
+   interpolates `${rows}` between `[` and `];`, which would leave a blank line inside the brackets
+   for an empty list — but `generate-deprecations.mjs` already runs its own output through
+   `prettier.format()` before writing (line ~162), so the file lands as `= [];` on one line with no
+   manual branch needed. Confirmed 2026-08-28: ran it against the now-empty map, `format:check`
+   passed unchanged. The doc comment above the export ("An empty `symbol` half means…") is worth a
+   revisit once the token half is empty too, but that's iteration 4's job (AGENTS.md), not this one.
 3. **`check:deprecations` runs `generate-deprecations.mjs --check`**, so a stale manifest fails.
    Regenerate in the same commit as the CSS change, not after.
 
@@ -283,6 +321,15 @@ The lab's layer-4 deprecation badges (`theming-page`, `deprecated-token-groups.t
 `GOG_DEPRECATIONS` from the **published** package and already guard on
 `deprecatedTokenGroups.length > 0`, so they degrade to nothing on their own. That is a
 `lab-after-publish.md` concern, not this release's.
+
+**Iteration 3, as it finished (2026-08-28).** `npm run generate:tokens` dropped `GogTokenName` from
+1394 total generated names to what remains after the 20 deprecated ones left (`TOKENS.md` was
+already byte-identical before and after — it never listed the fallback-only names, since they were
+never *declared*). `npm run generate:deprecations` produced `GOG_DEPRECATIONS: readonly
+GogDeprecation[] = [];` — checked item 2's worry directly: the generator already pipes its output
+through `prettier.format()` before writing, so the predicted blank-line-in-brackets problem never
+materialized and no generator code change was needed. `check:tokens` confirms both artifacts are
+up to date.
 
 ---
 

@@ -6,6 +6,25 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.7.0] - planned
 
+### Removed
+
+- **The three abbreviated token prefixes deprecated in 21.5.0 (21.3.0 for `--gog-ms-*`) are gone.**
+  Each had been declared nowhere, honoured only as a fallback the spelled-out token wrapped:
+  `--gog-button-x: var(--gog-btn-x, value)`. The fallback layer is deleted; the spelled-out name is
+  now the plain declaration, with the same final value as before. Rename any of the following you
+  still set, in your own stylesheet — a `var()` reference to a name nothing declares does not fail
+  a build, it just silently stops matching anything:
+
+  | Old               | New                            |
+  | ----------------- | ------------------------------ |
+  | `--gog-btn-*`     | `--gog-button-*`               |
+  | `--gog-ms-*`      | `--gog-multiselect-*`          |
+  | `--gog-confirm-*` | `--gog-confirmation-dialog-*`  |
+
+  `GogTokenName` (the exported type listing every `--gog-*` custom property) drops the 20 old
+  spellings it used to include — a compile error on a variable annotated with one of them is the
+  one part of this change your build will actually catch.
+
 ### Fixed
 
 - **Four tokens that resolved to nothing, found while surveying this release's removal below.**

@@ -19,43 +19,31 @@
   /* Scopes the spinner rendered inside a loading button to the variant's spinner colour. */
   --gog-spinner-color: var(
     --gog-button-spinner-color,
-    var(
-      --gog-btn-spinner-color,
-      var(--gog-button-variant-spinner-color, var(--gog-button-primary-spinner-color))
-    )
+    var(--gog-button-variant-spinner-color, var(--gog-button-primary-spinner-color))
   );
 
   gap: var(--gog-button-gap);
   border: var(--gog-button-border-width) var(--gog-button-border-style)
-    var(
-      --gog-button-border,
-      var(--gog-btn-border, var(--gog-button-variant-border, var(--gog-button-primary-border)))
-    );
+    var(--gog-button-border, var(--gog-button-variant-border, var(--gog-button-primary-border)));
   border-radius: var(--gog-button-radius);
-  padding: var(
-    --gog-button-padding,
-    var(--gog-btn-padding, var(--gog-button-size-padding, var(--gog-button-md-padding)))
-  );
+  padding: var(--gog-button-padding, var(--gog-button-size-padding, var(--gog-button-md-padding)));
   font-family: var(--gog-button-font-family);
   font-weight: var(--gog-button-font-weight);
   font-size: var(
     --gog-button-font-size,
-    var(--gog-btn-font-size, var(--gog-button-size-font-size, var(--gog-button-md-font-size)))
+    var(--gog-button-size-font-size, var(--gog-button-md-font-size))
   );
   letter-spacing: var(--gog-button-letter-spacing);
   text-transform: var(--gog-button-text-transform);
   line-height: var(--gog-button-line-height);
   background-color: var(
     --gog-button-bg,
-    var(--gog-btn-bg, var(--gog-button-variant-bg, var(--gog-button-primary-bg)))
+    var(--gog-button-variant-bg, var(--gog-button-primary-bg))
   );
-  color: var(
-    --gog-button-color,
-    var(--gog-btn-color, var(--gog-button-variant-color, var(--gog-button-primary-color)))
-  );
+  color: var(--gog-button-color, var(--gog-button-variant-color, var(--gog-button-primary-color)));
   box-shadow: var(
     --gog-button-shadow,
-    var(--gog-btn-shadow, var(--gog-button-variant-shadow, var(--gog-button-primary-shadow)))
+    var(--gog-button-variant-shadow, var(--gog-button-primary-shadow))
   );
   cursor: pointer;
   /* An `<a>` carries the UA underline; a `<button>` never did, which is why the component never
@@ -88,10 +76,7 @@
   outline: var(--gog-button-focus-ring-width) solid
     var(
       --gog-button-hover-bg,
-      var(
-        --gog-btn-hover-bg,
-        var(--gog-button-variant-hover-bg, var(--gog-button-primary-hover-bg))
-      )
+      var(--gog-button-variant-hover-bg, var(--gog-button-primary-hover-bg))
     );
   outline-offset: var(--gog-button-focus-ring-offset);
 }
@@ -99,21 +84,15 @@
 .gog-btn:hover:not(:disabled) {
   background-color: var(
     --gog-button-hover-bg,
-    var(--gog-btn-hover-bg, var(--gog-button-variant-hover-bg, var(--gog-button-primary-hover-bg)))
+    var(--gog-button-variant-hover-bg, var(--gog-button-primary-hover-bg))
   );
   color: var(
     --gog-button-hover-color,
-    var(
-      --gog-btn-hover-color,
-      var(--gog-button-variant-hover-color, var(--gog-button-primary-hover-color))
-    )
+    var(--gog-button-variant-hover-color, var(--gog-button-primary-hover-color))
   );
   box-shadow: var(
     --gog-button-hover-shadow,
-    var(
-      --gog-btn-hover-shadow,
-      var(--gog-button-variant-hover-shadow, var(--gog-button-primary-hover-shadow))
-    )
+    var(--gog-button-variant-hover-shadow, var(--gog-button-primary-hover-shadow))
   );
 }
 

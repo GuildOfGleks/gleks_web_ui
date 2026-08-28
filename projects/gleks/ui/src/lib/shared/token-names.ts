@@ -187,16 +187,6 @@ export type GogTokenName =
   | '--gog-badge-warning-color'
   | '--gog-badge-z'
   | '--gog-border-color'
-  | '--gog-btn-bg'
-  | '--gog-btn-border'
-  | '--gog-btn-color'
-  | '--gog-btn-font-size'
-  | '--gog-btn-hover-bg'
-  | '--gog-btn-hover-color'
-  | '--gog-btn-hover-shadow'
-  | '--gog-btn-padding'
-  | '--gog-btn-shadow'
-  | '--gog-btn-spinner-color'
   | '--gog-button-active-scale'
   | '--gog-button-bg'
   | '--gog-button-border'
@@ -2989,16 +2979,6 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-autocomplete-padding-y',
       '--gog-badge-bg',
       '--gog-badge-color',
-      '--gog-btn-bg',
-      '--gog-btn-border',
-      '--gog-btn-color',
-      '--gog-btn-font-size',
-      '--gog-btn-hover-bg',
-      '--gog-btn-hover-color',
-      '--gog-btn-hover-shadow',
-      '--gog-btn-padding',
-      '--gog-btn-shadow',
-      '--gog-btn-spinner-color',
       '--gog-button-bg',
       '--gog-button-border',
       '--gog-button-color',

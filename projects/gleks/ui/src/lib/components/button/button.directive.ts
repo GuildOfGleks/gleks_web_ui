@@ -84,7 +84,7 @@ export class GogButtonDirective {
   protected readonly variantClass = computed(() => `gog-btn--${this.variant()}`);
   /**
    * Unlike `gog-button`, this emits a class for `'md'` too. The component can leave the default
-   * size unclassed because its own stylesheet bottoms out at `--gog-btn-md-*`; here the class is
+   * size unclassed because its own stylesheet bottoms out at `--gog-button-md-*`; here the class is
    * also what a consumer reads in devtools to see which size is applied, and a silently absent
    * one reads as "no size resolved".
    */

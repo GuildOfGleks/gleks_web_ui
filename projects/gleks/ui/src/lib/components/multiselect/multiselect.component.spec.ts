@@ -522,10 +522,10 @@ describe('MultiselectComponent', () => {
 
     // Regression: the four panel-metrics tokens (optionGapToken, optionsPaddingToken,
     // panelMaxHeightToken, optionHeightToken) used to be overridden with the deprecated
-    // --gog-ms-* names, which theme.css never declares as a real property (only as another
-    // token's fallback) — so getComputedStyle always read '', and the panel's estimated
-    // height silently used the hardcoded JS defaults (0, 0, 260, 40) regardless of what the
-    // real --gog-multiselect-* tokens resolved to. Forcing 'up' with a huge availableSpace
+    // --gog-ms-* names, which theme.css never declared as a real property — so
+    // getComputedStyle always read '', and the panel's estimated height silently used the
+    // hardcoded JS defaults (0, 0, 260, 40) regardless of what the real --gog-multiselect-*
+    // tokens resolved to. Forcing 'up' with a huge availableSpace
     // makes resolveDropdownPlacement's `actualHeight` equal the raw estimate exactly, so the
     // rendered max-height is a direct readout of which token name was actually read:
     // rows = 2 options * 50px + 1 gap * 10px = 110; + 2 * 5px padding = 120. Reading the old
