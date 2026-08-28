@@ -9,7 +9,7 @@ interface BundleBar {
   readonly emphasis: boolean;
 }
 
-// Guild of Gleks UI re-measured 2026-08-23 against @guildofgleks/ui@21.6.0; Material
+// Guild of Gleks UI re-measured 2026-08-28 against @guildofgleks/ui@21.6.1; Material
 // (@angular/material@22.1.2 +cdk) and primeng@22.0.0 are unchanged since 2026-08-15.
 // `percent` is each bar's share of the largest one (PrimeNG) — keep the three in
 // step when the numbers are refreshed, and keep them equal to the figures in
@@ -17,9 +17,9 @@ interface BundleBar {
 const BUNDLE_BARS: readonly BundleBar[] = [
   {
     label: 'Guild of Gleks UI',
-    detail: 'entire library — 29 components + 2 directives',
-    value: '107.6 KB',
-    percent: 32,
+    detail: 'entire library — 31 components + 3 directives',
+    value: '113.6 KB',
+    percent: 34,
     emphasis: true,
   },
   {

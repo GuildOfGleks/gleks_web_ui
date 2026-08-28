@@ -35,50 +35,6 @@ Two things to know before building it:
 - It is read from the **installed** package, so the badge answers for the version the reader has.
   Do not hard-code 21.7.0 anywhere; take it from `removedIn`.
 
-## After 21.6.1 — what is left
-
-**All three pages are done** — `components/card`, `components/panel` and `components/ripple`, each
-in the extracted example shape with API tables, `since` chips and its own token section. What is
-left is one measurement this release invalidated — the ripple is now documented everywhere it
-needed to be: its own page, the `ripple` row on all ten component pages that take the input, and
-`global-config.md` (the `ripple` group, the `labels.togglePanel` string, and the note that
-`ripple.enabled` is the one *visual* default that has to live in TypeScript rather than a token).
-
-- **Re-measure the bundle bench for 21.6.1, then fix the counts that hang off it.**
-  `public/docs/compare-full.md` is hand-maintained (there is no script). Half of it is now solved;
-  the numbers below were taken on 2026-08-26 against the installed 21.6.1.
-
-  **The JavaScript recipe is recovered and reproduces.** The bench's "minified / gzipped" pair is
-  esbuild's minifier over the shipped FESM, then gzip:
-
-  ```sh
-  npx esbuild node_modules/@guildofgleks/ui/fesm2022/guildofgleks-ui.mjs     --minify --format=esm --target=es2022 --outfile=/tmp/gog.min.mjs
-  wc -c /tmp/gog.min.mjs && gzip -9 -c /tmp/gog.min.mjs | wc -c
-  ```
-
-  | | pre-21.6.1 (in the doc) | 21.6.1 (measured) | delta |
-  | --- | --- | --- | --- |
-  | minified | 806 623 B | **852 051 B** | +5.6 % |
-  | gzipped | 110 186 B | **116 650 B** | +5.9 % |
-
-  That is the shape two components and a directive should add, which is what makes the recipe
-  credible. **Write the recipe into `compare-full.md` when you update it** — it was not recorded
-  anywhere, and recovering it cost more than the measurement did.
-
-  **The stylesheet row is still unresolved, so do not guess it.** The doc says 25 302 B gzipped;
-  neither obvious reading of "required stylesheet" reproduces it against 21.6.1 — all of
-  `styles/*.css` concatenated is **30 298 B** gzipped, and the same minified first is **12 134 B**.
-  The middle figure is the plausible successor, but until the original selection is known it is not
-  comparable to the Material and PrimeNG cells beside it, and a comparison table whose columns were
-  measured differently is worse than one that is openly stale. Settle what was measured first.
-
-  **Then, and only then, the counts.** `compare-page.html`, `compare-page.ts` and `faq-data.ts`
-  each say "29 components" beside the pre-21.6.1 KB figure; the nav now holds 31 components and
-  3 directives (its own comment is corrected, and `compare-full.md`'s own "Documented components:
-  31" row is already right). The count and the weight are one claim — moving the count alone
-  asserts that 31 components weigh what 29 did. `compare-full.md` also counts on a third
-  convention ("all 33 components, 3 services, 23 directives"); reconcile or label each.
-
 ## After 21.7.0 — the removal's prose goes stale
 
 21.7.0 deletes the three abbreviated token prefixes (`docs/token-prefix-removal.md` has the full

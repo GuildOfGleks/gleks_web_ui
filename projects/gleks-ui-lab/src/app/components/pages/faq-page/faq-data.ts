@@ -209,8 +209,8 @@ don't pick this library for an RTL product.
     item(
       'How much does it add to my bundle?',
       `
-The whole library — 29 components plus the \`gogBadge\` and \`gogTooltip\` directives — is
-**107.6 KB gzipped** of JavaScript, plus a 24.7 KB
+The whole library — 31 components plus the \`gogBadge\`, \`gogTooltip\` and \`gogRipple\`
+directives — is **113.6 KB gzipped** of JavaScript, plus a 28.6 KB
 gzipped stylesheet that carries every theming token. An app using a handful of components pays
 a fraction of the first number, since the rest is tree-shaken; the stylesheet is loaded whole
 either way. For context, four Angular Material components gzip to 153.5 KB and the same four
