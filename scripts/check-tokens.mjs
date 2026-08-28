@@ -354,7 +354,13 @@ async function main() {
   // declared — so it has to be counted from the source text, not from the declaration sets.
   for (const match of themeCss.matchAll(/--gog-[a-zA-Z0-9-]+/g)) {
     for (const short of DEPRECATED_NAMESPACES.keys()) {
-      if (match[0].startsWith(`--gog-${short}-`)) deprecatedSpellings.add(match[0]);
+      const prefix = `--gog-${short}-`;
+      // `> prefix.length`, not `startsWith` alone: a bare `--gog-btn-` with nothing after it
+      // isn't a real token — it only shows up because prose like `` `--gog-btn-*` `` in a
+      // comment matches this regex up to the `*`, which isn't a CSS identifier character.
+      if (match[0].startsWith(prefix) && match[0].length > prefix.length) {
+        deprecatedSpellings.add(match[0]);
+      }
     }
   }
 

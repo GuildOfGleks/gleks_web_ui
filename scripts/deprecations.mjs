@@ -175,9 +175,13 @@ export function collectDeprecatedTokens(sources) {
       const rest = match[1];
       for (const [short, meta] of DEPRECATED_NAMESPACES) {
         if (!rest.startsWith(`${short}-`)) continue;
+        const suffix = rest.slice(short.length + 1);
+        // A bare `--gog-btn-` with nothing after it never resolves anything — it only shows up
+        // here because prose like `` `--gog-btn-*` `` in a comment matches the same regex up to
+        // the `*`, which isn't a CSS identifier character. Not a real deprecated token.
+        if (suffix.length === 0) continue;
 
         const name = `--gog-${rest}`;
-        const suffix = rest.slice(short.length + 1);
         found.set(name, {
           kind: 'token',
           name,

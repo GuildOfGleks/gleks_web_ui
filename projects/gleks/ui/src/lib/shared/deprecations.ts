@@ -19,7 +19,7 @@ export interface GogDeprecation {
 }
 
 /**
- * Everything `@guildofgleks/ui` currently deprecates: 0 symbol(s) and 154 token(s).
+ * Everything `@guildofgleks/ui` currently deprecates: 0 symbol(s) and 151 token(s).
  *
  * Generated from the library's own source — `@deprecated` tags for symbols, and the stylesheets
  * themselves for tokens — so it cannot drift from what actually still resolves. Meant for tooling
@@ -30,14 +30,6 @@ export interface GogDeprecation {
  * right now.
  */
 export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
-  {
-    kind: 'token',
-    name: '--gog-btn-',
-    replacement: '--gog-button-',
-    since: '21.5.0',
-    sinceDate: '2026-08-19',
-    removedIn: '21.7.0',
-  },
   {
     kind: 'token',
     name: '--gog-btn-active-scale',
@@ -592,14 +584,6 @@ export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
   },
   {
     kind: 'token',
-    name: '--gog-confirm-',
-    replacement: '--gog-confirmation-dialog-',
-    since: '21.5.0',
-    sinceDate: '2026-08-19',
-    removedIn: '21.7.0',
-  },
-  {
-    kind: 'token',
     name: '--gog-confirm-actions-gap',
     replacement: '--gog-confirmation-dialog-actions-gap',
     since: '21.5.0',
@@ -652,14 +636,6 @@ export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
     replacement: '--gog-confirmation-dialog-min-width',
     since: '21.5.0',
     sinceDate: '2026-08-19',
-    removedIn: '21.7.0',
-  },
-  {
-    kind: 'token',
-    name: '--gog-ms-',
-    replacement: '--gog-multiselect-',
-    since: '21.3.0',
-    sinceDate: '2026-08-07',
     removedIn: '21.7.0',
   },
   {
