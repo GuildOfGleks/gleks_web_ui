@@ -16,9 +16,11 @@ by a `var(--gog-<new>-x, var(--gog-<old>-x, <value>))` fallback wrapper in `them
 | `--gog-ms-*` | `--gog-multiselect-*` |
 | `--gog-confirm-*` | `--gog-confirmation-dialog-*` |
 
-Run `npm run check:tokens` for the live count and per-prefix split — **154** at last measurement
-(70 + 76 + 8), but that number moves with every token added or removed, so don't cite it without
-re-running the command. The mechanism and the reason (aliasing instead of wrapping would silently
+Run `npm run check:tokens` for the live count and per-prefix split — **151** at last measurement
+(69 + 75 + 7), but that number moves with every token added or removed, so don't cite it without
+re-running the command. (Both scanners briefly over-counted by 3 — a bare `--gog-btn-`/`--gog-ms-`/
+`--gog-confirm-` each, one per prefix, matched out of `theme.css`'s own header comment rather than
+a real declaration; fixed 2026-08-28 in `scripts/deprecations.mjs` and `scripts/check-tokens.mjs`.) The mechanism and the reason (aliasing instead of wrapping would silently
 discard a themed override — see `theme.css`'s own header comment above the deprecation tag) are
 already documented in `theme.css` itself; this file is the removal's blast radius, not a repeat of
 its reasoning.
@@ -52,7 +54,7 @@ read file by file so this list says what kind of change each file needs, not jus
 | `styles/theme.css` | ~149 | The three-line header comment (deprecation rationale) plus every `var(--gog-button-x, var(--gog-btn-x, …))`-shaped declaration | Delete the header comment's own deprecation block (or fold it into a "removed in 21.7.0" note in the CHANGELOG instead — see below); mechanically un-wrap every declaration per the pattern above |
 | `styles/button.css` | 11 | The **instance-layer** fallback chains — `--gog-button-bg`, `-color`, `-border`, `-padding`, `-font-size`, `-shadow`, `-hover-bg`, `-hover-color`, `-hover-shadow`, `-spinner-color` are deliberately undeclared in `theme.css` (the per-instance escape hatch), so their `--gog-btn-*` fallback lives here instead, one level deeper in each chain | Same un-wrap, e.g. `var(--gog-button-bg, var(--gog-btn-bg, var(--gog-button-variant-bg, …)))` → `var(--gog-button-bg, var(--gog-button-variant-bg, …))` |
 | `lib/shared/token-names.ts` | 20 | **Generated** — `// GENERATED FILE — do not edit by hand` | Nothing manual. Regenerates via `npm run generate:tokens` once `theme.css` no longer declares the old names |
-| `lib/shared/deprecations.ts` | 154 | **Generated** — the `GOG_DEPRECATIONS` manifest | Nothing manual. Regenerates via `npm run generate:deprecations`; the token half goes to empty, same as the symbol half already is (see `lab-versioning.md` layer 4) |
+| `lib/shared/deprecations.ts` | 151 | **Generated** — the `GOG_DEPRECATIONS` manifest | Nothing manual. Regenerates via `npm run generate:deprecations`; the token half goes to empty, same as the symbol half already is (see `lab-versioning.md` layer 4) |
 | `lib/components/multiselect/multiselect.component.ts` | 4 | **Not a fallback — a live bug, unrelated to this removal.** `optionGapToken`/`optionsPaddingToken`/`panelMaxHeightToken`/`optionHeightToken` are overridden with the *old* names, which are never declared as real properties anywhere (only referenced inside another token's fallback), so `getComputedStyle(...).getPropertyValue(...)` on them always returns `''` | **Does not get fixed by deleting the theme.css wrappers** — the JS reads the abbreviated name directly, not through a `var()` fallback, so removing the fallback changes nothing here. Needs its own fix: rename the four constants to the spelled-out names, matching `select.component.ts`. Filed as a defect in `docs/backlog.md`, independent of this removal — fix it whenever, but it must not be mistaken for done once the wrappers are gone |
 | `styles/presets/slate.css` | 1 | A comment noting what the preset does *not* contain (`no --gog-btn-*`) | Reword the comment to say `--gog-button-*` (or drop the aside — the deprecation it's referencing will no longer exist) |
 | `lib/components/button/button.directive.ts` | 1 | A comment: "its own stylesheet bottoms out at `--gog-btn-md-*`" | Reword to `--gog-button-md-*` |
