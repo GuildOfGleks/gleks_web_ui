@@ -5,7 +5,7 @@ Working notes for picking this up cold. The *plan* is `lab-stackblitz-plan.md` a
 **Delete a section from here once it stops being true** — same discipline as
 `lab-after-publish.md`, and for the same reason.
 
-Last updated: 2026-08-16.
+Last updated: 2026-08-26.
 
 ---
 
@@ -14,8 +14,17 @@ Last updated: 2026-08-16.
 | | |
 | --- | --- |
 | Pages converted | **1 of 30** — `scroll` (`848a91f`) |
-| Next | **`table`** — chosen deliberately, see below |
+| Next | **`table`** — chosen deliberately, see below; still on the old shape (12 `app-code-tabs` blocks, matching the count in "Next: `table`" below) |
 | StackBlitz | **not started, and not in the repository at all.** Phase 2. Do not begin it while pages remain unconverted |
+
+**The "1 of 30" counter has not moved, and that is not neglect.** Five more pages now render
+through `<app-demo [component]>` in the shape below — `menu`, `rtl`, `card`, `panel`, `ripple` —
+but every one of them documents a component or feature that shipped new in 21.5.0/21.6.1, so each
+was authored directly in this shape rather than converted from the legacy one. They don't move the
+counter (there was no legacy version of that page to convert), but they are five more data points
+that the shape holds beyond the `scroll` pilot, across pages with very different content (a
+composed directive, RTL toggling, a slotted surface, a collapsible panel, a cross-cutting
+directive wired into nine other components).
 
 Everything else on the site still works the old way: demo markup inline in the doc page, source
 text hand-typed into string arrays in the page's `.ts`, and a `<app-code-tabs [html] [ts] [css]>`

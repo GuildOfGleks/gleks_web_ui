@@ -52,7 +52,7 @@ an input, output, slot, type, service method or default edits it in the same cha
 
 ## Where the project is
 
-**Latest release: 21.6.0 (2026-08-23).** `projects/gleks/ui/CHANGELOG.md` is the authority and
+**Latest release: 21.6.1 (2026-08-26).** `projects/gleks/ui/CHANGELOG.md` is the authority and
 ships inside the package; its top entry is always the version being worked on.
 
 ### The release sequence
@@ -60,25 +60,28 @@ ships inside the package; its top entry is always the version being worked on.
 | Version    | State                                        | What it must carry                                                                                                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 21.6.0     | **released**                                 | seven fixes and `gog-table`'s `maxHeight`                                                                                                                                                                                                                                                                                                                                                           |
-| 21.6.1     | **unreleased, content complete**             | `aria-busy` on `gog-table` and `gog-autocomplete` plus `check:loading-aria`, **`gog-card` + `gog-panel`** (`docs/panel-card.md`, **all four iterations** — iteration 4 converted all 40 showcase pages and retired the app's own `.card`, 2026-08-26), **and the ripple, complete** (`docs/ripple.md`, all four iterations: `gogRipple`, nine components wired, `GOG_CONFIG.ripple.enabled`, off by default). AGENTS.md, README.md, TOKENS.md and the CHANGELOG all carry it; every `check:*` passes except `check:release`, which fails **by design** on exactly the two things the release itself does (see below). |
-| **21.7.0** | **not started, and has a mandatory payload** | **the three deprecated token prefixes come out** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`. **154** references in `theme.css` (70 + 76 + 8, measured 2026-08-26 — do not trust a number here, run `npm run check:tokens`, which prints the live count and the per-prefix split). Announced in 21.5.0, and `npm run check:deprecations` **fails the build** once `package.json` reaches 21.7.0 with any of them still there, so this is not optional and not deferrable. |
+| 21.6.1     | **released (2026-08-26)**                    | `aria-busy` on `gog-table` and `gog-autocomplete` plus `check:loading-aria`, **`gog-card` + `gog-panel`** (`docs/panel-card.md`, **all four iterations** — iteration 4 converted all 40 showcase pages and retired the app's own `.card`, 2026-08-26), **and the ripple, complete** (`docs/ripple.md`, all four iterations: `gogRipple`, nine components wired, `GOG_CONFIG.ripple.enabled`, off by default). AGENTS.md, README.md, TOKENS.md and the CHANGELOG all carry it; `npm view @guildofgleks/ui version` confirms it on the registry. |
+| **21.7.0** | **not started, and has a mandatory payload** | **the three deprecated token prefixes come out** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`. **154** references in `theme.css` (70 + 76 + 8, measured 2026-08-26 — do not trust a number here, run `npm run check:tokens`, which prints the live count and the per-prefix split), plus **12 live overrides in `projects/ui-showcase/src/styles.scss`** that read the abbreviated names and go dead silently once the fallback wrapper is deleted — see `docs/token-prefix-removal.md` for the full per-file list. Announced in 21.5.0, and `npm run check:deprecations` **fails the build** once `package.json` reaches 21.7.0 with any of them still there, so this is not optional and not deferrable. |
 | 22.x       | when Angular 22 lands                        | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                              |
 
 **Nothing else is scheduled.** The three future plans below are unscheduled; `themes.md` is
 written to ride along with 21.7.0's removal because both rewrite the same layer of `theme.css`.
 
-### What cutting 21.6.1 takes — and why an agent does none of it
+### Cutting a release — why an agent does none of it
 
-`npm run check:release` currently exits 1 with two problems, and **both are the release, not
-defects**: `projects/gleks/ui/package.json` is still at `21.6.0` while the changelog's top entry is
-`[21.6.1]`, and that heading still reads `planned` instead of a date. Bumping the version and
-dating the heading _are_ cutting the release, which is rule 1's territory: **the user cuts every
-release.** Do not "fix" the check by doing either. A clean `check:release` means the release is
-already cut. Its failing on an unreleased-but-finished version is the check working.
+`npm run check:release` fails whenever `projects/gleks/ui/package.json`'s version doesn't match
+the changelog's top `[x.y.z]` entry, or that heading still reads `planned` instead of a date.
+Bumping the version and dating the heading _are_ cutting the release, which is rule 1's territory:
+**the user cuts every release.** Do not "fix" the check by doing either — a clean `check:release`
+on a version still being worked on means someone jumped the gun, not that the check is wrong.
 
-Once it is published: `npm install` at the repo root, then work through
-`docs/lab-after-publish.md`'s _After 21.6.1_ section — two component pages, a `gogRipple` page,
-`since` chips and the theming rows. That file is a live checklist; delete each entry as it lands.
+Once a release is published: `npm install` at the repo root, then work through
+`docs/lab-after-publish.md`'s section for that version. That file is a live checklist; delete
+each entry as it lands. **21.6.1's lab section is fully checked off** (all three pages —
+`components/card`, `components/panel`, `components/ripple` — plus `since` chips and the theming
+rows); what remains there is the bundle-bench re-measurement, tracked in
+`projects/gleks-ui-lab/public/docs/compare-full.md`'s own history rather than as an open
+checklist item.
 
 **A future plan's filename carries no version** — `panel-card.md` and `ripple.md`
 were both named for a release that shipped without them, which is what that always becomes. A
@@ -173,7 +176,9 @@ major-version branch/subdomain approach, which is still only a recommendation.
 `docs/lab-examples-handoff.md` is the **running state** of that refactor — which pages are
 converted, the folder shape settled by the pilot, the traps already paid for, and what the next
 page needs. Read it first if you are continuing the work; it is short and it is the file that
-goes stale, so update it as you go.
+goes stale, so update it as you go. `docs/lab-appearance-baseline.md` is its mechanical check —
+one line per page recording preview geometry and text, captured before the refactor started, so a
+converted page can be diffed against its own before-picture instead of eyeballed.
 
 `docs/lab-stackblitz-plan.md` is the post-mortem of the reverted StackBlitz refactor
 (`b6dc543`, undone by `fca14ba`) and the plan that replaces it. **Read it before touching the
