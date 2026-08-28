@@ -81,6 +81,13 @@ export class ExampleComponent {}
 Outputs are prefixed `gog` (`gogClick`, `gogToggle`) so they never collide with native DOM
 events. Inputs keep their natural names.
 
+> **Don't write `(click)` on `gog-button`.** Its click handler is bound on the `<button>` inside
+> its own template, not on the host — a native click still bubbles up through the host element, so
+> a `(click)` listener there fires on every press, silently bypassing `debounce`'s throttling.
+> `(gogClick)` is the one that only emits once the debounce window has passed; use it instead. This
+> is specific to the `gog-button` component — `[gogButton]` on your own `<a>`/`<button>` has no
+> debounce to bypass, so your own `(click)` on it works exactly as written.
+
 **3. If you use dialogs or toasts, place their hosts once.** `DialogService.open()` and
 `ToastService.show()` update state but render nothing without them:
 

@@ -426,6 +426,13 @@ Outputs: `gogClick: MouseEvent`.
 **`debounce` is a spam guard, not a delay before the first click.** The first click in a window
 fires immediately (leading edge); further clicks within `debounce` ms are silently dropped.
 
+**Use `(gogClick)`, never `(click)`, on `gog-button`.** The click handler that drives `debounce`
+and emits `gogClick` is bound on the `<button>` inside the component's own template, not on the
+host — a native click still bubbles up through `<gog-button>`, so a `(click)` listener written
+there fires on every press, silently bypassing the debounce entirely. This is specific to the
+component: `[gogButton]` on your own `<a>`/`<button>` has no debounce to bypass, so `(click)` on
+it works exactly as written.
+
 ```html
 <gog-button variant="primary" [loading]="saving()" (gogClick)="save()">Save</gog-button>
 <gog-button variant="ghost" ariaLabel="Close" (gogClick)="close()"

@@ -85,9 +85,6 @@ reason may stop holding.
   Note `themes.md` iteration 1 pulls the other way and is the cheaper lever: 510 of 1127 component
   token declarations are literals, and a character layer replaces per-component literals with
   inherited foundation tokens. Doing that first may make this entry moot.
-- **`(click)` vs `(gogClick)` on `gog-button`.** A native click bubbles from the inner `<button>`
-  to the host, so a consumer writing `(click)` silently bypasses the debounce guard. Worth a
-  README warning now; a real fix means stopping propagation, which is its own trap.
 - **`DIALOG_DATA` typing.** `dialog.tokens.ts` is `InjectionToken<unknown>`, so every dialog
   component casts on injection. A generic `DialogService.open<TData, TResult>()` threading the
   type through would be nicer, but the cast is a one-liner and Material has the same wart.
@@ -121,14 +118,14 @@ can land without an announced removal window.
 
 ## Features — each needs its own decision
 
-Filed from use on 2026-08-16, none started. **Not one release's worth.** Numbering is the original
-filing's, kept so the request stays recognisable; item 1 of the list was a bug and is closed.
-
-2. **A filter box in `gog-multiselect`, matching `gog-select`.** Note the two share
-   `GogDropdownBase` and neither declares a `filter` input on its own component class today, so
-   check where select's filtering actually lives before assuming it can be lifted across.
-   `AGENTS.md` lists `filter`/`filterPosition` under the `dropdown` config group for both, so the
-   gap may be smaller than it looks.
+Filed from use on 2026-08-16, none started unless noted. **Not one release's worth.** Numbering is
+the original filing's, kept so the request stays recognisable; item 1 was a bug and is closed. Item
+2 is closed too, found while surveying this list on 2026-08-28: `gog-multiselect` and `gog-select`
+both extend `GogDropdownBase`, which already declares `filter`, `filterPosition` and `filterMatch`;
+both templates already wire up `filterQuery()`/`filterPlaceholder()`/`filterEmptyMessage()` in
+full, and `AGENTS.md`'s config table already listed both components under `filter`/`filterPosition`
+— the filing's own closing line ("the gap may be smaller than it looks") turned out to be the whole
+story. Confirmed live: a filter box opened and typed into on the multiselect page in `ui-showcase`.
 3. **Virtual scrolling in `gog-select` and `gog-multiselect`.**
 4. **Virtual scrolling in `gog-table`.**
 
