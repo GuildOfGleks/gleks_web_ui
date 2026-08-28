@@ -139,11 +139,11 @@ variant and size classes:
 }
 ```
 
-> **Renamed in 21.5.0.** Three prefixes were abbreviated and are now spelled out:
-> `--gog-btn-*` → `--gog-button-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`, and
-> `--gog-ms-*` → `--gog-multiselect-*` (that one since 21.3.0). **The old spellings still work**
-> — every new name derives from its old twin — and are **removed in 21.7.0**. A CSS override that
-> stops being read fails silently, which is why the window is two minors rather than one.
+> **Renamed in 21.5.0, removed in 21.7.0.** Three prefixes were abbreviated and are now spelled
+> out: `--gog-btn-*` → `--gog-button-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*`, and
+> `--gog-ms-*` → `--gog-multiselect-*` (that one since 21.3.0). **The old spellings no longer
+> resolve.** If you set one of them, rename it — a `var()` reference to a name nothing declares
+> doesn't fail your build, it just silently stops matching anything.
 >
 > One prefix that looks abbreviated and is not: **`--gog-input-*`**. It names the shared
 > text-field block that both `gog-inputfield` and `gog-textarea` render (`.gog-input__field`), not

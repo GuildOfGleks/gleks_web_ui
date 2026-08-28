@@ -18,8 +18,8 @@ below; the mechanical removal is iteration 1.
 | 1   | The removal itself: library, then `ui-showcase`         | api     | ✅ done |
 | 2   | Make the ratchet cover CSS, not just TypeScript         | tooling | ✅ done |
 | 3   | The generated artifacts, at zero                        | tooling | ✅ done |
-| 4   | The three documents that ship inside the package        | docs    | ⬜ todo |
-| 5   | Verification, and the browser pass that is not optional | check   | 🟡 partial |
+| 4   | The three documents that ship inside the package        | docs    | ✅ done |
+| 5   | Verification, and the browser pass that is not optional | check   | ✅ done |
 
 **Order matters between 0 and 1 only.** Iteration 0's fixes are three-line edits to lines that
 iteration 1 also rewrites; doing them second means writing the same lines twice and, worse, means
@@ -369,6 +369,23 @@ Add a migration note to `### Removed` in the shape 21.5.0's entry used: the thre
 the one instruction that matters — a global find-and-replace across the consumer's own stylesheets,
 because nothing else will tell them.
 
+**Iteration 4, as it finished (2026-08-28).** `CHANGELOG.md`'s `### Removed` entry landed in
+iteration 0's commit already (it made more sense to open the `[21.7.0] - planned` heading once,
+alongside the `### Fixed` entry, than to touch that heading twice) — confirmed still there,
+unchanged. `README.md`'s blockquote reworded to "renamed in 21.5.0, removed in 21.7.0" / "no longer
+resolve"; the `--gog-input-*` and `--gog-panel-*` notes beside it are untouched, as planned.
+`AGENTS.md` got three edits, one more than scoped: the inline mention at ~175–178 reworded to past
+tense; the `GOG_DEPRECATIONS` worked example rewritten against the real empty array (`[]`, checked
+against what `generate:deprecations` actually produces, not assumed); and a new **Removed in
+21.7.0** section added in the same shape as the existing **Removed in 21.5.0** one, since a
+three-row migration table serves an agent better than a paragraph — the file's own precedent made
+that the consistent choice, not a scope add. The unscoped extra: the file's header sentence ("as of
+`21.6.1`") also named a version, which the table above didn't mention — moved to `21.7.0` and
+pointed at both removal sections, since leaving a stale version number one paragraph above a
+freshly-corrected one would have undercut the fix. `TOKENS.md` needed nothing, confirmed in
+iteration 3. A full-repo grep for the three prefixes across `README.md`/`AGENTS.md` after all edits
+turned up only the intended historical/migration mentions.
+
 ---
 
 ## Iteration 5 — verification
@@ -404,6 +421,21 @@ since the failure mode is a token silently resolving to nothing:
 
 Take the before-shots first. `docs/lab-appearance-baseline.md` is the precedent: that file exists
 because "looks right" is not a check unless there is a picture to be right against.
+
+**Iteration 5, as it finished (2026-08-28).** The command checklist ran clean after every iteration
+that could affect it (0, 1, 2), and once more after 3 and 4 landed: `check:tokens`,
+`check:deprecations`, `lint`, `format:check`, `test:lib` (1059 tests), `build:lib` and
+`build:showcase` all pass; `check:release` still correctly fails on the version/heading, which is
+the expected state and not a bug. The browser pass — items 1–5 above — ran once, live against
+`ui-showcase` under `cyberpunk`/`warcraft`/`red-alert-3`, as part of iteration 1's own verification
+(recorded there in full: computed-value checks across all three themes plus screenshots of the
+button scale, the multiselect focus glow, both filter boxes, and an open confirmation dialog).
+**Not repeated after iterations 2 and 4**, deliberately: both are tooling and documentation only —
+neither touches `theme.css`, `button.css`, any component stylesheet, or `ui-showcase`'s styles — so
+nothing changed that a second browser pass could have caught. If a later iteration of this plan (or
+any future work) touches CSS again, the browser pass is not optional and needs its own re-run;
+"nothing rendering changed since the last check" is a claim to verify by diffing the actual file
+list touched, not to assume.
 
 ---
 

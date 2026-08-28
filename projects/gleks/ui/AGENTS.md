@@ -5,12 +5,13 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.6.1`**. 21.5.0 removed a batch
-of deprecated API — see **Removed in 21.5.0** near the end of this file, which exists so code
-written against 21.4.x can be migrated — and `CHANGELOG.md` has the rest. `README.md` covers the
-same ground at a higher level — install, setup, theming, global configuration — and is accurate;
-this file goes further, into per-component input tables, and is the one to trust for exact names,
-types and defaults.
+Everything below reflects the library's actual source as of **`21.7.0`**. 21.7.0 removed the three
+abbreviated token prefixes and 21.5.0 removed a batch of deprecated API — see **Removed in 21.7.0**
+and **Removed in 21.5.0** near the end of this file, which exist so code written against an older
+version can be migrated — and `CHANGELOG.md` has the rest. `README.md` covers the same ground at a
+higher level — install, setup, theming, global configuration — and is accurate; this file goes
+further, into per-component input tables, and is the one to trust for exact names, types and
+defaults.
 
 > **Maintainers:** this file ships inside the npm package and is the API reference an agent reads
 > while writing code against it, so a stale table here becomes wrong code in someone else's app —
@@ -175,9 +176,10 @@ Full model is in `README.md`'s Theming section and `theming.md`; short version:
   escape hatch for one element).
 - **Component prefixes are spelled out** since 21.5.0: `--gog-button-*`, `--gog-multiselect-*`,
   `--gog-confirmation-dialog-*`. The abbreviated `--gog-btn-*`, `--gog-ms-*` and `--gog-confirm-*`
-  still resolve and are removed in 21.7.0 — don't write new code with them. The exception is
-  `--gog-input-*`, which is not an abbreviation: it is the shared text-field block that
-  `gog-inputfield` and `gog-textarea` both render, and it keeps that name.
+  were removed in 21.7.0 — if you're reading a codebase or an example that still uses one, rename
+  it; it no longer resolves. The exception is `--gog-input-*`, which is not an abbreviation: it is
+  the shared text-field block that `gog-inputfield` and `gog-textarea` both render, and it keeps
+  that name.
 - **The package does not need the app's `box-sizing` reset** (since 21.6.0): `utilities.css`
   sets `border-box` on every element carrying a `gog-*` class, including the ones the library
   puts on a consumer's own element. Do not add a reset "so the components line up" — they
@@ -1626,17 +1628,33 @@ Everything the package currently deprecates, as data:
 ```ts
 import { GOG_DEPRECATIONS, type GogDeprecation } from '@guildofgleks/ui';
 
-GOG_DEPRECATIONS.filter((entry) => entry.removedIn === '21.7.0');
-// { kind: 'token', name: '--gog-btn-bg', replacement: '--gog-button-bg',
-//   since: '21.5.0', sinceDate: '2026-08-19', removedIn: '21.7.0' }
+GOG_DEPRECATIONS; // []
 ```
 
 `kind` is `'symbol'` for an export or input and `'token'` for a `--gog-*` custom property. The
 list is generated from the library's source — tags for symbols, stylesheets for tokens — so it
 matches what actually still resolves in the version you installed.
 
-**In 21.5.0 it holds 154 tokens and no symbols.** Nothing in the TypeScript API is deprecated
-right now; the three abbreviated token prefixes are, until 21.7.0.
+**As of 21.7.0 the list is empty on both halves.** Nothing in the TypeScript API is deprecated, and
+the three abbreviated token prefixes that used to fill the token half are gone rather than
+deprecated — see the removal table below. An empty list here means exactly that: nothing to
+migrate away from right now.
+
+## Removed in 21.7.0
+
+**Nothing in this table exists any more.** Three CSS custom-property prefixes, abbreviations of a
+component's own name, are gone — each was honoured only as a fallback the spelled-out token wrapped
+(`--gog-button-x: var(--gog-btn-x, value)`), never declared on its own.
+
+| Removed           | Replacement                   |
+| ------------------ | ------------------------------ |
+| `--gog-btn-*`     | `--gog-button-*`               |
+| `--gog-ms-*`      | `--gog-multiselect-*`          |
+| `--gog-confirm-*` | `--gog-confirmation-dialog-*`  |
+
+A consumer's CSS that still sets one of the left-hand names doesn't fail their build — an
+unresolved `var()` just stops matching anything, silently. If a themed surface stopped picking up
+an override after upgrading to 21.7.0, this table is the first thing to check.
 
 ## Removed in 21.5.0
 
