@@ -651,11 +651,6 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     id: 'multiselect',
     title: 'Multiselect',
     tokens: [
-      {
-        name: '--gog-multiselect-* (was --gog-multiselect-*)',
-        description:
-          'Renamed in 21.3.0. Both spellings work for the whole deprecation window — the --gog-multiselect-* name stays the declared one and the new name derives from it, so an existing override of either still reaches the component. --gog-multiselect-* is removed in 21.5.0.',
-      },
       { name: '--gog-multiselect-label-color', description: 'Field label color.' },
       {
         name: '--gog-multiselect-field-bg / -field-border',

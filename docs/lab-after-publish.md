@@ -19,22 +19,6 @@ delete the section too.
 
 ---
 
-## After 21.5.0 — layer 4 of lab-versioning.md is unblocked
-
-21.5.0 ships **`GOG_DEPRECATIONS`**: every deprecated symbol and token in the installed version,
-with `since`, `sinceDate`, `replacement` and `removedIn`. That is the data `lab-versioning.md`'s
-layer 4 was waiting for — a generated "deprecated, removed in 21.7.0" badge on an API or token
-row, with nobody maintaining a second list.
-
-Two things to know before building it:
-
-- **In 21.5.0 the manifest is all tokens** (154 of them, the three abbreviated prefixes) and **no
-  symbols** — iteration 3 removed every deprecated symbol. So the first useful badge belongs on
-  the theming page's token rows, not on component API rows. Write the lookup so an empty symbol
-  half is normal rather than an error state.
-- It is read from the **installed** package, so the badge answers for the version the reader has.
-  Do not hard-code 21.7.0 anywhere; take it from `removedIn`.
-
 ## After 21.7.0 — the removal's prose goes stale
 
 21.7.0 deletes the three abbreviated token prefixes (`docs/token-prefix-removal.md` has the full

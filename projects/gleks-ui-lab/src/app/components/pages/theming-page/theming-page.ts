@@ -13,12 +13,13 @@ import { httpResource } from '@angular/common/http';
 import {
   AccordionComponent,
   ButtonComponent,
+  GOG_DEPRECATIONS,
   GogAccordionContentDirective,
   type GogAccordionItem,
 } from '@guildofgleks/ui';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
-import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { isColorValue } from '../../shared/token-value';
+import { groupDeprecatedTokens } from './deprecated-token-groups';
 import { TOKEN_SECTIONS } from './token-reference-data';
 
 interface FullCssSection extends GogAccordionItem {
@@ -33,7 +34,6 @@ interface FullCssSection extends GogAccordionItem {
     AccordionComponent,
     GogAccordionContentDirective,
     ButtonComponent,
-    SinceBadgeComponent,
   ],
   templateUrl: './theming-page.html',
   styleUrl: './theming-page.scss',
@@ -47,6 +47,7 @@ export class ThemingPage {
   protected readonly hasMarkdown = computed(() => this.content.status() === 'resolved');
 
   protected readonly tokenSections = TOKEN_SECTIONS;
+  protected readonly deprecatedTokenGroups = groupDeprecatedTokens(GOG_DEPRECATIONS);
 
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   // Every token's real *current* resolved value — reflects a live theme-generator override too

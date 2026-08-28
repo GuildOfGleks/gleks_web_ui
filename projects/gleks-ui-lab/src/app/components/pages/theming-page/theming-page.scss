@@ -52,6 +52,26 @@
   }
 }
 
+.deprecated-tokens {
+  margin-bottom: 1.6em;
+}
+
+.deprecated-tokens__meta {
+  margin: 0 0 0.8em;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+
+  code {
+    font-family: var(--gog-font-mono);
+    color: var(--gog-accent-color);
+  }
+}
+
+// Two columns of comparable width, not the three-column .token-table's 34%/22% split.
+.deprecated-tokens .token-table th {
+  width: 50%;
+}
+
 .token-table-scroll {
   overflow-x: auto;
 }

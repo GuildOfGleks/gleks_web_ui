@@ -1,16 +1,17 @@
 # Showing version-to-version change in `gleks-ui-lab`
 
 How the documentation site communicates what changed between releases. Written up on 2026-08-14
-as a recommendation; **layers 1, 2 and 3 are implemented** — 1 and 3 the same day, 2 once 21.4.3
-put a package on npm that carries `CHANGELOG.md` — and layer 4 is deferred to
-`hardening-21.5.0.md` iteration 3, which needs the same generator for a CI check.
+as a recommendation; **all four layers are now implemented** — 1 and 3 the same day, 2 once 21.4.3
+put a package on npm that carries `CHANGELOG.md`, and 4 on 2026-08-28, once the same generator
+`hardening-21.5.0.md` iteration 3 built for a CI check turned out to be exactly what layer 4
+needed too.
 
 | Layer | State |
 | --- | --- |
 | 1 — version badge | **done** — `components/shared/library-version.ts`, rendered in `app.html` |
 | 2 — releases page | **done** — `CHANGELOG.md` ships in `ng-package.json`'s `assets`, an asset glob copies it to `docs/`, and `components/pages/releases-page/` renders it at `general/releases` |
 | 3 — `since` markers | **done** — `components/shared/since-badge/`, plus a `.since` rule in `src/styles.scss` for the markdown docs; API rows from 21.3.1 onward carry one |
-| 4 — deprecation badges | **not started** — deliberately, see below |
+| 4 — deprecation badges | **done** — see below |
 
 Companion to `lab-after-publish.md`, which tracks *what* the lab must say after each release. This
 file is about the *mechanism* for saying it.
@@ -116,38 +117,60 @@ un-highlight a whole feature set the moment a bug fix shipped.
 
 ### Layer 4 — deprecations, generated
 
-More valuable than "what's new": what will break. A badge on the affected API row —
-*deprecated in 21.3.0, removed in 21.5.0, use `gog-column`* — and optionally a single page listing
-everything currently deprecated with its removal version.
+More valuable than "what's new": what will break. **Built 2026-08-28** as a single generated page
+section, not a per-row badge — see "Why a section, not a per-row badge" below for why the second
+half of the original sketch didn't survive contact with the actual data.
 
-**Mechanics.** The metadata already exists in the source, in a format strict enough to parse:
+**Mechanics.** The metadata already existed, shipped in 21.5.0 for `hardening-21.5.0.md` iteration
+3's CI check — one generator, two consumers, exactly as this section originally hoped:
 
 ```
 @deprecated since 21.3.0 (2026-08-07) — use `gog-column` instead. Removed in 21.5.0.
 ```
 
-Four fixed parts in a fixed order, enforced by `api-design.instructions.md`. A generator in
-`scripts/` walks `projects/gleks/ui/src`, emits something like
+`scripts/generate-deprecations.mjs` walks `projects/gleks/ui/src` and `theme.css`'s fallback
+chains, and ships `GOG_DEPRECATIONS: readonly GogDeprecation[]` with the package (`kind`, `name`,
+`replacement`, `since`, `sinceDate`, `removedIn` — the real shape ended up a little different from
+this doc's original sketch, which imagined a single `symbol` field covering both TypeScript
+exports and CSS tokens; the shipped version splits them by `kind` instead). Verified in CI with
+`check:deprecations`, exactly like `generate-tokens.mjs`.
 
-```ts
-export interface GogDeprecation {
-  symbol: string;        // 'GogSelectOption' | 'gog-inputfield.iconStartFn' | '<column>'
-  since: string;         // '21.2.2'
-  date: string;          // '2026-07-30'
-  replacement: string;   // 'GogDropdownOption'
-  removedIn: string;     // '21.4.0'
-}
-```
+The lab reads it straight from the installed package —
+`projects/gleks-ui-lab/src/app/components/pages/theming-page/deprecated-token-groups.ts` groups
+the token half and `theming-page.ts`/`.html` render it as a collapsible section per prefix, above
+the main token reference. No lab-side data entry, so it cannot drift from what actually ships.
 
-ships it with the package, and is verified in CI with a `--check` flag exactly like
-`generate-tokens.mjs`. The lab then reads it from `node_modules` and renders badges.
+**Why a section, not a per-row badge.** The theming page's existing `TokenRow` entries are
+hand-authored and often collapse several real token names into one shorthand row (`--gog-button-bg
+/ -color / -border / -padding / -font-size`) — matching a manifest entry's exact `name` against
+that shorthand would need a parser for a notation invented for human readability, not machine
+matching, and a parser that gets a shorthand wrong produces a false *negative*: a deprecated token
+silently missing its badge, which is worse than not having badges at all. A dedicated generated
+section — the "optionally a single page" half of this doc's original sketch — sidesteps the
+problem entirely: it reads `GOG_DEPRECATIONS` directly, needs no matching, and can't be
+half-wrong. It also directly replaced a hand-written paragraph in the multiselect token section
+that had drifted (`--gog-multiselect-* (was --gog-multiselect-*)`, un-fixed since the token
+removal's target release moved from 21.5.0 to 21.7.0) — exactly the failure mode layer 4 exists to
+prevent.
 
-**Cost.** One generator, once. **Value.** This is the layer that makes an upgrade predictable, and
-because it is generated it cannot rot — which is the whole difference between "we will keep the
-docs updated" and the docs being updated.
+**Grouping trap, found in a browser, not by the type checker.** The obvious group key — every
+token deprecated in the same announcement shares its `since`/`sinceDate`/`removedIn` triple — is
+wrong: `--gog-btn-*` and `--gog-confirm-*` were both deprecated on the same day for the same
+removal version, so that key merges two unrelated prefixes into one group with a meaningless
+common prefix (`--gog-*`). The working key is structural instead: a deprecated token is always
+`--gog-<shortPrefix>-<rest>`, so `name.split('-')[3]` is the short prefix, independent of whether
+two renames happen to share a date.
 
-**Related.** The same manifest is what `hardening-21.5.0.md` iteration 3 wants for a CI check that
-*fails* when a removal is overdue. One generator, two consumers.
+**Interim note.** Until the next publish, the rendered page also carries three phantom rows —
+bare `--gog-btn-`, `--gog-ms-`, `--gog-confirm-` entries with no real suffix, matched out of
+`theme.css`'s own header comment by the pre-2026-08-28 scanner rather than a real declaration
+(fixed the same day in `scripts/deprecations.mjs` and `scripts/check-tokens.mjs`, regenerating
+151 real entries instead of 154). The lab renders whatever the installed package ships, by design
+— see `CLAUDE.md` rule 3 — so this self-corrects on the next release with no lab change needed.
+
+**Cost.** One generator (already paid for by iteration 3), one lab page section. **Value.** This
+is the layer that makes an upgrade predictable, and because it is generated it cannot rot — which
+is the whole difference between "we will keep the docs updated" and the docs being updated.
 
 ## Major versions — branch and subdomain
 

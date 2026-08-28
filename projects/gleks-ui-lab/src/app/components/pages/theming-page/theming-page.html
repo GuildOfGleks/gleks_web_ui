@@ -27,15 +27,50 @@
       Every CSS custom property a component paints with, grouped by area. Override any of them — on
       a single instance, a subtree, or a theme — to restyle the library.
     </p>
-    <p class="token-reference__intro">
-      Three prefixes were spelled out in <app-since version="21.5.0" />: <code>--gog-btn-*</code> →
-      <code>--gog-button-*</code>, <code>--gog-confirm-*</code> →
-      <code>--gog-confirmation-dialog-*</code>, <code>--gog-ms-*</code> →
-      <code>--gog-multiselect-*</code>. The names below are the current ones. If your theme uses the
-      old spellings it still applies — each new name declares the old one in its own fallback — but
-      they are removed in <strong>21.7.0</strong>, and a custom property nothing reads fails
-      silently, so this is a find-and-replace worth doing before then.
-    </p>
+    @if (deprecatedTokenGroups.length > 0) {
+      <p class="token-reference__intro">
+        The names below are the current ones —
+        <strong>{{ deprecatedTokenGroups.length }}</strong> prefix{{
+          deprecatedTokenGroups.length === 1 ? '' : 'es'
+        }}
+        were renamed earlier and are listed here with the version that removes the old spelling. If
+        your theme uses an old spelling it still applies until then — each new name declares the old
+        one in its own fallback — but a custom property nothing reads fails silently once that
+        version ships, so this is a find-and-replace worth doing before it does.
+      </p>
+
+      <gog-accordion class="deprecated-tokens" [items]="deprecatedTokenGroups" size="md">
+        <ng-template gogAccordionContent let-item>
+          <p class="deprecated-tokens__meta">
+            Deprecated since <code>{{ item.since }}</code> ({{ item.sinceDate }}) — removed in
+            <code>{{ item.removedIn }}</code
+            >.
+          </p>
+          <div class="token-table-scroll">
+            <table class="token-table">
+              <thead>
+                <tr>
+                  <th>Deprecated</th>
+                  <th>Use instead</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of $any(item.tokens); track row.oldName) {
+                  <tr>
+                    <td>
+                      <code>{{ row.oldName }}</code>
+                    </td>
+                    <td>
+                      <code>{{ row.newName }}</code>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </ng-template>
+      </gog-accordion>
+    }
 
     <gog-accordion [items]="tokenSections" [multi]="true" size="md">
       <ng-template gogAccordionContent let-item>
