@@ -1,0 +1,26 @@
+/*
+ * `terminal.fonts.css` — the optional webfont half of `presets/terminal.css`.
+ *
+ * **This file makes a network request. That is the whole reason it is a separate file.**
+ * See `parchment.fonts.css` for the full argument; the contract is identical.
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *   @import '@guildofgleks/ui/styles/presets/terminal.css';
+ *   @import '@guildofgleks/ui/styles/presets/terminal.fonts.css';  ← opt in
+ *
+ * Import it *after* the preset — it re-points the same tokens, and later wins.
+ *
+ * Worth knowing before you do: `terminal.css` on its own resolves to `ui-monospace`, which is
+ * the platform's *own* terminal face. That is arguably the more authentic result, and it is
+ * certainly the faster one. Take this file when you want the same face on every machine —
+ * a screenshot in documentation, a kiosk — rather than when you want it to look better.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root[data-theme='terminal'],
+[data-theme='terminal'] {
+  --gog-font-heading: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --gog-font-body: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --gog-font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}

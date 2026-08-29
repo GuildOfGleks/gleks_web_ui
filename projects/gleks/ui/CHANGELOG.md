@@ -8,6 +8,21 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **Three new presets complete the catalogue: `terminal`, `bevel` and `parchment`.** Retro and
+  Historical, the two families `docs/themes.md` had left unbuilt. `terminal` is green phosphor on
+  an unlit screen, monospaced throughout, square, no motion. `bevel` is the early-web desktop —
+  grey panels, raised buttons, sunken fields, navy — and is the first theme to use
+  `--gog-border-style: outset`/`inset`, which is what the character layer carries a border *style*
+  for. `parchment` is ink on laid paper: old-style serif, oxblood accent, roomy margins. Each is
+  `@import '@guildofgleks/ui/styles/presets/<name>.css'`, then `data-theme="<name>"`. All three
+  pass `check:contrast` on every gated pair.
+
+- **Optional webfont files, and the rule they exist to keep: a preset never makes a network
+  request.** Each preset sets a font stack that resolves to a real system face. Where a webfont
+  is worth offering, it is a separate file the consumer imports *after* the preset —
+  `presets/terminal.fonts.css` (IBM Plex Mono) and `presets/parchment.fonts.css` (EB Garamond).
+  Import the preset alone and nothing is downloaded.
+
 - **All six shipped presets now set a character, not just a palette.** `slate`, `one-dark` and
   `one-light` were palette-only, which made them recoloured defaults: they wore another product's
   colours on this library's shape. Each now sets the character layer and a density —

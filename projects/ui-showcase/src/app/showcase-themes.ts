@@ -1,5 +1,15 @@
 export type ShowcaseThemeName =
-  'light' | 'dark' | 'slate' | 'one-dark' | 'one-light' | 'ledger' | 'material' | 'primeng';
+  | 'light'
+  | 'dark'
+  | 'slate'
+  | 'one-dark'
+  | 'one-light'
+  | 'ledger'
+  | 'material'
+  | 'primeng'
+  | 'terminal'
+  | 'bevel'
+  | 'parchment';
 
 export interface ShowcaseThemePreset {
   readonly name: ShowcaseThemeName;
@@ -52,5 +62,20 @@ export const showcaseThemes: ShowcaseThemePreset[] = [
     name: 'primeng',
     label: 'PrimeNG',
     summary: "PrimeNG Aura's blue primary, thin borders, and sentence-case labels.",
+  },
+  {
+    name: 'terminal',
+    label: 'Terminal',
+    summary: 'Green phosphor on an unlit screen — monospaced throughout, no motion.',
+  },
+  {
+    name: 'bevel',
+    label: 'Bevel',
+    summary: 'The early-web desktop: grey panels, raised buttons, sunken fields, navy.',
+  },
+  {
+    name: 'parchment',
+    label: 'Parchment',
+    summary: 'Ink on laid paper — old-style serif, oxblood rubric, roomy margins.',
   },
 ] as const;

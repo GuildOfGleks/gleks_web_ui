@@ -77,6 +77,7 @@ That is the whole of iteration 1, and everything else in this plan is cheap once
 | 4   | The catalogue — eras and families                | feature | 🟡 partial |
 | 5   | Tooling and docs catch up                        | tooling | 🟡 partial |
 | 6   | Density — the character layer for spacing        | api     | ✅ done |
+| 4b  | The catalogue completed — Retro, Historical      | feature | ✅ done |
 
 ---
 
@@ -629,3 +630,60 @@ more than the preset did: the reader sees that character is the same kind of che
 **Palettes were not touched.** `check:contrast` reports the same eight gated findings before and
 after, which is the check confirming this pass changed shape only. Those eight remain
 `docs/backlog.md`'s open colour decision, unaffected by this.
+
+---
+
+### Iteration 4, third pass (2026-08-29) — Retro and Historical, and the font blocker resolved
+
+The catalogue is complete: nine presets across five families. This pass built the two families
+the plan had left, and settled the question it had flagged as a real blocker since 2026-08-17.
+
+| Preset      | Family     | Radius | Density | The identity                              |
+| ----------- | ---------- | ------ | ------- | ----------------------------------------- |
+| `terminal`  | Retro      | 0      | 0.85    | green phosphor, monospaced throughout      |
+| `bevel`     | Retro      | 0      | 0.9     | the early-web desktop, raised and sunken   |
+| `parchment` | Historical | 0      | 1.1     | ink on laid paper, old-style serif         |
+
+**The font blocker turned out to be smaller than the plan feared, and the answer was decided
+rather than discovered.** The plan's worry was that a period face is most of what makes a
+historical theme read as one, and a preset must not add a network request. The resolution, chosen
+by the user: a preset sets a *stack*, and a webfont lives in an opt-in companion file.
+
+What made it cheap is that the system stacks are genuinely good here. `ui-monospace` resolves to
+the platform's own terminal face, which is *more* authentic for `terminal` than any webfont;
+Tahoma/Verdana is what `bevel`'s era actually used; and Iowan Old Style/Palatino/Book Antiqua are
+real old-style serifs shipped by real operating systems. **The opt-in files
+(`terminal.fonts.css`, `parchment.fonts.css`) are an upgrade, not a rescue** — each file says so
+in its own header, so nobody imports one thinking the preset is broken without it. Verified: the
+themes page makes **zero** requests to `fonts.googleapis.com`.
+
+**`bevel` is the first theme to need `--gog-border-style`, and it justified the token.** Iteration
+1 added border *style* alongside width on the argument that a theme might want something other
+than `solid`; nothing had used it. One declaration — `outset` — bevels every raised surface in the
+library at once.
+
+**Two things the browser caught that the CSS did not:**
+
+- **A button is a "control", so it inherited the sunken border meant for text fields.** `bevel`
+  needs the two halves of the control tier to disagree: a field is `inset` (a sunken well is how a
+  text input was drawn), a button is `outset` (raised, and it pressed in when clicked). The
+  character layer has one control tier, so the button names its own style — the one per-component
+  override in the file, and recorded there with the reason.
+- **`outset` on a transparent border renders no bevel at all.** The style draws its highlight and
+  shade *from the border colour*, and the library's default for a filled button is
+  `--gog-button-primary-border: transparent`, which is right everywhere else. The computed style
+  said `2px outset rgba(0, 0, 0, 0)` and the screenshot showed a flat rectangle. Naming a colour
+  is what makes the style visible.
+
+**`check-contrast.mjs` needed a fix, and the fix is worth knowing about.** It reads every
+`[data-theme]` block under `presets/` as a theme and requires a full palette — so the two
+`.fonts.css` companions failed as themes missing eight tokens. A block declaring **no** palette
+token at all is now skipped as a companion; a block declaring **some** still fails, because a
+half-stated palette is a real defect and none-vs-some is exactly the line between "extends a
+theme" and "is a broken theme". Proved by adding one colour to a companion file and watching it
+fail again, then reverting.
+
+**All three palettes were drafted against the checker's own maths before any file was written** —
+the same method iteration 4's first pass used for `ledger`. All nine gated pairs passed on the
+first draft for all three themes, with margin (lowest: `bevel`'s mutedText/background at 5.97:1
+against a 4.5 threshold). The suite's gated failure count is unchanged at eight, all pre-existing.

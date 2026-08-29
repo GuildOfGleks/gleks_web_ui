@@ -1,0 +1,67 @@
+/*
+ * `terminal` — monochrome phosphor. Green on near-black, everything monospaced, square
+ * corners, no motion: the character-cell terminal, which is `docs/themes.md`'s Retro family.
+ *
+ * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *   @import '@guildofgleks/ui/styles/presets/terminal.css';
+ *
+ *   <html data-theme="terminal">
+ *
+ * Palette plus the character layer, no per-component overrides. The font is the one thing this
+ * identity cannot do without, and it does not need a download to get it: `ui-monospace` resolves
+ * to the platform's own terminal face (SF Mono, Cascadia, DejaVu Sans Mono), which is more
+ * authentic here than any webfont would be. `presets/terminal.fonts.css` is an optional extra
+ * for a period face — importing this file alone makes no network request.
+ *
+ * Amber instead of green is two declarations: swap `--gog-accent-*` and `--gog-text-color` for
+ * their amber equivalents. The rest of the theme does not care which phosphor it is.
+ */
+
+:root[data-theme='terminal'],
+[data-theme='terminal'] {
+  color-scheme: dark;
+
+  /* Palette — P1 green phosphor on an unlit screen */
+  --gog-background-color: #0a0e0a;
+  --gog-surface-color: #121a12;
+  --gog-hover-color: #1b2a1b;
+  --gog-border-color: #274a2c;
+  --gog-text-color: #c8f5c8;
+  --gog-accent-text-color: #04120a;
+  --gog-muted-text-color: #6fae6f;
+  --gog-primary-color: #c8f5c8;
+  --gog-accent-color: #3ddc5c;
+  --gog-accent-bright: #7cf591;
+  --gog-accent-dim: #2fae48;
+  --gog-accent-pale: #17311c;
+  --gog-secondary-color: #6fae6f;
+
+  /* Semantics — a monochrome display had no colour to spare, so these stay within the phosphor
+     family and separate by brightness. Only danger breaks out, because a destructive action is
+     the one thing worth spending the screen's only other colour on. */
+  --gog-success-color: #3ddc5c;
+  --gog-danger-color: #ff5f56;
+  --gog-warning-color: #d4d44a;
+  --gog-info-color: #8fd8a0;
+
+  /* A glow, not a shadow: a phosphor screen bleeds light outwards instead of casting one. */
+  --gog-panel-shadow: 0 0 0 1px var(--gog-border-color), 0 0 18px rgba(61, 220, 92, 0.12);
+  --gog-spinner-overlay-bg: rgba(10, 14, 10, 0.88);
+
+  /* Character layer — the whole identity in seven declarations. Monospace everywhere, not just
+     in code: a character-cell display had one grid and one face. Square corners and 1px rules
+     because the display drew box-drawing characters, and no motion because it had no way to
+     animate anything that was not a blinking cursor. */
+  --gog-font-heading: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --gog-font-body: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --gog-radius: 0;
+  --gog-density: 0.85;
+  --gog-control-border-width: 1px;
+  --gog-text-transform: uppercase;
+  --gog-letter-spacing: 1px;
+  --gog-duration-fast: 0s;
+  --gog-duration-base: 0s;
+  --gog-duration-slow: 0s;
+}

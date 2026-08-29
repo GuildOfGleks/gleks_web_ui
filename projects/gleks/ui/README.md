@@ -216,19 +216,33 @@ The palette half has always worked this way. The **character layer** (`--gog-rad
 lets a theme change the library's *shape* — square or generous corners, thin borders,
 sentence-case labels, tight or roomy spacing — still without naming a single component.
 
-Six presets ship alongside the built-in `light` and `dark`, each at `styles/presets/<name>.css`
-and activated by `data-theme="<name>"`. All six set palette **and** character:
+Nine presets ship alongside the built-in `light` and `dark`, each at `styles/presets/<name>.css`
+and activated by `data-theme="<name>"`. All nine set palette **and** character:
 
-| Preset                 | The identity                                                          |
-| ---------------------- | --------------------------------------------------------------------- |
-| `slate`                | soft modern — 12px corners, hairline borders, roomier than the default |
-| `one-dark`, `one-light` | editor chrome — 4px corners, compact, sentence case; one UI, two tones |
-| `ledger`               | administrative software — square corners, hard offset shadow, no motion |
-| `material`, `primeng`  | Material Design 3 and PrimeNG Aura, including their shape and density  |
+| Preset                  | The identity                                                            |
+| ----------------------- | ----------------------------------------------------------------------- |
+| `slate`                 | soft modern — 12px corners, hairline borders, roomier than the default   |
+| `one-dark`, `one-light` | editor chrome — 4px corners, compact, sentence case; one UI, two tones   |
+| `material`, `primeng`   | Material Design 3 and PrimeNG Aura, including their shape and density    |
+| `ledger`                | administrative software — square corners, hard offset shadow, no motion  |
+| `terminal`              | green phosphor — monospaced throughout, square, no motion                |
+| `bevel`                 | the early-web desktop — raised buttons, sunken fields, grey and navy     |
+| `parchment`             | ink on laid paper — old-style serif, oxblood accent, roomy              |
 
-`material` and `primeng` additionally set a few things the character layer has no vocabulary for
-(a pill button, a table's header font). `AGENTS.md` has the per-preset detail and the full token
-list.
+**No preset downloads a font.** Each sets a stack that resolves to a real system face — the
+platform's own monospace for `terminal`, Tahoma/Verdana for `bevel`, Iowan Old Style/Palatino for
+`parchment` — so importing a preset never adds a network request. Where a webfont makes a visible
+difference, it lives in a separate opt-in file you import *after* the preset:
+
+```css
+@import '@guildofgleks/ui/styles/presets/parchment.css';
+@import '@guildofgleks/ui/styles/presets/parchment.fonts.css'; /* optional: EB Garamond */
+```
+
+`terminal.fonts.css` (IBM Plex Mono) is the other one. `material` and `primeng` additionally set
+a few things the character layer has no vocabulary for (a pill button, a table's header font), and
+`bevel` sets one (a button's bevel must disagree with a field's). `AGENTS.md` has the per-preset
+detail and the full token list.
 
 Fonts are left alone on purpose (system stacks, no webfont download). Add
 `@guildofgleks/ui/styles/fonts.css` for the showcase's typography.

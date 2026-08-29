@@ -108,6 +108,9 @@
               "projects/gleks/ui/src/styles/presets/ledger.css",
               "projects/gleks/ui/src/styles/presets/material.css",
               "projects/gleks/ui/src/styles/presets/primeng.css",
+              "projects/gleks/ui/src/styles/presets/terminal.css",
+              "projects/gleks/ui/src/styles/presets/bevel.css",
+              "projects/gleks/ui/src/styles/presets/parchment.css",
               "projects/ui-showcase/src/styles.scss"
             ],
             "server": "projects/ui-showcase/src/main.server.ts",

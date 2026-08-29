@@ -1,0 +1,29 @@
+/*
+ * `parchment.fonts.css` — the optional webfont half of `presets/parchment.css`.
+ *
+ * **This file makes a network request. That is the whole reason it is a separate file.**
+ *
+ * A preset must be safe to import: `@import '…/presets/parchment.css'` never downloads
+ * anything, and the stack it sets is a real old-style serif on every platform. This file is for
+ * consumers who want the fuller period look and are willing to pay a font request for it:
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *   @import '@guildofgleks/ui/styles/presets/parchment.css';
+ *   @import '@guildofgleks/ui/styles/presets/parchment.fonts.css';  ← opt in
+ *
+ * Import it *after* the preset — it re-points the same two tokens, and later wins.
+ *
+ * If your app already self-hosts a font, or your CSP forbids Google Fonts, skip this file and
+ * point `--gog-font-heading`/`--gog-font-body` at your own family inside `[data-theme='parchment']`
+ * instead. Nothing else in the preset needs to change: the character layer does not care which
+ * serif it is.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+:root[data-theme='parchment'],
+[data-theme='parchment'] {
+  --gog-font-heading:
+    'EB Garamond', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --gog-font-body: 'EB Garamond', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+}

@@ -199,20 +199,29 @@ Full model is in `README.md`'s Theming section; short version:
   already do, and a `* { box-sizing: content-box }` in an app is the only thing that undoes it.
 - Theme switch is a `data-theme` attribute, usually on `<html>`, toggled through the
   `ThemeService` (`inject(ThemeService).setTheme('dark')` / `.toggleTheme()` / `.theme` signal).
-  Ships `light` and `dark`, plus six importable presets at
-  `@guildofgleks/ui/styles/presets/<name>.css`. **All six set palette and character** (since
+  Ships `light` and `dark`, plus nine importable presets at
+  `@guildofgleks/ui/styles/presets/<name>.css`. **All nine set palette and character** (since
   21.7.0 — before it, three were palette-only, which made them recoloured defaults):
 
-  | Preset                  | Radius | Density | Identity                                     |
-  | ----------------------- | ------ | ------- | -------------------------------------------- |
-  | `slate`                 | 12px   | 1.05    | soft modern — hairline borders, roomy         |
-  | `one-dark`/`one-light`  | 4px    | 0.9     | editor chrome; identical character, two tones |
-  | `ledger`                | 0      | 0.9     | administrative — hard offset shadow, no motion|
-  | `material`              | 4px    | 1.1     | Material Design 3, pill buttons               |
-  | `primeng`               | 6px    | 0.95    | PrimeNG Aura                                  |
+  | Preset                  | Radius | Density | Identity                                      |
+  | ----------------------- | ------ | ------- | --------------------------------------------- |
+  | `slate`                 | 12px   | 1.05    | soft modern — hairline borders, roomy          |
+  | `one-dark`/`one-light`  | 4px    | 0.9     | editor chrome; identical character, two tones  |
+  | `material`              | 4px    | 1.1     | Material Design 3, pill buttons                |
+  | `primeng`               | 6px    | 0.95    | PrimeNG Aura                                   |
+  | `ledger`                | 0      | 0.9     | administrative — hard offset shadow, no motion |
+  | `terminal`              | 0      | 0.85    | green phosphor, monospaced throughout, no motion |
+  | `bevel`                 | 0      | 0.9     | early-web desktop — `outset`/`inset` borders   |
+  | `parchment`             | 0      | 1.1     | ink on paper — old-style serif, oxblood        |
 
-  `material` and `primeng` also set a few genuinely per-component things the character layer has
-  no vocabulary for (a pill button, a table's header font); see their own file headers.
+  `material`, `primeng` and `bevel` also set a few genuinely per-component things the character
+  layer has no vocabulary for (a pill button, a table's header font, a button bevel that has to
+  disagree with a field's); see their own file headers.
+- **A preset never makes a network request.** Each sets a font *stack* resolving to a real system
+  face. Where a webfont is worth offering, it is a separate opt-in file — `terminal.fonts.css`
+  (IBM Plex Mono), `parchment.fonts.css` (EB Garamond) — imported **after** the preset, since it
+  re-points the same tokens and later wins. Do not add an `@import url(…)` to a preset itself; put
+  it in a companion file, or the import becomes a download nobody asked for.
 - Restyle one instance without touching a theme: `<gog-button style="--gog-button-bg: #ff4edb">`.
 - Build a custom theme by declaring a palette **and a character** against a new `data-theme`
   value (see `README.md`'s Theming section for the full worked example) — component tokens

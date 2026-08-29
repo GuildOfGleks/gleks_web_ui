@@ -159,7 +159,7 @@ function extractThemes(rawContent, source) {
 
 async function main() {
   const themeCss = readFileSync(path.join(uiSrc, 'styles/theme.css'), 'utf8');
-  const themes = extractThemes(themeCss, 'styles/theme.css');
+  let themes = extractThemes(themeCss, 'styles/theme.css');
 
   for await (const entry of glob('*.css', {
     cwd: path.join(uiSrc, 'styles/presets'),
@@ -172,6 +172,17 @@ async function main() {
   }
 
   themes.sort((a, b) => a.name.localeCompare(b.name));
+
+  // A `[data-theme]` block that declares no palette token at all is not a theme — it is a
+  // companion file layering something else onto one, like `presets/<name>.fonts.css`, whose whole
+  // job is to re-point two font tokens for a theme defined elsewhere. Demanding a full palette
+  // from it would be demanding it duplicate the preset it extends.
+  //
+  // A block declaring *some* palette still fails the missing-token check below: a half-stated
+  // palette is a real defect, and the line between "extends a theme" and "is a broken theme" is
+  // exactly none-vs-some. Dropped here rather than skipped inside the loop so the summary counts
+  // themes actually checked, not files read.
+  themes = themes.filter((t) => Object.keys(t.palette).length > 0);
 
   const failures = [];
   const findings = []; // informational, never fails

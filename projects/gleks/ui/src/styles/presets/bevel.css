@@ -1,0 +1,82 @@
+/*
+ * `bevel` — the high-chrome early-web look: grey panels, raised buttons, navy accent, square
+ * corners. The other half of `docs/themes.md`'s Retro family, and the one that dates itself by
+ * *shape* rather than by palette.
+ *
+ * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *   @import '@guildofgleks/ui/styles/presets/bevel.css';
+ *
+ *   <html data-theme="bevel">
+ *
+ * Palette plus the character layer, no per-component overrides and no font download — the face
+ * this look wants (Tahoma, Verdana, MS Sans Serif) is a system face on the platforms that have
+ * it and degrades to the platform sans elsewhere, which is exactly what it did at the time.
+ *
+ * **`--gog-border-style: outset` is what makes this theme.** Every raised surface in the library
+ * reads that token, so one declaration puts a bevel on buttons, panels and chips at once — the
+ * reason the character layer carries a border *style* and not just a width. `inset` on form
+ * fields is its counterpart: a sunken well is how a text input was drawn before a 1px outline
+ * was enough to say "type here".
+ */
+
+:root[data-theme='bevel'],
+[data-theme='bevel'] {
+  color-scheme: light;
+
+  /* Palette — the default desktop grey, and the navy that every link and title bar used */
+  --gog-background-color: #c0c0c0;
+  --gog-surface-color: #d8d8d8;
+  --gog-hover-color: #cacaca;
+  --gog-border-color: #808080;
+  --gog-text-color: #0a0a0a;
+  --gog-accent-text-color: #ffffff;
+  --gog-muted-text-color: #3d3d3d;
+  --gog-primary-color: #0a0a0a;
+  --gog-accent-color: #000080;
+  --gog-accent-bright: #1a1aa8;
+  --gog-accent-dim: #000080;
+  --gog-accent-pale: #b8b8cc;
+  --gog-secondary-color: #4a4a5a;
+  --gog-success-color: #006400;
+  --gog-danger-color: #8b0000;
+  --gog-warning-color: #7a5c00;
+  --gog-info-color: #005a6e;
+
+  /* No blur. A drop shadow of this era was a solid black offset rectangle, if it existed. */
+  --gog-panel-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  --gog-spinner-overlay-bg: rgba(192, 192, 192, 0.85);
+
+  /* Character layer — square, bevelled, compact, and shouting in caps the way a title bar did */
+  --gog-font-heading: Tahoma, Verdana, 'MS Sans Serif', Geneva, sans-serif;
+  --gog-font-body: Tahoma, Verdana, 'MS Sans Serif', Geneva, sans-serif;
+  --gog-radius: 0;
+  --gog-density: 0.9;
+  --gog-border-width: 2px;
+  --gog-border-style: outset;
+  --gog-panel-border-width: 2px;
+  --gog-panel-border-style: outset;
+  --gog-control-border-width: 2px;
+  --gog-control-border-style: inset;
+
+  /* The one per-component override in this file, and the reason it is needed: a button is a
+     "control" like a text field is, so it inherits `--gog-control-border-style` — which here has
+     to be `inset`, because a sunken well is how a text input was drawn. But a button of this era
+     is the opposite shape: raised, and it *pressed in* when you clicked it. The character layer
+     has one control tier and this theme needs two halves of it to disagree, so the button says
+     so itself. Everything else raised (panels, cards, chips, tags) gets `outset` from the tiers
+     above with nothing named. */
+  --gog-button-border-width: 2px;
+  --gog-button-border-style: outset;
+  /* `outset` draws its highlight and shade *from the border colour*, so a transparent border —
+     which is the library's default for a filled button, and correct everywhere else — renders a
+     bevel that is not there. Naming a colour is what makes the style visible at all. */
+  --gog-button-primary-border: #8a8ab0;
+
+  --gog-text-transform: none;
+  --gog-letter-spacing: normal;
+  --gog-duration-fast: 0s;
+  --gog-duration-base: 0s;
+  --gog-duration-slow: 0s;
+}

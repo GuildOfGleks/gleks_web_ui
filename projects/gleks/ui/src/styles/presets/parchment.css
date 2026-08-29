@@ -1,0 +1,63 @@
+/*
+ * `parchment` — ink on laid paper. Warm neutrals, a serif body, square corners, an oxblood
+ * accent: `docs/themes.md`'s Historical family, the one the plan flagged as blocked on fonts.
+ *
+ * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *   @import '@guildofgleks/ui/styles/presets/parchment.css';
+ *
+ *   <html data-theme="parchment">
+ *
+ * **How the font blocker was resolved.** A period serif is most of what makes this read as
+ * historical, and a preset must never add a network request by being imported. So this file sets
+ * a *stack* of old-style serifs that ship with real operating systems — Iowan Old Style, Palatino,
+ * Book Antiqua, Georgia — and every one of them is a genuine old-style face with the right colour
+ * on the page. It looks deliberate on every platform, with no download.
+ *
+ * For the fuller period look, `presets/parchment.fonts.css` is an optional second import that
+ * pulls EB Garamond and points the same tokens at it. That file is the only one here that makes
+ * a request, and importing it is the consumer's decision, not this file's.
+ */
+
+:root[data-theme='parchment'],
+[data-theme='parchment'] {
+  color-scheme: light;
+
+  /* Palette — aged paper, iron-gall ink, an oxblood rubric */
+  --gog-background-color: #e8dfc8;
+  --gog-surface-color: #f5efe0;
+  --gog-hover-color: #ded3b8;
+  --gog-border-color: #b8a888;
+  --gog-text-color: #241d14;
+  --gog-accent-text-color: #f5efe0;
+  --gog-muted-text-color: #57493a;
+  --gog-primary-color: #241d14;
+  --gog-accent-color: #6b2f2f;
+  --gog-accent-bright: #8a4040;
+  --gog-accent-dim: #5a2626;
+  --gog-accent-pale: #e3d4c4;
+  --gog-secondary-color: #6b5b45;
+
+  /* Semantics — the colours a scribe actually had: verdigris, vermilion, orpiment, indigo */
+  --gog-success-color: #3f5f3f;
+  --gog-danger-color: #8b2f26;
+  --gog-warning-color: #8a6516;
+  --gog-info-color: #3a5570;
+
+  /* Paper does not float. A soft, close shadow reads as a sheet resting on the desk. */
+  --gog-panel-shadow: 0 1px 3px rgba(36, 29, 20, 0.22);
+  --gog-spinner-overlay-bg: rgba(232, 223, 200, 0.88);
+
+  /* Character layer — a book, not an application. Serif throughout, square corners, hairline
+     rules, and roomier than the house default: printed pages have margins, and cramping this
+     palette into a dense grid is what would make it read as a skin rather than a design. */
+  --gog-font-heading:
+    'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --gog-font-body: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --gog-radius: 0;
+  --gog-density: 1.1;
+  --gog-control-border-width: 1px;
+  --gog-text-transform: none;
+  --gog-letter-spacing: normal;
+}
