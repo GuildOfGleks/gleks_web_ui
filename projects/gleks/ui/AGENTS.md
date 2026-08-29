@@ -372,9 +372,30 @@ async confirmDelete(): Promise<void> {
 }
 ```
 
-`DialogConfig`: `{ title?, component, data?, modal? (default true), closable?, draggable?, closeIconName?, closeIconTemplate?, width?, maxWidth?, role? ('dialog' default | 'alertdialog'), zIndex? }`.
-`open()` returns `{ close(result?), afterClosed: Promise<TResult | undefined> }`. Also:
+`DialogConfig<TData>`: `{ title?, component, data?: TData, modal? (default true), closable?, draggable?, closeIconName?, closeIconTemplate?, width?, maxWidth?, role? ('dialog' default | 'alertdialog'), zIndex? }`.
+`open<TResult, TData>()` returns `{ close(result?), afterClosed: Promise<TResult | undefined> }`. Also:
 `closeAll(result?)`, `updatePosition(id, offsetX, offsetY)` (for `draggable` dialogs).
+
+**`open<TResult, TData>()` type-checks `data` against `TData` when you supply both type
+arguments** — supplying only `TResult` (the common case above) leaves `TData` as `unknown`,
+exactly as before:
+
+```ts
+interface EditUserData {
+  userId: string;
+}
+
+const handle = this.dialogService.open<{ saved: boolean }, EditUserData>({
+  component: EditDialogComponent,
+  data: { userId: user.id }, // checked against EditUserData here
+});
+```
+
+This checks only the call site. `EditDialogComponent` still reads its data via `inject(DIALOG_DATA)`
+— an `InjectionToken<unknown>` shared by every dialog, so it still needs its own cast
+(`inject<EditUserData>(DIALOG_DATA)`, shown below). Angular's DI has no way to carry a
+per-call-site type through one shared token, so the receiving half of the round trip is still on
+trust — this closes only the half that can be closed.
 
 The library ships a ready-made `ConfirmationDialogComponent` for yes/no prompts — pass it as
 `component` with `data: { title, description, confirmText, cancelText }`; it resolves the

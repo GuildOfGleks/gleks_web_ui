@@ -85,9 +85,6 @@ reason may stop holding.
   Note `themes.md` iteration 1 pulls the other way and is the cheaper lever: 510 of 1127 component
   token declarations are literals, and a character layer replaces per-component literals with
   inherited foundation tokens. Doing that first may make this entry moot.
-- **`DIALOG_DATA` typing.** `dialog.tokens.ts` is `InjectionToken<unknown>`, so every dialog
-  component casts on injection. A generic `DialogService.open<TData, TResult>()` threading the
-  type through would be nicer, but the cast is a one-liner and Material has the same wart.
 
 ---
 

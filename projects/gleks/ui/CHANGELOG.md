@@ -6,6 +6,17 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.7.0] - planned
 
+### Added
+
+- **`DialogService.open()` and `DialogConfig` gain an optional `TData` generic**, checked against
+  `data` at the call site: `dialogService.open<TResult, TData>({ data: /* checked against TData */ })`.
+  Supplying only `TResult` — the existing, common form — leaves `TData` as `unknown`, exactly as
+  before; nothing about an existing call changes. This closes only the sending half of the round
+  trip: the component you open still reads its data via `inject(DIALOG_DATA)`, one
+  `InjectionToken<unknown>` shared by every dialog, so it still needs its own cast
+  (`inject<TData>(DIALOG_DATA)`) — Angular's DI has no way to carry a per-call-site type through a
+  single shared token. See `AGENTS.md`'s `DialogService` section for the full example.
+
 ### Removed
 
 - **The three abbreviated token prefixes deprecated in 21.5.0 (21.3.0 for `--gog-ms-*`) are gone.**

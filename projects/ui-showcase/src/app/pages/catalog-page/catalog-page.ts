@@ -24,7 +24,10 @@ import {
   ToastContainerComponent,
   ToastService,
 } from '@guildofgleks/ui';
-import { ProductQuickviewDialogComponent } from './product-quickview-dialog.component';
+import {
+  ProductQuickviewData,
+  ProductQuickviewDialogComponent,
+} from './product-quickview-dialog.component';
 
 type StockLevel = 'in-stock' | 'low-stock' | 'out-of-stock';
 
@@ -203,7 +206,7 @@ export class CatalogPage implements OnDestroy {
   }
 
   protected quickView(product: Product): void {
-    const ref = this.dialogService.open<'add-to-cart'>({
+    const ref = this.dialogService.open<'add-to-cart', ProductQuickviewData>({
       title: product.name,
       component: ProductQuickviewDialogComponent,
       width: 'min(100%, 28rem)',

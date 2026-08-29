@@ -2,10 +2,10 @@ import { DOCUMENT } from '@angular/common';
 import { Injectable, TemplateRef, inject, signal, Type } from '@angular/core';
 import { GogIconName } from '../../components/icon/icon.component';
 
-export interface DialogConfig {
+export interface DialogConfig<TData = unknown> {
   title?: string;
   component: Type<unknown>;
-  data?: unknown;
+  data?: TData;
   modal?: boolean;
   closable?: boolean;
   draggable?: boolean;
@@ -48,7 +48,16 @@ export class DialogService {
   private bodyOverflowBeforeLock: string | null = null;
   private focusedBeforeOpen: HTMLElement | null = null;
 
-  open<TResult = unknown>(config: DialogConfig): DialogHandle<TResult> {
+  /**
+   * `TData` is checked at this call site only — `data` here must match `TData`, but the dialog
+   * component you pass as `component` still receives it via `inject(DIALOG_DATA)`, an
+   * `InjectionToken<unknown>` shared by every dialog, so it still casts on injection
+   * (`inject<TData>(DIALOG_DATA)`). Angular's DI has no way to carry a per-call-site type
+   * through a single token, so this checks the half of the round trip that can be: what you
+   * pass in must match what you declared, even though what the component reads back is still
+   * on trust.
+   */
+  open<TResult = unknown, TData = unknown>(config: DialogConfig<TData>): DialogHandle<TResult> {
     const id = ++this.nextId;
     const zIndex = config.zIndex ?? this.nextZIndex++;
     this.nextZIndex = Math.max(this.nextZIndex, zIndex + 1);
