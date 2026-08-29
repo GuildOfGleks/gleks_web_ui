@@ -75,6 +75,29 @@ lab in a library-change session"). Once 21.7.0 is on npm:
 4. `compare-page.ts` and `app.ts` are the files that currently reference `'material'`/`'primeng'`
    by name (grep for both to find every call site before starting).
 
+## After 21.7.0 — six more presets need compare-page entries, and the "palette-only" framing is gone
+
+Bigger than it sounds, because it is not only additions: **the lab's own explanation of what a
+preset is has stopped being true.**
+
+1. **Six presets to add** alongside `ledger` below — `terminal`, `bevel`, `parchment` (new in
+   21.7.0), and `slate`, `one-dark`, `one-light`, which the lab may already list but now look
+   different, because they gained a character layer. Import each from
+   `@guildofgleks/ui/styles/presets/<name>.css` wherever `app.ts`/`compare-page.ts` enumerate
+   themes. **Expect a visible diff on the three existing ones** — new corner radii, densities and
+   sentence-case labels. That is the fix landing, not a regression; see `docs/themes.md`
+   iteration 4's second pass.
+2. **Anywhere the lab says a preset is "palette-only", or that a theme declares "just the
+   palette", it is now wrong.** All nine set palette *and* character. `README.md` and `AGENTS.md`
+   were rewritten for this; grep the lab's Theming page and FAQ for the same phrasing.
+3. **The two `.fonts.css` companions need explaining, not just listing.** `terminal.fonts.css`
+   and `parchment.fonts.css` are opt-in webfont files imported *after* their preset. The rule
+   they exist to keep is the interesting part and the lab should state it: **importing a preset
+   never makes a network request.** If the lab imports a companion for its own demo, say on the
+   page that it did, or readers will think the preset downloads a font.
+4. `--gog-density` belongs in whatever token reference the lab renders — one number that scales
+   every padding and gap. See the theme-generator entry below, which needs it too.
+
 ## After 21.7.0 — `ledger` needs a compare-page entry
 
 `docs/themes.md` iteration 4 shipped `ledger` (square-cornered, hard-shadowed, no motion, beige

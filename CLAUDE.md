@@ -129,10 +129,13 @@ Update the status table in whichever you are working from, as you go.
 - `docs/release-21.7.0.md` — **the close-out checklist, and the record that the release is
   held.** As of 2026-08-29 the user has gated publication on a theme catalogue worth shipping:
   themes must differ in spacing, rounding and type, not only colour. Section A0 tracks that gate.
-  Landed against it: `--gog-density` and the 14-step spacing scale (`themes.md` iteration 6), and
-  a character layer for the three presets that were palette-only (iteration 4, second pass). Open:
-  the Retro and Historical families, and the opt-in webfont mechanism they need
-  (`presets/<name>.fonts.css` — a preset never makes a network request; decided 2026-08-29).
+  **Everything the gate named is built (2026-08-29):** `--gog-density` and the 14-step spacing
+  scale (`themes.md` iteration 6), a character layer for the three presets that were palette-only
+  (iteration 4, second pass), and the catalogue completed with `terminal`/`bevel`/`parchment` plus
+  the opt-in webfont mechanism (iteration 4, third pass). **Nine presets across five families**,
+  each differing in rounding, spacing and type. A preset never makes a network request — a webfont
+  is a separate `presets/<name>.fonts.css` the consumer imports after it. Whether the gate lifts
+  is the user's call.
   Not a plan — the plans are the two below it, and their work is done. This answers the narrower
   question of what stands between the current tree and `npm run release` succeeding: one
   user-only step (the version bump), one decision that gates a CI step but blocks nothing (the

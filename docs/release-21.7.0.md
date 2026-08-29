@@ -41,10 +41,12 @@ Landed against that gate so far, all committed:
 | The three palette-only presets get a character (iter. 4, 2nd pass) | ✅ |
 | The three showcase-only themes deleted (`cyberpunk`/`warcraft`/`red-alert-3`) | ✅ |
 
-**Still open before the gate lifts:** new themes beyond the six (the plan's Retro and Historical
-families), and the opt-in webfont mechanism they need — `presets/<name>.fonts.css`, decided
-2026-08-29: a preset sets a system stack and never makes a network request; the consumer imports
-the fonts file separately if they want the full look.
+| The catalogue completed — `terminal`, `bevel`, `parchment` (iter. 4, 3rd pass) | ✅ |
+| The opt-in webfont mechanism (`presets/<name>.fonts.css`)                      | ✅ |
+
+**Everything the gate named is now built: nine presets across five families, each differing in
+rounding, spacing and type — not only colour.** Whether that clears the gate is the user's call,
+not this document's; the work it was waiting for is done and verified in a browser.
 
 ---
 
