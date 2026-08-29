@@ -156,8 +156,14 @@ const SHARED_BLOCK_NAMESPACES = new Map([
  */
 const CHARACTER_TOKENS = new Map([
   ['radius', ['--gog-radius']],
-  ['border-width', ['--gog-border-width', '--gog-control-border-width', '--gog-panel-border-width']],
-  ['border-style', ['--gog-border-style', '--gog-control-border-style', '--gog-panel-border-style']],
+  [
+    'border-width',
+    ['--gog-border-width', '--gog-control-border-width', '--gog-panel-border-width'],
+  ],
+  [
+    'border-style',
+    ['--gog-border-style', '--gog-control-border-style', '--gog-panel-border-style'],
+  ],
   ['text-transform', ['--gog-text-transform']],
   ['letter-spacing', ['--gog-letter-spacing']],
 ]);

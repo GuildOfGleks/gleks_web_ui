@@ -28,6 +28,7 @@
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "check:logical-properties": "node scripts/check-logical-properties.mjs",
     "check:loading-aria": "node scripts/check-loading-aria.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
     "check:state-specificity": "node scripts/check-state-specificity.mjs",
     "check:release": "node scripts/check-release.mjs",
     "check:sitemap": "node scripts/generate-sitemap.mjs --check",

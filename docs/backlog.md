@@ -16,7 +16,29 @@ not worth carrying here.
 
 ## Defects — first
 
-Nothing open. **Four closed 2026-08-28, all the same family** — a `var(--gog-…)` with no fallback
+**Two open, found 2026-08-29 by `docs/themes.md` iteration 2's new `npm run check:contrast`
+script — real WCAG AA failures in shipped theme palettes, not fixed here on purpose.** The plan
+that produced the check is explicit that finding and fixing are separate decisions, and both
+touch a shipped theme's actual colours, which is a visual-identity call rather than a mechanical
+one.
+
+- **Muted text fails 4.5:1 against its own background in three of five shipped themes.**
+  `--gog-muted-text-color` vs `--gog-background-color`/`--gog-surface-color`: `slate` is barely
+  under (4.39:1), `one-dark` (2.32–2.55:1) and `one-light` (2.47–2.58:1) are well under. `light`
+  and `dark` — the library's own defaults — both pass comfortably (6+:1). `one-dark`/`one-light`
+  reproduce a real, recognisable third-party editor palette on purpose (see their own file
+  header comments), so darkening/lightening the muted colour is a fidelity trade-off, not a free
+  fix.
+- **Button label text fails 4.5:1 against its own fill in two of five.** `--gog-accent-text-color`
+  vs `--gog-accent-color`: `light` is essentially at the line (4.44:1), `one-light` is short
+  (4.05:1). `slate`, `dark` and `one-dark` all pass.
+
+`npm run check:contrast` prints the exact ratio for every pair in every shipped theme and is not
+yet wired into CI — see the script's own header for why (wiring a hard gate over an already-known,
+unresolved finding just trains everyone to ignore red CI). Fixing either entry closes it here and
+is what turns that gate back on.
+
+**Four closed 2026-08-28, all the same family** — a `var(--gog-…)` with no fallback
 naming a property nothing declares, which makes the token holding it guaranteed-invalid so the
 declaration reading it computes to nothing, silently, in every consumer. Three were found while
 surveying 21.7.0's token-prefix removal (`gog-multiselect`'s focus glow had never rendered; the

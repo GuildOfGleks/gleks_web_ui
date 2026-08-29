@@ -72,7 +72,7 @@ That is the whole of iteration 1, and everything else in this plan is cheap once
 | #   | Iteration                                        | Kind    | State   |
 | --- | ------------------------------------------------ | ------- | ------- |
 | 1   | The character layer; 510 literals become derived | api     | ✅ done |
-| 2   | Contrast checking, before the catalogue grows    | tooling | ⬜ todo |
+| 2   | Contrast checking, before the catalogue grows    | tooling | 🟡 partial |
 | 3   | Promote `material` / `primeng` out of the lab    | feature | ⬜ todo |
 | 4   | The catalogue — eras and families                | feature | ⬜ todo |
 | 5   | Tooling and docs catch up                        | tooling | ⬜ todo |
@@ -218,6 +218,51 @@ Fifteen cannot, and a parchment-on-cream historical theme is exactly where AA qu
 
 **Done when:** CI fails on a preset that would ship an unreadable pairing, and every shipped preset
 passes.
+
+---
+
+### Iteration 2, as it finished (2026-08-29) — partial
+
+**The script exists and works: `scripts/check-contrast.mjs`, `npm run check:contrast`.** It
+resolves all five shipped palettes (`light`/`dark` in `theme.css`, `slate`/`one-dark`/`one-light`
+under `styles/presets/`) straight from their literal hex declarations — no colour in a palette
+block reads `var()`/`color-mix()` today, so a regex is enough; a real resolver is only needed the
+day that stops being true. Comment-stripped first, so `theme.css`'s own "Adding a theme"
+walkthrough (`[data-theme='mine']` in prose) doesn't get read as a sixth theme — caught by the
+script's own first run, before it was fixed.
+
+**One pair from the plan's own list turned out to be checking the wrong token.** Step 1 named
+"border/surface"; the obvious reading is `--gog-border-color`, and every shipped theme fails it by
+a wide margin (1.4–1.7:1 against a 3:1 floor, no near-misses). Read against how the library
+actually uses that token before accepting that as seven-times-repeated a design bug: every
+consumer of `--gog-border-color` is decorative — panel outlines, dividers, chip/tag/table
+hairlines — never the sole way to identify an interactive control. The token that *is* that,
+`--gog-accent-dim`, is what a form field's rest-state border actually resolves to
+(`--gog-input-field-border: var(--gog-accent-dim)`, mirrored in `select`/`multiselect`), and it
+passes 3:1 comfortably everywhere (4.05–7.90:1). Checked both: `accentDim`/`background` and
+`accentDim`/`surface` are gated, matching what WCAG 1.4.11 actually applies to; `border`/`surface`
+and `border`/`background` are still computed and printed every run — the plan asked for that pair
+by name, so the number doesn't just disappear — but marked informational, not a gate. The focus
+ring (`accent`/`background`, `accent`/`surface`) is gated as its own pair: every focus ring in the
+library draws from `--gog-accent-color` directly, which is a different token from the field
+border it usually sits beside.
+
+**What it found, real and ungated:** seven failures across the two threshold groups that stayed
+gated. `mutedText`/`background` and `mutedText`/`surface` fail in `slate` (barely, 4.39:1),
+`one-dark` (2.32–2.55:1) and `one-light` (2.47–2.58:1); `accentText`/`accent` fails in `light`
+(4.44:1 — one hundredth of a contrast point from the line) and `one-light` (4.05:1). `light`/`dark`
+pass every gated pair. Filed in `docs/backlog.md` under **Defects**, per step 3's instruction not
+to fix silently — `one-dark`/`one-light` exist specifically to reproduce a real, recognisable
+editor palette, so nudging their colours to pass AA is a fidelity trade-off someone should decide
+on purpose, not a side effect of writing a checker.
+
+**Not done: CI wiring, and therefore not "every shipped preset passes."** Step 2 asked for the
+check to run in CI; it isn't wired into `.github/workflows/ci.yml` yet, because doing that today
+would make CI permanently red over a known, tracked, un-fixed condition — which trains everyone to
+stop reading CI output, the opposite of what a contrast gate is for. The honest state is: the tool
+exists, the findings are documented, and turning the gate on is one line in `ci.yml` once the two
+backlog entries above are resolved (fixed, or explicitly accepted with the script's header comment
+updated to say so). That is a real decision, not a checklist item to tick past.
 
 ---
 

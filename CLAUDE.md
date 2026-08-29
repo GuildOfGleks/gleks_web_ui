@@ -135,8 +135,14 @@ Update the status table in whichever you are working from, as you go.
   dominant value to extract. `check-tokens.mjs` gained rule G — a literal that repeats a
   character token's *value*, not just its property category, in a covered category — which
   caught one the manual audit missed (`--gog-table-border-width`) before the audit was even
-  done. Iterations 2–5 are not started; see `themes.md`'s own _Iteration 1, as it finished_
-  section for the full audit table and verification record.
+  done. See `themes.md`'s own _Iteration 1, as it finished_ section for the full audit table and
+  verification record. **Iteration 2 (contrast checking) is partial, 2026-08-29**: `npm run
+  check:contrast` exists and resolves all five shipped palettes to real WCAG ratios, but two real
+  findings — muted text failing 4.5:1 in three themes, button label text failing it in two — are
+  filed in `docs/backlog.md` rather than silently fixed, per the plan's own instruction that
+  finding and fixing are separate decisions. Not wired into `.github/workflows/ci.yml` yet: doing
+  that today would make CI permanently red over a known, un-fixed condition. Iterations 3–5 are
+  not started.
 - `docs/panel-card.md` — **built 2026-08-23 into 21.6.1, finished 2026-08-26**: `gog-card` and
   `gog-panel`, all four iterations done. Read its _Iteration 1, as resolved_ section rather than the
   sketch above it: two of the answers came out differently from the plan. There is no `interactive`
