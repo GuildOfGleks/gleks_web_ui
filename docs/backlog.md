@@ -16,27 +16,37 @@ not worth carrying here.
 
 ## Defects — first
 
-**Two open, found 2026-08-29 by `docs/themes.md` iteration 2's new `npm run check:contrast`
-script — real WCAG AA failures in shipped theme palettes, not fixed here on purpose.** The plan
-that produced the check is explicit that finding and fixing are separate decisions, and both
-touch a shipped theme's actual colours, which is a visual-identity call rather than a mechanical
-one. The second entry gained a third theme when `primeng`/`material` shipped in iteration 3 and
-were run through the same check.
+**Two open, found 2026-08-29 by `docs/themes.md` iteration 2's `npm run check:contrast` — real
+WCAG AA failures in shipped theme palettes, deliberately not fixed here.** The plan that produced
+the check is explicit that finding and fixing are separate decisions, and both touch a shipped
+theme's actual colours, which is a visual-identity call rather than a mechanical one.
+
+**`light` and `primeng` were fixed on 2026-08-29 and are gone from both entries** (a decision
+taken about those two specifically, not about the class): `light`'s gold went `#9e6f00` →
+`#926600`, and `primeng` moved one step down Aura's own blue ramp, `#3b82f6` → `#2563eb`. What
+remains below is the set that was left alone on purpose — `one-dark`/`one-light` reproduce a
+recognisable third-party editor palette by name, and `slate`'s miss is 0.11 of a ratio point.
 
 - **Muted text fails 4.5:1 against its own background in three of the eleven shipped themes.**
   `--gog-muted-text-color` vs `--gog-background-color`/`--gog-surface-color`: `slate` is barely
   under (4.39:1), `one-dark` (2.32–2.55:1) and `one-light` (2.47–2.58:1) are well under. `light`
-  and `dark` — the library's own defaults — both pass comfortably (6+:1). `one-dark`/`one-light`
+  and `dark` — the library's own defaults — both pass comfortably (6+:1), as do the six other
+  presets. `one-dark`/`one-light`
   reproduce a real, recognisable third-party editor palette on purpose (see their own file
   header comments), so darkening/lightening the muted colour is a fidelity trade-off, not a free
   fix.
-- **Button label text fails 4.5:1 against its own fill in three of the eleven.** `--gog-accent-text-color`
-  vs `--gog-accent-color`: `light` is essentially at the line (4.44:1), `one-light` is short
-  (4.05:1), and `primeng` — found once it shipped as a real preset in iteration 3 — is short too
-  (3.68:1: white on `#3b82f6`, Tailwind's `blue-500` and PrimeNG's own Aura primary, copied
-  verbatim from the palette it reproduces). Same trade-off as the two above: the colour is
-  correct for what the theme is trying to be, not incorrect by accident. `slate`, `dark`,
-  `one-dark` and `material` all pass.
+- **Button label text fails 4.5:1 against its own fill, at rest or on hover, in two themes.**
+  `--gog-accent-text-color` vs `--gog-accent-color` (rest) and vs `--gog-accent-bright` (hover,
+  which is `--gog-button-primary-hover-bg`). `one-light` fails both — 4.05:1 at rest, 3.13:1 on
+  hover; `slate` passes at rest (6.29:1) and fails on hover by 0.03 (4.47:1). `one-light`
+  reproduces a real editor palette on purpose, so changing it is a fidelity trade-off.
+
+  **The hover half of this pair was not checked at all until 2026-08-29**, and adding it is what
+  found `slate`'s — a theme that passed every pair the script had. In most themes
+  `--gog-accent-bright` is *lighter* than the accent, so white on it is strictly worse than the
+  rest state that was being measured: the check was testing the easier of the two states and
+  reporting the button as fine. Four themes were failing it; two (`light`, `primeng`) were fixed
+  in the same pass, which is why the count did not move.
 
 `npm run check:contrast` prints the exact ratio for every pair in every shipped theme and is not
 yet wired into CI — see the script's own header for why (wiring a hard gate over an already-known,

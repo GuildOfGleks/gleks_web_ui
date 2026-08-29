@@ -32,9 +32,13 @@
   --gog-accent-text-color: #ffffff;
   --gog-muted-text-color: #64748b;
   --gog-primary-color: #0f172a;
-  --gog-accent-color: #3b82f6;
-  --gog-accent-bright: #2563eb;
-  --gog-accent-dim: #1d4ed8;
+  /* Shifted one step down Aura's own blue scale in 21.7.0 — 500/600/700 became 600/700/800.
+     White on blue-500 is 3.68:1, under WCAG AA's 4.5 for the label of a filled button, and it
+     is `#3b82f6` verbatim from the palette this reproduces. Rather than invent a colour, this
+     takes the next step of the same ramp: still Aura's blue, one shade deeper, 5.17:1. */
+  --gog-accent-color: #2563eb;
+  --gog-accent-bright: #1d4ed8;
+  --gog-accent-dim: #1e40af;
   --gog-accent-pale: #dbeafe;
   --gog-secondary-color: #64748b;
   --gog-success-color: #22c55e;

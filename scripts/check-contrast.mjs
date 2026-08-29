@@ -42,12 +42,24 @@
  *
  * ## What this found (2026-08-29) — recorded, not silently fixed
  *
- * Real AA failures, on the two threshold groups above, across the five shipped themes:
- * `mutedText`/`background` and `mutedText`/`surface` fail in `slate` (barely, 4.39:1),
- * `one-dark` (2.32–2.55:1) and `one-light` (2.47–2.58:1); `accentText`/`accent` fails in `light`
- * (4.44:1, essentially at the line) and `one-light` (4.05:1). `one-dark`/`one-light` deliberately
- * reproduce a real, recognisable third-party editor palette — see their own file comments — so
- * fixing this is a design decision about that fidelity promise, not a script's call to make.
+ * Real AA failures across the shipped themes. `mutedText`/`background` and `mutedText`/`surface`
+ * fail in `slate` (barely, 4.39:1), `one-dark` (2.32–2.55:1) and `one-light` (2.47–2.58:1);
+ * `accentText` fails against the button fill in `one-light` (4.05:1 at rest, 3.13:1 on hover) and
+ * on hover only in `slate` (4.47:1). `one-dark`/`one-light` deliberately reproduce a real,
+ * recognisable third-party editor palette — see their own file comments — so fixing those is a
+ * design decision about that fidelity promise, not a script's call to make.
+ *
+ * **`light` and `primeng` were fixed on 2026-08-29** and no longer appear: the library's own gold
+ * went `#9e6f00` → `#926600` (and its hover from brighter to darker, since gold light enough to
+ * read as a gleam cannot carry white text), and `primeng` moved one step down Aura's own blue
+ * ramp, `#3b82f6` → `#2563eb`, rather than inventing a colour outside the palette it reproduces.
+ *
+ * **The hover pair (`accentText`/`accentBright`) was added the same day, and it is why the
+ * failure count did not drop.** `--gog-accent-bright` is `--gog-button-primary-hover-bg`, and in
+ * most themes it is *lighter* than the accent — so white on it is strictly worse than the rest
+ * state this script was measuring. It found four failures, one of them in `slate`, which had
+ * passed every pair the script previously had. A rest state that clears AA says nothing about
+ * the hover.
  * Filed in `docs/backlog.md`. **Not yet wired into CI**: doing so with real, un-fixed findings
  * already in the shipped defaults would turn CI permanently red over a known, tracked condition
  * nobody has decided how to resolve, which trains everyone to ignore it — worse than not checking
@@ -72,6 +84,7 @@ const PALETTE_TOKENS = {
   mutedText: '--gog-muted-text-color',
   accent: '--gog-accent-color',
   accentText: '--gog-accent-text-color',
+  accentBright: '--gog-accent-bright',
   accentDim: '--gog-accent-dim',
   border: '--gog-border-color', // informational only — see header
 };
@@ -83,6 +96,12 @@ const PAIRS = [
   ['mutedText/background', 'mutedText', 'background', 4.5, true],
   ['mutedText/surface', 'mutedText', 'surface', 4.5, true],
   ['accentText/accent', 'accentText', 'accent', 4.5, true],
+  // The same label, on the same button, one hover later. `--gog-accent-bright` is
+  // `--gog-button-primary-hover-bg` (grep it in theme.css), so this pair is as real as the one
+  // above — and it was missing until 2026-08-29, which hid four failures, one of them in a theme
+  // that passed every pair the check did have. A rest state that clears AA says nothing about the
+  // hover: in most themes `bright` is *lighter* than `accent`, so white on it is strictly worse.
+  ['accentText/accentBright(hover)', 'accentText', 'accentBright', 4.5, true],
   ['accentDim(field border)/background', 'accentDim', 'background', 3.0, true],
   ['accentDim(field border)/surface', 'accentDim', 'surface', 3.0, true],
   ['accent(focus ring)/background', 'accent', 'background', 3.0, true],

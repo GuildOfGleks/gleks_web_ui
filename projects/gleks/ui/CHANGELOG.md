@@ -8,6 +8,19 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **Two WCAG AA contrast fixes, both on a filled button's own label.** The library's own `light`
+  theme: `--gog-accent-color` `#9e6f00` → `#926600` (white on the old value was 4.44:1, under
+  AA's 4.5), and its hover fill `#c88e00` → `#7a5500` — the hover is now *darker* than the rest
+  state rather than brighter, because gold light enough to read as "a brighter gleam" cannot
+  carry white text at all (the old hover was 2.87:1, worse than the rest state everyone had
+  noticed). `primeng`: moved one step down Aura's own blue ramp, `#3b82f6` → `#2563eb`
+  (500 → 600), rather than inventing a colour outside the palette it reproduces; 3.68:1 → 5.17:1.
+
+  **If you were overriding either token, nothing breaks** — but a theme built on top of `light`'s
+  gold may want to re-check its own derived shades. `check:contrast` now also tests the hover
+  fill, which was never checked before; `one-dark`, `one-light` and `slate` keep their known
+  findings on purpose (see `docs/backlog.md`).
+
 - **Three new presets complete the catalogue: `terminal`, `bevel` and `parchment`.** Retro and
   Historical, the two families `docs/themes.md` had left unbuilt. `terminal` is green phosphor on
   an unlit screen, monospaced throughout, square, no motion. `bevel` is the early-web desktop —
