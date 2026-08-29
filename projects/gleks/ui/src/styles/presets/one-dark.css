@@ -37,7 +37,6 @@
   --gog-surface-color: #21252b;
   --gog-hover-color: #2c313a;
   /* Elevation on a dark ground is a lighter surface, not a shadow — see theme.css. */
-  --gog-elevated-surface-color: #2c313a;
   --gog-border-color: #3e4451;
 
   /* Type */
@@ -63,5 +62,8 @@
   --gog-info-color: #56b6c2;
 
   --gog-panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--gog-border-color);
+  /* See theme.css's dark block: elevated drops the ring so it differs from outlined. */
+  --gog-card-elevated-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --gog-panel-elevated-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   --gog-spinner-overlay-bg: rgba(40, 44, 52, 0.85);
 }

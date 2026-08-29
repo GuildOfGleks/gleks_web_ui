@@ -832,6 +832,7 @@ export type GogTokenName =
   | '--gog-panel-disabled-opacity'
   | '--gog-panel-elevated-bg'
   | '--gog-panel-elevated-border-color'
+  | '--gog-panel-elevated-shadow'
   | '--gog-panel-filled-bg'
   | '--gog-panel-filled-border-color'
   | '--gog-panel-filled-shadow'
@@ -1561,11 +1562,12 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-accent-text-color',
       '--gog-background-color',
       '--gog-border-color',
+      '--gog-card-elevated-shadow',
       '--gog-danger-color',
-      '--gog-elevated-surface-color',
       '--gog-hover-color',
       '--gog-info-color',
       '--gog-muted-text-color',
+      '--gog-panel-elevated-shadow',
       '--gog-panel-shadow',
       '--gog-primary-color',
       '--gog-secondary-color',

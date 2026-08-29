@@ -28,7 +28,6 @@
   --gog-surface-color: #121a12;
   --gog-hover-color: #1b2a1b;
   /* Elevation on a dark ground is a lighter surface, not a shadow — see theme.css. */
-  --gog-elevated-surface-color: #1b2a1b;
   --gog-border-color: #274a2c;
   --gog-text-color: #c8f5c8;
   --gog-accent-text-color: #04120a;
@@ -50,6 +49,10 @@
 
   /* A glow, not a shadow: a phosphor screen bleeds light outwards instead of casting one. */
   --gog-panel-shadow: 0 0 0 1px var(--gog-border-color), 0 0 18px rgba(61, 220, 92, 0.12);
+  /* See theme.css's dark block: elevated drops the ring so it differs from outlined. The
+     phosphor glow stays — on this theme that glow *is* the elevation cue. */
+  --gog-card-elevated-shadow: 0 0 18px rgba(61, 220, 92, 0.12);
+  --gog-panel-elevated-shadow: 0 0 18px rgba(61, 220, 92, 0.12);
   --gog-spinner-overlay-bg: rgba(10, 14, 10, 0.88);
 
   /* Character layer — the whole identity in seven declarations. Monospace everywhere, not just

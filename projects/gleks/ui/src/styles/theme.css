@@ -282,8 +282,9 @@
   /* Backgrounds and surfaces */
   --gog-background-color: #0d0b08; /* Deep forge obsidian */
   --gog-surface-color: #16120e; /* Dark fired iron — cards */
-  /* Lifted, not shadowed — see --gog-elevated-surface-color. */
-  --gog-elevated-surface-color: #241d17;
+  /* Lifted, not shadowed — see --gog-elevated-surface-color. Deliberately a step above
+     --gog-hover-color, not equal to it: hover and the header strips are a light lift, elevation
+     is a bigger one, and the first attempt gave all three the same value. */
   --gog-hover-color: #241d17; /* Hover state */
   --gog-border-color: #3d3122; /* Aged chased bronze */
 
@@ -307,6 +308,13 @@
   --gog-info-color: #38bdf8; /* Sapphire */
 
   --gog-panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--gog-border-color);
+  /* `elevated` drops the 1px ring `--gog-panel-shadow` carries for real overlays (dialog,
+     dropdown, tooltip), because that ring is exactly what `outlined` draws — with it, the two
+     card/panel variants render identically on a dark ground. The blur stays; the ring goes,
+     so outlined has an edge and elevated does not. Light themes need none of this: their
+     shadow has no ring and reads on its own. */
+  --gog-card-elevated-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  --gog-panel-elevated-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
   --gog-spinner-overlay-bg: rgba(13, 11, 8, 0.85);
 }
 

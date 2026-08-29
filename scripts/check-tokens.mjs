@@ -540,6 +540,59 @@ async function main() {
     }
   }
 
+  // Rule I — the surface tiers of one theme must be three different colours.
+  //
+  // `--gog-surface-color` (the resting card), `--gog-hover-color` (a light lift: hover states and
+  // the table/accordion header strips) and `--gog-elevated-surface-color` (a bigger lift) express
+  // three distinct depths. Give any two of them the same value and the components that read them
+  // become indistinguishable — which is not theoretical: 21.7.1's first attempt at fixing
+  // "`elevated` looks like `outlined` on dark themes" set `--gog-elevated-surface-color` to the
+  // hover colour in all three dark themes, so an accordion header sitting inside an elevated
+  // panel vanished into it, reproducing the exact bug one level up. Caught by eye, not by any
+  // check, which is why this exists.
+  //
+  // Only literal palette blocks are compared, since that is where a theme states its own colours.
+  const TIERS = ['--gog-surface-color', '--gog-hover-color', '--gog-elevated-surface-color'];
+  const paletteSources = [themeCss];
+  for await (const entry of glob('*.css', {
+    cwd: path.join(uiSrc, 'styles/presets'),
+    withFileTypes: true,
+  })) {
+    if (entry.isFile()) {
+      paletteSources.push(
+        readFileSync(path.join(entry.parentPath ?? entry.path, entry.name), 'utf8'),
+      );
+    }
+  }
+
+  const seenThemes = new Set();
+  for (const source of paletteSources) {
+    const themeBlockRe = /\[data-theme=(['"])([a-z0-9-]+)\1\]\s*\{([^}]*)\}/g;
+    let block;
+    while ((block = themeBlockRe.exec(stripComments(source)))) {
+      const [, , themeName, body] = block;
+      if (seenThemes.has(themeName)) continue;
+      seenThemes.add(themeName);
+      const values = new Map();
+      for (const tier of TIERS) {
+        const hit = body.match(new RegExp(`${tier}\\s*:\\s*(#[0-9a-fA-F]{3,8})\\s*;`));
+        if (hit) values.set(tier, hit[1].toLowerCase());
+      }
+      for (const [a, b] of [
+        [TIERS[0], TIERS[1]],
+        [TIERS[0], TIERS[2]],
+        [TIERS[1], TIERS[2]],
+      ]) {
+        if (values.has(a) && values.has(b) && values.get(a) === values.get(b)) {
+          problems.push(
+            `[surface-tier-collision] theme '${themeName}': ${a} and ${b} are both ${values.get(a)}\n` +
+              `      they are different depths — components reading one become invisible against the other`,
+          );
+        }
+      }
+    }
+  }
+
   const allTokens = new Set([...themeDeclared, ...componentDeclared, ...readTokens]);
   for (const token of [...allTokens].sort()) {
     const namespace = knownNamespace(token);

@@ -19,12 +19,15 @@ reached 1.0, so breaking changes may land in minor versions.
     `--gog-hover-color`; the body stays transparent on purpose, so an accordion on a coloured
     surface still sits on that colour. (The token's own comment already claimed the body "reads
     slightly darker than the header" — that was only true under `data-theme="dark"`.)
-  - **`elevated` cards and panels were indistinguishable from `outlined` on dark themes.** New
-    foundation token `--gog-elevated-surface-color`: equal to `--gog-surface-color` by default,
-    since on a light theme elevation is a shadow, and lifted by each dark theme (`dark`,
-    `one-dark`, `terminal`), which is how elevation has to be expressed when the page is already
-    near-black. **A custom dark theme should set it too**, or its elevated surfaces will keep
-    reading flat.
+  - **`elevated` cards and panels were indistinguishable from `outlined` on dark themes.** The
+    dark `--gog-panel-shadow` carries a `0 0 0 1px` ring for overlays that need an edge against
+    the page — and that ring is exactly what `outlined` draws, so the two variants rendered the
+    same. `elevated` now uses a shadow without the ring in the three dark themes (`dark`,
+    `one-dark`, `terminal`): `outlined` has an edge, `elevated` has a blur and none.
+    **No background changed** — `gog-panel` defaults to `elevated`, so tinting that surface would
+    have repainted every panel in every app. `--gog-elevated-surface-color` exists as a foundation
+    token for a theme that wants to express elevation as a lighter surface instead, and equals
+    `--gog-surface-color` unless a theme sets it.
 
 - **`gog-select`'s chevron now turns over when the panel opens.** It never did — there was no
   rotation in any state, which looked like a reduced-motion problem and was a missing one:
