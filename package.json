@@ -1,14 +1,6 @@
 {
   "name": "gleks-ui-workspace",
   "version": "0.0.0",
-  "browserslist": [
-    "chrome >= 111",
-    "firefox >= 113",
-    "safari >= 16.2",
-    "edge >= 111",
-    "samsung >= 22",
-    "not dead"
-  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

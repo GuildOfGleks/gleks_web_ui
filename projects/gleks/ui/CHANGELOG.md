@@ -23,7 +23,9 @@ reached 1.0, so breaking changes may land in minor versions.
     dark `--gog-panel-shadow` carries a `0 0 0 1px` ring for overlays that need an edge against
     the page — and that ring is exactly what `outlined` draws, so the two variants rendered the
     same. `elevated` now uses a shadow without the ring in the three dark themes (`dark`,
-    `one-dark`, `terminal`): `outlined` has an edge, `elevated` has a blur and none.
+    `one-dark`, `terminal`). Nor does it keep the wide black blur: black haze over a near-black
+    page reads as smudge, not lift. Elevation is now stated the way a dark UI states it — a
+    hairline of light along the top edge, over a tight, close shadow.
     **No background changed** — `gog-panel` defaults to `elevated`, so tinting that surface would
     have repainted every panel in every app. `--gog-elevated-surface-color` exists as a foundation
     token for a theme that wants to express elevation as a lighter surface instead, and equals

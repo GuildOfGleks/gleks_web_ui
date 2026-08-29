@@ -313,8 +313,18 @@
      card/panel variants render identically on a dark ground. The blur stays; the ring goes,
      so outlined has an edge and elevated does not. Light themes need none of this: their
      shadow has no ring and reads on its own. */
-  --gog-card-elevated-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-  --gog-panel-elevated-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  /* `elevated` cannot use `--gog-panel-shadow` here. That shadow carries a `0 0 0 1px` ring so
+     overlays keep an edge against the page, and the ring is exactly what `outlined` draws — with
+     it the two variants render identically. Dropping the ring and keeping the 30px black blur was
+     worse: black blurred over a near-black page reads as smudge rather than lift.
+
+     So elevation is stated the way a dark UI actually states it — a hairline of light along the
+     top edge, where a raised surface would catch it, over a tighter, darker shadow that stays
+     close to the element instead of hazing the page. */
+  --gog-card-elevated-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 2px 6px rgba(0, 0, 0, 0.55);
+  --gog-panel-elevated-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 2px 6px rgba(0, 0, 0, 0.55);
   --gog-spinner-overlay-bg: rgba(13, 11, 8, 0.85);
 }
 
@@ -1905,9 +1915,18 @@
  * `@supports` is the only mechanism that gates a custom property by feature support, because it
  * is evaluated at parse time rather than at substitution time.
  *
- * `color-mix()` shipped in Chrome 111, Firefox 113, Safari 16.2 and Samsung Internet 22. Below
- * those, the library now renders in flat palette colours: less depth, every surface still
- * legible and every focus ring still visible.
+ * `color-mix()` shipped in Chrome 111, Firefox 113, Safari 16.2 and Samsung Internet 22.
+ *
+ * **That is not below the support floor — it overlaps it.** Angular 21 supports
+ * `baseline widely available on 2025-10-20`, whose minimums are Chrome 111, Firefox 112 and
+ * Safari 16.4. Firefox 112 is inside that window and has no `color-mix()`, so these fallbacks
+ * are load-bearing for a browser the framework itself supports, not a courtesy to ancient ones.
+ * Below the floor entirely (Samsung Internet on an older Android, which Angular's list does not
+ * mention at all) the library still renders: flat palette colours, less depth, every surface
+ * legible and every focus ring visible.
+ *
+ * The project deliberately declares no `browserslist` — Angular's baseline is the policy, and
+ * stating a lower one only produced "unsupported browsers" warnings on every build.
  */
 @supports (color: color-mix(in srgb, red 50%, blue)) {
   :root,
