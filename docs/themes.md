@@ -344,9 +344,13 @@ Families, not a flat list — a reader picking a theme is choosing a _mood_ firs
   once iteration 1 lands). Room for one flat/minimal and one soft/rounded.
 - **Look-alikes** — `material`, `primeng` from iteration 3. Their value is migration: a team moving
   off Material can keep the look while changing the library.
-- **Classic** — **shipped 2026-08-29**, `styles/presets/classic.css`. The square-cornered,
-  hard-shadowed, system-font look. Beige and grey, 1px borders, no radius, no motion to speak of.
-  This is the one that needed the least invention and landed best, exactly as predicted below.
+- **Classic** — **shipped 2026-08-29 as `ledger`**, `styles/presets/ledger.css`. Named `ledger`,
+  not the family name `classic`: `ui-showcase` already uses "Classic" as the display label for
+  `data-theme="light"` (`showcase-themes.ts`), so the plan's own working name for this family
+  collided with an existing preset before the first one shipped — this is what "Naming" under
+  Open Questions, below, was warning about. The square-cornered, hard-shadowed, system-font look.
+  Beige and grey, 1px borders, no radius, no motion to speak of. This is the one that needed the
+  least invention and landed best, exactly as predicted below.
 - **Retro** — monochrome terminal (green or amber phosphor on near-black), and a high-chrome
   early-web look. Both are mostly palette plus zero radius plus a mono font.
 - **Historical** — parchment and ink, serif body, square corners, warm neutrals. **This family is
@@ -375,18 +379,25 @@ invention" — and Historical is skipped entirely rather than forced, since its 
 decision (system-serif only, or a documented opt-in) is a real product decision, not this
 session's to make unprompted.
 
-**`classic.css` shipped**, palette plus the character layer, no per-component overrides needed at
-all — the cleanest possible proof that iteration 1's foundation tokens are sufficient on their
-own for a coherent identity. Designed against real constraints, not eyeballed after the fact:
-drafted the palette, ran it through `check-contrast.mjs`'s own maths *before* writing the file
-(`mutedText`/`background` came out at 4.81:1 on the first pass — passing, but thin — darkened
-`--gog-muted-text-color` for a real margin, landing at 5.90:1), then confirmed with the actual
-script once the file existed. **Zero gated failures** — the only theme so far, alongside
-`material`, with a completely clean `check:contrast` run.
+**Shipped as `ledger.css`, not `classic.css`** — the family the plan calls "Classic" needed its
+preset to have its own name, and `classic` was already taken: `ui-showcase` labels
+`data-theme="light"` "Classic" in its own theme switcher (`showcase-themes.ts`), a collision the
+plan's own "Naming" open question (below) had flagged as a risk in the abstract, caught here in
+practice once the first preset actually shipped and someone looked at it next to the showcase.
+Renamed across the file, `CHANGELOG.md`, `AGENTS.md` and `docs/lab-after-publish.md` the same day.
+
+Palette plus the character layer, no per-component overrides needed at all — the cleanest possible
+proof that iteration 1's foundation tokens are sufficient on their own for a coherent identity.
+Designed against real constraints, not eyeballed after the fact: drafted the palette, ran it
+through `check-contrast.mjs`'s own maths *before* writing the file (`mutedText`/`background` came
+out at 4.81:1 on the first pass — passing, but thin — darkened `--gog-muted-text-color` for a real
+margin, landing at 5.90:1), then confirmed with the actual script once the file existed. **Zero
+gated failures** — the only theme so far, alongside `material`, with a completely clean
+`check:contrast` run.
 
 **Verified live, the same DOM-injection method as iteration 3 (nothing in the repo touched or
-reverted):** built `@gleks/ui`, confirmed `classic.css` in `dist/gleks/ui/styles/presets/`,
-injected it into `ui-showcase` and set `data-theme="classic"`. Confirmed by `getComputedStyle` on
+reverted):** built `@gleks/ui`, confirmed `ledger.css` in `dist/gleks/ui/styles/presets/`,
+injected it into `ui-showcase` and set `data-theme="ledger"`. Confirmed by `getComputedStyle` on
 real elements, not assumption: `gog-card--elevated`'s `box-shadow` resolves to exactly
 `rgba(38, 36, 32, 0.25) 2px 2px 0px 0px` (hard-edged, zero blur — the whole point of "hard-
 shadowed"); both card variants render `0px` `border-radius`; `transition-duration` on the same
@@ -397,7 +408,7 @@ just the decorative ones. A full-page screenshot of the button variants page con
 identity reads as one coherent thing — beige page, white cards, navy accent, sentence-case labels,
 square corners throughout — not a pile of isolated correct tokens that happen to coexist.
 
-**Re-running `check:contrast` against all six current presets, not just `classic`, surfaced one
+**Re-running `check:contrast` against all six current presets, not just `ledger`, surfaced one
 finding this plan's own record hadn't caught yet:** `primeng` — shipped in iteration 3, before
 this check existed to run against it as a preset in its own right — fails `accentText`/`accent`
 at 3.68:1 (white on `#3b82f6`, copied verbatim from the real PrimeNG Aura palette it reproduces).

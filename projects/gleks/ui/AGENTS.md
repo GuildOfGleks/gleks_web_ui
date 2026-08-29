@@ -193,7 +193,7 @@ Full model is in `README.md`'s Theming section; short version:
 - Theme switch is a `data-theme` attribute, usually on `<html>`, toggled through the
   `ThemeService` (`inject(ThemeService).setTheme('dark')` / `.toggleTheme()` / `.theme` signal).
   Ships `light` and `dark`. Six more importable presets: `slate`, `one-dark`, `one-light`
-  (palette-only), `classic` (palette plus the character layer — square corners, hard offset
+  (palette-only), `ledger` (palette plus the character layer — square corners, hard offset
   shadow, no motion, sentence-case labels) and `material`, `primeng` (palette plus the character
   layer plus a few genuinely per-component settings; see their own file headers for why they
   differ from the palette-only ones) — all at `@guildofgleks/ui/styles/presets/<name>.css`.

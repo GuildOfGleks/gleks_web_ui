@@ -154,7 +154,9 @@ Update the status table in whichever you are working from, as you go.
   21.7.0 isn't published) — recorded in full in `docs/lab-after-publish.md`, including the
   six-component behaviour change so it reads as the fix landing, not a regression, when that work
   happens. **Iteration 4 (the catalogue) is partial, 2026-08-29**: one theme of the six the plan
-  sketches, `classic` (square-cornered, hard-shadowed, no motion, beige/grey/navy) — scoped down
+  sketches, shipped as `ledger` — not `classic`, the plan's own working name, because
+  `ui-showcase` already labels `data-theme="light"` "Classic" in its theme switcher — square-
+  cornered, hard-shadowed, no motion, beige/grey/navy. Scoped down
   deliberately, since six unreviewed palettes in one pass is a different risk than the mechanical
   work in 1–3, and Historical skipped entirely rather than forcing its still-open font-strategy
   question. Palette drafted against `check-contrast.mjs`'s own maths before the file existed, then

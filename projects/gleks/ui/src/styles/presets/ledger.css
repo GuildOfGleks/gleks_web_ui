@@ -1,14 +1,17 @@
 /*
- * `classic` — the square-cornered, hard-shadowed, system-font look. Beige and grey, thin
+ * `ledger` — the square-cornered, hard-shadowed, system-font look. Beige and grey, thin
  * borders, no motion to speak of: the administrative-software identity, from before rounded
- * corners and soft blur shadows were the default assumption.
+ * corners and soft blur shadows were the default assumption. This is `docs/themes.md`'s
+ * "Classic" catalogue *family* — the preset itself needed its own name, since `ui-showcase`
+ * already uses "Classic" as the display label for `data-theme="light"`
+ * (`projects/ui-showcase/src/app/showcase-themes.ts`).
  *
  * Import it after `index.css`, then put the attribute on the root — or on any subtree:
  *
  *   @import '@guildofgleks/ui/styles/index.css';
- *   @import '@guildofgleks/ui/styles/presets/classic.css';
+ *   @import '@guildofgleks/ui/styles/presets/ledger.css';
  *
- *   <html data-theme="classic">
+ *   <html data-theme="ledger">
  *
  * Palette plus the `docs/themes.md` iteration-1 character layer — no per-component overrides
  * needed, which is exactly the point of that layer existing (see `slate.css` for the same
@@ -16,8 +19,8 @@
  * a plain system-ui stack, which is the "system-font" look this preset asks for.
  */
 
-:root[data-theme='classic'],
-[data-theme='classic'] {
+:root[data-theme='ledger'],
+[data-theme='ledger'] {
   color-scheme: light;
 
   /* Palette — beige and grey, a muted navy accent */
