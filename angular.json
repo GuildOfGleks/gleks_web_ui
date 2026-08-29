@@ -102,8 +102,12 @@
             ],
             "styles": [
               "projects/gleks/ui/src/styles/index.css",
+              "projects/gleks/ui/src/styles/presets/slate.css",
               "projects/gleks/ui/src/styles/presets/one-dark.css",
               "projects/gleks/ui/src/styles/presets/one-light.css",
+              "projects/gleks/ui/src/styles/presets/ledger.css",
+              "projects/gleks/ui/src/styles/presets/material.css",
+              "projects/gleks/ui/src/styles/presets/primeng.css",
               "projects/ui-showcase/src/styles.scss"
             ],
             "server": "projects/ui-showcase/src/main.server.ts",
