@@ -192,10 +192,11 @@ Full model is in `README.md`'s Theming section; short version:
   already do, and a `* { box-sizing: content-box }` in an app is the only thing that undoes it.
 - Theme switch is a `data-theme` attribute, usually on `<html>`, toggled through the
   `ThemeService` (`inject(ThemeService).setTheme('dark')` / `.toggleTheme()` / `.theme` signal).
-  Ships `light` and `dark`. Five more importable presets: `slate`, `one-dark`, `one-light`
-  (palette-only) and `material`, `primeng` (full visual identities — palette plus the character
+  Ships `light` and `dark`. Six more importable presets: `slate`, `one-dark`, `one-light`
+  (palette-only), `classic` (palette plus the character layer — square corners, hard offset
+  shadow, no motion, sentence-case labels) and `material`, `primeng` (palette plus the character
   layer plus a few genuinely per-component settings; see their own file headers for why they
-  differ from the other three) — all at `@guildofgleks/ui/styles/presets/<name>.css`.
+  differ from the palette-only ones) — all at `@guildofgleks/ui/styles/presets/<name>.css`.
 - Restyle one instance without touching a theme: `<gog-button style="--gog-button-bg: #ff4edb">`.
 - Build a custom theme by declaring a palette against a new `data-theme` value (see `README.md`'s
   Theming section for the full worked example) — component tokens re-derive automatically, you

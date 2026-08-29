@@ -20,18 +20,23 @@ not worth carrying here.
 script — real WCAG AA failures in shipped theme palettes, not fixed here on purpose.** The plan
 that produced the check is explicit that finding and fixing are separate decisions, and both
 touch a shipped theme's actual colours, which is a visual-identity call rather than a mechanical
-one.
+one. The second entry gained a third theme when `primeng`/`material` shipped in iteration 3 and
+were run through the same check.
 
-- **Muted text fails 4.5:1 against its own background in three of five shipped themes.**
+- **Muted text fails 4.5:1 against its own background in three of five original shipped themes.**
   `--gog-muted-text-color` vs `--gog-background-color`/`--gog-surface-color`: `slate` is barely
   under (4.39:1), `one-dark` (2.32–2.55:1) and `one-light` (2.47–2.58:1) are well under. `light`
   and `dark` — the library's own defaults — both pass comfortably (6+:1). `one-dark`/`one-light`
   reproduce a real, recognisable third-party editor palette on purpose (see their own file
   header comments), so darkening/lightening the muted colour is a fidelity trade-off, not a free
   fix.
-- **Button label text fails 4.5:1 against its own fill in two of five.** `--gog-accent-text-color`
+- **Button label text fails 4.5:1 against its own fill in three of seven.** `--gog-accent-text-color`
   vs `--gog-accent-color`: `light` is essentially at the line (4.44:1), `one-light` is short
-  (4.05:1). `slate`, `dark` and `one-dark` all pass.
+  (4.05:1), and `primeng` — found once it shipped as a real preset in iteration 3 — is short too
+  (3.68:1: white on `#3b82f6`, Tailwind's `blue-500` and PrimeNG's own Aura primary, copied
+  verbatim from the palette it reproduces). Same trade-off as the two above: the colour is
+  correct for what the theme is trying to be, not incorrect by accident. `slate`, `dark`,
+  `one-dark` and `material` all pass.
 
 `npm run check:contrast` prints the exact ratio for every pair in every shipped theme and is not
 yet wired into CI — see the script's own header for why (wiring a hard gate over an already-known,

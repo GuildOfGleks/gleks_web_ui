@@ -74,7 +74,7 @@ That is the whole of iteration 1, and everything else in this plan is cheap once
 | 1   | The character layer; 510 literals become derived | api     | ✅ done |
 | 2   | Contrast checking, before the catalogue grows    | tooling | 🟡 partial |
 | 3   | Promote `material` / `primeng` out of the lab    | feature | 🟡 partial |
-| 4   | The catalogue — eras and families                | feature | ⬜ todo |
+| 4   | The catalogue — eras and families                | feature | 🟡 partial |
 | 5   | Tooling and docs catch up                        | tooling | ⬜ todo |
 
 ---
@@ -344,8 +344,9 @@ Families, not a flat list — a reader picking a theme is choosing a _mood_ firs
   once iteration 1 lands). Room for one flat/minimal and one soft/rounded.
 - **Look-alikes** — `material`, `primeng` from iteration 3. Their value is migration: a team moving
   off Material can keep the look while changing the library.
-- **Classic** — the square-cornered, hard-shadowed, system-font look. Beige and grey, 1px borders,
-  no radius, no motion to speak of. This is the one that needs the least invention and lands best.
+- **Classic** — **shipped 2026-08-29**, `styles/presets/classic.css`. The square-cornered,
+  hard-shadowed, system-font look. Beige and grey, 1px borders, no radius, no motion to speak of.
+  This is the one that needed the least invention and landed best, exactly as predicted below.
 - **Retro** — monochrome terminal (green or amber phosphor on near-black), and a high-chrome
   early-web look. Both are mostly palette plus zero radius plus a mono font.
 - **Historical** — parchment and ink, serif body, square corners, warm neutrals. **This family is
@@ -361,6 +362,55 @@ network request by being imported.**
 
 **Done when:** each shipped preset has a compare-page entry, passes iteration 2's check, and reads
 as a coherent identity rather than a recoloured default.
+
+---
+
+### Iteration 4, as it finished so far (2026-08-29) — partial, one family of six
+
+**Scoped down on purpose before starting.** Six new themes across four families is a large,
+mostly-subjective design surface — six unreviewed colour palettes shipped in one pass is a
+different kind of risk than the mechanical refactors iterations 1–3 were. Asked, and scoped to
+one theme this pass: **Classic**, the one the plan's own text flags as needing "the least
+invention" — and Historical is skipped entirely rather than forced, since its font-strategy
+decision (system-serif only, or a documented opt-in) is a real product decision, not this
+session's to make unprompted.
+
+**`classic.css` shipped**, palette plus the character layer, no per-component overrides needed at
+all — the cleanest possible proof that iteration 1's foundation tokens are sufficient on their
+own for a coherent identity. Designed against real constraints, not eyeballed after the fact:
+drafted the palette, ran it through `check-contrast.mjs`'s own maths *before* writing the file
+(`mutedText`/`background` came out at 4.81:1 on the first pass — passing, but thin — darkened
+`--gog-muted-text-color` for a real margin, landing at 5.90:1), then confirmed with the actual
+script once the file existed. **Zero gated failures** — the only theme so far, alongside
+`material`, with a completely clean `check:contrast` run.
+
+**Verified live, the same DOM-injection method as iteration 3 (nothing in the repo touched or
+reverted):** built `@gleks/ui`, confirmed `classic.css` in `dist/gleks/ui/styles/presets/`,
+injected it into `ui-showcase` and set `data-theme="classic"`. Confirmed by `getComputedStyle` on
+real elements, not assumption: `gog-card--elevated`'s `box-shadow` resolves to exactly
+`rgba(38, 36, 32, 0.25) 2px 2px 0px 0px` (hard-edged, zero blur — the whole point of "hard-
+shadowed"); both card variants render `0px` `border-radius`; `transition-duration` on the same
+element is `0s, 0s`; `gog-input__field`'s border resolves to `1px solid rgb(35, 55, 79)` — exactly
+`--gog-accent-dim`, the functional field-boundary token iteration 2 identified, confirming the
+"1px borders" character choice actually reaches the one border that has to pass WCAG 1.4.11, not
+just the decorative ones. A full-page screenshot of the button variants page confirmed the
+identity reads as one coherent thing — beige page, white cards, navy accent, sentence-case labels,
+square corners throughout — not a pile of isolated correct tokens that happen to coexist.
+
+**Re-running `check:contrast` against all six current presets, not just `classic`, surfaced one
+finding this plan's own record hadn't caught yet:** `primeng` — shipped in iteration 3, before
+this check existed to run against it as a preset in its own right — fails `accentText`/`accent`
+at 3.68:1 (white on `#3b82f6`, copied verbatim from the real PrimeNG Aura palette it reproduces).
+Added to the same `docs/backlog.md` entry as `light`/`one-light`'s versions of this failure, same
+reasoning: the colour is correct for what the theme is trying to be. Not this iteration's
+finding by origin, but this iteration's `check:contrast` re-run is what surfaced it, so it is
+recorded here rather than silently left for someone else to notice.
+
+**What's left, and why it's partial:** five theme slots across three families (one more Modern,
+one more Retro pairing, all of Historical) are simply not started — a scope decision, not a
+blocker. What *is* blocked, the same way iterations 2 and 3 are: the "done when" bar's
+"compare-page entry" is `gleks-ui-lab` territory, and 21.7.0 isn't published — recorded in
+`docs/lab-after-publish.md`, ready to execute the moment it can be.
 
 ---
 

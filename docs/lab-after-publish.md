@@ -75,6 +75,21 @@ lab in a library-change session"). Once 21.7.0 is on npm:
 4. `compare-page.ts` and `app.ts` are the files that currently reference `'material'`/`'primeng'`
    by name (grep for both to find every call site before starting).
 
+## After 21.7.0 — `classic` needs a compare-page entry
+
+`docs/themes.md` iteration 4 shipped `classic` (square-cornered, hard-shadowed, no motion, beige
+and grey — `projects/gleks/ui/src/styles/presets/classic.css`), the first of the plan's catalogue
+families. Unlike `material`/`primeng` above, this one never existed in the lab, so there is no
+local copy to delete — it is a straightforward addition once 21.7.0 is on npm:
+
+1. Add `classic` wherever `app.ts`/`compare-page.ts` enumerate the available themes, the same way
+   `material`/`primeng` are listed, importing `@guildofgleks/ui/styles/presets/classic.css`.
+2. No behaviour-change caveat this time — `classic` was written directly against the character
+   layer from the start, so there is nothing inconsistent to carry over or fix.
+3. Iteration 4's own "done when" also names `passes iteration 2's check` — it does
+   (`npm run check:contrast`, verified 2026-08-29, no gated failures) — and reads as one coherent
+   identity, verified live in `ui-showcase` (see `docs/themes.md` for the full record).
+
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see

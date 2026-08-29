@@ -8,6 +8,13 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **A new shipped preset: `classic`** — the square-cornered, hard-shadowed, system-font
+  administrative-software identity. Beige and grey, a muted navy accent, uniform 1px borders,
+  zero corner radius, a hard offset shadow with no blur, and every transition duration set to
+  `0s`. `@import '@guildofgleks/ui/styles/presets/classic.css'`, then `data-theme="classic"`.
+  Palette-plus-character-layer only, like `material`/`primeng` below but with no per-component
+  overrides needed at all — see `docs/themes.md` iteration 4.
+
 - **Two new shipped presets: `material` and `primeng`** — full visual identities (Material
   Design 3 baseline and PrimeNG's Aura), not just palettes, ported from `gleks-ui-lab`'s
   compare page. `@import '@guildofgleks/ui/styles/presets/material.css'` /

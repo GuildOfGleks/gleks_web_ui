@@ -153,7 +153,20 @@ Update the status table in whichever you are working from, as you go.
   (never touch `gleks-ui-lab` in a library-change session; it tracks the published package, and
   21.7.0 isn't published) — recorded in full in `docs/lab-after-publish.md`, including the
   six-component behaviour change so it reads as the fix landing, not a regression, when that work
-  happens. Iterations 4–5 are not started.
+  happens. **Iteration 4 (the catalogue) is partial, 2026-08-29**: one theme of the six the plan
+  sketches, `classic` (square-cornered, hard-shadowed, no motion, beige/grey/navy) — scoped down
+  deliberately, since six unreviewed palettes in one pass is a different risk than the mechanical
+  work in 1–3, and Historical skipped entirely rather than forcing its still-open font-strategy
+  question. Palette drafted against `check-contrast.mjs`'s own maths before the file existed, then
+  confirmed with the real script: zero gated failures, the cleanest run of any shipped theme.
+  Verified live the same DOM-injection way as iteration 3 — `getComputedStyle` confirmed the hard
+  shadow has zero blur, corners are `0px`, transitions are `0s`, and the functional field border
+  resolves to the theme's own `--gog-accent-dim`. Re-running the checker against all six current
+  presets also surfaced a finding iteration 3 hadn't caught: `primeng`'s own
+  `accentText`/`accent` fails 4.5:1 (3.68:1, inherited verbatim from the real PrimeNG palette) —
+  added to the same `docs/backlog.md` entry. Five theme slots remain unstarted by choice; the
+  "compare-page entry" half of iteration 4's own bar is `gleks-ui-lab` territory again, recorded
+  in `docs/lab-after-publish.md`. Iteration 5 is not started.
 - `docs/panel-card.md` — **built 2026-08-23 into 21.6.1, finished 2026-08-26**: `gog-card` and
   `gog-panel`, all four iterations done. Read its _Iteration 1, as resolved_ section rather than the
   sketch above it: two of the answers came out differently from the plan. There is no `interactive`

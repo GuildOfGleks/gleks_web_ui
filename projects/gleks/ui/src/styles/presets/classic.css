@@ -1,0 +1,59 @@
+/*
+ * `classic` — the square-cornered, hard-shadowed, system-font look. Beige and grey, thin
+ * borders, no motion to speak of: the administrative-software identity, from before rounded
+ * corners and soft blur shadows were the default assumption.
+ *
+ * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *   @import '@guildofgleks/ui/styles/presets/classic.css';
+ *
+ *   <html data-theme="classic">
+ *
+ * Palette plus the `docs/themes.md` iteration-1 character layer — no per-component overrides
+ * needed, which is exactly the point of that layer existing (see `slate.css` for the same
+ * argument, palette-only). Fonts are untouched on purpose: the library's own default is already
+ * a plain system-ui stack, which is the "system-font" look this preset asks for.
+ */
+
+:root[data-theme='classic'],
+[data-theme='classic'] {
+  color-scheme: light;
+
+  /* Palette — beige and grey, a muted navy accent */
+  --gog-background-color: #d8d3c7;
+  --gog-surface-color: #ffffff;
+  --gog-hover-color: #ccc6b8;
+  --gog-border-color: #a39d8f;
+  --gog-text-color: #262420;
+  --gog-accent-text-color: #ffffff;
+  --gog-muted-text-color: #4f4a3f;
+  --gog-primary-color: #262420;
+  --gog-accent-color: #35507a;
+  --gog-accent-bright: #4a6a9c;
+  --gog-accent-dim: #23374f;
+  --gog-accent-pale: #e4e8ee;
+  --gog-secondary-color: #6b6558;
+  --gog-success-color: #4a6b4a;
+  --gog-danger-color: #8b3a3a;
+  --gog-warning-color: #96702f;
+  --gog-info-color: #3d6b7a;
+
+  /* Hard-edged, not blurred — an offset with no blur radius reads as a printed drop shadow,
+     not a soft elevation cue. */
+  --gog-panel-shadow: 2px 2px 0 rgba(38, 36, 32, 0.25);
+  --gog-spinner-overlay-bg: rgba(216, 211, 199, 0.85);
+
+  /* Character layer — square corners, uniform 1px borders (down from the 2px form-field
+     default), sentence-case labels instead of shouty caps, and no motion: set all three
+     durations to 0s rather than lower each component's own transition individually, which is
+     the whole reason the character layer's foundation tokens exist. Components still honour
+     `prefers-reduced-motion` independently of this. */
+  --gog-radius: 0;
+  --gog-control-border-width: 1px;
+  --gog-text-transform: none;
+  --gog-letter-spacing: normal;
+  --gog-duration-fast: 0s;
+  --gog-duration-base: 0s;
+  --gog-duration-slow: 0s;
+}
