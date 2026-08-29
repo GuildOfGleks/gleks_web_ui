@@ -47,6 +47,32 @@ describe('SelectComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('chevron', () => {
+    // Added in 21.7.1: the chevron never turned over on open, which read as a reduced-motion bug
+    // and was a missing state — `gog-multiselect` and `gog-accordion` both had it.
+    it('marks the default chevron as auto-rotating', () => {
+      const chevron = fixture.nativeElement.querySelector('.gog-select__chevron');
+
+      expect(chevron.classList.contains('gog-select__chevron--auto-rotate')).toBe(true);
+    });
+
+    it('gets the open-state class the rotation hangs off', async () => {
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      fixture.nativeElement.querySelector('button').click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // The rotation itself is `.gog-select--open .gog-select__chevron--auto-rotate` in CSS;
+      // jsdom applies no stylesheet, so what is assertable here is that both halves of that
+      // selector are present on the right elements.
+      const chevron = fixture.nativeElement.querySelector('.gog-select__chevron--auto-rotate');
+      expect(chevron.closest('.gog-select--open')).not.toBeNull();
+    });
+  });
+
   describe('fullWidth', () => {
     it('should not apply the auto-width host class by default', () => {
       expect(fixture.nativeElement.classList.contains('gog-host--auto-width')).toBe(false);

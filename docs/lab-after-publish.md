@@ -22,7 +22,7 @@ delete the section too.
 ## After 21.7.0 — the removal's prose goes stale
 
 21.7.0 deletes the three abbreviated token prefixes (`docs/token-prefix-removal.md` has the full
-per-file list). Two lab pages describe them as *currently working, removed later* — both need to
+per-file list). Two lab pages describe them as _currently working, removed later_ — both need to
 flip to past tense once that ships:
 
 - **`theming-page.html`'s token-reference intro** (the paragraph starting "Three prefixes were
@@ -58,14 +58,14 @@ lab in a library-change session"). Once 21.7.0 is on npm:
    be imported (see `README.md`'s Theming section).
 2. **The palette and structural declarations are byte-for-byte identical to what `styles.scss`
    has today.** The character-layer consolidation changed only how the casing/tracking
-   declarations are *written* (ten per theme → two), not what they render — with one deliberate
+   declarations are _written_ (ten per theme → two), not what they render — with one deliberate
    exception, next.
 3. **Six components will render differently than the lab's current compare pages show, on
    purpose, not as a bug to chase.** The old hand-authored blocks explicitly set
    `text-transform`/`letter-spacing` on `button`/`input-label`/`select-label`/
    `multiselect-label`/`accordion-header`/`table-header`, but never got around to
    `button-toggle`/`calendar-weekday`/`autocomplete-label`/`datepicker-label`/`slider-label`/
-   `table-total` — so under the *current* lab those six still shout in `theme.css`'s own default
+   `table-total` — so under the _current_ lab those six still shout in `theme.css`'s own default
    uppercase/1px tracking, inconsistent with the other ten. The two new preset files set
    `--gog-text-transform: none` / `--gog-letter-spacing: normal` once, which correctly covers
    all eighteen. Verified live in `ui-showcase` (`docs/themes.md`, iteration 3): all six now
@@ -88,10 +88,10 @@ preset is has stopped being true.**
    sentence-case labels. That is the fix landing, not a regression; see `docs/themes.md`
    iteration 4's second pass.
 2. **Anywhere the lab says a preset is "palette-only", or that a theme declares "just the
-   palette", it is now wrong.** All nine set palette *and* character. `README.md` and `AGENTS.md`
+   palette", it is now wrong.** All nine set palette _and_ character. `README.md` and `AGENTS.md`
    were rewritten for this; grep the lab's Theming page and FAQ for the same phrasing.
 3. **The two `.fonts.css` companions need explaining, not just listing.** `terminal.fonts.css`
-   and `parchment.fonts.css` are opt-in webfont files imported *after* their preset. The rule
+   and `parchment.fonts.css` are opt-in webfont files imported _after_ their preset. The rule
    they exist to keep is the interesting part and the lab should state it: **importing a preset
    never makes a network request.** If the lab imports a companion for its own demo, say on the
    page that it did, or readers will think the preset downloads a font.
@@ -145,6 +145,43 @@ None of the three can happen before 21.7.0 ships, same reason as everything else
 description — needed no lab work and are already done: `TOKENS.md` regenerates itself
 (`npm run generate:tokens`, already current) and `README.md`'s Foundation paragraph picked up the
 character layer in iteration 1's own commit, not deferred here.
+
+## After 21.7.1 — the lab must state which browsers are supported
+
+**Asked for directly, and there is now a real answer to publish.** The lab documents a library
+whose support floor was never written down anywhere a reader could find it. `package.json` gained
+a `browserslist` in 21.7.1; the lab should say the same thing in prose, on the Getting Started or
+FAQ page.
+
+**The floor, and what sets it:**
+
+| Browser          | Minimum | Why that version |
+| ---------------- | ------- | ---------------- |
+| Chrome / Edge    | 111     | `color-mix()`    |
+| Firefox          | 113     | `color-mix()`    |
+| Safari / iOS     | 16.2    | `color-mix()`    |
+| Samsung Internet | 22      | `color-mix()`    |
+
+Chromium-based browsers follow their base version: Brave, Opera, Yandex, Vivaldi and Arc are all
+Chrome 111+ once their own release is recent enough. Opera 97 is Chromium 111.
+
+**What the page should also say, because it is the part people ask about:**
+
+- **Below the floor the library still works** — since 21.7.1, `color-mix()` values sit behind
+  `@supports` with flat palette fallbacks. Older browsers get flatter colour, not missing colour.
+- **Every animation is plain CSS** — `@keyframes` and `transition`, no Web Animations API and no
+  JavaScript timers driving visuals. There is no browser that runs the library but skips its
+  animations. If a user sees none, the cause is `prefers-reduced-motion`, not the browser.
+- **`backdrop-filter` degrades on its own**: every use of it sits on an element that also sets a
+  solid `background`, so a browser without it loses the blur and keeps the dimming.
+- **Brave's shields can block Google Fonts.** That only affects the two opt-in
+  `presets/*.fonts.css` files; the presets themselves set system stacks and are unaffected. Worth
+  one sentence, because it looks like a library bug and is not.
+
+**Say plainly what has and has not been tested.** As of 21.7.1 the library is verified in Chrome
+on Windows. The floor above is derived from the features the code actually uses, not from a test
+matrix — and the difference matters to anyone deciding whether to depend on it. Do not write
+"tested in Brave, Opera and Yandex" until someone has opened it in them.
 
 ## Checking your work
 

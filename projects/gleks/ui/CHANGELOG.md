@@ -8,6 +8,13 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-select`'s chevron now turns over when the panel opens.** It never did — there was no
+  rotation in any state, which looked like a reduced-motion problem and was a missing one:
+  `gog-multiselect` and `gog-accordion` both already had it. Only the default chevron rotates; a
+  custom icon supplied through the chevron slot keeps the orientation you drew, the same rule
+  `gog-accordion` follows. The rotation is a `transform`, so with `prefers-reduced-motion` the
+  arrow still points the right way and only the tween is dropped.
+
 - **Colours no longer vanish in browsers without `color-mix()`.** 36 tokens in `theme.css` used
   `color-mix()` with no fallback, and **a custom property does not fall back the way an ordinary
   one does**: it accepts almost any value at parse time and only fails when substituted, so a

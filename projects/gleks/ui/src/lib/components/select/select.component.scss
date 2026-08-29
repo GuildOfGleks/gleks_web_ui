@@ -163,6 +163,24 @@
   flex-shrink: 0;
 }
 
+/*
+ * Only the default `chevron-down` turns over on open — a consumer's own icon through the chevron
+ * slot keeps whatever orientation they drew, the same rule `gog-accordion` follows.
+ *
+ * The rotation is a `transform`, not an animation, so a reduced-motion user still gets the arrow
+ * pointing the right way; only the tween between the two states is dropped, in the block at the
+ * bottom of this file. Before 21.7.1 this chevron never moved at all, which read as a
+ * reduced-motion bug and was simply a missing state — `gog-multiselect` had it, `gog-select` did
+ * not.
+ */
+.gog-select__chevron--auto-rotate {
+  transition: transform var(--gog-select-transition-duration) var(--gog-easing);
+}
+
+.gog-select--open .gog-select__chevron--auto-rotate {
+  transform: rotate(180deg);
+}
+
 .gog-select__chevron gog-icon {
   font-size: calc(
     var(
@@ -325,6 +343,7 @@
 @media (prefers-reduced-motion: reduce) {
   .gog-select__control,
   .gog-select__option,
+  .gog-select__chevron--auto-rotate,
   .gog-select__label--float {
     transition: none;
   }

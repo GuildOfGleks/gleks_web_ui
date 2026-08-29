@@ -56,7 +56,11 @@
         {{ selectedLabel() || effectivePlaceholder() }}
       </span>
 
-      <span class="gog-select__chevron" aria-hidden="true">
+      <span
+        class="gog-select__chevron"
+        [class.gog-select__chevron--auto-rotate]="!chevronSlot()"
+        aria-hidden="true"
+      >
         <gog-icon [template]="chevronSlot()?.templateRef ?? null" name="chevron-down" />
       </span>
     </button>
