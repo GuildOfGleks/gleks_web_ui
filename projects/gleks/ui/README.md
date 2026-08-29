@@ -272,6 +272,16 @@ parent rather than replacing it.
 the animation frames, so a real off has to reach the TypeScript. It is **off by default**, and
 every rippling component takes a `ripple` input that beats it in both directions.
 
+**Under `prefers-reduced-motion: reduce` the ripple does not appear at all** — suppressed
+outright rather than shortened, in CSS and in the controller, so no node is created and no
+listener attached. If you turned it on and see nothing, check that setting before checking your
+config.
+
+That is the one place motion is removed entirely, and it is deliberate: a ripple is decoration,
+so losing it costs a user nothing. Everywhere else the rule is the opposite — **reduced motion
+drops the animation, never the information.** A chevron still turns to show a panel is open, a
+toggle still moves; only the tween between the two states goes away.
+
 Icons work the same way — 41 Lucide glyphs ship with the package, and your own register by name:
 
 ```ts
