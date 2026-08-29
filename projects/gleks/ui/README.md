@@ -123,8 +123,12 @@ want for a toast.
 
 Every value the components paint with lives in `styles/theme.css`, in three layers:
 
-**Foundation** — palette, type scale, spacing, motion. Override these to restyle everything at
-once; component tokens derive from them, so a palette swap carries through on its own.
+**Foundation** — palette, type scale, spacing, motion, and a small _character_ layer: corner
+rounding (`--gog-radius`), border weight (`--gog-control-border-*` for form fields,
+`--gog-panel-border-*` for raised surfaces, `--gog-border-*` for everything smaller and inline),
+and emphasis casing/tracking (`--gog-text-transform`, `--gog-letter-spacing`). Override these to
+restyle everything at once; component tokens derive from them, so a palette or character change
+carries through on its own, with nothing to re-list per component.
 
 **Component** — `--gog-<component>-*`, one block per component, named after the component you
 write in markup (`gog-button` → `--gog-button-*`), to restyle a single component app-wide:

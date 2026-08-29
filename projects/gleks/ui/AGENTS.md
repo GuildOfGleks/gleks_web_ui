@@ -167,13 +167,19 @@ exist.
 
 ## Theming
 
-Full model is in `README.md`'s Theming section and `theming.md`; short version:
+Full model is in `README.md`'s Theming section; short version:
 
 - Every visual value (color, spacing, radius, shadow, duration) is a `--gog-*` CSS custom
   property, layered **foundation** (`--gog-accent-color`, `--gog-space-md`, …, restyles
   everything) → **component** (`--gog-button-primary-bg`, …, one block per component, named after
   the component's own element) → **instance** (`--gog-button-bg`, …, deliberately undeclared
   escape hatch for one element).
+- **Foundation includes a small character layer** (since 21.7.0, `docs/themes.md` iteration 1):
+  `--gog-radius` (corner rounding), `--gog-control-border-*`/`--gog-panel-border-*`/`--gog-border-*`
+  (border weight — form fields, raised surfaces, everything smaller and inline, respectively),
+  `--gog-text-transform`/`--gog-letter-spacing` (emphasis casing/tracking). Component tokens in
+  the categories these cover derive from them by default; setting one in a `[data-theme]` block
+  restyles every component that reads it, with nothing to re-list per component.
 - **Component prefixes are spelled out** since 21.5.0: `--gog-button-*`, `--gog-multiselect-*`,
   `--gog-confirmation-dialog-*`. The abbreviated `--gog-btn-*`, `--gog-ms-*` and `--gog-confirm-*`
   were removed in 21.7.0 — if you're reading a codebase or an example that still uses one, rename

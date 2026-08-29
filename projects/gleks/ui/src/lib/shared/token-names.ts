@@ -187,6 +187,8 @@ export type GogTokenName =
   | '--gog-badge-warning-color'
   | '--gog-badge-z'
   | '--gog-border-color'
+  | '--gog-border-style'
+  | '--gog-border-width'
   | '--gog-button-active-scale'
   | '--gog-button-bg'
   | '--gog-button-border'
@@ -700,6 +702,7 @@ export type GogTokenName =
   | '--gog-input-spin-hover-bg'
   | '--gog-input-spin-width'
   | '--gog-input-transition-duration'
+  | '--gog-letter-spacing'
   | '--gog-menu-available-height'
   | '--gog-menu-bg'
   | '--gog-menu-border-color'
@@ -1274,6 +1277,7 @@ export type GogTokenName =
   | '--gog-text-lg'
   | '--gog-text-md'
   | '--gog-text-sm'
+  | '--gog-text-transform'
   | '--gog-text-xl'
   | '--gog-text-xs'
   | '--gog-textarea-clear-icon-ratio'
@@ -1421,11 +1425,13 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-font-body',
       '--gog-font-heading',
       '--gog-font-mono',
+      '--gog-letter-spacing',
       '--gog-text-2xl',
       '--gog-text-3xl',
       '--gog-text-lg',
       '--gog-text-md',
       '--gog-text-sm',
+      '--gog-text-transform',
       '--gog-text-xl',
       '--gog-text-xs',
     ],
@@ -1434,6 +1440,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     section: 'Spacing & geometry',
     layer: 'foundation',
     tokens: [
+      '--gog-border-style',
+      '--gog-border-width',
       '--gog-panel-border-style',
       '--gog-panel-border-width',
       '--gog-radius',

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Enforces the design-token contract from .github/instructions/styling.instructions.md
-// ("Theming via CSS custom properties — the three layers"). Four rules:
+// ("Theming via CSS custom properties — the three layers"). Seven rules:
 //
 //   A. no-literal-fallback   A component stylesheet must not carry a real default in a
 //                            var() fallback. `var(--gog-x, 8px)` puts the value in a file
@@ -41,6 +41,18 @@
 //                            nothing, silently, in every consumer — found 2026-08-28 in three
 //                            multiselect/select tokens that had never painted. See
 //                            docs/token-prefix-removal.md, iteration 0.
+//
+//   G. character-drift       A component-token literal whose value repeats a `docs/themes.md`
+//                            character token's current value, in a category that layer covers
+//                            (radius/border-width/border-style/text-transform/letter-spacing —
+//                            CHARACTER_TOKENS below) — should read that token, not restate its
+//                            value. This checks the *value*, not just the property name: a
+//                            radius of 6px isn't flagged just for being a radius, only for
+//                            being exactly 8px (today's --gog-radius) while staying a bare
+//                            literal. Added 2026-08-29, iteration 1: this is the mechanical
+//                            half of "give themes foundation tokens worth setting" — without
+//                            it, a component added in a hurry silently reintroduces the exact
+//                            drift the character layer exists to end.
 
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -99,6 +111,7 @@ const FOUNDATION_NAMESPACES = new Set([
   'easing',
   'focus',
   'font',
+  'letter-spacing',
   'radius',
   'space',
   // shared tiers several components read
@@ -127,6 +140,27 @@ const SHARED_BLOCK_NAMESPACES = new Map([
 
 // The abbreviations that predate the rule live in `deprecations.mjs`, together with the dates
 // they carry — one list, read here by rule E and expanded by the manifest generator.
+
+/**
+ * Rule G's targets — docs/themes.md's character layer, added in iteration 1 (2026-08-29).
+ * Each entry maps a component-token suffix to the foundation token(s) that already give a
+ * theme one place to set this exact value. A `--gog-<component>-<suffix>` declared as a bare
+ * literal whose value equals one of these is the drift the character layer exists to catch:
+ * someone typed the value they saw next door instead of reading the token that already carries
+ * it, and the next theme has to re-discover and re-list it by hand. This does **not** mean
+ * every token in these categories must derive from the character layer — a pill radius, a
+ * genuinely flat corner, a component's own tuned tracking are real per-component choices, not
+ * drift, which is exactly why this checks the *value*, not the property name: a literal that
+ * doesn't match today's character value isn't flagged, because nothing suggests it should have
+ * used the token instead of picking its own.
+ */
+const CHARACTER_TOKENS = new Map([
+  ['radius', ['--gog-radius']],
+  ['border-width', ['--gog-border-width', '--gog-control-border-width', '--gog-panel-border-width']],
+  ['border-style', ['--gog-border-style', '--gog-control-border-style', '--gog-panel-border-style']],
+  ['text-transform', ['--gog-text-transform']],
+  ['letter-spacing', ['--gog-letter-spacing']],
+]);
 
 /**
  * Component stylesheets are analysed **after** compiling them with sass, not as raw source.
@@ -164,6 +198,33 @@ async function collectCompiledScss(dir) {
 
 function findDeclared(content) {
   return new Set([...content.matchAll(DECLARATION_RE)].map((m) => m[1]));
+}
+
+/**
+ * Every `--gog-x: value;` declaration in `content`, name paired with its raw value text.
+ * Paren-depth-aware so a value containing `calc(...)`/`color-mix(...)` doesn't end the
+ * declaration at a `;` that's actually inside one of those calls — there is none today, but
+ * the character-layer values this feeds (radius/border/casing/tracking) are exactly the kind
+ * a future one might grow.
+ */
+function findDeclaredWithValues(content) {
+  const decls = [];
+  const head = /(--gog-[a-zA-Z0-9-]+)\s*:/g;
+  let m;
+  while ((m = head.exec(content))) {
+    let depth = 0;
+    let i = head.lastIndex;
+    const valueStart = i;
+    for (; i < content.length; i++) {
+      const c = content[i];
+      if (c === '(') depth++;
+      else if (c === ')') depth--;
+      else if (c === ';' && depth === 0) break;
+    }
+    decls.push({ name: m[1], value: content.slice(valueStart, i).trim(), index: m.index });
+    head.lastIndex = i;
+  }
+  return decls;
 }
 
 /**
@@ -401,6 +462,35 @@ async function main() {
       problems.push(
         `[no-dead-read] styles/theme.css:${line}\n      var(${token}) has no fallback and ${token} is declared nowhere — this reference always resolves to nothing`,
       );
+    }
+  }
+
+  // Rule G — docs/themes.md iteration 1's character-layer drift check. A component-token
+  // literal that repeats a character token's current value, in a category the character layer
+  // covers, should read that token instead — see CHARACTER_TOKENS above for what this is and
+  // is not catching.
+  const allCharacterTokenNames = new Set([...CHARACTER_TOKENS.values()].flat());
+  const themeDecls = findDeclaredWithValues(stripComments(themeCss));
+  const characterValues = new Map(); // suffix -> Map(tokenName -> currentValue)
+  for (const [suffix, tokenNames] of CHARACTER_TOKENS) {
+    const values = new Map();
+    for (const { name, value } of themeDecls) {
+      if (tokenNames.includes(name)) values.set(name, value);
+    }
+    characterValues.set(suffix, values);
+  }
+  for (const { name, value, index } of themeDecls) {
+    if (allCharacterTokenNames.has(name)) continue; // the character tokens themselves
+    if (value.includes('var(')) continue; // already derives from something
+    for (const [suffix, values] of characterValues) {
+      if (!name.endsWith(`-${suffix}`)) continue;
+      for (const [charToken, charValue] of values) {
+        if (value !== charValue) continue;
+        const line = lineOf(themeCss, index);
+        problems.push(
+          `[character-drift] styles/theme.css:${line}\n      ${name}: ${value}; repeats ${charToken}'s value verbatim — read it instead: var(${charToken})`,
+        );
+      }
     }
   }
 

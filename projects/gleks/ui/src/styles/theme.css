@@ -57,6 +57,15 @@
   --gog-text-2xl: 2rem;
   --gog-text-3xl: 3rem;
 
+  /* The "emphasis" casing character — labels, buttons, section and table headers all shout
+     the same way by default. Not every uppercase/1px-tracking declaration in this file reads
+     these two: only the ones that genuinely share this idea do. A few (gog-tabs among them)
+     stay their own literal on purpose, because normal case or a different tracking reads
+     better there — see docs/themes.md, iteration 1, for the full audit of what did and did
+     not qualify. */
+  --gog-text-transform: uppercase;
+  --gog-letter-spacing: 1px;
+
   /* ── Spacing & geometry ─────────────────────────────────────────────────────── */
   --gog-space-xs: 4px;
   --gog-space-sm: 8px;
@@ -65,6 +74,14 @@
   --gog-space-2xl: 48px;
 
   --gog-radius: 8px;
+  /* Three border-weight tiers, not one: --gog-control-border-width (2px) is form fields,
+     --gog-panel-border-width (1px) is raised/floating surfaces (card, dialog, dropdown panel,
+     tooltip — see README.md's note on --gog-panel-*), and this pair is everything smaller and
+     inline — chip, tag, badge, toggle, table rows, tabs, calendar cells. It happens to share
+     panel's value today; kept separate anyway; a theme wanting thick floating panels but thin
+     inline chips (or the reverse) needs the two independently settable. */
+  --gog-border-width: 1px;
+  --gog-border-style: solid;
   --gog-panel-border-width: 1px;
   --gog-panel-border-style: solid;
 
@@ -310,7 +327,7 @@
   --gog-accordion-focus-ring-width: var(--gog-focus-ring-width);
   --gog-accordion-body-color: var(--gog-text-color);
   --gog-accordion-body-line-height: 1.6;
-  --gog-accordion-header-text-transform: uppercase;
+  --gog-accordion-header-text-transform: var(--gog-text-transform);
   --gog-accordion-header-gap: 12px;
   --gog-accordion-disabled-opacity: 0.5;
   --gog-accordion-transition-duration: var(--gog-duration-base);
@@ -420,8 +437,8 @@
 
   --gog-button-font-family: var(--gog-font-heading);
   --gog-button-font-weight: 900;
-  --gog-button-letter-spacing: 1px;
-  --gog-button-text-transform: uppercase;
+  --gog-button-letter-spacing: var(--gog-letter-spacing);
+  --gog-button-text-transform: var(--gog-text-transform);
   --gog-button-line-height: 1;
   --gog-button-gap: var(--gog-space-sm);
   --gog-button-radius: var(--gog-radius);
@@ -484,7 +501,7 @@
   --gog-button-toggle-font-family: var(--gog-font-heading);
   --gog-button-toggle-font-weight: 700;
   --gog-button-toggle-letter-spacing: 0.5px;
-  --gog-button-toggle-text-transform: uppercase;
+  --gog-button-toggle-text-transform: var(--gog-text-transform);
   --gog-button-toggle-line-height: 1;
   --gog-button-toggle-gap: var(--gog-space-sm);
   --gog-button-toggle-icon-size: 1.1em;
@@ -519,7 +536,7 @@
   --gog-calendar-title-color: var(--gog-text-color);
   --gog-calendar-title-font-weight: 700;
   --gog-calendar-nav-size: 28px;
-  --gog-calendar-nav-radius: 6px;
+  --gog-calendar-nav-radius: calc(var(--gog-radius) - 2px);
   --gog-calendar-nav-bg: transparent;
   --gog-calendar-nav-color: var(--gog-muted-text-color);
   --gog-calendar-nav-hover-bg: var(--gog-hover-color);
@@ -531,10 +548,10 @@
   --gog-calendar-weekday-color: var(--gog-muted-text-color);
   --gog-calendar-weekday-font-size: var(--gog-text-xs);
   --gog-calendar-weekday-font-weight: 600;
-  --gog-calendar-weekday-text-transform: uppercase;
-  --gog-calendar-day-radius: 6px;
-  --gog-calendar-day-border-width: 1px;
-  --gog-calendar-day-border-style: solid;
+  --gog-calendar-weekday-text-transform: var(--gog-text-transform);
+  --gog-calendar-day-radius: calc(var(--gog-radius) - 2px);
+  --gog-calendar-day-border-width: var(--gog-border-width);
+  --gog-calendar-day-border-style: var(--gog-border-style);
   --gog-calendar-day-rest-bg: transparent;
   --gog-calendar-day-rest-color: var(--gog-text-color);
   --gog-calendar-day-hover-bg: var(--gog-hover-color);
@@ -691,8 +708,8 @@
   --gog-chip-bg: color-mix(in srgb, var(--gog-surface-color) 88%, var(--gog-hover-color));
   --gog-chip-hover-bg: color-mix(in srgb, var(--gog-hover-color) 45%, var(--gog-surface-color));
   --gog-chip-border: var(--gog-border-color);
-  --gog-chip-border-width: 1px;
-  --gog-chip-border-style: solid;
+  --gog-chip-border-width: var(--gog-border-width);
+  --gog-chip-border-style: var(--gog-border-style);
   --gog-chip-color: var(--gog-text-color);
   --gog-chip-font-weight: 500;
   --gog-chip-line-height: 1.2;
@@ -802,8 +819,8 @@
   --gog-autocomplete-label-color: var(--gog-accent-color);
   --gog-autocomplete-label-font-size: var(--gog-text-sm);
   --gog-autocomplete-label-font-weight: 600;
-  --gog-autocomplete-label-letter-spacing: 1px;
-  --gog-autocomplete-label-text-transform: uppercase;
+  --gog-autocomplete-label-letter-spacing: var(--gog-letter-spacing);
+  --gog-autocomplete-label-text-transform: var(--gog-text-transform);
   --gog-autocomplete-field-bg: var(--gog-surface-color);
   --gog-autocomplete-text-color: var(--gog-text-color);
   --gog-autocomplete-placeholder-color: var(--gog-muted-text-color);
@@ -847,7 +864,7 @@
   --gog-autocomplete-panel-max-width: 420px;
   --gog-autocomplete-options-padding: 4px;
   --gog-autocomplete-option-padding: 8px 10px;
-  --gog-autocomplete-option-radius: 4px;
+  --gog-autocomplete-option-radius: calc(var(--gog-radius) - 4px);
   --gog-autocomplete-option-gap: 10px;
   --gog-autocomplete-option-color: var(--gog-text-color);
   --gog-autocomplete-option-hover-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
@@ -882,7 +899,7 @@
   /* How far the badge hangs outside its host's corner. */
   --gog-badge-offset: 6px;
   --gog-badge-border-width: 0;
-  --gog-badge-border-style: solid;
+  --gog-badge-border-style: var(--gog-border-style);
   --gog-badge-border-color: transparent;
   /* Above the host's own chrome but below any overlay panel (--gog-dropdown-z is 300). */
   --gog-badge-z: 1;
@@ -906,8 +923,8 @@
   --gog-datepicker-gap: 4px;
   --gog-datepicker-label-color: var(--gog-accent-color);
   --gog-datepicker-label-font-size: var(--gog-text-sm);
-  --gog-datepicker-label-letter-spacing: 1px;
-  --gog-datepicker-label-text-transform: uppercase;
+  --gog-datepicker-label-letter-spacing: var(--gog-letter-spacing);
+  --gog-datepicker-label-text-transform: var(--gog-text-transform);
   --gog-datepicker-field-bg: var(--gog-surface-color);
   --gog-datepicker-text-color: var(--gog-text-color);
   --gog-datepicker-placeholder-color: var(--gog-muted-text-color);
@@ -981,8 +998,8 @@
   --gog-input-gap: 4px;
   --gog-input-label-color: var(--gog-accent-color);
   --gog-input-label-font-size: var(--gog-text-sm);
-  --gog-input-label-letter-spacing: 1px;
-  --gog-input-label-text-transform: uppercase;
+  --gog-input-label-letter-spacing: var(--gog-letter-spacing);
+  --gog-input-label-text-transform: var(--gog-text-transform);
   --gog-input-field-bg: var(--gog-surface-color);
   --gog-input-field-border: var(--gog-accent-dim);
   --gog-input-field-border-width: var(--gog-control-border-width);
@@ -1000,7 +1017,7 @@
   --gog-input-error-offset: 2px;
   --gog-input-icon-color: var(--gog-muted-text-color);
   --gog-input-icon-hover-color: var(--gog-accent-color);
-  --gog-input-icon-action-radius: 4px;
+  --gog-input-icon-action-radius: calc(var(--gog-radius) - 4px);
   --gog-input-icon-focus-ring-width: 2px;
   /* Number field's spin buttons — a subtle fill on hover, since they sit flush against the
      field's own border rather than floating with their own padding like the other icons. */
@@ -1059,8 +1076,8 @@
   --gog-multiselect-options-padding: 4px;
   --gog-multiselect-label-color: var(--gog-accent-color);
   --gog-multiselect-label-font-size: var(--gog-text-sm);
-  --gog-multiselect-label-letter-spacing: 1px;
-  --gog-multiselect-label-text-transform: uppercase;
+  --gog-multiselect-label-letter-spacing: var(--gog-letter-spacing);
+  --gog-multiselect-label-text-transform: var(--gog-text-transform);
   --gog-multiselect-field-bg: var(--gog-surface-color);
   --gog-multiselect-field-border: var(--gog-accent-dim);
   --gog-multiselect-field-border-width: var(--gog-control-border-width);
@@ -1325,8 +1342,8 @@
   --gog-select-gap: 4px;
   --gog-select-label-color: var(--gog-accent-color);
   --gog-select-label-font-size: var(--gog-text-sm);
-  --gog-select-label-letter-spacing: 1px;
-  --gog-select-label-text-transform: uppercase;
+  --gog-select-label-letter-spacing: var(--gog-letter-spacing);
+  --gog-select-label-text-transform: var(--gog-text-transform);
   --gog-select-field-bg: var(--gog-surface-color);
   --gog-select-field-border: var(--gog-accent-dim);
   --gog-select-field-border-width: var(--gog-control-border-width);
@@ -1436,8 +1453,8 @@
   --gog-slider-gap: 6px;
   --gog-slider-label-color: var(--gog-accent-color);
   --gog-slider-label-font-size: var(--gog-text-sm);
-  --gog-slider-label-letter-spacing: 1px;
-  --gog-slider-label-text-transform: uppercase;
+  --gog-slider-label-letter-spacing: var(--gog-letter-spacing);
+  --gog-slider-label-text-transform: var(--gog-text-transform);
   --gog-slider-value-color: var(--gog-accent-color);
   --gog-slider-value-font-size: var(--gog-text-sm);
   --gog-slider-value-min-width: 40px;
@@ -1456,8 +1473,8 @@
    * legible against its own theme's surface.
    */
   --gog-slider-track-bg: color-mix(in srgb, var(--gog-text-color) 30%, var(--gog-border-color));
-  --gog-slider-track-border-width: 1px;
-  --gog-slider-track-border-style: solid;
+  --gog-slider-track-border-width: var(--gog-border-width);
+  --gog-slider-track-border-style: var(--gog-border-style);
   /* Transparent by default — same opt-in convention as --gog-button-primary-border: the
      width/style are always in the box model, but invisible until a theme sets a color. */
   --gog-slider-track-border-color: transparent;
@@ -1468,7 +1485,7 @@
   --gog-slider-thumb-size: 16px;
   --gog-slider-thumb-bg: var(--gog-accent-color);
   --gog-slider-thumb-border: var(--gog-background-color);
-  --gog-slider-thumb-border-width: 2px;
+  --gog-slider-thumb-border-width: var(--gog-control-border-width);
   --gog-slider-thumb-radius: 50%;
   --gog-slider-thumb-shadow: color-mix(in srgb, var(--gog-accent-bright) 40%, transparent);
   --gog-slider-thumb-glow-size: 6px;
@@ -1517,9 +1534,9 @@
   --gog-table-numeric-font-family: var(--gog-font-mono);
   --gog-table-gap: 12px;
   --gog-table-border-color: var(--gog-accent-dim);
-  --gog-table-border-width: 2px;
-  --gog-table-border-style: solid;
-  --gog-table-row-border-width: 1px;
+  --gog-table-border-width: var(--gog-control-border-width);
+  --gog-table-border-style: var(--gog-border-style);
+  --gog-table-row-border-width: var(--gog-border-width);
   /* The selection column is sized to its checkbox and never grows with content. */
   --gog-table-select-col-width: 44px;
   --gog-table-surface: var(--gog-surface-color);
@@ -1532,8 +1549,8 @@
   --gog-table-muted-color: var(--gog-muted-text-color);
   --gog-table-focus-ring: var(--gog-accent-color);
   --gog-table-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-table-header-letter-spacing: 1px;
-  --gog-table-header-text-transform: uppercase;
+  --gog-table-header-letter-spacing: var(--gog-letter-spacing);
+  --gog-table-header-text-transform: var(--gog-text-transform);
   --gog-table-num-col-width: 48px;
   --gog-table-th-inner-gap: 6px;
   --gog-table-sort-icon-size: 0.9em;
@@ -1548,7 +1565,7 @@
   --gog-table-footer-min-height: 32px;
   --gog-table-total-font-size: var(--gog-text-xs);
   --gog-table-total-letter-spacing: 0.5px;
-  --gog-table-total-text-transform: uppercase;
+  --gog-table-total-text-transform: var(--gog-text-transform);
   --gog-table-num-font-size: var(--gog-text-xs);
   --gog-table-padding-h: 14px;
   --gog-table-xsm-padding-v: 2px;
@@ -1584,8 +1601,8 @@
   --gog-tabs-rest-color: var(--gog-muted-text-color);
   --gog-tabs-hover-color: var(--gog-text-color);
   --gog-tabs-active-color: var(--gog-accent-color);
-  --gog-tabs-header-border-width: 1px;
-  --gog-tabs-header-border-style: solid;
+  --gog-tabs-header-border-width: var(--gog-border-width);
+  --gog-tabs-header-border-style: var(--gog-border-style);
   --gog-tabs-header-border-color: var(--gog-border-color);
   --gog-tabs-indicator-color: var(--gog-accent-color);
   --gog-tabs-indicator-thickness: 2px;
@@ -1621,9 +1638,9 @@
   --gog-tag-color-mix: 82%;
   --gog-tag-bg-base: var(--gog-surface-color);
   --gog-tag-color-base: black;
-  --gog-tag-border-width: 1px;
-  --gog-tag-border-style: solid;
-  --gog-tag-inner-border-width: 1px;
+  --gog-tag-border-width: var(--gog-border-width);
+  --gog-tag-border-style: var(--gog-border-style);
+  --gog-tag-inner-border-width: var(--gog-border-width);
   --gog-tag-font-weight: 600;
   --gog-tag-line-height: 1;
   --gog-tag-radius: max(var(--gog-radius), 2px);
@@ -1703,8 +1720,8 @@
   --gog-toggle-font-family: var(--gog-font-body);
   --gog-toggle-gap: var(--gog-space-sm);
   --gog-toggle-radius: 999px;
-  --gog-toggle-border-width: 1px;
-  --gog-toggle-border-style: solid;
+  --gog-toggle-border-width: var(--gog-border-width);
+  --gog-toggle-border-style: var(--gog-border-style);
   --gog-toggle-border-color: var(--gog-border-color);
   --gog-toggle-on-border-color: var(--gog-accent-color);
   --gog-toggle-track-off-bg: color-mix(in srgb, var(--gog-text-color) 18%, transparent);

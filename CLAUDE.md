@@ -64,11 +64,12 @@ ships inside the package; its top entry is always the version being worked on.
 | **21.7.0** | **the mandatory payload is done (2026-08-28); only the version bump remains** | **the three deprecated token prefixes are gone** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*` — from `theme.css`, `button.css`, `ui-showcase`, the generated artifacts (`GOG_DEPRECATIONS` now `[]`) and both published docs (`README.md`, `AGENTS.md`, which gained a **Removed in 21.7.0** table matching **Removed in 21.5.0**'s shape); `CHANGELOG.md` carries `### Removed` and `### Fixed` entries under `## [21.7.0] - planned`. `check:tokens` reports zero left; `check:deprecations` now actually enforces the deadline for any *future* deprecation the same way — it reads `DEPRECATED_NAMESPACES` and fails once a namespace's `removedIn` is at or below the library's version and the stylesheets still contain it, sanity-checked by simulating the overdue case against scratch copies, never a commit. Verified live in `ui-showcase` under all three custom themes; `check:tokens`/`check:deprecations`/`lint`/`format:check`/`test:lib`/`build:lib`/`build:showcase` all pass, `check:release` still correctly fails on the version/heading. All six of `docs/token-prefix-removal.md`'s iterations are ✅. **What's left is rule 1's territory, not an agent's:** the user bumps `package.json` and dates the `planned` heading when ready to publish. |
 | 22.x       | when Angular 22 lands                        | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                              |
 
-**Nothing else is scheduled.** The three future plans below are unscheduled; `themes.md` is
-written to ride along with 21.7.0's removal because both rewrite the same layer of `theme.css`.
-**`token-prefix-removal.md` now argues against that**, on verification grounds rather than cost —
-both jobs are accepted by the same test ("no computed default changed"), so sharing a release
-leaves a moved pixel with two suspects. Read its closing section before deciding.
+**`themes.md` iteration 1 started 2026-08-29**, on the sequencing its own plan and
+`token-prefix-removal.md`'s closing section both argued for: not sharing a release with the
+removal, but starting immediately after it, once verified — so a moved pixel has one suspect, not
+two. Both jobs are accepted by the same test ("no computed default changed"); doing them
+back-to-back rather than interleaved is what keeps that test meaningful. See `themes.md`'s own
+status table for where the other four iterations stand — nothing else there is started.
 
 ### Cutting a release — why an agent does none of it
 
@@ -121,13 +122,21 @@ Update the status table in whichever you are working from, as you go.
   (`docs/backlog.md`); **iteration 2**, the ratchet that does not cover CSS; **iteration 3**, two
   generators that have never emitted an empty list. It also records why `docs/themes.md` should
   _not_ ride along despite naming the same version.
-- `docs/themes.md` — a **future** plan, nothing started, queued behind the ripple: presets
-  become full visual identities (radii, borders, shadows, density, typography) instead of palettes,
-  and then a catalogue across eras. Its load-bearing measurement is that **510 of 1127 component
-  token declarations in `theme.css` are literals**, 26 of them radii — which is why the lab's
-  `material`/`primeng` themes had to name component tokens one at a time. Iteration 1 introduces a
-  character layer so a theme sets ~25 foundation tokens instead, and new components inherit every
-  theme's character for free.
+- `docs/themes.md` — presets become full visual identities (radii, borders, casing, tracking)
+  instead of palettes, then a catalogue across eras. **Iteration 1 done 2026-08-29**: four new
+  foundation tokens (`--gog-text-transform`, `--gog-letter-spacing`, `--gog-border-width`,
+  `--gog-border-style`) plus wider adoption of three that already existed (`--gog-radius`,
+  `--gog-control-border-width`/`-style`), and 40 of `theme.css`'s then-548 literal component
+  tokens converted to derive from them — re-measured against the current file, not the plan's
+  original 2026-08-17 count, which had drifted after three releases. The rest stayed literal on
+  purpose, by category: pills/circles and deliberately-flat radii are shape choices a rounding
+  axis shouldn't touch; density (174 declarations) is explicitly deferred to its own iteration,
+  per the plan's still-open question about its interaction with `GogSize`; font-weight has no
+  dominant value to extract. `check-tokens.mjs` gained rule G — a literal that repeats a
+  character token's *value*, not just its property category, in a covered category — which
+  caught one the manual audit missed (`--gog-table-border-width`) before the audit was even
+  done. Iterations 2–5 are not started; see `themes.md`'s own _Iteration 1, as it finished_
+  section for the full audit table and verification record.
 - `docs/panel-card.md` — **built 2026-08-23 into 21.6.1, finished 2026-08-26**: `gog-card` and
   `gog-panel`, all four iterations done. Read its _Iteration 1, as resolved_ section rather than the
   sketch above it: two of the answers came out differently from the plan. There is no `interactive`

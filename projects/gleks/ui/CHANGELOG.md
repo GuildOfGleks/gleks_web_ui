@@ -8,6 +8,19 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **Four new foundation tokens give a theme somewhere to set corner rounding, border weight and
+  emphasis casing/tracking once, instead of per component:** `--gog-text-transform` (default
+  `uppercase`), `--gog-letter-spacing` (default `1px`), `--gog-border-width` and `--gog-border-style`
+  (default `1px solid` — a third tier alongside the existing `--gog-control-border-*` for form
+  fields and `--gog-panel-border-*` for raised surfaces, covering everything smaller and inline:
+  chips, tags, badges, toggles, table rows, tabs, calendar cells). 40 component tokens across
+  `theme.css` now derive from these plus the pre-existing `--gog-radius` — no default changed;
+  every conversion was checked to render the identical pixel value before and after. Not
+  converted, on purpose: pill/circle radii and deliberately-flat corners (a rounding axis
+  shouldn't reshape a shape choice), and per-component values with no shared pattern to extract.
+  `docs/themes.md` has the full audit. Setting any of the four in a `[data-theme]` block now
+  restyles every component that reads it, with no per-component overrides to list.
+
 - **`DialogService.open()` and `DialogConfig` gain an optional `TData` generic**, checked against
   `data` at the call site: `dialogService.open<TResult, TData>({ data: /* checked against TData */ })`.
   Supplying only `TResult` — the existing, common form — leaves `TData` as `unknown`, exactly as

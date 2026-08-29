@@ -1,8 +1,13 @@
 # @guildofgleks/ui — theme presets plan
 
-**Not started. Target: 21.7.0, alongside that version's mandatory token-prefix removal** — both
-touch `theme.css`'s component-token layer, and iteration 1 here rewrites 510 of its literals, so
-doing them in one pass is much cheaper than twice. See the release sequence in `CLAUDE.md`.
+**Iteration 1 started 2026-08-29.** Originally scoped to ride the same release as 21.7.0's
+token-prefix removal, since both touch `theme.css`'s component-token layer — but
+`docs/token-prefix-removal.md`'s closing section argued against sharing a release on verification
+grounds (both land under the same "no computed default changed" acceptance test, so a moved pixel
+in a shared release would have two suspects instead of one), and that removal shipped on its own
+first. This is the "immediately after" that argument called for: the removal is fully verified and
+committed, so iteration 1 here starts on a known-clean baseline. See the release sequence in
+`CLAUDE.md`.
 
 Turn a preset from a colour palette into a **complete visual identity**: radii, border weights,
 shadow depth, density, typography and letter-spacing character, not just eleven colours. Then ship
@@ -66,7 +71,7 @@ That is the whole of iteration 1, and everything else in this plan is cheap once
 
 | #   | Iteration                                        | Kind    | State   |
 | --- | ------------------------------------------------ | ------- | ------- |
-| 1   | The character layer; 510 literals become derived | api     | ⬜ todo |
+| 1   | The character layer; 510 literals become derived | api     | ✅ done |
 | 2   | Contrast checking, before the catalogue grows    | tooling | ⬜ todo |
 | 3   | Promote `material` / `primeng` out of the lab    | feature | ⬜ todo |
 | 4   | The catalogue — eras and families                | feature | ⬜ todo |
@@ -87,7 +92,7 @@ this exists. Writing the catalogue first would mean writing each theme twice.
 3. Rewrite the shared-idea literals as `var(--gog-<character-token>)`.
    **Defaults must not move by a single pixel.** This is a refactor of where a value is written,
    not of what it is; a diff of computed styles before and after should be empty.
-4. Keep the per-component escape hatch: `--gog-btn-radius` still exists and still wins, so a
+4. Keep the per-component escape hatch: `--gog-button-radius` still exists and still wins, so a
    consumer who wants one square button among round ones is not forced up to the character layer.
 5. `check-tokens.mjs` gains a rule: a component token whose value is a bare literal in a category
    the character layer covers is a failure. Otherwise this decays the first time someone adds a
@@ -95,6 +100,106 @@ this exists. Writing the catalogue first would mean writing each theme twice.
 
 **Done when:** setting `--gog-radius: 0` in a `[data-theme]` block squares every component that
 should be square, no computed default changed, and the check refuses new hardcoded radii.
+
+---
+
+### Iteration 1, as it finished (2026-08-29)
+
+**The audit came first, and it changed the shape of the work.** The 2026-08-17 measurement (1127
+component-token declarations, 617 derived, 510 literal) was stale — `theme.css` grew across three
+releases since, most recently the 21.7.0 token-prefix removal that landed immediately before this.
+Re-measured against the current file: **1131 component-token declarations, 583 derived, 548
+literal.** Sorting the 548 by category (a `var(--gog-…)` reference to any component prefix,
+radius/border-width/border-style/casing/tracking suffix, script in
+`scripts/check-tokens.mjs`'s git history if this needs re-running) gave:
+
+| Category                             | Count | What happened to it                                    |
+| ------------------------------------- | ----- | -------------------------------------------------------- |
+| density-ish (padding/gap/inset/offset) | 174   | **out of scope** — see below                              |
+| other (genuinely per-component)        | 269   | left alone — a checkbox's tick weight and its like        |
+| radius                                 | 20    | 4 converted, 16 left (shape primitives, deliberate flats) |
+| border-width                           | 11    | 9 converted, 2 left (a deliberate 0, one folded in below) |
+| border-style                           | 8     | 8 converted (all)                                          |
+| casing (text-transform)                | 13    | 11 converted, 1 left (`gog-tabs`, deliberate)              |
+| tracking (letter-spacing)              | 17    | 8 converted, 9 left (accordion's own size scale, etc.)     |
+| font-weight                            | 14    | left alone — see below                                     |
+| motion (duration/transition)           | 9     | left alone — foundation already covers most of this        |
+| font-family                            | 2     | left alone — both are `inherit`, not a competing value     |
+
+**Four new foundation tokens**, added to `:root`: `--gog-text-transform: uppercase`,
+`--gog-letter-spacing: 1px`, `--gog-border-width: 1px`, `--gog-border-style: solid`. Plus wider
+_adoption_ of three that already existed — `--gog-radius` (already 8px, just under-used),
+`--gog-control-border-width`/`-style` (already the form-field tier) — no new tokens needed there,
+just more literals pointed at them.
+
+**`--gog-border-width`/`-style` is a third border tier, not a rename of an existing one.**
+`--gog-control-border-width` (2px) is form fields; `--gog-panel-border-width` (1px) is raised
+surfaces — cards, dialogs, dropdown panels, tooltips, a boundary README.md documents by name. The
+9 literals this iteration converted (chip, tag ×2, toggle, table row, tabs header, calendar day,
+slider track, and — found by the rule below, not the original audit — the table's own outer
+border) are neither: small inline elements and a table frame. Their value happens to equal panel's
+today, but reusing `--gog-panel-border-width` for them would have silently widened what
+README.md's own "surface tier" sentence means. A new pair, even at a duplicate value, keeps that
+boundary honest and lets a theme vary the two independently later.
+
+**Radius converted the least, on purpose.** Only 4 of 20 literal radii: `calendar-nav-radius` and
+`calendar-day-radius` (6px, `calc(var(--gog-radius) - 2px)`), `autocomplete-option-radius` and
+`input-icon-action-radius` (4px, `calc(var(--gog-radius) - 4px)`) — both offsets already
+precedented elsewhere in `theme.css` (`--gog-panel-radius: calc(var(--gog-radius) + 8px)`,
+`--gog-multiselect-option-radius: calc(var(--gog-radius) - 2px)`), so neither invents a new
+convention. The other 16 are genuine exceptions, not oversights: **pills and circles** (`999px`/
+`9999px`/`50%` — checkbox-dash, chip-pill, tag-pill, badge, progressbar, toggle, tabs-indicator,
+slider-thumb) are a shape primitive, not a rounding *degree* — a square-cornered "classic" theme
+still wants a capsule-shaped toggle, so `--gog-radius: 0` shouldn't touch them; **deliberate flats**
+(`0px` — accordion, accordion-body, slider-track, skeleton-square, toast) are each an independent
+"this one stays square" choice, and forcing them onto `--gog-radius` would be the one change in
+this whole iteration that *could* move a pixel, which the plan rules out; and the three `2px`
+**clear-button radii** (input/select/multiselect) are close together but don't share a clean
+offset from 8px worth inventing a third `calc()` pattern for — left as their own literals rather
+than force-fit.
+
+**Casing and tracking turned out broader than "labels."** The uppercase cluster spans buttons,
+section headers and table headers as well as field labels — eleven different roles sharing one
+"emphasis" casing, which is why the token is `--gog-text-transform`, not
+`--gog-label-text-transform`. Tracking is narrower (eight declarations at exactly `1px`, all
+either that same emphasis role or a field label) but shares the token name for the same reason:
+both are one "how this design system shouts" axis, not a form-field-specific one. `gog-tabs`
+(`none`) stays its own literal — tab labels read better in sentence case, a genuine exception, not
+an oversight.
+
+**Density stayed out of scope, per the plan's own open question.** 174 padding/gap/inset/offset
+literals is the single largest bucket found, and the plan's "Open questions" section already flags
+"density as a token or a size input?" as unresolved against `GogSize`. Folding 174 declarations
+into a multiplier before that interaction is decided would be the riskiest, least reversible part
+of this plan, done first and alone. Left for its own iteration once the open question has an
+answer. **Font-weight stayed out too**, for a data reason rather than a scope one: the 14 literals
+span `500`/`600`/`700`/`900` with no dominant value the way casing had one — it reads as each
+component choosing an appropriate weight for its role, not as one drifted idea.
+
+**Verification.** Every conversion checked two ways: `getComputedStyle` on `document.documentElement`
+for the four `calc()`-derived radii resolves the unresolved-expression text, not a number — so the
+real check was on the elements that *use* the tokens (a calendar nav button, a calendar day cell,
+an autocomplete option, an input's icon-action button), all four rendering their exact pre-change
+pixel value (6px/6px/4px/4px) live in `ui-showcase`. Setting `--gog-radius: 0` on `documentElement`
+and re-reading the autocomplete option's rendered `border-radius` returned `0px` — the plan's own
+"done when" test, passing. The `chip`/`button` tokens were spot-checked the same way: default value
+unchanged, then overriding `--gog-border-width`/`-style`/`--gog-text-transform`/`--gog-letter-spacing`
+on `documentElement` changed the rendered chip border and button casing/tracking immediately. Full
+command suite also passed: `check:tokens`, `format:check`, `lint`, `test:lib` (1059 tests),
+`build:lib`, `build:showcase`.
+
+**Rule G**, `check-tokens.mjs`'s addition for step 5: not "any literal in a covered category
+fails" — given how many of the 548 are legitimate exceptions, that shape would have started this
+rule's life buried in false positives. Instead it checks the *value*: a bare-literal component
+token whose value equals an existing character token's current value, in a covered category, is
+flagged; a literal that doesn't match isn't, because nothing suggests it should have read the
+token instead of choosing its own. Verified in both directions: reverted to the pre-iteration-1
+`theme.css` (via a saved copy, restored after) and injected two fake drift declarations
+(`--gog-fake-widget-radius: 8px`, `--gog-fake-widget-text-transform: uppercase`) into the current
+tree — both caught, then removed. Along the way it caught something the manual audit missed:
+`--gog-table-border-width: 2px` matched `--gog-control-border-width` exactly and had been left
+as a literal on a weak "table isn't really a control" justification — the rule didn't care about
+that reasoning, only the value, and was right not to; converted, zero computed change.
 
 ---
 
