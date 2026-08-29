@@ -333,7 +333,7 @@ provideGogConfig({
     followSystem: true, // open in the OS prefers-color-scheme, and keep following it
     // until the app calls setTheme/toggleTheme
     lightTheme: 'light', // the two names followSystem maps to and toggleTheme alternates
-    darkTheme: 'cyberpunk', // between
+    darkTheme: 'one-dark', // between
     defaultTheme: 'light', // used when nothing else decides
   },
 });

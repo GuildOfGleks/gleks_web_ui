@@ -178,7 +178,7 @@ The active theme is a `data-theme` attribute on `:root`, managed by `ThemeServic
 ```ts
 private readonly theme = inject(ThemeService);
 this.theme.toggleTheme(); // light ⇄ dark
-this.theme.setTheme('cyberpunk'); // any name you declared in CSS
+this.theme.setTheme('one-dark'); // any preset you imported, or any name you declared in CSS
 ```
 
 Out of the box it adopts whatever `data-theme` is already on the document, or `light`.
@@ -186,7 +186,7 @@ Persisting the choice and following the OS setting are opt-in:
 
 ```ts
 provideGogConfig({
-  theme: { storageKey: 'app-theme', followSystem: true, darkTheme: 'cyberpunk' },
+  theme: { storageKey: 'app-theme', followSystem: true, darkTheme: 'one-dark' },
 });
 ```
 
