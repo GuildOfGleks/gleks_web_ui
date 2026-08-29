@@ -10,12 +10,21 @@
  *
  * The light counterpart to `one-dark.css`, using the same hue roles: blue is the accent,
  * green/red/yellow/cyan become success/danger/warning/info. Pair the two behind a toggle and
- * `ThemeService.setTheme('one-dark' | 'one-light')` switches between them.
+ * `ThemeService.setTheme('one-dark' | 'one-light')` switches between them — including the
+ * character layer below, which is deliberately identical in the two: they are one editor UI in
+ * two palettes, so a toggle between them must change tone and nothing else.
  */
 
 :root[data-theme='one-light'],
 [data-theme='one-light'] {
   color-scheme: light;
+
+  /* Character layer — identical to `one-dark.css`'s, on purpose. See that file's comment. */
+  --gog-radius: 4px;
+  --gog-density: 0.9;
+  --gog-control-border-width: 1px;
+  --gog-text-transform: none;
+  --gog-letter-spacing: normal;
 
   /* Editor chrome */
   --gog-background-color: #fafafa;

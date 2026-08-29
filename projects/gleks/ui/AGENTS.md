@@ -199,15 +199,24 @@ Full model is in `README.md`'s Theming section; short version:
   already do, and a `* { box-sizing: content-box }` in an app is the only thing that undoes it.
 - Theme switch is a `data-theme` attribute, usually on `<html>`, toggled through the
   `ThemeService` (`inject(ThemeService).setTheme('dark')` / `.toggleTheme()` / `.theme` signal).
-  Ships `light` and `dark`. Six more importable presets: `slate`, `one-dark`, `one-light`
-  (palette-only), `ledger` (palette plus the character layer — square corners, hard offset
-  shadow, no motion, sentence-case labels) and `material`, `primeng` (palette plus the character
-  layer plus a few genuinely per-component settings; see their own file headers for why they
-  differ from the palette-only ones) — all at `@guildofgleks/ui/styles/presets/<name>.css`.
+  Ships `light` and `dark`, plus six importable presets at
+  `@guildofgleks/ui/styles/presets/<name>.css`. **All six set palette and character** (since
+  21.7.0 — before it, three were palette-only, which made them recoloured defaults):
+
+  | Preset                  | Radius | Density | Identity                                     |
+  | ----------------------- | ------ | ------- | -------------------------------------------- |
+  | `slate`                 | 12px   | 1.05    | soft modern — hairline borders, roomy         |
+  | `one-dark`/`one-light`  | 4px    | 0.9     | editor chrome; identical character, two tones |
+  | `ledger`                | 0      | 0.9     | administrative — hard offset shadow, no motion|
+  | `material`              | 4px    | 1.1     | Material Design 3, pill buttons               |
+  | `primeng`               | 6px    | 0.95    | PrimeNG Aura                                  |
+
+  `material` and `primeng` also set a few genuinely per-component things the character layer has
+  no vocabulary for (a pill button, a table's header font); see their own file headers.
 - Restyle one instance without touching a theme: `<gog-button style="--gog-button-bg: #ff4edb">`.
-- Build a custom theme by declaring a palette against a new `data-theme` value (see `README.md`'s
-  Theming section for the full worked example) — component tokens re-derive automatically, you
-  don't restate them.
+- Build a custom theme by declaring a palette **and a character** against a new `data-theme`
+  value (see `README.md`'s Theming section for the full worked example) — component tokens
+  re-derive automatically, you don't restate them.
 
 ## Right-to-left
 

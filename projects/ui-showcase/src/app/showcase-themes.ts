@@ -26,17 +26,17 @@ export const showcaseThemes: ShowcaseThemePreset[] = [
   {
     name: 'slate',
     label: 'Slate',
-    summary: 'The palette-only worked example — cool greys, library metrics untouched.',
+    summary: 'Soft modern — 12px corners, hairline borders, and a little more air.',
   },
   {
     name: 'one-dark',
     label: 'One Dark',
-    summary: 'The editor palette, shipped in the package as styles/presets/one-dark.css.',
+    summary: 'Editor chrome: the Atom palette, 4px corners, compact, sentence case.',
   },
   {
     name: 'one-light',
     label: 'One Light',
-    summary: 'Its light counterpart — same hue roles, inverted chrome.',
+    summary: 'The same editor UI in light tones — identical shape, inverted palette.',
   },
   {
     name: 'ledger',

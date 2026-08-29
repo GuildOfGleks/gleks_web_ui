@@ -9,11 +9,17 @@
  *   <html data-theme="slate">
  *
  * Note what this file does *not* contain: no component tokens, no `--gog-button-*`, no
- * `--gog-table-*`. It declares the palette and nothing else. Every component token in
- * `theme.css`'s derived layer is re-declared on `[data-theme]`, so it re-resolves against
- * whichever palette is in scope — which is exactly why a theme this short can restyle the
- * entire library. If you find yourself listing component tokens in a theme, something in the
- * derived layer is missing instead.
+ * `--gog-table-*`. It declares the palette and a handful of foundation tokens, and nothing
+ * else. Every component token in `theme.css`'s derived layer is re-declared on `[data-theme]`,
+ * so it re-resolves against whichever palette and character are in scope — which is exactly why
+ * a theme this short can restyle the entire library. If you find yourself listing component
+ * tokens in a theme, something in the derived layer is missing instead.
+ *
+ * Until 21.7.0 this file was the palette-only worked example, and the README pointed at it to
+ * make that argument. The argument is still true and the README still makes it — but it did not
+ * need a whole preset held back to prove it, and holding one back meant shipping a theme that
+ * was a recoloured default. `slate` is now the *soft modern* entry in the catalogue: generous
+ * rounding, thin borders, a little more air than the house default.
  *
  * Both selectors are listed for the same reason `theme.css` lists both: `:root[data-theme]`
  * themes the page, the bare `[data-theme]` themes any subtree, so several themes can render
@@ -23,6 +29,16 @@
 :root[data-theme='slate'],
 [data-theme='slate'] {
   color-scheme: light;
+
+  /* Character layer — soft modern. Generous rounding against `ledger`'s zero and the editor
+     presets' 4px, hairline borders, sentence case, and a density slightly above the house
+     default: this is the roomy end of the catalogue, and the contrast with `ledger` at 0.9 is
+     the point of having both. */
+  --gog-radius: 12px;
+  --gog-density: 1.05;
+  --gog-control-border-width: 1px;
+  --gog-text-transform: none;
+  --gog-letter-spacing: normal;
 
   /* Surfaces — cool neutrals rather than the house obsidian */
   --gog-background-color: #f4f6f8;

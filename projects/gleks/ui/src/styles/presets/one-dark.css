@@ -8,15 +8,29 @@
  *
  *   <html data-theme="one-dark">
  *
- * Like every preset here it declares palette tokens only — see `slate.css` for why that is
- * enough to restyle the whole library. The syntax-highlighting hues map onto the library's
- * semantic roles: One Dark's blue is the accent, its green/red/yellow/cyan become
- * success/danger/warning/info.
+ * The syntax-highlighting hues map onto the library's semantic roles: One Dark's blue is the
+ * accent, its green/red/yellow/cyan become success/danger/warning/info.
+ *
+ * Palette plus the character layer. It was palette-only until 21.7.0, which made it a recoloured
+ * default wearing an editor's palette — and the editor this reproduces does not look like the
+ * library's default shape. Editor chrome is small-radius, thin-bordered, compact, and it never
+ * shouts in caps; four foundation tokens and a density say all of that, with no per-component
+ * override needed. See `docs/themes.md` iterations 1 and 6.
  */
 
 :root[data-theme='one-dark'],
 [data-theme='one-dark'] {
   color-scheme: dark;
+
+  /* Character layer — editor chrome. A 4px radius (panels, tabs and buttons in this family of
+     editors are barely rounded, not pill-shaped), 1px borders instead of the library's 2px form
+     default, sentence-case labels, and a compact density: an editor's UI exists to leave room
+     for the buffer. */
+  --gog-radius: 4px;
+  --gog-density: 0.9;
+  --gog-control-border-width: 1px;
+  --gog-text-transform: none;
+  --gog-letter-spacing: normal;
 
   /* Editor chrome */
   --gog-background-color: #282c34;

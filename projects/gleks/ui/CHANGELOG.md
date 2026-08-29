@@ -8,6 +8,15 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **All six shipped presets now set a character, not just a palette.** `slate`, `one-dark` and
+  `one-light` were palette-only, which made them recoloured defaults: they wore another product's
+  colours on this library's shape. Each now sets the character layer and a density —
+  `slate` becomes the catalogue's *soft modern* entry (12px corners, hairline borders, roomier at
+  `1.05`), and `one-dark`/`one-light` become editor chrome (4px corners, compact at `0.9`,
+  sentence-case labels), deliberately identical to each other so a toggle between them changes
+  tone and nothing else. **Palettes are unchanged**; `check:contrast` reports the same eight
+  findings as before. See `docs/themes.md` iteration 4.
+
 - **`--gog-density`: one number that sets the spacing of the whole library.** A theme makes
   every component tighter or roomier with `--gog-density: 0.9` — no component tokens named, no
   list to keep up to date as components are added. It multiplies a new fourteen-step spacing

@@ -593,3 +593,39 @@ was proved to fail by reverting one token to its literal against a scratch copy,
 **Not converted, on purpose:** `--gog-focus-ring-offset` (accessibility, not spacing),
 `--gog-field-float-label-reserve` (typography — it tracks the label's font size, not the
 padding), and the `16%`/`84px` values the rewrite skipped as not-density.
+
+---
+
+### Iteration 4, second pass (2026-08-29) — the three palette-only presets get a character
+
+**Asked for directly:** themes must differ in shape and spacing, not only colour. Iteration 4's
+first pass had shipped `ledger` and left `slate`/`one-dark`/`one-light` as they were, which the
+plan recorded as a scope decision. It was the wrong half to leave: those three were **recoloured
+defaults** — another product's palette on this library's shape — and they were half the shipped
+catalogue.
+
+| Preset      | Radius | Density | Identity                                            |
+| ----------- | ------ | ------- | --------------------------------------------------- |
+| `slate`     | 12px   | 1.05    | soft modern — the roomy end of the catalogue         |
+| `one-dark`  | 4px    | 0.9     | editor chrome                                        |
+| `one-light` | 4px    | 0.9     | the same editor UI, light                            |
+
+Five declarations each, no per-component overrides — which is the character layer and iteration 6's
+density doing exactly what they were built for.
+
+**`one-dark` and `one-light` carry identical character on purpose.** They are one editor UI in two
+palettes, and a toggle between them must change tone and nothing else; a user switching to dark
+mode has not asked for the corners to change. This is recorded in both files so the next person
+does not "fix" the duplication.
+
+**The decision worth writing down: `slate` stopped being the palette-only worked example.** It
+existed partly to prove that a palette alone restyles the whole library, and `README.md` pointed
+at it to make that argument. The argument is true and the README still makes it — but it did not
+need a whole shipped preset held back to demonstrate it, and holding one back meant shipping a
+theme that looked like the default in different colours. The README now makes the point with a
+code block that shows both halves (palette *and* character) in eleven declarations, which teaches
+more than the preset did: the reader sees that character is the same kind of cheap as palette.
+
+**Palettes were not touched.** `check:contrast` reports the same eight gated findings before and
+after, which is the check confirming this pass changed shape only. Those eight remain
+`docs/backlog.md`'s open colour decision, unaffected by this.

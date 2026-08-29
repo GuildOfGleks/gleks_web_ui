@@ -190,37 +190,45 @@ provideGogConfig({
 });
 ```
 
-A theme only declares what it changes — the derived layer re-resolves against whatever palette is
-in scope, so a new palette restyles every component without listing any of them. The `slate`
-preset is the worked example, palette-only:
-
-```css
-@import '@guildofgleks/ui/styles/index.css';
-@import '@guildofgleks/ui/styles/presets/slate.css';
-```
-
-Six presets ship alongside the built-in `light` and `dark`, each at
-`styles/presets/<name>.css` and activated by `data-theme="<name>"`:
-
-| Preset                             | What it declares                                                             |
-| ---------------------------------- | ---------------------------------------------------------------------------- |
-| `slate`, `one-dark`, `one-light`   | palette only — the case above                                                |
-| `ledger`                           | palette **plus character** — radius, border width, casing, tracking, motion  |
-| `material`, `primeng`              | palette plus character, plus a few genuinely per-component settings          |
-
-The character layer (since 21.7.0) is what lets a preset change the library's *shape* — square
-corners, thin borders, sentence-case labels — without listing component tokens. Density is the
-same idea for spacing: every padding and gap derives from one scale, so a whole theme gets
-tighter or roomier with one number.
+A theme only declares what it changes — the derived layer re-resolves against whatever is in
+scope, so a theme restyles every component without listing any of them. **Eleven declarations
+are a whole visual identity**, not a recolour:
 
 ```css
 [data-theme='compact'] {
-  --gog-density: 0.85; /* every padding and gap in the library, at once */
+  /* Palette: every colour in the library re-derives from these. */
+  --gog-background-color: #f4f6f8;
+  --gog-surface-color: #ffffff;
+  --gog-text-color: #1e293b;
+  --gog-accent-color: #4f46e5;
+
+  /* Character: every corner, border, label and gap in the library re-derives from these. */
   --gog-radius: 2px;
+  --gog-density: 0.85; /* one number = every padding and gap at once */
+  --gog-control-border-width: 1px;
+  --gog-text-transform: none;
+  --gog-letter-spacing: normal;
 }
 ```
 
-`AGENTS.md` has the per-preset detail and the full token list.
+The palette half has always worked this way. The **character layer** (`--gog-radius`,
+`--gog-density`, the border and casing tokens — all since 21.7.0) is the other half: it is what
+lets a theme change the library's *shape* — square or generous corners, thin borders,
+sentence-case labels, tight or roomy spacing — still without naming a single component.
+
+Six presets ship alongside the built-in `light` and `dark`, each at `styles/presets/<name>.css`
+and activated by `data-theme="<name>"`. All six set palette **and** character:
+
+| Preset                 | The identity                                                          |
+| ---------------------- | --------------------------------------------------------------------- |
+| `slate`                | soft modern — 12px corners, hairline borders, roomier than the default |
+| `one-dark`, `one-light` | editor chrome — 4px corners, compact, sentence case; one UI, two tones |
+| `ledger`               | administrative software — square corners, hard offset shadow, no motion |
+| `material`, `primeng`  | Material Design 3 and PrimeNG Aura, including their shape and density  |
+
+`material` and `primeng` additionally set a few things the character layer has no vocabulary for
+(a pill button, a table's header font). `AGENTS.md` has the per-preset detail and the full token
+list.
 
 Fonts are left alone on purpose (system stacks, no webfont download). Add
 `@guildofgleks/ui/styles/fonts.css` for the showcase's typography.
