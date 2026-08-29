@@ -88,7 +88,17 @@ docs-only change, and it is the kind of thing that is annoying to discover twice
 
 ---
 
-## 21.7.1 — defects, no new API
+## 21.7.1 — defects, no new API — ✅ all nine done (2026-08-29)
+
+**Every item below shipped.** Two of them were not what the report assumed, and one fix broke
+another item two commits later — recorded per row.
+
+**What the pass cost that the plan did not predict:** three of the nine fixes had to be corrected
+after a human looked at the result. Tinting `elevated` collided with the hover tier and repainted
+every panel; the shadow left behind hazed instead of lifting; and giving the accordion header a
+background made its own loading skeleton invisible at 1.02 contrast. Each was caught by eye, none
+by a check — so `check-tokens` gained rule I (a theme's three surface tiers must be three
+different colours), which is the only one of the three that could be automated.
 
 Everything here is wrong today against what is already documented. No new inputs, no new
 components, so none of it needs a minor.
