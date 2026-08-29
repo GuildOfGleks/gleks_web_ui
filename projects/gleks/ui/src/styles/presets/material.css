@@ -53,6 +53,9 @@
      calendar-weekday, autocomplete-label, datepicker-label, slider-label, table-total) — see
      `primeng.css`'s header for the full account, identical here. */
   --gog-radius: 4px;
+  /* Roomier than the library's default: M3's whole posture is generous touch targets and
+     breathing room, and reproducing it without the spacing reproduces only its colours. */
+  --gog-density: 1.1;
   --gog-control-border-width: 1px;
   --gog-focus-ring-width: 2px;
   --gog-focus-ring-offset: 2px;

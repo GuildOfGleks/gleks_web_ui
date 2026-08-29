@@ -66,12 +66,30 @@
   --gog-text-transform: uppercase;
   --gog-letter-spacing: 1px;
 
-  /* ── Spacing & geometry ─────────────────────────────────────────────────────── */
-  --gog-space-xs: 4px;
-  --gog-space-sm: 8px;
-  --gog-space-md: 16px;
-  --gog-space-lg: 24px;
-  --gog-space-2xl: 48px;
+  /* ── Spacing & geometry ───────────────────────────────────────────────────────
+
+     `--gog-density` is the whole spacing system in one number. It multiplies every step
+     of the scale below, and every component padding and gap derives from that scale, so
+     a theme makes the entire library compact or roomy without naming a single component:
+
+       [data-theme='compact'] { --gog-density: 0.75; }
+
+     This is the density half of docs/themes.md's character layer — the same idea as
+     --gog-radius for corners. Before it existed, 177 component paddings and gaps were
+     literals in two different units, and a theme that wanted tighter controls had to
+     re-list all of them; check-tokens.mjs rule G now fails a build that adds another.
+
+     The steps are named for their pixel value at density 1, because a t-shirt scale
+     stops being readable somewhere around the fourth size and this one has fourteen.
+     The five original t-shirt names are kept as aliases: they are public API, they are
+     what `theme-starter.css` and every existing consumer theme use, and they cost
+     nothing to keep.
+
+     Only the multiplier itself lives here — the scale is in the derived block below,
+     because every step reads this token and so has to re-resolve inside each theme
+     scope. A step declared here would be computed once against :root's density and a
+     [data-theme] subtree would inherit that number, not its own. */
+  --gog-density: 1;
 
   --gog-radius: 8px;
   /* Three border-weight tiers, not one: --gog-control-border-width (2px) is form fields,
@@ -102,13 +120,9 @@
      Five-tier scale: xsm/slg bookend the original sm/md/lg (restored below to
      their pre-compaction numbers) as new extremes for extra-tight or extra-roomy
      layouts. */
-  --gog-control-padding-y: 10px;
-  --gog-control-padding-x: 14px;
-  --gog-control-icon-offset: 10px;
   --gog-control-border-width: 2px;
   --gog-control-border-style: solid;
 
-  --gog-control-checkbox-padding: 6px;
   --gog-control-checkbox-box-size-xsm: 12px;
   --gog-control-checkbox-box-size-sm: 18px;
   --gog-control-checkbox-box-size-md: 24px;
@@ -127,29 +141,22 @@
 
   /* ── Button sizing ─────────────────────────────────────────────────────────── */
 
-  /* ── Field sizing (input / select / multiselect share one scale) ───────────── */
-  --gog-field-xsm-padding-y: 4px;
-  --gog-field-xsm-padding-x: 8px;
-  --gog-field-xsm-icon-offset: 6px;
-  --gog-field-xsm-icon-inset: 24px;
+  /* ── Field sizing (input / select / multiselect share one scale) ─────────────
+     The offsets are spacing and follow --gog-density with everything else; the glyph
+     box does not, because an icon that shrinks with the padding stops being legible
+     well before the padding stops being usable. Only the offsets move.
 
-  --gog-field-sm-padding-y: 6px;
-  --gog-field-sm-padding-x: 10px;
-  --gog-field-sm-icon-offset: 8px;
-  --gog-field-sm-icon-inset: 30px;
+     Each inset is the text's start edge: one offset before the glyph, the glyph, one
+     offset after. It was five hand-measured literals (docs/iteration-8-plan.md tuned
+     them in a browser) that happened to satisfy that identity, so nothing here moves
+     at density 1 — but a literal cannot follow the density knob, and at 0.75 the text
+     used to keep a 36px inset against 7px of padding. Stated as the sum it always was,
+     it just works. */
+  --gog-field-icon-glyph-xsm: 12px;
+  --gog-field-icon-glyph-sm: 14px;
+  --gog-field-icon-glyph: 16px;
 
-  --gog-field-md-icon-inset: 36px;
-
-  --gog-field-lg-padding-y: 14px;
-  --gog-field-lg-padding-x: 18px;
-  --gog-field-lg-icon-offset: 14px;
-  --gog-field-lg-icon-inset: 44px;
-
-  --gog-field-slg-padding-y: 18px;
-  --gog-field-slg-padding-x: 22px;
   --gog-field-slg-font-size: 1.25rem;
-  --gog-field-slg-icon-offset: 18px;
-  --gog-field-slg-icon-inset: 52px;
 
   /* ── Float label geometry (input / textarea / select / multiselect) ─────────
      One scale for every field that can float its label. Each control reads these
@@ -161,7 +168,6 @@
      kept clear for the 'over' variant. */
   --gog-field-float-label-reserve: 14px;
   --gog-field-float-label-in-top: 6px;
-  --gog-field-float-label-over-gap: 8px;
   --gog-field-float-label-over-reserve: 1.4em;
 
   /* ── Icon & spinner ───────────────────────────────────────────────────────── */
@@ -177,8 +183,6 @@
   /* ── Toast stack ──────────────────────────────────────────────────────────── */
   --gog-toast-min-width: 280px;
   --gog-toast-max-width: 400px;
-  --gog-toast-gap: 10px;
-  --gog-toast-stack-padding: 16px;
   --gog-toast-z-index: 9999;
   --gog-toast-enter-distance: 110%;
   --gog-toast-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
@@ -298,11 +302,66 @@
   /* ── Derived foundation tokens ───────────────────────────────────────────────
      Split out of the literal block above because they read other tokens: they have
      to re-resolve inside each theme scope. */
+  --gog-space-2: calc(2px * var(--gog-density));
+  --gog-space-4: calc(4px * var(--gog-density));
+  --gog-space-6: calc(6px * var(--gog-density));
+  --gog-space-8: calc(8px * var(--gog-density));
+  --gog-space-10: calc(10px * var(--gog-density));
+  --gog-space-12: calc(12px * var(--gog-density));
+  --gog-space-14: calc(14px * var(--gog-density));
+  --gog-space-16: calc(16px * var(--gog-density));
+  --gog-space-18: calc(18px * var(--gog-density));
+  --gog-space-20: calc(20px * var(--gog-density));
+  --gog-space-24: calc(24px * var(--gog-density));
+  --gog-space-28: calc(28px * var(--gog-density));
+  --gog-space-32: calc(32px * var(--gog-density));
+  --gog-space-48: calc(48px * var(--gog-density));
+  --gog-space-xs: var(--gog-space-4);
+  --gog-space-sm: var(--gog-space-8);
+  --gog-space-md: var(--gog-space-16);
+  --gog-space-lg: var(--gog-space-24);
+  --gog-space-2xl: var(--gog-space-48);
+  --gog-control-padding-y: var(--gog-space-10);
+  --gog-control-padding-x: var(--gog-space-14);
+  --gog-control-checkbox-padding: var(--gog-space-6);
+  --gog-field-xsm-padding-y: var(--gog-space-4);
+  --gog-field-xsm-padding-x: var(--gog-space-8);
+  --gog-field-sm-padding-y: var(--gog-space-6);
+  --gog-field-sm-padding-x: var(--gog-space-10);
+  --gog-field-lg-padding-y: var(--gog-space-14);
+  --gog-field-lg-padding-x: var(--gog-space-18);
+  --gog-field-slg-padding-y: var(--gog-space-18);
+  --gog-field-slg-padding-x: var(--gog-space-20);
+  --gog-field-float-label-over-gap: var(--gog-space-8);
+  --gog-toast-gap: var(--gog-space-10);
+  --gog-toast-stack-padding: var(--gog-space-16);
+  --gog-field-xsm-icon-offset: var(--gog-space-6);
+  --gog-field-sm-icon-offset: var(--gog-space-8);
+  --gog-field-lg-icon-offset: var(--gog-space-14);
+  --gog-field-slg-icon-offset: var(--gog-space-18);
+  --gog-control-icon-offset: var(--gog-space-10);
   --gog-panel-radius: calc(var(--gog-radius) + 8px);
   --gog-field-xsm-font-size: var(--gog-text-xs);
   --gog-field-sm-font-size: var(--gog-text-sm);
   --gog-field-md-padding-y: var(--gog-control-padding-y);
   --gog-field-md-padding-x: var(--gog-control-padding-x);
+
+  /* offset + glyph + offset — see the icon-chrome comment in the literal block above. */
+  --gog-field-xsm-icon-inset: calc(
+    var(--gog-field-xsm-icon-offset) * 2 + var(--gog-field-icon-glyph-xsm)
+  );
+  --gog-field-sm-icon-inset: calc(
+    var(--gog-field-sm-icon-offset) * 2 + var(--gog-field-icon-glyph-sm)
+  );
+  --gog-field-md-icon-inset: calc(
+    var(--gog-field-md-icon-offset) * 2 + var(--gog-field-icon-glyph)
+  );
+  --gog-field-lg-icon-inset: calc(
+    var(--gog-field-lg-icon-offset) * 2 + var(--gog-field-icon-glyph)
+  );
+  --gog-field-slg-icon-inset: calc(
+    var(--gog-field-slg-icon-offset) * 2 + var(--gog-field-icon-glyph)
+  );
   --gog-field-md-font-size: var(--gog-text-md);
   --gog-field-md-icon-offset: var(--gog-control-icon-offset);
   --gog-field-lg-font-size: var(--gog-text-lg);
@@ -328,7 +387,7 @@
   --gog-accordion-body-color: var(--gog-text-color);
   --gog-accordion-body-line-height: 1.6;
   --gog-accordion-header-text-transform: var(--gog-text-transform);
-  --gog-accordion-header-gap: 12px;
+  --gog-accordion-header-gap: var(--gog-space-12);
   --gog-accordion-disabled-opacity: 0.5;
   --gog-accordion-transition-duration: var(--gog-duration-base);
   --gog-accordion-body-transition-duration: var(--gog-duration-slow);
@@ -343,63 +402,63 @@
      reads slightly darker than the header regardless of the surrounding surface color. */
   --gog-accordion-body-bg: color-mix(in srgb, black 6%, transparent);
   /* Per-size metrics. `lg` is the default size. */
-  --gog-accordion-xsm-padding-y: 4px;
-  --gog-accordion-xsm-padding-x: 8px;
+  --gog-accordion-xsm-padding-y: var(--gog-space-4);
+  --gog-accordion-xsm-padding-x: var(--gog-space-8);
   --gog-accordion-xsm-font-size: var(--gog-text-xs);
   --gog-accordion-xsm-letter-spacing: 0.2px;
-  --gog-accordion-xsm-content-gap: 2px;
+  --gog-accordion-xsm-content-gap: var(--gog-space-2);
   --gog-accordion-xsm-body-font-size: var(--gog-text-xs);
   --gog-accordion-xsm-body-line-height: 1.5;
-  --gog-accordion-xsm-body-padding-top: 4px;
-  --gog-accordion-xsm-body-padding-bottom: 6px;
+  --gog-accordion-xsm-body-padding-top: var(--gog-space-4);
+  --gog-accordion-xsm-body-padding-bottom: var(--gog-space-6);
   --gog-accordion-xsm-chevron-size: 11px;
   --gog-accordion-xsm-chevron-font-size: 10px;
 
-  --gog-accordion-sm-padding-y: 6px;
-  --gog-accordion-sm-padding-x: 10px;
+  --gog-accordion-sm-padding-y: var(--gog-space-6);
+  --gog-accordion-sm-padding-x: var(--gog-space-10);
   --gog-accordion-sm-font-size: var(--gog-text-xs);
   --gog-accordion-sm-letter-spacing: 0.4px;
-  --gog-accordion-sm-content-gap: 2px;
+  --gog-accordion-sm-content-gap: var(--gog-space-2);
   --gog-accordion-sm-body-font-size: var(--gog-text-xs);
   --gog-accordion-sm-body-line-height: var(--gog-accordion-body-line-height);
-  --gog-accordion-sm-body-padding-top: 6px;
-  --gog-accordion-sm-body-padding-bottom: 8px;
+  --gog-accordion-sm-body-padding-top: var(--gog-space-6);
+  --gog-accordion-sm-body-padding-bottom: var(--gog-space-8);
   --gog-accordion-sm-chevron-size: 13px;
   --gog-accordion-sm-chevron-font-size: 12px;
 
-  --gog-accordion-md-padding-y: 10px;
-  --gog-accordion-md-padding-x: 14px;
+  --gog-accordion-md-padding-y: var(--gog-space-10);
+  --gog-accordion-md-padding-x: var(--gog-space-14);
   --gog-accordion-md-font-size: var(--gog-text-xs);
   --gog-accordion-md-letter-spacing: 0.8px;
-  --gog-accordion-md-content-gap: 2px;
+  --gog-accordion-md-content-gap: var(--gog-space-2);
   --gog-accordion-md-body-font-size: var(--gog-text-sm);
   --gog-accordion-md-body-line-height: var(--gog-accordion-body-line-height);
-  --gog-accordion-md-body-padding-top: 8px;
-  --gog-accordion-md-body-padding-bottom: 12px;
+  --gog-accordion-md-body-padding-top: var(--gog-space-8);
+  --gog-accordion-md-body-padding-bottom: var(--gog-space-12);
   --gog-accordion-md-chevron-size: 15px;
   --gog-accordion-md-chevron-font-size: 14px;
 
-  --gog-accordion-lg-padding-y: 14px;
-  --gog-accordion-lg-padding-x: 16px;
+  --gog-accordion-lg-padding-y: var(--gog-space-14);
+  --gog-accordion-lg-padding-x: var(--gog-space-16);
   --gog-accordion-lg-font-size: var(--gog-text-sm);
   --gog-accordion-lg-letter-spacing: 0.8px;
-  --gog-accordion-lg-content-gap: 4px;
+  --gog-accordion-lg-content-gap: var(--gog-space-4);
   --gog-accordion-lg-body-font-size: var(--gog-text-md);
   --gog-accordion-lg-body-line-height: var(--gog-accordion-body-line-height);
-  --gog-accordion-lg-body-padding-top: 12px;
-  --gog-accordion-lg-body-padding-bottom: 16px;
+  --gog-accordion-lg-body-padding-top: var(--gog-space-12);
+  --gog-accordion-lg-body-padding-bottom: var(--gog-space-16);
   --gog-accordion-lg-chevron-size: 18px;
   --gog-accordion-lg-chevron-font-size: 16px;
 
-  --gog-accordion-slg-padding-y: 18px;
-  --gog-accordion-slg-padding-x: 18px;
+  --gog-accordion-slg-padding-y: var(--gog-space-18);
+  --gog-accordion-slg-padding-x: var(--gog-space-18);
   --gog-accordion-slg-font-size: var(--gog-text-md);
   --gog-accordion-slg-letter-spacing: 0.8px;
-  --gog-accordion-slg-content-gap: 4px;
+  --gog-accordion-slg-content-gap: var(--gog-space-4);
   --gog-accordion-slg-body-font-size: var(--gog-text-lg);
   --gog-accordion-slg-body-line-height: var(--gog-accordion-body-line-height);
-  --gog-accordion-slg-body-padding-top: 16px;
-  --gog-accordion-slg-body-padding-bottom: 20px;
+  --gog-accordion-slg-body-padding-top: var(--gog-space-16);
+  --gog-accordion-slg-body-padding-bottom: var(--gog-space-20);
   --gog-accordion-slg-chevron-size: 20px;
   --gog-accordion-slg-chevron-font-size: 18px;
 
@@ -424,11 +483,11 @@
      `--gog-button-hover-bg`, `--gog-button-hover-shadow`, `--gog-button-padding` and
      `--gog-button-font-size` are intentionally NOT declared — they are the per-instance
      escape hatch the variant/size classes fall back through. */
-  --gog-button-xsm-padding: 0.25rem 0.5rem;
-  --gog-button-sm-padding: 0.5rem 0.875rem;
-  --gog-button-md-padding: 0.75rem 1.25rem;
-  --gog-button-lg-padding: 1rem 1.5rem;
-  --gog-button-slg-padding: 1.25rem 1.75rem;
+  --gog-button-xsm-padding: var(--gog-space-4) var(--gog-space-8);
+  --gog-button-sm-padding: var(--gog-space-8) var(--gog-space-14);
+  --gog-button-md-padding: var(--gog-space-12) var(--gog-space-20);
+  --gog-button-lg-padding: var(--gog-space-16) var(--gog-space-24);
+  --gog-button-slg-padding: var(--gog-space-20) var(--gog-space-28);
   --gog-button-xsm-font-size: 0.75rem;
   --gog-button-sm-font-size: 0.875rem;
   --gog-button-md-font-size: 1rem;
@@ -529,10 +588,10 @@
   /* Caps the host at its month grid instead of letting the header spread to the container.
      `100%` restores the pre-21.5.0 full-width behaviour. */
   --gog-calendar-max-width: max-content;
-  --gog-calendar-padding: 12px;
-  --gog-calendar-header-gap: 4px;
+  --gog-calendar-padding: var(--gog-space-12);
+  --gog-calendar-header-gap: var(--gog-space-4);
   --gog-calendar-header-margin: 8px;
-  --gog-calendar-months-gap: 16px;
+  --gog-calendar-months-gap: var(--gog-space-16);
   --gog-calendar-title-color: var(--gog-text-color);
   --gog-calendar-title-font-weight: 700;
   --gog-calendar-nav-size: 28px;
@@ -544,7 +603,7 @@
   --gog-calendar-nav-icon-size: 0.8rem;
   /* Pulls the two chevrons of a year step together so they read as one control. */
   --gog-calendar-nav-icon-overlap: -0.35em;
-  --gog-calendar-weekday-padding: 4px 0;
+  --gog-calendar-weekday-padding: var(--gog-space-4) 0;
   --gog-calendar-weekday-color: var(--gog-muted-text-color);
   --gog-calendar-weekday-font-size: var(--gog-text-xs);
   --gog-calendar-weekday-font-weight: 600;
@@ -573,13 +632,13 @@
   --gog-calendar-divider-width: 1px;
   --gog-calendar-divider-style: solid;
   --gog-calendar-divider-color: var(--gog-border-color);
-  --gog-calendar-time-gap: 6px;
+  --gog-calendar-time-gap: var(--gog-space-6);
   --gog-calendar-time-margin: 10px;
   --gog-calendar-time-input-width: 3.5rem;
-  --gog-calendar-time-input-padding: 4px 6px;
+  --gog-calendar-time-input-padding: var(--gog-space-4) var(--gog-space-6);
   --gog-calendar-time-input-bg: var(--gog-background-color);
-  --gog-calendar-action-padding: 4px 10px;
-  --gog-calendar-footer-gap: 8px;
+  --gog-calendar-action-padding: var(--gog-space-4) var(--gog-space-10);
+  --gog-calendar-footer-gap: var(--gog-space-8);
   --gog-calendar-xsm-font-size: var(--gog-text-xs);
   --gog-calendar-xsm-day-size: 24px;
   --gog-calendar-sm-font-size: var(--gog-text-sm);
@@ -632,27 +691,27 @@
   --gog-card-footer-gap: var(--gog-space-sm);
   --gog-card-footer-padding-top: var(--gog-space-sm);
 
-  --gog-card-xsm-padding-y: 8px;
-  --gog-card-xsm-padding-x: 10px;
-  --gog-card-xsm-gap: 6px;
-  --gog-card-sm-padding-y: 12px;
-  --gog-card-sm-padding-x: 14px;
+  --gog-card-xsm-padding-y: var(--gog-space-8);
+  --gog-card-xsm-padding-x: var(--gog-space-10);
+  --gog-card-xsm-gap: var(--gog-space-6);
+  --gog-card-sm-padding-y: var(--gog-space-12);
+  --gog-card-sm-padding-x: var(--gog-space-14);
   --gog-card-sm-gap: var(--gog-space-sm);
   --gog-card-md-padding-y: var(--gog-space-md);
-  --gog-card-md-padding-x: 20px;
-  --gog-card-md-gap: 12px;
-  --gog-card-lg-padding-y: 20px;
+  --gog-card-md-padding-x: var(--gog-space-20);
+  --gog-card-md-gap: var(--gog-space-12);
+  --gog-card-lg-padding-y: var(--gog-space-20);
   --gog-card-lg-padding-x: var(--gog-space-lg);
-  --gog-card-lg-gap: 14px;
-  --gog-card-slg-padding-y: 28px;
-  --gog-card-slg-padding-x: 32px;
+  --gog-card-lg-gap: var(--gog-space-14);
+  --gog-card-slg-padding-y: var(--gog-space-28);
+  --gog-card-slg-padding-x: var(--gog-space-32);
   --gog-card-slg-gap: var(--gog-space-md);
 
   /* ── Checkbox ──────────────────────────────────────────────────────────────
      Box/label/icon size and padding come from the `--gog-control-checkbox-*` scale;
      checkbox.component.ts maps the `size` input onto the host. */
   --gog-checkbox-font-family: var(--gog-font-body);
-  --gog-checkbox-gap: 10px;
+  --gog-checkbox-gap: var(--gog-space-10);
   --gog-checkbox-radius: var(--gog-radius);
   --gog-checkbox-border-width: var(--gog-control-border-width);
   --gog-checkbox-border-style: var(--gog-control-border-style);
@@ -676,12 +735,12 @@
      Box/label size reuse the `--gog-control-checkbox-*` scale (see Checkbox above);
      radio-group.component.ts maps the `size` input onto the host the same way. */
   --gog-radio-font-family: var(--gog-font-body);
-  --gog-radio-group-gap: 10px;
+  --gog-radio-group-gap: var(--gog-space-10);
   --gog-radio-group-label-size: var(--gog-text-sm);
   --gog-radio-group-label-color: var(--gog-muted-text-color);
-  --gog-radio-group-option-gap: 8px;
-  --gog-radio-group-option-gap-horizontal: 20px;
-  --gog-radio-gap: 10px;
+  --gog-radio-group-option-gap: var(--gog-space-8);
+  --gog-radio-group-option-gap-horizontal: var(--gog-space-20);
+  --gog-radio-gap: var(--gog-space-10);
   --gog-radio-border-width: var(--gog-control-border-width);
   --gog-radio-border-style: var(--gog-control-border-style);
   --gog-radio-border-color: var(--gog-accent-dim);
@@ -725,41 +784,41 @@
   --gog-chip-focus-ring-offset: var(--gog-focus-ring-offset);
 
   --gog-chip-xsm-font-size: 0.6875rem;
-  --gog-chip-xsm-padding-block: 0.225rem;
-  --gog-chip-xsm-padding-inline: 0.375rem;
-  --gog-chip-xsm-gap: 0.275rem;
+  --gog-chip-xsm-padding-block: var(--gog-space-4);
+  --gog-chip-xsm-padding-inline: var(--gog-space-6);
+  --gog-chip-xsm-gap: var(--gog-space-4);
   --gog-chip-xsm-avatar-size: 0.875rem;
   --gog-chip-xsm-icon-size: 0.6875rem;
   --gog-chip-xsm-remove-size: 0.75rem;
 
   --gog-chip-sm-font-size: 0.75rem;
-  --gog-chip-sm-padding-block: 0.3rem;
-  --gog-chip-sm-padding-inline: 0.5rem;
-  --gog-chip-sm-gap: 0.375rem;
+  --gog-chip-sm-padding-block: var(--gog-space-4);
+  --gog-chip-sm-padding-inline: var(--gog-space-8);
+  --gog-chip-sm-gap: var(--gog-space-6);
   --gog-chip-sm-avatar-size: 1rem;
   --gog-chip-sm-icon-size: 0.75rem;
   --gog-chip-sm-remove-size: 0.875rem;
 
   --gog-chip-md-font-size: 0.875rem;
-  --gog-chip-md-padding-block: 0.45rem;
-  --gog-chip-md-padding-inline: 0.75rem;
-  --gog-chip-md-gap: 0.5rem;
+  --gog-chip-md-padding-block: var(--gog-space-8);
+  --gog-chip-md-padding-inline: var(--gog-space-12);
+  --gog-chip-md-gap: var(--gog-space-8);
   --gog-chip-md-avatar-size: 1.25rem;
   --gog-chip-md-icon-size: 0.875rem;
   --gog-chip-md-remove-size: 1rem;
 
   --gog-chip-lg-font-size: 1rem;
-  --gog-chip-lg-padding-block: 0.6rem;
-  --gog-chip-lg-padding-inline: 0.875rem;
-  --gog-chip-lg-gap: 0.625rem;
+  --gog-chip-lg-padding-block: var(--gog-space-10);
+  --gog-chip-lg-padding-inline: var(--gog-space-14);
+  --gog-chip-lg-gap: var(--gog-space-10);
   --gog-chip-lg-avatar-size: 1.5rem;
   --gog-chip-lg-icon-size: 1rem;
   --gog-chip-lg-remove-size: 1.125rem;
 
   --gog-chip-slg-font-size: 1.125rem;
-  --gog-chip-slg-padding-block: 0.75rem;
-  --gog-chip-slg-padding-inline: 1rem;
-  --gog-chip-slg-gap: 0.75rem;
+  --gog-chip-slg-padding-block: var(--gog-space-12);
+  --gog-chip-slg-padding-inline: var(--gog-space-16);
+  --gog-chip-slg-gap: var(--gog-space-12);
   --gog-chip-slg-avatar-size: 1.75rem;
   --gog-chip-slg-icon-size: 1.125rem;
   --gog-chip-slg-remove-size: 1.25rem;
@@ -783,10 +842,10 @@
   --gog-dialog-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
   --gog-dialog-min-width: 320px;
   --gog-dialog-max-height: 90vh;
-  --gog-dialog-header-padding: 16px 20px 14px;
-  --gog-dialog-header-gap: 12px;
+  --gog-dialog-header-padding: var(--gog-space-16) var(--gog-space-20) var(--gog-space-14);
+  --gog-dialog-header-gap: var(--gog-space-12);
   --gog-dialog-header-border-color: var(--gog-border-color);
-  --gog-dialog-body-padding: 20px;
+  --gog-dialog-body-padding: var(--gog-space-20);
   --gog-dialog-body-max-height: calc(var(--gog-dialog-max-height) - 60px);
   --gog-dialog-close-size: 2rem;
   --gog-dialog-close-font-size: 0.875rem;
@@ -799,7 +858,7 @@
   --gog-dialog-close-focus-ring-offset: var(--gog-focus-ring-offset);
 
   /* Confirmation dialog */
-  --gog-confirmation-dialog-gap: 12px;
+  --gog-confirmation-dialog-gap: var(--gog-space-12);
   --gog-confirmation-dialog-min-width: 320px;
   --gog-confirmation-dialog-max-width: 440px;
   --gog-confirmation-dialog-color: var(--gog-text-color);
@@ -815,7 +874,7 @@
      back through. */
   --gog-autocomplete-font-family: var(--gog-font-body);
   --gog-autocomplete-label-font-family: var(--gog-font-heading);
-  --gog-autocomplete-gap: 4px;
+  --gog-autocomplete-gap: var(--gog-space-4);
   --gog-autocomplete-label-color: var(--gog-accent-color);
   --gog-autocomplete-label-font-size: var(--gog-text-sm);
   --gog-autocomplete-label-font-weight: 600;
@@ -844,7 +903,7 @@
   /* Trailing chrome: spinner and clear button, clear outermost — the arrangement the other
      dropdowns settled on, so all of them line up in a form. */
   --gog-autocomplete-actions-inset: var(--gog-control-icon-offset);
-  --gog-autocomplete-actions-gap: 6px;
+  --gog-autocomplete-actions-gap: var(--gog-space-6);
   /* Right padding on the input, reserving room for the actions above. */
   --gog-autocomplete-actions-reserve: 40px;
   --gog-autocomplete-clear-color: var(--gog-autocomplete-placeholder-color);
@@ -858,14 +917,14 @@
   --gog-autocomplete-panel-border-style: var(--gog-panel-border-style);
   --gog-autocomplete-panel-border-color: var(--gog-border-color);
   --gog-autocomplete-panel-radius: var(--gog-radius);
-  --gog-autocomplete-panel-gap: 2px;
+  --gog-autocomplete-panel-gap: var(--gog-space-2);
   --gog-autocomplete-panel-max-height: 260px;
   /* Ceiling for a content-sized panel, so one very long option cannot span the viewport. */
   --gog-autocomplete-panel-max-width: 420px;
-  --gog-autocomplete-options-padding: 4px;
-  --gog-autocomplete-option-padding: 8px 10px;
+  --gog-autocomplete-options-padding: var(--gog-space-4);
+  --gog-autocomplete-option-padding: var(--gog-space-8) var(--gog-space-10);
   --gog-autocomplete-option-radius: calc(var(--gog-radius) - 4px);
-  --gog-autocomplete-option-gap: 10px;
+  --gog-autocomplete-option-gap: var(--gog-space-10);
   --gog-autocomplete-option-color: var(--gog-text-color);
   --gog-autocomplete-option-hover-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
   --gog-autocomplete-option-hover-color: var(--gog-text-color);
@@ -894,7 +953,7 @@
      sideways only. */
   --gog-badge-size: 1.25rem;
   --gog-badge-dot-size: 0.5rem;
-  --gog-badge-padding-inline: 5px;
+  --gog-badge-padding-inline: var(--gog-space-4);
   --gog-badge-radius: 999px;
   /* How far the badge hangs outside its host's corner. */
   --gog-badge-offset: 6px;
@@ -920,7 +979,7 @@
      back through. */
   --gog-datepicker-font-family: var(--gog-font-body);
   --gog-datepicker-label-font-family: var(--gog-font-heading);
-  --gog-datepicker-gap: 4px;
+  --gog-datepicker-gap: var(--gog-space-4);
   --gog-datepicker-label-color: var(--gog-accent-color);
   --gog-datepicker-label-font-size: var(--gog-text-sm);
   --gog-datepicker-label-letter-spacing: var(--gog-letter-spacing);
@@ -945,7 +1004,7 @@
   --gog-datepicker-error-font-size: var(--gog-text-xs);
   --gog-datepicker-min-width: 150px;
   --gog-datepicker-actions-inset: var(--gog-control-icon-offset);
-  --gog-datepicker-actions-gap: 6px;
+  --gog-datepicker-actions-gap: var(--gog-space-6);
   /* Right padding on the input, reserving room for the calendar and clear buttons. */
   --gog-datepicker-actions-reserve: 40px;
   --gog-datepicker-icon-color: var(--gog-accent-color);
@@ -959,7 +1018,7 @@
   --gog-datepicker-panel-border-style: var(--gog-panel-border-style);
   --gog-datepicker-panel-border-color: var(--gog-border-color);
   --gog-datepicker-panel-radius: var(--gog-radius);
-  --gog-datepicker-panel-gap: 2px;
+  --gog-datepicker-panel-gap: var(--gog-space-2);
   /* The dropdown surface. Inline mode is `gog-calendar` itself, so it sizes from
      `--gog-calendar-max-width` rather than from this. */
   --gog-datepicker-panel-width: max-content;
@@ -995,7 +1054,7 @@
   /* ── Input field ───────────────────────────────────────────────────────────── */
   --gog-input-font-family: var(--gog-font-body);
   --gog-input-label-font-family: var(--gog-font-heading);
-  --gog-input-gap: 4px;
+  --gog-input-gap: var(--gog-space-4);
   --gog-input-label-color: var(--gog-accent-color);
   --gog-input-label-font-size: var(--gog-text-sm);
   --gog-input-label-letter-spacing: var(--gog-letter-spacing);
@@ -1041,7 +1100,7 @@
   --gog-textarea-resize-grip-color: var(--gog-input-field-border);
   --gog-textarea-resize-grip-opacity: 0.8;
   --gog-textarea-resize-grip-stripe-width: 1.5px;
-  --gog-textarea-resize-grip-stripe-gap: 3px;
+  --gog-textarea-resize-grip-stripe-gap: var(--gog-space-2);
   --gog-textarea-resize-grip-offset: 3px;
   /*
      Both default to 0 and are overwritten per instance, as an inline style on the field, from
@@ -1071,9 +1130,9 @@
   /* ── Multiselect ───────────────────────────────────────────────────────────── */
   --gog-multiselect-font-family: var(--gog-font-body);
   --gog-multiselect-label-font-family: var(--gog-font-heading);
-  --gog-multiselect-gap: 4px;
-  --gog-multiselect-option-gap: 4px;
-  --gog-multiselect-options-padding: 4px;
+  --gog-multiselect-gap: var(--gog-space-4);
+  --gog-multiselect-option-gap: var(--gog-space-4);
+  --gog-multiselect-options-padding: var(--gog-space-4);
   --gog-multiselect-label-color: var(--gog-accent-color);
   --gog-multiselect-label-font-size: var(--gog-text-sm);
   --gog-multiselect-label-letter-spacing: var(--gog-letter-spacing);
@@ -1102,7 +1161,7 @@
   --gog-multiselect-panel-offset: 2px;
   --gog-multiselect-option-hover-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
   --gog-multiselect-option-color: var(--gog-text-color);
-  --gog-multiselect-option-gap-inline: 10px;
+  --gog-multiselect-option-gap-inline: var(--gog-space-10);
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-multiselect-option-height: 40px;
@@ -1113,12 +1172,12 @@
   --gog-multiselect-checkbox-bg: var(--gog-background-color);
   --gog-multiselect-checkbox-checked-bg: var(--gog-accent-color);
   --gog-multiselect-checkbox-checked-color: var(--gog-primary-color);
-  --gog-multiselect-controls-gap: 4px;
-  --gog-multiselect-controls-padding: 6px 10px;
-  --gog-multiselect-actions-gap: 6px;
-  --gog-multiselect-filter-padding: 6px;
-  --gog-multiselect-filter-input-padding-y: 6px;
-  --gog-multiselect-filter-input-padding-x: 8px;
+  --gog-multiselect-controls-gap: var(--gog-space-4);
+  --gog-multiselect-controls-padding: var(--gog-space-6) var(--gog-space-10);
+  --gog-multiselect-actions-gap: var(--gog-space-6);
+  --gog-multiselect-filter-padding: var(--gog-space-6);
+  --gog-multiselect-filter-input-padding-y: var(--gog-space-6);
+  --gog-multiselect-filter-input-padding-x: var(--gog-space-8);
   --gog-multiselect-filter-input-bg: var(--gog-background-color);
   --gog-multiselect-filter-input-color: var(--gog-multiselect-field-color);
   --gog-multiselect-filter-input-border: var(--gog-multiselect-field-border);
@@ -1126,13 +1185,13 @@
   --gog-multiselect-filter-border-width: var(--gog-panel-border-width);
   --gog-multiselect-filter-border-style: var(--gog-panel-border-style);
   --gog-multiselect-filter-border-color: var(--gog-border-color);
-  --gog-multiselect-filter-empty-padding: 10px;
+  --gog-multiselect-filter-empty-padding: var(--gog-space-10);
   --gog-multiselect-filter-empty-color: var(--gog-multiselect-placeholder-color);
   /* Matches --gog-select-chevron-inset; see the note there. */
   /* "+N" badge shown when the selection does not fit on one line. */
   --gog-multiselect-overflow-color: var(--gog-multiselect-placeholder-color);
   --gog-multiselect-overflow-font-size: var(--gog-text-sm);
-  --gog-multiselect-overflow-gap: 6px;
+  --gog-multiselect-overflow-gap: var(--gog-space-6);
   --gog-multiselect-min-width: 120px;
   --gog-multiselect-panel-max-width: 420px;
   --gog-multiselect-actions-inset: var(--gog-control-icon-offset);
@@ -1161,8 +1220,8 @@
   --gog-menu-radius: var(--gog-panel-radius);
   --gog-menu-shadow: var(--gog-dialog-shadow);
   --gog-menu-font-family: var(--gog-font-body);
-  --gog-menu-padding: 4px;
-  --gog-menu-gap: 2px;
+  --gog-menu-padding: var(--gog-space-4);
+  --gog-menu-gap: var(--gog-space-2);
   --gog-menu-offset: 4px;
   --gog-menu-min-width: 180px;
   --gog-menu-max-width: 320px;
@@ -1174,7 +1233,7 @@
   --gog-menu-item-hover-bg: var(--gog-hover-color);
   --gog-menu-item-hover-color: var(--gog-text-color);
   --gog-menu-item-font-size: var(--gog-text-sm);
-  --gog-menu-item-padding: 8px 12px;
+  --gog-menu-item-padding: var(--gog-space-8) var(--gog-space-12);
   --gog-menu-item-radius: var(--gog-radius);
   --gog-menu-item-gap: var(--gog-space-sm);
   --gog-menu-item-disabled-opacity: var(--gog-disabled-opacity);
@@ -1183,7 +1242,7 @@
   --gog-menu-item-icon-size: 1em;
 
   /* ── Paginator ─────────────────────────────────────────────────────────────── */
-  --gog-paginator-gap: 4px;
+  --gog-paginator-gap: var(--gog-space-4);
   --gog-paginator-ellipsis-color: var(--gog-muted-text-color);
   --gog-paginator-ellipsis-font-size: var(--gog-text-sm);
   --gog-paginator-ellipsis-font-family: var(--gog-font-body);
@@ -1236,21 +1295,21 @@
   --gog-panel-footer-gap: var(--gog-space-sm);
   --gog-panel-footer-padding-top: var(--gog-space-sm);
 
-  --gog-panel-xsm-padding-y: 10px;
-  --gog-panel-xsm-padding-x: 12px;
+  --gog-panel-xsm-padding-y: var(--gog-space-10);
+  --gog-panel-xsm-padding-x: var(--gog-space-12);
   --gog-panel-xsm-gap: var(--gog-space-sm);
-  --gog-panel-sm-padding-y: 14px;
+  --gog-panel-sm-padding-y: var(--gog-space-14);
   --gog-panel-sm-padding-x: var(--gog-space-md);
-  --gog-panel-sm-gap: 10px;
-  --gog-panel-md-padding-y: 18px;
-  --gog-panel-md-padding-x: 20px;
-  --gog-panel-md-gap: 12px;
+  --gog-panel-sm-gap: var(--gog-space-10);
+  --gog-panel-md-padding-y: var(--gog-space-18);
+  --gog-panel-md-padding-x: var(--gog-space-20);
+  --gog-panel-md-gap: var(--gog-space-12);
   --gog-panel-lg-padding-y: var(--gog-space-lg);
-  --gog-panel-lg-padding-x: 28px;
+  --gog-panel-lg-padding-x: var(--gog-space-28);
   --gog-panel-lg-gap: var(--gog-space-md);
-  --gog-panel-slg-padding-y: 32px;
-  --gog-panel-slg-padding-x: 36px;
-  --gog-panel-slg-gap: 20px;
+  --gog-panel-slg-padding-y: var(--gog-space-32);
+  --gog-panel-slg-padding-x: var(--gog-space-32);
+  --gog-panel-slg-gap: var(--gog-space-20);
 
   /* ── Progressbar ──────────────────────────────────────────────────────────── */
   --gog-progressbar-track-base-bg: color-mix(
@@ -1333,13 +1392,13 @@
      `thin` variant gets more of it since its 6px track leaves the least visible thumb to aim
      at; both land the effective hit width in the ~22-24px range generally recommended for a
      comfortable pointer target. */
-  --gog-scroll-normal-thumb-hit-padding: 6px;
-  --gog-scroll-thin-thumb-hit-padding: 9px;
+  --gog-scroll-normal-thumb-hit-padding: var(--gog-space-6);
+  --gog-scroll-thin-thumb-hit-padding: var(--gog-space-8);
 
   /* ── Select ────────────────────────────────────────────────────────────────── */
   --gog-select-font-family: var(--gog-font-body);
   --gog-select-label-font-family: var(--gog-font-heading);
-  --gog-select-gap: 4px;
+  --gog-select-gap: var(--gog-space-4);
   --gog-select-label-color: var(--gog-accent-color);
   --gog-select-label-font-size: var(--gog-text-sm);
   --gog-select-label-letter-spacing: var(--gog-letter-spacing);
@@ -1372,9 +1431,9 @@
   /* Ceiling for a content-sized panel, so one very long option cannot span the viewport. */
   --gog-select-panel-max-width: 420px;
   /* Filter box — only rendered when `filter` is on. */
-  --gog-select-filter-padding: 6px;
-  --gog-select-filter-input-padding-y: 6px;
-  --gog-select-filter-input-padding-x: 8px;
+  --gog-select-filter-padding: var(--gog-space-6);
+  --gog-select-filter-input-padding-y: var(--gog-space-6);
+  --gog-select-filter-input-padding-x: var(--gog-space-8);
   --gog-select-filter-input-bg: var(--gog-background-color);
   --gog-select-filter-input-color: var(--gog-select-field-color);
   --gog-select-filter-input-border: var(--gog-select-field-border);
@@ -1382,15 +1441,15 @@
   --gog-select-filter-border-width: var(--gog-panel-border-width);
   --gog-select-filter-border-style: var(--gog-panel-border-style);
   --gog-select-filter-border-color: var(--gog-select-option-border-color, var(--gog-border-color));
-  --gog-select-filter-empty-padding: 10px;
+  --gog-select-filter-empty-padding: var(--gog-space-10);
   --gog-select-filter-empty-color: var(--gog-select-placeholder-color);
   /* Clear button — only rendered once a value is selected, see `clearable`. */
   --gog-select-clear-radius: 2px;
   --gog-select-clear-icon-ratio: 0.7;
-  --gog-select-clear-gap: 6px;
+  --gog-select-clear-gap: var(--gog-space-6);
   --gog-select-clear-color: var(--gog-select-placeholder-color);
   --gog-select-clear-hover-color: var(--gog-select-label-color);
-  --gog-select-control-gap: 12px;
+  --gog-select-control-gap: var(--gog-space-12);
   --gog-select-panel-bg: var(--gog-surface-color);
   --gog-select-panel-shadow: var(--gog-panel-shadow);
   --gog-select-panel-max-height: 260px;
@@ -1398,7 +1457,7 @@
   --gog-select-option-hover-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
   --gog-select-option-selected-color: var(--gog-accent-color);
   --gog-select-option-color: var(--gog-text-color);
-  --gog-select-option-gap: 10px;
+  --gog-select-option-gap: var(--gog-space-10);
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-select-option-height: 40px;
@@ -1450,7 +1509,7 @@
   --gog-slider-label-font-family: var(--gog-font-heading);
   --gog-slider-value-font-family: var(--gog-font-mono);
   --gog-slider-error-font-family: var(--gog-font-body);
-  --gog-slider-gap: 6px;
+  --gog-slider-gap: var(--gog-space-6);
   --gog-slider-label-color: var(--gog-accent-color);
   --gog-slider-label-font-size: var(--gog-text-sm);
   --gog-slider-label-letter-spacing: var(--gog-letter-spacing);
@@ -1532,7 +1591,7 @@
   --gog-table-font-family: var(--gog-font-body);
   --gog-table-header-font-family: var(--gog-font-heading);
   --gog-table-numeric-font-family: var(--gog-font-mono);
-  --gog-table-gap: 12px;
+  --gog-table-gap: var(--gog-space-12);
   --gog-table-border-color: var(--gog-accent-dim);
   --gog-table-border-width: var(--gog-control-border-width);
   --gog-table-border-style: var(--gog-border-style);
@@ -1552,13 +1611,13 @@
   --gog-table-header-letter-spacing: var(--gog-letter-spacing);
   --gog-table-header-text-transform: var(--gog-text-transform);
   --gog-table-num-col-width: 48px;
-  --gog-table-th-inner-gap: 6px;
+  --gog-table-th-inner-gap: var(--gog-space-6);
   --gog-table-sort-icon-size: 0.9em;
   --gog-table-sort-icon-width: 1.1em;
   --gog-table-sort-icon-opacity: 0.6;
-  --gog-table-empty-padding: 24px 14px;
+  --gog-table-empty-padding: var(--gog-space-24) var(--gog-space-14);
   --gog-table-empty-font-size: var(--gog-text-md);
-  --gog-table-loading-padding: 32px 14px;
+  --gog-table-loading-padding: var(--gog-space-32) var(--gog-space-14);
   --gog-table-loading-opacity: 0.5;
   --gog-table-row-transition-duration: var(--gog-duration-fast);
   --gog-table-footer-gap: var(--gog-space-sm);
@@ -1567,20 +1626,20 @@
   --gog-table-total-letter-spacing: 0.5px;
   --gog-table-total-text-transform: var(--gog-text-transform);
   --gog-table-num-font-size: var(--gog-text-xs);
-  --gog-table-padding-h: 14px;
-  --gog-table-xsm-padding-v: 2px;
+  --gog-table-padding-h: var(--gog-space-14);
+  --gog-table-xsm-padding-v: var(--gog-space-2);
   --gog-table-xsm-th-font-size: var(--gog-text-xs);
   --gog-table-xsm-td-font-size: var(--gog-text-xs);
-  --gog-table-sm-padding-v: 3px;
+  --gog-table-sm-padding-v: var(--gog-space-2);
   --gog-table-sm-th-font-size: var(--gog-text-xs);
   --gog-table-sm-td-font-size: var(--gog-text-xs);
-  --gog-table-md-padding-v: 6px;
+  --gog-table-md-padding-v: var(--gog-space-6);
   --gog-table-md-th-font-size: var(--gog-text-xs);
   --gog-table-md-td-font-size: var(--gog-text-sm);
-  --gog-table-lg-padding-v: 10px;
+  --gog-table-lg-padding-v: var(--gog-space-10);
   --gog-table-lg-th-font-size: var(--gog-text-sm);
   --gog-table-lg-td-font-size: var(--gog-text-md);
-  --gog-table-slg-padding-v: 14px;
+  --gog-table-slg-padding-v: var(--gog-space-14);
   --gog-table-slg-th-font-size: var(--gog-text-md);
   --gog-table-slg-td-font-size: var(--gog-text-lg);
 
@@ -1614,15 +1673,15 @@
   --gog-tabs-focus-ring-color: var(--gog-accent-color);
   --gog-tabs-panel-padding: var(--gog-space-md);
   --gog-tabs-panel-color: var(--gog-text-color);
-  --gog-tabs-xsm-padding: 0.375rem 0.625rem;
+  --gog-tabs-xsm-padding: var(--gog-space-6) var(--gog-space-10);
   --gog-tabs-xsm-font-size: var(--gog-text-xs);
-  --gog-tabs-sm-padding: 0.5rem 0.875rem;
+  --gog-tabs-sm-padding: var(--gog-space-8) var(--gog-space-14);
   --gog-tabs-sm-font-size: var(--gog-text-sm);
-  --gog-tabs-md-padding: 0.75rem 1.125rem;
+  --gog-tabs-md-padding: var(--gog-space-12) var(--gog-space-18);
   --gog-tabs-md-font-size: var(--gog-text-md);
-  --gog-tabs-lg-padding: 1rem 1.5rem;
+  --gog-tabs-lg-padding: var(--gog-space-16) var(--gog-space-24);
   --gog-tabs-lg-font-size: var(--gog-text-lg);
-  --gog-tabs-slg-padding: 1.25rem 1.75rem;
+  --gog-tabs-slg-padding: var(--gog-space-20) var(--gog-space-28);
   --gog-tabs-slg-font-size: var(--gog-text-xl);
 
   /* ── Tag ──────────────────────────────────────────────────────────────────
@@ -1647,33 +1706,33 @@
   --gog-tag-pill-radius: 9999px;
 
   --gog-tag-xsm-font-size: 0.6875rem;
-  --gog-tag-xsm-padding-block: 0.1875rem;
-  --gog-tag-xsm-padding-inline: 0.375rem;
-  --gog-tag-xsm-gap: 0.1875rem;
+  --gog-tag-xsm-padding-block: var(--gog-space-2);
+  --gog-tag-xsm-padding-inline: var(--gog-space-6);
+  --gog-tag-xsm-gap: var(--gog-space-2);
   --gog-tag-xsm-icon-size: 0.6875rem;
 
   --gog-tag-sm-font-size: 0.75rem;
-  --gog-tag-sm-padding-block: 0.25rem;
-  --gog-tag-sm-padding-inline: 0.5rem;
-  --gog-tag-sm-gap: 0.25rem;
+  --gog-tag-sm-padding-block: var(--gog-space-4);
+  --gog-tag-sm-padding-inline: var(--gog-space-8);
+  --gog-tag-sm-gap: var(--gog-space-4);
   --gog-tag-sm-icon-size: 0.75rem;
 
   --gog-tag-md-font-size: 0.875rem;
-  --gog-tag-md-padding-block: 0.375rem;
-  --gog-tag-md-padding-inline: 0.75rem;
-  --gog-tag-md-gap: 0.375rem;
+  --gog-tag-md-padding-block: var(--gog-space-6);
+  --gog-tag-md-padding-inline: var(--gog-space-12);
+  --gog-tag-md-gap: var(--gog-space-6);
   --gog-tag-md-icon-size: 0.875rem;
 
   --gog-tag-lg-font-size: 1rem;
-  --gog-tag-lg-padding-block: 0.5rem;
-  --gog-tag-lg-padding-inline: 0.875rem;
-  --gog-tag-lg-gap: 0.5rem;
+  --gog-tag-lg-padding-block: var(--gog-space-8);
+  --gog-tag-lg-padding-inline: var(--gog-space-14);
+  --gog-tag-lg-gap: var(--gog-space-8);
   --gog-tag-lg-icon-size: 1rem;
 
   --gog-tag-slg-font-size: 1.125rem;
-  --gog-tag-slg-padding-block: 0.625rem;
-  --gog-tag-slg-padding-inline: 1rem;
-  --gog-tag-slg-gap: 0.625rem;
+  --gog-tag-slg-padding-block: var(--gog-space-10);
+  --gog-tag-slg-padding-inline: var(--gog-space-16);
+  --gog-tag-slg-gap: var(--gog-space-10);
   --gog-tag-slg-icon-size: 1.125rem;
 
   /* ── Toast ────────────────────────────────────────────────────────────────── */
@@ -1687,18 +1746,18 @@
   --gog-toast-warning-color: var(--gog-accent-bright);
   --gog-toast-info-color: var(--gog-accent-color);
   --gog-toast-accent-width: 4px;
-  --gog-toast-padding: 12px 14px;
+  --gog-toast-padding: var(--gog-space-12) var(--gog-space-14);
   --gog-toast-radius: 0px;
-  --gog-toast-content-gap: 10px;
+  --gog-toast-content-gap: var(--gog-space-10);
   --gog-toast-main-gap: var(--gog-space-sm);
-  --gog-toast-actions-gap: 6px;
+  --gog-toast-actions-gap: var(--gog-space-6);
   --gog-toast-message-font-size: var(--gog-text-sm);
   --gog-toast-message-line-height: 1.5;
   --gog-toast-icon-size: 1rem;
   --gog-toast-icon-line-height: 1.4;
-  --gog-toast-action-padding: 0.25rem 0.5rem;
+  --gog-toast-action-padding: var(--gog-space-4) var(--gog-space-8);
   --gog-toast-action-font-size: 0.75rem;
-  --gog-toast-close-padding: 0.125rem 0.25rem;
+  --gog-toast-close-padding: var(--gog-space-2) var(--gog-space-4);
   --gog-toast-close-font-size: 0.75rem;
   --gog-toast-progress-height: 3px;
   --gog-toast-progress-opacity: 30%;
@@ -1741,13 +1800,13 @@
   --gog-toggle-state-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-toggle-state-font-weight: 600;
   --gog-toggle-state-letter-spacing: 0.04em;
-  --gog-toggle-state-padding-inline: 4px;
+  --gog-toggle-state-padding-inline: var(--gog-space-4);
   --gog-toggle-state-offset: 6px;
   /* Gap between the wording and the thumb parked at the opposite end. The clearance itself
      (thumb size + this) is computed in the component stylesheet, not here: a `var(` to a
      size-class token is substituted where it is *declared*, so doing that calc on :root would
      freeze it to the md thumb and stop it scaling with `size`. */
-  --gog-toggle-state-thumb-gap: 6px;
+  --gog-toggle-state-thumb-gap: var(--gog-space-6);
   --gog-toggle-xsm-track-width: 24px;
   --gog-toggle-xsm-track-height: 14px;
   --gog-toggle-xsm-thumb-size: 10px;
@@ -1778,7 +1837,7 @@
   --gog-tooltip-font-family: var(--gog-font-body);
   --gog-tooltip-font-size: var(--gog-text-xs);
   --gog-tooltip-line-height: 1.4;
-  --gog-tooltip-padding: 6px 10px;
+  --gog-tooltip-padding: var(--gog-space-6) var(--gog-space-10);
   --gog-tooltip-radius: var(--gog-radius);
   --gog-tooltip-max-width: 280px;
   /* Caps the gog-scroll wrapping the bubble's content — see tooltip-bubble.component.html.
@@ -1799,7 +1858,7 @@
   --gog-tooltip-arrow-size: 5px;
   /* Space kept between the trigger and the bubble. Read by the directive itself (not just
      CSS) to feed the placement math — see `readPxToken` in `tooltip.directive.ts`. */
-  --gog-tooltip-gap: 8px;
+  --gog-tooltip-gap: var(--gog-space-8);
   --gog-tooltip-z: 400;
   --gog-tooltip-transition-duration: var(--gog-duration-fast);
 }

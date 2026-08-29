@@ -76,6 +76,7 @@ That is the whole of iteration 1, and everything else in this plan is cheap once
 | 3   | Promote `material` / `primeng` out of the lab    | feature | 🟡 partial |
 | 4   | The catalogue — eras and families                | feature | 🟡 partial |
 | 5   | Tooling and docs catch up                        | tooling | 🟡 partial |
+| 6   | Density — the character layer for spacing        | api     | ✅ done |
 
 ---
 
@@ -501,3 +502,94 @@ verify today — is complete.**
   a builder would put a tool in a package that consumers pay to download.
 - **Per-component theme overrides as a shipped concept.** The instance layer already does this and
   needs no new API.
+
+---
+
+## Iteration 6 — Density, the character layer for spacing
+
+**Added 2026-08-29, after the user asked for themes that differ in shape and spacing, not only
+colour.** Iteration 1 gave a theme one place to set corner rounding, border weight and casing.
+It did not give it one for *space*, and the gap was not visible until someone asked a theme to
+be tighter.
+
+### The finding
+
+Measured in `theme.css` before this iteration:
+
+| Measured                                          | Count   |
+| ------------------------------------------------- | ------- |
+| `padding`/`gap` component tokens                   | 214     |
+| …deriving from `--gog-space-*`                     | 34      |
+| …**bare literals**                                 | **180** |
+| …of those literals, written in `px`                | 137     |
+| …written in `rem`                                  | 42      |
+
+**A theme could set `--gog-space-md` and almost nothing would move.** Density was not
+themeable, and it was not themeable in two units at once — which is how the file ended up with
+`0.225rem` (3.6px), `0.275rem` (4.4px), `0.3rem` (4.8px), `0.45rem` (7.2px) and `0.6rem`
+(9.6px) sitting next to round `px` values doing the same job. Each was defensible where it was
+typed. Together they were not a scale.
+
+### What was built
+
+1. **`--gog-density`, one multiplier**, and a fourteen-step scale that reads it —
+   `--gog-space-2` … `--gog-space-48`, named for their pixel value at density 1. T-shirt naming
+   was rejected: it stops being readable around the fourth size and this scale has fourteen.
+   The five existing t-shirt names stay as aliases at their exact previous values, because they
+   are public API and cost nothing to keep.
+2. **178 tokens rewritten to read the scale** — 177 paddings/gaps plus `--gog-control-icon-offset`.
+3. **The field icon chrome, stated as the sum it always was.** `--gog-field-*-icon-inset` was five
+   hand-measured literals (24/30/36/44/52 — `docs/iteration-8-plan.md` tuned them in a browser).
+   They turned out to satisfy `offset * 2 + glyph` exactly, so they are now written that way and
+   compute to the same five numbers at density 1. The glyph box is a new token per size and
+   deliberately does **not** follow density: an icon that shrinks with the padding stops being
+   legible well before the padding stops being usable.
+4. **`check-tokens.mjs` rule H**, the spacing half of rule G. It cannot be folded into G, which
+   compares a literal against a character token's literal value — a scale step is
+   `calc(10px * var(--gog-density))`, so `10px` never matches it textually even though that is
+   exactly the drift worth catching. Rule H compares the *number*, after resolving each step's
+   base value.
+5. **The three character presets now carry a density**: `ledger` 0.9, `primeng` 0.95,
+   `material` 1.1.
+
+### As it finished — what moved, and what did not
+
+**Nothing moves at density 1 except thirteen values that were never on a grid.** The rewrite was
+run as a dry run first, printing every value it would have to move; the list was thirteen long
+and every entry was either a fractional `rem` or an odd pixel:
+
+| Moved                        | Count | Largest |
+| ---------------------------- | ----- | ------- |
+| fractional `rem` → 2px grid  | 5     | 7.2 → 8 |
+| odd `px` → 2px grid          | 6     | 9 → 8   |
+| off-scale `px` → nearest step| 2     | 36 → 32 |
+
+`18px` and `28px` were added to the scale specifically so that deliberate values would not move;
+without them the list would have been 24. The one change worth naming is
+`--gog-panel-slg-padding-x`, 36px → 32px, on the largest panel size only.
+
+**Two things the checker caught that a code read had missed.** Both were real, and neither was
+in the plan:
+
+- **A derived token in the literals-only `:root` block does not follow a scoped theme.**
+  `theme.css` splits `:root` (literals) from `:root, [data-theme]` (derived) for exactly this
+  reason, and the rewrite moved 38 declarations across that line without noticing. A custom
+  property's `var()` resolves against the element the property is *declared* on, so the whole
+  scale had to live in the derived block or a `[data-theme]` subtree would inherit `:root`'s
+  numbers instead of its own. `check-tokens.mjs`'s `root-literals-only` rule failed the build
+  and named all 33 in one run. **This is the rule earning its keep on a change it was not
+  written for.**
+- **`--gog-control-icon-offset` was still a literal** after the first pass, because the rewrite
+  matched on `padding|gap` and this one is neither. It was invisible until the browser check:
+  at density 0.75 the field's padding shrank to 7.5px and the icon inset stayed at 36px. A
+  computed-value check found it; reading the diff would not have.
+
+**Verified in a real browser, not by inspection.** At density 1, all five icon insets still
+compute to 24/30/36/44/52 on real elements. At 0.75 they compute to 31px against 7.5px padding —
+consistent, which is the whole point — and restoring density 1 returns the historical values
+exactly. The three presets render visibly different densities side by side on `/themes`. Rule H
+was proved to fail by reverting one token to its literal against a scratch copy, then restored.
+
+**Not converted, on purpose:** `--gog-focus-ring-offset` (accessibility, not spacing),
+`--gog-field-float-label-reserve` (typography — it tracks the label's font size, not the
+padding), and the `16%`/`84px` values the rewrite skipped as not-density.

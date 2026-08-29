@@ -53,6 +53,10 @@
      the whole reason the character layer's foundation tokens exist. Components still honour
      `prefers-reduced-motion` independently of this. */
   --gog-radius: 0;
+  /* Tighter than the library's default, because the look this reproduces packed a screen:
+     administrative software was designed for people who read a whole table at once, not for
+     touch targets. One number, and every padding and gap in the library follows it. */
+  --gog-density: 0.9;
   --gog-control-border-width: 1px;
   --gog-text-transform: none;
   --gog-letter-spacing: normal;

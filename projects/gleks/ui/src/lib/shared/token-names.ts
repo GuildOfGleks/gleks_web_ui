@@ -566,6 +566,7 @@ export type GogTokenName =
   | '--gog-datepicker-text-color'
   | '--gog-datepicker-toggle-icon-size'
   | '--gog-datepicker-transition-duration'
+  | '--gog-density'
   | '--gog-dialog-backdrop-bg'
   | '--gog-dialog-backdrop-blur'
   | '--gog-dialog-backdrop-fade-duration'
@@ -626,6 +627,9 @@ export type GogTokenName =
   | '--gog-field-float-label-over-gap'
   | '--gog-field-float-label-over-reserve'
   | '--gog-field-float-label-reserve'
+  | '--gog-field-icon-glyph'
+  | '--gog-field-icon-glyph-sm'
+  | '--gog-field-icon-glyph-xsm'
   | '--gog-field-lg-font-size'
   | '--gog-field-lg-icon-inset'
   | '--gog-field-lg-icon-offset'
@@ -1081,7 +1085,21 @@ export type GogTokenName =
   | '--gog-slider-value-font-size'
   | '--gog-slider-value-min-width'
   | '--gog-slider-vertical-length'
+  | '--gog-space-10'
+  | '--gog-space-12'
+  | '--gog-space-14'
+  | '--gog-space-16'
+  | '--gog-space-18'
+  | '--gog-space-2'
+  | '--gog-space-20'
+  | '--gog-space-24'
+  | '--gog-space-28'
   | '--gog-space-2xl'
+  | '--gog-space-32'
+  | '--gog-space-4'
+  | '--gog-space-48'
+  | '--gog-space-6'
+  | '--gog-space-8'
   | '--gog-space-lg'
   | '--gog-space-md'
   | '--gog-space-sm'
@@ -1442,14 +1460,10 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     tokens: [
       '--gog-border-style',
       '--gog-border-width',
+      '--gog-density',
       '--gog-panel-border-style',
       '--gog-panel-border-width',
       '--gog-radius',
-      '--gog-space-2xl',
-      '--gog-space-lg',
-      '--gog-space-md',
-      '--gog-space-sm',
-      '--gog-space-xs',
     ],
   },
   {
@@ -1483,34 +1497,16 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-control-checkbox-label-size-slg',
       '--gog-control-checkbox-label-size-sm',
       '--gog-control-checkbox-label-size-xsm',
-      '--gog-control-checkbox-padding',
-      '--gog-control-icon-offset',
-      '--gog-control-padding-x',
-      '--gog-control-padding-y',
     ],
   },
   {
     section: 'Field sizing (input / select / multiselect share one scale)',
     layer: 'foundation',
     tokens: [
-      '--gog-field-lg-icon-inset',
-      '--gog-field-lg-icon-offset',
-      '--gog-field-lg-padding-x',
-      '--gog-field-lg-padding-y',
-      '--gog-field-md-icon-inset',
+      '--gog-field-icon-glyph',
+      '--gog-field-icon-glyph-sm',
+      '--gog-field-icon-glyph-xsm',
       '--gog-field-slg-font-size',
-      '--gog-field-slg-icon-inset',
-      '--gog-field-slg-icon-offset',
-      '--gog-field-slg-padding-x',
-      '--gog-field-slg-padding-y',
-      '--gog-field-sm-icon-inset',
-      '--gog-field-sm-icon-offset',
-      '--gog-field-sm-padding-x',
-      '--gog-field-sm-padding-y',
-      '--gog-field-xsm-icon-inset',
-      '--gog-field-xsm-icon-offset',
-      '--gog-field-xsm-padding-x',
-      '--gog-field-xsm-padding-y',
     ],
   },
   {
@@ -1518,7 +1514,6 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     layer: 'foundation',
     tokens: [
       '--gog-field-float-label-in-top',
-      '--gog-field-float-label-over-gap',
       '--gog-field-float-label-over-reserve',
       '--gog-field-float-label-reserve',
     ],
@@ -1542,11 +1537,9 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     layer: 'foundation',
     tokens: [
       '--gog-toast-enter-distance',
-      '--gog-toast-gap',
       '--gog-toast-max-width',
       '--gog-toast-min-width',
       '--gog-toast-shadow',
-      '--gog-toast-stack-padding',
       '--gog-toast-z-index',
     ],
   },
@@ -1584,14 +1577,57 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     section: 'Derived foundation tokens',
     layer: 'foundation',
     tokens: [
+      '--gog-control-checkbox-padding',
+      '--gog-control-icon-offset',
+      '--gog-control-padding-x',
+      '--gog-control-padding-y',
+      '--gog-field-float-label-over-gap',
       '--gog-field-lg-font-size',
+      '--gog-field-lg-icon-inset',
+      '--gog-field-lg-icon-offset',
+      '--gog-field-lg-padding-x',
+      '--gog-field-lg-padding-y',
       '--gog-field-md-font-size',
+      '--gog-field-md-icon-inset',
       '--gog-field-md-icon-offset',
       '--gog-field-md-padding-x',
       '--gog-field-md-padding-y',
+      '--gog-field-slg-icon-inset',
+      '--gog-field-slg-icon-offset',
+      '--gog-field-slg-padding-x',
+      '--gog-field-slg-padding-y',
       '--gog-field-sm-font-size',
+      '--gog-field-sm-icon-inset',
+      '--gog-field-sm-icon-offset',
+      '--gog-field-sm-padding-x',
+      '--gog-field-sm-padding-y',
       '--gog-field-xsm-font-size',
+      '--gog-field-xsm-icon-inset',
+      '--gog-field-xsm-icon-offset',
+      '--gog-field-xsm-padding-x',
+      '--gog-field-xsm-padding-y',
       '--gog-panel-radius',
+      '--gog-space-10',
+      '--gog-space-12',
+      '--gog-space-14',
+      '--gog-space-16',
+      '--gog-space-18',
+      '--gog-space-2',
+      '--gog-space-20',
+      '--gog-space-24',
+      '--gog-space-28',
+      '--gog-space-2xl',
+      '--gog-space-32',
+      '--gog-space-4',
+      '--gog-space-48',
+      '--gog-space-6',
+      '--gog-space-8',
+      '--gog-space-lg',
+      '--gog-space-md',
+      '--gog-space-sm',
+      '--gog-space-xs',
+      '--gog-toast-gap',
+      '--gog-toast-stack-padding',
     ],
   },
   {

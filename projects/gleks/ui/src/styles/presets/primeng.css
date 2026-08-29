@@ -62,6 +62,9 @@
      an inconsistency nobody had a way to see until there was one token to check instead of
      twenty). Setting the character layer once now covers all eighteen correctly. */
   --gog-radius: 6px;
+  /* Aura runs slightly tighter than this library's default — a data-dense posture, closer to
+     ledger's than to material's, which is the distinction density exists to express. */
+  --gog-density: 0.95;
   --gog-control-border-width: 1px;
   --gog-focus-ring-width: 2px;
   --gog-focus-ring-offset: 2px;

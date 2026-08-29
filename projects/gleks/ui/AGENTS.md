@@ -180,6 +180,13 @@ Full model is in `README.md`'s Theming section; short version:
   `--gog-text-transform`/`--gog-letter-spacing` (emphasis casing/tracking). Component tokens in
   the categories these cover derive from them by default; setting one in a `[data-theme]` block
   restyles every component that reads it, with nothing to re-list per component.
+- **`--gog-density` is the character layer for spacing** (since 21.7.0, `docs/themes.md`
+  iteration 6). It multiplies the fourteen-step scale `--gog-space-2` … `--gog-space-48`, named
+  for their pixel value at density 1, and every padding and gap in the library derives from a
+  step. `--gog-density: 0.9` in a `[data-theme]` block makes the whole library tighter; nothing
+  else needs to be named. `--gog-space-xs|sm|md|lg|2xl` are aliases for steps 4/8/16/24/48 and
+  still work. Icon offsets follow density; the glyph box, focus-ring offset and float-label
+  reserve deliberately do not — they are legibility, not spacing.
 - **Component prefixes are spelled out** since 21.5.0: `--gog-button-*`, `--gog-multiselect-*`,
   `--gog-confirmation-dialog-*`. The abbreviated `--gog-btn-*`, `--gog-ms-*` and `--gog-confirm-*`
   were removed in 21.7.0 — if you're reading a codebase or an example that still uses one, rename

@@ -106,6 +106,7 @@ const FOUNDATION_NAMESPACES = new Set([
   'text',
   'warning',
   // type, metrics, motion, state
+  'density',
   'disabled',
   'duration',
   'easing',
@@ -497,6 +498,43 @@ async function main() {
           `[character-drift] styles/theme.css:${line}\n      ${name}: ${value}; repeats ${charToken}'s value verbatim — read it instead: var(${charToken})`,
         );
       }
+    }
+  }
+
+  // Rule H — docs/themes.md iteration 6's density check, the spacing half of rule G.
+  //
+  // It cannot be folded into rule G, which compares a literal against a character token's
+  // literal value: a scale step is `calc(10px * var(--gog-density))`, so `10px` never matches
+  // it textually even though it is exactly the drift worth catching. This compares the number
+  // instead, after resolving the step's own base value at density 1.
+  //
+  // A padding or gap written as a literal is invisible to `--gog-density`, which is how the
+  // library got 177 of them in two different units: each was correct where it was typed, and
+  // together they made theme-level density impossible.
+  const SCALE_STEP = /^--gog-space-(\d+)$/;
+  const scaleSteps = new Map(); // px at density 1 -> token name
+  for (const { name } of themeDecls) {
+    const step = SCALE_STEP.exec(name);
+    if (step) scaleSteps.set(Number(step[1]), name);
+  }
+  const lengthToPx = (v) => {
+    const m = /^([\d.]+)(px|rem)$/.exec(v.trim());
+    if (!m) return null;
+    return m[2] === 'rem' ? parseFloat(m[1]) * 16 : parseFloat(m[1]);
+  };
+  for (const { name, value, index } of themeDecls) {
+    if (SCALE_STEP.test(name)) continue; // the scale itself
+    if (!/-(padding|gap)(-[a-z]+)?$/.test(name)) continue;
+    if (value.includes('var(')) continue;
+    for (const part of value.trim().split(/\s+/)) {
+      const px = lengthToPx(part);
+      if (px === null || px === 0) continue;
+      const step = scaleSteps.get(px);
+      if (!step) continue;
+      const line = lineOf(themeCss, index);
+      problems.push(
+        `[density-drift] styles/theme.css:${line}\n      ${name}: ${value}; ${part} is ${step}'s value — read the scale instead: var(${step}), or it will not follow --gog-density`,
+      );
     }
   }
 

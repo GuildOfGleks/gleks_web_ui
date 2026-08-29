@@ -8,6 +8,21 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`--gog-density`: one number that sets the spacing of the whole library.** A theme makes
+  every component tighter or roomier with `--gog-density: 0.9` — no component tokens named, no
+  list to keep up to date as components are added. It multiplies a new fourteen-step spacing
+  scale (`--gog-space-2` … `--gog-space-48`, named for their pixel value at density 1), and
+  every padding and gap in `theme.css` now derives from that scale. The three shipped presets
+  that carry a character layer use it: `ledger` at `0.9` (administrative software packed a
+  screen), `primeng` at `0.95`, `material` at `1.1` (M3's posture is generous by design).
+
+  The five existing `--gog-space-xs|sm|md|lg|2xl` names are kept as aliases with their exact
+  previous values, so no existing theme or consumer stylesheet changes. **Nothing moves at
+  density 1** except thirteen paddings that were never on a grid to begin with — five of them
+  fractional `rem` values computing to 3.6px, 4.4px, 4.8px, 7.2px and 9.6px — which now round
+  to the nearest 2px step. The largest single change is 4px, on `--gog-panel-slg-padding-x`.
+  See `docs/themes.md` iteration 6.
+
 - **A new shipped preset: `ledger`** — the square-cornered, hard-shadowed, system-font
   administrative-software identity. Beige and grey, a muted navy accent, uniform 1px borders,
   zero corner radius, a hard offset shadow with no blur, and every transition duration set to

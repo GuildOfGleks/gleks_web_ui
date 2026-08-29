@@ -209,8 +209,18 @@ Six presets ship alongside the built-in `light` and `dark`, each at
 | `material`, `primeng`              | palette plus character, plus a few genuinely per-component settings          |
 
 The character layer (since 21.7.0) is what lets a preset change the library's *shape* — square
-corners, thin borders, sentence-case labels — without listing component tokens. `AGENTS.md` has
-the per-preset detail.
+corners, thin borders, sentence-case labels — without listing component tokens. Density is the
+same idea for spacing: every padding and gap derives from one scale, so a whole theme gets
+tighter or roomier with one number.
+
+```css
+[data-theme='compact'] {
+  --gog-density: 0.85; /* every padding and gap in the library, at once */
+  --gog-radius: 2px;
+}
+```
+
+`AGENTS.md` has the per-preset detail and the full token list.
 
 Fonts are left alone on purpose (system stacks, no webfont download). Add
 `@guildofgleks/ui/styles/fonts.css` for the showcase's typography.

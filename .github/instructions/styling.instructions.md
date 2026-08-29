@@ -87,7 +87,10 @@ Rules when touching tokens:
   character layer (`docs/themes.md` iteration 1), corner rounding (`--gog-radius`), border
   weight (`--gog-control-border-*`/`--gog-panel-border-*`/`--gog-border-*`) and emphasis
   casing/tracking (`--gog-text-transform`, `--gog-letter-spacing`) where the theme wants a
-  different one. The derived layer re-resolves from both automatically; re-listing *component*
+  different one — plus **spacing, via `--gog-density`** (`docs/themes.md` iteration 6), the one
+  number every padding and gap in the library derives from. A theme that wants to be tighter or
+  roomier sets that, never a component padding.
+  The derived layer re-resolves from all of them automatically; re-listing *component*
   tokens per theme is what makes themes drift apart — see `material.css`/`primeng.css`/
   `ledger.css` for what a theme with real character looks like once it uses this layer instead
   of the roughly ten per-component overrides each one used to need for casing and tracking
