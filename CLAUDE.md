@@ -9,6 +9,20 @@ consume it.
 | `ui-showcase`      | `projects/ui-showcase`  | demo/validation app; **the only place to verify library changes live**        |
 | `gleks-ui-lab`     | `projects/gleks-ui-lab` | public documentation site; tracks the **published** package, not local builds |
 
+## Language: Russian in chat, English in the repo
+
+**Talk to the user in Russian. Write everything that lands in the repository in English.**
+
+This is not a style preference on either side — the two audiences are different people. The chat
+has one reader, who works in Russian. The repository is a published npm package read by consumers
+who never see this conversation, so **every byte committed stays English**: code, identifiers,
+comments, commit messages, `CHANGELOG.md`, the `docs/` plans, the `.github/instructions/` files,
+and the three documents that ship inside the package (`README.md`, `AGENTS.md`, `TOKENS.md`).
+User-visible strings in `ui-showcase` are English too — it is the documentation the lab quotes.
+
+So: explain in Russian what you are about to do, then write it in English. A Russian comment in a
+`.ts` file or a Russian line in `CHANGELOG.md` is a bug, however the request was phrased.
+
 ## Read these before working
 
 The authoritative rules live in `.github/instructions/`. They are written in Copilot's
