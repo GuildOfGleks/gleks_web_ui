@@ -1,0 +1,114 @@
+/*
+ * `primeng` — PrimeNG's Aura theme (light, blue primary), as a @guildofgleks/ui theme.
+ *
+ * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ *
+ *   @import '@guildofgleks/ui/styles/index.css';
+ *   @import '@guildofgleks/ui/styles/presets/primeng.css';
+ *
+ *   <html data-theme="primeng">
+ *
+ * Unlike `slate.css`/`one-dark.css`/`one-light.css`, this is not palette-only. PrimeNG's Aura
+ * has its own visual character — thin borders, a 6px radius, medium-weight sentence-case
+ * labels instead of this library's default shouty caps — and matching that needs the
+ * `docs/themes.md` iteration-1 character layer (`--gog-radius`, `--gog-control-border-width`,
+ * `--gog-text-transform`, `--gog-letter-spacing`) plus a small number of genuinely per-component
+ * settings the character layer has no vocabulary for (a table's header font, a slider's neutral
+ * track colour). Ported from `gleks-ui-lab`'s hand-authored `[data-theme='primeng']` block
+ * (`docs/themes.md`, iteration 3) — see that file's own comment for what changed in the move,
+ * beyond the palette staying byte-for-byte identical.
+ */
+
+:root[data-theme='primeng'],
+[data-theme='primeng'] {
+  color-scheme: light;
+
+  /* Palette */
+  --gog-background-color: #f8fafc;
+  --gog-surface-color: #ffffff;
+  --gog-hover-color: #f1f5f9;
+  --gog-border-color: #e2e8f0;
+  --gog-text-color: #0f172a;
+  --gog-accent-text-color: #ffffff;
+  --gog-muted-text-color: #64748b;
+  --gog-primary-color: #0f172a;
+  --gog-accent-color: #3b82f6;
+  --gog-accent-bright: #2563eb;
+  --gog-accent-dim: #1d4ed8;
+  --gog-accent-pale: #dbeafe;
+  --gog-secondary-color: #64748b;
+  --gog-success-color: #22c55e;
+  --gog-danger-color: #ef4444;
+  --gog-warning-color: #f59e0b;
+  --gog-info-color: #0ea5e9;
+  --gog-panel-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+  --gog-spinner-overlay-bg: rgba(248, 250, 252, 0.75);
+
+  /* Fonts — PrimeNG doesn't split heading/body, one system sans everywhere */
+  --gog-font-heading:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --gog-font-body:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --gog-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Character layer — thinner borders, tighter focus ring, 6px radius everywhere that
+     derives from --gog-radius (buttons, fields, checkboxes, dialogs), sentence-case labels
+     instead of shouty caps. This is the whole reason iteration 1 exists: before it, the two
+     lines below were ten — one letter-spacing/text-transform pair per component
+     (button/input-label/select-label/multiselect-label, plus text-transform-only on
+     accordion-header/table-header) — and even at ten lines it missed six more components
+     that share the same idea (button-toggle, calendar-weekday, autocomplete-label,
+     datepicker-label, slider-label, table-total all still shouted in caps under this theme,
+     an inconsistency nobody had a way to see until there was one token to check instead of
+     twenty). Setting the character layer once now covers all eighteen correctly. */
+  --gog-radius: 6px;
+  --gog-control-border-width: 1px;
+  --gog-focus-ring-width: 2px;
+  --gog-focus-ring-offset: 2px;
+  --gog-text-transform: none;
+  --gog-letter-spacing: normal;
+
+  /* Button — medium weight, body font (casing/tracking now come from the character layer) */
+  --gog-button-font-family: var(--gog-font-body);
+  --gog-button-font-weight: 500;
+
+  /* Field labels — muted gray, not accent-colored (casing/tracking from the character layer) */
+  --gog-input-label-color: var(--gog-muted-text-color);
+  --gog-input-label-font-family: var(--gog-font-body);
+  --gog-input-field-border: var(--gog-border-color);
+  --gog-select-label-color: var(--gog-muted-text-color);
+  --gog-select-label-font-family: var(--gog-font-body);
+  --gog-select-field-border: var(--gog-border-color);
+  --gog-multiselect-label-color: var(--gog-muted-text-color);
+  --gog-multiselect-label-font-family: var(--gog-font-body);
+  --gog-multiselect-field-border: var(--gog-border-color);
+  --gog-multiselect-checkbox-border: var(--gog-border-color);
+
+  /* Checkbox */
+  --gog-checkbox-border-color: var(--gog-border-color);
+  --gog-checkbox-label-color: var(--gog-text-color);
+
+  /* Accordion — surface header instead of transparent (casing from the character layer) */
+  --gog-accordion-font-family: var(--gog-font-body);
+  --gog-accordion-header-bg: var(--gog-surface-color);
+  --gog-accordion-hover-bg: var(--gog-hover-color);
+  --gog-accordion-body-bg: var(--gog-surface-color);
+  --gog-accordion-border-color: var(--gog-border-color);
+  --gog-accordion-radius: 6px;
+  --gog-accordion-body-radius: 6px;
+
+  /* Table — neutral row hover (header casing from the character layer) */
+  --gog-table-header-font-family: var(--gog-font-body);
+  --gog-table-border-color: var(--gog-border-color);
+  --gog-table-hover-bg: var(--gog-hover-color);
+
+  /* Slider / spinner — neutral track instead of accent-tinted */
+  --gog-slider-track-bg: var(--gog-border-color);
+  --gog-slider-label-color: var(--gog-muted-text-color);
+  --gog-spinner-track-color: var(--gog-border-color);
+
+  /* Dialog / toast */
+  --gog-dialog-backdrop-bg: rgba(0, 0, 0, 0.32);
+  --gog-dialog-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+  --gog-toast-radius: 6px;
+}

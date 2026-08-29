@@ -8,6 +8,15 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **Two new shipped presets: `material` and `primeng`** — full visual identities (Material
+  Design 3 baseline and PrimeNG's Aura), not just palettes, ported from `gleks-ui-lab`'s
+  compare page. `@import '@guildofgleks/ui/styles/presets/material.css'` /
+  `.../presets/primeng.css'`, then `data-theme="material"` / `"primeng"`. Unlike `slate`/
+  `one-dark`/`one-light`, both set the character layer (corner rounding, border weight, casing,
+  tracking) plus a handful of settings the character layer has no vocabulary for yet (a pill
+  button, a table's header font). See each file's own header comment for what's per-component
+  and why.
+
 - **Four new foundation tokens give a theme somewhere to set corner rounding, border weight and
   emphasis casing/tracking once, instead of per component:** `--gog-text-transform` (default
   `uppercase`), `--gog-letter-spacing` (default `1px`), `--gog-border-width` and `--gog-border-style`

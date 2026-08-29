@@ -141,8 +141,19 @@ Update the status table in whichever you are working from, as you go.
   findings — muted text failing 4.5:1 in three themes, button label text failing it in two — are
   filed in `docs/backlog.md` rather than silently fixed, per the plan's own instruction that
   finding and fixing are separate decisions. Not wired into `.github/workflows/ci.yml` yet: doing
-  that today would make CI permanently red over a known, un-fixed condition. Iterations 3–5 are
-  not started.
+  that today would make CI permanently red over a known, un-fixed condition. **Iteration 3
+  (`material`/`primeng` as shipped presets) is partial, 2026-08-29**: both are real files at
+  `styles/presets/`, ported from `gleks-ui-lab`'s hand-authored blocks and rewritten onto the
+  character layer — ten casing/tracking overrides per theme become two, which along the way
+  fixed six components (`button-toggle`, `calendar-weekday`, `autocomplete-label`,
+  `datepicker-label`, `slider-label`, `table-total`) the original hand-authoring had missed and
+  which still shouted in caps under the lab's current theme. Verified live in `ui-showcase` via
+  DOM-injected CSS, no source file touched. **Not done, and cannot be yet:** switching the lab's
+  compare pages to import these instead of declaring them locally — that is rule 3's territory
+  (never touch `gleks-ui-lab` in a library-change session; it tracks the published package, and
+  21.7.0 isn't published) — recorded in full in `docs/lab-after-publish.md`, including the
+  six-component behaviour change so it reads as the fix landing, not a regression, when that work
+  happens. Iterations 4–5 are not started.
 - `docs/panel-card.md` — **built 2026-08-23 into 21.6.1, finished 2026-08-26**: `gog-card` and
   `gog-panel`, all four iterations done. Read its _Iteration 1, as resolved_ section rather than the
   sketch above it: two of the answers came out differently from the plan. There is no `interactive`

@@ -73,7 +73,7 @@ That is the whole of iteration 1, and everything else in this plan is cheap once
 | --- | ------------------------------------------------ | ------- | ------- |
 | 1   | The character layer; 510 literals become derived | api     | ✅ done |
 | 2   | Contrast checking, before the catalogue grows    | tooling | 🟡 partial |
-| 3   | Promote `material` / `primeng` out of the lab    | feature | ⬜ todo |
+| 3   | Promote `material` / `primeng` out of the lab    | feature | 🟡 partial |
 | 4   | The catalogue — eras and families                | feature | ⬜ todo |
 | 5   | Tooling and docs catch up                        | tooling | ⬜ todo |
 
@@ -281,6 +281,57 @@ wrong and it is better to find out on themes nobody has to invent.
 
 **Done when:** both are shipped presets, the lab declares neither, and the compare pages look
 unchanged.
+
+---
+
+### Iteration 3, as it finished (2026-08-29) — partial
+
+**Steps 1–2 done: `material.css` and `primeng.css` are real, shipped presets** at
+`projects/gleks/ui/src/styles/presets/`, ported from `gleks-ui-lab/src/styles.scss`'s
+hand-authored blocks (read for reference, never edited — see below). Palette, fonts and every
+per-component setting the character layer has no vocabulary for (M3's pill button, its 4/12/28px
+per-component radii, PrimeNG's neutral slider track) carried over unchanged. What changed is the
+casing/tracking declarations: ten hand-listed overrides per theme
+(`button`/`input-label`/`select-label`/`multiselect-label`'s `letter-spacing`+`text-transform`,
+plus `text-transform` alone on `accordion-header`/`table-header`) become two —
+`--gog-text-transform: none`, `--gog-letter-spacing: normal` — which is the token count iteration
+1 promised, measured on a theme that already existed rather than one written to make the number
+look good.
+
+**Doing that surfaced a real inconsistency in the original hand-authored theme, and fixed it as a
+side effect.** Six more components share the exact same idea and value —
+`button-toggle`/`calendar-weekday`/`autocomplete-label`/`datepicker-label`/`slider-label`/
+`table-total` — but the original ten-line list never got around to them, so under the lab's
+*current* `material`/`primeng` those six still render `theme.css`'s own shouty-uppercase default,
+inconsistent with the ten that were covered. Setting the character layer once catches all
+eighteen. Verified live in `ui-showcase` (full method below): all six read in sentence case with
+normal tracking under the new preset, matching what the other ten already established as the
+theme's obvious intent. This is a **behaviour change** relative to the lab's current output on
+those six components — deliberate, documented, and recorded in `docs/lab-after-publish.md` so
+whoever does step 3 later isn't surprised by a diff on the compare pages and doesn't "fix" it back.
+
+**Verification, without touching `ui-showcase`'s or the lab's source.** Built `@gleks/ui`,
+confirmed both preset files land in `dist/gleks/ui/styles/presets/`, then in a real browser
+against `ui-showcase` injected each preset's CSS as a `<style>` element and set
+`data-theme="primeng"` via `documentElement.setAttribute` — a live DOM change, not a file edit, so
+nothing in the repo needed reverting afterward. Checked all six previously-inconsistent
+components plus two already-correct ones (`button`, `table-header`) across five pages
+(`/buttons`, `/button-toggle`, `/datepicker`, `/autocomplete`, `/slider`, `/table`): every one
+resolved to `text-transform: none` / `letter-spacing: normal` (or its own untouched literal where
+iteration 1 deliberately left one, e.g. `button-toggle-letter-spacing` staying `0.5px`, unaffected
+either way). A full-palette injection on `/buttons` confirmed the whole preset reads as one
+coherent identity — blue/gray, rounded, sentence-case — not just the two tokens in isolation.
+`check:tokens` passes unaffected (presets/ is outside its scan, by design — a preset declares
+palette and reads nothing a check needs to verify against theme.css's contract).
+
+**What's left, and why it's not done: steps 3–4, `gleks-ui-lab` itself.** Iteration 3's own steps
+2–3 ask to switch the lab's compare pages to import the new presets and delete `styles.scss`'s
+local copies — that is exactly the "touch the lab in a library-change session" the project's rule
+forbids (`agent-workflow.instructions.md`; the lab tracks the *published* package, and 21.7.0
+is not published). Recorded in full in `docs/lab-after-publish.md`, including the six-component
+behaviour change so it reads as expected rather than investigated as a regression when that work
+happens. Marked partial here for the same reason iteration 2 is: the plan's own "done when" bar
+names a lab-side outcome ("the lab declares neither") that cannot be true yet.
 
 ---
 

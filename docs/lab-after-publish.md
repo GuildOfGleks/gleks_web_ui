@@ -40,6 +40,41 @@ flip to past tense once that ships:
 Both are prose-only edits — no example or demo needs touching, since neither page renders a live
 token whose value would change.
 
+## After 21.7.0 — `material`/`primeng` become shipped presets, the lab stops declaring them
+
+`docs/themes.md` iteration 3 ported the lab's hand-authored `[data-theme='material']`/
+`[data-theme='primeng']` blocks (`projects/gleks-ui-lab/src/styles.scss`) to
+`projects/gleks/ui/src/styles/presets/material.css`/`primeng.css`, rewritten onto the iteration-1
+character layer. Steps 2–3 of that iteration — moving the palette out of `styles.scss` and
+switching the lab's compare pages to import the real package presets — are **deliberately not
+done yet**, because the lab can only import what is actually published
+(`gleks-ui-library.instructions.md` step 7; `agent-workflow.instructions.md`'s "never touch the
+lab in a library-change session"). Once 21.7.0 is on npm:
+
+1. Delete `[data-theme='material']` and `[data-theme='primeng']` from
+   `projects/gleks-ui-lab/src/styles.scss` and import the two preset files instead —
+   `@import '@guildofgleks/ui/styles/presets/material.css';` /
+   `@import '@guildofgleks/ui/styles/presets/primeng.css';`, the same way `slate.css` etc. would
+   be imported (see `README.md`'s Theming section).
+2. **The palette and structural declarations are byte-for-byte identical to what `styles.scss`
+   has today.** The character-layer consolidation changed only how the casing/tracking
+   declarations are *written* (ten per theme → two), not what they render — with one deliberate
+   exception, next.
+3. **Six components will render differently than the lab's current compare pages show, on
+   purpose, not as a bug to chase.** The old hand-authored blocks explicitly set
+   `text-transform`/`letter-spacing` on `button`/`input-label`/`select-label`/
+   `multiselect-label`/`accordion-header`/`table-header`, but never got around to
+   `button-toggle`/`calendar-weekday`/`autocomplete-label`/`datepicker-label`/`slider-label`/
+   `table-total` — so under the *current* lab those six still shout in `theme.css`'s own default
+   uppercase/1px tracking, inconsistent with the other ten. The two new preset files set
+   `--gog-text-transform: none` / `--gog-letter-spacing: normal` once, which correctly covers
+   all eighteen. Verified live in `ui-showcase` (`docs/themes.md`, iteration 3): all six now
+   read in sentence case with normal tracking, matching the theme's actual, obvious intent
+   everywhere else. When the compare pages switch to the real presets, expect (and keep) a
+   visible diff on exactly those six — it is the fix landing, not a regression to revert.
+4. `compare-page.ts` and `app.ts` are the files that currently reference `'material'`/`'primeng'`
+   by name (grep for both to find every call site before starting).
+
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see
