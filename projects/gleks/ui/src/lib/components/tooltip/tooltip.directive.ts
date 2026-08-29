@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 
 import { GOG_CONFIG } from '../../shared/config';
+import { resolveLengthToken, resolveNumberToken } from '../../shared/token-values';
 import { GogTooltipOverlay } from '../../shared/tooltip-overlay';
 import {
   GogTooltipTargetRect,
@@ -242,7 +243,7 @@ export class GogTooltipDirective {
     // untransformed layout box, which is the size to position against.
     const bubbleSize = { width: bubbleEl.offsetWidth, height: bubbleEl.offsetHeight };
     const viewport: GogTooltipViewport = { width: window.innerWidth, height: window.innerHeight };
-    const gap = readPxToken(hostEl, '--gog-tooltip-gap', DEFAULT_GAP);
+    const gap = resolveLengthToken(hostEl, '--gog-tooltip-gap', DEFAULT_GAP);
 
     const placement = resolveTooltipPlacement(
       this.resolvedPosition(),
@@ -271,11 +272,11 @@ export class GogTooltipDirective {
    */
   private resolveZIndex(hostEl: HTMLElement): number {
     const inherited = getComputedStyle(hostEl).getPropertyValue('--gog-tooltip-z').trim();
-    if (inherited) return readNumber(inherited, DEFAULT_Z_INDEX);
+    if (inherited) return resolveNumberToken(hostEl, '--gog-tooltip-z', DEFAULT_Z_INDEX);
 
     for (let node: HTMLElement | null = hostEl; node; node = node.parentElement) {
       const declared = node.style.getPropertyValue('--gog-tooltip-z').trim();
-      if (declared) return readNumber(declared, DEFAULT_Z_INDEX);
+      if (declared) return resolveNumberToken(node, '--gog-tooltip-z', DEFAULT_Z_INDEX);
     }
 
     return DEFAULT_Z_INDEX;
@@ -285,13 +286,4 @@ export class GogTooltipDirective {
     this.cancelTimers();
     this.hide();
   }
-}
-
-function readNumber(raw: string, fallback: number): number {
-  const parsed = Number.parseFloat(raw);
-  return Number.isFinite(parsed) ? parsed : fallback;
-}
-
-function readPxToken(el: HTMLElement, token: string, fallback: number): number {
-  return readNumber(getComputedStyle(el).getPropertyValue(token), fallback);
 }

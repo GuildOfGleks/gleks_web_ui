@@ -22,6 +22,7 @@ import {
 } from '@angular/core';
 
 import { GOG_CONFIG } from '../../shared/config';
+import { resolveNumberToken } from '../../shared/token-values';
 import { GogDropdownOverlay } from '../../shared/dropdown-overlay';
 import { resolveRipple } from '../../shared/ripple-state';
 import { bindRipple } from '../ripple/ripple-controller';
@@ -394,7 +395,7 @@ export class MenuComponent {
     const direction = written ?? (styles.direction === 'rtl' ? 'rtl' : 'ltr');
 
     const inheritedZ = styles.getPropertyValue('--gog-dropdown-z').trim();
-    this.panelZIndex.set(inheritedZ ? (Number.parseFloat(inheritedZ) ?? null) : null);
+    this.panelZIndex.set(inheritedZ ? resolveNumberToken(trigger, '--gog-dropdown-z', 0) : null);
 
     const size = panel
       ? { width: panel.offsetWidth, height: panel.scrollHeight }

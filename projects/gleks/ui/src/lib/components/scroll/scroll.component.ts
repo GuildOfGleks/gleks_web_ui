@@ -17,6 +17,7 @@ import {
 
 import { GogScrollAxis, GogScrollOverscrollBehavior, GogScrollSize } from '../../shared/types';
 import { GOG_CONFIG } from '../../shared/config';
+import { resolveLengthToken } from '../../shared/token-values';
 
 /** Snapshot of the viewport's native scroll geometry, emitted on every scroll/resize. */
 export interface GogScrollMetrics {
@@ -40,11 +41,6 @@ const DEFAULT_AUTO_HIDE = true;
 const DEFAULT_HIDE_DELAY = 800;
 const DEFAULT_OVERSCROLL_BEHAVIOR: GogScrollOverscrollBehavior = 'auto';
 const DEFAULT_SHOW_TRACK = true;
-
-function readPx(raw: string, fallback: number): number {
-  const parsed = Number.parseFloat(raw.trim());
-  return Number.isFinite(parsed) ? parsed : fallback;
-}
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
@@ -370,8 +366,8 @@ export class ScrollComponent {
 
   /** Reads the tokens that feed thumb-size math. Cheap, but still only once per change. */
   private refreshTokens(): void {
-    const styles = getComputedStyle(this.viewportRef().nativeElement);
-    this.thumbMinSizePx = readPx(styles.getPropertyValue('--gog-scroll-thumb-min-size'), 32);
+    const viewport = this.viewportRef().nativeElement;
+    this.thumbMinSizePx = resolveLengthToken(viewport, '--gog-scroll-thumb-min-size', 32);
   }
 
   /** Coalesces scroll/resize bursts into one measurement per frame. */
