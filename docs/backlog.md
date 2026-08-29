@@ -23,14 +23,14 @@ touch a shipped theme's actual colours, which is a visual-identity call rather t
 one. The second entry gained a third theme when `primeng`/`material` shipped in iteration 3 and
 were run through the same check.
 
-- **Muted text fails 4.5:1 against its own background in three of five original shipped themes.**
+- **Muted text fails 4.5:1 against its own background in three of the eleven shipped themes.**
   `--gog-muted-text-color` vs `--gog-background-color`/`--gog-surface-color`: `slate` is barely
   under (4.39:1), `one-dark` (2.32–2.55:1) and `one-light` (2.47–2.58:1) are well under. `light`
   and `dark` — the library's own defaults — both pass comfortably (6+:1). `one-dark`/`one-light`
   reproduce a real, recognisable third-party editor palette on purpose (see their own file
   header comments), so darkening/lightening the muted colour is a fidelity trade-off, not a free
   fix.
-- **Button label text fails 4.5:1 against its own fill in three of seven.** `--gog-accent-text-color`
+- **Button label text fails 4.5:1 against its own fill in three of the eleven.** `--gog-accent-text-color`
   vs `--gog-accent-color`: `light` is essentially at the line (4.44:1), `one-light` is short
   (4.05:1), and `primeng` — found once it shipped as a real preset in iteration 3 — is short too
   (3.68:1: white on `#3b82f6`, Tailwind's `blue-500` and PrimeNG's own Aura primary, copied
@@ -99,6 +99,18 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
 Carried over from `consumer-dx-plan.md`'s backlog, which was the project's second live list until
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
+
+- **A token read from JS must stay a bare literal, and nothing enforces it.** Three tokens are
+  parsed at runtime rather than only resolved by CSS: `--gog-scroll-thumb-min-size` (via `readPx`
+  in `scroll.component.ts`), `--gog-dropdown-z` and `--gog-tooltip-z` (via `readNumber`). Each
+  parser is `parseFloat`/`Number` with a fallback, so a token whose computed value becomes a
+  `calc()` expression does not error — **it silently returns the fallback.** 21.7.0's density
+  scale made 178 tokens `calc(<n>px * var(--gog-density))`; none of these three were among them
+  (checked), and the scroll sizes are still literals. But the next person extending the density
+  scale to size tokens would break `gog-scroll`'s thin variant into using the normal variant's
+  32px minimum, with no test failing and nothing in the console. Either teach the parsers to
+  resolve `calc()` (they have the computed pixel value available on a probe element), or add a
+  `check-tokens` rule pinning these three to literals. Found 2026-08-29 while auditing 21.7.0.
 
 - **`theme.css` payload.** Loaded whole even by an app importing three components — **106 521 B /
   20 227 B gzip in 21.6.1** (measured 2026-08-26), up from 99 492 B / 19 070 B at 21.6.0 and from

@@ -23,8 +23,8 @@ reached 1.0, so breaking changes may land in minor versions.
   `presets/terminal.fonts.css` (IBM Plex Mono) and `presets/parchment.fonts.css` (EB Garamond).
   Import the preset alone and nothing is downloaded.
 
-- **All six shipped presets now set a character, not just a palette.** `slate`, `one-dark` and
-  `one-light` were palette-only, which made them recoloured defaults: they wore another product's
+- **`slate`, `one-dark` and `one-light` now set a character, not just a palette** — so every
+  shipped preset does. They were palette-only, which made them recoloured defaults: they wore another product's
   colours on this library's shape. Each now sets the character layer and a density —
   `slate` becomes the catalogue's *soft modern* entry (12px corners, hairline borders, roomier at
   `1.05`), and `one-dark`/`one-light` become editor chrome (4px corners, compact at `0.9`,
