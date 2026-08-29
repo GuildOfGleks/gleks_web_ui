@@ -1,7 +1,7 @@
 # 21.7.0 — what is left before it ships
 
-**Status as of 2026-08-29: the payload is complete and verified; four items remain, one of which
-only the user can do.** This file is the close-out checklist for a release whose *work* is done,
+**Status as of 2026-08-29: the payload is complete and verified; section B is now done, so what
+remains is the version bump (user-only), one decision, and the post-publish lab work.** This file is the close-out checklist for a release whose *work* is done,
 not a plan for work still being designed — `docs/token-prefix-removal.md` and `docs/themes.md` are
 the plans, and both keep their own per-iteration records. This one answers a narrower question:
 **what stands between the current tree and `npm run release` succeeding.**
@@ -53,9 +53,10 @@ knowing the line is expected rather than a sign something was missed.
 
 ---
 
-## B. Should land before publish — an agent can do these
+## B. Should land before publish — ✅ both done, 2026-08-29
 
-Two gaps found while reviewing the cycle, both in surfaces the release itself created.
+Two gaps found while reviewing the cycle, both in surfaces the release itself created. Both are
+now closed; the sections below keep the reasoning, and each ends with what actually landed.
 
 ### B1. `README.md` does not name the presets this release added
 
@@ -77,6 +78,10 @@ a catalogue that has **six** importable presets, three of which shipped in this 
 between them — palette-only versus the ones that also set character. `slate` stays the worked
 example; the point is that a reader learns the others exist. Keep it short — `AGENTS.md` already
 carries the per-preset detail, and the README's job is the shape of the library, not a catalogue.
+
+**✅ Done.** `README.md`'s "Light, dark and your own" section keeps the `slate` code block as the
+worked example and gains a three-row table after it — palette-only, palette + character, palette +
+character + per-component — naming all six and pointing at `AGENTS.md` for the detail. Nine lines.
 
 ### B2. The three new presets have no `ui-showcase` surface
 
@@ -106,6 +111,25 @@ which is section D.
 
 **Worth doing before the bump, not after:** it is the last chance to catch a layout problem in a
 preset while it is still unpublished, and the presets are the largest new surface in this release.
+
+**✅ Done.** All four added to `angular.json`'s `ui-showcase` `styles` array and to
+`showcase-themes.ts`; the switcher now offers 11 themes and the themes page renders 9 side by side.
+Three things worth knowing from doing it:
+
+- **The themes page carried a hard-coded count.** Its hero read *"three radically different skins"*
+  and *"compares all three custom themes"* — prose that was correct when the list had three
+  non-built-in entries and silently wrong the moment it had nine. Updated in the same change. The
+  page renders from `showcaseThemes`, so the list was the only thing anyone thought to check;
+  **a page that derives its content from a list can still hard-code the list's length in its
+  copy.** Worth grepping for a spelled-out number next time a shared list grows.
+- **No layout problem in any of the three.** Verified at 1568px in Chrome on the themes page and on
+  `/dashboard` (the densest page: table, paginator, tags, three filter controls) under `ledger`,
+  `material` and `primeng`. Each resolves its own character — `--gog-radius` 0/4px/6px against the
+  library's 8px, `text-transform: none` against the default `uppercase` — and `material`'s pill
+  button (20px on a 4px base) confirms its per-component opt-in survived the port.
+- **+7.27 kB on the showcase's initial bundle** (369.45 → 376.72 kB over the 500 kB budget, which
+  was already exceeded before this). Showcase-only; the published package is unaffected, since
+  these files already shipped in it.
 
 ---
 
@@ -192,8 +216,8 @@ section C is decided. It is not part of `npm run release`'s gate and does not bl
 
 - **Blocking, user-only:** version bump + heading date (section A). Verified that nothing else
   stands in the way.
-- **Worth doing first, agent-able:** README's preset list, and giving the three new presets a live
-  `ui-showcase` surface (section B).
+- ~~**Worth doing first, agent-able:** README's preset list, and giving the three new presets a
+  live `ui-showcase` surface (section B).~~ **Both done, 2026-08-29.**
 - **Needs your decision, not blocking:** the six contrast failures, and whether `check:contrast`
   joins CI (section C).
 - **After publish, already written down:** everything in `docs/lab-after-publish.md` (section D).
