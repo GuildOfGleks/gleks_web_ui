@@ -1,15 +1,5 @@
 export type ShowcaseThemeName =
-  | 'light'
-  | 'dark'
-  | 'slate'
-  | 'one-dark'
-  | 'one-light'
-  | 'ledger'
-  | 'material'
-  | 'primeng'
-  | 'cyberpunk'
-  | 'warcraft'
-  | 'red-alert-3';
+  'light' | 'dark' | 'slate' | 'one-dark' | 'one-light' | 'ledger' | 'material' | 'primeng';
 
 export interface ShowcaseThemePreset {
   readonly name: ShowcaseThemeName;
@@ -17,16 +7,21 @@ export interface ShowcaseThemePreset {
   readonly summary: string;
 }
 
+/*
+ * Every entry here is a theme the *package* ships — `light`/`dark` from `theme.css`, and the six
+ * importable presets under `styles/presets/`. The showcase deliberately declares no themes of its
+ * own: a switcher option a consumer cannot install teaches nothing about the library.
+ */
 export const showcaseThemes: ShowcaseThemePreset[] = [
   {
     name: 'light',
-    label: 'Classic',
-    summary: 'Warm editorial baseline with soft spacing and restrained borders.',
+    label: 'Light',
+    summary: "The library's own light palette — the baseline every preset is measured against.",
   },
   {
     name: 'dark',
     label: 'Dark',
-    summary: "The library's own dark palette — same metrics as Classic, inverted tones.",
+    summary: "The library's own dark palette — same metrics as Light, inverted tones.",
   },
   {
     name: 'slate',
@@ -57,20 +52,5 @@ export const showcaseThemes: ShowcaseThemePreset[] = [
     name: 'primeng',
     label: 'PrimeNG',
     summary: "PrimeNG Aura's blue primary, thin borders, and sentence-case labels.",
-  },
-  {
-    name: 'cyberpunk',
-    label: 'Cyberpunk',
-    summary: 'Neon panels, sharp geometry, vivid contrast, and compact controls.',
-  },
-  {
-    name: 'warcraft',
-    label: 'Warcraft',
-    summary: 'Ornate fantasy styling with parchment tones and carved borders.',
-  },
-  {
-    name: 'red-alert-3',
-    label: 'Red Alert 3',
-    summary: 'Military UI with hard edges, dense typography, and warning colors.',
   },
 ] as const;
