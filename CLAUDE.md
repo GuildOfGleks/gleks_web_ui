@@ -32,7 +32,7 @@ git ls-files | Where-Object { $_ -notmatch 'package-lock|\.(png|ico|jpg|svg)$' }
   ForEach-Object { Select-String -Path $_ -Pattern '[Ѐ-ӿ]' }
 ```
 
-Two things were *not* solved by translating to English, and both should stay as they are:
+Two things were _not_ solved by translating to English, and both should stay as they are:
 
 - **`labels:` examples in `README.md`/`AGENTS.md` are German.** They illustrate "an app that isn't
   in English sets these once" — rendering that example in English would demonstrate nothing. Any
@@ -83,17 +83,18 @@ an input, output, slot, type, service method or default edits it in the same cha
 
 ## Where the project is
 
-**Latest release: 21.6.1 (2026-08-26).** `projects/gleks/ui/CHANGELOG.md` is the authority and
+**Latest release: 21.7.0 (2026-08-29), on npm and tagged.** `projects/gleks/ui/CHANGELOG.md` is the authority and
 ships inside the package; its top entry is always the version being worked on.
 
 ### The release sequence
 
-| Version    | State                                        | What it must carry                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 21.6.0     | **released**                                 | seven fixes and `gog-table`'s `maxHeight`                                                                                                                                                                                                                                                                                                                                                           |
-| 21.6.1     | **released (2026-08-26)**                    | `aria-busy` on `gog-table` and `gog-autocomplete` plus `check:loading-aria`, **`gog-card` + `gog-panel`** (`docs/panel-card.md`, **all four iterations** — iteration 4 converted all 40 showcase pages and retired the app's own `.card`, 2026-08-26), **and the ripple, complete** (`docs/ripple.md`, all four iterations: `gogRipple`, nine components wired, `GOG_CONFIG.ripple.enabled`, off by default). AGENTS.md, README.md, TOKENS.md and the CHANGELOG all carry it; `npm view @guildofgleks/ui version` confirms it on the registry. |
-| **21.7.0** | **payload complete and verified (2026-08-29) — see `docs/release-21.7.0.md` for the close-out checklist** | **the three deprecated token prefixes are gone** — `--gog-btn-*` → `--gog-button-*`, `--gog-ms-*` → `--gog-multiselect-*`, `--gog-confirm-*` → `--gog-confirmation-dialog-*` — from `theme.css`, `button.css`, `ui-showcase`, the generated artifacts (`GOG_DEPRECATIONS` now `[]`) and both published docs (`README.md`, `AGENTS.md`, which gained a **Removed in 21.7.0** table matching **Removed in 21.5.0**'s shape); `CHANGELOG.md` carries `### Removed` and `### Fixed` entries under `## [21.7.0] - planned`. `check:tokens` reports zero left; `check:deprecations` now actually enforces the deadline for any *future* deprecation the same way — it reads `DEPRECATED_NAMESPACES` and fails once a namespace's `removedIn` is at or below the library's version and the stylesheets still contain it, sanity-checked by simulating the overdue case against scratch copies, never a commit. Verified live in `ui-showcase` under all three custom themes; `check:tokens`/`check:deprecations`/`lint`/`format:check`/`test:lib`/`build:lib`/`build:showcase` all pass, `check:release` still correctly fails on the version/heading. All six of `docs/token-prefix-removal.md`'s iterations are ✅. **The release also carries `docs/themes.md`'s library-side work** — the character layer, `check:contrast`, and three new presets (`ledger`, `material`, `primeng`) — plus `DialogService.open()`'s optional `TData` generic. **`docs/release-21.7.0.md` is the close-out checklist**: what blocks the release (the version bump, rule 1's territory), the contrast findings that need a decision, and the lab work deferred to after publish. Its **section B is done (2026-08-29)** — `README.md` now names all six presets, and `ledger`/`material`/`primeng`/`slate` have a real `ui-showcase` surface (switcher plus themes page) instead of console injection. Confirmed by simulation that `check:deprecations` passes once the version reaches 21.7.0 — the ratchet does not block its own release. |
-| 22.x       | when Angular 22 lands                        | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                              |
+| Version    | State                     | What it must carry                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ---------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 21.6.0     | **released**              | seven fixes and `gog-table`'s `maxHeight`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| 21.6.1     | **released (2026-08-26)** | `aria-busy` on `gog-table` and `gog-autocomplete` plus `check:loading-aria`, **`gog-card` + `gog-panel`** (`docs/panel-card.md`, **all four iterations** — iteration 4 converted all 40 showcase pages and retired the app's own `.card`, 2026-08-26), **and the ripple, complete** (`docs/ripple.md`, all four iterations: `gogRipple`, nine components wired, `GOG_CONFIG.ripple.enabled`, off by default). AGENTS.md, README.md, TOKENS.md and the CHANGELOG all carry it; `npm view @guildofgleks/ui version` confirms it on the registry.                                                                                                                                               |
+| 21.7.0     | **released (2026-08-29)** | The three deprecated token prefixes removed (`--gog-btn-*`/`--gog-ms-*`/`--gog-confirm-*`), `GOG_DEPRECATIONS` now `[]`, and `check:deprecations` enforces the deadline for any future one. `docs/themes.md`'s whole library side: the character layer, `--gog-density` and the 14-step spacing scale, `check:contrast` (now a CI step, all 11 themes passing), and the preset catalogue completed to nine across five families — `slate`/`one-dark`/`one-light` gained a character, `ledger`/`material`/`primeng`/`terminal`/`bevel`/`parchment` added, plus opt-in webfont companions. `DialogService.open()`'s optional `TData` generic. The repository was also cleared of all Cyrillic. |
+| **21.7.1** | **in progress**           | Defects from the 21.6.1 hands-on pass — see `docs/feedback-triage.md` for the full sorted list. Landed so far: `color-mix()` fallbacks behind `@supports`, which is why colours broke in Samsung Internet and older Firefox, plus a `browserslist` stating the support floor.                                                                                                                                                                                                                                                                                                                                                                                                                |
+| 22.x       | when Angular 22 lands     | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 **`themes.md` iteration 1 started 2026-08-29**, on the sequencing its own plan and
 `token-prefix-removal.md`'s closing section both argued for: not sharing a release with the
@@ -143,25 +144,12 @@ a month, and see `docs/backlog.md` for the fourth, related defect it was found a
 A plan is not a backlog item — it is a decision already taken about how something gets built.
 Update the status table in whichever you are working from, as you go.
 
-- `docs/release-21.7.0.md` — **the close-out checklist, and the record that the release is
-  held.** As of 2026-08-29 the user has gated publication on a theme catalogue worth shipping:
-  themes must differ in spacing, rounding and type, not only colour. Section A0 tracks that gate.
-  **Everything the gate named is built (2026-08-29):** `--gog-density` and the 14-step spacing
-  scale (`themes.md` iteration 6), a character layer for the three presets that were palette-only
-  (iteration 4, second pass), and the catalogue completed with `terminal`/`bevel`/`parchment` plus
-  the opt-in webfont mechanism (iteration 4, third pass). **Nine presets across five families**,
-  each differing in rounding, spacing and type. A preset never makes a network request — a webfont
-  is a separate `presets/<name>.fonts.css` the consumer imports after it. Whether the gate lifts
-  is the user's call.
-  Not a plan — the plans are the two below it, and their work is done. This answers the narrower
-  question of what stands between the current tree and `npm run release` succeeding: one
-  user-only step (the version bump), one decision that gates a CI step but blocks nothing (the
-  contrast findings), and the lab work that cannot start until publish. Its two agent-able gaps
-  are closed — see its section B, which also records that the themes page had hard-coded the
-  number of themes in its own prose despite rendering from the list. Read it before doing
-  anything else on 21.7.0. **Delete it once
-  21.7.0 ships** — a close-out checklist that outlives its release is the same trap
-  `lab-after-publish.md` warns about.
+- `docs/feedback-triage.md` — **the live worklist.** 30 items from a hands-on pass over the
+  published 21.6.1, sorted by which release can carry each and why, with four of the reported
+  symptoms traced to a different cause than the report assumed. Read it before picking up any of
+  that feedback. `docs/release-21.7.0.md` is gone: 21.7.0 shipped on 2026-08-29 and a close-out
+  checklist that outlives its release is the trap `lab-after-publish.md` warns about.
+
 - `docs/token-prefix-removal.md` — **the plan for 21.7.0's mandatory payload**, in six iterations
   with a status table. It began as a pure per-file checklist on the view that a mechanical removal
   leaves no decision to make; the survey that produced the list disproved that, so it is now a plan.

@@ -4,6 +4,26 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.7.1] - planned
+
+### Fixed
+
+- **Colours no longer vanish in browsers without `color-mix()`.** 36 tokens in `theme.css` used
+  `color-mix()` with no fallback, and **a custom property does not fall back the way an ordinary
+  one does**: it accepts almost any value at parse time and only fails when substituted, so a
+  second declaration always wins and `var()` on it then resolves to nothing at all. Measured in
+  Chrome: an element styled that way with an unsupported function computed `rgba(0, 0, 0, 0)` —
+  transparent, not the earlier value. That is why hover fills, focus rings, chips, skeletons and
+  slider tracks looked wrong in Samsung Internet and older Firefox: the declarations were not
+  falling back, they were disappearing.
+
+  Every one of those tokens now has a flat palette value, with the mixed value moved into an
+  `@supports (color: color-mix(…))` block — the only mechanism that gates a custom property on
+  feature support. **Nothing changes in a browser that supports `color-mix()`**; below that line
+  the library renders in flat colours: less depth, every surface still legible and every focus
+  ring still visible. `package.json` now carries a `browserslist` stating that floor
+  (Chrome 111, Firefox 113, Safari 16.2, Samsung Internet 22).
+
 ## [21.7.0] - 29.08.2026
 
 ### Added

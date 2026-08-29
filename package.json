@@ -1,6 +1,14 @@
 {
   "name": "gleks-ui-workspace",
   "version": "0.0.0",
+  "browserslist": [
+    "chrome >= 111",
+    "firefox >= 113",
+    "safari >= 16.2",
+    "edge >= 111",
+    "samsung >= 22",
+    "not dead"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -50,7 +58,7 @@
     "@fortawesome/angular-fontawesome": "^4.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
     "@fortawesome/free-solid-svg-icons": "^7.3.1",
-    "@guildofgleks/ui": "^21.6.1",
+    "@guildofgleks/ui": "^21.7.0",
     "express": "^5.1.0",
     "highlight.js": "^11.11.1",
     "marked": "^18.0.7",
