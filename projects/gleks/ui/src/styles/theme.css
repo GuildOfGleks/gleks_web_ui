@@ -91,6 +91,14 @@
      [data-theme] subtree would inherit that number, not its own. */
   --gog-density: 1;
 
+  /* The ground a *raised* surface paints. Equal to the plain surface by default, because on a
+     light theme elevation reads as a shadow and the surface itself does not change.
+
+     On a dark theme a shadow has nothing to darken — 21.7.1 found `elevated` and `outlined`
+     cards rendering identically under `data-theme="dark"`, both a thin ring on the same fill.
+     Dark themes therefore lift this token instead, which is how elevation has to be expressed
+     when the page is already near-black. Each dark theme sets it; light themes leave it alone. */
+
   --gog-radius: 8px;
   /* Three border-weight tiers, not one: --gog-control-border-width (2px) is form fields,
      --gog-panel-border-width (1px) is raised/floating surfaces (card, dialog, dropdown panel,
@@ -274,6 +282,8 @@
   /* Backgrounds and surfaces */
   --gog-background-color: #0d0b08; /* Deep forge obsidian */
   --gog-surface-color: #16120e; /* Dark fired iron — cards */
+  /* Lifted, not shadowed — see --gog-elevated-surface-color. */
+  --gog-elevated-surface-color: #241d17;
   --gog-hover-color: #241d17; /* Hover state */
   --gog-border-color: #3d3122; /* Aged chased bronze */
 
@@ -348,6 +358,7 @@
   --gog-field-lg-icon-offset: var(--gog-space-14);
   --gog-field-slg-icon-offset: var(--gog-space-18);
   --gog-control-icon-offset: var(--gog-space-10);
+  --gog-elevated-surface-color: var(--gog-surface-color);
   --gog-panel-radius: calc(var(--gog-radius) + 8px);
   --gog-field-xsm-font-size: var(--gog-text-xs);
   --gog-field-sm-font-size: var(--gog-text-sm);
@@ -405,9 +416,14 @@
      opt in per-instance or theme-wide by overriding these two. */
   --gog-accordion-radius: 0px;
   --gog-accordion-body-radius: 0px;
-  --gog-accordion-header-bg: transparent;
-  /* A subtle black wash over whatever sits behind the accordion, so the body always
-     reads slightly darker than the header regardless of the surrounding surface color. */
+  /* The header carries its own ground and the body does not. Both were `transparent` until
+     21.7.1, which made every open item one continuous band: header and content painted the
+     surrounding surface, and the only thing between two open items was a hairline in the accent
+     colour. With several open at once nobody could tell where one ended and the next began.
+
+     Only the header changed. The body stays transparent on purpose, so an accordion dropped on
+     a coloured surface still sits on that colour rather than punching a hole in it. */
+  --gog-accordion-header-bg: var(--gog-hover-color);
   --gog-accordion-body-bg: transparent;
   /* Per-size metrics. `lg` is the default size. */
   --gog-accordion-xsm-padding-y: var(--gog-space-4);
@@ -677,7 +693,7 @@
   --gog-card-outlined-bg: var(--gog-surface-color);
   --gog-card-outlined-border-color: var(--gog-border-color);
   --gog-card-outlined-shadow: none;
-  --gog-card-elevated-bg: var(--gog-surface-color);
+  --gog-card-elevated-bg: var(--gog-elevated-surface-color);
   --gog-card-elevated-border-color: transparent;
   /* The shared surface shadow, so a card sits at the same elevation as a dialog or a
      dropdown panel instead of inventing a second house style for "raised". */
@@ -1277,7 +1293,7 @@
   --gog-panel-outlined-bg: var(--gog-surface-color);
   --gog-panel-outlined-border-color: var(--gog-border-color);
   --gog-panel-outlined-shadow: none;
-  --gog-panel-elevated-bg: var(--gog-surface-color);
+  --gog-panel-elevated-bg: var(--gog-elevated-surface-color);
   --gog-panel-elevated-border-color: transparent;
   --gog-panel-filled-bg: var(--gog-accent-pale);
   --gog-panel-filled-border-color: transparent;
@@ -1590,6 +1606,11 @@
   /* The selection column is sized to its checkbox and never grows with content. */
   --gog-table-select-col-width: 44px;
   --gog-table-surface: var(--gog-surface-color);
+  /* The header needs its own ground, not the table's. It used to paint `--gog-table-surface`,
+     which is the same colour the body paints, so on a scrolling table with a sticky header the
+     column names slid over rows of identical background and the only thing separating them was
+     the accent colour and the caps — legible on a light theme, not on a dark one. */
+  --gog-table-header-bg: var(--gog-hover-color);
   --gog-table-text-color: var(--gog-text-color);
   --gog-table-accent-color: var(--gog-accent-color);
   --gog-table-accent-bright: var(--gog-accent-bright);

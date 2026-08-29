@@ -109,6 +109,8 @@ const FOUNDATION_NAMESPACES = new Set([
   'density',
   'disabled',
   'duration',
+  // The ground a raised surface paints; a dark theme lifts it where a light one shadows.
+  'elevated',
   'easing',
   'focus',
   'font',

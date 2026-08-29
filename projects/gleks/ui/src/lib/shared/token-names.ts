@@ -623,6 +623,7 @@ export type GogTokenName =
   | '--gog-duration-fast'
   | '--gog-duration-slow'
   | '--gog-easing'
+  | '--gog-elevated-surface-color'
   | '--gog-field-float-label-in-top'
   | '--gog-field-float-label-over-gap'
   | '--gog-field-float-label-over-reserve'
@@ -1156,6 +1157,7 @@ export type GogTokenName =
   | '--gog-table-footer-gap'
   | '--gog-table-footer-min-height'
   | '--gog-table-gap'
+  | '--gog-table-header-bg'
   | '--gog-table-header-font-family'
   | '--gog-table-header-letter-spacing'
   | '--gog-table-header-text-transform'
@@ -1560,6 +1562,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-background-color',
       '--gog-border-color',
       '--gog-danger-color',
+      '--gog-elevated-surface-color',
       '--gog-hover-color',
       '--gog-info-color',
       '--gog-muted-text-color',
@@ -1581,6 +1584,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-control-icon-offset',
       '--gog-control-padding-x',
       '--gog-control-padding-y',
+      '--gog-elevated-surface-color',
       '--gog-field-float-label-over-gap',
       '--gog-field-lg-font-size',
       '--gog-field-lg-icon-inset',
@@ -2752,6 +2756,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-table-footer-gap',
       '--gog-table-footer-min-height',
       '--gog-table-gap',
+      '--gog-table-header-bg',
       '--gog-table-header-font-family',
       '--gog-table-header-letter-spacing',
       '--gog-table-header-text-transform',

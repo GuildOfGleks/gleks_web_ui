@@ -27,6 +27,8 @@
   --gog-background-color: #0a0e0a;
   --gog-surface-color: #121a12;
   --gog-hover-color: #1b2a1b;
+  /* Elevation on a dark ground is a lighter surface, not a shadow — see theme.css. */
+  --gog-elevated-surface-color: #1b2a1b;
   --gog-border-color: #274a2c;
   --gog-text-color: #c8f5c8;
   --gog-accent-text-color: #04120a;

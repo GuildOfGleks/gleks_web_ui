@@ -8,6 +8,24 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **Three surfaces that had no visual separation now have one.** All three were reported from a
+  dark theme, where a shadow has nothing to darken:
+
+  - **`gog-table`'s header** painted `--gog-table-surface` — the same colour as the body — so a
+    sticky header slid over rows of identical background with only the accent colour and the caps
+    to distinguish it. New `--gog-table-header-bg`, defaulting to `--gog-hover-color`.
+  - **`gog-accordion`'s header and body** were both `transparent`, making several open items one
+    continuous band with a hairline between them. `--gog-accordion-header-bg` now defaults to
+    `--gog-hover-color`; the body stays transparent on purpose, so an accordion on a coloured
+    surface still sits on that colour. (The token's own comment already claimed the body "reads
+    slightly darker than the header" — that was only true under `data-theme="dark"`.)
+  - **`elevated` cards and panels were indistinguishable from `outlined` on dark themes.** New
+    foundation token `--gog-elevated-surface-color`: equal to `--gog-surface-color` by default,
+    since on a light theme elevation is a shadow, and lifted by each dark theme (`dark`,
+    `one-dark`, `terminal`), which is how elevation has to be expressed when the page is already
+    near-black. **A custom dark theme should set it too**, or its elevated surfaces will keep
+    reading flat.
+
 - **`gog-select`'s chevron now turns over when the panel opens.** It never did — there was no
   rotation in any state, which looked like a reduced-motion problem and was a missing one:
   `gog-multiselect` and `gog-accordion` both already had it. Only the default chevron rotates; a
