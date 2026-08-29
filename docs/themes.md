@@ -75,7 +75,7 @@ That is the whole of iteration 1, and everything else in this plan is cheap once
 | 2   | Contrast checking, before the catalogue grows    | tooling | 🟡 partial |
 | 3   | Promote `material` / `primeng` out of the lab    | feature | 🟡 partial |
 | 4   | The catalogue — eras and families                | feature | 🟡 partial |
-| 5   | Tooling and docs catch up                        | tooling | ⬜ todo |
+| 5   | Tooling and docs catch up                        | tooling | 🟡 partial |
 
 ---
 
@@ -439,6 +439,45 @@ blocker. What *is* blocked, the same way iterations 2 and 3 are: the "done when"
    what that theme _changes_ (normally just the palette)". After iteration 1 the accurate version
    is: a theme declares palette **and character**, and still never re-lists component tokens. The
    rule's reasoning does not change; its scope does.
+
+---
+
+### Iteration 5, as it finished (2026-08-29) — partial, one item of five
+
+**Scoping this iteration turned up something the plan's own text didn't say: three of its five
+items are `gleks-ui-lab` files, not library ones.** `theme-starter.css` (item 1) lives at
+`projects/gleks-ui-lab/public/docs/styles/theme-starter.css` — a lab-served asset, not anything
+under `projects/gleks/ui`. The theme generator (item 2) and the Theming page (item 4) are lab
+pages by definition. Only item 5 (`styling.instructions.md`, a repo-level agent-instructions
+file — not part of the npm package, not part of the lab) and item 3 (`TOKENS.md`, the README)
+were ever library/repo-root territory to begin with.
+
+**Item 5 done:** `.github/instructions/styling.instructions.md`'s rule now says a theme block
+declares palette *and* character (naming all four character-layer axes explicitly), not just
+palette, matching what `material.css`/`primeng.css`/`ledger.css` actually do. Cross-referenced to
+`docs/themes.md` iteration 3's own token-count write-up so a reader lands on the concrete before/
+after numbers, not just the restated rule.
+
+**Item 3 needed no new work — already done, in iteration 1's own commit, not deferred here.**
+`TOKENS.md` regenerates itself (`npm run generate:tokens`, confirmed current); `README.md`'s
+Foundation paragraph already names the character layer, added the same day the tokens themselves
+were. The plan listed it under iteration 5 on the assumption it would come later; it didn't need
+to wait.
+
+**Items 1, 2 and 4 recorded in `docs/lab-after-publish.md`, not attempted:** all three are
+`gleks-ui-lab` files, and 21.7.0 isn't published — the same constraint iterations 2–4 ran into,
+for the same reason (the lab tracks the published package, not an in-progress local build). Full
+detail, exact file paths and what each needs is in that file rather than repeated here.
+
+**What this means for the plan as a whole:** every iteration from 2 onward has landed partial for
+the identical structural reason — the plan was written before the project's "never touch the lab
+in a library-change session" rule was as sharply enforced as it is now, so several of its steps
+quietly assumed lab access this session never had. That is not a flaw in the plan's design
+decisions, which have held up throughout (the character layer's scope, the contrast pairs once
+corrected, the preset ports); it is a scheduling fact worth naming plainly rather than re-deriving
+each time: **the lab-side half of this plan is one project (`gleks-ui-lab`, after 21.7.0 ships)
+away from being finished, and the library-side half — the part an agent can actually build and
+verify today — is complete.**
 
 ---
 

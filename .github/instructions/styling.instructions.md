@@ -83,9 +83,15 @@ Rules when touching tokens:
     `:root, [data-theme]` block, so it re-derives per theme scope.
   Getting this wrong produces a token that works on a full-page theme and silently breaks
   in the showcase's side-by-side theme lab — a bug class that is very hard to spot locally.
-- A theme block declares only what that theme *changes* (normally just the palette). The
-  derived layer re-resolves from it automatically; re-listing component tokens per theme is
-  what makes themes drift apart.
+- A theme block declares only what that theme *changes* — the palette, and, since 21.7.0's
+  character layer (`docs/themes.md` iteration 1), corner rounding (`--gog-radius`), border
+  weight (`--gog-control-border-*`/`--gog-panel-border-*`/`--gog-border-*`) and emphasis
+  casing/tracking (`--gog-text-transform`, `--gog-letter-spacing`) where the theme wants a
+  different one. The derived layer re-resolves from both automatically; re-listing *component*
+  tokens per theme is what makes themes drift apart — see `material.css`/`primeng.css`/
+  `ledger.css` for what a theme with real character looks like once it uses this layer instead
+  of the roughly ten per-component overrides each one used to need for casing and tracking
+  alone (`docs/themes.md`, iteration 3's write-up has the exact count).
 - Document any new app-level token in the README's theming table.
 - Do not hardcode brand colors when a token exists.
 

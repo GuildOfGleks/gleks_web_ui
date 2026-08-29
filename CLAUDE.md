@@ -123,52 +123,25 @@ Update the status table in whichever you are working from, as you go.
   generators that have never emitted an empty list. It also records why `docs/themes.md` should
   _not_ ride along despite naming the same version.
 - `docs/themes.md` — presets become full visual identities (radii, borders, casing, tracking)
-  instead of palettes, then a catalogue across eras. **Iteration 1 done 2026-08-29**: four new
-  foundation tokens (`--gog-text-transform`, `--gog-letter-spacing`, `--gog-border-width`,
-  `--gog-border-style`) plus wider adoption of three that already existed (`--gog-radius`,
-  `--gog-control-border-width`/`-style`), and 40 of `theme.css`'s then-548 literal component
-  tokens converted to derive from them — re-measured against the current file, not the plan's
-  original 2026-08-17 count, which had drifted after three releases. The rest stayed literal on
-  purpose, by category: pills/circles and deliberately-flat radii are shape choices a rounding
-  axis shouldn't touch; density (174 declarations) is explicitly deferred to its own iteration,
-  per the plan's still-open question about its interaction with `GogSize`; font-weight has no
-  dominant value to extract. `check-tokens.mjs` gained rule G — a literal that repeats a
-  character token's *value*, not just its property category, in a covered category — which
-  caught one the manual audit missed (`--gog-table-border-width`) before the audit was even
-  done. See `themes.md`'s own _Iteration 1, as it finished_ section for the full audit table and
-  verification record. **Iteration 2 (contrast checking) is partial, 2026-08-29**: `npm run
-  check:contrast` exists and resolves all five shipped palettes to real WCAG ratios, but two real
-  findings — muted text failing 4.5:1 in three themes, button label text failing it in two — are
-  filed in `docs/backlog.md` rather than silently fixed, per the plan's own instruction that
-  finding and fixing are separate decisions. Not wired into `.github/workflows/ci.yml` yet: doing
-  that today would make CI permanently red over a known, un-fixed condition. **Iteration 3
-  (`material`/`primeng` as shipped presets) is partial, 2026-08-29**: both are real files at
-  `styles/presets/`, ported from `gleks-ui-lab`'s hand-authored blocks and rewritten onto the
-  character layer — ten casing/tracking overrides per theme become two, which along the way
-  fixed six components (`button-toggle`, `calendar-weekday`, `autocomplete-label`,
-  `datepicker-label`, `slider-label`, `table-total`) the original hand-authoring had missed and
-  which still shouted in caps under the lab's current theme. Verified live in `ui-showcase` via
-  DOM-injected CSS, no source file touched. **Not done, and cannot be yet:** switching the lab's
-  compare pages to import these instead of declaring them locally — that is rule 3's territory
-  (never touch `gleks-ui-lab` in a library-change session; it tracks the published package, and
-  21.7.0 isn't published) — recorded in full in `docs/lab-after-publish.md`, including the
-  six-component behaviour change so it reads as the fix landing, not a regression, when that work
-  happens. **Iteration 4 (the catalogue) is partial, 2026-08-29**: one theme of the six the plan
-  sketches, shipped as `ledger` — not `classic`, the plan's own working name, because
-  `ui-showcase` already labels `data-theme="light"` "Classic" in its theme switcher — square-
-  cornered, hard-shadowed, no motion, beige/grey/navy. Scoped down
-  deliberately, since six unreviewed palettes in one pass is a different risk than the mechanical
-  work in 1–3, and Historical skipped entirely rather than forcing its still-open font-strategy
-  question. Palette drafted against `check-contrast.mjs`'s own maths before the file existed, then
-  confirmed with the real script: zero gated failures, the cleanest run of any shipped theme.
-  Verified live the same DOM-injection way as iteration 3 — `getComputedStyle` confirmed the hard
-  shadow has zero blur, corners are `0px`, transitions are `0s`, and the functional field border
-  resolves to the theme's own `--gog-accent-dim`. Re-running the checker against all six current
-  presets also surfaced a finding iteration 3 hadn't caught: `primeng`'s own
-  `accentText`/`accent` fails 4.5:1 (3.68:1, inherited verbatim from the real PrimeNG palette) —
-  added to the same `docs/backlog.md` entry. Five theme slots remain unstarted by choice; the
-  "compare-page entry" half of iteration 4's own bar is `gleks-ui-lab` territory again, recorded
-  in `docs/lab-after-publish.md`. Iteration 5 is not started.
+  instead of palettes, then a catalogue across eras. **The library-side work across all five
+  iterations is done, 2026-08-29** — iteration 1 built the character layer (4 new foundation
+  tokens, 40 component tokens converted, `check-tokens.mjs` rule G to catch future drift by
+  value, not just category); iteration 2 built `npm run check:contrast` and corrected one of the
+  plan's own pairs along the way (`--gog-border-color` is decorative in this library, not the
+  WCAG-1.4.11 boundary token — `--gog-accent-dim` is); iteration 3 shipped `material.css`/
+  `primeng.css` as real presets, fixing a six-component casing inconsistency the lab's
+  hand-authored originals had missed; iteration 4 shipped `ledger` (one theme of six, scoped
+  down deliberately — renamed from the plan's own working name `classic` once that turned out to
+  collide with `ui-showcase`'s existing "Classic" label for `data-theme="light"`); iteration 5
+  amended `styling.instructions.md`'s theming rule to name the character layer. **Every iteration
+  from 2 onward is marked partial for one shared, structural reason, not five separate
+  blockers**: each has a `gleks-ui-lab` half — compare-page entries, the theme generator, the
+  Theming page, `theme-starter.css` — that cannot happen before 21.7.0 is published, all recorded
+  in `docs/lab-after-publish.md` and ready to execute the moment it is. Real WCAG findings (three
+  themes' muted text, three themes' button label text) are filed in `docs/backlog.md` rather than
+  silently fixed, per the plan's own instruction that finding and fixing colour are separate
+  decisions. See `themes.md`'s own per-iteration _"as it finished"_ sections for the full audit
+  tables, numbers and verification record — not duplicated here.
 - `docs/panel-card.md` — **built 2026-08-23 into 21.6.1, finished 2026-08-26**: `gog-card` and
   `gog-panel`, all four iterations done. Read its _Iteration 1, as resolved_ section rather than the
   sketch above it: two of the answers came out differently from the plan. There is no `interactive`
