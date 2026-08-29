@@ -14,12 +14,12 @@ import { ScrollComponent } from '../scroll/scroll.component';
       [align]="align()"
       [scrollActiveIntoView]="scrollActiveIntoView()"
       [showScrollTrack]="showScrollTrack()"
-      ariaLabel="Разделы"
+      ariaLabel="Sections"
     >
-      <gog-tab label="Профиль">профиль</gog-tab>
-      <gog-tab label="Настройки" iconName="info">настройки</gog-tab>
-      <gog-tab label="Архив" [disabled]="archiveDisabled()">архив</gog-tab>
-      <gog-tab label="История">история</gog-tab>
+      <gog-tab label="Profile">profile</gog-tab>
+      <gog-tab label="Settings" iconName="info">settings</gog-tab>
+      <gog-tab label="Archive" [disabled]="archiveDisabled()">archive</gog-tab>
+      <gog-tab label="History">history</gog-tab>
     </gog-tabs>
   `,
 })
@@ -61,12 +61,12 @@ describe('TabsComponent', () => {
 
   it('should build one header per projected tab', () => {
     expect(headers().length).toBe(4);
-    expect(headers()[0].textContent?.trim()).toBe('Профиль');
+    expect(headers()[0].textContent?.trim()).toBe('Profile');
   });
 
   it('should wire the ARIA tabs pattern', () => {
     const tablist = root().querySelector('[role="tablist"]')!;
-    expect(tablist.getAttribute('aria-label')).toBe('Разделы');
+    expect(tablist.getAttribute('aria-label')).toBe('Sections');
     expect(tablist.getAttribute('aria-orientation')).toBe('horizontal');
 
     expect(headers()[0].getAttribute('aria-selected')).toBe('true');
@@ -86,7 +86,7 @@ describe('TabsComponent', () => {
   it('should keep inactive panels in the DOM so their state survives', () => {
     // Eager content is hidden, not destroyed — that is what preserves scroll position and
     // half-typed input across a tab switch.
-    expect(panels()[1].textContent?.trim()).toBe('настройки');
+    expect(panels()[1].textContent?.trim()).toBe('settings');
   });
 
   it('should switch on click', () => {
@@ -322,8 +322,8 @@ describe('TabsComponent', () => {
   imports: [TabsComponent, TabComponent],
   template: `
     <gog-tabs [(activeIndex)]="index" (gogTabChange)="changes.push($event)">
-      <gog-tab label="Один">один</gog-tab>
-      <gog-tab label="Два">два</gog-tab>
+      <gog-tab label="One">one</gog-tab>
+      <gog-tab label="Two">two</gog-tab>
     </gog-tabs>
   `,
 })
@@ -358,12 +358,12 @@ describe('TabsComponent — gogTabChange', () => {
   imports: [TabsComponent, TabComponent, GogTabContentDirective],
   template: `
     <gog-tabs [(activeIndex)]="index">
-      <gog-tab label="Сразу">
-        <span class="eager">сразу</span>
+      <gog-tab label="Eager">
+        <span class="eager">eager</span>
       </gog-tab>
-      <gog-tab label="Лениво">
+      <gog-tab label="Lazy">
         <ng-template gogTabContent>
-          <span class="lazy">лениво</span>
+          <span class="lazy">lazy</span>
         </ng-template>
       </gog-tab>
     </gog-tabs>
@@ -423,8 +423,8 @@ describe('TabsComponent — lazy content', () => {
       <ng-template gogTabHeader let-tab let-active="active">
         <span class="custom-header">{{ tab.label() }}{{ active ? '*' : '' }}</span>
       </ng-template>
-      <gog-tab label="Первый">1</gog-tab>
-      <gog-tab label="Второй">2</gog-tab>
+      <gog-tab label="First">1</gog-tab>
+      <gog-tab label="Second">2</gog-tab>
     </gog-tabs>
   `,
 })
@@ -439,7 +439,7 @@ describe('TabsComponent — gogTabHeader slot', () => {
 
     const custom = (fixture.nativeElement as HTMLElement).querySelectorAll('.custom-header');
     expect(custom.length).toBe(2);
-    expect(custom[0].textContent?.trim()).toBe('Первый*');
-    expect(custom[1].textContent?.trim()).toBe('Второй');
+    expect(custom[0].textContent?.trim()).toBe('First*');
+    expect(custom[1].textContent?.trim()).toBe('Second');
   });
 });

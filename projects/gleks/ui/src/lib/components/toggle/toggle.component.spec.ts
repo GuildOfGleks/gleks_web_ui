@@ -147,13 +147,13 @@ describe('ToggleComponent', () => {
   });
 
   it('should render the label, and use ariaLabel only without one', () => {
-    fixture.componentRef.setInput('ariaLabel', 'Тёмная тема');
+    fixture.componentRef.setInput('ariaLabel', 'Dark theme');
     fixture.detectChanges();
-    expect(input().getAttribute('aria-label')).toBe('Тёмная тема');
+    expect(input().getAttribute('aria-label')).toBe('Dark theme');
 
-    fixture.componentRef.setInput('label', 'Тёмная тема');
+    fixture.componentRef.setInput('label', 'Dark theme');
     fixture.detectChanges();
-    expect(host().querySelector('.gog-toggle__label')?.textContent?.trim()).toBe('Тёмная тема');
+    expect(host().querySelector('.gog-toggle__label')?.textContent?.trim()).toBe('Dark theme');
     // The visible label already names it; a second aria-label would win over it and hide the
     // wording the user can actually see.
     expect(input().getAttribute('aria-label')).toBeNull();
@@ -165,8 +165,8 @@ describe('ToggleComponent', () => {
   });
 
   it('should keep both track labels in the DOM so the width cannot jump', () => {
-    fixture.componentRef.setInput('onLabel', 'ВКЛ');
-    fixture.componentRef.setInput('offLabel', 'ВЫКЛ');
+    fixture.componentRef.setInput('onLabel', 'ON');
+    fixture.componentRef.setInput('offLabel', 'OFF');
     fixture.detectChanges();
 
     const states = host().querySelectorAll('.gog-toggle__state');
@@ -235,7 +235,7 @@ describe('ToggleComponent — GOG_CONFIG', () => {
 
 @Component({
   imports: [ToggleComponent, ReactiveFormsModule],
-  template: `<gog-toggle [formControl]="control" label="Уведомления" />`,
+  template: `<gog-toggle [formControl]="control" label="Notifications" />`,
 })
 class ReactiveHost {
   readonly control = new FormControl(false);

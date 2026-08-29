@@ -195,18 +195,18 @@
 
   /* ── Light palette (also the no-data-theme default) ───────────────────────── */
   color-scheme: light;
-  /* Фоновые и поверхностные тона */
-  --gog-background-color: #f7f3eb; /* Тёплый пергаментный фон страницы */
-  --gog-surface-color: #ffffff; /* КИСЛО-БЕЛЫЙ ПЕРГАМЕНТ карточек (создает контраст со слоем 1!) */
-  --gog-hover-color: #f0e7d7; /* Состояние наведения (мягкий воск) */
-  --gog-border-color: #d8c7ad; /* Состаренная латунная рамка */
+  /* Backgrounds and surfaces */
+  --gog-background-color: #f7f3eb; /* Warm parchment page ground */
+  --gog-surface-color: #ffffff; /* Bleached parchment for cards — lighter than the page on purpose, so the two tiers read apart */
+  --gog-hover-color: #f0e7d7; /* Hover state — soft wax */
+  --gog-border-color: #d8c7ad; /* Aged brass rule */
 
-  /* Типографика (Старинные дубовые чернила) */
-  --gog-text-color: #17120c; /* Глубокие чернила (высокий контраст WCAG AAA) */
+  /* Type — old oak-gall ink */
+  --gog-text-color: #17120c; /* Deep ink — clears WCAG AAA against both surfaces */
   --gog-accent-text-color: #ffffff;
-  --gog-muted-text-color: #63503c; /* Приглушенные печные чернила */
+  --gog-muted-text-color: #63503c; /* Muted kiln ink */
 
-  /* Бренд и акценты (Гильдейское Сусальное Золото) */
+  /* Brand and accents — guild gold leaf */
   --gog-primary-color: #17120c;
   /* Deep guild gold. Darkened from #9e6f00 in 21.7.0: white on the old value was 4.44:1,
      just under WCAG AA's 4.5, and its hover fill was 2.87:1 — the hover was the worse half.
@@ -214,17 +214,17 @@
      enough to read as "a brighter gleam" cannot carry white text at all. */
   --gog-accent-color: #926600;
   --gog-accent-bright: #7a5500;
-  --gog-accent-dim: #735100; /* Темная бронза */
-  --gog-accent-pale: #f8f1df; /* Светлая подложка под золото */
+  --gog-accent-dim: #735100; /* Dark bronze */
+  --gog-accent-pale: #f8f1df; /* Pale wash beneath the gold */
   --gog-secondary-color: #6b5328;
 
-  /* Гармонизированная алхимическая семантика */
-  --gog-success-color: #216e4e; /* Изумруд */
-  --gog-danger-color: #a7232b; /* Рубин */
-  --gog-warning-color: #c45100; /* Тёмный янтарь */
-  --gog-info-color: #2b5c8f; /* Лазурит */
+  /* Semantic colours, kept in the alchemical family */
+  --gog-success-color: #216e4e; /* Emerald */
+  --gog-danger-color: #a7232b; /* Ruby */
+  --gog-warning-color: #c45100; /* Dark amber */
+  --gog-info-color: #2b5c8f; /* Lapis */
 
-  /* Объёмная мягкая тень старой кожи */
+  /* Soft, deep shadow — old leather */
   --gog-panel-shadow: 0 4px 20px rgba(23, 18, 12, 0.08), 0 1px 3px rgba(23, 18, 12, 0.04);
   --gog-spinner-overlay-bg: rgba(247, 243, 235, 0.85);
 }
@@ -233,18 +233,18 @@
 [data-theme='light'] {
   color-scheme: light;
 
-  /* Фоновые и поверхностные тона */
-  --gog-background-color: #f7f3eb; /* Тёплый пергаментный фон страницы */
-  --gog-surface-color: #ffffff; /* КИСЛО-БЕЛЫЙ ПЕРГАМЕНТ карточек (создает контраст со слоем 1!) */
-  --gog-hover-color: #f0e7d7; /* Состояние наведения (мягкий воск) */
-  --gog-border-color: #d8c7ad; /* Состаренная латунная рамка */
+  /* Backgrounds and surfaces */
+  --gog-background-color: #f7f3eb; /* Warm parchment page ground */
+  --gog-surface-color: #ffffff; /* Bleached parchment for cards — lighter than the page on purpose, so the two tiers read apart */
+  --gog-hover-color: #f0e7d7; /* Hover state — soft wax */
+  --gog-border-color: #d8c7ad; /* Aged brass rule */
 
-  /* Типографика (Старинные дубовые чернила) */
-  --gog-text-color: #17120c; /* Глубокие чернила (высокий контраст WCAG AAA) */
+  /* Type — old oak-gall ink */
+  --gog-text-color: #17120c; /* Deep ink — clears WCAG AAA against both surfaces */
   --gog-accent-text-color: #ffffff;
-  --gog-muted-text-color: #63503c; /* Приглушенные печные чернила */
+  --gog-muted-text-color: #63503c; /* Muted kiln ink */
 
-  /* Бренд и акценты (Гильдейское Сусальное Золото) */
+  /* Brand and accents — guild gold leaf */
   --gog-primary-color: #17120c;
   /* Deep guild gold. Darkened from #9e6f00 in 21.7.0: white on the old value was 4.44:1,
      just under WCAG AA's 4.5, and its hover fill was 2.87:1 — the hover was the worse half.
@@ -252,17 +252,17 @@
      enough to read as "a brighter gleam" cannot carry white text at all. */
   --gog-accent-color: #926600;
   --gog-accent-bright: #7a5500;
-  --gog-accent-dim: #735100; /* Темная бронза */
-  --gog-accent-pale: #f8f1df; /* Светлая подложка под золото */
+  --gog-accent-dim: #735100; /* Dark bronze */
+  --gog-accent-pale: #f8f1df; /* Pale wash beneath the gold */
   --gog-secondary-color: #6b5328;
 
-  /* Гармонизированная алхимическая семантика */
-  --gog-success-color: #216e4e; /* Изумруд */
-  --gog-danger-color: #a7232b; /* Рубин */
-  --gog-warning-color: #c45100; /* Тёмный янтарь */
-  --gog-info-color: #2b5c8f; /* Лазурит */
+  /* Semantic colours, kept in the alchemical family */
+  --gog-success-color: #216e4e; /* Emerald */
+  --gog-danger-color: #a7232b; /* Ruby */
+  --gog-warning-color: #c45100; /* Dark amber */
+  --gog-info-color: #2b5c8f; /* Lapis */
 
-  /* Объёмная мягкая тень старой кожи */
+  /* Soft, deep shadow — old leather */
   --gog-panel-shadow: 0 4px 20px rgba(23, 18, 12, 0.08), 0 1px 3px rgba(23, 18, 12, 0.04);
   --gog-spinner-overlay-bg: rgba(247, 243, 235, 0.85);
 }
@@ -271,30 +271,30 @@
 [data-theme='dark'] {
   color-scheme: dark;
 
-  /* Фоновые и поверхностные тона */
-  --gog-background-color: #0d0b08; /* Глубокий кузнечный обсидиан */
-  --gog-surface-color: #16120e; /* Тёмное обожженное железо (карточки) */
-  --gog-hover-color: #241d17; /* Наведение на элементы */
-  --gog-border-color: #3d3122; /* Состаренная чеканенная бронза */
+  /* Backgrounds and surfaces */
+  --gog-background-color: #0d0b08; /* Deep forge obsidian */
+  --gog-surface-color: #16120e; /* Dark fired iron — cards */
+  --gog-hover-color: #241d17; /* Hover state */
+  --gog-border-color: #3d3122; /* Aged chased bronze */
 
-  /* Типографика (Светящаяся Слоновая Кость) */
-  --gog-text-color: #f3ebd8; /* Мягкий светящийся пергамент */
+  /* Type — glowing ivory */
+  --gog-text-color: #f3ebd8; /* Soft luminous parchment */
   --gog-accent-text-color: #0d0b08;
-  --gog-muted-text-color: #9e8d76; /* Приглушенная бронза */
+  --gog-muted-text-color: #9e8d76; /* Muted bronze */
 
-  /* Бренд и акценты (Светящееся Золото Алхимии) */
+  /* Brand and accents — the alchemist's glowing gold */
   --gog-primary-color: #f3ebd8;
-  --gog-accent-color: #fbbf24; /* Плазменный янтарь */
-  --gog-accent-bright: #fde047; /* Яркий золотой луч */
-  --gog-accent-dim: #b48310; /* Приглушенное золото */
-  --gog-accent-pale: #2b210c; /* Тёмный золотой отсвет */
+  --gog-accent-color: #fbbf24; /* Plasma amber */
+  --gog-accent-bright: #fde047; /* Bright gold ray */
+  --gog-accent-dim: #b48310; /* Muted gold */
+  --gog-accent-pale: #2b210c; /* Dark gold reflection */
   --gog-secondary-color: #d4a373;
 
-  /* Семантика */
-  --gog-success-color: #34d399; /* Светящийся изумруд */
-  --gog-danger-color: #f87171; /* Светящийся рубин */
-  --gog-warning-color: #fbbf24; /* Янтарь */
-  --gog-info-color: #38bdf8; /* Сапфир */
+  /* Semantics */
+  --gog-success-color: #34d399; /* Glowing emerald */
+  --gog-danger-color: #f87171; /* Glowing ruby */
+  --gog-warning-color: #fbbf24; /* Amber */
+  --gog-info-color: #38bdf8; /* Sapphire */
 
   --gog-panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--gog-border-color);
   --gog-spinner-overlay-bg: rgba(13, 11, 8, 0.85);

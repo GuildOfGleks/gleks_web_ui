@@ -19,8 +19,8 @@ const DEFAULT_SIZE: GogSize = 'md';
  * An on/off switch.
  *
  * ```html
- * <gog-toggle label="Уведомления" [(checked)]="on" />
- * <gog-toggle formControlName="darkMode" onLabel="ВКЛ" offLabel="ВЫКЛ" />
+ * <gog-toggle label="Notifications" [(checked)]="on" />
+ * <gog-toggle formControlName="darkMode" onLabel="ON" offLabel="OFF" />
  * ```
  *
  * Next to `gog-checkbox` rather than a variant of it, because the two answer different

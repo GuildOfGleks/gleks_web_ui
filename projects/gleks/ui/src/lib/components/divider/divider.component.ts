@@ -8,7 +8,7 @@ import { GogDividerVariant, GogOrientation } from '../../shared/types';
  * ```html
  * <gog-divider />
  * <gog-divider orientation="vertical" />
- * <gog-divider>ИЛИ</gog-divider>
+ * <gog-divider>OR</gog-divider>
  * ```
  *
  * The label is projected content rather than a `label` input: it is markup, so a consumer can

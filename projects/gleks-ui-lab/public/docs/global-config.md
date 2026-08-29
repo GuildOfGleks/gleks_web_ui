@@ -91,36 +91,36 @@ once, not on all 340 fields.
 ```ts
 provideGogConfig({
   labels: {
-    clear: 'Очистить', // input field / textarea clear button
-    clearSelection: 'Очистить выбор', // select / multiselect / autocomplete
-    clearDate: 'Очистить дату', // datepicker
-    selectAll: 'Выбрать все', // multiselect panel — visible text, not just a label
-    clearAll: 'Очистить', // multiselect panel
-    increment: 'Увеличить', // number spin buttons
-    decrement: 'Уменьшить',
-    showPassword: 'Показать пароль',
-    hidePassword: 'Скрыть пароль',
-    closeDialog: 'Закрыть',
-    closeToast: 'Закрыть',
-    pagination: 'Навигация по страницам',
-    previousPage: 'Предыдущая страница',
-    nextPage: 'Следующая страница',
-    openCalendar: 'Открыть календарь',
-    rowsPerPage: 'Строк на странице', // gog-paginator's size select
-    total: 'Всего', // gog-table's row-count label
-    tablePagination: 'Навигация по таблице',
-    selectRow: 'Выбрать строку',
-    selectAllRows: 'Выбрать все строки на странице',
-    today: 'Сегодня',
-    thisMonth: 'Текущий месяц',
-    previousMonth: 'Предыдущий месяц',
-    nextMonth: 'Следующий месяц',
-    previousYear: 'Предыдущий год',
-    nextYear: 'Следующий год',
-    hours: 'Часы',
-    minutes: 'Минуты',
-    seconds: 'Секунды',
-    togglePanel: 'Свернуть раздел', // gog-panel's toggle, when the panel has no header
+    clear: 'Löschen', // input field / textarea clear button
+    clearSelection: 'Auswahl löschen', // select / multiselect / autocomplete
+    clearDate: 'Datum löschen', // datepicker
+    selectAll: 'Alle auswählen', // multiselect panel — visible text, not just a label
+    clearAll: 'Alle löschen', // multiselect panel
+    increment: 'Erhöhen', // number spin buttons
+    decrement: 'Verringern',
+    showPassword: 'Passwort anzeigen',
+    hidePassword: 'Passwort verbergen',
+    closeDialog: 'Schließen',
+    closeToast: 'Schließen',
+    pagination: 'Seitennavigation',
+    previousPage: 'Vorherige Seite',
+    nextPage: 'Nächste Seite',
+    openCalendar: 'Kalender öffnen',
+    rowsPerPage: 'Zeilen pro Seite', // gog-paginator's size select
+    total: 'Gesamt', // gog-table's row-count label
+    tablePagination: 'Tabellennavigation',
+    selectRow: 'Zeile auswählen',
+    selectAllRows: 'Alle Zeilen auswählen',
+    today: 'Heute',
+    thisMonth: 'Aktueller Monat',
+    previousMonth: 'Vorheriger Monat',
+    nextMonth: 'Nächster Monat',
+    previousYear: 'Vorheriges Jahr',
+    nextYear: 'Nächstes Jahr',
+    hours: 'Stunden',
+    minutes: 'Minuten',
+    seconds: 'Sekunden',
+    togglePanel: 'Bereich umschalten', // gog-panel's toggle, when the panel has no header
   },
 });
 ```
@@ -137,8 +137,7 @@ page number, so this one field is a formatter:
 ```ts
 provideGogConfig({
   labels: {
-    page: (page, isCurrent) =>
-      isCurrent ? `Страница ${page}, текущая` : `Перейти на страницу ${page}`,
+    page: (page, isCurrent) => (isCurrent ? `Seite ${page}, aktuell` : `Zu Seite ${page} wechseln`),
   },
 });
 ```

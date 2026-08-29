@@ -20,7 +20,7 @@ import { GOG_TABS_STATE } from './tabs-state';
  * alive afterwards.
  *
  * ```html
- * <gog-tab label="Отчёт">
+ * <gog-tab label="Report">
  *   <ng-template gogTabContent><app-expensive-report /></ng-template>
  * </gog-tab>
  * ```
@@ -40,8 +40,8 @@ export class GogTabContentDirective {
  *
  * ```html
  * <gog-tabs>
- *   <gog-tab label="Профиль"><app-profile /></gog-tab>
- *   <gog-tab label="Настройки" iconName="info" [disabled]="!canEdit">…</gog-tab>
+ *   <gog-tab label="Profile"><app-profile /></gog-tab>
+ *   <gog-tab label="Settings" iconName="info" [disabled]="!canEdit">…</gog-tab>
  * </gog-tabs>
  * ```
  */

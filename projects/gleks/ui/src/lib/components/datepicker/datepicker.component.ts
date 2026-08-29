@@ -59,7 +59,7 @@ export type { GogDateRange, GogDatepickerValue };
  * A date field with a calendar panel.
  *
  * ```html
- * <gog-datepicker [(value)]="date" label="Дата рождения" [max]="today" />
+ * <gog-datepicker [(value)]="date" label="Date of birth" [max]="today" />
  * <gog-datepicker selectionMode="range" [(value)]="range" [numberOfMonths]="2" />
  * <gog-datepicker [showTime]="true" hourFormat="24" [(value)]="when" />
  * ```

@@ -213,7 +213,7 @@ are a whole visual identity**, not a recolour:
 
 The palette half has always worked this way. The **character layer** (`--gog-radius`,
 `--gog-density`, the border and casing tokens — all since 21.7.0) is the other half: it is what
-lets a theme change the library's *shape* — square or generous corners, thin borders,
+lets a theme change the library's _shape_ — square or generous corners, thin borders,
 sentence-case labels, tight or roomy spacing — still without naming a single component.
 
 Nine presets ship alongside the built-in `light` and `dark`, each at `styles/presets/<name>.css`
@@ -221,18 +221,18 @@ and activated by `data-theme="<name>"`. All nine set palette **and** character:
 
 | Preset                  | The identity                                                            |
 | ----------------------- | ----------------------------------------------------------------------- |
-| `slate`                 | soft modern — 12px corners, hairline borders, roomier than the default   |
-| `one-dark`, `one-light` | editor chrome — 4px corners, compact, sentence case; one UI, two tones   |
-| `material`, `primeng`   | Material Design 3 and PrimeNG Aura, including their shape and density    |
-| `ledger`                | administrative software — square corners, hard offset shadow, no motion  |
-| `terminal`              | green phosphor — monospaced throughout, square, no motion                |
-| `bevel`                 | the early-web desktop — raised buttons, sunken fields, grey and navy     |
+| `slate`                 | soft modern — 12px corners, hairline borders, roomier than the default  |
+| `one-dark`, `one-light` | editor chrome — 4px corners, compact, sentence case; one UI, two tones  |
+| `material`, `primeng`   | Material Design 3 and PrimeNG Aura, including their shape and density   |
+| `ledger`                | administrative software — square corners, hard offset shadow, no motion |
+| `terminal`              | green phosphor — monospaced throughout, square, no motion               |
+| `bevel`                 | the early-web desktop — raised buttons, sunken fields, grey and navy    |
 | `parchment`             | ink on laid paper — old-style serif, oxblood accent, roomy              |
 
 **No preset downloads a font.** Each sets a stack that resolves to a real system face — the
 platform's own monospace for `terminal`, Tahoma/Verdana for `bevel`, Iowan Old Style/Palatino for
 `parchment` — so importing a preset never adds a network request. Where a webfont makes a visible
-difference, it lives in a separate opt-in file you import *after* the preset:
+difference, it lives in a separate opt-in file you import _after_ the preset:
 
 ```css
 @import '@guildofgleks/ui/styles/presets/parchment.css';
@@ -258,7 +258,7 @@ provideGogConfig({
   dropdown: { appendToBody: true },
   datepicker: { locale: 'de-DE', format: 'dd.MM.yyyy' },
   ripple: { enabled: true }, // press feedback on every interactive surface at once
-  labels: { clear: 'Очистить', selectAll: 'Выбрать все' }, // translate the library once
+  labels: { clear: 'Löschen', selectAll: 'Alle auswählen' }, // translate the library once
 });
 ```
 

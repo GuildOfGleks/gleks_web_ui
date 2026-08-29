@@ -74,7 +74,7 @@ describe('DividerComponent', () => {
 
 @Component({
   imports: [DividerComponent],
-  template: `<gog-divider>ИЛИ</gog-divider>`,
+  template: `<gog-divider>OR</gog-divider>`,
 })
 class LabelledHost {}
 
@@ -98,7 +98,7 @@ describe('DividerComponent — projected label', () => {
     fixture.detectChanges();
 
     const label = (fixture.nativeElement as HTMLElement).querySelector('.gog-divider__label');
-    expect(label?.textContent?.trim()).toBe('ИЛИ');
+    expect(label?.textContent?.trim()).toBe('OR');
     expect(label?.childNodes.length).toBeGreaterThan(0);
   });
 });

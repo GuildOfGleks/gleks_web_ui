@@ -7,10 +7,10 @@ import { GOG_CONFIG } from '../../shared/config';
 import type { GogDropdownOption } from '../../shared/dropdown-base';
 
 const OPTIONS: GogDropdownOption[] = [
-  { id: 1, name: 'Ангуляр' },
-  { id: 2, name: 'Анимация' },
-  { id: 3, name: 'Бета', disabled: true },
-  { id: 4, name: 'Гамма' },
+  { id: 1, name: 'Angular' },
+  { id: 2, name: 'Animation' },
+  { id: 3, name: 'Beta', disabled: true },
+  { id: 4, name: 'Gamma' },
 ];
 
 type DefaultAutocomplete = AutocompleteComponent<GogDropdownOption, string | number | null>;
@@ -67,7 +67,7 @@ describe('AutocompleteComponent', () => {
     type('');
     expect(component.isOpen()).toBe(false);
 
-    type('а');
+    type('a');
     expect(component.isOpen()).toBe(true);
   });
 
@@ -75,10 +75,10 @@ describe('AutocompleteComponent', () => {
     fixture.componentRef.setInput('minLength', 3);
     fixture.detectChanges();
 
-    type('ан');
+    type('an');
     expect(component.isOpen()).toBe(false);
 
-    type('анг');
+    type('ang');
     expect(component.isOpen()).toBe(true);
   });
 
@@ -105,10 +105,10 @@ describe('AutocompleteComponent', () => {
     });
 
     it('should show every option on focus even when the field already displays a selection', () => {
-      type('а');
+      type('a');
       keydown('ArrowDown');
       keydown('Enter');
-      expect(field().value).toBe('Ангуляр');
+      expect(field().value).toBe('Angular');
 
       field().dispatchEvent(new Event('blur'));
       fixture.detectChanges();
@@ -125,17 +125,17 @@ describe('AutocompleteComponent', () => {
       fixture.detectChanges();
       expect(options().length).toBe(OPTIONS.length);
 
-      type('ан');
+      type('an');
       expect(options().map((option) => option.textContent?.trim())).toEqual([
-        'Ангуляр',
-        'Анимация',
+        'Angular',
+        'Animation',
       ]);
     });
   });
 
   it('should filter locally, case-insensitively', () => {
-    type('ан');
-    expect(options().map((option) => option.textContent?.trim())).toEqual(['Ангуляр', 'Анимация']);
+    type('an');
+    expect(options().map((option) => option.textContent?.trim())).toEqual(['Angular', 'Animation']);
   });
 
   it('should not filter locally when filterLocal is off', () => {
@@ -144,17 +144,17 @@ describe('AutocompleteComponent', () => {
     fixture.componentRef.setInput('filterLocal', false);
     fixture.detectChanges();
 
-    type('ничего такого');
+    type('nothing like it');
     expect(options().length).toBe(OPTIONS.length);
   });
 
   it('should show the empty message when nothing matches', () => {
-    fixture.componentRef.setInput('emptyMessage', 'Пусто');
+    fixture.componentRef.setInput('emptyMessage', 'Empty');
     fixture.detectChanges();
 
-    type('щщщ');
+    type('zzz');
     expect(options().length).toBe(0);
-    expect(host().querySelector('.gog-autocomplete__empty')?.textContent?.trim()).toBe('Пусто');
+    expect(host().querySelector('.gog-autocomplete__empty')?.textContent?.trim()).toBe('Empty');
   });
 
   describe('keyboard', () => {
@@ -166,7 +166,7 @@ describe('AutocompleteComponent', () => {
     });
 
     it('should highlight with the arrows and point aria-activedescendant at it', () => {
-      type('а');
+      type('a');
       keydown('ArrowDown');
 
       const active = host().querySelector('.gog-autocomplete__option--active');
@@ -176,7 +176,7 @@ describe('AutocompleteComponent', () => {
 
     it('should keep DOM focus in the input while navigating', () => {
       field().focus();
-      type('а');
+      type('a');
       keydown('ArrowDown');
 
       // A combobox must not move focus onto the option — that is what separates it from the
@@ -185,17 +185,17 @@ describe('AutocompleteComponent', () => {
     });
 
     it('should wrap around the highlight', () => {
-      // 'ан' rather than 'а': the match is a substring, and every option here happens to
-      // contain an 'а' somewhere.
-      type('ан');
+      // 'an' rather than 'a': the match is a substring, and every option here happens to
+      // contain an 'a' somewhere.
+      type('an');
       keydown('ArrowUp');
 
       const active = host().querySelector('.gog-autocomplete__option--active');
-      expect(active?.textContent?.trim()).toBe('Анимация');
+      expect(active?.textContent?.trim()).toBe('Animation');
     });
 
     it('should do nothing on Enter when nothing is highlighted', () => {
-      type('а');
+      type('a');
       keydown('Enter');
 
       expect(component.value()).toBeNull();
@@ -203,25 +203,25 @@ describe('AutocompleteComponent', () => {
     });
 
     it('should commit the highlighted option on Enter', () => {
-      type('а');
+      type('a');
       keydown('ArrowDown');
       keydown('Enter');
 
       expect(component.value()).toBe(1);
-      expect(field().value).toBe('Ангуляр');
+      expect(field().value).toBe('Angular');
       expect(component.isOpen()).toBe(false);
     });
 
     it('should close and restore the selected text on Escape', () => {
-      type('а');
+      type('a');
       keydown('ArrowDown');
       keydown('Enter');
 
-      type('переписал');
+      type('rewrote');
       keydown('Escape');
 
       expect(component.isOpen()).toBe(false);
-      expect(field().value).toBe('Ангуляр');
+      expect(field().value).toBe('Angular');
     });
 
     it('should leave Home/End to the caret while closed', () => {
@@ -234,16 +234,16 @@ describe('AutocompleteComponent', () => {
   });
 
   it('should commit on click', () => {
-    type('а');
+    type('a');
     options()[1].click();
     fixture.detectChanges();
 
     expect(component.value()).toBe(2);
-    expect(field().value).toBe('Анимация');
+    expect(field().value).toBe('Animation');
   });
 
   it('should prevent mousedown on an option so the input keeps focus', () => {
-    type('а');
+    type('a');
     const event = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
     options()[0].dispatchEvent(event);
 
@@ -253,7 +253,7 @@ describe('AutocompleteComponent', () => {
   });
 
   it('should ignore a disabled option', () => {
-    type('б');
+    type('b');
     options()[0].click();
     fixture.detectChanges();
 
@@ -261,12 +261,12 @@ describe('AutocompleteComponent', () => {
   });
 
   it('should keep the selection while it is being edited, so Escape can undo the edit', () => {
-    type('ан');
+    type('an');
     keydown('ArrowDown');
     keydown('Enter');
     expect(component.value()).toBe(1);
 
-    type('Ангуля');
+    type('Angula');
     // Dropping it per keystroke would mean someone who types one character to refine their
     // search and then changes their mind has silently lost what they had picked.
     expect(component.value()).toBe(1);
@@ -276,12 +276,12 @@ describe('AutocompleteComponent', () => {
     fixture.componentRef.setInput('forceSelection', false);
     fixture.detectChanges();
 
-    type('ан');
+    type('an');
     keydown('ArrowDown');
     keydown('Enter');
     expect(component.value()).toBe(1);
 
-    type('Ангуля');
+    type('Angula');
     // Here the text is the answer, so leaving the id behind would let a form submit a
     // selection the field no longer shows.
     expect(component.value()).toBeNull();
@@ -289,7 +289,7 @@ describe('AutocompleteComponent', () => {
 
   describe('forceSelection', () => {
     it('should discard unmatched free text on blur by default', () => {
-      type('несуществующее');
+      type('nonexistent');
       field().dispatchEvent(new Event('blur'));
       fixture.detectChanges();
 
@@ -298,26 +298,26 @@ describe('AutocompleteComponent', () => {
     });
 
     it('should restore the selected label on blur', () => {
-      type('а');
+      type('a');
       keydown('ArrowDown');
       keydown('Enter');
 
-      type('мусор');
+      type('junk');
       field().dispatchEvent(new Event('blur'));
       fixture.detectChanges();
 
-      expect(field().value).toBe('Ангуляр');
+      expect(field().value).toBe('Angular');
     });
 
     it('should keep free text when switched off', () => {
       fixture.componentRef.setInput('forceSelection', false);
       fixture.detectChanges();
 
-      type('своё значение');
+      type('my own value');
       field().dispatchEvent(new Event('blur'));
       fixture.detectChanges();
 
-      expect(field().value).toBe('своё значение');
+      expect(field().value).toBe('my own value');
     });
   });
 
@@ -330,12 +330,12 @@ describe('AutocompleteComponent', () => {
      * back. Reproduced in the showcase with real keystrokes before this was changed.
      */
     it('should let the text be erased while a selection is held', () => {
-      type('а');
+      type('a');
       keydown('ArrowDown');
       keydown('Enter');
-      expect(field().value).toBe('Ангуляр');
+      expect(field().value).toBe('Angular');
 
-      type('Ангуля');
+      type('Angula');
       type('');
 
       expect(field().value).toBe('');
@@ -354,7 +354,7 @@ describe('AutocompleteComponent', () => {
       await fixture.whenStable();
       fixture.detectChanges();
 
-      expect(field().value).toBe('Анимация');
+      expect(field().value).toBe('Animation');
     });
   });
 
@@ -393,13 +393,13 @@ describe('AutocompleteComponent', () => {
       const seen: string[] = [];
       component.gogSearch.subscribe((query) => seen.push(query));
 
-      type('а');
-      type('ан');
-      type('анг');
+      type('a');
+      type('an');
+      type('ang');
       expect(seen).toEqual([]);
 
       vi.advanceTimersByTime(300);
-      expect(seen).toEqual(['анг']);
+      expect(seen).toEqual(['ang']);
     });
 
     it('should emit on every keystroke when the debounce is 0', () => {
@@ -409,16 +409,16 @@ describe('AutocompleteComponent', () => {
       const seen: string[] = [];
       component.gogSearch.subscribe((query) => seen.push(query));
 
-      type('а');
-      type('ан');
-      expect(seen).toEqual(['а', 'ан']);
+      type('a');
+      type('an');
+      expect(seen).toEqual(['a', 'an']);
     });
 
     it('should not fire a pending search after a selection', () => {
       const seen: string[] = [];
       component.gogSearch.subscribe((query) => seen.push(query));
 
-      type('а');
+      type('a');
       keydown('ArrowDown');
       keydown('Enter');
       vi.advanceTimersByTime(1000);
@@ -445,7 +445,7 @@ describe('AutocompleteComponent', () => {
     }
 
     it('should fire once the panel is scrolled to the end of the option list', async () => {
-      type('а');
+      type('a');
       const viewport = host().querySelector('.gog-autocomplete__scroll .gog-scroll__viewport')!;
       mockMetrics(viewport as HTMLElement, { scrollHeight: 400, clientHeight: 100 });
       Object.defineProperty(viewport, 'scrollTop', { value: 300, configurable: true });
@@ -473,7 +473,7 @@ describe('AutocompleteComponent', () => {
     fixture.componentRef.setInput('optionValue', null);
     fixture.detectChanges();
 
-    type('а');
+    type('a');
     options()[0].click();
     fixture.detectChanges();
 
@@ -482,7 +482,7 @@ describe('AutocompleteComponent', () => {
 
   it('should clear the text as well as the value', () => {
     fixture.componentRef.setInput('clearable', true);
-    type('а');
+    type('a');
     options()[0].click();
     fixture.detectChanges();
 
@@ -514,7 +514,7 @@ describe('AutocompleteComponent — GOG_CONFIG', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     try {
       const input = (fixture.nativeElement as HTMLElement).querySelector('input')!;
-      input.value = 'а';
+      input.value = 'a';
       input.dispatchEvent(new Event('input'));
       fixture.detectChanges();
 
@@ -522,7 +522,7 @@ describe('AutocompleteComponent — GOG_CONFIG', () => {
       expect(fixture.componentInstance.isOpen()).toBe(false);
 
       vi.advanceTimersByTime(50);
-      expect(seen).toEqual(['а']);
+      expect(seen).toEqual(['a']);
     } finally {
       vi.useRealTimers();
     }
@@ -549,7 +549,7 @@ describe('AutocompleteComponent — GOG_CONFIG', () => {
 
 @Component({
   imports: [AutocompleteComponent, ReactiveFormsModule],
-  template: `<gog-autocomplete [formControl]="control" [options]="options()" label="Тег" />`,
+  template: `<gog-autocomplete [formControl]="control" [options]="options()" label="Tag" />`,
 })
 class ReactiveHost {
   readonly control = new FormControl<string | number | null>(2);
@@ -573,7 +573,7 @@ describe('AutocompleteComponent — Reactive Forms', () => {
   });
 
   it('should show the label of the value the form wrote', () => {
-    expect(field().value).toBe('Анимация');
+    expect(field().value).toBe('Animation');
   });
 
   it('should follow a later control update', async () => {
@@ -581,7 +581,7 @@ describe('AutocompleteComponent — Reactive Forms', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(field().value).toBe('Гамма');
+    expect(field().value).toBe('Gamma');
   });
 
   it('should honour the control being disabled', async () => {

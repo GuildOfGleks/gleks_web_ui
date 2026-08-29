@@ -45,7 +45,7 @@ export interface GogTabHeaderContext {
  *   <ng-template gogTabHeader let-tab let-active="active">
  *     {{ tab.label() }} <gog-tag *ngIf="active">•</gog-tag>
  *   </ng-template>
- *   <gog-tab label="Входящие">…</gog-tab>
+ *   <gog-tab label="Inbox">…</gog-tab>
  * </gog-tabs>
  * ```
  */
@@ -67,8 +67,8 @@ export class GogTabHeaderDirective {
  *
  * ```html
  * <gog-tabs [(activeIndex)]="index" align="start">
- *   <gog-tab label="Профиль"><app-profile /></gog-tab>
- *   <gog-tab label="Настройки"><app-settings /></gog-tab>
+ *   <gog-tab label="Profile"><app-profile /></gog-tab>
+ *   <gog-tab label="Settings"><app-settings /></gog-tab>
  * </gog-tabs>
  * ```
  *

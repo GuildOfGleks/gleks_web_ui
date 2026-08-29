@@ -23,6 +23,23 @@ User-visible strings in `ui-showcase` are English too — it is the documentatio
 So: explain in Russian what you are about to do, then write it in English. A Russian comment in a
 `.ts` file or a Russian line in `CHANGELOG.md` is a bug, however the request was phrased.
 
+**No Cyrillic anywhere in the repository — the tree was cleared of it on 2026-08-29** (28 files:
+`theme.css`'s palette comments, test fixtures across nine components, JSDoc examples, the lab's
+layout comments, `.gitignore`, the lab `Dockerfile`). To check:
+
+```powershell
+git ls-files | Where-Object { $_ -notmatch 'package-lock|\.(png|ico|jpg|svg)$' } |
+  ForEach-Object { Select-String -Path $_ -Pattern '[Ѐ-ӿ]' }
+```
+
+Two things were *not* solved by translating to English, and both should stay as they are:
+
+- **`labels:` examples in `README.md`/`AGENTS.md` are German.** They illustrate "an app that isn't
+  in English sets these once" — rendering that example in English would demonstrate nothing. Any
+  non-English language works; it just must not be Cyrillic.
+- **`date-utils.spec.ts` asserts on `monthNames('de-DE')`.** It is testing that month names follow
+  the locale, so it needs a locale whose month names differ from English.
+
 ## Read these before working
 
 The authoritative rules live in `.github/instructions/`. They are written in Copilot's

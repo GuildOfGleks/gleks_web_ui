@@ -21,7 +21,7 @@ const DEFAULT_MAX = 99;
  * A count or status dot pinned to the corner of another element.
  *
  * ```html
- * <gog-button gogBadge="12" badgeAriaLabel="12 непрочитанных">Входящие</gog-button>
+ * <gog-button gogBadge="12" badgeAriaLabel="12 unread">Inbox</gog-button>
  * <gog-icon name="info" gogBadge badgeDot />
  * ```
  *
@@ -55,9 +55,9 @@ export class GogBadgeDirective {
    * What assistive tech should hear instead of the bare number.
    *
    * Left empty, the badge text is announced inline with the host's own label, which reads as
-   * "Входящие 12" — acceptable, and what Material does. Set this and the visible badge becomes
+   * "Inbox 12" — acceptable, and what Material does. Set this and the visible badge becomes
    * `aria-hidden` while this wording is announced in its place, so the host reads as
-   * "Входящие, 12 непрочитанных" instead.
+   * "Inbox, 12 unread" instead.
    */
   readonly badgeAriaLabel = input('');
 

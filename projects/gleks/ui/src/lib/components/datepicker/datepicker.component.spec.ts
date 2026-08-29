@@ -176,7 +176,7 @@ describe('DatepickerComponent', () => {
       fixture.detectChanges();
 
       field().dispatchEvent(new Event('focus'));
-      type('чепуха');
+      type('nonsense');
       field().dispatchEvent(new Event('blur'));
       fixture.detectChanges();
 
@@ -272,15 +272,15 @@ describe('DatepickerComponent', () => {
     });
 
     it('should pass the footer labels through', () => {
-      fixture.componentRef.setInput('todayLabel', 'Сегодня');
+      fixture.componentRef.setInput('todayLabel', 'Today');
       fixture.componentRef.setInput('showThisMonthButton', true);
-      fixture.componentRef.setInput('thisMonthLabel', 'Текущий месяц');
+      fixture.componentRef.setInput('thisMonthLabel', 'This month');
       toggle().click();
       fixture.detectChanges();
 
-      expect(panel()!.querySelector('.gog-calendar__today')?.textContent?.trim()).toBe('Сегодня');
+      expect(panel()!.querySelector('.gog-calendar__today')?.textContent?.trim()).toBe('Today');
       expect(panel()!.querySelector('.gog-calendar__action--this-month')?.textContent?.trim()).toBe(
-        'Текущий месяц',
+        'This month',
       );
     });
   });
@@ -330,11 +330,11 @@ describe('DatepickerComponent', () => {
   });
 
   it('should show a manual error message', () => {
-    fixture.componentRef.setInput('errorMessage', 'Обязательное поле');
+    fixture.componentRef.setInput('errorMessage', 'Required field');
     fixture.detectChanges();
 
     const error = host().querySelector('.gog-datepicker__error');
-    expect(error?.textContent?.trim()).toBe('Обязательное поле');
+    expect(error?.textContent?.trim()).toBe('Required field');
     expect(field().getAttribute('aria-describedby')).toBe(error?.id);
     expect(field().getAttribute('aria-invalid')).toBe('true');
   });
@@ -364,7 +364,7 @@ describe('DatepickerComponent — GOG_CONFIG', () => {
 
 @Component({
   imports: [DatepickerComponent, ReactiveFormsModule],
-  template: `<gog-datepicker [formControl]="control" label="Дата" locale="en-US" />`,
+  template: `<gog-datepicker [formControl]="control" label="Date" locale="en-US" />`,
 })
 class ReactiveHost {
   readonly control = new FormControl<Date | null>(new Date(2026, 1, 3));

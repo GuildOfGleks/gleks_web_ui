@@ -1,6 +1,6 @@
 .lab-layout {
   display: grid;
-  grid-template-columns: 180px 1fr 180px; /* Сайдбар слева | Контент | Панель справа */
+  grid-template-columns: 180px 1fr 180px; /* Sidebar | content | table of contents */
   grid-template-rows: 60px 1fr;
   grid-template-areas:
     'header  header  header'
@@ -11,7 +11,7 @@
   color: var(--gog-text-color);
 }
 
-/* 1. Хедер */
+/* 1. Header */
 .lab-header {
   grid-area: header;
   z-index: 200;
@@ -101,7 +101,7 @@
   }
 }
 
-/* 2. Левый сайдбар (Список компонентов) */
+/* 2. Left sidebar (component list) */
 .lab-sidebar-left {
   grid-area: sidebar;
   display: flex;
@@ -122,12 +122,12 @@
   }
 }
 
-/* 3. Центральная область (Контент + Футер) */
+/* 3. Centre column (content + footer) */
 .lab-main-content {
   grid-area: main;
   display: flex;
   flex-direction: column;
-  min-width: 0; /* предотвращает расползание flex-элементов */
+  min-width: 0; /* keeps flex children from blowing the column out */
   min-height: 0;
 
   .lab-main-scroll {
@@ -144,7 +144,7 @@
   }
 }
 
-/* 4. Правый сайдбар (Оглавление) */
+/* 4. Right sidebar (table of contents) */
 .lab-sidebar-right {
   grid-area: right;
   display: flex;
@@ -160,7 +160,7 @@
   }
 }
 
-/* 5. Футер */
+/* 5. Footer */
 .lab-footer {
   padding: 24px 48px;
   border-top: 1px solid var(--gog-border-color);
@@ -183,7 +183,7 @@
   }
 }
 
-/* 6. Кнопка меню — только на узких экранах, где сайдбар превращается в выдвижную панель */
+/* 6. Menu button — only on narrow screens, where the sidebar becomes a drawer */
 .nav-toggle {
   display: none;
   align-items: center;
@@ -213,16 +213,16 @@
   display: none;
 }
 
-/* ── Адаптив ────────────────────────────────────────────────────────────────
+/* ── Responsive ────────────────────────────────────────────────────────────────
  *
- * Три ступени, а не две:
+ * Three breakpoints, not two:
  *
- *   ≤1100px  прячем оглавление справа — оно дублирует заголовки самой страницы;
- *   ≤900px   сайдбар становится выдвижным, контент занимает всю ширину;
- *   ≤560px   ужимаем шапку и подвал под телефон.
+ *   ≤1100px  hide the right-hand contents — it duplicates the page's own headings;
+ *   ≤900px   the sidebar becomes a drawer and content takes the full width;
+ *   ≤560px   shrink the header and footer for phones.
  *
- * Раньше на ≤768px сайдбар просто скрывался, и по документации нельзя было ходить вообще:
- * ни списка компонентов, ни ссылок — только та страница, на которую человек попал.
+ * It used to simply hide the sidebar at ≤768px, which left the docs unnavigable:
+ * no component list, no links — only the page you happened to land on.
  */
 @media (max-width: 1100px) {
   .lab-layout {
@@ -248,8 +248,8 @@
     display: inline-flex;
   }
 
-  /* Вне потока: панель выезжает поверх контента, а не раздвигает его. `100dvh` минус шапка —
-     на мобильных браузерах динамическая единица учитывает сворачивающуюся адресную строку. */
+  /* Out of flow: the drawer slides over the content rather than pushing it. `100dvh` minus the
+     header — on mobile the dynamic unit accounts for the collapsing address bar. */
   .lab-sidebar-left {
     position: fixed;
     top: 60px;
@@ -301,8 +301,8 @@
       min-width: 0;
     }
 
-    /* Название целиком не влезает рядом с бейджем версии и кнопкой меню — остаётся логотип,
-       который и так ведёт на главную страницу сайта. */
+    /* The full name does not fit beside the version badge and the menu button — the logo stays,
+       and it already links to the site's home page. */
     .logo-title {
       display: none;
     }

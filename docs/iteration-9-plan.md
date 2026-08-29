@@ -164,7 +164,7 @@ signals. Done together so the token block, README table and showcase page all la
 ```html
 <gog-divider />
 <gog-divider orientation="vertical" />
-<gog-divider>ИЛИ</gog-divider>
+<gog-divider>OR</gog-divider>
 ```
 
 - `orientation` (`GogOrientation`, `'horizontal'`), `variant` (`'solid' | 'dashed' | 'dotted'`),
@@ -178,7 +178,7 @@ signals. Done together so the token block, README table and showcase page all la
 ### `gogBadge` (directive)
 
 ```html
-<gog-button gogBadge="12" badgePosition="top-end">Входящие</gog-button>
+<gog-button gogBadge="12" badgePosition="top-end">Inbox</gog-button>
 <gog-icon name="info" gogBadge badgeDot />
 ```
 
@@ -193,7 +193,7 @@ signals. Done together so the token block, README table and showcase page all la
   "0" is the most common bug in this component class.
 - Accessibility: the badge text is not announced by default — it renders `aria-hidden` and
   the directive appends a visually-hidden `aria-label` fragment describing it, so a button
-  reads as "Входящие, 12 непрочитанных" rather than "Входящие12". Wording via
+  reads as "Inbox, 12 unread" rather than "Inbox12". Wording via
   `badgeAriaLabel`.
 - Tokens: `--gog-badge-{bg,color,size,dot-size,font-size,font-weight,radius,offset,border-*}`.
 
@@ -222,7 +222,7 @@ signals. Done together so the token block, README table and showcase page all la
 The user's framing: a checkbox, but unmistakably an on/off switch.
 
 ```html
-<gog-toggle label="Уведомления" [(checked)]="on" />
+<gog-toggle label="Notifications" [(checked)]="on" />
 <gog-toggle formControlName="darkMode" labelPosition="start" />
 ```
 
@@ -289,11 +289,11 @@ The user's definition: a row of buttons where one (or several) can be picked.
 
 ```html
 <gog-tabs [(activeIndex)]="index" align="start">
-  <gog-tab label="Профиль">
+  <gog-tab label="Profile">
     <app-profile />
   </gog-tab>
 
-  <gog-tab label="Настройки" iconName="info" [disabled]="!canEdit">
+  <gog-tab label="Settings" iconName="info" [disabled]="!canEdit">
     <ng-template gogTabContent>
       <!-- built only when this tab is first shown -->
       <app-settings />
@@ -381,7 +381,7 @@ with `filterLocal=false` works against a fake delayed source.
 The largest by a wide margin; its own iteration for that reason.
 
 ```html
-<gog-datepicker [(value)]="date" label="Дата рождения" [max]="today" />
+<gog-datepicker [(value)]="date" label="Date of birth" [max]="today" />
 
 <gog-datepicker selectionMode="range" [(value)]="range" />
 

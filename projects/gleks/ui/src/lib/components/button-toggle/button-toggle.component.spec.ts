@@ -11,10 +11,10 @@ interface View {
 }
 
 const VIEWS: View[] = [
-  { id: 'list', name: 'Список' },
-  { id: 'grid', name: 'Плитка' },
-  { id: 'map', name: 'Карта', disabled: true },
-  { id: 'chart', name: 'График' },
+  { id: 'list', name: 'List' },
+  { id: 'grid', name: 'Grid' },
+  { id: 'map', name: 'Map', disabled: true },
+  { id: 'chart', name: 'Chart' },
 ];
 
 type DefaultGroup = ButtonToggleGroupComponent<View, string>;
@@ -49,7 +49,7 @@ describe('ButtonToggleGroupComponent', () => {
 
   it('should render one button per option', () => {
     expect(buttons().length).toBe(4);
-    expect(buttons()[0].textContent?.trim()).toBe('Список');
+    expect(buttons()[0].textContent?.trim()).toBe('List');
   });
 
   it('should be a radiogroup in single mode', () => {
@@ -143,7 +143,7 @@ describe('ButtonToggleGroupComponent', () => {
     fixture.componentRef.setInput('optionLabel', (view: View) => view.name.toUpperCase());
     fixture.detectChanges();
 
-    expect(buttons()[0].textContent?.trim()).toBe('СПИСОК');
+    expect(buttons()[0].textContent?.trim()).toBe('LIST');
   });
 
   describe('roving tabindex', () => {
@@ -240,7 +240,7 @@ describe('ButtonToggleGroupComponent', () => {
 @Component({
   imports: [ButtonToggleGroupComponent, ReactiveFormsModule],
   template: `
-    <gog-button-toggle-group [formControl]="control" [options]="views()" ariaLabel="Вид" />
+    <gog-button-toggle-group [formControl]="control" [options]="views()" ariaLabel="View" />
   `,
 })
 class ReactiveHost {

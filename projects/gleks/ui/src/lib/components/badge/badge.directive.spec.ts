@@ -15,7 +15,7 @@ import { GogBadgeDirective } from './badge.directive';
       [badgeHidden]="hidden()"
       [badgeAriaLabel]="ariaLabel()"
     >
-      Входящие
+      Inbox
     </button>
   `,
 })
@@ -130,18 +130,18 @@ describe('GogBadgeDirective', () => {
   });
 
   it('should replace the number with the aria label when one is given', () => {
-    host.ariaLabel.set('12 непрочитанных');
+    host.ariaLabel.set('12 unread');
     fixture.detectChanges();
 
     expect(badge()?.getAttribute('aria-hidden')).toBe('true');
     const description = (fixture.nativeElement as HTMLElement).querySelector(
       '.gog-visually-hidden',
     );
-    expect(description?.textContent).toBe('12 непрочитанных');
+    expect(description?.textContent).toBe('12 unread');
   });
 
   it('should drop the hidden description again when the aria label is cleared', () => {
-    host.ariaLabel.set('12 непрочитанных');
+    host.ariaLabel.set('12 unread');
     fixture.detectChanges();
     host.ariaLabel.set('');
     fixture.detectChanges();

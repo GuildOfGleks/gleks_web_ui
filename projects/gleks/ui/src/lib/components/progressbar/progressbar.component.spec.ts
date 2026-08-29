@@ -128,9 +128,9 @@ describe('ProgressbarComponent', () => {
   });
 
   it('should pass the accessible name through', () => {
-    fixture.componentRef.setInput('ariaLabel', 'Загрузка файла');
+    fixture.componentRef.setInput('ariaLabel', 'File upload');
     fixture.detectChanges();
 
-    expect(host().getAttribute('aria-label')).toBe('Загрузка файла');
+    expect(host().getAttribute('aria-label')).toBe('File upload');
   });
 });

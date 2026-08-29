@@ -5,7 +5,7 @@
  *   --gog-divider-<name>                      the actual values, all in styles/theme.css.
  *
  * The label collapses itself when nothing was projected (`:empty`), which is what lets one
- * template serve both `<gog-divider />` and `<gog-divider>ИЛИ</gog-divider>`: with the label
+ * template serve both `<gog-divider />` and `<gog-divider>OR</gog-divider>`: with the label
  * gone the two rule halves sit flush and read as one continuous line. The spacing around a
  * label is therefore the label's own padding, never a flex `gap` — a gap would survive the
  * label's removal and leave a notch in the middle of a plain divider.

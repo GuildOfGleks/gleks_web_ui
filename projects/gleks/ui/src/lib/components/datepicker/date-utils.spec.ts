@@ -304,7 +304,7 @@ describe('weekdayNames / monthNames', () => {
   });
 
   it('localises', () => {
-    expect(monthNames('ru-RU')[0].toLowerCase()).toContain('январ');
+    expect(monthNames('de-DE')[0].toLowerCase()).toContain('januar');
   });
 });
 

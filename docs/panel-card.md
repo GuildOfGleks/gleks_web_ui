@@ -17,8 +17,8 @@ Written 2026-08-20, after 21.5.0 closed. Built 2026-08-23.
 
 ## The question this plan exists to answer
 
-> "Принимает стили библиотеки, но имеет какие-то свои встроенные вещи — правда, не могу придумать
-> какие, кроме темизации."
+> "It takes the library's styles but has some built-in things of its own — though I cannot think
+> what, apart from theming." (translated)
 
 That doubt is the right instinct, and it decides the whole design: **a surface that only paints a
 background is a class, not a component.** The proof is in this repo. `ui-showcase` hand-rolls
@@ -88,12 +88,12 @@ any code is written.
 
 ## Iterations
 
-| #   | Iteration                                 | Kind    | State                           |
-| --- | ----------------------------------------- | ------- | ------------------------------- |
-| 1   | Decide one-or-two, and write the API down | api     | ✅ done — two, see below        |
-| 2   | `gog-card`                                | feature | ✅ done (21.6.1)                |
-| 3   | `gog-panel`                               | feature | ✅ done (21.6.1)                |
-| 4   | The showcase's own `.card` goes away      | fix     | ✅ done — 2026-08-26, all 40    |
+| #   | Iteration                                 | Kind    | State                        |
+| --- | ----------------------------------------- | ------- | ---------------------------- |
+| 1   | Decide one-or-two, and write the API down | api     | ✅ done — two, see below     |
+| 2   | `gog-card`                                | feature | ✅ done (21.6.1)             |
+| 3   | `gog-panel`                               | feature | ✅ done (21.6.1)             |
+| 4   | The showcase's own `.card` goes away      | fix     | ✅ done — 2026-08-26, all 40 |
 
 ### Iteration 1, as resolved
 

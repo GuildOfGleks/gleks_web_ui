@@ -46,7 +46,7 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-# Секреты
+# Secrets
 *.pem
 *.key
 .env
@@ -56,9 +56,9 @@ secret.json
 node_modules/
 /.angular
 
-# Логи
+# Logs
 npm-debug.log*
 yarn-error.log*
 
 # Docker
-.dockerignore (его пушить можно, но проверь, что в нём)
+.dockerignore (safe to commit, but check what is in it first)

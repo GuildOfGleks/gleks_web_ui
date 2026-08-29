@@ -203,21 +203,22 @@ Full model is in `README.md`'s Theming section; short version:
   `@guildofgleks/ui/styles/presets/<name>.css`. **All nine set palette and character** (since
   21.7.0 — before it, three were palette-only, which made them recoloured defaults):
 
-  | Preset                  | Radius | Density | Identity                                      |
-  | ----------------------- | ------ | ------- | --------------------------------------------- |
-  | `slate`                 | 12px   | 1.05    | soft modern — hairline borders, roomy          |
-  | `one-dark`/`one-light`  | 4px    | 0.9     | editor chrome; identical character, two tones  |
-  | `material`              | 4px    | 1.1     | Material Design 3, pill buttons                |
-  | `primeng`               | 6px    | 0.95    | PrimeNG Aura                                   |
-  | `ledger`                | 0      | 0.9     | administrative — hard offset shadow, no motion |
-  | `terminal`              | 0      | 0.85    | green phosphor, monospaced throughout, no motion |
-  | `bevel`                 | 0      | 0.9     | early-web desktop — `outset`/`inset` borders   |
-  | `parchment`             | 0      | 1.1     | ink on paper — old-style serif, oxblood        |
+  | Preset                 | Radius | Density | Identity                                         |
+  | ---------------------- | ------ | ------- | ------------------------------------------------ |
+  | `slate`                | 12px   | 1.05    | soft modern — hairline borders, roomy            |
+  | `one-dark`/`one-light` | 4px    | 0.9     | editor chrome; identical character, two tones    |
+  | `material`             | 4px    | 1.1     | Material Design 3, pill buttons                  |
+  | `primeng`              | 6px    | 0.95    | PrimeNG Aura                                     |
+  | `ledger`               | 0      | 0.9     | administrative — hard offset shadow, no motion   |
+  | `terminal`             | 0      | 0.85    | green phosphor, monospaced throughout, no motion |
+  | `bevel`                | 0      | 0.9     | early-web desktop — `outset`/`inset` borders     |
+  | `parchment`            | 0      | 1.1     | ink on paper — old-style serif, oxblood          |
 
   `material`, `primeng` and `bevel` also set a few genuinely per-component things the character
   layer has no vocabulary for (a pill button, a table's header font, a button bevel that has to
   disagree with a field's); see their own file headers.
-- **A preset never makes a network request.** Each sets a font *stack* resolving to a real system
+
+- **A preset never makes a network request.** Each sets a font _stack_ resolving to a real system
   face. Where a webfont is worth offering, it is a separate opt-in file — `terminal.fonts.css`
   (IBM Plex Mono), `parchment.fonts.css` (EB Garamond) — imported **after** the preset, since it
   re-points the same tokens and later wins. Do not add an `@import url(…)` to a preset itself; put
@@ -289,40 +290,39 @@ in English sets these once rather than on every control:
 ```ts
 provideGogConfig({
   labels: {
-    clear: 'Очистить', // inputfield / textarea clear button
-    clearSelection: 'Очистить выбор', // select / multiselect / autocomplete
-    clearDate: 'Очистить дату', // datepicker
-    selectAll: 'Выбрать все', // multiselect panel
-    clearAll: 'Очистить', // multiselect panel
-    increment: 'Увеличить', // number spin buttons
-    decrement: 'Уменьшить',
-    showPassword: 'Показать пароль',
-    hidePassword: 'Скрыть пароль',
-    closeDialog: 'Закрыть',
-    closeToast: 'Закрыть',
-    pagination: 'Навигация по страницам',
-    previousPage: 'Предыдущая страница',
-    nextPage: 'Следующая страница',
-    openCalendar: 'Открыть календарь',
-    togglePanel: 'Свернуть раздел', // gog-panel's toggle, only when it has no heading
-    rowsPerPage: 'Строк на странице', // gog-paginator's size select
-    total: 'Всего', // gog-table's row-count label
-    tablePagination: 'Навигация по таблице',
-    selectRow: 'Выбрать строку',
-    selectAllRows: 'Выбрать все строки на странице',
-    today: 'Сегодня',
-    thisMonth: 'Текущий месяц',
-    previousMonth: 'Предыдущий месяц',
-    nextMonth: 'Следующий месяц',
-    previousYear: 'Предыдущий год',
-    nextYear: 'Следующий год',
-    hours: 'Часы',
-    minutes: 'Минуты',
-    seconds: 'Секунды',
+    clear: 'Löschen', // inputfield / textarea clear button
+    clearSelection: 'Auswahl löschen', // select / multiselect / autocomplete
+    clearDate: 'Datum löschen', // datepicker
+    selectAll: 'Alle auswählen', // multiselect panel
+    clearAll: 'Alle löschen', // multiselect panel
+    increment: 'Erhöhen', // number spin buttons
+    decrement: 'Verringern',
+    showPassword: 'Passwort anzeigen',
+    hidePassword: 'Passwort verbergen',
+    closeDialog: 'Schließen',
+    closeToast: 'Schließen',
+    pagination: 'Seitennavigation',
+    previousPage: 'Vorherige Seite',
+    nextPage: 'Nächste Seite',
+    openCalendar: 'Kalender öffnen',
+    togglePanel: 'Bereich umschalten', // gog-panel's toggle, only when it has no heading
+    rowsPerPage: 'Zeilen pro Seite', // gog-paginator's size select
+    total: 'Gesamt', // gog-table's row-count label
+    tablePagination: 'Tabellennavigation',
+    selectRow: 'Zeile auswählen',
+    selectAllRows: 'Alle Zeilen auswählen',
+    today: 'Heute',
+    thisMonth: 'Aktueller Monat',
+    previousMonth: 'Vorheriger Monat',
+    nextMonth: 'Nächster Monat',
+    previousYear: 'Vorheriges Jahr',
+    nextYear: 'Nächstes Jahr',
+    hours: 'Stunden',
+    minutes: 'Minuten',
+    seconds: 'Sekunden',
     // The one non-string field: it interpolates the page number, and word order and
     // agreement around a number vary by language, so it takes a formatter.
-    page: (page, isCurrent) =>
-      isCurrent ? `Страница ${page}, текущая` : `Перейти на страницу ${page}`,
+    page: (page, isCurrent) => (isCurrent ? `Seite ${page}, aktuell` : `Zu Seite ${page} wechseln`),
   },
 });
 ```
@@ -1709,10 +1709,10 @@ component's own name, are gone — each was honoured only as a fallback the spel
 (`--gog-button-x: var(--gog-btn-x, value)`), never declared on its own.
 
 | Removed           | Replacement                   |
-| ------------------ | ------------------------------ |
-| `--gog-btn-*`     | `--gog-button-*`               |
-| `--gog-ms-*`      | `--gog-multiselect-*`          |
-| `--gog-confirm-*` | `--gog-confirmation-dialog-*`  |
+| ----------------- | ----------------------------- |
+| `--gog-btn-*`     | `--gog-button-*`              |
+| `--gog-ms-*`      | `--gog-multiselect-*`         |
+| `--gog-confirm-*` | `--gog-confirmation-dialog-*` |
 
 A consumer's CSS that still sets one of the left-hand names doesn't fail their build — an
 unresolved `var()` just stops matching anything, silently. If a themed surface stopped picking up

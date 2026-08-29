@@ -15,7 +15,7 @@ function clamp(value: number): number {
  *
  * ```html
  * <gog-progressbar [value]="42" />
- * <gog-progressbar mode="indeterminate" ariaLabel="Загрузка" />
+ * <gog-progressbar mode="indeterminate" ariaLabel="Loading" />
  * <gog-progressbar mode="buffer" [value]="42" [buffer]="70" />
  * ```
  *
