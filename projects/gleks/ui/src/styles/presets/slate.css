@@ -49,12 +49,14 @@
   /* Type */
   --gog-text-color: #1e293b;
   --gog-accent-text-color: #ffffff;
-  --gog-muted-text-color: #64748b;
+  /* #64748b missed AA by 0.11 against the page ground; deepened one step. */
+  --gog-muted-text-color: #5c6b80;
 
   /* Brand — indigo instead of gold, to make the swap unmistakable */
   --gog-primary-color: #1e293b;
   --gog-accent-color: #4f46e5;
-  --gog-accent-bright: #6366f1;
+  /* Hover fill: white on #6366f1 was 4.47:1, short of AA by 0.03. */
+  --gog-accent-bright: #5b5ee8;
   --gog-accent-dim: #4338ca;
   --gog-accent-pale: #e0e7ff;
   --gog-secondary-color: #0ea5e9;

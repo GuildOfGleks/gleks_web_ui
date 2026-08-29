@@ -35,12 +35,16 @@
   /* Type */
   --gog-text-color: #383a42;
   --gog-accent-text-color: #ffffff;
-  --gog-muted-text-color: #a0a1a7;
+  /* Darkened from One Light's own #a0a1a7 (2.47:1) for the same reason as one-dark's. */
+  --gog-muted-text-color: #6e6f77;
 
   /* Brand — One Light's blue */
   --gog-primary-color: #383a42;
-  --gog-accent-color: #4078f2;
-  --gog-accent-bright: #5b8dff;
+  /* Deepened from #4078f2 / #5b8dff in 21.7.0: white on the original was 4.05:1 at rest and
+     3.13:1 on hover. As in `light`, the hover is now darker than the rest state rather than
+     lighter — a blue light enough to read as a highlight cannot carry white text. */
+  --gog-accent-color: #2f66db;
+  --gog-accent-bright: #2456c4;
   --gog-accent-dim: #2f5fd0;
   --gog-accent-pale: #dce7fd;
   --gog-secondary-color: #a626a4;

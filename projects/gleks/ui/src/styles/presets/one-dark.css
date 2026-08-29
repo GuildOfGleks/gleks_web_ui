@@ -41,7 +41,10 @@
   /* Type */
   --gog-text-color: #abb2bf;
   --gog-accent-text-color: #282c34;
-  --gog-muted-text-color: #5c6370;
+  /* Lightened from One Dark's own #5c6370 in 21.7.0. That is the editor's comment colour, and
+     it reads at 2.32:1 on this background — fine for code a reader skims, well under AA for UI
+     text a reader has to act on. Fidelity loses to legibility on this one token. */
+  --gog-muted-text-color: #9099a8;
 
   /* Brand — One Dark's blue */
   --gog-primary-color: #abb2bf;

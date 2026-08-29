@@ -40,31 +40,35 @@
  * do. Printed anyway, informationally, so the number stays visible rather than silently dropped
  * from the audit the plan asked for; it does not fail the check.
  *
- * ## What this found (2026-08-29) — recorded, not silently fixed
+ * ## Wired into CI on 2026-08-29, once every finding was resolved
  *
- * Real AA failures across the shipped themes. `mutedText`/`background` and `mutedText`/`surface`
- * fail in `slate` (barely, 4.39:1), `one-dark` (2.32–2.55:1) and `one-light` (2.47–2.58:1);
- * `accentText` fails against the button fill in `one-light` (4.05:1 at rest, 3.13:1 on hover) and
- * on hover only in `slate` (4.47:1). `one-dark`/`one-light` deliberately reproduce a real,
- * recognisable third-party editor palette — see their own file comments — so fixing those is a
- * design decision about that fidelity promise, not a script's call to make.
+ * `.github/workflows/ci.yml` runs this after the other token checks. It was deliberately kept
+ * out until the last real failure was fixed: a step that is permanently red over a known,
+ * tracked, undecided condition teaches everyone to ignore CI, which is worse than not checking.
+ * All 11 shipped themes now pass all 132 pairs. **A new preset that does not is what this is
+ * here to stop** — and a preset is one file, so the failure names the file to fix.
  *
- * **`light` and `primeng` were fixed on 2026-08-29** and no longer appear: the library's own gold
- * went `#9e6f00` → `#926600` (and its hover from brighter to darker, since gold light enough to
- * read as a gleam cannot carry white text), and `primeng` moved one step down Aura's own blue
- * ramp, `#3b82f6` → `#2563eb`, rather than inventing a colour outside the palette it reproduces.
+ * ## What this found (2026-08-29) — every finding now fixed
  *
- * **The hover pair (`accentText`/`accentBright`) was added the same day, and it is why the
- * failure count did not drop.** `--gog-accent-bright` is `--gog-button-primary-hover-bg`, and in
- * most themes it is *lighter* than the accent — so white on it is strictly worse than the rest
- * state this script was measuring. It found four failures, one of them in `slate`, which had
- * passed every pair the script previously had. A rest state that clears AA says nothing about
- * the hover.
- * Filed in `docs/backlog.md`. **Not yet wired into CI**: doing so with real, un-fixed findings
- * already in the shipped defaults would turn CI permanently red over a known, tracked condition
- * nobody has decided how to resolve, which trains everyone to ignore it — worse than not checking
- * at all. Wire the `check:contrast` step into `.github/workflows/ci.yml` once these are resolved
- * (or explicitly accepted and this comment is updated to say why); until then run it by hand.
+ * Nine gated failures were found when this script was first run, across five themes, and all
+ * nine are now fixed. What each one cost is worth keeping, because the pattern repeats:
+ *
+ *   - `light`      accent #9e6f00 -> #926600, hover #c88e00 -> #7a5500
+ *   - `primeng`    one step down Aura's own ramp, #3b82f6 -> #2563eb
+ *   - `slate`      muted #64748b -> #5c6b80, hover #6366f1 -> #5b5ee8 (both missed by <0.15)
+ *   - `one-dark`   muted #5c6370 -> #9099a8
+ *   - `one-light`  muted #a0a1a7 -> #6e6f77, accent #4078f2 -> #2f66db, hover -> #2456c4
+ *
+ * **`one-dark`/`one-light` deliberately reproduce a real editor palette, and this changed it.**
+ * `#5c6370` is One Dark's own comment colour: correct for code a reader skims past, 2.32:1
+ * against its own background, and well under AA for UI text a reader has to act on. Fidelity
+ * lost to legibility on those tokens, by an explicit decision, and the file comments say so.
+ *
+ * **Three of the nine were on the hover fill, a pair this script did not have until the same
+ * day.** `--gog-accent-bright` is `--gog-button-primary-hover-bg`, so it is the same label on
+ * the same button one hover later — and in most themes it is *lighter* than the accent, so
+ * white on it is strictly worse than the rest state that was being measured. It caught a
+ * failure in `slate`, which passed every pair the script previously had.
  *
  * Usage: node scripts/check-contrast.mjs
  */
