@@ -199,6 +199,19 @@ preset is the worked example, palette-only:
 @import '@guildofgleks/ui/styles/presets/slate.css';
 ```
 
+Six presets ship alongside the built-in `light` and `dark`, each at
+`styles/presets/<name>.css` and activated by `data-theme="<name>"`:
+
+| Preset                             | What it declares                                                             |
+| ---------------------------------- | ---------------------------------------------------------------------------- |
+| `slate`, `one-dark`, `one-light`   | palette only — the case above                                                |
+| `ledger`                           | palette **plus character** — radius, border width, casing, tracking, motion  |
+| `material`, `primeng`              | palette plus character, plus a few genuinely per-component settings          |
+
+The character layer (since 21.7.0) is what lets a preset change the library's *shape* — square
+corners, thin borders, sentence-case labels — without listing component tokens. `AGENTS.md` has
+the per-preset detail.
+
 Fonts are left alone on purpose (system stacks, no webfont download). Add
 `@guildofgleks/ui/styles/fonts.css` for the showcase's typography.
 
