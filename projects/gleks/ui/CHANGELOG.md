@@ -8,6 +8,19 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A toast now still shows how long it has left when animations are off.** The progress bar was
+  switched off along with everything else under `prefers-reduced-motion`, so the toast vanished
+  with no warning — the animation was carrying the information. It now runs in `steps(20, end)`:
+  the bar still reports the time remaining, in twenty discrete jumps rather than a slide. Nothing
+  appears to move, and nothing counts down in silence.
+
+- **`gog-textarea`'s scrollbar matches `gog-scroll`.** It cannot _be_ `gog-scroll` — that
+  component hides a container's native chrome and draws an overlay thumb over it, and a
+  `<textarea>` scrolls its own text, so the overlay would sit on the editing surface and either
+  swallow clicks or drift from the content. The real scrollbar is styled from the same
+  `--gog-scroll-*` tokens instead, via `scrollbar-width`/`scrollbar-color` in Firefox and
+  `::-webkit-scrollbar` in Blink and WebKit. Restyle `gog-scroll` in a theme and this follows.
+
 - **`gog-accordion`'s loading skeleton is visible again.** Its placeholders are mixed against
   `--gog-surface-color`, which is what a skeleton normally lies on — but the header strip now
   paints `--gog-accordion-header-bg`, putting a `#261e16` placeholder on a `#241d17` strip on the

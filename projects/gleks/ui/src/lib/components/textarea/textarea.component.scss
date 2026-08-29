@@ -66,6 +66,49 @@
   &::-webkit-resizer {
     background: transparent;
   }
+
+  /*
+   * The scrollbar is styled to match `gog-scroll` rather than replaced by it.
+   *
+   * `gog-scroll` works by hiding a container's native chrome and drawing an overlay thumb over
+   * it. A `<textarea>` scrolls its own text, not a child element, so there is nothing to wrap:
+   * the overlay would have to sit on top of the editing surface and would either swallow clicks
+   * meant for the text or drift away from the content it claims to track. Reported in the 21.6.1
+   * pass as "the textarea shows the native scrollbar, not gog-scroll" — which is true, and this
+   * is as close as the two can honestly get.
+   *
+   * So the same tokens, applied to the real scrollbar: Firefox through `scrollbar-*`, Blink and
+   * WebKit through `::-webkit-scrollbar`. A theme that restyles `gog-scroll` restyles this too.
+   */
+  scrollbar-width: thin;
+  scrollbar-color: var(--gog-scroll-thumb-bg) var(--gog-scroll-track-bg);
+
+  &::-webkit-scrollbar {
+    width: var(--gog-scroll-thin-track-width);
+    height: var(--gog-scroll-thin-track-width);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--gog-scroll-track-bg);
+    border-radius: var(--gog-scroll-track-radius);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--gog-scroll-thumb-bg);
+    border-radius: var(--gog-scroll-thumb-radius);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--gog-scroll-thumb-hover-bg);
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background: var(--gog-scroll-thumb-active-bg);
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: var(--gog-scroll-track-bg);
+  }
 }
 
 .gog-textarea__field--resize-vertical {

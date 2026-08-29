@@ -187,9 +187,26 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gog-toast,
-  .gog-toast__progress {
+  .gog-toast {
     transition: none;
     animation: none;
+  }
+
+  /*
+   * The progress bar keeps running — in steps.
+   *
+   * It used to be switched off with everything else, which left a toast that vanishes with no
+   * warning: the one thing telling a reader how long they have to finish reading was the bar's
+   * movement, and reduced motion removed the information along with the animation. Reported in
+   * the 21.6.1 pass as "with animations off it is unclear when the toast will disappear".
+   *
+   * `steps()` is the distinction made concrete. The bar still reports the time left, but it
+   * jumps in twenty discrete increments instead of sliding continuously — no smooth motion for
+   * a reader who asked for none, and no silent countdown either. Twenty is enough to read as a
+   * gauge and coarse enough that nothing appears to move.
+   */
+  .gog-toast__progress {
+    transition: none;
+    animation-timing-function: steps(20, end);
   }
 }
