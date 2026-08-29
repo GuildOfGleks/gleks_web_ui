@@ -278,6 +278,16 @@
 .gog-accordion__header--skeleton {
   cursor: default;
   pointer-events: none;
+
+  /*
+   * `--gog-skeleton-base` is mixed against `--gog-surface-color`, because that is what a skeleton
+   * normally lies on. This header does not: since 21.7.1 it paints `--gog-accordion-header-bg`,
+   * and on the dark theme that put a #261e16 placeholder on a #241d17 strip — a contrast of 1.02,
+   * so both the title and the chevron placeholder were invisible while still being 18px tall and
+   * present in the DOM. Re-based on the border colour, which is the one palette tone guaranteed
+   * to sit above whatever the header strip is.
+   */
+  --gog-skeleton-base: var(--gog-border-color);
 }
 
 @media (prefers-reduced-motion: reduce) {

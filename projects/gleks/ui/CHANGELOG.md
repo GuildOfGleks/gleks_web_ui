@@ -8,6 +8,13 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-accordion`'s loading skeleton is visible again.** Its placeholders are mixed against
+  `--gog-surface-color`, which is what a skeleton normally lies on — but the header strip now
+  paints `--gog-accordion-header-bg`, putting a `#261e16` placeholder on a `#241d17` strip on the
+  dark theme. Contrast 1.02: the title and chevron placeholders were both invisible while still
+  occupying their full 18px in the DOM. The skeleton inside that header is now based on
+  `--gog-border-color` instead, the one palette tone guaranteed to sit above the strip.
+
 - **Three surfaces that had no visual separation now have one.** All three were reported from a
   dark theme, where a shadow has nothing to darken:
 
