@@ -26,6 +26,28 @@ in the docs that ship inside the package (`README.md`, `AGENTS.md`, `TOKENS.md`,
 
 ---
 
+## A0. Held, by the user's own decision (2026-08-29)
+
+**The release waits for a theme catalogue worth shipping.** The user's instruction: *"before
+publishing a new version I must see a beautiful set of themes for end users"*, and themes must
+differ in spacing, rounding and type — not only colour. That is a product gate, not a technical
+one; nothing below has become untrue, it simply does not start yet.
+
+Landed against that gate so far, all committed:
+
+| Work                                                     | State |
+| -------------------------------------------------------- | ----- |
+| `--gog-density` + the 14-step spacing scale (`themes.md` iter. 6) | ✅ |
+| The three palette-only presets get a character (iter. 4, 2nd pass) | ✅ |
+| The three showcase-only themes deleted (`cyberpunk`/`warcraft`/`red-alert-3`) | ✅ |
+
+**Still open before the gate lifts:** new themes beyond the six (the plan's Retro and Historical
+families), and the opt-in webfont mechanism they need — `presets/<name>.fonts.css`, decided
+2026-08-29: a preset sets a system stack and never makes a network request; the consumer imports
+the fonts file separately if they want the full look.
+
+---
+
 ## A. Only the user can do this — it is the release
 
 **Bump `projects/gleks/ui/package.json` to `21.7.0` and date the `## [21.7.0] - planned` heading.**

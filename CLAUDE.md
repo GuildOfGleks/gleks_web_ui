@@ -126,7 +126,13 @@ a month, and see `docs/backlog.md` for the fourth, related defect it was found a
 A plan is not a backlog item — it is a decision already taken about how something gets built.
 Update the status table in whichever you are working from, as you go.
 
-- `docs/release-21.7.0.md` — **the close-out checklist for the release currently in progress.**
+- `docs/release-21.7.0.md` — **the close-out checklist, and the record that the release is
+  held.** As of 2026-08-29 the user has gated publication on a theme catalogue worth shipping:
+  themes must differ in spacing, rounding and type, not only colour. Section A0 tracks that gate.
+  Landed against it: `--gog-density` and the 14-step spacing scale (`themes.md` iteration 6), and
+  a character layer for the three presets that were palette-only (iteration 4, second pass). Open:
+  the Retro and Historical families, and the opt-in webfont mechanism they need
+  (`presets/<name>.fonts.css` — a preset never makes a network request; decided 2026-08-29).
   Not a plan — the plans are the two below it, and their work is done. This answers the narrower
   question of what stands between the current tree and `npm run release` succeeding: one
   user-only step (the version bump), one decision that gates a CI step but blocks nothing (the
