@@ -16,62 +16,28 @@ not worth carrying here.
 
 ## Defects — first
 
-**Two open, found 2026-08-29 by `docs/themes.md` iteration 2's `npm run check:contrast` — real
-WCAG AA failures in shipped theme palettes, deliberately not fixed here.** The plan that produced
-the check is explicit that finding and fixing are separate decisions, and both touch a shipped
-theme's actual colours, which is a visual-identity call rather than a mechanical one.
+**None open.** The section is empty again as of 2026-08-29.
 
-**`light` and `primeng` were fixed on 2026-08-29 and are gone from both entries** (a decision
-taken about those two specifically, not about the class): `light`'s gold went `#9e6f00` →
-`#926600`, and `primeng` moved one step down Aura's own blue ramp, `#3b82f6` → `#2563eb`. What
-remains below is the set that was left alone on purpose — `one-dark`/`one-light` reproduce a
-recognisable third-party editor palette by name, and `slate`'s miss is 0.11 of a ratio point.
+**What was here, and what closing it cost.** Nine WCAG AA failures across five shipped theme
+palettes, found by `docs/themes.md` iteration 2's `npm run check:contrast`. All nine are fixed,
+and `check:contrast` is now a CI step — which is the part worth keeping: the script was
+deliberately kept out of CI while any finding was open, because a permanently red step over a
+known, tracked condition teaches everyone to ignore CI. Wiring it in was the reward for getting
+to zero, not a separate task.
 
-- **Muted text fails 4.5:1 against its own background in three of the eleven shipped themes.**
-  `--gog-muted-text-color` vs `--gog-background-color`/`--gog-surface-color`: `slate` is barely
-  under (4.39:1), `one-dark` (2.32–2.55:1) and `one-light` (2.47–2.58:1) are well under. `light`
-  and `dark` — the library's own defaults — both pass comfortably (6+:1), as do the six other
-  presets. `one-dark`/`one-light`
-  reproduce a real, recognisable third-party editor palette on purpose (see their own file
-  header comments), so darkening/lightening the muted colour is a fidelity trade-off, not a free
-  fix.
-- **Button label text fails 4.5:1 against its own fill, at rest or on hover, in two themes.**
-  `--gog-accent-text-color` vs `--gog-accent-color` (rest) and vs `--gog-accent-bright` (hover,
-  which is `--gog-button-primary-hover-bg`). `one-light` fails both — 4.05:1 at rest, 3.13:1 on
-  hover; `slate` passes at rest (6.29:1) and fails on hover by 0.03 (4.47:1). `one-light`
-  reproduces a real editor palette on purpose, so changing it is a fidelity trade-off.
+The fixes are recorded in `scripts/check-contrast.mjs`'s header and in each preset's own
+comments. One decision inside them is worth restating here, because it traded away something
+real: **`one-dark` and `one-light` reproduce a named third-party editor palette, and this
+changed their colours.** `#5c6370` is One Dark's own comment colour — correct for code a reader
+skims past, 2.32:1 against its own background, and well under AA for UI text a reader has to
+act on. Fidelity lost to legibility, on the user's explicit call.
 
-  **The hover half of this pair was not checked at all until 2026-08-29**, and adding it is what
-  found `slate`'s — a theme that passed every pair the script had. In most themes
-  `--gog-accent-bright` is *lighter* than the accent, so white on it is strictly worse than the
-  rest state that was being measured: the check was testing the easier of the two states and
-  reporting the button as fine. Four themes were failing it; two (`light`, `primeng`) were fixed
-  in the same pass, which is why the count did not move.
-
-`npm run check:contrast` prints the exact ratio for every pair in every shipped theme and is not
-yet wired into CI — see the script's own header for why (wiring a hard gate over an already-known,
-unresolved finding just trains everyone to ignore red CI). Fixing either entry closes it here and
-is what turns that gate back on.
-
-**Four closed 2026-08-28, all the same family** — a `var(--gog-…)` with no fallback
-naming a property nothing declares, which makes the token holding it guaranteed-invalid so the
-declaration reading it computes to nothing, silently, in every consumer. Three were found while
-surveying 21.7.0's token-prefix removal (`gog-multiselect`'s focus glow had never rendered; the
-filter box inside both `gog-select` and `gog-multiselect` had no border and the wrong text colour)
-and fixed the same day as iteration 0 of `docs/token-prefix-removal.md`, which has the full detail
-and the before/after browser verification. The fourth, closed earlier that day, was the one that
-led to finding the other three: `gog-multiselect`'s JS-computed panel height reading token names
-(`--gog-ms-*`) that `theme.css` never declares, silently falling back to `0` for the option gap
-and options padding on every open since the 21.5.0 rename. Fixed in `multiselect.component.ts`,
-its four `GogDropdownBase` token overrides now spell out `--gog-multiselect-*`, matching the
-pattern `select.component.ts` already used correctly. Covered by a regression test in
-`multiselect.component.spec.ts` (forces `dropdownDirection="up"` with a huge available space so
-the rendered `max-height` is a direct readout of which token name was read) and confirmed in a
-real browser against `ui-showcase` — `getComputedStyle` on a live
-`gog-multiselect` showed the new names resolving to `4px`/`4px`/`260px`/`40px` and the old names
-resolving to `''`, exactly as diagnosed.
-
----
+**Three of the nine were on a pair the script did not have** until the same day:
+`accentText`/`accentBright`, the filled button's label against its _hover_ fill. In most themes
+the hover colour is lighter than the accent, so white on it is strictly worse than the rest
+state — the check had been measuring the easier of the two states. It caught a failure in
+`slate`, which passed every pair the script previously had. If a future pair looks like it
+"obviously passes because the related one does", that is the shape of this bug.
 
 ## Gaps — capability the library does not have
 
@@ -110,17 +76,14 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
-- **A token read from JS must stay a bare literal, and nothing enforces it.** Three tokens are
-  parsed at runtime rather than only resolved by CSS: `--gog-scroll-thumb-min-size` (via `readPx`
-  in `scroll.component.ts`), `--gog-dropdown-z` and `--gog-tooltip-z` (via `readNumber`). Each
-  parser is `parseFloat`/`Number` with a fallback, so a token whose computed value becomes a
-  `calc()` expression does not error — **it silently returns the fallback.** 21.7.0's density
-  scale made 178 tokens `calc(<n>px * var(--gog-density))`; none of these three were among them
-  (checked), and the scroll sizes are still literals. But the next person extending the density
-  scale to size tokens would break `gog-scroll`'s thin variant into using the normal variant's
-  32px minimum, with no test failing and nothing in the console. Either teach the parsers to
-  resolve `calc()` (they have the computed pixel value available on a probe element), or add a
-  `check-tokens` rule pinning these three to literals. Found 2026-08-29 while auditing 21.7.0.
+- **The lab's bundle budget has 4 kB of headroom, and that is why it was raised.**
+  `gleks-ui-lab`'s initial bundle is 1003.85 kB against a `maximumError` that had to go from 1MB
+  to 1.1MB (Angular reads 1MB as 1000 kB). Checked before accepting it: the heavy dependencies
+  are already imported narrowly — FontAwesome icon by icon, `highlight.js` language by language
+  — so there is no easy win sitting there, and the size is what an Angular SSR app with `marked`,
+  `highlight.js` and FontAwesome costs. Not a release concern (the lab is not published), but the
+  next thing added to the lab's initial bundle will fail the build, and the fix will have to be a
+  real one: lazy-load the syntax highlighter, or move the docs renderer off the initial route.
 
 - **`theme.css` payload.** Loaded whole even by an app importing three components — **106 521 B /
   20 227 B gzip in 21.6.1** (measured 2026-08-26), up from 99 492 B / 19 070 B at 21.6.0 and from
@@ -171,15 +134,13 @@ both extend `GogDropdownBase`, which already declares `filter`, `filterPosition`
 both templates already wire up `filterQuery()`/`filterPlaceholder()`/`filterEmptyMessage()` in
 full, and `AGENTS.md`'s config table already listed both components under `filter`/`filterPosition`
 — the filing's own closing line ("the gap may be smaller than it looks") turned out to be the whole
-story. Confirmed live: a filter box opened and typed into on the multiselect page in `ui-showcase`.
-3. **Virtual scrolling in `gog-select` and `gog-multiselect`.**
-4. **Virtual scrolling in `gog-table`.**
+story. Confirmed live: a filter box opened and typed into on the multiselect page in `ui-showcase`. 3. **Virtual scrolling in `gog-select` and `gog-multiselect`.** 4. **Virtual scrolling in `gog-table`.**
 
-   3 and 4 are the same primitive twice, and the same one as _Virtualization_ under **Gaps**
-   above — which already says the DOM half of large-list performance "needs a windowing
-   primitive, which is a genuine piece of engineering and its own plan". That is this. Build it
-   once, in `lib/shared`, and adopt it in the dropdowns first (a fixed row height) before the
-   table (variable rows, sticky header, selection column). Do not start it as a table feature.
+3 and 4 are the same primitive twice, and the same one as _Virtualization_ under **Gaps**
+above — which already says the DOM half of large-list performance "needs a windowing
+primitive, which is a genuine piece of engineering and its own plan". That is this. Build it
+once, in `lib/shared`, and adopt it in the dropdowns first (a fixed row height) before the
+table (variable rows, sticky header, selection column). Do not start it as a table feature.
 
 5. **A time zone setting for datepicker and calendar in `GOG_CONFIG`.** Today
    `GOG_CONFIG.datepicker` carries `locale` and `firstDayOfWeek`. Note the library is deliberately

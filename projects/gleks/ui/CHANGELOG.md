@@ -8,9 +8,28 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **Every shipped theme now meets WCAG AA, and the check runs in CI.** Nine gated failures across
+  five palettes were fixed: muted text in `slate`, `one-dark` and `one-light`; the filled button's
+  label, at rest and on hover, in `light`, `primeng`, `one-light` and `slate`. `check:contrast` is
+  now a CI step — it was deliberately kept out while any finding was open, because a permanently
+  red step over a known condition teaches everyone to ignore CI.
+
+  **`one-dark` and `one-light` changed colour, and that is a trade you may notice.** They
+  reproduce a named editor palette; `#5c6370` is One Dark's own comment colour and reads at 2.32:1
+  on its own background — fine for code, well under AA for UI text. Muted text is now `#9099a8`
+  (dark) and `#6e6f77` (light). If you depended on the exact original hues, set
+  `--gog-muted-text-color` back in your own theme block.
+
+- **Tokens read from TypeScript now resolve `calc()` instead of silently falling back.**
+  `--gog-scroll-thumb-min-size`, `--gog-tooltip-gap`, `--gog-tooltip-z` and `--gog-dropdown-z` were
+  read with `parseFloat`, which returns `NaN` for `calc(...)` — and every caller turned that into
+  its default without a word. **This is a consumer-facing fix:** writing
+  `--gog-scroll-thumb-min-size: calc(2rem + 4px)` in your own theme now works, where before it
+  quietly became 32px. `rem`, `em` and `%` work too.
+
 - **Two WCAG AA contrast fixes, both on a filled button's own label.** The library's own `light`
   theme: `--gog-accent-color` `#9e6f00` → `#926600` (white on the old value was 4.44:1, under
-  AA's 4.5), and its hover fill `#c88e00` → `#7a5500` — the hover is now *darker* than the rest
+  AA's 4.5), and its hover fill `#c88e00` → `#7a5500` — the hover is now _darker_ than the rest
   state rather than brighter, because gold light enough to read as "a brighter gleam" cannot
   carry white text at all (the old hover was 2.87:1, worse than the rest state everyone had
   noticed). `primeng`: moved one step down Aura's own blue ramp, `#3b82f6` → `#2563eb`
@@ -25,21 +44,21 @@ reached 1.0, so breaking changes may land in minor versions.
   Historical, the two families `docs/themes.md` had left unbuilt. `terminal` is green phosphor on
   an unlit screen, monospaced throughout, square, no motion. `bevel` is the early-web desktop —
   grey panels, raised buttons, sunken fields, navy — and is the first theme to use
-  `--gog-border-style: outset`/`inset`, which is what the character layer carries a border *style*
+  `--gog-border-style: outset`/`inset`, which is what the character layer carries a border _style_
   for. `parchment` is ink on laid paper: old-style serif, oxblood accent, roomy margins. Each is
   `@import '@guildofgleks/ui/styles/presets/<name>.css'`, then `data-theme="<name>"`. All three
   pass `check:contrast` on every gated pair.
 
 - **Optional webfont files, and the rule they exist to keep: a preset never makes a network
   request.** Each preset sets a font stack that resolves to a real system face. Where a webfont
-  is worth offering, it is a separate file the consumer imports *after* the preset —
+  is worth offering, it is a separate file the consumer imports _after_ the preset —
   `presets/terminal.fonts.css` (IBM Plex Mono) and `presets/parchment.fonts.css` (EB Garamond).
   Import the preset alone and nothing is downloaded.
 
 - **`slate`, `one-dark` and `one-light` now set a character, not just a palette** — so every
   shipped preset does. They were palette-only, which made them recoloured defaults: they wore another product's
   colours on this library's shape. Each now sets the character layer and a density —
-  `slate` becomes the catalogue's *soft modern* entry (12px corners, hairline borders, roomier at
+  `slate` becomes the catalogue's _soft modern_ entry (12px corners, hairline borders, roomier at
   `1.05`), and `one-dark`/`one-light` become editor chrome (4px corners, compact at `0.9`,
   sentence-case labels), deliberately identical to each other so a toggle between them changes
   tone and nothing else. **Palettes are unchanged**; `check:contrast` reports the same eight
@@ -66,7 +85,7 @@ reached 1.0, so breaking changes may land in minor versions.
   `0s`. `@import '@guildofgleks/ui/styles/presets/ledger.css'`, then `data-theme="ledger"`.
   Palette-plus-character-layer only, like `material`/`primeng` below but with no per-component
   overrides needed at all — see `docs/themes.md` iteration 4. Named `ledger`, not the plan's own
-  "Classic" (that names the catalogue *family*, not this preset) — `ui-showcase` already uses
+  "Classic" (that names the catalogue _family_, not this preset) — `ui-showcase` already uses
   "Classic" as the display label for `data-theme="light"`.
 
 - **Two new shipped presets: `material` and `primeng`** — full visual identities (Material
@@ -109,11 +128,11 @@ reached 1.0, so breaking changes may land in minor versions.
   still set, in your own stylesheet — a `var()` reference to a name nothing declares does not fail
   a build, it just silently stops matching anything:
 
-  | Old               | New                            |
-  | ----------------- | ------------------------------ |
-  | `--gog-btn-*`     | `--gog-button-*`               |
-  | `--gog-ms-*`      | `--gog-multiselect-*`          |
-  | `--gog-confirm-*` | `--gog-confirmation-dialog-*`  |
+  | Old               | New                           |
+  | ----------------- | ----------------------------- |
+  | `--gog-btn-*`     | `--gog-button-*`              |
+  | `--gog-ms-*`      | `--gog-multiselect-*`         |
+  | `--gog-confirm-*` | `--gog-confirmation-dialog-*` |
 
   `GogTokenName` (the exported type listing every `--gog-*` custom property) drops the 20 old
   spellings it used to include — a compile error on a variable annotated with one of them is the
