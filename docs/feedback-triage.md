@@ -143,8 +143,9 @@ on `gog-inputfield` **and** on a consumer's own `<input>`, the same argument tha
 
 ## The lab — after 21.7.0 is published
 
-All 11 LAB items plus 3 of the 4 "under question" ones. Added to `docs/lab-after-publish.md`,
-which is where lab work already queues.
+All 11 LAB items, plus Q2. Added to `docs/lab-after-publish.md`, which is where lab work already
+queues. **Q1 and Q3 turned out not to belong here** — Q1 didn't reproduce, and Q3 was a library
+bug fixed directly in `@gleks/ui` (see both rows below); neither needed a `gleks-ui-lab` edit.
 
 | #   | Item                                                                                       | Size     | Note                                                                |
 | --- | ------------------------------------------------------------------------------------------ | -------- | ------------------------------------------------------------------- |
@@ -159,9 +160,9 @@ which is where lab work already queues.
 | 9   | Header search over component names and keywords                                            | M        |                                                                     |
 | 10  | RTL toggle in the header next to the theme switcher                                        | S        |                                                                     |
 | 11  | Accordion loading example broken                                                           | S        | Verify against library item 8 first                                 |
-| Q1  | `gog-menu` portal draws over the footer; menu forced downward                              | M        | May be a library positioning bug — reproduce in `ui-showcase` first |
+| Q1  | `gog-menu` portal draws over the footer; menu forced downward                              | —        | **Closed, not reproduced (2026-08-30).** Tested live against published 21.7.1 in `gleks-ui-lab`: both `gog-select` (20-option panel) and `gog-menu` (`longMenu`, the branch list) flip **up** correctly when placed just above the lab's real footer, at desktop width. The footer sits in normal flow with no `z-index` of its own, so a panel that *did* open down would legitimately paint over it — `--gog-dropdown-z: 300` versus the footer's `auto` is by design, not a bug. Not reproduced at desktop width; narrower/mobile layouts untested. |
 | Q2  | Checkbox `indeterminate` example reads right-to-left                                       | S        | Likely example markup, not the component                            |
-| Q3  | Multiselect `+N` chip sits above the text baseline                                         | S        | **Probably a library bug** — reproduce in `ui-showcase`             |
+| Q3  | Multiselect `+N` chip sits above the text baseline                                         | **done** | **Fixed 2026-08-30**, library + `ui-showcase` (not yet published). Root cause: `.gog-ms` centers children by box height (`align-items: center`), and the `+N` badge's smaller font-size (14px vs. the value's 16px) put its visual center above the value text's baseline. Added `align-self: baseline` to `.gog-ms__value` and `.gog-ms__overflow` (not to `.gog-ms__actions`, which stays box-centered for its icons). New "Overflow summary" example added to the multiselect showcase page to keep it reproducible. |
 | +   | Padding at the bottom of the component list, so the browser's status bar does not cover it | XS       |                                                                     |
 
 **Estimate: 3–4 sessions.** Item 8 is a third of it.
