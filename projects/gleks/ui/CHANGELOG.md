@@ -4,6 +4,18 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.7.2] - planned
+
+### Fixed
+
+- **`gog-multiselect`'s `+N` overflow chip now sits on the same baseline as the selection text.**
+  `.gog-ms` centers its children by box height (`align-items: center`), and the chip's smaller
+  font-size (`--gog-multiselect-overflow-font-size`, 14px against the value's 16px) put its
+  visual center visibly above the value text's baseline rather than resting on it. `.gog-ms__value`
+  and `.gog-ms__overflow` now both set `align-self: baseline`, leaving `.gog-ms__actions`
+  box-centered as before so the trigger's icons are unaffected. An "Overflow summary" example was
+  added to the multiselect showcase page, since the bug had no live example to be caught by.
+
 ## [21.7.1] - 29.08.2026
 
 ### Fixed

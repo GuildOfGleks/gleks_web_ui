@@ -262,6 +262,25 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader>Overflow summary</h3>
+    <p class="lead">
+      Ten of twenty countries are pre-selected, more than the trigger can show on one line.
+      <code>fitLabels</code> greedily fits as many as it can and collapses the rest into
+      <code>+N</code>; hovering the trigger reveals the full selection via its tooltip.
+    </p>
+    <div class="field-grid overflow-demo">
+      <gog-multiselect
+        label="Countries"
+        [options]="countries"
+        [showControls]="true"
+        [appendToBody]="true"
+        dropdownDirection="down"
+        [(value)]="overflowValue"
+      />
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Custom panel size</h3>
     <p class="lead">
       <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and override

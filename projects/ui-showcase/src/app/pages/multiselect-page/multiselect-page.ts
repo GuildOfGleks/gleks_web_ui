@@ -88,6 +88,11 @@ export class MultiselectPage {
   protected readonly compactPanelValue = signal<(string | number)[]>([]);
   protected readonly bottomOfPageValue = signal<(string | number)[]>([]);
 
+  /** Pre-selected past what the trigger can show on one line, so `+N` renders on load. */
+  protected readonly overflowValue = signal<(string | number)[]>(
+    this.countries.slice(0, 10).map((option) => option.id),
+  );
+
   protected readonly fullWidthFeatures = signal<(string | number)[]>([]);
   protected readonly fullWidthTags = signal<(string | number)[]>(['bug']);
 

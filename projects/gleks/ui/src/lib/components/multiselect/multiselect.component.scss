@@ -129,6 +129,7 @@
     var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
   );
   flex: 1;
+  align-self: baseline;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -482,9 +483,16 @@
   max-width: var(--gog-multiselect-panel-max-width);
 }
 
-/* "+N" — the count of selected labels that did not fit; never shrinks, so it stays readable. */
+/*
+ * "+N" — the count of selected labels that did not fit; never shrinks, so it stays readable.
+ * `align-self: baseline` (shared with .gog-ms__value, not with the icons in .gog-ms__actions)
+ * lines its text up with the summary's baseline — the container's own `align-items: center`
+ * centers each element's *box*, and a smaller font's box-center sits visibly above a larger
+ * font's baseline, which is what made this chip look like it was floating above the text.
+ */
 .gog-ms__overflow {
   flex-shrink: 0;
+  align-self: baseline;
   margin-inline-start: var(--gog-multiselect-overflow-gap);
   font-size: var(--gog-multiselect-overflow-font-size);
   color: var(--gog-multiselect-overflow-color);
