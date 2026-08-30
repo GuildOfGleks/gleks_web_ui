@@ -21,7 +21,7 @@
   @if (isEmpty()) {
     <p class="code-block__empty">{{ emptyMessage() }}</p>
   } @else {
-    <gog-scroll class="code-block__scroll" size="thin" ariaLabel="Code sample">
+    <gog-scroll class="code-block__scroll" size="thin" axis="both" ariaLabel="Code sample">
       <pre><code class="hljs" [innerHTML]="activeHighlighted()"></code></pre>
     </gog-scroll>
   }

@@ -74,6 +74,7 @@ export class MarkdownComponent {
         projectableNodes: [[pre]],
       });
       ref.setInput('size', 'thin');
+      ref.setInput('axis', 'both');
       ref.setInput('ariaLabel', 'Code sample');
 
       const hostEl = ref.location.nativeElement as HTMLElement;
