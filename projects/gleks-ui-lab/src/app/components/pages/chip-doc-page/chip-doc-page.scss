@@ -97,8 +97,13 @@
   margin: 0;
 }
 
+/* Full width means full width of this box, not the component's own natural size — the border
+   is the container the reader is meant to see, the same reason paginator-doc-page's own
+   comparison box has one. */
 .width-demo {
   max-width: 320px;
+  padding: 12px;
+  border: 1px dashed var(--gog-border-color);
 }
 
 .api-table-scroll {
