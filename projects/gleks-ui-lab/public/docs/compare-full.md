@@ -37,6 +37,13 @@ library's own figures against 21.6.1 (re-verified on esbuild 0.28.1 / Node 24.15
 exactly, so it does not explain any of the deltas below); Material and PrimeNG were not
 re-installed, since neither has published since the original pass.
 
+**The deprecation figures below were re-checked 2026-08-31 against the currently published
+21.7.2** — they are type-definition facts, verifiable straight from the installed package with
+no bundler pass required, unlike the byte counts elsewhere on this page, which still reflect
+21.6.1 and are due a full re-measurement (`@angular/material` is now 22.1.4 and `primeng` is
+22.1.0, both newer than the pins below). Treat the two kinds of number on this page as dated
+independently until that re-measurement happens.
+
 Every figure below moves when any of these libraries publishes. Re-run the bench in the
 next section against whatever is current — that is the whole point of publishing the
 commands rather than the conclusions.
@@ -142,7 +149,7 @@ component counts — is one command each, listed in its own section below:
 | **Entire library, gzipped**               | 116 355 B (**113.6 KB**)                   | _(no combined entry point)_                            | _(no combined entry point)_           |
 | Required stylesheet, gzipped              | 29 295 B (28.6 KB)                         | 1 296 B (1.3 KB, M3 prebuilt theme)                    | 0 — injected at runtime from JS       |
 | `@deprecated` symbols in the package      | **0**                                      | 36                                                     | 34                                    |
-| …that name a removal version              | all of them (154 tokens)                   | 42 `@breaking-change` tags, 40 of them already overdue | 0 of 34                               |
+| …that name a removal version              | n/a — 0 deprecated (154 tokens removed in 21.7.0) | 42 `@breaking-change` tags, 40 of them already overdue | 0 of 34                        |
 | `NgModule` classes shipped                | **0**                                      | 43                                                     | 113                                   |
 | Theming                                   | Plain CSS custom properties, no build step | Sass mixins / M3 system tokens                         | JS preset system (`@primeuix/styled`) |
 
@@ -300,7 +307,7 @@ grep -c  '@deprecated' node_modules/@guildofgleks/ui/types/guildofgleks-ui.d.ts 
 # that single hit is prose, not a tag — it is the sentence describing the deprecation manifest.
 # The real counts are in the manifest itself, and it states them:
 grep -o 'currently deprecates: .*' node_modules/@guildofgleks/ui/types/guildofgleks-ui.d.ts
-# → currently deprecates: 0 symbol(s) and 154 token(s).
+# → currently deprecates: 0 symbol(s) and 0 token(s). (154 tokens, until 21.7.0 removed them)
 
 grep -rh 'declare class.*Module\b' node_modules/@angular/material/types | wc -l                # 43
 grep -rh 'declare class.*Module\b' node_modules/primeng/types          | wc -l                 # 113
@@ -310,7 +317,7 @@ grep -c  'NgModule\|declare class.*Module\b' node_modules/@guildofgleks/ui/types
 |                                         | Guild of Gleks UI                     | Angular Material           | PrimeNG |
 | --------------------------------------- | ------------------------------------- | -------------------------- | ------- |
 | `@deprecated` symbols                   | 0                                     | 36                         | 34      |
-| Deprecations naming when they disappear | all of them (154 tokens, `removedIn`) | 42 `@breaking-change` tags | 0       |
+| Deprecations naming when they disappear | n/a — 0 deprecated                    | 42 `@breaking-change` tags | 0       |
 | `NgModule` classes                      | 0                                     | 43                         | 113     |
 
 Restricted to the four-component slice the bundle section uses: Material 1 (`table`),
@@ -330,12 +337,15 @@ Removed in <version>.` **Two had overrun that date** — `GogSelectOption` and
 already been reached, so a deprecation cannot overrun its date again. The overrun is
 recorded in the changelog rather than quietly re-dated.
 
-What is still deprecated is 154 CSS custom properties — three abbreviated prefixes
-(`--gog-btn-*`, `--gog-confirm-*`, `--gog-ms-*`) spelled out, with every old name still
-resolving until 21.7.0. They get two minors rather than one precisely because a custom
-property nothing reads fails silently, which no compiler can catch for you. All 154 are
-readable at runtime from the exported `GOG_DEPRECATIONS` manifest, with `since`,
-`sinceDate`, `replacement` and `removedIn`, generated from the library's own source.
+**Nothing is deprecated any more, as of 21.7.0.** The last deprecation on the books was 154
+CSS custom properties — three abbreviated prefixes (`--gog-btn-*`, `--gog-confirm-*`,
+`--gog-ms-*`) spelled out, with every old name resolving alongside the new one for two minors
+rather than one, precisely because a custom property nothing reads fails silently, which no
+compiler can catch for you. 21.7.0 removed all three prefixes and their 154 old names on
+schedule, so `GOG_DEPRECATIONS` — the same manifest that carried them at runtime with `since`,
+`sinceDate`, `replacement` and `removedIn` — is now an empty array, and `npm run
+check:deprecations` still runs on every build to fail it the moment a future deprecation
+overruns its own stated removal version.
 
 ```sh
 grep -o 'Removed in [0-9.]*' node_modules/@guildofgleks/ui/types/guildofgleks-ui.d.ts | sort | uniq -c
