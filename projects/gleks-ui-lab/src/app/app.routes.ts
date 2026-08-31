@@ -55,6 +55,12 @@ export const routes: Routes = [
       import('./components/pages/releases-page/releases-page').then((m) => m.ReleasesPage),
   },
   {
+    // Renders the package's own AGENTS.md — same reason as `releases`, above.
+    path: 'general/agents',
+    loadComponent: () =>
+      import('./components/pages/agents-page/agents-page').then((m) => m.AgentsPage),
+  },
+  {
     path: 'general/:slug',
     loadComponent: () =>
       import('./components/pages/general-page/general-page').then((m) => m.GeneralPage),

@@ -210,6 +210,11 @@
                 "glob": "CHANGELOG.md",
                 "input": "node_modules/@guildofgleks/ui",
                 "output": "docs"
+              },
+              {
+                "glob": "AGENTS.md",
+                "input": "node_modules/@guildofgleks/ui",
+                "output": "docs"
               }
             ],
             "styles": [

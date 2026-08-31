@@ -1,0 +1,25 @@
+@use '../doc-page' as doc;
+
+@include doc.hero('agents-doc');
+
+.agents-doc {
+  &__hero {
+    /* The download link sits under the lead paragraph, in the same block as the rest of the
+       page's framing rather than floated into the content — there is exactly one action on this
+       page, and it belongs to the whole document, not to any one section of it. */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1em;
+  }
+
+  &__error {
+    max-width: 60ch;
+    color: var(--gog-muted-text-color);
+    line-height: 1.6;
+
+    a {
+      color: var(--gog-accent-color);
+    }
+  }
+}

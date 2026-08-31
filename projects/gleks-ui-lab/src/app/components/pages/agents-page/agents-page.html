@@ -1,0 +1,27 @@
+<div class="agents-doc">
+  <header class="agents-doc__hero">
+    <p class="agents-doc__eyebrow">&#64;guildofgleks/ui</p>
+    <h1 class="agents-doc__title font-heading">AGENTS.md</h1>
+    <p class="agents-doc__lead">
+      The per-component API reference the package ships for a coding agent to read —
+      <a [href]="libraryNpmUrl" target="_blank" rel="noopener">v{{ libraryVersion }}</a
+      >. Read from <code>node_modules</code> at build time rather than copied here, so it cannot
+      describe an input the installed package does not have.
+    </p>
+    <a gogButton variant="secondary" [href]="downloadUrl" download="AGENTS.md">
+      Download AGENTS.md
+    </a>
+  </header>
+
+  @if (hasContent()) {
+    <app-markdown [markdown]="markdown() ?? ''" />
+  } @else if (failed()) {
+    <p class="agents-doc__error">
+      <code>AGENTS.md</code> could not be loaded. It ships inside the package, so this usually means
+      the build did not copy it out of <code>node_modules</code> — see the asset globs for
+      <code>gleks-ui-lab</code> in <code>angular.json</code>. Meanwhile it is on
+      <a [href]="libraryNpmUrl" target="_blank" rel="noopener">npm</a>, inside the published
+      tarball.
+    </p>
+  }
+</div>

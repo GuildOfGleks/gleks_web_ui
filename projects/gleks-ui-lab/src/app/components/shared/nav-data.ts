@@ -16,6 +16,7 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
   },
   { label: 'FAQ', path: 'general/faq' },
   { label: 'Releases', path: 'general/releases' },
+  { label: 'AGENTS.md', path: 'general/agents' },
 ];
 
 // 34 entries — 31 components and the three directives (gogBadge, gogTooltip, gogRipple) — grouped by what they're for rather
