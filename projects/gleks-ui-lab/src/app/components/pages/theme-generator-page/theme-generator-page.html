@@ -95,6 +95,14 @@
     </article>
 
     <article class="gallery__card">
+      <h3 class="gallery__card-title">Card</h3>
+      <gog-card>
+        <h4 gogCardHeader>Quarterly summary</h4>
+        <p>One self-contained thing, usually one of many in a grid.</p>
+      </gog-card>
+    </article>
+
+    <article class="gallery__card">
       <h3 class="gallery__card-title">Checkbox</h3>
       <gog-checkbox label="Checked option" [checked]="true" />
     </article>
@@ -105,6 +113,18 @@
         <gog-chip>Angular</gog-chip>
         <gog-chip iconName="info">Informational</gog-chip>
       </div>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Collapsible</h3>
+      <gog-collapsible [open]="true">
+        <button type="button" gogCollapsibleTrigger class="gallery__collapsible-trigger">
+          Shipping details
+        </button>
+        <p gogCollapsibleContent class="gallery__collapsible-panel">
+          Ships within 2 business days via standard courier.
+        </p>
+      </gog-collapsible>
     </article>
 
     <article class="gallery__card">
@@ -145,6 +165,18 @@
     </article>
 
     <article class="gallery__card">
+      <h3 class="gallery__card-title">Menu</h3>
+      <gog-button variant="outline" type="button" [gogMenuTrigger]="galleryMenu">
+        Document actions
+      </gog-button>
+      <gog-menu #galleryMenu ariaLabel="Document actions">
+        <button gogMenuItem type="button">Rename</button>
+        <button gogMenuItem type="button">Duplicate</button>
+        <button gogMenuItem type="button">Delete</button>
+      </gog-menu>
+    </article>
+
+    <article class="gallery__card">
       <h3 class="gallery__card-title">Multiselect</h3>
       <gog-multiselect
         inputId="gallery-multiselect"
@@ -161,6 +193,14 @@
     </article>
 
     <article class="gallery__card">
+      <h3 class="gallery__card-title">Panel</h3>
+      <gog-panel size="md">
+        <h4 gogPanelHeader>Notifications</h4>
+        <p>A titled region of a page — a real landmark, and it can collapse.</p>
+      </gog-panel>
+    </article>
+
+    <article class="gallery__card">
       <h3 class="gallery__card-title">Progress Bar</h3>
       <gog-progressbar [value]="42" ariaLabel="Upload progress" />
     </article>
@@ -168,6 +208,25 @@
     <article class="gallery__card">
       <h3 class="gallery__card-title">Radio Group</h3>
       <gog-radio-group label="Delivery" [options]="radioOptions" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Ripple</h3>
+      <button type="button" class="gallery__ripple-surface" gogRipple>Click me</button>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Scroll</h3>
+      <gog-scroll
+        class="gallery__scroll"
+        size="thin"
+        [autoHide]="false"
+        ariaLabel="Scrollable list"
+      >
+        @for (line of scrollPreviewLines; track line) {
+          <p class="gallery__scroll-line">{{ line }}</p>
+        }
+      </gog-scroll>
     </article>
 
     <article class="gallery__card">

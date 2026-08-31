@@ -112,6 +112,53 @@
   gap: 12px;
 }
 
+/* gog-collapsible is headless — no --gog-collapsible-* chrome beyond disabled/max-height/
+   transition — so the trigger and panel are styled here the same way a consumer's own would be. */
+.gallery__collapsible-trigger {
+  cursor: pointer;
+  padding: 8px 12px;
+  border: var(--gog-control-border-width) var(--gog-control-border-style) var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  color: var(--gog-text-color);
+  font-size: var(--gog-text-sm);
+  font-family: var(--gog-font-body);
+
+  &:hover {
+    border-color: var(--gog-accent-color);
+    color: var(--gog-accent-color);
+  }
+}
+
+.gallery__collapsible-panel {
+  margin: 8px 0 0;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}
+
+/* [gogRipple] applied directly, the way a consumer's own surface would use it — the button
+   itself carries no library chrome, so only the ripple's own tokens are on display. */
+.gallery__ripple-surface {
+  cursor: pointer;
+  padding: 10px 16px;
+  border: var(--gog-control-border-width) var(--gog-control-border-style) var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  color: var(--gog-text-color);
+  font-size: var(--gog-text-sm);
+  font-family: var(--gog-font-body);
+}
+
+.gallery__scroll {
+  height: 90px;
+}
+
+.gallery__scroll-line {
+  margin: 0 0 8px;
+  font-size: var(--gog-text-sm);
+  color: var(--gog-muted-text-color);
+}
+
 .fine-tune {
   &__editor {
     margin-top: 16px;

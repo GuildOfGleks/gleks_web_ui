@@ -13,13 +13,16 @@ export const GENERATOR_COMPONENTS: readonly GeneratorComponentDef[] = [
   { id: 'button', label: 'Button', prefixes: ['--gog-button-'] },
   { id: 'button-toggle', label: 'Button Toggle', prefixes: ['--gog-button-toggle-'] },
   { id: 'calendar', label: 'Calendar', prefixes: ['--gog-calendar-'] },
+  { id: 'card', label: 'Card', prefixes: ['--gog-card-'] },
   { id: 'checkbox', label: 'Checkbox', prefixes: ['--gog-checkbox-', '--gog-control-checkbox-'] },
   { id: 'chip', label: 'Chip', prefixes: ['--gog-chip-'] },
+  { id: 'collapsible', label: 'Collapsible', prefixes: ['--gog-collapsible-'] },
   { id: 'datepicker', label: 'Datepicker', prefixes: ['--gog-datepicker-'] },
   { id: 'dialog', label: 'Dialog', prefixes: ['--gog-dialog-', '--gog-confirmation-dialog-'] },
   { id: 'divider', label: 'Divider', prefixes: ['--gog-divider-'] },
   { id: 'icon', label: 'Icon', prefixes: ['--gog-icon-'] },
   { id: 'inputfield', label: 'Input Field', prefixes: ['--gog-input-', '--gog-textarea-'] },
+  { id: 'menu', label: 'Menu', prefixes: ['--gog-menu-'] },
   // `--gog-multiselect-*` is the still-declared spelling; `--gog-multiselect-*` derives from it until
   // the old name is removed in 21.5.0, so both are listed to keep the generator complete.
   {
@@ -28,8 +31,11 @@ export const GENERATOR_COMPONENTS: readonly GeneratorComponentDef[] = [
     prefixes: ['--gog-multiselect-', '--gog-multiselect-'],
   },
   { id: 'paginator', label: 'Paginator', prefixes: ['--gog-paginator-'] },
+  { id: 'panel', label: 'Panel', prefixes: ['--gog-panel-'] },
   { id: 'progressbar', label: 'Progress Bar', prefixes: ['--gog-progressbar-'] },
   { id: 'radio-group', label: 'Radio Group', prefixes: ['--gog-radio-'] },
+  { id: 'ripple', label: 'Ripple', prefixes: ['--gog-ripple-'] },
+  { id: 'scroll', label: 'Scroll', prefixes: ['--gog-scroll-'] },
   { id: 'select', label: 'Select', prefixes: ['--gog-select-'] },
   { id: 'skeleton', label: 'Skeleton', prefixes: ['--gog-skeleton-'] },
   { id: 'slider', label: 'Slider', prefixes: ['--gog-slider-'] },
