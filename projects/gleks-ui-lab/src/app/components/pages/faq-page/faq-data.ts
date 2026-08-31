@@ -197,13 +197,21 @@ The library doesn't layer a separate, older browser floor on top of that.
     item(
       'Is right-to-left (RTL) supported?',
       `
-**Not yet — treat it as unsupported.** Most component stylesheets still position things with
-physical \`left\`/\`right\` rather than logical \`inset-inline-*\` properties, and the overlay
-positioning that places dropdown panels, tooltips and toasts has no notion of writing
-direction, so under \`dir="rtl"\` a panel can open against the wrong edge. Some components are
-already written with logical properties and will look correct, which is exactly the problem:
-the result is inconsistent rather than uniformly wrong. A full pass is planned; until it lands,
-don't pick this library for an RTL product.
+**Yes**, since <span class="since" title="Added in 21.5.0">21.5.0</span>. Set \`dir="rtl"\` on
+\`<html>\` for the whole app, or on any element for one region of it — physical \`left\`/\`right\`
+became logical \`inset-inline-*\` properties across every stylesheet, and portaled panels (the
+select/multiselect panel, the tooltip bubble) copy that scoped \`dir\` onto their own host, so an
+RTL region inside an LTR page still opens its overlays on the correct side instead of taking the
+document's direction. The calendar's month arrows turn around, and the slider, toast progress
+bar and indeterminate progress bar all run from the inline start rather than from a hardcoded
+left.
+
+Two APIs stay physical on purpose, not by omission: \`gogTooltipPosition\` (\`'left' | 'right'\`)
+names a literal side, and \`ToastConfig.position\`'s corners are a deliberate placement a reader
+chose — use \`'auto'\` on the tooltip for the direction-aware pick. See
+[Right-to-left](/general/rtl) for the full breakdown, a live demo and the three CSS custom
+properties (\`--gog-inline-start-side\`, \`--gog-inline-end-side\`, \`--gog-direction-sign\`) your
+own custom CSS can use to follow the same rule.
 `,
     ),
     item(
@@ -326,33 +334,28 @@ component doc pages call these out explicitly wherever they apply.
     item(
       "What's deprecated right now, and when does it go?",
       `
-**No symbol is deprecated.** 21.5.0 removed every deprecated input, element, type alias and
-asset path the library had — the full list is in the
-[release notes](/general/releases), and each one fails to compile rather than failing quietly,
-so the compiler is the migration checklist.
+**Nothing.** \`GOG_DEPRECATIONS\` — the manifest the package exports, generated from the
+library's own source with \`since\`, \`sinceDate\`, \`replacement\` and \`removedIn\` for whatever it
+lists — is an empty array as of the version you have installed.
 
-What is deprecated is three **CSS custom property prefixes**, which were abbreviations of a
-component's name — the one thing you cannot guess:
+The library's only two deprecation waves so far are both already fully removed. 21.5.0 removed
+every deprecated input, element, type alias and asset path it had; **21.7.0** removed the last
+of it, three abbreviated **CSS custom property prefixes** that stood in for a component's full
+name — \`--gog-btn-*\` → \`--gog-button-*\`, \`--gog-confirm-*\` → \`--gog-confirmation-dialog-*\`,
+\`--gog-ms-*\` → \`--gog-multiselect-*\`. Both waves are in the
+[release notes](/general/releases), and every removal fails to compile (or, for the CSS
+prefixes, silently stops applying — which is exactly why they got two minors of overlap rather
+than one) instead of failing quietly, so the compiler and your own visual check are the
+migration checklist.
 
-| Deprecated | Use instead |
-| --- | --- |
-| \`--gog-btn-*\` | \`--gog-button-*\` |
-| \`--gog-confirm-*\` | \`--gog-confirmation-dialog-*\` |
-| \`--gog-ms-*\` | \`--gog-multiselect-*\` |
+\`--gog-input-*\` looks like it should have been a fourth prefix and never was: it names the
+text-field block that \`gog-inputfield\` and \`gog-textarea\` both render, not the
+\`gog-inputfield\` component. It stays.
 
-**Nothing breaks yet.** Every old spelling still feeds the component — each new name declares
-the old one in its own fallback — so a theme written against either applies. They come out in
-**21.7.0**, two minors rather than one, because a custom property nothing reads fails silently:
-no error, no warning, just a value that stops applying. Migration is a find-and-replace on
-those three prefixes.
-
-\`--gog-input-*\` looks like a fourth and is not: it names the text-field block that
-\`gog-inputfield\` and \`gog-textarea\` both render, not the \`gog-inputfield\` component. It stays.
-
-You can read the whole list from the package itself rather than from this page — 21.5.0 exports
-\`GOG_DEPRECATIONS\`, generated from the library's own source, with \`since\`, \`sinceDate\`,
-\`replacement\` and \`removedIn\` for every deprecated token and symbol in the version you have
-installed.
+\`npm run check:deprecations\` runs on every build in this repo and fails it the moment a future
+deprecation's \`removedIn\` version is reached and the symbol is still exported — so the next
+deprecation, whenever it lands, cannot overrun its own stated date the way two of 21.5.0's did
+before that check existed.
 `,
     ),
   ]),
