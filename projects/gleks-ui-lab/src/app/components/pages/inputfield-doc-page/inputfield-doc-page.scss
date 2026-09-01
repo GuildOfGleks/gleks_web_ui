@@ -89,11 +89,18 @@
   }
 }
 
-/* Full width means full width of this box, not the component's own natural size — the border
-   is the container the reader is meant to see, the same reason paginator-doc-page's own
-   comparison box has one. */
 .width-demo {
   max-width: 320px;
+}
+
+/* The container a field fills, made visible: the width demo below is about the box, not the
+   field, so the box has to be something the reader can see. Same dashed frame paginator-doc-page
+   uses for its own comparison. Deliberately not on `.width-demo`, which on this page is the narrow
+   column every field demo sits in — framing all of them would claim a point about a container
+   where none is being made. `align-self` because `.demo-card__preview` centres its children:
+   a box that shrink-wraps the control it contains is not a container anyone can see. */
+.container-demo {
+  align-self: stretch;
   padding: 12px;
   border: 1px dashed var(--gog-border-color);
 }

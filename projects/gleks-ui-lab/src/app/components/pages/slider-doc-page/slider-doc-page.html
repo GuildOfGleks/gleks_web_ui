@@ -74,16 +74,19 @@
         Full width of its container by default (see every slider above). A slider's track has no
         content of its own to shrink-wrap to, so <code>[fullWidth]="false"</code> instead sizes it
         to <code>--gog-slider-auto-width</code> (240px by default) — a fixed, themeable fallback
-        rather than a content-derived one.
+        rather than a content-derived one. The dashed outline below is the container, not the
+        slider.
       </p>
       <div class="demo-card__preview">
-        <gog-slider
-          label="Compact"
-          [min]="0"
-          [max]="100"
-          [(value)]="compactValue"
-          [fullWidth]="false"
-        />
+        <div class="container-demo">
+          <gog-slider
+            label="Compact"
+            [min]="0"
+            [max]="100"
+            [(value)]="compactValue"
+            [fullWidth]="false"
+          />
+        </div>
       </div>
       <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
     </article>

@@ -118,10 +118,12 @@
       <h3 class="demo-card__title">Auto width</h3>
       <p class="demo-card__meta">
         Fields fill their container by default; <code>fullWidth="false"</code> shrinks the field to
-        fit its content instead.
+        fit its content instead. The dashed outline below is the container, not the field.
       </p>
       <div class="demo-card__preview">
-        <gog-textarea label="Short note" [fullWidth]="false" [rows]="2" />
+        <div class="container-demo">
+          <gog-textarea label="Short note" [fullWidth]="false" [rows]="2" />
+        </div>
       </div>
       <app-code-tabs [html]="autoWidthHtml" [ts]="autoWidthTs" />
     </article>

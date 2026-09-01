@@ -95,9 +95,10 @@
       <p class="demo-card__meta">
         Full width of its container by default (see every field above).
         <code>[fullWidth]="false"</code> shrinks the trigger to fit its selected label instead —
-        useful for a compact field alongside one that should keep growing.
+        useful for a compact field alongside one that should keep growing. The dashed outline is the
+        row both share.
       </p>
-      <div class="demo-card__preview field-row">
+      <div class="demo-card__preview field-row container-demo">
         <div class="field-row__grow">
           <gog-select label="Country" [options]="countries" [(value)]="fullWidthCountry" />
         </div>
