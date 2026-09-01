@@ -97,6 +97,15 @@
   margin: 0 0 1em;
 }
 
+/* `.demo-card__preview` (styles.scss) centres its children, which sizes a block-level flex item
+   to its content — fine for an accordion full of text, and the reason the loading example looked
+   broken: with every row replaced by a skeleton there is no text to size from, so it shrank to a
+   ~55px column in the middle of the card. Stretching it fixes both states at once, and the demo
+   no longer changes width when the toggle is pressed. */
+.accordion-doc__loading-demo {
+  align-self: stretch;
+}
+
 .size-grid {
   display: grid;
   gap: 20px;

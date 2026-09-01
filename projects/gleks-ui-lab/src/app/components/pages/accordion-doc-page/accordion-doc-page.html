@@ -140,7 +140,11 @@
         <div class="action-row">
           <gog-button variant="outline" (gogClick)="toggleLoading()">Toggle loading</gog-button>
         </div>
-        <gog-accordion [items]="basicItems" [loading]="isAccordionLoading()" />
+        <gog-accordion
+          class="accordion-doc__loading-demo"
+          [items]="basicItems"
+          [loading]="isAccordionLoading()"
+        />
       </div>
       <app-code-tabs [html]="loadingHtml" [ts]="loadingTs" />
     </article>

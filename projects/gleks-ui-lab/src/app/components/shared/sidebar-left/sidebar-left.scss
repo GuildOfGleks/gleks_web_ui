@@ -21,6 +21,16 @@
   min-height: 0;
 }
 
+/* The last component in the list used to sit flush against the bottom of the scroll viewport,
+   where a phone's own browser chrome — the URL bar that reappears on scroll-up, the gesture bar —
+   covers it. Reported from a phone check. The padding goes on the scrolled content, not on
+   `.nav-scroll`: `gog-scroll` measures the host to size its viewport and thumb, so padding there
+   would move the scrollbar rather than the last row. `env()` adds a notched device's own inset
+   on top of the flat floor, and resolves to 0 everywhere else. */
+.nav-scroll .nav-list {
+  padding-block-end: calc(24px + env(safe-area-inset-bottom, 0px));
+}
+
 .sidebar-title {
   font-size: var(--gog-text-xs);
   text-transform: uppercase;

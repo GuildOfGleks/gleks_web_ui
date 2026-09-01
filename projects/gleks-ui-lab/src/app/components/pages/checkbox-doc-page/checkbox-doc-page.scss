@@ -110,6 +110,29 @@
   gap: 10px;
 }
 
+/* A "select all" is a hierarchy, and it is read off the left edge: the parent, then the boxes
+   it governs indented under it. `.demo-card__preview`'s own centring (styles.scss) destroys
+   exactly that — every row is centred on its own text, so the parent lands to the *right* of
+   its children and the group reads inverted, which is what "the example reads right-to-left"
+   turned out to be. A second class takes this preview out of that rule; the box is still
+   centred in the card by `margin-inline: auto`, only its contents are not. */
+.checkbox-doc__select-all {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: fit-content;
+}
+
+.checkbox-doc__group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* Aligns a child's box under the parent's *label*, the usual shape for a select-all. Logical,
+     so it indents from the other side under `dir="rtl"`; in tokens, so it follows the theme. */
+  padding-inline-start: calc(var(--gog-control-checkbox-box-size-md) + var(--gog-space-sm));
+}
+
 /* Full width means full width of this box, not the component's own natural size — the border
    is the container the reader is meant to see, the same reason paginator-doc-page's own
    comparison box has one. */
