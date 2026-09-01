@@ -51,15 +51,25 @@ side by side on the same page.
 
 ## Ready-made presets
 
-Three additional palettes ship as importable stylesheets. Each one declares **palette tokens
-only** and still restyles every component — which is the theming contract demonstrated rather
-than described.
+**Nine** presets ship as importable stylesheets, each at `styles/presets/<name>.css` and
+activated by `data-theme="<name>"`. Until 21.7.0 there were three and each declared **palette
+tokens only**; that framing is gone. All nine now set palette **and** character — corner
+rounding, border weight, density, label casing — which is what makes them identities rather than
+recolours. None of them names a single component token it does not have to.
 
-| Preset                                | `data-theme` | Stylesheet                                  |
-| ------------------------------------- | ------------ | ------------------------------------------- |
-| Slate — cool, indigo                  | `slate`      | `@guildofgleks/ui/styles/presets/slate.css` |
-| One Dark — the Atom/JetBrains palette | `one-dark`   | `.../presets/one-dark.css`                  |
-| One Light — its light counterpart     | `one-light`  | `.../presets/one-light.css`                 |
+| Preset               | `data-theme`            | The identity                                                            |
+| -------------------- | ----------------------- | ----------------------------------------------------------------------- |
+| Slate                | `slate`                 | soft modern — 12px corners, hairline borders, roomier than the default  |
+| One Dark / One Light | `one-dark`, `one-light` | editor chrome — 4px corners, compact, sentence case; one UI, two tones  |
+| Material / PrimeNG   | `material`, `primeng`   | Material Design 3 and PrimeNG Aura, including their shape and density   |
+| Ledger               | `ledger`                | administrative software — square corners, hard offset shadow, no motion |
+| Terminal             | `terminal`              | green phosphor — monospaced throughout, square, no motion               |
+| Bevel                | `bevel`                 | the early-web desktop — raised buttons, sunken fields, grey and navy    |
+| Parchment            | `parchment`             | ink on laid paper — old-style serif, oxblood accent, roomy              |
+
+Every one of them is in the theme switcher in this site's header. **Try `material` or `primeng`
+against the comparison pages**: those two are the point of the exercise made literal — the
+library wearing another ecosystem's identity, from one imported stylesheet and no component code.
 
 Add the one you want to your global styles, then set the attribute:
 
@@ -84,8 +94,26 @@ Add the one you want to your global styles, then set the attribute:
 The One presets map the editor's syntax hues onto the library's semantic roles — blue becomes the
 accent, and green / red / yellow / cyan become success / danger / warning / info. Neither preset
 mentions `--gog-button-primary-bg` by name, yet buttons pick it up: that is the derived layer
-re-resolving, and it is why a preset can be a short list of colors rather than a fork of the whole
-stylesheet.
+re-resolving, and it is why a preset can be a short list of declarations rather than a fork of the
+whole stylesheet.
+
+### No preset downloads a font
+
+Importing a preset never adds a network request. Each one sets a stack that resolves to a real
+system face — the platform's own monospace for `terminal`, Tahoma/Verdana for `bevel`, Iowan Old
+Style/Palatino for `parchment`. Where a webfont makes a visible difference it lives in a separate
+opt-in file you import _after_ the preset:
+
+```css
+@import '@guildofgleks/ui/styles/presets/parchment.css';
+@import '@guildofgleks/ui/styles/presets/parchment.fonts.css'; /* optional: EB Garamond */
+```
+
+`terminal.fonts.css` (IBM Plex Mono) is the other one. **This site imports neither**, on purpose:
+a global stylesheet is loaded whether or not anyone picks that theme, and making every visitor pay
+for a font two of eleven themes use would contradict the rule this section is stating. So
+`terminal` and `parchment` render here in their system stacks — which is exactly what a consumer
+who imports the preset alone will see.
 
 ## Switching the theme from code
 

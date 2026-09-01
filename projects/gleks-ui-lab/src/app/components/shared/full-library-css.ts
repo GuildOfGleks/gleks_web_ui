@@ -5,9 +5,11 @@ import { httpResource } from '@angular/common/http';
 // `styles/` (see the "docs/styles" asset glob in angular.json for the
 // gleks-ui-lab build target), in the same order index.css imports them.
 //
-// Deliberately excludes `styles/presets/*`: a preset declares palette tokens only, so it
-// contributes nothing to the component-prefixed token names this feeds, and each extra file is
-// one more request the generator has to wait on before it can render anything.
+// Deliberately excludes `styles/presets/*`. Not because a preset is palette-only — since 21.7.0
+// none of the nine is, and `material`/`primeng` do declare component tokens — but because a
+// preset can only re-declare a name `theme.css` already has, so it contributes no *new* token to
+// the list this feeds, while each extra file is one more request the generator waits on before it
+// can render anything.
 const STYLE_FILES = [
   'index.css',
   'theme.css',

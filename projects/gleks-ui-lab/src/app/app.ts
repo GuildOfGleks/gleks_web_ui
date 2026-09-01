@@ -118,17 +118,23 @@ export class App {
 
   protected readonly footerLinks = FOOTER_LINKS;
 
-  // The first two ship with the library itself; `slate` / `one-*` are its importable presets
-  // (see the Theming page); `primeng` / `material` are this site's own look-alikes, declared in
-  // styles.scss, for the comparison pages.
+  // `light` and `dark` are built into `theme.css`; the other nine are the package's presets,
+  // imported in `angular.json` (see the Theming page for the catalogue). None of them is
+  // declared by this site — including `material` and `primeng`, which used to be hand-authored
+  // look-alikes in `styles.scss` and became real presets in 21.7.0. Listed in the same order
+  // the README's catalogue table uses, so the two documents agree.
   protected readonly themeOptions: ThemeMenuOption[] = [
     { value: 'light', label: 'Light' },
     { value: 'dark', label: 'Dark' },
     { value: 'slate', label: 'Slate' },
     { value: 'one-dark', label: 'One Dark' },
     { value: 'one-light', label: 'One Light' },
-    { value: 'primeng', label: 'PrimeNG' },
     { value: 'material', label: 'Material' },
+    { value: 'primeng', label: 'PrimeNG' },
+    { value: 'ledger', label: 'Ledger' },
+    { value: 'terminal', label: 'Terminal' },
+    { value: 'bevel', label: 'Bevel' },
+    { value: 'parchment', label: 'Parchment' },
   ];
 
   protected readonly activeTheme = computed(() => this.themeService.theme());

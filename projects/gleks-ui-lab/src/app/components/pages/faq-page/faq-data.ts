@@ -290,9 +290,9 @@ For a genuinely large grid rendered client-side, use a dedicated data-grid.
       'How do I switch between light and dark?',
       `
 Everything keys off one attribute on \`<html>\`: \`data-theme\`. \`theme.css\` ships \`light\` (also
-what you get with no attribute at all) and \`dark\`; the presets — \`slate\`, \`one-dark\`,
-\`one-light\` — are separate stylesheets you add to your \`styles\` array to make those names
-resolve.
+what you get with no attribute at all) and \`dark\`; the nine presets — \`slate\`, \`one-dark\`,
+\`one-light\`, \`material\`, \`primeng\`, \`ledger\`, \`terminal\`, \`bevel\` and \`parchment\` — are
+separate stylesheets you add to your \`styles\` array to make those names resolve.
 
 Set it yourself, or use \`ThemeService\`:
 

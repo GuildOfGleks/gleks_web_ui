@@ -31,7 +31,7 @@ const FEATURES: readonly FeatureCard[] = [
   {
     icon: faCircleHalfStroke,
     title: 'Effortless theming',
-    text: 'Light/dark theming that adapts to your brand, plus three ready-made presets you can drop in as-is.',
+    text: 'Light/dark theming that adapts to your brand, plus nine ready-made presets you can drop in as-is.',
   },
   {
     icon: faSliders,

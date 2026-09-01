@@ -222,6 +222,12 @@
               "node_modules/@guildofgleks/ui/styles/presets/slate.css",
               "node_modules/@guildofgleks/ui/styles/presets/one-dark.css",
               "node_modules/@guildofgleks/ui/styles/presets/one-light.css",
+              "node_modules/@guildofgleks/ui/styles/presets/material.css",
+              "node_modules/@guildofgleks/ui/styles/presets/primeng.css",
+              "node_modules/@guildofgleks/ui/styles/presets/ledger.css",
+              "node_modules/@guildofgleks/ui/styles/presets/terminal.css",
+              "node_modules/@guildofgleks/ui/styles/presets/bevel.css",
+              "node_modules/@guildofgleks/ui/styles/presets/parchment.css",
               "projects/gleks-ui-lab/src/styles.scss"
             ],
             "server": "projects/gleks-ui-lab/src/main.server.ts",
