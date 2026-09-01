@@ -125,43 +125,6 @@ description — needed no lab work and are already done: `TOKENS.md` regenerates
 (`npm run generate:tokens`, already current) and `README.md`'s Foundation paragraph picked up the
 character layer in iteration 1's own commit, not deferred here.
 
-## After 21.7.1 — the lab must state which browsers are supported
-
-**Asked for directly, and there is now a real answer to publish.** The lab documents a library
-whose support floor was never written down anywhere a reader could find it. `package.json` gained
-a `browserslist` in 21.7.1; the lab should say the same thing in prose, on the Getting Started or
-FAQ page.
-
-**The floor, and what sets it:**
-
-| Browser          | Minimum | Why that version |
-| ---------------- | ------- | ---------------- |
-| Chrome / Edge    | 111     | `color-mix()`    |
-| Firefox          | 113     | `color-mix()`    |
-| Safari / iOS     | 16.2    | `color-mix()`    |
-| Samsung Internet | 22      | `color-mix()`    |
-
-Chromium-based browsers follow their base version: Brave, Opera, Yandex, Vivaldi and Arc are all
-Chrome 111+ once their own release is recent enough. Opera 97 is Chromium 111.
-
-**What the page should also say, because it is the part people ask about:**
-
-- **Below the floor the library still works** — since 21.7.1, `color-mix()` values sit behind
-  `@supports` with flat palette fallbacks. Older browsers get flatter colour, not missing colour.
-- **Every animation is plain CSS** — `@keyframes` and `transition`, no Web Animations API and no
-  JavaScript timers driving visuals. There is no browser that runs the library but skips its
-  animations. If a user sees none, the cause is `prefers-reduced-motion`, not the browser.
-- **`backdrop-filter` degrades on its own**: every use of it sits on an element that also sets a
-  solid `background`, so a browser without it loses the blur and keeps the dimming.
-- **Brave's shields can block Google Fonts.** That only affects the two opt-in
-  `presets/*.fonts.css` files; the presets themselves set system stacks and are unaffected. Worth
-  one sentence, because it looks like a library bug and is not.
-
-**Say plainly what has and has not been tested.** As of 21.7.1 the library is verified in Chrome
-on Windows. The floor above is derived from the features the code actually uses, not from a test
-matrix — and the difference matters to anyone deciding whether to depend on it. Do not write
-"tested in Brave, Opera and Yandex" until someone has opened it in them.
-
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see

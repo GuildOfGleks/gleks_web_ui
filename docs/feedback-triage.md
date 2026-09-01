@@ -33,6 +33,17 @@ or two Android versions behind is below that line.
 newer ones override — plus a `browserslist` so the question stops being invisible. It explains
 several separate-looking complaints at once.
 
+**Both halves of that turned out to be wrong in the same way, and 21.7.1 corrected them —
+read the shipped `theme.css` header, not this paragraph.** A flat declaration *above* a mixed
+one does not fall back for a **custom property**: the property is validated when it is
+substituted, not when it is parsed, so the unsupported declaration still wins and `var()` on it
+resolves to nothing. `@supports` is the only mechanism that gates a custom property on feature
+support, and that is what shipped. And the `browserslist` was added and then removed again
+(`aec38ac`): the floor it stated was *below* Angular's own, so every build printed "unsupported
+browsers" warnings. Angular's baseline is the policy; the interesting fact is that Firefox 112
+is inside that baseline and has no `color-mix()`, which is what makes the fallbacks
+load-bearing rather than a courtesy. **Do not restore a `browserslist` from the sentence above.**
+
 ### 2. The select/multiselect chevron does not rotate _at all_ — reduced motion is a red herring
 
 Reported as "with animations off, the chevron does not change position". The chevron has no
@@ -159,11 +170,11 @@ bug fixed directly in `@gleks/ui` (see both rows below); neither needed a `gleks
 | 8   | Per-page "global config for this component" section, or a note saying there is none        | **L**    | The biggest lab item — every page, and it needs a source of truth   |
 | 9   | Header search over component names and keywords                                            | M        |                                                                     |
 | 10  | RTL toggle in the header next to the theme switcher                                        | S        |                                                                     |
-| 11  | Accordion loading example broken                                                           | S        | Verify against library item 8 first                                 |
+| 11  | Accordion loading example broken                                                           | **done** | **Fixed 2026-09-01, and it was the lab, not the library.** With `loading` on, the accordion shrank to a ~55px column in the middle of the card. Cause: `.demo-card__preview`'s centring rule in `styles.scss` (`align-items: center`) sizes a block-level flex item to its content, and a loading accordion's content is skeleton placeholders with no intrinsic width — the text that sizes it in every other state is exactly what `loading` removes. The demo's accordion now sets `align-self: stretch`, which fixes both states at once, so the demo no longer changes width when the toggle is pressed. Library item 8 (the skeleton's own contrast against the header strip) shipped separately in 21.7.1 and is unrelated. |
 | Q1  | `gog-menu` portal draws over the footer; menu forced downward                              | —        | **Closed, not reproduced (2026-08-30).** Tested live against published 21.7.1 in `gleks-ui-lab`: both `gog-select` (20-option panel) and `gog-menu` (`longMenu`, the branch list) flip **up** correctly when placed just above the lab's real footer, at desktop width. The footer sits in normal flow with no `z-index` of its own, so a panel that *did* open down would legitimately paint over it — `--gog-dropdown-z: 300` versus the footer's `auto` is by design, not a bug. Not reproduced at desktop width; narrower/mobile layouts untested. |
-| Q2  | Checkbox `indeterminate` example reads right-to-left                                       | S        | Likely example markup, not the component                            |
+| Q2  | Checkbox `indeterminate` example reads right-to-left                                       | **done** | **Fixed 2026-09-01. Same root cause as row 11 — not the component, and nothing to do with RTL.** A select-all is a hierarchy read off the left edge; `.demo-card__preview` centres each row on its own text, so the parent checkbox sat to the *right* of the three it governs, and `.checkbox-doc__group` had no styles at all — no indent, no left edge. The preview now carries a second class (which takes it out of that rule), left-aligns its contents, and indents the group under the parent's label by `calc(var(--gog-control-checkbox-box-size-md) + var(--gog-space-sm))` — logical, so it indents from the other side under `dir="rtl"`. |
 | Q3  | Multiselect `+N` chip sits above the text baseline                                         | **done** | **Fixed 2026-08-30**, library + `ui-showcase` (not yet published). Root cause: `.gog-ms` centers children by box height (`align-items: center`), and the `+N` badge's smaller font-size (14px vs. the value's 16px) put its visual center above the value text's baseline. Added `align-self: baseline` to `.gog-ms__value` and `.gog-ms__overflow` (not to `.gog-ms__actions`, which stays box-centered for its icons). New "Overflow summary" example added to the multiselect showcase page to keep it reproducible. |
-| +   | Padding at the bottom of the component list, so the browser's status bar does not cover it | XS       |                                                                     |
+| +   | Padding at the bottom of the component list, so the browser's status bar does not cover it | **done** | **Fixed 2026-09-01.** `.nav-scroll .nav-list` gains `calc(24px + env(safe-area-inset-bottom, 0px))`. On the scrolled content rather than on `.nav-scroll`: `gog-scroll` measures its host to size the viewport and thumb, so padding there would move the scrollbar, not the last row. |
 
 **Estimate: 3–4 sessions.** Item 8 is a third of it.
 

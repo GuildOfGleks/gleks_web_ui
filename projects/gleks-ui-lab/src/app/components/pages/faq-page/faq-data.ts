@@ -190,8 +190,42 @@ real behavior once hydrated on the client.
       'What browsers does it support?',
       `
 Whatever Angular's own ["Baseline" browser policy](https://angular.dev/reference/versions)
-covers for the Angular major you're on — recent evergreen Chrome, Edge, Firefox and Safari.
-The library doesn't layer a separate, older browser floor on top of that.
+covers for the Angular major you're on — for v21 that is \`baseline widely available on
+2025-10-20\`: Chrome 111, Firefox 112, Safari 16.4. **The library deliberately declares no
+\`browserslist\` of its own.** One was added and removed again: stating a lower floor than the
+framework's only produced "unsupported browsers" warnings on every build, and a component
+library cannot support a browser the framework it runs on does not.
+
+**What is worth knowing is where the CSS is newer than that window.** The themes mix colours
+with \`color-mix()\`, which shipped in Chrome 111, Firefox 113, Safari 16.2 and Samsung Internet
+22 — so Firefox 112 is *inside* Angular's supported window and has no \`color-mix()\`. Since
+<span class="since" title="Added in 21.7.1">21.7.1</span> every mixed value sits inside an
+\`@supports\` block over a flat palette value, which is the only mechanism that gates a **custom
+property** on feature support: the ordinary two-declaration fallback does not work here, because
+a custom property is validated when it is substituted rather than when it is parsed, so the
+unsupported declaration still wins and \`var()\` on it then resolves to nothing at all. That was
+the real cause of "the colours are wrong in Samsung Internet" — the declarations were not
+falling back, they were vanishing.
+
+So below the floor the library still renders: flat palette colours, less depth, every surface
+legible and every focus ring visible.
+
+Three more things that look like a bug and are not:
+
+- **Every animation is plain CSS** — \`@keyframes\` and \`transition\`, no Web Animations API and no
+  JavaScript timer driving a visual. There is no browser that runs the library but skips its
+  animations. If you see none, the cause is \`prefers-reduced-motion\`, not the browser.
+- **\`backdrop-filter\` degrades on its own.** Both places that use it — the dialog backdrop and
+  the spinner overlay — also set a solid \`background\`, so a browser without it loses the blur
+  and keeps the dimming.
+- **Brave's shields can block Google Fonts.** That affects only the two opt-in
+  \`presets/*.fonts.css\` companions; every preset itself sets system font stacks and is
+  unaffected. Importing a preset never makes a network request.
+
+**What has been tested is narrower than what is supported, and the difference is worth stating:**
+the library is verified in Chrome on Windows. Everything above is derived from the CSS features
+the code actually uses — read it as "nothing here needs anything newer", not as "someone has
+opened it in all of these".
 `,
     ),
     item(
