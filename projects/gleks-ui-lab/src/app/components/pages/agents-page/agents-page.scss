@@ -3,14 +3,14 @@
 @include doc.hero('agents-doc');
 
 .agents-doc {
-  &__hero {
-    /* The download link sits under the lead paragraph, in the same block as the rest of the
-       page's framing rather than floated into the content — there is exactly one action on this
-       page, and it belongs to the whole document, not to any one section of it. */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1em;
+  /* The download link sits under the lead paragraph, in the same block as the rest of the page's
+     framing rather than floated into the content — there is exactly one action on this page, and
+     it belongs to the whole document, not to any one section of it. Spaced with a margin rather
+     than by making the hero a flex column: `doc-page`'s `hero()` mixin already spaces the
+     eyebrow, title and lead with their own margins, and a `gap` would add to every one of them,
+     leaving this hero looser than the twenty pages that share the mixin. */
+  &__download {
+    margin-top: 1.2em;
   }
 
   &__error {

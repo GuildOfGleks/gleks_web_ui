@@ -149,7 +149,7 @@ component counts — is one command each, listed in its own section below:
 | **Entire library, gzipped**               | 116 355 B (**113.6 KB**)                   | _(no combined entry point)_                            | _(no combined entry point)_           |
 | Required stylesheet, gzipped              | 29 295 B (28.6 KB)                         | 1 296 B (1.3 KB, M3 prebuilt theme)                    | 0 — injected at runtime from JS       |
 | `@deprecated` symbols in the package      | **0**                                      | 36                                                     | 34                                    |
-| …that name a removal version              | n/a — 0 deprecated (154 tokens removed in 21.7.0) | 42 `@breaking-change` tags, 40 of them already overdue | 0 of 34                        |
+| …that name a removal version              | n/a — 0 deprecated (154 removed in 21.7.0) | 42 `@breaking-change` tags, 40 of them already overdue | 0 of 34                               |
 | `NgModule` classes shipped                | **0**                                      | 43                                                     | 113                                   |
 | Theming                                   | Plain CSS custom properties, no build step | Sass mixins / M3 system tokens                         | JS preset system (`@primeuix/styled`) |
 

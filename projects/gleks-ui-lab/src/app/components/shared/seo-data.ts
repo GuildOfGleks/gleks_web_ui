@@ -113,7 +113,7 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
       'fixed and what is deprecated, read from the changelog shipped inside the package itself.',
   },
   'general/agents': {
-    title: `AGENTS.md — AI Agent Reference`,
+    title: 'AGENTS.md — AI Agent Reference',
     description:
       'The per-component API reference @guildofgleks/ui ships for a coding agent: exact input ' +
       'names, types and defaults, read live from the file inside the installed package.',

@@ -343,16 +343,17 @@ every deprecated input, element, type alias and asset path it had; **21.7.0** re
 of it, three abbreviated **CSS custom property prefixes** that stood in for a component's full
 name — \`--gog-btn-*\` → \`--gog-button-*\`, \`--gog-confirm-*\` → \`--gog-confirmation-dialog-*\`,
 \`--gog-ms-*\` → \`--gog-multiselect-*\`. Both waves are in the
-[release notes](/general/releases), and every removal fails to compile (or, for the CSS
-prefixes, silently stops applying — which is exactly why they got two minors of overlap rather
-than one) instead of failing quietly, so the compiler and your own visual check are the
-migration checklist.
+[release notes](/general/releases). A removed **symbol** fails to compile, so for that half the
+compiler is the migration checklist. A removed **custom property** cannot fail that way — one
+nothing reads is not an error, just a value that stops applying — which is exactly why the three
+prefixes got two minors of overlap rather than one, and why that half is checked by looking at
+the page.
 
 \`--gog-input-*\` looks like it should have been a fourth prefix and never was: it names the
 text-field block that \`gog-inputfield\` and \`gog-textarea\` both render, not the
 \`gog-inputfield\` component. It stays.
 
-\`npm run check:deprecations\` runs on every build in this repo and fails it the moment a future
+The library's own build runs \`check:deprecations\`, which fails it the moment a future
 deprecation's \`removedIn\` version is reached and the symbol is still exported — so the next
 deprecation, whenever it lands, cannot overrun its own stated date the way two of 21.5.0's did
 before that check existed.
