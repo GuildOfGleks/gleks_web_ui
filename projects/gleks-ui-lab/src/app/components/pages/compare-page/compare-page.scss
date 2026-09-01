@@ -85,6 +85,20 @@
     &:last-of-type {
       margin-bottom: 1.2em;
     }
+
+    /* Matches the inline-code chip `_doc-page.scss` gives every documentation page, so a token
+       or theme name reads the same here as it does everywhere else on the site. */
+    code {
+      font-family: var(--gog-font-mono);
+      font-size: 0.9em;
+      background-color: var(--gog-hover-color);
+      border-radius: 4px;
+      padding: 0.15em 0.4em;
+    }
+
+    strong {
+      color: var(--gog-text-color);
+    }
   }
 
   &__callout {
