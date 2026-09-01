@@ -283,6 +283,20 @@
     </article>
 
     <article class="gallery__card">
+      <h3 class="gallery__card-title">Text Area</h3>
+      <!-- Left resizable (the default) and given a value: `--gog-textarea-*` is almost entirely
+           the resize grip's own chrome, which is only painted on a textarea that can be resized,
+           and `clearable` is what shows the one token that is not. -->
+      <gog-textarea
+        inputId="gallery-textarea"
+        label="Notes"
+        [rows]="3"
+        [clearable]="true"
+        value="Ships within two business days."
+      />
+    </article>
+
+    <article class="gallery__card">
       <h3 class="gallery__card-title">Toast</h3>
       <gog-toast [toast]="previewToast" />
     </article>

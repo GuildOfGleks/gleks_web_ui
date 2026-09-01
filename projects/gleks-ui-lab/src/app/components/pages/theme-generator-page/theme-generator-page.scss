@@ -112,17 +112,24 @@
   gap: 12px;
 }
 
-/* gog-collapsible is headless — no --gog-collapsible-* chrome beyond disabled/max-height/
-   transition — so the trigger and panel are styled here the same way a consumer's own would be. */
-.gallery__collapsible-trigger {
+/* Two tiles need a surface the library does not provide, and both want the same one: a plain
+   control of the kind a consumer would write. `gog-collapsible` is headless (no
+   `--gog-collapsible-*` chrome beyond disabled/max-height/transition), and `[gogRipple]` is
+   applied to markup the consumer owns, so on that tile only the ripple's own tokens are on
+   display. Same chrome, declared once. */
+.gallery__collapsible-trigger,
+.gallery__ripple-surface {
   cursor: pointer;
-  padding: 8px 12px;
   border: var(--gog-control-border-width) var(--gog-control-border-style) var(--gog-border-color);
   border-radius: var(--gog-radius);
   background: var(--gog-surface-color);
   color: var(--gog-text-color);
   font-size: var(--gog-text-sm);
   font-family: var(--gog-font-body);
+}
+
+.gallery__collapsible-trigger {
+  padding: 8px 12px;
 
   &:hover {
     border-color: var(--gog-accent-color);
@@ -136,17 +143,8 @@
   font-size: var(--gog-text-sm);
 }
 
-/* [gogRipple] applied directly, the way a consumer's own surface would use it — the button
-   itself carries no library chrome, so only the ripple's own tokens are on display. */
 .gallery__ripple-surface {
-  cursor: pointer;
   padding: 10px 16px;
-  border: var(--gog-control-border-width) var(--gog-control-border-style) var(--gog-border-color);
-  border-radius: var(--gog-radius);
-  background: var(--gog-surface-color);
-  color: var(--gog-text-color);
-  font-size: var(--gog-text-sm);
-  font-family: var(--gog-font-body);
 }
 
 .gallery__scroll {

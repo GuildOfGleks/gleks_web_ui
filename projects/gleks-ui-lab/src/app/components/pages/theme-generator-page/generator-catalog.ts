@@ -21,15 +21,11 @@ export const GENERATOR_COMPONENTS: readonly GeneratorComponentDef[] = [
   { id: 'dialog', label: 'Dialog', prefixes: ['--gog-dialog-', '--gog-confirmation-dialog-'] },
   { id: 'divider', label: 'Divider', prefixes: ['--gog-divider-'] },
   { id: 'icon', label: 'Icon', prefixes: ['--gog-icon-'] },
-  { id: 'inputfield', label: 'Input Field', prefixes: ['--gog-input-', '--gog-textarea-'] },
+  // `--gog-input-*` names the text-field block `gog-inputfield` and `gog-textarea` both render, so
+  // it belongs to this entry; `--gog-textarea-*` is the textarea's own chrome and has its own.
+  { id: 'inputfield', label: 'Input Field', prefixes: ['--gog-input-'] },
   { id: 'menu', label: 'Menu', prefixes: ['--gog-menu-'] },
-  // `--gog-multiselect-*` is the still-declared spelling; `--gog-multiselect-*` derives from it until
-  // the old name is removed in 21.5.0, so both are listed to keep the generator complete.
-  {
-    id: 'multiselect',
-    label: 'Multiselect',
-    prefixes: ['--gog-multiselect-', '--gog-multiselect-'],
-  },
+  { id: 'multiselect', label: 'Multiselect', prefixes: ['--gog-multiselect-'] },
   { id: 'paginator', label: 'Paginator', prefixes: ['--gog-paginator-'] },
   { id: 'panel', label: 'Panel', prefixes: ['--gog-panel-'] },
   { id: 'progressbar', label: 'Progress Bar', prefixes: ['--gog-progressbar-'] },
@@ -43,6 +39,7 @@ export const GENERATOR_COMPONENTS: readonly GeneratorComponentDef[] = [
   { id: 'table', label: 'Table', prefixes: ['--gog-table-'] },
   { id: 'tabs', label: 'Tabs', prefixes: ['--gog-tabs-'] },
   { id: 'tag', label: 'Tag', prefixes: ['--gog-tag-'] },
+  { id: 'textarea', label: 'Text Area', prefixes: ['--gog-textarea-'] },
   { id: 'toast', label: 'Toast', prefixes: ['--gog-toast-'] },
   { id: 'toggle', label: 'Toggle', prefixes: ['--gog-toggle-'] },
   { id: 'tooltip', label: 'Tooltip', prefixes: ['--gog-tooltip-'] },
