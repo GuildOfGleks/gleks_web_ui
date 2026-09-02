@@ -4,6 +4,23 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.8.0] - planned
+
+### Fixed
+
+- **`GOG_CONFIG`'s own documentation now names every component that reads each key.** The
+  `GogGlobalConfig` JSDoc — the closest thing the library has to a source of truth for which
+  component honours which setting, and what your editor shows you on hover — under-reported four
+  keys. `control.size` did not mention `gog-button-toggle-group`, `gog-toggle`, `gog-autocomplete`
+  or `gog-datepicker`; `control.errorDisplay`, `control.clearable` and `floatLabel` did not
+  mention `gog-autocomplete` or `gog-datepicker`; and `dropdown` claimed to apply to
+  `gog-select`/`gog-multiselect` as a block, when `appendToBody`/`direction` also reach
+  `gog-autocomplete` and `gog-datepicker` while `filter`/`filterPosition` genuinely do not.
+  `AGENTS.md`'s config table was closer but stated outright that `gog-toggle` does **not** take
+  `control.size`, which it does. No behaviour change — every one of these components already
+  honoured the setting; only the documentation was wrong, in the direction of telling you a
+  setting would not work when it does.
+
 ## [21.7.2] - 30.08.2026
 
 ### Fixed

@@ -264,7 +264,7 @@ parent's config**, one level deep per key — it does not replace it.
 
 | Key            | Fields                                                                  | Applies to                                                                                                                                                                                                                                                                                                                                                                                                   |
 | -------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `control`      | `size`, `errorDisplay`, `clearable`                                     | `size`: button, inputfield, textarea, select, multiselect, checkbox, radio-group, button-toggle-group, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, radio-group, slider, datepicker. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip/toggle. |
+| `control`      | `size`, `errorDisplay`, `clearable`                                     | `size`: button, `[gogButton]`, button-toggle-group, checkbox, toggle, radio-group, inputfield, textarea, select, multiselect, autocomplete, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, datepicker, radio-group, slider. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip.                                                          |
 | `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`                 | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text).                                                                                                                                                                                                                       |
 | `floatLabel`   | `variant`, `showPlaceholder`                                            | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                         |
 | `datepicker`   | `locale`, `firstDayOfWeek`, `format`                                    | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                            |
@@ -707,12 +707,12 @@ icon.
 An on/off switch (`role="switch"`) — semantically different from a checkbox ("is this setting
 on", not "is this one of the things you selected").
 
-| Input                   | Type                   | Default |
-| ----------------------- | ---------------------- | ------- |
-| `label`, `ariaLabel`    | `string`               | `''`    |
-| `size`                  | `GogSize \| undefined` | `'md'`  |
-| `disabled`, `fullWidth` | `boolean`              | `false` |
-| `labelPosition`         | `'start' \| 'end'`     | `'end'` |
+| Input                   | Type                   | Default | Notes                                 |
+| ----------------------- | ---------------------- | ------- | ------------------------------------- |
+| `label`, `ariaLabel`    | `string`               | `''`    |                                       |
+| `size`                  | `GogSize \| undefined` | `'md'`  | via `GOG_CONFIG.control.size`         |
+| `disabled`, `fullWidth` | `boolean`              | `false` |                                       |
+| `labelPosition`         | `'start' \| 'end'`     | `'end'` |                                       |
 | `onLabel`, `offLabel`   | `string`               | `''`    | text rendered inside the track itself |
 
 Model: `checked: boolean`. CVA: yes.

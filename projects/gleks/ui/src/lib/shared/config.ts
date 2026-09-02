@@ -70,7 +70,11 @@ export interface GogGlobalConfig {
     hideDelay?: number;
     position?: GogTooltipPosition;
   };
-  /** Applies to `gog-inputfield`, `gog-select`, `gog-multiselect` and `gog-textarea`. */
+  /**
+   * Applies to `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`,
+   * `gog-autocomplete` and `gog-datepicker` — every field that can float a label. All six read
+   * it through the same `GogFloatLabelState`, three of them via `GogDropdownBase`.
+   */
   floatLabel?: {
     variant?: GogFloatLabelVariant;
     /**
@@ -85,32 +89,55 @@ export interface GogGlobalConfig {
    * literally every one of them: a compact app writes `size="sm"` everywhere, and a
    * Reactive-Forms app writes `errorDisplay="auto"` on every field.
    *
-   * - `size` applies to `gog-button`, `gog-inputfield`, `gog-textarea`, `gog-select`,
-   *   `gog-multiselect`, `gog-checkbox` and `gog-radio-group`. Deliberately **not** to
-   *   `gog-table`, `gog-accordion` or `gog-paginator` (whose `size` means row/layout density
-   *   and whose defaults differ), nor to `gog-spinner`, `gog-skeleton`, `gog-tag` or
+   * - `size` applies to `gog-button` and `[gogButton]`, `gog-button-toggle-group`,
+   *   `gog-checkbox`, `gog-toggle`, `gog-radio-group`, `gog-inputfield`, `gog-textarea`,
+   *   `gog-select`, `gog-multiselect`, `gog-autocomplete` and `gog-datepicker`. Deliberately
+   *   **not** to `gog-table`, `gog-accordion` or `gog-paginator` (whose `size` means row/layout
+   *   density and whose defaults differ), nor to `gog-spinner`, `gog-skeleton`, `gog-tag` or
    *   `gog-chip` (sized to fit whatever they sit next to, not to a form's density).
    * - `errorDisplay` applies to every control that renders a validation message:
-   *   `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-radio-group`
-   *   and `gog-slider`.
+   *   `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`,
+   *   `gog-datepicker`, `gog-radio-group` and `gog-slider`.
    *
    * A component's own built-in default still applies when this is unset, so setting `size`
    * here does not flatten the different defaults those excluded components have.
+   *
+   * **When you add a reader, add it here — and note that "reader" is not the same as "names
+   * the field".** These lists were wrong for four keys until 2026-09-02, always in the same
+   * direction and for the same reason: `gog-select`, `gog-multiselect` and `gog-autocomplete`
+   * resolve `size`/`errorDisplay`/`clearable`/`floatLabel` inside `GogDropdownBase`, and
+   * `gog-datepicker` composes the same state classes directly, so none of the four contains the
+   * `globalConfig.control?.…` expression that a grep for readers finds. Nor does the resolved
+   * value always reach a template by name — `size` arrives as a computed class (`sizeClass`,
+   * `panelSizeClass`) and `dropdown.direction` is consumed by placement code, so "is the
+   * computed referenced in the component's HTML?" answers *no* for components that genuinely
+   * honour the key. Trace the shared state classes, not just the components.
    */
   control?: {
     size?: GogSize;
     errorDisplay?: GogErrorDisplay;
     /**
-     * Whether `gog-inputfield`, `gog-textarea`, `gog-select` and `gog-multiselect` offer a
-     * clear button. The button only ever appears once the control actually has something to
-     * clear, so switching this on app-wide adds no permanent chrome.
+     * Whether `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`,
+     * `gog-autocomplete` and `gog-datepicker` offer a clear button — every control that
+     * composes `GogClearableState`. The button only ever appears once the control actually has
+     * something to clear, so switching this on app-wide adds no permanent chrome.
      *
      * Component defaults are `false`, except `gog-multiselect`, which had a clear button
      * before this input existed and keeps it.
      */
     clearable?: boolean;
   };
-  /** Applies to `gog-select` and `gog-multiselect`. */
+  /**
+   * Applies per field rather than per component, which is why this is not one sentence:
+   *
+   * - `appendToBody` and `direction` reach `gog-select`, `gog-multiselect`,
+   *   `gog-autocomplete` (all three through `GogDropdownBase`) and `gog-datepicker`, which
+   *   resolves the same pair itself.
+   * - `filter` and `filterPosition` reach `gog-select` and `gog-multiselect` only.
+   *   `gog-autocomplete` inherits both inputs from the same base class and renders no filter
+   *   box for them — its own text field *is* the filter, so a second search box inside the
+   *   panel would be a duplicate. Setting these does nothing to an autocomplete.
+   */
   dropdown?: {
     /**
      * Whether the panel is rendered into `<body>` instead of inline. Worth setting app-wide
