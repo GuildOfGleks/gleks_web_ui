@@ -170,6 +170,44 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader>ARIA state — a toggle and a disclosure</h3>
+    <p class="meta">
+      The component hides the real <code>&lt;button&gt;</code>, so
+      <code>[attr.aria-pressed]</code> written on <code>&lt;gog-button&gt;</code> lands on the
+      custom element host — which has no role — and reaches no assistive tech at all. It compiles,
+      throws nothing, and looks right. Use the inputs: <code>ariaPressed</code>,
+      <code>ariaExpanded</code>, <code>ariaControls</code> and <code>ariaHasPopup</code>, alongside
+      the <code>ariaLabel</code> that already existed for the same reason.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" [ariaPressed]="isMirrored()" (gogClick)="toggleMirror()">
+        Mirror layout
+      </gog-button>
+      <gog-button
+        variant="outline"
+        [ariaExpanded]="areFiltersOpen()"
+        ariaControls="showcase-filters"
+        ariaHasPopup="dialog"
+        (gogClick)="toggleFilters()"
+      >
+        Filters
+      </gog-button>
+    </div>
+    @if (areFiltersOpen()) {
+      <div id="showcase-filters" class="action-row">
+        <p class="meta">The region <code>ariaControls</code> points at.</p>
+      </div>
+    }
+    <p class="meta">
+      Inspect either button: the attribute sits on the inner <code>&lt;button&gt;</code>, never on
+      <code>&lt;gog-button&gt;</code>. Note that the off state renders
+      <code>aria-pressed="false"</code> rather than dropping the attribute — <code>null</code> means
+      "not a toggle button", <code>false</code> means "a toggle button that is off", and they are
+      different controls to a screen reader.
+    </p>
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Native type semantics</h3>
     <p class="meta"><code>type</code> is forwarded to the native <code>&lt;button&gt;</code>.</p>
     <form class="action-row" (submit)="onFormSubmit($event)" (reset)="onFormReset()">

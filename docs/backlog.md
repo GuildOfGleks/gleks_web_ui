@@ -59,35 +59,18 @@ state — the check had been measuring the easier of the two states. It caught a
 
 Each is additive: nothing here breaks an existing consumer, and none blocks another.
 
-- **`gog-button` forwards `ariaLabel` and nothing else, so a toggle or disclosure button cannot
-  state what it is.** Filed 2026-09-02. The component's `ariaLabel` input exists precisely
-  because an attribute set on `<gog-button>` lands on the custom-element host rather than on the
-  `<button>` inside it — `button.component.ts` says so in that input's own comment. But it is the
-  only ARIA input there is: grep the library for `ariaPressed`, `ariaExpanded`, `ariaControls` or
-  `ariaHasPopup` and there are no hits. So a consumer building the two most ordinary stateful
-  buttons — a toggle (`aria-pressed`) and a thing that opens a panel (`aria-expanded` +
-  `aria-controls`) — writes the binding that reads correctly, gets no error, and ships a control
-  whose state reaches no assistive tech.
-
-  **This is not theoretical: the library's own docs site did it.** `gleks-ui-lab`'s RTL toggle
-  shipped with `[attr.aria-pressed]="isRtl()"` on a `<gog-button>` (`c0a62cf`), inert on a
-  roleless host, and the header search button had no `aria-expanded` because there was no way to
-  give it one. Both now carry their state in the accessible **name** instead, which works today
-  and is the documented fallback — see `app.ts`'s `directionToggleLabel`. That workaround is the
-  measure of the gap, not a reason to leave it: a name that changes under the user is strictly
-  worse than a state a screen reader can query, and every consumer will have to reinvent it.
-
-  Silent failure is what makes this the first of the gaps rather than one among them. The shape
-  of the fix is settled by `ariaLabel`'s own precedent — named inputs forwarded onto the inner
-  `<button>`, not a blanket attribute passthrough — so it is API design in the small, not a
-  decision to make first.
-
-  **`gog-chip` has the identical shape and should be surveyed in the same pass**, not assumed
-  into it: its `.gog-chip__surface` takes `role="button"` when the chip is interactive and reads
-  `ariaLabel()` onto that inner element — the same one-input ceiling, one component over.
-  `gog-toggle` is _not_ this problem and should not be swept in: it wraps a real
-  `<input role="switch">`, so its checked state is native and needs no forwarding. `gog-tag`
-  renders no interactive element at all. Deciding the boundary is the survey's job.
+- **A selectable chip.** `gog-chip` has `clickable` and `removable` but no `selected` — so the
+  filter-chip pattern (a row of chips you toggle on and off) cannot be built from it without the
+  consumer inventing both the styling and the semantics. Found 2026-09-02 while surveying the
+  chip for `gog-button`'s ARIA forwarding work, and worth stating as the feature gap it is rather
+  than the forwarding gap it looked like: `gog-chip` renders `role="button"` on its interactive
+  surface and reads only `ariaLabel` onto it, exactly like `gog-button` did — but **forwarding
+  `aria-pressed` there would be the wrong fix.** The chip has no selected state to style, so a
+  consumer could announce `aria-pressed="true"` on a chip that looks identical to an unpressed
+  one: state perceivable to a screen reader and to nobody else, which fails WCAG 1.4.1 in the
+  other direction. Whatever ships has to own the look and the semantics together. `gog-toggle`
+  and `gog-tag` were checked at the same time and neither belongs here — toggle wraps a real
+  `<input role="switch">` whose checked state is native, and tag renders nothing interactive.
 
 - **Missing components**, in rough order of how often a real site wants them: `alert`/`banner` (a
   persistent in-flow message — `gog-toast` is transient and cannot serve this), `avatar`,

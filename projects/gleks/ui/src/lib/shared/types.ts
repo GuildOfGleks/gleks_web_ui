@@ -1,6 +1,12 @@
 ﻿export type GogSize = 'xsm' | 'sm' | 'md' | 'lg' | 'slg';
 export type GogVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 /**
+ * The `aria-haspopup` values that make sense on a button, matching the ARIA 1.2 enumeration.
+ * `true` is a synonym for `'menu'` in the spec; prefer the specific value, since a screen
+ * reader announces it ("has menu", "has dialog").
+ */
+export type GogAriaHasPopup = boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+/**
  * How a surface paints itself, shared by `gog-card` and `gog-panel` so the two agree:
  * - `'outlined'` — a border, no shadow. The quietest, and right for a grid of many.
  * - `'elevated'` — the shared surface shadow (`--gog-panel-shadow`), no border.

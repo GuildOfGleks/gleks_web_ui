@@ -12,7 +12,7 @@ import { Subject, timer } from 'rxjs';
 import { throttle } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { GogSize, GogVariant } from '../../shared/types';
+import { GogAriaHasPopup, GogSize, GogVariant } from '../../shared/types';
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { resolveRipple } from '../../shared/ripple-state';
 import { GogRippleDirective } from '../ripple/ripple.directive';
@@ -65,6 +65,36 @@ export class ButtonComponent {
    * Use this input instead, especially for icon-only buttons.
    */
   ariaLabel = input<string | null>(null);
+
+  /**
+   * State and relationship attributes, forwarded to the native `<button>` for the same reason
+   * `ariaLabel` is: this component hides the real button, so an `[attr.aria-*]` written on
+   * `<gog-button>` lands on the custom element — which has no role — and reaches nothing.
+   * It fails silently, with no error and no visible difference.
+   *
+   * `null` (the default) omits the attribute. `false` is **not** the same as `null` here and is
+   * deliberately forwarded: a toggle button in its off state has to say `aria-pressed="false"`,
+   * because a button with no `aria-pressed` at all is not a toggle button — it is a button that
+   * does something, and a screen reader will describe it as one.
+   *
+   * ```html
+   * <gog-button [ariaPressed]="isRtl()" (gogClick)="toggle()">Mirror</gog-button>
+   *
+   * <gog-button [ariaExpanded]="isOpen()" ariaControls="filters" ariaHasPopup="dialog">
+   *   Filters
+   * </gog-button>
+   * ```
+   *
+   * The `[gogButton]` directive needs none of this: it styles an element the consumer owns, so
+   * `aria-pressed` written there already lands where it should.
+   */
+  ariaPressed = input<boolean | 'mixed' | null>(null);
+  /** See `ariaPressed`. `false` renders `aria-expanded="false"`; `null` omits the attribute. */
+  ariaExpanded = input<boolean | null>(null);
+  /** Id of the element this button controls — pairs with `ariaExpanded`. See `ariaPressed`. */
+  ariaControls = input<string | null>(null);
+  /** What this button opens, if anything. See `ariaPressed`. */
+  ariaHasPopup = input<GogAriaHasPopup | null>(null);
 
   gogClick = output<MouseEvent>();
 

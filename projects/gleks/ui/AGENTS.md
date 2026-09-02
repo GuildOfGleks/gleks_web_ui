@@ -5,7 +5,8 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.7.0`**. 21.7.0 removed the three
+Everything below reflects the library's actual source as of **`21.8.0`** (in progress — the
+released version is 21.7.2; see `CHANGELOG.md` for what 21.8.0 adds). 21.7.0 removed the three
 abbreviated token prefixes and 21.5.0 removed a batch of deprecated API — see **Removed in 21.7.0**
 and **Removed in 21.5.0** near the end of this file, which exist so code written against an older
 version can be migrated — and `CHANGELOG.md` has the rest. `README.md` covers the same ground at a
@@ -474,9 +475,36 @@ Every component below is exported from `@guildofgleks/ui`'s root — `import { X
 | `loading`   | `boolean`                         | `false`     | shows an inline `gog-spinner`, blocks clicks          |
 | `debounce`  | `number \| undefined`             | `300`       | ms; via `GOG_CONFIG.button.debounce` — see note below |
 | `ariaLabel` | `string \| null`                  | `null`      | **use this, not a raw `aria-label` attribute**        |
+| `ariaPressed` | `boolean \| 'mixed' \| null`    | `null`      | toggle button; `false` renders `aria-pressed="false"` |
+| `ariaExpanded` | `boolean \| null`              | `null`      | disclosure / popup trigger                            |
+| `ariaControls` | `string \| null`               | `null`      | id of the controlled element; pairs with `ariaExpanded` |
+| `ariaHasPopup` | `GogAriaHasPopup \| null`      | `null`      | `boolean \| 'menu' \| 'listbox' \| 'tree' \| 'grid' \| 'dialog'` |
 | `ripple`    | `boolean \| undefined`            | `false`     | press ripple; via `GOG_CONFIG.ripple.enabled`         |
 
 Outputs: `gogClick: MouseEvent`.
+
+**Every ARIA attribute this button needs has an input, and a raw attribute is not a
+substitute.** `<gog-button [attr.aria-pressed]="on()">` compiles, throws nothing, and does
+nothing: the attribute lands on the `<gog-button>` custom element, which has no role, while the
+real `<button>` inside stays unmarked. The failure is invisible — the control looks right and is
+simply not a toggle to a screen reader. Use `[ariaPressed]`, `[ariaExpanded]`, `[ariaControls]`,
+`[ariaHasPopup]` and `ariaLabel`.
+
+`false` is not the same as unset. `null` omits the attribute; `false` renders
+`aria-pressed="false"` / `aria-expanded="false"`, which is what an off toggle or a closed
+disclosure has to say — a button with no `aria-pressed` at all is not a toggle button.
+
+**`[gogButton]` needs none of these inputs.** It styles an element you own, so write the ARIA
+attributes on your own `<button>`/`<a>` directly. Same for `[gogMenuTrigger]`, which sets
+`aria-haspopup`/`aria-expanded`/`aria-controls` on its host — put it on your own `<button
+gogButton>`, as its own example shows, not on a `<gog-button>`.
+
+```html
+<gog-button [ariaPressed]="mirrored()" (gogClick)="toggleMirror()">Mirror</gog-button>
+
+<gog-button [ariaExpanded]="open()" ariaControls="filters" ariaHasPopup="dialog"
+            (gogClick)="open.set(!open())">Filters</gog-button>
+```
 
 **`debounce` is a spam guard, not a delay before the first click.** The first click in a window
 fires immediately (leading edge); further clicks within `debounce` ms are silently dropped.
@@ -1752,6 +1780,7 @@ Shared enum-like types (`import type { ... } from '@guildofgleks/ui'`):
 | `GogSize`                     | `'xsm' \| 'sm' \| 'md' \| 'lg' \| 'slg'`                                                                            |
 | `GogVariant`                  | `'primary' \| 'secondary' \| 'outline' \| 'ghost'`                                                                  |
 | `GogSurfaceVariant`           | `'outlined' \| 'elevated' \| 'filled'` — `gog-card` and `gog-panel`                                                 |
+| `GogAriaHasPopup`             | `boolean \| 'menu' \| 'listbox' \| 'tree' \| 'grid' \| 'dialog'` — `gog-button`'s `ariaHasPopup`                    |
 | `GogTagVariant`               | `'success' \| 'danger' \| 'warning' \| 'info'`                                                                      |
 | `GogOrientation`              | `'horizontal' \| 'vertical'`                                                                                        |
 | `GogTagShape`                 | `'rounded' \| 'pill'`                                                                                               |

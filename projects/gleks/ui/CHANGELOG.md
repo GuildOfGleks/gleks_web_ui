@@ -6,6 +6,19 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.8.0] - planned
 
+### Added
+
+- **`gog-button` forwards ARIA state and relationships: `ariaPressed`, `ariaExpanded`,
+  `ariaControls`, `ariaHasPopup`.** The component hides the real `<button>`, so
+  `<gog-button [attr.aria-pressed]="on()">` puts the attribute on the custom element host —
+  which has no role — and assistive tech never sees it. It compiles, throws nothing, looks
+  right, and silently ships a toggle button that is not a toggle button; `ariaLabel` already
+  existed for exactly this reason and was the only one. `null` (the default) omits the
+  attribute, while `false` is forwarded as `aria-pressed="false"`/`aria-expanded="false"`,
+  which is what an off toggle or a closed disclosure must say. New exported type
+  `GogAriaHasPopup`. The `[gogButton]` directive needs none of this — it styles an element you
+  own, so write the attributes there directly.
+
 ### Fixed
 
 - **`GOG_CONFIG`'s own documentation now names every component that reads each key.** The

@@ -139,6 +139,63 @@ describe('ButtonComponent', () => {
     });
   });
 
+  describe('ARIA state and relationship inputs', () => {
+    const nativeButton = () => fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+
+    it.each([
+      ['ariaPressed', 'aria-pressed', true, 'true'],
+      ['ariaPressed', 'aria-pressed', 'mixed', 'mixed'],
+      ['ariaExpanded', 'aria-expanded', true, 'true'],
+      ['ariaControls', 'aria-controls', 'filters-panel', 'filters-panel'],
+      ['ariaHasPopup', 'aria-haspopup', 'dialog', 'dialog'],
+      ['ariaHasPopup', 'aria-haspopup', true, 'true'],
+    ] as const)(
+      'should forward %s to the native button as %s',
+      async (inputName, attribute, value, expected) => {
+        fixture.componentRef.setInput(inputName, value);
+        await fixture.whenStable();
+
+        expect(nativeButton().getAttribute(attribute)).toBe(expected);
+      },
+    );
+
+    it.each([
+      ['ariaPressed', 'aria-pressed'],
+      ['ariaExpanded', 'aria-expanded'],
+      ['ariaControls', 'aria-controls'],
+      ['ariaHasPopup', 'aria-haspopup'],
+    ] as const)('should omit %s when unset', (_inputName, attribute) => {
+      expect(nativeButton().hasAttribute(attribute)).toBe(false);
+    });
+
+    // The distinction the whole feature turns on. A toggle button in its off state must say
+    // `aria-pressed="false"`; a button with no `aria-pressed` at all is not a toggle button, so
+    // treating `false` like the unset default would silently produce the wrong control.
+    it.each([
+      ['ariaPressed', 'aria-pressed'],
+      ['ariaExpanded', 'aria-expanded'],
+    ] as const)(
+      'should render %s="false" rather than omitting it',
+      async (inputName, attribute) => {
+        fixture.componentRef.setInput(inputName, false);
+        await fixture.whenStable();
+
+        expect(nativeButton().getAttribute(attribute)).toBe('false');
+      },
+    );
+
+    it('should keep the attributes off the host element, where they would do nothing', async () => {
+      fixture.componentRef.setInput('ariaPressed', true);
+      fixture.componentRef.setInput('ariaExpanded', true);
+      await fixture.whenStable();
+
+      const host = fixture.nativeElement as HTMLElement;
+      expect(host.hasAttribute('aria-pressed')).toBe(false);
+      expect(host.hasAttribute('aria-expanded')).toBe(false);
+      expect(nativeButton().getAttribute('aria-pressed')).toBe('true');
+    });
+  });
+
   describe('variant and size classes', () => {
     it('should apply the variant class', async () => {
       fixture.componentRef.setInput('variant', 'outline');

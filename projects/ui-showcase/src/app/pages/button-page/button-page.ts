@@ -42,6 +42,18 @@ export class ButtonPage {
   protected readonly clickCount = signal(0);
   protected readonly formResult = signal('Neither button pressed yet.');
 
+  /** Drives the ARIA-state examples: a toggle button and a disclosure button. */
+  protected readonly isMirrored = signal(false);
+  protected readonly areFiltersOpen = signal(false);
+
+  protected toggleMirror(): void {
+    this.isMirrored.update((mirrored) => !mirrored);
+  }
+
+  protected toggleFilters(): void {
+    this.areFiltersOpen.update((open) => !open);
+  }
+
   protected onClick(variant: GogVariant, size: GogSize): void {
     this.lastClicked.set(`Clicked "${variant}" (${size})`);
   }
