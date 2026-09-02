@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  Injector,
   PLATFORM_ID,
+  afterNextRender,
   computed,
   inject,
   signal,
@@ -80,6 +82,7 @@ export class App {
   private readonly themeService = inject(ThemeService);
   private readonly elRef = inject(ElementRef<HTMLElement>);
   private readonly router = inject(Router);
+  private readonly injector = inject(Injector);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   // The page does not scroll — `.lab-layout` is pinned to 100dvh and this `gog-scroll` owns the
@@ -236,8 +239,12 @@ export class App {
     }
     this.isSearchOpen.set(true);
     // The panel (and the input inside it) doesn't exist until this signal flips and Angular
-    // renders it — a plain `.focus()` here would target last render's (absent) element.
-    queueMicrotask(() => this.searchInput()?.nativeElement.focus());
+    // renders it — a plain `.focus()` here would target last render's (absent) element. This
+    // used to be a `queueMicrotask`, which is a race and not a guarantee: nothing orders a bare
+    // microtask against Angular's own scheduler, so it happened to run after the render rather
+    // than being required to. `afterNextRender` is the contract, and it also does the right
+    // thing under SSR, where it simply never runs.
+    afterNextRender(() => this.searchInput()?.nativeElement.focus(), { injector: this.injector });
   }
 
   protected closeSearch(): void {
