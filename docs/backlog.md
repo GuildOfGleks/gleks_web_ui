@@ -16,7 +16,26 @@ not worth carrying here.
 
 ## Defects — first
 
-**None open.** The section is empty again as of 2026-08-29.
+**One open, found 2026-09-02.** `shared/config.ts`'s own `GogGlobalConfig` JSDoc — the "Applies
+to …" sentence on each key, which is the closest thing the library has to a source of truth for
+which components read which config — is incomplete in four places, verified by grepping every
+`globalConfig.<key>?.<field>` read across the library plus the templates that actually consume
+each derived value (not just the ones that inherit it): `control.size`'s list omits
+`gog-button-toggle`, `gog-toggle`, `gog-datepicker` and `gog-autocomplete` (all four genuinely
+read it); `control.errorDisplay`'s list omits `gog-datepicker` and `gog-autocomplete`;
+`dropdown.appendToBody`/`dropdown.direction`'s list ("gog-select and gog-multiselect") omits
+`gog-datepicker` and `gog-autocomplete` — both read the same pair from `GogDropdownBase`, and
+`autocomplete.component.html` genuinely branches on `resolvedAppendToBody()` for its portal;
+`floatLabel` and `control.clearable`'s lists both omit `gog-datepicker` and `gog-autocomplete`
+for the same reason. **`dropdown.filter`/`filterPosition` is not one of the gaps** — `gog-select`
+and `gog-multiselect` both reference `resolvedFilter()`/`filterQuery()` in their templates,
+`gog-autocomplete`'s template references neither, so config.ts's narrower "gog-select and
+gog-multiselect" claim is correct for that specific pair alone, unlike the others. Found while
+building `gleks-ui-lab`'s per-component "Global Configuration" section
+(`docs/feedback-triage.md` item 8), which needed an accurate source before it could quote one —
+the lab documents the corrected, code-verified list rather than the comment as it stands. Fix is
+JSDoc-only, no behavior change: widen the four "Applies to" sentences in `config.ts`. A library
+session, not this lab one — see `CLAUDE.md` rule 3.
 
 **What was here, and what closing it cost.** Nine WCAG AA failures across five shipped theme
 palettes, found by `docs/themes.md` iteration 2's `npm run check:contrast`. All nine are fixed,

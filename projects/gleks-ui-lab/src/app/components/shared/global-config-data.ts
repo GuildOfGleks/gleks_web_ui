@@ -1,0 +1,172 @@
+// Per-component `GOG_CONFIG` keys, for the "Global Configuration" section every component doc
+// page renders (`global-config-note.ts`). docs/feedback-triage.md item 8.
+//
+// Not transcribed from `@guildofgleks/ui`'s `shared/config.ts` JSDoc — that file's own "Applies
+// to …" sentences turned out to be incomplete in four places (missing gog-datepicker and/or
+// gog-autocomplete, which read several fields through the same shared base classes as
+// gog-select/gog-multiselect and gog-inputfield/gog-textarea but weren't named alongside them).
+// See docs/backlog.md's defect entry, filed 2026-09-02. This table is built from the library's
+// actual source instead: every `globalConfig.<key>?.<field>` read, cross-checked against the
+// component's own template so an inherited-but-unused field (gog-autocomplete inherits
+// `dropdown.filter`/`filterPosition` from `GogDropdownBase` but never renders the filter box
+// that reads them) is correctly left out.
+
+export interface GlobalConfigEntry {
+  /** A `GOG_CONFIG` path, e.g. `'control.size'`. */
+  readonly key: string;
+  /** Shown after the key when the field name alone doesn't say what it does. */
+  readonly note?: string;
+}
+
+/** Keyed by the same slug `nav-data.ts` and the routes use (`components/<slug>`). */
+export const GLOBAL_CONFIG_BY_COMPONENT: Readonly<Record<string, readonly GlobalConfigEntry[]>> = {
+  accordion: [{ key: 'ripple.enabled' }],
+  autocomplete: [
+    { key: 'control.size' },
+    { key: 'control.errorDisplay' },
+    { key: 'control.clearable' },
+    { key: 'floatLabel.variant' },
+    { key: 'floatLabel.showPlaceholder' },
+    { key: 'dropdown.appendToBody' },
+    { key: 'dropdown.direction' },
+    { key: 'ripple.enabled' },
+    { key: 'autocomplete.minLength' },
+    { key: 'autocomplete.searchDebounce' },
+    { key: 'autocomplete.openOnFocus' },
+    { key: 'labels.clearSelection' },
+  ],
+  badge: [],
+  button: [{ key: 'control.size' }, { key: 'button.debounce' }, { key: 'ripple.enabled' }],
+  'button-toggle': [{ key: 'control.size' }, { key: 'ripple.enabled' }],
+  calendar: [
+    { key: 'datepicker.locale' },
+    { key: 'datepicker.firstDayOfWeek' },
+    { key: 'labels.today' },
+    { key: 'labels.thisMonth' },
+    { key: 'labels.previousMonth' },
+    { key: 'labels.nextMonth' },
+    { key: 'labels.previousYear' },
+    { key: 'labels.nextYear' },
+    { key: 'labels.hours', note: 'time selection' },
+    { key: 'labels.minutes', note: 'time selection' },
+    { key: 'labels.seconds', note: 'time selection' },
+  ],
+  card: [],
+  checkbox: [{ key: 'control.size' }],
+  chip: [{ key: 'ripple.enabled' }],
+  collapsible: [{ key: 'ripple.enabled', note: 'on gogCollapsibleTrigger' }],
+  datepicker: [
+    { key: 'control.size' },
+    { key: 'control.errorDisplay' },
+    { key: 'control.clearable' },
+    { key: 'floatLabel.variant' },
+    { key: 'floatLabel.showPlaceholder' },
+    { key: 'dropdown.appendToBody' },
+    { key: 'dropdown.direction' },
+    { key: 'datepicker.locale' },
+    { key: 'datepicker.firstDayOfWeek' },
+    { key: 'datepicker.format' },
+    { key: 'labels.clearDate' },
+    { key: 'labels.openCalendar' },
+    { key: 'labels.today', note: 'and the rest of Calendar’s labels, once the panel is open' },
+  ],
+  dialog: [{ key: 'labels.closeDialog' }],
+  divider: [],
+  icon: [],
+  inputfield: [
+    { key: 'control.size' },
+    { key: 'control.errorDisplay' },
+    { key: 'control.clearable' },
+    { key: 'floatLabel.variant' },
+    { key: 'floatLabel.showPlaceholder' },
+    { key: 'inputfield.showSpinButtons' },
+    { key: 'labels.clear' },
+    { key: 'labels.increment', note: 'type="number" spin buttons' },
+    { key: 'labels.decrement', note: 'type="number" spin buttons' },
+    { key: 'labels.showPassword' },
+    { key: 'labels.hidePassword' },
+  ],
+  menu: [{ key: 'ripple.enabled', note: 'on menu items' }],
+  multiselect: [
+    { key: 'control.size' },
+    { key: 'control.errorDisplay' },
+    { key: 'control.clearable' },
+    { key: 'floatLabel.variant' },
+    { key: 'floatLabel.showPlaceholder' },
+    { key: 'dropdown.appendToBody' },
+    { key: 'dropdown.direction' },
+    { key: 'dropdown.filter' },
+    { key: 'dropdown.filterPosition' },
+    { key: 'ripple.enabled', note: 'on the panel’s options' },
+    { key: 'labels.clearSelection' },
+    { key: 'labels.selectAll' },
+    { key: 'labels.clearAll' },
+  ],
+  paginator: [
+    { key: 'paginator.showPageSizeSelect' },
+    { key: 'paginator.pageSizeOptions' },
+    { key: 'labels.pagination' },
+    { key: 'labels.previousPage' },
+    { key: 'labels.nextPage' },
+    { key: 'labels.page' },
+    { key: 'labels.rowsPerPage' },
+  ],
+  panel: [{ key: 'labels.togglePanel', note: 'only when the panel has no gogPanelHeader' }],
+  progressbar: [],
+  'radio-group': [{ key: 'control.size' }, { key: 'control.errorDisplay' }],
+  ripple: [
+    {
+      key: 'ripple.enabled',
+      note: 'turns the press ripple on app-wide for nine other components — see each one’s own section. [gogRipple] on your own element is not covered; the attribute is already the per-element decision.',
+    },
+  ],
+  scroll: [
+    { key: 'scroll.size' },
+    { key: 'scroll.autoHide' },
+    { key: 'scroll.hideDelay' },
+    { key: 'scroll.overscrollBehavior' },
+    { key: 'scroll.showTrack' },
+  ],
+  select: [
+    { key: 'control.size' },
+    { key: 'control.errorDisplay' },
+    { key: 'control.clearable' },
+    { key: 'floatLabel.variant' },
+    { key: 'floatLabel.showPlaceholder' },
+    { key: 'dropdown.appendToBody' },
+    { key: 'dropdown.direction' },
+    { key: 'dropdown.filter' },
+    { key: 'dropdown.filterPosition' },
+    { key: 'ripple.enabled', note: 'on the panel’s options' },
+    { key: 'labels.clearSelection' },
+  ],
+  skeleton: [],
+  slider: [{ key: 'control.errorDisplay' }],
+  spinner: [],
+  table: [
+    { key: 'paginator.showPageSizeSelect', note: 'through the built-in pagination' },
+    { key: 'paginator.pageSizeOptions', note: 'through the built-in pagination' },
+    { key: 'labels.total' },
+    { key: 'labels.tablePagination' },
+    { key: 'labels.selectRow' },
+    { key: 'labels.selectAllRows' },
+  ],
+  tabs: [{ key: 'ripple.enabled' }],
+  tag: [],
+  textarea: [
+    { key: 'control.size' },
+    { key: 'control.errorDisplay' },
+    { key: 'control.clearable' },
+    { key: 'floatLabel.variant' },
+    { key: 'floatLabel.showPlaceholder' },
+    { key: 'textarea.resize' },
+    { key: 'labels.clear' },
+  ],
+  toast: [{ key: 'toast.position' }, { key: 'toast.duration' }, { key: 'labels.closeToast' }],
+  toggle: [{ key: 'control.size' }],
+  tooltip: [
+    { key: 'tooltip.position' },
+    { key: 'tooltip.showDelay' },
+    { key: 'tooltip.hideDelay' },
+  ],
+};

@@ -1,0 +1,26 @@
+<section class="doc-section">
+  <h2 id="global-config" class="doc-section__title font-heading">Global Configuration</h2>
+  @if (entries().length > 0) {
+    <p class="doc-section__intro">
+      Set any of these once with <code>provideGogConfig()</code> instead of repeating them on every
+      instance — an instance's own input still wins when it sets one itself. See
+      <a routerLink="/general/global-config">Global Configuration</a> for the full reference.
+    </p>
+    <ul class="global-config-note__list">
+      @for (entry of entries(); track entry.key) {
+        <li>
+          <code>GOG_CONFIG.{{ entry.key }}</code>
+          @if (entry.note) {
+            <span class="global-config-note__note"> — {{ entry.note }}</span>
+          }
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="doc-section__intro">
+      This component has no <code>GOG_CONFIG</code> entries of its own — every default is set per
+      instance. See <a routerLink="/general/global-config">Global Configuration</a> for what does
+      apply app-wide.
+    </p>
+  }
+</section>

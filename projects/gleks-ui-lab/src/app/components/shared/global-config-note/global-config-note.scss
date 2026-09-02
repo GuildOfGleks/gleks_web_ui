@@ -1,0 +1,20 @@
+@use '../../pages/doc-page' as doc;
+
+.global-config-note__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
+  code {
+    @include doc.inline-code;
+    color: var(--gog-accent-color);
+  }
+}
+
+.global-config-note__note {
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}
