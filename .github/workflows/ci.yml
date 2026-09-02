@@ -85,6 +85,15 @@ jobs:
       - name: Theme contrast check
         run: npm run check:contrast
 
+      # The docs site serves `theme-starter.css` as the file a consumer copies wholesale, and it
+      # opens by calling itself "every token the library paints with". Nothing enforced that, so
+      # it had drifted to 714 of 1312 tokens with fifteen components missing entirely. The
+      # component block is generated from the installed package now; this fails if it is stale or
+      # if any token is unaccounted for. Note it reads node_modules, so it checks the *published*
+      # package — which is the version the lab documents.
+      - name: Theme starter completeness
+        run: npm run check:theme-starter
+
       # The library must build standalone, before anything that consumes it.
       - name: Build @gleks/ui
         run: npm run build:lib
