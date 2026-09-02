@@ -9,8 +9,8 @@ interface BundleBar {
   readonly emphasis: boolean;
 }
 
-// Guild of Gleks UI re-measured 2026-08-28 against @guildofgleks/ui@21.6.1; Material
-// (@angular/material@22.1.2 +cdk) and primeng@22.0.0 are unchanged since 2026-08-15.
+// Re-measured 2026-09-02, all three libraries together: @guildofgleks/ui@21.7.2, Material
+// (@angular/material@22.1.5 +cdk) and primeng@22.1.0.
 // `percent` is each bar's share of the largest one (PrimeNG) — keep the three in
 // step when the numbers are refreshed, and keep them equal to the figures in
 // `public/docs/compare-full.md`, which is where the commands that produced them live.
@@ -18,7 +18,7 @@ const BUNDLE_BARS: readonly BundleBar[] = [
   {
     label: 'Guild of Gleks UI',
     detail: 'entire library — 31 components + 3 directives',
-    value: '113.6 KB',
+    value: '112.8 KB',
     percent: 34,
     emphasis: true,
   },
@@ -32,7 +32,7 @@ const BUNDLE_BARS: readonly BundleBar[] = [
   {
     label: 'PrimeNG',
     detail: 'Button + Select + Dialog + Table only',
-    value: '330.6 KB',
+    value: '332.5 KB',
     percent: 100,
     emphasis: false,
   },
@@ -59,7 +59,7 @@ const SPEC_ROWS: readonly SpecRow[] = [
     label: 'Setup',
     gleks: 'npm install, import, done',
     material: '+ @angular/cdk, theme mixins',
-    primeng: '+ 10 packages incl. CDK, a preset',
+    primeng: '+ 11 packages incl. CDK, a preset',
   },
 ];
 
