@@ -20,7 +20,7 @@ import {
   ToastContainerComponent,
 } from '@guildofgleks/ui';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faBars, faPalette } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faPalette, faRightLeft } from '@fortawesome/free-solid-svg-icons';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
 import { TocComponent } from './components/shared/toc/toc';
 import { LIBRARY_VERSION } from './components/shared/library-version';
@@ -140,6 +140,13 @@ export class App {
   protected readonly activeTheme = computed(() => this.themeService.theme());
   protected readonly isThemeMenuOpen = signal(false);
 
+  // Scoped to `.content-container` (app.html), not `<html>`: the library's components mirror
+  // through logical CSS properties, but this site's own chrome (header, both sidebars) is
+  // written in physical left/right (see app.scss) and was never part of the RTL story — the
+  // Right-to-left doc page's own demo makes the same choice, on a smaller region. Flipping the
+  // whole document would break the chrome around the page rather than demonstrate the library.
+  protected readonly isRtl = signal(false);
+
   /**
    * The left sidebar as a drawer, below the layout's tablet breakpoint. Above it the sidebar is
    * a permanent column and this is ignored — the same markup, positioned differently, so the
@@ -149,6 +156,7 @@ export class App {
 
   protected readonly faBars = faBars;
   protected readonly faPalette = faPalette;
+  protected readonly faRightLeft = faRightLeft;
 
   protected toggleNav(): void {
     this.isNavOpen.update((open) => !open);
@@ -169,6 +177,10 @@ export class App {
   protected selectTheme(theme: string): void {
     this.themeService.setTheme(theme);
     this.closeThemeMenu();
+  }
+
+  protected toggleDirection(): void {
+    this.isRtl.update((rtl) => !rtl);
   }
 
   protected onDocumentClick(event: MouseEvent): void {

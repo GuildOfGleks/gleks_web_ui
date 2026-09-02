@@ -26,6 +26,18 @@
     </div>
 
     <div class="header-controls">
+      <gog-button
+        variant="ghost"
+        size="sm"
+        ariaLabel="Toggle right-to-left"
+        [attr.aria-pressed]="isRtl()"
+        class="direction-toggle"
+        [class.direction-toggle--active]="isRtl()"
+        (gogClick)="toggleDirection()"
+      >
+        <fa-icon [icon]="faRightLeft"></fa-icon>
+      </gog-button>
+
       <div class="theme-switcher">
         <gog-button
           variant="ghost"
@@ -73,7 +85,7 @@
 
   <main class="lab-main-content">
     <gog-scroll #mainScroll class="lab-main-scroll" ariaLabel="Page content">
-      <div class="content-container">
+      <div class="content-container" [attr.dir]="isRtl() ? 'rtl' : null">
         <router-outlet />
       </div>
     </gog-scroll>

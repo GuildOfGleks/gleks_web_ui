@@ -61,6 +61,10 @@
   }
 }
 
+.direction-toggle--active {
+  --gog-button-ghost-color: var(--gog-accent-color);
+}
+
 .theme-switcher {
   position: relative;
 
