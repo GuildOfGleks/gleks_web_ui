@@ -69,15 +69,27 @@ That is the whole of iteration 1, and everything else in this plan is cheap once
 
 ## Status
 
-| #   | Iteration                                        | Kind    | State   |
-| --- | ------------------------------------------------ | ------- | ------- |
-| 1   | The character layer; 510 literals become derived | api     | ✅ done |
-| 2   | Contrast checking, before the catalogue grows    | tooling | 🟡 partial |
-| 3   | Promote `material` / `primeng` out of the lab    | feature | 🟡 partial |
-| 4   | The catalogue — eras and families                | feature | 🟡 partial |
-| 5   | Tooling and docs catch up                        | tooling | 🟡 partial |
-| 6   | Density — the character layer for spacing        | api     | ✅ done |
-| 4b  | The catalogue completed — Retro, Historical      | feature | ✅ done |
+| #   | Iteration                                        | Kind    | State                          |
+| --- | ------------------------------------------------ | ------- | ------------------------------ |
+| 1   | The character layer; 510 literals become derived | api     | ✅ done                        |
+| 2   | Contrast checking, before the catalogue grows    | tooling | ✅ done                        |
+| 3   | Promote `material` / `primeng` out of the lab    | feature | ✅ done                        |
+| 4   | The catalogue — eras and families                | feature | 🟡 partial — five slots unbuilt |
+| 5   | Tooling and docs catch up                        | tooling | ✅ done                        |
+| 6   | Density — the character layer for spacing        | api     | ✅ done                        |
+| 4b  | The catalogue completed — Retro, Historical      | feature | ✅ done                        |
+
+**Read the state column, not the per-iteration "as it finished" sections below it, for
+2–5.** Those sections were written on 2026-08-29, when every one of them was blocked on the same
+thing: their lab-side half could not happen until 21.7.0 was published. It was published that
+day, and the lab has since caught up — so each of those sections still opens by explaining a
+blockage that no longer exists. They are kept as the record of what was decided and measured,
+which has not changed; the closing note under iteration 5 says which commit closed which half.
+
+**Iteration 4 is the only one still genuinely partial, and for a reason that was never the
+lab's**: five theme slots across three families are simply unbuilt (one more Modern, one more
+Retro pairing, all of Historical). That is a scope decision to take when someone wants those
+themes, not a blocker on anything here.
 
 ---
 
@@ -480,6 +492,35 @@ corrected, the preset ports); it is a scheduling fact worth naming plainly rathe
 each time: **the lab-side half of this plan is one project (`gleks-ui-lab`, after 21.7.0 ships)
 away from being finished, and the library-side half — the part an agent can actually build and
 verify today — is complete.**
+
+### That project happened. Closed 2026-08-31 → 2026-09-02
+
+Everything the four "partial" verdicts above were waiting on is done, and each half was closed by
+a commit that can be read:
+
+- **Iteration 2's last item was CI wiring**, held back on purpose while any contrast finding was
+  open. All nine findings were fixed, so `npm run check:contrast` went into `.github/workflows/
+  ci.yml` — it runs on every push and reports 11 themes / 132 pairs, all at or above threshold.
+- **Iteration 3's steps 3–4** (`68b2dad`): the lab imports `material.css`/`primeng.css` from
+  `node_modules/@guildofgleks/ui/styles/presets/` alongside the other seven, and `styles.scss`'s
+  hand-authored copies are gone — its opening comment now records that they were replaced rather
+  than leaving a reader to wonder where they went. The plan's "done when" bar (both shipped as
+  presets, the lab declares neither, the compare pages unchanged) is met.
+- **Iteration 4's compare-page entries** landed in the same commit; the theme switcher offers all
+  nine presets plus light/dark.
+- **Iteration 5's three lab items** (`ecdb443`): `theme-starter.css` leads with the character
+  layer, the generator grew a Character Layer group, and the Theming page explains the layer in
+  prose and in its token table.
+
+Two things were found afterwards that the closing commits had missed, both now fixed and both
+worth knowing because they are the same shape — a surface that names the character layer without
+carrying all of it. `--gog-density` was in the Theming page's table but not in the generator's
+Character Layer group, so the layer's highest-leverage axis was the one the tool could not edit.
+And `theme-starter.css` — the file this plan sent a reader to copy — turned out to carry 714 of
+the library's 1312 tokens with fifteen components missing outright, including a set of literal
+`--gog-space-*` declarations that quietly cancelled iteration 6's density for everything deriving
+from them. It is generated and checked now (`npm run check:theme-starter`, in CI), so "every
+token" is verified rather than asserted.
 
 ---
 

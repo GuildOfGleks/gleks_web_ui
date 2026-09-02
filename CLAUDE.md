@@ -97,18 +97,28 @@ ships inside the package; its top entry is always the version being worked on.
 | 21.7.2     | **released (2026-08-30)** | The multiselect `+N` overflow chip's baseline alignment (`docs/feedback-triage.md` Q3), fixed in the library and `ui-showcase`, with an "Overflow summary" showcase example so the bug has a live case. Q1 (`gog-menu` over the lab's footer) was investigated and closed in the same pass — not reproduced at desktop width against the published 21.7.1.                                                                                                                                                                                                                                                                                                                                 |
 | 22.x       | when Angular 22 lands     | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
-**No next library version is open.** Everything since 21.7.2 shipped has been `gleks-ui-lab`
-work that the publish unblocked — the code-block scroll fix, the `general/agents` page, the six
-missing components in the theme generator, the stale FAQ and comparison prose, and the dashed
-container on full-width examples. `docs/feedback-triage.md` is the live worklist for the rest,
-and it marks which items need a library release and which do not.
+**No next library version is open, and the lab's own worklist is now empty too.** Everything
+since 21.7.2 shipped was `gleks-ui-lab` work that the publish unblocked — the code-block scroll
+fix, the `general/agents` page, the six missing components in the theme generator, the stale FAQ
+and comparison prose, the dashed container on full-width examples, the theming tooling, the RTL
+and search toggles, the per-component Global Configuration section, and the re-measured bundle
+bench. **`docs/feedback-triage.md`'s LAB table is fully closed as of 2026-09-02**; what is left
+in that file is its **21.8.0 section — five new-API items, each needing a decision first**, which
+is the next thing to plan.
 
-**`themes.md` iteration 1 started 2026-08-29**, on the sequencing its own plan and
-`token-prefix-removal.md`'s closing section both argued for: not sharing a release with the
-removal, but starting immediately after it, once verified — so a moved pixel has one suspect, not
-two. Both jobs are accepted by the same test ("no computed default changed"); doing them
-back-to-back rather than interleaved is what keeps that test meaningful. See `themes.md`'s own
-status table for where the other four iterations stand — nothing else there is started.
+**Before starting 21.8.0, read `docs/backlog.md`'s Defects and Gaps sections first** — the
+project's own rule is fixes and polish before anything new, and both are non-empty as of
+2026-09-02: one defect (`shared/config.ts`'s `GogGlobalConfig` JSDoc under-reports which
+components read four of its keys) and one gap that shipping code already tripped over
+(`gog-button` forwards `ariaLabel` and nothing else, so a toggle or disclosure button cannot
+state itself to assistive tech).
+
+**`themes.md` is done except one scope decision.** Iterations 1, 2, 3, 5 and 6 are ✅, and so is
+4b; iteration 4 is partial only because five theme slots across three families are unbuilt, which
+is a choice rather than a blocker. The four "partial" verdicts that file carried until 2026-09-02
+were all the same thing — a lab-side half that could not land before 21.7.0 was published — and
+all four are closed. Its per-iteration "as it finished" sections still open by describing that
+blockage; the closing note under iteration 5 says which commit closed which half.
 
 ### Cutting a release — why an agent does none of it
 
@@ -120,11 +130,11 @@ on a version still being worked on means someone jumped the gun, not that the ch
 
 Once a release is published: `npm install` at the repo root, then work through
 `docs/lab-after-publish.md`'s section for that version. That file is a live checklist; delete
-each entry as it lands. **21.6.1's lab section is fully checked off** (all three pages —
-`components/card`, `components/panel`, `components/ripple` — plus `since` chips and the theming
-rows); what remains there is the bundle-bench re-measurement, tracked in
-`projects/gleks-ui-lab/public/docs/compare-full.md`'s own history rather than as an open
-checklist item.
+each entry as it lands. **The file is empty as of 2026-09-02** — every section is checked off and
+deleted, which is the state it is supposed to return to after each release is documented. The
+bundle-bench re-measurement that was the last item is done (all three libraries re-measured, not
+just this one); its history lives in `projects/gleks-ui-lab/public/docs/compare-full.md` rather
+than as a checklist entry.
 
 **A future plan's filename carries no version** — `panel-card.md` and `ripple.md`
 were both named for a release that shipped without them, which is what that always becomes. A
@@ -140,9 +150,15 @@ without anyone noticing.
 
 **The order it comes off the list is fixed: fixes and polish of what already ships, before
 anything new.** A defect is something a consumer is hitting today; an unbuilt component is only
-an absence. As of 2026-08-28 the backlog's defects section is empty again — three found while
-planning 21.7.0 (a `var(--gog-…)` with no fallback naming a property nothing declares, which
-silently drops the whole declaration) were fixed and closed the same day, as iteration 0 of
+an absence. **As of 2026-09-02 the defects section holds one entry and the Gaps section opens
+with another**, both found by doing lab work rather than by looking for them, and both wanting a
+library session: `shared/config.ts`'s `GogGlobalConfig` JSDoc names too few components on four of
+its keys (JSDoc-only, no behaviour change), and `gog-button` exposes `ariaLabel` and no other ARIA
+input, so a toggle or disclosure button silently ships without a state assistive tech can read.
+
+The section was empty before that, and how it got empty is the part worth keeping: three defects
+found while planning 21.7.0 (a `var(--gog-…)` with no fallback naming a property nothing declares,
+which silently drops the whole declaration) were fixed and closed the same day, as iteration 0 of
 `docs/token-prefix-removal.md`, ahead of the removal itself — the removal's mechanical rule would
 otherwise have copied one of them forward verbatim. That iteration also added a permanent check
 for the family (`check-tokens.mjs` rule F), so the next instance fails a build instead of waiting
@@ -151,11 +167,18 @@ a month, and see `docs/backlog.md` for the fourth, related defect it was found a
 A plan is not a backlog item — it is a decision already taken about how something gets built.
 Update the status table in whichever you are working from, as you go.
 
-- `docs/feedback-triage.md` — **the live worklist.** 30 items from a hands-on pass over the
-  published 21.6.1, sorted by which release can carry each and why, with four of the reported
-  symptoms traced to a different cause than the report assumed. Read it before picking up any of
-  that feedback. `docs/release-21.7.0.md` is gone: 21.7.0 shipped on 2026-08-29 and a close-out
-  checklist that outlives its release is the trap `lab-after-publish.md` warns about.
+- `docs/feedback-triage.md` — **30 items from a hands-on pass over the published 21.6.1**, sorted
+  by which release can carry each and why, with four of the reported symptoms traced to a
+  different cause than the report assumed. Read it before picking up any of that feedback. **Its
+  21.7.1 and LAB tables are closed** (2026-08-29 and 2026-09-02); the live part is its **21.8.0
+  section** — `gog-button` severity, `gog-button` pressed state, input masking, horizontal wheel
+  handling in `gog-scroll`, whole-row click on `gog-table`. Each is new public API and the file
+  says why each needs a decision before code; the mask needs a written plan first. Its closing
+  section, "the theme running under all of it", argues that four of those are one observation —
+  the library's feedback story is opt-in and degrades to nothing rather than to something — and
+  is the better starting point than the table. `docs/release-21.7.0.md` is gone: 21.7.0 shipped
+  on 2026-08-29 and a close-out checklist that outlives its release is the trap
+  `lab-after-publish.md` warns about.
 
 - `docs/token-prefix-removal.md` — **the plan for 21.7.0's mandatory payload**, in six iterations
   with a status table. It began as a pure per-file checklist on the view that a mechanical removal
@@ -178,15 +201,19 @@ Update the status table in whichever you are working from, as you go.
   hand-authored originals had missed; iteration 4 shipped `ledger` (one theme of six, scoped
   down deliberately — renamed from the plan's own working name `classic` once that turned out to
   collide with `ui-showcase`'s existing "Classic" label for `data-theme="light"`); iteration 5
-  amended `styling.instructions.md`'s theming rule to name the character layer. **Every iteration
-  from 2 onward is marked partial for one shared, structural reason, not five separate
-  blockers**: each has a `gleks-ui-lab` half — compare-page entries, the theme generator, the
-  Theming page, `theme-starter.css` — that cannot happen before 21.7.0 is published, all recorded
-  in `docs/lab-after-publish.md` and ready to execute the moment it is. Real WCAG findings (three
-  themes' muted text, three themes' button label text) are filed in `docs/backlog.md` rather than
+  amended `styling.instructions.md`'s theming rule to name the character layer. **Iterations 2
+  through 5 each carried a `gleks-ui-lab` half — compare-page entries, the theme generator, the
+  Theming page, `theme-starter.css` — that could not land before 21.7.0 was published. All of it
+  landed between 2026-08-31 and 2026-09-02, and the plan's status table now reads ✅ for 1, 2, 3,
+  5, 6 and 4b.** Only iteration 4 is still partial, and not for that reason: five theme slots
+  across three families are unbuilt, which is a scope decision. Real WCAG findings (three themes'
+  muted text, three themes' button label text) were filed in `docs/backlog.md` rather than
   silently fixed, per the plan's own instruction that finding and fixing colour are separate
-  decisions. See `themes.md`'s own per-iteration _"as it finished"_ sections for the full audit
-  tables, numbers and verification record — not duplicated here.
+  decisions — all nine are now fixed and `check:contrast` is a CI step. **Read the plan's status
+  table over its per-iteration prose**: the _"as it finished"_ sections were written while the lab
+  work was still blocked and still open by describing that blockage, with a dated closing note
+  under iteration 5 saying which commit closed which half. They remain the place to go for the
+  full audit tables, numbers and verification record — not duplicated here.
 - `docs/panel-card.md` — **built 2026-08-23 into 21.6.1, finished 2026-08-26**: `gog-card` and
   `gog-panel`, all four iterations done. Read its _Iteration 1, as resolved_ section rather than the
   sketch above it: two of the answers came out differently from the plan. There is no `interactive`

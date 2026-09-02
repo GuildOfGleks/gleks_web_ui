@@ -134,6 +134,17 @@ reason may stop holding.
   next thing added to the lab's initial bundle will fail the build, and the fix will have to be a
   real one: lazy-load the syntax highlighter, or move the docs renderer off the initial route.
 
+- **`app.scss` is the lab's other budget, and it is the one closer to failing.** Measured
+  2026-09-02: **6.09 kB against a 4 kB warning and an 8 kB error** (`angular.json`,
+  `anyComponentStyle`), so ~1.9 kB of room before `build:lab` stops passing. It grew because the
+  header keeps growing — the RTL toggle, then the search panel (~1.2 kB of that headroom in one
+  commit), on top of the theme switcher and drawer that were already there. Five other component
+  stylesheets are over the 4 kB warning too (`compare-page`, `skeleton-doc-page`, `theming-page`,
+  `faq-page`, `theme-generator-page`), but none is near the error line; this one is. Nothing is
+  wrong with the CSS — the honest fix when it comes is that the header is now four controls and a
+  routed shell, and it wants to be its own component with its own stylesheet rather than more
+  rules in the app's. Worth doing before the next header feature, not after the build breaks.
+
 - **`theme.css` payload.** Loaded whole even by an app importing three components — **106 521 B /
   20 227 B gzip in 21.6.1** (measured 2026-08-26), up from 99 492 B / 19 070 B at 21.6.0 and from
   the 92 596 B / 16 817 B this was filed against. 21.6.1's +7.1 % raw / +6.1 % gzip is `gog-card`,
