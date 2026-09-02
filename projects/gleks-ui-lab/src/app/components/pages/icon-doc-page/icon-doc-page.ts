@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GogBuiltinIconName, ICON_DEFS, IconComponent } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -122,7 +123,14 @@ function buildGroups(): readonly IconGroup[] {
 
 @Component({
   selector: 'app-icon-doc-page',
-  imports: [IconComponent, MarkdownComponent, CodeTabsComponent, RouterLink, SinceBadgeComponent],
+  imports: [
+    IconComponent,
+    GlobalConfigNote,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './icon-doc-page.html',
   styleUrl: './icon-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

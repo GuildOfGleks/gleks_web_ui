@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { ChipComponent, GogSize, GogTagShape } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -116,7 +117,14 @@ const API_OUTPUTS: readonly ApiOutputRow[] = [
 
 @Component({
   selector: 'app-chip-doc-page',
-  imports: [ChipComponent, MarkdownComponent, CodeTabsComponent, RouterLink, SinceBadgeComponent],
+  imports: [
+    ChipComponent,
+    GlobalConfigNote,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './chip-doc-page.html',
   styleUrl: './chip-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

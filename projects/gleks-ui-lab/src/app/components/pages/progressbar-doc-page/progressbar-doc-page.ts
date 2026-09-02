@@ -7,6 +7,7 @@ import {
   ProgressbarComponent,
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -72,6 +73,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
   imports: [
     ProgressbarComponent,
     ButtonComponent,
+    GlobalConfigNote,
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,

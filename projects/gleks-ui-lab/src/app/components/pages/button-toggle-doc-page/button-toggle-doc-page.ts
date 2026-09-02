@@ -10,6 +10,7 @@ import {
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -151,6 +152,7 @@ const FORMATS: ViewOption[] = [
     ButtonToggleGroupComponent,
     GogButtonToggleOptionDirective,
     IconComponent,
+    GlobalConfigNote,
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,

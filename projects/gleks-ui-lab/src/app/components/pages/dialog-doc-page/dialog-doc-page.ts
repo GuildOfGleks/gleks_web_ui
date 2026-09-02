@@ -10,6 +10,7 @@ import {
   type ConfirmDialogData,
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -184,7 +185,7 @@ const INJECTION_TOKENS: readonly ServiceRow[] = [
 
 @Component({
   selector: 'app-dialog-doc-page',
-  imports: [ButtonComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [ButtonComponent, GlobalConfigNote, MarkdownComponent, CodeTabsComponent, RouterLink],
   templateUrl: './dialog-doc-page.html',
   styleUrl: './dialog-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

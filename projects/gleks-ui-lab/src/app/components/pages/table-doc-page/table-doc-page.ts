@@ -12,6 +12,7 @@ import {
   TagComponent,
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { LIBRARY_VERSION } from '../../shared/library-version';
@@ -326,6 +327,7 @@ const COLUMN_SLOTS: readonly SlotRow[] = [
     GogColumnHeaderDirective,
     TagComponent,
     ButtonComponent,
+    GlobalConfigNote,
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,

@@ -3,6 +3,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { GogRadioOption, GogSize, RadioGroupComponent } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -111,6 +112,7 @@ const PLAN_OPTIONS: GogRadioOption[] = [
   imports: [
     RadioGroupComponent,
     ReactiveFormsModule,
+    GlobalConfigNote,
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,

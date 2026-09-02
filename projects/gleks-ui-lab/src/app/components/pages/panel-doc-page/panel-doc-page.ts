@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DemoComponent } from '../../shared/demo/demo';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -104,7 +105,7 @@ const API_SLOTS: readonly SlotRow[] = [
 
 @Component({
   selector: 'app-panel-doc-page',
-  imports: [DemoComponent, MarkdownComponent, RouterLink, SinceBadgeComponent],
+  imports: [DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink, SinceBadgeComponent],
   templateUrl: './panel-doc-page.html',
   styleUrl: './panel-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

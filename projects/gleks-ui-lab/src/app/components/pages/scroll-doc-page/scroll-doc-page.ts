@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DemoComponent } from '../../shared/demo/demo';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -117,7 +118,7 @@ const API_METHODS: readonly { name: string; description: string }[] = [
 
 @Component({
   selector: 'app-scroll-doc-page',
-  imports: [DemoComponent, MarkdownComponent, RouterLink, SinceBadgeComponent],
+  imports: [DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink, SinceBadgeComponent],
   templateUrl: './scroll-doc-page.html',
   styleUrl: './scroll-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

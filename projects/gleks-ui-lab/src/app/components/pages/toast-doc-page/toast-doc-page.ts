@@ -10,6 +10,7 @@ import {
   ToastType,
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -121,6 +122,7 @@ const CONTAINER_INPUTS: readonly ApiRow[] = [
     ButtonComponent,
     InputfieldComponent,
     SelectComponent,
+    GlobalConfigNote,
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,

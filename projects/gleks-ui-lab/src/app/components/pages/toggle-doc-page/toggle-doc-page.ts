@@ -3,6 +3,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { GogSize, ToggleComponent } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -78,7 +79,14 @@ const API_OUTPUTS: readonly ApiRow[] = [
 
 @Component({
   selector: 'app-toggle-doc-page',
-  imports: [ToggleComponent, ReactiveFormsModule, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [
+    ToggleComponent,
+    ReactiveFormsModule,
+    GlobalConfigNote,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+  ],
   templateUrl: './toggle-doc-page.html',
   styleUrl: './toggle-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

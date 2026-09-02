@@ -7,6 +7,7 @@ import {
   SkeletonComponent,
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
@@ -101,7 +102,14 @@ const CHAT_MESSAGES: readonly ChatMessage[] = [
 
 @Component({
   selector: 'app-skeleton-doc-page',
-  imports: [SkeletonComponent, ButtonComponent, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [
+    SkeletonComponent,
+    ButtonComponent,
+    GlobalConfigNote,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+  ],
   templateUrl: './skeleton-doc-page.html',
   styleUrl: './skeleton-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
