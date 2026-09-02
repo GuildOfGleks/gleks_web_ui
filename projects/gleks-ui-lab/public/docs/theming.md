@@ -19,6 +19,21 @@ value the library paints with can be overridden from plain CSS.
    <gog-button style="--gog-button-bg: #ff4edb">One-off button</gog-button>
    ```
 
+### The character layer
+
+A named part of Foundation, and the short path to a custom look: corner rounding
+(`--gog-radius`), the three border-weight tiers (`--gog-control-border-*` for form fields,
+`--gog-panel-border-*` for raised surfaces like dialogs, and the plain `--gog-border-*` pair
+for everything smaller and inline — chip, tag, table row), emphasis casing and tracking
+(`--gog-text-transform`, `--gog-letter-spacing`), and density (`--gog-density`, the single
+multiplier every padding and gap in the library derives from). Most component tokens read one
+of these instead of declaring their own literal, so **a theme is expected to set these —
+not the dozens of component tokens that derive from them.** `material.css`, `primeng.css` and
+`ledger.css` are what a theme with real character looks like once it uses this layer instead of
+re-listing component tokens: each is a short list of declarations, not a fork of the whole
+stylesheet. Try them in the [Theme Generator](/general/theme-generator), which edits this exact
+layer live.
+
 ## What `index.css` pulls in
 
 One import is the whole setup, and it is a thin wrapper over four files:

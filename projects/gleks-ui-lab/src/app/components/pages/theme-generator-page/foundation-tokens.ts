@@ -50,15 +50,31 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
     ],
   },
   {
-    title: 'Spacing & Radius',
+    // The short path to a custom look (docs/themes.md iteration 1): most component
+    // tokens read one of these instead of declaring their own literal, so editing a
+    // value here reshapes the whole library at once — the difference between
+    // generating a palette and generating a theme.
+    title: 'Character Layer',
+    tokens: [
+      '--gog-radius',
+      '--gog-border-width',
+      '--gog-border-style',
+      '--gog-panel-border-width',
+      '--gog-panel-border-style',
+      '--gog-control-border-width',
+      '--gog-control-border-style',
+      '--gog-text-transform',
+      '--gog-letter-spacing',
+    ],
+  },
+  {
+    title: 'Spacing',
     tokens: [
       '--gog-space-xs',
       '--gog-space-sm',
       '--gog-space-md',
       '--gog-space-lg',
       '--gog-space-2xl',
-      '--gog-radius',
-      '--gog-panel-border-width',
     ],
   },
   {
@@ -74,12 +90,7 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
   },
   {
     title: 'Control Metrics',
-    tokens: [
-      '--gog-control-padding-y',
-      '--gog-control-padding-x',
-      '--gog-control-icon-offset',
-      '--gog-control-border-width',
-    ],
+    tokens: ['--gog-control-padding-y', '--gog-control-padding-x', '--gog-control-icon-offset'],
   },
 ];
 

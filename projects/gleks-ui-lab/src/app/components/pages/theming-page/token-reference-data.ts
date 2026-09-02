@@ -55,10 +55,12 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
-    id: 'foundation-spacing-radius',
-    title: 'Foundation — Spacing & Radius',
+    // The short path to a custom look (docs/themes.md iteration 1 & 6): most component
+    // tokens read one of these instead of declaring their own literal, so a theme is
+    // expected to set these — not the dozens of component tokens derived from them.
+    id: 'foundation-character-layer',
+    title: 'Foundation — Character Layer',
     tokens: [
-      { name: '--gog-space-xs … --gog-space-2xl', description: 'Spacing scale, from 4px to 48px.' },
       { name: '--gog-radius', description: 'Base corner radius used across most components.' },
       {
         name: '--gog-panel-radius',
@@ -66,10 +68,41 @@ export const TOKEN_SECTIONS: TokenSection[] = [
           'Corner radius for larger panels, derived from --gog-radius — and the gog-panel component’s own, which reads the same token.',
       },
       {
+        name: '--gog-border-width / --gog-border-style',
+        description:
+          'Border weight for small inline elements — chip, tag, table row — the tier below panel and control.',
+      },
+      {
         name: '--gog-panel-border-width / --gog-panel-border-style',
         description:
           'Border width and style for elevated panels — and for the gog-panel component, which reads the same pair.',
       },
+      {
+        name: '--gog-control-border-width / -style',
+        description:
+          'Border weight for form controls (buttons, fields) — the thickest of the three tiers.',
+      },
+      {
+        name: '--gog-text-transform',
+        description:
+          'Emphasis casing shared by buttons, section headers, table headers and field labels.',
+      },
+      {
+        name: '--gog-letter-spacing',
+        description: 'Emphasis tracking, paired with --gog-text-transform.',
+      },
+      {
+        name: '--gog-density',
+        description:
+          'Single multiplier every component padding and gap derives from — set once for a tighter or roomier library, never a component padding directly.',
+      },
+    ],
+  },
+  {
+    id: 'foundation-spacing',
+    title: 'Foundation — Spacing',
+    tokens: [
+      { name: '--gog-space-xs … --gog-space-2xl', description: 'Spacing scale, from 4px to 48px.' },
     ],
   },
   {
@@ -97,10 +130,6 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Shared padding for form controls (buttons, fields).',
       },
       { name: '--gog-control-icon-offset', description: 'Icon inset shared by form controls.' },
-      {
-        name: '--gog-control-border-width / -style',
-        description: 'Shared border width and style for form controls.',
-      },
       {
         name: '--gog-control-checkbox-{size}-box-size / -label-size / -icon-size',
         description: 'Checkbox box, label and icon size, per size step (xsm/sm/md/lg/slg).',
