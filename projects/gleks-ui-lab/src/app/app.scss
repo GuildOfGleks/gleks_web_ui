@@ -111,16 +111,13 @@
     overflow-y: auto;
   }
 
+  // An `<li role="option">`, not a button — see app.html. The button resets this block used to
+  // carry (`border: 0`, `background: transparent`, `text-align: left`) went with it.
   &__result {
-    display: block;
-    width: 100%;
     padding: 8px 10px;
-    border: 0;
     border-radius: calc(var(--gog-radius) - 2px);
-    background: transparent;
     color: var(--gog-text-color);
     font-size: var(--gog-text-sm);
-    text-align: left;
     cursor: pointer;
     transition: background-color var(--gog-duration-fast);
 

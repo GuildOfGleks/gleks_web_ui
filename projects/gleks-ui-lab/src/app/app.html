@@ -42,6 +42,12 @@
               #searchInput
               type="text"
               class="nav-search__input"
+              role="combobox"
+              aria-label="Search components"
+              aria-autocomplete="list"
+              aria-controls="nav-search-results"
+              [attr.aria-expanded]="searchResults().length > 0"
+              [attr.aria-activedescendant]="activeResultId()"
               placeholder="Search components…"
               autocomplete="off"
               [value]="searchQuery()"
@@ -49,20 +55,35 @@
               (keydown)="onSearchKeydown($event)"
             />
             @if (searchQuery() && searchResults().length === 0) {
-              <p class="nav-search__empty">No matches for "{{ searchQuery() }}"</p>
+              <p class="nav-search__empty" role="status">No matches for "{{ searchQuery() }}"</p>
             }
             @if (searchResults().length > 0) {
-              <ul class="nav-search__results" role="listbox">
+              <ul
+                id="nav-search-results"
+                class="nav-search__results"
+                role="listbox"
+                aria-label="Component search results"
+              >
                 @for (result of searchResults(); track result.path; let i = $index) {
-                  <li role="option" [attr.aria-selected]="i === activeResultIndex()">
-                    <button
-                      type="button"
-                      class="nav-search__result"
-                      [class.nav-search__result--active]="i === activeResultIndex()"
-                      (click)="goToResult(result.path)"
-                    >
-                      {{ result.label }}
-                    </button>
+                  <!--
+                    An option is deliberately not focusable and deliberately holds no control of
+                    its own: `role="option"` takes presentational children, and this listbox is
+                    driven by `aria-activedescendant` from the input, which is where focus stays
+                    the whole time. That is also why the two rules below are off for this element
+                    rather than satisfied — a `tabindex` or a keyboard handler here would break
+                    the pattern it is being asked to add. Arrow keys and Enter are handled on the
+                    input (`onSearchKeydown`); this click is the mouse's path to the same place.
+                  -->
+                  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus, @angular-eslint/template/click-events-have-key-events -->
+                  <li
+                    class="nav-search__result"
+                    role="option"
+                    [id]="'nav-search-result-' + i"
+                    [class.nav-search__result--active]="i === activeResultIndex()"
+                    [attr.aria-selected]="i === activeResultIndex()"
+                    (click)="goToResult(result.path)"
+                  >
+                    {{ result.label }}
                   </li>
                 }
               </ul>

@@ -162,6 +162,18 @@ export class App {
   protected readonly activeResultIndex = signal(-1);
 
   /**
+   * The active option's element id, for the input's `aria-activedescendant` — the whole reason
+   * arrow-key movement through the results is perceivable at all. Focus never leaves the input
+   * in an ARIA combobox, so without this a screen-reader user pressing ArrowDown hears nothing
+   * change no matter how the list is highlighted. `null` (attribute absent) while nothing is
+   * selected, which is the state Enter reads as "take the top result".
+   */
+  protected readonly activeResultId = computed(() => {
+    const index = this.activeResultIndex();
+    return index >= 0 ? `nav-search-result-${index}` : null;
+  });
+
+  /**
    * Each header toggle carries its state in its accessible **name**, because it cannot carry it
    * in `aria-pressed`/`aria-expanded`: an `[attr.*]` binding on `<gog-button>` lands on the
    * custom-element host, not on the `<button>` inside it — which is the very reason the
