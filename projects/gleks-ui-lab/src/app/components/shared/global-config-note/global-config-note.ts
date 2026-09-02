@@ -19,4 +19,15 @@ export class GlobalConfigNote {
   readonly component = input.required<string>();
 
   protected readonly entries = computed(() => GLOBAL_CONFIG_BY_COMPONENT[this.component()] ?? []);
+
+  /**
+   * This site sets `ripple.enabled: true` app-wide (`app.config.ts`) so the demos actually show
+   * the press feedback; the library's own default is `false`. Every page that lists the key says
+   * so, rather than leaving a reader to infer a default from what they see here — which is the
+   * mistake that produced a "the ripple does not work" report against a ripple nobody had
+   * switched on (`docs/feedback-triage.md`, finding 3).
+   */
+  protected readonly deviatesOnRipple = computed(() =>
+    this.entries().some((entry) => entry.key === 'ripple.enabled'),
+  );
 }

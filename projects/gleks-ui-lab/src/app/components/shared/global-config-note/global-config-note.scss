@@ -18,3 +18,18 @@
   color: var(--gog-muted-text-color);
   font-size: var(--gog-text-sm);
 }
+
+// Deliberately not styled as a warning: it is a true statement about this site, not a problem
+// with the component being read about. An accent rule is enough to stop it reading as body prose.
+.global-config-note__deviation {
+  margin: 1em 0 0;
+  padding-inline-start: 0.75em;
+  border-inline-start: 2px solid var(--gog-accent-dim);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+
+  code {
+    @include doc.inline-code;
+    color: var(--gog-accent-color);
+  }
+}
