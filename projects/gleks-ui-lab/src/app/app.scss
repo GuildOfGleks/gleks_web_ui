@@ -65,6 +65,72 @@
   --gog-button-ghost-color: var(--gog-accent-color);
 }
 
+.nav-search {
+  position: relative;
+
+  &__panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: var(--gog-dropdown-z, 300);
+    width: 280px;
+    padding: 8px;
+    background-color: var(--gog-surface-color);
+    border: 1px solid var(--gog-border-color);
+    border-radius: var(--gog-radius);
+    box-shadow: var(--gog-panel-shadow);
+  }
+
+  &__input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--gog-border-color);
+    border-radius: calc(var(--gog-radius) - 2px);
+    background-color: var(--gog-background-color);
+    color: var(--gog-text-color);
+    font-size: var(--gog-text-sm);
+
+    &:focus-visible {
+      outline: var(--gog-focus-ring-width) solid var(--gog-accent-color);
+      outline-offset: 2px;
+    }
+  }
+
+  &__empty {
+    margin: 8px 4px 2px;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+  }
+
+  &__results {
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  &__result {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: calc(var(--gog-radius) - 2px);
+    background: transparent;
+    color: var(--gog-text-color);
+    font-size: var(--gog-text-sm);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--gog-duration-fast);
+
+    &:hover,
+    &--active {
+      background-color: var(--gog-hover-color);
+    }
+  }
+}
+
 .theme-switcher {
   position: relative;
 

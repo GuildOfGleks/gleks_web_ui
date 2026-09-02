@@ -20,11 +20,17 @@ import {
   ToastContainerComponent,
 } from '@guildofgleks/ui';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faBars, faPalette, faRightLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBars,
+  faMagnifyingGlass,
+  faPalette,
+  faRightLeft,
+} from '@fortawesome/free-solid-svg-icons';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
 import { TocComponent } from './components/shared/toc/toc';
 import { LIBRARY_VERSION } from './components/shared/library-version';
 import { SeoService } from './components/shared/seo';
+import { SearchEntry, searchNav } from './components/shared/search-index';
 
 interface ThemeMenuOption {
   value: string;
@@ -147,6 +153,14 @@ export class App {
   // whole document would break the chrome around the page rather than demonstrate the library.
   protected readonly isRtl = signal(false);
 
+  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+  protected readonly isSearchOpen = signal(false);
+  protected readonly searchQuery = signal('');
+  protected readonly searchResults = computed<readonly SearchEntry[]>(() =>
+    searchNav(this.searchQuery()),
+  );
+  protected readonly activeResultIndex = signal(-1);
+
   /**
    * The left sidebar as a drawer, below the layout's tablet breakpoint. Above it the sidebar is
    * a permanent column and this is ignored — the same markup, positioned differently, so the
@@ -157,6 +171,7 @@ export class App {
   protected readonly faBars = faBars;
   protected readonly faPalette = faPalette;
   protected readonly faRightLeft = faRightLeft;
+  protected readonly faMagnifyingGlass = faMagnifyingGlass;
 
   protected toggleNav(): void {
     this.isNavOpen.update((open) => !open);
@@ -183,17 +198,75 @@ export class App {
     this.isRtl.update((rtl) => !rtl);
   }
 
-  protected onDocumentClick(event: MouseEvent): void {
-    if (!this.isThemeMenuOpen()) return;
+  protected toggleSearch(): void {
+    if (this.isSearchOpen()) {
+      this.closeSearch();
+      return;
+    }
+    this.isSearchOpen.set(true);
+    // The panel (and the input inside it) doesn't exist until this signal flips and Angular
+    // renders it — a plain `.focus()` here would target last render's (absent) element.
+    queueMicrotask(() => this.searchInput()?.nativeElement.focus());
+  }
 
-    const switcher = this.elRef.nativeElement.querySelector('.theme-switcher');
-    if (switcher && !switcher.contains(event.target as Node)) {
-      this.closeThemeMenu();
+  protected closeSearch(): void {
+    this.isSearchOpen.set(false);
+    this.searchQuery.set('');
+    this.activeResultIndex.set(-1);
+  }
+
+  protected onSearchInput(value: string): void {
+    this.searchQuery.set(value);
+    this.activeResultIndex.set(-1);
+  }
+
+  protected onSearchKeydown(event: KeyboardEvent): void {
+    const results = this.searchResults();
+    if (event.key === 'ArrowDown') {
+      if (results.length === 0) return;
+      event.preventDefault();
+      this.activeResultIndex.update((i) => (i + 1) % results.length);
+    } else if (event.key === 'ArrowUp') {
+      if (results.length === 0) return;
+      event.preventDefault();
+      this.activeResultIndex.update((i) => (i - 1 + results.length) % results.length);
+    } else if (event.key === 'Enter') {
+      const target = results[this.activeResultIndex()] ?? results[0];
+      if (target) {
+        event.preventDefault();
+        this.goToResult(target.path);
+      }
+    }
+    // Escape is not handled here — the document-level listener (onEscape) already closes the
+    // search panel, and handling it twice would just be redundant.
+  }
+
+  protected goToResult(path: string): void {
+    this.router.navigateByUrl('/' + path);
+    this.closeSearch();
+  }
+
+  protected onDocumentClick(event: MouseEvent): void {
+    if (this.isThemeMenuOpen()) {
+      const switcher = this.elRef.nativeElement.querySelector('.theme-switcher');
+      if (switcher && !switcher.contains(event.target as Node)) {
+        this.closeThemeMenu();
+      }
+    }
+    if (this.isSearchOpen()) {
+      const search = this.elRef.nativeElement.querySelector('.nav-search');
+      if (search && !search.contains(event.target as Node)) {
+        this.closeSearch();
+      }
     }
   }
 
-  /** Escape closes whichever overlay is open — the theme menu first, then the nav drawer. */
+  /** Escape closes whichever overlay is open — search first, then the theme menu, then the nav drawer. */
   protected onEscape(): void {
+    if (this.isSearchOpen()) {
+      this.closeSearch();
+      return;
+    }
     if (this.isThemeMenuOpen()) {
       this.closeThemeMenu();
       return;

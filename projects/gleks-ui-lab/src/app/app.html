@@ -26,6 +26,51 @@
     </div>
 
     <div class="header-controls">
+      <div class="nav-search">
+        <gog-button
+          variant="ghost"
+          size="sm"
+          ariaLabel="Search components"
+          (gogClick)="toggleSearch()"
+        >
+          <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+        </gog-button>
+
+        @if (isSearchOpen()) {
+          <div class="nav-search__panel" role="search">
+            <input
+              #searchInput
+              type="text"
+              class="nav-search__input"
+              placeholder="Search components…"
+              autocomplete="off"
+              [value]="searchQuery()"
+              (input)="onSearchInput($any($event.target).value)"
+              (keydown)="onSearchKeydown($event)"
+            />
+            @if (searchQuery() && searchResults().length === 0) {
+              <p class="nav-search__empty">No matches for "{{ searchQuery() }}"</p>
+            }
+            @if (searchResults().length > 0) {
+              <ul class="nav-search__results" role="listbox">
+                @for (result of searchResults(); track result.path; let i = $index) {
+                  <li role="option" [attr.aria-selected]="i === activeResultIndex()">
+                    <button
+                      type="button"
+                      class="nav-search__result"
+                      [class.nav-search__result--active]="i === activeResultIndex()"
+                      (click)="goToResult(result.path)"
+                    >
+                      {{ result.label }}
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        }
+      </div>
+
       <gog-button
         variant="ghost"
         size="sm"
