@@ -65,9 +65,20 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
       '--gog-control-border-style',
       '--gog-text-transform',
       '--gog-letter-spacing',
+      // Density belongs to this layer too (themes.md iteration 6, and the Theming page's
+      // Character Layer table lists it) — and it is the single highest-leverage token here,
+      // since the whole spacing scale below is `calc(Npx * var(--gog-density))`. Its value is
+      // a bare `1`, which `classifyToken` cannot read as a range (`UNIT_RE` wants a unit), so
+      // it renders as a text field — the same graceful degradation the two casing tokens above
+      // already rely on.
+      '--gog-density',
     ],
   },
   {
+    // The five named aliases only. The 14 numeric steps they derive from
+    // (`--gog-space-2` … `--gog-space-48`) are deliberately not fields here: they are the
+    // scale's internals, and `--gog-density` above already moves all of them at once, which is
+    // the edit a theme actually wants to make.
     title: 'Spacing',
     tokens: [
       '--gog-space-xs',

@@ -102,7 +102,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     id: 'foundation-spacing',
     title: 'Foundation — Spacing',
     tokens: [
-      { name: '--gog-space-xs … --gog-space-2xl', description: 'Spacing scale, from 4px to 48px.' },
+      {
+        name: '--gog-space-2 … --gog-space-48',
+        description:
+          'The 14-step scale every padding and gap in the library is built from. Each step is calc(Npx * var(--gog-density)), so the whole scale moves together when density changes.',
+      },
+      {
+        name: '--gog-space-xs … --gog-space-2xl',
+        description:
+          'Five named aliases onto that scale — 4, 8, 16, 24 and 48px at density 1. Convenience names, not a second scale: they derive from the numeric steps above, so overriding one with a literal takes it out of density.',
+      },
     ],
   },
   {
