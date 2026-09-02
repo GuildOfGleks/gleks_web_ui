@@ -162,6 +162,25 @@ export class App {
   protected readonly activeResultIndex = signal(-1);
 
   /**
+   * Each header toggle carries its state in its accessible **name**, because it cannot carry it
+   * in `aria-pressed`/`aria-expanded`: an `[attr.*]` binding on `<gog-button>` lands on the
+   * custom-element host, not on the `<button>` inside it — which is the very reason the
+   * component exposes an `ariaLabel` input at all (see `button.component.ts`'s own comment on
+   * that input). A name that names the action's next state is the standard fallback when a
+   * button component won't forward ARIA state, and unlike a host attribute it actually reaches
+   * assistive tech. The library-side fix — `ariaPressed`/`ariaExpanded`/`ariaControls` inputs
+   * alongside `ariaLabel` — is filed in `docs/backlog.md`; do not "restore" a host binding here.
+   */
+  protected readonly directionToggleLabel = computed(() =>
+    this.isRtl() ? 'Switch to left-to-right' : 'Switch to right-to-left',
+  );
+
+  /** See `directionToggleLabel` for why the name carries the state rather than `aria-expanded`. */
+  protected readonly searchToggleLabel = computed(() =>
+    this.isSearchOpen() ? 'Close component search' : 'Search components',
+  );
+
+  /**
    * The left sidebar as a drawer, below the layout's tablet breakpoint. Above it the sidebar is
    * a permanent column and this is ignored — the same markup, positioned differently, so the
    * navigation is never a second component that can drift from the real one.
