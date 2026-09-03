@@ -109,6 +109,9 @@ const FOUNDATION_NAMESPACES = new Set([
   'density',
   'disabled',
   'duration',
+  // `--gog-z-base`: the stacking floor every layer token adds to, so an app can lift the whole
+  // library above its own chrome with one number instead of five.
+  'z',
   // The ground a raised surface paints; a dark theme lifts it where a light one shadows.
   'elevated',
   'easing',
@@ -183,6 +186,15 @@ const CHARACTER_TOKENS = new Map([
     '--gog-text-xl',
     '--gog-text-2xl',
     '--gog-text-3xl',
+  ]],
+  // Weight joined the character layer on 2026-09-03, for the same reason casing and tracking did
+  // in 21.7.0: fifteen component tokens held a bare 500/600/700/900, so a house style that wanted
+  // lighter chrome had to find every one. Only the four steps the library actually paints.
+  ['font-weight', [
+    '--gog-font-weight-medium',
+    '--gog-font-weight-semibold',
+    '--gog-font-weight-bold',
+    '--gog-font-weight-heavy',
   ]],
   ['text-transform', ['--gog-text-transform']],
   ['letter-spacing', ['--gog-letter-spacing']],

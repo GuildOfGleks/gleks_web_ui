@@ -64,6 +64,16 @@
   --gog-text-2xl: 2rem;
   --gog-text-3xl: 3rem;
 
+  /* Weight, the third character axis after casing and tracking — and the one 21.7.0's character
+     layer missed, which is how fifteen component tokens came to hold a bare number. A house style
+     that wants lighter chrome sets these four and nothing else; before them it meant finding and
+     re-listing every one. Four steps because four are used: no `normal`, because nothing in the
+     library paints 400 and an unused token is API nobody asked for. */
+  --gog-font-weight-medium: 500;
+  --gog-font-weight-semibold: 600;
+  --gog-font-weight-bold: 700;
+  --gog-font-weight-heavy: 900;
+
   /* The "emphasis" casing character — labels, buttons, section and table headers all shout
      the same way by default. Not every uppercase/1px-tracking declaration in this file reads
      these two: only the ones that genuinely share this idea do. A few (gog-tabs among them)
@@ -203,8 +213,11 @@
   /* ── Overlay stacking ───────────────────────────────────────────────────────
      Baseline for dropdown panels. gog-dialog re-declares this on its own panel so
      dropdowns opened inside a dialog stack above it. */
-  --gog-dropdown-z: 300;
-  --gog-spinner-overlay-z: 8000;
+  /* The library's stacking floor. Every layer below is `base + N`, so an app that has to put the
+     whole library above its own chrome moves this one number and keeps the internal order —
+     badge 1, toast 100, dropdowns and dialogs 300, tooltip 400, the blocking spinner overlay
+     8000. Before this, shifting the stack meant editing five tokens and hoping none was missed. */
+  --gog-z-base: 0;
 
   /* ── Light palette (also the no-data-theme default) ───────────────────────── */
   color-scheme: light;
@@ -343,6 +356,17 @@
   /* ── Derived foundation tokens ───────────────────────────────────────────────
      Split out of the literal block above because they read other tokens: they have
      to re-resolve inside each theme scope. */
+  /* ── Stacking layers ─────────────────────────────────────────────────────────
+     All five read `--gog-z-base`, so the whole library moves together. The gaps are
+     deliberate: an app that needs to slot its own element between two of these has room
+     without touching the library's numbers. */
+  --gog-badge-z: calc(var(--gog-z-base) + 1);
+  --gog-toast-base-z: calc(var(--gog-z-base) + 100);
+  --gog-dropdown-z: calc(var(--gog-z-base) + 300);
+  --gog-tooltip-z: calc(var(--gog-z-base) + 400);
+  /* The blocking overlay outranks everything, including a dialog it may be covering. */
+  --gog-spinner-overlay-z: calc(var(--gog-z-base) + 8000);
+
   --gog-space-2: calc(2px * var(--gog-density));
   --gog-space-4: calc(4px * var(--gog-density));
   --gog-space-6: calc(6px * var(--gog-density));
@@ -443,7 +467,7 @@
   --gog-accordion-body-line-height: 1.6;
   --gog-accordion-header-text-transform: var(--gog-text-transform);
   --gog-accordion-header-gap: var(--gog-space-12);
-  --gog-accordion-disabled-opacity: 0.5;
+  --gog-accordion-disabled-opacity: var(--gog-disabled-opacity);
   --gog-accordion-transition-duration: var(--gog-duration-base);
   --gog-accordion-body-transition-duration: var(--gog-duration-slow);
   --gog-accordion-chevron-transition-duration: var(--gog-duration-slow);
@@ -555,7 +579,7 @@
   --gog-button-slg-font-size: var(--gog-text-slg);
 
   --gog-button-font-family: var(--gog-font-heading);
-  --gog-button-font-weight: 900;
+  --gog-button-font-weight: var(--gog-font-weight-heavy);
   --gog-button-letter-spacing: var(--gog-letter-spacing);
   --gog-button-text-transform: var(--gog-text-transform);
   --gog-button-line-height: 1;
@@ -684,7 +708,7 @@
      Padding/font-size reuse the `--gog-button-<size>-*` scale so a toggle group and a
      `<gog-button>` at the same `size` line up in a toolbar. */
   --gog-button-toggle-font-family: var(--gog-font-heading);
-  --gog-button-toggle-font-weight: 700;
+  --gog-button-toggle-font-weight: var(--gog-font-weight-bold);
   --gog-button-toggle-letter-spacing: 0.5px;
   --gog-button-toggle-text-transform: var(--gog-text-transform);
   --gog-button-toggle-line-height: 1;
@@ -723,7 +747,7 @@
   --gog-calendar-header-margin: 8px;
   --gog-calendar-months-gap: var(--gog-space-16);
   --gog-calendar-title-color: var(--gog-text-color);
-  --gog-calendar-title-font-weight: 700;
+  --gog-calendar-title-font-weight: var(--gog-font-weight-bold);
   --gog-calendar-nav-size: 28px;
   --gog-calendar-nav-radius: calc(var(--gog-radius) - 2px);
   --gog-calendar-nav-bg: transparent;
@@ -736,7 +760,7 @@
   --gog-calendar-weekday-padding: var(--gog-space-4) 0;
   --gog-calendar-weekday-color: var(--gog-muted-text-color);
   --gog-calendar-weekday-font-size: var(--gog-text-xs);
-  --gog-calendar-weekday-font-weight: 600;
+  --gog-calendar-weekday-font-weight: var(--gog-font-weight-semibold);
   --gog-calendar-weekday-text-transform: var(--gog-text-transform);
   --gog-calendar-day-radius: calc(var(--gog-radius) - 2px);
   --gog-calendar-day-border-width: var(--gog-border-width);
@@ -746,10 +770,10 @@
   --gog-calendar-day-hover-bg: var(--gog-hover-color);
   --gog-calendar-day-outside-color: var(--gog-muted-text-color);
   --gog-calendar-today-border-color: var(--gog-accent-color);
-  --gog-calendar-today-font-weight: 700;
+  --gog-calendar-today-font-weight: var(--gog-font-weight-bold);
   --gog-calendar-selected-bg: var(--gog-accent-color);
   --gog-calendar-selected-color: var(--gog-accent-text-color, var(--gog-primary-color));
-  --gog-calendar-selected-font-weight: 700;
+  --gog-calendar-selected-font-weight: var(--gog-font-weight-bold);
   /* The wash between the two ends of a range: same hue, low enough to read as a band rather
      than as a second selection. */
   --gog-calendar-range-bg: var(--gog-accent-pale);
@@ -794,7 +818,7 @@
   --gog-card-heading-color: var(--gog-text-color);
   --gog-card-heading-font-family: var(--gog-font-heading);
   --gog-card-heading-font-size: var(--gog-text-lg);
-  --gog-card-heading-font-weight: 600;
+  --gog-card-heading-font-weight: var(--gog-font-weight-semibold);
   --gog-card-heading-line-height: 1.3;
 
   --gog-card-outlined-bg: var(--gog-surface-color);
@@ -901,7 +925,7 @@
   --gog-chip-border-width: var(--gog-border-width);
   --gog-chip-border-style: var(--gog-border-style);
   --gog-chip-color: var(--gog-text-color);
-  --gog-chip-font-weight: 500;
+  --gog-chip-font-weight: var(--gog-font-weight-medium);
   --gog-chip-line-height: 1.2;
   --gog-chip-radius: max(var(--gog-radius), 2px);
   --gog-chip-pill-radius: 9999px;
@@ -910,7 +934,7 @@
   --gog-chip-remove-scale: 1.1;
   --gog-chip-avatar-inset-ratio: 0.9;
   --gog-chip-remove-inset-ratio: 0.85;
-  --gog-chip-disabled-opacity: 0.55;
+  --gog-chip-disabled-opacity: var(--gog-disabled-opacity);
   --gog-chip-focus-ring-width: 2px;
   --gog-chip-focus-ring-offset: var(--gog-focus-ring-offset);
 
@@ -1008,7 +1032,7 @@
   --gog-autocomplete-gap: var(--gog-space-4);
   --gog-autocomplete-label-color: var(--gog-accent-color);
   --gog-autocomplete-label-font-size: var(--gog-text-sm);
-  --gog-autocomplete-label-font-weight: 600;
+  --gog-autocomplete-label-font-weight: var(--gog-font-weight-semibold);
   --gog-autocomplete-label-letter-spacing: var(--gog-letter-spacing);
   --gog-autocomplete-label-text-transform: var(--gog-text-transform);
   --gog-autocomplete-field-bg: var(--gog-surface-color);
@@ -1080,7 +1104,7 @@
   /* ── Badge (the `gogBadge` directive; its classes live in utilities.css) ───── */
   --gog-badge-font-family: var(--gog-font-body);
   --gog-badge-font-size: var(--gog-text-xs);
-  --gog-badge-font-weight: 600;
+  --gog-badge-font-weight: var(--gog-font-weight-semibold);
   --gog-badge-line-height: 1;
   /* Min-width *and* height: a one-digit badge stays a circle, a three-digit one grows
      sideways only. */
@@ -1094,7 +1118,6 @@
   --gog-badge-border-style: var(--gog-border-style);
   --gog-badge-border-color: transparent;
   /* Above the host's own chrome but below any overlay panel (--gog-dropdown-z is 300). */
-  --gog-badge-z: 1;
   /* `--gog-accent-text-color` is the palette's "text on a filled surface" colour and flips
      with the theme, which is why a red badge reads white on light and near-black on dark. */
   --gog-badge-success-bg: var(--gog-success-color);
@@ -1178,7 +1201,7 @@
   --gog-divider-label-color: var(--gog-muted-text-color);
   --gog-divider-label-font-family: var(--gog-font-body);
   --gog-divider-label-font-size: var(--gog-text-sm);
-  --gog-divider-label-font-weight: 500;
+  --gog-divider-label-font-weight: var(--gog-font-weight-medium);
   --gog-divider-label-line-height: 1.4;
 
   /* ── Icon ──────────────────────────────────────────────────────────────────── */
@@ -1311,7 +1334,7 @@
      layout property, so it has no effect unless the JS reads it. */
   --gog-multiselect-option-height: 40px;
   --gog-multiselect-option-radius: calc(var(--gog-radius) - 2px);
-  --gog-multiselect-option-disabled-opacity: 0.5;
+  --gog-multiselect-option-disabled-opacity: var(--gog-disabled-opacity);
   --gog-multiselect-option-transition-duration: var(--gog-duration-fast);
   --gog-multiselect-checkbox-border: var(--gog-accent-dim);
   --gog-multiselect-checkbox-bg: var(--gog-background-color);
@@ -1419,7 +1442,7 @@
   --gog-panel-heading-color: var(--gog-text-color);
   --gog-panel-heading-font-family: var(--gog-font-heading);
   --gog-panel-heading-font-size: var(--gog-text-xl);
-  --gog-panel-heading-font-weight: 600;
+  --gog-panel-heading-font-weight: var(--gog-font-weight-semibold);
   --gog-panel-heading-line-height: 1.25;
 
   --gog-panel-outlined-bg: var(--gog-surface-color);
@@ -1602,7 +1625,7 @@
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-select-option-height: 40px;
-  --gog-select-option-disabled-opacity: 0.5;
+  --gog-select-option-disabled-opacity: var(--gog-disabled-opacity);
   --gog-select-option-transition-duration: var(--gog-duration-fast);
   /* Icon geometry, expressed as a ratio of the control's font size. */
   --gog-select-chevron-icon-ratio: 0.875;
@@ -1795,7 +1818,7 @@
      `--gog-tabs-indicator-offset` / `-length` are written as inline styles from the measured
      header geometry, so they are not declared either. */
   --gog-tabs-font-family: var(--gog-font-heading);
-  --gog-tabs-font-weight: 700;
+  --gog-tabs-font-weight: var(--gog-font-weight-bold);
   --gog-tabs-letter-spacing: 0.4px;
   --gog-tabs-text-transform: none;
   --gog-tabs-line-height: 1.2;
@@ -1854,7 +1877,7 @@
   --gog-tag-border-width: var(--gog-border-width);
   --gog-tag-border-style: var(--gog-border-style);
   --gog-tag-inner-border-width: var(--gog-border-width);
-  --gog-tag-font-weight: 600;
+  --gog-tag-font-weight: var(--gog-font-weight-semibold);
   --gog-tag-line-height: 1;
   --gog-tag-radius: max(var(--gog-radius), 2px);
   --gog-tag-pill-radius: 9999px;
@@ -1916,7 +1939,6 @@
   --gog-toast-progress-height: 3px;
   --gog-toast-progress-opacity: 30%;
   --gog-toast-transition-duration: 0.25s;
-  --gog-toast-base-z: 100;
   /* Card-stack geometry */
   --gog-toast-stack-peek: 14px;
   --gog-toast-stack-scale-step: 0.06;
@@ -1952,7 +1974,7 @@
   --gog-toggle-focus-ring-color: var(--gog-accent-color);
   /* In-track on/off wording */
   --gog-toggle-state-color: var(--gog-accent-text-color, var(--gog-primary-color));
-  --gog-toggle-state-font-weight: 600;
+  --gog-toggle-state-font-weight: var(--gog-font-weight-semibold);
   --gog-toggle-state-letter-spacing: 0.04em;
   --gog-toggle-state-padding-inline: var(--gog-space-4);
   --gog-toggle-state-offset: 6px;
@@ -2013,7 +2035,6 @@
   /* Space kept between the trigger and the bubble. Read by the directive itself (not just
      CSS) to feed the placement math — see `readPxToken` in `tooltip.directive.ts`. */
   --gog-tooltip-gap: var(--gog-space-8);
-  --gog-tooltip-z: 400;
   --gog-tooltip-transition-duration: var(--gog-duration-fast);
 }
 

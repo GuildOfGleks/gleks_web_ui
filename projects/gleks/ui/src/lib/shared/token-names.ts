@@ -683,6 +683,10 @@ export type GogTokenName =
   | '--gog-font-body'
   | '--gog-font-heading'
   | '--gog-font-mono'
+  | '--gog-font-weight-bold'
+  | '--gog-font-weight-heavy'
+  | '--gog-font-weight-medium'
+  | '--gog-font-weight-semibold'
   | '--gog-hover-color'
   | '--gog-icon-fallback-size'
   | '--gog-icon-size'
@@ -1450,7 +1454,8 @@ export type GogTokenName =
   | '--gog-tooltip-shadow'
   | '--gog-tooltip-transition-duration'
   | '--gog-tooltip-z'
-  | '--gog-warning-color';
+  | '--gog-warning-color'
+  | '--gog-z-base';
 
 /** Which of the three layers a token belongs to — see the README's theming section. */
 export type GogTokenLayer = 'foundation' | 'component' | 'instance';
@@ -1474,6 +1479,10 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-font-body',
       '--gog-font-heading',
       '--gog-font-mono',
+      '--gog-font-weight-bold',
+      '--gog-font-weight-heavy',
+      '--gog-font-weight-medium',
+      '--gog-font-weight-semibold',
       '--gog-letter-spacing',
       '--gog-text-2xl',
       '--gog-text-3xl',
@@ -1573,7 +1582,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
   {
     section: 'Overlay stacking',
     layer: 'foundation',
-    tokens: ['--gog-dropdown-z', '--gog-spinner-overlay-z'],
+    tokens: ['--gog-z-base'],
   },
   {
     section: 'Light palette (also the no-data-theme default)',
@@ -1603,13 +1612,15 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     ],
   },
   {
-    section: 'Derived foundation tokens',
-    layer: 'foundation',
+    section: 'Stacking layers',
+    layer: 'component',
     tokens: [
+      '--gog-badge-z',
       '--gog-control-checkbox-padding',
       '--gog-control-icon-offset',
       '--gog-control-padding-x',
       '--gog-control-padding-y',
+      '--gog-dropdown-z',
       '--gog-elevated-surface-color',
       '--gog-field-float-label-over-gap',
       '--gog-field-lg-font-size',
@@ -1657,8 +1668,11 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-space-md',
       '--gog-space-sm',
       '--gog-space-xs',
+      '--gog-spinner-overlay-z',
+      '--gog-toast-base-z',
       '--gog-toast-gap',
       '--gog-toast-stack-padding',
+      '--gog-tooltip-z',
     ],
   },
   {
@@ -2232,7 +2246,6 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-badge-success-color',
       '--gog-badge-warning-bg',
       '--gog-badge-warning-color',
-      '--gog-badge-z',
     ],
   },
   {
@@ -2946,7 +2959,6 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-toast-action-font-size',
       '--gog-toast-action-padding',
       '--gog-toast-actions-gap',
-      '--gog-toast-base-z',
       '--gog-toast-bg',
       '--gog-toast-border',
       '--gog-toast-close-font-size',
@@ -3054,7 +3066,6 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-tooltip-radius',
       '--gog-tooltip-shadow',
       '--gog-tooltip-transition-duration',
-      '--gog-tooltip-z',
     ],
   },
   {

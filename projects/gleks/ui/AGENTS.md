@@ -187,6 +187,13 @@ Full model is in `README.md`'s Theming section; short version:
   library; the handful that do not are off-scale on purpose (an 11px chip, the accordion
   chevron's px ramp, the toggle's own micro-ramp).
 
+- **Weight is `--gog-font-weight-medium | semibold | bold | heavy`** (500/600/700/900). Every
+  component weight reads one of them, so a lighter or heavier house style is four declarations.
+
+- **`--gog-z-base` moves the whole stacking order.** Badge `+1`, toast `+100`, dropdowns, dialogs
+  and menus `+300`, tooltip `+400`, the blocking spinner overlay `+8000`. Set the base to lift
+  the library above your own chrome without disturbing its internal order.
+
 - **`--gog-density` is the character layer for spacing** (since 21.7.0, `docs/themes.md`
   iteration 6). It multiplies the fourteen-step scale `--gog-space-2` … `--gog-space-48`, named
   for their pixel value at density 1, and every padding and gap in the library derives from a

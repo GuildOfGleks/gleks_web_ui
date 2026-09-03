@@ -8,6 +8,28 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **Weight is a character axis now: `--gog-font-weight-medium|semibold|bold|heavy`.** Fifteen
+  component tokens held a bare `500`/`600`/`700`/`900`, so a house style that wanted lighter
+  chrome had to find and re-list every one — 21.7.0's character layer unified casing and tracking
+  and stopped short of this. Same values, nothing moves; what changes is that four tokens now
+  reach all fifteen. Four steps because four are used: no `normal`, since nothing in the library
+  paints 400 and an unused token is API nobody asked for. `check-tokens` rule G covers the family,
+  so the next bare number fails the build.
+
+- **`--gog-z-base`: the whole stacking order moves as one.** `badge`, `toast`, `dropdown`
+  (which dialogs and menus read), `tooltip` and the blocking `spinner-overlay` were five
+  unrelated literals — 1, 100, 300, 400, 8000 — so an app that had to lift the library above its
+  own chrome edited five tokens and hoped it had found them all. Each is `calc(var(--gog-z-base) +
+  N)` now: the numbers are unchanged at `--gog-z-base: 0`, and setting it to 10000 gives
+  10001/10100/10300/10400/18000 — the same order, one number. The gaps are deliberate, so an app
+  can still slot its own element between two library layers.
+
+- **One disabled level, not four.** `--gog-disabled-opacity` (0.4) is read by nine components,
+  while `gog-accordion`, the `gog-select` and `gog-multiselect` option rows (0.5) and `gog-chip`
+  (0.55) each carried their own. One state should not have four opinions, and the three
+  stragglers were invisible to rule G by construction — it flags a literal only when the value
+  *matches* the token's. **This is a visual change**: those four fade slightly further now.
+
 - **The type scale gained the step it was missing: `--gog-text-slg` (1.25rem).** `gog-button` and
   the field controls both needed a size for their `slg` variant, the scale went straight from
   1.125rem to 1.5rem, and both wrote `1.25rem` as a literal — the same value chosen twice,
