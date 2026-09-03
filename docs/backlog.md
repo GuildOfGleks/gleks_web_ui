@@ -16,8 +16,28 @@ not worth carrying here.
 
 ## Defects — first
 
-**None open.** The section emptied again on 2026-09-02, when the `GogGlobalConfig` JSDoc defect
-was fixed for the in-progress 21.8.0 (see `CHANGELOG.md`).
+- **Nine pressable surfaces still have no press feedback at all.** 21.8.1 gave `gog-button` a
+  `:active` colour because its `transform: scale()` was switched off under
+  `prefers-reduced-motion`. While fixing it: `.gog-btn:active` was the **only** `:active` rule in
+  the entire library. `gogMenuItem`, `gog-chip`, `gog-tabs` headers, `gog-accordion` headers,
+  `gogCollapsibleTrigger`, `gog-button-toggle-group` options and the `gog-select` /
+  `gog-multiselect` / `gog-autocomplete` option rows have none — their press feedback is the
+  ripple, which is **off by default** and additionally suppressed under reduced motion. So in a
+  default-configured app none of them acknowledges a press, ever, animations or not. The button's
+  fix is the pattern to copy (a colour one step past the surface's own hover), but each surface
+  needs its own token pair and its own look at what its hover already does, so this is a pass of
+  its own rather than a find-and-replace.
+
+  Related, and the reason this is a defect rather than a gap: `docs/feedback-triage.md`'s closing
+  section already argued that the library's feedback story "degrades to nothing rather than to
+  something". This is the measurement behind that sentence.
+
+**What was here.** The section emptied on 2026-09-02, when the `GogGlobalConfig` JSDoc defect
+was fixed for the in-progress 21.8.0 (see `CHANGELOG.md`), and again refilled on 2026-09-03 with
+the entry above. Two contrast defects found the same day — the outline button's hover label
+failing WCAG AA in all 11 themes, and `one-dark`'s `--gog-accent-dim` under the new pressed fill
+— were fixed in 21.8.1 rather than filed here, because `check:contrast` is a CI step and a known
+failure would have made it permanently red.
 
 **One finding from it is worth keeping, because it will recur.** The defect was that four
 `GOG_CONFIG` keys under-reported their readers, always omitting the same components —

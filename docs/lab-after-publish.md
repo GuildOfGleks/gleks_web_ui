@@ -19,6 +19,25 @@ delete the section too.
 
 ---
 
+## After 21.8.1
+
+1. **The button page's Styling Tokens table gains the active-state tokens.** It is generated from
+   `TOKEN_SECTIONS`, so it picks them up on its own once the package is installed — but the page's
+   prose says nothing about the press state, and that is the part worth writing: the press is a
+   colour rather than only a scale, `prefers-reduced-motion` keeps the colour and drops the scale,
+   and the ripple deliberately does not cover this. `AGENTS.md`'s `gog-button` section has the
+   wording; the showcase's "Press feedback, with animations off" panel has a live case with the
+   DevTools recipe for emulating reduced motion.
+
+2. **The Right-to-left / accessibility story on `general/*` does not change**, but the FAQ answer
+   about reduced motion (if one is added) should say the same thing as the button page rather than
+   a second wording of it.
+
+3. **`one-dark`'s `--gog-accent-dim` changed** (`#4b8fca` → `#5399d6`). The theme generator reads
+   the installed package's presets, so it follows automatically; nothing to edit. Listed only so
+   that a colour difference between the deployed site and a local screenshot is not investigated
+   as a bug.
+
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see
