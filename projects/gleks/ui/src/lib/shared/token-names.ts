@@ -1324,6 +1324,7 @@ export type GogTokenName =
   | '--gog-text-color'
   | '--gog-text-lg'
   | '--gog-text-md'
+  | '--gog-text-slg'
   | '--gog-text-sm'
   | '--gog-text-transform'
   | '--gog-text-xl'
@@ -1478,6 +1479,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-text-3xl',
       '--gog-text-lg',
       '--gog-text-md',
+      '--gog-text-slg',
       '--gog-text-sm',
       '--gog-text-transform',
       '--gog-text-xl',
@@ -1532,12 +1534,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
   {
     section: 'Field sizing (input / select / multiselect share one scale)',
     layer: 'foundation',
-    tokens: [
-      '--gog-field-icon-glyph',
-      '--gog-field-icon-glyph-sm',
-      '--gog-field-icon-glyph-xsm',
-      '--gog-field-slg-font-size',
-    ],
+    tokens: ['--gog-field-icon-glyph', '--gog-field-icon-glyph-sm', '--gog-field-icon-glyph-xsm'],
   },
   {
     section: 'Float label geometry (input / textarea / select / multiselect)',
@@ -1625,6 +1622,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-field-md-icon-offset',
       '--gog-field-md-padding-x',
       '--gog-field-md-padding-y',
+      '--gog-field-slg-font-size',
       '--gog-field-slg-icon-inset',
       '--gog-field-slg-icon-offset',
       '--gog-field-slg-padding-x',

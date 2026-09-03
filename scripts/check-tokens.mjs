@@ -179,6 +179,7 @@ const CHARACTER_TOKENS = new Map([
     '--gog-text-sm',
     '--gog-text-md',
     '--gog-text-lg',
+    '--gog-text-slg',
     '--gog-text-xl',
     '--gog-text-2xl',
     '--gog-text-3xl',

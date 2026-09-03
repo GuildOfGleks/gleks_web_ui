@@ -181,6 +181,12 @@ Full model is in `README.md`'s Theming section; short version:
   `--gog-text-transform`/`--gog-letter-spacing` (emphasis casing/tracking). Component tokens in
   the categories these cover derive from them by default; setting one in a `[data-theme]` block
   restyles every component that reads it, with nothing to re-list per component.
+- **The type scale is `--gog-text-xs | sm | md | lg | slg | xl | 2xl | 3xl`.** `slg` (1.25rem)
+  fills the gap between `lg` and `xl` and is named for the control size that needed it. Every
+  component font size that is one of these reads the token, so retuning the scale retunes the
+  library; the handful that do not are off-scale on purpose (an 11px chip, the accordion
+  chevron's px ramp, the toggle's own micro-ramp).
+
 - **`--gog-density` is the character layer for spacing** (since 21.7.0, `docs/themes.md`
   iteration 6). It multiplies the fourteen-step scale `--gog-space-2` … `--gog-space-48`, named
   for their pixel value at density 1, and every padding and gap in the library derives from a

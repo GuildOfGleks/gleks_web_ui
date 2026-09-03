@@ -53,6 +53,13 @@
   --gog-text-sm: 0.875rem;
   --gog-text-md: 1rem;
   --gog-text-lg: 1.125rem;
+  /* 20px, between `lg` and `xl`. Named for the control size it serves rather than continuing the
+     t-shirt run, because that is what asked for it: `gog-button` and the field controls both
+     needed a step for their `slg` size and, having none, both wrote `1.25rem` as a literal — the
+     same value chosen twice, independently, which is a missing rung and not two opinions. The
+     gap from 1.125 to 1.5 is the widest in the scale, so it was the one likely to be filled by
+     hand. */
+  --gog-text-slg: 1.25rem;
   --gog-text-xl: 1.5rem;
   --gog-text-2xl: 2rem;
   --gog-text-3xl: 3rem;
@@ -163,8 +170,6 @@
   --gog-field-icon-glyph-xsm: 12px;
   --gog-field-icon-glyph-sm: 14px;
   --gog-field-icon-glyph: 16px;
-
-  --gog-field-slg-font-size: 1.25rem;
 
   /* ── Float label geometry (input / textarea / select / multiselect) ─────────
      One scale for every field that can float its label. Each control reads these
@@ -380,6 +385,11 @@
   --gog-panel-radius: calc(var(--gog-radius) + 8px);
   --gog-field-xsm-font-size: var(--gog-text-xs);
   --gog-field-sm-font-size: var(--gog-text-sm);
+  /* The only field metric that is a type size; the rest of this block is geometry. It lives
+     here rather than with them because it reads a token, and a derived value declared on the
+     literals-only `:root` freezes to that scope's scale (rule C). */
+  --gog-field-slg-font-size: var(--gog-text-slg);
+
   --gog-field-md-padding-y: var(--gog-control-padding-y);
   --gog-field-md-padding-x: var(--gog-control-padding-x);
 
@@ -542,7 +552,7 @@
   --gog-button-sm-font-size: var(--gog-text-sm);
   --gog-button-md-font-size: var(--gog-text-md);
   --gog-button-lg-font-size: var(--gog-text-lg);
-  --gog-button-slg-font-size: 1.25rem;
+  --gog-button-slg-font-size: var(--gog-text-slg);
 
   --gog-button-font-family: var(--gog-font-heading);
   --gog-button-font-weight: 900;

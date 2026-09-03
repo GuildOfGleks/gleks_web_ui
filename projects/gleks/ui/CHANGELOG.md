@@ -8,6 +8,14 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **The type scale gained the step it was missing: `--gog-text-slg` (1.25rem).** `gog-button` and
+  the field controls both needed a size for their `slg` variant, the scale went straight from
+  1.125rem to 1.5rem, and both wrote `1.25rem` as a literal — the same value chosen twice,
+  independently, which is a missing rung rather than two opinions. Both read the token now, and
+  rule G lists it, so the next component that wants 20px type cannot re-invent it. Named for the
+  control size it serves rather than continuing the t-shirt run, because that is what asked for
+  it.
+
 - **Sixteen component font sizes now read the type scale, and rule G covers it.** A theme that
   retuned `--gog-text-*` moved most of the library and left `gog-button`, `gog-chip`, `gog-tag`,
   the dialog's close button, the toast's action and close, and the toggle's `lg` state label
