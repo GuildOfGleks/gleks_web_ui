@@ -45,6 +45,19 @@
  * `.github/workflows/ci.yml` runs this after the other token checks. It was deliberately kept
  * out until the last real failure was fixed: a step that is permanently red over a known,
  * tracked, undecided condition teaches everyone to ignore CI, which is worse than not checking.
+ * ## Two halves, since 21.8.1
+ *
+ * `PAIRS` compares **palette** tokens: hex against hex, straight out of a theme block. That is the
+ * foundation, and it is blind to a label sitting on a `color-mix()` wash, because the wash has no
+ * colour until it is composited over whatever it covers. Two real AA failures went through that
+ * gap and were found by hand — the outline button's hover label, failing in all 11 themes, and
+ * the ghost button's, failing in three.
+ *
+ * `WASH_PAIRS` closes it. `token-color.mjs` resolves a component token the way a browser does
+ * (theme block, then the `@supports` mixed layer, then the derived layer, then the literals),
+ * composites it over the ground that component actually sits on, and measures the label against
+ * the result. It found 24 problems on its first run, every one of them real.
+ *
  * All 11 shipped themes now pass all 132 pairs. **A new preset that does not is what this is
  * here to stop** — and a preset is one file, so the failure names the file to fix.
  *
@@ -76,6 +89,8 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { glob } from 'node:fs/promises';
+
+import { buildLayers, contrast, makeResolver, over, parseDecls, toHex } from './token-color.mjs';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uiSrc = path.join(rootDir, 'projects/gleks/ui/src');
@@ -119,6 +134,38 @@ const PAIRS = [
   ['accent(focus ring)/surface', 'accent', 'surface', 3.0, true],
   ['border(decorative)/background', 'border', 'background', 3.0, false],
   ['border(decorative)/surface', 'border', 'surface', 3.0, false],
+];
+
+/**
+ * Component states whose colour only exists once composited — a label on a `color-mix()` wash,
+ * over whatever that surface sits on. `PAIRS` above cannot express these: it compares palette
+ * hexes, and a wash is not in the palette.
+ *
+ * Every entry here is a state that shipped or changed in 21.8.1, plus the hover it steps past,
+ * because the two failures this table was built for were both hovers. Grounds are listed per
+ * entry: a menu item sits on `--gog-menu-bg`, a ghost button on the page *or* on a card, and the
+ * worse of the two is the one that counts.
+ *
+ * [label, labelToken, backgroundToken, groundTokens, threshold]
+ */
+const WASH_PAIRS = [
+  ['button ghost hover', '--gog-button-ghost-hover-color', '--gog-button-ghost-hover-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button ghost press', '--gog-button-ghost-press-color', '--gog-button-ghost-press-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['menu item hover', '--gog-menu-item-hover-color', '--gog-menu-item-hover-bg', ['--gog-menu-bg'], 4.5],
+  ['menu item press', '--gog-menu-item-color', '--gog-menu-item-press-bg', ['--gog-menu-bg'], 4.5],
+  ['chip hover', '--gog-chip-color', '--gog-chip-hover-bg', ['--gog-chip-bg'], 4.5],
+  ['chip press', '--gog-chip-color', '--gog-chip-press-bg', ['--gog-chip-bg'], 4.5],
+  ['tab press', '--gog-tabs-press-color', '--gog-tabs-press-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['accordion header hover', '--gog-accordion-hover-color', '--gog-accordion-hover-bg', ['--gog-accordion-header-bg'], 4.5],
+  ['accordion header press', '--gog-accordion-hover-color', '--gog-accordion-press-bg', ['--gog-accordion-header-bg'], 4.5],
+  ['button-toggle hover', '--gog-button-toggle-hover-color', '--gog-button-toggle-hover-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button-toggle press', '--gog-button-toggle-rest-color', '--gog-button-toggle-press-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['select option hover', '--gog-select-option-color', '--gog-select-option-hover-bg', ['--gog-select-panel-bg'], 4.5],
+  ['select option press', '--gog-select-option-color', '--gog-select-option-press-bg', ['--gog-select-panel-bg'], 4.5],
+  ['multiselect option hover', '--gog-multiselect-option-color', '--gog-multiselect-option-hover-bg', ['--gog-multiselect-panel-bg'], 4.5],
+  ['multiselect option press', '--gog-multiselect-option-color', '--gog-multiselect-option-press-bg', ['--gog-multiselect-panel-bg'], 4.5],
+  ['autocomplete option hover', '--gog-autocomplete-option-hover-color', '--gog-autocomplete-option-hover-bg', ['--gog-autocomplete-panel-bg'], 4.5],
+  ['autocomplete option press', '--gog-autocomplete-option-color', '--gog-autocomplete-option-press-bg', ['--gog-autocomplete-panel-bg'], 4.5],
 ];
 
 function hexToRgb(hex) {
@@ -182,13 +229,14 @@ function extractThemes(rawContent, source) {
       const found = body.match(declRe);
       if (found) palette[short] = found[1];
     }
-    themes.push({ name, palette, source });
+    themes.push({ name, palette, source, decls: parseDecls(body) });
   }
   return themes;
 }
 
 async function main() {
   const themeCss = readFileSync(path.join(uiSrc, 'styles/theme.css'), 'utf8');
+  const layers = buildLayers(themeCss);
   let themes = extractThemes(themeCss, 'styles/theme.css');
 
   for await (const entry of glob('*.css', {
@@ -238,6 +286,46 @@ async function main() {
         `[${palette[aKey]} vs ${palette[bKey]}]`;
       if (!pass) {
         (gate ? failures : findings).push(`${gate ? '[contrast]' : '[informational]'} ${line}`);
+      }
+    }
+  }
+
+  // The composited half. A theme's own block can override any of these, so the resolver is built
+  // per theme rather than once.
+  for (const { name, decls } of themes) {
+    const resolve = makeResolver(layers, decls);
+    for (const [label, labelToken, bgToken, groundTokens, threshold] of WASH_PAIRS) {
+      const labelColour = resolve(labelToken);
+      const wash = resolve(bgToken);
+      if (labelColour === null || wash === null) {
+        failures.push(
+          `[unresolvable] ${name} — ${label}: ` +
+            `${labelColour === null ? labelToken : bgToken} does not resolve to a colour
+` +
+            `      the token is misspelled, or its value is a syntax token-color.mjs does not read —
+` +
+            `      teach it that syntax rather than dropping the pair, or the state goes unchecked`,
+        );
+        continue;
+      }
+
+      for (const groundToken of groundTokens) {
+        const ground = resolve(groundToken);
+        if (ground === null) {
+          failures.push(`[unresolvable] ${name} — ${label}: ground ${groundToken} has no colour`);
+          continue;
+        }
+        pairsChecked++;
+        const painted = over(wash, ground);
+        const text = labelColour.a === 1 ? labelColour : over(labelColour, painted);
+        const ratio = contrast(text, painted);
+        if (ratio < threshold) {
+          failures.push(
+            `[contrast] ${name} — ${label} on ${groundToken.replace('--gog-', '')}: ` +
+              `${ratio.toFixed(2)}:1 (need ${threshold}:1) ` +
+              `[${toHex(text)} vs ${toHex(painted)}]`,
+          );
+        }
       }
     }
   }

@@ -67,13 +67,12 @@ state — the check had been measuring the easier of the two states. It caught a
 `slate`, which passed every pair the script previously had. If a future pair looks like it
 "obviously passes because the related one does", that is the shape of this bug.
 
-**One finding from the same sweep is worth keeping, because it will recur.** The ghost hover
-failure above was invisible to `check:contrast` and still is: that script compares palette tokens,
-and the failing pair was a label against a `color-mix()` wash, which only exists once composited
-over a surface. Eight other surfaces gained exactly that kind of pair in 21.8.1 (their press
-washes), and they were verified by hand across the 11 themes — 4.80:1 at worst — rather than by
-the check. **Whether the script grows a way to express composited washes is an open decision**,
-and the argument for it is that hand-verification does not survive the next theme.
+**That open decision is closed: `check:contrast` grew the composited half** (21.8.1,
+`scripts/token-color.mjs`), and its first run found 24 failures the hand sweep had missed — a
+pressed tab's muted label, an accordion header's accent label on its own tinted strip, and the
+press wash being one percentage point too strong for one-dark. All fixed in the same release. The
+lesson is the one that was predicted: hand-verification found the two failures it went looking
+for and none of the ones it did not.
 
 Two measurement traps from the same session, both of which produced confident wrong answers:
 Chrome returns a `color-mix()` result as `color(srgb …)`, not `rgb()`, so a naive rgb parse yields

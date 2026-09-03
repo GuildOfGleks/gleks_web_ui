@@ -29,6 +29,29 @@ reached 1.0, so breaking changes may land in minor versions.
   `--gog-button-active-scale` keeps its spelling: renaming a token consumers already override
   needs a deprecation cycle, and this is a patch.
 
+- **`check:contrast` now measures composited washes, and found 24 more failures.** The script
+  compared palette hexes, so any pair where one side was a `color-mix()` wash was invisible to it
+  — which is both of the button failures above, found by hand instead. New `scripts/token-color.mjs`
+  resolves a component token the way a browser does (the theme's own block, then the `@supports`
+  mixed layer, then the derived layer, then the literals), composites it over the ground that
+  component actually sits on, and the check measures the label against that. 385 pairs across the
+  11 themes, up from 143.
+
+  Its first run failed 24 of them, all real, and all fixed here:
+
+  - **A pressed tab's label leaves the muted tone.** A resting tab is deliberately
+    `--gog-muted-text-color`, which has no headroom to spend on a tinted ground: 3.24:1 in
+    one-dark and under 4.5 in six more. New `--gog-tabs-press-color`, the full text colour — which
+    is what pressing a tab is about to make it anyway.
+  - **An accordion header's label stops turning accent while hovered or held.** It took
+    `--gog-accordion-accent-color` on an accent-tinted strip: 3.61:1 in light, 3.79:1 in one-light,
+    4.09:1 in ledger, and worse once the press deepened the tint. New `--gog-accordion-hover-color`,
+    defaulting to the header's own text colour; the lift is carried by the background alone. The
+    same trade as the ghost button's hover, for the same reason.
+  - **The press wash is 20%, not 22%.** Measured rather than chosen: at 21% one-dark's mid-grey
+    text falls under 4.5:1 on three of the surfaces. 20% is the strongest wash that clears AA in
+    every theme, and it is still a clear step past the 10-12% hover.
+
 - **A ghost button's label was under WCAG AA on its own hover, in three themes.** `light`
   3.94:1, `primeng` 4.18:1, `one-light` 4.22:1. The variant's resting label *is*
   `--gog-accent-color` and its hover tints the ground with the same accent, so the two walked

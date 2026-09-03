@@ -419,6 +419,13 @@
   --gog-accordion-text-color: var(--gog-text-color);
   --gog-accordion-accent-color: var(--gog-accent-color);
   --gog-accordion-hover-bg: var(--gog-hover-color);
+  /* The header's label stays body text while hovered or held, and the lift is carried by the
+     background alone. It turned `--gog-accordion-accent-color` until 21.8.1, which is the accent
+     — on an accent-tinted strip that measured 3.61:1 in light, 3.79:1 in one-light and 4.09:1 in
+     ledger, and worse again once the press deepened the tint. Same trade as the ghost button's
+     hover, and made for the same reason: the accent is not a text colour on a ground that is
+     itself tinted with the accent. */
+  --gog-accordion-hover-color: var(--gog-accordion-text-color);
   --gog-accordion-press-bg: var(--gog-border-color);
   --gog-accordion-hover-ring: var(--gog-accent-dim);
   --gog-accordion-focus-ring-width: var(--gog-focus-ring-width);
@@ -1754,6 +1761,11 @@
   /* Tabs paint no background at rest and none on hover — the press is the only one they get,
      which is why this token has no hover counterpart to step past. */
   --gog-tabs-press-bg: var(--gog-border-color);
+  /* A resting tab's label is deliberately muted, and muted text has no contrast headroom to
+     spend on a tinted ground: on the press wash it fell to 3.24:1 in one-dark and under 4.5 in
+     six other themes. The press takes the full text colour instead — which is also what pressing
+     a tab is about to make it. */
+  --gog-tabs-press-color: var(--gog-text-color);
   --gog-tabs-active-color: var(--gog-accent-color);
   --gog-tabs-header-border-width: var(--gog-border-width);
   --gog-tabs-header-border-style: var(--gog-border-style);
@@ -2002,21 +2014,25 @@
     --gog-button-primary-hover-shadow: 0 0 16px
       color-mix(in srgb, var(--gog-accent-bright) 45%, transparent);
     --gog-button-ghost-hover-bg: color-mix(in srgb, var(--gog-accent-color) 12%, transparent);
-    /* Every other pressable surface, one rule: roughly double the 10-12% wash its own hover
-       uses, in the same ingredient. The accordion mixes `--gog-accent-dim` because its hover
-       does — its header sits on a strip where a full-accent wash was too loud (21.7.1). */
-    --gog-accordion-press-bg: color-mix(in srgb, var(--gog-accent-dim) 22%, transparent);
+    /* Every other pressable surface, one rule: 20% of the same ingredient its own hover mixes at
+       10-12%, so the press is a clear step past the hover without becoming a fill. 20 rather than
+       a rounder 25 is measured, not chosen: `check:contrast` resolves these washes over the
+       surface each one actually sits on, and 21% puts one-dark's mid-grey text under 4.5:1 on the
+       tab, accordion and button-toggle presses. The accordion mixes `--gog-accent-dim` because
+       its hover does — its header sits on a strip where a full-accent wash was too loud
+       (21.7.1). */
+    --gog-accordion-press-bg: color-mix(in srgb, var(--gog-accent-dim) 20%, transparent);
     --gog-autocomplete-option-press-bg: color-mix(
       in srgb,
-      var(--gog-accent-color) 22%,
+      var(--gog-accent-color) 20%,
       transparent
     );
-    --gog-button-toggle-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
-    --gog-chip-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
-    --gog-menu-item-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
-    --gog-multiselect-option-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
-    --gog-select-option-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
-    --gog-tabs-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
+    --gog-button-toggle-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
+    --gog-chip-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
+    --gog-menu-item-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
+    --gog-multiselect-option-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
+    --gog-select-option-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
+    --gog-tabs-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
     --gog-calendar-range-bg: color-mix(in srgb, var(--gog-accent-color) 16%, transparent);
     --gog-card-filled-bg: color-mix(in srgb, var(--gog-accent-dim) 8%, var(--gog-surface-color));
     --gog-card-hover-border-color: color-mix(in srgb, var(--gog-accent-color) 45%, transparent);

@@ -35,6 +35,7 @@ export type GogTokenName =
   | '--gog-accordion-header-gap'
   | '--gog-accordion-header-text-transform'
   | '--gog-accordion-hover-bg'
+  | '--gog-accordion-hover-color'
   | '--gog-accordion-hover-ring'
   | '--gog-accordion-letter-spacing'
   | '--gog-accordion-lg-body-font-size'
@@ -1245,6 +1246,7 @@ export type GogTokenName =
   | '--gog-tabs-panel-color'
   | '--gog-tabs-panel-padding'
   | '--gog-tabs-press-bg'
+  | '--gog-tabs-press-color'
   | '--gog-tabs-rest-bg'
   | '--gog-tabs-rest-color'
   | '--gog-tabs-slg-font-size'
@@ -1678,6 +1680,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-accordion-header-gap',
       '--gog-accordion-header-text-transform',
       '--gog-accordion-hover-bg',
+      '--gog-accordion-hover-color',
       '--gog-accordion-hover-ring',
       '--gog-accordion-lg-body-font-size',
       '--gog-accordion-lg-body-line-height',
@@ -2864,6 +2867,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-tabs-panel-color',
       '--gog-tabs-panel-padding',
       '--gog-tabs-press-bg',
+      '--gog-tabs-press-color',
       '--gog-tabs-rest-bg',
       '--gog-tabs-rest-color',
       '--gog-tabs-slg-font-size',

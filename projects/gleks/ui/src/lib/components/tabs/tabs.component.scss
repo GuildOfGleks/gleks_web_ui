@@ -55,6 +55,7 @@
    so without this a pressed tab and a hovered one looked identical. */
 .gog-tabs__tab:active:not(:disabled) {
   background-color: var(--gog-tabs-press-bg);
+  color: var(--gog-tabs-press-color);
 }
 
 .gog-tabs__tab--active {
