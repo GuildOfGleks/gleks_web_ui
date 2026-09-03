@@ -5,8 +5,9 @@ import { GLOBAL_CONFIG_BY_COMPONENT } from '../global-config-data';
 /**
  * The "Global Configuration" section every component doc page renders — `docs/feedback-triage.md`
  * item 8. One component instead of 34 copies of the same markup: each page passes its own slug
- * (`components/<slug>` in `nav-data.ts`), and this looks up `global-config-data.ts`, the table
- * that resolves the gap in `@guildofgleks/ui`'s own `config.ts` JSDoc (`docs/backlog.md`).
+ * (`components/<slug>` in `nav-data.ts`), and this looks up `global-config-data.ts`, which holds
+ * the per-component view of `GOG_CONFIG` that the library's own `config.ts` cannot give — that
+ * file is organised by key, this page needs it by component.
  */
 @Component({
   selector: 'app-global-config-note',

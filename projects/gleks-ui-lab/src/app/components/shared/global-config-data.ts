@@ -1,15 +1,18 @@
 // Per-component `GOG_CONFIG` keys, for the "Global Configuration" section every component doc
 // page renders (`global-config-note.ts`). docs/feedback-triage.md item 8.
 //
-// Not transcribed from `@guildofgleks/ui`'s `shared/config.ts` JSDoc — that file's own "Applies
-// to …" sentences turned out to be incomplete in four places (missing gog-datepicker and/or
-// gog-autocomplete, which read several fields through the same shared base classes as
-// gog-select/gog-multiselect and gog-inputfield/gog-textarea but weren't named alongside them).
-// See docs/backlog.md's defect entry, filed 2026-09-02. This table is built from the library's
-// actual source instead: every `globalConfig.<key>?.<field>` read, cross-checked against the
-// component's own template so an inherited-but-unused field (gog-autocomplete inherits
-// `dropdown.filter`/`filterPosition` from `GogDropdownBase` but never renders the filter box
-// that reads them) is correctly left out.
+// This table exists because `@guildofgleks/ui`'s `shared/config.ts` is organised by key and a
+// reader on a component page needs the other direction: which keys reach *this* component. It is
+// not transcribed from that file's JSDoc either — it is built from the library's actual source,
+// every `globalConfig.<key>?.<field>` read traced through the shared state classes
+// (`GogDropdownBase`, `GogClearableState`, `GogFloatLabelState`, `GogErrorState`) that several
+// components resolve their config in, then cross-checked against each component's own template so
+// an inherited-but-unused field (gog-autocomplete inherits `dropdown.filter`/`filterPosition` from
+// `GogDropdownBase` but never renders the filter box that reads them) is correctly left out.
+//
+// Verified against the source again for 21.8.0, which corrected `config.ts`'s own "Applies to …"
+// sentences on four keys: the two now agree, so a difference between them is a bug in one of them
+// rather than the known gap it used to be.
 
 export interface GlobalConfigEntry {
   /** A `GOG_CONFIG` path, e.g. `'control.size'`. */
