@@ -83,7 +83,7 @@ an input, output, slot, type, service method or default edits it in the same cha
 
 ## Where the project is
 
-**Latest release: 21.7.2 (2026-08-30), on npm and tagged.** `projects/gleks/ui/CHANGELOG.md` is the authority and
+**Latest release: 21.8.0 (2026-09-03), on npm and tagged.** `projects/gleks/ui/CHANGELOG.md` is the authority and
 ships inside the package; its top entry is always the version being worked on.
 
 ### The release sequence
@@ -95,23 +95,27 @@ ships inside the package; its top entry is always the version being worked on.
 | 21.7.0     | **released (2026-08-29)** | The three deprecated token prefixes removed (`--gog-btn-*`/`--gog-ms-*`/`--gog-confirm-*`), `GOG_DEPRECATIONS` now `[]`, and `check:deprecations` enforces the deadline for any future one. `docs/themes.md`'s whole library side: the character layer, `--gog-density` and the 14-step spacing scale, `check:contrast` (now a CI step, all 11 themes passing), and the preset catalogue completed to nine across five families — `slate`/`one-dark`/`one-light` gained a character, `ledger`/`material`/`primeng`/`terminal`/`bevel`/`parchment` added, plus opt-in webfont companions. `DialogService.open()`'s optional `TData` generic. The repository was also cleared of all Cyrillic. |
 | 21.7.1     | **released (2026-08-29)** | All nine defects from the 21.6.1 hands-on pass (`docs/feedback-triage.md`) — `color-mix()` fallbacks behind `@supports` plus a `browserslist` stating the support floor (Chrome 111 / Firefox 113 / Safari 16.2 / Samsung Internet 22), `gog-select`'s chevron rotation, three surfaces given visual separation on dark themes (`gog-table` header, `gog-accordion` header/body, `elevated` card/panel vs. `outlined`), the toast countdown under reduced motion, and `gog-textarea`'s scrollbar matching `gog-scroll`.                                                                                                                                                                    |
 | 21.7.2     | **released (2026-08-30)** | The multiselect `+N` overflow chip's baseline alignment (`docs/feedback-triage.md` Q3), fixed in the library and `ui-showcase`, with an "Overflow summary" showcase example so the bug has a live case. Q1 (`gog-menu` over the lab's footer) was investigated and closed in the same pass — not reproduced at desktop width against the published 21.7.1.                                                                                                                                                                                                                                                                                                                                 |
+| 21.8.0     | **released (2026-09-03)** | `gog-button` forwards ARIA state and relationships — `ariaPressed`, `ariaExpanded`, `ariaControls`, `ariaHasPopup`, plus the exported `GogAriaHasPopup`. The component hides the real `<button>`, so a raw `[attr.aria-*]` lands on the roleless host and silently reaches nothing; `ariaLabel` had been the only input covering that. Also `GogGlobalConfig`'s own JSDoc, which under-reported the readers of four `GOG_CONFIG` keys — documentation only, every component already honoured the setting. |
 | 22.x       | when Angular 22 lands     | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
-**No next library version is open, and the lab's own worklist is now empty too.** Everything
-since 21.7.2 shipped was `gleks-ui-lab` work that the publish unblocked — the code-block scroll
-fix, the `general/agents` page, the six missing components in the theme generator, the stale FAQ
-and comparison prose, the dashed container on full-width examples, the theming tooling, the RTL
-and search toggles, the per-component Global Configuration section, and the re-measured bundle
-bench. **`docs/feedback-triage.md`'s LAB table is fully closed as of 2026-09-02**; what is left
-in that file is its **21.8.0 section — five new-API items, each needing a decision first**, which
-is the next thing to plan.
+**No next library version is open, and the lab's own worklist is empty again as of
+2026-09-03** — 21.8.0's three lab entries (the two stale `config.ts` comments, and the button
+page's four new inputs) landed the day it was published, which also let the lab's header drop the
+workaround it had been carrying: both toggles now state themselves with `aria-pressed` /
+`aria-expanded` instead of hiding the state in their accessible name.
 
-**Before starting 21.8.0, read `docs/backlog.md`'s Defects and Gaps sections first** — the
-project's own rule is fixes and polish before anything new, and both are non-empty as of
-2026-09-02: one defect (`shared/config.ts`'s `GogGlobalConfig` JSDoc under-reports which
-components read four of its keys) and one gap that shipping code already tripped over
-(`gog-button` forwards `ariaLabel` and nothing else, so a toggle or disclosure button cannot
-state itself to assistive tech).
+**`docs/feedback-triage.md`'s LAB table is fully closed** (2026-09-02); what is left in that file
+is its **21.8.0 section — five new-API items, each needing a decision first**. It is misnamed
+now: 21.8.0 shipped without any of them, so read it as the next-minor list rather than as a
+version's payload — a section heading with a version in it becomes a lie the same way a plan's
+filename does.
+
+**Read `docs/backlog.md`'s Defects and Gaps sections before anything new** — the project's own
+rule is fixes and polish first. **Defects is empty as of 2026-09-03**: both entries it carried
+(the `GogGlobalConfig` JSDoc, and `gog-button` exposing `ariaLabel` and no other ARIA input)
+shipped in 21.8.0. Gaps is not empty, and its first entry is the sibling of what 21.8.0 just
+fixed: `gog-chip` has no `selected`, and the file explains why forwarding `aria-pressed` there
+would be the wrong fix rather than the same one.
 
 **`themes.md` is done except one scope decision.** Iterations 1, 2, 3, 5 and 6 are ✅, and so is
 4b; iteration 4 is partial only because five theme slots across three families are unbuilt, which
@@ -130,7 +134,7 @@ on a version still being worked on means someone jumped the gun, not that the ch
 
 Once a release is published: `npm install` at the repo root, then work through
 `docs/lab-after-publish.md`'s section for that version. That file is a live checklist; delete
-each entry as it lands. **The file is empty as of 2026-09-02** — every section is checked off and
+each entry as it lands. **The file is empty as of 2026-09-03** — every section is checked off and
 deleted, which is the state it is supposed to return to after each release is documented. The
 bundle-bench re-measurement that was the last item is done (all three libraries re-measured, not
 just this one); its history lives in `projects/gleks-ui-lab/public/docs/compare-full.md` rather
