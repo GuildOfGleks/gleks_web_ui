@@ -278,6 +278,30 @@ exists, the findings are documented, and turning the gate on is one line in `ci.
 backlog entries above are resolved (fixed, or explicitly accepted with the script's header comment
 updated to say so). That is a real decision, not a checklist item to tick past.
 
+**Closing note, 2026-09-03 (21.8.1): the gate is on, and the script has a second half.** Both
+backlog entries were resolved, `check:contrast` became a CI step, and then the paragraph above
+was outgrown in a way worth recording, because it predicted the right thing for the wrong reason.
+
+It said a real resolver would be needed "the day" a palette block starts reading
+`var()`/`color-mix()`. No palette block does, even now. What happened instead is that the
+*pairs* left the palette: 21.8.1 gave nine surfaces a pressed state built from
+`color-mix()` washes, and a wash has no colour at all until it is composited over whatever it
+covers — so the thing needing a resolver was never the palette, it was everything painted on top
+of one. `scripts/token-color.mjs` is that resolver: it walks a token the way a browser does
+(theme block, then the `@supports` mixed layer, then the derived layer, then the literals) and
+understands `#hex`, `transparent`, `var()` with a fallback and `color-mix(in srgb, … N%, …)`.
+
+The check now runs in three passes — the palette pairs this iteration built, a curated table of
+composited states naming the exact ground each sits on, and a mechanical sweep that reads the
+*compiled* stylesheets and takes every label/ground pair the rules themselves state. **143 pairs
+became 627**, and the sweep covers components added later without anyone editing the script.
+
+It earned itself immediately: 24 failures on the first composited run and one more on the first
+sweep, every one real, including a hover label that had been failing in **all 11 themes** since
+long before this plan. The lesson for the next iteration of anything here is the one this file
+already believed and under-applied — a check that only measures what someone remembered to list
+measures the author's memory, not the product.
+
 ---
 
 ## Iteration 3 — Promote `material` and `primeng` out of the lab

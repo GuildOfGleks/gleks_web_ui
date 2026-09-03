@@ -96,24 +96,28 @@ ships inside the package; its top entry is always the version being worked on.
 | 21.7.1     | **released (2026-08-29)** | All nine defects from the 21.6.1 hands-on pass (`docs/feedback-triage.md`) — `color-mix()` fallbacks behind `@supports` plus a `browserslist` stating the support floor (Chrome 111 / Firefox 113 / Safari 16.2 / Samsung Internet 22), `gog-select`'s chevron rotation, three surfaces given visual separation on dark themes (`gog-table` header, `gog-accordion` header/body, `elevated` card/panel vs. `outlined`), the toast countdown under reduced motion, and `gog-textarea`'s scrollbar matching `gog-scroll`.                                                                                                                                                                    |
 | 21.7.2     | **released (2026-08-30)** | The multiselect `+N` overflow chip's baseline alignment (`docs/feedback-triage.md` Q3), fixed in the library and `ui-showcase`, with an "Overflow summary" showcase example so the bug has a live case. Q1 (`gog-menu` over the lab's footer) was investigated and closed in the same pass — not reproduced at desktop width against the published 21.7.1.                                                                                                                                                                                                                                                                                                                                 |
 | 21.8.0     | **released (2026-09-03)** | `gog-button` forwards ARIA state and relationships — `ariaPressed`, `ariaExpanded`, `ariaControls`, `ariaHasPopup`, plus the exported `GogAriaHasPopup`. The component hides the real `<button>`, so a raw `[attr.aria-*]` lands on the roleless host and silently reaches nothing; `ariaLabel` had been the only input covering that. Also `GogGlobalConfig`'s own JSDoc, which under-reported the readers of four `GOG_CONFIG` keys — documentation only, every component already honoured the setting. |
+| 21.8.1     | **open, not released**    | The library's feedback story, made to degrade to something rather than to nothing. `:active` is a colour and not only a `transform`, so a press survives `prefers-reduced-motion`; the eight other pressable surfaces gained one too (`gogCollapsibleTrigger` deliberately not — the consumer owns that element). Four WCAG AA failures fixed along the way, one of them in all 11 themes (`outline`'s hover label), plus a disabled dropdown option that lit up and rippled under the pointer. `check:contrast` grew a composited half (`scripts/token-color.mjs`) and went from 143 pairs to 627, `check-tokens` rule I from the surface tiers to any ramp. |
 | 22.x       | when Angular 22 lands     | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
-**No next library version is open, and the lab's own worklist is empty again as of
-2026-09-03** — 21.8.0's three lab entries (the two stale `config.ts` comments, and the button
-page's four new inputs) landed the day it was published, which also let the lab's header drop the
-workaround it had been carrying: both toggles now state themselves with `aria-pressed` /
-`aria-expanded` instead of hiding the state in their accessible name.
+**21.8.1 is open and unreleased** — see the row above and `CHANGELOG.md`, which carries eight
+entries. Its own lab debt is queued in `docs/lab-after-publish.md` under **After 21.8.1**: five
+items, all blocked until the version is on npm, one of which (`theme-starter.css`) will fail
+`check:theme-starter` the moment it is installed. 21.8.0's three lab entries were closed the day
+it was published, which also let the lab's header drop the workaround it had been carrying: both
+toggles now state themselves with `aria-pressed`/`aria-expanded` instead of hiding the state in
+their accessible name.
 
 **`docs/feedback-triage.md`'s LAB table is fully closed** (2026-09-02); what is left in that file
-is its **21.8.0 section — five new-API items, each needing a decision first**. It is misnamed
-now: 21.8.0 shipped without any of them, so read it as the next-minor list rather than as a
-version's payload — a section heading with a version in it becomes a lie the same way a plan's
-filename does.
+is its **21.8.0 section — now four items, not five**: item 2, the button's pressed state, shipped
+in 21.8.1. The heading is misnamed either way — 21.8.0 shipped with none of them, so read it as
+the next-minor list rather than as a version's payload, the same way a plan's filename with a
+version in it becomes a lie.
 
 **Read `docs/backlog.md`'s Defects and Gaps sections before anything new** — the project's own
-rule is fixes and polish first. **Defects is empty as of 2026-09-03**: both entries it carried
-(the `GogGlobalConfig` JSDoc, and `gog-button` exposing `ariaLabel` and no other ARIA input)
-shipped in 21.8.0. Gaps is not empty, and its first entry is the sibling of what 21.8.0 just
+rule is fixes and polish first. **Defects is empty as of 2026-09-03**, having emptied twice that
+day: the two entries it opened with shipped in 21.8.0, and the three filed while building 21.8.1
+(nine surfaces with no press feedback, a disabled dropdown option answering the pointer, a ghost
+button's hover label under AA) were all closed in it. Gaps is not empty, and its first entry is the sibling of what 21.8.0 just
 fixed: `gog-chip` has no `selected`, and the file explains why forwarding `aria-pressed` there
 would be the wrong fix rather than the same one.
 
