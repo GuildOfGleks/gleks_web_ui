@@ -25,7 +25,7 @@
  *
  * Usage: node scripts/check-lab-contrast.mjs
  */
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { glob } from 'node:fs/promises';
@@ -116,6 +116,13 @@ function rulesOf(css) {
 }
 
 async function main() {
+  if (!existsSync(path.join(pkgStyles, 'theme.css'))) {
+    console.error('Lab contrast check cannot run: @guildofgleks/ui is not installed.');
+    console.error('  It measures the lab against the palettes of the *published* package,');
+    console.error('  which is what the site renders with. Run `npm install` at the repo root.');
+    process.exit(1);
+  }
+
   const themeCss = readFileSync(path.join(pkgStyles, 'theme.css'), 'utf8');
   const layers = buildLayers(themeCss);
   const themes = [];
