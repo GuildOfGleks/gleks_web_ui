@@ -119,6 +119,29 @@
   transform: scale(var(--gog-button-active-scale));
 }
 
+/*
+ * A toggle button that is on, and the only state here that persists rather than tracking the
+ * pointer. It therefore has to survive the ones that do not: `:hover` and `:active` both own the
+ * background, so a ring is what is left that they cannot paint over. Last of the state rules and
+ * (0,3,0) like them, so it wins the tie by source order — a toggled button that loses its ring
+ * the moment the pointer arrives would announce `aria-pressed="true"` and show nothing, which is
+ * the WCAG 1.4.1 failure this rule exists to prevent.
+ *
+ * `mixed` is styled like `true`: a partially-checked toggle is on for the purpose of "does this
+ * look different from off".
+ *
+ * This matches `[gogButton]` on a consumer's own element too, which is the whole reason it keys
+ * off the attribute rather than an input — the directive styles markup you own, so you write
+ * `aria-pressed` there yourself and get the look for free.
+ */
+.gog-btn[aria-pressed='true']:not(:disabled),
+.gog-btn[aria-pressed='mixed']:not(:disabled) {
+  box-shadow: var(
+    --gog-button-toggled-shadow,
+    var(--gog-button-variant-toggled-shadow, var(--gog-button-primary-toggled-shadow))
+  );
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gog-btn {
     transition: none;
@@ -147,6 +170,7 @@
   --gog-button-variant-hover-bg: var(--gog-button-primary-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-primary-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-primary-hover-shadow);
+  --gog-button-variant-toggled-shadow: var(--gog-button-primary-toggled-shadow);
   --gog-button-variant-press-bg: var(--gog-button-primary-press-bg);
   --gog-button-variant-press-color: var(--gog-button-primary-press-color);
   --gog-button-variant-spinner-color: var(--gog-button-primary-spinner-color);
@@ -160,6 +184,7 @@
   --gog-button-variant-hover-bg: var(--gog-button-secondary-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-secondary-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-secondary-hover-shadow);
+  --gog-button-variant-toggled-shadow: var(--gog-button-secondary-toggled-shadow);
   --gog-button-variant-press-bg: var(--gog-button-secondary-press-bg);
   --gog-button-variant-press-color: var(--gog-button-secondary-press-color);
   --gog-button-variant-spinner-color: var(--gog-button-secondary-spinner-color);
@@ -174,6 +199,7 @@
   --gog-button-variant-hover-bg: var(--gog-button-outline-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-outline-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-outline-hover-shadow);
+  --gog-button-variant-toggled-shadow: var(--gog-button-outline-toggled-shadow);
   --gog-button-variant-press-bg: var(--gog-button-outline-press-bg);
   --gog-button-variant-press-color: var(--gog-button-outline-press-color);
   --gog-button-variant-spinner-color: var(--gog-button-outline-spinner-color);
@@ -188,6 +214,7 @@
   --gog-button-variant-hover-bg: var(--gog-button-ghost-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-ghost-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-ghost-hover-shadow);
+  --gog-button-variant-toggled-shadow: var(--gog-button-ghost-toggled-shadow);
   --gog-button-variant-press-bg: var(--gog-button-ghost-press-bg);
   --gog-button-variant-press-color: var(--gog-button-ghost-press-color);
   --gog-button-variant-spinner-color: var(--gog-button-ghost-spinner-color);

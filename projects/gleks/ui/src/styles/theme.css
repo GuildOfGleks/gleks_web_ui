@@ -632,6 +632,25 @@
      three accent-carrying variants; ghost has no fill of its own to deepen, so it takes a
      stronger wash of the same tint its hover uses (see the @supports block at the end of this
      file for the mixed value and why the flat one above it is not a fallback but the value). */
+  /* The *toggle* state — `aria-pressed="true"`, a button that stays on — as an inset ring rather
+     than a fill. A fill cannot carry it: every other state already owns the background, so a
+     toggled button that is also hovered or held would lose the one thing saying it is on. A ring
+     composes with all of them, and it is the same reasoning that made `gog-button-toggle-group`'s
+     selected option a fill: there, nothing else was competing for the background.
+
+     The ring takes the colour that is guaranteed to read on its own variant — the label colour on
+     the filled two, the accent on the transparent two — so both are pairs `check:contrast`
+     already gates. While toggled, this replaces the variant's `box-shadow`, which costs
+     `primary` its hover glow: the ring is state and the glow is decoration, and a `box-shadow`
+     list cannot hold `none` as a layer, so keeping both was not on offer. */
+  --gog-button-toggled-ring-width: 2px;
+  --gog-button-primary-toggled-shadow: inset 0 0 0 var(--gog-button-toggled-ring-width)
+    var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-button-secondary-toggled-shadow: var(--gog-button-primary-toggled-shadow);
+  --gog-button-outline-toggled-shadow: inset 0 0 0 var(--gog-button-toggled-ring-width)
+    var(--gog-accent-color);
+  --gog-button-ghost-toggled-shadow: var(--gog-button-outline-toggled-shadow);
+
   --gog-button-primary-press-bg: var(--gog-accent-dim);
   --gog-button-primary-press-color: var(--gog-button-primary-color);
   --gog-button-secondary-press-bg: var(--gog-accent-dim);

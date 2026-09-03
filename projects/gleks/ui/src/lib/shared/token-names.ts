@@ -214,6 +214,7 @@ export type GogTokenName =
   | '--gog-button-ghost-press-color'
   | '--gog-button-ghost-shadow'
   | '--gog-button-ghost-spinner-color'
+  | '--gog-button-ghost-toggled-shadow'
   | '--gog-button-hover-bg'
   | '--gog-button-hover-color'
   | '--gog-button-hover-shadow'
@@ -234,6 +235,7 @@ export type GogTokenName =
   | '--gog-button-outline-press-color'
   | '--gog-button-outline-shadow'
   | '--gog-button-outline-spinner-color'
+  | '--gog-button-outline-toggled-shadow'
   | '--gog-button-press-bg'
   | '--gog-button-press-color'
   | '--gog-button-primary-bg'
@@ -246,6 +248,7 @@ export type GogTokenName =
   | '--gog-button-primary-press-color'
   | '--gog-button-primary-shadow'
   | '--gog-button-primary-spinner-color'
+  | '--gog-button-primary-toggled-shadow'
   | '--gog-button-radius'
   | '--gog-button-secondary-bg'
   | '--gog-button-secondary-border'
@@ -257,6 +260,7 @@ export type GogTokenName =
   | '--gog-button-secondary-press-color'
   | '--gog-button-secondary-shadow'
   | '--gog-button-secondary-spinner-color'
+  | '--gog-button-secondary-toggled-shadow'
   | '--gog-button-shadow'
   | '--gog-button-slg-font-size'
   | '--gog-button-slg-padding'
@@ -295,6 +299,8 @@ export type GogTokenName =
   | '--gog-button-toggle-separated-gap'
   | '--gog-button-toggle-text-transform'
   | '--gog-button-toggle-transition-duration'
+  | '--gog-button-toggled-ring-width'
+  | '--gog-button-toggled-shadow'
   | '--gog-button-transition-duration'
   | '--gog-button-xsm-font-size'
   | '--gog-button-xsm-padding'
@@ -1775,6 +1781,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-ghost-press-color',
       '--gog-button-ghost-shadow',
       '--gog-button-ghost-spinner-color',
+      '--gog-button-ghost-toggled-shadow',
       '--gog-button-letter-spacing',
       '--gog-button-lg-font-size',
       '--gog-button-lg-padding',
@@ -1792,6 +1799,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-outline-press-color',
       '--gog-button-outline-shadow',
       '--gog-button-outline-spinner-color',
+      '--gog-button-outline-toggled-shadow',
       '--gog-button-primary-bg',
       '--gog-button-primary-border',
       '--gog-button-primary-color',
@@ -1802,6 +1810,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-primary-press-color',
       '--gog-button-primary-shadow',
       '--gog-button-primary-spinner-color',
+      '--gog-button-primary-toggled-shadow',
       '--gog-button-radius',
       '--gog-button-secondary-bg',
       '--gog-button-secondary-border',
@@ -1813,12 +1822,14 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-secondary-press-color',
       '--gog-button-secondary-shadow',
       '--gog-button-secondary-spinner-color',
+      '--gog-button-secondary-toggled-shadow',
       '--gog-button-slg-font-size',
       '--gog-button-slg-padding',
       '--gog-button-sm-font-size',
       '--gog-button-sm-padding',
       '--gog-button-spinner-max-size',
       '--gog-button-text-transform',
+      '--gog-button-toggled-ring-width',
       '--gog-button-transition-duration',
       '--gog-button-xsm-font-size',
       '--gog-button-xsm-padding',
@@ -3084,6 +3095,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-toggle-color',
       '--gog-button-toggle-font-size',
       '--gog-button-toggle-padding',
+      '--gog-button-toggled-shadow',
       '--gog-calendar-day-bg',
       '--gog-calendar-day-color',
       '--gog-calendar-day-size',

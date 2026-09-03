@@ -93,7 +93,11 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   `aria-pressed` there would be the wrong fix.** The chip has no selected state to style, so a
   consumer could announce `aria-pressed="true"` on a chip that looks identical to an unpressed
   one: state perceivable to a screen reader and to nobody else, which fails WCAG 1.4.1 in the
-  other direction. Whatever ships has to own the look and the semantics together. `gog-toggle`
+  other direction. Whatever ships has to own the look and the semantics together. **`gog-button`
+  was in exactly that position between 21.8.0 and 21.8.1** — forwarding with no look — and the
+  way out is the precedent to copy here: an inset ring
+  (`--gog-button-<variant>-toggled-shadow`), chosen because hover and press already own the
+  background and the state has to outlive both. `gog-toggle`
   and `gog-tag` were checked at the same time and neither belongs here — toggle wraps a real
   `<input role="switch">` whose checked state is native, and tag renders nothing interactive.
 

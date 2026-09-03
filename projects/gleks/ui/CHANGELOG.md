@@ -8,6 +8,17 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A toggle button now looks toggled.** 21.8.0 taught `gog-button` to forward `aria-pressed`,
+  and nothing in the library styled it — so a toggle could announce itself as on to a screen
+  reader while looking identical to an off one, which is WCAG 1.4.1 from the other side and
+  exactly the reason `docs/backlog.md` gives for *not* forwarding `aria-pressed` to `gog-chip`.
+  `aria-pressed="true"` (and `"mixed"`) now draws an inset ring: new
+  `--gog-button-<variant>-toggled-shadow`, with `--gog-button-toggled-shadow` as the per-instance
+  override. A ring rather than a fill because `:hover` and `:active` already own the background —
+  a toggled button that lost its state the moment the pointer arrived would be the same bug one
+  layer down. It keys off the attribute, not an input, so `[gogButton]` on your own element gets
+  it from the `aria-pressed` you already wrote there.
+
 - **A button pressed with animations off now shows that it was pressed.** `:active` was a
   `transform: scale()` and nothing else, and the `prefers-reduced-motion: reduce` block switched
   that transform off — so the reader most likely to need the feedback got none at all. The ripple

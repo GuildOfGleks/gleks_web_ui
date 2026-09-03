@@ -494,6 +494,13 @@ simply not a toggle to a screen reader. Use `[ariaPressed]`, `[ariaExpanded]`, `
 `aria-pressed="false"` / `aria-expanded="false"`, which is what an off toggle or a closed
 disclosure has to say — a button with no `aria-pressed` at all is not a toggle button.
 
+**A toggle button now looks toggled** (21.8.1). `aria-pressed="true"` (or `"mixed"`) draws an
+inset ring — `--gog-button-<variant>-toggled-shadow`, overridable per instance with
+`--gog-button-toggled-shadow`. A ring rather than a fill because hover and press already own the
+background: the state has to survive both, and until 21.8.1 it did not exist at all, so a button
+could announce itself as on to a screen reader and look identical to an off one. `[gogButton]`
+gets the same look from the attribute you write on your own element.
+
 **`[gogButton]` needs none of these inputs.** It styles an element you own, so write the ARIA
 attributes on your own `<button>`/`<a>` directly. Same for `[gogMenuTrigger]`, which sets
 `aria-haspopup`/`aria-expanded`/`aria-controls` on its host — put it on your own `<button

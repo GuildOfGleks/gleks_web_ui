@@ -223,6 +223,12 @@
       </div>
     }
     <p class="meta">
+      Since 21.8.1 the toggle also <em>looks</em> toggled: <code>aria-pressed="true"</code> draws an
+      inset ring. A ring rather than a fill because hover and press already own the background —
+      hold the mirror button down while it is on and the ring stays put underneath the press colour,
+      which is the whole point of it.
+    </p>
+    <p class="meta">
       Inspect either button: the attribute sits on the inner <code>&lt;button&gt;</code>, never on
       <code>&lt;gog-button&gt;</code>. Note that the off state renders
       <code>aria-pressed="false"</code> rather than dropping the attribute — <code>null</code> means

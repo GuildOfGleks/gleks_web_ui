@@ -31,6 +31,7 @@ export const INSTANCE_TOKENS = new Set([
   '--gog-button-hover-shadow',
   '--gog-button-shadow',
   '--gog-button-spinner-color',
+  '--gog-button-toggled-shadow',
   // Padding and font-size are the same escape hatch, but need no entry here: gog-toast's own
   // stylesheet writes `--gog-button-padding`/`-font-size` as instance overrides, which counts
   // as a declaration to rule B.
