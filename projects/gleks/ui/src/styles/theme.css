@@ -1032,7 +1032,12 @@
   --gog-autocomplete-option-press-bg: var(--gog-border-color);
   --gog-autocomplete-option-hover-color: var(--gog-text-color);
   --gog-autocomplete-option-selected-bg: var(--gog-accent-pale);
-  --gog-autocomplete-option-selected-color: var(--gog-accent-color);
+  /* Body text, not the accent. The selected row is the one option that carries a tint *and* a
+     coloured label, and the accent on that tint measured 4.12:1 in light — `--gog-accent-dim` is
+     worse again (3.77:1 in one-dark). `gog-select` gets away with an accent label because its
+     selected option has no tint behind it. The tint stays as the marker, alongside
+     `aria-selected`. */
+  --gog-autocomplete-option-selected-color: var(--gog-text-color);
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-autocomplete-option-height: 36px;

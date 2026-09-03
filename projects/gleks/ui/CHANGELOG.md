@@ -37,6 +37,16 @@ reached 1.0, so breaking changes may land in minor versions.
   component actually sits on, and the check measures the label against that. 385 pairs across the
   11 themes, up from 143.
 
+  It then grew a second half that needs no table at all: `collectStatePairs` reads the compiled
+  stylesheets and checks every label/ground pair the rules themselves state, so a component added
+  later is covered without anyone remembering to list it. **627 pairs** in total now. That sweep
+  found one further real failure across the whole library — `gog-autocomplete`'s **selected
+  option** label, `--gog-accent-color` on its own tint, 4.12:1 in light (and `--gog-accent-dim` is
+  worse again, 3.77:1 in one-dark). It is `--gog-text-color` now; the tint and `aria-selected`
+  still mark the row, and `gog-select` keeps its accent label because its selected option has no
+  tint behind it. Icons are held to 3:1 rather than 4.5:1, which is what keeps a spin-button glyph
+  and a panel chevron — 4.35:1 and 4.40:1, both correct — from being "fixed" into near-black.
+
   Its first run failed 24 of them, all real, and all fixed here:
 
   - **A pressed tab's label leaves the muted tone.** A resting tab is deliberately

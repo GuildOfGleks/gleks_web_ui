@@ -53,10 +53,24 @@
  * gap and were found by hand — the outline button's hover label, failing in all 11 themes, and
  * the ghost button's, failing in three.
  *
- * `WASH_PAIRS` closes it. `token-color.mjs` resolves a component token the way a browser does
- * (theme block, then the `@supports` mixed layer, then the derived layer, then the literals),
- * composites it over the ground that component actually sits on, and measures the label against
- * the result. It found 24 problems on its first run, every one of them real.
+ * `WASH_PAIRS` closes it for the states this library thought to list: `token-color.mjs` resolves
+ * a component token the way a browser does (theme block, then the `@supports` mixed layer, then
+ * the derived layer, then the literals), composites it over the ground that component actually
+ * sits on, and the label is measured against the result. It found 24 problems on its first run,
+ * every one of them real.
+ *
+ * `collectStatePairs` closes it for the states nobody listed. It reads the *compiled* stylesheets
+ * and takes every pair the rules themselves state — a rule setting `color` and `background-color`
+ * together names the pair outright; a rule setting one takes the other from its own base rule. So
+ * a component added next year is covered without anyone remembering to add it here, which is the
+ * property a hand-maintained table cannot have. That sweep found one more real failure across the
+ * whole library (`gog-autocomplete`'s selected option, 4.12:1 in light) and, just as usefully,
+ * confirmed the other 180-odd states were already fine.
+ *
+ * Icons are held to 3:1 rather than 4.5:1 — WCAG 1.4.11 rather than 1.4.3 — through
+ * `NON_TEXT_ELEMENTS`. Two of the sweep's first three findings were a spin-button glyph and a
+ * panel chevron at 4.35:1 and 4.40:1, which are fine and would otherwise have been "fixed" into
+ * near-black.
  *
  * All 11 shipped themes now pass all 132 pairs. **A new preset that does not is what this is
  * here to stop** — and a preset is one file, so the failure names the file to fix.
@@ -89,6 +103,8 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { glob } from 'node:fs/promises';
+
+import * as sass from 'sass';
 
 import { buildLayers, contrast, makeResolver, over, parseDecls, toHex } from './token-color.mjs';
 
@@ -167,6 +183,91 @@ const WASH_PAIRS = [
   ['autocomplete option hover', '--gog-autocomplete-option-hover-color', '--gog-autocomplete-option-hover-bg', ['--gog-autocomplete-panel-bg'], 4.5],
   ['autocomplete option press', '--gog-autocomplete-option-color', '--gog-autocomplete-option-press-bg', ['--gog-autocomplete-panel-bg'], 4.5],
 ];
+
+/**
+ * Elements that are a glyph rather than text — a chevron, a spinner arrow, a clear ×. WCAG asks
+ * 3:1 of them (1.4.11, non-text contrast) rather than 4.5:1 (1.4.3), and holding an icon to the
+ * text bar would either fail states that are fine or push every icon to near-black.
+ *
+ * Matched on the BEM element, so the list stays readable and a new component inherits nothing by
+ * accident: anything not named here is treated as text, which is the safer default of the two.
+ */
+const NON_TEXT_ELEMENTS = [
+  '__icon',
+  '__spin-btn',
+  '__chevron',
+  '__mark',
+  '__thumb',
+  '__arrow',
+  '__caret',
+  '__remove',
+  '__close',
+  '__nav',
+  '__toggle', // gog-panel's collapse control is its chevron; it renders no label
+];
+
+function thresholdFor(selector) {
+  return NON_TEXT_ELEMENTS.some((part) => selector.includes(part)) ? 3.0 : 4.5;
+}
+
+/**
+ * Every "this label meets this ground" pair the library's own rules actually state, read out of
+ * the compiled stylesheets rather than listed by hand.
+ *
+ * `WASH_PAIRS` above is the curated half: it names the exact ground each state sits on, including
+ * the two-ground case (a ghost button is on the page *or* on a card). This is the broad half —
+ * it finds pairs nobody thought to list, and it keeps finding them as components are added. A
+ * rule that sets `color` and `background-color` together states the pair outright; a rule that
+ * sets only one takes the other from its own base rule.
+ */
+function collectStatePairs(uiSrcDir, files) {
+  const rest = new Map();
+  const states = [];
+
+  const readRules = (css) => {
+    const rules = [];
+    const re = /([^{}]+)\{([^{}]*)\}/g;
+    let m;
+    while ((m = re.exec(css))) {
+      const selector = m[1].trim();
+      if (selector.startsWith('@')) continue;
+      const value = (prop) => {
+        const hit = m[2].match(new RegExp(`(?:^|;|\\s)${prop}:\\s*(var\\([^;]*?\\))\\s*(?:;|$)`));
+        return hit ? hit[1].trim() : null;
+      };
+      const colour = value('color');
+      const bg = value('background-color') ?? value('background');
+      if (colour || bg) rules.push({ selector, colour, bg });
+    }
+    return rules;
+  };
+
+  for (const file of files) {
+    const css = file.endsWith('.scss')
+      ? sass.compile(file, { style: 'expanded', sourceMap: false }).css
+      : readFileSync(file, 'utf8');
+    for (const rule of readRules(css)) {
+      const selector = rule.selector.replace(/\[_ng(?:content|host)[^\]]*\]/g, '');
+      const isState = /:hover|:active|:focus|--selected|--active|--current|:checked/.test(selector);
+      const base = selector.split(/[:,]/)[0].trim();
+      if (!isState) {
+        const seen = rest.get(base) ?? {};
+        rest.set(base, { colour: seen.colour ?? rule.colour, bg: seen.bg ?? rule.bg });
+      } else {
+        states.push({ file: path.relative(uiSrcDir, file), selector, base, ...rule });
+      }
+    }
+  }
+
+  return states
+    .map((state) => ({
+      ...state,
+      colour: state.colour ?? rest.get(state.base)?.colour ?? null,
+      bg: state.bg ?? rest.get(state.base)?.bg ?? null,
+      restBg: rest.get(state.base)?.bg ?? null,
+    }))
+    .filter((state) => state.colour && state.bg);
+}
 
 function hexToRgb(hex) {
   const h = hex.replace('#', '');
@@ -262,6 +363,18 @@ async function main() {
   // themes actually checked, not files read.
   themes = themes.filter((t) => Object.keys(t.palette).length > 0);
 
+  const styleFiles = [];
+  for await (const entry of glob('**/*.{css,scss}', { cwd: uiSrc, withFileTypes: true })) {
+    if (!entry.isFile()) continue;
+    const file = path.join(entry.parentPath ?? entry.path, entry.name);
+    // theme.css and the presets *are* the palette; theme-starter is a generated copy of it.
+    const name = path.basename(file);
+    if (name === 'theme.css' || name.startsWith('theme-starter') || file.includes('presets'))
+      continue;
+    styleFiles.push(file);
+  }
+  const statePairs = collectStatePairs(uiSrc, styleFiles);
+
   const failures = [];
   const findings = []; // informational, never fails
   let pairsChecked = 0;
@@ -328,6 +441,38 @@ async function main() {
         }
       }
     }
+  }
+
+  // The broad sweep: every state pair the stylesheets themselves state. Reported per rule with
+  // the worst theme, since one line per theme for 11 themes would bury the finding.
+  const sweepWorst = new Map();
+  for (const { name, decls } of themes) {
+    const resolve = makeResolver(layers, decls);
+    const surface = resolve('--gog-surface-color');
+    for (const state of statePairs) {
+      const label = resolve(state.colour);
+      const wash = resolve(state.bg);
+      if (label === null || wash === null) continue; // reported once, below
+      const restBg = state.restBg ? resolve(state.restBg) : null;
+      const under = restBg && restBg.a === 1 ? restBg : surface;
+      const ground = wash.a === 1 ? wash : over(wash, under);
+      const text = label.a === 1 ? label : over(label, ground);
+      const ratio = contrast(text, ground);
+      pairsChecked++;
+      const threshold = thresholdFor(state.selector);
+      if (ratio >= threshold) continue;
+      const key = `${state.file} ${state.selector}`;
+      const worst = sweepWorst.get(key);
+      if (!worst || ratio < worst.ratio)
+        sweepWorst.set(key, { ratio, threshold, theme: name, text: toHex(text), ground: toHex(ground), state });
+    }
+  }
+  for (const [key, w] of [...sweepWorst].sort((a, b) => a[1].ratio - b[1].ratio)) {
+    failures.push(
+      `[contrast] ${w.theme} — ${key}: ${w.ratio.toFixed(2)}:1 (need ${w.threshold}:1) ` +
+        `[${w.text} vs ${w.ground}]
+      ${w.state.colour} on ${w.state.bg}`,
+    );
   }
 
   if (findings.length > 0) {

@@ -183,7 +183,17 @@ export function makeResolver(layers, themeDecls) {
     return null;
   };
 
-  return (token) => parse(lookup(token), new Set([token]));
+  /**
+   * Takes a token name (`--gog-x`) or a whole declaration value
+   * (`var(--gog-x, var(--gog-y))`). The second form matters: this library deliberately leaves
+   * some tokens undeclared as per-instance escape hatches — `--gog-button-toggle-color` and
+   * friends — and the real default lives in the *rule's* fallback, not in the token. Resolving
+   * the value rather than the name is what makes those states checkable instead of skipped.
+   */
+  return (tokenOrValue) =>
+    tokenOrValue.startsWith('--')
+      ? parse(lookup(tokenOrValue), new Set([tokenOrValue]))
+      : parse(tokenOrValue, new Set());
 }
 
 /** Paints `fg` over the opaque `bg`. */
