@@ -77,9 +77,15 @@
     font-size: var(--gog-text-sm);
     transition: all var(--gog-duration-fast);
 
+    /* The hover lift is the background; the label stays body text. It used to turn
+       `--gog-accent-color`, which is 4.15:1 on that lift in `light` — the same
+       accent-on-a-tinted-ground trap the library hit four times in 21.8.1, and `--gog-accent-dim`
+       is not the way out either: it clears `light` and fails `one-dark` at 3.78:1. The active
+       item is still accent-coloured, which is what that colour is for here. Measured by
+       `npm run check:lab-contrast`. */
     &:hover {
       background-color: var(--gog-hover-color);
-      color: var(--gog-accent-color);
+      color: var(--gog-text-color);
     }
 
     &.active {
@@ -110,8 +116,10 @@
     color: var(--gog-muted-text-color);
     padding: 6px 12px;
 
+    /* Inherits the hover background from `.nav-item` above, so it inherited its contrast problem
+       too — same fix. */
     &:hover {
-      color: var(--gog-accent-color);
+      color: var(--gog-text-color);
     }
 
     &.active {

@@ -9,8 +9,11 @@
   gap: 0.5em;
 
   code {
+    /* No `color` of its own: the mixin paints `--gog-hover-color` behind the chip, and these two
+       rules were the only ones on the site that then coloured the text accent — 4.15:1 in
+       `light`, and 3.78:1 with `--gog-accent-dim` in `one-dark`. Inheriting the surrounding text
+       colour is what every other inline chip here already does. */
     @include doc.inline-code;
-    color: var(--gog-accent-color);
   }
 }
 
@@ -29,7 +32,10 @@
   font-size: var(--gog-text-sm);
 
   code {
+    /* No `color` of its own: the mixin paints `--gog-hover-color` behind the chip, and these two
+       rules were the only ones on the site that then coloured the text accent — 4.15:1 in
+       `light`, and 3.78:1 with `--gog-accent-dim` in `one-dark`. Inheriting the surrounding text
+       colour is what every other inline chip here already does. */
     @include doc.inline-code;
-    color: var(--gog-accent-color);
   }
 }

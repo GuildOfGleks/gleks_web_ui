@@ -53,6 +53,12 @@ delete the section too.
 
 ## Checking your work
 
+`npm run check:lab-contrast` — WCAG AA for the site's **own** chrome, in all 11 themes, against
+the palettes of the *installed* package (which is what the lab renders with). `check:contrast`
+has never covered any of this: it measures the library. Added 2026-09-03, when it found the
+sidebar's hover label and two `code` chips under AA in `light`, and the same two under it again
+in `one-dark` after the obvious fix.
+
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see
 `running-commands.instructions.md`). After a publish, `npm install` at the repo root first, so
 `node_modules/@guildofgleks/ui` is the new version rather than a stale one or a leftover local
