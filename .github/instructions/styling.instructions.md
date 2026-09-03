@@ -166,6 +166,47 @@ This applies to projected/dynamic content too, not just a component's own static
 ## Accessibility & motion
 
 - Provide a visible `:focus-visible` outline for every interactive element.
-- Every animation MUST be disabled under `@media (prefers-reduced-motion: reduce)`.
-- Ensure color choices meet **WCAG AA** contrast in both light and dark themes
-  (theme is toggled via the `[data-theme='dark']` attribute on `:root`).
+- **Reduced motion removes the animation, not the information.** Under
+  `@media (prefers-reduced-motion: reduce)` every animation MUST be disabled — but if the
+  animation was the *only* thing telling the reader something, what remains has to say it another
+  way. Two instances so far, both shipped broken: a toast whose countdown was the progress bar's
+  slide (fixed in 21.7.1 with `steps(20, end)` — twenty jumps still report the time), and a
+  button whose entire press feedback was `transform: scale()`, which this media query switched
+  off, so a reader with animations off pressed a button and nothing happened at all (21.8.1). A
+  state change is not an animation: it survives this query, and with transitions off it simply
+  lands on the first frame.
+- **A press must be a state, and the ripple does not count.** It is off by default *and*
+  suppressed under reduced motion, deliberately, because it genuinely is decoration. Anything a
+  reader can press paints `--gog-<block>-press-bg` — a step past that surface's own hover, in the
+  same ingredient. `gogCollapsibleTrigger` is the one exception, and the reason is the rule:
+  the library paints nothing on that element in any state, because the consumer owns it.
+- Ensure color choices meet **WCAG AA** contrast in every shipped theme, not only light and dark
+  — `npm run check:contrast` is the gate, and it is a CI step. It runs in three passes: the
+  palette pairs, a curated table of composited states, and a mechanical sweep of every
+  label/ground pair the compiled stylesheets themselves state. **You do not add pairs by hand for
+  a new component**; the sweep finds them. You do add a curated entry when a state sits on a
+  ground the sweep cannot infer (a menu item over `--gog-menu-bg`, a ghost button over the page
+  *or* a card).
+
+### The colour rule that keeps being learned the hard way
+
+**An accent-coloured label may not sit on an accent-tinted ground.** Tinting a surface with the
+accent walks it toward any label already using the accent, and the contrast collapses — worst in
+light themes, where `--gog-accent-color` as *text* is barely AA to begin with and has no headroom
+to spend on a ground.
+
+Four components shipped this exact bug and every one was found by measurement rather than by eye:
+`gog-button`'s `outline` hover label, which failed AA in **all 11 themes** (1.11:1 at worst); the
+same button's `ghost` hover; `gog-accordion`'s header, which turned accent on a strip tinted with
+`--gog-accent-dim`; and `gog-autocomplete`'s selected option. `gog-select` escaped only because
+its selected option has no tint behind it.
+
+So: **a tinted state takes `--gog-text-color`** (or the block's own text token), and the lift is
+carried by the background alone. A *filled* state is the other valid answer — fill with
+`--gog-accent-dim` and label it `--gog-accent-text-color`, which is the pair the check already
+gates. Do not reach for a weaker tint: half-strength washes, neutral washes and text scrims were
+all measured across the 11 themes, and in `light` every one of them still fails.
+
+**Icons are 3:1, not 4.5:1** (WCAG 1.4.11 against 1.4.3). A chevron or a spinner glyph held to
+the text bar would be "fixed" into near-black for no reason — `NON_TEXT_ELEMENTS` in
+`check-contrast.mjs` is that list, and anything not on it is treated as text.
