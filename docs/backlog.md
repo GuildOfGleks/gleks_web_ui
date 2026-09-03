@@ -139,16 +139,17 @@ reason may stop holding.
   next thing added to the lab's initial bundle will fail the build, and the fix will have to be a
   real one: lazy-load the syntax highlighter, or move the docs renderer off the initial route.
 
-- **`app.scss` is the lab's other budget, and it is the one closer to failing.** Measured
-  2026-09-02: **6.09 kB against a 4 kB warning and an 8 kB error** (`angular.json`,
-  `anyComponentStyle`), so ~1.9 kB of room before `build:lab` stops passing. It grew because the
-  header keeps growing — the RTL toggle, then the search panel (~1.2 kB of that headroom in one
-  commit), on top of the theme switcher and drawer that were already there. Five other component
-  stylesheets are over the 4 kB warning too (`compare-page`, `skeleton-doc-page`, `theming-page`,
-  `faq-page`, `theme-generator-page`), but none is near the error line; this one is. Nothing is
-  wrong with the CSS — the honest fix when it comes is that the header is now four controls and a
-  routed shell, and it wants to be its own component with its own stylesheet rather than more
-  rules in the app's. Worth doing before the next header feature, not after the build breaks.
+- **The lab's header is its own component now, and that entry is closed.** `app.scss` was
+  6.20 kB against a 4 kB warning and an 8 kB error, two thirds of it belonging to one row of the
+  layout, and this file said to split it *before* the next header feature rather than after the
+  build breaks. Three header features later (the ripple toggle, the icon-swap states, the four
+  tooltips) that moment arrived, and `app-header` was extracted on 2026-09-03: the shell keeps the
+  grid, the sidebars and the footer, and both stylesheets are now under the 4 kB warning. Kept
+  here only for the two things the split needed that a reader would otherwise rediscover —
+  `:host { display: contents }`, so `.lab-header` stays the grid item and every moved rule is the
+  one that was there rather than a re-plumbed version; and Escape, which stayed in the shell,
+  because its priority order runs *past* the header into the nav drawer and splitting it would
+  have left that order stated nowhere.
 
 - **`theme.css` payload.** Loaded whole even by an app importing three components — **106 521 B /
   20 227 B gzip in 21.6.1** (measured 2026-08-26), up from 99 492 B / 19 070 B at 21.6.0 and from

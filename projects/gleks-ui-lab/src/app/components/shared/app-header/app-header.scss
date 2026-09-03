@@ -1,0 +1,233 @@
+/*
+ * The site's own chrome: the logo and version badge, the component search, and the four controls
+ * that change how the docs are shown (ripple, direction, theme) plus the drawer button.
+ *
+ * Split out of `app.scss` when the header grew its fifth control. That file is the *layout* — a
+ * grid, three columns, a footer — and it had come to carry two thirds of its bytes for one row of
+ * it, against a 4 kB warning and an 8 kB build error (`docs/backlog.md` named the split and said
+ * to do it before the next header feature rather than after the build breaks).
+ *
+ * `:host { display: contents }` keeps `.lab-header` itself the grid item, so every rule below is
+ * the one that was in `app.scss`, unchanged, rather than a re-plumbed version of it.
+ */
+:host {
+  display: contents;
+}
+
+.lab-header {
+  grid-area: header;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background-color: var(--gog-surface-color);
+  border-bottom: 1px solid var(--gog-border-color);
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .logo-icon {
+      display: block;
+      height: 32px;
+      width: auto;
+    }
+
+    .logo-title {
+      font-size: var(--gog-text-lg);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .version-tag {
+      font-family: var(--gog-font-mono), serif;
+      font-size: var(--gog-text-xs);
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: color-mix(in srgb, var(--gog-accent-color) 15%, transparent);
+      color: var(--gog-accent-color);
+      text-decoration: none;
+
+      &:hover {
+        background: color-mix(in srgb, var(--gog-accent-color) 28%, transparent);
+      }
+    }
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+/* The two stateful header toggles colour *both* states, and that is the point.
+   `--gog-button-ghost-color--active: accent` on its own was a no-op on every theme whose ghost
+   button is already the accent colour — `dark` is one: both tokens resolve to #fbbf24, so an
+   "active" toggle painted itself the colour it already had and the ripple button looked switched
+   on while it was off. Muting the off state is what makes the pair differ whatever the palette
+   does. It is the quietest of the three signals — the glyph changes too
+   (`rippleIcon`/`directionIcon` in app.ts) and `aria-pressed` carries it to a screen reader. */
+.direction-toggle,
+.ripple-toggle {
+  --gog-button-ghost-color: var(--gog-muted-text-color);
+}
+
+.direction-toggle--active,
+.ripple-toggle--active {
+  --gog-button-ghost-color: var(--gog-accent-color);
+}
+
+.nav-search {
+  position: relative;
+
+  &__panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: var(--gog-dropdown-z, 300);
+    width: 280px;
+    padding: 8px;
+    background-color: var(--gog-surface-color);
+    border: 1px solid var(--gog-border-color);
+    border-radius: var(--gog-radius);
+    box-shadow: var(--gog-panel-shadow);
+  }
+
+  &__input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--gog-border-color);
+    border-radius: calc(var(--gog-radius) - 2px);
+    background-color: var(--gog-background-color);
+    color: var(--gog-text-color);
+    font-size: var(--gog-text-sm);
+
+    &:focus-visible {
+      outline: var(--gog-focus-ring-width) solid var(--gog-accent-color);
+      outline-offset: 2px;
+    }
+  }
+
+  &__empty {
+    margin: 8px 4px 2px;
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+  }
+
+  &__results {
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  // An `<li role="option">`, not a button — see app.html. The button resets this block used to
+  // carry (`border: 0`, `background: transparent`, `text-align: left`) went with it.
+  &__result {
+    padding: 8px 10px;
+    border-radius: calc(var(--gog-radius) - 2px);
+    color: var(--gog-text-color);
+    font-size: var(--gog-text-sm);
+    cursor: pointer;
+    transition: background-color var(--gog-duration-fast);
+
+    &:hover,
+    &--active {
+      background-color: var(--gog-hover-color);
+    }
+  }
+}
+
+.theme-switcher {
+  position: relative;
+
+  &__menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: var(--gog-dropdown-z, 300);
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+    padding: 4px;
+    background-color: var(--gog-surface-color);
+    border: 1px solid var(--gog-border-color);
+    border-radius: var(--gog-radius);
+    box-shadow: var(--gog-panel-shadow);
+  }
+
+  &__item {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: calc(var(--gog-radius) - 2px);
+    background: transparent;
+    color: var(--gog-text-color);
+    font-size: var(--gog-text-sm);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--gog-duration-fast);
+
+    &:hover {
+      background-color: var(--gog-hover-color);
+    }
+
+    &--active {
+      color: var(--gog-accent-color);
+      font-weight: 600;
+    }
+  }
+}
+
+/* The drawer button — only on narrow screens, where the sidebar becomes a drawer. */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-right: 4px;
+  padding: 0;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: transparent;
+  color: var(--gog-text-color);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--gog-accent-color);
+    border-color: var(--gog-accent-color);
+  }
+
+  &:focus-visible {
+    outline: var(--gog-focus-ring-width) solid var(--gog-focus-ring-color);
+    outline-offset: 2px;
+  }
+}
+
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 560px) {
+  .lab-header {
+    padding: 0 12px;
+
+    .header-left {
+      gap: 8px;
+      min-width: 0;
+    }
+
+    /* The full name does not fit beside the version badge and the menu button — the logo stays,
+       and it already links to the site's home page. */
+    .logo-title {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,170 @@
+<!-- 1. HEADER -->
+<header class="lab-header">
+  <div class="header-left">
+    <!-- Only below the tablet breakpoint, where the sidebar becomes a drawer (app.scss). -->
+    <button
+      type="button"
+      class="nav-toggle"
+      [attr.aria-expanded]="navOpen()"
+      aria-controls="lab-nav"
+      aria-label="Navigation"
+      (click)="navToggle.emit()"
+    >
+      <fa-icon [icon]="faBars" />
+    </button>
+    <img src="/gleks_ui_logo.svg" alt="" class="logo-icon" width="28" height="32" />
+    <span class="logo-title font-heading">GUILD OF GLEKS UI</span>
+    <!-- Points at the Releases page, not npm: the badge answers "which version is this?", and
+         the next question is always "what changed in it?" — which npm's page does not show. -->
+    <a
+      class="version-tag"
+      routerLink="/general/releases"
+      [title]="'This site documents @guildofgleks/ui ' + libraryVersion + ' — see what changed'"
+      >v{{ libraryVersion }}</a
+    >
+  </div>
+
+  <!--
+    Every control in here is icon-only, so each carries the same string twice: `ariaLabel` for
+    a screen reader, `gogTooltip` for everyone else. They are deliberately the *same* string,
+    not two wordings of the same idea — `gogTooltip` sets `aria-describedby` on its host, and
+    the host here is `<gog-button>`, a custom element with no role, so the bubble's text reaches
+    no assistive tech at all (the same reason `ariaLabel` is an input rather than an attribute).
+    Whatever the tooltip says that the label does not is information a screen-reader user never
+    gets. State is not in either one: it is on `aria-pressed` and in the icon.
+
+    The two toggles that open something disable their tooltip while it is open, so the bubble
+    cannot sit on top of the panel it just revealed.
+  -->
+  <div class="header-controls">
+    <div class="nav-search">
+      <gog-button
+        variant="ghost"
+        size="sm"
+        ariaLabel="Search components"
+        gogTooltip="Search components"
+        gogTooltipPosition="bottom"
+        [gogTooltipDisabled]="isSearchOpen()"
+        [ariaExpanded]="isSearchOpen()"
+        [ariaControls]="searchPanelId()"
+        (gogClick)="toggleSearch()"
+      >
+        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+      </gog-button>
+
+      @if (isSearchOpen()) {
+        <div id="nav-search-panel" class="nav-search__panel" role="search">
+          <input
+            #searchInput
+            type="text"
+            class="nav-search__input"
+            role="combobox"
+            aria-label="Search components"
+            aria-autocomplete="list"
+            aria-controls="nav-search-results"
+            [attr.aria-expanded]="searchResults().length > 0"
+            [attr.aria-activedescendant]="activeResultId()"
+            placeholder="Search components…"
+            autocomplete="off"
+            [value]="searchQuery()"
+            (input)="onSearchInput($any($event.target).value)"
+            (keydown)="onSearchKeydown($event)"
+          />
+          @if (searchQuery() && searchResults().length === 0) {
+            <p class="nav-search__empty" role="status">No matches for "{{ searchQuery() }}"</p>
+          }
+          @if (searchResults().length > 0) {
+            <ul
+              id="nav-search-results"
+              class="nav-search__results"
+              role="listbox"
+              aria-label="Component search results"
+            >
+              @for (result of searchResults(); track result.path; let i = $index) {
+                <!--
+                  An option is deliberately not focusable and deliberately holds no control of
+                  its own: `role="option"` takes presentational children, and this listbox is
+                  driven by `aria-activedescendant` from the input, which is where focus stays
+                  the whole time. That is also why the two rules below are off for this element
+                  rather than satisfied — a `tabindex` or a keyboard handler here would break
+                  the pattern it is being asked to add. Arrow keys and Enter are handled on the
+                  input (`onSearchKeydown`); this click is the mouse's path to the same place.
+                -->
+                <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus, @angular-eslint/template/click-events-have-key-events -->
+                <li
+                  class="nav-search__result"
+                  role="option"
+                  [id]="'nav-search-result-' + i"
+                  [class.nav-search__result--active]="i === activeResultIndex()"
+                  [attr.aria-selected]="i === activeResultIndex()"
+                  (click)="goToResult(result.path)"
+                >
+                  {{ result.label }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+    </div>
+
+    <gog-button
+      variant="ghost"
+      size="sm"
+      ariaLabel="Press ripple"
+      gogTooltip="Press ripple"
+      gogTooltipPosition="bottom"
+      [ariaPressed]="isRippleOn()"
+      class="ripple-toggle"
+      [class.ripple-toggle--active]="isRippleOn()"
+      (gogClick)="toggleRipple()"
+    >
+      <fa-icon [icon]="rippleIcon()"></fa-icon>
+    </gog-button>
+
+    <gog-button
+      variant="ghost"
+      size="sm"
+      ariaLabel="Right-to-left layout"
+      gogTooltip="Right-to-left layout"
+      gogTooltipPosition="bottom"
+      [ariaPressed]="isRtl()"
+      class="direction-toggle"
+      [class.direction-toggle--active]="isRtl()"
+      (gogClick)="toggleDirection()"
+    >
+      <fa-icon [icon]="directionIcon()"></fa-icon>
+    </gog-button>
+
+    <div class="theme-switcher">
+      <gog-button
+        variant="ghost"
+        size="sm"
+        ariaLabel="Change theme"
+        gogTooltip="Change theme"
+        gogTooltipPosition="bottom"
+        [gogTooltipDisabled]="isThemeMenuOpen()"
+        (gogClick)="toggleThemeMenu()"
+      >
+        <fa-icon [icon]="faPalette"></fa-icon>
+      </gog-button>
+
+      @if (isThemeMenuOpen()) {
+        <div class="theme-switcher__menu" role="menu" aria-label="Theme">
+          @for (option of themeOptions; track option.value) {
+            <button
+              type="button"
+              role="menuitemradio"
+              class="theme-switcher__item"
+              [class.theme-switcher__item--active]="option.value === activeTheme()"
+              [attr.aria-checked]="option.value === activeTheme()"
+              (click)="selectTheme(option.value)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</header>
