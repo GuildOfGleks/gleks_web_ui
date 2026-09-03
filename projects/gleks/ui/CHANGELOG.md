@@ -8,6 +8,18 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A button pressed with animations off now shows that it was pressed.** `:active` was a
+  `transform: scale()` and nothing else, and the `prefers-reduced-motion: reduce` block switched
+  that transform off — so the reader most likely to need the feedback got none at all. The ripple
+  did not cover it either: it is off by default, and it is deliberately suppressed under reduced
+  motion because it genuinely is decoration. `:active` now also deepens the button's background,
+  one step past its own hover so a press is distinguishable while hovering, and reduced motion
+  drops only the movement. New per-variant `--gog-button-<variant>-active-bg`/`-active-color`
+  tokens (ghost's fill is a stronger wash of its hover tint, behind the same `@supports` gate as
+  the rest of the file's `color-mix()` values) and the usual `--gog-button-active-bg`/
+  `-active-color` instance overrides. Reduced motion must remove the animation, not the
+  information — the same rule the toast countdown was fixed under in 21.7.1.
+
 - **The outline button's label was unreadable while hovered, in every shipped theme.**
   `--gog-button-outline-hover-color` resolved to `--gog-primary-color`, the colour of text on the
   *page*, while the hover fill is the accent — pale parchment on bright amber in `dark` (1.41:1),
@@ -15,6 +27,14 @@ reached 1.0, so breaking changes may land in minor versions.
   them `light` at 3.65:1. It now resolves to `--gog-accent-text-color`, the token that means "text
   on an accent fill" and the one both filled variants already used. Found while adding the state
   above, which would have copied the same mistake into `:active`.
+
+- **`check:contrast` gained the pair that hid both.** The script had no pair for a label on the
+  accent *fill* other than `accentText/accent`, so neither the outline label nor the new held
+  state was covered. `accentText/accentDim(active)` is now checked at 4.5:1, and it immediately
+  failed one theme: `one-dark`'s `--gog-accent-dim` moved from `#4b8fca` to `#5399d6` (4.05:1 →
+  4.59:1). That token had only ever been a field border, which is gated at 3:1; making it a fill
+  under a label is what raised the bar. The nudge moves it toward this palette's own `#61afef`,
+  so unlike 21.7.0's two comment-colour corrections it costs no fidelity.
 
 ## [21.8.0] - 03.09.2026
 

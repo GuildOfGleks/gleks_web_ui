@@ -506,6 +506,14 @@ gogButton>`, as its own example shows, not on a `<gog-button>`.
             (gogClick)="open.set(!open())">Filters</gog-button>
 ```
 
+**The press is a colour, not only a movement.** `:active` deepens the button's background (and
+the label where the fill demands it) as well as scaling it by `--gog-button-active-scale`. Under
+`prefers-reduced-motion: reduce` the scale is dropped and the colour stays, so the press is still
+visible to a reader who has switched animations off — before 21.8.1 that reader got no feedback at
+all, since the ripple is off by default and is itself suppressed under reduced motion. Override
+per instance with `--gog-button-active-bg` / `--gog-button-active-color`, or per theme with
+`--gog-button-<variant>-active-bg`.
+
 **`debounce` is a spam guard, not a delay before the first click.** The first click in a window
 fires immediately (leading edge); further clicks within `debounce` ms are silently dropped.
 

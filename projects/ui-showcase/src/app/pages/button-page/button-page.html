@@ -32,6 +32,30 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader>Press feedback, with animations off</h3>
+    <p class="meta">
+      Hold any of these down. The background deepens one step past its own hover, so the press is
+      visible even while the pointer is hovering the button — and it is a state rather than a
+      movement, which is the point: turn on
+      <code>prefers-reduced-motion: reduce</code> (DevTools &rarr; Rendering &rarr; Emulate CSS
+      media feature) and the <code>scale()</code> goes away while the colour stays. Until 21.8.1 the
+      scale was the whole press, so that reader pressed a button and nothing happened at all. The
+      ripple does not cover this: it is off by default, and it is suppressed under reduced motion on
+      purpose, because a ripple really is decoration and a press state is not.
+    </p>
+    <div class="action-row">
+      @for (variant of variants; track variant) {
+        <gog-button [variant]="variant" type="button">{{ variant }}</gog-button>
+      }
+    </div>
+    <p class="meta">
+      Override it per instance with <code>--gog-button-active-bg</code> /
+      <code>--gog-button-active-color</code>, or per theme with
+      <code>--gog-button-&lt;variant&gt;-active-bg</code>.
+    </p>
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Disabled</h3>
     <p class="meta">
       One disabled button per variant — disabled state must stay legible on every color.

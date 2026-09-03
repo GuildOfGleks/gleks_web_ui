@@ -106,6 +106,13 @@ const PAIRS = [
   // that passed every pair the check did have. A rest state that clears AA says nothing about the
   // hover: in most themes `bright` is *lighter* than `accent`, so white on it is strictly worse.
   ['accentText/accentBright(hover)', 'accentText', 'accentBright', 4.5, true],
+  // And one press later. 21.8.1 gave `:active` a colour of its own — `--gog-accent-dim` is
+  // `--gog-button-primary-active-bg` — because the press used to be a transform that
+  // `prefers-reduced-motion` switched off, leaving no feedback at all. That makes `dim` a fill
+  // under a label for the first time; it was only ever a field border before, which is why the
+  // two `accentDim` pairs below ask for 3.0 and this one asks for 4.5. Added with the state
+  // itself rather than after a report, which is the lesson the pair above is here to teach.
+  ['accentText/accentDim(active)', 'accentText', 'accentDim', 4.5, true],
   ['accentDim(field border)/background', 'accentDim', 'background', 3.0, true],
   ['accentDim(field border)/surface', 'accentDim', 'surface', 3.0, true],
   ['accent(focus ring)/background', 'accent', 'background', 3.0, true],

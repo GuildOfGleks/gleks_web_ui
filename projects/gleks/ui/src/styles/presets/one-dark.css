@@ -51,7 +51,13 @@
   --gog-primary-color: #abb2bf;
   --gog-accent-color: #61afef;
   --gog-accent-bright: #8ac2f5;
-  --gog-accent-dim: #4b8fca;
+  /* Nudged from #4b8fca on 2026-09-03, by 4 points of luminance. 21.8.1 made `--gog-accent-dim`
+     a *fill* under a label for the first time (the button's held state); as a field border, which
+     is all it was before, it never had to clear 4.5:1 against `--gog-accent-text-color`, and at
+     #4b8fca it cleared 4.05:1. The new value moves it toward this palette's own `#61afef`, so it
+     is if anything closer to One Dark's blue than the invented dim it replaces — unlike the two
+     comment-colour changes above, this one costs no fidelity. */
+  --gog-accent-dim: #5399d6;
   --gog-accent-pale: #2d3a4a;
   --gog-secondary-color: #c678dd;
 

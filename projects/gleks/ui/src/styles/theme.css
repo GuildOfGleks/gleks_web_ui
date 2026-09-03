@@ -599,6 +599,26 @@
   --gog-button-ghost-hover-shadow: none;
   --gog-button-ghost-spinner-color: var(--gog-accent-color);
 
+  /* The held state, and the reason it is a colour rather than only the `--gog-button-active-scale`
+     it used to be: `prefers-reduced-motion` switches that transform off, which left a button with
+     no press feedback at all for the readers most likely to need it. A colour change is a state,
+     not a movement — reduced motion keeps it and only drops the scale, and with transitions off it
+     lands instantly. See docs/feedback-triage.md's closing section: reduced motion must remove the
+     animation, not the information.
+
+     Each variant goes one step *deeper* than its own hover, so pressing is distinguishable while
+     hovering, which is the normal case for a pointer. `--gog-accent-dim` is that step for the
+     three accent-carrying variants; ghost has no fill of its own to deepen, so it takes a
+     stronger wash of the same tint its hover uses (see the @supports block at the end of this
+     file for the mixed value and why the flat one above it is not a fallback but the value). */
+  --gog-button-primary-active-bg: var(--gog-accent-dim);
+  --gog-button-primary-active-color: var(--gog-button-primary-color);
+  --gog-button-secondary-active-bg: var(--gog-accent-dim);
+  --gog-button-secondary-active-color: var(--gog-button-secondary-color);
+  --gog-button-outline-active-bg: var(--gog-accent-dim);
+  --gog-button-outline-active-color: var(--gog-button-outline-hover-color);
+  --gog-button-ghost-active-bg: var(--gog-border-color);
+  --gog-button-ghost-active-color: var(--gog-button-ghost-color);
 
   /* ── Button toggle group ───────────────────────────────────────────────────
      `--gog-button-toggle-bg`, `-color`, `-padding` and `-font-size` are intentionally NOT
@@ -1944,6 +1964,10 @@
     --gog-button-primary-hover-shadow: 0 0 16px
       color-mix(in srgb, var(--gog-accent-bright) 45%, transparent);
     --gog-button-ghost-hover-bg: color-mix(in srgb, var(--gog-accent-color) 12%, transparent);
+    /* Twice the hover wash, so a held ghost button reads as a step past hovering it rather than
+       as the same tint. The flat `--gog-border-color` above is what a browser without
+       `color-mix()` gets: a visible press on every theme, just not a tinted one. */
+    --gog-button-ghost-active-bg: color-mix(in srgb, var(--gog-accent-color) 24%, transparent);
     --gog-calendar-range-bg: color-mix(in srgb, var(--gog-accent-color) 16%, transparent);
     --gog-card-filled-bg: color-mix(in srgb, var(--gog-accent-dim) 8%, var(--gog-surface-color));
     --gog-card-hover-border-color: color-mix(in srgb, var(--gog-accent-color) 45%, transparent);

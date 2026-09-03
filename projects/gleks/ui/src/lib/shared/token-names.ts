@@ -189,6 +189,8 @@ export type GogTokenName =
   | '--gog-border-color'
   | '--gog-border-style'
   | '--gog-border-width'
+  | '--gog-button-active-bg'
+  | '--gog-button-active-color'
   | '--gog-button-active-scale'
   | '--gog-button-bg'
   | '--gog-button-border'
@@ -201,6 +203,8 @@ export type GogTokenName =
   | '--gog-button-font-family'
   | '--gog-button-font-weight'
   | '--gog-button-gap'
+  | '--gog-button-ghost-active-bg'
+  | '--gog-button-ghost-active-color'
   | '--gog-button-ghost-bg'
   | '--gog-button-ghost-border'
   | '--gog-button-ghost-color'
@@ -219,6 +223,8 @@ export type GogTokenName =
   | '--gog-button-loading-opacity'
   | '--gog-button-md-font-size'
   | '--gog-button-md-padding'
+  | '--gog-button-outline-active-bg'
+  | '--gog-button-outline-active-color'
   | '--gog-button-outline-bg'
   | '--gog-button-outline-border'
   | '--gog-button-outline-color'
@@ -227,6 +233,8 @@ export type GogTokenName =
   | '--gog-button-outline-hover-shadow'
   | '--gog-button-outline-shadow'
   | '--gog-button-outline-spinner-color'
+  | '--gog-button-primary-active-bg'
+  | '--gog-button-primary-active-color'
   | '--gog-button-primary-bg'
   | '--gog-button-primary-border'
   | '--gog-button-primary-color'
@@ -236,6 +244,8 @@ export type GogTokenName =
   | '--gog-button-primary-shadow'
   | '--gog-button-primary-spinner-color'
   | '--gog-button-radius'
+  | '--gog-button-secondary-active-bg'
+  | '--gog-button-secondary-active-color'
   | '--gog-button-secondary-bg'
   | '--gog-button-secondary-border'
   | '--gog-button-secondary-color'
@@ -1742,6 +1752,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-font-family',
       '--gog-button-font-weight',
       '--gog-button-gap',
+      '--gog-button-ghost-active-bg',
+      '--gog-button-ghost-active-color',
       '--gog-button-ghost-bg',
       '--gog-button-ghost-border',
       '--gog-button-ghost-color',
@@ -1757,6 +1769,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-loading-opacity',
       '--gog-button-md-font-size',
       '--gog-button-md-padding',
+      '--gog-button-outline-active-bg',
+      '--gog-button-outline-active-color',
       '--gog-button-outline-bg',
       '--gog-button-outline-border',
       '--gog-button-outline-color',
@@ -1765,6 +1779,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-outline-hover-shadow',
       '--gog-button-outline-shadow',
       '--gog-button-outline-spinner-color',
+      '--gog-button-primary-active-bg',
+      '--gog-button-primary-active-color',
       '--gog-button-primary-bg',
       '--gog-button-primary-border',
       '--gog-button-primary-color',
@@ -1774,6 +1790,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-primary-shadow',
       '--gog-button-primary-spinner-color',
       '--gog-button-radius',
+      '--gog-button-secondary-active-bg',
+      '--gog-button-secondary-active-color',
       '--gog-button-secondary-bg',
       '--gog-button-secondary-border',
       '--gog-button-secondary-color',
@@ -3030,6 +3048,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-autocomplete-padding-y',
       '--gog-badge-bg',
       '--gog-badge-color',
+      '--gog-button-active-bg',
+      '--gog-button-active-color',
       '--gog-button-bg',
       '--gog-button-border',
       '--gog-button-color',

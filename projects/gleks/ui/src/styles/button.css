@@ -96,7 +96,26 @@
   );
 }
 
+/*
+ * The held state. It changes colour *and* scales, and the colour is the part that matters:
+ * `prefers-reduced-motion` switches the transform off below, and until 21.8.1 that was the whole
+ * rule — so a reader with animations off pressed a button and nothing whatsoever happened. The
+ * ripple does not cover it either: it is off by default and is itself suppressed under reduced
+ * motion, deliberately, because it really is decoration. A colour change is not.
+ *
+ * This sits after `:hover` on purpose. Both are (0,3,0), so source order decides, and a pointer
+ * is nearly always hovering the button it is pressing — the press has to win that tie or it is
+ * invisible exactly when it is happening.
+ */
 .gog-btn:active:not(:disabled) {
+  background-color: var(
+    --gog-button-active-bg,
+    var(--gog-button-variant-active-bg, var(--gog-button-primary-active-bg))
+  );
+  color: var(
+    --gog-button-active-color,
+    var(--gog-button-variant-active-color, var(--gog-button-primary-active-color))
+  );
   transform: scale(var(--gog-button-active-scale));
 }
 
@@ -105,6 +124,8 @@
     transition: none;
   }
 
+  /* Only the movement goes. The colour above stays, and with the transition off it lands on the
+     first frame of the press instead of easing in. */
   .gog-btn:active:not(:disabled) {
     transform: none;
   }
@@ -126,6 +147,8 @@
   --gog-button-variant-hover-bg: var(--gog-button-primary-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-primary-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-primary-hover-shadow);
+  --gog-button-variant-active-bg: var(--gog-button-primary-active-bg);
+  --gog-button-variant-active-color: var(--gog-button-primary-active-color);
   --gog-button-variant-spinner-color: var(--gog-button-primary-spinner-color);
 }
 
@@ -137,6 +160,8 @@
   --gog-button-variant-hover-bg: var(--gog-button-secondary-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-secondary-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-secondary-hover-shadow);
+  --gog-button-variant-active-bg: var(--gog-button-secondary-active-bg);
+  --gog-button-variant-active-color: var(--gog-button-secondary-active-color);
   --gog-button-variant-spinner-color: var(--gog-button-secondary-spinner-color);
 }
 
@@ -149,6 +174,8 @@
   --gog-button-variant-hover-bg: var(--gog-button-outline-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-outline-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-outline-hover-shadow);
+  --gog-button-variant-active-bg: var(--gog-button-outline-active-bg);
+  --gog-button-variant-active-color: var(--gog-button-outline-active-color);
   --gog-button-variant-spinner-color: var(--gog-button-outline-spinner-color);
 }
 
@@ -161,6 +188,8 @@
   --gog-button-variant-hover-bg: var(--gog-button-ghost-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-ghost-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-ghost-hover-shadow);
+  --gog-button-variant-active-bg: var(--gog-button-ghost-active-bg);
+  --gog-button-variant-active-color: var(--gog-button-ghost-active-color);
   --gog-button-variant-spinner-color: var(--gog-button-ghost-spinner-color);
 }
 
