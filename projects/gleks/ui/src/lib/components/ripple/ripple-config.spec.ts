@@ -5,6 +5,7 @@ import { GOG_CONFIG } from '../../shared/config';
 import { ButtonComponent } from '../button/button.component';
 import { GogButtonDirective } from '../button/button.directive';
 import { ChipComponent } from '../chip/chip.component';
+import { SelectComponent } from '../select/select.component';
 
 /**
  * The `ripple` input's precedence, which is the same three-step chain every configurable input in
@@ -17,11 +18,12 @@ import { ChipComponent } from '../chip/chip.component';
  * and paying for itself. Whether a wave then appears is `ripple.directive.spec.ts`'s business.
  */
 @Component({
-  imports: [ButtonComponent, ChipComponent, GogButtonDirective],
+  imports: [ButtonComponent, ChipComponent, GogButtonDirective, SelectComponent],
   template: `
     <gog-button [ripple]="buttonRipple()">Save</gog-button>
     <a gogButton href="#" [ripple]="linkRipple()">Docs</a>
     <gog-chip [ripple]="chipRipple()" [clickable]="chipClickable()">Beta</gog-chip>
+    <gog-select [options]="selectOptions" />
   `,
 })
 class RippleConfigHost {
@@ -29,6 +31,10 @@ class RippleConfigHost {
   readonly linkRipple = signal<boolean | undefined>(undefined);
   readonly chipRipple = signal<boolean | undefined>(undefined);
   readonly chipClickable = signal(true);
+  readonly selectOptions = [
+    { id: 'a', name: 'Alpha' },
+    { id: 'b', name: 'Beta', disabled: true },
+  ];
 }
 
 describe('ripple — GOG_CONFIG.ripple.enabled', () => {
@@ -86,6 +92,23 @@ describe('ripple — GOG_CONFIG.ripple.enabled', () => {
 
     expect(rippling('.gog-chip__surface')).toBe(true);
     expect(rippling('.gog-btn')).toBe(false);
+  });
+
+  it('does not ripple a disabled option, whatever the config says', async () => {
+    await setUp({ ripple: { enabled: true } });
+
+    (fixture.nativeElement.querySelector('.gog-select__control') as HTMLButtonElement).click();
+    await fixture.whenStable();
+
+    const options = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.gog-select__option'),
+    ];
+
+    // Same argument as the inert chip below: a row that answers a press with a wave has promised
+    // something. The disabled option is rendered `aria-disabled`, not `disabled`, so nothing else
+    // was stopping the ripple from attaching to it.
+    expect(options[0].classList.contains('gog-ripple-host')).toBe(true);
+    expect(options[1].classList.contains('gog-ripple-host')).toBe(false);
   });
 
   it('does not ripple a chip that is not interactive, whatever the config says', async () => {

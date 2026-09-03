@@ -333,7 +333,9 @@
   cursor: not-allowed;
 }
 
-.gog-ms__option:hover {
+/* See the same rule in select.component.scss: a disabled option must not light up under the
+   pointer as though it were selectable. */
+.gog-ms__option:hover:not(.gog-ms__option--disabled) {
   background-color: var(--gog-multiselect-option-hover-bg);
 }
 

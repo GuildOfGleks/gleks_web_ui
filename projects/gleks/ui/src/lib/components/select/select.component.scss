@@ -269,7 +269,10 @@
   transition: background-color var(--gog-select-option-transition-duration) var(--gog-easing);
 }
 
-.gog-select__option:hover {
+/* Guarded, like the press rule below it and like `gog-autocomplete`'s own hover: a disabled
+   option used to take the hover background, so the pointer said "this one" about a row that does
+   nothing. Only its opacity and its cursor disagreed, and neither is what a hover is read for. */
+.gog-select__option:hover:not(.gog-select__option--disabled) {
   background-color: var(--gog-select-option-hover-bg);
 }
 

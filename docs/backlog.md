@@ -16,21 +16,17 @@ not worth carrying here.
 
 ## Defects — first
 
-- **Three dropdowns highlight a disabled option under the pointer.** `.gog-select__option:hover`,
-  `.gog-ms__option:hover` and `.gog-autocomplete__option:hover` carry no `:not(--disabled)` guard,
-  so a disabled row lights up exactly like a selectable one; only its opacity and cursor say
-  otherwise. Found 2026-09-03 while adding those rows' press states, which *were* guarded — see
-  `CHANGELOG.md` 21.8.1. Left alone deliberately: changing what hover does to a disabled row is a
-  visual decision of its own, and folding it into a press-feedback pass would have hidden it.
-  `gog-menu`'s item and `gog-autocomplete`'s option get this right (`:not(:disabled)` /
-  `:not([aria-disabled='true'])` on the hover selector), so the fix has a pattern to copy.
-
 **What was here.** The section emptied on 2026-09-02, when the `GogGlobalConfig` JSDoc defect
 was fixed for the in-progress 21.8.0 (see `CHANGELOG.md`). It refilled on 2026-09-03 with the
 "nine pressable surfaces have no press feedback" entry, which was **closed the same day** — eight
 of them fixed in 21.8.1, and `gogCollapsibleTrigger` ruled out with a reason recorded there: the
-library paints nothing on that element in any state, because the consumer owns it. Two contrast
-defects found the same day — the outline button's hover label
+library paints nothing on that element in any state, because the consumer owns it. The
+disabled-option entry filed alongside it was closed the same way, and its own filing was wrong in
+a way worth remembering: it named **three** dropdowns, when `gog-autocomplete` had the guard all
+along — the entry contradicted itself two sentences later by citing autocomplete as the pattern
+to copy. Written from the shape of the bug rather than from re-reading the third file. What the
+three did share was the ripple, which none of them guarded. Two contrast defects found the same
+day — the outline button's hover label
 failing WCAG AA in all 11 themes, and `one-dark`'s `--gog-accent-dim` under the new pressed fill
 — were fixed in 21.8.1 rather than filed here, because `check:contrast` is a CI step and a known
 failure would have made it permanently red.

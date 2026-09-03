@@ -48,6 +48,17 @@ reached 1.0, so breaking changes may land in minor versions.
   rules are not, and were left alone — a disabled option lighting up under the pointer is a
   separate decision from this one, and it is filed rather than folded in.
 
+- **A disabled option no longer lights up under the pointer, and no longer ripples.** Two
+  separate holes in the same place. `.gog-select__option:hover` and `.gog-ms__option:hover`
+  carried no disabled guard, so a row that cannot be chosen took the same hover background as one
+  that can — only its opacity and its cursor disagreed, and neither is what a hover is read for.
+  `gog-autocomplete` already had this right (`:not([aria-disabled='true'])`), which is where the
+  fix was copied from. And all **three** wired `gogRipple` with `[rippleDisabled]="!rippleEnabled()"`,
+  taking no account of the option's own state: with the ripple switched on app-wide, a disabled
+  row answered a press with a wave. The options are rendered `aria-disabled`, not `disabled`, so
+  nothing else was stopping it. Same argument the library already applied to a non-interactive
+  `gog-chip`: a wave is a promise, and these rows cannot keep it.
+
 - **The outline button's label was unreadable while hovered, in every shipped theme.**
   `--gog-button-outline-hover-color` resolved to `--gog-primary-color`, the colour of text on the
   *page*, while the hover fill is the accent — pale parchment on bright amber in `dark` (1.41:1),
