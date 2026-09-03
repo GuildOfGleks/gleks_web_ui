@@ -10,8 +10,15 @@
   flex: 0 0 auto;
 }
 
-.nav-fixed__components-title {
+/* Outside `.nav-section` (it is pinned above the scroll region, which the section wrapper does
+   not span), so it has to repeat that wrapper's 10px inset itself or it starts 10px left of the
+   "GENERAL" title above it and of the component links below it — 18px being that 10px plus the
+   8px `.sidebar-title` gives every section title. Compounded with `.sidebar-title` rather than
+   left as a single class: that rule sets `padding-left` too and sits further down this file, so
+   at equal specificity it would win. */
+.sidebar-title.nav-fixed__components-title {
   margin-top: 24px;
+  padding-left: 18px;
 }
 
 /* The long part — see scroll.component.scss's header comment for why a flex-basis chain
@@ -21,13 +28,20 @@
   min-height: 0;
 }
 
-/* The last component in the list used to sit flush against the bottom of the scroll viewport,
+/* The scrolled list carries the same 10px side inset as `.nav-section` wraps around the fixed
+   "General" block, so a component link lines up with an "Overview" or "Getting Started" link
+   instead of sitting 10px further out. It is set here rather than on `.nav-scroll` for the same
+   reason as the bottom padding below: `gog-scroll` measures its host to size the viewport and
+   thumb, so padding on the host would move the scrollbar rather than the rows.
+
+   The last component in the list used to sit flush against the bottom of the scroll viewport,
    where a phone's own browser chrome — the URL bar that reappears on scroll-up, the gesture bar —
    covers it. Reported from a phone check. The padding goes on the scrolled content, not on
    `.nav-scroll`: `gog-scroll` measures the host to size its viewport and thumb, so padding there
    would move the scrollbar rather than the last row. `env()` adds a notched device's own inset
    on top of the flat floor, and resolves to 0 everywhere else. */
 .nav-scroll .nav-list {
+  padding-inline: 10px;
   padding-block-end: calc(24px + env(safe-area-inset-bottom, 0px));
 }
 
@@ -112,9 +126,10 @@
    No [inset] and a smaller --gog-divider-label-font-size override: the label is
    `white-space: nowrap` by design (it's built for a short inline word like "OR"), and the
    component's own default label size (--gog-text-sm, 14px) clips a two-word category name
-   at this sidebar's 180px width — dropping the 24px inset and sizing the label down to
-   --gog-text-xs reclaims just enough room for the longest name ("Feedback & Overlays") to
-   fit on one line. */
+   in this sidebar — dropping the 24px inset and sizing the label down to --gog-text-xs reclaims
+   just enough room for the longest name ("Feedback & Overlays") to fit on one line. The sidebar
+   is 208px wide and the list insets by 10px on each side, so the label has ~188px; it was
+   180px flat when this override was written, and the two changes roughly cancel out. */
 .nav-divider {
   --gog-divider-label-font-size: var(--gog-text-xs);
   --gog-divider-label-font-weight: 600;

@@ -1,6 +1,6 @@
 .lab-layout {
   display: grid;
-  grid-template-columns: 180px 1fr 180px; /* Sidebar | content | table of contents */
+  grid-template-columns: 208px 1fr 208px; /* Sidebar | content | table of contents */
   grid-template-rows: 60px 1fr;
   grid-template-areas:
     'header  header  header'
@@ -293,7 +293,7 @@
  */
 @media (max-width: 1100px) {
   .lab-layout {
-    grid-template-columns: 180px 1fr;
+    grid-template-columns: 208px 1fr;
     grid-template-areas:
       'header  header'
       'sidebar main';
