@@ -599,7 +599,17 @@
   --gog-button-ghost-border: transparent;
   --gog-button-ghost-shadow: none;
   --gog-button-ghost-hover-bg: var(--gog-hover-color);
-  --gog-button-ghost-hover-color: var(--gog-button-ghost-color);
+  /* The label leaves the accent while the ground is tinted, and that is the only thing that
+     works here. Ghost's resting label *is* `--gog-accent-color`, and its hover tints the ground
+     with the same accent, so the two walk toward each other: measured across all 11 themes, the
+     label fell under 4.5:1 in `light` (3.94), `primeng` (4.18) and `one-light` (4.22). No ground
+     fixes it — a half-strength wash, a neutral `--gog-hover-color`, a text scrim and an
+     accent-dim wash were all measured, and `light` fails every one of them, because
+     `--gog-accent-color` as *text* on that theme's own background is 4.60:1 with no headroom to
+     spend. Moving the label to `--gog-text-color` clears 5.29:1 at worst (one-dark) and leaves
+     the ground exactly as it was, so the hover stays the subtle wash this variant is documented
+     to have. The press then goes the other way and fills — see `-press-bg` below. */
+  --gog-button-ghost-hover-color: var(--gog-text-color);
   --gog-button-ghost-hover-shadow: none;
   --gog-button-ghost-spinner-color: var(--gog-accent-color);
 

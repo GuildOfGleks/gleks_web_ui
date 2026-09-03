@@ -43,6 +43,14 @@ delete the section too.
    will fail the moment 21.8.1 is installed: that release adds ten `--gog-*-press-*` tokens the
    file does not carry yet.
 
+5. **Check the two header toggles' hover.** They show their state by overriding
+   `--gog-button-ghost-color` (muted when off, accent when on), and 21.8.1 changes a hovered
+   ghost button's label to `--gog-text-color` — so while the pointer is on a toggle, that colour
+   signal drops out. The icon still differs (`droplet` / `droplet-slash`, `align-left` /
+   `align-right`) and `aria-pressed` is unaffected, so nothing is lost that a reader depends on;
+   decide by looking whether it wants
+   `--gog-button-ghost-hover-color: var(--gog-accent-color)` on the `--active` class.
+
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see

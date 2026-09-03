@@ -29,6 +29,19 @@ reached 1.0, so breaking changes may land in minor versions.
   `--gog-button-active-scale` keeps its spelling: renaming a token consumers already override
   needs a deprecation cycle, and this is a patch.
 
+- **A ghost button's label was under WCAG AA on its own hover, in three themes.** `light`
+  3.94:1, `primeng` 4.18:1, `one-light` 4.22:1. The variant's resting label *is*
+  `--gog-accent-color` and its hover tints the ground with the same accent, so the two walked
+  toward each other. **No background fixes it**, which is why this took a sweep rather than a
+  nudge: a half-strength wash (4.28), a neutral `--gog-hover-color` (4.15), a text scrim (3.91)
+  and an accent-dim wash (3.96) were all measured across the 11 themes, and `light` fails every
+  one — `--gog-accent-color` as *text* on that theme's background is 4.60:1 to begin with, so
+  there is no headroom to spend on any ground at all. The label now becomes `--gog-text-color`
+  while hovered, which clears 5.29:1 at worst (one-dark) and leaves the wash untouched, so the
+  hover stays the subtle one this variant is documented to have. Ghost's three states now read
+  transparent → tinted → filled, with a label chosen for each ground rather than one label
+  hoping to survive three.
+
 - **`bevel` had no accent ramp, so its buttons could not show a press.** That preset declared
   `--gog-accent-dim: #000080`, byte-identical to its `--gog-accent-color`. Harmless while `dim`
   was only a field border; once it became the pressed fill, a pressed button in `bevel` painted
