@@ -61,7 +61,12 @@
   }
 }
 
-.direction-toggle--active {
+/* Both header toggles are ghost buttons that stay put when they are on, so "on" has to be the
+   button's own colour — the accent is the only state the ghost variant leaves free. The state is
+   also on the button as `aria-pressed`, which is what a screen reader reads; this is the half a
+   sighted reader gets. */
+.direction-toggle--active,
+.ripple-toggle--active {
   --gog-button-ghost-color: var(--gog-accent-color);
 }
 

@@ -24,10 +24,12 @@ import {
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
   faBars,
+  faDroplet,
   faMagnifyingGlass,
   faPalette,
   faRightLeft,
 } from '@fortawesome/free-solid-svg-icons';
+import { RipplePreference } from './components/shared/ripple-preference';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
 import { TocComponent } from './components/shared/toc/toc';
 import { LIBRARY_VERSION } from './components/shared/library-version';
@@ -80,6 +82,7 @@ const FOOTER_LINKS: readonly FooterLink[] = [
 })
 export class App {
   private readonly themeService = inject(ThemeService);
+  private readonly ripplePreference = inject(RipplePreference);
   private readonly elRef = inject(ElementRef<HTMLElement>);
   private readonly router = inject(Router);
   private readonly injector = inject(Injector);
@@ -203,7 +206,15 @@ export class App {
   protected readonly faBars = faBars;
   protected readonly faPalette = faPalette;
   protected readonly faRightLeft = faRightLeft;
+  protected readonly faDroplet = faDroplet;
   protected readonly faMagnifyingGlass = faMagnifyingGlass;
+
+  /**
+   * Whether the site is running with the press ripple on. It reaches the library through
+   * `GOG_CONFIG` (see `ripple-preference.ts`), so flipping it re-runs every ripple-capable
+   * component's own resolution — no reload, and no per-component input to keep in sync.
+   */
+  protected readonly isRippleOn = this.ripplePreference.enabled;
 
   protected toggleNav(): void {
     this.isNavOpen.update((open) => !open);
@@ -224,6 +235,10 @@ export class App {
   protected selectTheme(theme: string): void {
     this.themeService.setTheme(theme);
     this.closeThemeMenu();
+  }
+
+  protected toggleRipple(): void {
+    this.ripplePreference.toggle();
   }
 
   protected toggleDirection(): void {

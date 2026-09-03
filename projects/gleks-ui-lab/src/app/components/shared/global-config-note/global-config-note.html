@@ -21,7 +21,8 @@
         <strong>This site is not on the default here.</strong> The library ships
         <code>ripple.enabled</code> as <code>false</code>; these docs set it to
         <code>true</code> app-wide so the demos above actually show the press feedback. In a fresh
-        app you get no ripple until you ask for one.
+        app you get no ripple until you ask for one — the droplet button in the header switches this
+        site between the two, and it is <strong>{{ rippleOn() ? 'on' : 'off' }}</strong> right now.
       </p>
     }
   } @else {

@@ -97,6 +97,18 @@
       <gog-button
         variant="ghost"
         size="sm"
+        ariaLabel="Press ripple"
+        [ariaPressed]="isRippleOn()"
+        class="ripple-toggle"
+        [class.ripple-toggle--active]="isRippleOn()"
+        (gogClick)="toggleRipple()"
+      >
+        <fa-icon [icon]="faDroplet"></fa-icon>
+      </gog-button>
+
+      <gog-button
+        variant="ghost"
+        size="sm"
         ariaLabel="Right-to-left layout"
         [ariaPressed]="isRtl()"
         class="direction-toggle"

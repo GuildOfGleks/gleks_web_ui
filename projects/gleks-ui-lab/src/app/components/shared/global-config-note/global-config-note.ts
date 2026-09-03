@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GLOBAL_CONFIG_BY_COMPONENT } from '../global-config-data';
+import { RipplePreference } from '../ripple-preference';
 
 /**
  * The "Global Configuration" section every component doc page renders — `docs/feedback-triage.md`
@@ -31,4 +32,11 @@ export class GlobalConfigNote {
   protected readonly deviatesOnRipple = computed(() =>
     this.entries().some((entry) => entry.key === 'ripple.enabled'),
   );
+
+  /**
+   * The note names the current state rather than only the site's default, because the header's
+   * ripple toggle can change it: a reader who has switched the ripple off should not be told by
+   * this paragraph that the demos above are showing it.
+   */
+  protected readonly rippleOn = inject(RipplePreference).enabled;
 }
