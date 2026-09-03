@@ -15,9 +15,12 @@ reached 1.0, so breaking changes may land in minor versions.
   motion because it genuinely is decoration. `:active` now also deepens the button's background,
   one step past its own hover so a press is distinguishable while hovering, and reduced motion
   drops only the movement. New per-variant `--gog-button-<variant>-press-bg`/`-press-color`
-  tokens (ghost's fill is a stronger wash of its hover tint, behind the same `@supports` gate as
-  the rest of the file's `color-mix()` values) and the usual `--gog-button-press-bg`/
-  `-press-color` instance overrides. Reduced motion must remove the animation, not the
+  tokens and the usual `--gog-button-press-bg`/`-press-color` instance overrides. **Ghost presses
+  to a filled `--gog-accent-dim`, like outline, rather than to a wash** — checked across all 11
+  themes, and a wash cannot work there: ghost's own *label* is the accent, so tinting its ground
+  with the accent walks the two together, and a 24% wash put the label under 4.5:1 in seven
+  themes. A filled press moves the label to `--gog-accent-text-color`, the pair `check:contrast`
+  already gates, so no future theme can quietly break it. Reduced motion must remove the animation, not the
   information — the same rule the toast countdown was fixed under in 21.7.1.
 
   The family is spelled `press`, not `active`, because `active` already means two different
@@ -25,6 +28,15 @@ reached 1.0, so breaking changes may land in minor versions.
   `--gog-scroll-thumb-active-bg` is the thumb being dragged. One name, one meaning. The shipped
   `--gog-button-active-scale` keeps its spelling: renaming a token consumers already override
   needs a deprecation cycle, and this is a patch.
+
+- **`bevel` had no accent ramp, so its buttons could not show a press.** That preset declared
+  `--gog-accent-dim: #000080`, byte-identical to its `--gog-accent-color`. Harmless while `dim`
+  was only a field border; once it became the pressed fill, a pressed button in `bevel` painted
+  itself the colour it already was. Nothing failed — the token existed, resolved and passed every
+  contrast pair. It is now `#00005c`, and **`check-tokens` rule I was widened from the surface
+  tiers to any ramp**, so a theme whose rest/hover/press tones collapse into each other fails the
+  build instead of shipping a state nobody can see. Found by sweeping all 11 themes rather than by
+  the check that now catches it.
 
 - **The other nine pressable surfaces had no press feedback either — now eight of them do.**
   `.gog-btn:active` turned out to be the *only* `:active` rule in the library. `gogMenuItem`,

@@ -621,8 +621,16 @@
   --gog-button-secondary-press-color: var(--gog-button-secondary-color);
   --gog-button-outline-press-bg: var(--gog-accent-dim);
   --gog-button-outline-press-color: var(--gog-button-outline-hover-color);
-  --gog-button-ghost-press-bg: var(--gog-border-color);
-  --gog-button-ghost-press-color: var(--gog-button-ghost-color);
+  /* Ghost presses to the same deep fill as outline, rather than to a wash like every other
+     surface in this file. Measured across all 11 themes: a wash cannot work here, because this
+     button's *label* is the accent, so tinting its ground with the accent walks the two together
+     — a 24% wash put the label under 4.5:1 in seven themes, and `--gog-accent-pale` was either
+     no better or invisible against the hover. A filled press moves the label to
+     `--gog-accent-text-color` instead, which is the pair `check:contrast` already gates, so no
+     future theme can quietly break it. The other eight surfaces keep their washes: their labels
+     are body text, and their worst case across the 11 is 4.80:1. */
+  --gog-button-ghost-press-bg: var(--gog-accent-dim);
+  --gog-button-ghost-press-color: var(--gog-accent-text-color, var(--gog-primary-color));
 
   /* ── Button toggle group ───────────────────────────────────────────────────
      `--gog-button-toggle-bg`, `-color`, `-padding` and `-font-size` are intentionally NOT
@@ -1984,10 +1992,6 @@
     --gog-button-primary-hover-shadow: 0 0 16px
       color-mix(in srgb, var(--gog-accent-bright) 45%, transparent);
     --gog-button-ghost-hover-bg: color-mix(in srgb, var(--gog-accent-color) 12%, transparent);
-    /* Twice the hover wash, so a held ghost button reads as a step past hovering it rather than
-       as the same tint. The flat `--gog-border-color` above is what a browser without
-       `color-mix()` gets: a visible press on every theme, just not a tinted one. */
-    --gog-button-ghost-press-bg: color-mix(in srgb, var(--gog-accent-color) 24%, transparent);
     /* Every other pressable surface, one rule: roughly double the 10-12% wash its own hover
        uses, in the same ingredient. The accordion mixes `--gog-accent-dim` because its hover
        does — its header sits on a strip where a full-accent wash was too loud (21.7.1). */

@@ -67,6 +67,21 @@ state — the check had been measuring the easier of the two states. It caught a
 `slate`, which passed every pair the script previously had. If a future pair looks like it
 "obviously passes because the related one does", that is the shape of this bug.
 
+- **A ghost button's label is under WCAG AA on its own hover, in three themes.** Measured
+  2026-09-03 while sweeping all 11 themes for 21.8.1: `light` 3.94:1, `primeng` 4.18:1,
+  `one-light` 4.22:1, against 4.5. The cause is structural rather than a wrong token, which is why
+  it was filed instead of fixed in that pass: ghost's label is `--gog-accent-color` and its hover
+  tints the ground with the same accent, so the two walk toward each other. Its rest state is
+  already close to the line in those themes (4.60 / 4.94 / 4.97), so there is no headroom to spend
+  — the fix is a decision about what a hovered ghost button should look like, not a value to nudge.
+  The *pressed* state was changed to a filled `--gog-accent-dim` for exactly this reason, and that
+  is the shape a fix would take.
+
+  **`check:contrast` cannot see it.** The script compares palette tokens, and this pair is a label
+  against a `color-mix()` wash that only exists once composited over a surface. Whatever fixes the
+  hover should also decide whether the script grows a way to express washes, or whether these
+  states stay eyeballed.
+
 ## Gaps — capability the library does not have
 
 Each is additive: nothing here breaks an existing consumer, and none blocks another.

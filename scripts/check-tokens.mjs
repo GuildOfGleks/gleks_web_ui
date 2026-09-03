@@ -540,7 +540,8 @@ async function main() {
     }
   }
 
-  // Rule I — the surface tiers of one theme must be three different colours.
+  // Rule I — a theme's ramps must be ramps: tokens meant as separate steps must hold separate
+  // colours. Two groups. The surface tiers came first:
   //
   // `--gog-surface-color` (the resting card), `--gog-hover-color` (a light lift: hover states and
   // the table/accordion header strips) and `--gog-elevated-surface-color` (a bigger lift) express
@@ -552,7 +553,23 @@ async function main() {
   // check, which is why this exists.
   //
   // Only literal palette blocks are compared, since that is where a theme states its own colours.
-  const TIERS = ['--gog-surface-color', '--gog-hover-color', '--gog-elevated-surface-color'];
+  // The accent ramp joined it on 2026-09-03, for the same reason one release later: 21.8.1 made
+  // `--gog-accent-dim` the button's *pressed* fill, which only reads as a press if it differs from
+  // the rest and hover tones. `bevel` had `--gog-accent-dim: #000080`, byte-identical to its
+  // `--gog-accent-color`, so a pressed button in that theme painted itself the colour it already
+  // was. Nothing failed — the token existed, resolved, and passed every contrast pair.
+  const RAMPS = [
+    {
+      label: 'surface-tier-collision',
+      tokens: ['--gog-surface-color', '--gog-hover-color', '--gog-elevated-surface-color'],
+      why: 'they are different depths — components reading one become invisible against the other',
+    },
+    {
+      label: 'accent-ramp-collision',
+      tokens: ['--gog-accent-color', '--gog-accent-bright', '--gog-accent-dim'],
+      why: 'they are rest, hover and press — two of them equal means one state cannot be seen',
+    },
+  ];
   const paletteSources = [themeCss];
   for await (const entry of glob('*.css', {
     cwd: path.join(uiSrc, 'styles/presets'),
@@ -573,21 +590,24 @@ async function main() {
       const [, , themeName, body] = block;
       if (seenThemes.has(themeName)) continue;
       seenThemes.add(themeName);
-      const values = new Map();
-      for (const tier of TIERS) {
-        const hit = body.match(new RegExp(`${tier}\\s*:\\s*(#[0-9a-fA-F]{3,8})\\s*;`));
-        if (hit) values.set(tier, hit[1].toLowerCase());
-      }
-      for (const [a, b] of [
-        [TIERS[0], TIERS[1]],
-        [TIERS[0], TIERS[2]],
-        [TIERS[1], TIERS[2]],
-      ]) {
-        if (values.has(a) && values.has(b) && values.get(a) === values.get(b)) {
-          problems.push(
-            `[surface-tier-collision] theme '${themeName}': ${a} and ${b} are both ${values.get(a)}\n` +
-              `      they are different depths — components reading one become invisible against the other`,
-          );
+      for (const ramp of RAMPS) {
+        const values = new Map();
+        for (const token of ramp.tokens) {
+          const hit = body.match(new RegExp(`${token}\\s*:\\s*(#[0-9a-fA-F]{3,8})\\s*;`));
+          if (hit) values.set(token, hit[1].toLowerCase());
+        }
+        for (const [a, b] of [
+          [ramp.tokens[0], ramp.tokens[1]],
+          [ramp.tokens[0], ramp.tokens[2]],
+          [ramp.tokens[1], ramp.tokens[2]],
+        ]) {
+          if (values.has(a) && values.has(b) && values.get(a) === values.get(b)) {
+            problems.push(
+              `[${ramp.label}] theme '${themeName}': ${a} and ${b} are both ${values.get(a)}
+` +
+                `      ${ramp.why}`,
+            );
+          }
         }
       }
     }
