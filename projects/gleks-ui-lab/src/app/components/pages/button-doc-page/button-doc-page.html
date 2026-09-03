@@ -119,6 +119,46 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">ARIA state — a toggle and a disclosure</h3>
+      <p class="demo-card__meta">
+        Same trap as <code>ariaLabel</code>, one step further: the component hides the real
+        <code>&lt;button&gt;</code>, so <code>[attr.aria-pressed]</code> written on
+        <code>&lt;gog-button&gt;</code> lands on the custom-element host — which has no role — and
+        reaches no assistive tech at all. It compiles, throws nothing, and looks right, which is
+        what makes it worth a demo. Use the inputs: <code>ariaPressed</code>,
+        <code>ariaExpanded</code>, <code>ariaControls</code> and <code>ariaHasPopup</code>.
+      </p>
+      <div class="demo-card__preview action-row">
+        <gog-button variant="outline" [ariaPressed]="isMirrored()" (gogClick)="toggleMirror()">
+          Mirror layout
+        </gog-button>
+        <gog-button
+          variant="outline"
+          [ariaExpanded]="areFiltersOpen()"
+          ariaControls="button-doc-filters"
+          ariaHasPopup="dialog"
+          (gogClick)="toggleFilters()"
+        >
+          Filters
+        </gog-button>
+      </div>
+      <p id="button-doc-filters" class="demo-card__meta" [hidden]="!areFiltersOpen()">
+        The region <code>ariaControls</code> points at. It stays in the document and hides, rather
+        than being removed — <code>aria-controls</code> has to name an element that exists.
+      </p>
+      <p class="demo-card__meta">
+        Inspect either button: the attribute sits on the inner <code>&lt;button&gt;</code>, never on
+        <code>&lt;gog-button&gt;</code>. The off state renders
+        <code>aria-pressed="false"</code> rather than dropping the attribute —
+        <code>null</code> means "not a toggle button", <code>false</code> means "a toggle button
+        that is off", and to a screen reader those are two different controls.
+        <code>[gogButton]</code> needs none of these inputs: it styles an element you own, so write
+        the attributes on your own <code>&lt;button&gt;</code> directly.
+      </p>
+      <app-code-tabs [html]="ariaStateHtml" [ts]="ariaStateTs" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Debounce guard</h3>
       <p class="demo-card__meta">
         Clicks are throttled leading-edge: the first click fires immediately, further clicks are

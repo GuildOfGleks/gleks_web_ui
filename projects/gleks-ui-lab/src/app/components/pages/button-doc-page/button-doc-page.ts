@@ -75,6 +75,38 @@ const API_INPUTS: readonly ApiInputRow[] = [
       'Accessible name forwarded to the native <button>. Required for icon-only buttons — a plain aria-label attribute on <gog-button> lands on the host element, not the inner button, so assistive tech never sees it.',
   },
   {
+    name: 'ariaPressed',
+    type: "boolean | 'mixed' | null",
+    default: 'null',
+    description:
+      'Marks the button as a toggle and reports its state. null omits the attribute entirely; false renders aria-pressed="false", which is what an off toggle has to say — a button with no aria-pressed is not a toggle button.',
+    since: '21.8.0',
+  },
+  {
+    name: 'ariaExpanded',
+    type: 'boolean | null',
+    default: 'null',
+    description:
+      'For a disclosure or popup trigger: whether the thing it controls is currently open. Like ariaPressed, false is a real state and null means "this button expands nothing".',
+    since: '21.8.0',
+  },
+  {
+    name: 'ariaControls',
+    type: 'string | null',
+    default: 'null',
+    description:
+      'Id of the element this button controls. Pairs with ariaExpanded; point it at an element that is actually in the document.',
+    since: '21.8.0',
+  },
+  {
+    name: 'ariaHasPopup',
+    type: 'GogAriaHasPopup | null',
+    default: 'null',
+    description:
+      "boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' — what kind of popup the button opens.",
+    since: '21.8.0',
+  },
+  {
     name: 'ripple',
     type: 'boolean | undefined',
     default: 'undefined',
@@ -156,6 +188,9 @@ export class ButtonDocPage {
     '})',
     'export class ExampleComponent {}',
   ].join('\n');
+
+  protected readonly isMirrored = signal(false);
+  protected readonly areFiltersOpen = signal(false);
 
   protected readonly isLoading = signal(false);
   protected readonly lastClicked = signal('No button clicked yet.');
@@ -303,6 +338,44 @@ export class ButtonDocPage {
     'export class ExampleComponent {}',
   ].join('\n');
 
+  protected readonly ariaStateHtml = [
+    '<gog-button [ariaPressed]="isMirrored()" (gogClick)="toggleMirror()">',
+    '  Mirror layout',
+    '</gog-button>',
+    '',
+    '<gog-button',
+    '  [ariaExpanded]="areFiltersOpen()"',
+    '  ariaControls="filters"',
+    '  ariaHasPopup="dialog"',
+    '  (gogClick)="toggleFilters()"',
+    '>',
+    '  Filters',
+    '</gog-button>',
+    '',
+    '<div id="filters" [hidden]="!areFiltersOpen()">…</div>',
+  ].join('\n');
+  protected readonly ariaStateTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent],',
+    '  template: `',
+    '    <gog-button [ariaPressed]="isMirrored()" (gogClick)="toggleMirror()">',
+    '      Mirror layout',
+    '    </gog-button>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly isMirrored = signal(false);',
+    '',
+    '  protected toggleMirror(): void {',
+    '    this.isMirrored.update((on) => !on);',
+    '  }',
+    '}',
+  ].join('\n');
+
   protected readonly debounceHtml =
     '<gog-button variant="primary" [debounce]="300" (gogClick)="onSpamClick()">Click me fast</gog-button>';
   protected readonly debounceTs = [
@@ -376,6 +449,14 @@ export class ButtonDocPage {
     const target = this.loadingBySize[size];
     target.set(true);
     setTimeout(() => target.set(false), 1500);
+  }
+
+  protected toggleMirror(): void {
+    this.isMirrored.update((on) => !on);
+  }
+
+  protected toggleFilters(): void {
+    this.areFiltersOpen.update((open) => !open);
   }
 
   protected onSpamClick(): void {
