@@ -17,6 +17,7 @@ import { filter } from 'rxjs';
 import {
   ButtonComponent,
   DialogComponent,
+  GogTooltipDirective,
   ScrollComponent,
   ThemeService,
   ToastContainerComponent,
@@ -67,6 +68,7 @@ const FOOTER_LINKS: readonly FooterLink[] = [
     RouterLink,
     FaIconComponent,
     ButtonComponent,
+    GogTooltipDirective,
     ScrollComponent,
     SidebarLeftComponent,
     TocComponent,

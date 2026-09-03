@@ -25,12 +25,27 @@
       >
     </div>
 
+    <!--
+      Every control in here is icon-only, so each carries the same string twice: `ariaLabel` for
+      a screen reader, `gogTooltip` for everyone else. They are deliberately the *same* string,
+      not two wordings of the same idea — `gogTooltip` sets `aria-describedby` on its host, and
+      the host here is `<gog-button>`, a custom element with no role, so the bubble's text reaches
+      no assistive tech at all (the same reason `ariaLabel` is an input rather than an attribute).
+      Whatever the tooltip says that the label does not is information a screen-reader user never
+      gets. State is not in either one: it is on `aria-pressed` and in the icon.
+
+      The two toggles that open something disable their tooltip while it is open, so the bubble
+      cannot sit on top of the panel it just revealed.
+    -->
     <div class="header-controls">
       <div class="nav-search">
         <gog-button
           variant="ghost"
           size="sm"
           ariaLabel="Search components"
+          gogTooltip="Search components"
+          gogTooltipPosition="bottom"
+          [gogTooltipDisabled]="isSearchOpen()"
           [ariaExpanded]="isSearchOpen()"
           [ariaControls]="searchPanelId()"
           (gogClick)="toggleSearch()"
@@ -98,6 +113,8 @@
         variant="ghost"
         size="sm"
         ariaLabel="Press ripple"
+        gogTooltip="Press ripple"
+        gogTooltipPosition="bottom"
         [ariaPressed]="isRippleOn()"
         class="ripple-toggle"
         [class.ripple-toggle--active]="isRippleOn()"
@@ -110,6 +127,8 @@
         variant="ghost"
         size="sm"
         ariaLabel="Right-to-left layout"
+        gogTooltip="Right-to-left layout"
+        gogTooltipPosition="bottom"
         [ariaPressed]="isRtl()"
         class="direction-toggle"
         [class.direction-toggle--active]="isRtl()"
@@ -123,6 +142,9 @@
           variant="ghost"
           size="sm"
           ariaLabel="Change theme"
+          gogTooltip="Change theme"
+          gogTooltipPosition="bottom"
+          [gogTooltipDisabled]="isThemeMenuOpen()"
           (gogClick)="toggleThemeMenu()"
         >
           <fa-icon [icon]="faPalette"></fa-icon>
