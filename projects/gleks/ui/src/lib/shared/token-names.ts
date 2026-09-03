@@ -532,6 +532,7 @@ export type GogTokenName =
   | '--gog-control-checkbox-label-size-sm'
   | '--gog-control-checkbox-label-size-xsm'
   | '--gog-control-checkbox-padding'
+  | '--gog-control-clear-icon-ratio'
   | '--gog-control-icon-offset'
   | '--gog-control-padding-x'
   | '--gog-control-padding-y'
@@ -734,6 +735,12 @@ export type GogTokenName =
   | '--gog-input-spin-width'
   | '--gog-input-transition-duration'
   | '--gog-letter-spacing'
+  | '--gog-line-height-loose'
+  | '--gog-line-height-none'
+  | '--gog-line-height-normal'
+  | '--gog-line-height-relaxed'
+  | '--gog-line-height-snug'
+  | '--gog-line-height-tight'
   | '--gog-menu-available-height'
   | '--gog-menu-bg'
   | '--gog-menu-border-color'
@@ -1484,6 +1491,12 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-font-weight-medium',
       '--gog-font-weight-semibold',
       '--gog-letter-spacing',
+      '--gog-line-height-loose',
+      '--gog-line-height-none',
+      '--gog-line-height-normal',
+      '--gog-line-height-relaxed',
+      '--gog-line-height-snug',
+      '--gog-line-height-tight',
       '--gog-text-2xl',
       '--gog-text-3xl',
       '--gog-text-lg',
@@ -1538,6 +1551,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-control-checkbox-label-size-slg',
       '--gog-control-checkbox-label-size-sm',
       '--gog-control-checkbox-label-size-xsm',
+      '--gog-control-clear-icon-ratio',
     ],
   },
   {

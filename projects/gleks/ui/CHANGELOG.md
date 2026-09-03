@@ -6,7 +6,38 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.8.1] - planned
 
+### Added
+
+- **`GOG_CONFIG.spinner.component` — one line replaces every loading indicator in the library.**
+  Passing a component, not a value: it is rendered through `NgComponentOutlet` in place of the
+  built-in look, wherever the library draws a spinner. That includes the two places a consumer
+  could not reach at all — `gog-button` and `gog-autocomplete` render `<gog-spinner>` from their
+  own templates and expose no input for it, so a house loader had no way in. It sits inside the
+  same size wrapper as the built-ins, keeping the sizing, the overlay behaviour, `role="status"`
+  and the accessible name; only the visual changes.
+
+  Precedence is the library's usual instance-then-config-then-default, and the wrinkle is stated
+  because it is the one people will ask about: an instance's own `variant` outranks both config
+  keys, so `<gog-spinner variant="ring">` stays a ring in an app that has set a component.
+  `spinner.variant` is there for an app that only wants to switch between the two built-ins.
+
+  `variant` is therefore `GogSpinnerVariant | undefined` now, resolving through the same
+  `resolveConfigured` chain as every other configurable input. `variant="custom"` with projected
+  content is unaffected.
+
 ### Fixed
+
+- **Leading is a character axis too: `--gog-line-height-none|tight|snug|normal|relaxed|loose`.**
+  Twenty component tokens held a bare number — seven of them the same `1.4` — so roomier text
+  meant finding and re-listing every one. Same values, nothing moves. `gog-panel`'s heading keeps
+  its own `1.25`, off the scale on purpose the way an 11px chip is off the type scale, and rule G
+  covers the family so the next bare number fails the build.
+
+- **`--gog-control-clear-icon-ratio`: one number, not five.** The clear (×) button's glyph is the
+  same part in `gog-autocomplete`, `gog-datepicker`, `gog-inputfield`, `gog-multiselect` and
+  `gog-select`, and each carried its own `0.7`. `gog-textarea` keeps its own `1`: its clear
+  button sits in a corner rather than in the field's icon row, which is a different problem and
+  a different number.
 
 - **Weight is a character axis now: `--gog-font-weight-medium|semibold|bold|heavy`.** Fifteen
   component tokens held a bare `500`/`600`/`700`/`900`, so a house style that wanted lighter

@@ -11,57 +11,65 @@
 }
 
 <ng-template #spinnerTpl>
-  @switch (variant()) {
-    @case ('ring') {
-      <span class="gog-spinner__ring" aria-hidden="true"></span>
-    }
-    @case ('custom') {
-      <ng-content />
-    }
-    @default {
-      <svg class="gog-spinner__svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-        <!-- Static dim track -->
-        <circle class="gog-spinner__track" cx="32" cy="32" r="26" stroke-width="1.5" />
+  @if (configComponent(); as loader) {
+    <!-- The app's own indicator, from `GOG_CONFIG.spinner.component`. It sits inside the same
+         size wrapper as the built-ins, so it inherits the sizing, the overlay and the accessible
+         name — and it reaches the spinners inside `gog-button` and `gog-autocomplete`, which
+         expose no input of their own. -->
+    <ng-container *ngComponentOutlet="loader" />
+  } @else {
+    @switch (resolvedVariant()) {
+      @case ('ring') {
+        <span class="gog-spinner__ring" aria-hidden="true"></span>
+      }
+      @case ('custom') {
+        <ng-content />
+      }
+      @default {
+        <svg class="gog-spinner__svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <!-- Static dim track -->
+          <circle class="gog-spinner__track" cx="32" cy="32" r="26" stroke-width="1.5" />
 
-        <!-- Outer arc — rotates clockwise, long segment -->
-        <circle
-          class="gog-spinner__arc-outer"
-          cx="32"
-          cy="32"
-          r="26"
-          stroke-width="2.5"
-          stroke-linecap="butt"
-        />
+          <!-- Outer arc — rotates clockwise, long segment -->
+          <circle
+            class="gog-spinner__arc-outer"
+            cx="32"
+            cy="32"
+            r="26"
+            stroke-width="2.5"
+            stroke-linecap="butt"
+          />
 
-        <!-- Inner arc — rotates counter-clockwise, short segment -->
-        <circle
-          class="gog-spinner__arc-inner"
-          cx="32"
-          cy="32"
-          r="18"
-          stroke-width="1.5"
-          stroke-linecap="butt"
-        />
+          <!-- Inner arc — rotates counter-clockwise, short segment -->
+          <circle
+            class="gog-spinner__arc-inner"
+            cx="32"
+            cy="32"
+            r="18"
+            stroke-width="1.5"
+            stroke-linecap="butt"
+          />
 
-        <!-- Rotating diamond ticks group — single transform on <g> works correctly -->
-        <g class="gog-spinner__ticks">
-          <polygon points="32,3  34,6  32,9  30,6" class="gog-spinner__diamond" />
-          <polygon points="32,55 34,58 32,61 30,58" class="gog-spinner__diamond" />
-          <polygon points="3,32  6,30  9,32  6,34" class="gog-spinner__diamond" />
-          <polygon points="55,32 58,30 61,32 58,34" class="gog-spinner__diamond" />
-        </g>
+          <!-- Rotating diamond ticks group — single transform on <g> works correctly -->
+          <g class="gog-spinner__ticks">
+            <polygon points="32,3  34,6  32,9  30,6" class="gog-spinner__diamond" />
+            <polygon points="32,55 34,58 32,61 30,58" class="gog-spinner__diamond" />
+            <polygon points="3,32  6,30  9,32  6,34" class="gog-spinner__diamond" />
+            <polygon points="55,32 58,30 61,32 58,34" class="gog-spinner__diamond" />
+          </g>
 
-        <!-- Inner rune — glow pulse only, no transform -->
-        <text
-          class="gog-spinner__rune-wrap gog-spinner__rune"
-          x="32"
-          y="32"
-          text-anchor="middle"
-          dominant-baseline="central"
-        >
-          ✦
-        </text>
-      </svg>
+          <!-- Inner rune — glow pulse only, no transform -->
+          <text
+            class="gog-spinner__rune-wrap gog-spinner__rune"
+            x="32"
+            y="32"
+            text-anchor="middle"
+            dominant-baseline="central"
+          >
+            ✦
+          </text>
+        </svg>
+      }
     }
   }
 </ng-template>

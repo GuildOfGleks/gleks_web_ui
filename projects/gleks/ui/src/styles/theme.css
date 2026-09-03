@@ -74,6 +74,17 @@
   --gog-font-weight-bold: 700;
   --gog-font-weight-heavy: 900;
 
+  /* Leading, the fourth character axis. Twenty component tokens held a bare number — seven of
+     them the same 1.4 — so a house style that wanted roomier text had to find every one. Six
+     steps because six values are painted; `gog-panel`'s heading keeps its own 1.25, which is
+     off this scale on purpose the way an 11px chip is off the type scale. */
+  --gog-line-height-none: 1;
+  --gog-line-height-tight: 1.2;
+  --gog-line-height-snug: 1.3;
+  --gog-line-height-normal: 1.4;
+  --gog-line-height-relaxed: 1.5;
+  --gog-line-height-loose: 1.6;
+
   /* The "emphasis" casing character — labels, buttons, section and table headers all shout
      the same way by default. Not every uppercase/1px-tracking declaration in this file reads
      these two: only the ones that genuinely share this idea do. A few (gog-tabs among them)
@@ -145,6 +156,11 @@
      Five-tier scale: xsm/slg bookend the original sm/md/lg (restored below to
      their pre-compaction numbers) as new extremes for extra-tight or extra-roomy
      layouts. */
+  /* The clear (×) button's glyph, as a fraction of its box. One number written five times —
+     `gog-autocomplete`, `gog-datepicker`, `gog-inputfield`, `gog-multiselect` and `gog-select`
+     all had their own `0.7` for the same part. `gog-textarea` keeps its own `1` deliberately:
+     its clear button sits in a corner rather than in the field's icon row. */
+  --gog-control-clear-icon-ratio: 0.7;
   --gog-control-border-width: 2px;
   --gog-control-border-style: solid;
 
@@ -464,7 +480,7 @@
   --gog-accordion-hover-ring: var(--gog-accent-dim);
   --gog-accordion-focus-ring-width: var(--gog-focus-ring-width);
   --gog-accordion-body-color: var(--gog-text-color);
-  --gog-accordion-body-line-height: 1.6;
+  --gog-accordion-body-line-height: var(--gog-line-height-loose);
   --gog-accordion-header-text-transform: var(--gog-text-transform);
   --gog-accordion-header-gap: var(--gog-space-12);
   --gog-accordion-disabled-opacity: var(--gog-disabled-opacity);
@@ -492,7 +508,7 @@
   --gog-accordion-xsm-letter-spacing: 0.2px;
   --gog-accordion-xsm-content-gap: var(--gog-space-2);
   --gog-accordion-xsm-body-font-size: var(--gog-text-xs);
-  --gog-accordion-xsm-body-line-height: 1.5;
+  --gog-accordion-xsm-body-line-height: var(--gog-line-height-relaxed);
   --gog-accordion-xsm-body-padding-top: var(--gog-space-4);
   --gog-accordion-xsm-body-padding-bottom: var(--gog-space-6);
   --gog-accordion-xsm-chevron-size: 11px;
@@ -582,7 +598,7 @@
   --gog-button-font-weight: var(--gog-font-weight-heavy);
   --gog-button-letter-spacing: var(--gog-letter-spacing);
   --gog-button-text-transform: var(--gog-text-transform);
-  --gog-button-line-height: 1;
+  --gog-button-line-height: var(--gog-line-height-none);
   --gog-button-gap: var(--gog-space-sm);
   --gog-button-radius: var(--gog-radius);
   --gog-button-border-width: var(--gog-control-border-width);
@@ -711,7 +727,7 @@
   --gog-button-toggle-font-weight: var(--gog-font-weight-bold);
   --gog-button-toggle-letter-spacing: 0.5px;
   --gog-button-toggle-text-transform: var(--gog-text-transform);
-  --gog-button-toggle-line-height: 1;
+  --gog-button-toggle-line-height: var(--gog-line-height-none);
   --gog-button-toggle-gap: var(--gog-space-sm);
   --gog-button-toggle-icon-size: 1.1em;
   --gog-button-toggle-radius: var(--gog-radius);
@@ -819,7 +835,7 @@
   --gog-card-heading-font-family: var(--gog-font-heading);
   --gog-card-heading-font-size: var(--gog-text-lg);
   --gog-card-heading-font-weight: var(--gog-font-weight-semibold);
-  --gog-card-heading-line-height: 1.3;
+  --gog-card-heading-line-height: var(--gog-line-height-snug);
 
   --gog-card-outlined-bg: var(--gog-surface-color);
   --gog-card-outlined-border-color: var(--gog-border-color);
@@ -875,7 +891,7 @@
   --gog-checkbox-checked-border: var(--gog-accent-color);
   --gog-checkbox-icon-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-checkbox-label-color: var(--gog-muted-text-color);
-  --gog-checkbox-label-line-height: 1.3;
+  --gog-checkbox-label-line-height: var(--gog-line-height-snug);
   --gog-checkbox-focus-ring: var(--gog-accent-pale);
   --gog-checkbox-focus-ring-width: var(--gog-focus-ring-width);
   --gog-checkbox-focus-ring-offset: var(--gog-focus-ring-offset);
@@ -904,7 +920,7 @@
   --gog-radio-dot-color: var(--gog-accent-color);
   --gog-radio-dot-size-ratio: 0.45;
   --gog-radio-label-color: var(--gog-muted-text-color);
-  --gog-radio-label-line-height: 1.3;
+  --gog-radio-label-line-height: var(--gog-line-height-snug);
   --gog-radio-focus-ring: var(--gog-accent-pale);
   --gog-radio-focus-ring-width: var(--gog-focus-ring-width);
   --gog-radio-focus-ring-offset: var(--gog-focus-ring-offset);
@@ -926,7 +942,7 @@
   --gog-chip-border-style: var(--gog-border-style);
   --gog-chip-color: var(--gog-text-color);
   --gog-chip-font-weight: var(--gog-font-weight-medium);
-  --gog-chip-line-height: 1.2;
+  --gog-chip-line-height: var(--gog-line-height-tight);
   --gog-chip-radius: max(var(--gog-radius), 2px);
   --gog-chip-pill-radius: 9999px;
   --gog-chip-remove-color: var(--gog-muted-text-color);
@@ -1043,7 +1059,7 @@
   --gog-autocomplete-border-color: var(--gog-accent-dim);
   --gog-autocomplete-hover-border-color: var(--gog-accent-color);
   --gog-autocomplete-radius: var(--gog-radius);
-  --gog-autocomplete-line-height: 1.4;
+  --gog-autocomplete-line-height: var(--gog-line-height-normal);
   --gog-autocomplete-transition-duration: var(--gog-duration-base);
   --gog-autocomplete-disabled-opacity: var(--gog-disabled-opacity);
   --gog-autocomplete-focus-ring-width: var(--gog-focus-ring-width);
@@ -1063,7 +1079,7 @@
   --gog-autocomplete-actions-reserve: 40px;
   --gog-autocomplete-clear-color: var(--gog-autocomplete-placeholder-color);
   --gog-autocomplete-clear-hover-color: var(--gog-autocomplete-label-color);
-  --gog-autocomplete-clear-icon-ratio: 0.7;
+  --gog-autocomplete-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   --gog-autocomplete-spinner-size: 0.875rem;
   /* Panel */
   --gog-autocomplete-panel-bg: var(--gog-surface-color);
@@ -1105,7 +1121,7 @@
   --gog-badge-font-family: var(--gog-font-body);
   --gog-badge-font-size: var(--gog-text-xs);
   --gog-badge-font-weight: var(--gog-font-weight-semibold);
-  --gog-badge-line-height: 1;
+  --gog-badge-line-height: var(--gog-line-height-none);
   /* Min-width *and* height: a one-digit badge stays a circle, a three-digit one grows
      sideways only. */
   --gog-badge-size: 1.25rem;
@@ -1148,7 +1164,7 @@
   --gog-datepicker-border-color: var(--gog-accent-dim);
   --gog-datepicker-hover-border-color: var(--gog-accent-color);
   --gog-datepicker-radius: var(--gog-radius);
-  --gog-datepicker-line-height: 1.4;
+  --gog-datepicker-line-height: var(--gog-line-height-normal);
   --gog-datepicker-transition-duration: var(--gog-duration-base);
   --gog-datepicker-disabled-opacity: var(--gog-disabled-opacity);
   --gog-datepicker-focus-ring-width: var(--gog-focus-ring-width);
@@ -1167,7 +1183,7 @@
   --gog-datepicker-icon-hover-color: var(--gog-accent-bright);
   --gog-datepicker-toggle-icon-size: 1rem;
   --gog-datepicker-clear-color: var(--gog-datepicker-placeholder-color);
-  --gog-datepicker-clear-icon-ratio: 0.7;
+  --gog-datepicker-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   --gog-datepicker-panel-bg: var(--gog-surface-color);
   --gog-datepicker-panel-shadow: var(--gog-panel-shadow);
   --gog-datepicker-panel-border-width: var(--gog-panel-border-width);
@@ -1202,7 +1218,7 @@
   --gog-divider-label-font-family: var(--gog-font-body);
   --gog-divider-label-font-size: var(--gog-text-sm);
   --gog-divider-label-font-weight: var(--gog-font-weight-medium);
-  --gog-divider-label-line-height: 1.4;
+  --gog-divider-label-line-height: var(--gog-line-height-normal);
 
   /* ── Icon ──────────────────────────────────────────────────────────────────── */
   --gog-icon-fallback-size: 1em;
@@ -1253,7 +1269,7 @@
      `gog-toast` and `gog-accordion` keep their flat `0px` on purpose: those are a chosen shape,
      not a number that forgot where it came from. */
   --gog-input-clear-radius: calc(var(--gog-radius) / 4);
-  --gog-input-clear-icon-ratio: 0.7;
+  --gog-input-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   /*
      The textarea's clear button gets a full-size glyph. The 0.7 ratio above suits the dense
      single-line trigger of a dropdown; on a large multi-line box it reads as a speck.
@@ -1373,7 +1389,7 @@
   --gog-multiselect-float-label-over-reserve: var(--gog-field-float-label-over-reserve);
   --gog-multiselect-arrow-transition-duration: var(--gog-duration-slow);
   /* Icon geometry, expressed as a ratio of the control's font size. */
-  --gog-multiselect-clear-icon-ratio: 0.7;
+  --gog-multiselect-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   --gog-multiselect-arrow-icon-ratio: 0.875;
   --gog-multiselect-mark-size-ratio: 1.2375;
   --gog-multiselect-mark-icon-ratio: 1.125;
@@ -1412,7 +1428,7 @@
   --gog-menu-item-gap: var(--gog-space-sm);
   --gog-menu-item-disabled-opacity: var(--gog-disabled-opacity);
   --gog-menu-item-disabled-color: var(--gog-muted-text-color);
-  --gog-menu-item-line-height: 1.4;
+  --gog-menu-item-line-height: var(--gog-line-height-normal);
   --gog-menu-item-icon-size: 1em;
 
   /* ── Paginator ─────────────────────────────────────────────────────────────── */
@@ -1608,7 +1624,7 @@
   /* Clear button — only rendered once a value is selected, see `clearable`. */
   /* A quarter of the corner radius — see `--gog-input-clear-radius` for why. */
   --gog-select-clear-radius: calc(var(--gog-radius) / 4);
-  --gog-select-clear-icon-ratio: 0.7;
+  --gog-select-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   --gog-select-clear-gap: var(--gog-space-6);
   --gog-select-clear-color: var(--gog-select-placeholder-color);
   --gog-select-clear-hover-color: var(--gog-select-label-color);
@@ -1821,7 +1837,7 @@
   --gog-tabs-font-weight: var(--gog-font-weight-bold);
   --gog-tabs-letter-spacing: 0.4px;
   --gog-tabs-text-transform: none;
-  --gog-tabs-line-height: 1.2;
+  --gog-tabs-line-height: var(--gog-line-height-tight);
   --gog-tabs-gap: 0px;
   --gog-tabs-tab-gap: var(--gog-space-sm);
   --gog-tabs-icon-size: 1.1em;
@@ -1878,7 +1894,7 @@
   --gog-tag-border-style: var(--gog-border-style);
   --gog-tag-inner-border-width: var(--gog-border-width);
   --gog-tag-font-weight: var(--gog-font-weight-semibold);
-  --gog-tag-line-height: 1;
+  --gog-tag-line-height: var(--gog-line-height-none);
   --gog-tag-radius: max(var(--gog-radius), 2px);
   --gog-tag-pill-radius: 9999px;
 
@@ -1929,9 +1945,9 @@
   --gog-toast-main-gap: var(--gog-space-sm);
   --gog-toast-actions-gap: var(--gog-space-6);
   --gog-toast-message-font-size: var(--gog-text-sm);
-  --gog-toast-message-line-height: 1.5;
+  --gog-toast-message-line-height: var(--gog-line-height-relaxed);
   --gog-toast-icon-size: 1rem;
-  --gog-toast-icon-line-height: 1.4;
+  --gog-toast-icon-line-height: var(--gog-line-height-normal);
   --gog-toast-action-padding: var(--gog-space-4) var(--gog-space-8);
   --gog-toast-action-font-size: var(--gog-text-xs);
   --gog-toast-close-padding: var(--gog-space-2) var(--gog-space-4);
@@ -1968,7 +1984,7 @@
   --gog-toggle-transition-duration: var(--gog-duration-base);
   --gog-toggle-disabled-opacity: var(--gog-disabled-opacity);
   --gog-toggle-label-color: var(--gog-text-color);
-  --gog-toggle-label-line-height: 1.4;
+  --gog-toggle-label-line-height: var(--gog-line-height-normal);
   --gog-toggle-focus-ring-width: var(--gog-focus-ring-width);
   --gog-toggle-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-toggle-focus-ring-color: var(--gog-accent-color);
@@ -2012,7 +2028,7 @@
   /* ── Tooltip ──────────────────────────────────────────────────────────────── */
   --gog-tooltip-font-family: var(--gog-font-body);
   --gog-tooltip-font-size: var(--gog-text-xs);
-  --gog-tooltip-line-height: 1.4;
+  --gog-tooltip-line-height: var(--gog-line-height-normal);
   --gog-tooltip-padding: var(--gog-space-6) var(--gog-space-10);
   --gog-tooltip-radius: var(--gog-radius);
   --gog-tooltip-max-width: 280px;

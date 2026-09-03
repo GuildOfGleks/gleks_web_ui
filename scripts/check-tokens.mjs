@@ -109,6 +109,9 @@ const FOUNDATION_NAMESPACES = new Set([
   'density',
   'disabled',
   'duration',
+  // `--gog-line-height-*`: the leading scale, the fourth character axis after casing, tracking
+  // and weight.
+  'line',
   // `--gog-z-base`: the stacking floor every layer token adds to, so an app can lift the whole
   // library above its own chrome with one number instead of five.
   'z',
@@ -195,6 +198,16 @@ const CHARACTER_TOKENS = new Map([
     '--gog-font-weight-semibold',
     '--gog-font-weight-bold',
     '--gog-font-weight-heavy',
+  ]],
+  // Leading joined on 2026-09-03 with weight, for the same reason: twenty component tokens held
+  // a bare number, seven of them the same 1.4.
+  ['line-height', [
+    '--gog-line-height-none',
+    '--gog-line-height-tight',
+    '--gog-line-height-snug',
+    '--gog-line-height-normal',
+    '--gog-line-height-relaxed',
+    '--gog-line-height-loose',
   ]],
   ['text-transform', ['--gog-text-transform']],
   ['letter-spacing', ['--gog-letter-spacing']],

@@ -284,6 +284,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `datepicker`   | `locale`, `firstDayOfWeek`, `format`                                    | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                            |
 | `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                            | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                          |
 | `tooltip`      | `position`, `showDelay`, `hideDelay`                                    | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                  |
+| `spinner`      | `component`, `variant`                                                  | every spinner the library draws — `gog-spinner`, `gog-spinner-overlay`, and the ones inside `gog-button` and `gog-autocomplete`, which have no input of their own. `component` takes **your** component and renders it in place of the built-in look. |
 | `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack`      | `gog-scroll` (and every component that uses one internally).                                                                                                                                                                                                                                                                                                                                                 |
 | `button`       | `debounce`                                                              | `gog-button`.                                                                                                                                                                                                                                                                                                                                                                                                |
 | `ripple`       | `enabled`                                                               | the press ripple on `gog-button`, `[gogButton]`, `gog-button-toggle-group`, `gog-chip`, `gog-tabs`, `gog-accordion`, `gogCollapsibleTrigger`, `gogMenuItem` and the `gog-select`/`gog-multiselect`/`gog-autocomplete` options. **Off by default.** Each of those takes a `ripple` input that wins over it. Not the `gogRipple` directive — writing that attribute is already the per-element decision.       |
@@ -1080,6 +1081,19 @@ Slot: `<ng-template gogTagIcon>` for custom icon markup.
 
 `variant="custom"` renders your own projected markup, still inheriting the size wrapper and
 `--gog-spinner-color` theming.
+
+**To replace the spinner everywhere at once, pass a component to `GOG_CONFIG`** — including the
+two places you cannot reach with an input, `gog-button`'s and `gog-autocomplete`'s loading
+states:
+
+```ts
+provideGogConfig({ spinner: { component: HouseLoaderComponent } });
+```
+
+It renders inside the same size wrapper as the built-ins, so it keeps the sizing, the overlay
+behaviour, `role="status"` and the accessible name — only the visual is yours. An instance's own
+`variant` still wins over it, so `<gog-spinner variant="ring">` is a ring in an app that has set
+a component: a default does not overrule something asked for explicitly.
 
 ```html
 <gog-spinner-overlay [loading]="isLoading()">
