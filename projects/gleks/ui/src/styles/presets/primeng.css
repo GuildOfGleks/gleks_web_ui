@@ -42,7 +42,13 @@
   --gog-accent-pale: #dbeafe;
   --gog-secondary-color: #64748b;
   --gog-success-color: #22c55e;
-  --gog-danger-color: #ef4444;
+  /* Was #ef4444 — Tailwind red-500, PrimeNG's error colour. `--gog-danger-color` is what every `--gog-<block>-error-color`
+     resolves to, so this is the colour a validation message is printed in, and as *text* it
+     needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
+     Now 4.68:1 on the page and 4.90:1 on a card. Found 2026-09-03 by `check:app-contrast`
+     reading ui-showcase, which is how a palette pair nobody had listed became visible;
+     `check:contrast` gained the pair in the same change. */
+  --gog-danger-color: #ce3a3a;
   --gog-warning-color: #f59e0b;
   --gog-info-color: #0ea5e9;
   --gog-panel-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 12px 16px -4px rgba(0, 0, 0, 0.08);

@@ -42,7 +42,9 @@
   height: 28px;
   border-radius: 50%;
   background-color: var(--gog-accent-dim);
-  color: var(--gog-text-color);
+  /* Text on an accent fill takes the token that means that, not the page's text colour: on
+     `bevel`, whose accent is navy, `--gog-text-color` was near-black on it — 1.09:1. */
+  color: var(--gog-accent-text-color, var(--gog-primary-color));
   font-size: 0.75rem;
 }
 

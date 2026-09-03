@@ -45,8 +45,10 @@
   border-radius: var(--gog-radius);
 }
 
+/* The lift is the background; the label stays body text. The accent on `--gog-hover-color` is
+   4.15:1 in `light` — the accent-on-a-tinted-ground trap, same as the library's own four. */
 .collapsible-demo__link:hover:not(:disabled) {
-  color: var(--gog-accent-color);
+  color: var(--gog-text-color);
   background-color: var(--gog-hover-color);
 }
 

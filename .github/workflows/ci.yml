@@ -85,16 +85,19 @@ jobs:
       - name: Theme contrast check
         run: npm run check:contrast
 
-      # The same bar for the docs site's *own* chrome — its header, both sidebars, search panel,
-      # theme menu, footer and code blocks are hand-written CSS reading `--gog-*` tokens, and the
-      # step above has never looked at a line of it. Eleven palettes a reader can switch between,
-      # and until 2026-09-03 not one pair of it had ever been measured; the first run found the
-      # sidebar's own hover label under AA. Reads node_modules on purpose, like the step below:
-      # the lab renders with the *published* package, so that is the version its colours have to
-      # be legible against. A release that changes a palette can therefore turn this red without
-      # the lab changing — that is the point, and the fix belongs in the lab.
-      - name: Lab contrast check
-        run: npm run check:lab-contrast
+      # The same bar for the two apps' *own* chrome — the lab's header, sidebars, search panel,
+      # theme menu and code blocks, the showcase's page furniture and demo cards, all hand-written
+      # CSS reading `--gog-*` tokens that the step above has never looked at. Eleven palettes a
+      # reader can switch between, and until 2026-09-03 not one pair of it had been measured.
+      #
+      # The two resolve their palettes from different places, on purpose: the lab from
+      # node_modules, because it renders with the *published* package, and the showcase from the
+      # workspace, because it builds the library from source. So a release that changes a palette
+      # can turn the lab half red without the lab changing a line — that is the point — while the
+      # showcase half catches the same class of thing one release earlier. It already has: the
+      # showcase is where error text turned out to be below AA in four themes.
+      - name: App contrast check
+        run: npm run check:app-contrast
 
       # The docs site serves `theme-starter.css` as the file a consumer copies wholesale, and it
       # opens by calling itself "every token the library paints with". Nothing enforced that, so

@@ -54,7 +54,9 @@
     border-radius: var(--gog-radius);
     background: var(--gog-hover-color);
     font-size: 0.85rem;
-    color: var(--gog-muted-text-color);
+    /* Body text, not muted: these cells paint `--gog-hover-color` behind their label, and muted
+       on that tint is 4.16:1 in `one-light`. Muted is sized for the page, not for a tinted chip. */
+    color: var(--gog-text-color);
   }
 }
 
@@ -79,7 +81,9 @@
     border-radius: calc(var(--gog-radius) / 2);
     background: var(--gog-hover-color);
     font-size: 0.85rem;
-    color: var(--gog-muted-text-color);
+    /* Body text, not muted: these cells paint `--gog-hover-color` behind their label, and muted
+       on that tint is 4.16:1 in `one-light`. Muted is sized for the page, not for a tinted chip. */
+    color: var(--gog-text-color);
   }
 }
 

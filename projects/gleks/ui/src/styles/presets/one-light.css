@@ -51,7 +51,13 @@
 
   /* Semantics — the syntax hues in their natural roles */
   --gog-success-color: #50a14f;
-  --gog-danger-color: #e45649;
+  /* Was #e45649 — One Light's own red. `--gog-danger-color` is what every `--gog-<block>-error-color`
+     resolves to, so this is the colour a validation message is printed in, and as *text* it
+     needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
+     Now 4.66:1 on the page and 4.87:1 on a card. Found 2026-09-03 by `check:app-contrast`
+     reading ui-showcase, which is how a palette pair nobody had listed became visible;
+     `check:contrast` gained the pair in the same change. */
+  --gog-danger-color: #c2493e;
   --gog-warning-color: #c18401;
   --gog-info-color: #0184bc;
 

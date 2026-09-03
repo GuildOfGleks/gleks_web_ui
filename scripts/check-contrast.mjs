@@ -121,6 +121,7 @@ const PALETTE_TOKENS = {
   accentText: '--gog-accent-text-color',
   accentBright: '--gog-accent-bright',
   accentDim: '--gog-accent-dim',
+  danger: '--gog-danger-color',
   border: '--gog-border-color', // informational only — see header
 };
 
@@ -144,6 +145,12 @@ const PAIRS = [
   // two `accentDim` pairs below ask for 3.0 and this one asks for 4.5. Added with the state
   // itself rather than after a report, which is the lesson the pair above is here to teach.
   ['accentText/accentDim(press)', 'accentText', 'accentDim', 4.5, true],
+  // Error text. `--gog-danger-color` is what every `--gog-<block>-error-color` resolves to, so
+  // this is the colour a validation message is printed in — text, at 4.5:1, not a decorative
+  // accent. Added 2026-09-03 after `check:app-contrast` caught it in `ui-showcase`: this script
+  // had no danger pair at all, so a field error below AA was invisible to it.
+  ['danger(error text)/background', 'danger', 'background', 4.5, true],
+  ['danger(error text)/surface', 'danger', 'surface', 4.5, true],
   ['accentDim(field border)/background', 'accentDim', 'background', 3.0, true],
   ['accentDim(field border)/surface', 'accentDim', 'surface', 3.0, true],
   ['accent(focus ring)/background', 'accent', 'background', 3.0, true],

@@ -8,6 +8,16 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **Error text was below WCAG AA in four themes.** `--gog-danger-color` is what every
+  `--gog-<block>-error-color` resolves to, so it is the colour a validation message is printed in
+  — text, needing 4.5:1, not the 3:1 a status accent gets away with. It cleared neither ground in
+  `one-light` (3.51:1 / 3.67:1), `primeng` (3.60 / 3.76), `one-dark` (4.38) or `slate` (4.46).
+  Each preset's red moves the smallest distance that clears 4.6:1 on both the page and a card:
+  `#e45649`→`#c2493e`, `#ef4444`→`#ce3a3a`, `#e06c75`→`#e2737c`, `#dc2626`→`#d82525`.
+  `check:contrast` gained the pair in the same change — it had none for `danger` at all, which is
+  why a field error nobody could read was invisible to it. Found by pointing the new
+  `check:app-contrast` at `ui-showcase`, which renders the library from source.
+
 - **A toggle button now looks toggled.** 21.8.0 taught `gog-button` to forward `aria-pressed`,
   and nothing in the library styled it — so a toggle could announce itself as on to a screen
   reader while looking identical to an off one, which is WCAG 1.4.1 from the other side and

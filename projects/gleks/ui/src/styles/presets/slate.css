@@ -63,7 +63,13 @@
 
   /* Semantics */
   --gog-success-color: #059669;
-  --gog-danger-color: #dc2626;
+  /* Was #dc2626 — Tailwind red-600. `--gog-danger-color` is what every `--gog-<block>-error-color`
+     resolves to, so this is the colour a validation message is printed in, and as *text* it
+     needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
+     Now 4.61:1 on the page and 5.00:1 on a card. Found 2026-09-03 by `check:app-contrast`
+     reading ui-showcase, which is how a palette pair nobody had listed became visible;
+     `check:contrast` gained the pair in the same change. */
+  --gog-danger-color: #d82525;
   --gog-warning-color: #d97706;
   --gog-info-color: #0284c7;
 
