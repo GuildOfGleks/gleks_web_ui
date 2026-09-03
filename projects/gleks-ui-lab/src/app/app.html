@@ -30,14 +30,16 @@
         <gog-button
           variant="ghost"
           size="sm"
-          [ariaLabel]="searchToggleLabel()"
+          ariaLabel="Search components"
+          [ariaExpanded]="isSearchOpen()"
+          [ariaControls]="searchPanelId()"
           (gogClick)="toggleSearch()"
         >
           <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
         </gog-button>
 
         @if (isSearchOpen()) {
-          <div class="nav-search__panel" role="search">
+          <div id="nav-search-panel" class="nav-search__panel" role="search">
             <input
               #searchInput
               type="text"
@@ -95,7 +97,8 @@
       <gog-button
         variant="ghost"
         size="sm"
-        [ariaLabel]="directionToggleLabel()"
+        ariaLabel="Right-to-left layout"
+        [ariaPressed]="isRtl()"
         class="direction-toggle"
         [class.direction-toggle--active]="isRtl()"
         (gogClick)="toggleDirection()"

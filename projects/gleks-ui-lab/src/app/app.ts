@@ -177,22 +177,20 @@ export class App {
   });
 
   /**
-   * Each header toggle carries its state in its accessible **name**, because it cannot carry it
-   * in `aria-pressed`/`aria-expanded`: an `[attr.*]` binding on `<gog-button>` lands on the
-   * custom-element host, not on the `<button>` inside it — which is the very reason the
-   * component exposes an `ariaLabel` input at all (see `button.component.ts`'s own comment on
-   * that input). A name that names the action's next state is the standard fallback when a
-   * button component won't forward ARIA state, and unlike a host attribute it actually reaches
-   * assistive tech. The library-side fix — `ariaPressed`/`ariaExpanded`/`ariaControls` inputs
-   * alongside `ariaLabel` — is filed in `docs/backlog.md`; do not "restore" a host binding here.
+   * The search toggle's `aria-controls`, and `null` while the panel is closed. The panel lives
+   * inside an `@if`, so a constant id would point at an element that is not in the document
+   * whenever the search is shut — an invalid reference that sends a screen-reader user looking
+   * for a region that does not exist.
+   *
+   * Both header toggles state themselves through `gog-button`'s `ariaPressed`/`ariaExpanded`/
+   * `ariaControls` inputs (21.8.0). Before those existed each one carried its state in its
+   * accessible *name* instead, because an `[attr.aria-*]` binding on `<gog-button>` lands on the
+   * roleless custom-element host and never reaches the `<button>` inside. The name is stable
+   * again now; a name that changed under the user was the compromise, not the goal. Do not
+   * "restore" a host attribute binding here — it would silently do nothing.
    */
-  protected readonly directionToggleLabel = computed(() =>
-    this.isRtl() ? 'Switch to left-to-right' : 'Switch to right-to-left',
-  );
-
-  /** See `directionToggleLabel` for why the name carries the state rather than `aria-expanded`. */
-  protected readonly searchToggleLabel = computed(() =>
-    this.isSearchOpen() ? 'Close component search' : 'Search components',
+  protected readonly searchPanelId = computed(() =>
+    this.isSearchOpen() ? 'nav-search-panel' : null,
   );
 
   /**
