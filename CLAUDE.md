@@ -149,6 +149,10 @@ were both named for a release that shipped without them, which is what that alwa
 _completed_ plan keeps its version, because there it is a fact. Each future plan states its target
 in its own first paragraph, where it can be changed.
 
+**`docs/next-session.md` is the handoff from the last session, when there is one.** It says where
+to start and why, never what the durable lists already say, and it is deleted once its contents
+are done or moved.
+
 ## What to work on
 
 **`docs/backlog.md` is the live list** — everything known to be worth doing and not yet done, in

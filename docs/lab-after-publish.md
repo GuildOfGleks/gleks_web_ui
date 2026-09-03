@@ -51,6 +51,24 @@ delete the section too.
    decide by looking whether it wants
    `--gog-button-ghost-hover-color: var(--gog-accent-color)` on the `--active` class.
 
+6. **`GOG_CONFIG` gained `spinner` — the lab's own table needs the row, and it is the one key
+   that is not a value.** `global-config-data.ts` lists per-component keys and
+   `general/global-config` documents them; `spinner.component` takes a *component*, rendered in
+   place of the built-in look everywhere the library draws a spinner, so it belongs against
+   `gog-spinner`, `gog-button` and `gog-autocomplete` (the last two have no input of their own,
+   which is the reason the key exists). `spinner.variant` is the smaller sibling.
+
+7. **The button page gains the toggled look.** `aria-pressed="true"` now draws an inset ring —
+   the API table already lists `ariaPressed` from 21.8.0, but nothing on the page says the state
+   is visible now. The showcase's "ARIA state" panel has the wording.
+
+8. **The theme generator and the Theming page gain five new knobs**, all of which are the kind of
+   thing that page exists to show off: `--gog-font-weight-*` (four steps),
+   `--gog-line-height-*` (six), `--gog-z-base`, `--gog-text-slg` and
+   `--gog-control-clear-icon-ratio`. The generator reads the installed package's token list, so
+   the tokens appear on their own — the prose about "one number changes the whole library" is
+   what needs writing, and `--gog-z-base` is the most demonstrable of them.
+
 ## Checking your work
 
 `npm run check:app-contrast` — WCAG AA for both apps' **own** chrome, in all 11 themes. The lab
