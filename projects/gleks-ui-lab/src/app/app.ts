@@ -23,11 +23,13 @@ import {
 } from '@guildofgleks/ui';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
+  faAlignLeft,
+  faAlignRight,
   faBars,
   faDroplet,
+  faDropletSlash,
   faMagnifyingGlass,
   faPalette,
-  faRightLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { RipplePreference } from './components/shared/ripple-preference';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
@@ -205,8 +207,6 @@ export class App {
 
   protected readonly faBars = faBars;
   protected readonly faPalette = faPalette;
-  protected readonly faRightLeft = faRightLeft;
-  protected readonly faDroplet = faDroplet;
   protected readonly faMagnifyingGlass = faMagnifyingGlass;
 
   /**
@@ -215,6 +215,23 @@ export class App {
    * component's own resolution — no reload, and no per-component input to keep in sync.
    */
   protected readonly isRippleOn = this.ripplePreference.enabled;
+
+  /**
+   * Both stateful header toggles change their glyph, not just their colour.
+   *
+   * Colour alone was the whole signal, and on a dark theme it does not carry: the accent an
+   * active ghost button takes is close enough to the header's own foreground that the ripple
+   * toggle read as "on" in both states. That is WCAG 1.4.1 in miniature — a state told by hue
+   * and nothing else — and the fix is the same one the guideline asks for, a second channel.
+   * A slashed droplet says "off" whatever the palette does; `aria-pressed` says it to a screen
+   * reader; the accent stays as the third.
+   *
+   * Each glyph shows the state the site is in, not the one the button would switch to — the
+   * same reading as the `aria-pressed` beside it, so the two cannot contradict each other. The
+   * accessible name stays constant for the same reason it did when it was written.
+   */
+  protected readonly rippleIcon = computed(() => (this.isRippleOn() ? faDroplet : faDropletSlash));
+  protected readonly directionIcon = computed(() => (this.isRtl() ? faAlignRight : faAlignLeft));
 
   protected toggleNav(): void {
     this.isNavOpen.update((open) => !open);

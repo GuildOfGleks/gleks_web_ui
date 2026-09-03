@@ -103,7 +103,7 @@
         [class.ripple-toggle--active]="isRippleOn()"
         (gogClick)="toggleRipple()"
       >
-        <fa-icon [icon]="faDroplet"></fa-icon>
+        <fa-icon [icon]="rippleIcon()"></fa-icon>
       </gog-button>
 
       <gog-button
@@ -115,7 +115,7 @@
         [class.direction-toggle--active]="isRtl()"
         (gogClick)="toggleDirection()"
       >
-        <fa-icon [icon]="faRightLeft"></fa-icon>
+        <fa-icon [icon]="directionIcon()"></fa-icon>
       </gog-button>
 
       <div class="theme-switcher">

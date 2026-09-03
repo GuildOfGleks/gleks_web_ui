@@ -61,10 +61,18 @@
   }
 }
 
-/* Both header toggles are ghost buttons that stay put when they are on, so "on" has to be the
-   button's own colour — the accent is the only state the ghost variant leaves free. The state is
-   also on the button as `aria-pressed`, which is what a screen reader reads; this is the half a
-   sighted reader gets. */
+/* The two stateful header toggles colour *both* states, and that is the point.
+   `--gog-button-ghost-color--active: accent` on its own was a no-op on every theme whose ghost
+   button is already the accent colour — `dark` is one: both tokens resolve to #fbbf24, so an
+   "active" toggle painted itself the colour it already had and the ripple button looked switched
+   on while it was off. Muting the off state is what makes the pair differ whatever the palette
+   does. It is the quietest of the three signals — the glyph changes too
+   (`rippleIcon`/`directionIcon` in app.ts) and `aria-pressed` carries it to a screen reader. */
+.direction-toggle,
+.ripple-toggle {
+  --gog-button-ghost-color: var(--gog-muted-text-color);
+}
+
 .direction-toggle--active,
 .ripple-toggle--active {
   --gog-button-ghost-color: var(--gog-accent-color);
