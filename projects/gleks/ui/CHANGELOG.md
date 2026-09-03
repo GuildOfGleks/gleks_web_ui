@@ -4,6 +4,18 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.8.1] - planned
+
+### Fixed
+
+- **The outline button's label was unreadable while hovered, in every shipped theme.**
+  `--gog-button-outline-hover-color` resolved to `--gog-primary-color`, the colour of text on the
+  *page*, while the hover fill is the accent — pale parchment on bright amber in `dark` (1.41:1),
+  light grey on blue in `one-dark` (1.11:1), and failing WCAG AA in all 11 themes, the best of
+  them `light` at 3.65:1. It now resolves to `--gog-accent-text-color`, the token that means "text
+  on an accent fill" and the one both filled variants already used. Found while adding the state
+  above, which would have copied the same mistake into `:active`.
+
 ## [21.8.0] - 03.09.2026
 
 ### Added

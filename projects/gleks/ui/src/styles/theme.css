@@ -580,7 +580,13 @@
   --gog-button-outline-border: var(--gog-accent-color);
   --gog-button-outline-shadow: none;
   --gog-button-outline-hover-bg: var(--gog-accent-color);
-  --gog-button-outline-hover-color: var(--gog-primary-color);
+  /* The label sits on the accent fill once the button is hovered, so it takes the token that
+     means "text on an accent fill" — the same one the two filled variants use. It read
+     `--gog-primary-color` until 21.8.1, which is the colour of text on the *page*, and the
+     result failed WCAG AA in all 11 shipped themes: 1.11:1 in one-dark, 1.41:1 in dark, 3.65:1
+     in light at best. It was invisible to `check:contrast` because that script had no pair for
+     this label, the same way it had none for the hover fill until 2026-08-29. It has both now. */
+  --gog-button-outline-hover-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-button-outline-hover-shadow: none;
   --gog-button-outline-spinner-color: var(--gog-accent-color);
 
@@ -592,6 +598,7 @@
   --gog-button-ghost-hover-color: var(--gog-button-ghost-color);
   --gog-button-ghost-hover-shadow: none;
   --gog-button-ghost-spinner-color: var(--gog-accent-color);
+
 
   /* ── Button toggle group ───────────────────────────────────────────────────
      `--gog-button-toggle-bg`, `-color`, `-padding` and `-font-size` are intentionally NOT
