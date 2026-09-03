@@ -36,7 +36,8 @@
   opacity: var(--gog-accordion-disabled-opacity);
 }
 
-.gog-accordion__item--disabled .gog-accordion__header:hover {
+.gog-accordion__item--disabled .gog-accordion__header:hover,
+.gog-accordion__item--disabled .gog-accordion__header:active {
   color: var(--gog-accordion-text-color);
   background-color: var(--gog-accordion-header-bg);
 }
@@ -86,6 +87,12 @@
 .gog-accordion__header:hover {
   color: var(--gog-accordion-accent-color);
   background-color: var(--gog-accordion-hover-bg);
+}
+
+/* The disabled reset above is (0,3,0) against this rule's (0,2,0), so it still wins for a
+   disabled item however the two are ordered. */
+.gog-accordion__header:active {
+  background-color: var(--gog-accordion-press-bg);
 }
 
 .gog-accordion__header:focus-visible {

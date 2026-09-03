@@ -14,11 +14,39 @@ reached 1.0, so breaking changes may land in minor versions.
   did not cover it either: it is off by default, and it is deliberately suppressed under reduced
   motion because it genuinely is decoration. `:active` now also deepens the button's background,
   one step past its own hover so a press is distinguishable while hovering, and reduced motion
-  drops only the movement. New per-variant `--gog-button-<variant>-active-bg`/`-active-color`
+  drops only the movement. New per-variant `--gog-button-<variant>-press-bg`/`-press-color`
   tokens (ghost's fill is a stronger wash of its hover tint, behind the same `@supports` gate as
-  the rest of the file's `color-mix()` values) and the usual `--gog-button-active-bg`/
-  `-active-color` instance overrides. Reduced motion must remove the animation, not the
+  the rest of the file's `color-mix()` values) and the usual `--gog-button-press-bg`/
+  `-press-color` instance overrides. Reduced motion must remove the animation, not the
   information — the same rule the toast countdown was fixed under in 21.7.1.
+
+  The family is spelled `press`, not `active`, because `active` already means two different
+  things in this library — `--gog-tabs-active-color` is the *selected* tab, while
+  `--gog-scroll-thumb-active-bg` is the thumb being dragged. One name, one meaning. The shipped
+  `--gog-button-active-scale` keeps its spelling: renaming a token consumers already override
+  needs a deprecation cycle, and this is a patch.
+
+- **The other nine pressable surfaces had no press feedback either — now eight of them do.**
+  `.gog-btn:active` turned out to be the *only* `:active` rule in the library. `gogMenuItem`,
+  `gog-chip`, `gog-tabs` headers, `gog-accordion` headers, `gog-button-toggle-group` options and
+  the `gog-select` / `gog-multiselect` / `gog-autocomplete` option rows all acknowledged a press
+  through the ripple alone — which is off by default and suppressed under reduced motion — so a
+  default-configured app confirmed a press nowhere at all. Each now paints
+  `--gog-<block>-press-bg`: a wash roughly double the 10-12% one its own hover uses, in the same
+  ingredient, with a flat `--gog-border-color` for browsers without `color-mix()`. Two of them
+  are not that shape and say so in place: a `gog-tabs` header paints no background in any other
+  state (its hover moves the label colour only), and a *selected* button-toggle option is already
+  filled, so it deepens to `--gog-accent-dim` the way the filled button variants do.
+
+  **`gogCollapsibleTrigger` is deliberately not in that list.** It is the consumer's own element
+  and the library paints nothing on it — no background at rest, none on hover, only a cursor and
+  a disabled state. A press colour there would be the library inventing a look for markup it does
+  not own, and inventing it for one state out of three. The same reasoning `docs/ripple.md`
+  records for `gogCardLink` and `gog-table` rows.
+
+  The three option rows' press rules are guarded against the disabled modifier; their **hover**
+  rules are not, and were left alone — a disabled option lighting up under the pointer is a
+  separate decision from this one, and it is filed rather than folded in.
 
 - **The outline button's label was unreadable while hovered, in every shipped theme.**
   `--gog-button-outline-hover-color` resolved to `--gog-primary-color`, the colour of text on the

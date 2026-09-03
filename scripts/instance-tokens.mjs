@@ -21,8 +21,8 @@ export const INSTANCE_TOKENS = new Set([
   '--gog-accordion-padding-x',
   '--gog-accordion-padding-y',
   // gog-button
-  '--gog-button-active-bg',
-  '--gog-button-active-color',
+  '--gog-button-press-bg',
+  '--gog-button-press-color',
   '--gog-button-bg',
   '--gog-button-border',
   '--gog-button-color',

@@ -51,6 +51,12 @@
   color: var(--gog-tabs-hover-color);
 }
 
+/* The only state a tab paints a background for. Hover moves the label's colour and nothing else,
+   so without this a pressed tab and a hovered one looked identical. */
+.gog-tabs__tab:active:not(:disabled) {
+  background-color: var(--gog-tabs-press-bg);
+}
+
 .gog-tabs__tab--active {
   color: var(--gog-tabs-active-color);
 }

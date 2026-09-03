@@ -16,25 +16,21 @@ not worth carrying here.
 
 ## Defects — first
 
-- **Nine pressable surfaces still have no press feedback at all.** 21.8.1 gave `gog-button` a
-  `:active` colour because its `transform: scale()` was switched off under
-  `prefers-reduced-motion`. While fixing it: `.gog-btn:active` was the **only** `:active` rule in
-  the entire library. `gogMenuItem`, `gog-chip`, `gog-tabs` headers, `gog-accordion` headers,
-  `gogCollapsibleTrigger`, `gog-button-toggle-group` options and the `gog-select` /
-  `gog-multiselect` / `gog-autocomplete` option rows have none — their press feedback is the
-  ripple, which is **off by default** and additionally suppressed under reduced motion. So in a
-  default-configured app none of them acknowledges a press, ever, animations or not. The button's
-  fix is the pattern to copy (a colour one step past the surface's own hover), but each surface
-  needs its own token pair and its own look at what its hover already does, so this is a pass of
-  its own rather than a find-and-replace.
-
-  Related, and the reason this is a defect rather than a gap: `docs/feedback-triage.md`'s closing
-  section already argued that the library's feedback story "degrades to nothing rather than to
-  something". This is the measurement behind that sentence.
+- **Three dropdowns highlight a disabled option under the pointer.** `.gog-select__option:hover`,
+  `.gog-ms__option:hover` and `.gog-autocomplete__option:hover` carry no `:not(--disabled)` guard,
+  so a disabled row lights up exactly like a selectable one; only its opacity and cursor say
+  otherwise. Found 2026-09-03 while adding those rows' press states, which *were* guarded — see
+  `CHANGELOG.md` 21.8.1. Left alone deliberately: changing what hover does to a disabled row is a
+  visual decision of its own, and folding it into a press-feedback pass would have hidden it.
+  `gog-menu`'s item and `gog-autocomplete`'s option get this right (`:not(:disabled)` /
+  `:not([aria-disabled='true'])` on the hover selector), so the fix has a pattern to copy.
 
 **What was here.** The section emptied on 2026-09-02, when the `GogGlobalConfig` JSDoc defect
-was fixed for the in-progress 21.8.0 (see `CHANGELOG.md`), and again refilled on 2026-09-03 with
-the entry above. Two contrast defects found the same day — the outline button's hover label
+was fixed for the in-progress 21.8.0 (see `CHANGELOG.md`). It refilled on 2026-09-03 with the
+"nine pressable surfaces have no press feedback" entry, which was **closed the same day** — eight
+of them fixed in 21.8.1, and `gogCollapsibleTrigger` ruled out with a reason recorded there: the
+library paints nothing on that element in any state, because the consumer owns it. Two contrast
+defects found the same day — the outline button's hover label
 failing WCAG AA in all 11 themes, and `one-dark`'s `--gog-accent-dim` under the new pressed fill
 — were fixed in 21.8.1 rather than filed here, because `check:contrast` is a CI step and a known
 failure would have made it permanently red.

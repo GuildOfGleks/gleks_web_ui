@@ -419,6 +419,7 @@
   --gog-accordion-text-color: var(--gog-text-color);
   --gog-accordion-accent-color: var(--gog-accent-color);
   --gog-accordion-hover-bg: var(--gog-hover-color);
+  --gog-accordion-press-bg: var(--gog-border-color);
   --gog-accordion-hover-ring: var(--gog-accent-dim);
   --gog-accordion-focus-ring-width: var(--gog-focus-ring-width);
   --gog-accordion-body-color: var(--gog-text-color);
@@ -548,6 +549,9 @@
   --gog-button-transition-duration: var(--gog-duration-base);
   --gog-button-focus-ring-width: var(--gog-focus-ring-width);
   --gog-button-focus-ring-offset: 3px;
+  /* Shipped since before the press had a colour, and left spelled `active` on purpose: renaming
+     a token consumers already override needs a deprecation cycle, and this is a patch. The state
+     it names is the same one `--gog-button-press-*` paints. */
   --gog-button-active-scale: 0.97;
   --gog-button-disabled-opacity: var(--gog-disabled-opacity);
   --gog-button-loading-opacity: 0.7;
@@ -611,14 +615,14 @@
      three accent-carrying variants; ghost has no fill of its own to deepen, so it takes a
      stronger wash of the same tint its hover uses (see the @supports block at the end of this
      file for the mixed value and why the flat one above it is not a fallback but the value). */
-  --gog-button-primary-active-bg: var(--gog-accent-dim);
-  --gog-button-primary-active-color: var(--gog-button-primary-color);
-  --gog-button-secondary-active-bg: var(--gog-accent-dim);
-  --gog-button-secondary-active-color: var(--gog-button-secondary-color);
-  --gog-button-outline-active-bg: var(--gog-accent-dim);
-  --gog-button-outline-active-color: var(--gog-button-outline-hover-color);
-  --gog-button-ghost-active-bg: var(--gog-border-color);
-  --gog-button-ghost-active-color: var(--gog-button-ghost-color);
+  --gog-button-primary-press-bg: var(--gog-accent-dim);
+  --gog-button-primary-press-color: var(--gog-button-primary-color);
+  --gog-button-secondary-press-bg: var(--gog-accent-dim);
+  --gog-button-secondary-press-color: var(--gog-button-secondary-color);
+  --gog-button-outline-press-bg: var(--gog-accent-dim);
+  --gog-button-outline-press-color: var(--gog-button-outline-hover-color);
+  --gog-button-ghost-press-bg: var(--gog-border-color);
+  --gog-button-ghost-press-color: var(--gog-button-ghost-color);
 
   /* ── Button toggle group ───────────────────────────────────────────────────
      `--gog-button-toggle-bg`, `-color`, `-padding` and `-font-size` are intentionally NOT
@@ -639,10 +643,14 @@
   --gog-button-toggle-rest-bg: transparent;
   --gog-button-toggle-rest-color: var(--gog-text-color);
   --gog-button-toggle-hover-bg: var(--gog-hover-color);
+  --gog-button-toggle-press-bg: var(--gog-border-color);
   --gog-button-toggle-hover-color: var(--gog-text-color);
   --gog-button-toggle-selected-bg: var(--gog-accent-color);
   --gog-button-toggle-selected-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-button-toggle-selected-border-color: var(--gog-accent-color);
+  /* A selected option is already filled with the accent, so its press deepens the fill the way
+     the filled button variants do rather than washing over it. */
+  --gog-button-toggle-selected-press-bg: var(--gog-accent-dim);
   --gog-button-toggle-separated-gap: var(--gog-space-sm);
   --gog-button-toggle-transition-duration: var(--gog-duration-base);
   --gog-button-toggle-disabled-opacity: var(--gog-disabled-opacity);
@@ -834,6 +842,7 @@
   --gog-chip-font-family: inherit;
   --gog-chip-bg: var(--gog-surface-color);
   --gog-chip-hover-bg: var(--gog-hover-color);
+  --gog-chip-press-bg: var(--gog-border-color);
   --gog-chip-border: var(--gog-border-color);
   --gog-chip-border-width: var(--gog-border-width);
   --gog-chip-border-style: var(--gog-border-style);
@@ -995,6 +1004,7 @@
   --gog-autocomplete-option-gap: var(--gog-space-10);
   --gog-autocomplete-option-color: var(--gog-text-color);
   --gog-autocomplete-option-hover-bg: var(--gog-hover-color);
+  --gog-autocomplete-option-press-bg: var(--gog-border-color);
   --gog-autocomplete-option-hover-color: var(--gog-text-color);
   --gog-autocomplete-option-selected-bg: var(--gog-accent-pale);
   --gog-autocomplete-option-selected-color: var(--gog-accent-color);
@@ -1224,6 +1234,7 @@
   --gog-multiselect-panel-max-height: 260px;
   --gog-multiselect-panel-offset: 2px;
   --gog-multiselect-option-hover-bg: var(--gog-hover-color);
+  --gog-multiselect-option-press-bg: var(--gog-border-color);
   --gog-multiselect-option-color: var(--gog-text-color);
   --gog-multiselect-option-gap-inline: var(--gog-space-10);
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
@@ -1295,6 +1306,11 @@
   --gog-menu-focus-ring-width: var(--gog-focus-ring-width);
   --gog-menu-item-color: var(--gog-text-color);
   --gog-menu-item-hover-bg: var(--gog-hover-color);
+  /* The held state, same idea as the button's: one step past this surface's own hover, as a
+     colour rather than a movement, so `prefers-reduced-motion` cannot take it away. The flat
+     value here is what a browser without `color-mix()` gets; the tinted one is in the @supports
+     block at the end of the file. */
+  --gog-menu-item-press-bg: var(--gog-border-color);
   --gog-menu-item-hover-color: var(--gog-text-color);
   --gog-menu-item-font-size: var(--gog-text-sm);
   --gog-menu-item-padding: var(--gog-space-8) var(--gog-space-12);
@@ -1507,6 +1523,7 @@
   --gog-select-panel-max-height: 260px;
   --gog-select-panel-offset: 2px;
   --gog-select-option-hover-bg: var(--gog-hover-color);
+  --gog-select-option-press-bg: var(--gog-border-color);
   --gog-select-option-selected-color: var(--gog-accent-color);
   --gog-select-option-color: var(--gog-text-color);
   --gog-select-option-gap: var(--gog-space-10);
@@ -1716,6 +1733,9 @@
   --gog-tabs-rest-bg: transparent;
   --gog-tabs-rest-color: var(--gog-muted-text-color);
   --gog-tabs-hover-color: var(--gog-text-color);
+  /* Tabs paint no background at rest and none on hover — the press is the only one they get,
+     which is why this token has no hover counterpart to step past. */
+  --gog-tabs-press-bg: var(--gog-border-color);
   --gog-tabs-active-color: var(--gog-accent-color);
   --gog-tabs-header-border-width: var(--gog-border-width);
   --gog-tabs-header-border-style: var(--gog-border-style);
@@ -1967,7 +1987,22 @@
     /* Twice the hover wash, so a held ghost button reads as a step past hovering it rather than
        as the same tint. The flat `--gog-border-color` above is what a browser without
        `color-mix()` gets: a visible press on every theme, just not a tinted one. */
-    --gog-button-ghost-active-bg: color-mix(in srgb, var(--gog-accent-color) 24%, transparent);
+    --gog-button-ghost-press-bg: color-mix(in srgb, var(--gog-accent-color) 24%, transparent);
+    /* Every other pressable surface, one rule: roughly double the 10-12% wash its own hover
+       uses, in the same ingredient. The accordion mixes `--gog-accent-dim` because its hover
+       does — its header sits on a strip where a full-accent wash was too loud (21.7.1). */
+    --gog-accordion-press-bg: color-mix(in srgb, var(--gog-accent-dim) 22%, transparent);
+    --gog-autocomplete-option-press-bg: color-mix(
+      in srgb,
+      var(--gog-accent-color) 22%,
+      transparent
+    );
+    --gog-button-toggle-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
+    --gog-chip-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
+    --gog-menu-item-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
+    --gog-multiselect-option-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
+    --gog-select-option-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
+    --gog-tabs-press-bg: color-mix(in srgb, var(--gog-accent-color) 22%, transparent);
     --gog-calendar-range-bg: color-mix(in srgb, var(--gog-accent-color) 16%, transparent);
     --gog-card-filled-bg: color-mix(in srgb, var(--gog-accent-dim) 8%, var(--gog-surface-color));
     --gog-card-hover-border-color: color-mix(in srgb, var(--gog-accent-color) 45%, transparent);

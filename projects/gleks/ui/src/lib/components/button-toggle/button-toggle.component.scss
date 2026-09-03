@@ -49,10 +49,20 @@
   color: var(--gog-button-toggle-hover-color);
 }
 
+.gog-button-toggle__button:active:not(:disabled):not(.gog-button-toggle__button--selected) {
+  background-color: var(--gog-button-toggle-press-bg);
+}
+
 .gog-button-toggle__button--selected {
   border-color: var(--gog-button-toggle-selected-border-color);
   background-color: var(--gog-button-toggle-selected-bg);
   color: var(--gog-button-toggle-selected-color);
+}
+
+/* A selected option is filled, so it deepens rather than washes — and this rule has to come after
+   the selected one it is stepping past, which is why the two press rules are not together. */
+.gog-button-toggle__button--selected:active:not(:disabled) {
+  background-color: var(--gog-button-toggle-selected-press-bg);
 }
 
 .gog-button-toggle__button:disabled {

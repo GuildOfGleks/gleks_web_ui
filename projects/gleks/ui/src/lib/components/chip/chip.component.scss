@@ -51,6 +51,10 @@
   background-color: var(--gog-chip-hover-bg);
 }
 
+:host(.gog-chip--clickable) .gog-chip__surface:active:not([aria-disabled='true']) {
+  background-color: var(--gog-chip-press-bg);
+}
+
 .gog-chip__surface[aria-disabled='true'] {
   opacity: var(--gog-chip-disabled-opacity);
   pointer-events: none;

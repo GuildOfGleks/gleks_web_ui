@@ -38,6 +38,11 @@ delete the section too.
    that a colour difference between the deployed site and a local screenshot is not investigated
    as a bug.
 
+4. **`theme-starter.css` needs regenerating** (`npm run generate:theme-starter`). It is generated
+   from the *published* package, so `npm run check:theme-starter` passes today against 21.8.0 and
+   will fail the moment 21.8.1 is installed: that release adds ten `--gog-*-press-*` tokens the
+   file does not carry yet.
+
 ## Checking your work
 
 `npm run build:lab` (the wrapper — the raw `ng build gleks-ui-lab` never exits; see

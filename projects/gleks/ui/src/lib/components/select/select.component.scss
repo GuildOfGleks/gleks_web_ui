@@ -273,6 +273,10 @@
   background-color: var(--gog-select-option-hover-bg);
 }
 
+.gog-select__option:active:not(.gog-select__option--disabled) {
+  background-color: var(--gog-select-option-press-bg);
+}
+
 .gog-select__option--selected {
   color: var(--gog-select-option-selected-color);
 }

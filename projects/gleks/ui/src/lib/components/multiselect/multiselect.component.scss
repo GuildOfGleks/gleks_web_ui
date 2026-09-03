@@ -337,6 +337,10 @@
   background-color: var(--gog-multiselect-option-hover-bg);
 }
 
+.gog-ms__option:active:not(.gog-ms__option--disabled) {
+  background-color: var(--gog-multiselect-option-press-bg);
+}
+
 .gog-ms__option--selected {
   color: var(--gog-multiselect-border-color);
 }

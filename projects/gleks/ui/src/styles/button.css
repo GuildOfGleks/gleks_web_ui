@@ -109,12 +109,12 @@
  */
 .gog-btn:active:not(:disabled) {
   background-color: var(
-    --gog-button-active-bg,
-    var(--gog-button-variant-active-bg, var(--gog-button-primary-active-bg))
+    --gog-button-press-bg,
+    var(--gog-button-variant-press-bg, var(--gog-button-primary-press-bg))
   );
   color: var(
-    --gog-button-active-color,
-    var(--gog-button-variant-active-color, var(--gog-button-primary-active-color))
+    --gog-button-press-color,
+    var(--gog-button-variant-press-color, var(--gog-button-primary-press-color))
   );
   transform: scale(var(--gog-button-active-scale));
 }
@@ -147,8 +147,8 @@
   --gog-button-variant-hover-bg: var(--gog-button-primary-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-primary-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-primary-hover-shadow);
-  --gog-button-variant-active-bg: var(--gog-button-primary-active-bg);
-  --gog-button-variant-active-color: var(--gog-button-primary-active-color);
+  --gog-button-variant-press-bg: var(--gog-button-primary-press-bg);
+  --gog-button-variant-press-color: var(--gog-button-primary-press-color);
   --gog-button-variant-spinner-color: var(--gog-button-primary-spinner-color);
 }
 
@@ -160,8 +160,8 @@
   --gog-button-variant-hover-bg: var(--gog-button-secondary-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-secondary-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-secondary-hover-shadow);
-  --gog-button-variant-active-bg: var(--gog-button-secondary-active-bg);
-  --gog-button-variant-active-color: var(--gog-button-secondary-active-color);
+  --gog-button-variant-press-bg: var(--gog-button-secondary-press-bg);
+  --gog-button-variant-press-color: var(--gog-button-secondary-press-color);
   --gog-button-variant-spinner-color: var(--gog-button-secondary-spinner-color);
 }
 
@@ -174,8 +174,8 @@
   --gog-button-variant-hover-bg: var(--gog-button-outline-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-outline-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-outline-hover-shadow);
-  --gog-button-variant-active-bg: var(--gog-button-outline-active-bg);
-  --gog-button-variant-active-color: var(--gog-button-outline-active-color);
+  --gog-button-variant-press-bg: var(--gog-button-outline-press-bg);
+  --gog-button-variant-press-color: var(--gog-button-outline-press-color);
   --gog-button-variant-spinner-color: var(--gog-button-outline-spinner-color);
 }
 
@@ -188,8 +188,8 @@
   --gog-button-variant-hover-bg: var(--gog-button-ghost-hover-bg);
   --gog-button-variant-hover-color: var(--gog-button-ghost-hover-color);
   --gog-button-variant-hover-shadow: var(--gog-button-ghost-hover-shadow);
-  --gog-button-variant-active-bg: var(--gog-button-ghost-active-bg);
-  --gog-button-variant-active-color: var(--gog-button-ghost-active-color);
+  --gog-button-variant-press-bg: var(--gog-button-ghost-press-bg);
+  --gog-button-variant-press-color: var(--gog-button-ghost-press-color);
   --gog-button-variant-spinner-color: var(--gog-button-ghost-spinner-color);
 }
 

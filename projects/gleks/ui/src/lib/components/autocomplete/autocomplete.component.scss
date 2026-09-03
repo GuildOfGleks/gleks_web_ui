@@ -215,6 +215,10 @@
   color: var(--gog-autocomplete-option-hover-color);
 }
 
+.gog-autocomplete__option:active:not([aria-disabled='true']) {
+  background-color: var(--gog-autocomplete-option-press-bg);
+}
+
 .gog-autocomplete__option--selected {
   background-color: var(--gog-autocomplete-option-selected-bg);
   color: var(--gog-autocomplete-option-selected-color);

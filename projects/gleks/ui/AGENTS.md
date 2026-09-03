@@ -511,8 +511,13 @@ the label where the fill demands it) as well as scaling it by `--gog-button-acti
 `prefers-reduced-motion: reduce` the scale is dropped and the colour stays, so the press is still
 visible to a reader who has switched animations off — before 21.8.1 that reader got no feedback at
 all, since the ripple is off by default and is itself suppressed under reduced motion. Override
-per instance with `--gog-button-active-bg` / `--gog-button-active-color`, or per theme with
+per instance with `--gog-button-press-bg` / `--gog-button-press-color`, or per theme with
 `--gog-button-<variant>-active-bg`.
+
+Every other pressable surface in the library does the same thing since 21.8.1 — menu items,
+chips, tab and accordion headers, button-toggle options and the three dropdowns' option rows —
+each through its own `--gog-<block>-press-bg`. `gogCollapsibleTrigger` is the exception: the
+library paints nothing on that element in any state, because it is yours.
 
 **`debounce` is a spam guard, not a delay before the first click.** The first click in a window
 fires immediately (leading edge); further clicks within `debounce` ms are silently dropped.

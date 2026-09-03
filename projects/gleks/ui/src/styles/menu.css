@@ -90,6 +90,12 @@
   color: var(--gog-menu-item-hover-color);
 }
 
+/* After the hover rule on purpose: both are (0,3,0), so source order decides, and a pointer is
+   hovering the item it presses. */
+.gog-menu__item:active:not(:disabled) {
+  background-color: var(--gog-menu-item-press-bg);
+}
+
 .gog-menu__item.gog-menu__item:focus-visible {
   outline: var(--gog-menu-focus-ring-width) solid var(--gog-menu-focus-ring);
   outline-offset: calc(var(--gog-menu-focus-ring-width) * -1);
