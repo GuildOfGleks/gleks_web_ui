@@ -8,6 +8,21 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **Three clear buttons ignored the theme's corner radius.** `--gog-input-clear-radius`,
+  `--gog-select-clear-radius` and `--gog-multiselect-clear-radius` were a flat `2px`, so a theme
+  that set `--gog-radius` moved every corner in the library except these. They are
+  `calc(var(--gog-radius) / 4)` now: identical at the default 8px, so nothing moves in `light` or
+  `dark` — but `bevel`, whose whole identity is square corners (`--gog-radius: 0`), had three
+  quietly rounded controls and now does not.
+
+  Found by counting rather than by looking: of 47 radius tokens, 30 already derived from
+  `--gog-radius`, 8 are pills or circles (a shape, not a corner size), 5 are deliberately flat,
+  and these 3 were the remainder. `check-tokens` rule G could not have caught them — it flags a
+  literal only when its value *equals* a character token's, which is what keeps a pill's `999px`
+  from being called drift, and is exactly why a small arbitrary number is the shape of drift it
+  cannot see. `gog-toast` and `gog-accordion` keep their flat corners, on the user's call: those
+  are a chosen shape.
+
 - **Error text was below WCAG AA in four themes.** `--gog-danger-color` is what every
   `--gog-<block>-error-color` resolves to, so it is the colour a validation message is printed in
   — text, needing 4.5:1, not the 3:1 a status accent gets away with. It cleared neither ground in

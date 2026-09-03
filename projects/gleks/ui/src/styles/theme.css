@@ -1207,8 +1207,19 @@
   --gog-input-disabled-opacity: var(--gog-disabled-opacity);
   --gog-input-transition-duration: var(--gog-duration-base);
   /* Float label — also used by gog-textarea, which shares the --gog-input-* block. */
-  /* Clear button — only rendered once the field has text, see `clearable`. */
-  --gog-input-clear-radius: 2px;
+  /* Clear button — only rendered once the field has text, see `clearable`.
+
+     A quarter of the corner radius rather than a flat `2px`, which is what this was until
+     21.8.1: at the default `--gog-radius: 8px` it computes to the same 2px, so nothing moves in
+     any shipped theme, but a theme that rounds its corners now rounds this button too. The
+     literal was invisible to `check-tokens` rule G by design — that rule flags a literal only
+     when its value *equals* a character token's current one, so a pill's `999px` is correctly
+     left alone and a small arbitrary number like this one is correctly not detectable. The two
+     sibling controls below carry the same fix.
+
+     `gog-toast` and `gog-accordion` keep their flat `0px` on purpose: those are a chosen shape,
+     not a number that forgot where it came from. */
+  --gog-input-clear-radius: calc(var(--gog-radius) / 4);
   --gog-input-clear-icon-ratio: 0.7;
   /*
      The textarea's clear button gets a full-size glyph. The 0.7 ratio above suits the dense
@@ -1319,7 +1330,8 @@
   --gog-multiselect-min-width: 120px;
   --gog-multiselect-panel-max-width: 420px;
   --gog-multiselect-actions-inset: var(--gog-control-icon-offset);
-  --gog-multiselect-clear-radius: 2px;
+  /* A quarter of the corner radius — see `--gog-input-clear-radius` for why. */
+  --gog-multiselect-clear-radius: calc(var(--gog-radius) / 4);
   --gog-multiselect-disabled-opacity: var(--gog-disabled-opacity);
   --gog-multiselect-transition-duration: var(--gog-duration-base);
   --gog-multiselect-float-label-reserve: var(--gog-field-float-label-reserve);
@@ -1561,7 +1573,8 @@
   --gog-select-filter-empty-padding: var(--gog-space-10);
   --gog-select-filter-empty-color: var(--gog-select-placeholder-color);
   /* Clear button — only rendered once a value is selected, see `clearable`. */
-  --gog-select-clear-radius: 2px;
+  /* A quarter of the corner radius — see `--gog-input-clear-radius` for why. */
+  --gog-select-clear-radius: calc(var(--gog-radius) / 4);
   --gog-select-clear-icon-ratio: 0.7;
   --gog-select-clear-gap: var(--gog-space-6);
   --gog-select-clear-color: var(--gog-select-placeholder-color);
