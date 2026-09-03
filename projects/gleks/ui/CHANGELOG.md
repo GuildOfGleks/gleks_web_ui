@@ -8,6 +8,21 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **Sixteen component font sizes now read the type scale, and rule G covers it.** A theme that
+  retuned `--gog-text-*` moved most of the library and left `gog-button`, `gog-chip`, `gog-tag`,
+  the dialog's close button, the toast's action and close, and the toggle's `lg` state label
+  behind — each held a literal that was byte-for-byte a scale step (`--gog-button-md-font-size:
+  1rem` sitting beside `--gog-text-md: 1rem`). Same values, so nothing moves in any theme; the
+  difference is that retuning the scale now reaches them.
+
+  `check-tokens` rule G covered radii, strokes, casing and tracking but **not** font size, which
+  is how sixteen of them accumulated. It does now, and the thirteen remaining literals are right
+  to be literals: five are the accordion chevron's px ramp, and eight are off the scale on
+  purpose — `slg` is 1.25rem in two components because the scale has no step between 1.125 and
+  1.5, an 11px chip sits deliberately below `xs`, and the toggle's state label has its own
+  four-step micro-ramp. Rule G flags only an exact match, which is precisely what keeps those
+  out of it.
+
 - **Three clear buttons ignored the theme's corner radius.** `--gog-input-clear-radius`,
   `--gog-select-clear-radius` and `--gog-multiselect-clear-radius` were a flat `2px`, so a theme
   that set `--gog-radius` moved every corner in the library except these. They are

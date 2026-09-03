@@ -167,6 +167,22 @@ const CHARACTER_TOKENS = new Map([
     'border-style',
     ['--gog-border-style', '--gog-control-border-style', '--gog-panel-border-style'],
   ],
+  // The type scale. Added 2026-09-03: rule G covered radii, strokes, casing and tracking, and
+  // not this — so sixteen component tokens sat on a literal that was byte-for-byte a scale step
+  // (`--gog-button-md-font-size: 1rem` beside `--gog-text-md: 1rem`), and a theme retuning its
+  // type had to find and re-list every one. The off-scale values stay literals and are right to:
+  // `slg` is 1.25rem in two components because the scale has no step between 1.125 and 1.5, and
+  // an 11px chip is deliberately below `xs`. Rule G only ever flags an exact match, which is what
+  // keeps those out of it.
+  ['font-size', [
+    '--gog-text-xs',
+    '--gog-text-sm',
+    '--gog-text-md',
+    '--gog-text-lg',
+    '--gog-text-xl',
+    '--gog-text-2xl',
+    '--gog-text-3xl',
+  ]],
   ['text-transform', ['--gog-text-transform']],
   ['letter-spacing', ['--gog-letter-spacing']],
 ]);

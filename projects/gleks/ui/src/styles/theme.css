@@ -538,10 +538,10 @@
   --gog-button-md-padding: var(--gog-space-12) var(--gog-space-20);
   --gog-button-lg-padding: var(--gog-space-16) var(--gog-space-24);
   --gog-button-slg-padding: var(--gog-space-20) var(--gog-space-28);
-  --gog-button-xsm-font-size: 0.75rem;
-  --gog-button-sm-font-size: 0.875rem;
-  --gog-button-md-font-size: 1rem;
-  --gog-button-lg-font-size: 1.125rem;
+  --gog-button-xsm-font-size: var(--gog-text-xs);
+  --gog-button-sm-font-size: var(--gog-text-sm);
+  --gog-button-md-font-size: var(--gog-text-md);
+  --gog-button-lg-font-size: var(--gog-text-lg);
   --gog-button-slg-font-size: 1.25rem;
 
   --gog-button-font-family: var(--gog-font-heading);
@@ -912,7 +912,7 @@
   --gog-chip-xsm-icon-size: 0.6875rem;
   --gog-chip-xsm-remove-size: 0.75rem;
 
-  --gog-chip-sm-font-size: 0.75rem;
+  --gog-chip-sm-font-size: var(--gog-text-xs);
   --gog-chip-sm-padding-block: var(--gog-space-4);
   --gog-chip-sm-padding-inline: var(--gog-space-8);
   --gog-chip-sm-gap: var(--gog-space-6);
@@ -920,7 +920,7 @@
   --gog-chip-sm-icon-size: 0.75rem;
   --gog-chip-sm-remove-size: 0.875rem;
 
-  --gog-chip-md-font-size: 0.875rem;
+  --gog-chip-md-font-size: var(--gog-text-sm);
   --gog-chip-md-padding-block: var(--gog-space-8);
   --gog-chip-md-padding-inline: var(--gog-space-12);
   --gog-chip-md-gap: var(--gog-space-8);
@@ -928,7 +928,7 @@
   --gog-chip-md-icon-size: 0.875rem;
   --gog-chip-md-remove-size: 1rem;
 
-  --gog-chip-lg-font-size: 1rem;
+  --gog-chip-lg-font-size: var(--gog-text-md);
   --gog-chip-lg-padding-block: var(--gog-space-10);
   --gog-chip-lg-padding-inline: var(--gog-space-14);
   --gog-chip-lg-gap: var(--gog-space-10);
@@ -936,7 +936,7 @@
   --gog-chip-lg-icon-size: 1rem;
   --gog-chip-lg-remove-size: 1.125rem;
 
-  --gog-chip-slg-font-size: 1.125rem;
+  --gog-chip-slg-font-size: var(--gog-text-lg);
   --gog-chip-slg-padding-block: var(--gog-space-12);
   --gog-chip-slg-padding-inline: var(--gog-space-16);
   --gog-chip-slg-gap: var(--gog-space-12);
@@ -969,7 +969,7 @@
   --gog-dialog-body-padding: var(--gog-space-20);
   --gog-dialog-body-max-height: calc(var(--gog-dialog-max-height) - 60px);
   --gog-dialog-close-size: 2rem;
-  --gog-dialog-close-font-size: 0.875rem;
+  --gog-dialog-close-font-size: var(--gog-text-sm);
   --gog-dialog-close-color: var(--gog-muted-text-color);
   --gog-dialog-close-hover-color: var(--gog-text-color);
   --gog-dialog-close-hover-bg: var(--gog-hover-color);
@@ -1855,25 +1855,25 @@
   --gog-tag-xsm-gap: var(--gog-space-2);
   --gog-tag-xsm-icon-size: 0.6875rem;
 
-  --gog-tag-sm-font-size: 0.75rem;
+  --gog-tag-sm-font-size: var(--gog-text-xs);
   --gog-tag-sm-padding-block: var(--gog-space-4);
   --gog-tag-sm-padding-inline: var(--gog-space-8);
   --gog-tag-sm-gap: var(--gog-space-4);
   --gog-tag-sm-icon-size: 0.75rem;
 
-  --gog-tag-md-font-size: 0.875rem;
+  --gog-tag-md-font-size: var(--gog-text-sm);
   --gog-tag-md-padding-block: var(--gog-space-6);
   --gog-tag-md-padding-inline: var(--gog-space-12);
   --gog-tag-md-gap: var(--gog-space-6);
   --gog-tag-md-icon-size: 0.875rem;
 
-  --gog-tag-lg-font-size: 1rem;
+  --gog-tag-lg-font-size: var(--gog-text-md);
   --gog-tag-lg-padding-block: var(--gog-space-8);
   --gog-tag-lg-padding-inline: var(--gog-space-14);
   --gog-tag-lg-gap: var(--gog-space-8);
   --gog-tag-lg-icon-size: 1rem;
 
-  --gog-tag-slg-font-size: 1.125rem;
+  --gog-tag-slg-font-size: var(--gog-text-lg);
   --gog-tag-slg-padding-block: var(--gog-space-10);
   --gog-tag-slg-padding-inline: var(--gog-space-16);
   --gog-tag-slg-gap: var(--gog-space-10);
@@ -1900,9 +1900,9 @@
   --gog-toast-icon-size: 1rem;
   --gog-toast-icon-line-height: 1.4;
   --gog-toast-action-padding: var(--gog-space-4) var(--gog-space-8);
-  --gog-toast-action-font-size: 0.75rem;
+  --gog-toast-action-font-size: var(--gog-text-xs);
   --gog-toast-close-padding: var(--gog-space-2) var(--gog-space-4);
-  --gog-toast-close-font-size: 0.75rem;
+  --gog-toast-close-font-size: var(--gog-text-xs);
   --gog-toast-progress-height: 3px;
   --gog-toast-progress-opacity: 30%;
   --gog-toast-transition-duration: 0.25s;
@@ -1970,7 +1970,7 @@
   --gog-toggle-lg-track-height: 32px;
   --gog-toggle-lg-thumb-size: 26px;
   --gog-toggle-lg-label-size: var(--gog-control-checkbox-label-size-lg);
-  --gog-toggle-lg-state-font-size: 0.75rem;
+  --gog-toggle-lg-state-font-size: var(--gog-text-xs);
   --gog-toggle-slg-track-width: 68px;
   --gog-toggle-slg-track-height: 40px;
   --gog-toggle-slg-thumb-size: 34px;
