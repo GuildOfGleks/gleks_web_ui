@@ -38,12 +38,7 @@ delete the section too.
    that a colour difference between the deployed site and a local screenshot is not investigated
    as a bug.
 
-4. **`theme-starter.css` needs regenerating** (`npm run generate:theme-starter`). It is generated
-   from the *published* package, so `npm run check:theme-starter` passes today against 21.8.0 and
-   will fail the moment 21.9.0 is installed: that release adds ten `--gog-*-press-*` tokens the
-   file does not carry yet.
-
-5. **Check the two header toggles' hover.** They show their state by overriding
+4. **Check the two header toggles' hover.** They show their state by overriding
    `--gog-button-ghost-color` (muted when off, accent when on), and 21.9.0 changes a hovered
    ghost button's label to `--gog-text-color` — so while the pointer is on a toggle, that colour
    signal drops out. The icon still differs (`droplet` / `droplet-slash`, `align-left` /
@@ -51,25 +46,25 @@ delete the section too.
    decide by looking whether it wants
    `--gog-button-ghost-hover-color: var(--gog-accent-color)` on the `--active` class.
 
-6. **`GOG_CONFIG` gained `spinner` — the lab's own table needs the row, and it is the one key
+5. **`GOG_CONFIG` gained `spinner` — the lab's own table needs the row, and it is the one key
    that is not a value.** `global-config-data.ts` lists per-component keys and
    `general/global-config` documents them; `spinner.component` takes a *component*, rendered in
    place of the built-in look everywhere the library draws a spinner, so it belongs against
    `gog-spinner`, `gog-button` and `gog-autocomplete` (the last two have no input of their own,
    which is the reason the key exists). `spinner.variant` is the smaller sibling.
 
-7. **The button page gains the toggled look.** `aria-pressed="true"` now draws an inset ring —
+6. **The button page gains the toggled look.** `aria-pressed="true"` now draws an inset ring —
    the API table already lists `ariaPressed` from 21.8.0, but nothing on the page says the state
    is visible now. The showcase's "ARIA state" panel has the wording.
 
-8. **The theme generator and the Theming page gain five new knobs**, all of which are the kind of
+7. **The theme generator and the Theming page gain five new knobs**, all of which are the kind of
    thing that page exists to show off: `--gog-font-weight-*` (four steps),
    `--gog-line-height-*` (six), `--gog-z-base`, `--gog-text-slg` and
    `--gog-control-clear-icon-ratio`. The generator reads the installed package's token list, so
    the tokens appear on their own — the prose about "one number changes the whole library" is
    what needs writing, and `--gog-z-base` is the most demonstrable of them.
 
-9. **The Theming page's `--gog-density` copy can finally be taken literally.** It says the scale
+8. **The Theming page's `--gog-density` copy can finally be taken literally.** It says the scale
    is what "every padding and gap in the library" is built from; until 21.9.0 fourteen lengths
    were bare pixels that ignored it, ten of them spacing (dropdown panel gaps, the menu offset,
    the textarea's clear-button inset, the two error-line offsets, the toggle's in-track
@@ -80,7 +75,7 @@ delete the section too.
    moves. `AGENTS.md`'s `--gog-density` bullet carries the split between what follows density and
    what deliberately does not, and names the check (`check-tokens` rule H) that now enforces it.
 
-10. **The chip page gains `selected`, and it is the page's first tri-state input.** `gog-chip`
+9. **The chip page gains `selected`, and it is the page's first tri-state input.** `gog-chip`
     takes `[(selected)]` since 21.9.0 — `null` (not a toggle, the default), `false` (a toggle
     that is off), `true` (on, drawing `--gog-chip-selected-shadow`). Both halves need writing:
     the API table gets a row, and the prose has to say why `null` exists, because a reader who
@@ -89,7 +84,7 @@ delete the section too.
     unavailable" panels have the wording and a live case for each. The Styling Tokens table picks
     up the two new tokens on its own.
 
-11. **The scroll page gains `horizontalWheel`, and the demo has to include the off case.**
+10. **The scroll page gains `horizontalWheel`, and the demo has to include the off case.**
     `gog-scroll` takes `[horizontalWheel]` since 21.9.0, plus `GOG_CONFIG.scroll.horizontalWheel`
     — so the config table on `general/global-config` needs the row too. The page's prose should
     say what the input does *not* do, because that is the part people get wrong: at the content's
@@ -97,7 +92,7 @@ delete the section too.
     never touched. The showcase's `horizontalWheel` panel puts an off row next to an on row,
     which is the arrangement that makes the difference visible in one screen.
 
-12. **Seven status colours moved, in four presets — expect the compare page and any screenshot to
+11. **Seven status colours moved, in four presets — expect the compare page and any screenshot to
     differ.** `slate` (success/warning/info one step down Tailwind's ramp), `material` (info to
     Light Blue 800), `one-light` (all three darkened), all because a white label on them failed
     AA. `material` and `primeng` additionally declare `--gog-<status>-text-color`, a new token
@@ -105,7 +100,7 @@ delete the section too.
     difference between the deployed site and a local build is not investigated as a bug, the same
     reason item 3 exists.
 
-13. **The button page gains `severity`, and it is the best theming demo the lab has.**
+12. **The button page gains `severity`, and it is the best theming demo the lab has.**
     `gog-button` and `[gogButton]` take `severity` since 21.9.0 — `'accent'` (the default,
     unchanged), `success`, `danger`, `warning`, `info` — orthogonal to `variant`, so the page
     wants a severity x variant grid rather than a row. The API tables need the row on both, and

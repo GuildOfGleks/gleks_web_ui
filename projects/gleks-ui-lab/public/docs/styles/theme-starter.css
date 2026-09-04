@@ -26,6 +26,10 @@
   --gog-text-sm: 0.875rem;
   --gog-text-md: 1rem;
   --gog-text-lg: 1.125rem;
+  /* 20px, between `lg` and `xl`, and named for the control size it serves rather than
+     continuing the t-shirt run: `gog-button` and the field controls both needed a step for
+     their `slg` size and, having none, both wrote `1.25rem` as a literal. */
+  --gog-text-slg: 1.25rem;
   --gog-text-xl: 1.5rem;
   --gog-text-2xl: 2rem;
   --gog-text-3xl: 3rem;
@@ -120,6 +124,23 @@
   --gog-text-transform: uppercase;
   --gog-letter-spacing: 1px;
 
+  /* Weight, the third character axis. Four steps because four are painted — there is no
+     `normal`, since nothing in the library uses 400. Set these and every component weight
+     follows; before them, fifteen component tokens each held a bare number. */
+  --gog-font-weight-medium: 500;
+  --gog-font-weight-semibold: 600;
+  --gog-font-weight-bold: 700;
+  --gog-font-weight-heavy: 900;
+
+  /* Leading, the fourth. Six steps because six values are painted. `gog-panel`'s heading keeps
+     its own 1.25, off this scale on purpose the way an 11px chip is off the type scale. */
+  --gog-line-height-none: 1;
+  --gog-line-height-tight: 1.2;
+  --gog-line-height-snug: 1.3;
+  --gog-line-height-normal: 1.4;
+  --gog-line-height-relaxed: 1.5;
+  --gog-line-height-loose: 1.6;
+
   /* One multiplier under every padding and gap in the library: the 14-step spacing
      scale further down is `calc(Npx * var(--gog-density))`, so 0.9 tightens the whole
      UI and 1.15 opens it up without touching a single component token. Keep it here
@@ -148,6 +169,16 @@
   --gog-focus-ring-width: 3px;
   --gog-focus-ring-offset: 2px;
   --gog-disabled-opacity: 0.4;
+
+  /* The library's stacking floor. Every layer is `base + N` — badge 1, toast 100, dropdowns
+     and dialogs 300, tooltip 400, the blocking spinner overlay 8000 — so lifting the whole
+     library above your own chrome is this one number, with the internal order kept. */
+  --gog-z-base: 0;
+
+  /* The clear (x) button's glyph as a fraction of its box, shared by the five single-line
+     controls that draw one. `gog-textarea` keeps its own 1 on purpose: its clear button sits
+     in a corner rather than in the field's icon row. */
+  --gog-control-clear-icon-ratio: 0.7;
 
   /* Checkbox and radio metrics, per size step (xsm/sm/md/lg/slg). A box is a shape,
      not spacing, so these stay literal and do not follow density. */
@@ -225,6 +256,47 @@
   /* ── Derived foundation tokens ───────────────────────────────────────────────
      Split out of the literal block above because they read other tokens: they have
      to re-resolve inside each theme scope. */
+
+  /* ── Text on a status fill ───────────────────────────────────────────────────
+     `--gog-accent-text-color` means "text on the accent fill" and flips with the theme, which
+     made it the obvious label for a status fill too — `gogBadge` used it for all four. It is
+     wrong for some of them, and silently: measured 2026-09-04, `material`'s amber under white
+     was 1.97:1 and `primeng`'s green 2.28:1, both far under AA, in a pair no check had. The
+     accent is one colour a theme tunes deliberately; the four statuses are four more, and
+     nothing says one label reads on all five.
+
+     So each status names its own, defaulting to the accent's answer because that is right in
+     seven of the eleven themes. A theme states one of these only where its own hue disagrees —
+     `material` puts near-black on its amber, which is Material 3's own convention, and `primeng`
+     does the same on all three of Aura's bright hues. Where *neither* label reached AA the hue
+     itself moved instead; see the preset files. */
+  --gog-success-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-danger-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-warning-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-info-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
+
+  /* Which way a status fill deepens when it is hovered or held: **away from its own label**, so
+     the step always makes the label easier to read rather than harder. That is the theme's ink
+     for a fill wearing the accent's white, which is nine of the eleven themes — and the other way
+     round for the four fills whose label is the ink itself, `material`'s amber and `primeng`'s
+     three, which say so in their own files. Mixing toward a fixed colour instead is what a first
+     pass did, and it cost `primeng`'s info button 6.44:1 down to 4.23:1 on press: deepening
+     toward the ink walked the fill into the label. */
+  --gog-success-shade: var(--gog-text-color);
+  --gog-danger-shade: var(--gog-text-color);
+  --gog-warning-shade: var(--gog-text-color);
+  --gog-info-shade: var(--gog-text-color);
+  /* ── Stacking layers ─────────────────────────────────────────────────────────
+     All five read `--gog-z-base`, so the whole library moves together. The gaps are
+     deliberate: an app that needs to slot its own element between two of these has room
+     without touching the library's numbers. */
+  --gog-badge-z: calc(var(--gog-z-base) + 1);
+  --gog-toast-base-z: calc(var(--gog-z-base) + 100);
+  --gog-dropdown-z: calc(var(--gog-z-base) + 300);
+  --gog-tooltip-z: calc(var(--gog-z-base) + 400);
+  /* The blocking overlay outranks everything, including a dialog it may be covering. */
+  --gog-spinner-overlay-z: calc(var(--gog-z-base) + 8000);
+
   --gog-space-2: calc(2px * var(--gog-density));
   --gog-space-4: calc(4px * var(--gog-density));
   --gog-space-6: calc(6px * var(--gog-density));
@@ -267,6 +339,11 @@
   --gog-panel-radius: calc(var(--gog-radius) + 8px);
   --gog-field-xsm-font-size: var(--gog-text-xs);
   --gog-field-sm-font-size: var(--gog-text-sm);
+  /* The only field metric that is a type size; the rest of this block is geometry. It lives
+     here rather than with them because it reads a token, and a derived value declared on the
+     literals-only `:root` freezes to that scope's scale (rule C). */
+  --gog-field-slg-font-size: var(--gog-text-slg);
+
   --gog-field-md-padding-y: var(--gog-control-padding-y);
   --gog-field-md-padding-x: var(--gog-control-padding-x);
 
@@ -306,13 +383,21 @@
   --gog-accordion-text-color: var(--gog-text-color);
   --gog-accordion-accent-color: var(--gog-accent-color);
   --gog-accordion-hover-bg: var(--gog-hover-color);
+  /* The header's label stays body text while hovered or held, and the lift is carried by the
+     background alone. It turned `--gog-accordion-accent-color` until 21.9.0, which is the accent
+     — on an accent-tinted strip that measured 3.61:1 in light, 3.79:1 in one-light and 4.09:1 in
+     ledger, and worse again once the press deepened the tint. Same trade as the ghost button's
+     hover, and made for the same reason: the accent is not a text colour on a ground that is
+     itself tinted with the accent. */
+  --gog-accordion-hover-color: var(--gog-accordion-text-color);
+  --gog-accordion-press-bg: var(--gog-border-color);
   --gog-accordion-hover-ring: var(--gog-accent-dim);
   --gog-accordion-focus-ring-width: var(--gog-focus-ring-width);
   --gog-accordion-body-color: var(--gog-text-color);
-  --gog-accordion-body-line-height: 1.6;
+  --gog-accordion-body-line-height: var(--gog-line-height-loose);
   --gog-accordion-header-text-transform: var(--gog-text-transform);
   --gog-accordion-header-gap: var(--gog-space-12);
-  --gog-accordion-disabled-opacity: 0.5;
+  --gog-accordion-disabled-opacity: var(--gog-disabled-opacity);
   --gog-accordion-transition-duration: var(--gog-duration-base);
   --gog-accordion-body-transition-duration: var(--gog-duration-slow);
   --gog-accordion-chevron-transition-duration: var(--gog-duration-slow);
@@ -337,7 +422,7 @@
   --gog-accordion-xsm-letter-spacing: 0.2px;
   --gog-accordion-xsm-content-gap: var(--gog-space-2);
   --gog-accordion-xsm-body-font-size: var(--gog-text-xs);
-  --gog-accordion-xsm-body-line-height: 1.5;
+  --gog-accordion-xsm-body-line-height: var(--gog-line-height-relaxed);
   --gog-accordion-xsm-body-padding-top: var(--gog-space-4);
   --gog-accordion-xsm-body-padding-bottom: var(--gog-space-6);
   --gog-accordion-xsm-chevron-size: 11px;
@@ -417,24 +502,30 @@
   --gog-button-md-padding: var(--gog-space-12) var(--gog-space-20);
   --gog-button-lg-padding: var(--gog-space-16) var(--gog-space-24);
   --gog-button-slg-padding: var(--gog-space-20) var(--gog-space-28);
-  --gog-button-xsm-font-size: 0.75rem;
-  --gog-button-sm-font-size: 0.875rem;
-  --gog-button-md-font-size: 1rem;
-  --gog-button-lg-font-size: 1.125rem;
-  --gog-button-slg-font-size: 1.25rem;
+  --gog-button-xsm-font-size: var(--gog-text-xs);
+  --gog-button-sm-font-size: var(--gog-text-sm);
+  --gog-button-md-font-size: var(--gog-text-md);
+  --gog-button-lg-font-size: var(--gog-text-lg);
+  --gog-button-slg-font-size: var(--gog-text-slg);
 
   --gog-button-font-family: var(--gog-font-heading);
-  --gog-button-font-weight: 900;
+  --gog-button-font-weight: var(--gog-font-weight-heavy);
   --gog-button-letter-spacing: var(--gog-letter-spacing);
   --gog-button-text-transform: var(--gog-text-transform);
-  --gog-button-line-height: 1;
+  --gog-button-line-height: var(--gog-line-height-none);
   --gog-button-gap: var(--gog-space-sm);
   --gog-button-radius: var(--gog-radius);
   --gog-button-border-width: var(--gog-control-border-width);
   --gog-button-border-style: var(--gog-control-border-style);
   --gog-button-transition-duration: var(--gog-duration-base);
   --gog-button-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-button-focus-ring-offset: 3px;
+  /* One pixel further out than the foundation ring: a filled surface needs the extra air for
+     the ring to read as separate from the fill. Written as the foundation plus that pixel
+     rather than a flat 3px, so a theme that moves the ring moves this with it. */
+  --gog-button-focus-ring-offset: calc(var(--gog-focus-ring-offset) + 1px);
+  /* Shipped since before the press had a colour, and left spelled `active` on purpose: renaming
+     a token consumers already override needs a deprecation cycle, and this is a patch. The state
+     it names is the same one `--gog-button-press-*` paints. */
   --gog-button-active-scale: 0.97;
   --gog-button-disabled-opacity: var(--gog-disabled-opacity);
   --gog-button-loading-opacity: 0.7;
@@ -467,7 +558,13 @@
   --gog-button-outline-border: var(--gog-accent-color);
   --gog-button-outline-shadow: none;
   --gog-button-outline-hover-bg: var(--gog-accent-color);
-  --gog-button-outline-hover-color: var(--gog-primary-color);
+  /* The label sits on the accent fill once the button is hovered, so it takes the token that
+     means "text on an accent fill" — the same one the two filled variants use. It read
+     `--gog-primary-color` until 21.9.0, which is the colour of text on the *page*, and the
+     result failed WCAG AA in all 11 shipped themes: 1.11:1 in one-dark, 1.41:1 in dark, 3.65:1
+     in light at best. It was invisible to `check:contrast` because that script had no pair for
+     this label, the same way it had none for the hover fill until 2026-08-29. It has both now. */
+  --gog-button-outline-hover-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-button-outline-hover-shadow: none;
   --gog-button-outline-spinner-color: var(--gog-accent-color);
 
@@ -476,9 +573,124 @@
   --gog-button-ghost-border: transparent;
   --gog-button-ghost-shadow: none;
   --gog-button-ghost-hover-bg: var(--gog-hover-color);
-  --gog-button-ghost-hover-color: var(--gog-button-ghost-color);
+  /* The label leaves the accent while the ground is tinted, and that is the only thing that
+     works here. Ghost's resting label *is* `--gog-accent-color`, and its hover tints the ground
+     with the same accent, so the two walk toward each other: measured across all 11 themes, the
+     label fell under 4.5:1 in `light` (3.94), `primeng` (4.18) and `one-light` (4.22). No ground
+     fixes it — a half-strength wash, a neutral `--gog-hover-color`, a text scrim and an
+     accent-dim wash were all measured, and `light` fails every one of them, because
+     `--gog-accent-color` as *text* on that theme's own background is 4.60:1 with no headroom to
+     spend. Moving the label to `--gog-text-color` clears 5.29:1 at worst (one-dark) and leaves
+     the ground exactly as it was, so the hover stays the subtle wash this variant is documented
+     to have. The press then goes the other way and fills — see `-press-bg` below. */
+  --gog-button-ghost-hover-color: var(--gog-text-color);
   --gog-button-ghost-hover-shadow: none;
   --gog-button-ghost-spinner-color: var(--gog-accent-color);
+
+  /* The held state, and the reason it is a colour rather than only the `--gog-button-active-scale`
+     it used to be: `prefers-reduced-motion` switches that transform off, which left a button with
+     no press feedback at all for the readers most likely to need it. A colour change is a state,
+     not a movement — reduced motion keeps it and only drops the scale, and with transitions off it
+     lands instantly. See docs/feedback-triage.md's closing section: reduced motion must remove the
+     animation, not the information.
+
+     Each variant goes one step *deeper* than its own hover, so pressing is distinguishable while
+     hovering, which is the normal case for a pointer. `--gog-accent-dim` is that step for the
+     three accent-carrying variants; ghost has no fill of its own to deepen, so it takes a
+     stronger wash of the same tint its hover uses (see the @supports block at the end of this
+     file for the mixed value and why the flat one above it is not a fallback but the value). */
+  /* The *toggle* state — `aria-pressed="true"`, a button that stays on — as an inset ring rather
+     than a fill. A fill cannot carry it: every other state already owns the background, so a
+     toggled button that is also hovered or held would lose the one thing saying it is on. A ring
+     composes with all of them, and it is the same reasoning that made `gog-button-toggle-group`'s
+     selected option a fill: there, nothing else was competing for the background.
+
+     The ring takes the colour that is guaranteed to read on its own variant — the label colour on
+     the filled two, the accent on the transparent two — so both are pairs `check:contrast`
+     already gates. While toggled, this replaces the variant's `box-shadow`, which costs
+     `primary` its hover glow: the ring is state and the glow is decoration, and a `box-shadow`
+     list cannot hold `none` as a layer, so keeping both was not on offer. */
+  --gog-button-toggled-ring-width: 2px;
+  --gog-button-primary-toggled-shadow: inset 0 0 0 var(--gog-button-toggled-ring-width)
+    var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-button-secondary-toggled-shadow: var(--gog-button-primary-toggled-shadow);
+  --gog-button-outline-toggled-shadow: inset 0 0 0 var(--gog-button-toggled-ring-width)
+    var(--gog-accent-color);
+  --gog-button-ghost-toggled-shadow: var(--gog-button-outline-toggled-shadow);
+
+  --gog-button-primary-press-bg: var(--gog-accent-dim);
+  --gog-button-primary-press-color: var(--gog-button-primary-color);
+  --gog-button-secondary-press-bg: var(--gog-accent-dim);
+  --gog-button-secondary-press-color: var(--gog-button-secondary-color);
+  --gog-button-outline-press-bg: var(--gog-accent-dim);
+  --gog-button-outline-press-color: var(--gog-button-outline-hover-color);
+  /* Ghost presses to the same deep fill as outline, rather than to a wash like every other
+     surface in this file. Measured across all 11 themes: a wash cannot work here, because this
+     button's *label* is the accent, so tinting its ground with the accent walks the two together
+     — a 24% wash put the label under 4.5:1 in seven themes, and `--gog-accent-pale` was either
+     no better or invisible against the hover. A filled press moves the label to
+     `--gog-accent-text-color` instead, which is the pair `check:contrast` already gates, so no
+     future theme can quietly break it. The other eight surfaces keep their washes: their labels
+     are body text, and their worst case across the 11 is 4.80:1. */
+  --gog-button-ghost-press-bg: var(--gog-accent-dim);
+  --gog-button-ghost-press-color: var(--gog-accent-text-color, var(--gog-primary-color));
+
+  /* ── Button severity ─────────────────────────────────────────────────────────
+     `severity` is orthogonal to `variant`: a destructive action can be a filled button, an
+     outlined one or a ghost, and it is still destructive. So this is not a fifth variant — it
+     re-points the *ingredients* the four variants are built from, and the shape rules in
+     `styles/button.css` apply them per variant. Four severities x six ingredients rather than
+     four x four variants x eleven properties, which is what a fifth-variant reading would have
+     cost.
+
+     `-fill` and `-on-fill` are the filled pair, and `-on-fill` is `--gog-<status>-text-color`
+     rather than `--gog-accent-text-color`: see that block near the top of this file for why one
+     label does not read on every status.
+
+     `-ink` is the label a *transparent* variant paints, and it is not the raw status colour. As
+     text on the page, the raw hue clears 4.5:1 in only five of the eleven themes — `primeng`'s
+     amber manages 2.05:1 — so it is mixed toward the theme's own ink until it does. The 50% is
+     measured rather than chosen: `material`'s amber is the binding case and needs the hue below
+     54%, so 50 clears every theme with a little headroom. It costs saturation on the themes that
+     never needed it; a theme that wants the colour back overrides `--gog-button-<status>-ink`
+     directly, which is one token rather than a dial nobody would find. Mixing toward `--gog-text-color` rather than a
+     fixed black is what makes one number work on light and dark alike — the ink is dark on one
+     and light on the other, and both directions move *away* from the ground.
+
+     The hover and press fills move the same way, one small step and one larger, so a severity
+     button's states step the way an accent one's do. Moving toward the ink also moves away from
+     `-on-fill` in the seven themes where that is the accent's white-or-near-black, so the label
+     gets easier rather than harder; in the four where `-on-fill` *is* the ink, the rest state
+     starts at 6.44:1 or better and a 24% step cannot spend that. The flat values here are what a
+     browser without `color-mix()` renders — no step, the same graceful nothing the ghost button
+     degrades to — and the mixed ones are in the @supports block at the end of this file. */
+  --gog-button-success-fill: var(--gog-success-color);
+  --gog-button-success-on-fill: var(--gog-success-text-color);
+  --gog-button-success-fill-hover: var(--gog-success-color);
+  --gog-button-success-fill-press: var(--gog-success-color);
+  --gog-button-success-ink: var(--gog-success-color);
+  --gog-button-success-wash: transparent;
+
+  --gog-button-danger-fill: var(--gog-danger-color);
+  --gog-button-danger-on-fill: var(--gog-danger-text-color);
+  --gog-button-danger-fill-hover: var(--gog-danger-color);
+  --gog-button-danger-fill-press: var(--gog-danger-color);
+  --gog-button-danger-ink: var(--gog-danger-color);
+  --gog-button-danger-wash: transparent;
+
+  --gog-button-warning-fill: var(--gog-warning-color);
+  --gog-button-warning-on-fill: var(--gog-warning-text-color);
+  --gog-button-warning-fill-hover: var(--gog-warning-color);
+  --gog-button-warning-fill-press: var(--gog-warning-color);
+  --gog-button-warning-ink: var(--gog-warning-color);
+  --gog-button-warning-wash: transparent;
+
+  --gog-button-info-fill: var(--gog-info-color);
+  --gog-button-info-on-fill: var(--gog-info-text-color);
+  --gog-button-info-fill-hover: var(--gog-info-color);
+  --gog-button-info-fill-press: var(--gog-info-color);
+  --gog-button-info-ink: var(--gog-info-color);
+  --gog-button-info-wash: transparent;
 
   /* ── Button toggle group ───────────────────────────────────────────────────
      `--gog-button-toggle-bg`, `-color`, `-padding` and `-font-size` are intentionally NOT
@@ -486,10 +698,10 @@
      Padding/font-size reuse the `--gog-button-<size>-*` scale so a toggle group and a
      `<gog-button>` at the same `size` line up in a toolbar. */
   --gog-button-toggle-font-family: var(--gog-font-heading);
-  --gog-button-toggle-font-weight: 700;
+  --gog-button-toggle-font-weight: var(--gog-font-weight-bold);
   --gog-button-toggle-letter-spacing: 0.5px;
   --gog-button-toggle-text-transform: var(--gog-text-transform);
-  --gog-button-toggle-line-height: 1;
+  --gog-button-toggle-line-height: var(--gog-line-height-none);
   --gog-button-toggle-gap: var(--gog-space-sm);
   --gog-button-toggle-icon-size: 1.1em;
   --gog-button-toggle-radius: var(--gog-radius);
@@ -499,15 +711,19 @@
   --gog-button-toggle-rest-bg: transparent;
   --gog-button-toggle-rest-color: var(--gog-text-color);
   --gog-button-toggle-hover-bg: var(--gog-hover-color);
+  --gog-button-toggle-press-bg: var(--gog-border-color);
   --gog-button-toggle-hover-color: var(--gog-text-color);
   --gog-button-toggle-selected-bg: var(--gog-accent-color);
   --gog-button-toggle-selected-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-button-toggle-selected-border-color: var(--gog-accent-color);
+  /* A selected option is already filled with the accent, so its press deepens the fill the way
+     the filled button variants do rather than washing over it. */
+  --gog-button-toggle-selected-press-bg: var(--gog-accent-dim);
   --gog-button-toggle-separated-gap: var(--gog-space-sm);
   --gog-button-toggle-transition-duration: var(--gog-duration-base);
   --gog-button-toggle-disabled-opacity: var(--gog-disabled-opacity);
   --gog-button-toggle-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-button-toggle-focus-ring-offset: 2px;
+  --gog-button-toggle-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-button-toggle-focus-ring-color: var(--gog-accent-color);
 
   /* ── Calendar (the month grid inside gog-datepicker, and gog-calendar on its own) ── */
@@ -518,10 +734,10 @@
   --gog-calendar-max-width: max-content;
   --gog-calendar-padding: var(--gog-space-12);
   --gog-calendar-header-gap: var(--gog-space-4);
-  --gog-calendar-header-margin: 8px;
+  --gog-calendar-header-margin: var(--gog-space-8);
   --gog-calendar-months-gap: var(--gog-space-16);
   --gog-calendar-title-color: var(--gog-text-color);
-  --gog-calendar-title-font-weight: 700;
+  --gog-calendar-title-font-weight: var(--gog-font-weight-bold);
   --gog-calendar-nav-size: 28px;
   --gog-calendar-nav-radius: calc(var(--gog-radius) - 2px);
   --gog-calendar-nav-bg: transparent;
@@ -534,7 +750,7 @@
   --gog-calendar-weekday-padding: var(--gog-space-4) 0;
   --gog-calendar-weekday-color: var(--gog-muted-text-color);
   --gog-calendar-weekday-font-size: var(--gog-text-xs);
-  --gog-calendar-weekday-font-weight: 600;
+  --gog-calendar-weekday-font-weight: var(--gog-font-weight-semibold);
   --gog-calendar-weekday-text-transform: var(--gog-text-transform);
   --gog-calendar-day-radius: calc(var(--gog-radius) - 2px);
   --gog-calendar-day-border-width: var(--gog-border-width);
@@ -544,10 +760,10 @@
   --gog-calendar-day-hover-bg: var(--gog-hover-color);
   --gog-calendar-day-outside-color: var(--gog-muted-text-color);
   --gog-calendar-today-border-color: var(--gog-accent-color);
-  --gog-calendar-today-font-weight: 700;
+  --gog-calendar-today-font-weight: var(--gog-font-weight-bold);
   --gog-calendar-selected-bg: var(--gog-accent-color);
   --gog-calendar-selected-color: var(--gog-accent-text-color, var(--gog-primary-color));
-  --gog-calendar-selected-font-weight: 700;
+  --gog-calendar-selected-font-weight: var(--gog-font-weight-bold);
   /* The wash between the two ends of a range: same hue, low enough to read as a band rather
      than as a second selection. */
   --gog-calendar-range-bg: var(--gog-accent-pale);
@@ -555,13 +771,16 @@
   --gog-calendar-disabled-opacity: var(--gog-disabled-opacity);
   --gog-calendar-transition-duration: var(--gog-duration-fast);
   --gog-calendar-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-calendar-focus-ring-offset: -2px;
+  /* Inset rather than outset: the month grid packs its cells edge to edge, so an outward ring
+     would sit on top of the neighbouring day. Negated from the foundation so a theme still
+     controls how far it sits from the cell edge. */
+  --gog-calendar-focus-ring-offset: calc(var(--gog-focus-ring-offset) * -1);
   --gog-calendar-focus-ring-color: var(--gog-accent-color);
   --gog-calendar-divider-width: 1px;
   --gog-calendar-divider-style: solid;
   --gog-calendar-divider-color: var(--gog-border-color);
   --gog-calendar-time-gap: var(--gog-space-6);
-  --gog-calendar-time-margin: 10px;
+  --gog-calendar-time-margin: var(--gog-space-10);
   --gog-calendar-time-input-width: 3.5rem;
   --gog-calendar-time-input-padding: var(--gog-space-4) var(--gog-space-6);
   --gog-calendar-time-input-bg: var(--gog-background-color);
@@ -592,8 +811,8 @@
   --gog-card-heading-color: var(--gog-text-color);
   --gog-card-heading-font-family: var(--gog-font-heading);
   --gog-card-heading-font-size: var(--gog-text-lg);
-  --gog-card-heading-font-weight: 600;
-  --gog-card-heading-line-height: 1.3;
+  --gog-card-heading-font-weight: var(--gog-font-weight-semibold);
+  --gog-card-heading-line-height: var(--gog-line-height-snug);
 
   --gog-card-outlined-bg: var(--gog-surface-color);
   --gog-card-outlined-border-color: var(--gog-border-color);
@@ -649,7 +868,7 @@
   --gog-checkbox-checked-border: var(--gog-accent-color);
   --gog-checkbox-icon-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-checkbox-label-color: var(--gog-muted-text-color);
-  --gog-checkbox-label-line-height: 1.3;
+  --gog-checkbox-label-line-height: var(--gog-line-height-snug);
   --gog-checkbox-focus-ring: var(--gog-accent-pale);
   --gog-checkbox-focus-ring-width: var(--gog-focus-ring-width);
   --gog-checkbox-focus-ring-offset: var(--gog-focus-ring-offset);
@@ -678,7 +897,7 @@
   --gog-radio-dot-color: var(--gog-accent-color);
   --gog-radio-dot-size-ratio: 0.45;
   --gog-radio-label-color: var(--gog-muted-text-color);
-  --gog-radio-label-line-height: 1.3;
+  --gog-radio-label-line-height: var(--gog-line-height-snug);
   --gog-radio-focus-ring: var(--gog-accent-pale);
   --gog-radio-focus-ring-width: var(--gog-focus-ring-width);
   --gog-radio-focus-ring-offset: var(--gog-focus-ring-offset);
@@ -694,12 +913,13 @@
   --gog-chip-font-family: inherit;
   --gog-chip-bg: var(--gog-surface-color);
   --gog-chip-hover-bg: var(--gog-hover-color);
+  --gog-chip-press-bg: var(--gog-border-color);
   --gog-chip-border: var(--gog-border-color);
   --gog-chip-border-width: var(--gog-border-width);
   --gog-chip-border-style: var(--gog-border-style);
   --gog-chip-color: var(--gog-text-color);
-  --gog-chip-font-weight: 500;
-  --gog-chip-line-height: 1.2;
+  --gog-chip-font-weight: var(--gog-font-weight-medium);
+  --gog-chip-line-height: var(--gog-line-height-tight);
   --gog-chip-radius: max(var(--gog-radius), 2px);
   --gog-chip-pill-radius: 9999px;
   --gog-chip-remove-color: var(--gog-muted-text-color);
@@ -707,7 +927,16 @@
   --gog-chip-remove-scale: 1.1;
   --gog-chip-avatar-inset-ratio: 0.9;
   --gog-chip-remove-inset-ratio: 0.85;
-  --gog-chip-disabled-opacity: 0.55;
+  --gog-chip-disabled-opacity: var(--gog-disabled-opacity);
+  /* A selected filter chip (`[(selected)]`, 21.9.0). An inset ring for the reason
+     `--gog-button-primary-toggled-shadow` gives: hover and press own the background, and a
+     selected chip has to stay selected while it is also hovered or held. The accent, so it is
+     the same pair the focus ring is already gated on — and unlike the button there is only one
+     chip variant, so one token covers it. Override this token on the host to restyle a single
+     chip. */
+  --gog-chip-selected-ring-width: 2px;
+  --gog-chip-selected-shadow: inset 0 0 0 var(--gog-chip-selected-ring-width)
+    var(--gog-accent-color);
   --gog-chip-focus-ring-width: 2px;
   --gog-chip-focus-ring-offset: var(--gog-focus-ring-offset);
 
@@ -719,7 +948,7 @@
   --gog-chip-xsm-icon-size: 0.6875rem;
   --gog-chip-xsm-remove-size: 0.75rem;
 
-  --gog-chip-sm-font-size: 0.75rem;
+  --gog-chip-sm-font-size: var(--gog-text-xs);
   --gog-chip-sm-padding-block: var(--gog-space-4);
   --gog-chip-sm-padding-inline: var(--gog-space-8);
   --gog-chip-sm-gap: var(--gog-space-6);
@@ -727,7 +956,7 @@
   --gog-chip-sm-icon-size: 0.75rem;
   --gog-chip-sm-remove-size: 0.875rem;
 
-  --gog-chip-md-font-size: 0.875rem;
+  --gog-chip-md-font-size: var(--gog-text-sm);
   --gog-chip-md-padding-block: var(--gog-space-8);
   --gog-chip-md-padding-inline: var(--gog-space-12);
   --gog-chip-md-gap: var(--gog-space-8);
@@ -735,7 +964,7 @@
   --gog-chip-md-icon-size: 0.875rem;
   --gog-chip-md-remove-size: 1rem;
 
-  --gog-chip-lg-font-size: 1rem;
+  --gog-chip-lg-font-size: var(--gog-text-md);
   --gog-chip-lg-padding-block: var(--gog-space-10);
   --gog-chip-lg-padding-inline: var(--gog-space-14);
   --gog-chip-lg-gap: var(--gog-space-10);
@@ -743,7 +972,7 @@
   --gog-chip-lg-icon-size: 1rem;
   --gog-chip-lg-remove-size: 1.125rem;
 
-  --gog-chip-slg-font-size: 1.125rem;
+  --gog-chip-slg-font-size: var(--gog-text-lg);
   --gog-chip-slg-padding-block: var(--gog-space-12);
   --gog-chip-slg-padding-inline: var(--gog-space-16);
   --gog-chip-slg-gap: var(--gog-space-12);
@@ -776,7 +1005,7 @@
   --gog-dialog-body-padding: var(--gog-space-20);
   --gog-dialog-body-max-height: calc(var(--gog-dialog-max-height) - 60px);
   --gog-dialog-close-size: 2rem;
-  --gog-dialog-close-font-size: 0.875rem;
+  --gog-dialog-close-font-size: var(--gog-text-sm);
   --gog-dialog-close-color: var(--gog-muted-text-color);
   --gog-dialog-close-hover-color: var(--gog-text-color);
   --gog-dialog-close-hover-bg: var(--gog-hover-color);
@@ -805,7 +1034,7 @@
   --gog-autocomplete-gap: var(--gog-space-4);
   --gog-autocomplete-label-color: var(--gog-accent-color);
   --gog-autocomplete-label-font-size: var(--gog-text-sm);
-  --gog-autocomplete-label-font-weight: 600;
+  --gog-autocomplete-label-font-weight: var(--gog-font-weight-semibold);
   --gog-autocomplete-label-letter-spacing: var(--gog-letter-spacing);
   --gog-autocomplete-label-text-transform: var(--gog-text-transform);
   --gog-autocomplete-field-bg: var(--gog-surface-color);
@@ -816,7 +1045,7 @@
   --gog-autocomplete-border-color: var(--gog-accent-dim);
   --gog-autocomplete-hover-border-color: var(--gog-accent-color);
   --gog-autocomplete-radius: var(--gog-radius);
-  --gog-autocomplete-line-height: 1.4;
+  --gog-autocomplete-line-height: var(--gog-line-height-normal);
   --gog-autocomplete-transition-duration: var(--gog-duration-base);
   --gog-autocomplete-disabled-opacity: var(--gog-disabled-opacity);
   --gog-autocomplete-focus-ring-width: var(--gog-focus-ring-width);
@@ -836,7 +1065,7 @@
   --gog-autocomplete-actions-reserve: 40px;
   --gog-autocomplete-clear-color: var(--gog-autocomplete-placeholder-color);
   --gog-autocomplete-clear-hover-color: var(--gog-autocomplete-label-color);
-  --gog-autocomplete-clear-icon-ratio: 0.7;
+  --gog-autocomplete-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   --gog-autocomplete-spinner-size: 0.875rem;
   /* Panel */
   --gog-autocomplete-panel-bg: var(--gog-surface-color);
@@ -855,9 +1084,15 @@
   --gog-autocomplete-option-gap: var(--gog-space-10);
   --gog-autocomplete-option-color: var(--gog-text-color);
   --gog-autocomplete-option-hover-bg: var(--gog-hover-color);
+  --gog-autocomplete-option-press-bg: var(--gog-border-color);
   --gog-autocomplete-option-hover-color: var(--gog-text-color);
   --gog-autocomplete-option-selected-bg: var(--gog-accent-pale);
-  --gog-autocomplete-option-selected-color: var(--gog-accent-color);
+  /* Body text, not the accent. The selected row is the one option that carries a tint *and* a
+     coloured label, and the accent on that tint measured 4.12:1 in light — `--gog-accent-dim` is
+     worse again (3.77:1 in one-dark). `gog-select` gets away with an accent label because its
+     selected option has no tint behind it. The tint stays as the marker, alongside
+     `aria-selected`. */
+  --gog-autocomplete-option-selected-color: var(--gog-text-color);
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-autocomplete-option-height: 36px;
@@ -871,8 +1106,8 @@
   /* ── Badge (the `gogBadge` directive; its classes live in utilities.css) ───── */
   --gog-badge-font-family: var(--gog-font-body);
   --gog-badge-font-size: var(--gog-text-xs);
-  --gog-badge-font-weight: 600;
-  --gog-badge-line-height: 1;
+  --gog-badge-font-weight: var(--gog-font-weight-semibold);
+  --gog-badge-line-height: var(--gog-line-height-none);
   /* Min-width *and* height: a one-digit badge stays a circle, a three-digit one grows
      sideways only. */
   --gog-badge-size: 1.25rem;
@@ -880,22 +1115,24 @@
   --gog-badge-padding-inline: var(--gog-space-4);
   --gog-badge-radius: 999px;
   /* How far the badge hangs outside its host's corner. */
-  --gog-badge-offset: 6px;
+  --gog-badge-offset: var(--gog-space-6);
   --gog-badge-border-width: 0;
   --gog-badge-border-style: var(--gog-border-style);
   --gog-badge-border-color: transparent;
   /* Above the host's own chrome but below any overlay panel (--gog-dropdown-z is 300). */
-  --gog-badge-z: 1;
-  /* `--gog-accent-text-color` is the palette's "text on a filled surface" colour and flips
-     with the theme, which is why a red badge reads white on light and near-black on dark. */
+  /* Each label is its status's own "text on this fill" token, which flips with the theme — a red
+     badge reads white on light and near-black on dark. It read `--gog-accent-text-color` for all
+     four until 21.9.0, on the assumption that one label works on every fill; four themes proved
+     otherwise, `material`'s amber under white at 1.97:1 the worst of them. See the
+     `--gog-<status>-text-color` block near the top of this file. */
   --gog-badge-success-bg: var(--gog-success-color);
-  --gog-badge-success-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-success-color: var(--gog-success-text-color);
   --gog-badge-danger-bg: var(--gog-danger-color);
-  --gog-badge-danger-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-danger-color: var(--gog-danger-text-color);
   --gog-badge-warning-bg: var(--gog-warning-color);
-  --gog-badge-warning-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-warning-color: var(--gog-warning-text-color);
   --gog-badge-info-bg: var(--gog-info-color);
-  --gog-badge-info-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-info-color: var(--gog-info-text-color);
 
   /* ── Datepicker (the field; the grid inside it is themed by --gog-calendar-*) ───
      `--gog-datepicker-bg`, `-color`, `-font-size`, `-padding-x` and `-padding-y` are
@@ -916,7 +1153,7 @@
   --gog-datepicker-border-color: var(--gog-accent-dim);
   --gog-datepicker-hover-border-color: var(--gog-accent-color);
   --gog-datepicker-radius: var(--gog-radius);
-  --gog-datepicker-line-height: 1.4;
+  --gog-datepicker-line-height: var(--gog-line-height-normal);
   --gog-datepicker-transition-duration: var(--gog-duration-base);
   --gog-datepicker-disabled-opacity: var(--gog-disabled-opacity);
   --gog-datepicker-focus-ring-width: var(--gog-focus-ring-width);
@@ -935,7 +1172,7 @@
   --gog-datepicker-icon-hover-color: var(--gog-accent-bright);
   --gog-datepicker-toggle-icon-size: 1rem;
   --gog-datepicker-clear-color: var(--gog-datepicker-placeholder-color);
-  --gog-datepicker-clear-icon-ratio: 0.7;
+  --gog-datepicker-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   --gog-datepicker-panel-bg: var(--gog-surface-color);
   --gog-datepicker-panel-shadow: var(--gog-panel-shadow);
   --gog-datepicker-panel-border-width: var(--gog-panel-border-width);
@@ -969,8 +1206,8 @@
   --gog-divider-label-color: var(--gog-muted-text-color);
   --gog-divider-label-font-family: var(--gog-font-body);
   --gog-divider-label-font-size: var(--gog-text-sm);
-  --gog-divider-label-font-weight: 500;
-  --gog-divider-label-line-height: 1.4;
+  --gog-divider-label-font-weight: var(--gog-font-weight-medium);
+  --gog-divider-label-line-height: var(--gog-line-height-normal);
 
   /* ── Icon ──────────────────────────────────────────────────────────────────── */
   --gog-icon-fallback-size: 1em;
@@ -997,7 +1234,13 @@
   --gog-input-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-input-error-color: var(--gog-danger-color);
   --gog-input-error-font-size: var(--gog-text-xs);
-  --gog-input-error-offset: 2px;
+  /* Extra space above the error line, *on top of* the host's own `--gog-input-gap`, which
+     already separates every child of the field. It shipped as `2px` and put this field's error
+     6px under it while `gog-select`, `gog-autocomplete` and `gog-datepicker` — same gap, no
+     offset — sat at 4px; in one form the six did not line up. Zero by default since 21.9.0, so
+     one mechanism spaces the error line everywhere. Set it if you want this field's error
+     pushed further than the rest. */
+  --gog-input-error-offset: 0px;
   --gog-input-icon-color: var(--gog-muted-text-color);
   --gog-input-icon-hover-color: var(--gog-accent-color);
   --gog-input-icon-action-radius: calc(var(--gog-radius) - 4px);
@@ -1008,9 +1251,20 @@
   --gog-input-disabled-opacity: var(--gog-disabled-opacity);
   --gog-input-transition-duration: var(--gog-duration-base);
   /* Float label — also used by gog-textarea, which shares the --gog-input-* block. */
-  /* Clear button — only rendered once the field has text, see `clearable`. */
-  --gog-input-clear-radius: 2px;
-  --gog-input-clear-icon-ratio: 0.7;
+  /* Clear button — only rendered once the field has text, see `clearable`.
+
+     A quarter of the corner radius rather than a flat `2px`, which is what this was until
+     21.9.0: at the default `--gog-radius: 8px` it computes to the same 2px, so nothing moves in
+     any shipped theme, but a theme that rounds its corners now rounds this button too. The
+     literal was invisible to `check-tokens` rule G by design — that rule flags a literal only
+     when its value *equals* a character token's current one, so a pill's `999px` is correctly
+     left alone and a small arbitrary number like this one is correctly not detectable. The two
+     sibling controls below carry the same fix.
+
+     `gog-toast` and `gog-accordion` keep their flat `0px` on purpose: those are a chosen shape,
+     not a number that forgot where it came from. */
+  --gog-input-clear-radius: calc(var(--gog-radius) / 4);
+  --gog-input-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   /*
      The textarea's clear button gets a full-size glyph. The 0.7 ratio above suits the dense
      single-line trigger of a dropdown; on a large multi-line box it reads as a speck.
@@ -1035,7 +1289,7 @@
   */
   --gog-textarea-resize-inset-right: 0px;
   --gog-textarea-resize-inset-bottom: 0px;
-  --gog-input-clear-inset: 8px;
+  --gog-input-clear-inset: var(--gog-space-8);
   /*
      Width of one stepper button, and so of the whole stepper column. Scales with the field's
      own font size rather than being a fixed px value, so it stays proportional across the five
@@ -1076,21 +1330,23 @@
   --gog-multiselect-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-multiselect-error-color: var(--gog-danger-color);
   --gog-multiselect-error-font-size: var(--gog-text-xs);
-  --gog-multiselect-error-offset: 2px;
+  /* Zero by default since 21.9.0 — see `--gog-input-error-offset` for why. */
+  --gog-multiselect-error-offset: 0px;
   --gog-multiselect-border-color: var(--gog-accent-color);
   --gog-multiselect-panel-bg: var(--gog-surface-color);
   --gog-multiselect-panel-border: var(--gog-accent-color);
   --gog-multiselect-panel-shadow: var(--gog-panel-shadow);
   --gog-multiselect-panel-max-height: 260px;
-  --gog-multiselect-panel-offset: 2px;
+  --gog-multiselect-panel-offset: var(--gog-space-2);
   --gog-multiselect-option-hover-bg: var(--gog-hover-color);
+  --gog-multiselect-option-press-bg: var(--gog-border-color);
   --gog-multiselect-option-color: var(--gog-text-color);
   --gog-multiselect-option-gap-inline: var(--gog-space-10);
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-multiselect-option-height: 40px;
   --gog-multiselect-option-radius: calc(var(--gog-radius) - 2px);
-  --gog-multiselect-option-disabled-opacity: 0.5;
+  --gog-multiselect-option-disabled-opacity: var(--gog-disabled-opacity);
   --gog-multiselect-option-transition-duration: var(--gog-duration-fast);
   --gog-multiselect-checkbox-border: var(--gog-accent-dim);
   --gog-multiselect-checkbox-bg: var(--gog-background-color);
@@ -1119,7 +1375,8 @@
   --gog-multiselect-min-width: 120px;
   --gog-multiselect-panel-max-width: 420px;
   --gog-multiselect-actions-inset: var(--gog-control-icon-offset);
-  --gog-multiselect-clear-radius: 2px;
+  /* A quarter of the corner radius — see `--gog-input-clear-radius` for why. */
+  --gog-multiselect-clear-radius: calc(var(--gog-radius) / 4);
   --gog-multiselect-disabled-opacity: var(--gog-disabled-opacity);
   --gog-multiselect-transition-duration: var(--gog-duration-base);
   --gog-multiselect-float-label-reserve: var(--gog-field-float-label-reserve);
@@ -1128,7 +1385,7 @@
   --gog-multiselect-float-label-over-reserve: var(--gog-field-float-label-over-reserve);
   --gog-multiselect-arrow-transition-duration: var(--gog-duration-slow);
   /* Icon geometry, expressed as a ratio of the control's font size. */
-  --gog-multiselect-clear-icon-ratio: 0.7;
+  --gog-multiselect-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   --gog-multiselect-arrow-icon-ratio: 0.875;
   --gog-multiselect-mark-size-ratio: 1.2375;
   --gog-multiselect-mark-icon-ratio: 1.125;
@@ -1146,7 +1403,7 @@
   --gog-menu-font-family: var(--gog-font-body);
   --gog-menu-padding: var(--gog-space-4);
   --gog-menu-gap: var(--gog-space-2);
-  --gog-menu-offset: 4px;
+  --gog-menu-offset: var(--gog-space-4);
   --gog-menu-min-width: 180px;
   --gog-menu-max-width: 320px;
   --gog-menu-max-height: 320px;
@@ -1155,6 +1412,11 @@
   --gog-menu-focus-ring-width: var(--gog-focus-ring-width);
   --gog-menu-item-color: var(--gog-text-color);
   --gog-menu-item-hover-bg: var(--gog-hover-color);
+  /* The held state, same idea as the button's: one step past this surface's own hover, as a
+     colour rather than a movement, so `prefers-reduced-motion` cannot take it away. The flat
+     value here is what a browser without `color-mix()` gets; the tinted one is in the @supports
+     block at the end of the file. */
+  --gog-menu-item-press-bg: var(--gog-border-color);
   --gog-menu-item-hover-color: var(--gog-text-color);
   --gog-menu-item-font-size: var(--gog-text-sm);
   --gog-menu-item-padding: var(--gog-space-8) var(--gog-space-12);
@@ -1162,7 +1424,7 @@
   --gog-menu-item-gap: var(--gog-space-sm);
   --gog-menu-item-disabled-opacity: var(--gog-disabled-opacity);
   --gog-menu-item-disabled-color: var(--gog-muted-text-color);
-  --gog-menu-item-line-height: 1.4;
+  --gog-menu-item-line-height: var(--gog-line-height-normal);
   --gog-menu-item-icon-size: 1em;
 
   /* ── Paginator ─────────────────────────────────────────────────────────────── */
@@ -1192,7 +1454,7 @@
   --gog-panel-heading-color: var(--gog-text-color);
   --gog-panel-heading-font-family: var(--gog-font-heading);
   --gog-panel-heading-font-size: var(--gog-text-xl);
-  --gog-panel-heading-font-weight: 600;
+  --gog-panel-heading-font-weight: var(--gog-font-weight-semibold);
   --gog-panel-heading-line-height: 1.25;
 
   --gog-panel-outlined-bg: var(--gog-surface-color);
@@ -1356,8 +1618,9 @@
   --gog-select-filter-empty-padding: var(--gog-space-10);
   --gog-select-filter-empty-color: var(--gog-select-placeholder-color);
   /* Clear button — only rendered once a value is selected, see `clearable`. */
-  --gog-select-clear-radius: 2px;
-  --gog-select-clear-icon-ratio: 0.7;
+  /* A quarter of the corner radius — see `--gog-input-clear-radius` for why. */
+  --gog-select-clear-radius: calc(var(--gog-radius) / 4);
+  --gog-select-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   --gog-select-clear-gap: var(--gog-space-6);
   --gog-select-clear-color: var(--gog-select-placeholder-color);
   --gog-select-clear-hover-color: var(--gog-select-label-color);
@@ -1365,15 +1628,16 @@
   --gog-select-panel-bg: var(--gog-surface-color);
   --gog-select-panel-shadow: var(--gog-panel-shadow);
   --gog-select-panel-max-height: 260px;
-  --gog-select-panel-offset: 2px;
+  --gog-select-panel-offset: var(--gog-space-2);
   --gog-select-option-hover-bg: var(--gog-hover-color);
+  --gog-select-option-press-bg: var(--gog-border-color);
   --gog-select-option-selected-color: var(--gog-accent-color);
   --gog-select-option-color: var(--gog-text-color);
   --gog-select-option-gap: var(--gog-space-10);
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-select-option-height: 40px;
-  --gog-select-option-disabled-opacity: 0.5;
+  --gog-select-option-disabled-opacity: var(--gog-disabled-opacity);
   --gog-select-option-transition-duration: var(--gog-duration-fast);
   /* Icon geometry, expressed as a ratio of the control's font size. */
   --gog-select-chevron-icon-ratio: 0.875;
@@ -1566,16 +1830,24 @@
      `--gog-tabs-indicator-offset` / `-length` are written as inline styles from the measured
      header geometry, so they are not declared either. */
   --gog-tabs-font-family: var(--gog-font-heading);
-  --gog-tabs-font-weight: 700;
+  --gog-tabs-font-weight: var(--gog-font-weight-bold);
   --gog-tabs-letter-spacing: 0.4px;
   --gog-tabs-text-transform: none;
-  --gog-tabs-line-height: 1.2;
+  --gog-tabs-line-height: var(--gog-line-height-tight);
   --gog-tabs-gap: 0px;
   --gog-tabs-tab-gap: var(--gog-space-sm);
   --gog-tabs-icon-size: 1.1em;
   --gog-tabs-rest-bg: transparent;
   --gog-tabs-rest-color: var(--gog-muted-text-color);
   --gog-tabs-hover-color: var(--gog-text-color);
+  /* Tabs paint no background at rest and none on hover — the press is the only one they get,
+     which is why this token has no hover counterpart to step past. */
+  --gog-tabs-press-bg: var(--gog-border-color);
+  /* A resting tab's label is deliberately muted, and muted text has no contrast headroom to
+     spend on a tinted ground: on the press wash it fell to 3.24:1 in one-dark and under 4.5 in
+     six other themes. The press takes the full text colour instead — which is also what pressing
+     a tab is about to make it. */
+  --gog-tabs-press-color: var(--gog-text-color);
   --gog-tabs-active-color: var(--gog-accent-color);
   --gog-tabs-header-border-width: var(--gog-border-width);
   --gog-tabs-header-border-style: var(--gog-border-style);
@@ -1586,7 +1858,8 @@
   --gog-tabs-transition-duration: var(--gog-duration-base);
   --gog-tabs-disabled-opacity: var(--gog-disabled-opacity);
   --gog-tabs-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-tabs-focus-ring-offset: -2px;
+  /* Inset, for the same reason as the calendar cell: tabs sit shoulder to shoulder. */
+  --gog-tabs-focus-ring-offset: calc(var(--gog-focus-ring-offset) * -1);
   --gog-tabs-focus-ring-color: var(--gog-accent-color);
   --gog-tabs-panel-padding: var(--gog-space-md);
   --gog-tabs-panel-color: var(--gog-text-color);
@@ -1617,8 +1890,8 @@
   --gog-tag-border-width: var(--gog-border-width);
   --gog-tag-border-style: var(--gog-border-style);
   --gog-tag-inner-border-width: var(--gog-border-width);
-  --gog-tag-font-weight: 600;
-  --gog-tag-line-height: 1;
+  --gog-tag-font-weight: var(--gog-font-weight-semibold);
+  --gog-tag-line-height: var(--gog-line-height-none);
   --gog-tag-radius: max(var(--gog-radius), 2px);
   --gog-tag-pill-radius: 9999px;
 
@@ -1628,25 +1901,25 @@
   --gog-tag-xsm-gap: var(--gog-space-2);
   --gog-tag-xsm-icon-size: 0.6875rem;
 
-  --gog-tag-sm-font-size: 0.75rem;
+  --gog-tag-sm-font-size: var(--gog-text-xs);
   --gog-tag-sm-padding-block: var(--gog-space-4);
   --gog-tag-sm-padding-inline: var(--gog-space-8);
   --gog-tag-sm-gap: var(--gog-space-4);
   --gog-tag-sm-icon-size: 0.75rem;
 
-  --gog-tag-md-font-size: 0.875rem;
+  --gog-tag-md-font-size: var(--gog-text-sm);
   --gog-tag-md-padding-block: var(--gog-space-6);
   --gog-tag-md-padding-inline: var(--gog-space-12);
   --gog-tag-md-gap: var(--gog-space-6);
   --gog-tag-md-icon-size: 0.875rem;
 
-  --gog-tag-lg-font-size: 1rem;
+  --gog-tag-lg-font-size: var(--gog-text-md);
   --gog-tag-lg-padding-block: var(--gog-space-8);
   --gog-tag-lg-padding-inline: var(--gog-space-14);
   --gog-tag-lg-gap: var(--gog-space-8);
   --gog-tag-lg-icon-size: 1rem;
 
-  --gog-tag-slg-font-size: 1.125rem;
+  --gog-tag-slg-font-size: var(--gog-text-lg);
   --gog-tag-slg-padding-block: var(--gog-space-10);
   --gog-tag-slg-padding-inline: var(--gog-space-16);
   --gog-tag-slg-gap: var(--gog-space-10);
@@ -1669,17 +1942,16 @@
   --gog-toast-main-gap: var(--gog-space-sm);
   --gog-toast-actions-gap: var(--gog-space-6);
   --gog-toast-message-font-size: var(--gog-text-sm);
-  --gog-toast-message-line-height: 1.5;
+  --gog-toast-message-line-height: var(--gog-line-height-relaxed);
   --gog-toast-icon-size: 1rem;
-  --gog-toast-icon-line-height: 1.4;
+  --gog-toast-icon-line-height: var(--gog-line-height-normal);
   --gog-toast-action-padding: var(--gog-space-4) var(--gog-space-8);
-  --gog-toast-action-font-size: 0.75rem;
+  --gog-toast-action-font-size: var(--gog-text-xs);
   --gog-toast-close-padding: var(--gog-space-2) var(--gog-space-4);
-  --gog-toast-close-font-size: 0.75rem;
+  --gog-toast-close-font-size: var(--gog-text-xs);
   --gog-toast-progress-height: 3px;
   --gog-toast-progress-opacity: 30%;
   --gog-toast-transition-duration: 0.25s;
-  --gog-toast-base-z: 100;
   /* Card-stack geometry */
   --gog-toast-stack-peek: 14px;
   --gog-toast-stack-scale-step: 0.06;
@@ -1709,16 +1981,16 @@
   --gog-toggle-transition-duration: var(--gog-duration-base);
   --gog-toggle-disabled-opacity: var(--gog-disabled-opacity);
   --gog-toggle-label-color: var(--gog-text-color);
-  --gog-toggle-label-line-height: 1.4;
+  --gog-toggle-label-line-height: var(--gog-line-height-normal);
   --gog-toggle-focus-ring-width: var(--gog-focus-ring-width);
   --gog-toggle-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-toggle-focus-ring-color: var(--gog-accent-color);
   /* In-track on/off wording */
   --gog-toggle-state-color: var(--gog-accent-text-color, var(--gog-primary-color));
-  --gog-toggle-state-font-weight: 600;
+  --gog-toggle-state-font-weight: var(--gog-font-weight-semibold);
   --gog-toggle-state-letter-spacing: 0.04em;
   --gog-toggle-state-padding-inline: var(--gog-space-4);
-  --gog-toggle-state-offset: 6px;
+  --gog-toggle-state-offset: var(--gog-space-6);
   /* Gap between the wording and the thumb parked at the opposite end. The clearance itself
      (thumb size + this) is computed in the component stylesheet, not here: a `var(` to a
      size-class token is substituted where it is *declared*, so doing that calc on :root would
@@ -1743,7 +2015,7 @@
   --gog-toggle-lg-track-height: 32px;
   --gog-toggle-lg-thumb-size: 26px;
   --gog-toggle-lg-label-size: var(--gog-control-checkbox-label-size-lg);
-  --gog-toggle-lg-state-font-size: 0.75rem;
+  --gog-toggle-lg-state-font-size: var(--gog-text-xs);
   --gog-toggle-slg-track-width: 68px;
   --gog-toggle-slg-track-height: 40px;
   --gog-toggle-slg-thumb-size: 34px;
@@ -1753,7 +2025,7 @@
   /* ── Tooltip ──────────────────────────────────────────────────────────────── */
   --gog-tooltip-font-family: var(--gog-font-body);
   --gog-tooltip-font-size: var(--gog-text-xs);
-  --gog-tooltip-line-height: 1.4;
+  --gog-tooltip-line-height: var(--gog-line-height-normal);
   --gog-tooltip-padding: var(--gog-space-6) var(--gog-space-10);
   --gog-tooltip-radius: var(--gog-radius);
   --gog-tooltip-max-width: 280px;
@@ -1776,7 +2048,6 @@
   /* Space kept between the trigger and the bubble. Read by the directive itself (not just
      CSS) to feed the placement math — see `readPxToken` in `tooltip.directive.ts`. */
   --gog-tooltip-gap: var(--gog-space-8);
-  --gog-tooltip-z: 400;
   --gog-tooltip-transition-duration: var(--gog-duration-fast);
 }
 /* theme-starter:derived-end */
