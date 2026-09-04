@@ -4,7 +4,13 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [21.9.0] - planned
+## [21.9.1] - 04.09.2026
+
+### Fixed
+
+- version and commit history
+
+## [21.9.0] - 04.09.2026
 
 ### Added
 

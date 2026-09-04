@@ -1,6 +1,6 @@
 {
   "name": "@guildofgleks/ui",
-  "version": "21.8.0",
+  "version": "21.9.1",
   "engines": {
     "node": ">=20.19.0"
   },
