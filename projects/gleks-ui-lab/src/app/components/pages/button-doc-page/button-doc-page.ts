@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import {
   ButtonComponent,
   GogButtonDirective,
+  GogSeverity,
   GogSize,
   GogVariant,
   IconComponent,
@@ -27,6 +28,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: "'primary' | 'secondary' | 'outline' | 'ghost'",
     default: "'primary'",
     description: 'Visual style of the button.',
+  },
+  {
+    name: 'severity',
+    type: "'accent' | 'success' | 'danger' | 'warning' | 'info'",
+    default: "'accent'",
+    description:
+      'What the action means, as opposed to how loudly it is drawn. Orthogonal to variant, so every combination is real: a ghost delete is still a delete. accent is the absence of a claim and leaves the button exactly as it was.',
+    since: '21.9.0',
   },
   {
     name: 'size',
@@ -124,6 +133,14 @@ const DIRECTIVE_INPUTS: readonly ApiInputRow[] = [
     description: 'Visual style — the same four the component offers.',
   },
   {
+    name: 'severity',
+    type: "'accent' | 'success' | 'danger' | 'warning' | 'info'",
+    default: "'accent'",
+    description:
+      'What the action means, as opposed to how loudly it is drawn. Orthogonal to variant, so every combination is real: a ghost delete is still a delete. accent is the absence of a claim. The same input the component takes.',
+    since: '21.9.0',
+  },
+  {
     name: 'size',
     type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'",
     default: "'md'",
@@ -156,6 +173,7 @@ const DIRECTIVE_INPUTS: readonly ApiInputRow[] = [
 export class ButtonDocPage {
   protected readonly variants: GogVariant[] = ['primary', 'secondary', 'outline', 'ghost'];
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
+  protected readonly severities: GogSeverity[] = ['success', 'danger', 'warning', 'info'];
 
   protected readonly apiInputs = API_INPUTS;
   protected readonly directiveInputs = DIRECTIVE_INPUTS;
@@ -236,6 +254,31 @@ export class ButtonDocPage {
     '<gog-button variant="outline" size="md">Outline</gog-button>',
     '<gog-button variant="ghost" size="md">Ghost</gog-button>',
   ].join('\n');
+  protected readonly severityHtml = [
+    '@for (severity of severities; track severity) {',
+    '  @for (variant of variants; track variant) {',
+    '    <gog-button [variant]="variant" [severity]="severity">{{ variant }}</gog-button>',
+    '  }',
+    '}',
+  ].join('\n');
+  protected readonly severityTs = [
+    "import { Component } from '@angular/core';",
+    "import { ButtonComponent, GogSeverity, GogVariant } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent],',
+    '  template: `',
+    '    <gog-button severity="danger" (gogClick)="deleteAccount()">Delete account</gog-button>',
+    '    <gog-button variant="outline" severity="warning">Discard draft</gog-button>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    "  protected readonly variants: GogVariant[] = ['primary', 'secondary', 'outline', 'ghost'];",
+    "  protected readonly severities: GogSeverity[] = ['success', 'danger', 'warning', 'info'];",
+    '}',
+  ].join('\n');
+
   protected readonly variantsTs = [
     "import { Component } from '@angular/core';",
     "import { ButtonComponent } from '@guildofgleks/ui';",

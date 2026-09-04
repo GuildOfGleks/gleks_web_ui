@@ -46,6 +46,44 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">
+        Severity
+        <app-since version="21.9.0" />
+      </h3>
+      <p class="demo-card__meta">
+        <code>severity</code> says what the action <em>means</em>; <code>variant</code> says how
+        loudly it is drawn. The two are orthogonal, so this is not a fifth variant — every cell
+        below is a real combination, and a ghost delete is still a delete. <code>"accent"</code> is
+        the default and the absence of a claim, which is why every other button on this page needs
+        no opt-out.
+      </p>
+      <div class="demo-card__preview variant-grid">
+        @for (severity of severities; track severity) {
+          <div class="variant-row">
+            <span class="variant-row__label">{{ severity }}</span>
+            @for (variant of variants; track variant) {
+              <gog-button [variant]="variant" [severity]="severity">{{ variant }}</gog-button>
+            }
+          </div>
+        }
+      </div>
+      <p class="demo-card__meta">
+        <strong>Now switch the theme with the toggle in the header and look again.</strong> This
+        grid is the best demonstration of the token layering the
+        <a routerLink="/general/theming">Theming</a> guide describes, because three separate
+        decisions are visible in it at once. A filled button's label is the colour its own theme
+        states for that status, and it is stated per status rather than per theme: under
+        <code>primeng</code>, success, warning and info carry a near-black label because white would
+        be unreadable on those three, while danger keeps white because on that hue it is fine. Hover
+        and press deepen the fill <em>away</em> from that label, so a state always makes the label
+        easier to read rather than harder. And the outlined and ghost labels are not the raw status
+        colour at all but that hue mixed halfway toward the page's ink, because as body text the raw
+        hue clears WCAG AA in only five of the eleven shipped themes.
+      </p>
+      <app-code-tabs [html]="severityHtml" [ts]="severityTs" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Disabled</h3>
       <p class="demo-card__meta">
         One disabled button per variant — disabled state must stay legible on every color.

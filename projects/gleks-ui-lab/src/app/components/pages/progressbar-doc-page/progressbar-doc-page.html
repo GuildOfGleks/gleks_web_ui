@@ -55,6 +55,12 @@
         <code>accent</code> is the default — progress is usually just "the app is working", which is
         not one of the four status hues.
       </p>
+      <p class="demo-card__meta">
+        This vocabulary is shared: since 21.9.0 it is exported as <code>GogSeverity</code> and
+        <code>GogProgressbarVariant</code> is an alias of it, so the five names here are the same
+        five <a routerLink="/components/button">gog-button</a>'s <code>severity</code> takes. Both
+        spellings keep working.
+      </p>
       <div class="demo-card__preview progressbar-demo__stack">
         @for (variantOption of variants; track variantOption) {
           <div>
