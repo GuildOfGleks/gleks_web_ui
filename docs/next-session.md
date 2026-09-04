@@ -60,10 +60,21 @@ In the order the project's own rule puts them (fixes and polish before anything 
   Resolve through a canvas 2D context, or use `scripts/token-color.mjs`, which does it properly
   and is now the shared resolver for both contrast checks.
 
-## What the token audit did not cover
+## What the token audit did not cover — **done 2026-09-04**
 
-Every family was measured except `-offset` (13 literals), `-inset` (7) and `-max-height` (7).
-They were skipped for time, not because they are known to be clean; the same script shape as
-`scripts/_geo.mjs` (deleted, but three lines of `buildLayers` + a filter) answers it in a minute.
-The four families that were audited each turned up exactly one real finding, so the base rate
-suggests these three are worth an hour.
+`-offset`, `-inset` and `-max-height` were audited, and the base rate held: fourteen findings,
+all in 21.8.1 now. `-max-height` was clean — its seven literals are arbitrary per-component caps
+with no foundation token behind them. The other two, plus `-margin` (added to the sweep once
+`-offset` showed what the name filter was missing), gave ten lengths that restated a
+`--gog-space-*` step and so ignored `--gog-density` in the nine themes that set it, and four
+focus rings that restated `--gog-focus-ring-offset` instead of reading it.
+
+**The durable part is that `check-tokens` rule H already existed and covered only `-padding` and
+`-gap`** — it was written for the two families the density work had just converted, and the other
+four were never added. That is where all ten were hiding. The filter now covers six.
+
+Two findings were filed rather than fixed, both in `docs/backlog.md`: three of the six fields put
+no space above their error line (the only change in the pass that would move a pixel in a shipped
+app, and it wants one shared token rather than three more), and the same overlay gap is spelled
+`-panel-gap` in two components and `-panel-offset` in three, which is a rename and so a
+deprecation cycle.

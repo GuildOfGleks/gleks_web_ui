@@ -168,6 +168,16 @@ reason may stop holding.
   token declarations are literals, and a character layer replaces per-component literals with
   inherited foundation tokens. Doing that first may make this entry moot.
 
+- **Three of the six fields put no space above their error line.** `gog-inputfield`,
+  `gog-textarea` and `gog-multiselect` read an error offset (`--gog-input-error-offset` /
+  `--gog-multiselect-error-offset`, both `--gog-space-2` since 21.8.1); `gog-select`,
+  `gog-autocomplete` and `gog-datepicker` set no margin at all, so their error text sits tight
+  against the field. In one form, side by side, the six do not line up. Found 2026-09-04 by the
+  `-offset`/`-inset`/`-margin` audit, and deliberately not fixed there: the three missing offsets
+  are the only change in that pass that would move a pixel in a shipped app, and the right fix is
+  probably one shared `--gog-field-error-offset` the six read rather than three more
+  per-component tokens — which is a decision, not a correction.
+
 ---
 
 ## Structural — each needs its own deprecation cycle
@@ -184,6 +194,16 @@ can land without an announced removal window.
   (`GogDateRange`, `GogOptionAccessor`). Counted 2026-08-15. Nothing is broken by it, but every one
   is API someone can depend on and nobody decided to support, so the fix is a named export list —
   which is a breaking change and therefore needs its own deprecation window, not a slot in 21.5.0.
+
+- **The same overlay gap has two names.** Five components place a panel with
+  `calc(100% + <token>)`, and they split on what to call it: `gog-autocomplete` and
+  `gog-datepicker` use `--gog-*-panel-gap`, `gog-select` and `gog-multiselect` use
+  `--gog-*-panel-offset`, and `gog-menu` uses `--gog-menu-offset`. A consumer who learns one
+  spelling guesses wrong on the next component. All five now hold the same value and follow
+  `--gog-density` (21.8.1), so nothing is broken — but settling on one name renames tokens
+  consumers already override, which is a deprecation cycle. `-gap` is the better name of the two:
+  an offset is a displacement from where a thing would otherwise be, and this is the space
+  between two things. Found 2026-09-04 while auditing the `-offset` family.
 
 - **Secondary entry points** (`@guildofgleks/ui/select`, …). Filed twice — `consumer-dx-plan.md`
   had it as build ergonomics rather than bytes, which is the same conclusion from the other end.

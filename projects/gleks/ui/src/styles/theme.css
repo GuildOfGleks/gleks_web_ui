@@ -605,7 +605,10 @@
   --gog-button-border-style: var(--gog-control-border-style);
   --gog-button-transition-duration: var(--gog-duration-base);
   --gog-button-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-button-focus-ring-offset: 3px;
+  /* One pixel further out than the foundation ring: a filled surface needs the extra air for
+     the ring to read as separate from the fill. Written as the foundation plus that pixel
+     rather than a flat 3px, so a theme that moves the ring moves this with it. */
+  --gog-button-focus-ring-offset: calc(var(--gog-focus-ring-offset) + 1px);
   /* Shipped since before the press had a colour, and left spelled `active` on purpose: renaming
      a token consumers already override needs a deprecation cycle, and this is a patch. The state
      it names is the same one `--gog-button-press-*` paints. */
@@ -749,7 +752,7 @@
   --gog-button-toggle-transition-duration: var(--gog-duration-base);
   --gog-button-toggle-disabled-opacity: var(--gog-disabled-opacity);
   --gog-button-toggle-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-button-toggle-focus-ring-offset: 2px;
+  --gog-button-toggle-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-button-toggle-focus-ring-color: var(--gog-accent-color);
 
   /* ── Calendar (the month grid inside gog-datepicker, and gog-calendar on its own) ── */
@@ -760,7 +763,7 @@
   --gog-calendar-max-width: max-content;
   --gog-calendar-padding: var(--gog-space-12);
   --gog-calendar-header-gap: var(--gog-space-4);
-  --gog-calendar-header-margin: 8px;
+  --gog-calendar-header-margin: var(--gog-space-8);
   --gog-calendar-months-gap: var(--gog-space-16);
   --gog-calendar-title-color: var(--gog-text-color);
   --gog-calendar-title-font-weight: var(--gog-font-weight-bold);
@@ -797,13 +800,16 @@
   --gog-calendar-disabled-opacity: var(--gog-disabled-opacity);
   --gog-calendar-transition-duration: var(--gog-duration-fast);
   --gog-calendar-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-calendar-focus-ring-offset: -2px;
+  /* Inset rather than outset: the month grid packs its cells edge to edge, so an outward ring
+     would sit on top of the neighbouring day. Negated from the foundation so a theme still
+     controls how far it sits from the cell edge. */
+  --gog-calendar-focus-ring-offset: calc(var(--gog-focus-ring-offset) * -1);
   --gog-calendar-focus-ring-color: var(--gog-accent-color);
   --gog-calendar-divider-width: 1px;
   --gog-calendar-divider-style: solid;
   --gog-calendar-divider-color: var(--gog-border-color);
   --gog-calendar-time-gap: var(--gog-space-6);
-  --gog-calendar-time-margin: 10px;
+  --gog-calendar-time-margin: var(--gog-space-10);
   --gog-calendar-time-input-width: 3.5rem;
   --gog-calendar-time-input-padding: var(--gog-space-4) var(--gog-space-6);
   --gog-calendar-time-input-bg: var(--gog-background-color);
@@ -1129,7 +1135,7 @@
   --gog-badge-padding-inline: var(--gog-space-4);
   --gog-badge-radius: 999px;
   /* How far the badge hangs outside its host's corner. */
-  --gog-badge-offset: 6px;
+  --gog-badge-offset: var(--gog-space-6);
   --gog-badge-border-width: 0;
   --gog-badge-border-style: var(--gog-border-style);
   --gog-badge-border-color: transparent;
@@ -1245,7 +1251,7 @@
   --gog-input-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-input-error-color: var(--gog-danger-color);
   --gog-input-error-font-size: var(--gog-text-xs);
-  --gog-input-error-offset: 2px;
+  --gog-input-error-offset: var(--gog-space-2);
   --gog-input-icon-color: var(--gog-muted-text-color);
   --gog-input-icon-hover-color: var(--gog-accent-color);
   --gog-input-icon-action-radius: calc(var(--gog-radius) - 4px);
@@ -1294,7 +1300,7 @@
   */
   --gog-textarea-resize-inset-right: 0px;
   --gog-textarea-resize-inset-bottom: 0px;
-  --gog-input-clear-inset: 8px;
+  --gog-input-clear-inset: var(--gog-space-8);
   /*
      Width of one stepper button, and so of the whole stepper column. Scales with the field's
      own font size rather than being a fixed px value, so it stays proportional across the five
@@ -1335,13 +1341,13 @@
   --gog-multiselect-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-multiselect-error-color: var(--gog-danger-color);
   --gog-multiselect-error-font-size: var(--gog-text-xs);
-  --gog-multiselect-error-offset: 2px;
+  --gog-multiselect-error-offset: var(--gog-space-2);
   --gog-multiselect-border-color: var(--gog-accent-color);
   --gog-multiselect-panel-bg: var(--gog-surface-color);
   --gog-multiselect-panel-border: var(--gog-accent-color);
   --gog-multiselect-panel-shadow: var(--gog-panel-shadow);
   --gog-multiselect-panel-max-height: 260px;
-  --gog-multiselect-panel-offset: 2px;
+  --gog-multiselect-panel-offset: var(--gog-space-2);
   --gog-multiselect-option-hover-bg: var(--gog-hover-color);
   --gog-multiselect-option-press-bg: var(--gog-border-color);
   --gog-multiselect-option-color: var(--gog-text-color);
@@ -1407,7 +1413,7 @@
   --gog-menu-font-family: var(--gog-font-body);
   --gog-menu-padding: var(--gog-space-4);
   --gog-menu-gap: var(--gog-space-2);
-  --gog-menu-offset: 4px;
+  --gog-menu-offset: var(--gog-space-4);
   --gog-menu-min-width: 180px;
   --gog-menu-max-width: 320px;
   --gog-menu-max-height: 320px;
@@ -1632,7 +1638,7 @@
   --gog-select-panel-bg: var(--gog-surface-color);
   --gog-select-panel-shadow: var(--gog-panel-shadow);
   --gog-select-panel-max-height: 260px;
-  --gog-select-panel-offset: 2px;
+  --gog-select-panel-offset: var(--gog-space-2);
   --gog-select-option-hover-bg: var(--gog-hover-color);
   --gog-select-option-press-bg: var(--gog-border-color);
   --gog-select-option-selected-color: var(--gog-accent-color);
@@ -1862,7 +1868,8 @@
   --gog-tabs-transition-duration: var(--gog-duration-base);
   --gog-tabs-disabled-opacity: var(--gog-disabled-opacity);
   --gog-tabs-focus-ring-width: var(--gog-focus-ring-width);
-  --gog-tabs-focus-ring-offset: -2px;
+  /* Inset, for the same reason as the calendar cell: tabs sit shoulder to shoulder. */
+  --gog-tabs-focus-ring-offset: calc(var(--gog-focus-ring-offset) * -1);
   --gog-tabs-focus-ring-color: var(--gog-accent-color);
   --gog-tabs-panel-padding: var(--gog-space-md);
   --gog-tabs-panel-color: var(--gog-text-color);
@@ -1993,7 +2000,7 @@
   --gog-toggle-state-font-weight: var(--gog-font-weight-semibold);
   --gog-toggle-state-letter-spacing: 0.04em;
   --gog-toggle-state-padding-inline: var(--gog-space-4);
-  --gog-toggle-state-offset: 6px;
+  --gog-toggle-state-offset: var(--gog-space-6);
   /* Gap between the wording and the thumb parked at the opposite end. The clearance itself
      (thumb size + this) is computed in the component stylesheet, not here: a `var(` to a
      size-class token is substituted where it is *declared*, so doing that calc on :root would

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Enforces the design-token contract from .github/instructions/styling.instructions.md
-// ("Theming via CSS custom properties — the three layers"). Seven rules:
+// ("Theming via CSS custom properties — the three layers"). Nine rules:
 //
 //   A. no-literal-fallback   A component stylesheet must not carry a real default in a
 //                            var() fallback. `var(--gog-x, 8px)` puts the value in a file
@@ -53,6 +53,14 @@
 //                            half of "give themes foundation tokens worth setting" — without
 //                            it, a component added in a hurry silently reintroduces the exact
 //                            drift the character layer exists to end.
+//
+//   H. density-drift         The spacing half of G: a length token that restates a
+//                            `--gog-space-*` step's value as a bare literal, and so stops
+//                            following `--gog-density`. Full reasoning at the rule itself.
+//
+//   I. ramp-collision        A theme's ramps must be ramps — give two steps of one the same
+//                            colour and a state stops being visible. Full reasoning at the
+//                            rule itself.
 
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -555,7 +563,32 @@ async function main() {
   // A padding or gap written as a literal is invisible to `--gog-density`, which is how the
   // library got 177 of them in two different units: each was correct where it was typed, and
   // together they made theme-level density impossible.
+  //
+  // The name filter grew on 2026-09-04 from `-padding`/`-gap` to the four other families that
+  // hold the same kind of number. It was written for the two the density work had just
+  // converted, and the families it left out kept drifting quietly for three releases: an
+  // audit of `-offset`, `-inset` and `-margin` found ten literals, among them the dropdown
+  // panel gap, where `gog-autocomplete` and `gog-datepicker` read the scale while `gog-select`
+  // and `gog-multiselect` restated `2px`. At the default density all four render the same, so
+  // nothing looked wrong; in `terminal` (0.85) two panels moved and two did not.
   const SCALE_STEP = /^--gog-space-(\d+)$/;
+
+  /**
+   * Rule-H exceptions: a length that matches a scale step by coincidence rather than by
+   * meaning, so following `--gog-density` would be wrong.
+   */
+  const DENSITY_EXEMPT = new Set([
+    // Both sit inside a track whose own width is a fixed px (`--gog-scroll-normal-track-width`,
+    // and the toggle's size tiers). Scaling the inset without the track it fits into is what
+    // would break them.
+    '--gog-scroll-thumb-inset',
+    '--gog-toggle-thumb-inset',
+  ]);
+  // Every focus-ring offset, foundation and component alike: the ring is an accessibility
+  // affordance rather than page rhythm, so a compact theme must not shrink it. Matched by name
+  // instead of listed, because the right answer for a component's ring is to read
+  // `--gog-focus-ring-offset` — which this rule would otherwise send toward `--gog-space-2`.
+  const DENSITY_EXEMPT_RE = /focus-ring-offset$/;
   const scaleSteps = new Map(); // px at density 1 -> token name
   for (const { name } of themeDecls) {
     const step = SCALE_STEP.exec(name);
@@ -568,7 +601,8 @@ async function main() {
   };
   for (const { name, value, index } of themeDecls) {
     if (SCALE_STEP.test(name)) continue; // the scale itself
-    if (!/-(padding|gap)(-[a-z]+)?$/.test(name)) continue;
+    if (DENSITY_EXEMPT.has(name) || DENSITY_EXEMPT_RE.test(name)) continue;
+    if (!/-(padding|gap|offset|inset|margin)(-[a-z]+)?$/.test(name)) continue;
     if (value.includes('var(')) continue;
     for (const part of value.trim().split(/\s+/)) {
       const px = lengthToPx(part);

@@ -5,8 +5,8 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.8.0`** (in progress — the
-released version is 21.7.2; see `CHANGELOG.md` for what 21.8.0 adds). 21.7.0 removed the three
+Everything below reflects the library's actual source as of **`21.8.1`** (in progress — the
+released version is 21.8.0; see `CHANGELOG.md` for what 21.8.1 adds). 21.7.0 removed the three
 abbreviated token prefixes and 21.5.0 removed a batch of deprecated API — see **Removed in 21.7.0**
 and **Removed in 21.5.0** near the end of this file, which exist so code written against an older
 version can be migrated — and `CHANGELOG.md` has the rest. `README.md` covers the same ground at a
@@ -199,8 +199,12 @@ Full model is in `README.md`'s Theming section; short version:
   for their pixel value at density 1, and every padding and gap in the library derives from a
   step. `--gog-density: 0.9` in a `[data-theme]` block makes the whole library tighter; nothing
   else needs to be named. `--gog-space-xs|sm|md|lg|2xl` are aliases for steps 4/8/16/24/48 and
-  still work. Icon offsets follow density; the glyph box, focus-ring offset and float-label
-  reserve deliberately do not — they are legibility, not spacing.
+  still work. Icon offsets, dropdown panel gaps, error-line offsets and the badge's overhang
+  follow density; the glyph box, the focus-ring offset, the float-label reserve and the
+  scrollbar/toggle thumb insets deliberately do not — those are legibility or geometry fitted to
+  a fixed-width track, not spacing. Since 21.8.1 the split is enforced rather than trusted:
+  `check-tokens` rule H fails the build on a length token that restates a scale step's value as
+  a bare literal, with the three exceptions named in the script.
 - **Component prefixes are spelled out** since 21.5.0: `--gog-button-*`, `--gog-multiselect-*`,
   `--gog-confirmation-dialog-*`. The abbreviated `--gog-btn-*`, `--gog-ms-*` and `--gog-confirm-*`
   were removed in 21.7.0 — if you're reading a codebase or an example that still uses one, rename

@@ -245,6 +245,39 @@ reached 1.0, so breaking changes may land in minor versions.
   under a label is what raised the bar. The nudge moves it toward this palette's own `#61afef`,
   so unlike 21.7.0's two comment-colour corrections it costs no fidelity.
 
+- **Ten pieces of geometry ignored `--gog-density`, and nine of the eleven themes set it.**
+  `terminal` runs at 0.85, `one-dark`/`one-light`/`bevel`/`ledger` at 0.9, `primeng` at 0.95,
+  `slate` at 1.05, `material`/`parchment` at 1.1 — so in every one of them these ten stayed at
+  the pixel they were typed as while everything around them moved. The clearest case is the gap
+  between a dropdown and its panel: `gog-autocomplete` and `gog-datepicker` read `--gog-space-2`,
+  while `gog-select` and `gog-multiselect` restated `2px`, so in `terminal` two of the four
+  panels drew closer to their field and two did not. Also converted: `--gog-menu-offset` (which
+  sat between `--gog-menu-padding` and `--gog-menu-gap`, both already reading the scale),
+  `--gog-input-clear-inset` (the textarea's clear button — the other four clearable fields place
+  their chrome from `--gog-control-icon-offset`), the two error-line offsets, the toggle's
+  in-track wording clearance, the badge's overhang, and the calendar's header and time-row
+  margins. Each now reads its scale step, so all ten render exactly as before at the default
+  density and follow the theme everywhere else.
+
+- **Four focus rings did not follow `--gog-focus-ring-offset`.** `gog-button-toggle` restated
+  its `2px` on the line directly after reading `--gog-focus-ring-width` from the foundation;
+  `gog-button` used `3px`; `gog-calendar` and `gog-tabs` used `-2px` to sit the ring inside a
+  cell, because both pack their cells edge to edge and an outward ring lands on the neighbour.
+  All four now derive from the foundation token — `var(…)`, `calc(… + 1px)` and `calc(… * -1)` —
+  so a theme that moves the ring moves them with it, and the two negative values now say in the
+  file why they are negative. No rendered value changes.
+
+- **`check-tokens` rule H only covered two of the six families that hold a spacing number.**
+  The density check was written for `-padding` and `-gap`, the two the density work had just
+  converted, and `-offset`, `-inset` and `-margin` went unwatched for three releases — which is
+  where all ten literals above were hiding. The name filter now covers all six, and exempts the
+  lengths that match a scale step by coincidence rather than by meaning: every
+  `*-focus-ring-offset` (an accessibility affordance, which a compact theme must not shrink, and
+  which a component should answer by reading the foundation ring rather than a spacing step),
+  plus the scrollbar and toggle thumb insets, both fitted to a track whose own width is a fixed
+  pixel value. The script's header now also lists rules H and I, which had been in it unlisted
+  since they were added.
+
 ## [21.8.0] - 03.09.2026
 
 ### Added

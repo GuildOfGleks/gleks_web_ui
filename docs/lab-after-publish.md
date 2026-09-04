@@ -69,6 +69,17 @@ delete the section too.
    the tokens appear on their own — the prose about "one number changes the whole library" is
    what needs writing, and `--gog-z-base` is the most demonstrable of them.
 
+9. **The Theming page's `--gog-density` copy can finally be taken literally.** It says the scale
+   is what "every padding and gap in the library" is built from; until 21.8.1 fourteen lengths
+   were bare pixels that ignored it, ten of them spacing (dropdown panel gaps, the menu offset,
+   the textarea's clear-button inset, the two error-line offsets, the toggle's in-track
+   clearance, the badge's overhang, the calendar's two margins) and four focus rings that
+   restated `--gog-focus-ring-offset`. Nothing on the page is *wrong* today, so this is not a
+   correction — it is that the density demo now has a visible effect it did not have, and the
+   dropdown panel gap is the one to show: set the generator's density to 0.85 and the panel
+   moves. `AGENTS.md`'s `--gog-density` bullet carries the split between what follows density and
+   what deliberately does not, and names the check (`check-tokens` rule H) that now enforces it.
+
 ## Checking your work
 
 `npm run check:app-contrast` — WCAG AA for both apps' **own** chrome, in all 11 themes. The lab
