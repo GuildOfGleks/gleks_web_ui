@@ -55,6 +55,22 @@
   background-color: var(--gog-chip-press-bg);
 }
 
+/*
+ * A selected filter chip, as an inset ring rather than a fill. The same reasoning as
+ * `gog-button`'s toggled ring, and for the same reason it had to be settled there first: hover
+ * and press already own this surface's background, so a selected chip painted with a fill would
+ * lose the one thing saying it is on the moment the pointer arrived. A ring is what they cannot
+ * take, and it needs no source-order tie-break here — those two rules set `background-color` and
+ * this one sets `box-shadow`.
+ *
+ * Keyed off the host class rather than `[aria-pressed='true']`, unlike the button: a chip drops
+ * the attribute when it is disabled, since `aria-pressed` needs the `role="button"` that goes
+ * with it, and a selected-but-unavailable chip should still look selected.
+ */
+:host(.gog-chip--selected) .gog-chip__surface {
+  box-shadow: var(--gog-chip-selected-shadow);
+}
+
 .gog-chip__surface[aria-disabled='true'] {
   opacity: var(--gog-chip-disabled-opacity);
   pointer-events: none;

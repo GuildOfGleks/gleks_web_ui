@@ -80,6 +80,15 @@ delete the section too.
    moves. `AGENTS.md`'s `--gog-density` bullet carries the split between what follows density and
    what deliberately does not, and names the check (`check-tokens` rule H) that now enforces it.
 
+10. **The chip page gains `selected`, and it is the page's first tri-state input.** `gog-chip`
+    takes `[(selected)]` since 21.8.1 — `null` (not a toggle, the default), `false` (a toggle
+    that is off), `true` (on, drawing `--gog-chip-selected-shadow`). Both halves need writing:
+    the API table gets a row, and the prose has to say why `null` exists, because a reader who
+    sees `boolean | null` and assumes `false` is the default will conclude the library puts
+    `aria-pressed` on every chip. The showcase's "Filter chips (selected)" and "Selected, and
+    unavailable" panels have the wording and a live case for each. The Styling Tokens table picks
+    up the two new tokens on its own.
+
 ## Checking your work
 
 `npm run check:app-contrast` — WCAG AA for both apps' **own** chrome, in all 11 themes. The lab

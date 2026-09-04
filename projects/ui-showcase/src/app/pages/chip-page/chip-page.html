@@ -41,6 +41,37 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader>Filter chips (selected)</h3>
+    <p class="meta">
+      <code>[(selected)]</code> makes a chip a toggle: it flips itself on click, Enter and Space,
+      draws an inset ring while it is on, and announces <code>aria-pressed</code> either way. It is
+      tri-state — the default <code>null</code> is not a toggle at all, which is why every chip
+      above still behaves exactly as it did. The ring rather than a fill because hover and press
+      already own the background; hover a selected chip and the ring stays.
+    </p>
+    <div class="chip-grid">
+      @for (topic of topics; track topic.label) {
+        <gog-chip [(selected)]="topic.on">{{ topic.label }}</gog-chip>
+      }
+    </div>
+    <p class="meta">{{ selectedTopics() }}</p>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Selected, and unavailable</h3>
+    <p class="meta">
+      A disabled chip keeps its ring. The state is real — this filter is on, you just cannot change
+      it right now — so dropping the look would leave it announced to a screen reader and invisible
+      to everyone else. The <code>aria-pressed</code> attribute does go, because it needs the
+      <code>role="button"</code> that a disabled chip does not carry.
+    </p>
+    <div class="chip-grid">
+      <gog-chip [selected]="true" [disabled]="true">Locked filter (on)</gog-chip>
+      <gog-chip [selected]="false" [disabled]="true">Locked filter (off)</gog-chip>
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Avatar + removable</h3>
     <p class="meta">The two features compose — an avatar chip can also be removable.</p>
     <div class="chip-grid">

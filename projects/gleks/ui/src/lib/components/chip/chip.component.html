@@ -3,6 +3,7 @@
   [attr.aria-label]="ariaLabel() || null"
   [attr.aria-disabled]="disabled() ? 'true' : null"
   [attr.role]="isInteractive() ? 'button' : null"
+  [attr.aria-pressed]="ariaPressed()"
   [attr.tabindex]="isInteractive() ? 0 : null"
   [style.cursor]="isInteractive() ? 'pointer' : 'default'"
   (click)="onChipClick($event)"

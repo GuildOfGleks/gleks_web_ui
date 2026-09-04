@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { ChipComponent, GogPanelHeaderDirective, PanelComponent } from '@guildofgleks/ui';
 
 interface ChipPerson {
@@ -35,6 +35,22 @@ export class ChipPage {
         "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><rect width='64' height='64' rx='32' fill='%237a5c00'/><text x='32' y='38' text-anchor='middle' font-size='24' font-family='Arial' fill='white'>PP</text></svg>",
     },
   ]);
+
+  /**
+   * One signal per chip rather than one signal holding the whole row: `[(selected)]` writes back
+   * into whatever it is bound to, and a signal per topic is what lets it write without the page
+   * needing a click handler at all.
+   */
+  protected readonly topics = [
+    { label: 'Accessibility', on: signal(true) },
+    { label: 'Theming', on: signal(false) },
+    { label: 'Forms', on: signal(true) },
+    { label: 'Overlays', on: signal(false) },
+  ];
+  protected readonly selectedTopics = computed(() => {
+    const on = this.topics.filter((topic) => topic.on()).map((topic) => topic.label);
+    return on.length ? `Showing: ${on.join(', ')}` : 'No filter selected — showing everything.';
+  });
 
   protected readonly lastAction = signal('No chip clicked yet.');
 

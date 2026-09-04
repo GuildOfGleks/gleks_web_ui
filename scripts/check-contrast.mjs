@@ -178,6 +178,12 @@ const WASH_PAIRS = [
   ['menu item press', '--gog-menu-item-color', '--gog-menu-item-press-bg', ['--gog-menu-bg'], 4.5],
   ['chip hover', '--gog-chip-color', '--gog-chip-hover-bg', ['--gog-chip-bg'], 4.5],
   ['chip press', '--gog-chip-color', '--gog-chip-press-bg', ['--gog-chip-bg'], 4.5],
+  // The selected filter chip's ring (21.8.1), against the two backgrounds it has to stay visible
+  // over — which is the whole argument for a ring rather than a fill, so both are checked rather
+  // than the rest state alone. A boundary, not text: 3:1 per WCAG 1.4.11, the same bar the focus
+  // ring is held to.
+  ['chip selected ring on hover', '--gog-accent-color', '--gog-chip-hover-bg', ['--gog-chip-bg'], 3],
+  ['chip selected ring on press', '--gog-accent-color', '--gog-chip-press-bg', ['--gog-chip-bg'], 3],
   ['tab press', '--gog-tabs-press-color', '--gog-tabs-press-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
   ['accordion header hover', '--gog-accordion-hover-color', '--gog-accordion-hover-bg', ['--gog-accordion-header-bg'], 4.5],
   ['accordion header press', '--gog-accordion-hover-color', '--gog-accordion-press-bg', ['--gog-accordion-header-bg'], 4.5],

@@ -1042,6 +1042,7 @@ are impossible by design.
 | `size`                         | `GogSize`                           | `'md'`                                   |
 | `shape`                        | `GogTagShape` (`'rounded'\|'pill'`) | `'rounded'`                              |
 | `disabled`, `clickable`        | `boolean`                           | `false`, `true`                          |
+| `selected`                     | `boolean \| null` (two-way)         | `null` — see below                       |
 | `removable`                    | `boolean`                           | `false`                                  |
 | `fullWidth`                    | `boolean`                           | `false`                                  |
 | `ariaLabel`, `removeAriaLabel` | `string`                            | `''`, `'Remove chip'`                    |
@@ -1056,6 +1057,29 @@ Outputs: `gogClick: MouseEvent | KeyboardEvent`, `gogRemove: void`.
   >{{ user.name }}</gog-chip
 >
 ```
+
+**`selected` makes it a filter chip** (21.8.1) — a chip you toggle on and off rather than press.
+It is tri-state, and `null` is the default so nothing about an existing chip changes: no
+`aria-pressed`, no selected look, activation only emits `gogClick`. Set it to `false` and the chip
+is a toggle that is off (`aria-pressed="false"` — a chip with no `aria-pressed` at all is not a
+toggle to a screen reader, so "off" has to be stated); `true` and it is on, which draws an inset
+ring from `--gog-chip-selected-shadow`. A ring rather than a fill because `:hover` and `:active`
+already own the chip's background and the selection has to survive both.
+
+It is a two-way `model`, so the chip flips it on click, Enter and Space — a row of filters needs
+no click handler:
+
+```html
+@for (f of filters; track f.label) {
+<gog-chip [(selected)]="f.on">{{ f.label }}</gog-chip>
+}
+```
+
+`gogClick` still fires, **after** the flip, so a handler reading `selected()` sees the new value.
+Drive the state from that handler instead and you want a one-way `[selected]`, or the two writes
+cancel out. A `disabled` chip keeps the ring but drops `aria-pressed`, which needs the
+`role="button"` a disabled chip does not carry — "selected, and currently unavailable" is a real
+state and hiding it would leave it announced and invisible.
 
 #### `gog-tag`
 

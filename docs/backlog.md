@@ -84,22 +84,24 @@ a page and inside a card.
 
 Each is additive: nothing here breaks an existing consumer, and none blocks another.
 
-- **A selectable chip.** `gog-chip` has `clickable` and `removable` but no `selected` — so the
-  filter-chip pattern (a row of chips you toggle on and off) cannot be built from it without the
-  consumer inventing both the styling and the semantics. Found 2026-09-02 while surveying the
-  chip for `gog-button`'s ARIA forwarding work, and worth stating as the feature gap it is rather
-  than the forwarding gap it looked like: `gog-chip` renders `role="button"` on its interactive
-  surface and reads only `ariaLabel` onto it, exactly like `gog-button` did — but **forwarding
-  `aria-pressed` there would be the wrong fix.** The chip has no selected state to style, so a
-  consumer could announce `aria-pressed="true"` on a chip that looks identical to an unpressed
-  one: state perceivable to a screen reader and to nobody else, which fails WCAG 1.4.1 in the
-  other direction. Whatever ships has to own the look and the semantics together. **`gog-button`
-  was in exactly that position between 21.8.0 and 21.8.1** — forwarding with no look — and the
-  way out is the precedent to copy here: an inset ring
-  (`--gog-button-<variant>-toggled-shadow`), chosen because hover and press already own the
-  background and the state has to outlive both. `gog-toggle`
-  and `gog-tag` were checked at the same time and neither belongs here — toggle wraps a real
-  `<input role="switch">` whose checked state is native, and tag renders nothing interactive.
+- ~~**A selectable chip.**~~ **Shipped in 21.8.1** as `[(selected)]`, and the entry's own argument
+  is what it was built to: the look and the semantics landed together, an inset ring
+  (`--gog-chip-selected-shadow`) copied from `gog-button`'s toggled ring, because forwarding
+  `aria-pressed` alone would have let a chip announce itself as on while looking identical to an
+  off one — WCAG 1.4.1 from the other side. Kept for the two things the entry got right ahead of
+  time and one it did not have. Right: `gog-toggle` and `gog-tag` were checked at the same time
+  and neither belonged here — toggle wraps a real `<input role="switch">` whose checked state is
+  native, and tag renders nothing interactive. Also right: the button was in exactly this position
+  between 21.8.0 and 21.8.1, so the precedent existed before the copy. **Not anticipated:** the
+  input had to be tri-state. `boolean` with a `false` default would have put `aria-pressed="false"`
+  on every chip in the library and turned each of them into a toggle button to a screen reader,
+  which most of them are not — so `null` means "not a toggle", and it is the default.
+
+  **One asymmetry came out of it and is not resolved:** a disabled chip keeps its ring, a disabled
+  button does not (`.gog-btn[aria-pressed='true']:not(:disabled)`). The chip's behaviour is the
+  one to keep — "on, and currently unavailable" is a real state, and dropping the look leaves it
+  announced and invisible — so the button is probably wrong, in a small way, on a surface nobody
+  has complained about. Decide it rather than let the two drift.
 
 - **Missing components**, in rough order of how often a real site wants them: `alert`/`banner` (a
   persistent in-flow message — `gog-toast` is transient and cannot serve this), `avatar`,

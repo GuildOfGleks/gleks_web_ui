@@ -8,6 +8,29 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`gog-chip` gains `selected` — the filter chip.** A row of chips you toggle on and off could
+  not be built from this component: it had `clickable` and `removable`, so a chip could be pressed
+  or dismissed, but nothing said "this one is on". `[(selected)]` is that, and it is tri-state
+  because the alternative would have changed every chip that already ships. `null`, the default,
+  is not a toggle at all — no `aria-pressed`, no selected look, activation emits `gogClick` and
+  nothing else. `false` is a toggle that is off, and states it: a chip with no `aria-pressed` is
+  not a toggle to a screen reader, so "off" has to be said rather than left absent. `true` draws
+  an inset ring, `--gog-chip-selected-shadow`.
+
+  The look and the semantics ship together on purpose, which is the whole reason this waited:
+  forwarding `aria-pressed` alone would have let a chip announce itself as on while looking
+  identical to an off one — WCAG 1.4.1 from the other side, and the exact trap `gog-button` was
+  in between 21.8.0 and 21.8.1. A ring rather than a fill for the same reason as the button's:
+  `:hover` and `:active` already own this surface's background, so a selected chip painted with a
+  fill would lose the one thing saying it is on the moment the pointer arrived.
+
+  It is a `model`, so the chip flips it on click, Enter and Space and a filter row needs no click
+  handler. `gogClick` still fires, after the flip, so a handler reading `selected()` sees the new
+  value. A `disabled` chip keeps the ring and drops `aria-pressed`, which needs the `role="button"`
+  a disabled chip does not carry — "on, and currently unavailable" is a real state, and hiding it
+  would leave it announced and invisible. `check:contrast` gained the ring against both the hover
+  and the press background, at 3:1 (WCAG 1.4.11, a boundary rather than text); all 11 themes pass.
+
 - **`GOG_CONFIG.spinner.component` — one line replaces every loading indicator in the library.**
   Passing a component, not a value: it is rendered through `NgComponentOutlet` in place of the
   built-in look, wherever the library draws a spinner. That includes the two places a consumer

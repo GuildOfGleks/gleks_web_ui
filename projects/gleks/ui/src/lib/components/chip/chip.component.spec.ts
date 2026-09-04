@@ -256,4 +256,107 @@ describe('ChipComponent', () => {
       expect(clicks).toHaveLength(0);
     });
   });
+
+  // `selected` is tri-state on purpose: `null` has to leave every chip that shipped before it
+  // untouched, which is what the first two of these pin.
+  describe('selected — the filter chip', () => {
+    function surface(): HTMLElement {
+      return fixture.nativeElement.querySelector('.gog-chip__surface') as HTMLElement;
+    }
+
+    it('is not a toggle at all by default — no aria-pressed, no ring', async () => {
+      await fixture.whenStable();
+
+      expect(surface().getAttribute('aria-pressed')).toBeNull();
+      expect(fixture.nativeElement.className).not.toContain('gog-chip--selected');
+    });
+
+    it('leaves a plain chip alone on activation, rather than making it a toggle', async () => {
+      await fixture.whenStable();
+
+      surface().click();
+      await fixture.whenStable();
+
+      expect(component.selected()).toBeNull();
+      expect(surface().getAttribute('aria-pressed')).toBeNull();
+    });
+
+    it('announces off as aria-pressed=false, not as an absent attribute', async () => {
+      fixture.componentRef.setInput('selected', false);
+      await fixture.whenStable();
+
+      expect(surface().getAttribute('aria-pressed')).toBe('false');
+      expect(fixture.nativeElement.className).not.toContain('gog-chip--selected');
+    });
+
+    it('shows on both ways round — the attribute and the ring', async () => {
+      fixture.componentRef.setInput('selected', true);
+      await fixture.whenStable();
+
+      expect(surface().getAttribute('aria-pressed')).toBe('true');
+      expect(fixture.nativeElement.className).toContain('gog-chip--selected');
+    });
+
+    it('flips itself on click and on the two activation keys', async () => {
+      fixture.componentRef.setInput('selected', false);
+      await fixture.whenStable();
+
+      surface().click();
+      await fixture.whenStable();
+      expect(component.selected()).toBe(true);
+
+      surface().dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      await fixture.whenStable();
+      expect(component.selected()).toBe(false);
+
+      surface().dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+      await fixture.whenStable();
+      expect(component.selected()).toBe(true);
+    });
+
+    it('emits gogClick after the flip, so a handler reads the new value', async () => {
+      const seen: (boolean | null)[] = [];
+      component.gogClick.subscribe(() => seen.push(component.selected()));
+      fixture.componentRef.setInput('selected', false);
+      await fixture.whenStable();
+
+      surface().click();
+      await fixture.whenStable();
+
+      expect(seen).toEqual([true]);
+    });
+
+    it('does not flip while disabled, and emits nothing', async () => {
+      const clicks: unknown[] = [];
+      component.gogClick.subscribe(() => clicks.push('clicked'));
+      fixture.componentRef.setInput('selected', true);
+      fixture.componentRef.setInput('disabled', true);
+      await fixture.whenStable();
+
+      surface().click();
+      surface().dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      await fixture.whenStable();
+
+      expect(component.selected()).toBe(true);
+      expect(clicks).toHaveLength(0);
+    });
+
+    it('keeps the ring on a disabled chip but drops the attribute with the role', async () => {
+      fixture.componentRef.setInput('selected', true);
+      fixture.componentRef.setInput('disabled', true);
+      await fixture.whenStable();
+
+      expect(surface().getAttribute('role')).toBeNull();
+      expect(surface().getAttribute('aria-pressed')).toBeNull();
+      expect(fixture.nativeElement.className).toContain('gog-chip--selected');
+    });
+
+    it('writes no aria-pressed on a chip that is not clickable', async () => {
+      fixture.componentRef.setInput('selected', true);
+      fixture.componentRef.setInput('clickable', false);
+      await fixture.whenStable();
+
+      expect(surface().getAttribute('aria-pressed')).toBeNull();
+    });
+  });
 });

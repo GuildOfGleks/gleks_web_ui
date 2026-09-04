@@ -483,6 +483,8 @@ export type GogTokenName =
   | '--gog-chip-remove-inset-ratio'
   | '--gog-chip-remove-scale'
   | '--gog-chip-remove-size'
+  | '--gog-chip-selected-ring-width'
+  | '--gog-chip-selected-shadow'
   | '--gog-chip-slg-avatar-size'
   | '--gog-chip-slg-font-size'
   | '--gog-chip-slg-gap'
@@ -2104,6 +2106,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-chip-remove-hover-color',
       '--gog-chip-remove-inset-ratio',
       '--gog-chip-remove-scale',
+      '--gog-chip-selected-ring-width',
+      '--gog-chip-selected-shadow',
       '--gog-chip-slg-avatar-size',
       '--gog-chip-slg-font-size',
       '--gog-chip-slg-gap',
