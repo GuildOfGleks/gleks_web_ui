@@ -62,7 +62,12 @@
   --gog-secondary-color: #0ea5e9;
 
   /* Semantics */
-  --gog-success-color: #059669;
+  /* Was #059669 — Tailwind emerald-600. A status fill carries a white label, and this read
+     3.77:1 under it; Slate's own ink is no better at 3.88:1, so there was no label to pick and
+     the hue moved. One step down the same ramp to emerald-700: 5.48:1 under white, 5.06:1 as
+     text on the page. The three statuses here all moved one step for the same reason.
+     Found 2026-09-04. */
+  --gog-success-color: #047857;
   /* Was #dc2626 — Tailwind red-600. `--gog-danger-color` is what every `--gog-<block>-error-color`
      resolves to, so this is the colour a validation message is printed in, and as *text* it
      needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
@@ -70,8 +75,10 @@
      reading ui-showcase, which is how a palette pair nobody had listed became visible;
      `check:contrast` gained the pair in the same change. */
   --gog-danger-color: #d82525;
-  --gog-warning-color: #d97706;
-  --gog-info-color: #0284c7;
+  /* Was #d97706 — Tailwind amber-600, 3.19:1 under a white label. Amber-700: 5.02:1. */
+  --gog-warning-color: #b45309;
+  /* Was #0284c7 — Tailwind sky-600, 4.10:1 under a white label. Sky-700: 5.93:1. */
+  --gog-info-color: #0369a1;
 
   /* The two palette-shaped tokens that are not plain colours. */
   --gog-panel-shadow: 0 10px 30px rgba(15, 23, 42, 0.12), 0 0 0 1px var(--gog-border-color);

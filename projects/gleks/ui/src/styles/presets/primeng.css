@@ -42,6 +42,11 @@
   --gog-accent-pale: #dbeafe;
   --gog-secondary-color: #64748b;
   --gog-success-color: #22c55e;
+  /* Aura's hues, unchanged — what moved is the label on them. White read 2.28:1 on this green,
+     2.15:1 on the amber below and 2.77:1 on the blue; Aura's own near-black reads 7.83, 8.31 and
+     6.44. Three of the four worst status pairs in the library were here, and none of them cost a
+     hue to fix. Found 2026-09-04. */
+  --gog-success-text-color: #0f172a;
   /* Was #ef4444 — Tailwind red-500, PrimeNG's error colour. `--gog-danger-color` is what every `--gog-<block>-error-color`
      resolves to, so this is the colour a validation message is printed in, and as *text* it
      needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
@@ -50,7 +55,9 @@
      `check:contrast` gained the pair in the same change. */
   --gog-danger-color: #ce3a3a;
   --gog-warning-color: #f59e0b;
+  --gog-warning-text-color: #0f172a;
   --gog-info-color: #0ea5e9;
+  --gog-info-text-color: #0f172a;
   --gog-panel-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
   --gog-spinner-overlay-bg: rgba(248, 250, 252, 0.75);
 

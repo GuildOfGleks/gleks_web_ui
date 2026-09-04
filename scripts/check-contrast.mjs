@@ -67,6 +67,16 @@
  * whole library (`gog-autocomplete`'s selected option, 4.12:1 in light) and, just as usefully,
  * confirmed the other 180-odd states were already fine.
  *
+ * **What that sweep does not see, found 2026-09-04.** It takes a pair from a rule that sets
+ * `color` and `background-color`; the library's variant classes set neither. `.gog-badge--warning`
+ * sets `--gog-badge-variant-bg` and `--gog-badge-variant-color` and lets the base rule read them,
+ * and every variant of every component is written that way — button variants, tag variants, chip
+ * and scroll sizes. So a variant's colours reach the DOM through an indirection the sweep cannot
+ * follow, and it reports ~180 passing states without ever having looked at one of them. That is
+ * how the badge shipped four themes' worth of AA failures with this script green. The four `badge
+ * *` entries in WASH_PAIRS below cover that one component by hand; teaching the sweep to resolve
+ * the indirection is the real fix and is filed in `docs/backlog.md`.
+ *
  * Icons are held to 3:1 rather than 4.5:1 — WCAG 1.4.11 rather than 1.4.3 — through
  * `NON_TEXT_ELEMENTS`. Two of the sweep's first three findings were a spin-button glyph and a
  * panel chevron at 4.35:1 and 4.40:1, which are fine and would otherwise have been "fixed" into
@@ -176,6 +186,18 @@ const WASH_PAIRS = [
   ['button ghost press', '--gog-button-ghost-press-color', '--gog-button-ghost-press-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
   ['menu item hover', '--gog-menu-item-hover-color', '--gog-menu-item-hover-bg', ['--gog-menu-bg'], 4.5],
   ['menu item press', '--gog-menu-item-color', '--gog-menu-item-press-bg', ['--gog-menu-bg'], 4.5],
+  // A label on a status fill, which `gogBadge` paints for all four and which `PAIRS` cannot
+  // express: `--gog-<status>-text-color` is derived in theme.css rather than stated in a palette
+  // block, so it only exists once resolved. Added 2026-09-04 with the defect it found — the
+  // badge had been putting `--gog-accent-text-color` on all four fills, which is white on a light
+  // theme, and it failed AA in four of them (`material` amber 1.97:1, `primeng` green 2.28:1,
+  // `slate` and `one-light` across all three of success/warning/info). `danger` passed
+  // everywhere, and that was the tell: a danger pair was added the day before and the palettes
+  // were tuned to it, while the other three had never been measured against anything.
+  ['badge success', '--gog-badge-success-color', '--gog-badge-success-bg', ['--gog-surface-color'], 4.5],
+  ['badge danger', '--gog-badge-danger-color', '--gog-badge-danger-bg', ['--gog-surface-color'], 4.5],
+  ['badge warning', '--gog-badge-warning-color', '--gog-badge-warning-bg', ['--gog-surface-color'], 4.5],
+  ['badge info', '--gog-badge-info-color', '--gog-badge-info-bg', ['--gog-surface-color'], 4.5],
   ['chip hover', '--gog-chip-color', '--gog-chip-hover-bg', ['--gog-chip-bg'], 4.5],
   ['chip press', '--gog-chip-color', '--gog-chip-press-bg', ['--gog-chip-bg'], 4.5],
   // The selected filter chip's ring (21.8.1), against the two backgrounds it has to stay visible

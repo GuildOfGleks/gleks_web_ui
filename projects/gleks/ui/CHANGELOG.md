@@ -8,6 +8,11 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`--gog-success-text-color` and its three siblings: the label a status fill carries.** Each
+  status names its own "text on this fill" colour, the way `--gog-accent-text-color` already did
+  for the accent, and defaults to it — so a theme states one only where its own hue disagrees.
+  Added with the defect it exists to fix, in the Fixed section below.
+
 - **`gog-scroll` gains `horizontalWheel`, so a vertical wheel can scroll a horizontal row.**
   Hover a horizontal-only region, turn the wheel, and the page moves instead — the browser's own
   behaviour, and the thing consumers report about this component most. The component draws an
@@ -321,6 +326,28 @@ reached 1.0, so breaking changes may land in minor versions.
   plus the scrollbar and toggle thumb insets, both fitted to a track whose own width is a fixed
   pixel value. The script's header now also lists rules H and I, which had been in it unlisted
   since they were added.
+
+- **`gogBadge`'s status variants failed WCAG AA in four themes, and had since they shipped.** A
+  status badge paints `--gog-<status>-color` and labelled it `--gog-accent-text-color`, which on
+  a light theme is white: `material`'s amber measured **1.97:1**, `primeng`'s green 2.28:1, and
+  `slate` and `one-light` failed on all three of success/warning/info — 11 pairs in total.
+  `danger` passed everywhere, which is the tell: a danger pair was added to `check:contrast` on
+  2026-09-03 and the palettes were tuned to it, while the other three statuses had never been
+  measured against anything.
+
+  Half the fix costs no fidelity: `material` puts near-black on its amber (8.69:1) and `primeng`
+  does the same on all three of Aura's bright hues (6.44–8.31:1), which is what both design
+  systems do themselves. The other half had no label to pick — neither white nor the theme's own
+  ink reached AA — so the hue moved instead, one step down each theme's own ramp: `slate`'s three
+  to Tailwind's 700s, `material`'s blue to Light Blue 800, and `one-light`'s three darkened, the
+  same trade that theme already made on its accent and muted tokens in 21.7.0.
+
+  **The reason no check caught it generalises past the badge.** `check:contrast`'s automatic
+  sweep pairs a rule that sets `color` with the `background-color` beside it; a variant class
+  sets neither, only `--gog-badge-variant-bg`/`-color` for the base rule to read. Every variant
+  of every component is written that way, so the sweep had been reporting ~180 passing states
+  without looking at one of them. Four explicit badge pairs close it for this component; the
+  general fix is filed in `docs/backlog.md`.
 
 - **Two fields put their error line 2px lower than the other six.** Every control that renders an
   error — `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`,

@@ -372,6 +372,24 @@
   /* ── Derived foundation tokens ───────────────────────────────────────────────
      Split out of the literal block above because they read other tokens: they have
      to re-resolve inside each theme scope. */
+
+  /* ── Text on a status fill ───────────────────────────────────────────────────
+     `--gog-accent-text-color` means "text on the accent fill" and flips with the theme, which
+     made it the obvious label for a status fill too — `gogBadge` used it for all four. It is
+     wrong for some of them, and silently: measured 2026-09-04, `material`'s amber under white
+     was 1.97:1 and `primeng`'s green 2.28:1, both far under AA, in a pair no check had. The
+     accent is one colour a theme tunes deliberately; the four statuses are four more, and
+     nothing says one label reads on all five.
+
+     So each status names its own, defaulting to the accent's answer because that is right in
+     seven of the eleven themes. A theme states one of these only where its own hue disagrees —
+     `material` puts near-black on its amber, which is Material 3's own convention, and `primeng`
+     does the same on all three of Aura's bright hues. Where *neither* label reached AA the hue
+     itself moved instead; see the preset files. */
+  --gog-success-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-danger-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-warning-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-info-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
   /* ── Stacking layers ─────────────────────────────────────────────────────────
      All five read `--gog-z-base`, so the whole library moves together. The gaps are
      deliberate: an app that needs to slot its own element between two of these has room
@@ -1149,16 +1167,19 @@
   --gog-badge-border-style: var(--gog-border-style);
   --gog-badge-border-color: transparent;
   /* Above the host's own chrome but below any overlay panel (--gog-dropdown-z is 300). */
-  /* `--gog-accent-text-color` is the palette's "text on a filled surface" colour and flips
-     with the theme, which is why a red badge reads white on light and near-black on dark. */
+  /* Each label is its status's own "text on this fill" token, which flips with the theme — a red
+     badge reads white on light and near-black on dark. It read `--gog-accent-text-color` for all
+     four until 21.8.1, on the assumption that one label works on every fill; four themes proved
+     otherwise, `material`'s amber under white at 1.97:1 the worst of them. See the
+     `--gog-<status>-text-color` block near the top of this file. */
   --gog-badge-success-bg: var(--gog-success-color);
-  --gog-badge-success-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-success-color: var(--gog-success-text-color);
   --gog-badge-danger-bg: var(--gog-danger-color);
-  --gog-badge-danger-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-danger-color: var(--gog-danger-text-color);
   --gog-badge-warning-bg: var(--gog-warning-color);
-  --gog-badge-warning-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-warning-color: var(--gog-warning-text-color);
   --gog-badge-info-bg: var(--gog-info-color);
-  --gog-badge-info-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-badge-info-color: var(--gog-info-text-color);
 
   /* ── Datepicker (the field; the grid inside it is themed by --gog-calendar-*) ───
      `--gog-datepicker-bg`, `-color`, `-font-size`, `-padding-x` and `-padding-y` are

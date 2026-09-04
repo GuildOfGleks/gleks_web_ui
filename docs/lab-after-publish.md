@@ -97,6 +97,14 @@ delete the section too.
     never touched. The showcase's `horizontalWheel` panel puts an off row next to an on row,
     which is the arrangement that makes the difference visible in one screen.
 
+12. **Seven status colours moved, in four presets — expect the compare page and any screenshot to
+    differ.** `slate` (success/warning/info one step down Tailwind's ramp), `material` (info to
+    Light Blue 800), `one-light` (all three darkened), all because a white label on them failed
+    AA. `material` and `primeng` additionally declare `--gog-<status>-text-color`, a new token
+    family the theme generator will pick up on its own. Nothing to edit — listed so a colour
+    difference between the deployed site and a local build is not investigated as a bug, the same
+    reason item 3 exists.
+
 ## Checking your work
 
 `npm run check:app-contrast` — WCAG AA for both apps' **own** chrome, in all 11 themes. The lab

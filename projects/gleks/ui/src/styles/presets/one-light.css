@@ -50,7 +50,12 @@
   --gog-secondary-color: #a626a4;
 
   /* Semantics — the syntax hues in their natural roles */
-  --gog-success-color: #50a14f;
+  /* Was #50a14f — One Light's own green. A status fill carries a white label, and this read
+     3.21:1 under it; the theme's ink is no better at 3.54:1, so there was no label to pick and
+     the hue had to darken. 5.17:1 under white now, 4.95:1 as text on the page. This is the same
+     trade this theme already made on its accent and muted tokens in 21.7.0 — fidelity lost to
+     legibility — and all three of its statuses moved for it. Found 2026-09-04. */
+  --gog-success-color: #3f7a3e;
   /* Was #e45649 — One Light's own red. `--gog-danger-color` is what every `--gog-<block>-error-color`
      resolves to, so this is the colour a validation message is printed in, and as *text* it
      needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
@@ -58,8 +63,10 @@
      reading ui-showcase, which is how a palette pair nobody had listed became visible;
      `check:contrast` gained the pair in the same change. */
   --gog-danger-color: #c2493e;
-  --gog-warning-color: #c18401;
-  --gog-info-color: #0184bc;
+  /* Was #c18401 — One Light's own yellow, 3.20:1 under a white label. Darkened: 5.36:1. */
+  --gog-warning-color: #8f6201;
+  /* Was #0184bc — One Light's own blue, 4.18:1 under a white label. Darkened: 5.13:1. */
+  --gog-info-color: #0175a6;
 
   --gog-panel-shadow: 0 10px 30px rgba(56, 58, 66, 0.12), 0 0 0 1px var(--gog-border-color);
   --gog-spinner-overlay-bg: rgba(250, 250, 250, 0.85);

@@ -539,6 +539,7 @@ export type GogTokenName =
   | '--gog-control-padding-x'
   | '--gog-control-padding-y'
   | '--gog-danger-color'
+  | '--gog-danger-text-color'
   | '--gog-datepicker-actions-gap'
   | '--gog-datepicker-actions-inset'
   | '--gog-datepicker-actions-reserve'
@@ -695,6 +696,7 @@ export type GogTokenName =
   | '--gog-icon-size'
   | '--gog-icon-stroke-width'
   | '--gog-info-color'
+  | '--gog-info-text-color'
   | '--gog-input-clear-icon-ratio'
   | '--gog-input-clear-inset'
   | '--gog-input-clear-radius'
@@ -1182,6 +1184,7 @@ export type GogTokenName =
   | '--gog-spinner-track-color'
   | '--gog-spinner-track-opacity'
   | '--gog-success-color'
+  | '--gog-success-text-color'
   | '--gog-surface-color'
   | '--gog-table-accent-bright'
   | '--gog-table-accent-color'
@@ -1464,6 +1467,7 @@ export type GogTokenName =
   | '--gog-tooltip-transition-duration'
   | '--gog-tooltip-z'
   | '--gog-warning-color'
+  | '--gog-warning-text-color'
   | '--gog-z-base';
 
 /** Which of the three layers a token belongs to — see the README's theming section. */
@@ -1625,6 +1629,16 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-surface-color',
       '--gog-text-color',
       '--gog-warning-color',
+    ],
+  },
+  {
+    section: 'Text on a status fill',
+    layer: 'component',
+    tokens: [
+      '--gog-danger-text-color',
+      '--gog-info-text-color',
+      '--gog-success-text-color',
+      '--gog-warning-text-color',
     ],
   },
   {
