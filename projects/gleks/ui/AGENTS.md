@@ -289,7 +289,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                            | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                          |
 | `tooltip`      | `position`, `showDelay`, `hideDelay`                                    | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                  |
 | `spinner`      | `component`, `variant`                                                  | every spinner the library draws — `gog-spinner`, `gog-spinner-overlay`, and the ones inside `gog-button` and `gog-autocomplete`, which have no input of their own. `component` takes **your** component and renders it in place of the built-in look. |
-| `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack`      | `gog-scroll` (and every component that uses one internally).                                                                                                                                                                                                                                                                                                                                                 |
+| `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack`, `horizontalWheel` | `gog-scroll` (and every component that uses one internally).                                                                                                                                                                                                                                                                                                                                                 |
 | `button`       | `debounce`                                                              | `gog-button`.                                                                                                                                                                                                                                                                                                                                                                                                |
 | `ripple`       | `enabled`                                                               | the press ripple on `gog-button`, `[gogButton]`, `gog-button-toggle-group`, `gog-chip`, `gog-tabs`, `gog-accordion`, `gogCollapsibleTrigger`, `gogMenuItem` and the `gog-select`/`gog-multiselect`/`gog-autocomplete` options. **Off by default.** Each of those takes a `ripple` input that wins over it. Not the `gogRipple` directive — writing that attribute is already the per-element decision.       |
 | `inputfield`   | `showSpinButtons`                                                       | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                            |
@@ -1663,6 +1663,21 @@ region — the library's official recommendation over a raw `overflow-x`/`overfl
 | `ariaLabel`          | `string`                                                                 | `''`                                                                                    |
 | `overscrollBehavior` | `GogScrollOverscrollBehavior \| undefined` (`'auto'\|'contain'\|'none'`) | `'auto'`; via `GOG_CONFIG.scroll.overscrollBehavior`                                    |
 | `showTrack`          | `boolean \| undefined`                                                   | `true`; via `GOG_CONFIG.scroll.showTrack`                                               |
+| `horizontalWheel`    | `boolean \| undefined`                                                   | `false`; via `GOG_CONFIG.scroll.horizontalWheel`                                        |
+
+**`horizontalWheel` turns a vertical wheel into horizontal scrolling** (21.8.1), for the case a
+consumer hits first: hover a horizontal-only row, turn the wheel, and the *page* moves. That is
+the browser's own behaviour and the component deliberately did nothing about it until now.
+
+It is off by default because it changes what an existing instance does with a gesture it
+currently passes on; `provideGogConfig({ scroll: { horizontalWheel: true } })` turns it on
+app-wide. It only acts when the viewport cannot scroll vertically (checked against live
+geometry, so `axis="both"` scrolls down while there is down to go), the event carries no
+horizontal delta of its own (a trackpad swipe and `Shift`+wheel already work), `ctrlKey` is
+clear (pinch-zoom), and there is room left in the direction of the turn. **That last condition is
+the point:** at the content's end the event is left alone and the page picks it up, so the wheel
+never goes dead over a scrolled-to-the-end region. `overscrollBehavior: 'contain'` still
+contains — that boundary is the browser's and this never reaches past it.
 
 Outputs: `gogScroll: GogScrollMetrics`, `gogReachStart`/`gogReachEnd: 'vertical'|'horizontal'`.
 Methods (via template ref): `scrollTo(options)`, `scrollToTop()`, `scrollToBottom()`,

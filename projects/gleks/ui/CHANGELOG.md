@@ -8,6 +8,27 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`gog-scroll` gains `horizontalWheel`, so a vertical wheel can scroll a horizontal row.**
+  Hover a horizontal-only region, turn the wheel, and the page moves instead — the browser's own
+  behaviour, and the thing consumers report about this component most. The component draws an
+  overlay thumb over native scrolling and had deliberately never touched wheel handling; this is
+  the narrow exception, opt-in.
+
+  It acts only when all of this holds: the viewport cannot scroll vertically (checked against
+  live geometry, not the `axis` input, so `axis="both"` still scrolls down while there is down to
+  go), the event carries no horizontal delta of its own (a trackpad swipe and `Shift`+wheel
+  already work and translating on top would double them), `ctrlKey` is clear (pinch-zoom), and
+  there is room left in the direction of the turn. **The last one is most of the feature:** at the
+  content's end the event is left alone, so the page picks it up exactly as before. A region that
+  swallowed the wheel at its own end would leave the page feeling stuck, which is a worse bug than
+  the one being fixed. `overscrollBehavior: 'contain'` still contains — that boundary is the
+  browser's and this never reaches past it.
+
+  Off by default, because it changes what an existing instance does with a gesture it currently
+  passes on; `GOG_CONFIG.scroll.horizontalWheel` turns it on app-wide. A line-mode delta (what
+  Firefox sends) is scaled rather than applied raw, which would have moved the content three
+  pixels per notch.
+
 - **`gog-chip` gains `selected` — the filter chip.** A row of chips you toggle on and off could
   not be built from this component: it had `clickable` and `removable`, so a chip could be pressed
   or dismissed, but nothing said "this one is on". `[(selected)]` is that, and it is tri-state

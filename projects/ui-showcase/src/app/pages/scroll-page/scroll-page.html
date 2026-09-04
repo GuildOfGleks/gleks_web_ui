@@ -110,6 +110,46 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader><code>horizontalWheel</code></h3>
+    <p class="meta">
+      Hover the first row and turn the wheel: the page moves, because a vertical wheel over a region
+      with nothing to scroll vertically is the browser's to handle. The second row has
+      <code>[horizontalWheel]="true"</code> and scrolls sideways instead. Off by default — it
+      changes what an existing instance does with a gesture it currently passes on, and
+      <code>GOG_CONFIG.scroll.horizontalWheel</code> turns it on app-wide.
+    </p>
+    <p class="meta">
+      Scroll the second row to its right-hand end and keep turning: the page starts moving again.
+      That is deliberate and it is most of the feature — a region that swallowed the wheel at its
+      own end would leave the page feeling stuck, which is a worse bug than the one this fixes. A
+      trackpad's sideways swipe, <code>Shift</code>+wheel and pinch-zoom are all left to the browser
+      too.
+    </p>
+    <div class="field-grid">
+      <div>
+        <p class="meta">off (the default)</p>
+        <gog-scroll axis="horizontal" class="row-demo">
+          <div class="card-row">
+            @for (card of wideCards; track card) {
+              <div class="card-row__card">{{ card }}</div>
+            }
+          </div>
+        </gog-scroll>
+      </div>
+      <div>
+        <p class="meta">horizontalWheel</p>
+        <gog-scroll axis="horizontal" [horizontalWheel]="true" class="row-demo">
+          <div class="card-row">
+            @for (card of wideCards; track card) {
+              <div class="card-row__card">{{ card }}</div>
+            }
+          </div>
+        </gog-scroll>
+      </div>
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Auto-hide vs. always visible</h3>
     <p class="meta">
       By default the thumb fades in on hover/scroll and fades back out after

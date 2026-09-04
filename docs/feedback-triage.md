@@ -81,6 +81,17 @@ It is still a real usability gap, and fixing it means intercepting `wheel` and t
 vertical delta to horizontal on a horizontal-only container. That is new behaviour with a
 scroll-chaining trap attached, so it is a minor, not a patch.
 
+**Shipped in 21.8.1 as `horizontalWheel`, opt-in.** The trap this entry named turned out to be
+the feature rather than an obstacle to it: the condition "there is room left in the direction of
+the turn" is what makes it safe, because at the content's end the event is left alone and the
+page picks it up. Intercepting unconditionally would have made the wheel go dead over a
+scrolled-to-the-end row — a worse bug than the one being fixed, and the reason this could not be
+a two-line handler. Three more conditions came out of building it, none of them in this entry: a
+horizontal delta is already correct (a trackpad swipe, `Shift`+wheel), `ctrlKey` is pinch-zoom,
+and the vertical check has to read live geometry rather than the `axis` input, or `axis="both"`
+stops scrolling down. Firefox's line-mode delta needed scaling too, which is the classic version
+of this bug — three pixels per notch instead of three lines.
+
 ---
 
 ## Ship 21.7.0 now — the recommendation
@@ -138,7 +149,7 @@ it means actually loading the lab in an older browser rather than trusting a sup
 | 1   | `gog-button` `severity` (warning / success / …)  | New public input, new token families per severity                   | M    |
 | 2   | ~~`gog-button` pressed state~~ **done, 21.8.1**  | Shipped as the `:active` colour, per variant, plus the eight other pressable surfaces. The `aria-pressed` toggle *look* shipped in the same release — an inset ring, `--gog-button-<variant>-toggled-shadow` — so it is closed too; what is still open is the same gap on `gog-chip`, see `docs/backlog.md` | S–M  |
 | 3   | Input masking (phone, barcode, …)                | **Needs a plan before code** — see below                            | L    |
-| 4   | Horizontal wheel handling in `gog-scroll`        | New behaviour, scroll-chaining trap                                 | M    |
+| 4   | ~~Horizontal wheel handling in `gog-scroll`~~ **done, 21.8.1** | Shipped as `horizontalWheel`, opt-in. The scroll-chaining trap is handled by the condition that turned out to be the feature's core: at the content's end the event is left alone, so the wheel never goes dead. Also skipped for a horizontal delta, for `ctrlKey`, and whenever the viewport can still scroll vertically | M    |
 | 5   | Whole-row click when `gog-table` selection is on | Behaviour change on an existing input; conflicts with `gogRowClick` | M    |
 
 **On the mask (item 3), the reporter already asked the right question** — extend `gog-inputfield`

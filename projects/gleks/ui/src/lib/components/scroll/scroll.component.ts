@@ -41,6 +41,14 @@ const DEFAULT_AUTO_HIDE = true;
 const DEFAULT_HIDE_DELAY = 800;
 const DEFAULT_OVERSCROLL_BEHAVIOR: GogScrollOverscrollBehavior = 'auto';
 const DEFAULT_SHOW_TRACK = true;
+const DEFAULT_HORIZONTAL_WHEEL = false;
+/**
+ * `WheelEvent.deltaY` is only in pixels when `deltaMode` is `DOM_DELTA_PIXEL`. Firefox reports
+ * lines, where a notch is about 3 — scrolling by that raw number moves three pixels and looks
+ * broken. These convert a notch into something comparable to the pixel case: roughly one line of
+ * text, and for the page mode the viewport's own width, resolved at the call site.
+ */
+const WHEEL_LINE_HEIGHT_PX = 16;
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
@@ -100,6 +108,28 @@ export class ScrollComponent {
    * then to `true`.
    */
   readonly showTrack = input<boolean | undefined>(undefined);
+  /**
+   * Turns a vertical wheel into horizontal scrolling, for the case where the container has
+   * nothing to scroll vertically. Without it, hovering a horizontal-only region and turning the
+   * wheel scrolls the *page* — the browser's own behaviour, and the single most reported thing
+   * about this component.
+   *
+   * Only ever acts when all of this holds, so it cannot take a gesture that was meant for
+   * something else: this viewport is not itself scrollable vertically, the event carries no
+   * horizontal delta of its own (a trackpad or `Shift`+wheel already speaks horizontal and the
+   * browser handles those correctly), `ctrlKey` is clear (that is pinch-zoom), and there is
+   * horizontal room left in the direction of the turn. **That last one is the whole
+   * scroll-chaining story:** once the content is against its end, the event is left alone, so
+   * the page picks it up exactly as it would have. Intercepting unconditionally would make the
+   * wheel go dead over a scrolled-to-the-end region, which is a worse bug than the one this
+   * fixes. `overscrollBehavior: 'contain'` still contains it — that boundary is the browser's
+   * and this never reaches past it.
+   *
+   * Unset, falls back to `GOG_CONFIG.scroll.horizontalWheel`, then to `false`. Off by default
+   * because it changes what an existing `axis="horizontal"` instance does with a gesture it
+   * currently passes on, and one `provideGogConfig` line turns it on everywhere.
+   */
+  readonly horizontalWheel = input<boolean | undefined>(undefined);
 
   readonly gogScroll = output<GogScrollMetrics>();
   readonly gogReachStart = output<GogScrollDirection>();
@@ -159,6 +189,12 @@ export class ScrollComponent {
   );
   protected readonly resolvedShowTrack = computed(
     () => this.showTrack() ?? this.globalConfig.scroll?.showTrack ?? DEFAULT_SHOW_TRACK,
+  );
+  protected readonly resolvedHorizontalWheel = computed(
+    () =>
+      this.horizontalWheel() ??
+      this.globalConfig.scroll?.horizontalWheel ??
+      DEFAULT_HORIZONTAL_WHEEL,
   );
   /**
    * Only applies `resolvedOverscrollBehavior` on an axis that's actually acting as a scroll
@@ -268,6 +304,44 @@ export class ScrollComponent {
   protected onActivity(): void {
     this.interacting.set(true);
     this.restartHideTimer();
+  }
+
+  /**
+   * See the `horizontalWheel` input for the rules. Every early return here hands the event back
+   * to the browser untouched, which is the default this feature is a narrow exception to.
+   */
+  protected onWheel(event: WheelEvent): void {
+    if (!this.resolvedHorizontalWheel()) return;
+    // Pinch-zoom arrives as a wheel event with ctrlKey set, on every platform.
+    if (event.ctrlKey) return;
+    // The device (or Shift) already produced a horizontal delta; the browser applies it
+    // correctly and translating on top would double the movement.
+    if (event.deltaX !== 0 || event.deltaY === 0) return;
+
+    const viewport = this.viewportRef().nativeElement;
+    // A viewport that can still scroll vertically was the target of this gesture. Checked
+    // against live geometry rather than `axis`, so `axis="both"` behaves the way a reader
+    // expects on both counts: the wheel scrolls down while there is down to go, and turns into
+    // horizontal only once there is not.
+    if (viewport.scrollHeight - viewport.clientHeight > 0) return;
+
+    const maxScrollLeft = viewport.scrollWidth - viewport.clientWidth;
+    if (maxScrollLeft <= 0) return;
+
+    const delta = this.wheelDeltaToPixels(event, viewport.clientWidth);
+    const next = clamp(viewport.scrollLeft + delta, 0, maxScrollLeft);
+    // Already against the end in the direction of the turn: leave the event alone so it chains
+    // to the page, which is what it would have done anyway.
+    if (next === viewport.scrollLeft) return;
+
+    event.preventDefault();
+    viewport.scrollLeft = next;
+  }
+
+  private wheelDeltaToPixels(event: WheelEvent, viewportWidth: number): number {
+    if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) return event.deltaY * WHEEL_LINE_HEIGHT_PX;
+    if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) return event.deltaY * viewportWidth;
+    return event.deltaY;
   }
 
   protected onTrackPointerDown(event: PointerEvent, axis: GogScrollDirection): void {

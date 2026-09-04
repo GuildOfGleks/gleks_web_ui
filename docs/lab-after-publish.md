@@ -89,6 +89,14 @@ delete the section too.
     unavailable" panels have the wording and a live case for each. The Styling Tokens table picks
     up the two new tokens on its own.
 
+11. **The scroll page gains `horizontalWheel`, and the demo has to include the off case.**
+    `gog-scroll` takes `[horizontalWheel]` since 21.8.1, plus `GOG_CONFIG.scroll.horizontalWheel`
+    — so the config table on `general/global-config` needs the row too. The page's prose should
+    say what the input does *not* do, because that is the part people get wrong: at the content's
+    end the wheel goes back to the page, and a trackpad swipe, `Shift`+wheel and pinch-zoom are
+    never touched. The showcase's `horizontalWheel` panel puts an off row next to an on row,
+    which is the arrangement that makes the difference visible in one screen.
+
 ## Checking your work
 
 `npm run check:app-contrast` — WCAG AA for both apps' **own** chrome, in all 11 themes. The lab

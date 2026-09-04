@@ -68,6 +68,12 @@ export interface GogGlobalConfig {
      * — this is purely the visual affordance. Defaults to `true`.
      */
     showTrack?: boolean;
+    /**
+     * Turns a vertical wheel into horizontal scrolling on a `gog-scroll` that has nothing to
+     * scroll vertically. Defaults to `false`; see the component's `horizontalWheel` input for
+     * the conditions it applies under and why it never swallows a gesture at the content's end.
+     */
+    horizontalWheel?: boolean;
   };
   button?: {
     debounce?: number;

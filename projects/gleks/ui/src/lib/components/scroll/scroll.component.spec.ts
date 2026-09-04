@@ -504,4 +504,149 @@ describe('ScrollComponent', () => {
       thumb.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1, bubbles: true }));
     });
   });
+
+  /**
+   * `horizontalWheel`. Every case here is really the same question — did the component leave the
+   * event alone? — because the feature is a narrow exception and the failure mode people report
+   * is the opposite one: a region that swallows the wheel and makes the page feel stuck.
+   */
+  describe('horizontal wheel', () => {
+    /** A viewport with 300px of horizontal content in 100px, and nothing to scroll vertically. */
+    function horizontalOnly(): void {
+      mockMetrics(viewport, {
+        scrollWidth: 300,
+        clientWidth: 100,
+        scrollHeight: 100,
+        clientHeight: 100,
+      });
+      Object.defineProperty(viewport, 'scrollLeft', { value: 0, writable: true });
+    }
+
+    function wheel(init: WheelEventInit): WheelEvent {
+      const event = new WheelEvent('wheel', { bubbles: true, cancelable: true, ...init });
+      viewport.dispatchEvent(event);
+      return event;
+    }
+
+    it('does nothing at all until it is turned on', async () => {
+      horizontalOnly();
+      await fixture.whenStable();
+
+      const event = wheel({ deltaY: 120 });
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(viewport.scrollLeft).toBe(0);
+    });
+
+    it('turns a vertical turn into horizontal scrolling once it is', async () => {
+      fixture.componentRef.setInput('horizontalWheel', true);
+      horizontalOnly();
+      await fixture.whenStable();
+
+      const event = wheel({ deltaY: 120 });
+
+      expect(event.defaultPrevented).toBe(true);
+      expect(viewport.scrollLeft).toBe(120);
+    });
+
+    it('reads GOG_CONFIG when the input is unset', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [ScrollComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { scroll: { horizontalWheel: true } } }],
+      }).compileComponents();
+      fixture = TestBed.createComponent(ScrollComponent);
+      await fixture.whenStable();
+      viewport = fixture.nativeElement.querySelector('.gog-scroll__viewport') as HTMLElement;
+      horizontalOnly();
+
+      const event = wheel({ deltaY: 120 });
+
+      expect(event.defaultPrevented).toBe(true);
+      expect(viewport.scrollLeft).toBe(120);
+    });
+
+    it('leaves the event alone at the end, so the page still scrolls', async () => {
+      fixture.componentRef.setInput('horizontalWheel', true);
+      horizontalOnly();
+      Object.defineProperty(viewport, 'scrollLeft', { value: 200, writable: true });
+      await fixture.whenStable();
+
+      const event = wheel({ deltaY: 120 });
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(viewport.scrollLeft).toBe(200);
+    });
+
+    it('leaves it alone at the start too, turning the other way', async () => {
+      fixture.componentRef.setInput('horizontalWheel', true);
+      horizontalOnly();
+      await fixture.whenStable();
+
+      const event = wheel({ deltaY: -120 });
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(viewport.scrollLeft).toBe(0);
+    });
+
+    it('keeps out of the way when the viewport can still scroll vertically', async () => {
+      fixture.componentRef.setInput('horizontalWheel', true);
+      mockMetrics(viewport, {
+        scrollWidth: 300,
+        clientWidth: 100,
+        scrollHeight: 400,
+        clientHeight: 100,
+      });
+      Object.defineProperty(viewport, 'scrollLeft', { value: 0, writable: true });
+      await fixture.whenStable();
+
+      const event = wheel({ deltaY: 120 });
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(viewport.scrollLeft).toBe(0);
+    });
+
+    it('keeps out of the way of a device that already speaks horizontal', async () => {
+      fixture.componentRef.setInput('horizontalWheel', true);
+      horizontalOnly();
+      await fixture.whenStable();
+
+      const event = wheel({ deltaX: 40, deltaY: 120 });
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(viewport.scrollLeft).toBe(0);
+    });
+
+    it('keeps out of the way of pinch-zoom', async () => {
+      fixture.componentRef.setInput('horizontalWheel', true);
+      horizontalOnly();
+      await fixture.whenStable();
+
+      const event = wheel({ deltaY: 120, ctrlKey: true });
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(viewport.scrollLeft).toBe(0);
+    });
+
+    it('scales a line-mode delta, which is what Firefox sends', async () => {
+      fixture.componentRef.setInput('horizontalWheel', true);
+      horizontalOnly();
+      await fixture.whenStable();
+
+      // Three lines, not three pixels — the raw number would move the content invisibly.
+      wheel({ deltaY: 3, deltaMode: WheelEvent.DOM_DELTA_LINE });
+
+      expect(viewport.scrollLeft).toBe(48);
+    });
+
+    it('clamps to the end rather than overshooting it', async () => {
+      fixture.componentRef.setInput('horizontalWheel', true);
+      horizontalOnly();
+      await fixture.whenStable();
+
+      wheel({ deltaY: 5000 });
+
+      expect(viewport.scrollLeft).toBe(200);
+    });
+  });
 });

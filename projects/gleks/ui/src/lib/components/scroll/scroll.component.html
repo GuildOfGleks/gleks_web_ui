@@ -17,6 +17,7 @@
     [attr.role]="focusable() ? 'region' : null"
     [attr.aria-label]="focusable() && ariaLabel() ? ariaLabel() : null"
     (scroll)="onScroll()"
+    (wheel)="onWheel($event)"
     (pointerenter)="onActivity()"
     (pointermove)="onActivity()"
   >
