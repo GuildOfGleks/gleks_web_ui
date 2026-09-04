@@ -66,14 +66,6 @@ delete the section too.
    carries the split between what follows density and what deliberately does not, and names the
    check (`check-tokens` rule H) that now enforces it.
 
-8. **Seven status colours moved, in four presets — expect the compare page and any screenshot to
-    differ.** `slate` (success/warning/info one step down Tailwind's ramp), `material` (info to
-    Light Blue 800), `one-light` (all three darkened), all because a white label on them failed
-    AA. `material` and `primeng` additionally declare `--gog-<status>-text-color`, a new token
-    family the theme generator will pick up on its own. Nothing to edit — listed so a colour
-    difference between the deployed site and a local build is not investigated as a bug, the same
-    reason item 3 exists.
-
 ## Checking your work
 
 `npm run check:app-contrast` — WCAG AA for both apps' **own** chrome, in all 11 themes. The lab

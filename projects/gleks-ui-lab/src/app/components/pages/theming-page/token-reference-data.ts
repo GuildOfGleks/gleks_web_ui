@@ -38,6 +38,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-warning-color', description: 'Semantic warning color.' },
       { name: '--gog-info-color', description: 'Semantic info color.' },
       {
+        name: '--gog-success-text-color / --gog-danger-text-color / --gog-warning-text-color / --gog-info-text-color',
+        description:
+          'The label a status fill carries, the way --gog-accent-text-color is the accent’s. Each defaults to the accent’s answer, so state one only where your own hue disagrees — and check it, because getting this wrong is silent: white on a bright amber measured 1.97:1 in one of this package’s own presets before these existed.',
+      },
+      {
+        name: '--gog-success-shade / --gog-danger-shade / --gog-warning-shade / --gog-info-shade',
+        description:
+          'Which way a status fill deepens when hovered or held: away from its own label, so the state always makes the label easier to read rather than harder. Defaults to the page’s ink, which is right when the label is white — set it to the opposite when the label is the ink itself.',
+      },
+      {
         name: '--gog-panel-shadow',
         description:
           'Drop shadow for elevated panels (dialogs, dropdowns) — and the gog-panel component’s own chrome, which reads the same token.',

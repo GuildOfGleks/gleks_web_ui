@@ -48,6 +48,20 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
       '--gog-danger-color',
       '--gog-warning-color',
       '--gog-info-color',
+      // A status colour is three tokens, not one (21.9.0), and all three have to be editable
+      // together or this page generates the bug the library just fixed: pick a bright hue here,
+      // leave the label at the accent's white, and `gogBadge` and `gog-button severity` paint
+      // white on it. That measured 1.97:1 in one of the package's own presets before the label
+      // token existed. `-shade` is which way hover and press deepen — away from the label, so it
+      // is the ink when the label is white and the other way round when the label is the ink.
+      '--gog-success-text-color',
+      '--gog-danger-text-color',
+      '--gog-warning-text-color',
+      '--gog-info-text-color',
+      '--gog-success-shade',
+      '--gog-danger-shade',
+      '--gog-warning-shade',
+      '--gog-info-shade',
     ],
   },
   {
