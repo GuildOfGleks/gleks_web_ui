@@ -52,6 +52,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-font-body', description: 'Font stack used for body text.' },
       { name: '--gog-font-mono', description: 'Monospace font stack (code, numeric values).' },
       { name: '--gog-text-xs … --gog-text-3xl', description: 'Type scale, from 0.75rem to 3rem.' },
+      {
+        name: '--gog-text-slg',
+        description:
+          '20px, between lg and xl — named for the control size it serves rather than continuing the t-shirt run, because that is what asked for it. gog-button and the field controls both needed a step for their slg size and, having none, both wrote 1.25rem as a literal.',
+      },
     ],
   },
   {
@@ -90,6 +95,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-letter-spacing',
         description: 'Emphasis tracking, paired with --gog-text-transform.',
+      },
+      {
+        name: '--gog-font-weight-medium / -semibold / -bold / -heavy',
+        description:
+          'Weight, the third character axis. Four steps because four are painted — there is no normal, since nothing in the library uses 400. Set these and every component weight follows; before them, fifteen component tokens each held a bare number.',
+      },
+      {
+        name: '--gog-line-height-none / -tight / -snug / -normal / -relaxed / -loose',
+        description:
+          'Leading, the fourth. Six steps because six values are painted. gog-panel’s heading keeps its own 1.25, off this scale on purpose the way an 11px chip is off the type scale.',
       },
       {
         name: '--gog-density',
@@ -131,6 +146,24 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    // One token and five derivations, which is the whole point of it being here: an app that has
+    // to sit the library above its own chrome edits the floor, not the five layers.
+    id: 'foundation-stacking',
+    title: 'Foundation — Stacking',
+    tokens: [
+      {
+        name: '--gog-z-base',
+        description:
+          'The library’s stacking floor, and the only one of these you set. Every layer is base + N, so moving it lifts the whole library at once and keeps the internal order intact.',
+      },
+      {
+        name: '--gog-badge-z / --gog-toast-base-z / --gog-dropdown-z / --gog-tooltip-z / --gog-spinner-overlay-z',
+        description:
+          'The five layers themselves — +1, +100, +300 (dropdowns, dialogs and menus), +400 and +8000 (the blocking overlay, which outranks even a dialog it covers). Derived, so overriding one takes it out of the base and should be a deliberate exception rather than the way you move the stack.',
+      },
+    ],
+  },
+  {
     id: 'foundation-control-metrics',
     title: 'Foundation — Control Metrics',
     tokens: [
@@ -139,6 +172,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Shared padding for form controls (buttons, fields).',
       },
       { name: '--gog-control-icon-offset', description: 'Icon inset shared by form controls.' },
+      {
+        name: '--gog-control-clear-icon-ratio',
+        description:
+          'The clear (×) button’s glyph as a fraction of its box, shared by the five single-line controls that draw one. gog-textarea keeps its own 1 deliberately: its clear button sits in a corner rather than in the field’s icon row.',
+      },
       {
         name: '--gog-control-checkbox-{size}-box-size / -label-size / -icon-size',
         description: 'Checkbox box, label and icon size, per size step (xsm/sm/md/lg/slg).',

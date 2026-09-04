@@ -57,25 +57,16 @@ delete the section too.
    the API table already lists `ariaPressed` from 21.8.0, but nothing on the page says the state
    is visible now. The showcase's "ARIA state" panel has the wording.
 
-7. **The theme generator and the Theming page gain five new knobs**, all of which are the kind of
-   thing that page exists to show off: `--gog-font-weight-*` (four steps),
-   `--gog-line-height-*` (six), `--gog-z-base`, `--gog-text-slg` and
-   `--gog-control-clear-icon-ratio`. The generator reads the installed package's token list, so
-   the tokens appear on their own — the prose about "one number changes the whole library" is
-   what needs writing, and `--gog-z-base` is the most demonstrable of them.
+7. **The `--gog-density` demo pointer is what is left of this entry.** The prose half landed with
+   item 7's "One number instead of fifty" section in `public/docs/theming.md`, which says the
+   scale claim is literally true as of 21.9.0 and names the fourteen lengths that used to ignore
+   it. What is not written is the concrete thing to *do*: set the generator's density to 0.85 and
+   watch a dropdown panel gap move, which is the cheapest way to see it and wants a sentence on
+   the Theme Generator page rather than in the theming doc. `AGENTS.md`'s `--gog-density` bullet
+   carries the split between what follows density and what deliberately does not, and names the
+   check (`check-tokens` rule H) that now enforces it.
 
-8. **The Theming page's `--gog-density` copy can finally be taken literally.** It says the scale
-   is what "every padding and gap in the library" is built from; until 21.9.0 fourteen lengths
-   were bare pixels that ignored it, ten of them spacing (dropdown panel gaps, the menu offset,
-   the textarea's clear-button inset, the two error-line offsets, the toggle's in-track
-   clearance, the badge's overhang, the calendar's two margins) and four focus rings that
-   restated `--gog-focus-ring-offset`. Nothing on the page is *wrong* today, so this is not a
-   correction — it is that the density demo now has a visible effect it did not have, and the
-   dropdown panel gap is the one to show: set the generator's density to 0.85 and the panel
-   moves. `AGENTS.md`'s `--gog-density` bullet carries the split between what follows density and
-   what deliberately does not, and names the check (`check-tokens` rule H) that now enforces it.
-
-9. **Seven status colours moved, in four presets — expect the compare page and any screenshot to
+8. **Seven status colours moved, in four presets — expect the compare page and any screenshot to
     differ.** `slate` (success/warning/info one step down Tailwind's ramp), `material` (info to
     Light Blue 800), `one-light` (all three darkened), all because a white label on them failed
     AA. `material` and `primeng` additionally declare `--gog-<status>-text-color`, a new token

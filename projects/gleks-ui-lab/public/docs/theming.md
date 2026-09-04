@@ -25,14 +25,46 @@ A named part of Foundation, and the short path to a custom look: corner rounding
 (`--gog-radius`), the three border-weight tiers (`--gog-control-border-*` for form fields,
 `--gog-panel-border-*` for raised surfaces like dialogs, and the plain `--gog-border-*` pair
 for everything smaller and inline — chip, tag, table row), emphasis casing and tracking
-(`--gog-text-transform`, `--gog-letter-spacing`), and density (`--gog-density`, the single
-multiplier every padding and gap in the library derives from). Most component tokens read one
-of these instead of declaring their own literal, so **a theme is expected to set these —
+(`--gog-text-transform`, `--gog-letter-spacing`), **weight** (`--gog-font-weight-medium` …
+`-heavy`) and **leading** (`--gog-line-height-none` … `-loose`), and density (`--gog-density`,
+the single multiplier every padding and gap in the library derives from). Most component tokens
+read one of these instead of declaring their own literal, so **a theme is expected to set these —
 not the dozens of component tokens that derive from them.** `material.css`, `primeng.css` and
 `ledger.css` are what a theme with real character looks like once it uses this layer instead of
 re-listing component tokens: each is a short list of declarations, not a fork of the whole
 stylesheet. Try them in the [Theme Generator](/general/theme-generator), which edits this exact
 layer live.
+
+### One number instead of fifty
+
+The axes above are all the same bet: a value that appears in many component tokens is worth
+extracting so a theme can move all of them at once. It is worth stating plainly, because the
+alternative looks reasonable right up until you try it — a house style that wants lighter chrome
+edits `--gog-font-weight-*`, not the fifteen component weights that used to each hold a bare
+number, and one that wants roomier text edits `--gog-line-height-*` rather than the twenty that
+held theirs. Seven of those twenty were the same `1.4`, which is what a missing axis looks like
+from the inside: the same decision made over and over, independently, with nothing naming it.
+
+**`--gog-z-base` is the clearest demonstration**, because you can watch the whole library move.
+It is the stacking floor, and every layer is `base + N` — badge `+1`, toast `+100`, dropdowns,
+dialogs and menus `+300`, tooltip `+400`, the blocking spinner overlay `+8000`. An app with its
+own fixed header that has to sit above or below the library changes one number:
+
+```css
+:root {
+  --gog-z-base: 10000;
+}
+```
+
+Every layer follows and the order between them is untouched — the badge is still under the
+toast, the tooltip still over the dropdown. Setting `--gog-dropdown-z` directly is the version
+of this that goes wrong: it moves one layer out of a stack the other four still agree on.
+
+`--gog-density` is the same idea applied to spacing, and since 21.9.0 the claim above it is
+literally true rather than nearly so. Fourteen lengths were still bare pixels that ignored it —
+dropdown panel gaps, the menu offset, a clear button's inset, two error-line offsets — so a
+theme that tightened everything left those where they were. They read the scale now, which is
+worth knowing if you had compensated for it.
 
 ## What `index.css` pulls in
 

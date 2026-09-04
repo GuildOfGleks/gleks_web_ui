@@ -22,6 +22,7 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
       '--gog-text-sm',
       '--gog-text-md',
       '--gog-text-lg',
+      '--gog-text-slg',
       '--gog-text-xl',
       '--gog-text-2xl',
       '--gog-text-3xl',
@@ -65,6 +66,19 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
       '--gog-control-border-style',
       '--gog-text-transform',
       '--gog-letter-spacing',
+      // Weight and leading, the third and fourth axes of this layer (21.9.0). Both are unitless,
+      // so `classifyToken` renders them as text fields rather than ranges — the same graceful
+      // degradation the two casing tokens above and `--gog-density` below already rely on.
+      '--gog-font-weight-medium',
+      '--gog-font-weight-semibold',
+      '--gog-font-weight-bold',
+      '--gog-font-weight-heavy',
+      '--gog-line-height-none',
+      '--gog-line-height-tight',
+      '--gog-line-height-snug',
+      '--gog-line-height-normal',
+      '--gog-line-height-relaxed',
+      '--gog-line-height-loose',
       // Density belongs to this layer too (themes.md iteration 6, and the Theming page's
       // Character Layer table lists it) — and it is the single highest-leverage token here,
       // since the whole spacing scale below is `calc(Npx * var(--gog-density))`. Its value is
@@ -100,8 +114,21 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
     ],
   },
   {
+    // One field, five derivations. The layer tokens (`--gog-badge-z` and friends) are each
+    // `calc(var(--gog-z-base) + N)`, so editing the floor moves the whole library and keeps the
+    // order — which is the edit a theme actually wants, the same argument `--gog-density` makes
+    // for the spacing scale.
+    title: 'Stacking',
+    tokens: ['--gog-z-base'],
+  },
+  {
     title: 'Control Metrics',
-    tokens: ['--gog-control-padding-y', '--gog-control-padding-x', '--gog-control-icon-offset'],
+    tokens: [
+      '--gog-control-padding-y',
+      '--gog-control-padding-x',
+      '--gog-control-icon-offset',
+      '--gog-control-clear-icon-ratio',
+    ],
   },
 ];
 
