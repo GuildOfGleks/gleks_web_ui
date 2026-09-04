@@ -43,6 +43,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
       'Whether the chip responds to click/Enter/Space and exposes role="button". Set false for a static, non-interactive label.',
   },
   {
+    name: 'selected',
+    type: 'boolean | null',
+    default: 'null',
+    description:
+      'Two-way. Makes the chip a filter chip: one you toggle rather than press. null is not a toggle at all and is the default, so an existing chip is untouched; false is a toggle that is off and says so with aria-pressed="false"; true is on and draws an inset ring. The chip flips it itself on click, Enter and Space.',
+    since: '21.9.0',
+  },
+  {
     name: 'removable',
     type: 'boolean',
     default: 'false',
@@ -139,6 +147,16 @@ export class ChipDocPage {
     TOKEN_SECTIONS.find((section) => section.id === 'chip')?.tokens ?? [];
 
   protected readonly lastClicked = signal('No chip clicked yet.');
+
+  /**
+   * One signal per chip rather than one holding the row: `[(selected)]` writes back into whatever
+   * it is bound to, and a signal each is what lets the demo work with no click handler at all.
+   */
+  protected readonly topics = [
+    { label: 'Accessibility', on: signal(true) },
+    { label: 'Theming', on: signal(false) },
+    { label: 'Forms', on: signal(true) },
+  ];
 
   protected readonly tags = signal([
     { id: 'angular', label: 'Angular' },
@@ -267,6 +285,59 @@ export class ChipDocPage {
     "  selector: 'app-example',",
     '  imports: [ChipComponent],',
     '  template: `<gog-chip [disabled]="true">Disabled</gog-chip>`,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+
+  protected readonly selectedHtml = [
+    '@for (topic of topics; track topic.label) {',
+    '  <gog-chip [(selected)]="topic.on">{{ topic.label }}</gog-chip>',
+    '}',
+  ].join('\n');
+  protected readonly selectedTs = [
+    "import { Component, computed, signal } from '@angular/core';",
+    "import { ChipComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ChipComponent],',
+    '  template: `',
+    '    @for (topic of topics; track topic.label) {',
+    '      <gog-chip [(selected)]="topic.on">{{ topic.label }}</gog-chip>',
+    '    }',
+    '    <p>{{ summary() }}</p>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  // One signal per chip: [(selected)] writes back into what it is bound to, so the row',
+    '  // needs no click handler of its own.',
+    '  protected readonly topics = [',
+    "    { label: 'Accessibility', on: signal(true) },",
+    "    { label: 'Theming', on: signal(false) },",
+    "    { label: 'Forms', on: signal(true) },",
+    '  ];',
+    '',
+    '  protected readonly summary = computed(() =>',
+    "    this.topics.filter((topic) => topic.on()).map((topic) => topic.label).join(', '),",
+    '  );',
+    '}',
+  ].join('\n');
+
+  protected readonly selectedDisabledHtml = [
+    '<gog-chip [selected]="true" [disabled]="true">Locked filter (on)</gog-chip>',
+    '<gog-chip [selected]="false" [disabled]="true">Locked filter (off)</gog-chip>',
+  ].join('\n');
+  protected readonly selectedDisabledTs = [
+    "import { Component } from '@angular/core';",
+    "import { ChipComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ChipComponent],',
+    '  template: `',
+    '    <gog-chip [selected]="true" [disabled]="true">Locked filter (on)</gog-chip>',
+    '    <gog-chip [selected]="false" [disabled]="true">Locked filter (off)</gog-chip>',
+    '  `,',
     '})',
     'export class ExampleComponent {}',
   ].join('\n');

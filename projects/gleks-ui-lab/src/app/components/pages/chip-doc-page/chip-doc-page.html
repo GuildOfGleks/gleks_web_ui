@@ -62,6 +62,52 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">
+        Filter chips — <code>selected</code>
+        <app-since version="21.9.0" />
+      </h3>
+      <p class="demo-card__meta">
+        <code>[(selected)]</code> makes a chip a toggle rather than a press: it flips itself on
+        click, Enter and Space, draws an inset ring while it is on, and announces
+        <code>aria-pressed</code> either way. Two-way, so a row of filters needs no click handler.
+      </p>
+      <p class="demo-card__meta">
+        <strong
+          >It is tri-state, and <code>null</code> is the default — not <code>false</code>.</strong
+        >
+        A chip that is not part of a selection model should say nothing at all, so
+        <code>null</code> writes no <code>aria-pressed</code> and draws no ring: every chip on this
+        page above and below behaves exactly as it did before this input existed.
+        <code>false</code> is different — it is a toggle that is currently off, and it says so,
+        because a chip with no <code>aria-pressed</code> is not a toggle to a screen reader at all.
+      </p>
+      <div class="demo-card__preview action-row">
+        @for (topic of topics; track topic.label) {
+          <gog-chip [(selected)]="topic.on">{{ topic.label }}</gog-chip>
+        }
+      </div>
+      <app-code-tabs [html]="selectedHtml" [ts]="selectedTs" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">
+        Selected and unavailable
+        <app-since version="21.9.0" />
+      </h3>
+      <p class="demo-card__meta">
+        A disabled chip keeps its ring. "On, and you cannot change it right now" is a real state,
+        and dropping the look would leave it announced to a screen reader and invisible to everyone
+        else. The <code>aria-pressed</code> attribute does go, because it needs the
+        <code>role="button"</code> that a disabled chip does not carry.
+      </p>
+      <div class="demo-card__preview action-row">
+        <gog-chip [selected]="true" [disabled]="true">Locked filter (on)</gog-chip>
+        <gog-chip [selected]="false" [disabled]="true">Locked filter (off)</gog-chip>
+      </div>
+      <app-code-tabs [html]="selectedDisabledHtml" [ts]="selectedDisabledTs" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Non-interactive</h3>
       <p class="demo-card__meta">
         <code>clickable="false"</code> drops the <code>role="button"</code>, tab stop, and pointer

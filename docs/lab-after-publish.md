@@ -75,16 +75,7 @@ delete the section too.
    moves. `AGENTS.md`'s `--gog-density` bullet carries the split between what follows density and
    what deliberately does not, and names the check (`check-tokens` rule H) that now enforces it.
 
-9. **The chip page gains `selected`, and it is the page's first tri-state input.** `gog-chip`
-    takes `[(selected)]` since 21.9.0 — `null` (not a toggle, the default), `false` (a toggle
-    that is off), `true` (on, drawing `--gog-chip-selected-shadow`). Both halves need writing:
-    the API table gets a row, and the prose has to say why `null` exists, because a reader who
-    sees `boolean | null` and assumes `false` is the default will conclude the library puts
-    `aria-pressed` on every chip. The showcase's "Filter chips (selected)" and "Selected, and
-    unavailable" panels have the wording and a live case for each. The Styling Tokens table picks
-    up the two new tokens on its own.
-
-10. **The scroll page gains `horizontalWheel`, and the demo has to include the off case.**
+9. **The scroll page gains `horizontalWheel`, and the demo has to include the off case.**
     `gog-scroll` takes `[horizontalWheel]` since 21.9.0, plus `GOG_CONFIG.scroll.horizontalWheel`
     — so the config table on `general/global-config` needs the row too. The page's prose should
     say what the input does *not* do, because that is the part people get wrong: at the content's
@@ -92,7 +83,7 @@ delete the section too.
     never touched. The showcase's `horizontalWheel` panel puts an off row next to an on row,
     which is the arrangement that makes the difference visible in one screen.
 
-11. **Seven status colours moved, in four presets — expect the compare page and any screenshot to
+10. **Seven status colours moved, in four presets — expect the compare page and any screenshot to
     differ.** `slate` (success/warning/info one step down Tailwind's ramp), `material` (info to
     Light Blue 800), `one-light` (all three darkened), all because a white label on them failed
     AA. `material` and `primeng` additionally declare `--gog-<status>-text-color`, a new token
@@ -100,7 +91,7 @@ delete the section too.
     difference between the deployed site and a local build is not investigated as a bug, the same
     reason item 3 exists.
 
-12. **The button page gains `severity`, and it is the best theming demo the lab has.**
+11. **The button page gains `severity`, and it is the best theming demo the lab has.**
     `gog-button` and `[gogButton]` take `severity` since 21.9.0 — `'accent'` (the default,
     unchanged), `success`, `danger`, `warning`, `info` — orthogonal to `variant`, so the page
     wants a severity x variant grid rather than a row. The API tables need the row on both, and
