@@ -129,6 +129,10 @@ export const GLOBAL_CONFIG_BY_COMPONENT: Readonly<Record<string, readonly Global
     { key: 'scroll.hideDelay' },
     { key: 'scroll.overscrollBehavior' },
     { key: 'scroll.showTrack' },
+    {
+      key: 'scroll.horizontalWheel',
+      note: 'turns a vertical wheel into horizontal scrolling on a region with nothing to scroll vertically. Off by default, and it never takes a gesture the browser already handles — a horizontal delta, a pinch-zoom, or a turn at the content’s end.',
+    },
   ],
   select: [
     { key: 'control.size' },

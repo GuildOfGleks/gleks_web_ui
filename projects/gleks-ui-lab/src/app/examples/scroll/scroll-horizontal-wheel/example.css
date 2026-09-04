@@ -1,0 +1,43 @@
+/* The example is mounted as a component, so it owns its own box. Without an explicit
+   display it is an inline element, and `width: 100%` on the region inside then resolves
+   against a shrink-to-fit parent — circular, and the region collapses. */
+:host {
+  display: block;
+  width: 100%;
+}
+
+.wheel-label {
+  margin: 0 0 6px;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}
+
+.wheel-label + .scroll-box {
+  margin-bottom: 18px;
+}
+
+/* No height: on the horizontal axis the row sizes itself, and the width is the container's. */
+.scroll-box {
+  width: 100%;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-background-color);
+}
+
+.scroll-row-flex {
+  display: flex;
+  gap: 8px;
+  padding: 14px;
+}
+
+/* flex: 0 0 auto, so the chips keep their width and overflow the row instead of being squeezed
+   into it — without that there is nothing to scroll, and nothing to demonstrate. */
+.scroll-chip {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border-radius: var(--gog-radius);
+  background: var(--gog-hover-color);
+  color: var(--gog-text-color);
+  font-size: var(--gog-text-sm);
+  white-space: nowrap;
+}

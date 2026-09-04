@@ -32,6 +32,35 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">
+        Horizontal wheel
+        <app-since version="21.9.0" />
+      </h3>
+      <p class="demo-card__meta">
+        Hover the first row and turn the wheel: the page moves. A vertical wheel over a region with
+        nothing to scroll vertically belongs to the browser, and this component draws its thumb over
+        native scrolling rather than replacing it, so that is the default and always was.
+        <code>[horizontalWheel]="true"</code> is the opt-in exception — the second row is the same
+        markup with that one input.
+      </p>
+      <p class="demo-card__meta">
+        <strong>What it does not do is the part worth reading.</strong> Scroll the second row to its
+        right-hand end and keep turning: the page starts moving again. The translation only happens
+        while there is room left in the direction of the turn, so a region can never swallow the
+        wheel and leave the page feeling stuck — which would be a worse bug than the one this fixes.
+        It also keeps out of the way of anything that already works: a trackpad's sideways swipe and
+        <code>Shift</code>+wheel carry a horizontal delta the browser applies correctly,
+        <code>Ctrl</code>+wheel is pinch-zoom, and a region that can still scroll vertically is left
+        alone — so <code>axis="both"</code> keeps scrolling down while there is down to go.
+      </p>
+      <p class="demo-card__meta">
+        Off by default, because it changes what an existing region does with a gesture it currently
+        passes on. <code>GOG_CONFIG.scroll.horizontalWheel</code> turns it on app-wide.
+      </p>
+      <app-demo [component]="examples.horizontalWheel" [source]="sources.scrollHorizontalWheel" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Size and auto-hide</h3>
       <p class="demo-card__meta">
         <code>size="thin"</code> shrinks the track/thumb; <code>autoHide="false"</code> keeps the

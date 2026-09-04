@@ -8,6 +8,7 @@ import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 import { SCROLL_EXAMPLES } from '../../../examples/scroll/sources.generated';
 import { ScrollAxisExample } from '../../../examples/scroll/scroll-axis/example';
+import { ScrollHorizontalWheelExample } from '../../../examples/scroll/scroll-horizontal-wheel/example';
 import { ScrollMethodsExample } from '../../../examples/scroll/scroll-methods/example';
 import { ScrollOverviewExample } from '../../../examples/scroll/scroll-overview/example';
 import { ScrollReachExample } from '../../../examples/scroll/scroll-reach/example';
@@ -68,6 +69,14 @@ const API_INPUTS: readonly ApiRow[] = [
     default: "''",
     description:
       'Accessible name for the viewport when focusable is true and there is no visible label.',
+  },
+  {
+    name: 'horizontalWheel',
+    type: 'boolean | undefined',
+    default: 'undefined',
+    description:
+      'Turns a vertical wheel into horizontal scrolling on a region that has nothing to scroll vertically. Only acts while there is room left in that direction — at the content’s end the event is left alone and the page takes it — and never touches a horizontal delta (trackpad, Shift+wheel) or a pinch-zoom. Unset, falls back to GOG_CONFIG.scroll.horizontalWheel, then to false.',
+    since: '21.9.0',
   },
   {
     name: 'showTrack',
@@ -153,6 +162,7 @@ export class ScrollDocPage {
   protected readonly examples = {
     overview: ScrollOverviewExample,
     axis: ScrollAxisExample,
+    horizontalWheel: ScrollHorizontalWheelExample,
     sizeAutoHide: ScrollSizeAutoHideExample,
     reach: ScrollReachExample,
     methods: ScrollMethodsExample,

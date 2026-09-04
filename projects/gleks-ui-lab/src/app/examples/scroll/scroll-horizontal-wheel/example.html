@@ -1,0 +1,24 @@
+<!-- Both rows are the same content on the same axis. The only difference is the input, which is
+     the point: hover each and turn the wheel. -->
+<p class="wheel-label">off — a vertical wheel scrolls the page (the default)</p>
+<gog-scroll axis="horizontal" class="scroll-box" ariaLabel="Columns, wheel off">
+  <div class="scroll-row-flex">
+    @for (item of items; track item) {
+      <span class="scroll-chip">{{ item }}</span>
+    }
+  </div>
+</gog-scroll>
+
+<p class="wheel-label">horizontalWheel — the same turn scrolls the row</p>
+<gog-scroll
+  axis="horizontal"
+  [horizontalWheel]="true"
+  class="scroll-box"
+  ariaLabel="Columns, wheel translated"
+>
+  <div class="scroll-row-flex">
+    @for (item of items; track item) {
+      <span class="scroll-chip">{{ item }}</span>
+    }
+  </div>
+</gog-scroll>

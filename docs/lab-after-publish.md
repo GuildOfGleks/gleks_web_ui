@@ -75,15 +75,7 @@ delete the section too.
    moves. `AGENTS.md`'s `--gog-density` bullet carries the split between what follows density and
    what deliberately does not, and names the check (`check-tokens` rule H) that now enforces it.
 
-9. **The scroll page gains `horizontalWheel`, and the demo has to include the off case.**
-    `gog-scroll` takes `[horizontalWheel]` since 21.9.0, plus `GOG_CONFIG.scroll.horizontalWheel`
-    — so the config table on `general/global-config` needs the row too. The page's prose should
-    say what the input does *not* do, because that is the part people get wrong: at the content's
-    end the wheel goes back to the page, and a trackpad swipe, `Shift`+wheel and pinch-zoom are
-    never touched. The showcase's `horizontalWheel` panel puts an off row next to an on row,
-    which is the arrangement that makes the difference visible in one screen.
-
-10. **Seven status colours moved, in four presets — expect the compare page and any screenshot to
+9. **Seven status colours moved, in four presets — expect the compare page and any screenshot to
     differ.** `slate` (success/warning/info one step down Tailwind's ramp), `material` (info to
     Light Blue 800), `one-light` (all three darkened), all because a white label on them failed
     AA. `material` and `primeng` additionally declare `--gog-<status>-text-color`, a new token
@@ -91,7 +83,7 @@ delete the section too.
     difference between the deployed site and a local build is not investigated as a bug, the same
     reason item 3 exists.
 
-11. **The button page gains `severity`, and it is the best theming demo the lab has.**
+10. **The button page gains `severity`, and it is the best theming demo the lab has.**
     `gog-button` and `[gogButton]` take `severity` since 21.9.0 — `'accent'` (the default,
     unchanged), `success`, `danger`, `warning`, `info` — orthogonal to `variant`, so the page
     wants a severity x variant grid rather than a row. The API tables need the row on both, and
