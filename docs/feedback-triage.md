@@ -136,7 +136,7 @@ it means actually loading the lab in an older browser rather than trusting a sup
 | #   | Item                                             | Why it is a minor                                                   | Size |
 | --- | ------------------------------------------------ | ------------------------------------------------------------------- | ---- |
 | 1   | `gog-button` `severity` (warning / success / …)  | New public input, new token families per severity                   | M    |
-| 2   | ~~`gog-button` pressed state~~ **done, 21.8.1**  | Shipped as the `:active` colour, per variant, plus the eight other pressable surfaces. Not the `aria-pressed` toggle *look*, which is still open — see `docs/backlog.md` | S–M  |
+| 2   | ~~`gog-button` pressed state~~ **done, 21.8.1**  | Shipped as the `:active` colour, per variant, plus the eight other pressable surfaces. The `aria-pressed` toggle *look* shipped in the same release — an inset ring, `--gog-button-<variant>-toggled-shadow` — so it is closed too; what is still open is the same gap on `gog-chip`, see `docs/backlog.md` | S–M  |
 | 3   | Input masking (phone, barcode, …)                | **Needs a plan before code** — see below                            | L    |
 | 4   | Horizontal wheel handling in `gog-scroll`        | New behaviour, scroll-chaining trap                                 | M    |
 | 5   | Whole-row click when `gog-table` selection is on | Behaviour change on an existing input; conflicts with `gogRowClick` | M    |

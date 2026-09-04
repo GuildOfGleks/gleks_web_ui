@@ -1251,7 +1251,13 @@
   --gog-input-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-input-error-color: var(--gog-danger-color);
   --gog-input-error-font-size: var(--gog-text-xs);
-  --gog-input-error-offset: var(--gog-space-2);
+  /* Extra space above the error line, *on top of* the host's own `--gog-input-gap`, which
+     already separates every child of the field. It shipped as `2px` and put this field's error
+     6px under it while `gog-select`, `gog-autocomplete` and `gog-datepicker` — same gap, no
+     offset — sat at 4px; in one form the six did not line up. Zero by default since 21.8.1, so
+     one mechanism spaces the error line everywhere. Set it if you want this field's error
+     pushed further than the rest. */
+  --gog-input-error-offset: 0px;
   --gog-input-icon-color: var(--gog-muted-text-color);
   --gog-input-icon-hover-color: var(--gog-accent-color);
   --gog-input-icon-action-radius: calc(var(--gog-radius) - 4px);
@@ -1341,7 +1347,8 @@
   --gog-multiselect-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-multiselect-error-color: var(--gog-danger-color);
   --gog-multiselect-error-font-size: var(--gog-text-xs);
-  --gog-multiselect-error-offset: var(--gog-space-2);
+  /* Zero by default since 21.8.1 — see `--gog-input-error-offset` for why. */
+  --gog-multiselect-error-offset: 0px;
   --gog-multiselect-border-color: var(--gog-accent-color);
   --gog-multiselect-panel-bg: var(--gog-surface-color);
   --gog-multiselect-panel-border: var(--gog-accent-color);

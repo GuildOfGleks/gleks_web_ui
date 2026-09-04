@@ -168,15 +168,20 @@ reason may stop holding.
   token declarations are literals, and a character layer replaces per-component literals with
   inherited foundation tokens. Doing that first may make this entry moot.
 
-- **Three of the six fields put no space above their error line.** `gog-inputfield`,
-  `gog-textarea` and `gog-multiselect` read an error offset (`--gog-input-error-offset` /
-  `--gog-multiselect-error-offset`, both `--gog-space-2` since 21.8.1); `gog-select`,
-  `gog-autocomplete` and `gog-datepicker` set no margin at all, so their error text sits tight
-  against the field. In one form, side by side, the six do not line up. Found 2026-09-04 by the
-  `-offset`/`-inset`/`-margin` audit, and deliberately not fixed there: the three missing offsets
-  are the only change in that pass that would move a pixel in a shipped app, and the right fix is
-  probably one shared `--gog-field-error-offset` the six read rather than three more
-  per-component tokens — which is a decision, not a correction.
+- **The error line's spacing is fixed, and the filing had it backwards** — kept because the
+  mistake is the reusable part. Filed 2026-09-04 as "three of the six fields put no space above
+  their error line", with a proposed fix of one shared `--gog-field-error-offset` for the six to
+  read. Both halves were wrong. **Six was eight**: `gog-radio-group` and `gog-slider` render an
+  error too, and a grep for `-error-offset` in `theme.css` cannot see a component that never had
+  one — the same blind spot as the `GOG_CONFIG` JSDoc defect above, where the missing readers were
+  the ones that did not name the thing. **And the polarity was inverted**: all eight are flex
+  columns whose gap already separates the error from the field, so the two carrying a
+  `margin-top` were adding 2px on top of it, not supplying the only spacing there was. Measured
+  in a browser rather than read off the stylesheets, which is what settled it — 6px for
+  `gog-inputfield` and `gog-multiselect`, 4px for their three siblings on the identical gap. The
+  fix was to zero the two offsets, not to add five more (21.8.1). Written from the shape of the
+  bug: three files had a declaration, five did not, and "add it to the five" followed without
+  asking what was already spacing them.
 
 ---
 

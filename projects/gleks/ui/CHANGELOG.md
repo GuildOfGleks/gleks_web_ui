@@ -278,6 +278,17 @@ reached 1.0, so breaking changes may land in minor versions.
   pixel value. The script's header now also lists rules H and I, which had been in it unlisted
   since they were added.
 
+- **Two fields put their error line 2px lower than the other six.** Every control that renders an
+  error — `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`,
+  `gog-datepicker`, `gog-radio-group`, `gog-slider` — is a flex column whose own gap already
+  separates the error from the field, the same gap that separates the label from it. Two of them
+  then added `margin-top: 2px` on top: measured in a browser, `gog-inputfield` and
+  `gog-multiselect` sat at 6px while `gog-select`, `gog-autocomplete` and `gog-datepicker` sat at
+  4px from the identical gap. In one form, side by side, the six did not line up.
+  `--gog-input-error-offset` and `--gog-multiselect-error-offset` now default to `0`, so one
+  mechanism spaces the error line everywhere; both tokens stay, and setting one still pushes that
+  field's error further than the rest.
+
 ## [21.8.0] - 03.09.2026
 
 ### Added
