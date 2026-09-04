@@ -16,6 +16,50 @@ not worth carrying here.
 
 ## Defects — first
 
+- **`gogBadge`'s status variants fail WCAG AA in four themes — 11 pairs, shipped today.** A
+  status badge paints `--gog-<status>-color` as its fill and `--gog-accent-text-color` as its
+  label, which on a light theme is white. Measured 2026-09-04 with `scripts/token-color.mjs`:
+
+  | theme | success | warning | info |
+  | --- | --- | --- | --- |
+  | `material` | ok | **1.97** | **3.86** |
+  | `primeng` | **2.28** | **2.15** | **2.77** |
+  | `slate` | **3.77** | **3.19** | **4.10** |
+  | `one-light` | **3.21** | **3.20** | **4.18** |
+
+  `danger` passes everywhere, and that is the tell: a danger pair was added to `check:contrast`
+  on 2026-09-03 and the palettes were tuned to it. The other three statuses have never been
+  measured against anything.
+
+  **Why the check did not see it, which is the part that generalises.** `collectStatePairs`
+  reads compiled stylesheets and takes the pair from any rule that sets `color` and
+  `background-color`. The badge's rule sets neither: it sets `--gog-badge-variant-bg` and
+  `--gog-badge-variant-color`, and the base rule reads them. That indirection is the library's
+  standard pattern — button variants, chip sizes, tag variants, scroll sizes all use it — so the
+  sweep is blind to **every** variant of **every** component, not just this one. It has been
+  reporting ~180 states and passing, which reads as coverage it does not have.
+
+  **It also blocks `gog-button`'s `severity`** (`docs/feedback-triage.md`, item 1), which is the
+  same fill under the same label. Splitting the fix by what it costs:
+
+  - **Four pairs need only a label colour** — `material` warning, `primeng` success/warning/info.
+    The theme's own ink on its own hue measures 6.44–8.69:1, so a `--gog-<status>-text-color`
+    per theme (defaulting to `--gog-accent-text-color`, stated only where it differs) fixes them
+    with **no hue change at all**. Material and Aura both put dark text on their amber anyway.
+  - **Four pairs need the hue to move** — `material` info (best case 4.44, short by 0.06) and
+    `one-light` success/warning/info, where neither white nor the theme's ink reaches 4.5.
+    `one-light` reproduces a named editor palette and `material` reproduces Material 3, so this
+    is the fidelity-versus-legibility trade that was made once before for those same two
+    families. **`docs/themes.md`'s rule applies: finding and fixing colour are separate
+    decisions.** Not fixed unilaterally.
+  - **`slate`'s three** sit between: ink was not measured for them above because white was
+    within reach of a hue nudge; measure before choosing.
+
+  A third piece belongs with whichever fix lands: `severity`'s transparent variants would use the
+  status colour as *text on the page*, which fails in six themes. `gog-tag` already solved that
+  without touching a palette — it mixes the status colour 82% toward `--gog-tag-color-base`
+  rather than using it raw — and that recipe is the thing to reuse rather than re-derive.
+
 **What was here.** The section emptied on 2026-09-02, when the `GogGlobalConfig` JSDoc defect
 was fixed for the in-progress 21.8.0 (see `CHANGELOG.md`). It refilled on 2026-09-03 with the
 "nine pressable surfaces have no press feedback" entry, which was **closed the same day** — eight
