@@ -168,6 +168,16 @@ variant and size classes:
 > "what a raised surface looks like here". Change one and every raised surface follows, which is
 > the intent; the rest of `--gog-panel-*` belongs to the component alone.
 
+**A status colour is three tokens, not one.** `--gog-danger-color` and its three siblings are
+fills, and a fill needs a label that reads on it and a direction to deepen in — so each also has
+`--gog-<status>-text-color` (the label; defaults to the accent's, state it only when your hue
+disagrees) and `--gog-<status>-shade` (which way hover and press move; defaults to the page's ink,
+and should be the opposite when your label *is* the ink). Setting a status colour alone and
+leaving those at their defaults is how a bright amber ends up under white text: it measured 1.97:1
+in one of this package's own presets before 21.9.0. `gogBadge` and `gog-button`'s `severity` read
+the label; the button also reads the shade. `gog-tag` derives its own pair by mixing and
+`gog-progressbar` paints no label on its bar, so neither needs them.
+
 Every group and token name is in **[`TOKENS.md`](./TOKENS.md)**, generated from `theme.css` so it
 cannot drift, and available at runtime as `GOG_TOKEN_GROUPS`.
 
@@ -263,9 +273,20 @@ provideGogConfig({
 ```
 
 Keys: `control`, `dropdown`, `floatLabel`, `datepicker`, `autocomplete`, `inputfield`, `textarea`,
-`tooltip`, `scroll`, `button`, `ripple`, `paginator`, `toast`, `theme`, `labels`. An instance's own
-input always wins, and providing the config again lower in the injector tree layers onto the
-parent rather than replacing it.
+`tooltip`, `scroll`, `button`, `ripple`, `spinner`, `paginator`, `toast`, `theme`, `labels`. An
+instance's own input always wins, and providing the config again lower in the injector tree layers
+onto the parent rather than replacing it.
+
+`spinner` is the one key that takes a **component** rather than a value:
+
+```ts
+provideGogConfig({ spinner: { component: HouseLoader } });
+```
+
+That renders your loader wherever the library draws a spinner — including the two places no input
+could reach, since `gog-button` and `gog-autocomplete` render their own and expose nothing for it.
+It keeps the library's sizing, overlay behaviour, `role="status"` and accessible name; only the
+visual is yours.
 
 `ripple` is the one visual default that is not a token, and the exception is deliberate:
 `--gog-ripple-opacity: 0` would hide the wash but still pay for the DOM node, the listeners and

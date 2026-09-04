@@ -26,10 +26,13 @@ reached 1.0, so breaking changes may land in minor versions.
   case (`material`'s amber) rather than a round number. All four severities, four variants and
   every state are gated by `check:contrast` — 1155 pairs across 11 themes, all passing.
 
-- **`--gog-success-text-color` and its three siblings: the label a status fill carries.** Each
-  status names its own "text on this fill" colour, the way `--gog-accent-text-color` already did
-  for the accent, and defaults to it — so a theme states one only where its own hue disagrees.
-  Added with the defect it exists to fix, in the Fixed section below.
+- **A status colour is three tokens now, not one.** `--gog-<status>-color` is the fill;
+  `--gog-<status>-text-color` is the label that reads on it, the way `--gog-accent-text-color`
+  already did for the accent; and `--gog-<status>-shade` is the direction hover and press deepen
+  in. Both new ones default to the accent's answer, so a theme states them only where its own hue
+  disagrees — and the defaults are what nine of the eleven shipped presets still use. If you write
+  a theme, this is the contract to know: setting a status colour alone is how a bright amber ends
+  up under white text, which is exactly the defect in the Fixed section below.
 
 - **`gog-scroll` gains `horizontalWheel`, so a vertical wheel can scroll a horizontal row.**
   Hover a horizontal-only region, turn the wheel, and the page moves instead — the browser's own
