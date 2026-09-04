@@ -159,6 +159,15 @@ export function makeResolver(layers, themeDecls) {
     if (v.startsWith('color-mix(')) {
       const args = splitTop(v.slice(10, v.lastIndexOf(')')));
       if (args.length !== 3 || !/^in\s+srgb$/.test(args[0])) return null;
+      // The percentage has to be a literal. CSS allows `var(--ratio)` there and a browser
+      // resolves it, but this reads the number with a regex before any substitution happens, so
+      // a `var()` percentage matches nothing, the weight comes back null, and the mix silently
+      // becomes a 50/50 — or the whole token reports as unresolvable, which is what actually
+      // happened on 2026-09-04 when `--gog-button-<status>-ink` was written with a
+      // `--gog-button-severity-ink-mix` knob. Every pair reading such a token drops out of the
+      // contrast check, so the failure is loud in `check:contrast` and invisible in the browser:
+      // exactly backwards from useful. **Keep mix ratios as literals in theme.css**, or teach
+      // `parse` to substitute here first.
       const read = (arg) => {
         const pct = arg.match(/([\d.]+)%\s*$/);
         const colour = parse(pct ? arg.slice(0, pct.index).trim() : arg, seen);
