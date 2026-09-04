@@ -629,7 +629,7 @@ async function main() {
   // check, which is why this exists.
   //
   // Only literal palette blocks are compared, since that is where a theme states its own colours.
-  // The accent ramp joined it on 2026-09-03, for the same reason one release later: 21.8.1 made
+  // The accent ramp joined it on 2026-09-03, for the same reason one release later: 21.9.0 made
   // `--gog-accent-dim` the button's *pressed* fill, which only reads as a press if it differs from
   // the rest and hover tones. `bevel` had `--gog-accent-dim: #000080`, byte-identical to its
   // `--gog-accent-color`, so a pressed button in that theme painted itself the colour it already

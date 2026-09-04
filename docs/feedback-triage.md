@@ -81,7 +81,7 @@ It is still a real usability gap, and fixing it means intercepting `wheel` and t
 vertical delta to horizontal on a horizontal-only container. That is new behaviour with a
 scroll-chaining trap attached, so it is a minor, not a patch.
 
-**Shipped in 21.8.1 as `horizontalWheel`, opt-in.** The trap this entry named turned out to be
+**Shipped in 21.9.0 as `horizontalWheel`, opt-in.** The trap this entry named turned out to be
 the feature rather than an obstacle to it: the condition "there is room left in the direction of
 the turn" is what makes it safe, because at the content's end the event is left alone and the
 page picks it up. Intercepting unconditionally would have made the wheel go dead over a
@@ -146,10 +146,10 @@ it means actually loading the lab in an older browser rather than trusting a sup
 
 | #   | Item                                             | Why it is a minor                                                   | Size |
 | --- | ------------------------------------------------ | ------------------------------------------------------------------- | ---- |
-| 1   | ~~`gog-button` `severity` (warning / success / …)~~ **done, 21.8.1** | Shipped as `severity`, orthogonal to `variant` — one ingredient set per status rather than a token family per severity per variant. The real cost was not the tokens: the status colours could not carry a label, which turned out to be a shipped `gogBadge` defect first | M    |
-| 2   | ~~`gog-button` pressed state~~ **done, 21.8.1**  | Shipped as the `:active` colour, per variant, plus the eight other pressable surfaces. The `aria-pressed` toggle *look* shipped in the same release — an inset ring, `--gog-button-<variant>-toggled-shadow` — so it is closed too; what is still open is the same gap on `gog-chip`, see `docs/backlog.md` | S–M  |
+| 1   | ~~`gog-button` `severity` (warning / success / …)~~ **done, 21.9.0** | Shipped as `severity`, orthogonal to `variant` — one ingredient set per status rather than a token family per severity per variant. The real cost was not the tokens: the status colours could not carry a label, which turned out to be a shipped `gogBadge` defect first | M    |
+| 2   | ~~`gog-button` pressed state~~ **done, 21.9.0**  | Shipped as the `:active` colour, per variant, plus the eight other pressable surfaces. The `aria-pressed` toggle *look* shipped in the same release — an inset ring, `--gog-button-<variant>-toggled-shadow` — so it is closed too; what is still open is the same gap on `gog-chip`, see `docs/backlog.md` | S–M  |
 | 3   | Input masking (phone, barcode, …)                | **Needs a plan before code** — see below                            | L    |
-| 4   | ~~Horizontal wheel handling in `gog-scroll`~~ **done, 21.8.1** | Shipped as `horizontalWheel`, opt-in. The scroll-chaining trap is handled by the condition that turned out to be the feature's core: at the content's end the event is left alone, so the wheel never goes dead. Also skipped for a horizontal delta, for `ctrlKey`, and whenever the viewport can still scroll vertically | M    |
+| 4   | ~~Horizontal wheel handling in `gog-scroll`~~ **done, 21.9.0** | Shipped as `horizontalWheel`, opt-in. The scroll-chaining trap is handled by the condition that turned out to be the feature's core: at the content's end the event is left alone, so the wheel never goes dead. Also skipped for a horizontal delta, for `ctrlKey`, and whenever the viewport can still scroll vertically | M    |
 | 5   | Whole-row click when `gog-table` selection is on | Behaviour change on an existing input; conflicts with `gogRowClick` | M    |
 
 **On the mask (item 3), the reporter already asked the right question** — extend `gog-inputfield`
@@ -159,8 +159,8 @@ mask is a value transform, not a control — so it wants to be a directive (`gog
 on `gog-inputfield` **and** on a consumer's own `<input>`, the same argument that made
 `[gogButton]` a directive. But that is a plan to write, not a conclusion to act on.
 
-**Estimate: one session per item, plus one for the mask plan.** Four items, not five, since
-2026-09-03.
+**Two items left, not four, since 2026-09-04**: input masking (which still needs a written plan
+first) and the whole-row click. Estimate a session each, plus one for the mask plan.
 
 ---
 

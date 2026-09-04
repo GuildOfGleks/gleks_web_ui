@@ -98,7 +98,7 @@
 
 /*
  * The held state. It changes colour *and* scales, and the colour is the part that matters:
- * `prefers-reduced-motion` switches the transform off below, and until 21.8.1 that was the whole
+ * `prefers-reduced-motion` switches the transform off below, and until 21.9.0 that was the whole
  * rule — so a reader with animations off pressed a button and nothing whatsoever happened. The
  * ripple does not cover it either: it is off by default and is itself suppressed under reduced
  * motion, deliberately, because it really is decoration. A colour change is not.
@@ -311,7 +311,7 @@
 }
 
 /* Ghost: a wash on hover rather than a fill, the same shape the accent ghost has. Its hover
-   label is `--gog-text-color` for the reason 21.8.1 recorded on `--gog-button-ghost-hover-color`
+   label is `--gog-text-color` for the reason 21.9.0 recorded on `--gog-button-ghost-hover-color`
    — a label and a ground made of the same hue walk toward each other — and the press then fills
    properly, which is also what the accent ghost does. */
 :is(.gog-btn--success, .gog-btn--danger, .gog-btn--warning, .gog-btn--info).gog-btn--ghost {

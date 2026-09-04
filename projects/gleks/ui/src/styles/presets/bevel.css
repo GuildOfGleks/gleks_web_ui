@@ -37,7 +37,7 @@
   --gog-accent-color: #000080;
   --gog-accent-bright: #1a1aa8;
   /* Was #000080 — byte-identical to --gog-accent-color, which made it not a ramp at all.
-     Harmless while `dim` was only a field border; 21.8.1 made it the button's pressed fill, so a
+     Harmless while `dim` was only a field border; 21.9.0 made it the button's pressed fill, so a
      pressed button in this theme painted itself the colour it already was. Darkened to a deeper
      navy, which is as period-correct as the one it replaces. `check-tokens` rule I now fails on
      any theme whose accent ramp collapses like this. */

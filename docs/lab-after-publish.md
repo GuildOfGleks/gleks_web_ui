@@ -19,7 +19,7 @@ delete the section too.
 
 ---
 
-## After 21.8.1
+## After 21.9.0
 
 1. **The button page's Styling Tokens table gains the active-state tokens.** It is generated from
    `TOKEN_SECTIONS`, so it picks them up on its own once the package is installed — but the page's
@@ -40,11 +40,11 @@ delete the section too.
 
 4. **`theme-starter.css` needs regenerating** (`npm run generate:theme-starter`). It is generated
    from the *published* package, so `npm run check:theme-starter` passes today against 21.8.0 and
-   will fail the moment 21.8.1 is installed: that release adds ten `--gog-*-press-*` tokens the
+   will fail the moment 21.9.0 is installed: that release adds ten `--gog-*-press-*` tokens the
    file does not carry yet.
 
 5. **Check the two header toggles' hover.** They show their state by overriding
-   `--gog-button-ghost-color` (muted when off, accent when on), and 21.8.1 changes a hovered
+   `--gog-button-ghost-color` (muted when off, accent when on), and 21.9.0 changes a hovered
    ghost button's label to `--gog-text-color` — so while the pointer is on a toggle, that colour
    signal drops out. The icon still differs (`droplet` / `droplet-slash`, `align-left` /
    `align-right`) and `aria-pressed` is unaffected, so nothing is lost that a reader depends on;
@@ -70,7 +70,7 @@ delete the section too.
    what needs writing, and `--gog-z-base` is the most demonstrable of them.
 
 9. **The Theming page's `--gog-density` copy can finally be taken literally.** It says the scale
-   is what "every padding and gap in the library" is built from; until 21.8.1 fourteen lengths
+   is what "every padding and gap in the library" is built from; until 21.9.0 fourteen lengths
    were bare pixels that ignored it, ten of them spacing (dropdown panel gaps, the menu offset,
    the textarea's clear-button inset, the two error-line offsets, the toggle's in-track
    clearance, the badge's overhang, the calendar's two margins) and four focus rings that
@@ -81,7 +81,7 @@ delete the section too.
    what deliberately does not, and names the check (`check-tokens` rule H) that now enforces it.
 
 10. **The chip page gains `selected`, and it is the page's first tri-state input.** `gog-chip`
-    takes `[(selected)]` since 21.8.1 — `null` (not a toggle, the default), `false` (a toggle
+    takes `[(selected)]` since 21.9.0 — `null` (not a toggle, the default), `false` (a toggle
     that is off), `true` (on, drawing `--gog-chip-selected-shadow`). Both halves need writing:
     the API table gets a row, and the prose has to say why `null` exists, because a reader who
     sees `boolean | null` and assumes `false` is the default will conclude the library puts
@@ -90,7 +90,7 @@ delete the section too.
     up the two new tokens on its own.
 
 11. **The scroll page gains `horizontalWheel`, and the demo has to include the off case.**
-    `gog-scroll` takes `[horizontalWheel]` since 21.8.1, plus `GOG_CONFIG.scroll.horizontalWheel`
+    `gog-scroll` takes `[horizontalWheel]` since 21.9.0, plus `GOG_CONFIG.scroll.horizontalWheel`
     — so the config table on `general/global-config` needs the row too. The page's prose should
     say what the input does *not* do, because that is the part people get wrong: at the content's
     end the wheel goes back to the page, and a trackpad swipe, `Shift`+wheel and pinch-zoom are
@@ -106,7 +106,7 @@ delete the section too.
     reason item 3 exists.
 
 13. **The button page gains `severity`, and it is the best theming demo the lab has.**
-    `gog-button` and `[gogButton]` take `severity` since 21.8.1 — `'accent'` (the default,
+    `gog-button` and `[gogButton]` take `severity` since 21.9.0 — `'accent'` (the default,
     unchanged), `success`, `danger`, `warning`, `info` — orthogonal to `variant`, so the page
     wants a severity x variant grid rather than a row. The API tables need the row on both, and
     `GogSeverity` should be named on the types page (`GogProgressbarVariant` is now an alias of

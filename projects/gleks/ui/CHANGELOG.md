@@ -4,7 +4,7 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [21.8.1] - planned
+## [21.9.0] - planned
 
 ### Added
 
@@ -64,7 +64,7 @@ reached 1.0, so breaking changes may land in minor versions.
   The look and the semantics ship together on purpose, which is the whole reason this waited:
   forwarding `aria-pressed` alone would have let a chip announce itself as on while looking
   identical to an off one — WCAG 1.4.1 from the other side, and the exact trap `gog-button` was
-  in between 21.8.0 and 21.8.1. A ring rather than a fill for the same reason as the button's:
+  in between 21.8.0 and 21.9.0. A ring rather than a fill for the same reason as the button's:
   `:hover` and `:active` already own this surface's background, so a selected chip painted with a
   fill would lose the one thing saying it is on the moment the pointer arrived.
 

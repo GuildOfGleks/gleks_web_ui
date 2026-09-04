@@ -172,7 +172,7 @@ This applies to projected/dynamic content too, not just a component's own static
   way. Two instances so far, both shipped broken: a toast whose countdown was the progress bar's
   slide (fixed in 21.7.1 with `steps(20, end)` — twenty jumps still report the time), and a
   button whose entire press feedback was `transform: scale()`, which this media query switched
-  off, so a reader with animations off pressed a button and nothing happened at all (21.8.1). A
+  off, so a reader with animations off pressed a button and nothing happened at all (21.9.0). A
   state change is not an animation: it survives this query, and with transitions off it simply
   lands on the first frame.
 - **A press must be a state, and the ripple does not count.** It is off by default *and*

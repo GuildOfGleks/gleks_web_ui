@@ -22,7 +22,7 @@ not worth carrying here.
   them, and every variant of every component is written that way — button variants, tag variants,
   chip and scroll sizes. So the sweep reports ~180 passing states without having looked at a
   single variant, which reads as coverage it does not have. **This is how `gogBadge` shipped 11
-  AA failures across four themes with the script green** (fixed in 21.8.1; the four `badge *`
+  AA failures across four themes with the script green** (fixed in 21.9.0; the four `badge *`
   entries in `WASH_PAIRS` now cover that one component by hand, and the script's header records
   the limitation).
 
@@ -36,7 +36,7 @@ not worth carrying here.
 **What was here.** The section emptied on 2026-09-02, when the `GogGlobalConfig` JSDoc defect
 was fixed for the in-progress 21.8.0 (see `CHANGELOG.md`). It refilled on 2026-09-03 with the
 "nine pressable surfaces have no press feedback" entry, which was **closed the same day** — eight
-of them fixed in 21.8.1, and `gogCollapsibleTrigger` ruled out with a reason recorded there: the
+of them fixed in 21.9.0, and `gogCollapsibleTrigger` ruled out with a reason recorded there: the
 library paints nothing on that element in any state, because the consumer owns it. The
 disabled-option entry filed alongside it was closed the same way, and its own filing was wrong in
 a way worth remembering: it named **three** dropdowns, when `gog-autocomplete` had the guard all
@@ -45,7 +45,7 @@ to copy. Written from the shape of the bug rather than from re-reading the third
 three did share was the ripple, which none of them guarded. Two contrast defects found the same
 day — the outline button's hover label
 failing WCAG AA in all 11 themes, and `one-dark`'s `--gog-accent-dim` under the new pressed fill
-— were fixed in 21.8.1 rather than filed here, because `check:contrast` is a CI step and a known
+— were fixed in 21.9.0 rather than filed here, because `check:contrast` is a CI step and a known
 failure would have made it permanently red.
 
 **One finding from it is worth keeping, because it will recur.** The defect was that four
@@ -84,7 +84,7 @@ state — the check had been measuring the easier of the two states. It caught a
 `slate`, which passed every pair the script previously had. If a future pair looks like it
 "obviously passes because the related one does", that is the shape of this bug.
 
-**That open decision is closed: `check:contrast` grew the composited half** (21.8.1,
+**That open decision is closed: `check:contrast` grew the composited half** (21.9.0,
 `scripts/token-color.mjs`), and its first run found 24 failures the hand sweep had missed — a
 pressed tab's muted label, an accordion header's accent label on its own tinted strip, and the
 press wash being one percentage point too strong for one-dark. All fixed in the same release. The
@@ -101,7 +101,7 @@ a page and inside a card.
 
 Each is additive: nothing here breaks an existing consumer, and none blocks another.
 
-- ~~**A selectable chip.**~~ **Shipped in 21.8.1** as `[(selected)]`, and the entry's own argument
+- ~~**A selectable chip.**~~ **Shipped in 21.9.0** as `[(selected)]`, and the entry's own argument
   is what it was built to: the look and the semantics landed together, an inset ring
   (`--gog-chip-selected-shadow`) copied from `gog-button`'s toggled ring, because forwarding
   `aria-pressed` alone would have let a chip announce itself as on while looking identical to an
@@ -109,7 +109,7 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   time and one it did not have. Right: `gog-toggle` and `gog-tag` were checked at the same time
   and neither belonged here — toggle wraps a real `<input role="switch">` whose checked state is
   native, and tag renders nothing interactive. Also right: the button was in exactly this position
-  between 21.8.0 and 21.8.1, so the precedent existed before the copy. **Not anticipated:** the
+  between 21.8.0 and 21.9.0, so the precedent existed before the copy. **Not anticipated:** the
   input had to be tri-state. `boolean` with a `false` default would have put `aria-pressed="false"`
   on every chip in the library and turned each of them into a toggle button to a screen reader,
   which most of them are not — so `null` means "not a toggle", and it is the default.
@@ -198,7 +198,7 @@ reason may stop holding.
   `margin-top` were adding 2px on top of it, not supplying the only spacing there was. Measured
   in a browser rather than read off the stylesheets, which is what settled it — 6px for
   `gog-inputfield` and `gog-multiselect`, 4px for their three siblings on the identical gap. The
-  fix was to zero the two offsets, not to add five more (21.8.1). Written from the shape of the
+  fix was to zero the two offsets, not to add five more (21.9.0). Written from the shape of the
   bug: three files had a declaration, five did not, and "add it to the five" followed without
   asking what was already spacing them.
 
@@ -224,7 +224,7 @@ can land without an announced removal window.
   `gog-datepicker` use `--gog-*-panel-gap`, `gog-select` and `gog-multiselect` use
   `--gog-*-panel-offset`, and `gog-menu` uses `--gog-menu-offset`. A consumer who learns one
   spelling guesses wrong on the next component. All five now hold the same value and follow
-  `--gog-density` (21.8.1), so nothing is broken — but settling on one name renames tokens
+  `--gog-density` (21.9.0), so nothing is broken — but settling on one name renames tokens
   consumers already override, which is a deprecation cycle. `-gap` is the better name of the two:
   an offset is a displacement from where a thing would otherwise be, and this is the space
   between two things. Found 2026-09-04 while auditing the `-offset` family.

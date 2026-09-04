@@ -79,7 +79,7 @@
 
     /* The hover lift is the background; the label stays body text. It used to turn
        `--gog-accent-color`, which is 4.15:1 on that lift in `light` — the same
-       accent-on-a-tinted-ground trap the library hit four times in 21.8.1, and `--gog-accent-dim`
+       accent-on-a-tinted-ground trap the library hit four times in 21.9.0, and `--gog-accent-dim`
        is not the way out either: it clears `light` and fails `one-dark` at 3.78:1. The active
        item is still accent-coloured, which is what that colour is for here. Measured by
        `npm run check:lab-contrast`. */

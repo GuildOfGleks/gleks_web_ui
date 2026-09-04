@@ -278,13 +278,13 @@ exists, the findings are documented, and turning the gate on is one line in `ci.
 backlog entries above are resolved (fixed, or explicitly accepted with the script's header comment
 updated to say so). That is a real decision, not a checklist item to tick past.
 
-**Closing note, 2026-09-03 (21.8.1): the gate is on, and the script has a second half.** Both
+**Closing note, 2026-09-03 (21.9.0): the gate is on, and the script has a second half.** Both
 backlog entries were resolved, `check:contrast` became a CI step, and then the paragraph above
 was outgrown in a way worth recording, because it predicted the right thing for the wrong reason.
 
 It said a real resolver would be needed "the day" a palette block starts reading
 `var()`/`color-mix()`. No palette block does, even now. What happened instead is that the
-*pairs* left the palette: 21.8.1 gave nine surfaces a pressed state built from
+*pairs* left the palette: 21.9.0 gave nine surfaces a pressed state built from
 `color-mix()` washes, and a wash has no colour at all until it is composited over whatever it
 covers — so the thing needing a resolver was never the palette, it was everything painted on top
 of one. `scripts/token-color.mjs` is that resolver: it walks a token the way a browser does

@@ -1,66 +1,91 @@
 # Next session — after 2026-09-04
 
-**Written at the end of 2026-09-04, replacing the handoff from the day before. Delete this file
-when its contents are done or moved.** It says where to start and why; everything durable lives
-in `docs/backlog.md`, `docs/lab-after-publish.md` and `docs/feedback-triage.md`.
+**Written at the end of 2026-09-04. Delete this file when its contents are done or moved.** It
+says where to start and why; everything durable lives in `docs/backlog.md`,
+`docs/lab-after-publish.md` and `docs/feedback-triage.md`.
 
 ---
 
 ## Where things stand
 
-**21.8.1 is open, unreleased, and now carries 24 changelog entries.** Every check passes, 1095
-tests pass, and the working tree is clean.
+**The open version was renamed from `21.8.1` to `21.9.0` on 2026-09-04, and it is a minor for a
+reason:** it carries four new public inputs — `gog-button`/`[gogButton]` `severity`, `gog-chip`
+`[(selected)]`, `gog-scroll` `horizontalWheel`, `GOG_CONFIG.spinner.component` — plus two new
+palette token families. A patch number was describing a release with an `Added` section, which is
+what prompted the rename. Twenty-eight changelog entries, 1112 tests, every check green, working
+tree clean.
 
-Four commits landed on 2026-09-04, and together they emptied the part of the backlog an agent can
-work without a decision from you:
+**`package.json` is still at 21.8.0 and the changelog heading still says `planned`, on purpose.**
+`check:release` fails on both, which is the correct state for work in progress — see CLAUDE.md,
+"Cutting a release — why an agent does none of it". Both are yours to change when you cut.
 
-- the `-offset`/`-inset`/`-margin` token audit the previous handoff left unfinished, plus the
-  `check-tokens` rule H gap that let it hide;
-- the error line's spacing, which was 2px lower under two of the eight controls that render one;
-- `gog-chip`'s `[(selected)]`, the last entry in **Gaps** that was shovel-ready.
+Seven commits landed on 2026-09-04. The three that were asked for:
 
-## The first decision is still the same one, and it has got sharper
+- **`severity` on the button**, orthogonal to `variant` — the triage entry predicted a token
+  family per severity per variant; what it actually needed was six ingredients per status and
+  three shape rules.
+- **`horizontalWheel` on `gog-scroll`**, opt-in, where the scroll-chaining trap the triage entry
+  warned about turned out to be the feature rather than an obstacle to it.
+- **`[(selected)]` on `gog-chip`**, tri-state so that no existing chip becomes a toggle button to
+  a screen reader.
 
-**Cut 21.8.1, or keep going?** `docs/lab-after-publish.md` now holds **ten** items blocked on
+And four that were not, each found while doing those:
+
+- **`gogBadge`'s status labels failed WCAG AA in four themes** — 11 pairs, `material`'s amber at
+  1.97:1, shipped and unmeasured. Fixed; half of it cost no fidelity, half moved a hue one step
+  down its own ramp.
+- **Fourteen lengths ignored `--gog-density`** in the nine themes that set it, hiding in the four
+  families `check-tokens` rule H did not cover.
+- **The error line** sat 2px lower under two of the eight controls that render one.
+- **A `feedback-triage.md` line claiming the toggled look was still open**, which the same release
+  had already shipped.
+
+## The first decision
+
+**Cut 21.9.0, or keep going?** `docs/lab-after-publish.md` now holds **13** items blocked on
 publication, one of which (`theme-starter.css`) will fail `check:theme-starter` the moment the new
-version is installed. Two of the ten are new public API from today — the chip's `selected` and the
-tri-state that goes with it — so the lab's chip page is now describing a component that has moved.
+version is installed. Four of the 13 are new public API from today, so the lab's button, chip and
+scroll pages all describe components that have moved.
 
-If cutting: `npm install` at the repo root afterwards, then work `lab-after-publish.md` top to
-bottom and delete each entry as it lands.
+If cutting: bump `package.json` and date the changelog heading yourself, then `npm install` at the
+repo root and work `lab-after-publish.md` top to bottom, deleting each entry as it lands.
 
-## If not cutting — everything left needs your call first
+## If not cutting — what is left, and it all needs your call
 
-There is no "fixes and polish" work queued any more. **`docs/backlog.md`'s Defects section is
-empty**, and each of the following is a decision rather than a correction:
+**`docs/backlog.md`'s Defects section holds one entry**, and it is a check rather than a
+component: `check:contrast`'s automatic sweep cannot see a variant, because a variant class sets
+`--gog-<block>-variant-*` rather than `color`/`background-color`. It has been reporting ~180
+passing states without having looked at one of them, which is how the badge shipped its failures.
+`gog-tag` and `gog-progressbar` are the two components with status variants still not covered by
+hand, so they are the likeliest place for the next instance of the same bug.
 
-1. **`docs/feedback-triage.md` → the 21.8.0 section, four items.** `gog-button` `severity`, input
-   masking (**needs a written plan before any code** — the file argues it wants to be a `gogMask`
-   directive, not an input component, and says why that is a plan and not a conclusion),
-   horizontal wheel handling in `gog-scroll`, whole-row click on `gog-table`. Each is new public
-   API and the file states the trade-off for each.
+Everything else is a decision:
+
+1. **`docs/feedback-triage.md` → two items left.** Input masking (**needs a written plan first** —
+   the file argues for a `gogMask` directive rather than an input component, and says why that is
+   a plan and not a conclusion) and whole-row click on `gog-table`.
 
 2. **`docs/backlog.md` → Gaps, missing components.** `alert`/`banner` is the one a real site wants
-   most, and `empty state` is the one with a plan waiting to be written. Both have to answer
+   most; `empty state` is the one with a plan waiting to be written. Both have to answer
    `panel-card.md`'s question first: what does it own that a `<div>` and a class do not?
 
-3. **`docs/backlog.md` → Rough edges, the lab's bundle budget.** 1.00 MB against a 1.1 MB error, so
-   the next thing added to the lab's initial route fails the build. The honest fix — lazy-load the
-   syntax highlighter, or move the docs renderer off that route — is real work, not a budget bump.
+3. **`docs/backlog.md` → Rough edges, the lab's bundle budget.** 1.00 MB against a 1.1 MB error.
 
-4. **The small one, filed today:** a disabled chip keeps its selected ring, a disabled button drops
-   its toggled one. The chip's behaviour is the one to keep; the button is probably wrong in a
-   small way on a surface nobody has complained about. See **Gaps** in `docs/backlog.md`.
+4. **The small one:** a disabled chip keeps its selected ring, a disabled button drops its toggled
+   one. The chip's behaviour is the one to keep.
 
-## Traps recorded today, so they are not paid for twice
+## Traps recorded today
 
-- **A gapped flex column already spaces its children**, and a `margin-top` on one child adds to
-  that gap rather than replacing it. Both halves of the error-line finding came from reading
-  stylesheets instead of measuring: it looked like five components were missing their only
-  spacing, when two were adding a second helping of it. Measure the rendered distance.
-- **A grep for a token cannot find a component that never declared one.** The same filing said
-  "six fields" when eight render an error. This is the second time that shape has appeared — the
-  `GOG_CONFIG` JSDoc defect in `docs/backlog.md` is the first, and it names the general form.
-- The two Chrome measurement traps from 2026-09-03 still apply and are recorded in
-  `docs/backlog.md` and `docs/ripple.md`: a backgrounded tab freezes transitions, and `color-mix()`
-  reads back as `color(srgb …)` rather than `rgb()`.
+- **A gapped flex column already spaces its children**, so a `margin-top` on one adds to the gap
+  rather than replacing it. Reading stylesheets said five components were missing their only
+  spacing; measuring said two were adding a second helping.
+- **A grep for a token cannot find a component that never declared one.** The error-line filing
+  said "six fields" when eight render an error — the second sighting of that shape, after the
+  `GOG_CONFIG` JSDoc defect.
+- **A state colour must move _away_ from its own label, not in a fixed direction.** Deepening
+  severity fills toward the page ink is right in the nine themes whose label is white and exactly
+  backwards in the four whose label is the ink; it cost `primeng`'s info button 6.44:1 → 4.23:1 on
+  press. `--gog-<status>-shade` is the fix, and the check caught it, not the eye.
+- **`token-color.mjs` cannot resolve a `color-mix()` whose percentage is a `var()`.** A knob token
+  for the mix ratio looked elegant and made every pair reading it unverifiable; the percentage is
+  a literal now.

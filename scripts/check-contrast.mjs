@@ -45,7 +45,7 @@
  * `.github/workflows/ci.yml` runs this after the other token checks. It was deliberately kept
  * out until the last real failure was fixed: a step that is permanently red over a known,
  * tracked, undecided condition teaches everyone to ignore CI, which is worse than not checking.
- * ## Two halves, since 21.8.1
+ * ## Two halves, since 21.9.0
  *
  * `PAIRS` compares **palette** tokens: hex against hex, straight out of a theme block. That is the
  * foundation, and it is blind to a label sitting on a `color-mix()` wash, because the wash has no
@@ -148,7 +148,7 @@ const PAIRS = [
   // that passed every pair the check did have. A rest state that clears AA says nothing about the
   // hover: in most themes `bright` is *lighter* than `accent`, so white on it is strictly worse.
   ['accentText/accentBright(hover)', 'accentText', 'accentBright', 4.5, true],
-  // And one press later. 21.8.1 gave the press a colour of its own — `--gog-accent-dim` is
+  // And one press later. 21.9.0 gave the press a colour of its own — `--gog-accent-dim` is
   // `--gog-button-primary-active-bg` — because the press used to be a transform that
   // `prefers-reduced-motion` switched off, leaving no feedback at all. That makes `dim` a fill
   // under a label for the first time; it was only ever a field border before, which is why the
@@ -174,7 +174,7 @@ const PAIRS = [
  * over whatever that surface sits on. `PAIRS` above cannot express these: it compares palette
  * hexes, and a wash is not in the palette.
  *
- * Every entry here is a state that shipped or changed in 21.8.1, plus the hover it steps past,
+ * Every entry here is a state that shipped or changed in 21.9.0, plus the hover it steps past,
  * because the two failures this table was built for were both hovers. Grounds are listed per
  * entry: a menu item sits on `--gog-menu-bg`, a ghost button on the page *or* on a card, and the
  * worse of the two is the one that counts.
@@ -198,7 +198,7 @@ const WASH_PAIRS = [
   ['badge danger', '--gog-badge-danger-color', '--gog-badge-danger-bg', ['--gog-surface-color'], 4.5],
   ['badge warning', '--gog-badge-warning-color', '--gog-badge-warning-bg', ['--gog-surface-color'], 4.5],
   ['badge info', '--gog-badge-info-color', '--gog-badge-info-bg', ['--gog-surface-color'], 4.5],
-  // `gog-button`'s severity (21.8.1), every state of every shape. The transparent variants are
+  // `gog-button`'s severity (21.9.0), every state of every shape. The transparent variants are
   // the reason `--gog-button-<status>-ink` exists rather than the raw status colour: as text on
   // the page the raw hue clears AA in five of the eleven themes, and the ink mix is what the rest
   // needed. Listed exhaustively rather than by sample, because the two failures the wash table
@@ -229,7 +229,7 @@ const WASH_PAIRS = [
   ['button info ghost hover', '--gog-text-color', '--gog-button-info-wash', ['--gog-background-color', '--gog-surface-color'], 4.5],
   ['chip hover', '--gog-chip-color', '--gog-chip-hover-bg', ['--gog-chip-bg'], 4.5],
   ['chip press', '--gog-chip-color', '--gog-chip-press-bg', ['--gog-chip-bg'], 4.5],
-  // The selected filter chip's ring (21.8.1), against the two backgrounds it has to stay visible
+  // The selected filter chip's ring (21.9.0), against the two backgrounds it has to stay visible
   // over — which is the whole argument for a ring rather than a fill, so both are checked rather
   // than the rest state alone. A boundary, not text: 3:1 per WCAG 1.4.11, the same bar the focus
   // ring is held to.

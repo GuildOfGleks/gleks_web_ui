@@ -11,12 +11,12 @@
  * Two real failures got through that gap and were found by hand instead:
  *
  * - the outline button's hover label, which failed WCAG AA in **all 11** shipped themes
- *   (21.8.1); and
+ *   (21.9.0); and
  * - the ghost button's hover label, under AA in three themes, where the label is the accent and
  *   the hover tints the ground with the same accent, so the two walk toward each other.
  *
  * Both are labels on a ground the palette does not state. Eight more surfaces took on the same
- * shape in 21.8.1 when their press states became washes. Hand-verification found all of it and
+ * shape in 21.9.0 when their press states became washes. Hand-verification found all of it and
  * will not survive the next theme, which is the argument for this file.
  *
  * ## What it understands

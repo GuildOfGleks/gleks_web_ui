@@ -68,7 +68,7 @@
       visible even while the pointer is hovering the button — and it is a state rather than a
       movement, which is the point: turn on
       <code>prefers-reduced-motion: reduce</code> (DevTools &rarr; Rendering &rarr; Emulate CSS
-      media feature) and the <code>scale()</code> goes away while the colour stays. Until 21.8.1 the
+      media feature) and the <code>scale()</code> goes away while the colour stays. Until 21.9.0 the
       scale was the whole press, so that reader pressed a button and nothing happened at all. The
       ripple does not cover this: it is off by default, and it is suppressed under reduced motion on
       purpose, because a ripple really is decoration and a press state is not.
@@ -253,7 +253,7 @@
       </div>
     }
     <p class="meta">
-      Since 21.8.1 the toggle also <em>looks</em> toggled: <code>aria-pressed="true"</code> draws an
+      Since 21.9.0 the toggle also <em>looks</em> toggled: <code>aria-pressed="true"</code> draws an
       inset ring. A ring rather than a fill because hover and press already own the background —
       hold the mirror button down while it is on and the ring stays put underneath the press colour,
       which is the whole point of it.

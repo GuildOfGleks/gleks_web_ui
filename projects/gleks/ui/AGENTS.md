@@ -5,8 +5,8 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.8.1`** (in progress — the
-released version is 21.8.0; see `CHANGELOG.md` for what 21.8.1 adds). 21.7.0 removed the three
+Everything below reflects the library's actual source as of **`21.9.0`** (in progress — the
+released version is 21.8.0; see `CHANGELOG.md` for what 21.9.0 adds). 21.7.0 removed the three
 abbreviated token prefixes and 21.5.0 removed a batch of deprecated API — see **Removed in 21.7.0**
 and **Removed in 21.5.0** near the end of this file, which exist so code written against an older
 version can be migrated — and `CHANGELOG.md` has the rest. `README.md` covers the same ground at a
@@ -202,7 +202,7 @@ Full model is in `README.md`'s Theming section; short version:
   still work. Icon offsets, dropdown panel gaps, error-line offsets and the badge's overhang
   follow density; the glyph box, the focus-ring offset, the float-label reserve and the
   scrollbar/toggle thumb insets deliberately do not — those are legibility or geometry fitted to
-  a fixed-width track, not spacing. Since 21.8.1 the split is enforced rather than trusted:
+  a fixed-width track, not spacing. Since 21.9.0 the split is enforced rather than trusted:
   `check-tokens` rule H fails the build on a length token that restates a scale step's value as
   a bare literal, with the three exceptions named in the script.
 - **Component prefixes are spelled out** since 21.5.0: `--gog-button-*`, `--gog-multiselect-*`,
@@ -502,7 +502,7 @@ Every component below is exported from `@guildofgleks/ui`'s root — `import { X
 
 Outputs: `gogClick: MouseEvent`.
 
-**`severity` says what the action means; `variant` says how loudly it is drawn** (21.8.1). The
+**`severity` says what the action means; `variant` says how loudly it is drawn** (21.9.0). The
 two are orthogonal, so this is not a fifth variant — it re-points the colours all four are built
 from, and every combination is real: `variant="ghost" severity="danger"` is a quiet delete,
 `variant="primary" severity="danger"` a loud one. `'accent'` is the default and the absence of a
@@ -536,10 +536,10 @@ simply not a toggle to a screen reader. Use `[ariaPressed]`, `[ariaExpanded]`, `
 `aria-pressed="false"` / `aria-expanded="false"`, which is what an off toggle or a closed
 disclosure has to say — a button with no `aria-pressed` at all is not a toggle button.
 
-**A toggle button now looks toggled** (21.8.1). `aria-pressed="true"` (or `"mixed"`) draws an
+**A toggle button now looks toggled** (21.9.0). `aria-pressed="true"` (or `"mixed"`) draws an
 inset ring — `--gog-button-<variant>-toggled-shadow`, overridable per instance with
 `--gog-button-toggled-shadow`. A ring rather than a fill because hover and press already own the
-background: the state has to survive both, and until 21.8.1 it did not exist at all, so a button
+background: the state has to survive both, and until 21.9.0 it did not exist at all, so a button
 could announce itself as on to a screen reader and look identical to an off one. `[gogButton]`
 gets the same look from the attribute you write on your own element.
 
@@ -558,12 +558,12 @@ gogButton>`, as its own example shows, not on a `<gog-button>`.
 **The press is a colour, not only a movement.** `:active` deepens the button's background (and
 the label where the fill demands it) as well as scaling it by `--gog-button-active-scale`. Under
 `prefers-reduced-motion: reduce` the scale is dropped and the colour stays, so the press is still
-visible to a reader who has switched animations off — before 21.8.1 that reader got no feedback at
+visible to a reader who has switched animations off — before 21.9.0 that reader got no feedback at
 all, since the ripple is off by default and is itself suppressed under reduced motion. Override
 per instance with `--gog-button-press-bg` / `--gog-button-press-color`, or per theme with
 `--gog-button-<variant>-active-bg`.
 
-Every other pressable surface in the library does the same thing since 21.8.1 — menu items,
+Every other pressable surface in the library does the same thing since 21.9.0 — menu items,
 chips, tab and accordion headers, button-toggle options and the three dropdowns' option rows —
 each through its own `--gog-<block>-press-bg`. `gogCollapsibleTrigger` is the exception: the
 library paints nothing on that element in any state, because it is yours.
@@ -1083,7 +1083,7 @@ Outputs: `gogClick: MouseEvent | KeyboardEvent`, `gogRemove: void`.
 >
 ```
 
-**`selected` makes it a filter chip** (21.8.1) — a chip you toggle on and off rather than press.
+**`selected` makes it a filter chip** (21.9.0) — a chip you toggle on and off rather than press.
 It is tri-state, and `null` is the default so nothing about an existing chip changes: no
 `aria-pressed`, no selected look, activation only emits `gogClick`. Set it to `false` and the chip
 is a toggle that is off (`aria-pressed="false"` — a chip with no `aria-pressed` at all is not a
@@ -1690,7 +1690,7 @@ region — the library's official recommendation over a raw `overflow-x`/`overfl
 | `showTrack`          | `boolean \| undefined`                                                   | `true`; via `GOG_CONFIG.scroll.showTrack`                                               |
 | `horizontalWheel`    | `boolean \| undefined`                                                   | `false`; via `GOG_CONFIG.scroll.horizontalWheel`                                        |
 
-**`horizontalWheel` turns a vertical wheel into horizontal scrolling** (21.8.1), for the case a
+**`horizontalWheel` turns a vertical wheel into horizontal scrolling** (21.9.0), for the case a
 consumer hits first: hover a horizontal-only row, turn the wheel, and the *page* moves. That is
 the browser's own behaviour and the component deliberately did nothing about it until now.
 
