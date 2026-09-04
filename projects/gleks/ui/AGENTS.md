@@ -486,6 +486,7 @@ Every component below is exported from `@guildofgleks/ui`'s root — `import { X
 | Input       | Type                              | Default     | Notes                                                 |
 | ----------- | --------------------------------- | ----------- | ----------------------------------------------------- |
 | `variant`   | `GogVariant`                      | `'primary'` |                                                       |
+| `severity`  | `GogSeverity`                     | `'accent'`  | what the action means; orthogonal to `variant` — see below |
 | `size`      | `GogSize \| undefined`            | `'md'`      | via `GOG_CONFIG.control.size`                         |
 | `disabled`  | `boolean`                         | `false`     |                                                       |
 | `fullWidth` | `boolean`                         | `false`     |                                                       |
@@ -500,6 +501,29 @@ Every component below is exported from `@guildofgleks/ui`'s root — `import { X
 | `ripple`    | `boolean \| undefined`            | `false`     | press ripple; via `GOG_CONFIG.ripple.enabled`         |
 
 Outputs: `gogClick: MouseEvent`.
+
+**`severity` says what the action means; `variant` says how loudly it is drawn** (21.8.1). The
+two are orthogonal, so this is not a fifth variant — it re-points the colours all four are built
+from, and every combination is real: `variant="ghost" severity="danger"` is a quiet delete,
+`variant="primary" severity="danger"` a loud one. `'accent'` is the default and the absence of a
+claim, so nothing has to opt out of a severity it does not have. `GogSeverity` is shared with
+`gog-progressbar`, whose `GogProgressbarVariant` is now an alias of it.
+
+```html
+<gog-button severity="danger" (gogClick)="deleteAccount()">Delete account</gog-button>
+<gog-button variant="outline" severity="warning">Discard draft</gog-button>
+<a gogButton severity="success" routerLink="/done">Finish</a>
+```
+
+Two colour rules are worth knowing before you override anything. A **filled** severity button's
+label is `--gog-<status>-text-color`, which each theme states for its own hue — `material` and
+`primeng` put near-black on their bright ones, the rest white — and hover and press deepen the
+fill *away* from that label (`--gog-<status>-shade`), so a state always makes the label easier to
+read rather than harder. A **transparent** one's label is `--gog-button-<status>-ink`: the status
+hue mixed halfway toward the page's ink, because the raw hue is legible body text in only five of
+the eleven shipped themes. Override `--gog-button-<status>-ink` if your own theme wants more
+colour there, and check it: all four severities across all four variants and all their states are
+gated by `npm run check:contrast`.
 
 **Every ARIA attribute this button needs has an input, and a raw attribute is not a
 substitute.** `<gog-button [attr.aria-pressed]="on()">` compiles, throws nothing, and does
@@ -994,6 +1018,7 @@ the element stays yours and the directive only gives it the look.
 | Input       | Type                     | Default                                  |
 | ----------- | ------------------------ | ---------------------------------------- |
 | `variant`   | `GogVariant`             | `'primary'`                              |
+| `severity`  | `GogSeverity`            | `'accent'`; same as `gog-button`         |
 | `size`      | `GogSize \| undefined`   | `'md'`; via `GOG_CONFIG.control.size`    |
 | `fullWidth` | `boolean` (bare attr ok) | `false`                                  |
 | `ripple`    | `boolean \| undefined`   | `false`; via `GOG_CONFIG.ripple.enabled` |

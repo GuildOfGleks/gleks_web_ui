@@ -390,6 +390,18 @@
   --gog-danger-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-warning-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-info-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
+
+  /* Which way a status fill deepens when it is hovered or held: **away from its own label**, so
+     the step always makes the label easier to read rather than harder. That is the theme's ink
+     for a fill wearing the accent's white, which is nine of the eleven themes — and the other way
+     round for the four fills whose label is the ink itself, `material`'s amber and `primeng`'s
+     three, which say so in their own files. Mixing toward a fixed colour instead is what a first
+     pass did, and it cost `primeng`'s info button 6.44:1 down to 4.23:1 on press: deepening
+     toward the ink walked the fill into the label. */
+  --gog-success-shade: var(--gog-text-color);
+  --gog-danger-shade: var(--gog-text-color);
+  --gog-warning-shade: var(--gog-text-color);
+  --gog-info-shade: var(--gog-text-color);
   /* ── Stacking layers ─────────────────────────────────────────────────────────
      All five read `--gog-z-base`, so the whole library moves together. The gaps are
      deliberate: an app that needs to slot its own element between two of these has room
@@ -738,6 +750,63 @@
      are body text, and their worst case across the 11 is 4.80:1. */
   --gog-button-ghost-press-bg: var(--gog-accent-dim);
   --gog-button-ghost-press-color: var(--gog-accent-text-color, var(--gog-primary-color));
+
+  /* ── Button severity ─────────────────────────────────────────────────────────
+     `severity` is orthogonal to `variant`: a destructive action can be a filled button, an
+     outlined one or a ghost, and it is still destructive. So this is not a fifth variant — it
+     re-points the *ingredients* the four variants are built from, and the shape rules in
+     `styles/button.css` apply them per variant. Four severities x six ingredients rather than
+     four x four variants x eleven properties, which is what a fifth-variant reading would have
+     cost.
+
+     `-fill` and `-on-fill` are the filled pair, and `-on-fill` is `--gog-<status>-text-color`
+     rather than `--gog-accent-text-color`: see that block near the top of this file for why one
+     label does not read on every status.
+
+     `-ink` is the label a *transparent* variant paints, and it is not the raw status colour. As
+     text on the page, the raw hue clears 4.5:1 in only five of the eleven themes — `primeng`'s
+     amber manages 2.05:1 — so it is mixed toward the theme's own ink until it does. The 50% is
+     measured rather than chosen: `material`'s amber is the binding case and needs the hue below
+     54%, so 50 clears every theme with a little headroom. It costs saturation on the themes that
+     never needed it; a theme that wants the colour back overrides `--gog-button-<status>-ink`
+     directly, which is one token rather than a dial nobody would find. Mixing toward `--gog-text-color` rather than a
+     fixed black is what makes one number work on light and dark alike — the ink is dark on one
+     and light on the other, and both directions move *away* from the ground.
+
+     The hover and press fills move the same way, one small step and one larger, so a severity
+     button's states step the way an accent one's do. Moving toward the ink also moves away from
+     `-on-fill` in the seven themes where that is the accent's white-or-near-black, so the label
+     gets easier rather than harder; in the four where `-on-fill` *is* the ink, the rest state
+     starts at 6.44:1 or better and a 24% step cannot spend that. The flat values here are what a
+     browser without `color-mix()` renders — no step, the same graceful nothing the ghost button
+     degrades to — and the mixed ones are in the @supports block at the end of this file. */
+  --gog-button-success-fill: var(--gog-success-color);
+  --gog-button-success-on-fill: var(--gog-success-text-color);
+  --gog-button-success-fill-hover: var(--gog-success-color);
+  --gog-button-success-fill-press: var(--gog-success-color);
+  --gog-button-success-ink: var(--gog-success-color);
+  --gog-button-success-wash: transparent;
+
+  --gog-button-danger-fill: var(--gog-danger-color);
+  --gog-button-danger-on-fill: var(--gog-danger-text-color);
+  --gog-button-danger-fill-hover: var(--gog-danger-color);
+  --gog-button-danger-fill-press: var(--gog-danger-color);
+  --gog-button-danger-ink: var(--gog-danger-color);
+  --gog-button-danger-wash: transparent;
+
+  --gog-button-warning-fill: var(--gog-warning-color);
+  --gog-button-warning-on-fill: var(--gog-warning-text-color);
+  --gog-button-warning-fill-hover: var(--gog-warning-color);
+  --gog-button-warning-fill-press: var(--gog-warning-color);
+  --gog-button-warning-ink: var(--gog-warning-color);
+  --gog-button-warning-wash: transparent;
+
+  --gog-button-info-fill: var(--gog-info-color);
+  --gog-button-info-on-fill: var(--gog-info-text-color);
+  --gog-button-info-fill-hover: var(--gog-info-color);
+  --gog-button-info-fill-press: var(--gog-info-color);
+  --gog-button-info-ink: var(--gog-info-color);
+  --gog-button-info-wash: transparent;
 
   /* ── Button toggle group ───────────────────────────────────────────────────
      `--gog-button-toggle-bg`, `-color`, `-padding` and `-font-size` are intentionally NOT
@@ -2161,6 +2230,66 @@
     --gog-multiselect-option-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
     --gog-select-option-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
     --gog-tabs-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
+
+    /* Button severity — see the block of the same name above for what each ingredient is and
+       why the ink mix is 50%. Four severities, one recipe each, so a new status colour would
+       need four lines rather than a design decision. */
+    --gog-button-success-fill-hover: color-mix(
+      in srgb,
+      var(--gog-success-color) 88%,
+      var(--gog-success-shade)
+    );
+    --gog-button-success-fill-press: color-mix(
+      in srgb,
+      var(--gog-success-color) 76%,
+      var(--gog-success-shade)
+    );
+    --gog-button-success-ink: color-mix(
+      in srgb,
+      var(--gog-success-color) 50%,
+      var(--gog-text-color)
+    );
+    --gog-button-success-wash: color-mix(in srgb, var(--gog-success-color) 12%, transparent);
+    --gog-button-danger-fill-hover: color-mix(
+      in srgb,
+      var(--gog-danger-color) 88%,
+      var(--gog-danger-shade)
+    );
+    --gog-button-danger-fill-press: color-mix(
+      in srgb,
+      var(--gog-danger-color) 76%,
+      var(--gog-danger-shade)
+    );
+    --gog-button-danger-ink: color-mix(in srgb, var(--gog-danger-color) 50%, var(--gog-text-color));
+    --gog-button-danger-wash: color-mix(in srgb, var(--gog-danger-color) 12%, transparent);
+    --gog-button-warning-fill-hover: color-mix(
+      in srgb,
+      var(--gog-warning-color) 88%,
+      var(--gog-warning-shade)
+    );
+    --gog-button-warning-fill-press: color-mix(
+      in srgb,
+      var(--gog-warning-color) 76%,
+      var(--gog-warning-shade)
+    );
+    --gog-button-warning-ink: color-mix(
+      in srgb,
+      var(--gog-warning-color) 50%,
+      var(--gog-text-color)
+    );
+    --gog-button-warning-wash: color-mix(in srgb, var(--gog-warning-color) 12%, transparent);
+    --gog-button-info-fill-hover: color-mix(
+      in srgb,
+      var(--gog-info-color) 88%,
+      var(--gog-info-shade)
+    );
+    --gog-button-info-fill-press: color-mix(
+      in srgb,
+      var(--gog-info-color) 76%,
+      var(--gog-info-shade)
+    );
+    --gog-button-info-ink: color-mix(in srgb, var(--gog-info-color) 50%, var(--gog-text-color));
+    --gog-button-info-wash: color-mix(in srgb, var(--gog-info-color) 12%, transparent);
     --gog-calendar-range-bg: color-mix(in srgb, var(--gog-accent-color) 16%, transparent);
     --gog-card-filled-bg: color-mix(in srgb, var(--gog-accent-dim) 8%, var(--gog-surface-color));
     --gog-card-hover-border-color: color-mix(in srgb, var(--gog-accent-color) 45%, transparent);

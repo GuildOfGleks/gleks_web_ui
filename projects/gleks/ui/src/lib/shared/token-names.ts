@@ -198,6 +198,12 @@ export type GogTokenName =
   | '--gog-button-border-style'
   | '--gog-button-border-width'
   | '--gog-button-color'
+  | '--gog-button-danger-fill'
+  | '--gog-button-danger-fill-hover'
+  | '--gog-button-danger-fill-press'
+  | '--gog-button-danger-ink'
+  | '--gog-button-danger-on-fill'
+  | '--gog-button-danger-wash'
   | '--gog-button-disabled-opacity'
   | '--gog-button-focus-ring-offset'
   | '--gog-button-focus-ring-width'
@@ -218,6 +224,12 @@ export type GogTokenName =
   | '--gog-button-hover-bg'
   | '--gog-button-hover-color'
   | '--gog-button-hover-shadow'
+  | '--gog-button-info-fill'
+  | '--gog-button-info-fill-hover'
+  | '--gog-button-info-fill-press'
+  | '--gog-button-info-ink'
+  | '--gog-button-info-on-fill'
+  | '--gog-button-info-wash'
   | '--gog-button-letter-spacing'
   | '--gog-button-lg-font-size'
   | '--gog-button-lg-padding'
@@ -268,6 +280,12 @@ export type GogTokenName =
   | '--gog-button-sm-padding'
   | '--gog-button-spinner-color'
   | '--gog-button-spinner-max-size'
+  | '--gog-button-success-fill'
+  | '--gog-button-success-fill-hover'
+  | '--gog-button-success-fill-press'
+  | '--gog-button-success-ink'
+  | '--gog-button-success-on-fill'
+  | '--gog-button-success-wash'
   | '--gog-button-text-transform'
   | '--gog-button-toggle-bg'
   | '--gog-button-toggle-border-color'
@@ -302,6 +320,12 @@ export type GogTokenName =
   | '--gog-button-toggled-ring-width'
   | '--gog-button-toggled-shadow'
   | '--gog-button-transition-duration'
+  | '--gog-button-warning-fill'
+  | '--gog-button-warning-fill-hover'
+  | '--gog-button-warning-fill-press'
+  | '--gog-button-warning-ink'
+  | '--gog-button-warning-on-fill'
+  | '--gog-button-warning-wash'
   | '--gog-button-xsm-font-size'
   | '--gog-button-xsm-padding'
   | '--gog-calendar-action-padding'
@@ -539,6 +563,7 @@ export type GogTokenName =
   | '--gog-control-padding-x'
   | '--gog-control-padding-y'
   | '--gog-danger-color'
+  | '--gog-danger-shade'
   | '--gog-danger-text-color'
   | '--gog-datepicker-actions-gap'
   | '--gog-datepicker-actions-inset'
@@ -696,6 +721,7 @@ export type GogTokenName =
   | '--gog-icon-size'
   | '--gog-icon-stroke-width'
   | '--gog-info-color'
+  | '--gog-info-shade'
   | '--gog-info-text-color'
   | '--gog-input-clear-icon-ratio'
   | '--gog-input-clear-inset'
@@ -1184,6 +1210,7 @@ export type GogTokenName =
   | '--gog-spinner-track-color'
   | '--gog-spinner-track-opacity'
   | '--gog-success-color'
+  | '--gog-success-shade'
   | '--gog-success-text-color'
   | '--gog-surface-color'
   | '--gog-table-accent-bright'
@@ -1467,6 +1494,7 @@ export type GogTokenName =
   | '--gog-tooltip-transition-duration'
   | '--gog-tooltip-z'
   | '--gog-warning-color'
+  | '--gog-warning-shade'
   | '--gog-warning-text-color'
   | '--gog-z-base';
 
@@ -1635,9 +1663,13 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     section: 'Text on a status fill',
     layer: 'component',
     tokens: [
+      '--gog-danger-shade',
       '--gog-danger-text-color',
+      '--gog-info-shade',
       '--gog-info-text-color',
+      '--gog-success-shade',
       '--gog-success-text-color',
+      '--gog-warning-shade',
       '--gog-warning-text-color',
     ],
   },
@@ -1875,6 +1907,36 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-transition-duration',
       '--gog-button-xsm-font-size',
       '--gog-button-xsm-padding',
+    ],
+  },
+  {
+    section: 'Button severity',
+    layer: 'component',
+    tokens: [
+      '--gog-button-danger-fill',
+      '--gog-button-danger-fill-hover',
+      '--gog-button-danger-fill-press',
+      '--gog-button-danger-ink',
+      '--gog-button-danger-on-fill',
+      '--gog-button-danger-wash',
+      '--gog-button-info-fill',
+      '--gog-button-info-fill-hover',
+      '--gog-button-info-fill-press',
+      '--gog-button-info-ink',
+      '--gog-button-info-on-fill',
+      '--gog-button-info-wash',
+      '--gog-button-success-fill',
+      '--gog-button-success-fill-hover',
+      '--gog-button-success-fill-press',
+      '--gog-button-success-ink',
+      '--gog-button-success-on-fill',
+      '--gog-button-success-wash',
+      '--gog-button-warning-fill',
+      '--gog-button-warning-fill-hover',
+      '--gog-button-warning-fill-press',
+      '--gog-button-warning-ink',
+      '--gog-button-warning-on-fill',
+      '--gog-button-warning-wash',
     ],
   },
   {

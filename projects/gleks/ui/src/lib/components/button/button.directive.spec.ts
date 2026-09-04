@@ -11,6 +11,7 @@ import { GOG_CONFIG } from '../../shared/config';
       id="link"
       gogButton
       [variant]="variant()"
+      [severity]="severity()"
       [size]="size()"
       [fullWidth]="fullWidth()"
       href="/pricing"
@@ -24,6 +25,7 @@ import { GOG_CONFIG } from '../../shared/config';
 })
 class Host {
   readonly variant = signal<'primary' | 'secondary' | 'outline' | 'ghost'>('primary');
+  readonly severity = signal<'accent' | 'success' | 'danger' | 'warning' | 'info'>('accent');
   readonly size = signal<'xsm' | 'sm' | 'md' | 'lg' | 'slg' | undefined>(undefined);
   readonly fullWidth = signal(false);
   readonly disabled = signal(false);
@@ -157,6 +159,34 @@ describe('GogButtonDirective', () => {
       // `booleanAttribute`, so `<a gogButton fullWidth>` means true — the shape a consumer
       // reaches for first.
       expect(el('bare').classList.contains('gog-btn--full-width')).toBe(true);
+    });
+  });
+
+  describe('severity', () => {
+    it('emits nothing for accent, so an existing link is untouched', () => {
+      expect(el('link').className).not.toMatch(/gog-btn--(accent|success|danger|warning|info)/);
+    });
+
+    it('adds the status class alongside the variant and size ones', async () => {
+      host.severity.set('danger');
+      host.variant.set('outline');
+      await settle();
+
+      const link = el('link');
+      expect(link.classList.contains('gog-btn--danger')).toBe(true);
+      expect(link.classList.contains('gog-btn--outline')).toBe(true);
+      expect(link.classList.contains('gog-btn--md')).toBe(true);
+    });
+
+    it('removes it again on the way back to accent', async () => {
+      host.severity.set('success');
+      await settle();
+      expect(el('link').classList.contains('gog-btn--success')).toBe(true);
+
+      host.severity.set('accent');
+      await settle();
+
+      expect(el('link').classList.contains('gog-btn--success')).toBe(false);
     });
   });
 });

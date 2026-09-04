@@ -105,6 +105,17 @@ delete the section too.
     difference between the deployed site and a local build is not investigated as a bug, the same
     reason item 3 exists.
 
+13. **The button page gains `severity`, and it is the best theming demo the lab has.**
+    `gog-button` and `[gogButton]` take `severity` since 21.8.1 — `'accent'` (the default,
+    unchanged), `success`, `danger`, `warning`, `info` — orthogonal to `variant`, so the page
+    wants a severity x variant grid rather than a row. The API tables need the row on both, and
+    `GogSeverity` should be named on the types page (`GogProgressbarVariant` is now an alias of
+    it). The part worth writing prose for is what the Theming page can show off: a filled
+    severity button's label is per-theme, its hover and press deepen *away* from that label, and
+    a transparent one's label is the status hue mixed halfway toward the page ink — so switching
+    themes under that grid is the demonstration. The showcase's "Severity" panel has the wording
+    and the grid. Fourteen new tokens per the generator, which picks them up on its own.
+
 ## Checking your work
 
 `npm run check:app-contrast` — WCAG AA for both apps' **own** chrome, in all 11 themes. The lab

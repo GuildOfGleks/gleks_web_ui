@@ -220,6 +220,115 @@
   --gog-button-variant-spinner-color: var(--gog-button-ghost-spinner-color);
 }
 
+/* === Severity ===
+ *
+ * `severity` is orthogonal to `variant` — a destructive action can be filled, outlined or a
+ * ghost and is destructive in all three — so these do not add a fifth variant. They re-point the
+ * `--gog-button-variant-*` layer the variant classes above set, and they come *after* those
+ * classes so the tie is decided by source order where specificity allows it.
+ *
+ * Two halves. The severity class carries only the ingredients (`--gog-button-severity-*`, from
+ * the per-severity tokens in theme.css); the shape rules below say what a variant does with
+ * them, once each rather than once per severity. Four plus three blocks instead of sixteen, and
+ * a fifth status colour would be one more block rather than four.
+ *
+ * The shape rules are `(0,2,0)` through the doubled `:is()`, which is what puts them above the
+ * `(0,1,0)` variant classes regardless of the order the two classes appear in on the element.
+ */
+.gog-btn--success {
+  --gog-button-severity-fill: var(--gog-button-success-fill);
+  --gog-button-severity-on-fill: var(--gog-button-success-on-fill);
+  --gog-button-severity-fill-hover: var(--gog-button-success-fill-hover);
+  --gog-button-severity-fill-press: var(--gog-button-success-fill-press);
+  --gog-button-severity-ink: var(--gog-button-success-ink);
+  --gog-button-severity-wash: var(--gog-button-success-wash);
+}
+
+.gog-btn--danger {
+  --gog-button-severity-fill: var(--gog-button-danger-fill);
+  --gog-button-severity-on-fill: var(--gog-button-danger-on-fill);
+  --gog-button-severity-fill-hover: var(--gog-button-danger-fill-hover);
+  --gog-button-severity-fill-press: var(--gog-button-danger-fill-press);
+  --gog-button-severity-ink: var(--gog-button-danger-ink);
+  --gog-button-severity-wash: var(--gog-button-danger-wash);
+}
+
+.gog-btn--warning {
+  --gog-button-severity-fill: var(--gog-button-warning-fill);
+  --gog-button-severity-on-fill: var(--gog-button-warning-on-fill);
+  --gog-button-severity-fill-hover: var(--gog-button-warning-fill-hover);
+  --gog-button-severity-fill-press: var(--gog-button-warning-fill-press);
+  --gog-button-severity-ink: var(--gog-button-warning-ink);
+  --gog-button-severity-wash: var(--gog-button-warning-wash);
+}
+
+.gog-btn--info {
+  --gog-button-severity-fill: var(--gog-button-info-fill);
+  --gog-button-severity-on-fill: var(--gog-button-info-on-fill);
+  --gog-button-severity-fill-hover: var(--gog-button-info-fill-hover);
+  --gog-button-severity-fill-press: var(--gog-button-info-fill-press);
+  --gog-button-severity-ink: var(--gog-button-info-ink);
+  --gog-button-severity-wash: var(--gog-button-info-wash);
+}
+
+/* The two filled variants: the status colour is the fill, and the label is the one that reads
+   on it. `secondary` loses its own neutral fill here, which is the point — a severity says what
+   the action does, and the variant is left saying only how loud it is. */
+:is(.gog-btn--success, .gog-btn--danger, .gog-btn--warning, .gog-btn--info):is(
+  .gog-btn--primary,
+  .gog-btn--secondary
+) {
+  --gog-button-variant-bg: var(--gog-button-severity-fill);
+  --gog-button-variant-color: var(--gog-button-severity-on-fill);
+  --gog-button-variant-border: transparent;
+  --gog-button-variant-shadow: none;
+  --gog-button-variant-hover-bg: var(--gog-button-severity-fill-hover);
+  --gog-button-variant-hover-color: var(--gog-button-severity-on-fill);
+  --gog-button-variant-hover-shadow: none;
+  --gog-button-variant-toggled-shadow: inset 0 0 0 var(--gog-button-toggled-ring-width)
+    var(--gog-button-severity-on-fill);
+  --gog-button-variant-press-bg: var(--gog-button-severity-fill-press);
+  --gog-button-variant-press-color: var(--gog-button-severity-on-fill);
+  --gog-button-variant-spinner-color: var(--gog-button-severity-on-fill);
+}
+
+/* Outline: the border and the label are the *ink* rather than the raw status colour, because
+   this label is text on the page and the raw hue clears AA in only five of the eleven themes.
+   Hovering fills with the status colour proper, which is where `-on-fill` comes back. */
+:is(.gog-btn--success, .gog-btn--danger, .gog-btn--warning, .gog-btn--info).gog-btn--outline {
+  --gog-button-variant-bg: transparent;
+  --gog-button-variant-color: var(--gog-button-severity-ink);
+  --gog-button-variant-border: var(--gog-button-severity-ink);
+  --gog-button-variant-shadow: none;
+  --gog-button-variant-hover-bg: var(--gog-button-severity-fill);
+  --gog-button-variant-hover-color: var(--gog-button-severity-on-fill);
+  --gog-button-variant-hover-shadow: none;
+  --gog-button-variant-toggled-shadow: inset 0 0 0 var(--gog-button-toggled-ring-width)
+    var(--gog-button-severity-ink);
+  --gog-button-variant-press-bg: var(--gog-button-severity-fill-press);
+  --gog-button-variant-press-color: var(--gog-button-severity-on-fill);
+  --gog-button-variant-spinner-color: var(--gog-button-severity-ink);
+}
+
+/* Ghost: a wash on hover rather than a fill, the same shape the accent ghost has. Its hover
+   label is `--gog-text-color` for the reason 21.8.1 recorded on `--gog-button-ghost-hover-color`
+   — a label and a ground made of the same hue walk toward each other — and the press then fills
+   properly, which is also what the accent ghost does. */
+:is(.gog-btn--success, .gog-btn--danger, .gog-btn--warning, .gog-btn--info).gog-btn--ghost {
+  --gog-button-variant-bg: transparent;
+  --gog-button-variant-color: var(--gog-button-severity-ink);
+  --gog-button-variant-border: transparent;
+  --gog-button-variant-shadow: none;
+  --gog-button-variant-hover-bg: var(--gog-button-severity-wash);
+  --gog-button-variant-hover-color: var(--gog-text-color);
+  --gog-button-variant-hover-shadow: none;
+  --gog-button-variant-toggled-shadow: inset 0 0 0 var(--gog-button-toggled-ring-width)
+    var(--gog-button-severity-ink);
+  --gog-button-variant-press-bg: var(--gog-button-severity-fill-press);
+  --gog-button-variant-press-color: var(--gog-button-severity-on-fill);
+  --gog-button-variant-spinner-color: var(--gog-button-severity-ink);
+}
+
 /* === Sizes === */
 .gog-btn--xsm {
   --gog-button-size-padding: var(--gog-button-xsm-padding);

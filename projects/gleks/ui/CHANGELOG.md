@@ -8,6 +8,24 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`gog-button` and `[gogButton]` gain `severity`.** `severity` says what the action means;
+  `variant` says how loudly it is drawn. The two are orthogonal, which is the whole design: this
+  is not a fifth variant but a re-pointing of the colours all four are built from, so
+  `variant="ghost" severity="danger"` is a quiet delete and `variant="primary" severity="danger"`
+  a loud one. `'accent'` is the default and the absence of a claim — an existing button emits no
+  new class and renders byte-for-byte as before. The `GogSeverity` union is shared with
+  `gog-progressbar`, whose `GogProgressbarVariant` is now an alias of it.
+
+  Two colour rules came out of measuring rather than choosing. A **filled** severity button's
+  label is `--gog-<status>-text-color`, and hover and press deepen the fill *away* from it via
+  `--gog-<status>-shade`, so every state makes the label easier to read rather than harder — the
+  first attempt deepened toward the page's ink unconditionally and cost `primeng`'s info button
+  6.44:1 down to 4.23:1 on press, because there the label *is* the ink. A **transparent** one's
+  label is `--gog-button-<status>-ink`, the status hue mixed halfway toward the ink, because the
+  raw hue is legible body text in only five of the eleven shipped themes; the 50% is the binding
+  case (`material`'s amber) rather than a round number. All four severities, four variants and
+  every state are gated by `check:contrast` — 1155 pairs across 11 themes, all passing.
+
 - **`--gog-success-text-color` and its three siblings: the label a status fill carries.** Each
   status names its own "text on this fill" colour, the way `--gog-accent-text-color` already did
   for the accent, and defaults to it — so a theme states one only where its own hue disagrees.

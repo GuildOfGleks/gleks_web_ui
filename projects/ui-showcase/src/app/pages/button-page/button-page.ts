@@ -6,6 +6,7 @@ import {
   GogPanelHeaderDirective,
   GogSize,
   GogVariant,
+  GogSeverity,
   IconComponent,
   PanelComponent,
 } from '@guildofgleks/ui';
@@ -27,6 +28,7 @@ import {
 export class ButtonPage {
   protected readonly variants: GogVariant[] = ['primary', 'secondary', 'outline', 'ghost'];
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
+  protected readonly severities: GogSeverity[] = ['success', 'danger', 'warning', 'info'];
 
   protected readonly isLoading = signal(false);
   protected readonly lastClicked = signal('No button clicked yet.');

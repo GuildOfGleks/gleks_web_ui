@@ -12,7 +12,7 @@ import { Subject, timer } from 'rxjs';
 import { throttle } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { GogAriaHasPopup, GogSize, GogVariant } from '../../shared/types';
+import { GogAriaHasPopup, GogSeverity, GogSize, GogVariant } from '../../shared/types';
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { resolveRipple } from '../../shared/ripple-state';
 import { GogRippleDirective } from '../ripple/ripple.directive';
@@ -36,6 +36,27 @@ const DEFAULT_SIZE: GogSize = 'md';
 })
 export class ButtonComponent {
   variant = input<GogVariant>('primary');
+  /**
+   * What the action means, as opposed to how loudly the button is drawn. `'accent'` — the
+   * default — is the absence of a claim and leaves the button exactly as it was; the four status
+   * names paint it in that status's colour.
+   *
+   * **Orthogonal to `variant`, on purpose.** A destructive action is destructive whether it is
+   * filled, outlined or a ghost, so this does not add a fifth variant: it re-points the colours
+   * all four are built from. `variant="ghost" severity="danger"` is a quiet delete, and
+   * `variant="primary" severity="danger"` is a loud one.
+   *
+   * ```html
+   * <gog-button severity="danger" (gogClick)="deleteAccount()">Delete account</gog-button>
+   * <gog-button variant="outline" severity="warning">Discard draft</gog-button>
+   * ```
+   *
+   * A filled severity button's label is `--gog-<status>-text-color`, which each theme states for
+   * its own hue; a transparent one's is that hue mixed toward the page's ink until it reads as
+   * text, since the raw status colour clears WCAG AA on the page in only five of the eleven
+   * shipped themes. Override `--gog-button-<status>-ink` to change it.
+   */
+  severity = input<GogSeverity>('accent');
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   size = input<GogSize | undefined>(undefined);
   disabled = input<boolean>(false);
@@ -128,6 +149,16 @@ export class ButtonComponent {
    * Always emitted — `gog-btn` has a rule for every size, `md` included.
    */
   protected readonly sizeClass = computed(() => `gog-btn--${this.resolvedSize()}`);
+
+  /**
+   * Size and severity in one binding, because a template may carry only one `[class]`. `'accent'`
+   * emits nothing: it is the absence of a severity, and a `.gog-btn--accent` class would be a
+   * selector that has to exist for no reason.
+   */
+  protected readonly stateClasses = computed(() => {
+    const severity = this.severity();
+    return severity === 'accent' ? this.sizeClass() : `${this.sizeClass()} gog-btn--${severity}`;
+  });
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly click$ = new Subject<MouseEvent>();

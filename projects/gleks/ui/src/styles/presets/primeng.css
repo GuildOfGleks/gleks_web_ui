@@ -47,6 +47,9 @@
      6.44. Three of the four worst status pairs in the library were here, and none of them cost a
      hue to fix. Found 2026-09-04. */
   --gog-success-text-color: #0f172a;
+  /* All three labels here are the ink, so all three fills deepen toward white instead. Measured:
+     without this the info button's press fell to 4.23:1. See `--gog-<status>-shade`. */
+  --gog-success-shade: #ffffff;
   /* Was #ef4444 — Tailwind red-500, PrimeNG's error colour. `--gog-danger-color` is what every `--gog-<block>-error-color`
      resolves to, so this is the colour a validation message is printed in, and as *text* it
      needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
@@ -56,8 +59,10 @@
   --gog-danger-color: #ce3a3a;
   --gog-warning-color: #f59e0b;
   --gog-warning-text-color: #0f172a;
+  --gog-warning-shade: #ffffff;
   --gog-info-color: #0ea5e9;
   --gog-info-text-color: #0f172a;
+  --gog-info-shade: #ffffff;
   --gog-panel-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
   --gog-spinner-overlay-bg: rgba(248, 250, 252, 0.75);
 

@@ -41,6 +41,9 @@
      worst status pair in any shipped theme; near-black reads 8.69:1, and dark text on amber is
      Material 3's own convention, so this costs no fidelity at all. Found 2026-09-04. */
   --gog-warning-text-color: #1c1b1f;
+  /* The label here is the ink, so the fill has to deepen the other way — toward white — or a
+     hover walks it into its own label. See `--gog-<status>-shade` in theme.css. */
+  --gog-warning-shade: #ffffff;
   /* Was #0288d1 — Material Light Blue 700. Neither label cleared AA on it: white 3.86:1,
      near-black 4.44:1, so unlike the amber above there was no label to pick and the hue had to
      move. One step down Material's own ramp to Light Blue 800, which is 4.80:1 under white and

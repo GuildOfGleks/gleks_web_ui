@@ -198,6 +198,35 @@ const WASH_PAIRS = [
   ['badge danger', '--gog-badge-danger-color', '--gog-badge-danger-bg', ['--gog-surface-color'], 4.5],
   ['badge warning', '--gog-badge-warning-color', '--gog-badge-warning-bg', ['--gog-surface-color'], 4.5],
   ['badge info', '--gog-badge-info-color', '--gog-badge-info-bg', ['--gog-surface-color'], 4.5],
+  // `gog-button`'s severity (21.8.1), every state of every shape. The transparent variants are
+  // the reason `--gog-button-<status>-ink` exists rather than the raw status colour: as text on
+  // the page the raw hue clears AA in five of the eleven themes, and the ink mix is what the rest
+  // needed. Listed exhaustively rather than by sample, because the two failures the wash table
+  // was built for were both a state nobody thought to list.
+  ['button success fill', '--gog-button-success-on-fill', '--gog-button-success-fill', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button success fill hover', '--gog-button-success-on-fill', '--gog-button-success-fill-hover', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button success fill press', '--gog-button-success-on-fill', '--gog-button-success-fill-press', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button success ink', '--gog-button-success-ink', '--gog-background-color', ['--gog-background-color'], 4.5],
+  ['button success ink on surface', '--gog-button-success-ink', '--gog-surface-color', ['--gog-surface-color'], 4.5],
+  ['button success ghost hover', '--gog-text-color', '--gog-button-success-wash', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button danger fill', '--gog-button-danger-on-fill', '--gog-button-danger-fill', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button danger fill hover', '--gog-button-danger-on-fill', '--gog-button-danger-fill-hover', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button danger fill press', '--gog-button-danger-on-fill', '--gog-button-danger-fill-press', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button danger ink', '--gog-button-danger-ink', '--gog-background-color', ['--gog-background-color'], 4.5],
+  ['button danger ink on surface', '--gog-button-danger-ink', '--gog-surface-color', ['--gog-surface-color'], 4.5],
+  ['button danger ghost hover', '--gog-text-color', '--gog-button-danger-wash', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button warning fill', '--gog-button-warning-on-fill', '--gog-button-warning-fill', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button warning fill hover', '--gog-button-warning-on-fill', '--gog-button-warning-fill-hover', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button warning fill press', '--gog-button-warning-on-fill', '--gog-button-warning-fill-press', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button warning ink', '--gog-button-warning-ink', '--gog-background-color', ['--gog-background-color'], 4.5],
+  ['button warning ink on surface', '--gog-button-warning-ink', '--gog-surface-color', ['--gog-surface-color'], 4.5],
+  ['button warning ghost hover', '--gog-text-color', '--gog-button-warning-wash', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button info fill', '--gog-button-info-on-fill', '--gog-button-info-fill', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button info fill hover', '--gog-button-info-on-fill', '--gog-button-info-fill-hover', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button info fill press', '--gog-button-info-on-fill', '--gog-button-info-fill-press', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  ['button info ink', '--gog-button-info-ink', '--gog-background-color', ['--gog-background-color'], 4.5],
+  ['button info ink on surface', '--gog-button-info-ink', '--gog-surface-color', ['--gog-surface-color'], 4.5],
+  ['button info ghost hover', '--gog-text-color', '--gog-button-info-wash', ['--gog-background-color', '--gog-surface-color'], 4.5],
   ['chip hover', '--gog-chip-color', '--gog-chip-hover-bg', ['--gog-chip-bg'], 4.5],
   ['chip press', '--gog-chip-color', '--gog-chip-press-bg', ['--gog-chip-bg'], 4.5],
   // The selected filter chip's ring (21.8.1), against the two backgrounds it has to stay visible

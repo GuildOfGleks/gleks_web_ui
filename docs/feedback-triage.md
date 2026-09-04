@@ -146,7 +146,7 @@ it means actually loading the lab in an older browser rather than trusting a sup
 
 | #   | Item                                             | Why it is a minor                                                   | Size |
 | --- | ------------------------------------------------ | ------------------------------------------------------------------- | ---- |
-| 1   | `gog-button` `severity` (warning / success / …)  | New public input, new token families per severity                   | M    |
+| 1   | ~~`gog-button` `severity` (warning / success / …)~~ **done, 21.8.1** | Shipped as `severity`, orthogonal to `variant` — one ingredient set per status rather than a token family per severity per variant. The real cost was not the tokens: the status colours could not carry a label, which turned out to be a shipped `gogBadge` defect first | M    |
 | 2   | ~~`gog-button` pressed state~~ **done, 21.8.1**  | Shipped as the `:active` colour, per variant, plus the eight other pressable surfaces. The `aria-pressed` toggle *look* shipped in the same release — an inset ring, `--gog-button-<variant>-toggled-shadow` — so it is closed too; what is still open is the same gap on `gog-chip`, see `docs/backlog.md` | S–M  |
 | 3   | Input masking (phone, barcode, …)                | **Needs a plan before code** — see below                            | L    |
 | 4   | ~~Horizontal wheel handling in `gog-scroll`~~ **done, 21.8.1** | Shipped as `horizontalWheel`, opt-in. The scroll-chaining trap is handled by the condition that turned out to be the feature's core: at the content's end the event is left alone, so the wheel never goes dead. Also skipped for a horizontal delta, for `ctrlKey`, and whenever the viewport can still scroll vertically | M    |

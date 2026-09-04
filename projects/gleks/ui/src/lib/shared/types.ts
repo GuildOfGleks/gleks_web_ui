@@ -90,7 +90,20 @@ export type GogProgressbarMode = 'determinate' | 'indeterminate' | 'buffer';
  * "the app is working", which is the accent colour rather than any of the four status hues —
  * so `'accent'` is the default and the status names are the exception.
  */
-export type GogProgressbarVariant = 'accent' | 'success' | 'danger' | 'warning' | 'info';
+export type GogProgressbarVariant = GogSeverity;
+
+/**
+ * What an action or a reading *means*, as opposed to how loudly it is drawn. `'accent'` is the
+ * absence of a claim — the library's own colour, and the default everywhere this appears — and
+ * the four status names are the exception, so nothing has to opt out of a severity it does not
+ * have.
+ *
+ * Deliberately orthogonal to `GogVariant` on `gog-button`: a destructive action can be filled,
+ * outlined or a ghost and is destructive in all three, so `severity` says what it does and
+ * `variant` says only how much room it takes up. Shared rather than re-declared per component —
+ * `gog-progressbar` had this exact union first, under its own name, which is kept as an alias.
+ */
+export type GogSeverity = 'accent' | 'success' | 'danger' | 'warning' | 'info';
 
 /**
  * - `'joined'` — one segmented control, buttons sharing borders (Material's look).

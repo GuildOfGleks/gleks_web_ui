@@ -3,7 +3,7 @@ import { Directive, booleanAttribute, computed, inject, input } from '@angular/c
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { resolveRipple } from '../../shared/ripple-state';
 import { bindRipple } from '../ripple/ripple-controller';
-import { GogSize, GogVariant } from '../../shared/types';
+import { GogSeverity, GogSize, GogVariant } from '../../shared/types';
 
 /** Built-in default, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
@@ -54,12 +54,33 @@ const DEFAULT_SIZE: GogSize = 'md';
   selector: 'a[gogButton], button[gogButton]',
   host: {
     class: 'gog-btn gog-inline-center gog-contained-layout',
-    '[class]': 'variantClass() + " " + sizeClass()',
+    '[class]': 'variantClass() + " " + sizeClass() + severityClass()',
     '[class.gog-btn--full-width]': 'fullWidth()',
   },
 })
 export class GogButtonDirective {
   readonly variant = input<GogVariant>('primary');
+  /**
+   * What the action means, as opposed to how loudly the button is drawn. `'accent'` — the
+   * default — is the absence of a claim and leaves the button exactly as it was; the four status
+   * names paint it in that status's colour.
+   *
+   * **Orthogonal to `variant`, on purpose.** A destructive action is destructive whether it is
+   * filled, outlined or a ghost, so this does not add a fifth variant: it re-points the colours
+   * all four are built from. `variant="ghost" severity="danger"` is a quiet delete, and
+   * `variant="primary" severity="danger"` is a loud one.
+   *
+   * ```html
+   * <button gogButton severity="danger" type="submit">Delete account</button>
+   * <a gogButton variant="outline" severity="warning" routerLink="/drafts">Discard draft</a>
+   * ```
+   *
+   * A filled severity button's label is `--gog-<status>-text-color`, which each theme states for
+   * its own hue; a transparent one's is that hue mixed toward the page's ink until it reads as
+   * text, since the raw status colour clears WCAG AA on the page in only five of the eleven
+   * shipped themes. Override `--gog-button-<status>-ink` to change it.
+   */
+  readonly severity = input<GogSeverity>('accent');
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'` — as on `gog-button`. */
   readonly size = input<GogSize | undefined>(undefined);
   /**
@@ -82,6 +103,10 @@ export class GogButtonDirective {
   );
 
   protected readonly variantClass = computed(() => `gog-btn--${this.variant()}`);
+  /** Empty for `'accent'` — see `stateClasses` on `gog-button` for why that emits no class. */
+  protected readonly severityClass = computed(() =>
+    this.severity() === 'accent' ? '' : ` gog-btn--${this.severity()}`,
+  );
   /**
    * Unlike `gog-button`, this emits a class for `'md'` too. The component can leave the default
    * size unclassed because its own stylesheet bottoms out at `--gog-button-md-*`; here the class is

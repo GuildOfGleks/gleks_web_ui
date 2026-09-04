@@ -32,6 +32,36 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader>Severity</h3>
+    <p class="meta">
+      <code>severity</code> says what the action <em>means</em>; <code>variant</code> says how
+      loudly it is drawn. They are orthogonal, so every cell below is a real combination rather than
+      a fifth variant: a ghost delete is still a delete. <code>"accent"</code> is the default and
+      the absence of a claim, which is why the row above this one needs no opt-out.
+    </p>
+    <div class="variant-grid">
+      @for (severity of severities; track severity) {
+        <div class="variant-row">
+          <span class="variant-row__label">{{ severity }}</span>
+          @for (variant of variants; track variant) {
+            <gog-button [variant]="variant" [severity]="severity" type="button">
+              {{ variant }}
+            </gog-button>
+          }
+        </div>
+      }
+    </div>
+    <p class="meta">
+      Hover and press each one. A filled button's label is the colour its own theme states for that
+      status — <code>material</code> and <code>primeng</code> put near-black on their bright hues,
+      everything else white — and the fill deepens away from that label, so the state always makes
+      the label easier rather than harder to read. The outlined and ghost labels are the status hue
+      mixed toward the page's ink: the raw colour is legible text in only five of the eleven themes,
+      so switching themes here is the interesting part.
+    </p>
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Press feedback, with animations off</h3>
     <p class="meta">
       Hold any of these down. The background deepens one step past its own hover, so the press is

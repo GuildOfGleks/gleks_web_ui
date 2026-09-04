@@ -230,6 +230,47 @@ describe('ButtonComponent', () => {
     });
   });
 
+  describe('severity', () => {
+    function button(): HTMLButtonElement {
+      return fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    }
+
+    it('emits no class by default, since accent is the absence of a severity', async () => {
+      await fixture.whenStable();
+
+      expect(button().className).not.toMatch(/gog-btn--(accent|success|danger|warning|info)/);
+    });
+
+    it('emits the status class, and keeps the size class beside it', async () => {
+      fixture.componentRef.setInput('severity', 'danger');
+      fixture.componentRef.setInput('size', 'lg');
+      await fixture.whenStable();
+
+      expect(button().classList.contains('gog-btn--danger')).toBe(true);
+      expect(button().classList.contains('gog-btn--lg')).toBe(true);
+    });
+
+    it('composes with variant rather than replacing it', async () => {
+      fixture.componentRef.setInput('severity', 'warning');
+      fixture.componentRef.setInput('variant', 'ghost');
+      await fixture.whenStable();
+
+      expect(button().classList.contains('gog-btn--warning')).toBe(true);
+      expect(button().classList.contains('gog-btn--ghost')).toBe(true);
+    });
+
+    it('drops the previous status class when the severity changes', async () => {
+      fixture.componentRef.setInput('severity', 'info');
+      await fixture.whenStable();
+      expect(button().classList.contains('gog-btn--info')).toBe(true);
+
+      fixture.componentRef.setInput('severity', 'accent');
+      await fixture.whenStable();
+
+      expect(button().classList.contains('gog-btn--info')).toBe(false);
+    });
+  });
+
   describe('click throttling', () => {
     it('should emit the first click immediately (leading edge)', async () => {
       const clicks: MouseEvent[] = [];
