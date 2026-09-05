@@ -41,6 +41,9 @@ reached 1.0, so breaking changes may land in minor versions.
   in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
   second default nobody can find.
 
+- **`gog-checkbox`'s gap between box and label is 12px, not 10px** — its one length off the 4px
+  grid.
+
 - **The shared field tier is on the grid, at a ratio of 2.0.** Every text-bearing control that
   reads it — `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`
   and `gog-datepicker` — is padded `4/8`, `8/16`, `12/24`, `16/32`, `20/40` (vertical/horizontal).

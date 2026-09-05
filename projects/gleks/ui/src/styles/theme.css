@@ -985,7 +985,7 @@
      Box/label/icon size and padding come from the `--gog-control-checkbox-*` scale;
      checkbox.component.ts maps the `size` input onto the host. */
   --gog-checkbox-font-family: var(--gog-font-body);
-  --gog-checkbox-gap: var(--gog-space-10);
+  --gog-checkbox-gap: var(--gog-space-12);
   --gog-checkbox-radius: var(--gog-radius);
   --gog-checkbox-border-width: var(--gog-control-border-width);
   --gog-checkbox-border-style: var(--gog-control-border-style);
