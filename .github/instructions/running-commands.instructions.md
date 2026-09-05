@@ -107,6 +107,19 @@ Get-NetTCPConnection -LocalPort 4200 -State Listen -ErrorAction SilentlyContinue
 
 ## Windows / sandbox gotchas hit in real sessions
 
+- **`npm install` inside `projects/gleks/ui` breaks the whole test suite.** The library's
+  `package.json` declares Angular as a *peer* dependency with the range
+  `^21.2.0 || ^22.0.0`, so npm run there resolves it to the newest match — **Angular 22** — and
+  writes a nested `projects/gleks/ui/node_modules` plus a `package-lock.json`. Both are
+  git-ignored, so nothing shows in `git status`. Anything resolving from inside the library folder
+  then finds that copy instead of the workspace's Angular 21, and every spec fails with
+  `Error: Need to call TestBed.initTestEnvironment() first` — 356 failures across 49 files, with
+  no hint of the real cause. Found on 2026-09-05; the stray install was dated the evening of the
+  21.9.1 publish. **Fix: delete `projects/gleks/ui/node_modules` and
+  `projects/gleks/ui/package-lock.json`.** There is one `node_modules` in this workspace, at the
+  root; the library is built from source by `ng build @gleks/ui` and never needs its own install.
+  If a step of the release really does need one, `npm publish` from the root with `--workspace`
+  rather than `cd`-ing into the package.
 - **`rm -rf node_modules/<pkg>` is blocked** by the tool sandbox. Use PowerShell instead:
   `Remove-Item -Recurse -Force <path>`.
 - **`npm install` will not restore a package you overwrote with a local build** when the two
