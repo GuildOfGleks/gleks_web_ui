@@ -38,7 +38,8 @@
     "ping:indexnow": "node scripts/ping-indexnow.mjs",
     "generate:examples": "node scripts/generate-example-sources.mjs",
     "check:examples": "node scripts/generate-example-sources.mjs --check",
-    "survey:geometry": "node scripts/survey-geometry.mjs"
+    "survey:geometry": "node scripts/survey-geometry.mjs",
+    "check:geometry": "node scripts/check-geometry.mjs"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
