@@ -21,3 +21,19 @@
   display: flex;
   gap: 12px;
 }
+
+/* The achromatopsia simulation, scoped to the one panel that argues from it. `filter` on the
+   stack rather than on the page: the surrounding prose has to stay readable while the bars are
+   grey, and a reader comparing the two wants both on screen at once. */
+.progress-stack--greyscale {
+  filter: grayscale(1);
+}
+
+.progress-greyscale-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gog-space-8);
+  margin-block-end: var(--gog-space-12);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}

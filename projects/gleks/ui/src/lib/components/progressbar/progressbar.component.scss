@@ -40,6 +40,21 @@
     --gog-progressbar-fill-bg,
     var(--gog-progressbar-variant-bg, var(--gog-progressbar-accent-bg))
   );
+  /* Where the fill ends, as two hairlines rather than as a colour difference — see the comment on
+     `--gog-progressbar-edge-*` in theme.css for why the fill and the track cannot carry this
+     themselves. The ink line sits outermost, against the track, because that is the pair that
+     clears 3:1 in every theme; the backing line sits inside it, so the marker separates from a
+     dark fill too.
+
+     Both are inset shadows on the fill rather than a border, so they cost no layout and cannot
+     change the fill's width — a border here would make a 100% bar overflow its own track. The
+     direction sign flips them to the other end under `dir="rtl"`; `box-shadow` has no logical
+     form, which is exactly what `--gog-direction-sign` exists for. */
+  box-shadow:
+    inset calc(var(--gog-direction-sign) * -1 * var(--gog-progressbar-edge-width)) 0 0
+      var(--gog-progressbar-edge-color),
+    inset calc(var(--gog-direction-sign) * -2 * var(--gog-progressbar-edge-width)) 0 0
+      var(--gog-progressbar-edge-backing-color);
 }
 
 .gog-progressbar__buffer {

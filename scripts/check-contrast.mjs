@@ -208,6 +208,38 @@ const PAIRS = [
  *
  * [label, labelToken, backgroundToken, groundTokens, threshold]
  */
+/**
+ * Boundaries marked by a **pair** of tones, where neither tone alone can do the job.
+ *
+ * `gog-progressbar`'s fill ends somewhere, and that somewhere is the value — `showValue` is
+ * `false` by default, so nothing else states it. Neither the fill nor the track can carry the
+ * boundary (see the header), and no single marker colour works either: the five fills straddle
+ * mid-luminance, so a tone that reads on the amber warning disappears on the blue info. Two tones
+ * do, and the rule is "whichever side you are on, at least one of them contrasts":
+ *
+ *   [label, toneA, toneB, neighbours, threshold]
+ *
+ * Every neighbour must clear `threshold` against **the better of the two tones**. That is weaker
+ * than gating each tone and it is the correct requirement: the marker is two adjacent hairlines
+ * whose own contrast is the theme's text pair, so the one that reads is the one you see.
+ */
+const EDGE_PAIRS = [
+  [
+    'progressbar fill edge',
+    '--gog-progressbar-edge-color',
+    '--gog-progressbar-edge-backing-color',
+    [
+      '--gog-progressbar-track-base-bg',
+      '--gog-progressbar-accent-bg',
+      '--gog-progressbar-success-bg',
+      '--gog-progressbar-warning-bg',
+      '--gog-progressbar-danger-bg',
+      '--gog-progressbar-info-bg',
+    ],
+    3.0,
+  ],
+];
+
 const WASH_PAIRS = [
   ['button ghost hover', '--gog-button-ghost-hover-color', '--gog-button-ghost-hover-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
   ['button ghost press', '--gog-button-ghost-press-color', '--gog-button-ghost-press-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
@@ -725,6 +757,37 @@ async function main() {
             `[contrast] ${name} — ${label} on ${groundToken.replace('--gog-', '')}: ` +
               `${ratio.toFixed(2)}:1 (need ${threshold}:1) ` +
               `[${toHex(text)} vs ${toHex(painted)}]`,
+          );
+        }
+      }
+    }
+  }
+
+  // The two-tone boundary markers.
+  for (const { name, decls } of themes) {
+    const resolve = makeResolver(layers, decls);
+    const surface = resolve('--gog-surface-color');
+    for (const [label, toneAToken, toneBToken, neighbourTokens, threshold] of EDGE_PAIRS) {
+      const a = resolve(toneAToken);
+      const b = resolve(toneBToken);
+      if (a === null || b === null) {
+        failures.push(`[unresolvable] ${name} — ${label}: ${a === null ? toneAToken : toneBToken}`);
+        continue;
+      }
+      for (const neighbourToken of neighbourTokens) {
+        const raw = resolve(neighbourToken);
+        if (raw === null) {
+          failures.push(`[unresolvable] ${name} — ${label}: neighbour ${neighbourToken}`);
+          continue;
+        }
+        const neighbour = raw.a === 1 ? raw : over(raw, surface);
+        pairsChecked++;
+        const best = Math.max(contrast(a, neighbour), contrast(b, neighbour));
+        if (best < threshold) {
+          failures.push(
+            `[contrast] ${name} — ${label} against ${neighbourToken.replace('--gog-', '')}: ` +
+              `${best.toFixed(2)}:1 (need ${threshold}:1, best of the two tones) ` +
+              `[${toHex(a)} / ${toHex(b)} vs ${toHex(neighbour)}]`,
           );
         }
       }

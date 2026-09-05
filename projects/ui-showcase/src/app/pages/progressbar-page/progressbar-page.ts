@@ -25,9 +25,16 @@ export class ProgressbarPage implements OnDestroy {
   ];
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
+  /** Local to one panel, so the rest of the page stays in colour beside it. */
+  protected readonly greyscale = signal(false);
+
   protected readonly progress = signal(35);
   protected readonly buffer = signal(60);
   private timer: ReturnType<typeof setInterval> | null = null;
+
+  protected toggleGreyscale(): void {
+    this.greyscale.update((on) => !on);
+  }
 
   protected start(): void {
     this.stop();

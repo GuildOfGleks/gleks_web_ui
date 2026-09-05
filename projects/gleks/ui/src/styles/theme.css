@@ -1632,6 +1632,21 @@
   /* The reduced-motion stand-in for the indeterminate animation. */
   --gog-progressbar-stripe-size: 6px;
   --gog-progressbar-stripe-color: var(--gog-surface-color);
+  /* The two hairlines that mark where the fill ends, and the reason they are two.
+     WCAG 1.4.11 wants 3:1 for the part of a graphic that carries its meaning, and here that is
+     the boundary — `showValue` is `false` by default, so nothing else states the value. The fill
+     cannot carry it against the track: measured across the whole `--gog-text-color`-to-
+     `--gog-border-color` axis, no single track colour clears 3:1 against all five fills in any
+     theme but `primeng`, because the fills straddle mid-luminance and a track dark enough for the
+     amber warning lands on the blue info (`docs/backlog.md` has the table).
+     A marker can, but not in one tone either: `--gog-surface-color` alone is 1.79:1 on
+     `material`'s warning fill, `--gog-text-color` alone is 1.06:1 on `one-dark`'s success. As a
+     pair they always work — the ink line is 3.25:1 to 9.57:1 against the track in all eleven
+     themes, and whichever tone a fill sits close to, the other one does not. `check:contrast`
+     gates both halves. */
+  --gog-progressbar-edge-width: 1px;
+  --gog-progressbar-edge-color: var(--gog-text-color);
+  --gog-progressbar-edge-backing-color: var(--gog-surface-color);
   /* The buffer tier is the same hue at low opacity, so it reads as "ahead of the fill"
      rather than as a second, competing colour. */
   --gog-progressbar-accent-bg: var(--gog-accent-color);

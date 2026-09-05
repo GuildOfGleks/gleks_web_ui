@@ -4,7 +4,33 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [21.9.2] - planned
+## [21.10.0] - planned
+
+### Added
+
+- **`gog-progressbar` marks where its fill ends**, with two hairlines rather than a colour
+  difference — `--gog-progressbar-edge-color` (the theme's ink, outermost, against the track),
+  `--gog-progressbar-edge-backing-color` (the surface colour, inside the fill) and
+  `--gog-progressbar-edge-width`, 1px each. Both are inset shadows on the fill, so they cost no
+  layout and cannot push a 100% bar past its own track, and they flip end under `dir="rtl"`
+  through `--gog-direction-sign`.
+
+  **The boundary is the value.** `showValue` is `false` by default, so nothing else states it, and
+  WCAG 1.4.11 asks 3:1 of the part of a graphic that carries its meaning. The fill and track could
+  not carry it: 51 of the 55 shipped fill/track combinations were under 3:1, and that is not a
+  palette bug — the five fills straddle mid-luminance in every theme, so a track dark enough for
+  the amber warning lands on the blue info. Sweeping the entire `--gog-text-color`-to-
+  `--gog-border-color` axis, the best achievable worst-fill ratio is 1.58 to 3.45 per theme, and
+  only `primeng` clears 3:1 at all.
+
+  One marker tone does not work either (`--gog-surface-color` is 1.79:1 on `material`'s warning
+  fill, `--gog-text-color` 1.06:1 on `one-dark`'s success). Two do, and `check:contrast` gates them
+  as a pair: every neighbour — the track and all five fills — must clear 3:1 against the better of
+  the two tones. Worst case across the eleven themes is 3.25:1.
+
+  Found by rendering the component in greyscale, which is what a reader with achromatopsia sees:
+  on `primeng`, success, warning and info had no visible boundary at all. The showcase's
+  progressbar page carries that comparison as a toggle.
 
 ### Fixed
 

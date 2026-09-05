@@ -61,6 +61,36 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader>Where the fill ends, in greyscale</h3>
+    <p class="hint">
+      The boundary between fill and track <em>is</em> the value — <code>showValue</code> is
+      <code>false</code> by default, so nothing else states it. It cannot be carried by the two
+      colours themselves: the five fills straddle mid-luminance in every palette, so a track dark
+      enough for the amber warning lands on the blue info, and no single track colour clears WCAG
+      1.4.11's 3:1 against all five in any shipped theme but one. Two hairlines at the fill's
+      leading edge do — the ink line against the track measures 3.25:1 to 9.57:1 across the eleven
+      themes, and whichever tone a fill sits close to, the other one does not.
+    </p>
+    <p class="hint">
+      <strong>Tick the box</strong> to render this panel the way a reader with achromatopsia sees
+      it. Before 21.10.0 three of these five bars lost their boundary almost entirely here; the tick
+      is what is left when hue is taken away.
+    </p>
+    <label class="progress-greyscale-toggle">
+      <input type="checkbox" [checked]="greyscale()" (change)="toggleGreyscale()" />
+      Simulate achromatopsia (greyscale)
+    </label>
+    <div class="progress-stack" [class.progress-stack--greyscale]="greyscale()">
+      @for (variant of variants; track variant) {
+        <div class="progress-row">
+          <span class="progress-row__label">{{ variant }}</span>
+          <gog-progressbar [variant]="variant" [value]="62" />
+        </div>
+      }
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Clamping</h3>
     <p class="hint">
       Values outside 0–100 are pulled in rather than overflowing the track, and a non-finite value

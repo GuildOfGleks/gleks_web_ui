@@ -1199,6 +1199,14 @@ defaults: neither has a config key to fall through to.
 <gog-progressbar mode="buffer" [value]="42" [buffer]="70" />
 ```
 
+**The fill's end is marked by two hairlines** (21.10.0), `--gog-progressbar-edge-color` over
+`--gog-progressbar-edge-backing-color`, each `--gog-progressbar-edge-width` wide. That boundary is
+the value — `showValue` is off by default — and the fill and the track cannot carry it themselves:
+in every shipped theme the five fills straddle mid-luminance, so no one track colour clears WCAG
+1.4.11's 3:1 against all of them. Two tones always do, and `check:contrast` gates the pair. Retint
+them per theme if you like; keep them a *pair* whose tones sit on opposite sides of the middle, or
+the marker disappears on whichever fill it happens to match.
+
 #### `gog-divider`
 
 | Input         | Type                                                | Default        |

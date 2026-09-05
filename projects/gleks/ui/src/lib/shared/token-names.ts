@@ -948,6 +948,9 @@ export type GogTokenName =
   | '--gog-progressbar-buffer-bg'
   | '--gog-progressbar-danger-bg'
   | '--gog-progressbar-danger-buffer-bg'
+  | '--gog-progressbar-edge-backing-color'
+  | '--gog-progressbar-edge-color'
+  | '--gog-progressbar-edge-width'
   | '--gog-progressbar-fill-bg'
   | '--gog-progressbar-height'
   | '--gog-progressbar-indeterminate-duration'
@@ -2659,6 +2662,9 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-progressbar-accent-buffer-bg',
       '--gog-progressbar-danger-bg',
       '--gog-progressbar-danger-buffer-bg',
+      '--gog-progressbar-edge-backing-color',
+      '--gog-progressbar-edge-color',
+      '--gog-progressbar-edge-width',
       '--gog-progressbar-indeterminate-duration',
       '--gog-progressbar-indeterminate-easing',
       '--gog-progressbar-info-bg',
