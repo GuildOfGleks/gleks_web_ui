@@ -41,6 +41,16 @@ reached 1.0, so breaking changes may land in minor versions.
   in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
   second default nobody can find.
 
+- **`gog-accordion`'s header is on the grid at a ratio of 2.0**, and it had the widest drift in
+  the library: 2.00, 1.67, 1.40, 1.14, 1.00 — by `slg` the header was padded equally on all four
+  sides, which is a box rather than a row. Now `4/8`, `8/16`, `12/24`, `16/32`, `20/40`. The body's
+  two off-grid paddings and the three 2px content gaps move with it.
+
+  **An `xsm` header is 24px tall**, up from 20. It grows rather than inflating a hit area because
+  headers stack directly on one another: an invisible target reaching past the row would overlap
+  the neighbouring header's, and two targets claiming the same pixels is worse than one small
+  target.
+
 - **`gog-chip` is on the grid at a ratio of 2.0, and it is the one component whose paint had to
   grow.** Padding goes to `4/8`, `4/8`, `8/16`, `12/24`, `12/24` (block/inline) and the gaps to 4,
   8, 8, 12, 12.

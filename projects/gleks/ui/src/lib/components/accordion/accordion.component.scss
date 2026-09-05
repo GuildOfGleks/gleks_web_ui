@@ -55,6 +55,14 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  /*
+   * WCAG 2.5.8's 24 CSS px. An `xsm` header computes to 20px tall (4 + 4 of padding over a 12px
+   * label), and unlike a button this target cannot borrow the space with an invisible `::before`:
+   * headers are stacked directly on one another, so an inflated hit area would overlap the
+   * neighbouring header's — two targets claiming the same pixels is worse than one small target.
+   * The row grows instead, by 4px at `xsm` and by nothing at any other size.
+   */
+  min-block-size: 24px;
   padding: var(
       --gog-accordion-padding-y,
       var(--gog-accordion-size-padding-y, var(--gog-accordion-lg-padding-y))

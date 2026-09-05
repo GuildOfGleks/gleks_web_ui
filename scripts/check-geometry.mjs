@@ -98,6 +98,7 @@ const HIT_AREA = new Map([
   ['chip-remove/md', 'chip.component.scss, `.gog-chip__remove::before` — 17.6px painted'],
   ['chip-remove/lg', 'chip.component.scss, `.gog-chip__remove::before` — 19.8px painted'],
   ['chip-remove/slg', 'chip.component.scss, `.gog-chip__remove::before` — 22px painted'],
+  ['accordion/xsm', 'accordion.component.scss, `.gog-accordion__header` min-block-size — stacked rows, so an inflated hit area would overlap its neighbour'],
   ['chip/xsm', 'chip.component.scss, `.gog-chip__surface` min-block-size — the surface clips, so the paint grows'],
   ['chip/sm', 'chip.component.scss, `.gog-chip__surface` min-block-size — the surface clips, so the paint grows'],
 ]);

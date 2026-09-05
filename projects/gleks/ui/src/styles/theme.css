@@ -547,31 +547,31 @@
   --gog-accordion-xsm-padding-x: var(--gog-space-8);
   --gog-accordion-xsm-font-size: var(--gog-text-xs);
   --gog-accordion-xsm-letter-spacing: 0.2px;
-  --gog-accordion-xsm-content-gap: var(--gog-space-2);
+  --gog-accordion-xsm-content-gap: var(--gog-space-4);
   --gog-accordion-xsm-body-font-size: var(--gog-text-xs);
   --gog-accordion-xsm-body-line-height: var(--gog-line-height-relaxed);
   --gog-accordion-xsm-body-padding-top: var(--gog-space-4);
-  --gog-accordion-xsm-body-padding-bottom: var(--gog-space-6);
+  --gog-accordion-xsm-body-padding-bottom: var(--gog-space-8);
   --gog-accordion-xsm-chevron-size: 11px;
   --gog-accordion-xsm-chevron-font-size: 10px;
 
-  --gog-accordion-sm-padding-y: var(--gog-space-6);
-  --gog-accordion-sm-padding-x: var(--gog-space-10);
+  --gog-accordion-sm-padding-y: var(--gog-space-8);
+  --gog-accordion-sm-padding-x: var(--gog-space-16);
   --gog-accordion-sm-font-size: var(--gog-text-xs);
   --gog-accordion-sm-letter-spacing: 0.4px;
-  --gog-accordion-sm-content-gap: var(--gog-space-2);
+  --gog-accordion-sm-content-gap: var(--gog-space-4);
   --gog-accordion-sm-body-font-size: var(--gog-text-xs);
   --gog-accordion-sm-body-line-height: var(--gog-accordion-body-line-height);
-  --gog-accordion-sm-body-padding-top: var(--gog-space-6);
+  --gog-accordion-sm-body-padding-top: var(--gog-space-8);
   --gog-accordion-sm-body-padding-bottom: var(--gog-space-8);
   --gog-accordion-sm-chevron-size: 13px;
   --gog-accordion-sm-chevron-font-size: 12px;
 
-  --gog-accordion-md-padding-y: var(--gog-space-10);
-  --gog-accordion-md-padding-x: var(--gog-space-14);
+  --gog-accordion-md-padding-y: var(--gog-space-12);
+  --gog-accordion-md-padding-x: var(--gog-space-24);
   --gog-accordion-md-font-size: var(--gog-text-xs);
   --gog-accordion-md-letter-spacing: 0.8px;
-  --gog-accordion-md-content-gap: var(--gog-space-2);
+  --gog-accordion-md-content-gap: var(--gog-space-4);
   --gog-accordion-md-body-font-size: var(--gog-text-sm);
   --gog-accordion-md-body-line-height: var(--gog-accordion-body-line-height);
   --gog-accordion-md-body-padding-top: var(--gog-space-8);
@@ -579,8 +579,8 @@
   --gog-accordion-md-chevron-size: 15px;
   --gog-accordion-md-chevron-font-size: 14px;
 
-  --gog-accordion-lg-padding-y: var(--gog-space-14);
-  --gog-accordion-lg-padding-x: var(--gog-space-16);
+  --gog-accordion-lg-padding-y: var(--gog-space-16);
+  --gog-accordion-lg-padding-x: var(--gog-space-32);
   --gog-accordion-lg-font-size: var(--gog-text-sm);
   --gog-accordion-lg-letter-spacing: 0.8px;
   --gog-accordion-lg-content-gap: var(--gog-space-4);
@@ -591,8 +591,8 @@
   --gog-accordion-lg-chevron-size: 18px;
   --gog-accordion-lg-chevron-font-size: 16px;
 
-  --gog-accordion-slg-padding-y: var(--gog-space-18);
-  --gog-accordion-slg-padding-x: var(--gog-space-18);
+  --gog-accordion-slg-padding-y: var(--gog-space-20);
+  --gog-accordion-slg-padding-x: var(--gog-space-40);
   --gog-accordion-slg-font-size: var(--gog-text-md);
   --gog-accordion-slg-letter-spacing: 0.8px;
   --gog-accordion-slg-content-gap: var(--gog-space-4);
