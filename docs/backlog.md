@@ -65,6 +65,14 @@ not worth carrying here.
   `check:contrast`'s `DENSITY_EXEMPT` and `REST_PAIRS_NOT_RENDERED` are the pattern — an exception
   that names why is documentation, a threshold quietly relaxed is a check that stopped checking.
 
+  **`docs/component-geometry.md` is the plan for all of this** (2026-09-05). It extends these five
+  laws with seven more — optical area, optical centroid, fluid interpolation, measure, the
+  two-light elevation scale, Hick, Fitts — and gives each a verdict rather than adopting it: three
+  are adopted, two narrowed, and two rejected as library rules because this library cannot check
+  what a consumer owns. It also holds the nine decisions (D0–D8) that have to be taken before any
+  component is touched, and the branch protocol for the sweep: one component, one commit. Do not
+  start the sweep from this entry; the check comes first, and the plan says why.
+
 - **Theme colour should be decided by arithmetic, not by eye — in two spaces, both gated in CI.**
   The ask, and it is the owner's own framing: nobody here is a designer, so the right colour
   combinations get found by computing them. A change to any palette — `theme.css`'s two blocks or any file in

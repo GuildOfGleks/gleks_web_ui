@@ -184,6 +184,16 @@ a month, and see `docs/backlog.md` for the fourth, related defect it was found a
 A plan is not a backlog item — it is a decision already taken about how something gets built.
 Update the status table in whichever you are working from, as you go.
 
+- `docs/component-geometry.md` — **the ruleset for computed geometry, and the sweep that applies
+  it**, targeting the first minor after 21.10.0. It extends `styling.instructions.md`'s five laws
+  with seven more and rules on each: optical area, optical centroid and the two-light elevation
+  scale are adopted, measure and fluid `clamp()` are adopted narrowed, and Hick and Fitts are
+  rejected as library rules and kept as documentation — because a library cannot check what the
+  consumer owns. **Nothing starts until 21.10.0 is released**, the check is written before the
+  components are touched, and the sweep is one branch with one commit per component (33 of them).
+  Its Part 2 is the part to read first: nine decisions (D0–D8) that no script can settle and that
+  would otherwise be settled thirty-three times over.
+
 - `docs/feedback-triage.md` — **30 items from a hands-on pass over the published 21.6.1**, sorted
   by which release can carry each and why, with four of the reported symptoms traced to a
   different cause than the report assumed. Read it before picking up any of that feedback. **Its
