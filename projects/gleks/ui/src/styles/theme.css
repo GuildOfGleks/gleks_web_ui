@@ -1126,7 +1126,7 @@
   --gog-dialog-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
   --gog-dialog-min-width: 320px;
   --gog-dialog-max-height: 90vh;
-  --gog-dialog-header-padding: var(--gog-space-16) var(--gog-space-20) var(--gog-space-14);
+  --gog-dialog-header-padding: var(--gog-space-16) var(--gog-space-20) var(--gog-space-16);
   --gog-dialog-header-gap: var(--gog-space-12);
   --gog-dialog-header-border-color: var(--gog-border-color);
   --gog-dialog-body-padding: var(--gog-space-20);

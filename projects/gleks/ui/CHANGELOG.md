@@ -45,6 +45,9 @@ reached 1.0, so breaking changes may land in minor versions.
   `sm` 14 to 16 with its gap 10 to 12, `md` 18 to 20. A surface like the card, and outside the
   optical ratio for the same reason.
 
+- **`gog-dialog`'s header padding is on the grid** — its bottom side goes from 14px to 16px, so
+  the header is padded 16/20/16 rather than 16/20/14.
+
 - **`gog-menu`'s item padding is 8/16 at a ratio of 2.0**, from 8/12, and the panel's own gap
   goes from 2px to 4px. A menu item is a control — it is the row a pointer activates — so unlike
   the panel around it, the ratio applies.
