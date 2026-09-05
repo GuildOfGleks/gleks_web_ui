@@ -41,6 +41,13 @@ reached 1.0, so breaking changes may land in minor versions.
   in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
   second default nobody can find.
 
+- **`gog-table`'s cell padding is on the grid** — vertical `4/4/8/12/16` per size and horizontal
+  16px, from `2/2/6/10/14` and 14. A row is 2 to 4px taller at every density. The table is
+  deliberately **outside** the optical-ratio law: a cell's padding is row density and a column
+  rhythm, not a label balanced inside a control, and 2.0 would put 32px between every column.
+  The sortable header cell is still checked as a pointer target, which is where the law that
+  applies to it lives.
+
 - **`gog-tabs` is on the grid at a ratio of 2.0** — `8/16`, `8/16`, `12/24`, `16/32`, `20/40`
   (vertical/horizontal), from 1.67, 1.75, 1.50, 1.50, 1.40. `xsm` and `sm` now share a padding and
   are told apart by their type, as everywhere else in this release.
