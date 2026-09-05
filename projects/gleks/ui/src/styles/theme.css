@@ -2135,6 +2135,10 @@
   --gog-toggle-thumb-off-bg: var(--gog-surface-color);
   --gog-toggle-thumb-on-bg: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-toggle-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  /* The thumb's clearance inside its own track, and off the 4px grid on purpose: at 2px the
+     thumb is 83% of a 24px track, which is what makes a switch read as a switch, and 4px would
+     take it to 67%. A length inside a single painted mark is not spacing between two things —
+     `check-geometry.mjs` lists it in OPTICAL_CHROME with that reason. */
   --gog-toggle-thumb-inset: 2px;
   --gog-toggle-transition-duration: var(--gog-duration-base);
   --gog-toggle-disabled-opacity: var(--gog-disabled-opacity);
@@ -2148,12 +2152,12 @@
   --gog-toggle-state-font-weight: var(--gog-font-weight-semibold);
   --gog-toggle-state-letter-spacing: 0.04em;
   --gog-toggle-state-padding-inline: var(--gog-space-4);
-  --gog-toggle-state-offset: var(--gog-space-6);
+  --gog-toggle-state-offset: var(--gog-space-8);
   /* Gap between the wording and the thumb parked at the opposite end. The clearance itself
      (thumb size + this) is computed in the component stylesheet, not here: a `var(` to a
      size-class token is substituted where it is *declared*, so doing that calc on :root would
      freeze it to the md thumb and stop it scaling with `size`. */
-  --gog-toggle-state-thumb-gap: var(--gog-space-6);
+  --gog-toggle-state-thumb-gap: var(--gog-space-8);
   --gog-toggle-xsm-track-width: 24px;
   --gog-toggle-xsm-track-height: 14px;
   --gog-toggle-xsm-thumb-size: 10px;

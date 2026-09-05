@@ -41,6 +41,12 @@ reached 1.0, so breaking changes may land in minor versions.
   in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
   second default nobody can find.
 
+- **`gog-toggle`'s state chrome is on the grid** — the offset of the on/off state labels and the
+  gap between a state label and the thumb both go from 6px to 8px. **The thumb's inset stays at
+  2px**, deliberately and now with the reason written next to it: at 2px the thumb is 83% of a
+  24px track, which is what makes a switch read as a switch, and 4px would take it to 67%. A
+  length inside a single painted mark is not spacing between two things.
+
 - **`gog-radio-group`'s two gaps are 12px, not 10px** — between a radio and its label, and
   between the options in a group.
 

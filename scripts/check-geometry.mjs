@@ -95,6 +95,31 @@ const HIT_AREA = new Map([
   ['button/xsm', 'button.css, `.gog-btn--xsm::before` — 20px painted, 24px target'],
 ]);
 
+/**
+ * Lengths *inside* a single painted mark, which the grid does not govern.
+ *
+ * The distinction is not "small": a gap between two elements is spacing and is checked however
+ * small it is. These are the lengths that define one mark's own shape — a thumb's clearance
+ * inside its track is what makes a switch read as a switch, and quadrupling it to satisfy a grid
+ * would shrink the thumb from 83% of the track to 67% and change the component's identity.
+ * Same category as `--gog-focus-ring-offset`, which is skipped for the same reason.
+ */
+const OPTICAL_CHROME = new Map([
+  ['--gog-toggle-thumb-inset', "the thumb's clearance inside its own track: 2px on a 24px track"],
+]);
+
+/**
+ * Where a target's padding comes from when it is not a token of that block.
+ *
+ * A `gog-toggle`'s pointer target is the `<label>` around it, whose padding falls through
+ * `var(--gog-toggle-padding, var(--gog-control-checkbox-padding))` in the component's stylesheet
+ * — a chain no token in `theme.css` states, so the sweep sees a bare 14px track and reports a
+ * failure that is not there. One line per block, naming the token that actually pads it.
+ */
+const TARGET_PADDING = new Map([
+  ['toggle-track', '--gog-control-checkbox-padding'],
+]);
+
 const fmt = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.?0+$/, ''));
 
 const themeCss = await fs.readFile(themeCssPath, 'utf8');
@@ -147,6 +172,7 @@ for (const block of blocks.values()) {
     // the grid governs its *inputs* (the offset, which is checked) and the glyph is a font size.
     // Rounding the sum would put the text somewhere the icon is not.
     if (/-icon-inset$/.test(t.token)) continue;
+    if (OPTICAL_CHROME.has(t.token)) continue;
     const d = resolve(t.token);
     for (const part of d.parts) {
       if (part.px === null || part.px === 0) continue;
@@ -233,9 +259,12 @@ for (const block of blocks.values()) {
   }
 
   const shared = bySize.get(null) ?? {};
+  const borrowed = TARGET_PADDING.has(block.name)
+    ? resolver.value(`var(${TARGET_PADDING.get(block.name)})`).px
+    : null;
   for (const [size, slot] of bySize) {
     const explicit = slot.explicit ?? null;
-    const padY = slot.padY ?? shared.padY ?? null;
+    const padY = slot.padY ?? shared.padY ?? borrowed ?? null;
     const font = slot.font ?? shared.font ?? null;
     const leading = slot.leading ?? shared.leading ?? 1;
     // The target is the element a pointer lands on, not the mark that is painted. A checkbox
