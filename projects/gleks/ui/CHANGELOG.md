@@ -45,6 +45,9 @@ reached 1.0, so breaking changes may land in minor versions.
   `sm` 14 to 16 with its gap 10 to 12, `md` 18 to 20. A surface like the card, and outside the
   optical ratio for the same reason.
 
+- **`gog-tooltip`'s padding is 8/12, not 6/10** — on the grid. A bubble around text rather than a
+  control, so it stays outside the optical ratio.
+
 - **`gog-toast` is on the grid** — the stack gap 10 to 12, its own padding 12/14 to 12/16, the
   content gap 10 to 12, the action row's gap 6 to 8 and the close button's padding 2/4 to 4/8. A
   surface, so outside the optical ratio; its two buttons are controls and are checked as targets.

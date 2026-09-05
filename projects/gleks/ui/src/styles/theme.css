@@ -2188,7 +2188,7 @@
   --gog-tooltip-font-family: var(--gog-font-body);
   --gog-tooltip-font-size: var(--gog-text-xs);
   --gog-tooltip-line-height: var(--gog-line-height-normal);
-  --gog-tooltip-padding: var(--gog-space-6) var(--gog-space-10);
+  --gog-tooltip-padding: var(--gog-space-8) var(--gog-space-12);
   --gog-tooltip-radius: var(--gog-radius);
   --gog-tooltip-max-width: 280px;
   /* Caps the gog-scroll wrapping the bubble's content — see tooltip-bubble.component.html.
