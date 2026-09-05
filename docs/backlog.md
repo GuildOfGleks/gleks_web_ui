@@ -33,6 +33,35 @@ not worth carrying here.
   `WASH_PAIRS` by name — `gog-tag` and `gog-progressbar` are the two with status variants that
   still do not.
 
+- **`GOG_CONFIG.spinner.component` does not reach `gog-spinner-overlay`, which three documents say
+  it does.** The overlay binds `[variant]="variant()"` to the spinner it wraps, and its own
+  `variant` input defaults to `'runic'` rather than to `undefined` — so the inner `gog-spinner`
+  sees an explicit request and the config key, whose whole rule is that an instance's own
+  `variant` outranks it, correctly steps aside. Every other spinner the library draws honours the
+  key; the overlay silently does not, and it is the one a consumer reaches for when a *region*
+  loads. `config.ts`'s "Applies to" sentence, `AGENTS.md`'s `spinner` row and the 21.9.0 changelog
+  entry all name the overlay.
+
+  The fix is to type the overlay's input `GogSpinnerVariant | undefined` with an `undefined`
+  default, the way `gog-spinner`'s own is written, so "unset" survives being forwarded. Two things
+  to check while doing it: `size` and `ariaLabel` are forwarded the same way, and *those* defaults
+  are right, because neither has a config key to fall through to; and `spinner-config.spec.ts`
+  covers `gog-spinner` only, which is why this shipped — a test that mounts a `gog-spinner-overlay`
+  under a configured component belongs in the same change.
+
+  **Found from the lab side**, documenting the key against the published 21.9.1 — the same way the
+  four under-reported `GOG_CONFIG` keys were found in 21.8.0. The lab now documents the exception
+  (`global-config.md`, the spinner page's overlay card and its API table); **all three want deleting
+  in the release that fixes this**, and `docs/lab-after-publish.md` carries that as an entry.
+
+- **`gog-table`'s spinner is missing from the same "Applies to" sentences.** `table.component.html`
+  renders a bare `<gog-spinner size="md" />` in place of its rows, so it honours
+  `spinner.component` and `spinner.variant` in full — but `config.ts`'s JSDoc and `AGENTS.md` both
+  name only `gog-spinner`, `gog-spinner-overlay`, `gog-button` and `gog-autocomplete`. Documentation
+  only, no behaviour change, and the exact shape of the 21.8.0 defect: the reader of a key learns
+  which components it reaches from a hand-written sentence, and a component that draws a spinner
+  without reading any config itself never shows up in a grep for readers.
+
 **What was here.** The section emptied on 2026-09-02, when the `GogGlobalConfig` JSDoc defect
 was fixed for the in-progress 21.8.0 (see `CHANGELOG.md`). It refilled on 2026-09-03 with the
 "nine pressable surfaces have no press feedback" entry, which was **closed the same day** — eight

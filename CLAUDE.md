@@ -101,10 +101,12 @@ ships inside the package; its top entry is always the version being worked on.
 | 22.x       | when Angular 22 lands     | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 **21.9.1 is on npm and is what `gleks-ui-lab` now resolves.** Its 28 changelog entries are all
-21.9.0's; see the two rows above. **The live work is `docs/lab-after-publish.md`, 13 items under
-"After 21.9.0"** — no longer blocked, and one of them (`theme-starter.css`) is a check that is red
-right now, because it is generated from the published package and 21.9.0 added tokens it does not
-carry. 21.8.0's three lab entries were closed the day it was published, which also let the lab's
+21.9.0's; see the two rows above. **The live work is `docs/lab-after-publish.md`, 6 items under
+"After 21.9.0"** — down from 13, and every check is green again, `check:theme-starter` included.
+Documenting `GOG_CONFIG.spinner` there found two library defects, now in `docs/backlog.md`: the
+key does not reach `gog-spinner-overlay`, and `gog-table` is missing from the "Applies to"
+sentences that say where it does. The lab states both, and that file's second section says which
+three passages come out when the first is fixed. 21.8.0's three lab entries were closed the day it was published, which also let the lab's
 header drop the workaround it had been carrying: both toggles now state themselves with
 `aria-pressed`/`aria-expanded` instead of hiding the state in their accessible name.
 
@@ -140,7 +142,7 @@ on a version still being worked on means someone jumped the gun, not that the ch
 
 Once a release is published: `npm install` at the repo root, then work through
 `docs/lab-after-publish.md`'s section for that version. That file is a live checklist; delete
-each entry as it lands. **It holds 13 items as of 2026-09-04, all of them 21.9.0's**; it was empty on 2026-09-03 — every section is checked off and
+each entry as it lands. **It holds 6 items as of 2026-09-05, all of them 21.9.0's, plus one section deferred to a future release**; it was empty on 2026-09-03 — every section is checked off and
 deleted, which is the state it is supposed to return to after each release is documented. The
 bundle-bench re-measurement that was the last item is done (all three libraries re-measured, not
 just this one); its history lives in `projects/gleks-ui-lab/public/docs/compare-full.md` rather

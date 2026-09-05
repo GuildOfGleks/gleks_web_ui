@@ -109,6 +109,32 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">The app’s own indicator, everywhere at once</h3>
+      <p class="demo-card__meta">
+        <code>variant="custom"</code> above restyles <em>one</em> spinner. Most of the spinners an
+        app shows are not ones it writes: <code>gog-button</code> draws one while
+        <code>loading</code>, <code>gog-autocomplete</code> while it searches, and
+        <code>gog-table</code> in place of its rows — none of them take a spinner input.
+        <code>GOG_CONFIG.spinner.component</code> is how those get your look too: pass a
+        <em>component</em>, and every spinner the library draws renders it instead.
+      </p>
+      <div class="demo-card__preview">
+        <app-house-spinner-demo />
+      </div>
+      <p class="demo-card__meta">
+        Your component sits inside the library’s own size wrapper, so it keeps the sizing, the
+        overlay behaviour, <code>role="status"</code> and the accessible name — only the visual is
+        yours. An instance that asks for something specific still wins:
+        <code>&lt;gog-spinner variant="ring"&gt;</code> is a ring even here.
+        <strong>The provider on this demo is scoped to it</strong>, which is a route’s mechanism
+        rather than an app’s — the rest of this page shows the built-in look. See
+        <a routerLink="/general/global-config">Global Configuration</a>, where the same key covers
+        why <code>gog-spinner-overlay</code> is the one place it does not reach.
+      </p>
+      <app-code-tabs [html]="houseSpinnerHtml" [ts]="houseSpinnerTs" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Custom color</h3>
       <p class="demo-card__meta">
         Override <code>--gog-spinner-color</code> to recolor the spinner regardless of theme —
@@ -138,7 +164,10 @@
       <p class="demo-card__meta">
         Wrap any section to block interaction while it loads. A companion component,
         <code>gog-spinner-overlay</code>, forwards <code>variant</code>/<code>size</code>/
-        <code>ariaLabel</code> straight to the inner <code>gog-spinner</code>.
+        <code>ariaLabel</code> straight to the inner <code>gog-spinner</code> — and its own
+        <code>variant</code> defaults to <code>runic</code> rather than to nothing, so the spinner
+        inside reads it as an explicit request. That is the one place
+        <code>GOG_CONFIG.spinner.component</code> does not reach.
       </p>
       <div class="demo-card__preview">
         <gog-button variant="primary" type="button" (gogClick)="previewOverlay()">

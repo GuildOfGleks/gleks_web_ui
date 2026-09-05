@@ -13,6 +13,13 @@
 // Verified against the source again for 21.8.0, which corrected `config.ts`'s own "Applies to …"
 // sentences on four keys: the two now agree, so a difference between them is a bug in one of them
 // rather than the known gap it used to be.
+//
+// Verified again for 21.9.x, when `spinner` was added. Two differences from `config.ts`'s own
+// "Applies to" sentence, both traced through the templates rather than the JSDoc: `gog-table`
+// draws a `gog-spinner` in place of its rows and is not named there, and `gog-spinner-overlay`
+// *is* named there but binds `[variant]="variant()"` on an input defaulting to `'runic'`, so a
+// configured component never reaches it. Listed here as the library behaves, not as it is
+// documented to.
 
 export interface GlobalConfigEntry {
   /** A `GOG_CONFIG` path, e.g. `'control.size'`. */
@@ -36,10 +43,18 @@ export const GLOBAL_CONFIG_BY_COMPONENT: Readonly<Record<string, readonly Global
     { key: 'autocomplete.minLength' },
     { key: 'autocomplete.searchDebounce' },
     { key: 'autocomplete.openOnFocus' },
+    { key: 'spinner.component', note: 'the spinner loading draws, which has no input of its own' },
+    { key: 'spinner.variant', note: 'the same spinner, when no component is set' },
     { key: 'labels.clearSelection' },
   ],
   badge: [],
-  button: [{ key: 'control.size' }, { key: 'button.debounce' }, { key: 'ripple.enabled' }],
+  button: [
+    { key: 'control.size' },
+    { key: 'button.debounce' },
+    { key: 'ripple.enabled' },
+    { key: 'spinner.component', note: 'the spinner loading draws, which has no input of its own' },
+    { key: 'spinner.variant', note: 'the same spinner, when no component is set' },
+  ],
   'button-toggle': [{ key: 'control.size' }, { key: 'ripple.enabled' }],
   calendar: [
     { key: 'datepicker.locale' },
@@ -149,7 +164,13 @@ export const GLOBAL_CONFIG_BY_COMPONENT: Readonly<Record<string, readonly Global
   ],
   skeleton: [],
   slider: [{ key: 'control.errorDisplay' }],
-  spinner: [],
+  spinner: [
+    {
+      key: 'spinner.component',
+      note: 'your own component drawn in place of the built-in look, everywhere the library’s spinner appears — an instance’s own variant still wins over it. Not gog-spinner-overlay, which forwards a variant of its own.',
+    },
+    { key: 'spinner.variant', note: 'the app-wide preset an instance that asks for none gets' },
+  ],
   table: [
     { key: 'paginator.showPageSizeSelect', note: 'through the built-in pagination' },
     { key: 'paginator.pageSizeOptions', note: 'through the built-in pagination' },
@@ -157,6 +178,8 @@ export const GLOBAL_CONFIG_BY_COMPONENT: Readonly<Record<string, readonly Global
     { key: 'labels.tablePagination' },
     { key: 'labels.selectRow' },
     { key: 'labels.selectAllRows' },
+    { key: 'spinner.component', note: 'the spinner shown in place of rows while loading' },
+    { key: 'spinner.variant', note: 'the same spinner, when no component is set' },
   ],
   tabs: [{ key: 'ripple.enabled' }],
   tag: [],

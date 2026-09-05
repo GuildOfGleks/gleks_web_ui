@@ -46,25 +46,35 @@ delete the section too.
    decide by looking whether it wants
    `--gog-button-ghost-hover-color: var(--gog-accent-color)` on the `--active` class.
 
-5. **`GOG_CONFIG` gained `spinner` — the lab's own table needs the row, and it is the one key
-   that is not a value.** `global-config-data.ts` lists per-component keys and
-   `general/global-config` documents them; `spinner.component` takes a *component*, rendered in
-   place of the built-in look everywhere the library draws a spinner, so it belongs against
-   `gog-spinner`, `gog-button` and `gog-autocomplete` (the last two have no input of their own,
-   which is the reason the key exists). `spinner.variant` is the smaller sibling.
-
-6. **The button page gains the toggled look.** `aria-pressed="true"` now draws an inset ring —
+5. **The button page gains the toggled look.** `aria-pressed="true"` now draws an inset ring —
    the API table already lists `ariaPressed` from 21.8.0, but nothing on the page says the state
    is visible now. The showcase's "ARIA state" panel has the wording.
 
-7. **The `--gog-density` demo pointer is what is left of this entry.** The prose half landed with
-   item 7's "One number instead of fifty" section in `public/docs/theming.md`, which says the
+6. **The `--gog-density` demo pointer is what is left of this entry.** The prose half landed as the
+   "One number instead of fifty" section in `public/docs/theming.md`, which says the
    scale claim is literally true as of 21.9.0 and names the fourteen lengths that used to ignore
    it. What is not written is the concrete thing to *do*: set the generator's density to 0.85 and
    watch a dropdown panel gap move, which is the cheapest way to see it and wants a sentence on
    the Theme Generator page rather than in the theming doc. `AGENTS.md`'s `--gog-density` bullet
    carries the split between what follows density and what deliberately does not, and names the
    check (`check-tokens` rule H) that now enforces it.
+
+## After the release that fixes the spinner overlay
+
+`docs/backlog.md` carries the defect: `GOG_CONFIG.spinner.component` does not reach
+`gog-spinner-overlay`, because the overlay's own `variant` defaults to `'runic'` and is forwarded
+down. The lab documents that exception in three places, and **all three come out in the release
+that fixes it**:
+
+- `public/docs/global-config.md` — the last paragraph of "The second — `spinner.component`", and
+  the closing clause of the `spinner` row in "What you can configure".
+- The spinner page's "Overlay mode" card — the sentence added after "forwards
+  `variant`/`size`/`ariaLabel` straight to the inner `gog-spinner`".
+- The same page's `gog-spinner-overlay` API table, `variant` row, and the last sentence of the new
+  "The app's own indicator, everywhere at once" card.
+
+`global-config-data.ts`'s `spinner.component` note and its header comment say the same thing and
+want the same edit.
 
 ## Checking your work
 

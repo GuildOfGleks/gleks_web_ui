@@ -8,6 +8,7 @@ import {
   SpinnerOverlayComponent,
 } from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { HouseSpinnerDemo } from './house-spinner-demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
@@ -23,9 +24,9 @@ const SPINNER_API_INPUTS: readonly ApiInputRow[] = [
   {
     name: 'variant',
     type: "'runic' | 'ring' | 'custom'",
-    default: "'runic'",
+    default: 'unset',
     description:
-      'runic and ring are built-in presets. custom renders your own markup via content projection — it inherits the size wrapper, overlay behavior, and --gog-spinner-color theming, but the visuals are yours.',
+      'runic and ring are built-in presets. custom renders your own markup via content projection — it inherits the size wrapper, overlay behavior, and --gog-spinner-color theming, but the visuals are yours. Left unset, this falls through to GOG_CONFIG.spinner.component, then to GOG_CONFIG.spinner.variant, then to runic.',
   },
   {
     name: 'size',
@@ -59,7 +60,8 @@ const SPINNER_OVERLAY_API_INPUTS: readonly ApiInputRow[] = [
     name: 'variant',
     type: "'runic' | 'ring' | 'custom'",
     default: "'runic'",
-    description: 'Forwarded to the inner gog-spinner.',
+    description:
+      'Forwarded to the inner gog-spinner. Unlike gog-spinner’s own, this one has a default rather than falling through, so the inner spinner always reads it as an explicit request — which is why GOG_CONFIG.spinner.component does not reach an overlay.',
   },
   {
     name: 'size',
@@ -84,6 +86,7 @@ const SPINNER_OVERLAY_API_INPUTS: readonly ApiInputRow[] = [
     GlobalConfigNote,
     MarkdownComponent,
     CodeTabsComponent,
+    HouseSpinnerDemo,
     RouterLink,
   ],
   templateUrl: './spinner-doc-page.html',
@@ -183,6 +186,36 @@ export class SpinnerDocPage implements OnDestroy {
     '  `,',
     '})',
     'export class ExampleComponent {}',
+  ].join('\n');
+
+  protected readonly houseSpinnerHtml = [
+    '<gog-spinner size="lg" ariaLabel="Loading" />',
+    '<gog-button variant="primary" [loading]="saving()" (gogClick)="save()">Save</gog-button>',
+  ].join('\n');
+  protected readonly houseSpinnerTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { ButtonComponent, SpinnerComponent, provideGogConfig } from '@guildofgleks/ui';",
+    "import { HouseLoaderComponent } from './house-loader.component';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [SpinnerComponent, ButtonComponent],',
+    '  // App-wide, this goes in `app.config.ts` instead; on a component or a route it reaches',
+    '  // only what is inside, and layers onto the config above it rather than replacing it.',
+    '  providers: [provideGogConfig({ spinner: { component: HouseLoaderComponent } })],',
+    '  template: `',
+    '    <gog-spinner size="lg" ariaLabel="Loading" />',
+    '    <gog-button variant="primary" [loading]="saving()" (gogClick)="save()">Save</gog-button>',
+    '  `,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly saving = signal(false);',
+    '',
+    '  protected save(): void {',
+    '    this.saving.set(true);',
+    '    setTimeout(() => this.saving.set(false), 2200);',
+    '  }',
+    '}',
   ].join('\n');
 
   protected readonly customVariantHtml = [

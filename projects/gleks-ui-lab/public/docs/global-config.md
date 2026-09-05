@@ -72,8 +72,9 @@ explicitly.
 | `autocomplete`                                                                   | `searchDebounce`, `minLength`, `openOnFocus` <span class="since" title="Added in 21.3.1">21.3.1</span>                       | `gog-autocomplete`. `openOnFocus` is on by default.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `tooltip`                                                                        | `position`, `showDelay`, `hideDelay`                                                                                         | The `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `scroll`                                                                         | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack` <span class="since" title="Added in 21.3.1">21.3.1</span> | `gog-scroll`, and every component that uses one internally.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `spinner` <span class="since since--latest" title="Added in 21.9.0">21.9.0</span>        | `component`, `variant`                                                                                                       | Every spinner the library draws: `gog-spinner`, the one `gog-button` shows while `loading`, `gog-autocomplete`'s while it searches, and the one `gog-table` puts in place of its rows. The last three have **no spinner input of their own**, which is the reason the key exists. `component` takes your own component and renders it inside the library's size wrapper — see below. Not `gog-spinner-overlay`, which forwards a `variant` of its own to the spinner it wraps. |
 | `button`                                                                         | `debounce`                                                                                                                   | `gog-button`, and the `[gogButton]` directive.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `ripple` <span class="since since--latest" title="Added in 21.6.1">21.6.1</span> | `enabled`                                                                                                                    | The press ripple on `gog-button`, `[gogButton]`, `gog-button-toggle-group`, `gog-chip`, `gog-tabs`, `gog-accordion`, `gogCollapsibleTrigger`, `gogMenuItem` and the `gog-select`/`gog-multiselect`/`gog-autocomplete` options — nine surfaces at once. **Off by default**, so 21.6.1 changed the look of nothing. Each of those takes a `ripple` input that wins over this in both directions. Not the `gogRipple` directive: writing that attribute is already the per-element decision.                                                      |
+| `ripple` <span class="since" title="Added in 21.6.1">21.6.1</span> | `enabled`                                                                                                                    | The press ripple on `gog-button`, `[gogButton]`, `gog-button-toggle-group`, `gog-chip`, `gog-tabs`, `gog-accordion`, `gogCollapsibleTrigger`, `gogMenuItem` and the `gog-select`/`gog-multiselect`/`gog-autocomplete` options — nine surfaces at once. **Off by default**, so 21.6.1 changed the look of nothing. Each of those takes a `ripple` input that wins over this in both directions. Not the `gogRipple` directive: writing that attribute is already the per-element decision.                                                      |
 | `inputfield` <span class="since" title="Added in 21.3.1">21.3.1</span>           | `showSpinButtons`                                                                                                            | `gog-inputfield`. Whether a `type="number"` field shows the library's own spin buttons instead of the browser's. On by default.                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `textarea` <span class="since" title="Added in 21.3.1">21.3.1</span>             | `resize`                                                                                                                     | `gog-textarea`. Which direction(s) the drag handle resizes in — the native CSS `resize` value space. `'vertical'` by default.                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `paginator` <span class="since" title="Added in 21.4.0">21.4.0</span>            | `showPageSizeSelect`, `pageSizeOptions`                                                                                      | `gog-paginator`, and through it `gog-table`'s built-in pagination. The rows-per-page select is **off** by default; the options default to `[10, 20, 30, 40, 50]`.                                                                                                                                                                                                                                                                                                                                                                              |
@@ -199,7 +200,7 @@ gets it everywhere, with no TypeScript involved.
 reach: a `setTimeout` duration, an RxJS throttle window, a locale string. If a value only ever ends
 up as a bound style, it belongs in `theme.css`.
 
-### The one exception — `ripple.enabled` <span class="since since--latest" title="Added in 21.6.1">21.6.1</span>
+### The first exception — `ripple.enabled` <span class="since" title="Added in 21.6.1">21.6.1</span>
 
 `ripple.enabled` is the first _visual_ default that lives here rather than in `theme.css`, and it
 breaks the rule above on purpose. A token could hide the wash — `--gog-ripple-opacity: 0` — but the
@@ -210,3 +211,34 @@ what being on costs.
 A real "off" has to reach the TypeScript, so that a component with the ripple disabled attaches no
 listeners and adds no class at all. Everything about how the ripple _looks_ is still a token: the
 five `--gog-ripple-*` properties on the [Ripple](/components/ripple) page.
+
+### The second — `spinner.component` <span class="since since--latest" title="Added in 21.9.0">21.9.0</span>
+
+Every other key here is a value: a number, a string, an enum member. `spinner.component` is a
+**component**, and it is the one place `GOG_CONFIG` carries markup.
+
+It is here because of what it removes. A house loading indicator otherwise has to be passed into
+every control that can show one — and cannot be passed into the ones that draw their own, which is
+most of them. `gog-button` while `loading`, `gog-autocomplete` while it searches and `gog-table` in
+place of its rows all render a spinner that no input of yours reaches. Set this once and all of
+them are yours:
+
+```ts
+provideGogConfig({ spinner: { component: HouseLoaderComponent } });
+```
+
+Your component is rendered through `NgComponentOutlet` **inside the library's own size wrapper**,
+so it keeps the sizing, the overlay behaviour, `role="status"` and the accessible name. Only the
+visual is yours — which is also why this is not the same thing as `variant="custom"`, the
+per-instance version that projects content into one spinner.
+
+Precedence runs the library's usual way, with one wrinkle worth stating out loud: an instance's own
+`variant` wins over both keys here, `component` wins over `variant`, and the built-in `runic` is the
+fallback. So `<gog-spinner variant="ring">` is still a ring in an app that has set a component — a
+default does not overrule something asked for explicitly.
+
+That last rule is also the catch. `gog-spinner-overlay` binds a `variant` of its own to the spinner
+it wraps, and that input defaults to `'runic'` rather than to nothing, so it reads as an instance
+asking for the built-in look and a configured component never reaches it. Wrap your content in a
+`gog-spinner-overlay` and you get the runic spinner regardless of this key; the spinners listed
+above are unaffected.
