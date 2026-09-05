@@ -1414,8 +1414,12 @@
   --gog-textarea-resize-grip-color: var(--gog-input-field-border);
   --gog-textarea-resize-grip-opacity: 0.8;
   --gog-textarea-resize-grip-stripe-width: 1.5px;
+  /* The three hairlines of the resize grip and the gap between them: a length inside one painted
+     mark, not spacing between two things, so it is off the 4px grid on purpose (OPTICAL_CHROME in
+     check-geometry.mjs). At 4px the three stripes would be a 20px block in the corner of every
+     textarea instead of a 9px hint. */
   --gog-textarea-resize-grip-stripe-gap: var(--gog-space-2);
-  --gog-textarea-resize-grip-offset: 3px;
+  --gog-textarea-resize-grip-offset: var(--gog-space-4);
   /*
      Both default to 0 and are overwritten per instance, as an inline style on the field, from
      the component's own ResizeObserver — they close the gap that opens once the field has been
