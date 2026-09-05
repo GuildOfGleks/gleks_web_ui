@@ -2039,9 +2039,9 @@
   --gog-tag-pill-radius: 9999px;
 
   --gog-tag-xsm-font-size: 0.6875rem;
-  --gog-tag-xsm-padding-block: var(--gog-space-2);
-  --gog-tag-xsm-padding-inline: var(--gog-space-6);
-  --gog-tag-xsm-gap: var(--gog-space-2);
+  --gog-tag-xsm-padding-block: var(--gog-space-4);
+  --gog-tag-xsm-padding-inline: var(--gog-space-8);
+  --gog-tag-xsm-gap: var(--gog-space-4);
   --gog-tag-xsm-icon-size: 0.6875rem;
 
   --gog-tag-sm-font-size: var(--gog-text-xs);
@@ -2051,21 +2051,21 @@
   --gog-tag-sm-icon-size: 0.75rem;
 
   --gog-tag-md-font-size: var(--gog-text-sm);
-  --gog-tag-md-padding-block: var(--gog-space-6);
-  --gog-tag-md-padding-inline: var(--gog-space-12);
-  --gog-tag-md-gap: var(--gog-space-6);
+  --gog-tag-md-padding-block: var(--gog-space-8);
+  --gog-tag-md-padding-inline: var(--gog-space-16);
+  --gog-tag-md-gap: var(--gog-space-8);
   --gog-tag-md-icon-size: 0.875rem;
 
   --gog-tag-lg-font-size: var(--gog-text-md);
   --gog-tag-lg-padding-block: var(--gog-space-8);
-  --gog-tag-lg-padding-inline: var(--gog-space-14);
+  --gog-tag-lg-padding-inline: var(--gog-space-16);
   --gog-tag-lg-gap: var(--gog-space-8);
   --gog-tag-lg-icon-size: 1rem;
 
   --gog-tag-slg-font-size: var(--gog-text-lg);
-  --gog-tag-slg-padding-block: var(--gog-space-10);
-  --gog-tag-slg-padding-inline: var(--gog-space-16);
-  --gog-tag-slg-gap: var(--gog-space-10);
+  --gog-tag-slg-padding-block: var(--gog-space-12);
+  --gog-tag-slg-padding-inline: var(--gog-space-24);
+  --gog-tag-slg-gap: var(--gog-space-12);
   --gog-tag-slg-icon-size: 1.125rem;
 
   /* ── Toast ────────────────────────────────────────────────────────────────── */

@@ -4,6 +4,23 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.11.0] - planned
+
+### Changed
+
+- **`gog-tag`'s padding lands on the 4px grid, at a ratio of exactly 2.0.** Horizontal padding is
+  twice vertical at every size, which is the library's optical-ratio law (`styling.instructions.md`);
+  the tag had been running 3.00 at `xsm` down to 1.60 at `slg`, five different opinions about one
+  shape. New values, per size: `4/8`, `4/8`, `8/16`, `8/16`, `12/24` (block/inline), with the gap
+  following the block padding as before.
+
+  **Two adjacent sizes now share a padding**, and that is the finding this first component
+  produced rather than an oversight. Five *distinct* vertical paddings on a 4px grid would have to
+  run 4, 8, 12, 16, 20, which doubles `slg` and makes a tag the size of a button. So the size step
+  is carried by the type scale — 11, 12, 14, 16, 18px — and the padding repeats between adjacent
+  steps rather than the geometry inflating to keep five distinct numbers. Every sized component in
+  this release follows the same rule.
+
 ## [21.10.0] - 05.09.2026
 
 ### Added
