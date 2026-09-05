@@ -330,6 +330,60 @@ otherwise be settled thirty-three times by whoever happened to be editing.
 | **D7** | Whether the four overlay max-widths become `min(…, …vw)`, and whether prose caps move to `ch`.                   | L8's exception plus L9.                                                                                                                                                              |
 | **D8** | The type scale's completeness.                                                                                   | 11 `font-size` declarations in `theme.css` bypass `--gog-text-*` with a literal (`0.6875rem`, `0.5625rem`, `18px`, `10px`, …). Either the scale gains steps or those become exceptions with reasons. |
 
+## Decisions taken — 2026-09-05, against the survey
+
+`npm run survey:geometry` came first, on purpose: a threshold chosen before seeing the spread is a
+threshold chosen to flatter what is already there. What it measured is in the commit that added
+it; what follows is what the owner decided against those numbers.
+
+**D1 — the grid tightens to 4px.** `--gog-space-2`, `-6`, `-10`, `-14` and `-18` come out of the
+scale, which leaves nine steps: 4, 8, 12, 16, 20, 24, 28, 32, 48. **102 declarations read the five
+that go** and each has to be re-pointed, which is most of the per-component work.
+
+One thing checked before accepting it, because it would have been the strongest argument against:
+**focus rings are not affected.** `--gog-focus-ring-width: 3px` and `--gog-focus-ring-offset: 2px`
+are literals in their own foundation family, not steps of the spacing scale, so a 2px ring offset
+survives a 4px spacing grid. The hybrid this decision was weighed against — "controls on 4px,
+small optical chrome on 2px" — turned out to describe something the token layout already does.
+
+**D3 — the optical ratio is 2.0, exactly, at every size step.** This one has an arithmetic
+argument behind it rather than a preference. With vertical padding on the 4px grid (4, 8, 12, 16,
+20) and horizontal padding likewise a multiple of 4, the achievable ratios per step are discrete:
+2.0 and 1.0 are the **only two** values reachable at all five. A per-block ratio held "within a
+tolerance" would therefore have meant an exception at `xsm` for every block in the library, which
+is a rule that fails on its own first row. So the ratio is 2.0 and the grid is never bent.
+
+The cost is stated here rather than discovered later: **controls get wider.** The button goes from
+`8 / 14 / 20 / 24 / 28` to `8 / 16 / 24 / 32 / 40`, and the shared field tier — every input,
+select, multiselect, autocomplete and datepicker — from `8 / 10 / 14 / 18 / 20` to the same
+`8 / 16 / 24 / 32 / 40`. The largest single change in this release is a `slg` text field's
+horizontal padding doubling. `tag` already ships 2.00 at `sm` and `md`, so parts of the library
+are already there.
+
+**Law 3's scope is controls, which the law already said and the survey did not respect.** A
+surface frames content; a control balances a label. `card`, `panel`, `dialog`, `toast`,
+`tooltip`, `accordion-body` and `table` are out of this law with that as the reason — a card at
+2.0 would carry 32px of side padding against 16px above, which is a frame nobody asked for. In:
+`button`, `button-toggle`, `field`, `chip`, `tag`, `tabs`, `menu-item`, the accordion **header**,
+the three option rows, the in-panel filter inputs, and the small calendar and toast buttons.
+
+**D6 — an undersized target grows its hit area, not its paint.** The 17 findings are fixed with a
+transparent `::before` inflated to 24×24 (44×44 where a thumb is expected), so nothing visible
+moves and WCAG 2.5.8 passes. `xsm` stays `xsm`; a compact size that silently stopped being compact
+would have defeated the reason it exists.
+
+**D2 — the optical-area multiplier applies to filled marks only.** `badge`'s dot, `chip`'s avatar
+and the other filled circles take the 1.128 correction. Stroked marks do not: a radio is a ring
+around empty ground, where the ink argument runs the other way, and a 27px disc beside a 24px
+checkbox breaks the one thing a form column has to keep — a single left edge under the labels.
+**The radio does get its own size token**, currently absent (it falls through to
+`--gog-control-checkbox-box-size-md`), declared equal to the checkbox with that reason recorded,
+so the next person to ask this question finds an answer instead of a fallback.
+
+**Still open: D0, D4, D5, D7, D8.** D4 and D5 need their own survey pass (the leading half is
+mostly *unstated* — 45 blocks declare a font size and 20 declare a line-height), and D5's
+elevation ladder is a separate token family that does not have to ride with this one.
+
 ---
 
 # Part 3 — the checks, which come before the sweep

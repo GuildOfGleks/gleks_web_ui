@@ -176,28 +176,35 @@ per-component CI check that enforces them is in `docs/backlog.md`, and until it 
 enforced by reading. **A new component satisfies all five before it is done, and an existing one
 that violates one is a defect, not a style.**
 
-1. **The grid.** Every padding, gap, margin, offset and inset reads a step of the spacing scale
-   (`--gog-space-2` … `--gog-space-48`), never a literal — `check-tokens` rule H already fails the
-   build on a literal that restates a step. What the scale's *members* may be is the open half:
-   fourteen steps at 2px granularity is finer than the 4px/8px grid this rule is named for, and
-   tightening it is a decision with real breakage (five of the fourteen steps are odd multiples,
-   and controls use them).
+1. **The grid is 4px.** Every padding, gap, margin, offset and inset reads a step of the spacing
+   scale, never a literal — `check-tokens` rule H already fails the build on a literal that
+   restates a step — and **every step of that scale is a multiple of 4**: `--gog-space-4` …
+   `--gog-space-48`, nine steps. The five 2px-granular steps (`-2`, `-6`, `-10`, `-14`, `-18`)
+   were removed once their 102 readers moved; a new one is not added back without changing this
+   rule first. Focus rings are not spacing: `--gog-focus-ring-width`/`-offset` are their own
+   foundation tokens and a 2px ring offset is unaffected by this.
 2. **Concentric radii.** A radius nested inside another is the outer radius minus the padding
    between them — an inner corner that repeats its parent's radius reads as a mistake at every
    size, and one that ignores it reads as a different component. Anything sitting inside a
    rounded box (an option row in a panel, a fill inside a track, an avatar in a chip) derives its
    radius; it does not restate one.
-3. **Optical ratio.** A control's horizontal padding is a fixed multiple of its vertical padding,
-   the same multiple at every size step. The library currently drifts from 2.00 at `xsm` to 1.40
-   at `slg`, which is five different opinions about the same button.
+3. **Optical ratio: horizontal padding is exactly twice vertical.** The same multiple at every
+   size step, on every control. **2.0 is not a taste, it is the arithmetic:** with both paddings
+   on the 4px grid, 2.0 and 1.0 are the only ratios reachable at all five steps, so any other
+   value would need an exception at `xsm` for every block in the library. A *surface* is out of
+   this law and says so in its own stylesheet — `card`, `panel`, `dialog`, `toast`, `tooltip`,
+   the accordion body and the table cell frame content rather than balancing a label.
 4. **The typographic ratio.** Line-height is a function of font size and role, not a per-component
    choice: text that wraps takes the relaxed end of `--gog-line-height-*`, a single-line label the
    tight end, and the ratio moves *inversely* with size — a 24px heading does not want 1.5.
-5. **The target.** Anything a pointer activates meets WCAG 2.5.8's 24×24 CSS px at every size the
-   component offers, or is exempt through spacing, and the exemption is stated in the component's
-   own stylesheet rather than assumed. 44×44 (2.5.5, AAA) is the goal for anything a thumb is
-   expected to hit. This is measured at `--gog-density: 1`; a compact theme is the consumer's
-   decision and does not license shipping a 22px button.
+5. **The target grows its hit area, not its paint.** Anything a pointer activates meets WCAG
+   2.5.8's 24×24 CSS px at every size the component offers — and where the painted control is
+   smaller, a transparent `::before` inflates the hit area to 24×24 (44×44, 2.5.5 AAA, where a
+   thumb is expected) rather than the design getting bigger. That is the difference between "the
+   target got easier" and "`xsm` stopped being `xsm`". Spacing exemption only where even that is
+   impossible, stated in the component's own stylesheet rather than assumed. Measured at
+   `--gog-density: 1`; a compact theme is the consumer's decision and does not license shipping a
+   22px button.
 
 **Where a law and a measurement disagree, the measurement wins and the law gets an exception with
 a reason** — the same discipline `check:contrast`'s exceptions already follow. What is not
