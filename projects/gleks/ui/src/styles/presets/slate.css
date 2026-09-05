@@ -59,7 +59,13 @@
   --gog-accent-bright: #5b5ee8;
   --gog-accent-dim: #4338ca;
   --gog-accent-pale: #e0e7ff;
-  --gog-secondary-color: #0ea5e9;
+  /* Was #0ea5e9 — Tailwind sky-500, and the only palette value in any shipped theme that the
+     variant sweep caught when `check:contrast` learned to resolve variant classes (2026-09-05).
+     The secondary button fills with this and labels it `--gog-accent-text-color`, white here:
+     2.77:1. sky-600 does not rescue it either (4.10:1), so two steps down the same ramp to
+     sky-700, which reads 5.93:1 — the same move, and the same reason, as the three status
+     colours below. */
+  --gog-secondary-color: #0369a1;
 
   /* Semantics */
   /* Was #059669 — Tailwind emerald-600. A status fill carries a white label, and this read

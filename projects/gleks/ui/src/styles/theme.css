@@ -2000,9 +2000,21 @@
   --gog-tag-warning-color: var(--gog-warning-color);
   --gog-tag-info-color: var(--gog-info-color);
   --gog-tag-bg-mix: 10%;
-  --gog-tag-color-mix: 82%;
+  /* The label is the status hue mixed **halfway toward the page's ink**, and both halves of that
+     changed in 21.9.2. It was 82% of the hue mixed toward literal `black`, which is a light-theme
+     assumption twice over: on a dark theme it darkened a label that already sat on a dark ground
+     (one-dark's danger tag read 3.11:1), and on a light one 18% of black is not enough to bring a
+     bright hue down to text contrast (material's warning, 2.49:1; primeng's success, 3.06:1).
+     Eleven of the 55 shipped combinations were under WCAG AA and nothing had ever measured them —
+     a tag's colours reach the DOM through `--gog-tag-variant-color`, which `check:contrast` could
+     not follow until the same release taught it to.
+
+     `--gog-text-color` rather than `black` makes the mix follow the theme, and 50% rather than 82%
+     is the same ratio, and the same argument, as `--gog-button-<status>-ink`: as body text the raw
+     status hue clears AA in only a handful of themes. The worst pair is now 4.67:1. */
+  --gog-tag-color-mix: 50%;
   --gog-tag-bg-base: var(--gog-surface-color);
-  --gog-tag-color-base: black;
+  --gog-tag-color-base: var(--gog-text-color);
   --gog-tag-border-width: var(--gog-border-width);
   --gog-tag-border-style: var(--gog-border-style);
   --gog-tag-inner-border-width: var(--gog-border-width);
@@ -2211,6 +2223,18 @@
     --gog-button-primary-hover-shadow: 0 0 16px
       color-mix(in srgb, var(--gog-accent-bright) 45%, transparent);
     --gog-button-ghost-hover-bg: color-mix(in srgb, var(--gog-accent-color) 12%, transparent);
+    /* The table's header labels, one step off the raw accent and toward the page's ink. The
+       accent alone is text on a tinted strip (`--gog-table-header-bg` is `--gog-hover-color`), and
+       it read 4.15:1 in `light` and 4.32:1 in `one-light` — the only two themes it failed, and
+       both by a margin small enough that a per-theme patch would have been the tempting fix. This
+       is the general one: 20% of the ink lifts every theme (worst is now one-light at 5.09:1) and
+       keeps the accent identity the header is drawn in. Flat fallback above stays the raw accent,
+       which is what a browser without `color-mix()` has always shown. */
+    --gog-table-accent-color: color-mix(
+      in srgb,
+      var(--gog-accent-color) 80%,
+      var(--gog-text-color)
+    );
     /* Every other pressable surface, one rule: 20% of the same ingredient its own hover mixes at
        10-12%, so the press is a clear step past the hover without becoming a fill. 20 rather than
        a rounder 25 is measured, not chosen: `check:contrast` resolves these washes over the

@@ -16,22 +16,20 @@ not worth carrying here.
 
 ## Defects — first
 
-- **`check:contrast`'s automatic sweep cannot see a variant.** `collectStatePairs` takes a pair
-  from any rule that sets `color` and `background-color`; the library's variant classes set
-  neither. `.gog-badge--warning` sets `--gog-badge-variant-bg`/`-color` and the base rule reads
-  them, and every variant of every component is written that way — button variants, tag variants,
-  chip and scroll sizes. So the sweep reports ~180 passing states without having looked at a
-  single variant, which reads as coverage it does not have. **This is how `gogBadge` shipped 11
-  AA failures across four themes with the script green** (fixed in 21.9.0; the four `badge *`
-  entries in `WASH_PAIRS` now cover that one component by hand, and the script's header records
-  the limitation).
-
-  The real fix is to resolve the indirection: for a rule that sets `--gog-<block>-variant-<prop>`,
-  find the base rule that reads it and pair the two. `token-color.mjs` already resolves token
-  chains, so the missing part is matching a variant rule to its base rather than any new colour
-  maths. Until then, assume any component with variants is unmeasured unless it appears in
-  `WASH_PAIRS` by name — `gog-tag` and `gog-progressbar` are the two with status variants that
-  still do not.
+**The variant blind spot is closed** (2026-09-05, 21.9.2). `check:contrast` resolves the
+indirection now: a variant class sets `--gog-<block>-variant-*` and one painting rule reads it
+through a `var()` chain, so the sweep resolves each painting rule twice — once plain, once with
+the modifier's declarations layered above the theme block — and measures the pairs that differ.
+It also measures the rest state, which neither earlier pass did. 1155 pairs to 2187, and it found
+five real AA failures on shipped variants, all fixed in the same change (`CHANGELOG.md`):
+`gog-tag`'s label mix in three themes, the table header in two, `slate`'s secondary button. Two
+things are worth carrying forward from it. **`gog-tag` had been resolving to nothing at all** —
+its mix ratio is a token (`--gog-tag-color-mix: 82%`) and `token-color.mjs` could not read a
+`var()` percentage, so nine pairs per theme were skipped silently: the checker failed open, which
+is worse than not checking. And **a fill against its own track is deliberately not gated**: 51 of
+the progressbar's 55 shipped combinations are under 3:1, WCAG's ratio is luminance-only while
+those pairs differ mostly in hue, and the bar renders its value as text beside it. The script's
+header carries both, with the numbers.
 
 **Two entries closed on 2026-09-05**, both filed the same day they were fixed and both found
 from the documentation side rather than from a report: `GOG_CONFIG.spinner.component` did not

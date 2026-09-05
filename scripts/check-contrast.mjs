@@ -67,22 +67,41 @@
  * whole library (`gog-autocomplete`'s selected option, 4.12:1 in light) and, just as usefully,
  * confirmed the other 180-odd states were already fine.
  *
- * **What that sweep does not see, found 2026-09-04.** It takes a pair from a rule that sets
- * `color` and `background-color`; the library's variant classes set neither. `.gog-badge--warning`
- * sets `--gog-badge-variant-bg` and `--gog-badge-variant-color` and lets the base rule read them,
- * and every variant of every component is written that way — button variants, tag variants, chip
- * and scroll sizes. So a variant's colours reach the DOM through an indirection the sweep cannot
- * follow, and it reports ~180 passing states without ever having looked at one of them. That is
- * how the badge shipped four themes' worth of AA failures with this script green. The four `badge
- * *` entries in WASH_PAIRS below cover that one component by hand; teaching the sweep to resolve
- * the indirection is the real fix and is filed in `docs/backlog.md`.
+ * `collectVariantPairs` closes the hole that sweep still had, and it was a wide one. Both of the
+ * passes above take a pair from a rule that sets `color` and `background-color`; **a variant class
+ * in this library sets neither.** `.gog-tag--danger` sets `--gog-tag-variant-color`,
+ * `.gog-btn--outline` sets `--gog-button-variant-bg`/`-color`, `.gog-badge--warning` sets
+ * `--gog-badge-variant-*`, and in each case one painting rule reads that layer through a `var()`
+ * chain. So until 2026-09-05 the sweep saw the *default* variant of every component and nothing
+ * else, while reporting a healthy pair count — which is how `gogBadge` shipped eleven AA failures
+ * across four themes with this script green.
+ *
+ * The join is made by resolving each painting rule twice, once as written and once with a
+ * modifier rule's declarations layered above the theme's own block, the way a class on the element
+ * outranks `[data-theme]` on the root. Identical results mean the modifier changes nothing that
+ * rule paints — a size class, a state that only moves a shadow — and no pair is emitted. Different
+ * results are a state a user can see, and it is measured. **It found one real failure on its first
+ * run:** `slate`'s secondary button, white on Tailwind sky-500, 2.77:1 — a shipped palette value
+ * in a shipped variant, and the last of the family the badge belonged to. 493 pairs, and the four
+ * hand-written `badge *` entries in `WASH_PAIRS` are now redundant with it rather than load-bearing
+ * (kept: they state the intent, and the sweep is machinery).
+ *
+ * **What it deliberately does not gate: a fill against its own track.** A progressbar's variant
+ * changes `--gog-progressbar-variant-bg` on a rule that paints a background and no text, so there
+ * is no label to measure — the pair a checker could form instead is fill-against-track, and 51 of
+ * the 55 shipped combinations are under 3:1 (measured 2026-09-05: 1.13:1 to 4.28:1, `bevel`'s
+ * warning the lowest). That is not eleven broken themes. WCAG's ratio is luminance-only and these
+ * pairs differ mostly in hue, the bar's own value is rendered as text beside it
+ * (`--gog-progressbar-value-color`, which resolves to `--gog-muted-text-color` and is gated
+ * above), and forcing 3:1 here would drive every track to near-white or every fill to near-black.
+ * Recorded rather than measured, so the next reader does not re-derive it.
  *
  * Icons are held to 3:1 rather than 4.5:1 — WCAG 1.4.11 rather than 1.4.3 — through
  * `NON_TEXT_ELEMENTS`. Two of the sweep's first three findings were a spin-button glyph and a
  * panel chevron at 4.35:1 and 4.40:1, which are fine and would otherwise have been "fixed" into
  * near-black.
  *
- * All 11 shipped themes now pass all 132 pairs. **A new preset that does not is what this is
+ * All 11 shipped themes now pass all 1648 pairs. **A new preset that does not is what this is
  * here to stop** — and a preset is one file, so the failure names the file to fix.
  *
  * ## What this found (2026-08-29) — every finding now fixed
@@ -270,6 +289,32 @@ const NON_TEXT_ELEMENTS = [
   '__toggle', // gog-panel's collapse control is its chevron; it renders no label
 ];
 
+/**
+ * Rest-state pairs that read as a pair in CSS and never render as one.
+ *
+ * `.gog-checkbox__box` states the tick's colour and the *unchecked* box's background in the same
+ * rule, because the tick inherits `color` from the box. But the tick is only in the DOM while the
+ * box is checked (`checkbox.component.html`), and checking it also swaps the background — so the
+ * two values in this rule never appear together. In `ledger` both resolve to `#ffffff` and the
+ * sweep read 1.00:1, which is arithmetically true and describes nothing a user can see. The pair
+ * that does render — the tick on `--gog-checkbox-checked-bg` — is measured by the variant sweep,
+ * and passes.
+ *
+ * **Add to this only for that exact shape:** an ink that no state renders against the ground
+ * stated beside it. Anything else belongs in the palette, not here — an exclusion list is how a
+ * contrast check quietly stops checking.
+ */
+const REST_PAIRS_NOT_RENDERED = [
+  { selector: '.gog-checkbox__box', colour: '--gog-checkbox-icon-color' },
+];
+
+function isRestPairRendered(candidate) {
+  return !REST_PAIRS_NOT_RENDERED.some(
+    (skip) =>
+      candidate.selector === skip.selector && (candidate.colour ?? '').includes(skip.colour),
+  );
+}
+
 function thresholdFor(selector) {
   return NON_TEXT_ELEMENTS.some((part) => selector.includes(part)) ? 3.0 : 4.5;
 }
@@ -284,6 +329,176 @@ function thresholdFor(selector) {
  * rule that sets `color` and `background-color` together states the pair outright; a rule that
  * sets only one takes the other from its own base rule.
  */
+/**
+ * The value of one painted declaration: a `var()` chain, a `color-mix()`, or a literal hex.
+ *
+ * Written as literals rather than built with `new RegExp` from a property name, which is how the
+ * first draft of this had every escape eaten by its own template string — `\s` became `s` and the
+ * sweep silently matched nothing at all, reporting a healthy pair count over zero rules read. A
+ * checker that fails open is worse than no checker, so: literals, one per property.
+ */
+const COLOUR_DECL = /(?:^|;|\s)color:\s*((?:var|color-mix)\([^;]*?\)|#[0-9a-fA-F]{3,8})\s*(?:;|$)/;
+const BACKGROUND_COLOR_DECL =
+  /(?:^|;|\s)background-color:\s*((?:var|color-mix)\([^;]*?\)|#[0-9a-fA-F]{3,8})\s*(?:;|$)/;
+const BACKGROUND_DECL =
+  /(?:^|;|\s)background:\s*((?:var|color-mix)\([^;]*?\)|#[0-9a-fA-F]{3,8})\s*(?:;|$)/;
+
+/**
+ * Every rule in one stylesheet, with its custom-property declarations kept alongside its painted
+ * colours. `collectStatePairs` throws the declarations away, which is exactly why it cannot see a
+ * variant; `collectVariantPairs` below needs them.
+ */
+function readRules(css) {
+  const rules = [];
+  const re = /([^{}]+)\{([^{}]*)\}/g;
+  let m;
+  while ((m = re.exec(stripComments(css)))) {
+    const selector = m[1].trim();
+    if (!selector || selector.startsWith('@')) continue;
+    const body = m[2];
+    const value = (pattern) => {
+      const hit = body.match(pattern);
+      return hit ? hit[1].trim() : null;
+    };
+    rules.push({
+      selector,
+      colour: value(COLOUR_DECL),
+      bg: value(BACKGROUND_COLOR_DECL) ?? value(BACKGROUND_DECL),
+      decls: parseDecls(body),
+    });
+  }
+  return rules;
+}
+
+/** Every `--token` named inside a declaration value, however deeply nested in `var()`/`color-mix()`. */
+function referencedTokens(value) {
+  return [...value.matchAll(/var\(\s*(--[a-z0-9-]+)/gi)].map((m) => m[1]);
+}
+
+/**
+ * A selector that only ever matches when a modifier class is present — a variant, a severity, a
+ * size, a state. Anything else is treated as the component's own unconditional rule, whose custom
+ * properties are the defaults every painter in that file resolves against.
+ */
+function isModifierSelector(selector) {
+  return /--[a-z]/i.test(selector) || /:(?:hover|active|focus|checked|disabled)/.test(selector);
+}
+
+/**
+ * The variant half of the sweep — the gap `collectStatePairs` left open, and the one that let
+ * `gogBadge` ship eleven AA failures with this script green.
+ *
+ * **The shape of the problem.** A variant class in this library paints nothing. It re-points an
+ * indirection layer — `.gog-tag--danger` sets `--gog-tag-variant-color`, `.gog-btn--outline` sets
+ * `--gog-button-variant-bg`/`-color` — and the block's one painting rule reads that layer through
+ * a `var()` chain. So a sweep that takes pairs from rules setting `color` and `background-color`
+ * sees the *default* variant of every component and nothing else, while reporting a healthy pair
+ * count. There is no colour maths missing; the missing part is joining the rule that declares to
+ * the rule that reads.
+ *
+ * **How the join is made.** For every painting rule P and every modifier rule V in the same
+ * stylesheet, P's colours are resolved twice — once as they are, once with V's declarations
+ * layered on top, above the theme's own block, the way a class on the element outranks
+ * `[data-theme]` on the root. If the two resolutions are identical, V changes nothing P paints
+ * (a size class, a state that only moves a shadow) and no pair is emitted. If they differ, that
+ * difference *is* a state a user sees, and it gets measured.
+ *
+ * **Combinations, without inventing states that cannot exist.** `gog-button`'s severity is
+ * orthogonal to its variant, so the real states are products: the rule that says what an outline
+ * button does with a severity sets `--gog-button-variant-color: var(--gog-button-severity-ink)`,
+ * and nothing declares `--gog-button-severity-ink` except the four severity classes. Rather than
+ * multiplying every modifier by every other — which would measure `.gog-btn--primary.gog-btn--ghost`,
+ * a thing no component can render — a seed rule pulls in only the rules that declare the tokens it
+ * *references and does not itself declare*, transitively, branching where several rules supply the
+ * same token. The combinations that come out are the ones the stylesheet says are possible.
+ */
+function collectVariantPairs(uiSrcDir, files) {
+  const candidates = [];
+
+  for (const file of files) {
+    const css = file.endsWith('.scss')
+      ? sass.compile(file, { style: 'expanded', sourceMap: false }).css
+      : readFileSync(file, 'utf8');
+    const rules = readRules(css).map((rule) => ({
+      ...rule,
+      selector: rule.selector.replace(/\[_ng(?:content|host)[^\]]*\]/g, '').trim(),
+    }));
+
+    const painters = rules.filter((rule) => rule.colour || rule.bg);
+    const modifiers = rules.filter((rule) => rule.decls.size > 0 && isModifierSelector(rule.selector));
+
+    // The component's own defaults: every unconditional rule's declarations, in source order.
+    const defaults = new Map();
+    for (const rule of rules) {
+      if (isModifierSelector(rule.selector)) continue;
+      for (const [k, v] of rule.decls) defaults.set(k, v);
+    }
+
+    /** Adds the rules that declare what `seed` references but nobody has declared yet. */
+    const complete = (chain) => {
+      const declared = new Map(chain.flatMap((rule) => [...rule.decls]));
+      for (const rule of chain) {
+        for (const [, value] of rule.decls) {
+          for (const token of referencedTokens(value)) {
+            if (declared.has(token) || defaults.has(token)) continue;
+            const suppliers = modifiers.filter(
+              (other) => !chain.includes(other) && other.decls.has(token),
+            );
+            if (suppliers.length === 0) continue;
+            return suppliers.flatMap((supplier) => complete([...chain, supplier]));
+          }
+        }
+      }
+      return [chain];
+    };
+
+    // The rest state, with no modifier at all. Neither sweep above measures it: `collectStatePairs`
+    // only emits `:hover`-shaped rules, and it uses a rest rule solely as the ground for one. So a
+    // component whose default look fails — `gog-tag` in `one-dark`, 3.74:1, found the day this was
+    // added — had nothing looking at it. Emitted here rather than in a fourth pass because the
+    // machinery is identical: it is the variant sweep with an empty variant.
+    for (const painter of painters) {
+      const env = new Map(defaults);
+      for (const [k, v] of painter.decls) env.set(k, v);
+      const rest = {
+        file: path.relative(uiSrcDir, file),
+        selector: painter.selector,
+        colour: painter.colour,
+        bg: painter.bg,
+        restBg: painters.find((rule) => !isModifierSelector(rule.selector))?.bg ?? null,
+        variantEnv: env,
+        baseEnv: env,
+        isRest: true,
+      };
+      if (isRestPairRendered(rest)) candidates.push(rest);
+    }
+
+    for (const variant of modifiers) {
+      for (const chain of complete([variant])) {
+        const local = new Map(defaults);
+        for (const rule of chain) for (const [k, v] of rule.decls) local.set(k, v);
+        for (const painter of painters) {
+          const withPainter = new Map(local);
+          for (const [k, v] of painter.decls) withPainter.set(k, v);
+          const base = new Map(defaults);
+          for (const [k, v] of painter.decls) base.set(k, v);
+          candidates.push({
+            file: path.relative(uiSrcDir, file),
+            selector: `${painter.selector} + ${chain.map((rule) => rule.selector).join(' + ')}`,
+            colour: painter.colour,
+            bg: painter.bg,
+            restBg: painters.find((rule) => !isModifierSelector(rule.selector))?.bg ?? null,
+            variantEnv: withPainter,
+            baseEnv: base,
+          });
+        }
+      }
+    }
+  }
+
+  return candidates.filter((candidate) => candidate.colour && candidate.bg);
+}
+
 function collectStatePairs(uiSrcDir, files) {
   const rest = new Map();
   const states = [];
@@ -438,6 +653,7 @@ async function main() {
     styleFiles.push(file);
   }
   const statePairs = collectStatePairs(uiSrc, styleFiles);
+  const variantPairs = collectVariantPairs(uiSrc, styleFiles);
 
   const failures = [];
   const findings = []; // informational, never fails
@@ -536,6 +752,58 @@ async function main() {
       `[contrast] ${w.theme} — ${key}: ${w.ratio.toFixed(2)}:1 (need ${w.threshold}:1) ` +
         `[${w.text} vs ${w.ground}]
       ${w.state.colour} on ${w.state.bg}`,
+    );
+  }
+
+  // The variant half of the sweep. Same reporting shape — worst theme per rule — because a
+  // variant that fails usually fails in several themes and one line each buries the finding.
+  const variantWorst = new Map();
+  for (const { name, decls } of themes) {
+    const surface = makeResolver(layers, decls)('--gog-surface-color');
+    for (const candidate of variantPairs) {
+      const resolve = makeResolver(layers, new Map([...decls, ...candidate.variantEnv]));
+      const plain = makeResolver(layers, new Map([...decls, ...candidate.baseEnv]));
+      const label = resolve(candidate.colour);
+      const wash = resolve(candidate.bg);
+      if (label === null || wash === null) continue;
+      // A modifier that changes nothing this rule paints is a size class, or a state that only
+      // moves a shadow. The unmodified pair is already measured by the sweep above.
+      const plainLabel = plain(candidate.colour);
+      const plainWash = plain(candidate.bg);
+      if (
+        !candidate.isRest &&
+        plainLabel &&
+        plainWash &&
+        toHex(plainLabel) === toHex(label) &&
+        toHex(plainWash) === toHex(wash)
+      )
+        continue;
+      const restBg = candidate.restBg ? resolve(candidate.restBg) : null;
+      const under = restBg && restBg.a === 1 ? restBg : surface;
+      const ground = wash.a === 1 ? wash : over(wash, under);
+      const text = label.a === 1 ? label : over(label, ground);
+      const ratio = contrast(text, ground);
+      pairsChecked++;
+      const threshold = thresholdFor(candidate.selector);
+      if (ratio >= threshold) continue;
+      const key = `${candidate.file} ${candidate.selector}`;
+      const worst = variantWorst.get(key);
+      if (!worst || ratio < worst.ratio)
+        variantWorst.set(key, {
+          ratio,
+          threshold,
+          theme: name,
+          text: toHex(text),
+          ground: toHex(ground),
+          candidate,
+        });
+    }
+  }
+  for (const [key, w] of [...variantWorst].sort((a, b) => a[1].ratio - b[1].ratio)) {
+    failures.push(
+      `[contrast] ${w.theme} — ${key}: ${w.ratio.toFixed(2)}:1 (need ${w.threshold}:1) ` +
+        `[${w.text} vs ${w.ground}]
+      ${w.candidate.colour} on ${w.candidate.bg}`,
     );
   }
 

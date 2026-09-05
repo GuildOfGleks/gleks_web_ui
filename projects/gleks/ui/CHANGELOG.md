@@ -27,6 +27,41 @@ reached 1.0, so breaking changes may land in minor versions.
   and `gog-button`, which is why every test passed over a key that missed a third of its targets;
   it now mounts an overlay too, in four cases.
 
+- **Five WCAG AA failures on shipped variants**, none of which any check had ever looked at.
+  `check:contrast` took its pairs from rules that set `color` and `background-color`, and a variant
+  class in this library sets neither — `.gog-tag--danger` re-points `--gog-tag-variant-color`,
+  `.gog-btn--outline` re-points `--gog-button-variant-*`, and one painting rule reads that layer
+  through a `var()` chain. The script now resolves the indirection (and a rest state with no
+  modifier at all, which nothing measured either), taking it from 1155 pairs to 2187. What it
+  found:
+
+  - **`gog-tag`'s label was mixed toward literal `black`, at 82% of the status hue.** That is a
+    light-theme assumption twice over: on a dark theme it darkened a label already sitting on a
+    dark ground, and on a light one 18% of black cannot bring a bright hue down to text contrast.
+    Eleven of the 55 shipped combinations were under AA — `one-dark`'s danger at 3.11:1,
+    `material`'s warning at 2.49:1, `primeng`'s success at 3.06:1. `--gog-tag-color-base` is now
+    `var(--gog-text-color)` so the mix follows the theme, and `--gog-tag-color-mix` is 50%: the
+    same ratio, and the same argument, as `--gog-button-<status>-ink`. Worst pair is now 4.67:1.
+    **This changes how every status tag looks** — the label is a softer, inkier version of its
+    hue, and the background is untouched.
+  - **The table's header labels** were the raw accent on a tinted strip: 4.15:1 in `light`, 4.32:1
+    in `one-light`. `--gog-table-accent-color` now mixes 20% of the page's ink into the accent
+    inside the `@supports` block, which lifts every theme (worst 5.09:1) and keeps the accent
+    identity the header is drawn in. The flat fallback stays the raw accent.
+  - **`slate`'s secondary button** filled with Tailwind sky-500 under a white label: 2.77:1.
+    sky-600 does not clear either (4.10:1), so `--gog-secondary-color` moves two steps to sky-700
+    — the same move the theme's three status colours made in 21.9.0.
+
+  A false positive is recorded rather than silenced: `.gog-checkbox__box` states the tick's colour
+  and the *unchecked* box's background in one rule, and those never render together, so the sweep
+  read 1.00:1 in `ledger`. It is the one entry in the script's `REST_PAIRS_NOT_RENDERED` list, and
+  the pair that does render — the tick on the checked background — is measured and passes.
+
+  `token-color.mjs` learned two things it needed for this: a `color-mix()` percentage that is
+  itself a token (`--gog-tag-color-mix: 82%`), and the named colours `black`/`white`. Without them
+  `gog-tag` resolved to nothing at all and its nine variant pairs were skipped in every theme —
+  the checker failing open, which is the failure mode this change exists to remove.
+
 ### Documentation
 
 - **`gog-table` is named among the spinners `GOG_CONFIG.spinner` reaches**, in `AGENTS.md` and in

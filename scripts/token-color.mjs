@@ -22,10 +22,12 @@
  * ## What it understands
  *
  * Enough of CSS colour syntax to resolve what this library's own theme file actually writes, and
- * nothing more: `#hex`, `transparent`, `var(--x)` with an optional fallback, and
- * `color-mix(in srgb, <colour> N%, <colour>)`. Anything else resolves to `null`, which the caller
- * reports rather than guesses at — a token that quietly resolved to the wrong colour would be
- * worse than one that says it cannot.
+ * nothing more: `#hex`, `transparent`, the two named colours it uses (`black`, `white`),
+ * `var(--x)` with an optional fallback, and `color-mix(in srgb, <colour> N%, <colour>)` — whose
+ * percentage may itself be a `var()`, since `gog-tag` writes its two mix ratios as tokens
+ * (`--gog-tag-color-mix: 82%`). Anything else resolves to `null`, which the caller reports rather
+ * than guesses at — a token that quietly resolved to the wrong colour would be worse than one
+ * that says it cannot.
  *
  * ## The layers, in the order a browser resolves them
  *
@@ -140,11 +142,28 @@ export function makeResolver(layers, themeDecls) {
     layers.rootLiteral.get(token) ??
     null;
 
+  /**
+   * Substitutes `var()` textually, for the places a value is not a colour — the percentage inside
+   * `color-mix()`. Colours go through `parse` instead, which understands them; this only has to
+   * turn `var(--gog-tag-color-mix)` into `82%`. A token it cannot look up is left as written, so
+   * the caller still sees an unreadable value rather than a wrong number.
+   */
+  const expandVars = (text, seen) =>
+    text.replace(/var\(\s*(--[a-z0-9-]+)\s*(?:,([^()]*(?:\([^()]*\)[^()]*)*))?\)/gi, (whole, name, fallback) => {
+      if (seen.has(name)) return whole;
+      const next = lookup(name) ?? (fallback === undefined ? null : fallback.trim());
+      return next === null ? whole : expandVars(next, new Set([...seen, name]));
+    });
+
   const parse = (value, seen) => {
     if (value === null) return null;
     const v = value.trim();
 
     if (v === 'transparent') return { r: 0, g: 0, b: 0, a: 0 };
+    // The only two named colours any shipped palette writes — `--gog-tag-color-base: black`. A
+    // full CSS colour-name table would be pretending to a generality this file does not have.
+    if (v === 'black') return { r: 0, g: 0, b: 0, a: 1 };
+    if (v === 'white') return { r: 255, g: 255, b: 255, a: 1 };
     if (v.startsWith('#')) return hexToRgba(v);
 
     if (v.startsWith('var(')) {
@@ -159,18 +178,20 @@ export function makeResolver(layers, themeDecls) {
     if (v.startsWith('color-mix(')) {
       const args = splitTop(v.slice(10, v.lastIndexOf(')')));
       if (args.length !== 3 || !/^in\s+srgb$/.test(args[0])) return null;
-      // The percentage has to be a literal. CSS allows `var(--ratio)` there and a browser
-      // resolves it, but this reads the number with a regex before any substitution happens, so
-      // a `var()` percentage matches nothing, the weight comes back null, and the mix silently
-      // becomes a 50/50 — or the whole token reports as unresolvable, which is what actually
-      // happened on 2026-09-04 when `--gog-button-<status>-ink` was written with a
-      // `--gog-button-severity-ink-mix` knob. Every pair reading such a token drops out of the
-      // contrast check, so the failure is loud in `check:contrast` and invisible in the browser:
-      // exactly backwards from useful. **Keep mix ratios as literals in theme.css**, or teach
-      // `parse` to substitute here first.
+      // The percentage may be a token. CSS allows it, a browser resolves it, and this library
+      // writes two of them (`--gog-tag-bg-mix`, `--gog-tag-color-mix`) — so the regex runs over a
+      // textually expanded copy of the argument rather than the raw one.
+      //
+      // Getting this wrong fails *open*, which is why it is worth the extra step: an unread
+      // percentage makes the whole token unresolvable, every pair reading it drops silently out
+      // of the contrast check, and the check then reports a healthy count over states it never
+      // looked at. That is exactly what happened to `gog-tag` — nine variant pairs skipped in
+      // every theme — and on 2026-09-04 to `--gog-button-<status>-ink`, whose
+      // `--gog-button-severity-ink-mix` knob was removed rather than resolved.
       const read = (arg) => {
-        const pct = arg.match(/([\d.]+)%\s*$/);
-        const colour = parse(pct ? arg.slice(0, pct.index).trim() : arg, seen);
+        const expanded = expandVars(arg, seen);
+        const pct = expanded.match(/([\d.]+)%\s*$/);
+        const colour = parse(pct ? expanded.slice(0, pct.index).trim() : expanded, seen);
         return colour === null ? null : { colour, weight: pct ? Number(pct[1]) / 100 : null };
       };
       const first = read(args[1]);
