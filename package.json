@@ -37,7 +37,8 @@
     "check:sitemap": "node scripts/generate-sitemap.mjs --check",
     "ping:indexnow": "node scripts/ping-indexnow.mjs",
     "generate:examples": "node scripts/generate-example-sources.mjs",
-    "check:examples": "node scripts/generate-example-sources.mjs --check"
+    "check:examples": "node scripts/generate-example-sources.mjs --check",
+    "survey:geometry": "node scripts/survey-geometry.mjs"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
