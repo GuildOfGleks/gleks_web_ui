@@ -214,7 +214,11 @@ for (const block of blocks.values()) {
     const slot = bySize.get(key) ?? {};
     if (t.prop === 'padding') {
       const d = resolve(t.token);
-      if (d.parts.length === 2 && d.parts[0].px !== null) slot.padY = d.parts[0].px;
+      // A one-value `padding` applies to all four sides, so it is the vertical padding too —
+      // `--gog-control-checkbox-padding` is written that way and was being read as no padding
+      // at all, which is how a 24px target reported as 12.
+      if (d.parts.length === 1 && d.parts[0].px !== null) slot.padY = d.parts[0].px;
+      else if (d.parts.length === 2 && d.parts[0].px !== null) slot.padY = d.parts[0].px;
     } else if (PAD_Y.includes(t.prop)) slot.padY = resolve(t.token).px;
     else if (t.prop === 'font-size') slot.font = resolve(t.token).px;
     else if (t.prop === 'line-height') slot.leading = resolve(t.token).px;
@@ -229,8 +233,17 @@ for (const block of blocks.values()) {
     const padY = slot.padY ?? shared.padY ?? null;
     const font = slot.font ?? shared.font ?? null;
     const leading = slot.leading ?? shared.leading ?? 1;
+    // The target is the element a pointer lands on, not the mark that is painted. A checkbox
+    // paints a 12px box at `xsm` and sits inside a `<label>` whose padding is part of the
+    // target — 12 + 8 + 8 is 28, and the SC is met without touching anything. Measuring the box
+    // alone reported two findings that were not there, which is the same class of mistake as
+    // holding a progressbar's height to 24px: the law is about targets.
     const px =
-      explicit !== null ? explicit : padY !== null && font !== null ? padY * 2 + font * leading : null;
+      explicit !== null
+        ? explicit + 2 * (padY ?? 0)
+        : padY !== null && font !== null
+          ? padY * 2 + font * leading
+          : null;
     if (px === null || px >= 24) continue;
     const key = `${block.name}${size ? `/${size}` : ''}`;
     if (HIT_AREA.has(key)) continue;
