@@ -376,9 +376,14 @@ would have defeated the reason it exists.
 and the other filled circles take the 1.128 correction. Stroked marks do not: a radio is a ring
 around empty ground, where the ink argument runs the other way, and a 27px disc beside a 24px
 checkbox breaks the one thing a form column has to keep — a single left edge under the labels.
-**The radio does get its own size token**, currently absent (it falls through to
-`--gog-control-checkbox-box-size-md`), declared equal to the checkbox with that reason recorded,
-so the next person to ask this question finds an answer instead of a fallback.
+**The radio was not missing a token, and the survey's reading of it was wrong** — corrected
+2026-09-05, by `check:tokens` rather than by re-reading. `--gog-radio-box-size` is deliberately
+*undeclared*: it is an instance-layer token, and the whole point of the layer is that a
+declaration in `theme.css` would pin every radio in the app instead of letting one instance
+override itself. The sizing does reach it — `radio-group.component.ts` sets that variable on the
+host from the shared `--gog-control-checkbox-*` scale, exactly as the checkbox does — so the
+`-md` inside the fallback is the no-size default, not a missing decision. What the survey saw as
+an absence is the design; rule D of the token contract exists to catch precisely this fix.
 
 **D3a — a padding may repeat between adjacent size steps.** Found by the first calibration
 commit (`gog-tag`) rather than decided in advance, which is what the calibration slot exists for.

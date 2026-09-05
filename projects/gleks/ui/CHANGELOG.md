@@ -41,6 +41,9 @@ reached 1.0, so breaking changes may land in minor versions.
   in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
   second default nobody can find.
 
+- **`gog-radio-group`'s two gaps are 12px, not 10px** — between a radio and its label, and
+  between the options in a group.
+
 - **`gog-checkbox`'s gap between box and label is 12px, not 10px** — its one length off the 4px
   grid.
 

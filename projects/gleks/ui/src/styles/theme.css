@@ -1009,12 +1009,12 @@
      Box/label size reuse the `--gog-control-checkbox-*` scale (see Checkbox above);
      radio-group.component.ts maps the `size` input onto the host the same way. */
   --gog-radio-font-family: var(--gog-font-body);
-  --gog-radio-group-gap: var(--gog-space-10);
+  --gog-radio-group-gap: var(--gog-space-12);
   --gog-radio-group-label-size: var(--gog-text-sm);
   --gog-radio-group-label-color: var(--gog-muted-text-color);
   --gog-radio-group-option-gap: var(--gog-space-8);
   --gog-radio-group-option-gap-horizontal: var(--gog-space-20);
-  --gog-radio-gap: var(--gog-space-10);
+  --gog-radio-gap: var(--gog-space-12);
   --gog-radio-border-width: var(--gog-control-border-width);
   --gog-radio-border-style: var(--gog-control-border-style);
   --gog-radio-border-color: var(--gog-accent-dim);
