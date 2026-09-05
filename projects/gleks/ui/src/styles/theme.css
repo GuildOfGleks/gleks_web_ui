@@ -1612,13 +1612,13 @@
   --gog-panel-footer-gap: var(--gog-space-sm);
   --gog-panel-footer-padding-top: var(--gog-space-sm);
 
-  --gog-panel-xsm-padding-y: var(--gog-space-10);
+  --gog-panel-xsm-padding-y: var(--gog-space-12);
   --gog-panel-xsm-padding-x: var(--gog-space-12);
   --gog-panel-xsm-gap: var(--gog-space-sm);
-  --gog-panel-sm-padding-y: var(--gog-space-14);
+  --gog-panel-sm-padding-y: var(--gog-space-16);
   --gog-panel-sm-padding-x: var(--gog-space-md);
-  --gog-panel-sm-gap: var(--gog-space-10);
-  --gog-panel-md-padding-y: var(--gog-space-18);
+  --gog-panel-sm-gap: var(--gog-space-12);
+  --gog-panel-md-padding-y: var(--gog-space-20);
   --gog-panel-md-padding-x: var(--gog-space-20);
   --gog-panel-md-gap: var(--gog-space-12);
   --gog-panel-lg-padding-y: var(--gog-space-lg);

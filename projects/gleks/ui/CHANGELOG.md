@@ -41,6 +41,10 @@ reached 1.0, so breaking changes may land in minor versions.
   in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
   second default nobody can find.
 
+- **`gog-panel`'s four off-grid lengths move to the grid** — `xsm` vertical padding 10 to 12,
+  `sm` 14 to 16 with its gap 10 to 12, `md` 18 to 20. A surface like the card, and outside the
+  optical ratio for the same reason.
+
 - **`gog-card`'s four off-grid lengths move to the grid** — `xsm` side padding 10 to 12 and its
   gap 6 to 8, `sm` side padding 14 to 16, `lg` gap 14 to 16. The card is **outside** the
   optical-ratio law and stays at roughly 1.2: it frames projected content rather than balancing a
