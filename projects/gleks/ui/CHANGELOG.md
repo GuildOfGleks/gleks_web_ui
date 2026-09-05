@@ -28,6 +28,19 @@ reached 1.0, so breaking changes may land in minor versions.
   steps rather than the geometry inflating to keep five distinct numbers. Every sized component in
   this release follows the same rule.
 
+- **The shared control tier is on the grid, at a ratio of 2.0.** `--gog-control-padding-y`/`-x`
+  go from `10/14` (a ratio of 1.40) to `12/24`, and `--gog-field-md-padding-*` derives from them —
+  so an `md` input, select, multiselect, autocomplete and datepicker are all padded by this one
+  pair. `--gog-control-icon-offset` follows from 10px to 12px, which also moves the four
+  `*-actions-inset` tokens that read it.
+
+- **`--gog-control-checkbox-padding` is 8px, not 6px**, which is the padding a checkable control's
+  `<label>` carries around its box. It is part of the pointer target rather than decoration: a
+  12px `xsm` box inside 8px of padding is a 28px target, and that is how the smallest checkbox,
+  radio and toggle clear WCAG 2.5.8 without the painted box growing at all. The literal fallback
+  in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
+  second default nobody can find.
+
 - **`gog-button`'s padding is on the grid, at a ratio of exactly 2.0.** Horizontal padding is twice
   vertical at every size step: `4/8`, `8/16`, `12/24`, `16/32`, `20/40` (vertical/horizontal). It
   had run 2.00, 1.75, 1.67, 1.50, 1.40 across the five — monotonic drift, which is what per-size

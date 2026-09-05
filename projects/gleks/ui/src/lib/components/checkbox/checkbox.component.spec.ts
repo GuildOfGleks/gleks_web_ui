@@ -51,7 +51,7 @@ describe('CheckboxComponent', () => {
 
     const host = fixture.nativeElement as HTMLElement;
     expect(host.style.getPropertyValue('--gog-checkbox-padding')).toBe(
-      'var(--gog-control-checkbox-padding, 6px)',
+      'var(--gog-control-checkbox-padding, 8px)',
     );
   });
 

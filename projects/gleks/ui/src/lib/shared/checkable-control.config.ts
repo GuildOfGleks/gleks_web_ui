@@ -6,7 +6,7 @@ export interface GogCheckableControlSizeConfig {
   readonly indicatorSize: string;
 }
 
-export const GOG_CHECKABLE_CONTROL_PADDING = 'var(--gog-control-checkbox-padding, 6px)';
+export const GOG_CHECKABLE_CONTROL_PADDING = 'var(--gog-control-checkbox-padding, 8px)';
 
 export const GOG_CHECKABLE_CONTROL_SIZE_MAP = {
   xsm: {

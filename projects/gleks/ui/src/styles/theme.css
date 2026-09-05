@@ -437,9 +437,15 @@
   --gog-space-md: var(--gog-space-16);
   --gog-space-lg: var(--gog-space-24);
   --gog-space-2xl: var(--gog-space-48);
-  --gog-control-padding-y: var(--gog-space-10);
-  --gog-control-padding-x: var(--gog-space-14);
-  --gog-control-checkbox-padding: var(--gog-space-6);
+  /* The shared control tier, on the 4px grid at a ratio of exactly 2.0 (styling.instructions.md,
+     law 3). It was 10/14, a ratio of 1.40; `--gog-field-md-padding-*` derives from it, so this
+     pair is what an `md` input, select, multiselect, autocomplete and datepicker are padded by. */
+  --gog-control-padding-y: var(--gog-space-12);
+  --gog-control-padding-x: var(--gog-space-24);
+  /* One value, all four sides: this is the padding a checkable control's `<label>` carries around
+     its box, and it is part of the pointer target — a 12px `xsm` box inside 8px of padding is a
+     28px target, which is how the smallest checkbox clears WCAG 2.5.8 without growing. */
+  --gog-control-checkbox-padding: var(--gog-space-8);
   --gog-field-xsm-padding-y: var(--gog-space-4);
   --gog-field-xsm-padding-x: var(--gog-space-8);
   --gog-field-sm-padding-y: var(--gog-space-6);
@@ -455,7 +461,7 @@
   --gog-field-sm-icon-offset: var(--gog-space-8);
   --gog-field-lg-icon-offset: var(--gog-space-14);
   --gog-field-slg-icon-offset: var(--gog-space-18);
-  --gog-control-icon-offset: var(--gog-space-10);
+  --gog-control-icon-offset: var(--gog-space-12);
   --gog-elevated-surface-color: var(--gog-surface-color);
   --gog-panel-radius: calc(var(--gog-radius) + 8px);
   --gog-field-xsm-font-size: var(--gog-text-xs);
