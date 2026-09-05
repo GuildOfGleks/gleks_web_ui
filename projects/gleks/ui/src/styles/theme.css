@@ -1533,7 +1533,7 @@
   --gog-menu-shadow: var(--gog-dialog-shadow);
   --gog-menu-font-family: var(--gog-font-body);
   --gog-menu-padding: var(--gog-space-4);
-  --gog-menu-gap: var(--gog-space-2);
+  --gog-menu-gap: var(--gog-space-4);
   --gog-menu-offset: var(--gog-space-4);
   --gog-menu-min-width: 180px;
   --gog-menu-max-width: 320px;
@@ -1550,7 +1550,7 @@
   --gog-menu-item-press-bg: var(--gog-border-color);
   --gog-menu-item-hover-color: var(--gog-text-color);
   --gog-menu-item-font-size: var(--gog-text-sm);
-  --gog-menu-item-padding: var(--gog-space-8) var(--gog-space-12);
+  --gog-menu-item-padding: var(--gog-space-8) var(--gog-space-16);
   --gog-menu-item-radius: var(--gog-radius);
   --gog-menu-item-gap: var(--gog-space-sm);
   --gog-menu-item-disabled-opacity: var(--gog-disabled-opacity);
