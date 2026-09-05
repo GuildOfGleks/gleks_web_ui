@@ -1831,7 +1831,7 @@
   --gog-slider-label-font-family: var(--gog-font-heading);
   --gog-slider-value-font-family: var(--gog-font-mono);
   --gog-slider-error-font-family: var(--gog-font-body);
-  --gog-slider-gap: var(--gog-space-6);
+  --gog-slider-gap: var(--gog-space-8);
   --gog-slider-label-color: var(--gog-accent-color);
   --gog-slider-label-font-size: var(--gog-text-sm);
   --gog-slider-label-letter-spacing: var(--gog-letter-spacing);

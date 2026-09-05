@@ -93,6 +93,7 @@ const SURFACES = new Map([
  */
 const HIT_AREA = new Map([
   ['button/xsm', 'button.css, `.gog-btn::before` — 20px painted, 24px target'],
+  ['slider-thumb', 'slider.component.scss, `.gog-slider__thumb::before` — 16px painted; the track is clickable too'],
   ['toast-close', 'button.css, `.gog-btn::before` — a gog-button with --gog-button-padding overridden'],
   ['toast-action', 'button.css, `.gog-btn::before` — a gog-button with --gog-button-padding overridden'],
   ['chip-remove/xsm', 'chip.component.scss, `.gog-chip__remove::before` — 13.2px painted'],

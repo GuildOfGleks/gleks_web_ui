@@ -85,6 +85,28 @@
   will-change: transform;
 }
 
+/*
+ * The thumb paints at 16px and WCAG 2.5.8 asks 24. A transparent `::before` carries the target so
+ * the thumb stays the size it is — this is the one control in the library a pointer *drags*, and
+ * a 24px dot would cover the value it is pointing at.
+ *
+ * 2.5.5 (AAA) would want 44px here, and this deliberately does not go that far: the track itself
+ * is clickable along its whole length, so the coarse-pointer story is "tap the track", not "hit
+ * the thumb". Recorded rather than left implicit — an AAA gap someone can find is different from
+ * one nobody wrote down.
+ */
+.gog-slider__thumb::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
 .gog-slider__thumb {
   position: absolute;
   top: 50%;
