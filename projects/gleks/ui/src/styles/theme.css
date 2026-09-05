@@ -1468,7 +1468,7 @@
   --gog-multiselect-panel-border: var(--gog-accent-color);
   --gog-multiselect-panel-shadow: var(--gog-panel-shadow);
   --gog-multiselect-panel-max-height: 260px;
-  --gog-multiselect-panel-offset: var(--gog-space-2);
+  --gog-multiselect-panel-offset: var(--gog-space-4);
   --gog-multiselect-option-hover-bg: var(--gog-hover-color);
   --gog-multiselect-option-press-bg: var(--gog-border-color);
   --gog-multiselect-option-color: var(--gog-text-color);
@@ -1484,11 +1484,11 @@
   --gog-multiselect-checkbox-checked-bg: var(--gog-accent-color);
   --gog-multiselect-checkbox-checked-color: var(--gog-primary-color);
   --gog-multiselect-controls-gap: var(--gog-space-4);
-  --gog-multiselect-controls-padding: var(--gog-space-6) var(--gog-space-10);
-  --gog-multiselect-actions-gap: var(--gog-space-6);
-  --gog-multiselect-filter-padding: var(--gog-space-6);
-  --gog-multiselect-filter-input-padding-y: var(--gog-space-6);
-  --gog-multiselect-filter-input-padding-x: var(--gog-space-8);
+  --gog-multiselect-controls-padding: var(--gog-space-8) var(--gog-space-12);
+  --gog-multiselect-actions-gap: var(--gog-space-8);
+  --gog-multiselect-filter-padding: var(--gog-space-8);
+  --gog-multiselect-filter-input-padding-y: var(--gog-space-8);
+  --gog-multiselect-filter-input-padding-x: var(--gog-space-16);
   --gog-multiselect-filter-input-bg: var(--gog-background-color);
   --gog-multiselect-filter-input-color: var(--gog-multiselect-field-color);
   --gog-multiselect-filter-input-border: var(--gog-multiselect-field-border);
@@ -1496,13 +1496,13 @@
   --gog-multiselect-filter-border-width: var(--gog-panel-border-width);
   --gog-multiselect-filter-border-style: var(--gog-panel-border-style);
   --gog-multiselect-filter-border-color: var(--gog-border-color);
-  --gog-multiselect-filter-empty-padding: var(--gog-space-10);
+  --gog-multiselect-filter-empty-padding: var(--gog-space-12);
   --gog-multiselect-filter-empty-color: var(--gog-multiselect-placeholder-color);
   /* Matches --gog-select-chevron-inset; see the note there. */
   /* "+N" badge shown when the selection does not fit on one line. */
   --gog-multiselect-overflow-color: var(--gog-multiselect-placeholder-color);
   --gog-multiselect-overflow-font-size: var(--gog-text-sm);
-  --gog-multiselect-overflow-gap: var(--gog-space-6);
+  --gog-multiselect-overflow-gap: var(--gog-space-8);
   --gog-multiselect-min-width: 120px;
   --gog-multiselect-panel-max-width: 420px;
   --gog-multiselect-actions-inset: var(--gog-control-icon-offset);
