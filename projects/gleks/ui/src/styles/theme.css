@@ -2009,15 +2009,15 @@
   --gog-tabs-focus-ring-color: var(--gog-accent-color);
   --gog-tabs-panel-padding: var(--gog-space-md);
   --gog-tabs-panel-color: var(--gog-text-color);
-  --gog-tabs-xsm-padding: var(--gog-space-6) var(--gog-space-10);
+  --gog-tabs-xsm-padding: var(--gog-space-8) var(--gog-space-16);
   --gog-tabs-xsm-font-size: var(--gog-text-xs);
-  --gog-tabs-sm-padding: var(--gog-space-8) var(--gog-space-14);
+  --gog-tabs-sm-padding: var(--gog-space-8) var(--gog-space-16);
   --gog-tabs-sm-font-size: var(--gog-text-sm);
-  --gog-tabs-md-padding: var(--gog-space-12) var(--gog-space-18);
+  --gog-tabs-md-padding: var(--gog-space-12) var(--gog-space-24);
   --gog-tabs-md-font-size: var(--gog-text-md);
-  --gog-tabs-lg-padding: var(--gog-space-16) var(--gog-space-24);
+  --gog-tabs-lg-padding: var(--gog-space-16) var(--gog-space-32);
   --gog-tabs-lg-font-size: var(--gog-text-lg);
-  --gog-tabs-slg-padding: var(--gog-space-20) var(--gog-space-28);
+  --gog-tabs-slg-padding: var(--gog-space-20) var(--gog-space-40);
   --gog-tabs-slg-font-size: var(--gog-text-xl);
 
   /* ── Tag ──────────────────────────────────────────────────────────────────

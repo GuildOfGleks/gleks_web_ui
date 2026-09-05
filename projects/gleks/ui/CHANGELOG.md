@@ -41,6 +41,10 @@ reached 1.0, so breaking changes may land in minor versions.
   in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
   second default nobody can find.
 
+- **`gog-tabs` is on the grid at a ratio of 2.0** — `8/16`, `8/16`, `12/24`, `16/32`, `20/40`
+  (vertical/horizontal), from 1.67, 1.75, 1.50, 1.50, 1.40. `xsm` and `sm` now share a padding and
+  are told apart by their type, as everywhere else in this release.
+
 - **`gog-accordion`'s header is on the grid at a ratio of 2.0**, and it had the widest drift in
   the library: 2.00, 1.67, 1.40, 1.14, 1.00 — by `slg` the header was padded equally on all four
   sides, which is a box rather than a row. Now `4/8`, `8/16`, `12/24`, `16/32`, `20/40`. The body's
