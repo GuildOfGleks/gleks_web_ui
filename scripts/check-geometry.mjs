@@ -91,7 +91,9 @@ const SURFACES = new Map([
  *
  * Empty until the sweep fills it — every line here is a component commit that has landed.
  */
-const HIT_AREA = new Map([]);
+const HIT_AREA = new Map([
+  ['button/xsm', 'button.css, `.gog-btn--xsm::before` — 20px painted, 24px target'],
+]);
 
 const fmt = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.?0+$/, ''));
 

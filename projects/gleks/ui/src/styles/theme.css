@@ -619,10 +619,10 @@
      `--gog-button-font-size` are intentionally NOT declared — they are the per-instance
      escape hatch the variant/size classes fall back through. */
   --gog-button-xsm-padding: var(--gog-space-4) var(--gog-space-8);
-  --gog-button-sm-padding: var(--gog-space-8) var(--gog-space-14);
-  --gog-button-md-padding: var(--gog-space-12) var(--gog-space-20);
-  --gog-button-lg-padding: var(--gog-space-16) var(--gog-space-24);
-  --gog-button-slg-padding: var(--gog-space-20) var(--gog-space-28);
+  --gog-button-sm-padding: var(--gog-space-8) var(--gog-space-16);
+  --gog-button-md-padding: var(--gog-space-12) var(--gog-space-24);
+  --gog-button-lg-padding: var(--gog-space-16) var(--gog-space-32);
+  --gog-button-slg-padding: var(--gog-space-20) var(--gog-space-40);
   --gog-button-xsm-font-size: var(--gog-text-xs);
   --gog-button-sm-font-size: var(--gog-text-sm);
   --gog-button-md-font-size: var(--gog-text-md);

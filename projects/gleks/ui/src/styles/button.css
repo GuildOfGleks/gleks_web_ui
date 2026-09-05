@@ -347,6 +347,31 @@
 .gog-btn--xsm {
   --gog-button-size-padding: var(--gog-button-xsm-padding);
   --gog-button-size-font-size: var(--gog-button-xsm-font-size);
+
+  /*
+   * WCAG 2.5.8 asks 24x24 CSS px of *target*, and an `xsm` button computes to 20px tall
+   * (4 + 4 of padding over a 12px label). The target grows; the button does not.
+   *
+   * A transparent `::before` centred on the button carries the missing height, so the pointer
+   * area is 24px while every painted edge stays where it was — `xsm` exists to be small, and a
+   * compact size that silently stopped being compact would defeat the reason it is offered.
+   * `min-block-size` rather than a fixed height so the rule is inert the moment a consumer's own
+   * font or `--gog-density` pushes the button past 24px on its own.
+   *
+   * Not `padding`, not `min-height` on the button itself: both would move the paint.
+   */
+  position: relative;
+}
+
+.gog-btn--xsm::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  min-block-size: 24px;
+  block-size: 100%;
+  inline-size: 100%;
 }
 
 .gog-btn--sm {

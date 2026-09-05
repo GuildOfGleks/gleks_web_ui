@@ -28,6 +28,19 @@ reached 1.0, so breaking changes may land in minor versions.
   steps rather than the geometry inflating to keep five distinct numbers. Every sized component in
   this release follows the same rule.
 
+- **`gog-button`'s padding is on the grid, at a ratio of exactly 2.0.** Horizontal padding is twice
+  vertical at every size step: `4/8`, `8/16`, `12/24`, `16/32`, `20/40` (vertical/horizontal). It
+  had run 2.00, 1.75, 1.67, 1.50, 1.40 across the five — monotonic drift, which is what per-size
+  eyeballing looks like from the outside. **`xsm` does not move and every other size gets wider**;
+  `slg` gains the most, from 28px of side padding to 40px.
+
+- **An `xsm` button's pointer target is 24x24, and the button is still 20px tall.** WCAG 2.5.8 asks
+  24 CSS px of target; an `xsm` button computes to 20 (4 + 4 of padding over a 12px label). A
+  transparent `::before` centred on the button carries the missing height, so the *target* grows
+  and no painted edge moves. `xsm` exists to be small, and a compact size that silently stopped
+  being compact would defeat the reason it is offered. The rule is inert as soon as a consumer's
+  own font or `--gog-density` takes the button past 24px on its own.
+
 - **`gogBadge` hangs 8px outside its host's corner, not 6px.** The badge's one off-grid length, and
   the commit that had to settle the tie-break behind all of them: every off-grid step this library
   used sat exactly halfway between two grid steps, so snapping to 4px is a *direction* rather than
