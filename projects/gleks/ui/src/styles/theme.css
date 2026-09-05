@@ -966,17 +966,17 @@
   --gog-card-footer-padding-top: var(--gog-space-sm);
 
   --gog-card-xsm-padding-y: var(--gog-space-8);
-  --gog-card-xsm-padding-x: var(--gog-space-10);
-  --gog-card-xsm-gap: var(--gog-space-6);
+  --gog-card-xsm-padding-x: var(--gog-space-12);
+  --gog-card-xsm-gap: var(--gog-space-8);
   --gog-card-sm-padding-y: var(--gog-space-12);
-  --gog-card-sm-padding-x: var(--gog-space-14);
+  --gog-card-sm-padding-x: var(--gog-space-16);
   --gog-card-sm-gap: var(--gog-space-sm);
   --gog-card-md-padding-y: var(--gog-space-md);
   --gog-card-md-padding-x: var(--gog-space-20);
   --gog-card-md-gap: var(--gog-space-12);
   --gog-card-lg-padding-y: var(--gog-space-20);
   --gog-card-lg-padding-x: var(--gog-space-lg);
-  --gog-card-lg-gap: var(--gog-space-14);
+  --gog-card-lg-gap: var(--gog-space-16);
   --gog-card-slg-padding-y: var(--gog-space-28);
   --gog-card-slg-padding-x: var(--gog-space-32);
   --gog-card-slg-gap: var(--gog-space-md);

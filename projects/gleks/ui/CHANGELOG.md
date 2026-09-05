@@ -41,6 +41,11 @@ reached 1.0, so breaking changes may land in minor versions.
   in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
   second default nobody can find.
 
+- **`gog-card`'s four off-grid lengths move to the grid** — `xsm` side padding 10 to 12 and its
+  gap 6 to 8, `sm` side padding 14 to 16, `lg` gap 14 to 16. The card is **outside** the
+  optical-ratio law and stays at roughly 1.2: it frames projected content rather than balancing a
+  label, and 2.0 would give it twice as much padding at its sides as above.
+
 - **`gog-table`'s cell padding is on the grid** — vertical `4/4/8/12/16` per size and horizontal
   16px, from `2/2/6/10/14` and 14. A row is 2 to 4px taller at every density. The table is
   deliberately **outside** the optical-ratio law: a cell's padding is row density and a column
