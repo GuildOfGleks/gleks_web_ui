@@ -17,9 +17,13 @@
 // Verified again for 21.9.x, when `spinner` was added. Two differences from `config.ts`'s own
 // "Applies to" sentence, both traced through the templates rather than the JSDoc: `gog-table`
 // draws a `gog-spinner` in place of its rows and is not named there, and `gog-spinner-overlay`
-// *is* named there but binds `[variant]="variant()"` on an input defaulting to `'runic'`, so a
-// configured component never reaches it. Listed here as the library behaves, not as it is
-// documented to.
+// *is* named there but bound `[variant]="variant()"` on an input defaulting to `'runic'`, so a
+// configured component never reached it. Listed here as the library behaves, not as it is
+// documented to — which is what made both of them visible.
+//
+// **21.10.0 closed both.** The overlay's `variant` is unset by default now, so it honours the key,
+// and `config.ts` names `gog-table`. The two sources agree again; the reason for keeping this list
+// derived from the templates does not go away with them, because that is how the gap was found.
 
 export interface GlobalConfigEntry {
   /** A `GOG_CONFIG` path, e.g. `'control.size'`. */
@@ -167,7 +171,7 @@ export const GLOBAL_CONFIG_BY_COMPONENT: Readonly<Record<string, readonly Global
   spinner: [
     {
       key: 'spinner.component',
-      note: 'your own component drawn in place of the built-in look, everywhere the library’s spinner appears — an instance’s own variant still wins over it. Not gog-spinner-overlay, which forwards a variant of its own.',
+      note: 'your own component drawn in place of the built-in look, everywhere the library’s spinner appears — an instance’s own variant still wins over it. gog-spinner-overlay forwards a variant of its own, but only when one is set: it honours this key from 21.10.0 on.',
     },
     { key: 'spinner.variant', note: 'the app-wide preset an instance that asks for none gets' },
   ],

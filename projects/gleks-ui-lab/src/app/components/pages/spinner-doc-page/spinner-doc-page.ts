@@ -58,10 +58,10 @@ const SPINNER_OVERLAY_API_INPUTS: readonly ApiInputRow[] = [
   },
   {
     name: 'variant',
-    type: "'runic' | 'ring' | 'custom'",
-    default: "'runic'",
+    type: "'runic' | 'ring' | 'custom' | undefined",
+    default: 'unset',
     description:
-      'Forwarded to the inner gog-spinner. Unlike gog-spinner’s own, this one has a default rather than falling through, so the inner spinner always reads it as an explicit request — which is why GOG_CONFIG.spinner.component does not reach an overlay.',
+      'Forwarded to the inner gog-spinner, and unset by default so that "asked for nothing" survives the trip: an overlay that names no variant lets GOG_CONFIG.spinner.component or .variant through, exactly as a bare gog-spinner does. It defaulted to runic until 21.10.0, which the inner spinner read as an explicit request — so a configured house spinner appeared everywhere except here.',
   },
   {
     name: 'size',

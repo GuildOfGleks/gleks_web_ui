@@ -118,6 +118,19 @@
       announce "0 percent" forever. Its animation is also replaced by a static stripe under
       <code>prefers-reduced-motion</code>.
     </p>
+    <p class="doc-section__intro">
+      <strong>The fill's leading edge is marked by two hairlines</strong>, since 21.10.0. With
+      <code>showValue</code> off — the default — that boundary is the only thing stating the value,
+      and WCAG 1.4.11 asks 3:1 of the part of a graphic that carries its meaning. Fill against track
+      could not carry it: 51 of the 55 shipped fill/track combinations were below 3:1, because the
+      five fills straddle mid-luminance and no single track colour clears all of them in any theme
+      but <code>primeng</code>. One marker tone does not work either, so there are two — the theme's
+      ink outermost against the track, the surface colour just inside the fill — and whichever tone
+      a fill sits close to, the other one reads. Worst case across the eleven themes is 3.25:1. The
+      tones are <code>--gog-progressbar-edge-color</code> / <code>-edge-backing-color</code>, each
+      <code>--gog-progressbar-edge-width</code> wide, and they flip end under
+      <code>dir="rtl"</code>.
+    </p>
   </section>
 
   <section class="doc-section">

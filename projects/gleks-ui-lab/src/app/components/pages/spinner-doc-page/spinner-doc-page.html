@@ -128,8 +128,8 @@
         <code>&lt;gog-spinner variant="ring"&gt;</code> is a ring even here.
         <strong>The provider on this demo is scoped to it</strong>, which is a route’s mechanism
         rather than an app’s — the rest of this page shows the built-in look. See
-        <a routerLink="/general/global-config">Global Configuration</a>, where the same key covers
-        why <code>gog-spinner-overlay</code> is the one place it does not reach.
+        <a routerLink="/general/global-config">Global Configuration</a> for the full precedence
+        rules, including <code>gog-spinner-overlay</code>, which honours the key from 21.10.0 on.
       </p>
       <app-code-tabs [html]="houseSpinnerHtml" [ts]="houseSpinnerTs" />
     </article>
@@ -164,10 +164,12 @@
       <p class="demo-card__meta">
         Wrap any section to block interaction while it loads. A companion component,
         <code>gog-spinner-overlay</code>, forwards <code>variant</code>/<code>size</code>/
-        <code>ariaLabel</code> straight to the inner <code>gog-spinner</code> — and its own
-        <code>variant</code> defaults to <code>runic</code> rather than to nothing, so the spinner
-        inside reads it as an explicit request. That is the one place
-        <code>GOG_CONFIG.spinner.component</code> does not reach.
+        <code>ariaLabel</code> straight to the inner <code>gog-spinner</code>. Its own
+        <code>variant</code> is unset by default, so an overlay that asks for nothing forwards
+        nothing and <code>GOG_CONFIG.spinner</code> reaches the spinner inside — the same way it
+        reaches a bare <code>gog-spinner</code>. Until 21.10.0 that input defaulted to
+        <code>runic</code>, which the inner spinner correctly read as an instance overruling the
+        config, so this was the one place a configured house spinner never appeared.
       </p>
       <div class="demo-card__preview">
         <gog-button variant="primary" type="button" (gogClick)="previewOverlay()">

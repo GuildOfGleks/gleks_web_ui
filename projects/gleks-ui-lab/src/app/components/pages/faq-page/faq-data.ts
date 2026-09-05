@@ -215,7 +215,7 @@ Three more things that look like a bug and are not:
 - **Every animation is plain CSS** — \`@keyframes\` and \`transition\`, no Web Animations API and no
   JavaScript timer driving a visual. There is no browser that runs the library but skips its
   animations. If you see none, the cause is \`prefers-reduced-motion\`, not the browser. That
-  setting removes movement, not feedback: since <span class="since since--latest" title="Added in 21.9.0">21.9.0</span>
+  setting removes movement, not feedback: since <span class="since" title="Added in 21.9.0">21.9.0</span>
   a press is a colour as well as a scale, and under \`prefers-reduced-motion: reduce\` the scale
   goes and the colour stays, on the button and on the eight other pressable surfaces. The
   [Button](/components/button) page has the live case. The ripple is the deliberate exception —

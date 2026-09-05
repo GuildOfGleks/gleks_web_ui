@@ -940,6 +940,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-progressbar-value-color / -value-font-size / -value-min-width / -value-gap',
         description: 'The percentage readout rendered when showValue is on.',
       },
+      {
+        name: '--gog-progressbar-edge-color / -edge-backing-color / -edge-width',
+        description:
+          'The two hairlines marking where the fill ends, added in 21.10.0. Two rather than one because no single tone clears WCAG 1.4.11 against all five fills: the ink line sits outermost against the track, the surface-coloured one just inside the fill, and whichever tone a fill sits close to, the other one reads. With showValue off — the default — this boundary is the only thing stating the value.',
+      },
     ],
   },
   {
