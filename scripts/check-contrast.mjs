@@ -86,15 +86,23 @@
  * hand-written `badge *` entries in `WASH_PAIRS` are now redundant with it rather than load-bearing
  * (kept: they state the intent, and the sweep is machinery).
  *
- * **What it deliberately does not gate: a fill against its own track.** A progressbar's variant
- * changes `--gog-progressbar-variant-bg` on a rule that paints a background and no text, so there
- * is no label to measure — the pair a checker could form instead is fill-against-track, and 51 of
- * the 55 shipped combinations are under 3:1 (measured 2026-09-05: 1.13:1 to 4.28:1, `bevel`'s
- * warning the lowest). That is not eleven broken themes. WCAG's ratio is luminance-only and these
- * pairs differ mostly in hue, the bar's own value is rendered as text beside it
- * (`--gog-progressbar-value-color`, which resolves to `--gog-muted-text-color` and is gated
- * above), and forcing 3:1 here would drive every track to near-white or every fill to near-black.
- * Recorded rather than measured, so the next reader does not re-derive it.
+ * **What it does not gate yet: a progressbar's fill against its own track.** That variant changes
+ * `--gog-progressbar-variant-bg` on a rule painting a background and no text, so there is no label
+ * to measure; the pair a checker would form instead is fill-against-track, and 51 of the 55
+ * shipped combinations are under 3:1 (1.13:1 to 4.28:1). It is left ungated because **no single
+ * track colour can fix it** — the five fills straddle mid-luminance in every palette, so a track
+ * dark enough to carry the amber warning sits on top of the blue info; a sweep of the whole
+ * `text`-to-`border` axis, 21 points per theme, tops out at a worst-fill ratio of 1.58–3.45
+ * (`docs/backlog.md` carries the table). Gating it would make eleven themes permanently red over
+ * something they cannot satisfy, which is the failure mode this script's own header argues
+ * against.
+ *
+ * **It is a real defect, not a metric artefact**, and the note here said otherwise until
+ * 2026-09-05: it claimed the bar renders its value as text beside it, when `showValue` defaults to
+ * `false`, and leaned on the fills differing in hue rather than luminance. Rendered in greyscale —
+ * which is what a reader with achromatopsia sees — `primeng`'s success, warning and info bars lose
+ * their boundary almost entirely. The fix is a boundary marker rather than a palette change; see
+ * `docs/backlog.md`.
  *
  * Icons are held to 3:1 rather than 4.5:1 — WCAG 1.4.11 rather than 1.4.3 — through
  * `NON_TEXT_ELEMENTS`. Two of the sweep's first three findings were a spin-button glyph and a

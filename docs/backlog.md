@@ -16,6 +16,31 @@ not worth carrying here.
 
 ## Defects — first
 
+- **A progressbar's fill and its track are under 3:1 in 51 of 55 shipped combinations**, and the
+  boundary between them is the only thing that carries the value: `showValue` defaults to `false`,
+  so by default there is no number beside the bar. WCAG 1.4.11 wants 3:1 for "parts of graphical
+  objects required to understand the content", and this is that part. **Checked in greyscale**, the
+  way a reader with achromatopsia sees it: on `primeng`, success, warning and info lose their
+  boundary almost completely; accent and danger survive. Filed 2026-09-05, when the check that had
+  been dismissing it turned out to be dismissing it for two wrong reasons — see the correction in
+  `check-contrast.mjs`'s header.
+
+  **A palette fix does not exist, and that is measured rather than assumed.** The five fills
+  straddle mid-luminance in every theme, so a track dark enough to carry the amber warning sits on
+  top of the blue info. Sweeping the whole `--gog-text-color`-to-`--gog-border-color` axis in 5%
+  steps, the best achievable worst-fill ratio per theme is: light 2.59, dark 2.58, bevel 1.58,
+  ledger 1.90, material 2.62, one-dark 2.30, one-light 2.16, parchment 2.10, primeng 3.45, slate
+  2.33, terminal 2.58. Only `primeng` clears 3:1, and only at a near-black track.
+
+  **What does work is a boundary marker**, and two tones are needed rather than one: a single edge
+  colour must contrast with a light fill and a dark one in the same theme, and the best single
+  candidates fail (ink 1.06 at one-dark/success, surface 1.79 at material/warning). A two-tone
+  hairline at the fill's leading edge clears everything — `--gog-text-color` + `--gog-surface-color`
+  measures 3.25:1 at worst across all 55 combinations (black + white would give 4.64, at the cost
+  of the theme's own voice). One new token pair, one rule on `.gog-progressbar__fill`, mind the
+  `--gog-direction-sign` for RTL. **Not built: it changes how the component looks in every theme,
+  which is a decision rather than a fix.**
+
 **The variant blind spot is closed** (2026-09-05, 21.9.2). `check:contrast` resolves the
 indirection now: a variant class sets `--gog-<block>-variant-*` and one painting rule reads it
 through a `var()` chain, so the sweep resolves each painting rule twice — once plain, once with
