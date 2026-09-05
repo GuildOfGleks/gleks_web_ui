@@ -142,6 +142,11 @@ for (const block of blocks.values()) {
 
   for (const t of block.tokens) {
     if (!SPACING_PROPS.includes(t.prop)) continue;
+    // A derived total is not a grid step. `--gog-field-<size>-icon-inset` is
+    // `icon-offset * 2 + glyph-size` — the padding that keeps typed text clear of the icon — so
+    // the grid governs its *inputs* (the offset, which is checked) and the glyph is a font size.
+    // Rounding the sum would put the text somewhere the icon is not.
+    if (/-icon-inset$/.test(t.token)) continue;
     const d = resolve(t.token);
     for (const part of d.parts) {
       if (part.px === null || part.px === 0) continue;

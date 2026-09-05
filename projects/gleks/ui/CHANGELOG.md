@@ -41,6 +41,14 @@ reached 1.0, so breaking changes may land in minor versions.
   in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
   second default nobody can find.
 
+- **The shared field tier is on the grid, at a ratio of 2.0.** Every text-bearing control that
+  reads it — `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`
+  and `gog-datepicker` — is padded `4/8`, `8/16`, `12/24`, `16/32`, `20/40` (vertical/horizontal).
+  It had run 2.00, 1.67, 1.40, 1.29, 1.11 across the five sizes, drifting further from the ratio at
+  every step up; `slg` gains the most, from 20px of side padding to 40px. The icon offsets follow
+  the same grid — `xsm` 6 to 8, `lg` 14 to 16, `slg` 18 to 20 — which moves where the clear button
+  and the chevron sit inside a field.
+
 - **`gog-button`'s padding is on the grid, at a ratio of exactly 2.0.** Horizontal padding is twice
   vertical at every size step: `4/8`, `8/16`, `12/24`, `16/32`, `20/40` (vertical/horizontal). It
   had run 2.00, 1.75, 1.67, 1.50, 1.40 across the five — monotonic drift, which is what per-size
