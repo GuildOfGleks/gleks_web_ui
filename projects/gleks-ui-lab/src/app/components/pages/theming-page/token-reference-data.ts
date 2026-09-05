@@ -164,6 +164,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Keyboard focus ring size and offset.',
       },
       { name: '--gog-disabled-opacity', description: 'Opacity applied to disabled controls.' },
+      {
+        name: '--gog-{block}-press-bg',
+        description:
+          'The pressed background, on each of the nine pressable surfaces (button, menu item, ' +
+          'chip, tab and accordion header, button-toggle option and the three dropdowns’ option ' +
+          'rows). Listed here as well because they share a rule: a press is a colour and not ' +
+          'only a movement, so it is the half that survives prefers-reduced-motion. The ripple ' +
+          'is the deliberate exception — it is suppressed there, being decoration rather than ' +
+          'state.',
+      },
     ],
   },
   {
@@ -223,6 +233,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Header hover background and focus ring.',
       },
       {
+        name: '--gog-accordion-press-bg',
+        description: 'Header press background, one step past its own hover.',
+      },
+      {
         name: '--gog-accordion-radius / -body-radius',
         description: 'Corner radius for the header and body.',
       },
@@ -263,7 +277,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Suggestion panel surface and height cap.',
       },
       {
-        name: '--gog-autocomplete-option-hover-bg / -option-selected-bg / -option-height',
+        name: '--gog-autocomplete-option-hover-bg / -option-press-bg / -option-selected-bg / -option-height',
         description: 'Suggestion row states and row height.',
       },
       {
@@ -380,6 +394,12 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-button-toggle-hover-bg / -hover-color',
         description: 'Hover state.',
+      },
+      {
+        name: '--gog-button-toggle-press-bg / -selected-press-bg',
+        description:
+          'Press state, with its own value for a button that is already selected — pressing one ' +
+          'has to read as a press rather than as a deselection.',
       },
       {
         name: '--gog-button-toggle-border-color / -border-width / -border-style / -radius',
@@ -527,7 +547,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     id: 'chip',
     title: 'Chip',
     tokens: [
-      { name: '--gog-chip-bg / -hover-bg', description: 'Background, default and hover.' },
+      {
+        name: '--gog-chip-bg / -hover-bg / -press-bg',
+        description: 'Background, default, hover and pressed.',
+      },
+      {
+        name: '--gog-chip-selected-shadow / -selected-ring-width',
+        description:
+          'The inset ring a filter chip draws while selected ([(selected)], 21.9.0). A ring ' +
+          'rather than a fill, because hover and press already own the background.',
+      },
       { name: '--gog-chip-border / -border-width / -style', description: 'Border.' },
       { name: '--gog-chip-color / -font-weight', description: 'Text color and weight.' },
       {
@@ -733,6 +762,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-menu-font-family', description: 'Panel font family.' },
       { name: '--gog-menu-padding', description: 'Space between the panel edge and its items.' },
       { name: '--gog-menu-gap', description: 'Space between items.' },
+      {
+        name: '--gog-menu-item-hover-bg / -item-press-bg',
+        description: 'An item under the pointer, and under a press.',
+      },
       { name: '--gog-menu-offset', description: 'Gap between the trigger and the panel.' },
       {
         name: '--gog-menu-min-width / -max-width',
@@ -794,8 +827,8 @@ export const TOKEN_SECTIONS: TokenSection[] = [
           'Dropdown panel surface, and the cap on a panel that sizes to its own content rather than to the trigger.',
       },
       {
-        name: '--gog-multiselect-option-hover-bg / -option-color',
-        description: 'Option row, default and hover.',
+        name: '--gog-multiselect-option-hover-bg / -option-press-bg / -option-color',
+        description: 'Option row, default, hover and pressed.',
       },
       {
         name: '--gog-multiselect-checkbox-bg / -checkbox-checked-bg',
@@ -1021,7 +1054,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
           'Dropdown arrow color and inset. Since 21.3.0 the inset lands on --gog-control-icon-offset, the same line as gog-inputfield’s icons — the three controls now line up in a form.',
       },
       {
-        name: '--gog-select-option-hover-bg / -option-selected-color',
+        name: '--gog-select-option-hover-bg / -option-press-bg / -option-selected-color',
         description: 'Option row states.',
       },
       {
@@ -1120,6 +1153,12 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-tabs-rest-color / -hover-color / -active-color',
         description: 'Tab header label, per state.',
+      },
+      {
+        name: '--gog-tabs-press-bg / -press-color',
+        description:
+          'A header under a press. It carries a label colour as well as a background, the way ' +
+          'the button does, because a header has little fill of its own to deepen.',
       },
       {
         name: '--gog-tabs-indicator-color / -indicator-thickness / -indicator-radius',

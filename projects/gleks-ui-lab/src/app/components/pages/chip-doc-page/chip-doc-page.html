@@ -70,6 +70,10 @@
         <code>[(selected)]</code> makes a chip a toggle rather than a press: it flips itself on
         click, Enter and Space, draws an inset ring while it is on, and announces
         <code>aria-pressed</code> either way. Two-way, so a row of filters needs no click handler.
+        The ring is <code>--gog-chip-selected-shadow</code>, its thickness
+        <code>--gog-chip-selected-ring-width</code> — a ring rather than a fill because
+        <code>:hover</code> and <code>:active</code> already own the background, and the selected
+        look has to survive both.
       </p>
       <p class="demo-card__meta">
         <strong
