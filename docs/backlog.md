@@ -16,6 +16,24 @@ not worth carrying here.
 
 ## Defects — first
 
+- **Geometry: laws 2 and 4 are what is left.** Laws 1, 3 and 5 — the 4px grid, horizontal padding
+  at exactly twice vertical on every control, and 24×24 CSS px of pointer target — are **done and
+  gated**: `npm run check:geometry` is a CI step as of 21.11.0, having gone from 164 findings
+  across 66 components to zero in a 25-commit sweep (`docs/component-geometry.md` has the status
+  table and the five findings that changed a rule rather than a component).
+
+  **Law 2 (concentric radii) needs a declared parent per nested radius.** The survey infers
+  parentage by name and reports 27 radii with no parent inferred, which is the work: a name is not
+  a parent — a dropdown panel's option nests inside the panel, not the field of the same name — so
+  the pair table is a decision and cannot be a regex.
+
+  **Law 4 (the typographic ratio) needs a role per text token.** 45 blocks declare a font size and
+  only 20 declare a line-height, so the larger half of this law is *unstated* rather than wrong,
+  and `--gog-line-height-none: 1` on a tag is correct. Both halves are visible today in
+  `npm run survey:geometry`, which reports all five laws and gates none.
+
+  The original entry, kept because it is still the argument for the two that remain:
+
 - **Every component's geometry and typography, checked in CI — the five laws.** The standard is
   now written down (`styling.instructions.md`, "Geometry and typography are computed, not chosen",
   and step 4 of the definition of done); what does not exist is the script that enforces it. It
