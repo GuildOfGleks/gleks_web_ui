@@ -16,6 +16,60 @@ not worth carrying here.
 
 ## Defects — first
 
+- **Theme colour should be decided by arithmetic, not by eye — in two spaces, both gated in CI.**
+  The ask, and it is the owner's own framing: nobody here is a designer, so the right colour
+  combinations get found by computing them. A change to any palette — `theme.css`'s two blocks or any file in
+  `styles/presets/` — should not be mergeable until both of these agree, and the second half is the
+  one that does not exist yet.
+
+  **1. WCAG 2.1 contrast ratio — largely built, and here is what it does not cover.**
+  `check:contrast` (2253 pairs, 11 themes) and `check:app-contrast` are both CI steps already, so
+  the *gate* exists; the question is its reach. Audited 2026-09-05:
+
+  - **Only `color` and `background-color` are read.** The sweep never looks at `border-color`,
+    `outline-color` or a `box-shadow` colour — which is the whole first bullet of SC 1.4.11, the
+    boundary that says "this is a control". 36 `*-border-color` tokens, 6 `*-focus-ring-color` and
+    31 `*-shadow` tokens are unmeasured; the only thing standing in for them is one hand-picked
+    foundation pair (`accentDim` against the two grounds). A field's own border in a preset that
+    tints it can fall under 3:1 with nothing complaining.
+  - **Large text is not modelled.** Everything not in `NON_TEXT_ELEMENTS` is held to 4.5:1, but
+    SC 1.4.3 allows 3:1 at 18.66px bold / 24px. That direction is safe but not free: it invites a
+    palette to be darkened for a heading that never needed it.
+  - **Disabled states are deliberately outside**, and should stay there — WCAG exempts inactive
+    components — but nothing in the script says so, so the next reader will "fix" it. The state
+    sweep's regex simply has no `:disabled`.
+  - **Adjacent non-text pairs have no general rule.** The progressbar's fill/track needed a
+    hand-built `EDGE_PAIRS` entry; the next component with two abutting colours will need another.
+
+  **2. OKLCH — perceptual lightness and chroma — is the half that is missing entirely.** WCAG's
+  ratio is a luminance formula: it says nothing about whether a ramp *looks* evenly stepped, and it
+  scores two hues that differ wildly as identical when their luminance matches. Every finding in
+  21.10.0 came out of that gap. Concretely, the rules worth computing in OKLCH:
+
+  - **Ramps must be monotonic and evenly spaced in L.** `--gog-accent-color` /`-bright` /`-dim`
+    /`-pale`, the surface tiers, the status colours: rule I in `check-tokens` already asserts they
+    are *different*, which is the weak version of this. `light`'s "hover is darker than rest, dark's
+    is lighter" is a real design rule that is currently only prose.
+  - **A chroma band per role.** A status colour that is nearly grey stops reading as a status;
+    one at maximum chroma reads as neon in a parchment theme. Both are one number to check.
+  - **ΔL between a surface and what sits on it**, as the perceptual companion to the ratio — this
+    is what catches "the boundary is invisible in greyscale" *before* someone renders it in
+    greyscale, which is how the progressbar defect was actually found.
+  - **Hue drift inside a family.** A theme whose `success` and `info` sit 12° apart has two statuses
+    a reader cannot tell apart, and no contrast pair will ever say so.
+
+  **3. The part that makes it usable: a solver, not just a gate.** A check that says "2.77:1, need
+  4.5" leaves the fixing to taste. In OKLCH the fix is arithmetic: hold hue and chroma, walk L until
+  the ratio clears, and report the nearest passing colour. Every palette fix this project has made
+  by hand — `slate`'s sky-500 to sky-700, `light`'s gold, `one-dark`'s comment grey — is that walk
+  done manually. `scripts/token-color.mjs` already resolves any token to RGB, so this is a
+  conversion (~40 lines, no dependency: sRGB → linear → OKLab → OKLCH and back) plus a bisection.
+  Ship it as `npm run suggest:color <token> <ground>` and the CI failure can name the value that
+  would have passed.
+
+  Nothing here needs a new dependency or a design opinion, which is the point: it replaces the one
+  the project does not have.
+
 **The progressbar's boundary is marked** (2026-09-05, 21.10.0). Filed and built the same day: the
 fill/track pair was under 3:1 in 51 of 55 shipped combinations, and since `showValue` defaults to
 `false` that boundary is the only thing carrying the value. No palette fix exists — sweeping the
