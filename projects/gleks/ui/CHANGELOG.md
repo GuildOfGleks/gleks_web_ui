@@ -45,6 +45,11 @@ reached 1.0, so breaking changes may land in minor versions.
   `sm` 14 to 16 with its gap 10 to 12, `md` 18 to 20. A surface like the card, and outside the
   optical ratio for the same reason.
 
+- **`gog-datepicker` and `gog-calendar` are on the grid, at a ratio of 2.0.** The calendar's
+  footer buttons go from 4/10 (a ratio of 2.50, the only block in the library padded *too* wide
+  for its height) to 4/8; the time row's gap 6 to 8 and its input 4/6 to 4/8; the datepicker's
+  actions gap 6 to 8 and its panel gap 2 to 4.
+
 - **`gog-autocomplete`'s option row is 8/16 at a ratio of 2.0**, from 8/10, with its gap 10 to 12,
   the actions gap 6 to 8 and the panel gap 2 to 4. An option row is a control — it is what a
   pointer picks — so it takes the ratio while the panel holding it does not.

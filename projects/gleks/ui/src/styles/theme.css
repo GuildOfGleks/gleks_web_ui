@@ -906,12 +906,12 @@
   --gog-calendar-divider-width: 1px;
   --gog-calendar-divider-style: solid;
   --gog-calendar-divider-color: var(--gog-border-color);
-  --gog-calendar-time-gap: var(--gog-space-6);
+  --gog-calendar-time-gap: var(--gog-space-8);
   --gog-calendar-time-margin: var(--gog-space-10);
   --gog-calendar-time-input-width: 3.5rem;
-  --gog-calendar-time-input-padding: var(--gog-space-4) var(--gog-space-6);
+  --gog-calendar-time-input-padding: var(--gog-space-4) var(--gog-space-8);
   --gog-calendar-time-input-bg: var(--gog-background-color);
-  --gog-calendar-action-padding: var(--gog-space-4) var(--gog-space-10);
+  --gog-calendar-action-padding: var(--gog-space-4) var(--gog-space-8);
   --gog-calendar-footer-gap: var(--gog-space-8);
   --gog-calendar-xsm-font-size: var(--gog-text-xs);
   --gog-calendar-xsm-day-size: 24px;
@@ -1296,7 +1296,7 @@
   --gog-datepicker-error-font-size: var(--gog-text-xs);
   --gog-datepicker-min-width: 150px;
   --gog-datepicker-actions-inset: var(--gog-control-icon-offset);
-  --gog-datepicker-actions-gap: var(--gog-space-6);
+  --gog-datepicker-actions-gap: var(--gog-space-8);
   /* Right padding on the input, reserving room for the calendar and clear buttons. */
   --gog-datepicker-actions-reserve: 40px;
   --gog-datepicker-icon-color: var(--gog-accent-color);
@@ -1310,7 +1310,7 @@
   --gog-datepicker-panel-border-style: var(--gog-panel-border-style);
   --gog-datepicker-panel-border-color: var(--gog-border-color);
   --gog-datepicker-panel-radius: var(--gog-radius);
-  --gog-datepicker-panel-gap: var(--gog-space-2);
+  --gog-datepicker-panel-gap: var(--gog-space-4);
   /* The dropdown surface. Inline mode is `gog-calendar` itself, so it sizes from
      `--gog-calendar-max-width` rather than from this. */
   --gog-datepicker-panel-width: max-content;
