@@ -38,6 +38,16 @@ delete the section too.
    carries the split between what follows density and what deliberately does not, and names the
    check (`check-tokens` rule H) that now enforces it.
 
+3. **The other eight pressable surfaces' press tokens are still undocumented, and so is the chip's
+   selected ring.** Found while doing the button half: `token-reference-data.ts` is hand-written
+   (its header now says so), so 21.9.0's tokens appear only where someone adds them.
+   `--gog-menu-item-press-bg`, `--gog-chip-press-bg`, `--gog-tabs-press-bg`,
+   `--gog-accordion-press-bg`, `--gog-button-toggle-press-bg`, the three dropdowns'
+   `--gog-<block>-option-press-bg` and `--gog-chip-selected-shadow` are all in the installed
+   `theme.css` and in none of the lab's sections. Same edit as the button one, seven sections
+   over; the chip also wants a line on its own page, where `[(selected)]` is already documented
+   but the ring it draws is not.
+
 ## After the release that fixes the spinner overlay
 
 `docs/backlog.md` carries the defect: `GOG_CONFIG.spinner.component` does not reach
