@@ -47,6 +47,11 @@ const themeCssPath = path.join(root, 'projects/gleks/ui/src/styles/theme.css');
 
 const PAD_X = ['padding-x', 'padding-inline', 'padding-h'];
 const PAD_Y = ['padding-y', 'padding-block', 'padding-v'];
+// The law names "every padding, gap, margin, offset and inset". The first version of this list
+// had no `margin` and no logical `gap-inline`/`gap-block`, so two tokens — the calendar's time
+// margin and the multiselect option's inline gap — were never parsed at all and survived the
+// whole sweep on an off-grid step. Found by grepping for readers of a step that was supposed to
+// have none, which is the only reason they turned up.
 const SPACING_PROPS = [
   'padding',
   ...PAD_X,
@@ -54,8 +59,15 @@ const SPACING_PROPS = [
   'padding-top',
   'padding-bottom',
   'gap',
+  'gap-inline',
+  'gap-block',
   'row-gap',
   'column-gap',
+  'margin',
+  'margin-top',
+  'margin-bottom',
+  'margin-inline',
+  'margin-block',
   'offset',
   'inset',
 ];

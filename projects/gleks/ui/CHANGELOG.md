@@ -13,6 +13,22 @@ reached 1.0, so breaking changes may land in minor versions.
   vertical, `slg` controls carry 20px of vertical padding, and the scale went 32 and then jumped to
   48. It multiplies `--gog-density` like every other step.
 
+### Removed
+
+- **`--gog-space-2`, `-6`, `-10`, `-14` and `-18` are gone from the spacing scale**, which is now
+  ten steps and every one of them a multiple of 4. This is the end of the sweep rather than the
+  start of it: the five could only come out once the last of their 102 readers had moved, and each
+  of those moves is a component entry above.
+
+  **Three lengths stay off the grid on purpose**, each with the reason in its own comment: a toggle
+  thumb's 2px inset, a scrollbar thumb's, and the 2px gap between the resize grip's three
+  hairlines. A length *inside* a single painted mark defines that mark's shape rather than spacing
+  two things apart — at 4px the grip's stripes are a 20px block in the corner of every textarea
+  instead of a 9px hint. `--gog-focus-ring-offset` was never part of the scale and is unaffected.
+
+  If your app reads one of the five, replace it with the neighbouring step: the library rounded
+  **up** everywhere, because it had seventeen pointer targets under 24×24 and none over.
+
 ### Changed
 
 - **`gog-tag`'s padding lands on the 4px grid, at a ratio of exactly 2.0.** Horizontal padding is

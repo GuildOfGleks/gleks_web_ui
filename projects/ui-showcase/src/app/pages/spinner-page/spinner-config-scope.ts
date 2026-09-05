@@ -149,13 +149,13 @@ interface Row {
       display: flex;
       flex-wrap: wrap;
       align-items: flex-start;
-      gap: var(--gog-space-6);
+      gap: var(--gog-space-8);
     }
 
     .spinner-config-scope__tile {
       display: flex;
       flex-direction: column;
-      gap: var(--gog-space-2);
+      gap: var(--gog-space-4);
       min-inline-size: 200px;
     }
 

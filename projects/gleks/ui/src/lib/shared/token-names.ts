@@ -1157,12 +1157,8 @@ export type GogTokenName =
   | '--gog-slider-value-font-size'
   | '--gog-slider-value-min-width'
   | '--gog-slider-vertical-length'
-  | '--gog-space-10'
   | '--gog-space-12'
-  | '--gog-space-14'
   | '--gog-space-16'
-  | '--gog-space-18'
-  | '--gog-space-2'
   | '--gog-space-20'
   | '--gog-space-24'
   | '--gog-space-28'
@@ -1171,7 +1167,6 @@ export type GogTokenName =
   | '--gog-space-4'
   | '--gog-space-40'
   | '--gog-space-48'
-  | '--gog-space-6'
   | '--gog-space-8'
   | '--gog-space-lg'
   | '--gog-space-md'
@@ -1717,12 +1712,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-field-xsm-padding-x',
       '--gog-field-xsm-padding-y',
       '--gog-panel-radius',
-      '--gog-space-10',
       '--gog-space-12',
-      '--gog-space-14',
       '--gog-space-16',
-      '--gog-space-18',
-      '--gog-space-2',
       '--gog-space-20',
       '--gog-space-24',
       '--gog-space-28',
@@ -1731,7 +1722,6 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-space-4',
       '--gog-space-40',
       '--gog-space-48',
-      '--gog-space-6',
       '--gog-space-8',
       '--gog-space-lg',
       '--gog-space-md',

@@ -413,15 +413,10 @@
   /* The blocking overlay outranks everything, including a dialog it may be covering. */
   --gog-spinner-overlay-z: calc(var(--gog-z-base) + 8000);
 
-  --gog-space-2: calc(2px * var(--gog-density));
   --gog-space-4: calc(4px * var(--gog-density));
-  --gog-space-6: calc(6px * var(--gog-density));
   --gog-space-8: calc(8px * var(--gog-density));
-  --gog-space-10: calc(10px * var(--gog-density));
   --gog-space-12: calc(12px * var(--gog-density));
-  --gog-space-14: calc(14px * var(--gog-density));
   --gog-space-16: calc(16px * var(--gog-density));
-  --gog-space-18: calc(18px * var(--gog-density));
   --gog-space-20: calc(20px * var(--gog-density));
   --gog-space-24: calc(24px * var(--gog-density));
   --gog-space-28: calc(28px * var(--gog-density));
@@ -912,7 +907,7 @@
   --gog-calendar-divider-style: solid;
   --gog-calendar-divider-color: var(--gog-border-color);
   --gog-calendar-time-gap: var(--gog-space-8);
-  --gog-calendar-time-margin: var(--gog-space-10);
+  --gog-calendar-time-margin: var(--gog-space-12);
   --gog-calendar-time-input-width: 3.5rem;
   --gog-calendar-time-input-padding: var(--gog-space-4) var(--gog-space-8);
   --gog-calendar-time-input-bg: var(--gog-background-color);
@@ -1418,7 +1413,7 @@
      mark, not spacing between two things, so it is off the 4px grid on purpose (OPTICAL_CHROME in
      check-geometry.mjs). At 4px the three stripes would be a 20px block in the corner of every
      textarea instead of a 9px hint. */
-  --gog-textarea-resize-grip-stripe-gap: var(--gog-space-2);
+  --gog-textarea-resize-grip-stripe-gap: 2px;
   --gog-textarea-resize-grip-offset: var(--gog-space-4);
   /*
      Both default to 0 and are overwritten per instance, as an inline style on the field, from
@@ -1481,7 +1476,7 @@
   --gog-multiselect-option-hover-bg: var(--gog-hover-color);
   --gog-multiselect-option-press-bg: var(--gog-border-color);
   --gog-multiselect-option-color: var(--gog-text-color);
-  --gog-multiselect-option-gap-inline: var(--gog-space-10);
+  --gog-multiselect-option-gap-inline: var(--gog-space-12);
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-multiselect-option-height: 40px;

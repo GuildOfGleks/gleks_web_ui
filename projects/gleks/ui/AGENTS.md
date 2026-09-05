@@ -195,11 +195,16 @@ Full model is in `README.md`'s Theming section; short version:
   the library above your own chrome without disturbing its internal order.
 
 - **`--gog-density` is the character layer for spacing** (since 21.7.0, `docs/themes.md`
-  iteration 6). It multiplies the fourteen-step scale `--gog-space-2` … `--gog-space-48`, named
+  iteration 6). It multiplies the ten-step scale `--gog-space-4` … `--gog-space-48`, named
   for their pixel value at density 1, and every padding and gap in the library derives from a
   step. `--gog-density: 0.9` in a `[data-theme]` block makes the whole library tighter; nothing
   else needs to be named. `--gog-space-xs|sm|md|lg|2xl` are aliases for steps 4/8/16/24/48 and
-  still work. Icon offsets, dropdown panel gaps, error-line offsets and the badge's overhang
+  still work. **Every step is a multiple of 4** (since 21.11.0): the five 2px-granular steps came
+  out once the last of their 102 readers moved, so "on the grid" is a fact about the scale rather
+  than a habit. Three lengths stay off it on purpose and say so in their own comments — a toggle
+  thumb's inset, a scrollbar thumb's, and the resize grip's hairline gap — because a length inside
+  a single painted mark defines that mark's shape rather than spacing two things apart.
+  Icon offsets, dropdown panel gaps, error-line offsets and the badge's overhang
   follow density; the glyph box, the focus-ring offset, the float-label reserve and the
   scrollbar/toggle thumb insets deliberately do not — those are legibility or geometry fitted to
   a fixed-width track, not spacing. Since 21.9.0 the split is enforced rather than trusted:
