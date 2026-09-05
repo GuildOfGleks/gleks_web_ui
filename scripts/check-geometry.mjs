@@ -33,9 +33,10 @@
 //      wrong, and `--gog-line-height-none: 1` on a tag is correct — which is exactly why the role
 //      tag cannot be skipped.
 //
-// **This is deliberately not a CI step until it is green.** Same discipline check:contrast
-// followed: a permanently red step over a known, tracked condition teaches everyone to ignore CI.
-// Wiring it in is the last commit of the sweep, not the first.
+// **A CI step since 21.11.0, and not one day earlier.** It was written red — 164 findings across
+// 66 components — and stayed out of CI for the 25 commits it took to reach zero, because a
+// permanently red step over a known, tracked condition teaches everyone to ignore CI. Wiring it in
+// was the reward for reaching zero, exactly as it was for check:contrast.
 
 import fs from 'node:fs/promises';
 import path from 'node:path';

@@ -54,6 +54,14 @@ jobs:
       - name: Deprecation ratchet check
         run: npm run check:deprecations
 
+      # The geometry laws from styling.instructions.md — the 4px grid, horizontal padding at
+      # exactly twice vertical on every control, and 24x24 CSS px of pointer target. Wired in the
+      # moment it reached zero and not before (docs/component-geometry.md): the sweep that made it
+      # green was 25 commits long, and a permanently red step over a tracked condition teaches
+      # everyone to ignore CI. Laws 2 and 4 are not in it yet and the script's header says why.
+      - name: Geometry check
+        run: npm run check:geometry
+
       # RTL guard. A `padding`/`margin` shorthand that sets the two horizontal sides
       # differently is physical, so it does not mirror under `dir="rtl"` — and because the
       # sidedness lives in a value's *position* rather than in a `left`/`right` keyword, no

@@ -482,12 +482,46 @@ re-litigates a settled number.
 | Step                                                     | State                        |
 | -------------------------------------------------------- | ---------------------------- |
 | The seven candidate laws, with verdicts                   | ✅ written (this file)       |
-| D0–D8                                                     | ⬜ open — none decided       |
-| `check:geometry`                                          | ⬜ not started               |
-| The 33-commit sweep                                       | ⬜ blocked on the check      |
+| D1, D2, D3, D6 + D3a, D3b                                 | ✅ taken 2026-09-05, against the survey |
+| D0, D4, D5, D7, D8                                        | ⬜ open                      |
+| `survey:geometry` (all five laws, reports)                | ✅                           |
+| `check:geometry` (laws 1, 3, 5, gates)                    | ✅ green, and a CI step      |
+| The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits    |
+| Laws 2 and 4 in the gate                                  | ⬜ blocked on D-radii and D4 |
 | L7 icon-centroid audit                                    | ⬜ not started               |
 | L11 into `api-design.instructions.md` and `AGENTS.md`     | ⬜ not started               |
 | L8's consumer recipe into `README.md`                     | ⬜ not started               |
+
+### What the sweep actually cost, and what it found
+
+**164 findings across 66 components, to zero in 25 commits.** Law 1 116, law 3 31, law 5 17.
+
+Five of them changed a rule rather than a component, and those are the ones worth keeping:
+
+1. **The scale was missing a value the rule required.** `--gog-space-40` did not exist; at 20px of
+   vertical padding the ratio needs exactly 40, and the scale ran 32 then jumped to 48.
+2. **The tie-break decided everything.** All five off-grid steps sat exactly halfway between two
+   grid steps, so "snap to the grid" was a direction, not a rounding rule (D3b).
+3. **Law 5's first version measured the mark, not the target** — a checkbox paints 12px inside a
+   `<label>` whose padding is part of the target, and a one-value `padding` was being read as no
+   padding at all. Two findings that were never there.
+4. **The button's hit-area rule was keyed to `xsm` and the toast disproved it in the same
+   release**: `.gog-toast__close` sets `--gog-button-padding` directly and is 16px tall at any size
+   class, and a consumer can do the same to any button.
+5. **`SPACING_PROPS` had no `margin` and no logical `gap-inline`** — two tokens were never parsed
+   at all and survived the entire sweep on an off-grid step. They turned up from grepping for
+   readers of a step that was meant to have none.
+
+**Three components had to grow their paint, and each for a different reason.** The chip, because
+its surface clips and an invisible target is cut off at the edge; the accordion, because its rows
+are stacked and an inflated target would overlap its neighbour's; the six fields, because an
+overlay above an input swallows the click that places the caret. Everywhere else the paint did not
+move by a pixel.
+
+**Three lengths are deliberately off the grid**, listed in `OPTICAL_CHROME` with their numbers: a
+toggle thumb's inset, a scrollbar thumb's, and the resize grip's hairline gap. The distinction is
+not size — it is that a length *inside a single painted mark* defines that mark's shape, while a
+gap between two elements is spacing however small it is.
 
 ## What this plan does not cover
 
