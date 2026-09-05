@@ -52,9 +52,27 @@ export class App {
    */
   protected readonly isRtl = signal(false);
 
+  /**
+   * Paints the invisible half of WCAG 2.5.8.
+   *
+   * Where a control paints smaller than 24x24, the library does not grow it — it grows the
+   * *target*, with a transparent `::before` centred on the control (`styling.instructions.md`,
+   * law 5). That is the right fix and it is completely invisible, which means nobody can check
+   * it, nobody notices when it regresses, and a reviewer has to take the commit message's word
+   * for it. This toggle outlines every one of those pseudo-elements.
+   *
+   * It also earns its keep the other way round: an inflated hit area that outlives its reason is
+   * a click target that lies about where the button is, and with this on you can see one
+   * overlapping something it should not.
+   */
+  protected readonly showHitAreas = signal(false);
+
   constructor() {
     effect(() => {
       this.document.documentElement.setAttribute('dir', this.isRtl() ? 'rtl' : 'ltr');
+    });
+    effect(() => {
+      this.document.body.classList.toggle('app-show-hit-areas', this.showHitAreas());
     });
   }
   protected readonly themes = showcaseThemes;
