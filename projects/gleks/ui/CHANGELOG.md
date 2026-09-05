@@ -21,6 +21,12 @@ reached 1.0, so breaking changes may land in minor versions.
   steps rather than the geometry inflating to keep five distinct numbers. Every sized component in
   this release follows the same rule.
 
+- **`gogBadge` hangs 8px outside its host's corner, not 6px.** The badge's one off-grid length, and
+  the commit that had to settle the tie-break behind all of them: every off-grid step this library
+  used sat exactly halfway between two grid steps, so snapping to 4px is a *direction* rather than
+  a rounding rule. It rounds up. Here that is also right on its own terms — a 20px badge clears the
+  host's corner radius at `--gog-radius: 8px` at 8px of overhang, and did not quite at 6px.
+
 ## [21.10.0] - 05.09.2026
 
 ### Added

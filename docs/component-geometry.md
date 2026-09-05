@@ -388,6 +388,13 @@ type scale — a tag's five steps are 11, 12, 14, 16 and 18px — and the paddin
 repeat between neighbours rather than the geometry inflating to keep five distinct numbers. The
 ratio still holds exactly at every step.
 
+**D3b — a tie rounds up.** Every off-grid step this library had sits exactly halfway between two
+grid steps: 2 between 0 and 4, then 6, 10, 14 and 18 between their neighbours. So "snap to the
+grid" is not a rounding rule, it is a direction, and it decides every one of the 102 moves. It
+rounds **up**: the library has seventeen pointer targets under 24x24 and none over, so the tie-break
+that helps law 5 is the same one that never shrinks an already-tight `xsm`. A component that argues
+for rounding down says so in its own stylesheet, with the reason.
+
 **Still open: D0, D4, D5, D7, D8.** D4 and D5 need their own survey pass (the leading half is
 mostly *unstated* — 45 blocks declare a font size and 20 declare a line-height), and D5's
 elevation ladder is a separate token family that does not have to ride with this one.

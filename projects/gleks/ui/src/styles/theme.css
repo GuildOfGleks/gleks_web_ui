@@ -1230,8 +1230,12 @@
   --gog-badge-dot-size: 0.5rem;
   --gog-badge-padding-inline: var(--gog-space-4);
   --gog-badge-radius: 999px;
-  /* How far the badge hangs outside its host's corner. */
-  --gog-badge-offset: var(--gog-space-6);
+  /* How far the badge hangs outside its host's corner. `space-8` rather than the `space-6` it
+     was: every off-grid step this library had sat exactly halfway between two grid steps, so the
+     4px grid made the tie-break a real decision, and it rounds up (docs/component-geometry.md,
+     D3b). Here that is also the better answer on its own terms — a 20px badge hanging 8px out
+     clears the host's corner radius at `--gog-radius: 8px`, which 6px did not quite do. */
+  --gog-badge-offset: var(--gog-space-8);
   --gog-badge-border-width: 0;
   --gog-badge-border-style: var(--gog-border-style);
   --gog-badge-border-color: transparent;
