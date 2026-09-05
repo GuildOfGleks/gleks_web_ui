@@ -4,6 +4,37 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.9.2] - planned
+
+### Fixed
+
+- **`GOG_CONFIG.spinner.component` now reaches `gog-spinner-overlay`.** The overlay forwards its
+  own `variant` to the spinner it wraps, and that input defaulted to `'runic'` rather than to
+  nothing — so the spinner inside read it as an instance asking for the built-in look, and the
+  config, whose rule is that an explicit `variant` outranks it, correctly stepped aside. An app
+  that had set a house spinner got it everywhere except on the one component it reaches for to
+  cover a whole region while it loads. `variant` is now `GogSpinnerVariant | undefined` and
+  defaults to unset, so "asked for nothing" survives being passed down; `size` and `ariaLabel`
+  keep their defaults, having no config key to fall through to.
+
+  Nothing changes for an app that configures no spinner: an overlay with no `variant` still
+  renders `runic`. The type widens rather than narrows, so a binding that passes a
+  `GogSpinnerVariant` still compiles; only code that *reads* `overlay.variant()` now has to
+  account for `undefined`.
+
+  Found from the documentation side rather than from a report — the same way 21.8.0's four
+  under-reported `GOG_CONFIG` keys were. `spinner-config.spec.ts` had mounted only `gog-spinner`
+  and `gog-button`, which is why every test passed over a key that missed a third of its targets;
+  it now mounts an overlay too, in four cases.
+
+### Documentation
+
+- **`gog-table` is named among the spinners `GOG_CONFIG.spinner` reaches**, in `AGENTS.md` and in
+  `GogGlobalConfig`'s own JSDoc. It renders a bare `gog-spinner` in place of its rows and has
+  always honoured both keys; it appeared in no "Applies to" sentence because it reads no config
+  itself, so a grep for readers never finds it. Documentation only — the behaviour was already
+  correct, which is exactly what makes this class of defect quiet.
+
 ## [21.9.1] - 04.09.2026
 
 ### Fixed

@@ -92,6 +92,28 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader>One spinner for the whole app — GOG_CONFIG.spinner.component</h3>
+    <p class="lead">
+      <code>variant="custom"</code> restyles one spinner. Most of the spinners an app shows are ones
+      it never writes: <code>gog-button</code> draws one while <code>loading</code>,
+      <code>gog-autocomplete</code> while it searches, <code>gog-table</code> in place of its rows,
+      and <code>gog-spinner-overlay</code> over a whole region — none of them take a spinner input.
+      Pass a <em>component</em> to <code>GOG_CONFIG</code> and every one of them is yours. It is
+      rendered inside the library's own size wrapper, so the sizing, <code>role="status"</code> and
+      the accessible name survive; only the visual is yours.
+    </p>
+    <p class="meta">
+      <strong>Watch the overlay tile.</strong> Until 21.9.2 it forwarded a <code>variant</code> of
+      its own, defaulting to <code>runic</code>, which the spinner inside read as an instance
+      overruling the config — so this panel would have shown the house loader in four places and the
+      built-in in the fifth, on a key documented as reaching all of them. The provider here is
+      scoped to this panel; a real app calls <code>provideGogConfig</code> once in
+      <code>app.config.ts</code>.
+    </p>
+    <app-spinner-config-scope />
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Full-screen overlay</h3>
     <p class="lead">
       <code>gog-spinner</code> itself can render as a fixed, viewport-covering overlay via

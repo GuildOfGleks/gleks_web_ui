@@ -39,10 +39,10 @@ export interface GogGlobalConfig {
    * because of what it removes: a house spinner otherwise has to be passed into every control
    * that can show one, and cannot be passed into the ones that render their own. Set it once and
    * **every** spinner the library draws is yours — `gog-spinner`, `gog-spinner-overlay`, and the
-   * ones inside `gog-button` and `gog-autocomplete`'s loading states, which have no input to
-   * reach. It is rendered through `NgComponentOutlet` inside the size wrapper, so it keeps the
-   * sizing, the overlay behaviour, the `role="status"` and the accessible name; only the visual
-   * is yours.
+   * ones inside `gog-button`, `gog-autocomplete` and `gog-table`'s loading states, which have no
+   * input to reach. It is rendered through `NgComponentOutlet` inside the size wrapper, so it
+   * keeps the sizing, the overlay behaviour, the `role="status"` and the accessible name; only
+   * the visual is yours.
    *
    * Precedence is the library's usual one, with a wrinkle worth stating: an instance's own
    * `variant` wins over both keys here, `component` wins over `variant`, and the built-in
@@ -50,8 +50,13 @@ export interface GogGlobalConfig {
    * has set a component — an instance asking for something specific is not overridden by a
    * default.
    *
-   * Applies to: `gog-spinner`, `gog-spinner-overlay`, and the spinners inside `gog-button` and
-   * `gog-autocomplete`.
+   * Applies to: `gog-spinner`, `gog-spinner-overlay`, and the spinners inside `gog-button`,
+   * `gog-autocomplete` and `gog-table`. Two of those were wrong until 21.9.2 and are worth the
+   * warning: `gog-table` was never listed although it always honoured the key, and
+   * `gog-spinner-overlay` was listed although it did not — it forwards its own `variant` down,
+   * and that input defaulted to `'runic'`, which the spinner inside correctly read as an
+   * instance overruling a default. Neither shows up in a grep for `globalConfig.spinner`,
+   * because neither reads the config: they render a `gog-spinner` that does.
    */
   spinner?: {
     component?: Type<unknown>;

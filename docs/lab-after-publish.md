@@ -19,12 +19,13 @@ delete the section too.
 
 ---
 
-## After the release that fixes the spinner overlay
+## After 21.9.2
 
-`docs/backlog.md` carries the defect: `GOG_CONFIG.spinner.component` does not reach
-`gog-spinner-overlay`, because the overlay's own `variant` defaults to `'runic'` and is forwarded
-down. The lab documents that exception in three places, and **all three come out in the release
-that fixes it**:
+**The fix is written and waiting for a release** (`CHANGELOG.md`, `## [21.9.2] - planned`):
+`GOG_CONFIG.spinner.component` did not reach `gog-spinner-overlay`, because the overlay's own
+`variant` defaulted to `'runic'` and is forwarded down. The lab documents that exception in three
+places, and **all three come out once 21.9.2 is on npm and `npm install` has run** — not before,
+or the site describes a package nobody can install:
 
 - `public/docs/global-config.md` — the last paragraph of "The second — `spinner.component`", and
   the closing clause of the `spinner` row in "What you can configure".
@@ -34,7 +35,9 @@ that fixes it**:
   "The app's own indicator, everywhere at once" card.
 
 `global-config-data.ts`'s `spinner.component` note and its header comment say the same thing and
-want the same edit.
+want the same edit. `gog-table` also gains the key in the lab's own per-component list — it is
+already there, because that list was built from the source rather than from the JSDoc that was
+missing it.
 
 ## Checking your work
 

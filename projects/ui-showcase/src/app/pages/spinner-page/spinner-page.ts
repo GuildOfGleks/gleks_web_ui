@@ -8,6 +8,7 @@ import {
   SpinnerComponent,
   SpinnerOverlayComponent,
 } from '@guildofgleks/ui';
+import { SpinnerConfigScope } from './spinner-config-scope';
 
 @Component({
   selector: 'app-spinner-page',
@@ -17,6 +18,7 @@ import {
     PanelComponent,
     SpinnerComponent,
     SpinnerOverlayComponent,
+    SpinnerConfigScope,
   ],
   templateUrl: './spinner-page.html',
   styleUrl: './spinner-page.scss',
