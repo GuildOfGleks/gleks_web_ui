@@ -75,6 +75,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* WCAG 2.5.8's 24 CSS px. An `xsm` field computes to 20px tall, and a text field cannot borrow
+     the difference with an invisible `::before` the way a button does — an overlay above an input
+     swallows the click that places the caret. The box grows instead: 4px at `xsm`, nothing at any
+     other size. */
+  min-block-size: var(--gog-field-min-block-size);
   padding: var(
       --gog-multiselect-padding-y,
       var(--gog-multiselect-size-padding-y, var(--gog-field-md-padding-y))

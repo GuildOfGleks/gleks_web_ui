@@ -45,6 +45,13 @@ reached 1.0, so breaking changes may land in minor versions.
   `sm` 14 to 16 with its gap 10 to 12, `md` 18 to 20. A surface like the card, and outside the
   optical ratio for the same reason.
 
+- **An `xsm` field is 24px tall, up from 20** — `gog-inputfield`, `gog-textarea`, `gog-select`,
+  `gog-multiselect`, `gog-autocomplete` and `gog-datepicker`, through the new
+  `--gog-field-min-block-size` they all read. This is the third and last place in the release where
+  the paint grows instead of a hit area, and the reason is specific to text: an invisible `::before`
+  over an input would swallow the click that places the caret, so the trick that works for a button
+  breaks the thing it is protecting. Nothing changes from `sm` up.
+
 - **`gog-scroll`'s thumb hit padding is 8px, not 6px** — the invisible band around the thumb that
   makes it easier to grab, so the grid moves it in the helpful direction. **The thumb's 2px inset
   stays**, for the same reason the toggle's does: a length inside a single painted mark defines
