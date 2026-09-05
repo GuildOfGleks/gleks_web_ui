@@ -1187,7 +1187,7 @@
   /* Trailing chrome: spinner and clear button, clear outermost — the arrangement the other
      dropdowns settled on, so all of them line up in a form. */
   --gog-autocomplete-actions-inset: var(--gog-control-icon-offset);
-  --gog-autocomplete-actions-gap: var(--gog-space-6);
+  --gog-autocomplete-actions-gap: var(--gog-space-8);
   /* Right padding on the input, reserving room for the actions above. */
   --gog-autocomplete-actions-reserve: 40px;
   --gog-autocomplete-clear-color: var(--gog-autocomplete-placeholder-color);
@@ -1201,14 +1201,14 @@
   --gog-autocomplete-panel-border-style: var(--gog-panel-border-style);
   --gog-autocomplete-panel-border-color: var(--gog-border-color);
   --gog-autocomplete-panel-radius: var(--gog-radius);
-  --gog-autocomplete-panel-gap: var(--gog-space-2);
+  --gog-autocomplete-panel-gap: var(--gog-space-4);
   --gog-autocomplete-panel-max-height: 260px;
   /* Ceiling for a content-sized panel, so one very long option cannot span the viewport. */
   --gog-autocomplete-panel-max-width: 420px;
   --gog-autocomplete-options-padding: var(--gog-space-4);
-  --gog-autocomplete-option-padding: var(--gog-space-8) var(--gog-space-10);
+  --gog-autocomplete-option-padding: var(--gog-space-8) var(--gog-space-16);
   --gog-autocomplete-option-radius: calc(var(--gog-radius) - 4px);
-  --gog-autocomplete-option-gap: var(--gog-space-10);
+  --gog-autocomplete-option-gap: var(--gog-space-12);
   --gog-autocomplete-option-color: var(--gog-text-color);
   --gog-autocomplete-option-hover-bg: var(--gog-hover-color);
   --gog-autocomplete-option-press-bg: var(--gog-border-color);

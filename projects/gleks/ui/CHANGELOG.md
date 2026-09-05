@@ -45,6 +45,10 @@ reached 1.0, so breaking changes may land in minor versions.
   `sm` 14 to 16 with its gap 10 to 12, `md` 18 to 20. A surface like the card, and outside the
   optical ratio for the same reason.
 
+- **`gog-autocomplete`'s option row is 8/16 at a ratio of 2.0**, from 8/10, with its gap 10 to 12,
+  the actions gap 6 to 8 and the panel gap 2 to 4. An option row is a control — it is what a
+  pointer picks — so it takes the ratio while the panel holding it does not.
+
 - **`gog-multiselect`'s panel chrome is on the grid** — the controls row 6/10 to 8/12, the
   actions gap 6 to 8, the filter row 6 to 8 with its input at 8/16 (a ratio of 2.0, from 1.33),
   the empty state 10 to 12, the `+N` overflow chip's gap 6 to 8, and the panel offset 2 to 4.
