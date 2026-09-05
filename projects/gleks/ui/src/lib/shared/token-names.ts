@@ -692,7 +692,6 @@ export type GogTokenName =
   | '--gog-field-md-icon-offset'
   | '--gog-field-md-padding-x'
   | '--gog-field-md-padding-y'
-  | '--gog-field-min-block-size'
   | '--gog-field-slg-font-size'
   | '--gog-field-slg-icon-inset'
   | '--gog-field-slg-icon-offset'
@@ -1695,7 +1694,6 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-field-md-icon-offset',
       '--gog-field-md-padding-x',
       '--gog-field-md-padding-y',
-      '--gog-field-min-block-size',
       '--gog-field-slg-font-size',
       '--gog-field-slg-icon-inset',
       '--gog-field-slg-icon-offset',

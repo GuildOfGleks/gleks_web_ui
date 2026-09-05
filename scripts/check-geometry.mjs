@@ -105,19 +105,16 @@ const SURFACES = new Map([
  * Empty until the sweep fills it — every line here is a component commit that has landed.
  */
 const HIT_AREA = new Map([
-  ['button/xsm', 'button.css, `.gog-btn::before` — 20px painted, 24px target'],
-  ['slider-thumb', 'slider.component.scss, `.gog-slider__thumb::before` — 16px painted; the track is clickable too'],
-  ['toast-close', 'button.css, `.gog-btn::before` — a gog-button with --gog-button-padding overridden'],
-  ['toast-action', 'button.css, `.gog-btn::before` — a gog-button with --gog-button-padding overridden'],
+  ['accordion/xsm', 'accordion.component.scss, `.gog-accordion__header` min-block-size — stacked rows, so an inflated hit area would overlap its neighbour; the header draws no border of its own'],
+  ['chip/xsm', 'chip.component.scss, `.gog-chip__surface` min-block-size — 23.2px painted, and the surface clips, so the paint grows'],
   ['chip-remove/xsm', 'chip.component.scss, `.gog-chip__remove::before` — 13.2px painted'],
   ['chip-remove/sm', 'chip.component.scss, `.gog-chip__remove::before` — 15.4px painted'],
   ['chip-remove/md', 'chip.component.scss, `.gog-chip__remove::before` — 17.6px painted'],
   ['chip-remove/lg', 'chip.component.scss, `.gog-chip__remove::before` — 19.8px painted'],
   ['chip-remove/slg', 'chip.component.scss, `.gog-chip__remove::before` — 22px painted'],
-  ['field/xsm', 'the six field components, `min-block-size: var(--gog-field-min-block-size)` — an overlay above an input swallows the click that places the caret'],
-  ['accordion/xsm', 'accordion.component.scss, `.gog-accordion__header` min-block-size — stacked rows, so an inflated hit area would overlap its neighbour'],
-  ['chip/xsm', 'chip.component.scss, `.gog-chip__surface` min-block-size — the surface clips, so the paint grows'],
-  ['chip/sm', 'chip.component.scss, `.gog-chip__surface` min-block-size — the surface clips, so the paint grows'],
+  ['slider-thumb', 'slider.component.scss, `.gog-slider__thumb::before` — 20px painted; the track is clickable too'],
+  ['toast-close', 'button.css, `.gog-btn::before` — a gog-button at 20px, its --gog-button-padding overridden'],
+  ['toast-action', 'button.css, `.gog-btn::before` — a gog-button at 20px, its --gog-button-padding overridden'],
 ]);
 
 /**
@@ -149,6 +146,25 @@ const OPTICAL_CHROME = new Map([
 const TARGET_PADDING = new Map([
   ['toggle-track', '--gog-control-checkbox-padding'],
 ]);
+
+/**
+ * Blocks whose `*-border-width` token is drawn by a *different* element than the target.
+ *
+ * Counting the border was the fix that removed seven false findings, and it introduced one false
+ * pass: `--gog-accordion-border-width` is the item's outline, not the header's, so crediting the
+ * header with 2 + 2 of border it does not draw takes a genuinely 20px row to a passing 24. Caught
+ * in Chrome, where the computed `border-top-width` on `.gog-accordion__header` is 0.
+ */
+const BORDER_NOT_ON_TARGET = new Set(['accordion']);
+
+/**
+ * The other direction: a block that draws a border it does not declare a token for.
+ *
+ * The field tier has no `--gog-field-border-width`; the six components that read the tier draw
+ * `--gog-control-border-width`, 2px a side. Without this an `xsm` field measures 20 here and 24
+ * in Chrome, which is how this branch briefly grew a `--gog-field-min-block-size` nothing needed.
+ */
+const TARGET_BORDER = new Map([['field', '--gog-control-border-width']]);
 
 const fmt = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.?0+$/, ''));
 
@@ -283,6 +299,7 @@ for (const block of blocks.values()) {
     } else if (PAD_Y.includes(t.prop)) slot.padY = resolve(t.token).px;
     else if (t.prop === 'font-size') slot.font = resolve(t.token).px;
     else if (t.prop === 'line-height') slot.leading = resolve(t.token).px;
+    else if (t.prop === 'border-width') slot.border = resolve(t.token).px;
     else if (['height', 'min-height', 'box-size', 'size'].includes(t.prop))
       slot.explicit = resolve(t.token).px;
     bySize.set(key, slot);
@@ -302,11 +319,23 @@ for (const block of blocks.values()) {
     // target — 12 + 8 + 8 is 28, and the SC is met without touching anything. Measuring the box
     // alone reported two findings that were not there, which is the same class of mistake as
     // holding a progressbar's height to 24px: the law is about targets.
+    // **The border counts.** A `box-sizing: border-box` control includes its own border in the
+    // box a pointer lands on, and every control in this library draws one — an `xsm` button is
+    // 4 + 12 + 4 of padding and text plus 2 + 2 of border, which is 24 in the browser and was
+    // 20 in this script. Measured in Chrome after the sweep had already "fixed" it, which is the
+    // whole argument for looking at the rendered thing: nothing in the token arithmetic was
+    // wrong, it was just incomplete, and a check that is quietly incomplete produces work.
+    const borrowedBorder = TARGET_BORDER.has(block.name)
+      ? resolver.value(`var(${TARGET_BORDER.get(block.name)})`).px
+      : null;
+    const border = BORDER_NOT_ON_TARGET.has(block.name)
+      ? 0
+      : (slot.border ?? shared.border ?? borrowedBorder ?? 0);
     const px =
       explicit !== null
-        ? explicit + 2 * (padY ?? 0)
+        ? explicit + 2 * (padY ?? 0) + 2 * border
         : padY !== null && font !== null
-          ? padY * 2 + font * leading
+          ? padY * 2 + font * leading + 2 * border
           : null;
     if (px === null || px >= 24) continue;
     const key = `${block.name}${size ? `/${size}` : ''}`;

@@ -19,12 +19,13 @@
   width: fit-content;
   max-width: 100%;
   /*
-   * WCAG 2.5.8 asks 24 CSS px of pointer target. An `xsm` chip computes to 21.2px tall and `sm`
-   * to 22.4, and unlike every other control in this library the shortfall cannot be carried by an
-   * invisible `::before`: this element clips (the ripple and the pill shape both need it), so a
-   * hit area larger than the surface is cut off at the surface's edge. The paint grows instead —
-   * by 1.6px at `xsm` and 2.8px at `sm`, and by nothing at all from `md` up, where the chip is
-   * already 32.8px.
+   * WCAG 2.5.8 asks 24 CSS px of pointer target. An `xsm` chip is 23.2px tall — 4 + 13.2 + 4 of
+   * padding and text plus its 1px border on each side — and unlike every other control here the
+   * 0.8px cannot be carried by an invisible `::before`: this element clips (the ripple and the
+   * pill shape both need it), so a hit area larger than the surface is cut off at the surface's
+   * edge. The paint grows instead, at `xsm` alone. `sm` measures 24.4px and does not move; an
+   * earlier version of this comment claimed 2.8px there, from arithmetic that had not counted the
+   * border.
    *
    * It is also what gives the remove button room: a 24px target inside a 21px box is impossible
    * for the same clipping reason, so this line is what makes `.gog-chip__remove::before` work.

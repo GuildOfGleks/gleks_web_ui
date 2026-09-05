@@ -16,20 +16,20 @@
  * to a theme token, so a theme can restyle the button without touching this stylesheet.
  */
 /*
- * WCAG 2.5.8 asks 24x24 CSS px of *target*, and an `xsm` button computes to 20px tall (4 + 4 of
- * padding over a 12px label). The target grows; the button does not.
+ * WCAG 2.5.8 asks 24x24 CSS px of *target*. A transparent `::before` centred on the button carries
+ * the size when the button itself is short, so the pointer area is 24px while every painted edge
+ * stays where it was. `min-*-size` rather than a fixed one, so it is inert whenever the button is
+ * already big enough.
  *
- * A transparent `::before` centred on the button carries the missing size, so the pointer area is
- * 24px while every painted edge stays where it was — `xsm` exists to be small, and a compact size
- * that silently stopped being compact would defeat the reason it is offered. `min-*-size` rather
- * than a fixed one, so the rule is inert the moment the button is already big enough, which is
- * every size from `sm` up.
+ * **An `xsm` button at its own padding does not need this**, and believing it did is what put this
+ * rule on `.gog-btn--xsm` first: 4 + 12 + 4 is 20, but the button draws a 2px border on each side
+ * and `box-sizing` is `border-box`, so Chrome measures 24. The token arithmetic that said 20 was
+ * not wrong, it was incomplete.
  *
- * **On `.gog-btn`, not on `.gog-btn--xsm`.** The narrow version was written first and the toast
- * disproved it in the same release: `.gog-toast__close` and `.gog-toast__action` are `gog-button`s
- * that set `--gog-button-padding` directly, so they are 16px and 20px tall at *any* size class.
- * A consumer can do exactly the same thing. The rule has to key off being a button, not off
- * carrying one particular size class.
+ * What the rule is actually for is a button whose padding has been overridden.
+ * `.gog-toast__close` and `.gog-toast__action` set `--gog-button-padding` directly and land at
+ * 20px at *any* size class, and a consumer can do the same to any button in the library. So it
+ * keys off being a button, not off carrying one particular size class.
  *
  * Not `padding`, not `min-height` on the button itself: both would move the paint.
  */

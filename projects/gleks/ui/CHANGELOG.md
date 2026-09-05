@@ -61,13 +61,6 @@ reached 1.0, so breaking changes may land in minor versions.
   `sm` 14 to 16 with its gap 10 to 12, `md` 18 to 20. A surface like the card, and outside the
   optical ratio for the same reason.
 
-- **An `xsm` field is 24px tall, up from 20** — `gog-inputfield`, `gog-textarea`, `gog-select`,
-  `gog-multiselect`, `gog-autocomplete` and `gog-datepicker`, through the new
-  `--gog-field-min-block-size` they all read. This is the third and last place in the release where
-  the paint grows instead of a hit area, and the reason is specific to text: an invisible `::before`
-  over an input would swallow the click that places the caret, so the trick that works for a button
-  breaks the thing it is protecting. Nothing changes from `sm` up.
-
 - **`gog-scroll`'s thumb hit padding is 8px, not 6px** — the invisible band around the thumb that
   makes it easier to grab, so the grid moves it in the helpful direction. **The thumb's 2px inset
   stays**, for the same reason the toggle's does: a length inside a single painted mark defines
@@ -111,13 +104,6 @@ reached 1.0, so breaking changes may land in minor versions.
   content gap 10 to 12, the action row's gap 6 to 8 and the close button's padding 2/4 to 4/8. A
   surface, so outside the optical ratio; its two buttons are controls and are checked as targets.
 
-- **Every `gog-button` carries a 24×24 pointer target now, not only `xsm`.** The rule shipped
-  keyed to `.gog-btn--xsm` earlier in this release, and the toast disproved that in the same pass:
-  `.gog-toast__close` and `.gog-toast__action` are `gog-button`s that set `--gog-button-padding`
-  directly, so they are 16px and 20px tall at *any* size class — and a consumer can do exactly the
-  same thing. The hit area keys off being a button. It stays inert wherever the button already
-  clears 24px, which is every size from `sm` up.
-
 - **`gog-card`'s four off-grid lengths move to the grid** — `xsm` side padding 10 to 12 and its
   gap 6 to 8, `sm` side padding 14 to 16, `lg` gap 14 to 16. The card is **outside** the
   optical-ratio law and stays at roughly 1.2: it frames projected content rather than balancing a
@@ -148,8 +134,8 @@ reached 1.0, so breaking changes may land in minor versions.
   grow.** Padding goes to `4/8`, `4/8`, `8/16`, `12/24`, `12/24` (block/inline) and the gaps to 4,
   8, 8, 12, 12.
 
-  **A chip is 24px tall at minimum now**, which adds 1.6px at `xsm` and 2.8px at `sm` and nothing
-  from `md` up. Everywhere else in this release an undersized target grew an invisible hit area and
+  **A chip is 24px tall at minimum now**, which adds 0.8px at `xsm` and nothing at any other size —
+  `sm` measures 24.4px on its own. Everywhere else in this release an undersized target grew an invisible hit area and
   the paint stayed put; a chip cannot do that, because `.gog-chip__surface` clips — the ripple and
   the pill shape both need `overflow: hidden` — so a hit area larger than the surface is cut off at
   the surface's edge. The same line is what gives the remove button room: a 24px target inside a
@@ -184,12 +170,13 @@ reached 1.0, so breaking changes may land in minor versions.
   eyeballing looks like from the outside. **`xsm` does not move and every other size gets wider**;
   `slg` gains the most, from 28px of side padding to 40px.
 
-- **An `xsm` button's pointer target is 24x24, and the button is still 20px tall.** WCAG 2.5.8 asks
-  24 CSS px of target; an `xsm` button computes to 20 (4 + 4 of padding over a 12px label). A
-  transparent `::before` centred on the button carries the missing height, so the *target* grows
-  and no painted edge moves. `xsm` exists to be small, and a compact size that silently stopped
-  being compact would defeat the reason it is offered. The rule is inert as soon as a consumer's
-  own font or `--gog-density` takes the button past 24px on its own.
+- **Every `gog-button` carries a 24×24 pointer target, whatever its padding says.** A transparent
+  `::before` centred on the button supplies the size when the button is short, and no painted edge
+  moves. It is inert whenever the button is already big enough — which, it turns out, includes
+  `xsm` at its own padding: 4 + 12 + 4 is 20, but the button draws a 2px border on each side and
+  `box-sizing` is `border-box`, so it measures 24 in a browser. What the rule is actually for is a
+  button whose padding has been overridden, like `gog-toast`'s own two, which land at 20px at any
+  size class.
 
 - **`gogBadge` hangs 8px outside its host's corner, not 6px.** The badge's one off-grid length, and
   the commit that had to settle the tie-break behind all of them: every off-grid step this library
