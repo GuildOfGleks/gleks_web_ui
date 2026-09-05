@@ -1751,9 +1751,9 @@
   /* Ceiling for a content-sized panel, so one very long option cannot span the viewport. */
   --gog-select-panel-max-width: 420px;
   /* Filter box — only rendered when `filter` is on. */
-  --gog-select-filter-padding: var(--gog-space-6);
-  --gog-select-filter-input-padding-y: var(--gog-space-6);
-  --gog-select-filter-input-padding-x: var(--gog-space-8);
+  --gog-select-filter-padding: var(--gog-space-8);
+  --gog-select-filter-input-padding-y: var(--gog-space-8);
+  --gog-select-filter-input-padding-x: var(--gog-space-16);
   --gog-select-filter-input-bg: var(--gog-background-color);
   --gog-select-filter-input-color: var(--gog-select-field-color);
   --gog-select-filter-input-border: var(--gog-select-field-border);
@@ -1761,25 +1761,25 @@
   --gog-select-filter-border-width: var(--gog-panel-border-width);
   --gog-select-filter-border-style: var(--gog-panel-border-style);
   --gog-select-filter-border-color: var(--gog-select-option-border-color, var(--gog-border-color));
-  --gog-select-filter-empty-padding: var(--gog-space-10);
+  --gog-select-filter-empty-padding: var(--gog-space-12);
   --gog-select-filter-empty-color: var(--gog-select-placeholder-color);
   /* Clear button — only rendered once a value is selected, see `clearable`. */
   /* A quarter of the corner radius — see `--gog-input-clear-radius` for why. */
   --gog-select-clear-radius: calc(var(--gog-radius) / 4);
   --gog-select-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
-  --gog-select-clear-gap: var(--gog-space-6);
+  --gog-select-clear-gap: var(--gog-space-8);
   --gog-select-clear-color: var(--gog-select-placeholder-color);
   --gog-select-clear-hover-color: var(--gog-select-label-color);
   --gog-select-control-gap: var(--gog-space-12);
   --gog-select-panel-bg: var(--gog-surface-color);
   --gog-select-panel-shadow: var(--gog-panel-shadow);
   --gog-select-panel-max-height: 260px;
-  --gog-select-panel-offset: var(--gog-space-2);
+  --gog-select-panel-offset: var(--gog-space-4);
   --gog-select-option-hover-bg: var(--gog-hover-color);
   --gog-select-option-press-bg: var(--gog-border-color);
   --gog-select-option-selected-color: var(--gog-accent-color);
   --gog-select-option-color: var(--gog-text-color);
-  --gog-select-option-gap: var(--gog-space-10);
+  --gog-select-option-gap: var(--gog-space-12);
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-select-option-height: 40px;

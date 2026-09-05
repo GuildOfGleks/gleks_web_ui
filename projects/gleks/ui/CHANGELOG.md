@@ -45,6 +45,10 @@ reached 1.0, so breaking changes may land in minor versions.
   `sm` 14 to 16 with its gap 10 to 12, `md` 18 to 20. A surface like the card, and outside the
   optical ratio for the same reason.
 
+- **`gog-select`'s panel chrome is on the grid** — the filter row's padding 6 to 8, its input
+  8/16 at a ratio of 2.0 (from 1.33), the empty-state padding 10 to 12, the clear button's gap 6
+  to 8, the option row's gap 10 to 12, and the panel's offset from the field 2px to 4px.
+
 - **`gog-dialog`'s header padding is on the grid** — its bottom side goes from 14px to 16px, so
   the header is padded 16/20/16 rather than 16/20/14.
 
