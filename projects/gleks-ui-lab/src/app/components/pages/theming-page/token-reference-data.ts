@@ -1,3 +1,14 @@
+// The token reference the Theming page renders, and the per-component Styling Tokens table every
+// doc page slices out of it by section id.
+//
+// **Hand-maintained, and deliberately not the package's full token list.** `TOKENS.md` and
+// `GOG_TOKEN_GROUPS` are exhaustive — 1383 custom properties, most of them one per size step —
+// and reprinting that is a search result, not a reference. The rows here compress a family into
+// one line (`{variant}`, `{status}`, "per size step") and say what it is *for*. The cost of that
+// choice is that a release adding tokens does not show up here on its own: check a new release's
+// changelog against the section it touches. 21.9.0's press, toggled and severity tokens were
+// added this way.
+
 import type { GogAccordionItem } from '@guildofgleks/ui';
 
 export interface TokenRow {
@@ -319,7 +330,36 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Hover state per variant.',
       },
       {
-        name: '--gog-button-bg / -color / -border / -padding / -font-size',
+        name: '--gog-button-{variant}-press-bg / -press-color',
+        description:
+          'Pressed state per variant. The press is a colour and not only the scale below, so it ' +
+          'survives prefers-reduced-motion.',
+      },
+      {
+        name: '--gog-button-active-scale',
+        description:
+          'How far a press shrinks the button. Dropped under prefers-reduced-motion, where the ' +
+          'press colour carries the state on its own.',
+      },
+      {
+        name: '--gog-button-{variant}-toggled-shadow / --gog-button-toggled-ring-width',
+        description:
+          'The inset ring a button with aria-pressed="true" (or "mixed") draws. A ring rather ' +
+          'than a fill, because hover and press already own the background.',
+      },
+      {
+        name: '--gog-button-{status}-fill / -fill-hover / -fill-press / -on-fill / -ink / -wash',
+        description:
+          'The severity palette, per status (danger/success/warning/info). fill and on-fill are ' +
+          'a filled button and its label; ink is the label of a transparent one, the status hue ' +
+          'mixed halfway toward the page ink; wash is the hover background under it.',
+      },
+      {
+        name: '--gog-button-{variant}-spinner-color',
+        description: 'The loading spinner, per variant.',
+      },
+      {
+        name: '--gog-button-bg / -color / -border / -padding / -font-size / -press-bg / -press-color / -toggled-shadow',
         description:
           'Undeclared by default — the escape hatch for styling a single button instance.',
       },

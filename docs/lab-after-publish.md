@@ -21,24 +21,7 @@ delete the section too.
 
 ## After 21.9.0
 
-1. **The button page's Styling Tokens table gains the active-state tokens.** It is generated from
-   `TOKEN_SECTIONS`, so it picks them up on its own once the package is installed — but the page's
-   prose says nothing about the press state, and that is the part worth writing: the press is a
-   colour rather than only a scale, `prefers-reduced-motion` keeps the colour and drops the scale,
-   and the ripple deliberately does not cover this. `AGENTS.md`'s `gog-button` section has the
-   wording; the showcase's "Press feedback, with animations off" panel has a live case with the
-   DevTools recipe for emulating reduced motion.
-
-2. **The Right-to-left / accessibility story on `general/*` does not change**, but the FAQ answer
-   about reduced motion (if one is added) should say the same thing as the button page rather than
-   a second wording of it.
-
-3. **`one-dark`'s `--gog-accent-dim` changed** (`#4b8fca` → `#5399d6`). The theme generator reads
-   the installed package's presets, so it follows automatically; nothing to edit. Listed only so
-   that a colour difference between the deployed site and a local screenshot is not investigated
-   as a bug.
-
-4. **Check the two header toggles' hover.** They show their state by overriding
+1. **Check the two header toggles' hover.** They show their state by overriding
    `--gog-button-ghost-color` (muted when off, accent when on), and 21.9.0 changes a hovered
    ghost button's label to `--gog-text-color` — so while the pointer is on a toggle, that colour
    signal drops out. The icon still differs (`droplet` / `droplet-slash`, `align-left` /
@@ -46,11 +29,7 @@ delete the section too.
    decide by looking whether it wants
    `--gog-button-ghost-hover-color: var(--gog-accent-color)` on the `--active` class.
 
-5. **The button page gains the toggled look.** `aria-pressed="true"` now draws an inset ring —
-   the API table already lists `ariaPressed` from 21.8.0, but nothing on the page says the state
-   is visible now. The showcase's "ARIA state" panel has the wording.
-
-6. **The `--gog-density` demo pointer is what is left of this entry.** The prose half landed as the
+2. **The `--gog-density` demo pointer is what is left of this entry.** The prose half landed as the
    "One number instead of fifty" section in `public/docs/theming.md`, which says the
    scale claim is literally true as of 21.9.0 and names the fourteen lengths that used to ignore
    it. What is not written is the concrete thing to *do*: set the generator's density to 0.85 and

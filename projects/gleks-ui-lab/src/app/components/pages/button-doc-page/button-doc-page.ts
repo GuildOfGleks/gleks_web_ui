@@ -296,6 +296,33 @@ export class ButtonDocPage {
     'export class ExampleComponent {}',
   ].join('\n');
 
+  protected readonly pressHtml = [
+    '<!-- Nothing to wire up: every variant presses. The tokens are the knobs. -->',
+    '<gog-button variant="primary">primary</gog-button>',
+    '',
+    '<!-- One instance, its own press colour -->',
+    '<gog-button',
+    '  variant="primary"',
+    '  style="--gog-button-press-bg: var(--gog-danger-color); --gog-button-press-color: #fff"',
+    '>',
+    '  primary',
+    '</gog-button>',
+  ].join('\n');
+  protected readonly pressTs = [
+    "import { Component } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ButtonComponent],',
+    '  // A theme sets the same thing for every button of a variant:',
+    '  //   --gog-button-primary-active-bg: #7a1d1d;',
+    '  // and --gog-button-active-scale retimes or removes the movement, app-wide.',
+    '  template: `<gog-button variant="primary">primary</gog-button>`,',
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+
   protected readonly disabledHtml =
     '<gog-button variant="primary" [disabled]="true">Primary</gog-button>';
   protected readonly disabledTs = [

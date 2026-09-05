@@ -84,6 +84,38 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">
+        Press feedback, with animations off
+        <app-since version="21.9.0" />
+      </h3>
+      <p class="demo-card__meta">
+        Hold any of these down. The background deepens one step past its own hover, so the press
+        reads even while the pointer is already hovering the button — and it is a
+        <em>state</em> rather than a movement, which is the whole point. Turn on
+        <code>prefers-reduced-motion: reduce</code> (DevTools &rarr; Rendering &rarr; Emulate CSS
+        media feature) and the <code>scale()</code> goes away while the colour stays.
+      </p>
+      <div class="demo-card__preview action-row">
+        @for (variant of variants; track variant) {
+          <gog-button [variant]="variant" type="button">{{ variant }}</gog-button>
+        }
+      </div>
+      <p class="demo-card__meta">
+        Until 21.9.0 the scale was the whole press, so a reader with animations off pressed a button
+        and nothing happened at all. The <a routerLink="/components/ripple">ripple</a> does not
+        cover that case and is not meant to: it is off by default, and it is suppressed under
+        reduced motion on purpose, because a ripple really is decoration and a press state is not.
+        Override the colour per instance with <code>--gog-button-press-bg</code> /
+        <code>--gog-button-press-color</code>, per theme with
+        <code>--gog-button-&lt;variant&gt;-active-bg</code>, and retime or remove the movement with
+        <code>--gog-button-active-scale</code>. Every other pressable surface in the library — menu
+        items, chips, tab and accordion headers, button-toggle options, the three dropdowns' option
+        rows — gained the same treatment in the same release.
+      </p>
+      <app-code-tabs [html]="pressHtml" [ts]="pressTs" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Disabled</h3>
       <p class="demo-card__meta">
         One disabled button per variant — disabled state must stay legible on every color.
@@ -166,6 +198,16 @@
         what makes it worth a demo. Use the inputs: <code>ariaPressed</code>,
         <code>ariaExpanded</code>, <code>ariaControls</code> and <code>ariaHasPopup</code>.
       </p>
+      <p class="demo-card__meta">
+        <strong>A toggle button now looks toggled</strong>
+        <app-since version="21.9.0" /> — press "Mirror layout" and it keeps an inset ring
+        (<code>--gog-button-&lt;variant&gt;-toggled-shadow</code>, width from
+        <code>--gog-button-toggled-ring-width</code>) for as long as <code>aria-pressed</code> is
+        <code>"true"</code> or <code>"mixed"</code>. A ring rather than a fill, because hover and
+        press already own the background and the state has to survive both. Until 21.9.0 it did not
+        exist at all: a button could announce itself as on to a screen reader and look identical to
+        an off one.
+      </p>
       <div class="demo-card__preview action-row">
         <gog-button variant="outline" [ariaPressed]="isMirrored()" (gogClick)="toggleMirror()">
           Mirror layout
@@ -191,7 +233,8 @@
         <code>null</code> means "not a toggle button", <code>false</code> means "a toggle button
         that is off", and to a screen reader those are two different controls.
         <code>[gogButton]</code> needs none of these inputs: it styles an element you own, so write
-        the attributes on your own <code>&lt;button&gt;</code> directly.
+        the attributes on your own <code>&lt;button&gt;</code> directly — and it draws the same
+        toggled ring off the attribute you wrote.
       </p>
       <app-code-tabs [html]="ariaStateHtml" [ts]="ariaStateTs" />
     </article>

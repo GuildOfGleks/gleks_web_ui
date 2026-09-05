@@ -133,7 +133,7 @@ behaves the same whether your app is zoneless or still zone-based.
       `
 No, and deliberately not. A component library that imports the router forces it on apps that
 don't route. Where a link is genuinely the right element — a nav button, a "Back to list" — use
-the **\`[gogButton]\`** directive <span class="since since--latest" title="Added in 21.4.0">21.4.0</span>
+the **\`[gogButton]\`** directive <span class="since" title="Added in 21.4.0">21.4.0</span>
 on your own \`<a>\` and keep whatever directives that anchor already has, \`routerLink\` included:
 
 \`\`\`html
@@ -170,7 +170,7 @@ unlabelled field.
       'Can I use my own icons?',
       `
 Yes — register them once with \`provideGogIcons(...)\`
-<span class="since since--latest" title="Added in 21.4.0">21.4.0</span> and use the name
+<span class="since" title="Added in 21.4.0">21.4.0</span> and use the name
 anywhere a built-in one goes. A registered name also overrides a built-in of the same name,
 which is how you swap the library's glyph set for your own without touching call sites. See the
 [Icon](/components/icon) page — including the rule about what SVG is safe to register.
@@ -214,7 +214,12 @@ Three more things that look like a bug and are not:
 
 - **Every animation is plain CSS** — \`@keyframes\` and \`transition\`, no Web Animations API and no
   JavaScript timer driving a visual. There is no browser that runs the library but skips its
-  animations. If you see none, the cause is \`prefers-reduced-motion\`, not the browser.
+  animations. If you see none, the cause is \`prefers-reduced-motion\`, not the browser. That
+  setting removes movement, not feedback: since <span class="since since--latest" title="Added in 21.9.0">21.9.0</span>
+  a press is a colour as well as a scale, and under \`prefers-reduced-motion: reduce\` the scale
+  goes and the colour stays, on the button and on the eight other pressable surfaces. The
+  [Button](/components/button) page has the live case. The ripple is the deliberate exception —
+  it is suppressed outright, because it is decoration rather than state.
 - **\`backdrop-filter\` degrades on its own.** Both places that use it — the dialog backdrop and
   the spinner overlay — also set a solid \`background\`, so a browser without it loses the blur
   and keeps the dimming.
