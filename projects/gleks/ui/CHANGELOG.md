@@ -41,6 +41,20 @@ reached 1.0, so breaking changes may land in minor versions.
   in `checkable-control.config.ts` moves with it — a fallback that disagrees with the token is a
   second default nobody can find.
 
+- **`gog-chip` is on the grid at a ratio of 2.0, and it is the one component whose paint had to
+  grow.** Padding goes to `4/8`, `4/8`, `8/16`, `12/24`, `12/24` (block/inline) and the gaps to 4,
+  8, 8, 12, 12.
+
+  **A chip is 24px tall at minimum now**, which adds 1.6px at `xsm` and 2.8px at `sm` and nothing
+  from `md` up. Everywhere else in this release an undersized target grew an invisible hit area and
+  the paint stayed put; a chip cannot do that, because `.gog-chip__surface` clips — the ripple and
+  the pill shape both need `overflow: hidden` — so a hit area larger than the surface is cut off at
+  the surface's edge. The same line is what gives the remove button room: a 24px target inside a
+  21px box is impossible for exactly the same reason.
+
+  **The remove button's target is 24×24 while its glyph stays between 13px and 22px.** An X drawn
+  at 24px inside a chip would be the loudest thing in it.
+
 - **`gog-toggle`'s state chrome is on the grid** — the offset of the on/off state labels and the
   gap between a state label and the thumb both go from 6px to 8px. **The thumb's inset stays at
   2px**, deliberately and now with the reason written next to it: at 2px the thumb is 83% of a

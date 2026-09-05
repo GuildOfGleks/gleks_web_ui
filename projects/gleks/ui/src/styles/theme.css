@@ -1069,7 +1069,7 @@
 
   --gog-chip-xsm-font-size: 0.6875rem;
   --gog-chip-xsm-padding-block: var(--gog-space-4);
-  --gog-chip-xsm-padding-inline: var(--gog-space-6);
+  --gog-chip-xsm-padding-inline: var(--gog-space-8);
   --gog-chip-xsm-gap: var(--gog-space-4);
   --gog-chip-xsm-avatar-size: 0.875rem;
   --gog-chip-xsm-icon-size: 0.6875rem;
@@ -1078,30 +1078,30 @@
   --gog-chip-sm-font-size: var(--gog-text-xs);
   --gog-chip-sm-padding-block: var(--gog-space-4);
   --gog-chip-sm-padding-inline: var(--gog-space-8);
-  --gog-chip-sm-gap: var(--gog-space-6);
+  --gog-chip-sm-gap: var(--gog-space-8);
   --gog-chip-sm-avatar-size: 1rem;
   --gog-chip-sm-icon-size: 0.75rem;
   --gog-chip-sm-remove-size: 0.875rem;
 
   --gog-chip-md-font-size: var(--gog-text-sm);
   --gog-chip-md-padding-block: var(--gog-space-8);
-  --gog-chip-md-padding-inline: var(--gog-space-12);
+  --gog-chip-md-padding-inline: var(--gog-space-16);
   --gog-chip-md-gap: var(--gog-space-8);
   --gog-chip-md-avatar-size: 1.25rem;
   --gog-chip-md-icon-size: 0.875rem;
   --gog-chip-md-remove-size: 1rem;
 
   --gog-chip-lg-font-size: var(--gog-text-md);
-  --gog-chip-lg-padding-block: var(--gog-space-10);
-  --gog-chip-lg-padding-inline: var(--gog-space-14);
-  --gog-chip-lg-gap: var(--gog-space-10);
+  --gog-chip-lg-padding-block: var(--gog-space-12);
+  --gog-chip-lg-padding-inline: var(--gog-space-24);
+  --gog-chip-lg-gap: var(--gog-space-12);
   --gog-chip-lg-avatar-size: 1.5rem;
   --gog-chip-lg-icon-size: 1rem;
   --gog-chip-lg-remove-size: 1.125rem;
 
   --gog-chip-slg-font-size: var(--gog-text-lg);
   --gog-chip-slg-padding-block: var(--gog-space-12);
-  --gog-chip-slg-padding-inline: var(--gog-space-16);
+  --gog-chip-slg-padding-inline: var(--gog-space-24);
   --gog-chip-slg-gap: var(--gog-space-12);
   --gog-chip-slg-avatar-size: 1.75rem;
   --gog-chip-slg-icon-size: 1.125rem;

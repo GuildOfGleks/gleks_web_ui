@@ -18,6 +18,18 @@
   box-sizing: border-box;
   width: fit-content;
   max-width: 100%;
+  /*
+   * WCAG 2.5.8 asks 24 CSS px of pointer target. An `xsm` chip computes to 21.2px tall and `sm`
+   * to 22.4, and unlike every other control in this library the shortfall cannot be carried by an
+   * invisible `::before`: this element clips (the ripple and the pill shape both need it), so a
+   * hit area larger than the surface is cut off at the surface's edge. The paint grows instead —
+   * by 1.6px at `xsm` and 2.8px at `sm`, and by nothing at all from `md` up, where the chip is
+   * already 32.8px.
+   *
+   * It is also what gives the remove button room: a 24px target inside a 21px box is impossible
+   * for the same clipping reason, so this line is what makes `.gog-chip__remove::before` work.
+   */
+  min-block-size: 24px;
   overflow: hidden;
   padding: var(
       --gog-chip-padding-block,
@@ -128,6 +140,26 @@
   );
   cursor: pointer;
   flex-shrink: 0;
+  /* Anchors the hit area below. */
+  position: relative;
+}
+
+/*
+ * The remove button paints between 13.2px (`xsm`) and 22px (`slg`) once
+ * `--gog-chip-remove-scale` is applied, all of it under WCAG 2.5.8's 24. A transparent `::before`
+ * carries the target so the glyph stays the size it is — an X drawn at 24px inside a chip would
+ * be the loudest thing in it.
+ */
+.gog-chip__remove::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .gog-chip__remove:hover:not(:disabled) {

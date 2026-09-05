@@ -93,6 +93,13 @@ const SURFACES = new Map([
  */
 const HIT_AREA = new Map([
   ['button/xsm', 'button.css, `.gog-btn--xsm::before` — 20px painted, 24px target'],
+  ['chip-remove/xsm', 'chip.component.scss, `.gog-chip__remove::before` — 13.2px painted'],
+  ['chip-remove/sm', 'chip.component.scss, `.gog-chip__remove::before` — 15.4px painted'],
+  ['chip-remove/md', 'chip.component.scss, `.gog-chip__remove::before` — 17.6px painted'],
+  ['chip-remove/lg', 'chip.component.scss, `.gog-chip__remove::before` — 19.8px painted'],
+  ['chip-remove/slg', 'chip.component.scss, `.gog-chip__remove::before` — 22px painted'],
+  ['chip/xsm', 'chip.component.scss, `.gog-chip__surface` min-block-size — the surface clips, so the paint grows'],
+  ['chip/sm', 'chip.component.scss, `.gog-chip__surface` min-block-size — the surface clips, so the paint grows'],
 ]);
 
 /**
