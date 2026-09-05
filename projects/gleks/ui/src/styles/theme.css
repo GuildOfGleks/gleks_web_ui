@@ -1696,6 +1696,10 @@
   --gog-scroll-thumb-hover-bg: var(--gog-accent-color);
   --gog-scroll-thumb-active-bg: var(--gog-accent-bright);
   --gog-scroll-thumb-radius: var(--gog-radius);
+  /* The thumb's clearance inside its own track, off the 4px grid for the same reason
+     `--gog-toggle-thumb-inset` is: a length inside a single painted mark defines that mark's
+     shape rather than spacing two things apart, and 4px on a thin scrollbar would leave a thumb
+     barely wider than the hairline it rides in. Listed in OPTICAL_CHROME. */
   --gog-scroll-thumb-inset: 2px;
   --gog-scroll-corner-bg: transparent;
   --gog-scroll-fade-duration: var(--gog-duration-base);
@@ -1712,7 +1716,7 @@
      `thin` variant gets more of it since its 6px track leaves the least visible thumb to aim
      at; both land the effective hit width in the ~22-24px range generally recommended for a
      comfortable pointer target. */
-  --gog-scroll-normal-thumb-hit-padding: var(--gog-space-6);
+  --gog-scroll-normal-thumb-hit-padding: var(--gog-space-8);
   --gog-scroll-thin-thumb-hit-padding: var(--gog-space-8);
 
   /* ── Select ────────────────────────────────────────────────────────────────── */

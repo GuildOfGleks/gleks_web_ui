@@ -117,6 +117,7 @@ const HIT_AREA = new Map([
  */
 const OPTICAL_CHROME = new Map([
   ['--gog-toggle-thumb-inset', "the thumb's clearance inside its own track: 2px on a 24px track"],
+  ['--gog-scroll-thumb-inset', "the same, on a scrollbar thumb: 4px would leave it barely wider than its own track"],
 ]);
 
 /**

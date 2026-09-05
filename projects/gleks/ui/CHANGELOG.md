@@ -45,6 +45,12 @@ reached 1.0, so breaking changes may land in minor versions.
   `sm` 14 to 16 with its gap 10 to 12, `md` 18 to 20. A surface like the card, and outside the
   optical ratio for the same reason.
 
+- **`gog-scroll`'s thumb hit padding is 8px, not 6px** — the invisible band around the thumb that
+  makes it easier to grab, so the grid moves it in the helpful direction. **The thumb's 2px inset
+  stays**, for the same reason the toggle's does: a length inside a single painted mark defines
+  that mark's shape, and 4px on a thin scrollbar would leave the thumb barely wider than the
+  hairline it rides in.
+
 - **`gog-slider`'s thumb has a 24×24 pointer target and still paints at 16px**, and its gap goes
   from 6px to 8px. This is the one control in the library a pointer *drags*, and a 24px dot would
   cover the value it points at. It stops at 24 rather than 2.5.5's 44 on purpose: the track is
