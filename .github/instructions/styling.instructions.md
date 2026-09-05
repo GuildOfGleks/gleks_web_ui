@@ -163,6 +163,46 @@ This applies to projected/dynamic content too, not just a component's own static
 - Avoid `::ng-deep`; if a child must be themed, expose a `--gog-*` custom property instead.
 - Use `contain: layout style` on self-contained blocks to limit reflow scope.
 
+## Geometry and typography are computed, not chosen
+
+**Nobody on this project is a designer, and the library does not pretend otherwise: every length
+it ships is derived from a rule that can be checked, not picked because it looked right.** That is
+a strength rather than an apology — a value chosen by eye is unfalsifiable and drifts component by
+component, which is exactly how the library ended up with 177 hard-coded paddings in two units
+before `--gog-density` existed.
+
+Five laws govern any length a component declares. They are stated here as the standard; the
+per-component CI check that enforces them is in `docs/backlog.md`, and until it exists these are
+enforced by reading. **A new component satisfies all five before it is done, and an existing one
+that violates one is a defect, not a style.**
+
+1. **The grid.** Every padding, gap, margin, offset and inset reads a step of the spacing scale
+   (`--gog-space-2` … `--gog-space-48`), never a literal — `check-tokens` rule H already fails the
+   build on a literal that restates a step. What the scale's *members* may be is the open half:
+   fourteen steps at 2px granularity is finer than the 4px/8px grid this rule is named for, and
+   tightening it is a decision with real breakage (five of the fourteen steps are odd multiples,
+   and controls use them).
+2. **Concentric radii.** A radius nested inside another is the outer radius minus the padding
+   between them — an inner corner that repeats its parent's radius reads as a mistake at every
+   size, and one that ignores it reads as a different component. Anything sitting inside a
+   rounded box (an option row in a panel, a fill inside a track, an avatar in a chip) derives its
+   radius; it does not restate one.
+3. **Optical ratio.** A control's horizontal padding is a fixed multiple of its vertical padding,
+   the same multiple at every size step. The library currently drifts from 2.00 at `xsm` to 1.40
+   at `slg`, which is five different opinions about the same button.
+4. **The typographic ratio.** Line-height is a function of font size and role, not a per-component
+   choice: text that wraps takes the relaxed end of `--gog-line-height-*`, a single-line label the
+   tight end, and the ratio moves *inversely* with size — a 24px heading does not want 1.5.
+5. **The target.** Anything a pointer activates meets WCAG 2.5.8's 24×24 CSS px at every size the
+   component offers, or is exempt through spacing, and the exemption is stated in the component's
+   own stylesheet rather than assumed. 44×44 (2.5.5, AAA) is the goal for anything a thumb is
+   expected to hit. This is measured at `--gog-density: 1`; a compact theme is the consumer's
+   decision and does not license shipping a 22px button.
+
+**Where a law and a measurement disagree, the measurement wins and the law gets an exception with
+a reason** — the same discipline `check:contrast`'s exceptions already follow. What is not
+acceptable is a length with no derivation at all.
+
 ## Accessibility & motion
 
 - Provide a visible `:focus-visible` outline for every interactive element.

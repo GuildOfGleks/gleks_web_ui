@@ -16,6 +16,55 @@ not worth carrying here.
 
 ## Defects — first
 
+- **Every component's geometry and typography, checked in CI — the five laws.** The standard is
+  now written down (`styling.instructions.md`, "Geometry and typography are computed, not chosen",
+  and step 4 of the definition of done); what does not exist is the script that enforces it. It
+  should run per component, over every shipped component and every new one, from the token values
+  rather than from a rendered page — `theme.css` states all of them, so this is arithmetic on a
+  parsed stylesheet, not a browser.
+
+  Each law below is written as the rule, then what it would find in the library **today**. Those
+  findings are the point: this is not a tidy-up, it is a list of things that were chosen by eye
+  because nothing could check them.
+
+  1. **The 4px / 8px grid.** Every padding, gap, margin, offset and inset already reads a step of
+     the scale — `check-tokens` rule H fails a literal that restates one. **The open half is the
+     scale itself:** `--gog-space-2 … --gog-space-48` is fourteen steps at 2px granularity, and
+     five of them (2, 6, 10, 14, 18) are not multiples of 4. They are load-bearing —
+     `--gog-control-padding-y` is `space-10`, `-x` is `space-14`, the tag's block padding is
+     `space-6` — so tightening to a 4px grid is a decision that moves controls, not a check that
+     passes. Decide the grid first, then the check is trivial.
+  2. **Concentric corner radii.** Inner radius = outer radius − the padding between them. Nothing
+     enforces it and the library has all three states: derived (`--gog-tag-radius` is
+     `max(var(--gog-radius), 2px)`), independent (`--gog-progressbar-radius: 999px`), and repeated
+     verbatim, which is the one that reads as a mistake. The check needs a declared parent for each
+     nested radius — a small table, one line per pair, the same shape `WASH_PAIRS` has.
+  3. **Optical ratio.** Horizontal padding as a fixed multiple of vertical, the same at every size.
+     `gog-button` today: **xsm 8/4 = 2.00, sm 14/8 = 1.75, md 20/12 = 1.67, lg 24/16 = 1.50,
+     slg 28/20 = 1.40.** Five sizes, five opinions, and the drift is monotonic, which is what a
+     value picked by eye per size looks like. Pick the ratio and the tolerance, then this is four
+     lines of script.
+  4. **Line-height / font-size.** The scale exists (`--gog-line-height-none` 1 through `-loose`
+     1.6) and its use is per-component taste. The rule is a function of role and size: wrapping
+     text takes the relaxed end, a single-line label the tight end, and the ratio falls as the
+     font grows. The check needs each component's `-line-height` paired with its `-<size>-font-size`
+     tokens and a role tag — and `--gog-line-height-none: 1` on a tag is *correct*, so the role tag
+     is not optional.
+  5. **Target size (WCAG 2.5.8 AA, 2.5.5 AAA).** The one that will fail loudest and matters most.
+     `--gog-control-checkbox-box-size-xsm` is **12px** and `-sm` is **18px**, against 2.5.8's
+     24x24 CSS px minimum; `md` is exactly 24, with no margin. An `xsm` button computes to about
+     **22px** tall (4+4 padding over a 12px label). None of that is automatically a defect — 2.5.8
+     exempts an undersized target with enough spacing around it — but **the exemption has to be
+     claimed and justified per component, and right now it is claimed nowhere.** 44x44 (2.5.5)
+     is the goal for anything a thumb hits. Measure at `--gog-density: 1`: a compact theme is the
+     consumer's call and does not license shipping a 22px control.
+
+  Two things to get right in the implementation. **It must run per component, not per token** — a
+  finding is only actionable as "gog-button, sm, optical ratio 1.75, expected 1.6 ± 0.1". And
+  **each law needs an exception list with reasons, not a threshold loosened until it passes**;
+  `check:contrast`'s `DENSITY_EXEMPT` and `REST_PAIRS_NOT_RENDERED` are the pattern — an exception
+  that names why is documentation, a threshold quietly relaxed is a check that stopped checking.
+
 - **Theme colour should be decided by arithmetic, not by eye — in two spaces, both gated in CI.**
   The ask, and it is the owner's own framing: nobody here is a designer, so the right colour
   combinations get found by computing them. A change to any palette — `theme.css`'s two blocks or any file in

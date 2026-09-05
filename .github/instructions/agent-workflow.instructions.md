@@ -23,7 +23,7 @@ So the loop is:
 1. Change the library.
 2. Add or extend the example in `ui-showcase` that exercises the change, and verify it there —
    that is the only place a library change is verified live (`gleks-ui-library.instructions.md`
-   step 7).
+   step 8).
 3. **Anything the lab will need — new API to document, a statement that stops being true, a
    path that moves — goes into `docs/lab-after-publish.md` instead of into the lab.** Write it
    as a checklist entry with the file and, where useful, the line: the point is that whoever

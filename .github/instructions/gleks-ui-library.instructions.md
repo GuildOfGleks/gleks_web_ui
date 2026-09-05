@@ -181,10 +181,14 @@ To make an existing or new input configurable this way:
 1. Follows the layout, naming, `gog` prefix, and OnPush/standalone rules above.
 2. Public symbols are exported from `src/public-api.ts`.
 3. SCSS uses `--gog-*` custom properties and BEM classes; no global leakage.
-4. Passes AXE / WCAG AA, supports keyboard focus and reduced motion.
-5. Has passing Vitest specs covering the public API.
-6. `ng build @gleks/ui` succeeds with no new warnings.
-7. **Verified live in `ui-showcase`, and *only* `ui-showcase`** — not just via specs, and not
+4. **Every length it declares is derived, not chosen** — the grid, concentric radii, the optical
+   ratio, the typographic ratio and the 24x24 target, all five of
+   `styling.instructions.md`'s "Geometry and typography are computed, not chosen". A value picked
+   because it looked right is the one kind of change nobody can review.
+5. Passes AXE / WCAG AA, supports keyboard focus and reduced motion.
+6. Has passing Vitest specs covering the public API.
+7. `ng build @gleks/ui` succeeds with no new warnings.
+8. **Verified live in `ui-showcase`, and *only* `ui-showcase`** — not just via specs, and not
    in `gleks-ui-lab`. Vitest/jsdom does not lay out real CSS, so layout-dependent bugs
    (percentage-height chains, scroll-chaining, `position: sticky` containment, circular
    intrinsic sizing) only surface in an actual browser. Build the library
@@ -202,14 +206,14 @@ To make an existing or new input configurable this way:
    **Never use `gleks-ui-lab` for this.** It resolves `@guildofgleks/ui` from the real,
    published npm package on purpose (its `tsconfig.app.json` clears `paths` to force that) —
    its examples must reflect what a consumer can actually install *today*, not an unreleased
-   local build. Don't edit its docs for an API that hasn't shipped; record it per step 8 and
+   local build. Don't edit its docs for an API that hasn't shipped; record it per step 9 and
    document it there only after the user has published the version that includes it.
-8. **Record anything `gleks-ui-lab` will need in `docs/lab-after-publish.md`** — and nowhere
+9. **Record anything `gleks-ui-lab` will need in `docs/lab-after-publish.md`** — and nowhere
    else. A library change touches exactly two projects, this one and `ui-showcase`; see
    `agent-workflow.instructions.md` for the rule and for the discipline of deleting entries
    once they are done. New API, a lab statement the change makes untrue, a moved path: all of
    it goes in that file, grouped under the release that unblocks it.
-9. **Update the documentation that ships inside the package.** Four files are published to npm
+10. **Update the documentation that ships inside the package.** Four files are published to npm
    alongside the code (`ng-package.json`'s `assets`), and a public API change is not done until
    they agree with it. They are not interchangeable — each answers a different question:
 
@@ -218,7 +222,7 @@ To make an existing or new input configurable this way:
    | `README.md` | the npm landing page — install, setup, theming, global config, the shape of the library | setup changes, a concept appears (a new config key, a new cross-cutting behaviour), the component inventory moves |
    | `AGENTS.md` | the per-component API reference an AI agent reads while building an app on the package | **any** input, output, slot, type, service method or default changes — this is the file that goes stale first and silently |
    | `TOKENS.md` | the generated token catalogue | never by hand — run `npm run generate:tokens` after editing `theme.css` |
-   | `CHANGELOG.md` | the release history | per step 10 below — it ships so the docs site can render the notes for the exact version a reader installed, which is why its headings and wording are consumer-facing, not internal notes |
+   | `CHANGELOG.md` | the release history | per step 11 below — it ships so the docs site can render the notes for the exact version a reader installed, which is why its headings and wording are consumer-facing, not internal notes |
 
    **`AGENTS.md` is the one to watch.** It is a large reference with per-component input tables,
    so it is easy to finish a whole release without touching it — and an agent reading a stale
@@ -227,12 +231,12 @@ To make an existing or new input configurable this way:
    in the same change. Its header carries the version it was last verified against; move that
    marker when you update it.
 
-10. **Once step 7 passes, record the change in `projects/gleks/ui/CHANGELOG.md`** under the
+11. **Once step 8 passes, record the change in `projects/gleks/ui/CHANGELOG.md`** under the
    in-progress version heading at the top (Added/Changed/Fixed sections, matching the
    existing entries' style — `## [<next-version>] - planned`; the user swaps `planned` for the
    real date when they cut the release). Do this for every user-visible library change, not
    just new components — bug fixes and behavior changes belong there too.
-11. **Publishing the library is strictly forbidden for an AI agent, under any circumstance.**
+12. **Publishing the library is strictly forbidden for an AI agent, under any circumstance.**
    Do not bump the version in `package.json`, do not edit `CHANGELOG.md`'s heading away from
    `planned`, and do not run `npm publish` or the `release` script — not even if explicitly
    asked to in a way that seems to authorize it in the moment. The user always cuts the release

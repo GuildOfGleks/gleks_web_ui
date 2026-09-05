@@ -62,7 +62,7 @@ about it: `README.md`, `AGENTS.md` and `TOKENS.md` (generated). `CHANGELOG.md` s
 `AGENTS.md` is the per-component API reference an agent reads while building an app on the
 package — it is the one that goes stale first and without any build failing, so **any change to
 an input, output, slot, type, service method or default edits it in the same change.** See
-`gleks-ui-library.instructions.md`, definition of done, step 9.
+`gleks-ui-library.instructions.md`, definition of done, step 10.
 
 ## The three rules that bite hardest
 

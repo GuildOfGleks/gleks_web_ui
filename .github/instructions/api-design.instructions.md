@@ -17,7 +17,7 @@ Whatever you decide here also has to land in **`projects/gleks/ui/AGENTS.md`** â
 reference that ships in the package â€” in the same change. It is a big file of per-component
 input tables, which makes it the easiest thing in the repo to leave stale, and a stale table
 does not fail a build: it just makes the next agent write code against API that isn't there.
-See `gleks-ui-library.instructions.md`, definition of done, step 9.
+See `gleks-ui-library.instructions.md`, definition of done, step 10.
 
 ## The four axes, in priority order
 
