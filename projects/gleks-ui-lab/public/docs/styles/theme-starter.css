@@ -1516,6 +1516,21 @@
   /* The reduced-motion stand-in for the indeterminate animation. */
   --gog-progressbar-stripe-size: 6px;
   --gog-progressbar-stripe-color: var(--gog-surface-color);
+  /* The two hairlines that mark where the fill ends, and the reason they are two.
+     WCAG 1.4.11 wants 3:1 for the part of a graphic that carries its meaning, and here that is
+     the boundary — `showValue` is `false` by default, so nothing else states the value. The fill
+     cannot carry it against the track: measured across the whole `--gog-text-color`-to-
+     `--gog-border-color` axis, no single track colour clears 3:1 against all five fills in any
+     theme but `primeng`, because the fills straddle mid-luminance and a track dark enough for the
+     amber warning lands on the blue info (`docs/backlog.md` has the table).
+     A marker can, but not in one tone either: `--gog-surface-color` alone is 1.79:1 on
+     `material`'s warning fill, `--gog-text-color` alone is 1.06:1 on `one-dark`'s success. As a
+     pair they always work — the ink line is 3.25:1 to 9.57:1 against the track in all eleven
+     themes, and whichever tone a fill sits close to, the other one does not. `check:contrast`
+     gates both halves. */
+  --gog-progressbar-edge-width: 1px;
+  --gog-progressbar-edge-color: var(--gog-text-color);
+  --gog-progressbar-edge-backing-color: var(--gog-surface-color);
   /* The buffer tier is the same hue at low opacity, so it reads as "ahead of the fill"
      rather than as a second, competing colour. */
   --gog-progressbar-accent-bg: var(--gog-accent-color);
@@ -1884,9 +1899,21 @@
   --gog-tag-warning-color: var(--gog-warning-color);
   --gog-tag-info-color: var(--gog-info-color);
   --gog-tag-bg-mix: 10%;
-  --gog-tag-color-mix: 82%;
+  /* The label is the status hue mixed **halfway toward the page's ink**, and both halves of that
+     changed in 21.10.0. It was 82% of the hue mixed toward literal `black`, which is a light-theme
+     assumption twice over: on a dark theme it darkened a label that already sat on a dark ground
+     (one-dark's danger tag read 3.11:1), and on a light one 18% of black is not enough to bring a
+     bright hue down to text contrast (material's warning, 2.49:1; primeng's success, 3.06:1).
+     Eleven of the 55 shipped combinations were under WCAG AA and nothing had ever measured them —
+     a tag's colours reach the DOM through `--gog-tag-variant-color`, which `check:contrast` could
+     not follow until the same release taught it to.
+
+     `--gog-text-color` rather than `black` makes the mix follow the theme, and 50% rather than 82%
+     is the same ratio, and the same argument, as `--gog-button-<status>-ink`: as body text the raw
+     status hue clears AA in only a handful of themes. The worst pair is now 4.67:1. */
+  --gog-tag-color-mix: 50%;
   --gog-tag-bg-base: var(--gog-surface-color);
-  --gog-tag-color-base: black;
+  --gog-tag-color-base: var(--gog-text-color);
   --gog-tag-border-width: var(--gog-border-width);
   --gog-tag-border-style: var(--gog-border-style);
   --gog-tag-inner-border-width: var(--gog-border-width);
