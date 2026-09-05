@@ -380,6 +380,14 @@ checkbox breaks the one thing a form column has to keep — a single left edge u
 `--gog-control-checkbox-box-size-md`), declared equal to the checkbox with that reason recorded,
 so the next person to ask this question finds an answer instead of a fallback.
 
+**D3a — a padding may repeat between adjacent size steps.** Found by the first calibration
+commit (`gog-tag`) rather than decided in advance, which is what the calibration slot exists for.
+Five *distinct* vertical paddings on a 4px grid have to run 4, 8, 12, 16, 20; on a tag that
+doubles `slg` and produces something the size of a button. So the size step is carried by the
+type scale — a tag's five steps are 11, 12, 14, 16 and 18px — and the padding is allowed to
+repeat between neighbours rather than the geometry inflating to keep five distinct numbers. The
+ratio still holds exactly at every step.
+
 **Still open: D0, D4, D5, D7, D8.** D4 and D5 need their own survey pass (the leading half is
 mostly *unstated* — 45 blocks declare a font size and 20 declare a line-height), and D5's
 elevation ladder is a separate token family that does not have to ride with this one.
