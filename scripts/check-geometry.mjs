@@ -92,7 +92,9 @@ const SURFACES = new Map([
  * Empty until the sweep fills it — every line here is a component commit that has landed.
  */
 const HIT_AREA = new Map([
-  ['button/xsm', 'button.css, `.gog-btn--xsm::before` — 20px painted, 24px target'],
+  ['button/xsm', 'button.css, `.gog-btn::before` — 20px painted, 24px target'],
+  ['toast-close', 'button.css, `.gog-btn::before` — a gog-button with --gog-button-padding overridden'],
+  ['toast-action', 'button.css, `.gog-btn::before` — a gog-button with --gog-button-padding overridden'],
   ['chip-remove/xsm', 'chip.component.scss, `.gog-chip__remove::before` — 13.2px painted'],
   ['chip-remove/sm', 'chip.component.scss, `.gog-chip__remove::before` — 15.4px painted'],
   ['chip-remove/md', 'chip.component.scss, `.gog-chip__remove::before` — 17.6px painted'],

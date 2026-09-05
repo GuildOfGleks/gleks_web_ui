@@ -45,6 +45,17 @@ reached 1.0, so breaking changes may land in minor versions.
   `sm` 14 to 16 with its gap 10 to 12, `md` 18 to 20. A surface like the card, and outside the
   optical ratio for the same reason.
 
+- **`gog-toast` is on the grid** — the stack gap 10 to 12, its own padding 12/14 to 12/16, the
+  content gap 10 to 12, the action row's gap 6 to 8 and the close button's padding 2/4 to 4/8. A
+  surface, so outside the optical ratio; its two buttons are controls and are checked as targets.
+
+- **Every `gog-button` carries a 24×24 pointer target now, not only `xsm`.** The rule shipped
+  keyed to `.gog-btn--xsm` earlier in this release, and the toast disproved that in the same pass:
+  `.gog-toast__close` and `.gog-toast__action` are `gog-button`s that set `--gog-button-padding`
+  directly, so they are 16px and 20px tall at *any* size class — and a consumer can do exactly the
+  same thing. The hit area keys off being a button. It stays inert wherever the button already
+  clears 24px, which is every size from `sm` up.
+
 - **`gog-card`'s four off-grid lengths move to the grid** — `xsm` side padding 10 to 12 and its
   gap 6 to 8, `sm` side padding 14 to 16, `lg` gap 14 to 16. The card is **outside** the
   optical-ratio law and stays at roughly 1.2: it frames projected content rather than balancing a
