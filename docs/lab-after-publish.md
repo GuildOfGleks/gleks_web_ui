@@ -19,25 +19,6 @@ delete the section too.
 
 ---
 
-## After 21.9.0
-
-1. **Check the two header toggles' hover.** They show their state by overriding
-   `--gog-button-ghost-color` (muted when off, accent when on), and 21.9.0 changes a hovered
-   ghost button's label to `--gog-text-color` — so while the pointer is on a toggle, that colour
-   signal drops out. The icon still differs (`droplet` / `droplet-slash`, `align-left` /
-   `align-right`) and `aria-pressed` is unaffected, so nothing is lost that a reader depends on;
-   decide by looking whether it wants
-   `--gog-button-ghost-hover-color: var(--gog-accent-color)` on the `--active` class.
-
-2. **The `--gog-density` demo pointer is what is left of this entry.** The prose half landed as the
-   "One number instead of fifty" section in `public/docs/theming.md`, which says the
-   scale claim is literally true as of 21.9.0 and names the fourteen lengths that used to ignore
-   it. What is not written is the concrete thing to *do*: set the generator's density to 0.85 and
-   watch a dropdown panel gap move, which is the cheapest way to see it and wants a sentence on
-   the Theme Generator page rather than in the theming doc. `AGENTS.md`'s `--gog-density` bullet
-   carries the split between what follows density and what deliberately does not, and names the
-   check (`check-tokens` rule H) that now enforces it.
-
 ## After the release that fixes the spinner overlay
 
 `docs/backlog.md` carries the defect: `GOG_CONFIG.spinner.component` does not reach

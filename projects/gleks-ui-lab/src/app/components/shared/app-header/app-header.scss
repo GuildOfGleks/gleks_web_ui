@@ -68,8 +68,18 @@
    button is already the accent colour — `dark` is one: both tokens resolve to #fbbf24, so an
    "active" toggle painted itself the colour it already had and the ripple button looked switched
    on while it was off. Muting the off state is what makes the pair differ whatever the palette
-   does. It is the quietest of the three signals — the glyph changes too
-   (`rippleIcon`/`directionIcon` in app.ts) and `aria-pressed` carries it to a screen reader. */
+   does. It is the quietest of the four signals — the glyph changes too
+   (`rippleIcon`/`directionIcon` in app.ts), `aria-pressed` carries it to a screen reader, and
+   since 21.9.0 that attribute also draws an inset accent ring.
+
+   That ring is why this block did not change when 21.9.0 moved a hovered ghost button's label to
+   `--gog-text-color`: under the pointer the colour above stops distinguishing the pair, and the
+   obvious repair — `--gog-button-ghost-hover-color: var(--gog-accent-color)` on `--active` — is
+   the exact failure the library had just measured and fixed (the accent as a label on the hover
+   wash is 3.94:1 in `light`, 4.18 in `primeng`, 4.22 in `one-light`). Re-pointing it here would
+   buy back the quietest signal by breaking WCAG AA on three themes. Checked by hand in `dark` and
+   `classic`, and no preset overrides `--gog-button-ghost-toggled-shadow`, so the ring is there in
+   all eleven: a hovered active toggle keeps its ring, a hovered inactive one has none. */
 .direction-toggle,
 .ripple-toggle {
   --gog-button-ghost-color: var(--gog-muted-text-color);
