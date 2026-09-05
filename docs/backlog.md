@@ -122,11 +122,14 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   on every chip in the library and turned each of them into a toggle button to a screen reader,
   which most of them are not — so `null` means "not a toggle", and it is the default.
 
-  **One asymmetry came out of it and is not resolved:** a disabled chip keeps its ring, a disabled
-  button does not (`.gog-btn[aria-pressed='true']:not(:disabled)`). The chip's behaviour is the
-  one to keep — "on, and currently unavailable" is a real state, and dropping the look leaves it
-  announced and invisible — so the button is probably wrong, in a small way, on a surface nobody
-  has complained about. Decide it rather than let the two drift.
+  **The asymmetry it left is resolved** (2026-09-05, 21.9.2), the way this entry guessed: the chip
+  was right and the button dropped its ring while disabled. The guard had been copied from the
+  button's own hover and press rules, where `:not(:disabled)` belongs — and it was quietly load
+  bearing, because it also made the rule (0,3,0) and that is what lets the ring survive a hover.
+  The doubled class replaces it. Two bugs in `check:state-specificity` came out of testing that:
+  it did not treat `aria-pressed` as a state, and it read a quoted attribute value as an element
+  name, which floated the weakened selector over the consumer floor it enforces. It self-tests its
+  arithmetic now.
 
 - **Missing components**, in rough order of how often a real site wants them: `alert`/`banner` (a
   persistent in-flow message — `gog-toast` is transient and cannot serve this), `avatar`,

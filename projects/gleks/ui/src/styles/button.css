@@ -133,9 +133,23 @@
  * This matches `[gogButton]` on a consumer's own element too, which is the whole reason it keys
  * off the attribute rather than an input — the directive styles markup you own, so you write
  * `aria-pressed` there yourself and get the look for free.
+ *
+ * **A disabled toggle keeps the ring** (21.9.2). It carried `:not(:disabled)` until then, copied
+ * from the pointer states above where the guard is correct — but "on, and you cannot change it
+ * right now" is a real state, and `disabled` on a real `<button>` does not remove `aria-pressed`,
+ * so dropping the look left the button announcing itself as on and looking exactly like an off
+ * one: the failure this rule was written to prevent, in the one case nobody looks at.
+ * `gog-chip` had it right from the start (`:host(.gog-chip--selected)`, no disabled guard) and
+ * the two had drifted apart. The `--gog-button-disabled-opacity` on the rule below dims the ring
+ * along with everything else, which is the correct amount of "unavailable".
+ *
+ * The doubled class is what the removed `:not(:disabled)` was silently paying for: both are
+ * (0,3,0), and this rule has to stay level with `:hover:not(:disabled)` to win the tie by source
+ * order. It buys the same protection `:focus-visible` and `:disabled` have from a consumer's
+ * single-class rule, which is right for a state and wrong for a look — see the comment on those.
  */
-.gog-btn[aria-pressed='true']:not(:disabled),
-.gog-btn[aria-pressed='mixed']:not(:disabled) {
+.gog-btn.gog-btn[aria-pressed='true'],
+.gog-btn.gog-btn[aria-pressed='mixed'] {
   box-shadow: var(
     --gog-button-toggled-shadow,
     var(--gog-button-variant-toggled-shadow, var(--gog-button-primary-toggled-shadow))

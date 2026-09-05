@@ -27,6 +27,29 @@ reached 1.0, so breaking changes may land in minor versions.
   and `gog-button`, which is why every test passed over a key that missed a third of its targets;
   it now mounts an overlay too, in four cases.
 
+- **A disabled toggle button keeps its ring.** `.gog-btn[aria-pressed='true']` carried a
+  `:not(:disabled)` guard, copied from the hover and press rules above it where the guard is
+  correct. It is not correct here: `disabled` on a real `<button>` does not remove `aria-pressed`,
+  so a disabled toggle announced itself as on and looked exactly like the off one beside it —
+  which is the WCAG 1.4.1 failure the ring was added to prevent, in the one state nobody looks at.
+  `gog-chip`'s `selected` ring never had the guard, and `docs/backlog.md` had the asymmetry filed
+  with the chip named as the correct side; this settles it that way. The disabled opacity dims the
+  ring with the rest of the button, which is the right amount of "unavailable".
+
+  The guard was also paying for something invisible: it made the rule (0,3,0), level with
+  `:hover:not(:disabled)`, which is what lets the ring survive a pointer by source order. The
+  selector is now `.gog-btn.gog-btn[aria-pressed='…']` — the same doubled class `:focus-visible`
+  and `:disabled` already use, which restores that and protects the state from a consumer's
+  single-class rule.
+
+  **`check:state-specificity` did not catch the weakened rule when it was tested against it**, and
+  that turned out to be two bugs in the check: `[aria-pressed` was not in its list of states, and
+  its specificity arithmetic read a quoted attribute value as an element name, floating
+  `.gog-btn[aria-pressed='true']` from (0,2,0) to (0,2,1) — over the consumer floor it is there to
+  enforce. Both fixed, `:not()` no longer counted as a class of its own, and the function now
+  self-tests against eight selectors on every run, because a specificity check that miscounts does
+  not fail loudly: it passes a rule it should have caught.
+
 - **Five WCAG AA failures on shipped variants**, none of which any check had ever looked at.
   `check:contrast` took its pairs from rules that set `color` and `background-color`, and a variant
   class in this library sets neither — `.gog-tag--danger` re-points `--gog-tag-variant-color`,

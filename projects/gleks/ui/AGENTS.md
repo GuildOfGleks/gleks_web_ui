@@ -543,6 +543,12 @@ background: the state has to survive both, and until 21.9.0 it did not exist at 
 could announce itself as on to a screen reader and look identical to an off one. `[gogButton]`
 gets the same look from the attribute you write on your own element.
 
+**A `disabled` toggle keeps the ring** (21.9.2), dimmed by `--gog-button-disabled-opacity` like
+the rest of the button. `disabled` on a real `<button>` does not remove `aria-pressed`, so "on,
+and unavailable" is announced either way and has to be visible; the rule had excluded
+`:disabled` until then, copied from the hover and press rules where the guard belongs.
+`gog-chip`'s `selected` ring has always behaved this way, and the two are now the same.
+
 **`[gogButton]` needs none of these inputs.** It styles an element you own, so write the ARIA
 attributes on your own `<button>`/`<a>` directly. Same for `[gogMenuTrigger]`, which sets
 `aria-haspopup`/`aria-expanded`/`aria-controls` on its host — put it on your own `<button

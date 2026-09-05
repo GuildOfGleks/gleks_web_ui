@@ -27,7 +27,10 @@
  *
  * ## What counts as a state, and why only states
  *
- * `:disabled`, `:focus-visible`, `:checked`, `aria-disabled` and friends. A base look — plain
+ * `:disabled`, `:focus-visible`, `:checked`, `aria-disabled`, `aria-pressed` and friends.
+ * `aria-pressed` joined them in 21.9.2, when the toggled ring stopped excluding `:disabled` and
+ * therefore stopped being (0,3,0) by accident — a state saying "this toggle is on" is exactly
+ * the kind whose silent loss is an accessibility regression rather than a taste one. A base look — plain
  * `.gog-btn` — is left beatable on purpose: restyling the library is the consumer's call, and
  * that is the whole point of the token system. A *state* is different. Losing it silently is a
  * correctness or accessibility regression, not a difference of taste.
@@ -50,7 +53,7 @@ const SHEETS = [
 
 /** Selectors that express a state rather than a look. */
 const STATE =
-  /:disabled|:checked|:focus-visible|:focus\b|:indeterminate|:invalid|\[aria-disabled|\[aria-checked|\[disabled\]|--disabled\b/;
+  /:disabled|:checked|:focus-visible|:focus\b|:indeterminate|:invalid|\[aria-disabled|\[aria-checked|\[aria-pressed|\[disabled\]|--disabled\b/;
 
 /** The plainest rule a consumer's component stylesheet can produce: one class + `[_ngcontent]`. */
 const CONSUMER_FLOOR = [0, 2, 0];
@@ -58,20 +61,64 @@ const CONSUMER_FLOOR = [0, 2, 0];
 /**
  * (ids, classes, elements) for one compound selector. Good enough for these files, which use
  * flat selectors and no `:is()`/`:where()`.
+ *
+ * **Attribute selectors are removed before anything else is counted**, and that is not tidiness.
+ * A quoted value is made of ordinary word characters, so counting element names over the raw
+ * selector read `[aria-pressed='true']` as one attribute *and* an element called `true` — which
+ * inflated `.gog-btn[aria-pressed='true']` from (0,2,0) to (0,2,1) and floated it over the
+ * consumer floor. This check then passed a rule an app beats by accident, which is the one thing
+ * it exists to catch. Found 2026-09-05, when the toggled-ring rule was deliberately weakened to
+ * test the check and the check did not notice.
+ *
+ * `:not(...)` contributes only its argument, so the functional pseudo-class name itself is
+ * dropped: `.gog-btn:hover:not(:disabled)` is (0,3,0), which is what the comments in
+ * `button.css` say it is.
  */
 function specificity(selector) {
-  const ids = (selector.match(/(?<![\w-])#[\w-]+/g) ?? []).length;
-  const pseudoClasses = selector.match(/(?<!:):(?!:)[\w-]+/g) ?? [];
-  const classes =
-    (selector.match(/\.[\w-]+/g) ?? []).length +
-    (selector.match(/\[[^\]]+\]/g) ?? []).length +
-    pseudoClasses.length;
-  const elements =
-    (selector.match(/(?<![\w.\-#[:])[a-z][\w-]*/g) ?? []).length -
-    pseudoClasses.length +
-    (selector.match(/::[\w-]+/g) ?? []).length;
+  const attributes = selector.match(/\[[^\]]+\]/g) ?? [];
+  const bare = selector.replace(/\[[^\]]+\]/g, ' ').replace(/:(not|is|where|has)\(/g, '(');
 
-  return [ids, classes, Math.max(0, elements)];
+  const ids = (bare.match(/(?<![\w-])#[\w-]+/g) ?? []).length;
+  const pseudoClasses = bare.match(/(?<!:):(?!:)[\w-]+/g) ?? [];
+  const pseudoElements = bare.match(/::[\w-]+/g) ?? [];
+  const classes =
+    (bare.match(/\.[\w-]+/g) ?? []).length + attributes.length + pseudoClasses.length;
+  // A pseudo name is preceded by `:`, which the lookbehind excludes, so plain names are element
+  // names and nothing else. Pseudo-elements are added back: they count in this slot.
+  const elements =
+    (bare.match(/(?<![\w.\-#:])[a-z][\w-]*/g) ?? []).length + pseudoElements.length;
+
+  return [ids, classes, elements];
+}
+
+/**
+ * The arithmetic above, checked against selectors whose values are not in dispute — including the
+ * two shapes that have actually been wrong: a quoted attribute value read as an element name, and
+ * `:not()` counted as a class of its own.
+ *
+ * A specificity check that miscounts does not fail loudly; it passes a rule it should have caught.
+ * This runs every time for a few microseconds, which is the price of knowing that did not happen.
+ */
+const SELF_TEST = [
+  ['.gog-btn', [0, 1, 0]],
+  ['.gog-btn:disabled', [0, 2, 0]],
+  ['.gog-btn.gog-btn:disabled', [0, 3, 0]],
+  ['.gog-btn:hover:not(:disabled)', [0, 3, 0]],
+  [".gog-btn[aria-pressed='true']", [0, 2, 0]],
+  [".gog-btn.gog-btn[aria-pressed='true']", [0, 3, 0]],
+  ["button[gogButton]:focus-visible", [0, 2, 1]],
+  ['.gog-menu__item::before', [0, 1, 1]],
+];
+
+for (const [selector, expected] of SELF_TEST) {
+  const found = specificity(selector);
+  if (found.join(',') !== expected.join(',')) {
+    console.error(
+      `check-state-specificity is broken: ${selector} computed (${found.join(',')}), ` +
+        `expected (${expected.join(',')}). Fix \`specificity()\` before trusting this run.`,
+    );
+    process.exit(1);
+  }
 }
 
 /** Is `a` less than or equal to `b`, comparing left to right? */

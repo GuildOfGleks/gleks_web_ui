@@ -265,6 +265,24 @@
       "not a toggle button", <code>false</code> means "a toggle button that is off", and they are
       different controls to a screen reader.
     </p>
+    <p class="meta">
+      <strong>A disabled toggle keeps the ring too</strong>, since 21.9.2 — the two below are on and
+      unavailable, and "on, and you cannot change it right now" is a state a reader has to be able
+      to see. <code>disabled</code> on a real <code>&lt;button&gt;</code> does not remove
+      <code>aria-pressed</code>, so a ring dropped here would leave the button announcing itself as
+      on and looking exactly like the off one beside it. <code>gog-chip</code> has done this since
+      <code>selected</code> shipped; the button had copied the <code>:not(:disabled)</code>
+      guard from its own hover and press rules, where it belongs.
+    </p>
+    <div class="action-row">
+      <gog-button variant="outline" [ariaPressed]="true" [disabled]="true"
+        >On, unavailable</gog-button
+      >
+      <gog-button variant="outline" [ariaPressed]="false" [disabled]="true">
+        Off, unavailable
+      </gog-button>
+      <gog-button variant="primary" [ariaPressed]="true" [disabled]="true">On, filled</gog-button>
+    </div>
   </gog-panel>
 
   <gog-panel size="md">
