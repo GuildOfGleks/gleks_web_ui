@@ -426,6 +426,11 @@
   --gog-space-24: calc(24px * var(--gog-density));
   --gog-space-28: calc(28px * var(--gog-density));
   --gog-space-32: calc(32px * var(--gog-density));
+  /* 21.11.0. Added because the optical ratio requires it, not because a design asked: a control
+     with 20px of vertical padding needs exactly 40px horizontal, and `slg` is that control on
+     `gog-button`, `gog-inputfield` and every field that shares their tier. The scale had 32 and
+     then jumped to 48. */
+  --gog-space-40: calc(40px * var(--gog-density));
   --gog-space-48: calc(48px * var(--gog-density));
   --gog-space-xs: var(--gog-space-4);
   --gog-space-sm: var(--gog-space-8);

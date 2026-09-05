@@ -1168,6 +1168,7 @@ export type GogTokenName =
   | '--gog-space-2xl'
   | '--gog-space-32'
   | '--gog-space-4'
+  | '--gog-space-40'
   | '--gog-space-48'
   | '--gog-space-6'
   | '--gog-space-8'
@@ -1726,6 +1727,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-space-2xl',
       '--gog-space-32',
       '--gog-space-4',
+      '--gog-space-40',
       '--gog-space-48',
       '--gog-space-6',
       '--gog-space-8',

@@ -6,6 +6,13 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.11.0] - planned
 
+### Added
+
+- **`--gog-space-40`**, the one step the spacing scale was missing. Added because the optical ratio
+  requires it rather than because a design asked for it: horizontal padding is exactly twice
+  vertical, `slg` controls carry 20px of vertical padding, and the scale went 32 and then jumped to
+  48. It multiplies `--gog-density` like every other step.
+
 ### Changed
 
 - **`gog-tag`'s padding lands on the 4px grid, at a ratio of exactly 2.0.** Horizontal padding is
