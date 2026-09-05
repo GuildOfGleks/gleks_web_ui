@@ -24,7 +24,7 @@ export class SpinnerOverlayComponent {
    * `GOG_CONFIG.spinner.component` and `spinner.variant` are read — and an instance that states a
    * variant outranks both, correctly. A default here would therefore state one on every overlay
    * ever rendered, and an app that had configured a house spinner would get the built-in look
-   * from this component alone (fixed in 21.9.2).
+   * from this component alone (fixed in 21.10.0).
    *
    * `size` and `ariaLabel` above keep their defaults for the opposite reason: neither has a
    * config key to fall through to, so "unset" would mean nothing there.

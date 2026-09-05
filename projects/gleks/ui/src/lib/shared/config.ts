@@ -51,7 +51,7 @@ export interface GogGlobalConfig {
    * default.
    *
    * Applies to: `gog-spinner`, `gog-spinner-overlay`, and the spinners inside `gog-button`,
-   * `gog-autocomplete` and `gog-table`. Two of those were wrong until 21.9.2 and are worth the
+   * `gog-autocomplete` and `gog-table`. Two of those were wrong until 21.10.0 and are worth the
    * warning: `gog-table` was never listed although it always honoured the key, and
    * `gog-spinner-overlay` was listed although it did not — it forwards its own `variant` down,
    * and that input defaulted to `'runic'`, which the spinner inside correctly read as an

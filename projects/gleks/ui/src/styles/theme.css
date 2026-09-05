@@ -2016,7 +2016,7 @@
   --gog-tag-info-color: var(--gog-info-color);
   --gog-tag-bg-mix: 10%;
   /* The label is the status hue mixed **halfway toward the page's ink**, and both halves of that
-     changed in 21.9.2. It was 82% of the hue mixed toward literal `black`, which is a light-theme
+     changed in 21.10.0. It was 82% of the hue mixed toward literal `black`, which is a light-theme
      assumption twice over: on a dark theme it darkened a label that already sat on a dark ground
      (one-dark's danger tag read 3.11:1), and on a light one 18% of black is not enough to bring a
      bright hue down to text contrast (material's warning, 2.49:1; primeng's success, 3.06:1).

@@ -90,7 +90,7 @@ describe('spinner — GOG_CONFIG.spinner', () => {
   });
 
   /**
-   * 21.9.2. `gog-spinner-overlay` forwards its own `variant` to the spinner it wraps, and that
+   * 21.10.0. `gog-spinner-overlay` forwards its own `variant` to the spinner it wraps, and that
    * input used to default to `'runic'` — so the overlay always looked like an instance asking
    * for the built-in, and the key documented as reaching "every spinner the library draws" was
    * silently not reaching the one a consumer uses to cover a whole region. Nothing above catches

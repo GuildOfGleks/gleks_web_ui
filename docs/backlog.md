@@ -139,7 +139,7 @@ toggle. And **the note that had dismissed this for a day was wrong twice** — i
 renders its value as text, and it leaned on hue difference the metric deliberately ignores. A
 justification for not gating something deserves the same scrutiny as the gate.
 
-**The variant blind spot is closed** (2026-09-05, 21.9.2). `check:contrast` resolves the
+**The variant blind spot is closed** (2026-09-05, 21.10.0). `check:contrast` resolves the
 indirection now: a variant class sets `--gog-<block>-variant-*` and one painting rule reads it
 through a `var()` chain, so the sweep resolves each painting rule twice — once plain, once with
 the modifier's declarations layered above the theme block — and measures the pairs that differ.
@@ -158,7 +158,7 @@ header carries both, with the numbers.
 from the documentation side rather than from a report: `GOG_CONFIG.spinner.component` did not
 reach `gog-spinner-overlay` (the overlay forwarded a `variant` defaulting to `'runic'`), and
 `gog-table` was named in no "Applies to" sentence although it always honoured the key. Fixed in
-21.9.2, with four cases added to `spinner-config.spec.ts` — which had mounted only `gog-spinner`
+21.10.0, with four cases added to `spinner-config.spec.ts` — which had mounted only `gog-spinner`
 and `gog-button`, and is why a suite of 1112 tests was green over a key that missed a third of
 its targets. The lesson is the one the 21.8.0 defect already taught and this repeated: a
 component that *renders* a `gog-spinner` reads no config itself, so it appears in no grep for
@@ -245,7 +245,7 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   on every chip in the library and turned each of them into a toggle button to a screen reader,
   which most of them are not — so `null` means "not a toggle", and it is the default.
 
-  **The asymmetry it left is resolved** (2026-09-05, 21.9.2), the way this entry guessed: the chip
+  **The asymmetry it left is resolved** (2026-09-05, 21.10.0), the way this entry guessed: the chip
   was right and the button dropped its ring while disabled. The guard had been copied from the
   button's own hover and press rules, where `:not(:disabled)` belongs — and it was quietly load
   bearing, because it also made the rule (0,3,0) and that is what lets the ring survive a hover.

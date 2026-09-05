@@ -19,12 +19,12 @@ delete the section too.
 
 ---
 
-## After 21.9.2
+## After 21.10.0
 
-**The fix is written and waiting for a release** (`CHANGELOG.md`, `## [21.9.2] - planned`):
+**The fix is written and waiting for a release** (`CHANGELOG.md`, `## [21.10.0] - planned`):
 `GOG_CONFIG.spinner.component` did not reach `gog-spinner-overlay`, because the overlay's own
 `variant` defaulted to `'runic'` and is forwarded down. The lab documents that exception in three
-places, and **all three come out once 21.9.2 is on npm and `npm install` has run** — not before,
+places, and **all three come out once 21.10.0 is on npm and `npm install` has run** — not before,
 or the site describes a package nobody can install:
 
 - `public/docs/global-config.md` — the last paragraph of "The second — `spinner.component`", and

@@ -86,7 +86,7 @@ interface Row {
  * `app.config.ts`; the same shape as `ripple-scope` and `global-config-scope`, and for the same
  * reason — "before" and "after" side by side otherwise takes two applications.
  *
- * The overlay is the one worth watching. Until 21.9.2 it forwarded its own `variant` down with a
+ * The overlay is the one worth watching. Until 21.10.0 it forwarded its own `variant` down with a
  * `'runic'` default, which the spinner inside read as an instance overruling the config — so this
  * panel would have shown the house loader in three places and the built-in in the fourth, on a
  * key documented as reaching all of them.
@@ -134,7 +134,7 @@ interface Row {
 
       <div class="spinner-config-scope__tile spinner-config-scope__tile--wide">
         <gog-spinner-overlay [loading]="busy()" size="lg" ariaLabel="Loading region">
-          <p class="meta">A region that loads. This is the one 21.9.2 fixed.</p>
+          <p class="meta">A region that loads. This is the one 21.10.0 fixed.</p>
         </gog-spinner-overlay>
         <span class="meta">gog-spinner-overlay</span>
       </div>

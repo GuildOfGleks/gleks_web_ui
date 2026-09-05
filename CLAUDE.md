@@ -104,10 +104,10 @@ ships inside the package; its top entry is always the version being worked on.
 **21.9.1 is on npm and is what `gleks-ui-lab` now resolves.** Its 28 changelog entries are all
 21.9.0's; see the two rows above. **`docs/lab-after-publish.md`'s "After 21.9.0" section is
 empty and deleted** (2026-09-05, all 13 items) — the release is documented and every check is
-green. What is left in that file is one section for 21.9.2, which is
+green. What is left in that file is one section for 21.10.0, which is
 written but not released: documenting `GOG_CONFIG.spinner` found two library defects, **both now
-fixed in the working tree** rather than filed. The lab still states the overlay exception in
-three places, and that section lists them — they come out once 21.9.2 is on npm, not before. 21.8.0's three lab entries were closed the day it was published, which also let the lab's
+fixed and committed** rather than filed. The lab still states the overlay exception in
+three places, and that section lists them — they come out once 21.10.0 is on npm, not before. 21.8.0's three lab entries were closed the day it was published, which also let the lab's
 header drop the workaround it had been carrying: both toggles now state themselves with
 `aria-pressed`/`aria-expanded` instead of hiding the state in their accessible name.
 

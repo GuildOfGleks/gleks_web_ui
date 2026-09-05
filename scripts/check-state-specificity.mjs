@@ -28,7 +28,7 @@
  * ## What counts as a state, and why only states
  *
  * `:disabled`, `:focus-visible`, `:checked`, `aria-disabled`, `aria-pressed` and friends.
- * `aria-pressed` joined them in 21.9.2, when the toggled ring stopped excluding `:disabled` and
+ * `aria-pressed` joined them in 21.10.0, when the toggled ring stopped excluding `:disabled` and
  * therefore stopped being (0,3,0) by accident — a state saying "this toggle is on" is exactly
  * the kind whose silent loss is an accessibility regression rather than a taste one. A base look — plain
  * `.gog-btn` — is left beatable on purpose: restyling the library is the consumer's call, and

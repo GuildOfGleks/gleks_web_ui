@@ -134,7 +134,7 @@
  * off the attribute rather than an input — the directive styles markup you own, so you write
  * `aria-pressed` there yourself and get the look for free.
  *
- * **A disabled toggle keeps the ring** (21.9.2). It carried `:not(:disabled)` until then, copied
+ * **A disabled toggle keeps the ring** (21.10.0). It carried `:not(:disabled)` until then, copied
  * from the pointer states above where the guard is correct — but "on, and you cannot change it
  * right now" is a real state, and `disabled` on a real `<button>` does not remove `aria-pressed`,
  * so dropping the look left the button announcing itself as on and looking exactly like an off

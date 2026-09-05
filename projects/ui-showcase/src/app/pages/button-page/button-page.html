@@ -266,9 +266,9 @@
       different controls to a screen reader.
     </p>
     <p class="meta">
-      <strong>A disabled toggle keeps the ring too</strong>, since 21.9.2 — the two below are on and
-      unavailable, and "on, and you cannot change it right now" is a state a reader has to be able
-      to see. <code>disabled</code> on a real <code>&lt;button&gt;</code> does not remove
+      <strong>A disabled toggle keeps the ring too</strong>, since 21.10.0 — the two below are on
+      and unavailable, and "on, and you cannot change it right now" is a state a reader has to be
+      able to see. <code>disabled</code> on a real <code>&lt;button&gt;</code> does not remove
       <code>aria-pressed</code>, so a ring dropped here would leave the button announcing itself as
       on and looking exactly like the off one beside it. <code>gog-chip</code> has done this since
       <code>selected</code> shipped; the button had copied the <code>:not(:disabled)</code>
