@@ -83,7 +83,7 @@ an input, output, slot, type, service method or default edits it in the same cha
 
 ## Where the project is
 
-**Latest release: 21.8.0 (2026-09-03), on npm and tagged.** `projects/gleks/ui/CHANGELOG.md` is the authority and
+**Latest release: 21.10.0 (2026-09-05), on npm and tagged.** `projects/gleks/ui/CHANGELOG.md` is the authority and
 ships inside the package; its top entry is always the version being worked on.
 
 ### The release sequence
@@ -98,18 +98,21 @@ ships inside the package; its top entry is always the version being worked on.
 | 21.8.0     | **released (2026-09-03)** | `gog-button` forwards ARIA state and relationships — `ariaPressed`, `ariaExpanded`, `ariaControls`, `ariaHasPopup`, plus the exported `GogAriaHasPopup`. The component hides the real `<button>`, so a raw `[attr.aria-*]` lands on the roleless host and silently reaches nothing; `ariaLabel` had been the only input covering that. Also `GogGlobalConfig`'s own JSDoc, which under-reported the readers of four `GOG_CONFIG` keys — documentation only, every component already honoured the setting. |
 | 21.9.0     | **released (2026-09-04)** | **A minor, not a patch — it carries four new public inputs.** `gog-button`/`[gogButton]` `severity` (orthogonal to `variant`), `gog-chip` `[(selected)]` (the filter chip), `gog-scroll` `horizontalWheel`, and `GOG_CONFIG.spinner.component`. Under that: the library's feedback story, made to degrade to something rather than to nothing — `:active` is a colour and not only a `transform`, so a press survives `prefers-reduced-motion`, and eight other pressable surfaces gained one. And three passes of colour and geometry work, each found by a check rather than by eye: `gogBadge`'s status labels failed WCAG AA in four themes (11 pairs, `material`'s amber at 1.97:1), fourteen lengths ignored `--gog-density` in the nine themes that set it, and the error line sat 2px lower under two of the eight controls that render one. `check:contrast` went from 143 pairs to **1155** across two new halves (`scripts/token-color.mjs`, then the severity and badge tables), `check-tokens` gained rule I and grew rule H from two families to six. |
 | 21.9.1     | **released (2026-09-04)** | No library change. 21.9.0 was published from a working tree whose version bump had not been committed, so 21.9.1 re-publishes the same code with the history recorded — the two tarballs differ only by the changelog entry. Worth knowing for the trap rather than the fix: the root `package.json` moved to `^21.9.1` while `package-lock.json` still pinned 21.8.0, and `gleks-ui-lab` resolves the package out of `node_modules` on purpose, so it kept building against the old one until `npm install` ran. `npm ci` cannot rescue that — it exits on the mismatch rather than reconciling it. |
-| 21.10.0    | **open, not released**    | `GOG_CONFIG.spinner.component` now reaches `gog-spinner-overlay`: the overlay forwards its own `variant` to the spinner it wraps, and that input defaulted to `'runic'`, which the spinner correctly read as an instance overruling the config — so the one component a consumer uses to cover a whole loading region was the only place a configured house spinner never appeared. `variant` is now `GogSpinnerVariant | undefined`, defaulting to unset. Plus `gog-table` named among the spinners the key reaches (documentation only; it always honoured it). `spinner-config.spec.ts` gains four cases — it had mounted only `gog-spinner` and `gog-button`, which is how 1112 green tests covered a key that missed a third of its targets. **Then `check:contrast` learned to see a variant** (`docs/backlog.md`'s last open defect): a variant class sets `--gog-<block>-variant-*` and paints nothing, so the sweep had been measuring the default variant of every component and reporting a healthy count — 1155 pairs became 2187, and five real AA failures came out of it, all fixed here: `gog-tag`'s label mixed toward literal black (11 of 55 combinations under AA), the table header's raw accent in two light themes, and `slate`'s secondary button at 2.77:1. **Renamed from 21.9.2 to a minor on 2026-09-05**, when `gog-progressbar` gained the two hairlines that mark where its fill ends — new tokens, so a minor rather than a patch. That one is the model for how a colour finding should go: 51 of 55 fill/track pairs were under 3:1, no track colour can fix it (measured across the whole axis, 21 points per theme), the evidence was a greyscale render rather than a ratio, and the note that had dismissed it for a day was wrong on two counts. The changelog heading reads `planned`; **the user cuts the release**, so `check:release` is red on purpose until then. |
+| 21.10.0    | **released (2026-09-05)** | `GOG_CONFIG.spinner.component` now reaches `gog-spinner-overlay`: the overlay forwards its own `variant` to the spinner it wraps, and that input defaulted to `'runic'`, which the spinner correctly read as an instance overruling the config — so the one component a consumer uses to cover a whole loading region was the only place a configured house spinner never appeared. `variant` is now `GogSpinnerVariant | undefined`, defaulting to unset. Plus `gog-table` named among the spinners the key reaches (documentation only; it always honoured it). `spinner-config.spec.ts` gains four cases — it had mounted only `gog-spinner` and `gog-button`, which is how 1112 green tests covered a key that missed a third of its targets. **Then `check:contrast` learned to see a variant** (`docs/backlog.md`'s last open defect): a variant class sets `--gog-<block>-variant-*` and paints nothing, so the sweep had been measuring the default variant of every component and reporting a healthy count — 1155 pairs became 2187, and five real AA failures came out of it, all fixed here: `gog-tag`'s label mixed toward literal black (11 of 55 combinations under AA), the table header's raw accent in two light themes, and `slate`'s secondary button at 2.77:1. **Renamed from 21.9.2 to a minor on 2026-09-05**, when `gog-progressbar` gained the two hairlines that mark where its fill ends — new tokens, so a minor rather than a patch. That one is the model for how a colour finding should go: 51 of 55 fill/track pairs were under 3:1, no track colour can fix it (measured across the whole axis, 21 points per theme), the evidence was a greyscale render rather than a ratio, and the note that had dismissed it for a day was wrong on two counts. **Seventeen sentences still said 21.9.2 after the rename**, three of them inside the package a consumer installs — the number moves with the changelog heading and nothing checks the prose. |
 | 22.x       | when Angular 22 lands     | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
-**21.9.1 is on npm and is what `gleks-ui-lab` now resolves.** Its 28 changelog entries are all
-21.9.0's; see the two rows above. **`docs/lab-after-publish.md`'s "After 21.9.0" section is
-empty and deleted** (2026-09-05, all 13 items) — the release is documented and every check is
-green. What is left in that file is one section for 21.10.0, which is
-written but not released: documenting `GOG_CONFIG.spinner` found two library defects, **both now
-fixed and committed** rather than filed. The lab still states the overlay exception in
-three places, and that section lists them — they come out once 21.10.0 is on npm, not before. 21.8.0's three lab entries were closed the day it was published, which also let the lab's
-header drop the workaround it had been carrying: both toggles now state themselves with
-`aria-pressed`/`aria-expanded` instead of hiding the state in their accessible name.
+**21.10.0 is on npm, tagged, and is what `gleks-ui-lab` now resolves** — `npm install` ran at the
+root, so `package-lock.json` moved with it rather than leaving the lab on the old package the way
+21.9.0 did. **`docs/lab-after-publish.md` is empty of sections** (2026-09-05): the overlay
+exception the site stated in four places is gone, and the two things the checklist did not know
+about were done in the same pass — the hand-maintained token reference gained
+`--gog-progressbar-edge-*`, and the progressbar page's Accessibility section now carries the
+hairlines. That file is supposed to return to this state after every release.
+
+**A recurring tail worth knowing about: `since` chips written as raw HTML go stale.** The
+`app-since` component computes "is this the latest line" from the installed package, but four
+chips in markdown and two templates hardcode `since--latest`, so they kept the filled styling for
+21.9.0 after the release moved past it. Check them after each publish.
 
 **`docs/feedback-triage.md`'s LAB table is fully closed** (2026-09-02); what is left in that file
 is its **21.8.0 section — now two items, not five**: the button's pressed state, its `severity` and
@@ -119,12 +122,15 @@ the next-minor list rather than as a version's payload, the same way a plan's fi
 version in it becomes a lie.
 
 **Read `docs/backlog.md`'s Defects and Gaps sections before anything new** — the project's own
-rule is fixes and polish first. **Defects is empty as of 2026-09-03**, having emptied twice that
-day: the two entries it opened with shipped in 21.8.0, and the three filed while building 21.9.0
-(nine surfaces with no press feedback, a disabled dropdown option answering the pointer, a ghost
-button's hover label under AA) were all closed in it. Gaps is not empty, and its first entry is the sibling of what 21.8.0 just
-fixed: `gog-chip` has no `selected`, and the file explains why forwarding `aria-pressed` there
-would be the wrong fix rather than the same one.
+rule is fixes and polish first. **Defects holds two entries as of 2026-09-05, and neither is a
+bug report — both are a whole class of decision nothing currently checks**: every component's
+geometry and typography against the five laws (planned in `docs/component-geometry.md`), and
+theme colour computed rather than eyeballed, in OKLCH as well as WCAG, with a solver so a failing
+check can name the value that would pass. It had emptied twice on 2026-09-03 — the two entries it
+opened with shipped in 21.8.0, and the three filed while building 21.9.0 (nine surfaces with no
+press feedback, a disabled dropdown option answering the pointer, a ghost button's hover label
+under AA) were all closed in it. Gaps is not empty either; `gog-chip`'s missing `selected` came
+off it in 21.9.0, and what leads it now is the unbuilt-component list.
 
 **`themes.md` is done except one scope decision.** Iterations 1, 2, 3, 5 and 6 are ✅, and so is
 4b; iteration 4 is partial only because five theme slots across three families are unbuilt, which
@@ -143,8 +149,11 @@ on a version still being worked on means someone jumped the gun, not that the ch
 
 Once a release is published: `npm install` at the repo root, then work through
 `docs/lab-after-publish.md`'s section for that version. That file is a live checklist; delete
-each entry as it lands. **It holds no 21.9.0 items as of 2026-09-05 — one section remains, deferred to whichever release fixes the spinner overlay**; it was empty on 2026-09-03 — every section is checked off and
-deleted, which is the state it is supposed to return to after each release is documented. The
+each entry as it lands. **It is empty as of 2026-09-05, 21.10.0 documented and its section
+deleted** — which is the state it is supposed to return to after each release. Two of that
+release's lab-side items were never in it, because the checklist predates the work that created
+them: the token reference is hand-maintained and says so, and a component whose *look* changes
+needs its own page's prose read, not just its API table. The
 bundle-bench re-measurement that was the last item is done (all three libraries re-measured, not
 just this one); its history lives in `projects/gleks-ui-lab/public/docs/compare-full.md` rather
 than as a checklist entry.
