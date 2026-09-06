@@ -16,11 +16,12 @@ not worth carrying here.
 
 ## Defects — first
 
-- **Geometry: laws 2 and 4 are what is left.** Laws 1, 3 and 5 — the 4px grid, horizontal padding
-  at exactly twice vertical on every control, and 24×24 CSS px of pointer target — are **done and
-  gated**: `npm run check:geometry` is a CI step as of 21.11.0, having gone from 164 findings
-  across 66 components to zero in a 25-commit sweep (`docs/component-geometry.md` has the status
-  table and the five findings that changed a rule rather than a component).
+- **Geometry: law 4 is what is left.** Laws 1, 2, 3 and 5 — the 4px grid, concentric radii,
+  horizontal padding at exactly twice vertical on every control, and 24×24 CSS px of pointer
+  target — are **done and gated**: `npm run check:geometry` is a CI step as of 21.11.0, having
+  gone from 164 findings across 66 components to zero in a 25-commit sweep, plus law 2's own six
+  (`docs/component-geometry.md` has the status table and the findings that changed a rule rather
+  than a component). L7, icon centring, is gated alongside them.
 
   **Law 2 is done and gated (2026-09-06).** `npm run check:radii`, folded into `check:geometry`
   and therefore into CI once it was green — written red on six findings and fixed one component

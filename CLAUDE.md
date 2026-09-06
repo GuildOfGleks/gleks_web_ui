@@ -116,10 +116,17 @@ with no fallbacks, so both gaps silently collapse to nothing — and one is a ch
 as a regression to anyone who does not know why (both dropdown filter inputs now have square
 corners, which is the *correct* concentric answer where the inset equals the panel radius).
 
-**A recurring tail worth knowing about: `since` chips written as raw HTML go stale.** The
-`app-since` component computes "is this the latest line" from the installed package, but four
-chips in markdown and two templates hardcode `since--latest`, so they kept the filled styling for
-21.9.0 after the release moved past it. Check them after each publish.
+**A tail worth knowing about, and it has changed shape (re-checked 2026-09-06): `since` chips
+written as raw HTML cannot follow the version.** The `app-since` component computes "is this the
+latest line" from the installed package and is always right. **The hardcoded `since--latest` this
+note used to warn about is gone** — nothing in the tree carries that class but the component's own
+`[class.since--latest]="isLatest()"` binding, so the old failure (a chip stuck on the filled
+styling after the release moved past it) can no longer happen.
+
+What is left is the mirror image, and it is much quieter: **17 raw `<span class="since">` chips in
+`projects/gleks-ui-lab/public/docs/*.md` can never be filled at all**, latest or not. Nobody sees a
+wrong highlight; a genuinely new API in the markdown docs simply never gets the highlight it
+should. Lab-side, so it waits for a publish either way.
 
 **`docs/feedback-triage.md`'s LAB table is fully closed** (2026-09-02); what is left in that file
 is its **21.8.0 section — now two items, not five**: the button's pressed state, its `severity` and
