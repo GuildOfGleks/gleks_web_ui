@@ -1086,7 +1086,7 @@
   --gog-chip-focus-ring-width: 2px;
   --gog-chip-focus-ring-offset: var(--gog-focus-ring-offset);
 
-  --gog-chip-xsm-font-size: 0.6875rem;
+  --gog-chip-xsm-font-size: var(--gog-text-2xs);
   --gog-chip-xsm-padding-block: var(--gog-space-4);
   --gog-chip-xsm-padding-inline: var(--gog-space-8);
   --gog-chip-xsm-gap: var(--gog-space-4);
@@ -2158,7 +2158,7 @@
   --gog-tag-radius: max(var(--gog-radius), 2px);
   --gog-tag-pill-radius: 9999px;
 
-  --gog-tag-xsm-font-size: 0.6875rem;
+  --gog-tag-xsm-font-size: var(--gog-text-2xs);
   --gog-tag-xsm-padding-block: var(--gog-space-4);
   --gog-tag-xsm-padding-inline: var(--gog-space-8);
   --gog-tag-xsm-gap: var(--gog-space-4);
