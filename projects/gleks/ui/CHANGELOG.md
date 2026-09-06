@@ -184,6 +184,13 @@ reached 1.0, so breaking changes may land in minor versions.
   a rounding rule. It rounds up. Here that is also right on its own terms — a 20px badge clears the
   host's corner radius at `--gog-radius: 8px` at 8px of overhang, and did not quite at 6px.
 
+- **`gog-autocomplete`'s option row is concentric with its panel at every density.** The radius was
+  `calc(var(--gog-radius) - 4px)`, which is the right number only where `--gog-density` is 1: the
+  4px it subtracts is the list's own padding, and that padding scales with density while a restated
+  literal does not. It now reads the two tokens it is derived from, so at `--gog-density: 0.85` the
+  corner is 4.6px rather than 4px and the gap to the panel stays constant. Nothing moves at the
+  default density.
+
 ### Documentation
 
 - **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41

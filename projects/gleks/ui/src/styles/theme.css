@@ -1202,7 +1202,14 @@
   --gog-autocomplete-panel-max-width: 420px;
   --gog-autocomplete-options-padding: var(--gog-space-4);
   --gog-autocomplete-option-padding: var(--gog-space-8) var(--gog-space-16);
-  --gog-autocomplete-option-radius: calc(var(--gog-radius) - 4px);
+  /* Concentric with the panel: the option row is inset by the list's own padding, so its corner
+     is the panel's corner minus that distance. Written as the two tokens rather than as
+     `calc(var(--gog-radius) - 4px)`, which was right only at `--gog-density: 1` -- the padding
+     scales with density and a restated `4px` does not. */
+  --gog-autocomplete-option-radius: max(
+    0px,
+    calc(var(--gog-autocomplete-panel-radius) - var(--gog-autocomplete-options-padding))
+  );
   --gog-autocomplete-option-gap: var(--gog-space-12);
   --gog-autocomplete-option-color: var(--gog-text-color);
   --gog-autocomplete-option-hover-bg: var(--gog-hover-color);
