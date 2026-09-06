@@ -1719,7 +1719,15 @@
   --gog-scroll-thumb-bg: var(--gog-accent-dim);
   --gog-scroll-thumb-hover-bg: var(--gog-accent-color);
   --gog-scroll-thumb-active-bg: var(--gog-accent-bright);
-  --gog-scroll-thumb-radius: var(--gog-radius);
+  /* Concentric with the track: the thumb is inset on every side by `--gog-scroll-thumb-inset`,
+     so its corner is the track's minus that. Both radii exceed half the thumb's width at either
+     track size (10px and 6px, less 2x2 of inset), so this changes no rendered pixel today -- it
+     is here so that a theme raising `--gog-radius` on a wide scroller keeps the two curves
+     parallel instead of letting the thumb match the track it sits inside. */
+  --gog-scroll-thumb-radius: max(
+    0px,
+    calc(var(--gog-scroll-track-radius) - var(--gog-scroll-thumb-inset))
+  );
   /* The thumb's clearance inside its own track, off the 4px grid for the same reason
      `--gog-toggle-thumb-inset` is: a length inside a single painted mark defines that mark's
      shape rather than spacing two things apart, and 4px on a thin scrollbar would leave a thumb

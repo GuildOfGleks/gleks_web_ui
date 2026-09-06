@@ -212,6 +212,13 @@ reached 1.0, so breaking changes may land in minor versions.
   that stays an equal distance from the panel's curve. `--gog-select-filter-input-radius` derives
   from the panel radius and the filter padding rather than repeating `--gog-radius`.
 
+- **`gog-scroll`'s thumb derives its corner from the track**, `--gog-scroll-track-radius` minus
+  `--gog-scroll-thumb-inset`, where it had repeated `--gog-radius`. **No pixel changes today**: at
+  both track widths (10px and 6px, less 2px of inset per side) either radius already exceeds half
+  the thumb's width and renders as a full pill. It matters to a theme that raises `--gog-radius`
+  on a wide scroller, where the thumb would otherwise carry the same corner as the track it sits
+  inside.
+
 ### Documentation
 
 - **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41
