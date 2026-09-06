@@ -61,7 +61,7 @@
 .gog-checkbox__box gog-icon {
   display: block;
   font-size: var(--gog-checkbox-icon-size, var(--gog-control-checkbox-icon-size-md));
-  line-height: 1;
+  line-height: var(--gog-checkbox-icon-line-height);
   pointer-events: none;
 }
 

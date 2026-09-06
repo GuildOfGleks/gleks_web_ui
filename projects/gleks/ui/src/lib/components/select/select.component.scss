@@ -383,7 +383,7 @@
   border-radius: var(--gog-select-clear-radius);
   background: transparent;
   color: var(--gog-select-clear-color);
-  line-height: 1;
+  line-height: var(--gog-select-clear-line-height);
   cursor: pointer;
   transition: color var(--gog-select-transition-duration) var(--gog-easing);
 }

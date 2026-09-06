@@ -1010,6 +1010,8 @@
   --gog-checkbox-checked-bg: var(--gog-accent-color);
   --gog-checkbox-checked-border: var(--gog-accent-color);
   --gog-checkbox-icon-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  /* A glyph in its own box: role label-none, so the box is the glyph and not the font. */
+  --gog-checkbox-icon-line-height: var(--gog-line-height-none);
   --gog-checkbox-label-color: var(--gog-muted-text-color);
   --gog-checkbox-label-line-height: var(--gog-line-height-snug);
   --gog-checkbox-focus-ring: var(--gog-accent-pale);
@@ -1405,6 +1407,7 @@
      pushed further than the rest. */
   --gog-input-error-offset: 0px;
   --gog-input-icon-color: var(--gog-muted-text-color);
+  --gog-input-icon-line-height: var(--gog-line-height-none);
   --gog-input-icon-hover-color: var(--gog-accent-color);
   --gog-input-icon-action-radius: calc(var(--gog-radius) - 4px);
   --gog-input-icon-focus-ring-width: 2px;
@@ -1427,12 +1430,16 @@
      `gog-toast` and `gog-accordion` keep their flat `0px` on purpose: those are a chosen shape,
      not a number that forgot where it came from. */
   --gog-input-clear-radius: calc(var(--gog-radius) / 4);
+  --gog-input-clear-line-height: var(--gog-line-height-none);
   --gog-input-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   /*
      The textarea's clear button gets a full-size glyph. The 0.7 ratio above suits the dense
      single-line trigger of a dropdown; on a large multi-line box it reads as a speck.
   */
   --gog-textarea-clear-icon-ratio: 1;
+  /* The field is the one place in the library that renders a paragraph the consumer typed:
+     role prose. */
+  --gog-textarea-line-height: var(--gog-line-height-relaxed);
   /* Custom resize grip — see the `::-webkit-resizer` comment in textarea.component.scss for
      why this replaces rather than restyles the native glyph. Colour follows the field's own
      border by default, not a fixed muted grey, so it reads as part of the field rather than a
@@ -1564,6 +1571,7 @@
   --gog-multiselect-actions-inset: var(--gog-control-icon-offset);
   /* A quarter of the corner radius — see `--gog-input-clear-radius` for why. */
   --gog-multiselect-clear-radius: calc(var(--gog-radius) / 4);
+  --gog-multiselect-clear-line-height: var(--gog-line-height-none);
   --gog-multiselect-disabled-opacity: var(--gog-disabled-opacity);
   --gog-multiselect-transition-duration: var(--gog-duration-base);
   --gog-multiselect-float-label-reserve: var(--gog-field-float-label-reserve);
@@ -1848,6 +1856,7 @@
   /* Clear button — only rendered once a value is selected, see `clearable`. */
   /* A quarter of the corner radius — see `--gog-input-clear-radius` for why. */
   --gog-select-clear-radius: calc(var(--gog-radius) / 4);
+  --gog-select-clear-line-height: var(--gog-line-height-none);
   --gog-select-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   --gog-select-clear-gap: var(--gog-space-8);
   --gog-select-clear-color: var(--gog-select-placeholder-color);
