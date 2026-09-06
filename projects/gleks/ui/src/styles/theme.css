@@ -49,6 +49,11 @@
   --gog-font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --gog-font-mono: ui-monospace, SFMono-Regular, 'JetBrains Mono', monospace;
 
+  /* 11px, below `xs`. The chip and the tag both wrote it as a literal at `xsm` — the same value
+     chosen twice, independently, which is a missing rung rather than two opinions, exactly as
+     `slg` was. Moving them to `xs` instead would have made `xsm` and `sm` the same size, which
+     is the one thing `xsm` exists to avoid. */
+  --gog-text-2xs: 0.6875rem;
   --gog-text-xs: 0.75rem;
   --gog-text-sm: 0.875rem;
   --gog-text-md: 1rem;
@@ -465,6 +470,16 @@
      here rather than with them because it reads a token, and a derived value declared on the
      literals-only `:root` freezes to that scope's scale (rule C). */
   --gog-field-slg-font-size: var(--gog-text-slg);
+
+  /* Leading for the three kinds of text every field renders, declared once and aliased by each
+     component the way the padding and float-label tiers above already are. A block that sets a
+     font size sets its leading (law 4): inheriting it while changing the size moves the ratio
+     silently, which is the thing the law guards. Roles, from
+     `docs/component-geometry.md` — the value in the field itself is one UI line whose box is the
+     row height; a label and an error message may both wrap beside their control. */
+  --gog-field-line-height: var(--gog-line-height-normal);
+  --gog-field-label-line-height: var(--gog-line-height-snug);
+  --gog-field-error-line-height: var(--gog-line-height-snug);
 
   --gog-field-md-padding-y: var(--gog-control-padding-y);
   --gog-field-md-padding-x: var(--gog-control-padding-x);

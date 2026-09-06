@@ -675,6 +675,7 @@ export type GogTokenName =
   | '--gog-duration-slow'
   | '--gog-easing'
   | '--gog-elevated-surface-color'
+  | '--gog-field-error-line-height'
   | '--gog-field-float-label-in-top'
   | '--gog-field-float-label-over-gap'
   | '--gog-field-float-label-over-reserve'
@@ -682,11 +683,13 @@ export type GogTokenName =
   | '--gog-field-icon-glyph'
   | '--gog-field-icon-glyph-sm'
   | '--gog-field-icon-glyph-xsm'
+  | '--gog-field-label-line-height'
   | '--gog-field-lg-font-size'
   | '--gog-field-lg-icon-inset'
   | '--gog-field-lg-icon-offset'
   | '--gog-field-lg-padding-x'
   | '--gog-field-lg-padding-y'
+  | '--gog-field-line-height'
   | '--gog-field-md-font-size'
   | '--gog-field-md-icon-inset'
   | '--gog-field-md-icon-offset'
@@ -1362,6 +1365,7 @@ export type GogTokenName =
   | '--gog-tag-xsm-padding-block'
   | '--gog-tag-xsm-padding-inline'
   | '--gog-text-2xl'
+  | '--gog-text-2xs'
   | '--gog-text-3xl'
   | '--gog-text-color'
   | '--gog-text-lg'
@@ -1531,6 +1535,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-line-height-snug',
       '--gog-line-height-tight',
       '--gog-text-2xl',
+      '--gog-text-2xs',
       '--gog-text-3xl',
       '--gog-text-lg',
       '--gog-text-md',
@@ -1683,12 +1688,15 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-control-padding-y',
       '--gog-dropdown-z',
       '--gog-elevated-surface-color',
+      '--gog-field-error-line-height',
       '--gog-field-float-label-over-gap',
+      '--gog-field-label-line-height',
       '--gog-field-lg-font-size',
       '--gog-field-lg-icon-inset',
       '--gog-field-lg-icon-offset',
       '--gog-field-lg-padding-x',
       '--gog-field-lg-padding-y',
+      '--gog-field-line-height',
       '--gog-field-md-font-size',
       '--gog-field-md-icon-inset',
       '--gog-field-md-icon-offset',
