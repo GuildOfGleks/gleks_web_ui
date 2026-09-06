@@ -1557,7 +1557,10 @@
   --gog-menu-item-hover-color: var(--gog-text-color);
   --gog-menu-item-font-size: var(--gog-text-sm);
   --gog-menu-item-padding: var(--gog-space-8) var(--gog-space-16);
-  --gog-menu-item-radius: var(--gog-radius);
+  /* Concentric with the panel, which paints `--gog-panel-radius` (8px larger than the base) and
+     insets its items by `--gog-menu-padding`. Repeating the base radius here made the first and
+     last items visibly squarer than the corner they sit in. */
+  --gog-menu-item-radius: max(0px, calc(var(--gog-menu-radius) - var(--gog-menu-padding)));
   --gog-menu-item-gap: var(--gog-space-sm);
   --gog-menu-item-disabled-opacity: var(--gog-disabled-opacity);
   --gog-menu-item-disabled-color: var(--gog-muted-text-color);

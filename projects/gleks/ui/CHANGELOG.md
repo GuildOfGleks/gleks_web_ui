@@ -191,6 +191,13 @@ reached 1.0, so breaking changes may land in minor versions.
   corner is 4.6px rather than 4px and the gap to the panel stays constant. Nothing moves at the
   default density.
 
+- **`gog-menu`'s item corner is 12px, not 8px.** The menu panel paints `--gog-panel-radius`, which
+  is the base radius plus 8, and insets its items by `--gog-menu-padding` (4px) — so a concentric
+  item corner is 16 − 4 = 12px, and the item had been repeating the base `--gog-radius` instead.
+  At the default theme the first and last items were visibly squarer than the corner they sit in.
+  `--gog-menu-item-radius` now derives from the panel radius and the padding rather than restating
+  a value, so a theme that changes either carries the item with it.
+
 ### Documentation
 
 - **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41
