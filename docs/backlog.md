@@ -37,16 +37,18 @@ not worth carrying here.
   and the centre of mass as much as 3.47 units out — and the second number was correct as drawn,
   because a monoline set reads by extent. It is gated by `check:geometry`'s second half.
 
-- **L6's optical-area correction was decided and never applied.** `docs/component-geometry.md`'s
-  D2 adopted the 1.128 multiplier for *filled* marks — the badge's dot, the chip's avatar, the
-  other filled circles — with stroked marks such as the radio deliberately excluded and the reason
-  recorded. The 21.11.0 sweep was scoped to laws 1, 3 and 5, so the multiplier is written down and
-  nowhere in the CSS: `grep 1.128` over the library returns nothing.
+- **The chip's avatar drifts against its icon: 1.27 at `xsm` to 1.56 at `slg`.** Five sizes, five
+  different opinions about one relationship — the shape law 3 was written for, in a pair law 3 does
+  not cover because neither of the two is padding.
 
-  It is small but it is not free: it changes what those marks paint, so it is a per-component
-  commit each, under the same rule the sweep followed. Worth deciding whether it is one, because
-  a decision that never becomes code is indistinguishable from one that was never taken — and this
-  one currently reads as taken in the plan's own status table.
+  Found while trying to apply L6 and worth keeping apart from it: **1.128 is not the constant this
+  wants.** The chip's icon is a monoline glyph, mostly empty ground, so the equal-ink argument runs
+  the other way there exactly as it does for the radio — and the avatar is a *photograph*, sized so
+  a face is recognisable rather than so its ink matches a mark. Whatever the right number is, it is
+  one number and not five. Picking it is a decision; the drift is the defect.
+
+  (L6 itself is closed as inapplicable, not deferred — `docs/component-geometry.md`'s L6 section
+  has the table of every candidate mark and why each has no square to be corrected against.)
 
   The original entry, kept because it is still the argument for the two that remain:
 

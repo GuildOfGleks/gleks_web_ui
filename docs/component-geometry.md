@@ -110,6 +110,33 @@ chosen deliberately rather than discovered halfway through the sweep.
 `triangle`, `square`), and the square it is meant to match. The script asserts the ratio within
 tolerance; exceptions name a reason, per the `check:contrast` pattern.
 
+**Verdict revised 2026-09-06: there is no mark in this library the correction applies to, so it
+does not become a rule here.** D2 adopted 1.128 for "`badge`'s dot, `chip`'s avatar and the other
+filled circles", and building the table above is what showed the table has no rows. The last
+column is the load-bearing one — *the square it is meant to match* — and every candidate fails on
+it rather than on the arithmetic:
+
+| Mark                            | Why the correction has nothing to apply against                                                                                                                                                     |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--gog-chip-*-avatar-size`      | It is a **photograph** — `avatarUrl` takes `user.photo`, with `object-fit: cover`. Sized so a face is recognisable, not so its ink matches a mark's. It is also the icon's *alternative* in one slot (both `@if`), never its neighbour inside a chip. |
+| `--gog-badge-dot-size`          | 8px, standalone. Its alternative is a count pill carrying text; there is no square anywhere near it.                                                                                                |
+| `--gog-skeleton-circle-size-*`  | `circle` is a *shape* beside `text` and `rect`, and it stands for an avatar of that diameter. `square` in this component is a corner modifier (`rounded="false"`), not a shape to be matched.        |
+| `--gog-slider-thumb-size`, the toggle thumb | Parts of one painted control, sized by their own track. A thumb has no peer square; law 5 already governs the only thing about it that a reader acts on.                                |
+| the radio                       | Excluded by D2 itself, for the form-column argument.                                                                                                                                               |
+
+So the law is sound and its arithmetic is right; this component set simply contains no instance of
+the thing it corrects. **It stays as guidance for a mark that genuinely must read as equal weight
+to a specific square, and it is not a check** — a table with no rows enforced over 33 components
+is a check that has never checked anything, and the next reader could not tell that from a green
+build.
+
+**One real finding came out of the exercise, and it is not an L6 finding.** The chip's avatar runs
+`1.27 / 1.33 / 1.43 / 1.50 / 1.56` times its icon across the five sizes — monotonic drift, spread
+0.28, five different opinions about one relationship. That is the shape law 3 exists for, not this
+one, and 1.128 is not the constant it wants (the icon is a monoline glyph, so the ink argument runs
+the other way there, exactly as it does for the radio). Filed in `docs/backlog.md` rather than
+fixed here, because picking the constant is a decision and this section is not where it belongs.
+
 ---
 
 ### L7 — Optical centre of mass: the bounding box is not the centre
@@ -528,7 +555,7 @@ re-litigates a settled number.
 | The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits    |
 | Laws 2 and 4 in the gate                                  | ⬜ blocked on D-radii and D4 |
 | L7 audited, and gated by `check:geometry`'s second half    | ✅ 2026-09-06 — the audit reversed the law |
-| L6's 1.128 correction applied to the filled marks         | ⬜ decided at D2, never applied |
+| L6's 1.128 correction applied to the filled marks         | ❌ 2026-09-06 — no mark in this library it applies to |
 | L11 into `api-design.instructions.md` and `AGENTS.md`     | ✅ 2026-09-06                |
 | L8's consumer recipe into `README.md`                     | ✅ 2026-09-06                |
 
