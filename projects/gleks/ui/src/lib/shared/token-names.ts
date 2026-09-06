@@ -49,6 +49,7 @@ export type GogTokenName =
   | '--gog-accordion-lg-letter-spacing'
   | '--gog-accordion-lg-padding-x'
   | '--gog-accordion-lg-padding-y'
+  | '--gog-accordion-line-height'
   | '--gog-accordion-md-body-font-size'
   | '--gog-accordion-md-body-line-height'
   | '--gog-accordion-md-body-padding-bottom'
@@ -113,6 +114,7 @@ export type GogTokenName =
   | '--gog-autocomplete-disabled-opacity'
   | '--gog-autocomplete-empty-color'
   | '--gog-autocomplete-empty-font-size'
+  | '--gog-autocomplete-empty-line-height'
   | '--gog-autocomplete-error-border-color'
   | '--gog-autocomplete-error-color'
   | '--gog-autocomplete-error-font-family'
@@ -355,6 +357,7 @@ export type GogTokenName =
   | '--gog-calendar-header-margin'
   | '--gog-calendar-lg-day-size'
   | '--gog-calendar-lg-font-size'
+  | '--gog-calendar-line-height'
   | '--gog-calendar-max-width'
   | '--gog-calendar-md-day-size'
   | '--gog-calendar-md-font-size'
@@ -1234,6 +1237,7 @@ export type GogTokenName =
   | '--gog-table-border-style'
   | '--gog-table-border-width'
   | '--gog-table-empty-font-size'
+  | '--gog-table-empty-line-height'
   | '--gog-table-empty-padding'
   | '--gog-table-focus-ring'
   | '--gog-table-focus-ring-width'
@@ -1257,6 +1261,7 @@ export type GogTokenName =
   | '--gog-table-muted-color'
   | '--gog-table-num-col-width'
   | '--gog-table-num-font-size'
+  | '--gog-table-num-line-height'
   | '--gog-table-numeric-font-family'
   | '--gog-table-padding-h'
   | '--gog-table-row-border-width'
@@ -1274,13 +1279,16 @@ export type GogTokenName =
   | '--gog-table-sort-icon-width'
   | '--gog-table-surface'
   | '--gog-table-td-font-size'
+  | '--gog-table-td-line-height'
   | '--gog-table-td-padding-v'
   | '--gog-table-text-color'
   | '--gog-table-th-font-size'
   | '--gog-table-th-inner-gap'
+  | '--gog-table-th-line-height'
   | '--gog-table-th-padding-v'
   | '--gog-table-total-font-size'
   | '--gog-table-total-letter-spacing'
+  | '--gog-table-total-line-height'
   | '--gog-table-total-text-transform'
   | '--gog-table-xsm-padding-v'
   | '--gog-table-xsm-td-font-size'
@@ -1789,6 +1797,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-accordion-lg-letter-spacing',
       '--gog-accordion-lg-padding-x',
       '--gog-accordion-lg-padding-y',
+      '--gog-accordion-line-height',
       '--gog-accordion-md-body-font-size',
       '--gog-accordion-md-body-line-height',
       '--gog-accordion-md-body-padding-bottom',
@@ -2013,6 +2022,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-calendar-header-margin',
       '--gog-calendar-lg-day-size',
       '--gog-calendar-lg-font-size',
+      '--gog-calendar-line-height',
       '--gog-calendar-max-width',
       '--gog-calendar-md-day-size',
       '--gog-calendar-md-font-size',
@@ -2283,6 +2293,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-autocomplete-disabled-opacity',
       '--gog-autocomplete-empty-color',
       '--gog-autocomplete-empty-font-size',
+      '--gog-autocomplete-empty-line-height',
       '--gog-autocomplete-error-border-color',
       '--gog-autocomplete-error-color',
       '--gog-autocomplete-error-font-family',
@@ -2937,6 +2948,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-table-border-style',
       '--gog-table-border-width',
       '--gog-table-empty-font-size',
+      '--gog-table-empty-line-height',
       '--gog-table-empty-padding',
       '--gog-table-focus-ring',
       '--gog-table-focus-ring-width',
@@ -2960,6 +2972,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-table-muted-color',
       '--gog-table-num-col-width',
       '--gog-table-num-font-size',
+      '--gog-table-num-line-height',
       '--gog-table-numeric-font-family',
       '--gog-table-padding-h',
       '--gog-table-row-border-width',
@@ -2976,10 +2989,13 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-table-sort-icon-size',
       '--gog-table-sort-icon-width',
       '--gog-table-surface',
+      '--gog-table-td-line-height',
       '--gog-table-text-color',
       '--gog-table-th-inner-gap',
+      '--gog-table-th-line-height',
       '--gog-table-total-font-size',
       '--gog-table-total-letter-spacing',
+      '--gog-table-total-line-height',
       '--gog-table-total-text-transform',
       '--gog-table-xsm-padding-v',
       '--gog-table-xsm-td-font-size',

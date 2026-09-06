@@ -556,6 +556,8 @@
   --gog-accordion-xsm-padding-y: var(--gog-space-4);
   --gog-accordion-xsm-padding-x: var(--gog-space-8);
   --gog-accordion-xsm-font-size: var(--gog-text-xs);
+  /* The header label is one UI line whose box is the row height (law 4, role ui-line). */
+  --gog-accordion-line-height: var(--gog-line-height-normal);
   --gog-accordion-xsm-letter-spacing: 0.2px;
   --gog-accordion-xsm-content-gap: var(--gog-space-4);
   --gog-accordion-xsm-body-font-size: var(--gog-text-xs);
@@ -932,6 +934,7 @@
   --gog-calendar-lg-font-size: var(--gog-text-md);
   --gog-calendar-lg-day-size: 40px;
   --gog-calendar-slg-font-size: var(--gog-text-lg);
+  --gog-calendar-line-height: var(--gog-line-height-normal);
   --gog-calendar-slg-day-size: 46px;
 
   /* ── Card ──────────────────────────────────────────────────────────────────
@@ -1245,6 +1248,7 @@
   --gog-autocomplete-option-height: 36px;
   --gog-autocomplete-empty-color: var(--gog-autocomplete-placeholder-color);
   --gog-autocomplete-empty-font-size: var(--gog-text-sm);
+  --gog-autocomplete-empty-line-height: var(--gog-line-height-normal);
   --gog-autocomplete-float-label-reserve: var(--gog-field-float-label-reserve);
   --gog-autocomplete-float-label-in-top: var(--gog-field-float-label-in-top);
   --gog-autocomplete-float-label-over-gap: var(--gog-field-float-label-over-gap);
@@ -2015,15 +2019,18 @@
   --gog-table-sort-icon-opacity: 0.6;
   --gog-table-empty-padding: var(--gog-space-24) var(--gog-space-16);
   --gog-table-empty-font-size: var(--gog-text-md);
+  --gog-table-empty-line-height: var(--gog-line-height-normal);
   --gog-table-loading-padding: var(--gog-space-32) var(--gog-space-16);
   --gog-table-loading-opacity: 0.5;
   --gog-table-row-transition-duration: var(--gog-duration-fast);
   --gog-table-footer-gap: var(--gog-space-sm);
   --gog-table-footer-min-height: 32px;
   --gog-table-total-font-size: var(--gog-text-xs);
+  --gog-table-total-line-height: var(--gog-line-height-normal);
   --gog-table-total-letter-spacing: 0.5px;
   --gog-table-total-text-transform: var(--gog-text-transform);
   --gog-table-num-font-size: var(--gog-text-xs);
+  --gog-table-num-line-height: var(--gog-line-height-normal);
   --gog-table-padding-h: var(--gog-space-16);
   --gog-table-xsm-padding-v: var(--gog-space-4);
   --gog-table-xsm-th-font-size: var(--gog-text-xs);
@@ -2040,6 +2047,9 @@
   --gog-table-slg-padding-v: var(--gog-space-16);
   --gog-table-slg-th-font-size: var(--gog-text-md);
   --gog-table-slg-td-font-size: var(--gog-text-lg);
+  /* One value for every size step: the role picks the leading and the size does not (D4). */
+  --gog-table-td-line-height: var(--gog-line-height-normal);
+  --gog-table-th-line-height: var(--gog-line-height-normal);
 
   /* ── Tabs ──────────────────────────────────────────────────────────────────
      `--gog-tabs-tab-bg`, `-tab-color`, `-tab-padding` and `-tab-font-size` are intentionally
