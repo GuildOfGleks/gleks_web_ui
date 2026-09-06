@@ -83,8 +83,10 @@ an input, output, slot, type, service method or default edits it in the same cha
 
 ## Where the project is
 
-**Latest release: 21.10.0 (2026-09-05), on npm and tagged.** `projects/gleks/ui/CHANGELOG.md` is the authority and
-ships inside the package; its top entry is always the version being worked on.
+**Latest release: 21.10.0 (2026-09-05), on npm and tagged. 21.11.0 is built and merged to
+`master` but NOT released** — its changelog heading still reads `planned`, and dating it is the
+user's to do (rule 1). `projects/gleks/ui/CHANGELOG.md` is the authority and ships inside the
+package; its top entry is always the version being worked on.
 
 ### The release sequence
 
@@ -99,15 +101,20 @@ ships inside the package; its top entry is always the version being worked on.
 | 21.9.0     | **released (2026-09-04)** | **A minor, not a patch — it carries four new public inputs.** `gog-button`/`[gogButton]` `severity` (orthogonal to `variant`), `gog-chip` `[(selected)]` (the filter chip), `gog-scroll` `horizontalWheel`, and `GOG_CONFIG.spinner.component`. Under that: the library's feedback story, made to degrade to something rather than to nothing — `:active` is a colour and not only a `transform`, so a press survives `prefers-reduced-motion`, and eight other pressable surfaces gained one. And three passes of colour and geometry work, each found by a check rather than by eye: `gogBadge`'s status labels failed WCAG AA in four themes (11 pairs, `material`'s amber at 1.97:1), fourteen lengths ignored `--gog-density` in the nine themes that set it, and the error line sat 2px lower under two of the eight controls that render one. `check:contrast` went from 143 pairs to **1155** across two new halves (`scripts/token-color.mjs`, then the severity and badge tables), `check-tokens` gained rule I and grew rule H from two families to six. |
 | 21.9.1     | **released (2026-09-04)** | No library change. 21.9.0 was published from a working tree whose version bump had not been committed, so 21.9.1 re-publishes the same code with the history recorded — the two tarballs differ only by the changelog entry. Worth knowing for the trap rather than the fix: the root `package.json` moved to `^21.9.1` while `package-lock.json` still pinned 21.8.0, and `gleks-ui-lab` resolves the package out of `node_modules` on purpose, so it kept building against the old one until `npm install` ran. `npm ci` cannot rescue that — it exits on the mismatch rather than reconciling it. |
 | 21.10.0    | **released (2026-09-05)** | `GOG_CONFIG.spinner.component` now reaches `gog-spinner-overlay`: the overlay forwards its own `variant` to the spinner it wraps, and that input defaulted to `'runic'`, which the spinner correctly read as an instance overruling the config — so the one component a consumer uses to cover a whole loading region was the only place a configured house spinner never appeared. `variant` is now `GogSpinnerVariant | undefined`, defaulting to unset. Plus `gog-table` named among the spinners the key reaches (documentation only; it always honoured it). `spinner-config.spec.ts` gains four cases — it had mounted only `gog-spinner` and `gog-button`, which is how 1112 green tests covered a key that missed a third of its targets. **Then `check:contrast` learned to see a variant** (`docs/backlog.md`'s last open defect): a variant class sets `--gog-<block>-variant-*` and paints nothing, so the sweep had been measuring the default variant of every component and reporting a healthy count — 1155 pairs became 2187, and five real AA failures came out of it, all fixed here: `gog-tag`'s label mixed toward literal black (11 of 55 combinations under AA), the table header's raw accent in two light themes, and `slate`'s secondary button at 2.77:1. **Renamed from 21.9.2 to a minor on 2026-09-05**, when `gog-progressbar` gained the two hairlines that mark where its fill ends — new tokens, so a minor rather than a patch. That one is the model for how a colour finding should go: 51 of 55 fill/track pairs were under 3:1, no track colour can fix it (measured across the whole axis, 21 points per theme), the evidence was a greyscale render rather than a ratio, and the note that had dismissed it for a day was wrong on two counts. **Seventeen sentences still said 21.9.2 after the rename**, three of them inside the package a consumer installs — the number moves with the changelog heading and nothing checks the prose. |
+| 21.11.0    | **built, not released**   | The geometry release. **`--gog-space-*` is ten steps, all multiples of 4** — `-2`, `-6`, `-10`, `-14` and `-18` removed once their 102 readers moved, `-40` added because the optical ratio needs it; a consumer reading one of the five replaces it with the neighbouring step, always rounding **up**. Under that, the sweep: 164 findings across 66 components to zero in 25 commits, laws 1, 3 and 5 (the 4px grid, horizontal padding exactly twice vertical on every control, 24x24 of pointer target), and `check:geometry` became a CI step the day it reached zero. Controls got wider — the button and the whole field tier run `8 / 16 / 24 / 32 / 40` of horizontal padding. **Then two more laws, and both reversed on contact with the evidence.** L7 (icon centring) was planned against the ink's centre of mass; measuring all 41 glyphs showed the boxes already centred to a hundredth of a unit while the mass runs 3.47 units out — and correctly so, since a monoline set reads by extent. It is gated on the extent, with an area branch for a filled mark. L6 (optical area, 1.128) was *decided* at D2 and turned out to have no instance: every candidate failed on "the square it is meant to match", the chip's avatar being a photograph. **Law 2 (concentric radii) is gated too** — a declared parent per radius, 46 of them, and the check had to resolve at two densities before it was true. L11 and L8 shipped as documentation, which is what their verdicts asked for. Only law 4 is outside the gate, and `docs/component-geometry.md` carries a proposal for it. |
 | 22.x       | when Angular 22 lands     | the branch split — see `docs/branching-and-support.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 **21.10.0 is on npm, tagged, and is what `gleks-ui-lab` now resolves** — `npm install` ran at the
 root, so `package-lock.json` moved with it rather than leaving the lab on the old package the way
-21.9.0 did. **`docs/lab-after-publish.md` is empty of sections** (2026-09-05): the overlay
-exception the site stated in four places is gone, and the two things the checklist did not know
-about were done in the same pass — the hand-maintained token reference gained
-`--gog-progressbar-edge-*`, and the progressbar page's Accessibility section now carries the
-hairlines. That file is supposed to return to this state after every release.
+21.9.0 did. It emptied `docs/lab-after-publish.md` completely on 2026-09-05, which is the state
+that file is supposed to return to after every release.
+
+**It is not empty now: 21.11.0 filled it again** (2026-09-06), and it has to stay filled until
+that release is published, because the lab tracks npm rather than this tree. Two of its entries
+are code and not prose — `house-spinner-demo.ts` reads two spacing tokens the release deletes,
+with no fallbacks, so both gaps silently collapse to nothing — and one is a change that will read
+as a regression to anyone who does not know why (both dropdown filter inputs now have square
+corners, which is the *correct* concentric answer where the inset equals the panel radius).
 
 **A recurring tail worth knowing about: `since` chips written as raw HTML go stale.** The
 `app-since` component computes "is this the latest line" from the installed package, but four
@@ -122,11 +129,14 @@ the next-minor list rather than as a version's payload, the same way a plan's fi
 version in it becomes a lie.
 
 **Read `docs/backlog.md`'s Defects and Gaps sections before anything new** — the project's own
-rule is fixes and polish first. **Defects holds two entries as of 2026-09-05, and neither is a
-bug report — both are a whole class of decision nothing currently checks**: every component's
-geometry and typography against the five laws (planned in `docs/component-geometry.md`), and
-theme colour computed rather than eyeballed, in OKLCH as well as WCAG, with a solver so a failing
-check can name the value that would pass. It had emptied twice on 2026-09-03 — the two entries it
+rule is fixes and polish first. **As of 2026-09-06 the geometry half of Defects is nearly closed:
+four of the five laws are gated in CI and only law 4 is left**, blocked on a decision (a role per
+text token) for which the plan carries a written proposal. What sits beside it is the colour
+entry, unchanged: theme colour computed rather than eyeballed, in OKLCH as well as WCAG, with a
+solver so a failing check can name the value that would pass. Three smaller entries came out of
+the geometry work and are decisions rather than bugs — the chip avatar's drift against its icon
+(1.27 to 1.56 across five sizes), and four dropdowns on one base carrying two panel-radius answers
+and three panel interiors. It had emptied twice on 2026-09-03 — the two entries it
 opened with shipped in 21.8.0, and the three filed while building 21.9.0 (nine surfaces with no
 press feedback, a disabled dropdown option answering the pointer, a ghost button's hover label
 under AA) were all closed in it. Gaps is not empty either; `gog-chip`'s missing `selected` came
@@ -149,9 +159,10 @@ on a version still being worked on means someone jumped the gun, not that the ch
 
 Once a release is published: `npm install` at the repo root, then work through
 `docs/lab-after-publish.md`'s section for that version. That file is a live checklist; delete
-each entry as it lands. **It is empty as of 2026-09-05, 21.10.0 documented and its section
-deleted** — which is the state it is supposed to return to after each release. Two of that
-release's lab-side items were never in it, because the checklist predates the work that created
+each entry as it lands. It emptied on 2026-09-05 with 21.10.0 documented and its section deleted,
+which is the state it is supposed to return to after each release — **and it is full again,
+because 21.11.0 is built and its lab side cannot start until that version is on npm.** Two of
+21.10.0's lab-side items were never in it, because the checklist predates the work that created
 them: the token reference is hand-maintained and says so, and a component whose *look* changes
 needs its own page's prose read, not just its API table. The
 bundle-bench re-measurement that was the last item is done (all three libraries re-measured, not
@@ -193,15 +204,22 @@ a month, and see `docs/backlog.md` for the fourth, related defect it was found a
 A plan is not a backlog item — it is a decision already taken about how something gets built.
 Update the status table in whichever you are working from, as you go.
 
-- `docs/component-geometry.md` — **the ruleset for computed geometry, and the sweep that applies
-  it**, targeting the first minor after 21.10.0. It extends `styling.instructions.md`'s five laws
-  with seven more and rules on each: optical area, optical centroid and the two-light elevation
-  scale are adopted, measure and fluid `clamp()` are adopted narrowed, and Hick and Fitts are
-  rejected as library rules and kept as documentation — because a library cannot check what the
-  consumer owns. **Nothing starts until 21.10.0 is released**, the check is written before the
-  components are touched, and the sweep is one branch with one commit per component (33 of them).
-  Its Part 2 is the part to read first: nine decisions (D0–D8) that no script can settle and that
-  would otherwise be settled thirty-three times over.
+- `docs/component-geometry.md` — **the ruleset for computed geometry, and the record of the sweep
+  that applied it**, built into 21.11.0. It extends `styling.instructions.md`'s five laws with
+  seven more and rules on each. **Read its status table first, then Part 2's decisions** — the
+  prose around them was written before the work and several verdicts moved:
+
+  - **Laws 1, 2, 3 and 5 are gated** by `npm run check:geometry`, a CI step. So is **L7**, icon
+    centring, via a second script over the registry's path data.
+  - **Two adopted laws reversed on contact with the evidence, and that is the file's main
+    lesson.** L7 was planned against the ink's centre of mass and is enforced on its extent
+    instead; L6 (optical area) was *decided* at D2 and closed as having no instance in this
+    component set. Both sections carry the measurements rather than the original argument.
+  - **Law 4 is the only one left**, and its blocker is a decision: "D4 — proposed, not taken"
+    names six roles and the four things they depend on, the expensive one being 33 blocks that
+    declare a font size and no line-height.
+  - D0, D5, D7 and D8 are still open. D8 (11 `font-size` literals bypassing `--gog-text-*`) is
+    the same shape as one of D4's four, so they are cheaper together.
 
 - `docs/feedback-triage.md` — **30 items from a hands-on pass over the published 21.6.1**, sorted
   by which release can carry each and why, with four of the reported symptoms traced to a
