@@ -32,6 +32,22 @@ not worth carrying here.
   and `--gog-line-height-none: 1` on a tag is correct. Both halves are visible today in
   `npm run survey:geometry`, which reports all five laws and gates none.
 
+  **L7 came off this list on 2026-09-06** and is worth reading rather than summarising: the audit
+  reversed the law. All 41 glyphs measured, the ink box already centred to a hundredth of a unit
+  and the centre of mass as much as 3.47 units out — and the second number was correct as drawn,
+  because a monoline set reads by extent. It is gated by `check:geometry`'s second half.
+
+- **L6's optical-area correction was decided and never applied.** `docs/component-geometry.md`'s
+  D2 adopted the 1.128 multiplier for *filled* marks — the badge's dot, the chip's avatar, the
+  other filled circles — with stroked marks such as the radio deliberately excluded and the reason
+  recorded. The 21.11.0 sweep was scoped to laws 1, 3 and 5, so the multiplier is written down and
+  nowhere in the CSS: `grep 1.128` over the library returns nothing.
+
+  It is small but it is not free: it changes what those marks paint, so it is a per-component
+  commit each, under the same rule the sweep followed. Worth deciding whether it is one, because
+  a decision that never becomes code is indistinguishable from one that was never taken — and this
+  one currently reads as taken in the plan's own status table.
+
   The original entry, kept because it is still the argument for the two that remain:
 
 - **Every component's geometry and typography, checked in CI — the five laws.** The standard is

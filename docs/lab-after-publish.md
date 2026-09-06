@@ -31,3 +31,60 @@ it found the lab's sidebar hover label and two `code` chips under AA.
 `running-commands.instructions.md`). After a publish, `npm install` at the repo root first, so
 `node_modules/@guildofgleks/ui` is the new version rather than a stale one or a leftover local
 build.
+
+---
+
+## 21.11.0 — the spacing scale, and the geometry sweep behind it
+
+**This release changes rendered geometry across the whole library and deletes five tokens.** The
+lab is the only place that still describes the old scale, and two of the four spots are code
+rather than prose, so they break silently rather than read wrongly.
+
+### The scale went from fourteen steps to ten
+
+`--gog-space-2`, `-6`, `-10`, `-14` and `-18` are gone; `--gog-space-40` is new. Every remaining
+step is a multiple of 4.
+
+- **`pages/spinner-doc-page/house-spinner-demo.ts:102,109`** — the demo's own CSS reads
+  `--gog-space-6` and `--gog-space-2`. Neither token exists after this release, and neither
+  declaration has a fallback, so **both gaps silently collapse to nothing.** This is the one entry
+  here that is a defect rather than a documentation update. `-6` becomes `-8` and `-2` becomes
+  `-4`, following the library's own rounding direction (it rounded up everywhere).
+- **`pages/theming-page/token-reference-data.ts:142`** — the hand-maintained token reference still
+  reads `--gog-space-2 … --gog-space-48` and calls it "the 14-step scale". It is ten steps: 4, 8,
+  12, 16, 20, 24, 28, 32, 40, 48. The five named aliases below it are unchanged and still correct.
+- **`pages/theme-generator-page/theme-generator-page.html:25`** — "the fourteen-step spacing
+  scale", twice in one paragraph.
+- **`pages/theme-generator-page/foundation-tokens.ts:107`** — the comment explaining why the scale
+  is not a field names `--gog-space-2` as the range's lower bound.
+- **`public/docs/styles/theme-starter.css`** — generated, so it fixes itself: `npm install` at the
+  root, then `npm run generate:theme-starter`. `npm run check:theme-starter` fails until that runs,
+  which is the reminder working as designed.
+
+### The worked example on the theme-generator page now prints different numbers
+
+Same paragraph (`theme-generator-page.html:25`): it tells the reader to set `--gog-density: 0.85`
+and look inside the Select panel, where "its option rows go from `10px 14px` of padding to
+`8.5px 11.9px`". The option row derives from the shared field tier, and that tier moved from
+`10/14` to `12/24` — horizontal padding is now exactly twice vertical on every control. **The
+example still demonstrates exactly what it was written to demonstrate**; only the four numbers
+change, to `12px 24px` and `10.2px 20.4px`. Re-read it against a real panel rather than trusting
+this arithmetic — it is what the tokens say, not what was measured in a browser.
+
+### Controls are wider, so any page that quotes a length is suspect
+
+The button and the whole field tier went to `8 / 16 / 24 / 32 / 40` of horizontal padding across
+the five sizes; the largest single change is a `slg` text field's side padding doubling. Nothing
+in the lab is *generated* from those values, which is the problem: a page that quotes one was
+typed by hand. Check `lab-appearance-baseline.md`'s recorded preview geometry against the
+component pages before assuming a diff there is a regression — for this release, a preview that
+grew is the release landing, not the page breaking.
+
+### The Theming page can say the laws are checked now
+
+`npm run check:geometry` is a CI step as of this release: the 4px grid, horizontal padding at
+exactly twice vertical on every control, 24×24 CSS px of pointer target, and — from a second
+script over the icon registry — that every glyph centres its ink in its own viewBox. Laws 2
+(concentric radii) and 4 (the typographic ratio) are deliberately not in it yet, each for a stated
+reason. Worth a paragraph on the Theming page only if it earns one; the audience there is a
+consumer choosing tokens, not an author of the library.
