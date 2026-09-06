@@ -22,10 +22,35 @@ not worth carrying here.
   across 66 components to zero in a 25-commit sweep (`docs/component-geometry.md` has the status
   table and the five findings that changed a rule rather than a component).
 
-  **Law 2 (concentric radii) needs a declared parent per nested radius.** The survey infers
-  parentage by name and reports 27 radii with no parent inferred, which is the work: a name is not
-  a parent — a dropdown panel's option nests inside the panel, not the field of the same name — so
-  the pair table is a decision and cannot be a regex.
+  **Law 2 has its table and its check now (2026-09-06), and five findings to fix.**
+  `npm run check:radii` — deliberately its own script and deliberately not in CI, because
+  `check:geometry` is a required step and is green. All 46 radii are accounted for: 26 outermost,
+  7 nested, 13 outside the law. The five:
+
+  | Radius                                  | Is    | Should be | Because                                                  |
+  | --------------------------------------- | ----- | --------- | -------------------------------------------------------- |
+  | `--gog-menu-item-radius`                | 8px   | 12px      | the menu paints `--gog-panel-radius` (16px), 4px of padding |
+  | `--gog-multiselect-option-radius`       | 6px   | 4px       | 8px panel, 4px of options padding                         |
+  | `--gog-multiselect-filter-input-radius` | 8px   | 0px       | identical to its panel with 8px between them              |
+  | `--gog-select-filter-input-radius`      | 8px   | 0px       | identical to its panel with 8px between them              |
+  | `--gog-scroll-thumb-radius`             | 8px   | 6px       | 2px of thumb inset inside the track                       |
+
+  Each is a paint change, so each is its own commit under the sweep's rule. **Two of them want a
+  decision before the arithmetic is applied**: a 0px filter input inside a rounded panel is what
+  concentricity says and it may read as wrong, and the two are the same case twice.
+
+  **Building the table produced a third state the plan did not have**, and it is the part worth
+  keeping: *a child that never reaches its parent's corner has no concentric relationship with it
+  at all.* Without it the law squares off every calendar day in the grid — `inner = outer -
+  padding` clamps to 0 at 12px of panel padding, and 31 of 35 cells are nowhere near a corner. So
+  `NOT_CONCENTRIC` holds 13 rows, each saying what makes the relationship absent rather than
+  inconvenient.
+
+  **It also caught two inconsistencies that are not law-2 failures** and are reported alongside:
+  the autocomplete and datepicker have their own panel radius token while the select and
+  multiselect panels paint with the *field's*, and the select panel has no option radius and no
+  options padding at all — its rows are full-bleed and square while the other two are inset and
+  rounded. Four dropdowns on one base, three panel interiors.
 
   **Law 4 (the typographic ratio) needs a role per text token.** 45 blocks declare a font size and
   only 20 declare a line-height, so the larger half of this law is *unstated* rather than wrong,
