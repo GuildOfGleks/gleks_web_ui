@@ -1041,6 +1041,7 @@
   --gog-radio-disabled-opacity: var(--gog-disabled-opacity);
   --gog-radio-transition-duration: var(--gog-duration-base);
   --gog-radio-error-font-size: var(--gog-text-xs);
+  --gog-radio-error-line-height: var(--gog-field-error-line-height);
   --gog-radio-error-color: var(--gog-danger-color);
 
   /* ── Chip ──────────────────────────────────────────────────────────────────
@@ -1171,6 +1172,7 @@
   --gog-autocomplete-gap: var(--gog-space-4);
   --gog-autocomplete-label-color: var(--gog-accent-color);
   --gog-autocomplete-label-font-size: var(--gog-text-sm);
+  --gog-autocomplete-label-line-height: var(--gog-field-label-line-height);
   --gog-autocomplete-label-font-weight: var(--gog-font-weight-semibold);
   --gog-autocomplete-label-letter-spacing: var(--gog-letter-spacing);
   --gog-autocomplete-label-text-transform: var(--gog-text-transform);
@@ -1192,6 +1194,7 @@
   --gog-autocomplete-error-border-color: var(--gog-danger-color);
   --gog-autocomplete-error-font-family: var(--gog-font-body);
   --gog-autocomplete-error-font-size: var(--gog-text-xs);
+  --gog-autocomplete-error-line-height: var(--gog-field-error-line-height);
   /* Floor for an auto-width field, so [fullWidth]="false" cannot collapse it to its chrome. */
   --gog-autocomplete-min-width: 120px;
   /* Trailing chrome: spinner and clear button, clear outermost — the arrangement the other
@@ -1291,6 +1294,7 @@
   --gog-datepicker-gap: var(--gog-space-4);
   --gog-datepicker-label-color: var(--gog-accent-color);
   --gog-datepicker-label-font-size: var(--gog-text-sm);
+  --gog-datepicker-label-line-height: var(--gog-field-label-line-height);
   --gog-datepicker-label-letter-spacing: var(--gog-letter-spacing);
   --gog-datepicker-label-text-transform: var(--gog-text-transform);
   --gog-datepicker-field-bg: var(--gog-surface-color);
@@ -1311,6 +1315,7 @@
   --gog-datepicker-error-border-color: var(--gog-danger-color);
   --gog-datepicker-error-font-family: var(--gog-font-body);
   --gog-datepicker-error-font-size: var(--gog-text-xs);
+  --gog-datepicker-error-line-height: var(--gog-field-error-line-height);
   --gog-datepicker-min-width: 150px;
   --gog-datepicker-actions-inset: var(--gog-control-icon-offset);
   --gog-datepicker-actions-gap: var(--gog-space-8);
@@ -1366,6 +1371,7 @@
   --gog-input-gap: var(--gog-space-4);
   --gog-input-label-color: var(--gog-accent-color);
   --gog-input-label-font-size: var(--gog-text-sm);
+  --gog-input-label-line-height: var(--gog-field-label-line-height);
   --gog-input-label-letter-spacing: var(--gog-letter-spacing);
   --gog-input-label-text-transform: var(--gog-text-transform);
   --gog-input-field-bg: var(--gog-surface-color);
@@ -1382,6 +1388,7 @@
   --gog-input-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-input-error-color: var(--gog-danger-color);
   --gog-input-error-font-size: var(--gog-text-xs);
+  --gog-input-error-line-height: var(--gog-field-error-line-height);
   /* Extra space above the error line, *on top of* the host's own `--gog-input-gap`, which
      already separates every child of the field. It shipped as `2px` and put this field's error
      6px under it while `gog-select`, `gog-autocomplete` and `gog-datepicker` — same gap, no
@@ -1465,6 +1472,7 @@
   --gog-multiselect-options-padding: var(--gog-space-4);
   --gog-multiselect-label-color: var(--gog-accent-color);
   --gog-multiselect-label-font-size: var(--gog-text-sm);
+  --gog-multiselect-label-line-height: var(--gog-field-label-line-height);
   --gog-multiselect-label-letter-spacing: var(--gog-letter-spacing);
   --gog-multiselect-label-text-transform: var(--gog-text-transform);
   --gog-multiselect-field-bg: var(--gog-surface-color);
@@ -1482,6 +1490,7 @@
   --gog-multiselect-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-multiselect-error-color: var(--gog-danger-color);
   --gog-multiselect-error-font-size: var(--gog-text-xs);
+  --gog-multiselect-error-line-height: var(--gog-field-error-line-height);
   /* Zero by default since 21.9.0 — see `--gog-input-error-offset` for why. */
   --gog-multiselect-error-offset: 0px;
   --gog-multiselect-border-color: var(--gog-accent-color);
@@ -1772,6 +1781,7 @@
   --gog-select-gap: var(--gog-space-4);
   --gog-select-label-color: var(--gog-accent-color);
   --gog-select-label-font-size: var(--gog-text-sm);
+  --gog-select-label-line-height: var(--gog-field-label-line-height);
   --gog-select-label-letter-spacing: var(--gog-letter-spacing);
   --gog-select-label-text-transform: var(--gog-text-transform);
   --gog-select-field-bg: var(--gog-surface-color);
@@ -1788,6 +1798,7 @@
   --gog-select-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-select-error-color: var(--gog-danger-color);
   --gog-select-error-font-size: var(--gog-text-xs);
+  --gog-select-error-line-height: var(--gog-field-error-line-height);
   --gog-select-chevron-color: var(--gog-accent-color);
   /*
      Distance from the trigger's right edge to the trailing chrome, matching the leading icon
@@ -1892,6 +1903,7 @@
   --gog-slider-gap: var(--gog-space-8);
   --gog-slider-label-color: var(--gog-accent-color);
   --gog-slider-label-font-size: var(--gog-text-sm);
+  --gog-slider-label-line-height: var(--gog-field-label-line-height);
   --gog-slider-label-letter-spacing: var(--gog-letter-spacing);
   --gog-slider-label-text-transform: var(--gog-text-transform);
   --gog-slider-value-color: var(--gog-accent-color);
@@ -1934,6 +1946,7 @@
   --gog-slider-range-font-size: var(--gog-text-xs);
   --gog-slider-error-color: var(--gog-danger-color);
   --gog-slider-error-font-size: var(--gog-text-xs);
+  --gog-slider-error-line-height: var(--gog-field-error-line-height);
   --gog-slider-disabled-opacity: var(--gog-disabled-opacity);
 
   /* ── Spinner ──────────────────────────────────────────────────────────────── */

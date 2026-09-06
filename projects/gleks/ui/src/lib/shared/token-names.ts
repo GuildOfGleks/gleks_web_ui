@@ -117,6 +117,7 @@ export type GogTokenName =
   | '--gog-autocomplete-error-color'
   | '--gog-autocomplete-error-font-family'
   | '--gog-autocomplete-error-font-size'
+  | '--gog-autocomplete-error-line-height'
   | '--gog-autocomplete-field-bg'
   | '--gog-autocomplete-float-label-in-top'
   | '--gog-autocomplete-float-label-on-bg'
@@ -135,6 +136,7 @@ export type GogTokenName =
   | '--gog-autocomplete-label-font-size'
   | '--gog-autocomplete-label-font-weight'
   | '--gog-autocomplete-label-letter-spacing'
+  | '--gog-autocomplete-label-line-height'
   | '--gog-autocomplete-label-text-transform'
   | '--gog-autocomplete-line-height'
   | '--gog-autocomplete-min-width'
@@ -580,6 +582,7 @@ export type GogTokenName =
   | '--gog-datepicker-error-color'
   | '--gog-datepicker-error-font-family'
   | '--gog-datepicker-error-font-size'
+  | '--gog-datepicker-error-line-height'
   | '--gog-datepicker-field-bg'
   | '--gog-datepicker-float-label-in-top'
   | '--gog-datepicker-float-label-on-bg'
@@ -599,6 +602,7 @@ export type GogTokenName =
   | '--gog-datepicker-label-font-family'
   | '--gog-datepicker-label-font-size'
   | '--gog-datepicker-label-letter-spacing'
+  | '--gog-datepicker-label-line-height'
   | '--gog-datepicker-label-text-transform'
   | '--gog-datepicker-line-height'
   | '--gog-datepicker-min-width'
@@ -732,6 +736,7 @@ export type GogTokenName =
   | '--gog-input-disabled-opacity'
   | '--gog-input-error-color'
   | '--gog-input-error-font-size'
+  | '--gog-input-error-line-height'
   | '--gog-input-error-offset'
   | '--gog-input-field-bg'
   | '--gog-input-field-border'
@@ -759,6 +764,7 @@ export type GogTokenName =
   | '--gog-input-label-font-family'
   | '--gog-input-label-font-size'
   | '--gog-input-label-letter-spacing'
+  | '--gog-input-label-line-height'
   | '--gog-input-label-text-transform'
   | '--gog-input-padding-x'
   | '--gog-input-padding-y'
@@ -820,6 +826,7 @@ export type GogTokenName =
   | '--gog-multiselect-disabled-opacity'
   | '--gog-multiselect-error-color'
   | '--gog-multiselect-error-font-size'
+  | '--gog-multiselect-error-line-height'
   | '--gog-multiselect-error-offset'
   | '--gog-multiselect-field-bg'
   | '--gog-multiselect-field-border'
@@ -855,6 +862,7 @@ export type GogTokenName =
   | '--gog-multiselect-label-font-family'
   | '--gog-multiselect-label-font-size'
   | '--gog-multiselect-label-letter-spacing'
+  | '--gog-multiselect-label-line-height'
   | '--gog-multiselect-label-text-transform'
   | '--gog-multiselect-mark-icon-ratio'
   | '--gog-multiselect-mark-size-ratio'
@@ -992,6 +1000,7 @@ export type GogTokenName =
   | '--gog-radio-dot-size-ratio'
   | '--gog-radio-error-color'
   | '--gog-radio-error-font-size'
+  | '--gog-radio-error-line-height'
   | '--gog-radio-focus-ring'
   | '--gog-radio-focus-ring-offset'
   | '--gog-radio-focus-ring-width'
@@ -1046,6 +1055,7 @@ export type GogTokenName =
   | '--gog-select-disabled-opacity'
   | '--gog-select-error-color'
   | '--gog-select-error-font-size'
+  | '--gog-select-error-line-height'
   | '--gog-select-field-bg'
   | '--gog-select-field-border'
   | '--gog-select-field-border-style'
@@ -1079,6 +1089,7 @@ export type GogTokenName =
   | '--gog-select-label-font-family'
   | '--gog-select-label-font-size'
   | '--gog-select-label-letter-spacing'
+  | '--gog-select-label-line-height'
   | '--gog-select-label-text-transform'
   | '--gog-select-mark-icon-ratio'
   | '--gog-select-mark-size-ratio'
@@ -1129,6 +1140,7 @@ export type GogTokenName =
   | '--gog-slider-error-color'
   | '--gog-slider-error-font-family'
   | '--gog-slider-error-font-size'
+  | '--gog-slider-error-line-height'
   | '--gog-slider-fill-bg'
   | '--gog-slider-focus-ring'
   | '--gog-slider-focus-ring-width'
@@ -1137,6 +1149,7 @@ export type GogTokenName =
   | '--gog-slider-label-font-family'
   | '--gog-slider-label-font-size'
   | '--gog-slider-label-letter-spacing'
+  | '--gog-slider-label-line-height'
   | '--gog-slider-label-text-transform'
   | '--gog-slider-range-color'
   | '--gog-slider-range-font-size'
@@ -2132,6 +2145,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-radio-dot-size-ratio',
       '--gog-radio-error-color',
       '--gog-radio-error-font-size',
+      '--gog-radio-error-line-height',
       '--gog-radio-focus-ring',
       '--gog-radio-focus-ring-offset',
       '--gog-radio-focus-ring-width',
@@ -2273,6 +2287,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-autocomplete-error-color',
       '--gog-autocomplete-error-font-family',
       '--gog-autocomplete-error-font-size',
+      '--gog-autocomplete-error-line-height',
       '--gog-autocomplete-field-bg',
       '--gog-autocomplete-float-label-in-top',
       '--gog-autocomplete-float-label-over-gap',
@@ -2289,6 +2304,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-autocomplete-label-font-size',
       '--gog-autocomplete-label-font-weight',
       '--gog-autocomplete-label-letter-spacing',
+      '--gog-autocomplete-label-line-height',
       '--gog-autocomplete-label-text-transform',
       '--gog-autocomplete-line-height',
       '--gog-autocomplete-min-width',
@@ -2362,6 +2378,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-datepicker-error-color',
       '--gog-datepicker-error-font-family',
       '--gog-datepicker-error-font-size',
+      '--gog-datepicker-error-line-height',
       '--gog-datepicker-field-bg',
       '--gog-datepicker-float-label-in-top',
       '--gog-datepicker-float-label-over-gap',
@@ -2379,6 +2396,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-datepicker-label-font-family',
       '--gog-datepicker-label-font-size',
       '--gog-datepicker-label-letter-spacing',
+      '--gog-datepicker-label-line-height',
       '--gog-datepicker-label-text-transform',
       '--gog-datepicker-line-height',
       '--gog-datepicker-min-width',
@@ -2433,6 +2451,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-input-disabled-opacity',
       '--gog-input-error-color',
       '--gog-input-error-font-size',
+      '--gog-input-error-line-height',
       '--gog-input-error-offset',
       '--gog-input-field-bg',
       '--gog-input-field-border',
@@ -2458,6 +2477,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-input-label-font-family',
       '--gog-input-label-font-size',
       '--gog-input-label-letter-spacing',
+      '--gog-input-label-line-height',
       '--gog-input-label-text-transform',
       '--gog-input-placeholder-color',
       '--gog-input-radius',
@@ -2495,6 +2515,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-multiselect-disabled-opacity',
       '--gog-multiselect-error-color',
       '--gog-multiselect-error-font-size',
+      '--gog-multiselect-error-line-height',
       '--gog-multiselect-error-offset',
       '--gog-multiselect-field-bg',
       '--gog-multiselect-field-border',
@@ -2528,6 +2549,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-multiselect-label-font-family',
       '--gog-multiselect-label-font-size',
       '--gog-multiselect-label-letter-spacing',
+      '--gog-multiselect-label-line-height',
       '--gog-multiselect-label-text-transform',
       '--gog-multiselect-mark-icon-ratio',
       '--gog-multiselect-mark-size-ratio',
@@ -2740,6 +2762,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-select-disabled-opacity',
       '--gog-select-error-color',
       '--gog-select-error-font-size',
+      '--gog-select-error-line-height',
       '--gog-select-field-bg',
       '--gog-select-field-border',
       '--gog-select-field-border-style',
@@ -2772,6 +2795,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-select-label-font-family',
       '--gog-select-label-font-size',
       '--gog-select-label-letter-spacing',
+      '--gog-select-label-line-height',
       '--gog-select-label-text-transform',
       '--gog-select-mark-icon-ratio',
       '--gog-select-mark-size-ratio',
@@ -2834,6 +2858,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-slider-error-color',
       '--gog-slider-error-font-family',
       '--gog-slider-error-font-size',
+      '--gog-slider-error-line-height',
       '--gog-slider-fill-bg',
       '--gog-slider-focus-ring',
       '--gog-slider-focus-ring-width',
@@ -2842,6 +2867,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-slider-label-font-family',
       '--gog-slider-label-font-size',
       '--gog-slider-label-letter-spacing',
+      '--gog-slider-label-line-height',
       '--gog-slider-label-text-transform',
       '--gog-slider-range-color',
       '--gog-slider-range-font-size',
