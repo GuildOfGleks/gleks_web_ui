@@ -171,14 +171,10 @@ a strength rather than an apology — a value chosen by eye is unfalsifiable and
 component, which is exactly how the library ended up with 177 hard-coded paddings in two units
 before `--gog-density` existed.
 
-Five laws govern any length a component declares. **Four of them are enforced by CI** —
-`npm run check:geometry` gates laws 1, 2, 3 and 5 over every component, from the token values
-rather than from a rendered page, and it is a required step as of 21.11.0. **Only law 4 is still
-enforced by reading**, and for a stated reason: it needs a role per text token, which is a
-decision before it can be a check (`docs/component-geometry.md`, "D4 — proposed, not taken").
-`npm run survey:geometry` reports all five and gates none, which is where to look for what law 4
-would find today. **A new component satisfies all five before it is done, and an existing one
-that violates one is a defect, not a style.**
+Five laws govern any length a component declares, and **all five are enforced by CI** as of
+21.11.0 — `npm run check:geometry` runs four scripts over every component, from the token values
+and the stylesheets rather than from a rendered page. **A new component satisfies all five before
+it is done, and an existing one that violates one is a defect, not a style.**
 
 1. **The grid is 4px.** Every padding, gap, margin, offset and inset reads a step of the spacing
    scale, never a literal — `check-tokens` rule H already fails the build on a literal that

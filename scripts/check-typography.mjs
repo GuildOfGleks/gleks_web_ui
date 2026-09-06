@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Law 4 — the typographic ratio — plus D8, the type scale's completeness. Written red; not a CI
-// step until it is green, the sequence every check in this repo has followed.
+// Law 4 — the typographic ratio — plus D8, the type scale's completeness. Written red on 50
+// findings and wired into `check:geometry` once it was green, the sequence every check in this
+// repo has followed. With it, all five laws are gated.
 //
 //   4. THE TYPOGRAPHIC RATIO  Line-height is a function of role, not a per-component choice, and a
 //                             block that sets a font size sets its leading. Inheriting the leading

@@ -62,7 +62,9 @@ jobs:
       # Three scripts. The second reads the icon registry's path data rather than theme.css, for
       # L7 (a glyph centres its ink in its own viewBox). The third is law 2, concentric radii,
       # which joined once its six findings were fixed -- it needed a declared parent per nested
-      # radius, since a name is not a parent. Only law 4 is still outside the gate.
+      # radius, since a name is not a parent. The fourth is law 4 and D8, which joined last and
+      # reads the component stylesheets as well as theme.css -- eight literal line-heights lived
+      # there, invisible to a token-level sweep. All five laws are gated.
       - name: Geometry check
         run: npm run check:geometry
 

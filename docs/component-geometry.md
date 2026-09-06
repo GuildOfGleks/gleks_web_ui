@@ -674,7 +674,7 @@ re-litigates a settled number.
 | The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits    |
 | Law 2's parent table + `check:radii`                       | ✅ 2026-09-06 — opened on 6 findings |
 | Law 2 green, and in CI via `check:geometry`                | ✅ 2026-09-06, 5 component commits |
-| Law 4 in the gate                                         | ⬜ blocked on D4             |
+| Law 4 + D8 in the gate (`check:typography`)                | ✅ 2026-09-06 — 50 findings to zero |
 | L7 audited, and gated by `check:geometry`'s second half    | ✅ 2026-09-06 — the audit reversed the law |
 | L6's 1.128 correction applied to the filled marks         | ❌ 2026-09-06 — no mark in this library it applies to |
 | L11 into `api-design.instructions.md` and `AGENTS.md`     | ✅ 2026-09-06                |

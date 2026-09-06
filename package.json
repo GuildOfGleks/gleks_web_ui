@@ -39,7 +39,7 @@
     "generate:examples": "node scripts/generate-example-sources.mjs",
     "check:examples": "node scripts/generate-example-sources.mjs --check",
     "survey:geometry": "node scripts/survey-geometry.mjs",
-    "check:geometry": "node scripts/check-geometry.mjs && node scripts/check-icon-geometry.mjs && node scripts/check-radii.mjs",
+    "check:geometry": "node scripts/check-geometry.mjs && node scripts/check-icon-geometry.mjs && node scripts/check-radii.mjs && node scripts/check-typography.mjs",
     "check:radii": "node scripts/check-radii.mjs",
     "check:typography": "node scripts/check-typography.mjs"
   },
