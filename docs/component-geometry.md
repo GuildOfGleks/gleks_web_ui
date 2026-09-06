@@ -1,18 +1,26 @@
 # Component geometry — the laws, and the sweep that applies them
 
-**Target: the first minor released after 21.10.0.** At the time of writing that is 21.11.0, and
-the filename deliberately does not say so — `panel-card.md` and `ripple.md` were both named for a
-release that shipped without them, which is what a version in a plan's filename always becomes.
-The target is stated here, in the paragraph where it can be changed.
+**Target: the first minor released after 21.10.0 — which turned out to be 21.11.0, and it carries
+this.** Built on the `geometry` branch and merged to `master` on 2026-09-06; the release is not
+cut, so the changelog heading still reads `planned`. The filename deliberately does not say
+21.11.0 — `panel-card.md` and `ripple.md` were both named for a release that shipped without them,
+which is what a version in a plan's filename always becomes. This one happens to have hit its
+target, which is exactly the case where nobody would have noticed the convention failing.
+
+**Read the status table before the prose.** Most of what follows was written before the work, and
+two of the adopted laws reversed once they were measured — the L6 and L7 sections carry their own
+revisions, dated, rather than being rewritten into a story that was always right.
 
 **This is not a patch.** Some of what follows moves a control by two pixels, some of it adds a
 token family, and some of it changes the spacing scale's members. Any of those three is a minor.
 Whether it is _one_ minor is the first open decision (D0, below).
 
-**Shape of the work: one branch, one component per commit.** The branch exists so `master` never
-carries a half-applied ruleset; the commit granularity is the rule `docs/showcase-card-to-panel.md`
+**Shape of the work: one branch, one component per commit.** The branch existed so `master` never
+carried a half-applied ruleset; the commit granularity is the rule `docs/showcase-card-to-panel.md`
 had to learn the hard way — a bulk geometry change over 33 components is unreviewable as one diff,
-and the one component whose numbers do not fit the rule is the finding, not an obstacle.
+and the one component whose numbers do not fit the rule is the finding, not an obstacle. It held:
+51 commits, fast-forwarded to `master` once every check was green, and five of the findings changed
+a rule rather than a component.
 
 ---
 
@@ -35,9 +43,13 @@ in two units, all of which had to be converted when `--gog-density` arrived. Eve
 So the order is: **settle the ruleset → build the checks → sweep the 33 shipped components → then
 build the new ones, which are born compliant.** Not: build twenty, then sweep fifty-three.
 
-## Entry condition
+## Entry condition — met 2026-09-05, kept as the record
 
-Nothing here starts until **21.10.0 is released and its open work is closed**. That is the
+All three conditions below held before the branch was cut, and the third one is the reason to keep
+this section rather than delete it: the colour half of `docs/backlog.md` was re-read and
+deliberately left where it was. It is still open, and it is still a separate piece of work.
+
+Nothing here started until **21.10.0 was released and its open work was closed**. That is the
 project's own rule — fixes and polish of what already ships come first — and it applies to this
 plan more than to most, because this plan _is_ polish and would otherwise queue-jump the defects
 in front of it. Concretely, before the branch is cut:
