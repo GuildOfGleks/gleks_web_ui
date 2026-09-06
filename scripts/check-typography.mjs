@@ -171,17 +171,27 @@ for (const token of leadingTokens) {
 }
 
 // ── Rule E: no literal leading in a component stylesheet ─────────────────────────────────────
-const walk = async (dir) => {
+const walk = async (dir, ext) => {
   const out = [];
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...(await walk(full)));
-    else if (entry.name.endsWith('.scss')) out.push(full);
+    if (entry.isDirectory()) out.push(...(await walk(full, ext)));
+    else if (entry.name.endsWith(ext)) out.push(full);
   }
   return out;
 };
 
-for (const file of await walk(libRoot)) {
+// Component stylesheets *and* the global ones. `gog-button`'s rules live in `styles/button.css`
+// rather than beside the component, so a sweep of `lib/` alone reported five healthy tokens as
+// read by nothing — the button, the badge, the menu item and both headings all read theirs there.
+// A rule that names a healthy token is worse than no rule: it sends someone to delete working
+// code, and it was this rule's own first output.
+const scssFiles = [
+  ...(await walk(libRoot, '.scss')),
+  ...(await walk(path.join(root, 'projects/gleks/ui/src/styles'), '.css')),
+];
+
+for (const file of scssFiles) {
   const css = await fs.readFile(file, 'utf8');
   const rel = path.relative(root, file).replace(/\\/g, '/');
   css.split('\n').forEach((line, i) => {
@@ -192,6 +202,43 @@ for (const file of await walk(libRoot)) {
     if (NOT_LEADING.has(value)) return;
     add('E', rel.split('/').at(-1).replace('.component.scss', ''), `${rel}:${i + 1} sets line-height: ${value} — a literal outside --gog-line-height-*`);
   });
+}
+
+// ── Rule F: a declared leading that nothing reads is not a leading ──────────────────────────
+//
+// Rule C asks whether the token exists. That is not the same question as whether the block's text
+// actually carries the leading, and the difference is the whole point: a token no stylesheet reads
+// changes nothing, the block goes on inheriting whatever it inherited, and rule C reports a clean
+// bill. Thirty-five tokens were added under rule C before this rule existed and every one of them
+// was inert -- caught by grepping for a reader rather than by the check, which is the failure this
+// repo keeps paying for.
+//
+// A token counts as read when a component stylesheet names it, or when a token that is itself read
+// names it -- the `--gog-field-*` tier is read only through the aliases that point at it.
+const readInScss = new Set();
+for (const file of scssFiles) {
+  const css = await fs.readFile(file, 'utf8');
+  for (const m of css.matchAll(/var\(\s*(--gog-[a-z0-9-]+)/g)) readInScss.add(m[1]);
+}
+
+const live = new Set(readInScss);
+for (let changed = true; changed; ) {
+  changed = false;
+  for (const token of live) {
+    for (const m of (declared.get(token) ?? '').matchAll(/var\(\s*(--gog-[a-z0-9-]+)/g)) {
+      if (!live.has(m[1])) {
+        live.add(m[1]);
+        changed = true;
+      }
+    }
+  }
+}
+
+for (const token of leadingTokens) {
+  if (NOT_A_LEADING_TOKEN.has(token)) continue;
+  if (!live.has(token)) {
+    add('F', blockOf(token), `${token} is declared and no stylesheet reads it — the block still inherits its leading`);
+  }
 }
 
 // ── Report ───────────────────────────────────────────────────────────────────────────────────
