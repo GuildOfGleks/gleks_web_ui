@@ -521,9 +521,15 @@ the same shape as law 3's finding and the chip avatar's.
 > `aria-hidden="true"` micro-lettering inside the switch track; the state a reader actually
 > receives comes from `role="switch"` and `aria-checked`, and this is decoration for sighted users.
 > Its five values are not a scale (8, 9, 10, 12, 13), and stretching a reading scale to cover them
-> would be stretching it over a mark. They stay literal in a named exception with that reason — and
-> `lg` stops being the odd one reading a token, because one of five following the scale is worse
-> than none of them doing so.
+> would be stretching it over a mark. They stay literal in a named exception with that reason.
+
+> **Corrected the same day, by `check:tokens`.** The decision above originally went one step
+> further and made `lg` a literal too, so that all five would read alike — and rule G
+> (character-drift) refused the build, because 12px is `--gog-text-xs` exactly and a literal
+> repeating a step verbatim is indistinguishable from a mistake. Rule G is right and the tidier
+> version was wrong: **a role justifies a value that sits off the scale; it never justifies
+> restating one that is on it.** So `lg` goes on reading the token, four of five are literals, and
+> the exemption means *may* be off the scale rather than *must* be.
 
 ### D4 — the roles, taken
 

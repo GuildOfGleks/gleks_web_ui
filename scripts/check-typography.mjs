@@ -119,10 +119,13 @@ for (const token of fontSizeTokens) {
   const exempt = FONT_SIZE_EXEMPT.get(token);
   const readsScale = /var\(\s*--gog-text-/.test(value) || /var\(\s*--gog-[a-z-]*font-size/.test(value);
 
-  if (readsScale) {
-    if (exempt) add('A', block, `${token} reads the scale but is listed as exempt ("${exempt}") — remove the entry`);
-    continue;
-  }
+  // An exemption says the token *may* sit off the scale, not that it must. Where a value happens
+  // to equal a step, reading the step is right whatever the block's role — and `check-tokens`
+  // rule G (character-drift) fails the build if it does not. That is how this rule found out: it
+  // wanted `--gog-toggle-lg-state-font-size` spelled as a literal for consistency with its four
+  // neighbours, rule G refused, and rule G was right. **A role justifies a value off the scale;
+  // it never justifies restating one that is on it.**
+  if (readsScale) continue;
   if (exempt) continue;
 
   if (/\d\s*px/.test(value)) {
