@@ -198,6 +198,15 @@ reached 1.0, so breaking changes may land in minor versions.
   `--gog-menu-item-radius` now derives from the panel radius and the padding rather than restating
   a value, so a theme that changes either carries the item with it.
 
+- **`gog-multiselect`'s panel interior is concentric with the panel — two corners, both derived.**
+  The option row went from 6px to 4px (8px panel, 4px of list padding), and **the filter input's
+  corner is now square**. The second one looks like a value clamped to zero and is not: the filter
+  is inset by 8px, which is exactly the panel's radius, and where the inset equals the radius the
+  inner box's corner point lands on the centre of the outer arc — so a right angle is equidistant
+  from the whole curve, and it is the only shape that keeps the gap constant. Both now read the
+  panel radius and their own padding rather than restating a number, which is also what makes them
+  hold at a density other than 1.
+
 ### Documentation
 
 - **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41

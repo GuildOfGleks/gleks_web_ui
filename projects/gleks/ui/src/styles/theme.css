@@ -1482,7 +1482,14 @@
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-multiselect-option-height: 40px;
-  --gog-multiselect-option-radius: calc(var(--gog-radius) - 2px);
+  /* Concentric with the panel. The panel paints `--gog-multiselect-radius` (the field's token --
+     this component has no panel radius of its own) and insets its rows by the list padding, so
+     the row's corner is that radius minus that padding. It had subtracted 2px against 4px of
+     padding, and a restated literal also stops being true once density moves. */
+  --gog-multiselect-option-radius: max(
+    0px,
+    calc(var(--gog-multiselect-radius) - var(--gog-multiselect-options-padding))
+  );
   --gog-multiselect-option-disabled-opacity: var(--gog-disabled-opacity);
   --gog-multiselect-option-transition-duration: var(--gog-duration-fast);
   --gog-multiselect-checkbox-border: var(--gog-accent-dim);
@@ -1498,7 +1505,15 @@
   --gog-multiselect-filter-input-bg: var(--gog-background-color);
   --gog-multiselect-filter-input-color: var(--gog-multiselect-field-color);
   --gog-multiselect-filter-input-border: var(--gog-multiselect-field-border);
-  --gog-multiselect-filter-input-radius: var(--gog-radius);
+  /* Concentric with the panel, and the concentric answer here is a square corner. The filter is
+     inset by `--gog-multiselect-filter-padding`, which equals the panel's radius -- and where the
+     inset equals the radius, the inner box's corner point lands exactly on the centre of the
+     outer arc, so a right angle is equidistant from the whole curve. It is the only shape that
+     keeps the gap constant, not a value clamped to zero for want of a better one. */
+  --gog-multiselect-filter-input-radius: max(
+    0px,
+    calc(var(--gog-multiselect-radius) - var(--gog-multiselect-filter-padding))
+  );
   --gog-multiselect-filter-border-width: var(--gog-panel-border-width);
   --gog-multiselect-filter-border-style: var(--gog-panel-border-style);
   --gog-multiselect-filter-border-color: var(--gog-border-color);
