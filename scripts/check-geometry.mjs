@@ -136,6 +136,24 @@ const OPTICAL_CHROME = new Map([
 ]);
 
 /**
+ * Values that are deliberately not lengths, so no grid can govern them.
+ *
+ * Distinct from OPTICAL_CHROME above, which holds off-grid *lengths*. These resolve to nothing at
+ * all, and until they were named here they arrived in the "could not resolve" list on every run —
+ * a permanent line in a green build's output, which is the same failure as a permanently red CI
+ * step: it teaches the reader to skip the section where a real unresolvable would appear.
+ *
+ * Naming one is not skipping it. An entry that becomes resolvable is reported, because a value
+ * that turned into a length is a value the grid now governs and nobody would notice otherwise.
+ */
+const NOT_A_LENGTH = new Map([
+  [
+    '--gog-spinner-ring-padding',
+    'a fraction of the spinner’s own diameter (16%), which is what keeps the ring’s stroke in proportion at every size; a px step would make the ring thick at `xsm` and hairline at `slg`',
+  ],
+]);
+
+/**
  * Where a target's padding comes from when it is not a token of that block.
  *
  * A `gog-toggle`'s pointer target is the `<label>` around it, whose padding falls through
@@ -187,12 +205,27 @@ for (const [token, raw] of declared) {
 /** Findings, grouped by component so a failure reads as "gog-button / sm / …". */
 const findings = [];
 const unreadable = [];
+const staleExemptions = new Set();
 const add = (block, size, law, message) =>
   findings.push({ block, size, law, message });
 
 const resolve = (token) => {
   const d = resolver.declaration(token);
-  if (d.px === null && d.parts.length <= 1 && d.why !== 'not declared') unreadable.push(`${token} — ${d.why}`);
+  const exempt = NOT_A_LENGTH.get(token);
+  if (d.px === null && d.parts.length <= 1 && d.why !== 'not declared' && !exempt) {
+    unreadable.push(`${token} — ${d.why}`);
+  }
+  if (exempt && d.px !== null && !staleExemptions.has(token)) {
+    // It used to be unresolvable and now is a length, so the grid governs it after all. Reported
+    // once: `resolve` runs per law, and one stale row is one defect however many passes see it.
+    staleExemptions.add(token);
+    add(
+      parseTokenName(token, PROP_SUFFIXES).block ?? token,
+      null,
+      1,
+      `${token} resolves to ${d.px}px now — it is listed in NOT_A_LENGTH ("${exempt}"), which is no longer true`,
+    );
+  }
   return d;
 };
 
