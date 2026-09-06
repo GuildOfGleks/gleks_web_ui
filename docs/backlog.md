@@ -52,10 +52,18 @@ not worth carrying here.
   options padding at all — its rows are full-bleed and square while the other two are inset and
   rounded. Four dropdowns on one base, three panel interiors.
 
-  **Law 4 (the typographic ratio) needs a role per text token.** 45 blocks declare a font size and
-  only 20 declare a line-height, so the larger half of this law is *unstated* rather than wrong,
-  and `--gog-line-height-none: 1` on a tag is correct. Both halves are visible today in
-  `npm run survey:geometry`, which reports all five laws and gates none.
+  **Law 4 needs a role per text token, and there is now a proposal to accept or change**
+  (`docs/component-geometry.md`, "D4 — proposed, not taken"). Six roles, named against what the
+  library already does: the vocabulary exists (`--gog-line-height-*`, six steps) and nineteen
+  component tokens each read a named step rather than a literal. **The function turned out simpler
+  than the plan assumed** — 17 of the 19 hold one value across all five sizes, so it is
+  `leading = step(role)` with one size-dependent role (headings), not `role × size → step`.
+
+  Four things need deciding first, and one of them sets the law's reach: **33 blocks declare a font
+  size and no line-height at all**, so a check today would cover 19 of 52 text blocks. Making them
+  explicit is 33 new tokens. The other three are smaller — `prose` holds two steps (toast 1.5,
+  accordion body 1.6), `--gog-panel-heading-line-height: 1.25` is a literal outside the scale, and
+  `--gog-skeleton-line-height-*` is a naming collision holding px bone heights rather than leading.
 
   **L7 came off this list on 2026-09-06** and is worth reading rather than summarising: the audit
   reversed the law. All 41 glyphs measured, the ink box already centred to a hundredth of a unit

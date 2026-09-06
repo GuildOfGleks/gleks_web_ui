@@ -461,6 +461,55 @@ rounds **up**: the library has seventeen pointer targets under 24x24 and none ov
 that helps law 5 is the same one that never shrinks an already-tight `xsm`. A component that argues
 for rounding down says so in its own stylesheet, with the reason.
 
+## D4 — proposed, not taken (2026-09-06)
+
+**The vocabulary already exists and nothing reads a literal but one block.** `--gog-line-height-*`
+is six named steps (`none` 1, `tight` 1.2, `snug` 1.3, `normal` 1.4, `relaxed` 1.5, `loose` 1.6)
+and nineteen component tokens each read one of them. What is missing is not the scale, it is the
+**role** that says which step a given kind of text takes — so the proposal below is a naming of
+what the library already does, plus four places where it does two things at once.
+
+| Proposed role    | Step               | What it is                                                                                                              | Blocks today                                                                        |
+| ---------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `label-none`     | `none` (1)         | A single-line label in a box whose height is padding plus the type. Leading here adds space nobody asked for and pushes the box off its computed height. | `button`, `button-toggle`, `badge`, `tag`                                              |
+| `label-tight`    | `tight` (1.2)      | A single-line label that may carry descenders, in a box sized by its content.                                            | `chip`, `tabs`                                                                        |
+| `label-wrapping` | `snug` (1.3)       | A form label that may wrap to a second line beside its control.                                                          | `checkbox-label`, `radio-label`                                                       |
+| `heading`        | size-dependent     | A heading. The only role where law 4's "inversely with size" is visible, because it is the only text whose size varies enough for it to matter. | `card-heading` (18px, 1.3), `panel-heading` (24px, 1.25)                              |
+| `ui-line`        | `normal` (1.4)     | One line of UI text whose line box *is* the row height.                                                                  | `menu-item`, `tooltip`, `divider-label`, `autocomplete`, `datepicker`, `toast-icon`, `toggle-label` |
+| `prose`          | `relaxed`/`loose`  | Text that wraps into a paragraph.                                                                                        | `toast-message` (1.5), `accordion-body` (1.6, and 1.5 at `xsm`)                        |
+
+**The function is simpler than the plan assumed, and the data is why.** D4 asks for `role × size →
+step`; seventeen of the nineteen declared line-heights are **one value across all five sizes**. So
+the proposal is `leading = step(role)`, with exactly one role — `heading` — taking a
+size-dependent step. Two blocks are the exceptions, and both are listed below as decisions rather
+than smoothed over.
+
+### The four things that need deciding before this can be a check
+
+**(a) `prose` currently holds two steps, and one of its blocks holds both.** `toast-message` is
+1.5, `accordion-body` is 1.6, and `accordion-body` at `xsm` is 1.5. Either prose is one step and
+one of those two components moves, or it is two steps and the role has to say what distinguishes
+them — "a toast is short and an accordion body is long" is a real distinction, but it is about
+expected length rather than about the component, and a check cannot see it.
+
+**(b) `--gog-panel-heading-line-height: 1.25` is a literal outside the scale.** The steps run 1.2
+then 1.3 with nothing between, so this one declaration bypasses the vocabulary — the same shape as
+the five off-grid spacing steps that D1 removed, and the same shape `check-tokens` rule H already
+fails for spacing. Three ways out: the scale gains a step, the panel heading takes `snug` (1.3,
+matching `card-heading`), or `heading` becomes an explicit size table and both headings read it.
+
+**(c) Thirty-three blocks declare a font size and no line-height at all.** They inherit, which is
+*unstated* rather than wrong — `field`, `table-td`, `table-th`, every `*-label` and every
+`*-error` among them. Either each gains an explicit role token, which is 33 new tokens and is the
+only way this law gates more than a third of the library, or "inherits" is itself a role and the
+check verifies only that inheriting was deliberate. **This is the decision that sets the law's
+reach**, and it is the expensive one: at present a check would cover 19 of 52 text blocks.
+
+**(d) `--gog-skeleton-line-height-*` is a naming collision.** Those five tokens are bone heights in
+px (8/10/14/18/24), not leading. Any check keyed on the `-line-height` suffix reads them as a
+line-height of 8 to 24 and either fails or has to name them. Rename them, or exclude them in the
+check with that as the reason — the second is cheaper and the first is right.
+
 **Still open: D0, D4, D5, D7, D8.** D4 and D5 need their own survey pass (the leading half is
 mostly *unstated* — 45 blocks declare a font size and 20 declare a line-height), and D5's
 elevation ladder is a separate token family that does not have to ride with this one.
