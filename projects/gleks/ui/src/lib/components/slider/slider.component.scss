@@ -32,6 +32,7 @@
 .gog-slider__label {
   font-family: var(--gog-slider-label-font-family);
   font-size: var(--gog-slider-label-font-size);
+  line-height: var(--gog-slider-label-line-height);
   color: var(--gog-slider-label-color);
   text-transform: var(--gog-slider-label-text-transform);
   letter-spacing: var(--gog-slider-label-letter-spacing);
@@ -47,6 +48,7 @@
   min-width: max(var(--gog-slider-value-min-width), calc(var(--value-chars, 0) * 1ch));
   font-family: var(--gog-slider-value-font-family);
   font-size: var(--gog-slider-value-font-size);
+  line-height: var(--gog-slider-value-line-height);
   font-variant-numeric: tabular-nums;
   color: var(--gog-slider-value-color);
   text-align: end;
@@ -205,12 +207,14 @@
   justify-content: space-between;
   font-family: var(--gog-slider-value-font-family);
   font-size: var(--gog-slider-range-font-size);
+  line-height: var(--gog-slider-range-line-height);
   color: var(--gog-slider-range-color);
 }
 
 .gog-slider__error {
   font-family: var(--gog-slider-error-font-family);
   font-size: var(--gog-slider-error-font-size);
+  line-height: var(--gog-slider-error-line-height);
   color: var(--gog-slider-error-color);
 }
 

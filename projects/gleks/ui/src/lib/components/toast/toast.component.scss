@@ -139,6 +139,7 @@
 .gog-toast__action {
   --gog-button-padding: var(--gog-toast-action-padding);
   --gog-button-font-size: var(--gog-toast-action-font-size);
+  line-height: var(--gog-toast-action-line-height);
 }
 
 .gog-toast__action gog-icon {
@@ -150,6 +151,7 @@
   flex-shrink: 0;
   --gog-button-padding: var(--gog-toast-close-padding);
   --gog-button-font-size: var(--gog-toast-close-font-size);
+  line-height: var(--gog-toast-close-line-height);
 }
 
 .gog-toast__close gog-icon {

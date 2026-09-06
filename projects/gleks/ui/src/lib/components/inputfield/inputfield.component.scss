@@ -31,6 +31,7 @@
 .gog-input__label {
   font-family: var(--gog-input-label-font-family);
   font-size: var(--gog-input-label-font-size);
+  line-height: var(--gog-input-label-line-height);
   color: var(--gog-input-label-color);
   text-transform: var(--gog-input-label-text-transform);
   letter-spacing: var(--gog-input-label-letter-spacing);
@@ -215,6 +216,7 @@
 .gog-input__error {
   font-family: var(--gog-input-font-family);
   font-size: var(--gog-input-error-font-size);
+  line-height: var(--gog-input-error-line-height);
   color: var(--gog-input-error-color);
   margin-top: var(--gog-input-error-offset);
 }

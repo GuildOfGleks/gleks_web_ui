@@ -87,6 +87,7 @@
     --gog-accordion-font-size,
     var(--gog-accordion-size-font-size, var(--gog-accordion-lg-font-size))
   );
+  line-height: var(--gog-accordion-line-height);
   transition:
     color var(--gog-accordion-transition-duration) var(--gog-easing),
     background-color var(--gog-accordion-transition-duration) var(--gog-easing);
@@ -147,6 +148,7 @@
     --gog-accordion-chevron-font-size,
     var(--gog-accordion-size-chevron-font-size, var(--gog-accordion-lg-chevron-font-size))
   );
+  line-height: var(--gog-accordion-chevron-line-height);
   color: var(--gog-accordion-border-color);
   transition: color var(--gog-accordion-transition-duration) var(--gog-easing);
 }

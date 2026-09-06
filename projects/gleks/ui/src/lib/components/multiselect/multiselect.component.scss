@@ -64,6 +64,7 @@
 .gog-ms__label {
   font-family: var(--gog-multiselect-label-font-family);
   font-size: var(--gog-multiselect-label-font-size);
+  line-height: var(--gog-multiselect-label-line-height);
   color: var(--gog-multiselect-label-color);
   text-transform: var(--gog-multiselect-label-text-transform);
   letter-spacing: var(--gog-multiselect-label-letter-spacing);
@@ -388,6 +389,7 @@
 .gog-ms__error {
   font-family: var(--gog-multiselect-font-family);
   font-size: var(--gog-multiselect-error-font-size);
+  line-height: var(--gog-multiselect-error-line-height);
   color: var(--gog-multiselect-error-color);
   margin-top: var(--gog-multiselect-error-offset);
 }
@@ -501,6 +503,7 @@
   align-self: baseline;
   margin-inline-start: var(--gog-multiselect-overflow-gap);
   font-size: var(--gog-multiselect-overflow-font-size);
+  line-height: var(--gog-multiselect-overflow-line-height);
   color: var(--gog-multiselect-overflow-color);
 }
 

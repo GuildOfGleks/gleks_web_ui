@@ -24,6 +24,7 @@
   color: var(--gog-datepicker-label-color);
   font-family: var(--gog-datepicker-label-font-family);
   font-size: var(--gog-datepicker-label-font-size);
+  line-height: var(--gog-datepicker-label-line-height);
   letter-spacing: var(--gog-datepicker-label-letter-spacing);
   text-transform: var(--gog-datepicker-label-text-transform);
 }
@@ -136,6 +137,7 @@
   color: var(--gog-datepicker-error-color);
   font-family: var(--gog-datepicker-error-font-family);
   font-size: var(--gog-datepicker-error-font-size);
+  line-height: var(--gog-datepicker-error-line-height);
 }
 
 /* === Panel === */

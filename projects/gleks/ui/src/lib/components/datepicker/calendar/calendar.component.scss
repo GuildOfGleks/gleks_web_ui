@@ -25,6 +25,7 @@
   color: var(--gog-calendar-color);
   font-family: var(--gog-calendar-font-family);
   font-size: var(--gog-calendar-size-font-size, var(--gog-calendar-md-font-size));
+  line-height: var(--gog-calendar-line-height);
   contain: layout style;
 }
 
@@ -102,6 +103,7 @@
   padding: var(--gog-calendar-weekday-padding);
   color: var(--gog-calendar-weekday-color);
   font-size: var(--gog-calendar-weekday-font-size);
+  line-height: var(--gog-calendar-weekday-line-height);
   font-weight: var(--gog-calendar-weekday-font-weight);
   text-align: center;
   text-transform: var(--gog-calendar-weekday-text-transform);

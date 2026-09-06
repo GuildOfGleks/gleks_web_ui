@@ -21,6 +21,7 @@
   color: var(--gog-autocomplete-label-color);
   font-family: var(--gog-autocomplete-label-font-family);
   font-size: var(--gog-autocomplete-label-font-size);
+  line-height: var(--gog-autocomplete-label-line-height);
   font-weight: var(--gog-autocomplete-label-font-weight);
   letter-spacing: var(--gog-autocomplete-label-letter-spacing);
 }
@@ -138,6 +139,7 @@
   color: var(--gog-autocomplete-error-color);
   font-family: var(--gog-autocomplete-error-font-family);
   font-size: var(--gog-autocomplete-error-font-size);
+  line-height: var(--gog-autocomplete-error-line-height);
 }
 
 /* === Panel === */
@@ -242,6 +244,7 @@
   color: var(--gog-autocomplete-empty-color);
   font-family: var(--gog-autocomplete-font-family);
   font-size: var(--gog-autocomplete-empty-font-size);
+  line-height: var(--gog-autocomplete-empty-line-height);
 }
 
 /* === Sizes ===

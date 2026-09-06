@@ -24,6 +24,7 @@ export type GogTokenName =
   | '--gog-accordion-border-style'
   | '--gog-accordion-border-width'
   | '--gog-accordion-chevron-font-size'
+  | '--gog-accordion-chevron-line-height'
   | '--gog-accordion-chevron-size'
   | '--gog-accordion-chevron-transition-duration'
   | '--gog-accordion-content-gap'
@@ -393,6 +394,7 @@ export type GogTokenName =
   | '--gog-calendar-weekday-color'
   | '--gog-calendar-weekday-font-size'
   | '--gog-calendar-weekday-font-weight'
+  | '--gog-calendar-weekday-line-height'
   | '--gog-calendar-weekday-padding'
   | '--gog-calendar-weekday-text-transform'
   | '--gog-calendar-xsm-day-size'
@@ -643,6 +645,7 @@ export type GogTokenName =
   | '--gog-dialog-close-hover-bg'
   | '--gog-dialog-close-hover-border'
   | '--gog-dialog-close-hover-color'
+  | '--gog-dialog-close-line-height'
   | '--gog-dialog-close-size'
   | '--gog-dialog-color'
   | '--gog-dialog-enter-distance'
@@ -883,6 +886,7 @@ export type GogTokenName =
   | '--gog-multiselect-overflow-color'
   | '--gog-multiselect-overflow-font-size'
   | '--gog-multiselect-overflow-gap'
+  | '--gog-multiselect-overflow-line-height'
   | '--gog-multiselect-padding-x'
   | '--gog-multiselect-padding-y'
   | '--gog-multiselect-panel-bg'
@@ -899,6 +903,7 @@ export type GogTokenName =
   | '--gog-paginator-ellipsis-color'
   | '--gog-paginator-ellipsis-font-family'
   | '--gog-paginator-ellipsis-font-size'
+  | '--gog-paginator-ellipsis-line-height'
   | '--gog-paginator-ellipsis-min-width'
   | '--gog-paginator-gap'
   | '--gog-paginator-page-size-min-width'
@@ -987,6 +992,7 @@ export type GogTokenName =
   | '--gog-progressbar-value-font-family'
   | '--gog-progressbar-value-font-size'
   | '--gog-progressbar-value-gap'
+  | '--gog-progressbar-value-line-height'
   | '--gog-progressbar-value-min-width'
   | '--gog-progressbar-warning-bg'
   | '--gog-progressbar-warning-buffer-bg'
@@ -1156,6 +1162,7 @@ export type GogTokenName =
   | '--gog-slider-label-text-transform'
   | '--gog-slider-range-color'
   | '--gog-slider-range-font-size'
+  | '--gog-slider-range-line-height'
   | '--gog-slider-thumb-bg'
   | '--gog-slider-thumb-border'
   | '--gog-slider-thumb-border-width'
@@ -1173,6 +1180,7 @@ export type GogTokenName =
   | '--gog-slider-value-color'
   | '--gog-slider-value-font-family'
   | '--gog-slider-value-font-size'
+  | '--gog-slider-value-line-height'
   | '--gog-slider-value-min-width'
   | '--gog-slider-vertical-length'
   | '--gog-space-12'
@@ -1408,12 +1416,14 @@ export type GogTokenName =
   | '--gog-textarea-scrollbar-width'
   | '--gog-toast-accent-width'
   | '--gog-toast-action-font-size'
+  | '--gog-toast-action-line-height'
   | '--gog-toast-action-padding'
   | '--gog-toast-actions-gap'
   | '--gog-toast-base-z'
   | '--gog-toast-bg'
   | '--gog-toast-border'
   | '--gog-toast-close-font-size'
+  | '--gog-toast-close-line-height'
   | '--gog-toast-close-padding'
   | '--gog-toast-color'
   | '--gog-toast-content-gap'
@@ -1483,6 +1493,7 @@ export type GogTokenName =
   | '--gog-toggle-state-color'
   | '--gog-toggle-state-font-weight'
   | '--gog-toggle-state-letter-spacing'
+  | '--gog-toggle-state-line-height'
   | '--gog-toggle-state-offset'
   | '--gog-toggle-state-padding-inline'
   | '--gog-toggle-state-thumb-gap'
@@ -1776,6 +1787,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-accordion-border-color',
       '--gog-accordion-border-style',
       '--gog-accordion-border-width',
+      '--gog-accordion-chevron-line-height',
       '--gog-accordion-chevron-transition-duration',
       '--gog-accordion-disabled-opacity',
       '--gog-accordion-focus-ring-width',
@@ -2058,6 +2070,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-calendar-weekday-color',
       '--gog-calendar-weekday-font-size',
       '--gog-calendar-weekday-font-weight',
+      '--gog-calendar-weekday-line-height',
       '--gog-calendar-weekday-padding',
       '--gog-calendar-weekday-text-transform',
       '--gog-calendar-xsm-day-size',
@@ -2263,6 +2276,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-dialog-close-hover-bg',
       '--gog-dialog-close-hover-border',
       '--gog-dialog-close-hover-color',
+      '--gog-dialog-close-line-height',
       '--gog-dialog-close-size',
       '--gog-dialog-color',
       '--gog-dialog-enter-distance',
@@ -2578,6 +2592,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-multiselect-overflow-color',
       '--gog-multiselect-overflow-font-size',
       '--gog-multiselect-overflow-gap',
+      '--gog-multiselect-overflow-line-height',
       '--gog-multiselect-panel-bg',
       '--gog-multiselect-panel-border',
       '--gog-multiselect-panel-max-height',
@@ -2632,6 +2647,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-paginator-ellipsis-color',
       '--gog-paginator-ellipsis-font-family',
       '--gog-paginator-ellipsis-font-size',
+      '--gog-paginator-ellipsis-line-height',
       '--gog-paginator-ellipsis-min-width',
       '--gog-paginator-gap',
       '--gog-paginator-page-size-min-width',
@@ -2717,6 +2733,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-progressbar-value-font-family',
       '--gog-progressbar-value-font-size',
       '--gog-progressbar-value-gap',
+      '--gog-progressbar-value-line-height',
       '--gog-progressbar-value-min-width',
       '--gog-progressbar-warning-bg',
       '--gog-progressbar-warning-buffer-bg',
@@ -2882,6 +2899,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-slider-label-text-transform',
       '--gog-slider-range-color',
       '--gog-slider-range-font-size',
+      '--gog-slider-range-line-height',
       '--gog-slider-thumb-bg',
       '--gog-slider-thumb-border',
       '--gog-slider-thumb-border-width',
@@ -2899,6 +2917,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-slider-value-color',
       '--gog-slider-value-font-family',
       '--gog-slider-value-font-size',
+      '--gog-slider-value-line-height',
       '--gog-slider-value-min-width',
       '--gog-slider-vertical-length',
     ],
@@ -3099,11 +3118,13 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     tokens: [
       '--gog-toast-accent-width',
       '--gog-toast-action-font-size',
+      '--gog-toast-action-line-height',
       '--gog-toast-action-padding',
       '--gog-toast-actions-gap',
       '--gog-toast-bg',
       '--gog-toast-border',
       '--gog-toast-close-font-size',
+      '--gog-toast-close-line-height',
       '--gog-toast-close-padding',
       '--gog-toast-color',
       '--gog-toast-content-gap',
@@ -3171,6 +3192,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-toggle-state-color',
       '--gog-toggle-state-font-weight',
       '--gog-toggle-state-letter-spacing',
+      '--gog-toggle-state-line-height',
       '--gog-toggle-state-offset',
       '--gog-toggle-state-padding-inline',
       '--gog-toggle-state-thumb-gap',

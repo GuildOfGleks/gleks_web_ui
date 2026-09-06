@@ -65,6 +65,7 @@
 .gog-select__label {
   font-family: var(--gog-select-label-font-family);
   font-size: var(--gog-select-label-font-size);
+  line-height: var(--gog-select-label-line-height);
   color: var(--gog-select-label-color);
   text-transform: var(--gog-select-label-text-transform);
   letter-spacing: var(--gog-select-label-letter-spacing);
@@ -328,6 +329,7 @@
 .gog-select__error {
   font-family: var(--gog-select-font-family);
   font-size: var(--gog-select-error-font-size);
+  line-height: var(--gog-select-error-line-height);
   color: var(--gog-select-error-color);
 }
 

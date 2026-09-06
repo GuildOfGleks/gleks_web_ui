@@ -566,6 +566,8 @@
   --gog-accordion-xsm-body-padding-bottom: var(--gog-space-8);
   --gog-accordion-xsm-chevron-size: 11px;
   --gog-accordion-xsm-chevron-font-size: 10px;
+  /* A glyph in its own box: leading would push it off the centre it is placed on. */
+  --gog-accordion-chevron-line-height: var(--gog-line-height-none);
 
   --gog-accordion-sm-padding-y: var(--gog-space-8);
   --gog-accordion-sm-padding-x: var(--gog-space-16);
@@ -889,6 +891,7 @@
   --gog-calendar-weekday-padding: var(--gog-space-4) 0;
   --gog-calendar-weekday-color: var(--gog-muted-text-color);
   --gog-calendar-weekday-font-size: var(--gog-text-xs);
+  --gog-calendar-weekday-line-height: var(--gog-line-height-none);
   --gog-calendar-weekday-font-weight: var(--gog-font-weight-semibold);
   --gog-calendar-weekday-text-transform: var(--gog-text-transform);
   --gog-calendar-day-radius: calc(var(--gog-radius) - 2px);
@@ -1147,6 +1150,7 @@
   --gog-dialog-body-max-height: calc(var(--gog-dialog-max-height) - 60px);
   --gog-dialog-close-size: 2rem;
   --gog-dialog-close-font-size: var(--gog-text-sm);
+  --gog-dialog-close-line-height: var(--gog-line-height-none);
   --gog-dialog-close-color: var(--gog-muted-text-color);
   --gog-dialog-close-hover-color: var(--gog-text-color);
   --gog-dialog-close-hover-bg: var(--gog-hover-color);
@@ -1551,6 +1555,9 @@
   /* "+N" badge shown when the selection does not fit on one line. */
   --gog-multiselect-overflow-color: var(--gog-multiselect-placeholder-color);
   --gog-multiselect-overflow-font-size: var(--gog-text-sm);
+  /* It sits on the field values own baseline (align-self: baseline, 21.7.2), so it takes the
+     field text leading rather than a mark leading. */
+  --gog-multiselect-overflow-line-height: var(--gog-field-line-height);
   --gog-multiselect-overflow-gap: var(--gog-space-8);
   --gog-multiselect-min-width: 120px;
   --gog-multiselect-panel-max-width: 420px;
@@ -1614,6 +1621,7 @@
   --gog-paginator-gap: var(--gog-space-4);
   --gog-paginator-ellipsis-color: var(--gog-muted-text-color);
   --gog-paginator-ellipsis-font-size: var(--gog-text-sm);
+  --gog-paginator-ellipsis-line-height: var(--gog-line-height-none);
   --gog-paginator-ellipsis-font-family: var(--gog-font-body);
   /* Enough for a three-digit page size plus the chevron, so the row doesn't shift on change. */
   --gog-paginator-page-size-min-width: 5rem;
@@ -1694,6 +1702,7 @@
   --gog-progressbar-value-color: var(--gog-muted-text-color);
   --gog-progressbar-value-font-family: var(--gog-font-body);
   --gog-progressbar-value-font-size: var(--gog-text-sm);
+  --gog-progressbar-value-line-height: var(--gog-line-height-none);
   --gog-progressbar-indeterminate-duration: 1.6s;
   --gog-progressbar-indeterminate-easing: cubic-bezier(0.65, 0.05, 0.36, 1);
   /* The reduced-motion stand-in for the indeterminate animation. */
@@ -1912,6 +1921,7 @@
   --gog-slider-label-text-transform: var(--gog-text-transform);
   --gog-slider-value-color: var(--gog-accent-color);
   --gog-slider-value-font-size: var(--gog-text-sm);
+  --gog-slider-value-line-height: var(--gog-line-height-none);
   --gog-slider-value-min-width: 40px;
   --gog-slider-track-height: 4px;
   --gog-slider-track-area-height: 20px;
@@ -1948,6 +1958,7 @@
   --gog-slider-focus-ring-width: var(--gog-focus-ring-width);
   --gog-slider-range-color: var(--gog-muted-text-color);
   --gog-slider-range-font-size: var(--gog-text-xs);
+  --gog-slider-range-line-height: var(--gog-line-height-none);
   --gog-slider-error-color: var(--gog-danger-color);
   --gog-slider-error-font-size: var(--gog-text-xs);
   --gog-slider-error-line-height: var(--gog-field-error-line-height);
@@ -2186,8 +2197,10 @@
   --gog-toast-icon-line-height: var(--gog-line-height-normal);
   --gog-toast-action-padding: var(--gog-space-4) var(--gog-space-8);
   --gog-toast-action-font-size: var(--gog-text-xs);
+  --gog-toast-action-line-height: var(--gog-line-height-none);
   --gog-toast-close-padding: var(--gog-space-4) var(--gog-space-8);
   --gog-toast-close-font-size: var(--gog-text-xs);
+  --gog-toast-close-line-height: var(--gog-line-height-none);
   --gog-toast-progress-height: 3px;
   --gog-toast-progress-opacity: 30%;
   --gog-toast-transition-duration: 0.25s;
@@ -2264,6 +2277,7 @@
   --gog-toggle-slg-thumb-size: 34px;
   --gog-toggle-slg-label-size: var(--gog-control-checkbox-label-size-slg);
   --gog-toggle-slg-state-font-size: 0.8125rem;
+  --gog-toggle-state-line-height: var(--gog-line-height-none);
 
   /* ── Tooltip ──────────────────────────────────────────────────────────────── */
   --gog-tooltip-font-family: var(--gog-font-body);
