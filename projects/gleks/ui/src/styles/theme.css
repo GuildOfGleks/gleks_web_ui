@@ -564,8 +564,22 @@
   --gog-accordion-xsm-body-line-height: var(--gog-line-height-relaxed);
   --gog-accordion-xsm-body-padding-top: var(--gog-space-4);
   --gog-accordion-xsm-body-padding-bottom: var(--gog-space-8);
-  --gog-accordion-xsm-chevron-size: 11px;
-  --gog-accordion-xsm-chevron-font-size: 10px;
+  --gog-accordion-xsm-chevron-size: 1.4em;
+  /* The chevron is a ratio of the header's own type, not a px ladder of its own. It had been
+     10/12/14/16/18px of glyph basis inside an 11/13/15/18/20px box, beside a label in rem -- so
+     raising the browser's text size grew the label and left the chevron where it was, and the
+     box/label ratio drifted 0.92 to 1.29 across the five sizes.
+
+     Two bugs came out of writing it as a ratio. The box was *smaller than its glyph at every
+     size*: `gog-icon` renders at `--gog-icon-size: 1.2em` of this font size, so the mark was
+     12/14.4/16.8/19.2/21.6px inside a box of 11/13/15/18/20 and overflowed it everywhere. And
+     the five sizes had five ratios where they needed one.
+
+     `1em` makes this the em basis rather than the glyph size, so the mark is 1.2em of the header
+     and the 1.4em box surrounds it. All five steps hold the same ratio and still render five
+     different sizes, because the header's type differs -- the tokens stay per-size so an override
+     keeps working. */
+  --gog-accordion-xsm-chevron-font-size: 1em;
   /* A glyph in its own box: leading would push it off the centre it is placed on. */
   --gog-accordion-chevron-line-height: var(--gog-line-height-none);
 
@@ -578,8 +592,8 @@
   --gog-accordion-sm-body-line-height: var(--gog-accordion-body-line-height);
   --gog-accordion-sm-body-padding-top: var(--gog-space-8);
   --gog-accordion-sm-body-padding-bottom: var(--gog-space-8);
-  --gog-accordion-sm-chevron-size: 13px;
-  --gog-accordion-sm-chevron-font-size: 12px;
+  --gog-accordion-sm-chevron-size: 1.4em;
+  --gog-accordion-sm-chevron-font-size: 1em;
 
   --gog-accordion-md-padding-y: var(--gog-space-12);
   --gog-accordion-md-padding-x: var(--gog-space-24);
@@ -590,8 +604,8 @@
   --gog-accordion-md-body-line-height: var(--gog-accordion-body-line-height);
   --gog-accordion-md-body-padding-top: var(--gog-space-8);
   --gog-accordion-md-body-padding-bottom: var(--gog-space-12);
-  --gog-accordion-md-chevron-size: 15px;
-  --gog-accordion-md-chevron-font-size: 14px;
+  --gog-accordion-md-chevron-size: 1.4em;
+  --gog-accordion-md-chevron-font-size: 1em;
 
   --gog-accordion-lg-padding-y: var(--gog-space-16);
   --gog-accordion-lg-padding-x: var(--gog-space-32);
@@ -602,8 +616,8 @@
   --gog-accordion-lg-body-line-height: var(--gog-accordion-body-line-height);
   --gog-accordion-lg-body-padding-top: var(--gog-space-12);
   --gog-accordion-lg-body-padding-bottom: var(--gog-space-16);
-  --gog-accordion-lg-chevron-size: 18px;
-  --gog-accordion-lg-chevron-font-size: 16px;
+  --gog-accordion-lg-chevron-size: 1.4em;
+  --gog-accordion-lg-chevron-font-size: 1em;
 
   --gog-accordion-slg-padding-y: var(--gog-space-20);
   --gog-accordion-slg-padding-x: var(--gog-space-40);
@@ -614,8 +628,8 @@
   --gog-accordion-slg-body-line-height: var(--gog-accordion-body-line-height);
   --gog-accordion-slg-body-padding-top: var(--gog-space-16);
   --gog-accordion-slg-body-padding-bottom: var(--gog-space-20);
-  --gog-accordion-slg-chevron-size: 20px;
-  --gog-accordion-slg-chevron-font-size: 18px;
+  --gog-accordion-slg-chevron-size: 1.4em;
+  --gog-accordion-slg-chevron-font-size: 1em;
 
   /* ── Collapsible ───────────────────────────────────────────────────────────
      No portal, no owned markup — see utilities.css for the actual `.gog-collapsible__*`

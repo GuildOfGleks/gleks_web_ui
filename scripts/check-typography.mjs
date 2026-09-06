@@ -117,7 +117,16 @@ for (const token of fontSizeTokens) {
   sizedBlocks.add(block);
 
   const exempt = FONT_SIZE_EXEMPT.get(token);
-  const readsScale = /var\(\s*--gog-text-/.test(value) || /var\(\s*--gog-[a-z-]*font-size/.test(value);
+  // A relative size is not a bypass of the scale, it is a deferral to it: `1em` on a mark inside
+  // a labelled row means "whatever the scale gave the label", which is stronger than naming a step
+  // -- it cannot drift from the text it sits beside, and it follows a theme that moves the scale
+  // without being told. The accordion chevron is the case: it had a px ladder of its own and now
+  // has none.
+  const isRelative = /^[\d.]+(em|%)$/.test(value);
+  const readsScale =
+    isRelative ||
+    /var\(\s*--gog-text-/.test(value) ||
+    /var\(\s*--gog-[a-z-]*font-size/.test(value);
 
   // An exemption says the token *may* sit off the scale, not that it must. Where a value happens
   // to equal a step, reading the step is right whatever the block's role — and `check-tokens`
