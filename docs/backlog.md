@@ -16,12 +16,28 @@ not worth carrying here.
 
 ## Defects — first
 
-- **Geometry: law 4 is what is left.** Laws 1, 2, 3 and 5 — the 4px grid, concentric radii,
-  horizontal padding at exactly twice vertical on every control, and 24×24 CSS px of pointer
-  target — are **done and gated**: `npm run check:geometry` is a CI step as of 21.11.0, having
-  gone from 164 findings across 66 components to zero in a 25-commit sweep, plus law 2's own six
-  (`docs/component-geometry.md` has the status table and the findings that changed a rule rather
-  than a component). L7, icon centring, is gated alongside them.
+- **Geometry: all five laws are gated (2026-09-06).** The 4px grid, concentric radii, horizontal
+  padding at exactly twice vertical on every control, the typographic ratio, and 24×24 CSS px of
+  pointer target. `npm run check:geometry` runs four scripts and is a CI step as of 21.11.0: the
+  sweep went from 164 findings across 66 components to zero in 25 commits, then law 2 added six
+  and law 4 with D8 added fifty. L7, icon centring, is gated alongside them.
+  `docs/component-geometry.md` has the status table and the findings that changed a rule rather
+  than a component — including two adopted laws that reversed once they were measured.
+
+  **Three findings from the last two laws are worth carrying here rather than in the plan**,
+  because each is about how a check fails rather than about geometry:
+
+  - **A check that verifies a declaration rather than an effect passes on nothing.** Law 4's rule C
+    asked whether a block declares a leading token; thirty-five such tokens were added and every
+    one was inert, because no stylesheet read them and the blocks went on inheriting. Found by
+    grepping for a reader. Rule F now requires a token to be read, transitively.
+  - **A check that resolves at one density is only true at that density.** Law 2 passed
+    `--gog-autocomplete-option-radius` at `--gog-density: 1` and it is 0.6px wrong at 0.85, because
+    it restated a padding as a literal instead of reading it.
+  - **When two checks disagree, the newer one is usually the one that is wrong.** `check:typography`
+    wanted a value spelled as a literal for consistency; `check-tokens` rule G refused because the
+    literal equalled a scale step. Rule G was right: a role justifies a value off the scale, never
+    restating one that is on it.
 
   **Law 2 is done and gated (2026-09-06).** `npm run check:radii`, folded into `check:geometry`
   and therefore into CI once it was green — written red on six findings and fixed one component
@@ -46,18 +62,16 @@ not worth carrying here.
   inset and round theirs. `check:radii` prints both alongside its findings so they cannot be
   forgotten; closing them adds public tokens, so it wants its own decision.
 
-  **Law 4 needs a role per text token, and there is now a proposal to accept or change**
-  (`docs/component-geometry.md`, "D4 — proposed, not taken"). Six roles, named against what the
-  library already does: the vocabulary exists (`--gog-line-height-*`, six steps) and nineteen
-  component tokens each read a named step rather than a literal. **The function turned out simpler
-  than the plan assumed** — 17 of the 19 hold one value across all five sizes, so it is
-  `leading = step(role)` with one size-dependent role (headings), not `role × size → step`.
+  **Law 4 and D8 are done and gated (2026-09-06)**, in `npm run check:typography`, folded into
+  `check:geometry`. Fifty findings to zero, fixed by role rather than by component — the judgement
+  was taken once in D4 and the application was mechanical, so a per-component split would have
+  produced sixteen diffs saying the same thing. Six roles, and the function came out simpler than
+  D4 asked for: `leading = step(role)` with no size term, because seventeen of the nineteen
+  line-heights that already existed were one value across all five sizes.
 
-  Four things need deciding first, and one of them sets the law's reach: **33 blocks declare a font
-  size and no line-height at all**, so a check today would cover 19 of 52 text blocks. Making them
-  explicit is 33 new tokens. The other three are smaller — `prose` holds two steps (toast 1.5,
-  accordion body 1.6), `--gog-panel-heading-line-height: 1.25` is a literal outside the scale, and
-  `--gog-skeleton-line-height-*` is a naming collision holding px bone heights rather than leading.
+  **The reach was larger than the survey said**, and that is the part to remember: it read
+  `theme.css` only, so eight literal `line-height` declarations in component stylesheets were
+  invisible to it. The first check to read the stylesheets is the first one that could see them.
 
   **L7 came off this list on 2026-09-06** and is worth reading rather than summarising: the audit
   reversed the law. All 41 glyphs measured, the ink box already centred to a hundredth of a unit
