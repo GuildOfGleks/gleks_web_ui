@@ -1785,7 +1785,14 @@
   --gog-select-filter-input-bg: var(--gog-background-color);
   --gog-select-filter-input-color: var(--gog-select-field-color);
   --gog-select-filter-input-border: var(--gog-select-field-border);
-  --gog-select-filter-input-radius: var(--gog-radius);
+  /* Concentric with the panel, and the concentric answer here is a square corner. The filter is
+     inset by `--gog-select-filter-padding`, which equals the panel's radius -- and where the inset
+     equals the radius, the inner box's corner point lands exactly on the centre of the outer arc,
+     so a right angle is equidistant from the whole curve. The same case as the multiselect's. */
+  --gog-select-filter-input-radius: max(
+    0px,
+    calc(var(--gog-select-radius) - var(--gog-select-filter-padding))
+  );
   --gog-select-filter-border-width: var(--gog-panel-border-width);
   --gog-select-filter-border-style: var(--gog-panel-border-style);
   --gog-select-filter-border-color: var(--gog-select-option-border-color, var(--gog-border-color));

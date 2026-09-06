@@ -207,6 +207,11 @@ reached 1.0, so breaking changes may land in minor versions.
   panel radius and their own padding rather than restating a number, which is also what makes them
   hold at a density other than 1.
 
+- **`gog-select`'s filter input has a square corner**, for the same reason the multiselect's does:
+  it is inset by exactly the panel's radius, and at that distance a right angle is the only corner
+  that stays an equal distance from the panel's curve. `--gog-select-filter-input-radius` derives
+  from the panel radius and the filter padding rather than repeating `--gog-radius`.
+
 ### Documentation
 
 - **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41
