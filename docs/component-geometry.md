@@ -473,58 +473,109 @@ rounds **up**: the library has seventeen pointer targets under 24x24 and none ov
 that helps law 5 is the same one that never shrinks an already-tight `xsm`. A component that argues
 for rounding down says so in its own stylesheet, with the reason.
 
-## D4 — proposed, not taken (2026-09-06)
+## D4 and D8 — taken 2026-09-06, against a second survey
 
-**The vocabulary already exists and nothing reads a literal but one block.** `--gog-line-height-*`
-is six named steps (`none` 1, `tight` 1.2, `snug` 1.3, `normal` 1.4, `relaxed` 1.5, `loose` 1.6)
-and nineteen component tokens each read one of them. What is missing is not the scale, it is the
-**role** that says which step a given kind of text takes — so the proposal below is a naming of
-what the library already does, plus four places where it does two things at once.
+**They are one defect wearing two shapes:** a value written as a literal where a scale step exists,
+or written off the scale with nobody having said why. Taken together because the surveys overlap —
+the accordion's chevron is a D8 finding whose fix is a D4 rule.
 
-| Proposed role    | Step               | What it is                                                                                                              | Blocks today                                                                        |
-| ---------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `label-none`     | `none` (1)         | A single-line label in a box whose height is padding plus the type. Leading here adds space nobody asked for and pushes the box off its computed height. | `button`, `button-toggle`, `badge`, `tag`                                              |
-| `label-tight`    | `tight` (1.2)      | A single-line label that may carry descenders, in a box sized by its content.                                            | `chip`, `tabs`                                                                        |
-| `label-wrapping` | `snug` (1.3)       | A form label that may wrap to a second line beside its control.                                                          | `checkbox-label`, `radio-label`                                                       |
-| `heading`        | size-dependent     | A heading. The only role where law 4's "inversely with size" is visible, because it is the only text whose size varies enough for it to matter. | `card-heading` (18px, 1.3), `panel-heading` (24px, 1.25)                              |
-| `ui-line`        | `normal` (1.4)     | One line of UI text whose line box *is* the row height.                                                                  | `menu-item`, `tooltip`, `divider-label`, `autocomplete`, `datepicker`, `toast-icon`, `toggle-label` |
-| `prose`          | `relaxed`/`loose`  | Text that wraps into a paragraph.                                                                                        | `toast-message` (1.5), `accordion-body` (1.6, and 1.5 at `xsm`)                        |
+### What the second survey found that the first did not
 
-**The function is simpler than the plan assumed, and the data is why.** D4 asks for `role × size →
-step`; seventeen of the nineteen declared line-heights are **one value across all five sizes**. So
-the proposal is `leading = step(role)`, with exactly one role — `heading` — taking a
-size-dependent step. Two blocks are the exceptions, and both are listed below as decisions rather
-than smoothed over.
+The first pass read `theme.css` only. Sweeping the component stylesheets as well:
 
-### The four things that need deciding before this can be a check
+- **Eleven literal `line-height` declarations live in component SCSS**, invisible to a token-level
+  survey. Seven are `1`, restating `--gog-line-height-none`; one is `1.5`, restating `relaxed`; and
+  three are `0`, which is not typography at all — it is the trick that kills an inline box's
+  leading around an icon.
+- **`font-size` is clean in SCSS.** Every one reads a token or a `calc()` over one, so every bypass
+  of the type scale lives in `theme.css`, and there are eleven.
 
-**(a) `prose` currently holds two steps, and one of its blocks holds both.** `toast-message` is
-1.5, `accordion-body` is 1.6, and `accordion-body` at `xsm` is 1.5. Either prose is one step and
-one of those two components moves, or it is two steps and the role has to say what distinguishes
-them — "a toast is short and an accordion body is long" is a real distinction, but it is about
-expected length rather than about the component, and a check cannot see it.
+### D8 — the type scale's completeness
 
-**(b) `--gog-panel-heading-line-height: 1.25` is a literal outside the scale.** The steps run 1.2
-then 1.3 with nothing between, so this one declaration bypasses the vocabulary — the same shape as
-the five off-grid spacing steps that D1 removed, and the same shape `check-tokens` rule H already
-fails for spacing. Three ways out: the scale gains a step, the panel heading takes `snug` (1.3,
-matching `card-heading`), or `heading` becomes an explicit size table and both headings read it.
+The eleven literals are two unrelated problems, and only one of them is about the scale.
 
-**(c) Thirty-three blocks declare a font size and no line-height at all.** They inherit, which is
-*unstated* rather than wrong — `field`, `table-td`, `table-th`, every `*-label` and every
-`*-error` among them. Either each gains an explicit role token, which is 33 new tokens and is the
-only way this law gates more than a third of the library, or "inherits" is itself a role and the
-check verifies only that inheriting was deliberate. **This is the decision that sets the law's
-reach**, and it is the expensive one: at present a check would cover 19 of 52 text blocks.
+**(1) Five accordion chevron sizes are `px` beside a label in `rem`. That is a defect, not a scale
+gap.** `--gog-accordion-*-chevron-font-size` runs 10/12/14/16/18px and `-chevron-size` runs
+11/13/15/18/20px, while the header's own label reads `--gog-text-*`. Raise the browser's text size
+and the label grows while the chevron stays exactly where it is — the WCAG 1.4.4 family that
+`README.md`'s fluid recipe warns about, and the reason the type scale is in `rem` in the first
+place.
 
-**(d) `--gog-skeleton-line-height-*` is a naming collision.** Those five tokens are bone heights in
-px (8/10/14/18/24), not leading. Any check keyed on the `-line-height` suffix reads them as a
-line-height of 8 to 24 and either fails or has to name them. Rename them, or exclude them in the
-check with that as the reason — the second is cheaper and the first is right.
+The ratios drift too, which is how you can tell nobody chose them: the chevron's box runs 0.92× its
+label at `xsm` to 1.29× at `lg`, its glyph 0.83× to 1.17×. Five opinions about one relationship —
+the same shape as law 3's finding and the chip avatar's.
 
-**Still open: D0, D4, D5, D7, D8.** D4 and D5 need their own survey pass (the leading half is
-mostly *unstated* — 45 blocks declare a font size and 20 declare a line-height), and D5's
-elevation ladder is a separate token family that does not have to ride with this one.
+> **Decision.** The chevron derives from the header's own font size in `em`: one ratio for the box,
+> one for the glyph. That is the idiom the library already uses for `--gog-icon-size: 1.2em`. Ten
+> literals become two ratios, and the rem chain is restored.
+
+**(2) Six `rem` literals sit off the scale, and only two of them are text.** `--gog-text-*` runs 12,
+14, 16, 18, 20, 24, 32, 48 at a 16px root. Below and between it: the chip and the tag at `xsm`
+(11px), and the toggle's state label (8, 9, 10, 13px — with `lg` alone reading `--gog-text-xs`).
+
+> **Decision.** The scale gains **one** step, `--gog-text-2xs` (0.6875rem, 11px), for the chip and
+> the tag. Moving those to `xs` instead would collide with their own `sm`, which is the one thing
+> `xsm` exists to avoid.
+
+> **Decision.** **The toggle's state label is not text and gets no steps.** It is
+> `aria-hidden="true"` micro-lettering inside the switch track; the state a reader actually
+> receives comes from `role="switch"` and `aria-checked`, and this is decoration for sighted users.
+> Its five values are not a scale (8, 9, 10, 12, 13), and stretching a reading scale to cover them
+> would be stretching it over a mark. They stay literal in a named exception with that reason — and
+> `lg` stops being the odd one reading a token, because one of five following the scale is worse
+> than none of them doing so.
+
+### D4 — the roles, taken
+
+| Role             | Step            | What it is                                                                                                                              |
+| ---------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `label-none`     | `none` (1)      | A single-line label in a box whose height is padding plus type. Leading adds invisible space and pushes the box off its computed height. |
+| `label-tight`    | `tight` (1.2)   | A single-line label that may carry descenders, in a box sized by its content.                                                            |
+| `label-wrapping` | `snug` (1.3)    | A form label that may wrap beside its control.                                                                                           |
+| `heading`        | `snug` (1.3)    | A heading.                                                                                                                               |
+| `ui-line`        | `normal` (1.4)  | One line of UI text whose line box _is_ the row height.                                                                                  |
+| `prose`          | `relaxed` (1.5) | Text that wraps into a paragraph.                                                                                                        |
+
+**The function is `leading = step(role)`, with no size term.** D4 asked for `role × size → step`;
+seventeen of the nineteen declared line-heights are already one value across all five sizes. The
+two exceptions are questions (a) and (b) below, and both resolve toward the simpler function.
+
+**(a) `prose` is one step, `relaxed` (1.5); the accordion body moves 1.6 → 1.5.** The two values
+were toast-message 1.5 and accordion-body 1.6, with the accordion contradicting itself at `xsm`
+(1.5). "A toast is short and an accordion body is long" is a distinction about _content_, and the
+library never sees the content — the consumer passes it. **A role the library cannot evaluate is
+not a role.** The better argument for two steps is measure rather than length (leading should rise
+with line width, and a toast is capped at 400px while an accordion body is not); it is recorded
+here as the reason a second step could be justified later, and rejected now because it would make
+the role two-dimensional, which is more machinery than two components are worth.
+
+**(b) `heading` is one step, `snug` (1.3); `--gog-panel-heading-line-height: 1.25` goes.** It was
+the one line-height literal outside the scale, which runs 1.2 then 1.3 with nothing between. Two
+headings at 18px and 24px differing by 0.05 is two people picking a nice number, not an inverse
+function — 0.05 at 24px is 1.2px of leading. **Law 4's "the ratio moves inversely with size" is
+honoured across the roles rather than between two adjacent headings**, and it already is: prose 1.5
+at 12–18px, ui-line 1.4 at 14px, heading 1.3 at 18–24px, labels 1–1.2. The ratio falls as the size
+rises. Fitting an inverse curve to two data points is over-fitting.
+
+**(c) A block that declares a font size declares its leading.** That is the law itself: changing
+the size while inheriting the leading changes the ratio silently, which is the whole thing law 4
+guards. Thirty-three blocks currently declare a size and inherit — but that is not thirty-three
+tokens, because **a shared role gets a shared token**. The `--gog-field-*` tier already works this
+way for padding and float-label geometry, with every field aliasing it, so the `*-label` and
+`*-error` blocks take one declaration each rather than eleven. The SCSS literals fold in at the
+same time: the seven `1`s and the one `1.5` read their token.
+
+**The three `line-height: 0` declarations are not typography and are named as such** — that value
+exists to collapse an inline box around an icon, and no role or step applies to it.
+
+**(d) `--gog-skeleton-line-height-*` is excluded by name, not renamed.** Those five tokens hold
+bone heights in px (8/10/14/18/24), so any check keyed on the suffix reads them as leading of 8 to
+24. Renaming five public tokens to fix a collision that misleads only a script is a cost paid by
+consumers for a script's benefit, and this release already carries one breaking token change. The
+exclusion carries the reason; the rename is a candidate for the next major.
+
+**Still open: D0, D5, D7.** D5's elevation ladder is a separate token family that does not have to
+ride with any of this, and it is the one that still needs its own survey pass.
 
 ---
 
@@ -610,7 +661,8 @@ re-litigates a settled number.
 | -------------------------------------------------------- | ---------------------------- |
 | The seven candidate laws, with verdicts                   | ✅ written (this file)       |
 | D1, D2, D3, D6 + D3a, D3b                                 | ✅ taken 2026-09-05, against the survey |
-| D0, D4, D5, D7, D8                                        | ⬜ open                      |
+| D0, D5, D7                                                | ⬜ open                      |
+| D4 + D8                                                   | ✅ taken 2026-09-06, against a second survey |
 | `survey:geometry` (all five laws, reports)                | ✅                           |
 | `check:geometry` (laws 1, 3, 5, gates)                    | ✅ green, and a CI step      |
 | The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits    |
