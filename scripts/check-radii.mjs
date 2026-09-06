@@ -1,15 +1,16 @@
 #!/usr/bin/env node
-// Law 2 — concentric radii. Written red, on purpose, and NOT a CI step yet.
+// Law 2 — concentric radii.
 //
 //   2. CONCENTRIC RADII  A radius nested inside another is the outer radius minus the padding
 //                        between them. An inner corner that repeats its parent's reads as a
 //                        mistake at every size; one that ignores it reads as a different
 //                        component.
 //
-// It is its own script rather than a fourth section of `check-geometry.mjs` for one reason:
-// that script is a required CI step and is green. This one is not green and must not be, until
-// its findings are fixed -- the same sequence `check:geometry` itself followed for 25 commits.
-// Run it with `npm run check:radii`. Wiring it into `check:geometry` is the reward for zero.
+// **Written red and wired in once it was green**, which is the sequence `check:geometry` itself
+// followed for 25 commits: it opened on six findings, they were fixed one component per commit,
+// and only then did it join `npm run check:geometry` and therefore CI. It stays a separate script
+// -- and separately runnable as `npm run check:radii` -- because its table is long enough to read
+// on its own, but it is no longer optional.
 //
 // ── Why this needed a table and could not be a regex ─────────────────────────────────────────
 //
@@ -269,9 +270,7 @@ if (findings.length > 0) {
   }
   console.error('\n  Noted alongside, not law-2 failures:');
   for (const note of PANEL_RADIUS_SPLIT) console.error(`    - ${note}`);
-  console.error(
-    '\nThis check is red on purpose and is not in CI. docs/component-geometry.md, law 2.',
-  );
+  console.error('\ndocs/component-geometry.md, law 2.');
   process.exit(1);
 }
 

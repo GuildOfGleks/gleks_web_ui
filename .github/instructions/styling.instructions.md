@@ -171,14 +171,14 @@ a strength rather than an apology — a value chosen by eye is unfalsifiable and
 component, which is exactly how the library ended up with 177 hard-coded paddings in two units
 before `--gog-density` existed.
 
-Five laws govern any length a component declares. **Three of them are enforced by CI** —
-`npm run check:geometry` gates laws 1, 3 and 5 over every component, from the token values rather
-than from a rendered page, and it is a required step as of 21.11.0. Laws 2 and 4 are still
-enforced by reading, each for a stated reason: law 2 needs a declared parent per nested radius
-(a name is not a parent) and law 4 needs a role per text token, so both are decisions before they
-can be checks. `npm run survey:geometry` reports all five and gates none, which is where to look
-for what law 2 and law 4 would find today. **A new component satisfies all five before it is
-done, and an existing one that violates one is a defect, not a style.**
+Five laws govern any length a component declares. **Four of them are enforced by CI** —
+`npm run check:geometry` gates laws 1, 2, 3 and 5 over every component, from the token values
+rather than from a rendered page, and it is a required step as of 21.11.0. **Only law 4 is still
+enforced by reading**, and for a stated reason: it needs a role per text token, which is a
+decision before it can be a check (`docs/component-geometry.md`, "D4 — proposed, not taken").
+`npm run survey:geometry` reports all five and gates none, which is where to look for what law 4
+would find today. **A new component satisfies all five before it is done, and an existing one
+that violates one is a defect, not a style.**
 
 1. **The grid is 4px.** Every padding, gap, margin, offset and inset reads a step of the spacing
    scale, never a literal — `check-tokens` rule H already fails the build on a literal that
@@ -190,8 +190,16 @@ done, and an existing one that violates one is a defect, not a style.**
 2. **Concentric radii.** A radius nested inside another is the outer radius minus the padding
    between them — an inner corner that repeats its parent's radius reads as a mistake at every
    size, and one that ignores it reads as a different component. Anything sitting inside a
-   rounded box (an option row in a panel, a fill inside a track, an avatar in a chip) derives its
-   radius; it does not restate one.
+   rounded box **derives** its radius from the two tokens involved; it does not restate either.
+   Restating is not a style preference: the radius is a plain length and the padding is
+   `calc(Npx * var(--gog-density))`, so a hardcoded subtrahend is only correct at density 1.
+   **Two things the check taught that the rule did not say.** A child that never reaches its
+   parent's corner — a cell in a grid, a button centred in a field — has no concentric
+   relationship at all, and forcing one squares off things that should stay round; `check-radii`
+   holds those in `NOT_CONCENTRIC`, each with its reason. And **a square corner is a real answer**:
+   where the inset equals the parent's radius, the inner corner point sits on the centre of the
+   outer arc, so a right angle is equidistant from every point of that curve — the only shape that
+   keeps the gap constant, not a value clamped to zero.
 3. **Optical ratio: horizontal padding is exactly twice vertical.** The same multiple at every
    size step, on every control. **2.0 is not a taste, it is the arithmetic:** with both paddings
    on the 4px grid, 2.0 and 1.0 are the only ratios reachable at all five steps, so any other

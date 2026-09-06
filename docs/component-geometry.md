@@ -602,8 +602,8 @@ re-litigates a settled number.
 | `survey:geometry` (all five laws, reports)                | ✅                           |
 | `check:geometry` (laws 1, 3, 5, gates)                    | ✅ green, and a CI step      |
 | The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits    |
-| Law 2's parent table + `check:radii`, written red          | ✅ 2026-09-06 — 5 findings, not in CI |
-| Law 2's five findings fixed, then wired into `check:geometry` | ⬜ one commit per component  |
+| Law 2's parent table + `check:radii`                       | ✅ 2026-09-06 — opened on 6 findings |
+| Law 2 green, and in CI via `check:geometry`                | ✅ 2026-09-06, 5 component commits |
 | Law 4 in the gate                                         | ⬜ blocked on D4             |
 | L7 audited, and gated by `check:geometry`'s second half    | ✅ 2026-09-06 — the audit reversed the law |
 | L6's 1.128 correction applied to the filled marks         | ❌ 2026-09-06 — no mark in this library it applies to |
