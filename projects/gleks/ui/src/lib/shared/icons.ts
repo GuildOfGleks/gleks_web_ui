@@ -20,6 +20,12 @@
  * 2, round caps and joins. Mixing in a set drawn for a different weight (Heroicons is drawn for
  * 1.5) shows up immediately as uneven visual mass in a row of icons.
  *
+ * **A new glyph centres its ink in that 24×24 box**, and `npm run check:geometry` measures it
+ * (L7, `docs/component-geometry.md`): centring the box has to centre the mark, because that is
+ * all any caller does. A *filled* glyph is measured on its area rather than its extent — a solid
+ * triangle's centroid sits a sixth of its width from the middle of its bounding box, which is the
+ * one case where drawing inside a centred box still reads as off-centre.
+ *
  * An app that wants a different set does not need a fork — `provideGogIcons` overrides any of
  * these by name.
  */

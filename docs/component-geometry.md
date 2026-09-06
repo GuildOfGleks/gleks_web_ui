@@ -129,19 +129,53 @@ _inside_ the 24×24 box, once, where every consumer of the icon inherits it. A p
 and would be invisible to anyone reading the icon set. This is the one law fixed in an SVG path
 rather than in a token.
 
-**What it finds today.** Unaudited — nobody has looked at the registry for asymmetric glyphs, so
-the finding _is_ the audit. The candidates are the triangle family (play, caret) and anything with
-a directional stem. **Chevrons are the interesting case**: `gog-select`'s and `gog-accordion`'s
-chevrons rotate, and a rotation happens about the transform origin — the box centre — while the
-glyph's mass is off-centre, so a mass-centred path would visibly orbit when it flips. However that
-resolves, it must be recorded: a glyph centred correctly at rest and wrong while animating is worse
-than one that is consistently 1px off.
+**What it found — audited 2026-09-06, and the audit turned the law around.** All 41 built-in
+glyphs measured, both ways: the ink's bounding box and its centre of mass, the latter weighted by
+stroke length (`scripts/svg-ink.mjs`).
 
-**How it is checked.** A script can compute a path's centroid, but not reliably for arbitrary
-curves without a geometry dependency, and this library adds no dependency for a check. So the
-honest answer is that **this one is enforced by a spec, not by a sweep**: a test over the registry
-listing the asymmetric glyphs and asserting the declared centroid offset carried in each path's own
-metadata comment. Small set, changes rarely.
+| Statistic          | Largest offset from the box centre, in units of the 24 grid                  |
+| ------------------ | ---------------------------------------------------------------------------- |
+| **ink box**        | 0.01 horizontally, 0.50 vertically (`check`, `error`, `star`)                |
+| **centre of mass** | **2.05** horizontally (`arrow-left`/`arrow-right`), **3.47** vertically (`download`) |
+
+So the set is already box-centred to a hundredth of a unit and its mass is nowhere near centred —
+and **the second number is not a defect list.** `arrow-right` is a shaft with a head on one end;
+its mass belongs on the head. Re-centring it by mass would drag the shaft's tail off the left edge
+of the box while the head stopped short of the right, curing something no reader can see by
+breaking something every reader can. `download` (a tray with an arrow falling into it, mass 3.47
+low) and `filter` (a funnel, mass 2.88 high) are the same story.
+
+**The reason the law's own worked example does not transfer is the set's weight.** L7's triangle
+is a *solid tapering* mark, where one end genuinely carries more ink. Every glyph here is a
+uniform 2px monoline, so ink density is constant along the stroke and the eye reads the extent.
+The law bites where a mark is filled — which in SVG is a shape with a `fill` — and the registry
+has exactly one, `star-filled`, whose area centroid sits 0.51 low. Below the gate, and a good
+illustration in miniature: its ink *box* is 0.49 units **high** while its mass is 0.51 units
+**low**, because the five points are thin and the body is not.
+
+**The chevron worry does not arise, and measuring is what settled it.** All four chevrons come out
+at exactly 0.00 on both statistics — a chevron is two equal strokes meeting at a vertex on the
+axis — so there is no conflict between a mass-centred path and a rotation about the box centre to
+resolve. The concern was the right one to have; it simply has no instance here.
+
+**How it is checked — a check, not a spec.** The plan assumed a path centroid could not be computed
+"reliably for arbitrary curves without a geometry dependency" and fell back to a hand-maintained
+test. That assumption was wrong: sampling each curve and arc at 64 points and summing segment
+midpoints by length needs no dependency and lands three orders below the gate. So L7 is enforced by
+`scripts/check-icon-geometry.mjs`, the second half of `npm run check:geometry` and therefore a CI
+step from the day it landed — it was green on the first run, so the discipline that kept
+`check:geometry` out of CI until it reached zero costs nothing here.
+
+Two details of that script are the interesting ones. **The gate is derived rather than fitted**:
+one unit, a quarter of `W/6 = 4 units`, the smallest correction the law itself would prescribe —
+not the 0.6 that the observed spread would have flattered. And **it reads the registry twice**, the
+name union and `ICON_DEFS`, and fails when they disagree or when the count of values does not match
+the count of keys it could parse; a glyph whose key spelling the regex misses would otherwise go
+unmeasured while the summary line still reported a healthy number.
+
+**It is reported as L7, not renumbered into the standing set.** `styling.instructions.md` states
+five laws and this is not one of them: L6 (optical area) was decided at D2 and has not been applied
+to a component yet, so promoting L7 to "law 6" would have claimed a law that does not exist.
 
 ---
 
@@ -428,8 +462,13 @@ thirty-fourth component, written next month, drifts immediately.
   permanently red step over a known, tracked condition teaches everyone to ignore CI. Wiring it in
   is the reward for reaching zero.
 
-Two of the twelve laws are not served by this script and should not be forced into it: **L7** (icon
-centroids — a spec over the registry) and **L11** (documentation only).
+Two of the twelve laws are not served by *this* script and should not be forced into it: **L7**
+(icon centroids) and **L11** (documentation only). L7 got its own script rather than the spec this
+paragraph originally planned for it — `check-icon-geometry.mjs`, the second half of
+`npm run check:geometry` — because the dependency it was assumed to need turned out not to be
+needed. It stays a separate process for the reason stated above: this one reads token values and
+never a rendered anything, and its input is `theme.css`. Path data is a different input, and one
+script reading both would be lying about what it reads.
 
 ---
 
@@ -488,7 +527,8 @@ re-litigates a settled number.
 | `check:geometry` (laws 1, 3, 5, gates)                    | ✅ green, and a CI step      |
 | The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits    |
 | Laws 2 and 4 in the gate                                  | ⬜ blocked on D-radii and D4 |
-| L7 icon-centroid audit                                    | ⬜ not started               |
+| L7 audited, and gated by `check:geometry`'s second half    | ✅ 2026-09-06 — the audit reversed the law |
+| L6's 1.128 correction applied to the filled marks         | ⬜ decided at D2, never applied |
 | L11 into `api-design.instructions.md` and `AGENTS.md`     | ⬜ not started               |
 | L8's consumer recipe into `README.md`                     | ⬜ not started               |
 

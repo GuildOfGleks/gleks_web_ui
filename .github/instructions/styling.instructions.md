@@ -171,10 +171,14 @@ a strength rather than an apology — a value chosen by eye is unfalsifiable and
 component, which is exactly how the library ended up with 177 hard-coded paddings in two units
 before `--gog-density` existed.
 
-Five laws govern any length a component declares. They are stated here as the standard; the
-per-component CI check that enforces them is in `docs/backlog.md`, and until it exists these are
-enforced by reading. **A new component satisfies all five before it is done, and an existing one
-that violates one is a defect, not a style.**
+Five laws govern any length a component declares. **Three of them are enforced by CI** —
+`npm run check:geometry` gates laws 1, 3 and 5 over every component, from the token values rather
+than from a rendered page, and it is a required step as of 21.11.0. Laws 2 and 4 are still
+enforced by reading, each for a stated reason: law 2 needs a declared parent per nested radius
+(a name is not a parent) and law 4 needs a role per text token, so both are decisions before they
+can be checks. `npm run survey:geometry` reports all five and gates none, which is where to look
+for what law 2 and law 4 would find today. **A new component satisfies all five before it is
+done, and an existing one that violates one is a defect, not a style.**
 
 1. **The grid is 4px.** Every padding, gap, margin, offset and inset reads a step of the spacing
    scale, never a literal — `check-tokens` rule H already fails the build on a literal that
@@ -209,6 +213,14 @@ that violates one is a defect, not a style.**
 **Where a law and a measurement disagree, the measurement wins and the law gets an exception with
 a reason** — the same discipline `check:contrast`'s exceptions already follow. What is not
 acceptable is a length with no derivation at all.
+
+**A glyph is governed too, by a law of its own.** `docs/component-geometry.md`'s L7: an icon
+centres its ink inside its own viewBox, so that centring the box centres the mark — and where the
+mark is *filled*, it is the area that centres, not the outline, because a solid triangle's
+centroid sits `W/6` from the middle of its bounding box. `check:geometry`'s second half measures
+all 41 built-in glyphs and gates it. The law is deliberately **not** written against the ink's
+centre of mass: a monoline set reads by extent, so a directional glyph such as `arrow-right`
+carries its mass 2 units off centre and is correct exactly as drawn.
 
 ## Accessibility & motion
 

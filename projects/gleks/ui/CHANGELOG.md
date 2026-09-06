@@ -184,6 +184,22 @@ reached 1.0, so breaking changes may land in minor versions.
   a rounding rule. It rounds up. Here that is also right on its own terms — a 20px badge clears the
   host's corner radius at `--gog-radius: 8px` at 8px of overhang, and did not quite at 6px.
 
+### Documentation
+
+- **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41
+  built-in glyphs now pass a check (`npm run check:geometry`, second half): a glyph centres its ink
+  in its own viewBox, so that centring the box centres the mark. Nothing moved — every glyph
+  already passed, to within a hundredth of a unit horizontally.
+
+  The audit is the interesting half. The rule had been planned against the ink's **centre of
+  mass**, and by that measure the set looks broken: `arrow-right`'s mass sits 2.05 units right of
+  centre and `download`'s 3.47 units low, on a 24 grid. Neither is a defect. A directional glyph is
+  *supposed* to carry its mass toward its head, and re-centring one would pull its tail off the
+  edge of the box. What the eye reads in a uniform-weight set is the extent, so the extent is what
+  is checked — with one branch for a **filled** mark, where a solid triangle's centroid genuinely
+  sits a sixth of its width off the box centre. The registry has one filled glyph (`star-filled`,
+  0.51 low) and that branch is what would catch a play triangle the day one is added.
+
 ## [21.10.0] - 05.09.2026
 
 ### Added

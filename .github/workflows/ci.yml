@@ -59,6 +59,8 @@ jobs:
       # moment it reached zero and not before (docs/component-geometry.md): the sweep that made it
       # green was 25 commits long, and a permanently red step over a tracked condition teaches
       # everyone to ignore CI. Laws 2 and 4 are not in it yet and the script's header says why.
+      # Two scripts: the second reads the icon registry's path data rather than theme.css, for L7
+      # (a glyph centres its ink in its own viewBox), which is why it is not one process.
       - name: Geometry check
         run: npm run check:geometry
 
