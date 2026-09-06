@@ -166,7 +166,22 @@ const PANEL_RADIUS_SPLIT = [
 
 const themeCss = await fs.readFile(themeCssPath, 'utf8');
 const layers = buildLengthLayers(themeCss);
-const { declaration } = makeLengthResolver(layers, new Map(), { density: 1 });
+
+/**
+ * Two densities, and the second one is the point.
+ *
+ * `--gog-radius` is a plain length and the spacing scale is `calc(Npx * var(--gog-density))`, so a
+ * nested radius written as `calc(var(--gog-radius) - 4px)` is only correct where the density
+ * happens to be 1. It restates a token's value instead of reading it — the same defect
+ * `check-tokens` rule H fails for spacing — and a single-density check cannot see it, because the
+ * number is right in the one place it looks. Checking at 0.85 as well turns "this value is
+ * correct today" into "this derivation is correct", which is what the law is actually about.
+ */
+const DENSITIES = [1, 0.85];
+const resolvers = new Map(
+  DENSITIES.map((d) => [d, makeLengthResolver(layers, new Map(), { density: d })]),
+);
+const { declaration } = resolvers.get(1);
 const declared = new Map([...layers.rootLiteral, ...layers.derivedBase]);
 
 /** Every `--gog-*-radius` token declared in theme.css, minus the foundation one. */
@@ -177,15 +192,8 @@ const radii = [...declared.keys()]
 const findings = [];
 const unresolved = [];
 
-const resolve = (token) => {
-  const { px, why } = declaration(token);
-  if (px === null || Number.isNaN(px)) {
-    // A radius that cannot be resolved is a radius nobody checked. Printed, never skipped.
-    unresolved.push(`${token} — ${why ?? 'unresolvable'}`);
-    return null;
-  }
-  return px;
-};
+/** Trims 4.6000000000000005 to 4.6 without hiding a real fraction. */
+const fmt = (n) => (Number.isInteger(n) ? String(n) : Number(n.toFixed(3)).toString());
 
 // Every radius is accounted for by exactly one of the three tables, or it is a hole in them.
 for (const name of radii) {
@@ -210,19 +218,40 @@ for (const table of [OUTERMOST, NESTED, NOT_CONCENTRIC]) {
 
 for (const [name, { parent, gap, note }] of NESTED) {
   if (!radii.includes(name) || !radii.includes(parent)) continue;
-  const inner = resolve(`--gog-${name}-radius`);
-  const outer = resolve(`--gog-${parent}-radius`);
-  const distance = typeof gap === 'number' ? gap : resolve(`--gog-${gap}`);
-  if (inner === null || outer === null || distance === null) continue;
 
-  const expected = Math.max(0, outer - distance);
-  if (Math.abs(inner - expected) > 0.01) {
-    findings.push({
-      block: name,
-      message:
-        `${inner}px inside --gog-${parent}-radius (${outer}px) with ${distance}px between them — ` +
-        `expected ${expected}px (outer minus the gap). Nested because ${note}.`,
-    });
+  for (const density of DENSITIES) {
+    const at = resolvers.get(density).declaration;
+    const read = (token) => {
+      const { px, why } = at(token);
+      if (px === null || Number.isNaN(px)) {
+        if (density === 1) unresolved.push(`${token} — ${why ?? 'unresolvable'}`);
+        return null;
+      }
+      return px;
+    };
+
+    const inner = read(`--gog-${name}-radius`);
+    const outer = read(`--gog-${parent}-radius`);
+    const distance = typeof gap === 'number' ? gap * density : read(`--gog-${gap}`);
+    if (inner === null || outer === null || distance === null) break;
+
+    const expected = Math.max(0, outer - distance);
+    if (Math.abs(inner - expected) > 0.01) {
+      const where = density === 1 ? '' : ` at --gog-density: ${density}`;
+      const hint =
+        density === 1
+          ? ''
+          : ' — the value is right at density 1, so the derivation restates a token instead of reading it';
+      findings.push({
+        block: name,
+        message:
+          `${fmt(inner)}px inside --gog-${parent}-radius (${fmt(outer)}px) with ${fmt(distance)}px ` +
+          `between them${where} — expected ${fmt(expected)}px (outer minus the gap)${hint}. ` +
+          `Nested because ${note}.`,
+      });
+      // One finding per pair: the same derivation failing at both densities is one defect.
+      break;
+    }
   }
 }
 
