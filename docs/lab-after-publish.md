@@ -80,6 +80,26 @@ typed by hand. Check `lab-appearance-baseline.md`'s recorded preview geometry ag
 component pages before assuming a diff there is a regression — for this release, a preview that
 grew is the release landing, not the page breaking.
 
+### Three corners changed shape, and one of them looks like a bug
+
+Law 2 (concentric radii) joined the gate in this release, and five components moved. Two are worth
+a look on the site rather than a token-table edit:
+
+- **`gog-menu`'s item corner went 8px to 12px.** The panel paints `--gog-panel-radius` and insets
+  its items by 4px, so the first and last items had been squarer than the corner they sit in.
+  Visible on the menu page at the default theme.
+- **The `gog-select` and `gog-multiselect` filter inputs now have square corners.** This will read
+  as a regression to anyone who does not know why, so if either page says anything about that
+  panel, it is worth one sentence: the filter is inset by exactly the panel's radius, and at that
+  distance the inner box's corner point sits on the *centre* of the panel's corner arc — a right
+  angle there is equidistant from the whole curve, and it is the only corner that keeps the gap
+  constant. It is not a value clamped to zero.
+
+`gog-autocomplete`'s option row and `gog-scroll`'s thumb also changed, and neither is visible at
+the default density: the first only differs once `--gog-density` leaves 1, the second is clamped
+to a full pill at both track widths either way. The hand-maintained token reference needs no edit
+for any of the five — none of its descriptions quote a value.
+
 ### The Theming page can say the laws are checked now
 
 `npm run check:geometry` is a CI step as of this release: the 4px grid, horizontal padding at
