@@ -13,6 +13,20 @@ reached 1.0, so breaking changes may land in minor versions.
   vertical, `slg` controls carry 20px of vertical padding, and the scale went 32 and then jumped to
   48. It multiplies `--gog-density` like every other step.
 
+- **`--gog-text-2xs` (0.6875rem, 11px)**, the step below `xs`. `gog-chip` and `gog-tag` had both
+  written that value as a literal at `xsm` — the same number chosen twice, independently, which is
+  a missing rung rather than two opinions. Nothing renders differently; a theme moving the scale
+  now moves both with it.
+
+- **A leading token for every block that sets a font size** — around forty-five of them, and the
+  reason is law 4 rather than tidiness: a block that changes its size while inheriting its leading
+  changes the ratio silently. A `--gog-text-xs` numeric table cell inside a `--gog-text-md` page
+  inherited the page's leading and landed on a ratio nobody chose. Where the role is shared the
+  token is shared: `--gog-field-line-height`, `--gog-field-label-line-height` and
+  `--gog-field-error-line-height` are declared once and aliased by every field, the way the padding
+  tier already works. Six roles, one leading each — the full table is in
+  `docs/component-geometry.md`.
+
 ### Removed
 
 - **`--gog-space-2`, `-6`, `-10`, `-14` and `-18` are gone from the spacing scale**, which is now
@@ -218,6 +232,25 @@ reached 1.0, so breaking changes may land in minor versions.
   the thumb's width and renders as a full pill. It matters to a theme that raises `--gog-radius`
   on a wide scroller, where the thumb would otherwise carry the same corner as the track it sits
   inside.
+
+- **`gog-accordion`'s chevron is a ratio of its header instead of a px ladder, and it fits its box
+  now.** Ten literals become two: `1em` for the em basis and `1.4em` for the surrounding box.
+  Writing it as a ratio surfaced two bugs the ladder had hidden. It was **px beside a label in
+  `rem`**, so raising the browser's text size grew the label and left the chevron where it was —
+  and its box/label ratio drifted 0.92 to 1.29 across the five sizes. And **the glyph overflowed
+  its box at every size**: the font-size token is the em basis for the `gog-icon` inside, which
+  renders at 1.2em of it, so a 21.6px mark sat in a 20px box. The chevrons at `xsm`, `sm` and `md`
+  are identical now, because those three sizes all label with `--gog-text-xs` and the chevron
+  ladder was the only thing distinguishing them.
+
+- **`--gog-panel-heading-line-height` is `snug` (1.3), not 1.25** — the one leading in the library
+  outside `--gog-line-height-*`, which runs 1.2 then 1.3 with nothing between.
+
+- **Eight literal `line-height` declarations in component stylesheets now read tokens**, so a theme
+  can reach them at all: the checkbox and input icons, the three clear buttons, the toggle's state
+  label and the textarea's own field, which is the one place the library renders a paragraph the
+  consumer typed. The dialog's was dead code — its close button already read the token two lines
+  below.
 
 ### Documentation
 

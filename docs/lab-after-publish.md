@@ -100,6 +100,21 @@ the default density: the first only differs once `--gog-density` leaves 1, the s
 to a full pill at both track widths either way. The hand-maintained token reference needs no edit
 for any of the five — none of its descriptions quote a value.
 
+### Typography moved too, and one change is visible on the accordion page
+
+Law 4 and D8 landed in the same release. Three things the lab may need to say:
+
+- **The accordion chevron is a ratio now, not a px ladder**, so the chevrons at `xsm`, `sm` and
+  `md` are identical — those three sizes all label with `--gog-text-xs`, and the chevron was the
+  only thing distinguishing them. Visible on the accordion page's size examples. If that page
+  shows the five sizes side by side, the three smallest will look closer together than they did.
+- **The hand-maintained token reference gains a step and loses none**: `--gog-text-2xs`
+  (0.6875rem, 11px), below `xs`. The Spacing entry needs nothing; this is the type scale.
+- **Roughly forty-five new `*-line-height` tokens.** The reference lists token families rather
+  than every token, so most need no entry — but the shared field tier is new and is the kind of
+  thing that page does document: `--gog-field-line-height`, `-label-line-height` and
+  `-error-line-height`, declared once and aliased by every field.
+
 ### The Theming page can say the laws are checked now
 
 `npm run check:geometry` is a CI step as of this release: the 4px grid, horizontal padding at
