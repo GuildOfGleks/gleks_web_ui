@@ -200,6 +200,19 @@ reached 1.0, so breaking changes may land in minor versions.
   sits a sixth of its width off the box centre. The registry has one filled glyph (`star-filled`,
   0.51 low) and that branch is what would catch a play triangle the day one is added.
 
+- **`README.md` carries the recipe for making the library fluid**, which it had never stated and a
+  consumer had to derive: the two-point linear interpolation, worked, applied to the root font size
+  (the type scale is in `rem`, so one `clamp()` moves all of it) — with the reason the intercept
+  belongs in `rem` rather than `px`, which is WCAG 1.4.4. It also says plainly why the library
+  itself ships zero `clamp()`, zero `vw` and zero breakpoints, and how to carry the spacing scale
+  along if you want gaps to grow with the type.
+
+- **`AGENTS.md`'s dropdown section says when to turn `filter` on**, and the narrower half of the
+  rule that most quotations of it drop: choice time grows with the log of the option count, so a
+  panel past roughly seven options wants a filter — *unless* the list is one the reader can
+  predict, in which case they are searching rather than choosing and ordering it well is worth as
+  much. `GOG_CONFIG.dropdown.filter` sets it once for an app.
+
 ## [21.10.0] - 05.09.2026
 
 ### Added

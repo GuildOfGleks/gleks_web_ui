@@ -257,6 +257,56 @@ detail and the full token list.
 Fonts are left alone on purpose (system stacks, no webfont download). Add
 `@guildofgleks/ui/styles/fonts.css` for the showcase's typography.
 
+### Making it fluid — one `clamp()`, not thirty
+
+**The library ships no `clamp()`, no `vw` and no breakpoints, and that is a decision rather than an
+omission.** A component does not know how wide the screen is; it knows how wide its container is,
+and `size` is your input, not something a stylesheet should override at 400px. So fluid sizing is
+the app's to declare — and because everything here derives from a few foundation tokens, it is one
+declaration rather than one per component.
+
+Interpolate as a straight line between two viewports. Between `(W_min, V_min)` and
+`(W_max, V_max)`:
+
+```
+slope     m = (V_max − V_min) / (W_max − W_min) × 100      → the vw coefficient
+intercept b = (W_min·V_max − W_max·V_min) / (W_min − W_max) → the constant
+size        = clamp(V_min, b + m·vw, V_max)
+```
+
+**The type scale is in `rem`, so the root font size is the one knob that moves all of it.** For 15px
+at a 360px viewport growing to 17px at 1440px — `m = 0.185`, `b = 14.33px` — write the constant in
+`rem` rather than `px`:
+
+```css
+html {
+  /* 15px at 360px wide, 17px at 1440px. 0.8958rem is the 14.33px intercept. */
+  font-size: clamp(0.9375rem, 0.8958rem + 0.185vw, 1.0625rem);
+}
+```
+
+**Keep the intercept in `rem`, not `px`.** A viewport-only font size ignores the reader's own
+browser text-size setting, which fails WCAG 1.4.4; with a `rem` term in the expression, their
+preference still scales the result. Every `--gog-text-*` follows, and so does `--gog-icon-size`,
+which is `1.2em`.
+
+Spacing does not follow, deliberately: `--gog-space-*` is authored in `px` times `--gog-density` so
+that one number is the whole spacing system, and a unitless multiplier cannot carry a `vw` term
+(`calc()` will not add a number to a length). If you want gaps to grow with the type too, restate
+the ten steps against the root font size once — the derived layer re-resolves and every component
+follows:
+
+```css
+:root {
+  --gog-space-4: calc(0.25rem * var(--gog-density));
+  --gog-space-8: calc(0.5rem * var(--gog-density));
+  /* …12, 16, 20, 24, 28, 32, 40, 48, each Npx as N/16 rem */
+}
+```
+
+`--gog-density` on its own remains the simpler answer for "roomier" versus "compact", and it needs
+no arithmetic at all.
+
 ## App-wide configuration
 
 Anything visual is a token. Everything else — the settings you would otherwise repeat on every

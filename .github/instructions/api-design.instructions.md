@@ -167,6 +167,41 @@ readonly optionValue = input<string | ((option: T) => unknown) | null>(null);
 
 with a shared resolver helper, so a consumer can pass their own objects untouched.
 
+## A component that renders a set answers Hick's law before it ships
+
+Choice time grows with the log of the number of options — `T = b · log₂(n + 1)` — so past roughly
+seven first-level items a list stops being scanned and starts being read. **The library never owns
+`n`**: the consumer passes the items, so this can never be a check (a test asserting "no more than
+seven options" could only ever run against the showcase's own demo data, which would assert that a
+fixture is small). It is a question the API answers instead.
+
+**The question.** _Can this component's set exceed roughly seven items, and can it be meaningfully
+ordered?_ If it can exceed seven and cannot be ordered, the component ships a filter, grouping, or
+a search affordance — **and it ships it in its first version**, because retrofitting one changes
+the component's layout and therefore its slots.
+
+**The law is narrower than it is usually quoted, and the narrowing is the useful half.** Hick
+governs _equally probable, unordered, unfamiliar_ choices. An alphabetical list of 200 countries
+is not Hick-governed at all: the reader is searching, not choosing, and search time is a function
+of ordering and filtering rather than of `n`. So a long list is not automatically a defect — a
+long list with no order and no filter is.
+
+The components already shipped are the worked examples. `gog-select` and `gog-multiselect` take
+`filter` (and `gog-autocomplete` filters through the field's own text, which is why it has no
+filter box); `gog-table` has sorting and a paginator. `gog-tabs` has none of them and is right not
+to — tabs are a fixed, authored set, and a tab strip that needed a filter would be a menu.
+
+**And a component that takes markup rather than data has already answered it.** `gog-menu`'s items
+are the consumer's own buttons, so it owns neither `n` nor the structure: sectioning a long menu
+with `gog-divider` is the consumer's to author, and adding a grouping input would be the library
+taking back a decision the slot exists to hand over. The question is still worth asking of such a
+component — but the answer can be "the consumer already has it", stated, rather than a new input.
+
+**It is documentation as well as a design rule.** Where a component's own recommendation to the
+consumer follows from this (turn `filter` on past ~7 options; group rather than lengthen), it is
+stated in that component's `AGENTS.md` entry, where an agent building an app will actually read
+it.
+
 ## Deduplication: the rule of three
 
 The library already carries the right tool for this — `GogErrorState` is a plain class,

@@ -730,6 +730,14 @@ CVA: yes, both. Slots (shared): `<ng-template gogDropdownChevron>` (custom chevr
 `<ng-template gogDropdownOption let-opt let-selected="selected" let-label="label">` (custom
 option row). Multiselect adds `<ng-template gogMultiselectClearIcon>`.
 
+**Turn `filter` on past about seven options — or order them instead.** Choice time grows with the
+log of the count (`T = b · log₂(n + 1)`), so beyond roughly seven a panel stops being scanned and
+starts being read. The escape is not always the filter box: the law governs _unordered_ choices,
+and a list the reader can predict — alphabetical countries, ascending amounts, a familiar fixed
+sequence — is one they search rather than choose from, so ordering it well is worth as much as
+filtering it. Both, for a long list of neither. `GOG_CONFIG.dropdown.filter` sets this once for
+the app rather than per dropdown, which is usually the right place for it.
+
 ```html
 <gog-select
   label="Region"

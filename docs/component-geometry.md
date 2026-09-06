@@ -529,8 +529,8 @@ re-litigates a settled number.
 | Laws 2 and 4 in the gate                                  | ⬜ blocked on D-radii and D4 |
 | L7 audited, and gated by `check:geometry`'s second half    | ✅ 2026-09-06 — the audit reversed the law |
 | L6's 1.128 correction applied to the filled marks         | ⬜ decided at D2, never applied |
-| L11 into `api-design.instructions.md` and `AGENTS.md`     | ⬜ not started               |
-| L8's consumer recipe into `README.md`                     | ⬜ not started               |
+| L11 into `api-design.instructions.md` and `AGENTS.md`     | ✅ 2026-09-06                |
+| L8's consumer recipe into `README.md`                     | ✅ 2026-09-06                |
 
 ### What the sweep actually cost, and what it found
 
