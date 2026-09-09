@@ -669,6 +669,24 @@ The three dropdown `*-panel-max-width` tokens (420px) and `--gog-calendar-max-wi
 (`max-content`, not a cap) are unchanged. Gated by `npm run check:measure`, folded into
 `check:geometry`.
 
+### A fourth finding, from implementing rather than surveying
+
+`ch` resolves against the font of the element the property is declared on, **never a
+descendant's** — and the survey's font-tracing (font-size read on the message/description, not on
+the element carrying `max-width`) did not check that the two were the same element. They were not,
+for toast: `.gog-toast`/`.gog-toast-container` (where `--gog-toast-max-width` lands) declare no
+font-size of their own, so `53ch` was resolving against the 16px both inherit, not the 14px
+`--gog-toast-message-font-size` it was chosen against — 457px instead of the intended 400px.
+Caught live in `ui-showcase`, not by `check:measure` (a structural check has no notion of which
+element a property paints onto, only what the token's own text says) and not by
+`survey:measure` (which reads `theme.css`, not the SCSS that decides which element gets which
+font). Fixed by stating `font-size: var(--gog-toast-message-font-size)` explicitly on both
+elements — confirmed first that nothing else inside inherits its size from either one, since every
+piece of toast text already sets its own token. Tooltip was never at risk (`:host` sets both
+properties together); the confirmation dialog is safe today only because its description's own
+font-size bug (filed in `docs/backlog.md`) happens to leave it inheriting the same value its
+ancestor does — worth re-checking once that bug is fixed.
+
 **Still open: D0, D5.**
 
 ---

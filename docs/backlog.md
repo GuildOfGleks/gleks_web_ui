@@ -39,6 +39,15 @@ not worth carrying here.
   so it wants its own commit and its own look in `ui-showcase`, not a drive-by fix inside an
   unrelated branch.
 
+  **Also re-check `--gog-confirmation-dialog-max-width` when this is fixed.** Its `ch` measure
+  (`docs/component-geometry.md`, "D7 — taken") was deliberately computed against today's inherited
+  16px rather than the 14px the class name implies, precisely so the cap would not tighten if this
+  bug were fixed first — but a `ch` cap resolves against the font of the element `max-width` is
+  declared on (`.confirm-dialog`), not its child, and fixing this bug only changes the
+  **description's** font-size, not `.confirm-dialog`'s own. Confirm live whether `.confirm-dialog`
+  picks up a new inherited size or stays at 16px once the fix lands; toast's own D7 implementation
+  hit exactly this class of bug (same file, "A fourth finding").
+
 - **Geometry: all five laws are gated (2026-09-06).** The 4px grid, concentric radii, horizontal
   padding at exactly twice vertical on every control, the typographic ratio, and 24×24 CSS px of
   pointer target. `npm run check:geometry` runs four scripts and is a CI step as of 21.11.0: the
