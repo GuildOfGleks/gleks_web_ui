@@ -57,8 +57,33 @@ complete. Delete this file once it has been read.
 D5 (the elevation ladder) — its own release, its own plan document, not started. Nothing from
 `docs/backlog.md` beyond the one defect filed above. `gleks-ui-lab` untouched.
 
+## Review, and what it changed
+
+A review pass over the finished branch found five things the implementation had not, four of them
+in work this branch itself added. They are commits 13–16, and each is worth knowing:
+
+1. **`check:measure` was a list of seven answers, not a rule.** It iterated its own decision table
+   and never asked `theme.css` what else was there, so a new `*-max-width` token passed in silence.
+   Proved by injecting one. Rule E now walks the family and fails on anything unclassified.
+2. **The length resolver was answering where it should have refused.** `evalArithmetic` let
+   `String.match` drop what it could not tokenise, so `43ch` read as `43` — and `survey:measure`,
+   the tool that justified the whole decision, reported a 43px tooltip and a measure of 6.6ch while
+   `check:measure`'s failure text told readers to re-run it. Now fails closed.
+3. **The survey's viewport-unit self-check was vacuous**: `\bvw\b` cannot match `100vw`, and it read
+   `theme.css` alone. It printed "confirmed: none" over four occurrences.
+4. **"The only place `vw` appears in the library" was false**, and false before this branch too —
+   the dialog panel's `90vw`, `--gog-dialog-max-height: 90vh`, `gog-menu`'s `100vh`. It had shipped
+   into `README.md` and `CHANGELOG.md`. The claim had been checked by grepping `.css`/`.scss`; the
+   counterexample that mattered was an inline binding in a template.
+5. **The confirmation dialog's clamp could never bind**, because its panel already caps at `90vw`
+   and the body pads 20px a side inside that. Removed; it keeps its `51ch` measure. The rule it
+   produced is in the decision: an overlay nested in another overlay inherits that one's cap.
+
+Findings 4 and 5 are the same mistake twice — a claim about the whole library checked against part
+of it — and both were made by this branch's own author. Worth reading before the next survey.
+
 ## Branch state
 
-Eleven commits on `d7-measure-and-overlay-clamp`, cut from `master` at `bd8d6d0`. Not merged, not
+Sixteen commits on `d7-measure-and-overlay-clamp`, cut from `master` at `bd8d6d0`. Not merged, not
 squashed, not rebased. Pushed: no — still local as of this write-up; push before handing off if
 review happens in a different session.
