@@ -669,6 +669,27 @@ The three dropdown `*-panel-max-width` tokens (420px) and `--gog-calendar-max-wi
 (`max-content`, not a cap) are unchanged. Gated by `npm run check:measure`, folded into
 `check:geometry`.
 
+### The clamp's own bound: a `min-width` outranks it
+
+Found reviewing the change rather than making it, and it limits what L8's exception can claim. CSS
+resolves `min-width` **after** `max-width`, so a floor wins outright: the clamp governs only down
+to the width where the component's own `min-width` plus its margins exceeds the viewport, and
+below that the floor decides and the overflow returns.
+
+| Component            | Floor | Margin a side | Clamp governs down to | Below that                    |
+| -------------------- | ----- | ------------- | --------------------- | ----------------------------- |
+| `gog-tooltip`        | none  | 16px          | any width             | —                             |
+| `gog-menu`           | 180px | 16px          | 212px                 | narrower than any real device |
+| `gog-toast`          | 280px | 16px          | 312px                 | narrower than any real device |
+| confirmation dialog  | 320px | 24px          | **368px**             | a 360px phone, by 8px         |
+
+**Nothing here regressed** — every floor predates this release and the dialog behaved identically
+at 360px before the clamp existed; what changed is that between 368px and its 51ch cap the dialog
+now tracks the viewport where it used to sit at a fixed 440px. But "no wider than the screen" is
+the wrong sentence for it, and the changelog was corrected to say "caps itself against the
+viewport" instead. Whether `--gog-confirmation-dialog-min-width` should be 320px at all is a
+separate decision, on a token this branch did not touch.
+
 ### A fourth finding, from implementing rather than surveying
 
 `ch` resolves against the font of the element the property is declared on, **never a

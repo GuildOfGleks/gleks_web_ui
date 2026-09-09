@@ -125,7 +125,7 @@ viewBox) and a third over the four overlay max-widths (below). All five geometry
 tracks are gated by the time this section is read. Worth a paragraph on the Theming page only if
 it earns one; the audience there is a consumer choosing tokens, not an author of the library.
 
-### Four overlay tokens never render wider than the screen
+### Four overlay tokens cap themselves against the screen
 
 `--gog-tooltip-max-width`, `--gog-menu-max-width`, `--gog-toast-max-width` and
 `--gog-confirmation-dialog-max-width` each became `min(<cap>, calc(100vw - <margin> * 2))`

@@ -252,7 +252,7 @@ reached 1.0, so breaking changes may land in minor versions.
   consumer typed. The dialog's was dead code — its close button already read the token two lines
   below.
 
-- **`gog-tooltip`, `gog-menu`, `gog-toast` and the confirmation dialog never render wider than the
+- **`gog-tooltip`, `gog-menu`, `gog-toast` and the confirmation dialog cap themselves against the
   viewport.** `--gog-tooltip-max-width`, `--gog-menu-max-width`, `--gog-toast-max-width` and
   `--gog-confirmation-dialog-max-width` each become `min(<cap>, calc(100vw - <margin> * 2))` — the
   one place `vw` appears in the library, because this is chrome positioned against the screen
@@ -263,6 +263,13 @@ reached 1.0, so breaking changes may land in minor versions.
   dropdown panel widths (`autocomplete`/`select`/`multiselect`, 420px) are deliberately unchanged —
   each already tracks its trigger field's own width via `min-width: 100%`, so a viewport clamp on
   the panel would protect against nothing the field's own responsive layout does not already own.
+
+  **A `min-width` still outranks a `max-width`, and that bound is unchanged.** The confirmation
+  dialog's `--gog-confirmation-dialog-min-width` is 320px against 24px of backdrop padding a side,
+  so below a 368px viewport it is the floor that decides, exactly as before this change; the clamp
+  is what governs between there and its 51ch cap. Toast (280px floor, 16px a side) and menu (180px)
+  clear every phone width in use. Nothing here regressed — the floors predate this release — but
+  "never wider than the screen" would be the wrong thing to read into it.
 
 - **Three of those four caps move from `px` to `ch`**: tooltip `43ch`, toast `53ch`, the
   confirmation dialog `51ch` — each the nearest whole character to what the cap already rendered,
