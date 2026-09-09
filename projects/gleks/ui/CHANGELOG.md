@@ -4,6 +4,47 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.12.0] - planned
+
+### Added
+
+- **`--gog-select-panel-radius` and `--gog-multiselect-panel-radius`.** Both default to
+  `var(--gog-radius)`, so nothing renders differently — what changes is that the dropdown panel
+  and the field it hangs from are now two boxes with two tokens. They had been one: the panel
+  painted `--gog-select-radius` / `--gog-multiselect-radius`, the *field's* radius, so a theme
+  that rounded the control into a pill rounded the overlay into one as well. The filter input's
+  radius and the option row's radius both derive from the panel's corner, so they followed it
+  too. `gog-autocomplete` and `gog-datepicker` already declared this token; this is the pair of
+  the four dropdowns on `GogDropdownBase` that did not.
+
+- **`--gog-select-options-padding` and `--gog-select-option-radius`**, the interior the select's
+  panel did not have. Its rows were full-bleed and square inside a rounded panel, while
+  `gog-autocomplete` and `gog-multiselect` inset theirs by `--gog-space-4` and round them
+  concentrically — three panels on one base, three interiors. The select now matches: a 4px
+  gutter and a `max(0px, panel radius - gutter)` row, derived rather than restated so it stays
+  true once `--gog-density` moves the padding.
+
+### Changed
+
+- **`gog-chip`'s avatar is one ratio of the chip's type instead of five px values.**
+  `--gog-chip-<size>-avatar-size` is `1.5em` at every size — 16.5 / 18 / 21 / 24 / 27px against
+  the 14 / 16 / 20 / 24 / 28px it was. Those five were 1.27, 1.33, 1.43, 1.50 and 1.56 of the
+  label's font size: one relationship with five opinions, drifting monotonically, which is what
+  a value picked by eye per size looks like. 1.5 is the ratio `lg` already held, and it keeps the
+  intent the rest of the component is built on — the avatar reads larger than the label and hugs
+  the chip's leading edge, which is what `--gog-chip-avatar-inset-ratio` exists for. The tokens
+  stay per-size, so an override of one keeps working.
+
+- **`--gog-chip-<size>-icon-size` is `1em`.** Nothing renders differently: the five rem values it
+  replaces were 11 / 12 / 14 / 16 / 18px against a label of exactly 11 / 12 / 14 / 16 / 18px, so
+  the ratio was already 1.00 five times over — stated by hand rather than by rule. Writing it as
+  `em` also means an override of a single size's font-size now carries its icon along, which the
+  rem ladder did not.
+
+- **The select's option list gained a wrapper element**, `.gog-select__options`, to carry the
+  gutter above. On the scrolled content rather than on `gog-scroll` itself, which measures its
+  host to size the thumb.
+
 ## [21.11.0] - 09.09.2026
 
 ### Added

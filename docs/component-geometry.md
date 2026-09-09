@@ -866,6 +866,7 @@ re-litigates a settled number.
 | D4 + D8                                                   | ✅ taken 2026-09-06, against a second survey |
 | D7                                                         | ✅ taken 2026-09-09, against a survey |
 | D0                                                         | ✅ closed 2026-09-09, as a record of what happened |
+| The two entries law 2 and L6 left behind                   | ✅ closed 2026-09-09 — dropdown panel radii + interior, chip avatar ratio |
 | `survey:geometry` (all five laws, reports)                | ✅                           |
 | `check:geometry` (laws 1, 3, 5, gates)                    | ✅ green, and a CI step      |
 | The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits    |
@@ -909,6 +910,83 @@ move by a pixel.
 toggle thumb's inset, a scrollbar thumb's, and the resize grip's hairline gap. The distinction is
 not size — it is that a length *inside a single painted mark* defines that mark's shape, while a
 gap between two elements is spacing however small it is.
+
+## The two entries law 2 and L6 left behind — closed 2026-09-09
+
+Neither was a law and neither was a check finding. Both were things the geometry work *saw* and
+correctly refused to fix in the same pass, because each needed a decision about public API. They
+are recorded here rather than in `docs/backlog.md`, whose own rule is that nothing closed lives
+there.
+
+### The four dropdowns: one panel radius each, and the select gains an interior
+
+The filing called it "naming and API rather than geometry". That was written without opening a
+browser, and it was wrong in the direction that matters: `gog-select` and `gog-multiselect` painted
+their overlay panels with `--gog-select-radius` / `--gog-multiselect-radius`, the **field's** token,
+so one token shaped two boxes that are not nested — the panel is the field's sibling, placed against
+its measured rect and rendered into `<body>` under `appendToBody`.
+
+Measured live in `ui-showcase`, before and after, with `--gog-select-radius: 999px` set on `:root`
+— a pill field, which is a plausible theme choice and is what `--gog-radius: 999px` would produce:
+
+| box | before the fix, pill field | after |
+| --- | --- | --- |
+| `.gog-select__control` (the field) | 999px | 999px — it is the field's token and it should move |
+| `.gog-select__dropdown` (the panel) | **999px** | 8px |
+| `.gog-select__option` | **derived from 999px** | 4px |
+
+Both components now declare a `*-panel-radius`, defaulting to `var(--gog-radius)`, so nothing
+renders differently by default; the filter input's radius and the option row's derive from it
+rather than from the field. All four dropdowns on `GogDropdownBase` answer the question the same
+way, and `check:radii`'s parent table now names a `*-panel-radius` for every nested radius.
+
+The select's interior went with it, because it was the same finding one level down: its rows were
+full-bleed and square inside a rounded panel, while `gog-autocomplete` and `gog-multiselect` inset
+theirs by `--gog-space-4` and round them concentrically. That is the defect
+`--gog-menu-item-radius` already records for the menu — a child squarer than the corner it sits in.
+`--gog-select-options-padding` and `--gog-select-option-radius` close it; measured live, the gutter
+is 4px on all three sides and the row is 4px inside an 8px panel. **And it resolves at two
+densities**, which is what law 2 requires: at `--gog-density: 0.85` the gutter is 3.4px and the row
+is 4.6px, derived rather than restated.
+
+**The finding worth more than the fix is about the reminder, not the radius.** `check:radii`
+carried both entries as a `PANEL_RADIUS_SPLIT` array printed *only inside the failure branch* — so
+from the day the check went green, which is the state a CI gate is built to sit in, the reminder
+printed nothing at all. `docs/backlog.md` claimed the script "prints both alongside its findings so
+they cannot be forgotten"; it did not. A note visible only when something else is broken is not a
+reminder. The array is gone and a comment in its place says why.
+
+### The chip's avatar: 1.5em, and the icon states the rule it already followed
+
+`--gog-chip-<size>-avatar-size` was 14 / 16 / 20 / 24 / 28px against a label of 11 / 12 / 14 / 16 /
+18px — ratios of 1.27, 1.33, 1.43, 1.50, 1.56. Five opinions about one relationship, drifting
+monotonically, which is what a value picked by eye per size looks like.
+
+**What decided the number was the icon.** Its five values were 11 / 12 / 14 / 16 / 18px against
+that same label — **1.00 at every size, exactly**. So the chip's row was never "two elements with
+no rule"; it was one element following a rule nobody had written down and one following nothing.
+The icon is `1em` now, which renders identically at all five sizes (verified live) and states it.
+
+For the avatar, 1.5em: the ratio `lg` already held, and the one that preserves what the rest of the
+component is built on. `--gog-chip-avatar-inset-ratio: 0.9` pulls the leading padding in when an
+avatar is present, which is only worth doing for an avatar that reads larger than the label and
+hugs the chip's edge. The alternative measured and rejected was 1.2em — the chip's own
+`--gog-line-height-tight`, which would have made a chip with an avatar exactly as tall as one
+without (today the gap runs 0.8px at `xsm` to 6.4px at `slg`) at the cost of shrinking every avatar,
+by 6.4px at `slg`. Height consistency is real but it is not what this component's own tokens ask
+for; the drift was the defect and one ratio is the fix.
+
+Verified live by driving one real chip through the five size classes: 1.5000 at each,
+16.5 / 18 / 21 / 24 / 27px.
+
+**L6 stays closed as inapplicable.** 1.128 is not the constant here for the reason the L6 table
+already gives: the icon is a monoline glyph and the avatar is a photograph, so neither has the
+square it would be corrected against.
+
+**`--gog-chip-<size>-remove-size` is the same drift and was left open**, in `docs/backlog.md`:
+1.091 / 1.167 / 1.143 / 1.125 / 1.111, non-monotonic and inside a 7% band, which reads as a px
+ladder converted to rem rather than as five judgements. Finding it and picking its number are
+separate decisions, and the whole span between its extremes is 0.6px.
 
 ## What this plan does not cover
 

@@ -54,14 +54,6 @@ not worth carrying here.
   4px)`, correct at `--gog-density: 1` and 0.6px wrong at 0.85, because a restated literal does
   not scale with the padding it restates.
 
-- **Four dropdowns on one base, two panel-radius answers and three panel interiors.** Surfaced by
-  law 2 and deliberately not fixed by it, because it is naming and API rather than geometry:
-  `gog-autocomplete` and `gog-datepicker` each declare a `*-panel-radius`, while `gog-select` and
-  `gog-multiselect` paint their panels with the *field's* radius token. And the select panel has
-  no option radius and no options padding at all — full-bleed square rows, where the other two
-  inset and round theirs. `check:radii` prints both alongside its findings so they cannot be
-  forgotten; closing them adds public tokens, so it wants its own decision.
-
   **Law 4 and D8 are done and gated (2026-09-06)**, in `npm run check:typography`, folded into
   `check:geometry`. Fifty findings to zero, fixed by role rather than by component — the judgement
   was taken once in D4 and the application was mechanical, so a per-component split would have
@@ -78,20 +70,22 @@ not worth carrying here.
   and the centre of mass as much as 3.47 units out — and the second number was correct as drawn,
   because a monoline set reads by extent. It is gated by `check:geometry`'s second half.
 
-- **The chip's avatar drifts against its icon: 1.27 at `xsm` to 1.56 at `slg`.** Five sizes, five
-  different opinions about one relationship — the shape law 3 was written for, in a pair law 3 does
-  not cover because neither of the two is padding.
+- **`--gog-chip-<size>-remove-size` is the same drift, one component over, and smaller.** 1.091,
+  1.167, 1.143, 1.125, 1.111 of the label's font size — five values again, but non-monotonic and
+  inside a 7% band, which is the signature of a px ladder converted to rem rather than of five
+  judgements. Found while measuring the avatar and **deliberately not fixed in the same pass**:
+  picking its number is its own decision, and the whole span between the extremes is 0.6px, so
+  nothing a consumer sees today depends on it. Two things to settle when it is taken: the button's
+  painted box is `remove-size × --gog-chip-remove-scale` (1.1), so the ratio to choose is not the
+  ratio to write; and `chip.component.scss` carries a WCAG 2.5.8 comment quoting "13.2px (`xsm`)
+  to 22px (`slg`)" that moves with it.
 
-  Found while trying to apply L6 and worth keeping apart from it: **1.128 is not the constant this
-  wants.** The chip's icon is a monoline glyph, mostly empty ground, so the equal-ink argument runs
-  the other way there exactly as it does for the radio — and the avatar is a *photograph*, sized so
-  a face is recognisable rather than so its ink matches a mark. Whatever the right number is, it is
-  one number and not five. Picking it is a decision; the drift is the defect.
+  Do not reach for 1.128 here either: L6 is closed as inapplicable, not deferred, and
+  `docs/component-geometry.md`'s L6 section has the table of every candidate mark and why each has
+  no square to be corrected against.
 
-  (L6 itself is closed as inapplicable, not deferred — `docs/component-geometry.md`'s L6 section
-  has the table of every candidate mark and why each has no square to be corrected against.)
-
-  The original entry, kept because it is still the argument for the two that remain:
+  The entry that follows is the original filing of the whole geometry programme, kept because it
+  is the argument that produced the five laws and the reasoning is still the model:
 
 - **Every component's geometry and typography, checked in CI — the five laws.** The standard is
   now written down (`styling.instructions.md`, "Geometry and typography are computed, not chosen",

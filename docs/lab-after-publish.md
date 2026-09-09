@@ -34,6 +34,59 @@ build.
 
 ---
 
+## 21.12.0 — four new tokens, and two visible shapes
+
+Small next to 21.11.0's section below, and it does not replace it: **21.11.0's entries are still
+open**, because the lab is deliberately being left alone for now. Work through that section first
+— it is the one whose two code entries break silently.
+
+### Four new tokens for the hand-maintained reference
+
+`pages/theming-page/token-reference-data.ts` is hand-maintained and none of these will appear on
+their own:
+
+- `--gog-select-panel-radius` and `--gog-multiselect-panel-radius` — the dropdown panel's own
+  corner, defaulting to `var(--gog-radius)`. The point worth writing in the description is *why*
+  they exist: the panel used to paint the field's radius, so overriding `--gog-select-radius` to
+  shape the control also reshaped the overlay. They are separate boxes now. `gog-autocomplete` and
+  `gog-datepicker` already had theirs, so if the reference lists those two, this is the pair that
+  makes the family complete rather than a new idea.
+- `--gog-select-options-padding` and `--gog-select-option-radius` — the gutter around the option
+  list and the concentric row corner, matching what `gog-autocomplete` and `gog-multiselect`
+  already had.
+
+Nothing existing in that file needs correcting: checked, and no entry for `--gog-select-radius` or
+`--gog-multiselect-radius` describes the panel.
+
+### The select's dropdown looks different, and the chip's avatar is a different size
+
+Both are the kind of change that reads as a regression to someone who does not know why, so check
+the pages rather than only the token table:
+
+- **The select panel's rows are inset by 4px and rounded to 4px**, where they used to run edge to
+  edge with square corners clipped by the panel. The panel is also ~8px wider, since its content
+  now carries a gutter. Visible on the Select page at any theme. This is the select catching up
+  with the autocomplete and multiselect, not a new look for the library.
+- **`gog-chip`'s avatar is `1.5em` at every size** — 16.5 / 18 / 21 / 24 / 27px against the
+  14 / 16 / 20 / 24 / 28px it was. `lg` does not move at all; `xsm` grows 2.5px and `slg` shrinks
+  1px. If the Chip page shows the five sizes side by side with an avatar, the small end will look
+  slightly heavier than it did. The icon is unchanged in every rendered pixel despite its token
+  changing to `1em` — do not report it as a diff.
+
+### The theme generator
+
+`generator-catalog.ts`'s Select entry picks tokens up by prefix (`--gog-select-`), so the three new
+select tokens arrive on their own; the multiselect's does too. Worth one look at the Select tile
+after publishing to confirm the new panel radius is editable and does what it says — it is the
+first select token that changes something *other* than the field.
+
+### theme-starter.css
+
+Regenerate as always (`npm install` at the root, then `npm run generate:theme-starter`). None of
+the four is a foundation token, so unlike 21.11.0's `--gog-text-2xs` there is no hand-written half
+here — checked, not assumed: `check:theme-starter` against this tree still reports exactly the one
+missing token it reported before this work, and it is `--gog-text-2xs`.
+
 ## 21.11.0 — the spacing scale, and the geometry sweep behind it
 
 **This release changes rendered geometry across the whole library and deletes five tokens.** The
