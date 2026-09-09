@@ -57,9 +57,14 @@ step is a multiple of 4.
   scale", twice in one paragraph.
 - **`pages/theme-generator-page/foundation-tokens.ts:107`** — the comment explaining why the scale
   is not a field names `--gog-space-2` as the range's lower bound.
-- **`public/docs/styles/theme-starter.css`** — generated, so it fixes itself: `npm install` at the
-  root, then `npm run generate:theme-starter`. `npm run check:theme-starter` fails until that runs,
-  which is the reminder working as designed.
+- **`public/docs/styles/theme-starter.css`** — half generated, and the generator does **not** fix
+  it on its own. Run `npm install` at the root, then `npm run generate:theme-starter`; that
+  rewrites the derived-layer block between the two markers, but the check reports a second
+  finding it cannot touch: **`--gog-text-2xs` is declared in `theme.css` and missing from the
+  starter's hand-written head**, so it has to be added by hand next to the rest of the type
+  scale. `npm run check:theme-starter` fails until both halves are done — it is red on `master`
+  as of 2026-09-09 and it is the **only** red check there, which is the reminder working as
+  designed rather than a regression to chase.
 
 ### The worked example on the theme-generator page now prints different numbers
 
