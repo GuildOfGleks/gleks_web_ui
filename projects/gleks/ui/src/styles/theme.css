@@ -1188,14 +1188,16 @@
   --gog-confirmation-dialog-min-width: 320px;
   /* L9 (docs/component-geometry.md, "D7 — taken"): the description wraps, so its cap is a
      measure — 51ch at the description's actual rendered 16px (it inherits, rather than reading a
-     token; see the defect filed in docs/backlog.md), the nearest whole character to today's 440px
-     so this changes robustness to a font-size change, not the pixels anyone sees today. L8's
-     viewport exception is layered on top: the margin reads --gog-dialog-backdrop-padding, the
-     backdrop this dialog already renders inside, rather than a new number. */
-  --gog-confirmation-dialog-max-width: min(
-    51ch,
-    calc(100vw - var(--gog-dialog-backdrop-padding) * 2)
-  );
+     token; see the defect filed in docs/backlog.md), the nearest whole character to today's 440px,
+     so this changes robustness to a font-size change, not the pixels anyone sees today.
+
+     L8's viewport clamp is deliberately NOT here, unlike the other three overlays: this renders
+     inside .gog-dialog__panel, which already caps itself at 90vw (an inline style in
+     dialog.component.html), and .gog-dialog__body spends --gog-dialog-body-padding a side inside
+     that. The width available here is therefore `0.9 * 100vw - 40px`, tighter than any
+     `100vw - margin` clamp at every viewport above 80px, so a second clamp on the child could
+     never bind. An inert declaration is the thing this repo keeps finding rather than shipping. */
+  --gog-confirmation-dialog-max-width: 51ch;
   --gog-confirmation-dialog-color: var(--gog-text-color);
   --gog-confirmation-dialog-description-color: var(--gog-muted-text-color);
   --gog-confirmation-dialog-actions-gap: var(--gog-space-sm);

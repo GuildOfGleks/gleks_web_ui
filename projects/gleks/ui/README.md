@@ -265,14 +265,20 @@ container is, and `size` is your input, not something a stylesheet should overri
 fluid sizing is the app's to declare — and because everything here derives from a few foundation
 tokens, it is one declaration rather than one per component.
 
-**Four tokens are the deliberate exception, and they are a narrower thing than fluid sizing.**
-`--gog-tooltip-max-width`, `--gog-menu-max-width`, `--gog-toast-max-width` and
-`--gog-confirmation-dialog-max-width` each read `min(<cap>, calc(100vw - <margin> * 2))` — chrome
-positioned against the viewport itself rather than a container, where "no wider than the screen"
-is what the component is for, not a style choice a consumer makes. That is the only place `vw`
-appears anywhere in the library, and it does not grow anything: it only ever narrows a cap that
-would otherwise overflow a small screen. It is not the recipe below, and reading one as an example
-of the other is the mistake to avoid.
+**Chrome that floats over the viewport is the deliberate exception, and it is a narrower thing than
+fluid sizing.** `--gog-tooltip-max-width`, `--gog-menu-max-width` and `--gog-toast-max-width` each
+read `min(<cap>, calc(100vw - <margin> * 2))` — an overlay positioned against the screen rather
+than a container, where "no wider than the screen" is what the component is for, not a style choice
+a consumer makes. It does not grow anything: it only ever narrows a cap that would otherwise
+overflow a small screen. It is not the recipe below, and reading one as an example of the other is
+the mistake to avoid.
+
+Viewport units appear in four other places, all older than that rule and all the same shape — a
+ceiling rather than a curve: a dialog panel defaults to `90vw` and `--gog-dialog-max-height` to
+`90vh`, `gog-menu` falls back to `100vh` when it cannot measure the room below its trigger, and
+`gog-table`'s `maxHeight` takes any CSS length you give it, `'60vh'` included. `gog-confirmation-dialog`
+has **no** viewport clamp of its own precisely because the panel it renders inside already carries
+one.
 
 Interpolate as a straight line between two viewports. Between `(W_min, V_min)` and
 `(W_max, V_max)`:

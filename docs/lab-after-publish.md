@@ -125,13 +125,14 @@ viewBox) and a third over the four overlay max-widths (below). All five geometry
 tracks are gated by the time this section is read. Worth a paragraph on the Theming page only if
 it earns one; the audience there is a consumer choosing tokens, not an author of the library.
 
-### Four overlay tokens cap themselves against the screen
+### Three overlay tokens cap themselves against the screen, and three move to `ch`
 
-`--gog-tooltip-max-width`, `--gog-menu-max-width`, `--gog-toast-max-width` and
-`--gog-confirmation-dialog-max-width` each became `min(<cap>, calc(100vw - <margin> * 2))`
-(`docs/component-geometry.md`, "D7 — taken"). Three of the four also moved from `px` to `ch` —
-tooltip, toast and the confirmation dialog, whichever cap wraps text — so raising the relevant
-font-size token now widens the bubble with it. Nothing here changes what a consumer reads off the
+`--gog-tooltip-max-width`, `--gog-menu-max-width` and `--gog-toast-max-width` became
+`min(<cap>, calc(100vw - <margin> * 2))` (`docs/component-geometry.md`, "D7 — taken").
+`--gog-confirmation-dialog-max-width` deliberately did **not** — the dialog panel it renders inside
+already caps at `90vw`, so a clamp on the child could never bind. Separately, the three caps whose
+text wraps moved from `px` to `ch` — tooltip, toast and the confirmation dialog — so raising the
+relevant font-size token now widens the bubble with it. Nothing here changes what a consumer reads off the
 token names or what the token reference already says about them (checked: the existing entries for
 `--gog-menu-min-width / -max-width` and `--gog-tooltip-max-width / -max-height` in
 `token-reference-data.ts` are generic enough to still be accurate — neither quotes a pixel value or

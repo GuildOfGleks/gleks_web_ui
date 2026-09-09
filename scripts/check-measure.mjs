@@ -50,12 +50,10 @@ const DECISIONS = [
     clamp: true,
     edgeToken: '--gog-toast-stack-padding',
   },
-  {
-    token: '--gog-confirmation-dialog-max-width',
-    wraps: true,
-    clamp: true,
-    edgeToken: '--gog-dialog-backdrop-padding',
-  },
+  // Wraps, so L9 applies and the cap is a measure — but no L8 clamp: the dialog panel it renders
+  // inside already caps itself at 90vw, and the body's padding makes the space available here
+  // tighter than any `100vw - margin` above an 80px viewport, so a clamp could never bind.
+  { token: '--gog-confirmation-dialog-max-width', wraps: true, clamp: false },
   { token: '--gog-autocomplete-panel-max-width', wraps: false, clamp: false },
   { token: '--gog-multiselect-panel-max-width', wraps: false, clamp: false },
   { token: '--gog-select-panel-max-width', wraps: false, clamp: false },

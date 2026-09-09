@@ -622,8 +622,10 @@ confirmation dialog) split two ways the plan had not separated:
 
 ### The three questions D7 has to answer
 
-**1. Which caps take the viewport clamp.** All four named tokens — tooltip, menu, toast,
-confirmation dialog — **and not** the three dropdown panels (`autocomplete`/`select`/`multiselect`
+**1. Which caps take the viewport clamp.** Three of the four named tokens — tooltip, menu and
+toast. **Not the confirmation dialog** (it sits inside a panel that already caps itself at `90vw`;
+the section below has the arithmetic and the general rule it produced — this answer was "all four"
+until review). **And not** the three dropdown panels (`autocomplete`/`select`/`multiselect`
 at 420px), which stay outside it. Reason, checked rather than assumed: each panel's own CSS sets
 `min-width: 100%` against its trigger field, so the panel is only ever as wide as the field it
 belongs to; `max-width: 420px` is a ceiling that only engages when the *field* is already wider
@@ -634,7 +636,7 @@ genuinely positioned against the viewport; these three are positioned against a 
 already the consumer's responsibility.
 
 **2. What the margin term is.** Read the component's own edge-inset token where one exists —
-`--gog-toast-stack-padding` for toast, `--gog-dialog-backdrop-padding` for the confirmation dialog
+`--gog-toast-stack-padding` for toast, the only one of the three that has such a token
 — so the clamp cannot drift from the padding the component already paints. Menu and tooltip have
 no such token, so both read `var(--gog-space-16)` directly (16px, `check-tokens` rule H's own
 floor for "reads the scale rather than restating a literal"), matching the value toast already
@@ -662,12 +664,33 @@ itself, and now has the honest number to revisit it against.
 --gog-tooltip-max-width: min(43ch, calc(100vw - var(--gog-space-16) * 2));
 --gog-menu-max-width: min(320px, calc(100vw - var(--gog-space-16) * 2));
 --gog-toast-max-width: min(53ch, calc(100vw - var(--gog-toast-stack-padding) * 2));
---gog-confirmation-dialog-max-width: min(51ch, calc(100vw - var(--gog-dialog-backdrop-padding) * 2));
+--gog-confirmation-dialog-max-width: 51ch;
 ```
 
 The three dropdown `*-panel-max-width` tokens (420px) and `--gog-calendar-max-width`
 (`max-content`, not a cap) are unchanged. Gated by `npm run check:measure`, folded into
 `check:geometry`.
+
+### The confirmation dialog lost its clamp on review, and the reason generalises
+
+**The first implementation gave all four tokens the clamp. Three of them earn it.** The
+confirmation dialog does not, and the argument is not about the dialog: **an overlay nested inside
+another overlay inherits that one's viewport cap, and a second clamp on the child is a declaration
+that cannot bind.** `.confirm-dialog` renders inside `.gog-dialog__panel`, whose
+`[style.max-width]` defaults to `90vw` (an inline binding in `dialog.component.html`, invisible to
+any sweep of the stylesheets), and `.gog-dialog__body` spends `--gog-dialog-body-padding` — 20px —
+a side inside that. The width available to the child is therefore `0.9·100vw − 40px`, which is
+tighter than `100vw − 48px` at every viewport above **80px**:
+
+| Viewport | Panel at 90vw | Available inside the body | The clamp would have said | Binds? |
+| -------- | ------------- | ------------------------- | ------------------------- | ------ |
+| 320px    | 288px         | 248px                     | 272px                     | no     |
+| 360px    | 324px         | 284px                     | 312px                     | no     |
+| 768px    | 691px         | 651px                     | 720px                     | no     |
+
+The first pass through this arithmetic got it wrong by leaving the body's padding out and concluded
+the clamp bound below 480px. **Check the containing block, not just the viewport** — a `max-width`
+only matters when it is smaller than the space the parent already gives, and here it never is.
 
 ### The clamp's own bound: a `min-width` outranks it
 
@@ -681,14 +704,16 @@ below that the floor decides and the overflow returns.
 | `gog-tooltip`        | none  | 16px          | any width             | —                             |
 | `gog-menu`           | 180px | 16px          | 212px                 | narrower than any real device |
 | `gog-toast`          | 280px | 16px          | 312px                 | narrower than any real device |
-| confirmation dialog  | 320px | 24px          | **368px**             | a 360px phone, by 8px         |
 
-**Nothing here regressed** — every floor predates this release and the dialog behaved identically
-at 360px before the clamp existed; what changed is that between 368px and its 51ch cap the dialog
-now tracks the viewport where it used to sit at a fixed 440px. But "no wider than the screen" is
-the wrong sentence for it, and the changelog was corrected to say "caps itself against the
-viewport" instead. Whether `--gog-confirmation-dialog-min-width` should be 320px at all is a
-separate decision, on a token this branch did not touch.
+**Nothing here regressed** — every floor predates this release. But "no wider than the screen" is
+the wrong sentence even for the three that do carry the clamp, and the changelog was corrected to
+say "cap themselves against the viewport" instead.
+
+The confirmation dialog is not in this table because it no longer has a clamp (above) — but it has
+the same floor problem and had it before this branch: `--gog-confirmation-dialog-min-width` is
+320px, against a panel capped at `90vw` less 40px of body padding, so below a **400px** viewport
+the floor is what decides and the dialog overflows its own body. Unchanged by this release, and a
+decision about that token rather than about this law.
 
 ### A fourth finding, from implementing rather than surveying
 
