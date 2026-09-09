@@ -281,6 +281,15 @@ reached 1.0, so breaking changes may land in minor versions.
   resolves against the font of the element `max-width` is declared on, not a descendant's, which
   toast's own message/container split got wrong on the first pass.
 
+### Fixed
+
+- **`gog-dialog`'s title now states its own size.** `.gog-dialog__title` (the library's only
+  `<h2>`) declared neither `font-size` nor `line-height`, so it rendered at the browser's default
+  24px bold rather than a token. `--gog-dialog-title-font-size` reads `--gog-text-xl` — exactly
+  today's rendered size, so nothing changes visibly — and `--gog-dialog-title-line-height` reads
+  `--gog-line-height-snug`, law 4's `heading` role. A theme raising `--gog-text-xl` now resizes the
+  dialog title with it, which it previously could not.
+
 ### Documentation
 
 - **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41

@@ -661,6 +661,8 @@ export type GogTokenName =
   | '--gog-dialog-offset-y'
   | '--gog-dialog-radius'
   | '--gog-dialog-shadow'
+  | '--gog-dialog-title-font-size'
+  | '--gog-dialog-title-line-height'
   | '--gog-disabled-opacity'
   | '--gog-divider-block-spacing'
   | '--gog-divider-color'
@@ -2296,6 +2298,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-dialog-min-width',
       '--gog-dialog-radius',
       '--gog-dialog-shadow',
+      '--gog-dialog-title-font-size',
+      '--gog-dialog-title-line-height',
     ],
   },
   {
