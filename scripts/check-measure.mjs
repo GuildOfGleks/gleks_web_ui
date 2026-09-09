@@ -59,6 +59,9 @@ const DECISIONS = [
   { token: '--gog-autocomplete-panel-max-width', wraps: false, clamp: false },
   { token: '--gog-multiselect-panel-max-width', wraps: false, clamp: false },
   { token: '--gog-select-panel-max-width', wraps: false, clamp: false },
+  // Not a cap at all — `max-content` is "as wide as the grid needs", so neither law has anything
+  // to measure. Listed rather than omitted, because rule E below fails on anything unlisted.
+  { token: '--gog-calendar-max-width', wraps: false, clamp: false, notACap: true },
 ];
 
 const themeCss = await fs.readFile(themeCssPath, 'utf8');
@@ -79,6 +82,10 @@ for (const decision of DECISIONS) {
     continue;
   }
   const value = raw.trim();
+
+  // A token that is not a cap has no width to measure and no overflow to clamp; rule E is what
+  // keeps it from being *silently* absent instead of deliberately excluded.
+  if (decision.notACap) continue;
 
   // ── Rule B: a wrapping cap's base is a measure (ch), a non-wrapping cap's is not ────────────
   if (decision.wraps) {
@@ -120,6 +127,25 @@ for (const decision of DECISIONS) {
       );
     }
   }
+}
+
+// ── Rule E: every width cap in theme.css is classified, not just the seven this script knows ──
+//
+// Without this the check is a list of seven answers rather than a rule about a family: a new
+// overlay ships with a `px` cap and no viewport clamp, nobody classifies it, and the check goes on
+// reporting a clean bill — the exact shape of `SPACING_PROPS` having no `margin` (two tokens never
+// parsed at all, surviving a whole sweep) and of `token-color.mjs` returning null for `gog-tag`
+// (nine pairs skipped in silence). A checker that fails open is worse than no checker, so an
+// unlisted cap is a finding, and the fix is to take a decision about it and record it here.
+const classified = new Set(DECISIONS.map((d) => d.token));
+for (const token of declared.keys()) {
+  if (!token.endsWith('-max-width')) continue;
+  if (classified.has(token)) continue;
+  add(
+    'E',
+    token,
+    `is a width cap that no decision covers — does its text wrap (L9: a ch measure) and does it float over the viewport (L8: a min(…, calc(100vw − …)) clamp)? Take the decision in docs/component-geometry.md, then add it to DECISIONS in this script`,
+  );
 }
 
 // ── Report ───────────────────────────────────────────────────────────────────────────────────
