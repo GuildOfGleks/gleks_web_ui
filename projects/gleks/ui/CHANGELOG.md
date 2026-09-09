@@ -252,6 +252,27 @@ reached 1.0, so breaking changes may land in minor versions.
   consumer typed. The dialog's was dead code — its close button already read the token two lines
   below.
 
+- **`gog-tooltip`, `gog-menu`, `gog-toast` and the confirmation dialog never render wider than the
+  viewport.** `--gog-tooltip-max-width`, `--gog-menu-max-width`, `--gog-toast-max-width` and
+  `--gog-confirmation-dialog-max-width` each become `min(<cap>, calc(100vw - <margin> * 2))` — the
+  one place `vw` appears in the library, because this is chrome positioned against the screen
+  itself rather than a container, where "no wider than the screen" is what the component is for.
+  The margin reads each component's own edge-inset token where one exists (toast's
+  `--gog-toast-stack-padding`, the confirmation dialog's `--gog-dialog-backdrop-padding`) rather
+  than a new one; menu and tooltip, which have neither, read `--gog-space-16` directly. The three
+  dropdown panel widths (`autocomplete`/`select`/`multiselect`, 420px) are deliberately unchanged —
+  each already tracks its trigger field's own width via `min-width: 100%`, so a viewport clamp on
+  the panel would protect against nothing the field's own responsive layout does not already own.
+
+- **Three of those four caps move from `px` to `ch`**: tooltip `43ch`, toast `53ch`, the
+  confirmation dialog `51ch` — each the nearest whole character to what the cap already rendered,
+  so a consumer raising the relevant font-size token now widens the bubble with it instead of the
+  text silently dropping from 47 characters a line to 30. Menu stays in `px`: its items do not
+  wrap, so a character measure would be measuring nothing. `docs/component-geometry.md`, "D7 —
+  taken", has the survey and the reasoning, including a live-caught bug in the fix itself: `ch`
+  resolves against the font of the element `max-width` is declared on, not a descendant's, which
+  toast's own message/container split got wrong on the first pass.
+
 ### Documentation
 
 - **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41
@@ -280,6 +301,13 @@ reached 1.0, so breaking changes may land in minor versions.
   panel past roughly seven options wants a filter — *unless* the list is one the reader can
   predict, in which case they are searching rather than choosing and ordering it well is worth as
   much. `GOG_CONFIG.dropdown.filter` sets it once for an app.
+
+- **`README.md`'s fluid-sizing section is corrected**: it said the library ships zero `clamp()`,
+  zero `vw` and zero breakpoints, which was true when written and stopped being true later in this
+  same release — the four overlay caps above are exactly that. The section now scopes the claim to
+  *component sizing* and names the exception, with the reason it is not an example of the recipe it
+  sits beside: the recipe grows a size with the viewport, the exception only ever narrows a cap
+  that would otherwise overflow one.
 
 ## [21.10.0] - 05.09.2026
 
