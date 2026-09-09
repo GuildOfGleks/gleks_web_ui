@@ -1192,6 +1192,17 @@
   /* Confirmation dialog */
   --gog-confirmation-dialog-gap: var(--gog-space-12);
   --gog-confirmation-dialog-min-width: 320px;
+  /* The title and description carried dead utility classes (`heading-md` / `body-sm`) with no
+     CSS rule anywhere in the library, so both rendered at whatever the browser inherited rather
+     than a step of the type scale (docs/backlog.md, fixed here). `lg` for the title rather than
+     `md`: the dead class named `md`, but it never ran, so it is not evidence of intent — 18.72px
+     is what actually rendered, and --gog-text-lg (18px) is the nearest step to that, so this
+     states what shipped rather than silently shrinking every confirmation dialog. The description
+     takes `sm`, the size every other muted secondary line in the library already uses. */
+  --gog-confirmation-dialog-title-font-size: var(--gog-text-lg);
+  --gog-confirmation-dialog-title-line-height: var(--gog-line-height-snug);
+  --gog-confirmation-dialog-description-font-size: var(--gog-text-sm);
+  --gog-confirmation-dialog-description-line-height: var(--gog-line-height-relaxed);
   /* L9 (docs/component-geometry.md, "D7 — taken"): the description wraps, so its cap is a
      measure — 51ch at the description's actual rendered 16px (it inherits, rather than reading a
      token; see the defect filed in docs/backlog.md), the nearest whole character to today's 440px,

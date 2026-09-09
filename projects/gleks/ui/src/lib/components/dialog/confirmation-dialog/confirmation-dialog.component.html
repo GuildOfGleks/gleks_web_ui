@@ -3,10 +3,10 @@
   [attr.aria-labelledby]="'confirm-title-' + instanceId"
   [attr.aria-describedby]="'confirm-desc-' + instanceId"
 >
-  <h3 [id]="'confirm-title-' + instanceId" class="confirm-dialog__title heading-md">
+  <h3 [id]="'confirm-title-' + instanceId" class="confirm-dialog__title">
     {{ data.title }}
   </h3>
-  <p [id]="'confirm-desc-' + instanceId" class="confirm-dialog__description body-sm">
+  <p [id]="'confirm-desc-' + instanceId" class="confirm-dialog__description">
     {{ data.description }}
   </p>
   <div class="confirm-dialog__actions">

@@ -290,6 +290,18 @@ reached 1.0, so breaking changes may land in minor versions.
   `--gog-line-height-snug`, law 4's `heading` role. A theme raising `--gog-text-xl` now resizes the
   dialog title with it, which it previously could not.
 
+- **`gog-confirmation-dialog`'s title and description now read the type scale.** Both carried a
+  dead utility class (`heading-md`, `body-sm`) with no CSS rule anywhere in the library, so the
+  title rendered at the browser's default `<h3>` size (18.72px) and the description at the
+  inherited 16px, neither following `--gog-text-*`. The classes are removed; the title now reads
+  `--gog-text-lg` (18px, the nearest step to what already rendered — a dead class named `md` is
+  not evidence it was meant to be one) and the description reads `--gog-text-sm` (14px, a visible
+  2px shrink, the size every other muted secondary line in the library already uses). A theme
+  moving the scale now moves both with it. `--gog-confirmation-dialog-max-width` (51ch) is
+  unaffected — a `ch` cap resolves against the font of the element `max-width` is declared on
+  (`.confirm-dialog`), not the description's, so the cap's pixel width does not change; only the
+  measure it produces against the now-smaller description does, and it stays in L9's 45–75 band.
+
 ### Documentation
 
 - **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41
