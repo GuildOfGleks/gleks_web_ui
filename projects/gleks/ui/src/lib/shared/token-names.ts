@@ -1663,7 +1663,6 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     layer: 'foundation',
     tokens: [
       '--gog-toast-enter-distance',
-      '--gog-toast-max-width',
       '--gog-toast-min-width',
       '--gog-toast-shadow',
       '--gog-toast-z-index',
@@ -1774,6 +1773,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-spinner-overlay-z',
       '--gog-toast-base-z',
       '--gog-toast-gap',
+      '--gog-toast-max-width',
       '--gog-toast-stack-padding',
       '--gog-tooltip-z',
     ],

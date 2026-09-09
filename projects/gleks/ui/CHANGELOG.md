@@ -252,6 +252,35 @@ reached 1.0, so breaking changes may land in minor versions.
   consumer typed. The dialog's was dead code — its close button already read the token two lines
   below.
 
+- **`gog-tooltip`, `gog-menu` and `gog-toast` cap themselves against the viewport.**
+  `--gog-tooltip-max-width`, `--gog-menu-max-width` and `--gog-toast-max-width` each become
+  `min(<cap>, calc(100vw - <margin> * 2))` — an overlay positioned against the screen itself rather
+  than a container, where "no wider than the screen" is what the component is for. The margin reads
+  the component's own edge-inset token where one exists (toast's `--gog-toast-stack-padding`)
+  rather than a new one; menu and tooltip, which have none, read `--gog-space-16` directly.
+
+  **`gog-confirmation-dialog` deliberately does not get one**, though an earlier draft of this
+  release gave it one: it renders inside `.gog-dialog__panel`, which already defaults to `90vw`,
+  and the dialog body pads 20px a side inside that — so the width available to it is
+  `0.9 * 100vw - 40px`, tighter than any `100vw - margin` clamp above an 80px viewport. The clamp
+  could never bind, and an inert declaration is worse than an absent one. Its cap is the measure
+  alone. The three dropdown panel widths (`autocomplete`/`select`/`multiselect`, 420px) are
+  unchanged for a related reason — each already tracks its trigger field's own width via
+  `min-width: 100%`.
+
+  **A `min-width` outranks a `max-width`, so each overlay's own floor still decides below a
+  certain width**, unchanged by this release: menu at 212px of viewport, toast at 312px — both
+  narrower than any device in use.
+
+- **Three caps move from `px` to `ch`**: tooltip `43ch`, toast `53ch`, the
+  confirmation dialog `51ch` — each the nearest whole character to what the cap already rendered,
+  so a consumer raising the relevant font-size token now widens the bubble with it instead of the
+  text silently dropping from 47 characters a line to 30. Menu stays in `px`: its items do not
+  wrap, so a character measure would be measuring nothing. `docs/component-geometry.md`, "D7 —
+  taken", has the survey and the reasoning, including a live-caught bug in the fix itself: `ch`
+  resolves against the font of the element `max-width` is declared on, not a descendant's, which
+  toast's own message/container split got wrong on the first pass.
+
 ### Documentation
 
 - **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41
@@ -280,6 +309,22 @@ reached 1.0, so breaking changes may land in minor versions.
   panel past roughly seven options wants a filter — *unless* the list is one the reader can
   predict, in which case they are searching rather than choosing and ordering it well is worth as
   much. `GOG_CONFIG.dropdown.filter` sets it once for an app.
+
+- **`README.md`'s fluid-sizing section is corrected, and it was wrong before this release as well
+  as after it.** It said the library ships zero `clamp()`, zero `vw` and zero breakpoints. The
+  overlay caps above made the first half false; the second half had never been true — a dialog
+  panel has defaulted to `90vw` and `--gog-dialog-max-height` to `90vh` for as long as both have
+  existed, `gog-menu` falls back to `100vh`, and `gog-table`'s `maxHeight` takes `'60vh'` as its own
+  documented example. The section now scopes the claim to *component sizing*, lists every viewport
+  unit the library actually contains, and says why none of them is the recipe beside it: the recipe
+  grows a size with the viewport, these only ever cap one against it.
+
+  Worth keeping for the shape of the mistake rather than the fact: the claim was checked by
+  grepping `.css` and `.scss`, and every counterexample but one lives in exactly those files. The
+  one that does not — the dialog panel's `90vw` — is an inline `[style.max-width]` binding in a
+  template, and it is the one that mattered, because it is what makes a clamp on the confirmation
+  dialog unable to bind. `npm run survey:measure` now inventories viewport units across CSS, SCSS
+  **and** templates, so the next such claim is measured rather than recalled.
 
 ## [21.10.0] - 05.09.2026
 

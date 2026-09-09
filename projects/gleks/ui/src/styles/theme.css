@@ -226,7 +226,9 @@
 
   /* ── Toast stack ──────────────────────────────────────────────────────────── */
   --gog-toast-min-width: 280px;
-  --gog-toast-max-width: 400px;
+  /* --gog-toast-max-width lives in the :root, [data-theme] block below — it derives from
+     --gog-toast-stack-padding, and a derived value cannot live in this literals-only block (it
+     would not follow a scoped theme). */
   --gog-toast-z-index: 9999;
   --gog-toast-enter-distance: 110%;
   --gog-toast-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
@@ -457,6 +459,12 @@
   --gog-field-float-label-over-gap: var(--gog-space-8);
   --gog-toast-gap: var(--gog-space-12);
   --gog-toast-stack-padding: var(--gog-space-16);
+  /* L9 (docs/component-geometry.md, "D7 — taken"): the message wraps, so its cap is a measure —
+     53ch at --gog-toast-message-font-size (14px), the nearest whole character to today's 400px so
+     this changes robustness to a font-size change, not the pixels anyone sees today. L8's viewport
+     exception is layered on top: the margin reads --gog-toast-stack-padding above, the container's
+     own edge inset, rather than a new number. */
+  --gog-toast-max-width: min(53ch, calc(100vw - var(--gog-toast-stack-padding) * 2));
   --gog-field-xsm-icon-offset: var(--gog-space-8);
   --gog-field-sm-icon-offset: var(--gog-space-8);
   --gog-field-lg-icon-offset: var(--gog-space-16);
@@ -1178,7 +1186,18 @@
   /* Confirmation dialog */
   --gog-confirmation-dialog-gap: var(--gog-space-12);
   --gog-confirmation-dialog-min-width: 320px;
-  --gog-confirmation-dialog-max-width: 440px;
+  /* L9 (docs/component-geometry.md, "D7 — taken"): the description wraps, so its cap is a
+     measure — 51ch at the description's actual rendered 16px (it inherits, rather than reading a
+     token; see the defect filed in docs/backlog.md), the nearest whole character to today's 440px,
+     so this changes robustness to a font-size change, not the pixels anyone sees today.
+
+     L8's viewport clamp is deliberately NOT here, unlike the other three overlays: this renders
+     inside .gog-dialog__panel, which already caps itself at 90vw (an inline style in
+     dialog.component.html), and .gog-dialog__body spends --gog-dialog-body-padding a side inside
+     that. The width available here is therefore `0.9 * 100vw - 40px`, tighter than any
+     `100vw - margin` clamp at every viewport above 80px, so a second clamp on the child could
+     never bind. An inert declaration is the thing this repo keeps finding rather than shipping. */
+  --gog-confirmation-dialog-max-width: 51ch;
   --gog-confirmation-dialog-color: var(--gog-text-color);
   --gog-confirmation-dialog-description-color: var(--gog-muted-text-color);
   --gog-confirmation-dialog-actions-gap: var(--gog-space-sm);
@@ -1614,7 +1633,11 @@
   --gog-menu-gap: var(--gog-space-4);
   --gog-menu-offset: var(--gog-space-4);
   --gog-menu-min-width: 180px;
-  --gog-menu-max-width: 320px;
+  /* L8's viewport exception (docs/component-geometry.md, "D7 — taken"): a menu portals into
+     <body> and floats over the viewport, not a container. Its items do not wrap (L9 does not
+     apply — the width stays in px), but L8 still does: no edge-inset token exists on this
+     component today, so the margin reads the scale directly. */
+  --gog-menu-max-width: min(320px, calc(100vw - var(--gog-space-16) * 2));
   --gog-menu-max-height: 320px;
   --gog-menu-transition-duration: var(--gog-duration-base);
   --gog-menu-focus-ring: var(--gog-accent-color);
@@ -2312,7 +2335,13 @@
   --gog-tooltip-line-height: var(--gog-line-height-normal);
   --gog-tooltip-padding: var(--gog-space-8) var(--gog-space-12);
   --gog-tooltip-radius: var(--gog-radius);
-  --gog-tooltip-max-width: 280px;
+  /* L9 (docs/component-geometry.md, "D7 — taken"): the bubble wraps, so its cap is a measure —
+     43ch at --gog-tooltip-font-size (12px), the nearest whole character to today's 280px so this
+     changes robustness to a font-size change, not the pixels anyone sees today. It sits under
+     Bringhurst's 45ch floor even so; widening it is a pixel decision this law does not make (see
+     "D7 — taken"). L8's viewport exception is layered on top: no edge-inset token exists on this
+     component today, so the margin reads the scale directly. */
+  --gog-tooltip-max-width: min(43ch, calc(100vw - var(--gog-space-16) * 2));
   /* Caps the gog-scroll wrapping the bubble's content — see tooltip-bubble.component.html.
      A cap, not a fixed height: shorter content stays exactly as tall as it needs to be, this
      only stops something unusually long (a multi-paragraph TemplateRef) from growing to

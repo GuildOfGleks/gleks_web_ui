@@ -117,9 +117,27 @@ Law 4 and D8 landed in the same release. Three things the lab may need to say:
 
 ### The Theming page can say the laws are checked now
 
-`npm run check:geometry` is a CI step as of this release: the 4px grid, horizontal padding at
-exactly twice vertical on every control, 24×24 CSS px of pointer target, and — from a second
-script over the icon registry — that every glyph centres its ink in its own viewBox. Laws 2
-(concentric radii) and 4 (the typographic ratio) are deliberately not in it yet, each for a stated
-reason. Worth a paragraph on the Theming page only if it earns one; the audience there is a
-consumer choosing tokens, not an author of the library.
+`npm run check:geometry` is a CI step as of this release, and it now runs five scripts, not the
+two this paragraph originally described: the 4px grid, horizontal padding at exactly twice
+vertical on every control, 24×24 CSS px of pointer target, concentric radii, the typographic
+ratio, plus a second script over the icon registry (every glyph centres its ink in its own
+viewBox) and a third over the four overlay max-widths (below). All five geometry laws this project
+tracks are gated by the time this section is read. Worth a paragraph on the Theming page only if
+it earns one; the audience there is a consumer choosing tokens, not an author of the library.
+
+### Three overlay tokens cap themselves against the screen, and three move to `ch`
+
+`--gog-tooltip-max-width`, `--gog-menu-max-width` and `--gog-toast-max-width` became
+`min(<cap>, calc(100vw - <margin> * 2))` (`docs/component-geometry.md`, "D7 — taken").
+`--gog-confirmation-dialog-max-width` deliberately did **not** — the dialog panel it renders inside
+already caps at `90vw`, so a clamp on the child could never bind. Separately, the three caps whose
+text wraps moved from `px` to `ch` — tooltip, toast and the confirmation dialog — so raising the
+relevant font-size token now widens the bubble with it. Nothing here changes what a consumer reads off the
+token names or what the token reference already says about them (checked: the existing entries for
+`--gog-menu-min-width / -max-width` and `--gog-tooltip-max-width / -max-height` in
+`token-reference-data.ts` are generic enough to still be accurate — neither quotes a pixel value or
+a unit). Nothing to fix there. What is worth a look once the lab tracks this release: the tooltip
+and toast pages' live demos, to confirm a bubble/card at the new width still reads correctly —
+verified in `ui-showcase` already, but the lab renders against the *published* palette and fonts,
+which is exactly the case `check:app-contrast`'s own doc-comment gives for why the two apps are
+checked separately.

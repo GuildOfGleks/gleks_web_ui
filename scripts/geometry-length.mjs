@@ -132,6 +132,15 @@ function evalArithmetic(text) {
   const tokens = text.match(/\d*\.?\d+(?:px|rem|em|%)?|[()+\-*/]|\s+/g);
   if (!tokens) return null;
 
+  // **Nothing may be dropped in silence.** `match()` collects what it matches and ignores the gaps,
+  // so a unit this tokenizer does not know — `43ch`, `100vw` — used to match the digits alone and
+  // leave the unit on the floor, and the caller got `43` where the answer was "I cannot read this".
+  // That is the fail-open this file's own header exists to prevent, and D7's `ch` caps walked
+  // straight into it: `survey:measure` reported a 43px tooltip and a measure of 6.6ch. Rejecting
+  // any input the tokenizer cannot wholly account for turns a wrong number back into a stated
+  // refusal, which the callers already know how to print.
+  if (tokens.join('') !== text) return null;
+
   const out = [];
   const ops = [];
   const prec = { '+': 1, '-': 1, '*': 2, '/': 2 };
@@ -188,10 +197,7 @@ function evalArithmetic(text) {
  */
 export function makeLengthResolver(layers, themeDecls = new Map(), { density = 1 } = {}) {
   const lookup = (token) =>
-    themeDecls.get(token) ??
-    layers.derivedBase.get(token) ??
-    layers.rootLiteral.get(token) ??
-    null;
+    themeDecls.get(token) ?? layers.derivedBase.get(token) ?? layers.rootLiteral.get(token) ?? null;
 
   /** Textual `var()` substitution, with cycle protection and fallbacks. */
   const expand = (text, seen) =>

@@ -580,8 +580,178 @@ bone heights in px (8/10/14/18/24), so any check keyed on the suffix reads them 
 consumers for a script's benefit, and this release already carries one breaking token change. The
 exclusion carries the reason; the rename is a candidate for the next major.
 
-**Still open: D0, D5, D7.** D5's elevation ladder is a separate token family that does not have to
-ride with any of this, and it is the one that still needs its own survey pass.
+**Still open at the time of this write-up (2026-09-06): D0, D5, D7.** D5's elevation ladder is a
+separate token family that does not have to ride with any of this, and it is the one that still
+needs its own survey pass. D7 is taken below.
+
+## D7 — taken 2026-09-09, against a survey
+
+D7 as stated above: *"Whether the four overlay max-widths become `min(…, …vw)`, and whether prose
+caps move to `ch`."* Two verdicts were already taken when D7 was written — L8 adopted only as a
+four-token viewport exception, L9 adopted for wrapping text only, both with the caps named — so D7
+is where those verdicts get implemented, not re-argued. `npm run survey:measure` is the evidence;
+see its header for the method.
+
+### What the survey found that the prose did not
+
+The four candidate tokens (`docs/backlog.md`'s L8 section lists them: tooltip, menu, toast,
+confirmation dialog) split two ways the plan had not separated:
+
+- **`gog-menu`'s max-width has no measure at all.** Menu items do not wrap, so L9 never applied to
+  it — but L8 is a different law. A 320px menu is still wider than a 360px phone's remaining width
+  once *anything* sits beside it, independent of whether its text wraps. **L8 and L9 are
+  orthogonal**: a token can take the viewport clamp without moving to `ch`.
+- **The confirmation dialog's text is not reliably on the type scale at all.** Tracing its font (a
+  stated deliverable of this survey) found `.confirm-dialog__description`/`.confirm-dialog__title`
+  read `body-sm`/`heading-md` classes with no CSS behind them anywhere in the library — filed as
+  its own defect (`docs/backlog.md`) rather than fixed here. The description renders at the
+  browser's inherited 16px, not `--gog-text-sm`. **The ch figure below is built on that real
+  16px**, deliberately: if the class defect is fixed later and the description starts reading
+  `--gog-text-sm` (14px), the cap will only get roomier relative to the text, never tighter.
+- **The measured `1ch` is not the textbook `~0.5em`.** 0.5391 for this library's default
+  `--gog-font-body` stack, measured live (script header has the method). Recomputing L9's own
+  table with the real ratio instead of the ~0.5 approximation moves two of the four caps: tooltip
+  from "≈47ch, at the floor" to **≈43ch, under the 45ch floor**; menu from "≈46ch" to ≈42ch (moot —
+  menu does not wrap). Toast and the confirmation dialog stay in band (≈53ch, ≈51ch).
+- **Two of the four already carry their own edge-inset token.** `--gog-toast-stack-padding` is
+  already the toast container's own distance from the viewport edge; the confirmation dialog
+  renders inside `gog-dialog`'s backdrop, whose `--gog-dialog-backdrop-padding` is the same thing.
+  Reusing them for the clamp's margin means the clamp agrees with the padding the component already
+  paints, rather than a second number that can drift from the first. Menu and tooltip have no such
+  token today.
+
+### The three questions D7 has to answer
+
+**1. Which caps take the viewport clamp.** Three of the four named tokens — tooltip, menu and
+toast. **Not the confirmation dialog** (it sits inside a panel that already caps itself at `90vw`;
+the section below has the arithmetic and the general rule it produced — this answer was "all four"
+until review). **And not** the three dropdown panels (`autocomplete`/`select`/`multiselect`
+at 420px), which stay outside it. Reason, checked rather than assumed: each panel's own CSS sets
+`min-width: 100%` against its trigger field, so the panel is only ever as wide as the field it
+belongs to; `max-width: 420px` is a ceiling that only engages when the *field* is already wider
+than 420px. A field wider than a 360px phone is a pre-existing overflow the field's own responsive
+layout (or `fullWidth`) is responsible for — clamping the panel alone would not fix it, and would
+add a rule that is never reachable through the panel's own geometry. L8's exception is for chrome
+genuinely positioned against the viewport; these three are positioned against a trigger that is
+already the consumer's responsibility.
+
+**2. What the margin term is.** Read the component's own edge-inset token where one exists —
+`--gog-toast-stack-padding` for toast, the only one of the three that has such a token
+— so the clamp cannot drift from the padding the component already paints. Menu and tooltip have
+no such token, so both read `var(--gog-space-16)` directly (16px, `check-tokens` rule H's own
+floor for "reads the scale rather than restating a literal"), matching the value toast already
+uses for the same purpose. No new named token: a value used at exactly one call site each does not
+earn one, and `--gog-toast-stack-padding` is the precedent for what a component gets when the
+margin *is* worth naming.
+
+**3. Which caps move to `ch`, and whether menu is one of them.** Tooltip, toast and the
+confirmation dialog — the three that wrap — move to `ch`, each set to the nearest whole `ch` that
+reproduces today's rendered width (so the release changes robustness to a font-size change, not
+the pixels anyone sees today): tooltip **43ch** (278px at 12px, was 280px), toast **53ch** (400px
+at 14px, exact), confirmation dialog **51ch** (440px at 16px, exact). **Menu stays in `px`** — L9
+governs wrapping text and menu items do not wrap, so a `ch` cap on it would be measuring nothing;
+it keeps its viewport clamp (question 1) but its base width stays the `320px` it already is.
+
+**Tooltip's 43ch sits under Bringhurst's 45ch floor, and that is left as-is.** Widening the tooltip
+to clear the floor is a pixel decision — L8/L9's own verdict is that D7 is about the *unit*, not
+the width (`docs/component-geometry.md`, L9: "the law here is not really '280px is too narrow'").
+Recorded rather than silently accepted: a future session may want to revisit the 280px figure
+itself, and now has the honest number to revisit it against.
+
+### Implemented
+
+```css
+--gog-tooltip-max-width: min(43ch, calc(100vw - var(--gog-space-16) * 2));
+--gog-menu-max-width: min(320px, calc(100vw - var(--gog-space-16) * 2));
+--gog-toast-max-width: min(53ch, calc(100vw - var(--gog-toast-stack-padding) * 2));
+--gog-confirmation-dialog-max-width: 51ch;
+```
+
+The three dropdown `*-panel-max-width` tokens (420px) and `--gog-calendar-max-width`
+(`max-content`, not a cap) are unchanged. Gated by `npm run check:measure`, folded into
+`check:geometry`.
+
+### The confirmation dialog lost its clamp on review, and the reason generalises
+
+**The first implementation gave all four tokens the clamp. Three of them earn it.** The
+confirmation dialog does not, and the argument is not about the dialog: **an overlay nested inside
+another overlay inherits that one's viewport cap, and a second clamp on the child is a declaration
+that cannot bind.** `.confirm-dialog` renders inside `.gog-dialog__panel`, whose
+`[style.max-width]` defaults to `90vw` (an inline binding in `dialog.component.html`, invisible to
+any sweep of the stylesheets), and `.gog-dialog__body` spends `--gog-dialog-body-padding` — 20px —
+a side inside that. The width available to the child is therefore `0.9·100vw − 40px`, which is
+tighter than `100vw − 48px` at every viewport above **80px**:
+
+| Viewport | Panel at 90vw | Available inside the body | The clamp would have said | Binds? |
+| -------- | ------------- | ------------------------- | ------------------------- | ------ |
+| 320px    | 288px         | 248px                     | 272px                     | no     |
+| 360px    | 324px         | 284px                     | 312px                     | no     |
+| 768px    | 691px         | 651px                     | 720px                     | no     |
+
+The first pass through this arithmetic got it wrong by leaving the body's padding out and concluded
+the clamp bound below 480px. **Check the containing block, not just the viewport** — a `max-width`
+only matters when it is smaller than the space the parent already gives, and here it never is.
+
+### The clamp's own bound: a `min-width` outranks it
+
+Found reviewing the change rather than making it, and it limits what L8's exception can claim. CSS
+resolves `min-width` **after** `max-width`, so a floor wins outright: the clamp governs only down
+to the width where the component's own `min-width` plus its margins exceeds the viewport, and
+below that the floor decides and the overflow returns.
+
+| Component            | Floor | Margin a side | Clamp governs down to | Below that                    |
+| -------------------- | ----- | ------------- | --------------------- | ----------------------------- |
+| `gog-tooltip`        | none  | 16px          | any width             | —                             |
+| `gog-menu`           | 180px | 16px          | 212px                 | narrower than any real device |
+| `gog-toast`          | 280px | 16px          | 312px                 | narrower than any real device |
+
+**Nothing here regressed** — every floor predates this release. But "no wider than the screen" is
+the wrong sentence even for the three that do carry the clamp, and the changelog was corrected to
+say "cap themselves against the viewport" instead.
+
+The confirmation dialog is not in this table because it no longer has a clamp (above) — but it has
+the same floor problem and had it before this branch: `--gog-confirmation-dialog-min-width` is
+320px, against a panel capped at `90vw` less 40px of body padding, so below a **400px** viewport
+the floor is what decides and the dialog overflows its own body. Unchanged by this release, and a
+decision about that token rather than about this law.
+
+### A fourth finding, from implementing rather than surveying
+
+`ch` resolves against the font of the element the property is declared on, **never a
+descendant's** — and the survey's font-tracing (font-size read on the message/description, not on
+the element carrying `max-width`) did not check that the two were the same element. They were not,
+for toast: `.gog-toast`/`.gog-toast-container` (where `--gog-toast-max-width` lands) declare no
+font-size of their own, so `53ch` was resolving against the 16px both inherit, not the 14px
+`--gog-toast-message-font-size` it was chosen against — 457px instead of the intended 400px.
+Caught live in `ui-showcase`, not by `check:measure` (a structural check has no notion of which
+element a property paints onto, only what the token's own text says) and not by
+`survey:measure` (which reads `theme.css`, not the SCSS that decides which element gets which
+font). Fixed by stating `font-size: var(--gog-toast-message-font-size)` explicitly on both
+elements — confirmed first that nothing else inside inherits its size from either one, since every
+piece of toast text already sets its own token. Tooltip was never at risk (`:host` sets both
+properties together); the confirmation dialog is safe today only because its description's own
+font-size bug (filed in `docs/backlog.md`) happens to leave it inheriting the same value its
+ancestor does — worth re-checking once that bug is fixed.
+
+**Still open: D5.**
+
+## D0 — closed 2026-09-09, as a record of what happened
+
+D0 asked in advance: *"Is this one minor or several? 33 component commits plus a spacing-scale
+change plus a shadow token family is a large release. Splitting by law — geometry first, elevation
+second — is the alternative."*
+
+**It was never taken as a decision; it resolved itself as a fact, and the fact is the alternative
+it named.** The geometry work — laws 1, 3, 5 (25 commits), law 2 and its radius table (5 more), law
+4 with D8 (the typography sweep), D7 (the four overlay caps) and the spacing-scale removal that
+made law 1 possible — shipped as one minor, **21.11.0**. D5's elevation ladder (the shadow token
+family D0's own text named as the thing that would make this "a large release") is **not** in it:
+`docs/backlog.md` carries it as the colour-and-shadow half of the geometry backlog, unstarted, and
+it needs its own survey before it needs its own decision. So the split D0 offered as an
+alternative is exactly what happened, without anyone having to choose it — geometry is one
+release, elevation is the next one, and no session sat down and decided that division on paper.
+
+**Still open: D5.**
 
 ---
 
@@ -667,8 +837,10 @@ re-litigates a settled number.
 | -------------------------------------------------------- | ---------------------------- |
 | The seven candidate laws, with verdicts                   | ✅ written (this file)       |
 | D1, D2, D3, D6 + D3a, D3b                                 | ✅ taken 2026-09-05, against the survey |
-| D0, D5, D7                                                | ⬜ open                      |
+| D5                                                         | ⬜ open                      |
 | D4 + D8                                                   | ✅ taken 2026-09-06, against a second survey |
+| D7                                                         | ✅ taken 2026-09-09, against a survey |
+| D0                                                         | ✅ closed 2026-09-09, as a record of what happened |
 | `survey:geometry` (all five laws, reports)                | ✅                           |
 | `check:geometry` (laws 1, 3, 5, gates)                    | ✅ green, and a CI step      |
 | The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits    |
@@ -679,6 +851,8 @@ re-litigates a settled number.
 | L6's 1.128 correction applied to the filled marks         | ❌ 2026-09-06 — no mark in this library it applies to |
 | L11 into `api-design.instructions.md` and `AGENTS.md`     | ✅ 2026-09-06                |
 | L8's consumer recipe into `README.md`                     | ✅ 2026-09-06                |
+| `survey:measure` (L8's exception + L9, reports)            | ✅ 2026-09-09                |
+| `check:measure` (D7 in the gate)                            | ✅ 2026-09-09 — 0 findings after implementation |
 
 ### What the sweep actually cost, and what it found
 

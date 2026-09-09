@@ -603,6 +603,10 @@ typed. Together they were not a scale.
    was rejected: it stops being readable around the fourth size and this scale has fourteen.
    The five existing t-shirt names stay as aliases at their exact previous values, because they
    are public API and cost nothing to keep.
+
+   **Corrected to ten steps in 21.11.0** (`docs/component-geometry.md`, D1): `-2`, `-6`, `-10`,
+   `-14` and `-18` came out once the 4px-grid law needed them gone. This is that decision's
+   history, kept as it was written; the current scale is `docs/component-geometry.md`'s.
 2. **178 tokens rewritten to read the scale** — 177 paddings/gaps plus `--gog-control-icon-offset`.
 3. **The field icon chrome, stated as the sum it always was.** `--gog-field-*-icon-inset` was five
    hand-measured literals (24/30/36/44/52 — `docs/iteration-8-plan.md` tuned them in a browser).
