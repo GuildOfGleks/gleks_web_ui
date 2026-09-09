@@ -68,6 +68,15 @@ jobs:
       - name: Geometry check
         run: npm run check:geometry
 
+      # Every class a library template applies to its own markup reads `gog-`, or is a named
+      # exception. `docs/backlog.md`'s confirmation-dialog defect -- two utility classes with no
+      # CSS rule anywhere in the library -- is why this exists: the prefix would have flagged both
+      # on day one. Deliberately not "every class has a rule" -- ~50 of the library's own state and
+      # behaviour hooks (`gog-scroll--dragging`, `gog-select--floated`, …) have none by design, and
+      # a fifty-entry exception list would be a threshold, not documentation.
+      - name: Class-name check
+        run: npm run check:class-names
+
       # RTL guard. A `padding`/`margin` shorthand that sets the two horizontal sides
       # differently is physical, so it does not mirror under `dir="rtl"` — and because the
       # sidedness lives in a value's *position* rather than in a `left`/`right` keyword, no

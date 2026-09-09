@@ -304,6 +304,15 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Documentation
 
+- **Every class a library template applies to its own markup is checked for the `gog-` prefix**
+  (`npm run check:class-names`, a CI step). The confirmation-dialog defect above is exactly what an
+  unprefixed class can hide: two utility classes with no CSS rule anywhere in the library. The
+  check does not require every class to have a rule — roughly 50 of the library's own state and
+  behaviour hooks (`gog-scroll--dragging`, `gog-select--floated`, …) legitimately have none — only
+  that it be named as this library's own rather than a name that looks borrowed or invented in
+  passing. Two legacy unprefixed names on shipped components (`confirm-dialog*`, `slide-left`) are
+  named exceptions rather than renamed, since a rename there is a consumer-visible class change.
+
 - **The icon set is verified centred, and the audit reversed the rule it was written for.** All 41
   built-in glyphs now pass a check (`npm run check:geometry`, second half): a glyph centres its ink
   in its own viewBox, so that centring the box centres the mark. Nothing moved — every glyph
