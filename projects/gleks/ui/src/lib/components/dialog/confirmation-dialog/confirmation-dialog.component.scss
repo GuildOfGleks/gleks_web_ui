@@ -15,11 +15,15 @@
 
 .confirm-dialog__title {
   margin: 0;
+  font-size: var(--gog-confirmation-dialog-title-font-size);
+  line-height: var(--gog-confirmation-dialog-title-line-height);
 }
 
 .confirm-dialog__description {
   margin: 0;
   color: var(--gog-confirmation-dialog-description-color);
+  font-size: var(--gog-confirmation-dialog-description-font-size);
+  line-height: var(--gog-confirmation-dialog-description-line-height);
 }
 
 .confirm-dialog__actions {

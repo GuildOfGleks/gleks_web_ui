@@ -608,6 +608,19 @@ confirmation dialog) split two ways the plan had not separated:
   browser's inherited 16px, not `--gog-text-sm`. **The ch figure below is built on that real
   16px**, deliberately: if the class defect is fixed later and the description starts reading
   `--gog-text-sm` (14px), the cap will only get roomier relative to the text, never tighter.
+
+  **Defect fixed 2026-09-09, and the prediction above held — but not for the reason it gives.**
+  The classes are gone; the title reads `--gog-text-lg` and the description `--gog-text-sm`, both
+  through their own tokens. The cap did not move (still `51ch`, still 439.9px), and the wording
+  above is why this note exists: "the cap will only get roomier" reads as though the cap *responds*
+  to the description's font. It does not. `max-width` is declared on `.confirm-dialog`, whose own
+  size is the inherited 16px and was never touched, so a `ch` cap there can no more shrink than
+  grow when a **descendant** changes size. What actually got roomier is the measure — the same
+  439.9px now holds ≈58ch of 14px text instead of ≈51ch of 16px text, still inside the 45–75 band.
+  Verified live (`getComputedStyle`: `.confirm-dialog` 16px / 439.875px, description 14px). The
+  identical wording in `scripts/survey-measure.mjs` was corrected in the same change; this file was
+  the second place it lived, and finding it needed a grep rather than a memory.
+
 - **The measured `1ch` is not the textbook `~0.5em`.** 0.5391 for this library's default
   `--gog-font-body` stack, measured live (script header has the method). Recomputing L9's own
   table with the real ratio instead of the ~0.5 approximation moves two of the four caps: tooltip
@@ -732,6 +745,18 @@ piece of toast text already sets its own token. Tooltip was never at risk (`:hos
 properties together); the confirmation dialog is safe today only because its description's own
 font-size bug (filed in `docs/backlog.md`) happens to leave it inheriting the same value its
 ancestor does — worth re-checking once that bug is fixed.
+
+**Re-checked 2026-09-09, when that bug was fixed: the dialog is still safe, and the sentence above
+names the wrong reason.** It is not safe *because* the description inherits its ancestor's size —
+it is safe because `--gog-confirmation-dialog-max-width` is declared on `.confirm-dialog`, and the
+fix changed the **description's** font-size, not `.confirm-dialog`'s. The element carrying
+`max-width` still resolves `ch` against the same inherited 16px it always did, so the cap could not
+have moved whatever the description did. The toast case above differs precisely because there the
+cap and the text it was chosen for sat on elements that *both* inherited, which is what let the
+wrong font resolve it. Measured live after the fix: `.confirm-dialog` 16px / 439.875px, description
+14px, title 18px. Also confirmed at a 360px viewport — the panel's own `90vw` (324px) governs and
+the child's 51ch cap never binds, which is the same measurement that closes D7's "no clamp here"
+decision.
 
 **Still open: D5.**
 

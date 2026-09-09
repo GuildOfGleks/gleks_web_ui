@@ -141,3 +141,20 @@ and toast pages' live demos, to confirm a bubble/card at the new width still rea
 verified in `ui-showcase` already, but the lab renders against the *published* palette and fonts,
 which is exactly the case `check:app-contrast`'s own doc-comment gives for why the two apps are
 checked separately.
+
+### Two dialog titles now read the type scale, visible on the Dialog page
+
+`gog-dialog`'s `<h2>` and `gog-confirmation-dialog`'s title/description previously rendered at
+whatever the browser inherited rather than a token (`docs/backlog.md`'s confirmation-dialog
+defect, fixed). Nothing here moves the plain dialog's title visibly — `--gog-dialog-title-font-
+size` reads `--gog-text-xl`, which is exactly its already-rendered 24px — but the confirmation
+dialog's description is a real, visible change: 16px to 14px (`--gog-text-sm`), a step smaller
+than before. Live in `ui-showcase` at both densities and both a light and a dark theme: no
+wrapping change, no overflow, the panel still reads comfortably. The lab's own dialog page should
+get the same look once this version is published — a screenshot comparison against the page's
+current state before assuming a diff there is a regression, the same caution `lab-appearance-
+baseline.md` gives for the geometry sweep's own width changes above.
+
+`--gog-confirmation-dialog-max-width` (51ch) does not move — a `ch` cap resolves against
+`.confirm-dialog`'s own font (16px, inherited, untouched by the description's change), not a
+descendant's — so nothing about the panel's width needs checking here, only its text.

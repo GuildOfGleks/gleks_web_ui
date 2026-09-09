@@ -545,9 +545,13 @@ export type GogTokenName =
   | '--gog-confirmation-dialog-actions-offset'
   | '--gog-confirmation-dialog-color'
   | '--gog-confirmation-dialog-description-color'
+  | '--gog-confirmation-dialog-description-font-size'
+  | '--gog-confirmation-dialog-description-line-height'
   | '--gog-confirmation-dialog-gap'
   | '--gog-confirmation-dialog-max-width'
   | '--gog-confirmation-dialog-min-width'
+  | '--gog-confirmation-dialog-title-font-size'
+  | '--gog-confirmation-dialog-title-line-height'
   | '--gog-control-border-style'
   | '--gog-control-border-width'
   | '--gog-control-checkbox-box-size-lg'
@@ -661,6 +665,8 @@ export type GogTokenName =
   | '--gog-dialog-offset-y'
   | '--gog-dialog-radius'
   | '--gog-dialog-shadow'
+  | '--gog-dialog-title-font-size'
+  | '--gog-dialog-title-line-height'
   | '--gog-disabled-opacity'
   | '--gog-divider-block-spacing'
   | '--gog-divider-color'
@@ -2262,9 +2268,13 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-confirmation-dialog-actions-offset',
       '--gog-confirmation-dialog-color',
       '--gog-confirmation-dialog-description-color',
+      '--gog-confirmation-dialog-description-font-size',
+      '--gog-confirmation-dialog-description-line-height',
       '--gog-confirmation-dialog-gap',
       '--gog-confirmation-dialog-max-width',
       '--gog-confirmation-dialog-min-width',
+      '--gog-confirmation-dialog-title-font-size',
+      '--gog-confirmation-dialog-title-line-height',
       '--gog-dialog-backdrop-bg',
       '--gog-dialog-backdrop-blur',
       '--gog-dialog-backdrop-fade-duration',
@@ -2296,6 +2306,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-dialog-min-width',
       '--gog-dialog-radius',
       '--gog-dialog-shadow',
+      '--gog-dialog-title-font-size',
+      '--gog-dialog-title-line-height',
     ],
   },
   {

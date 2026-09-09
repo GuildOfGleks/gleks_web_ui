@@ -43,7 +43,8 @@
     "check:radii": "node scripts/check-radii.mjs",
     "check:typography": "node scripts/check-typography.mjs",
     "survey:measure": "node scripts/survey-measure.mjs",
-    "check:measure": "node scripts/check-measure.mjs"
+    "check:measure": "node scripts/check-measure.mjs",
+    "check:class-names": "node scripts/check-class-names.mjs"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
