@@ -41,7 +41,8 @@
     "survey:geometry": "node scripts/survey-geometry.mjs",
     "check:geometry": "node scripts/check-geometry.mjs && node scripts/check-icon-geometry.mjs && node scripts/check-radii.mjs && node scripts/check-typography.mjs",
     "check:radii": "node scripts/check-radii.mjs",
-    "check:typography": "node scripts/check-typography.mjs"
+    "check:typography": "node scripts/check-typography.mjs",
+    "survey:measure": "node scripts/survey-measure.mjs"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
