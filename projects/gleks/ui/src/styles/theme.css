@@ -1112,40 +1112,59 @@
   --gog-chip-xsm-padding-block: var(--gog-space-4);
   --gog-chip-xsm-padding-inline: var(--gog-space-8);
   --gog-chip-xsm-gap: var(--gog-space-4);
-  --gog-chip-xsm-avatar-size: 0.875rem;
-  --gog-chip-xsm-icon-size: 0.6875rem;
+  /* The avatar and the icon are ratios of the chip's own type, not px ladders of their own.
+
+     The icon already was one and nobody had written it down: 11/12/14/16/18px of glyph beside a
+     label of exactly 11/12/14/16/18px, five sizes holding 1.00 five times by hand. `1em` states
+     it, and it changes nothing rendered -- but it means an override of one size's font-size now
+     carries the icon with it, which the rem ladder did not.
+
+     The avatar had no rule at all: 14/16/20/24/28px against that same type is 1.27, 1.33, 1.43,
+     1.50, 1.56 -- five opinions about one relationship, drifting monotonically, which is what a
+     value picked by eye per size looks like. 1.5em is the ratio `lg` already held, and it keeps
+     the intent the rest of the component is built around: the avatar is larger than the label
+     and hugs the chip's leading edge, which is what `--gog-chip-avatar-inset-ratio` exists for.
+     A chip with an avatar is still taller than one without, but now by one constant ratio
+     instead of a gap that grew 0.8px to 6.4px across the five sizes.
+
+     The tokens stay per-size so an override keeps working -- the same shape
+     `--gog-accordion-*-chevron-size` took for the same reason. `--gog-chip-*-remove-size` is
+     still a ladder (1.09 to 1.17 of the type, non-monotonic); it is filed in docs/backlog.md
+     rather than changed here, because picking its number is its own decision. */
+  --gog-chip-xsm-avatar-size: 1.5em;
+  --gog-chip-xsm-icon-size: 1em;
   --gog-chip-xsm-remove-size: 0.75rem;
 
   --gog-chip-sm-font-size: var(--gog-text-xs);
   --gog-chip-sm-padding-block: var(--gog-space-4);
   --gog-chip-sm-padding-inline: var(--gog-space-8);
   --gog-chip-sm-gap: var(--gog-space-8);
-  --gog-chip-sm-avatar-size: 1rem;
-  --gog-chip-sm-icon-size: 0.75rem;
+  --gog-chip-sm-avatar-size: 1.5em;
+  --gog-chip-sm-icon-size: 1em;
   --gog-chip-sm-remove-size: 0.875rem;
 
   --gog-chip-md-font-size: var(--gog-text-sm);
   --gog-chip-md-padding-block: var(--gog-space-8);
   --gog-chip-md-padding-inline: var(--gog-space-16);
   --gog-chip-md-gap: var(--gog-space-8);
-  --gog-chip-md-avatar-size: 1.25rem;
-  --gog-chip-md-icon-size: 0.875rem;
+  --gog-chip-md-avatar-size: 1.5em;
+  --gog-chip-md-icon-size: 1em;
   --gog-chip-md-remove-size: 1rem;
 
   --gog-chip-lg-font-size: var(--gog-text-md);
   --gog-chip-lg-padding-block: var(--gog-space-12);
   --gog-chip-lg-padding-inline: var(--gog-space-24);
   --gog-chip-lg-gap: var(--gog-space-12);
-  --gog-chip-lg-avatar-size: 1.5rem;
-  --gog-chip-lg-icon-size: 1rem;
+  --gog-chip-lg-avatar-size: 1.5em;
+  --gog-chip-lg-icon-size: 1em;
   --gog-chip-lg-remove-size: 1.125rem;
 
   --gog-chip-slg-font-size: var(--gog-text-lg);
   --gog-chip-slg-padding-block: var(--gog-space-12);
   --gog-chip-slg-padding-inline: var(--gog-space-24);
   --gog-chip-slg-gap: var(--gog-space-12);
-  --gog-chip-slg-avatar-size: 1.75rem;
-  --gog-chip-slg-icon-size: 1.125rem;
+  --gog-chip-slg-avatar-size: 1.5em;
+  --gog-chip-slg-icon-size: 1em;
   --gog-chip-slg-remove-size: 1.25rem;
 
   /* ── Dialog ────────────────────────────────────────────────────────────────── */
