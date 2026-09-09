@@ -244,7 +244,7 @@
   background-color: var(--gog-multiselect-panel-bg);
   border: var(--gog-multiselect-field-border-width) var(--gog-multiselect-field-border-style)
     var(--gog-multiselect-panel-border);
-  border-radius: var(--gog-multiselect-radius);
+  border-radius: var(--gog-multiselect-panel-radius);
   max-height: var(--gog-multiselect-panel-max-height);
   /* Defensive: gog-ms__scroll's own overlay clips its content correctly on its own, but
      this still keeps the panel visually masked (rounded corners, no bleed) for a frame

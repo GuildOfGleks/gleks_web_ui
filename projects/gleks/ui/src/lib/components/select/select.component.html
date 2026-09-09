@@ -142,46 +142,48 @@
       overscrollBehavior="contain"
       class="gog-select__scroll"
     >
-      @if (visibleOptions().length === 0) {
-        <p class="gog-select__empty">{{ filterEmptyMessage() }}</p>
-      }
-      @for (option of visibleOptions(); track valueOf(option)) {
-        <!--
-          tabindex="-1" keeps the list to a single tab stop, as the listbox pattern expects:
-          focus is moved between options with the arrow keys, not by tabbing through every
-          one of them. Programmatic .focus() still works on a negative tabindex.
-        -->
-        <button
-          type="button"
-          class="gog-select__option"
-          role="option"
-          tabindex="-1"
-          [attr.aria-selected]="isSelected(option)"
-          [attr.aria-disabled]="isOptionDisabled(option)"
-          [class.gog-select__option--selected]="isSelected(option)"
-          [class.gog-select__option--disabled]="isOptionDisabled(option)"
-          (click)="selectOption(option, $event)"
-          (keydown)="onOptionKeydown($event)"
-          gogRipple
-          [rippleDisabled]="!rippleEnabled() || isOptionDisabled(option)"
-        >
-          @if (optionSlot(); as slot) {
-            <ng-container
-              *ngTemplateOutlet="
-                slot.templateRef;
-                context: optionContext(option, isSelected(option))
-              "
-            />
-          } @else {
-            <span class="gog-select__option-mark" aria-hidden="true">
-              @if (isSelected(option)) {
-                <gog-icon name="check" />
-              }
-            </span>
-            <span class="gog-select__option-label">{{ labelOf(option) }}</span>
-          }
-        </button>
-      }
+      <div class="gog-select__options">
+        @if (visibleOptions().length === 0) {
+          <p class="gog-select__empty">{{ filterEmptyMessage() }}</p>
+        }
+        @for (option of visibleOptions(); track valueOf(option)) {
+          <!--
+            tabindex="-1" keeps the list to a single tab stop, as the listbox pattern expects:
+            focus is moved between options with the arrow keys, not by tabbing through every
+            one of them. Programmatic .focus() still works on a negative tabindex.
+          -->
+          <button
+            type="button"
+            class="gog-select__option"
+            role="option"
+            tabindex="-1"
+            [attr.aria-selected]="isSelected(option)"
+            [attr.aria-disabled]="isOptionDisabled(option)"
+            [class.gog-select__option--selected]="isSelected(option)"
+            [class.gog-select__option--disabled]="isOptionDisabled(option)"
+            (click)="selectOption(option, $event)"
+            (keydown)="onOptionKeydown($event)"
+            gogRipple
+            [rippleDisabled]="!rippleEnabled() || isOptionDisabled(option)"
+          >
+            @if (optionSlot(); as slot) {
+              <ng-container
+                *ngTemplateOutlet="
+                  slot.templateRef;
+                  context: optionContext(option, isSelected(option))
+                "
+              />
+            } @else {
+              <span class="gog-select__option-mark" aria-hidden="true">
+                @if (isSelected(option)) {
+                  <gog-icon name="check" />
+                }
+              </span>
+              <span class="gog-select__option-label">{{ labelOf(option) }}</span>
+            }
+          </button>
+        }
+      </div>
     </gog-scroll>
     @if (resolvedFilter() && resolvedFilterPosition() === 'bottom') {
       <div class="gog-select__filter gog-select__filter--bottom">

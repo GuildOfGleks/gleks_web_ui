@@ -211,7 +211,7 @@
   background-color: var(--gog-select-panel-bg);
   border: var(--gog-select-field-border-width) var(--gog-select-field-border-style)
     var(--gog-select-field-border);
-  border-radius: var(--gog-select-radius);
+  border-radius: var(--gog-select-panel-radius);
   max-height: var(--gog-select-panel-max-height);
   /* Defensive: gog-select__scroll's own overlay clips its content correctly on its own,
      but this still keeps the panel visually masked (rounded corners, no bleed) for a frame
@@ -243,6 +243,15 @@
   inset-inline: unset;
 }
 
+/* The list's own gutter. On the scrolled content and not on `.gog-select__scroll`: `gog-scroll`
+   measures its host to size the viewport and the thumb, so padding there would move the
+   scrollbar rather than inset the rows. */
+.gog-select__options {
+  display: flex;
+  flex-direction: column;
+  padding: var(--gog-select-options-padding);
+}
+
 .gog-select__option {
   width: 100%;
   display: flex;
@@ -267,6 +276,7 @@
   );
   color: var(--gog-select-option-color);
   cursor: pointer;
+  border-radius: var(--gog-select-option-radius);
   transition: background-color var(--gog-select-option-transition-duration) var(--gog-easing);
 }
 

@@ -1570,6 +1570,13 @@
   --gog-multiselect-panel-bg: var(--gog-surface-color);
   --gog-multiselect-panel-border: var(--gog-accent-color);
   --gog-multiselect-panel-shadow: var(--gog-panel-shadow);
+  /* The panel's own corner, and the reason it is not `--gog-multiselect-radius`: that token
+     shapes the *field*, and it shaped this box too until this release. One token painting two
+     boxes meant a consumer rounding the field into a pill rounded the dropdown into one as well,
+     and the two radii below derive from whatever it is, so the filter and the option rows
+     followed. Same default, so nothing moves; `gog-autocomplete` and `gog-datepicker` already
+     declared this token and this is the pair that did not. */
+  --gog-multiselect-panel-radius: var(--gog-radius);
   --gog-multiselect-panel-max-height: 260px;
   --gog-multiselect-panel-offset: var(--gog-space-4);
   --gog-multiselect-option-hover-bg: var(--gog-hover-color);
@@ -1579,13 +1586,12 @@
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-multiselect-option-height: 40px;
-  /* Concentric with the panel. The panel paints `--gog-multiselect-radius` (the field's token --
-     this component has no panel radius of its own) and insets its rows by the list padding, so
-     the row's corner is that radius minus that padding. It had subtracted 2px against 4px of
-     padding, and a restated literal also stops being true once density moves. */
+  /* Concentric with the panel, which paints `--gog-multiselect-panel-radius` and insets its rows
+     by the list padding, so the row's corner is that radius minus that padding. It had subtracted
+     2px against 4px of padding, and a restated literal also stops being true once density moves. */
   --gog-multiselect-option-radius: max(
     0px,
-    calc(var(--gog-multiselect-radius) - var(--gog-multiselect-options-padding))
+    calc(var(--gog-multiselect-panel-radius) - var(--gog-multiselect-options-padding))
   );
   --gog-multiselect-option-disabled-opacity: var(--gog-disabled-opacity);
   --gog-multiselect-option-transition-duration: var(--gog-duration-fast);
@@ -1609,7 +1615,7 @@
      keeps the gap constant, not a value clamped to zero for want of a better one. */
   --gog-multiselect-filter-input-radius: max(
     0px,
-    calc(var(--gog-multiselect-radius) - var(--gog-multiselect-filter-padding))
+    calc(var(--gog-multiselect-panel-radius) - var(--gog-multiselect-filter-padding))
   );
   --gog-multiselect-filter-border-width: var(--gog-panel-border-width);
   --gog-multiselect-filter-border-style: var(--gog-panel-border-style);
@@ -1912,7 +1918,7 @@
      so a right angle is equidistant from the whole curve. The same case as the multiselect's. */
   --gog-select-filter-input-radius: max(
     0px,
-    calc(var(--gog-select-radius) - var(--gog-select-filter-padding))
+    calc(var(--gog-select-panel-radius) - var(--gog-select-filter-padding))
   );
   --gog-select-filter-border-width: var(--gog-panel-border-width);
   --gog-select-filter-border-style: var(--gog-panel-border-style);
@@ -1932,11 +1938,29 @@
   --gog-select-panel-shadow: var(--gog-panel-shadow);
   --gog-select-panel-max-height: 260px;
   --gog-select-panel-offset: var(--gog-space-4);
+  /* The panel's own corner, and the reason it is not `--gog-select-radius`: that token shapes the
+     *field*, and it shaped this box too until this release. One token painting two boxes meant a
+     consumer rounding the field into a pill rounded the dropdown into one as well, and the filter
+     radius below derives from whatever it is, so that followed too. Same default, so nothing
+     moves; `gog-autocomplete` and `gog-datepicker` already declared this token and this is the
+     pair that did not. */
+  --gog-select-panel-radius: var(--gog-radius);
+  /* The list's own gutter, so the rows sit inside the panel rather than bleeding to its border.
+     `gog-autocomplete` and `gog-multiselect` both inset theirs by this amount; this panel had no
+     interior at all, which is why its first and last rows were square inside a rounded corner --
+     the same defect `--gog-menu-item-radius` records for the menu. */
+  --gog-select-options-padding: var(--gog-space-4);
   --gog-select-option-hover-bg: var(--gog-hover-color);
   --gog-select-option-press-bg: var(--gog-border-color);
   --gog-select-option-selected-color: var(--gog-accent-color);
   --gog-select-option-color: var(--gog-text-color);
   --gog-select-option-gap: var(--gog-space-12);
+  /* Concentric with the panel, which insets its rows by the list padding above. Derived rather
+     than restated, so it stays true once `--gog-density` moves the padding. */
+  --gog-select-option-radius: max(
+    0px,
+    calc(var(--gog-select-panel-radius) - var(--gog-select-options-padding))
+  );
   /* Estimated row height fed into the panel's up/down placement math; not itself a real
      layout property, so it has no effect unless the JS reads it. */
   --gog-select-option-height: 40px;

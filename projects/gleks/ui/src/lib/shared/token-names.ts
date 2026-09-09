@@ -904,6 +904,7 @@ export type GogTokenName =
   | '--gog-multiselect-panel-max-height'
   | '--gog-multiselect-panel-max-width'
   | '--gog-multiselect-panel-offset'
+  | '--gog-multiselect-panel-radius'
   | '--gog-multiselect-panel-shadow'
   | '--gog-multiselect-placeholder-color'
   | '--gog-multiselect-radius'
@@ -1120,12 +1121,15 @@ export type GogTokenName =
   | '--gog-select-option-height'
   | '--gog-select-option-hover-bg'
   | '--gog-select-option-press-bg'
+  | '--gog-select-option-radius'
   | '--gog-select-option-selected-color'
   | '--gog-select-option-transition-duration'
+  | '--gog-select-options-padding'
   | '--gog-select-panel-bg'
   | '--gog-select-panel-max-height'
   | '--gog-select-panel-max-width'
   | '--gog-select-panel-offset'
+  | '--gog-select-panel-radius'
   | '--gog-select-panel-shadow'
   | '--gog-select-placeholder-color'
   | '--gog-select-radius'
@@ -2621,6 +2625,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-multiselect-panel-max-height',
       '--gog-multiselect-panel-max-width',
       '--gog-multiselect-panel-offset',
+      '--gog-multiselect-panel-radius',
       '--gog-multiselect-panel-shadow',
       '--gog-multiselect-placeholder-color',
       '--gog-multiselect-radius',
@@ -2858,12 +2863,15 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-select-option-height',
       '--gog-select-option-hover-bg',
       '--gog-select-option-press-bg',
+      '--gog-select-option-radius',
       '--gog-select-option-selected-color',
       '--gog-select-option-transition-duration',
+      '--gog-select-options-padding',
       '--gog-select-panel-bg',
       '--gog-select-panel-max-height',
       '--gog-select-panel-max-width',
       '--gog-select-panel-offset',
+      '--gog-select-panel-radius',
       '--gog-select-panel-shadow',
       '--gog-select-placeholder-color',
       '--gog-select-radius',

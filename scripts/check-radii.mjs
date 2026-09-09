@@ -75,6 +75,14 @@ const OUTERMOST = new Map([
     'datepicker-panel',
     'an overlay placed against the trigger rect, and into <body> under appendToBody — the field’s sibling, never its child',
   ],
+  [
+    'select-panel',
+    'an overlay placed against the trigger rect, and into <body> under appendToBody — the field’s sibling, never its child',
+  ],
+  [
+    'multiselect-panel',
+    'an overlay placed against the trigger rect, and into <body> under appendToBody — the field’s sibling, never its child',
+  ],
   ['menu', 'an overlay; it always renders into <body>'],
   ['badge', 'it hangs outside its host box on purpose — the host is not its container'],
   ['progressbar', 'the track is the outermost box'],
@@ -92,39 +100,75 @@ const OUTERMOST = new Map([
  * Boxes inside another box, at its corner: `inner = max(0, outer - gap)`.
  *
  * `gap` is the token holding the distance between the two boxes' edges, or a number where the
- * distance is a literal. `parent` is the token holding the outer radius — which is not always the
- * one the child's name suggests: the multiselect and select panels have no radius token of their
- * own and paint with the field's, while the autocomplete and datepicker have a separate one. That
- * inconsistency is a finding in its own right and is reported at the end.
+ * distance is a literal. `parent` is the token holding the outer radius, and every one of them is
+ * now a `*-panel-radius`: the multiselect and select panels used to paint with the *field's*
+ * radius, which this table had to name and which a trailing note used to report. Both now declare
+ * their own, so that note is gone and the four dropdowns answer the question one way.
  */
 const NESTED = new Map([
   [
     'accordion-body',
-    { parent: 'accordion', gap: 0, note: 'the body is flush with the item; no padding between the boxes' },
+    {
+      parent: 'accordion',
+      gap: 0,
+      note: 'the body is flush with the item; no padding between the boxes',
+    },
   ],
   [
     'autocomplete-option',
-    { parent: 'autocomplete-panel', gap: 'autocomplete-options-padding', note: 'the first and last rows meet the panel corners' },
+    {
+      parent: 'autocomplete-panel',
+      gap: 'autocomplete-options-padding',
+      note: 'the first and last rows meet the panel corners',
+    },
   ],
   [
     'multiselect-option',
-    { parent: 'multiselect', gap: 'multiselect-options-padding', note: 'the panel paints with the field token; see PANEL_RADIUS_SPLIT' },
+    {
+      parent: 'multiselect-panel',
+      gap: 'multiselect-options-padding',
+      note: 'the first and last rows meet the panel corners',
+    },
   ],
   [
     'multiselect-filter-input',
-    { parent: 'multiselect', gap: 'multiselect-filter-padding', note: 'the filter sits at the top of the panel, against its corners' },
+    {
+      parent: 'multiselect-panel',
+      gap: 'multiselect-filter-padding',
+      note: 'the filter sits at the top of the panel, against its corners',
+    },
+  ],
+  [
+    'select-option',
+    {
+      parent: 'select-panel',
+      gap: 'select-options-padding',
+      note: 'the first and last rows meet the panel corners',
+    },
   ],
   [
     'select-filter-input',
-    { parent: 'select', gap: 'select-filter-padding', note: 'the filter sits at the top of the panel, against its corners' },
+    {
+      parent: 'select-panel',
+      gap: 'select-filter-padding',
+      note: 'the filter sits at the top of the panel, against its corners',
+    },
   ],
   [
     'menu-item',
-    { parent: 'menu', gap: 'menu-padding', note: 'the first and last items meet the panel corners' },
+    {
+      parent: 'menu',
+      gap: 'menu-padding',
+      note: 'the first and last items meet the panel corners',
+    },
   ],
   [
     'scroll-thumb',
-    { parent: 'scroll-track', gap: 'scroll-thumb-inset', note: 'the thumb is inset inside the track on every side' },
+    {
+      parent: 'scroll-track',
+      gap: 'scroll-thumb-inset',
+      note: 'the thumb is inset inside the track on every side',
+    },
   ],
 ]);
 
@@ -135,16 +179,28 @@ const NESTED = new Map([
  * what makes the concentric relationship absent rather than inconvenient.
  */
 const NOT_CONCENTRIC = new Map([
-  ['checkbox-dash', 'a pill-shaped mark drawn inside the box, not an inner box — 999px is its shape'],
+  [
+    'checkbox-dash',
+    'a pill-shaped mark drawn inside the box, not an inner box — 999px is its shape',
+  ],
   ['chip-pill', 'a variant radius of the same box, not a child of it'],
   ['tag-pill', 'a variant radius of the same box, not a child of it'],
   ['skeleton-square', 'a shape variant of the same bone, not a child'],
   ['skeleton-line', 'a shape variant of the same bone, not a child'],
-  ['slider-thumb', 'a disc that overflows the track symmetrically; 50% is its shape, not an inset corner'],
+  [
+    'slider-thumb',
+    'a disc that overflows the track symmetrically; 50% is its shape, not an inset corner',
+  ],
   ['input-clear', 'vertically centred and inset from the field end — it never reaches a corner'],
   ['select-clear', 'vertically centred and inset from the field end — it never reaches a corner'],
-  ['multiselect-clear', 'vertically centred and inset from the field end — it never reaches a corner'],
-  ['input-icon-action', 'vertically centred and inset from the field end — it never reaches a corner'],
+  [
+    'multiselect-clear',
+    'vertically centred and inset from the field end — it never reaches a corner',
+  ],
+  [
+    'input-icon-action',
+    'vertically centred and inset from the field end — it never reaches a corner',
+  ],
   [
     'calendar-day',
     'a cell in a grid: four of thirty-five touch a panel corner and one token sizes them all, so the concentric answer would square off the other thirty-one',
@@ -156,14 +212,19 @@ const NOT_CONCENTRIC = new Map([
   ],
 ]);
 
-/**
- * Pairs where two components solve the same problem two ways. Not a law-2 violation; reported
- * because the law is what surfaced them and a reader deciding a radius needs to know.
+/*
+ * Both entries this file used to carry here are closed, and how they were carried is worth one
+ * line. They were two prose notes printed *only on failure*, to keep a decision the law had
+ * surfaced from being forgotten -- so from the day the check went green, which is the state a CI
+ * gate is built to sit in, the reminder printed nothing. A note visible only when something else
+ * is broken is not a reminder; the backlog is.
+ *
+ * What they said: the four dropdowns on `GogDropdownBase` gave two answers to what paints a
+ * panel's corner (`--gog-autocomplete-panel-radius` and `--gog-datepicker-panel-radius` against
+ * the select's and multiselect's *field* radius), and three answers to a panel's interior (the
+ * select had no options padding and no option radius at all). Both closed: all four declare a
+ * `*-panel-radius`, and the select's list is inset and its rows rounded like the other two.
  */
-const PANEL_RADIUS_SPLIT = [
-  '--gog-autocomplete-panel-radius and --gog-datepicker-panel-radius exist; the select and multiselect panels paint with the *field* token instead (--gog-select-radius / --gog-multiselect-radius). Four dropdowns sharing GogDropdownBase, two answers.',
-  'The select panel has no option radius and no options padding at all: its rows are full-bleed with square corners, while the autocomplete and multiselect inset theirs and round them. Three panels, three interiors.',
-];
 
 const themeCss = await fs.readFile(themeCssPath, 'utf8');
 const layers = buildLengthLayers(themeCss);
@@ -212,7 +273,10 @@ for (const table of [OUTERMOST, NESTED, NOT_CONCENTRIC]) {
   for (const name of table.keys()) {
     if (!radii.includes(name)) {
       // A row that outlives its token sends the next reader looking for something that is gone.
-      findings.push({ block: name, message: `no --gog-${name}-radius in theme.css — stale table row` });
+      findings.push({
+        block: name,
+        message: `no --gog-${name}-radius in theme.css — stale table row`,
+      });
     }
   }
 }
@@ -268,8 +332,6 @@ if (findings.length > 0) {
     console.error(`\n  Could not resolve — ${unresolved.length}, printed rather than skipped:`);
     for (const token of unresolved) console.error(`    ${token}`);
   }
-  console.error('\n  Noted alongside, not law-2 failures:');
-  for (const note of PANEL_RADIUS_SPLIT) console.error(`    - ${note}`);
   console.error('\ndocs/component-geometry.md, law 2.');
   process.exit(1);
 }
