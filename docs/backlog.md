@@ -143,6 +143,10 @@ not worth carrying here.
      `--gog-control-padding-y` is `space-10`, `-x` is `space-14`, the tag's block padding is
      `space-6` — so tightening to a 4px grid is a decision that moves controls, not a check that
      passes. Decide the grid first, then the check is trivial.
+
+     **This half closed in 21.11.0**: the scale is ten steps, all multiples of 4
+     (`docs/component-geometry.md`, D1). Kept here as written, since the finding is what justified
+     the decision.
   2. **Concentric corner radii.** Inner radius = outer radius − the padding between them. Nothing
      enforces it and the library has all three states: derived (`--gog-tag-radius` is
      `max(var(--gog-radius), 2px)`), independent (`--gog-progressbar-radius: 999px`), and repeated
