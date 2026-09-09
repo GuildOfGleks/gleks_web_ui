@@ -58,6 +58,13 @@
   border-radius: var(--gog-toast-radius);
   color: var(--gog-toast-color);
   font-family: var(--gog-toast-font-family);
+  /* --gog-toast-max-width is a ch measure sized against the message's own font
+     (docs/component-geometry.md, "D7 — taken") — ch resolves against the font of the element the
+     property is declared on, never a descendant's, and .gog-toast__message is the only thing in
+     this tree that reads --gog-toast-message-font-size. Every piece of text inside still sets its
+     own size (message, actions, close); this changes no rendered text, only what ch measures
+     against. */
+  font-size: var(--gog-toast-message-font-size);
   box-shadow: var(--gog-toast-shadow);
   min-width: var(--gog-toast-min-width);
   max-width: var(--gog-toast-max-width);

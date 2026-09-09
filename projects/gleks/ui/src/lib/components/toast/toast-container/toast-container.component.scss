@@ -8,6 +8,13 @@
   display: grid;
   padding: var(--gog-toast-stack-padding);
   pointer-events: none;
+  /* --gog-toast-max-width is a ch measure (docs/component-geometry.md, "D7 — taken") sized against
+     the message's own font, so this element needs that font-size stated on itself: `ch` resolves
+     against the font of the element the property is declared on, never a descendant's, and
+     --gog-toast__message is the only thing in this tree that reads --gog-toast-message-font-size.
+     Every toast's own text still sets its own size (message, actions, close) — this line changes
+     no rendered text, only what `ch` measures against. */
+  font-size: var(--gog-toast-message-font-size);
   max-width: var(--gog-toast-max-width);
 }
 
