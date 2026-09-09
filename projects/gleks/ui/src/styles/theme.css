@@ -1192,7 +1192,10 @@
      so this changes robustness to a font-size change, not the pixels anyone sees today. L8's
      viewport exception is layered on top: the margin reads --gog-dialog-backdrop-padding, the
      backdrop this dialog already renders inside, rather than a new number. */
-  --gog-confirmation-dialog-max-width: min(51ch, calc(100vw - var(--gog-dialog-backdrop-padding) * 2));
+  --gog-confirmation-dialog-max-width: min(
+    51ch,
+    calc(100vw - var(--gog-dialog-backdrop-padding) * 2)
+  );
   --gog-confirmation-dialog-color: var(--gog-text-color);
   --gog-confirmation-dialog-description-color: var(--gog-muted-text-color);
   --gog-confirmation-dialog-actions-gap: var(--gog-space-sm);
