@@ -687,7 +687,25 @@ properties together); the confirmation dialog is safe today only because its des
 font-size bug (filed in `docs/backlog.md`) happens to leave it inheriting the same value its
 ancestor does — worth re-checking once that bug is fixed.
 
-**Still open: D0, D5.**
+**Still open: D5.**
+
+## D0 — closed 2026-09-09, as a record of what happened
+
+D0 asked in advance: *"Is this one minor or several? 33 component commits plus a spacing-scale
+change plus a shadow token family is a large release. Splitting by law — geometry first, elevation
+second — is the alternative."*
+
+**It was never taken as a decision; it resolved itself as a fact, and the fact is the alternative
+it named.** The geometry work — laws 1, 3, 5 (25 commits), law 2 and its radius table (5 more), law
+4 with D8 (the typography sweep), D7 (the four overlay caps) and the spacing-scale removal that
+made law 1 possible — shipped as one minor, **21.11.0**. D5's elevation ladder (the shadow token
+family D0's own text named as the thing that would make this "a large release") is **not** in it:
+`docs/backlog.md` carries it as the colour-and-shadow half of the geometry backlog, unstarted, and
+it needs its own survey before it needs its own decision. So the split D0 offered as an
+alternative is exactly what happened, without anyone having to choose it — geometry is one
+release, elevation is the next one, and no session sat down and decided that division on paper.
+
+**Still open: D5.**
 
 ---
 
@@ -773,9 +791,10 @@ re-litigates a settled number.
 | -------------------------------------------------------- | ---------------------------- |
 | The seven candidate laws, with verdicts                   | ✅ written (this file)       |
 | D1, D2, D3, D6 + D3a, D3b                                 | ✅ taken 2026-09-05, against the survey |
-| D0, D5                                                     | ⬜ open                      |
+| D5                                                         | ⬜ open                      |
 | D4 + D8                                                   | ✅ taken 2026-09-06, against a second survey |
 | D7                                                         | ✅ taken 2026-09-09, against a survey |
+| D0                                                         | ✅ closed 2026-09-09, as a record of what happened |
 | `survey:geometry` (all five laws, reports)                | ✅                           |
 | `check:geometry` (laws 1, 3, 5, gates)                    | ✅ green, and a CI step      |
 | The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits    |
