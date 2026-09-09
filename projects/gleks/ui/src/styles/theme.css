@@ -1204,9 +1204,17 @@
   --gog-confirmation-dialog-description-font-size: var(--gog-text-sm);
   --gog-confirmation-dialog-description-line-height: var(--gog-line-height-relaxed);
   /* L9 (docs/component-geometry.md, "D7 — taken"): the description wraps, so its cap is a
-     measure — 51ch at the description's actual rendered 16px (it inherits, rather than reading a
-     token; see the defect filed in docs/backlog.md), the nearest whole character to today's 440px,
-     so this changes robustness to a font-size change, not the pixels anyone sees today.
+     measure — 51ch at 16px, the nearest whole character to today's 440px, so this changes
+     robustness to a font-size change, not the pixels anyone sees today. The 16px is
+     `.confirm-dialog`'s own inherited size (it declares no font-size of its own; see
+     confirmation-dialog.component.scss), not the description's — the description now reads
+     --gog-confirmation-dialog-description-font-size (14px, fixed above), but a `ch` cap resolves
+     against the element `max-width` is declared on, never a descendant's, so that change does not
+     move this number. What it changes is the *measure* the 440px produces against a 14px
+     description: 439.9px ÷ (0.5391 × 14px) ≈ 58ch by hand (scripts/survey-measure.mjs's own
+     `chCount` line is a tautology for this token — it resolves against `.confirm-dialog`'s 16px,
+     not the description's font; see that script's reason string for the full account), still
+     inside L9's 45–75 band, so no token value here needs to change.
 
      L8's viewport clamp is deliberately NOT here, unlike the other three overlays: this renders
      inside .gog-dialog__panel, which already caps itself at 90vw (an inline style in

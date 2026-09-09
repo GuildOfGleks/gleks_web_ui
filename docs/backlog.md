@@ -16,38 +16,6 @@ not worth carrying here.
 
 ## Defects — first
 
-- **`gog-confirmation-dialog`'s title and description carry dead utility classes.** Found
-  2026-09-09 while tracing which font size governs each overlay's text for D7's measure survey
-  (`docs/component-geometry.md`, L9). The template
-  (`confirmation-dialog.component.html`) puts `class="... heading-md"` on the title and
-  `class="... body-sm"` on the description — and neither class has a CSS rule anywhere in the
-  library: not in `styles/*.css`, not in any component `.scss`. Confirmed live in `ui-showcase`
-  via `getComputedStyle`: the description renders at **16px**, the browser's inherited default,
-  not the `--gog-text-sm` (14px) its name promises; the title renders at **18.72px**, the
-  browser's default `<h3>` size, not `--gog-text-md` or any other step. The dialog is themed
-  everywhere else — colour, spacing, the panel itself — and these two lines of text are the one
-  part of it that silently opted out of the type scale. A theme that raises `--gog-text-md` or
-  changes `--gog-font-body` changes nothing here, because nothing here reads either.
-
-  Likely fix: give `.confirm-dialog__title` and `.confirm-dialog__description` their own
-  `font-size`/`line-height` declarations reading `--gog-text-md`/`--gog-line-height-heading` and
-  `--gog-text-sm`/`--gog-line-height-prose` respectively (matching what the class names already
-  claim), and drop the two dead classes — or, if `.heading-md`/`.body-sm` were meant to be a
-  small reusable utility pair, add them to `styles/utilities.css` and use them elsewhere too
-  rather than leaving a two-instance convention that was never wired up. Either way it is a
-  visible rendering change (the description shrinks by 2px, the title's leading changes with it),
-  so it wants its own commit and its own look in `ui-showcase`, not a drive-by fix inside an
-  unrelated branch.
-
-  **Also re-check `--gog-confirmation-dialog-max-width` when this is fixed.** Its `ch` measure
-  (`docs/component-geometry.md`, "D7 — taken") was deliberately computed against today's inherited
-  16px rather than the 14px the class name implies, precisely so the cap would not tighten if this
-  bug were fixed first — but a `ch` cap resolves against the font of the element `max-width` is
-  declared on (`.confirm-dialog`), not its child, and fixing this bug only changes the
-  **description's** font-size, not `.confirm-dialog`'s own. Confirm live whether `.confirm-dialog`
-  picks up a new inherited size or stays at 16px once the fix lands; toast's own D7 implementation
-  hit exactly this class of bug (same file, "A fourth finding").
-
 - **Geometry: all five laws are gated (2026-09-06).** The 4px grid, concentric radii, horizontal
   padding at exactly twice vertical on every control, the typographic ratio, and 24×24 CSS px of
   pointer target. `npm run check:geometry` runs four scripts and is a CI step as of 21.11.0: the
