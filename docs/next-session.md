@@ -55,6 +55,46 @@ are complete. Delete this file once it has been read.
   provably invariant under it rather than untested under it.
   Dev server stopped afterward (`taskkill` on the listening PID); port 4300 confirmed free.
 
+- **The 360px check the plan asked for — done 2026-09-09, after review caught that it had been
+  skipped without being declared skipped.** The plan's phase 3 required it and said explicitly
+  that a sandbox that cannot narrow the viewport should say so rather than stay quiet; the first
+  pass did neither, and `playwright-cli resize` was available the whole time. Measured, against a
+  prediction written before looking (margin `--gog-space-16` = 16px, `CH_PER_EM` 0.5391):
+
+  | viewport | tooltip | menu | toast | doc overflow |
+  | -------- | ------- | ---- | ----- | ------------ |
+  | 360px | 278.156px — own cap wins | 320px — own cap wins | **328px = 360 − 32, clamp binds** | none |
+  | 300px | **268px** | **268px** | **268px** — all three clamp | none |
+
+  Both rows match the arithmetic to the hundredth. The tooltip's cap is read on an element
+  carrying `--gog-tooltip-font-size`, not on a bare probe — reading it on an inherited 16px would
+  have reported 370px and "the clamp binds", which is the same `ch`-resolves-per-element trap this
+  branch spent a commit on.
+
+  **And the confirmation dialog at 360px, which is D7's "no clamp here" decision seen directly:**
+  `.gog-dialog__panel` computes `max-width: 324px` (its `90vw`) and renders 320px (its own
+  `min-width`), while `.confirm-dialog`'s `max-width` still computes to 439.875px — the child's cap
+  never binds, so the clamp D7 declined to add there could never have done anything. Title 18px and
+  description 14px hold at that width too, no horizontal overflow.
+
+## Fixed after review
+
+Two findings from a review pass over the finished branch, both in work this branch added:
+
+1. **The `ch`-cap prediction was corrected in one of the two places it lived** (`e3d03cf`).
+   Commit `4a58e56` rewrote it in `scripts/survey-measure.mjs` and never grepped for the rest;
+   `docs/component-geometry.md` carried the same claim twice, one of them asking for a re-check
+   this branch had already performed. Both now carry a dated correction, per that file's own
+   convention. This is the previous branch's own recorded lesson — a claim checked against part of
+   the library rather than all of it — repeated one branch later.
+2. **`check:class-names` could not tell a class from a prefix of one** (`a38949f`). The
+   stale-exception guard used a substring test, so `confirm-dialog` counted as applied because
+   `confirm-dialog__title` exists. Proved by deletion before fixing. The rewrite also drops a
+   second walk of every template, checks literal tokens that sit beside a computed one, and needed
+   a marker so `{{ size() }}` does not split into `size()` and get reported as a class. A renamed
+   counter had also left a `ReferenceError` on the success path — found by running it, not reading
+   it.
+
 ## Out of scope, on purpose (per the plan, unchanged)
 
 D5 (the elevation ladder), the colour/OKLCH half of `docs/backlog.md`, the two geometry decisions
