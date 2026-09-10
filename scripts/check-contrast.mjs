@@ -30,11 +30,26 @@
  *     library (`grep -rn 'focus-ring.*var(--gog-accent-color)' theme.css`), so that is the pair
  *     checked, against both surfaces a focused element commonly sits on.
  *
+ * **Both claims in the paragraph above were wrong, and the boundary sweep is what found out**
+ * (21.12.0). `accentDim` is what the *base* theme resolves a field border to; `material` and
+ * `primeng` re-point `--gog-input-field-border` and four siblings to `--gog-border-color`, so on
+ * those two the token being gated was not the token being painted, and seven control boundaries
+ * shipped at 1.18:1 with this script green. And focus rings are *not* all drawn from
+ * `--gog-accent-color`: six read `--gog-accent-pale`, and for the checkbox, the radio and the
+ * multiselect that wash was the entire focus indicator, measured at 1.38:1. Both are fixed;
+ * the lesson is that **a proxy token is not a boundary**, and only reading the declaration that
+ * paints survives a theme re-pointing it.
+ *
  * `--gog-border-color` is **not** a gated pair, on purpose, even though it is the pair
- * `docs/themes.md` iteration 2 names literally ("border/surface"). It is used exclusively for
- * decoration in this library — panel outlines, dividers, chip/tag/table hairlines
+ * `docs/themes.md` iteration 2 names literally ("border/surface"). It is used for
+ * decoration in this library — panel outlines, dividers, table hairlines
  * (`grep -n 'var(--gog-border-color)' theme.css`) — never as the sole way to identify an
- * interactive control, which is what SC 1.4.11 actually requires a 3:1 ratio for. Every shipped
+ * interactive control, which is what SC 1.4.11 actually requires a 3:1 ratio for. **That
+ * sentence used to say "exclusively", and three controls disproved it**: `gog-chip`,
+ * `gog-toggle` and `gog-button-toggle` all drew their own edge from it, in every theme, and
+ * neither their border nor their fill reached 3:1 anywhere. They read
+ * `--gog-control-boundary-color` now — a separate foundation token for exactly this job, whose
+ * per-theme values came out of `npm run suggest:color` rather than out of anyone's eye. Every shipped
  * theme fails it well below 3:1 (measured 1.4–1.7:1 across all five, 2026-08-29) while its actual
  * job — a soft hairline that is visible without being loud — is exactly what a low ratio means to
  * do. Printed anyway, informationally, so the number stays visible rather than silently dropped
@@ -241,9 +256,27 @@ const EDGE_PAIRS = [
 ];
 
 const WASH_PAIRS = [
-  ['button ghost hover', '--gog-button-ghost-hover-color', '--gog-button-ghost-hover-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button ghost press', '--gog-button-ghost-press-color', '--gog-button-ghost-press-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['menu item hover', '--gog-menu-item-hover-color', '--gog-menu-item-hover-bg', ['--gog-menu-bg'], 4.5],
+  [
+    'button ghost hover',
+    '--gog-button-ghost-hover-color',
+    '--gog-button-ghost-hover-bg',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button ghost press',
+    '--gog-button-ghost-press-color',
+    '--gog-button-ghost-press-bg',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'menu item hover',
+    '--gog-menu-item-hover-color',
+    '--gog-menu-item-hover-bg',
+    ['--gog-menu-bg'],
+    4.5,
+  ],
   ['menu item press', '--gog-menu-item-color', '--gog-menu-item-press-bg', ['--gog-menu-bg'], 4.5],
   // A label on a status fill, which `gogBadge` paints for all four and which `PAIRS` cannot
   // express: `--gog-<status>-text-color` is derived in theme.css rather than stated in a palette
@@ -253,58 +286,298 @@ const WASH_PAIRS = [
   // `slate` and `one-light` across all three of success/warning/info). `danger` passed
   // everywhere, and that was the tell: a danger pair was added the day before and the palettes
   // were tuned to it, while the other three had never been measured against anything.
-  ['badge success', '--gog-badge-success-color', '--gog-badge-success-bg', ['--gog-surface-color'], 4.5],
-  ['badge danger', '--gog-badge-danger-color', '--gog-badge-danger-bg', ['--gog-surface-color'], 4.5],
-  ['badge warning', '--gog-badge-warning-color', '--gog-badge-warning-bg', ['--gog-surface-color'], 4.5],
+  [
+    'badge success',
+    '--gog-badge-success-color',
+    '--gog-badge-success-bg',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'badge danger',
+    '--gog-badge-danger-color',
+    '--gog-badge-danger-bg',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'badge warning',
+    '--gog-badge-warning-color',
+    '--gog-badge-warning-bg',
+    ['--gog-surface-color'],
+    4.5,
+  ],
   ['badge info', '--gog-badge-info-color', '--gog-badge-info-bg', ['--gog-surface-color'], 4.5],
   // `gog-button`'s severity (21.9.0), every state of every shape. The transparent variants are
   // the reason `--gog-button-<status>-ink` exists rather than the raw status colour: as text on
   // the page the raw hue clears AA in five of the eleven themes, and the ink mix is what the rest
   // needed. Listed exhaustively rather than by sample, because the two failures the wash table
   // was built for were both a state nobody thought to list.
-  ['button success fill', '--gog-button-success-on-fill', '--gog-button-success-fill', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button success fill hover', '--gog-button-success-on-fill', '--gog-button-success-fill-hover', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button success fill press', '--gog-button-success-on-fill', '--gog-button-success-fill-press', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button success ink', '--gog-button-success-ink', '--gog-background-color', ['--gog-background-color'], 4.5],
-  ['button success ink on surface', '--gog-button-success-ink', '--gog-surface-color', ['--gog-surface-color'], 4.5],
-  ['button success ghost hover', '--gog-text-color', '--gog-button-success-wash', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button danger fill', '--gog-button-danger-on-fill', '--gog-button-danger-fill', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button danger fill hover', '--gog-button-danger-on-fill', '--gog-button-danger-fill-hover', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button danger fill press', '--gog-button-danger-on-fill', '--gog-button-danger-fill-press', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button danger ink', '--gog-button-danger-ink', '--gog-background-color', ['--gog-background-color'], 4.5],
-  ['button danger ink on surface', '--gog-button-danger-ink', '--gog-surface-color', ['--gog-surface-color'], 4.5],
-  ['button danger ghost hover', '--gog-text-color', '--gog-button-danger-wash', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button warning fill', '--gog-button-warning-on-fill', '--gog-button-warning-fill', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button warning fill hover', '--gog-button-warning-on-fill', '--gog-button-warning-fill-hover', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button warning fill press', '--gog-button-warning-on-fill', '--gog-button-warning-fill-press', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button warning ink', '--gog-button-warning-ink', '--gog-background-color', ['--gog-background-color'], 4.5],
-  ['button warning ink on surface', '--gog-button-warning-ink', '--gog-surface-color', ['--gog-surface-color'], 4.5],
-  ['button warning ghost hover', '--gog-text-color', '--gog-button-warning-wash', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button info fill', '--gog-button-info-on-fill', '--gog-button-info-fill', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button info fill hover', '--gog-button-info-on-fill', '--gog-button-info-fill-hover', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button info fill press', '--gog-button-info-on-fill', '--gog-button-info-fill-press', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button info ink', '--gog-button-info-ink', '--gog-background-color', ['--gog-background-color'], 4.5],
-  ['button info ink on surface', '--gog-button-info-ink', '--gog-surface-color', ['--gog-surface-color'], 4.5],
-  ['button info ghost hover', '--gog-text-color', '--gog-button-info-wash', ['--gog-background-color', '--gog-surface-color'], 4.5],
+  [
+    'button success fill',
+    '--gog-button-success-on-fill',
+    '--gog-button-success-fill',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button success fill hover',
+    '--gog-button-success-on-fill',
+    '--gog-button-success-fill-hover',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button success fill press',
+    '--gog-button-success-on-fill',
+    '--gog-button-success-fill-press',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button success ink',
+    '--gog-button-success-ink',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'button success ink on surface',
+    '--gog-button-success-ink',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button success ghost hover',
+    '--gog-text-color',
+    '--gog-button-success-wash',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button danger fill',
+    '--gog-button-danger-on-fill',
+    '--gog-button-danger-fill',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button danger fill hover',
+    '--gog-button-danger-on-fill',
+    '--gog-button-danger-fill-hover',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button danger fill press',
+    '--gog-button-danger-on-fill',
+    '--gog-button-danger-fill-press',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button danger ink',
+    '--gog-button-danger-ink',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'button danger ink on surface',
+    '--gog-button-danger-ink',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button danger ghost hover',
+    '--gog-text-color',
+    '--gog-button-danger-wash',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button warning fill',
+    '--gog-button-warning-on-fill',
+    '--gog-button-warning-fill',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button warning fill hover',
+    '--gog-button-warning-on-fill',
+    '--gog-button-warning-fill-hover',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button warning fill press',
+    '--gog-button-warning-on-fill',
+    '--gog-button-warning-fill-press',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button warning ink',
+    '--gog-button-warning-ink',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'button warning ink on surface',
+    '--gog-button-warning-ink',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button warning ghost hover',
+    '--gog-text-color',
+    '--gog-button-warning-wash',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button info fill',
+    '--gog-button-info-on-fill',
+    '--gog-button-info-fill',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button info fill hover',
+    '--gog-button-info-on-fill',
+    '--gog-button-info-fill-hover',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button info fill press',
+    '--gog-button-info-on-fill',
+    '--gog-button-info-fill-press',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button info ink',
+    '--gog-button-info-ink',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'button info ink on surface',
+    '--gog-button-info-ink',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button info ghost hover',
+    '--gog-text-color',
+    '--gog-button-info-wash',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
   ['chip hover', '--gog-chip-color', '--gog-chip-hover-bg', ['--gog-chip-bg'], 4.5],
   ['chip press', '--gog-chip-color', '--gog-chip-press-bg', ['--gog-chip-bg'], 4.5],
   // The selected filter chip's ring (21.9.0), against the two backgrounds it has to stay visible
   // over — which is the whole argument for a ring rather than a fill, so both are checked rather
   // than the rest state alone. A boundary, not text: 3:1 per WCAG 1.4.11, the same bar the focus
   // ring is held to.
-  ['chip selected ring on hover', '--gog-accent-color', '--gog-chip-hover-bg', ['--gog-chip-bg'], 3],
-  ['chip selected ring on press', '--gog-accent-color', '--gog-chip-press-bg', ['--gog-chip-bg'], 3],
-  ['tab press', '--gog-tabs-press-color', '--gog-tabs-press-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['accordion header hover', '--gog-accordion-hover-color', '--gog-accordion-hover-bg', ['--gog-accordion-header-bg'], 4.5],
-  ['accordion header press', '--gog-accordion-hover-color', '--gog-accordion-press-bg', ['--gog-accordion-header-bg'], 4.5],
-  ['button-toggle hover', '--gog-button-toggle-hover-color', '--gog-button-toggle-hover-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['button-toggle press', '--gog-button-toggle-rest-color', '--gog-button-toggle-press-bg', ['--gog-background-color', '--gog-surface-color'], 4.5],
-  ['select option hover', '--gog-select-option-color', '--gog-select-option-hover-bg', ['--gog-select-panel-bg'], 4.5],
-  ['select option press', '--gog-select-option-color', '--gog-select-option-press-bg', ['--gog-select-panel-bg'], 4.5],
-  ['multiselect option hover', '--gog-multiselect-option-color', '--gog-multiselect-option-hover-bg', ['--gog-multiselect-panel-bg'], 4.5],
-  ['multiselect option press', '--gog-multiselect-option-color', '--gog-multiselect-option-press-bg', ['--gog-multiselect-panel-bg'], 4.5],
-  ['autocomplete option hover', '--gog-autocomplete-option-hover-color', '--gog-autocomplete-option-hover-bg', ['--gog-autocomplete-panel-bg'], 4.5],
-  ['autocomplete option press', '--gog-autocomplete-option-color', '--gog-autocomplete-option-press-bg', ['--gog-autocomplete-panel-bg'], 4.5],
+  [
+    'chip selected ring on hover',
+    '--gog-accent-color',
+    '--gog-chip-hover-bg',
+    ['--gog-chip-bg'],
+    3,
+  ],
+  [
+    'chip selected ring on press',
+    '--gog-accent-color',
+    '--gog-chip-press-bg',
+    ['--gog-chip-bg'],
+    3,
+  ],
+  [
+    'tab press',
+    '--gog-tabs-press-color',
+    '--gog-tabs-press-bg',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'accordion header hover',
+    '--gog-accordion-hover-color',
+    '--gog-accordion-hover-bg',
+    ['--gog-accordion-header-bg'],
+    4.5,
+  ],
+  [
+    'accordion header press',
+    '--gog-accordion-hover-color',
+    '--gog-accordion-press-bg',
+    ['--gog-accordion-header-bg'],
+    4.5,
+  ],
+  [
+    'button-toggle hover',
+    '--gog-button-toggle-hover-color',
+    '--gog-button-toggle-hover-bg',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'button-toggle press',
+    '--gog-button-toggle-rest-color',
+    '--gog-button-toggle-press-bg',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'select option hover',
+    '--gog-select-option-color',
+    '--gog-select-option-hover-bg',
+    ['--gog-select-panel-bg'],
+    4.5,
+  ],
+  [
+    'select option press',
+    '--gog-select-option-color',
+    '--gog-select-option-press-bg',
+    ['--gog-select-panel-bg'],
+    4.5,
+  ],
+  [
+    'multiselect option hover',
+    '--gog-multiselect-option-color',
+    '--gog-multiselect-option-hover-bg',
+    ['--gog-multiselect-panel-bg'],
+    4.5,
+  ],
+  [
+    'multiselect option press',
+    '--gog-multiselect-option-color',
+    '--gog-multiselect-option-press-bg',
+    ['--gog-multiselect-panel-bg'],
+    4.5,
+  ],
+  [
+    'autocomplete option hover',
+    '--gog-autocomplete-option-hover-color',
+    '--gog-autocomplete-option-hover-bg',
+    ['--gog-autocomplete-panel-bg'],
+    4.5,
+  ],
+  [
+    'autocomplete option press',
+    '--gog-autocomplete-option-color',
+    '--gog-autocomplete-option-press-bg',
+    ['--gog-autocomplete-panel-bg'],
+    4.5,
+  ],
 ];
 
 /**
@@ -465,7 +738,9 @@ function collectVariantPairs(uiSrcDir, files) {
     }));
 
     const painters = rules.filter((rule) => rule.colour || rule.bg);
-    const modifiers = rules.filter((rule) => rule.decls.size > 0 && isModifierSelector(rule.selector));
+    const modifiers = rules.filter(
+      (rule) => rule.decls.size > 0 && isModifierSelector(rule.selector),
+    );
 
     // The component's own defaults: every unconditional rule's declarations, in source order.
     const defaults = new Map();
@@ -537,6 +812,211 @@ function collectVariantPairs(uiSrcDir, files) {
   }
 
   return candidates.filter((candidate) => candidate.colour && candidate.bg);
+}
+
+/**
+ * The boundary sweep — SC 1.4.11's *first* bullet, which nothing here measured until 21.12.0.
+ *
+ * Every pass above measures ink against a ground: text, icons, washes, variants. None of them
+ * ever reads `border-color`, `outline-color` or the shorthand that sets either. That is the whole
+ * of "the visual information required to identify user interface components and states" — the
+ * boundary that says *this is a text field* rather than a flat rectangle, and the focus ring that
+ * says *the keyboard is here*.
+ *
+ * **Why a proxy was not enough, which is the finding that produced this.** `PAIRS` gates
+ * `accentDim` against both grounds, and its comment says why: that is the colour a rest-state
+ * field border resolves to. It *was*. `primeng` re-points `--gog-input-field-border`,
+ * `--gog-select-field-border`, `--gog-multiselect-field-border` and `--gog-checkbox-border-color`
+ * to `--gog-border-color`, so on that theme the token being measured is not the one being
+ * painted, and four control boundaries shipped at 1.18:1 with this script green. A theme can
+ * always re-point a component token; the only durable check reads the declaration that paints.
+ *
+ * **What is in scope, and why it is an inclusion list rather than an exclusion one.** A border is
+ * only under 1.4.11 when it is how you identify a control. A panel outline, a table rule, a
+ * divider, a badge hairline are decoration — every shipped theme runs those at 1.4–1.7:1 *on
+ * purpose*, which this file's header has argued since 2026-08-29. Gating all of them would make
+ * eleven themes permanently red over something they are doing right. So `CONTROL_BOUNDARIES`
+ * names the blocks whose border is the control, and everything else is measured and printed
+ * informationally rather than gated.
+ *
+ * A focus indicator is different: it is under 1.4.11 whatever it decorates, so every
+ * `:focus-visible` outline is gated wherever it appears.
+ *
+ * **Parsing note, paid for once.** The value pattern balances parentheses to three levels.
+ * `[^;]` — which every other matcher in this file uses safely, because one declaration has one
+ * `var()` and the `;` anchor rescues it — crosses parens, and a shorthand has three: on
+ * `border: var(w) var(s) var(colour)` it swallows the entire declaration and the result resolves
+ * to nothing. 58 of 82 declarations were lost that way on the first run, and the sweep reported a
+ * healthy count over a quarter of the data.
+ */
+const CONTROL_BOUNDARIES = [
+  // Text-entry and dropdown controls: the border is the affordance.
+  '.gog-input__field',
+  '.gog-select__control',
+  '.gog-select__filter-input',
+  '.gog-ms',
+  '.gog-ms__filter-input',
+  '.gog-autocomplete__control',
+  '.gog-datepicker__control',
+  '.gog-calendar__time-input',
+  '.gog-calendar__meridiem',
+  // Choice controls, where the box or track *is* the whole mark.
+  '.gog-checkbox__box',
+  '.gog-radio__box',
+  '.gog-toggle__track',
+  '.gog-button-toggle__button',
+  '.gog-slider__thumb',
+  '.gog-slider__track',
+  '.gog-chip__surface',
+];
+
+/**
+ * `.gog-btn` is deliberately absent, and the reason is a real limit rather than an exemption.
+ * What identifies a button depends on its variant: a filled one is its fill, an outline one is
+ * its border, a ghost one is neither until it is hovered. This sweep resolves a painting rule
+ * once, so on `.gog-btn` it reads `--gog-button-primary-border` — `transparent` in the base theme
+ * and a bevel highlight in `bevel`, neither of which is the boundary anybody identifies a button
+ * by. Measuring the *outline* variant's border needs the modifier-layering that
+ * `collectVariantPairs` does, applied to boundaries; filed in `docs/backlog.md`.
+ */
+
+/**
+ * Controls that do not sit on the page. A filter input lives inside a dropdown panel and a
+ * calendar's inputs inside the datepicker's, so measuring either against the page ground answers
+ * a question no user is asked. One entry per block whose ground is not `background`/`surface`.
+ */
+/**
+ * Boundaries that read as a boundary in CSS and are not one. Same shape and same discipline as
+ * `REST_PAIRS_NOT_RENDERED`: add to it only for a declaration that cannot identify the control,
+ * never for one that merely fails.
+ *
+ * A border resolving to `transparent` needs no entry — it is skipped by rule, because a control
+ * with no border is identified by something else and compositing nothing over the ground reports
+ * 1.00:1 about a thing that is not painted. `--gog-button-primary-border` and
+ * `--gog-slider-track-border-color` are both `transparent` by the same opt-in convention, and
+ * `theme.css` says so beside each.
+ */
+const BOUNDARIES_NOT_IDENTIFYING = [
+  {
+    selector: '.gog-slider__thumb',
+    reason:
+      '`--gog-slider-thumb-border` is `--gog-background-color` on purpose: it is a gap ring that ' +
+      'separates the thumb from the track it sits on, not an edge against the page. Measuring it ' +
+      'against the page asks whether the page contrasts with itself. The pair that does identify ' +
+      'the thumb — its accent fill against the track — is measured by the variant sweep.',
+  },
+];
+
+const BOUNDARY_GROUNDS = new Map([
+  ['.gog-select__filter-input', ['--gog-select-panel-bg']],
+  ['.gog-ms__filter-input', ['--gog-multiselect-panel-bg']],
+  ['.gog-calendar__time-input', ['--gog-calendar-bg']],
+  ['.gog-calendar__meridiem', ['--gog-calendar-bg']],
+]);
+
+const PAREN_L3 = '[^()]*';
+const PAREN_L2 = `(?:[^()]|\\(${PAREN_L3}\\))*`;
+const PAREN_L1 = `(?:[^()]|\\(${PAREN_L2}\\))*`;
+const BOUNDARY_VALUE = `((?:var|color-mix)\\(${PAREN_L1}\\)|#[0-9a-fA-F]{3,8})`;
+/** `mid` is greedy so the capture lands on the shorthand's colour rather than on its width. */
+const boundaryDecl = (prop, mid = '') =>
+  new RegExp(`(?:^|;|\\s)${prop}:\\s*${mid}${BOUNDARY_VALUE}\\s*(?:;|$)`);
+
+const BOUNDARY_FILL = boundaryDecl('background(?:-color)?');
+
+const BOUNDARY_PROPS = [
+  ['border-color', boundaryDecl('border-color')],
+  ['border', boundaryDecl('border', '[^;]*')],
+  ['border-block-start-color', boundaryDecl('border-block-start-color')],
+  ['border-inline-start-color', boundaryDecl('border-inline-start-color')],
+  ['outline-color', boundaryDecl('outline-color')],
+  ['outline', boundaryDecl('outline', '[^;]*')],
+];
+
+/**
+ * These patterns are built with `new RegExp` from a template literal, which is the one thing the
+ * note above `COLOUR_DECL` says not to do — every backslash has to be doubled or the escape is
+ * eaten by the template and the pattern silently matches nothing. That note exists because it
+ * already happened once; it happened again while this function was being written, and the check
+ * passed, reporting its usual healthy pair count over **zero** boundaries read.
+ *
+ * Six near-identical balanced-paren patterns are genuinely worse as hand-written literals, so the
+ * builder stays and this asserts instead. A checker that fails open is worse than no checker, and
+ * "I doubled the backslashes correctly" is not something to verify by reading.
+ */
+function assertBoundaryPatternsWork() {
+  const cases = [
+    ['border-color', 'border-color: var(--gog-a);', 'var(--gog-a)'],
+    ['border', 'border: var(--w) var(--s) var(--gog-a);', 'var(--gog-a)'],
+    ['border', 'border: 1px solid #abc;', '#abc'],
+    [
+      'outline',
+      'outline: var(--w) solid var(--gog-a, var(--gog-b));',
+      'var(--gog-a, var(--gog-b))',
+    ],
+    ['border-color', 'border-color: var(--a, var(--b, var(--c)));', 'var(--a, var(--b, var(--c)))'],
+  ];
+  for (const [prop, decl, expected] of cases) {
+    const mid = prop === 'border' || prop === 'outline' ? '[^;]*' : '';
+    const hit = decl.match(boundaryDecl(prop, mid));
+    if (!hit || hit[1] !== expected) {
+      throw new Error(
+        `boundary pattern for \`${prop}\` is broken: ${JSON.stringify(decl)} produced ` +
+          `${hit ? JSON.stringify(hit[1]) : 'no match'}, expected ${JSON.stringify(expected)}. ` +
+          `Check the backslash doubling in BOUNDARY_VALUE / boundaryDecl.`,
+      );
+    }
+  }
+}
+
+const isFocusIndicator = (selector, prop) =>
+  /:focus-visible|:focus\b/.test(selector) && prop.startsWith('outline');
+
+function boundaryBlock(selector) {
+  const parts = selector.split(/[,\s]+/).filter(Boolean);
+  return CONTROL_BOUNDARIES.find((block) => parts.some((part) => part.startsWith(block))) ?? null;
+}
+
+function collectBoundaryPairs(uiSrcDir, files) {
+  assertBoundaryPatternsWork();
+  const out = [];
+  for (const file of files) {
+    const css = file.endsWith('.scss')
+      ? sass.compile(file, { style: 'expanded', sourceMap: false }).css
+      : readFileSync(file, 'utf8');
+    const re = /([^{}]+)\{([^{}]*)\}/g;
+    let m;
+    while ((m = re.exec(stripComments(css)))) {
+      const selector = m[1].trim().replace(/\[_ng(?:content|host)[^\]]*\]/g, '');
+      if (!selector || selector.startsWith('@')) continue;
+      for (const [prop, pattern] of BOUNDARY_PROPS) {
+        const hit = m[2].match(pattern);
+        if (!hit) continue;
+        const block = boundaryBlock(selector);
+        const focus = isFocusIndicator(selector, prop);
+        const excused = BOUNDARIES_NOT_IDENTIFYING.some((e) => selector.startsWith(e.selector));
+        out.push({
+          file: path.relative(uiSrcDir, file).split(path.sep).join('/'),
+          selector,
+          prop,
+          value: hit[1].trim(),
+          // The control's own fill, when the same rule states one. A control is identified by its
+          // boundary *or* by its fill — SC 1.4.11 asks for "the visual information required to
+          // identify", not for a border specifically — so a filled control whose fill carries the
+          // job needs nothing from its hairline.
+          fill: focus ? null : ((m[2].match(BOUNDARY_FILL) ?? [])[1] ?? null),
+          // A focus ring is gated wherever it is; a border only where it identifies a control.
+          gated: (focus || block !== null) && !excused,
+          kind: focus ? 'focus ring' : block ? 'control boundary' : 'decoration',
+          grounds: (block && BOUNDARY_GROUNDS.get(block)) ?? [
+            '--gog-background-color',
+            '--gog-surface-color',
+          ],
+        });
+      }
+    }
+  }
+  return out;
 }
 
 function collectStatePairs(uiSrcDir, files) {
@@ -694,6 +1174,7 @@ async function main() {
   }
   const statePairs = collectStatePairs(uiSrc, styleFiles);
   const variantPairs = collectVariantPairs(uiSrc, styleFiles);
+  const boundaryPairs = collectBoundaryPairs(uiSrc, styleFiles);
 
   const failures = [];
   const findings = []; // informational, never fails
@@ -815,7 +1296,14 @@ async function main() {
       const key = `${state.file} ${state.selector}`;
       const worst = sweepWorst.get(key);
       if (!worst || ratio < worst.ratio)
-        sweepWorst.set(key, { ratio, threshold, theme: name, text: toHex(text), ground: toHex(ground), state });
+        sweepWorst.set(key, {
+          ratio,
+          threshold,
+          theme: name,
+          text: toHex(text),
+          ground: toHex(ground),
+          state,
+        });
     }
   }
   for (const [key, w] of [...sweepWorst].sort((a, b) => a[1].ratio - b[1].ratio)) {
@@ -823,6 +1311,103 @@ async function main() {
       `[contrast] ${w.theme} — ${key}: ${w.ratio.toFixed(2)}:1 (need ${w.threshold}:1) ` +
         `[${w.text} vs ${w.ground}]
       ${w.state.colour} on ${w.state.bg}`,
+    );
+  }
+
+  // The boundary sweep. SC 1.4.11's first bullet: a control's own edge, and every focus ring.
+  // Reported worst-theme-per-rule like the two sweeps above, for the same reason.
+  const boundaryWorst = new Map();
+  const decorationWorst = new Map();
+  for (const { name, decls } of themes) {
+    const resolve = makeResolver(layers, decls);
+    const surface = resolve('--gog-surface-color');
+    for (const edge of boundaryPairs) {
+      let ink;
+      try {
+        ink = resolve(edge.value);
+      } catch {
+        ink = null;
+      }
+      if (ink === null) {
+        // Deliberately not silent. A boundary this script cannot resolve is a boundary it is not
+        // checking, and failing open is the bug `gog-tag`'s mix ratio already taught this file.
+        // It fails the run only for an edge we gate, though: `gog-tag`'s own border reaches the
+        // instance layer through a fallback the resolver does not follow, and a tag renders
+        // nothing interactive, so that one is decoration and belongs in the printed half.
+        (edge.gated ? failures : findings).push(
+          `[unresolvable] ${name} — ${edge.file} ${edge.selector} ${edge.prop}: ` +
+            `${edge.value}
+      teach the resolver this syntax rather than skipping the edge`,
+        );
+        continue;
+      }
+      for (const groundToken of edge.grounds) {
+        const raw = resolve(groundToken);
+        if (raw === null) continue;
+        const ground = raw.a === 1 ? raw : over(raw, surface);
+        // A boundary is adjacent to what is OUTSIDE it. Measuring it against the fill it encloses
+        // asks whether a border contrasts with its own control, which 1.4.11 does not require and
+        // which reports 1.00:1 for every checked box whose border deliberately matches its fill.
+        // A border that resolves to nothing is not a boundary: the control is identified by
+        // something else, and compositing nothing over the ground reports 1.00:1 about a
+        // thing that is not painted.
+        if (ink.a === 0) continue;
+        const edgeColour = ink.a === 1 ? ink : over(ink, ground);
+        let ratio = contrast(edgeColour, ground);
+        // A fill that carries the identification on its own excuses the hairline around it. Same
+        // shape as EDGE_PAIRS' "best of the two tones": the requirement is that *something* marks
+        // the control, not that a particular property does.
+        let carriedBy = 'border';
+        if (ratio < 3.0 && edge.fill) {
+          let fill = null;
+          try {
+            fill = resolve(edge.fill);
+          } catch {
+            fill = null;
+          }
+          if (fill && fill.a > 0) {
+            const fillColour = fill.a === 1 ? fill : over(fill, ground);
+            const fillRatio = contrast(fillColour, ground);
+            if (fillRatio > ratio) {
+              ratio = fillRatio;
+              carriedBy = 'fill';
+            }
+          }
+        }
+        pairsChecked++;
+        if (ratio >= 3.0) continue;
+        const bucket = edge.gated ? boundaryWorst : decorationWorst;
+        const key = `${edge.file} ${edge.selector} ${edge.prop}`;
+        const worst = bucket.get(key);
+        if (!worst || ratio < worst.ratio)
+          bucket.set(key, {
+            ratio,
+            theme: name,
+            edge,
+            groundToken,
+            ink: toHex(edgeColour),
+            ground: toHex(ground),
+            themes: new Set([...(worst?.themes ?? []), name]),
+          });
+        else worst.themes.add(name);
+      }
+    }
+  }
+  for (const [key, w] of [...boundaryWorst].sort((a, b) => a[1].ratio - b[1].ratio)) {
+    failures.push(
+      `[contrast] ${w.theme} — ${key} (${w.edge.kind}): ` +
+        `${w.ratio.toFixed(2)}:1 (need 3:1) [${w.ink} vs ${w.ground}]
+` +
+        `      ${w.edge.value} on ${w.groundToken}` +
+        `\n      fails in ${w.themes.size} theme(s): ${[...w.themes].sort().join(', ')}`,
+    );
+  }
+  // Decorative edges are printed, never gated — see the note on CONTROL_BOUNDARIES. Kept visible
+  // so the numbers stay in the audit rather than being silently dropped from it.
+  for (const [key, w] of [...decorationWorst].sort((a, b) => a[1].ratio - b[1].ratio).slice(0, 8)) {
+    findings.push(
+      `${w.theme} — ${key}: ${w.ratio.toFixed(2)}:1 (decoration, not gated) ` +
+        `[${w.ink} vs ${w.ground}]`,
     );
   }
 

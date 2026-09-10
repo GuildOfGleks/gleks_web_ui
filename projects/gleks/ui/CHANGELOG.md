@@ -8,6 +8,20 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`--gog-control-boundary-color`, and `npm run suggest:color`.** A foundation token for the edge
+  that _identifies_ a control, separate from `--gog-border-color`, which draws dividers, table
+  rules and panel outlines and is deliberately kept faint. `gog-chip`, `gog-toggle` and
+  `gog-button-toggle` had been reading the decorative one as their own boundary; measured across
+  all eleven themes they sat at 1.18 to 2.17:1, against the 3:1 WCAG SC 1.4.11 requires, and
+  neither their border nor their fill carried it. All three read the new token now.
+
+  Its eleven values are computed rather than chosen. `npm run suggest:color -- <ink> <ground>
+[target]` takes a hex or a `--gog-*` token, resolves it per theme, and walks lightness in OKLCH
+  — holding hue and chroma, so a gold comes back gold rather than brown — until the ratio clears,
+  then verifies the answer by measuring it. It reports per theme, because a palette problem is
+  almost never in one theme alone, and it says so plainly when a hue cannot reach the target at
+  any lightness instead of returning a colour that silently misses.
+
 - **An elevation ladder — `--gog-elevation-0` through `-5` — and the ten knobs a theme turns to
   place its own shadows on it.** Six heights, Z doubling: 0, 1, 2, 4, 8, 16. A step is two lights,
   a contact shadow that hugs the object and never moves and a key light whose offset is Z and
@@ -68,6 +82,24 @@ reached 1.0, so breaking changes may land in minor versions.
   true once `--gog-density` moves the padding.
 
 ### Changed
+
+- **Eight focus indicators were nearly invisible and now read the accent.** `gog-checkbox`,
+  `gog-radio-group` and `gog-multiselect` drew their `:focus-visible` outline from
+  `--gog-accent-pale` — a wash, measured at 1.38:1 against the light page — and it was the only
+  thing marking focus on those controls. `gog-chip` reached for `--gog-chip-border`, its
+  decorative hairline, because it had a focus-ring width and offset but no colour;
+  `gog-accordion`'s header read `--gog-accordion-hover-ring`, so a hover-weight colour was doing
+  focus duty. Fourteen of the library's focus rings already read `--gog-accent-color`; these were
+  the outliers. New tokens: `--gog-chip-focus-ring-color` and
+  `--gog-accordion-focus-ring-color`. Visible, and meant to be: a focused checkbox now carries a
+  solid accent ring where it had a pale halo.
+
+- **`material` and `primeng` give their form fields a boundary that can be seen.** Both pointed
+  `--gog-input-field-border` and four siblings at `--gog-border-color`, the decorative hairline,
+  putting every text field, select, multiselect and checkbox edge at 1.18–1.62:1. Each now carries
+  its own grey at the lightness that clears 3.2:1 against the harder of its two grounds, computed
+  by `suggest:color` with hue and chroma held, so both themes keep their own neutral. The
+  decorative token is untouched in both.
 
 - **`gog-menu`'s panel sits at the dropdown tier instead of the dialog's.** Its shadow was an
   alias of `--gog-dialog-shadow` (`0 24px 48px`, alpha 0.5 on the base themes) while

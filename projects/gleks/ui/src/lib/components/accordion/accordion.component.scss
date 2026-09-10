@@ -105,7 +105,7 @@
 }
 
 .gog-accordion__header:focus-visible {
-  outline: var(--gog-accordion-focus-ring-width) solid var(--gog-accordion-hover-ring);
+  outline: var(--gog-accordion-focus-ring-width) solid var(--gog-accordion-focus-ring-color);
   outline-offset: calc(var(--gog-accordion-focus-ring-width) * -1);
 }
 

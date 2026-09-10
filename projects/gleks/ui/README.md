@@ -197,6 +197,13 @@ the other four up from whatever encloses it, which is how a light subtree inside
 up with dark-weight shadows. `--gog-panel-shadow`, `--gog-dialog-shadow` and the rest are still the
 names you override for a single surface; what changed is that their default is a step.
 
+**A control's edge and a divider are different tokens.** `--gog-border-color` is decoration —
+dividers, table rules, panel outlines — and every theme keeps it faint on purpose.
+`--gog-control-boundary-color` is the edge that says _this is a control_, and WCAG SC 1.4.11 wants
+it at 3:1 against whatever it sits on. If you build a theme, set both: a palette that gives them
+one value either shouts its dividers or hides its controls. `npm run suggest:color -- <ink>
+<ground> 3` will tell you the nearest passing value for any colour you would rather keep.
+
 **A status colour is three tokens, not one.** `--gog-danger-color` and its three siblings are
 fills, and a fill needs a label that reads on it and a direction to deepen in — so each also has
 `--gog-<status>-text-color` (the label; defaults to the accent's, state it only when your hue

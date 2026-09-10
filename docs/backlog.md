@@ -212,16 +212,56 @@ keeping here rather than in the plan, because both are about how a check fails:
   `styles/presets/` — should not be mergeable until both of these agree, and the second half is the
   one that does not exist yet.
 
+  **Half of this closed on 2026-09-10, in 21.12.0.** The WCAG half's reach gap is shut and the
+  solver exists; what is still open is the OKLCH _checks_ — the ramp, chroma-band, ΔL and
+  hue-drift rules below, which are a different piece of work from the walk that fixes a failing
+  pair. Read the two bullets under **1** with that in mind: the first is closed, the rest stand.
+
+  **What closing it cost, and the general lesson.** The boundary sweep reads `border-color`,
+  `outline-color` and the shorthands that set either, out of the compiled stylesheets, and
+  measures them against the ground the control sits on. It took 2253 pairs to 3883 and found
+  **twenty real failures**: eight focus indicators drawn from a wash or a decorative hairline
+  (`gog-checkbox`, `gog-radio-group`, `gog-multiselect`, `gog-chip`, `gog-accordion` — a focused
+  checkbox measured 1.38:1 in `light`), seven field borders in `material` and `primeng`, and three
+  controls whose edge came from `--gog-border-color` in every theme. All fixed, and
+  `--gog-control-boundary-color` exists now because of the last group.
+
+  **A proxy token is not a boundary.** This script gated `--gog-accent-dim` and said in its own
+  header that it was "the colour a rest-state field border actually resolves to". It was — in the
+  base theme. Two presets re-point that component token, so the check measured a token those
+  themes no longer use for the job and passed while the real edge sat at 1.18:1. The same header
+  claimed focus rings are drawn from `--gog-accent-color` "everywhere"; six read the pale wash.
+  Both claims were true when written and neither was checked again. **Read the declaration that
+  paints, never the token you believe it resolves to.**
+
+  **And the file's own warning was repeated verbatim while writing this.** The note above
+  `COLOUR_DECL` says not to build these patterns with `new RegExp` from a template literal,
+  because the escapes get eaten and the sweep silently matches nothing. That is exactly what
+  happened: the first working run read **zero** boundaries and the check passed, reporting its
+  usual healthy pair count. `assertBoundaryPatternsWork()` is that lesson made permanent — five
+  cases with known answers, run on every invocation, because "I doubled the backslashes correctly"
+  is not something to verify by reading.
+
+  **One boundary is still not measured, and it is a limit rather than an exemption.**
+  `.gog-btn` is out of the gated set: what identifies a button depends on its variant — a filled
+  one is its fill, an outline one its border, a ghost one neither until hovered — and the sweep
+  resolves a painting rule once, so on `.gog-btn` it reads `--gog-button-primary-border`, which is
+  `transparent` in the base theme. Measuring the outline variant's border needs the
+  modifier-layering `collectVariantPairs` already does, applied to boundaries. Worth doing; not
+  done.
+
   **1. WCAG 2.1 contrast ratio — largely built, and here is what it does not cover.**
   `check:contrast` (2253 pairs, 11 themes) and `check:app-contrast` are both CI steps already, so
   the _gate_ exists; the question is its reach. Audited 2026-09-05:
 
-  - **Only `color` and `background-color` are read.** The sweep never looks at `border-color`,
-    `outline-color` or a `box-shadow` colour — which is the whole first bullet of SC 1.4.11, the
-    boundary that says "this is a control". 36 `*-border-color` tokens, 6 `*-focus-ring-color` and
-    31 `*-shadow` tokens are unmeasured; the only thing standing in for them is one hand-picked
-    foundation pair (`accentDim` against the two grounds). A field's own border in a preset that
-    tints it can fall under 3:1 with nothing complaining.
+  - ~~**Only `color` and `background-color` are read.**~~ **Closed 2026-09-10.** The boundary
+    sweep reads `border-color`, `outline-color` and the `border`/`outline` shorthands, gates every
+    focus indicator wherever it appears, and gates a border wherever it is how you identify a
+    control. Its last sentence turned out to be a prediction: "a field's own border in a preset
+    that tints it can fall under 3:1 with nothing complaining" — `material` and `primeng`, seven
+    boundaries each side of 1.2:1. **`*-shadow` colours are still unmeasured**, and are a smaller
+    question than they were: since the elevation ladder every shadow is generated from one
+    per-theme alpha pair, so the sweep to write is over eleven knob sets rather than 31 tokens.
   - **Large text is not modelled.** Everything not in `NON_TEXT_ELEMENTS` is held to 4.5:1, but
     SC 1.4.3 allows 3:1 at 18.66px bold / 24px. That direction is safe but not free: it invites a
     palette to be darkened for a heading that never needed it.
@@ -248,7 +288,16 @@ keeping here rather than in the plan, because both are about how a check fails:
   - **Hue drift inside a family.** A theme whose `success` and `info` sit 12° apart has two statuses
     a reader cannot tell apart, and no contrast pair will ever say so.
 
-  **3. The part that makes it usable: a solver, not just a gate.** A check that says "2.77:1, need
+  **3. The part that makes it usable: a solver, not just a gate.** ✅ **Built 2026-09-10** as
+  `scripts/oklch.mjs` plus `npm run suggest:color`, and it paid for itself in the same session:
+  every value in the twenty fixes above came out of it rather than out of anyone's eye. Three
+  things it does that the sketch below did not ask for, each learned from using it. It resolves a
+  **token** per theme, not just a hex, because a palette problem is almost never in one theme
+  alone. It **verifies the colour it returns by measuring it**, since `oklchToRgb` clips
+  out-of-gamut combinations and a solver that trusts its own search is the same failing-open bug
+  as a checker that matches nothing. And it reports **no solution** with the best ratio the hue
+  can reach, rather than returning something that misses — giving up chroma is a design decision
+  and it takes `--allow-chroma-loss` to make it. The original sketch: A check that says "2.77:1, need
   4.5" leaves the fixing to taste. In OKLCH the fix is arithmetic: hold hue and chroma, walk L until
   the ratio clears, and report the nearest passing colour. Every palette fix this project has made
   by hand — `slate`'s sky-500 to sky-700, `light`'s gold, `one-dark`'s comment grey — is that walk

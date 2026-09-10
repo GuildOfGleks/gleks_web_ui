@@ -175,6 +175,9 @@ Full model is in `README.md`'s Theming section; short version:
   everything) → **component** (`--gog-button-primary-bg`, …, one block per component, named after
   the component's own element) → **instance** (`--gog-button-bg`, …, deliberately undeclared
   escape hatch for one element).
+- **`--gog-control-boundary-color` is the edge that identifies a control** (since 21.12.0), and
+  it is not `--gog-border-color`, which is the decorative hairline for dividers, table rules and
+  panel outlines. `gog-chip`, `gog-toggle` and `gog-button-toggle` read it. A theme sets both.
 - **Shadows are an elevation ladder** (since 21.12.0): `--gog-elevation-0` … `-5`, Z doubling
   0/1/2/4/8/16. Step 1 is a thumb riding on a control, 2 an `elevated` card or panel, 3 anything
   anchored to a control (dropdown panel, tooltip, menu), 4 a toast, 5 a modal dialog. The steps are

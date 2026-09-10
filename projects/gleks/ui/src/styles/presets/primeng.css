@@ -68,6 +68,17 @@
      puts a *toast* — that height was the theme restating one hand-written value for every
      surface, and it is exactly what the ladder exists to stop. The negative spreads go with it,
      for the same reason `material`'s positive one does. */
+  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
+     decorative hairline this library draws dividers, table rules and panel outlines with and
+     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
+     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
+     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
+     Neither their border nor their fill carried it; the sweep checks the better of the two.
+
+     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
+     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
+     the page and the surface. */
+  --gog-control-boundary-color: #878d94;
   --gog-elevation-ink: 0 0 0;
   --gog-elevation-key-alpha: 0.08;
   --gog-elevation-ambient-alpha: 0.05;
@@ -114,17 +125,29 @@
   /* Field labels — muted gray, not accent-colored (casing/tracking from the character layer) */
   --gog-input-label-color: var(--gog-muted-text-color);
   --gog-input-label-font-family: var(--gog-font-body);
-  --gog-input-field-border: var(--gog-border-color);
+  /* The boundary that identifies a control, and it cannot be `--gog-border-color`.
+     This theme pointed all five of these at the decorative hairline, which is deliberately kept
+     faint — #e2e8f0 at 1.18:1 against this theme's own ground, against the 3:1 WCAG 1.4.11
+     requires of anything that says "this is a text field" rather than "this is a rectangle".
+     Found by the boundary sweep in 21.12.0, which reads the declaration that paints instead of
+     the token the check *assumed* it painted: `check:contrast` had been gating `--gog-accent-dim`
+     because that is what the base theme resolves a field border to, and this theme re-points it.
+
+     #878d94 is the same grey at the lightness that clears 3.2:1 against the harder of this theme's
+     two grounds -- computed by `npm run suggest:color`, holding hue and chroma so the theme's
+     neutral stays its own neutral. The decorative `--gog-border-color` is untouched: a divider
+     and a field boundary are different jobs and now have different values. */
+  --gog-input-field-border: #878d94;
   --gog-select-label-color: var(--gog-muted-text-color);
   --gog-select-label-font-family: var(--gog-font-body);
-  --gog-select-field-border: var(--gog-border-color);
+  --gog-select-field-border: #878d94;
   --gog-multiselect-label-color: var(--gog-muted-text-color);
   --gog-multiselect-label-font-family: var(--gog-font-body);
-  --gog-multiselect-field-border: var(--gog-border-color);
-  --gog-multiselect-checkbox-border: var(--gog-border-color);
+  --gog-multiselect-field-border: #878d94;
+  --gog-multiselect-checkbox-border: #878d94;
 
   /* Checkbox */
-  --gog-checkbox-border-color: var(--gog-border-color);
+  --gog-checkbox-border-color: #878d94;
   --gog-checkbox-label-color: var(--gog-text-color);
 
   /* Accordion — surface header instead of transparent (casing from the character layer) */

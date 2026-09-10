@@ -19,6 +19,7 @@
     "lint": "ng lint @gleks/ui && ng lint ui-showcase && ng lint gleks-ui-lab",
     "check:tokens": "node scripts/check-tokens.mjs && node scripts/generate-tokens.mjs --check",
     "check:elevation": "node scripts/check-elevation.mjs",
+    "suggest:color": "node scripts/suggest-color.mjs",
     "check:theme-starter": "node scripts/generate-theme-starter.mjs --check",
     "check:deprecations": "node scripts/check-deprecations.mjs && node scripts/generate-deprecations.mjs --check",
     "serve:ssr:ui-showcase": "node dist/ui-showcase/server/server.mjs",

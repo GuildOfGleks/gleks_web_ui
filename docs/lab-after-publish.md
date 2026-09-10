@@ -40,6 +40,34 @@ Small next to 21.11.0's section below, and it does not replace it: **21.11.0's e
 open**, because the lab is deliberately being left alone for now. Work through that section first
 — it is the one whose two code entries break silently.
 
+### `--gog-control-boundary-color`, and eight focus rings that became visible
+
+A new foundation token, and it needs a hand-written entry in
+`pages/theming-page/token-reference-data.ts` like the elevation family below. The Theming page
+should say what it is _for_, because the distinction is the whole point and a token table cannot
+carry it: `--gog-border-color` is decoration (dividers, table rules, panel outlines) and stays
+faint; `--gog-control-boundary-color` is the edge that identifies a control and has to clear 3:1
+under WCAG SC 1.4.11. **A theme author who sets only one of them either shouts their dividers or
+hides their controls**, which is exactly what three of this package's own presets were doing.
+
+Also new and needing entries: `--gog-chip-focus-ring-color` and `--gog-accordion-focus-ring-color`.
+
+**Visible on the component pages, so look rather than only diffing the table:**
+
+- **Chips, switches and segmented controls have a clearly darker outline in all eleven themes.**
+  Not a regression — those three read the decorative hairline until 21.12.0 and were unidentifiable
+  by WCAG in every shipped theme.
+- **A focused checkbox, radio, multiselect, chip or accordion header now carries a solid accent
+  ring.** It was a pale wash at 1.38:1, which is to say invisible. If any lab screenshot or prose
+  describes the focus style as subtle, it is now wrong.
+- **`material` and `primeng` form fields have visibly darker borders.** Same cause, theme-local.
+
+**The comparison page has a new claim available to it**, and it is a strong one: the accessibility
+section can say the library computes its palettes rather than eyeballing them —
+`npm run suggest:color` ships in the repo, and `check:contrast` is 3883 gated pairs across eleven
+themes including every control boundary and every focus indicator. Worth checking what
+`compare-full.md` currently claims about accessibility before writing it.
+
 ### The elevation ladder is a new foundation family, and it changes what shadows look like
 
 The largest item in this section. `--gog-elevation-*` is sixteen new tokens — six generated steps

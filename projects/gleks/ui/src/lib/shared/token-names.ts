@@ -29,6 +29,7 @@ export type GogTokenName =
   | '--gog-accordion-chevron-transition-duration'
   | '--gog-accordion-content-gap'
   | '--gog-accordion-disabled-opacity'
+  | '--gog-accordion-focus-ring-color'
   | '--gog-accordion-focus-ring-width'
   | '--gog-accordion-font-family'
   | '--gog-accordion-font-size'
@@ -482,6 +483,7 @@ export type GogTokenName =
   | '--gog-chip-border-width'
   | '--gog-chip-color'
   | '--gog-chip-disabled-opacity'
+  | '--gog-chip-focus-ring-color'
   | '--gog-chip-focus-ring-offset'
   | '--gog-chip-focus-ring-width'
   | '--gog-chip-font-family'
@@ -554,6 +556,7 @@ export type GogTokenName =
   | '--gog-confirmation-dialog-title-line-height'
   | '--gog-control-border-style'
   | '--gog-control-border-width'
+  | '--gog-control-boundary-color'
   | '--gog-control-checkbox-box-size-lg'
   | '--gog-control-checkbox-box-size-md'
   | '--gog-control-checkbox-box-size-slg'
@@ -1724,6 +1727,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-accent-text-color',
       '--gog-background-color',
       '--gog-border-color',
+      '--gog-control-boundary-color',
       '--gog-danger-color',
       '--gog-elevation-ambient-alpha',
       '--gog-elevation-contact-blur',
@@ -1863,6 +1867,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-accordion-chevron-line-height',
       '--gog-accordion-chevron-transition-duration',
       '--gog-accordion-disabled-opacity',
+      '--gog-accordion-focus-ring-color',
       '--gog-accordion-focus-ring-width',
       '--gog-accordion-font-family',
       '--gog-accordion-header-bg',
@@ -2269,6 +2274,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-chip-border-width',
       '--gog-chip-color',
       '--gog-chip-disabled-opacity',
+      '--gog-chip-focus-ring-color',
       '--gog-chip-focus-ring-offset',
       '--gog-chip-focus-ring-width',
       '--gog-chip-font-family',

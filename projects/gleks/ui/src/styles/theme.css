@@ -320,6 +320,17 @@
   --gog-warning-color: #c45100; /* Dark amber */
   --gog-info-color: #2b5c8f; /* Lapis */
 
+  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
+     decorative hairline this library draws dividers, table rules and panel outlines with and
+     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
+     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
+     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
+     Neither their border nor their fill carried it; the sweep checks the better of the two.
+
+     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
+     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
+     the page and the surface. */
+  --gog-control-boundary-color: #96866d;
   --gog-spinner-overlay-bg: rgba(247, 243, 235, 0.85);
 }
 
@@ -356,6 +367,17 @@
   --gog-warning-color: #c45100; /* Dark amber */
   --gog-info-color: #2b5c8f; /* Lapis */
 
+  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
+     decorative hairline this library draws dividers, table rules and panel outlines with and
+     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
+     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
+     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
+     Neither their border nor their fill carried it; the sweep checks the better of the two.
+
+     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
+     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
+     the page and the surface. */
+  --gog-control-boundary-color: #96866d;
   --gog-spinner-overlay-bg: rgba(247, 243, 235, 0.85);
 
   /* Restated rather than inherited, and every knob of the set rather than the ones that differ
@@ -427,6 +449,7 @@
   --gog-elevation-ring-width: 1px;
   --gog-elevation-highlight-ink: 255 255 255;
   --gog-elevation-highlight-alpha: 0.07;
+  --gog-control-boundary-color: #716353;
   --gog-spinner-overlay-bg: rgba(13, 11, 8, 0.85);
 }
 
@@ -660,6 +683,9 @@
   --gog-accordion-hover-color: var(--gog-accordion-text-color);
   --gog-accordion-press-bg: var(--gog-border-color);
   --gog-accordion-hover-ring: var(--gog-accent-dim);
+  /* Its own token. The header's `:focus-visible` outline read `--gog-accordion-hover-ring`, so a
+     hover-weight colour was doing focus duty and failed 3:1 in all eleven themes. */
+  --gog-accordion-focus-ring-color: var(--gog-accent-color);
   --gog-accordion-focus-ring-width: var(--gog-focus-ring-width);
   --gog-accordion-body-color: var(--gog-text-color);
   --gog-accordion-body-line-height: var(--gog-line-height-loose);
@@ -993,7 +1019,7 @@
   --gog-button-toggle-radius: var(--gog-radius);
   --gog-button-toggle-border-width: var(--gog-control-border-width);
   --gog-button-toggle-border-style: var(--gog-control-border-style);
-  --gog-button-toggle-border-color: var(--gog-border-color);
+  --gog-button-toggle-border-color: var(--gog-control-boundary-color);
   --gog-button-toggle-rest-bg: transparent;
   --gog-button-toggle-rest-color: var(--gog-text-color);
   --gog-button-toggle-hover-bg: var(--gog-hover-color);
@@ -1159,7 +1185,11 @@
   --gog-checkbox-icon-line-height: var(--gog-line-height-none);
   --gog-checkbox-label-color: var(--gog-muted-text-color);
   --gog-checkbox-label-line-height: var(--gog-line-height-snug);
-  --gog-checkbox-focus-ring: var(--gog-accent-pale);
+  /* The accent, not `--gog-accent-pale`. This outline is the *only* thing marking focus on this
+     control, and a pale wash cannot carry that: measured 1.38:1 against the light page, against
+     the 3:1 WCAG 2.4.11 and 1.4.11 both require. Fourteen of the library's focus rings already
+     read `--gog-accent-color`; these were the outliers, found by the boundary sweep in 21.12.0. */
+  --gog-checkbox-focus-ring: var(--gog-accent-color);
   --gog-checkbox-focus-ring-width: var(--gog-focus-ring-width);
   --gog-checkbox-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-checkbox-disabled-opacity: var(--gog-disabled-opacity);
@@ -1188,7 +1218,11 @@
   --gog-radio-dot-size-ratio: 0.45;
   --gog-radio-label-color: var(--gog-muted-text-color);
   --gog-radio-label-line-height: var(--gog-line-height-snug);
-  --gog-radio-focus-ring: var(--gog-accent-pale);
+  /* The accent, not `--gog-accent-pale`. This outline is the *only* thing marking focus on this
+     control, and a pale wash cannot carry that: measured 1.38:1 against the light page, against
+     the 3:1 WCAG 2.4.11 and 1.4.11 both require. Fourteen of the library's focus rings already
+     read `--gog-accent-color`; these were the outliers, found by the boundary sweep in 21.12.0. */
+  --gog-radio-focus-ring: var(--gog-accent-color);
   --gog-radio-focus-ring-width: var(--gog-focus-ring-width);
   --gog-radio-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-radio-disabled-opacity: var(--gog-disabled-opacity);
@@ -1205,7 +1239,7 @@
   --gog-chip-bg: var(--gog-surface-color);
   --gog-chip-hover-bg: var(--gog-hover-color);
   --gog-chip-press-bg: var(--gog-border-color);
-  --gog-chip-border: var(--gog-border-color);
+  --gog-chip-border: var(--gog-control-boundary-color);
   --gog-chip-border-width: var(--gog-border-width);
   --gog-chip-border-style: var(--gog-border-style);
   --gog-chip-color: var(--gog-text-color);
@@ -1228,6 +1262,10 @@
   --gog-chip-selected-ring-width: 2px;
   --gog-chip-selected-shadow: inset 0 0 0 var(--gog-chip-selected-ring-width)
     var(--gog-accent-color);
+  /* The chip had a focus-ring width and offset but no colour, so `chip.component.scss` reached
+     for `--gog-chip-border` — the decorative hairline, 1.18:1 in `primeng`. A focus indicator
+     needs a colour of its own. */
+  --gog-chip-focus-ring-color: var(--gog-accent-color);
   --gog-chip-focus-ring-width: 2px;
   --gog-chip-focus-ring-offset: var(--gog-focus-ring-offset);
 
@@ -1702,7 +1740,11 @@
   --gog-multiselect-value-color: var(--gog-text-color);
   --gog-multiselect-placeholder-color: var(--gog-muted-text-color);
   --gog-multiselect-focus-border: var(--gog-accent-color);
-  --gog-multiselect-focus-ring: var(--gog-accent-pale);
+  /* The accent, not `--gog-accent-pale`. This outline is the *only* thing marking focus on this
+     control, and a pale wash cannot carry that: measured 1.38:1 against the light page, against
+     the 3:1 WCAG 2.4.11 and 1.4.11 both require. Fourteen of the library's focus rings already
+     read `--gog-accent-color`; these were the outliers, found by the boundary sweep in 21.12.0. */
+  --gog-multiselect-focus-ring: var(--gog-accent-color);
   --gog-multiselect-focus-glow: 0 0 8px var(--gog-multiselect-focus-ring);
   --gog-multiselect-focus-ring-width: var(--gog-focus-ring-width);
   --gog-multiselect-focus-ring-offset: var(--gog-focus-ring-offset);
@@ -2468,7 +2510,7 @@
   --gog-toggle-radius: 999px;
   --gog-toggle-border-width: var(--gog-border-width);
   --gog-toggle-border-style: var(--gog-border-style);
-  --gog-toggle-border-color: var(--gog-border-color);
+  --gog-toggle-border-color: var(--gog-control-boundary-color);
   --gog-toggle-on-border-color: var(--gog-accent-color);
   --gog-toggle-track-off-bg: var(--gog-border-color);
   --gog-toggle-track-on-bg: var(--gog-accent-color);
@@ -2697,8 +2739,6 @@
     --gog-calendar-range-bg: color-mix(in srgb, var(--gog-accent-color) 16%, transparent);
     --gog-card-filled-bg: color-mix(in srgb, var(--gog-accent-dim) 8%, var(--gog-surface-color));
     --gog-card-hover-border-color: color-mix(in srgb, var(--gog-accent-color) 45%, transparent);
-    --gog-checkbox-focus-ring: color-mix(in srgb, var(--gog-accent-color) 25%, transparent);
-    --gog-radio-focus-ring: color-mix(in srgb, var(--gog-accent-color) 25%, transparent);
     --gog-chip-bg: color-mix(in srgb, var(--gog-surface-color) 88%, var(--gog-hover-color));
     --gog-chip-hover-bg: color-mix(in srgb, var(--gog-hover-color) 45%, var(--gog-surface-color));
     --gog-dialog-close-hover-bg: color-mix(in srgb, var(--gog-hover-color) 70%, transparent);
@@ -2718,7 +2758,6 @@
       var(--gog-input-icon-hover-color) 12%,
       transparent
     );
-    --gog-multiselect-focus-ring: color-mix(in srgb, var(--gog-accent-color) 25%, transparent);
     --gog-multiselect-option-hover-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
     --gog-panel-filled-bg: color-mix(in srgb, var(--gog-accent-dim) 8%, var(--gog-surface-color));
     --gog-panel-toggle-hover-bg: color-mix(in srgb, var(--gog-hover-color) 70%, transparent);

@@ -68,6 +68,17 @@
   /* Was #0184bc — One Light's own blue, 4.18:1 under a white label. Darkened: 5.13:1. */
   --gog-info-color: #0175a6;
 
+  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
+     decorative hairline this library draws dividers, table rules and panel outlines with and
+     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
+     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
+     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
+     Neither their border nor their fill carried it; the sweep checks the better of the two.
+
+     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
+     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
+     the page and the surface. */
+  --gog-control-boundary-color: #8d8c8d;
   --gog-elevation-ink: 56 58 66;
   --gog-elevation-key-alpha: 0.12;
   --gog-elevation-ambient-alpha: 0.06;

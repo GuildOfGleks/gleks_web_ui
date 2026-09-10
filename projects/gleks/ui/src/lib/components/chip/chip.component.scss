@@ -56,7 +56,7 @@
 }
 
 .gog-chip__surface:focus-visible {
-  outline: var(--gog-chip-focus-ring-width) solid var(--gog-chip-border);
+  outline: var(--gog-chip-focus-ring-width) solid var(--gog-chip-focus-ring-color);
   outline-offset: var(--gog-chip-focus-ring-offset);
 }
 
@@ -167,7 +167,7 @@
 }
 
 .gog-chip__remove:focus-visible {
-  outline: var(--gog-chip-focus-ring-width) solid var(--gog-chip-border);
+  outline: var(--gog-chip-focus-ring-width) solid var(--gog-chip-focus-ring-color);
   outline-offset: var(--gog-chip-focus-ring-offset);
 }
 
