@@ -176,17 +176,6 @@ not worth carrying here.
   component is touched, and the branch protocol for the sweep: one component, one commit. Do not
   start the sweep from this entry; the check comes first, and the plan says why.
 
-- **`--gog-slider-thumb-shadow` carries a colour, not a shadow.** Found 2026-09-10 while
-  classifying every `*-shadow` token for the elevation ladder, and it is the only one of the 31
-  whose name is simply wrong: the thumb composes it as
-  `box-shadow: 0 0 var(--gog-slider-thumb-glow-size) var(--gog-slider-thumb-shadow)`, so the token
-  holds `var(--gog-accent-pale)` and a `color-mix()`. Nothing is broken — a consumer overriding it
-  with a colour gets what they expect, and one overriding it with a shadow gets a declaration that
-  silently drops. `--gog-slider-thumb-glow-color` is the name; renaming a public token is a
-  deprecation cycle, so it belongs with the other two entries under **Structural** rather than
-  here. It is listed in `check-elevation.mjs`'s `NOT_ELEVATION` with that reason, so the next
-  reader does not re-derive it.
-
 **The elevation ladder closed D5** (2026-09-10, 21.12.0), which was the last open decision in
 `docs/component-geometry.md`. Six generated steps, ten knobs a theme turns, and
 `npm run check:elevation` in CI. Three shipped defects came out of it rather than being looked
@@ -545,6 +534,18 @@ reason may stop holding.
 
 Not defects, and not cheap: both change a consumer's import paths or public surface, so neither
 can land without an announced removal window.
+
+- **`--gog-slider-thumb-shadow` carries a colour, not a shadow.** Found 2026-09-10 while
+  classifying every `*-shadow` token for the elevation ladder, and it is the only one of the 31
+  whose name is simply wrong: the thumb composes it as
+  `box-shadow: 0 0 var(--gog-slider-thumb-glow-size) var(--gog-slider-thumb-shadow)`, so the token
+  holds `var(--gog-accent-pale)` and a `color-mix()`. Nothing is broken — a consumer overriding it
+  with a colour gets what they expect, and one overriding it with a shadow gets a declaration that
+  silently drops. `--gog-slider-thumb-glow-color` is the name; renaming a public token is a
+  deprecation cycle, so it belongs with the other two entries under **Structural** rather than
+  here. It is listed in `check-elevation.mjs`'s `NOT_ELEVATION` with that reason, so the next
+  reader does not re-derive it. Filed here rather than under Defects because nothing is broken:
+  the rename is the work, and a rename is a deprecation cycle.
 
 - **Incidental public exports.** `public-api.ts` re-exports two helper modules wholesale
   (`export * from './lib/components/datepicker/date-utils'` and `'./lib/shared/option-accessor'`),
