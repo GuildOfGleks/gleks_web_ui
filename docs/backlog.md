@@ -51,7 +51,7 @@ not worth carrying here.
   corner point lands on the centre of the outer arc, so a right angle is equidistant from the
   whole curve and is the only shape holding the gap constant. **And the check had to resolve at
   two densities to be true:** `--gog-autocomplete-option-radius` was `calc(var(--gog-radius) -
-  4px)`, correct at `--gog-density: 1` and 0.6px wrong at 0.85, because a restated literal does
+4px)`, correct at `--gog-density: 1` and 0.6px wrong at 0.85, because a restated literal does
   not scale with the padding it restates.
 
   **Law 4 and D8 are done and gated (2026-09-06)**, in `npm run check:typography`, folded into
@@ -70,17 +70,44 @@ not worth carrying here.
   and the centre of mass as much as 3.47 units out — and the second number was correct as drawn,
   because a monoline set reads by extent. It is gated by `check:geometry`'s second half.
 
-- **`--gog-chip-<size>-remove-size` is the same drift, one component over, and smaller.** 1.091,
-  1.167, 1.143, 1.125, 1.111 of the label's font size — five values again, but non-monotonic and
-  inside a 7% band, which is the signature of a px ladder converted to rem rather than of five
-  judgements. Found while measuring the avatar and **deliberately not fixed in the same pass**:
-  picking its number is its own decision, and the whole span between the extremes is 0.6px, so
-  nothing a consumer sees today depends on it. Two things to settle when it is taken: the button's
-  painted box is `remove-size × --gog-chip-remove-scale` (1.1), so the ratio to choose is not the
-  ratio to write; and `chip.component.scss` carries a WCAG 2.5.8 comment quoting "13.2px (`xsm`)
-  to 22px (`slg`)" that moves with it.
+- ~~**`--gog-chip-<size>-remove-size` is the same drift, one component over, and smaller.**~~
+  **Closed 2026-09-10, in the in-progress 21.12.0.** `1.125em` at every size, which is the ratio
+  `lg` already held — the same shape the avatar's answer took, and for the same reason: 1.125 is
+  what all five values were circling (1.091, 1.167, 1.143, 1.125, 1.111), so stating it costs
+  `lg` nothing and no other size more than half a pixel. Both things this entry said to settle
+  were settled: the WCAG 2.5.8 comment now reads 13.6 to 22.3px, and the box/glyph question
+  resolved by _not_ restating the token — see below.
 
-  Do not reach for 1.128 here either: L6 is closed as inapplicable, not deferred, and
+  **The one thing the filing did not anticipate, and it is the reusable part.** This entry framed
+  the box as an arithmetic problem — "the ratio to choose is not the ratio to write" — and it was
+  a units problem. `.gog-chip__remove` reads the token as its own `font-size`, and in every
+  property _but_ `font-size`, `em` resolves against the element's own computed size. So once the
+  token became a ratio, `calc(var(--gog-chip-remove-size) * var(--gog-chip-remove-scale))` in
+  `width` would have compounded 1.125 against the size it had just produced: 19.5px where 17.3px
+  was meant, at `md`. It is `calc(1em * var(--gog-chip-remove-scale))` now — on that element `1em`
+  _is_ the resolved token, whatever a consumer wrote it in. **This is D7's `ch` trap in a second
+  component** (`docs/component-geometry.md`, "a fourth finding, from implementing rather than
+  surveying"), which is twice now: a relative unit means the element that carries the property,
+  not the element the value was written for. Neither check catches it; both times it was caught by
+  measuring in a browser.
+
+- **`--gog-chip-remove-scale` buys less than its name says, and nothing visible depends on it.**
+  Found while measuring the above, and filed rather than fixed for the same reason that entry was:
+  the number is a decision. The box is `remove-scale` (1.1) of the glyph's font-size, but a
+  `gog-icon` renders its `<svg>` at `--gog-icon-size: 1.2em` of that same font-size — so the glyph
+  is 1.2 and the box is 1.1, and **the mark overflows its own button by 9% at every size**
+  (18.9px of glyph in a 17.3px box at `md`). Measured live, and it predates this work: the ratio
+  is `1.2 / 1.1` and is independent of what `remove-size` is.
+
+  It is invisible today because the box paints nothing — no background at rest or on hover, and
+  the focus ring's 2px offset clears the overflow. What it costs is honesty: a consumer who raises
+  `remove-scale` to enlarge the target gets nothing until 1.2. Two readings to choose between, and
+  that is why this is not a one-line fix — either the token means "the box is N× the _token_",
+  which is exactly what it does and makes the name fine, or it means "N× the _glyph_", which needs
+  the icon's own 1.2 in the multiplication and hardcodes a global ratio into one component. The
+  target itself is not at stake: the transparent `::before` carries 24×24 under D6 either way.
+
+  Do not reach for 1.128 on any of this: L6 is closed as inapplicable, not deferred, and
   `docs/component-geometry.md`'s L6 section has the table of every candidate mark and why each has
   no square to be corrected against.
 
@@ -109,6 +136,7 @@ not worth carrying here.
      **This half closed in 21.11.0**: the scale is ten steps, all multiples of 4
      (`docs/component-geometry.md`, D1). Kept here as written, since the finding is what justified
      the decision.
+
   2. **Concentric corner radii.** Inner radius = outer radius − the padding between them. Nothing
      enforces it and the library has all three states: derived (`--gog-tag-radius` is
      `max(var(--gog-radius), 2px)`), independent (`--gog-progressbar-radius: 999px`), and repeated
@@ -123,7 +151,7 @@ not worth carrying here.
      1.6) and its use is per-component taste. The rule is a function of role and size: wrapping
      text takes the relaxed end, a single-line label the tight end, and the ratio falls as the
      font grows. The check needs each component's `-line-height` paired with its `-<size>-font-size`
-     tokens and a role tag — and `--gog-line-height-none: 1` on a tag is *correct*, so the role tag
+     tokens and a role tag — and `--gog-line-height-none: 1` on a tag is _correct_, so the role tag
      is not optional.
   5. **Target size (WCAG 2.5.8 AA, 2.5.5 AAA).** The one that will fail loudest and matters most.
      `--gog-control-checkbox-box-size-xsm` is **12px** and `-sm` is **18px**, against 2.5.8's
@@ -156,7 +184,7 @@ not worth carrying here.
 
   **1. WCAG 2.1 contrast ratio — largely built, and here is what it does not cover.**
   `check:contrast` (2253 pairs, 11 themes) and `check:app-contrast` are both CI steps already, so
-  the *gate* exists; the question is its reach. Audited 2026-09-05:
+  the _gate_ exists; the question is its reach. Audited 2026-09-05:
 
   - **Only `color` and `background-color` are read.** The sweep never looks at `border-color`,
     `outline-color` or a `box-shadow` colour — which is the whole first bullet of SC 1.4.11, the
@@ -174,18 +202,18 @@ not worth carrying here.
     hand-built `EDGE_PAIRS` entry; the next component with two abutting colours will need another.
 
   **2. OKLCH — perceptual lightness and chroma — is the half that is missing entirely.** WCAG's
-  ratio is a luminance formula: it says nothing about whether a ramp *looks* evenly stepped, and it
+  ratio is a luminance formula: it says nothing about whether a ramp _looks_ evenly stepped, and it
   scores two hues that differ wildly as identical when their luminance matches. Every finding in
   21.10.0 came out of that gap. Concretely, the rules worth computing in OKLCH:
 
   - **Ramps must be monotonic and evenly spaced in L.** `--gog-accent-color` /`-bright` /`-dim`
     /`-pale`, the surface tiers, the status colours: rule I in `check-tokens` already asserts they
-    are *different*, which is the weak version of this. `light`'s "hover is darker than rest, dark's
+    are _different_, which is the weak version of this. `light`'s "hover is darker than rest, dark's
     is lighter" is a real design rule that is currently only prose.
   - **A chroma band per role.** A status colour that is nearly grey stops reading as a status;
     one at maximum chroma reads as neon in a parchment theme. Both are one number to check.
   - **ΔL between a surface and what sits on it**, as the perceptual companion to the ratio — this
-    is what catches "the boundary is invisible in greyscale" *before* someone renders it in
+    is what catches "the boundary is invisible in greyscale" _before_ someone renders it in
     greyscale, which is how the progressbar defect was actually found.
   - **Hue drift inside a family.** A theme whose `success` and `info` sit 12° apart has two statuses
     a reader cannot tell apart, and no contrast pair will ever say so.
@@ -236,7 +264,7 @@ reach `gog-spinner-overlay` (the overlay forwarded a `variant` defaulting to `'r
 21.10.0, with four cases added to `spinner-config.spec.ts` — which had mounted only `gog-spinner`
 and `gog-button`, and is why a suite of 1112 tests was green over a key that missed a third of
 its targets. The lesson is the one the 21.8.0 defect already taught and this repeated: a
-component that *renders* a `gog-spinner` reads no config itself, so it appears in no grep for
+component that _renders_ a `gog-spinner` reads no config itself, so it appears in no grep for
 readers and in no test that mounts the configured component directly.
 
 **What was here.** The section emptied on 2026-09-02, when the `GogGlobalConfig` JSDoc defect
@@ -373,14 +401,14 @@ reason may stop holding.
 
 - **The lab's header is its own component now, and that entry is closed.** `app.scss` was
   6.20 kB against a 4 kB warning and an 8 kB error, two thirds of it belonging to one row of the
-  layout, and this file said to split it *before* the next header feature rather than after the
+  layout, and this file said to split it _before_ the next header feature rather than after the
   build breaks. Three header features later (the ripple toggle, the icon-swap states, the four
   tooltips) that moment arrived, and `app-header` was extracted on 2026-09-03: the shell keeps the
   grid, the sidebars and the footer, and both stylesheets are now under the 4 kB warning. Kept
   here only for the two things the split needed that a reader would otherwise rediscover —
   `:host { display: contents }`, so `.lab-header` stays the grid item and every moved rule is the
   one that was there rather than a re-plumbed version; and Escape, which stayed in the shell,
-  because its priority order runs *past* the header into the nav drawer and splitting it would
+  because its priority order runs _past_ the header into the nav drawer and splitting it would
   have left that order stated nowhere.
 
 - **`theme.css` payload.** Loaded whole even by an app importing three components — **106 521 B /

@@ -104,6 +104,29 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader>Sizes, with everything the chip can hold</h3>
+    <p class="meta">
+      The avatar, the icon and the remove button are each one ratio of the chip's own type — 1.5em,
+      1em and 1.125em — so the whole object scales from a single font size. This row is where that
+      is visible: the three marks keep their proportion to the label and to each other at all five
+      sizes. A value picked per size instead would drift here first.
+    </p>
+    <div class="chip-grid chip-grid--baseline">
+      @for (size of sizes; track size.value) {
+        <gog-chip
+          [size]="size.value"
+          [avatarUrl]="people[0].avatarUrl"
+          iconName="warning"
+          [removable]="true"
+          [removeAriaLabel]="'Remove the ' + size.label + ' chip'"
+        >
+          {{ size.label }}
+        </gog-chip>
+      }
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Shapes</h3>
     <div class="chip-grid">
       <gog-chip shape="rounded">Rounded</gog-chip>

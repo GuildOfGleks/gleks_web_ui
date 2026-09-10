@@ -22,7 +22,7 @@ delete the section too.
 ## Checking your work
 
 `npm run check:app-contrast` — WCAG AA for both apps' **own** chrome, in all 11 themes. The lab
-half resolves against the palettes of the *installed* package, which is what the site renders
+half resolves against the palettes of the _installed_ package, which is what the site renders
 with; the showcase half against the workspace, which is why it catches a palette problem one
 release earlier. `check:contrast` covers neither: it measures the library. Added 2026-09-03, when
 it found the lab's sidebar hover label and two `code` chips under AA.
@@ -46,7 +46,7 @@ open**, because the lab is deliberately being left alone for now. Work through t
 their own:
 
 - `--gog-select-panel-radius` and `--gog-multiselect-panel-radius` — the dropdown panel's own
-  corner, defaulting to `var(--gog-radius)`. The point worth writing in the description is *why*
+  corner, defaulting to `var(--gog-radius)`. The point worth writing in the description is _why_
   they exist: the panel used to paint the field's radius, so overriding `--gog-select-radius` to
   shape the control also reshaped the overlay. They are separate boxes now. `gog-autocomplete` and
   `gog-datepicker` already had theirs, so if the reference lists those two, this is the pair that
@@ -72,13 +72,18 @@ the pages rather than only the token table:
   1px. If the Chip page shows the five sizes side by side with an avatar, the small end will look
   slightly heavier than it did. The icon is unchanged in every rendered pixel despite its token
   changing to `1em` — do not report it as a diff.
+- **`gog-chip`'s remove button is `1.125em` at every size**, the third of the same family. Measured
+  live at all five: 12.4 / 13.5 / 15.8 / 18 / 20.3px of glyph type against the 12 / 14 / 16 / 18 /
+  20px it was, so `lg` does not move and nothing else moves by more than half a pixel. Almost
+  certainly invisible on the Chip page — listed so that a diff of the token table is not mistaken
+  for a rendering change.
 
 ### The theme generator
 
 `generator-catalog.ts`'s Select entry picks tokens up by prefix (`--gog-select-`), so the three new
 select tokens arrive on their own; the multiselect's does too. Worth one look at the Select tile
 after publishing to confirm the new panel radius is editable and does what it says — it is the
-first select token that changes something *other* than the field.
+first select token that changes something _other_ than the field.
 
 ### theme-starter.css
 
@@ -133,7 +138,7 @@ this arithmetic — it is what the tokens say, not what was measured in a browse
 
 The button and the whole field tier went to `8 / 16 / 24 / 32 / 40` of horizontal padding across
 the five sizes; the largest single change is a `slg` text field's side padding doubling. Nothing
-in the lab is *generated* from those values, which is the problem: a page that quotes one was
+in the lab is _generated_ from those values, which is the problem: a page that quotes one was
 typed by hand. Check `lab-appearance-baseline.md`'s recorded preview geometry against the
 component pages before assuming a diff there is a regression — for this release, a preview that
 grew is the release landing, not the page breaking.
@@ -149,7 +154,7 @@ a look on the site rather than a token-table edit:
 - **The `gog-select` and `gog-multiselect` filter inputs now have square corners.** This will read
   as a regression to anyone who does not know why, so if either page says anything about that
   panel, it is worth one sentence: the filter is inset by exactly the panel's radius, and at that
-  distance the inner box's corner point sits on the *centre* of the panel's corner arc — a right
+  distance the inner box's corner point sits on the _centre_ of the panel's corner arc — a right
   angle there is equidistant from the whole curve, and it is the only corner that keeps the gap
   constant. It is not a value clamped to zero.
 
@@ -196,7 +201,7 @@ token names or what the token reference already says about them (checked: the ex
 `token-reference-data.ts` are generic enough to still be accurate — neither quotes a pixel value or
 a unit). Nothing to fix there. What is worth a look once the lab tracks this release: the tooltip
 and toast pages' live demos, to confirm a bubble/card at the new width still reads correctly —
-verified in `ui-showcase` already, but the lab renders against the *published* palette and fonts,
+verified in `ui-showcase` already, but the lab renders against the _published_ palette and fonts,
 which is exactly the case `check:app-contrast`'s own doc-comment gives for why the two apps are
 checked separately.
 

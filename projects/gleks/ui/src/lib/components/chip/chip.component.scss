@@ -122,14 +122,13 @@
 .gog-chip__remove {
   display: inline-grid;
   place-items: center;
-  width: calc(
-    var(--gog-chip-remove-size, var(--gog-chip-size-remove-size, var(--gog-chip-md-remove-size))) *
-      var(--gog-chip-remove-scale)
-  );
-  height: calc(
-    var(--gog-chip-remove-size, var(--gog-chip-size-remove-size, var(--gog-chip-md-remove-size))) *
-      var(--gog-chip-remove-scale)
-  );
+  /* `1em` and not the token, deliberately: `font-size` below already resolves the token chain,
+     and in every other property `em` means this element's own font-size — so `1em` here *is*
+     the resolved remove size, whatever a consumer wrote it in. Restating the token instead
+     would compound it, because the token is now a ratio (`1.125em`) and would resolve against
+     the size it had just produced. */
+  width: calc(1em * var(--gog-chip-remove-scale));
+  height: calc(1em * var(--gog-chip-remove-scale));
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -146,7 +145,7 @@
 }
 
 /*
- * The remove button paints between 13.2px (`xsm`) and 22px (`slg`) once
+ * The remove button paints between 13.6px (`xsm`) and 22.3px (`slg`) once
  * `--gog-chip-remove-scale` is applied, all of it under WCAG 2.5.8's 24. A transparent `::before`
  * carries the target so the glyph stays the size it is — an X drawn at 24px inside a chip would
  * be the loudest thing in it.

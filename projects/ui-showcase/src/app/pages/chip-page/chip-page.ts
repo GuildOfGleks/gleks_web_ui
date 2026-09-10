@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { ChipComponent, GogPanelHeaderDirective, PanelComponent } from '@guildofgleks/ui';
+import { ChipComponent, GogPanelHeaderDirective, GogSize, PanelComponent } from '@guildofgleks/ui';
 
 interface ChipPerson {
   name: string;
@@ -26,6 +26,19 @@ export class ChipPage {
       avatarUrl:
         "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><rect width='64' height='64' rx='32' fill='%23d4b483'/><text x='32' y='38' text-anchor='middle' font-size='24' font-family='Arial' fill='%231a1208'>MS</text></svg>",
     },
+  ];
+
+  /**
+   * The size row that carries an avatar, an icon and a remove button at once. Its point is the
+   * three ratios: each mark is a multiple of the chip's own font size, so the row is where a
+   * per-size value would visibly drift away from the label.
+   */
+  protected readonly sizes: { value: GogSize; label: string }[] = [
+    { value: 'xsm', label: 'Extra small' },
+    { value: 'sm', label: 'Small' },
+    { value: 'md', label: 'Medium' },
+    { value: 'lg', label: 'Large' },
+    { value: 'slg', label: 'Extra large' },
   ];
 
   protected readonly team = signal([

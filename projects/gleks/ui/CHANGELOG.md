@@ -11,7 +11,7 @@ reached 1.0, so breaking changes may land in minor versions.
 - **`--gog-select-panel-radius` and `--gog-multiselect-panel-radius`.** Both default to
   `var(--gog-radius)`, so nothing renders differently — what changes is that the dropdown panel
   and the field it hangs from are now two boxes with two tokens. They had been one: the panel
-  painted `--gog-select-radius` / `--gog-multiselect-radius`, the *field's* radius, so a theme
+  painted `--gog-select-radius` / `--gog-multiselect-radius`, the _field's_ radius, so a theme
   that rounded the control into a pill rounded the overlay into one as well. The filter input's
   radius and the option row's radius both derive from the panel's corner, so they followed it
   too. `gog-autocomplete` and `gog-datepicker` already declared this token; this is the pair of
@@ -35,6 +35,22 @@ reached 1.0, so breaking changes may land in minor versions.
   the chip's leading edge, which is what `--gog-chip-avatar-inset-ratio` exists for. The tokens
   stay per-size, so an override of one keeps working.
 
+- **`gog-chip`'s remove button is one ratio of the chip's type instead of five px values.**
+  `--gog-chip-<size>-remove-size` is `1.125em` at every size — 12.4 / 13.5 / 15.8 / 18 / 20.3px
+  against the 12 / 14 / 16 / 18 / 20px it was. Those five were 1.091, 1.167, 1.143, 1.125 and
+  1.111 of the label: non-monotonic and inside a 7% band, which is the signature of a px ladder
+  converted to `rem` rather than of five judgements. 1.125 is the ratio `lg` already held, and it
+  keeps what all five values agreed on — the mark a reader can press reads a shade heavier than
+  the one that only decorates. `lg` does not move and no other size moves by more than half a
+  pixel. This completes the chip: avatar, icon and remove are now three ratios of one type scale.
+
+  **The painted box is computed differently as a result**, and that is the part a theme override
+  can notice. `.gog-chip__remove` reads the token as its own `font-size`, so the box could no
+  longer restate the token — in every property but `font-size`, `em` resolves against the
+  element's _own_ size, and the multiplication would have compounded the ratio against the size it
+  had just produced. It is `calc(1em * var(--gog-chip-remove-scale))` now, which is the same
+  length by construction and stays correct whether an override is written in `em`, `rem` or `px`.
+
 - **`--gog-chip-<size>-icon-size` is `1em`.** Nothing renders differently: the five rem values it
   replaces were 11 / 12 / 14 / 16 / 18px against a label of exactly 11 / 12 / 14 / 16 / 18px, so
   the ratio was already 1.00 five times over — stated by hand rather than by rule. Writing it as
@@ -51,8 +67,7 @@ reached 1.0, so breaking changes may land in minor versions.
 
 - **`--gog-space-40`**, the one step the spacing scale was missing. Added because the optical ratio
   requires it rather than because a design asked for it: horizontal padding is exactly twice
-  vertical, `slg` controls carry 20px of vertical padding, and the scale went 32 and then jumped to
-  48. It multiplies `--gog-density` like every other step.
+  vertical, `slg` controls carry 20px of vertical padding, and the scale went 32 and then jumped to 48. It multiplies `--gog-density` like every other step.
 
 - **`--gog-text-2xs` (0.6875rem, 11px)**, the step below `xs`. `gog-chip` and `gog-tag` had both
   written that value as a literal at `xsm` — the same number chosen twice, independently, which is
@@ -77,7 +92,7 @@ reached 1.0, so breaking changes may land in minor versions.
 
   **Three lengths stay off the grid on purpose**, each with the reason in its own comment: a toggle
   thumb's 2px inset, a scrollbar thumb's, and the 2px gap between the resize grip's three
-  hairlines. A length *inside* a single painted mark defines that mark's shape rather than spacing
+  hairlines. A length _inside_ a single painted mark defines that mark's shape rather than spacing
   two things apart — at 4px the grip's stripes are a 20px block in the corner of every textarea
   instead of a 9px hint. `--gog-focus-ring-offset` was never part of the scale and is unaffected.
 
@@ -93,7 +108,7 @@ reached 1.0, so breaking changes may land in minor versions.
   following the block padding as before.
 
   **Two adjacent sizes now share a padding**, and that is the finding this first component
-  produced rather than an oversight. Five *distinct* vertical paddings on a 4px grid would have to
+  produced rather than an oversight. Five _distinct_ vertical paddings on a 4px grid would have to
   run 4, 8, 12, 16, 20, which doubles `slg` and makes a tag the size of a button. So the size step
   is carried by the type scale — 11, 12, 14, 16, 18px — and the padding repeats between adjacent
   steps rather than the geometry inflating to keep five distinct numbers. Every sized component in
@@ -123,13 +138,13 @@ reached 1.0, so breaking changes may land in minor versions.
   hairline it rides in.
 
 - **`gog-slider`'s thumb has a 24×24 pointer target and still paints at 16px**, and its gap goes
-  from 6px to 8px. This is the one control in the library a pointer *drags*, and a 24px dot would
+  from 6px to 8px. This is the one control in the library a pointer _drags_, and a 24px dot would
   cover the value it points at. It stops at 24 rather than 2.5.5's 44 on purpose: the track is
   clickable along its whole length, so the coarse-pointer story is "tap the track", not "hit the
   thumb". The AAA gap is written down in the stylesheet rather than left implicit.
 
 - **`gog-datepicker` and `gog-calendar` are on the grid, at a ratio of 2.0.** The calendar's
-  footer buttons go from 4/10 (a ratio of 2.50, the only block in the library padded *too* wide
+  footer buttons go from 4/10 (a ratio of 2.50, the only block in the library padded _too_ wide
   for its height) to 4/8; the time row's gap 6 to 8 and its input 4/6 to 4/8; the datepicker's
   actions gap 6 to 8 and its panel gap 2 to 4.
 
@@ -235,7 +250,7 @@ reached 1.0, so breaking changes may land in minor versions.
 
 - **`gogBadge` hangs 8px outside its host's corner, not 6px.** The badge's one off-grid length, and
   the commit that had to settle the tie-break behind all of them: every off-grid step this library
-  used sat exactly halfway between two grid steps, so snapping to 4px is a *direction* rather than
+  used sat exactly halfway between two grid steps, so snapping to 4px is a _direction_ rather than
   a rounding rule. It rounds up. Here that is also right on its own terms — a 20px badge clears the
   host's corner radius at `--gog-radius: 8px` at 8px of overhang, and did not quite at 6px.
 
@@ -362,7 +377,7 @@ reached 1.0, so breaking changes may land in minor versions.
   The audit is the interesting half. The rule had been planned against the ink's **centre of
   mass**, and by that measure the set looks broken: `arrow-right`'s mass sits 2.05 units right of
   centre and `download`'s 3.47 units low, on a 24 grid. Neither is a defect. A directional glyph is
-  *supposed* to carry its mass toward its head, and re-centring one would pull its tail off the
+  _supposed_ to carry its mass toward its head, and re-centring one would pull its tail off the
   edge of the box. What the eye reads in a uniform-weight set is the extent, so the extent is what
   is checked — with one branch for a **filled** mark, where a solid triangle's centroid genuinely
   sits a sixth of its width off the box centre. The registry has one filled glyph (`star-filled`,
@@ -377,7 +392,7 @@ reached 1.0, so breaking changes may land in minor versions.
 
 - **`AGENTS.md`'s dropdown section says when to turn `filter` on**, and the narrower half of the
   rule that most quotations of it drop: choice time grows with the log of the option count, so a
-  panel past roughly seven options wants a filter — *unless* the list is one the reader can
+  panel past roughly seven options wants a filter — _unless_ the list is one the reader can
   predict, in which case they are searching rather than choosing and ordering it well is worth as
   much. `GOG_CONFIG.dropdown.filter` sets it once for an app.
 
@@ -386,7 +401,7 @@ reached 1.0, so breaking changes may land in minor versions.
   overlay caps above made the first half false; the second half had never been true — a dialog
   panel has defaulted to `90vw` and `--gog-dialog-max-height` to `90vh` for as long as both have
   existed, `gog-menu` falls back to `100vh`, and `gog-table`'s `maxHeight` takes `'60vh'` as its own
-  documented example. The section now scopes the claim to *component sizing*, lists every viewport
+  documented example. The section now scopes the claim to _component sizing_, lists every viewport
   unit the library actually contains, and says why none of them is the recipe beside it: the recipe
   grows a size with the viewport, these only ever cap one against it.
 
@@ -438,7 +453,7 @@ reached 1.0, so breaking changes may land in minor versions.
 
   Nothing changes for an app that configures no spinner: an overlay with no `variant` still
   renders `runic`. The type widens rather than narrows, so a binding that passes a
-  `GogSpinnerVariant` still compiles; only code that *reads* `overlay.variant()` now has to
+  `GogSpinnerVariant` still compiles; only code that _reads_ `overlay.variant()` now has to
   account for `undefined`.
 
   Found from the documentation side rather than from a report — the same way 21.8.0's four
@@ -495,7 +510,7 @@ reached 1.0, so breaking changes may land in minor versions.
     — the same move the theme's three status colours made in 21.9.0.
 
   A false positive is recorded rather than silenced: `.gog-checkbox__box` states the tick's colour
-  and the *unchecked* box's background in one rule, and those never render together, so the sweep
+  and the _unchecked_ box's background in one rule, and those never render together, so the sweep
   read 1.00:1 in `ledger`. It is the one entry in the script's `REST_PAIRS_NOT_RENDERED` list, and
   the pair that does render — the tick on the checked background — is measured and passes.
 
@@ -531,10 +546,10 @@ reached 1.0, so breaking changes may land in minor versions.
   `gog-progressbar`, whose `GogProgressbarVariant` is now an alias of it.
 
   Two colour rules came out of measuring rather than choosing. A **filled** severity button's
-  label is `--gog-<status>-text-color`, and hover and press deepen the fill *away* from it via
+  label is `--gog-<status>-text-color`, and hover and press deepen the fill _away_ from it via
   `--gog-<status>-shade`, so every state makes the label easier to read rather than harder — the
   first attempt deepened toward the page's ink unconditionally and cost `primeng`'s info button
-  6.44:1 down to 4.23:1 on press, because there the label *is* the ink. A **transparent** one's
+  6.44:1 down to 4.23:1 on press, because there the label _is_ the ink. A **transparent** one's
   label is `--gog-button-<status>-ink`, the status hue mixed halfway toward the ink, because the
   raw hue is legible body text in only five of the eleven shipped themes; the 50% is the binding
   case (`material`'s amber) rather than a round number. All four severities, four variants and
@@ -635,7 +650,7 @@ reached 1.0, so breaking changes may land in minor versions.
   (which dialogs and menus read), `tooltip` and the blocking `spinner-overlay` were five
   unrelated literals — 1, 100, 300, 400, 8000 — so an app that had to lift the library above its
   own chrome edited five tokens and hoped it had found them all. Each is `calc(var(--gog-z-base) +
-  N)` now: the numbers are unchanged at `--gog-z-base: 0`, and setting it to 10000 gives
+N)` now: the numbers are unchanged at `--gog-z-base: 0`, and setting it to 10000 gives
   10001/10100/10300/10400/18000 — the same order, one number. The gaps are deliberate, so an app
   can still slot its own element between two library layers.
 
@@ -643,7 +658,7 @@ reached 1.0, so breaking changes may land in minor versions.
   while `gog-accordion`, the `gog-select` and `gog-multiselect` option rows (0.5) and `gog-chip`
   (0.55) each carried their own. One state should not have four opinions, and the three
   stragglers were invisible to rule G by construction — it flags a literal only when the value
-  *matches* the token's. **This is a visual change**: those four fade slightly further now.
+  _matches_ the token's. **This is a visual change**: those four fade slightly further now.
 
 - **The type scale gained the step it was missing: `--gog-text-slg` (1.25rem).** `gog-button` and
   the field controls both needed a size for their `slg` variant, the scale went straight from
@@ -657,7 +672,7 @@ reached 1.0, so breaking changes may land in minor versions.
   retuned `--gog-text-*` moved most of the library and left `gog-button`, `gog-chip`, `gog-tag`,
   the dialog's close button, the toast's action and close, and the toggle's `lg` state label
   behind — each held a literal that was byte-for-byte a scale step (`--gog-button-md-font-size:
-  1rem` sitting beside `--gog-text-md: 1rem`). Same values, so nothing moves in any theme; the
+1rem` sitting beside `--gog-text-md: 1rem`). Same values, so nothing moves in any theme; the
   difference is that retuning the scale now reaches them.
 
   `check-tokens` rule G covered radii, strokes, casing and tracking but **not** font size, which
@@ -678,7 +693,7 @@ reached 1.0, so breaking changes may land in minor versions.
   Found by counting rather than by looking: of 47 radius tokens, 30 already derived from
   `--gog-radius`, 8 are pills or circles (a shape, not a corner size), 5 are deliberately flat,
   and these 3 were the remainder. `check-tokens` rule G could not have caught them — it flags a
-  literal only when its value *equals* a character token's, which is what keeps a pill's `999px`
+  literal only when its value _equals_ a character token's, which is what keeps a pill's `999px`
   from being called drift, and is exactly why a small arbitrary number is the shape of drift it
   cannot see. `gog-toast` and `gog-accordion` keep their flat corners, on the user's call: those
   are a chosen shape.
@@ -696,7 +711,7 @@ reached 1.0, so breaking changes may land in minor versions.
 - **A toggle button now looks toggled.** 21.8.0 taught `gog-button` to forward `aria-pressed`,
   and nothing in the library styled it — so a toggle could announce itself as on to a screen
   reader while looking identical to an off one, which is WCAG 1.4.1 from the other side and
-  exactly the reason `docs/backlog.md` gives for *not* forwarding `aria-pressed` to `gog-chip`.
+  exactly the reason `docs/backlog.md` gives for _not_ forwarding `aria-pressed` to `gog-chip`.
   `aria-pressed="true"` (and `"mixed"`) now draws an inset ring: new
   `--gog-button-<variant>-toggled-shadow`, with `--gog-button-toggled-shadow` as the per-instance
   override. A ring rather than a fill because `:hover` and `:active` already own the background —
@@ -713,14 +728,14 @@ reached 1.0, so breaking changes may land in minor versions.
   drops only the movement. New per-variant `--gog-button-<variant>-press-bg`/`-press-color`
   tokens and the usual `--gog-button-press-bg`/`-press-color` instance overrides. **Ghost presses
   to a filled `--gog-accent-dim`, like outline, rather than to a wash** — checked across all 11
-  themes, and a wash cannot work there: ghost's own *label* is the accent, so tinting its ground
+  themes, and a wash cannot work there: ghost's own _label_ is the accent, so tinting its ground
   with the accent walks the two together, and a 24% wash put the label under 4.5:1 in seven
   themes. A filled press moves the label to `--gog-accent-text-color`, the pair `check:contrast`
   already gates, so no future theme can quietly break it. Reduced motion must remove the animation, not the
   information — the same rule the toast countdown was fixed under in 21.7.1.
 
   The family is spelled `press`, not `active`, because `active` already means two different
-  things in this library — `--gog-tabs-active-color` is the *selected* tab, while
+  things in this library — `--gog-tabs-active-color` is the _selected_ tab, while
   `--gog-scroll-thumb-active-bg` is the thumb being dragged. One name, one meaning. The shipped
   `--gog-button-active-scale` keeps its spelling: renaming a token consumers already override
   needs a deprecation cycle, and this is a patch.
@@ -759,12 +774,12 @@ reached 1.0, so breaking changes may land in minor versions.
     every theme, and it is still a clear step past the 10-12% hover.
 
 - **A ghost button's label was under WCAG AA on its own hover, in three themes.** `light`
-  3.94:1, `primeng` 4.18:1, `one-light` 4.22:1. The variant's resting label *is*
+  3.94:1, `primeng` 4.18:1, `one-light` 4.22:1. The variant's resting label _is_
   `--gog-accent-color` and its hover tints the ground with the same accent, so the two walked
   toward each other. **No background fixes it**, which is why this took a sweep rather than a
   nudge: a half-strength wash (4.28), a neutral `--gog-hover-color` (4.15), a text scrim (3.91)
   and an accent-dim wash (3.96) were all measured across the 11 themes, and `light` fails every
-  one — `--gog-accent-color` as *text* on that theme's background is 4.60:1 to begin with, so
+  one — `--gog-accent-color` as _text_ on that theme's background is 4.60:1 to begin with, so
   there is no headroom to spend on any ground at all. The label now becomes `--gog-text-color`
   while hovered, which clears 5.29:1 at worst (one-dark) and leaves the wash untouched, so the
   hover stays the subtle one this variant is documented to have. Ghost's three states now read
@@ -781,7 +796,7 @@ reached 1.0, so breaking changes may land in minor versions.
   the check that now catches it.
 
 - **The other nine pressable surfaces had no press feedback either — now eight of them do.**
-  `.gog-btn:active` turned out to be the *only* `:active` rule in the library. `gogMenuItem`,
+  `.gog-btn:active` turned out to be the _only_ `:active` rule in the library. `gogMenuItem`,
   `gog-chip`, `gog-tabs` headers, `gog-accordion` headers, `gog-button-toggle-group` options and
   the `gog-select` / `gog-multiselect` / `gog-autocomplete` option rows all acknowledged a press
   through the ripple alone — which is off by default and suppressed under reduced motion — so a
@@ -789,7 +804,7 @@ reached 1.0, so breaking changes may land in minor versions.
   `--gog-<block>-press-bg`: a wash roughly double the 10-12% one its own hover uses, in the same
   ingredient, with a flat `--gog-border-color` for browsers without `color-mix()`. Two of them
   are not that shape and say so in place: a `gog-tabs` header paints no background in any other
-  state (its hover moves the label colour only), and a *selected* button-toggle option is already
+  state (its hover moves the label colour only), and a _selected_ button-toggle option is already
   filled, so it deepens to `--gog-accent-dim` the way the filled button variants do.
 
   **`gogCollapsibleTrigger` is deliberately not in that list.** It is the consumer's own element
@@ -815,14 +830,14 @@ reached 1.0, so breaking changes may land in minor versions.
 
 - **The outline button's label was unreadable while hovered, in every shipped theme.**
   `--gog-button-outline-hover-color` resolved to `--gog-primary-color`, the colour of text on the
-  *page*, while the hover fill is the accent — pale parchment on bright amber in `dark` (1.41:1),
+  _page_, while the hover fill is the accent — pale parchment on bright amber in `dark` (1.41:1),
   light grey on blue in `one-dark` (1.11:1), and failing WCAG AA in all 11 themes, the best of
   them `light` at 3.65:1. It now resolves to `--gog-accent-text-color`, the token that means "text
   on an accent fill" and the one both filled variants already used. Found while adding the state
   above, which would have copied the same mistake into `:active`.
 
 - **`check:contrast` gained the pair that hid both.** The script had no pair for a label on the
-  accent *fill* other than `accentText/accent`, so neither the outline label nor the new held
+  accent _fill_ other than `accentText/accent`, so neither the outline label nor the new held
   state was covered. `accentText/accentDim(active)` is now checked at 4.5:1, and it immediately
   failed one theme: `one-dark`'s `--gog-accent-dim` moved from `#4b8fca` to `#5399d6` (4.05:1 →
   4.59:1). That token had only ever been a field border, which is gated at 3:1; making it a fill

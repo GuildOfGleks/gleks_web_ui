@@ -6,6 +6,15 @@
   gap: 12px;
 }
 
+/*
+ * The five sizes read as one type scale only if their labels sit on one line — `align-items`
+ * defaults to `stretch`, which makes five chips of five font sizes the same height and hides the
+ * thing the row exists to show.
+ */
+.chip-grid--baseline {
+  align-items: baseline;
+}
+
 .width-demo {
   max-width: 320px;
   border: 1px dashed var(--gog-border-color);
