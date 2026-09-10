@@ -47,12 +47,25 @@
   --gog-warning-color: #d4d44a;
   --gog-info-color: #8fd8a0;
 
-  /* A glow, not a shadow: a phosphor screen bleeds light outwards instead of casting one. */
-  --gog-panel-shadow: 0 0 0 1px var(--gog-border-color), 0 0 18px rgba(61, 220, 92, 0.12);
-  /* See theme.css's dark block: elevated drops the ring so it differs from outlined. The
-     phosphor glow stays — on this theme that glow *is* the elevation cue. */
-  --gog-card-elevated-shadow: inset 0 1px 0 rgba(61, 220, 92, 0.18), 0 2px 6px rgba(0, 0, 0, 0.5);
-  --gog-panel-elevated-shadow: inset 0 1px 0 rgba(61, 220, 92, 0.18), 0 2px 6px rgba(0, 0, 0, 0.5);
+  /* A glow, not a shadow: a phosphor screen bleeds light outwards instead of casting one. The
+     ladder expresses that without knowing what a glow is — the key light's vertical travel is
+     zero, so it never leaves the object, and all that grows with height is its blur. At the
+     overlay step that is `0 0 18px`, this theme's own shipped value to the pixel.
+
+     The `elevated` tier changes deliberately. It had been a black `0 2px 6px` under the green
+     catch light — the one place this theme cast a shadow rather than emitting light, and it was
+     inherited from the dark preset it started as rather than chosen. It is a smaller glow now,
+     which is what the comment beside it already claimed was happening. */
+  --gog-elevation-ink: 61 220 92;
+  --gog-elevation-key-alpha: 0.12;
+  --gog-elevation-ambient-alpha: 0;
+  --gog-elevation-contact-blur: 3px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 0;
+  --gog-elevation-key-blur: 4.5;
+  --gog-elevation-ring-width: 1px;
+  --gog-elevation-highlight-ink: 61 220 92;
+  --gog-elevation-highlight-alpha: 0.18;
   --gog-spinner-overlay-bg: rgba(10, 14, 10, 0.88);
 
   /* Character layer — the whole identity in seven declarations. Monospace everywhere, not just

@@ -70,6 +70,26 @@
             </div>
 
             <gog-spinner aria-label="Loading preview" />
+
+            <!-- The elevation ladder, one tile per step. Nothing in the library renders this
+                 row; it exists so the six heights are visible as a set, per theme, which is the
+                 only way to see that they are one ladder and not six opinions. Note what the
+                 themes do differently here: `bevel` and `ledger` climb by hard offset, `terminal`
+                 by the width of a glow, `parchment` barely climbs at all — all three out of the
+                 same three knobs. -->
+            <div class="theme-panel__elevation">
+              <p class="theme-panel__elevation-label">Elevation</p>
+              <div class="theme-panel__elevation-row">
+                @for (step of elevationSteps; track step) {
+                  <span
+                    class="theme-panel__step"
+                    [style.box-shadow]="'var(--gog-elevation-' + step + ')'"
+                    [attr.title]="'--gog-elevation-' + step"
+                    >{{ step }}</span
+                  >
+                }
+              </div>
+            </div>
           </div>
         </div>
       </article>

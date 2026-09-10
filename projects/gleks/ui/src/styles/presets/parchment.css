@@ -45,8 +45,20 @@
   --gog-warning-color: #8a6516;
   --gog-info-color: #3a5570;
 
-  /* Paper does not float. A soft, close shadow reads as a sheet resting on the desk. */
-  --gog-panel-shadow: 0 1px 3px rgba(36, 29, 20, 0.22);
+  /* Paper does not float. A soft, close shadow reads as a sheet resting on the desk — so this
+     theme keeps the default's soft style and simply climbs the ladder more slowly: a quarter of
+     a pixel of lift per unit of Z reproduces the `0 1px 3px` it shipped at the overlay step, and
+     even a modal only reaches 4px. The blur is still three times the offset, as everywhere. */
+  --gog-elevation-ink: 36 29 20;
+  --gog-elevation-key-alpha: 0.22;
+  --gog-elevation-ambient-alpha: 0;
+  --gog-elevation-contact-blur: 3px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 0.25;
+  --gog-elevation-key-blur: 0.75;
+  --gog-elevation-ring-width: 0px;
+  --gog-elevation-highlight-ink: 255 255 255;
+  --gog-elevation-highlight-alpha: 0;
   --gog-spinner-overlay-bg: rgba(232, 223, 200, 0.88);
 
   /* Character layer — a book, not an application. Serif throughout, square corners, hairline

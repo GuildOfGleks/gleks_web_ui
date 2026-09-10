@@ -175,6 +175,16 @@ Full model is in `README.md`'s Theming section; short version:
   everything) → **component** (`--gog-button-primary-bg`, …, one block per component, named after
   the component's own element) → **instance** (`--gog-button-bg`, …, deliberately undeclared
   escape hatch for one element).
+- **Shadows are an elevation ladder** (since 21.12.0): `--gog-elevation-0` … `-5`, Z doubling
+  0/1/2/4/8/16. Step 1 is a thumb riding on a control, 2 an `elevated` card or panel, 3 anything
+  anchored to a control (dropdown panel, tooltip, menu), 4 a toast, 5 a modal dialog. The steps are
+  generated from ten per-theme knobs (`--gog-elevation-ink`, the two alphas, `-contact-blur`, the
+  three per-Z multipliers `-key-x`/`-key-y`/`-key-blur` that carry the style, `-ring-width`, and
+  the two `-highlight-*`). **A theme declares all ten or none** — they inherit, so a partial set
+  borrows the enclosing theme's weight. `--gog-panel-shadow`, `--gog-dialog-shadow`,
+  `--gog-toast-shadow`, `--gog-menu-shadow`, `--gog-toggle-thumb-shadow` and the `*-elevated-shadow`
+  pair are still the names to override for one surface; their default is now a step. Never
+  hand-write a shadow in a theme block — `npm run check:elevation` fails on it.
 - **Foundation includes a small character layer** (since 21.7.0, `docs/themes.md` iteration 1):
   `--gog-radius` (corner rounding), `--gog-control-border-*`/`--gog-panel-border-*`/`--gog-border-*`
   (border weight — form fields, raised surfaces, everything smaller and inline, respectively),
@@ -285,24 +295,24 @@ Precedence, always: **instance input → `GOG_CONFIG` → component's built-in d
 `provideGogConfig(...)` (in a route's or component's own `providers`) **layers onto the
 parent's config**, one level deep per key — it does not replace it.
 
-| Key            | Fields                                                                  | Applies to                                                                                                                                                                                                                                                                                                                                                                                                   |
-| -------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `control`      | `size`, `errorDisplay`, `clearable`                                     | `size`: button, `[gogButton]`, button-toggle-group, checkbox, toggle, radio-group, inputfield, textarea, select, multiselect, autocomplete, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, datepicker, radio-group, slider. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip.                                                          |
-| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`                 | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text).                                                                                                                                                                                                                       |
-| `floatLabel`   | `variant`, `showPlaceholder`                                            | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                         |
-| `datepicker`   | `locale`, `firstDayOfWeek`, `format`                                    | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                            |
-| `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                            | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                          |
-| `tooltip`      | `position`, `showDelay`, `hideDelay`                                    | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                  |
-| `spinner`      | `component`, `variant`                                                  | every spinner the library draws — `gog-spinner`, `gog-spinner-overlay`, and the ones inside `gog-button`, `gog-autocomplete` and `gog-table`, which have no input of their own. `component` takes **your** component and renders it in place of the built-in look. The overlay honoured neither key until 21.10.0, and `gog-table` was simply never listed. |
-| `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack`, `horizontalWheel` | `gog-scroll` (and every component that uses one internally).                                                                                                                                                                                                                                                                                                                                                 |
-| `button`       | `debounce`                                                              | `gog-button`.                                                                                                                                                                                                                                                                                                                                                                                                |
-| `ripple`       | `enabled`                                                               | the press ripple on `gog-button`, `[gogButton]`, `gog-button-toggle-group`, `gog-chip`, `gog-tabs`, `gog-accordion`, `gogCollapsibleTrigger`, `gogMenuItem` and the `gog-select`/`gog-multiselect`/`gog-autocomplete` options. **Off by default.** Each of those takes a `ripple` input that wins over it. Not the `gogRipple` directive — writing that attribute is already the per-element decision.       |
-| `inputfield`   | `showSpinButtons`                                                       | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                            |
-| `textarea`     | `resize`                                                                | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                              |
-| `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                 | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                           |
-| `toast`        | `position`, `duration`                                                  | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                              |
-| `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme` | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                      |
-| `labels`       | every fixed string the library renders — see below                      | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                            |
+| Key            | Fields                                                                                | Applies to                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| -------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `control`      | `size`, `errorDisplay`, `clearable`                                                   | `size`: button, `[gogButton]`, button-toggle-group, checkbox, toggle, radio-group, inputfield, textarea, select, multiselect, autocomplete, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, datepicker, radio-group, slider. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip. |
+| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`                               | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text).                                                                                                                                                                                                                                                     |
+| `floatLabel`   | `variant`, `showPlaceholder`                                                          | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                                                       |
+| `datepicker`   | `locale`, `firstDayOfWeek`, `format`                                                  | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                                          | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `tooltip`      | `position`, `showDelay`, `hideDelay`                                                  | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `spinner`      | `component`, `variant`                                                                | every spinner the library draws — `gog-spinner`, `gog-spinner-overlay`, and the ones inside `gog-button`, `gog-autocomplete` and `gog-table`, which have no input of their own. `component` takes **your** component and renders it in place of the built-in look. The overlay honoured neither key until 21.10.0, and `gog-table` was simply never listed.                                                                                |
+| `scroll`       | `autoHide`, `hideDelay`, `size`, `overscrollBehavior`, `showTrack`, `horizontalWheel` | `gog-scroll` (and every component that uses one internally).                                                                                                                                                                                                                                                                                                                                                                               |
+| `button`       | `debounce`                                                                            | `gog-button`.                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `ripple`       | `enabled`                                                                             | the press ripple on `gog-button`, `[gogButton]`, `gog-button-toggle-group`, `gog-chip`, `gog-tabs`, `gog-accordion`, `gogCollapsibleTrigger`, `gogMenuItem` and the `gog-select`/`gog-multiselect`/`gog-autocomplete` options. **Off by default.** Each of those takes a `ripple` input that wins over it. Not the `gogRipple` directive — writing that attribute is already the per-element decision.                                     |
+| `inputfield`   | `showSpinButtons`                                                                     | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `textarea`     | `resize`                                                                              | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                               | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                                                         |
+| `toast`        | `position`, `duration`                                                                | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme`               | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                                                    |
+| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                                                          |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
 
@@ -488,22 +498,22 @@ Every component below is exported from `@guildofgleks/ui`'s root — `import { X
 
 #### `gog-button`
 
-| Input       | Type                              | Default     | Notes                                                 |
-| ----------- | --------------------------------- | ----------- | ----------------------------------------------------- |
-| `variant`   | `GogVariant`                      | `'primary'` |                                                       |
-| `severity`  | `GogSeverity`                     | `'accent'`  | what the action means; orthogonal to `variant` — see below |
-| `size`      | `GogSize \| undefined`            | `'md'`      | via `GOG_CONFIG.control.size`                         |
-| `disabled`  | `boolean`                         | `false`     |                                                       |
-| `fullWidth` | `boolean`                         | `false`     |                                                       |
-| `type`      | `'button' \| 'submit' \| 'reset'` | `'button'`  |                                                       |
-| `loading`   | `boolean`                         | `false`     | shows an inline `gog-spinner`, blocks clicks          |
-| `debounce`  | `number \| undefined`             | `300`       | ms; via `GOG_CONFIG.button.debounce` — see note below |
-| `ariaLabel` | `string \| null`                  | `null`      | **use this, not a raw `aria-label` attribute**        |
-| `ariaPressed` | `boolean \| 'mixed' \| null`    | `null`      | toggle button; `false` renders `aria-pressed="false"` |
-| `ariaExpanded` | `boolean \| null`              | `null`      | disclosure / popup trigger                            |
-| `ariaControls` | `string \| null`               | `null`      | id of the controlled element; pairs with `ariaExpanded` |
-| `ariaHasPopup` | `GogAriaHasPopup \| null`      | `null`      | `boolean \| 'menu' \| 'listbox' \| 'tree' \| 'grid' \| 'dialog'` |
-| `ripple`    | `boolean \| undefined`            | `false`     | press ripple; via `GOG_CONFIG.ripple.enabled`         |
+| Input          | Type                              | Default     | Notes                                                            |
+| -------------- | --------------------------------- | ----------- | ---------------------------------------------------------------- |
+| `variant`      | `GogVariant`                      | `'primary'` |                                                                  |
+| `severity`     | `GogSeverity`                     | `'accent'`  | what the action means; orthogonal to `variant` — see below       |
+| `size`         | `GogSize \| undefined`            | `'md'`      | via `GOG_CONFIG.control.size`                                    |
+| `disabled`     | `boolean`                         | `false`     |                                                                  |
+| `fullWidth`    | `boolean`                         | `false`     |                                                                  |
+| `type`         | `'button' \| 'submit' \| 'reset'` | `'button'`  |                                                                  |
+| `loading`      | `boolean`                         | `false`     | shows an inline `gog-spinner`, blocks clicks                     |
+| `debounce`     | `number \| undefined`             | `300`       | ms; via `GOG_CONFIG.button.debounce` — see note below            |
+| `ariaLabel`    | `string \| null`                  | `null`      | **use this, not a raw `aria-label` attribute**                   |
+| `ariaPressed`  | `boolean \| 'mixed' \| null`      | `null`      | toggle button; `false` renders `aria-pressed="false"`            |
+| `ariaExpanded` | `boolean \| null`                 | `null`      | disclosure / popup trigger                                       |
+| `ariaControls` | `string \| null`                  | `null`      | id of the controlled element; pairs with `ariaExpanded`          |
+| `ariaHasPopup` | `GogAriaHasPopup \| null`         | `null`      | `boolean \| 'menu' \| 'listbox' \| 'tree' \| 'grid' \| 'dialog'` |
+| `ripple`       | `boolean \| undefined`            | `false`     | press ripple; via `GOG_CONFIG.ripple.enabled`                    |
 
 Outputs: `gogClick: MouseEvent`.
 
@@ -523,7 +533,7 @@ claim, so nothing has to opt out of a severity it does not have. `GogSeverity` i
 Two colour rules are worth knowing before you override anything. A **filled** severity button's
 label is `--gog-<status>-text-color`, which each theme states for its own hue — `material` and
 `primeng` put near-black on their bright ones, the rest white — and hover and press deepen the
-fill *away* from that label (`--gog-<status>-shade`), so a state always makes the label easier to
+fill _away_ from that label (`--gog-<status>-shade`), so a state always makes the label easier to
 read rather than harder. A **transparent** one's label is `--gog-button-<status>-ink`: the status
 hue mixed halfway toward the page's ink, because the raw hue is legible body text in only five of
 the eleven shipped themes. Override `--gog-button-<status>-ink` if your own theme wants more
@@ -562,8 +572,13 @@ gogButton>`, as its own example shows, not on a `<gog-button>`.
 ```html
 <gog-button [ariaPressed]="mirrored()" (gogClick)="toggleMirror()">Mirror</gog-button>
 
-<gog-button [ariaExpanded]="open()" ariaControls="filters" ariaHasPopup="dialog"
-            (gogClick)="open.set(!open())">Filters</gog-button>
+<gog-button
+  [ariaExpanded]="open()"
+  ariaControls="filters"
+  ariaHasPopup="dialog"
+  (gogClick)="open.set(!open())"
+  >Filters</gog-button
+>
 ```
 
 **The press is a colour, not only a movement.** `:active` deepens the button's background (and
@@ -1217,7 +1232,7 @@ defaults: neither has a config key to fall through to.
 the value — `showValue` is off by default — and the fill and the track cannot carry it themselves:
 in every shipped theme the five fills straddle mid-luminance, so no one track colour clears WCAG
 1.4.11's 3:1 against all of them. Two tones always do, and `check:contrast` gates the pair. Retint
-them per theme if you like; keep them a *pair* whose tones sit on opposite sides of the middle, or
+them per theme if you like; keep them a _pair_ whose tones sit on opposite sides of the middle, or
 the marker disappears on whichever fill it happens to match.
 
 #### `gog-divider`
@@ -1725,7 +1740,7 @@ region — the library's official recommendation over a raw `overflow-x`/`overfl
 | `horizontalWheel`    | `boolean \| undefined`                                                   | `false`; via `GOG_CONFIG.scroll.horizontalWheel`                                        |
 
 **`horizontalWheel` turns a vertical wheel into horizontal scrolling** (21.9.0), for the case a
-consumer hits first: hover a horizontal-only row, turn the wheel, and the *page* moves. That is
+consumer hits first: hover a horizontal-only row, turn the wheel, and the _page_ moves. That is
 the browser's own behaviour and the component deliberately did nothing about it until now.
 
 It is off by default because it changes what an existing instance does with a gesture it

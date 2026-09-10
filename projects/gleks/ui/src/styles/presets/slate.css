@@ -87,6 +87,15 @@
   --gog-info-color: #0369a1;
 
   /* The two palette-shaped tokens that are not plain colours. */
-  --gog-panel-shadow: 0 10px 30px rgba(15, 23, 42, 0.12), 0 0 0 1px var(--gog-border-color);
+  --gog-elevation-ink: 15 23 42;
+  --gog-elevation-key-alpha: 0.12;
+  --gog-elevation-ambient-alpha: 0.06;
+  --gog-elevation-contact-blur: 3px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 1;
+  --gog-elevation-key-blur: 3;
+  --gog-elevation-ring-width: 1px;
+  --gog-elevation-highlight-ink: 255 255 255;
+  --gog-elevation-highlight-alpha: 0;
   --gog-spinner-overlay-bg: rgba(244, 246, 248, 0.85);
 }

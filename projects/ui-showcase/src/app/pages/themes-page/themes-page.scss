@@ -72,3 +72,37 @@
   font-size: 1.25rem;
   color: var(--gog-accent-color);
 }
+
+/*
+ * The elevation row. The tiles sit on the theme's own surface colour and carry generous spacing:
+ * a shadow is only legible with room around it, and step 5 blurs 48px in most themes.
+ */
+.theme-panel__elevation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-8);
+}
+
+.theme-panel__elevation-label {
+  margin: 0;
+  font-size: var(--gog-text-xs);
+  color: var(--gog-muted-text-color);
+}
+
+.theme-panel__elevation-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-20);
+  padding: var(--gog-space-12) var(--gog-space-8) var(--gog-space-24);
+}
+
+.theme-panel__step {
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}

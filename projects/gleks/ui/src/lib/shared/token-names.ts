@@ -692,6 +692,25 @@ export type GogTokenName =
   | '--gog-duration-slow'
   | '--gog-easing'
   | '--gog-elevated-surface-color'
+  | '--gog-elevation-0'
+  | '--gog-elevation-1'
+  | '--gog-elevation-2'
+  | '--gog-elevation-3'
+  | '--gog-elevation-4'
+  | '--gog-elevation-5'
+  | '--gog-elevation-ambient-alpha'
+  | '--gog-elevation-contact'
+  | '--gog-elevation-contact-blur'
+  | '--gog-elevation-highlight'
+  | '--gog-elevation-highlight-alpha'
+  | '--gog-elevation-highlight-ink'
+  | '--gog-elevation-ink'
+  | '--gog-elevation-key-alpha'
+  | '--gog-elevation-key-blur'
+  | '--gog-elevation-key-x'
+  | '--gog-elevation-key-y'
+  | '--gog-elevation-ring'
+  | '--gog-elevation-ring-width'
   | '--gog-field-error-line-height'
   | '--gog-field-float-label-in-top'
   | '--gog-field-float-label-over-gap'
@@ -1655,6 +1674,22 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     ],
   },
   {
+    section: 'Elevation',
+    layer: 'foundation',
+    tokens: [
+      '--gog-elevation-ambient-alpha',
+      '--gog-elevation-contact-blur',
+      '--gog-elevation-highlight-alpha',
+      '--gog-elevation-highlight-ink',
+      '--gog-elevation-ink',
+      '--gog-elevation-key-alpha',
+      '--gog-elevation-key-blur',
+      '--gog-elevation-key-x',
+      '--gog-elevation-key-y',
+      '--gog-elevation-ring-width',
+    ],
+  },
+  {
     section: 'Icon & spinner',
     layer: 'foundation',
     tokens: [
@@ -1671,12 +1706,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
   {
     section: 'Toast stack',
     layer: 'foundation',
-    tokens: [
-      '--gog-toast-enter-distance',
-      '--gog-toast-min-width',
-      '--gog-toast-shadow',
-      '--gog-toast-z-index',
-    ],
+    tokens: ['--gog-toast-enter-distance', '--gog-toast-min-width', '--gog-toast-z-index'],
   },
   {
     section: 'Overlay stacking',
@@ -1694,13 +1724,20 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-accent-text-color',
       '--gog-background-color',
       '--gog-border-color',
-      '--gog-card-elevated-shadow',
       '--gog-danger-color',
+      '--gog-elevation-ambient-alpha',
+      '--gog-elevation-contact-blur',
+      '--gog-elevation-highlight-alpha',
+      '--gog-elevation-highlight-ink',
+      '--gog-elevation-ink',
+      '--gog-elevation-key-alpha',
+      '--gog-elevation-key-blur',
+      '--gog-elevation-key-x',
+      '--gog-elevation-key-y',
+      '--gog-elevation-ring-width',
       '--gog-hover-color',
       '--gog-info-color',
       '--gog-muted-text-color',
-      '--gog-panel-elevated-shadow',
-      '--gog-panel-shadow',
       '--gog-primary-color',
       '--gog-secondary-color',
       '--gog-spinner-overlay-bg',
@@ -1708,6 +1745,26 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-surface-color',
       '--gog-text-color',
       '--gog-warning-color',
+    ],
+  },
+  {
+    section: 'The elevation ladder',
+    layer: 'component',
+    tokens: [
+      '--gog-dialog-shadow',
+      '--gog-elevation-0',
+      '--gog-elevation-1',
+      '--gog-elevation-2',
+      '--gog-elevation-3',
+      '--gog-elevation-4',
+      '--gog-elevation-5',
+      '--gog-elevation-contact',
+      '--gog-elevation-highlight',
+      '--gog-elevation-ring',
+      '--gog-panel-elevated-shadow',
+      '--gog-panel-shadow',
+      '--gog-toast-shadow',
+      '--gog-toggle-thumb-shadow',
     ],
   },
   {
@@ -2309,7 +2366,6 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-dialog-max-height',
       '--gog-dialog-min-width',
       '--gog-dialog-radius',
-      '--gog-dialog-shadow',
       '--gog-dialog-title-font-size',
       '--gog-dialog-title-line-height',
     ],
@@ -3231,7 +3287,6 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-toggle-thumb-inset',
       '--gog-toggle-thumb-off-bg',
       '--gog-toggle-thumb-on-bg',
-      '--gog-toggle-thumb-shadow',
       '--gog-toggle-track-off-bg',
       '--gog-toggle-track-on-bg',
       '--gog-toggle-transition-duration',

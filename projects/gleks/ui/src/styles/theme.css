@@ -214,6 +214,54 @@
   --gog-field-float-label-in-top: 6px;
   --gog-field-float-label-over-reserve: 1.4em;
 
+  /* ── Elevation ───────────────────────────────────────────────
+     A ladder of six heights, `--gog-elevation-0` through `-5`, generated in the derived block
+     below from the knobs here. Z doubles: 0, 1, 2, 4, 8, 16. No theme writes a step; a theme
+     turns these knobs and every step follows, which is the whole reason the family exists --
+     before it, eleven themes hand-authored 22 shadow values with no relationship to each other,
+     and two of them gave a modal dialog the elevation of a card because restating the second
+     value was work.
+
+     A step is two lights. The **contact shadow** hugs the object and does not grow with height:
+     that is what ambient occlusion does, and it is what this library already did in the three
+     places it wrote two soft layers (`0 1px 2px` to `0 1px 3px`, every time). The **key light**
+     is the one that moves -- its offset is Z and its blur is three times it.
+
+     **Three, not two, and the number was measured rather than adopted.** The ruleset this comes
+     from (`docs/component-geometry.md`, L10) specifies blur = 2Z. Every shadow the library
+     shipped disagreed: across 26 layers the ratio runs 1.33 to 6.00 with a median of exactly
+     3.00, and 16 of the 26 are 3.00 on the nose. The rule was written from the physics and the
+     library was written from looking at it; on this one the library was consistent and the rule
+     was not, so 3 it is. It falls out well -- at the top step the blur is 48px, which is the
+     dialog's own shipped blur to the pixel.
+
+     The three geometry knobs are multipliers per unit of Z, and between them they cover every
+     style a theme in this repo actually uses. Soft (the default) drops the key straight down.
+     A hard-offset theme -- `bevel`, `ledger` -- sets x and y to a fraction and blur to 0. A glow
+     theme -- `terminal` -- sets y to 0 and keeps blur, and the key light becomes a halo without
+     the ladder knowing anything about halos.
+
+     What is deliberately *not* in a step: the hairline ring and the top-edge catch light. Both
+     are below as their own tokens, because they belong to particular surfaces rather than to
+     height -- a dark theme's overlay wants the ring and its in-flow `elevated` card must not have
+     it, or `elevated` and `outlined` render identically, which is a defect 21.7.1 already fixed
+     once. A component composes them: `var(--gog-elevation-ring), var(--gog-elevation-3)`. */
+  --gog-elevation-ink: 23 18 12;
+  --gog-elevation-key-alpha: 0.08;
+  /* Half the key, which is the ratio the light theme's own two-layer panel already held
+     (0.04 against 0.08). A theme states both, so a theme that wants a different ratio -- and
+     `material` does, its contact being stronger than its key -- just writes it. */
+  --gog-elevation-ambient-alpha: 0.04;
+  --gog-elevation-contact-blur: 3px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 1;
+  --gog-elevation-key-blur: 3;
+  /* Inert by default: a 0px spread paints nothing, and a 0 alpha costs nothing to composite.
+     A theme whose surfaces read by their contour rather than by their shadow turns them on. */
+  --gog-elevation-ring-width: 0px;
+  --gog-elevation-highlight-ink: 255 255 255;
+  --gog-elevation-highlight-alpha: 0;
+
   /* ── Icon & spinner ───────────────────────────────────────────────────────── */
   --gog-icon-size: 1.2em;
   --gog-icon-stroke-width: 2;
@@ -231,7 +279,6 @@
      would not follow a scoped theme). */
   --gog-toast-z-index: 9999;
   --gog-toast-enter-distance: 110%;
-  --gog-toast-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
 
   /* ── Overlay stacking ───────────────────────────────────────────────────────
      Baseline for dropdown panels. gog-dialog re-declares this on its own panel so
@@ -273,8 +320,6 @@
   --gog-warning-color: #c45100; /* Dark amber */
   --gog-info-color: #2b5c8f; /* Lapis */
 
-  /* Soft, deep shadow — old leather */
-  --gog-panel-shadow: 0 4px 20px rgba(23, 18, 12, 0.08), 0 1px 3px rgba(23, 18, 12, 0.04);
   --gog-spinner-overlay-bg: rgba(247, 243, 235, 0.85);
 }
 
@@ -311,9 +356,23 @@
   --gog-warning-color: #c45100; /* Dark amber */
   --gog-info-color: #2b5c8f; /* Lapis */
 
-  /* Soft, deep shadow — old leather */
-  --gog-panel-shadow: 0 4px 20px rgba(23, 18, 12, 0.08), 0 1px 3px rgba(23, 18, 12, 0.04);
   --gog-spinner-overlay-bg: rgba(247, 243, 235, 0.85);
+
+  /* Restated rather than inherited, and every knob of the set rather than the ones that differ
+     from the default. A custom property inherits, so a `data-theme="light"` subtree nested inside
+     a dark page picks up whatever the outer theme left set — that is how this block came to carry
+     its own copy of `--gog-panel-shadow` before the ladder existed. A theme owns all ten or it
+     owns none; `check:elevation` enforces the set. */
+  --gog-elevation-ink: 23 18 12;
+  --gog-elevation-key-alpha: 0.08;
+  --gog-elevation-ambient-alpha: 0.04;
+  --gog-elevation-contact-blur: 3px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 1;
+  --gog-elevation-key-blur: 3;
+  --gog-elevation-ring-width: 0px;
+  --gog-elevation-highlight-ink: 255 255 255;
+  --gog-elevation-highlight-alpha: 0;
 }
 
 :root[data-theme='dark'],
@@ -348,24 +407,26 @@
   --gog-warning-color: #fbbf24; /* Amber */
   --gog-info-color: #38bdf8; /* Sapphire */
 
-  --gog-panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--gog-border-color);
-  /* `elevated` drops the 1px ring `--gog-panel-shadow` carries for real overlays (dialog,
-     dropdown, tooltip), because that ring is exactly what `outlined` draws — with it, the two
-     card/panel variants render identically on a dark ground. The blur stays; the ring goes,
-     so outlined has an edge and elevated does not. Light themes need none of this: their
-     shadow has no ring and reads on its own. */
-  /* `elevated` cannot use `--gog-panel-shadow` here. That shadow carries a `0 0 0 1px` ring so
-     overlays keep an edge against the page, and the ring is exactly what `outlined` draws — with
-     it the two variants render identically. Dropping the ring and keeping the 30px black blur was
-     worse: black blurred over a near-black page reads as smudge rather than lift.
+  /* Elevation, as this theme states it. The long note in the literal block explains the knobs;
+     what is specific here is why a dark ground needs all three of them. Black blurred over a
+     near-black page reads as smudge rather than lift, so the shadow stays tight and dark and the
+     *edges* do the work: a hairline of light along the top, where a raised surface would catch
+     it, and a hairline ring for overlays that have to sit apart from the page.
 
-     So elevation is stated the way a dark UI actually states it — a hairline of light along the
-     top edge, where a raised surface would catch it, over a tighter, darker shadow that stays
-     close to the element instead of hazing the page. */
-  --gog-card-elevated-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 2px 6px rgba(0, 0, 0, 0.55);
-  --gog-panel-elevated-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 2px 6px rgba(0, 0, 0, 0.55);
+     The ring is not on the ladder, deliberately. `elevated` must not have one -- a ring is
+     exactly what `outlined` draws, and with it the two card and panel variants render
+     identically on a dark ground. That was a real defect, fixed in 21.7.1, and folding the ring
+     into a step would have reintroduced it. Overlays compose it; `elevated` does not. */
+  --gog-elevation-ink: 0 0 0;
+  --gog-elevation-key-alpha: 0.55;
+  --gog-elevation-ambient-alpha: 0.28;
+  --gog-elevation-contact-blur: 3px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 1;
+  --gog-elevation-key-blur: 3;
+  --gog-elevation-ring-width: 1px;
+  --gog-elevation-highlight-ink: 255 255 255;
+  --gog-elevation-highlight-alpha: 0.07;
   --gog-spinner-overlay-bg: rgba(13, 11, 8, 0.85);
 }
 
@@ -379,6 +440,68 @@
   /* ── Derived foundation tokens ───────────────────────────────────────────────
      Split out of the literal block above because they read other tokens: they have
      to re-resolve inside each theme scope. */
+
+  /* ── The elevation ladder ────────────────────────────────────────────────────
+     Generated from the knobs in the literal block above; see the long note there for why the
+     key light's blur is three times its offset and why the ring and the highlight are not part
+     of a step. Every step but 0 is the same two layers with one number changed, which is the
+     property that makes the arithmetic assertable by reading rather than by a check.
+
+     The heights, and what the library puts on each:
+
+       0  --  flat. Every button at rest, and the `outlined` and `filled` card and panel.
+       1  --  a mark riding on a control: the toggle's thumb.
+       2  --  a surface raised in normal flow: the `elevated` card and panel.
+       4  --  an overlay anchored to a control: the four dropdown panels, the tooltip, the menu.
+       8  --  an overlay floating free of one: the toast.
+      16  --  a modal that owns the screen: the dialog.
+
+     `gog-menu` is the one whose height *changes* here rather than being restated. It aliased
+     `--gog-dialog-shadow`, so a dropdown menu carried a modal's shadow while the four dropdown
+     panels beside it carried a panel's -- two overlays of one kind, four steps apart, and the
+     alias is why nobody saw it. */
+  --gog-elevation-contact: 0 1px var(--gog-elevation-contact-blur)
+    rgb(var(--gog-elevation-ink) / var(--gog-elevation-ambient-alpha));
+  /* Composable character layers, not steps. A component that wants one prepends it. */
+  --gog-elevation-ring: 0 0 0 var(--gog-elevation-ring-width) var(--gog-border-color);
+  --gog-elevation-highlight: inset 0 1px 0
+    rgb(var(--gog-elevation-highlight-ink) / var(--gog-elevation-highlight-alpha));
+  --gog-elevation-0: none;
+  --gog-elevation-1:
+    var(--gog-elevation-contact),
+    calc(1px * var(--gog-elevation-key-x)) calc(1px * var(--gog-elevation-key-y))
+      calc(1px * var(--gog-elevation-key-blur))
+      rgb(var(--gog-elevation-ink) / var(--gog-elevation-key-alpha));
+  --gog-elevation-2:
+    var(--gog-elevation-contact),
+    calc(2px * var(--gog-elevation-key-x)) calc(2px * var(--gog-elevation-key-y))
+      calc(2px * var(--gog-elevation-key-blur))
+      rgb(var(--gog-elevation-ink) / var(--gog-elevation-key-alpha));
+  --gog-elevation-3:
+    var(--gog-elevation-contact),
+    calc(4px * var(--gog-elevation-key-x)) calc(4px * var(--gog-elevation-key-y))
+      calc(4px * var(--gog-elevation-key-blur))
+      rgb(var(--gog-elevation-ink) / var(--gog-elevation-key-alpha));
+  --gog-elevation-4:
+    var(--gog-elevation-contact),
+    calc(8px * var(--gog-elevation-key-x)) calc(8px * var(--gog-elevation-key-y))
+      calc(8px * var(--gog-elevation-key-blur))
+      rgb(var(--gog-elevation-ink) / var(--gog-elevation-key-alpha));
+  --gog-elevation-5:
+    var(--gog-elevation-contact),
+    calc(16px * var(--gog-elevation-key-x)) calc(16px * var(--gog-elevation-key-y))
+      calc(16px * var(--gog-elevation-key-blur))
+      rgb(var(--gog-elevation-ink) / var(--gog-elevation-key-alpha));
+
+  /* The library's own surfaces, placed on the ladder. These stay the public names a consumer
+     overrides — what changed in 21.12.0 is that their *value* is a step rather than a hand-written
+     shadow, so a theme moves all of them by turning one knob. Overriding any single one still
+     works exactly as before. */
+  --gog-panel-shadow: var(--gog-elevation-ring), var(--gog-elevation-3);
+  --gog-panel-elevated-shadow: var(--gog-elevation-highlight), var(--gog-elevation-2);
+  --gog-toast-shadow: var(--gog-elevation-ring), var(--gog-elevation-4);
+  --gog-dialog-shadow: var(--gog-elevation-ring), var(--gog-elevation-5);
+  --gog-toggle-thumb-shadow: var(--gog-elevation-1);
 
   /* ── Text on a status fill ───────────────────────────────────────────────────
      `--gog-accent-text-color` means "text on the accent fill" and flips with the theme, which
@@ -986,7 +1109,7 @@
   --gog-card-elevated-border-color: transparent;
   /* The shared surface shadow, so a card sits at the same elevation as a dialog or a
      dropdown panel instead of inventing a second house style for "raised". */
-  --gog-card-elevated-shadow: var(--gog-panel-shadow);
+  --gog-card-elevated-shadow: var(--gog-elevation-highlight), var(--gog-elevation-2);
   --gog-card-filled-bg: var(--gog-accent-pale);
   --gog-card-filled-border-color: transparent;
   --gog-card-filled-shadow: none;
@@ -1187,7 +1310,6 @@
   --gog-dialog-border-width: var(--gog-panel-border-width);
   --gog-dialog-border-style: var(--gog-panel-border-style);
   --gog-dialog-radius: var(--gog-radius);
-  --gog-dialog-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
   --gog-dialog-min-width: 320px;
   --gog-dialog-max-height: 90vh;
   --gog-dialog-header-padding: var(--gog-space-16) var(--gog-space-20) var(--gog-space-16);
@@ -1681,7 +1803,9 @@
   --gog-menu-border-width: var(--gog-control-border-width);
   --gog-menu-border-style: var(--gog-control-border-style);
   --gog-menu-radius: var(--gog-panel-radius);
-  --gog-menu-shadow: var(--gog-dialog-shadow);
+  /* Step 3, with the dropdown panels it belongs beside — not step 5. This aliased
+     `--gog-dialog-shadow` until 21.12.0, so a dropdown menu carried a modal's elevation. */
+  --gog-menu-shadow: var(--gog-panel-shadow);
   --gog-menu-font-family: var(--gog-font-body);
   --gog-menu-padding: var(--gog-space-4);
   --gog-menu-gap: var(--gog-space-4);
@@ -2350,7 +2474,6 @@
   --gog-toggle-track-on-bg: var(--gog-accent-color);
   --gog-toggle-thumb-off-bg: var(--gog-surface-color);
   --gog-toggle-thumb-on-bg: var(--gog-accent-text-color, var(--gog-primary-color));
-  --gog-toggle-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   /* The thumb's clearance inside its own track, and off the 4px grid on purpose: at 2px the
      thumb is 83% of a 24px track, which is what makes a switch read as a switch, and 4px would
      take it to 67%. A length inside a single painted mark is not spacing between two things —

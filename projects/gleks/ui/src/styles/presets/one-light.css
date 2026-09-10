@@ -68,6 +68,15 @@
   /* Was #0184bc — One Light's own blue, 4.18:1 under a white label. Darkened: 5.13:1. */
   --gog-info-color: #0175a6;
 
-  --gog-panel-shadow: 0 10px 30px rgba(56, 58, 66, 0.12), 0 0 0 1px var(--gog-border-color);
+  --gog-elevation-ink: 56 58 66;
+  --gog-elevation-key-alpha: 0.12;
+  --gog-elevation-ambient-alpha: 0.06;
+  --gog-elevation-contact-blur: 3px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 1;
+  --gog-elevation-key-blur: 3;
+  --gog-elevation-ring-width: 1px;
+  --gog-elevation-highlight-ink: 255 255 255;
+  --gog-elevation-highlight-alpha: 0;
   --gog-spinner-overlay-bg: rgba(250, 250, 250, 0.85);
 }

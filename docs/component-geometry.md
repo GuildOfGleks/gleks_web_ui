@@ -125,16 +125,16 @@ tolerance; exceptions name a reason, per the `check:contrast` pattern.
 **Verdict revised 2026-09-06: there is no mark in this library the correction applies to, so it
 does not become a rule here.** D2 adopted 1.128 for "`badge`'s dot, `chip`'s avatar and the other
 filled circles", and building the table above is what showed the table has no rows. The last
-column is the load-bearing one — *the square it is meant to match* — and every candidate fails on
+column is the load-bearing one — _the square it is meant to match_ — and every candidate fails on
 it rather than on the arithmetic:
 
-| Mark                            | Why the correction has nothing to apply against                                                                                                                                                     |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--gog-chip-*-avatar-size`      | It is a **photograph** — `avatarUrl` takes `user.photo`, with `object-fit: cover`. Sized so a face is recognisable, not so its ink matches a mark's. It is also the icon's *alternative* in one slot (both `@if`), never its neighbour inside a chip. |
-| `--gog-badge-dot-size`          | 8px, standalone. Its alternative is a count pill carrying text; there is no square anywhere near it.                                                                                                |
-| `--gog-skeleton-circle-size-*`  | `circle` is a *shape* beside `text` and `rect`, and it stands for an avatar of that diameter. `square` in this component is a corner modifier (`rounded="false"`), not a shape to be matched.        |
-| `--gog-slider-thumb-size`, the toggle thumb | Parts of one painted control, sized by their own track. A thumb has no peer square; law 5 already governs the only thing about it that a reader acts on.                                |
-| the radio                       | Excluded by D2 itself, for the form-column argument.                                                                                                                                               |
+| Mark                                        | Why the correction has nothing to apply against                                                                                                                                                                                                       |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--gog-chip-*-avatar-size`                  | It is a **photograph** — `avatarUrl` takes `user.photo`, with `object-fit: cover`. Sized so a face is recognisable, not so its ink matches a mark's. It is also the icon's _alternative_ in one slot (both `@if`), never its neighbour inside a chip. |
+| `--gog-badge-dot-size`                      | 8px, standalone. Its alternative is a count pill carrying text; there is no square anywhere near it.                                                                                                                                                  |
+| `--gog-skeleton-circle-size-*`              | `circle` is a _shape_ beside `text` and `rect`, and it stands for an avatar of that diameter. `square` in this component is a corner modifier (`rounded="false"`), not a shape to be matched.                                                         |
+| `--gog-slider-thumb-size`, the toggle thumb | Parts of one painted control, sized by their own track. A thumb has no peer square; law 5 already governs the only thing about it that a reader acts on.                                                                                              |
+| the radio                                   | Excluded by D2 itself, for the form-column argument.                                                                                                                                                                                                  |
 
 So the law is sound and its arithmetic is right; this component set simply contains no instance of
 the thing it corrects. **It stays as guidance for a mark that genuinely must read as equal weight
@@ -172,9 +172,9 @@ rather than in a token.
 glyphs measured, both ways: the ink's bounding box and its centre of mass, the latter weighted by
 stroke length (`scripts/svg-ink.mjs`).
 
-| Statistic          | Largest offset from the box centre, in units of the 24 grid                  |
-| ------------------ | ---------------------------------------------------------------------------- |
-| **ink box**        | 0.01 horizontally, 0.50 vertically (`check`, `error`, `star`)                |
+| Statistic          | Largest offset from the box centre, in units of the 24 grid                          |
+| ------------------ | ------------------------------------------------------------------------------------ |
+| **ink box**        | 0.01 horizontally, 0.50 vertically (`check`, `error`, `star`)                        |
 | **centre of mass** | **2.05** horizontally (`arrow-left`/`arrow-right`), **3.47** vertically (`download`) |
 
 So the set is already box-centred to a hundredth of a unit and its mass is nowhere near centred —
@@ -185,11 +185,11 @@ breaking something every reader can. `download` (a tray with an arrow falling in
 low) and `filter` (a funnel, mass 2.88 high) are the same story.
 
 **The reason the law's own worked example does not transfer is the set's weight.** L7's triangle
-is a *solid tapering* mark, where one end genuinely carries more ink. Every glyph here is a
+is a _solid tapering_ mark, where one end genuinely carries more ink. Every glyph here is a
 uniform 2px monoline, so ink density is constant along the stroke and the eye reads the extent.
 The law bites where a mark is filled — which in SVG is a shape with a `fill` — and the registry
 has exactly one, `star-filled`, whose area centroid sits 0.51 low. Below the gate, and a good
-illustration in miniature: its ink *box* is 0.49 units **high** while its mass is 0.51 units
+illustration in miniature: its ink _box_ is 0.49 units **high** while its mass is 0.51 units
 **low**, because the five points are thin and the body is not.
 
 **The chevron worry does not arise, and measuring is what settled it.** All four chevrons come out
@@ -276,13 +276,13 @@ should do.
 both are numeric width, not measure. Every prose cap is px. Approximating `1ch ≈ 0.5em` (the real
 figure is font-dependent, which the check must state as an assumption rather than hide):
 
-| Token                                     | Cap   | Font                    | ≈ measure | Verdict                                        |
-| ----------------------------------------- | ----- | ----------------------- | --------- | ---------------------------------------------- |
-| `--gog-tooltip-max-width`                 | 280px | `--gog-text-xs` (12px)  | ≈47ch     | at the floor                                   |
-| `--gog-menu-max-width`                    | 320px | `--gog-text-sm` (14px)  | ≈46ch     | at the floor, but menu items do not wrap       |
-| `--gog-toast-max-width`                   | 400px | unstated — to trace     | to measure| —                                              |
-| `--gog-confirmation-dialog-max-width`     | 440px | to trace                | ≈63ch     | in band                                        |
-| the four `*-panel-max-width` at 420px     | 420px | —                       | n/a       | single-line options; the law does not apply    |
+| Token                                 | Cap   | Font                   | ≈ measure  | Verdict                                     |
+| ------------------------------------- | ----- | ---------------------- | ---------- | ------------------------------------------- |
+| `--gog-tooltip-max-width`             | 280px | `--gog-text-xs` (12px) | ≈47ch      | at the floor                                |
+| `--gog-menu-max-width`                | 320px | `--gog-text-sm` (14px) | ≈46ch      | at the floor, but menu items do not wrap    |
+| `--gog-toast-max-width`               | 400px | unstated — to trace    | to measure | —                                           |
+| `--gog-confirmation-dialog-max-width` | 440px | to trace               | ≈63ch      | in band                                     |
+| the four `*-panel-max-width` at 420px | 420px | —                      | n/a        | single-line options; the law does not apply |
 
 So the sweep's first job under this law is to **partition the components into wrapping and
 non-wrapping**, and that partition is itself a deliverable — a dropdown option that ellipsises is
@@ -330,6 +330,59 @@ gets the two-light model.
 **How it is checked.** `check-tokens` gains a rule: every `*-shadow` token resolves to a step of the
 ladder or is listed as a character override with its style named. The ladder's own steps are
 generated, so the arithmetic is asserted by construction rather than by a check.
+
+---
+
+**Built 2026-09-10, and the formula above is wrong on two counts — this is the third law the
+evidence reversed, after L7 and L6.** It shipped as its own script, `check:elevation`, rather than
+as a `check-tokens` rule; the last paragraph's reasoning about what to assert survived intact.
+
+**1. Blur is three times the offset, not twice.** Measured across all 26 key layers the library
+shipped: the ratio runs 1.33 to 6.00, the median is exactly **3.00**, and **16 of the 26 are 3.00
+on the nose**. The rule was written from the physics; the library was written by eye — and on this
+one the eye was consistent across eleven themes and four authors while the rule was not. Two
+appears three times in the whole corpus, all of them in one theme's ambient layer plus the dialog.
+Taking 3 also costs less than it sounds: at the top step the blur is 48px, the dialog's own shipped
+value to the pixel, so the change there is height rather than softness.
+
+**2. The ambient light does not scale with Z.** The formula gives it `blur = 2Z`, which at the top
+step is a 32px halo hanging off a 1px offset. Everywhere the library actually wrote two soft
+layers — `theme.css`'s light panel, `material`, `primeng` — the lower one is `0 1px 2px` to
+`0 1px 3px` and does not grow. That is what ambient occlusion is: a contact shadow, tied to where
+the object meets the ground rather than to how far above it. It is one constant knob,
+`--gog-elevation-contact-blur`.
+
+**A third correction, and it came from the constraint rather than the formula.** The ring and the
+top-edge catch light are _not_ layers of a step. Folding them in was the obvious reading of "a
+theme sets the shadow's style", and it silently reintroduces a defect 21.7.1 already fixed: on a
+dark ground a ring is exactly what `outlined` draws, so an `elevated` card that gets one renders
+identically to an outlined one. They are standalone tokens a surface composes —
+`var(--gog-elevation-ring), var(--gog-elevation-3)` — which also turns out to be the more honest
+model, since height is semantic and a contour is thematic.
+
+**What the style axis became.** Three multipliers per unit of Z — `-key-x`, `-key-y`, `-key-blur` —
+covering all four styles in the package without the ladder knowing any of their names. Soft leaves
+them; a hard-offset theme sets the two offsets to a fraction and the blur to 0 (`bevel`, `ledger`);
+a glow theme sets `-key-y` to 0 and keeps the blur, and the key light stops leaving the object
+(`terminal`); `parchment` climbs at a quarter rate because its own comment says paper does not
+float. **Three of the four reproduce their theme's shipped panel exactly** — the calibration anchor
+was step 3, since `--gog-panel-shadow` is the one token every preset overrode.
+
+**The survey's own count was wrong, and instructively.** This section says "47 shadow tokens".
+There are 51 declarations under 31 names, but only **22** are elevations: 11 are `none`, 10 are
+aliases of another shadow token, 3 are inset rings marking a pressed state, 3 are accent glows, and
+**2 carry a colour rather than a shadow** (`--gog-slider-thumb-shadow`, which the thumb composes as
+`0 0 <glow-size> var(…)`). The ladder replaces six distinct values in `theme.css` and sixteen in
+the presets — a smaller job than the number implied, and half of it was already aliased, which is
+the ladder half-built without steps.
+
+**One trap, caught in a browser and by no check that existed.** A custom property inherits, so a
+theme that declares six of the ten knobs picks the other four up from whatever scope encloses it —
+`data-theme="light"` nested in a dark page rendered light surfaces with dark-weight shadows on the
+first run. Rule A of `check:elevation` is that finding: all ten or none. A second rule came from the
+fix for it, since the script that filled the blocks in stacked three whole sets into `:root` and the
+first rule caught only the neighbouring symptom — a knob declared twice in one scope is a value that
+reads as live and is not.
 
 ---
 
@@ -391,17 +444,17 @@ a screen edge — is documentation for the app author, not a rule the library im
 Each of these changes rendered output. None can be settled by a script, and every one of them would
 otherwise be settled thirty-three times by whoever happened to be editing.
 
-| #      | Decision                                                                                                       | Why it blocks                                                                                                                                                                       |
-| ------ | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **D0** | Is this one minor or several?                                                                                   | 33 component commits plus a spacing-scale change plus a shadow token family is a large release. Splitting by law — geometry first, elevation second — is the alternative.              |
-| **D1** | The grid's granularity.                                                                                         | `--gog-space-*` is 14 steps at 2px, five of them not multiples of 4, and they are load-bearing (`--gog-control-padding-y` is `space-10`, `-x` is `space-14`). Tightening moves controls. Backlog law 1. |
-| **D2** | The optical multiplier per shape — and whether the _mark_ grows or the _box_ grows.                              | L6. Blocks the radio, the chip avatar, the spinner, the badge dot and the skeleton circle.                                                                                            |
-| **D3** | The optical ratio and its tolerance.                                                                            | Backlog law 3. `gog-button` runs 2.00 → 1.40 across five sizes today; one number replaces five opinions.                                                                              |
-| **D4** | The line-height function: role × size → step.                                                                   | Backlog law 4. Needs a role tag per text token, and `--gog-line-height-none: 1` on a tag is correct and must stay expressible.                                                        |
-| **D5** | The elevation ladder: how many Z steps, which components sit on which, and how a theme declares a non-soft style. | L10. The largest new token family.                                                                                                                                                   |
-| **D6** | The target-size floor per size step, and which components claim 2.5.8's spacing exemption.                       | Backlog law 5 plus L12(b). The 12px `xsm` checkbox is the test case.                                                                                                                 |
-| **D7** | Whether the four overlay max-widths become `min(…, …vw)`, and whether prose caps move to `ch`.                   | L8's exception plus L9.                                                                                                                                                              |
-| **D8** | The type scale's completeness.                                                                                   | 11 `font-size` declarations in `theme.css` bypass `--gog-text-*` with a literal (`0.6875rem`, `0.5625rem`, `18px`, `10px`, …). Either the scale gains steps or those become exceptions with reasons. |
+| #      | Decision                                                                                                          | Why it blocks                                                                                                                                                                                           |
+| ------ | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **D0** | Is this one minor or several?                                                                                     | 33 component commits plus a spacing-scale change plus a shadow token family is a large release. Splitting by law — geometry first, elevation second — is the alternative.                               |
+| **D1** | The grid's granularity.                                                                                           | `--gog-space-*` is 14 steps at 2px, five of them not multiples of 4, and they are load-bearing (`--gog-control-padding-y` is `space-10`, `-x` is `space-14`). Tightening moves controls. Backlog law 1. |
+| **D2** | The optical multiplier per shape — and whether the _mark_ grows or the _box_ grows.                               | L6. Blocks the radio, the chip avatar, the spinner, the badge dot and the skeleton circle.                                                                                                              |
+| **D3** | The optical ratio and its tolerance.                                                                              | Backlog law 3. `gog-button` runs 2.00 → 1.40 across five sizes today; one number replaces five opinions.                                                                                                |
+| **D4** | The line-height function: role × size → step.                                                                     | Backlog law 4. Needs a role tag per text token, and `--gog-line-height-none: 1` on a tag is correct and must stay expressible.                                                                          |
+| **D5** | The elevation ladder: how many Z steps, which components sit on which, and how a theme declares a non-soft style. | L10. The largest new token family.                                                                                                                                                                      |
+| **D6** | The target-size floor per size step, and which components claim 2.5.8's spacing exemption.                        | Backlog law 5 plus L12(b). The 12px `xsm` checkbox is the test case.                                                                                                                                    |
+| **D7** | Whether the four overlay max-widths become `min(…, …vw)`, and whether prose caps move to `ch`.                    | L8's exception plus L9.                                                                                                                                                                                 |
+| **D8** | The type scale's completeness.                                                                                    | 11 `font-size` declarations in `theme.css` bypass `--gog-text-*` with a literal (`0.6875rem`, `0.5625rem`, `18px`, `10px`, …). Either the scale gains steps or those become exceptions with reasons.    |
 
 ## Decisions taken — 2026-09-05, against the survey
 
@@ -420,8 +473,7 @@ survives a 4px spacing grid. The hybrid this decision was weighed against — "c
 small optical chrome on 2px" — turned out to describe something the token layout already does.
 
 **D3 — the optical ratio is 2.0, exactly, at every size step.** This one has an arithmetic
-argument behind it rather than a preference. With vertical padding on the 4px grid (4, 8, 12, 16,
-20) and horizontal padding likewise a multiple of 4, the achievable ratios per step are discrete:
+argument behind it rather than a preference. With vertical padding on the 4px grid (4, 8, 12, 16, 20) and horizontal padding likewise a multiple of 4, the achievable ratios per step are discrete:
 2.0 and 1.0 are the **only two** values reachable at all five. A per-block ratio held "within a
 tolerance" would therefore have meant an exception at `xsm` for every block in the library, which
 is a rule that fails on its own first row. So the ratio is 2.0 and the grid is never bent.
@@ -451,7 +503,7 @@ around empty ground, where the ink argument runs the other way, and a 27px disc 
 checkbox breaks the one thing a form column has to keep — a single left edge under the labels.
 **The radio was not missing a token, and the survey's reading of it was wrong** — corrected
 2026-09-05, by `check:tokens` rather than by re-reading. `--gog-radio-box-size` is deliberately
-*undeclared*: it is an instance-layer token, and the whole point of the layer is that a
+_undeclared_: it is an instance-layer token, and the whole point of the layer is that a
 declaration in `theme.css` would pin every radio in the app instead of letting one instance
 override itself. The sizing does reach it — `radio-group.component.ts` sets that variable on the
 host from the shared `--gog-control-checkbox-*` scale, exactly as the checkbox does — so the
@@ -460,7 +512,7 @@ an absence is the design; rule D of the token contract exists to catch precisely
 
 **D3a — a padding may repeat between adjacent size steps.** Found by the first calibration
 commit (`gog-tag`) rather than decided in advance, which is what the calibration slot exists for.
-Five *distinct* vertical paddings on a 4px grid have to run 4, 8, 12, 16, 20; on a tag that
+Five _distinct_ vertical paddings on a 4px grid have to run 4, 8, 12, 16, 20; on a tag that
 doubles `slg` and produces something the size of a button. So the size step is carried by the
 type scale — a tag's five steps are 11, 12, 14, 16 and 18px — and the padding is allowed to
 repeat between neighbours rather than the geometry inflating to keep five distinct numbers. The
@@ -529,11 +581,11 @@ the same shape as law 3's finding and the chip avatar's.
 > repeating a step verbatim is indistinguishable from a mistake. Rule G is right and the tidier
 > version was wrong: **a role justifies a value that sits off the scale; it never justifies
 > restating one that is on it.** So `lg` goes on reading the token, four of five are literals, and
-> the exemption means *may* be off the scale rather than *must* be.
+> the exemption means _may_ be off the scale rather than _must_ be.
 
 ### D4 — the roles, taken
 
-| Role             | Step            | What it is                                                                                                                              |
+| Role             | Step            | What it is                                                                                                                               |
 | ---------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `label-none`     | `none` (1)      | A single-line label in a box whose height is padding plus type. Leading adds invisible space and pushes the box off its computed height. |
 | `label-tight`    | `tight` (1.2)   | A single-line label that may carry descenders, in a box sized by its content.                                                            |
@@ -575,8 +627,7 @@ same time: the seven `1`s and the one `1.5` read their token.
 exists to collapse an inline box around an icon, and no role or step applies to it.
 
 **(d) `--gog-skeleton-line-height-*` is excluded by name, not renamed.** Those five tokens hold
-bone heights in px (8/10/14/18/24), so any check keyed on the suffix reads them as leading of 8 to
-24. Renaming five public tokens to fix a collision that misleads only a script is a cost paid by
+bone heights in px (8/10/14/18/24), so any check keyed on the suffix reads them as leading of 8 to 24. Renaming five public tokens to fix a collision that misleads only a script is a cost paid by
 consumers for a script's benefit, and this release already carries one breaking token change. The
 exclusion carries the reason; the rename is a candidate for the next major.
 
@@ -586,8 +637,8 @@ needs its own survey pass. D7 is taken below.
 
 ## D7 — taken 2026-09-09, against a survey
 
-D7 as stated above: *"Whether the four overlay max-widths become `min(…, …vw)`, and whether prose
-caps move to `ch`."* Two verdicts were already taken when D7 was written — L8 adopted only as a
+D7 as stated above: _"Whether the four overlay max-widths become `min(…, …vw)`, and whether prose
+caps move to `ch`."_ Two verdicts were already taken when D7 was written — L8 adopted only as a
 four-token viewport exception, L9 adopted for wrapping text only, both with the caps named — so D7
 is where those verdicts get implemented, not re-argued. `npm run survey:measure` is the evidence;
 see its header for the method.
@@ -599,7 +650,7 @@ confirmation dialog) split two ways the plan had not separated:
 
 - **`gog-menu`'s max-width has no measure at all.** Menu items do not wrap, so L9 never applied to
   it — but L8 is a different law. A 320px menu is still wider than a 360px phone's remaining width
-  once *anything* sits beside it, independent of whether its text wraps. **L8 and L9 are
+  once _anything_ sits beside it, independent of whether its text wraps. **L8 and L9 are
   orthogonal**: a token can take the viewport clamp without moving to `ch`.
 - **The confirmation dialog's text is not reliably on the type scale at all.** Tracing its font (a
   stated deliverable of this survey) found `.confirm-dialog__description`/`.confirm-dialog__title`
@@ -612,7 +663,7 @@ confirmation dialog) split two ways the plan had not separated:
   **Defect fixed 2026-09-09, and the prediction above held — but not for the reason it gives.**
   The classes are gone; the title reads `--gog-text-lg` and the description `--gog-text-sm`, both
   through their own tokens. The cap did not move (still `51ch`, still 439.9px), and the wording
-  above is why this note exists: "the cap will only get roomier" reads as though the cap *responds*
+  above is why this note exists: "the cap will only get roomier" reads as though the cap _responds_
   to the description's font. It does not. `max-width` is declared on `.confirm-dialog`, whose own
   size is the inherited 16px and was never touched, so a `ch` cap there can no more shrink than
   grow when a **descendant** changes size. What actually got roomier is the measure — the same
@@ -641,7 +692,7 @@ the section below has the arithmetic and the general rule it produced — this a
 until review). **And not** the three dropdown panels (`autocomplete`/`select`/`multiselect`
 at 420px), which stay outside it. Reason, checked rather than assumed: each panel's own CSS sets
 `min-width: 100%` against its trigger field, so the panel is only ever as wide as the field it
-belongs to; `max-width: 420px` is a ceiling that only engages when the *field* is already wider
+belongs to; `max-width: 420px` is a ceiling that only engages when the _field_ is already wider
 than 420px. A field wider than a 360px phone is a pre-existing overflow the field's own responsive
 layout (or `fullWidth`) is responsible for — clamping the panel alone would not fix it, and would
 add a rule that is never reachable through the panel's own geometry. L8's exception is for chrome
@@ -655,7 +706,7 @@ no such token, so both read `var(--gog-space-16)` directly (16px, `check-tokens`
 floor for "reads the scale rather than restating a literal"), matching the value toast already
 uses for the same purpose. No new named token: a value used at exactly one call site each does not
 earn one, and `--gog-toast-stack-padding` is the precedent for what a component gets when the
-margin *is* worth naming.
+margin _is_ worth naming.
 
 **3. Which caps move to `ch`, and whether menu is one of them.** Tooltip, toast and the
 confirmation dialog — the three that wrap — move to `ch`, each set to the nearest whole `ch` that
@@ -666,7 +717,7 @@ governs wrapping text and menu items do not wrap, so a `ch` cap on it would be m
 it keeps its viewport clamp (question 1) but its base width stays the `320px` it already is.
 
 **Tooltip's 43ch sits under Bringhurst's 45ch floor, and that is left as-is.** Widening the tooltip
-to clear the floor is a pixel decision — L8/L9's own verdict is that D7 is about the *unit*, not
+to clear the floor is a pixel decision — L8/L9's own verdict is that D7 is about the _unit_, not
 the width (`docs/component-geometry.md`, L9: "the law here is not really '280px is too narrow'").
 Recorded rather than silently accepted: a future session may want to revisit the 280px figure
 itself, and now has the honest number to revisit it against.
@@ -712,11 +763,11 @@ resolves `min-width` **after** `max-width`, so a floor wins outright: the clamp 
 to the width where the component's own `min-width` plus its margins exceeds the viewport, and
 below that the floor decides and the overflow returns.
 
-| Component            | Floor | Margin a side | Clamp governs down to | Below that                    |
-| -------------------- | ----- | ------------- | --------------------- | ----------------------------- |
-| `gog-tooltip`        | none  | 16px          | any width             | —                             |
-| `gog-menu`           | 180px | 16px          | 212px                 | narrower than any real device |
-| `gog-toast`          | 280px | 16px          | 312px                 | narrower than any real device |
+| Component     | Floor | Margin a side | Clamp governs down to | Below that                    |
+| ------------- | ----- | ------------- | --------------------- | ----------------------------- |
+| `gog-tooltip` | none  | 16px          | any width             | —                             |
+| `gog-menu`    | 180px | 16px          | 212px                 | narrower than any real device |
+| `gog-toast`   | 280px | 16px          | 312px                 | narrower than any real device |
 
 **Nothing here regressed** — every floor predates this release. But "no wider than the screen" is
 the wrong sentence even for the three that do carry the clamp, and the changelog was corrected to
@@ -747,12 +798,12 @@ font-size bug (filed in `docs/backlog.md`) happens to leave it inheriting the sa
 ancestor does — worth re-checking once that bug is fixed.
 
 **Re-checked 2026-09-09, when that bug was fixed: the dialog is still safe, and the sentence above
-names the wrong reason.** It is not safe *because* the description inherits its ancestor's size —
+names the wrong reason.** It is not safe _because_ the description inherits its ancestor's size —
 it is safe because `--gog-confirmation-dialog-max-width` is declared on `.confirm-dialog`, and the
 fix changed the **description's** font-size, not `.confirm-dialog`'s. The element carrying
 `max-width` still resolves `ch` against the same inherited 16px it always did, so the cap could not
 have moved whatever the description did. The toast case above differs precisely because there the
-cap and the text it was chosen for sat on elements that *both* inherited, which is what let the
+cap and the text it was chosen for sat on elements that _both_ inherited, which is what let the
 wrong font resolve it. Measured live after the fix: `.confirm-dialog` 16px / 439.875px, description
 14px, title 18px. Also confirmed at a 360px viewport — the panel's own `90vw` (324px) governs and
 the child's 51ch cap never binds, which is the same measurement that closes D7's "no clamp here"
@@ -762,9 +813,9 @@ decision.
 
 ## D0 — closed 2026-09-09, as a record of what happened
 
-D0 asked in advance: *"Is this one minor or several? 33 component commits plus a spacing-scale
+D0 asked in advance: _"Is this one minor or several? 33 component commits plus a spacing-scale
 change plus a shadow token family is a large release. Splitting by law — geometry first, elevation
-second — is the alternative."*
+second — is the alternative."_
 
 **It was never taken as a decision; it resolved itself as a fact, and the fact is the alternative
 it named.** The geometry work — laws 1, 3, 5 (25 commits), law 2 and its radius table (5 more), law
@@ -802,7 +853,7 @@ thirty-fourth component, written next month, drifts immediately.
   permanently red step over a known, tracked condition teaches everyone to ignore CI. Wiring it in
   is the reward for reaching zero.
 
-Two of the twelve laws are not served by *this* script and should not be forced into it: **L7**
+Two of the twelve laws are not served by _this_ script and should not be forced into it: **L7**
 (icon centroids) and **L11** (documentation only). L7 got its own script rather than the spec this
 paragraph originally planned for it — `check-icon-geometry.mjs`, the second half of
 `npm run check:geometry` — because the dependency it was assumed to need turned out not to be
@@ -845,12 +896,12 @@ re-litigates a settled number.
 
 ### Order
 
-| Group                   | Components                                                                                                                                                | Why grouped                                                                                     |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Calibration             | `tag`, `badge`                                                                                                                                              | smallest surface, and the rules are still mutable                                                |
+| Group                   | Components                                                                                                                                                        | Why grouped                                                                                                  |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Calibration             | `tag`, `badge`                                                                                                                                                    | smallest surface, and the rules are still mutable                                                            |
 | Sized controls          | `button`, `button-toggle`, `checkbox`, `radio-group`, `toggle`, `inputfield`, `textarea`, `select`, `multiselect`, `autocomplete`, `datepicker`, `slider`, `chip` | they share the `size` axis, so the optical ratio and the target floor are decided across all of them at once |
-| Surfaces and containers | `card`, `panel`, `accordion`, `collapsible`, `dialog`, `toast`, `tooltip`, `menu`, `tabs`, `table`, `paginator`, `divider`                                   | concentric radii, elevation and measure land here                                                |
-| Marks and chrome        | `icon`, `spinner`, `progressbar`, `skeleton`, `scroll`, `ripple`                                                                                            | optical area and centroid; mostly geometry with no text                                          |
+| Surfaces and containers | `card`, `panel`, `accordion`, `collapsible`, `dialog`, `toast`, `tooltip`, `menu`, `tabs`, `table`, `paginator`, `divider`                                        | concentric radii, elevation and measure land here                                                            |
+| Marks and chrome        | `icon`, `spinner`, `progressbar`, `skeleton`, `scroll`, `ripple`                                                                                                  | optical area and centroid; mostly geometry with no text                                                      |
 
 33 components, 33 commits, plus the rule commits and the check.
 
@@ -858,27 +909,28 @@ re-litigates a settled number.
 
 ## Status
 
-| Step                                                     | State                        |
-| -------------------------------------------------------- | ---------------------------- |
-| The seven candidate laws, with verdicts                   | ✅ written (this file)       |
-| D1, D2, D3, D6 + D3a, D3b                                 | ✅ taken 2026-09-05, against the survey |
-| D5                                                         | ⬜ open                      |
-| D4 + D8                                                   | ✅ taken 2026-09-06, against a second survey |
-| D7                                                         | ✅ taken 2026-09-09, against a survey |
-| D0                                                         | ✅ closed 2026-09-09, as a record of what happened |
+| Step                                                       | State                                                                     |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------- |
+| The seven candidate laws, with verdicts                    | ✅ written (this file)                                                    |
+| D1, D2, D3, D6 + D3a, D3b                                  | ✅ taken 2026-09-05, against the survey                                   |
+| D5                                                         | ✅ taken 2026-09-10, against a third survey                               |
+| D4 + D8                                                    | ✅ taken 2026-09-06, against a second survey                              |
+| D7                                                         | ✅ taken 2026-09-09, against a survey                                     |
+| D0                                                         | ✅ closed 2026-09-09, as a record of what happened                        |
 | The two entries law 2 and L6 left behind                   | ✅ closed 2026-09-09 — dropdown panel radii + interior, chip avatar ratio |
-| `survey:geometry` (all five laws, reports)                | ✅                           |
-| `check:geometry` (laws 1, 3, 5, gates)                    | ✅ green, and a CI step      |
-| The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits    |
-| Law 2's parent table + `check:radii`                       | ✅ 2026-09-06 — opened on 6 findings |
-| Law 2 green, and in CI via `check:geometry`                | ✅ 2026-09-06, 5 component commits |
-| Law 4 + D8 in the gate (`check:typography`)                | ✅ 2026-09-06 — 50 findings to zero |
-| L7 audited, and gated by `check:geometry`'s second half    | ✅ 2026-09-06 — the audit reversed the law |
-| L6's 1.128 correction applied to the filled marks         | ❌ 2026-09-06 — no mark in this library it applies to |
-| L11 into `api-design.instructions.md` and `AGENTS.md`     | ✅ 2026-09-06                |
-| L8's consumer recipe into `README.md`                     | ✅ 2026-09-06                |
-| `survey:measure` (L8's exception + L9, reports)            | ✅ 2026-09-09                |
-| `check:measure` (D7 in the gate)                            | ✅ 2026-09-09 — 0 findings after implementation |
+| `survey:geometry` (all five laws, reports)                 | ✅                                                                        |
+| `check:geometry` (laws 1, 3, 5, gates)                     | ✅ green, and a CI step                                                   |
+| The sweep — laws 1, 3 and 5 across every shipped component | ✅ 2026-09-05, 25 commits                                                 |
+| Law 2's parent table + `check:radii`                       | ✅ 2026-09-06 — opened on 6 findings                                      |
+| Law 2 green, and in CI via `check:geometry`                | ✅ 2026-09-06, 5 component commits                                        |
+| Law 4 + D8 in the gate (`check:typography`)                | ✅ 2026-09-06 — 50 findings to zero                                       |
+| L7 audited, and gated by `check:geometry`'s second half    | ✅ 2026-09-06 — the audit reversed the law                                |
+| L6's 1.128 correction applied to the filled marks          | ❌ 2026-09-06 — no mark in this library it applies to                     |
+| L11 into `api-design.instructions.md` and `AGENTS.md`      | ✅ 2026-09-06                                                             |
+| L8's consumer recipe into `README.md`                      | ✅ 2026-09-06                                                             |
+| `survey:measure` (L8's exception + L9, reports)            | ✅ 2026-09-09                                                             |
+| `check:measure` (D7 in the gate)                           | ✅ 2026-09-09 — 0 findings after implementation                           |
+| The elevation ladder, and `check:elevation` in the gate    | ✅ 2026-09-10 — L10's formula reversed by the survey                      |
 
 ### What the sweep actually cost, and what it found
 
@@ -908,12 +960,12 @@ move by a pixel.
 
 **Three lengths are deliberately off the grid**, listed in `OPTICAL_CHROME` with their numbers: a
 toggle thumb's inset, a scrollbar thumb's, and the resize grip's hairline gap. The distinction is
-not size — it is that a length *inside a single painted mark* defines that mark's shape, while a
+not size — it is that a length _inside a single painted mark_ defines that mark's shape, while a
 gap between two elements is spacing however small it is.
 
 ## The two entries law 2 and L6 left behind — closed 2026-09-09
 
-Neither was a law and neither was a check finding. Both were things the geometry work *saw* and
+Neither was a law and neither was a check finding. Both were things the geometry work _saw_ and
 correctly refused to fix in the same pass, because each needed a decision about public API. They
 are recorded here rather than in `docs/backlog.md`, whose own rule is that nothing closed lives
 there.
@@ -929,11 +981,11 @@ its measured rect and rendered into `<body>` under `appendToBody`.
 Measured live in `ui-showcase`, before and after, with `--gog-select-radius: 999px` set on `:root`
 — a pill field, which is a plausible theme choice and is what `--gog-radius: 999px` would produce:
 
-| box | before the fix, pill field | after |
-| --- | --- | --- |
-| `.gog-select__control` (the field) | 999px | 999px — it is the field's token and it should move |
-| `.gog-select__dropdown` (the panel) | **999px** | 8px |
-| `.gog-select__option` | **derived from 999px** | 4px |
+| box                                 | before the fix, pill field | after                                              |
+| ----------------------------------- | -------------------------- | -------------------------------------------------- |
+| `.gog-select__control` (the field)  | 999px                      | 999px — it is the field's token and it should move |
+| `.gog-select__dropdown` (the panel) | **999px**                  | 8px                                                |
+| `.gog-select__option`               | **derived from 999px**     | 4px                                                |
 
 Both components now declare a `*-panel-radius`, defaulting to `var(--gog-radius)`, so nothing
 renders differently by default; the filter input's radius and the option row's derive from it
@@ -950,7 +1002,7 @@ densities**, which is what law 2 requires: at `--gog-density: 0.85` the gutter i
 is 4.6px, derived rather than restated.
 
 **The finding worth more than the fix is about the reminder, not the radius.** `check:radii`
-carried both entries as a `PANEL_RADIUS_SPLIT` array printed *only inside the failure branch* — so
+carried both entries as a `PANEL_RADIUS_SPLIT` array printed _only inside the failure branch_ — so
 from the day the check went green, which is the state a CI gate is built to sit in, the reminder
 printed nothing at all. `docs/backlog.md` claimed the script "prints both alongside its findings so
 they cannot be forgotten"; it did not. A note visible only when something else is broken is not a

@@ -49,7 +49,20 @@
      move. One step down Material's own ramp to Light Blue 800, which is 4.80:1 under white and
      4.56:1 as text on the page. Found 2026-09-04. */
   --gog-info-color: #0277bd;
-  --gog-panel-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  /* The one theme whose contact shadow is *stronger* than its key light, which is why the two
+     alphas are stated separately rather than derived from one. The 2px spread its own value
+     carried is dropped: spread is not part of the two-light model, and at these alphas it read
+     as a slightly wider blur rather than as a distinct edge. */
+  --gog-elevation-ink: 0 0 0;
+  --gog-elevation-key-alpha: 0.15;
+  --gog-elevation-ambient-alpha: 0.3;
+  --gog-elevation-contact-blur: 2px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 1;
+  --gog-elevation-key-blur: 3;
+  --gog-elevation-ring-width: 0px;
+  --gog-elevation-highlight-ink: 255 255 255;
+  --gog-elevation-highlight-alpha: 0;
   --gog-spinner-overlay-bg: rgba(254, 247, 255, 0.75);
 
   /* Fonts — Material is Roboto end to end, no heading/body split */
@@ -117,6 +130,5 @@
   /* Dialog (M3 "extra-large" shape) / toast (M3 snackbar shape) */
   --gog-dialog-backdrop-bg: rgba(0, 0, 0, 0.32);
   --gog-dialog-radius: 28px;
-  --gog-dialog-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
   --gog-toast-radius: 4px;
 }

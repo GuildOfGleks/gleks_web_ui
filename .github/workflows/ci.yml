@@ -77,6 +77,18 @@ jobs:
       - name: Class-name check
         run: npm run check:class-names
 
+      # The elevation ladder (21.12.0, docs/component-geometry.md D5). Three rules, and the
+      # ladder's own arithmetic is deliberately not one of them -- every step is the same two
+      # layers with one number changed, so it is asserted by construction. What is checked is
+      # what drifted before the family existed: a theme must declare all ten knobs (a custom
+      # property inherits, so a partial set silently borrows the enclosing theme's weight -- that
+      # one was caught in a browser, not by a check), no shadow token may be hand-written unless
+      # it is a named non-height (an inset ring, an accent glow), and no preset may write a
+      # shadow at all. Before it: 22 hand-authored values across 11 themes, a dropdown menu
+      # carrying a modal's shadow, and two presets whose dialog had the elevation of a card.
+      - name: Elevation check
+        run: npm run check:elevation
+
       # RTL guard. A `padding`/`margin` shorthand that sets the two horizontal sides
       # differently is physical, so it does not mirror under `dir="rtl"` — and because the
       # sidedness lives in a value's *position* rather than in a `left`/`right` keyword, no

@@ -125,6 +125,10 @@ const FOUNDATION_NAMESPACES = new Set([
   'z',
   // The ground a raised surface paints; a dark theme lifts it where a light one shadows.
   'elevated',
+  // `--gog-elevation-*`: the height ladder (21.12.0). Six generated steps plus the knobs a theme
+  // turns to place its own shadows on them — ink, two alphas, the three per-Z multipliers that
+  // carry the style (soft, hard-offset, glow), and the ring and catch light a surface composes.
+  'elevation',
   'easing',
   'focus',
   'font',

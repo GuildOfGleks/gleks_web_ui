@@ -8,6 +8,49 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **An elevation ladder — `--gog-elevation-0` through `-5` — and the ten knobs a theme turns to
+  place its own shadows on it.** Six heights, Z doubling: 0, 1, 2, 4, 8, 16. A step is two lights,
+  a contact shadow that hugs the object and never moves and a key light whose offset is Z and
+  whose blur is three times it. The library's own surfaces are placed on it: a toggle thumb at 1,
+  an `elevated` card or panel at 2, anything anchored to a control at 3 (the four dropdown panels,
+  the tooltip, the menu), a toast at 4, a modal dialog at 5.
+
+  **What it replaces is the reason it exists.** Eleven themes hand-authored 22 shadow values with
+  no relationship to each other, and three defects were living inside that: `--gog-menu-shadow`
+  aliased `--gog-dialog-shadow`, so a dropdown menu carried a modal's elevation while the four
+  dropdown panels beside it carried a panel's — two overlays of one kind, four steps apart;
+  `material` and `primeng` each declared `--gog-dialog-shadow` byte-identical to their own
+  `--gog-panel-shadow`, so on both a modal had the elevation of a card; and the same panel sat at
+  4px of lift on the light theme and 10px on the dark one, with nothing anywhere stating that a
+  panel has two heights. None of the three is a value anybody typed wrong. They are what happens
+  when a number has to be restated by hand in a tenth file.
+
+  **The blur is three times the offset, and that number was measured rather than adopted.** The
+  ruleset this comes from specifies two (`docs/component-geometry.md`, L10). Every shadow the
+  library shipped disagreed: across 26 layers the ratio runs 1.33 to 6.00, the median is exactly
+  3.00, and 16 of the 26 are 3.00 on the nose. It lands well — at the top step the blur is 48px,
+  which is the dialog's own shipped blur to the pixel, so what moves there is the height and not
+  the softness.
+
+  **A theme keeps its character, because the style is three of the knobs.** `--gog-elevation-key-x`,
+  `-key-y` and `-key-blur` are multipliers per unit of Z, and between them they cover every style
+  in the package: leave them for a soft drop shadow, set the two offsets to a fraction and the blur
+  to `0` for `bevel` and `ledger`'s hard offset, set `-key-y` to `0` and keep the blur and the key
+  light becomes `terminal`'s phosphor glow — the ladder never learns what a glow is. `parchment`
+  climbs at a quarter of the rate, because paper does not float. Three of the four styles reproduce
+  their theme's shipped panel exactly.
+
+  The hairline ring and the top-edge catch light are deliberately **not** part of a step, and
+  compose over one instead (`var(--gog-elevation-ring), var(--gog-elevation-3)`). An `elevated`
+  card on a dark ground must not have a ring — a ring is what `outlined` draws, and with it the two
+  variants render identically, which was a real defect fixed in 21.7.1. Folding it into the ladder
+  would have reintroduced it.
+
+  `npm run check:elevation` is a CI step from the day it went green. It checks the things that
+  actually drift rather than the ladder's arithmetic, which is asserted by construction: a theme
+  declares all ten knobs or none, no shadow token may be hand-written unless it is a named
+  non-height (an inset ring, an accent glow), and no preset may write a shadow at all.
+
 - **`--gog-select-panel-radius` and `--gog-multiselect-panel-radius`.** Both default to
   `var(--gog-radius)`, so nothing renders differently — what changes is that the dropdown panel
   and the field it hangs from are now two boxes with two tokens. They had been one: the panel
@@ -25,6 +68,14 @@ reached 1.0, so breaking changes may land in minor versions.
   true once `--gog-density` moves the padding.
 
 ### Changed
+
+- **`gog-menu`'s panel sits at the dropdown tier instead of the dialog's.** Its shadow was an
+  alias of `--gog-dialog-shadow` (`0 24px 48px`, alpha 0.5 on the base themes) while
+  `gog-select`, `gog-multiselect`, `gog-autocomplete` and `gog-datepicker` all read
+  `--gog-panel-shadow`. A menu is the same kind of object as those four — an overlay anchored to
+  the control that opened it — so it now reads the same token they do, four steps down. Visible:
+  an open menu is noticeably lighter, and matches a select panel opened beside it. Override
+  `--gog-menu-shadow` to put it back.
 
 - **`gog-chip`'s avatar is one ratio of the chip's type instead of five px values.**
   `--gog-chip-<size>-avatar-size` is `1.5em` at every size — 16.5 / 18 / 21 / 24 / 27px against

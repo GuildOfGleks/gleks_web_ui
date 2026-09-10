@@ -168,11 +168,40 @@ variant and size classes:
 > "what a raised surface looks like here". Change one and every raised surface follows, which is
 > the intent; the rest of `--gog-panel-*` belongs to the component alone.
 
+**Shadows come off a ladder, not out of a stylesheet.** Since 21.12.0 every raised surface reads
+one of six heights — `--gog-elevation-0` through `-5`, with Z doubling: 0, 1, 2, 4, 8, 16. Step 3
+is anything anchored to a control (a dropdown panel, a tooltip, a menu), step 4 a toast, step 5 a
+modal dialog. The steps are generated, so you never write one; a theme turns ten knobs and all six
+follow:
+
+```css
+:root[data-theme='mine'] {
+  --gog-elevation-ink: 15 23 42; /* the shadow's colour, unpacked for rgb(… / α) */
+  --gog-elevation-key-alpha: 0.12; /* the light that moves with height */
+  --gog-elevation-ambient-alpha: 0.06; /* the contact shadow, which does not */
+  --gog-elevation-contact-blur: 3px;
+  --gog-elevation-key-x: 0; /* per unit of Z — the three that carry the style */
+  --gog-elevation-key-y: 1;
+  --gog-elevation-key-blur: 3;
+  --gog-elevation-ring-width: 1px; /* a hairline contour; 0px for none */
+  --gog-elevation-highlight-ink: 255 255 255; /* a top-edge catch light, for dark grounds */
+  --gog-elevation-highlight-alpha: 0;
+}
+```
+
+The three per-Z multipliers are the whole style axis. Leave them alone for a soft drop shadow; set
+`key-x` and `key-y` to a fraction and `key-blur` to `0` for a hard offset (that is what `bevel` and
+`ledger` do); set `key-y` to `0` and keep the blur and the key light becomes a glow (`terminal`).
+**Declare all ten or none** — a custom property inherits, so a theme that states six of them picks
+the other four up from whatever encloses it, which is how a light subtree inside a dark page ends
+up with dark-weight shadows. `--gog-panel-shadow`, `--gog-dialog-shadow` and the rest are still the
+names you override for a single surface; what changed is that their default is a step.
+
 **A status colour is three tokens, not one.** `--gog-danger-color` and its three siblings are
 fills, and a fill needs a label that reads on it and a direction to deepen in — so each also has
 `--gog-<status>-text-color` (the label; defaults to the accent's, state it only when your hue
 disagrees) and `--gog-<status>-shade` (which way hover and press move; defaults to the page's ink,
-and should be the opposite when your label *is* the ink). Setting a status colour alone and
+and should be the opposite when your label _is_ the ink). Setting a status colour alone and
 leaving those at their defaults is how a bright amber ends up under white text: it measured 1.97:1
 in one of this package's own presets before 21.9.0. `gogBadge` and `gog-button`'s `severity` read
 the label; the button also reads the shade. `gog-tag` derives its own pair by mixing and

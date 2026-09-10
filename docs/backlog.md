@@ -176,6 +176,36 @@ not worth carrying here.
   component is touched, and the branch protocol for the sweep: one component, one commit. Do not
   start the sweep from this entry; the check comes first, and the plan says why.
 
+- **`--gog-slider-thumb-shadow` carries a colour, not a shadow.** Found 2026-09-10 while
+  classifying every `*-shadow` token for the elevation ladder, and it is the only one of the 31
+  whose name is simply wrong: the thumb composes it as
+  `box-shadow: 0 0 var(--gog-slider-thumb-glow-size) var(--gog-slider-thumb-shadow)`, so the token
+  holds `var(--gog-accent-pale)` and a `color-mix()`. Nothing is broken — a consumer overriding it
+  with a colour gets what they expect, and one overriding it with a shadow gets a declaration that
+  silently drops. `--gog-slider-thumb-glow-color` is the name; renaming a public token is a
+  deprecation cycle, so it belongs with the other two entries under **Structural** rather than
+  here. It is listed in `check-elevation.mjs`'s `NOT_ELEVATION` with that reason, so the next
+  reader does not re-derive it.
+
+**The elevation ladder closed D5** (2026-09-10, 21.12.0), which was the last open decision in
+`docs/component-geometry.md`. Six generated steps, ten knobs a theme turns, and
+`npm run check:elevation` in CI. Three shipped defects came out of it rather than being looked
+for — a dropdown menu carrying a modal's shadow, two presets whose dialog had a card's elevation,
+and a panel that sat at 4px of lift on light and 10px on dark. Two things from it are worth
+keeping here rather than in the plan, because both are about how a check fails:
+
+- **A custom property inherits, so a partial set of theme knobs is a silent borrow.** A theme
+  declaring six of ten picks the rest up from whatever encloses it: a `data-theme="light"` subtree
+  in a dark page rendered light surfaces with dark-weight shadows. Found in a browser on the first
+  run, by no check that existed. The rule is now all-ten-or-none — and the second rule beside it
+  came from the _fix_, when the script that filled the blocks in stacked three whole sets into
+  `:root` and the first rule caught only the neighbouring symptom.
+- **A survey's headline count can be off by half and still be quoted for a month.** The plan said
+  "47 shadow tokens and no scale of any kind". There are 51 declarations under 31 names, of which
+  22 are elevations — the rest are `none`, aliases, inset rings, glows, and two tokens holding a
+  colour. Ten of the 51 were _already_ aliases, which is the ladder half-built without steps. The
+  count was never re-derived after it was first written down.
+
 - **Theme colour should be decided by arithmetic, not by eye — in two spaces, both gated in CI.**
   The ask, and it is the owner's own framing: nobody here is a designer, so the right colour
   combinations get found by computing them. A change to any palette — `theme.css`'s two blocks or any file in

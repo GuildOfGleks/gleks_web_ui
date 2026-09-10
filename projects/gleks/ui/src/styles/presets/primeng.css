@@ -63,7 +63,21 @@
   --gog-info-color: #0ea5e9;
   --gog-info-text-color: #0f172a;
   --gog-info-shade: #ffffff;
-  --gog-panel-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+  /* Its own two very light alphas and a wide contact shadow; the default geometry otherwise.
+     The value this replaces lifted a dropdown panel 12px, which is higher than this library
+     puts a *toast* — that height was the theme restating one hand-written value for every
+     surface, and it is exactly what the ladder exists to stop. The negative spreads go with it,
+     for the same reason `material`'s positive one does. */
+  --gog-elevation-ink: 0 0 0;
+  --gog-elevation-key-alpha: 0.08;
+  --gog-elevation-ambient-alpha: 0.05;
+  --gog-elevation-contact-blur: 6px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 1;
+  --gog-elevation-key-blur: 3;
+  --gog-elevation-ring-width: 0px;
+  --gog-elevation-highlight-ink: 255 255 255;
+  --gog-elevation-highlight-alpha: 0;
   --gog-spinner-overlay-bg: rgba(248, 250, 252, 0.75);
 
   /* Fonts — PrimeNG doesn't split heading/body, one system sans everywhere */
@@ -134,6 +148,5 @@
 
   /* Dialog / toast */
   --gog-dialog-backdrop-bg: rgba(0, 0, 0, 0.32);
-  --gog-dialog-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
   --gog-toast-radius: 6px;
 }

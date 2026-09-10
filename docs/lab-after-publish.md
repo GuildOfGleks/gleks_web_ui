@@ -40,6 +40,50 @@ Small next to 21.11.0's section below, and it does not replace it: **21.11.0's e
 open**, because the lab is deliberately being left alone for now. Work through that section first
 — it is the one whose two code entries break silently.
 
+### The elevation ladder is a new foundation family, and it changes what shadows look like
+
+The largest item in this section. `--gog-elevation-*` is sixteen new tokens — six generated steps
+(`-0` … `-5`) plus the ten knobs a theme turns — and every raised surface in the package now reads
+one. **Every one of these needs a hand-written entry in
+`pages/theming-page/token-reference-data.ts`**, and none will appear on its own.
+
+The Theming page needs more than a token table for this one, because it is the first foundation
+family that is a _system_ rather than a list. Worth writing, in roughly this order:
+
+- **The six heights and what sits on each**: 0 flat, 1 a thumb riding on a control, 2 an
+  `elevated` card or panel, 3 anything anchored to a control (the four dropdown panels, the
+  tooltip, the menu), 4 a toast, 5 a modal dialog. Z doubles: 0, 1, 2, 4, 8, 16.
+- **A theme declares all ten knobs or none.** This is the one a reader will get wrong, and it
+  fails silently: custom properties inherit, so a theme stating six borrows the rest from whatever
+  encloses it. `README.md`'s new Theming paragraph has the copy-pasteable block.
+- **The three per-Z multipliers are the style axis** — soft, hard offset, glow, all out of
+  `-key-x`/`-key-y`/`-key-blur`. `ui-showcase`'s themes page has the demo worth copying: six tiles
+  per theme, `box-shadow: var(--gog-elevation-N)`, which makes the point in one row per theme and
+  no prose at all.
+
+**Two visible changes to check on the pages, not just in the table:**
+
+- **`gog-menu`'s panel is much lighter.** It aliased `--gog-dialog-shadow` and now reads
+  `--gog-panel-shadow` — four steps down. This is the fix, not a regression: a menu and a select
+  panel opened side by side finally match. Any lab prose describing the menu as heavier or more
+  prominent than a dropdown is now wrong.
+- **Every theme's shadows moved somewhat.** `material` and `primeng` had given their dialog the
+  same value as their panel, so on those two a modal now sits visibly higher than a card for the
+  first time. `slate`, `one-light`, `one-dark` and the base dark theme had their panel at 10px of
+  lift and it is 4px now. `bevel`, `ledger`, `terminal` and `parchment` reproduce their old panel
+  exactly, so those four should look unchanged at the overlay tier and differ higher up the ladder.
+
+**The theme generator** (`generator-catalog.ts`) picks tokens up by prefix, so `--gog-elevation-*`
+needs a decision rather than an automatic pickup: it is a foundation family with no component of
+its own, so there is no tile to hang it on. Either give it its own entry with a small stack of
+surfaces as the preview, or leave it out and let the Theming page carry it — but decide, rather
+than discovering the family is uneditable.
+
+**`theme-starter.css`**: regenerate as always. Unlike 21.11.0's `--gog-text-2xs` this one is
+partly hand-written territory — the ten knobs are literals in each theme's palette block, so check
+whether the generated derived-layer block picks up the six steps and the hand-written head needs
+the knobs.
+
 ### Four new tokens for the hand-maintained reference
 
 `pages/theming-page/token-reference-data.ts` is hand-maintained and none of these will appear on
