@@ -40,6 +40,22 @@ Small next to 21.11.0's section below, and it does not replace it: **21.11.0's e
 open**, because the lab is deliberately being left alone for now. Work through that section first
 — it is the one whose two code entries break silently.
 
+### Two palette values changed, and one of them is visible on every `terminal` screenshot
+
+- **`terminal`'s `--gog-info-color` is a phosphor cyan (`#4dd0e1`) instead of a pale green.** Its
+  info and success colours were 4.6 degrees of hue apart, so the two statuses were the same
+  colour. Any lab screenshot of `terminal` showing badges, toasts or status icons is now stale,
+  and the theme gallery's `terminal` tile will look different. It still reads as a green
+  phosphor theme — it already signalled in red and yellow.
+- **`one-light`'s `--gog-accent-dim` is `#1e53c6`.** Barely visible as a change; listed so a diff
+  of the token table is not chased.
+
+**The Theming page has a new thing to explain, and it is the interesting half of this release for
+a docs site:** `npm run check:oklch` gates what a contrast ratio cannot see. A state step that is
+invisible, a status colour that has stopped being a colour, two statuses that share a hue — all
+three passed WCAG comfortably and were still defects. That is a better accessibility story than
+"we check contrast", and it is true.
+
 ### `--gog-control-boundary-color`, and eight focus rings that became visible
 
 A new foundation token, and it needs a hand-written entry in

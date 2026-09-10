@@ -89,6 +89,18 @@ jobs:
       - name: Elevation check
         run: npm run check:elevation
 
+      # The perceptual half of the palette gate (21.12.0), the companion to `check:contrast`.
+      # WCAG's ratio is a luminance formula: it cannot say whether a state step is visible, whether
+      # a status colour has stopped being a colour, or whether two statuses are the same hue. Three
+      # rules, every threshold set after measuring all eleven palettes rather than before. It found
+      # two on its first run, neither of which any ratio would have caught: `one-light`'s pressed
+      # state sat 0.023 of lightness from its rest state (both passing AA comfortably, and the same
+      # colour), and `terminal`'s success and info were 4.6 degrees of hue apart. The rule
+      # docs/backlog.md proposed -- "ramps must be monotonic in L" -- is deliberately NOT here; the
+      # measurement disproved it, and the script's header says why.
+      - name: OKLCH palette check
+        run: npm run check:oklch
+
       # RTL guard. A `padding`/`margin` shorthand that sets the two horizontal sides
       # differently is physical, so it does not mirror under `dir="rtl"` — and because the
       # sidedness lives in a value's *position* rather than in a `left`/`right` keyword, no

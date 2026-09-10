@@ -45,7 +45,13 @@
      lighter — a blue light enough to read as a highlight cannot carry white text. */
   --gog-accent-color: #2f66db;
   --gog-accent-bright: #2456c4;
-  --gog-accent-dim: #2f5fd0;
+  /* A clear step below the accent rather than a shade of it. #2f5fd0 sat 0.023 of OKLCH
+     lightness from #2f66db, which is under the ~0.03 a flat area needs to read as different at
+     all -- so the pressed state and the field boundary looked like the rest state. Same hue and
+     chroma, six hundredths of lightness down; contrast improves as a side effect (6.47:1 on the
+     page, 6.76:1 on a card). Found by `check:oklch`, which WCAG's ratio cannot see: both values
+     passed it comfortably and were still the same colour. */
+  --gog-accent-dim: #1e53c6;
   --gog-accent-pale: #dce7fd;
   --gog-secondary-color: #a626a4;
 

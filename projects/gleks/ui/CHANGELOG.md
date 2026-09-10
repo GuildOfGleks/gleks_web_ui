@@ -8,6 +8,18 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`npm run check:oklch` — the perceptual half of the palette gate**, and a CI step. WCAG's
+  ratio is a luminance formula: it cannot say whether a state step is visible, whether a status
+  colour has stopped being a colour, or whether two statuses are the same hue. Three rules, every
+  threshold set after measuring all eleven shipped palettes rather than before. It found two
+  defects on its first run, neither of which any contrast ratio would ever have caught — both are
+  fixed below.
+
+  **One rule `docs/backlog.md` asked for is deliberately not in it.** "Ramps must be monotonic and
+  evenly spaced in L" fails eight of the eleven palettes, and eight of them are right: on a light
+  ground the hover fill is _darker_ than the rest state, which is a decision taken in 21.7.0 with
+  the numbers behind it. What is checkable is that the step exists, not which way it points.
+
 - **`--gog-control-boundary-color`, and `npm run suggest:color`.** A foundation token for the edge
   that _identifies_ a control, separate from `--gog-border-color`, which draws dividers, table
   rules and panel outlines and is deliberately kept faint. `gog-chip`, `gog-toggle` and
@@ -82,6 +94,19 @@ reached 1.0, so breaking changes may land in minor versions.
   true once `--gog-density` moves the padding.
 
 ### Changed
+
+- **`one-light`'s pressed state was the same colour as its rest state.**
+  `--gog-accent-dim` sat 0.023 of OKLCH lightness from `--gog-accent-color` — under the ~0.03 a
+  flat area needs to read as different at all — so a pressed button and a field boundary looked
+  like the rest state. Both values passed WCAG comfortably and were still the same colour, which
+  is the whole argument for measuring in a perceptual space. Now `#1e53c6`, same hue and chroma,
+  six hundredths of lightness down.
+
+- **`terminal`'s info and success colours were the same green.** 4.6 degrees of hue and 0.032 of
+  lightness apart, so an info badge could not be told from a success badge — and greyscale did not
+  separate them either. `--gog-info-color` is now a phosphor cyan (`#4dd0e1`), 61 degrees from
+  success and 98 from warning. The theme already signalled in red and yellow, so a second phosphor
+  is the consistent answer rather than a departure from its character.
 
 - **Eight focus indicators were nearly invisible and now read the accent.** `gog-checkbox`,
   `gog-radio-group` and `gog-multiselect` drew their `:focus-visible` outline from

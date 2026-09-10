@@ -271,7 +271,28 @@ keeping here rather than in the plan, because both are about how a check fails:
   - **Adjacent non-text pairs have no general rule.** The progressbar's fill/track needed a
     hand-built `EDGE_PAIRS` entry; the next component with two abutting colours will need another.
 
-  **2. OKLCH — perceptual lightness and chroma — is the half that is missing entirely.** WCAG's
+  **2. OKLCH — ✅ built 2026-09-10 as `npm run check:oklch`, a CI step.** Three rules, two
+  findings on the first run, both fixed: `one-light`'s pressed state sat 0.023 of lightness from
+  its rest state (both passing AA comfortably, and the same colour), and `terminal`'s success and
+  info were 4.6 degrees of hue apart with 0.03 of lightness between them — two statuses no badge
+  could distinguish, in colour or in greyscale.
+
+  **The first rule listed below was measured and rejected**, which is the third time this project's
+  planned rule has lost to its own evidence, after L7 and L6. Monotonic-in-L fails eight of the
+  eleven palettes and eight of them are correct to fail it: on a light ground the hover fill is
+  _darker_ than the rest state, decided in 21.7.0 with the numbers behind it. What went into the
+  gate instead is that the step **exists** — ΔL ≥ 0.03, the just-noticeable difference for a flat
+  area — which is checkable without an opinion about direction. Two more things the sketch got
+  wrong: `--gog-accent-pale` is not a step of the ramp at all (it is a wash _behind_ content,
+  sitting at L 0.88–0.96 on light themes, and including it made every light palette look broken),
+  and ΔL between the two surface tiers is **not** gateable — it runs 0.0149 to 0.1325 and the low
+  end is `material`, `primeng` and `one-light` marking the tier with a border instead, which is a
+  legitimate answer. That number is printed rather than gated, and the thing that does have to be
+  visible is gated by the boundary sweep.
+
+  The rules as originally sketched, kept because the reasoning is still the model:
+
+  **2. OKLCH — perceptual lightness and chroma — was the half that was missing entirely.** WCAG's
   ratio is a luminance formula: it says nothing about whether a ramp _looks_ evenly stepped, and it
   scores two hues that differ wildly as identical when their luminance matches. Every finding in
   21.10.0 came out of that gap. Concretely, the rules worth computing in OKLCH:
