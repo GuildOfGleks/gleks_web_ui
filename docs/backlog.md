@@ -233,8 +233,10 @@ keeping here rather than in the plan, because both are about how a check fails:
   2026-09-11. All three pieces are CI steps now: `check:contrast` (3883 pairs),
   `check:oklch` and `suggest:color`.
 
-  **What is genuinely left is reach, not the gate** — the four bullets under **1**, minus the
-  first, plus `*-shadow` colours. **`.gog-btn` came off that list on 2026-09-11**; see below.
+  **What is genuinely left is reach, not the gate** — three bullets under **1**: large text is
+  held to 4.5:1 rather than SC 1.4.3's 3:1, disabled states are correctly outside but the script
+  never says so, and adjacent non-text pairs have no general rule. **`.gog-btn` and the
+  `*-shadow` colours both came off that list on 2026-09-11**; see below and R4.
 
   **What closing it cost, and the general lesson.** The boundary sweep reads `border-color`,
   `outline-color` and the shorthands that set either, out of the compiled stylesheets, and
@@ -291,9 +293,14 @@ keeping here rather than in the plan, because both are about how a check fails:
     focus indicator wherever it appears, and gates a border wherever it is how you identify a
     control. Its last sentence turned out to be a prediction: "a field's own border in a preset
     that tints it can fall under 3:1 with nothing complaining" — `material` and `primeng`, seven
-    boundaries each side of 1.2:1. **`*-shadow` colours are still unmeasured**, and are a smaller
-    question than they were: since the elevation ladder every shadow is generated from one
-    per-theme alpha pair, so the sweep to write is over eleven knob sets rather than 31 tokens.
+    boundaries each side of 1.2:1. ~~**`*-shadow` colours are still unmeasured.**~~ **Closed
+    2026-09-11 as `check:oklch` R4**, and it went to the perceptual check rather than to this one
+    because a shadow is not a WCAG pair: gating it at 3:1 would fail ten of the eleven themes,
+    which is the monotonic-in-L mistake again. What is checkable is that the edge _exists_ — the
+    surface against the darkest pixel immediately outside it, by whichever of four carriers is
+    strongest, at the ΔL ≥ 0.03 R1 already justifies. Six themes are carried by their shadow and
+    five by their ring, so gating a single carrier would have failed half the catalogue for a
+    deliberate choice. Observed 0.0852 to 0.3465.
   - **Large text is not modelled.** Everything not in `NON_TEXT_ELEMENTS` is held to 4.5:1, but
     SC 1.4.3 allows 3:1 at 18.66px bold / 24px. That direction is safe but not free: it invites a
     palette to be darkened for a heading that never needed it.

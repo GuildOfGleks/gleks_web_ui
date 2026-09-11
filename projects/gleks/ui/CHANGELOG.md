@@ -23,6 +23,21 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **`npm run check:oklch` gates that a raised surface has an edge (R4).** `*-shadow` colours were
+  the last thing the palette gate did not read. `check:elevation` requires a theme to declare all
+  ten elevation knobs, but a theme may declare all ten at zero and pass it — rendering a dialog
+  with no boundary against the page behind it, with every check green.
+
+  The rule is a disjunction, because four different things can mark that edge and the eleven
+  shipped themes split on which: **six are carried by their shadow and five by their hairline
+  ring**, so gating any single carrier would have failed half the catalogue for a choice it made
+  deliberately. Whichever is strongest must clear ΔL ≥ 0.03 — the same threshold R1 already uses,
+  because it is the same question. Observed 0.0852 (`light`) to 0.3465 (`material`): the weakest
+  shipped theme clears it by 2.8x, and both figures are now printed per theme.
+
+  Nothing in the library changes. This one is a gate against a theme a consumer writes, which is
+  where the failure is silent.
+
 - **`npm run check:contrast` resolves a boundary through the variant layer, and `.gog-btn` is
   gated by it.** The button was the one control deliberately outside the boundary sweep, because
   what identifies a button depends on its variant and the sweep resolved each painting rule once —

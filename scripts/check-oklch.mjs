@@ -43,6 +43,30 @@
  *   L between them, which is two statuses one badge cannot distinguish from the other in any
  *   rendering. That is the second finding this file was written by.
  *
+ *   **R4 — a raised surface has an edge.** `docs/backlog.md` carried `*-shadow` colours as the
+ *   last thing the palette gate did not read, and this is that half. Nothing asserted that a
+ *   theme's elevation is *visible*: `check:elevation` requires all ten knobs to be declared, but
+ *   a theme may declare all ten at zero and pass it, rendering a dialog with no boundary against
+ *   the page behind it.
+ *
+ *   The rule is a disjunction, because four different things can mark that edge and every shipped
+ *   theme leans on a different one: the shadow, the surface tier itself, the hairline ring, or the
+ *   inset catch light. Whichever is strongest has to clear ΔL ≥ 0.03 — **deliberately the same
+ *   threshold as R1**, because it is the same question: is a flat area of colour distinguishable
+ *   from the one beside it. Inventing a second number for one perceptual question is how two
+ *   checks end up disagreeing.
+ *
+ *   **The pair measured is the surface against the darkest pixel immediately outside it**, not
+ *   the surface against the bare ground. The contact shadow and the key light both land at the
+ *   edge, so their alphas add there; measuring against the ground instead answers 0.0000 by
+ *   definition whenever a panel sits on a card, which is the case the rule most needs to cover.
+ *
+ *   Observed across the eleven, on the harder of the two grounds: **0.0852 (`light`) to 0.3465
+ *   (`material`)**, so the weakest shipped theme clears the threshold by 2.8x. Six themes are
+ *   carried by their shadow and five by their ring — which is why gating any single carrier would
+ *   have failed roughly half the catalogue for a choice it made on purpose. Both figures are
+ *   printed per theme beside the tier ΔL.
+ *
  *   **Reported, not gated: ΔL between the page and the surface stacked on it.** It runs 0.0149
  *   (`one-light`) to 0.1325 (`ledger`), and the low end is not a defect: those themes mark the
  *   tier with a border rather than with lightness, which is a legitimate answer and the one
@@ -90,12 +114,36 @@ function palettes(raw) {
     for (const d of m[3].matchAll(/(--gog-[a-z0-9-]+)\s*:\s*(#[0-9a-fA-F]{3,8})\s*;/g)) {
       decls[d[1]] = d[2];
     }
+    // The elevation knobs are not hex — an unwrapped `r g b` triple, two alphas and a width — so
+    // the palette matcher above cannot see them. R4 needs them, and they live in the same block.
+    for (const d of m[3].matchAll(/(--gog-elevation-[a-z-]+)\s*:\s*([^;]+);/g)) {
+      decls[d[1]] = d[2].trim();
+    }
     if (Object.keys(decls).length) out.push({ name, decls });
   }
   return out;
 }
 
 const oklch = (hex) => rgbToOklch(hexToRgb(hex));
+/** `src` at `alpha` composited over an opaque `dst`; both plain `{r,g,b}`. */
+const over = (src, alpha, dst) => ({
+  r: src.r * alpha + dst.r * (1 - alpha),
+  g: src.g * alpha + dst.g * (1 - alpha),
+  b: src.b * alpha + dst.b * (1 - alpha),
+});
+const asTriple = (value) => {
+  const parts = String(value ?? '')
+    .trim()
+    .split(/\s+/)
+    .map(Number);
+  return parts.length === 3 && parts.every(Number.isFinite)
+    ? { r: parts[0], g: parts[1], b: parts[2] }
+    : null;
+};
+const asNumber = (value) => {
+  const n = Number.parseFloat(String(value ?? ''));
+  return Number.isFinite(n) ? n : null;
+};
 const hueGap = (a, b) => {
   const d = Math.abs(a - b) % 360;
   return d > 180 ? 360 - d : d;
@@ -187,12 +235,76 @@ async function main() {
       }
     }
 
+    // ── R4 — a raised surface has an edge, by whatever carries it ────────────────────────────
+    let edgeReport = null;
+    const ink = asTriple(d['--gog-elevation-ink']);
+    const surfaceHex = d['--gog-surface-color'];
+    if (ink && surfaceHex) {
+      const surface = hexToRgb(surfaceHex);
+      const ambient = asNumber(d['--gog-elevation-ambient-alpha']) ?? 0;
+      const keyAlpha = asNumber(d['--gog-elevation-key-alpha']) ?? 0;
+      const ringWidth = asNumber(d['--gog-elevation-ring-width']) ?? 0;
+      const highlightInk = asTriple(d['--gog-elevation-highlight-ink']);
+      const highlightAlpha = asNumber(d['--gog-elevation-highlight-alpha']) ?? 0;
+      const surfaceL = rgbToOklch(surface).L;
+
+      for (const groundToken of ['--gog-background-color', '--gog-surface-color']) {
+        const groundHex = d[groundToken];
+        if (!groundHex) continue;
+        checks++;
+        const ground = hexToRgb(groundHex);
+        // The darkest pixel immediately outside the surface: the contact shadow and the key light
+        // both land there, so their alphas add. This is the edge a reader actually sees — not the
+        // surface against the bare ground, which is what a naive reading measures and which is
+        // 0.00 by definition when a panel sits on a card.
+        const shadowAlpha = Math.min(1, ambient + keyAlpha);
+        const carriers = [['the surface tier', Math.abs(surfaceL - rgbToOklch(ground).L)]];
+        // Only when there is a shadow at all. At alpha 0 the composite *is* the ground, so the
+        // candidate would tie with the tier and — being first — take its name, and the failure
+        // would tell a theme author to raise a shadow that is already carrying nothing.
+        if (shadowAlpha > 0) {
+          const shadow = over(ink, shadowAlpha, ground);
+          carriers.push(['its shadow', Math.abs(surfaceL - rgbToOklch(shadow).L)]);
+        }
+        if (ringWidth > 0 && d['--gog-border-color']) {
+          carriers.push([
+            'its hairline ring',
+            Math.abs(surfaceL - oklch(d['--gog-border-color']).L),
+          ]);
+        }
+        if (highlightInk && highlightAlpha > 0) {
+          carriers.push([
+            'its catch light',
+            Math.abs(rgbToOklch(over(highlightInk, highlightAlpha, surface)).L - surfaceL),
+          ]);
+        }
+        const best = carriers.reduce((a, b) => (b[1] > a[1] ? b : a));
+        // Printed as well as gated: the margin over the threshold is the number that says whether
+        // a theme is comfortable or one tweak away, and it is the number the next threshold
+        // argument will be made from.
+        if (groundToken === '--gog-surface-color') {
+          edgeReport = `${best[1].toFixed(4)} (${best[0]})`;
+        }
+        if (best[1] < MIN_STATE_STEP) {
+          failures.push(
+            `[R4 elevation edge] ${theme} — a raised surface on ` +
+              `${groundToken.replace('--gog-', '').replace('-color', '')} differs from it by ` +
+              `${best[1].toFixed(4)} of lightness at best (need ${MIN_STATE_STEP}); nothing ` +
+              `marks where the surface ends
+      strongest carrier is ${best[0]} — raise ` +
+              `--gog-elevation-key-alpha, or turn on --gog-elevation-ring-width`,
+          );
+        }
+      }
+    }
+
     // ── Reported: how far apart the two surface tiers sit in lightness ───────────────────────
     if (d['--gog-background-color'] && d['--gog-surface-color']) {
       const dL = Math.abs(oklch(d['--gog-surface-color']).L - oklch(d['--gog-background-color']).L);
       findings.push(
         `${theme.padEnd(11)} page → surface ΔL ${dL.toFixed(4)}` +
-          (dL < 0.02 ? '  (the tier is carried by its border, not by lightness)' : ''),
+          (dL < 0.02 ? '  (the tier is carried by its border, not by lightness)' : '') +
+          (edgeReport ? `, raised-surface edge ${edgeReport}` : ''),
       );
     }
   }
@@ -208,7 +320,8 @@ async function main() {
 
   console.log(
     `\nOKLCH palette check passed — ${merged.size} theme(s), ${checks} check(s): ` +
-      `state steps perceptible, chroma inside the band, every status pair tellable apart.`,
+      `state steps perceptible, chroma inside the band, every status pair tellable apart, ` +
+      `every raised surface with an edge.`,
   );
 }
 
