@@ -234,8 +234,7 @@ keeping here rather than in the plan, because both are about how a check fails:
   `check:oklch` and `suggest:color`.
 
   **What is genuinely left is reach, not the gate** — the four bullets under **1**, minus the
-  first, plus two boundaries the sweep cannot resolve yet (`*-shadow` colours, and `.gog-btn`,
-  whose identifying edge depends on its variant). Read them with that in mind.
+  first, plus `*-shadow` colours. **`.gog-btn` came off that list on 2026-09-11**; see below.
 
   **What closing it cost, and the general lesson.** The boundary sweep reads `border-color`,
   `outline-color` and the shorthands that set either, out of the compiled stylesheets, and
@@ -262,13 +261,26 @@ keeping here rather than in the plan, because both are about how a check fails:
   cases with known answers, run on every invocation, because "I doubled the backslashes correctly"
   is not something to verify by reading.
 
-  **One boundary is still not measured, and it is a limit rather than an exemption.**
-  `.gog-btn` is out of the gated set: what identifies a button depends on its variant — a filled
-  one is its fill, an outline one its border, a ghost one neither until hovered — and the sweep
-  resolves a painting rule once, so on `.gog-btn` it reads `--gog-button-primary-border`, which is
-  `transparent` in the base theme. Measuring the outline variant's border needs the
-  modifier-layering `collectVariantPairs` already does, applied to boundaries. Worth doing; not
-  done.
+  ~~**One boundary is still not measured.**~~ **`.gog-btn` is gated as of 2026-09-11.** The sweep
+  resolves every boundary under each variant chain now — the same machinery the variant sweep
+  already used for fills and labels — so `outline`'s border is measured as `outline`'s and
+  `ghost`'s transparent one is skipped by the rule that skips a boundary painting nothing. The
+  button's own border turned out to be clean in all eleven themes; **what the reach found was its
+  focus ring**, drawn from `--gog-button-variant-hover-bg`. Eleven failures: `ghost` at
+  1.07–1.16:1 and the severity `outline` combinations at 1.79–2.65:1, across four themes. Fixed
+  with `--gog-button-focus-ring-color`, which is the same correction eight other indicators got in
+  21.12.0 — the button was missed then because its ring arrives through the variant layer.
+
+  **Two findings about the checker rather than the library came out of it, and both are the shape
+  this file keeps re-learning.** `boundaryBlock` returned the _first_ matching gated prefix rather
+  than the longest, and `.gog-ms` is a prefix of `.gog-ms__filter-input` — so the multiselect's
+  filter input was measured against the page instead of the panel it sits inside, answering a
+  question nobody asks. It had been wrong since the boundary sweep shipped, and nothing could see
+  it: the pair count looked healthy either way. What surfaced it was the _other_ finding, a new
+  `assertEveryGatedBlockWasRead` that fails the run when a block in the gated list matches no
+  declaration at all. It found one on its first execution. **A gated list whose entries match
+  nothing is indistinguishable, from the outside, from a library with no defects** — which is now
+  the third time this file has needed that sentence.
 
   **1. WCAG 2.1 contrast ratio — largely built, and here is what it does not cover.**
   `check:contrast` (2253 pairs, 11 themes) and `check:app-contrast` are both CI steps already, so

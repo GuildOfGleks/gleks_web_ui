@@ -4,7 +4,40 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [21.12.1] - planned
+## [21.13.0] - planned
+
+### Added
+
+- **`--gog-button-focus-ring-color`**, and it is a fix as much as an addition. `gog-button` had a
+  focus-ring width and a focus-ring offset but no colour, so `button.css` reached for
+  `--gog-button-variant-hover-bg` — the _hover_ fill doing focus duty, which is the same defect
+  eight other indicators had corrected in 21.12.0. It passed on `primary` and `secondary`, whose
+  hover fill is a saturated accent, and failed wherever that fill is a wash: **`ghost` at
+  1.07–1.16:1** and the **severity `outline`** combinations at **1.79–2.65:1**, eleven failures
+  across `light`, `material`, `primeng` and `terminal`.
+
+  It defaults to `--gog-accent-color` — one colour, not one per variant. A focus ring's job is to
+  be visible against the page the button sits on, which does not change with the button's fill,
+  and this ring already sits a pixel further out than the foundation's so it reads as separate
+  even on a filled accent button. That is the answer the library's other fourteen rings give.
+
+### Changed
+
+- **`npm run check:contrast` resolves a boundary through the variant layer, and `.gog-btn` is
+  gated by it.** The button was the one control deliberately outside the boundary sweep, because
+  what identifies a button depends on its variant and the sweep resolved each painting rule once —
+  on `.gog-btn` that meant reading `--gog-button-primary-border`, `transparent` in the base theme.
+  It now resolves every boundary under each variant chain, the same machinery the variant sweep
+  already used for fills and labels, so `outline`'s border is measured as `outline`'s and
+  `ghost`'s transparent one is skipped. That is what found the focus-ring failures above.
+
+  Two smaller corrections came out of building it. **`boundaryBlock` matched the first gated
+  prefix rather than the longest**, and `.gog-ms` is a prefix of `.gog-ms__filter-input`: the
+  multiselect's filter input was being measured against the _page_ rather than the panel it sits
+  in, so the pair it reported was one nobody sees. And **the sweep now asserts that every block it
+  gates actually matched a declaration** — the same discipline as the pattern self-test added in
+  21.12.0, and it is what surfaced the prefix bug. A gated list whose entries match nothing looks
+  exactly like a library with no defects.
 
 ### Fixed
 

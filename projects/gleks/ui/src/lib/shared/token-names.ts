@@ -211,6 +211,7 @@ export type GogTokenName =
   | '--gog-button-danger-on-fill'
   | '--gog-button-danger-wash'
   | '--gog-button-disabled-opacity'
+  | '--gog-button-focus-ring-color'
   | '--gog-button-focus-ring-offset'
   | '--gog-button-focus-ring-width'
   | '--gog-button-font-family'
@@ -1955,6 +1956,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-button-border-style',
       '--gog-button-border-width',
       '--gog-button-disabled-opacity',
+      '--gog-button-focus-ring-color',
       '--gog-button-focus-ring-offset',
       '--gog-button-focus-ring-width',
       '--gog-button-font-family',

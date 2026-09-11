@@ -831,6 +831,18 @@
   --gog-button-border-style: var(--gog-control-border-style);
   --gog-button-transition-duration: var(--gog-duration-base);
   --gog-button-focus-ring-width: var(--gog-focus-ring-width);
+  /* Its own colour. The ring read `--gog-button-variant-hover-bg` -- a *hover* fill doing focus
+     duty, the same defect eight other indicators had fixed in 21.12.0, and hidden here because
+     the value arrives through the variant layer rather than from a token this sweep could read.
+     It passed on `primary` and `secondary`, whose hover fill is a saturated accent, and failed
+     wherever the hover fill is a wash: `ghost` at 1.07-1.16:1 and the severity `outline`
+     combinations at 1.79-2.65:1, across four themes.
+
+     One colour, not one per variant. A focus ring's job is to be visible against the page the
+     button sits on, which does not change with the button's fill -- and the ring already sits a
+     pixel further out than the foundation's so it reads as separate even on a filled accent
+     button. That is the answer the other fourteen rings in the library already give. */
+  --gog-button-focus-ring-color: var(--gog-accent-color);
   /* One pixel further out than the foundation ring: a filled surface needs the extra air for
      the ring to read as separate from the fill. Written as the foundation plus that pixel
      rather than a flat 3px, so a theme that moves the ring moves this with it. */
@@ -1251,7 +1263,7 @@
   --gog-chip-remove-hover-color: var(--gog-text-color);
   /* The ring around the remove mark, as a ratio of the mark itself -- so `1` is the box the
      glyph occupies and anything above it is padding. It multiplied the button's *font-size*
-     until 21.12.1, which is not the same thing: `gog-icon` draws at `--gog-icon-size` (1.2em) of
+     until 21.13.0, which is not the same thing: `gog-icon` draws at `--gog-icon-size` (1.2em) of
      that font-size, so a value of 1.1 produced a box 9% narrower than its own contents. A
      consumer who had overridden this gets a larger box than before at the same number; the
      number now means what the name says. */

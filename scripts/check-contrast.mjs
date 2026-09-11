@@ -675,6 +675,7 @@ function readRules(css) {
     };
     rules.push({
       selector,
+      body,
       colour: value(COLOUR_DECL),
       bg: value(BACKGROUND_COLOR_DECL) ?? value(BACKGROUND_DECL),
       decls: parseDecls(body),
@@ -725,47 +726,58 @@ function isModifierSelector(selector) {
  * *references and does not itself declare*, transitively, branching where several rules supply the
  * same token. The combinations that come out are the ones the stylesheet says are possible.
  */
+/**
+ * One stylesheet's rules, its unconditional defaults, and the modifier chains those defaults can
+ * be layered with — the machinery `collectVariantPairs` was written around, factored out because
+ * `collectBoundaryPairs` needs exactly the same thing and for exactly the same reason. A variant
+ * class in this library paints nothing; it re-points an indirection layer. That is as true of
+ * `.gog-btn--outline`'s *border* as it is of its label colour.
+ */
+function variantEnvironments(uiSrcDir, file) {
+  const css = file.endsWith('.scss')
+    ? sass.compile(file, { style: 'expanded', sourceMap: false }).css
+    : readFileSync(file, 'utf8');
+  const rules = readRules(css).map((rule) => ({
+    ...rule,
+    selector: rule.selector.replace(/\[_ng(?:content|host)[^\]]*\]/g, '').trim(),
+  }));
+
+  const modifiers = rules.filter((rule) => rule.decls.size > 0 && isModifierSelector(rule.selector));
+
+  // The component's own defaults: every unconditional rule's declarations, in source order.
+  const defaults = new Map();
+  for (const rule of rules) {
+    if (isModifierSelector(rule.selector)) continue;
+    for (const [k, v] of rule.decls) defaults.set(k, v);
+  }
+
+  /** Adds the rules that declare what `seed` references but nobody has declared yet. */
+  const complete = (chain) => {
+    const declared = new Map(chain.flatMap((rule) => [...rule.decls]));
+    for (const rule of chain) {
+      for (const [, value] of rule.decls) {
+        for (const token of referencedTokens(value)) {
+          if (declared.has(token) || defaults.has(token)) continue;
+          const suppliers = modifiers.filter(
+            (other) => !chain.includes(other) && other.decls.has(token),
+          );
+          if (suppliers.length === 0) continue;
+          return suppliers.flatMap((supplier) => complete([...chain, supplier]));
+        }
+      }
+    }
+    return [chain];
+  };
+
+  return { rules, modifiers, defaults, complete };
+}
+
 function collectVariantPairs(uiSrcDir, files) {
   const candidates = [];
 
   for (const file of files) {
-    const css = file.endsWith('.scss')
-      ? sass.compile(file, { style: 'expanded', sourceMap: false }).css
-      : readFileSync(file, 'utf8');
-    const rules = readRules(css).map((rule) => ({
-      ...rule,
-      selector: rule.selector.replace(/\[_ng(?:content|host)[^\]]*\]/g, '').trim(),
-    }));
-
+    const { rules, modifiers, defaults, complete } = variantEnvironments(uiSrcDir, file);
     const painters = rules.filter((rule) => rule.colour || rule.bg);
-    const modifiers = rules.filter(
-      (rule) => rule.decls.size > 0 && isModifierSelector(rule.selector),
-    );
-
-    // The component's own defaults: every unconditional rule's declarations, in source order.
-    const defaults = new Map();
-    for (const rule of rules) {
-      if (isModifierSelector(rule.selector)) continue;
-      for (const [k, v] of rule.decls) defaults.set(k, v);
-    }
-
-    /** Adds the rules that declare what `seed` references but nobody has declared yet. */
-    const complete = (chain) => {
-      const declared = new Map(chain.flatMap((rule) => [...rule.decls]));
-      for (const rule of chain) {
-        for (const [, value] of rule.decls) {
-          for (const token of referencedTokens(value)) {
-            if (declared.has(token) || defaults.has(token)) continue;
-            const suppliers = modifiers.filter(
-              (other) => !chain.includes(other) && other.decls.has(token),
-            );
-            if (suppliers.length === 0) continue;
-            return suppliers.flatMap((supplier) => complete([...chain, supplier]));
-          }
-        }
-      }
-      return [chain];
-    };
 
     // The rest state, with no modifier at all. Neither sweep above measures it: `collectStatePairs`
     // only emits `:hover`-shaped rules, and it uses a rest rule solely as the ground for one. So a
@@ -868,17 +880,14 @@ const CONTROL_BOUNDARIES = [
   '.gog-slider__thumb',
   '.gog-slider__track',
   '.gog-chip__surface',
+  // `.gog-btn` was out of this list until 2026-09-11, and the reason was real: what identifies a
+  // button depends on its variant, and a sweep that resolves a painting rule once read
+  // `--gog-button-primary-border` — `transparent` in the base theme — for every button in the
+  // library. It is in now because the sweep resolves each boundary under each variant chain, so
+  // `outline`'s border is measured as `outline`'s and `ghost`'s transparent one is skipped by
+  // the rule that skips any boundary painting nothing.
+  '.gog-btn',
 ];
-
-/**
- * `.gog-btn` is deliberately absent, and the reason is a real limit rather than an exemption.
- * What identifies a button depends on its variant: a filled one is its fill, an outline one is
- * its border, a ghost one is neither until it is hovered. This sweep resolves a painting rule
- * once, so on `.gog-btn` it reads `--gog-button-primary-border` — `transparent` in the base theme
- * and a bevel highlight in `bevel`, neither of which is the boundary anybody identifies a button
- * by. Measuring the *outline* variant's border needs the modifier-layering that
- * `collectVariantPairs` does, applied to boundaries; filed in `docs/backlog.md`.
- */
 
 /**
  * Controls that do not sit on the page. A filter input lives inside a dropdown panel and a
@@ -972,39 +981,69 @@ function assertBoundaryPatternsWork() {
 const isFocusIndicator = (selector, prop) =>
   /:focus-visible|:focus\b/.test(selector) && prop.startsWith('outline');
 
+/**
+ * The gated block a selector belongs to — the **longest** matching prefix, not the first one in
+ * list order.
+ *
+ * `.gog-ms` is a prefix of `.gog-ms__filter-input`, and both are gated blocks, so a `find` over
+ * the list returned whichever came first. It returned `.gog-ms`, which meant
+ * `BOUNDARY_GROUNDS.get('.gog-ms__filter-input')` never fired and the multiselect's filter input
+ * was measured against the *page* instead of the panel it lives inside. The ground was wrong, so
+ * the answer was about a pair nobody sees. Found 2026-09-11 by `assertEveryGatedBlockWasRead`,
+ * which noticed the entry matched nothing — the order dependency was invisible before that.
+ */
 function boundaryBlock(selector) {
   const parts = selector.split(/[,\s]+/).filter(Boolean);
-  return CONTROL_BOUNDARIES.find((block) => parts.some((part) => part.startsWith(block))) ?? null;
+  let best = null;
+  for (const block of CONTROL_BOUNDARIES) {
+    if (!parts.some((part) => part.startsWith(block))) continue;
+    if (best === null || block.length > best.length) best = block;
+  }
+  return best;
 }
 
 function collectBoundaryPairs(uiSrcDir, files) {
   assertBoundaryPatternsWork();
   const out = [];
   for (const file of files) {
-    const css = file.endsWith('.scss')
-      ? sass.compile(file, { style: 'expanded', sourceMap: false }).css
-      : readFileSync(file, 'utf8');
-    const re = /([^{}]+)\{([^{}]*)\}/g;
-    let m;
-    while ((m = re.exec(stripComments(css)))) {
-      const selector = m[1].trim().replace(/\[_ng(?:content|host)[^\]]*\]/g, '');
+    const { rules, modifiers, defaults, complete } = variantEnvironments(uiSrcDir, file);
+
+    /**
+     * The modifier chains that can change what this declaration paints, and only those.
+     *
+     * A boundary reached through an indirection layer is invisible to a sweep that resolves it
+     * once — `.gog-btn`'s border reads `--gog-button-variant-border`, and every variant class
+     * re-points it. Seeding from the tokens the declaration actually references keeps this from
+     * becoming a cross product: a size class declares none of them and contributes no chain.
+     */
+    const chainsFor = (value, fill) => {
+      const refs = new Set([...referencedTokens(value), ...(fill ? referencedTokens(fill) : [])]);
+      if (refs.size === 0) return [];
+      const seeds = modifiers.filter((rule) => [...refs].some((token) => rule.decls.has(token)));
+      return seeds.flatMap((seed) => complete([seed]));
+    };
+
+    for (const rule of rules) {
+      const selector = rule.selector;
       if (!selector || selector.startsWith('@')) continue;
       for (const [prop, pattern] of BOUNDARY_PROPS) {
-        const hit = m[2].match(pattern);
+        const hit = rule.body.match(pattern);
         if (!hit) continue;
         const block = boundaryBlock(selector);
         const focus = isFocusIndicator(selector, prop);
         const excused = BOUNDARIES_NOT_IDENTIFYING.some((e) => selector.startsWith(e.selector));
-        out.push({
+        const value = hit[1].trim();
+        // The control's own fill, when the same rule states one. A control is identified by its
+        // boundary *or* by its fill — SC 1.4.11 asks for "the visual information required to
+        // identify", not for a border specifically — so a filled control whose fill carries the
+        // job needs nothing from its hairline.
+        const fill = focus ? null : ((rule.body.match(BOUNDARY_FILL) ?? [])[1] ?? null);
+        const base = {
           file: path.relative(uiSrcDir, file).split(path.sep).join('/'),
           selector,
           prop,
-          value: hit[1].trim(),
-          // The control's own fill, when the same rule states one. A control is identified by its
-          // boundary *or* by its fill — SC 1.4.11 asks for "the visual information required to
-          // identify", not for a border specifically — so a filled control whose fill carries the
-          // job needs nothing from its hairline.
-          fill: focus ? null : ((m[2].match(BOUNDARY_FILL) ?? [])[1] ?? null),
+          value,
+          fill,
           // A focus ring is gated wherever it is; a border only where it identifies a control.
           gated: (focus || block !== null) && !excused,
           kind: focus ? 'focus ring' : block ? 'control boundary' : 'decoration',
@@ -1012,11 +1051,53 @@ function collectBoundaryPairs(uiSrcDir, files) {
             '--gog-background-color',
             '--gog-surface-color',
           ],
-        });
+          env: new Map([...defaults, ...rule.decls]),
+        };
+        out.push(base);
+        for (const chain of chainsFor(value, fill)) {
+          const env = new Map(defaults);
+          for (const link of chain) for (const [k, v] of link.decls) env.set(k, v);
+          for (const [k, v] of rule.decls) env.set(k, v);
+          out.push({
+            ...base,
+            selector: `${selector} + ${chain.map((link) => link.selector).join(' + ')}`,
+            env,
+            baseEnv: base.env,
+          });
+        }
       }
     }
   }
+  assertEveryGatedBlockWasRead(out);
   return out;
+}
+
+/**
+ * Every block named in `CONTROL_BOUNDARIES` matched at least one declaration.
+ *
+ * This file has now shipped twice while reading nothing: once when a template-literal pattern ate
+ * its own backslashes and the sweep matched zero boundaries, and once when it gated a proxy token
+ * two presets no longer painted with. Both times the run was green and reported a healthy count.
+ * `assertBoundaryPatternsWork` covers the first; this covers the other half, which is a block name
+ * that no longer matches anything — a renamed class, a component that stopped declaring its own
+ * border, a selector that only ever appears with a prefix this matcher does not strip.
+ *
+ * It is the same argument as the patterns' self-test: a gated list whose entries match nothing is
+ * indistinguishable, from the outside, from a library with no defects.
+ */
+function assertEveryGatedBlockWasRead(pairs) {
+  const seen = new Set(pairs.map((pair) => boundaryBlock(pair.selector)).filter(Boolean));
+  const missing = CONTROL_BOUNDARIES.filter((block) => !seen.has(block));
+  if (missing.length === 0) return;
+  throw new Error(
+    [
+      `check-contrast: ${missing.length} gated control boundary block(s) matched no declaration:`,
+      ...missing.map((block) => `  ${block}`),
+      'Either the class was renamed -- update CONTROL_BOUNDARIES -- or the component stopped',
+      'declaring its own border, in which case say where its boundary comes from now. Do not',
+      'delete the entry to make this pass: a block that is not read is a block that is not checked.',
+    ].join(String.fromCharCode(10)),
+  );
 }
 
 function collectStatePairs(uiSrcDir, files) {
@@ -1322,11 +1403,38 @@ async function main() {
     const resolve = makeResolver(layers, decls);
     const surface = resolve('--gog-surface-color');
     for (const edge of boundaryPairs) {
+      // Resolved under the variant chain's own declarations, layered above the theme block the
+      // way a class on the element outranks `[data-theme]` on the root. `edge.env` is the
+      // component's defaults for a base pair, and defaults + the chain for a variant one.
+      const resolveEdge = makeResolver(layers, new Map([...decls, ...edge.env]));
       let ink;
       try {
-        ink = resolve(edge.value);
+        ink = resolveEdge(edge.value);
       } catch {
         ink = null;
+      }
+      // A variant that resolves to exactly what the base pair already resolves to is a size class
+      // or a state that moves something other than this boundary. Measuring it again would report
+      // one finding per variant for a single defect.
+      if (edge.baseEnv && ink !== null) {
+        const plain = makeResolver(layers, new Map([...decls, ...edge.baseEnv]));
+        let plainInk = null;
+        try {
+          plainInk = plain(edge.value);
+        } catch {
+          plainInk = null;
+        }
+        let sameFill = true;
+        if (edge.fill) {
+          try {
+            const a = resolveEdge(edge.fill);
+            const b = plain(edge.fill);
+            sameFill = a !== null && b !== null && toHex(a) === toHex(b);
+          } catch {
+            sameFill = true;
+          }
+        }
+        if (plainInk !== null && toHex(plainInk) === toHex(ink) && sameFill) continue;
       }
       if (ink === null) {
         // Deliberately not silent. A boundary this script cannot resolve is a boundary it is not
@@ -1342,7 +1450,7 @@ async function main() {
         continue;
       }
       for (const groundToken of edge.grounds) {
-        const raw = resolve(groundToken);
+        const raw = resolveEdge(groundToken);
         if (raw === null) continue;
         const ground = raw.a === 1 ? raw : over(raw, surface);
         // A boundary is adjacent to what is OUTSIDE it. Measuring it against the fill it encloses
@@ -1361,7 +1469,7 @@ async function main() {
         if (ratio < 3.0 && edge.fill) {
           let fill = null;
           try {
-            fill = resolve(edge.fill);
+            fill = resolveEdge(edge.fill);
           } catch {
             fill = null;
           }

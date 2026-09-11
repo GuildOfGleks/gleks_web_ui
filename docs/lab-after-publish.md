@@ -36,7 +36,7 @@ build.
 
 ---
 
-## 21.12.1 — three icon boxes stop being smaller than their icon
+## 21.13.0 — three icon boxes stop being smaller than their icon
 
 Small, and only one of the three has any visible surface on the site.
 
@@ -60,3 +60,10 @@ Small, and only one of the three has any visible surface on the site.
 
 - **`styling.instructions.md` gained a rule** ("a box that holds a glyph is never smaller than the
   glyph"). Nothing on the lab quotes that file, so this is context rather than a task.
+
+- **A focused `gog-button` has a visibly different ring on `ghost` and on the severity `outline`
+  variants** — it now reads the accent instead of that variant's hover wash, which on four themes
+  had made it invisible (1.07:1 at worst). `--gog-button-focus-ring-color` is a new token and the
+  hand-maintained token reference does not list the button's focus ring at all; if a row is added,
+  it belongs beside `-focus-ring-width` / `-focus-ring-offset`. The theme generator picks it up by
+  prefix on its own.

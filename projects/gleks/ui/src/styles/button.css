@@ -106,11 +106,11 @@
  * wants to restyle them can still do it by being specific about it.
  */
 .gog-btn.gog-btn:focus-visible {
-  outline: var(--gog-button-focus-ring-width) solid
-    var(
-      --gog-button-hover-bg,
-      var(--gog-button-variant-hover-bg, var(--gog-button-primary-hover-bg))
-    );
+  /* `--gog-button-focus-ring-color`, not the hover fill this used to read. A hover-weight colour
+     cannot carry focus: on `ghost` and on the severity `outline` combinations the hover fill is a
+     wash, and the ring measured 1.07:1 to 2.65:1 against the page. See the token's own note in
+     `theme.css`. */
+  outline: var(--gog-button-focus-ring-width) solid var(--gog-button-focus-ring-color);
   outline-offset: var(--gog-button-focus-ring-offset);
 }
 
