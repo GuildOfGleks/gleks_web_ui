@@ -16,21 +16,29 @@
 <section class="foundation">
   <h2 class="foundation__title font-heading">Foundation</h2>
   <p class="foundation__intro">
-    Every component derives from these — palette, fonts, spacing, radius, motion. Change one and
-    watch the whole gallery below follow.
+    Every component derives from these — palette, fonts, spacing, radius, motion, elevation. Change
+    one and watch the whole gallery below follow.
+  </p>
+  <p class="foundation__intro">
+    <strong>Elevation is ten knobs and no steps</strong>, which is deliberate: the six heights every
+    raised surface reads (<code>--gog-elevation-0</code> … <code>-5</code>) are generated from those
+    ten, so a card, a dropdown, a toast and a dialog all move together and keep their order. Turn
+    <code>--gog-elevation-key-y</code> to <code>0</code> and raise the blur and the whole library
+    starts glowing instead of dropping shadows — that is how <code>terminal</code> is built.
+    Randomize picks one of those styles rather than jittering the ten apart from each other.
   </p>
   <p class="foundation__intro">
     <strong>The cheapest one to try first is <code>--gog-density</code></strong> (Character Layer,
     below). Set it to <code>0.85</code> and every padding and gap in the gallery tightens at once:
-    it multiplies the fourteen-step spacing scale that all of them derive from, so a whole compact
-    theme is one number rather than fifty overrides. Open the Select card afterwards and look inside
-    the panel: its option rows go from <code>10px 14px</code> of padding to
-    <code>8.5px 11.9px</code>, because those are scale steps rather than literals. That is the part
-    <span class="since" title="Added in 21.9.0">21.9.0</span> finished — dropdown panel gaps, icon
-    offsets, error-line offsets and the badge's overhang follow density now as well, where fourteen
-    lengths used to ignore it. Four things deliberately still do not: the glyph box, the focus-ring
-    offset, the float-label reserve and the scrollbar and toggle thumb insets are legibility and
-    geometry fitted to a fixed track, not spacing.
+    it multiplies the ten-step spacing scale that all of them derive from, so a whole compact theme
+    is one number rather than fifty overrides. Open the Select card afterwards and look inside the
+    panel: its option rows go from <code>12px 24px</code> of padding to <code>10.2px 20.4px</code>,
+    because those are scale steps rather than literals. That is the part
+    <app-since version="21.9.0" /> finished — dropdown panel gaps, icon offsets, error-line offsets
+    and the badge's overhang follow density now as well, where fourteen lengths used to ignore it.
+    Four things deliberately still do not: the glyph box, the focus-ring offset, the float-label
+    reserve and the scrollbar and toggle thumb insets are legibility and geometry fitted to a fixed
+    track, not spacing.
   </p>
 
   <div class="foundation__groups">

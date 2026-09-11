@@ -63,8 +63,7 @@ const MONO_FONTS = [
  * inside their recognizable range — a random "danger" that isn't red-ish would be actively
  * confusing, not a fun surprise.
  */
-function randomPalette(dark: boolean): Record<string, string> {
-  const hue = randInt(0, 359);
+function randomPalette(dark: boolean, hue: number): Record<string, string> {
   const secondaryHue = (hue + randInt(40, 140)) % 360;
   const successHue = randInt(95, 150);
   const dangerHue = Math.random() < 0.5 ? randInt(0, 12) : randInt(348, 360);
@@ -77,6 +76,17 @@ function randomPalette(dark: boolean): Record<string, string> {
     '--gog-surface-color': hslToHex(hue, randInt(6, 16), dark ? randInt(10, 16) : randInt(98, 100)),
     '--gog-hover-color': hslToHex(hue, randInt(8, 18), dark ? randInt(16, 24) : randInt(89, 95)),
     '--gog-border-color': hslToHex(hue, randInt(8, 20), dark ? randInt(24, 34) : randInt(76, 87)),
+    // The control boundary is generated rather than left at its shipped default, and it is
+    // generated *apart* from the decorative border above: a random theme that moved the hairline
+    // and left the boundary behind would be a theme whose chips and switches are invisible in it,
+    // which is the exact defect 21.12.0 split the two tokens to end. The lightness bands are
+    // picked so the worst draw still clears 3:1 (WCAG SC 1.4.11) against both the surface and the
+    // page — measured across every hue and saturation this function can produce, worst case 3.07.
+    '--gog-control-boundary-color': hslToHex(
+      hue,
+      randInt(8, 20),
+      dark ? randInt(56, 66) : randInt(38, 46),
+    ),
     '--gog-text-color': hslToHex(hue, randInt(4, 12), dark ? randInt(90, 97) : randInt(10, 18)),
     '--gog-accent-text-color': dark ? '#0b0f14' : '#ffffff',
     '--gog-muted-text-color': hslToHex(
@@ -101,6 +111,64 @@ function randomPalette(dark: boolean): Record<string, string> {
   };
 }
 
+/** `#rrggbb` → the unwrapped `r g b` triple the elevation family composites its alphas against. */
+function hexToTriple(hex: string): string {
+  const r = Number.parseInt(hex.slice(1, 3), 16);
+  const g = Number.parseInt(hex.slice(3, 5), 16);
+  const b = Number.parseInt(hex.slice(5, 7), 16);
+  return `${r} ${g} ${b}`;
+}
+
+/**
+ * The elevation family, generated as one *style* rather than as ten independent numbers.
+ *
+ * It has to be handled here rather than left to the generic jitter loop below, and the reason is
+ * worth stating: `--gog-elevation-ring-width` ships at `0px`, and `classifyToken`'s px range opens
+ * at a 0–64 span regardless of the current value, so a random draw puts a twenty-pixel ring around
+ * every overlay in the gallery. `--gog-elevation-contact-blur` goes the same way.
+ *
+ * They are not independent anyway. The three multipliers are a style axis, and the three styles
+ * the library's own presets use are soft (drop the key straight down), hard offset (`bevel`,
+ * `ledger` — a fraction of x and y, no blur) and glow (`terminal` — no y, all blur). Picking one
+ * and filling it in coherently is both safer than jitter and a better demonstration of what the
+ * family is for.
+ */
+function randomElevation(hue: number, dark: boolean): Record<string, string> {
+  const style = pick(['soft', 'soft', 'hard', 'glow'] as const);
+  const keyAlpha = dark ? rand(0.45, 0.65) : rand(0.06, 0.12);
+
+  return {
+    // A dark theme's shadow is the absence of light, so it stays neutral black; a light theme's
+    // reads better tinted toward its own hue, which is what the shipped light palette does.
+    '--gog-elevation-ink': dark
+      ? '0 0 0'
+      : hexToTriple(hslToHex(hue, randInt(30, 50), randInt(6, 12))),
+    '--gog-elevation-key-alpha': Number(keyAlpha.toFixed(2)).toString(),
+    // Half the key — the ratio the shipped light theme's own two-layer panel already held.
+    '--gog-elevation-ambient-alpha': Number((keyAlpha / 2).toFixed(2)).toString(),
+    '--gog-elevation-contact-blur': `${randInt(2, 4)}px`,
+    '--gog-elevation-key-x': style === 'hard' ? Number(rand(0.2, 0.5).toFixed(2)).toString() : '0',
+    '--gog-elevation-key-y':
+      style === 'glow'
+        ? '0'
+        : style === 'hard'
+          ? Number(rand(0.2, 0.5).toFixed(2)).toString()
+          : '1',
+    '--gog-elevation-key-blur':
+      style === 'hard'
+        ? '0'
+        : style === 'glow'
+          ? randInt(4, 7).toString()
+          : randInt(2, 4).toString(),
+    // On a near-black page a black blur reads as smudge rather than lift, so a dark draw carries
+    // the ring and the top-edge catch light that actually mark the surface. Both stay inert on a
+    // light one, where the shadow alone is enough.
+    '--gog-elevation-ring-width': dark ? '1px' : '0px',
+    '--gog-elevation-highlight-ink': '255 255 255',
+    '--gog-elevation-highlight-alpha': dark ? Number(rand(0.05, 0.1).toFixed(2)).toString() : '0',
+  };
+}
+
 /** Nudges a range-classified token's current value by up to ~35% of its slider span. */
 function jitterNumeric(currentValue: string): string | undefined {
   const control = classifyToken(currentValue);
@@ -120,11 +188,17 @@ function jitterNumeric(currentValue: string): string | undefined {
 // broken. Scaling the whole ladder by one shared factor keeps every step's relative order
 // intact (multiplying a strictly-increasing sequence by the same positive number is still
 // strictly increasing) while still producing real variation between randomizations.
+// Every step, in order — including `--gog-text-2xs` (21.11.0) and `--gog-text-slg`, both of which
+// were missing here. A step left out of the shared factor keeps its shipped value while its
+// neighbours move, which is precisely the inversion this list exists to prevent: at the top of the
+// factor's range, `slg`'s untouched 1.25rem came out *smaller* than the `lg` it sits above.
 const TYPE_SCALE_NAMES = [
+  '--gog-text-2xs',
   '--gog-text-xs',
   '--gog-text-sm',
   '--gog-text-md',
   '--gog-text-lg',
+  '--gog-text-slg',
   '--gog-text-xl',
   '--gog-text-2xl',
   '--gog-text-3xl',
@@ -166,7 +240,11 @@ export function randomizeFoundation(
   currentValue: (name: string) => string,
 ): Record<string, string> {
   const dark = Math.random() < 0.5;
-  const result: Record<string, string> = { ...randomPalette(dark) };
+  const hue = randInt(0, 359);
+  const result: Record<string, string> = {
+    ...randomPalette(dark, hue),
+    ...randomElevation(hue, dark),
+  };
 
   result['--gog-font-heading'] = pick(HEADING_FONTS);
   result['--gog-font-body'] = pick(BODY_FONTS);

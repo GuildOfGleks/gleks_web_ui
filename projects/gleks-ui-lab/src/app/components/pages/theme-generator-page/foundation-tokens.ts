@@ -18,6 +18,7 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
       '--gog-font-heading',
       '--gog-font-body',
       '--gog-font-mono',
+      '--gog-text-2xs',
       '--gog-text-xs',
       '--gog-text-sm',
       '--gog-text-md',
@@ -35,6 +36,13 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
       '--gog-surface-color',
       '--gog-hover-color',
       '--gog-border-color',
+      // Two kinds of border, and only one of them is a boundary. `--gog-border-color` above is
+      // decoration — dividers, table rules, panel outlines — and is meant to stay faint; this is
+      // the edge that *identifies* a control (chip, toggle, button-toggle) and has to clear 3:1
+      // under WCAG SC 1.4.11. Editable separately because a generator that moved them together
+      // would reproduce the defect 21.12.0 fixed: three controls reading the decorative hairline
+      // and measuring 1.18:1.
+      '--gog-control-boundary-color',
       '--gog-text-color',
       '--gog-accent-text-color',
       '--gog-muted-text-color',
@@ -103,8 +111,8 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
     ],
   },
   {
-    // The five named aliases only. The 14 numeric steps they derive from
-    // (`--gog-space-2` … `--gog-space-48`) are deliberately not fields here: they are the
+    // The five named aliases only. The 10 numeric steps they derive from
+    // (`--gog-space-4` … `--gog-space-48`) are deliberately not fields here: they are the
     // scale's internals, and `--gog-density` above already moves all of them at once, which is
     // the edit a theme actually wants to make.
     title: 'Spacing',
@@ -114,6 +122,30 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
       '--gog-space-md',
       '--gog-space-lg',
       '--gog-space-2xl',
+    ],
+  },
+  {
+    // Ten knobs, and the six steps every raised surface reads (`--gog-elevation-0` … `-5`) are
+    // generated from them — so the steps are deliberately not fields here, for the same reason
+    // the spacing scale and the five stacking layers are not: they derive, and editing a
+    // derivation is how you take one surface off a ladder the others still agree on.
+    //
+    // The one thing to know while turning these: a theme states all ten or none. Custom
+    // properties inherit, so a partial set silently borrows the rest from whatever encloses it.
+    // On this page that is harmless — every override lands on <html> together — but the exported
+    // CSS is a real theme, and there it is the failure that looks nearly right.
+    title: 'Elevation',
+    tokens: [
+      '--gog-elevation-ink',
+      '--gog-elevation-key-alpha',
+      '--gog-elevation-ambient-alpha',
+      '--gog-elevation-contact-blur',
+      '--gog-elevation-key-x',
+      '--gog-elevation-key-y',
+      '--gog-elevation-key-blur',
+      '--gog-elevation-ring-width',
+      '--gog-elevation-highlight-ink',
+      '--gog-elevation-highlight-alpha',
     ],
   },
   {

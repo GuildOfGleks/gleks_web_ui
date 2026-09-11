@@ -56,6 +56,7 @@ import {
   type ConfirmDialogData,
   type GogDropdownOption,
 } from '@guildofgleks/ui';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { injectFullLibraryCss } from '../../shared/full-library-css';
 import { ThemeGeneratorState } from '../../shared/theme-generator-state';
@@ -89,6 +90,7 @@ interface FoundationGroupView {
   imports: [
     RouterLink,
     MarkdownComponent,
+    SinceBadgeComponent,
     TokenRowEditor,
     AccordionComponent,
     GogAccordionContentDirective,
