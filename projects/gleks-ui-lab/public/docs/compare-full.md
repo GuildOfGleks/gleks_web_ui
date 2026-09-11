@@ -425,8 +425,20 @@ right — no rebuild, no Sass recompile, no fighting specificity.**
   foundation → component → instance (see [Theming](/general/theming)). Retheme the whole
   library by overriding a handful of foundation tokens, restyle one component by
   overriding its own tokens, or override a single instance inline. No build step, no
-  preprocessor, no JS theming API at any layer. The cost is on the table above: a 20 KB
-  gzipped stylesheet that declares all 1 289 of them.
+  preprocessor, no JS theming API at any layer. The cost is the stylesheet measured in
+  [The CSS nobody counts](/general/compare-full#the-css-nobody-counts) above — every token
+  shipped as a live custom property rather than baked at build time.
+
+  **The palettes are computed and gated rather than picked by eye**, which is the part of a
+  theming model that usually goes unstated. `npm run check:contrast` measures 3 883 pairs
+  across the eleven shipped themes — including every control boundary and every focus
+  indicator, not only text — and `npm run check:oklch` gates the three things a WCAG ratio
+  is blind to: a state step too small to perceive, a status colour that has stopped being a
+  colour, and two statuses a reader cannot tell apart. Both are CI steps. A third script,
+  `npm run suggest:color`, does the half a check normally leaves to you: given an ink, a
+  ground and a target ratio it returns a value that clears it **holding hue and chroma**, so
+  the fix is still your theme's own neutral. All three ship in the repository and run
+  against a fork of any preset.
 - **Angular Material** — theming is built around Sass: `mat.theme()`, palette definitions
   and per-component `-overrides` mixins. Material 3 introduced CSS-variable system tokens
   (`--mat-sys-*`) which help at the palette level, but granular per-component and

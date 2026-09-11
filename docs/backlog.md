@@ -479,6 +479,20 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
+- **`compare-full.md`'s whole bench is measured at 21.7.2, and five minors have shipped since.**
+  Its header dates every figure to 2026-09-02 and the page says plainly that "every figure below
+  moves when any of these libraries publishes", so nothing there is dishonest — but the byte
+  counts, the dependency tree and the two token counts in its prose (1 289 in one section, 1 312
+  in another, for the same thing; it is 1 456 now) all predate the elevation family and the
+  geometry sweep. **Re-running it needs the three bench folders with `@angular/material` and
+  `primeng` installed, which this workspace does not carry**, and half-updating it — refreshing
+  our rows against 21.12.0 while Material's and PrimeNG's stay on a 2026-09-02 install — would
+  break the one thing that makes the page trustworthy: all three measured on one day, on one
+  machine, by the commands it prints. So it waits for a full pass rather than a patch. The one
+  edit made in the meantime (2026-09-11) was to stop the Theming section restating a token count
+  at all: it points at the measured table instead, which removes both the staleness and the
+  disagreement between the two numbers.
+
 - **The lab's bundle budget has 4 kB of headroom, and that is why it was raised.**
   `gleks-ui-lab`'s initial bundle is 1003.85 kB against a `maximumError` that had to go from 1MB
   to 1.1MB (Angular reads 1MB as 1000 kB). Checked before accepting it: the heavy dependencies
