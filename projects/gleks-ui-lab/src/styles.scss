@@ -215,8 +215,10 @@ h3[id] {
  * is unreadable in the source.
  *
  * `--latest` (filled rather than outlined) marks the newest published release —
- * usually what a reader is scanning for. In markdown it is set by hand, so it
- * moves with each release; the component derives it from the installed version.
+ * usually what a reader is scanning for. Neither renderer sets it by hand: the
+ * component derives it from the installed version, and `markdown-renderer.ts`
+ * adds the class on its way out for any chip naming the current release line.
+ * A `.md` author writes the version and nothing else.
  */
 .since {
   display: inline-flex;

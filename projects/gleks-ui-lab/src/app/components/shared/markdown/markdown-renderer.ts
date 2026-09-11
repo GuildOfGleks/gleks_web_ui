@@ -1,5 +1,6 @@
 import { Marked, type Tokens } from 'marked';
 import { highlightCode } from '../code-highlight';
+import { isLatestVersion } from '../library-version';
 
 function renderCodeBlock({ text, lang }: Tokens.Code): string {
   const highlighted = highlightCode(text, lang);
@@ -49,7 +50,32 @@ function renderHeading(
 
 const markedRenderer = new Marked({ renderer: { code: renderCodeBlock, heading: renderHeading } });
 
+/**
+ * The hand-written `since` chip inside `public/docs/*.md`, e.g.
+ * `<span class="since" title="Added in 21.12.0">21.12.0</span>`. Marked passes inline HTML
+ * straight through, so this is what reaches the page.
+ */
+const SINCE_CHIP_RE = /<span class="since"([^>]*)>(\d+\.\d+\.\d+)<\/span>/g;
+
+/**
+ * Fills in `since--latest` on the markdown chips that name the current release line.
+ *
+ * `<app-since>` computes that from the installed package and is always right. Its markdown twin
+ * could not: the class had to be typed by hand, so it went stale on the next release, and once
+ * the stale ones were removed the markdown half could no longer be filled **at all** — a
+ * genuinely new API in `theming.md` or `global-config.md` simply never got the highlight the same
+ * API gets one page over. Deriving it here fixes the class of bug rather than an instance, and
+ * means a `.md` author writes the version and nothing else.
+ */
+function markLatestSinceChips(html: string): string {
+  return html.replace(SINCE_CHIP_RE, (match, attrs: string, version: string) =>
+    isLatestVersion(version)
+      ? `<span class="since since--latest"${attrs}>${version}</span>`
+      : match,
+  );
+}
+
 export function renderMarkdown(markdown: string): string {
   usedHeadingIds = new Map();
-  return markedRenderer.parse(markdown) as string;
+  return markLatestSinceChips(markedRenderer.parse(markdown) as string);
 }

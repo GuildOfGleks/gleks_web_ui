@@ -1,10 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { LIBRARY_VERSION } from '../library-version';
-
-/** `'21.4.1'` → `'21.4'`. */
-function minor(version: string): string {
-  return version.split('.').slice(0, 2).join('.');
-}
+import { isLatestVersion } from '../library-version';
 
 /**
  * "Added in 21.4.0" — a chip marking API newer than some readers' installed version.
@@ -29,13 +24,10 @@ export class SinceBadgeComponent {
   /**
    * The current release line gets a filled chip, older ones an outline: on any given visit the
    * reader is usually looking for what landed last, and this makes that scannable without
-   * turning the whole page into highlights.
-   *
-   * Compared at major.minor, not exactly: a patch release adds no API, so `21.4.0`'s additions
-   * are still "what's new" for someone who installed `21.4.1`. Comparing the full version would
-   * un-highlight the whole feature set the moment a bug fix shipped.
+   * turning the whole page into highlights. The comparison itself lives in `library-version.ts`,
+   * shared with the markdown renderer, which draws the same chip from hand-written HTML.
    */
-  protected readonly isLatest = computed(() => minor(this.version()) === minor(LIBRARY_VERSION));
+  protected readonly isLatest = computed(() => isLatestVersion(this.version()));
 
   protected readonly label = computed(() => `Added in version ${this.version()}`);
 }
