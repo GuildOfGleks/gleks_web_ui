@@ -28,7 +28,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-background-color', description: 'Page / app background.' },
       { name: '--gog-surface-color', description: 'Card, panel and control surface background.' },
       { name: '--gog-hover-color', description: 'Hover background for interactive surfaces.' },
-      { name: '--gog-border-color', description: 'Default border color.' },
+      {
+        name: '--gog-border-color',
+        description:
+          'The decorative hairline — dividers, table rules, panel outlines — and deliberately faint. It is not the edge of a control; that is the token below.',
+      },
+      {
+        name: '--gog-control-boundary-color',
+        description:
+          'The edge that identifies a control, and the one WCAG SC 1.4.11 measures: it has to clear 3:1 against whatever the control sits on. Split off from --gog-border-color in 21.12.0, because one token cannot be both — a theme that sets only the decorative one either shouts its dividers or hides its controls, and three of this package’s own presets were doing the second, at 1.18 to 2.17:1. gog-chip, gog-toggle and gog-button-toggle read it. Set both, and check the boundary rather than eyeballing it: npm run suggest:color in the repo computes a value that clears a target ratio while holding your theme’s own hue and chroma.',
+      },
       { name: '--gog-text-color', description: 'Primary text color.' },
       { name: '--gog-muted-text-color', description: 'Secondary / placeholder text color.' },
       {
@@ -59,9 +68,9 @@ export const TOKEN_SECTIONS: TokenSection[] = [
           'Which way a status fill deepens when hovered or held: away from its own label, so the state always makes the label easier to read rather than harder. Defaults to the page’s ink, which is right when the label is white — set it to the opposite when the label is the ink itself.',
       },
       {
-        name: '--gog-panel-shadow',
+        name: '--gog-panel-shadow / --gog-dialog-shadow / --gog-toast-shadow',
         description:
-          'Drop shadow for elevated panels (dialogs, dropdowns) — and the gog-panel component’s own chrome, which reads the same token.',
+          'The surfaces that lift, and still the names you override for one of them. Since 21.12.0 their value is a step off the elevation ladder rather than a hand-written shadow — panel 3, toast 4, dialog 5 — so turning one knob in the Elevation family moves all of them together and keeps the order between them. The gog-panel component reads the first.',
       },
     ],
   },
@@ -73,6 +82,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-font-body', description: 'Font stack used for body text.' },
       { name: '--gog-font-mono', description: 'Monospace font stack (code, numeric values).' },
       { name: '--gog-text-xs … --gog-text-3xl', description: 'Type scale, from 0.75rem to 3rem.' },
+      {
+        name: '--gog-text-2xs',
+        description:
+          '0.6875rem (11px), one step below xs and the bottom of the scale. It exists because the smallest chip and the smallest tag were already painting 11px as a literal — the step was being used before it had a name.',
+      },
       {
         name: '--gog-text-slg',
         description:
@@ -139,9 +153,9 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     title: 'Foundation — Spacing',
     tokens: [
       {
-        name: '--gog-space-2 … --gog-space-48',
+        name: '--gog-space-4 … --gog-space-48',
         description:
-          'The 14-step scale every padding and gap in the library is built from. Each step is calc(Npx * var(--gog-density)), so the whole scale moves together when density changes.',
+          'The ten-step scale every padding and gap in the library is built from — 4, 8, 12, 16, 20, 24, 28, 32, 40, 48, every one of them a multiple of 4. Each step is calc(Npx * var(--gog-density)), so the whole scale moves together when density changes. It was fourteen steps until 21.11.0; the five odd ones (2, 6, 10, 14, 18) are gone, and a stylesheet still naming one should take the neighbouring step, rounding up, which is the direction the library itself took.',
       },
       {
         name: '--gog-space-xs … --gog-space-2xl',
@@ -195,6 +209,46 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    // Ten knobs and six generated steps, and the ten are the part a theme writes. Listed as its
+    // own section rather than folded into the character layer because it is a system with an
+    // internal rule — Z doubles — and a reader who takes one token out of it gets a ladder that
+    // no longer climbs evenly.
+    id: 'foundation-elevation',
+    title: 'Foundation — Elevation',
+    tokens: [
+      {
+        name: '--gog-elevation-0 … --gog-elevation-5',
+        description:
+          'The ladder: six heights, generated from the knobs below, and every raised surface in the package reads one. Z doubles — 0, 1, 2, 4, 8, 16 — and the heights are assigned by what a thing is, not by how it looks: 0 flat, 1 a thumb riding on a control, 2 an elevated card or panel, 3 anything anchored to a control (the four dropdown panels, the menu, the tooltip), 4 a toast, 5 a modal dialog. You do not write a step; you turn the knobs and all six follow.',
+      },
+      {
+        name: '--gog-elevation-ink / -key-alpha / -ambient-alpha',
+        description:
+          'The colour of the shadow, as an unwrapped RGB triple, and the two opacities it composites at. A step is two lights: the ambient contact shadow that hugs the object and the key light that moves with height. The default ambient is half the key, which is the ratio the light theme’s hand-written panel already held.',
+      },
+      {
+        name: '--gog-elevation-key-x / -key-y / -key-blur',
+        description:
+          'The style axis, as three unitless multipliers per unit of Z. Soft is the default: x 0, y 1, blur 3. A hard-offset theme (bevel, ledger) sets x and y to a fraction and blur to 0; a glow theme (terminal) sets y to 0 and keeps blur, and the key light becomes a halo without the ladder knowing anything about halos. Blur is 3× Z rather than the 2× the general rule gives, because across the 26 shadow layers this library shipped before the ladder the median ratio was exactly 3.00.',
+      },
+      {
+        name: '--gog-elevation-contact-blur',
+        description:
+          'The contact shadow’s blur, and the one length in the family that does not grow with height — that is what ambient occlusion does, and it is what this library already did every time it hand-wrote two layers.',
+      },
+      {
+        name: '--gog-elevation-ring-width / -highlight-ink / -highlight-alpha',
+        description:
+          'The hairline ring and the top-edge catch light, deliberately outside the steps: they belong to particular surfaces rather than to height. A dark theme’s overlay wants the ring and its in-flow elevated card must not have it, or elevated and outlined render identically. Both are inert by default (0px, 0 alpha); a component that wants one composes it — box-shadow: var(--gog-elevation-ring), var(--gog-elevation-3).',
+      },
+      {
+        name: '--gog-elevation-ring / -highlight / -contact',
+        description:
+          'The three composable layers themselves, derived from the knobs above so a component can prepend one to a step. Derived, so override the knobs rather than these.',
+      },
+    ],
+  },
+  {
     id: 'foundation-control-metrics',
     title: 'Foundation — Control Metrics',
     tokens: [
@@ -211,6 +265,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-control-checkbox-{size}-box-size / -label-size / -icon-size',
         description: 'Checkbox box, label and icon size, per size step (xsm/sm/md/lg/slg).',
+      },
+      {
+        name: '--gog-field-line-height / -label-line-height / -error-line-height',
+        description:
+          'Leading for the three things every field renders — its own text, its label and its error line — declared once here and aliased by all eight controls that draw them. The role is what sets the value, not the size: all five size steps of a field share one leading, which is why there is no per-size token to override.',
       },
       {
         name: '--gog-field-float-label-reserve / -in-top / -over-gap / -over-reserve',
@@ -230,7 +289,12 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-accordion-text-color / -accent-color', description: 'Text and accent color.' },
       {
         name: '--gog-accordion-hover-bg / -hover-ring',
-        description: 'Header hover background and focus ring.',
+        description: 'Header hover background and the ring the hover draws.',
+      },
+      {
+        name: '--gog-accordion-focus-ring-color / -width',
+        description:
+          'The keyboard focus ring, and its own colour since 21.12.0. The header’s :focus-visible outline used to read --gog-accordion-hover-ring, so a hover-weight colour was doing focus duty and missed 3:1 in all eleven themes. Hover and focus are different signals and now carry different colours.',
       },
       {
         name: '--gog-accordion-press-bg',
@@ -250,8 +314,9 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Expand/collapse animation timing.',
       },
       {
-        name: '--gog-accordion-{size}-padding-y / -x / -font-size',
-        description: 'Header padding and font size, per size step (xsm/sm/md/lg/slg).',
+        name: '--gog-accordion-{size}-padding-y / -x / -font-size / -chevron-size / -chevron-font-size',
+        description:
+          'Header padding and font size, per size step (xsm/sm/md/lg/slg). The chevron is a ratio of the header’s own type since 21.11.0 — 1.4em of box, 1em of glyph, one value at every size — so the three smallest sizes, which all label at --gog-text-xs, now carry identical chevrons. Making it a ratio also surfaced a glyph that had been overflowing its own box at every size.',
       },
     ],
   },
@@ -403,7 +468,8 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       },
       {
         name: '--gog-button-toggle-border-color / -border-width / -border-style / -radius',
-        description: 'Group border and corner radius.',
+        description:
+          'Group border and corner radius. The colour defaults to --gog-control-boundary-color since 21.12.0 — it read the decorative hairline before, which is why a segmented control now shows a visibly firmer edge in every theme.',
       },
       {
         name: '--gog-button-toggle-separated-gap',
@@ -539,7 +605,8 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       { name: '--gog-checkbox-label-color', description: 'Label text color.' },
       {
         name: '--gog-checkbox-focus-ring / -focus-ring-width / -focus-ring-offset',
-        description: 'Keyboard focus ring.',
+        description:
+          'Keyboard focus ring. The colour reads --gog-accent-color rather than the pale wash it used to, corrected in 21.12.0: this outline is the only thing marking focus on this control, and a wash measured 1.38:1 against the light page where WCAG asks for 3:1.',
       },
     ],
   },
@@ -557,7 +624,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
           'The inset ring a filter chip draws while selected ([(selected)], 21.9.0). A ring ' +
           'rather than a fill, because hover and press already own the background.',
       },
-      { name: '--gog-chip-border / -border-width / -style', description: 'Border.' },
+      {
+        name: '--gog-chip-border / -border-width / -style',
+        description:
+          'Border. Since 21.12.0 the colour defaults to --gog-control-boundary-color rather than the decorative --gog-border-color: a chip is a control, and its edge is what identifies it. That is why chips look outlined more firmly than they did — they were at 1.18:1 in primeng before.',
+      },
+      {
+        name: '--gog-chip-focus-ring-color / -width / -offset',
+        description:
+          'The keyboard focus ring. The colour is new in 21.12.0 — the chip had a width and an offset but no colour of its own, so the stylesheet reached for --gog-chip-border and the ring came out as a hairline. A focus indicator needs its own colour.',
+      },
       { name: '--gog-chip-color / -font-weight', description: 'Text color and weight.' },
       {
         name: '--gog-chip-radius / -pill-radius',
@@ -568,8 +644,9 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Remove (×) icon color.',
       },
       {
-        name: '--gog-chip-{size}-font-size / -padding-block / -padding-inline / -gap / -avatar-size / -icon-size',
-        description: 'Full sizing scale, per size step (xsm/sm/md/lg/slg).',
+        name: '--gog-chip-{size}-font-size / -padding-block / -padding-inline / -gap / -avatar-size / -icon-size / -remove-size',
+        description:
+          'Full sizing scale, per size step (xsm/sm/md/lg/slg). The three glyph sizes are ratios of the chip’s own type rather than px ladders since 21.11.0 — avatar 1.5em, icon 1em, remove mark 1.125em, one value at every size — so overriding a size’s font-size carries its glyphs with it, which the rem ladder did not.',
       },
     ],
   },
@@ -652,6 +729,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Panel surface.',
       },
       {
+        name: '--gog-dialog-title-font-size / -title-line-height',
+        description:
+          'The dialog’s <h2>. New tokens in 21.11.0 and the value is the size it was already rendering — the title had simply been inheriting from the browser rather than reading the type scale, so it was outside a theme’s reach.',
+      },
+      {
         name: '--gog-dialog-header-padding / -body-padding',
         description: 'Section padding.',
       },
@@ -662,6 +744,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-confirmation-dialog-color / -description-color / -actions-gap',
         description: 'Confirmation dialog variant.',
+      },
+      {
+        name: '--gog-confirmation-dialog-title-font-size / -description-font-size (and their line heights)',
+        description:
+          'The title and the description, on the type scale since 21.11.0 rather than inherited. The description is the one that visibly moved: 16px to 14px, a step smaller than it was.',
+      },
+      {
+        name: '--gog-confirmation-dialog-max-width',
+        description:
+          'The panel’s cap, in ch since 21.11.0 so raising the font size widens the panel with it. It resolves against .confirm-dialog’s own inherited size, not the description’s — a ch cap always reads the font of the element carrying max-width, never a descendant’s.',
       },
     ],
   },
@@ -757,8 +849,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-menu-border-color / -border-width / -border-style',
         description: 'Panel border.',
       },
-      { name: '--gog-menu-radius', description: 'Panel corner radius.' },
-      { name: '--gog-menu-shadow', description: "Panel shadow. Defaults to the dialog's." },
+      {
+        name: '--gog-menu-radius / --gog-menu-item-radius',
+        description:
+          'The panel’s corner, and the item’s. The item derives from the panel less the panel’s own padding since 21.11.0, so the first and last rows stay concentric with the corner they sit in instead of looking squarer than it — at the default theme that moved the item from 8px to 12px.',
+      },
+      {
+        name: '--gog-menu-shadow',
+        description:
+          'Panel shadow. Defaults to --gog-panel-shadow, the same step the four dropdown panels sit on. It aliased the dialog’s until 21.12.0, which put a modal’s shadow on a dropdown menu — two overlays of one kind, four steps apart, and the alias is why nobody saw it.',
+      },
       { name: '--gog-menu-font-family', description: 'Panel font family.' },
       { name: '--gog-menu-padding', description: 'Space between the panel edge and its items.' },
       { name: '--gog-menu-gap', description: 'Space between items.' },
@@ -818,13 +918,18 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-multiselect-radius / -min-width',
         description:
-          'Field corner radius, and the floor an auto-width trigger cannot collapse past.',
+          'The field’s corner radius — the field only, since 21.12.0 — and the floor an auto-width trigger cannot collapse past.',
       },
       { name: '--gog-multiselect-focus-border / -focus-ring', description: 'Focus state.' },
       {
         name: '--gog-multiselect-panel-bg / -panel-border / -panel-shadow / -panel-max-width',
         description:
           'Dropdown panel surface, and the cap on a panel that sizes to its own content rather than to the trigger.',
+      },
+      {
+        name: '--gog-multiselect-panel-radius',
+        description:
+          'The panel’s own corner, new in 21.12.0 and defaulting to var(--gog-radius). Splitting it off the field’s radius is why shaping the trigger no longer reshapes the overlay; the option row and the filter input both stay concentric with whatever you set here.',
       },
       {
         name: '--gog-multiselect-option-hover-bg / -option-press-bg / -option-color',
@@ -973,7 +1078,8 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       },
       {
         name: '--gog-radio-focus-ring / -focus-ring-width / -focus-ring-offset',
-        description: 'Keyboard focus ring.',
+        description:
+          'Keyboard focus ring. The colour reads --gog-accent-color rather than the pale wash it used to, corrected in 21.12.0: this outline is the only thing marking focus on this control, and a wash measured 1.38:1 against the light page where WCAG asks for 3:1.',
       },
       {
         name: '--gog-radio-error-color / -error-font-size / -disabled-opacity',
@@ -1042,12 +1148,26 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-select-field-bg / -field-border',
         description: 'Field surface and border.',
       },
-      { name: '--gog-select-radius', description: 'Field corner radius.' },
+      {
+        name: '--gog-select-radius',
+        description:
+          'The field’s corner radius — the field only. Until 21.12.0 it shaped the dropdown panel too, so rounding the trigger into a pill rounded the overlay into one as well; that box has its own token now.',
+      },
       { name: '--gog-select-focus-border / -focus-ring', description: 'Focus state.' },
       {
         name: '--gog-select-panel-bg / -panel-shadow / -panel-max-width',
         description:
           'Dropdown panel surface, and the cap on a panel that sizes to its own content rather than to the trigger.',
+      },
+      {
+        name: '--gog-select-panel-radius',
+        description:
+          'The panel’s own corner, new in 21.12.0 and defaulting to var(--gog-radius), so nothing moves unless you change it. gog-autocomplete and gog-datepicker already declared theirs; this and the multiselect’s are the pair that completes the family.',
+      },
+      {
+        name: '--gog-select-options-padding / --gog-select-option-radius',
+        description:
+          'The gutter around the option list and the row’s own corner, matching what gog-autocomplete and gog-multiselect already had. This panel had no interior at all before 21.12.0, which is why its first and last rows were square inside a rounded corner. The row radius derives from the panel radius less the gutter, so it stays concentric once --gog-density moves the padding.',
       },
       {
         name: '--gog-select-min-width',
@@ -1236,6 +1356,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-toggle-track-off-bg / -track-on-bg / -on-border-color',
         description: 'The track, off and on.',
+      },
+      {
+        name: '--gog-toggle-border-color / -border-width / -border-style',
+        description:
+          'The track’s edge in the off state, which is the whole of the control when it is off. It defaults to --gog-control-boundary-color since 21.12.0; reading the decorative hairline instead had left an off switch at under 3:1 in all eleven themes, which is to say invisible to WCAG.',
       },
       {
         name: '--gog-toggle-thumb-off-bg / -thumb-on-bg / -thumb-shadow / -thumb-inset',
