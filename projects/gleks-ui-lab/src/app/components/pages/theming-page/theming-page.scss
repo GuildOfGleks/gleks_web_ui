@@ -20,23 +20,76 @@
   font-size: var(--gog-text-sm);
 }
 
+/*
+ * The tiles need room around them, not beside them: step 5 blurs 48px in most themes, so a tight
+ * gap makes the top of the ladder read as one smudge rather than as two distinct heights.
+ *
+ * The section heading and lead share `.token-reference`'s rules below rather than restating them —
+ * two sections of one page that look deliberately alike should say so in one place.
+ */
+.elevation-ladder {
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    padding: 16px 8px 32px;
+  }
+
+  &__cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    max-width: 108px;
+  }
+
+  &__tile {
+    display: grid;
+    place-items: center;
+    inline-size: 56px;
+    block-size: 56px;
+    border-radius: var(--gog-radius);
+    background: var(--gog-surface-color);
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-sm);
+  }
+
+  &__caption {
+    text-align: center;
+    font-size: var(--gog-text-xs);
+    line-height: 1.4;
+    color: var(--gog-muted-text-color);
+  }
+}
+
+/*
+ * The two sections' heading and lead, in one place. Written as a flat selector list rather than
+ * by nesting `&` under a two-item parent: the block below also carries `&__full .markdown-body`
+ * and friends, and those would fan out into `.elevation-ladder__full …` selectors that match
+ * nothing.
+ */
+.elevation-ladder__title,
+.token-reference__title {
+  font-size: var(--gog-text-xl);
+  color: var(--gog-accent-color);
+  border-bottom: 1px solid var(--gog-border-color);
+  padding-bottom: 0.3em;
+  margin: 0 0 0.6em;
+}
+
+.elevation-ladder__intro,
+.token-reference__intro {
+  color: var(--gog-text-color);
+  line-height: 1.6;
+  margin: 0 0 1.2em;
+}
+
+.elevation-ladder,
 .token-reference {
   margin-top: 1.6em;
+}
 
-  &__title {
-    font-size: var(--gog-text-xl);
-    color: var(--gog-accent-color);
-    border-bottom: 1px solid var(--gog-border-color);
-    padding-bottom: 0.3em;
-    margin: 0 0 0.6em;
-  }
-
-  &__intro {
-    color: var(--gog-text-color);
-    line-height: 1.6;
-    margin: 0 0 1.2em;
-  }
-
+.token-reference {
   &__full-intro {
     color: var(--gog-muted-text-color);
     margin: 1.6em 0 0.6em;

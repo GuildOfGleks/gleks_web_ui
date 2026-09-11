@@ -47,6 +47,18 @@ export class ThemingPage {
   protected readonly hasMarkdown = computed(() => this.content.status() === 'resolved');
 
   protected readonly tokenSections = TOKEN_SECTIONS;
+
+  // What each height is *for*, which is how the library assigns them — by what a thing is, not by
+  // how heavy it should look. Kept beside the tiles so the row reads as a rule rather than as six
+  // shadows of increasing size.
+  protected readonly elevationSteps = [
+    { n: 0, what: 'flat' },
+    { n: 1, what: 'a thumb on a control' },
+    { n: 2, what: 'an elevated card' },
+    { n: 3, what: 'a dropdown, menu, tooltip' },
+    { n: 4, what: 'a toast' },
+    { n: 5, what: 'a modal dialog' },
+  ] as const;
   protected readonly deprecatedTokenGroups = groupDeprecatedTokens(GOG_DEPRECATIONS);
 
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));

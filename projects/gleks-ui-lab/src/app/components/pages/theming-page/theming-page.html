@@ -21,6 +21,47 @@
     <app-markdown [markdown]="markdown()!" />
   }
 
+  <!--
+    The ladder, live, in whatever theme the reader has picked. Nothing in the library renders a
+    row like this; it exists because six heights are only legible as a *set* — and because the
+    three geometry knobs are far easier to understand from `bevel` climbing by hard offset and
+    `terminal` by the width of a glow than from any paragraph about multipliers. Switch the theme
+    in the header with this row on screen.
+  -->
+  <section class="elevation-ladder">
+    <h2 id="elevation-ladder" class="elevation-ladder__title font-heading">The Elevation Ladder</h2>
+    <p class="elevation-ladder__intro">
+      Six heights, one per step, on this theme's own surface colour. Z doubles — 0, 1, 2, 4, 8, 16 —
+      and every raised surface in the package reads one of them. Change the theme in the header and
+      watch all six move together: that is the whole point of the family.
+    </p>
+    <p class="elevation-ladder__intro">
+      <strong
+        >On a dark theme these six will look nearly alike, and that is the honest result</strong
+      >
+      rather than a broken demo: a black blur on a near-black page reads as smudge, not as lift.
+      Each tile here paints the step <em>alone</em>, which is what the token is. A real component
+      composes it with the two layers that sit outside the ladder —
+      <code>box-shadow: var(--gog-elevation-ring), var(--gog-elevation-3)</code> — and on a dark
+      theme it is that hairline ring and the top-edge catch light doing the work the shadow cannot.
+      Switch to a light theme to watch the ladder itself climb.
+    </p>
+    <div class="elevation-ladder__row">
+      @for (step of elevationSteps; track step) {
+        <div class="elevation-ladder__cell">
+          <span
+            class="elevation-ladder__tile"
+            [style.box-shadow]="'var(--gog-elevation-' + step.n + ')'"
+            aria-hidden="true"
+          >
+            {{ step.n }}
+          </span>
+          <span class="elevation-ladder__caption">{{ step.what }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
   <section class="token-reference">
     <h2 id="token-reference" class="token-reference__title font-heading">Token Reference</h2>
     <p class="token-reference__intro">

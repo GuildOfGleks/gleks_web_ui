@@ -60,6 +60,67 @@ Every layer follows and the order between them is untouched — the badge is sti
 toast, the tooltip still over the dropdown. Setting `--gog-dropdown-z` directly is the version
 of this that goes wrong: it moves one layer out of a stack the other four still agree on.
 
+### The elevation ladder
+
+<span class="since" title="Added in 21.12.0">21.12.0</span> The same bet again, and the clearest
+case of it, because before the ladder eleven themes hand-authored twenty-two shadow values with no
+stated relationship between any two of them — and two of those themes gave a modal dialog the
+elevation of a card, because restating the second value was work.
+
+There is now one ladder of six heights, `--gog-elevation-0` through `-5`, and **every raised
+surface in the package reads a step off it.** Z doubles: 0, 1, 2, 4, 8, 16. A height is assigned by
+what a thing _is_, not by how heavy it should look:
+
+| Step | What sits on it                                                            |
+| ---- | -------------------------------------------------------------------------- |
+| 0    | flat — in the flow of the page                                             |
+| 1    | a thumb riding on a control (the toggle's)                                 |
+| 2    | an `elevated` card or panel                                                |
+| 3    | anything anchored to a control — the four dropdown panels, the menu, the tooltip |
+| 4    | a toast                                                                    |
+| 5    | a modal dialog                                                             |
+
+**You do not write a step.** A theme turns ten knobs and all six follow:
+
+```css
+:root[data-theme='midnight'],
+[data-theme='midnight'] {
+  --gog-elevation-ink: 0 0 0; /* unwrapped RGB, so the alphas below can composite it */
+  --gog-elevation-key-alpha: 0.55;
+  --gog-elevation-ambient-alpha: 0.28;
+  --gog-elevation-contact-blur: 3px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 1;
+  --gog-elevation-key-blur: 3;
+  --gog-elevation-ring-width: 1px;
+  --gog-elevation-highlight-ink: 255 255 255;
+  --gog-elevation-highlight-alpha: 0.07;
+}
+```
+
+**State all ten or none — and this is the one that will bite.** Custom properties inherit, so a
+theme block declaring six of them silently borrows the other four from whatever encloses it. There
+is no error; you get a shadow that looks nearly right, on some surfaces, in one theme.
+
+A step is two lights. The **contact shadow** hugs the object and does not grow with height — that
+is what ambient occlusion does, and it is what this library already did every time it hand-wrote
+two soft layers. The **key light** is the one that moves: its offset is Z and its blur three times
+it. Those three multipliers are the style axis, and between them they cover every look the eleven
+shipped presets actually use. Soft is the default. A hard-offset theme — `bevel`, `ledger` — sets
+x and y to a fraction and blur to `0`. A glow theme — `terminal` — sets y to `0` and keeps the
+blur, and the key light becomes a halo without the ladder knowing anything about halos.
+
+Two things are deliberately _outside_ the steps, as their own tokens: the hairline **ring** and the
+top-edge **catch light**. They belong to particular surfaces rather than to height — a dark theme's
+overlay wants the ring and its in-flow `elevated` card must not have it, or `elevated` and
+`outlined` render identically. A component composes them:
+`box-shadow: var(--gog-elevation-ring), var(--gog-elevation-3)`.
+
+`--gog-panel-shadow`, `--gog-dialog-shadow` and `--gog-toast-shadow` are still the names you
+override for one surface, and overriding one works exactly as it always did. What changed is their
+_value_: each is now a step rather than a literal, so a theme that turns one knob moves all of them
+together and keeps the order between them intact.
+
 `--gog-density` is the same idea applied to spacing, and since 21.9.0 the claim above it is
 literally true rather than nearly so. Fourteen lengths were still bare pixels that ignored it —
 dropdown panel gaps, the menu offset, a clear button's inset, two error-line offsets — so a
@@ -218,7 +279,8 @@ works at the document root _and_ on any subtree:
   --gog-background-color: #0b0f1a;
   --gog-surface-color: #131a2b;
   --gog-hover-color: #1c2540;
-  --gog-border-color: #2a355a;
+  --gog-border-color: #2a355a; /* decoration: dividers, table rules, panel outlines */
+  --gog-control-boundary-color: #6b7aa8; /* identity: the edge of a chip, a switch, a segment */
 
   /* Text */
   --gog-text-color: #e8ecf7;
@@ -238,6 +300,18 @@ works at the document root _and_ on any subtree:
   --gog-danger-color: #ef4565;
   --gog-warning-color: #f2a541;
   --gog-info-color: #38bdf8;
+
+  /* Elevation — all ten knobs or none; see the ladder above */
+  --gog-elevation-ink: 0 0 0;
+  --gog-elevation-key-alpha: 0.55;
+  --gog-elevation-ambient-alpha: 0.28;
+  --gog-elevation-contact-blur: 3px;
+  --gog-elevation-key-x: 0;
+  --gog-elevation-key-y: 1;
+  --gog-elevation-key-blur: 3;
+  --gog-elevation-ring-width: 1px;
+  --gog-elevation-highlight-ink: 255 255 255;
+  --gog-elevation-highlight-alpha: 0.07;
 }
 ```
 
@@ -250,6 +324,67 @@ themeService.setTheme('midnight');
 Because every component token derives from these foundation tokens, a new palette
 propagates through buttons, tables, dialogs and everything else without touching a
 single component stylesheet.
+
+## Colour that is checked rather than eyeballed
+
+A theme is the one part of this library a consumer writes from scratch, and colour is the part of
+_that_ which fails silently: nothing renders wrong, nothing throws, and some fraction of your
+readers simply cannot use the result. So the palettes here are computed and gated rather than
+picked, and the tooling that does it ships in the repository.
+
+### Two kinds of border, and only one of them is a boundary
+
+`--gog-border-color` is **decoration** — dividers, table rules, panel outlines — and is deliberately
+faint. `--gog-control-boundary-color`
+<span class="since" title="Added in 21.12.0">21.12.0</span> is the edge that **identifies a
+control**, and WCAG SC 1.4.11 requires it to clear 3:1 against whatever the control sits on.
+
+They cannot be one token, and the proof is what happened while they were: `gog-chip`, `gog-toggle`
+and `gog-button-toggle` read the decorative colour as their own edge and measured **1.18 to 2.17:1
+in every shipped theme** — neither their border nor their fill carried the boundary, so a switch in
+its off state was, to WCAG, not there. A theme that sets only the decorative colour has to choose
+between shouting its dividers and hiding its controls. Set both.
+
+### `suggest:color` — a check that names the value that would pass
+
+A failing ratio tells you something is wrong; it does not tell you what to write instead. The
+repository ships a solver that does:
+
+```bash
+npm run suggest:color -- '#2a355a' '#131a2b' 3.2
+# #2a355a on #131a2b: 1.45:1 → #5b6991 3.20:1  (hue and chroma held)
+```
+
+It walks lightness in OKLCH and **holds hue and chroma**, so the value it hands back is still
+recognisably your theme's neutral rather than a grey that happens to pass. Every one of the eleven
+shipped presets' boundary colours was produced this way.
+
+### What a contrast ratio cannot see
+
+WCAG's ratio is a luminance formula. It is the right tool for "can this text be read", and it is
+blind to three things that are just as much defects — all three passed it comfortably while being
+wrong. `npm run check:oklch`
+<span class="since" title="Added in 21.12.0">21.12.0</span> gates them, in OKLCH, where lightness,
+chroma and hue come apart:
+
+- **A state step that is invisible.** Hover and pressed have to _read_ as different from the rest
+  state. Gated at ΔL ≥ 0.03, roughly the just-noticeable difference for an area of flat colour.
+- **A status colour that has stopped being a colour.** Near-grey stops signalling; maximum chroma
+  reads as neon in a parchment theme. Gated to a band, 0.04 ≤ C ≤ 0.25.
+- **Two statuses that are the same colour.** Every pair of the four must differ by ≥15° of hue
+  **or** ≥0.10 of lightness — a disjunction, because hue alone fails a reader with achromatopsia
+  and lightness alone fails nothing at all. `terminal`'s success and info sat 4.6° apart, which is
+  two statuses one badge could not tell apart in any rendering.
+
+Every threshold was measured across all eleven palettes before it was set, never the other way
+round — a threshold chosen in advance is a threshold chosen to flatter what is already there. One
+rule that looked obvious did not survive that: "the ramp must be monotonic in lightness" fails
+eight of the eleven, and eight of them are right, because on a light ground the hover fill is
+_darker_ than the rest state. What is checkable is that the step exists, not which way it points.
+
+Between them, `check:contrast` (3883 pairs across the eleven themes, including every control
+boundary and every focus indicator) and `check:oklch` are CI steps. If you fork a preset, they are
+worth running against your own file.
 
 ## Rules of thumb
 
