@@ -148,14 +148,27 @@
 }
 
 .gog-select__chevron {
-  width: var(
-    --gog-select-control-font,
-    var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+  /* The box is the glyph. Both are stated once, here: this element carries the font-size the
+     mark is drawn from, and the box is `--gog-icon-size` of it -- the same declaration
+     `gog-icon` reads, so the two cannot drift for any ratio or any icon size a consumer sets.
+
+     It took two tries. The box used to read the field's type while the mark read
+     `--gog-icon-size` (1.2em) of a font-size this ratio had already reduced, so the mark came
+     out 5% wider than the box holding it. The first fix put `--gog-icon-size` in the box and
+     left the font-size on the child -- wrong for a *different* reason, and measured worse
+     (+25% at `slg`): the icon's size comes off a token chain, while an `em` in the box resolves
+     against this element's own inherited font-size, and at `lg`/`slg` those are not the same
+     number. A relative unit means the element carrying the property, which is the third time
+     this library has paid for that -- see D7's `ch` and `gog-chip`'s remove mark. */
+  font-size: calc(
+    var(
+        --gog-select-control-font,
+        var(--gog-select-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-select-chevron-icon-ratio)
   );
-  height: var(
-    --gog-select-control-font,
-    var(--gog-select-size-font-size, var(--gog-field-md-font-size))
-  );
+  width: var(--gog-icon-size, var(--gog-icon-fallback-size));
+  height: var(--gog-icon-size, var(--gog-icon-fallback-size));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,16 +193,6 @@
 
 .gog-select--open .gog-select__chevron--auto-rotate {
   transform: rotate(180deg);
-}
-
-.gog-select__chevron gog-icon {
-  font-size: calc(
-    var(
-        --gog-select-control-font,
-        var(--gog-select-size-font-size, var(--gog-field-md-font-size))
-      ) *
-      var(--gog-select-chevron-icon-ratio)
-  );
 }
 
 .gog-select__dropdown {

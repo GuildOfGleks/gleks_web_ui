@@ -33,3 +33,30 @@ it found the lab's sidebar hover label and two `code` chips under AA.
 build.
 
 ---
+
+---
+
+## 21.12.1 — three icon boxes stop being smaller than their icon
+
+Small, and only one of the three has any visible surface on the site.
+
+- **A removable `gog-chip` with no avatar is slightly taller** — 1.2px at `xsm` to 2.0px at
+  `slg`, at `--gog-density: 1`. The × itself does not change size at any of the five, and a chip
+  _with_ an avatar does not move at all, because the avatar is the taller element. If the Chip
+  page shows removable and non-removable chips in one row, the removable ones sit a hair taller
+  than they did. This is the chip measuring its own contents: the mark had been painting 9% wider
+  than the box holding it.
+
+- **`gog-select`'s chevron and `gog-multiselect`'s arrow do not move**, and neither does the field
+  around them — their box grew 5% to contain a mark that was already that size. Listed so a diff
+  of the two stylesheets is not chased.
+
+- **The token reference has nothing wrong in it** (checked): `--gog-chip-remove-scale`,
+  `--gog-select-chevron-icon-ratio` and `--gog-multiselect-arrow-icon-ratio` are not among the
+  rows it carries. `--gog-chip-remove-scale`'s **default changes from `1.1` to `1` and its
+  meaning changes with it** — it is the ring around the mark now, not a multiplier on the
+  button's font-size — so if a row is ever added for it, that is the sentence it needs. The theme
+  generator picks it up by prefix and reads the new default live; nothing to do there.
+
+- **`styling.instructions.md` gained a rule** ("a box that holds a glyph is never smaller than the
+  glyph"). Nothing on the lab quotes that file, so this is context rather than a task.

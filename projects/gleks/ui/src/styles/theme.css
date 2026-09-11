@@ -1249,7 +1249,13 @@
   --gog-chip-pill-radius: 9999px;
   --gog-chip-remove-color: var(--gog-muted-text-color);
   --gog-chip-remove-hover-color: var(--gog-text-color);
-  --gog-chip-remove-scale: 1.1;
+  /* The ring around the remove mark, as a ratio of the mark itself -- so `1` is the box the
+     glyph occupies and anything above it is padding. It multiplied the button's *font-size*
+     until 21.12.1, which is not the same thing: `gog-icon` draws at `--gog-icon-size` (1.2em) of
+     that font-size, so a value of 1.1 produced a box 9% narrower than its own contents. A
+     consumer who had overridden this gets a larger box than before at the same number; the
+     number now means what the name says. */
+  --gog-chip-remove-scale: 1;
   --gog-chip-avatar-inset-ratio: 0.9;
   --gog-chip-remove-inset-ratio: 0.85;
   --gog-chip-disabled-opacity: var(--gog-disabled-opacity);
@@ -1294,8 +1300,8 @@
      rem rather than five judgements. 1.125 is the ratio `lg` already held, the same way 1.5 was
      the avatar's, and it keeps what all five values agreed on: the mark a reader can press
      reads a shade heavier than the one that only decorates. No size moves by more than half a
-     pixel. The painted box stays `--gog-chip-remove-scale` of it -- see chip.component.scss,
-     which had to stop writing that multiplication in `em`. */
+     pixel. The painted box is `--gog-chip-remove-scale` of the *mark* -- see chip.component.scss,
+     which had to stop writing that multiplication against this token's own em basis. */
   --gog-chip-xsm-avatar-size: 1.5em;
   --gog-chip-xsm-icon-size: 1em;
   --gog-chip-xsm-remove-size: 1.125em;

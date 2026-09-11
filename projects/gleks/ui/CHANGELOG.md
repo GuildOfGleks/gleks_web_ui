@@ -4,6 +4,45 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.12.1] - planned
+
+### Fixed
+
+- **Three icon buttons were smaller than the icon inside them** — `gog-chip`'s remove mark by 9%,
+  `gog-select`'s chevron and `gog-multiselect`'s arrow by 5%, at every size and in every theme.
+  Each set its box from one basis and let `<gog-icon>` draw the mark from another: the icon
+  renders its `<svg>` at `--gog-icon-size` (1.2em) of its own font-size, and none of the three
+  boxes was derived from that.
+
+  **Nothing painted the overflow, so nothing showed it** — the boxes carry no background at rest
+  or on hover. What it cost was the focus indicator. `:focus-visible` draws its outline on the
+  box, so on the chip the ring was drawn _inside_ the mark it indicates and cleared it only
+  because `--gog-chip-focus-ring-offset` happens to be 2px; measured at an offset of `0` — a
+  value any theme may choose, and one the theme generator offers as a slider — the ring landed
+  0.79px inside the glyph at `md`.
+
+  All three now state the mark's font-size and its box on the same element, with the box reading
+  the same `--gog-icon-size` the icon reads. The two cannot drift again for any ratio, or for any
+  icon size a consumer sets.
+
+- **`--gog-chip-remove-scale` now means what its name says, and its default is `1`.** It was
+  `1.1`, and it multiplied the button's _font-size_ rather than the mark — so it produced a box
+  9% narrower than its own contents, and any value under `1.2` did nothing visible at all. It is
+  the ring around the mark now: `1` is the box the glyph occupies, and anything above it is
+  padding. **A theme that overrides this token gets a larger box than before at the same
+  number**, by a factor of 1.2.
+
+  `--gog-select-chevron-icon-ratio` and `--gog-multiselect-arrow-icon-ratio` were wrong in the
+  same way and are unchanged in value: both read `0.875`, which a reader takes to mean the
+  chevron is seven eighths of the field's type. It was 1.05 of it, because `--gog-icon-size`
+  multiplied on top. The mark does not move; the box around it grows 5% to contain it.
+
+  One visible consequence: **a removable chip with no avatar is ~9% of its remove box taller** —
+  1.2px at `xsm` to 2.0px at `slg`, measured at `--gog-density: 1`. The mark itself does not
+  change size at any of the five. A chip with an avatar does not move at all, because the avatar
+  is the taller element. On `gog-select` and `gog-multiselect` nothing moves: the chevron's box
+  is not what sets a field's height.
+
 ## [21.12.0] - 10.09.2026
 
 ### Added

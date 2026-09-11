@@ -22,16 +22,16 @@ Every component `.scss` file follows the rules below. See
 ## Theming via CSS custom properties — the three layers
 
 Every themeable value is a **CSS custom property named `--gog-<block>-*`**. Where it is
-*declared* is the whole design, so read this before adding one. The authoritative version
+_declared_ is the whole design, so read this before adding one. The authoritative version
 of this model lives in the header comment of `src/styles/theme.css`; this is the short form.
 
-| Layer | Name shape | Declared in | Purpose |
-| --- | --- | --- | --- |
-| 1. Foundation | `--gog-accent-color`, `--gog-space-md`, `--gog-duration-base` | `theme.css` | palette / scale — restyles everything |
-| 2. Component | `--gog-btn-primary-bg`, `--gog-select-option-gap` | `theme.css` | the actual values, one block per component |
-| 3. Instance | `--gog-btn-bg`, `--gog-tag-accent` | **nowhere** | deliberately undeclared escape hatch |
+| Layer         | Name shape                                                    | Declared in | Purpose                                    |
+| ------------- | ------------------------------------------------------------- | ----------- | ------------------------------------------ |
+| 1. Foundation | `--gog-accent-color`, `--gog-space-md`, `--gog-duration-base` | `theme.css` | palette / scale — restyles everything      |
+| 2. Component  | `--gog-btn-primary-bg`, `--gog-select-option-gap`             | `theme.css` | the actual values, one block per component |
+| 3. Instance   | `--gog-btn-bg`, `--gog-tag-accent`                            | **nowhere** | deliberately undeclared escape hatch       |
 
-**A component stylesheet declares no `--gog-*` value of its own — ever.** It only *reads*
+**A component stylesheet declares no `--gog-*` value of its own — ever.** It only _reads_
 tokens, falling through the layers with nested `var()`:
 
 ```scss
@@ -56,7 +56,7 @@ Why each rule matters:
   most load-bearing property of the theming system; do not break it.
 - **No literal fallbacks in component SCSS.** `var(--gog-input-float-label-in-top, 8px)` puts
   the real default in a file a theme cannot reach: a consumer can override the token, but
-  nobody can *discover* that `8px` without grepping the SCSS, and `theme.css` no longer
+  nobody can _discover_ that `8px` without grepping the SCSS, and `theme.css` no longer
   documents the component's full surface. The fallback chain must bottom out in a token that
   `theme.css` declares, not in a number. `scripts/check-tokens.mjs` enforces this.
 - The only nested `var()` fallbacks allowed are **token-to-token** — the instance → variant →
@@ -76,21 +76,21 @@ Rules when touching tokens:
   back to the previous value.
 - **Which block in `theme.css` a new token goes in is decided by one question: does its
   value contain `var()`?** A custom property's `var()` references are substituted on the
-  element that *declares* it, not where it is read — so a derived token declared only on
+  element that _declares_ it, not where it is read — so a derived token declared only on
   `:root` freezes to the root palette and will not follow a scoped `[data-theme]` subtree.
   - value is a literal (`8px`, `#fae000`, `ease`) → the `:root` block;
   - value reads another token (`var(--gog-accent-color)`, `color-mix(… var(…))`) → the
     `:root, [data-theme]` block, so it re-derives per theme scope.
-  Getting this wrong produces a token that works on a full-page theme and silently breaks
-  in the showcase's side-by-side theme lab — a bug class that is very hard to spot locally.
-- A theme block declares only what that theme *changes* — the palette, and, since 21.7.0's
+    Getting this wrong produces a token that works on a full-page theme and silently breaks
+    in the showcase's side-by-side theme lab — a bug class that is very hard to spot locally.
+- A theme block declares only what that theme _changes_ — the palette, and, since 21.7.0's
   character layer (`docs/themes.md` iteration 1), corner rounding (`--gog-radius`), border
   weight (`--gog-control-border-*`/`--gog-panel-border-*`/`--gog-border-*`) and emphasis
   casing/tracking (`--gog-text-transform`, `--gog-letter-spacing`) where the theme wants a
   different one — plus **spacing, via `--gog-density`** (`docs/themes.md` iteration 6), the one
   number every padding and gap in the library derives from. A theme that wants to be tighter or
   roomier sets that, never a component padding.
-  The derived layer re-resolves from all of them automatically; re-listing *component*
+  The derived layer re-resolves from all of them automatically; re-listing _component_
   tokens per theme is what makes themes drift apart — see `material.css`/`primeng.css`/
   `ledger.css` for what a theme with real character looks like once it uses this layer instead
   of the roughly ten per-component overrides each one used to need for casing and tracking
@@ -199,12 +199,12 @@ it is done, and an existing one that violates one is a defect, not a style.**
 3. **Optical ratio: horizontal padding is exactly twice vertical.** The same multiple at every
    size step, on every control. **2.0 is not a taste, it is the arithmetic:** with both paddings
    on the 4px grid, 2.0 and 1.0 are the only ratios reachable at all five steps, so any other
-   value would need an exception at `xsm` for every block in the library. A *surface* is out of
+   value would need an exception at `xsm` for every block in the library. A _surface_ is out of
    this law and says so in its own stylesheet — `card`, `panel`, `dialog`, `toast`, `tooltip`,
    the accordion body and the table cell frame content rather than balancing a label.
 4. **The typographic ratio.** Line-height is a function of font size and role, not a per-component
    choice: text that wraps takes the relaxed end of `--gog-line-height-*`, a single-line label the
-   tight end, and the ratio moves *inversely* with size — a 24px heading does not want 1.5.
+   tight end, and the ratio moves _inversely_ with size — a 24px heading does not want 1.5.
 5. **The target grows its hit area, not its paint.** Anything a pointer activates meets WCAG
    2.5.8's 24×24 CSS px at every size the component offers — and where the painted control is
    smaller, a transparent `::before` inflates the hit area to 24×24 (44×44, 2.5.5 AAA, where a
@@ -220,25 +220,57 @@ acceptable is a length with no derivation at all.
 
 **A glyph is governed too, by a law of its own.** `docs/component-geometry.md`'s L7: an icon
 centres its ink inside its own viewBox, so that centring the box centres the mark — and where the
-mark is *filled*, it is the area that centres, not the outline, because a solid triangle's
+mark is _filled_, it is the area that centres, not the outline, because a solid triangle's
 centroid sits `W/6` from the middle of its bounding box. `check:geometry`'s second half measures
 all 41 built-in glyphs and gates it. The law is deliberately **not** written against the ink's
 centre of mass: a monoline set reads by extent, so a directional glyph such as `arrow-right`
 carries its mass 2 units off centre and is correct exactly as drawn.
+
+**A box that holds a glyph is never smaller than the glyph, and the way to guarantee that is to
+size both from one declaration.** `<gog-icon>` draws its `<svg>` at `--gog-icon-size` (1.2em) of
+its own font-size, so an element that sets its own square box _and_ contains an icon has two
+sizes to keep in agreement. Put the font-size and the box on the same element and let the box
+read `--gog-icon-size`:
+
+```scss
+.gog-<block > __<mark > {
+  /* the basis the mark is drawn from … */
+  font-size: calc(var(--gog-<block>-<thing>-font-size) * var(--gog-<block>-<thing>-ratio));
+  /* … and the box, from the same declaration the icon reads */
+  width: var(--gog-icon-size, var(--gog-icon-fallback-size));
+  height: var(--gog-icon-size, var(--gog-icon-fallback-size));
+}
+```
+
+A box that is deliberately _roomier_ than its mark — a checkbox, a calendar's nav button — states
+its own size and is outside this; the rule is one-directional. **Nothing painted the overflow in
+any of the three cases that had it, so nothing showed it. What it cost was the focus indicator**,
+which `:focus-visible` draws on the box: a ring smaller than the mark it indicates, clearing it
+only by whatever `--gog-focus-ring-offset` happened to be.
+
+Two traps, both paid for twice. **A relative unit resolves against the element carrying the
+property, not the element the value was written for** — so an `em` box on the parent and a
+font-size that arrives through a token chain are not the same number, and at `lg`/`slg` they were
+5% to 25% apart. That is D7's `ch` finding in a third component. And **a ratio token multiplied on
+top of `--gog-icon-size` does not mean what its name says**: `--gog-select-chevron-icon-ratio:
+0.875` rendered a chevron at 1.05 of the field's type, not 0.875 of it.
+
+There is **no check for this**; all three instances were found by measuring in a browser, and
+`docs/backlog.md` carries what a static one would have to resolve.
 
 ## Accessibility & motion
 
 - Provide a visible `:focus-visible` outline for every interactive element.
 - **Reduced motion removes the animation, not the information.** Under
   `@media (prefers-reduced-motion: reduce)` every animation MUST be disabled — but if the
-  animation was the *only* thing telling the reader something, what remains has to say it another
+  animation was the _only_ thing telling the reader something, what remains has to say it another
   way. Two instances so far, both shipped broken: a toast whose countdown was the progress bar's
   slide (fixed in 21.7.1 with `steps(20, end)` — twenty jumps still report the time), and a
   button whose entire press feedback was `transform: scale()`, which this media query switched
   off, so a reader with animations off pressed a button and nothing happened at all (21.9.0). A
   state change is not an animation: it survives this query, and with transitions off it simply
   lands on the first frame.
-- **A press must be a state, and the ripple does not count.** It is off by default *and*
+- **A press must be a state, and the ripple does not count.** It is off by default _and_
   suppressed under reduced motion, deliberately, because it genuinely is decoration. Anything a
   reader can press paints `--gog-<block>-press-bg` — a step past that surface's own hover, in the
   same ingredient. `gogCollapsibleTrigger` is the one exception, and the reason is the rule:
@@ -249,13 +281,13 @@ carries its mass 2 units off centre and is correct exactly as drawn.
   label/ground pair the compiled stylesheets themselves state. **You do not add pairs by hand for
   a new component**; the sweep finds them. You do add a curated entry when a state sits on a
   ground the sweep cannot infer (a menu item over `--gog-menu-bg`, a ghost button over the page
-  *or* a card).
+  _or_ a card).
 
 ### The colour rule that keeps being learned the hard way
 
 **An accent-coloured label may not sit on an accent-tinted ground.** Tinting a surface with the
 accent walks it toward any label already using the accent, and the contrast collapses — worst in
-light themes, where `--gog-accent-color` as *text* is barely AA to begin with and has no headroom
+light themes, where `--gog-accent-color` as _text_ is barely AA to begin with and has no headroom
 to spend on a ground.
 
 Four components shipped this exact bug and every one was found by measurement rather than by eye:
@@ -265,7 +297,7 @@ same button's `ghost` hover; `gog-accordion`'s header, which turned accent on a 
 its selected option has no tint behind it.
 
 So: **a tinted state takes `--gog-text-color`** (or the block's own text token), and the lift is
-carried by the background alone. A *filled* state is the other valid answer — fill with
+carried by the background alone. A _filled_ state is the other valid answer — fill with
 `--gog-accent-dim` and label it `--gog-accent-text-color`, which is the pair the check already
 gates. Do not reach for a weaker tint: half-strength washes, neutral washes and text scrims were
 all measured across the 11 themes, and in `light` every one of them still fails.

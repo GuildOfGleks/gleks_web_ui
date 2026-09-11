@@ -91,25 +91,50 @@ not worth carrying here.
   not the element the value was written for. Neither check catches it; both times it was caught by
   measuring in a browser.
 
-- **`--gog-chip-remove-scale` buys less than its name says, and nothing visible depends on it.**
-  Found while measuring the above, and filed rather than fixed for the same reason that entry was:
-  the number is a decision. The box is `remove-scale` (1.1) of the glyph's font-size, but a
-  `gog-icon` renders its `<svg>` at `--gog-icon-size: 1.2em` of that same font-size — so the glyph
-  is 1.2 and the box is 1.1, and **the mark overflows its own button by 9% at every size**
-  (18.9px of glyph in a 17.3px box at `md`). Measured live, and it predates this work: the ratio
-  is `1.2 / 1.1` and is independent of what `remove-size` is.
+- ~~**`--gog-chip-remove-scale` buys less than its name says.**~~ **Closed 2026-09-11, and it was
+  three components rather than one.** The entry framed it as a decision between two readings of
+  one token; measuring it in a browser turned it into a class. Every finding below is live
+  measurement, not arithmetic off the stylesheets.
 
-  It is invisible today because the box paints nothing — no background at rest or on hover, and
-  the focus ring's 2px offset clears the overflow. What it costs is honesty: a consumer who raises
-  `remove-scale` to enlarge the target gets nothing until 1.2. Two readings to choose between, and
-  that is why this is not a one-line fix — either the token means "the box is N× the _token_",
-  which is exactly what it does and makes the name fine, or it means "N× the _glyph_", which needs
-  the icon's own 1.2 in the multiplication and hardcodes a global ratio into one component. The
-  target itself is not at stake: the transparent `::before` carries 24×24 under D6 either way.
+  **What was actually wrong, in three places.** `<gog-icon>` draws its `<svg>` at
+  `--gog-icon-size` (1.2em) of its own font-size, and three elements set a square box from a
+  different basis: `gog-chip`'s remove mark overflowed its button by **9%**, and
+  `gog-select`'s chevron and `gog-multiselect`'s arrow by **5%** — every size, every theme. A
+  sweep of every `gog-icon` sitting in a square box across twenty showcase routes found exactly
+  these three and no others; seven more boxes are deliberately roomier than their mark and are
+  right to be.
 
-  Do not reach for 1.128 on any of this: L6 is closed as inapplicable, not deferred, and
-  `docs/component-geometry.md`'s L6 section has the table of every candidate mark and why each has
-  no square to be corrected against.
+  **The cost was the focus indicator, which is why this stopped being cosmetic.**
+  `:focus-visible` draws its outline on the box, so the chip's ring was drawn _inside_ the mark
+  it indicates and cleared it only because `--gog-chip-focus-ring-offset` happens to be 2px. At
+  an offset of `0` — a value any theme may pick, and one the theme generator offers as a slider —
+  it landed 0.79px inside the glyph at `md`.
+
+  **The reading that won, and it is neither of the two the entry offered.** Not "N× the token"
+  and not "N× the glyph with 1.2 hardcoded": state the mark's font-size and its box on the _same
+  element_, and let the box read the same `--gog-icon-size` the icon reads. Then they cannot
+  drift for any ratio or any icon size a consumer sets, and nothing restates a value it believes
+  another declaration resolves to. `--gog-chip-remove-scale` becomes the ring around the mark,
+  default `1`.
+
+  **Two traps, and the first cost a whole wrong fix.** The first attempt put `--gog-icon-size` in
+  the box and left the font-size on the child — and measured _worse_ (+25% at `slg`, up from
+  +5%), because the icon's size arrives through a token chain while an `em` in the box resolves
+  against the parent's own inherited font-size, and at `lg`/`slg` those are different numbers.
+  **A relative unit means the element carrying the property**, which is now the third time this
+  project has paid for that: D7's `ch` cap, `gog-chip`'s remove size, and this. The second trap
+  is quieter: **a ratio token multiplied on top of `--gog-icon-size` does not mean what its name
+  says.** `--gog-select-chevron-icon-ratio: 0.875` rendered a chevron at 1.05 of the field's
+  type. Both tokens keep their value; only the box moved.
+
+  The rule is now in `styling.instructions.md` under the five laws. A **check is not** — see
+  _Rough edges_ below for what one would have to resolve and why it is not a bolt-on.
+
+  **A caution about the measurement itself**, since the sweep is the reusable part: driving an
+  Angular SPA by `history.pushState` and probing after a fixed delay catches elements from the
+  _previous_ route mid-teardown. That produced a phantom fourth finding (`gog-input__clear`,
+  +19.9%) that does not reproduce under a hard navigation. Re-verify a route-sweep finding with a
+  real page load before believing it.
 
   The entry that follows is the original filing of the whole geometry programme, kept because it
   is the argument that produced the five laws and the reasoning is still the model:
@@ -519,6 +544,26 @@ reason may stop holding.
   one that was there rather than a re-plumbed version; and Escape, which stayed in the shell,
   because its priority order runs _past_ the header into the nav drawer and splitting it would
   have left that order stated nowhere.
+
+- **There is no check for "a box is never smaller than the glyph it holds", and a static one is
+  not a bolt-on.** Filed 2026-09-11 with the three fixes above, which were all found by measuring
+  in a browser. The rule is one-directional and has no exceptions — ten elements in the library
+  put a `gog-icon` in a square box, three were under it and seven are deliberately roomier — so
+  unlike most of this project's checks it would need no exemption list at all. That is the
+  argument for building it.
+
+  The argument against building it _quickly_: the glyph's size is `--gog-icon-size` (1.2em) of the
+  element's resolved font-size, and resolving "the element's font-size" statically means following
+  a `var()` chain through the per-size blocks **and** knowing which element in the cascade the
+  `em` attaches to. That last part is exactly what produced a wrong fix on the first attempt with
+  a browser open, and is the same class of mistake as D7's `ch` cap. `check:contrast` failing open
+  for a month is what a chain-resolver gets wrong when nobody verifies it against a rendering.
+
+  So: build it against a real rendering, or not at all. The live probe that found all three is
+  fifteen lines — walk every `gog-icon`, take its parent's computed box, compare to the `<svg>`'s
+  rect — and the honest shape is a headless pass over `ui-showcase`'s routes rather than a parse
+  of `theme.css`. That is a different kind of check from every other one here, which is the
+  decision to take before writing it.
 
 - **`theme.css` payload — re-measured 2026-09-11, and the measurement moved the whole entry.**
   Loaded whole even by an app importing three components: **170 923 B / 38 681 B gzip at

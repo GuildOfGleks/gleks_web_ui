@@ -122,13 +122,25 @@
 .gog-chip__remove {
   display: inline-grid;
   place-items: center;
-  /* `1em` and not the token, deliberately: `font-size` below already resolves the token chain,
-     and in every other property `em` means this element's own font-size — so `1em` here *is*
-     the resolved remove size, whatever a consumer wrote it in. Restating the token instead
-     would compound it, because the token is now a ratio (`1.125em`) and would resolve against
-     the size it had just produced. */
-  width: calc(1em * var(--gog-chip-remove-scale));
-  height: calc(1em * var(--gog-chip-remove-scale));
+  /* The box is a ratio of the **mark**, not of the type the mark is sized from — and the
+     difference is the whole of a defect this carried from the component's first commit.
+     `<gog-icon>` renders its `<svg>` at `--gog-icon-size` (1.2em) of this element's font-size,
+     while the box was `1.1em` of the same font-size: the mark was 9% wider than the button
+     containing it, at every size, in every theme.
+
+     Nothing painted it, so nothing showed — but `:focus-visible` draws its outline on this box,
+     so the focus indicator was smaller than the glyph it indicates and cleared it only because
+     `--gog-chip-focus-ring-offset` happens to be 2px. At an offset of 0 — one drag of a slider
+     in the theme generator — the ring lands *inside* the mark.
+
+     So it reads the declaration that paints, exactly as `gog-icon` does, rather than restating
+     the 1.2 it believes that declaration resolves to. `--gog-chip-remove-scale` is the ring
+     around the mark and now means that at every value; `1` is the box the mark actually
+     occupies. `gog-accordion` hit the identical bug in 21.11.0 and fixed it by stating a larger
+     `em` box — correct there, fragile in general, because it goes wrong again the moment a
+     consumer moves `--gog-icon-size`. */
+  width: calc(var(--gog-icon-size, var(--gog-icon-fallback-size)) * var(--gog-chip-remove-scale));
+  height: calc(var(--gog-icon-size, var(--gog-icon-fallback-size)) * var(--gog-chip-remove-scale));
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -145,10 +157,11 @@
 }
 
 /*
- * The remove button paints between 13.6px (`xsm`) and 22.3px (`slg`) once
- * `--gog-chip-remove-scale` is applied, all of it under WCAG 2.5.8's 24. A transparent `::before`
- * carries the target so the glyph stays the size it is — an X drawn at 24px inside a chip would
- * be the loudest thing in it.
+ * The remove button paints between 14.8px (`xsm`) and 24.3px (`slg`) — measured, at
+ * `--gog-density: 1`. Four of the five are under WCAG 2.5.8's 24, and `slg` clears it by a
+ * third of a pixel, which is not something to rely on. A transparent `::before` carries the
+ * target at all five so the glyph stays the size it is — an X drawn at 24px inside an `xsm`
+ * chip would be the loudest thing in it.
  */
 .gog-chip__remove::before {
   content: '';

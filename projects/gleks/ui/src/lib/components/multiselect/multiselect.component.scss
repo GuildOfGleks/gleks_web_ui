@@ -201,17 +201,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(
-    --gog-multiselect-font-size,
-    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
-  );
-  height: var(
-    --gog-multiselect-font-size,
-    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
-  );
-}
+  /* The box is the glyph. Both are stated once, here: this element carries the font-size the
+     mark is drawn from, and the box is `--gog-icon-size` of it -- the same declaration
+     `gog-icon` reads, so the two cannot drift for any ratio or any icon size a consumer sets.
 
-.gog-ms__arrow gog-icon {
+     It took two tries. The box used to read the field's type while the mark read
+     `--gog-icon-size` (1.2em) of a font-size this ratio had already reduced, so the mark came
+     out 5% wider than the box holding it. The first fix put `--gog-icon-size` in the box and
+     left the font-size on the child -- wrong for a *different* reason, and measured worse
+     (+25% at `slg`): the icon's size comes off a token chain, while an `em` in the box resolves
+     against this element's own inherited font-size, and at `lg`/`slg` those are not the same
+     number. A relative unit means the element carrying the property, which is the third time
+     this library has paid for that -- see D7's `ch` and `gog-chip`'s remove mark. */
   font-size: calc(
     var(
         --gog-multiselect-font-size,
@@ -219,6 +220,8 @@
       ) *
       var(--gog-multiselect-arrow-icon-ratio)
   );
+  width: var(--gog-icon-size, var(--gog-icon-fallback-size));
+  height: var(--gog-icon-size, var(--gog-icon-fallback-size));
 }
 
 .gog-ms__arrow--up {
