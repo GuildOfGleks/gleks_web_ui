@@ -99,14 +99,14 @@ export class HouseLoaderComponent {}
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: var(--gog-space-6);
+      gap: var(--gog-space-8);
     }
 
     .house-demo__tile {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--gog-space-2);
+      gap: var(--gog-space-4);
     }
 
     .house-demo__meta {
