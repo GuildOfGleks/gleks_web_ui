@@ -206,6 +206,17 @@
       <code>filterMatch</code> swaps the default match for your own predicate — useful for searching
       a field the label never shows.
     </p>
+    <p class="doc-section__intro">
+      <strong
+        >The search box has square corners, and that is the concentric answer rather than a value
+        clamped to zero.</strong
+      >
+      It is inset from the panel edge by exactly the panel's own radius, and at that distance the
+      inner box's corner point sits on the <em>centre</em> of the panel's corner arc — a right angle
+      there is equidistant from the whole curve, which is the only shape that keeps the gap
+      constant. Override <code>--gog-select-panel-radius</code> and the filter reshapes itself to
+      match.
+    </p>
     <div class="demo-card">
       <div class="demo-card__preview size-column">
         <gog-select

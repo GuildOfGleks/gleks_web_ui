@@ -224,6 +224,15 @@
       same tokens dialogs and dropdown panels read, so a theme's idea of a raised surface reaches
       this component for free. Everything else below is the component's own family.
     </p>
+    <p class="doc-section__intro">
+      <code>--gog-panel-shadow</code> is still the token you override for this surface, but since
+      <app-since version="21.12.0" /> its <em>value</em> is a step off a six-height
+      <a routerLink="/general/theming" fragment="elevation-ladder">elevation ladder</a>
+      rather than a hand-written shadow. A theme that turns the ladder's knobs moves this panel, a
+      dropdown, a toast and a modal dialog together and keeps the order between them — which is the
+      edit a theme actually wants, and what eleven themes hand-writing twenty-two shadow values
+      could not do.
+    </p>
     <div class="api-table-scroll">
       <table class="api-table">
         <thead>

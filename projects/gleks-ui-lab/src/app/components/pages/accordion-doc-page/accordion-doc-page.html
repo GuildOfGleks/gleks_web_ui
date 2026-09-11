@@ -35,7 +35,13 @@
 
     <article class="demo-card">
       <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Every size, from <code>xsm</code> through <code>slg</code>.</p>
+      <p class="demo-card__meta">
+        Every size, from <code>xsm</code> through <code>slg</code>. The three smallest look closer
+        together than the gap between <code>lg</code> and <code>slg</code>, and that is correct:
+        they all label at <code>--gog-text-xs</code>, and since <app-since version="21.11.0" /> the
+        chevron is a ratio of the header's own type rather than a px ladder of its own — so it no
+        longer manufactures a difference the type does not have.
+      </p>
       <div class="demo-card__preview size-grid">
         @for (sizeOption of sizes; track sizeOption) {
           <div class="size-grid__cell">
