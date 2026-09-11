@@ -201,10 +201,16 @@ keeping here rather than in the plan, because both are about how a check fails:
   `styles/presets/` — should not be mergeable until both of these agree, and the second half is the
   one that does not exist yet.
 
-  **Half of this closed on 2026-09-10, in 21.12.0.** The WCAG half's reach gap is shut and the
-  solver exists; what is still open is the OKLCH _checks_ — the ramp, chroma-band, ΔL and
-  hue-drift rules below, which are a different piece of work from the walk that fixes a failing
-  pair. Read the two bullets under **1** with that in mind: the first is closed, the rest stand.
+  **Most of this closed on 2026-09-10, in 21.12.0**, and this paragraph said otherwise for a day:
+  it was written mid-session, when only the WCAG half and the solver were done, and it named the
+  OKLCH checks as still open. They shipped in the same release — section **2** below has been
+  marked ✅ the whole time, two screens down from a summary contradicting it. Corrected
+  2026-09-11. All three pieces are CI steps now: `check:contrast` (3883 pairs),
+  `check:oklch` and `suggest:color`.
+
+  **What is genuinely left is reach, not the gate** — the four bullets under **1**, minus the
+  first, plus two boundaries the sweep cannot resolve yet (`*-shadow` colours, and `.gog-btn`,
+  whose identifying edge depends on its variant). Read them with that in mind.
 
   **What closing it cost, and the general lesson.** The boundary sweep reads `border-color`,
   `outline-color` and the shorthands that set either, out of the compiled stylesheets, and
@@ -514,18 +520,44 @@ reason may stop holding.
   because its priority order runs _past_ the header into the nav drawer and splitting it would
   have left that order stated nowhere.
 
-- **`theme.css` payload.** Loaded whole even by an app importing three components — **106 521 B /
-  20 227 B gzip in 21.6.1** (measured 2026-08-26), up from 99 492 B / 19 070 B at 21.6.0 and from
-  the 92 596 B / 16 817 B this was filed against. 21.6.1's +7.1 % raw / +6.1 % gzip is `gog-card`,
-  `gog-panel` and the ripple's tokens; it is the second consecutive release to add ~6–7 %.
-  Splitting per component would break the "one stylesheet, one import" setup story, and 20 KB gzip
-  still does not justify that trade — but this entry now has three data points trending one way,
-  so the next component-shaped release is the point to re-argue it rather than re-measure it. The
-  bench in `gleks-ui-lab/public/docs/compare-full.md` tracks the published figure.
+- **`theme.css` payload — re-measured 2026-09-11, and the measurement moved the whole entry.**
+  Loaded whole even by an app importing three components: **170 923 B / 38 681 B gzip at
+  21.12.0**, against 106 521 B / 20 227 B at 21.6.1, 99 492 B / 19 070 B at 21.6.0, and the
+  92 596 B / 16 817 B this was filed against. That is **+60 % raw and +91 % gzip in six
+  releases**, and the entry's own trigger has fired: it said three data points trending one way
+  meant the next component-shaped release was the point to re-argue the trade rather than
+  re-measure it, and 20 KB gzip was the number that did not justify breaking "one stylesheet, one
+  import".
 
-  Note `themes.md` iteration 1 pulls the other way and is the cheaper lever: 510 of 1127 component
-  token declarations are literals, and a character layer replaces per-component literals with
-  inherited foundation tokens. Doing that first may make this entry moot.
+  **But the split this entry proposes would not recover any of it, and the reason is the finding.
+  Comments are 46 % of the file and 72 % of the gzipped payload.**
+
+  |                      | raw       | gzip         |
+  | -------------------- | --------- | ------------ |
+  | as shipped           | 170 923 B | 38 681 B     |
+  | comments stripped    | 88 216 B  | **10 787 B** |
+  | what the prose costs | 82 707 B  | **27 894 B** |
+
+  Stripped, `theme.css` would be **half** its 21.6.1 gzipped size while carrying 50 % more
+  tokens — the declarations themselves are repetitive and compress almost to nothing. Nor is it
+  the presets: those are already separate files under `styles/presets/`, and `theme.css` holds
+  only `light` and `dark`. Splitting per component, per preset, or per anything divides the 10 KB
+  that is not the problem.
+
+  **So the decision is about the prose, and it is a real trade rather than a free win.** Those
+  comments are this library's design record — why `--gog-elevation-key-blur` is 3 and not 2, why
+  a status fill deepens away from its own label, which defect each token exists because of — and
+  they are **not** recoverable from anywhere else in the package: `TOKENS.md` is generated from
+  the same file but carries only the names, grouped. A consumer reading `node_modules` today
+  learns all of it; one reading a minified file learns nothing. Three ways out, and the choice
+  needs the owner: ship `theme.css` minified and the commented original beside it as a second
+  file; teach `generate-tokens.mjs` to lift the comments into `TOKENS.md` so the record moves to
+  the document that is already documentation; or decide 28 KB gzip is what a self-documenting
+  stylesheet costs and close this entry for good. **What should not happen is a fourth
+  re-measurement**, which is all this entry has produced in three fillings.
+
+  The bench in `gleks-ui-lab/public/docs/compare-full.md` tracks the published figure and is
+  itself stale at 21.7.2 — see the entry above it.
 
 - **The error line's spacing is fixed, and the filing had it backwards** — kept because the
   mistake is the reusable part. Filed 2026-09-04 as "three of the six fields put no space above
