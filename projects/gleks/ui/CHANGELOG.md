@@ -23,6 +23,17 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **A disabled control is exempt from `check:contrast`, consistently and on purpose.** WCAG carves
+  out "an inactive user interface component" in both SC 1.4.3 and 1.4.11 — a disabled control is
+  meant to look unavailable, and holding it to 4.5:1 makes "unavailable" impossible to draw. The
+  script had simply never had `:disabled` in one of its state regexes, with nothing saying why, so
+  the omission read as an oversight.
+
+  It also was not the exemption it looked like: **eight pairs reached the sweeps through compound
+  selectors** — `.gog-accordion__item--disabled .gog-accordion__header:hover` enters on its
+  `:hover` — and were gated. One predicate governs all three sweeps now, and such pairs are
+  printed rather than dropped. Nothing in the library changes; all eight already passed.
+
 - **`npm run check:oklch` gates that a raised surface has an edge (R4).** `*-shadow` colours were
   the last thing the palette gate did not read. `check:elevation` requires a theme to declare all
   ten elevation knobs, but a theme may declare all ten at zero and pass it — rendering a dialog

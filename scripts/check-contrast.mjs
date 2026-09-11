@@ -641,6 +641,53 @@ function isRestPairRendered(candidate) {
   );
 }
 
+/**
+ * A selector that applies **while the control is disabled**.
+ *
+ * WCAG exempts these: SC 1.4.3 and 1.4.11 both carve out "an inactive user interface component",
+ * and a disabled control is meant to look unavailable — the whole point of dimming it is that it
+ * reads as out of reach. Holding it to 4.5:1 would make "unavailable" impossible to draw.
+ *
+ * **This is deliberate, and the next person to read this file should not "fix" it.** It is
+ * written down because the omission used to be implicit: `collectStatePairs` simply had no
+ * `:disabled` in its state regex, and nothing said why, so the natural reading was oversight.
+ *
+ * It also was not actually true. Eight pairs reached the sweeps anyway, through *compound*
+ * selectors — `.gog-accordion__item--disabled .gog-accordion__header:hover` enters on its
+ * `:hover`, carrying a disabled ancestor with it — and were gated at 4.5:1. A palette change
+ * could have been blocked by a state WCAG does not ask about. Found 2026-09-11.
+ *
+ * `:not(...)` is stripped first, because `:hover:not(:disabled)` is an **enabled**-state rule and
+ * the single most common selector shape in this library. Matching it here would have excluded
+ * roughly four hundred pairs that are exactly what this script exists to measure.
+ */
+function appliesWhenDisabled(selector) {
+  const bare = String(selector).replace(/:not\([^)]*\)/g, '');
+  return /:disabled|--disabled|\[disabled\]|aria-disabled/.test(bare);
+}
+
+/**
+ * 3:1 for a mark, 4.5:1 for text.
+ *
+ * **SC 1.4.3's large-text allowance (3:1 at 24px, or 18.66px bold) is deliberately not modelled,
+ * and it is not an omission — it has no instance here.** Measured 2026-09-11, and the reason is
+ * structural rather than a matter of effort: in this library a colour pair belongs to a
+ * *variant* and a font size belongs to a *size step*, and the two are independent. `.gog-btn`'s
+ * label/fill pair serves `xsm` at 12px and `slg` at 20px bold from one set of tokens; the same is
+ * true of `.gog-tabs__tab`, 12px through 24px. Granting either the large-text threshold because
+ * its largest step qualifies would lower the bar for its smallest, which is the opposite of what
+ * the allowance is for.
+ *
+ * That leaves pairs that exist *only* at a large size, and there are none. The two blocks that
+ * are unconditionally large — `.gog-dialog__title` and `.gog-panel__heading`, both
+ * `--gog-text-xl` — declare a colour and no background, so neither forms a pair at all; their
+ * ink is measured where the background actually is, on the panel, at the panel's own 16px.
+ *
+ * So the 4.5 below is stricter than WCAG for exactly zero of the pairs this script measures. The
+ * cost `docs/backlog.md` worried about — "it invites a palette to be darkened for a heading that
+ * never needed it" — cannot arise, because no heading is measured on its own. Revisit only if a
+ * component gains a colour pair that is large at every size it offers.
+ */
 function thresholdFor(selector) {
   return NON_TEXT_ELEMENTS.some((part) => selector.includes(part)) ? 3.0 : 4.5;
 }
@@ -1060,7 +1107,7 @@ function collectBoundaryPairs(uiSrcDir, files) {
           value,
           fill,
           // A focus ring is gated wherever it is; a border only where it identifies a control.
-          gated: (focus || block !== null) && !excused,
+          gated: (focus || block !== null) && !excused && !appliesWhenDisabled(selector),
           kind: focus ? 'focus ring' : block ? 'control boundary' : 'decoration',
           grounds: (block && BOUNDARY_GROUNDS.get(block)) ?? [
             '--gog-background-color',
@@ -1403,11 +1450,12 @@ async function main() {
     }
   }
   for (const [key, w] of [...sweepWorst].sort((a, b) => a[1].ratio - b[1].ratio)) {
-    failures.push(
-      `[contrast] ${w.theme} — ${key}: ${w.ratio.toFixed(2)}:1 (need ${w.threshold}:1) ` +
-        `[${w.text} vs ${w.ground}]
-      ${w.state.colour} on ${w.state.bg}`,
-    );
+    const line =
+      `${w.theme} — ${key}: ${w.ratio.toFixed(2)}:1 (need ${w.threshold}:1) ` +
+      `[${w.text} vs ${w.ground}]
+      ${w.state.colour} on ${w.state.bg}`;
+    if (appliesWhenDisabled(w.state.selector)) findings.push(`${line}  (disabled, not gated)`);
+    else failures.push(`[contrast] ${line}`);
   }
 
   // The boundary sweep. SC 1.4.11's first bullet: a control's own edge, and every focus ring.
@@ -1579,11 +1627,12 @@ async function main() {
     }
   }
   for (const [key, w] of [...variantWorst].sort((a, b) => a[1].ratio - b[1].ratio)) {
-    failures.push(
-      `[contrast] ${w.theme} — ${key}: ${w.ratio.toFixed(2)}:1 (need ${w.threshold}:1) ` +
-        `[${w.text} vs ${w.ground}]
-      ${w.candidate.colour} on ${w.candidate.bg}`,
-    );
+    const line =
+      `${w.theme} — ${key}: ${w.ratio.toFixed(2)}:1 (need ${w.threshold}:1) ` +
+      `[${w.text} vs ${w.ground}]
+      ${w.candidate.colour} on ${w.candidate.bg}`;
+    if (appliesWhenDisabled(w.candidate.selector)) findings.push(`${line}  (disabled, not gated)`);
+    else failures.push(`[contrast] ${line}`);
   }
 
   if (findings.length > 0) {

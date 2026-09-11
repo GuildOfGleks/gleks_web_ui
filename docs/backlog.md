@@ -233,10 +233,19 @@ keeping here rather than in the plan, because both are about how a check fails:
   2026-09-11. All three pieces are CI steps now: `check:contrast` (3883 pairs),
   `check:oklch` and `suggest:color`.
 
-  **What is genuinely left is reach, not the gate** — three bullets under **1**: large text is
-  held to 4.5:1 rather than SC 1.4.3's 3:1, disabled states are correctly outside but the script
-  never says so, and adjacent non-text pairs have no general rule. **`.gog-btn` and the
-  `*-shadow` colours both came off that list on 2026-09-11**; see below and R4.
+  **This entry is closed as of 2026-09-11.** Every bullet under **1** is struck through or
+  answered: the boundary sweep reads borders and outlines, `.gog-btn` is gated through the variant
+  layer, `*-shadow` became `check:oklch` R4, large text is inapplicable to this library's token
+  structure and says so in `thresholdFor`, disabled states are exempt consistently across all
+  three sweeps, and the adjacent-pair bullet produced a shipped fix plus a written reason why the
+  general rule waits for the component that needs it.
+
+  What the ask wanted exists: **a palette change is not mergeable until three CI steps agree** —
+  `check:contrast` (3993 pairs across eleven themes, text, marks, washes, variants, control
+  boundaries and every focus indicator), `check:oklch` (four perceptual rules WCAG cannot express)
+  and `check:app-contrast` for both apps' own chrome — with `npm run suggest:color` to name the
+  value that would pass. Nobody here is a designer, and no colour in this library is chosen by
+  eye any more.
 
   **What closing it cost, and the general lesson.** The boundary sweep reads `border-color`,
   `outline-color` and the shorthands that set either, out of the compiled stylesheets, and
@@ -301,12 +310,37 @@ keeping here rather than in the plan, because both are about how a check fails:
     strongest, at the ΔL ≥ 0.03 R1 already justifies. Six themes are carried by their shadow and
     five by their ring, so gating a single carrier would have failed half the catalogue for a
     deliberate choice. Observed 0.0852 to 0.3465.
-  - **Large text is not modelled.** Everything not in `NON_TEXT_ELEMENTS` is held to 4.5:1, but
-    SC 1.4.3 allows 3:1 at 18.66px bold / 24px. That direction is safe but not free: it invites a
-    palette to be darkened for a heading that never needed it.
-  - **Disabled states are deliberately outside**, and should stay there — WCAG exempts inactive
-    components — but nothing in the script says so, so the next reader will "fix" it. The state
-    sweep's regex simply has no `:disabled`.
+  - ~~**Large text is not modelled.**~~ **Closed 2026-09-11 as inapplicable, not as built.**
+    Measured, and the reason is structural: in this library a colour pair belongs to a _variant_
+    and a font size belongs to a _size step_, and the two are independent. `.gog-btn`'s label/fill
+    pair serves `xsm` at 12px and `slg` at 20px bold out of one set of tokens; `.gog-tabs__tab` is
+    the same from 12px to 24px. Granting either the large-text threshold because its largest step
+    qualifies would lower the bar for its smallest — the opposite of what the allowance is for.
+
+    That leaves pairs that exist _only_ at a large size, and there are none. The two blocks that
+    are unconditionally large — `.gog-dialog__title` and `.gog-panel__heading`, both
+    `--gog-text-xl` — declare a colour and no background, so neither forms a pair at all; their
+    ink is measured where the background is, on the panel, at its own 16px. **So the cost this
+    entry worried about cannot arise**: no heading is measured on its own, so none can drag a
+    palette darker. The verdict is in `thresholdFor`'s own comment, with the condition that would
+    reopen it — a component gaining a colour pair that is large at every size it offers.
+
+  - ~~**Disabled states are deliberately outside**, and nothing in the script says so.~~
+    **Closed 2026-09-11, and the filing was half wrong in a useful way.** The documentation was
+    missing, as filed. But "deliberately outside" was not true: **eight pairs reached the sweeps
+    anyway**, through _compound_ selectors —
+    `.gog-accordion__item--disabled .gog-accordion__header:hover` enters on its `:hover`, carrying
+    a disabled ancestor with it — and were gated at 4.5:1. A future palette change could have been
+    blocked by a state WCAG explicitly exempts, and the entry predicting that the next reader
+    would wrongly _add_ disabled had it backwards.
+
+    One `appliesWhenDisabled` predicate now governs all three sweeps, and such pairs are printed
+    rather than dropped. It strips `:not(...)` first, which is load-bearing: `:hover:not(:disabled)`
+    is an **enabled**-state rule and the most common selector shape in the library — matching it
+    would have exempted roughly four hundred pairs that are the point of the script. Nothing
+    changes today (all eight pass 4.5 comfortably); it was verified by forcing every threshold to
+    100 and watching the routing split correctly.
+
   - **Adjacent non-text pairs have no general rule — and the search for one found a defect
     instead.** Filed as "the progressbar's fill/track needed a hand-built `EDGE_PAIRS` entry; the
     next component with two abutting colours will need another". Looking for that next component
