@@ -307,8 +307,31 @@ keeping here rather than in the plan, because both are about how a check fails:
   - **Disabled states are deliberately outside**, and should stay there — WCAG exempts inactive
     components — but nothing in the script says so, so the next reader will "fix" it. The state
     sweep's regex simply has no `:disabled`.
-  - **Adjacent non-text pairs have no general rule.** The progressbar's fill/track needed a
-    hand-built `EDGE_PAIRS` entry; the next component with two abutting colours will need another.
+  - **Adjacent non-text pairs have no general rule — and the search for one found a defect
+    instead.** Filed as "the progressbar's fill/track needed a hand-built `EDGE_PAIRS` entry; the
+    next component with two abutting colours will need another". Looking for that next component
+    (2026-09-11) turned up the _same_ one: **`gog-progressbar`'s buffer had no edge marker**,
+    under 3:1 against the track in 55 of 55 combinations, worst 1.06:1 — a stronger result than
+    the 51 of 55 that justified marking the fill in 21.10.0, and missed then because the fix was
+    applied to `.gog-progressbar__fill` rather than to the rule both tiers share. Fixed; no new
+    token needed.
+
+    **The general rule is still not written, and the sweep that found this says why it is hard.**
+    A live probe over the showcase — every element painting its own background inside a parent
+    that paints one, with no border between them — produces mostly pairs that are _meant_ to be
+    subtle: a hover wash on a surface carries no information by itself and must not be gated.
+    Separating "two colours that abut" from "a boundary that carries information" is the judgement
+    the hand-built entry encodes, and nothing in the stylesheets distinguishes them. The candidate
+    list is short enough to enumerate by hand (fill/track, buffer/track, thumb/track for the
+    toggle and the slider, the scroll thumb) and all of them now pass, so the rule can wait for
+    the component that needs it.
+
+    **One trap worth keeping**, because this file already records it and it was walked into
+    anyway: the first probe read `getComputedStyle().backgroundColor` with a regex over the
+    numbers, and Chrome returns a `color-mix()` result as `color(srgb 0.98 0.74 0.14 / 0.35)` —
+    0-to-1 channels read as 0-to-255. It reported the buffer at 1.00:1 against its track, which
+    was plausible, wrong, and the same mistake the closing note of this entry warns about.
+    Resolve through a canvas 2D context.
 
   **2. OKLCH — ✅ built 2026-09-10 as `npm run check:oklch`, a CI step.** Three rules, two
   findings on the first run, both fixed: `one-light`'s pressed state sat 0.023 of lightness from

@@ -67,3 +67,10 @@ Small, and only one of the three has any visible surface on the site.
   hand-maintained token reference does not list the button's focus ring at all; if a row is added,
   it belongs beside `-focus-ring-width` / `-focus-ring-offset`. The theme generator picks it up by
   prefix on its own.
+
+- **`gog-progressbar`'s buffer tier now has the same two hairlines its fill has**, marking where
+  the buffered region ends. Visible on any `mode="buffer"` demo — the boundary was under 3:1
+  against the track in every shipped theme and variant before, worst 1.06:1, so on the lab's
+  progressbar page the buffer's end simply was not locatable. No token changed and the token
+  reference needs no edit (checked): `--gog-progressbar-edge-*` already describes the marker, and
+  nothing in that entry says which tier draws it.

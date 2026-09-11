@@ -238,6 +238,19 @@ const PAIRS = [
  * than gating each tone and it is the correct requirement: the marker is two adjacent hairlines
  * whose own contrast is the theme's text pair, so the one that reads is the one you see.
  */
+/**
+ * Two-tone markers, gated against what sits **outside** them.
+ *
+ * `--gog-progressbar-edge-*` marks where a tier ends, and since 21.13.0 the buffer carries it as
+ * well as the fill. The five `*-buffer-bg` tints are deliberately **not** in the grounds below,
+ * and the reason is the one `collectBoundaryPairs` already states for borders: a boundary is
+ * adjacent to what is outside it. The pair that locates the buffer's edge is the marker against
+ * the bare track — measured at 3.25:1 to 9.57:1 across all 55 theme/variant combinations, and
+ * `--gog-progressbar-track-base-bg` is in the list. Against the buffer tint *inside* it the best
+ * tone runs 2.94:1 to 9.2:1, and the one combination under three (`one-dark`'s danger) is the
+ * marker not separating from the tint it is drawn on — which is not what tells a reader where the
+ * buffer ends, and gating it would buy a palette change for a pair that carries no information.
+ */
 const EDGE_PAIRS = [
   [
     'progressbar fill edge',
@@ -742,7 +755,9 @@ function variantEnvironments(uiSrcDir, file) {
     selector: rule.selector.replace(/\[_ng(?:content|host)[^\]]*\]/g, '').trim(),
   }));
 
-  const modifiers = rules.filter((rule) => rule.decls.size > 0 && isModifierSelector(rule.selector));
+  const modifiers = rules.filter(
+    (rule) => rule.decls.size > 0 && isModifierSelector(rule.selector),
+  );
 
   // The component's own defaults: every unconditional rule's declarations, in source order.
   const defaults = new Map();

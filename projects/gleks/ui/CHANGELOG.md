@@ -56,6 +56,19 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-progressbar`'s buffer had no edge, and its edge is the whole of what it says.** The
+  buffer tier marks how much is loaded; where it _ends_ was under 3:1 against the track in **55 of
+  55** shipped theme/variant combinations, worst **1.06:1**. That is a stronger result than the 51
+  of 55 that justified marking the fill's edge in 21.10.0, and it has the same cause: the two
+  tiers are the same hue by design — "the buffer tier is the same hue at low opacity, so it reads
+  as _ahead of the fill_ rather than as a second, competing colour" — which is the right choice
+  and exactly why a colour difference cannot carry the boundary.
+
+  The buffer now draws the same two hairlines the fill has drawn since 21.10.0. **No new token and
+  no palette change:** measured at the buffer's own edge across the same 55, the existing marker
+  clears 3:1 everywhere, worst 3.25:1, carried by the ink line against the bare track — the pair
+  `check:contrast` already gates. Visible wherever `mode="buffer"` is used.
+
 - **Three icon buttons were smaller than the icon inside them** — `gog-chip`'s remove mark by 9%,
   `gog-select`'s chevron and `gog-multiselect`'s arrow by 5%, at every size and in every theme.
   Each set its box from one basis and let `<gog-icon>` draw the mark from another: the icon
