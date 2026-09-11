@@ -148,12 +148,16 @@ the next-minor list rather than as a version's payload, the same way a plan's fi
 version in it becomes a lie.
 
 **Read `docs/backlog.md`'s Defects and Gaps sections before anything new** — the project's own
-rule is fixes and polish first. **As of 2026-09-09 the geometry half of Defects is fully closed:
-all five laws plus D7's overlay caps are gated in CI**, and what is left of that work is D5, the
-elevation ladder — its own token family and its own survey, not a blocked decision on an existing
-one. What sits beside it is the colour entry, unchanged: theme colour computed rather than
-eyeballed, in OKLCH as well as WCAG, with a solver so a failing check can name the value that would
-pass. Three smaller entries came out of
+rule is fixes and polish first. **As of 2026-09-10 the whole geometry-and-colour programme is
+closed and gated**: all five laws, L7, D7's overlay caps, D5's elevation ladder, `check:contrast`
+at 3883 pairs, `check:oklch`, and `suggest:color` so a failing check can name the value that
+would pass. Eleven of the workspace's checks are CI steps.
+
+**What is left of the colour entry is reach, not the gate** — `*-shadow` colours are still
+unmeasured (smaller than it was: since the ladder, that is eleven per-theme knob sets rather than
+31 tokens), `.gog-btn` is outside the boundary sweep because what identifies a button depends on
+its variant, large text is held to 4.5:1 rather than SC 1.4.3's 3:1, and adjacent non-text pairs
+have no general rule. Three smaller entries came out of
 the geometry work and are decisions rather than bugs — the chip avatar's drift against its icon
 (1.27 to 1.56 across five sizes), and four dropdowns on one base carrying two panel-radius answers
 and three panel interiors. It had emptied twice on 2026-09-03 — the two entries it
@@ -236,9 +240,12 @@ Update the status table in whichever you are working from, as you go.
     lesson.** L7 was planned against the ink's centre of mass and is enforced on its extent
     instead; L6 (optical area) was _decided_ at D2 and closed as having no instance in this
     component set. Both sections carry the measurements rather than the original argument.
-  - **D5 is the only decision still open.** D0, D4, D7 and D8 are all closed — D0 as a record
-    (the geometry work shipped as one minor and D5's shadow family was never in it, which is the
-    split the decision itself offered as an alternative), the rest as the rules they became.
+  - **Nothing in it is open any more.** D5, the last one, was taken on 2026-09-10 as 21.12.0's
+    elevation ladder; D0 closed as a record rather than a decision (the geometry work shipped as
+    one minor and the shadow family was not in it, which is the split D0's own text offered as
+    the alternative), and D4, D7 and D8 closed as the rules they became. **Read the status table
+    in Part 2 over the prose** — two "Still open: D5" lines survived the close by a day, which is
+    the failure mode this document keeps producing.
 
 - `docs/feedback-triage.md` — **30 items from a hands-on pass over the published 21.6.1**, sorted
   by which release can carry each and why, with four of the reported symptoms traced to a

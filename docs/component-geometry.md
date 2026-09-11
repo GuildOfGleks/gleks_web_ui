@@ -809,7 +809,8 @@ wrong font resolve it. Measured live after the fix: `.confirm-dialog` 16px / 439
 the child's 51ch cap never binds, which is the same measurement that closes D7's "no clamp here"
 decision.
 
-**Still open: D5.**
+**D5 closed on 2026-09-10** (21.12.0, the elevation ladder), which leaves nothing in this
+document open. The status table in Part 2 is the authority; this line was stale for a day.
 
 ## D0 — closed 2026-09-09, as a record of what happened
 
@@ -827,7 +828,8 @@ it needs its own survey before it needs its own decision. So the split D0 offere
 alternative is exactly what happened, without anyone having to choose it — geometry is one
 release, elevation is the next one, and no session sat down and decided that division on paper.
 
-**Still open: D5.**
+**D5 closed on 2026-09-10** (21.12.0, the elevation ladder), which leaves nothing in this
+document open. The status table in Part 2 is the authority; this line was stale for a day.
 
 ---
 
