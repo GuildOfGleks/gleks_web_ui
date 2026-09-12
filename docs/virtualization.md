@@ -194,6 +194,45 @@ real row gap. Its pitch is height + gap where the select's is height alone, and 
 flex children too — so they will take that gap on both sides of themselves. That is arithmetic
 nothing here exercised.
 
+### As iteration 3 finished
+
+Both adopted it, and **the keyboard — the half this row predicted would be the work — needed
+nothing on either.** `gog-multiselect` inherits `gog-select`'s handlers wholesale from the base.
+`gog-autocomplete`'s active row was already an index into the full list rather than an element,
+because the combobox pattern had put it there long before windowing existed; only `scrollIntoView`
+had to go, since it needs an element and the window's point is that most rows are not rendered.
+
+What actually needed work was one thing per component, neither of them keyboard:
+
+- **A spacer is a flex child, so a list with a row `gap` gets one either side of the spacer too**
+  — while the window's padding already stands in for every gap between the rows it replaces.
+  `gog-multiselect` is the only one of the three lists that declares a row gap. Uncorrected the
+  panel is two gaps too tall and every row sits one gap below its index. **A constant error, not
+  an accumulating one**, which is exactly why it would survive a reading: at the shipped 4px
+  nothing looks wrong, it is 4px wrong everywhere. The spacer's height is the padding less one
+  gap; `gog-select` and `gog-autocomplete` subtract nothing, because they declare none.
+- **An `aria-activedescendant` id has to name the index in the whole list.** Keyed to the rendered
+  slice it restarts at zero on every scroll, so the input points at option 0's id while the
+  highlight paints a row in the middle — and the two agree only while the window is at the top.
+  This is the windowing bug that a component using DOM focus cannot have, and the mirror of
+  `gog-select`'s focus-on-`<body>`: each pattern has its own way of losing track of the row.
+
+Measured live in Chrome, 10 000 options each. Multiselect: 8 rows in the DOM, 490 004px of scroll
+height — matching the unwindowed list exactly — and row 2 036 at 99 768px, which is `2036 × 49 + 4`
+to the pixel. Autocomplete: 12 rows of 37px, `End` reaching option 10 000 with
+`aria-activedescendant` on it and the scroll following.
+
+**A verification note worth keeping.** `docs/ripple.md` records that a background Chrome tab
+pauses CSS animations; it also pauses `requestAnimationFrame`, and this component measures its row
+in one. A hidden tab therefore never takes the measurement, and a scripted check reads the seed
+and calls it the answer. Shimming `requestAnimationFrame` to `setTimeout` in the page is enough to
+drive it, but the timers are throttled to about a second while hidden — a 400ms wait reported "the
+window did not move" when it moved 1.2s later. Foreground the tab, or wait in seconds.
+
+**Iteration 4 is `gog-table`, and the plan's own instruction is to re-read this file first.**
+Nothing in these three exercised a variable row height, a sticky header, or a column that spans
+the window.
+
 ## The four things that are easy to get wrong
 
 These are the plan, more than the arithmetic is. **Read the iteration-2 note above before
@@ -252,13 +291,13 @@ So: per-instance `virtualize`, with `GOG_CONFIG.dropdown.virtualize` as the app-
 
 ## Iterations
 
-| #   | What                                                                                                    | Status                                                          |
-| --- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| 0   | Verify `--gog-select-option-height` against a rendered row in all eleven themes                         | ✅ 2026-09-12 — wrong in 11 of 11, and it is load-bearing today |
-| 1   | `GogVirtualWindow` in `lib/shared` — arithmetic, specs, no component touched                            | ✅ 2026-09-12                                                   |
-| 2   | `gog-select` adopts it: `virtualize` input, ARIA counts, keyboard rework, filter reset, showcase        | ✅ 2026-09-12 — and three of the four traps landed differently  |
-| 3   | `gog-multiselect` and `gog-autocomplete` follow — same base, so mostly the keyboard half again          | 🔜                                                              |
-| 4   | `gog-table`: variable rows, sticky header, selection column. Its own decisions; may become its own plan | 🔜                                                              |
+| #   | What                                                                                                    | Status                                                                 |
+| --- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 0   | Verify `--gog-select-option-height` against a rendered row in all eleven themes                         | ✅ 2026-09-12 — wrong in 11 of 11, and it is load-bearing today        |
+| 1   | `GogVirtualWindow` in `lib/shared` — arithmetic, specs, no component touched                            | ✅ 2026-09-12                                                          |
+| 2   | `gog-select` adopts it: `virtualize` input, ARIA counts, keyboard rework, filter reset, showcase        | ✅ 2026-09-12 — and three of the four traps landed differently         |
+| 3   | `gog-multiselect` and `gog-autocomplete` follow — same base, so mostly the keyboard half again          | ✅ 2026-09-12 — and the keyboard half was the part that needed nothing |
+| 4   | `gog-table`: variable rows, sticky header, selection column. Its own decisions; may become its own plan | 🔜                                                                     |
 
 **Iteration 0 is not ceremony.** The whole window rests on one number that is currently documented
 as an estimate nothing checks. Measuring it first is cheaper than debugging a drifting scroll

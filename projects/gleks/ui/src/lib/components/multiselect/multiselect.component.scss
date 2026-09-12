@@ -304,6 +304,12 @@
   gap: var(--gog-multiselect-option-gap);
 }
 
+/* The windowed list's filler above and below the rendered rows. See `gog-select`'s own note;
+   this container declares a `gap`, which the spacer's computed height already accounts for. */
+.gog-ms__spacer {
+  flex-shrink: 0;
+}
+
 .gog-ms__option {
   width: 100%;
   display: flex;

@@ -114,12 +114,27 @@
       overscrollBehavior="contain"
       class="gog-autocomplete__scroll"
       (gogReachEnd)="gogLoadMore.emit()"
+      (gogScroll)="onPanelScroll($event)"
     >
       @if (visibleOptions().length === 0) {
         <p class="gog-autocomplete__empty">{{ emptyMessage() }}</p>
       }
 
-      @for (option of visibleOptions(); track valueOf(option); let i = $index) {
+      <!--
+        The windowed list's spacers — see GogVirtualWindow. They keep the scrollbar describing the
+        whole list, which is also what keeps `gogReachEnd` meaning the end of the *data* rather
+        than the end of the window.
+      -->
+      @if (padBefore() > 0) {
+        <div
+          class="gog-autocomplete__spacer"
+          [style.height.px]="padBefore()"
+          aria-hidden="true"
+        ></div>
+      }
+
+      @for (option of renderedOptions(); track valueOf(option); let i = $index) {
+        @let optionIndex = optionWindow().start + i;
         <!--
           A div, not a button: focus stays in the input, so these rows are never focused and a
           button would only add tab stops and a second Enter handler. The highlight is pointed
@@ -132,10 +147,12 @@
         <div
           class="gog-autocomplete__option"
           role="option"
-          [id]="optionId(i)"
+          [id]="optionId(optionIndex)"
           [attr.aria-selected]="isSelected(option)"
           [attr.aria-disabled]="isOptionDisabled(option)"
-          [class.gog-autocomplete__option--active]="i === activeIndex()"
+          [attr.aria-setsize]="ariaSetSize()"
+          [attr.aria-posinset]="ariaPosInSet(i)"
+          [class.gog-autocomplete__option--active]="optionIndex === activeIndex()"
           [class.gog-autocomplete__option--selected]="isSelected(option)"
           [class.gog-autocomplete__option--disabled]="isOptionDisabled(option)"
           gogRipple
@@ -152,6 +169,13 @@
             <span class="gog-autocomplete__option-label">{{ labelOf(option) }}</span>
           }
         </div>
+      }
+      @if (padAfter() > 0) {
+        <div
+          class="gog-autocomplete__spacer"
+          [style.height.px]="padAfter()"
+          aria-hidden="true"
+        ></div>
       }
     </gog-scroll>
   </div>

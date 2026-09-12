@@ -135,12 +135,27 @@
         />
       </div>
     }
-    <gog-scroll size="thin" [focusable]="false" overscrollBehavior="contain" class="gog-ms__scroll">
+    <gog-scroll
+      size="thin"
+      [focusable]="false"
+      overscrollBehavior="contain"
+      class="gog-ms__scroll"
+      (gogScroll)="onPanelScroll($event)"
+    >
       <div class="gog-ms__options">
         @if (visibleOptions().length === 0) {
           <p class="gog-ms__empty">{{ filterEmptyMessage() }}</p>
         }
-        @for (option of visibleOptions(); track valueOf(option)) {
+        <!--
+          The windowed list's spacers — see GogVirtualWindow. This list is the one of the three
+          that declares a row `gap`, so the spacer's own height is one gap short of the window's
+          padding: a spacer is a flex child and takes that gap either side of itself, while the
+          padding already stands in for every gap in the rows it replaces.
+        -->
+        @if (padBefore() > 0) {
+          <div class="gog-ms__spacer" [style.height.px]="padBefore()" aria-hidden="true"></div>
+        }
+        @for (option of renderedOptions(); track valueOf(option); let i = $index) {
           <!--
             tabindex="-1" keeps the list to a single tab stop, as the listbox pattern
             expects: focus moves between options with the arrow keys, not by tabbing
@@ -151,8 +166,11 @@
             class="gog-ms__option"
             role="option"
             tabindex="-1"
+            [attr.data-gog-option-index]="optionWindow().start + i"
             [attr.aria-selected]="isSelected(option)"
             [attr.aria-disabled]="isOptionDisabled(option)"
+            [attr.aria-setsize]="ariaSetSize()"
+            [attr.aria-posinset]="ariaPosInSet(i)"
             [class.gog-ms__option--selected]="isSelected(option)"
             [class.gog-ms__option--disabled]="isOptionDisabled(option)"
             (click)="toggleOption(option, $event)"
@@ -174,6 +192,9 @@
               {{ labelOf(option) }}
             }
           </button>
+        }
+        @if (padAfter() > 0) {
+          <div class="gog-ms__spacer" [style.height.px]="padAfter()" aria-hidden="true"></div>
         }
       </div>
     </gog-scroll>

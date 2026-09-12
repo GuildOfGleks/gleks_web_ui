@@ -427,6 +427,83 @@ describe('AutocompleteComponent', () => {
     });
   });
 
+  /*
+   * Windowing — see `docs/virtualization.md` iteration 3.
+   *
+   * The shared half is covered by `gog-select`'s suite. What is specific here is the combobox
+   * pattern: focus never leaves the input, so the rows are pointed at with
+   * `aria-activedescendant` rather than focused — which means the option **id** has to be the
+   * index in the whole list, not in the rendered slice, or the highlight points at the wrong row
+   * the moment the window moves off the top.
+   */
+  describe('virtualize', () => {
+    const manyOptions = Array.from({ length: 1000 }, (_, i) => ({ id: i, name: `Option ${i}` }));
+
+    async function openWindowed(virtualize = true): Promise<void> {
+      fixture.componentRef.setInput('options', manyOptions);
+      fixture.componentRef.setInput('virtualize', virtualize);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      field().dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+      await fixture.whenStable();
+    }
+
+    it('renders a window and announces the whole list', async () => {
+      await openWindowed();
+
+      const rendered = options();
+      expect(rendered.length).toBeLessThan(20);
+      expect(rendered[0].getAttribute('aria-setsize')).toBe('1000');
+      expect(rendered[0].getAttribute('aria-posinset')).toBe('1');
+    });
+
+    it('is off by default', async () => {
+      await openWindowed(false);
+
+      expect(options().length).toBe(1000);
+      expect(options()[0].getAttribute('aria-setsize')).toBeNull();
+    });
+
+    /*
+     * `aria-activedescendant` names an id, and the id is derived from the index. Rendered-slice
+     * indices would restart at zero on every scroll, so the input would point at option 0's id
+     * while the highlight painted some row in the middle of the list — the two agreeing only
+     * while the window happens to be at the top.
+     */
+    it('keeps the option id keyed to the whole list, not the window', async () => {
+      await openWindowed();
+
+      keydown('End');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const rendered = options();
+      const last = rendered.at(-1)!;
+      expect(last.textContent).toContain('Option 999');
+      expect(last.id).toContain('-option-999');
+      expect(field().getAttribute('aria-activedescendant')).toBe(last.id);
+      expect(last.classList.contains('gog-autocomplete__option--active')).toBe(true);
+    });
+
+    /*
+     * Windowed, `scrollIntoView` has nothing to scroll to: the row the arrow key moved to was
+     * not rendered when the key was pressed. The arithmetic knows where it would be.
+     */
+    it('reaches an option that has not been rendered', async () => {
+      await openWindowed();
+
+      keydown('ArrowUp');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const rendered = options();
+      expect(rendered.at(-1)?.textContent).toContain('Option 999');
+      expect(rendered[0].textContent).not.toContain('Option 0');
+    });
+  });
+
   describe('gogLoadMore', () => {
     /** jsdom never lays elements out, so scroll/client metrics are stubbed as needed. */
     function mockMetrics(

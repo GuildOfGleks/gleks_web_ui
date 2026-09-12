@@ -301,7 +301,7 @@ parent's config**, one level deep per key — it does not replace it.
 | Key            | Fields                                                                                | Applies to                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | -------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `control`      | `size`, `errorDisplay`, `clearable`                                                   | `size`: button, `[gogButton]`, button-toggle-group, checkbox, toggle, radio-group, inputfield, textarea, select, multiselect, autocomplete, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, datepicker, radio-group, slider. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip. |
-| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`, `virtualize`                 | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text). `virtualize` reaches `gog-select` only.                                                                                                                                                                                                             |
+| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`, `virtualize`                 | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text). `virtualize` reaches all three dropdowns; not `gog-table`.                                                                                                                                                                                          |
 | `floatLabel`   | `variant`, `showPlaceholder`                                                          | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                                                       |
 | `datepicker`   | `locale`, `firstDayOfWeek`, `format`                                                  | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                                          | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -743,6 +743,9 @@ and multiselect unless noted otherwise):
 | `ripple`                                               | `boolean \| undefined`                  | `false`                                                      | press ripple; via `GOG_CONFIG.ripple.enabled`                                       |
 
 `gog-select`-specific: `value: model<TValue>(null)`, and `virtualize: boolean | undefined` (default `false`, via `GOG_CONFIG.dropdown.virtualize`) — see below.
+`virtualize: boolean | undefined` (default `false`, via `GOG_CONFIG.dropdown.virtualize`) is on
+`gog-select`, `gog-multiselect` and `gog-autocomplete` alike.
+
 `gog-multiselect`-specific additions: `value: model<TValue[]>([])`, `showControls: boolean` (default `false`, a select-all/clear row), `controlsPosition: 'top'|'bottom'` (default `'top'`), and `selectAllLabel`/`clearAllLabel` for that row's two buttons (`'Select all'`/`'Clear'`, also via `GOG_CONFIG.labels`).
 
 CVA: yes, both. Slots (shared): `<ng-template gogDropdownChevron>` (custom chevron markup),
@@ -772,9 +775,13 @@ What changes while it is on:
 - Arrow keys move through the whole list rather than the rendered part, so ArrowUp from the
   trigger still reaches option 10 000.
 
-It reaches `gog-select` only. `gog-multiselect`, `gog-autocomplete` and `gog-table` do not window
-yet; `gogLoadMore` and `[lazy]` solve the _fetch_ half for two of them and do nothing about the
-DOM.
+All three dropdowns take it — `gog-select`, `gog-multiselect` and `gog-autocomplete`. **`gog-table`
+does not**, and `[lazy]` is not a substitute: that keeps the _fetch_ small and still stamps every
+row it is handed. The same distinction applies to `gog-autocomplete`'s `gogLoadMore`, and the two
+compose — pair them on a long list, because neither implies the other.
+
+On `gog-autocomplete` the focus caveat above does not apply: it is a combobox, so focus never
+leaves the text field and the highlight is carried by `aria-activedescendant` either way.
 
 **Turn `filter` on past about seven options — or order them instead.** Choice time grows with the
 log of the count (`T = b · log₂(n + 1)`), so beyond roughly seven a panel stops being scanned and

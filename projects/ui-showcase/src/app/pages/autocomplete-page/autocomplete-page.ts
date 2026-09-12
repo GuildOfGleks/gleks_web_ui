@@ -82,6 +82,15 @@ export class AutocompletePage implements OnDestroy {
   protected readonly employee = signal<Employee | null>(null);
   protected readonly formCity = new FormControl<number | null>(11);
 
+  /**
+   * Windowing demo. The whole list is handed over at once on purpose — this is the DOM half of
+   * the problem, which `gogLoadMore` below does not touch.
+   */
+  protected readonly manyCities = Array.from({ length: 10000 }, (_, index) => ({
+    id: index,
+    name: `City ${(index + 1).toLocaleString('en-US')}`,
+  }));
+
   /** Server-backed demo: `filterLocal` is off, so this list is used exactly as returned. */
   protected readonly remoteResults = signal(CITIES);
   protected readonly remoteLoading = signal(false);

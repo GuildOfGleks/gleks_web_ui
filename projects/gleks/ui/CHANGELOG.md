@@ -60,6 +60,40 @@ reached 1.0, so breaking changes may land in minor versions.
 
   `gog-multiselect`, `gog-autocomplete` and `gog-table` do not window yet.
 
+- **`gog-multiselect` and `gog-autocomplete` window too — the same `virtualize`, same default.**
+  Verified live in Chrome on 10 000 options each. Multiselect: 8 rows in the DOM, a 490 004px
+  scroll height matching the unwindowed list to the pixel, and row 2 036 sitting at 99 768px,
+  which is `2036 × 49 + 4` exactly. Autocomplete: 12 rows, `End` reaching option 10 000 with
+  `aria-activedescendant` on it and the panel scrolled to match.
+
+  Two things were specific to these two rather than shared, and both were real:
+
+  - **A spacer in a list that declares a row `gap` takes that gap on both sides of itself**, while
+    the window's padding already stands in for every gap between the rows it replaces. So the
+    spacer's height is the padding less one gap. `gog-multiselect` is the only one of the three
+    lists with a row gap, and uncorrected the panel was two gaps too tall and every row sat one
+    gap below where its index said. **A constant error, not an accumulating one**, which is why it
+    would have survived a reading: at the shipped 4px nothing looks wrong, it is just 4px wrong
+    everywhere.
+  - **A combobox names a row by id, and the id has to be the index in the whole list.** Focus
+    never leaves `gog-autocomplete`'s input, so the highlight travels by `aria-activedescendant`.
+    With the id keyed to the rendered slice it restarts at zero on every scroll, so the input
+    points at option 0 while the highlight paints a row in the middle — the two agreeing only
+    while the window happens to be at the top. Its spec fails that way without the fix
+    (`expected 'gog-autocomplete-35-option-10' to contain '-option-999'`).
+
+  `gog-autocomplete`'s keyboard needed nothing else: its active row was already an index into the
+  full list rather than an element, because the combobox pattern had put it there years before
+  windowing existed. Only `scrollIntoView` had to go — it needs an element, and the window's whole
+  point is that most of them are not rendered; the arithmetic knows where the row would be.
+
+  **`virtualize` and `gogLoadMore` are different halves and compose.** One keeps the records the
+  server sends small, the other keeps the rows the browser builds small; a `gogLoadMore` list that
+  has loaded 10 000 records still stamps 10 000 rows without this. The spacers are also what keep
+  `gogReachEnd` meaning the end of the data rather than the end of the window.
+
+  `gog-table` still does not window.
+
 - **`gog-alert` — a persistent, in-flow message**, and the thing `gog-toast` cannot be. No timer,
   no queue, no overlay, no service: it renders where you write it and stays until your app removes
   it. `severity` (the shared `GogSeverity`, defaulting to `'accent'`), an optional `heading`, a

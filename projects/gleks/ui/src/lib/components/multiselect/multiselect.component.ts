@@ -107,6 +107,20 @@ export class MultiselectComponent<
    */
   readonly value = model<TValue[]>([]);
 
+  /**
+   * Renders only the options in view instead of all of them. Off by default, with
+   * `GOG_CONFIG.dropdown.virtualize` as the app-wide default.
+   *
+   * Everything `gog-select`'s own `virtualize` documents applies here unchanged — the count stays
+   * honest through `aria-setsize`/`aria-posinset`, `Ctrl+F` sees only rendered rows, CSS
+   * targeting `:last-child` matches the last rendered one, and scrolling a keyboard-focused row
+   * out of view hands focus back to the trigger.
+   *
+   * @default false
+   */
+  readonly virtualize = input<boolean | undefined>(undefined);
+  protected override readonly virtualizeRequest = this.virtualize;
+
   protected readonly panelTemplate = viewChild<TemplateRef<unknown>>('panelTpl');
   protected readonly emptyValue: TValue[] = [];
   protected readonly optionClass = 'gog-ms__option';

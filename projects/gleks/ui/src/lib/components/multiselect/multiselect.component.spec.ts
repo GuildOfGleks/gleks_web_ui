@@ -609,6 +609,76 @@ describe('MultiselectComponent', () => {
     });
   });
 
+  /*
+   * Windowing — see `docs/virtualization.md` iteration 3.
+   *
+   * Everything `gog-select`'s own suite covers is shared with this one through `GogDropdownBase`
+   * and is not repeated here. What is specific is that this is the **only one of the three lists
+   * that declares a row gap**, so it is the only one where a spacer, being a flex child, takes
+   * that gap either side of itself.
+   */
+  describe('virtualize', () => {
+    const manyOptions = Array.from({ length: 1000 }, (_, i) => ({ id: i, name: `Option ${i}` }));
+
+    async function open(virtualize?: boolean): Promise<HTMLElement> {
+      fixture.componentRef.setInput('options', manyOptions);
+      if (virtualize !== undefined) fixture.componentRef.setInput('virtualize', virtualize);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const host = fixture.nativeElement as HTMLElement;
+      (host.querySelector('.gog-ms') as HTMLElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      return host;
+    }
+
+    const rows = (host: HTMLElement) =>
+      Array.from(host.querySelectorAll<HTMLElement>('.gog-ms__option'));
+
+    it('is off by default', async () => {
+      const host = await open();
+
+      expect(rows(host).length).toBe(1000);
+      expect(host.querySelector('.gog-ms__spacer')).toBeNull();
+    });
+
+    it('renders a window and announces the whole list', async () => {
+      const host = await open(true);
+      const rendered = rows(host);
+
+      expect(rendered.length).toBeLessThan(20);
+      expect(rendered[0].getAttribute('aria-setsize')).toBe('1000');
+      expect(rendered[0].getAttribute('aria-posinset')).toBe('1');
+    });
+
+    /*
+     * The gap is why this component has its own case.
+     *
+     * With a 10px row gap, a spacer standing in for N rows must be N pitches *less one gap*: the
+     * padding already accounts for every gap between the rows it replaces, and the flex column
+     * then adds one more on the spacer's own side. Uncorrected the panel is two gaps too tall and
+     * every row sits one gap below where its index says — a constant error, not an accumulating
+     * one, which is exactly why it would survive a reading. At the shipped 4px it is not visible;
+     * it is simply 4px wrong everywhere.
+     */
+    it('takes the row gap out of the spacer it puts either side of', async () => {
+      const host = await open(true);
+
+      const list = host.querySelector('.gog-ms__options') as HTMLElement;
+      list.style.rowGap = '10px';
+      for (const row of rows(host)) stubRect(row, { height: 30, width: 200 });
+      await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const rendered = rows(host).length;
+      const spacer = host.querySelector('.gog-ms__spacer') as HTMLElement;
+      // A pitch of 40 (30 + 10) over 1000 rows, less the ones stamped, less one gap.
+      expect(spacer.style.height).toBe(`${40000 - rendered * 40 - 10}px`);
+    });
+  });
+
   describe('ControlValueAccessor / Reactive Forms integration', () => {
     @Component({
       imports: [MultiselectComponent, ReactiveFormsModule],

@@ -191,6 +191,14 @@
   min-height: 0;
 }
 
+/* The windowed list's filler above and below the rendered rows. Unlike the other two lists these
+   rows are projected straight into `gog-scroll`, so the spacer's parent is the scroller's own
+   content box rather than an options container; it declares no gap, and the height applies the
+   same either way. */
+.gog-autocomplete__spacer {
+  flex-shrink: 0;
+}
+
 .gog-autocomplete__option {
   display: flex;
   align-items: center;

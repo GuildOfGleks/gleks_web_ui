@@ -637,11 +637,16 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   `gog-select` has `virtualize`. Measured live rather than in raw DOM: the same 10 000 options
   open in **512ms** eager and **21ms** windowed, 10 000 rows against 10.
 
-  **Left: iterations 3 (`gog-multiselect`, `gog-autocomplete`) and 4 (`gog-table`)**, and the plan
-  says to re-read it between them. One thing iteration 2 leaves for 3 and did not exercise:
-  `gog-multiselect` is the only one of the three lists that declares a real row gap, so its pitch
-  is height + gap, and the spacers are flex children that will take that gap on both sides of
-  themselves.
+  **Iteration 3 is done too**: `gog-multiselect` and `gog-autocomplete` take the same input.
+  **Left: iteration 4, `gog-table`**, and the plan says to re-read it first — nothing in the three
+  dropdowns exercised a variable row height, a sticky header, or a column spanning the window.
+
+  Iteration 3's two findings, neither of them the keyboard the plan expected: a spacer in a list
+  that declares a row `gap` takes that gap either side of itself (a constant 4px error on
+  `gog-multiselect`, invisible precisely because it is constant), and an
+  `aria-activedescendant` id must name the index in the whole list, not the rendered slice —
+  `gog-autocomplete`'s way of losing track of the active row, mirroring `gog-select`'s
+  focus-on-`<body>`.
 
   Both defects this work produced are closed: the placement estimate's row height (66699ce) and
   the row gap that is not between rows (57b61eb) — the second found only because fixing the first
@@ -649,10 +654,11 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
 
   The filing below stands as written:
 
-- **Virtualization.** Nothing in the library virtualizes: a 10 000-option `gog-select` and a
-  10 000-row eager `gog-table` will both crawl. `gog-autocomplete`'s `gogLoadMore` covers the
-  fetch half of the problem; `lazy` covers it for the table. The DOM half needs a windowing
-  primitive, which is a genuine piece of engineering and its own plan.
+- ~~**Virtualization.**~~ **The dropdown half shipped 2026-09-12** (see above); what is left of
+  this filing is `gog-table`. Kept for the part of it that turned out to be exactly right, and is
+  worth re-reading before iteration 4: `gogLoadMore` and `lazy` cover the _fetch_ half and nothing
+  about the DOM, so "we have `lazy`" is still the sentence that will make someone think the
+  table's problem is solved.
 
   **Requested twice.** Items 3 and 4 under _Features_ below are this same primitive, filed
   separately from use. Build it once in `lib/shared` and adopt it in the dropdowns first — a fixed

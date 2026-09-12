@@ -91,12 +91,13 @@ Small, and only one of the three has any visible surface on the site.
   last item in this section describes it. Two entries about one component, written hours apart,
   and the earlier one was already wrong: a checklist drifts the same way prose does.)
 
-- **`gog-select` has a `virtualize` input, and the Select page should show it.** Renders only the
+- **All three dropdowns have a `virtualize` input, and all three pages should show it.** Renders only the
   rows in view. On the same 10 000 options, measured in Chrome: **512ms** and 10 000 DOM rows
   eager against **21ms** and 10 windowed. Off by default, per field or app-wide through
   `GOG_CONFIG.dropdown.virtualize` — which is a new key for the Global Config page's table.
   `ui-showcase`'s Select page has a two-field side-by-side demo worth copying, since the
-  comparison is the only way to show what it buys.
+  comparison is the only way to show what it buys; its Multiselect and Autocomplete pages each
+  have a single windowed field.
 
   **Four things the page must say, or it teaches the wrong thing.** It is never switched on
   automatically at a row count, and the reason is the interesting part — `Ctrl+F` finds only the
@@ -104,8 +105,15 @@ Small, and only one of the three has any visible surface on the site.
   would depend on how much data happened to arrive. The announced count stays honest
   (`aria-setsize`/`aria-posinset` carry the real list, so a screen reader hears "10 000 items").
   Scrolling a keyboard-focused row out of view hands focus back to the trigger, which is a
-  behaviour a plain list does not have. And it reaches `gog-select` only — not multiselect, not
-  autocomplete, not the table.
+  behaviour a plain list does not have (it does **not** apply to `gog-autocomplete`, which is a
+  combobox — focus never leaves its input). And it reaches the three dropdowns, **not the table**:
+  `[lazy]` is not a substitute, since it keeps the fetch small and still stamps every row.
+
+  On the Autocomplete page there is one more sentence to write, because the page already documents
+  `gogLoadMore` and a reader will assume they overlap: they are different halves and compose. One
+  keeps the records the server sends small, the other keeps the rows the browser builds small, and
+  a `gogLoadMore` list that has loaded 10 000 records still stamps 10 000 rows without
+  `virtualize`.
 
   The comparison page's accessibility or feature claims may also need a look: "no virtualization
   anywhere" stops being true for the dropdown, while staying true for the table.

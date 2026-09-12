@@ -253,6 +253,25 @@ export class AutocompleteComponent<
     });
   }
 
+  /**
+   * Renders only the options in view instead of all of them. Off by default, with
+   * `GOG_CONFIG.dropdown.virtualize` as the app-wide default.
+   *
+   * Worth pairing with `gogLoadMore`, which solves the other half: that keeps the number of
+   * records the server sends small, and this keeps the number of rows the browser builds small.
+   * Neither implies the other — a `gogLoadMore` list that has loaded 10 000 records still stamps
+   * 10 000 rows without this.
+   *
+   * The count stays honest through `aria-setsize`/`aria-posinset`; `Ctrl+F` sees only the
+   * rendered rows and CSS targeting `:last-child` matches the last rendered one. Focus is not at
+   * risk here the way it is on `gog-select` — this is a combobox, so focus never leaves the text
+   * field.
+   *
+   * @default false
+   */
+  readonly virtualize = input<boolean | undefined>(undefined);
+  protected override readonly virtualizeRequest = this.virtualize;
+
   protected isSelected(option: TOption): boolean {
     return this.sameValue(this.valueOf(option), this.value());
   }
@@ -263,6 +282,9 @@ export class AutocompleteComponent<
     this.browsingAll.set(false);
     this.query.set(text);
     this.activeIndex.set(-1);
+    // Typing replaces the list under the window, so the scroller and the range go back to the
+    // top together — otherwise a search made while scrolled down shows the end of its results.
+    this.resetPanelScroll();
 
     // Whether editing over a selection drops it depends on which mode this is in.
     //
@@ -418,6 +440,14 @@ export class AutocompleteComponent<
 
   private scrollActiveIntoView(index: number): void {
     if (!this.isBrowser) return;
+
+    // Windowed, the row may not exist to be scrolled to: `scrollIntoView` needs an element and
+    // the window's whole point is that most of them are not there. The arithmetic knows where
+    // the row *would* be, which is the same answer one frame earlier.
+    if (this.resolvedVirtualize()) {
+      this.revealOption(index);
+      return;
+    }
 
     // The highlighted row is not focused, so nothing scrolls it into view for us.
     queueMicrotask(() => {

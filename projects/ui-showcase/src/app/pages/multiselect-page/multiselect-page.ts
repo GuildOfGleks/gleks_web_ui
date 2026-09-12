@@ -86,6 +86,13 @@ export class MultiselectPage {
   protected readonly bottomControlsValue = signal<(string | number)[]>([]);
 
   protected readonly compactPanelValue = signal<(string | number)[]>([]);
+  /** Long enough that stamping every row is the cost rather than the data. */
+  protected readonly manyCities: GogDropdownOption[] = Array.from({ length: 10000 }, (_, i) => ({
+    id: `city-${i}`,
+    name: `City ${(i + 1).toLocaleString('en-US')}`,
+  }));
+  protected readonly windowedCities = signal<(string | number)[]>([]);
+
   protected readonly bottomOfPageValue = signal<(string | number)[]>([]);
 
   /** Pre-selected past what the trigger can show on one line, so `+N` renders on load. */

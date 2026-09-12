@@ -168,6 +168,26 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader>Virtualized options</h3>
+    <p class="hint">
+      <code>virtualize</code> renders only the rows in view — about twenty in the DOM, out of 10,000
+      here. It is the other half of the problem from <code>gogLoadMore</code> above: that one keeps
+      the number of records the <em>server</em> sends small, this one keeps the number of rows the
+      <em>browser</em> builds small. Neither implies the other, and a list long enough to want one
+      usually wants both.
+    </p>
+    <p class="hint">
+      Off by default, per field or app-wide through
+      <code>GOG_CONFIG.dropdown.virtualize</code>. <code>aria-setsize</code> and
+      <code>aria-posinset</code> carry the real list, and arrow keys still walk all 10,000 —
+      <kbd>End</kbd> reaches the last one.
+    </p>
+    <div class="ac-grid">
+      <gog-autocomplete label="City" [options]="manyCities" [virtualize]="true" />
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Appended to body</h3>
     <p class="hint">
       For a field inside a scrollable or overflow-clipped container. The panel is stamped into

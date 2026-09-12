@@ -510,8 +510,18 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
     this.resetPanelScroll();
   }
 
+  /**
+   * Scrolls `index` into view **without moving focus**, which is what a combobox needs: focus
+   * stays in the text field and the highlight is pointed at with `aria-activedescendant`, so
+   * nothing scrolls the row into view on its own the way focusing it would.
+   */
+  protected revealOption(index: number): void {
+    const offset = this.virtualWindow.scrollOffsetFor(index);
+    if (offset !== null) this.setPanelScrollTop(offset);
+  }
+
   /** Puts the scroller, the window and the keyboard's idea of "here" back at the top together. */
-  private resetPanelScroll(): void {
+  protected resetPanelScroll(): void {
     this.activeOptionIndex.set(-1);
     this.setPanelScrollTop(0);
   }
@@ -651,6 +661,13 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   protected readonly rowPitch = signal(0);
 
   /**
+   * The gap alone, as a signal, because `spacerHeight` needs it from inside a `computed` and the
+   * cached `measuredOptionGap` beside it is a plain field -- a computed reading that would be
+   * correct only by the accident of `rowPitch` changing in the same statement.
+   */
+  private readonly rowGap = signal(0);
+
+  /**
    * The scroller's real geometry, fed from `gog-scroll`'s own `(gogScroll)`.
    *
    * The plan called for a `ResizeObserver` on the scroller; it is not needed, because the
@@ -701,11 +718,30 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    * `GogVirtualWindow`'s own note for why that trade is worth making for a one-column list.
    */
   protected readonly padBefore = computed(() =>
-    this.resolvedVirtualize() ? this.virtualWindow.padBefore() : 0,
+    this.resolvedVirtualize() ? this.spacerHeight(this.virtualWindow.padBefore()) : 0,
   );
   protected readonly padAfter = computed(() =>
-    this.resolvedVirtualize() ? this.virtualWindow.padAfter() : 0,
+    this.resolvedVirtualize() ? this.spacerHeight(this.virtualWindow.padAfter()) : 0,
   );
+
+  /**
+   * A spacer's own height, less the gap the flex column puts either side of it.
+   *
+   * A spacer is a flex child like a row, so a list that declares `gap` gets one *around the
+   * spacer too* -- and the window's padding already accounts for every gap in the rows it stands
+   * in for. Left uncorrected, an open panel is two gaps too tall and every rendered row sits one
+   * gap lower than its index says. It is a constant, not an accumulating error, which is exactly
+   * why it would have survived review: at `gog-multiselect`'s 4px nothing looks wrong, it is just
+   * 4px wrong everywhere.
+   *
+   * `gog-select` and `gog-autocomplete` declare no row gap, so this subtracts nothing there. The
+   * subtraction can never go negative on a spacer that exists: any non-zero padding is at least
+   * one whole row, and a row is taller than the gap beside it.
+   */
+  private spacerHeight(padding: number): number {
+    if (padding <= 0) return 0;
+    return Math.max(0, padding - this.rowGap());
+  }
 
   /**
    * A windowed listbox holds twenty `role="option"` children and has to announce ten thousand.
@@ -888,9 +924,9 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    */
   private seedWindow(): void {
     this.activeOptionIndex.set(-1);
-    this.rowPitch.set(
-      (this.measuredOptionHeight ?? this.optionHeight) + (this.measuredOptionGap ?? this.optionGap),
-    );
+    const gap = this.measuredOptionGap ?? this.optionGap;
+    this.rowGap.set(gap);
+    this.rowPitch.set((this.measuredOptionHeight ?? this.optionHeight) + gap);
     this.panelViewport.set({
       scrollTop: 0,
       height: this.isBrowser ? this.estimatePanelHeight() : 0,
@@ -989,6 +1025,7 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
       // The window reads this too, and it is the reason the measurement is not optional there:
       // a placement is wrong once, a pitch is wrong once per row and the error accumulates down
       // the list until the rendered rows and the scrollbar disagree about where they are.
+      this.rowGap.set(gap);
       this.rowPitch.set(height + gap);
       if (changed) this.updatePlacement();
     });
