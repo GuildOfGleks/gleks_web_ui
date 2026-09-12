@@ -149,14 +149,11 @@ export function makeResolver(layers, themeDecls) {
    * the caller still sees an unreadable value rather than a wrong number.
    */
   const expandVars = (text, seen) =>
-    text.replace(
-      /var\(\s*(--[a-z0-9-]+)\s*(?:,([^()]*(?:\([^()]*\)[^()]*)*))?\)/gi,
-      (whole, name, fallback) => {
-        if (seen.has(name)) return whole;
-        const next = lookup(name) ?? (fallback === undefined ? null : fallback.trim());
-        return next === null ? whole : expandVars(next, new Set([...seen, name]));
-      },
-    );
+    text.replace(/var\(\s*(--[a-z0-9-]+)\s*(?:,([^()]*(?:\([^()]*\)[^()]*)*))?\)/gi, (whole, name, fallback) => {
+      if (seen.has(name)) return whole;
+      const next = lookup(name) ?? (fallback === undefined ? null : fallback.trim());
+      return next === null ? whole : expandVars(next, new Set([...seen, name]));
+    });
 
   const parse = (value, seen) => {
     if (value === null) return null;
