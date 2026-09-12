@@ -593,6 +593,17 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   name, which floated the weakened selector over the consumer floor it enforces. It self-tests its
   arithmetic now.
 
+- ~~**No check for a token nothing reads.**~~ **Closed 2026-09-12 as `check:tokens` rule K**, the
+  mirror of rule F. Six findings on its first run: `gog-inputfield`'s clear mark wired to its own
+  ratio token (it had been rendering 43% larger than the same mark on five sibling controls), and
+  five leftovers removed. `--gog-menu-panel-gap` was the seventh and is what started it.
+
+  **The reusable part is how the check was nearly useless.** TypeScript spells a token two ways —
+  a bare name passed to `resolveLengthToken`, and a whole declaration built as a string, which is
+  what a host binding writes — and the first version matched only the first, reporting eight live
+  tokens as dead. A check whose findings are half wrong is worse than none, because its findings
+  are what gets acted on. It was caught by not believing the first run.
+
 - **`gog-table` rows still have no ripple, and the reason it was deferred has expired.**
   `docs/ripple.md` left them out on two arguments and kept the weaker one as the gate: "a table
   installs one directive instance per row with no virtualization in this library yet … revisit

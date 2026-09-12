@@ -16,6 +16,20 @@
 //                            property is *declared*, so a derived token declared on :root
 //                            freezes to the root palette and stops following a scoped
 //                            [data-theme] subtree.
+//   K. no-dead-declaration  The mirror of F: a token `theme.css` declares that nothing reads.
+//                   F catches a read with no declaration; until 2026-09-12 nothing caught a
+//                   declaration with no read, so a component could ship a documented knob wired
+//                   to nothing — `--gog-menu-panel-gap` was exactly that for the whole life of
+//                   `gog-menu`, because the panel is placed in script and the placement call
+//                   left its gap argument out. Reads are collected from component stylesheets,
+//                   the global ones, `theme.css` itself and TypeScript string literals, since a
+//                   token read only from script is still read. Exemptions: `UNREAD_BY_DESIGN`,
+//                   which holds public scale steps and nothing belonging to a component.
+//
+//                   What it cannot see: a dead *chain*. If A is read only by B's declaration and
+//                   nothing reads B, both look live. The leaf case is the one that has ever
+//                   happened here.
+//
 //   D. allowlist-fresh       INSTANCE_TOKENS below must match reality — an entry that is
 //                            now declared, or no longer read, is stale and fails the check.
 //                            This is what keeps the list usable as documentation.
@@ -70,6 +84,27 @@ import * as sass from 'sass';
 
 import { DEPRECATED_NAMESPACES } from './deprecations.mjs';
 import { INSTANCE_TOKENS } from './instance-tokens.mjs';
+
+/**
+ * Tokens `theme.css` declares that nothing in the library reads, **on purpose** — rule K's only
+ * exemptions.
+ *
+ * Each is a step of a complete public scale. A scale is offered whole or it is not a scale: a
+ * consumer writing `padding: var(--gog-space-2xl)` in their own stylesheet is the reader, and
+ * dropping the steps this library happens not to use would turn a ladder into a list of the rungs
+ * we stood on.
+ *
+ * **Nothing that belongs to a component may be added here.** A component token with no reader is
+ * a knob wired to nothing, which is the defect rule K exists to find — see
+ * `--gog-menu-panel-gap`, which was one for the whole life of `gog-menu`.
+ */
+const UNREAD_BY_DESIGN = new Map([
+  ['--gog-elevation-0', 'the elevation ladder’s zero step — a complete 0-5 scale'],
+  ['--gog-space-xs', 'the named spacing scale, offered whole'],
+  ['--gog-space-2xl', 'the named spacing scale, offered whole'],
+  ['--gog-text-2xl', 'the type scale, offered whole'],
+  ['--gog-text-3xl', 'the type scale, offered whole'],
+]);
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uiSrc = path.join(rootDir, 'projects/gleks/ui/src');
@@ -748,6 +783,48 @@ async function main() {
         `      be pixel-identical to a plain one. Point it at --gog-${role}-color, or add it to
 ` +
         `      NOT_THE_ROLES_COLOUR in this script with the reason its name means something else`,
+    );
+  }
+
+  // Rule K — a token theme.css declares that nothing reads. The mirror of rule F.
+  //
+  // TypeScript counts as a reader: `gog-menu`, `gog-scroll` and the dropdowns resolve tokens from
+  // script, and a token read only that way is still read. `token-names.ts` is excluded because it
+  // is the generated inventory of every token there is — counting it would make every token look
+  // live, which is precisely how this category stayed invisible.
+  const tsReads = new Set();
+  for await (const entry of glob('**/*.ts', {
+    cwd: path.join(uiSrc, 'lib'),
+    withFileTypes: true,
+  })) {
+    if (!entry.isFile() || entry.name === 'token-names.ts') continue;
+    const file = path.join(entry.parentPath ?? entry.path, entry.name);
+    const source = readFileSync(file, 'utf8');
+    // Two spellings, because TypeScript reads a token two ways and missing either one reports a
+    // live token as dead: a bare name handed to `resolveLengthToken(el, '--gog-menu-panel-gap')`,
+    // and a whole declaration built as a string — `checkable-control.config.ts` holds
+    // `'var(--gog-control-checkbox-box-size-lg, 32px)'`, which is what the host binding writes.
+    // The second shape was missed on the first run and reported eight live tokens as dead.
+    for (const { token } of parseVarReads(source)) tsReads.add(token);
+    for (const match of source.matchAll(/['"`](--gog-[a-zA-Z0-9-]+)['"`]/g)) tsReads.add(match[1]);
+  }
+
+  const themeSelfReads = new Set(
+    [...parseVarReads(stripComments(themeCss))].map(({ token }) => token),
+  );
+
+  for (const token of [...themeDeclared].sort()) {
+    if (readTokens.has(token) || tsReads.has(token) || themeSelfReads.has(token)) continue;
+    if (UNREAD_BY_DESIGN.has(token)) continue;
+
+    problems.push(
+      `[no-dead-declaration] ${token} is declared in styles/theme.css and read by nothing
+` +
+        `      not by a component stylesheet, a global one, theme.css itself, or TypeScript — so a
+` +
+        `      consumer who sets it gets silence. Wire it up where its siblings are read, delete it,
+` +
+        `      or add it to UNREAD_BY_DESIGN with the reason (public scale steps only)`,
     );
   }
 

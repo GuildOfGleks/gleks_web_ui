@@ -526,7 +526,6 @@
      shadow, so a theme moves all of them by turning one knob. Overriding any single one still
      works exactly as before. */
   --gog-panel-shadow: var(--gog-elevation-ring), var(--gog-elevation-3);
-  --gog-panel-elevated-shadow: var(--gog-elevation-highlight), var(--gog-elevation-2);
   --gog-toast-shadow: var(--gog-elevation-ring), var(--gog-elevation-4);
   --gog-dialog-shadow: var(--gog-elevation-ring), var(--gog-elevation-5);
   --gog-toggle-thumb-shadow: var(--gog-elevation-1);
@@ -608,7 +607,6 @@
   --gog-field-slg-padding-y: var(--gog-space-20);
   --gog-field-slg-padding-x: var(--gog-space-40);
   --gog-field-float-label-over-gap: var(--gog-space-8);
-  --gog-toast-gap: var(--gog-space-12);
   --gog-toast-stack-padding: var(--gog-space-16);
   /* L9 (docs/component-geometry.md, "D7 — taken"): the message wraps, so its cap is a measure —
      53ch at --gog-toast-message-font-size (14px), the nearest whole character to today's 400px so
@@ -687,7 +685,6 @@
      itself tinted with the accent. */
   --gog-accordion-hover-color: var(--gog-accordion-text-color);
   --gog-accordion-press-bg: var(--gog-border-color);
-  --gog-accordion-hover-ring: var(--gog-accent-dim);
   /* Its own token. The header's `:focus-visible` outline read `--gog-accordion-hover-ring`, so a
      hover-weight colour was doing focus duty and failed 3:1 in all eleven themes. */
   --gog-accordion-focus-ring-color: var(--gog-accent-color);
@@ -1865,9 +1862,7 @@
   --gog-multiselect-option-disabled-opacity: var(--gog-disabled-opacity);
   --gog-multiselect-option-transition-duration: var(--gog-duration-fast);
   --gog-multiselect-checkbox-border: var(--gog-accent-dim);
-  --gog-multiselect-checkbox-bg: var(--gog-background-color);
   --gog-multiselect-checkbox-checked-bg: var(--gog-accent-color);
-  --gog-multiselect-checkbox-checked-color: var(--gog-primary-color);
   --gog-multiselect-controls-gap: var(--gog-space-4);
   --gog-multiselect-controls-padding: var(--gog-space-8) var(--gog-space-12);
   --gog-multiselect-actions-gap: var(--gog-space-8);
@@ -2740,7 +2735,6 @@
   :root,
   [data-theme] {
     --gog-accordion-hover-bg: color-mix(in srgb, var(--gog-accent-dim) 10%, transparent);
-    --gog-accordion-hover-ring: color-mix(in srgb, var(--gog-accent-color) 30%, transparent);
     --gog-accordion-body-bg: color-mix(in srgb, black 6%, transparent);
     --gog-button-primary-hover-shadow: 0 0 16px
       color-mix(in srgb, var(--gog-accent-bright) 45%, transparent);

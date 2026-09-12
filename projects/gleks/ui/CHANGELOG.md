@@ -114,6 +114,27 @@ reached 1.0, so breaking changes may land in minor versions.
 
   `gog-multiselect`, `gog-autocomplete` and `gog-table` do not window yet.
 
+- **`npm run check:tokens` rule K — a token `theme.css` declares that nothing reads.** The mirror
+  of rule F, which has always caught the opposite direction: a `var()` read with no declaration.
+  Nothing caught a declaration with no reader, so a component could ship a documented knob wired to
+  nothing and every gate this project has would pass. `--gog-menu-panel-gap` was exactly that for
+  the whole life of `gog-menu` (fixed below).
+
+  Reads are collected from component stylesheets, the global ones, `theme.css` itself **and
+  TypeScript**, because a token read only from script is still read. That last half took two
+  passes: TypeScript spells a token two ways — a bare name handed to `resolveLengthToken`, and a
+  whole declaration built as a string (`'var(--gog-control-checkbox-box-size-lg, 32px)'`, which a
+  host binding writes) — and the first version matched only the first shape, reporting **eight
+  live tokens as dead**. A check that cannot read half its inputs is worse than no check, because
+  its findings are what you act on.
+
+  Five exemptions, all steps of a complete public scale (`--gog-elevation-0`, two spacing aliases,
+  two type steps): a scale is offered whole or it is not a scale, and the consumer is the reader.
+  **Nothing belonging to a component may be exempted** — that is the defect the rule exists for.
+
+  It cannot see a dead _chain_: if A is read only by B's declaration and nothing reads B, both look
+  live. The leaf case is the one that has ever happened here.
+
 - **`gog-multiselect` and `gog-autocomplete` window too — the same `virtualize`, same default.**
   Verified live in Chrome on 10 000 options each. Multiselect: 8 rows in the DOM, a 490 004px
   scroll height matching the unwindowed list to the pixel, and row 2 036 sitting at 99 768px,
@@ -295,6 +316,28 @@ reached 1.0, so breaking changes may land in minor versions.
   exactly like a library with no defects.
 
 ### Fixed
+
+- **Six tokens were declared and read by nothing — one wired up, five removed.** Everything rule K
+  found on its first run, each given a verdict rather than a blanket fix:
+
+  **`gog-inputfield`'s clear mark was the wrong size**, and this is the one a consumer can see.
+  Six controls offer a clear button and all six declare `--gog-<block>-clear-icon-ratio` at `0.7`;
+  five read it and `gog-inputfield` did not, so its `×` rendered at the field's full type size —
+  about **43% larger** than the identical mark on a select, multiselect, autocomplete, datepicker
+  or textarea standing next to it. It now reads its own token, like its five siblings.
+
+  **Five leftovers removed**, none of which any stylesheet could reach:
+  `--gog-accordion-hover-ring` (the header's hover paints a colour and a background, never a ring),
+  `--gog-multiselect-checkbox-bg` and `--gog-multiselect-checkbox-checked-color` (the option's mark
+  is a glyph, so a background and a label colour have nothing to paint — the two tokens the mark
+  _does_ read are untouched), `--gog-panel-elevated-shadow` (21.12.0 deliberately pointed the
+  elevated variant at the foundation's own `--gog-panel-shadow`, which left this behind), and
+  `--gog-toast-gap` (the stack uses `--gog-toast-stack-expanded-gap` and the row
+  `--gog-toast-content-gap`).
+
+  **No deprecation cycle for any of the five**, on the same reasoning as the menu's rename: a
+  deprecation window protects working consumer code, and a token nothing reads has none to protect.
+  Overriding any of them has always done exactly nothing, and still does.
 
 - **`gog-menu`'s gap between trigger and panel was a token nothing read.** `--gog-menu-offset` was
   declared in `theme.css`, listed in `TOKENS.md`, and documented on the site as "gap between the
