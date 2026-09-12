@@ -918,10 +918,23 @@ can land without an announced removal window.
     than a few groups: the hubs become small entry points everyone depends on explicitly, where a
     group split would bundle unrelated components together and still not let a consumer take just
     a button.
-  - What is left is the mechanical half and it is large: 34 entry-point folders each with their
-    own `ng-package.json` and public API, ~51 cross-component imports rewritten to package paths,
-    and the primary entry point re-exporting everything for a deprecation window. Worth its own
-    session, with the graph above as the map.
+  - **What is left is not manifests over the current tree — it is moving the tree.** Piloted with
+    one entry point (`icon`) whose `public-api.ts` reached into `src/lib/components/icon/` by
+    relative path: ng-packagr builds the primary, starts the secondary and dies with
+    `Cannot destructure property 'pos' of 'file.referencedFiles[index]'`. **An entry point owns
+    its files.** So each of the 34 components' sources move into their own directory under the
+    package root, and so does `shared`.
+
+  - **And `shared` therefore becomes a published path**, which is the consequence the decision to
+    build did not include. It cannot be imported across entry points by relative path — the file
+    would be compiled into every bundle that reaches it, and `GOG_CONFIG` duplicated across
+    bundles is two different `InjectionToken`s, which is a silent and brutal bug. So
+    `@guildofgleks/ui/shared` is public, republishing helpers this release deliberately narrowed
+    out of the root (`getByPath` and friends, deprecated for 21.14.0). Angular Material solves
+    this the same way and lives with it; it is a decision, not a detail.
+
+  Worth its own session with the graph above as the map, and worth settling the `shared` question
+  before the first file moves.
 
   The original filing:
 

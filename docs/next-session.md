@@ -1,52 +1,76 @@
 # Where to start
 
-**Both virtualization plans are closed.** `docs/virtualization.md` (the three dropdowns) and
-`docs/table-virtualization.md` (the table, which the parent plan's iteration 4 became) have no open
-iterations. All four collection components take `virtualize`, off by default.
+**One thing stands between here and the unbuilt components, and it is sized and scoped:** the
+mechanical half of secondary entry points. Everything else on the durable lists is either closed
+or blocked on publishing 21.13.0.
 
-## What is in flight
+## The state of the lists
 
-`21.13.0` is open in `projects/gleks/ui/CHANGELOG.md`, unreleased, and it is now a large minor.
-Cutting it is the user's, per rule 1.
+| Section         | Open                                                                 |
+| --------------- | -------------------------------------------------------------------- |
+| **Defects**     | none — every entry left is a record of closed work or a lesson       |
+| **Gaps**        | the unbuilt-component list only, which is the thing waiting on this  |
+| **Rough edges** | none actionable — what is left is lab-side and blocked until publish |
+| **Structural**  | secondary entry points, below                                        |
 
-## Read these two lessons before the next feature
+## Secondary entry points — read this before touching it
 
-Both came out of the windowing work and neither is about windowing.
+The prerequisite is **done and gated**: `shared/` no longer imports upward and
+`npm run check:layering` keeps it that way. Two cycles had to go first, because ng-packagr refuses
+a cycle between entry points and a cycle is invisible until something tries to cut along it.
 
-- **Inside an effect, a method call subscribes to everything that method reads.**
-  `gog-table`'s reset effect called `rowWindow.reset()`, which reads the measurement signal to
-  decide whether it has anything to clear — so measuring re-triggered the effect, which cleared the
-  measurement. **Nothing looked wrong**: the right rows rendered at the right heights, and only the
-  scroll height was quietly the estimate times the row count. Found by computing what the total
-  should have been and noticing it was a round multiple. `untracked` is the fix.
-- **The predicted hard part was free three times running.** Iteration 2's `ResizeObserver` (the
-  scroller already had one), iteration 3's keyboard (the index-based helper already existed),
-  iteration 4's sticky header and selection column. Each time the real work was somewhere the plan
-  had not looked. Survey before designing; `docs/table-virtualization.md`'s iteration 0 is the
-  shape that keeps paying.
+Two things were then measured rather than assumed, and both change the job:
 
-## Where to look for the next thing
+1. **An entry point owns its files.** A pilot whose `public-api.ts` reached into `src/lib/` by
+   relative path builds the primary, starts the secondary and dies with
+   `Cannot destructure property 'pos' of 'file.referencedFiles[index]'`. So this is a **source-tree
+   move** of 34 component folders, not manifests laid over the current one.
+2. **`shared` therefore becomes a published path.** Cross-entry-point relative imports duplicate
+   the file into every bundle that reaches it — and `GOG_CONFIG` duplicated is two different
+   `InjectionToken`s, silently. So `@guildofgleks/ui/shared` is public, republishing helpers this
+   release deliberately narrowed out of the root.
 
-`docs/backlog.md`, Defects first — the project's own ordering. The Gaps section's unbuilt-component
-list is what leads it now: `avatar`, `breadcrumbs`, `stepper`, `file upload`, `rating`,
-`empty state`. Each needs the question `docs/panel-card.md` sets — what does it own that a `<div>`
-and a class do not — answered before code, and `gog-alert` is the recent example of answering it
-with semantics rather than looks.
+**Settle #2 before the first file moves.** It is the decision the "build it" call did not include,
+and it partly undoes `4c00126`.
 
-## A verification trap, twice paid for
+The graph is in `docs/backlog.md`: 34 components, 51 cross-component edges, hubs are `icon`,
+`ripple`, `scroll`, `spinner`, `skeleton`, `button`. That shape argues for one entry point per
+component over a few groups.
 
-**A hidden Chrome tab pauses `requestAnimationFrame`, and these components measure in one.**
-`docs/ripple.md` records the CSS-animation half; the rAF half is worse, because a scripted check in
-a hidden tab reads the seed and reports it as the measurement — it does not fail, it lies. Worse
-still for the table: a frame scheduled _before_ the tab was hidden never fires, and the
-`measureFrame !== null` guard then wedges every later measurement.
+## What 21.13.0 has become
 
-Foreground the tab (a `computer` click on the page usually does it). If you cannot, shim
-`requestAnimationFrame` to `setTimeout` in the page — but hidden-tab timers throttle to about a
-second, so wait in seconds, and clear any stale frame id first.
+Large, and unreleased. Virtualization across all four collection components, `gog-alert`, three
+token renames with the first real deprecation window since 21.7.0, three new checks
+(`check:tokens` rule K, `check:glyph-box`, `check:layering`), and a run of small defects each found
+by a check rather than by eye. Its heading still says `planned`, so `npm run check:release` fails —
+**that is the correct state**; dating it is cutting the release, which is rule 1 and yours alone.
 
-## Not started, and not mine to start
+## Two lessons worth more than the fixes
 
-`docs/lab-after-publish.md` has a full 21.13.0 section, now including the four `virtualize` entries
-and the table's own (its limitations section currently says the table does not virtualize, which
-stops being true). None of it can begin until 21.13.0 is on npm.
+- **Inside an effect, a method call subscribes to everything that method reads.** `gog-table`'s
+  reset effect called `reset()`, which reads the measurement signal — so measuring re-triggered the
+  effect, which cleared the measurement. Nothing looked wrong; only the scroll height was quietly
+  the estimate times the row count.
+- **A check whose findings are half wrong is worse than no check.** `check:tokens` rule K reported
+  eight live tokens as dead because it knew one of the two ways TypeScript spells a token.
+  `check:glyph-box` reported a checkbox because it measured the content box instead of the border
+  box, and its findings depended on visit order until each route got its own browser context.
+  Every one was caught by not believing the first run.
+
+## The verification trap, paid for twice
+
+A hidden Chrome tab pauses `requestAnimationFrame`, and several components measure in one. A
+scripted check in a hidden tab reads the seed and reports it as the measurement — it does not fail,
+it lies. Worse for the table: a frame scheduled before the tab was hidden never fires, and the
+`measureFrame !== null` guard then wedges every later measurement. Foreground the tab, or shim
+`requestAnimationFrame` to `setTimeout` and wait in seconds.
+
+`check:glyph-box` sidesteps all of it by driving the installed Chrome through Playwright
+(`channel: 'chrome'`, no browser download) against the prerendered showcase — needs
+`npm run build:showcase` first.
+
+## Blocked, not forgotten
+
+`docs/lab-after-publish.md` has a full 21.13.0 section, including the `virtualize` entries, the
+table's own, the FAQ's "nothing in the library virtualizes", and the renamed tokens. None of it can
+start until 21.13.0 is on npm.
