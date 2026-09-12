@@ -103,6 +103,19 @@ export class SelectPage {
     name: `Country ${i + 1}`,
   }));
   protected readonly compactPanelValue = signal<string | number | null>(null);
+
+  /**
+   * Long enough that the difference is the point: unwindowed this stamps 10 000 rows to show
+   * about six, which measures at 216ms of build and layout before Angular does any of its own.
+   */
+  protected readonly manyCities: GogDropdownOption[] = Array.from({ length: 10000 }, (_, i) => ({
+    id: `city-${i}`,
+    name: `City ${(i + 1).toLocaleString('en-US')}`,
+  }));
+  protected readonly windowedCity = signal<string | number | null>(null);
+  protected readonly eagerCity = signal<string | number | null>(null);
+  protected readonly virtualizeOn = signal(true);
+
   protected readonly bottomOfPageValue = signal<string | number | null>(null);
 
   protected readonly fullWidthCountry = signal<string | number | null>(null);

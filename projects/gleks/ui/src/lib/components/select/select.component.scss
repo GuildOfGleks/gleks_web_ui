@@ -255,6 +255,13 @@
   padding: var(--gog-select-options-padding);
 }
 
+/* The windowed list's filler above and below the rendered rows. `flex-shrink: 0` is the whole
+   declaration that matters: as a flex child in a column that is taller than its container, a
+   spacer left to shrink gives back exactly the height the window just computed. */
+.gog-select__spacer {
+  flex-shrink: 0;
+}
+
 .gog-select__option {
   width: 100%;
   display: flex;

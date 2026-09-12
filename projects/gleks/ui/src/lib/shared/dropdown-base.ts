@@ -5,10 +5,12 @@ import {
   Directive,
   DoCheck,
   ElementRef,
+  Injector,
   ModelSignal,
   PLATFORM_ID,
   Signal,
   TemplateRef,
+  afterNextRender,
   computed,
   contentChild,
   effect,
@@ -32,7 +34,13 @@ import { resolveRipple } from './ripple-state';
 import { GogErrorState, type GogErrorDisplay } from './error-state';
 import { type GogOptionAccessor, isSameOptionValue, readOption } from './option-accessor';
 import { GogFloatLabelState } from './float-label-state';
-import { handleRovingFocusKeydown } from './roving-focus';
+import {
+  type RovingFocusKey,
+  handleRovingFocusKeydown,
+  isRovingFocusKey,
+  nextRovingFocusIndex,
+} from './roving-focus';
+import { GogVirtualWindow } from './virtual-window';
 import { GogDropdownFilterPosition, GogFloatLabelVariant, GogSize } from './types';
 
 /**
@@ -342,6 +350,7 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   protected readonly uid = ++GogDropdownBase.nextUid;
 
   protected readonly elRef = inject(ElementRef<HTMLElement>);
+  private readonly injector = inject(Injector);
   protected readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly document = inject(DOCUMENT);
   private readonly appRef = inject(ApplicationRef);
@@ -493,6 +502,53 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
 
   protected onFilterInput(event: Event): void {
     this.filterQuery.set((event.target as HTMLInputElement).value);
+    // Typing can take 10 000 options to 3. The window's range and the scroller's position have
+    // to reset *together*: leave the scroller where it was and the range is computed from a
+    // scrollTop that is past the end of the new list, so the panel renders rows 400-420 of a
+    // three-row list and shows nothing. The panel still looks right until you type, which is
+    // why this is the bug a reviewer does not see.
+    this.resetPanelScroll();
+  }
+
+  /** Puts the scroller, the window and the keyboard's idea of "here" back at the top together. */
+  private resetPanelScroll(): void {
+    this.activeOptionIndex.set(-1);
+    this.setPanelScrollTop(0);
+  }
+
+  /**
+   * Moves the scroller and the window's own idea of where it is, in that order and in the same
+   * turn.
+   *
+   * The signal is written here rather than waiting for the scroller to echo the change back
+   * through `(gogScroll)`: that echo is coalesced into an animation frame, so a keyboard move
+   * that scrolled would compute its new range one frame after it moved focus -- which is one
+   * frame during which the row it is trying to focus has not been rendered.
+   */
+  private setPanelScrollTop(top: number): void {
+    this.panelViewport.update((viewport) => ({ ...viewport, scrollTop: top }));
+
+    const viewport = this.panelViewportElement();
+    if (!viewport) return;
+    // Feature-detected rather than assumed, for the reason `gog-autocomplete` records against
+    // `scrollIntoView`: jsdom implements neither, and an unhandled throw here fails a whole test
+    // run rather than this line. Assigning `scrollTop` is the equivalent every host does have.
+    if (typeof viewport.scrollTo === 'function') {
+      viewport.scrollTo({ top, behavior: 'auto' });
+    } else {
+      viewport.scrollTop = top;
+    }
+  }
+
+  /**
+   * `gog-scroll`'s scrolling element inside the open panel, found in the DOM rather than with a
+   * `viewChild`: an appended panel is attached to `<body>` as its own change-detection root, so a
+   * view query on this component does not reach it.
+   */
+  private panelViewportElement(): HTMLElement | null {
+    if (!this.isBrowser) return null;
+    const scope = this.overlay.hostElement ?? (this.elRef.nativeElement as HTMLElement);
+    return scope.querySelector<HTMLElement>('.gog-scroll__viewport');
   }
 
   /** Resets the control to its empty value and notifies any attached form. */
@@ -555,6 +611,162 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   private measuredOptionGap: number | null = null;
   private measureFrame: number | null = null;
   private repositionFrame: number | null = null;
+
+  // ── Windowing ────────────────────────────────────────────────────────────────
+  //
+  // See `docs/virtualization.md`. The arithmetic is `GogVirtualWindow`'s; what lives here is
+  // everything that touches the page: what the row pitch really is, how tall the scroller
+  // actually became, where it is scrolled to, and which index the keyboard is on.
+
+  /**
+   * Whether this instance windows its list. Resolved the same way every other dropdown setting
+   * is: instance input, then `GOG_CONFIG.dropdown.virtualize`, then off.
+   *
+   * **Off by default and never switched on automatically.** A windowed list and a plain one
+   * differ under `Ctrl+F`, under a screen reader's "list all items", and under any consumer CSS
+   * that targets `:last-child`; flipping that at a row-count threshold would make the component's
+   * behaviour depend on how much data happened to arrive, which works in development and
+   * surprises in production. `GOG_CONFIG.ripple.enabled` is off by default for the same reason.
+   */
+  protected readonly resolvedVirtualize = computed(() =>
+    resolveConfigured(this.virtualizeRequest(), this.globalConfig.dropdown?.virtualize, false),
+  );
+
+  /**
+   * The subclass's own `virtualize` input, if it offers one.
+   *
+   * A subclass overrides this with its input rather than the base declaring one, so a control
+   * that has not adopted windowing yet does not inherit a public input that does nothing. Read
+   * only from inside a `computed`, which is what lets a subclass field override a base field
+   * that was initialised first.
+   */
+  protected readonly virtualizeRequest: Signal<boolean | undefined> = signal(undefined);
+
+  /**
+   * How far apart two rows start, in px: the row's own height plus whatever gap the list puts
+   * between rows. Seeded from the tokens and replaced by the measurement, exactly as the
+   * placement estimate is -- and for a window it matters more, because the error accumulates
+   * once per row instead of once per panel.
+   */
+  protected readonly rowPitch = signal(0);
+
+  /**
+   * The scroller's real geometry, fed from `gog-scroll`'s own `(gogScroll)`.
+   *
+   * The plan called for a `ResizeObserver` on the scroller; it is not needed, because the
+   * scroller already runs one and already coalesces scroll and resize into a single
+   * rAF-batched emission carrying both numbers. A second observer would have measured the same
+   * element one frame later.
+   *
+   * `height` is the viewport's `clientHeight`, never `--gog-*-panel-max-height`: that token is a
+   * cap, and a panel with three options is three rows tall.
+   */
+  protected readonly panelViewport = signal<{ scrollTop: number; height: number }>({
+    scrollTop: 0,
+    height: 0,
+  });
+
+  private readonly virtualWindow = new GogVirtualWindow({
+    count: computed(() => this.visibleOptions().length),
+    rowHeight: this.rowPitch,
+    viewportHeight: computed(() => this.panelViewport().height),
+    scrollTop: computed(() => this.panelViewport().scrollTop),
+  });
+
+  /** Index into `visibleOptions()` of the row the keyboard is on, or -1 for none. */
+  protected readonly activeOptionIndex = signal(-1);
+
+  /** The slice of `visibleOptions()` actually stamped into the panel. */
+  protected readonly optionWindow = computed(() =>
+    this.resolvedVirtualize()
+      ? this.virtualWindow.range()
+      : { start: 0, end: this.visibleOptions().length },
+  );
+
+  /**
+   * What the template loops over. Identical to `visibleOptions()` when not windowing, and the
+   * same array instance, so nothing re-renders for the sake of a slice that changed nothing.
+   */
+  protected readonly renderedOptions = computed(() => {
+    const all = this.visibleOptions();
+    const { start, end } = this.optionWindow();
+    return start === 0 && end === all.length ? all : all.slice(start, end);
+  });
+
+  /**
+   * Filler above and below the rendered rows, in px.
+   *
+   * Spacers rather than absolute positioning: the rows stay flex children of the same container,
+   * so every gap, selector and `:last-child` the component already relies on keeps working. See
+   * `GogVirtualWindow`'s own note for why that trade is worth making for a one-column list.
+   */
+  protected readonly padBefore = computed(() =>
+    this.resolvedVirtualize() ? this.virtualWindow.padBefore() : 0,
+  );
+  protected readonly padAfter = computed(() =>
+    this.resolvedVirtualize() ? this.virtualWindow.padAfter() : 0,
+  );
+
+  /**
+   * A windowed listbox holds twenty `role="option"` children and has to announce ten thousand.
+   *
+   * Set only while windowing. An unwindowed list has every option in the DOM, and the browser's
+   * own count is then both correct and free -- restating it would be one more thing to keep true.
+   */
+  protected readonly ariaSetSize = computed(() =>
+    this.resolvedVirtualize() ? this.visibleOptions().length : null,
+  );
+
+  /** The real position of a rendered row in the full list, 1-based, or null when not windowing. */
+  protected ariaPosInSet(renderedIndex: number): number | null {
+    return this.resolvedVirtualize() ? this.optionWindow().start + renderedIndex + 1 : null;
+  }
+
+  /** `(gogScroll)` on the panel's `gog-scroll`. */
+  protected onPanelScroll(metrics: { scrollTop: number; clientHeight: number }): void {
+    this.panelViewport.update((viewport) => ({
+      scrollTop: metrics.scrollTop,
+      // A zero is "not laid out yet", not "no viewport": the scroller's first emission comes
+      // from its own `afterNextRender`, which can land before the panel has a height. Taking it
+      // literally would throw away the seed and render the whole list for a frame -- the one
+      // thing the seed exists to prevent -- and then render it again once the real height
+      // arrived. The last number known to be real is a better answer than a zero.
+      height: metrics.clientHeight > 0 ? metrics.clientHeight : viewport.height,
+    }));
+    this.releaseFocusLeavingTheWindow();
+  }
+
+  /**
+   * A row that scrolls out of the window is unmounted, and an unmounted element holding focus
+   * drops it on `<body>` -- where an open panel has no keyboard at all: Escape does not close it
+   * and the arrows scroll the page instead of the list.
+   *
+   * So a mouse scroll that would take the focused row away hands focus back to the trigger,
+   * which is a state both Escape and ArrowDown work from. Checked here rather than in an effect
+   * because this runs *before* the re-render, while the row still exists and can still be asked
+   * whether it is the focused one -- after the unmount that question has no answer.
+   *
+   * This is the price of windowing that a plain list does not pay, and the reason it is opt-in.
+   */
+  private releaseFocusLeavingTheWindow(): void {
+    const active = this.activeOptionIndex();
+    if (!this.isBrowser || !this.resolvedVirtualize() || active < 0) return;
+
+    const { start, end } = this.optionWindow();
+    if (active >= start && active < end) return;
+
+    this.activeOptionIndex.set(-1);
+
+    const scope = this.overlay.hostElement ?? (this.elRef.nativeElement as HTMLElement);
+    const focused = this.document.activeElement;
+    if (
+      focused instanceof HTMLElement &&
+      scope.contains(focused) &&
+      focused.classList.contains(this.optionClass)
+    ) {
+      this.focusTrigger();
+    }
+  }
 
   private onChangeFn: (val: TValue) => void = () => {};
   private onTouchedFn: () => void = () => {};
@@ -655,6 +867,7 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
 
     this.isOpen.set(true);
     this.refreshPanelMetrics();
+    this.seedWindow();
     this.updatePlacement();
 
     if (this.resolvedAppendToBody()) {
@@ -662,6 +875,26 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
     }
 
     this.scheduleOptionMeasure();
+  }
+
+  /**
+   * Gives the window numbers to work from before anything has rendered.
+   *
+   * Without this the first frame has a viewport height of zero, which `GogVirtualWindow`
+   * deliberately reads as "render everything" -- correct, and exactly the 10 000 rows the window
+   * exists to avoid, stamped once before the scroller reports its real height a frame later. The
+   * seed is the same panel-height estimate placement already uses, so no new arithmetic and no
+   * new token.
+   */
+  private seedWindow(): void {
+    this.activeOptionIndex.set(-1);
+    this.rowPitch.set(
+      (this.measuredOptionHeight ?? this.optionHeight) + (this.measuredOptionGap ?? this.optionGap),
+    );
+    this.panelViewport.set({
+      scrollTop: 0,
+      height: this.isBrowser ? this.estimatePanelHeight() : 0,
+    });
   }
 
   protected close(): void {
@@ -753,6 +986,10 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
             Math.abs(gap - (this.measuredOptionGap ?? this.optionGap)) > 0.5;
       this.measuredOptionHeight = height;
       this.measuredOptionGap = gap;
+      // The window reads this too, and it is the reason the measurement is not optional there:
+      // a placement is wrong once, a pitch is wrong once per row and the error accumulates down
+      // the list until the rendered rows and the scrollbar disagree about where they are.
+      this.rowPitch.set(height + gap);
       if (changed) this.updatePlacement();
     });
   }
@@ -761,6 +998,14 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   protected onTriggerArrowKeydown(event: Event): void {
     if (!this.isOpen()) return;
     event.preventDefault();
+
+    // Windowed, the last option is not in the DOM to be focused, so the entry point is an index
+    // in the full list rather than an element in the rendered slice. Home/End mean the first and
+    // last *reachable* option, which is what ArrowDown and ArrowUp mean from the trigger.
+    if (this.resolvedVirtualize()) {
+      this.moveActiveOption((event as KeyboardEvent).key === 'ArrowUp' ? 'End' : 'Home');
+      return;
+    }
 
     const options = this.enabledOptionElements();
     if (options.length === 0) return;
@@ -787,7 +1032,70 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
       return;
     }
 
+    // The inversion windowing needs: arrow keys move an index in `visibleOptions()`, and the DOM
+    // follows it. Walking rendered elements stops at the edge of the window, so ArrowDown from
+    // the last rendered row would wrap to the first rendered row rather than advance the list.
+    if (this.resolvedVirtualize() && isRovingFocusKey(event.key)) {
+      event.preventDefault();
+      this.moveActiveOption(event.key);
+      return;
+    }
+
     handleRovingFocusKeydown(event, this.enabledOptionElements());
+  }
+
+  /**
+   * Moves the keyboard's index by one roving-focus key, skipping disabled options and wrapping,
+   * then makes the DOM agree: scroll first if the target is outside the window, focus second.
+   */
+  private moveActiveOption(key: RovingFocusKey): void {
+    const options = this.visibleOptions();
+    if (options.length === 0) return;
+
+    const current = this.activeOptionIndex();
+    // With nothing active yet, start one step *behind* the intended first target and let the
+    // wrap do the work, so a disabled first (or last) option is skipped by the same code that
+    // skips one in the middle.
+    const from =
+      current >= 0 ? current : key === 'ArrowUp' || key === 'End' ? 0 : options.length - 1;
+
+    this.focusOptionAt(
+      nextRovingFocusIndex(
+        key,
+        from,
+        options.length,
+        (index) => !this.isOptionDisabled(options[index]),
+      ),
+    );
+  }
+
+  /**
+   * Puts the keyboard on `index` and the focus with it.
+   *
+   * The wait is conditional on purpose: `scrollOffsetFor` returns null when the row is already
+   * visible, which means it is already rendered and can be focused in this turn. Only a move
+   * that actually changes the window has to wait for the render that stamps the row.
+   */
+  private focusOptionAt(index: number): void {
+    this.activeOptionIndex.set(index);
+
+    const offset = this.virtualWindow.scrollOffsetFor(index);
+    if (offset === null) {
+      this.focusRenderedOption(index);
+      return;
+    }
+
+    this.setPanelScrollTop(offset);
+    if (!this.isBrowser) return;
+    afterNextRender(() => this.focusRenderedOption(index), { injector: this.injector });
+  }
+
+  private focusRenderedOption(index: number): void {
+    if (!this.isBrowser) return;
+    const scope = this.overlay.hostElement ?? (this.elRef.nativeElement as HTMLElement);
+    scope
+      .querySelector<HTMLElement>(`.${this.optionClass}[data-gog-option-index="${index}"]`)
+      ?.focus();
   }
 
   protected focusTrigger(): void {

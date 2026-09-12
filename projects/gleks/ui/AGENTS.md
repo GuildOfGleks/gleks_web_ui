@@ -301,7 +301,7 @@ parent's config**, one level deep per key — it does not replace it.
 | Key            | Fields                                                                                | Applies to                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | -------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `control`      | `size`, `errorDisplay`, `clearable`                                                   | `size`: button, `[gogButton]`, button-toggle-group, checkbox, toggle, radio-group, inputfield, textarea, select, multiselect, autocomplete, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, datepicker, radio-group, slider. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip. |
-| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`                               | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text).                                                                                                                                                                                                                                                     |
+| `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`, `virtualize`                 | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text). `virtualize` reaches `gog-select` only.                                                                                                                                                                                                             |
 | `floatLabel`   | `variant`, `showPlaceholder`                                                          | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                                                       |
 | `datepicker`   | `locale`, `firstDayOfWeek`, `format`                                                  | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                                          | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -742,12 +742,39 @@ and multiselect unless noted otherwise):
 | `inputId` (select/autocomplete only)                   | `string`                                | `''`                                                         |                                                                                     |
 | `ripple`                                               | `boolean \| undefined`                  | `false`                                                      | press ripple; via `GOG_CONFIG.ripple.enabled`                                       |
 
-`gog-select`-specific: `value: model<TValue>(null)`.
+`gog-select`-specific: `value: model<TValue>(null)`, and `virtualize: boolean | undefined` (default `false`, via `GOG_CONFIG.dropdown.virtualize`) — see below.
 `gog-multiselect`-specific additions: `value: model<TValue[]>([])`, `showControls: boolean` (default `false`, a select-all/clear row), `controlsPosition: 'top'|'bottom'` (default `'top'`), and `selectAllLabel`/`clearAllLabel` for that row's two buttons (`'Select all'`/`'Clear'`, also via `GOG_CONFIG.labels`).
 
 CVA: yes, both. Slots (shared): `<ng-template gogDropdownChevron>` (custom chevron markup),
 `<ng-template gogDropdownOption let-opt let-selected="selected" let-label="label">` (custom
 option row). Multiselect adds `<ng-template gogMultiselectClearIcon>`.
+
+**`virtualize` for a list in the thousands, and only when you mean it.** Unwindowed, 10 000
+options build 10 000 DOM rows to show about six: measured in Chrome that is 512ms before the panel
+appears, against 21ms windowed, on the same data. Windowed, the DOM holds roughly twenty rows
+whatever the count is, and the scrollbar is identical because spacers stand in for the rows that
+are not there.
+
+It is **off by default and never switched on at a row-count threshold**, which is the same call
+`GOG_CONFIG.ripple.enabled` makes: a windowed list behaves differently in ways nothing about the
+data predicts, so flipping it when enough rows happen to arrive works in development and surprises
+in production. Set it per field, or app-wide with `GOG_CONFIG.dropdown.virtualize`.
+
+What changes while it is on:
+
+- **`Ctrl+F` finds only the rendered rows**, and CSS targeting `:last-child` matches the last
+  _rendered_ row. Those are the two that catch people out.
+- **The announced count stays honest.** `aria-setsize` and `aria-posinset` carry the real list and
+  the real position, so a screen reader is told "10 000 items", not "20".
+- **Scrolling a keyboard-focused row out of view hands focus back to the trigger**, because the
+  row it was on no longer exists. Escape and ArrowDown both work from there. An unwindowed list
+  never has to do this.
+- Arrow keys move through the whole list rather than the rendered part, so ArrowUp from the
+  trigger still reaches option 10 000.
+
+It reaches `gog-select` only. `gog-multiselect`, `gog-autocomplete` and `gog-table` do not window
+yet; `gogLoadMore` and `[lazy]` solve the _fetch_ half for two of them and do nothing about the
+DOM.
 
 **Turn `filter` on past about seven options — or order them instead.** Choice time grows with the
 log of the count (`T = b · log₂(n + 1)`), so beyond roughly seven a panel stops being scanned and

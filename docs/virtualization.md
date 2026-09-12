@@ -129,9 +129,77 @@ none of them in the original sketch:
 when a row is already visible: scrolling when nothing needs to move cancels a user's own
 in-progress scroll in some browsers.
 
+### As iteration 2 finished
+
+`gog-select` windows. Measured in Chrome on one page holding two selects over the same 10 000
+options, which is the comparison the showcase page now ships:
+
+|              | opens in     | rows in the DOM | scrollable content |
+| ------------ | ------------ | --------------- | ------------------ |
+| eager        | **511.6 ms** | 10 000          | 450 008px          |
+| `virtualize` | **20.8 ms**  | 10              | 450 008px          |
+
+The identical third column is the part worth checking rather than the first two: the spacers make
+the scrollbar say the same thing either way, and the rows land exactly where their indices claim —
+at `scrollTop: 225000` the first rendered row is City 4 997 with `padBefore: 224820`, which is
+4 996 × 45 to the pixel. No drift at ten thousand rows.
+
+**The four traps in the section above: three of them resolved differently from the plan.**
+
+- **Trap 1 (the ARIA count) is as written**, and is the one thing here with no surprise in it.
+- **Trap 2 (keyboard) needed less code than expected.** `nextRovingFocusIndex` already existed as
+  the index half of `roving-focus.ts` — wrapping, skipping disabled, `Home`/`End` meaning the
+  first and last _reachable_ option — so the inversion was a matter of calling the half that was
+  already there rather than writing navigation twice. `handleRovingFocusKeydown` (the DOM half)
+  still serves the unwindowed path unchanged.
+- **Trap 3 (the panel's height) did not need a `ResizeObserver`.** `gog-scroll` already runs one,
+  and already coalesces scroll and resize into a single rAF-batched `(gogScroll)` carrying both
+  `scrollTop` and `clientHeight`. A second observer would have watched the same element and
+  reported a frame later. **The real hazard was the opposite one:** that emission can arrive
+  before the panel has a height, and a `clientHeight` of `0` read literally throws the seed away
+  and renders the whole list for a frame — precisely what the seed exists to prevent. A zero is
+  "not laid out yet", not "no viewport", and is ignored.
+- **Trap 4 (filtering) is narrower than this document claimed.** `GogVirtualWindow` clamps a
+  scrollTop past the end of its own list — written for an elastic overscroll bounce — so "it
+  renders rows 400–420 of a three-row list and shows nothing" **cannot happen**: the clamp puts
+  the range back at the top for free. The first spec written for this passed with the reset
+  removed, which is how that was found. What the clamp cannot do is the case where the filtered
+  list is still long enough to scroll: 111 matches at 45px clamp to a _valid_ position in the new
+  list, and the search shows the end of its results instead of the beginning. The reset is for
+  that, and the spec now asserts it (`expected 'Option 189' to be 'Option 1'` without it).
+
+**And one thing this document did not have at all, which is the real cost of windowing.** A row
+scrolled out of the window is unmounted, and an unmounted element holding focus drops it on
+`<body>` — where an open panel has no keyboard at all: Escape does not close it, the arrows scroll
+the page. Arrow into the list, then reach for the wheel, and that is where you are. So a scroll
+that would take the focused row away hands focus back to the trigger first, which Escape and
+ArrowDown both work from.
+
+It is checked in the scroll handler, **before** the re-render, rather than in an effect after it:
+once the row is gone there is nothing left to ask whether it was the one holding focus. The spec
+for it fails without the guard with `expected <body> to be <button>`, which is the defect stated
+as plainly as it can be.
+
+This is a behaviour a plain list never has to have, and it belongs beside `Ctrl+F` and
+`:last-child` in the argument for keeping windowing opt-in — the list of ways a windowed list
+differs is one longer than the plan thought.
+
+**What did not have to change:** the option template, the ripple, the selected mark, the filter
+box, placement, `appendToBody`, the CVA, or any of `gog-select`'s 46 existing specs. The spacers
+are flex children of the same container the rows are, which is what that choice in
+`GogVirtualWindow` bought.
+
+**Before iteration 3**, note that `gog-multiselect` is the one list of the three that declares a
+real row gap. Its pitch is height + gap where the select's is height alone, and the spacers are
+flex children too — so they will take that gap on both sides of themselves. That is arithmetic
+nothing here exercised.
+
 ## The four things that are easy to get wrong
 
-These are the plan, more than the arithmetic is.
+These are the plan, more than the arithmetic is. **Read the iteration-2 note above before
+trusting any of the four**: one of them was right as written, one needed less than it asks for,
+one asks for the wrong mechanism, and one describes a failure that cannot happen. They are kept
+unedited because what each turned into is the more useful record.
 
 ### 1. A listbox with 20 of 10 000 options must still say it has 10 000
 
@@ -188,7 +256,7 @@ So: per-instance `virtualize`, with `GOG_CONFIG.dropdown.virtualize` as the app-
 | --- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
 | 0   | Verify `--gog-select-option-height` against a rendered row in all eleven themes                         | ✅ 2026-09-12 — wrong in 11 of 11, and it is load-bearing today |
 | 1   | `GogVirtualWindow` in `lib/shared` — arithmetic, specs, no component touched                            | ✅ 2026-09-12                                                   |
-| 2   | `gog-select` adopts it: `virtualize` input, ARIA counts, keyboard rework, filter reset, showcase        | 🔜                                                              |
+| 2   | `gog-select` adopts it: `virtualize` input, ARIA counts, keyboard rework, filter reset, showcase        | ✅ 2026-09-12 — and three of the four traps landed differently  |
 | 3   | `gog-multiselect` and `gog-autocomplete` follow — same base, so mostly the keyboard half again          | 🔜                                                              |
 | 4   | `gog-table`: variable rows, sticky header, selection column. Its own decisions; may become its own plan | 🔜                                                              |
 

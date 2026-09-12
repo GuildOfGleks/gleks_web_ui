@@ -141,12 +141,22 @@
       [focusable]="false"
       overscrollBehavior="contain"
       class="gog-select__scroll"
+      (gogScroll)="onPanelScroll($event)"
     >
       <div class="gog-select__options">
         @if (visibleOptions().length === 0) {
           <p class="gog-select__empty">{{ filterEmptyMessage() }}</p>
         }
-        @for (option of visibleOptions(); track valueOf(option)) {
+        <!--
+          The windowed list's spacers. Filler in normal flow rather than absolute positioning, so
+          the rows stay flex children of this container and every gap and selector it already
+          relies on keeps working — see GogVirtualWindow. Both are zero-height and absent from
+          the accessibility tree when the list is not windowed, which is the default.
+        -->
+        @if (padBefore() > 0) {
+          <div class="gog-select__spacer" [style.height.px]="padBefore()" aria-hidden="true"></div>
+        }
+        @for (option of renderedOptions(); track valueOf(option); let i = $index) {
           <!--
             tabindex="-1" keeps the list to a single tab stop, as the listbox pattern expects:
             focus is moved between options with the arrow keys, not by tabbing through every
@@ -157,8 +167,11 @@
             class="gog-select__option"
             role="option"
             tabindex="-1"
+            [attr.data-gog-option-index]="optionWindow().start + i"
             [attr.aria-selected]="isSelected(option)"
             [attr.aria-disabled]="isOptionDisabled(option)"
+            [attr.aria-setsize]="ariaSetSize()"
+            [attr.aria-posinset]="ariaPosInSet(i)"
             [class.gog-select__option--selected]="isSelected(option)"
             [class.gog-select__option--disabled]="isOptionDisabled(option)"
             (click)="selectOption(option, $event)"
@@ -182,6 +195,9 @@
               <span class="gog-select__option-label">{{ labelOf(option) }}</span>
             }
           </button>
+        }
+        @if (padAfter() > 0) {
+          <div class="gog-select__spacer" [style.height.px]="padAfter()" aria-hidden="true"></div>
         }
       </div>
     </gog-scroll>

@@ -40,6 +40,30 @@ export class SelectComponent<
    */
   readonly value = model<TValue>(null as TValue);
 
+  /**
+   * Renders only the options in view instead of all of them.
+   *
+   * For lists long enough that stamping every row is the cost: 10 000 options build 10 000 DOM
+   * nodes to show about six, which measures at 216ms of build and layout before Angular does any
+   * of its own work, and 50 000 at over a second. Windowed, that is a fixed ~20 rows whatever the
+   * count is.
+   *
+   * **Opt in per field, or app-wide with `GOG_CONFIG.dropdown.virtualize`; never automatic.** A
+   * windowed list behaves differently in ways nothing about the data predicts -- `Ctrl+F` finds
+   * only what is rendered, a screen reader's "list all items" reads the window rather than the
+   * list (the count stays honest through `aria-setsize`, the rows do not), and CSS targeting
+   * `:last-child` matches the last *rendered* row.
+   *
+   * Two things it also changes, both only while it is on. Scrolling a keyboard-focused row out
+   * of view hands focus back to the trigger, because the row it was on no longer exists. And the
+   * rows are laid out by a spacer above and below rather than by their own count, so a consumer
+   * stylesheet reaching into the options list by position will not find what it expects.
+   *
+   * @default false
+   */
+  readonly virtualize = input<boolean | undefined>(undefined);
+  protected override readonly virtualizeRequest = this.virtualize;
+
   protected readonly panelTemplate = viewChild<TemplateRef<unknown>>('panelTpl');
   /** A cleared select is `null`, whatever `TValue` the consumer bound. */
   protected readonly emptyValue = null as TValue;

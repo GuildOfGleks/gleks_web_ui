@@ -82,12 +82,43 @@ Small, and only one of the three has any visible surface on the site.
   on its own, the reference does not). `AGENTS.md` and `README.md` already carry it, and
   `ui-showcase` has a page worth copying the examples from.
 
-  **Two things the page has to say, because they read as omissions otherwise.** `dismissed` means
+  **One thing the page has to say, because it reads as an omission otherwise.** `dismissed` means
   _pressed_, not removed — the alert stays in the DOM and the app decides, which is deliberate and
-  is why the showcase example keeps its own signal. And the component sets **no `role` or
-  `aria-live` yet**: that is measured-not-guessed work recorded in `docs/alert.md`, not an
-  oversight, and a docs page that quietly implies an alert announces itself would be worse than
-  one that says it does not.
+  is why the showcase example keeps its own signal.
+
+  (This entry used to end by saying the component sets no `role` or `aria-live`. It did when the
+  entry was written and it does not now — the `live` input shipped later the same day, and the
+  last item in this section describes it. Two entries about one component, written hours apart,
+  and the earlier one was already wrong: a checklist drifts the same way prose does.)
+
+- **`gog-select` has a `virtualize` input, and the Select page should show it.** Renders only the
+  rows in view. On the same 10 000 options, measured in Chrome: **512ms** and 10 000 DOM rows
+  eager against **21ms** and 10 windowed. Off by default, per field or app-wide through
+  `GOG_CONFIG.dropdown.virtualize` — which is a new key for the Global Config page's table.
+  `ui-showcase`'s Select page has a two-field side-by-side demo worth copying, since the
+  comparison is the only way to show what it buys.
+
+  **Four things the page must say, or it teaches the wrong thing.** It is never switched on
+  automatically at a row count, and the reason is the interesting part — `Ctrl+F` finds only the
+  rendered rows and CSS targeting `:last-child` matches the last _rendered_ row, so the behaviour
+  would depend on how much data happened to arrive. The announced count stays honest
+  (`aria-setsize`/`aria-posinset` carry the real list, so a screen reader hears "10 000 items").
+  Scrolling a keyboard-focused row out of view hands focus back to the trigger, which is a
+  behaviour a plain list does not have. And it reaches `gog-select` only — not multiselect, not
+  autocomplete, not the table.
+
+  The comparison page's accessibility or feature claims may also need a look: "no virtualization
+  anywhere" stops being true for the dropdown, while staying true for the table.
+
+- **Two dropdown placement fixes, both invisible until they are not.** The panel's up/down
+  decision was computed from a row height that is wrong in all eleven themes (low by up to
+  8.38px a row) and a "row gap" that on `gog-select` and `gog-autocomplete` is the gap _inside_ a
+  row (12px too much per gap). Both terms are measured now. Nothing needs saying on the site
+  unless a page claims the panel is placed from `--gog-*-option-height` — but **the token
+  reference, if it carries `--gog-select-option-height` or its two siblings, should describe them
+  as a seed for the first frame rather than as the row height**: the component measures a real
+  row and corrects itself. `theme-starter.css` regenerates on its own (`check:theme-starter`
+  compares it against the installed package), so that half needs no hand-editing.
 
 - **`compare-full.md` says the library ships 31 components; it is 32 now.** The count in that
   file uses its own convention (`README.md` says 30 by a different one), so change the number

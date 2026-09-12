@@ -631,12 +631,21 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   is the absent one — and a limitations list that looks wrong on its first line is worse than no
   list. Both documents now draw that distinction explicitly.
 
-- **Virtualization — `docs/virtualization.md` now holds the plan** (2026-09-12), with the
-  measurements behind it: 10 000 option rows cost **216ms** of build and layout and 10 000 DOM
-  nodes to show **six**, and 50 000 cost over a second. That is a floor — raw DOM, no Angular on
-  top. Iteration 0 is done and changed the design (the primitive measures the row rather than
-  reading a token) and produced the placement defect now filed at the head of Defects, which the
-  project's own ordering puts ahead of the rest of this.
+- **Virtualization — `docs/virtualization.md` holds the plan, and `gog-select` ships it**
+  (2026-09-12). Iterations 0, 1 and 2 are done: the row height is measured rather than read (the
+  token is wrong in all eleven themes), `GogVirtualWindow` is the arithmetic in `lib/shared`, and
+  `gog-select` has `virtualize`. Measured live rather than in raw DOM: the same 10 000 options
+  open in **512ms** eager and **21ms** windowed, 10 000 rows against 10.
+
+  **Left: iterations 3 (`gog-multiselect`, `gog-autocomplete`) and 4 (`gog-table`)**, and the plan
+  says to re-read it between them. One thing iteration 2 leaves for 3 and did not exercise:
+  `gog-multiselect` is the only one of the three lists that declares a real row gap, so its pitch
+  is height + gap, and the spacers are flex children that will take that gap on both sides of
+  themselves.
+
+  Both defects this work produced are closed: the placement estimate's row height (66699ce) and
+  the row gap that is not between rows (57b61eb) — the second found only because fixing the first
+  stopped the two errors cancelling.
 
   The filing below stands as written:
 

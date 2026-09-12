@@ -714,6 +714,173 @@ describe('SelectComponent', () => {
     });
   });
 
+  /*
+   * Windowing — see `docs/virtualization.md`.
+   *
+   * jsdom has no layout, so the numbers here come from the seed the component computes on open:
+   * the fallback row height (40px) and the fallback panel cap (260px), which is the same pair
+   * `estimatePanelHeight` already uses. That is deliberate rather than a workaround — the seed is
+   * what governs the first frame in a real browser too, and a test that only passed once a real
+   * scroller had reported would not cover it.
+   */
+  describe('virtualize', () => {
+    const manyOptions = Array.from({ length: 1000 }, (_, i) => ({ id: i, name: `Option ${i}` }));
+
+    async function openWith(virtualize: boolean | undefined): Promise<HTMLElement> {
+      fixture.componentRef.setInput('options', manyOptions);
+      if (virtualize !== undefined) fixture.componentRef.setInput('virtualize', virtualize);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const host = fixture.nativeElement as HTMLElement;
+      (host.querySelector('.gog-select__control') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      return host;
+    }
+
+    function rows(host: HTMLElement): HTMLElement[] {
+      return Array.from(host.querySelectorAll('.gog-select__option'));
+    }
+
+    it('is off by default, and a thousand options are a thousand rows', async () => {
+      const host = await openWith(undefined);
+
+      expect(rows(host).length).toBe(1000);
+      // Nothing to correct when every row is present: the browser's own count is right and free.
+      expect(rows(host)[0].getAttribute('aria-setsize')).toBeNull();
+      expect(host.querySelector('.gog-select__spacer')).toBeNull();
+    });
+
+    it('renders a window rather than the list', async () => {
+      const host = await openWith(true);
+
+      // A 260px panel at 40px a row is seven visible, plus the straddle row and four of
+      // overscan at each edge. The assertion that matters is the ratio, not the number.
+      expect(rows(host).length).toBeLessThan(20);
+      expect(rows(host).length).toBeGreaterThan(0);
+      expect(rows(host)[0].textContent).toContain('Option 0');
+    });
+
+    /*
+     * A listbox holding twenty `role="option"` children announces "20 items". This is the first
+     * thing an implementation skips, because nothing looks wrong without it.
+     */
+    it('announces the whole list, not the window', async () => {
+      const host = await openWith(true);
+      const rendered = rows(host);
+
+      for (const [index, row] of rendered.entries()) {
+        expect(row.getAttribute('aria-setsize')).toBe('1000');
+        expect(row.getAttribute('aria-posinset')).toBe(String(index + 1));
+      }
+    });
+
+    it('holds the list open at its full height with a spacer', async () => {
+      const host = await openWith(true);
+
+      const spacers = Array.from(host.querySelectorAll<HTMLElement>('.gog-select__spacer'));
+      // At the top of the list there is nothing above, so only the trailing spacer exists.
+      expect(spacers.length).toBe(1);
+
+      const rendered = rows(host).length;
+      // 1000 rows of 40px, less the ones actually stamped.
+      expect(spacers[0].style.height).toBe(`${40000 - rendered * 40}px`);
+    });
+
+    /*
+     * The window's second trap: ArrowUp from the trigger means the last option, and the last
+     * option is not in the DOM to be focused. The index has to move first and the DOM follow it.
+     */
+    it('reaches an option that has not been rendered', async () => {
+      const host = await openWith(true);
+      const trigger = host.querySelector('.gog-select__control') as HTMLButtonElement;
+
+      trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const rendered = rows(host);
+      expect(rendered.at(-1)?.textContent).toContain('Option 999');
+      expect(rendered[0].textContent).not.toContain('Option 0');
+      expect(document.activeElement?.getAttribute('data-gog-option-index')).toBe('999');
+    });
+
+    /*
+     * The fourth trap, and the one a reviewer does not see: the panel looks right until you type.
+     *
+     * **And it is narrower than the plan said.** `GogVirtualWindow` already clamps a scrollTop
+     * past the end of its own list -- written for an elastic overscroll bounce -- so filtering
+     * 1000 options down to *three* cannot render rows 400-420 of a three-row list: the clamp puts
+     * the range back at the top for free. A spec that filtered down to one passed with the reset
+     * removed, which is how that was found.
+     *
+     * What the clamp cannot do is the case where the filtered list is still long enough to
+     * scroll. 111 matches at 40px are 4440px against a 260px viewport, so a scroll position from
+     * the old list clamps to a *valid* position in the new one, and the search shows the end of
+     * its results rather than the beginning. That is the assertion.
+     */
+    it('puts the window back at the top when the filter changes the list under it', async () => {
+      fixture.componentRef.setInput('filter', true);
+      const host = await openWith(true);
+
+      const trigger = host.querySelector('.gog-select__control') as HTMLButtonElement;
+      trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(rows(host)[0].textContent).not.toContain('Option 0');
+
+      // Matches 1, 10-19 and 100-199: 111 rows, well past one viewport.
+      const search = host.querySelector('.gog-select__filter-input') as HTMLInputElement;
+      search.value = 'Option 1';
+      search.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const rendered = rows(host);
+      expect(rendered.length).toBeLessThan(20);
+      expect(rendered[0].textContent?.trim()).toBe('Option 1');
+    });
+
+    /*
+     * Scrolling the focused row out of the window unmounts it, and an unmounted element holding
+     * focus drops it on <body> — where an open panel has no keyboard at all. Focus goes back to
+     * the trigger instead, which Escape and ArrowDown both work from.
+     */
+    it('hands focus back to the trigger when the focused row scrolls away', async () => {
+      const host = await openWith(true);
+      const trigger = host.querySelector('.gog-select__control') as HTMLButtonElement;
+
+      trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(document.activeElement?.getAttribute('data-gog-option-index')).toBe('0');
+
+      const viewport = host.querySelector('.gog-scroll__viewport') as HTMLElement;
+      viewport.scrollTop = 20000;
+      viewport.dispatchEvent(new Event('scroll'));
+      await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(document.activeElement).toBe(trigger);
+    });
+
+    it('reads GOG_CONFIG.dropdown.virtualize when the input is unset', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [SelectComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { dropdown: { virtualize: true } } }],
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(SelectComponent) as ComponentFixture<DefaultSelect>;
+      await fixture.whenStable();
+
+      const host = await openWith(undefined);
+      expect(rows(host).length).toBeLessThan(20);
+    });
+  });
+
   describe('ControlValueAccessor / Reactive Forms integration', () => {
     @Component({
       imports: [SelectComponent, ReactiveFormsModule],

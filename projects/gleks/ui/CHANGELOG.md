@@ -8,6 +8,58 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`gog-select` windows its option list — `virtualize`, off by default.** Measured in Chrome on
+  one page holding two selects over the same 10 000 options: the eager panel takes **512ms** to
+  appear and builds **10 000 rows to show six**; the windowed one takes **21ms** and holds **10**.
+  Both scroll through an identical 450 008px of content, because spacers stand in for the rows
+  that are not there. A per-field input, with `GOG_CONFIG.dropdown.virtualize` as the app-wide
+  default.
+
+  **Never automatic above some row count**, which is the same call `GOG_CONFIG.ripple.enabled`
+  makes: a windowed list differs from a plain one under `Ctrl+F`, under a screen reader's "list
+  all items", and under consumer CSS targeting `:last-child`, so flipping it when enough rows
+  happen to arrive is behaviour that depends on how much data turned up — it works in development
+  and surprises in production.
+
+  Under it, `GogVirtualWindow` in `lib/shared` (added below, internal): the arithmetic and nothing
+  that touches the page, so the component keeps its own scroller. The four things
+  `docs/virtualization.md` said were easy to get wrong all needed work, and three of them landed
+  differently from the plan:
+
+  - **The count stays honest.** `aria-setsize` and `aria-posinset` carry the real list and the
+    real index, so a listbox holding twenty rows is announced as ten thousand items. Set only
+    while windowing — an unwindowed list has every row present and the browser's own count is
+    both right and free.
+  - **The keyboard moves an index, not an element.** ArrowUp from the trigger means option 10 000,
+    which is not in the DOM to be focused: the index moves first, the scroll follows, and the row
+    is focused after the render that stamps it. `nextRovingFocusIndex` already existed as the
+    index half of the roving-focus helper, so the navigation rules — wrapping, skipping disabled,
+    Home/End meaning first/last _reachable_ — did not have to be written twice.
+  - **The panel's height is read from the scroller, not from a token.** The plan asked for a
+    `ResizeObserver`; `gog-scroll` already runs one and already coalesces scroll and resize into
+    one rAF-batched emission carrying both `scrollTop` and `clientHeight`, so `(gogScroll)` is the
+    whole answer and a second observer would have measured the same element a frame later. A
+    reported height of **zero** is ignored rather than believed: the scroller's first emission can
+    land before the panel has a height, and taking it literally renders the whole list for a frame
+    — the one thing the seed exists to prevent.
+  - **Filtering resets the window and the scroller together** — and this one is narrower than the
+    plan claimed. `GogVirtualWindow` already clamps a scroll position past the end of its own
+    list, so filtering 10 000 options down to three cannot render rows 400–420 of a three-row
+    list; the plan's own example is handled for free. The real case is a filtered list still long
+    enough to scroll, where the old position clamps to a **valid** position in the new list and
+    the search shows the end of its results. The first spec written for this passed with the reset
+    removed, which is how that was found.
+
+  One thing the plan did not have at all. **A row scrolled out of the window is unmounted, and an
+  unmounted element holding focus drops it on `<body>`** — where an open panel has no keyboard:
+  Escape does not close it and the arrows scroll the page. So a mouse scroll that would take the
+  focused row away hands focus back to the trigger first, which Escape and ArrowDown both work
+  from. It is checked before the re-render rather than after, because once the row is gone there
+  is nothing left to ask whether it was the focused one. This is a cost a plain list does not pay
+  and part of why windowing is opt-in.
+
+  `gog-multiselect`, `gog-autocomplete` and `gog-table` do not window yet.
+
 - **`gog-alert` — a persistent, in-flow message**, and the thing `gog-toast` cannot be. No timer,
   no queue, no overlay, no service: it renders where you write it and stays until your app removes
   it. `severity` (the shared `GogSeverity`, defaulting to `'accent'`), an optional `heading`, a
