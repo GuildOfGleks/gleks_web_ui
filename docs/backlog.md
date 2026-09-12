@@ -845,7 +845,18 @@ can land without an announced removal window.
   reader does not re-derive it. Filed here rather than under Defects because nothing is broken:
   the rename is the work, and a rename is a deprecation cycle.
 
-- **Incidental public exports.** `public-api.ts` re-exports two helper modules wholesale
+- ~~**Incidental public exports.**~~ **Closed 2026-09-12.** Both modules are named exports now.
+  **The entry framed it as "which symbols should be public" and the answer turned out to be
+  "almost all of them"** — `date-utils`' twenty helpers are advertised in `AGENTS.md` with an
+  ellipsis, so the set was already decided and nothing was dropped. The real defect was the
+  one the framing hid: an `export *` makes the _next_ helper public the moment it is written,
+  with nobody choosing it and no diff showing it. A named list is the choosing.
+
+  `option-accessor` was where it had consequences: `getByPath`, `readOption` and
+  `isSameOptionValue` are deprecated for 21.14.0, and `GogOptionAccessor` — the only reason
+  that module was exported — stays. The original filing:
+
+  `public-api.ts` re-exports two helper modules wholesale
   (`export * from './lib/components/datepicker/date-utils'` and `'./lib/shared/option-accessor'`),
   which puts ~20 free functions in the package's `.d.ts` — `buildMonthGrid`, `clampDate`,
   `withTime`, `getByPath`, `readOption`, `isSameOptionValue`, `defaultCompare`, … Some are

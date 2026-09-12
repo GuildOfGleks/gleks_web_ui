@@ -215,6 +215,19 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **`public-api.ts` names what it exports instead of re-exporting two modules wholesale.** The
+  defect was never which symbols are public — it was that **adding one published it silently**. A
+  helper written into `date-utils.ts` or `option-accessor.ts` became part of the package's `.d.ts`
+  the moment it was saved, with nobody deciding that and no diff showing it.
+
+  **Nothing is dropped from `date-utils`.** All twenty of its helpers and `GogDateRange` are
+  listed by name, because `AGENTS.md` already advertises `formatDate`, `parseDate` "and a family
+  of date-math helpers" — the set is supported on purpose. The list changes nothing a consumer can
+  import; it changes who decides the next one, which is the whole point.
+
+  `option-accessor` is the module where the accident had consequences, and its three functions are
+  deprecated above.
+
 - **A warning toast and an info toast were both the accent, and an info toast was pixel-identical
   to a plain one.** `--gog-toast-warning-color` read `--gog-accent-bright` and
   `--gog-toast-info-color` read `--gog-accent-color` — which is also what a _typeless_ toast
@@ -316,6 +329,13 @@ reached 1.0, so breaking changes may land in minor versions.
   exactly like a library with no defects.
 
 ### Deprecated
+
+- **`getByPath`, `readOption` and `isSameOptionValue` are deprecated, removed in 21.14.0.** They
+  are this library's own plumbing for reading a field off a consumer's object, and they became
+  public API because `public-api.ts` re-exported their module wholesale. Nothing in `README.md` or
+  `AGENTS.md` has ever mentioned them. `GogOptionAccessor` — the type every collection control's
+  `optionLabel` / `optionValue` / `optionDisabled` input is declared with — stays, and is the
+  reason the module was exported at all.
 
 - **`--gog-slider-thumb-shadow` becomes `--gog-slider-thumb-glow-color`, removed in 21.14.0.**
   The thumb composes it as `box-shadow: 0 0 var(--gog-slider-thumb-glow-size) <this>`, so the

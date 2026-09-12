@@ -20,7 +20,37 @@ export * from './lib/components/panel/panel.component';
 export * from './lib/components/checkbox/checkbox.component';
 export * from './lib/components/datepicker/calendar/calendar.component';
 export * from './lib/components/datepicker/datepicker.component';
-export * from './lib/components/datepicker/date-utils';
+/*
+ * Named, not wholesale, though nothing is dropped: `AGENTS.md` advertises `formatDate`,
+ * `parseDate` and "a family of date-math helpers", so this whole set is supported on purpose.
+ *
+ * The list is here for what an `export *` cannot do -- make the next addition a decision. A
+ * helper added to `date-utils.ts` used to become public API the moment it was written, with
+ * nobody choosing that and no diff showing it. Adding a line here is the choosing.
+ */
+export {
+  addDays,
+  addMonths,
+  addYears,
+  buildMonthGrid,
+  clampDate,
+  copyTimeOnto,
+  daysInMonth,
+  formatDate,
+  isAfterDay,
+  isBeforeDay,
+  isInRange,
+  isSameDay,
+  isSameMonth,
+  isWithinBounds,
+  localeFirstDayOfWeek,
+  monthNames,
+  parseDate,
+  startOfDay,
+  weekdayNames,
+  withTime,
+} from './lib/components/datepicker/date-utils';
+export type { GogDateRange } from './lib/components/datepicker/date-utils';
 export * from './lib/components/divider/divider.component';
 export * from './lib/components/progressbar/progressbar.component';
 export * from './lib/components/ripple/ripple.directive';
@@ -55,7 +85,15 @@ export * from './lib/shared/types';
 export * from './lib/shared/config';
 export * from './lib/shared/dropdown-base';
 export * from './lib/shared/float-label-state';
-export * from './lib/shared/option-accessor';
+/*
+ * Named, not wholesale: `GogOptionAccessor` is the type every collection control's `optionLabel`
+ * / `optionValue` / `optionDisabled` inputs are declared with, so a consumer needs it. The three
+ * functions beside it -- `getByPath`, `readOption`, `isSameOptionValue` -- are this library's own
+ * plumbing, nothing advertises them, and they went public only because this line used to be an
+ * `export *`. They are deprecated in place and this list drops them in 21.14.0.
+ */
+export type { GogOptionAccessor } from './lib/shared/option-accessor';
+export { getByPath, isSameOptionValue, readOption } from './lib/shared/option-accessor';
 export * from './lib/shared/deprecations';
 export * from './lib/shared/token-names';
 export type { GogDropdownDirection } from './lib/shared/dropdown-position';

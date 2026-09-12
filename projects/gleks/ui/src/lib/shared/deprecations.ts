@@ -19,7 +19,7 @@ export interface GogDeprecation {
 }
 
 /**
- * Everything `@guildofgleks/ui` currently deprecates: 0 symbol(s) and 3 token(s).
+ * Everything `@guildofgleks/ui` currently deprecates: 3 symbol(s) and 3 token(s).
  *
  * Generated from the library's own source — `@deprecated` tags for symbols, and the stylesheets
  * themselves for tokens — so it cannot drift from what actually still resolves. Meant for tooling
@@ -30,6 +30,33 @@ export interface GogDeprecation {
  * right now.
  */
 export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
+  {
+    kind: 'symbol',
+    name: 'getByPath',
+    replacement:
+      "internal plumbing, published only because `public-api.ts` used to re-export this module wholesale. Nothing in the package's own documentation advertises it.",
+    since: '21.13.0',
+    sinceDate: '2026-09-12',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'isSameOptionValue',
+    replacement:
+      "internal plumbing, published only because `public-api.ts` used to re-export this module wholesale. Nothing in the package's own documentation advertises it.",
+    since: '21.13.0',
+    sinceDate: '2026-09-12',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'readOption',
+    replacement:
+      "internal plumbing, published only because `public-api.ts` used to re-export this module wholesale. Nothing in the package's own documentation advertises it.",
+    since: '21.13.0',
+    sinceDate: '2026-09-12',
+    removedIn: '21.14.0',
+  },
   {
     kind: 'token',
     name: '--gog-multiselect-panel-offset',
