@@ -1,49 +1,52 @@
 # Where to start
 
-**Read `docs/virtualization.md`'s status table and its two "as it finished" sections first.** The
-prose above them was written before the work and three of its four named traps turned out
-differently; the iteration notes say how.
+**Both virtualization plans are closed.** `docs/virtualization.md` (the three dropdowns) and
+`docs/table-virtualization.md` (the table, which the parent plan's iteration 4 became) have no open
+iterations. All four collection components take `virtualize`, off by default.
 
 ## What is in flight
 
-`21.13.0` is open in `projects/gleks/ui/CHANGELOG.md`, unreleased. Nothing about it is the user's
-to cut yet — rule 1 stands.
+`21.13.0` is open in `projects/gleks/ui/CHANGELOG.md`, unreleased, and it is now a large minor.
+Cutting it is the user's, per rule 1.
 
-## The one thing left on this plan
+## Read these two lessons before the next feature
 
-**Iteration 4: `gog-table`.** The plan deliberately gates it:
+Both came out of the windowing work and neither is about windowing.
 
-> Stop after 3 and re-read this file before starting 4. […] The backlog's own instruction is not
-> to start this as a table feature, and the corollary is not to finish it as one either, on
-> momentum.
+- **Inside an effect, a method call subscribes to everything that method reads.**
+  `gog-table`'s reset effect called `rowWindow.reset()`, which reads the measurement signal to
+  decide whether it has anything to clear — so measuring re-triggered the effect, which cleared the
+  measurement. **Nothing looked wrong**: the right rows rendered at the right heights, and only the
+  scroll height was quietly the estimate times the row count. Found by computing what the total
+  should have been and noticing it was a round multiple. `untracked` is the fix.
+- **The predicted hard part was free three times running.** Iteration 2's `ResizeObserver` (the
+  scroller already had one), iteration 3's keyboard (the index-based helper already existed),
+  iteration 4's sticky header and selection column. Each time the real work was somewhere the plan
+  had not looked. Survey before designing; `docs/table-virtualization.md`'s iteration 0 is the
+  shape that keeps paying.
 
-That is why it was not started in the same session as 2 and 3. Nothing in the three dropdowns
-exercised any of what the table needs: **variable row heights** (the window's whole arithmetic
-assumes one pitch), a **sticky header** (which is not a row and must not enter the range), and a
-**selection column** that spans the window. The plan says it may become its own plan, and on the
-evidence of iterations 2 and 3 — where the predicted hard part was free and the real work was
-somewhere else both times — it should be surveyed before it is designed.
+## Where to look for the next thing
 
-`GogVirtualWindow` is still internal, not exported. If the table's adoption gives a consumer a
-reason to hold one, that is when it becomes public API; `public-api.ts`'s rule is to export only
-what a consumer should use.
+`docs/backlog.md`, Defects first — the project's own ordering. The Gaps section's unbuilt-component
+list is what leads it now: `avatar`, `breadcrumbs`, `stepper`, `file upload`, `rating`,
+`empty state`. Each needs the question `docs/panel-card.md` sets — what does it own that a `<div>`
+and a class do not — answered before code, and `gog-alert` is the recent example of answering it
+with semantics rather than looks.
 
-## Before anything else, though
+## A verification trap, twice paid for
 
-`docs/backlog.md`'s Defects section, per the project's own ordering. It is in good shape —
-both defects this programme produced are closed — but read it rather than assuming.
+**A hidden Chrome tab pauses `requestAnimationFrame`, and these components measure in one.**
+`docs/ripple.md` records the CSS-animation half; the rAF half is worse, because a scripted check in
+a hidden tab reads the seed and reports it as the measurement — it does not fail, it lies. Worse
+still for the table: a frame scheduled _before_ the tab was hidden never fires, and the
+`measureFrame !== null` guard then wedges every later measurement.
 
-## A trap that cost time here, and will again
-
-**A hidden Chrome tab pauses `requestAnimationFrame`, and these components measure their rows in
-one.** `docs/ripple.md` records the CSS-animation half of this; the rAF half is worse, because a
-scripted check in a hidden tab silently reads the seed value and reports it as the measurement —
-it does not fail, it lies. Foreground the tab (a `computer` click on the page does it), or shim
-`requestAnimationFrame` to `setTimeout` in the page. If you shim it, note that hidden-tab timers
-throttle to about a second: a 400ms wait reported "the window did not move" when it had moved
-1.2s later.
+Foreground the tab (a `computer` click on the page usually does it). If you cannot, shim
+`requestAnimationFrame` to `setTimeout` in the page — but hidden-tab timers throttle to about a
+second, so wait in seconds, and clear any stale frame id first.
 
 ## Not started, and not mine to start
 
-`docs/lab-after-publish.md` has a full 21.13.0 section, including three new `virtualize` entries.
-It cannot begin until 21.13.0 is on npm.
+`docs/lab-after-publish.md` has a full 21.13.0 section, now including the four `virtualize` entries
+and the table's own (its limitations section currently says the table does not virtualize, which
+stops being true). None of it can begin until 21.13.0 is on npm.
