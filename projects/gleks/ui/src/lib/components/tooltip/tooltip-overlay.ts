@@ -1,8 +1,8 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { scopedOverlayDirection } from './overlay-direction';
-import { scopedOverlayTheme } from './overlay-theme';
+import { scopedOverlayDirection } from '../../shared/overlay-direction';
+import { scopedOverlayTheme } from '../../shared/overlay-theme';
 
-import { GogTooltipBubbleComponent } from '../components/tooltip/tooltip-bubble.component';
+import { GogTooltipBubbleComponent } from './tooltip-bubble.component';
 
 /**
  * Creates the tooltip bubble on demand and moves it into `document.body`, same reasoning

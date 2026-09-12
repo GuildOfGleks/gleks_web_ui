@@ -48,7 +48,8 @@
     "survey:measure": "node scripts/survey-measure.mjs",
     "check:measure": "node scripts/check-measure.mjs",
     "check:class-names": "node scripts/check-class-names.mjs",
-    "check:glyph-box": "node scripts/check-glyph-box.mjs"
+    "check:glyph-box": "node scripts/check-glyph-box.mjs",
+    "check:layering": "node scripts/check-layering.mjs"
   },
   "private": true,
   "packageManager": "npm@11.6.2",

@@ -114,6 +114,23 @@ reached 1.0, so breaking changes may land in minor versions.
 
   `gog-multiselect`, `gog-autocomplete` and `gog-table` do not window yet.
 
+- **`npm run check:layering` — the library's own layering, as a build failure.** Two rules:
+  nothing in `lib/shared/` may import a component or a service, and no two units may import each
+  other. It exists because both were being broken and neither hurt anything: **a cycle is
+  invisible until something tries to cut along it.**
+
+  `shared/config.ts` imported `ToastPosition` from `services/toast-service`, which imports
+  `shared/config`. `shared/tooltip-overlay.ts` imported a component out of `components/tooltip/`,
+  which imports `shared/`. In one flat bundle, harmless. To a secondary entry point, fatal —
+  ng-packagr refuses a cycle between entry points outright — which is what makes this the
+  prerequisite for that work rather than tidying.
+
+  Both are fixed: `ToastPosition` moved to `shared/types.ts`, where
+  `gleks-ui-library.instructions.md` already said public types live, and is re-exported from the
+  service so the package's surface is unchanged; `tooltip-overlay.ts` moved into
+  `components/tooltip/`, which is its only consumer and the component it stamps. 36 units, no
+  cycles.
+
 - **`npm run check:glyph-box` — the first check in this repo that measures a rendering.** Every
   other one reads source; this rule cannot be read honestly from source, because a glyph is
   `--gog-icon-size` (1.2em) of its element's resolved font-size and **an `em` attaches to the

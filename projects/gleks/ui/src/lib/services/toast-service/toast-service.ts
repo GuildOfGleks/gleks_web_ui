@@ -4,7 +4,10 @@ import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { GogIconName } from '../../components/icon/icon.component';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
-export type ToastPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+import type { ToastPosition } from '../../shared/types';
+// Re-exported, not declared: the type lives in `shared/types.ts` with the rest of the public
+// types. Kept exported from here so `@guildofgleks/ui`'s surface is unchanged.
+export type { ToastPosition };
 
 export interface Toast {
   id: string;

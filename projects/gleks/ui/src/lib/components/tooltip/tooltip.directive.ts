@@ -15,7 +15,7 @@ import {
 
 import { GOG_CONFIG } from '../../shared/config';
 import { resolveLengthToken, resolveNumberToken } from '../../shared/token-values';
-import { GogTooltipOverlay } from '../../shared/tooltip-overlay';
+import { GogTooltipOverlay } from './tooltip-overlay';
 import {
   GogTooltipTargetRect,
   GogTooltipViewport,

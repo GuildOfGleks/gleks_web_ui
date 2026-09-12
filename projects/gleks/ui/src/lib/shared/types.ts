@@ -167,3 +167,14 @@ export type GogInputType =
  */
 export type GogInputMode =
   'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url';
+
+/**
+ * Which corner a toast stack occupies.
+ *
+ * Here rather than beside `ToastService`, where it was declared until 2026-09-12, for two reasons
+ * that turned out to be the same one: `gleks-ui-library.instructions.md` puts public types in this
+ * file, and `shared/config.ts` needs it — so declaring it in a service made `shared` depend on
+ * `services`, which depends on `shared`. A cycle nothing minded while the package is one flat
+ * bundle, and one that a secondary entry point cannot express at all.
+ */
+export type ToastPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';

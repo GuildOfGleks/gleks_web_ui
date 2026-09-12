@@ -904,7 +904,28 @@ can land without an announced removal window.
   an offset is a displacement from where a thing would otherwise be, and this is the space
   between two things. Found 2026-09-04 while auditing the `-offset` family.
 
-- **Secondary entry points** (`@guildofgleks/ui/select`, …). Filed twice — `consumer-dx-plan.md`
+- **Secondary entry points** (`@guildofgleks/ui/select`, …). **Started 2026-09-12; the
+  prerequisite is done and the rest is sized.** Surveying the import graph before designing the
+  split — the method that has paid three times this week — found the thing that decides it:
+
+  - **36 units, and two of them formed cycles**: `shared ↔ services` and
+    `shared ↔ components/tooltip`. ng-packagr refuses a cycle between entry points, so these were
+    not a detail, they were a blocker. Both fixed, and `npm run check:layering` now keeps them
+    out; a cycle is invisible until something tries to cut along it, so the gate has to exist
+    before the split, not after.
+  - **51 cross-component edges** over 34 components, with `icon`, `ripple`, `scroll`, `spinner`,
+    `skeleton` and `button` as hubs. That shape argues for one entry point per component rather
+    than a few groups: the hubs become small entry points everyone depends on explicitly, where a
+    group split would bundle unrelated components together and still not let a consumer take just
+    a button.
+  - What is left is the mechanical half and it is large: 34 entry-point folders each with their
+    own `ng-package.json` and public API, ~51 cross-component imports rewritten to package paths,
+    and the primary entry point re-exporting everything for a deprecation window. Worth its own
+    session, with the graph above as the map.
+
+  The original filing:
+
+  Filed twice — `consumer-dx-plan.md`
   had it as build ergonomics rather than bytes, which is the same conclusion from the other end.
   Raised by the paginator's dependency
   on `gog-select`: ng-packagr flattens everything into one FESM, so `@defer` inside the library

@@ -14,7 +14,7 @@ import {
 import type { GogErrorDisplay } from './error-state';
 import type { GogDropdownDirection } from './dropdown-position';
 import type { GogDropdownFilterPosition } from './types';
-import type { ToastPosition } from '../services/toast-service/toast-service';
+import type { ToastPosition } from './types';
 
 /**
  * App-wide defaults for the handful of component inputs where that actually makes sense —
