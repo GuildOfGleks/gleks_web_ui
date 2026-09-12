@@ -75,6 +75,17 @@ reached 1.0, so breaking changes may land in minor versions.
   percentages of a role rather than the role. Verified by putting the old value back and watching
   it fail.
 
+- **`README.md` and `AGENTS.md` say where `gog-table` stops.** No column resizing or reordering by
+  the reader, no frozen columns, no expandable rows, no grouping, no virtualization — stated where
+  someone evaluating the table will read it rather than discovered halfway into a project.
+  Documentation only; nothing about the component changes.
+
+  Each claim was verified against the code first, and one in `docs/backlog.md`'s filing was wrong:
+  it said "no sticky columns" while the table has shipped `stickyHeader` since 21.6.0. Those are
+  different axes — the header pins while rows scroll under it; the absent one is freezing a column
+  against _horizontal_ scroll — and both documents now draw that line, because a limitations list
+  that looks wrong on its first line teaches a reader to distrust the rest.
+
 - **`check:oklch`'s R3 compares five severities, not four — and three themes were painting two of
   them as one colour.** `GogSeverity` is `'accent' | 'success' | 'danger' | 'warning' | 'info'`
   and the library paints all five as a set (`gog-button`'s `severity`, `gog-progressbar`'s

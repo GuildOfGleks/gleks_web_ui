@@ -464,6 +464,21 @@ A few things worth knowing before you reach for a workaround:
   `[lazy]="true"` it hands both to the server: `value` is the current page, `totalRecords` drives
   the paginator, and `gogSortChange` / `gogPageChange` are your refetch signals. Row selection is
   `selectionMode` + `[(selection)]`; set `dataKey` or a refetch drops it.
+
+  **And here is where it stops, so you find out now rather than halfway in.** `gog-table` has no
+  **column resizing or reordering** by the reader (a column's `width`/`minWidth`/`maxWidth` are
+  yours to set, not theirs to drag), no **frozen columns**, no **expandable rows** and no **row
+  grouping**. It also **does not virtualize**: ten thousand eager rows render ten thousand rows.
+  `[lazy]="true"` keeps the fetch small, which is the half that matters most often, but the DOM
+  half is not solved here.
+
+  `stickyHeader` is not the missing feature in disguise — it pins the header while rows scroll
+  under it, which is the vertical axis. Freezing a first column against horizontal scroll is the
+  one this list says no to.
+
+  If you need a data grid, use one. This is a table that sorts, pages, selects and lets you
+  template any cell, and it is meant to stay small enough to read.
+
 - **`gog-button` cannot be a link** — it renders its own `<button>`. Use `[gogButton]` on your own
   `<a>` instead; nothing is brokered through inputs, so `routerLink`, `href` and `target` keep
   working. That is also why this package needs no `@angular/router`.

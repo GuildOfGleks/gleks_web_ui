@@ -581,9 +581,15 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   `gog-panel` turned out to be exactly what `gog-card` was for. An `empty state` that cannot
   survive the same question — what does it own that a `<div>` and a class do not — is not ready.
 
-- **`gog-table`'s ceiling:** no column resize or reorder, no sticky columns, no expandable rows,
-  no grouping. Possibly the right boundary for a lightweight library — but state it in the README
-  rather than letting someone discover it mid-project.
+- ~~**`gog-table`'s ceiling.**~~ **Written down 2026-09-12**, in `README.md` where a consumer
+  evaluates the table and in `AGENTS.md` where an agent writes against it. No column resizing or
+  reordering by the reader, no frozen columns, no expandable rows, no grouping, no virtualization.
+
+  **Each claim was checked against the code before being published**, which was worth doing: the
+  entry said "no sticky columns" and the table _does_ have `stickyHeader`. They are different axes
+  — the header pins while rows scroll under it; freezing a first column against horizontal scroll
+  is the absent one — and a limitations list that looks wrong on its first line is worse than no
+  list. Both documents now draw that distinction explicitly.
 
 - **Virtualization.** Nothing in the library virtualizes: a 10 000-option `gog-select` and a
   10 000-row eager `gog-table` will both crawl. `gog-autocomplete`'s `gogLoadMore` covers the

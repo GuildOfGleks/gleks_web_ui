@@ -1649,6 +1649,17 @@ total evenly. Before 21.6.0 that split clipped the widest header, and a `width` 
 the workaround — under auto layout a stated `width` is a suggestion weighed against content
 rather than a hard split, so those can usually go.
 
+**Where `gog-table` stops.** No **column resizing or reordering** by the reader — a column's
+`width`/`minWidth`/`maxWidth` are set by whoever writes the template, not dragged by whoever reads
+it. No **frozen columns**, no **expandable rows**, no **row grouping**, and no virtualization: ten
+thousand eager rows render ten thousand rows. `[lazy]="true"` keeps the _fetch_ small, which is
+usually the half that hurts, but the DOM half is not solved here. If a request needs one of those,
+it needs a data grid, and this is not one — say so rather than reaching for `::ng-deep`.
+
+`stickyHeader` is not any of them in disguise: it pins the header while rows scroll under it,
+which is the vertical axis. Freezing a first column against horizontal scroll is the thing that
+does not exist.
+
 **`stickyHeader` needs `maxHeight`** (both since 21.6.0 for the pairing). A sticky element
 resolves against its nearest scroll container, and the table wraps itself in a `gog-scroll`;
 once that scroller moves on either axis it is a scroll container on _both_, because CSS coerces
