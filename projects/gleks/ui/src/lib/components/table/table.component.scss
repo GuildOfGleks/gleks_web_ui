@@ -220,8 +220,31 @@
   background-color: var(--gog-table-hover-bg);
 }
 
+/*
+ * A row that answers a click answers a press, which is the rule 21.9.0 applied to nine other
+ * pressable surfaces and did not reach here: an interactive row had a cursor, a hover tint and a
+ * focus ring, and nothing at all under the finger.
+ *
+ * A colour rather than a ripple, and that is the whole verdict on `docs/ripple.md`'s deferred
+ * `gog-table` rows: a wave whose radius is an 800-1200px row reads as a flash across the table
+ * rather than as feedback where the finger landed. A colour also survives
+ * `prefers-reduced-motion`, which is 21.9.0's other half.
+ *
+ * Guarded on `--interactive` because a plain row is not a control -- it has a hover tint to show
+ * which row the pointer is on, and pressing it means nothing.
+ */
+.gog-table__row--interactive:active {
+  background-color: var(--gog-table-row-press-bg);
+}
+
 .gog-table__row--selected,
 .gog-table__row--selected:hover {
+  background-color: var(--gog-table-selected-bg);
+}
+
+/* A selected row keeps its own tint under the finger too, for the reason the hover rule above
+   gives: a press that looked like a deselect would be a lie about what the click does. */
+.gog-table__row--selected.gog-table__row--interactive:active {
   background-color: var(--gog-table-selected-bg);
 }
 

@@ -2401,6 +2401,9 @@
   --gog-table-accent-color: var(--gog-accent-color);
   --gog-table-accent-bright: var(--gog-accent-bright);
   --gog-table-hover-bg: var(--gog-accent-pale);
+  /* Only an `interactiveRows` row presses; a plain row is not a control and takes no state
+     beyond hover. Same value the three option lists use, for the same reason. */
+  --gog-table-row-press-bg: var(--gog-border-color);
   /* Selected rows keep this tint through hover, so hovering one never reads as clearing it. */
   --gog-table-selected-bg: var(--gog-accent-pale);
   --gog-table-muted-color: var(--gog-muted-text-color);

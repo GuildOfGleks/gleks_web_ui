@@ -604,7 +604,13 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   tokens as dead. A check whose findings are half wrong is worse than none, because its findings
   are what gets acted on. It was caught by not believing the first run.
 
-- **`gog-table` rows still have no ripple, and the reason it was deferred has expired.**
+- ~~**`gog-table` rows still have no ripple, and the reason it was deferred has expired.**~~
+  **Decided 2026-09-12: still no ripple — and deciding it found the real gap beside it.** An
+  `interactiveRows` row had a cursor, a hover tint and a focus ring and **nothing under the
+  finger**; 21.9.0 gave nine other pressable surfaces a `:active` colour and never reached this
+  one. It has `--gog-table-row-press-bg` now. The feedback the row was missing was the one every
+  other control has, not the one `docs/ripple.md` declined to give it. The original filing:
+
   `docs/ripple.md` left them out on two arguments and kept the weaker one as the gate: "a table
   installs one directive instance per row with no virtualization in this library yet … revisit
   with the windowing primitive, not before." **The primitive landed 2026-09-12**, so a windowed

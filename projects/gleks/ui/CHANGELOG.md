@@ -376,6 +376,19 @@ reached 1.0, so breaking changes may land in minor versions.
   deprecation window protects working consumer code, and a token nothing reads has none to protect.
   Overriding any of them has always done exactly nothing, and still does.
 
+- **An `interactiveRows` table row answered a click and not a press.** It had a cursor, a hover
+  tint and a focus ring, and nothing at all under the finger — 21.9.0 gave nine other pressable
+  surfaces a `:active` colour and this one was not among them. `--gog-table-row-press-bg` now
+  fills that, guarded on `--interactive` because a plain row is not a control, and a selected row
+  keeps its own tint under the finger for the reason it already keeps it on hover.
+
+  **A colour rather than a ripple, and that is the verdict on `docs/ripple.md`'s deferred table
+  rows.** That plan left them out on two arguments and gated the revisit on the weaker one —
+  "no virtualization in this library yet" — which `virtualize` has now removed. The other never
+  depended on it: a wave whose radius is an 800–1200px row reads as a flash across the table
+  rather than as feedback where the finger landed. A colour also survives
+  `prefers-reduced-motion`, which was 21.9.0's other half.
+
 - **`gog-menu`'s gap between trigger and panel was a token nothing read.** `--gog-menu-offset` was
   declared in `theme.css`, listed in `TOKENS.md`, and documented on the site as "gap between the
   trigger and the panel" — and the panel is placed in script, by a function that was called

@@ -1332,6 +1332,7 @@ export type GogTokenName =
   | '--gog-table-numeric-font-family'
   | '--gog-table-padding-h'
   | '--gog-table-row-border-width'
+  | '--gog-table-row-press-bg'
   | '--gog-table-row-transition-duration'
   | '--gog-table-select-col-width'
   | '--gog-table-selected-bg'
@@ -3137,6 +3138,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-table-numeric-font-family',
       '--gog-table-padding-h',
       '--gog-table-row-border-width',
+      '--gog-table-row-press-bg',
       '--gog-table-row-transition-duration',
       '--gog-table-select-col-width',
       '--gog-table-selected-bg',
