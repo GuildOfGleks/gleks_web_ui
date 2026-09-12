@@ -49,7 +49,13 @@ export class SelectComponent<
   protected readonly clearableByDefault = false;
   protected readonly sizeBlockClass = 'gog-select';
   protected readonly panelBlockClass = 'gog-select__dropdown';
-  protected override readonly optionGapToken = '--gog-select-option-gap';
+  /*
+   * `optionGapToken` is deliberately not overridden. `--gog-select-option-gap` is the gap *inside*
+   * a row -- between the check mark and the label -- and the options container declares no gap
+   * between rows at all, so the base's undeclared default resolving to zero is the
+   * truth. Pointing the seed at this token by its name added 12px of panel per row to
+   * the height estimate that up/down placement is decided from.
+   */
   protected override readonly panelMaxHeightToken = '--gog-select-panel-max-height';
   protected override readonly optionHeightToken = '--gog-select-option-height';
 

@@ -527,6 +527,91 @@ describe('SelectComponent', () => {
       expect(panel.style.width).toBe('');
     });
 
+    /*
+     * The panel-height estimate sums rows *and the gap between them*, and for two of the three
+     * dropdowns that gap does not exist.
+     *
+     * `--gog-select-option-gap` is the gap *inside* a row -- between the check mark and the label
+     * -- and `.gog-select__options` declares no gap between rows at all. The estimate seeded from
+     * it by name, so every row added 12px of panel that is not on the page, and the panel could
+     * be judged too tall to open downward when it fits.
+     *
+     * Asserts the sum rather than a pixel: three 20px rows with no row gap are 60px of panel,
+     * whatever a token named for something else says.
+     */
+    it('sizes the panel from rows alone when the options list has no row gap', async () => {
+      fixture.componentRef.setInput('options', [
+        { id: 1, name: 'One' },
+        { id: 2, name: 'Two' },
+        { id: 3, name: 'Three' },
+      ]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.componentRef.setInput('dropdownDirection', 'up');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const host = fixture.nativeElement as HTMLElement;
+      host.style.setProperty('--gog-select-option-height', '20px');
+      host.style.setProperty('--gog-select-options-padding', '0px');
+      host.style.setProperty('--gog-select-panel-max-height', '500px');
+      // Set loudly: this is the intra-row gap, and the estimate must not read it.
+      host.style.setProperty('--gog-select-option-gap', '30px');
+
+      const trigger = host.querySelector('.gog-select__control') as HTMLElement;
+      stubRect(trigger, { top: 1000, bottom: 1020, left: 20, width: 200 });
+
+      trigger.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      expect(panel.style.maxHeight).toBe('60px');
+    });
+
+    /*
+     * And the measurement is the authority, the same way the row height already is: a real row
+     * gap on the rendered container replaces whatever the seed said, so a theme that adds one
+     * does not need the library to learn about it.
+     */
+    it('re-places from a measured row gap once the list has rendered', async () => {
+      fixture.componentRef.setInput('options', [
+        { id: 1, name: 'One' },
+        { id: 2, name: 'Two' },
+        { id: 3, name: 'Three' },
+      ]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.componentRef.setInput('dropdownDirection', 'up');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const host = fixture.nativeElement as HTMLElement;
+      host.style.setProperty('--gog-select-option-height', '20px');
+      host.style.setProperty('--gog-select-options-padding', '0px');
+      host.style.setProperty('--gog-select-panel-max-height', '500px');
+
+      const trigger = host.querySelector('.gog-select__control') as HTMLElement;
+      stubRect(trigger, { top: 1000, bottom: 1020, left: 20, width: 200 });
+
+      trigger.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      expect(panel.style.maxHeight).toBe('60px');
+
+      const list = document.body.querySelector('.gog-select__options') as HTMLElement;
+      list.style.rowGap = '10px';
+      for (const row of Array.from(document.body.querySelectorAll('.gog-select__option'))) {
+        stubRect(row, { height: 20, width: 200 });
+      }
+      await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // Three 20px rows and two 10px gaps.
+      expect(panel.style.maxHeight).toBe('80px');
+    });
+
     it('lets dropdownWidth/dropdownMaxHeight override the computed panel size', async () => {
       fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
       fixture.componentRef.setInput('appendToBody', true);

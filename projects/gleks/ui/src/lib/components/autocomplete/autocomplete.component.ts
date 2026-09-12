@@ -132,7 +132,13 @@ export class AutocompleteComponent<
   protected readonly panelBlockClass = 'gog-autocomplete__dropdown';
   /** Opt-in, matching `gog-select` and `gog-inputfield`. */
   protected readonly clearableByDefault = false;
-  protected override readonly optionGapToken = '--gog-autocomplete-option-gap';
+  /*
+   * `optionGapToken` is deliberately not overridden. `--gog-autocomplete-option-gap` is the gap *inside*
+   * a row -- between an option icon and its label -- and the options container declares no gap
+   * between rows at all, so the base's undeclared default resolving to zero is the
+   * truth. Pointing the seed at this token by its name added 12px of panel per row to
+   * the height estimate that up/down placement is decided from.
+   */
   protected override readonly panelMaxHeightToken = '--gog-autocomplete-panel-max-height';
   protected override readonly optionHeightToken = '--gog-autocomplete-option-height';
 

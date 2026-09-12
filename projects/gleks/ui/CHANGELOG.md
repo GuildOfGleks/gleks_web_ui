@@ -169,6 +169,29 @@ reached 1.0, so breaking changes may land in minor versions.
   Found by `docs/virtualization.md`'s iteration 0, which existed to check exactly this before
   anything new depended on it.
 
+- **Two of the three dropdowns sized their panel from a gap that is not between the rows.** The
+  height estimate that decides whether a panel opens up or down sums the rows _and the gap
+  between them_, and it took that gap from `--gog-<block>-option-gap` — which on `gog-select` and
+  `gog-autocomplete` is the gap **inside** a row, between the mark or icon and the label. Neither
+  options container declares a gap between rows at all, so every row added 12px of panel that is
+  not on the page: 48px on a five-row list, which is the length at which this decision is made at
+  all.
+
+  It is the same defect as the row-height one above and the opposite sign, which is why they were
+  invisible together — one estimate ran low per row and the other ran high per gap. Fixing the
+  first is what exposed the second, and that is the argument for measuring rather than deriving:
+  **a sum of two wrong terms can place a panel correctly and does not stay lucky.**
+
+  The gap is now measured from the rendered options container, in the same frame and from the same
+  element as the row — the row's own `parentElement`, so no subclass has to declare a second
+  selector. `gog-multiselect` is unaffected: its list is the one that really does declare a row
+  gap, and it is the only one that still seeds from a token.
+
+  **The token names are unchanged and so is what they paint.** `--gog-select-option-gap` still
+  sets the space between the check mark and the label, which is what it has always done; only
+  what read it for a different purpose has changed. All three now say in `theme.css` which gap
+  they are.
+
 - **`gog-progressbar`'s buffer had no edge, and its edge is the whole of what it says.** The
   buffer tier marks how much is loaded; where it _ends_ was under 3:1 against the track in **55 of
   55** shipped theme/variant combinations, worst **1.06:1**. That is a stronger result than the 51

@@ -315,6 +315,16 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    * Spacing tokens feeding the height estimate. Overridable so each control keeps the
    * `--gog-<block>-*` names it already exposes to consumers for theming.
    */
+  /**
+   * The gap **between rows**, as a seed for the first frame. Like `optionHeightToken`, the real
+   * value is measured from the rendered list and replaces this.
+   *
+   * **Read the options container's CSS before pointing this at a token, not the token's name.**
+   * Two of the three controls name a token `--gog-<block>-option-gap` and use it for the gap
+   * *inside* a row — between the check mark and the label — with no gap between rows at all.
+   * Seeding from it added 12px per row of panel that does not exist. Only `gog-multiselect`'s
+   * options container declares a `gap`, and only it overrides this.
+   */
   protected readonly optionGapToken: string = '--gog-dropdown-option-gap';
   protected readonly optionsPaddingToken: string = '--gog-dropdown-options-padding';
   /** Keep in sync with the real `max-height` on the subclass's `__dropdown` block. */
@@ -534,6 +544,15 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    * error is masked -- which is why it went unseen.
    */
   private measuredOptionHeight: number | null = null;
+  /**
+   * The real gap between two rows, once a list has ever rendered. `null` until then.
+   *
+   * Measured for the same reason the row height is, and it came out of the same audit: the token
+   * `optionGapToken` seeds from is the *inside* of a row in two of the three controls (mark to
+   * label), while their options containers declare no row gap at all. Reading the container is
+   * exact where reading a token is a guess about what the token means.
+   */
+  private measuredOptionGap: number | null = null;
   private measureFrame: number | null = null;
   private repositionFrame: number | null = null;
 
@@ -719,11 +738,21 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
       const height = row?.getBoundingClientRect().height ?? 0;
       if (height <= 0) return;
 
+      // The row's own parent is the options container, so the gap comes for free once the row
+      // has been found -- no second selector for a class each subclass would have to declare.
+      // `row-gap` computes to the keyword `normal` when a flex container sets no gap, which is
+      // used as zero; `readPx` returns the fallback for anything it cannot parse, which is that.
+      const gap = row?.parentElement
+        ? readPx(getComputedStyle(row.parentElement).rowGap, 0)
+        : (this.measuredOptionGap ?? this.optionGap);
+
       const changed =
         this.measuredOptionHeight === null
-          ? Math.abs(height - this.optionHeight) > 0.5
-          : Math.abs(height - this.measuredOptionHeight) > 0.5;
+          ? Math.abs(height - this.optionHeight) > 0.5 || Math.abs(gap - this.optionGap) > 0.5
+          : Math.abs(height - this.measuredOptionHeight) > 0.5 ||
+            Math.abs(gap - (this.measuredOptionGap ?? this.optionGap)) > 0.5;
       this.measuredOptionHeight = height;
+      this.measuredOptionGap = gap;
       if (changed) this.updatePlacement();
     });
   }
@@ -837,7 +866,8 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
 
     const count = Math.max(this.visibleOptions().length, 1);
     const rowHeight = this.measuredOptionHeight ?? this.optionHeight;
-    const rows = count * rowHeight + Math.max(count - 1, 0) * this.optionGap;
+    const gap = this.measuredOptionGap ?? this.optionGap;
+    const rows = count * rowHeight + Math.max(count - 1, 0) * gap;
     return Math.min(rows + this.optionsPadding * 2 + this.extraPanelHeight(), this.maxPanelHeight);
   }
 

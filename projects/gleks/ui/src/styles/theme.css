@@ -1542,6 +1542,8 @@
     0px,
     calc(var(--gog-autocomplete-panel-radius) - var(--gog-autocomplete-options-padding))
   );
+  /* The gap *inside* a row -- icon to label. Not the gap between rows; see the select's own
+     note above the same token. */
   --gog-autocomplete-option-gap: var(--gog-space-12);
   --gog-autocomplete-option-color: var(--gog-text-color);
   --gog-autocomplete-option-hover-bg: var(--gog-hover-color);
@@ -1795,6 +1797,8 @@
   --gog-multiselect-font-family: var(--gog-font-body);
   --gog-multiselect-label-font-family: var(--gog-font-heading);
   --gog-multiselect-gap: var(--gog-space-4);
+  /* The gap *between* rows -- the only one of the three lists that declares one. The inside
+     of a row is `--gog-multiselect-option-gap-inline`. */
   --gog-multiselect-option-gap: var(--gog-space-4);
   --gog-multiselect-options-padding: var(--gog-space-4);
   --gog-multiselect-label-color: var(--gog-accent-color);
@@ -2221,6 +2225,9 @@
   --gog-select-option-press-bg: var(--gog-border-color);
   --gog-select-option-selected-color: var(--gog-accent-color);
   --gog-select-option-color: var(--gog-text-color);
+  /* The gap *inside* a row -- check mark to label. Not the gap between rows: the options
+     container declares none, and the placement estimate measures the container rather than
+     reading this, which it used to do on the strength of the name alone. */
   --gog-select-option-gap: var(--gog-space-12);
   /* Concentric with the panel, which insets its rows by the list padding above. Derived rather
      than restated, so it stays true once `--gog-density` moves the padding. */
