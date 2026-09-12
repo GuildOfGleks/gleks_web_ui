@@ -106,6 +106,29 @@ only for the first frame, before any row exists.
 
 ---
 
+### As iteration 1 finished
+
+Built, with eleven specs and no component touched. Three decisions worth having on the record,
+none of them in the original sketch:
+
+- **It is not exported.** `GogRippleController` is not either, and for the same reason: an engine
+  with no consumer-facing use is not public API, and `public-api.ts`'s rule is to export only what
+  a consumer should use. It becomes public if and when a component's adoption gives a consumer a
+  reason to hold one.
+- **A zero row height degrades to the whole list, not to an empty one.** Zero is what a caller has
+  before it has measured anything, and the arithmetic would otherwise produce `{0, 0}` — a panel
+  that renders nothing and reads as broken. Rendering everything is the pre-window behaviour:
+  slow, and correct. A fallback should fail toward the old behaviour, not toward a blank.
+- **Padding, not absolute positioning.** Spacers above and below keep the rows in normal flow, so
+  they stay flex children of the same container and every gap, selector and `:last-child` the
+  adopting component already relies on keeps working. Positioning each row absolutely is the other
+  common shape and it changes what the component's own CSS means — a large price for a list one
+  column wide.
+
+`scrollOffsetFor` is there for point 2 below, and returns `null` rather than the current offset
+when a row is already visible: scrolling when nothing needs to move cancels a user's own
+in-progress scroll in some browsers.
+
 ## The four things that are easy to get wrong
 
 These are the plan, more than the arithmetic is.
@@ -164,7 +187,7 @@ So: per-instance `virtualize`, with `GOG_CONFIG.dropdown.virtualize` as the app-
 | #   | What                                                                                                    | Status                                                          |
 | --- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
 | 0   | Verify `--gog-select-option-height` against a rendered row in all eleven themes                         | ✅ 2026-09-12 — wrong in 11 of 11, and it is load-bearing today |
-| 1   | `GogVirtualWindow` in `lib/shared` — arithmetic, specs, no component touched                            | 🔜                                                              |
+| 1   | `GogVirtualWindow` in `lib/shared` — arithmetic, specs, no component touched                            | ✅ 2026-09-12                                                   |
 | 2   | `gog-select` adopts it: `virtualize` input, ARIA counts, keyboard rework, filter reset, showcase        | 🔜                                                              |
 | 3   | `gog-multiselect` and `gog-autocomplete` follow — same base, so mostly the keyboard half again          | 🔜                                                              |
 | 4   | `gog-table`: variable rows, sticky header, selection column. Its own decisions; may become its own plan | 🔜                                                              |
