@@ -556,6 +556,57 @@ describe('MultiselectComponent', () => {
       const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
       expect(panel.style.maxHeight).toBe('120px');
     });
+
+    /*
+     * The row-height token is a seed, not a claim.
+     *
+     * `--gog-*-option-height` calls itself an estimate, and measured against a rendered row it is
+     * wrong in all eleven shipped themes -- low in ten, by up to 8.38px a row. It is not
+     * decorative: `estimatePanelHeight` multiplies it by the option count and the panel opens up
+     * or down on the result, so a low estimate can place a panel below when it does not fit.
+     *
+     * The fix reads one real row a frame after the panel renders and re-places if the token
+     * disagreed. This asserts the mechanism rather than a pixel: with the token deliberately far
+     * from the rendered height, the panel's own cap has to follow the measurement.
+     */
+    it('re-places from a measured row when the height token disagrees', async () => {
+      fixture.componentRef.setInput('options', [
+        { id: 1, name: 'One' },
+        { id: 2, name: 'Two' },
+        { id: 3, name: 'Three' },
+      ]);
+      fixture.componentRef.setInput('appendToBody', true);
+      fixture.componentRef.setInput('dropdownDirection', 'up');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const host = fixture.nativeElement as HTMLElement;
+      host.style.setProperty('--gog-multiselect-option-height', '20px');
+      host.style.setProperty('--gog-multiselect-option-gap', '0px');
+      host.style.setProperty('--gog-multiselect-options-padding', '0px');
+      host.style.setProperty('--gog-multiselect-panel-max-height', '500px');
+
+      const trigger = host.querySelector('.gog-ms') as HTMLElement;
+      stubRect(trigger, { top: 1000, bottom: 1020, left: 20, width: 200 });
+
+      trigger.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = document.body.querySelector('[role="listbox"]') as HTMLElement;
+      // Three rows at the token's 20px.
+      expect(panel.style.maxHeight).toBe('60px');
+
+      // A real row measures 44px. One frame later the placement has to agree with the row.
+      for (const row of Array.from(document.body.querySelectorAll('.gog-ms__option'))) {
+        stubRect(row, { height: 44, width: 200 });
+      }
+      await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(panel.style.maxHeight).toBe('132px');
+    });
   });
 
   describe('ControlValueAccessor / Reactive Forms integration', () => {

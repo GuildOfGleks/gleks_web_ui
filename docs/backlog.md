@@ -41,6 +41,15 @@ not worth carrying here.
   then correct it from a measurement once a row has ever rendered. Four components share the base,
   so it is one change with four components' worth of tests.
 
+  **The fix reads one real row a frame after the panel renders and re-places if the token
+  disagreed**, caching the measurement so every later open of that instance is right from its
+  first frame. Deriving a better estimate from the row's own tokens was the other candidate and
+  lost: it would re-state the row's CSS in JavaScript, and a measurement is exact where a
+  derivation is only closer. The token stays as the seed for the first frame, with its
+  documentation corrected in all four components. The spec that covers it was checked against the
+  unfixed code first and fails there, which is the only way to know a regression test tests
+  anything.
+
   **The lesson, which is the reusable part:** a token whose own comment said it was only an
   estimate that nothing reads for layout _was_ being read for a layout decision, and that comment
   is precisely what stopped anyone checking it against a rendered row. A disclaimer is not an

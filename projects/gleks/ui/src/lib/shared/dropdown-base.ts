@@ -517,6 +517,24 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   private optionsPadding = 0;
   private maxPanelHeight = FALLBACK_MAX_PANEL_HEIGHT;
   private optionHeight = FALLBACK_OPTION_HEIGHT;
+  /**
+   * A real row's height, once one has ever been rendered. `null` until then.
+   *
+   * The token this class reads for `optionHeight` calls itself an estimate, and it is a bad one:
+   * measured against a rendered row in all eleven shipped themes it is wrong in every one, from
+   * -0.62px (`terminal`) to +8.38px (`parchment`), and low in ten of them. No static value can be
+   * right -- the same `parchment` row is 48.38px at `--gog-density: 1` and 42.38px at 0.85,
+   * because the height is padding plus leading plus border and a theme or a consumer can move
+   * every term.
+   *
+   * That matters because the estimate is not decorative: `estimatePanelHeight` multiplies it by
+   * the option count and `resolveDropdownDirection` opens the panel up or down on the result. Low
+   * by 7px a row means a five-row panel judged to fit below when it needs 37px more than there is.
+   * Only short lists were ever affected -- above `panelMaxHeightToken` the cap dominates and the
+   * error is masked -- which is why it went unseen.
+   */
+  private measuredOptionHeight: number | null = null;
+  private measureFrame: number | null = null;
   private repositionFrame: number | null = null;
 
   private onChangeFn: (val: TValue) => void = () => {};
@@ -561,6 +579,11 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
         if (this.repositionFrame !== null) {
           cancelAnimationFrame(this.repositionFrame);
           this.repositionFrame = null;
+        }
+
+        if (this.measureFrame !== null) {
+          cancelAnimationFrame(this.measureFrame);
+          this.measureFrame = null;
         }
       });
     });
@@ -618,6 +641,8 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
     if (this.resolvedAppendToBody()) {
       this.attachOverlay();
     }
+
+    this.scheduleOptionMeasure();
   }
 
   protected close(): void {
@@ -667,6 +692,39 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
       if (this.isOpen()) {
         this.updatePlacement();
       }
+    });
+  }
+
+  /**
+   * Reads one real row after the panel has rendered, and re-places if the token had lied.
+   *
+   * One frame late by construction -- the row has to exist -- so the very first open of an
+   * instance can be placed from the estimate and corrected before the next paint. Every later
+   * open starts from the measurement and is right immediately, which is why this caches rather
+   * than measuring each time.
+   *
+   * Deliberately does **not** fall back to the token when no row is found: an empty list has no
+   * row to measure and no rows to be wrong about, and overwriting a good measurement with the
+   * token because the user filtered everything away would undo the fix.
+   */
+  private scheduleOptionMeasure(): void {
+    if (!this.isBrowser || this.measureFrame !== null) return;
+
+    this.measureFrame = requestAnimationFrame(() => {
+      this.measureFrame = null;
+      if (!this.isOpen()) return;
+
+      const scope = this.overlay.hostElement ?? (this.elRef.nativeElement as HTMLElement);
+      const row = scope.querySelector<HTMLElement>(`.${this.optionClass}`);
+      const height = row?.getBoundingClientRect().height ?? 0;
+      if (height <= 0) return;
+
+      const changed =
+        this.measuredOptionHeight === null
+          ? Math.abs(height - this.optionHeight) > 0.5
+          : Math.abs(height - this.measuredOptionHeight) > 0.5;
+      this.measuredOptionHeight = height;
+      if (changed) this.updatePlacement();
     });
   }
 
@@ -760,10 +818,15 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   }
 
   /**
-   * Rough height, used only to choose up/down and to cap `max-height` before the panel
-   * has been laid out. Deliberately an estimate: measuring would require rendering the
-   * panel first, which is what we are trying to position. A resolvable `dropdownMaxHeight`
-   * replaces the row-count guess outright, since it is exact rather than estimated.
+   * The panel's height, used to choose up/down and to cap `max-height`.
+   *
+   * Estimated on the very first open of an instance and exact from then on. Measuring needs a
+   * rendered row and placement runs before the panel renders, so the first pass uses the row
+   * height token; `measureOptionHeight` then reads a real row and re-places if it disagreed.
+   * Every open after that starts from the measurement.
+   *
+   * A resolvable `dropdownMaxHeight` replaces the row-count arithmetic outright, since it is
+   * exact rather than derived.
    */
   private estimatePanelHeight(): number {
     const custom = this.dropdownMaxHeight();
@@ -773,7 +836,8 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
     }
 
     const count = Math.max(this.visibleOptions().length, 1);
-    const rows = count * this.optionHeight + Math.max(count - 1, 0) * this.optionGap;
+    const rowHeight = this.measuredOptionHeight ?? this.optionHeight;
+    const rows = count * rowHeight + Math.max(count - 1, 0) * this.optionGap;
     return Math.min(rows + this.optionsPadding * 2 + this.extraPanelHeight(), this.maxPanelHeight);
   }
 

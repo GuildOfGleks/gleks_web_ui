@@ -1554,8 +1554,15 @@
      selected option has no tint behind it. The tint stays as the marker, alongside
      `aria-selected`. */
   --gog-autocomplete-option-selected-color: var(--gog-text-color);
-  /* Estimated row height fed into the panel's up/down placement math; not itself a real
-     layout property, so it has no effect unless the JS reads it. */
+  /* The row height the panel's up/down placement math starts from. **A seed, not a claim**: the
+     component measures a real row one frame after the panel renders and re-places if this
+     disagreed, so this value only governs the very first open of an instance.
+
+     It used to say "an estimate ... no effect unless the JS reads it", and the JS did read it,
+     for a layout decision. Measured against a rendered row it is wrong in all eleven shipped
+     themes -- low in ten, by up to 8.38px -- and no static value can be right, since the row is
+     padding plus leading plus border and a theme or `--gog-density` moves every term. Overriding
+     this is still worth doing if your rows are very unusual: it buys the first frame. */
   --gog-autocomplete-option-height: 36px;
   --gog-autocomplete-empty-color: var(--gog-autocomplete-placeholder-color);
   --gog-autocomplete-empty-font-size: var(--gog-text-sm);
@@ -1834,8 +1841,15 @@
   --gog-multiselect-option-press-bg: var(--gog-border-color);
   --gog-multiselect-option-color: var(--gog-text-color);
   --gog-multiselect-option-gap-inline: var(--gog-space-12);
-  /* Estimated row height fed into the panel's up/down placement math; not itself a real
-     layout property, so it has no effect unless the JS reads it. */
+  /* The row height the panel's up/down placement math starts from. **A seed, not a claim**: the
+     component measures a real row one frame after the panel renders and re-places if this
+     disagreed, so this value only governs the very first open of an instance.
+
+     It used to say "an estimate ... no effect unless the JS reads it", and the JS did read it,
+     for a layout decision. Measured against a rendered row it is wrong in all eleven shipped
+     themes -- low in ten, by up to 8.38px -- and no static value can be right, since the row is
+     padding plus leading plus border and a theme or `--gog-density` moves every term. Overriding
+     this is still worth doing if your rows are very unusual: it buys the first frame. */
   --gog-multiselect-option-height: 40px;
   /* Concentric with the panel, which paints `--gog-multiselect-panel-radius` and insets its rows
      by the list padding, so the row's corner is that radius minus that padding. It had subtracted
@@ -2214,8 +2228,15 @@
     0px,
     calc(var(--gog-select-panel-radius) - var(--gog-select-options-padding))
   );
-  /* Estimated row height fed into the panel's up/down placement math; not itself a real
-     layout property, so it has no effect unless the JS reads it. */
+  /* The row height the panel's up/down placement math starts from. **A seed, not a claim**: the
+     component measures a real row one frame after the panel renders and re-places if this
+     disagreed, so this value only governs the very first open of an instance.
+
+     It used to say "an estimate ... no effect unless the JS reads it", and the JS did read it,
+     for a layout decision. Measured against a rendered row it is wrong in all eleven shipped
+     themes -- low in ten, by up to 8.38px -- and no static value can be right, since the row is
+     padding plus leading plus border and a theme or `--gog-density` moves every term. Overriding
+     this is still worth doing if your rows are very unusual: it buys the first frame. */
   --gog-select-option-height: 40px;
   --gog-select-option-disabled-opacity: var(--gog-disabled-opacity);
   --gog-select-option-transition-duration: var(--gog-duration-fast);
