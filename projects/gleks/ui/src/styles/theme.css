@@ -1933,7 +1933,9 @@
   --gog-menu-font-family: var(--gog-font-body);
   --gog-menu-padding: var(--gog-space-4);
   --gog-menu-gap: var(--gog-space-4);
-  --gog-menu-offset: var(--gog-space-4);
+  /* Gap between the trigger and the panel, matching the four other components that place one.
+     Read by `menu.component.ts`, not by CSS -- a menu panel is positioned in script. */
+  --gog-menu-panel-gap: var(--gog-space-4);
   --gog-menu-min-width: 180px;
   /* L8's viewport exception (docs/component-geometry.md, "D7 — taken"): a menu portals into
      <body> and floats over the viewport, not a container. Its items do not wrap (L9 does not

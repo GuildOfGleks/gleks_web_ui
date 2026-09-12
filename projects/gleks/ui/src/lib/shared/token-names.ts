@@ -867,8 +867,8 @@ export type GogTokenName =
   | '--gog-menu-max-height'
   | '--gog-menu-max-width'
   | '--gog-menu-min-width'
-  | '--gog-menu-offset'
   | '--gog-menu-padding'
+  | '--gog-menu-panel-gap'
   | '--gog-menu-radius'
   | '--gog-menu-shadow'
   | '--gog-menu-transition-duration'
@@ -2780,8 +2780,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-menu-max-height',
       '--gog-menu-max-width',
       '--gog-menu-min-width',
-      '--gog-menu-offset',
       '--gog-menu-padding',
+      '--gog-menu-panel-gap',
       '--gog-menu-radius',
       '--gog-menu-shadow',
       '--gog-menu-transition-duration',

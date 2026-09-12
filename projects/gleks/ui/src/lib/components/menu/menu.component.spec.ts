@@ -268,6 +268,32 @@ describe('MenuComponent', () => {
       expect(panel()?.style.getPropertyValue('--gog-menu-available-height')).toMatch(/^\d+px$/);
     });
 
+    /*
+     * `--gog-menu-panel-gap` was declared in `theme.css` and read by nothing: the panel is placed
+     * in script, and the placement function was called without its `gap` argument, so it used its
+     * own default of 4. A consumer setting the token got silence, and a theme moving
+     * `--gog-density` moved the panel gap of the four other components that place one this way
+     * and left the menu's at a hard-coded 4.
+     *
+     * Same shape as the `max-height` defect above and pinned for the same reason: the bug was in
+     * whether the number reached the element at all, not in the number.
+     *
+     * jsdom reports a zero-sized trigger, so a down-menu's `top` *is* the gap.
+     */
+    it('takes the gap between trigger and panel from its token', async () => {
+      trigger().style.setProperty('--gog-menu-panel-gap', '21px');
+
+      await openByClick();
+
+      expect(panel()?.style.top).toBe('21px');
+    });
+
+    it('falls back to the built-in gap when nothing declares the token', async () => {
+      await openByClick();
+
+      expect(panel()?.style.top).toBe('4px');
+    });
+
     it('anchors a menu by one edge only, so it is never stretched between top and bottom', async () => {
       await openByClick();
 

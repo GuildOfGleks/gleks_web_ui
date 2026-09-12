@@ -22,7 +22,7 @@ import {
 } from '@angular/core';
 
 import { GOG_CONFIG } from '../../shared/config';
-import { resolveNumberToken } from '../../shared/token-values';
+import { resolveLengthToken, resolveNumberToken } from '../../shared/token-values';
 import { GogDropdownOverlay } from '../../shared/dropdown-overlay';
 import { resolveRipple } from '../../shared/ripple-state';
 import { bindRipple } from '../ripple/ripple-controller';
@@ -31,7 +31,11 @@ import { isRovingFocusKey, nextRovingFocusIndex } from '../../shared/roving-focu
 import { scopedOverlayDirection } from '../../shared/overlay-direction';
 import type { GogDropdownDirection } from '../../shared/dropdown-position';
 import { ScrollComponent } from '../scroll/scroll.component';
-import { resolveMenuPlacement, type GogMenuPlacement } from './menu-position';
+import {
+  DEFAULT_MENU_PANEL_GAP,
+  resolveMenuPlacement,
+  type GogMenuPlacement,
+} from './menu-position';
 
 /**
  * One command in a `gog-menu`. Put it on the consumer's own `<button>`:
@@ -417,6 +421,18 @@ export class MenuComponent {
         { width: window.innerWidth, height: window.innerHeight },
         direction,
         this.direction(),
+        /*
+         * Read rather than left to `resolveMenuPlacement`'s own default, which is what it was
+         * until 2026-09-12 -- and which made `--gog-menu-offset` a token a consumer could set
+         * with nothing at all on the other end. The four other components that place a panel
+         * this way take their gap from CSS, so a theme moving `--gog-density` moved four of the
+         * five and left the menu on a hard-coded 4.
+         *
+         * `resolveLengthToken` rather than `parseFloat`, for the reason that file records: the
+         * density scale makes this `calc(4px * var(--gog-density))`, and a specified value is not
+         * a used one.
+         */
+        resolveLengthToken(trigger, '--gog-menu-panel-gap', DEFAULT_MENU_PANEL_GAP),
       ),
     );
   }

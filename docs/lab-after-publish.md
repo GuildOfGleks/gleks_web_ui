@@ -137,6 +137,11 @@ Small, and only one of the three has any visible surface on the site.
   fetch half, and the two compose. Found by grepping the repo for the claim rather than by reading
   the page, which is the only way this one would have surfaced.
 
+- **`--gog-menu-offset` is now `--gog-menu-panel-gap`, and the token reference documents the old
+  one.** `token-reference-data.ts` lists it as "Gap between the trigger and the panel", which was
+  the intent and never the behaviour — the token was read by nothing. Change the row's name; the
+  description stays right, because now it is true.
+
 - **`GogVariableWindow` and `GogVirtualWindow` are both internal**, so neither belongs in the API
   reference. Worth knowing only so nobody adds them from the changelog.
 

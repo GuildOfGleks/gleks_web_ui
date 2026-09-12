@@ -296,6 +296,30 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-menu`'s gap between trigger and panel was a token nothing read.** `--gog-menu-offset` was
+  declared in `theme.css`, listed in `TOKENS.md`, and documented on the site as "gap between the
+  trigger and the panel" — and the panel is placed in script, by a function that was called
+  without its `gap` argument and fell back to its own hard-coded `4`. Setting the token did
+  nothing, in every theme, since the component shipped.
+
+  What it cost beyond the dead knob: the four other components that place a panel this way take
+  their gap from CSS and follow `--gog-density`, so **a theme changing density moved four of the
+  five and left the menu's gap at 4px.** The component resolves the token now, through
+  `resolveLengthToken` — `parseFloat` would return `NaN` on the `calc(4px * var(--gog-density))`
+  the density scale produces, which is the trap that file exists for.
+
+  **Renamed to `--gog-menu-panel-gap` in the same change, with no deprecation cycle, on purpose.**
+  A deprecation window protects working consumer code and there is none to protect: nothing a
+  consumer wrote against the old name ever had an effect. Keeping an alias alive for two releases
+  would be complexity spent guarding a promise that was never kept. The new name is also the one
+  the other four already use — `--gog-<block>-panel-gap` — which is what the
+  `-gap`/`-offset` split in `docs/backlog.md` is about.
+
+  Found by sweeping `theme.css` for tokens nothing reads, after `--gog-menu-offset` turned up while
+  auditing that naming split. **The sweep found twelve candidates out of 1482**, and no check
+  covers the category: `check:tokens` rule F is the opposite direction — a `var()` read with no
+  declaration — so a declaration with no reader passes every gate the project has.
+
 - **A dropdown could open downward into a panel that does not fit.** The three controls on
   `GogDropdownBase` — `gog-select`, `gog-multiselect` and `gog-autocomplete` — size their panel
   from `--gog-*-option-height` and choose up or down from the result. That token calls itself an estimate; measured against a rendered row it is wrong in

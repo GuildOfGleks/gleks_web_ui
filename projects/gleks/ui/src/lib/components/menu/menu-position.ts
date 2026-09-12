@@ -32,7 +32,12 @@ export interface GogMenuPlacement {
   availableHeight: number;
 }
 
-const DEFAULT_GAP = 4;
+/**
+ * The gap used when no CSS value reaches here. `gog-menu` resolves `--gog-menu-panel-gap` and
+ * passes it, so this is the pre-layout fallback rather than the value in force — exported so the
+ * component's fallback and this one cannot become two different numbers.
+ */
+export const DEFAULT_MENU_PANEL_GAP = 4;
 const DEFAULT_VIEWPORT_PADDING = 8;
 
 /**
@@ -69,7 +74,7 @@ export function resolveMenuPlacement(
   viewport: GogMenuViewport,
   direction: GogWritingDirection = 'ltr',
   preferred: GogDropdownDirection = 'auto',
-  gap = DEFAULT_GAP,
+  gap = DEFAULT_MENU_PANEL_GAP,
   viewportPadding = DEFAULT_VIEWPORT_PADDING,
 ): GogMenuPlacement {
   const spaceAbove = Math.max(0, triggerRect.top - gap - viewportPadding);
