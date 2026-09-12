@@ -29,7 +29,10 @@ reached 1.0, so breaking changes may land in minor versions.
 
   The `<tbody>` spacers are `<tr>`s, since a table body takes rows and nothing else; a row honours
   an explicit height exactly, including at 400 000px. **The ceiling is Chrome's, not the
-  library's:** an element clamps at 33 554 426px, about 745 000 rows at 45px.
+  library's:** an element clamps at 33 554 426px, about 745 000 rows at 45px — and a dev-mode
+  warning says so once when a table passes it, because past that the rows stay correct while the
+  scrollbar stops reaching the end of the data, which is not a symptom anyone traces back to a row
+  count.
 
   **Three indices would have changed meaning silently, and all three are public promises**:
   `gogRowClick`'s `index` (documented as the index within the page), the `showRowNumbers` column,

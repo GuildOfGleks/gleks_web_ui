@@ -1706,7 +1706,7 @@ of view moves focus to the scroll region, because the row it was on no longer ex
 `aria-rowcount` and `aria-rowindex` keep the announced size and position honest, and every index
 the table hands out — `gogRowClick`'s `index`, the `showRowNumbers` column, and
 `GogColumnBodyContext.index` — still counts from the top of the page rather than the top of the
-window. There is a ceiling: Chrome clamps an element at 33 554 426px, about 745 000 rows at 45px.
+window. There is a ceiling: Chrome clamps an element at 33 554 426px, about **745 000 rows** at 45px, and a dev-mode warning says so once when a table passes it — past that the rows stay correct while the scrollbar stops reaching the end of the data.
 
 **Where `gog-table` stops.** No **column resizing or reordering** by the reader — a column's
 `width`/`minWidth`/`maxWidth` are set by whoever writes the template, not dragged by whoever reads

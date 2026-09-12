@@ -659,11 +659,10 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   and nothing about the DOM, so "we have `lazy`" is still the sentence that will make someone
   think the table's problem is solved. `README.md` and `AGENTS.md` both draw that line explicitly.
 
-  **One thing is left open, and it is a decision rather than a defect.** A windowed table stands
-  its full height up with a `<tr>` spacer, and Chrome clamps an element at **33 554 426px** —
-  about 745 000 rows at 45px. Past that the scrollbar silently stops describing the list.
-  `docs/table-virtualization.md` iteration 3 is whether that is documented or guarded; nothing
-  measures it today, which is the weaker half of the answer.
+  The row ceiling that came out of it is **guarded as well as documented** (2026-09-12): a windowed
+  table stands its unrendered rows up as one `<tr>` spacer, and Chrome clamps an element at
+  **33 554 426px** — about 745 000 rows at 45px — past which the rows stay correct and the
+  scrollbar stops reaching the end of the data. A dev-mode warning names it once.
 
   **Requested twice.** Items 3 and 4 under _Features_ below are this same primitive, filed
   separately from use. Build it once in `lib/shared` and adopt it in the dropdowns first — a fixed

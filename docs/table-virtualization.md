@@ -166,6 +166,20 @@ deeper: a pending `requestAnimationFrame` scheduled before a tab was hidden neve
 measurement. Harmless in a tab someone is looking at, and worth knowing before concluding the
 measurement code is broken.
 
+### As iteration 3 finished
+
+**Guarded, not only documented**, on the project's own argument that a check outlives prose: a
+dev-mode warning when a windowed table's computed height passes 33 554 426px, naming the number and
+saying what breaks — the rows stay correct and the scrollbar stops reaching the end of the data,
+which is a symptom nobody would trace back to a row count.
+
+Warned **once** rather than per measurement. The total climbs as rows are measured, so an effect
+re-warning on every correction would bury the page it is trying to help; and the flag is set inside
+`untracked`, for the reason iteration 2 paid to learn one effect over.
+
+It is also in `AGENTS.md` beside the input, because the number a consumer needs is the row count
+they can afford, not the pixel cap.
+
 ## What this does not try to be
 
 - **Not horizontal windowing**, same as the parent plan. Columns stay whole.

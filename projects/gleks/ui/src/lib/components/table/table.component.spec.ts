@@ -1118,6 +1118,31 @@ describe('TableComponent — virtualize', () => {
   });
 
   /*
+   * The one limit windowing has that the browser imposes rather than the library: measured in
+   * Chrome, a `<tr>` asked for 50 000 000px comes back 33 554 426px while every size below is
+   * honoured exactly. Past it the rows still render correctly and the scrollbar stops reaching the
+   * end of the data, which is the kind of failure nobody would trace back to a row count.
+   */
+  it('warns once when the list is taller than a browser will render', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    fixture.componentRef.setInput(
+      'value',
+      Array.from({ length: 2_000_000 }, (_, i) => ({ id: i, name: `Row ${i}` })),
+    );
+    fixture.componentRef.setInput('virtualize', true);
+    fixture.componentRef.setInput('maxHeight', '400px');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const capWarnings = warn.mock.calls.filter((call) =>
+      String(call[0]).includes('past the 33554426px'),
+    );
+    expect(capWarnings).toHaveLength(1);
+    warn.mockRestore();
+  });
+
+  /*
    * Checked rather than assumed: select-all means the page. Had it followed the rendered slice it
    * would have selected the twenty rows on screen while claiming to have selected a thousand.
    */

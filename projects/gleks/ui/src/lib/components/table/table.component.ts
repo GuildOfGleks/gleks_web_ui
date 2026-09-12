@@ -42,6 +42,17 @@ import {
  */
 const FALLBACK_ROW_HEIGHT = 40;
 
+/**
+ * The tallest an element can be before the browser clamps it, measured in Chrome: a `<tr>` asked
+ * for 50 000 000px came back 33 554 426px, while every size below that was honoured exactly.
+ *
+ * It is the windowed table's real row ceiling, because the window stands the rows it is not
+ * rendering up as one spacer. Past it the scrollbar stops describing the list — the rows still
+ * render correctly, but the bottom of the data becomes unreachable by dragging the thumb. About
+ * 745 000 rows at a 45px row.
+ */
+const ELEMENT_HEIGHT_CAP = 33_554_426;
+
 export type SortDirection = 'asc' | 'desc' | null;
 
 /**
@@ -623,6 +634,7 @@ export class TableComponent<T extends object> {
   }
 
   private rowHeightSeeded = false;
+  private cappedHeightWarned = false;
   private measureFrame: number | null = null;
 
   private scheduleRowMeasure(): void {
@@ -715,6 +727,23 @@ export class TableComponent<T extends object> {
           "[gog-table] `lazy` with a `pageSize` but no `totalRecords`: the table cannot know how many pages exist, so pagination stays hidden. Pass the server's total row count.",
         );
       }
+    });
+
+    /*
+     * The one limit windowing has that the browser imposes rather than this library. Warned once,
+     * not per measurement: the total climbs as rows are measured, and an effect that re-warned on
+     * every correction would bury the page it is trying to help.
+     */
+    effect(() => {
+      if (!isDevMode() || !this.windowingActive() || this.cappedHeightWarned) return;
+      const total = this.rowWindow.totalHeight();
+      if (total <= ELEMENT_HEIGHT_CAP) return;
+      untracked(() => {
+        this.cappedHeightWarned = true;
+        console.warn(
+          `[gog-table] this windowed table is ${Math.round(total)}px tall, past the ${ELEMENT_HEIGHT_CAP}px a browser will render. The rows are still correct, but the scrollbar no longer reaches the end of the data. Page the data, or raise the row height.`,
+        );
+      });
     });
 
     /*
