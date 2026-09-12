@@ -1,0 +1,93 @@
+<section class="detail">
+  <div class="detail__hero">
+    <p class="eyebrow">gog-alert</p>
+    <h2>Alert</h2>
+    <p class="lead">
+      A persistent, in-flow message. Unlike a toast it has no timer, no queue and no overlay — it
+      renders where you write it and stays until your app removes it.
+    </p>
+  </div>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Severities</h3>
+    <div class="alert-stack">
+      @for (severity of severities; track severity) {
+        <gog-alert [severity]="severity" [heading]="severity + ' alert'">
+          The severity chooses the edge colour and the glyph. <code>accent</code> is the library's
+          own colour and claims nothing, which is the default.
+        </gog-alert>
+      }
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Without a heading</h3>
+    <p class="note">A single line needs no title above it.</p>
+    <div class="alert-stack">
+      <gog-alert severity="info">Your changes are saved automatically.</gog-alert>
+      <gog-alert severity="warning">
+        This workspace is read-only until the owner restores billing.
+      </gog-alert>
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Dismissible</h3>
+    <p class="note">
+      <code>dismissed</code> is <em>pressed</em>, not removed — the alert stays in the DOM and the
+      app decides. That is deliberate: a component that deleted itself would take the focused
+      element with it.
+    </p>
+    <div class="alert-stack">
+      @if (showDismissible()) {
+        <gog-alert
+          severity="danger"
+          heading="Payment failed"
+          [dismissible]="true"
+          (dismissed)="showDismissible.set(false)"
+        >
+          The card issuer declined the charge. No money has left your account.
+        </gog-alert>
+      } @else {
+        <gog-button variant="outline" (gogClick)="showDismissible.set(true)">
+          Bring the alert back
+        </gog-button>
+      }
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Icons</h3>
+    <p class="note">
+      Each severity brings its own glyph. <code>iconName</code> overrides it, and
+      <code>null</code> removes it for a message whose words already carry the meaning.
+    </p>
+    <div class="alert-stack">
+      <gog-alert severity="success" iconName="lock">
+        An <code>iconName</code> overrides the severity's own glyph.
+      </gog-alert>
+      <gog-alert severity="info" [iconName]="null">
+        <code>[iconName]="null"</code> suppresses the icon entirely.
+      </gog-alert>
+      <gog-alert severity="warning">
+        <ng-template gogAlertIcon><gog-icon name="star" /></ng-template>
+        A projected <code>gogAlertIcon</code> template replaces it with your own markup.
+      </gog-alert>
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>Long content</h3>
+    <p class="note">
+      The body wraps and the icon stays at the top, so a paragraph does not centre its glyph against
+      the middle of the text.
+    </p>
+    <div class="alert-stack">
+      <gog-alert severity="danger" heading="Three records could not be imported">
+        Rows 14, 27 and 31 name a cost centre that does not exist in this workspace. Everything else
+        in the file was imported and is visible in the table below. Fix those three rows and
+        re-upload only them; re-uploading the whole file would duplicate the rest.
+      </gog-alert>
+    </div>
+  </gog-panel>
+</section>

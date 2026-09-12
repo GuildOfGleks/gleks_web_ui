@@ -426,7 +426,12 @@
   /* Semantics */
   --gog-success-color: #34d399; /* Glowing emerald */
   --gog-danger-color: #f87171; /* Glowing ruby */
-  --gog-warning-color: #fbbf24; /* Amber */
+  /* Orange, not the accent's amber. It was `#fbbf24` -- the same hex as `--gog-accent-color`
+     two declarations above, so an `accent` severity and a `warning` one were one colour in
+     every component that paints the set. Moved by hue rather than by lightness (18.1 deg, L
+     held) because darkening a status on a dark ground trades one defect for another, and a
+     warning reads as orange at least as readily as it reads as gold. */
+  --gog-warning-color: #ffac4e; /* Ember orange */
   --gog-info-color: #38bdf8; /* Sapphire */
 
   /* Elevation, as this theme states it. The long note in the literal block explains the knobs;
@@ -787,6 +792,47 @@
   --gog-accordion-slg-body-padding-bottom: var(--gog-space-20);
   --gog-accordion-slg-chevron-size: 1.4em;
   --gog-accordion-slg-chevron-font-size: 1em;
+
+  /* ── Alert ─────────────────────────────────────────────────────────────────
+     A persistent, in-flow message. The severity is carried by a leading edge and the icon over
+     the ordinary surface, not by a tinted fill, and that is forced rather than chosen: the
+     library ships no per-status tint (`--gog-accent-pale` exists, `--gog-success-pale` does not),
+     and inventing one here would make the alert the twelfth place a theme restates its red.
+     `gog-toast` reached the same shape for the same reason. See `docs/alert.md`.
+
+     The five severity tokens below derive from the status colours rather than repeating them,
+     which is what lets a theme retune its red once. */
+  --gog-alert-bg: var(--gog-surface-color);
+  --gog-alert-color: var(--gog-text-color);
+  --gog-alert-heading-color: var(--gog-text-color);
+  --gog-alert-font-family: var(--gog-font-body);
+  --gog-alert-border-color: var(--gog-border-color);
+  --gog-alert-border-width: var(--gog-panel-border-width);
+  --gog-alert-border-style: var(--gog-panel-border-style);
+  /* The leading edge, which is the whole of the severity signal. Wider than the hairline around
+     it so it reads as a mark rather than as an uneven border — the control border tier doubled,
+     derived so a theme that thickens its controls thickens this with them. */
+  --gog-alert-edge-width: calc(var(--gog-control-border-width) * 2);
+  --gog-alert-radius: var(--gog-radius);
+  --gog-alert-padding-y: var(--gog-space-12);
+  --gog-alert-padding-x: var(--gog-space-24);
+  --gog-alert-gap: var(--gog-space-12);
+  /* Between the heading and the body — the tightest step on the scale, because they are one
+     block of text rather than two things in a row. */
+  --gog-alert-main-gap: var(--gog-space-4);
+  --gog-alert-icon-font-size: var(--gog-text-md);
+  /* A glyph in its own box: leading would push it off the centre it is placed on. */
+  --gog-alert-icon-line-height: var(--gog-line-height-none);
+  --gog-alert-heading-font-size: var(--gog-text-md);
+  --gog-alert-heading-font-weight: var(--gog-font-weight-semibold);
+  --gog-alert-heading-line-height: var(--gog-line-height-snug);
+  --gog-alert-body-font-size: var(--gog-text-sm);
+  --gog-alert-body-line-height: var(--gog-line-height-relaxed);
+  --gog-alert-accent-color: var(--gog-accent-color);
+  --gog-alert-success-color: var(--gog-success-color);
+  --gog-alert-danger-color: var(--gog-danger-color);
+  --gog-alert-warning-color: var(--gog-warning-color);
+  --gog-alert-info-color: var(--gog-info-color);
 
   /* ── Collapsible ───────────────────────────────────────────────────────────
      No portal, no owned markup — see utilities.css for the actual `.gog-collapsible__*`

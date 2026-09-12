@@ -338,6 +338,7 @@ provideGogConfig({
     hidePassword: 'Passwort verbergen',
     closeDialog: 'Schließen',
     closeToast: 'Schließen',
+    closeAlert: 'Meldung schließen', // gog-alert's dismiss button
     pagination: 'Seitennavigation',
     previousPage: 'Vorherige Seite',
     nextPage: 'Nächste Seite',
@@ -1142,6 +1143,46 @@ Drive the state from that handler instead and you want a one-way `[selected]`, o
 cancel out. A `disabled` chip keeps the ring but drops `aria-pressed`, which needs the
 `role="button"` a disabled chip does not carry — "selected, and currently unavailable" is a real
 state and hiding it would leave it announced and invisible.
+
+#### `gog-alert`
+
+A **persistent, in-flow message** — the one `gog-toast` cannot be. No timer, no queue, no overlay,
+no service: it renders where you write it and stays until your app removes it.
+
+| Input         | Type                               | Default     |
+| ------------- | ---------------------------------- | ----------- |
+| `severity`    | `GogSeverity`                      | `'accent'`  |
+| `heading`     | `string \| undefined`              | `undefined` |
+| `dismissible` | `boolean`                          | `false`     |
+| `iconName`    | `GogIconName \| null \| undefined` | `undefined` |
+
+| Output      | Type   | When                             |
+| ----------- | ------ | -------------------------------- |
+| `dismissed` | `void` | the close button was **pressed** |
+
+Slot: `<ng-template gogAlertIcon>` for custom icon markup. Body is projected content.
+
+```html
+<gog-alert severity="danger" heading="Payment failed" [dismissible]="true" (dismissed)="hide()">
+  The card issuer declined the charge. No money has left your account.
+</gog-alert>
+```
+
+**`dismissed` means pressed, not removed.** The alert stays in the DOM and your app decides what
+happens — hide it, retry, navigate. A component that deleted itself would take the focused element
+with it and drop a keyboard reader back onto `<body>`.
+
+The severity picks both the edge colour and the glyph (`success`/`error`/`warning`/`info`;
+`'accent'` borrows `info`'s, because it claims nothing). `iconName` overrides the glyph and
+**`[iconName]="null"` removes it** for a message whose words already carry the meaning.
+
+**It sets no `role` or `aria-live` yet, deliberately.** A live region has to exist in the DOM
+before the text it announces lands inside it, and an alert created by `@if` arrives with its own
+text in one insertion — the trap `gog-toast-container` exists to work around. Getting that wrong
+announces nothing while looking correct, so it is being measured rather than guessed; see
+`docs/alert.md`. If you need an announcement today, put your own live region around it.
+
+`GOG_CONFIG.labels.closeAlert` names the dismiss button.
 
 #### `gog-tag`
 

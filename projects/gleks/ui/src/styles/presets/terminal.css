@@ -42,7 +42,12 @@
   /* Semantics — a monochrome display had no colour to spare, so these stay within the phosphor
      family and separate by brightness. Only danger breaks out, because a destructive action is
      the one thing worth spending the screen's only other colour on. */
-  --gog-success-color: #3ddc5c;
+  /* Was `#3ddc5c`, the same hex as `--gog-accent-color`: a success badge and an ordinary
+     accent one were indistinguishable. Moved along its own hue rather than across, because
+     this theme's other three statuses already occupy yellow, red and cyan -- the room left
+     is in lightness, not in hue. Same finding as this file's own info/success note below,
+     one role over. */
+  --gog-success-color: #00b330;
   --gog-danger-color: #ff5f56;
   --gog-warning-color: #d4d44a;
   /* Phosphor cyan, not a paler green. #8fd8a0 sat 4.6 degrees of hue and 0.032 of lightness from

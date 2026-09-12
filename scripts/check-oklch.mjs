@@ -98,6 +98,21 @@ const MIN_STATUS_L = 0.1;
 const STATUSES = ['success', 'warning', 'danger', 'info'];
 
 /**
+ * What R3 actually compares, and it is **five** rather than four.
+ *
+ * `GogSeverity` is `'accent' | 'success' | 'danger' | 'warning' | 'info'`, and the library paints
+ * all five as one set — `gog-button`'s `severity`, `gog-progressbar`'s `variant`, `gogBadge`, and
+ * `gog-alert`, whose entire signal is the colour of one edge. R3 was written against "the four
+ * status colours" and left the accent out, so four of the ten pairs went unmeasured.
+ *
+ * Extending it found three, and two are not close calls: `dark` declares
+ * `--gog-warning-color: #fbbf24`, the same hex as its accent, and `terminal` declares
+ * `--gog-success-color: #3ddc5c`, the same hex as its. Nobody writes one value twice for two
+ * roles on purpose; it is what a palette typed role-by-role produces when nothing compares them.
+ */
+const SEVERITIES = ['accent', ...STATUSES];
+
+/**
  * Every palette block, merged per theme name. A preset states its palette in one block and
  * `theme.css` states light and dark in theirs; `:root`'s literals are the light defaults and are
  * folded into `light` rather than reported as a theme of their own.
@@ -213,8 +228,8 @@ async function main() {
       }
     }
 
-    // ── R3 — the four statuses are tellable apart, in colour and in greyscale ────────────────
-    const present = STATUSES.filter((s) => d[`--gog-${s}-color`]);
+    // ── R3 — the five severities are tellable apart, in colour and in greyscale ─────────────
+    const present = SEVERITIES.filter((s) => d[`--gog-${s}-color`]);
     for (let i = 0; i < present.length; i++) {
       for (let j = i + 1; j < present.length; j++) {
         const a = at(`--gog-${present[i]}-color`);
@@ -224,12 +239,13 @@ async function main() {
         const dL = Math.abs(a.L - b.L);
         if (dh < MIN_STATUS_HUE && dL < MIN_STATUS_L) {
           failures.push(
-            `[R3 status pair] ${theme} — ${present[i]} and ${present[j]} are ` +
+            `[R3 severity pair] ${theme} — ${present[i]} and ${present[j]} are ` +
               `${dh.toFixed(1)}° of hue and ${dL.toFixed(3)} of lightness apart ` +
               `(need ${MIN_STATUS_HUE}° or ${MIN_STATUS_L})\n` +
               `      ${d[`--gog-${present[i]}-color`]} vs ${d[`--gog-${present[j]}-color`]} — ` +
               `a badge in one cannot be told from a badge in the other, and greyscale does not ` +
-              `separate them either`,
+              `separate them either. Move the *status*, not the accent: the accent is the theme's ` +
+              `identity and the status is the role that has to be read.`,
           );
         }
       }

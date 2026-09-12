@@ -111,6 +111,7 @@ export class App {
     { path: 'card', label: 'Card' },
     { path: 'panel', label: 'Panel' },
     { path: 'toast', label: 'Toast' },
+    { path: 'alert', label: 'Alert' },
     { path: 'tooltip', label: 'Tooltip' },
     { path: 'tag', label: 'Tag' },
     { path: 'dialog', label: 'Dialog' },

@@ -5,6 +5,7 @@
 export * from './lib/components/button/button.component';
 export * from './lib/components/button/button.directive';
 export * from './lib/components/accordion/accordion.component';
+export * from './lib/components/alert/alert.component';
 export * from './lib/components/collapsible/collapsible.component';
 export * from './lib/components/collapsible/collapsible-trigger.directive';
 export * from './lib/components/collapsible/collapsible-content.directive';

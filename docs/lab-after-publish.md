@@ -74,3 +74,27 @@ Small, and only one of the three has any visible surface on the site.
   progressbar page the buffer's end simply was not locatable. No token changed and the token
   reference needs no edit (checked): `--gog-progressbar-edge-*` already describes the marker, and
   nothing in that entry says which tier draws it.
+
+- **`gog-alert` is new, and the site has no page for it.** A persistent in-flow message —
+  severity, optional heading, projected body, dismissible, `gogAlertIcon` slot. It needs its own
+  component page, an entry in the sidebar, a `Feedback` group row, and rows in the hand-maintained
+  token reference for the `--gog-alert-*` family (24 tokens; the generator picks them up by prefix
+  on its own, the reference does not). `AGENTS.md` and `README.md` already carry it, and
+  `ui-showcase` has a page worth copying the examples from.
+
+  **Two things the page has to say, because they read as omissions otherwise.** `dismissed` means
+  _pressed_, not removed — the alert stays in the DOM and the app decides, which is deliberate and
+  is why the showcase example keeps its own signal. And the component sets **no `role` or
+  `aria-live` yet**: that is measured-not-guessed work recorded in `docs/alert.md`, not an
+  oversight, and a docs page that quietly implies an alert announces itself would be worse than
+  one that says it does not.
+
+- **`compare-full.md` says the library ships 31 components; it is 32 now.** The count in that
+  file uses its own convention (`README.md` says 30 by a different one), so change the number
+  rather than recounting from the README's table.
+
+- **Three themes changed a status colour**, so any screenshot or swatch of them is stale:
+  `dark`'s warning is ember orange rather than the accent's gold, `terminal`'s success is a deeper
+  green, and `parchment`'s danger is lighter. In all three the old value was indistinguishable
+  from that theme's own accent — two of them were literally the same hex — which nothing measured
+  until `check:oklch`'s R3 grew from four severities to five.

@@ -56,6 +56,7 @@ const themeCssPath = path.join(root, 'projects/gleks/ui/src/styles/theme.css');
 const OUTERMOST = new Map([
   ['panel', 'the outermost surface tier; a panel frames page content rather than sitting in a box'],
   ['accordion', 'the item is the outermost box; a stack of items sits on the page'],
+  ['alert', 'a message placed in the consumer’s own flow; it frames content, nothing frames it'],
   ['button', 'sits in the consumer layout'],
   ['button-toggle', 'its own component — it shares a name prefix with the button, not a box'],
   ['card', 'the outermost surface'],

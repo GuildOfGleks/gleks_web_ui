@@ -6,7 +6,7 @@
 
 # @guildofgleks/ui
 
-An Angular 21 and 22 component library with **no CDK and no Material**. 29 components, 5
+An Angular 21 and 22 component library with **no CDK and no Material**. 30 components, 5
 directives and 3 services, all standalone, all signal-based, themed entirely through CSS custom
 properties.
 
@@ -446,7 +446,7 @@ dropdowns, always for the menu.
 | Data                | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag`                                                                                                                                                          |
 | Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-card`, `gog-panel`, `gog-divider`, `gog-scroll`                                                                                                |
 | Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`), `gog-menu` (+ `gogMenuTrigger` / `gogMenuItem`)                                                                                   |
-| Feedback            | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton`                                                                                                                                           |
+| Feedback            | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton`, `gog-alert`                                                                                                                              |
 | Content             | `gog-icon`                                                                                                                                                                                                        |
 
 **Directives:** `gogButton` (a link that looks like a button), `gogTooltip`, `gogBadge`,

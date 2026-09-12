@@ -8,6 +8,30 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`gog-alert` — a persistent, in-flow message**, and the thing `gog-toast` cannot be. No timer,
+  no queue, no overlay, no service: it renders where you write it and stays until your app removes
+  it. `severity` (the shared `GogSeverity`, defaulting to `'accent'`), an optional `heading`, a
+  projected body, `dismissible` with a `dismissed` output, `iconName` with a `gogAlertIcon` slot,
+  and `GOG_CONFIG.labels.closeAlert`.
+
+  **`dismissed` means pressed, not removed.** The alert stays in the DOM and the app decides. A
+  component that deleted itself would take the focused element with it and drop a keyboard reader
+  onto `<body>`.
+
+  **It sets no `role` or `aria-live` yet, and that is deliberate rather than forgotten.** A live
+  region has to exist before the text it announces lands inside it, and an alert written as
+  `@if (error()) { <gog-alert>…</gog-alert> }` arrives with its own text in one insertion — the
+  trap `gog-toast-container` already exists to work around. Getting it wrong announces nothing
+  while looking correct, so it is being measured rather than guessed; `docs/alert.md` carries the
+  argument and the open question. The visible half is complete and honest on its own.
+
+  One thing the plan called for and the code refused: **there is no `variant` input.** It was to be
+  `GogSurfaceVariant` defaulting to `'filled'`, but `filled` in this library means _a tint_ and
+  there is no per-status tint to draw it with — `--gog-accent-pale` exists, `--gog-success-pale`
+  does not. Inventing that family here would make the alert the twelfth place a theme restates its
+  red, so the severity is a leading edge and the icon over the ordinary surface, which is the shape
+  `gog-toast` already reached for the same reason.
+
 - **`--gog-button-focus-ring-color`**, and it is a fix as much as an addition. `gog-button` had a
   focus-ring width and a focus-ring offset but no colour, so `button.css` reached for
   `--gog-button-variant-hover-bg` — the _hover_ fill doing focus duty, which is the same defect
@@ -22,6 +46,27 @@ reached 1.0, so breaking changes may land in minor versions.
   even on a filled accent button. That is the answer the library's other fourteen rings give.
 
 ### Changed
+
+- **`check:oklch`'s R3 compares five severities, not four — and three themes were painting two of
+  them as one colour.** `GogSeverity` is `'accent' | 'success' | 'danger' | 'warning' | 'info'`
+  and the library paints all five as a set (`gog-button`'s `severity`, `gog-progressbar`'s
+  `variant`, `gogBadge`, and now `gog-alert`, whose entire signal is the colour of one edge). R3
+  was written against "the four status colours" and left the accent out, so four of the ten pairs
+  went unmeasured.
+
+  Two of the three findings are not close calls: the **dark** theme declared
+  `--gog-warning-color: #fbbf24`, the same hex as its accent, and **terminal** declared
+  `--gog-success-color: #3ddc5c`, the same hex as its. Nobody writes one value twice for two roles
+  on purpose — it is what a palette typed role-by-role produces when nothing compares them.
+  **parchment**'s danger sat 6.9° of hue and 0.052 of lightness from its oxblood accent, which is
+  not a distance a reader can use.
+
+  All three moved the **status**, never the accent: the accent is the theme's identity and the
+  status is the role that has to be read. `dark`'s warning is ember orange `#ffac4e` — moved by
+  hue rather than lightness, because darkening a status on a dark ground trades one defect for
+  another. `terminal`'s success is `#00b330`, moved along its own hue because that theme's other
+  three statuses already occupy yellow, red and cyan and the room left is in lightness.
+  `parchment`'s danger is `#a24439`. `check:contrast` stays green on all eleven themes.
 
 - **A disabled control is exempt from `check:contrast`, consistently and on purpose.** WCAG carves
   out "an inactive user interface component" in both SC 1.4.3 and 1.4.11 — a disabled control is

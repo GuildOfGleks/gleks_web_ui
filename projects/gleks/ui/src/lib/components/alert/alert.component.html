@@ -1,0 +1,30 @@
+@if (hasIcon()) {
+  <gog-icon
+    class="gog-alert__icon"
+    [ariaHidden]="true"
+    [name]="resolvedIconName()"
+    [template]="iconSlot()?.templateRef ?? null"
+  />
+}
+
+<div class="gog-alert__main">
+  @if (heading()) {
+    <p class="gog-alert__heading">{{ heading() }}</p>
+  }
+  <div class="gog-alert__body">
+    <ng-content></ng-content>
+  </div>
+</div>
+
+@if (dismissible()) {
+  <gog-button
+    class="gog-alert__close"
+    variant="ghost"
+    size="sm"
+    type="button"
+    [ariaLabel]="closeLabel()"
+    (gogClick)="onDismiss()"
+  >
+    <gog-icon name="close" />
+  </gog-button>
+}

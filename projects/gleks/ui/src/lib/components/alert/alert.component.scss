@@ -1,0 +1,91 @@
+/*
+ * `gog-alert` — a persistent, in-flow message.
+ *
+ * The severity is carried by a leading edge and the icon, over the ordinary surface, rather than
+ * by a tinted fill. That is not a style preference: the library ships no per-status tint family
+ * (`--gog-accent-pale` exists; `--gog-success-pale` and friends do not), and `docs/alert.md` says
+ * plainly not to invent one here — it would make the alert the twelfth place a theme has to
+ * restate its red. `gog-toast` reached the same shape for the same reason.
+ *
+ * The pair that carries the text is `--gog-text-color` on `--gog-surface-color`, which every
+ * theme already clears comfortably and `check:contrast` already gates. The edge is the severity's
+ * own colour against that surface — the pair the boundary sweep measures.
+ */
+:host {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gog-alert-gap);
+  padding: var(--gog-alert-padding-y) var(--gog-alert-padding-x);
+  border: var(--gog-alert-border-width) var(--gog-alert-border-style) var(--gog-alert-border-color);
+  /* The severity, as a thicker edge on the leading side. Logical, so it follows `dir="rtl"`
+     without a second rule — the mistake `--gog-direction-sign` exists for elsewhere is only
+     needed where a property has no logical form, and `border-inline-start` has one. */
+  border-inline-start: var(--gog-alert-edge-width) var(--gog-alert-border-style)
+    var(--gog-alert-edge-color);
+  border-radius: var(--gog-alert-radius);
+  background: var(--gog-alert-bg);
+  color: var(--gog-alert-color);
+  font-family: var(--gog-alert-font-family);
+}
+
+.gog-alert__icon {
+  flex-shrink: 0;
+  color: var(--gog-alert-edge-color);
+  /* The glyph's box is `--gog-icon-size` of this element's own font-size, which is the rule
+     `styling.instructions.md` states for every mark in a box: state the basis and the box from
+     one declaration so they cannot drift. */
+  font-size: var(--gog-alert-icon-font-size);
+  line-height: var(--gog-alert-icon-line-height);
+}
+
+.gog-alert__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-alert-main-gap);
+  /* Without this a long unbroken word in the body pushes the alert past its container instead of
+     wrapping — a flex item's `min-width` is `auto`, not 0. */
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.gog-alert__heading {
+  margin: 0;
+  color: var(--gog-alert-heading-color);
+  font-size: var(--gog-alert-heading-font-size);
+  font-weight: var(--gog-alert-heading-font-weight);
+  line-height: var(--gog-alert-heading-line-height);
+}
+
+.gog-alert__body {
+  font-size: var(--gog-alert-body-font-size);
+  line-height: var(--gog-alert-body-line-height);
+}
+
+.gog-alert__close {
+  flex-shrink: 0;
+}
+
+/* === Severities ===
+   Each re-points one token. The alert paints from `--gog-alert-edge-color` and knows nothing
+   about which severity supplied it, which is what keeps the rule above to a single declaration —
+   the indirection layer `check:contrast`'s variant sweep resolves. */
+
+:host(.gog-alert--accent) {
+  --gog-alert-edge-color: var(--gog-alert-accent-color);
+}
+
+:host(.gog-alert--success) {
+  --gog-alert-edge-color: var(--gog-alert-success-color);
+}
+
+:host(.gog-alert--danger) {
+  --gog-alert-edge-color: var(--gog-alert-danger-color);
+}
+
+:host(.gog-alert--warning) {
+  --gog-alert-edge-color: var(--gog-alert-warning-color);
+}
+
+:host(.gog-alert--info) {
+  --gog-alert-edge-color: var(--gog-alert-info-color);
+}

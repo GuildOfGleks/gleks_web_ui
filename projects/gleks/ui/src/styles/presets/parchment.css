@@ -41,7 +41,10 @@
 
   /* Semantics — the colours a scribe actually had: verdigris, vermilion, orpiment, indigo */
   --gog-success-color: #3f5f3f;
-  --gog-danger-color: #8b2f26;
+  /* 6.9 deg of hue and 0.052 of lightness from this theme's oxblood accent, which is not a
+     distance a reader can use. Lightened along its own hue: a danger that stops being red is
+     worse than one that is a shade brighter than the accent beside it. */
+  --gog-danger-color: #a24439;
   --gog-warning-color: #8a6516;
   --gog-info-color: #3a5570;
 

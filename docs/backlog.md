@@ -553,10 +553,26 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   name, which floated the weakened selector over the consumer floor it enforces. It self-tests its
   arithmetic now.
 
-- **Missing components**, in rough order of how often a real site wants them: `alert`/`banner` (a
-  persistent in-flow message — `gog-toast` is transient and cannot serve this), `avatar`,
+- **Missing components**, in rough order of how often a real site wants them.
+  ~~`alert`/`banner`~~ **came off this list on 2026-09-12** — `gog-alert` ships in the in-progress
+  21.13.0, plan and iterations in `docs/alert.md`. What is left: `avatar`,
   `breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`. Each is additive and
-  independent; none blocks anything else. **`card` and `gog-panel` came off this list in 21.6.1**
+  independent; none blocks anything else.
+
+  **What building the first one taught, and it is not about alerts.** The plan's required question
+  — what does it own that a `<div>` and a class do not — was answered by _semantics_, not by
+  looks: the live-region role is a decision a class cannot hold, and a live region that arrives
+  with its own text announces nothing, which is a behaviour only a component can work around. That
+  is a stronger answer than the card's was, and it is the shape to look for in the remaining six.
+  **It also shipped without the half that justified it**, deliberately: the visible component
+  landed first because an alert with no live region is merely not announced early, while the chip's
+  equivalent shortcut would have shown a _wrong_ state. Read `docs/alert.md`'s iteration note
+  before inverting that order again — it only works when the missing half is additive.
+
+  **And it found a defect three releases old in something else entirely.** Five alerts side by
+  side made it obvious that `dark` painted `accent` and `warning` in the same hex; `check:oklch`'s
+  R3 had been comparing four statuses and not the five-member `GogSeverity`. A new component is a
+  new rendering of the old palette, which is a kind of test. **`card` and `gog-panel` came off this list in 21.6.1**
   — see `docs/panel-card.md`. `empty state` is the next one with a plan waiting to be written, and
   that plan is the same argument as the card's: it has to own something a class cannot.
 

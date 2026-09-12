@@ -102,6 +102,31 @@ export type GogTokenName =
   | '--gog-accordion-xsm-letter-spacing'
   | '--gog-accordion-xsm-padding-x'
   | '--gog-accordion-xsm-padding-y'
+  | '--gog-alert-accent-color'
+  | '--gog-alert-bg'
+  | '--gog-alert-body-font-size'
+  | '--gog-alert-body-line-height'
+  | '--gog-alert-border-color'
+  | '--gog-alert-border-style'
+  | '--gog-alert-border-width'
+  | '--gog-alert-color'
+  | '--gog-alert-danger-color'
+  | '--gog-alert-edge-width'
+  | '--gog-alert-font-family'
+  | '--gog-alert-gap'
+  | '--gog-alert-heading-color'
+  | '--gog-alert-heading-font-size'
+  | '--gog-alert-heading-font-weight'
+  | '--gog-alert-heading-line-height'
+  | '--gog-alert-icon-font-size'
+  | '--gog-alert-icon-line-height'
+  | '--gog-alert-info-color'
+  | '--gog-alert-main-gap'
+  | '--gog-alert-padding-x'
+  | '--gog-alert-padding-y'
+  | '--gog-alert-radius'
+  | '--gog-alert-success-color'
+  | '--gog-alert-warning-color'
   | '--gog-autocomplete-actions-gap'
   | '--gog-autocomplete-actions-inset'
   | '--gog-autocomplete-actions-reserve'
@@ -1937,6 +1962,37 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-accordion-xsm-letter-spacing',
       '--gog-accordion-xsm-padding-x',
       '--gog-accordion-xsm-padding-y',
+    ],
+  },
+  {
+    section: 'Alert',
+    layer: 'component',
+    tokens: [
+      '--gog-alert-accent-color',
+      '--gog-alert-bg',
+      '--gog-alert-body-font-size',
+      '--gog-alert-body-line-height',
+      '--gog-alert-border-color',
+      '--gog-alert-border-style',
+      '--gog-alert-border-width',
+      '--gog-alert-color',
+      '--gog-alert-danger-color',
+      '--gog-alert-edge-width',
+      '--gog-alert-font-family',
+      '--gog-alert-gap',
+      '--gog-alert-heading-color',
+      '--gog-alert-heading-font-size',
+      '--gog-alert-heading-font-weight',
+      '--gog-alert-heading-line-height',
+      '--gog-alert-icon-font-size',
+      '--gog-alert-icon-line-height',
+      '--gog-alert-info-color',
+      '--gog-alert-main-gap',
+      '--gog-alert-padding-x',
+      '--gog-alert-padding-y',
+      '--gog-alert-radius',
+      '--gog-alert-success-color',
+      '--gog-alert-warning-color',
     ],
   },
   {

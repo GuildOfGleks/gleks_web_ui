@@ -287,6 +287,12 @@ export interface GogGlobalConfig {
     /** Close buttons on the two service-driven overlays. */
     closeDialog?: string;
     closeToast?: string;
+    /**
+     * `gog-alert`'s dismiss button. Separate from `closeToast` on purpose: a toast closes
+     * something that was going to leave anyway, an alert dismisses a message that would have
+     * stayed, and several languages use different verbs for the two.
+     */
+    closeAlert?: string;
     /** `gog-paginator`'s `<nav>` accessible name and its two step buttons. */
     pagination?: string;
     previousPage?: string;
