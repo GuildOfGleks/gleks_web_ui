@@ -9,6 +9,7 @@
     [axis]="maxHeight() ? 'both' : 'horizontal'"
     [style.max-height]="maxHeight()"
     class="gog-table-scroll"
+    (gogScroll)="onTableScroll($event)"
   >
     <table
       class="gog-table"
@@ -18,6 +19,7 @@
       [class.gog-table--sticky-header]="stickyHeader()"
       [class.gog-table--auto-layout]="!fullWidth()"
       [style.width]="fullWidth() ? '100%' : 'fit-content'"
+      [attr.aria-rowcount]="ariaRowCount()"
     >
       <colgroup>
         @if (hasSelectionColumn()) {
@@ -102,15 +104,27 @@
             <td class="gog-table__empty" [attr.colspan]="emptyColspan()">—</td>
           </tr>
         } @else {
-          @for (row of visibleRows(); track rowKey(row); let i = $index) {
+          <!--
+            The windowed table's spacers. A `<tr>` and not a `<div>`: `<tbody>` takes rows and
+            nothing else, and a row honours an explicit height exactly — measured, including at
+            400 000px. Chrome clamps an element at 33 554 426px, which is this table's row ceiling.
+          -->
+          @if (padBefore() > 0) {
+            <tr class="gog-table__spacer" aria-hidden="true" [style.height.px]="padBefore()">
+              <td [attr.colspan]="emptyColspan()"></td>
+            </tr>
+          }
+          @for (row of renderedRows(); track rowKey(row); let i = $index) {
             <tr
               class="gog-table__row"
               [class.gog-table__row--interactive]="interactiveRows()"
               [class.gog-table__row--selected]="isSelected(row)"
               [attr.tabindex]="interactiveRows() ? 0 : null"
               [attr.aria-selected]="hasSelection() ? isSelected(row) : null"
-              (click)="emitRowClick(row, i, $event)"
-              (keydown)="onRowKeydown(row, i, $event)"
+              [attr.aria-rowindex]="ariaRowIndex(i)"
+              [attr.data-gog-row-index]="rowIndexOf(i)"
+              (click)="emitRowClick(row, rowIndexOf(i), $event)"
+              (keydown)="onRowKeydown(row, rowIndexOf(i), $event)"
             >
               @if (hasSelectionColumn()) {
                 <td class="gog-table__td gog-table__td--select">
@@ -128,17 +142,26 @@
                 </td>
               }
               @if (showRowNumbers()) {
-                <td class="gog-table__td gog-table__td--num">{{ globalRowIndex(i) }}</td>
+                <td class="gog-table__td gog-table__td--num">
+                  {{ globalRowIndex(rowIndexOf(i)) }}
+                </td>
               }
               @for (col of columns(); track col.field()) {
                 <td class="gog-table__td">
                   @if (getBodyTemplate(col); as bodyTpl) {
-                    <ng-container *ngTemplateOutlet="bodyTpl; context: bodyContext(row, col, i)" />
+                    <ng-container
+                      *ngTemplateOutlet="bodyTpl; context: bodyContext(row, col, rowIndexOf(i))"
+                    />
                   } @else {
                     {{ formatCellValue(row, col.field()) }}
                   }
                 </td>
               }
+            </tr>
+          }
+          @if (padAfter() > 0) {
+            <tr class="gog-table__spacer" aria-hidden="true" [style.height.px]="padAfter()">
+              <td [attr.colspan]="emptyColspan()"></td>
             </tr>
           }
         }

@@ -8,6 +8,57 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`gog-table` windows its rows — `virtualize`, off by default, and it needed a second
+  primitive.** The dropdowns' `GogVirtualWindow` takes one row height, and a table cannot supply
+  one: **a table row's height cannot be pinned**, because `height` on a `<tr>` _and_ on a `<td>` is
+  a **minimum** in table layout. One cell taken from 40 to 600 characters measured 39px → 173.75px
+  under `table-layout: fixed`, with the column width unchanged, and neither `height` on the row nor
+  on its cells moved it.
+
+  So `GogVariableWindow` (internal, `lib/shared`): a height per row — measured where a row has
+  rendered, estimated everywhere else — with a prefix sum, so the range is a binary search rather
+  than a division. The three dropdowns keep the fixed-pitch one, which is exact where this is only
+  ever as right as the rows it has seen.
+
+  **It requires `maxHeight` and `fullWidth`, does nothing without either, and says which is missing
+  in a dev-mode warning.** Both are measured constraints rather than preferences: without
+  `maxHeight` the table never scrolls vertically on its own, so there is no viewport to window
+  against; and `fullWidth="false"` means `table-layout: auto`, where the browser sizes columns from
+  the rows that are _rendered_ — measured, rendering 2 of 24 rows moved columns by up to 7.8px, so
+  a windowed table would shift its own columns as you scroll.
+
+  The `<tbody>` spacers are `<tr>`s, since a table body takes rows and nothing else; a row honours
+  an explicit height exactly, including at 400 000px. **The ceiling is Chrome's, not the
+  library's:** an element clamps at 33 554 426px, about 745 000 rows at 45px.
+
+  **Three indices would have changed meaning silently, and all three are public promises**:
+  `gogRowClick`'s `index` (documented as the index within the page), the `showRowNumbers` column,
+  and `GogColumnBodyContext.index` in every consumer's cell template. Under a window `$index` is
+  the position in the rendered slice, so each keeps its name, its type and its documentation while
+  meaning something else. Specs fail without the fix with `expected +0 to be 196` and
+  `expected '1' to be '197'`. Checked rather than assumed on the other side: `toggleAllOnPage` and
+  the header checkbox still read the page, not the window — select-all would otherwise have
+  selected the twenty rows on screen while claiming a thousand.
+
+  **Two of the three things the plan called hard were not.** The sticky header lives in `<thead>`,
+  which a window over `<tbody>` never touches — pinned exactly at the viewport top across 200 000px
+  of scroll past a 400 000px spacer. The selection column is an ordinary `<td>` per row. That is
+  the third release running where the predicted hard part cost nothing.
+
+  **And one bug came out of the live pass that no spec would have suggested.** The effect that
+  clears cached heights on a new page or sort calls `reset()`, and `reset()` _reads_ the
+  measurement signal to decide whether it has anything to clear — so, called bare inside an effect,
+  that read became one of the effect's dependencies. Measuring wrote the signal, the effect re-ran,
+  and it cleared the measurements that had just been taken. **Nothing looked wrong**: the right
+  rows rendered at the right heights, and only the scroll height was quietly the estimate times the
+  row count, for ever. `untracked` is the fix and a regression spec now asserts it — it fails
+  without it on a spacer that is exactly `982 × 30`, a whole number of estimates.
+
+  The estimate is seeded from the **median** of the first rendered batch rather than its first row.
+  Taking row 0 was the first version, and the showcase's own demo is why it is wrong: it makes
+  every seventh row wrap, row 0 among them, so the estimate came out 65% high and all 10 000 rows
+  were sized from the one row that least resembles them.
+
 - **`gog-select` windows its option list — `virtualize`, off by default.** Measured in Chrome on
   one page holding two selects over the same 10 000 options: the eager panel takes **512ms** to
   appear and builds **10 000 rows to show six**; the windowed one takes **21ms** and holds **10**.

@@ -243,6 +243,46 @@
   </gog-panel>
 
   <gog-panel size="md">
+    <h3 gogPanelHeader>Virtualized rows</h3>
+    <p class="lead">
+      <code>virtualize</code> renders only the rows in view. This table holds 10,000, and every
+      seventh carries a long note that wraps — so the rows genuinely differ in height, which is the
+      case a table has and a dropdown does not. A row's height cannot be pinned in CSS (<code
+        >height</code
+      >
+      on a <code>&lt;tr&gt;</code> is a <em>minimum</em>), so the window measures each row as it
+      renders and corrects itself.
+    </p>
+    <p class="lead">
+      It needs <code>maxHeight</code> — without it the table never scrolls vertically on its own, so
+      there is no viewport to window against — and <code>fullWidth</code>, because
+      <code>fullWidth="false"</code> lays out with <code>table-layout: auto</code>, which sizes
+      columns from the rows that happen to be rendered. Both are stated rather than half-honoured:
+      switch either off and windowing turns itself off with a warning.
+      <code>aria-rowcount</code> and <code>aria-rowindex</code> keep the announced size and position
+      honest, and <code>gogRowClick</code>'s <code>index</code> still counts from the top of the
+      page.
+    </p>
+    <div class="action-row">
+      <gog-checkbox label="virtualize" [(checked)]="virtualizeRows" />
+    </div>
+
+    <gog-table
+      [value]="manyRows"
+      [virtualize]="virtualizeRows()"
+      maxHeight="420px"
+      [stickyHeader]="true"
+      [showRowNumbers]="true"
+      size="sm"
+    >
+      <gog-column field="component" header="Component" width="320px" [sortable]="true"></gog-column>
+      <gog-column field="status" header="Status" width="120px"></gog-column>
+      <gog-column field="owner" header="Owner" width="140px" [sortable]="true"></gog-column>
+      <gog-column field="updated" header="Updated" width="120px"></gog-column>
+    </gog-table>
+  </gog-panel>
+
+  <gog-panel size="md">
     <h3 gogPanelHeader>Empty state</h3>
     <div class="action-row">
       <gog-button variant="ghost" type="button" (gogClick)="toggleEmpty()">

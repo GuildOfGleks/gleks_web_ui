@@ -468,11 +468,12 @@ A few things worth knowing before you reach for a workaround:
   **And here is where it stops, so you find out now rather than halfway in.** `gog-table` has no
   **column resizing or reordering** by the reader (a column's `width`/`minWidth`/`maxWidth` are
   yours to set, not theirs to drag), no **frozen columns**, no **expandable rows** and no **row
-  grouping**. It also **does not virtualize**: ten thousand eager rows render ten thousand rows.
-  `[lazy]="true"` keeps the fetch small, which is the half that matters most often, but the DOM
-  half is not solved here. (All three dropdowns do window their options, with `virtualize` — the
-  primitive exists; the table's rows are variable-height with a sticky header and a selection
-  column spanning them, which is its own piece of work.)
+  grouping**.
+
+  It **does** virtualize, with `virtualize` — which needs `maxHeight` and `fullWidth`, and says so
+  in a dev-mode warning if either is missing. That is the DOM half: `[lazy]="true"` keeps the fetch
+  small and still stamps every row it is handed. Neither substitutes for the other, and a long
+  table usually wants both.
 
   `stickyHeader` is not the missing feature in disguise — it pins the header while rows scroll
   under it, which is the vertical axis. Freezing a first column against horizontal scroll is the

@@ -123,12 +123,48 @@ everything, and windowing without the second is visibly broken.
 | --- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
 | 0   | The survey above — seven measurements, before any design                                                 | ✅ 2026-09-12 — and it reversed two of the parent plan's three |
 | 1   | `GogVariableWindow` in `lib/shared`: per-row heights, prefix sums, the correction delta. No component    | ✅ 2026-09-12                                                  |
-| 2   | `gog-table` adopts it: `virtualize`, `<tr>` spacers, the two index traps, the two requirements, showcase | 🔜                                                             |
+| 2   | `gog-table` adopts it: `virtualize`, `<tr>` spacers, the two index traps, the two requirements, showcase | ✅ 2026-09-12 — three index traps, not two                     |
 | 3   | The ceiling at finding #5 — decide whether ~745 000 rows is documented or guarded                        | 🔜                                                             |
 
 **Iteration 1 before 2, and not in the same commit.** That is iteration 1 of the parent plan's own
 shape, and it earned it: building the arithmetic alone is what let eleven specs cover the window
 before a single component depended on it.
+
+### As iteration 2 finished
+
+Built, verified live at 10 000 rows with every seventh row wrapping to two lines, and two things
+came out of it that this document did not have.
+
+**The index traps were three, not two.** `GogColumnBodyContext.index` reaches every consumer's own
+cell template, and it is the one a consumer is most likely to have built something on. All three
+keep their meaning; the specs for two of them fail without the fix with `expected +0 to be 196` and
+`expected '1' to be '197'`.
+
+**The estimate is seeded from the median of the first rendered batch, not its first row.** Taking
+row 0 was the first version and the showcase's own demo is what disproved it: it makes every
+seventh row wrap, row 0 among them, so the estimate came out 65% high and every one of 10 000 rows
+was sized from the row that least resembles them. Seeded once and then held — an estimate that
+keeps moving re-sizes every unmeasured row above the viewport, and that shift is invisible to
+`applyMeasurements` because it is not a measurement, so it would move the content under the reader
+with no delta to correct it.
+
+**And the bug worth the whole live pass.** The effect that clears the cached heights on a new page
+or sort calls `reset()`, and `reset()` _reads_ the measurement signal to decide whether it has
+anything to clear. Called bare inside an effect, that read becomes one of the effect's
+dependencies — so measuring wrote the signal, the effect re-ran, and it cleared the measurements
+that had just been taken. A ping-pong.
+
+**Nothing looked wrong.** The right rows rendered, at the right heights, with the right indices;
+only the scroll height was quietly the estimate times the row count, for ever. It was found by
+computing what the total _should_ have been and noticing it was a round multiple. `untracked` is
+the fix, and the general rule is worth more than the fix: **inside an effect, a method call is a
+subscription to everything that method reads.**
+
+The verification also re-confirmed `docs/virtualization.md`'s note about hidden tabs, one layer
+deeper: a pending `requestAnimationFrame` scheduled before a tab was hidden never fires, and since
+`scheduleRowMeasure` guards on `measureFrame !== null`, that one stale frame wedges every later
+measurement. Harmless in a tab someone is looking at, and worth knowing before concluding the
+measurement code is broken.
 
 ## What this does not try to be
 

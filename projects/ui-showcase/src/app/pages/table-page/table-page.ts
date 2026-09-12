@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import {
   ButtonComponent,
+  CheckboxComponent,
   GogColumn,
   GogColumnBodyDirective,
   GogColumnHeaderDirective,
@@ -56,6 +57,7 @@ const SERVER_ROWS: ServerRow[] = Array.from({ length: 137 }, (_, i) => ({
   selector: 'app-table-page',
   imports: [
     ButtonComponent,
+    CheckboxComponent,
     GogColumn,
     GogColumnBodyDirective,
     GogColumnHeaderDirective,
@@ -87,6 +89,22 @@ export class TablePage implements OnDestroy {
     owner: ['Design', 'Forms', 'Data', 'Navigation', 'Feedback'][i % 5],
     updated: `${i + 1} days ago`,
   }));
+
+  /**
+   * 10,000 rows whose heights genuinely differ — every seventh carries a paragraph, so the window
+   * has to place rows it has measured beside rows it has only estimated. A uniform list would not
+   * exercise the thing `GogVariableWindow` exists for.
+   */
+  protected readonly manyRows: DemoRow[] = Array.from({ length: 10000 }, (_, i) => ({
+    component:
+      i % 7 === 0
+        ? `Component ${i + 1} — with a long note attached, the kind that wraps across several lines in a narrow column and makes this row taller than the ones around it`
+        : `Component ${i + 1}`,
+    status: i % 3 === 0 ? 'Ready' : i % 3 === 1 ? 'In review' : 'Planned',
+    owner: ['Design', 'Forms', 'Data', 'Navigation', 'Feedback'][i % 5],
+    updated: `${(i % 30) + 1} days ago`,
+  }));
+  protected readonly virtualizeRows = signal(true);
 
   protected readonly loading = signal(false);
   private loadingTimer: ReturnType<typeof setTimeout> | null = null;

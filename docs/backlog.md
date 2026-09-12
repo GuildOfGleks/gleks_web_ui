@@ -654,11 +654,16 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
 
   The filing below stands as written:
 
-- ~~**Virtualization.**~~ **The dropdown half shipped 2026-09-12** (see above); what is left of
-  this filing is `gog-table`. Kept for the part of it that turned out to be exactly right, and is
-  worth re-reading before iteration 4: `gogLoadMore` and `lazy` cover the _fetch_ half and nothing
-  about the DOM, so "we have `lazy`" is still the sentence that will make someone think the
-  table's problem is solved.
+- ~~**Virtualization.**~~ **Closed 2026-09-12** — all four components window now. Kept for the
+  part of it that turned out to be exactly right: `gogLoadMore` and `lazy` cover the _fetch_ half
+  and nothing about the DOM, so "we have `lazy`" is still the sentence that will make someone
+  think the table's problem is solved. `README.md` and `AGENTS.md` both draw that line explicitly.
+
+  **One thing is left open, and it is a decision rather than a defect.** A windowed table stands
+  its full height up with a `<tr>` spacer, and Chrome clamps an element at **33 554 426px** —
+  about 745 000 rows at 45px. Past that the scrollbar silently stops describing the list.
+  `docs/table-virtualization.md` iteration 3 is whether that is documented or guarded; nothing
+  measures it today, which is the weaker half of the answer.
 
   **Requested twice.** Items 3 and 4 under _Features_ below are this same primitive, filed
   separately from use. Build it once in `lib/shared` and adopt it in the dropdowns first — a fixed

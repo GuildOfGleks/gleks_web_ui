@@ -115,6 +115,24 @@ Small, and only one of the three has any visible surface on the site.
   a `gogLoadMore` list that has loaded 10 000 records still stamps 10 000 rows without
   `virtualize`.
 
+- **`gog-table` has `virtualize` too, and its story is not the dropdowns'.** Same input name, and
+  the Table page should say why it behaves differently: a table's rows genuinely vary in height —
+  **a row's height cannot be pinned**, since `height` on a `<tr>` or `<td>` is a _minimum_ in table
+  layout — so the window measures each row as it renders and the scroll height sharpens as you
+  scroll rather than being exact from the start. It **requires `maxHeight` and `fullWidth`** and
+  warns in dev mode when either is missing; both are measured constraints, not preferences.
+
+  The page's limitations section needs editing rather than extending: it currently says the table
+  **does not virtualize**, which stops being true. Keep the `lazy`-is-the-other-half sentence —
+  that one is still right and is the thing readers get wrong.
+
+  `ui-showcase`'s Table page has a demo worth copying whose data makes every seventh row wrap, so
+  the variable-height case is actually visible rather than described. There is also a ceiling worth
+  one line: Chrome clamps an element at 33 554 426px, about 745 000 rows.
+
+- **`GogVariableWindow` and `GogVirtualWindow` are both internal**, so neither belongs in the API
+  reference. Worth knowing only so nobody adds them from the changelog.
+
   The comparison page's accessibility or feature claims may also need a look: "no virtualization
   anywhere" stops being true for the dropdown, while staying true for the table.
 

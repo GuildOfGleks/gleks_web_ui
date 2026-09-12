@@ -1647,29 +1647,30 @@ they never asked to be.
 
 #### `gog-table<T>`
 
-| Input                         | Type                          | Default                             |
-| ----------------------------- | ----------------------------- | ----------------------------------- |
-| `value`                       | `T[]`                         | `[]`                                |
-| `fullWidth`                   | `boolean`                     | `true`                              |
-| `pageSize`                    | `model<number>`               | `0` (no pagination) — two-way       |
-| `showPageSizeSelect`          | `boolean \| undefined`        | `false`; forwarded to the paginator |
-| `pageSizeOptions`             | `number[] \| undefined`       | `[10, 20, 30, 40, 50]`; forwarded   |
-| `showRowNumbers`, `showTotal` | `boolean`                     | `true`, `false`                     |
-| `emptyPlaceholder`            | `string`                      | `'-'`                               |
-| `paginatorPosition`           | `'left'\|'center'\|'right'`   | `'center'`                          |
-| `totalPosition`               | `'left'\|'right'\|'opposite'` | `'opposite'`                        |
-| `loading`                     | `boolean`                     | `false`                             |
-| `showColumnBorders`           | `boolean`                     | `false`                             |
-| `stickyHeader`                | `boolean`                     | `false` — pair with `maxHeight`     |
-| `maxHeight`                   | `string \| null`              | `null` — any CSS length             |
-| `size`                        | `GogSize`                     | `'lg'` (row density — not `'md'`)   |
-| `lazy`                        | `boolean`                     | `false` — see below                 |
-| `totalRecords`                | `number \| null`              | `null` — `lazy` only                |
-| `selectionMode`               | `GogTableSelectionMode`       | `'none'`                            |
-| `selection`                   | `model<T[]>`                  | `[]` — two-way bindable             |
-| `dataKey`                     | `string`                      | `''` — row identity field           |
-| `showSelectionColumn`         | `boolean`                     | `true` (once selection is on)       |
-| `interactiveRows`             | `boolean`                     | `false`                             |
+| Input                         | Type                          | Default                                   |
+| ----------------------------- | ----------------------------- | ----------------------------------------- |
+| `value`                       | `T[]`                         | `[]`                                      |
+| `fullWidth`                   | `boolean`                     | `true`                                    |
+| `pageSize`                    | `model<number>`               | `0` (no pagination) — two-way             |
+| `showPageSizeSelect`          | `boolean \| undefined`        | `false`; forwarded to the paginator       |
+| `pageSizeOptions`             | `number[] \| undefined`       | `[10, 20, 30, 40, 50]`; forwarded         |
+| `showRowNumbers`, `showTotal` | `boolean`                     | `true`, `false`                           |
+| `emptyPlaceholder`            | `string`                      | `'-'`                                     |
+| `paginatorPosition`           | `'left'\|'center'\|'right'`   | `'center'`                                |
+| `totalPosition`               | `'left'\|'right'\|'opposite'` | `'opposite'`                              |
+| `loading`                     | `boolean`                     | `false`                                   |
+| `showColumnBorders`           | `boolean`                     | `false`                                   |
+| `stickyHeader`                | `boolean`                     | `false` — pair with `maxHeight`           |
+| `maxHeight`                   | `string \| null`              | `null` — any CSS length                   |
+| `size`                        | `GogSize`                     | `'lg'` (row density — not `'md'`)         |
+| `lazy`                        | `boolean`                     | `false` — see below                       |
+| `totalRecords`                | `number \| null`              | `null` — `lazy` only                      |
+| `selectionMode`               | `GogTableSelectionMode`       | `'none'`                                  |
+| `selection`                   | `model<T[]>`                  | `[]` — two-way bindable                   |
+| `dataKey`                     | `string`                      | `''` — row identity field                 |
+| `showSelectionColumn`         | `boolean`                     | `true` (once selection is on)             |
+| `interactiveRows`             | `boolean`                     | `false`                                   |
+| `virtualize`                  | `boolean`                     | `false` — needs `maxHeight` + `fullWidth` |
 
 Outputs: `gogSortChange: GogTableSortEvent` (`{ field, direction }`, `{ field: '', direction:
 null }` when the third click clears it), `gogPageChange: number` (1-based; **does not fire** on
@@ -1683,12 +1684,36 @@ total evenly. Before 21.6.0 that split clipped the widest header, and a `width` 
 the workaround — under auto layout a stated `width` is a suggestion weighed against content
 rather than a hard split, so those can usually go.
 
+**`virtualize` renders only the rows in view**, for a table long enough that stamping every row is
+the cost. It **requires `maxHeight` and `fullWidth`**, does nothing without either, and says which
+is missing in a dev-mode warning rather than half-working:
+
+- Without `maxHeight` the table never scrolls vertically on its own, so there is no viewport to
+  window against — the same constraint `stickyHeader` has, below.
+- `fullWidth="false"` means `table-layout: auto`, and the browser then sizes columns from the rows
+  that are **rendered**. Measured: rendering 2 of 24 rows moved columns by up to 7.8px, so a
+  windowed table would shift its own columns as you scroll.
+
+Unlike the three dropdowns' `virtualize`, this one deals in rows whose heights genuinely differ —
+**a table row's height cannot be pinned**, because `height` on a `<tr>` or `<td>` is a _minimum_ in
+table layout, so a cell whose content wraps makes its row taller and no CSS stops it. The window
+measures each row as it renders and corrects itself, which means the scroll height is an estimate
+that sharpens as you scroll rather than an exact figure from the start.
+
+What else changes while it is on: `Ctrl+F` finds only the rendered rows, CSS targeting
+`:last-child` matches the last rendered one, and with `interactiveRows` scrolling a focused row out
+of view moves focus to the scroll region, because the row it was on no longer exists.
+`aria-rowcount` and `aria-rowindex` keep the announced size and position honest, and every index
+the table hands out — `gogRowClick`'s `index`, the `showRowNumbers` column, and
+`GogColumnBodyContext.index` — still counts from the top of the page rather than the top of the
+window. There is a ceiling: Chrome clamps an element at 33 554 426px, about 745 000 rows at 45px.
+
 **Where `gog-table` stops.** No **column resizing or reordering** by the reader — a column's
 `width`/`minWidth`/`maxWidth` are set by whoever writes the template, not dragged by whoever reads
-it. No **frozen columns**, no **expandable rows**, no **row grouping**, and no virtualization: ten
-thousand eager rows render ten thousand rows. `[lazy]="true"` keeps the _fetch_ small, which is
-usually the half that hurts, but the DOM half is not solved here. If a request needs one of those,
-it needs a data grid, and this is not one — say so rather than reaching for `::ng-deep`.
+it. No **frozen columns**, no **expandable rows**, no **row grouping**. `[lazy]="true"` keeps the
+_fetch_ small, which is usually the half that hurts; `virtualize` above is the DOM half, and
+neither substitutes for the other. If a request needs one of the rest, it needs a data grid, and
+this is not one — say so rather than reaching for `::ng-deep`.
 
 `stickyHeader` is not any of them in disguise: it pins the header while rows scroll under it,
 which is the vertical axis. Freezing a first column against horizontal scroll is the thing that

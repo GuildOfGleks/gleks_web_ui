@@ -911,3 +911,226 @@ describe('TableComponent — page size', () => {
     expect(paginator.componentInstance.pageSizeOptions()).toEqual([5, 15]);
   });
 });
+
+/*
+ * Windowing — see `docs/table-virtualization.md`.
+ *
+ * jsdom has no layout, so the window runs on its seed: the constant 40px row height and the
+ * viewport resolved from `maxHeight`. That is the same pair that governs the first frame in a real
+ * browser, which is the frame worth covering — the corrections that follow are `GogVariableWindow`'s
+ * own specs.
+ */
+describe('TableComponent — virtualize', () => {
+  let fixture: ComponentFixture<TableComponent<object>>;
+
+  const manyRows = Array.from({ length: 1000 }, (_, i) => ({ id: i, name: `Row ${i}` }));
+
+  function bodyRows(): HTMLElement[] {
+    return Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('tbody tr.gog-table__row'),
+    );
+  }
+
+  function spacers(): HTMLElement[] {
+    return Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('tbody tr.gog-table__spacer'),
+    );
+  }
+
+  async function setUp(inputs: Record<string, unknown> = {}): Promise<void> {
+    fixture.componentRef.setInput('value', manyRows);
+    for (const [key, value] of Object.entries(inputs)) {
+      fixture.componentRef.setInput(key, value);
+    }
+    fixture.detectChanges();
+    await fixture.whenStable();
+  }
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [TableComponent] }).compileComponents();
+    fixture = TestBed.createComponent(TableComponent);
+    await fixture.whenStable();
+  });
+
+  it('is off by default, and a thousand rows are a thousand <tr>', async () => {
+    await setUp();
+
+    expect(bodyRows().length).toBe(1000);
+    expect(spacers().length).toBe(0);
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('table')?.getAttribute('aria-rowcount'),
+    ).toBeNull();
+  });
+
+  it('renders a window, and stands the rest of the list up with a spacer', async () => {
+    await setUp({ virtualize: true, maxHeight: '400px' });
+
+    const rendered = bodyRows();
+    expect(rendered.length).toBeLessThan(30);
+    expect(rendered.length).toBeGreaterThan(0);
+
+    // Nothing above the first row, so only the trailing spacer exists.
+    expect(spacers().length).toBe(1);
+    expect(spacers()[0].style.height).toBe(`${(1000 - rendered.length) * 40}px`);
+  });
+
+  /*
+   * A `<tbody>` takes rows and nothing else, so the spacer is a `<tr>` — and it must carry no
+   * border, background or padding, or it reads as a row that is there.
+   */
+  it('spaces with a <tr> whose cell spans the table', async () => {
+    await setUp({ virtualize: true, maxHeight: '400px', showRowNumbers: true });
+
+    const spacer = spacers()[0];
+    expect(spacer.tagName).toBe('TR');
+    expect(spacer.getAttribute('aria-hidden')).toBe('true');
+    const cell = spacer.querySelector('td')!;
+    const headerCells = (fixture.nativeElement as HTMLElement).querySelectorAll('thead th').length;
+    expect(Number(cell.getAttribute('colspan'))).toBe(headerCells);
+  });
+
+  it('announces the whole grid, not the window', async () => {
+    await setUp({ virtualize: true, maxHeight: '400px' });
+
+    const table = (fixture.nativeElement as HTMLElement).querySelector('table')!;
+    // The header is row 1, so a 1000-row body is 1001.
+    expect(table.getAttribute('aria-rowcount')).toBe('1001');
+    expect(bodyRows()[0].getAttribute('aria-rowindex')).toBe('2');
+  });
+
+  describe('the indices that would have changed meaning', () => {
+    /*
+     * `$index` inside the loop is the position in the *window* once there is one. Three things
+     * read it and every one of them is a promise already made: `gogRowClick.index` is documented
+     * as the index within the page, the row-number column shows it, and it reaches every
+     * consumer's cell template as `GogColumnBodyContext.index`.
+     */
+    it('keeps gogRowClick.index the index within the page', async () => {
+      await setUp({ virtualize: true, maxHeight: '400px' });
+      const seen: GogTableRowClickEvent<object>[] = [];
+      fixture.componentInstance.gogRowClick.subscribe((e) => seen.push(e));
+
+      // Scroll far enough that the window starts well past the top.
+      const viewport = (fixture.nativeElement as HTMLElement).querySelector(
+        '.gog-scroll__viewport',
+      ) as HTMLElement;
+      Object.defineProperty(viewport, 'clientHeight', { value: 400, configurable: true });
+      viewport.scrollTop = 8000;
+      viewport.dispatchEvent(new Event('scroll'));
+      await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const first = bodyRows()[0];
+      expect(first.getAttribute('data-gog-row-index')).not.toBe('0');
+      first.click();
+
+      expect(seen).toHaveLength(1);
+      expect(seen[0].index).toBe(Number(first.getAttribute('data-gog-row-index')));
+      expect((seen[0].row as { id: number }).id).toBe(seen[0].index);
+    });
+
+    it('keeps the row-number column counting from the top of the page', async () => {
+      await setUp({ virtualize: true, maxHeight: '400px', showRowNumbers: true });
+
+      const viewport = (fixture.nativeElement as HTMLElement).querySelector(
+        '.gog-scroll__viewport',
+      ) as HTMLElement;
+      Object.defineProperty(viewport, 'clientHeight', { value: 400, configurable: true });
+      viewport.scrollTop = 8000;
+      viewport.dispatchEvent(new Event('scroll'));
+      await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const first = bodyRows()[0];
+      const realIndex = Number(first.getAttribute('data-gog-row-index'));
+      expect(realIndex).toBeGreaterThan(0);
+      expect(first.querySelector('.gog-table__td--num')?.textContent?.trim()).toBe(
+        String(realIndex + 1),
+      );
+    });
+  });
+
+  describe('what it refuses to do', () => {
+    /*
+     * Both are hard requirements, measured rather than preferred: without `maxHeight` the table
+     * never scrolls vertically on its own, and `fullWidth="false"` means `table-layout: auto`,
+     * which sizes columns from the rendered rows.
+     */
+    /*
+     * This one passes twice over, and the second reason is the interesting one: with no
+     * `maxHeight` there is also no viewport, and `GogVariableWindow` degrades to the whole list
+     * rather than to an empty one. The guard makes the refusal explicit and gives the dev-mode
+     * warning something to say; without it the table would still render everything, silently.
+     */
+    it('does nothing without maxHeight', async () => {
+      await setUp({ virtualize: true });
+
+      expect(bodyRows().length).toBe(1000);
+      expect(spacers().length).toBe(0);
+    });
+
+    it('does nothing without fullWidth', async () => {
+      await setUp({ virtualize: true, maxHeight: '400px', fullWidth: false });
+
+      expect(bodyRows().length).toBe(1000);
+      expect(spacers().length).toBe(0);
+    });
+  });
+
+  /*
+   * Regression, and it was found live rather than here.
+   *
+   * The effect that clears the cached heights on a new page or sort calls `reset()`, and `reset()`
+   * *reads* the measurement signal to decide whether it has anything to clear. Called bare inside
+   * an effect, that read becomes one of the effect's dependencies — so measuring wrote the signal,
+   * the effect re-ran, and it cleared the measurements that had just been taken.
+   *
+   * Nothing looked wrong. The right rows rendered at the right heights; only the scroll height was
+   * quietly the estimate times the row count for ever. That is what this asserts: a measured row
+   * has to change the total, or the measurement did not survive.
+   */
+  it('keeps the heights it measures', async () => {
+    await setUp({ virtualize: true, maxHeight: '400px' });
+
+    // Alternating heights, so the median the estimate is seeded from cannot also account for the
+    // total — only retained per-row measurements can.
+    const rendered = bodyRows();
+    rendered.forEach((row, i) => {
+      vi.spyOn(row, 'getBoundingClientRect').mockReturnValue({
+        ...new DOMRect(0, 0, 200, i % 2 === 0 ? 30 : 90),
+        height: i % 2 === 0 ? 30 : 90,
+        toJSON: () => ({}),
+      } as DOMRect);
+    });
+
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const spacerHeight = Number.parseFloat(spacers().at(-1)!.style.height);
+    const estimate = 30;
+    const unmeasured = 1000 - bodyRows().length;
+    // Had the measurements been wiped, the spacer would be a whole number of estimates.
+    expect(spacerHeight).not.toBe(unmeasured * estimate);
+    expect(spacerHeight).toBeGreaterThan(0);
+  });
+
+  /*
+   * Checked rather than assumed: select-all means the page. Had it followed the rendered slice it
+   * would have selected the twenty rows on screen while claiming to have selected a thousand.
+   */
+  it('still selects the whole page, not the window', async () => {
+    await setUp({ virtualize: true, maxHeight: '400px', selectionMode: 'multiple' });
+
+    const selectAll = (fixture.nativeElement as HTMLElement).querySelector(
+      '.gog-table__th--select input',
+    ) as HTMLInputElement;
+    selectAll.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.selection().length).toBe(1000);
+  });
+});

@@ -1,6 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  ElementRef,
+  PLATFORM_ID,
   computed,
   contentChildren,
   effect,
@@ -12,8 +15,9 @@ import {
   output,
   signal,
   TemplateRef,
+  untracked,
 } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import { CheckboxComponent } from '../checkbox/checkbox.component';
 import { IconComponent } from '../icon/icon.component';
 import { PaginatorComponent } from '../paginator/paginator.component';
@@ -23,12 +27,20 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
 import { GogSize } from '../../shared/types';
 import { getByPath } from '../../shared/option-accessor';
+import { resolveCssLengthPx } from '../../shared/dropdown-position';
+import { GogVariableWindow } from '../../shared/variable-window';
 import {
   GogColumn,
   type GogColumnBodyContext,
   type GogColumnHeaderContext,
   defaultCompare,
 } from './column';
+
+/**
+ * Row height assumed before any row has been measured, for `virtualize`. A seed, not a claim: the
+ * first rendered row replaces it. See `docs/table-virtualization.md`.
+ */
+const FALLBACK_ROW_HEIGHT = 40;
 
 export type SortDirection = 'asc' | 'desc' | null;
 
@@ -386,6 +398,241 @@ export class TableComponent<T extends object> {
     () => this.hasSelection() && this.showSelectionColumn(),
   );
 
+  // ── Windowing ────────────────────────────────────────────────────────────────
+  //
+  // See `docs/table-virtualization.md`. `GogVariableWindow` rather than the dropdowns'
+  // `GogVirtualWindow`, because a table row's height cannot be pinned: `height` on a `<tr>` or a
+  // `<td>` is a *minimum* in table layout, so a cell whose content wraps makes its row taller and
+  // nothing in CSS can stop it. Measured: one cell from 40 to 600 characters went 39px to 173.75px
+  // with its column width unchanged.
+
+  /**
+   * Renders only the rows in view instead of all of them.
+   *
+   * **Requires `maxHeight` and `fullWidth`**, and does nothing without them — with a dev-mode
+   * warning saying which is missing, rather than half-working:
+   *
+   * - Without `maxHeight` the table's scroller is exactly as tall as its content and never scrolls
+   *   vertically, so there is no viewport to compute a window from. This is the same constraint
+   *   `stickyHeader` already documents.
+   * - `fullWidth="false"` means `table-layout: auto`, and the browser then sizes columns from the
+   *   cells that are *present*. Measured: rendering 2 of 24 rows moved columns by up to 7.8px, so
+   *   a windowed table would shift its own columns as you scroll.
+   *
+   * What it changes while it is on, beyond speed: `Ctrl+F` finds only the rendered rows, CSS
+   * targeting `:last-child` matches the last rendered one, and — with `interactiveRows` — scrolling
+   * a focused row out of view moves focus to the scroll region, because the row it was on no longer
+   * exists. `aria-rowcount` and `aria-rowindex` keep the announced count and position honest.
+   *
+   * Not a substitute for `[lazy]` and not substituted by it: `lazy` keeps the *fetch* small and
+   * still stamps every row it is handed.
+   *
+   * @default false
+   */
+  readonly virtualize = input(false);
+
+  private readonly elRef = inject(ElementRef<HTMLElement>);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly ownDestroyRef = inject(DestroyRef);
+
+  /** The scroller's real geometry, fed from `gog-scroll`'s own `(gogScroll)`. */
+  private readonly viewport = signal<{ scrollTop: number; height: number }>({
+    scrollTop: 0,
+    height: 0,
+  });
+
+  /**
+   * What to assume for a row that has never been rendered.
+   *
+   * Seeded from `maxHeight` is impossible — that is the viewport, not a row — so it starts at a
+   * constant and is replaced by the first row actually measured. A seed, not a claim: it governs
+   * only the frames before any row has rendered, and being wrong there costs one re-render rather
+   * than a drifting scroll position.
+   */
+  private readonly estimatedRowHeight = signal(FALLBACK_ROW_HEIGHT);
+
+  /** Windowing is on only when it can be correct — see `virtualize`. */
+  protected readonly windowingActive = computed(
+    () => this.virtualize() && !!this.maxHeight() && this.fullWidth() && !this.loading(),
+  );
+
+  /**
+   * `maxHeight` resolved to px, as the viewport's stand-in until `gog-scroll` reports a real one.
+   *
+   * A computed rather than a value seeded on open, which is what this was first written as and is
+   * wrong for a reason worth keeping: a component's constructor runs before its inputs are set, so
+   * a seed taken there reads `maxHeight` as `null` and the first frame renders the whole table —
+   * exactly the frame the seed exists to prevent.
+   */
+  private readonly maxHeightPx = computed(() => {
+    if (!this.isBrowser) return 0;
+    const max = this.maxHeight();
+    if (!max) return 0;
+    return resolveCssLengthPx(max, window.innerHeight) ?? 0;
+  });
+
+  private readonly rowWindow = new GogVariableWindow({
+    count: computed(() => this.visibleRows().length),
+    estimatedRowHeight: this.estimatedRowHeight,
+    viewportHeight: computed(() => {
+      const reported = this.viewport().height;
+      return reported > 0 ? reported : this.maxHeightPx();
+    }),
+    scrollTop: computed(() => this.viewport().scrollTop),
+  });
+
+  protected readonly rowRange = computed(() =>
+    this.windowingActive() ? this.rowWindow.range() : { start: 0, end: this.visibleRows().length },
+  );
+
+  /**
+   * What the template loops over. The same array instance as `visibleRows()` when not windowing,
+   * so nothing re-renders for the sake of a slice that changed nothing.
+   */
+  protected readonly renderedRows = computed(() => {
+    const all = this.visibleRows();
+    const { start, end } = this.rowRange();
+    return start === 0 && end === all.length ? all : all.slice(start, end);
+  });
+
+  /** Filler above and below the rendered rows, as `<tr>` heights. */
+  protected readonly padBefore = computed(() =>
+    this.windowingActive() ? this.rowWindow.padBefore() : 0,
+  );
+  protected readonly padAfter = computed(() =>
+    this.windowingActive() ? this.rowWindow.padAfter() : 0,
+  );
+
+  /**
+   * A rendered row's index **within the page**, which is what every index this component hands out
+   * has always meant.
+   *
+   * Three places read it and all three would have changed meaning silently under a window:
+   * `gogRowClick`'s `index` (public API, documented as the index within the page), the
+   * `showRowNumbers` column, and `GogColumnBodyContext.index` in every consumer's cell template.
+   * The same trap `gog-autocomplete`'s option id hit one iteration earlier.
+   */
+  protected rowIndexOf(renderedIndex: number): number {
+    return this.rowRange().start + renderedIndex;
+  }
+
+  /** Total rows the grid claims, header included — `null` when every row is present anyway. */
+  protected readonly ariaRowCount = computed(() =>
+    this.windowingActive() ? this.visibleRows().length + 1 : null,
+  );
+
+  /** 1-based position of a rendered row in the grid, header being row 1. */
+  protected ariaRowIndex(renderedIndex: number): number | null {
+    return this.windowingActive() ? this.rowIndexOf(renderedIndex) + 2 : null;
+  }
+
+  /** `(gogScroll)` on the table's own scroller. */
+  protected onTableScroll(metrics: { scrollTop: number; clientHeight: number }): void {
+    this.viewport.update((viewport) => ({
+      scrollTop: metrics.scrollTop,
+      // A zero is "not laid out yet", not "no viewport" -- the scroller's first emission can land
+      // before the table has a height, and believing it renders every row for a frame.
+      height: metrics.clientHeight > 0 ? metrics.clientHeight : viewport.height,
+    }));
+    this.releaseFocusLeavingTheWindow();
+  }
+
+  /**
+   * With `interactiveRows`, every row is a tab stop. A row scrolled out of the window is
+   * unmounted, and an unmounted element holding focus drops it on `<body>` -- where the arrow keys
+   * scroll the page instead of the table.
+   *
+   * Focus goes to the scroll region instead, which `gog-scroll` already makes a tab stop
+   * (`role="region"`, `tabindex="0"`) and which is where scrolling is driven from anyway.
+   *
+   * Runs after the viewport signal moves, so `rowRange()` is already the new range -- and before
+   * the re-render, so the row still exists to be recognised. After the unmount there is nothing
+   * left to ask whether it held focus.
+   */
+  private releaseFocusLeavingTheWindow(): void {
+    if (!this.isBrowser || !this.windowingActive() || !this.interactiveRows()) return;
+
+    const host = this.elRef.nativeElement as HTMLElement;
+    const focused = document.activeElement;
+    if (!(focused instanceof HTMLElement) || !host.contains(focused)) return;
+    if (!focused.classList.contains('gog-table__row')) return;
+
+    const index = Number(focused.dataset['gogRowIndex']);
+    if (!Number.isFinite(index)) return;
+
+    const { start, end } = this.rowRange();
+    if (index >= start && index < end) return;
+
+    host.querySelector<HTMLElement>('.gog-scroll__viewport')?.focus();
+  }
+
+  /**
+   * Reads the rendered rows and tells the window what they really measured.
+   *
+   * The return value is the part that matters and the part the arithmetic does not make obvious:
+   * correcting a row *above* the viewport moves everything below it, under the reader, while they
+   * are scrolling. Adding that delta to the scroller holds the visible rows still.
+   */
+  private measureRenderedRows(): void {
+    if (!this.isBrowser || !this.windowingActive()) return;
+
+    const host = this.elRef.nativeElement as HTMLElement;
+    const rows = Array.from(
+      host.querySelectorAll<HTMLElement>('tbody .gog-table__row[data-gog-row-index]'),
+    );
+    if (rows.length === 0) return;
+
+    const heights = new Map<number, number>();
+    for (const row of rows) {
+      const index = Number(row.dataset['gogRowIndex']);
+      const height = row.getBoundingClientRect().height;
+      if (!Number.isFinite(index) || height <= 0) continue;
+      heights.set(index, height);
+    }
+    if (heights.size === 0) return;
+
+    /*
+     * The first batch of rendered rows replaces the constant seed, so every row nobody has looked
+     * at is estimated from this table's own geometry rather than from a number in this file.
+     *
+     * **The median of the batch, not its first row.** Taking row 0 was the first version and it is
+     * wrong wherever the tall rows are not evenly spread: the showcase's own demo makes every
+     * seventh row wrap, row 0 among them, so the estimate came out 65% high and all 10 000 rows
+     * were sized from the one row that least resembles them. The median is the row a reader would
+     * point at and say "that is what a row looks like here".
+     *
+     * Seeded once and then held. An estimate that keeps moving re-sizes every unmeasured row above
+     * the viewport, and *that* shift is invisible to `applyMeasurements` — it is not a measurement
+     * — so it would move the content under the reader with no delta to correct it.
+     */
+    if (!this.rowHeightSeeded) {
+      const sorted = [...heights.values()].sort((a, b) => a - b);
+      const median = sorted[Math.floor(sorted.length / 2)];
+      this.rowHeightSeeded = true;
+      if (median > 0 && Math.abs(this.estimatedRowHeight() - median) > 0.5) {
+        this.estimatedRowHeight.set(median);
+      }
+    }
+
+    const delta = this.rowWindow.applyMeasurements(heights);
+    if (delta === 0) return;
+
+    const viewportEl = host.querySelector<HTMLElement>('.gog-scroll__viewport');
+    if (viewportEl) viewportEl.scrollTop = viewportEl.scrollTop + delta;
+    this.viewport.update((viewport) => ({ ...viewport, scrollTop: viewport.scrollTop + delta }));
+  }
+
+  private rowHeightSeeded = false;
+  private measureFrame: number | null = null;
+
+  private scheduleRowMeasure(): void {
+    if (!this.isBrowser || this.measureFrame !== null) return;
+    this.measureFrame = requestAnimationFrame(() => {
+      this.measureFrame = null;
+      this.measureRenderedRows();
+    });
+  }
+
   readonly emptyColspan = computed(
     () =>
       this.columns().length + (this.showRowNumbers() ? 1 : 0) + (this.hasSelectionColumn() ? 1 : 0),
@@ -468,6 +715,69 @@ export class TableComponent<T extends object> {
           "[gog-table] `lazy` with a `pageSize` but no `totalRecords`: the table cannot know how many pages exist, so pagination stays hidden. Pass the server's total row count.",
         );
       }
+    });
+
+    /*
+     * `virtualize` needs both, and does nothing without either, so say which is missing rather
+     * than let a consumer conclude the input is broken. Both are hard requirements for reasons
+     * measured in `docs/table-virtualization.md`, not preferences.
+     */
+    effect(() => {
+      if (!isDevMode() || !this.virtualize()) return;
+      if (!this.maxHeight()) {
+        console.warn(
+          '[gog-table] `virtualize` needs `maxHeight`: without it the table never scrolls vertically on its own, so there is no viewport to window against. Windowing is off.',
+        );
+      }
+      if (!this.fullWidth()) {
+        console.warn(
+          '[gog-table] `virtualize` needs `fullWidth`: `fullWidth="false"` lays the table out with `table-layout: auto`, which sizes columns from the rows that are rendered — so a windowed table would move its own columns as you scroll. Windowing is off.',
+        );
+      }
+    });
+
+    /*
+     * Measure after every render that changes what is on screen. This converges rather than
+     * looping: `applyMeasurements` writes nothing when the rows measure what it already believed,
+     * so the effect stops re-triggering itself as soon as the window is telling the truth.
+     */
+    effect(() => {
+      this.renderedRows();
+      this.rowRange();
+      if (this.windowingActive()) this.scheduleRowMeasure();
+    });
+
+    /*
+     * A cached height belongs to a row, and these are the four things that change which rows the
+     * indices refer to. Keeping the measurements across a sort would place the new rows using the
+     * old rows' heights — which is not a small error, because sorting is exactly what moves a tall
+     * row from the bottom of the list to the top.
+     */
+    effect(() => {
+      this.value();
+      this.sortState();
+      this.currentPage();
+      this.pageSize();
+      /*
+       * `untracked` is load-bearing, and it took a live session to see why.
+       *
+       * `reset()` *reads* the window's measurement signal to decide whether it has anything to
+       * clear. Called bare inside this effect, that read becomes one of the effect's dependencies
+       * — so measuring wrote the signal, this effect re-ran, and it cleared the measurements that
+       * had just been taken. A ping-pong, and the table ran on the estimate for ever while looking
+       * entirely correct: the rows were right, the heights were right, and only the scroll height
+       * was quietly the estimate times the row count.
+       *
+       * The four reads above are the intended dependencies. Anything this effect *does* is not.
+       */
+      untracked(() => {
+        this.rowWindow.reset();
+        this.rowHeightSeeded = false;
+      });
+    });
+
+    this.ownDestroyRef.onDestroy(() => {
+      if (this.measureFrame !== null) cancelAnimationFrame(this.measureFrame);
     });
   }
 

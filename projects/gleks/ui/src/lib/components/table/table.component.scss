@@ -189,6 +189,15 @@
   border-bottom: none;
 }
 
+/* The windowed table's filler above and below the rendered rows. It carries no border, no
+   background and no padding: it stands in for rows that are not there, and any of the three would
+   draw something the reader would read as one. */
+.gog-table__spacer > td {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
 .gog-table__row {
   transition: background-color var(--gog-table-row-transition-duration) var(--gog-easing);
 }
