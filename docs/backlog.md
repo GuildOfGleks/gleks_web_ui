@@ -16,6 +16,36 @@ not worth carrying here.
 
 ## Defects — first
 
+- **The dropdown panel's open-direction decision rests on a row height that is wrong in every
+  theme.** Found 2026-09-12 by `docs/virtualization.md`'s iteration 0, which existed to check
+  exactly this before anything new depended on it.
+
+  `--gog-select-option-height` and its three siblings are documented as "an estimated row height
+  fed into the panel's up/down placement math; not itself a real layout property". The second half
+  is true and the first half is what matters. `GogDropdownBase.estimatePanelHeight()` multiplies
+  the token by the option count, and `resolveDropdownDirection` then decides with
+  `if (spaceBelow >= panelHeight && spaceAbove < panelHeight) return 'down'`.
+
+  **Measured against a rendered row in all eleven themes, the token is low in ten of them**, from
+  +0.59px (`bevel`) to **+8.38px** (`parchment`); only `terminal` is high, by 0.62px. So the
+  estimate systematically under-reports, and the component can decide a panel fits below when it
+  does not.
+
+  **It only misfires on short lists**, which is why nobody has hit it: above
+  `--gog-*-panel-max-height` (260px) the cap dominates and the error is masked, so the window is
+  lists of roughly five options or fewer. Short lists are the ones nobody worries about.
+
+  **No static token can fix it.** The same `parchment` row is 48.38px at `--gog-density: 1` and
+  42.38px at 0.85 — the height is padding + leading + border, and a theme or a consumer can move
+  every term. The fix is to derive the estimate from the tokens the row is actually built from and
+  then correct it from a measurement once a row has ever rendered. Four components share the base,
+  so it is one change with four components' worth of tests.
+
+  **The lesson, which is the reusable part:** a token whose own comment said it was only an
+  estimate that nothing reads for layout _was_ being read for a layout decision, and that comment
+  is precisely what stopped anyone checking it against a rendered row. A disclaimer is not an
+  exemption.
+
 - **Geometry: all five laws are gated (2026-09-06).** The 4px grid, concentric radii, horizontal
   padding at exactly twice vertical on every control, the typographic ratio, and 24×24 CSS px of
   pointer target. `npm run check:geometry` runs four scripts and is a CI step as of 21.11.0: the
@@ -590,6 +620,15 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   — the header pins while rows scroll under it; freezing a first column against horizontal scroll
   is the absent one — and a limitations list that looks wrong on its first line is worse than no
   list. Both documents now draw that distinction explicitly.
+
+- **Virtualization — `docs/virtualization.md` now holds the plan** (2026-09-12), with the
+  measurements behind it: 10 000 option rows cost **216ms** of build and layout and 10 000 DOM
+  nodes to show **six**, and 50 000 cost over a second. That is a floor — raw DOM, no Angular on
+  top. Iteration 0 is done and changed the design (the primitive measures the row rather than
+  reading a token) and produced the placement defect now filed at the head of Defects, which the
+  project's own ordering puts ahead of the rest of this.
+
+  The filing below stands as written:
 
 - **Virtualization.** Nothing in the library virtualizes: a 10 000-option `gog-select` and a
   10 000-row eager `gog-table` will both crawl. `gog-autocomplete`'s `gogLoadMore` covers the
