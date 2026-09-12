@@ -255,8 +255,22 @@ font-size that arrives through a token chain are not the same number, and at `lg
 top of `--gog-icon-size` does not mean what its name says**: `--gog-select-chevron-icon-ratio:
 0.875` rendered a chevron at 1.05 of the field's type, not 0.875 of it.
 
-There is **no check for this**; all three instances were found by measuring in a browser, and
-`docs/backlog.md` carries what a static one would have to resolve.
+**`npm run check:glyph-box` gates this** (21.13.0), and it is the only check here that measures a
+rendering rather than reading source — for the reason the first trap above gives: an `em` cannot
+be resolved honestly without knowing which element it landed on, and the attempt that guessed
+produced a fix 25% worse at `slg`. It serves the prerendered `ui-showcase`, walks all 46 routes in
+Playwright and compares every `<gog-icon>`'s `<svg>` against the element holding it. Needs
+`npm run build:showcase` first.
+
+Two things it settled that the prose above had not. **The border box is the box** — the first
+version compared against the content box and reported `gog-checkbox`, whose 12px tick spans its own
+2px outline, which is what a checkbox looks like. And **it found two more instances the three
+above had missed**: `gog-table`'s sort icon (9% over, the fourth instance of the relative-unit
+trap) and `gog-textarea`'s clear mark (20% over, and the one control whose ratio is deliberately
+`1`, which is what made it the largest).
+
+It sees only what the showcase renders — an icon in a state no page reaches is not measured, which
+is a reason the showcase's coverage matters beyond documentation.
 
 ## Accessibility & motion
 

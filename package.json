@@ -47,7 +47,8 @@
     "check:typography": "node scripts/check-typography.mjs",
     "survey:measure": "node scripts/survey-measure.mjs",
     "check:measure": "node scripts/check-measure.mjs",
-    "check:class-names": "node scripts/check-class-names.mjs"
+    "check:class-names": "node scripts/check-class-names.mjs",
+    "check:glyph-box": "node scripts/check-glyph-box.mjs"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
@@ -84,6 +85,7 @@
     "eslint": "^10.3.0",
     "jsdom": "^28.0.0",
     "ng-packagr": "^21.2.0",
+    "playwright": "^1.63.0",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",
     "typescript-eslint": "8.59.2",

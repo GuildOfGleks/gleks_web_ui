@@ -146,7 +146,17 @@
 
 .gog-table__sort-icon {
   display: inline-block;
-  width: var(--gog-table-sort-icon-width);
+  /* `--gog-table-sort-icon-width` is the slot, and `max()` is what keeps it a slot rather than a
+     clip. It defaulted to `1.1em`, which looks like "a little wider than the mark" and is not:
+     an `em` on `width` resolves against *this* element's font-size, which the line below has
+     already reduced to 0.9em -- so the slot came out 0.99em of the header while the mark is
+     `--gog-icon-size` (1.2em) of 0.9em, or 1.08em of it. The mark was 9% wider than its slot.
+
+     The fourth time this library has paid for "a relative unit means the element carrying the
+     property"; `select.component.scss` calls its own the third. A floor states the invariant in
+     the CSS instead of leaving it to a number someone has to get right. A consumer setting the
+     token wider still wins. */
+  width: max(var(--gog-table-sort-icon-width), var(--gog-icon-size, var(--gog-icon-fallback-size)));
   text-align: center;
   font-size: var(--gog-table-sort-icon-size);
   opacity: var(--gog-table-sort-icon-opacity);

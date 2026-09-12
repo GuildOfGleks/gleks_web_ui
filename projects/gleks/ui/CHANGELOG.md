@@ -114,6 +114,23 @@ reached 1.0, so breaking changes may land in minor versions.
 
   `gog-multiselect`, `gog-autocomplete` and `gog-table` do not window yet.
 
+- **`npm run check:glyph-box` — the first check in this repo that measures a rendering.** Every
+  other one reads source; this rule cannot be read honestly from source, because a glyph is
+  `--gog-icon-size` (1.2em) of its element's resolved font-size and **an `em` attaches to the
+  element carrying the property, not the one the value was written for**. Guessing that produced a
+  "fix" 25% worse at `slg` in this very release. So it serves the prerendered `ui-showcase`, walks
+  all 46 routes in Playwright against the installed Chrome, and compares every `<gog-icon>`'s
+  `<svg>` to the element holding it. 580 icons.
+
+  The rule has **no exemption list**, which no other check here can say: a box roomier than its
+  mark is fine, smaller never is.
+
+  **Two things went wrong in the check before it was right, and both are the lesson.** It first
+  walked every route on one page, so findings depended on visit order — the showcase persists
+  theme and density, and a route measured after the themes page inherited whatever it had left
+  set. And it compared against the _content_ box, which reported `gog-checkbox`: a 12px tick
+  spanning its own 2px outline, which is what a checkbox is. **The border box is the box.**
+
 - **`npm run check:tokens` rule K — a token `theme.css` declares that nothing reads.** The mirror
   of rule F, which has always caught the opposite direction: a `var()` read with no declaration.
   Nothing caught a declaration with no reader, so a component could ship a documented knob wired to
@@ -395,6 +412,25 @@ reached 1.0, so breaking changes may land in minor versions.
   **No deprecation cycle for any of the five**, on the same reasoning as the menu's rename: a
   deprecation window protects working consumer code, and a token nothing reads has none to protect.
   Overriding any of them has always done exactly nothing, and still does.
+
+- **Two more marks were bigger than the boxes holding them**, found by the check above rather than
+  by eye — the same defect as the chip's remove mark, the select's chevron and the multiselect's
+  arrow earlier in this release, in two places that audit did not reach.
+
+  **`gog-table`'s sort icon was 9% wider than its slot**, and it is the _fourth_ time this library
+  has paid for "a relative unit resolves against the element carrying the property".
+  `--gog-table-sort-icon-width: 1.1em` reads as "a little wider than the mark" and is not: the
+  `em` resolves against the element's own font-size, which the line below it had already reduced
+  to `0.9em`, so the slot came out `0.99em` of the header while the mark is `1.2 × 0.9 = 1.08em`
+  of it. The slot now takes a floor of `--gog-icon-size`, which states the invariant in the CSS
+  rather than leaving it to a number someone has to get right. A consumer setting the token wider
+  still wins.
+
+  **`gog-textarea`'s clear mark was 20% wider than its button**, and this one is the largest of
+  the four because its ratio is deliberately `1` — `theme.css` says why, and it is right: 0.7
+  suits a dropdown's dense single-line trigger and reads as a speck on a multi-line box. So the
+  **box grew and the mark did not move**, which is the same resolution the chip's got. The clear
+  button's hit area is about 20% larger.
 
 - **An `interactiveRows` table row answered a click and not a press.** It had a cursor, a hover
   tint and a focus ring, and nothing at all under the finger — 21.9.0 gave nine other pressable

@@ -747,8 +747,27 @@ reason may stop holding.
   because its priority order runs _past_ the header into the nav drawer and splitting it would
   have left that order stated nowhere.
 
-- **There is no check for "a box is never smaller than the glyph it holds", and a static one is
-  not a bolt-on.** Filed 2026-09-11 with the three fixes above, which were all found by measuring
+- ~~**There is no check for "a box is never smaller than the glyph it holds".**~~ **Closed
+  2026-09-12 as `npm run check:glyph-box`** — built against a real rendering, which is what this
+  entry insisted on, using Playwright against the installed Chrome (no browser download) over the
+  prerendered `ui-showcase`. 580 icons across 46 routes.
+
+  **It found two instances beyond the three that prompted it**, both of which a static check would
+  have had to resolve `em` correctly to see: `gog-table`'s sort icon, 9% over, which is the
+  _fourth_ time this library has paid for "a relative unit resolves against the element carrying
+  the property"; and `gog-textarea`'s clear mark, 20% over, on the one control whose icon ratio is
+  deliberately `1` — so the box grew and the mark did not move.
+
+  **Two things went wrong in the check itself and both are the general lesson.** It first walked
+  all 46 routes on one page, so findings depended on the order it visited them — the showcase
+  persists theme and density, and a route measured after the themes page rendered under whatever
+  that page had left set. And it compared against the _content_ box, which reported `gog-checkbox`:
+  a 12px tick spanning its own 2px outline, which is what a checkbox is. A check whose findings
+  depend on visit order, or whose definition is subtly wrong, is worse than no check.
+
+  The original filing, for the argument that shaped it:
+
+  **A static one is not a bolt-on.** Filed 2026-09-11 with the three fixes above, which were all found by measuring
   in a browser. The rule is one-directional and has no exceptions — ten elements in the library
   put a `gog-icon` in a square box, three were under it and seven are deliberately roomier — so
   unlike most of this project's checks it would need no exemption list at all. That is the
