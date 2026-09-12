@@ -104,3 +104,10 @@ Small, and only one of the three has any visible surface on the site.
   `--gog-accent-color` — the same value a typeless toast paints — so three of the five states were
   the accent. Both read their own role now. Any lab screenshot or prose describing toast types as
   accent-tinted is stale, and the Toast page's "one of each type" demo finally shows four colours.
+
+- **`gog-alert` has a `live` input and the page has to explain it**, because the default is wrong
+  for the case a docs site shows most: a message rendered at page load. `live` is
+  `'assertive' | 'polite' | 'off'`, defaulting from the severity, and `'off'` is the answer for an
+  alert that was already there. The announcement is a separate visually-hidden region filled one
+  render after mount — worth a sentence, since a reader who "simplifies" it onto the alert itself
+  breaks it silently. `GogAlertLive` is a new exported type for the token/type tables.

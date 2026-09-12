@@ -106,6 +106,23 @@ export type GogProgressbarVariant = GogSeverity;
 export type GogSeverity = 'accent' | 'success' | 'danger' | 'warning' | 'info';
 
 /**
+ * How `gog-alert` announces itself, and it is a decision the component cannot make for you.
+ *
+ * - `'assertive'` — interrupts whatever a screen reader is saying. For a message that *just
+ *   happened* and changes what the reader should do: a failed save, a rejected payment.
+ * - `'polite'` — waits for a pause. The right answer for most appearing messages.
+ * - `'off'` — announces nothing. **The right answer for a message that was already on the page
+ *   when it loaded**, which is otherwise an interruption about something nobody asked about yet.
+ *
+ * The choice follows from *why the message appeared*, not from how bad it is — the same red box
+ * earns an interruption on submit and does not on page load. Nothing in `@angular/core` lets a
+ * component tell those apart: `ApplicationRef` exposes no stability member a component can read
+ * synchronously at construction, and `afterNextRender` reports the component's *own* first render
+ * rather than the application's. Measured before being decided; see `docs/alert.md` §1.
+ */
+export type GogAlertLive = 'assertive' | 'polite' | 'off';
+
+/**
  * - `'joined'` — one segmented control, buttons sharing borders (Material's look).
  * - `'separated'` — discrete buttons with a gap between them.
  */

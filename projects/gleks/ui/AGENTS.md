@@ -1149,12 +1149,13 @@ state and hiding it would leave it announced and invisible.
 A **persistent, in-flow message** — the one `gog-toast` cannot be. No timer, no queue, no overlay,
 no service: it renders where you write it and stays until your app removes it.
 
-| Input         | Type                               | Default     |
-| ------------- | ---------------------------------- | ----------- |
-| `severity`    | `GogSeverity`                      | `'accent'`  |
-| `heading`     | `string \| undefined`              | `undefined` |
-| `dismissible` | `boolean`                          | `false`     |
-| `iconName`    | `GogIconName \| null \| undefined` | `undefined` |
+| Input         | Type                               | Default         |
+| ------------- | ---------------------------------- | --------------- |
+| `severity`    | `GogSeverity`                      | `'accent'`      |
+| `heading`     | `string \| undefined`              | `undefined`     |
+| `dismissible` | `boolean`                          | `false`         |
+| `iconName`    | `GogIconName \| null \| undefined` | `undefined`     |
+| `live`        | `GogAlertLive \| undefined`        | _from severity_ |
 
 | Output      | Type   | When                             |
 | ----------- | ------ | -------------------------------- |
@@ -1176,11 +1177,19 @@ The severity picks both the edge colour and the glyph (`success`/`error`/`warnin
 `'accent'` borrows `info`'s, because it claims nothing). `iconName` overrides the glyph and
 **`[iconName]="null"` removes it** for a message whose words already carry the meaning.
 
-**It sets no `role` or `aria-live` yet, deliberately.** A live region has to exist in the DOM
-before the text it announces lands inside it, and an alert created by `@if` arrives with its own
-text in one insertion — the trap `gog-toast-container` exists to work around. Getting that wrong
-announces nothing while looking correct, so it is being measured rather than guessed; see
-`docs/alert.md`. If you need an announcement today, put your own live region around it.
+**How it announces.** `live` is `'assertive' | 'polite' | 'off'`, defaulting from the severity —
+`danger` and `warning` interrupt, the rest wait. **Set `'off'` for a message that is already on the
+page when it loads**: that is the commonest case and the one the default gets wrong, because a
+reader arriving at a page does not need it interrupted about something that was already there.
+
+The component cannot tell those apart for you, and that was measured rather than assumed:
+`@angular/core` exposes no stability member a component can read synchronously at construction,
+and `afterNextRender` reports its _own_ first render, which every alert has whenever it mounts.
+
+The announcement lives in a **separate visually-hidden region**, empty until one render after the
+alert mounts, which is the only way it works: a live region filled in the same pass as its own
+creation announces nothing — the trap `gog-toast-container`'s permanently-mounted regions exist to
+avoid. Do not "simplify" this by putting `aria-live` on the alert itself.
 
 `GOG_CONFIG.labels.closeAlert` names the dismiss button.
 

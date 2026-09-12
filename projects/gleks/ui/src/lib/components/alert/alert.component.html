@@ -7,7 +7,7 @@
   />
 }
 
-<div class="gog-alert__main">
+<div #content class="gog-alert__main">
   @if (heading()) {
     <p class="gog-alert__heading">{{ heading() }}</p>
   }
@@ -27,4 +27,19 @@
   >
     <gog-icon name="close" />
   </gog-button>
+}
+
+<!--
+  The announcement, and it is a *copy* rather than the message itself. This region is in the DOM
+  from the alert's first render and empty; the text lands one render later, and that mutation is
+  what a screen reader announces. Filling it in the same pass as its own creation announces
+  nothing — see the class comment and `gog-toast-container`, which mounts its regions permanently
+  for the same reason.
+
+  It renders at all only when the alert announces: `live="off"` leaves no region behind.
+-->
+@if (liveRole()) {
+  <div class="gog-visually-hidden" [attr.role]="liveRole()" [attr.aria-live]="resolvedLive()">
+    {{ announcement() }}
+  </div>
 }

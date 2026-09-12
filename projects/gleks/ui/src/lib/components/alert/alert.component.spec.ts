@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { AlertComponent } from './alert.component';
+import type { GogAlertLive, GogSeverity } from '../../shared/types';
 import { IconComponent } from '../icon/icon.component';
 import { GOG_CONFIG } from '../../shared/config';
 
@@ -132,6 +133,89 @@ describe('AlertComponent', () => {
 
     expect(emitted).toBe(1);
     expect((fixture.nativeElement as HTMLElement).querySelector('.gog-alert__close')).toBeTruthy();
+  });
+});
+
+describe('AlertComponent — the announcement', () => {
+  @Component({
+    imports: [AlertComponent],
+    template: `<gog-alert [severity]="severity()" [live]="live()" heading="Payment failed">
+      The card issuer declined the charge.
+    </gog-alert>`,
+  })
+  class Host {
+    readonly severity = signal<GogSeverity>('danger');
+    readonly live = signal<GogAlertLive | undefined>(undefined);
+  }
+
+  const region = (fixture: ComponentFixture<Host>) =>
+    (fixture.nativeElement as HTMLElement).querySelector('[aria-live]');
+
+  /*
+   * **The structural invariant, which is the whole mechanism.** A live region has to be in the DOM
+   * before the text it announces lands inside it, so the region must be a *separate* element that
+   * renders empty and is filled a render later — never the visible content with `aria-live` put on
+   * it, which arrives with its own text in one insertion and announces nothing.
+   *
+   * The "empty on the first frame" half is deliberately **not** asserted here: `detectChanges()`
+   * flushes `afterNextRender` synchronously, so TestBed cannot observe the gap that a real browser
+   * paint creates. Asserting it would have meant asserting the test harness. What is checked is
+   * the thing that makes the gap possible at all, and it is the thing a well-meaning simplification
+   * would break.
+   */
+  it('announces through a separate region, not by labelling the visible content', async () => {
+    const fixture = TestBed.createComponent(Host);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const live = region(fixture);
+    const main = (fixture.nativeElement as HTMLElement).querySelector('.gog-alert__main');
+    expect(live).toBeTruthy();
+    expect(main).toBeTruthy();
+    expect(live!.contains(main!)).toBe(false);
+    expect(main!.contains(live!)).toBe(false);
+    expect(live!.textContent).toContain('Payment failed');
+    expect(live!.textContent).toContain('The card issuer declined the charge.');
+  });
+
+  it('defaults danger and warning to assertive, and the rest to polite', async () => {
+    const fixture = TestBed.createComponent(Host);
+    for (const [severity, expected] of [
+      ['danger', 'assertive'],
+      ['warning', 'assertive'],
+      ['success', 'polite'],
+      ['info', 'polite'],
+      ['accent', 'polite'],
+    ] as const) {
+      fixture.componentInstance.severity.set(severity);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(region(fixture)?.getAttribute('aria-live')).toBe(expected);
+      expect(region(fixture)?.getAttribute('role')).toBe(
+        expected === 'assertive' ? 'alert' : 'status',
+      );
+    }
+  });
+
+  it('renders no region at all when live is off', async () => {
+    const fixture = TestBed.createComponent(Host);
+    fixture.componentInstance.live.set('off');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(region(fixture)).toBeNull();
+  });
+
+  it('lets live override the severity default', async () => {
+    const fixture = TestBed.createComponent(Host);
+    fixture.componentInstance.live.set('polite');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(region(fixture)?.getAttribute('aria-live')).toBe('polite');
+    expect(region(fixture)?.getAttribute('role')).toBe('status');
   });
 });
 

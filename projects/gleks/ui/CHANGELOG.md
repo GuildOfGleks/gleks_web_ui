@@ -18,12 +18,19 @@ reached 1.0, so breaking changes may land in minor versions.
   component that deleted itself would take the focused element with it and drop a keyboard reader
   onto `<body>`.
 
-  **It sets no `role` or `aria-live` yet, and that is deliberate rather than forgotten.** A live
-  region has to exist before the text it announces lands inside it, and an alert written as
-  `@if (error()) { <gog-alert>…</gog-alert> }` arrives with its own text in one insertion — the
-  trap `gog-toast-container` already exists to work around. Getting it wrong announces nothing
-  while looking correct, so it is being measured rather than guessed; `docs/alert.md` carries the
-  argument and the open question. The visible half is complete and honest on its own.
+  **It announces through `live`** — `'assertive' | 'polite' | 'off'`, defaulting from the severity,
+  with `GogAlertLive` exported. The announcement is a copy of the message in a **separate
+  visually-hidden region**, empty until one render after the alert mounts, because a live region
+  filled in the same pass as its own creation announces nothing — the trap
+  `gog-toast-container`'s permanently-mounted regions exist to avoid.
+
+  **Whether the component could pick `live` itself was measured, and it cannot.** The question was
+  whether it can detect having been created during the application's first render, which is the
+  one case the severity-derived default gets wrong. `@angular/core` exposes no stability member on
+  `ApplicationRef` a component can read synchronously at construction, and `afterNextRender`
+  reports its _own_ first render — which every alert has, whenever it mounts. So `live` is the
+  consumer's call with a loud note: **set `'off'` for a message that is on the page when it
+  loads.**
 
   One thing the plan called for and the code refused: **there is no `variant` input.** It was to be
   `GogSurfaceVariant` defaulting to `'filled'`, but `filled` in this library means _a tint_ and

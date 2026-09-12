@@ -116,8 +116,8 @@ actually tell the component about its own mounting.**
 | #   | What                                                                                                     | Status        |
 | --- | -------------------------------------------------------------------------------------------------------- | ------------- |
 | 1   | The component: severity, heading, projected body, icon, dismissible, tokens, specs, showcase page        | ✅ 2026-09-12 |
-| 2   | The live-region decision from §1/§2, measured rather than assumed, plus the focus rule from §3           | 🔜            |
-| 3   | `AGENTS.md`, `README.md` inventory, `docs/lab-after-publish.md`; the component count moves from 31 to 32 | 🔜            |
+| 2   | The live-region decision from §1/§2, measured rather than assumed, plus the focus rule from §3           | ✅ 2026-09-12 |
+| 3   | `AGENTS.md`, `README.md` inventory, `docs/lab-after-publish.md`; the component count moves from 31 to 32 | ✅ 2026-09-12 — folded into 1 and 2, since the library's own rule puts `AGENTS.md` in the same change as the API |
 
 Iteration 1 deliberately ships the _look_ before the semantics, which is the opposite of the order
 `docs/backlog.md` used for the selectable chip ("the look and the semantics landed together …

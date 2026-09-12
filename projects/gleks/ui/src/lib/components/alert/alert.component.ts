@@ -2,18 +2,22 @@ import {
   ChangeDetectionStrategy,
   Component,
   Directive,
+  ElementRef,
   TemplateRef,
+  afterNextRender,
   computed,
   contentChild,
   inject,
   input,
   output,
+  signal,
+  viewChild,
 } from '@angular/core';
 
 import { ButtonComponent } from '../button/button.component';
 import { IconComponent, type GogIconName } from '../icon/icon.component';
 import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
-import { GogSeverity } from '../../shared/types';
+import { GogAlertLive, GogSeverity } from '../../shared/types';
 
 /**
  * Custom markup for the alert's leading icon:
@@ -43,19 +47,26 @@ const SEVERITY_ICONS: Record<GogSeverity, GogIconName> = {
   info: 'info',
 };
 
+/** Severities whose default announcement interrupts. See `GogAlertLive`. */
+const ASSERTIVE_SEVERITIES: readonly GogSeverity[] = ['danger', 'warning'];
+
 /**
  * A persistent, in-flow message — the thing `gog-toast` is not.
  *
  * A toast is transient, queued and portalled to a corner; this renders where it is written and
  * stays until something removes it. `docs/alert.md` has the argument for why it is a component
- * rather than a class, and the short version is that it owns semantics a class cannot express:
- * the live-region role, and the ordering problem underneath it.
+ * rather than a class, and the short version is that it owns semantics a class cannot express.
  *
- * **Iteration 1 is the visible half only.** It sets no `role` and no `aria-live` yet, which is
- * deliberate and is recorded in the plan: getting that wrong is worse than not having it, because
- * a live region created together with its own text announces nothing while looking correct — the
- * trap `gog-toast-container` already exists to work around. What ships here is complete and
- * honest on its own; the announcement is additive.
+ * **How it announces, and why the region is a separate hidden element.** A live region has to be
+ * in the DOM *before* the text it announces lands inside it. An alert written as
+ * `@if (error()) { <gog-alert>…</gog-alert> }` arrives with its own text in one insertion, and a
+ * screen reader routinely skips that — the exact trap `gog-toast-container` exists to work
+ * around, and the reason its regions are permanently mounted. So the visible alert renders
+ * normally and a visually-hidden region beside it, empty at first, takes a copy of the text one
+ * render later. The mutation inside an existing region is what gets announced.
+ *
+ * That is also why the copy is read off the DOM rather than from an input: the body is projected
+ * content, and the component has no other way to know what it says.
  */
 @Component({
   selector: 'gog-alert',
@@ -91,6 +102,18 @@ export class AlertComponent {
   protected readonly iconSlot = contentChild(GogAlertIconDirective);
 
   /**
+   * How this message reaches a screen reader. **Defaults from `severity`** — `danger` and
+   * `warning` interrupt, the rest wait — which is the less wrong default, since an unannounced
+   * error costs more than an over-announced notice.
+   *
+   * **Set `'off'` for an alert that is on the page when it loads.** That is the commonest case and
+   * the one the default gets wrong: a reader arriving at a page does not need it interrupted about
+   * a message that was already there. The component cannot tell the two apart — see `GogAlertLive`
+   * for what was measured before this was left to you.
+   */
+  readonly live = input<GogAlertLive | undefined>(undefined);
+
+  /**
    * Pressed, not dismissed: the alert stays in the DOM and the consumer decides what happens.
    * A component that removed itself would take the focused element with it — see `docs/alert.md`
    * §3, which is iteration 2's work.
@@ -107,6 +130,34 @@ export class AlertComponent {
   protected readonly resolvedIconName = computed(
     () => this.iconName() ?? SEVERITY_ICONS[this.severity()],
   );
+
+  protected readonly resolvedLive = computed<GogAlertLive>(
+    () => this.live() ?? (ASSERTIVE_SEVERITIES.includes(this.severity()) ? 'assertive' : 'polite'),
+  );
+
+  /** `role` and `aria-live` both, because support for either alone is uneven. */
+  protected readonly liveRole = computed(() =>
+    this.resolvedLive() === 'assertive'
+      ? 'alert'
+      : this.resolvedLive() === 'polite'
+        ? 'status'
+        : null,
+  );
+
+  private readonly contentEl = viewChild<ElementRef<HTMLElement>>('content');
+  /**
+   * Empty until after the first render, which is the whole mechanism: the region exists, then the
+   * text arrives inside it. Filling it during the first render would announce nothing.
+   */
+  protected readonly announcement = signal('');
+
+  constructor() {
+    afterNextRender(() => {
+      if (this.resolvedLive() === 'off') return;
+      const text = this.contentEl()?.nativeElement.textContent?.trim() ?? '';
+      if (text) this.announcement.set(text);
+    });
+  }
 
   protected readonly hostClasses = computed(() =>
     ['gog-alert', `gog-alert--${this.severity()}`, this.hasIcon() ? 'gog-alert--has-icon' : null]

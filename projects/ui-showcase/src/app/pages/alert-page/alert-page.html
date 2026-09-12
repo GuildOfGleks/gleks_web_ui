@@ -35,8 +35,11 @@
     <h3 gogPanelHeader>Dismissible</h3>
     <p class="note">
       <code>dismissed</code> is <em>pressed</em>, not removed — the alert stays in the DOM and the
-      app decides. That is deliberate: a component that deleted itself would take the focused
-      element with it.
+      app decides. That is deliberate, and it is what makes the focus problem solvable: the handler
+      runs while the alert is still mounted and its close button still has focus, so there is
+      somewhere to move focus <em>from</em>. A component that deleted itself would have destroyed
+      the focused element before anyone could react. This example moves focus to the button that
+      replaces it — the library cannot pick that destination, only your app knows it.
     </p>
     <div class="alert-stack">
       @if (showDismissible()) {
@@ -44,12 +47,12 @@
           severity="danger"
           heading="Payment failed"
           [dismissible]="true"
-          (dismissed)="showDismissible.set(false)"
+          (dismissed)="onDismissed()"
         >
           The card issuer declined the charge. No money has left your account.
         </gog-alert>
       } @else {
-        <gog-button variant="outline" (gogClick)="showDismissible.set(true)">
+        <gog-button #restore variant="outline" (gogClick)="showDismissible.set(true)">
           Bring the alert back
         </gog-button>
       }
@@ -72,6 +75,31 @@
       <gog-alert severity="warning">
         <ng-template gogAlertIcon><gog-icon name="star" /></ng-template>
         A projected <code>gogAlertIcon</code> template replaces it with your own markup.
+      </gog-alert>
+    </div>
+  </gog-panel>
+
+  <gog-panel size="md">
+    <h3 gogPanelHeader>How it announces</h3>
+    <p class="note">
+      <code>live</code> is <code>'assertive'</code>, <code>'polite'</code> or <code>'off'</code>,
+      defaulting from the severity — <code>danger</code> and <code>warning</code> interrupt, the
+      rest wait.
+      <strong>Set <code>'off'</code> for a message that is already on the page when it loads</strong
+      >: the default is wrong for exactly that case, and the component cannot tell it apart from a
+      message that just appeared. The announcement itself lives in a visually-hidden region beside
+      the alert, empty until one render after the alert mounts — a live region filled in the same
+      pass as its own creation announces nothing.
+    </p>
+    <div class="alert-stack">
+      <gog-alert severity="danger" heading="Assertive (the danger default)">
+        Interrupts. For something that just happened and changes what to do next.
+      </gog-alert>
+      <gog-alert severity="info" heading="Polite (the default for the rest)">
+        Waits for a pause in what the reader is already hearing.
+      </gog-alert>
+      <gog-alert severity="warning" live="off" heading="Off — already on the page">
+        Announces nothing. This is the one to reach for on a message rendered at page load.
       </gog-alert>
     </div>
   </gog-panel>
