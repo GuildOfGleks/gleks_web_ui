@@ -151,9 +151,9 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
-- **A dropdown could open downward into a panel that does not fit.** The four controls on
-  `GogDropdownBase` size their panel from `--gog-*-option-height` and choose up or down from the
-  result. That token calls itself an estimate; measured against a rendered row it is wrong in
+- **A dropdown could open downward into a panel that does not fit.** The three controls on
+  `GogDropdownBase` — `gog-select`, `gog-multiselect` and `gog-autocomplete` — size their panel
+  from `--gog-*-option-height` and choose up or down from the result. That token calls itself an estimate; measured against a rendered row it is wrong in
   **all eleven shipped themes** — low in ten of them, by up to 8.38px a row — so the estimate
   systematically under-reported and a short list could be judged to fit below when it needed more
   room than there was.
@@ -164,12 +164,10 @@ reached 1.0, so breaking changes may land in minor versions.
   `--gog-density: 1` and 42.38px at 0.85 — so the component now measures one real row a frame
   after the panel renders and re-places if the token disagreed, caching it so every later open is
   right from its first frame. The token remains as the seed for that first frame and its
-  documentation is corrected in all four components.
+  documentation is corrected in all three.
 
   Found by `docs/virtualization.md`'s iteration 0, which existed to check exactly this before
   anything new depended on it.
-
-### Fixed
 
 - **`gog-progressbar`'s buffer had no edge, and its edge is the whole of what it says.** The
   buffer tier marks how much is loaded; where it _ends_ was under 3:1 against the track in **55 of

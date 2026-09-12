@@ -16,9 +16,10 @@ not worth carrying here.
 
 ## Defects — first
 
-- **The dropdown panel's open-direction decision rests on a row height that is wrong in every
-  theme.** Found 2026-09-12 by `docs/virtualization.md`'s iteration 0, which existed to check
-  exactly this before anything new depended on it.
+- ~~**The dropdown panel's open-direction decision rests on a row height that is wrong in every
+  theme.**~~ **Closed 2026-09-12, in the in-progress 21.13.0.** Found the same day by
+  `docs/virtualization.md`'s iteration 0, which existed to check exactly this before anything new
+  depended on it.
 
   `--gog-select-option-height` and its three siblings are documented as "an estimated row height
   fed into the panel's up/down placement math; not itself a real layout property". The second half
