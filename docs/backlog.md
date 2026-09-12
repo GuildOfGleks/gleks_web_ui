@@ -822,7 +822,12 @@ reason may stop holding.
 Not defects, and not cheap: both change a consumer's import paths or public surface, so neither
 can land without an announced removal window.
 
-- **`--gog-slider-thumb-shadow` carries a colour, not a shadow.** Found 2026-09-10 while
+- ~~**`--gog-slider-thumb-shadow` carries a colour, not a shadow.**~~ **Closed 2026-09-12** as
+  `--gog-slider-thumb-glow-color`, deprecated in 21.13.0 and removed in 21.14.0 — one of three
+  token renames that went through the deprecation window the ratchet grew for them. The
+  original filing:
+
+  **Found 2026-09-10 while
   classifying every `*-shadow` token for the elevation ladder, and it is the only one of the 31
   whose name is simply wrong: the thumb composes it as
   `box-shadow: 0 0 var(--gog-slider-thumb-glow-size) var(--gog-slider-thumb-shadow)`, so the token

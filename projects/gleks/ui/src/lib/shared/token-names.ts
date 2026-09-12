@@ -1225,9 +1225,9 @@ export type GogTokenName =
   | '--gog-slider-thumb-bg'
   | '--gog-slider-thumb-border'
   | '--gog-slider-thumb-border-width'
+  | '--gog-slider-thumb-glow-color'
   | '--gog-slider-thumb-glow-size'
   | '--gog-slider-thumb-radius'
-  | '--gog-slider-thumb-shadow'
   | '--gog-slider-thumb-size'
   | '--gog-slider-track-area-height'
   | '--gog-slider-track-bg'
@@ -3045,9 +3045,9 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-slider-thumb-bg',
       '--gog-slider-thumb-border',
       '--gog-slider-thumb-border-width',
+      '--gog-slider-thumb-glow-color',
       '--gog-slider-thumb-glow-size',
       '--gog-slider-thumb-radius',
-      '--gog-slider-thumb-shadow',
       '--gog-slider-thumb-size',
       '--gog-slider-track-area-height',
       '--gog-slider-track-bg',

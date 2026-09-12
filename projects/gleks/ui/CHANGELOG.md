@@ -317,6 +317,17 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Deprecated
 
+- **`--gog-slider-thumb-shadow` becomes `--gog-slider-thumb-glow-color`, removed in 21.14.0.**
+  The thumb composes it as `box-shadow: 0 0 var(--gog-slider-thumb-glow-size) <this>`, so the
+  token holds a **colour** and always has. Of the 31 `*-shadow` tokens the elevation audit
+  classified for 21.12.0, it was the only one whose name was simply wrong — and the wrongness is
+  not decorative: a consumer overriding it with a colour got what they expected, and one
+  overriding it with a shadow got a declaration the browser silently dropped.
+
+  `check-elevation.mjs` has carried it in `NOT_ELEVATION` with that reason since it was found;
+  that entry now explains why it is still listed (the sweep keys on the `-shadow`/`-glow`
+  families, not on what a token holds) rather than promising a rename.
+
 - **`--gog-select-panel-offset` and `--gog-multiselect-panel-offset` become `*-panel-gap`,
   removed in 21.14.0.** Five components place a panel with `calc(100% + <token>)` and split three
   ways on what to call the value: `gog-autocomplete` and `gog-datepicker` said `-panel-gap`,

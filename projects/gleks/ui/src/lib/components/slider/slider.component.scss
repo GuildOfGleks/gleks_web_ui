@@ -124,13 +124,13 @@
   pointer-events: none;
   translate: calc(-50% * var(--gog-direction-sign)) -50%;
   will-change: translate;
-  box-shadow: 0 0 var(--gog-slider-thumb-glow-size) var(--gog-slider-thumb-shadow);
+  box-shadow: 0 0 var(--gog-slider-thumb-glow-size) var(--gog-slider-thumb-glow-color);
 }
 
 .gog-slider__track-container:focus-within .gog-slider__thumb {
   box-shadow:
     0 0 0 var(--gog-slider-focus-ring-width) var(--gog-slider-focus-ring),
-    0 0 var(--gog-slider-thumb-glow-size) var(--gog-slider-thumb-shadow);
+    0 0 var(--gog-slider-thumb-glow-size) var(--gog-slider-thumb-glow-color);
 }
 
 .gog-slider__input {

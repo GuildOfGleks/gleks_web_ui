@@ -2332,7 +2332,12 @@
   --gog-slider-thumb-border: var(--gog-background-color);
   --gog-slider-thumb-border-width: var(--gog-control-border-width);
   --gog-slider-thumb-radius: 50%;
-  --gog-slider-thumb-shadow: var(--gog-accent-pale);
+  /* A colour, not a shadow: the thumb's glow ring composes it as
+     `0 0 var(--gog-slider-thumb-glow-size) <this>`. Renamed from
+     `--gog-slider-thumb-shadow` in 21.13.0, which is the only token of the 31 the
+     elevation audit classified whose name was simply wrong; the old name is read as this
+     one's fallback and goes in 21.14.0. */
+  --gog-slider-thumb-glow-color: var(--gog-slider-thumb-shadow, var(--gog-accent-pale));
   --gog-slider-thumb-glow-size: 6px;
   --gog-slider-focus-ring: var(--gog-accent-pale);
   --gog-slider-focus-ring-width: var(--gog-focus-ring-width);
@@ -2890,7 +2895,7 @@
     --gog-skeleton-base: color-mix(in srgb, var(--gog-border-color) 40%, var(--gog-surface-color));
     --gog-skeleton-shine: color-mix(in srgb, var(--gog-skeleton-base), white 35%);
     --gog-slider-track-bg: color-mix(in srgb, var(--gog-text-color) 30%, var(--gog-border-color));
-    --gog-slider-thumb-shadow: color-mix(in srgb, var(--gog-accent-bright) 40%, transparent);
+    --gog-slider-thumb-glow-color: color-mix(in srgb, var(--gog-accent-bright) 40%, transparent);
     --gog-slider-focus-ring: color-mix(in srgb, var(--gog-accent-color) 30%, transparent);
     --gog-toggle-track-off-bg: color-mix(in srgb, var(--gog-text-color) 18%, transparent);
   }

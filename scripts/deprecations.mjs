@@ -84,6 +84,15 @@ export const DEPRECATED_TOKENS = new Map([
     },
   ],
   [
+    '--gog-slider-thumb-shadow',
+    {
+      replacement: '--gog-slider-thumb-glow-color',
+      since: '21.13.0',
+      sinceDate: '2026-09-12',
+      removedIn: '21.14.0',
+    },
+  ],
+  [
     '--gog-multiselect-panel-offset',
     {
       replacement: '--gog-multiselect-panel-gap',

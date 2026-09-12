@@ -80,10 +80,11 @@ const NOT_ELEVATION = new Map([
     'an accent glow on hover: feedback, and it does not lift the button',
   ],
   [
-    '--gog-slider-thumb-shadow',
+    '--gog-slider-thumb-glow-color',
     'carries a COLOUR, not a shadow — the thumb’s glow ring composes it as ' +
-      '`0 0 <glow-size> var(--gog-slider-thumb-shadow)`. Misnamed; renaming it is a ' +
-      'deprecation cycle, filed in docs/backlog.md',
+      '`0 0 <glow-size> var(--gog-slider-thumb-glow-color)`. The name says so since 21.13.0; ' +
+      'it is here because the sweep keys on the `-shadow`/`-glow` families, not on what a ' +
+      'token holds',
   ],
 ]);
 
