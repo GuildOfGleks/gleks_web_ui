@@ -130,6 +130,13 @@ Small, and only one of the three has any visible surface on the site.
   the variable-height case is actually visible rather than described. There is also a ceiling worth
   one line: Chrome clamps an element at 33 554 426px, about 745 000 rows.
 
+- **The FAQ answers a question with "nothing in the library virtualizes", and that stops being
+  true.** `faq-data.ts` (around the large-data answer) says so in bold and then explains
+  `gog-table` renders every row. The whole answer needs rewriting rather than patching: the honest
+  version is that all four collection components window on request, `lazy`/`gogLoadMore` are the
+  fetch half, and the two compose. Found by grepping the repo for the claim rather than by reading
+  the page, which is the only way this one would have surfaced.
+
 - **`GogVariableWindow` and `GogVirtualWindow` are both internal**, so neither belongs in the API
   reference. Worth knowing only so nobody adds them from the changelog.
 

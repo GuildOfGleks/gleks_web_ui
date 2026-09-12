@@ -132,6 +132,13 @@ the plan was protecting against was ten _different_ decisions made invisibly; th
   0.4s it reads as a flash across the table rather than as feedback where the finger landed. And
   a table installs one directive instance per row with no virtualization in this library yet
   (`docs/backlog.md`, _Virtualization_). Revisit with the windowing primitive, not before.
+
+  **That gate opened on 2026-09-12**: `gog-table` has `virtualize`, so the second half of this
+  argument no longer holds — a windowed table installs a directive per _rendered_ row. The first
+  half stands untouched, and it was always the stronger one: a wave whose radius is the whole
+  800–1200px row reads as a flash across the table rather than as feedback where the finger
+  landed. Filed in `docs/backlog.md` as a decision to take rather than a change to make.
+
 - **`gogCardLink`.** Same width argument, and a card already answers a press with a hover border
   and a focus ring around the whole surface. A consumer who disagrees puts `gogRipple` on it.
 - **Form controls** — checkbox, radio, toggle. Unchanged from the original plan: this library's

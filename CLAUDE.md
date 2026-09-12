@@ -88,8 +88,14 @@ an input, output, slot, type, service method or default edits it in the same cha
 The bump was committed separately on 2026-09-11 (`chore(release): 21.12.0`), which is the habit
 21.9.1 paid a whole patch release to learn.
 `projects/gleks/ui/CHANGELOG.md` is the authority and ships inside the package; its top entry is
-always the version being worked on. Nothing is in flight: the next version has no heading yet, and
-writing one is the user's to do (rule 1).
+always the version being worked on.
+
+**21.13.0 is in flight and is large**: `gog-alert`, `--gog-button-focus-ring-color`, the toast's
+severity colours, `check:tokens` rule J, and **virtualization across all four collection
+components** — `virtualize` on `gog-select`, `gog-multiselect`, `gog-autocomplete` and
+`gog-table`, plus the two dropdown-placement fixes the work surfaced. Its heading still reads
+`planned`, so `npm run check:release` fails, and **that is the correct state**: dating it is
+cutting the release, which is rule 1's territory and the user's alone.
 
 ### The release sequence
 

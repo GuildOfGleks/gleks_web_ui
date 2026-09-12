@@ -124,7 +124,7 @@ everything, and windowing without the second is visibly broken.
 | 0   | The survey above — seven measurements, before any design                                                 | ✅ 2026-09-12 — and it reversed two of the parent plan's three |
 | 1   | `GogVariableWindow` in `lib/shared`: per-row heights, prefix sums, the correction delta. No component    | ✅ 2026-09-12                                                  |
 | 2   | `gog-table` adopts it: `virtualize`, `<tr>` spacers, the two index traps, the two requirements, showcase | ✅ 2026-09-12 — three index traps, not two                     |
-| 3   | The ceiling at finding #5 — decide whether ~745 000 rows is documented or guarded                        | 🔜                                                             |
+| 3   | The ceiling at finding #5 — decide whether ~745 000 rows is documented or guarded                        | ✅ 2026-09-12 — guarded, and documented in the same change     |
 
 **Iteration 1 before 2, and not in the same commit.** That is iteration 1 of the parent plan's own
 shape, and it earned it: building the arithmetic alone is what let eleven specs cover the window

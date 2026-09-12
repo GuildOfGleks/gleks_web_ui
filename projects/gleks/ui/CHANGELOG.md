@@ -216,9 +216,14 @@ reached 1.0, so breaking changes may land in minor versions.
   it fail.
 
 - **`README.md` and `AGENTS.md` say where `gog-table` stops.** No column resizing or reordering by
-  the reader, no frozen columns, no expandable rows, no grouping, no virtualization — stated where
-  someone evaluating the table will read it rather than discovered halfway into a project.
-  Documentation only; nothing about the component changes.
+  the reader, no frozen columns, no expandable rows, no grouping — stated where someone evaluating
+  the table will read it rather than discovered halfway into a project. Documentation only;
+  nothing about the component changes.
+
+  **This list said "no virtualization" when it was written, and this release removed that line by
+  building the thing.** Both entries are in this changelog, days apart, and for a while the release
+  both added `virtualize` and advertised its absence. A limitations list is a claim with a shelf
+  life, and the shelf can be one release.
 
   Each claim was verified against the code first, and one in `docs/backlog.md`'s filing was wrong:
   it said "no sticky columns" while the table has shipped `stickyHeader` since 21.6.0. Those are

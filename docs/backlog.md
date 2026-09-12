@@ -593,6 +593,20 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   name, which floated the weakened selector over the consumer floor it enforces. It self-tests its
   arithmetic now.
 
+- **`gog-table` rows still have no ripple, and the reason it was deferred has expired.**
+  `docs/ripple.md` left them out on two arguments and kept the weaker one as the gate: "a table
+  installs one directive instance per row with no virtualization in this library yet … revisit
+  with the windowing primitive, not before." **The primitive landed 2026-09-12**, so a windowed
+  table installs a directive per _rendered_ row and that objection is gone.
+
+  **A decision, not a defect, and the likely answer is still no.** The other argument never
+  depended on virtualization and is the stronger one: a wave whose radius is the whole
+  800–1200px row reads as a flash across the table rather than as feedback where the finger
+  landed. What changed is that the question is now answerable on its merits instead of being
+  blocked, and it only arises at all for `interactiveRows`, where a row is a button in every
+  sense but the tag. Worth ten minutes and a decision written down either way, so the next reader
+  of `ripple.md` does not re-derive the expired half.
+
 - **Missing components**, in rough order of how often a real site wants them.
   ~~`alert`/`banner`~~ **came off this list on 2026-09-12** — `gog-alert` ships in the in-progress
   21.13.0, plan and iterations in `docs/alert.md`. What is left: `avatar`,
@@ -623,7 +637,12 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
 
 - ~~**`gog-table`'s ceiling.**~~ **Written down 2026-09-12**, in `README.md` where a consumer
   evaluates the table and in `AGENTS.md` where an agent writes against it. No column resizing or
-  reordering by the reader, no frozen columns, no expandable rows, no grouping, no virtualization.
+  reordering by the reader, no frozen columns, no expandable rows, no grouping.
+
+  **"No virtualization" was on that list for about six hours.** It was true when written and the
+  same release removed it by building the thing — which is worth keeping as the shortest-lived
+  claim this project has published, and as the reason a limitations list gets re-read rather than
+  copied forward.
 
   **Each claim was checked against the code before being published**, which was worth doing: the
   entry said "no sticky columns" and the table _does_ have `stickyHeader`. They are different axes
@@ -631,15 +650,15 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   is the absent one — and a limitations list that looks wrong on its first line is worse than no
   list. Both documents now draw that distinction explicitly.
 
-- **Virtualization — `docs/virtualization.md` holds the plan, and `gog-select` ships it**
-  (2026-09-12). Iterations 0, 1 and 2 are done: the row height is measured rather than read (the
-  token is wrong in all eleven themes), `GogVirtualWindow` is the arithmetic in `lib/shared`, and
-  `gog-select` has `virtualize`. Measured live rather than in raw DOM: the same 10 000 options
-  open in **512ms** eager and **21ms** windowed, 10 000 rows against 10.
+- ~~**Virtualization — the plan and its iterations.**~~ **Closed 2026-09-12, all four components.**
+  `docs/virtualization.md` covers the three dropdowns and `docs/table-virtualization.md` the table,
+  which the parent plan's iteration 4 became. Measured live rather than in raw DOM: the same
+  10 000 options open in **512ms** eager and **21ms** windowed, 10 000 rows against 10.
 
-  **Iteration 3 is done too**: `gog-multiselect` and `gog-autocomplete` take the same input.
-  **Left: iteration 4, `gog-table`**, and the plan says to re-read it first — nothing in the three
-  dropdowns exercised a variable row height, a sticky header, or a column spanning the window.
+  The row height is measured rather than read — the token is wrong in all eleven themes — and there
+  are two primitives, not one: `GogVirtualWindow` for a uniform list and `GogVariableWindow` for
+  the table, because **a table row's height cannot be pinned** (`height` on a `<tr>` or `<td>` is a
+  minimum in table layout). Both are internal.
 
   Iteration 3's two findings, neither of them the keyboard the plan expected: a spacer in a list
   that declares a row `gap` takes that gap either side of itself (a constant 4px error on
@@ -843,13 +862,15 @@ both extend `GogDropdownBase`, which already declares `filter`, `filterPosition`
 both templates already wire up `filterQuery()`/`filterPlaceholder()`/`filterEmptyMessage()` in
 full, and `AGENTS.md`'s config table already listed both components under `filter`/`filterPosition`
 — the filing's own closing line ("the gap may be smaller than it looks") turned out to be the whole
-story. Confirmed live: a filter box opened and typed into on the multiselect page in `ui-showcase`. 3. **Virtual scrolling in `gog-select` and `gog-multiselect`.** 4. **Virtual scrolling in `gog-table`.**
+story. Confirmed live: a filter box opened and typed into on the multiselect page in `ui-showcase`. ~~3. **Virtual scrolling in `gog-select` and `gog-multiselect`.** 4. **Virtual scrolling in
+`gog-table`.**~~ **Both closed 2026-09-12**, along with `gog-autocomplete`, which neither item
+asked for.
 
-3 and 4 are the same primitive twice, and the same one as _Virtualization_ under **Gaps**
-above — which already says the DOM half of large-list performance "needs a windowing
-primitive, which is a genuine piece of engineering and its own plan". That is this. Build it
-once, in `lib/shared`, and adopt it in the dropdowns first (a fixed row height) before the
-table (variable rows, sticky header, selection column). Do not start it as a table feature.
+The filing's own instruction is the part that held up: 3 and 4 were the same primitive twice, and
+the same one as _Virtualization_ under **Gaps** above — build it once in `lib/shared`, adopt it in
+the dropdowns first, and do not start it as a table feature. That order is what kept the table's
+own decisions out of the dropdowns' code. What it got wrong is that the table could not reuse the
+primitive at all: its rows genuinely vary in height, so it needed a second one.
 
 5. **A time zone setting for datepicker and calendar in `GOG_CONFIG`.** Today
    `GOG_CONFIG.datepicker` carries `locale` and `firstDayOfWeek`. Note the library is deliberately
