@@ -291,13 +291,13 @@ So: per-instance `virtualize`, with `GOG_CONFIG.dropdown.virtualize` as the app-
 
 ## Iterations
 
-| #   | What                                                                                                    | Status                                                                 |
-| --- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| 0   | Verify `--gog-select-option-height` against a rendered row in all eleven themes                         | ✅ 2026-09-12 — wrong in 11 of 11, and it is load-bearing today        |
-| 1   | `GogVirtualWindow` in `lib/shared` — arithmetic, specs, no component touched                            | ✅ 2026-09-12                                                          |
-| 2   | `gog-select` adopts it: `virtualize` input, ARIA counts, keyboard rework, filter reset, showcase        | ✅ 2026-09-12 — and three of the four traps landed differently         |
-| 3   | `gog-multiselect` and `gog-autocomplete` follow — same base, so mostly the keyboard half again          | ✅ 2026-09-12 — and the keyboard half was the part that needed nothing |
-| 4   | `gog-table`: variable rows, sticky header, selection column. Its own decisions; may become its own plan | 🔜                                                                     |
+| #   | What                                                                                                    | Status                                                                     |
+| --- | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| 0   | Verify `--gog-select-option-height` against a rendered row in all eleven themes                         | ✅ 2026-09-12 — wrong in 11 of 11, and it is load-bearing today            |
+| 1   | `GogVirtualWindow` in `lib/shared` — arithmetic, specs, no component touched                            | ✅ 2026-09-12                                                              |
+| 2   | `gog-select` adopts it: `virtualize` input, ARIA counts, keyboard rework, filter reset, showcase        | ✅ 2026-09-12 — and three of the four traps landed differently             |
+| 3   | `gog-multiselect` and `gog-autocomplete` follow — same base, so mostly the keyboard half again          | ✅ 2026-09-12 — and the keyboard half was the part that needed nothing     |
+| 4   | `gog-table`: variable rows, sticky header, selection column. Its own decisions; may become its own plan | ✅ surveyed 2026-09-12 — and it became one: `docs/table-virtualization.md` |
 
 **Iteration 0 is not ceremony.** The whole window rests on one number that is currently documented
 as an estimate nothing checks. Measuring it first is cheaper than debugging a drifting scroll
@@ -308,6 +308,15 @@ its own.
 its header is sticky, and its selection column spans the window — none of which the dropdown work
 will have exercised. The backlog's own instruction is not to start this as a table feature, and
 the corollary is not to finish it as one either, on momentum.
+
+**That is what happened, and the survey it forced is in `docs/table-virtualization.md`.** Two of
+the three hard things named in that paragraph are not hard: the sticky header lives in `<thead>`
+and a window over `<tbody>` never touches it (measured across 200 000px of scroll), and the
+selection column is an ordinary `<td>` per row. The third is not merely hard but disqualifying for
+_this_ primitive — **a table row's height cannot be pinned**, because `height` on `<tr>` and `<td>`
+is a minimum in table layout, so a one-pitch window cannot describe a table. The survey also found
+the thing none of the three named: under `table-layout: auto` the columns are measured from the
+rendered rows, so a windowed table moves its own columns as you scroll.
 
 ## The defect iteration 0 found, which ships today
 
