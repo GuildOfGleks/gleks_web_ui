@@ -2533,10 +2533,16 @@
   --gog-toast-color: var(--gog-text-color);
   --gog-toast-border: var(--gog-accent-color);
   --gog-toast-icon-color: var(--gog-accent-color);
+  /* Each type reads its own role. Two of the four did not until 21.13.0: `warning` read
+     `--gog-accent-bright` and `info` read `--gog-accent-color`, which is also what a *typeless*
+     toast paints -- so an info toast was pixel-identical to a plain one, and a warning toast was
+     the same hue a shade brighter. This colour is the whole signal: it paints the leading stripe,
+     the icon and the countdown bar (see toast.component.scss's `--toast-border`). Three of the
+     five states were the accent. */
   --gog-toast-success-color: var(--gog-success-color);
   --gog-toast-error-color: var(--gog-danger-color);
-  --gog-toast-warning-color: var(--gog-accent-bright);
-  --gog-toast-info-color: var(--gog-accent-color);
+  --gog-toast-warning-color: var(--gog-warning-color);
+  --gog-toast-info-color: var(--gog-info-color);
   --gog-toast-accent-width: 4px;
   --gog-toast-padding: var(--gog-space-12) var(--gog-space-16);
   --gog-toast-radius: 0px;

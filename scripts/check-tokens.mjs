@@ -192,35 +192,44 @@ const CHARACTER_TOKENS = new Map([
   // `slg` is 1.25rem in two components because the scale has no step between 1.125 and 1.5, and
   // an 11px chip is deliberately below `xs`. Rule G only ever flags an exact match, which is what
   // keeps those out of it.
-  ['font-size', [
-    '--gog-text-xs',
-    '--gog-text-sm',
-    '--gog-text-md',
-    '--gog-text-lg',
-    '--gog-text-slg',
-    '--gog-text-xl',
-    '--gog-text-2xl',
-    '--gog-text-3xl',
-  ]],
+  [
+    'font-size',
+    [
+      '--gog-text-xs',
+      '--gog-text-sm',
+      '--gog-text-md',
+      '--gog-text-lg',
+      '--gog-text-slg',
+      '--gog-text-xl',
+      '--gog-text-2xl',
+      '--gog-text-3xl',
+    ],
+  ],
   // Weight joined the character layer on 2026-09-03, for the same reason casing and tracking did
   // in 21.7.0: fifteen component tokens held a bare 500/600/700/900, so a house style that wanted
   // lighter chrome had to find every one. Only the four steps the library actually paints.
-  ['font-weight', [
-    '--gog-font-weight-medium',
-    '--gog-font-weight-semibold',
-    '--gog-font-weight-bold',
-    '--gog-font-weight-heavy',
-  ]],
+  [
+    'font-weight',
+    [
+      '--gog-font-weight-medium',
+      '--gog-font-weight-semibold',
+      '--gog-font-weight-bold',
+      '--gog-font-weight-heavy',
+    ],
+  ],
   // Leading joined on 2026-09-03 with weight, for the same reason: twenty component tokens held
   // a bare number, seven of them the same 1.4.
-  ['line-height', [
-    '--gog-line-height-none',
-    '--gog-line-height-tight',
-    '--gog-line-height-snug',
-    '--gog-line-height-normal',
-    '--gog-line-height-relaxed',
-    '--gog-line-height-loose',
-  ]],
+  [
+    'line-height',
+    [
+      '--gog-line-height-none',
+      '--gog-line-height-tight',
+      '--gog-line-height-snug',
+      '--gog-line-height-normal',
+      '--gog-line-height-relaxed',
+      '--gog-line-height-loose',
+    ],
+  ],
   ['text-transform', ['--gog-text-transform']],
   ['letter-spacing', ['--gog-letter-spacing']],
 ]);
@@ -684,13 +693,62 @@ async function main() {
           if (values.has(a) && values.has(b) && values.get(a) === values.get(b)) {
             problems.push(
               `[${ramp.label}] theme '${themeName}': ${a} and ${b} are both ${values.get(a)}
-` +
-                `      ${ramp.why}`,
+` + `      ${ramp.why}`,
             );
           }
         }
       }
     }
+  }
+
+  // Rule J — a token named for a severity resolves to that severity.
+  //
+  // `--gog-toast-warning-color` read `--gog-accent-bright` and `--gog-toast-info-color` read
+  // `--gog-accent-color`, which is also what a *typeless* toast paints. That colour is the whole
+  // signal — it draws the leading stripe, the icon and the countdown bar — so an info toast was
+  // pixel-identical to a plain one and a warning toast was the same hue a shade brighter. Three
+  // of the five states were the accent. Every other component in the library derived correctly,
+  // which is what made it invisible: nothing compares a token's *name* against the root it reads.
+  //
+  // This is a text rule on purpose. It needs no colour maths and no resolver — the declaration
+  // either names its own role or it does not, and a rule that cheap should not be a sweep.
+  //
+  // Only the tokens whose job is to BE the role's colour are in scope, which is the suffix list
+  // below. `--gog-badge-warning-color` is the *label* on the warning fill and is contrasting by
+  // design; `-wash`, `-buffer-bg` and `-ink` are percentages of the role rather than the role.
+  const ROLE_SUFFIXES = ['color', 'bg', 'fill', 'border'];
+  const ROLE_ALIASES = new Map([['error', 'danger']]);
+  // A severity-named token whose name means something other than "this role's colour". Same
+  // discipline as every other exception list here: name why, never widen it to silence a finding.
+  const NOT_THE_ROLES_COLOUR = new Map([
+    [
+      '--gog-badge-success-color',
+      'the label on the success fill, not the fill — it reads --gog-success-text-color by design',
+    ],
+    ['--gog-badge-danger-color', 'the label on the danger fill, as above'],
+    ['--gog-badge-warning-color', 'the label on the warning fill, as above'],
+    ['--gog-badge-info-color', 'the label on the info fill, as above'],
+  ]);
+  const SEVERITY_DECL =
+    /(--gog-[a-z-]+?)-(success|danger|error|warning|info)-([a-z-]+)\s*:\s*var\(\s*(--gog-[a-z0-9-]+)/g;
+  let sev;
+  while ((sev = SEVERITY_DECL.exec(stripComments(themeCss)))) {
+    const [, block, named, suffix, reads] = sev;
+    if (!ROLE_SUFFIXES.includes(suffix)) continue;
+    const token = `${block}-${named}-${suffix}`;
+    if (NOT_THE_ROLES_COLOUR.has(token)) continue;
+    const role = ROLE_ALIASES.get(named) ?? named;
+    // It may read the role's own colour, or any token inside that role's family.
+    if (reads.startsWith(`--gog-${role}-`) || reads.startsWith(`${block}-${named}-`)) continue;
+    problems.push(
+      `[severity-role] ${token} is named for '${named}' and reads ${reads}
+` +
+        `      a token named for a severity paints that severity — this is how an info toast came to
+` +
+        `      be pixel-identical to a plain one. Point it at --gog-${role}-color, or add it to
+` +
+        `      NOT_THE_ROLES_COLOUR in this script with the reason its name means something else`,
+    );
   }
 
   const allTokens = new Set([...themeDeclared, ...componentDeclared, ...readTokens]);

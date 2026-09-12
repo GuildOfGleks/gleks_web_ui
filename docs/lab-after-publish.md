@@ -98,3 +98,9 @@ Small, and only one of the three has any visible surface on the site.
   green, and `parchment`'s danger is lighter. In all three the old value was indistinguishable
   from that theme's own accent — two of them were literally the same hex — which nothing measured
   until `check:oklch`'s R3 grew from four severities to five.
+
+- **A warning toast and an info toast change colour, and an info toast stops looking like a plain
+  one.** `--gog-toast-warning-color` read `--gog-accent-bright` and `--gog-toast-info-color` read
+  `--gog-accent-color` — the same value a typeless toast paints — so three of the five states were
+  the accent. Both read their own role now. Any lab screenshot or prose describing toast types as
+  accent-tinted is stale, and the Toast page's "one of each type" demo finally shows four colours.

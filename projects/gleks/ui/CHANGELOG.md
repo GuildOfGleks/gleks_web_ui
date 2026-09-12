@@ -47,6 +47,27 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **A warning toast and an info toast were both the accent, and an info toast was pixel-identical
+  to a plain one.** `--gog-toast-warning-color` read `--gog-accent-bright` and
+  `--gog-toast-info-color` read `--gog-accent-color` — which is also what a _typeless_ toast
+  paints. That token is the whole signal: it draws the leading stripe, the icon and the countdown
+  bar. Three of the five toast states were the accent, in every theme, since the component
+  shipped. Both now read their own role.
+
+  **Surveyed rather than assumed, after the palette fix below raised the question.** All 45
+  severity-named colour tokens across every component were resolved against their own role in all
+  eleven themes; `gog-toast` is the only one that was wrong, and it was wrong twice. `gog-alert`,
+  `gog-button`, `gogBadge`, `gog-tag` and `gog-progressbar` all derive correctly — which is what
+  made this invisible, since nothing compared a token's _name_ against the root it reads.
+
+- **`check:tokens` rule J — a token named for a severity resolves to that severity.** A text rule
+  rather than a sweep: the declaration either names its own role or it does not, and that needs no
+  colour maths. Scoped to the four suffixes whose job is to _be_ the role's colour (`-color`,
+  `-bg`, `-fill`, `-border`); `--gog-badge-warning-color` is the _label_ on the warning fill and is
+  in the exception list with that reason, beside `-wash`, `-ink` and `-buffer-bg`, which are
+  percentages of a role rather than the role. Verified by putting the old value back and watching
+  it fail.
+
 - **`check:oklch`'s R3 compares five severities, not four — and three themes were painting two of
   them as one colour.** `GogSeverity` is `'accent' | 'success' | 'danger' | 'warning' | 'info'`
   and the library paints all five as a set (`gog-button`'s `severity`, `gog-progressbar`'s
