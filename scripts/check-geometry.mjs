@@ -74,7 +74,14 @@ const SPACING_PROPS = [
 ];
 const SIZE_PROPS = ['height', 'min-height', 'box-size', 'size', 'width', 'min-width'];
 const PROP_SUFFIXES = [
-  ...new Set([...SPACING_PROPS, ...SIZE_PROPS, 'font-size', 'line-height', 'radius', 'border-width']),
+  ...new Set([
+    ...SPACING_PROPS,
+    ...SIZE_PROPS,
+    'font-size',
+    'line-height',
+    'radius',
+    'border-width',
+  ]),
 ].sort((a, b) => b.length - a.length);
 
 /**
@@ -105,16 +112,31 @@ const SURFACES = new Map([
  * Empty until the sweep fills it — every line here is a component commit that has landed.
  */
 const HIT_AREA = new Map([
-  ['accordion/xsm', 'accordion.component.scss, `.gog-accordion__header` min-block-size — stacked rows, so an inflated hit area would overlap its neighbour; the header draws no border of its own'],
-  ['chip/xsm', 'chip.component.scss, `.gog-chip__surface` min-block-size — 23.2px painted, and the surface clips, so the paint grows'],
+  [
+    'accordion/xsm',
+    'accordion.component.scss, `.gog-accordion__header` min-block-size — stacked rows, so an inflated hit area would overlap its neighbour; the header draws no border of its own',
+  ],
+  [
+    'chip/xsm',
+    'chip.component.scss, `.gog-chip__surface` min-block-size — 23.2px painted, and the surface clips, so the paint grows',
+  ],
   ['chip-remove/xsm', 'chip.component.scss, `.gog-chip__remove::before` — 13.2px painted'],
   ['chip-remove/sm', 'chip.component.scss, `.gog-chip__remove::before` — 15.4px painted'],
   ['chip-remove/md', 'chip.component.scss, `.gog-chip__remove::before` — 17.6px painted'],
   ['chip-remove/lg', 'chip.component.scss, `.gog-chip__remove::before` — 19.8px painted'],
   ['chip-remove/slg', 'chip.component.scss, `.gog-chip__remove::before` — 22px painted'],
-  ['slider-thumb', 'slider.component.scss, `.gog-slider__thumb::before` — 20px painted; the track is clickable too'],
-  ['toast-close', 'button.css, `.gog-btn::before` — a gog-button at 20px, its --gog-button-padding overridden'],
-  ['toast-action', 'button.css, `.gog-btn::before` — a gog-button at 20px, its --gog-button-padding overridden'],
+  [
+    'slider-thumb',
+    'slider.component.scss, `.gog-slider__thumb::before` — 20px painted; the track is clickable too',
+  ],
+  [
+    'toast-close',
+    'button.css, `.gog-btn::before` — a gog-button at 20px, its --gog-button-padding overridden',
+  ],
+  [
+    'toast-action',
+    'button.css, `.gog-btn::before` — a gog-button at 20px, its --gog-button-padding overridden',
+  ],
 ]);
 
 /**
@@ -128,7 +150,10 @@ const HIT_AREA = new Map([
  */
 const OPTICAL_CHROME = new Map([
   ['--gog-toggle-thumb-inset', "the thumb's clearance inside its own track: 2px on a 24px track"],
-  ['--gog-scroll-thumb-inset', "the same, on a scrollbar thumb: 4px would leave it barely wider than its own track"],
+  [
+    '--gog-scroll-thumb-inset',
+    'the same, on a scrollbar thumb: 4px would leave it barely wider than its own track',
+  ],
   [
     '--gog-textarea-resize-grip-stripe-gap',
     'the gap between the resize grip’s three hairlines: at 4px they are a block, not a hint',
@@ -161,9 +186,7 @@ const NOT_A_LENGTH = new Map([
  * — a chain no token in `theme.css` states, so the sweep sees a bare 14px track and reports a
  * failure that is not there. One line per block, naming the token that actually pads it.
  */
-const TARGET_PADDING = new Map([
-  ['toggle-track', '--gog-control-checkbox-padding'],
-]);
+const TARGET_PADDING = new Map([['toggle-track', '--gog-control-checkbox-padding']]);
 
 /**
  * Blocks whose `*-border-width` token is drawn by a *different* element than the target.
@@ -195,7 +218,9 @@ const blocks = new Map();
 for (const [token, raw] of declared) {
   const parsed = parseTokenName(token, PROP_SUFFIXES);
   if (!parsed || !parsed.block) continue;
-  if (/^(space|text|line|font|radius|density|control-border|panel-border|border)$/.test(parsed.block))
+  if (
+    /^(space|text|line|font|radius|density|control-border|panel-border|border)$/.test(parsed.block)
+  )
     continue;
   const entry = blocks.get(parsed.block) ?? { name: parsed.block, tokens: [] };
   entry.tokens.push({ token, raw, ...parsed });
@@ -206,8 +231,7 @@ for (const [token, raw] of declared) {
 const findings = [];
 const unreadable = [];
 const staleExemptions = new Set();
-const add = (block, size, law, message) =>
-  findings.push({ block, size, law, message });
+const add = (block, size, law, message) => findings.push({ block, size, law, message });
 
 const resolve = (token) => {
   const d = resolver.declaration(token);
@@ -234,7 +258,12 @@ const steps = [...layers.derivedBase.keys(), ...layers.rootLiteral.keys()]
   .filter((t) => /^--gog-space-\d+$/.test(t))
   .map((t) => Number(t.replace('--gog-space-', '')));
 for (const step of steps.filter((s) => s % 4 !== 0).sort((a, b) => a - b)) {
-  add('the scale', null, 1, `--gog-space-${step} is not a multiple of 4 — the scale is nine steps (D1)`);
+  add(
+    'the scale',
+    null,
+    1,
+    `--gog-space-${step} is not a multiple of 4 — the scale is nine steps (D1)`,
+  );
 }
 
 for (const block of blocks.values()) {
@@ -401,7 +430,9 @@ if (!findings.length) {
 }
 
 if (unreadable.length) {
-  console.log(`\n  Could not resolve — ${new Set(unreadable).size} tokens, printed rather than skipped:`);
+  console.log(
+    `\n  Could not resolve — ${new Set(unreadable).size} tokens, printed rather than skipped:`,
+  );
   for (const line of [...new Set(unreadable)].sort()) console.log(`    ${line}`);
 }
 

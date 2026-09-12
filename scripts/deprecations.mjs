@@ -54,6 +54,46 @@ export const DEPRECATED_NAMESPACES = new Map([
   ],
 ]);
 
+/**
+ * Individual tokens that were **renamed**, as opposed to the abbreviated prefixes above.
+ *
+ * A second map rather than a cleverer first one, because the two are not the same shape:
+ * `DEPRECATED_NAMESPACES` rewrites a token's *prefix* and keeps its suffix, so one entry covers
+ * every token under it and the replacement can be computed. A rename moves the suffix —
+ * `--gog-select-panel-offset` becomes `--gog-select-panel-gap` — so there is nothing to compute
+ * and each one has to be named.
+ *
+ * The mechanism is the same as the prefixes', and `theme.css` carries it: the replacement is
+ * declared as `var(<old name>, <real value>)`, and the old name is declared nowhere. A consumer
+ * who set the old name still wins, one who sets the new name wins over that, and everyone else
+ * gets the value from the fallback. Scanning the CSS for the old name is therefore exactly the
+ * set that still resolves.
+ *
+ * Unlike the prefix map, **entries may be added here** — a rename is ordinary API maintenance and
+ * this is where its deadline lives. `api-design.instructions.md` sets the window: one minor
+ * unless the migration is genuinely awkward.
+ */
+export const DEPRECATED_TOKENS = new Map([
+  [
+    '--gog-select-panel-offset',
+    {
+      replacement: '--gog-select-panel-gap',
+      since: '21.13.0',
+      sinceDate: '2026-09-12',
+      removedIn: '21.14.0',
+    },
+  ],
+  [
+    '--gog-multiselect-panel-offset',
+    {
+      replacement: '--gog-multiselect-panel-gap',
+      since: '21.13.0',
+      sinceDate: '2026-09-12',
+      removedIn: '21.14.0',
+    },
+  ],
+]);
+
 /** `since <version> (<date>) — <replacement>. Removed in <version>.` */
 const TAG_HEAD_RE = /^since\s+(\d+\.\d+\.\d+)\s+\((\d{4}-\d{2}-\d{2})\)\s+—\s+(.+)$/s;
 const REMOVAL_RE = /Removed in\s+(\d+\.\d+\.\d+)\./;
@@ -171,6 +211,13 @@ export function collectDeprecatedTokens(sources) {
   const found = new Map();
 
   for (const css of sources) {
+    for (const [name, meta] of DEPRECATED_TOKENS) {
+      // Word-boundary on the tail, so `--gog-select-panel-offset` does not also match a
+      // hypothetical `--gog-select-panel-offset-x`.
+      if (!new RegExp(`${name}(?![a-zA-Z0-9-])`).test(css)) continue;
+      found.set(name, { kind: 'token', name, ...meta });
+    }
+
     for (const match of css.matchAll(/--gog-([a-zA-Z0-9-]+)/g)) {
       const rest = match[1];
       for (const [short, meta] of DEPRECATED_NAMESPACES) {

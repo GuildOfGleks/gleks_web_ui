@@ -19,7 +19,7 @@ export interface GogDeprecation {
 }
 
 /**
- * Everything `@guildofgleks/ui` currently deprecates: 0 symbol(s) and 0 token(s).
+ * Everything `@guildofgleks/ui` currently deprecates: 0 symbol(s) and 2 token(s).
  *
  * Generated from the library's own source — `@deprecated` tags for symbols, and the stylesheets
  * themselves for tokens — so it cannot drift from what actually still resolves. Meant for tooling
@@ -29,4 +29,21 @@ export interface GogDeprecation {
  * An empty `symbol` half means exactly what it says: nothing in the TypeScript API is deprecated
  * right now.
  */
-export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [];
+export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
+  {
+    kind: 'token',
+    name: '--gog-multiselect-panel-offset',
+    replacement: '--gog-multiselect-panel-gap',
+    since: '21.13.0',
+    sinceDate: '2026-09-12',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'token',
+    name: '--gog-select-panel-offset',
+    replacement: '--gog-select-panel-gap',
+    since: '21.13.0',
+    sinceDate: '2026-09-12',
+    removedIn: '21.14.0',
+  },
+];

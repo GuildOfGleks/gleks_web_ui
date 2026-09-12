@@ -51,6 +51,7 @@ import {
   collectDeprecatedTokens,
   compareVersions,
   DEPRECATED_NAMESPACES,
+  DEPRECATED_TOKENS,
   parseTag,
   readContext,
   readTag,
@@ -141,6 +142,21 @@ async function main() {
           `and the stylesheets still declare or read: ${names}`,
       );
     }
+  }
+
+  // Rule C, second half -- the same deadline for a token renamed one at a time. The prefix
+  // map above can express `--gog-btn-*` becoming `--gog-button-*`; it cannot express a suffix
+  // moving, which is what a rename is.
+  for (const [name, meta] of DEPRECATED_TOKENS) {
+    cssNamespacesDue.push({ short: name, removedIn: meta.removedIn });
+    if (compareVersions(meta.removedIn, currentVersion) > 0) continue;
+    if (!stillPresent.some((entry) => entry.name === name)) continue;
+
+    problems.push(
+      `[css-overdue] ${name} (deprecations.mjs, DEPRECATED_TOKENS)\n` +
+        `      tagged removedIn '${meta.removedIn}' but the library is already at ${currentVersion}, ` +
+        `and the stylesheets still declare or read it -- drop the fallback and the entry together`,
+    );
   }
 
   if (problems.length > 0) {

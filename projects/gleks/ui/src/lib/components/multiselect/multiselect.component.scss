@@ -230,7 +230,7 @@
 
 .gog-ms__dropdown {
   position: absolute;
-  top: calc(100% + var(--gog-multiselect-panel-offset));
+  top: calc(100% + var(--gog-multiselect-panel-gap));
   inset-inline-start: 0;
   /*
    * Sized to its own content, with the trigger width as the floor rather than the fixed width.
@@ -265,7 +265,7 @@
 
 .gog-ms__dropdown--up {
   top: auto;
-  bottom: calc(100% + var(--gog-multiselect-panel-offset));
+  bottom: calc(100% + var(--gog-multiselect-panel-gap));
 }
 
 .gog-ms__dropdown--portal {

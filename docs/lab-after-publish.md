@@ -142,6 +142,14 @@ Small, and only one of the three has any visible surface on the site.
   the intent and never the behaviour — the token was read by nothing. Change the row's name; the
   description stays right, because now it is true.
 
+- **Two panel-gap tokens are deprecated, and the site should say so.**
+  `--gog-select-panel-offset` and `--gog-multiselect-panel-offset` are now
+  `--gog-select-panel-gap` / `--gog-multiselect-panel-gap`, with the old names resolving until
+  21.14.0. The token reference should carry the new names; `GOG_DEPRECATIONS` ships two entries
+  for the first time since 21.7.0, so if the site ever renders that manifest (layer 4 in
+  `docs/lab-versioning.md`, deliberately deferred), this is the first release with anything in it
+  to render.
+
 - **`GogVariableWindow` and `GogVirtualWindow` are both internal**, so neither belongs in the API
   reference. Worth knowing only so nobody adds them from the changelog.
 

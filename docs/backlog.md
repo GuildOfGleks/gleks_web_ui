@@ -844,7 +844,16 @@ can land without an announced removal window.
   is API someone can depend on and nobody decided to support, so the fix is a named export list —
   which is a breaking change and therefore needs its own deprecation window, not a slot in 21.5.0.
 
-- **The same overlay gap has two names.** Five components place a panel with
+- ~~**The same overlay gap has two names.**~~ **Closed 2026-09-12.** `-gap` won, for the reason
+  this entry gave. `gog-select` and `gog-multiselect` are deprecated to `*-panel-gap` and go in
+  21.14.0; `gog-menu`'s was renamed outright with no window because it turned out to be read by
+  nothing at all — which this entry did not know and is filed under Defects' own history.
+
+  **The entry was right about the names and wrong about the count:** it said two names, and there
+  were three. It also could not have known that one of the three was inert, which is what the
+  audit found first.
+
+  The original filing, for the argument: **Five components place a panel with
   `calc(100% + <token>)`, and they split on what to call it: `gog-autocomplete` and
   `gog-datepicker` use `--gog-*-panel-gap`, `gog-select` and `gog-multiselect` use
   `--gog-*-panel-offset`, and `gog-menu` uses `--gog-menu-offset`. A consumer who learns one

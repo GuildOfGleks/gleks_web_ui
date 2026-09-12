@@ -98,10 +98,14 @@ const add = (rule, block, message) => findings.push({ rule, block, message });
 // about things it never measured.
 const isLength = (t) => /^-?[\d.]+(rem|em|px)$/.test((declared.get(t) ?? '').trim());
 const LEADING_STEPS = [...declared.keys()].filter((t) => /^--gog-line-height-[a-z]+$/.test(t));
-const TEXT_STEPS = [...declared.keys()].filter((t) => /^--gog-text-[a-z0-9]+$/.test(t) && isLength(t));
+const TEXT_STEPS = [...declared.keys()].filter(
+  (t) => /^--gog-text-[a-z0-9]+$/.test(t) && isLength(t),
+);
 
 if (LEADING_STEPS.length === 0 || TEXT_STEPS.length === 0) {
-  console.error('Could not find --gog-line-height-* or --gog-text-* in theme.css. Nothing measured.');
+  console.error(
+    'Could not find --gog-line-height-* or --gog-text-* in theme.css. Nothing measured.',
+  );
   process.exit(1);
 }
 
@@ -125,9 +129,7 @@ for (const token of fontSizeTokens) {
   // has none.
   const isRelative = /^[\d.]+(em|%)$/.test(value);
   const readsScale =
-    isRelative ||
-    /var\(\s*--gog-text-/.test(value) ||
-    /var\(\s*--gog-[a-z-]*font-size/.test(value);
+    isRelative || /var\(\s*--gog-text-/.test(value) || /var\(\s*--gog-[a-z-]*font-size/.test(value);
 
   // An exemption says the token *may* sit off the scale, not that it must. Where a value happens
   // to equal a step, reading the step is right whatever the block's role — and `check-tokens`
@@ -165,7 +167,11 @@ for (const block of [...sizedBlocks].sort()) {
 }
 for (const [block, reason] of LEADING_INHERITED) {
   if (blocksWithLeading.has(block)) {
-    add('C', block, `declares a line-height but is listed as inheriting one ("${reason}") — remove the entry`);
+    add(
+      'C',
+      block,
+      `declares a line-height but is listed as inheriting one ("${reason}") — remove the entry`,
+    );
   }
 }
 
@@ -173,9 +179,15 @@ for (const [block, reason] of LEADING_INHERITED) {
 for (const token of leadingTokens) {
   const exempt = NOT_A_LEADING_TOKEN.get(token);
   const value = declared.get(token).trim();
-  const readsStep = /var\(\s*--gog-line-height-/.test(value) || /var\(\s*--gog-[a-z-]*line-height/.test(value);
+  const readsStep =
+    /var\(\s*--gog-line-height-/.test(value) || /var\(\s*--gog-[a-z-]*line-height/.test(value);
   if (exempt) {
-    if (readsStep) add('D', blockOf(token), `${token} reads a step but is listed as not-a-leading ("${exempt}")`);
+    if (readsStep)
+      add(
+        'D',
+        blockOf(token),
+        `${token} reads a step but is listed as not-a-leading ("${exempt}")`,
+      );
     continue;
   }
   if (!readsStep) {
@@ -213,7 +225,11 @@ for (const file of scssFiles) {
     const value = match[1].trim();
     if (value.startsWith('var(')) return;
     if (NOT_LEADING.has(value)) return;
-    add('E', rel.split('/').at(-1).replace('.component.scss', ''), `${rel}:${i + 1} sets line-height: ${value} — a literal outside --gog-line-height-*`);
+    add(
+      'E',
+      rel.split('/').at(-1).replace('.component.scss', ''),
+      `${rel}:${i + 1} sets line-height: ${value} — a literal outside --gog-line-height-*`,
+    );
   });
 }
 
@@ -235,7 +251,7 @@ for (const file of scssFiles) {
 }
 
 const live = new Set(readInScss);
-for (let changed = true; changed; ) {
+for (let changed = true; changed;) {
   changed = false;
   for (const token of live) {
     for (const m of (declared.get(token) ?? '').matchAll(/var\(\s*(--gog-[a-z0-9-]+)/g)) {
@@ -250,7 +266,11 @@ for (let changed = true; changed; ) {
 for (const token of leadingTokens) {
   if (NOT_A_LEADING_TOKEN.has(token)) continue;
   if (!live.has(token)) {
-    add('F', blockOf(token), `${token} is declared and no stylesheet reads it — the block still inherits its leading`);
+    add(
+      'F',
+      blockOf(token),
+      `${token} is declared and no stylesheet reads it — the block still inherits its leading`,
+    );
   }
 }
 

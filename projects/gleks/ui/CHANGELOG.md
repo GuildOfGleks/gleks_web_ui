@@ -315,6 +315,32 @@ reached 1.0, so breaking changes may land in minor versions.
   21.12.0, and it is what surfaced the prefix bug. A gated list whose entries match nothing looks
   exactly like a library with no defects.
 
+### Deprecated
+
+- **`--gog-select-panel-offset` and `--gog-multiselect-panel-offset` become `*-panel-gap`,
+  removed in 21.14.0.** Five components place a panel with `calc(100% + <token>)` and split three
+  ways on what to call the value: `gog-autocomplete` and `gog-datepicker` said `-panel-gap`,
+  `gog-select` and `gog-multiselect` said `-panel-offset`, and `gog-menu` said `-offset`. A
+  consumer who learned one spelling guessed wrong on the next component.
+
+  `-gap` wins because it is the true one: an offset is a displacement from where a thing would
+  otherwise be, and this is the space between two things. `gog-menu`'s is renamed outright in the
+  same release with no window, because that one was never read (see Fixed) — a deprecation cycle
+  protects working consumer code, and there was none.
+
+  **Both old names keep resolving until 21.14.0.** `theme.css` declares each new token as
+  `var(<old name>, <value>)`, which is the mechanism the 21.7.0 prefix removals used: an override
+  on the old name still wins, one on the new name wins over it, and everyone else gets the value.
+  One minor rather than two, per `api-design.instructions.md` — the migration is a find-and-replace
+  in a theme.
+
+  **The ratchet had to grow a second half to hold this.** `DEPRECATED_NAMESPACES` can express
+  `--gog-btn-*` becoming `--gog-button-*`, because the prefix moves and the suffix is carried
+  through — it cannot express a rename, where the suffix itself moves and the replacement has to be
+  named. `DEPRECATED_TOKENS` is that map, `check:deprecations` fails on an overdue entry the same
+  way, and `GOG_DEPRECATIONS` now ships two entries where it shipped none. Verified by dating both
+  to the current version and watching the check fail.
+
 ### Fixed
 
 - **Six tokens were declared and read by nothing — one wired up, five removed.** Everything rule K

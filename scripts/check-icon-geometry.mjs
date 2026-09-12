@@ -96,7 +96,8 @@ if (names.length === 0) {
   findings.push('could not read GogBuiltinIconName — the union moved, and nothing was measured');
 }
 for (const name of names) {
-  if (!defs.has(name)) findings.push(`${name}: named in GogBuiltinIconName but not read from ICON_DEFS`);
+  if (!defs.has(name))
+    findings.push(`${name}: named in GogBuiltinIconName but not read from ICON_DEFS`);
 }
 for (const name of defs.keys()) {
   if (!names.includes(name)) findings.push(`${name}: in ICON_DEFS but not in GogBuiltinIconName`);
@@ -125,7 +126,9 @@ for (const [name, svg] of defs) {
   const reason = OFF_CENTRE.get(name);
   // The area centroid is the law's own statistic and takes over wherever a fill makes it mean
   // something; a purely stroked glyph is read on its extent. See the header.
-  const [what, point] = glyph.areaCentre ? ['area centre', glyph.areaCentre] : ['ink box', glyph.boxCentre];
+  const [what, point] = glyph.areaCentre
+    ? ['area centre', glyph.areaCentre]
+    : ['ink box', glyph.boxCentre];
   const dx = point[0] - centre[0];
   const dy = point[1] - centre[1];
 

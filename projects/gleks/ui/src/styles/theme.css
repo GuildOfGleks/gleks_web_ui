@@ -1837,7 +1837,9 @@
      declared this token and this is the pair that did not. */
   --gog-multiselect-panel-radius: var(--gog-radius);
   --gog-multiselect-panel-max-height: 260px;
-  --gog-multiselect-panel-offset: var(--gog-space-4);
+  /* Renamed from `--gog-multiselect-panel-offset` in 21.13.0; the old name is read as this
+     one's fallback so a consumer override still resolves, and goes in 21.14.0. */
+  --gog-multiselect-panel-gap: var(--gog-multiselect-panel-offset, var(--gog-space-4));
   --gog-multiselect-option-hover-bg: var(--gog-hover-color);
   --gog-multiselect-option-press-bg: var(--gog-border-color);
   --gog-multiselect-option-color: var(--gog-text-color);
@@ -2205,7 +2207,8 @@
   --gog-select-panel-bg: var(--gog-surface-color);
   --gog-select-panel-shadow: var(--gog-panel-shadow);
   --gog-select-panel-max-height: 260px;
-  --gog-select-panel-offset: var(--gog-space-4);
+  /* Renamed from `--gog-select-panel-offset` in 21.13.0; see the multiselect's note above. */
+  --gog-select-panel-gap: var(--gog-select-panel-offset, var(--gog-space-4));
   /* The panel's own corner, and the reason it is not `--gog-select-radius`: that token shapes the
      *field*, and it shaped this box too until this release. One token painting two boxes meant a
      consumer rounding the field into a pill rounded the dropdown into one as well, and the filter

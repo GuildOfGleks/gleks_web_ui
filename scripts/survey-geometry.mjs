@@ -107,7 +107,11 @@ function main(themeCss) {
   for (const [token, raw] of declared) {
     const parsed = parseTokenName(token, PROP_SUFFIXES);
     if (!parsed || !parsed.block) continue;
-    if (/^(space|text|line|font|radius|density|control-border|panel-border|border)$/.test(parsed.block))
+    if (
+      /^(space|text|line|font|radius|density|control-border|panel-border|border)$/.test(
+        parsed.block,
+      )
+    )
       continue;
 
     const entry = blocks.get(parsed.block) ?? { name: parsed.block, tokens: [] };
@@ -177,7 +181,9 @@ function law1Grid(blocks, resolve, layers) {
   console.log(`  Off-grid values in use: ${total} declarations across ${users.size} values`);
   for (const px of [...users.keys()].sort((a, b) => a - b)) {
     const list = users.get(px);
-    console.log(`    ${fmt(px)}px — ${list.length}: ${list.slice(0, 6).join(', ')}${list.length > 6 ? ', …' : ''}`);
+    console.log(
+      `    ${fmt(px)}px — ${list.length}: ${list.slice(0, 6).join(', ')}${list.length > 6 ? ', …' : ''}`,
+    );
   }
 }
 
@@ -218,7 +224,9 @@ function law2Radii(blocks) {
     else unpaired.push({ name, raw });
   }
 
-  console.log(`  ${radii.size} radius tokens: ${nested.length} nest inside another, ${unpaired.length} are outermost or unpaired.`);
+  console.log(
+    `  ${radii.size} radius tokens: ${nested.length} nest inside another, ${unpaired.length} are outermost or unpaired.`,
+  );
   console.log('  Nested — inner radius should be the outer minus the padding between them:');
   for (const n of nested.sort((a, b) => a.name.localeCompare(b.name))) {
     const same = n.raw === n.parentRaw;
@@ -270,15 +278,15 @@ function law3OpticalRatio(blocks, resolve) {
 
   console.log(`  ${rows.length} padding pairs across ${byBlock.size} blocks.`);
   for (const [name, list] of [...byBlock].sort()) {
-    const ordered = list.sort(
-      (a, b) => SIZE_STEPS.indexOf(a.size) - SIZE_STEPS.indexOf(b.size),
-    );
+    const ordered = list.sort((a, b) => SIZE_STEPS.indexOf(a.size) - SIZE_STEPS.indexOf(b.size));
     const ratios = ordered.map((r) => r.ratio);
     const spread = Math.max(...ratios) - Math.min(...ratios);
     const detail = ordered
       .map((r) => `${r.size} ${fmt(r.x)}/${fmt(r.y)}=${r.ratio.toFixed(2)}`)
       .join('  ');
-    console.log(`    ${name.padEnd(22)} ${detail}${list.length > 1 ? `   spread ${spread.toFixed(2)}` : ''}`);
+    console.log(
+      `    ${name.padEnd(22)} ${detail}${list.length > 1 ? `   spread ${spread.toFixed(2)}` : ''}`,
+    );
   }
 }
 
@@ -438,7 +446,9 @@ function law5Target(blocks, resolve) {
   console.log(
     `  ${POINTER_TARGETS.size} blocks are pointer targets; ${rows.length} of their size steps are measurable; ${under.length} below 24px.`,
   );
-  console.log(`  ${excluded.length} blocks excluded as not a pointer target${args.includes('--all') ? ':' : ' (--all to list).'}`);
+  console.log(
+    `  ${excluded.length} blocks excluded as not a pointer target${args.includes('--all') ? ':' : ' (--all to list).'}`,
+  );
   if (args.includes('--all')) console.log(`    ${excluded.sort().join(', ')}`);
   for (const r of under) {
     console.log(

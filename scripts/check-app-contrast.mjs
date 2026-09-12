@@ -45,7 +45,8 @@ const TARGETS = [
     name: 'gleks-ui-lab',
     styles: 'projects/gleks-ui-lab/src/app',
     palettes: 'node_modules/@guildofgleks/ui/styles',
-    missing: 'run `npm install` at the repo root — the lab is checked against the published package',
+    missing:
+      'run `npm install` at the repo root — the lab is checked against the published package',
   },
   {
     key: 'showcase',
@@ -135,7 +136,9 @@ function rulesOf(css) {
     // from saying nothing at all. Without the distinction a base rule's transparency fell through
     // to its own `:hover` rule's background, and the *rest* state was then measured against the
     // hover tint: three of this check's first seven showcase findings were that, not a defect.
-    const paintsNothing = new RegExp('(?:^|;|\\s)background(?:-color)?:\\s*(none|transparent)\\s*(?:;|$)').test(body);
+    const paintsNothing = new RegExp(
+      '(?:^|;|\\s)background(?:-color)?:\\s*(none|transparent)\\s*(?:;|$)',
+    ).test(body);
     const colour = value('color');
     const bg = value('background-color') ?? value('background') ?? (paintsNothing ? 'none' : null);
     if (colour || bg) out.push({ selector, colour, bg });

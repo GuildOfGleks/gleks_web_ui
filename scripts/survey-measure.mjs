@@ -70,19 +70,19 @@ const CAPS = [
     reason:
       '`max-width` is declared on `.confirm-dialog`, which sets no font-size of its own and ' +
       'inherits the page root (16px) — the description now reads --gog-confirmation-dialog-' +
-      'description-font-size (--gog-text-sm, 14px), but that is a *descendant*\'s size, and a ' +
-      '`ch` cap resolves against the element `max-width` is declared on, not a descendant\'s. ' +
+      "description-font-size (--gog-text-sm, 14px), but that is a *descendant*'s size, and a " +
+      "`ch` cap resolves against the element `max-width` is declared on, not a descendant's. " +
       'Pointing fontToken at the description token here would be the same bug the toast fix ' +
       'caught (docs/component-geometry.md, "A fourth finding"): measuring the cap against a font ' +
       'nothing on `.confirm-dialog` itself reads. 16px stays live-measured rather than traced to ' +
       'a token because `.confirm-dialog` reads none — it is inheritance, not an unwired class, ' +
       'now that the dead `heading-md`/`body-sm` classes are gone (docs/backlog.md, fixed). ' +
       "NOTE ON THE `measure:` LINE BELOW: it prints this entry's own declared 51ch, which is a " +
-      "tautology for this token — the `ch` base and the width conversion both resolve against " +
+      'tautology for this token — the `ch` base and the width conversion both resolve against ' +
       "`.confirm-dialog`'s 16px, not the description's 14px, so the number below is not the " +
-      "reading measure a viewer of the *description* experiences. That real number is computed " +
-      'by hand: 439.9px ÷ (0.5391 × 14px) ≈ 58ch, still inside L9\'s 45–75 band. Computing it in ' +
-      'the script would need a second font axis (the cap\'s own font vs. the wrapping text\'s), ' +
+      'reading measure a viewer of the *description* experiences. That real number is computed ' +
+      "by hand: 439.9px ÷ (0.5391 × 14px) ≈ 58ch, still inside L9's 45–75 band. Computing it in " +
+      "the script would need a second font axis (the cap's own font vs. the wrapping text's), " +
       "which none of the other three entries need because their `ch` base and their text's font " +
       'are the same element — left as a documented gap rather than a feature grown for one entry.',
   },

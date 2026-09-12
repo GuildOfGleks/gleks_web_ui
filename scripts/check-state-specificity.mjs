@@ -81,12 +81,10 @@ function specificity(selector) {
   const ids = (bare.match(/(?<![\w-])#[\w-]+/g) ?? []).length;
   const pseudoClasses = bare.match(/(?<!:):(?!:)[\w-]+/g) ?? [];
   const pseudoElements = bare.match(/::[\w-]+/g) ?? [];
-  const classes =
-    (bare.match(/\.[\w-]+/g) ?? []).length + attributes.length + pseudoClasses.length;
+  const classes = (bare.match(/\.[\w-]+/g) ?? []).length + attributes.length + pseudoClasses.length;
   // A pseudo name is preceded by `:`, which the lookbehind excludes, so plain names are element
   // names and nothing else. Pseudo-elements are added back: they count in this slot.
-  const elements =
-    (bare.match(/(?<![\w.\-#:])[a-z][\w-]*/g) ?? []).length + pseudoElements.length;
+  const elements = (bare.match(/(?<![\w.\-#:])[a-z][\w-]*/g) ?? []).length + pseudoElements.length;
 
   return [ids, classes, elements];
 }
@@ -106,7 +104,7 @@ const SELF_TEST = [
   ['.gog-btn:hover:not(:disabled)', [0, 3, 0]],
   [".gog-btn[aria-pressed='true']", [0, 2, 0]],
   [".gog-btn.gog-btn[aria-pressed='true']", [0, 3, 0]],
-  ["button[gogButton]:focus-visible", [0, 2, 1]],
+  ['button[gogButton]:focus-visible', [0, 2, 1]],
   ['.gog-menu__item::before', [0, 1, 1]],
 ];
 

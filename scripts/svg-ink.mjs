@@ -163,7 +163,11 @@ export function pathRuns(d) {
       reflectX = reflectY = null;
     } else if (c === 'C' || c === 'S') {
       const c1 =
-        c === 'C' ? at(num(), num()) : reflectX === null ? [x, y] : [2 * x - reflectX, 2 * y - reflectY];
+        c === 'C'
+          ? at(num(), num())
+          : reflectX === null
+            ? [x, y]
+            : [2 * x - reflectX, 2 * y - reflectY];
       const c2 = at(num(), num());
       const end = at(num(), num());
       sampleCubic([x, y], c1, c2, end, out);
@@ -171,7 +175,11 @@ export function pathRuns(d) {
       [x, y] = end;
     } else if (c === 'Q' || c === 'T') {
       const q =
-        c === 'Q' ? at(num(), num()) : reflectX === null ? [x, y] : [2 * x - reflectX, 2 * y - reflectY];
+        c === 'Q'
+          ? at(num(), num())
+          : reflectX === null
+            ? [x, y]
+            : [2 * x - reflectX, 2 * y - reflectY];
       const end = at(num(), num());
       // A quadratic raised to a cubic, so one sampler serves both.
       sampleCubic(
