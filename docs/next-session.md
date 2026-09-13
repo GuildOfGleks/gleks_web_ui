@@ -14,9 +14,9 @@ presets now say why in a few lines, and `styling.instructions.md` has the rule t
 - **Input masking** (`docs/feedback-triage.md`, the one item left) — with the next batch of new
   components, since it is new `gog-inputfield` API.
 - **The lab examples refactor** (`docs/lab-examples-handoff.md`, one legacy page of thirty).
-- **More entry points for root components used behind lazy routes** — measured, not designed.
-  `docs/backlog.md` (Structural) has the numbers: about a quarter of the initial transfer in a
-  four-route app, at best.
+
+**Decided, not deferred:** no entry points beyond `table`, `datepicker` and `dialog`
+(`docs/entry-points.md`, _Where the split stops_).
 
 ## Two lessons worth more than the fixes
 

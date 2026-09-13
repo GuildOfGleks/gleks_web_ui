@@ -878,7 +878,11 @@ can land without an announced removal window.
   an offset is a displacement from where a thing would otherwise be, and this is the space
   between two things. Found 2026-09-04 while auditing the `-offset` family.
 
-- **A root component used only behind a lazy route still ships in the initial bundle.** Measured
+- ~~**A root component used only behind a lazy route still ships in the initial bundle.**~~
+  **Decided 2026-09-13: no further split, now or in the near future.** The measurement below put
+  the best case at about a quarter of a four-route app's initial transfer, and the owner judged a
+  few kilobytes not worth another round of import-path breaks. Reopen only with a consumer's real
+  bundle in hand, and read the numbers below first. Measured
   2026-09-13 while closing phase 2 of `docs/entry-points.md`, on a fresh CLI app: a first page with
   one `gog-button` is 61.2 kB; add a `loadComponent` route that uses checkbox, icon, paginator,
   scroll, spinner and button, and the initial bundle is **86.3 kB with a 560-byte lazy chunk**. The
@@ -891,7 +895,7 @@ can land without an announced removal window.
   `button`, `select` carry most of the graph; the survey below counted 51 edges) or a root that
   stops re-exporting what moves, each with its own deprecation cycle.
 
-  **Measured 2026-09-13, design deferred by the owner.** A fresh CLI 21.2 app (no SSR) on the
+  **Measured 2026-09-13.** A fresh CLI 21.2 app (no SSR) on the
   published 21.14.0, four `loadComponent` routes using 20 root components between them plus the
   three split entry points — dashboard (card, progressbar, tag, skeleton, alert, badge), orders
   (table, paginator, select, inputfield, chip), edit (datepicker, dialog, inputfield, select,
@@ -928,8 +932,9 @@ can land without an announced removal window.
   exporting them, in 21.14.0. `docs/entry-points.md`, _As 2 finished_, has the numbers — and the
   entry above has what they did not cover.
 
-- **Secondary entry points — `docs/entry-points.md` holds the plan**, measured end to end on
-  2026-09-13 before any file moved. Read its Part 2 before touching this: the natural design
+- ~~**Secondary entry points — `docs/entry-points.md` holds the plan**~~ **Closed 2026-09-13**: its
+  two phases shipped in 21.13.0 and 21.14.0, and the split stops at `table`, `datepicker` and
+  `dialog` by decision (the entry above). Measured end to end on 2026-09-13 before any file moved. Read its Part 2 before touching this: the natural design
   (split everything, root re-exports for compatibility) splits for nobody. Earlier notes follow.
 
   **Secondary entry points** (`@guildofgleks/ui/select`, …). **Started 2026-09-12; the

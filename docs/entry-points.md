@@ -244,5 +244,13 @@ and hydration clean. Its own first run reported 21.13.0's split instead — the 
 overwritten the local one, which shares its file name until the version is bumped — which is how
 the lazy-chunk gate was seen to catch the shape it exists for.
 
+### Where the split stops
+
+**Decided 2026-09-13: three entry points, and no more for the foreseeable future.** What is left
+in the initial bundle is root components a lazy route alone uses. `docs/backlog.md`, Structural,
+measured it on a four-route app: at best about 28 kB of a 114 kB initial transfer, and less for
+any app whose first page already renders a field or a select. Not worth another break to every
+consumer's imports.
+
 **1a before 1b, and not in the same commit** — 1a changes nothing a consumer can see and touches 61
 files, 1b changes the public surface and touches four.
