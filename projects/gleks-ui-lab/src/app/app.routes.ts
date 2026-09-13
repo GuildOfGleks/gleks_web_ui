@@ -97,6 +97,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'components/alert',
+    loadComponent: () =>
+      import('./components/pages/alert-doc-page/alert-doc-page').then((m) => m.AlertDocPage),
+  },
+  {
     path: 'components/calendar',
     loadComponent: () =>
       import('./components/pages/calendar-doc-page/calendar-doc-page').then(

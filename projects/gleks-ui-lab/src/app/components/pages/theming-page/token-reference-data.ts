@@ -321,6 +321,48 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    id: 'alert',
+    title: 'Alert',
+    tokens: [
+      {
+        name: '--gog-alert-bg / -color / -font-family',
+        description:
+          'Surface, body text colour and font stack. The ordinary surface and text pair, not a status tint — the library ships no per-status tint family, and the alert does not invent one.',
+      },
+      {
+        name: '--gog-alert-border-color / -border-width / -border-style / -radius',
+        description: 'The frame on three sides, and the corner radius.',
+      },
+      {
+        name: '--gog-alert-edge-color / -edge-width',
+        description:
+          'The leading edge that carries the severity, and the icon colour. Written by the severity class, which outranks a plain class of yours — to repaint a severity, set its own colour token below instead.',
+      },
+      {
+        name: '--gog-alert-accent-color / -success-color / -danger-color / -warning-color / -info-color',
+        description:
+          'What each severity points --gog-alert-edge-color at. Default to the foundation status colours, so a theme that sets those needs nothing here.',
+      },
+      {
+        name: '--gog-alert-padding-y / -padding-x / -gap / -main-gap',
+        description:
+          'Inner padding, the gap between icon, text and close button, and the gap between heading and body.',
+      },
+      {
+        name: '--gog-alert-icon-font-size / -icon-line-height',
+        description: 'The glyph, and the box that holds it.',
+      },
+      {
+        name: '--gog-alert-heading-color / -heading-font-size / -heading-font-weight / -heading-line-height',
+        description: 'The optional heading.',
+      },
+      {
+        name: '--gog-alert-body-font-size / -body-line-height',
+        description: 'The projected body.',
+      },
+    ],
+  },
+  {
     id: 'autocomplete',
     title: 'Autocomplete',
     tokens: [

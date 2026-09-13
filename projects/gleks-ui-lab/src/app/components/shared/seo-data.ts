@@ -124,6 +124,11 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     'An accessible Angular accordion with single or multiple open panels, projected headers and ' +
       'chevrons, animated height and full keyboard support.',
   ),
+  'components/alert': component(
+    'Alert',
+    'A persistent, in-flow Angular alert: five severities, an optional heading and close button, ' +
+      'and a screen-reader announcement you can switch off for messages already on the page.',
+  ),
   'components/autocomplete': component(
     'Autocomplete',
     'Angular autocomplete input with async options, load-more paging, custom option templates and ' +

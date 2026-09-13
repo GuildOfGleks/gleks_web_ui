@@ -103,6 +103,7 @@ provideGogConfig({
     hidePassword: 'Passwort verbergen',
     closeDialog: 'Schließen',
     closeToast: 'Schließen',
+    closeAlert: 'Meldung schließen', // gog-alert's dismiss button
     pagination: 'Seitennavigation',
     previousPage: 'Vorherige Seite',
     nextPage: 'Nächste Seite',

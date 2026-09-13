@@ -1,0 +1,15 @@
+@if (visible()) {
+  <gog-alert
+    severity="danger"
+    heading="Payment failed"
+    live="off"
+    [dismissible]="true"
+    (dismissed)="onDismissed()"
+  >
+    The card issuer declined the charge. No money has left your account.
+  </gog-alert>
+} @else {
+  <gog-button #restore variant="outline" (gogClick)="visible.set(true)">
+    Bring the alert back
+  </gog-button>
+}

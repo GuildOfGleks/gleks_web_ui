@@ -35,6 +35,7 @@ export interface GlobalConfigEntry {
 /** Keyed by the same slug `nav-data.ts` and the routes use (`components/<slug>`). */
 export const GLOBAL_CONFIG_BY_COMPONENT: Readonly<Record<string, readonly GlobalConfigEntry[]>> = {
   accordion: [{ key: 'ripple.enabled' }],
+  alert: [{ key: 'labels.closeAlert', note: 'the close button, when dismissible' }],
   autocomplete: [
     { key: 'control.size' },
     { key: 'control.errorDisplay' },

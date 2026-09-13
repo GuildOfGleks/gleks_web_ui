@@ -1,0 +1,25 @@
+<div class="actions">
+  <gog-button variant="outline" (gogClick)="saveFailed.set(!saveFailed())">
+    {{ saveFailed() ? 'Clear the error' : 'Fail a save' }}
+  </gog-button>
+  <gog-button variant="outline" (gogClick)="exported.set(!exported())">
+    {{ exported() ? 'Clear the notice' : 'Finish an export' }}
+  </gog-button>
+</div>
+
+<!-- No `live`: it defaults from the severity. danger interrupts... -->
+@if (saveFailed()) {
+  <gog-alert severity="danger" heading="Could not save">
+    The server did not answer. Your draft is kept in this tab.
+  </gog-alert>
+}
+
+<!-- ...and info waits for a pause in what the reader is already hearing. -->
+@if (exported()) {
+  <gog-alert severity="info">The export is ready in your downloads.</gog-alert>
+}
+
+<!-- On the page from the start, so it says nothing: set live="off" for that case yourself. -->
+<gog-alert severity="warning" live="off">
+  This workspace is read-only until the owner restores billing.
+</gog-alert>

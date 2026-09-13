@@ -1,0 +1,12 @@
+<gog-alert severity="success" iconName="lock" live="off">
+  An <code>iconName</code> overrides the severity's own glyph.
+</gog-alert>
+
+<gog-alert severity="info" [iconName]="null" live="off">
+  <code>[iconName]="null"</code> removes the icon, for a message whose words already carry it.
+</gog-alert>
+
+<gog-alert severity="warning" live="off">
+  <ng-template gogAlertIcon><gog-icon name="star" /></ng-template>
+  A projected <code>gogAlertIcon</code> template replaces it with your own markup.
+</gog-alert>

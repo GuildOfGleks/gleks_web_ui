@@ -9,6 +9,7 @@ import {
 import { RouterLink } from '@angular/router';
 import {
   AccordionComponent,
+  AlertComponent,
   AutocompleteComponent,
   GogBadgeDirective,
   ButtonComponent,
@@ -93,6 +94,7 @@ interface FoundationGroupView {
     SinceBadgeComponent,
     TokenRowEditor,
     AccordionComponent,
+    AlertComponent,
     GogAccordionContentDirective,
     AutocompleteComponent,
     GogBadgeDirective,
