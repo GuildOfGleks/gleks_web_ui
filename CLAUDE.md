@@ -105,8 +105,9 @@ exports them, nor the three deprecated helpers; the three deprecated tokens stop
 `GOG_DEPRECATIONS` is `[]`. **A script that scans the library takes its directories from
 `scripts/library-sources.mjs`.** Measured on a CLI app: initial 101.2 → 88.2 kB for a lazy route
 holding the heavy four; the 27 kB left over is their root dependencies, which stay eager for any
-root component (`docs/backlog.md`, Structural). There is no in-progress version yet: the next
-library change opens `## [21.14.1] - planned` or `## [21.15.0] - planned`, whichever it is.
+root component (`docs/backlog.md`, Structural). **21.15.0 is open, heading `planned`** — `gog-table`'s
+`selectOnRowClick`, and the fix for Space on a row checkbox in an `interactiveRows` table; so
+`npm run check:release` fails again, correctly.
 
 ### The release sequence
 
@@ -139,8 +140,8 @@ three 21.13.0 items reached the site only because the changelog was read against
 deprecated-token list rendered single-token renames as prefixes until it was looked at in a
 browser.
 
-**Every check is green on `master`, `check:release` included** — 21.14.0 is released and nothing
-newer is open. `check:theme-starter` compares `theme.css` from the _installed_ package against the
+**Every check is green on `master` except `check:release`**, which fails because 21.15.0 is
+`planned` — the correct state. `check:theme-starter` compares `theme.css` from the _installed_ package against the
 lab's mirror, so a published release makes it fail until the lab regenerates it — expected, not a
 regression. Verified 2026-09-13 after the 21.14.0 lab pass.
 

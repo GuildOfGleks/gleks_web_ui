@@ -434,6 +434,7 @@ describe('TableComponent — outputs, lazy mode and selection', () => {
         [interactiveRows]="interactiveRows()"
         [selectionMode]="selectionMode()"
         [showSelectionColumn]="showSelectionColumn()"
+        [selectOnRowClick]="selectOnRowClick()"
         [dataKey]="dataKey()"
         [(selection)]="selection"
         [showTotal]="true"
@@ -454,6 +455,7 @@ describe('TableComponent — outputs, lazy mode and selection', () => {
     readonly interactiveRows = signal(false);
     readonly selectionMode = signal<GogTableSelectionMode>('none');
     readonly showSelectionColumn = signal(true);
+    readonly selectOnRowClick = signal(false);
     readonly dataKey = signal('');
     readonly selection = signal<Person[]>([]);
 
@@ -799,6 +801,112 @@ describe('TableComponent — outputs, lazy mode and selection', () => {
 
       expect(host.selection().length).toBe(1);
       expect(host.rowClicks).toEqual([]);
+    });
+
+    describe('selectOnRowClick', () => {
+      const ids = () => host.selection().map((row) => row.id);
+      const click = async (index: number) => {
+        (rows()[index] as HTMLElement).click();
+        await settle();
+      };
+
+      it('is off by default: a row click selects nothing', async () => {
+        await click(0);
+
+        expect(ids()).toEqual([]);
+        expect(host.rowClicks.length).toBe(1);
+      });
+
+      it('toggles the pressed row, and still reports the click', async () => {
+        host.selectOnRowClick.set(true);
+        await settle();
+
+        await click(0);
+        await click(1);
+        expect(ids()).toEqual([1, 2]);
+
+        await click(0);
+        expect(ids()).toEqual([2]);
+        expect(host.rowClicks.length).toBe(3);
+      });
+
+      it('keeps at most one row in single mode', async () => {
+        host.selectOnRowClick.set(true);
+        host.selectionMode.set('single');
+        await settle();
+
+        await click(0);
+        await click(1);
+
+        expect(ids()).toEqual([2]);
+      });
+
+      it('does nothing, and makes nothing interactive, without a selectionMode', async () => {
+        host.selectOnRowClick.set(true);
+        host.selectionMode.set('none');
+        await settle();
+
+        await click(0);
+
+        expect(ids()).toEqual([]);
+        expect((rows()[0] as HTMLElement).getAttribute('tabindex')).toBeNull();
+      });
+
+      it('makes the rows interactive even with interactiveRows off, Enter and Space included', async () => {
+        host.selectOnRowClick.set(true);
+        host.showSelectionColumn.set(false);
+        await settle();
+
+        const row = rows()[0] as HTMLElement;
+        expect(row.getAttribute('tabindex')).toBe('0');
+        expect(row.classList.contains('gog-table__row--interactive')).toBe(true);
+
+        row.dispatchEvent(
+          new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true }),
+        );
+        await settle();
+        expect(ids()).toEqual([1]);
+
+        row.dispatchEvent(
+          new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }),
+        );
+        await settle();
+        expect(ids()).toEqual([]);
+      });
+
+      it('leaves a press on a control inside a cell to that control', async () => {
+        host.selectOnRowClick.set(true);
+        await settle();
+
+        // Stands in for a consumer's gogColumnBody button: what matters is where the press lands.
+        const button = document.createElement('button');
+        button.textContent = 'Open';
+        (rows()[0] as HTMLElement).querySelectorAll('td')[2].appendChild(button);
+        button.click();
+        await settle();
+
+        expect(ids()).toEqual([]);
+        expect(host.rowClicks.length).toBe(1);
+      });
+
+      it('does not toggle on a click that ends a text selection inside the row', async () => {
+        host.selectOnRowClick.set(true);
+        await settle();
+
+        const row = rows()[0] as HTMLElement;
+        const range = document.createRange();
+        range.selectNodeContents(row.querySelectorAll('td')[2]);
+        const selection = document.getSelection()!;
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        await click(0);
+        expect(ids()).toEqual([]);
+
+        selection.removeAllRanges();
+        await click(0);
+        expect(ids()).toEqual([1]);
+      });
     });
 
     it('can hide the checkbox column while keeping selection on', async () => {

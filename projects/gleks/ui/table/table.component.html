@@ -117,9 +117,9 @@
           @for (row of renderedRows(); track rowKey(row); let i = $index) {
             <tr
               class="gog-table__row"
-              [class.gog-table__row--interactive]="interactiveRows()"
+              [class.gog-table__row--interactive]="rowsInteractive()"
               [class.gog-table__row--selected]="isSelected(row)"
-              [attr.tabindex]="interactiveRows() ? 0 : null"
+              [attr.tabindex]="rowsInteractive() ? 0 : null"
               [attr.aria-selected]="hasSelection() ? isSelected(row) : null"
               [attr.aria-rowindex]="ariaRowIndex(i)"
               [attr.data-gog-row-index]="rowIndexOf(i)"

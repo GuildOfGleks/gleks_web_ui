@@ -1700,6 +1700,7 @@ the paginator and select — still land wherever the root does.
 | `dataKey`                     | `string`                      | `''` — row identity field                 |
 | `showSelectionColumn`         | `boolean`                     | `true` (once selection is on)             |
 | `interactiveRows`             | `boolean`                     | `false`                                   |
+| `selectOnRowClick`            | `boolean`                     | `false` — needs `selectionMode`           |
 | `virtualize`                  | `boolean`                     | `false` — needs `maxHeight` + `fullWidth` |
 
 Outputs: `gogSortChange: GogTableSortEvent` (`{ field, direction }`, `{ field: '', direction:
@@ -1845,8 +1846,14 @@ where it holds zero or one row — one shape rather than a union to narrow on ev
 - **Set `dataKey`.** Without it rows are matched by object identity, so any refetch that produces
   new objects silently drops the selection. It is also the `@for` track key, which is what lets
   the DOM survive a refetch instead of being rebuilt.
-- The checkbox column renders automatically (`showSelectionColumn` to turn it off, e.g. for a
-  table that selects by row click — pair that with `interactiveRows`).
+- The checkbox column renders automatically (`showSelectionColumn` to turn it off).
+- **`selectOnRowClick` toggles a row's selection when the row itself is pressed** (since 21.15.0),
+  the usual partner of `[showSelectionColumn]="false"`. It makes the rows interactive on its own —
+  focusable, and toggled by Enter or Space on the focused row — so do not also reach for
+  `interactiveRows` to make it keyboard-reachable. A press on a control inside a cell (link,
+  button, form field, the row checkbox) keeps its own meaning, and a click that ends a text
+  selection inside the row does not toggle. `gogRowClick` still fires; if rows also navigate,
+  leave this off rather than selecting and navigating on one press.
 - The header select-all appears only in `'multiple'` mode and covers **the current page**, never
   the whole data set: in `lazy` mode the table has never seen the other pages, and a control that
   behaved differently between the two modes would be worse than either.
@@ -1856,7 +1863,7 @@ where it holds zero or one row — one shape rather than a union to narrow on ev
 `gogRowClick` fires on a click regardless, but a `<tr>` is not focusable, so on its own that is a
 mouse-only affordance. `interactiveRows` makes rows focusable and styles them as clickable, and
 Enter/Space then activate the focused row — only the row itself: those keys on a checkbox, button
-or link inside a cell stay with that control (since 21.14.1; before it, Space on the selection
+or link inside a cell stay with that control (since 21.15.0; before it, Space on the selection
 checkbox fired the row instead of ticking the box). If the action is really "open this one thing", a link
 or button inside a cell is better than a whole-row target.
 

@@ -4,7 +4,29 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
-## [21.14.1] - planned
+## [21.15.0] - planned
+
+### Added
+
+- **`gog-table` `selectOnRowClick` — select a row by pressing the row.** Off by default, and a no-op
+  without `selectionMode`. The input existed in spirit already: `showSelectionColumn`'s own
+  documentation told consumers to hide the checkboxes "for a table that selects by clicking the row
+  itself", and nothing did the selecting — every such table had to wire `gogRowClick` to its
+  selection by hand, and pair it with `interactiveRows` or ship a mouse-only table
+  (`docs/feedback-triage.md`, item 5).
+
+  **It makes the rows interactive by itself**, rather than asking to be paired: focusable, styled as
+  pressable, and toggled by Enter or Space on the focused row. Two presses deliberately do not
+  toggle — one that lands on a control inside a cell (a link, a button, a form field, the row's own
+  checkbox), and a click that ends a text selection in the row, so a value can still be copied.
+  `gogRowClick` fires for every press either way. Verified in Chrome with a real mouse and keyboard
+  on the showcase's new "Selecting by row" example: click to select and deselect, an _Open_ button
+  in a cell that does not select its row, Space on a focused row, and a drag over a cell's text that
+  selects the text and not the row.
+
+  **Named for what it does rather than folded into `interactiveRows`**, which the feedback item had
+  framed as "a behaviour change on an existing input": a table whose rows open a detail page and
+  also carry checkboxes would have started selecting on every navigation.
 
 ### Fixed
 

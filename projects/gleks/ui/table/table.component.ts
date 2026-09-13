@@ -55,6 +55,27 @@ const FALLBACK_ROW_HEIGHT = 40;
  */
 const ELEMENT_HEIGHT_CAP = 33_554_426;
 
+/**
+ * What counts as a control inside a row for `selectOnRowClick`: a press that lands on one of these
+ * keeps its own meaning and does not also toggle the row.
+ */
+const ROW_CONTROLS = [
+  'a[href]',
+  'button',
+  'input',
+  'select',
+  'textarea',
+  'label',
+  'summary',
+  '[contenteditable]:not([contenteditable="false"])',
+  '[role="button"]',
+  '[role="link"]',
+  '[role="checkbox"]',
+  '[role="switch"]',
+  '[role="menuitem"]',
+  '[role="option"]',
+].join(', ');
+
 export type SortDirection = 'asc' | 'desc' | null;
 
 /**
@@ -219,10 +240,26 @@ export class TableComponent<T extends object> {
   readonly dataKey = input('');
   /**
    * Whether the checkbox column renders. On by default once `selectionMode` is set; turn it off
-   * for a table that selects by clicking the row itself, and pair it with `interactiveRows` so
-   * that stays reachable by keyboard.
+   * for a table that selects by clicking the row itself — see `selectOnRowClick`.
    */
   readonly showSelectionColumn = input(true);
+  /**
+   * Toggles a row's selection when the row itself is pressed, so a table can select without making
+   * the reader aim for a checkbox. Needs `selectionMode`; does nothing without it.
+   *
+   * **It makes the rows interactive, whatever `interactiveRows` says** — focusable, styled as
+   * pressable, and toggled by Enter or Space on the focused row. A row that selects on a click but
+   * cannot be reached by keyboard would be the mouse-only affordance `interactiveRows` exists to
+   * prevent, so the two are not left to be paired by hand.
+   *
+   * Three presses do not toggle, on purpose: one that lands on a control inside a cell (a link, a
+   * button, a form field, the row's own checkbox — each keeps its own meaning), and a click that
+   * ends a text selection inside the row, which is someone copying a value rather than choosing a
+   * row. `gogRowClick` still fires for every press that reaches the row, so a table can select and
+   * report in one gesture; one whose rows also navigate should keep the two apart and leave this
+   * off. Off by default.
+   */
+  readonly selectOnRowClick = input(false);
   readonly showRowNumbers = input<boolean>(true);
   readonly showTotal = input<boolean>(false);
   readonly emptyPlaceholder = input<string>('-');
@@ -276,7 +313,7 @@ export class TableComponent<T extends object> {
    * or a clamp — not for the initial render.
    */
   readonly gogPageChange = output<number>();
-  /** Fires when a row is clicked, or activated with Enter/Space when `interactiveRows` is on. */
+  /** Fires when a row is clicked, or activated with Enter/Space on the focused row when rows are interactive. */
   readonly gogRowClick = output<GogTableRowClickEvent<T>>();
 
   readonly columns = contentChildren(GogColumn);
@@ -407,6 +444,11 @@ export class TableComponent<T extends object> {
   });
 
   protected readonly hasSelection = computed(() => this.selectionMode() !== 'none');
+
+  /** Rows are focusable and pressable: asked for directly, or implied by `selectOnRowClick`. */
+  protected readonly rowsInteractive = computed(
+    () => this.interactiveRows() || (this.selectOnRowClick() && this.hasSelection()),
+  );
   protected readonly hasSelectionColumn = computed(
     () => this.hasSelection() && this.showSelectionColumn(),
   );
@@ -563,7 +605,7 @@ export class TableComponent<T extends object> {
    * left to ask whether it held focus.
    */
   private releaseFocusLeavingTheWindow(): void {
-    if (!this.isBrowser || !this.windowingActive() || !this.interactiveRows()) return;
+    if (!this.isBrowser || !this.windowingActive() || !this.rowsInteractive()) return;
 
     const host = this.elRef.nativeElement as HTMLElement;
     const focused = document.activeElement;
@@ -850,22 +892,46 @@ export class TableComponent<T extends object> {
     this.gogSortChange.emit(this.sortState());
   }
 
-  /** Click, or Enter/Space on a focused row when `interactiveRows` is on. */
+  /** Click, or Enter/Space on a focused row when rows are interactive. */
   protected emitRowClick(row: T, index: number, originalEvent: MouseEvent | KeyboardEvent): void {
+    if (this.selectOnRowClick() && this.hasSelection() && this.pressSelectsRow(originalEvent)) {
+      this.toggleRowSelection(row, !this.isSelected(row));
+    }
     this.gogRowClick.emit({ row, index, originalEvent });
+  }
+
+  /**
+   * Whether a press on a row should toggle its selection: not when it landed on a control inside a
+   * cell, and not when it ended a text selection inside the row.
+   */
+  private pressSelectsRow(event: MouseEvent | KeyboardEvent): boolean {
+    const row = event.currentTarget;
+    const target = event.target;
+    if (!(row instanceof Element) || !(target instanceof Element)) return true;
+
+    const control = target.closest(ROW_CONTROLS);
+    if (control && control !== row && row.contains(control)) return false;
+
+    if (event instanceof MouseEvent) {
+      const selection = row.ownerDocument.getSelection();
+      if (selection && selection.type === 'Range' && row.contains(selection.anchorNode)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
    * Enter and Space activate the focused row; Space must not also scroll the page.
    *
    * **Only when the row itself has focus.** A keydown from a control inside a cell bubbles here
-   * too, and before 21.14.1 this handler took it: Space on the selection checkbox was prevented —
+   * too, and before 21.15.0 this handler took it: Space on the selection checkbox was prevented —
    * so the box never ticked — and fired `gogRowClick` instead, which left keyboard users unable to
    * select a row at all in a table with `interactiveRows`. The same went for Enter on a button or
    * link in a cell. That key belongs to the control.
    */
   protected onRowKeydown(row: T, index: number, event: KeyboardEvent): void {
-    if (!this.interactiveRows()) return;
+    if (!this.rowsInteractive()) return;
     if (event.target !== event.currentTarget) return;
     if (event.key !== 'Enter' && event.key !== ' ') return;
     event.preventDefault();

@@ -33,3 +33,21 @@ it found the lab's sidebar hover label and two `code` chips under AA.
 build.
 
 ---
+
+## 21.15.0 — select a table row by pressing it
+
+- **`gog-table` has `selectOnRowClick`, and the Table page's selection section should show it.** An
+  API row beside `showSelectionColumn` and `interactiveRows`, and a demo: `[showSelectionColumn]="false"`
+  plus `[selectOnRowClick]="true"`, with a button in one column so the page can say that a press on
+  a control in a cell does not select the row. `ui-showcase`'s table page has the example ("Selecting
+  by row"). Three sentences the page needs: it makes rows interactive on its own (so no
+  `interactiveRows` to pair), a drag that selects text does not toggle, and `gogRowClick` still
+  fires — so a table whose rows navigate should leave it off.
+
+- **The Table page's `showSelectionColumn` row** in `table-doc-page.ts` should point at
+  `selectOnRowClick` for "a table that selects by clicking the row", if it says anything about
+  that.
+
+- **Space on a row's checkbox ticks it now** in a table with `interactiveRows` (21.15.0's fix; before
+  it, the key fired `gogRowClick` instead). Nothing on the site claims otherwise, checked; worth
+  knowing only if a page describes the keyboard behaviour of a selectable, interactive table.

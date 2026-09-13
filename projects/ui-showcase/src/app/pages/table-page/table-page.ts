@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, computed, signal } from '@angular/core';
 import {
   ButtonComponent,
   CheckboxComponent,
@@ -148,6 +148,16 @@ export class TablePage implements OnDestroy {
     this.serverPage = 1;
     this.fetchPage();
   }
+
+  // ── Row-click selection demo ─────────────────────────────────────────────────────────────
+  protected readonly picked = signal<DemoRow[]>([]);
+  protected readonly pickedSummary = computed(
+    () =>
+      this.picked()
+        .map((row) => row.component)
+        .join(', ') || 'nothing',
+  );
+  protected readonly lastOpened = signal('—');
 
   protected onServerRowClick(event: GogTableRowClickEvent<ServerRow>): void {
     this.lastServerQuery.set(`clicked ${event.row.name} (row ${event.index + 1} on this page)`);
