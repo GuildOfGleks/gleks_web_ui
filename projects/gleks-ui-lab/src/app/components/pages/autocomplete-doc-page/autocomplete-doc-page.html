@@ -162,6 +162,61 @@
   </section>
 
   <section class="doc-section">
+    <h2 id="virtualize" class="doc-section__title font-heading">
+      Virtualized options — <code>virtualize</code> <app-since version="21.13.0" />
+    </h2>
+    <p class="doc-section__intro">
+      <code>[virtualize]="true"</code> renders only the rows in view. Unwindowed, 10&nbsp;000
+      options build 10&nbsp;000 DOM rows to show about six — measured in Chrome,
+      <strong>512&nbsp;ms</strong> before the panel appears, against
+      <strong>21&nbsp;ms</strong> windowed on the same data. The scrollbar looks the same either
+      way, because spacers stand in for the rows that are not there.
+    </p>
+    <div class="demo-card">
+      <p class="demo-card__meta">
+        10&nbsp;000 cities. Focus the field and scroll the panel, or press End.
+      </p>
+      <div class="demo-card__preview size-column">
+        <gog-autocomplete label="City" [options]="manyCities" [virtualize]="true" />
+      </div>
+      <app-code-tabs [html]="virtualizeHtml" [ts]="virtualizeTs" />
+    </div>
+    <p class="doc-section__intro">
+      <strong>Off by default, and never switched on at some row count.</strong> A windowed list
+      behaves differently in ways nothing about the data predicts: <code>Ctrl+F</code> finds only
+      the rendered rows, and CSS targeting <code>:last-child</code> matches the last
+      <em>rendered</em> row. A threshold would make that depend on how much data happened to arrive,
+      so set it per field, or app-wide with <code>GOG_CONFIG.dropdown.virtualize</code>.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>The announced count stays honest:</strong> the <code>aria-setsize</code> and
+        <code>aria-posinset</code> carry the real list, so a screen reader hears "10&nbsp;000 items"
+        rather than "20". Arrow keys walk the whole list — End reaches the last option.
+      </li>
+      <li>
+        <strong>Focus never moves</strong>, which is the one way this differs from the select and
+        the multiselect. Their windowed lists hand focus back to the trigger when a focused row
+        scrolls away; a combobox keeps focus in its input the whole time, so there is nothing to
+        hand back.
+      </li>
+      <li>
+        <strong><code>gog-table</code>'s <code>virtualize</code> is a different story</strong> under
+        the same name: table rows vary in height, so it measures as it goes — see the
+        <a routerLink="/components/table" fragment="virtualize">Table page</a>.
+      </li>
+    </ul>
+    <p class="doc-section__intro">
+      <strong>Not the same thing as <code>gogLoadMore</code>, and the two compose.</strong> The
+      <a routerLink="." fragment="server">server-backed suggestions</a> above keep the number of
+      records the <em>server</em> sends small; <code>virtualize</code> keeps the number of rows the
+      <em>browser</em> builds small. A <code>gogLoadMore</code> list that has loaded 10&nbsp;000
+      records still stamps 10&nbsp;000 rows without it — neither implies the other, and a list long
+      enough to want one usually wants both.
+    </p>
+  </section>
+
+  <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs — autocomplete's own</h3>
