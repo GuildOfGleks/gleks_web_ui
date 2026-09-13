@@ -454,11 +454,11 @@
       <code>:last-child</code> selector matches the last <em>rendered</em> one.
     </p>
     <p class="doc-section__intro">
-      <strong><code>lazy</code> is not a substitute, and the two compose.</strong> <code>lazy</code>
-      keeps the fetch small and still stamps every row of the page it was handed;
-      <code>virtualize</code> keeps the rows the browser builds small, whatever was fetched. One
-      ceiling worth knowing: Chrome clamps an element's height at 33&nbsp;554&nbsp;426px, roughly
-      745&nbsp;000 rows.
+      <strong><code>lazy</code> is not a substitute, and the two compose.</strong> The
+      <code>lazy</code> flag keeps the fetch small and still stamps every row of the page it was
+      handed; <code>virtualize</code> keeps the rows the browser builds small, whatever was fetched.
+      One ceiling worth knowing: Chrome clamps an element's height at 33&nbsp;554&nbsp;426px,
+      roughly 745&nbsp;000 rows.
     </p>
   </section>
 
