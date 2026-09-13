@@ -190,12 +190,13 @@ export interface GogGlobalConfig {
     filterPosition?: GogDropdownFilterPosition;
     /**
      * Whether the option list renders only the rows in view instead of all of them. Reaches
-     * `gog-select`. **Off by default**, and deliberately not switched on above some row count:
-     * a windowed list and a plain one differ under `Ctrl+F`, under a screen reader's "list all
-     * items", and under consumer CSS that targets `:last-child`, so a data-dependent threshold
-     * would make behaviour depend on how much data happened to arrive.
+     * `gog-select`, `gog-multiselect` and `gog-autocomplete` — not `gog-table`, whose own
+     * `virtualize` has no app-wide key. **Off by default**, and deliberately not switched on above
+     * some row count: a windowed list and a plain one differ under `Ctrl+F`, under a screen
+     * reader's "list all items", and under consumer CSS that targets `:last-child`, so a
+     * data-dependent threshold would make behaviour depend on how much data happened to arrive.
      *
-     * Worth setting app-wide for an app whose selects are generally fed long lists; a per-field
+     * Worth setting app-wide for an app whose dropdowns are generally fed long lists; a per-field
      * `virtualize` still wins over it.
      */
     virtualize?: boolean;

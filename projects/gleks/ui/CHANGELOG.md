@@ -4,6 +4,18 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.14.0] - planned
+
+### Fixed
+
+- **Two sentences shipped in 21.13.0 still said the library does not virtualize.** `AGENTS.md`'s
+  ripple section left `gog-table` rows out partly because there was "no virtualization in this
+  library yet", in the same release that added `virtualize` to the table; the reason that stands
+  is the other one, and the section now says what a row does instead — a press colour. And
+  `GOG_CONFIG.dropdown.virtualize`'s JSDoc said the key reaches `gog-select`, when it reaches all
+  three dropdowns and not the table. Documentation only. Both were found while documenting 21.13.0
+  on the docs site, by reading the published package rather than the plan.
+
 ## [21.13.0] - 13.09.2026
 
 ### Added

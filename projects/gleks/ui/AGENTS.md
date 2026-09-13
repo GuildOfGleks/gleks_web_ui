@@ -1411,8 +1411,9 @@ control out of an app-wide on, `[ripple]="true"` opts one in without switching t
 
 Not covered, and deliberately: `gog-table` rows and `gogCardLink`. A row and a card are hundreds
 of pixels wide, so the wave has to travel the whole surface and reads as a flash rather than as
-feedback at the point you pressed — and a table renders one directive per row, with no
-virtualization in this library yet. Put `gogRipple` on them yourself if you disagree.
+feedback at the point you pressed. An `interactiveRows` row answers a press with a colour instead,
+`--gog-table-row-press-bg`, which also survives `prefers-reduced-motion`. Put `gogRipple` on them
+yourself if you disagree.
 
 A chip that is not `clickable`, or is `disabled`, never ripples whatever the config says: a label
 answering a press is a promise it cannot keep.
