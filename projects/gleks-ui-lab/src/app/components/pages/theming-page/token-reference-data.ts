@@ -384,8 +384,13 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Suggestion panel surface and height cap.',
       },
       {
-        name: '--gog-autocomplete-option-hover-bg / -option-press-bg / -option-selected-bg / -option-height',
-        description: 'Suggestion row states and row height.',
+        name: '--gog-autocomplete-option-hover-bg / -option-press-bg / -option-selected-bg',
+        description: 'Suggestion row states.',
+      },
+      {
+        name: '--gog-autocomplete-option-height / -panel-gap',
+        description:
+          'A seed for the first frame rather than the row height — the component measures a real row and corrects itself, which is also what places the panel above or below the field. And the gap between the field and its panel.',
       },
       {
         name: '--gog-autocomplete-empty-color / -spinner-size',
@@ -455,6 +460,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description:
           'Pressed state per variant. The press is a colour and not only the scale below, so it ' +
           'survives prefers-reduced-motion.',
+      },
+      {
+        name: '--gog-button-focus-ring-color / -focus-ring-width / -focus-ring-offset',
+        description:
+          'The keyboard focus ring. Its colour is its own token since 21.13.0 and reads the accent; it used to follow each variant’s hover wash, which on ghost and the severity outline buttons made the ring invisible in four themes (1.07:1 at worst).',
       },
       {
         name: '--gog-button-active-scale',
@@ -908,7 +918,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-menu-item-hover-bg / -item-press-bg',
         description: 'An item under the pointer, and under a press.',
       },
-      { name: '--gog-menu-offset', description: 'Gap between the trigger and the panel.' },
+      { name: '--gog-menu-panel-gap', description: 'Gap between the trigger and the panel.' },
       {
         name: '--gog-menu-min-width / -max-width',
         description:
@@ -967,6 +977,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-multiselect-panel-bg / -panel-border / -panel-shadow / -panel-max-width',
         description:
           'Dropdown panel surface, and the cap on a panel that sizes to its own content rather than to the trigger.',
+      },
+      {
+        name: '--gog-multiselect-panel-gap',
+        description:
+          'Gap between the trigger and the panel. Renamed from --gog-multiselect-panel-offset in 21.13.0; the old name still resolves until 21.14.0, so move an override now.',
+      },
+      {
+        name: '--gog-multiselect-option-height',
+        description:
+          'A seed for the first frame, not the row height: the component measures a real row and corrects itself, which is also what decides whether the panel opens up or down.',
       },
       {
         name: '--gog-multiselect-panel-radius',
@@ -1200,6 +1220,16 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-select-panel-bg / -panel-shadow / -panel-max-width',
         description:
           'Dropdown panel surface, and the cap on a panel that sizes to its own content rather than to the trigger.',
+      },
+      {
+        name: '--gog-select-panel-gap',
+        description:
+          'Gap between the trigger and the panel. Renamed from --gog-select-panel-offset in 21.13.0; the old name still resolves until 21.14.0, so move an override now.',
+      },
+      {
+        name: '--gog-select-option-height',
+        description:
+          'A seed for the first frame, not the row height: the component measures a real row and corrects itself, which is also what decides whether the panel opens up or down.',
       },
       {
         name: '--gog-select-panel-radius',
