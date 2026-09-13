@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ButtonComponent } from '@guildofgleks/ui';
 import {
-  ButtonComponent,
   ConfirmationDialogComponent,
   DIALOG_DATA,
   DIALOG_REF,
   DialogRef,
   DialogService,
   type ConfirmDialogData,
-} from '@guildofgleks/ui';
+} from '@guildofgleks/ui/dialog';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -202,7 +202,7 @@ export class DialogDocPage {
   protected readonly lastResult = signal('No dialog closed yet.');
 
   protected readonly importSnippet =
-    "```typescript\nimport { DialogComponent, DialogService } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [DialogComponent],\n})\nexport class AppComponent {\n  // Mount <gog-dialog /> once, near the root of your app.\n}\n```";
+    "```typescript\nimport { DialogComponent, DialogService } from '@guildofgleks/ui/dialog';\n\n@Component({\n  // ...\n  imports: [DialogComponent],\n})\nexport class AppComponent {\n  // Mount <gog-dialog /> once, near the root of your app.\n}\n```";
 
   protected readonly overviewHtml = [
     '<gog-button (gogClick)="openConfirm()">Delete workspace</gog-button>',
@@ -210,13 +210,13 @@ export class DialogDocPage {
   ].join('\n');
   protected readonly overviewTs = [
     "import { Component, inject } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
     'import {',
-    '  ButtonComponent,',
     '  ConfirmationDialogComponent,',
     '  DialogComponent,',
     '  DialogService,',
     '  type ConfirmDialogData,',
-    "} from '@guildofgleks/ui';",
+    "} from '@guildofgleks/ui/dialog';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -254,7 +254,14 @@ export class DialogDocPage {
   ].join('\n');
   protected readonly customContentTs = [
     "import { Component, inject } from '@angular/core';",
-    "import { ButtonComponent, DIALOG_DATA, DIALOG_REF, DialogComponent, DialogRef, DialogService } from '@guildofgleks/ui';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    'import {',
+    '  DIALOG_DATA,',
+    '  DIALOG_REF,',
+    '  DialogComponent,',
+    '  DialogRef,',
+    '  DialogService,',
+    "} from '@guildofgleks/ui/dialog';",
     '',
     'interface DemoDialogData {',
     '  message: string;',
@@ -327,7 +334,8 @@ export class DialogDocPage {
   protected readonly stackedHtml = '<gog-dialog />';
   protected readonly stackedTs = [
     "import { Component, inject } from '@angular/core';",
-    "import { ButtonComponent, DIALOG_DATA, DIALOG_REF, DialogRef, DialogService } from '@guildofgleks/ui';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    "import { DIALOG_DATA, DIALOG_REF, DialogRef, DialogService } from '@guildofgleks/ui/dialog';",
     '',
     'interface DemoDialogData {',
     '  message: string;',
