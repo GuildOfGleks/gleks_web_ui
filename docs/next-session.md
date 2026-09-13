@@ -1,19 +1,14 @@
 # Where to start
 
-**21.14.0 is ready for you to release.** Phase 2 of `docs/entry-points.md` is done: the three heavy
-units moved into their entry points, the root stopped exporting them, the deprecated helpers and
-tokens are gone, `GOG_DEPRECATIONS` is `[]`. Every check's count matched its pre-move baseline, 1188
-tests pass, the showcase builds, `check:glyph-box` is clean across 46 routes, and
-`npm run check:install` passes against published 21.13.0.
+**21.14.0 is released and the lab is caught up with it** (2026-09-13). Phase 2 of
+`docs/entry-points.md` is done and verified as a consumer installs it; `docs/lab-after-publish.md` is
+empty; every check is green, `check:release` included.
 
-**After publishing**: `npm install` at the root, then `docs/lab-after-publish.md`'s 21.14.0 section.
-The lab's code already imports from the subpaths, so its build should hold; the work is prose that
-was written in the future tense, and the smaller-than-promised bundle number.
-
-**Then, by the project's own order** — fixes and polish before anything new — `docs/backlog.md`'s
-Defects and Rough edges, and `docs/feedback-triage.md`'s two remaining items (input masking needs a
-plan first; whole-row click). The new Structural entry about root components staying eager behind a
-lazy route is a decision, not a defect: measure what an app would save before designing anything.
+**Next, by the project's own order** — fixes and polish before anything new, and no new components —
+`docs/backlog.md`'s Defects and Rough edges, and `docs/feedback-triage.md`'s two remaining items
+(input masking needs a plan first; whole-row click). The Structural entry about root components
+staying eager behind a lazy route is a decision, not a defect: measure what an app would save before
+designing anything. A release that changes the package's shape runs `npm run check:install` first.
 
 ## Two lessons worth more than the fixes
 
