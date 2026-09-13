@@ -217,5 +217,25 @@ layering units — and `test:lib` stayed at 61 files and 1188 tests. One trap on
 `include` and coverage paths. The working-tree diff showed it before anything was committed, and
 the tests were re-run on the restored file.
 
+### Before 21.14.0 is published — the break, installed
+
+The same procedure as for 21.13.0, on 2026-09-13: the tarball of `dist/gleks/ui` (45 files) installed
+into a clean Angular 21.2.17-generated SSR app (runtime 21.2.23), `provideGogConfig` labels set once
+in the root, `gog-dialog` mounted in the app shell from `@guildofgleks/ui/dialog`, and a lazy route
+importing the table, calendar, datepicker, `DialogService` and the confirmation dialog from their
+subpaths.
+
+- **Production build and prerender clean**; the lazy route's chunk is 14.9 kB and **loaded only on
+  navigation** — the first page fetched five scripts, the click fetched the sixth.
+- **The prerendered HTML already carried `Gesamt: 3` and `Heute`**, the root's configured labels
+  inside components from two different subpaths, and `GOG_CONFIG` compared equal between the root
+  and the lazy route.
+- **Live**: `DialogService` from the subpath opened the confirmation dialog in the shell's
+  `gog-dialog`, its close button read the configured `Schliessen`, _Yes_ resolved `afterClosed` to
+  `true`; a direct load of the lazy route hydrated with an empty console.
+- **The break is a compile error, not a runtime one**: `import { TableComponent } from
+'@guildofgleks/ui'` fails `ng build` with `TS2724 … has no exported member named
+'TableComponent'`, which is the loudest a removal can be.
+
 **1a before 1b, and not in the same commit** — 1a changes nothing a consumer can see and touches 61
 files, 1b changes the public surface and touches four.
