@@ -20,12 +20,15 @@
     </p>
     <app-markdown [markdown]="importSnippet" />
     <p class="doc-section__intro">
-      <strong>Import it from <code>@guildofgleks/ui/table</code></strong> — <code>GogColumn</code>, its template directives and the table's event types come with it. The root package has not exported
-      it since 21.14.0 — in 21.13.0 it still did, deprecated — and that is
-      what lets a table used only behind a lazy route keep its own code out of your app's initial bundle.
-      <strong>What it imports from the root does not move</strong>:
-      the paginator, select, checkbox, scroll, spinner, icon and button a table renders belong to the root package, and load wherever your first page already loads it.
-      Measured on a fresh app with the table, datepicker, calendar and dialog behind one lazy route: the initial bundle went from 101.2 kB to 88.2 kB, and 27 kB of those components' root dependencies stayed in it.
+      <strong>Import it from <code>@guildofgleks/ui/table</code></strong> — <code>GogColumn</code>,
+      its template directives and the table's event types come with it. The root package has not
+      exported it since 21.14.0 — in 21.13.0 it still did, deprecated — and that is what lets a
+      table used only behind a lazy route keep its own code out of your app's initial bundle.
+      <strong>What it imports from the root does not move</strong>: the paginator, select, checkbox,
+      scroll, spinner, icon and button a table renders belong to the root package, and load wherever
+      your first page already loads it. Measured on a fresh app with the table, datepicker, calendar
+      and dialog behind one lazy route: the initial bundle went from 101.2 kB to 88.2 kB, and 27 kB
+      of those components' root dependencies stayed in it.
     </p>
 
     <p class="doc-section__intro">

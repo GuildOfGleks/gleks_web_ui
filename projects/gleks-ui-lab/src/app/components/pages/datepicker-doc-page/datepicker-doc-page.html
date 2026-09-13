@@ -14,12 +14,14 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
     <p class="doc-section__intro">
-      <strong>Import it from <code>@guildofgleks/ui/datepicker</code></strong>, together with <code>gog-calendar</code>. The root package has not exported
-      it since 21.14.0 — in 21.13.0 it still did, deprecated — and that is
-      what lets a datepicker used only behind a lazy route keep its own code out of your app's initial bundle.
-      <strong>What it imports from the root does not move</strong>:
-      the icons it draws belong to the root package, and load wherever your first page already loads it.
-      Measured on a fresh app with the table, datepicker, calendar and dialog behind one lazy route: the initial bundle went from 101.2 kB to 88.2 kB, and 27 kB of those components' root dependencies stayed in it.
+      <strong>Import it from <code>@guildofgleks/ui/datepicker</code></strong
+      >, together with <code>gog-calendar</code>. The root package has not exported it since 21.14.0
+      — in 21.13.0 it still did, deprecated — and that is what lets a datepicker used only behind a
+      lazy route keep its own code out of your app's initial bundle.
+      <strong>What it imports from the root does not move</strong>: the icons it draws belong to the
+      root package, and load wherever your first page already loads it. Measured on a fresh app with
+      the table, datepicker, calendar and dialog behind one lazy route: the initial bundle went from
+      101.2 kB to 88.2 kB, and 27 kB of those components' root dependencies stayed in it.
     </p>
 
     <p class="doc-section__intro">Basic usage:</p>
