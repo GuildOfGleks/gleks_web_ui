@@ -93,12 +93,12 @@ can split while the root still re-exports, whichever path they import from.
 
 ## Iterations
 
-| #   | What                                                                                                                                     | Status                 |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| 0   | Part 1 and Part 2 — measure before moving anything                                                                                       | ✅ 2026-09-13          |
-| 1a  | `shared` → `projects/gleks/ui/shared/` entry point; every import rewritten to the package path; scripts, generators and tsconfigs follow | ✅ 2026-09-13          |
-| 1b  | `/table`, `/datepicker`, `/dialog` thin subpaths; root exports deprecated for the next minor                                             | ✅ 2026-09-13          |
-| 2   | Move the three units' code; drop the root exports; re-run Part 1's variant D and publish the number                                      | 🔜 (the minor after 1) |
+| #   | What                                                                                                                                     | Status                  |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| 0   | Part 1 and Part 2 — measure before moving anything                                                                                       | ✅ 2026-09-13           |
+| 1a  | `shared` → `projects/gleks/ui/shared/` entry point; every import rewritten to the package path; scripts, generators and tsconfigs follow | ✅ 2026-09-13           |
+| 1b  | `/table`, `/datepicker`, `/dialog` thin subpaths; root exports deprecated for the next minor                                             | ✅ 2026-09-13           |
+| 2   | Move the three units' code; drop the root exports; re-run Part 1's variant D and publish the number                                      | ✅ 2026-09-13 (21.14.0) |
 
 ### As 1a finished
 
@@ -185,6 +185,37 @@ multi-entry package through `node_modules`, which is how the lab and every consu
 
 **The deprecated root imports compile and behave identically to the new ones**, which is what the
 window promises existing consumers.
+
+### As 2 finished
+
+The table, datepicker and dialog sources moved into `projects/gleks/ui/table/`, `/datepicker/` and
+`/dialog/` (with `DialogService`, which has to travel with the component it opens), their imports of
+the rest of the library became `@guildofgleks/ui`, and the root's 25 deprecated exports went, along
+with the three deprecated helpers and the three token fallbacks. `GOG_DEPRECATIONS` is `[]`.
+
+**Variant D, re-run on the same kind of CLI app, estimated transfer size:**
+
+| Variant                                                     | Initial     | Lazy chunk  |
+| ----------------------------------------------------------- | ----------- | ----------- |
+| D before (21.13.0)                                          | 101.2 kB    | 442 B       |
+| **D after — button eager, 4 heavy components via subpaths** | **88.2 kB** | **17.0 kB** |
+| H — the same app with no heavy route (the floor)            | 61.2 kB     | —           |
+| I — a lazy route using only root components the table uses  | 86.3 kB     | 560 B       |
+
+**Finding 7 — the split moves a unit's own code, not what it imports from the root.** D after is
+27 kB above the floor, and I shows where they come from: the paginator, select, checkbox, scroll,
+spinner, icon and button the three units depend on stay in the initial chunk, for the reason
+finding 2 gave about re-exports — the root is one module, the first page imports it, and everything
+used from it is placed there. That is true of _any_ root component used only lazily, so it is filed
+in `docs/backlog.md` (Structural) rather than treated as a gap in this phase.
+
+**Nothing broke that a count could see.** Ten scripts had `src/lib` spelled out and now read
+`scripts/library-sources.mjs`; every check's summary was captured before the move and compared after
+— 3995 contrast pairs, 45 component stylesheets, 506 template classes, 7 `loading` components, 36
+layering units — and `test:lib` stayed at 61 files and 1188 tests. One trap on the way out: restoring
+`angular.json` with `git checkout` after the throwaway probe app also reverted the new test
+`include` and coverage paths. The working-tree diff showed it before anything was committed, and
+the tests were re-run on the restored file.
 
 **1a before 1b, and not in the same commit** — 1a changes nothing a consumer can see and touches 61
 files, 1b changes the public surface and touches four.

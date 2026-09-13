@@ -1,29 +1,18 @@
 # Where to start
 
-**21.13.0 is published and the lab is caught up with it, so phase 2 of `docs/entry-points.md` is
-unblocked and is 21.14.0's mandatory payload.** Phase 2 moves the code of `gog-table`,
-`gog-datepicker`/`gog-calendar` and `gog-dialog` into their entry points and removes the root's 25
-deprecated exports — plus `getByPath`/`readOption`/`isSameOptionValue` and the three deprecated
-tokens, all `removedIn: 21.14.0`. `check:deprecations` fails the 21.14.0 build until it happens.
+**21.14.0 is ready for you to release.** Phase 2 of `docs/entry-points.md` is done: the three heavy
+units moved into their entry points, the root stopped exporting them, the deprecated helpers and
+tokens are gone, `GOG_DEPRECATIONS` is `[]`. Every check's count matched its pre-move baseline, 1188
+tests pass, the showcase builds and `check:glyph-box` is clean across 46 routes.
 
-**Read `docs/entry-points.md` Part 2 before touching phase 2.** Findings 2 and 4 are the design;
-finding 6 reversed on the built package and explains why no editor will show the deprecation.
+**After publishing**: `npm install` at the root, then `docs/lab-after-publish.md`'s 21.14.0 section.
+The lab's code already imports from the subpaths, so its build should hold; the work is prose that
+was written in the future tense, and the smaller-than-promised bundle number.
 
-## What phase 2 has to do, in order
-
-1. Move `src/lib/components/table`, `…/datepicker` and `…/dialog` plus `src/lib/services/dialog-service`
-   into `projects/gleks/ui/table/`, `/datepicker/`, `/dialog/`. Their imports of other components
-   become `@guildofgleks/ui` (finding 4 — a secondary may import the root).
-2. Drop the 25 deprecated exports from `src/public-api.ts` and their manifest entries.
-3. The test `include` in `angular.json` resolves against `sourceRoot`: add `../table/**/*.spec.ts`
-   and the other two, and **compare the count to 1188** — 1a lost 110 tests silently to exactly this.
-4. `check:layering`'s scan has to learn the three directories, or it goes blind the way it did in 1a.
-5. Re-run Part 1's variant D on the real CLI and publish the number. It is the whole point.
-
-## The state of the lists
-
-Defects: none. Rough edges: nothing actionable. Structural: entry points, above. Gaps: the
-unbuilt-component list, which has nothing in front of it except phase 2.
+**Then, by the project's own order** — fixes and polish before anything new — `docs/backlog.md`'s
+Defects and Rough edges, and `docs/feedback-triage.md`'s two remaining items (input masking needs a
+plan first; whole-row click). The new Structural entry about root components staying eager behind a
+lazy route is a decision, not a defect: measure what an app would save before designing anything.
 
 ## Two lessons worth more than the fixes
 

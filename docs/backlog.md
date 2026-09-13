@@ -920,11 +920,25 @@ can land without an announced removal window.
   an offset is a displacement from where a thing would otherwise be, and this is the space
   between two things. Found 2026-09-04 while auditing the `-offset` family.
 
-- **Secondary entry points — phase 1 done 2026-09-13; phase 2 is due in 21.14.0 and the build
-  enforces it.** `@guildofgleks/ui/shared` is an entry point, and `/table`, `/datepicker`,
-  `/dialog` exist as thin re-exports with the root's 25 exports deprecated. Phase 2 moves their code
-  and drops the root exports; `check:deprecations` fails the 21.14.0 build if it has not happened.
-  Read `docs/entry-points.md` — especially finding 6, which reversed on the built package.
+- **A root component used only behind a lazy route still ships in the initial bundle.** Measured
+  2026-09-13 while closing phase 2 of `docs/entry-points.md`, on a fresh CLI app: a first page with
+  one `gog-button` is 61.2 kB; add a `loadComponent` route that uses checkbox, icon, paginator,
+  scroll, spinner and button, and the initial bundle is **86.3 kB with a 560-byte lazy chunk**. The
+  root package is one FESM module, the first page already imports it, and everything the app uses
+  from that module is placed with it. This is why phase 2 moved 13 kB rather than 40: the table,
+  datepicker and dialog are lazy now, but the 27 kB of root components they depend on are not.
+
+  Not a defect — tree-shaking still works, and an app pays only for what it uses — and not cheap:
+  the only fixes are more entry points (per component, or per hub — `icon`, `scroll`, `spinner`,
+  `button`, `select` carry most of the graph; the survey below counted 51 edges) or a root that
+  stops re-exporting what moves, each with its own deprecation cycle. **Measure what an app would
+  actually save before deciding**: for most apps the eager page already uses buttons and icons, and
+  the saving is only the components a lazy route alone uses.
+
+- ~~**Secondary entry points — phase 1 done 2026-09-13; phase 2 is due in 21.14.0.**~~ **Closed
+  2026-09-13**: phase 2 moved the three units' code into their entry points and the root stopped
+  exporting them, in 21.14.0. `docs/entry-points.md`, _As 2 finished_, has the numbers — and the
+  entry above has what they did not cover.
 
 - **Secondary entry points — `docs/entry-points.md` holds the plan**, measured end to end on
   2026-09-13 before any file moved. Read its Part 2 before touching this: the natural design

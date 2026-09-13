@@ -98,10 +98,16 @@ not `src/lib/shared/`, and is imported as `@guildofgleks/ui/shared`** — `check
 relative import. It was installed as a consumer gets it before it was published (a fresh CLI SSR
 app, old and new import paths, one `GOG_CONFIG`, schematics) — see `docs/entry-points.md`.
 
-**21.14.0 is open, heading `planned`, so `npm run check:release` fails — the correct state.** Its
-mandatory payload is phase 2 of `docs/entry-points.md`: move the three units' code into their entry
-points and drop the root's 25 deprecated exports plus the three deprecated helpers and three
-deprecated tokens. `check:deprecations` fails the 21.14.0 build until that happens.
+**21.14.0 is built and waiting to be released, heading `planned`, so `npm run check:release`
+fails — the correct state.** It carries phase 2 of `docs/entry-points.md`: `gog-table`,
+`gog-datepicker`/`gog-calendar` and `gog-dialog` (with `DialogService`) **live in
+`projects/gleks/ui/table/`, `/datepicker/` and `/dialog/`**, beside `src/`, and the root no longer
+exports them, nor the three deprecated helpers; the three deprecated tokens stopped resolving, and
+`GOG_DEPRECATIONS` is `[]`. **A script that scans the library takes its directories from
+`scripts/library-sources.mjs`** — ten had `src/lib` spelled out. Measured on a CLI app: initial
+101.2 → 88.2 kB for a lazy route holding the heavy four, and the 27 kB left over is their root
+dependencies, which stay eager for any root component (`docs/backlog.md`, Structural).
+`docs/lab-after-publish.md` has its 21.14.0 section waiting for the publish.
 
 ### The release sequence
 
