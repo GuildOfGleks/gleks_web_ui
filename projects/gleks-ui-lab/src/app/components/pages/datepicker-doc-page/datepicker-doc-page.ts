@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui';
+import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -192,14 +192,14 @@ export class DatepickerDocPage {
     TOKEN_SECTIONS.find((section) => section.id === 'datepicker')?.tokens ?? [];
 
   protected readonly importSnippet =
-    "```typescript\nimport { DatepickerComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [DatepickerComponent],\n})\n```";
+    "```typescript\nimport { DatepickerComponent } from '@guildofgleks/ui/datepicker';\n\n@Component({\n  // ...\n  imports: [DatepickerComponent],\n})\n```";
 
   protected readonly overviewHtml = [
     '<gog-datepicker label="Date of birth" [max]="today" [(value)]="birthday" />',
   ].join('\n');
   protected readonly overviewTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui';",
+    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -222,7 +222,7 @@ export class DatepickerDocPage {
   ].join('\n');
   protected readonly rangeTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui';",
+    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -253,7 +253,7 @@ export class DatepickerDocPage {
   ].join('\n');
   protected readonly timeTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui';",
+    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -279,7 +279,7 @@ export class DatepickerDocPage {
   ].join('\n');
   protected readonly formatTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui';",
+    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -294,7 +294,7 @@ export class DatepickerDocPage {
   protected readonly inlineHtml = '<gog-datepicker [inline]="true" [(value)]="inlineDate" />';
   protected readonly inlineTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui';",
+    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -319,7 +319,7 @@ export class DatepickerDocPage {
   protected readonly formsTs = [
     "import { Component } from '@angular/core';",
     "import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';",
-    "import { DatepickerComponent } from '@guildofgleks/ui';",
+    "import { DatepickerComponent } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",
