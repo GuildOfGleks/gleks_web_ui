@@ -159,5 +159,32 @@ also made them invisible to editors. Same trade, same notice.
 Phase 2's whole benefit rests on it (finding 2), and breaking it would leave every build green.
 Verified by planting the violation.
 
+### Before 21.13.0 was published — the package as a consumer installs it
+
+The showcase resolves the package through a path alias onto `dist/`; nothing had installed the real
+multi-entry package through `node_modules`, which is how the lab and every consumer get it. So on
+2026-09-13, before the release:
+
+- **The tarball** (`npm pack` of `dist/gleks/ui`, exactly what `npm run release` publishes): every
+  file 21.12.0 shipped is still there, plus the four new entry points' FESM and types. The nested
+  `package.json` stubs are left out by ng-packagr's own `.npmignore`, so subpaths resolve through
+  `exports` only — the same way `@angular/common/http` does, so no app that can import that is
+  excluded by this.
+- **A clean Angular 21.2.23 app outside the repository** (`ng new --ssr`, zoneless, `strictTemplates`,
+  `module: preserve`), the tarball installed with `npm install`, styles added the way `README.md`
+  says. Three routes: every moved symbol imported from the new subpaths; the same symbols from the
+  root, the deprecated way; and `GOG_CONFIG`/`TableComponent` compared across both paths.
+- **Production build and prerender: no error, no warning**, subpaths resolved in the browser and the
+  server bundles alike. The server-rendered HTML already carried the app's `provideGogConfig` labels
+  inside components imported from subpaths.
+- **Live, against the app's own SSR server**: both routes rendered the configured table total and
+  calendar label, `DialogService` opened a dialog and passed `DIALOG_DATA` on each path, the close
+  button carried the configured label, hydration raised nothing, and the console stayed empty. The
+  token and the class compare equal across `@guildofgleks/ui` and its subpaths.
+- `npm run test:schematics`: 5 of 5.
+
+**The deprecated root imports compile and behave identically to the new ones**, which is what the
+window promises existing consumers.
+
 **1a before 1b, and not in the same commit** — 1a changes nothing a consumer can see and touches 61
 files, 1b changes the public surface and touches four.
