@@ -71,14 +71,14 @@ There is now one ladder of six heights, `--gog-elevation-0` through `-5`, and **
 surface in the package reads a step off it.** Z doubles: 0, 1, 2, 4, 8, 16. A height is assigned by
 what a thing _is_, not by how heavy it should look:
 
-| Step | What sits on it                                                            |
-| ---- | -------------------------------------------------------------------------- |
-| 0    | flat — in the flow of the page                                             |
-| 1    | a thumb riding on a control (the toggle's)                                 |
-| 2    | an `elevated` card or panel                                                |
+| Step | What sits on it                                                                  |
+| ---- | -------------------------------------------------------------------------------- |
+| 0    | flat — in the flow of the page                                                   |
+| 1    | a thumb riding on a control (the toggle's)                                       |
+| 2    | an `elevated` card or panel                                                      |
 | 3    | anything anchored to a control — the four dropdown panels, the menu, the tooltip |
-| 4    | a toast                                                                    |
-| 5    | a modal dialog                                                             |
+| 4    | a toast                                                                          |
+| 5    | a modal dialog                                                                   |
 
 **You do not write a step.** A theme turns ten knobs and all six follow:
 
