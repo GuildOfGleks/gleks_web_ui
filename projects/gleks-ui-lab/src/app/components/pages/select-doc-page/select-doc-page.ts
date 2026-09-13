@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {
+  CheckboxComponent,
   GogDropdownChevronDirective,
   GogDropdownOption,
   GogDropdownOptionDirective,
@@ -218,11 +219,26 @@ const API_INPUTS: readonly ApiInputRow[] = [
       'Press ripple on each option row in the panel. Unset, falls back to GOG_CONFIG.ripple.enabled, which is off by default; setting it here wins over the app-wide value in both directions.',
     since: '21.6.1',
   },
+  {
+    name: 'virtualize',
+    type: 'boolean | undefined',
+    default: 'GOG_CONFIG.dropdown.virtualize ?? false',
+    description:
+      'Renders only the option rows in view — about twenty in the DOM whatever the list holds. Off by default and never switched on at a row count: Ctrl+F finds only rendered rows and :last-child matches the last rendered one. aria-setsize/aria-posinset keep the announced count real.',
+    since: '21.13.0',
+  },
 ];
+
+/** Long enough that the difference is the point: 10 000 rows to show about six. */
+const MANY_CITIES: GogDropdownOption[] = Array.from({ length: 10_000 }, (_, i) => ({
+  id: `city-${i}`,
+  name: `City ${(i + 1).toLocaleString('en-US')}`,
+}));
 
 @Component({
   selector: 'app-select-doc-page',
   imports: [
+    CheckboxComponent,
     SelectComponent,
     GogDropdownOptionDirective,
     GogDropdownChevronDirective,
@@ -242,6 +258,11 @@ export class SelectDocPage {
   protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly apiInputs = API_INPUTS;
+
+  protected readonly manyCities = MANY_CITIES;
+  protected readonly windowedCity = signal<string | number | null>(null);
+  protected readonly eagerCity = signal<string | number | null>(null);
+  protected readonly virtualizeOn = signal(true);
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'select')?.tokens ?? [];
 
@@ -725,6 +746,42 @@ export class SelectDocPage {
     '  [(value)]="compactPanelValue"',
     '/>',
   ].join('\n');
+  protected readonly virtualizeHtml = [
+    '<gog-checkbox label="virtualize the first field" [(checked)]="virtualizeOn" />',
+    '<gog-select',
+    '  label="City (windowed)"',
+    '  [options]="cities"',
+    '  [virtualize]="virtualizeOn()"',
+    '  [filter]="true"',
+    '  [(value)]="windowedCity"',
+    '/>',
+    '<gog-select',
+    '  label="City (eager, for comparison)"',
+    '  [options]="cities"',
+    '  [filter]="true"',
+    '  [(value)]="eagerCity"',
+    '/>',
+  ].join('\n');
+  protected readonly virtualizeTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { CheckboxComponent, GogDropdownOption, SelectComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [CheckboxComponent, SelectComponent],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly cities: GogDropdownOption[] = Array.from({ length: 10_000 }, (_, i) => ({',
+    '    id: `city-${i}`,',
+    '    name: `City ${i + 1}`,',
+    '  }));',
+    '  protected readonly windowedCity = signal<string | number | null>(null);',
+    '  protected readonly eagerCity = signal<string | number | null>(null);',
+    '  protected readonly virtualizeOn = signal(true);',
+    '}',
+  ].join('\n');
+
   protected readonly appendToBodyTs = [
     "import { Component, signal } from '@angular/core';",
     "import { GogDropdownOption, SelectComponent } from '@guildofgleks/ui';",
