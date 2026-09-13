@@ -13,7 +13,6 @@ import {
   GogBadgeDirective,
   ButtonComponent,
   ButtonToggleGroupComponent,
-  CalendarComponent,
   CardComponent,
   CheckboxComponent,
   ChipComponent,
@@ -21,11 +20,6 @@ import {
   GogCardHeaderDirective,
   GogCollapsibleContentDirective,
   GogCollapsibleTriggerDirective,
-  GogColumn,
-  ConfirmationDialogComponent,
-  DatepickerComponent,
-  DialogComponent,
-  DialogService,
   DividerComponent,
   GogAccordionContentDirective,
   GogMenuItemDirective,
@@ -46,16 +40,22 @@ import {
   SliderComponent,
   SpinnerComponent,
   TabComponent,
-  TableComponent,
   TabsComponent,
   TagComponent,
   TextareaComponent,
   ToastComponent,
   ToggleComponent,
   GogTooltipDirective,
-  type ConfirmDialogData,
   type GogDropdownOption,
 } from '@guildofgleks/ui';
+import { CalendarComponent, DatepickerComponent } from '@guildofgleks/ui/datepicker';
+import {
+  ConfirmationDialogComponent,
+  DialogComponent,
+  DialogService,
+  type ConfirmDialogData,
+} from '@guildofgleks/ui/dialog';
+import { GogColumn, TableComponent } from '@guildofgleks/ui/table';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { injectFullLibraryCss } from '../../shared/full-library-css';
