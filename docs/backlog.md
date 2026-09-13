@@ -726,14 +726,30 @@ reason may stop holding.
   at all: it points at the measured table instead, which removes both the staleness and the
   disagreement between the two numbers.
 
-- **The lab's bundle budget has 4 kB of headroom, and that is why it was raised.**
-  `gleks-ui-lab`'s initial bundle is 1003.85 kB against a `maximumError` that had to go from 1MB
-  to 1.1MB (Angular reads 1MB as 1000 kB). Checked before accepting it: the heavy dependencies
-  are already imported narrowly — FontAwesome icon by icon, `highlight.js` language by language
-  — so there is no easy win sitting there, and the size is what an Angular SSR app with `marked`,
-  `highlight.js` and FontAwesome costs. Not a release concern (the lab is not published), but the
-  next thing added to the lab's initial bundle will fail the build, and the fix will have to be a
-  real one: lazy-load the syntax highlighter, or move the docs renderer off the initial route.
+- **The lab's bundle budget has 46 kB of headroom left, and 21.13.0 spent half of what it had.**
+  `gleks-ui-lab`'s initial bundle is **1053.79 kB** against a `maximumError` of 1.1MB (Angular
+  reads that as 1100 kB). It was 1003.85 kB when the error had to go up from 1MB. Measured on
+  2026-09-13 by building the lab twice with nothing changed but the installed package: **1028.48 kB
+  on 21.12.0, 1053.79 kB on 21.13.0** — so about 25 kB came from lab work before 21.12.0 and 25 kB
+  from the release, almost all of it in the chunk holding the library (439.41 to 462.15 kB) plus
+  1 kB of global styles.
+
+  **The release's share is not a regression**, and a consumer app was built to check that rather
+  than assume it (a `--minimal` CLI app, same machine): a page using only `gog-button` is
+  225.5 kB on both versions, and one rendering every component but the alert grew from 582.9 to
+  597.3 kB — 14 kB, which is virtualization landing in the four collection components and the
+  window classes in `shared`. **`gog-alert` itself looked like 46 kB and is not**: it renders a
+  `gog-button` for its close control and the button renders a spinner, and the all-components page
+  happened to render neither, so the alert was charged for both. Rendered alone it is 263.6 kB
+  against the button's 225.3 kB: about 16 kB of Angular runtime for its content query and
+  `afterNextRender`, 14.5 kB from `shared` (the icon data a `gog-icon` needs), 6.5 kB of its own.
+
+  Checked before the error was first raised, still true: the heavy dependencies are already
+  imported narrowly — FontAwesome icon by icon, `highlight.js` language by language — so there is
+  no easy win sitting there. The next real fix is one of two: lazy-load the syntax highlighter, or
+  move the docs renderer off the initial route. **21.14.0 may buy some of it for free**: phase 2
+  of `docs/entry-points.md` takes table, datepicker and dialog out of the root, and the lab's
+  initial chunk carries the library whole today. Re-measure then rather than counting on it.
 
 - **The lab's header is its own component now, and that entry is closed.** `app.scss` was
   6.20 kB against a 4 kB warning and an 8 kB error, two thirds of it belonging to one row of the
