@@ -21,13 +21,14 @@
       <strong
         >Import the dialog and <code>DialogService</code> from
         <code>@guildofgleks/ui/dialog</code></strong
-      >, its own entry point since 21.13.0. The root package still exports it in 21.13.0 and stops
-      in 21.14.0. Two things no other page will tell you:
-      <strong>your editor will not strike the old import through</strong>
-      — the package's bundled type declarations drop the deprecation tag on a re-export — and
-      <strong>switching changes nothing yet</strong>. In 21.14.0 the code moves into the entry
-      point, and only from then does a dialog opened only behind a lazy route stay out of your app's
-      initial bundle.
+      >, with the confirmation dialog and the dialog tokens. The root package has not exported it
+      since 21.14.0 — in 21.13.0 it still did, deprecated — and that is what lets a dialog opened
+      only behind a lazy route keep its own code out of your app's initial bundle.
+      <strong>What it imports from the root does not move</strong>: the button, icon and scroll area
+      it renders belong to the root package, and load wherever your first page already loads it.
+      Measured on a fresh app with the table, datepicker, calendar and dialog behind one lazy route:
+      the initial bundle went from 101.2 kB to 88.2 kB, and 27 kB of those components' root
+      dependencies stayed in it.
     </p>
 
     <p class="doc-section__intro">
