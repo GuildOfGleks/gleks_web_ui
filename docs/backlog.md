@@ -904,7 +904,11 @@ can land without an announced removal window.
   an offset is a displacement from where a thing would otherwise be, and this is the space
   between two things. Found 2026-09-04 while auditing the `-offset` family.
 
-- **Secondary entry points** (`@guildofgleks/ui/select`, …). **Started 2026-09-12; the
+- **Secondary entry points — `docs/entry-points.md` holds the plan**, measured end to end on
+  2026-09-13 before any file moved. Read its Part 2 before touching this: the natural design
+  (split everything, root re-exports for compatibility) splits for nobody. Earlier notes follow.
+
+  **Secondary entry points** (`@guildofgleks/ui/select`, …). **Started 2026-09-12; the
   prerequisite is done and the rest is sized.** Surveying the import graph before designing the
   split — the method that has paid three times this week — found the thing that decides it:
 
