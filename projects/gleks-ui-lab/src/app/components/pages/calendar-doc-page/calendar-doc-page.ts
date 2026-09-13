@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';
+import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -172,12 +172,12 @@ export class CalendarDocPage {
     TOKEN_SECTIONS.find((section) => section.id === 'calendar')?.tokens ?? [];
 
   protected readonly importSnippet =
-    "```typescript\nimport { CalendarComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [CalendarComponent],\n})\n```";
+    "```typescript\nimport { CalendarComponent } from '@guildofgleks/ui/datepicker';\n\n@Component({\n  // ...\n  imports: [CalendarComponent],\n})\n```";
 
   protected readonly overviewHtml = '<gog-calendar [(value)]="day" />';
   protected readonly overviewTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';",
+    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -194,7 +194,7 @@ export class CalendarDocPage {
   ].join('\n');
   protected readonly rangeTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';",
+    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -214,7 +214,7 @@ export class CalendarDocPage {
   ].join('\n');
   protected readonly disabledTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';",
+    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -243,7 +243,7 @@ export class CalendarDocPage {
   ].join('\n');
   protected readonly timeTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui';",
+    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -269,7 +269,7 @@ export class CalendarDocPage {
   ].join('\n');
   protected readonly localeTs = [
     "import { Component } from '@angular/core';",
-    "import { CalendarComponent } from '@guildofgleks/ui';",
+    "import { CalendarComponent } from '@guildofgleks/ui/datepicker';",
     '',
     '@Component({',
     "  selector: 'app-example',",

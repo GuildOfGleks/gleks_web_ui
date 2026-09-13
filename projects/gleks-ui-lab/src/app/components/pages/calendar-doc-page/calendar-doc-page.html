@@ -13,6 +13,16 @@
     <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
+    <p class="doc-section__intro">
+      <strong>Import it from <code>@guildofgleks/ui/datepicker</code></strong
+      >, its own entry point since 21.13.0. The root package still exports it in 21.13.0 and stops
+      in 21.14.0. Two things no other page will tell you:
+      <strong>your editor will not strike the old import through</strong>
+      — the package's bundled type declarations drop the deprecation tag on a re-export — and
+      <strong>switching changes nothing yet</strong>. In 21.14.0 the code moves into the entry
+      point, and only from then does a calendar used only behind a lazy route stay out of your app's
+      initial bundle.
+    </p>
 
     <p class="doc-section__intro">Basic usage:</p>
     <div class="demo-card">
