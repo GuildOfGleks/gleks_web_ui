@@ -382,7 +382,7 @@ rule that looked obvious did not survive that: "the ramp must be monotonic in li
 eight of the eleven, and eight of them are right, because on a light ground the hover fill is
 _darker_ than the rest state. What is checkable is that the step exists, not which way it points.
 
-Between them, `check:contrast` (3883 pairs across the eleven themes, including every control
+Between them, `check:contrast` (3995 pairs across the eleven themes, including every control
 boundary and every focus indicator) and `check:oklch` are CI steps. If you fork a preset, they are
 worth running against your own file.
 

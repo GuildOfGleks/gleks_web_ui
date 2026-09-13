@@ -259,13 +259,13 @@ own custom CSS can use to follow the same rule.
     item(
       'How much does it add to my bundle?',
       `
-The whole library — 31 components plus the \`gogBadge\`, \`gogTooltip\` and \`gogRipple\`
-directives — is **113.6 KB gzipped** of JavaScript, plus a 28.6 KB
-gzipped stylesheet that carries every theming token. An app using a handful of components pays
-a fraction of the first number, since the rest is tree-shaken; the stylesheet is loaded whole
-either way. For context, four Angular Material components gzip to 153.5 KB and the same four
-from PrimeNG to 330.6 KB — with the commands to re-measure all of it on the
-[full technical comparison](/general/compare-full).
+The whole library — 32 components plus the \`gogBadge\`, \`gogTooltip\` and \`gogRipple\`
+directives — is **123.1 KB gzipped** of JavaScript, plus a 51.4 KB gzipped stylesheet that
+carries every theming token (most of it the stylesheet's own comments). An app using a handful
+of components pays a fraction of the first number, since the rest is tree-shaken; the stylesheet
+is loaded whole either way. For context, four Angular Material components gzip to 153.6 KB and
+the same four from PrimeNG to 332.7 KB — measured 2026-09-13, with the commands to re-measure
+all of it on the [full technical comparison](/general/compare-full).
 `,
     ),
     item(
