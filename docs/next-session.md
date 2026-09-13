@@ -1,14 +1,22 @@
 # Where to start
 
-**21.14.0 is released and the lab is caught up with it** (2026-09-13). Phase 2 of
-`docs/entry-points.md` is done and verified as a consumer installs it; `docs/lab-after-publish.md` is
-empty; every check is green, `check:release` included.
+**21.14.0 is released and the lab is caught up with it; 21.15.0 is open** (2026-09-13) with
+`gog-table`'s `selectOnRowClick` and the fix for Space on a row checkbox in an `interactiveRows`
+table. Nothing in it changes the package's shape, so `npm run check:install` is not required for it.
+`docs/lab-after-publish.md` has its 21.15.0 section waiting. The comparison bench is re-measured.
 
-**Next, by the project's own order** — fixes and polish before anything new, and no new components —
-`docs/backlog.md`'s Defects and Rough edges, and `docs/feedback-triage.md`'s two remaining items
-(input masking needs a plan first; whole-row click). The Structural entry about root components
-staying eager behind a lazy route is a decision, not a defect: measure what an app would save before
-designing anything. A release that changes the package's shape runs `npm run check:install` first.
+**What is left needs a decision from the owner rather than more work:**
+
+- **`theme.css` ships its design record as comments** — 74% of its gzipped bytes. Three ways out in
+  `docs/backlog.md` (Rough edges): a minified file beside the commented one, the comments lifted into
+  `TOKENS.md`, or keep it and close the entry.
+- **`themes.md` iteration 4** — five theme slots across three families are unbuilt; build them or
+  close the iteration as scoped.
+- **A root component used only behind a lazy route stays in the initial bundle** (`docs/backlog.md`,
+  Structural) — measure what a real app would save before designing more entry points.
+- **Input masking** (`docs/feedback-triage.md`, the one item left) needs a written plan first.
+- **The lab examples refactor** (`docs/lab-examples-handoff.md`) has converted one legacy page of
+  thirty.
 
 ## Two lessons worth more than the fixes
 
