@@ -195,12 +195,26 @@ blockage; the closing note under iteration 5 says which commit closed which half
 
 ### Cutting a release — why an agent does none of it
 
-**Before the user publishes, a release that changes the package's shape gets the consumer install
-check**: the packed tarball installed into a clean app outside the repo. The triggers are specific
-— the package manifest or `ng-package.json`, entry points, a public removal or rename, a toolchain
-upgrade, the `ng add` schematic — and so is the procedure; both are in
-`gleks-ui-library.instructions.md`, _The consumer install check_. The showcase cannot catch these:
-it reads `dist/` through a path alias and never touches `node_modules`, `exports` or the tarball.
+**Before the user publishes, a release that changes the package's shape passes
+`npm run check:install`** — the packed tarball installed into a clean SSR app outside the repo,
+compared against the last published version, built, prerendered and opened in Chrome. The showcase
+cannot catch these: it reads `dist/` through a path alias and never touches `node_modules`, the
+`exports` map or the tarball.
+
+- **Run it when the version contains any of**: a change to `projects/gleks/ui/package.json`, any
+  `ng-package.json` or `tsconfig.lib*.json`; an entry point added, removed or renamed, or code or an
+  `InjectionToken` moved between entry points; an export, token or documented stylesheet path
+  removed or renamed; an Angular, ng-packagr or TypeScript upgrade, or a changed Angular peer range;
+  any change to the `ng add` schematic.
+- **Not for** component internals, token values, additive exports, docs or tests.
+- **Once per release, at the end** — after the last triggering change and everything else in the
+  definition of done. Run it again if another triggering change lands.
+- **Tell the user before they publish**: that it passed and what it printed, or that nothing in the
+  release triggered it. Record the run in the plan the release came from.
+- A new public entry point needs a page in the script's `SMOKE` table, or the check fails.
+
+The detail — what it asserts, what is still manual, how the script was proven — is in
+`gleks-ui-library.instructions.md`, _The consumer install check_.
 
 `npm run check:release` fails whenever `projects/gleks/ui/package.json`'s version doesn't match
 the changelog's top `[x.y.z]` entry, or that heading still reads `planned` instead of a date.

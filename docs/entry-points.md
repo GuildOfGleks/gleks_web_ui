@@ -237,5 +237,12 @@ subpaths.
 '@guildofgleks/ui'` fails `ng build` with `TS2724 … has no exported member named
 'TableComponent'`, which is the loudest a removal can be.
 
+**Then as `npm run check:install`**, the script that procedure became, against published 21.13.0:
+45 files in both tarballs, 28 root exports removed and every one named in the changelog, initial
+112.9 kB, lazy chunks of 7.0 kB (table), 8.8 kB (datepicker) and 3.8 kB (dialog), prerendered labels
+and hydration clean. Its own first run reported 21.13.0's split instead — the baseline tarball had
+overwritten the local one, which shares its file name until the version is bumped — which is how
+the lazy-chunk gate was seen to catch the shape it exists for.
+
 **1a before 1b, and not in the same commit** — 1a changes nothing a consumer can see and touches 61
 files, 1b changes the public surface and touches four.

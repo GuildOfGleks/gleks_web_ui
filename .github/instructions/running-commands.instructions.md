@@ -5,22 +5,24 @@ applyTo: '**'
 
 # Running commands in this workspace
 
-Every script here is fast — the slowest is 15 seconds. If you are waiting minutes for one, it
+Every script here is fast — the slowest is 15 seconds, with one deliberate exception,
+`check:install`, which builds a whole app (below). If you are waiting minutes for any other, it
 is not slow, it is **hung**, and waiting will not help. This file records which commands exit
 cleanly, which do not, and how to run either kind so a session never stalls.
 
 Measured on the reference machine (Windows, `npm@11.6.2`, Angular v21), cold `.angular/cache`:
 
-| Script | Exits on its own? | Wall time |
-| --- | --- | --- |
-| `npm run check:tokens` | ✅ | ~1 s |
-| `npm run format:check` / `npm run format` | ✅ | ~6 s |
-| `npm run build:lib` | ✅ | ~5–7 s |
-| `npm run lint` | ✅ | ~25 s (three projects: library, showcase, lab) |
-| `npm run test:lib` | ✅ | ~13 s |
-| `npm run build:showcase` | ✅ | ~11–15 s |
-| `npm run build:lab` | ✅ (via wrapper, see below) | ~8–9 s |
-| `ng serve …` (any project) | ❌ by design | a dev server is supposed to keep running |
+| Script                                    | Exits on its own?           | Wall time                                                                                         |
+| ----------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------- |
+| `npm run check:tokens`                    | ✅                          | ~1 s                                                                                              |
+| `npm run format:check` / `npm run format` | ✅                          | ~6 s                                                                                              |
+| `npm run build:lib`                       | ✅                          | ~5–7 s                                                                                            |
+| `npm run lint`                            | ✅                          | ~25 s (three projects: library, showcase, lab)                                                    |
+| `npm run test:lib`                        | ✅                          | ~13 s                                                                                             |
+| `npm run build:showcase`                  | ✅                          | ~11–15 s                                                                                          |
+| `npm run build:lab`                       | ✅ (via wrapper, see below) | ~8–9 s                                                                                            |
+| `npm run check:install`                   | ✅                          | ~80 s warm npm cache, longer cold — generates and installs a whole app; run it with `timeout 590` |
+| `ng serve …` (any project)                | ❌ by design                | a dev server is supposed to keep running                                                          |
 
 ## The one rule
 
@@ -60,7 +62,7 @@ problem, not a project-config one — so don't chase it in application code (tim
 
 `npm run build:lab` itself now runs `scripts/build-lab.mjs` instead of `ng build` directly: the
 wrapper spawns the real build, watches its stdout for the `Output location:` marker Angular CLI
-prints last, and force-kills the process once that lands — so the *script* exits 0 in ~8–9 s even
+prints last, and force-kills the process once that lands — so the _script_ exits 0 in ~8–9 s even
 though the underlying `ng` process still wouldn't on its own. This is also why `docker build` on
 `projects/gleks-ui-lab/Dockerfile` no longer hangs at `RUN npm run build:lab`.
 
@@ -108,7 +110,7 @@ Get-NetTCPConnection -LocalPort 4200 -State Listen -ErrorAction SilentlyContinue
 ## Windows / sandbox gotchas hit in real sessions
 
 - **`npm install` inside `projects/gleks/ui` breaks the whole test suite.** The library's
-  `package.json` declares Angular as a *peer* dependency with the range
+  `package.json` declares Angular as a _peer_ dependency with the range
   `^21.2.0 || ^22.0.0`, so npm run there resolves it to the newest match — **Angular 22** — and
   writes a nested `projects/gleks/ui/node_modules` plus a `package-lock.json`. Both are
   git-ignored, so nothing shows in `git status`. Anything resolving from inside the library folder
@@ -125,7 +127,7 @@ Get-NetTCPConnection -LocalPort 4200 -State Listen -ErrorAction SilentlyContinue
 - **`npm install` will not restore a package you overwrote with a local build** when the two
   carry the same version string — npm sees the version it wants and leaves the directory alone.
   To undo the local-library swap from `ui-showcase.instructions.md`, `Remove-Item` the package
-  directory *first*, then `npm install`.
+  directory _first_, then `npm install`.
 - **Chained sleeps are blocked** (`sleep 30; cat log`). To wait for a condition, use a
   backgrounded `until` loop: `until grep -q "marker" log; do sleep 2; done`.
 - **Prefer redirecting to a file over `| head -N`.** Reading a saved log is cheaper than

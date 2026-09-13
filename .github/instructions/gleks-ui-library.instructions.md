@@ -231,28 +231,54 @@ landed and everything else in the definition of done passes, not after every com
 triggering change lands afterwards, run it again. Say in the chat, before the user publishes,
 that it ran and what it covered — or that nothing in the release triggered it.
 
-### How
+### How — `npm run check:install`
 
-1. `npm run build:lib`, then `npm pack` inside `dist/gleks/ui` into a scratch directory **outside
-   the repository**. Compare its file list against the last published tarball
-   (`npm pack @guildofgleks/ui@<latest>`): a file that disappeared must be one you meant to remove.
-2. **A clean app, generated outside the workspace** —
-   `npx @angular/cli@<the workspace's Angular version> new <name> --ssr --defaults --skip-git`.
-   Never `ng generate application` inside this repo: that app resolves the package through the root
-   tsconfig's `paths` onto `dist/`, which is exactly the path this check exists to avoid, and it
-   edits `angular.json` and `tsconfig.json` — restoring those with `git checkout` has already
-   thrown away unrelated uncommitted edits once.
-3. `npm install <tarball>`, and wire the styles exactly as `README.md` says.
-4. **Exercise what changed, by name**: import from every entry point the release touched; set
-   `provideGogConfig` in the root and read it from a component in each secondary (one
-   `GOG_CONFIG`, not two); for a removal, confirm the old import **fails to compile** and the new
-   one builds; for a change made for bundle size, record initial and lazy sizes.
-5. `ng build` with prerendering: no error and no warning that comes from the library. Serve it,
-   open it in a browser, and check hydration and an empty console on the routes you touched.
-6. For a schematic change, `ng add` the tarball into a second fresh app.
-7. **Write it down** in the plan the release came from, in the shape of the two existing
-   write-ups — what was installed, what was exercised, what was seen — then delete the scratch app
-   and tarball.
+**`npm run check:install` does steps 1 to 6 of the procedure and fails on what they would find.**
+About 80 seconds with a warm npm cache, longer on a cold one — it generates and installs a whole
+app, so it is not a CI step. What it runs, in order (the script's header has the detail):
+
+1. `npm run build:lib`, then `npm pack` of `dist/gleks/ui` into a scratch directory in the OS temp
+   dir, **outside the repository**.
+2. **Against the last published version**: fails if a file the published tarball has is gone
+   (unless `--accept-removed-files`), or if an entry point stopped exporting a name the top
+   `CHANGELOG.md` entry does not mention.
+3. A clean SSR app from the workspace's own Angular CLI version, the tarball installed, and the
+   package's own `ng-add` schematic run on it, which must add the baseline stylesheet.
+4. One page per public entry point, from the script's `SMOKE` table — the root eager, every other
+   one lazy — with `provideGogConfig` marker labels set once in the root. **A new public entry
+   point with no `SMOKE` page fails the check**: add its page in the same change.
+5. `ng build` with prerendering: fails on an error, on a warning naming the package, and on a
+   secondary entry point's lazy chunk under its `minLazyBytes` (the 21.13.0 shape: a 442-byte chunk
+   and the component in the initial bundle).
+6. The prerendered HTML must carry each page's marker labels (the root's `GOG_CONFIG` reached the
+   other entry points), and in Chrome, through the app's own SSR server, every page must hydrate
+   with an empty console, a navigation to each lazy page must fetch a script, and each page's
+   `interact` step (the dialog opens, with the configured close label) must pass.
+
+A failed run keeps its scratch directory and prints its path; `--keep` keeps a passing one.
+
+**What is still yours to do by hand:**
+
+- **Exercise what the release changed, if `SMOKE` does not already.** The table covers each entry
+  point's basic render; a release that changes how one behaves when installed needs that behaviour
+  added to its page, or checked by hand in the kept app.
+- **For a removal, the old import failing is already asserted** — through the export diff against
+  the published version — so there is nothing to type out.
+- **Write it down** in the plan the release came from, in the shape of the two write-ups in
+  `docs/entry-points.md`: which version was compared, what the notes printed (files, removed
+  exports, initial and lazy sizes), and anything checked by hand.
+
+**Never generate the app inside this repository instead** (`ng generate application`): it resolves
+the package through the root tsconfig's `paths` onto `dist/`, which is exactly the path this check
+exists to avoid, and it edits `angular.json` and `tsconfig.json` — restoring those with
+`git checkout` has already thrown away unrelated uncommitted edits once.
+
+**How the script was proven, so a future edit keeps it honest.** Its first run failed with every
+lazy chunk under 700 bytes: the published baseline had been packed into the same directory as the
+local tarball, which carries the same file name until the version is bumped, and replaced it — so
+it had installed 21.13.0 and correctly reported 21.13.0's split as not lazy. And with one removed
+name deleted from `CHANGELOG.md`, it failed on `[unannounced-removal]`. Keep a change to it
+honest the same way: make it fail on purpose once.
 
 ## Testing (Vitest)
 

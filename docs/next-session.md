@@ -3,7 +3,8 @@
 **21.14.0 is ready for you to release.** Phase 2 of `docs/entry-points.md` is done: the three heavy
 units moved into their entry points, the root stopped exporting them, the deprecated helpers and
 tokens are gone, `GOG_DEPRECATIONS` is `[]`. Every check's count matched its pre-move baseline, 1188
-tests pass, the showcase builds and `check:glyph-box` is clean across 46 routes.
+tests pass, the showcase builds, `check:glyph-box` is clean across 46 routes, and
+`npm run check:install` passes against published 21.13.0.
 
 **After publishing**: `npm install` at the root, then `docs/lab-after-publish.md`'s 21.14.0 section.
 The lab's code already imports from the subpaths, so its build should hold; the work is prose that
