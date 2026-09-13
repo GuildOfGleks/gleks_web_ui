@@ -288,8 +288,9 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       },
       { name: '--gog-accordion-text-color / -accent-color', description: 'Text and accent color.' },
       {
-        name: '--gog-accordion-hover-bg / -hover-ring',
-        description: 'Header hover background and the ring the hover draws.',
+        name: '--gog-accordion-hover-bg',
+        description:
+          'Header hover background. --gog-accordion-hover-ring was removed in 21.13.0: the hover never drew a ring, so nothing read it.',
       },
       {
         name: '--gog-accordion-focus-ring-color / -width',
@@ -998,8 +999,9 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Option row, default, hover and pressed.',
       },
       {
-        name: '--gog-multiselect-checkbox-bg / -checkbox-checked-bg',
-        description: 'Per-option selection checkbox.',
+        name: '--gog-multiselect-checkbox-border / -checkbox-checked-bg',
+        description:
+          'Per-option selection mark. The mark is a glyph, so -checkbox-bg and -checkbox-checked-color had nothing to paint and were removed in 21.13.0.',
       },
       {
         name: '--gog-multiselect-float-label-reserve / -in-top / -on-bg / -over-gap / -over-reserve',
@@ -1292,8 +1294,9 @@ export const TOKEN_SECTIONS: TokenSection[] = [
           'An optional border on the track — transparent by default, the same opt-in convention as --gog-button-primary-border.',
       },
       {
-        name: '--gog-slider-thumb-bg / -thumb-border / -thumb-shadow',
-        description: 'Drag handle.',
+        name: '--gog-slider-thumb-bg / -thumb-border / -thumb-glow-color / -thumb-glow-size',
+        description:
+          'Drag handle, and the glow around it. -thumb-glow-color was --gog-slider-thumb-shadow until 21.13.0 — it always held a colour, not a shadow — and the old name still resolves until 21.14.0.',
       },
       {
         name: '--gog-slider-auto-width / -vertical-length',
@@ -1332,6 +1335,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Surface, body text and header accent.',
       },
       { name: '--gog-table-hover-bg', description: 'Row hover background.' },
+      {
+        name: '--gog-table-row-press-bg',
+        description:
+          'An interactiveRows row under the finger, since 21.13.0 — a colour rather than a ripple, so it survives prefers-reduced-motion. A plain row does not use it.',
+      },
       { name: '--gog-table-muted-color', description: 'Secondary text (e.g. empty state).' },
       {
         name: '--gog-table-header-letter-spacing / -text-transform',

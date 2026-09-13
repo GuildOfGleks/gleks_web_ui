@@ -62,7 +62,12 @@ export function groupDeprecatedTokens(
       const oldPrefix = commonPrefix(deps.map((d) => d.name));
       return {
         id: newPrefix || oldPrefix,
-        title: `${oldPrefix}* → ${newPrefix}* — ${deps.length} token${deps.length === 1 ? '' : 's'}`,
+        // A single renamed token is a rename, not a prefix: `--gog-x-offset* → --gog-x-gap*` would
+        // advertise a family that does not exist. 21.13.0 was the first release to ship any.
+        title:
+          deps.length === 1
+            ? `${deps[0].name} → ${deps[0].replacement}`
+            : `${oldPrefix}* → ${newPrefix}* — ${deps.length} tokens`,
         oldPrefix,
         newPrefix,
         since,

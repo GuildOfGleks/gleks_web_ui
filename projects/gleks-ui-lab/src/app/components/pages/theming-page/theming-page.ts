@@ -60,6 +60,10 @@ export class ThemingPage {
     { n: 5, what: 'a modal dialog' },
   ] as const;
   protected readonly deprecatedTokenGroups = groupDeprecatedTokens(GOG_DEPRECATIONS);
+  protected readonly deprecatedTokenCount = this.deprecatedTokenGroups.reduce(
+    (sum, group) => sum + group.tokens.length,
+    0,
+  );
 
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   // Every token's real *current* resolved value — reflects a live theme-generator override too

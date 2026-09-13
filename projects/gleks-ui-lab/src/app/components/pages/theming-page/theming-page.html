@@ -71,13 +71,13 @@
     @if (deprecatedTokenGroups.length > 0) {
       <p class="token-reference__intro">
         The names below are the current ones —
-        <strong>{{ deprecatedTokenGroups.length }}</strong> prefix{{
-          deprecatedTokenGroups.length === 1 ? '' : 'es'
+        <strong>{{ deprecatedTokenCount }}</strong> token name{{
+          deprecatedTokenCount === 1 ? ' was' : 's were'
         }}
-        were renamed earlier and are listed here with the version that removes the old spelling. If
-        your theme uses an old spelling it still applies until then — each new name declares the old
-        one in its own fallback — but a custom property nothing reads fails silently once that
-        version ships, so this is a find-and-replace worth doing before it does.
+        renamed earlier and are listed here with the version that removes the old spelling. If your
+        theme uses an old spelling it still applies until then — each new name declares the old one
+        in its own fallback — but a custom property nothing reads fails silently once that version
+        ships, so this is a find-and-replace worth doing before it does.
       </p>
 
       <gog-accordion class="deprecated-tokens" [items]="deprecatedTokenGroups" size="md">
