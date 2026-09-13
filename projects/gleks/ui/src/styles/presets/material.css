@@ -1,19 +1,15 @@
 /*
- * `material` — Material Design 3 baseline (light), as a @guildofgleks/ui theme.
+ * `material` — Material Design 3 baseline (light).
  *
- * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ * Not palette-only: M3's shapes are not uniform — pill buttons, near-square checkboxes, large
+ * dialog radius — so `--gog-radius` sets the base and three components add their own shape.
+ *
+ * Import it after `index.css`, then set the attribute on the root or on any subtree:
  *
  *   @import '@guildofgleks/ui/styles/index.css';
  *   @import '@guildofgleks/ui/styles/presets/material.css';
  *
  *   <html data-theme="material">
- *
- * Unlike `slate.css`/`one-dark.css`/`one-light.css`, this is not palette-only — see
- * `primeng.css`'s header for why, and `docs/themes.md` iteration 3 for how this file was
- * ported from `gleks-ui-lab`'s hand-authored `[data-theme='material']` block. M3's shape scale
- * isn't uniform the way PrimeNG's is: buttons are pill-shaped, checkboxes are near-square and
- * dialogs get a large radius, so `--gog-radius` sets the *base* (fields, checkboxes) and three
- * components still opt into their own shape on top of it.
  */
 
 :root[data-theme='material'],
@@ -37,33 +33,14 @@
   --gog-success-color: #2e7d32;
   --gog-danger-color: #b3261e;
   --gog-warning-color: #f9a825;
-  /* Material's amber, unchanged — what moved is the label on it. White read 1.97:1 here, the
-     worst status pair in any shipped theme; near-black reads 8.69:1, and dark text on amber is
-     Material 3's own convention, so this costs no fidelity at all. Found 2026-09-04. */
+  /* Near-black on amber, M3's own convention: white is unreadable on this fill. */
   --gog-warning-text-color: #1c1b1f;
-  /* The label here is the ink, so the fill has to deepen the other way — toward white — or a
-     hover walks it into its own label. See `--gog-<status>-shade` in theme.css. */
+  /* The label is the ink, so the fill deepens toward white instead. */
   --gog-warning-shade: #ffffff;
-  /* Was #0288d1 — Material Light Blue 700. Neither label cleared AA on it: white 3.86:1,
-     near-black 4.44:1, so unlike the amber above there was no label to pick and the hue had to
-     move. One step down Material's own ramp to Light Blue 800, which is 4.80:1 under white and
-     4.56:1 as text on the page. Found 2026-09-04. */
+  /* One step down Material's light-blue ramp: neither label is readable on the lighter step. */
   --gog-info-color: #0277bd;
-  /* The one theme whose contact shadow is *stronger* than its key light, which is why the two
-     alphas are stated separately rather than derived from one. The 2px spread its own value
-     carried is dropped: spread is not part of the two-light model, and at these alphas it read
-     as a slightly wider blur rather than as a distinct edge. */
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
   --gog-control-boundary-color: #8c8692;
+  /* The contact shadow is stronger than the key light here, so the two alphas are stated separately. */
   --gog-elevation-ink: 0 0 0;
   --gog-elevation-key-alpha: 0.15;
   --gog-elevation-ambient-alpha: 0.3;
@@ -76,20 +53,14 @@
   --gog-elevation-highlight-alpha: 0;
   --gog-spinner-overlay-bg: rgba(254, 247, 255, 0.75);
 
-  /* Fonts — Material is Roboto end to end, no heading/body split */
+  /* Fonts — Roboto throughout. */
   --gog-font-heading: Roboto, 'Segoe UI', Helvetica, Arial, sans-serif;
   --gog-font-body: Roboto, 'Segoe UI', Helvetica, Arial, sans-serif;
   --gog-font-mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Character layer — small 4px base radius (fields, checkboxes), sentence-case labels
-     instead of shouty caps. As with `primeng.css`, this replaces ten hand-listed
-     letter-spacing/text-transform overrides with two foundation ones, and in doing so also
-     covers six components the original lab authoring had missed (button-toggle,
-     calendar-weekday, autocomplete-label, datepicker-label, slider-label, table-total) — see
-     `primeng.css`'s header for the full account, identical here. */
+  /* Character layer — a 4px base radius and sentence-case labels. */
   --gog-radius: 4px;
-  /* Roomier than the library's default: M3's whole posture is generous touch targets and
-     breathing room, and reproducing it without the spacing reproduces only its colours. */
+  /* Roomier than the default: M3 is built around generous touch targets. */
   --gog-density: 1.1;
   --gog-control-border-width: 1px;
   --gog-focus-ring-width: 2px;
@@ -97,26 +68,16 @@
   --gog-text-transform: none;
   --gog-letter-spacing: normal;
 
-  /* Button — pill-shaped, medium weight, body font (casing/tracking from the character layer) */
+  /* Button — pill-shaped, medium weight, body font. */
   --gog-button-font-family: var(--gog-font-body);
   --gog-button-font-weight: 500;
   --gog-button-radius: 20px;
 
-  /* Field labels — on-surface-variant gray (casing/tracking from the character layer) */
+  /* Field labels — on-surface-variant grey. */
   --gog-input-label-color: var(--gog-muted-text-color);
   --gog-input-label-font-family: var(--gog-font-body);
-  /* The boundary that identifies a control, and it cannot be `--gog-border-color`.
-     This theme pointed all five of these at the decorative hairline, which is deliberately kept
-     faint — #cac4d0 at 1.55:1 against this theme's own ground, against the 3:1 WCAG 1.4.11
-     requires of anything that says "this is a text field" rather than "this is a rectangle".
-     Found by the boundary sweep in 21.12.0, which reads the declaration that paints instead of
-     the token the check *assumed* it painted: `check:contrast` had been gating `--gog-accent-dim`
-     because that is what the base theme resolves a field border to, and this theme re-points it.
-
-     #8c8692 is the same grey at the lightness that clears 3.2:1 against the harder of this theme's
-     two grounds -- computed by `npm run suggest:color`, holding hue and chroma so the theme's
-     neutral stays its own neutral. The decorative `--gog-border-color` is untouched: a divider
-     and a field boundary are different jobs and now have different values. */
+  /* Field boundaries need 3:1 (WCAG 1.4.11), which the decorative border colour does not give;
+     this is the same grey, computed to the lightness that clears it. */
   --gog-input-field-border: #8c8692;
   --gog-select-label-color: var(--gog-muted-text-color);
   --gog-select-label-font-family: var(--gog-font-body);
@@ -126,12 +87,12 @@
   --gog-multiselect-field-border: #8c8692;
   --gog-multiselect-checkbox-border: #8c8692;
 
-  /* Checkbox — small square radius, on-surface-variant border */
+  /* Checkbox — small square radius. */
   --gog-checkbox-radius: 2px;
   --gog-checkbox-border-color: #8c8692;
   --gog-checkbox-label-color: var(--gog-text-color);
 
-  /* Accordion — rounded panel, surface header (casing from the character layer) */
+  /* Accordion — rounded panel, surface header. */
   --gog-accordion-font-family: var(--gog-font-body);
   --gog-accordion-header-bg: var(--gog-surface-color);
   --gog-accordion-hover-bg: var(--gog-hover-color);
@@ -140,17 +101,17 @@
   --gog-accordion-radius: 12px;
   --gog-accordion-body-radius: 12px;
 
-  /* Table — neutral row hover (header casing from the character layer) */
+  /* Table — neutral row hover. */
   --gog-table-header-font-family: var(--gog-font-body);
   --gog-table-border-color: var(--gog-border-color);
   --gog-table-hover-bg: var(--gog-hover-color);
 
-  /* Slider / spinner — neutral track instead of accent-tinted */
+  /* Slider and spinner — neutral track rather than accent-tinted. */
   --gog-slider-track-bg: var(--gog-border-color);
   --gog-slider-label-color: var(--gog-muted-text-color);
   --gog-spinner-track-color: var(--gog-border-color);
 
-  /* Dialog (M3 "extra-large" shape) / toast (M3 snackbar shape) */
+  /* Dialog (M3 extra-large shape) and toast (M3 snackbar shape). */
   --gog-dialog-backdrop-bg: rgba(0, 0, 0, 0.32);
   --gog-dialog-radius: 28px;
   --gog-toast-radius: 4px;

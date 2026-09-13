@@ -1,22 +1,15 @@
 /*
- * `primeng` — PrimeNG's Aura theme (light, blue primary), as a @guildofgleks/ui theme.
+ * `primeng` — PrimeNG's Aura theme (light, blue primary).
  *
- * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ * Not palette-only: Aura's thin borders, 6px radius and sentence-case labels come from the
+ * character layer, plus a few per-component settings it has no vocabulary for.
+ *
+ * Import it after `index.css`, then set the attribute on the root or on any subtree:
  *
  *   @import '@guildofgleks/ui/styles/index.css';
  *   @import '@guildofgleks/ui/styles/presets/primeng.css';
  *
  *   <html data-theme="primeng">
- *
- * Unlike `slate.css`/`one-dark.css`/`one-light.css`, this is not palette-only. PrimeNG's Aura
- * has its own visual character — thin borders, a 6px radius, medium-weight sentence-case
- * labels instead of this library's default shouty caps — and matching that needs the
- * `docs/themes.md` iteration-1 character layer (`--gog-radius`, `--gog-control-border-width`,
- * `--gog-text-transform`, `--gog-letter-spacing`) plus a small number of genuinely per-component
- * settings the character layer has no vocabulary for (a table's header font, a slider's neutral
- * track colour). Ported from `gleks-ui-lab`'s hand-authored `[data-theme='primeng']` block
- * (`docs/themes.md`, iteration 3) — see that file's own comment for what changed in the move,
- * beyond the palette staying byte-for-byte identical.
  */
 
 :root[data-theme='primeng'],
@@ -32,30 +25,18 @@
   --gog-accent-text-color: #ffffff;
   --gog-muted-text-color: #64748b;
   --gog-primary-color: #0f172a;
-  /* Shifted one step down Aura's own blue scale in 21.7.0 — 500/600/700 became 600/700/800.
-     White on blue-500 is 3.68:1, under WCAG AA's 4.5 for the label of a filled button, and it
-     is `#3b82f6` verbatim from the palette this reproduces. Rather than invent a colour, this
-     takes the next step of the same ramp: still Aura's blue, one shade deeper, 5.17:1. */
+  /* One step down Aura's blue ramp, so the accent carries a white label. */
   --gog-accent-color: #2563eb;
   --gog-accent-bright: #1d4ed8;
   --gog-accent-dim: #1e40af;
   --gog-accent-pale: #dbeafe;
   --gog-secondary-color: #64748b;
   --gog-success-color: #22c55e;
-  /* Aura's hues, unchanged — what moved is the label on them. White read 2.28:1 on this green,
-     2.15:1 on the amber below and 2.77:1 on the blue; Aura's own near-black reads 7.83, 8.31 and
-     6.44. Three of the four worst status pairs in the library were here, and none of them cost a
-     hue to fix. Found 2026-09-04. */
+  /* Aura's hues unchanged; the labels are Aura's near-black, because white is unreadable on these fills. */
   --gog-success-text-color: #0f172a;
-  /* All three labels here are the ink, so all three fills deepen toward white instead. Measured:
-     without this the info button's press fell to 4.23:1. See `--gog-<status>-shade`. */
+  /* The labels are the ink, so these fills deepen toward white instead. */
   --gog-success-shade: #ffffff;
-  /* Was #ef4444 — Tailwind red-500, PrimeNG's error colour. `--gog-danger-color` is what every `--gog-<block>-error-color`
-     resolves to, so this is the colour a validation message is printed in, and as *text* it
-     needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
-     Now 4.68:1 on the page and 4.90:1 on a card. Found 2026-09-03 by `check:app-contrast`
-     reading ui-showcase, which is how a palette pair nobody had listed became visible;
-     `check:contrast` gained the pair in the same change. */
+  /* Slightly darker than Aura's red: validation messages are text and need 4.5:1. */
   --gog-danger-color: #ce3a3a;
   --gog-warning-color: #f59e0b;
   --gog-warning-text-color: #0f172a;
@@ -63,22 +44,8 @@
   --gog-info-color: #0ea5e9;
   --gog-info-text-color: #0f172a;
   --gog-info-shade: #ffffff;
-  /* Its own two very light alphas and a wide contact shadow; the default geometry otherwise.
-     The value this replaces lifted a dropdown panel 12px, which is higher than this library
-     puts a *toast* — that height was the theme restating one hand-written value for every
-     surface, and it is exactly what the ladder exists to stop. The negative spreads go with it,
-     for the same reason `material`'s positive one does. */
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
   --gog-control-boundary-color: #878d94;
+  /* Very light alphas and a wide contact shadow; the default geometry otherwise. */
   --gog-elevation-ink: 0 0 0;
   --gog-elevation-key-alpha: 0.08;
   --gog-elevation-ambient-alpha: 0.05;
@@ -91,26 +58,16 @@
   --gog-elevation-highlight-alpha: 0;
   --gog-spinner-overlay-bg: rgba(248, 250, 252, 0.75);
 
-  /* Fonts — PrimeNG doesn't split heading/body, one system sans everywhere */
+  /* Fonts — one system sans throughout. */
   --gog-font-heading:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --gog-font-body:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --gog-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* Character layer — thinner borders, tighter focus ring, 6px radius everywhere that
-     derives from --gog-radius (buttons, fields, checkboxes, dialogs), sentence-case labels
-     instead of shouty caps. This is the whole reason iteration 1 exists: before it, the two
-     lines below were ten — one letter-spacing/text-transform pair per component
-     (button/input-label/select-label/multiselect-label, plus text-transform-only on
-     accordion-header/table-header) — and even at ten lines it missed six more components
-     that share the same idea (button-toggle, calendar-weekday, autocomplete-label,
-     datepicker-label, slider-label, table-total all still shouted in caps under this theme,
-     an inconsistency nobody had a way to see until there was one token to check instead of
-     twenty). Setting the character layer once now covers all eighteen correctly. */
+  /* Character layer — thin borders, a tighter focus ring, 6px radius, sentence-case labels. */
   --gog-radius: 6px;
-  /* Aura runs slightly tighter than this library's default — a data-dense posture, closer to
-     ledger's than to material's, which is the distinction density exists to express. */
+  /* Slightly denser than the default, as Aura is. */
   --gog-density: 0.95;
   --gog-control-border-width: 1px;
   --gog-focus-ring-width: 2px;
@@ -118,25 +75,15 @@
   --gog-text-transform: none;
   --gog-letter-spacing: normal;
 
-  /* Button — medium weight, body font (casing/tracking now come from the character layer) */
+  /* Button — medium weight, body font. */
   --gog-button-font-family: var(--gog-font-body);
   --gog-button-font-weight: 500;
 
-  /* Field labels — muted gray, not accent-colored (casing/tracking from the character layer) */
+  /* Field labels — muted grey rather than the accent. */
   --gog-input-label-color: var(--gog-muted-text-color);
   --gog-input-label-font-family: var(--gog-font-body);
-  /* The boundary that identifies a control, and it cannot be `--gog-border-color`.
-     This theme pointed all five of these at the decorative hairline, which is deliberately kept
-     faint — #e2e8f0 at 1.18:1 against this theme's own ground, against the 3:1 WCAG 1.4.11
-     requires of anything that says "this is a text field" rather than "this is a rectangle".
-     Found by the boundary sweep in 21.12.0, which reads the declaration that paints instead of
-     the token the check *assumed* it painted: `check:contrast` had been gating `--gog-accent-dim`
-     because that is what the base theme resolves a field border to, and this theme re-points it.
-
-     #878d94 is the same grey at the lightness that clears 3.2:1 against the harder of this theme's
-     two grounds -- computed by `npm run suggest:color`, holding hue and chroma so the theme's
-     neutral stays its own neutral. The decorative `--gog-border-color` is untouched: a divider
-     and a field boundary are different jobs and now have different values. */
+  /* Field boundaries need 3:1 (WCAG 1.4.11), which the decorative border colour does not give;
+     this is the same grey, computed to the lightness that clears it. */
   --gog-input-field-border: #878d94;
   --gog-select-label-color: var(--gog-muted-text-color);
   --gog-select-label-font-family: var(--gog-font-body);
@@ -150,7 +97,7 @@
   --gog-checkbox-border-color: #878d94;
   --gog-checkbox-label-color: var(--gog-text-color);
 
-  /* Accordion — surface header instead of transparent (casing from the character layer) */
+  /* Accordion — surface header. */
   --gog-accordion-font-family: var(--gog-font-body);
   --gog-accordion-header-bg: var(--gog-surface-color);
   --gog-accordion-hover-bg: var(--gog-hover-color);
@@ -159,12 +106,12 @@
   --gog-accordion-radius: 6px;
   --gog-accordion-body-radius: 6px;
 
-  /* Table — neutral row hover (header casing from the character layer) */
+  /* Table — neutral row hover. */
   --gog-table-header-font-family: var(--gog-font-body);
   --gog-table-border-color: var(--gog-border-color);
   --gog-table-hover-bg: var(--gog-hover-color);
 
-  /* Slider / spinner — neutral track instead of accent-tinted */
+  /* Slider and spinner — neutral track rather than accent-tinted. */
   --gog-slider-track-bg: var(--gog-border-color);
   --gog-slider-label-color: var(--gog-muted-text-color);
   --gog-spinner-track-color: var(--gog-border-color);

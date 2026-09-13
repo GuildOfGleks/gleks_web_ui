@@ -1,30 +1,23 @@
 /*
- * `parchment` — ink on laid paper. Warm neutrals, a serif body, square corners, an oxblood
- * accent: `docs/themes.md`'s Historical family, the one the plan flagged as blocked on fonts.
+ * `parchment` — ink on laid paper: warm neutrals, a serif body, square corners, an oxblood accent.
  *
- * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ * A preset must never add a network request, so it sets a stack of old-style serifs that ship with
+ * operating systems (Iowan Old Style, Palatino, Book Antiqua, Georgia). `parchment.fonts.css` is an
+ * optional second import for EB Garamond.
+ *
+ * Import it after `index.css`, then set the attribute on the root or on any subtree:
  *
  *   @import '@guildofgleks/ui/styles/index.css';
  *   @import '@guildofgleks/ui/styles/presets/parchment.css';
  *
  *   <html data-theme="parchment">
- *
- * **How the font blocker was resolved.** A period serif is most of what makes this read as
- * historical, and a preset must never add a network request by being imported. So this file sets
- * a *stack* of old-style serifs that ship with real operating systems — Iowan Old Style, Palatino,
- * Book Antiqua, Georgia — and every one of them is a genuine old-style face with the right colour
- * on the page. It looks deliberate on every platform, with no download.
- *
- * For the fuller period look, `presets/parchment.fonts.css` is an optional second import that
- * pulls EB Garamond and points the same tokens at it. That file is the only one here that makes
- * a request, and importing it is the consumer's decision, not this file's.
  */
 
 :root[data-theme='parchment'],
 [data-theme='parchment'] {
   color-scheme: light;
 
-  /* Palette — aged paper, iron-gall ink, an oxblood rubric */
+  /* Palette — aged paper, iron-gall ink, an oxblood rubric. */
   --gog-background-color: #e8dfc8;
   --gog-surface-color: #f5efe0;
   --gog-hover-color: #ded3b8;
@@ -39,30 +32,15 @@
   --gog-accent-pale: #e3d4c4;
   --gog-secondary-color: #6b5b45;
 
-  /* Semantics — the colours a scribe actually had: verdigris, vermilion, orpiment, indigo */
+  /* Semantics — a scribe's pigments: verdigris, vermilion, orpiment, indigo. */
   --gog-success-color: #3f5f3f;
-  /* 6.9 deg of hue and 0.052 of lightness from this theme's oxblood accent, which is not a
-     distance a reader can use. Lightened along its own hue: a danger that stops being red is
-     worse than one that is a shade brighter than the accent beside it. */
+  /* Lighter along its own hue, so danger stays distinguishable from the oxblood accent. */
   --gog-danger-color: #a24439;
   --gog-warning-color: #8a6516;
   --gog-info-color: #3a5570;
 
-  /* Paper does not float. A soft, close shadow reads as a sheet resting on the desk — so this
-     theme keeps the default's soft style and simply climbs the ladder more slowly: a quarter of
-     a pixel of lift per unit of Z reproduces the `0 1px 3px` it shipped at the overlay step, and
-     even a modal only reaches 4px. The blur is still three times the offset, as everywhere. */
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
   --gog-control-boundary-color: #88795b;
+  /* Paper does not float: the default soft style, climbing the ladder slowly. */
   --gog-elevation-ink: 36 29 20;
   --gog-elevation-key-alpha: 0.22;
   --gog-elevation-ambient-alpha: 0;
@@ -75,9 +53,8 @@
   --gog-elevation-highlight-alpha: 0;
   --gog-spinner-overlay-bg: rgba(232, 223, 200, 0.88);
 
-  /* Character layer — a book, not an application. Serif throughout, square corners, hairline
-     rules, and roomier than the house default: printed pages have margins, and cramping this
-     palette into a dense grid is what would make it read as a skin rather than a design. */
+  /* Character layer — a book, not an application: serif, square corners, hairline rules, and roomier
+     than the default. */
   --gog-font-heading:
     'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
   --gog-font-body: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;

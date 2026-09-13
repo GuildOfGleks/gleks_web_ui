@@ -1,25 +1,20 @@
 /*
- * `one-light` — the Atom/JetBrains One Light palette, as a @guildofgleks/ui theme.
+ * `one-light` — the One Light editor palette, with the same hue roles as `one-dark`. The character
+ * layer is identical to `one-dark`'s, so a toggle between the two changes only tone.
  *
- * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ * Import it after `index.css`, then set the attribute on the root or on any subtree:
  *
  *   @import '@guildofgleks/ui/styles/index.css';
  *   @import '@guildofgleks/ui/styles/presets/one-light.css';
  *
  *   <html data-theme="one-light">
- *
- * The light counterpart to `one-dark.css`, using the same hue roles: blue is the accent,
- * green/red/yellow/cyan become success/danger/warning/info. Pair the two behind a toggle and
- * `ThemeService.setTheme('one-dark' | 'one-light')` switches between them — including the
- * character layer below, which is deliberately identical in the two: they are one editor UI in
- * two palettes, so a toggle between them must change tone and nothing else.
  */
 
 :root[data-theme='one-light'],
 [data-theme='one-light'] {
   color-scheme: light;
 
-  /* Character layer — identical to `one-dark.css`'s, on purpose. See that file's comment. */
+  /* Character layer — identical to `one-dark.css`'s. */
   --gog-radius: 4px;
   --gog-density: 0.9;
   --gog-control-border-width: 1px;
@@ -35,55 +30,26 @@
   /* Type */
   --gog-text-color: #383a42;
   --gog-accent-text-color: #ffffff;
-  /* Darkened from One Light's own #a0a1a7 (2.47:1) for the same reason as one-dark's. */
+  /* Darker than One Light's comment grey, which is too faint for UI text. */
   --gog-muted-text-color: #6e6f77;
 
-  /* Brand — One Light's blue */
   --gog-primary-color: #383a42;
-  /* Deepened from #4078f2 / #5b8dff in 21.7.0: white on the original was 4.05:1 at rest and
-     3.13:1 on hover. As in `light`, the hover is now darker than the rest state rather than
-     lighter — a blue light enough to read as a highlight cannot carry white text. */
+  /* Deepened from One Light's blue so it carries white text; hover is darker than rest, not lighter. */
   --gog-accent-color: #2f66db;
   --gog-accent-bright: #2456c4;
-  /* A clear step below the accent rather than a shade of it. #2f5fd0 sat 0.023 of OKLCH
-     lightness from #2f66db, which is under the ~0.03 a flat area needs to read as different at
-     all -- so the pressed state and the field boundary looked like the rest state. Same hue and
-     chroma, six hundredths of lightness down; contrast improves as a side effect (6.47:1 on the
-     page, 6.76:1 on a card). Found by `check:oklch`, which WCAG's ratio cannot see: both values
-     passed it comfortably and were still the same colour. */
+  /* A clearly perceptible step below the accent, so a press or field boundary reads as different. */
   --gog-accent-dim: #1e53c6;
   --gog-accent-pale: #dce7fd;
   --gog-secondary-color: #a626a4;
 
-  /* Semantics — the syntax hues in their natural roles */
-  /* Was #50a14f — One Light's own green. A status fill carries a white label, and this read
-     3.21:1 under it; the theme's ink is no better at 3.54:1, so there was no label to pick and
-     the hue had to darken. 5.17:1 under white now, 4.95:1 as text on the page. This is the same
-     trade this theme already made on its accent and muted tokens in 21.7.0 — fidelity lost to
-     legibility — and all three of its statuses moved for it. Found 2026-09-04. */
+  /* Semantics — the syntax hues in their natural roles. */
+  /* Every status is darkened from One Light's own hue so its fill carries a white label and it
+     reads as text; neither label worked on the originals. */
   --gog-success-color: #3f7a3e;
-  /* Was #e45649 — One Light's own red. `--gog-danger-color` is what every `--gog-<block>-error-color`
-     resolves to, so this is the colour a validation message is printed in, and as *text* it
-     needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
-     Now 4.66:1 on the page and 4.87:1 on a card. Found 2026-09-03 by `check:app-contrast`
-     reading ui-showcase, which is how a palette pair nobody had listed became visible;
-     `check:contrast` gained the pair in the same change. */
   --gog-danger-color: #c2493e;
-  /* Was #c18401 — One Light's own yellow, 3.20:1 under a white label. Darkened: 5.36:1. */
   --gog-warning-color: #8f6201;
-  /* Was #0184bc — One Light's own blue, 4.18:1 under a white label. Darkened: 5.13:1. */
   --gog-info-color: #0175a6;
 
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
   --gog-control-boundary-color: #8d8c8d;
   --gog-elevation-ink: 56 58 66;
   --gog-elevation-key-alpha: 0.12;

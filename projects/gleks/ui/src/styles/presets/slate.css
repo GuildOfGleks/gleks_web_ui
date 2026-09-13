@@ -1,46 +1,30 @@
 /*
- * `slate` — an alternative preset, and a worked example of the whole theming contract.
+ * `slate` — soft modern: generous rounding, thin borders, a little more air than the default.
  *
- * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ * It declares only palette and foundation tokens, no component tokens: the derived layer in
+ * `theme.css` re-resolves against whatever is in scope. If a theme needs to list component tokens,
+ * something in the derived layer is missing instead.
+ *
+ * Import it after `index.css`, then set the attribute on the root or on any subtree:
  *
  *   @import '@guildofgleks/ui/styles/index.css';
  *   @import '@guildofgleks/ui/styles/presets/slate.css';
  *
  *   <html data-theme="slate">
- *
- * Note what this file does *not* contain: no component tokens, no `--gog-button-*`, no
- * `--gog-table-*`. It declares the palette and a handful of foundation tokens, and nothing
- * else. Every component token in `theme.css`'s derived layer is re-declared on `[data-theme]`,
- * so it re-resolves against whichever palette and character are in scope — which is exactly why
- * a theme this short can restyle the entire library. If you find yourself listing component
- * tokens in a theme, something in the derived layer is missing instead.
- *
- * Until 21.7.0 this file was the palette-only worked example, and the README pointed at it to
- * make that argument. The argument is still true and the README still makes it — but it did not
- * need a whole preset held back to prove it, and holding one back meant shipping a theme that
- * was a recoloured default. `slate` is now the *soft modern* entry in the catalogue: generous
- * rounding, thin borders, a little more air than the house default.
- *
- * Both selectors are listed for the same reason `theme.css` lists both: `:root[data-theme]`
- * themes the page, the bare `[data-theme]` themes any subtree, so several themes can render
- * side by side.
  */
 
 :root[data-theme='slate'],
 [data-theme='slate'] {
   color-scheme: light;
 
-  /* Character layer — soft modern. Generous rounding against `ledger`'s zero and the editor
-     presets' 4px, hairline borders, sentence case, and a density slightly above the house
-     default: this is the roomy end of the catalogue, and the contrast with `ledger` at 0.9 is
-     the point of having both. */
+  /* Character layer — the roomy, rounded end of the catalogue. */
   --gog-radius: 12px;
   --gog-density: 1.05;
   --gog-control-border-width: 1px;
   --gog-text-transform: none;
   --gog-letter-spacing: normal;
 
-  /* Surfaces — cool neutrals rather than the house obsidian */
+  /* Surfaces — cool neutrals. */
   --gog-background-color: #f4f6f8;
   --gog-surface-color: #ffffff;
   --gog-hover-color: #e8edf2;
@@ -49,54 +33,25 @@
   /* Type */
   --gog-text-color: #1e293b;
   --gog-accent-text-color: #ffffff;
-  /* #64748b missed AA by 0.11 against the page ground; deepened one step. */
+  /* Deepened one step so muted text clears AA on the page. */
   --gog-muted-text-color: #5c6b80;
 
-  /* Brand — indigo instead of gold, to make the swap unmistakable */
+  /* Brand — indigo. */
   --gog-primary-color: #1e293b;
   --gog-accent-color: #4f46e5;
-  /* Hover fill: white on #6366f1 was 4.47:1, short of AA by 0.03. */
+  /* Deepened slightly so white stays readable on hover. */
   --gog-accent-bright: #5b5ee8;
   --gog-accent-dim: #4338ca;
   --gog-accent-pale: #e0e7ff;
-  /* Was #0ea5e9 — Tailwind sky-500, and the only palette value in any shipped theme that the
-     variant sweep caught when `check:contrast` learned to resolve variant classes (2026-09-05).
-     The secondary button fills with this and labels it `--gog-accent-text-color`, white here:
-     2.77:1. sky-600 does not rescue it either (4.10:1), so two steps down the same ramp to
-     sky-700, which reads 5.93:1 — the same move, and the same reason, as the three status
-     colours below. */
+  /* Two steps down the sky ramp: the secondary button's white label is unreadable on the lighter ones. */
   --gog-secondary-color: #0369a1;
 
-  /* Semantics */
-  /* Was #059669 — Tailwind emerald-600. A status fill carries a white label, and this read
-     3.77:1 under it; Slate's own ink is no better at 3.88:1, so there was no label to pick and
-     the hue moved. One step down the same ramp to emerald-700: 5.48:1 under white, 5.06:1 as
-     text on the page. The three statuses here all moved one step for the same reason.
-     Found 2026-09-04. */
+  /* Semantics — each deepened from its Tailwind value, so fills carry a white label and read as text. */
   --gog-success-color: #047857;
-  /* Was #dc2626 — Tailwind red-600. `--gog-danger-color` is what every `--gog-<block>-error-color`
-     resolves to, so this is the colour a validation message is printed in, and as *text* it
-     needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
-     Now 4.61:1 on the page and 5.00:1 on a card. Found 2026-09-03 by `check:app-contrast`
-     reading ui-showcase, which is how a palette pair nobody had listed became visible;
-     `check:contrast` gained the pair in the same change. */
   --gog-danger-color: #d82525;
-  /* Was #d97706 — Tailwind amber-600, 3.19:1 under a white label. Amber-700: 5.02:1. */
   --gog-warning-color: #b45309;
-  /* Was #0284c7 — Tailwind sky-600, 4.10:1 under a white label. Sky-700: 5.93:1. */
   --gog-info-color: #0369a1;
 
-  /* The two palette-shaped tokens that are not plain colours. */
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
   --gog-control-boundary-color: #818a96;
   --gog-elevation-ink: 15 23 42;
   --gog-elevation-key-alpha: 0.12;

@@ -1,31 +1,23 @@
 /*
- * `bevel` — the high-chrome early-web look: grey panels, raised buttons, navy accent, square
- * corners. The other half of `docs/themes.md`'s Retro family, and the one that dates itself by
- * *shape* rather than by palette.
+ * `bevel` — the early-web desktop look: grey panels, raised buttons, navy accent, square corners.
  *
- * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ * `--gog-border-style: outset` is what makes it: every raised surface reads that token, so one
+ * declaration bevels buttons, panels and chips at once. `inset` on fields draws the sunken well.
+ * The system faces it names need no download.
+ *
+ * Import it after `index.css`, then set the attribute on the root or on any subtree:
  *
  *   @import '@guildofgleks/ui/styles/index.css';
  *   @import '@guildofgleks/ui/styles/presets/bevel.css';
  *
  *   <html data-theme="bevel">
- *
- * Palette plus the character layer, no per-component overrides and no font download — the face
- * this look wants (Tahoma, Verdana, MS Sans Serif) is a system face on the platforms that have
- * it and degrades to the platform sans elsewhere, which is exactly what it did at the time.
- *
- * **`--gog-border-style: outset` is what makes this theme.** Every raised surface in the library
- * reads that token, so one declaration puts a bevel on buttons, panels and chips at once — the
- * reason the character layer carries a border *style* and not just a width. `inset` on form
- * fields is its counterpart: a sunken well is how a text input was drawn before a 1px outline
- * was enough to say "type here".
  */
 
 :root[data-theme='bevel'],
 [data-theme='bevel'] {
   color-scheme: light;
 
-  /* Palette — the default desktop grey, and the navy that every link and title bar used */
+  /* Palette — desktop grey and title-bar navy. */
   --gog-background-color: #c0c0c0;
   --gog-surface-color: #d8d8d8;
   --gog-hover-color: #cacaca;
@@ -36,11 +28,7 @@
   --gog-primary-color: #0a0a0a;
   --gog-accent-color: #000080;
   --gog-accent-bright: #1a1aa8;
-  /* Was #000080 — byte-identical to --gog-accent-color, which made it not a ramp at all.
-     Harmless while `dim` was only a field border; 21.9.0 made it the button's pressed fill, so a
-     pressed button in this theme painted itself the colour it already was. Darkened to a deeper
-     navy, which is as period-correct as the one it replaces. `check-tokens` rule I now fails on
-     any theme whose accent ramp collapses like this. */
+  /* A distinct step below the accent, so a pressed button changes colour. */
   --gog-accent-dim: #00005c;
   --gog-accent-pale: #b8b8cc;
   --gog-secondary-color: #4a4a5a;
@@ -49,21 +37,8 @@
   --gog-warning-color: #7a5c00;
   --gog-info-color: #005a6e;
 
-  /* No blur. A drop shadow of this era was a solid black offset rectangle, if it existed —
-     so the key light offsets on both axes and does not blur at all, and there is no contact
-     shadow to speak of. Half a pixel of offset per unit of Z reproduces the 2px this theme
-     shipped at the overlay step, and the ladder carries it up from there. */
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
   --gog-control-boundary-color: #656565;
+  /* No blur: a drop shadow of this era was a solid offset rectangle. */
   --gog-elevation-ink: 0 0 0;
   --gog-elevation-key-alpha: 0.35;
   --gog-elevation-ambient-alpha: 0;
@@ -76,7 +51,7 @@
   --gog-elevation-highlight-alpha: 0;
   --gog-spinner-overlay-bg: rgba(192, 192, 192, 0.85);
 
-  /* Character layer — square, bevelled, compact, and shouting in caps the way a title bar did */
+  /* Character layer — square, bevelled, compact, in caps. */
   --gog-font-heading: Tahoma, Verdana, 'MS Sans Serif', Geneva, sans-serif;
   --gog-font-body: Tahoma, Verdana, 'MS Sans Serif', Geneva, sans-serif;
   --gog-radius: 0;
@@ -88,18 +63,11 @@
   --gog-control-border-width: 2px;
   --gog-control-border-style: inset;
 
-  /* The one per-component override in this file, and the reason it is needed: a button is a
-     "control" like a text field is, so it inherits `--gog-control-border-style` — which here has
-     to be `inset`, because a sunken well is how a text input was drawn. But a button of this era
-     is the opposite shape: raised, and it *pressed in* when you clicked it. The character layer
-     has one control tier and this theme needs two halves of it to disagree, so the button says
-     so itself. Everything else raised (panels, cards, chips, tags) gets `outset` from the tiers
-     above with nothing named. */
+  /* The one per-component override: a button inherits the control border style, which is `inset`
+     here for fields, but a button of this era is raised and presses in. */
   --gog-button-border-width: 2px;
   --gog-button-border-style: outset;
-  /* `outset` draws its highlight and shade *from the border colour*, so a transparent border —
-     which is the library's default for a filled button, and correct everywhere else — renders a
-     bevel that is not there. Naming a colour is what makes the style visible at all. */
+  /* `outset` draws its bevel from the border colour, so a transparent border would show nothing. */
   --gog-button-primary-border: #8a8ab0;
 
   --gog-text-transform: none;

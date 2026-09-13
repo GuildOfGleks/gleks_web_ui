@@ -1,33 +1,25 @@
 /*
- * `terminal` — monochrome phosphor. Green on near-black, everything monospaced, square
- * corners, no motion: the character-cell terminal, which is `docs/themes.md`'s Retro family.
+ * `terminal` — monochrome phosphor: green on near-black, monospace everywhere, square corners, no
+ * motion. `ui-monospace` is the platform's own terminal face, so no download is needed;
+ * `terminal.fonts.css` is an optional period face. For amber, swap the accent and text colours.
  *
- * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ * Import it after `index.css`, then set the attribute on the root or on any subtree:
  *
  *   @import '@guildofgleks/ui/styles/index.css';
  *   @import '@guildofgleks/ui/styles/presets/terminal.css';
  *
  *   <html data-theme="terminal">
- *
- * Palette plus the character layer, no per-component overrides. The font is the one thing this
- * identity cannot do without, and it does not need a download to get it: `ui-monospace` resolves
- * to the platform's own terminal face (SF Mono, Cascadia, DejaVu Sans Mono), which is more
- * authentic here than any webfont would be. `presets/terminal.fonts.css` is an optional extra
- * for a period face — importing this file alone makes no network request.
- *
- * Amber instead of green is two declarations: swap `--gog-accent-*` and `--gog-text-color` for
- * their amber equivalents. The rest of the theme does not care which phosphor it is.
  */
 
 :root[data-theme='terminal'],
 [data-theme='terminal'] {
   color-scheme: dark;
 
-  /* Palette — P1 green phosphor on an unlit screen */
+  /* Palette — green phosphor on an unlit screen. */
   --gog-background-color: #0a0e0a;
   --gog-surface-color: #121a12;
   --gog-hover-color: #1b2a1b;
-  /* Elevation on a dark ground is a lighter surface, not a shadow — see theme.css. */
+  /* On a dark ground elevation is a lighter surface, not a shadow. */
   --gog-border-color: #274a2c;
   --gog-text-color: #c8f5c8;
   --gog-accent-text-color: #04120a;
@@ -39,45 +31,19 @@
   --gog-accent-pale: #17311c;
   --gog-secondary-color: #6fae6f;
 
-  /* Semantics — a monochrome display had no colour to spare, so these stay within the phosphor
-     family and separate by brightness. Only danger breaks out, because a destructive action is
-     the one thing worth spending the screen's only other colour on. */
-  /* Was `#3ddc5c`, the same hex as `--gog-accent-color`: a success badge and an ordinary
-     accent one were indistinguishable. Moved along its own hue rather than across, because
-     this theme's other three statuses already occupy yellow, red and cyan -- the room left
-     is in lightness, not in hue. Same finding as this file's own info/success note below,
-     one role over. */
+  /* Semantics — statuses separate by brightness within the phosphor family; only danger spends the
+     screen's other colour. */
+  /* Darker than the accent, so success and accent stay distinct; the room left is in lightness. */
   --gog-success-color: #00b330;
   --gog-danger-color: #ff5f56;
   --gog-warning-color: #d4d44a;
-  /* Phosphor cyan, not a paler green. #8fd8a0 sat 4.6 degrees of hue and 0.032 of lightness from
-     `--gog-success-color`, so an info badge and a success badge were the same colour -- and
-     greyscale did not separate them either, which is the test `check:oklch`'s R3 applies. A
-     monochrome-green terminal would be one answer, but this theme already signals in red and
-     yellow, so the second phosphor is the consistent one: 61 degrees from success, 98 from
-     warning, and 10.58:1 on the page. */
+  /* Phosphor cyan rather than a paler green, so info and success are distinguishable, in greyscale
+     too. */
   --gog-info-color: #4dd0e1;
 
-  /* A glow, not a shadow: a phosphor screen bleeds light outwards instead of casting one. The
-     ladder expresses that without knowing what a glow is — the key light's vertical travel is
-     zero, so it never leaves the object, and all that grows with height is its blur. At the
-     overlay step that is `0 0 18px`, this theme's own shipped value to the pixel.
-
-     The `elevated` tier changes deliberately. It had been a black `0 2px 6px` under the green
-     catch light — the one place this theme cast a shadow rather than emitting light, and it was
-     inherited from the dark preset it started as rather than chosen. It is a smaller glow now,
-     which is what the comment beside it already claimed was happening. */
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
   --gog-control-boundary-color: #4c7150;
+  /* A glow, not a shadow: a phosphor screen emits light. The key light has no vertical travel, so only
+     its blur grows with height. */
   --gog-elevation-ink: 61 220 92;
   --gog-elevation-key-alpha: 0.12;
   --gog-elevation-ambient-alpha: 0;
@@ -90,10 +56,8 @@
   --gog-elevation-highlight-alpha: 0.18;
   --gog-spinner-overlay-bg: rgba(10, 14, 10, 0.88);
 
-  /* Character layer — the whole identity in seven declarations. Monospace everywhere, not just
-     in code: a character-cell display had one grid and one face. Square corners and 1px rules
-     because the display drew box-drawing characters, and no motion because it had no way to
-     animate anything that was not a blinking cursor. */
+  /* Character layer — one monospace face, square corners, 1px rules, no motion: a character-cell
+     display. */
   --gog-font-heading: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --gog-font-body: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --gog-radius: 0;

@@ -1,31 +1,22 @@
 /*
- * `one-dark` — the Atom/JetBrains One Dark palette, as a @guildofgleks/ui theme.
+ * `one-dark` — the One Dark editor palette. Its blue is the accent; green, red, yellow and cyan are
+ * the statuses. The character layer reproduces editor chrome: barely rounded, thin borders,
+ * compact, never in caps.
  *
- * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ * Import it after `index.css`, then set the attribute on the root or on any subtree:
  *
  *   @import '@guildofgleks/ui/styles/index.css';
  *   @import '@guildofgleks/ui/styles/presets/one-dark.css';
  *
  *   <html data-theme="one-dark">
- *
- * The syntax-highlighting hues map onto the library's semantic roles: One Dark's blue is the
- * accent, its green/red/yellow/cyan become success/danger/warning/info.
- *
- * Palette plus the character layer. It was palette-only until 21.7.0, which made it a recoloured
- * default wearing an editor's palette — and the editor this reproduces does not look like the
- * library's default shape. Editor chrome is small-radius, thin-bordered, compact, and it never
- * shouts in caps; four foundation tokens and a density say all of that, with no per-component
- * override needed. See `docs/themes.md` iterations 1 and 6.
  */
 
 :root[data-theme='one-dark'],
 [data-theme='one-dark'] {
   color-scheme: dark;
 
-  /* Character layer — editor chrome. A 4px radius (panels, tabs and buttons in this family of
-     editors are barely rounded, not pill-shaped), 1px borders instead of the library's 2px form
-     default, sentence-case labels, and a compact density: an editor's UI exists to leave room
-     for the buffer. */
+  /* Character layer — editor chrome leaves room for the buffer: 4px radius, 1px borders, sentence
+     case, compact. */
   --gog-radius: 4px;
   --gog-density: 0.9;
   --gog-control-border-width: 1px;
@@ -36,57 +27,32 @@
   --gog-background-color: #282c34;
   --gog-surface-color: #21252b;
   --gog-hover-color: #2c313a;
-  /* Elevation on a dark ground is a lighter surface, not a shadow — see theme.css. */
+  /* On a dark ground elevation is a lighter surface, not a shadow. */
   --gog-border-color: #3e4451;
 
   /* Type */
   --gog-text-color: #abb2bf;
   --gog-accent-text-color: #282c34;
-  /* Lightened from One Dark's own #5c6370 in 21.7.0. That is the editor's comment colour, and
-     it reads at 2.32:1 on this background — fine for code a reader skims, well under AA for UI
-     text a reader has to act on. Fidelity loses to legibility on this one token. */
+  /* Lighter than One Dark's comment grey, which is too faint for UI text. */
   --gog-muted-text-color: #9099a8;
 
-  /* Brand — One Dark's blue */
   --gog-primary-color: #abb2bf;
   --gog-accent-color: #61afef;
   --gog-accent-bright: #8ac2f5;
-  /* Nudged from #4b8fca on 2026-09-03, by 4 points of luminance. 21.9.0 made `--gog-accent-dim`
-     a *fill* under a label for the first time (the button's held state); as a field border, which
-     is all it was before, it never had to clear 4.5:1 against `--gog-accent-text-color`, and at
-     #4b8fca it cleared 4.05:1. The new value moves it toward this palette's own `#61afef`, so it
-     is if anything closer to One Dark's blue than the invented dim it replaces — unlike the two
-     comment-colour changes above, this one costs no fidelity. */
+  /* A dim step light enough to carry a label when used as a press fill. */
   --gog-accent-dim: #5399d6;
   --gog-accent-pale: #2d3a4a;
   --gog-secondary-color: #c678dd;
 
-  /* Semantics — the syntax hues in their natural roles */
+  /* Semantics — the syntax hues in their natural roles. */
   --gog-success-color: #98c379;
-  /* Was #e06c75 — One Dark's own red. `--gog-danger-color` is what every `--gog-<block>-error-color`
-     resolves to, so this is the colour a validation message is printed in, and as *text* it
-     needs 4.5:1 rather than the 3:1 a status accent would. It cleared neither ground here.
-     Now 4.65:1 on the page and 5.12:1 on a card. Found 2026-09-03 by `check:app-contrast`
-     reading ui-showcase, which is how a palette pair nobody had listed became visible;
-     `check:contrast` gained the pair in the same change. */
+  /* Slightly lighter than One Dark's red: validation messages are text and need 4.5:1. */
   --gog-danger-color: #e2737c;
   --gog-warning-color: #e5c07b;
   --gog-info-color: #56b6c2;
 
-  /* A dark ground, so the same three parts as theme.css's dark block: a tight dark key, a
-     hairline ring for overlays, and a catch light along the top edge. See that block for why the
-     ring is composed per surface instead of living on the ladder. */
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
   --gog-control-boundary-color: #727987;
+  /* A dark ground: a tight dark key, a hairline ring for overlays and a top catch light. */
   --gog-elevation-ink: 0 0 0;
   --gog-elevation-key-alpha: 0.45;
   --gog-elevation-ambient-alpha: 0.22;

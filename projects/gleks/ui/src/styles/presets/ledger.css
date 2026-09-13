@@ -1,29 +1,21 @@
 /*
- * `ledger` — the square-cornered, hard-shadowed, system-font look. Beige and grey, thin
- * borders, no motion to speak of: the administrative-software identity, from before rounded
- * corners and soft blur shadows were the default assumption. This is `docs/themes.md`'s
- * "Classic" catalogue *family* — the preset itself needed its own name, since `ui-showcase`
- * already uses "Classic" as the display label for `data-theme="light"`
- * (`projects/ui-showcase/src/app/showcase-themes.ts`).
+ * `ledger` — square corners, hard shadows, system fonts: administrative software from before soft
+ * blur and rounded corners were the default. Palette plus the character layer, no per-component
+ * overrides.
  *
- * Import it after `index.css`, then put the attribute on the root — or on any subtree:
+ * Import it after `index.css`, then set the attribute on the root or on any subtree:
  *
  *   @import '@guildofgleks/ui/styles/index.css';
  *   @import '@guildofgleks/ui/styles/presets/ledger.css';
  *
  *   <html data-theme="ledger">
- *
- * Palette plus the `docs/themes.md` iteration-1 character layer — no per-component overrides
- * needed, which is exactly the point of that layer existing (see `slate.css` for the same
- * argument, palette-only). Fonts are untouched on purpose: the library's own default is already
- * a plain system-ui stack, which is the "system-font" look this preset asks for.
  */
 
 :root[data-theme='ledger'],
 [data-theme='ledger'] {
   color-scheme: light;
 
-  /* Palette — beige and grey, a muted navy accent */
+  /* Palette — beige and grey, a muted navy accent. */
   --gog-background-color: #d8d3c7;
   --gog-surface-color: #ffffff;
   --gog-hover-color: #ccc6b8;
@@ -42,19 +34,8 @@
   --gog-warning-color: #96702f;
   --gog-info-color: #3d6b7a;
 
-  /* Hard-edged, not blurred — an offset with no blur radius reads as a printed drop shadow,
-     not a soft elevation cue. Same style as `bevel`, its own ink and weight. */
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
   --gog-control-boundary-color: #787265;
+  /* An offset with no blur reads as a printed drop shadow rather than soft elevation. */
   --gog-elevation-ink: 38 36 32;
   --gog-elevation-key-alpha: 0.25;
   --gog-elevation-ambient-alpha: 0;
@@ -67,15 +48,10 @@
   --gog-elevation-highlight-alpha: 0;
   --gog-spinner-overlay-bg: rgba(216, 211, 199, 0.85);
 
-  /* Character layer — square corners, uniform 1px borders (down from the 2px form-field
-     default), sentence-case labels instead of shouty caps, and no motion: set all three
-     durations to 0s rather than lower each component's own transition individually, which is
-     the whole reason the character layer's foundation tokens exist. Components still honour
-     `prefers-reduced-motion` independently of this. */
+  /* Character layer — square corners, 1px borders, sentence case, and no motion (durations at 0s).
+     Components still honour prefers-reduced-motion on their own. */
   --gog-radius: 0;
-  /* Tighter than the library's default, because the look this reproduces packed a screen:
-     administrative software was designed for people who read a whole table at once, not for
-     touch targets. One number, and every padding and gap in the library follows it. */
+  /* Denser than the default: this look packs a screen for people reading whole tables. */
   --gog-density: 0.9;
   --gog-control-border-width: 1px;
   --gog-text-transform: none;
