@@ -1676,9 +1676,8 @@
      declared this token and this is the pair that did not. */
   --gog-multiselect-panel-radius: var(--gog-radius);
   --gog-multiselect-panel-max-height: 260px;
-  /* Renamed from `--gog-multiselect-panel-offset` in 21.13.0; the old name is read as this
-     one's fallback so a consumer override still resolves, and goes in 21.14.0. */
-  --gog-multiselect-panel-gap: var(--gog-multiselect-panel-offset, var(--gog-space-4));
+  /* `--gog-multiselect-panel-offset` until 21.13.0; the old name stopped resolving in 21.14.0. */
+  --gog-multiselect-panel-gap: var(--gog-space-4);
   --gog-multiselect-option-hover-bg: var(--gog-hover-color);
   --gog-multiselect-option-press-bg: var(--gog-border-color);
   --gog-multiselect-option-color: var(--gog-text-color);
@@ -2046,8 +2045,8 @@
   --gog-select-panel-bg: var(--gog-surface-color);
   --gog-select-panel-shadow: var(--gog-panel-shadow);
   --gog-select-panel-max-height: 260px;
-  /* Renamed from `--gog-select-panel-offset` in 21.13.0; see the multiselect's note above. */
-  --gog-select-panel-gap: var(--gog-select-panel-offset, var(--gog-space-4));
+  /* `--gog-select-panel-offset` until 21.13.0; the old name stopped resolving in 21.14.0. */
+  --gog-select-panel-gap: var(--gog-space-4);
   /* The panel's own corner, and the reason it is not `--gog-select-radius`: that token shapes the
      *field*, and it shaped this box too until this release. One token painting two boxes meant a
      consumer rounding the field into a pill rounded the dropdown into one as well, and the filter
@@ -2172,11 +2171,10 @@
   --gog-slider-thumb-border-width: var(--gog-control-border-width);
   --gog-slider-thumb-radius: 50%;
   /* A colour, not a shadow: the thumb's glow ring composes it as
-     `0 0 var(--gog-slider-thumb-glow-size) <this>`. Renamed from
-     `--gog-slider-thumb-shadow` in 21.13.0, which is the only token of the 31 the
-     elevation audit classified whose name was simply wrong; the old name is read as this
-     one's fallback and goes in 21.14.0. */
-  --gog-slider-thumb-glow-color: var(--gog-slider-thumb-shadow, var(--gog-accent-pale));
+     `0 0 var(--gog-slider-thumb-glow-size) <this>`. It was `--gog-slider-thumb-shadow` until
+     21.13.0, the only token of the 31 the elevation audit classified whose name was simply
+     wrong; the old name stopped resolving in 21.14.0. */
+  --gog-slider-thumb-glow-color: var(--gog-accent-pale);
   --gog-slider-thumb-glow-size: 6px;
   --gog-slider-focus-ring: var(--gog-accent-pale);
   --gog-slider-focus-ring-width: var(--gog-focus-ring-width);
