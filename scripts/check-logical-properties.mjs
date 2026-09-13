@@ -40,8 +40,9 @@
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { COMPONENT_SOURCE_DIRS, UI_ROOT } from './library-sources.mjs';
 
-const ROOTS = ['projects/gleks/ui/src/lib', 'projects/gleks/ui/src/styles'];
+const ROOTS = [...COMPONENT_SOURCE_DIRS, join(UI_ROOT, 'src/styles')];
 const SHORTHANDS = ['padding', 'margin', 'border-width', 'border-radius'];
 
 /** Every `.scss`/`.css` under `dir`, recursively. */

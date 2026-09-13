@@ -6,6 +6,50 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ## [21.14.0] - planned
 
+### Removed
+
+- **`gog-table`, `gog-datepicker`/`gog-calendar` and `gog-dialog` are no longer exported from the
+  root** — import them from `@guildofgleks/ui/table`, `/datepicker` and `/dialog`, where they have
+  been since 21.13.0. 25 symbols, deprecated for one minor: `TableComponent`, `GogColumn`,
+  `GogColumnBodyDirective`, `GogColumnHeaderDirective`, `defaultCompare`, `SortDirection`,
+  `GogTableSortEvent`, `GogTableSelectionMode`, `GogTableRowClickEvent`, `GogColumnBodyContext`,
+  `GogColumnHeaderContext`; `DatepickerComponent`, `CalendarComponent`, `GogCalendarDay`,
+  `GogDatepickerValue`; `DialogComponent`, `ConfirmationDialogComponent`, `ConfirmDialogData`,
+  `DialogService`, `DialogConfig`, `DialogHandle`, `OpenDialog`, `DIALOG_DATA`, `DIALOG_REF`,
+  `DialogRef`. **The migration is the import path and nothing else** — the classes are the same.
+  The date helpers (`formatDate`, `parseDate`, …) and `GogDateRange` stay in the root.
+
+  **This is what the split was for, and it buys less than the whole of it.** The three units' code
+  moved into their entry points, and the root stopped re-exporting them — a root that re-exports a
+  module drags it into every app that imports anything from the root, which is why 21.13.0's thin
+  subpaths changed nothing. Measured on a fresh CLI app, a button on the first page and the four
+  heavy components behind a `loadComponent` route: **initial 101.2 kB → 88.2 kB, lazy chunk 442 B →
+  17.0 kB** (estimated transfer size). **The other 27 kB is their dependencies from the root** —
+  paginator, select, checkbox, scroll, spinner, icon, button — and it stays eager: a lazy route that
+  uses _only_ root components produces a 560-byte chunk and moves nothing either, because the root
+  is one module and an app's first page already imports it. That is a property of every root
+  component rather than of these three, and it is filed in `docs/backlog.md` rather than solved
+  here.
+
+- **`getByPath`, `readOption` and `isSameOptionValue` are no longer exported from the root.** They
+  were never documented and remain the library's internal plumbing. `GogOptionAccessor` stays.
+
+- **`--gog-select-panel-offset`, `--gog-multiselect-panel-offset` and `--gog-slider-thumb-shadow`
+  stop resolving.** Use `--gog-select-panel-gap`, `--gog-multiselect-panel-gap` and
+  `--gog-slider-thumb-glow-color`. An override of an old name is not an error — it silently stops
+  applying — so search a theme for them. `GOG_DEPRECATIONS` is `[]` again.
+
+### Changed
+
+- **The three units' source lives in `projects/gleks/ui/table/`, `/datepicker/` and `/dialog/`**,
+  beside `src/`, because an entry point must own its files. Ten scripts had `src/lib` spelled
+  out; they now take their directories from `scripts/library-sources.mjs`, and every check's own
+  count was compared before and after the move rather than trusted to pass — 3995 contrast pairs,
+  45 stylesheets, 506 template classes, 7 `loading` components, 1188 tests, all unchanged.
+  `check:layering` gained the relative-path half of rule D (the root may not reach a split
+  directory) and rule E (a split directory may not reach into `src/`), and fails if any of the
+  three directories is empty.
+
 ### Fixed
 
 - **Two sentences shipped in 21.13.0 still said the library does not virtualize.** `AGENTS.md`'s

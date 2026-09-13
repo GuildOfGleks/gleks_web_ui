@@ -35,8 +35,11 @@
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { ROOT_LIB_DIR, SPLIT_DIRS } from './library-sources.mjs';
 
-const ROOT = 'projects/gleks/ui/src/lib/components';
+// The root's components and each split entry point's: `gog-table`, which has `loading`, moved out
+// of `src/lib/components` in 21.14.0.
+const ROOTS = [join(ROOT_LIB_DIR, 'components'), ...SPLIT_DIRS];
 
 /** Every component source under `dir`, specs excluded — a test host may declare its own input. */
 function componentsIn(dir) {
@@ -52,7 +55,7 @@ function componentsIn(dir) {
 const problems = [];
 let checked = 0;
 
-for (const path of componentsIn(ROOT)) {
+for (const path of ROOTS.flatMap(componentsIn)) {
   const source = readFileSync(path, 'utf8');
 
   // `loading = input(...)`, with or without `readonly` and with or without a type argument.

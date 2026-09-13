@@ -20,14 +20,21 @@
  *                          the other. Only `@guildofgleks/ui/shared` keeps it one.
  *   D. root-never-imports-a-split
  *                          Nothing in `src/` or `shared/` may import `@guildofgleks/ui/table`,
- *                          `/datepicker` or `/dialog`. The whole benefit of splitting them rests on
- *                          it: a root that imports a split entry point pulls it back into the
- *                          initial bundle of every app, silently, with every build green.
+ *                          `/datepicker` or `/dialog` — by package name or by relative path. The
+ *                          whole benefit of splitting them rests on it: a root that imports a split
+ *                          entry point pulls it back into the initial bundle of every app, silently,
+ *                          with every build green.
+ *   E. split-imports-by-package
+ *                          A split entry point's directory may not reach into `src/` or another
+ *                          split directory by relative path. ng-packagr refuses an entry point that
+ *                          does not own its files, and a relative path would compile the root's
+ *                          components into the split bundle a second time. It imports
+ *                          `@guildofgleks/ui` instead (docs/entry-points.md, Part 2, finding 4).
  *
  * **This check went blind once already, which is why it counts what it sees.** Before rule C, the
  * move left it scanning a `lib/shared/` that no longer existed: it reported 29 units instead of
  * 36, "no cycles", and a floor rule that examined no files at all. A layering check that passes on
- * nothing is worse than none, so it now fails if `shared/` holds no source.
+ * nothing is worse than none, so it now fails if `shared/` or any split directory holds no source.
  *
  * Run via `npm run check:layering`.
  */
@@ -36,28 +43,25 @@ import { existsSync, readFileSync } from 'node:fs';
 import { glob } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  ROOT_LIB_DIR as libRoot,
+  SHARED_DIR as sharedRoot,
+  SPLIT_DIRS,
+  SPLIT_ENTRY_POINTS,
+} from './library-sources.mjs';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const uiRoot = path.join(rootDir, 'projects/gleks/ui');
-const libRoot = path.join(uiRoot, 'src/lib');
-const sharedRoot = path.join(uiRoot, 'shared');
 
 const ROOT_PACKAGE = '@guildofgleks/ui';
 const SHARED_PACKAGE = '@guildofgleks/ui/shared';
 
-/**
- * Entry points split out of the root so a lazy route can keep them out of the initial bundle.
- * The root must never import one: docs/entry-points.md measured that a root which re-exports a
- * module drags it into every app that imports anything from the root, and the split then does
- * nothing at all while every build stays green.
- */
-const SPLIT_ENTRY_POINTS = ['table', 'datepicker', 'dialog'];
-
 const rel = (file) => path.relative(rootDir, file).split(path.sep).join('/');
 
-/** A component folder, a `src/lib` bucket, or `shared` for the entry point beside `src/`. */
+/** `split:<name>`, `shared`, a component folder or a `src/lib` bucket — or `root` for `src/` itself. */
 function unitOf(file) {
   if (!path.relative(sharedRoot, file).startsWith('..')) return 'shared';
+  const split = SPLIT_DIRS.findIndex((dir) => !path.relative(dir, file).startsWith('..'));
+  if (split !== -1) return `split:${SPLIT_ENTRY_POINTS[split]}`;
   const inLib = path.relative(libRoot, file).split(path.sep).join('/');
   if (inLib.startsWith('..')) return 'root';
   const [bucket, name] = inLib.split('/');
@@ -78,13 +82,22 @@ async function collect(cwd) {
 async function main() {
   const libFiles = await collect(libRoot);
   const sharedFiles = await collect(sharedRoot);
+  const splitFiles = (await Promise.all(SPLIT_DIRS.map(collect))).flat();
 
   const problems = [];
-  if (sharedFiles.length === 0) {
-    problems.push(
-      `[blind] ${rel(sharedRoot)} holds no source\n` +
-        `      the shared entry point moved or emptied, and every rule below would pass on nothing`,
-    );
+  for (const [dir, count] of [
+    [sharedRoot, sharedFiles.length],
+    ...SPLIT_DIRS.map((d) => [
+      d,
+      splitFiles.filter((f) => !path.relative(d, f).startsWith('..')).length,
+    ]),
+  ]) {
+    if (count === 0) {
+      problems.push(
+        `[blind] ${rel(dir)} holds no source\n` +
+          `      the entry point moved or emptied, and every rule below would pass on nothing`,
+      );
+    }
   }
 
   const edges = new Map();
@@ -96,7 +109,7 @@ async function main() {
     if (!where.has(`${from}->${to}`)) where.set(`${from}->${to}`, rel(file));
   };
 
-  for (const file of [...libFiles, ...sharedFiles]) {
+  for (const file of [...libFiles, ...sharedFiles, ...splitFiles]) {
     const from = unitOf(file);
     const source = readFileSync(file, 'utf8');
 
@@ -108,6 +121,10 @@ async function main() {
         continue;
       }
       const split = SPLIT_ENTRY_POINTS.find((name) => specifier === `${ROOT_PACKAGE}/${name}`);
+      if (split && from.startsWith('split:')) {
+        addEdge(from, `split:${split}`, file);
+        continue;
+      }
       if (split) {
         problems.push(
           `[root-never-imports-a-split] ${rel(file)}
@@ -133,6 +150,23 @@ async function main() {
 
       const target = path.resolve(path.dirname(file), specifier);
       const to = unitOf(target);
+
+      if (from.startsWith('split:') && to !== from && to !== 'shared') {
+        problems.push(
+          `[split-imports-by-package] ${rel(file)}\n` +
+            `      reaches ${specifier} by relative path — a split entry point owns its files and\n` +
+            `      imports the rest of the library as ${ROOT_PACKAGE}`,
+        );
+        continue;
+      }
+      if (to.startsWith('split:') && !from.startsWith('split:')) {
+        problems.push(
+          `[root-never-imports-a-split] ${rel(file)}\n` +
+            `      reaches ${specifier} by relative path — the root must not depend on a split entry\n` +
+            `      point, or it rides into every app's initial bundle`,
+        );
+        continue;
+      }
 
       if (from === 'shared' && to !== 'shared') {
         problems.push(
@@ -176,10 +210,12 @@ async function main() {
 
   const units = new Set([...edges.keys(), ...[...edges.values()].flatMap((s) => [...s])]);
   units.delete('root');
+  const fileCount = libFiles.length + sharedFiles.length + splitFiles.length;
   console.log(
-    `Layering check passed — ${units.size} unit(s) across ${libFiles.length + sharedFiles.length} ` +
+    `Layering check passed — ${units.size} unit(s) across ${fileCount} ` +
       `file(s), no cycles, shared/ (${sharedFiles.length} file(s)) imports nothing above it, and ` +
-      `nothing outside it imports shared by relative path.`,
+      `nothing outside it imports shared by relative path; ${SPLIT_DIRS.length} split entry point(s) ` +
+      `(${splitFiles.length} file(s)) import the root by package name and nothing imports them back.`,
   );
 }
 

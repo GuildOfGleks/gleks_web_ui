@@ -21,7 +21,7 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { NgTemplateOutlet } from '@angular/common';
 
 import { CalendarComponent, type GogDatepickerValue } from './calendar/calendar.component';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogClearableState } from '@guildofgleks/ui/shared';
 import { GogErrorState, type GogErrorDisplay } from '@guildofgleks/ui/shared';

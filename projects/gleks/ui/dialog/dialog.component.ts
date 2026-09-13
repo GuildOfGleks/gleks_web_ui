@@ -9,9 +9,8 @@ import {
 import { NgComponentOutlet } from '@angular/common';
 import { DIALOG_DATA, DIALOG_REF } from './dialog.tokens';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
-import { DialogService, OpenDialog } from '../../services/dialog-service/dialog.service';
-import { IconComponent } from '../icon/icon.component';
-import { ScrollComponent } from '../scroll/scroll.component';
+import { DialogService, OpenDialog } from './dialog.service';
+import { IconComponent, ScrollComponent } from '@guildofgleks/ui';
 
 /** Built-in default, used when neither `DialogConfig` nor `GOG_CONFIG.labels` supplies one. */
 const DEFAULT_CLOSE_LABEL = 'Close dialog';

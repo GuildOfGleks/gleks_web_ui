@@ -32,6 +32,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildLengthLayers, parseTokenName } from './geometry-length.mjs';
+import { SPLIT_DIRS } from './library-sources.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const themeCssPath = path.join(root, 'projects/gleks/ui/src/styles/theme.css');
@@ -213,6 +214,7 @@ const walk = async (dir, ext) => {
 // code, and it was this rule's own first output.
 const scssFiles = [
   ...(await walk(libRoot, '.scss')),
+  ...(await Promise.all(SPLIT_DIRS.map((dir) => walk(dir, '.scss')))).flat(),
   ...(await walk(path.join(root, 'projects/gleks/ui/src/styles'), '.css')),
 ];
 

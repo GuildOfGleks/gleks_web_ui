@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ButtonComponent } from '../../button/button.component';
+import { ButtonComponent } from '@guildofgleks/ui';
 import { DIALOG_DATA, DIALOG_REF } from '../dialog.tokens';
 
 export interface ConfirmDialogData {

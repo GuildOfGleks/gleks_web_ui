@@ -18,11 +18,13 @@ import {
   untracked,
 } from '@angular/core';
 import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
-import { CheckboxComponent } from '../checkbox/checkbox.component';
-import { IconComponent } from '../icon/icon.component';
-import { PaginatorComponent } from '../paginator/paginator.component';
-import { ScrollComponent } from '../scroll/scroll.component';
-import { SpinnerComponent } from '../spinner/spinner.component';
+import {
+  CheckboxComponent,
+  IconComponent,
+  PaginatorComponent,
+  ScrollComponent,
+  SpinnerComponent,
+} from '@guildofgleks/ui';
 
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogSize } from '@guildofgleks/ui/shared';

@@ -53,9 +53,20 @@ shared/                              # the @guildofgleks/ui/shared entry point, 
   ng-package.json
   public-api.ts
   types.ts, config.ts, …
+table/  datepicker/  dialog/         # split entry points: @guildofgleks/ui/table, /datepicker, /dialog
+  ng-package.json
+  public-api.ts
+  table.component.ts, …              # their own code, not re-exports
 ```
 
-- One component per folder under `lib/components/<name>/`.
+- One component per folder under `lib/components/<name>/` — except the three **split entry
+  points**, whose directories sit beside `src/` (`docs/entry-points.md`). They exist so a lazy route
+  can keep a heavy component out of an app's initial bundle, and that only works if **the root never
+  imports or re-exports them**. They import the rest of the library as `@guildofgleks/ui`, never by
+  relative path. `check:layering` rules D and E fail the build on either mistake.
+- **A script that scans the library's source takes its directories from
+  `scripts/library-sources.mjs`**, never a spelled-out `src/lib`. The layout moved twice, and both
+  times checks kept passing while scanning a directory that no longer held the code.
 - Shared, reusable primitives (types, injection tokens, helpers) live in **`shared/`, beside
   `src/`** — the `@guildofgleks/ui/shared` entry point since `docs/entry-points.md` phase 1a.
 - **Import shared code as `@guildofgleks/ui/shared`, never by relative path.** An entry point is

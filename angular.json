@@ -37,20 +37,35 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/gleks/ui/tsconfig.spec.json",
-            "include": ["**/*.spec.ts", "../shared/**/*.spec.ts"]
+            "include": [
+              "**/*.spec.ts",
+              "../shared/**/*.spec.ts",
+              "../table/**/*.spec.ts",
+              "../datepicker/**/*.spec.ts",
+              "../dialog/**/*.spec.ts"
+            ]
           },
           "configurations": {
             "coverage": {
               "coverage": true,
               "coverageInclude": [
                 "projects/gleks/ui/src/**/*.ts",
-                "projects/gleks/ui/shared/**/*.ts"
+                "projects/gleks/ui/shared/**/*.ts",
+                "projects/gleks/ui/table/**/*.ts",
+                "projects/gleks/ui/datepicker/**/*.ts",
+                "projects/gleks/ui/dialog/**/*.ts"
               ],
               "coverageExclude": [
                 "projects/gleks/ui/src/**/*.spec.ts",
                 "projects/gleks/ui/shared/**/*.spec.ts",
+                "projects/gleks/ui/table/**/*.spec.ts",
+                "projects/gleks/ui/datepicker/**/*.spec.ts",
+                "projects/gleks/ui/dialog/**/*.spec.ts",
                 "projects/gleks/ui/src/public-api.ts",
                 "projects/gleks/ui/shared/public-api.ts",
+                "projects/gleks/ui/table/public-api.ts",
+                "projects/gleks/ui/datepicker/public-api.ts",
+                "projects/gleks/ui/dialog/public-api.ts",
                 "projects/gleks/ui/shared/token-names.ts"
               ],
               "coverageReporters": ["text", "lcovonly"],

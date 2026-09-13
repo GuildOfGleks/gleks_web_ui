@@ -6,14 +6,26 @@
     "outDir": "../../../out-tsc/spec",
     "types": ["vitest/globals"],
     /*
-     * Specs compile from source, so the shared entry point resolves to its source barrel -- the
-     * same file every relative import inside `shared/` reaches, which is what keeps `GOG_CONFIG`
-     * one token under test as well as in a build. Replaces the root's `paths` rather than merging
-     * with them; no spec imports the package by its published name.
+     * Specs compile from source, so every entry point resolves to its source barrel -- the same
+     * files the relative imports inside each directory reach, which is what keeps `GOG_CONFIG` one
+     * token and each component one class under test as well as in a build. Replaces the root's
+     * `paths` rather than merging with them. `@guildofgleks/ui` is needed since 21.14.0, when the
+     * table, datepicker and dialog moved out of `src/` and started importing the root by name.
      */
     "paths": {
-      "@guildofgleks/ui/shared": ["./shared/public-api.ts"]
+      "@guildofgleks/ui": ["./src/public-api.ts"],
+      "@guildofgleks/ui/shared": ["./shared/public-api.ts"],
+      "@guildofgleks/ui/table": ["./table/public-api.ts"],
+      "@guildofgleks/ui/datepicker": ["./datepicker/public-api.ts"],
+      "@guildofgleks/ui/dialog": ["./dialog/public-api.ts"]
     }
   },
-  "include": ["src/**/*.d.ts", "src/**/*.spec.ts", "shared/**/*.spec.ts"]
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.spec.ts",
+    "shared/**/*.spec.ts",
+    "table/**/*.spec.ts",
+    "datepicker/**/*.spec.ts",
+    "dialog/**/*.spec.ts"
+  ]
 }

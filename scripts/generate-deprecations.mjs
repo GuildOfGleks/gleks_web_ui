@@ -28,6 +28,7 @@ import { glob } from 'node:fs/promises';
 import * as prettier from 'prettier';
 
 import { collectDeprecatedTokens, parseTag, readContext, readTag } from './deprecations.mjs';
+import { SPLIT_DIRS } from './library-sources.mjs';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uiSrc = path.join(rootDir, 'projects/gleks/ui/src');
@@ -140,7 +141,7 @@ export async function buildManifest() {
   const tsFiles = [];
   // Both trees: the root's `src/` and the `shared/` entry point beside it (docs/entry-points.md).
   // Scanning only `src/` would silently drop every tag inside `shared/` from the manifest.
-  for (const cwd of [uiSrc, path.join(uiSrc, '../shared')]) {
+  for (const cwd of [uiSrc, path.join(uiSrc, '../shared'), ...SPLIT_DIRS]) {
     for await (const entry of glob('**/*.ts', { cwd, withFileTypes: true })) {
       if (entry.isFile() && !entry.name.endsWith('.spec.ts')) {
         tsFiles.push(path.join(entry.parentPath ?? entry.path, entry.name));

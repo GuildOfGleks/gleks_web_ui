@@ -16,6 +16,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildLengthLayers, makeLengthResolver } from './geometry-length.mjs';
+import { SPLIT_DIRS } from './library-sources.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const themeCssPath = path.join(root, 'projects/gleks/ui/src/styles/theme.css');
@@ -264,6 +265,7 @@ const walk = async (dir) => {
   }
 };
 await walk(path.join(root, 'projects/gleks/ui/src'));
+for (const dir of SPLIT_DIRS) await walk(dir);
 
 const FLUID = /[\d.]+(?:vw|vh|vi|vb|vmin|vmax)\b|clamp\(/g;
 let found = 0;

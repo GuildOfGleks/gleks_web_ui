@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 
 import { DialogComponent } from './dialog.component';
 import { DIALOG_DATA, DIALOG_REF, type DialogRef } from './dialog.tokens';
-import { DialogService } from '../../services/dialog-service/dialog.service';
+import { DialogService } from './dialog.service';
 
 @Component({
   standalone: true,

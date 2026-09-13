@@ -84,6 +84,7 @@ import * as sass from 'sass';
 
 import { DEPRECATED_NAMESPACES } from './deprecations.mjs';
 import { INSTANCE_TOKENS } from './instance-tokens.mjs';
+import { SPLIT_DIRS } from './library-sources.mjs';
 
 /**
  * Tokens `theme.css` declares that nothing in the library reads, **on purpose** — rule K's only
@@ -433,6 +434,9 @@ async function main() {
   const themeDeclared = findDeclared(themeCss);
 
   const scssContent = await collectCompiledScss(path.join(uiSrc, 'lib'));
+  for (const dir of SPLIT_DIRS) {
+    for (const [file, css] of await collectCompiledScss(dir)) scssContent.set(file, css);
+  }
 
   // The global stylesheets carry the classes for everything that renders into a *consumer's*
   // DOM — `gog-collapsible`'s projected trigger/content, the `gogBadge` directive's badge, the
@@ -531,6 +535,12 @@ async function main() {
 
   // Rule E
   const componentNames = await collectComponentNames(path.join(uiSrc, 'lib/components'));
+  // A split entry point's directory is itself a component folder (`table/`), and its subfolders
+  // are nested components the same way `dialog/confirmation-dialog` always was.
+  for (const dir of SPLIT_DIRS) {
+    componentNames.add(path.basename(dir));
+    for (const name of await collectComponentNames(dir)) componentNames.add(name);
+  }
   const knownNamespace = (token) => {
     const rest = token.slice('--gog-'.length);
     const matches = (name) => rest === name || rest.startsWith(name + '-');
@@ -797,7 +807,7 @@ async function main() {
   // `shared/` is an entry point beside `src/` now, and it holds `checkable-control.config.ts` --
   // the file whose string-built reads rule K's first version missed. Scanning only `src/lib`
   // after the move would report the whole checkbox size scale dead a second time.
-  for (const cwd of [path.join(uiSrc, 'lib'), path.join(uiSrc, '../shared')]) {
+  for (const cwd of [path.join(uiSrc, 'lib'), path.join(uiSrc, '../shared'), ...SPLIT_DIRS]) {
     for await (const entry of glob('**/*.ts', { cwd, withFileTypes: true })) {
       if (entry.isFile() && entry.name !== 'token-names.ts') {
         tsFiles.push(path.join(entry.parentPath ?? entry.path, entry.name));

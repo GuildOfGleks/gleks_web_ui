@@ -12,7 +12,7 @@ import {
   untracked,
 } from '@angular/core';
 
-import { IconComponent } from '../../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogDateSelectionMode, GogHourFormat, GogSize } from '@guildofgleks/ui/shared';
 import {

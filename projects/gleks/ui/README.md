@@ -67,8 +67,9 @@ reset is untouched either way, and a single class of specificity means your own 
 
 ```ts
 import { ButtonComponent, SelectComponent } from '@guildofgleks/ui';
-// Three components have their own entry point, so a lazy route can keep them out of your
-// initial bundle: '@guildofgleks/ui/table', '/datepicker' and '/dialog'.
+// Three components are imported from their own entry point, so a lazy route can keep them out
+// of your initial bundle: '@guildofgleks/ui/table', '/datepicker' and '/dialog'. The root does
+// not export them.
 
 @Component({
   imports: [ButtonComponent, SelectComponent],

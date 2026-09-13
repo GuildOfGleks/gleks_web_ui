@@ -10,8 +10,7 @@ import {
   type GogTableSortEvent,
 } from './table.component';
 import { GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective } from './column';
-import { PaginatorComponent } from '../paginator/paginator.component';
-import { ScrollComponent } from '../scroll/scroll.component';
+import { PaginatorComponent, ScrollComponent } from '@guildofgleks/ui';
 
 interface Row {
   id: number;

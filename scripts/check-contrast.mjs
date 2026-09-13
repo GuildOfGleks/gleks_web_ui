@@ -159,6 +159,7 @@ import { glob } from 'node:fs/promises';
 import * as sass from 'sass';
 
 import { buildLayers, contrast, makeResolver, over, parseDecls, toHex } from './token-color.mjs';
+import { SPLIT_DIRS } from './library-sources.mjs';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uiSrc = path.join(rootDir, 'projects/gleks/ui/src');
@@ -1306,7 +1307,15 @@ async function main() {
   themes = themes.filter((t) => Object.keys(t.palette).length > 0);
 
   const styleFiles = [];
-  for await (const entry of glob('**/*.{css,scss}', { cwd: uiSrc, withFileTypes: true })) {
+  // `src/` for the global stylesheets and the root's components, then each split entry point's
+  // own directory — `gog-table`, `gog-datepicker` and `gog-dialog` left `src/` in 21.14.0.
+  const styleEntries = [];
+  for (const cwd of [uiSrc, ...SPLIT_DIRS]) {
+    for await (const entry of glob('**/*.{css,scss}', { cwd, withFileTypes: true })) {
+      styleEntries.push(entry);
+    }
+  }
+  for (const entry of styleEntries) {
     if (!entry.isFile()) continue;
     const file = path.join(entry.parentPath ?? entry.path, entry.name);
     // theme.css and the presets *are* the palette; theme-starter is a generated copy of it.

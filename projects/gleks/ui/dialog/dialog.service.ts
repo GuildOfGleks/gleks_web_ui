@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Injectable, TemplateRef, inject, signal, Type } from '@angular/core';
-import { GogIconName } from '../../components/icon/icon.component';
+import { GogIconName } from '@guildofgleks/ui';
 
 export interface DialogConfig<TData = unknown> {
   title?: string;

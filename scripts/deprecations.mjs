@@ -73,35 +73,11 @@ export const DEPRECATED_NAMESPACES = new Map([
  * this is where its deadline lives. `api-design.instructions.md` sets the window: one minor
  * unless the migration is genuinely awkward.
  */
-export const DEPRECATED_TOKENS = new Map([
-  [
-    '--gog-select-panel-offset',
-    {
-      replacement: '--gog-select-panel-gap',
-      since: '21.13.0',
-      sinceDate: '2026-09-12',
-      removedIn: '21.14.0',
-    },
-  ],
-  [
-    '--gog-slider-thumb-shadow',
-    {
-      replacement: '--gog-slider-thumb-glow-color',
-      since: '21.13.0',
-      sinceDate: '2026-09-12',
-      removedIn: '21.14.0',
-    },
-  ],
-  [
-    '--gog-multiselect-panel-offset',
-    {
-      replacement: '--gog-multiselect-panel-gap',
-      since: '21.13.0',
-      sinceDate: '2026-09-12',
-      removedIn: '21.14.0',
-    },
-  ],
-]);
+// Empty since 21.14.0, which removed the first three: `--gog-select-panel-offset` and
+// `--gog-multiselect-panel-offset` (now `*-panel-gap`) and `--gog-slider-thumb-shadow` (now
+// `--gog-slider-thumb-glow-color`), each deprecated for one minor. An entry comes out in the same
+// change as its fallback in theme.css — `check:deprecations` fails on one without the other.
+export const DEPRECATED_TOKENS = new Map([]);
 
 /** `since <version> (<date>) — <replacement>. Removed in <version>.` */
 const TAG_HEAD_RE = /^since\s+(\d+\.\d+\.\d+)\s+\((\d{4}-\d{2}-\d{2})\)\s+—\s+(.+)$/s;
