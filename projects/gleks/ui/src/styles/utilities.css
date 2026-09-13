@@ -1,17 +1,9 @@
 /*
- * Direction primitives, for the handful of properties CSS gives no logical form of:
- * `transform-origin`, `translate`, `transform`. Everything else uses real logical
- * properties (`inset-inline-start`, `padding-inline-end`, `text-align: start`, …) and needs
- * none of this.
+ * Direction primitives for the few properties with no logical form (`transform-origin`,
+ * `translate`). Flipped by `[dir='rtl']`, so an RTL subtree works inside an LTR page.
  *
- *   --gog-inline-start-side / --gog-inline-end-side  `left`/`right` keywords, swapped in RTL.
- *                                                    For `transform-origin`.
- *   --gog-direction-sign                             `1` / `-1`. Multiply the X part of a
- *                                                    translate by it when the element is
- *                                                    placed with `inset-inline-start`.
- *
- * Declared on `:root` and flipped by `[dir='rtl']`, so a subtree can be RTL on its own — an
- * RTL panel inside an LTR page follows the nearest `dir`, like every other RTL behaviour.
+ *   --gog-inline-start-side / --gog-inline-end-side  `left` / `right`, swapped in RTL
+ *   --gog-direction-sign                             `1` / `-1`, for the X part of a translate
  */
 :root {
   --gog-inline-start-side: left;
@@ -20,24 +12,9 @@
 }
 
 /*
- * Every element the library renders sizes itself border-box, so the package does not depend on
- * the consumer having a `* { box-sizing: border-box }` reset.
- *
- * It used to. `.gog-input__field` is `width: 100%` plus horizontal padding plus a border, so
- * under the CSS default of `content-box` it overflowed its own container by exactly that much —
- * measured 20px at `xsm` rising to 48px at `slg`. It stayed invisible for the life of the
- * package because both apps that render it (`ui-showcase`, and `gleks-ui-lab` since later) carry
- * a global reset of their own, so the library was only ever *looked at* under border-box.
- *
- * Matched on the class prefix rather than by listing elements, because the set that needs it is
- * exactly "things the library painted" — including the ones that live on a consumer's own
- * element (`.gog-btn`, `.gog-menu__item`, `.gog-collapsible__trigger`) and would be missed by a
- * `gog-*` tag list. A consumer's own elements are untouched.
- *
- * Specificity is a single class, deliberately: this is a default the library needs, not a
- * decision it should win. `:where()` would drop it to zero and lose to the UA's own
- * `content-box`… which is not a thing, but it would also lose to a consumer's `*` reset setting
- * `content-box` back, and matching that intent is right.
+ * Everything the library paints is border-box, so the package does not depend on a consumer's
+ * box-sizing reset. Matched by class prefix, which also covers classes placed on a consumer's own
+ * elements. One class of specificity: a default, not a decision the library must win.
  */
 [class^='gog-'],
 [class*=' gog-'] {
@@ -63,10 +40,8 @@
 }
 
 /*
- * Scopes reflow to this subtree. Never put it on an element that has to paint something
- * outside its own box — `contain: layout` creates a stacking context, so a popup inside
- * it can no longer stack above the rest of the page no matter its z-index. That rules it
- * out for gog-select and gog-multiselect.
+ * Scopes reflow to this subtree. Never on an element whose popup must escape it: `contain: layout`
+ * creates a stacking context.
  */
 .gog-contained-layout {
   contain: layout style;
@@ -85,9 +60,8 @@
 }
 
 /*
- * Present to assistive tech, invisible on screen. The clip-path/1px recipe rather than
- * `display: none` or `visibility: hidden`, both of which remove the text from the
- * accessibility tree along with the pixels.
+ * Present to assistive tech, invisible on screen. `display: none` and `visibility: hidden` would
+ * remove it from the accessibility tree.
  */
 .gog-visually-hidden {
   position: absolute;
@@ -101,15 +75,9 @@
   white-space: nowrap;
 }
 
-/*
- * `gogBadge`'s classes, global for the same reason as `gog-collapsible`'s below: the
- * directive appends its badge into a *consumer's* element, which is light DOM belonging to
- * that consumer's view, so a scoped stylesheet could never reach it.
- */
+/* `gogBadge`'s classes are global: the badge is appended into a consumer's element. */
 .gog-badge-host {
-  /* The badge is positioned against this element, so it has to be a containing block.
-     Harmless on an already-relative host; a host that is itself absolutely positioned
-     should set its own position after this class, which ordinary specificity allows. */
+  /* The badge's containing block. An absolutely positioned host can set its own position after this. */
   position: relative;
 }
 
@@ -186,26 +154,16 @@
 }
 
 /*
- * `gog-collapsible`'s trigger/content classes, global rather than component-scoped: both
- * are applied via `gogCollapsibleTrigger`/`gogCollapsibleContent` directives to elements a
- * *consumer* projects into `<gog-collapsible>` — light DOM that belongs to the consumer's
- * own view, not `gog-collapsible`'s, so a scoped stylesheet on the component itself would
- * never reach it.
+ * `gog-collapsible`'s trigger and content classes are global: the directives mark elements the
+ * consumer projects, which the component's scoped stylesheet cannot reach.
  */
 .gog-collapsible__trigger {
   cursor: pointer;
 }
 
 /*
- * Scoped through the host on purpose, for one point of specificity the plain
- * `.gog-collapsible__trigger[aria-disabled='true']` (0,2,0) does not have.
- *
- * The trigger is the *consumer's* element, and Angular's emulated encapsulation stamps
- * `[_ngcontent-…]` onto every rule in a component stylesheet — so an ordinary
- * `.my-trigger { cursor: pointer }` in the consumer's own component is also (0,2,0) and wins on
- * source order, since this file loads before their app's styles. Measured: a disabled trigger
- * reading `cursor: pointer` while this rule's `opacity` applied, in the showcase's own demo.
- * A disabled state the consumer has to know to opt out of is not a disabled state.
+ * Scoped through the host for one point of specificity over a consumer's single-class rule, so a
+ * disabled trigger cannot silently lose its disabled cursor.
  */
 gog-collapsible .gog-collapsible__trigger[aria-disabled='true'] {
   cursor: not-allowed;
@@ -214,18 +172,9 @@ gog-collapsible .gog-collapsible__trigger[aria-disabled='true'] {
 
 .gog-collapsible__content {
   /*
-   * Lets the `max-height` transition below run to `max-content` — the default of
-   * `--gog-collapsible-max-height` — instead of refusing to animate to an intrinsic keyword.
-   * That default is what keeps an open panel from clipping its content at an arbitrary
-   * number; this property is only what makes the same value animate.
-   *
-   * Declared here rather than on `:root`: the property is inherited, and a component library
-   * has no business switching keyword interpolation on for a consumer's whole document. It
-   * does inherit into this panel's own descendants, which is harmless — it changes nothing
-   * for an element that is not animating to or from an intrinsic size.
-   *
-   * Unsupported browsers ignore it and the panel snaps open, exactly as it does when a
-   * consumer sets `--gog-collapsible-max-height: none`.
+   * Lets `max-height` animate to the `max-content` default. Set here, not on `:root`, so the
+   * library does not change keyword interpolation for the whole document. Unsupported browsers
+   * snap open.
    */
   interpolate-size: allow-keywords;
   max-height: 0;

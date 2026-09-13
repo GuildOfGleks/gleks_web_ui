@@ -1,37 +1,18 @@
 /*
- * The button's visual block, in a **global** stylesheet rather than the component's own.
- *
- * `gog-button` is not the only thing that renders it: `[gogButton]` applies these same classes to
- * a consumer's own `<a>` or `<button>`, and Angular's emulated encapsulation would never let a
- * component stylesheet reach an element declared in someone else's template. The same reason
- * `gogBadge` and `gog-collapsible` keep their CSS here.
+ * The button's visual block, global rather than in the component: `[gogButton]` applies these
+ * classes to a consumer's own `<a>` or `<button>`, which a component's encapsulated stylesheet
+ * cannot reach.
  *
  * Token layering (see theme.css):
- *   --gog-button-<prop>            per-instance override. Never declared here or in the
- *                               theme, so it always wins when a consumer sets it.
- *   --gog-button-variant-<prop>    internal, set by the variant classes below.
- *   --gog-button-size-<prop>       internal, set by the size classes below.
- *   --gog-button-<variant>-<prop>  the actual values, all in theme.css.
- * Nothing in this file is a literal: every colour, font, metric and duration resolves
- * to a theme token, so a theme can restyle the button without touching this stylesheet.
+ *   --gog-button-<prop>            per-instance override, never declared, so a consumer's value wins
+ *   --gog-button-variant-<prop>    internal, set by the variant classes
+ *   --gog-button-size-<prop>       internal, set by the size classes
+ *   --gog-button-<variant>-<prop>  the values, in theme.css
  */
 /*
- * WCAG 2.5.8 asks 24x24 CSS px of *target*. A transparent `::before` centred on the button carries
- * the size when the button itself is short, so the pointer area is 24px while every painted edge
- * stays where it was. `min-*-size` rather than a fixed one, so it is inert whenever the button is
- * already big enough.
- *
- * **An `xsm` button at its own padding does not need this**, and believing it did is what put this
- * rule on `.gog-btn--xsm` first: 4 + 12 + 4 is 20, but the button draws a 2px border on each side
- * and `box-sizing` is `border-box`, so Chrome measures 24. The token arithmetic that said 20 was
- * not wrong, it was incomplete.
- *
- * What the rule is actually for is a button whose padding has been overridden.
- * `.gog-toast__close` and `.gog-toast__action` set `--gog-button-padding` directly and land at
- * 20px at *any* size class, and a consumer can do the same to any button in the library. So it
- * keys off being a button, not off carrying one particular size class.
- *
- * Not `padding`, not `min-height` on the button itself: both would move the paint.
+ * A transparent `::before` guarantees a 24×24 pointer target (WCAG 2.5.8) without moving any
+ * painted edge. It matters for buttons whose padding was overridden smaller; `min-*` keeps it
+ * inert on buttons that are already big enough.
  */
 .gog-btn::before {
   content: '';
@@ -79,8 +60,7 @@
     var(--gog-button-variant-shadow, var(--gog-button-primary-shadow))
   );
   cursor: pointer;
-  /* An `<a>` carries the UA underline; a `<button>` never did, which is why the component never
-     needed this. Reset here so `[gogButton]` on a link is visually identical to the component. */
+  /* A link carries the UA underline; reset so `[gogButton]` on an `<a>` looks like the component. */
   text-decoration: none;
   transition:
     background-color var(--gog-button-transition-duration) var(--gog-easing),
@@ -89,27 +69,12 @@
 }
 
 /*
- * The doubled class on this rule and the disabled one below is deliberate, and the only two
- * rules in this file that need it.
- *
- * `[gogButton]` goes on the *consumer's* own element, which is the element they style — and
- * Angular's emulated encapsulation stamps `[_ngcontent-…]` onto every rule in a component
- * stylesheet, so an ordinary `.my-btn { cursor: pointer }` is (0,2,0). That exactly ties
- * `.gog-btn:disabled` and wins on source order, because this file loads before the app's own
- * styles. Measured in the showcase: a disabled button went from `not-allowed`/`0.4` to
- * `pointer`/`1` under a single-class consumer rule — it looked and felt enabled while disabled.
- *
- * `:hover` and `:active` below need no help: their `:not(:disabled)` already makes them (0,3,0).
- * The base `.gog-btn` is left beatable on purpose — restyling the look is the consumer's call.
- * These two are not look, they are state and focus visibility, and losing them silently is a
- * correctness and accessibility regression rather than a taste one. A consumer who genuinely
- * wants to restyle them can still do it by being specific about it.
+ * The doubled class on this rule and the disabled one gives one point of specificity over a
+ * consumer's single-class rule, which Angular's encapsulation raises to (0,2,0) and would
+ * otherwise win on source order. Focus visibility and the disabled state must not be lost by
+ * accident; the base look stays freely overridable.
  */
 .gog-btn.gog-btn:focus-visible {
-  /* `--gog-button-focus-ring-color`, not the hover fill this used to read. A hover-weight colour
-     cannot carry focus: on `ghost` and on the severity `outline` combinations the hover fill is a
-     wash, and the ring measured 1.07:1 to 2.65:1 against the page. See the token's own note in
-     `theme.css`. */
   outline: var(--gog-button-focus-ring-width) solid var(--gog-button-focus-ring-color);
   outline-offset: var(--gog-button-focus-ring-offset);
 }
@@ -130,15 +95,9 @@
 }
 
 /*
- * The held state. It changes colour *and* scales, and the colour is the part that matters:
- * `prefers-reduced-motion` switches the transform off below, and until 21.9.0 that was the whole
- * rule — so a reader with animations off pressed a button and nothing whatsoever happened. The
- * ripple does not cover it either: it is off by default and is itself suppressed under reduced
- * motion, deliberately, because it really is decoration. A colour change is not.
- *
- * This sits after `:hover` on purpose. Both are (0,3,0), so source order decides, and a pointer
- * is nearly always hovering the button it is pressing — the press has to win that tie or it is
- * invisible exactly when it is happening.
+ * Pressed: a colour change as well as a scale, because reduced motion removes the scale and the
+ * press must still show. After `:hover` so it wins their specificity tie — a pointer is always
+ * hovering what it presses.
  */
 .gog-btn:active:not(:disabled) {
   background-color: var(
@@ -153,33 +112,10 @@
 }
 
 /*
- * A toggle button that is on, and the only state here that persists rather than tracking the
- * pointer. It therefore has to survive the ones that do not: `:hover` and `:active` both own the
- * background, so a ring is what is left that they cannot paint over. Last of the state rules and
- * (0,3,0) like them, so it wins the tie by source order — a toggled button that loses its ring
- * the moment the pointer arrives would announce `aria-pressed="true"` and show nothing, which is
- * the WCAG 1.4.1 failure this rule exists to prevent.
- *
- * `mixed` is styled like `true`: a partially-checked toggle is on for the purpose of "does this
- * look different from off".
- *
- * This matches `[gogButton]` on a consumer's own element too, which is the whole reason it keys
- * off the attribute rather than an input — the directive styles markup you own, so you write
- * `aria-pressed` there yourself and get the look for free.
- *
- * **A disabled toggle keeps the ring** (21.10.0). It carried `:not(:disabled)` until then, copied
- * from the pointer states above where the guard is correct — but "on, and you cannot change it
- * right now" is a real state, and `disabled` on a real `<button>` does not remove `aria-pressed`,
- * so dropping the look left the button announcing itself as on and looking exactly like an off
- * one: the failure this rule was written to prevent, in the one case nobody looks at.
- * `gog-chip` had it right from the start (`:host(.gog-chip--selected)`, no disabled guard) and
- * the two had drifted apart. The `--gog-button-disabled-opacity` on the rule below dims the ring
- * along with everything else, which is the correct amount of "unavailable".
- *
- * The doubled class is what the removed `:not(:disabled)` was silently paying for: both are
- * (0,3,0), and this rule has to stay level with `:hover:not(:disabled)` to win the tie by source
- * order. It buys the same protection `:focus-visible` and `:disabled` have from a consumer's
- * single-class rule, which is right for a state and wrong for a look — see the comment on those.
+ * A toggle that is on (`aria-pressed` true or mixed) shows an inset ring, the one thing hover and
+ * press do not paint over. It keys off the attribute so it also works on a consumer's own element
+ * with `[gogButton]`. A disabled toggle keeps the ring: it is still on. The doubled class keeps it
+ * level with the pointer states so it wins by source order.
  */
 .gog-btn.gog-btn[aria-pressed='true'],
 .gog-btn.gog-btn[aria-pressed='mixed'] {
@@ -194,8 +130,7 @@
     transition: none;
   }
 
-  /* Only the movement goes. The colour above stays, and with the transition off it lands on the
-     first frame of the press instead of easing in. */
+  /* Only the movement goes; the colour above stays. */
   .gog-btn:active:not(:disabled) {
     transform: none;
   }
@@ -208,7 +143,6 @@
 
 /* === Variants === */
 
-/* primary: solid gold */
 .gog-btn--primary {
   --gog-button-variant-bg: var(--gog-button-primary-bg);
   --gog-button-variant-color: var(--gog-button-primary-color);
@@ -237,7 +171,6 @@
   --gog-button-variant-spinner-color: var(--gog-button-secondary-spinner-color);
 }
 
-/* outline: transparent with golden border */
 .gog-btn--outline {
   --gog-button-variant-bg: var(--gog-button-outline-bg);
   --gog-button-variant-color: var(--gog-button-outline-color);
@@ -252,7 +185,6 @@
   --gog-button-variant-spinner-color: var(--gog-button-outline-spinner-color);
 }
 
-/* ghost: no border, subtle hover */
 .gog-btn--ghost {
   --gog-button-variant-bg: var(--gog-button-ghost-bg);
   --gog-button-variant-color: var(--gog-button-ghost-color);
@@ -269,18 +201,10 @@
 
 /* === Severity ===
  *
- * `severity` is orthogonal to `variant` — a destructive action can be filled, outlined or a
- * ghost and is destructive in all three — so these do not add a fifth variant. They re-point the
- * `--gog-button-variant-*` layer the variant classes above set, and they come *after* those
- * classes so the tie is decided by source order where specificity allows it.
- *
- * Two halves. The severity class carries only the ingredients (`--gog-button-severity-*`, from
- * the per-severity tokens in theme.css); the shape rules below say what a variant does with
- * them, once each rather than once per severity. Four plus three blocks instead of sixteen, and
- * a fifth status colour would be one more block rather than four.
- *
- * The shape rules are `(0,2,0)` through the doubled `:is()`, which is what puts them above the
- * `(0,1,0)` variant classes regardless of the order the two classes appear in on the element.
+ * Severity is orthogonal to variant, so these re-point the variant layer rather than adding a
+ * fifth variant. The severity class carries only ingredients; the shape rules below apply them
+ * once per variant. The doubled `:is()` makes those rules (0,2,0), above the variant classes
+ * whatever order the classes appear in.
  */
 .gog-btn--success {
   --gog-button-severity-fill: var(--gog-button-success-fill);
@@ -318,9 +242,7 @@
   --gog-button-severity-wash: var(--gog-button-info-wash);
 }
 
-/* The two filled variants: the status colour is the fill, and the label is the one that reads
-   on it. `secondary` loses its own neutral fill here, which is the point — a severity says what
-   the action does, and the variant is left saying only how loud it is. */
+/* Filled variants: the status colour is the fill, with its own label. */
 :is(.gog-btn--success, .gog-btn--danger, .gog-btn--warning, .gog-btn--info):is(
   .gog-btn--primary,
   .gog-btn--secondary
@@ -339,9 +261,8 @@
   --gog-button-variant-spinner-color: var(--gog-button-severity-on-fill);
 }
 
-/* Outline: the border and the label are the *ink* rather than the raw status colour, because
-   this label is text on the page and the raw hue clears AA in only five of the eleven themes.
-   Hovering fills with the status colour proper, which is where `-on-fill` comes back. */
+/* Outline: border and label use the ink mix, because the raw hue is too light as text; the hover
+   fills with the status colour. */
 :is(.gog-btn--success, .gog-btn--danger, .gog-btn--warning, .gog-btn--info).gog-btn--outline {
   --gog-button-variant-bg: transparent;
   --gog-button-variant-color: var(--gog-button-severity-ink);
@@ -357,10 +278,8 @@
   --gog-button-variant-spinner-color: var(--gog-button-severity-ink);
 }
 
-/* Ghost: a wash on hover rather than a fill, the same shape the accent ghost has. Its hover
-   label is `--gog-text-color` for the reason 21.9.0 recorded on `--gog-button-ghost-hover-color`
-   — a label and a ground made of the same hue walk toward each other — and the press then fills
-   properly, which is also what the accent ghost does. */
+/* Ghost: a wash on hover with a body-text label (a label and ground of one hue converge), then a
+   filled press. */
 :is(.gog-btn--success, .gog-btn--danger, .gog-btn--warning, .gog-btn--info).gog-btn--ghost {
   --gog-button-variant-bg: transparent;
   --gog-button-variant-color: var(--gog-button-severity-ink);
@@ -405,9 +324,8 @@
 .gog-btn--loading {
   position: relative;
   pointer-events: none;
-  /* Loading buttons stay natively focusable (aria-disabled + aria-busy instead of
-     `disabled`) so keyboard users don't lose focus mid-action. `:disabled` styling
-     below therefore no longer covers this state, so the dim is applied explicitly. */
+  /* Loading buttons stay focusable (aria-disabled + aria-busy, not `disabled`), so the dim is
+     applied here rather than by the `:disabled` rule. */
   opacity: var(--gog-button-loading-opacity);
 }
 
@@ -415,7 +333,6 @@
   visibility: hidden;
 }
 
-/* absolute center so the spinner is always in the middle of the button */
 .gog-btn__spinner {
   position: absolute;
   top: 50%;
@@ -425,10 +342,7 @@
   max-height: var(--gog-button-spinner-max-size);
 }
 
-/*
- * `gog-button` gets its full width through `:host`, having a wrapper element to work with.
- * `[gogButton]` has none — the element *is* the button — so it needs a class of its own.
- */
+/* `gog-button` gets full width through `:host`; `[gogButton]` has no wrapper, so it needs a class. */
 .gog-btn--full-width {
   width: 100%;
 }

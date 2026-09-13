@@ -1,13 +1,6 @@
 /*
- * The projected pieces of `gog-card` and `gog-panel`.
- *
- * Global for the same reason `gog-collapsible`'s trigger/content classes and `[gogButton]`'s
- * `.gog-btn` are: every class below lands on an element the *consumer* wrote — their `<h3>`,
- * their `<img>`, their `<a>` — which is light DOM belonging to the consumer's own view. A
- * component's scoped stylesheet can never reach it, so these rules have to live here or the
- * slots would come out unstyled with no way to fix them from inside the library.
- *
- * Everything each component paints on *itself* stays in its own `.scss`.
+ * The projected pieces of `gog-card` and `gog-panel`. Global because every class here lands on an
+ * element the consumer wrote, which a component's scoped stylesheet cannot reach.
  */
 
 /* ── gog-card ───────────────────────────────────────────────────────────────── */
@@ -21,11 +14,7 @@
   line-height: var(--gog-card-heading-line-height);
 }
 
-/*
- * Media runs to the card's edges rather than sitting inside its padding — that is the whole
- * difference between `gogCardMedia` and an `<img>` a consumer drops in the body, and it is why
- * the negative margins repeat the card's own padding chain instead of a fixed number.
- */
+/* Media runs to the card's edges; the negative margins follow the card's own padding chain. */
 .gog-card__media {
   display: block;
   inline-size: calc(
@@ -58,19 +47,14 @@
 }
 
 /*
- * `gogCardLink` — the whole card activates this one link.
- *
- * The link keeps every bit of its own behaviour (href, Enter, middle-click, "open in new tab");
- * only its hit area grows, as a pseudo-element stretched over the card. The card is the
- * containing block for it (`position: relative` on `gog-card`), so this element itself must NOT
- * be positioned — that is also why the escape rule below excludes it.
+ * `gogCardLink`: the link keeps all its own behaviour and only its hit area grows, as a
+ * pseudo-element over the card. The card is the containing block, so this element must not be
+ * positioned.
  */
 .gog-card__link {
   /*
-   * The card is the affordance — its cursor, its hover elevation and its focus ring all say
-   * "this activates". A link rendered in the browser's blue-and-underlined inside that reads as
-   * a second, separate control sitting on the surface, which is exactly what it is not. One
-   * class of specificity, so a consumer who wants their own link colour simply writes it.
+   * The card is the affordance, so the link inside it does not look like a second control. One
+   * class of specificity, so a consumer can restyle it.
    */
   color: inherit;
   text-decoration: none;
@@ -99,9 +83,8 @@
 }
 
 /*
- * Doubled class for one point of specificity over a consumer's plainest rule — see
- * `scripts/check-state-specificity.mjs`. A disabled card whose link still swallowed clicks
- * would be the same defect the disabled-button rules were hardened against.
+ * Doubled class for one point of specificity over a consumer's plainest rule: a disabled or
+ * loading card must not keep an active link.
  */
 .gog-card--disabled.gog-card--disabled .gog-card__link,
 .gog-card--loading.gog-card--loading .gog-card__link {
@@ -109,17 +92,9 @@
 }
 
 /*
- * Anything *else* interactive inside an interactive card or a collapsible panel header sits
- * above the stretched hit area, instead of being covered by it — a footer button in a clickable
- * card is the common case, and having it silently activate the card's link instead would be the
- * pattern's classic trap.
- *
- * The two elements that own a stretched hit area are excluded: positioning them would make each
- * one its own containing block, and the pseudo-element would then cover the control instead of
- * the surface — the exact thing it exists to spread across.
- *
- * Written entirely in `:where()` so it carries zero specificity: it is a default that must never
- * win against a consumer positioning their own element.
+ * Other interactive elements inside an interactive card or panel header sit above the stretched
+ * hit area, so a footer button does not activate the card's link. The elements that own a stretched
+ * area are excluded. Zero specificity, so it never beats a consumer positioning their own element.
  */
 :where(.gog-card--interactive, .gog-panel__header)
   :where(a, button, input, select, textarea, summary, [tabindex]):where(
