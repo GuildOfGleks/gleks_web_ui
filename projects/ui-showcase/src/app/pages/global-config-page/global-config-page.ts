@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import {
   AutocompleteComponent,
   ButtonComponent,
-  DatepickerComponent,
   GogPanelHeaderDirective,
   GogTooltipDirective,
   InputfieldComponent,
@@ -13,6 +12,7 @@ import {
   ToastContainerComponent,
   ToastService,
 } from '@guildofgleks/ui';
+import { DatepickerComponent } from '@guildofgleks/ui/datepicker';
 
 import { GlobalConfigScopeComponent } from './global-config-scope';
 

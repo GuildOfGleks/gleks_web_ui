@@ -18,6 +18,11 @@
  *                          bundles is two copies, and two copies of `GOG_CONFIG` are two different
  *                          `InjectionToken`s — `provideGogConfig` reaches one and silently misses
  *                          the other. Only `@guildofgleks/ui/shared` keeps it one.
+ *   D. root-never-imports-a-split
+ *                          Nothing in `src/` or `shared/` may import `@guildofgleks/ui/table`,
+ *                          `/datepicker` or `/dialog`. The whole benefit of splitting them rests on
+ *                          it: a root that imports a split entry point pulls it back into the
+ *                          initial bundle of every app, silently, with every build green.
  *
  * **This check went blind once already, which is why it counts what it sees.** Before rule C, the
  * move left it scanning a `lib/shared/` that no longer existed: it reported 29 units instead of
@@ -39,6 +44,14 @@ const sharedRoot = path.join(uiRoot, 'shared');
 
 const ROOT_PACKAGE = '@guildofgleks/ui';
 const SHARED_PACKAGE = '@guildofgleks/ui/shared';
+
+/**
+ * Entry points split out of the root so a lazy route can keep them out of the initial bundle.
+ * The root must never import one: docs/entry-points.md measured that a root which re-exports a
+ * module drags it into every app that imports anything from the root, and the split then does
+ * nothing at all while every build stays green.
+ */
+const SPLIT_ENTRY_POINTS = ['table', 'datepicker', 'dialog'];
 
 const rel = (file) => path.relative(rootDir, file).split(path.sep).join('/');
 
@@ -92,6 +105,17 @@ async function main() {
 
       if (specifier === SHARED_PACKAGE) {
         addEdge(from, 'shared', file);
+        continue;
+      }
+      const split = SPLIT_ENTRY_POINTS.find((name) => specifier === `${ROOT_PACKAGE}/${name}`);
+      if (split) {
+        problems.push(
+          `[root-never-imports-a-split] ${rel(file)}
+` +
+            `      imports ${specifier} — the root and shared must not depend on a split entry point,
+` +
+            `      or it rides into every app's initial bundle and the split buys nothing`,
+        );
         continue;
       }
       if (specifier === ROOT_PACKAGE) {

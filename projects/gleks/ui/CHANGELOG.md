@@ -380,6 +380,31 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Deprecated
 
+- **`gog-table`, `gog-datepicker`/`gog-calendar` and `gog-dialog` move to their own entry points —
+  import them from `@guildofgleks/ui/table`, `/datepicker` and `/dialog`.** The root keeps
+  exporting all 25 symbols until **21.14.0** and stops then, when the code moves. The split is the
+  point: a lazy route using these components currently ships them in the initial bundle anyway,
+  and only an entry point the root does not re-export can change that — measured in
+  `docs/entry-points.md` in the repository.
+
+  - `@guildofgleks/ui/table` — `TableComponent`, `GogColumn`, `GogColumnBodyDirective`,
+    `GogColumnHeaderDirective`, `defaultCompare`, and the types `GogColumnBodyContext`,
+    `GogColumnHeaderContext`, `GogTableRowClickEvent`, `GogTableSelectionMode`,
+    `GogTableSortEvent`, `SortDirection`.
+  - `@guildofgleks/ui/datepicker` — `DatepickerComponent`, `CalendarComponent`, and the types
+    `GogCalendarDay`, `GogDatepickerValue`. The date helpers and `GogDateRange` stay in the root.
+  - `@guildofgleks/ui/dialog` — `DialogService`, `DialogComponent`,
+    `ConfirmationDialogComponent`, `DIALOG_DATA`, `DIALOG_REF`, and the types `DialogRef`,
+    `DialogConfig`, `DialogHandle`, `OpenDialog`, `ConfirmDialogData`.
+
+  **Your editor will not strike the old imports through**, and that is measured rather than
+  overlooked: ng-packagr bundles the root's types into a single export statement and drops the
+  deprecation tag on every re-export. A tag on the class itself would survive — and would strike
+  through the new subpath too, since it is the same class. This entry, `AGENTS.md` and
+  `GOG_DEPRECATIONS` are the notice.
+
+  Switching an import today changes nothing at runtime; both paths reach the same class.
+
 - **`getByPath`, `readOption` and `isSameOptionValue` are deprecated, removed in 21.14.0.** They
   are this library's own plumbing for reading a field off a consumer's object, and they became
   public API because `public-api.ts` re-exported their module wholesale. Nothing in `README.md` or

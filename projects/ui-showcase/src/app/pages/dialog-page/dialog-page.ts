@@ -8,13 +8,15 @@ import {
 } from '@angular/core';
 import {
   ButtonComponent,
-  ConfirmationDialogComponent,
-  DialogComponent,
-  DialogService,
   GogPanelHeaderDirective,
   PanelComponent,
   ToastService,
 } from '@guildofgleks/ui';
+import {
+  ConfirmationDialogComponent,
+  DialogComponent,
+  DialogService,
+} from '@guildofgleks/ui/dialog';
 import { LoadingInventoryDialogComponent } from './loading-inventory-dialog.component';
 import {
   WarehouseRegistrationDialogComponent,

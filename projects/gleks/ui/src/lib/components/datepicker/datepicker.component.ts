@@ -38,7 +38,7 @@ import {
   GogHourFormat,
   GogSize,
 } from '@guildofgleks/ui/shared';
-import { type GogDateRange, formatDate, parseDate } from './date-utils';
+import { type GogDateRange, formatDate, parseDate } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';

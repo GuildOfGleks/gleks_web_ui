@@ -3,13 +3,12 @@ import { ReactiveFormsModule, Validators, FormBuilder, AbstractControl } from '@
 import {
   ButtonComponent,
   CheckboxComponent,
-  DIALOG_REF,
-  DialogRef,
   InputfieldComponent,
   SelectComponent,
   TextareaComponent,
   ToastService,
 } from '@guildofgleks/ui';
+import { DIALOG_REF, DialogRef } from '@guildofgleks/ui/dialog';
 
 export interface WarehouseRegistrationDialogResult {
   registrationCode: string;

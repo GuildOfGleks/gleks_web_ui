@@ -150,6 +150,25 @@ Small, and only one of the three has any visible surface on the site.
   `docs/lab-versioning.md`, deliberately deferred), this is the first release with anything in it
   to render.
 
+- **Three components have their own entry point, and every lab page that imports them has to say
+  so.** `gog-table` (`GogColumn` and its directives with it), `gog-datepicker`/`gog-calendar` and
+  `gog-dialog` with `DialogService` import from `@guildofgleks/ui/table`, `/datepicker` and
+  `/dialog`. The root still exports them in 21.13.0 and stops in 21.14.0, so the lab's own code
+  keeps compiling on 21.13.0 — but its **code samples** are what readers paste, and a sample on the
+  old path teaches the import that is about to break. `ui-showcase` made the same move in 15 files
+  and is the model.
+
+  Two sentences the Table, Datepicker and Dialog pages each need, because readers will not find them
+  anywhere else: **the editor does not strike the old import through** (ng-packagr's bundled types
+  drop the tag on re-exports), and **switching changes nothing until 21.14.0**, when the move is
+  what finally keeps a lazily-used table out of the initial bundle. The comparison page's
+  bundle-size section is the natural place for `docs/entry-points.md`'s numbers: 442 bytes of lazy
+  chunk today for a route holding four heavy components, and 40 kB of initial bundle it should not
+  have had.
+
+- **`@guildofgleks/ui/shared` exists and is internal.** If the token reference or the API pages list
+  import paths, it should not appear as one to use.
+
 - **`GogVariableWindow` and `GogVirtualWindow` are both internal**, so neither belongs in the API
   reference. Worth knowing only so nobody adds them from the changelog.
 

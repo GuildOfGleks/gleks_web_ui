@@ -11,8 +11,6 @@ import {
   AccordionComponent,
   ButtonComponent,
   CheckboxComponent,
-  DialogComponent,
-  DialogService,
   GogAccordionContentDirective,
   GogAccordionItem,
   GogPanelHeaderDirective,
@@ -24,6 +22,7 @@ import {
   ToastContainerComponent,
   ToastService,
 } from '@guildofgleks/ui';
+import { DialogComponent, DialogService } from '@guildofgleks/ui/dialog';
 import {
   ProductQuickviewData,
   ProductQuickviewDialogComponent,

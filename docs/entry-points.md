@@ -50,14 +50,14 @@ reachable from the initial chunk is placed in it.
 A two-entry-point library built with the same ng-packagr, installed into `node_modules` as a real
 package (the lab's path, not the showcase's alias), then consumed by the same throwaway app.
 
-| #   | Question                                                                  | Answer                                                                                                                                                                                                                                                                                        |
-| --- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Does an entry point need to own its files?                                | **Yes.** A `public-api.ts` reaching into `src/lib/` by relative path builds the primary and dies on the secondary: `Cannot destructure property 'pos' of 'file.referencedFiles[index]'`                                                                                                       |
-| 2   | Does a secondary split out of the initial chunk?                          | **Only if the root does not re-export it.** Root re-exporting it: initial 269.7 kB raw, lazy chunk **70 B**. Root not re-exporting it: initial 189.4 kB, lazy chunk **80.4 kB** — the whole heavy unit                                                                                        |
-| 3   | …even when the lazy route imports the subpath directly?                   | **Yes, the re-export still wins.** An unused re-export in a module the app already imports eagerly drags the secondary into the initial chunk                                                                                                                                                 |
-| 4   | May a secondary import the primary?                                       | **Yes.** ng-packagr reorders the build (shared → primary → heavy) on its own, provided the primary does not import the secondary back                                                                                                                                                         |
-| 5   | Does an `InjectionToken` stay one instance across entry points?           | **Yes, when it lives in its own entry point everyone imports by package path.** A root component, the same component inside a lazy secondary, and the secondary itself all read the app's provided value at runtime                                                                           |
-| 6   | Can the root export be marked deprecated without marking the subpath too? | **Only through an `ɵ` alias.** A JSDoc tag inside the export braces flags the root import — but a subpath re-exporting that specifier inherits the flag, so the new, correct import is struck through too. Re-exporting an un-tagged `ɵ`-prefixed alias from the root keeps the subpath clean |
+| #   | Question                                                                  | Answer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| --- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Does an entry point need to own its files?                                | **Yes.** A `public-api.ts` reaching into `src/lib/` by relative path builds the primary and dies on the secondary: `Cannot destructure property 'pos' of 'file.referencedFiles[index]'`                                                                                                                                                                                                                                                                                                                                                                                    |
+| 2   | Does a secondary split out of the initial chunk?                          | **Only if the root does not re-export it.** Root re-exporting it: initial 269.7 kB raw, lazy chunk **70 B**. Root not re-exporting it: initial 189.4 kB, lazy chunk **80.4 kB** — the whole heavy unit                                                                                                                                                                                                                                                                                                                                                                     |
+| 3   | …even when the lazy route imports the subpath directly?                   | **Yes, the re-export still wins.** An unused re-export in a module the app already imports eagerly drags the secondary into the initial chunk                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 4   | May a secondary import the primary?                                       | **Yes.** ng-packagr reorders the build (shared → primary → heavy) on its own, provided the primary does not import the secondary back                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| 5   | Does an `InjectionToken` stay one instance across entry points?           | **Yes, when it lives in its own entry point everyone imports by package path.** A root component, the same component inside a lazy secondary, and the secondary itself all read the app's provided value at runtime                                                                                                                                                                                                                                                                                                                                                        |
+| 6   | Can the root export be marked deprecated without marking the subpath too? | **In source, through an `ɵ` alias — in the published package, not at all.** Measured twice: on source files a tag inside the export braces flags the root import and an `ɵ` alias keeps the subpath clean; but ng-packagr bundles the root's types into one `export { … }` statement and **drops every comment on a specifier** (508 JSDoc blocks survive on declarations in the built `.d.ts`, zero `@deprecated`). A tag on the declaration survives and strikes through the subpath too, since it is the same class; a `const` alias breaks ngtsc. See _As 1b finished_ |
 
 **Finding 2 is the one that would have sunk the refactor.** Moving `gog-table` into an entry point
 while keeping `export { TableComponent }` in `public-api.ts` "for compatibility" — the natural first
@@ -81,10 +81,10 @@ design — produces a package that splits for nobody.
 - **The root stops exporting the heavy units** (finding 2). That is a breaking change, and it gets a
   deprecation window, in two phases:
 
-| Phase | Release         | What happens                                                                                                                                                                                                                                                           |
-| ----- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1** | the next minor  | `shared` becomes an entry point. `/table`, `/datepicker`, `/dialog` exist as **thin re-exports of the root**, through `ɵ` aliases (finding 6). The root's exports of those symbols are `@deprecated`, removal the following minor. Nothing breaks; nothing splits yet. |
-| **2** | the minor after | The heavy units' code **moves** into their entry points and the root stops exporting them. Consumers who changed their imports notice nothing and get the split. `check:deprecations` fails the build if this phase is late.                                           |
+| Phase | Release         | What happens                                                                                                                                                                                                                                                                                                                         |
+| ----- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1** | the next minor  | `shared` becomes an entry point. `/table`, `/datepicker`, `/dialog` exist as **thin re-exports of the root**. The root's exports of those symbols are tagged `@deprecated` for the ratchet and the manifest — not for editors, which never see the tag (finding 6). Removal the following minor. Nothing breaks; nothing splits yet. |
+| **2** | the minor after | The heavy units' code **moves** into their entry points and the root stops exporting them. Consumers who changed their imports notice nothing and get the split. `check:deprecations` fails the build if this phase is late.                                                                                                         |
 
 The benefit arrives in phase 2, not phase 1, and that is unavoidable: finding 3 means no consumer
 can split while the root still re-exports, whichever path they import from.
@@ -97,7 +97,7 @@ can split while the root still re-exports, whichever path they import from.
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | 0   | Part 1 and Part 2 — measure before moving anything                                                                                       | ✅ 2026-09-13          |
 | 1a  | `shared` → `projects/gleks/ui/shared/` entry point; every import rewritten to the package path; scripts, generators and tsconfigs follow | ✅ 2026-09-13          |
-| 1b  | `/table`, `/datepicker`, `/dialog` thin subpaths via `ɵ` aliases; root exports deprecated for the next minor                             | 🔜                     |
+| 1b  | `/table`, `/datepicker`, `/dialog` thin subpaths; root exports deprecated for the next minor                                             | ✅ 2026-09-13          |
 | 2   | Move the three units' code; drop the root exports; re-run Part 1's variant D and publish the number                                      | 🔜 (the minor after 1) |
 
 ### As 1a finished
@@ -129,6 +129,35 @@ comparing a count rather than reading a pass:
 Two scanners also had to learn a second directory — `check:tokens` rule K (which would otherwise
 have reported the checkbox size scale dead a second time, since `checkable-control.config.ts`
 lives in `shared/`) and the deprecation generator and check.
+
+### As 1b finished
+
+Three entry points, each about a kilobyte of pure re-export. The date helpers and `GogDateRange`
+moved to `shared/` instead, so the root keeps exporting them without a deprecation — 21 advertised
+helpers were never going to be deprecated for a move they do not need. **25 symbols** are
+deprecated from the root: 11 for the table, 4 for the datepicker, 10 for the dialog including
+`DialogService`, which has to travel with the component it opens. `GOG_DEPRECATIONS` carries all
+28 symbols (these and yesterday's three) and three tokens. `ui-showcase` imports all 25 from the
+subpaths now — 15 files — and its bundle still holds exactly one `gog-table` component definition.
+
+**Finding 6 reversed on the built package, and it took the plan's only consumer-visible notice
+with it.** The `ɵ` aliases did exactly what the source-file measurement said. Then a type check
+against `dist/` reported no deprecation anywhere — not on the root import either — and the reason
+is in the bundled `.d.ts`: every export is merged into one `export { … }` statement, and comments on
+specifiers do not survive. A tag on the declaration would survive and would strike through
+`@guildofgleks/ui/table` as well, because it is one class. **No placement gives "root struck
+through, subpath clean" in a published Angular package.** The aliases were removed — 25 extra root
+exports that bought nothing — and the tags stay on the specifiers, where they drive
+`check:deprecations` and the manifest. The notice a consumer actually gets is `CHANGELOG.md`,
+`AGENTS.md` (a paragraph in each of the three sections) and `GOG_DEPRECATIONS`.
+
+The same finding reaches yesterday's three: `getByPath`, `readOption` and `isSameOptionValue` were
+moved onto specifiers in 1a so the ratchet would not demand deleting code the package calls — which
+also made them invisible to editors. Same trade, same notice.
+
+**`check:layering` gained rule D** — nothing in `src/` or `shared/` may import a split entry point.
+Phase 2's whole benefit rests on it (finding 2), and breaking it would leave every build green.
+Verified by planting the violation.
 
 **1a before 1b, and not in the same commit** — 1a changes nothing a consumer can see and touches 61
 files, 1b changes the public surface and touches four.

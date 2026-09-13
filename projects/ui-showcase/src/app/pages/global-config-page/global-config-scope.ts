@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
   AutocompleteComponent,
   ButtonComponent,
-  DatepickerComponent,
   GogTooltipDirective,
   InputfieldComponent,
   ScrollComponent,
@@ -10,6 +9,7 @@ import {
   TextareaComponent,
   provideGogConfig,
 } from '@guildofgleks/ui';
+import { DatepickerComponent } from '@guildofgleks/ui/datepicker';
 
 interface RoleOption {
   id: number;

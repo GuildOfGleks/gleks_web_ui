@@ -2,11 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
 import {
   ButtonComponent,
   CheckboxComponent,
-  GogColumn,
   InputfieldComponent,
   SpinnerComponent,
-  TableComponent,
 } from '@guildofgleks/ui';
+import { GogColumn, TableComponent } from '@guildofgleks/ui/table';
 
 import {
   BENCHMARK_DANGER_THRESHOLD,

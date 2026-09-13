@@ -2,12 +2,11 @@ import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/
 import {
   AutocompleteComponent,
   ButtonComponent,
-  GogColumn,
   SpinnerComponent,
   SpinnerOverlayComponent,
-  TableComponent,
   provideGogConfig,
 } from '@guildofgleks/ui';
+import { GogColumn, TableComponent } from '@guildofgleks/ui/table';
 
 /** A stand-in for the loading indicator an app already owns — three bars, nothing from here. */
 @Component({

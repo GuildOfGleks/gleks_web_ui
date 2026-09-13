@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
   ButtonComponent,
-  GogColumn,
   GogPanelHeaderDirective,
   PanelComponent,
   ScrollComponent,
-  TableComponent,
 } from '@guildofgleks/ui';
+import { GogColumn, TableComponent } from '@guildofgleks/ui/table';
 
 interface DemoRow {
   component: string;

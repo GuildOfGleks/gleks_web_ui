@@ -4,7 +4,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { DatepickerComponent } from './datepicker.component';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
-import type { GogDateRange } from './date-utils';
+import type { GogDateRange } from '@guildofgleks/ui/shared';
 
 describe('DatepickerComponent', () => {
   let fixture: ComponentFixture<DatepickerComponent>;

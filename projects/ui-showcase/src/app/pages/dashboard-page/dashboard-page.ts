@@ -1,12 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import {
   GogButtonDirective,
-  GogColumn,
-  GogColumnBodyDirective,
-  GogColumnHeaderDirective,
-  ConfirmationDialogComponent,
-  DialogComponent,
-  DialogService,
   GogDropdownOption,
   GogTagVariant,
   InputfieldComponent,
@@ -17,11 +11,21 @@ import {
   MultiselectComponent,
   PanelComponent,
   SelectComponent,
-  TableComponent,
   TagComponent,
   ToastContainerComponent,
   ToastService,
 } from '@guildofgleks/ui';
+import {
+  ConfirmationDialogComponent,
+  DialogComponent,
+  DialogService,
+} from '@guildofgleks/ui/dialog';
+import {
+  GogColumn,
+  GogColumnBodyDirective,
+  GogColumnHeaderDirective,
+  TableComponent,
+} from '@guildofgleks/ui/table';
 
 type MemberStatus = 'active' | 'invited' | 'suspended';
 

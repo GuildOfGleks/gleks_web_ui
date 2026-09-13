@@ -2,17 +2,15 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
   ButtonComponent,
   GogButtonDirective,
-  GogColumn,
-  GogColumnBodyDirective,
   GogMenuItemDirective,
   GogMenuTriggerDirective,
   GogPanelHeaderDirective,
   IconComponent,
   MenuComponent,
   PanelComponent,
-  TableComponent,
   ToggleComponent,
 } from '@guildofgleks/ui';
+import { GogColumn, GogColumnBodyDirective, TableComponent } from '@guildofgleks/ui/table';
 
 interface Document {
   id: number;

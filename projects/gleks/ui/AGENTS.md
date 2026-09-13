@@ -434,6 +434,12 @@ place instead of stacking a duplicate.
 
 ### `DialogService`
 
+**Import from `@guildofgleks/ui/dialog`** — `DialogService`, `DIALOG_DATA`, `DIALOG_REF`, `DialogRef`, `DialogConfig` and the dialog components. The root still exports them in 21.13.0 and
+stops in **21.14.0**, which is when the code moves into that entry point and a lazy route that
+uses them stops carrying them in the initial bundle. **Your editor will not strike the root
+import through**: ng-packagr's bundled types drop the deprecation tags on re-exports, measured. The
+notice is this line, `CHANGELOG.md` and `GOG_DEPRECATIONS`.
+
 Root-provided singleton, imperative dynamic-component dialogs. Requires a `<gog-dialog />`
 placed once in your app (see [gog-dialog](#gog-dialog) below — also **not** automatic).
 
@@ -485,7 +491,7 @@ itself via `DIALOG_REF`:
 
 ```ts
 import { Component, inject } from '@angular/core';
-import { DIALOG_DATA, DIALOG_REF } from '@guildofgleks/ui';
+import { DIALOG_DATA, DIALOG_REF } from '@guildofgleks/ui/dialog';
 
 @Component({ selector: 'app-edit-dialog', template: `…` })
 export class EditDialogComponent {
@@ -502,7 +508,11 @@ export class EditDialogComponent {
 
 ## Component reference
 
-Every component below is exported from `@guildofgleks/ui`'s root — `import { X } from '@guildofgleks/ui'`.
+Every component below is exported from `@guildofgleks/ui`'s root — `import { X } from '@guildofgleks/ui'` —
+**except `gog-table`, `gog-datepicker`/`gog-calendar` and `gog-dialog` with `DialogService`**, which
+have their own entry points: `@guildofgleks/ui/table`, `/datepicker` and `/dialog`. They are the
+three components heavy enough to be worth keeping out of an app's initial bundle, and splitting
+them is how that becomes possible (21.14.0; see each section).
 "CVA" = implements `ControlValueAccessor` (works with `[formControl]`/`formControlName`).
 
 ### Buttons & choices
@@ -949,6 +959,13 @@ they are ORed with `disabled` rather than overriding it, and unlike it they do n
 control or cut pointer events over the track, which would take the still-enabled thumb with them.
 
 #### `gog-datepicker` / `gog-calendar`
+
+**Import from `@guildofgleks/ui/datepicker`** — `DatepickerComponent`, `CalendarComponent`, `GogCalendarDay` and `GogDatepickerValue`; the date
+helpers (`formatDate`, `parseDate`, …) and `GogDateRange` stay in the root. The root still exports them in 21.13.0 and
+stops in **21.14.0**, which is when the code moves into that entry point and a lazy route that
+uses them stops carrying them in the initial bundle. **Your editor will not strike the root
+import through**: ng-packagr's bundled types drop the deprecation tags on re-exports, measured. The
+notice is this line, `CHANGELOG.md` and `GOG_DEPRECATIONS`.
 
 `gog-datepicker` is a field + panel; `gog-calendar` is the month grid alone (what `inline` mode
 renders). Native `Date` only — no date library, no adapter.
@@ -1653,6 +1670,13 @@ they never asked to be.
 ```
 
 #### `gog-table<T>`
+
+**Import from `@guildofgleks/ui/table`** — `TableComponent`, `GogColumn` and its template directives, `defaultCompare`, and the table's
+event and context types. The root still exports them in 21.13.0 and
+stops in **21.14.0**, which is when the code moves into that entry point and a lazy route that
+uses them stops carrying them in the initial bundle. **Your editor will not strike the root
+import through**: ng-packagr's bundled types drop the deprecation tags on re-exports, measured. The
+notice is this line, `CHANGELOG.md` and `GOG_DEPRECATIONS`.
 
 | Input                         | Type                          | Default                                   |
 | ----------------------------- | ----------------------------- | ----------------------------------------- |

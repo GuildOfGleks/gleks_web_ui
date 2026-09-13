@@ -2,18 +2,20 @@ import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/
 import {
   ButtonComponent,
   CheckboxComponent,
+  GogPanelHeaderDirective,
+  GogSize,
+  GogTagVariant,
+  PanelComponent,
+  TagComponent,
+} from '@guildofgleks/ui';
+import {
   GogColumn,
   GogColumnBodyDirective,
   GogColumnHeaderDirective,
-  GogPanelHeaderDirective,
-  GogSize,
   GogTableRowClickEvent,
   GogTableSortEvent,
-  GogTagVariant,
-  PanelComponent,
   TableComponent,
-  TagComponent,
-} from '@guildofgleks/ui';
+} from '@guildofgleks/ui/table';
 
 interface DemoRow {
   component: string;

@@ -904,6 +904,12 @@ can land without an announced removal window.
   an offset is a displacement from where a thing would otherwise be, and this is the space
   between two things. Found 2026-09-04 while auditing the `-offset` family.
 
+- **Secondary entry points — phase 1 done 2026-09-13; phase 2 is due in 21.14.0 and the build
+  enforces it.** `@guildofgleks/ui/shared` is an entry point, and `/table`, `/datepicker`,
+  `/dialog` exist as thin re-exports with the root's 25 exports deprecated. Phase 2 moves their code
+  and drops the root exports; `check:deprecations` fails the 21.14.0 build if it has not happened.
+  Read `docs/entry-points.md` — especially finding 6, which reversed on the built package.
+
 - **Secondary entry points — `docs/entry-points.md` holds the plan**, measured end to end on
   2026-09-13 before any file moved. Read its Part 2 before touching this: the natural design
   (split everything, root re-exports for compatibility) splits for nobody. Earlier notes follow.

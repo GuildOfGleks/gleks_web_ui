@@ -14,6 +14,7 @@ export * from './checkable-control.config';
 export * from './clearable-state';
 export * from './config';
 export * from './control-id';
+export * from './date-utils';
 export * from './deprecations';
 export * from './dropdown-base';
 export * from './dropdown-overlay';

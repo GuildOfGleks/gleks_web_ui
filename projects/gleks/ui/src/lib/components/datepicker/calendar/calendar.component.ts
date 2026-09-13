@@ -34,7 +34,7 @@ import {
   startOfDay,
   weekdayNames,
   withTime,
-} from '../date-utils';
+} from '@guildofgleks/ui/shared';
 
 /** What `gog-calendar` and `gog-datepicker` carry, depending on `selectionMode`. */
 export type GogDatepickerValue = Date | GogDateRange | null;

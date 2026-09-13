@@ -18,8 +18,44 @@ export * from './lib/components/tabs/tabs-state';
 export * from './lib/components/card/card.component';
 export * from './lib/components/panel/panel.component';
 export * from './lib/components/checkbox/checkbox.component';
-export * from './lib/components/datepicker/calendar/calendar.component';
-export * from './lib/components/datepicker/datepicker.component';
+/*
+ * Table, datepicker and dialog: deprecated here, and the tags on these export specifiers are for
+ * `check:deprecations` and the generated manifest, not for a consumer's editor. ng-packagr bundles
+ * the root's types into one `export { ... }` statement and drops every comment on a specifier, so
+ * nothing below reaches a published `.d.ts` -- measured in docs/entry-points.md (Part 2, finding 6).
+ * A tag on the declaration would survive, and would strike through `@guildofgleks/ui/table` too,
+ * because it is the same class. The announcement is CHANGELOG.md, AGENTS.md and GOG_DEPRECATIONS.
+ */
+export {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/datepicker`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  CalendarComponent,
+} from './lib/components/datepicker/calendar/calendar.component';
+export type {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/datepicker`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  GogCalendarDay,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/datepicker`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  GogDatepickerValue,
+} from './lib/components/datepicker/calendar/calendar.component';
+export {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/datepicker`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  DatepickerComponent,
+} from './lib/components/datepicker/datepicker.component';
 /*
  * Named, not wholesale, though nothing is dropped: `AGENTS.md` advertises `formatDate`,
  * `parseDate` and "a family of date-math helpers", so this whole set is supported on purpose.
@@ -49,16 +85,59 @@ export {
   startOfDay,
   weekdayNames,
   withTime,
-} from './lib/components/datepicker/date-utils';
-export type { GogDateRange } from './lib/components/datepicker/date-utils';
+} from '@guildofgleks/ui/shared';
+export type { GogDateRange } from '@guildofgleks/ui/shared';
 export * from './lib/components/divider/divider.component';
 export * from './lib/components/progressbar/progressbar.component';
 export * from './lib/components/ripple/ripple.directive';
 export * from './lib/components/toggle/toggle.component';
 export * from './lib/components/radio-group/radio-group.component';
-export * from './lib/components/dialog/confirmation-dialog/confirmation-dialog.component';
-export * from './lib/components/dialog/dialog.component';
-export * from './lib/components/dialog/dialog.tokens';
+export {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/dialog`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  ConfirmationDialogComponent,
+} from './lib/components/dialog/confirmation-dialog/confirmation-dialog.component';
+export type {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/dialog`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  ConfirmDialogData,
+} from './lib/components/dialog/confirmation-dialog/confirmation-dialog.component';
+export {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/dialog`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  DialogComponent,
+} from './lib/components/dialog/dialog.component';
+export {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/dialog`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  DIALOG_DATA,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/dialog`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  DIALOG_REF,
+} from './lib/components/dialog/dialog.tokens';
+export type {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/dialog`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  DialogRef,
+} from './lib/components/dialog/dialog.tokens';
 export * from './lib/components/icon/icon.component';
 export * from './lib/components/toast/toast.component';
 export * from './lib/components/toast/toast-container/toast-container.component';
@@ -74,11 +153,110 @@ export * from './lib/components/skeleton/skeleton.component';
 export * from './lib/components/paginator/paginator.component';
 export * from './lib/components/scroll/scroll.component';
 export * from './lib/components/spinner/spinner-overlay/spinner-overlay.component';
-export * from './lib/components/table/column';
-export * from './lib/components/table/table.component';
+export {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  GogColumn,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  GogColumnBodyDirective,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  GogColumnHeaderDirective,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  defaultCompare,
+} from './lib/components/table/column';
+export type {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  GogColumnBodyContext,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  GogColumnHeaderContext,
+} from './lib/components/table/column';
+export {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  TableComponent,
+} from './lib/components/table/table.component';
+export type {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  GogTableRowClickEvent,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  GogTableSelectionMode,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  GogTableSortEvent,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/table`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  SortDirection,
+} from './lib/components/table/table.component';
 export * from './lib/components/spinner/spinner.component';
 export * from './lib/components/tooltip/tooltip.directive';
-export * from './lib/services/dialog-service/dialog.service';
+export {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/dialog`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  DialogService,
+} from './lib/services/dialog-service/dialog.service';
+export type {
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/dialog`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  DialogConfig,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/dialog`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  DialogHandle,
+  /**
+   * @deprecated since 21.13.0 (2026-09-13) — import it from `@guildofgleks/ui/dialog`. From that
+   * minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.
+   * Removed in 21.14.0.
+   */
+  OpenDialog,
+} from './lib/services/dialog-service/dialog.service';
 export * from './lib/services/toast-service/toast-service';
 export * from './lib/services/theme-service/theme.service';
 export type {

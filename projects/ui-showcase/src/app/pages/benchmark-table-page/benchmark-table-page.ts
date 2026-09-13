@@ -7,13 +7,8 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import {
-  CheckboxComponent,
-  GogColumn,
-  GogPanelHeaderDirective,
-  PanelComponent,
-  TableComponent,
-} from '@guildofgleks/ui';
+import { CheckboxComponent, GogPanelHeaderDirective, PanelComponent } from '@guildofgleks/ui';
+import { GogColumn, TableComponent } from '@guildofgleks/ui/table';
 
 import { BenchmarkPanel } from '../../benchmark/benchmark-panel/benchmark-panel';
 import { BenchmarkResult, BenchmarkRunner } from '../../benchmark/benchmark-runner';

@@ -19,7 +19,7 @@ export interface GogDeprecation {
 }
 
 /**
- * Everything `@guildofgleks/ui` currently deprecates: 3 symbol(s) and 3 token(s).
+ * Everything `@guildofgleks/ui` currently deprecates: 28 symbol(s) and 3 token(s).
  *
  * Generated from the library's own source — `@deprecated` tags for symbols, and the stylesheets
  * themselves for tokens — so it cannot drift from what actually still resolves. Meant for tooling
@@ -32,11 +32,209 @@ export interface GogDeprecation {
 export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
   {
     kind: 'symbol',
+    name: 'CalendarComponent',
+    replacement:
+      'import it from `@guildofgleks/ui/datepicker`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'ConfirmationDialogComponent',
+    replacement:
+      'import it from `@guildofgleks/ui/dialog`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'ConfirmDialogData',
+    replacement:
+      'import it from `@guildofgleks/ui/dialog`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'DatepickerComponent',
+    replacement:
+      'import it from `@guildofgleks/ui/datepicker`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'defaultCompare',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'DIALOG_DATA',
+    replacement:
+      'import it from `@guildofgleks/ui/dialog`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'DIALOG_REF',
+    replacement:
+      'import it from `@guildofgleks/ui/dialog`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'DialogComponent',
+    replacement:
+      'import it from `@guildofgleks/ui/dialog`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'DialogConfig',
+    replacement:
+      'import it from `@guildofgleks/ui/dialog`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'DialogHandle',
+    replacement:
+      'import it from `@guildofgleks/ui/dialog`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'DialogRef',
+    replacement:
+      'import it from `@guildofgleks/ui/dialog`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'DialogService',
+    replacement:
+      'import it from `@guildofgleks/ui/dialog`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
     name: 'getByPath',
     replacement:
       "read the field yourself; this is the package's own plumbing and it leaves the root. It stays inside `@guildofgleks/ui/shared`, the internal entry point, which is not a replacement to build on.",
     since: '21.13.0',
     sinceDate: '2026-09-12',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'GogCalendarDay',
+    replacement:
+      'import it from `@guildofgleks/ui/datepicker`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'GogColumn',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'GogColumnBodyContext',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'GogColumnBodyDirective',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'GogColumnHeaderContext',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'GogColumnHeaderDirective',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'GogDatepickerValue',
+    replacement:
+      'import it from `@guildofgleks/ui/datepicker`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'GogTableRowClickEvent',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'GogTableSelectionMode',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'GogTableSortEvent',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
     removedIn: '21.14.0',
   },
   {
@@ -50,11 +248,38 @@ export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
   },
   {
     kind: 'symbol',
+    name: 'OpenDialog',
+    replacement:
+      'import it from `@guildofgleks/ui/dialog`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
     name: 'readOption',
     replacement:
       "read the field yourself; this is the package's own plumbing and it leaves the root. It stays inside `@guildofgleks/ui/shared`, the internal entry point, which is not a replacement to build on.",
     since: '21.13.0',
     sinceDate: '2026-09-12',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'SortDirection',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
+    removedIn: '21.14.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'TableComponent',
+    replacement:
+      'import it from `@guildofgleks/ui/table`. From that minor on it stays out of the initial bundle of an app that only uses it behind a lazy route.',
+    since: '21.13.0',
+    sinceDate: '2026-09-13',
     removedIn: '21.14.0',
   },
   {

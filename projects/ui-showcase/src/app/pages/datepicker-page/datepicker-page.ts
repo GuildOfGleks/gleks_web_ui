@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
-  CalendarComponent,
-  DatepickerComponent,
   GogDateRange,
   GogPanelHeaderDirective,
   GogSize,
   PanelComponent,
   formatDate,
 } from '@guildofgleks/ui';
+import { CalendarComponent, DatepickerComponent } from '@guildofgleks/ui/datepicker';
 
 const TODAY = new Date();
 
