@@ -19,6 +19,25 @@ Every component `.scss` file follows the rules below. See
 - Drive modifiers from the template with `[class.gog-btn--lg]="size() === 'lg'"`
   bindings — never `ngClass`.
 
+## Comments in `src/styles/` ship to every consumer
+
+Everything under `src/styles/` — `theme.css`, the global stylesheets and the presets — is copied
+into the package as written, comments included, and `index.css` puts the global ones in every app's
+bundle. Before 21.15.0 comments were three quarters of that stylesheet's gzipped size. So a comment
+there:
+
+- **says why, not what** — the reason a value is what it is, or why a rule is global, doubled or
+  ordered the way it is. The declaration already says what it does.
+- **is one to three lines.** A longer argument belongs in a `docs/` plan or the changelog.
+- **carries no history** (versions, "was X until", "found on"), **no measurements** and **no
+  references to `docs/`**, which consumers do not have. Those go in `CHANGELOG.md` and the plan.
+- **keeps section headers exact** (`/* ── Name ───`): `generate-tokens.mjs` groups `TOKENS.md` by
+  them. In `theme.css`'s derived block a comment must not contain a brace — the theme-starter
+  generator counts them.
+
+Component `.scss` comments are stripped from the published bundle, so this rule is about
+`src/styles/` only.
+
 ## Theming via CSS custom properties — the three layers
 
 Every themeable value is a **CSS custom property named `--gog-<block>-*`**. Where it is

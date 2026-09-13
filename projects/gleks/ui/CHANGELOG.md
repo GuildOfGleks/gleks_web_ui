@@ -28,6 +28,17 @@ reached 1.0, so breaking changes may land in minor versions.
   framed as "a behaviour change on an existing input": a table whose rows open a detail page and
   also carry checkboxes would have started selecting on every navigation.
 
+### Changed
+
+- **The stylesheets ship 45% lighter, because their comments were rewritten.** Every
+  comment in `styles/` — `theme.css`, the global stylesheets `index.css` imports, and the presets —
+  now says why a value is what it is, in a line or two. Release history, measurements, internal
+  plan references and restatements of the declaration beside them are gone; that record lives in
+  this changelog and the repository. `index.css` as an app bundles it went from 52.6 KB to 28.9 KB
+  gzipped, and `theme.css` alone from 40.8 KB to 22.5 KB. **No declaration changed** — every file
+  is identical to its previous version once comments and whitespace are removed — so nothing
+  renders differently and no override is affected.
+
 ### Fixed
 
 - **A keyboard user could not select a row in a `gog-table` with `interactiveRows`.** The row's

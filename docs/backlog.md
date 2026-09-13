@@ -790,44 +790,14 @@ reason may stop holding.
   of `theme.css`. That is a different kind of check from every other one here, which is the
   decision to take before writing it.
 
-- **`theme.css` payload — re-measured 2026-09-11, and the measurement moved the whole entry.**
-  Loaded whole even by an app importing three components: **170 923 B / 38 681 B gzip at
-  21.12.0**, against 106 521 B / 20 227 B at 21.6.1, 99 492 B / 19 070 B at 21.6.0, and the
-  92 596 B / 16 817 B this was filed against. That is **+60 % raw and +91 % gzip in six
-  releases**, and the entry's own trigger has fired: it said three data points trending one way
-  meant the next component-shaped release was the point to re-argue the trade rather than
-  re-measure it, and 20 KB gzip was the number that did not justify breaking "one stylesheet, one
-  import".
-
-  **But the split this entry proposes would not recover any of it, and the reason is the finding.
-  Comments are 46 % of the file and 72 % of the gzipped payload.**
-
-  |                      | raw       | gzip         |
-  | -------------------- | --------- | ------------ |
-  | as shipped           | 170 923 B | 38 681 B     |
-  | comments stripped    | 88 216 B  | **10 787 B** |
-  | what the prose costs | 82 707 B  | **27 894 B** |
-
-  Stripped, `theme.css` would be **half** its 21.6.1 gzipped size while carrying 50 % more
-  tokens — the declarations themselves are repetitive and compress almost to nothing. Nor is it
-  the presets: those are already separate files under `styles/presets/`, and `theme.css` holds
-  only `light` and `dark`. Splitting per component, per preset, or per anything divides the 10 KB
-  that is not the problem.
-
-  **So the decision is about the prose, and it is a real trade rather than a free win.** Those
-  comments are this library's design record — why `--gog-elevation-key-blur` is 3 and not 2, why
-  a status fill deepens away from its own label, which defect each token exists because of — and
-  they are **not** recoverable from anywhere else in the package: `TOKENS.md` is generated from
-  the same file but carries only the names, grouped. A consumer reading `node_modules` today
-  learns all of it; one reading a minified file learns nothing. Three ways out, and the choice
-  needs the owner: ship `theme.css` minified and the commented original beside it as a second
-  file; teach `generate-tokens.mjs` to lift the comments into `TOKENS.md` so the record moves to
-  the document that is already documentation; or decide 28 KB gzip is what a self-documenting
-  stylesheet costs and close this entry for good. **What should not happen is a fourth
-  re-measurement**, which is all this entry has produced in three fillings.
-
-  The bench in `gleks-ui-lab/public/docs/compare-full.md` tracks the published figure and is
-  itself stale at 21.7.2 — see the entry above it.
+- ~~**`theme.css` payload.**~~ **Closed 2026-09-13, in 21.15.0, by rewriting the comments.** The
+  measurement had shown comments were three quarters of the gzipped stylesheet, and the owner's call
+  was that most of them were notes — some stale, some very long — rather than a design record worth
+  shipping. Every comment in `styles/` now says why in a line or two; history, measurements and
+  plan references are gone. `index.css` as bundled: 52.6 KB to 28.9 KB gzipped; `theme.css`: 40.8 KB
+  to 22.5 KB. Declarations were proven unchanged by comparing each file with comments and
+  whitespace stripped. The rule that keeps them that way is in `styling.instructions.md`, "Comments in
+  `src/styles/` ship to every consumer".
 
 - **The error line's spacing is fixed, and the filing had it backwards** — kept because the
   mistake is the reusable part. Filed 2026-09-04 as "three of the six fields put no space above

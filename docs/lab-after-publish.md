@@ -51,3 +51,10 @@ build.
 - **Space on a row's checkbox ticks it now** in a table with `interactiveRows` (21.15.0's fix; before
   it, the key fired `gogRowClick` instead). Nothing on the site claims otherwise, checked; worth
   knowing only if a page describes the keyboard behaviour of a selectable, interactive table.
+
+- **The stylesheets are 45% lighter**, so the comparison page's CSS figures are stale the moment
+  21.15.0 installs: `theme.css` 22.5 KB and the bundled `index.css` 28.9 KB gzipped, against the
+  40.8 KB and 51.4 KB `compare-full.md` measured on 2026-09-13. Update the CSS table, the short
+  version's "Required stylesheet" row, the prose that says most of the stylesheet is prose (it no
+  longer is — say what changed instead), the FAQ's bundle answer, and `theme-starter.css`
+  (`npm run generate:theme-starter`, which copies the derived layer's comments too).
