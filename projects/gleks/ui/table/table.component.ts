@@ -855,9 +855,18 @@ export class TableComponent<T extends object> {
     this.gogRowClick.emit({ row, index, originalEvent });
   }
 
-  /** Enter and Space activate the focused row; Space must not also scroll the page. */
+  /**
+   * Enter and Space activate the focused row; Space must not also scroll the page.
+   *
+   * **Only when the row itself has focus.** A keydown from a control inside a cell bubbles here
+   * too, and before 21.14.1 this handler took it: Space on the selection checkbox was prevented —
+   * so the box never ticked — and fired `gogRowClick` instead, which left keyboard users unable to
+   * select a row at all in a table with `interactiveRows`. The same went for Enter on a button or
+   * link in a cell. That key belongs to the control.
+   */
   protected onRowKeydown(row: T, index: number, event: KeyboardEvent): void {
     if (!this.interactiveRows()) return;
+    if (event.target !== event.currentTarget) return;
     if (event.key !== 'Enter' && event.key !== ' ') return;
     event.preventDefault();
     this.emitRowClick(row, index, event);

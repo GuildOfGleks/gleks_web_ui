@@ -4,6 +4,20 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.14.1] - planned
+
+### Fixed
+
+- **A keyboard user could not select a row in a `gog-table` with `interactiveRows`.** The row's
+  Enter/Space handler took those keys from anything inside the row, not just from the focused row:
+  Space on the selection checkbox was prevented, so the box never ticked, and fired `gogRowClick`
+  instead — and Enter on a button or link in a cell activated the row as well as the control. With
+  the mouse everything worked, which is how it shipped in 21.4.0 and lasted ten minors: the spec
+  dispatched the keys on the `<tr>` itself, the one place the bug could not appear. Found by
+  pressing Space on the showcase's lazy table while planning row-click selection, and confirmed with
+  a real keyboard in Chrome before the fix and after it. The row now answers Enter and Space only
+  when it is the row that has focus.
+
 ## [21.14.0] - 13.09.2026
 
 ### Removed

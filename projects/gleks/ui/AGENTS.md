@@ -1855,7 +1855,9 @@ where it holds zero or one row — one shape rather than a union to narrow on ev
 
 `gogRowClick` fires on a click regardless, but a `<tr>` is not focusable, so on its own that is a
 mouse-only affordance. `interactiveRows` makes rows focusable and styles them as clickable, and
-Enter/Space then activate the focused row. If the action is really "open this one thing", a link
+Enter/Space then activate the focused row — only the row itself: those keys on a checkbox, button
+or link inside a cell stay with that control (since 21.14.1; before it, Space on the selection
+checkbox fired the row instead of ticking the box). If the action is really "open this one thing", a link
 or button inside a cell is better than a whole-row target.
 
 `gog-column` inputs: `field` (required, dot-paths ok), `header`, `sortable` (default `false`),

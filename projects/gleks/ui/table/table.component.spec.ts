@@ -592,6 +592,27 @@ describe('TableComponent — outputs, lazy mode and selection', () => {
       expect(host.rowClicks.length).toBe(2);
       expect(host.rowClicks[0].originalEvent).toBeInstanceOf(KeyboardEvent);
     });
+
+    it('leaves Enter and Space alone when they come from a control inside the row', async () => {
+      // The defect this pins: Space on the selection checkbox was prevented (the box never
+      // ticked) and turned into a row click, so a keyboard user could not select a row.
+      host.interactiveRows.set(true);
+      host.selectionMode.set('multiple');
+      await settle();
+
+      const box = fixture.nativeElement.querySelector(
+        '.gog-table__td--select input',
+      ) as HTMLInputElement;
+      const space = new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
+      const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+      box.dispatchEvent(space);
+      box.dispatchEvent(enter);
+      await settle();
+
+      expect(space.defaultPrevented).toBe(false);
+      expect(enter.defaultPrevented).toBe(false);
+      expect(host.rowClicks).toEqual([]);
+    });
   });
 
   describe('lazy mode', () => {
