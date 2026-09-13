@@ -712,19 +712,18 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
-- **`compare-full.md`'s whole bench is measured at 21.7.2, and five minors have shipped since.**
-  Its header dates every figure to 2026-09-02 and the page says plainly that "every figure below
-  moves when any of these libraries publishes", so nothing there is dishonest — but the byte
-  counts, the dependency tree and the two token counts in its prose (1 289 in one section, 1 312
-  in another, for the same thing; it is 1 456 now) all predate the elevation family and the
-  geometry sweep. **Re-running it needs the three bench folders with `@angular/material` and
-  `primeng` installed, which this workspace does not carry**, and half-updating it — refreshing
-  our rows against 21.12.0 while Material's and PrimeNG's stay on a 2026-09-02 install — would
-  break the one thing that makes the page trustworthy: all three measured on one day, on one
-  machine, by the commands it prints. So it waits for a full pass rather than a patch. The one
-  edit made in the meantime (2026-09-11) was to stop the Theming section restating a token count
-  at all: it points at the measured table instead, which removes both the staleness and the
-  disagreement between the two numbers.
+- ~~**`compare-full.md`'s whole bench is measured at 21.7.2.**~~ **Closed 2026-09-13**: re-run end
+  to end against `@guildofgleks/ui@21.14.0`, `@angular/material@22.1.6` and `primeng@22.1.1`, in three
+  isolated folders outside the repository, with the commands the page prints — every table, the
+  short comparison page's bars and the FAQ's figures together. Kept for what moved, because the
+  page states it rather than quietly changing numbers: the whole library grew from 112.8 KB to
+  123.1 KB gzipped (still under four Material components at 153.6 KB, but 1.25× rather than 1.36×),
+  `index.css` from 29.8 KB to 51.4 KB gzipped (74% of `theme.css`'s gzipped bytes are comments — the
+  payload entry below), and the whole-library recipe needed four `export *` lines since 21.14.0 —
+  bundling the root alone would have silently dropped the table, datepicker and dialog. The page
+  also gained the caveat it had been missing: these are partially compiled packages bundled
+  without the Angular linker, fair between the three libraries and not what one component costs in
+  a real app.
 
 - **The lab's bundle budget has 118 kB of headroom again, because 21.14.0 bought some back.**
   `gleks-ui-lab`'s initial bundle is **981.69 kB** on 21.14.0 against a `maximumError` of 1.1MB,
