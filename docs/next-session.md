@@ -5,18 +5,18 @@
 table. Nothing in it changes the package's shape, so `npm run check:install` is not required for it.
 `docs/lab-after-publish.md` has its 21.15.0 section waiting. The comparison bench is re-measured.
 
-**What is left needs a decision from the owner rather than more work:**
+21.15.0 also carries the stylesheet comment rewrite: `theme.css`, the global stylesheets and the
+presets now say why in a few lines, and `styling.instructions.md` has the rule that keeps them so.
 
-- **`theme.css` ships its design record as comments** — 74% of its gzipped bytes. Three ways out in
-  `docs/backlog.md` (Rough edges): a minified file beside the commented one, the comments lifted into
-  `TOKENS.md`, or keep it and close the entry.
-- **`themes.md` iteration 4** — five theme slots across three families are unbuilt; build them or
-  close the iteration as scoped.
-- **A root component used only behind a lazy route stays in the initial bundle** (`docs/backlog.md`,
-  Structural) — measure what a real app would save before designing more entry points.
-- **Input masking** (`docs/feedback-triage.md`, the one item left) needs a written plan first.
-- **The lab examples refactor** (`docs/lab-examples-handoff.md`) has converted one legacy page of
-  thirty.
+**Deferred by the owner on 2026-09-13 — do not start these without asking:**
+
+- **`themes.md` iteration 4** (five unbuilt theme slots) — later.
+- **Input masking** (`docs/feedback-triage.md`, the one item left) — with the next batch of new
+  components, since it is new `gog-inputfield` API.
+- **The lab examples refactor** (`docs/lab-examples-handoff.md`, one legacy page of thirty).
+- **More entry points for root components used behind lazy routes** — measured, not designed.
+  `docs/backlog.md` (Structural) has the numbers: about a quarter of the initial transfer in a
+  four-route app, at best.
 
 ## Two lessons worth more than the fixes
 

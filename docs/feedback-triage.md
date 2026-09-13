@@ -160,7 +160,8 @@ on `gog-inputfield` **and** on a consumer's own `<input>`, the same argument tha
 `[gogButton]` a directive. But that is a plan to write, not a conclusion to act on.
 
 **One item left, since 2026-09-13**: input masking, which still needs a written plan first. The
-whole-row click shipped in 21.15.0 as `selectOnRowClick`.
+whole-row click shipped in 21.15.0 as `selectOnRowClick`. The owner deferred the mask on 2026-09-13
+until the next batch of new components, which is when new API is being designed anyway.
 
 ---
 

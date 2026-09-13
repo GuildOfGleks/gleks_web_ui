@@ -889,9 +889,39 @@ can land without an announced removal window.
   Not a defect — tree-shaking still works, and an app pays only for what it uses — and not cheap:
   the only fixes are more entry points (per component, or per hub — `icon`, `scroll`, `spinner`,
   `button`, `select` carry most of the graph; the survey below counted 51 edges) or a root that
-  stops re-exporting what moves, each with its own deprecation cycle. **Measure what an app would
-  actually save before deciding**: for most apps the eager page already uses buttons and icons, and
-  the saving is only the components a lazy route alone uses.
+  stops re-exporting what moves, each with its own deprecation cycle.
+
+  **Measured 2026-09-13, design deferred by the owner.** A fresh CLI 21.2 app (no SSR) on the
+  published 21.14.0, four `loadComponent` routes using 20 root components between them plus the
+  three split entry points — dashboard (card, progressbar, tag, skeleton, alert, badge), orders
+  (table, paginator, select, inputfield, chip), edit (datepicker, dialog, inputfield, select,
+  checkbox, textarea, radio group, toggle, button), settings (tabs, slider, button toggle,
+  accordion). Each route was built with those components and again as a bare `<p>`, under three
+  eager shells. Initial total, raw / estimated transfer:
+
+  | Eager shell                                      | Routes bare     | Routes with components | Added by the routes |
+  | ------------------------------------------------ | --------------- | ---------------------- | ------------------- |
+  | none (no library on the first page)              | 203.5 / 56.5 kB | 253.1 / 70.5 kB        | +49.6 / +14.0 kB    |
+  | login (button, inputfield)                       | 296.6 / 77.2 kB | 507.9 / 109.6 kB       | +211.3 / +32.5 kB   |
+  | admin (`gogButton`, icon, menu, toast container) | 315.8 / 83.1 kB | 530.7 / 114.3 kB       | +214.9 / +31.2 kB   |
+
+  Attributed by package from `--stats-json`, the admin shell's +215 kB raw is 205 kB of this
+  library (root +182, `shared` +23) and 10 kB of Angular. With the admin shell, the dashboard and
+  settings routes' lazy chunks are about 0.5 kB each: everything they render ships up front. One
+  route at a time, the admin shell's initial transfer grows by 5.7 kB (dashboard), 16.6 (orders),
+  17.6 (edit) and 11.7 (settings); together 31.2, because select and inputfield are shared.
+
+  **What a complete split would save is the "none" row's library share**: with no library import
+  on the first page, all 252 kB raw of root and `shared` went to lazy chunks and only Angular's own
+  growth stayed.
+  For this app that is **about 28 kB of transfer out of a 114 kB initial bundle, a quarter** (31.2 less Angular's 10 kB
+  raw, estimated) — the
+  ceiling, reached only if every root component a lazy route uses could leave the root module.
+  Two things bound it. Angular has the same mechanism: `@angular/core` is one module too, and in
+  the "none" row the routes pulled 42 kB raw of it into the initial bundle with the library
+  entirely lazy, so no library split removes that part. And an app whose first page already
+  renders a field or a select has paid for the heaviest shared dependencies, so its saving is
+  smaller than this one's. Scripts and scenarios were throwaway; the numbers above are the record.
 
 - ~~**Secondary entry points — phase 1 done 2026-09-13; phase 2 is due in 21.14.0.**~~ **Closed
   2026-09-13**: phase 2 moved the three units' code into their entry points and the root stopped
