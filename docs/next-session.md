@@ -1,41 +1,29 @@
 # Where to start
 
-**One thing stands between here and the unbuilt components, and it is sized and scoped:** the
-mechanical half of secondary entry points. Everything else on the durable lists is either closed
-or blocked on publishing 21.13.0.
+**Phase 1 of `docs/entry-points.md` is done; phase 2 must wait for 21.13.0 to ship.** Phase 2 moves
+the code of `gog-table`, `gog-datepicker`/`gog-calendar` and `gog-dialog` into their entry points
+and removes the root's 25 deprecated exports. Doing it before 21.13.0 is published would delete the
+exports in the same release that deprecated them — a window of zero. `check:deprecations` fails the
+21.14.0 build if it has not happened, so it cannot be forgotten either.
+
+**Read `docs/entry-points.md` Part 2 before touching phase 2.** Findings 2 and 4 are the design;
+finding 6 reversed on the built package and explains why no editor will show the deprecation.
+
+## What phase 2 has to do, in order
+
+1. Move `src/lib/components/table`, `…/datepicker` and `…/dialog` plus `src/lib/services/dialog-service`
+   into `projects/gleks/ui/table/`, `/datepicker/`, `/dialog/`. Their imports of other components
+   become `@guildofgleks/ui` (finding 4 — a secondary may import the root).
+2. Drop the 25 deprecated exports from `src/public-api.ts` and their manifest entries.
+3. The test `include` in `angular.json` resolves against `sourceRoot`: add `../table/**/*.spec.ts`
+   and the other two, and **compare the count to 1188** — 1a lost 110 tests silently to exactly this.
+4. `check:layering`'s scan has to learn the three directories, or it goes blind the way it did in 1a.
+5. Re-run Part 1's variant D on the real CLI and publish the number. It is the whole point.
 
 ## The state of the lists
 
-| Section         | Open                                                                 |
-| --------------- | -------------------------------------------------------------------- |
-| **Defects**     | none — every entry left is a record of closed work or a lesson       |
-| **Gaps**        | the unbuilt-component list only, which is the thing waiting on this  |
-| **Rough edges** | none actionable — what is left is lab-side and blocked until publish |
-| **Structural**  | secondary entry points, below                                        |
-
-## Secondary entry points — read this before touching it
-
-The prerequisite is **done and gated**: `shared/` no longer imports upward and
-`npm run check:layering` keeps it that way. Two cycles had to go first, because ng-packagr refuses
-a cycle between entry points and a cycle is invisible until something tries to cut along it.
-
-Two things were then measured rather than assumed, and both change the job:
-
-1. **An entry point owns its files.** A pilot whose `public-api.ts` reached into `src/lib/` by
-   relative path builds the primary, starts the secondary and dies with
-   `Cannot destructure property 'pos' of 'file.referencedFiles[index]'`. So this is a **source-tree
-   move** of 34 component folders, not manifests laid over the current one.
-2. **`shared` therefore becomes a published path.** Cross-entry-point relative imports duplicate
-   the file into every bundle that reaches it — and `GOG_CONFIG` duplicated is two different
-   `InjectionToken`s, silently. So `@guildofgleks/ui/shared` is public, republishing helpers this
-   release deliberately narrowed out of the root.
-
-**Settle #2 before the first file moves.** It is the decision the "build it" call did not include,
-and it partly undoes `4c00126`.
-
-The graph is in `docs/backlog.md`: 34 components, 51 cross-component edges, hubs are `icon`,
-`ripple`, `scroll`, `spinner`, `skeleton`, `button`. That shape argues for one entry point per
-component over a few groups.
+Defects: none. Rough edges: nothing actionable. Structural: entry points, above. Gaps: the
+unbuilt-component list, which now has nothing in front of it except phase 2's release timing.
 
 ## What 21.13.0 has become
 

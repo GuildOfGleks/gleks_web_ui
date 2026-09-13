@@ -93,7 +93,12 @@ always the version being worked on.
 **21.13.0 is in flight and is large**: `gog-alert`, `--gog-button-focus-ring-color`, the toast's
 severity colours, `check:tokens` rule J, and **virtualization across all four collection
 components** — `virtualize` on `gog-select`, `gog-multiselect`, `gog-autocomplete` and
-`gog-table`, plus the two dropdown-placement fixes the work surfaced. Its heading still reads
+`gog-table`, plus the two dropdown-placement fixes the work surfaced — and **the first secondary
+entry points** (`docs/entry-points.md` phase 1): `@guildofgleks/ui/shared` (internal, so
+`GOG_CONFIG` exists once), and `/table`, `/datepicker`, `/dialog` as thin re-exports with the root's
+copies deprecated for 21.14.0. **Shared code lives in `projects/gleks/ui/shared/` now, not
+`src/lib/shared/`, and is imported as `@guildofgleks/ui/shared`** — `check:layering` fails on a
+relative import. Its heading still reads
 `planned`, so `npm run check:release` fails, and **that is the correct state**: dating it is
 cutting the release, which is rule 1's territory and the user's alone.
 
