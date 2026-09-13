@@ -86,13 +86,14 @@ weight.
       `
 Just what you import. Every component is standalone and the package sets \`"sideEffects":
 false\`, so a production bundler tree-shakes out anything you don't reference — importing
-\`ButtonComponent\` alone doesn't pull in the other 30 components.
+\`ButtonComponent\` alone doesn't pull in the other 31 components.
 
-One structural difference from Material and PrimeNG worth knowing: this package has a **single
-entry point**. There is no \`@guildofgleks/ui/button\` to import from — everything comes from
-\`@guildofgleks/ui\`, and unused symbols are removed by the bundler rather than never being
-imported in the first place. In practice that produces the same bundle for a normal app; it
-matters only if your build pipeline reasons about package subpaths.
+Tree-shaking is not code-splitting, though. The root package is **one module**: once anything in
+your initial bundle imports from it, every component you use from it lands there too — including
+one you only use behind a lazy route. The three heavy enough for that to matter have their own entry points
+since 21.13.0: \`@guildofgleks/ui/table\`, \`/datepicker\` and \`/dialog\`. Import them from there. In
+21.13.0 that changes nothing yet; in 21.14.0 their code moves in, the root stops exporting them,
+and a lazily-used table stays out of the initial bundle.
 `,
     ),
     item(
@@ -278,14 +279,19 @@ proper roles, labels and \`aria-*\` state precisely so that this is possible.
     item(
       'Can it handle a 10 000-row table or a 10 000-option select?',
       `
-Not by rendering them all — **nothing in the library virtualizes**. \`gog-table\` renders every
-row of the current page and \`gog-select\` every option in the list, so very large collections
-will crawl.
+Yes, if you ask for it. Since 21.13.0 all four collection components — \`gog-select\`,
+\`gog-multiselect\`, \`gog-autocomplete\` and \`gog-table\` — take \`[virtualize]="true"\` and
+render only the rows in view: on 10 000 options that is 21ms before a panel appears rather than
+512ms. It is **off by default** and never turns itself on at a row count, because a windowed list
+behaves differently (\`Ctrl+F\` finds only rendered rows). The table's version needs
+\`maxHeight\` and \`fullWidth\`, and measures its rows as it goes, since table rows cannot be
+given a fixed height.
 
-What exists instead is the server-side half of the problem: \`gog-table\`'s \`lazy\` mode hands
-sorting and paging to your backend so only one page ever reaches the DOM, \`gog-paginator\`
-does the same for your own lists, and \`gog-autocomplete\` fetches in pages as the user scrolls.
-For a genuinely large grid rendered client-side, use a dedicated data-grid.
+That is the DOM half. The fetch half is separate and composes with it: \`gog-table\`'s \`lazy\`
+mode hands sorting and paging to your backend, \`gog-paginator\` does the same for your own
+lists, and \`gog-autocomplete\`'s \`gogLoadMore\` fetches in pages as the user scrolls. A
+\`lazy\` table still stamps every row of the page it was given, so a long page wants both. What
+the library does not have is a data grid — no column grouping, frozen columns or row expansion.
 `,
     ),
   ]),
