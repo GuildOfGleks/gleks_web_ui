@@ -1,14 +1,12 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
   GogButtonDirective,
-  GogColumn,
-  GogColumnBodyDirective,
   GogMenuItemDirective,
   GogMenuTriggerDirective,
   IconComponent,
   MenuComponent,
-  TableComponent,
 } from '@guildofgleks/ui';
+import { GogColumn, GogColumnBodyDirective, TableComponent } from '@guildofgleks/ui/table';
 
 interface DocumentRow {
   readonly id: number;
