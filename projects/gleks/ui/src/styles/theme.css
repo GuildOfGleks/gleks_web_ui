@@ -1,88 +1,62 @@
 /*
  * @guildofgleks/ui — baseline theme
  *
- * Every token the components read, with a working default, so the library renders
- * correctly from a single import and a consumer can override only what they care about.
+ * Every token the components read, with a working default, so the library renders correctly
+ * from one import and a consumer overrides only what they care about.
  *
  * ── The three layers ─────────────────────────────────────────────────────────────
- *   1. Foundation  — palette, type scale, spacing, motion, focus. Restyles everything.
- *   2. Component   — `--gog-<component>-*`, spelled out as the component's own element
- *                    name. Every colour, font, border, radius, shadow, padding and
- *                    duration each component paints with lives here, so a theme can
- *                    restyle one component without touching its stylesheet.
- *   3. Instance    — a handful of deliberately UNDECLARED tokens (`--gog-button-bg`,
- *                    `--gog-button-padding`, `--gog-tag-bg`, …) that variant/size classes
- *                    fall back through. Left unset on purpose: a value declared here
- *                    would out-cascade the variant classes and pin every button to one
- *                    look. Set them on an element to override a single instance.
+ *   1. Foundation — palette, type, spacing, motion, focus. Restyles everything.
+ *   2. Component  — `--gog-<component>-*`. Everything a component paints, so a theme can
+ *                   restyle one component without touching its stylesheet.
+ *   3. Instance   — a few deliberately UNDECLARED tokens (`--gog-button-bg`, `--gog-tag-bg`, …)
+ *                   that variant and size classes fall back through. Declaring them here would
+ *                   out-cascade those classes; set them on an element to style one instance.
  *
- * No component stylesheet declares a `--gog-*` default of its own — everything a
- * component paints resolves to a token below.
+ * ── Why two blocks ───────────────────────────────────────────────────────────────
+ * A custom property's `var()` is substituted where it is declared, not where it is read. A
+ * token derived from the palette and declared only on `:root` would ignore a `data-theme`
+ * subtree that changes the palette.
  *
- * ── Why there are two blocks, and which one to add a token to ────────────────────
- * A custom property's `var()` references are substituted on the element that *declares*
- * it, not where it is read. So `--gog-button-primary-bg: var(--gog-accent-color)` declared on
- * `:root` freezes to the root palette: a `data-theme` scope further down the tree could
- * change `--gog-accent-color` and buttons inside it would not follow.
- *
- *   `:root`             — literals only (and the light palette default). Values that
- *                         reference nothing, so resolving them once at the root is right.
- *   `:root, [data-theme]` — every token whose value reads another token. Re-declared on
- *                         each theme scope so it re-derives from that scope's palette
- *                         and metrics. **A new token that contains `var(` goes here.**
+ *   `:root`               — literals only, resolved once.
+ *   `:root, [data-theme]` — every token that reads another token, re-declared on each theme
+ *                           scope so it re-derives there. **A new token containing `var(` goes here.**
  *
  * ── Adding a theme ───────────────────────────────────────────────────────────────
- * Declare a palette against the attribute value; the derived layer re-resolves for you:
+ * Declare a palette against the attribute; the derived layer follows:
  *
  *   :root[data-theme='mine'], [data-theme='mine'] { --gog-accent-color: #ff4edb; }
  *
- * Listing both selectors makes the theme work at the root *and* on any subtree, so a
- * single page can show several themes side by side.
+ * Both selectors, so the theme works at the root and on any subtree.
  */
 
 :root {
   /* ── Typography ───────────────────────────────────────────────────────────────
-     Generic stacks on purpose: a UI library should not force a webfont download on
-     its consumers. Point these at your own families to restyle all text at once.
-     `styles/fonts.css` is an optional import that wires up the showcase's families. */
+     Generic stacks, so the library never forces a webfont download. `styles/fonts.css` is an
+     optional import with the showcase's families. */
   --gog-font-heading: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --gog-font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --gog-font-mono: ui-monospace, SFMono-Regular, 'JetBrains Mono', monospace;
 
-  /* 11px, below `xs`. The chip and the tag both wrote it as a literal at `xsm` — the same value
-     chosen twice, independently, which is a missing rung rather than two opinions, exactly as
-     `slg` was. Moving them to `xs` instead would have made `xsm` and `sm` the same size, which
-     is the one thing `xsm` exists to avoid. */
+  /* Its own step so `xsm` controls stay smaller than `sm` ones. */
   --gog-text-2xs: 0.6875rem;
   --gog-text-xs: 0.75rem;
   --gog-text-sm: 0.875rem;
   --gog-text-md: 1rem;
   --gog-text-lg: 1.125rem;
-  /* 20px, between `lg` and `xl`. Named for the control size it serves rather than continuing the
-     t-shirt run, because that is what asked for it: `gog-button` and the field controls both
-     needed a step for their `slg` size and, having none, both wrote `1.25rem` as a literal — the
-     same value chosen twice, independently, which is a missing rung and not two opinions. The
-     gap from 1.125 to 1.5 is the widest in the scale, so it was the one likely to be filled by
-     hand. */
+  /* Named for the `slg` control size it serves; fills the widest gap in the scale. */
   --gog-text-slg: 1.25rem;
   --gog-text-xl: 1.5rem;
   --gog-text-2xl: 2rem;
   --gog-text-3xl: 3rem;
 
-  /* Weight, the third character axis after casing and tracking — and the one 21.7.0's character
-     layer missed, which is how fifteen component tokens came to hold a bare number. A house style
-     that wants lighter chrome sets these four and nothing else; before them it meant finding and
-     re-listing every one. Four steps because four are used: no `normal`, because nothing in the
-     library paints 400 and an unused token is API nobody asked for. */
+  /* Weight is a character axis: a house style changes these four and every component follows.
+     No 400 step, because nothing paints it. */
   --gog-font-weight-medium: 500;
   --gog-font-weight-semibold: 600;
   --gog-font-weight-bold: 700;
   --gog-font-weight-heavy: 900;
 
-  /* Leading, the fourth character axis. Twenty component tokens held a bare number — seven of
-     them the same 1.4 — so a house style that wanted roomier text had to find every one. Six
-     steps because six values are painted; `gog-panel`'s heading keeps its own 1.25, which is
-     off this scale on purpose the way an 11px chip is off the type scale. */
+  /* Leading, the fourth character axis. `gog-panel`'s heading stays off this scale on purpose. */
   --gog-line-height-none: 1;
   --gog-line-height-tight: 1.2;
   --gog-line-height-snug: 1.3;
@@ -90,63 +64,38 @@
   --gog-line-height-relaxed: 1.5;
   --gog-line-height-loose: 1.6;
 
-  /* The "emphasis" casing character — labels, buttons, section and table headers all shout
-     the same way by default. Not every uppercase/1px-tracking declaration in this file reads
-     these two: only the ones that genuinely share this idea do. A few (gog-tabs among them)
-     stay their own literal on purpose, because normal case or a different tracking reads
-     better there — see docs/themes.md, iteration 1, for the full audit of what did and did
-     not qualify. */
+  /* The shared "emphasis" casing for labels, buttons and headers. Components whose text reads
+     better in normal case (tabs, for one) keep their own values rather than reading these. */
   --gog-text-transform: uppercase;
   --gog-letter-spacing: 1px;
 
   /* ── Spacing & geometry ───────────────────────────────────────────────────────
-
-     `--gog-density` is the whole spacing system in one number. It multiplies every step
-     of the scale below, and every component padding and gap derives from that scale, so
-     a theme makes the entire library compact or roomy without naming a single component:
+     `--gog-density` multiplies every spacing step, and every component padding and gap derives
+     from those steps, so one number makes the whole library compact or roomy:
 
        [data-theme='compact'] { --gog-density: 0.75; }
 
-     This is the density half of docs/themes.md's character layer — the same idea as
-     --gog-radius for corners. Before it existed, 177 component paddings and gaps were
-     literals in two different units, and a theme that wanted tighter controls had to
-     re-list all of them; check-tokens.mjs rule G now fails a build that adds another.
-
-     The steps are named for their pixel value at density 1, because a t-shirt scale
-     stops being readable somewhere around the fourth size and this one has fourteen.
-     The five original t-shirt names are kept as aliases: they are public API, they are
-     what `theme-starter.css` and every existing consumer theme use, and they cost
-     nothing to keep.
-
-     Only the multiplier itself lives here — the scale is in the derived block below,
-     because every step reads this token and so has to re-resolve inside each theme
-     scope. A step declared here would be computed once against :root's density and a
-     [data-theme] subtree would inherit that number, not its own. */
+     Steps are named for their pixel value at density 1; the t-shirt names remain as aliases. The
+     scale itself is in the derived block, because a step that reads `--gog-density` has to
+     re-resolve inside each theme scope. */
   --gog-density: 1;
 
-  /* The ground a *raised* surface paints. Equal to the plain surface by default, because on a
-     light theme elevation reads as a shadow and the surface itself does not change.
-
-     On a dark theme a shadow has nothing to darken — 21.7.1 found `elevated` and `outlined`
-     cards rendering identically under `data-theme="dark"`, both a thin ring on the same fill.
-     Dark themes therefore lift this token instead, which is how elevation has to be expressed
-     when the page is already near-black. Each dark theme sets it; light themes leave it alone. */
+  /* What a raised surface paints. Equal to the surface on light themes, where a shadow carries
+     elevation; dark themes lift it instead, because a shadow has nothing to darken on a near-black
+     page. */
 
   --gog-radius: 8px;
-  /* Three border-weight tiers, not one: --gog-control-border-width (2px) is form fields,
-     --gog-panel-border-width (1px) is raised/floating surfaces (card, dialog, dropdown panel,
-     tooltip — see README.md's note on --gog-panel-*), and this pair is everything smaller and
-     inline — chip, tag, badge, toggle, table rows, tabs, calendar cells. It happens to share
-     panel's value today; kept separate anyway; a theme wanting thick floating panels but thin
-     inline chips (or the reverse) needs the two independently settable. */
+  /* Three border tiers: controls (2px), raised surfaces (`--gog-panel-border-width`) and this one
+     for small inline marks — chip, tag, badge, table rows. Separate so a theme can thicken one
+     without the others. */
   --gog-border-width: 1px;
   --gog-border-style: solid;
   --gog-panel-border-width: 1px;
   --gog-panel-border-style: solid;
 
   /* ── Motion ──────────────────────────────────────────────────────────────────
-     Every component transition/animation is expressed in these. Set them to 0s to
-     flatten all motion theme-wide (components also honour prefers-reduced-motion). */
+     Every transition reads these, so 0s flattens all motion. Components also honour
+     prefers-reduced-motion. */
   --gog-duration-fast: 0.12s;
   --gog-duration-base: 0.15s;
   --gog-duration-slow: 0.2s;
@@ -158,13 +107,9 @@
   --gog-disabled-opacity: 0.4;
 
   /* ── Control metrics ─────────────────────────────────────────────────────────
-     Five-tier scale: xsm/slg bookend the original sm/md/lg (restored below to
-     their pre-compaction numbers) as new extremes for extra-tight or extra-roomy
-     layouts. */
-  /* The clear (×) button's glyph, as a fraction of its box. One number written five times —
-     `gog-autocomplete`, `gog-datepicker`, `gog-inputfield`, `gog-multiselect` and `gog-select`
-     all had their own `0.7` for the same part. `gog-textarea` keeps its own `1` deliberately:
-     its clear button sits in a corner rather than in the field's icon row. */
+     Five sizes: xsm, sm, md, lg, slg. */
+  /* The clear (×) glyph as a fraction of its button, shared by every dropdown and the input.
+     `gog-textarea` keeps 1: on a multi-line box 0.7 reads as a speck. */
   --gog-control-clear-icon-ratio: 0.7;
   --gog-control-border-width: 2px;
   --gog-control-border-style: solid;
@@ -188,76 +133,40 @@
   /* ── Button sizing ─────────────────────────────────────────────────────────── */
 
   /* ── Field sizing (input / select / multiselect share one scale) ─────────────
-     The offsets are spacing and follow --gog-density with everything else; the glyph
-     box does not, because an icon that shrinks with the padding stops being legible
-     well before the padding stops being usable. Only the offsets move.
-
-     Each inset is the text's start edge: one offset before the glyph, the glyph, one
-     offset after. It was five hand-measured literals (docs/iteration-8-plan.md tuned
-     them in a browser) that happened to satisfy that identity, so nothing here moves
-     at density 1 — but a literal cannot follow the density knob, and at 0.75 the text
-     used to keep a 36px inset against 7px of padding. Stated as the sum it always was,
-     it just works. */
+     Offsets follow `--gog-density`; the glyph box does not, because an icon that shrinks with the
+     padding stops being legible first. The text inset is derived as offset + glyph + offset. */
   --gog-field-icon-glyph-xsm: 12px;
   --gog-field-icon-glyph-sm: 14px;
   --gog-field-icon-glyph: 16px;
 
   /* ── Float label geometry (input / textarea / select / multiselect) ─────────
-     One scale for every field that can float its label. Each control reads these
-     through its own `--gog-<block>-float-label-*` token in the derived layer below,
-     so setting a value here retunes all of them at once while a single control can
-     still be tuned on its own. `reserve` is the headroom added inside the field for
-     the 'in'/'on' variants; `in-top` is where the label lands once floated for 'in';
-     `over-gap`/`over-reserve` are the gap above the border and the space permanently
-     kept clear for the 'over' variant. */
+     One scale for every field that floats its label; each control aliases it, so one value retunes
+     all of them and a single control can still be tuned alone. */
   --gog-field-float-label-reserve: 14px;
   --gog-field-float-label-in-top: 6px;
   --gog-field-float-label-over-reserve: 1.4em;
 
   /* ── Elevation ───────────────────────────────────────────────
-     A ladder of six heights, `--gog-elevation-0` through `-5`, generated in the derived block
-     below from the knobs here. Z doubles: 0, 1, 2, 4, 8, 16. No theme writes a step; a theme
-     turns these knobs and every step follows, which is the whole reason the family exists --
-     before it, eleven themes hand-authored 22 shadow values with no relationship to each other,
-     and two of them gave a modal dialog the elevation of a card because restating the second
-     value was work.
+     Knobs for the six-step ladder generated in the derived block (`--gog-elevation-0` to `-5`,
+     Z = 0, 1, 2, 4, 8, 16). A theme turns these; it never writes a step, so every surface keeps
+     its relative height.
 
-     A step is two lights. The **contact shadow** hugs the object and does not grow with height:
-     that is what ambient occlusion does, and it is what this library already did in the three
-     places it wrote two soft layers (`0 1px 2px` to `0 1px 3px`, every time). The **key light**
-     is the one that moves -- its offset is Z and its blur is three times it.
+     Each step is two lights: a contact shadow that hugs the object at every height, and a key light
+     whose offset is Z and whose blur is 3Z. Soft themes drop the key straight down; hard-offset
+     themes set blur to 0; glow themes set y to 0.
 
-     **Three, not two, and the number was measured rather than adopted.** The ruleset this comes
-     from (`docs/component-geometry.md`, L10) specifies blur = 2Z. Every shadow the library
-     shipped disagreed: across 26 layers the ratio runs 1.33 to 6.00 with a median of exactly
-     3.00, and 16 of the 26 are 3.00 on the nose. The rule was written from the physics and the
-     library was written from looking at it; on this one the library was consistent and the rule
-     was not, so 3 it is. It falls out well -- at the top step the blur is 48px, which is the
-     dialog's own shipped blur to the pixel.
-
-     The three geometry knobs are multipliers per unit of Z, and between them they cover every
-     style a theme in this repo actually uses. Soft (the default) drops the key straight down.
-     A hard-offset theme -- `bevel`, `ledger` -- sets x and y to a fraction and blur to 0. A glow
-     theme -- `terminal` -- sets y to 0 and keeps blur, and the key light becomes a halo without
-     the ladder knowing anything about halos.
-
-     What is deliberately *not* in a step: the hairline ring and the top-edge catch light. Both
-     are below as their own tokens, because they belong to particular surfaces rather than to
-     height -- a dark theme's overlay wants the ring and its in-flow `elevated` card must not have
-     it, or `elevated` and `outlined` render identically, which is a defect 21.7.1 already fixed
-     once. A component composes them: `var(--gog-elevation-ring), var(--gog-elevation-3)`. */
+     The hairline ring and the top highlight are separate tokens, not part of a step: they belong to
+     particular surfaces. An in-flow `elevated` card must not get the ring, or it becomes
+     indistinguishable from `outlined`. */
   --gog-elevation-ink: 23 18 12;
   --gog-elevation-key-alpha: 0.08;
-  /* Half the key, which is the ratio the light theme's own two-layer panel already held
-     (0.04 against 0.08). A theme states both, so a theme that wants a different ratio -- and
-     `material` does, its contact being stronger than its key -- just writes it. */
+  /* The contact is weaker than the key by default; a theme wanting the opposite states both. */
   --gog-elevation-ambient-alpha: 0.04;
   --gog-elevation-contact-blur: 3px;
   --gog-elevation-key-x: 0;
   --gog-elevation-key-y: 1;
   --gog-elevation-key-blur: 3;
-  /* Inert by default: a 0px spread paints nothing, and a 0 alpha costs nothing to composite.
-     A theme whose surfaces read by their contour rather than by their shadow turns them on. */
+  /* Off by default (0px, 0 alpha): for themes whose surfaces read by contour rather than shadow. */
   --gog-elevation-ring-width: 0px;
   --gog-elevation-highlight-ink: 255 255 255;
   --gog-elevation-highlight-alpha: 0;
@@ -274,62 +183,41 @@
 
   /* ── Toast stack ──────────────────────────────────────────────────────────── */
   --gog-toast-min-width: 280px;
-  /* --gog-toast-max-width lives in the :root, [data-theme] block below — it derives from
-     --gog-toast-stack-padding, and a derived value cannot live in this literals-only block (it
-     would not follow a scoped theme). */
   --gog-toast-z-index: 9999;
   --gog-toast-enter-distance: 110%;
 
-  /* ── Overlay stacking ───────────────────────────────────────────────────────
-     Baseline for dropdown panels. gog-dialog re-declares this on its own panel so
-     dropdowns opened inside a dialog stack above it. */
-  /* The library's stacking floor. Every layer below is `base + N`, so an app that has to put the
-     whole library above its own chrome moves this one number and keeps the internal order —
-     badge 1, toast 100, dropdowns and dialogs 300, tooltip 400, the blocking spinner overlay
-     8000. Before this, shifting the stack meant editing five tokens and hoping none was missed. */
+  /* ── Overlay stacking ─────────────────────────────────────────────────────────
+     The stacking floor. Every layer is `base + N`, so an app lifts the whole library above its
+     own chrome by moving this one number. */
   --gog-z-base: 0;
 
   /* ── Light palette (also the no-data-theme default) ───────────────────────── */
   color-scheme: light;
-  /* Backgrounds and surfaces */
-  --gog-background-color: #f7f3eb; /* Warm parchment page ground */
-  --gog-surface-color: #ffffff; /* Bleached parchment for cards — lighter than the page on purpose, so the two tiers read apart */
-  --gog-hover-color: #f0e7d7; /* Hover state — soft wax */
-  --gog-border-color: #d8c7ad; /* Aged brass rule */
+  --gog-background-color: #f7f3eb;
+  --gog-surface-color: #ffffff; /* Lighter than the page, so the two tiers read apart. */
+  --gog-hover-color: #f0e7d7;
+  --gog-border-color: #d8c7ad;
 
-  /* Type — old oak-gall ink */
-  --gog-text-color: #17120c; /* Deep ink — clears WCAG AAA against both surfaces */
+  --gog-text-color: #17120c;
   --gog-accent-text-color: #ffffff;
-  --gog-muted-text-color: #63503c; /* Muted kiln ink */
+  --gog-muted-text-color: #63503c;
 
-  /* Brand and accents — guild gold leaf */
   --gog-primary-color: #17120c;
-  /* Deep guild gold. Darkened from #9e6f00 in 21.7.0: white on the old value was 4.44:1,
-     just under WCAG AA's 4.5, and its hover fill was 2.87:1 — the hover was the worse half.
-     The hover is now *darker* than the rest state rather than brighter, because gold light
-     enough to read as "a brighter gleam" cannot carry white text at all. */
+  /* Hover is darker than rest, not brighter: gold light enough to gleam cannot carry white text. */
   --gog-accent-color: #926600;
   --gog-accent-bright: #7a5500;
-  --gog-accent-dim: #735100; /* Dark bronze */
-  --gog-accent-pale: #f8f1df; /* Pale wash beneath the gold */
+  --gog-accent-dim: #735100;
+  --gog-accent-pale: #f8f1df;
   --gog-secondary-color: #6b5328;
 
-  /* Semantic colours, kept in the alchemical family */
-  --gog-success-color: #216e4e; /* Emerald */
-  --gog-danger-color: #a7232b; /* Ruby */
-  --gog-warning-color: #c45100; /* Dark amber */
-  --gog-info-color: #2b5c8f; /* Lapis */
+  --gog-success-color: #216e4e;
+  --gog-danger-color: #a7232b;
+  --gog-warning-color: #c45100;
+  --gog-info-color: #2b5c8f;
 
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
+  /* The edge that identifies a control, kept apart from `--gog-border-color`, which is a
+     deliberately faint decorative hairline. Each theme's value is computed to clear 3:1 (WCAG
+     1.4.11) against both page and surface while keeping its own hue. */
   --gog-control-boundary-color: #96866d;
   --gog-spinner-overlay-bg: rgba(247, 243, 235, 0.85);
 }
@@ -338,53 +226,32 @@
 [data-theme='light'] {
   color-scheme: light;
 
-  /* Backgrounds and surfaces */
-  --gog-background-color: #f7f3eb; /* Warm parchment page ground */
-  --gog-surface-color: #ffffff; /* Bleached parchment for cards — lighter than the page on purpose, so the two tiers read apart */
-  --gog-hover-color: #f0e7d7; /* Hover state — soft wax */
-  --gog-border-color: #d8c7ad; /* Aged brass rule */
+  --gog-background-color: #f7f3eb;
+  --gog-surface-color: #ffffff;
+  --gog-hover-color: #f0e7d7;
+  --gog-border-color: #d8c7ad;
 
-  /* Type — old oak-gall ink */
-  --gog-text-color: #17120c; /* Deep ink — clears WCAG AAA against both surfaces */
+  --gog-text-color: #17120c;
   --gog-accent-text-color: #ffffff;
-  --gog-muted-text-color: #63503c; /* Muted kiln ink */
+  --gog-muted-text-color: #63503c;
 
-  /* Brand and accents — guild gold leaf */
   --gog-primary-color: #17120c;
-  /* Deep guild gold. Darkened from #9e6f00 in 21.7.0: white on the old value was 4.44:1,
-     just under WCAG AA's 4.5, and its hover fill was 2.87:1 — the hover was the worse half.
-     The hover is now *darker* than the rest state rather than brighter, because gold light
-     enough to read as "a brighter gleam" cannot carry white text at all. */
   --gog-accent-color: #926600;
   --gog-accent-bright: #7a5500;
-  --gog-accent-dim: #735100; /* Dark bronze */
-  --gog-accent-pale: #f8f1df; /* Pale wash beneath the gold */
+  --gog-accent-dim: #735100;
+  --gog-accent-pale: #f8f1df;
   --gog-secondary-color: #6b5328;
 
-  /* Semantic colours, kept in the alchemical family */
-  --gog-success-color: #216e4e; /* Emerald */
-  --gog-danger-color: #a7232b; /* Ruby */
-  --gog-warning-color: #c45100; /* Dark amber */
-  --gog-info-color: #2b5c8f; /* Lapis */
+  --gog-success-color: #216e4e;
+  --gog-danger-color: #a7232b;
+  --gog-warning-color: #c45100;
+  --gog-info-color: #2b5c8f;
 
-  /* The boundary that identifies a control, as distinct from `--gog-border-color`, which is the
-     decorative hairline this library draws dividers, table rules and panel outlines with and
-     deliberately keeps faint. Three controls -- `gog-chip`, `gog-toggle`, `gog-button-toggle` --
-     had been reading the decorative one as their own edge, and the boundary sweep in 21.12.0
-     measured them at 1.18 to 2.17:1 in every shipped theme, against the 3:1 SC 1.4.11 requires.
-     Neither their border nor their fill carried it; the sweep checks the better of the two.
-
-     Computed, not chosen: `npm run suggest:color -- --gog-border-color <ground> 3.2` per theme,
-     holding hue and chroma so each theme's neutral stays its own, then the value that clears both
-     the page and the surface. */
   --gog-control-boundary-color: #96866d;
   --gog-spinner-overlay-bg: rgba(247, 243, 235, 0.85);
 
-  /* Restated rather than inherited, and every knob of the set rather than the ones that differ
-     from the default. A custom property inherits, so a `data-theme="light"` subtree nested inside
-     a dark page picks up whatever the outer theme left set — that is how this block came to carry
-     its own copy of `--gog-panel-shadow` before the ladder existed. A theme owns all ten or it
-     owns none; `check:elevation` enforces the set. */
+  /* A theme states all ten elevation knobs, not just the ones it changes: custom properties inherit,
+     so a light subtree inside a dark page would otherwise borrow the outer theme's values. */
   --gog-elevation-ink: 23 18 12;
   --gog-elevation-key-alpha: 0.08;
   --gog-elevation-ambient-alpha: 0.04;
@@ -401,49 +268,33 @@
 [data-theme='dark'] {
   color-scheme: dark;
 
-  /* Backgrounds and surfaces */
-  --gog-background-color: #0d0b08; /* Deep forge obsidian */
-  --gog-surface-color: #16120e; /* Dark fired iron — cards */
-  /* Lifted, not shadowed — see --gog-elevated-surface-color. Deliberately a step above
-     --gog-hover-color, not equal to it: hover and the header strips are a light lift, elevation
-     is a bigger one, and the first attempt gave all three the same value. */
-  --gog-hover-color: #241d17; /* Hover state */
-  --gog-border-color: #3d3122; /* Aged chased bronze */
+  --gog-background-color: #0d0b08;
+  --gog-surface-color: #16120e;
+  /* A step above `--gog-hover-color`: hover is a small lift, elevation a bigger one. */
+  --gog-hover-color: #241d17;
+  --gog-border-color: #3d3122;
 
-  /* Type — glowing ivory */
-  --gog-text-color: #f3ebd8; /* Soft luminous parchment */
+  --gog-text-color: #f3ebd8;
   --gog-accent-text-color: #0d0b08;
-  --gog-muted-text-color: #9e8d76; /* Muted bronze */
+  --gog-muted-text-color: #9e8d76;
 
-  /* Brand and accents — the alchemist's glowing gold */
   --gog-primary-color: #f3ebd8;
-  --gog-accent-color: #fbbf24; /* Plasma amber */
-  --gog-accent-bright: #fde047; /* Bright gold ray */
-  --gog-accent-dim: #b48310; /* Muted gold */
-  --gog-accent-pale: #2b210c; /* Dark gold reflection */
+  --gog-accent-color: #fbbf24;
+  --gog-accent-bright: #fde047;
+  --gog-accent-dim: #b48310;
+  --gog-accent-pale: #2b210c;
   --gog-secondary-color: #d4a373;
 
-  /* Semantics */
-  --gog-success-color: #34d399; /* Glowing emerald */
-  --gog-danger-color: #f87171; /* Glowing ruby */
-  /* Orange, not the accent's amber. It was `#fbbf24` -- the same hex as `--gog-accent-color`
-     two declarations above, so an `accent` severity and a `warning` one were one colour in
-     every component that paints the set. Moved by hue rather than by lightness (18.1 deg, L
-     held) because darkening a status on a dark ground trades one defect for another, and a
-     warning reads as orange at least as readily as it reads as gold. */
-  --gog-warning-color: #ffac4e; /* Ember orange */
-  --gog-info-color: #38bdf8; /* Sapphire */
+  --gog-success-color: #34d399;
+  --gog-danger-color: #f87171;
+  /* Orange rather than the accent's amber, so `warning` and `accent` stay distinct. Moved by hue,
+     not lightness, which a dark ground has no room to spend. */
+  --gog-warning-color: #ffac4e;
+  --gog-info-color: #38bdf8;
 
-  /* Elevation, as this theme states it. The long note in the literal block explains the knobs;
-     what is specific here is why a dark ground needs all three of them. Black blurred over a
-     near-black page reads as smudge rather than lift, so the shadow stays tight and dark and the
-     *edges* do the work: a hairline of light along the top, where a raised surface would catch
-     it, and a hairline ring for overlays that have to sit apart from the page.
-
-     The ring is not on the ladder, deliberately. `elevated` must not have one -- a ring is
-     exactly what `outlined` draws, and with it the two card and panel variants render
-     identically on a dark ground. That was a real defect, fixed in 21.7.1, and folding the ring
-     into a step would have reintroduced it. Overlays compose it; `elevated` does not. */
+  /* On a dark page a blurred black shadow reads as smudge, so the shadow stays tight and the edges do
+     the work: a top highlight and, for overlays, a hairline ring. The ring stays off the ladder so
+     `elevated` never matches `outlined`. */
   --gog-elevation-ink: 0 0 0;
   --gog-elevation-key-alpha: 0.55;
   --gog-elevation-ambient-alpha: 0.28;
@@ -465,32 +316,19 @@
  */
 :root,
 [data-theme] {
-  /* ── Derived foundation tokens ───────────────────────────────────────────────
-     Split out of the literal block above because they read other tokens: they have
-     to re-resolve inside each theme scope. */
+  /* ── Derived foundation tokens ─────────────────────────────────────────────── */
 
   /* ── The elevation ladder ────────────────────────────────────────────────────
-     Generated from the knobs in the literal block above; see the long note there for why the
-     key light's blur is three times its offset and why the ring and the highlight are not part
-     of a step. Every step but 0 is the same two layers with one number changed, which is the
-     property that makes the arithmetic assertable by reading rather than by a check.
-
-     The heights, and what the library puts on each:
-
-       0  --  flat. Every button at rest, and the `outlined` and `filled` card and panel.
-       1  --  a mark riding on a control: the toggle's thumb.
-       2  --  a surface raised in normal flow: the `elevated` card and panel.
-       4  --  an overlay anchored to a control: the four dropdown panels, the tooltip, the menu.
-       8  --  an overlay floating free of one: the toast.
-      16  --  a modal that owns the screen: the dialog.
-
-     `gog-menu` is the one whose height *changes* here rather than being restated. It aliased
-     `--gog-dialog-shadow`, so a dropdown menu carried a modal's shadow while the four dropdown
-     panels beside it carried a panel's -- two overlays of one kind, four steps apart, and the
-     alias is why nobody saw it. */
+     Generated from the knobs above. What sits on each step:
+       0 — flat: buttons at rest, `outlined` and `filled` cards and panels
+       1 — a mark on a control: the toggle's thumb
+       2 — raised in flow: `elevated` cards and panels
+       3 — anchored overlays: dropdown panels, tooltip, menu
+       4 — free-floating overlays: toast
+       5 — modal: dialog */
   --gog-elevation-contact: 0 1px var(--gog-elevation-contact-blur)
     rgb(var(--gog-elevation-ink) / var(--gog-elevation-ambient-alpha));
-  /* Composable character layers, not steps. A component that wants one prepends it. */
+  /* Character layers, not steps: a surface that wants one prepends it. */
   --gog-elevation-ring: 0 0 0 var(--gog-elevation-ring-width) var(--gog-border-color);
   --gog-elevation-highlight: inset 0 1px 0
     rgb(var(--gog-elevation-highlight-ink) / var(--gog-elevation-highlight-alpha));
@@ -521,53 +359,35 @@
       calc(16px * var(--gog-elevation-key-blur))
       rgb(var(--gog-elevation-ink) / var(--gog-elevation-key-alpha));
 
-  /* The library's own surfaces, placed on the ladder. These stay the public names a consumer
-     overrides — what changed in 21.12.0 is that their *value* is a step rather than a hand-written
-     shadow, so a theme moves all of them by turning one knob. Overriding any single one still
-     works exactly as before. */
+  /* The public surface names consumers override, each placed on the ladder; a theme moves all of
+     them by turning the knobs, and overriding one still works. */
   --gog-panel-shadow: var(--gog-elevation-ring), var(--gog-elevation-3);
   --gog-toast-shadow: var(--gog-elevation-ring), var(--gog-elevation-4);
   --gog-dialog-shadow: var(--gog-elevation-ring), var(--gog-elevation-5);
   --gog-toggle-thumb-shadow: var(--gog-elevation-1);
 
   /* ── Text on a status fill ───────────────────────────────────────────────────
-     `--gog-accent-text-color` means "text on the accent fill" and flips with the theme, which
-     made it the obvious label for a status fill too — `gogBadge` used it for all four. It is
-     wrong for some of them, and silently: measured 2026-09-04, `material`'s amber under white
-     was 1.97:1 and `primeng`'s green 2.28:1, both far under AA, in a pair no check had. The
-     accent is one colour a theme tunes deliberately; the four statuses are four more, and
-     nothing says one label reads on all five.
-
-     So each status names its own, defaulting to the accent's answer because that is right in
-     seven of the eleven themes. A theme states one of these only where its own hue disagrees —
-     `material` puts near-black on its amber, which is Material 3's own convention, and `primeng`
-     does the same on all three of Aura's bright hues. Where *neither* label reached AA the hue
-     itself moved instead; see the preset files. */
+     One label colour does not read on every status fill (white on an amber fill can fall far below
+     AA), so each status names its own. They default to the accent's label; a theme overrides only
+     the ones its own hues need. */
   --gog-success-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-danger-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-warning-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-info-text-color: var(--gog-accent-text-color, var(--gog-primary-color));
 
-  /* Which way a status fill deepens when it is hovered or held: **away from its own label**, so
-     the step always makes the label easier to read rather than harder. That is the theme's ink
-     for a fill wearing the accent's white, which is nine of the eleven themes — and the other way
-     round for the four fills whose label is the ink itself, `material`'s amber and `primeng`'s
-     three, which say so in their own files. Mixing toward a fixed colour instead is what a first
-     pass did, and it cost `primeng`'s info button 6.44:1 down to 4.23:1 on press: deepening
-     toward the ink walked the fill into the label. */
+  /* Which way a status fill deepens on hover and press: away from its label, so the label only
+     gets easier to read. Themes whose label is the ink reverse this in their own files. */
   --gog-success-shade: var(--gog-text-color);
   --gog-danger-shade: var(--gog-text-color);
   --gog-warning-shade: var(--gog-text-color);
   --gog-info-shade: var(--gog-text-color);
   /* ── Stacking layers ─────────────────────────────────────────────────────────
-     All five read `--gog-z-base`, so the whole library moves together. The gaps are
-     deliberate: an app that needs to slot its own element between two of these has room
-     without touching the library's numbers. */
+     All read `--gog-z-base`. The gaps leave room for an app to slot its own layer in between. */
   --gog-badge-z: calc(var(--gog-z-base) + 1);
   --gog-toast-base-z: calc(var(--gog-z-base) + 100);
   --gog-dropdown-z: calc(var(--gog-z-base) + 300);
   --gog-tooltip-z: calc(var(--gog-z-base) + 400);
-  /* The blocking overlay outranks everything, including a dialog it may be covering. */
+  /* Above everything, including a dialog it may be covering. */
   --gog-spinner-overlay-z: calc(var(--gog-z-base) + 8000);
 
   --gog-space-4: calc(4px * var(--gog-density));
@@ -578,10 +398,7 @@
   --gog-space-24: calc(24px * var(--gog-density));
   --gog-space-28: calc(28px * var(--gog-density));
   --gog-space-32: calc(32px * var(--gog-density));
-  /* 21.11.0. Added because the optical ratio requires it, not because a design asked: a control
-     with 20px of vertical padding needs exactly 40px horizontal, and `slg` is that control on
-     `gog-button`, `gog-inputfield` and every field that shares their tier. The scale had 32 and
-     then jumped to 48. */
+  /* Needed by the 2:1 padding ratio: an `slg` control with 20px vertical padding takes 40px horizontal. */
   --gog-space-40: calc(40px * var(--gog-density));
   --gog-space-48: calc(48px * var(--gog-density));
   --gog-space-xs: var(--gog-space-4);
@@ -589,14 +406,11 @@
   --gog-space-md: var(--gog-space-16);
   --gog-space-lg: var(--gog-space-24);
   --gog-space-2xl: var(--gog-space-48);
-  /* The shared control tier, on the 4px grid at a ratio of exactly 2.0 (styling.instructions.md,
-     law 3). It was 10/14, a ratio of 1.40; `--gog-field-md-padding-*` derives from it, so this
-     pair is what an `md` input, select, multiselect, autocomplete and datepicker are padded by. */
+  /* The shared control padding, at the library's 2:1 horizontal-to-vertical ratio. */
   --gog-control-padding-y: var(--gog-space-12);
   --gog-control-padding-x: var(--gog-space-24);
-  /* One value, all four sides: this is the padding a checkable control's `<label>` carries around
-     its box, and it is part of the pointer target — a 12px `xsm` box inside 8px of padding is a
-     28px target, which is how the smallest checkbox clears WCAG 2.5.8 without growing. */
+  /* Padding around a checkable control's box is part of its pointer target: it is what lets the
+     smallest checkbox reach 24×24 (WCAG 2.5.8) without growing the box. */
   --gog-control-checkbox-padding: var(--gog-space-8);
   --gog-field-xsm-padding-y: var(--gog-space-4);
   --gog-field-xsm-padding-x: var(--gog-space-8);
@@ -608,11 +422,8 @@
   --gog-field-slg-padding-x: var(--gog-space-40);
   --gog-field-float-label-over-gap: var(--gog-space-8);
   --gog-toast-stack-padding: var(--gog-space-16);
-  /* L9 (docs/component-geometry.md, "D7 — taken"): the message wraps, so its cap is a measure —
-     53ch at --gog-toast-message-font-size (14px), the nearest whole character to today's 400px so
-     this changes robustness to a font-size change, not the pixels anyone sees today. L8's viewport
-     exception is layered on top: the margin reads --gog-toast-stack-padding above, the container's
-     own edge inset, rather than a new number. */
+  /* The message wraps, so the cap is a measure in `ch`; the viewport clamp keeps the toast on screen
+     on narrow devices. */
   --gog-toast-max-width: min(53ch, calc(100vw - var(--gog-toast-stack-padding) * 2));
   --gog-field-xsm-icon-offset: var(--gog-space-8);
   --gog-field-sm-icon-offset: var(--gog-space-8);
@@ -623,17 +434,11 @@
   --gog-panel-radius: calc(var(--gog-radius) + 8px);
   --gog-field-xsm-font-size: var(--gog-text-xs);
   --gog-field-sm-font-size: var(--gog-text-sm);
-  /* The only field metric that is a type size; the rest of this block is geometry. It lives
-     here rather than with them because it reads a token, and a derived value declared on the
-     literals-only `:root` freezes to that scope's scale (rule C). */
+  /* A type size among geometry, because it reads a token and so must live in this derived block. */
   --gog-field-slg-font-size: var(--gog-text-slg);
 
-  /* Leading for the three kinds of text every field renders, declared once and aliased by each
-     component the way the padding and float-label tiers above already are. A block that sets a
-     font size sets its leading (law 4): inheriting it while changing the size moves the ratio
-     silently, which is the thing the law guards. Roles, from
-     `docs/component-geometry.md` — the value in the field itself is one UI line whose box is the
-     row height; a label and an error message may both wrap beside their control. */
+  /* Leading for the three kinds of text a field renders — the value (one line, sized to the row),
+     the label and the error message (both may wrap) — declared once and aliased per component. */
   --gog-field-line-height: var(--gog-line-height-normal);
   --gog-field-label-line-height: var(--gog-line-height-snug);
   --gog-field-error-line-height: var(--gog-line-height-snug);
@@ -641,7 +446,7 @@
   --gog-field-md-padding-y: var(--gog-control-padding-y);
   --gog-field-md-padding-x: var(--gog-control-padding-x);
 
-  /* offset + glyph + offset — see the icon-chrome comment in the literal block above. */
+  /* offset + glyph + offset. */
   --gog-field-xsm-icon-inset: calc(
     var(--gog-field-xsm-icon-offset) * 2 + var(--gog-field-icon-glyph-xsm)
   );
@@ -677,16 +482,11 @@
   --gog-accordion-text-color: var(--gog-text-color);
   --gog-accordion-accent-color: var(--gog-accent-color);
   --gog-accordion-hover-bg: var(--gog-hover-color);
-  /* The header's label stays body text while hovered or held, and the lift is carried by the
-     background alone. It turned `--gog-accordion-accent-color` until 21.9.0, which is the accent
-     — on an accent-tinted strip that measured 3.61:1 in light, 3.79:1 in one-light and 4.09:1 in
-     ledger, and worse again once the press deepened the tint. Same trade as the ghost button's
-     hover, and made for the same reason: the accent is not a text colour on a ground that is
-     itself tinted with the accent. */
+  /* The label keeps body colour while hovered or pressed: the accent is not readable as text on a
+     ground already tinted with the accent. */
   --gog-accordion-hover-color: var(--gog-accordion-text-color);
   --gog-accordion-press-bg: var(--gog-border-color);
-  /* Its own token. The header's `:focus-visible` outline read `--gog-accordion-hover-ring`, so a
-     hover-weight colour was doing focus duty and failed 3:1 in all eleven themes. */
+  /* Its own token, so focus is never a hover-weight colour that fails 3:1. */
   --gog-accordion-focus-ring-color: var(--gog-accent-color);
   --gog-accordion-focus-ring-width: var(--gog-focus-ring-width);
   --gog-accordion-body-color: var(--gog-text-color);
@@ -698,24 +498,18 @@
   --gog-accordion-body-transition-duration: var(--gog-duration-slow);
   --gog-accordion-chevron-transition-duration: var(--gog-duration-slow);
   --gog-accordion-body-lift: -2px;
-  /* Flat by default — corner rounding is a look, not a given; consumers who want it
-     opt in per-instance or theme-wide by overriding these two. */
+  /* Square by default; rounding is opt-in. */
   --gog-accordion-radius: 0px;
   --gog-accordion-body-radius: 0px;
-  /* The header carries its own ground and the body does not. Both were `transparent` until
-     21.7.1, which made every open item one continuous band: header and content painted the
-     surrounding surface, and the only thing between two open items was a hairline in the accent
-     colour. With several open at once nobody could tell where one ended and the next began.
-
-     Only the header changed. The body stays transparent on purpose, so an accordion dropped on
-     a coloured surface still sits on that colour rather than punching a hole in it. */
+  /* The header carries its own ground so several open items stay separable. The body stays
+     transparent so the accordion takes on whatever surface it is placed on. */
   --gog-accordion-header-bg: var(--gog-hover-color);
   --gog-accordion-body-bg: transparent;
-  /* Per-size metrics. `lg` is the default size. */
+  /* Per-size metrics; `lg` is the default. */
   --gog-accordion-xsm-padding-y: var(--gog-space-4);
   --gog-accordion-xsm-padding-x: var(--gog-space-8);
   --gog-accordion-xsm-font-size: var(--gog-text-xs);
-  /* The header label is one UI line whose box is the row height (law 4, role ui-line). */
+  /* One UI line, so the leading is the row height. */
   --gog-accordion-line-height: var(--gog-line-height-normal);
   --gog-accordion-xsm-letter-spacing: 0.2px;
   --gog-accordion-xsm-content-gap: var(--gog-space-4);
@@ -724,22 +518,10 @@
   --gog-accordion-xsm-body-padding-top: var(--gog-space-4);
   --gog-accordion-xsm-body-padding-bottom: var(--gog-space-8);
   --gog-accordion-xsm-chevron-size: 1.4em;
-  /* The chevron is a ratio of the header's own type, not a px ladder of its own. It had been
-     10/12/14/16/18px of glyph basis inside an 11/13/15/18/20px box, beside a label in rem -- so
-     raising the browser's text size grew the label and left the chevron where it was, and the
-     box/label ratio drifted 0.92 to 1.29 across the five sizes.
-
-     Two bugs came out of writing it as a ratio. The box was *smaller than its glyph at every
-     size*: `gog-icon` renders at `--gog-icon-size: 1.2em` of this font size, so the mark was
-     12/14.4/16.8/19.2/21.6px inside a box of 11/13/15/18/20 and overflowed it everywhere. And
-     the five sizes had five ratios where they needed one.
-
-     `1em` makes this the em basis rather than the glyph size, so the mark is 1.2em of the header
-     and the 1.4em box surrounds it. All five steps hold the same ratio and still render five
-     different sizes, because the header's type differs -- the tokens stay per-size so an override
-     keeps working. */
+  /* The chevron is a ratio of the header's own type, so it scales with the label (including browser
+     text zoom). `1em` is the icon's basis; the box at 1.4em always contains the 1.2em glyph. */
   --gog-accordion-xsm-chevron-font-size: 1em;
-  /* A glyph in its own box: leading would push it off the centre it is placed on. */
+  /* A glyph in its own box: leading would push it off centre. */
   --gog-accordion-chevron-line-height: var(--gog-line-height-none);
 
   --gog-accordion-sm-padding-y: var(--gog-space-8);
@@ -791,14 +573,9 @@
   --gog-accordion-slg-chevron-font-size: 1em;
 
   /* ── Alert ─────────────────────────────────────────────────────────────────
-     A persistent, in-flow message. The severity is carried by a leading edge and the icon over
-     the ordinary surface, not by a tinted fill, and that is forced rather than chosen: the
-     library ships no per-status tint (`--gog-accent-pale` exists, `--gog-success-pale` does not),
-     and inventing one here would make the alert the twelfth place a theme restates its red.
-     `gog-toast` reached the same shape for the same reason. See `docs/alert.md`.
-
-     The five severity tokens below derive from the status colours rather than repeating them,
-     which is what lets a theme retune its red once. */
+     Severity is carried by a leading edge and the icon over the ordinary surface, not by a tinted
+     fill: the palette has no per-status tint, and inventing one would be one more colour every theme
+     has to restate. The severity tokens derive from the status colours, so a theme retunes once. */
   --gog-alert-bg: var(--gog-surface-color);
   --gog-alert-color: var(--gog-text-color);
   --gog-alert-heading-color: var(--gog-text-color);
@@ -806,19 +583,17 @@
   --gog-alert-border-color: var(--gog-border-color);
   --gog-alert-border-width: var(--gog-panel-border-width);
   --gog-alert-border-style: var(--gog-panel-border-style);
-  /* The leading edge, which is the whole of the severity signal. Wider than the hairline around
-     it so it reads as a mark rather than as an uneven border — the control border tier doubled,
-     derived so a theme that thickens its controls thickens this with them. */
+  /* Twice the control border, so it reads as a mark rather than an uneven border, and thickens with
+     the controls. */
   --gog-alert-edge-width: calc(var(--gog-control-border-width) * 2);
   --gog-alert-radius: var(--gog-radius);
   --gog-alert-padding-y: var(--gog-space-12);
   --gog-alert-padding-x: var(--gog-space-24);
   --gog-alert-gap: var(--gog-space-12);
-  /* Between the heading and the body — the tightest step on the scale, because they are one
-     block of text rather than two things in a row. */
+  /* The tightest step: heading and body are one block of text. */
   --gog-alert-main-gap: var(--gog-space-4);
   --gog-alert-icon-font-size: var(--gog-text-md);
-  /* A glyph in its own box: leading would push it off the centre it is placed on. */
+  /* A glyph in its own box: leading would push it off centre. */
   --gog-alert-icon-line-height: var(--gog-line-height-none);
   --gog-alert-heading-font-size: var(--gog-text-md);
   --gog-alert-heading-font-weight: var(--gog-font-weight-semibold);
@@ -832,26 +607,19 @@
   --gog-alert-info-color: var(--gog-info-color);
 
   /* ── Collapsible ───────────────────────────────────────────────────────────
-     No portal, no owned markup — see utilities.css for the actual `.gog-collapsible__*`
-     rules (they style content this component's consumer projects, which sits outside
-     `gog-collapsible`'s own view and can't be reached by its scoped stylesheet). */
+     No owned markup: the `.gog-collapsible__*` rules live in utilities.css, because they style content
+     the consumer projects, which a scoped stylesheet cannot reach. */
   --gog-collapsible-transition-duration: var(--gog-duration-slow);
-  /* The panel's natural height, so an open panel never truncates whatever it holds. This was
-     a fixed `480px` cap, which bought the CSS-only transition an animatable target but paid
-     for it by silently clipping any taller content — `overflow: hidden` means no scrollbar
-     and no other sign that the rest of the panel is missing. `max-content` still animates,
-     via `interpolate-size: allow-keywords` on the content element (see utilities.css); where
-     that is unsupported the panel snaps open instead of easing, which is the right way round
-     for the trade — losing an animation is visible and harmless, losing content is neither.
-     Set a length here to cap a particular panel on purpose; it will clip, as before. */
+  /* The content's natural height, so an open panel never clips what it holds. It still animates where
+     `interpolate-size` is supported and snaps open elsewhere. Set a length only to cap a panel on
+     purpose — it will clip. */
   --gog-collapsible-max-height: max-content;
   --gog-collapsible-disabled-opacity: var(--gog-disabled-opacity);
 
   /* ── Button ────────────────────────────────────────────────────────────────
-     `--gog-button-bg`, `--gog-button-color`, `--gog-button-border`, `--gog-button-shadow`,
-     `--gog-button-hover-bg`, `--gog-button-hover-shadow`, `--gog-button-padding` and
-     `--gog-button-font-size` are intentionally NOT declared — they are the per-instance
-     escape hatch the variant/size classes fall back through. */
+     `--gog-button-bg`, `-color`, `-border`, `-shadow`, `-hover-bg`, `-hover-shadow`, `-padding` and
+     `-font-size` are intentionally NOT declared: they are the per-instance escape hatch the variant
+     and size classes fall back through. */
   --gog-button-xsm-padding: var(--gog-space-4) var(--gog-space-8);
   --gog-button-sm-padding: var(--gog-space-8) var(--gog-space-16);
   --gog-button-md-padding: var(--gog-space-12) var(--gog-space-24);
@@ -874,25 +642,13 @@
   --gog-button-border-style: var(--gog-control-border-style);
   --gog-button-transition-duration: var(--gog-duration-base);
   --gog-button-focus-ring-width: var(--gog-focus-ring-width);
-  /* Its own colour. The ring read `--gog-button-variant-hover-bg` -- a *hover* fill doing focus
-     duty, the same defect eight other indicators had fixed in 21.12.0, and hidden here because
-     the value arrives through the variant layer rather than from a token this sweep could read.
-     It passed on `primary` and `secondary`, whose hover fill is a saturated accent, and failed
-     wherever the hover fill is a wash: `ghost` at 1.07-1.16:1 and the severity `outline`
-     combinations at 1.79-2.65:1, across four themes.
-
-     One colour, not one per variant. A focus ring's job is to be visible against the page the
-     button sits on, which does not change with the button's fill -- and the ring already sits a
-     pixel further out than the foundation's so it reads as separate even on a filled accent
-     button. That is the answer the other fourteen rings in the library already give. */
+  /* One focus colour for every variant: the ring has to show against the page the button sits on,
+     which does not change with the button's fill. A variant's hover wash is too faint to do it. */
   --gog-button-focus-ring-color: var(--gog-accent-color);
-  /* One pixel further out than the foundation ring: a filled surface needs the extra air for
-     the ring to read as separate from the fill. Written as the foundation plus that pixel
-     rather than a flat 3px, so a theme that moves the ring moves this with it. */
+  /* A pixel further out than the foundation ring, so it separates from a filled button; derived, so
+     it moves with the foundation. */
   --gog-button-focus-ring-offset: calc(var(--gog-focus-ring-offset) + 1px);
-  /* Shipped since before the press had a colour, and left spelled `active` on purpose: renaming
-     a token consumers already override needs a deprecation cycle, and this is a patch. The state
-     it names is the same one `--gog-button-press-*` paints. */
+  /* Named `active` rather than `press` for compatibility: consumers already override it. */
   --gog-button-active-scale: 0.97;
   --gog-button-disabled-opacity: var(--gog-disabled-opacity);
   --gog-button-loading-opacity: 0.7;
@@ -905,9 +661,7 @@
   --gog-button-primary-hover-bg: var(--gog-accent-bright);
   --gog-button-primary-hover-color: var(--gog-button-primary-color);
   --gog-button-primary-hover-shadow: 0 0 16px var(--gog-accent-pale);
-  /* The label's colour, not the page's. `--gog-text-color` is the colour of text on the page
-     background, and a filled button is not the page background — on the dark theme that put pale
-     parchment on bright amber, which read as a washed-out spinner beside a near-black label. */
+  /* The label colour, not the page text colour: a filled button is not the page. */
   --gog-button-primary-spinner-color: var(--gog-button-primary-color);
 
   --gog-button-secondary-bg: var(--gog-secondary-color);
@@ -917,7 +671,6 @@
   --gog-button-secondary-hover-bg: var(--gog-accent-color);
   --gog-button-secondary-hover-color: var(--gog-button-secondary-color);
   --gog-button-secondary-hover-shadow: none;
-  /* Same reasoning as primary: the other filled variant, the same mismatch. */
   --gog-button-secondary-spinner-color: var(--gog-button-secondary-color);
 
   --gog-button-outline-bg: transparent;
@@ -925,12 +678,7 @@
   --gog-button-outline-border: var(--gog-accent-color);
   --gog-button-outline-shadow: none;
   --gog-button-outline-hover-bg: var(--gog-accent-color);
-  /* The label sits on the accent fill once the button is hovered, so it takes the token that
-     means "text on an accent fill" — the same one the two filled variants use. It read
-     `--gog-primary-color` until 21.9.0, which is the colour of text on the *page*, and the
-     result failed WCAG AA in all 11 shipped themes: 1.11:1 in one-dark, 1.41:1 in dark, 3.65:1
-     in light at best. It was invisible to `check:contrast` because that script had no pair for
-     this label, the same way it had none for the hover fill until 2026-08-29. It has both now. */
+  /* Hovered, the button sits on the accent fill, so its label is the "text on accent" token. */
   --gog-button-outline-hover-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-button-outline-hover-shadow: none;
   --gog-button-outline-spinner-color: var(--gog-accent-color);
@@ -940,43 +688,17 @@
   --gog-button-ghost-border: transparent;
   --gog-button-ghost-shadow: none;
   --gog-button-ghost-hover-bg: var(--gog-hover-color);
-  /* The label leaves the accent while the ground is tinted, and that is the only thing that
-     works here. Ghost's resting label *is* `--gog-accent-color`, and its hover tints the ground
-     with the same accent, so the two walk toward each other: measured across all 11 themes, the
-     label fell under 4.5:1 in `light` (3.94), `primeng` (4.18) and `one-light` (4.22). No ground
-     fixes it — a half-strength wash, a neutral `--gog-hover-color`, a text scrim and an
-     accent-dim wash were all measured, and `light` fails every one of them, because
-     `--gog-accent-color` as *text* on that theme's own background is 4.60:1 with no headroom to
-     spend. Moving the label to `--gog-text-color` clears 5.29:1 at worst (one-dark) and leaves
-     the ground exactly as it was, so the hover stays the subtle wash this variant is documented
-     to have. The press then goes the other way and fills — see `-press-bg` below. */
+  /* The label leaves the accent on hover: ghost's label is the accent and its hover tints the ground
+     with the accent, so the two would converge below AA. Body text keeps the hover a subtle wash. */
   --gog-button-ghost-hover-color: var(--gog-text-color);
   --gog-button-ghost-hover-shadow: none;
   --gog-button-ghost-spinner-color: var(--gog-accent-color);
 
-  /* The held state, and the reason it is a colour rather than only the `--gog-button-active-scale`
-     it used to be: `prefers-reduced-motion` switches that transform off, which left a button with
-     no press feedback at all for the readers most likely to need it. A colour change is a state,
-     not a movement — reduced motion keeps it and only drops the scale, and with transitions off it
-     lands instantly. See docs/feedback-triage.md's closing section: reduced motion must remove the
-     animation, not the information.
-
-     Each variant goes one step *deeper* than its own hover, so pressing is distinguishable while
-     hovering, which is the normal case for a pointer. `--gog-accent-dim` is that step for the
-     three accent-carrying variants; ghost has no fill of its own to deepen, so it takes a
-     stronger wash of the same tint its hover uses (see the @supports block at the end of this
-     file for the mixed value and why the flat one above it is not a fallback but the value). */
-  /* The *toggle* state — `aria-pressed="true"`, a button that stays on — as an inset ring rather
-     than a fill. A fill cannot carry it: every other state already owns the background, so a
-     toggled button that is also hovered or held would lose the one thing saying it is on. A ring
-     composes with all of them, and it is the same reasoning that made `gog-button-toggle-group`'s
-     selected option a fill: there, nothing else was competing for the background.
-
-     The ring takes the colour that is guaranteed to read on its own variant — the label colour on
-     the filled two, the accent on the transparent two — so both are pairs `check:contrast`
-     already gates. While toggled, this replaces the variant's `box-shadow`, which costs
-     `primary` its hover glow: the ring is state and the glow is decoration, and a `box-shadow`
-     list cannot hold `none` as a layer, so keeping both was not on offer. */
+  /* The press is a colour, not only a scale: reduced motion removes the scale, and a press must still
+     be visible. Each variant goes one step deeper than its own hover. */
+  /* The toggled state (`aria-pressed="true"`) is an inset ring, not a fill: hover and press already
+     own the background, and a toggled button must still read as on while hovered or pressed. The
+     ring colour is the one guaranteed to read on each variant. */
   --gog-button-toggled-ring-width: 2px;
   --gog-button-primary-toggled-shadow: inset 0 0 0 var(--gog-button-toggled-ring-width)
     var(--gog-accent-text-color, var(--gog-primary-color));
@@ -991,46 +713,22 @@
   --gog-button-secondary-press-color: var(--gog-button-secondary-color);
   --gog-button-outline-press-bg: var(--gog-accent-dim);
   --gog-button-outline-press-color: var(--gog-button-outline-hover-color);
-  /* Ghost presses to the same deep fill as outline, rather than to a wash like every other
-     surface in this file. Measured across all 11 themes: a wash cannot work here, because this
-     button's *label* is the accent, so tinting its ground with the accent walks the two together
-     — a 24% wash put the label under 4.5:1 in seven themes, and `--gog-accent-pale` was either
-     no better or invisible against the hover. A filled press moves the label to
-     `--gog-accent-text-color` instead, which is the pair `check:contrast` already gates, so no
-     future theme can quietly break it. The other eight surfaces keep their washes: their labels
-     are body text, and their worst case across the 11 is 4.80:1. */
+  /* Ghost presses to a fill: its label is the accent, so an accent wash would erase it. The filled
+     press moves the label to the "text on accent" pair instead. */
   --gog-button-ghost-press-bg: var(--gog-accent-dim);
   --gog-button-ghost-press-color: var(--gog-accent-text-color, var(--gog-primary-color));
 
   /* ── Button severity ─────────────────────────────────────────────────────────
-     `severity` is orthogonal to `variant`: a destructive action can be a filled button, an
-     outlined one or a ghost, and it is still destructive. So this is not a fifth variant — it
-     re-points the *ingredients* the four variants are built from, and the shape rules in
-     `styles/button.css` apply them per variant. Four severities x six ingredients rather than
-     four x four variants x eleven properties, which is what a fifth-variant reading would have
-     cost.
+     Severity is orthogonal to variant: it re-points the ingredients the four variants are built from,
+     and `styles/button.css` applies them per variant.
 
-     `-fill` and `-on-fill` are the filled pair, and `-on-fill` is `--gog-<status>-text-color`
-     rather than `--gog-accent-text-color`: see that block near the top of this file for why one
-     label does not read on every status.
+     `-fill` / `-on-fill` are the filled pair. `-ink` is the label of the transparent variants: the raw
+     status hue is too light as text in most themes, so it is mixed halfway toward the theme's ink —
+     toward `--gog-text-color` rather than black, so the same mix works on light and dark themes.
+     Override `--gog-button-<status>-ink` to get the raw colour back.
 
-     `-ink` is the label a *transparent* variant paints, and it is not the raw status colour. As
-     text on the page, the raw hue clears 4.5:1 in only five of the eleven themes — `primeng`'s
-     amber manages 2.05:1 — so it is mixed toward the theme's own ink until it does. The 50% is
-     measured rather than chosen: `material`'s amber is the binding case and needs the hue below
-     54%, so 50 clears every theme with a little headroom. It costs saturation on the themes that
-     never needed it; a theme that wants the colour back overrides `--gog-button-<status>-ink`
-     directly, which is one token rather than a dial nobody would find. Mixing toward `--gog-text-color` rather than a
-     fixed black is what makes one number work on light and dark alike — the ink is dark on one
-     and light on the other, and both directions move *away* from the ground.
-
-     The hover and press fills move the same way, one small step and one larger, so a severity
-     button's states step the way an accent one's do. Moving toward the ink also moves away from
-     `-on-fill` in the seven themes where that is the accent's white-or-near-black, so the label
-     gets easier rather than harder; in the four where `-on-fill` *is* the ink, the rest state
-     starts at 6.44:1 or better and a 24% step cannot spend that. The flat values here are what a
-     browser without `color-mix()` renders — no step, the same graceful nothing the ghost button
-     degrades to — and the mixed ones are in the @supports block at the end of this file. */
+     Hover and press step toward the ink as well, away from the label. These flat values are what a
+     browser without `color-mix()` renders; the mixed ones are in the @supports block at the end. */
   --gog-button-success-fill: var(--gog-success-color);
   --gog-button-success-on-fill: var(--gog-success-text-color);
   --gog-button-success-fill-hover: var(--gog-success-color);
@@ -1060,10 +758,8 @@
   --gog-button-info-wash: transparent;
 
   /* ── Button toggle group ───────────────────────────────────────────────────
-     `--gog-button-toggle-bg`, `-color`, `-padding` and `-font-size` are intentionally NOT
-     declared — they are the per-instance escape hatch the size classes fall back through.
-     Padding/font-size reuse the `--gog-button-<size>-*` scale so a toggle group and a
-     `<gog-button>` at the same `size` line up in a toolbar. */
+     `-bg`, `-color`, `-padding` and `-font-size` are intentionally NOT declared (per-instance escape
+     hatch). Sizes reuse the button scale so a toggle group lines up with buttons in a toolbar. */
   --gog-button-toggle-font-family: var(--gog-font-heading);
   --gog-button-toggle-font-weight: var(--gog-font-weight-bold);
   --gog-button-toggle-letter-spacing: 0.5px;
@@ -1083,8 +779,7 @@
   --gog-button-toggle-selected-bg: var(--gog-accent-color);
   --gog-button-toggle-selected-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-button-toggle-selected-border-color: var(--gog-accent-color);
-  /* A selected option is already filled with the accent, so its press deepens the fill the way
-     the filled button variants do rather than washing over it. */
+  /* A selected option is already a fill, so its press deepens like a filled button. */
   --gog-button-toggle-selected-press-bg: var(--gog-accent-dim);
   --gog-button-toggle-separated-gap: var(--gog-space-sm);
   --gog-button-toggle-transition-duration: var(--gog-duration-base);
@@ -1096,8 +791,7 @@
   /* ── Calendar (the month grid inside gog-datepicker, and gog-calendar on its own) ── */
   --gog-calendar-font-family: var(--gog-font-body);
   --gog-calendar-color: var(--gog-text-color);
-  /* Caps the host at its month grid instead of letting the header spread to the container.
-     `100%` restores the pre-21.5.0 full-width behaviour. */
+  /* Hugs the month grid; set `100%` to fill the container. */
   --gog-calendar-max-width: max-content;
   --gog-calendar-padding: var(--gog-space-12);
   --gog-calendar-header-gap: var(--gog-space-4);
@@ -1132,16 +826,13 @@
   --gog-calendar-selected-bg: var(--gog-accent-color);
   --gog-calendar-selected-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-calendar-selected-font-weight: var(--gog-font-weight-bold);
-  /* The wash between the two ends of a range: same hue, low enough to read as a band rather
-     than as a second selection. */
+  /* Same hue, low enough to read as a band rather than a second selection. */
   --gog-calendar-range-bg: var(--gog-accent-pale);
   --gog-calendar-range-color: var(--gog-text-color);
   --gog-calendar-disabled-opacity: var(--gog-disabled-opacity);
   --gog-calendar-transition-duration: var(--gog-duration-fast);
   --gog-calendar-focus-ring-width: var(--gog-focus-ring-width);
-  /* Inset rather than outset: the month grid packs its cells edge to edge, so an outward ring
-     would sit on top of the neighbouring day. Negated from the foundation so a theme still
-     controls how far it sits from the cell edge. */
+  /* Inset: cells sit edge to edge, so an outward ring would cover the neighbour. */
   --gog-calendar-focus-ring-offset: calc(var(--gog-focus-ring-offset) * -1);
   --gog-calendar-focus-ring-color: var(--gog-accent-color);
   --gog-calendar-divider-width: 1px;
@@ -1167,9 +858,8 @@
   --gog-calendar-slg-day-size: 46px;
 
   /* ── Card ──────────────────────────────────────────────────────────────────
-     `--gog-card-bg`, `--gog-card-border-color`, `--gog-card-shadow`, `--gog-card-padding-y`,
-     `--gog-card-padding-x` and `--gog-card-gap` are intentionally NOT declared — they are the
-     per-instance escape hatch the variant and size classes fall back through. */
+     `--gog-card-bg`, `-border-color`, `-shadow`, `-padding-y`, `-padding-x` and `-gap` are
+     intentionally NOT declared: the per-instance escape hatch. */
   --gog-card-font-family: var(--gog-font-body);
   --gog-card-color: var(--gog-text-color);
   --gog-card-radius: var(--gog-radius);
@@ -1188,14 +878,13 @@
   --gog-card-outlined-shadow: none;
   --gog-card-elevated-bg: var(--gog-elevated-surface-color);
   --gog-card-elevated-border-color: transparent;
-  /* The shared surface shadow, so a card sits at the same elevation as a dialog or a
-     dropdown panel instead of inventing a second house style for "raised". */
+  /* Step 2 of the ladder, the in-flow raised surface. */
   --gog-card-elevated-shadow: var(--gog-elevation-highlight), var(--gog-elevation-2);
   --gog-card-filled-bg: var(--gog-accent-pale);
   --gog-card-filled-border-color: transparent;
   --gog-card-filled-shadow: none;
 
-  /* Hover and focus only ever show on a card that holds a `gogCardLink`. */
+  /* Hover and focus only apply to a card that holds a `gogCardLink`. */
   --gog-card-hover-border-color: var(--gog-accent-dim);
   --gog-card-hover-shadow: var(--gog-panel-shadow);
   --gog-card-focus-ring: var(--gog-accent-color);
@@ -1224,8 +913,7 @@
   --gog-card-slg-gap: var(--gog-space-md);
 
   /* ── Checkbox ──────────────────────────────────────────────────────────────
-     Box/label/icon size and padding come from the `--gog-control-checkbox-*` scale;
-     checkbox.component.ts maps the `size` input onto the host. */
+     Box, label and icon sizes come from the shared `--gog-control-checkbox-*` scale. */
   --gog-checkbox-font-family: var(--gog-font-body);
   --gog-checkbox-gap: var(--gog-space-12);
   --gog-checkbox-radius: var(--gog-radius);
@@ -1236,14 +924,11 @@
   --gog-checkbox-checked-bg: var(--gog-accent-color);
   --gog-checkbox-checked-border: var(--gog-accent-color);
   --gog-checkbox-icon-color: var(--gog-accent-text-color, var(--gog-primary-color));
-  /* A glyph in its own box: role label-none, so the box is the glyph and not the font. */
+  /* A glyph in its own box: the box is the glyph, not the font. */
   --gog-checkbox-icon-line-height: var(--gog-line-height-none);
   --gog-checkbox-label-color: var(--gog-muted-text-color);
   --gog-checkbox-label-line-height: var(--gog-line-height-snug);
-  /* The accent, not `--gog-accent-pale`. This outline is the *only* thing marking focus on this
-     control, and a pale wash cannot carry that: measured 1.38:1 against the light page, against
-     the 3:1 WCAG 2.4.11 and 1.4.11 both require. Fourteen of the library's focus rings already
-     read `--gog-accent-color`; these were the outliers, found by the boundary sweep in 21.12.0. */
+  /* The accent, not a pale wash: this outline is the only focus indicator, and it must clear 3:1. */
   --gog-checkbox-focus-ring: var(--gog-accent-color);
   --gog-checkbox-focus-ring-width: var(--gog-focus-ring-width);
   --gog-checkbox-focus-ring-offset: var(--gog-focus-ring-offset);
@@ -1254,8 +939,7 @@
   --gog-checkbox-dash-radius: 999px;
 
   /* ── Radio group ───────────────────────────────────────────────────────────
-     Box/label size reuse the `--gog-control-checkbox-*` scale (see Checkbox above);
-     radio-group.component.ts maps the `size` input onto the host the same way. */
+     Sizes reuse the `--gog-control-checkbox-*` scale. */
   --gog-radio-font-family: var(--gog-font-body);
   --gog-radio-group-gap: var(--gog-space-12);
   --gog-radio-group-label-size: var(--gog-text-sm);
@@ -1273,10 +957,7 @@
   --gog-radio-dot-size-ratio: 0.45;
   --gog-radio-label-color: var(--gog-muted-text-color);
   --gog-radio-label-line-height: var(--gog-line-height-snug);
-  /* The accent, not `--gog-accent-pale`. This outline is the *only* thing marking focus on this
-     control, and a pale wash cannot carry that: measured 1.38:1 against the light page, against
-     the 3:1 WCAG 2.4.11 and 1.4.11 both require. Fourteen of the library's focus rings already
-     read `--gog-accent-color`; these were the outliers, found by the boundary sweep in 21.12.0. */
+  /* The accent, not a pale wash: this outline is the only focus indicator, and it must clear 3:1. */
   --gog-radio-focus-ring: var(--gog-accent-color);
   --gog-radio-focus-ring-width: var(--gog-focus-ring-width);
   --gog-radio-focus-ring-offset: var(--gog-focus-ring-offset);
@@ -1287,8 +968,7 @@
   --gog-radio-error-color: var(--gog-danger-color);
 
   /* ── Chip ──────────────────────────────────────────────────────────────────
-     `--gog-chip-*` size tokens below are the per-size scale; the unsuffixed
-     `--gog-chip-font-size`/`-padding-*`/`-gap`/`-avatar-size`/`-icon-size`/
+     The unsuffixed `--gog-chip-font-size`, `-padding-*`, `-gap`, `-avatar-size`, `-icon-size` and
      `-remove-size` are left undeclared as the per-instance escape hatch. */
   --gog-chip-font-family: inherit;
   --gog-chip-bg: var(--gog-surface-color);
@@ -1304,28 +984,18 @@
   --gog-chip-pill-radius: 9999px;
   --gog-chip-remove-color: var(--gog-muted-text-color);
   --gog-chip-remove-hover-color: var(--gog-text-color);
-  /* The ring around the remove mark, as a ratio of the mark itself -- so `1` is the box the
-     glyph occupies and anything above it is padding. It multiplied the button's *font-size*
-     until 21.13.0, which is not the same thing: `gog-icon` draws at `--gog-icon-size` (1.2em) of
-     that font-size, so a value of 1.1 produced a box 9% narrower than its own contents. A
-     consumer who had overridden this gets a larger box than before at the same number; the
-     number now means what the name says. */
+  /* The remove button's box as a multiple of its glyph: 1 is the glyph itself, anything above is
+     padding. */
   --gog-chip-remove-scale: 1;
   --gog-chip-avatar-inset-ratio: 0.9;
   --gog-chip-remove-inset-ratio: 0.85;
   --gog-chip-disabled-opacity: var(--gog-disabled-opacity);
-  /* A selected filter chip (`[(selected)]`, 21.9.0). An inset ring for the reason
-     `--gog-button-primary-toggled-shadow` gives: hover and press own the background, and a
-     selected chip has to stay selected while it is also hovered or held. The accent, so it is
-     the same pair the focus ring is already gated on — and unlike the button there is only one
-     chip variant, so one token covers it. Override this token on the host to restyle a single
-     chip. */
+  /* A selected filter chip is an inset ring, not a fill, so it stays visibly selected while hovered
+     or pressed. */
   --gog-chip-selected-ring-width: 2px;
   --gog-chip-selected-shadow: inset 0 0 0 var(--gog-chip-selected-ring-width)
     var(--gog-accent-color);
-  /* The chip had a focus-ring width and offset but no colour, so `chip.component.scss` reached
-     for `--gog-chip-border` — the decorative hairline, 1.18:1 in `primeng`. A focus indicator
-     needs a colour of its own. */
+  /* A focus colour of its own; the chip's border is too faint to mark focus. */
   --gog-chip-focus-ring-color: var(--gog-accent-color);
   --gog-chip-focus-ring-width: 2px;
   --gog-chip-focus-ring-offset: var(--gog-focus-ring-offset);
@@ -1334,29 +1004,8 @@
   --gog-chip-xsm-padding-block: var(--gog-space-4);
   --gog-chip-xsm-padding-inline: var(--gog-space-8);
   --gog-chip-xsm-gap: var(--gog-space-4);
-  /* The avatar and the icon are ratios of the chip's own type, not px ladders of their own.
-
-     The icon already was one and nobody had written it down: 11/12/14/16/18px of glyph beside a
-     label of exactly 11/12/14/16/18px, five sizes holding 1.00 five times by hand. `1em` states
-     it, and it changes nothing rendered -- but it means an override of one size's font-size now
-     carries the icon with it, which the rem ladder did not.
-
-     The avatar had no rule at all: 14/16/20/24/28px against that same type is 1.27, 1.33, 1.43,
-     1.50, 1.56 -- five opinions about one relationship, drifting monotonically, which is what a
-     value picked by eye per size looks like. 1.5em is the ratio `lg` already held, and it keeps
-     the intent the rest of the component is built around: the avatar is larger than the label
-     and hugs the chip's leading edge, which is what `--gog-chip-avatar-inset-ratio` exists for.
-     A chip with an avatar is still taller than one without, but now by one constant ratio
-     instead of a gap that grew 0.8px to 6.4px across the five sizes.
-
-     The remove button's glyph is the third of the same family and now the same kind of rule:
-     1.125em, one number where there were five. Those five were 1.091, 1.167, 1.143, 1.125 and
-     1.111 of the label -- non-monotonic and inside a 7% band, which is a px ladder converted to
-     rem rather than five judgements. 1.125 is the ratio `lg` already held, the same way 1.5 was
-     the avatar's, and it keeps what all five values agreed on: the mark a reader can press
-     reads a shade heavier than the one that only decorates. No size moves by more than half a
-     pixel. The painted box is `--gog-chip-remove-scale` of the *mark* -- see chip.component.scss,
-     which had to stop writing that multiplication against this token's own em basis. */
+  /* Avatar, icon and remove glyph are ratios of the chip's own type, so each scales with its label
+     and one override carries all three. */
   --gog-chip-xsm-avatar-size: 1.5em;
   --gog-chip-xsm-icon-size: 1em;
   --gog-chip-xsm-remove-size: 1.125em;
@@ -1395,8 +1044,7 @@
 
   /* ── Dialog ────────────────────────────────────────────────────────────────── */
   --gog-dialog-font-family: var(--gog-font-heading);
-  /* Deliberately a flat value rather than a palette derivation: the scrim has to read
-     the same over any page content. Restate it per theme if a lighter wash suits. */
+  /* A flat value, not derived from the palette: the scrim must read the same over any page. */
   --gog-dialog-backdrop-bg: rgba(10, 8, 3, 0.72);
   --gog-dialog-backdrop-blur: 2px;
   --gog-dialog-backdrop-padding: var(--gog-space-lg);
@@ -1414,10 +1062,7 @@
   --gog-dialog-header-padding: var(--gog-space-16) var(--gog-space-20) var(--gog-space-16);
   --gog-dialog-header-gap: var(--gog-space-12);
   --gog-dialog-header-border-color: var(--gog-border-color);
-  /* `.gog-dialog__title` is the library's only <h2>; before this it rendered at the browser's
-     default 24px bold rather than a stated size. --gog-text-xl is exactly today's rendered size,
-     so this states an accident as a declaration rather than changing anything visible. `snug`
-     (1.3) is law 4's `heading` role (docs/component-geometry.md, D4). */
+  /* Stated explicitly so the dialog title does not inherit the browser's default heading size. */
   --gog-dialog-title-font-size: var(--gog-text-xl);
   --gog-dialog-title-line-height: var(--gog-line-height-snug);
   --gog-dialog-body-padding: var(--gog-space-20);
@@ -1436,36 +1081,12 @@
   /* Confirmation dialog */
   --gog-confirmation-dialog-gap: var(--gog-space-12);
   --gog-confirmation-dialog-min-width: 320px;
-  /* The title and description carried dead utility classes (`heading-md` / `body-sm`) with no
-     CSS rule anywhere in the library, so both rendered at whatever the browser inherited rather
-     than a step of the type scale (docs/backlog.md, fixed here). `lg` for the title rather than
-     `md`: the dead class named `md`, but it never ran, so it is not evidence of intent — 18.72px
-     is what actually rendered, and --gog-text-lg (18px) is the nearest step to that, so this
-     states what shipped rather than silently shrinking every confirmation dialog. The description
-     takes `sm`, the size every other muted secondary line in the library already uses. */
   --gog-confirmation-dialog-title-font-size: var(--gog-text-lg);
   --gog-confirmation-dialog-title-line-height: var(--gog-line-height-snug);
   --gog-confirmation-dialog-description-font-size: var(--gog-text-sm);
   --gog-confirmation-dialog-description-line-height: var(--gog-line-height-relaxed);
-  /* L9 (docs/component-geometry.md, "D7 — taken"): the description wraps, so its cap is a
-     measure — 51ch at 16px, the nearest whole character to today's 440px, so this changes
-     robustness to a font-size change, not the pixels anyone sees today. The 16px is
-     `.confirm-dialog`'s own inherited size (it declares no font-size of its own; see
-     confirmation-dialog.component.scss), not the description's — the description now reads
-     --gog-confirmation-dialog-description-font-size (14px, fixed above), but a `ch` cap resolves
-     against the element `max-width` is declared on, never a descendant's, so that change does not
-     move this number. What it changes is the *measure* the 440px produces against a 14px
-     description: 439.9px ÷ (0.5391 × 14px) ≈ 58ch by hand (scripts/survey-measure.mjs's own
-     `chCount` line is a tautology for this token — it resolves against `.confirm-dialog`'s 16px,
-     not the description's font; see that script's reason string for the full account), still
-     inside L9's 45–75 band, so no token value here needs to change.
-
-     L8's viewport clamp is deliberately NOT here, unlike the other three overlays: this renders
-     inside .gog-dialog__panel, which already caps itself at 90vw (an inline style in
-     dialog.component.html), and .gog-dialog__body spends --gog-dialog-body-padding a side inside
-     that. The width available here is therefore `0.9 * 100vw - 40px`, tighter than any
-     `100vw - margin` clamp at every viewport above 80px, so a second clamp on the child could
-     never bind. An inert declaration is the thing this repo keeps finding rather than shipping. */
+  /* The description wraps, so its cap is a measure in `ch`. No viewport clamp: the dialog panel
+     around it is already capped to the viewport, so a second clamp could never apply. */
   --gog-confirmation-dialog-max-width: 51ch;
   --gog-confirmation-dialog-color: var(--gog-text-color);
   --gog-confirmation-dialog-description-color: var(--gog-muted-text-color);
@@ -1473,11 +1094,9 @@
   --gog-confirmation-dialog-actions-offset: var(--gog-space-sm);
 
   /* ── Autocomplete ──────────────────────────────────────────────────────────
-     A combobox whose trigger is a real text input. Padding/font-size reuse the shared
-     `--gog-field-<size>-*` scale, so it lines up with `gog-inputfield` and `gog-select` in a
-     form. `--gog-autocomplete-bg`, `-color`, `-font-size`, `-padding-x` and `-padding-y` are
-     intentionally NOT declared — they are the per-instance escape hatch the size classes fall
-     back through. */
+     Sizes reuse the shared `--gog-field-<size>-*` scale so it lines up with the other fields.
+     `-bg`, `-color`, `-font-size`, `-padding-x` and `-padding-y` are intentionally NOT declared
+     (per-instance escape hatch). */
   --gog-autocomplete-font-family: var(--gog-font-body);
   --gog-autocomplete-label-font-family: var(--gog-font-heading);
   --gog-autocomplete-gap: var(--gog-space-4);
@@ -1506,13 +1125,12 @@
   --gog-autocomplete-error-font-family: var(--gog-font-body);
   --gog-autocomplete-error-font-size: var(--gog-text-xs);
   --gog-autocomplete-error-line-height: var(--gog-field-error-line-height);
-  /* Floor for an auto-width field, so [fullWidth]="false" cannot collapse it to its chrome. */
+  /* Floor for an auto-width field, so it cannot collapse to its chrome. */
   --gog-autocomplete-min-width: 120px;
-  /* Trailing chrome: spinner and clear button, clear outermost — the arrangement the other
-     dropdowns settled on, so all of them line up in a form. */
+  /* Clear outermost, the same order every dropdown uses, so fields line up in a form. */
   --gog-autocomplete-actions-inset: var(--gog-control-icon-offset);
   --gog-autocomplete-actions-gap: var(--gog-space-8);
-  /* Right padding on the input, reserving room for the actions above. */
+  /* Room on the input for the trailing actions. */
   --gog-autocomplete-actions-reserve: 40px;
   --gog-autocomplete-clear-color: var(--gog-autocomplete-placeholder-color);
   --gog-autocomplete-clear-hover-color: var(--gog-autocomplete-label-color);
@@ -1527,41 +1145,28 @@
   --gog-autocomplete-panel-radius: var(--gog-radius);
   --gog-autocomplete-panel-gap: var(--gog-space-4);
   --gog-autocomplete-panel-max-height: 260px;
-  /* Ceiling for a content-sized panel, so one very long option cannot span the viewport. */
+  /* Ceiling for a content-sized panel, so one long option cannot span the viewport. */
   --gog-autocomplete-panel-max-width: 420px;
   --gog-autocomplete-options-padding: var(--gog-space-4);
   --gog-autocomplete-option-padding: var(--gog-space-8) var(--gog-space-16);
-  /* Concentric with the panel: the option row is inset by the list's own padding, so its corner
-     is the panel's corner minus that distance. Written as the two tokens rather than as
-     `calc(var(--gog-radius) - 4px)`, which was right only at `--gog-density: 1` -- the padding
-     scales with density and a restated `4px` does not. */
+  /* Concentric with the panel: its radius minus the list padding. Derived so it stays correct when
+     density changes the padding. */
   --gog-autocomplete-option-radius: max(
     0px,
     calc(var(--gog-autocomplete-panel-radius) - var(--gog-autocomplete-options-padding))
   );
-  /* The gap *inside* a row -- icon to label. Not the gap between rows; see the select's own
-     note above the same token. */
+  /* The gap inside a row (icon to label), not between rows. */
   --gog-autocomplete-option-gap: var(--gog-space-12);
   --gog-autocomplete-option-color: var(--gog-text-color);
   --gog-autocomplete-option-hover-bg: var(--gog-hover-color);
   --gog-autocomplete-option-press-bg: var(--gog-border-color);
   --gog-autocomplete-option-hover-color: var(--gog-text-color);
   --gog-autocomplete-option-selected-bg: var(--gog-accent-pale);
-  /* Body text, not the accent. The selected row is the one option that carries a tint *and* a
-     coloured label, and the accent on that tint measured 4.12:1 in light — `--gog-accent-dim` is
-     worse again (3.77:1 in one-dark). `gog-select` gets away with an accent label because its
-     selected option has no tint behind it. The tint stays as the marker, alongside
-     `aria-selected`. */
+  /* Body text, not the accent: the selected row also carries a tint, and the accent on that tint
+     falls below AA. */
   --gog-autocomplete-option-selected-color: var(--gog-text-color);
-  /* The row height the panel's up/down placement math starts from. **A seed, not a claim**: the
-     component measures a real row one frame after the panel renders and re-places if this
-     disagreed, so this value only governs the very first open of an instance.
-
-     It used to say "an estimate ... no effect unless the JS reads it", and the JS did read it,
-     for a layout decision. Measured against a rendered row it is wrong in all eleven shipped
-     themes -- low in ten, by up to 8.38px -- and no static value can be right, since the row is
-     padding plus leading plus border and a theme or `--gog-density` moves every term. Overriding
-     this is still worth doing if your rows are very unusual: it buys the first frame. */
+  /* A starting estimate for the up/down placement. The component measures a real row after the
+     panel first renders and corrects itself; this only affects that first frame. */
   --gog-autocomplete-option-height: 36px;
   --gog-autocomplete-empty-color: var(--gog-autocomplete-placeholder-color);
   --gog-autocomplete-empty-font-size: var(--gog-text-sm);
@@ -1576,27 +1181,19 @@
   --gog-badge-font-size: var(--gog-text-xs);
   --gog-badge-font-weight: var(--gog-font-weight-semibold);
   --gog-badge-line-height: var(--gog-line-height-none);
-  /* Min-width *and* height: a one-digit badge stays a circle, a three-digit one grows
-     sideways only. */
+  /* Min-width and height: one digit stays a circle, more digits grow sideways. */
   --gog-badge-size: 1.25rem;
   --gog-badge-dot-size: 0.5rem;
   --gog-badge-padding-inline: var(--gog-space-4);
   --gog-badge-radius: 999px;
-  /* How far the badge hangs outside its host's corner. `space-8` rather than the `space-6` it
-     was: every off-grid step this library had sat exactly halfway between two grid steps, so the
-     4px grid made the tie-break a real decision, and it rounds up (docs/component-geometry.md,
-     D3b). Here that is also the better answer on its own terms — a 20px badge hanging 8px out
-     clears the host's corner radius at `--gog-radius: 8px`, which 6px did not quite do. */
+  /* How far the badge hangs outside the host corner; enough to clear the default corner radius. */
   --gog-badge-offset: var(--gog-space-8);
   --gog-badge-border-width: 0;
   --gog-badge-border-style: var(--gog-border-style);
   --gog-badge-border-color: transparent;
-  /* Above the host's own chrome but below any overlay panel (--gog-dropdown-z is 300). */
-  /* Each label is its status's own "text on this fill" token, which flips with the theme — a red
-     badge reads white on light and near-black on dark. It read `--gog-accent-text-color` for all
-     four until 21.9.0, on the assumption that one label works on every fill; four themes proved
-     otherwise, `material`'s amber under white at 1.97:1 the worst of them. See the
-     `--gog-<status>-text-color` block near the top of this file. */
+  /* Above the host's chrome, below any overlay panel. */
+  /* Each label is its own status's "text on this fill" token: one colour does not read on every
+     status fill. */
   --gog-badge-success-bg: var(--gog-success-color);
   --gog-badge-success-color: var(--gog-success-text-color);
   --gog-badge-danger-bg: var(--gog-danger-color);
@@ -1607,9 +1204,8 @@
   --gog-badge-info-color: var(--gog-info-text-color);
 
   /* ── Datepicker (the field; the grid inside it is themed by --gog-calendar-*) ───
-     `--gog-datepicker-bg`, `-color`, `-font-size`, `-padding-x` and `-padding-y` are
-     intentionally NOT declared — they are the per-instance escape hatch the size classes fall
-     back through. */
+     `-bg`, `-color`, `-font-size`, `-padding-x` and `-padding-y` are intentionally NOT declared
+     (per-instance escape hatch). */
   --gog-datepicker-font-family: var(--gog-font-body);
   --gog-datepicker-label-font-family: var(--gog-font-heading);
   --gog-datepicker-gap: var(--gog-space-4);
@@ -1640,7 +1236,7 @@
   --gog-datepicker-min-width: 150px;
   --gog-datepicker-actions-inset: var(--gog-control-icon-offset);
   --gog-datepicker-actions-gap: var(--gog-space-8);
-  /* Right padding on the input, reserving room for the calendar and clear buttons. */
+  /* Room on the input for the calendar and clear buttons. */
   --gog-datepicker-actions-reserve: 40px;
   --gog-datepicker-icon-color: var(--gog-accent-color);
   --gog-datepicker-icon-hover-color: var(--gog-accent-bright);
@@ -1654,8 +1250,7 @@
   --gog-datepicker-panel-border-color: var(--gog-border-color);
   --gog-datepicker-panel-radius: var(--gog-radius);
   --gog-datepicker-panel-gap: var(--gog-space-4);
-  /* The dropdown surface. Inline mode is `gog-calendar` itself, so it sizes from
-     `--gog-calendar-max-width` rather than from this. */
+  /* The dropdown panel. Inline mode is `gog-calendar` itself and sizes from `--gog-calendar-max-width`. */
   --gog-datepicker-panel-width: max-content;
   --gog-datepicker-float-label-reserve: var(--gog-field-float-label-reserve);
   --gog-datepicker-float-label-in-top: var(--gog-field-float-label-in-top);
@@ -1665,16 +1260,14 @@
   /* ── Divider ───────────────────────────────────────────────────────────────── */
   --gog-divider-line-color: var(--gog-border-color);
   --gog-divider-line-thickness: 1px;
-  /* The variant classes map onto these, so a theme can decide what "dashed" looks like
-     rather than the value being frozen into the component's stylesheet. */
+  /* Variant classes map onto these, so a theme decides what "dashed" looks like. */
   --gog-divider-solid-style: solid;
   --gog-divider-dashed-style: dashed;
   --gog-divider-dotted-style: dotted;
   --gog-divider-block-spacing: var(--gog-space-md);
   --gog-divider-inline-spacing: var(--gog-space-md);
   --gog-divider-inset-size: var(--gog-space-lg);
-  /* Floor for a vertical divider with nothing to stretch to — e.g. between two inline
-     buttons. In a flex/grid row it stretches to the row instead. */
+  /* Length of a vertical divider with nothing to stretch to; in a flex or grid row it stretches. */
   --gog-divider-vertical-length: 1.5em;
   --gog-divider-label-gap: var(--gog-space-sm);
   --gog-divider-label-color: var(--gog-muted-text-color);
@@ -1710,78 +1303,45 @@
   --gog-input-error-color: var(--gog-danger-color);
   --gog-input-error-font-size: var(--gog-text-xs);
   --gog-input-error-line-height: var(--gog-field-error-line-height);
-  /* Extra space above the error line, *on top of* the host's own `--gog-input-gap`, which
-     already separates every child of the field. It shipped as `2px` and put this field's error
-     6px under it while `gog-select`, `gog-autocomplete` and `gog-datepicker` — same gap, no
-     offset — sat at 4px; in one form the six did not line up. Zero by default since 21.9.0, so
-     one mechanism spaces the error line everywhere. Set it if you want this field's error
-     pushed further than the rest. */
+  /* Extra space above the error line, on top of the field's own gap. Zero so every field spaces its
+     error the same way. */
   --gog-input-error-offset: 0px;
   --gog-input-icon-color: var(--gog-muted-text-color);
   --gog-input-icon-line-height: var(--gog-line-height-none);
   --gog-input-icon-hover-color: var(--gog-accent-color);
   --gog-input-icon-action-radius: calc(var(--gog-radius) - 4px);
   --gog-input-icon-focus-ring-width: 2px;
-  /* Number field's spin buttons — a subtle fill on hover, since they sit flush against the
-     field's own border rather than floating with their own padding like the other icons. */
+  /* The spin buttons sit flush against the border, so hover is a fill rather than a ring. */
   --gog-input-spin-hover-bg: var(--gog-hover-color);
   --gog-input-disabled-opacity: var(--gog-disabled-opacity);
   --gog-input-transition-duration: var(--gog-duration-base);
   /* Float label — also used by gog-textarea, which shares the --gog-input-* block. */
-  /* Clear button — only rendered once the field has text, see `clearable`.
-
-     A quarter of the corner radius rather than a flat `2px`, which is what this was until
-     21.9.0: at the default `--gog-radius: 8px` it computes to the same 2px, so nothing moves in
-     any shipped theme, but a theme that rounds its corners now rounds this button too. The
-     literal was invisible to `check-tokens` rule G by design — that rule flags a literal only
-     when its value *equals* a character token's current one, so a pill's `999px` is correctly
-     left alone and a small arbitrary number like this one is correctly not detectable. The two
-     sibling controls below carry the same fix.
-
-     `gog-toast` and `gog-accordion` keep their flat `0px` on purpose: those are a chosen shape,
-     not a number that forgot where it came from. */
+  /* Clear button, rendered once the field has text. Its radius is a quarter of the corner radius,
+     so a theme that rounds its corners rounds this too. */
   --gog-input-clear-radius: calc(var(--gog-radius) / 4);
   --gog-input-clear-line-height: var(--gog-line-height-none);
   --gog-input-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
-  /*
-     The textarea's clear button gets a full-size glyph. The 0.7 ratio above suits the dense
-     single-line trigger of a dropdown; on a large multi-line box it reads as a speck.
-  */
+  /* A full-size glyph: 0.7 suits a dense dropdown trigger and reads as a speck on a
+     multi-line box. */
   --gog-textarea-clear-icon-ratio: 1;
-  /* The field is the one place in the library that renders a paragraph the consumer typed:
-     role prose. */
+  /* The only place the library renders prose the user typed. */
   --gog-textarea-line-height: var(--gog-line-height-relaxed);
-  /* Custom resize grip — see the `::-webkit-resizer` comment in textarea.component.scss for
-     why this replaces rather than restyles the native glyph. Colour follows the field's own
-     border by default, not a fixed muted grey, so it reads as part of the field rather than a
-     mismatched accent. */
+  /* A custom grip replaces the native one, which cannot be restyled reliably. It follows the field
+     border so it reads as part of the field. */
   --gog-textarea-resize-grip-size: 11px;
   --gog-textarea-resize-grip-color: var(--gog-input-field-border);
   --gog-textarea-resize-grip-opacity: 0.8;
   --gog-textarea-resize-grip-stripe-width: 1.5px;
-  /* The three hairlines of the resize grip and the gap between them: a length inside one painted
-     mark, not spacing between two things, so it is off the 4px grid on purpose (OPTICAL_CHROME in
-     check-geometry.mjs). At 4px the three stripes would be a 20px block in the corner of every
-     textarea instead of a 9px hint. */
+  /* Inside one painted mark, so off the 4px grid on purpose: at 4px the grip becomes a block. */
   --gog-textarea-resize-grip-stripe-gap: 2px;
   --gog-textarea-resize-grip-offset: var(--gog-space-4);
-  /*
-     Both default to 0 and are overwritten per instance, as an inline style on the field, from
-     the component's own ResizeObserver — they close the gap that opens once the field has been
-     dragged narrower/shorter than its container. Declared here rather than left to a `var()`
-     fallback so the grip's resting geometry is discoverable in this file like everything else;
-     an inline style outranks this declaration, so the per-instance override still wins.
-  */
+  /* Written per instance as inline styles by the component's ResizeObserver, to follow a
+     field dragged smaller than its container. Declared here so the resting value is visible. */
   --gog-textarea-resize-inset-right: 0px;
   --gog-textarea-resize-inset-bottom: 0px;
   --gog-input-clear-inset: var(--gog-space-8);
-  /*
-     Width of one stepper button, and so of the whole stepper column. Scales with the field's
-     own font size rather than being a fixed px value, so it stays proportional across the five
-     sizes. Read in two places — the buttons themselves, and the offset that moves the clear
-     button clear of them on a clearable number field — which is why it is a token rather than
-     the same `calc()` written twice.
-  */
+  /* One stepper button's width, scaled to the field's font size. A token because two places
+     read it: the buttons, and the clear button's offset on a clearable number field. */
   --gog-input-spin-width: calc(
     var(--gog-input-size-font-size, var(--gog-field-md-font-size)) * 1.35
   );
@@ -1794,8 +1354,7 @@
   --gog-multiselect-font-family: var(--gog-font-body);
   --gog-multiselect-label-font-family: var(--gog-font-heading);
   --gog-multiselect-gap: var(--gog-space-4);
-  /* The gap *between* rows -- the only one of the three lists that declares one. The inside
-     of a row is `--gog-multiselect-option-gap-inline`. */
+  /* The gap between rows (inside a row is `-option-gap-inline`). */
   --gog-multiselect-option-gap: var(--gog-space-4);
   --gog-multiselect-options-padding: var(--gog-space-4);
   --gog-multiselect-label-color: var(--gog-accent-color);
@@ -1812,10 +1371,7 @@
   --gog-multiselect-value-color: var(--gog-text-color);
   --gog-multiselect-placeholder-color: var(--gog-muted-text-color);
   --gog-multiselect-focus-border: var(--gog-accent-color);
-  /* The accent, not `--gog-accent-pale`. This outline is the *only* thing marking focus on this
-     control, and a pale wash cannot carry that: measured 1.38:1 against the light page, against
-     the 3:1 WCAG 2.4.11 and 1.4.11 both require. Fourteen of the library's focus rings already
-     read `--gog-accent-color`; these were the outliers, found by the boundary sweep in 21.12.0. */
+  /* The accent, not a pale wash: this outline is the only focus indicator, and it must clear 3:1. */
   --gog-multiselect-focus-ring: var(--gog-accent-color);
   --gog-multiselect-focus-glow: 0 0 8px var(--gog-multiselect-focus-ring);
   --gog-multiselect-focus-ring-width: var(--gog-focus-ring-width);
@@ -1823,39 +1379,25 @@
   --gog-multiselect-error-color: var(--gog-danger-color);
   --gog-multiselect-error-font-size: var(--gog-text-xs);
   --gog-multiselect-error-line-height: var(--gog-field-error-line-height);
-  /* Zero by default since 21.9.0 — see `--gog-input-error-offset` for why. */
+  /* Zero, like every field — see `--gog-input-error-offset`. */
   --gog-multiselect-error-offset: 0px;
   --gog-multiselect-border-color: var(--gog-accent-color);
   --gog-multiselect-panel-bg: var(--gog-surface-color);
   --gog-multiselect-panel-border: var(--gog-accent-color);
   --gog-multiselect-panel-shadow: var(--gog-panel-shadow);
-  /* The panel's own corner, and the reason it is not `--gog-multiselect-radius`: that token
-     shapes the *field*, and it shaped this box too until this release. One token painting two
-     boxes meant a consumer rounding the field into a pill rounded the dropdown into one as well,
-     and the two radii below derive from whatever it is, so the filter and the option rows
-     followed. Same default, so nothing moves; `gog-autocomplete` and `gog-datepicker` already
-     declared this token and this is the pair that did not. */
+  /* The panel's own corner, separate from `--gog-multiselect-radius` so a pill-shaped field does not
+     turn the dropdown into a pill. */
   --gog-multiselect-panel-radius: var(--gog-radius);
   --gog-multiselect-panel-max-height: 260px;
-  /* `--gog-multiselect-panel-offset` until 21.13.0; the old name stopped resolving in 21.14.0. */
   --gog-multiselect-panel-gap: var(--gog-space-4);
   --gog-multiselect-option-hover-bg: var(--gog-hover-color);
   --gog-multiselect-option-press-bg: var(--gog-border-color);
   --gog-multiselect-option-color: var(--gog-text-color);
   --gog-multiselect-option-gap-inline: var(--gog-space-12);
-  /* The row height the panel's up/down placement math starts from. **A seed, not a claim**: the
-     component measures a real row one frame after the panel renders and re-places if this
-     disagreed, so this value only governs the very first open of an instance.
-
-     It used to say "an estimate ... no effect unless the JS reads it", and the JS did read it,
-     for a layout decision. Measured against a rendered row it is wrong in all eleven shipped
-     themes -- low in ten, by up to 8.38px -- and no static value can be right, since the row is
-     padding plus leading plus border and a theme or `--gog-density` moves every term. Overriding
-     this is still worth doing if your rows are very unusual: it buys the first frame. */
+  /* A starting estimate for the up/down placement. The component measures a real row after the
+     panel first renders and corrects itself; this only affects that first frame. */
   --gog-multiselect-option-height: 40px;
-  /* Concentric with the panel, which paints `--gog-multiselect-panel-radius` and insets its rows
-     by the list padding, so the row's corner is that radius minus that padding. It had subtracted
-     2px against 4px of padding, and a restated literal also stops being true once density moves. */
+  /* Concentric with the panel: its radius minus the list padding, derived so it survives density changes. */
   --gog-multiselect-option-radius: max(
     0px,
     calc(var(--gog-multiselect-panel-radius) - var(--gog-multiselect-options-padding))
@@ -1873,11 +1415,8 @@
   --gog-multiselect-filter-input-bg: var(--gog-background-color);
   --gog-multiselect-filter-input-color: var(--gog-multiselect-field-color);
   --gog-multiselect-filter-input-border: var(--gog-multiselect-field-border);
-  /* Concentric with the panel, and the concentric answer here is a square corner. The filter is
-     inset by `--gog-multiselect-filter-padding`, which equals the panel's radius -- and where the
-     inset equals the radius, the inner box's corner point lands exactly on the centre of the
-     outer arc, so a right angle is equidistant from the whole curve. It is the only shape that
-     keeps the gap constant, not a value clamped to zero for want of a better one. */
+  /* Square is the concentric answer: the filter is inset by exactly the panel's radius, so a right
+     angle keeps the gap to the curve constant. */
   --gog-multiselect-filter-input-radius: max(
     0px,
     calc(var(--gog-multiselect-panel-radius) - var(--gog-multiselect-filter-padding))
@@ -1887,18 +1426,17 @@
   --gog-multiselect-filter-border-color: var(--gog-border-color);
   --gog-multiselect-filter-empty-padding: var(--gog-space-12);
   --gog-multiselect-filter-empty-color: var(--gog-multiselect-placeholder-color);
-  /* Matches --gog-select-chevron-inset; see the note there. */
-  /* "+N" badge shown when the selection does not fit on one line. */
+  /* Matches --gog-select-chevron-inset. */
+  /* "+N" summary when the selection does not fit on one line. */
   --gog-multiselect-overflow-color: var(--gog-multiselect-placeholder-color);
   --gog-multiselect-overflow-font-size: var(--gog-text-sm);
-  /* It sits on the field values own baseline (align-self: baseline, 21.7.2), so it takes the
-     field text leading rather than a mark leading. */
+  /* Sits on the value's baseline, so it takes the field text leading. */
   --gog-multiselect-overflow-line-height: var(--gog-field-line-height);
   --gog-multiselect-overflow-gap: var(--gog-space-8);
   --gog-multiselect-min-width: 120px;
   --gog-multiselect-panel-max-width: 420px;
   --gog-multiselect-actions-inset: var(--gog-control-icon-offset);
-  /* A quarter of the corner radius — see `--gog-input-clear-radius` for why. */
+  /* A quarter of the corner radius, like the input's clear button. */
   --gog-multiselect-clear-radius: calc(var(--gog-radius) / 4);
   --gog-multiselect-clear-line-height: var(--gog-line-height-none);
   --gog-multiselect-disabled-opacity: var(--gog-disabled-opacity);
@@ -1908,35 +1446,30 @@
   --gog-multiselect-float-label-over-gap: var(--gog-field-float-label-over-gap);
   --gog-multiselect-float-label-over-reserve: var(--gog-field-float-label-over-reserve);
   --gog-multiselect-arrow-transition-duration: var(--gog-duration-slow);
-  /* Icon geometry, expressed as a ratio of the control's font size. */
+  /* Icon geometry as ratios of the control's font size. */
   --gog-multiselect-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
   --gog-multiselect-arrow-icon-ratio: 0.875;
   --gog-multiselect-mark-size-ratio: 1.2375;
   --gog-multiselect-mark-icon-ratio: 1.125;
 
   /* ── Menu ──────────────────────────────────────────────────────────────────
-     The command menu opened by `[gogMenuTrigger]`. Metrics follow the dropdown panel's, so a
-     menu and a select opened from the same toolbar read as the same surface. */
+     The menu opened by `[gogMenuTrigger]`. Metrics follow the dropdown panel's, so a menu and a
+     select from the same toolbar read as one surface. */
   --gog-menu-z: var(--gog-dropdown-z);
   --gog-menu-bg: var(--gog-surface-color);
   --gog-menu-border-color: var(--gog-border-color);
   --gog-menu-border-width: var(--gog-control-border-width);
   --gog-menu-border-style: var(--gog-control-border-style);
   --gog-menu-radius: var(--gog-panel-radius);
-  /* Step 3, with the dropdown panels it belongs beside — not step 5. This aliased
-     `--gog-dialog-shadow` until 21.12.0, so a dropdown menu carried a modal's elevation. */
+  /* Step 3, with the dropdown panels it sits beside. */
   --gog-menu-shadow: var(--gog-panel-shadow);
   --gog-menu-font-family: var(--gog-font-body);
   --gog-menu-padding: var(--gog-space-4);
   --gog-menu-gap: var(--gog-space-4);
-  /* Gap between the trigger and the panel, matching the four other components that place one.
-     Read by `menu.component.ts`, not by CSS -- a menu panel is positioned in script. */
+  /* Read by `menu.component.ts` for positioning, not by CSS. */
   --gog-menu-panel-gap: var(--gog-space-4);
   --gog-menu-min-width: 180px;
-  /* L8's viewport exception (docs/component-geometry.md, "D7 — taken"): a menu portals into
-     <body> and floats over the viewport, not a container. Its items do not wrap (L9 does not
-     apply — the width stays in px), but L8 still does: no edge-inset token exists on this
-     component today, so the margin reads the scale directly. */
+  /* Viewport-clamped because the menu portals to <body>. Items do not wrap, so the cap stays in px. */
   --gog-menu-max-width: min(320px, calc(100vw - var(--gog-space-16) * 2));
   --gog-menu-max-height: 320px;
   --gog-menu-transition-duration: var(--gog-duration-base);
@@ -1944,17 +1477,13 @@
   --gog-menu-focus-ring-width: var(--gog-focus-ring-width);
   --gog-menu-item-color: var(--gog-text-color);
   --gog-menu-item-hover-bg: var(--gog-hover-color);
-  /* The held state, same idea as the button's: one step past this surface's own hover, as a
-     colour rather than a movement, so `prefers-reduced-motion` cannot take it away. The flat
-     value here is what a browser without `color-mix()` gets; the tinted one is in the @supports
-     block at the end of the file. */
+  /* One step past the item's hover, as a colour so reduced motion keeps it. The tinted value is in
+     the @supports block at the end. */
   --gog-menu-item-press-bg: var(--gog-border-color);
   --gog-menu-item-hover-color: var(--gog-text-color);
   --gog-menu-item-font-size: var(--gog-text-sm);
   --gog-menu-item-padding: var(--gog-space-8) var(--gog-space-16);
-  /* Concentric with the panel, which paints `--gog-panel-radius` (8px larger than the base) and
-     insets its items by `--gog-menu-padding`. Repeating the base radius here made the first and
-     last items visibly squarer than the corner they sit in. */
+  /* Concentric with the panel: its radius minus the menu padding. */
   --gog-menu-item-radius: max(0px, calc(var(--gog-menu-radius) - var(--gog-menu-padding)));
   --gog-menu-item-gap: var(--gog-space-sm);
   --gog-menu-item-disabled-opacity: var(--gog-disabled-opacity);
@@ -1968,21 +1497,17 @@
   --gog-paginator-ellipsis-font-size: var(--gog-text-sm);
   --gog-paginator-ellipsis-line-height: var(--gog-line-height-none);
   --gog-paginator-ellipsis-font-family: var(--gog-font-body);
-  /* Enough for a three-digit page size plus the chevron, so the row doesn't shift on change. */
+  /* Fits a three-digit page size and the chevron, so the row does not shift. */
   --gog-paginator-page-size-min-width: 5rem;
   --gog-paginator-ellipsis-min-width: 32px;
 
   /* ── Panel ─────────────────────────────────────────────────────────────────
-     The `gog-panel` component, which shares its prefix with the foundation surface tier
-     above (`--gog-panel-radius`, `--gog-panel-shadow`, `--gog-panel-border-width`,
-     `--gog-panel-border-style`) deliberately: a panel is the surface those describe, and a
-     theme that sets a house radius for raised surfaces should get it here too.
+     `gog-panel` shares the `--gog-panel-*` prefix with the foundation surface tier deliberately: a
+     panel is that surface, so a theme's house radius for raised surfaces applies here too.
 
-     `--gog-panel-bg`, `--gog-panel-border-color`, `--gog-panel-padding-y`,
-     `--gog-panel-padding-x` and `--gog-panel-gap` are intentionally NOT declared — the
-     per-instance escape hatch. There is no `--gog-panel-*-shadow` twin of that hatch for the
-     elevated variant: it reads `--gog-panel-shadow` from a declaration the component makes on
-     its own host, so setting that token on one panel already changes only that panel. */
+     `--gog-panel-bg`, `-border-color`, `-padding-y`, `-padding-x` and `-gap` are intentionally NOT
+     declared (per-instance escape hatch). The elevated variant reads `--gog-panel-shadow` from its
+     own host, so setting that on one panel already affects only that panel. */
   --gog-panel-font-family: var(--gog-font-body);
   --gog-panel-color: var(--gog-text-color);
   --gog-panel-transition-duration: var(--gog-duration-base);
@@ -1991,10 +1516,7 @@
   --gog-panel-heading-font-family: var(--gog-font-heading);
   --gog-panel-heading-font-size: var(--gog-text-xl);
   --gog-panel-heading-font-weight: var(--gog-font-weight-semibold);
-  /* Role heading, the same step the card heading takes. It had been 1.25 -- the one leading in
-     the library outside the scale, which runs 1.2 then 1.3 with nothing between. Two headings
-     four steps apart differing by 0.05 is two people picking a nice number, not the inverse
-     relationship law 4 describes; that one holds across the roles, where it is real. */
+  /* The heading role, the same step as the card heading. */
   --gog-panel-heading-line-height: var(--gog-line-height-snug);
 
   --gog-panel-outlined-bg: var(--gog-surface-color);
@@ -2054,26 +1576,16 @@
   --gog-progressbar-value-line-height: var(--gog-line-height-none);
   --gog-progressbar-indeterminate-duration: 1.6s;
   --gog-progressbar-indeterminate-easing: cubic-bezier(0.65, 0.05, 0.36, 1);
-  /* The reduced-motion stand-in for the indeterminate animation. */
+  /* Stands in for the indeterminate animation under reduced motion. */
   --gog-progressbar-stripe-size: 6px;
   --gog-progressbar-stripe-color: var(--gog-surface-color);
-  /* The two hairlines that mark where the fill ends, and the reason they are two.
-     WCAG 1.4.11 wants 3:1 for the part of a graphic that carries its meaning, and here that is
-     the boundary — `showValue` is `false` by default, so nothing else states the value. The fill
-     cannot carry it against the track: measured across the whole `--gog-text-color`-to-
-     `--gog-border-color` axis, no single track colour clears 3:1 against all five fills in any
-     theme but `primeng`, because the fills straddle mid-luminance and a track dark enough for the
-     amber warning lands on the blue info (`docs/backlog.md` has the table).
-     A marker can, but not in one tone either: `--gog-surface-color` alone is 1.79:1 on
-     `material`'s warning fill, `--gog-text-color` alone is 1.06:1 on `one-dark`'s success. As a
-     pair they always work — the ink line is 3.25:1 to 9.57:1 against the track in all eleven
-     themes, and whichever tone a fill sits close to, the other one does not. `check:contrast`
-     gates both halves. */
+  /* Two hairlines mark where the fill ends, because that boundary is the value (`showValue` is off
+     by default) and must clear 3:1. No single track or marker tone manages that against every fill in
+     every theme; an ink line and a surface line together always do. */
   --gog-progressbar-edge-width: 1px;
   --gog-progressbar-edge-color: var(--gog-text-color);
   --gog-progressbar-edge-backing-color: var(--gog-surface-color);
-  /* The buffer tier is the same hue at low opacity, so it reads as "ahead of the fill"
-     rather than as a second, competing colour. */
+  /* Same hue at low opacity, so the buffer reads as ahead of the fill, not as a second colour. */
   --gog-progressbar-accent-bg: var(--gog-accent-color);
   --gog-progressbar-accent-buffer-bg: var(--gog-accent-pale);
   --gog-progressbar-success-bg: var(--gog-success-color);
@@ -2086,15 +1598,12 @@
   --gog-progressbar-info-buffer-bg: var(--gog-border-color);
 
   /* ── Ripple (the `gogRipple` directive; its classes live in ripple.css) ────
-     `currentColor` rather than a fixed colour on purpose: the wash then reads as the host's
-     own foreground, so one value works on a filled button and on a ghost one without a
-     per-variant tier. The property is inherited, so `--gog-ripple-color` set anywhere above
-     the host reaches it — which is the per-instance override, no undeclared tier needed. */
+     `currentColor`, so the wash matches the host's foreground on any variant. The property inherits,
+     so setting it above a host is the per-instance override. */
   --gog-ripple-color: currentColor;
   --gog-ripple-opacity: 0.16;
-  /* Longer than any other motion in the library, deliberately: a ripple held to the house 0.2s
-     is over before the eye has followed it across the surface. Still expressed in the
-     foundation scale, so setting the durations to 0s still flattens it theme-wide. */
+  /* Longer than other motion on purpose: a ripple as fast as the house duration is over before the
+     eye follows it. Still derived, so zeroed durations flatten it. */
   --gog-ripple-enter-duration: calc(var(--gog-duration-slow) * 2);
   --gog-ripple-exit-duration: var(--gog-duration-slow);
   --gog-ripple-easing: var(--gog-easing);
@@ -2105,35 +1614,24 @@
   --gog-scroll-thumb-bg: var(--gog-accent-dim);
   --gog-scroll-thumb-hover-bg: var(--gog-accent-color);
   --gog-scroll-thumb-active-bg: var(--gog-accent-bright);
-  /* Concentric with the track: the thumb is inset on every side by `--gog-scroll-thumb-inset`,
-     so its corner is the track's minus that. Both radii exceed half the thumb's width at either
-     track size (10px and 6px, less 2x2 of inset), so this changes no rendered pixel today -- it
-     is here so that a theme raising `--gog-radius` on a wide scroller keeps the two curves
-     parallel instead of letting the thumb match the track it sits inside. */
+  /* Concentric with the track: its radius minus the thumb inset. */
   --gog-scroll-thumb-radius: max(
     0px,
     calc(var(--gog-scroll-track-radius) - var(--gog-scroll-thumb-inset))
   );
-  /* The thumb's clearance inside its own track, off the 4px grid for the same reason
-     `--gog-toggle-thumb-inset` is: a length inside a single painted mark defines that mark's
-     shape rather than spacing two things apart, and 4px on a thin scrollbar would leave a thumb
-     barely wider than the hairline it rides in. Listed in OPTICAL_CHROME. */
+  /* Inside one painted mark, so off the 4px grid on purpose: 4px would leave the thumb barely wider
+     than a hairline. */
   --gog-scroll-thumb-inset: 2px;
   --gog-scroll-corner-bg: transparent;
   --gog-scroll-fade-duration: var(--gog-duration-base);
   --gog-scroll-focus-ring: var(--gog-accent-color);
   --gog-scroll-focus-ring-width: var(--gog-focus-ring-width);
-  /* Per-size pair for the two-tier `--gog-scroll-track-width`/`-thumb-min-size` chains
-     that scroll.component.scss's `.gog-scroll--thin` modifier switches between. `normal`
-     is the unmarked default, mirroring --gog-table-lg-*. */
+  /* The two scroll sizes the `.gog-scroll--thin` modifier switches between. */
   --gog-scroll-normal-track-width: 10px;
   --gog-scroll-thin-track-width: 6px;
   --gog-scroll-normal-thumb-min-size: 32px;
   --gog-scroll-thin-thumb-min-size: 24px;
-  /* Invisible pointer-target padding around the thumb (see .gog-scroll__thumb::before) — the
-     `thin` variant gets more of it since its 6px track leaves the least visible thumb to aim
-     at; both land the effective hit width in the ~22-24px range generally recommended for a
-     comfortable pointer target. */
+  /* Invisible hit padding around the thumb, bringing the pointer target to roughly 24px. */
   --gog-scroll-normal-thumb-hit-padding: var(--gog-space-8);
   --gog-scroll-thin-thumb-hit-padding: var(--gog-space-8);
 
@@ -2162,29 +1660,22 @@
   --gog-select-error-font-size: var(--gog-text-xs);
   --gog-select-error-line-height: var(--gog-field-error-line-height);
   --gog-select-chevron-color: var(--gog-accent-color);
-  /*
-     Distance from the trigger's right edge to the trailing chrome, matching the leading icon
-     inset on gog-inputfield so a select, a multiselect and an input line up in one form. It is
-     applied as the trigger's `padding-right`, and the chevron sits inside that padding — so this
-     is the gap itself, not the gap plus the chevron. It used to be 40px, which double-counted
-     and put the chevron 42px from the edge.
-  */
+  /* The trigger's padding-right, with the chevron inside that padding; matches the input's icon
+     inset so fields line up in a form. */
   --gog-select-chevron-inset: var(--gog-control-icon-offset);
-  /* Floor for an auto-width trigger, so [fullWidth]="false" cannot collapse it to the chevron. */
+  /* Floor for an auto-width trigger, so it cannot collapse to the chevron. */
   --gog-select-min-width: 120px;
-  /* Ceiling for a content-sized panel, so one very long option cannot span the viewport. */
+  /* Ceiling for a content-sized panel, so one long option cannot span the viewport. */
   --gog-select-panel-max-width: 420px;
-  /* Filter box — only rendered when `filter` is on. */
+  /* Filter box, rendered only when `filter` is on. */
   --gog-select-filter-padding: var(--gog-space-8);
   --gog-select-filter-input-padding-y: var(--gog-space-8);
   --gog-select-filter-input-padding-x: var(--gog-space-16);
   --gog-select-filter-input-bg: var(--gog-background-color);
   --gog-select-filter-input-color: var(--gog-select-field-color);
   --gog-select-filter-input-border: var(--gog-select-field-border);
-  /* Concentric with the panel, and the concentric answer here is a square corner. The filter is
-     inset by `--gog-select-filter-padding`, which equals the panel's radius -- and where the inset
-     equals the radius, the inner box's corner point lands exactly on the centre of the outer arc,
-     so a right angle is equidistant from the whole curve. The same case as the multiselect's. */
+  /* Square is the concentric answer: the filter is inset by exactly the panel's radius, so a right
+     angle keeps the gap to the curve constant. */
   --gog-select-filter-input-radius: max(
     0px,
     calc(var(--gog-select-panel-radius) - var(--gog-select-filter-padding))
@@ -2194,8 +1685,8 @@
   --gog-select-filter-border-color: var(--gog-select-option-border-color, var(--gog-border-color));
   --gog-select-filter-empty-padding: var(--gog-space-12);
   --gog-select-filter-empty-color: var(--gog-select-placeholder-color);
-  /* Clear button — only rendered once a value is selected, see `clearable`. */
-  /* A quarter of the corner radius — see `--gog-input-clear-radius` for why. */
+  /* Clear button, rendered once a value is selected. */
+  /* A quarter of the corner radius, like the input's clear button. */
   --gog-select-clear-radius: calc(var(--gog-radius) / 4);
   --gog-select-clear-line-height: var(--gog-line-height-none);
   --gog-select-clear-icon-ratio: var(--gog-control-clear-icon-ratio);
@@ -2206,47 +1697,29 @@
   --gog-select-panel-bg: var(--gog-surface-color);
   --gog-select-panel-shadow: var(--gog-panel-shadow);
   --gog-select-panel-max-height: 260px;
-  /* `--gog-select-panel-offset` until 21.13.0; the old name stopped resolving in 21.14.0. */
   --gog-select-panel-gap: var(--gog-space-4);
-  /* The panel's own corner, and the reason it is not `--gog-select-radius`: that token shapes the
-     *field*, and it shaped this box too until this release. One token painting two boxes meant a
-     consumer rounding the field into a pill rounded the dropdown into one as well, and the filter
-     radius below derives from whatever it is, so that followed too. Same default, so nothing
-     moves; `gog-autocomplete` and `gog-datepicker` already declared this token and this is the
-     pair that did not. */
+  /* The panel's own corner, separate from `--gog-select-radius` so a pill-shaped field does not turn
+     the dropdown into a pill. */
   --gog-select-panel-radius: var(--gog-radius);
-  /* The list's own gutter, so the rows sit inside the panel rather than bleeding to its border.
-     `gog-autocomplete` and `gog-multiselect` both inset theirs by this amount; this panel had no
-     interior at all, which is why its first and last rows were square inside a rounded corner --
-     the same defect `--gog-menu-item-radius` records for the menu. */
+  /* The list's gutter, so rounded rows sit inside the rounded panel. */
   --gog-select-options-padding: var(--gog-space-4);
   --gog-select-option-hover-bg: var(--gog-hover-color);
   --gog-select-option-press-bg: var(--gog-border-color);
   --gog-select-option-selected-color: var(--gog-accent-color);
   --gog-select-option-color: var(--gog-text-color);
-  /* The gap *inside* a row -- check mark to label. Not the gap between rows: the options
-     container declares none, and the placement estimate measures the container rather than
-     reading this, which it used to do on the strength of the name alone. */
+  /* The gap inside a row (check mark to label), not between rows. */
   --gog-select-option-gap: var(--gog-space-12);
-  /* Concentric with the panel, which insets its rows by the list padding above. Derived rather
-     than restated, so it stays true once `--gog-density` moves the padding. */
+  /* Concentric with the panel: its radius minus the list padding, derived so it survives density changes. */
   --gog-select-option-radius: max(
     0px,
     calc(var(--gog-select-panel-radius) - var(--gog-select-options-padding))
   );
-  /* The row height the panel's up/down placement math starts from. **A seed, not a claim**: the
-     component measures a real row one frame after the panel renders and re-places if this
-     disagreed, so this value only governs the very first open of an instance.
-
-     It used to say "an estimate ... no effect unless the JS reads it", and the JS did read it,
-     for a layout decision. Measured against a rendered row it is wrong in all eleven shipped
-     themes -- low in ten, by up to 8.38px -- and no static value can be right, since the row is
-     padding plus leading plus border and a theme or `--gog-density` moves every term. Overriding
-     this is still worth doing if your rows are very unusual: it buys the first frame. */
+  /* A starting estimate for the up/down placement. The component measures a real row after the
+     panel first renders and corrects itself; this only affects that first frame. */
   --gog-select-option-height: 40px;
   --gog-select-option-disabled-opacity: var(--gog-disabled-opacity);
   --gog-select-option-transition-duration: var(--gog-duration-fast);
-  /* Icon geometry, expressed as a ratio of the control's font size. */
+  /* Icon geometry as ratios of the control's font size. */
   --gog-select-chevron-icon-ratio: 0.875;
   --gog-select-mark-size-ratio: 1.125;
   --gog-select-mark-icon-ratio: 0.875;
@@ -2286,8 +1759,7 @@
 
   /* ── Slider ───────────────────────────────────────────────────────────────── */
   --gog-slider-auto-width: 240px;
-  /* Length (height) of a vertical slider's track — the counterpart to
-     --gog-slider-auto-width, which only sizes the horizontal case. */
+  /* Track length of a vertical slider; `-auto-width` covers the horizontal case. */
   --gog-slider-vertical-length: 160px;
   --gog-slider-label-font-family: var(--gog-font-heading);
   --gog-slider-value-font-family: var(--gog-font-mono);
@@ -2306,35 +1778,22 @@
   --gog-slider-track-area-height: 20px;
   --gog-slider-track-radius: 0px;
   /*
-   * Deliberately NOT an accent-* token: --gog-accent-dim sits on the same hue ramp as
-   * --gog-slider-fill-bg (--gog-accent-color), so at a 4px track height the two used to
-   * read as one blob rather than "recessed groove + accent fill" — same problem in both
-   * themes, since the whole accent ramp is one hue. Mixing --gog-text-color into
-   * --gog-border-color instead gives a desaturated, theme-adaptive groove: it darkens
-   * toward black in the light theme (text-color is near-black there) and lightens toward
-   * parchment in the dark theme (text-color is near-white there), landing at a neutral
-   * warm gray in both — always visibly distinct from the saturated accent fill, and always
-   * legible against its own theme's surface.
+   * Not an accent token: a groove on the accent ramp blurs into the accent fill at a 4px track. A
+   * neutral groove stays distinct from the fill in every theme.
    */
   --gog-slider-track-bg: var(--gog-border-color);
   --gog-slider-track-border-width: var(--gog-border-width);
   --gog-slider-track-border-style: var(--gog-border-style);
-  /* Transparent by default — same opt-in convention as --gog-button-primary-border: the
-     width/style are always in the box model, but invisible until a theme sets a color. */
+  /* Transparent by default: the border is in the box model, and a theme opts in by giving it a colour. */
   --gog-slider-track-border-color: transparent;
-  /* Bound via `background` (not `background-color`) in slider.component.scss, so this
-     also accepts a gradient (e.g. `linear-gradient(...)`) for the fill style, not just a
-     solid color. */
+  /* Bound to `background`, so a gradient works as well as a colour. */
   --gog-slider-fill-bg: var(--gog-accent-color);
   --gog-slider-thumb-size: 16px;
   --gog-slider-thumb-bg: var(--gog-accent-color);
   --gog-slider-thumb-border: var(--gog-background-color);
   --gog-slider-thumb-border-width: var(--gog-control-border-width);
   --gog-slider-thumb-radius: 50%;
-  /* A colour, not a shadow: the thumb's glow ring composes it as
-     `0 0 var(--gog-slider-thumb-glow-size) <this>`. It was `--gog-slider-thumb-shadow` until
-     21.13.0, the only token of the 31 the elevation audit classified whose name was simply
-     wrong; the old name stopped resolving in 21.14.0. */
+  /* A colour, not a shadow: the thumb composes it as `0 0 var(--gog-slider-thumb-glow-size) <this>`. */
   --gog-slider-thumb-glow-color: var(--gog-accent-pale);
   --gog-slider-thumb-glow-size: 6px;
   --gog-slider-focus-ring: var(--gog-accent-pale);
@@ -2387,22 +1846,18 @@
   --gog-table-border-width: var(--gog-control-border-width);
   --gog-table-border-style: var(--gog-border-style);
   --gog-table-row-border-width: var(--gog-border-width);
-  /* The selection column is sized to its checkbox and never grows with content. */
+  /* Sized to its checkbox; never grows with content. */
   --gog-table-select-col-width: 44px;
   --gog-table-surface: var(--gog-surface-color);
-  /* The header needs its own ground, not the table's. It used to paint `--gog-table-surface`,
-     which is the same colour the body paints, so on a scrolling table with a sticky header the
-     column names slid over rows of identical background and the only thing separating them was
-     the accent colour and the caps — legible on a light theme, not on a dark one. */
+  /* The header's own ground, so a sticky header stays distinct from the rows scrolling beneath it. */
   --gog-table-header-bg: var(--gog-hover-color);
   --gog-table-text-color: var(--gog-text-color);
   --gog-table-accent-color: var(--gog-accent-color);
   --gog-table-accent-bright: var(--gog-accent-bright);
   --gog-table-hover-bg: var(--gog-accent-pale);
-  /* Only an `interactiveRows` row presses; a plain row is not a control and takes no state
-     beyond hover. Same value the three option lists use, for the same reason. */
+  /* Only an `interactiveRows` row presses; a plain row is not a control. */
   --gog-table-row-press-bg: var(--gog-border-color);
-  /* Selected rows keep this tint through hover, so hovering one never reads as clearing it. */
+  /* Selected rows keep this tint through hover, so hover never reads as deselecting. */
   --gog-table-selected-bg: var(--gog-accent-pale);
   --gog-table-muted-color: var(--gog-muted-text-color);
   --gog-table-focus-ring: var(--gog-accent-color);
@@ -2444,15 +1899,14 @@
   --gog-table-slg-padding-v: var(--gog-space-16);
   --gog-table-slg-th-font-size: var(--gog-text-md);
   --gog-table-slg-td-font-size: var(--gog-text-lg);
-  /* One value for every size step: the role picks the leading and the size does not (D4). */
+  /* One value for every size: the role picks the leading, not the size. */
   --gog-table-td-line-height: var(--gog-line-height-normal);
   --gog-table-th-line-height: var(--gog-line-height-normal);
 
   /* ── Tabs ──────────────────────────────────────────────────────────────────
-     `--gog-tabs-tab-bg`, `-tab-color`, `-tab-padding` and `-tab-font-size` are intentionally
-     NOT declared — they are the per-instance escape hatch the size classes fall back through.
-     `--gog-tabs-indicator-offset` / `-length` are written as inline styles from the measured
-     header geometry, so they are not declared either. */
+     `--gog-tabs-tab-bg`, `-tab-color`, `-tab-padding` and `-tab-font-size` are intentionally NOT
+     declared (per-instance escape hatch). The indicator's offset and length are written as inline
+     styles from measured geometry. */
   --gog-tabs-font-family: var(--gog-font-heading);
   --gog-tabs-font-weight: var(--gog-font-weight-bold);
   --gog-tabs-letter-spacing: 0.4px;
@@ -2464,13 +1918,9 @@
   --gog-tabs-rest-bg: transparent;
   --gog-tabs-rest-color: var(--gog-muted-text-color);
   --gog-tabs-hover-color: var(--gog-text-color);
-  /* Tabs paint no background at rest and none on hover — the press is the only one they get,
-     which is why this token has no hover counterpart to step past. */
+  /* Tabs have no rest or hover ground, so the press is their only fill. */
   --gog-tabs-press-bg: var(--gog-border-color);
-  /* A resting tab's label is deliberately muted, and muted text has no contrast headroom to
-     spend on a tinted ground: on the press wash it fell to 3.24:1 in one-dark and under 4.5 in
-     six other themes. The press takes the full text colour instead — which is also what pressing
-     a tab is about to make it. */
+  /* The press uses full text colour: a muted label on a tinted ground falls below AA. */
   --gog-tabs-press-color: var(--gog-text-color);
   --gog-tabs-active-color: var(--gog-accent-color);
   --gog-tabs-header-border-width: var(--gog-border-width);
@@ -2482,7 +1932,7 @@
   --gog-tabs-transition-duration: var(--gog-duration-base);
   --gog-tabs-disabled-opacity: var(--gog-disabled-opacity);
   --gog-tabs-focus-ring-width: var(--gog-focus-ring-width);
-  /* Inset, for the same reason as the calendar cell: tabs sit shoulder to shoulder. */
+  /* Inset: tabs sit shoulder to shoulder, like calendar cells. */
   --gog-tabs-focus-ring-offset: calc(var(--gog-focus-ring-offset) * -1);
   --gog-tabs-focus-ring-color: var(--gog-accent-color);
   --gog-tabs-panel-padding: var(--gog-space-md);
@@ -2499,8 +1949,8 @@
   --gog-tabs-slg-font-size: var(--gog-text-xl);
 
   /* ── Tag ──────────────────────────────────────────────────────────────────
-     Like the button, the unsuffixed `--gog-tag-bg`/`-border`/`-color`/`-font-size`
-     and friends stay undeclared so variant and size classes can fall through them. */
+     The unsuffixed `--gog-tag-bg`, `-border`, `-color`, `-font-size` and friends stay undeclared so
+     variant and size classes fall through them. */
   --gog-tag-font-family: inherit;
   --gog-tag-default-color: var(--gog-info-color, var(--gog-muted-text-color));
   --gog-tag-success-color: var(--gog-success-color);
@@ -2508,18 +1958,8 @@
   --gog-tag-warning-color: var(--gog-warning-color);
   --gog-tag-info-color: var(--gog-info-color);
   --gog-tag-bg-mix: 10%;
-  /* The label is the status hue mixed **halfway toward the page's ink**, and both halves of that
-     changed in 21.10.0. It was 82% of the hue mixed toward literal `black`, which is a light-theme
-     assumption twice over: on a dark theme it darkened a label that already sat on a dark ground
-     (one-dark's danger tag read 3.11:1), and on a light one 18% of black is not enough to bring a
-     bright hue down to text contrast (material's warning, 2.49:1; primeng's success, 3.06:1).
-     Eleven of the 55 shipped combinations were under WCAG AA and nothing had ever measured them —
-     a tag's colours reach the DOM through `--gog-tag-variant-color`, which `check:contrast` could
-     not follow until the same release taught it to.
-
-     `--gog-text-color` rather than `black` makes the mix follow the theme, and 50% rather than 82%
-     is the same ratio, and the same argument, as `--gog-button-<status>-ink`: as body text the raw
-     status hue clears AA in only a handful of themes. The worst pair is now 4.67:1. */
+  /* The label is the status hue mixed halfway toward the theme's ink — toward `--gog-text-color`
+     rather than black, so it works on light and dark themes and stays readable as text. */
   --gog-tag-color-mix: 50%;
   --gog-tag-bg-base: var(--gog-surface-color);
   --gog-tag-color-base: var(--gog-text-color);
@@ -2567,12 +2007,8 @@
   --gog-toast-color: var(--gog-text-color);
   --gog-toast-border: var(--gog-accent-color);
   --gog-toast-icon-color: var(--gog-accent-color);
-  /* Each type reads its own role. Two of the four did not until 21.13.0: `warning` read
-     `--gog-accent-bright` and `info` read `--gog-accent-color`, which is also what a *typeless*
-     toast paints -- so an info toast was pixel-identical to a plain one, and a warning toast was
-     the same hue a shade brighter. This colour is the whole signal: it paints the leading stripe,
-     the icon and the countdown bar (see toast.component.scss's `--toast-border`). Three of the
-     five states were the accent. */
+  /* Each type has its own colour; it paints the stripe, the icon and the countdown bar, so it is the
+     whole signal. */
   --gog-toast-success-color: var(--gog-success-color);
   --gog-toast-error-color: var(--gog-danger-color);
   --gog-toast-warning-color: var(--gog-warning-color);
@@ -2596,7 +2032,6 @@
   --gog-toast-progress-height: 3px;
   --gog-toast-progress-opacity: 30%;
   --gog-toast-transition-duration: 0.25s;
-  /* Card-stack geometry */
   --gog-toast-stack-peek: 14px;
   --gog-toast-stack-scale-step: 0.06;
   --gog-toast-stack-expanded-gap: 84px;
@@ -2605,10 +2040,8 @@
   --gog-toast-stack-max-depth: 6;
 
   /* ── Toggle ───────────────────────────────────────────────────────────────────
-     A switch, not a checkbox: it announces as "switch, on". The outer label size reuses
-     the `--gog-control-checkbox-*` scale so a toggle and a checkbox in the same form read
-     at the same weight; the track/thumb geometry is its own, since a switch is wider than
-     it is tall. */
+     A switch, not a checkbox. The label reuses the checkbox scale so the two read at the same weight
+     in one form; the track and thumb geometry is its own. */
   --gog-toggle-font-family: var(--gog-font-body);
   --gog-toggle-gap: var(--gog-space-sm);
   --gog-toggle-radius: 999px;
@@ -2620,10 +2053,8 @@
   --gog-toggle-track-on-bg: var(--gog-accent-color);
   --gog-toggle-thumb-off-bg: var(--gog-surface-color);
   --gog-toggle-thumb-on-bg: var(--gog-accent-text-color, var(--gog-primary-color));
-  /* The thumb's clearance inside its own track, and off the 4px grid on purpose: at 2px the
-     thumb is 83% of a 24px track, which is what makes a switch read as a switch, and 4px would
-     take it to 67%. A length inside a single painted mark is not spacing between two things —
-     `check-geometry.mjs` lists it in OPTICAL_CHROME with that reason. */
+  /* Inside one painted mark, so off the 4px grid on purpose: the thumb at this inset fills enough of
+     the track to read as a switch. */
   --gog-toggle-thumb-inset: 2px;
   --gog-toggle-transition-duration: var(--gog-duration-base);
   --gog-toggle-disabled-opacity: var(--gog-disabled-opacity);
@@ -2632,16 +2063,14 @@
   --gog-toggle-focus-ring-width: var(--gog-focus-ring-width);
   --gog-toggle-focus-ring-offset: var(--gog-focus-ring-offset);
   --gog-toggle-focus-ring-color: var(--gog-accent-color);
-  /* In-track on/off wording */
+  /* In-track on/off wording. */
   --gog-toggle-state-color: var(--gog-accent-text-color, var(--gog-primary-color));
   --gog-toggle-state-font-weight: var(--gog-font-weight-semibold);
   --gog-toggle-state-letter-spacing: 0.04em;
   --gog-toggle-state-padding-inline: var(--gog-space-4);
   --gog-toggle-state-offset: var(--gog-space-8);
-  /* Gap between the wording and the thumb parked at the opposite end. The clearance itself
-     (thumb size + this) is computed in the component stylesheet, not here: a `var(` to a
-     size-class token is substituted where it is *declared*, so doing that calc on :root would
-     freeze it to the md thumb and stop it scaling with `size`. */
+  /* The full clearance (thumb size + this gap) is computed in the component stylesheet: a size token
+     substituted here would freeze to one size. */
   --gog-toggle-state-thumb-gap: var(--gog-space-8);
   --gog-toggle-xsm-track-width: 24px;
   --gog-toggle-xsm-track-height: 14px;
@@ -2676,22 +2105,12 @@
   --gog-tooltip-line-height: var(--gog-line-height-normal);
   --gog-tooltip-padding: var(--gog-space-8) var(--gog-space-12);
   --gog-tooltip-radius: var(--gog-radius);
-  /* L9 (docs/component-geometry.md, "D7 — taken"): the bubble wraps, so its cap is a measure —
-     43ch at --gog-tooltip-font-size (12px), the nearest whole character to today's 280px so this
-     changes robustness to a font-size change, not the pixels anyone sees today. It sits under
-     Bringhurst's 45ch floor even so; widening it is a pixel decision this law does not make (see
-     "D7 — taken"). L8's viewport exception is layered on top: no edge-inset token exists on this
-     component today, so the margin reads the scale directly. */
+  /* The bubble wraps, so its cap is a measure in `ch`; the viewport clamp keeps it on screen. */
   --gog-tooltip-max-width: min(43ch, calc(100vw - var(--gog-space-16) * 2));
-  /* Caps the gog-scroll wrapping the bubble's content — see tooltip-bubble.component.html.
-     A cap, not a fixed height: shorter content stays exactly as tall as it needs to be, this
-     only stops something unusually long (a multi-paragraph TemplateRef) from growing to
-     cover most of the viewport. */
+  /* A cap, not a height: only unusually long content (a template with several paragraphs) scrolls. */
   --gog-tooltip-max-height: 220px;
-  /* Same "floating panel" recipe as gog-dialog's panel and gog-select's dropdown — a
-     surface-colored box with a plain (not accent) border and the shared panel shadow —
-     rather than an inverted dark/light bubble, so it reads as part of this site instead of
-     a generic dark tooltip dropped on top of it. */
+  /* The same floating-panel recipe as the dialog and the dropdowns, rather than an inverted bubble,
+     so it belongs to the theme. */
   --gog-tooltip-bg: var(--gog-surface-color);
   --gog-tooltip-color: var(--gog-text-color);
   --gog-tooltip-border-width: var(--gog-panel-border-width);
@@ -2699,8 +2118,7 @@
   --gog-tooltip-border-color: var(--gog-border-color);
   --gog-tooltip-shadow: var(--gog-panel-shadow);
   --gog-tooltip-arrow-size: 5px;
-  /* Space kept between the trigger and the bubble. Read by the directive itself (not just
-     CSS) to feed the placement math — see `readPxToken` in `tooltip.directive.ts`. */
+  /* Read by the directive for its placement math, not only by CSS. */
   --gog-tooltip-gap: var(--gog-space-8);
   --gog-tooltip-transition-duration: var(--gog-duration-fast);
 }
@@ -2708,37 +2126,16 @@
 /*
  * ── color-mix(), and why it is quarantined here ─────────────────────────────────
  *
- * Every token above has a flat value that works in any browser. The richer, mixed value lives
- * in this block, which a browser without `color-mix()` skips entirely.
+ * Every token above has a flat value that works in any browser; the mixed value lives here.
  *
- * **The usual two-declaration fallback does not work for custom properties, and that is the
- * whole reason this block exists.** A custom property accepts almost any token stream at parse
- * time — it is only validated when it is *substituted* — so writing
+ * The usual two-declaration fallback does not work for custom properties: a custom property is
+ * only validated when substituted, so `--x: color-mix(…)` overrides an earlier `--x` even where
+ * `color-mix()` is unsupported, and `var(--x)` then resolves to nothing. `@supports` is evaluated at
+ * parse time, so it is the only way to gate a custom property on feature support.
  *
- *     --x: var(--gog-hover-color);
- *     --x: color-mix(in srgb, …);
- *
- * leaves the second declaration winning even where `color-mix()` means nothing, and `var(--x)`
- * then resolves to nothing at all. Measured in Chrome (2026-08-30): an element styled that way
- * with an unsupported function computed `background: rgba(0, 0, 0, 0)` — transparent, not the
- * earlier value. That is the reported "colours are wrong in Samsung Internet / Firefox": the
- * declarations were not falling back, they were vanishing.
- *
- * `@supports` is the only mechanism that gates a custom property by feature support, because it
- * is evaluated at parse time rather than at substitution time.
- *
- * `color-mix()` shipped in Chrome 111, Firefox 113, Safari 16.2 and Samsung Internet 22.
- *
- * **That is not below the support floor — it overlaps it.** Angular 21 supports
- * `baseline widely available on 2025-10-20`, whose minimums are Chrome 111, Firefox 112 and
- * Safari 16.4. Firefox 112 is inside that window and has no `color-mix()`, so these fallbacks
- * are load-bearing for a browser the framework itself supports, not a courtesy to ancient ones.
- * Below the floor entirely (Samsung Internet on an older Android, which Angular's list does not
- * mention at all) the library still renders: flat palette colours, less depth, every surface
- * legible and every focus ring visible.
- *
- * The project deliberately declares no `browserslist` — Angular's baseline is the policy, and
- * stating a lower one only produced "unsupported browsers" warnings on every build.
+ * `color-mix()` needs Chrome 111, Firefox 113, Safari 16.2. Angular's own browser baseline includes
+ * Firefox 112, so these fallbacks matter for a supported browser; without them it would render
+ * flat but fully legible.
  */
 @supports (color: color-mix(in srgb, red 50%, blue)) {
   :root,
@@ -2748,25 +2145,16 @@
     --gog-button-primary-hover-shadow: 0 0 16px
       color-mix(in srgb, var(--gog-accent-bright) 45%, transparent);
     --gog-button-ghost-hover-bg: color-mix(in srgb, var(--gog-accent-color) 12%, transparent);
-    /* The table's header labels, one step off the raw accent and toward the page's ink. The
-       accent alone is text on a tinted strip (`--gog-table-header-bg` is `--gog-hover-color`), and
-       it read 4.15:1 in `light` and 4.32:1 in `one-light` — the only two themes it failed, and
-       both by a margin small enough that a per-theme patch would have been the tempting fix. This
-       is the general one: 20% of the ink lifts every theme (worst is now one-light at 5.09:1) and
-       keeps the accent identity the header is drawn in. Flat fallback above stays the raw accent,
-       which is what a browser without `color-mix()` has always shown. */
+    /* The header label is a step off the accent toward the ink, so it clears AA on the tinted
+       header strip in every theme while keeping the accent's identity. */
     --gog-table-accent-color: color-mix(
       in srgb,
       var(--gog-accent-color) 80%,
       var(--gog-text-color)
     );
-    /* Every other pressable surface, one rule: 20% of the same ingredient its own hover mixes at
-       10-12%, so the press is a clear step past the hover without becoming a fill. 20 rather than
-       a rounder 25 is measured, not chosen: `check:contrast` resolves these washes over the
-       surface each one actually sits on, and 21% puts one-dark's mid-grey text under 4.5:1 on the
-       tab, accordion and button-toggle presses. The accordion mixes `--gog-accent-dim` because
-       its hover does — its header sits on a strip where a full-accent wash was too loud
-       (21.7.1). */
+    /* Every other pressable surface presses to 20% of the ingredient its hover mixes at 10-12%: a
+       clear step past hover without becoming a fill. Above 20% one theme's muted text drops below AA
+       on the tab, accordion and button-toggle presses. */
     --gog-accordion-press-bg: color-mix(in srgb, var(--gog-accent-dim) 20%, transparent);
     --gog-autocomplete-option-press-bg: color-mix(
       in srgb,
@@ -2780,9 +2168,7 @@
     --gog-select-option-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
     --gog-tabs-press-bg: color-mix(in srgb, var(--gog-accent-color) 20%, transparent);
 
-    /* Button severity — see the block of the same name above for what each ingredient is and
-       why the ink mix is 50%. Four severities, one recipe each, so a new status colour would
-       need four lines rather than a design decision. */
+    /* Button severity — see the block of the same name above. */
     --gog-button-success-fill-hover: color-mix(
       in srgb,
       var(--gog-success-color) 88%,
