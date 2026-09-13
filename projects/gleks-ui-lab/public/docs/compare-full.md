@@ -223,18 +223,25 @@ component code.
 
 ### Code-splitting
 
-Tree-shaking and code-splitting are different promises, and until 21.14.0 this library keeps only
-the first. Measured on a fresh CLI application against 21.13.0 (production build, estimated
-transfer size): a page with one `gog-button` costs 10.2 kB over Angular's own 50.9 kB, so an app
-pays for what it imports. But a route that loaded `gog-table`, `gog-datepicker`, `gog-calendar` and
-`gog-dialog` through `loadComponent` produced a lazy chunk of **442 bytes** — the components stayed
-in the initial bundle, which was 40 kB heavier than it needed to be. A package shipped as one module
-puts anything reachable from the initial chunk into it.
+Tree-shaking and code-splitting are different promises. Measured on a fresh CLI application
+(production build, estimated transfer size): a page with one `gog-button` costs 10.2 kB over
+Angular's own 50.9 kB, so an app pays for what it imports. Splitting is narrower. On 21.13.0 a route
+that loaded `gog-table`, `gog-datepicker`, `gog-calendar` and `gog-dialog` through `loadComponent`
+produced a lazy chunk of **442 bytes**, and the components stayed in the initial bundle.
 
-That is what the three entry points are for. Importing from `@guildofgleks/ui/table`,
-`/datepicker` and `/dialog` works today and changes nothing yet; in 21.14.0 the code moves into
-them and the root stops exporting it, and from then a lazily-used table stays off the initial
-route. This section will carry the re-measured number once that ships.
+21.14.0 exports those three only from their own entry points — `@guildofgleks/ui/table`,
+`/datepicker` and `/dialog` — and the same app measured again:
+
+| Same app, heavy four behind one lazy route | Initial     | Lazy chunk  |
+| ------------------------------------------ | ----------- | ----------- |
+| 21.13.0                                    | 101.2 kB    | 442 B       |
+| **21.14.0**                                | **88.2 kB** | **17.0 kB** |
+| No heavy route at all (the floor)          | 61.2 kB     | —           |
+
+**The other 27 kB is what those components import from the root** — paginator, select, checkbox,
+scroll, spinner, icon, button — and it stays in the initial bundle, because the root is one module
+and the first page already imports it. That is true of any root component used only behind a lazy
+route, so this is a saving on the three heaviest components' own code, not a general answer.
 
 ### Package size on the registry
 
