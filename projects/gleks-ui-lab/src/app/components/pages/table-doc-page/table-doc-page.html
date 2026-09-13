@@ -19,6 +19,17 @@
       <code>contentChildren</code>, so the columns live in your template, not a config array.
     </p>
     <app-markdown [markdown]="importSnippet" />
+    <p class="doc-section__intro">
+      <strong>Import it from <code>@guildofgleks/ui/table</code></strong
+      >, its own entry point since 21.13.0 — <code>GogColumn</code>, its template directives and the
+      table's event types come with it. The root package still exports them in 21.13.0 and stops in
+      21.14.0. Two things no other page will tell you:
+      <strong>your editor will not strike the old import through</strong>
+      — the package's bundled type declarations drop the deprecation tag on a re-export — and
+      <strong>switching changes nothing yet</strong>. In 21.14.0 the code moves into the entry
+      point, and only from then does a table used only behind a lazy route stay out of your app's
+      initial bundle.
+    </p>
 
     <p class="doc-section__intro">
       Basic usage — <code>sortable</code> columns cycle asc → desc → unsorted on click:
@@ -393,6 +404,61 @@
       In lazy mode <code>pageSizeChange</code> is the refetch signal for a new page size, so bind
       <code>[pageSize]</code> + <code>(pageSizeChange)</code> rather than the banana-box when you
       need to act on it.
+    </p>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="virtualize" class="doc-section__title font-heading">
+      Virtualized rows — <code>virtualize</code> <app-since version="21.13.0" />
+    </h2>
+    <p class="doc-section__intro">
+      <code>[virtualize]="true"</code> renders only the rows in view. The table below holds
+      10&nbsp;000, and every seventh carries a note long enough to wrap — so the rows genuinely
+      differ in height, which is the case a table has and a dropdown does not.
+      <strong>A row's height cannot be pinned</strong>: <code>height</code> on a
+      <code>&lt;tr&gt;</code> or <code>&lt;td&gt;</code> is a <em>minimum</em> in table layout. So
+      the window measures each row as it renders, and the scroll height sharpens as you scroll
+      rather than being exact from the first frame.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview virtualize-demo">
+        <gog-checkbox label="virtualize" [(checked)]="virtualizeRows" />
+        <gog-table
+          [value]="manyRows"
+          [virtualize]="virtualizeRows()"
+          maxHeight="420px"
+          [stickyHeader]="true"
+          [showRowNumbers]="true"
+          size="sm"
+        >
+          <gog-column field="component" header="Component" width="320px"></gog-column>
+          <gog-column field="status" header="Status" width="120px"></gog-column>
+          <gog-column field="owner" header="Owner" width="140px"></gog-column>
+        </gog-table>
+      </div>
+      <app-code-tabs [html]="virtualizeHtml" [ts]="virtualizeTs" />
+    </div>
+    <p class="doc-section__intro">
+      <strong>It requires <code>maxHeight</code> and <code>fullWidth</code></strong
+      >, and both are measured constraints rather than preferences. Without
+      <code>maxHeight</code> the table never scrolls on its own, so there is no viewport to window
+      against; <code>[fullWidth]="false"</code> lays out with <code>table-layout: auto</code>, which
+      sizes columns from whichever rows happen to be rendered. Switch either off and windowing turns
+      itself off, with a warning in dev mode.
+    </p>
+    <p class="doc-section__intro">
+      <code>aria-rowcount</code> and <code>aria-rowindex</code> keep the announced size and position
+      honest, and <code>gogRowClick</code>'s <code>index</code> still counts from the top. It is off
+      by default and never switches itself on at a row count, because a windowed table behaves
+      differently in ways a page can notice — the browser's find only sees rendered rows, and a
+      <code>:last-child</code> selector matches the last <em>rendered</em> one.
+    </p>
+    <p class="doc-section__intro">
+      <strong><code>lazy</code> is not a substitute, and the two compose.</strong> <code>lazy</code>
+      keeps the fetch small and still stamps every row of the page it was handed;
+      <code>virtualize</code> keeps the rows the browser builds small, whatever was fetched. One
+      ceiling worth knowing: Chrome clamps an element's height at 33&nbsp;554&nbsp;426px, roughly
+      745&nbsp;000 rows.
     </p>
   </section>
 

@@ -102,6 +102,12 @@
   }
 }
 
+.virtualize-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .status-header {
   color: var(--gog-accent-color);
   font-weight: 600;

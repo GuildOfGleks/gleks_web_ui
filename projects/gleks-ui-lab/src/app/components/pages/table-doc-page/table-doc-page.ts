@@ -1,16 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ButtonComponent, CheckboxComponent, GogTagVariant, TagComponent } from '@guildofgleks/ui';
 import {
-  ButtonComponent,
   GogColumn,
   GogColumnBodyDirective,
   GogColumnHeaderDirective,
   GogTableRowClickEvent,
   GogTableSortEvent,
-  GogTagVariant,
   TableComponent,
-  TagComponent,
-} from '@guildofgleks/ui';
+} from '@guildofgleks/ui/table';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -24,6 +22,16 @@ interface DemoRow {
   owner: string;
   updated: string;
 }
+/** Every seventh row wraps, so the virtualize demo shows rows of genuinely different heights. */
+const MANY_ROWS: DemoRow[] = Array.from({ length: 10_000 }, (_, i) => ({
+  component:
+    i % 7 === 0
+      ? `Component ${i + 1} — with a long note attached, the kind that wraps across several lines in a narrow column`
+      : `Component ${i + 1}`,
+  status: i % 3 === 0 ? 'Ready' : i % 3 === 1 ? 'In review' : 'Planned',
+  owner: ['Design', 'Forms', 'Data', 'Navigation', 'Feedback'][i % 5],
+  updated: `${(i % 30) + 1} days ago`,
+}));
 
 interface SparseRow {
   component: string;
@@ -220,6 +228,14 @@ const TABLE_INPUTS: readonly ApiRow[] = [
     since: '21.6.0',
   },
   {
+    name: 'virtualize',
+    type: 'boolean',
+    default: 'false',
+    description:
+      'Renders only the rows in view, measuring each one as it renders since a table row cannot be given a fixed height. Requires maxHeight and fullWidth — without either it turns itself off and warns in dev mode. Composes with lazy rather than replacing it.',
+    since: '21.13.0',
+  },
+  {
     name: 'size',
     type: "'xsm' | 'sm' | 'md' | 'lg' | 'slg'",
     default: "'lg'",
@@ -321,6 +337,7 @@ const COLUMN_SLOTS: readonly SlotRow[] = [
 @Component({
   selector: 'app-table-doc-page',
   imports: [
+    CheckboxComponent,
     TableComponent,
     GogColumn,
     GogColumnBodyDirective,
@@ -357,6 +374,10 @@ export class TableDocPage implements OnDestroy {
 
   protected readonly loading = signal(false);
   protected readonly showEmpty = signal(false);
+
+  // ── Virtualize demo ────────────────────────────────────────────────────────────────────────
+  protected readonly manyRows = MANY_ROWS;
+  protected readonly virtualizeRows = signal(true);
   private loadingTimer: ReturnType<typeof setTimeout> | null = null;
 
   // ── Outputs demo ───────────────────────────────────────────────────────────────────────────
@@ -462,7 +483,7 @@ export class TableDocPage implements OnDestroy {
   }
 
   protected readonly importSnippet =
-    "```typescript\nimport { GogColumn, TableComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [TableComponent, GogColumn],\n})\n```";
+    "```typescript\nimport { GogColumn, TableComponent } from '@guildofgleks/ui/table';\n\n@Component({\n  // ...\n  imports: [TableComponent, GogColumn],\n})\n```";
 
   protected statusVariant(status: string): GogTagVariant {
     return STATUS_VARIANTS[status] ?? 'info';
@@ -478,7 +499,7 @@ export class TableDocPage implements OnDestroy {
   ].join('\n');
   protected readonly overviewTs = [
     "import { Component } from '@angular/core';",
-    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui/table';",
     '',
     'interface Row {',
     '  component: string;',
@@ -525,14 +546,13 @@ export class TableDocPage implements OnDestroy {
   ].join('\n');
   protected readonly templatesTs = [
     "import { Component } from '@angular/core';",
+    "import { GogTagVariant, TagComponent } from '@guildofgleks/ui';",
     'import {',
     '  GogColumn,',
     '  GogColumnBodyDirective,',
     '  GogColumnHeaderDirective,',
-    '  GogTagVariant,',
     '  TableComponent,',
-    '  TagComponent,',
-    "} from '@guildofgleks/ui';",
+    "} from '@guildofgleks/ui/table';",
     '',
     'const STATUS_VARIANTS: Record<string, GogTagVariant> = {',
     "  Ready: 'success',",
@@ -592,7 +612,7 @@ export class TableDocPage implements OnDestroy {
   ].join('\n');
   protected readonly paginationTs = [
     "import { Component } from '@angular/core';",
-    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui/table';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -620,7 +640,7 @@ export class TableDocPage implements OnDestroy {
   ].join('\n');
   protected readonly stickyTs = [
     "import { Component } from '@angular/core';",
-    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui/table';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -651,7 +671,7 @@ export class TableDocPage implements OnDestroy {
   ].join('\n');
   protected readonly missingValuesTs = [
     "import { Component } from '@angular/core';",
-    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui/table';",
     '',
     'interface SparseRow {',
     '  component: string;',
@@ -689,7 +709,7 @@ export class TableDocPage implements OnDestroy {
   ].join('\n');
   protected readonly fullWidthTs = [
     "import { Component } from '@angular/core';",
-    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui/table';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -710,7 +730,8 @@ export class TableDocPage implements OnDestroy {
     '<gog-table [value]="rows" [loading]="loading()">...</gog-table>';
   protected readonly loadingTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { ButtonComponent, GogColumn, TableComponent } from '@guildofgleks/ui';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui/table';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -737,7 +758,8 @@ export class TableDocPage implements OnDestroy {
   protected readonly emptyHtml = '<gog-table [value]="showEmpty() ? [] : rows">...</gog-table>';
   protected readonly emptyTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { ButtonComponent, GogColumn, TableComponent } from '@guildofgleks/ui';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui/table';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -803,7 +825,7 @@ export class TableDocPage implements OnDestroy {
     '  GogTableRowClickEvent,',
     '  GogTableSortEvent,',
     '  TableComponent,',
-    "} from '@guildofgleks/ui';",
+    "} from '@guildofgleks/ui/table';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -843,7 +865,7 @@ export class TableDocPage implements OnDestroy {
   ].join('\n');
   protected readonly selectionTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui/table';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -872,7 +894,7 @@ export class TableDocPage implements OnDestroy {
   ].join('\n');
   protected readonly rowsPerPageTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { GogColumn, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui/table';",
     '',
     '@Component({',
     "  selector: 'app-example',",
@@ -885,6 +907,44 @@ export class TableDocPage implements OnDestroy {
     '  // `pageSize` is a model on both the table and the paginator, which is exactly what lets',
     '  // the select write back through the table without a go-between signal.',
     '  protected readonly rowsPerPage = signal(2);',
+    '}',
+  ].join('\n');
+
+  protected readonly virtualizeHtml = [
+    '<gog-checkbox label="virtualize" [(checked)]="virtualizeRows" />',
+    '<!-- maxHeight is required: it is the viewport the window is measured against. -->',
+    '<gog-table',
+    '  [value]="rows"',
+    '  [virtualize]="virtualizeRows()"',
+    '  maxHeight="420px"',
+    '  [stickyHeader]="true"',
+    '  [showRowNumbers]="true"',
+    '  size="sm"',
+    '>',
+    '  <gog-column field="component" header="Component" width="320px"></gog-column>',
+    '  <gog-column field="status" header="Status" width="120px"></gog-column>',
+    '  <gog-column field="owner" header="Owner" width="140px"></gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly virtualizeTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { CheckboxComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, TableComponent } from '@guildofgleks/ui/table';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [CheckboxComponent, TableComponent, GogColumn],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    '  // 10 000 rows, and every seventh has a note long enough to wrap.',
+    '  protected readonly rows = Array.from({ length: 10_000 }, (_, i) => ({',
+    '    component: i % 7 === 0 ? `Component ${i + 1} — with a long note…` : `Component ${i + 1}`,',
+    "    status: ['Ready', 'In review', 'Planned'][i % 3],",
+    "    owner: ['Design', 'Forms', 'Data', 'Navigation', 'Feedback'][i % 5],",
+    '  }));',
+    '',
+    '  protected readonly virtualizeRows = signal(true);',
     '}',
   ].join('\n');
 
@@ -910,7 +970,7 @@ export class TableDocPage implements OnDestroy {
   ].join('\n');
   protected readonly lazyTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { GogColumn, GogTableSortEvent, TableComponent } from '@guildofgleks/ui';",
+    "import { GogColumn, GogTableSortEvent, TableComponent } from '@guildofgleks/ui/table';",
     '',
     '@Component({',
     "  selector: 'app-example',",
