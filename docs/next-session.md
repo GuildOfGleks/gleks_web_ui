@@ -1,10 +1,10 @@
 # Where to start
 
-**Phase 1 of `docs/entry-points.md` is done; phase 2 must wait for 21.13.0 to ship.** Phase 2 moves
-the code of `gog-table`, `gog-datepicker`/`gog-calendar` and `gog-dialog` into their entry points
-and removes the root's 25 deprecated exports. Doing it before 21.13.0 is published would delete the
-exports in the same release that deprecated them — a window of zero. `check:deprecations` fails the
-21.14.0 build if it has not happened, so it cannot be forgotten either.
+**21.13.0 is published and the lab is caught up with it, so phase 2 of `docs/entry-points.md` is
+unblocked and is 21.14.0's mandatory payload.** Phase 2 moves the code of `gog-table`,
+`gog-datepicker`/`gog-calendar` and `gog-dialog` into their entry points and removes the root's 25
+deprecated exports — plus `getByPath`/`readOption`/`isSameOptionValue` and the three deprecated
+tokens, all `removedIn: 21.14.0`. `check:deprecations` fails the 21.14.0 build until it happens.
 
 **Read `docs/entry-points.md` Part 2 before touching phase 2.** Findings 2 and 4 are the design;
 finding 6 reversed on the built package and explains why no editor will show the deprecation.
@@ -23,15 +23,7 @@ finding 6 reversed on the built package and explains why no editor will show the
 ## The state of the lists
 
 Defects: none. Rough edges: nothing actionable. Structural: entry points, above. Gaps: the
-unbuilt-component list, which now has nothing in front of it except phase 2's release timing.
-
-## What 21.13.0 has become
-
-Large, and unreleased. Virtualization across all four collection components, `gog-alert`, three
-token renames with the first real deprecation window since 21.7.0, three new checks
-(`check:tokens` rule K, `check:glyph-box`, `check:layering`), and a run of small defects each found
-by a check rather than by eye. Its heading still says `planned`, so `npm run check:release` fails —
-**that is the correct state**; dating it is cutting the release, which is rule 1 and yours alone.
+unbuilt-component list, which has nothing in front of it except phase 2.
 
 ## Two lessons worth more than the fixes
 
@@ -56,9 +48,3 @@ it lies. Worse for the table: a frame scheduled before the tab was hidden never 
 `check:glyph-box` sidesteps all of it by driving the installed Chrome through Playwright
 (`channel: 'chrome'`, no browser download) against the prerendered showcase — needs
 `npm run build:showcase` first.
-
-## Blocked, not forgotten
-
-`docs/lab-after-publish.md` has a full 21.13.0 section, including the `virtualize` entries, the
-table's own, the FAQ's "nothing in the library virtualizes", and the renamed tokens. None of it can
-start until 21.13.0 is on npm.
