@@ -982,7 +982,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-multiselect-panel-gap',
         description:
-          'Gap between the trigger and the panel. Renamed from --gog-multiselect-panel-offset in 21.13.0; the old name still resolves until 21.14.0, so move an override now.',
+          'Gap between the trigger and the panel. It was --gog-multiselect-panel-offset until 21.13.0, and the old name stopped resolving in 21.14.0.',
       },
       {
         name: '--gog-multiselect-option-height',
@@ -1226,7 +1226,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-select-panel-gap',
         description:
-          'Gap between the trigger and the panel. Renamed from --gog-select-panel-offset in 21.13.0; the old name still resolves until 21.14.0, so move an override now.',
+          'Gap between the trigger and the panel. It was --gog-select-panel-offset until 21.13.0, and the old name stopped resolving in 21.14.0.',
       },
       {
         name: '--gog-select-option-height',
@@ -1296,7 +1296,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-slider-thumb-bg / -thumb-border / -thumb-glow-color / -thumb-glow-size',
         description:
-          'Drag handle, and the glow around it. -thumb-glow-color was --gog-slider-thumb-shadow until 21.13.0 — it always held a colour, not a shadow — and the old name still resolves until 21.14.0.',
+          'Drag handle, and the glow around it. -thumb-glow-color was --gog-slider-thumb-shadow until 21.13.0 — it always held a colour, not a shadow — and the old name stopped resolving in 21.14.0.',
       },
       {
         name: '--gog-slider-auto-width / -vertical-length',
