@@ -463,6 +463,22 @@
   </section>
 
   <section class="doc-section">
+    <h2 id="limits" class="doc-section__title font-heading">Where it stops</h2>
+    <p class="doc-section__intro">
+      Stated here so you find out now rather than halfway into a project.
+      <code>gog-table</code> has no <strong>column resizing or reordering</strong> by the reader — a
+      column's <code>width</code>, <code>minWidth</code> and <code>maxWidth</code> are yours to set,
+      not theirs to drag — no <strong>frozen columns</strong>, no
+      <strong>expandable rows</strong> and no <strong>row grouping</strong>.
+    </p>
+    <p class="doc-section__intro">
+      <code>stickyHeader</code> is not the missing feature in disguise: it pins the header while
+      rows scroll under it, which is the vertical axis. Freezing a column against horizontal scroll
+      is the other axis, and that one is absent. For a full data grid, use a dedicated one.
+    </p>
+  </section>
+
+  <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">gog-table — Inputs</h3>
