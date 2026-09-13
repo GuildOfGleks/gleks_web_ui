@@ -249,6 +249,22 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **The package has a second entry point, `@guildofgleks/ui/shared`, and it is internal.** Shared
+  types, configuration and helpers moved out of the root bundle into their own, which the root now
+  imports by package path. Nothing an app imports changes: every symbol the root exported, it still
+  exports, now named one by one instead of re-exported wholesale.
+
+  This is phase 1 of `docs/entry-points.md` in the repository, and the reason for it is a
+  measurement: **the package tree-shakes but does not code-split.** On the real CLI a button costs
+  about 10 kB gzip over an empty app, but a lazy route holding `gog-table`, `gog-datepicker`,
+  `gog-calendar` and `gog-dialog` produced a 442-byte chunk and left all four in the initial bundle
+  — 40 kB heavier than it needs to be. Splitting the heavy components out needs `GOG_CONFIG` to live
+  in exactly one bundle, which is what this entry point is; the split itself comes in the next
+  minors.
+
+  `@guildofgleks/ui/shared` resolves, but it is plumbing the package's own entry points share.
+  Import from `@guildofgleks/ui`.
+
 - **`public-api.ts` names what it exports instead of re-exporting two modules wholesale.** The
   defect was never which symbols are public — it was that **adding one published it silently**. A
   helper written into `date-utils.ts` or `option-accessor.ts` became part of the package's `.d.ts`

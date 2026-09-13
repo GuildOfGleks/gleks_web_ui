@@ -793,12 +793,18 @@ async function main() {
   // is the generated inventory of every token there is — counting it would make every token look
   // live, which is precisely how this category stayed invisible.
   const tsReads = new Set();
-  for await (const entry of glob('**/*.ts', {
-    cwd: path.join(uiSrc, 'lib'),
-    withFileTypes: true,
-  })) {
-    if (!entry.isFile() || entry.name === 'token-names.ts') continue;
-    const file = path.join(entry.parentPath ?? entry.path, entry.name);
+  const tsFiles = [];
+  // `shared/` is an entry point beside `src/` now, and it holds `checkable-control.config.ts` --
+  // the file whose string-built reads rule K's first version missed. Scanning only `src/lib`
+  // after the move would report the whole checkbox size scale dead a second time.
+  for (const cwd of [path.join(uiSrc, 'lib'), path.join(uiSrc, '../shared')]) {
+    for await (const entry of glob('**/*.ts', { cwd, withFileTypes: true })) {
+      if (entry.isFile() && entry.name !== 'token-names.ts') {
+        tsFiles.push(path.join(entry.parentPath ?? entry.path, entry.name));
+      }
+    }
+  }
+  for (const file of tsFiles) {
     const source = readFileSync(file, 'utf8');
     // Two spellings, because TypeScript reads a token two ways and missing either one reports a
     // live token as dead: a bare name handed to `resolveLengthToken(el, '--gog-menu-panel-gap')`,

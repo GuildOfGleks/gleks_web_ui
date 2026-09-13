@@ -16,8 +16,8 @@ import {
 
 import { ButtonComponent } from '../button/button.component';
 import { IconComponent, type GogIconName } from '../icon/icon.component';
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
-import { GogAlertLive, GogSeverity } from '../../shared/types';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { GogAlertLive, GogSeverity } from '@guildofgleks/ui/shared';
 
 /**
  * Custom markup for the alert's leading icon:

@@ -2,7 +2,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, TemplateRef, computed, input } from '@angular/core';
 
 import { ScrollComponent } from '../scroll/scroll.component';
-import { GogTooltipSide } from '../../shared/tooltip-position';
+import { GogTooltipSide } from '@guildofgleks/ui/shared';
 
 /**
  * The visible bubble, created on demand by `GogTooltipOverlay` and moved into `document.body`.

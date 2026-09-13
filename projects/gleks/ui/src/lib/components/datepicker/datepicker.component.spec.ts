@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { DatepickerComponent } from './datepicker.component';
-import { GOG_CONFIG } from '../../shared/config';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import type { GogDateRange } from './date-utils';
 
 describe('DatepickerComponent', () => {

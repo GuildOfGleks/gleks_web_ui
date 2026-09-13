@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
-import { GogSize, GogSpinnerVariant } from '../../shared/types';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { GogSize, GogSpinnerVariant } from '@guildofgleks/ui/shared';
 
 /** The built-in look, when neither the instance nor the app asks for anything else. */
 const DEFAULT_VARIANT: GogSpinnerVariant = 'runic';

@@ -21,10 +21,10 @@ import {
 import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
-import { GOG_CONFIG } from '../../shared/config';
-import { resolveRipple } from '../../shared/ripple-state';
-import { handleRovingFocusKeydown } from '../../shared/roving-focus';
-import { GogOrientation, GogSize, GogTabsAlign } from '../../shared/types';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { resolveRipple } from '@guildofgleks/ui/shared';
+import { handleRovingFocusKeydown } from '@guildofgleks/ui/shared';
+import { GogOrientation, GogSize, GogTabsAlign } from '@guildofgleks/ui/shared';
 import { GOG_TABS_STATE, type GogTabsState } from './tabs-state';
 import { TabComponent } from './tab.component';
 

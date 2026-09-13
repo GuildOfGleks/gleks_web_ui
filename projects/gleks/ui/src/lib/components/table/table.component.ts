@@ -24,11 +24,11 @@ import { PaginatorComponent } from '../paginator/paginator.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
-import { GogSize } from '../../shared/types';
-import { getByPath } from '../../shared/option-accessor';
-import { resolveCssLengthPx } from '../../shared/dropdown-position';
-import { GogVariableWindow } from '../../shared/variable-window';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { GogSize } from '@guildofgleks/ui/shared';
+import { getByPath } from '@guildofgleks/ui/shared';
+import { resolveCssLengthPx } from '@guildofgleks/ui/shared';
+import { GogVariableWindow } from '@guildofgleks/ui/shared';
 import {
   GogColumn,
   type GogColumnBodyContext,

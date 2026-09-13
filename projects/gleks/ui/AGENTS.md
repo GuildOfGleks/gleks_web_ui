@@ -36,7 +36,14 @@ defaults.
 - Theming is 100% CSS custom properties (`--gog-*`) — no Sass config, no JS theme objects, no
   build step to restyle anything.
 - Tree-shakeable: `"sideEffects": false` and every component is a separate standalone import, so
-  importing `ButtonComponent` alone does not pull in the rest of the library.
+  importing `ButtonComponent` alone does not pull in the rest of the library — measured on the real
+  CLI, a button costs about 10 kB gzip over an empty app and all 31 components about 75 kB.
+  **It does not yet code-split**: a component used only behind a lazy route still ships in the
+  initial bundle, because the root is one module. `docs/entry-points.md` in the repository is the
+  plan that fixes it.
+- **Import from `@guildofgleks/ui`.** `@guildofgleks/ui/shared` also resolves — it is the
+  package's internal entry point, which the root and its other entry points share so that
+  `GOG_CONFIG` exists once. It is not an API to build an app on.
 - SSR-safe: anything touching `window`/`document` is guarded with `isPlatformBrowser`/
   `afterNextRender`.
 

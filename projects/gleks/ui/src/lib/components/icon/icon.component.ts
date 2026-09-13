@@ -9,10 +9,10 @@ import {
   isDevMode,
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GogIconName, ICON_DEFS } from '../../shared/icons';
-import { GOG_ICONS } from '../../shared/icon-registry';
+import { GogIconName, ICON_DEFS } from '@guildofgleks/ui/shared';
+import { GOG_ICONS } from '@guildofgleks/ui/shared';
 
-export type { GogIconName, GogBuiltinIconName } from '../../shared/icons';
+export type { GogIconName, GogBuiltinIconName } from '@guildofgleks/ui/shared';
 
 /**
  * Names already warned about, so a missing icon rendered in a `@for` logs once rather than once

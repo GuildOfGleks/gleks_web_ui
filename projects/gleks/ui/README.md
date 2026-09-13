@@ -518,4 +518,4 @@ Apache-2.0 © Roman Malitskyi
 Built-in icons are [Lucide](https://lucide.dev) glyphs, inlined so the package keeps zero runtime
 dependencies. Lucide is ISC licensed; portions are held by Cole Bemis 2013–2022 as part of
 Feather (MIT), all others by Lucide Contributors 2022 — full notice in
-`src/lib/shared/icons.ts`.
+`shared/icons.ts`.

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 
 import { ScrollComponent } from './scroll.component';
-import { GOG_CONFIG } from '../../shared/config';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 
 /** jsdom never lays elements out, so scroll/client metrics are stubbed per test as needed. */
 function mockMetrics(

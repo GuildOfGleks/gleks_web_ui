@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PaginatorComponent } from './paginator.component';
-import { GOG_CONFIG } from '../../shared/config';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 
 describe('PaginatorComponent', () => {
   let component: PaginatorComponent;

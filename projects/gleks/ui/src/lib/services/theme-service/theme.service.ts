@@ -1,7 +1,7 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { DestroyRef, Injectable, PLATFORM_ID, Signal, inject, signal } from '@angular/core';
 
-import { GOG_CONFIG } from '../../shared/config';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when `GOG_CONFIG.theme` doesn't supply one. */
 const DEFAULT_THEME = 'light';

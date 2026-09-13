@@ -48,7 +48,7 @@ import { fileURLToPath } from 'node:url';
 import { measureGlyph } from './svg-ink.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const iconsPath = path.join(root, 'projects/gleks/ui/src/lib/shared/icons.ts');
+const iconsPath = path.join(root, 'projects/gleks/ui/shared/icons.ts');
 
 /** Units of the 24-grid a glyph's ink centre may sit from the box centre. See the header. */
 const TOLERANCE = 1;

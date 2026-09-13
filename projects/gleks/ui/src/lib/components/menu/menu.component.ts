@@ -21,15 +21,15 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { GOG_CONFIG } from '../../shared/config';
-import { resolveLengthToken, resolveNumberToken } from '../../shared/token-values';
-import { GogDropdownOverlay } from '../../shared/dropdown-overlay';
-import { resolveRipple } from '../../shared/ripple-state';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { resolveLengthToken, resolveNumberToken } from '@guildofgleks/ui/shared';
+import { GogDropdownOverlay } from '@guildofgleks/ui/shared';
+import { resolveRipple } from '@guildofgleks/ui/shared';
 import { bindRipple } from '../ripple/ripple-controller';
-import { nextGogControlId } from '../../shared/control-id';
-import { isRovingFocusKey, nextRovingFocusIndex } from '../../shared/roving-focus';
-import { scopedOverlayDirection } from '../../shared/overlay-direction';
-import type { GogDropdownDirection } from '../../shared/dropdown-position';
+import { nextGogControlId } from '@guildofgleks/ui/shared';
+import { isRovingFocusKey, nextRovingFocusIndex } from '@guildofgleks/ui/shared';
+import { scopedOverlayDirection } from '@guildofgleks/ui/shared';
+import type { GogDropdownDirection } from '@guildofgleks/ui/shared';
 import { ScrollComponent } from '../scroll/scroll.component';
 import {
   DEFAULT_MENU_PANEL_GAP,

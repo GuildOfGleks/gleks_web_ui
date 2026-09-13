@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ThemeService } from './theme.service';
-import { GOG_CONFIG, GogGlobalConfig } from '../../shared/config';
+import { GOG_CONFIG, GogGlobalConfig } from '@guildofgleks/ui/shared';
 
 /** A fresh injector per case, so each one sees the service's constructor-time resolution. */
 function createService(config: GogGlobalConfig = {}): ThemeService {

@@ -1,6 +1,6 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { scopedOverlayDirection } from '../../shared/overlay-direction';
-import { scopedOverlayTheme } from '../../shared/overlay-theme';
+import { scopedOverlayDirection } from '@guildofgleks/ui/shared';
+import { scopedOverlayTheme } from '@guildofgleks/ui/shared';
 
 import { GogTooltipBubbleComponent } from './tooltip-bubble.component';
 

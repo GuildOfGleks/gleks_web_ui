@@ -1,9 +1,9 @@
 import { Directive, booleanAttribute, computed, inject, input } from '@angular/core';
 
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
-import { resolveRipple } from '../../shared/ripple-state';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { resolveRipple } from '@guildofgleks/ui/shared';
 import { bindRipple } from '../ripple/ripple-controller';
-import { GogSeverity, GogSize, GogVariant } from '../../shared/types';
+import { GogSeverity, GogSize, GogVariant } from '@guildofgleks/ui/shared';
 
 /** Built-in default, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';

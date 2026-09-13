@@ -12,9 +12,9 @@ import { Subject, timer } from 'rxjs';
 import { throttle } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { GogAriaHasPopup, GogSeverity, GogSize, GogVariant } from '../../shared/types';
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
-import { resolveRipple } from '../../shared/ripple-state';
+import { GogAriaHasPopup, GogSeverity, GogSize, GogVariant } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { resolveRipple } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
 import { SpinnerComponent } from '../spinner/spinner.component';
 

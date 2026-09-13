@@ -22,22 +22,22 @@ import { NgTemplateOutlet } from '@angular/common';
 
 import { CalendarComponent, type GogDatepickerValue } from './calendar/calendar.component';
 import { IconComponent } from '../icon/icon.component';
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
-import { GogClearableState } from '../../shared/clearable-state';
-import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
-import { GogFloatLabelState } from '../../shared/float-label-state';
-import { GogDropdownOverlay } from '../../shared/dropdown-overlay';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { GogClearableState } from '@guildofgleks/ui/shared';
+import { GogErrorState, type GogErrorDisplay } from '@guildofgleks/ui/shared';
+import { GogFloatLabelState } from '@guildofgleks/ui/shared';
+import { GogDropdownOverlay } from '@guildofgleks/ui/shared';
 import {
   type GogDropdownDirection,
   type GogDropdownPlacement,
   resolveDropdownPlacement,
-} from '../../shared/dropdown-position';
+} from '@guildofgleks/ui/shared';
 import {
   GogDateSelectionMode,
   GogFloatLabelVariant,
   GogHourFormat,
   GogSize,
-} from '../../shared/types';
+} from '@guildofgleks/ui/shared';
 import { type GogDateRange, formatDate, parseDate } from './date-utils';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */

@@ -12,7 +12,7 @@ import {
   input,
 } from '@angular/core';
 
-import { GogBadgePosition, GogTagVariant } from '../../shared/types';
+import { GogBadgePosition, GogTagVariant } from '@guildofgleks/ui/shared';
 
 /** Beyond this count the badge renders `N+` rather than growing without limit. */
 const DEFAULT_MAX = 99;

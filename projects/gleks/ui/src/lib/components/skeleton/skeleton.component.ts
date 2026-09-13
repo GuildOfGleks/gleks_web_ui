@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { GogSize, GogSkeletonAnimation, GogSkeletonShape } from '../../shared/types';
+import { GogSize, GogSkeletonAnimation, GogSkeletonShape } from '@guildofgleks/ui/shared';
 
 @Component({
   selector: 'gog-skeleton',

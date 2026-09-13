@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GOG_CONFIG } from '../../shared/config';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import { ButtonComponent } from '../button/button.component';
 import { GogButtonDirective } from '../button/button.directive';
 import { ChipComponent } from '../chip/chip.component';

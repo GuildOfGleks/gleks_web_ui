@@ -13,15 +13,15 @@ import {
   signal,
 } from '@angular/core';
 
-import { GOG_CONFIG } from '../../shared/config';
-import { resolveLengthToken, resolveNumberToken } from '../../shared/token-values';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { resolveLengthToken, resolveNumberToken } from '@guildofgleks/ui/shared';
 import { GogTooltipOverlay } from './tooltip-overlay';
 import {
   GogTooltipTargetRect,
   GogTooltipViewport,
   resolveTooltipPlacement,
-} from '../../shared/tooltip-position';
-import { GogTooltipPosition } from '../../shared/types';
+} from '@guildofgleks/ui/shared';
+import { GogTooltipPosition } from '@guildofgleks/ui/shared';
 import { GogTooltipBubbleComponent } from './tooltip-bubble.component';
 
 const DEFAULT_SHOW_DELAY = 300;

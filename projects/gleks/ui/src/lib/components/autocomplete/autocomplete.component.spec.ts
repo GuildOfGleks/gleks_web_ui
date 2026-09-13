@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { AutocompleteComponent } from './autocomplete.component';
-import { GOG_CONFIG } from '../../shared/config';
-import type { GogDropdownOption } from '../../shared/dropdown-base';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import type { GogDropdownOption } from '@guildofgleks/ui/shared';
 
 const OPTIONS: GogDropdownOption[] = [
   { id: 1, name: 'Angular' },

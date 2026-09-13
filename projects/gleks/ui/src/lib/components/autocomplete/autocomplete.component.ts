@@ -14,8 +14,8 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-base';
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+import { GogDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';

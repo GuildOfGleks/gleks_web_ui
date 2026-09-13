@@ -34,7 +34,7 @@ export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
     kind: 'symbol',
     name: 'getByPath',
     replacement:
-      "internal plumbing, published only because `public-api.ts` used to re-export this module wholesale. Nothing in the package's own documentation advertises it.",
+      "read the field yourself; this is the package's own plumbing and it leaves the root. It stays inside `@guildofgleks/ui/shared`, the internal entry point, which is not a replacement to build on.",
     since: '21.13.0',
     sinceDate: '2026-09-12',
     removedIn: '21.14.0',
@@ -43,7 +43,7 @@ export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
     kind: 'symbol',
     name: 'isSameOptionValue',
     replacement:
-      "internal plumbing, published only because `public-api.ts` used to re-export this module wholesale. Nothing in the package's own documentation advertises it.",
+      "read the field yourself; this is the package's own plumbing and it leaves the root. It stays inside `@guildofgleks/ui/shared`, the internal entry point, which is not a replacement to build on.",
     since: '21.13.0',
     sinceDate: '2026-09-12',
     removedIn: '21.14.0',
@@ -52,7 +52,7 @@ export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
     kind: 'symbol',
     name: 'readOption',
     replacement:
-      "internal plumbing, published only because `public-api.ts` used to re-export this module wholesale. Nothing in the package's own documentation advertises it.",
+      "read the field yourself; this is the package's own plumbing and it leaves the root. It stays inside `@guildofgleks/ui/shared`, the internal entry point, which is not a replacement to build on.",
     since: '21.13.0',
     sinceDate: '2026-09-12',
     removedIn: '21.14.0',

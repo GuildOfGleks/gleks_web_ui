@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates `projects/gleks/ui/src/lib/shared/deprecations.ts` — the manifest of everything the
+ * Generates `projects/gleks/ui/shared/deprecations.ts` — the manifest of everything the
  * library currently deprecates, shipped in the public API as `GOG_DEPRECATIONS`.
  *
  * **Why generate it rather than write it.** The docs site's job is to answer "is this still
@@ -31,7 +31,7 @@ import { collectDeprecatedTokens, parseTag, readContext, readTag } from './depre
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uiSrc = path.join(rootDir, 'projects/gleks/ui/src');
-const manifestPath = path.join(uiSrc, 'lib/shared/deprecations.ts');
+const manifestPath = path.join(uiSrc, '../shared/deprecations.ts');
 
 /** Deprecated public symbols, from the `@deprecated` tags in the library's own source. */
 function collectSymbols(files) {
@@ -138,9 +138,13 @@ function writeMatchingEol(filepath, next) {
 
 export async function buildManifest() {
   const tsFiles = [];
-  for await (const entry of glob('**/*.ts', { cwd: uiSrc, withFileTypes: true })) {
-    if (entry.isFile() && !entry.name.endsWith('.spec.ts')) {
-      tsFiles.push(path.join(entry.parentPath ?? entry.path, entry.name));
+  // Both trees: the root's `src/` and the `shared/` entry point beside it (docs/entry-points.md).
+  // Scanning only `src/` would silently drop every tag inside `shared/` from the manifest.
+  for (const cwd of [uiSrc, path.join(uiSrc, '../shared')]) {
+    for await (const entry of glob('**/*.ts', { cwd, withFileTypes: true })) {
+      if (entry.isFile() && !entry.name.endsWith('.spec.ts')) {
+        tsFiles.push(path.join(entry.parentPath ?? entry.path, entry.name));
+      }
     }
   }
   tsFiles.sort();
@@ -177,7 +181,7 @@ async function main() {
   if (check) {
     if (!sameContent(current, source)) {
       console.error(
-        'The deprecation manifest is out of date:\n  lib/shared/deprecations.ts\n\nRun `npm run generate:deprecations`.',
+        'The deprecation manifest is out of date:\n  shared/deprecations.ts\n\nRun `npm run generate:deprecations`.',
       );
       process.exit(1);
     }

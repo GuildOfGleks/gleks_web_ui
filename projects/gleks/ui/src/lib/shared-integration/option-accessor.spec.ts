@@ -5,8 +5,8 @@ import { describe, expect, it } from 'vitest';
 
 import { MultiselectComponent } from '../components/multiselect/multiselect.component';
 import { SelectComponent } from '../components/select/select.component';
-import { GogDropdownOptionDirective } from './dropdown-base';
-import { getByPath, isSameOptionValue, readOption } from './option-accessor';
+import { GogDropdownOptionDirective } from '@guildofgleks/ui/shared';
+import { getByPath, isSameOptionValue, readOption } from '@guildofgleks/ui/shared';
 
 /** A consumer's own DTO — no `id`, no `name`, and a nested field. */
 interface User {

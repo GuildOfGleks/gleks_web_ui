@@ -1,7 +1,7 @@
 import { Directive, ElementRef, inject, input } from '@angular/core';
 
-import { GOG_CONFIG } from '../../shared/config';
-import { resolveRipple } from '../../shared/ripple-state';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { resolveRipple } from '@guildofgleks/ui/shared';
 import { bindRipple } from '../ripple/ripple-controller';
 import { CollapsibleComponent } from './collapsible.component';
 

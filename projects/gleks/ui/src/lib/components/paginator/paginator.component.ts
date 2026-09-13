@@ -9,10 +9,10 @@ import {
   untracked,
 } from '@angular/core';
 
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { ButtonComponent } from '../button/button.component';
 import { SelectComponent } from '../select/select.component';
-import { GogPaginatorRangeMode, GogSize } from '../../shared/types';
+import { GogPaginatorRangeMode, GogSize } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG.labels` supplies one. */
 const DEFAULT_PAGE_SIZE = 10;

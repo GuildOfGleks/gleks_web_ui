@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { DIALOG_DATA, DIALOG_REF } from './dialog.tokens';
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { DialogService, OpenDialog } from '../../services/dialog-service/dialog.service';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';

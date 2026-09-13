@@ -96,9 +96,39 @@ can split while the root still re-exports, whichever path they import from.
 | #   | What                                                                                                                                     | Status                 |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | 0   | Part 1 and Part 2 — measure before moving anything                                                                                       | ✅ 2026-09-13          |
-| 1a  | `shared` → `projects/gleks/ui/shared/` entry point; every import rewritten to the package path; scripts, generators and tsconfigs follow | 🔜                     |
+| 1a  | `shared` → `projects/gleks/ui/shared/` entry point; every import rewritten to the package path; scripts, generators and tsconfigs follow | ✅ 2026-09-13          |
 | 1b  | `/table`, `/datepicker`, `/dialog` thin subpaths via `ɵ` aliases; root exports deprecated for the next minor                             | 🔜                     |
 | 2   | Move the three units' code; drop the root exports; re-run Part 1's variant D and publish the number                                      | 🔜 (the minor after 1) |
+
+### As 1a finished
+
+`shared/` is `@guildofgleks/ui/shared`. 37 files moved with history, 64 files' imports rewritten
+to the package path, the root's six wholesale re-exports of shared modules replaced by named lists
+taken from the compiler rather than typed. Four specs that exercise components through shared code
+moved to `src/lib/shared-integration/`, where the components are. In the built showcase there is
+exactly **one** `new InjectionToken('GOG_CONFIG', …)` and one for `GOG_ICONS`; a Playwright sweep
+of all 46 routes raised no application error.
+
+**Three things would have shipped broken with every check green**, and each was caught by
+comparing a count rather than reading a pass:
+
+- **110 tests stopped running.** `@angular/build:unit-test` resolves `include` against the
+  project's `sourceRoot`, not its root as the schema says, so specs moved beside `src/` were simply
+  not found: 51 files and 1078 tests, all passing. `include` now names `../shared/**/*.spec.ts`,
+  and the count is 61 and 1188 again — the baseline taken before the move.
+- **`check:layering` went blind.** It kept scanning `lib/shared/`, which no longer existed, and
+  passed on 29 units instead of 36 with a floor rule that examined no files. Rewritten for the new
+  layout, it now fails if `shared/` holds no source, and gains the rule this whole phase exists
+  for: nothing outside `shared/` imports it by relative path.
+- **This release's own deprecation would have deleted code the package uses.** `getByPath`,
+  `readOption` and `isSameOptionValue` were tagged `@deprecated … Removed in 21.14.0` on their
+  _declarations_, so in 21.14.0 `check:deprecations` would have demanded their deletion while
+  `gog-table` and the dropdown base call them. The tags are on the root's export specifiers now,
+  which is what was meant, and the manifest still names all three.
+
+Two scanners also had to learn a second directory — `check:tokens` rule K (which would otherwise
+have reported the checkbox size scale dead a second time, since `checkable-control.config.ts`
+lives in `shared/`) and the deprecation generator and check.
 
 **1a before 1b, and not in the same commit** — 1a changes nothing a consumer can see and touches 61
 files, 1b changes the public surface and touches four.

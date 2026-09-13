@@ -4,11 +4,11 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { vi } from 'vitest';
 
 import { MultiselectComponent } from './multiselect.component';
-import type { GogDropdownOption } from '../../shared/dropdown-base';
+import type { GogDropdownOption } from '@guildofgleks/ui/shared';
 
 /** See the note in select.component.spec.ts — generics have nothing to infer from here. */
 type DefaultMultiselect = MultiselectComponent<GogDropdownOption, string | number>;
-import { GOG_CONFIG } from '../../shared/config';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 
 /** See the identical helper in select.component.spec.ts. */
 function stubRect(target: Element, rect: Partial<DOMRect>): void {

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { GogProgressbarMode, GogProgressbarVariant, GogSize } from '../../shared/types';
+import { GogProgressbarMode, GogProgressbarVariant, GogSize } from '@guildofgleks/ui/shared';
 
 const MIN = 0;
 const MAX = 100;

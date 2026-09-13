@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { GogDividerVariant, GogOrientation } from '../../shared/types';
+import { GogDividerVariant, GogOrientation } from '@guildofgleks/ui/shared';
 
 /**
  * A rule separating two regions, optionally with a label running through it.

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CalendarComponent, type GogDatepickerValue } from './calendar.component';
 import { isSameDay, type GogDateRange } from '../date-utils';
-import { GOG_CONFIG } from '../../../shared/config';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 
 /** A fixed month with no ambiguity: June 2026 starts on a Monday and has 30 days. */
 const JUNE_2026 = new Date(2026, 5, 15);

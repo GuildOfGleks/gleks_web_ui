@@ -70,11 +70,15 @@ async function main() {
   ).version;
 
   const files = [];
-  for await (const entry of glob('**/*.ts', { cwd: uiSrc, withFileTypes: true })) {
-    // The generated manifest *describes* deprecations, so its prose says "@deprecated" without
-    // being one. Scanning it would have this check fail on the artifact it feeds.
-    if (entry.isFile() && entry.name !== GENERATED_MANIFEST) {
-      files.push(path.join(entry.parentPath ?? entry.path, entry.name));
+  // Both trees, for the reason generate-deprecations.mjs gives: `shared/` is its own entry point
+  // now, and a tag there that this loop never read would be a deadline nothing enforces.
+  for (const cwd of [uiSrc, path.join(uiSrc, '../shared')]) {
+    for await (const entry of glob('**/*.ts', { cwd, withFileTypes: true })) {
+      // The generated manifest *describes* deprecations, so its prose says "@deprecated" without
+      // being one. Scanning it would have this check fail on the artifact it feeds.
+      if (entry.isFile() && entry.name !== GENERATED_MANIFEST) {
+        files.push(path.join(entry.parentPath ?? entry.path, entry.name));
+      }
     }
   }
   files.sort();

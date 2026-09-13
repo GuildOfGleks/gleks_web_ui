@@ -6,7 +6,7 @@ import {
   GogPanelHeaderDirective,
   PanelComponent,
 } from './panel.component';
-import { GogSize, GogSurfaceVariant } from '../../shared/types';
+import { GogSize, GogSurfaceVariant } from '@guildofgleks/ui/shared';
 
 @Component({
   imports: [PanelComponent, GogPanelFooterDirective, GogPanelHeaderDirective],

@@ -81,10 +81,50 @@ export * from './lib/components/tooltip/tooltip.directive';
 export * from './lib/services/dialog-service/dialog.service';
 export * from './lib/services/toast-service/toast-service';
 export * from './lib/services/theme-service/theme.service';
-export * from './lib/shared/types';
-export * from './lib/shared/config';
-export * from './lib/shared/dropdown-base';
-export * from './lib/shared/float-label-state';
+export type {
+  GogAlertLive,
+  GogAriaHasPopup,
+  GogBadgePosition,
+  GogButtonToggleAppearance,
+  GogDateSelectionMode,
+  GogDividerVariant,
+  GogDropdownFilterPosition,
+  GogFloatLabelVariant,
+  GogHourFormat,
+  GogInputMode,
+  GogInputType,
+  GogOrientation,
+  GogPaginatorRangeMode,
+  GogProgressbarMode,
+  GogProgressbarVariant,
+  GogScrollAxis,
+  GogScrollOverscrollBehavior,
+  GogScrollSize,
+  GogSeverity,
+  GogSize,
+  GogSkeletonAnimation,
+  GogSkeletonShape,
+  GogSliderOrientation,
+  GogSliderRange,
+  GogSpinnerVariant,
+  GogSurfaceVariant,
+  GogTabsAlign,
+  GogTagShape,
+  GogTagVariant,
+  GogTextareaResize,
+  GogTooltipPosition,
+  GogVariant,
+  ToastPosition,
+} from '@guildofgleks/ui/shared';
+export { GOG_CONFIG, provideGogConfig, resolveConfigured } from '@guildofgleks/ui/shared';
+export type { GogGlobalConfig } from '@guildofgleks/ui/shared';
+export {
+  GogDropdownBase,
+  GogDropdownChevronDirective,
+  GogDropdownOptionDirective,
+} from '@guildofgleks/ui/shared';
+export type { GogDropdownOption, GogDropdownOptionContext } from '@guildofgleks/ui/shared';
+export { GogFloatLabelState } from '@guildofgleks/ui/shared';
 /*
  * Named, not wholesale: `GogOptionAccessor` is the type every collection control's `optionLabel`
  * / `optionValue` / `optionDisabled` inputs are declared with, so a consumer needs it. The three
@@ -92,12 +132,38 @@ export * from './lib/shared/float-label-state';
  * plumbing, nothing advertises them, and they went public only because this line used to be an
  * `export *`. They are deprecated in place and this list drops them in 21.14.0.
  */
-export type { GogOptionAccessor } from './lib/shared/option-accessor';
-export { getByPath, isSameOptionValue, readOption } from './lib/shared/option-accessor';
-export * from './lib/shared/deprecations';
-export * from './lib/shared/token-names';
-export type { GogDropdownDirection } from './lib/shared/dropdown-position';
-export type { GogTooltipSide } from './lib/shared/tooltip-position';
-export type { GogIconName, GogBuiltinIconName } from './lib/shared/icons';
-export { ICON_DEFS } from './lib/shared/icons';
-export { GOG_ICONS, provideGogIcons } from './lib/shared/icon-registry';
+export type { GogOptionAccessor } from '@guildofgleks/ui/shared';
+/*
+ * Deprecated on the export, not on the declaration: the table and the dropdown base still use all
+ * three. The first version of this change tagged the functions themselves, which would have had
+ * `check:deprecations` demand their deletion in 21.14.0 while the package depended on them.
+ */
+export {
+  /**
+   * @deprecated since 21.13.0 (2026-09-12) — read the field yourself; this is the package's own
+   * plumbing and it leaves the root. It stays inside `@guildofgleks/ui/shared`, the internal entry
+   * point, which is not a replacement to build on. Removed in 21.14.0.
+   */
+  getByPath,
+  /**
+   * @deprecated since 21.13.0 (2026-09-12) — read the field yourself; this is the package's own
+   * plumbing and it leaves the root. It stays inside `@guildofgleks/ui/shared`, the internal entry
+   * point, which is not a replacement to build on. Removed in 21.14.0.
+   */
+  isSameOptionValue,
+  /**
+   * @deprecated since 21.13.0 (2026-09-12) — read the field yourself; this is the package's own
+   * plumbing and it leaves the root. It stays inside `@guildofgleks/ui/shared`, the internal entry
+   * point, which is not a replacement to build on. Removed in 21.14.0.
+   */
+  readOption,
+} from '@guildofgleks/ui/shared';
+export { GOG_DEPRECATIONS } from '@guildofgleks/ui/shared';
+export type { GogDeprecation, GogDeprecationKind } from '@guildofgleks/ui/shared';
+export { GOG_TOKEN_GROUPS } from '@guildofgleks/ui/shared';
+export type { GogTokenGroup, GogTokenLayer, GogTokenName } from '@guildofgleks/ui/shared';
+export type { GogDropdownDirection } from '@guildofgleks/ui/shared';
+export type { GogTooltipSide } from '@guildofgleks/ui/shared';
+export type { GogIconName, GogBuiltinIconName } from '@guildofgleks/ui/shared';
+export { ICON_DEFS } from '@guildofgleks/ui/shared';
+export { GOG_ICONS, provideGogIcons } from '@guildofgleks/ui/shared';

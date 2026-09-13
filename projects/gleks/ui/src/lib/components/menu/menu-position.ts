@@ -2,8 +2,8 @@ import {
   resolveDropdownDirection,
   type GogDropdownDirection,
   type GogDropdownTriggerRect,
-} from '../../shared/dropdown-position';
-import type { GogWritingDirection } from '../../shared/tooltip-position';
+} from '@guildofgleks/ui/shared';
+import type { GogWritingDirection } from '@guildofgleks/ui/shared';
 
 export interface GogMenuSize {
   width: number;

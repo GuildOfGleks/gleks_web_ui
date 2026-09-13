@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { GogSize, GogSpinnerVariant } from '../../../shared/types';
+import { GogSize, GogSpinnerVariant } from '@guildofgleks/ui/shared';
 import { SpinnerComponent } from '../spinner.component';
 
 @Component({

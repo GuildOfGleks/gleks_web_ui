@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { GogInputAddonEndDirective, InputfieldComponent } from './inputfield.component';
-import { GOG_CONFIG } from '../../shared/config';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 
 describe('InputfieldComponent', () => {
   let component: InputfieldComponent;

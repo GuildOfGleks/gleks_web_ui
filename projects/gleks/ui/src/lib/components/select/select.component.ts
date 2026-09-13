@@ -9,7 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { GogDropdownBase, type GogDropdownOption } from '../../shared/dropdown-base';
+import { GogDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';

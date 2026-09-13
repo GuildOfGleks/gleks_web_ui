@@ -15,9 +15,9 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { GogScrollAxis, GogScrollOverscrollBehavior, GogScrollSize } from '../../shared/types';
-import { GOG_CONFIG } from '../../shared/config';
-import { resolveLengthToken } from '../../shared/token-values';
+import { GogScrollAxis, GogScrollOverscrollBehavior, GogScrollSize } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { resolveLengthToken } from '@guildofgleks/ui/shared';
 
 /** Snapshot of the viewport's native scroll geometry, emitted on every scroll/resize. */
 export interface GogScrollMetrics {

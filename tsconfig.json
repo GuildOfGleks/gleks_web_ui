@@ -13,6 +13,14 @@
        * kept as an alias so existing imports and CLI commands keep working.
        */
       "@guildofgleks/ui": ["./dist/gleks/ui"],
+      /*
+       * Secondary entry points (`@guildofgleks/ui/shared`, see docs/entry-points.md). The built
+       * package's own FESM imports them by this name, so an app resolving the root from `dist/`
+       * has to resolve its subpaths from there too -- otherwise the bare specifier walks up to
+       * `node_modules`, finds the published release the lab uses, and loads a second copy of
+       * `GOG_CONFIG` from the wrong version.
+       */
+      "@guildofgleks/ui/*": ["./dist/gleks/ui/*"],
       "@gleks/ui": ["./dist/gleks/ui"]
     },
     "strict": true,

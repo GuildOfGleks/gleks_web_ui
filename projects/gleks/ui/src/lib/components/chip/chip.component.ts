@@ -9,9 +9,9 @@ import {
 } from '@angular/core';
 
 import { type GogIconName, IconComponent } from '../icon/icon.component';
-import { GogSize, GogTagShape } from '../../shared/types';
-import { GOG_CONFIG } from '../../shared/config';
-import { resolveRipple } from '../../shared/ripple-state';
+import { GogSize, GogTagShape } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { resolveRipple } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
 
 @Component({

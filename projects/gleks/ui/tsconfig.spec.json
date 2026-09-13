@@ -4,7 +4,16 @@
   "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../out-tsc/spec",
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    /*
+     * Specs compile from source, so the shared entry point resolves to its source barrel -- the
+     * same file every relative import inside `shared/` reaches, which is what keeps `GOG_CONFIG`
+     * one token under test as well as in a build. Replaces the root's `paths` rather than merging
+     * with them; no spec imports the package by its published name.
+     */
+    "paths": {
+      "@guildofgleks/ui/shared": ["./shared/public-api.ts"]
+    }
   },
-  "include": ["src/**/*.d.ts", "src/**/*.spec.ts"]
+  "include": ["src/**/*.d.ts", "src/**/*.spec.ts", "shared/**/*.spec.ts"]
 }

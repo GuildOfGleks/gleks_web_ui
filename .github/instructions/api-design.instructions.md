@@ -5,7 +5,7 @@ applyTo: 'projects/gleks/ui/**'
 
 # @guildofgleks/ui — API Design & Extension Pressure
 
-`gleks-ui-library.instructions.md` covers *how* to write a component. This file covers the
+`gleks-ui-library.instructions.md` covers _how_ to write a component. This file covers the
 decision that comes before that: **when a request arrives, which extension mechanism should
 absorb it.** Getting this wrong is not a style problem — it is how a component library ends
 up with a hundred inputs per component that nobody can discover, which is the specific
@@ -27,13 +27,13 @@ first axis that can carry it. Reaching for a plain input first is the default mi
 ### 1. A theme token — for anything visual
 
 If the value only ever ends up in CSS, it is a token (`--gog-<block>-*` in `theme.css`), not
-an input. See `styling.instructions.md`. A consumer gets it app-wide *and* per instance for
+an input. See `styling.instructions.md`. A consumer gets it app-wide _and_ per instance for
 free, with zero API surface. An input that only feeds a `[style.x]` binding is a token that
 was implemented in the wrong place.
 
 ### 2. A slot — for "I need different markup here"
 
-Anything shaped like *content* — a custom header, a chevron, an option row, a trailing
+Anything shaped like _content_ — a custom header, a chevron, an option row, a trailing
 action — is a slot, never a set of inputs.
 
 **Use one mechanism: a content directive read with `contentChild()`.**
@@ -55,7 +55,7 @@ This is the pattern `gog-accordion` uses and the one to copy. Two older mechanis
 are **deprecated for new code** — do not add more of either:
 
 - `input<TemplateRef>(...)` (`iconEndTemplate`, `checkIconTemplate`, …). Forces the consumer
-  to declare `<ng-template #x>` *and* wire `[fooTemplate]="x"` by hand, gives the template no
+  to declare `<ng-template #x>` _and_ wire `[fooTemplate]="x"` by hand, gives the template no
   typed context, and costs one input per slot — which is precisely how a component reaches 26
   inputs.
 - String-keyed lookup (`gog-table`'s `TemplateDirective` with `type="body" template="name"`).
@@ -68,7 +68,7 @@ Always give the directive a **typed context interface** (`GogAccordionHeaderCont
 
 `gog-collapsible` owns no markup: it is open/close state plus `gogCollapsibleTrigger` /
 `gogCollapsibleContent` directives. When a consumer needs a structure the component can't
-anticipate, the answer is to expose the *behaviour* this way rather than to keep adding
+anticipate, the answer is to expose the _behaviour_ this way rather than to keep adding
 inputs to the opinionated version.
 
 Behaviour cores already factored out and reusable for this: `GogDropdownBase`,
@@ -76,7 +76,7 @@ Behaviour cores already factored out and reusable for this: `GogDropdownBase`,
 
 ### 4. An input — everything else
 
-Only once 1–3 are ruled out. An input is right for a scalar that changes *behaviour*
+Only once 1–3 are ruled out. An input is right for a scalar that changes _behaviour_
 (`debounce`, `pageSize`, `sortable`) or a small closed enum (`variant`, `size`).
 
 ## Hard limits on inputs
@@ -127,8 +127,8 @@ Two rules that come with it:
 
 Every fixed string a component renders that the consumer never writes markup for — button text,
 an accessible name for a close/clear/step control — belongs in `GOG_CONFIG.labels`, not in one
-input per string. The test is the one the config section already uses: *would an app set this
-once, or per instance?* "Clear", "Close dialog", "Previous page" are set once, by an app that
+input per string. The test is the one the config section already uses: _would an app set this
+once, or per instance?_ "Clear", "Close dialog", "Previous page" are set once, by an app that
 isn't in English; twenty inputs to say so is exactly the boilerplate this library exists to
 remove.
 
@@ -138,7 +138,7 @@ Three rules that come with it:
   friends resolve instance → config → default through `resolveConfigured`, like every other
   configurable input. Add one only when a single instance realistically differs.
 - **Content is not chrome.** `gog-checkbox`'s `ariaLabel`, `gog-button`'s `ariaLabel`, a field's
-  `label` or `placeholder` describe *that* control and have no meaningful app-wide value. They
+  `label` or `placeholder` describe _that_ control and have no meaningful app-wide value. They
   stay per-instance and out of `labels`.
 - **A string that interpolates takes a function, not a placeholder.** `GOG_CONFIG.labels.page`
   is `(page, isCurrent) => string` rather than `'Go to page {0}'`. A `{0}` convention is a
@@ -205,20 +205,20 @@ it.
 ## Deduplication: the rule of three
 
 The library already carries the right tool for this — `GogErrorState` is a plain class,
-constructed with signals and composed into components that share a base class *and* ones that
+constructed with signals and composed into components that share a base class _and_ ones that
 can't (`error-state.ts:16-21` explains why it is not a base class or a directive). Use that
 pattern.
 
 **Before writing the third copy of anything, extract it.** Concretely:
 
 - Repeated **TypeScript state** (a cluster of `computed()`s appearing in more than two
-  components) → a composition class in `lib/shared/`, like `GogErrorState`.
+  components) → a composition class in `shared/`, like `GogErrorState`.
 - Repeated **SCSS** that differs only by the BEM block prefix → a mixin in
   `lib/styles/_mixins.scss`, parameterized by block name. Four near-identical copies of the
   float-label rules is what motivated this rule; they diverge silently, because nothing fails
   when only three of four get a fix.
 - Repeated **config resolution** (`this.x() ?? this.globalConfig.a?.x ?? DEFAULT_X`) → the
-  shared resolver helper in `lib/shared/config.ts`.
+  shared resolver helper in `shared/config.ts`.
 
 When you fix a bug in one copy of duplicated code, you own fixing it in all copies — or
 extracting it. Never fix one and leave the rest.
@@ -232,7 +232,7 @@ rules that belong here:
   onto whatever the parent injector already provides; it must not silently drop sibling keys.
   Preserve this when touching `config.ts`.
 - **A setting that an app would realistically write on every instance belongs in the config**
-  (`errorDisplay`, `size`, `appendToBody`) — that repetition *is* the boilerplate this library
+  (`errorDisplay`, `size`, `appendToBody`) — that repetition _is_ the boilerplate this library
   is supposed to remove. This does not override the CSS-token rule: if the value only reaches
   CSS, it is still a token, not a config field.
 
@@ -243,7 +243,7 @@ A `loading` input has one required part and one choice.
 **Required: `aria-busy="true"` on the host while loading.** Not optional, and not something the
 consumer should have to add. A loading component usually replaces its content with skeletons or a
 spinner, and those are `aria-hidden` — so without `aria-busy` the component is not "loading" to a
-screen reader, it is *empty*. `gog-button` and `gog-spinner-overlay` have always done this;
+screen reader, it is _empty_. `gog-button` and `gog-spinner-overlay` have always done this;
 `gog-accordion` gained it in 21.6.0.
 
 **The choice is between two treatments, and it follows from what the component is:**
@@ -320,6 +320,6 @@ letting it drift silently.
 
 - List every deprecation under a `### Deprecated` heading in `CHANGELOG.md`, and every actual
   removal under `### Removed`, each with a one-line migration note.
-- Prefer making the *new* shape the default and the old one opt-in, over a hard swap.
+- Prefer making the _new_ shape the default and the old one opt-in, over a hard swap.
 - A deprecated symbol keeps working exactly as before. Do not "soften" it, change its behaviour,
   or make it warn at runtime — a deprecation is a documentation event, not a behaviour change.

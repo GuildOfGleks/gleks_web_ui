@@ -8,11 +8,6 @@
 export type GogOptionAccessor<TOption, TResult> = string | ((option: TOption) => TResult);
 
 /** Resolves `field` against `source`, following dot-paths (e.g. `"address.city"`). */
-/**
- * @deprecated since 21.13.0 (2026-09-12) — internal plumbing, published only because
- * `public-api.ts` used to re-export this module wholesale. Nothing in the package's own
- * documentation advertises it. Removed in 21.14.0.
- */
 export function getByPath(source: unknown, field: string): unknown {
   if (!field.includes('.')) return (source as Record<string, unknown> | null)?.[field];
 
@@ -25,11 +20,6 @@ export function getByPath(source: unknown, field: string): unknown {
 }
 
 /** Applies an accessor — a property path or a function — to one option. */
-/**
- * @deprecated since 21.13.0 (2026-09-12) — internal plumbing, published only because
- * `public-api.ts` used to re-export this module wholesale. Nothing in the package's own
- * documentation advertises it. Removed in 21.14.0.
- */
 export function readOption<TOption, TResult>(
   option: TOption,
   accessor: GogOptionAccessor<TOption, TResult>,
@@ -46,11 +36,6 @@ export function readOption<TOption, TResult>(
  * whose value is the number `1` — the library behaved this way before option values could be
  * anything, and forms routinely stringify. Objects are compared by identity instead: coercing
  * them would make every plain object equal to every other (`"[object Object]"`).
- */
-/**
- * @deprecated since 21.13.0 (2026-09-12) — internal plumbing, published only because
- * `public-api.ts` used to re-export this module wholesale. Nothing in the package's own
- * documentation advertises it. Removed in 21.14.0.
  */
 export function isSameOptionValue(a: unknown, b: unknown): boolean {
   if (a === b) return true;

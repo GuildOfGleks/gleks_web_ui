@@ -17,7 +17,7 @@ import {
   GogInputAddonStartDirective,
   InputfieldComponent,
 } from '../components/inputfield/inputfield.component';
-import { GogDropdownChevronDirective } from './dropdown-base';
+import { GogDropdownChevronDirective } from '@guildofgleks/ui/shared';
 
 /**
  * The projected-template slots introduced in 21.3.0. They replaced the per-slot

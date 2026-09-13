@@ -7,7 +7,7 @@ import { InputfieldComponent } from '../components/inputfield/inputfield.compone
 import { MultiselectComponent } from '../components/multiselect/multiselect.component';
 import { SelectComponent } from '../components/select/select.component';
 import { TextareaComponent } from '../components/textarea/textarea.component';
-import { provideGogConfig } from './config';
+import { provideGogConfig } from '@guildofgleks/ui/shared';
 
 const OPTIONS = [
   { id: 'a', name: 'Alpha' },

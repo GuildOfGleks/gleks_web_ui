@@ -8,7 +8,7 @@ import {
   GogCardLinkDirective,
   GogCardMediaDirective,
 } from './card.component';
-import { GogSize, GogSurfaceVariant } from '../../shared/types';
+import { GogSize, GogSurfaceVariant } from '@guildofgleks/ui/shared';
 
 @Component({
   imports: [

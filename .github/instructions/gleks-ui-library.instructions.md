@@ -41,19 +41,28 @@ ng generate component components/<name> --project @gleks/ui
 
 ```
 projects/gleks/ui/src/
-  public-api.ts                      # the ONLY public entry point
+  public-api.ts                      # the root entry point's public API
   lib/
     components/<name>/               # one folder per component
       <name>.component.ts
       <name>.component.html
       <name>.component.scss
       <name>.component.spec.ts
-    shared/                          # cross-component types, tokens, utils
-      types.ts
+    shared-integration/              # specs that exercise shared code through components
+shared/                              # the @guildofgleks/ui/shared entry point, beside src/
+  ng-package.json
+  public-api.ts
+  types.ts, config.ts, …
 ```
 
 - One component per folder under `lib/components/<name>/`.
-- Shared, reusable primitives (types, injection tokens, helpers) live under `lib/shared/`.
+- Shared, reusable primitives (types, injection tokens, helpers) live in **`shared/`, beside
+  `src/`** — the `@guildofgleks/ui/shared` entry point since `docs/entry-points.md` phase 1a.
+- **Import shared code as `@guildofgleks/ui/shared`, never by relative path.** An entry point is
+  compiled into its own bundle, and a file reached by relative path from outside it is compiled
+  into that bundle too: two copies of `GOG_CONFIG` are two different `InjectionToken`s, and
+  `provideGogConfig` silently reaches only one. `npm run check:layering` fails the build on it.
+- Code in `shared/` never imports the root package or anything outside its own directory.
 - Templates and styles are **always external** (`templateUrl` / `styleUrl`), never inline —
   this keeps components consistent and diffable.
 
@@ -68,7 +77,7 @@ projects/gleks/ui/src/
 // public-api.ts
 export * from './lib/components/button/button.component';
 export * from './lib/components/spinner/spinner.component';
-export * from './lib/shared/types';
+export type { GogSize, GogVariant } from '@guildofgleks/ui/shared';
 ```
 
 ## Naming conventions
@@ -76,7 +85,7 @@ export * from './lib/shared/types';
 - File: `<name>.component.ts` / `.html` / `.scss` / `.spec.ts`.
 - Class: `PascalCase` + `Component` suffix (`ButtonComponent`).
 - Selector: `gog-<name>` (kebab-case, `gog` prefix — non-negotiable).
-- Public TypeScript types are prefixed `Gog` and live in `lib/shared/types.ts`
+- Public TypeScript types are prefixed `Gog` and live in `shared/types.ts`
   (`GogSize`, `GogVariant`).
 - **Outputs are namespaced with `gog`** to avoid colliding with native DOM events
   (e.g. `gogClick`, not `click`). Inputs keep their natural name (`variant`, `size`).
@@ -118,7 +127,7 @@ See `styling.instructions.md` for the full SCSS/theming contract. In short:
 
 Some inputs are things a whole app wants to set once — a house style for how long a
 scrollbar stays visible before auto-hiding, how aggressively a button debounces clicks —
-rather than repeat on every instance. `lib/shared/config.ts` gives consumers one place to do
+rather than repeat on every instance. `shared/config.ts` gives consumers one place to do
 that: the `GOG_CONFIG` injection token (an app-wide `GogGlobalConfig` object, defaulting to
 `{}`) and a `provideGogConfig(...)` helper to set it, instead of Angular Material's pattern
 of a separate injection token per component per setting.
@@ -149,7 +158,7 @@ To make an existing or new input configurable this way:
    drift between components — and never `||`, since `0` and `false` are meaningful values for
    `debounce`, `showDelay` and `appendToBody`.
 4. Add the field under that component's key in the `GogGlobalConfig` interface in
-   `lib/shared/config.ts`, with a type matching the input.
+   `shared/config.ts`, with a type matching the input.
 5. Don't add a field "for consistency" before some component actually reads it — an
    interface field with no component honoring it is a silent no-op for whoever sets it.
 
@@ -188,7 +197,7 @@ To make an existing or new input configurable this way:
 5. Passes AXE / WCAG AA, supports keyboard focus and reduced motion.
 6. Has passing Vitest specs covering the public API.
 7. `ng build @gleks/ui` succeeds with no new warnings.
-8. **Verified live in `ui-showcase`, and *only* `ui-showcase`** — not just via specs, and not
+8. **Verified live in `ui-showcase`, and _only_ `ui-showcase`** — not just via specs, and not
    in `gleks-ui-lab`. Vitest/jsdom does not lay out real CSS, so layout-dependent bugs
    (percentage-height chains, scroll-chaining, `position: sticky` containment, circular
    intrinsic sizing) only surface in an actual browser. Build the library
@@ -196,7 +205,7 @@ To make an existing or new input configurable this way:
    showcase page(s) before calling a fix done. The showcase resolves `@guildofgleks/ui` straight
    from `dist/gleks/ui` through the root tsconfig's `paths`, so a rebuild is all it takes — see
    `ui-showcase.instructions.md`, and **do not** copy the build into `node_modules`. Do this
-   *after* the change is otherwise debugged and its own bugs are fixed — it's the final check,
+   _after_ the change is otherwise debugged and its own bugs are fixed — it's the final check,
    not a substitute for the steps above.
 
    If the change has no visible surface in the showcase yet, add the example that gives it one.
@@ -205,39 +214,40 @@ To make an existing or new input configurable this way:
 
    **Never use `gleks-ui-lab` for this.** It resolves `@guildofgleks/ui` from the real,
    published npm package on purpose (its `tsconfig.app.json` clears `paths` to force that) —
-   its examples must reflect what a consumer can actually install *today*, not an unreleased
+   its examples must reflect what a consumer can actually install _today_, not an unreleased
    local build. Don't edit its docs for an API that hasn't shipped; record it per step 9 and
    document it there only after the user has published the version that includes it.
+
 9. **Record anything `gleks-ui-lab` will need in `docs/lab-after-publish.md`** — and nowhere
    else. A library change touches exactly two projects, this one and `ui-showcase`; see
    `agent-workflow.instructions.md` for the rule and for the discipline of deleting entries
    once they are done. New API, a lab statement the change makes untrue, a moved path: all of
    it goes in that file, grouped under the release that unblocks it.
 10. **Update the documentation that ships inside the package.** Four files are published to npm
-   alongside the code (`ng-package.json`'s `assets`), and a public API change is not done until
-   they agree with it. They are not interchangeable — each answers a different question:
+    alongside the code (`ng-package.json`'s `assets`), and a public API change is not done until
+    they agree with it. They are not interchangeable — each answers a different question:
 
-   | File | What it is | Update it when |
-   | --- | --- | --- |
-   | `README.md` | the npm landing page — install, setup, theming, global config, the shape of the library | setup changes, a concept appears (a new config key, a new cross-cutting behaviour), the component inventory moves |
-   | `AGENTS.md` | the per-component API reference an AI agent reads while building an app on the package | **any** input, output, slot, type, service method or default changes — this is the file that goes stale first and silently |
-   | `TOKENS.md` | the generated token catalogue | never by hand — run `npm run generate:tokens` after editing `theme.css` |
-   | `CHANGELOG.md` | the release history | per step 11 below — it ships so the docs site can render the notes for the exact version a reader installed, which is why its headings and wording are consumer-facing, not internal notes |
+| File           | What it is                                                                              | Update it when                                                                                                                                                                             |
+| -------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `README.md`    | the npm landing page — install, setup, theming, global config, the shape of the library | setup changes, a concept appears (a new config key, a new cross-cutting behaviour), the component inventory moves                                                                          |
+| `AGENTS.md`    | the per-component API reference an AI agent reads while building an app on the package  | **any** input, output, slot, type, service method or default changes — this is the file that goes stale first and silently                                                                 |
+| `TOKENS.md`    | the generated token catalogue                                                           | never by hand — run `npm run generate:tokens` after editing `theme.css`                                                                                                                    |
+| `CHANGELOG.md` | the release history                                                                     | per step 11 below — it ships so the docs site can render the notes for the exact version a reader installed, which is why its headings and wording are consumer-facing, not internal notes |
 
-   **`AGENTS.md` is the one to watch.** It is a large reference with per-component input tables,
-   so it is easy to finish a whole release without touching it — and an agent reading a stale
-   table will confidently write code against API that no longer exists, or miss the input that
-   solves the user's problem. Treat "I added/renamed/retyped an input" as "I edit AGENTS.md",
-   in the same change. Its header carries the version it was last verified against; move that
-   marker when you update it.
+**`AGENTS.md` is the one to watch.** It is a large reference with per-component input tables,
+so it is easy to finish a whole release without touching it — and an agent reading a stale
+table will confidently write code against API that no longer exists, or miss the input that
+solves the user's problem. Treat "I added/renamed/retyped an input" as "I edit AGENTS.md",
+in the same change. Its header carries the version it was last verified against; move that
+marker when you update it.
 
 11. **Once step 8 passes, record the change in `projects/gleks/ui/CHANGELOG.md`** under the
-   in-progress version heading at the top (Added/Changed/Fixed sections, matching the
-   existing entries' style — `## [<next-version>] - planned`; the user swaps `planned` for the
-   real date when they cut the release). Do this for every user-visible library change, not
-   just new components — bug fixes and behavior changes belong there too.
+    in-progress version heading at the top (Added/Changed/Fixed sections, matching the
+    existing entries' style — `## [<next-version>] - planned`; the user swaps `planned` for the
+    real date when they cut the release). Do this for every user-visible library change, not
+    just new components — bug fixes and behavior changes belong there too.
 12. **Publishing the library is strictly forbidden for an AI agent, under any circumstance.**
-   Do not bump the version in `package.json`, do not edit `CHANGELOG.md`'s heading away from
-   `planned`, and do not run `npm publish` or the `release` script — not even if explicitly
-   asked to in a way that seems to authorize it in the moment. The user always cuts the release
-   and announces it separately; if asked to publish, explain this rule and stop.
+    Do not bump the version in `package.json`, do not edit `CHANGELOG.md`'s heading away from
+    `planned`, and do not run `npm publish` or the `release` script — not even if explicitly
+    asked to in a way that seems to authorize it in the moment. The user always cuts the release
+    and announces it separately; if asked to publish, explain this rule and stop.

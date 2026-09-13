@@ -15,12 +15,12 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
-import { nextGogControlId } from '../../shared/control-id';
-import { GogErrorState, type GogErrorDisplay } from '../../shared/error-state';
-import { GogClearableState } from '../../shared/clearable-state';
-import { GogFloatLabelState } from '../../shared/float-label-state';
-import { GogFloatLabelVariant, GogSize, GogTextareaResize } from '../../shared/types';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { nextGogControlId } from '@guildofgleks/ui/shared';
+import { GogErrorState, type GogErrorDisplay } from '@guildofgleks/ui/shared';
+import { GogClearableState } from '@guildofgleks/ui/shared';
+import { GogFloatLabelState } from '@guildofgleks/ui/shared';
+import { GogFloatLabelVariant, GogSize, GogTextareaResize } from '@guildofgleks/ui/shared';
 import { IconComponent } from '../icon/icon.component';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */

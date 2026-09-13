@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 
 import { IconComponent } from './icon.component';
-import { GOG_ICONS, provideGogIcons } from '../../shared/icon-registry';
-import { ICON_DEFS } from '../../shared/icons';
+import { GOG_ICONS, provideGogIcons } from '@guildofgleks/ui/shared';
+import { ICON_DEFS } from '@guildofgleks/ui/shared';
 
 const CART = '<svg viewBox="0 0 24 24" data-icon="cart"><path d="M1 1" /></svg>';
 const STAR = '<svg viewBox="0 0 24 24" data-icon="star"><path d="M2 2" /></svg>';

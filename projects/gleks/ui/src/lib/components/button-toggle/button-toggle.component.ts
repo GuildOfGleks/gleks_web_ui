@@ -17,16 +17,12 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { NgTemplateOutlet } from '@angular/common';
 
 import { IconComponent, type GogIconName } from '../icon/icon.component';
-import { GOG_CONFIG, resolveConfigured } from '../../shared/config';
-import { resolveRipple } from '../../shared/ripple-state';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { resolveRipple } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
-import {
-  type GogOptionAccessor,
-  isSameOptionValue,
-  readOption,
-} from '../../shared/option-accessor';
-import { handleRovingFocusKeydown } from '../../shared/roving-focus';
-import { GogButtonToggleAppearance, GogOrientation, GogSize } from '../../shared/types';
+import { type GogOptionAccessor, isSameOptionValue, readOption } from '@guildofgleks/ui/shared';
+import { handleRovingFocusKeydown } from '@guildofgleks/ui/shared';
+import { GogButtonToggleAppearance, GogOrientation, GogSize } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';

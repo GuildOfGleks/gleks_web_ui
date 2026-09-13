@@ -13,8 +13,8 @@ import {
 } from '@angular/core';
 
 import { IconComponent } from '../../icon/icon.component';
-import { GOG_CONFIG, resolveConfigured } from '../../../shared/config';
-import { GogDateSelectionMode, GogHourFormat, GogSize } from '../../../shared/types';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { GogDateSelectionMode, GogHourFormat, GogSize } from '@guildofgleks/ui/shared';
 import {
   type GogDateRange,
   addDays,
