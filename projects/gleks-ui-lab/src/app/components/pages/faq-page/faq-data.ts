@@ -379,11 +379,25 @@ component doc pages call these out explicitly wherever they apply.
     item(
       "What's deprecated right now, and when does it go?",
       `
-**Nothing.** \`GOG_DEPRECATIONS\` — the manifest the package exports, generated from the
-library's own source with \`since\`, \`sinceDate\`, \`replacement\` and \`removedIn\` for whatever it
-lists — is an empty array as of the version you have installed.
+**As of 21.13.0: 28 symbols and 3 CSS custom properties, and every one of them goes in 21.14.0.**
+\`GOG_DEPRECATIONS\` — the manifest the package exports, generated from the library's own source —
+lists each with \`since\`, \`replacement\` and \`removedIn\`, so it is the checklist.
 
-The library's only two deprecation waves so far are both already fully removed. 21.5.0 removed
+- **25 of the symbols are one move.** \`gog-table\`, \`gog-datepicker\`/\`gog-calendar\` and \`gog-dialog\`
+  with \`DialogService\`, and their directives, tokens and types, import from
+  \`@guildofgleks/ui/table\`, \`/datepicker\` and \`/dialog\`. The classes are the same; only the path
+  changes. **Your editor will not strike the old import through** — the package's bundled type
+  declarations drop the tag on a re-export — so search your code for them rather than waiting for
+  a warning.
+- **\`getByPath\`, \`readOption\` and \`isSameOptionValue\` leave the public API.** They are the
+  library's own plumbing for reading a field off your objects and were never documented.
+  \`GogOptionAccessor\`, the type the option inputs are declared with, stays.
+- **Three tokens are renamed**: \`--gog-select-panel-offset\` and \`--gog-multiselect-panel-offset\`
+  become \`*-panel-gap\`, and \`--gog-slider-thumb-shadow\` becomes \`--gog-slider-thumb-glow-color\` —
+  it always held a colour. The old names keep resolving until 21.14.0, and the
+  [token reference](/general/theming#token-reference) lists them.
+
+Before this release, the library's two deprecation waves were both fully removed. 21.5.0 removed
 every deprecated input, element, type alias and asset path it had; **21.7.0** removed the last
 of it, three abbreviated **CSS custom property prefixes** that stood in for a component's full
 name — \`--gog-btn-*\` → \`--gog-button-*\`, \`--gog-confirm-*\` → \`--gog-confirmation-dialog-*\`,
@@ -399,9 +413,9 @@ text-field block that \`gog-inputfield\` and \`gog-textarea\` both render, not t
 \`gog-inputfield\` component. It stays.
 
 The library's own build runs \`check:deprecations\`, which fails it the moment a future
-deprecation's \`removedIn\` version is reached and the symbol is still exported — so the next
-deprecation, whenever it lands, cannot overrun its own stated date the way two of 21.5.0's did
-before that check existed.
+deprecation's \`removedIn\` version is reached and the symbol is still exported — so 21.13.0's
+deprecations cannot overrun 21.14.0 the way two of 21.5.0's overran their own stated date before
+that check existed.
 `,
     ),
   ]),
