@@ -188,6 +188,72 @@ To make an existing or new input configurable this way:
 - Keep `"sideEffects": false` — do not introduce import side effects.
 - The library must build standalone: **never import from `ui-showcase` or any consuming app.**
 
+## The consumer install check — when the package's shape changes
+
+**`ui-showcase` does not consume the package the way anyone else does.** It resolves
+`@guildofgleks/ui` through a tsconfig path alias straight onto `dist/gleks/ui`, so it never goes
+through `node_modules`, the `exports` map, `.npmignore`, `peerDependencies` or the tarball's file
+list. Specs compile from source and see even less. A change that is wrong only in _how the package
+is shipped_ passes every build, every test and every showcase page, and fails for the first
+consumer who runs `npm install`. So for the changes below, the last check before the user publishes
+is installing the packed tarball into a clean app outside the repository.
+
+Both times it ran, it checked something nothing else could: 21.13.0's subpaths turned out to resolve
+only through `exports` (ng-packagr's own `.npmignore` drops the nested `package.json` stubs), and
+21.14.0's removal had to be seen to fail at compile time rather than at runtime. Both write-ups are in
+`docs/entry-points.md` (_Before 21.13.0 was published_, _Before 21.14.0 is published_) and are the
+model for a new one.
+
+### When it is required
+
+Run it if the version being prepared contains **any** of these — each one changes what a consumer
+installs rather than how a component behaves:
+
+1. **The package manifest or packaging config**: `projects/gleks/ui/package.json` (`exports`,
+   `peerDependencies`, `dependencies`, `sideEffects`, `schematics`, `engines`), any
+   `ng-package.json` (including `assets`), `tsconfig.lib*.json`.
+2. **Entry points**: one added, removed or renamed; files moved from one entry point to another; an
+   `InjectionToken` or provider moved between entry points.
+3. **A removal or rename of anything public**: an export dropped or renamed in any `public-api.ts`,
+   a deprecated symbol or token removed on schedule, a stylesheet path under `styles/` that
+   `README.md` tells consumers to import. _Adding_ an export does not trigger it.
+4. **The toolchain the package is built with**: an Angular, ng-packagr or TypeScript upgrade in the
+   workspace, or a widened/narrowed Angular peer range — the published output is partial
+   compilation, and only a consumer's own build links it.
+5. **The `ng add` schematic**: any change under `projects/gleks/ui/schematics/`. `npm run
+test:schematics` runs the compiled schematic against a fake tree; this runs the real `ng add`.
+
+**Not required** for component internals, styles and token values, new components or inputs
+exported additively, docs and tests — the showcase, the checks and the specs cover those.
+
+**Once per release, at the end.** Run it after the last triggering change for that version has
+landed and everything else in the definition of done passes, not after every commit. If another
+triggering change lands afterwards, run it again. Say in the chat, before the user publishes,
+that it ran and what it covered — or that nothing in the release triggered it.
+
+### How
+
+1. `npm run build:lib`, then `npm pack` inside `dist/gleks/ui` into a scratch directory **outside
+   the repository**. Compare its file list against the last published tarball
+   (`npm pack @guildofgleks/ui@<latest>`): a file that disappeared must be one you meant to remove.
+2. **A clean app, generated outside the workspace** —
+   `npx @angular/cli@<the workspace's Angular version> new <name> --ssr --defaults --skip-git`.
+   Never `ng generate application` inside this repo: that app resolves the package through the root
+   tsconfig's `paths` onto `dist/`, which is exactly the path this check exists to avoid, and it
+   edits `angular.json` and `tsconfig.json` — restoring those with `git checkout` has already
+   thrown away unrelated uncommitted edits once.
+3. `npm install <tarball>`, and wire the styles exactly as `README.md` says.
+4. **Exercise what changed, by name**: import from every entry point the release touched; set
+   `provideGogConfig` in the root and read it from a component in each secondary (one
+   `GOG_CONFIG`, not two); for a removal, confirm the old import **fails to compile** and the new
+   one builds; for a change made for bundle size, record initial and lazy sizes.
+5. `ng build` with prerendering: no error and no warning that comes from the library. Serve it,
+   open it in a browser, and check hydration and an empty console on the routes you touched.
+6. For a schematic change, `ng add` the tarball into a second fresh app.
+7. **Write it down** in the plan the release came from, in the shape of the two existing
+   write-ups — what was installed, what was exercised, what was seen — then delete the scratch app
+   and tarball.
+
 ## Testing (Vitest)
 
 - Co-locate a `<name>.component.spec.ts` for every component.
@@ -218,6 +284,10 @@ To make an existing or new input configurable this way:
    `ui-showcase.instructions.md`, and **do not** copy the build into `node_modules`. Do this
    _after_ the change is otherwise debugged and its own bugs are fixed — it's the final check,
    not a substitute for the steps above.
+
+   **If the change alters the package's shape** — its manifest, an entry point, a public removal,
+   the toolchain or the schematic — the showcase cannot see it; the release also needs the consumer
+   install check (see _The consumer install check_ above).
 
    If the change has no visible surface in the showcase yet, add the example that gives it one.
    That is what the showcase is for, and an API with no live example is an API whose layout bugs

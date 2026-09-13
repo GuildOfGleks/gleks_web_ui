@@ -195,6 +195,13 @@ blockage; the closing note under iteration 5 says which commit closed which half
 
 ### Cutting a release — why an agent does none of it
 
+**Before the user publishes, a release that changes the package's shape gets the consumer install
+check**: the packed tarball installed into a clean app outside the repo. The triggers are specific
+— the package manifest or `ng-package.json`, entry points, a public removal or rename, a toolchain
+upgrade, the `ng add` schematic — and so is the procedure; both are in
+`gleks-ui-library.instructions.md`, _The consumer install check_. The showcase cannot catch these:
+it reads `dist/` through a path alias and never touches `node_modules`, `exports` or the tarball.
+
 `npm run check:release` fails whenever `projects/gleks/ui/package.json`'s version doesn't match
 the changelog's top `[x.y.z]` entry, or that heading still reads `planned` instead of a date.
 Bumping the version and dating the heading _are_ cutting the release, which is rule 1's territory:
