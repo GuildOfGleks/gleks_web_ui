@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { provideGogIcons } from '@guildofgleks/ui';
 
 import { routes } from './app.routes';
-import { CUSTOM_ICONS } from './custom-icons';
+import { CUSTOM_ICONS } from './legacy/custom-icons';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {

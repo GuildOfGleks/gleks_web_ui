@@ -31,7 +31,7 @@
         @for (link of navLinks; track link.path) {
           <a
             class="app-shell__nav-link"
-            [routerLink]="link.path"
+            [routerLink]="['/legacy', link.path]"
             routerLinkActive="app-shell__nav-link--active"
           >
             {{ link.label }}
@@ -44,7 +44,7 @@
         @for (link of pageLinks; track link.path) {
           <a
             class="app-shell__nav-link"
-            [routerLink]="link.path"
+            [routerLink]="['/legacy', link.path]"
             routerLinkActive="app-shell__nav-link--active"
           >
             {{ link.label }}
@@ -57,7 +57,7 @@
         @for (link of benchmarkLinks; track link.path) {
           <a
             class="app-shell__nav-link"
-            [routerLink]="link.path"
+            [routerLink]="['/legacy', link.path]"
             routerLinkActive="app-shell__nav-link--active"
             [routerLinkActiveOptions]="{ exact: link.path === 'benchmark' }"
           >

@@ -60,7 +60,7 @@
         <gog-card>
           <img [src]="mediaSrc" gogCardMedia alt="" height="120" />
           <h4 gogCardHeader>
-            <a gogCardLink routerLink="/catalog" [fragment]="person.id">{{ person.name }}</a>
+            <a gogCardLink routerLink="/legacy/catalog" [fragment]="person.id">{{ person.name }}</a>
           </h4>
           <p class="card-demo__text">{{ person.role }} · {{ person.years }}</p>
           <div gogCardFooter>
@@ -105,7 +105,7 @@
           </gog-button>
         </p>
         <gog-card [disabled]="disabled()">
-          <h4 gogCardHeader><a gogCardLink routerLink="/catalog">Archived report</a></h4>
+          <h4 gogCardHeader><a gogCardLink routerLink="/legacy/catalog">Archived report</a></h4>
           <p class="card-demo__text">Read-only once the quarter closes.</p>
         </gog-card>
       </div>

@@ -16,7 +16,7 @@ import {
   ToggleComponent,
 } from '@guildofgleks/ui';
 
-import { showcaseThemes, type ShowcaseThemeName } from './showcase-themes';
+import { showcaseThemes, type ShowcaseThemeName } from './legacy/showcase-themes';
 
 interface ShowcaseNavLink {
   path: string;

@@ -124,7 +124,8 @@
               "projects/gleks/ui/src/styles/presets/terminal.css",
               "projects/gleks/ui/src/styles/presets/bevel.css",
               "projects/gleks/ui/src/styles/presets/parchment.css",
-              "projects/ui-showcase/src/styles.scss"
+              "projects/ui-showcase/src/styles.scss",
+              "projects/ui-showcase/src/legacy.scss"
             ],
             "server": "projects/ui-showcase/src/main.server.ts",
             "outputMode": "server",
