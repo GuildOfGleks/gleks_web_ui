@@ -2,7 +2,7 @@
   <app-doc-section
     id="states"
     title="States"
-    lead="Focus (Tab, then arrow keys) and press are live; the roving tabindex only reaches the selected or first enabled option."
+    lead="Hover, focus and press are pseudo-classes and cannot be forced from the page; every group here is live. Tab lands on the selected option, or the first enabled one, and the arrow keys move from there."
   >
     <h3>appearance × size</h3>
     <app-doc-matrix rowAxis="appearance" colAxis="size">
@@ -70,7 +70,7 @@
           optionIcon="icon"
           [multiple]="true"
           [size]="size"
-          value="search"
+          [value]="['search']"
           ariaLabel="Tools"
         />
       </ng-template>
@@ -111,23 +111,20 @@
   <app-doc-section
     id="modes"
     title="Single vs multiple"
-    lead="Single mode is a radio group: role=radiogroup / role=radio with aria-checked, and the arrow keys move and select. Multiple mode is a toolbar of independent toggles: role=group with aria-pressed, arrows only move and Space toggles."
+    lead="Single mode is a radio group: role=radiogroup / role=radio with aria-checked, and the arrow keys move and select. Multiple mode is a toolbar of independent toggles: role=group with aria-pressed, arrows only move and Space or Enter toggles."
   >
-    <app-doc-matrix rowAxis="mode" colAxis="">
-      <ng-template appDocCell [rows]="modeRows" [cols]="attrColumns" let-mode>
-        <app-doc-attrs target="button">
-          @switch (mode) {
-            @case ('single, selected') {
-              <gog-button-toggle-group [options]="alignOptions" value="center" ariaLabel="Align" />
-            }
-            @case ('multiple, selected') {
-              <gog-button-toggle-group
-                [options]="toolOptions"
-                [multiple]="true"
-                [value]="['search']"
-                ariaLabel="Tools"
-              />
-            }
+    <app-doc-matrix rowAxis="mode" colAxis="option">
+      <ng-template appDocCell [rows]="modes" [cols]="modeOptions" let-mode let-option="col">
+        <app-doc-attrs [target]="option.target">
+          @if (mode.multiple) {
+            <gog-button-toggle-group
+              [options]="toolOptions"
+              [multiple]="true"
+              [value]="['filter']"
+              ariaLabel="Tools"
+            />
+          } @else {
+            <gog-button-toggle-group [options]="alignOptions" value="center" ariaLabel="Align" />
           }
         </app-doc-attrs>
       </ng-template>
@@ -278,29 +275,18 @@
       </ng-template>
     </app-doc-matrix>
 
-    <h3>option attributes</h3>
-    <app-doc-matrix rowAxis="state" colAxis="">
-      <ng-template appDocCell [rows]="optionAttrStates" [cols]="attrColumns" let-state>
-        <app-doc-attrs target="button">
-          @switch (state) {
-            @case ('default (single)') {
+    <h3>option attributes, single mode</h3>
+    <app-doc-matrix rowAxis="state · option read" colAxis="">
+      <ng-template appDocCell [rows]="optionAttrRows" [cols]="attrColumns" let-row>
+        <app-doc-attrs [target]="row.target">
+          @switch (row.group) {
+            @case ('no value') {
               <gog-button-toggle-group [options]="alignOptions" ariaLabel="Align" />
             }
-            @case ('selected (single)') {
-              <gog-button-toggle-group [options]="alignOptions" value="center" ariaLabel="Align" />
-            }
-            @case ('selected (multiple)') {
-              <gog-button-toggle-group
-                [options]="toolOptions"
-                [multiple]="true"
-                [value]="['search']"
-                ariaLabel="Tools"
-              />
-            }
-            @case ('optionDisabled') {
+            @case ('one disabled') {
               <gog-button-toggle-group [options]="alignOptionsOneDisabled" ariaLabel="Align" />
             }
-            @case ('[disabled]="true" (group)') {
+            @case ('group disabled') {
               <gog-button-toggle-group
                 [options]="alignOptions"
                 [disabled]="true"

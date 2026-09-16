@@ -39,6 +39,16 @@ interface MultiStateRow {
   readonly value: string[];
 }
 
+/** A column or row that reads one option's attributes; `target` is positional, never an ARIA attribute it is meant to check. */
+interface OptionRead {
+  readonly name: string;
+  readonly target: string;
+}
+
+interface OptionAttrRow extends OptionRead {
+  readonly group: 'no value' | 'one disabled' | 'group disabled';
+}
+
 @Component({
   selector: 'app-button-toggle-page',
   imports: [
@@ -102,10 +112,17 @@ export class ButtonTogglePage {
     { name: 'all selected', value: ['search', 'filter', 'star'] },
   ];
 
-  /** Every non-attrs matrix on this page also has one cell per row. */
+  /** The single column of a matrix whose rows are the only axis. */
   protected readonly controlColumn = ['control'] as const;
 
-  protected readonly modeRows = ['single, selected', 'multiple, selected'] as const;
+  protected readonly modes = [
+    { name: 'single, value="center"', multiple: false },
+    { name: `multiple, [value]="['filter']"`, multiple: true },
+  ] as const;
+  protected readonly modeOptions: readonly OptionRead[] = [
+    { name: 'option 1, not selected', target: 'button:nth-of-type(1)' },
+    { name: 'option 2, selected', target: 'button:nth-of-type(2)' },
+  ];
 
   protected readonly groupAttrStates = [
     'default (single)',
@@ -113,14 +130,21 @@ export class ButtonTogglePage {
     '[disabled]="true"',
     'orientation="vertical"',
   ] as const;
-  protected readonly optionAttrStates = [
-    'default (single)',
-    'selected (single)',
-    'selected (multiple)',
-    'optionDisabled',
-    '[disabled]="true" (group)',
-  ] as const;
-  /** Every doc-attrs matrix on this page has one cell per row — this column exists only so `app-doc-matrix` has something to iterate. */
+  protected readonly optionAttrRows: readonly OptionAttrRow[] = [
+    { name: 'no value · option 1', target: 'button:nth-of-type(1)', group: 'no value' },
+    { name: 'no value · option 2', target: 'button:nth-of-type(2)', group: 'no value' },
+    {
+      name: 'optionDisabled on option 3 · option 3',
+      target: 'button:nth-of-type(3)',
+      group: 'one disabled',
+    },
+    {
+      name: '[disabled]="true" · option 1',
+      target: 'button:nth-of-type(1)',
+      group: 'group disabled',
+    },
+  ];
+  /** The single column of an attribute matrix whose rows are the only axis. */
   protected readonly attrColumns = ['attrs'] as const;
 
   protected readonly scopeConfig = BUTTON_TOGGLE_SCOPE_CONFIG;
