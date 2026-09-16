@@ -62,6 +62,14 @@ reached 1.0, so breaking changes may land in minor versions.
   rather than by an RxJS timer, so `[debounce]="0"` no longer drops a second click dispatched in
   the same task — a user cannot produce one.
 
+- **A selected `gog-button-toggle-group` segment painted over a sticky header.** In a `joined`
+  group the selected segment, and the focused one, raise `z-index: 1` so their border wins over a
+  neighbour's overlapping edge. The host created no stacking context, so that value competed with
+  the whole page: scrolled under a sticky header with the same `z-index`, the selected segment
+  stayed on top while the rest of the group went under it. The host now sets `isolation: isolate`,
+  which keeps the z-index inside the group and changes nothing about how the segments overlap each
+  other. Found on the showcase's Button toggle page and confirmed there in Chrome before and after.
+
 ## [21.14.0] - 13.09.2026
 
 ### Removed

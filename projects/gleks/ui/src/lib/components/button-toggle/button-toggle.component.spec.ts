@@ -146,6 +146,23 @@ describe('ButtonToggleGroupComponent', () => {
     expect(buttons()[0].textContent?.trim()).toBe('LIST');
   });
 
+  it('isolates its host, so the z-index a selected segment raises stays inside the group', () => {
+    // Without a stacking context on the host, that z-index competes with the page: a selected
+    // segment painted over a sticky header while the rest of the group scrolled under it.
+    // jsdom does not compute `isolation`, so this reads the rule Angular rendered for the host
+    // attribute; the painting itself is verified in a browser.
+    const hostAttribute = Array.from(host().attributes).find((a) => a.name.startsWith('_nghost'));
+    const hostSelector = `[${hostAttribute?.name}]{`;
+    // Whitespace removed, one entry per rule, each cut to start at the host attribute selector.
+    const hostBlocks = Array.from(document.querySelectorAll('style'))
+      .flatMap((style) => (style.textContent ?? '').replace(/\s+/g, '').split('}'))
+      .filter((block) => block.includes(hostSelector))
+      .map((block) => block.slice(block.indexOf(hostSelector)));
+
+    expect(hostAttribute).toBeDefined();
+    expect(hostBlocks.some((block) => block.includes('isolation:isolate'))).toBe(true);
+  });
+
   describe('roving tabindex', () => {
     it('should expose exactly one tab stop', () => {
       expect(buttons().filter((button) => button.tabIndex === 0).length).toBe(1);

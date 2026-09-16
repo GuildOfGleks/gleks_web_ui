@@ -11,6 +11,10 @@
   display: inline-flex;
   box-sizing: border-box;
   max-width: 100%;
+  /* The selected and focused segments raise their z-index to paint over a neighbour's border.
+     Without a stacking context here that z-index competes with the page, and a selected segment
+     painted over a sticky header while the rest of the group scrolled under it. */
+  isolation: isolate;
 }
 
 .gog-button-toggle__button {
