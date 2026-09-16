@@ -124,11 +124,6 @@ export const legacyRoutes: Routes = [
       import('./pages/datepicker-page/datepicker-page').then((m) => m.DatepickerPage),
   },
   {
-    path: 'button-toggle',
-    loadComponent: () =>
-      import('./pages/button-toggle-page/button-toggle-page').then((m) => m.ButtonTogglePage),
-  },
-  {
     path: 'toggle',
     loadComponent: () => import('./pages/toggle-page/toggle-page').then((m) => m.TogglePage),
   },
