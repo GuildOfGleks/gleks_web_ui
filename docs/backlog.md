@@ -16,6 +16,23 @@ not worth carrying here.
 
 ## Defects — first
 
+- **`gog-button type="submit"` submits its form while `loading`, and past `debounce`.** Found
+  2026-09-16 by the rebuilt showcase's Button page, Behaviour section. Three clicks 40ms apart
+  inside a `<form>`:
+
+  | button                                        | `gogClick` | form `submit` |
+  | --------------------------------------------- | ---------- | ------------- |
+  | `<gog-button type="submit">`                  | 1          | **3**         |
+  | `<gog-button type="submit" [loading]="true">` | 0          | **3**         |
+
+  `onClick` returns early while loading and the throttle drops repeat clicks, but both sit between
+  the native `click` and `gogClick`. The native `<button type="submit">` submits on every
+  activation regardless, and `loading` deliberately leaves it enabled (`aria-disabled`, so it keeps
+  focus). So the two cases a consumer reads as protection against a double submission — a button
+  that is busy, and a debounced one — are exactly the ones it misses, and `AGENTS.md` says
+  `loading` "blocks clicks". Likely fix: `preventDefault()` on a click that is dropped, which
+  cancels the implicit submission; a spec should submit a real form in both cases.
+
 - ~~**The dropdown panel's open-direction decision rests on a row height that is wrong in every
   theme.**~~ **Closed 2026-09-12, in the in-progress 21.13.0.** Found the same day by
   `docs/virtualization.md`'s iteration 0, which existed to check exactly this before anything new
