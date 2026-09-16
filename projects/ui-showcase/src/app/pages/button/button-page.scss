@@ -1,0 +1,20 @@
+.button-page__narrow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-8);
+  width: 20rem;
+  max-width: 100%;
+  padding: var(--gog-space-8);
+  border: 1px dashed var(--gog-border-color);
+}
+
+.button-page__na {
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}
+
+.button-page__config {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+}

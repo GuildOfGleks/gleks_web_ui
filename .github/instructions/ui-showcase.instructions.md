@@ -25,7 +25,7 @@ this project extends it unchanged. So verifying an unreleased change is just:
 
 **Do not copy the build over `node_modules/@guildofgleks/ui`.** It achieves nothing here — the
 alias already points at `dist/` — and there is one root-level `node_modules` shared with
-`gleks-ui-lab`, which is a *real* consumer of the published package (`tsconfig.app.json` there
+`gleks-ui-lab`, which is a _real_ consumer of the published package (`tsconfig.app.json` there
 clears `paths` on purpose, see its own comment). Swapping the folder therefore silently points
 the lab at an unreleased build, which is exactly what it must never track. If you find a
 swapped copy in place, `npm install` at the repo root restores it.
@@ -67,3 +67,26 @@ rule.
 - Standalone, `OnPush`, signal `input()`/`output()`, native control flow — same standards as
   the library. Prefix selectors with `app`.
 - Lazy-load feature routes.
+
+## Component pages — the rebuilt showcase
+
+The showcase is being rebuilt page by page (started 2026-09-16). Everything under
+`src/app/legacy/` is the old app, served at `/legacy/*`; a legacy page is deleted in the same
+change that adds its replacement. Do not extend legacy pages.
+
+- **`registry/units.ts`** lists every public unit. `registry.spec.ts` fails when an entry point
+  exports a component, directive or service no unit owns.
+- **A page is a unit id in `pages/pages.ts`** — that entry routes it at `/<id>` and carries its
+  API rows and token sections. `pages.spec.ts` checks the API names against the compiled class;
+  types and defaults are hand-written, so read them against the source when you write them.
+- **Every page is an `app-doc-page`** and gets the header, contents, API and Tokens from it. The
+  page itself writes only `app-doc-section`s, in this order where they apply: `states`,
+  `content`, then component-specific ones (`directive`, `behaviour`, `configuration`),
+  `accessibility`.
+- **States are matrices** (`app-doc-matrix` + `ng-template appDocCell`), one axis per input that
+  changes the look, crossed with the others it interacts with. Axis values are labelled as a
+  template writes them (`[disabled]="true"`, `ariaPressed="mixed"`). Pseudo-class states (hover,
+  focus, press) cannot be forced from a page; the section says so, and the cells are live.
+- **Accessibility reads the DOM** through `app-doc-attrs`, never a hand-written list.
+- Plain HTML and foundation tokens for the page's own frame; library components only as the
+  subject, or where a cell needs one.

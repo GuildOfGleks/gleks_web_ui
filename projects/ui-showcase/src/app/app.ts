@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ViewportScroller } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, DOCUMENT, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import {
   type GogDropdownOption,
@@ -33,6 +34,17 @@ export class App {
     name: theme.label,
   }));
   protected readonly theme = computed(() => this.themeService.theme());
+
+  constructor() {
+    // The router scrolls to an anchor without reading `scroll-margin`, so it is told how tall
+    // the toolbar is while it is sticky. Called only when it scrolls, which is only in the browser.
+    const document = inject(DOCUMENT);
+    inject(ViewportScroller).setOffset(() => {
+      const bar = document.querySelector('.shell__bar');
+      const sticky = bar !== null && getComputedStyle(bar).position === 'sticky';
+      return [0, sticky ? bar.getBoundingClientRect().height : 0];
+    });
+  }
 
   protected setTheme(theme: string | number | null): void {
     if (theme !== null) this.themeService.setTheme(String(theme));

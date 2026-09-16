@@ -33,7 +33,7 @@
     @for (group of groups; track group.group) {
       <p class="shell__group">{{ group.label }}</p>
       @for (row of group.units; track row.unit.id) {
-        @if (row.unit.page) {
+        @if (row.page) {
           <a
             class="shell__link"
             [routerLink]="['/', row.unit.id]"

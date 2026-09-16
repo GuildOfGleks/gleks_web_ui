@@ -4,6 +4,7 @@ import * as datepicker from '@guildofgleks/ui/datepicker';
 import * as dialog from '@guildofgleks/ui/dialog';
 import * as table from '@guildofgleks/ui/table';
 
+import { PAGES } from '../pages/pages';
 import { type GogPart, type GogUnit, type GogUnitGroup, GROUP_LABELS, UNITS } from './units';
 
 export interface PartRow {
@@ -18,6 +19,9 @@ export interface PartRow {
 
 export interface UnitRow {
   readonly unit: GogUnit;
+  readonly groupLabel: string;
+  /** Whether the rebuilt page exists, i.e. the unit is listed in `PAGES`. */
+  readonly page: boolean;
   readonly importPath: string;
   readonly parts: readonly PartRow[];
 }
@@ -78,14 +82,24 @@ export function registryByGroup(units: readonly GogUnit[] = UNITS): GroupRows[] 
   return (Object.keys(GROUP_LABELS) as GogUnitGroup[]).map((group) => ({
     group,
     label: GROUP_LABELS[group],
-    units: units
-      .filter((unit) => unit.group === group)
-      .map((unit) => ({
-        unit,
-        importPath: importPath(unit.entry),
-        parts: unit.parts.map(describePart),
-      })),
+    units: units.filter((unit) => unit.group === group).map(describeUnit),
   }));
+}
+
+export function describeUnit(unit: GogUnit): UnitRow {
+  return {
+    unit,
+    groupLabel: GROUP_LABELS[unit.group],
+    page: unit.id in PAGES,
+    importPath: importPath(unit.entry),
+    parts: unit.parts.map(describePart),
+  };
+}
+
+export function unitById(id: string): GogUnit {
+  const unit = UNITS.find((candidate) => candidate.id === id);
+  if (!unit) throw new Error(`No registry unit '${id}'`);
+  return unit;
 }
 
 export interface RegistryCounts {

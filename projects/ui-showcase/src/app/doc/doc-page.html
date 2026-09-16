@@ -1,0 +1,39 @@
+<header class="doc-page__head">
+  <p class="doc-page__crumb"><a routerLink="/">Overview</a> / {{ row().groupLabel }}</p>
+  <h1 class="doc-page__title">{{ row().unit.name }}</h1>
+  <pre class="doc-page__import"><code>{{ importLine() }}</code></pre>
+
+  <table class="doc-page__parts">
+    <tbody>
+      @for (part of row().parts; track part.symbol) {
+        <tr>
+          <th scope="row">
+            <code>{{ part.selector ?? part.symbol }}</code>
+          </th>
+          <td>
+            <code>{{ part.symbol }}</code>
+          </td>
+          <td>{{ part.kind }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</header>
+
+<nav class="doc-page__contents" aria-label="On this page">
+  @for (item of contents(); track item.id) {
+    <a [routerLink]="[]" [fragment]="item.id">{{ item.title }}</a>
+  }
+</nav>
+
+<ng-content />
+
+<app-doc-section id="api" title="API">
+  @for (api of entry().api; track $index) {
+    <app-doc-api [api]="api" />
+  }
+</app-doc-section>
+
+<app-doc-section id="tokens" title="Tokens">
+  <app-doc-tokens [sections]="entry().tokens" />
+</app-doc-section>

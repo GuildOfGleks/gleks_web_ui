@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  margin-block-end: var(--gog-space-40);
+  // Clears the sticky toolbar when a contents link scrolls here.
+  scroll-margin-block-start: var(--shell-bar-height, 0);
+}
+
+.doc-section__title {
+  margin-block: 0 var(--gog-space-8);
+  padding-block-end: var(--gog-space-4);
+  border-block-end: 1px solid var(--gog-border-color);
+  font-family: var(--gog-font-heading), sans-serif;
+  font-size: var(--gog-text-lg);
+}
+
+.doc-section__anchor {
+  color: inherit;
+  text-decoration: none;
+}
+
+.doc-section__lead {
+  margin-block: 0 var(--gog-space-12);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}

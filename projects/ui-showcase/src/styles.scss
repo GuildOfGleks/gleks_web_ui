@@ -26,6 +26,15 @@ code {
   unicode-bidi: isolate;
 }
 
+/* Sub-headings inside a component page's sections; global because the page, not the section, declares them. */
+.doc-section h3 {
+  margin-block: var(--gog-space-24) var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-family: var(--gog-font-mono), monospace;
+  font-size: var(--gog-text-sm);
+  font-weight: normal;
+}
+
 /*
  * "Hit areas" in the toolbar. Global because the targets are pseudo-elements declared in the
  * library's scoped stylesheets, which an app's scoped rule cannot reach.

@@ -16,10 +16,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/themes-page/themes-page').then((m) => m.ThemesPage),
   },
   {
-    path: 'buttons',
-    loadComponent: () => import('./pages/button-page/button-page').then((m) => m.ButtonPage),
-  },
-  {
     path: 'checkbox',
     loadComponent: () => import('./pages/checkbox-page/checkbox-page').then((m) => m.CheckboxPage),
   },

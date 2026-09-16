@@ -1,0 +1,64 @@
+:host {
+  display: block;
+}
+
+.doc-page__head {
+  margin-block-end: var(--gog-space-16);
+}
+
+.doc-page__crumb {
+  margin: 0;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+
+  a {
+    color: inherit;
+  }
+}
+
+.doc-page__title {
+  margin-block: var(--gog-space-4) var(--gog-space-12);
+  font-family: var(--gog-font-heading), sans-serif;
+  font-size: var(--gog-text-2xl);
+}
+
+.doc-page__import {
+  margin-block: 0 var(--gog-space-12);
+  padding-block: var(--gog-space-8);
+  padding-inline: var(--gog-space-12);
+  overflow-x: auto;
+  border: 1px solid var(--gog-border-color);
+  background: var(--gog-surface-color);
+  font-size: var(--gog-text-xs);
+}
+
+.doc-page__parts {
+  border-collapse: collapse;
+  font-size: var(--gog-text-xs);
+
+  th,
+  td {
+    padding-block: var(--gog-space-4);
+    padding-inline: 0 var(--gog-space-24);
+    text-align: start;
+    font-weight: normal;
+  }
+
+  td {
+    color: var(--gog-muted-text-color);
+  }
+}
+
+.doc-page__contents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-4) var(--gog-space-16);
+  margin-block-end: var(--gog-space-32);
+  padding-block: var(--gog-space-8);
+  border-block: 1px solid var(--gog-border-color);
+  font-size: var(--gog-text-sm);
+
+  a {
+    color: var(--gog-accent-color);
+  }
+}

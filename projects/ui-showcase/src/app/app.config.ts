@@ -1,6 +1,6 @@
 import { ApplicationConfig, inject, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { GOG_CONFIG, provideGogIcons } from '@guildofgleks/ui';
 
 import { routes } from './app.routes';
@@ -10,7 +10,10 @@ import { ShowcaseSettings } from './shell/showcase-settings';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
+    ),
     provideClientHydration(withEventReplay()),
     // A factory rather than `provideGogConfig`, because the value comes from the toolbar.
     {

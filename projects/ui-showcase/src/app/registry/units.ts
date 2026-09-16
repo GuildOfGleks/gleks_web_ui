@@ -92,8 +92,6 @@ export interface GogUnit {
   readonly entry: GogEntryPoint;
   /** Primary part first. */
   readonly parts: readonly GogPart[];
-  /** Whether the rebuilt page for this unit exists yet. */
-  readonly page: boolean;
 }
 
 export const GROUP_LABELS: Readonly<Record<GogUnitGroup, string>> = {
@@ -121,7 +119,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'actions',
     entry: 'root',
     parts: [cmp(ButtonComponent), dir(GogButtonDirective, 'a[gogButton], button[gogButton]')],
-    page: false,
   },
   {
     id: 'button-toggle',
@@ -132,7 +129,6 @@ export const UNITS: readonly GogUnit[] = [
       cmp(ButtonToggleGroupComponent),
       dir(GogButtonToggleOptionDirective, '[gogButtonToggleOption]'),
     ],
-    page: false,
   },
 
   // Form controls
@@ -146,7 +142,6 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogInputAddonStartDirective, '[gogInputAddonStart]'),
       dir(GogInputAddonEndDirective, '[gogInputAddonEnd]'),
     ],
-    page: false,
   },
   {
     id: 'textarea',
@@ -154,7 +149,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'root',
     parts: [cmp(TextareaComponent)],
-    page: false,
   },
   {
     id: 'select',
@@ -162,7 +156,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'root',
     parts: [cmp(SelectComponent)],
-    page: false,
   },
   {
     id: 'multiselect',
@@ -173,7 +166,6 @@ export const UNITS: readonly GogUnit[] = [
       cmp(MultiselectComponent),
       dir(GogMultiselectClearIconDirective, '[gogMultiselectClearIcon]'),
     ],
-    page: false,
   },
   {
     id: 'autocomplete',
@@ -181,7 +173,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'root',
     parts: [cmp(AutocompleteComponent)],
-    page: false,
   },
   {
     id: 'dropdown-templates',
@@ -192,7 +183,6 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogDropdownOptionDirective, '[gogDropdownOption]'),
       dir(GogDropdownChevronDirective, '[gogDropdownChevron]'),
     ],
-    page: false,
   },
   {
     id: 'checkbox',
@@ -200,7 +190,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'root',
     parts: [cmp(CheckboxComponent), dir(GogCheckboxIconDirective, '[gogCheckboxIcon]')],
-    page: false,
   },
   {
     id: 'toggle',
@@ -208,7 +197,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'root',
     parts: [cmp(ToggleComponent)],
-    page: false,
   },
   {
     id: 'radio-group',
@@ -216,7 +204,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'root',
     parts: [cmp(RadioGroupComponent)],
-    page: false,
   },
   {
     id: 'slider',
@@ -224,7 +211,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'root',
     parts: [cmp(SliderComponent)],
-    page: false,
   },
   {
     id: 'datepicker',
@@ -232,7 +218,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'datepicker',
     parts: [cmp(DatepickerComponent), cmp(CalendarComponent)],
-    page: false,
   },
 
   // Display & feedback
@@ -242,7 +227,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [cmp(IconComponent)],
-    page: false,
   },
   {
     id: 'badge',
@@ -250,7 +234,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [dir(GogBadgeDirective, '[gogBadge]')],
-    page: false,
   },
   {
     id: 'chip',
@@ -258,7 +241,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [cmp(ChipComponent)],
-    page: false,
   },
   {
     id: 'tag',
@@ -266,7 +248,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [cmp(TagComponent), dir(GogTagIconDirective, '[gogTagIcon]')],
-    page: false,
   },
   {
     id: 'alert',
@@ -274,7 +255,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [cmp(AlertComponent), dir(GogAlertIconDirective, '[gogAlertIcon]')],
-    page: false,
   },
   {
     id: 'spinner',
@@ -282,7 +262,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [cmp(SpinnerComponent), cmp(SpinnerOverlayComponent)],
-    page: false,
   },
   {
     id: 'skeleton',
@@ -290,7 +269,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [cmp(SkeletonComponent)],
-    page: false,
   },
   {
     id: 'progressbar',
@@ -298,7 +276,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [cmp(ProgressbarComponent)],
-    page: false,
   },
   {
     id: 'divider',
@@ -306,7 +283,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [cmp(DividerComponent)],
-    page: false,
   },
   {
     id: 'ripple',
@@ -314,7 +290,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [dir(GogRippleDirective, '[gogRipple]')],
-    page: false,
   },
 
   // Layout & navigation
@@ -330,7 +305,6 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogCardFooterDirective, '[gogCardFooter]'),
       dir(GogCardLinkDirective, 'a[gogCardLink], button[gogCardLink]'),
     ],
-    page: false,
   },
   {
     id: 'panel',
@@ -342,7 +316,6 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogPanelHeaderDirective, '[gogPanelHeader]'),
       dir(GogPanelFooterDirective, '[gogPanelFooter]'),
     ],
-    page: false,
   },
   {
     id: 'accordion',
@@ -355,7 +328,6 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogAccordionContentDirective, '[gogAccordionContent]'),
       dir(GogAccordionChevronDirective, '[gogAccordionChevron]'),
     ],
-    page: false,
   },
   {
     id: 'collapsible',
@@ -367,7 +339,6 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogCollapsibleTriggerDirective, '[gogCollapsibleTrigger]'),
       dir(GogCollapsibleContentDirective, '[gogCollapsibleContent]'),
     ],
-    page: false,
   },
   {
     id: 'tabs',
@@ -380,7 +351,6 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogTabHeaderDirective, '[gogTabHeader]'),
       dir(GogTabContentDirective, '[gogTabContent]'),
     ],
-    page: false,
   },
   {
     id: 'scroll',
@@ -388,7 +358,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'layout',
     entry: 'root',
     parts: [cmp(ScrollComponent)],
-    page: false,
   },
   {
     id: 'paginator',
@@ -396,7 +365,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'layout',
     entry: 'root',
     parts: [cmp(PaginatorComponent)],
-    page: false,
   },
   {
     id: 'table',
@@ -409,7 +377,6 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogColumnHeaderDirective, '[gogColumnHeader]'),
       dir(GogColumnBodyDirective, '[gogColumnBody]'),
     ],
-    page: false,
   },
 
   // Overlays
@@ -423,7 +390,6 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogMenuTriggerDirective, '[gogMenuTrigger]'),
       dir(GogMenuItemDirective, '[gogMenuItem]'),
     ],
-    page: false,
   },
   {
     id: 'tooltip',
@@ -431,7 +397,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'overlay',
     entry: 'root',
     parts: [dir(GogTooltipDirective, '[gogTooltip]')],
-    page: false,
   },
   {
     id: 'dialog',
@@ -439,7 +404,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'overlay',
     entry: 'dialog',
     parts: [svc(DialogService), cmp(DialogComponent), cmp(ConfirmationDialogComponent)],
-    page: false,
   },
   {
     id: 'toast',
@@ -447,7 +411,6 @@ export const UNITS: readonly GogUnit[] = [
     group: 'overlay',
     entry: 'root',
     parts: [svc(ToastService), cmp(ToastComponent), cmp(ToastContainerComponent)],
-    page: false,
   },
 
   // Foundation
@@ -457,6 +420,5 @@ export const UNITS: readonly GogUnit[] = [
     group: 'foundation',
     entry: 'root',
     parts: [svc(ThemeService)],
-    page: false,
   },
 ];

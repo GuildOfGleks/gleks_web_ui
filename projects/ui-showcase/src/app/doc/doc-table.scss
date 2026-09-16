@@ -1,0 +1,61 @@
+// Shared by the page's reference tables (API, tokens, parts).
+:host {
+  display: block;
+}
+
+.doc-api__scroll {
+  overflow-x: auto;
+}
+
+// Fixed layout, so every table of one kind on a page lines up with the others.
+table {
+  width: 100%;
+  min-width: 48rem;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: var(--gog-text-sm);
+}
+
+th,
+td {
+  padding-block: var(--gog-space-4);
+  padding-inline: var(--gog-space-8);
+  border-block-end: 1px solid var(--gog-border-color);
+  text-align: start;
+  vertical-align: top;
+}
+
+thead th {
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  font-weight: normal;
+}
+
+tbody + thead th {
+  padding-block-start: var(--gog-space-16);
+}
+
+tbody th {
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+code {
+  font-size: var(--gog-text-xs);
+}
+
+.doc-api__name {
+  width: 12rem;
+}
+
+.doc-api__type {
+  width: 20rem;
+}
+
+.doc-api__default {
+  width: 8rem;
+}
+
+.doc-tokens__name {
+  width: 24rem;
+}

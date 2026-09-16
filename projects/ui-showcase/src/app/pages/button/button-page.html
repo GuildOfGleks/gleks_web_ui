@@ -1,0 +1,281 @@
+<app-doc-page unit="button">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Every button here is live: hover, focus (Tab) and press are pseudo-classes and cannot be forced from the page."
+  >
+    <h3>variant × size</h3>
+    <app-doc-matrix rowAxis="variant" colAxis="size">
+      <ng-template appDocCell [rows]="variants" [cols]="sizes" let-variant let-size="col">
+        <gog-button [variant]="variant" [size]="size">Button</gog-button>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>variant × severity</h3>
+    <app-doc-matrix rowAxis="variant" colAxis="severity">
+      <ng-template appDocCell [rows]="variants" [cols]="severities" let-variant let-severity="col">
+        <gog-button [variant]="variant" [severity]="severity">Button</gog-button>
+      </ng-template>
+    </app-doc-matrix>
+
+    @for (variant of variants; track variant) {
+      <h3>severity × state · variant="{{ variant }}"</h3>
+      <app-doc-matrix rowAxis="severity" colAxis="state">
+        <ng-template appDocCell [rows]="severities" [cols]="states" let-severity let-state="col">
+          <gog-button
+            [variant]="variant"
+            [severity]="severity"
+            [disabled]="state.disabled"
+            [loading]="state.loading"
+            [ariaPressed]="state.pressed"
+            >Button</gog-button
+          >
+        </ng-template>
+      </app-doc-matrix>
+    }
+
+    <h3>size × loading</h3>
+    <app-doc-matrix rowAxis="size" colAxis="loading">
+      <ng-template appDocCell [rows]="sizes" [cols]="loadingAxis" let-size let-loading="col">
+        <gog-button [size]="size" [loading]="loading">Button</gog-button>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>content × size</h3>
+    <app-doc-matrix rowAxis="content" colAxis="size">
+      <ng-template appDocCell [rows]="contents" [cols]="sizes" let-content let-size="col">
+        @switch (content) {
+          @case ('text') {
+            <gog-button [size]="size">Save</gog-button>
+          }
+          @case ('icon + text') {
+            <gog-button [size]="size"><gog-icon name="check" /> Save</gog-button>
+          }
+          @case ('icon only') {
+            <gog-button [size]="size" ariaLabel="Close"><gog-icon name="close" /></gog-button>
+          }
+          @case ('long text') {
+            <gog-button [size]="size">Export every selected row to a spreadsheet</gog-button>
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>fullWidth, in a 20rem container</h3>
+    <div class="button-page__narrow">
+      <gog-button [fullWidth]="true">gog-button [fullWidth]="true"</gog-button>
+      <button gogButton fullWidth variant="outline" type="button">
+        button[gogButton] fullWidth
+      </button>
+      <a gogButton fullWidth variant="ghost" [routerLink]="[]" fragment="content"
+        >a[gogButton] fullWidth</a
+      >
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="directive"
+    title="gog-button vs [gogButton]"
+    lead="[gogButton] has no disabled, loading or aria inputs: those are attributes of the element it is written on."
+  >
+    <h3>element × variant</h3>
+    <app-doc-matrix rowAxis="element" colAxis="variant">
+      <ng-template appDocCell [rows]="elements" [cols]="variants" let-element let-variant="col">
+        @switch (element) {
+          @case ('gog-button') {
+            <gog-button [variant]="variant">Button</gog-button>
+          }
+          @case ('button[gogButton]') {
+            <button gogButton type="button" [variant]="variant">Button</button>
+          }
+          @case ('a[gogButton]') {
+            <a gogButton [variant]="variant" [routerLink]="[]" fragment="directive">Link</a>
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>element × state</h3>
+    <app-doc-matrix rowAxis="element" colAxis="state">
+      <ng-template appDocCell [rows]="elements" [cols]="states" let-element let-state="col">
+        @switch (element) {
+          @case ('gog-button') {
+            <gog-button
+              [disabled]="state.disabled"
+              [loading]="state.loading"
+              [ariaPressed]="state.pressed"
+              >Button</gog-button
+            >
+          }
+          @case ('button[gogButton]') {
+            @if (state.loading) {
+              <span class="button-page__na">no loading</span>
+            } @else {
+              <button
+                gogButton
+                type="button"
+                [disabled]="state.disabled"
+                [attr.aria-pressed]="state.pressed"
+              >
+                Button
+              </button>
+            }
+          }
+          @case ('a[gogButton]') {
+            @if (state.loading || state.disabled) {
+              <span class="button-page__na">no {{ state.loading ? 'loading' : 'disabled' }}</span>
+            } @else {
+              <a
+                gogButton
+                [attr.aria-pressed]="state.pressed"
+                [routerLink]="[]"
+                fragment="directive"
+                >Link</a
+              >
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="Click fast. The debounce is a leading-edge throttle: the first click emits, later ones inside the window are dropped."
+  >
+    <app-doc-matrix rowAxis="scenario" colAxis="">
+      <ng-template
+        appDocCell
+        [rows]="scenarios"
+        [cols]="scenarioColumns"
+        let-scenario
+        let-column="col"
+      >
+        @if (column === 'result') {
+          <code>{{ count(scenario.key) }} {{ scenario.counts }}</code>
+        } @else {
+          @switch (scenario.key) {
+            @case ('default') {
+              <gog-button (gogClick)="increment('default')">Click</gog-button>
+            }
+            @case ('zero') {
+              <gog-button [debounce]="0" (gogClick)="increment('zero')">Click</gog-button>
+            }
+            @case ('slow') {
+              <gog-button [debounce]="1000" (gogClick)="increment('slow')">Click</gog-button>
+            }
+            @case ('loading') {
+              <gog-button [loading]="true" (gogClick)="increment('loading')">Click</gog-button>
+            }
+            @case ('disabled') {
+              <gog-button [disabled]="true" (gogClick)="increment('disabled')">Click</gog-button>
+            }
+            @case ('form-button') {
+              <form (submit)="submitted($event, 'form-button')">
+                <gog-button>Click</gog-button>
+              </form>
+            }
+            @case ('form-submit') {
+              <form (submit)="submitted($event, 'form-submit')">
+                <gog-button type="submit">Click</gog-button>
+              </form>
+            }
+            @case ('form-submit-loading') {
+              <form (submit)="submitted($event, 'form-submit-loading')">
+                <gog-button type="submit" [loading]="true">Click</gog-button>
+              </form>
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre class="button-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-button-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-button>Button</gog-button>
+              }
+              @case ('size="sm"') {
+                <gog-button size="sm">Button</gog-button>
+              }
+              @case ('gogClick count') {
+                <gog-button (gogClick)="increment('scope-in')">Click</gog-button>
+                <code> {{ count('scope-in') }}</code>
+              }
+            }
+          </app-button-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-button>Button</gog-button>
+            }
+            @case ('size="sm"') {
+              <gog-button size="sm">Button</gog-button>
+            }
+            @case ('gogClick count') {
+              <gog-button (gogClick)="increment('scope-out')">Click</gog-button>
+              <code> {{ count('scope-out') }}</code>
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Attributes of the native button element that gog-button renders, read from the live DOM."
+  >
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="a11yColumns" let-state>
+        <app-doc-attrs target="button">
+          @switch (state) {
+            @case ('default') {
+              <gog-button>Button</gog-button>
+            }
+            @case ('[disabled]="true"') {
+              <gog-button [disabled]="true">Button</gog-button>
+            }
+            @case ('[loading]="true"') {
+              <gog-button [loading]="true">Button</gog-button>
+            }
+            @case ('ariaLabel="Close", icon only') {
+              <gog-button ariaLabel="Close"><gog-icon name="close" /></gog-button>
+            }
+            @case ('[ariaPressed]="false"') {
+              <gog-button [ariaPressed]="false">Button</gog-button>
+            }
+            @case ('[ariaPressed]="true"') {
+              <gog-button [ariaPressed]="true">Button</gog-button>
+            }
+            @case ('ariaPressed="mixed"') {
+              <gog-button ariaPressed="mixed">Button</gog-button>
+            }
+            @case ('[ariaExpanded]="false" ariaControls="menu-1" ariaHasPopup="menu"') {
+              <gog-button [ariaExpanded]="false" ariaControls="menu-1" ariaHasPopup="menu"
+                >Button</gog-button
+              >
+            }
+            @case ('type="submit"') {
+              <gog-button type="submit">Button</gog-button>
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

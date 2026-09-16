@@ -63,7 +63,7 @@
               <tr [class.overview__secondary]="!first">
                 @if (first) {
                   <th scope="rowgroup" [attr.rowspan]="row.parts.length">
-                    @if (row.unit.page) {
+                    @if (row.page) {
                       <a [routerLink]="['/', row.unit.id]">{{ row.unit.name }}</a>
                     } @else {
                       {{ row.unit.name }}
