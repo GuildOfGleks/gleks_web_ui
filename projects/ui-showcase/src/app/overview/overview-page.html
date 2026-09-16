@@ -1,0 +1,94 @@
+<h1 class="overview__title">Overview</h1>
+
+<dl class="overview__env">
+  <div>
+    <dt>package</dt>
+    <dd><code>&#64;guildofgleks/ui</code> {{ libraryVersion }}</dd>
+  </div>
+  <div>
+    <dt>angular</dt>
+    <dd>{{ angularVersion }}</dd>
+  </div>
+  <div>
+    <dt>theme</dt>
+    <dd>{{ theme() }}</dd>
+  </div>
+  <div>
+    <dt>dir</dt>
+    <dd>{{ settings.rtl() ? 'rtl' : 'ltr' }}</dd>
+  </div>
+  <div>
+    <dt>ripple</dt>
+    <dd>{{ settings.ripple ? 'on' : 'off' }}</dd>
+  </div>
+  <div>
+    <dt>registry</dt>
+    <dd>
+      {{ counts.units }} units · {{ counts.components }} components ·
+      {{ counts.directives }} directives · {{ counts.services }} services
+    </dd>
+  </div>
+</dl>
+
+@for (group of groups; track group.group) {
+  <section class="overview__group">
+    <h2 class="overview__group-title">
+      {{ group.label }} <span class="overview__count">{{ group.units.length }}</span>
+    </h2>
+    <div class="overview__scroll">
+      <table class="overview__table">
+        <colgroup>
+          <col class="overview__col-unit" />
+          <col class="overview__col-symbol" />
+          <col class="overview__col-selector" />
+          <col class="overview__col-kind" />
+          <col class="overview__col-num" />
+          <col class="overview__col-num" />
+          <col class="overview__col-import" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col">Unit</th>
+            <th scope="col">Symbol</th>
+            <th scope="col">Selector</th>
+            <th scope="col">Kind</th>
+            <th scope="col" class="overview__num">In</th>
+            <th scope="col" class="overview__num">Out</th>
+            <th scope="col">Import</th>
+          </tr>
+        </thead>
+        @for (row of group.units; track row.unit.id) {
+          <tbody>
+            @for (part of row.parts; track part.symbol; let first = $first) {
+              <tr [class.overview__secondary]="!first">
+                @if (first) {
+                  <th scope="rowgroup" [attr.rowspan]="row.parts.length">
+                    @if (row.unit.page) {
+                      <a [routerLink]="['/', row.unit.id]">{{ row.unit.name }}</a>
+                    } @else {
+                      {{ row.unit.name }}
+                    }
+                  </th>
+                }
+                <td>
+                  <code>{{ part.symbol }}</code>
+                </td>
+                <td>
+                  <code>{{ part.selector ?? '—' }}</code>
+                </td>
+                <td>{{ part.kind }}</td>
+                <td class="overview__num">{{ part.inputs ?? '—' }}</td>
+                <td class="overview__num">{{ part.outputs ?? '—' }}</td>
+                @if (first) {
+                  <td [attr.rowspan]="row.parts.length">
+                    <code>{{ row.importPath }}</code>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        }
+      </table>
+    </div>
+  </section>
+}

@@ -1,17 +1,23 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, inject, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { provideGogIcons } from '@guildofgleks/ui';
+import { GOG_CONFIG, provideGogIcons } from '@guildofgleks/ui';
 
 import { routes } from './app.routes';
 import { CUSTOM_ICONS } from './legacy/custom-icons';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { ShowcaseSettings } from './shell/showcase-settings';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    // Registered once here; every `gog-icon` and every icon-name input in the app can use them.
+    // A factory rather than `provideGogConfig`, because the value comes from the toolbar.
+    {
+      provide: GOG_CONFIG,
+      useFactory: () => ({ ripple: { enabled: inject(ShowcaseSettings).ripple } }),
+    },
+    // Only the legacy icon page reads these.
     provideGogIcons(CUSTOM_ICONS),
   ],
 };

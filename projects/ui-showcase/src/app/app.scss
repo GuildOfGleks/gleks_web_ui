@@ -1,138 +1,118 @@
+// The shell reads only foundation tokens, so every theme repaints it too.
 :host {
   display: block;
-  /* A definite height (not min-height) — gog-scroll needs one from its own parent to
-     reliably size the scroll region it replaces below; percentage/flex-grown heights work
-     the same way this element's own height:100% now resolves from body's (html, body {
-     height: 100% } in styles.scss), a genuinely definite chain, not a max-height clamp. */
-  height: 100%;
 }
 
-.app-shell-scroll {
-  height: 100%;
-}
-
-.app-shell {
-  min-height: 100%;
-  padding: 32px;
+.shell {
   display: grid;
-  gap: 28px;
+  grid-template-columns: 14rem minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas:
+    'bar bar'
+    'nav main';
+  height: 100vh;
 }
 
-.app-shell__header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  gap: 20px 24px;
-  padding: 28px;
-  border: var(--gog-panel-border-width, 1px) var(--gog-panel-border-style, solid)
-    var(--gog-border-color);
-  border-radius: var(--gog-panel-radius, calc(var(--gog-radius) + 8px));
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--gog-surface-color) 92%, transparent),
-      transparent 70%
-    ),
-    color-mix(in srgb, var(--gog-surface-color) 88%, transparent);
-  box-shadow: var(--gog-panel-shadow, 0 12px 28px rgba(0, 0, 0, 0.12));
-}
-
-.app-shell__intro {
-  display: grid;
-  gap: 10px;
-}
-
-.app-shell__eyebrow {
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.75rem;
-  color: var(--gog-muted-text-color);
-}
-
-h1 {
-  margin: 0;
-  font-family: var(--gog-font-heading);
-  font-size: clamp(2rem, 4vw, 3.5rem);
-}
-
-.app-shell__lead {
-  margin: 0;
-  max-width: 68ch;
-  color: var(--gog-muted-text-color);
-}
-
-.app-shell__theme-copy {
-  display: grid;
-  gap: 4px;
-  margin: 0;
-  max-width: 68ch;
-  color: var(--gog-muted-text-color);
-
-  strong {
-    color: var(--gog-text-color);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 0.75rem;
-  }
-}
-
-.app-shell__theme-switcher {
+.shell__bar {
+  grid-area: bar;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: space-between;
+  gap: var(--gog-space-8) var(--gog-space-16);
+  padding-block: var(--gog-space-8);
+  padding-inline: var(--gog-space-16);
+  border-block-end: 1px solid var(--gog-border-color);
+  background: var(--gog-surface-color);
 }
 
-.app-shell__nav {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-}
-
-.app-shell__nav-group-label {
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.7rem;
-  color: var(--gog-muted-text-color);
-  margin-right: 4px;
-}
-
-.app-shell__nav-link {
-  padding: 10px 18px;
-  border: var(--gog-control-border-width, 1px) var(--gog-control-border-style, solid)
-    var(--gog-border-color);
-  border-radius: 999px;
-  color: var(--gog-muted-text-color);
+.shell__name {
+  color: var(--gog-text-color);
+  font-family: var(--gog-font-mono), monospace;
+  font-size: var(--gog-text-sm);
   text-decoration: none;
-  font-size: 0.9rem;
-  transition:
-    color 0.15s ease,
-    border-color 0.15s ease,
-    background-color 0.15s ease;
+}
+
+.shell__switches {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-16);
+}
+
+.shell__nav {
+  grid-area: nav;
+  overflow-y: auto;
+  padding-block: var(--gog-space-12);
+  border-inline-end: 1px solid var(--gog-border-color);
+  font-size: var(--gog-text-sm);
+}
+
+.shell__group {
+  margin-block: var(--gog-space-16) var(--gog-space-4);
+  padding-inline: var(--gog-space-16);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.shell__link {
+  display: block;
+  padding-block: var(--gog-space-4);
+  padding-inline: var(--gog-space-16);
+  color: var(--gog-text-color);
+  text-decoration: none;
 
   &:hover {
-    color: var(--gog-text-color);
-    border-color: var(--gog-accent-color);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--gog-accent-color);
-    outline-offset: 2px;
-  }
-
-  &--active {
-    color: var(--gog-accent-color);
-    border-color: var(--gog-accent-color);
-    background: color-mix(in srgb, var(--gog-accent-color) 12%, transparent);
+    background: var(--gog-surface-color);
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .app-shell__nav-link {
-    transition: none;
+.shell__link--active {
+  box-shadow: inset 2px 0 0 var(--gog-accent-color);
+  color: var(--gog-accent-color);
+}
+
+:host-context([dir='rtl']) .shell__link--active {
+  box-shadow: inset -2px 0 0 var(--gog-accent-color);
+}
+
+.shell__link--pending {
+  color: var(--gog-muted-text-color);
+
+  &:hover {
+    background: none;
+  }
+}
+
+.shell__link--legacy {
+  font-family: var(--gog-font-mono), monospace;
+  font-size: var(--gog-text-xs);
+}
+
+.shell__main {
+  grid-area: main;
+  overflow-y: auto;
+  padding-block: var(--gog-space-24);
+  padding-inline: var(--gog-space-32);
+}
+
+@media (max-width: 48rem) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: 'bar' 'nav' 'main';
+    height: auto;
+  }
+
+  .shell__nav {
+    max-height: 12rem;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--gog-border-color);
+  }
+
+  .shell__main {
+    padding-inline: var(--gog-space-16);
   }
 }

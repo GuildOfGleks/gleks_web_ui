@@ -1,72 +1,63 @@
-<gog-scroll class="app-shell-scroll">
-  <div class="app-shell">
-    <header class="app-shell__header">
-      <div class="app-shell__intro">
-        <p class="app-shell__eyebrow">&#64;gleks/ui</p>
-        <h1>{{ title() }}</h1>
-        <p class="app-shell__lead">
-          A live playground for the latest components, tokens, overlays, and radically different
-          theme systems.
-        </p>
-        <p class="app-shell__theme-copy">
-          <strong>{{ themeLabel() }}</strong>
-          <span>{{ themeSummary() }}</span>
-        </p>
-      </div>
+<div class="shell">
+  <header class="shell__bar">
+    <a class="shell__name" routerLink="/"><code>&#64;guildofgleks/ui</code> showcase</a>
+    <div class="shell__switches">
+      <gog-select
+        size="sm"
+        ariaLabel="Theme"
+        [options]="themeOptions"
+        [value]="theme()"
+        [fullWidth]="false"
+        (valueChange)="setTheme($event)"
+      />
+      <gog-toggle size="sm" label="RTL" [(checked)]="settings.rtl" />
+      <gog-toggle size="sm" label="Hit areas" [(checked)]="settings.hitAreas" />
+      <gog-toggle
+        size="sm"
+        label="Ripple (reloads)"
+        [checked]="settings.ripple"
+        (checkedChange)="settings.setRipple($event)"
+      />
+    </div>
+  </header>
 
-      <div class="app-shell__theme-switcher">
-        <gog-select
-          ariaLabel="Theme preset"
-          [options]="themeOptions"
-          [value]="activeTheme()"
-          [fullWidth]="false"
-          (valueChange)="setTheme($event)"
-        />
-        <gog-toggle label="RTL" size="sm" [(checked)]="isRtl" />
-        <gog-toggle label="Hit areas" size="sm" [(checked)]="showHitAreas" />
-      </div>
+  <nav class="shell__nav" aria-label="Showcase">
+    <a
+      class="shell__link"
+      routerLink="/"
+      routerLinkActive="shell__link--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >Overview</a
+    >
 
-      <nav class="app-shell__nav" aria-label="Component showcase pages">
-        <span class="app-shell__nav-group-label">Components</span>
-        @for (link of navLinks; track link.path) {
+    @for (group of groups; track group.group) {
+      <p class="shell__group">{{ group.label }}</p>
+      @for (row of group.units; track row.unit.id) {
+        @if (row.unit.page) {
           <a
-            class="app-shell__nav-link"
-            [routerLink]="['/legacy', link.path]"
-            routerLinkActive="app-shell__nav-link--active"
+            class="shell__link"
+            [routerLink]="['/', row.unit.id]"
+            routerLinkActive="shell__link--active"
+            >{{ row.unit.name }}</a
           >
-            {{ link.label }}
-          </a>
+        } @else {
+          <span class="shell__link shell__link--pending">{{ row.unit.name }}</span>
         }
-      </nav>
+      }
+    }
 
-      <nav class="app-shell__nav" aria-label="Full page showcase examples">
-        <span class="app-shell__nav-group-label">Full pages</span>
-        @for (link of pageLinks; track link.path) {
-          <a
-            class="app-shell__nav-link"
-            [routerLink]="['/legacy', link.path]"
-            routerLinkActive="app-shell__nav-link--active"
-          >
-            {{ link.label }}
-          </a>
-        }
-      </nav>
+    <p class="shell__group">Legacy</p>
+    @for (path of legacyPaths; track path) {
+      <a
+        class="shell__link shell__link--legacy"
+        [routerLink]="['/legacy', path]"
+        routerLinkActive="shell__link--active"
+        >{{ path }}</a
+      >
+    }
+  </nav>
 
-      <nav class="app-shell__nav" aria-label="Performance benchmarks">
-        <span class="app-shell__nav-group-label">Benchmarks</span>
-        @for (link of benchmarkLinks; track link.path) {
-          <a
-            class="app-shell__nav-link"
-            [routerLink]="['/legacy', link.path]"
-            routerLinkActive="app-shell__nav-link--active"
-            [routerLinkActiveOptions]="{ exact: link.path === 'benchmark' }"
-          >
-            {{ link.label }}
-          </a>
-        }
-      </nav>
-    </header>
-
+  <main class="shell__main">
     <router-outlet />
-  </div>
-</gog-scroll>
+  </main>
+</div>

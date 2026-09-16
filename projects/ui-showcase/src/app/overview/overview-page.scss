@@ -1,0 +1,132 @@
+:host {
+  display: block;
+  max-width: 72rem;
+}
+
+.overview__title {
+  margin-block: 0 var(--gog-space-16);
+  font-family: var(--gog-font-heading), sans-serif;
+  font-size: var(--gog-text-xl);
+}
+
+.overview__env {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-4) var(--gog-space-24);
+  margin-block: 0 var(--gog-space-32);
+  padding-block: var(--gog-space-8);
+  padding-inline: var(--gog-space-12);
+  border: 1px solid var(--gog-border-color);
+  background: var(--gog-surface-color);
+  font-family: var(--gog-font-mono), monospace;
+  font-size: var(--gog-text-xs);
+
+  div {
+    display: flex;
+    gap: var(--gog-space-8);
+  }
+
+  dt {
+    color: var(--gog-muted-text-color);
+  }
+
+  // Values are version strings and counts: they read left to right in an RTL page too.
+  dd {
+    margin: 0;
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+}
+
+.overview__group {
+  margin-block-end: var(--gog-space-32);
+}
+
+.overview__group-title {
+  margin-block: 0 var(--gog-space-8);
+  font-family: var(--gog-font-heading), sans-serif;
+  font-size: var(--gog-text-md);
+}
+
+.overview__count {
+  color: var(--gog-muted-text-color);
+  font-family: var(--gog-font-mono), monospace;
+  font-size: var(--gog-text-xs);
+  font-weight: normal;
+}
+
+.overview__scroll {
+  overflow-x: auto;
+}
+
+// Fixed layout with shared column widths, so every group's table lines up with the others.
+.overview__table {
+  width: 100%;
+  min-width: 72rem;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: var(--gog-text-sm);
+
+  th,
+  td {
+    padding-block: var(--gog-space-4);
+    padding-inline: var(--gog-space-8);
+    text-align: start;
+    vertical-align: top;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  thead th {
+    border-block-end: 1px solid var(--gog-border-color);
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-xs);
+    font-weight: normal;
+  }
+
+  tbody {
+    border-block-end: 1px solid var(--gog-border-color);
+  }
+
+  tbody th {
+    font-weight: 600;
+  }
+
+  code {
+    font-size: var(--gog-text-xs);
+  }
+
+  a {
+    color: var(--gog-accent-color);
+  }
+}
+
+.overview__secondary td {
+  color: var(--gog-muted-text-color);
+}
+
+.overview__num {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview__col-unit {
+  width: 11rem;
+}
+
+.overview__col-symbol {
+  width: 18rem;
+}
+
+.overview__col-selector {
+  width: 18rem;
+}
+
+.overview__col-kind {
+  width: 6rem;
+}
+
+.overview__col-num {
+  width: 3rem;
+}
