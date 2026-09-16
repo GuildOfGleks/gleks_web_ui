@@ -2,6 +2,7 @@ import type { Type } from '@angular/core';
 
 import type { DocApi } from '../doc/doc-api';
 import { BUTTON_API } from './button/button.api';
+import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
 
 /** What `app-doc-page` renders on its own for a unit, after the page's hand-built sections. */
 export interface DocPageEntry {
@@ -18,5 +19,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./button/button-page').then((m) => m.ButtonPage),
     api: BUTTON_API,
     tokens: ['Button', 'Button severity'],
+  },
+  'button-toggle': {
+    load: () => import('./button-toggle/button-toggle-page').then((m) => m.ButtonTogglePage),
+    api: BUTTON_TOGGLE_API,
+    tokens: ['Button toggle group'],
   },
 };

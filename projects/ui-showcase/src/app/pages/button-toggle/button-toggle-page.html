@@ -1,0 +1,315 @@
+<app-doc-page unit="button-toggle">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Focus (Tab, then arrow keys) and press are live; the roving tabindex only reaches the selected or first enabled option."
+  >
+    <h3>appearance × size</h3>
+    <app-doc-matrix rowAxis="appearance" colAxis="size">
+      <ng-template appDocCell [rows]="appearances" [cols]="sizes" let-appearance let-size="col">
+        <gog-button-toggle-group
+          [options]="alignOptions"
+          [appearance]="appearance"
+          [size]="size"
+          value="center"
+          ariaLabel="Align"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>orientation × appearance</h3>
+    <app-doc-matrix rowAxis="orientation" colAxis="appearance">
+      <ng-template
+        appDocCell
+        [rows]="orientations"
+        [cols]="appearances"
+        let-orientation
+        let-appearance="col"
+      >
+        <gog-button-toggle-group
+          [options]="alignOptions"
+          [orientation]="orientation"
+          [appearance]="appearance"
+          value="center"
+          ariaLabel="Align"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>state</h3>
+    <app-doc-matrix rowAxis="state" colAxis="">
+      <ng-template appDocCell [rows]="states" [cols]="controlColumn" let-state>
+        <gog-button-toggle-group
+          [options]="state.options"
+          [value]="state.value"
+          [disabled]="state.groupDisabled"
+          ariaLabel="Align"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>multiple: selection</h3>
+    <app-doc-matrix rowAxis="state" colAxis="">
+      <ng-template appDocCell [rows]="multiStates" [cols]="controlColumn" let-state>
+        <gog-button-toggle-group
+          [options]="toolOptions"
+          [multiple]="true"
+          [value]="state.value"
+          ariaLabel="Tools"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>optionIcon</h3>
+    <app-doc-matrix rowAxis="size" colAxis="">
+      <ng-template appDocCell [rows]="sizes" [cols]="controlColumn" let-size>
+        <gog-button-toggle-group
+          [options]="toolOptions"
+          optionIcon="icon"
+          [multiple]="true"
+          [size]="size"
+          value="search"
+          ariaLabel="Tools"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>custom slot: icon-only buttons</h3>
+    <p class="button-toggle-page__note">
+      <code>gogButtonToggleOption</code> replaces a button's whole content; the slot's
+      <code>label</code> context still carries the resolved name, here used for a visually-hidden
+      accessible label.
+    </p>
+    <gog-button-toggle-group
+      [options]="toolOptions"
+      [multiple]="true"
+      [(value)]="slotValue"
+      ariaLabel="Tools"
+    >
+      <ng-template gogButtonToggleOption let-option let-label="label">
+        <gog-icon [name]="asIconOption(option).icon" [ariaHidden]="true" />
+        <span class="button-toggle-page__sr-only">{{ label }}</span>
+      </ng-template>
+    </gog-button-toggle-group>
+    <p>
+      <code>value: {{ slotValue() | json }}</code>
+    </p>
+
+    <h3>fullWidth, in a 20rem container</h3>
+    <div class="button-toggle-page__narrow">
+      <gog-button-toggle-group
+        [options]="alignOptions"
+        [fullWidth]="true"
+        value="center"
+        ariaLabel="Align"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="modes"
+    title="Single vs multiple"
+    lead="Single mode is a radio group: role=radiogroup / role=radio with aria-checked, and the arrow keys move and select. Multiple mode is a toolbar of independent toggles: role=group with aria-pressed, arrows only move and Space toggles."
+  >
+    <app-doc-matrix rowAxis="mode" colAxis="">
+      <ng-template appDocCell [rows]="modeRows" [cols]="attrColumns" let-mode>
+        <app-doc-attrs target="button">
+          @switch (mode) {
+            @case ('single, selected') {
+              <gog-button-toggle-group [options]="alignOptions" value="center" ariaLabel="Align" />
+            }
+            @case ('multiple, selected') {
+              <gog-button-toggle-group
+                [options]="toolOptions"
+                [multiple]="true"
+                [value]="['search']"
+                ariaLabel="Tools"
+              />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="value is model-bound: [(value)] works in both modes, and the group is a full ControlValueAccessor, so formControl works the same way."
+  >
+    <h3>[(value)]</h3>
+    <p>
+      <gog-button-toggle-group
+        [options]="alignOptions"
+        [(value)]="singleValue"
+        (valueChange)="increment('single')"
+        ariaLabel="Align"
+      />
+      <code> value: {{ singleValue() }} · {{ count('single') }} valueChange</code>
+    </p>
+    <p>
+      <gog-button-toggle-group
+        [options]="toolOptions"
+        [multiple]="true"
+        [(value)]="multiValue"
+        (valueChange)="increment('multi')"
+        ariaLabel="Tools"
+      />
+      <code> value: {{ multiValue() | json }} · {{ count('multi') }} valueChange</code>
+    </p>
+
+    <h3>formControl</h3>
+    <p>
+      <gog-button-toggle-group
+        [options]="alignOptions"
+        [formControl]="formControl"
+        ariaLabel="Align (reactive form)"
+      />
+      <button type="button" (click)="toggleFormDisabled()">
+        {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+      </button>
+      <code> value: {{ formControl.value }} · disabled: {{ formControl.disabled }}</code>
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre
+      class="button-toggle-page__config"
+    ><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-button-toggle-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-button-toggle-group
+                  [options]="alignOptions"
+                  value="center"
+                  ariaLabel="Align"
+                />
+              }
+              @case ('size="sm"') {
+                <gog-button-toggle-group
+                  [options]="alignOptions"
+                  size="sm"
+                  value="center"
+                  ariaLabel="Align"
+                />
+              }
+              @case ('valueChange count') {
+                <gog-button-toggle-group
+                  [options]="alignOptions"
+                  ariaLabel="Align"
+                  (valueChange)="increment('scope-in')"
+                />
+                <code> {{ count('scope-in') }}</code>
+              }
+            }
+          </app-button-toggle-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-button-toggle-group [options]="alignOptions" value="center" ariaLabel="Align" />
+            }
+            @case ('size="sm"') {
+              <gog-button-toggle-group
+                [options]="alignOptions"
+                size="sm"
+                value="center"
+                ariaLabel="Align"
+              />
+            }
+            @case ('valueChange count') {
+              <gog-button-toggle-group
+                [options]="alignOptions"
+                ariaLabel="Align"
+                (valueChange)="increment('scope-out')"
+              />
+              <code> {{ count('scope-out') }}</code>
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Attributes read from the live DOM."
+  >
+    <h3>group attributes</h3>
+    <app-doc-matrix rowAxis="state" colAxis="">
+      <ng-template appDocCell [rows]="groupAttrStates" [cols]="attrColumns" let-state>
+        <app-doc-attrs target="gog-button-toggle-group">
+          @switch (state) {
+            @case ('default (single)') {
+              <gog-button-toggle-group [options]="alignOptions" ariaLabel="Align" />
+            }
+            @case ('[multiple]="true"') {
+              <gog-button-toggle-group
+                [options]="toolOptions"
+                [multiple]="true"
+                ariaLabel="Tools"
+              />
+            }
+            @case ('[disabled]="true"') {
+              <gog-button-toggle-group
+                [options]="alignOptions"
+                [disabled]="true"
+                ariaLabel="Align"
+              />
+            }
+            @case ('orientation="vertical"') {
+              <gog-button-toggle-group
+                [options]="alignOptions"
+                orientation="vertical"
+                ariaLabel="Align"
+              />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>option attributes</h3>
+    <app-doc-matrix rowAxis="state" colAxis="">
+      <ng-template appDocCell [rows]="optionAttrStates" [cols]="attrColumns" let-state>
+        <app-doc-attrs target="button">
+          @switch (state) {
+            @case ('default (single)') {
+              <gog-button-toggle-group [options]="alignOptions" ariaLabel="Align" />
+            }
+            @case ('selected (single)') {
+              <gog-button-toggle-group [options]="alignOptions" value="center" ariaLabel="Align" />
+            }
+            @case ('selected (multiple)') {
+              <gog-button-toggle-group
+                [options]="toolOptions"
+                [multiple]="true"
+                [value]="['search']"
+                ariaLabel="Tools"
+              />
+            }
+            @case ('optionDisabled') {
+              <gog-button-toggle-group [options]="alignOptionsOneDisabled" ariaLabel="Align" />
+            }
+            @case ('[disabled]="true" (group)') {
+              <gog-button-toggle-group
+                [options]="alignOptions"
+                [disabled]="true"
+                ariaLabel="Align"
+              />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

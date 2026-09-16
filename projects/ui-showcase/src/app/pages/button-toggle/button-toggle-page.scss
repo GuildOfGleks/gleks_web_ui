@@ -1,0 +1,28 @@
+.button-toggle-page__narrow {
+  width: 20rem;
+  max-width: 100%;
+  padding: var(--gog-space-8);
+  border: 1px dashed var(--gog-border-color);
+}
+
+.button-toggle-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}
+
+.button-toggle-page__config {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+}
+
+// Visible to assistive tech only — the slot demo's accessible name for an icon-only button.
+.button-toggle-page__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
