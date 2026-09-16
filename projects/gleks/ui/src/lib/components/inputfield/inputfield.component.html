@@ -4,6 +4,8 @@
   [class.gog-input-wrapper--icon-start]="hasIconStart()"
   [class.gog-input-wrapper--icon-end]="hasIconEnd() || hasSpinButtons()"
   [class.gog-input-wrapper--spin-clear]="hasSpinAndClear()"
+  [class.gog-input-wrapper--toggle-pair]="hasPasswordCompanion()"
+  [class.gog-input-wrapper--spin-pair]="hasSpinCompanion()"
   [class.gog-input-wrapper--float-in]="resolvedFloatLabel() === 'in'"
   [class.gog-input-wrapper--float-on]="resolvedFloatLabel() === 'on'"
   [class.gog-input-wrapper--float-over]="resolvedFloatLabel() === 'over'"
@@ -53,15 +55,12 @@
       (focus)="onFocus()"
       (blur)="onBlur()"
     />
-    <!--
-      A password field's built-in show/hide toggle owns the end slot: it is the only control
-      that reveals the value, so a projected addon must not be able to displace it.
-    -->
     @if (hasSpinButtons()) {
       <span class="gog-input__spin">
         <button
           type="button"
           class="gog-input__spin-btn gog-input__spin-btn--up"
+          data-gog-part="increment"
           tabindex="-1"
           [attr.aria-label]="resolvedIncrementLabel()"
           [disabled]="isDisabled() || isAtMax()"
@@ -73,6 +72,7 @@
         <button
           type="button"
           class="gog-input__spin-btn gog-input__spin-btn--down"
+          data-gog-part="decrement"
           tabindex="-1"
           [attr.aria-label]="resolvedDecrementLabel()"
           [disabled]="isDisabled() || isAtMin()"
@@ -94,31 +94,45 @@
       <button
         type="button"
         class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action gog-input__clear"
+        data-gog-part="clear"
         [attr.aria-label]="resolvedClearLabel()"
         (click)="clearValue($event)"
       >
         <gog-icon name="close" />
       </button>
-    } @else if (!hasSpinButtons()) {
-      @if (addonEnd() && !isPasswordField()) {
-        <span class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__addon">
+    } @else {
+      <!--
+        The reveal toggle and the stepper keep the outer edge; a projected addon or iconEnd sits
+        beside them (`--toggle-pair`, `--spin-pair`), so neither can hide the other.
+      -->
+      @if (addonEnd()) {
+        <span
+          class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__addon"
+          [class.gog-input__icon--beside-toggle]="isPasswordField()"
+          [class.gog-input__icon--beside-spin]="hasSpinButtons()"
+        >
           <ng-content select="[gogInputAddonEnd]" />
         </span>
-      } @else if (effectiveIconEnd(); as iconEndName) {
-        @if (isPasswordField()) {
-          <button
-            type="button"
-            class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action"
-            [attr.aria-label]="effectiveIconEndLabel() || null"
-            (click)="togglePasswordVisibility()"
-          >
-            <gog-icon [name]="iconEndName" />
-          </button>
-        } @else {
-          <span class="gog-input__icon gog-inline-center gog-input__icon--end" aria-hidden="true">
-            <gog-icon [name]="iconEndName" />
-          </span>
-        }
+      } @else if (iconEnd(); as iconEndName) {
+        <span
+          class="gog-input__icon gog-inline-center gog-input__icon--end"
+          [class.gog-input__icon--beside-toggle]="isPasswordField()"
+          [class.gog-input__icon--beside-spin]="hasSpinButtons()"
+          aria-hidden="true"
+        >
+          <gog-icon [name]="iconEndName" />
+        </span>
+      }
+      @if (isPasswordField()) {
+        <button
+          type="button"
+          class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__icon--action"
+          data-gog-part="password-toggle"
+          [attr.aria-label]="passwordToggleLabel()"
+          (click)="togglePasswordVisibility()"
+        >
+          <gog-icon [name]="passwordToggleIcon()" />
+        </button>
       }
     }
   </div>

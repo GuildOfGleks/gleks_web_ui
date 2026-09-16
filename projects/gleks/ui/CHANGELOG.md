@@ -28,6 +28,10 @@ reached 1.0, so breaking changes may land in minor versions.
   framed as "a behaviour change on an existing input": a table whose rows open a detail page and
   also carry checkboxes would have started selecting on every navigation.
 
+- **`gog-inputfield`'s own buttons carry `data-gog-part`** — `increment`, `decrement`, `clear` and
+  `password-toggle` — so a test or an automation script can find the stepper, the clear button or
+  the reveal toggle without reaching for the internal `gog-input__*` classes, which may change.
+
 ### Changed
 
 - **The stylesheets ship 45% lighter, because their comments were rewritten.** Every
@@ -40,6 +44,14 @@ reached 1.0, so breaking changes may land in minor versions.
   renders differently and no override is affected.
 
 ### Fixed
+
+- **A password or number `gog-inputfield` dropped its `iconEnd` and its projected
+  `gogInputAddonEnd`.** The reveal toggle, or the stepper, took the end slot and the other element
+  was never rendered, so an icon or a unit set on the field silently did not appear. Both now
+  render: the toggle or the stepper keeps the outer edge, the icon or addon sits beside it, and the
+  text gutter widens to clear both. On a clearable number field the clear button still takes that
+  place while there is a value, as it does on every other field. Found on the showcase's Password
+  field examples.
 
 - **A keyboard user could not select a row in a `gog-table` with `interactiveRows`.** The row's
   Enter/Space handler took those keys from anything inside the row, not just from the focused row:

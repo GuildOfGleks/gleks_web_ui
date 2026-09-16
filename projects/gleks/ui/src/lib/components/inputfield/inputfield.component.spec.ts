@@ -99,6 +99,120 @@ describe('InputfieldComponent', () => {
     });
   });
 
+  describe('password field end slot', () => {
+    const toggle = () =>
+      fixture.nativeElement.querySelector('[data-gog-part="password-toggle"]') as HTMLButtonElement;
+
+    it('renders iconEnd beside the reveal toggle instead of dropping it', async () => {
+      fixture.componentRef.setInput('type', 'password');
+      fixture.componentRef.setInput('iconEnd', 'star');
+      await fixture.whenStable();
+
+      const companion = fixture.nativeElement.querySelector('.gog-input__icon--beside-toggle');
+      expect(companion?.querySelector('svg')?.classList).toContain('lucide-star');
+      expect(companion?.getAttribute('aria-hidden')).toBe('true');
+      expect(toggle().getAttribute('aria-label')).toBe('Show password');
+      expect(
+        fixture.nativeElement
+          .querySelector('.gog-input-wrapper')
+          .classList.contains('gog-input-wrapper--toggle-pair'),
+      ).toBe(true);
+    });
+
+    it('keeps the lone toggle unpaired when there is nothing beside it', async () => {
+      fixture.componentRef.setInput('type', 'password');
+      await fixture.whenStable();
+
+      expect(toggle()).toBeTruthy();
+      expect(fixture.nativeElement.querySelector('.gog-input__icon--beside-toggle')).toBeNull();
+      expect(
+        fixture.nativeElement
+          .querySelector('.gog-input-wrapper')
+          .classList.contains('gog-input-wrapper--toggle-pair'),
+      ).toBe(false);
+    });
+
+    it('does not mark iconEnd as beside a toggle on a text field', async () => {
+      fixture.componentRef.setInput('iconEnd', 'star');
+      await fixture.whenStable();
+
+      expect(toggle()).toBeNull();
+      expect(fixture.nativeElement.querySelector('.gog-input__icon--beside-toggle')).toBeNull();
+    });
+
+    it('swaps the toggle icon and label when pressed', async () => {
+      fixture.componentRef.setInput('type', 'password');
+      await fixture.whenStable();
+
+      toggle().click();
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('input').type).toBe('text');
+      expect(toggle().getAttribute('aria-label')).toBe('Hide password');
+      expect(toggle().querySelector('svg')?.classList).toContain('lucide-eye-off-icon');
+    });
+  });
+
+  describe('number field end slot', () => {
+    const wrapperHas = (cls: string) =>
+      fixture.nativeElement.querySelector('.gog-input-wrapper').classList.contains(cls);
+    const companion = () => fixture.nativeElement.querySelector('.gog-input__icon--beside-spin');
+
+    beforeEach(() => {
+      fixture.componentRef.setInput('type', 'number');
+      fixture.componentRef.setInput('iconEnd', 'star');
+    });
+
+    it('renders iconEnd beside the stepper instead of dropping it', async () => {
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-input__spin')).toBeTruthy();
+      expect(companion()?.querySelector('svg')?.classList).toContain('lucide-star');
+      expect(wrapperHas('gog-input-wrapper--spin-pair')).toBe(true);
+    });
+
+    it('lets the clear button take the place of iconEnd while there is a value', async () => {
+      fixture.componentRef.setInput('clearable', true);
+      fixture.componentRef.setInput('value', '5');
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.querySelector('.gog-input__clear')).toBeTruthy();
+      expect(companion()).toBeNull();
+      expect(wrapperHas('gog-input-wrapper--spin-clear')).toBe(true);
+      expect(wrapperHas('gog-input-wrapper--spin-pair')).toBe(false);
+    });
+
+    it('puts iconEnd back in the plain end slot when the stepper is off', async () => {
+      fixture.componentRef.setInput('showSpinButtons', false);
+      await fixture.whenStable();
+
+      expect(companion()).toBeNull();
+      expect(fixture.nativeElement.querySelector('.gog-input__icon--end')).toBeTruthy();
+      expect(wrapperHas('gog-input-wrapper--spin-pair')).toBe(false);
+    });
+  });
+
+  describe('data-gog-part hooks', () => {
+    const part = (name: string) =>
+      fixture.nativeElement.querySelector(`[data-gog-part="${name}"]`) as HTMLButtonElement | null;
+
+    it('marks the stepper buttons', async () => {
+      fixture.componentRef.setInput('type', 'number');
+      await fixture.whenStable();
+
+      expect(part('increment')?.classList).toContain('gog-input__spin-btn--up');
+      expect(part('decrement')?.classList).toContain('gog-input__spin-btn--down');
+    });
+
+    it('marks the clear button', async () => {
+      fixture.componentRef.setInput('clearable', true);
+      fixture.componentRef.setInput('value', 'text');
+      await fixture.whenStable();
+
+      expect(part('clear')?.getAttribute('aria-label')).toBe('Clear');
+    });
+  });
+
   describe('autocomplete default', () => {
     it('defaults to current-password for password fields', () => {
       fixture.componentRef.setInput('type', 'password');

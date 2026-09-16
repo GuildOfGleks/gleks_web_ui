@@ -48,6 +48,15 @@ build.
   `selectOnRowClick` for "a table that selects by clicking the row", if it says anything about
   that.
 
+- **`gog-inputfield`: password and number fields show `iconEnd` and `gogInputAddonEnd` beside the
+  reveal toggle or the stepper** (before 21.15.0 both were silently dropped). If the Inputfield
+  page says the toggle or the stepper owns or replaces the end slot, correct it; an example with a
+  unit beside the eye or the stepper is worth adding. The clear button still outranks the addon.
+
+- **`gog-inputfield`'s buttons carry `data-gog-part`** (`increment`, `decrement`, `clear`,
+  `password-toggle`). One API-page sentence: a stable hook for tests, unlike the `gog-input__*`
+  classes.
+
 - **Space on a row's checkbox ticks it now** in a table with `interactiveRows` (21.15.0's fix; before
   it, the key fired `gogRowClick` instead). Nothing on the site claims otherwise, checked; worth
   knowing only if a page describes the keyboard behaviour of a selectable, interactive table.

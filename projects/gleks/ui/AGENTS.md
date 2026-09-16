@@ -671,25 +671,25 @@ toggles) — this is a real ARIA distinction, not cosmetic.
 
 #### `gog-inputfield`
 
-| Input                                     | Type                   | Default                             | Notes                                                                                  |
-| ----------------------------------------- | ---------------------- | ----------------------------------- | -------------------------------------------------------------------------------------- |
-| `label`, `placeholder`                    | `string`               | `''`                                |                                                                                        |
-| `type`                                    | `GogInputType`         | `'text'`                            | `text`/`password`/`email`/`number`/`search`/`tel`/`url`/`date`/`time`/`datetime-local` |
-| `readonly`                                | `boolean`              | `false`                             | value stays focusable and submitted, edits blocked; hides the clear button and stepper |
-| `maxlength`, `minlength`                  | `number \| null`       | `null`                              | native attributes                                                                      |
-| `pattern`                                 | `string`               | `''`                                | native attribute, regex source                                                         |
-| `inputMode`                               | `GogInputMode \| null` | `null`                              | on-screen keyboard hint (`numeric`, `tel`, …)                                          |
-| `spellcheck`                              | `boolean \| null`      | `null`                              | unset = browser default                                                                |
-| `inputId`                                 | `string`               | `''` → generated                    | a real id is always rendered; pass one only to reference the field externally          |
-| `min`, `max`, `step`                      | `number \| null`       | `null`                              | `type="number"` only                                                                   |
-| `showSpinButtons`                         | `boolean \| undefined` | `true`                              | own +/- glyphs on `type="number"`; via `GOG_CONFIG.inputfield.showSpinButtons`         |
-| `errorMessage`, `errorDisplay`            |                        | `''`, `'manual'`                    | see conventions                                                                        |
-| `disabled`, `size`, `fullWidth`           |                        | `false`, `'md'`, `true`             |                                                                                        |
-| `iconStart` / `iconEnd`                   | `GogIconName \| ''`    | `''`                                | bare leading/trailing icon                                                             |
-| `clearable`, `clearAriaLabel`             |                        | `false`, `'Clear'`                  | on `type="number"` the clear button renders alongside the stepper                      |
-| `floatLabel`, `floatLabelShowPlaceholder` |                        | `'none'`, `false`                   |                                                                                        |
-| `showPasswordLabel` / `hidePasswordLabel` | `string \| undefined`  | `'Show password'`/`'Hide password'` | `type="password"` reveal toggle aria-labels; via `GOG_CONFIG.labels`                   |
-| `incrementLabel` / `decrementLabel`       | `string \| undefined`  | `'Increment'`/`'Decrement'`         | spin button aria-labels; via `GOG_CONFIG.labels`                                       |
+| Input                                     | Type                   | Default                             | Notes                                                                                       |
+| ----------------------------------------- | ---------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| `label`, `placeholder`                    | `string`               | `''`                                |                                                                                             |
+| `type`                                    | `GogInputType`         | `'text'`                            | `text`/`password`/`email`/`number`/`search`/`tel`/`url`/`date`/`time`/`datetime-local`      |
+| `readonly`                                | `boolean`              | `false`                             | value stays focusable and submitted, edits blocked; hides the clear button and stepper      |
+| `maxlength`, `minlength`                  | `number \| null`       | `null`                              | native attributes                                                                           |
+| `pattern`                                 | `string`               | `''`                                | native attribute, regex source                                                              |
+| `inputMode`                               | `GogInputMode \| null` | `null`                              | on-screen keyboard hint (`numeric`, `tel`, …)                                               |
+| `spellcheck`                              | `boolean \| null`      | `null`                              | unset = browser default                                                                     |
+| `inputId`                                 | `string`               | `''` → generated                    | a real id is always rendered; pass one only to reference the field externally               |
+| `min`, `max`, `step`                      | `number \| null`       | `null`                              | `type="number"` only                                                                        |
+| `showSpinButtons`                         | `boolean \| undefined` | `true`                              | own +/- glyphs on `type="number"`; via `GOG_CONFIG.inputfield.showSpinButtons`              |
+| `errorMessage`, `errorDisplay`            |                        | `''`, `'manual'`                    | see conventions                                                                             |
+| `disabled`, `size`, `fullWidth`           |                        | `false`, `'md'`, `true`             |                                                                                             |
+| `iconStart` / `iconEnd`                   | `GogIconName \| ''`    | `''`                                | bare leading/trailing icon; on `password`/`number` `iconEnd` sits beside the toggle/stepper |
+| `clearable`, `clearAriaLabel`             |                        | `false`, `'Clear'`                  | on `type="number"` the clear button renders alongside the stepper                           |
+| `floatLabel`, `floatLabelShowPlaceholder` |                        | `'none'`, `false`                   |                                                                                             |
+| `showPasswordLabel` / `hidePasswordLabel` | `string \| undefined`  | `'Show password'`/`'Hide password'` | `type="password"` reveal toggle aria-labels; via `GOG_CONFIG.labels`                        |
+| `incrementLabel` / `decrementLabel`       | `string \| undefined`  | `'Increment'`/`'Decrement'`         | spin button aria-labels; via `GOG_CONFIG.labels`                                            |
 
 Model: `value: string` (always a string, even for `type="number"` — the _form control_ value is
 `number | null`, but the `[(value)]` model mirrors the raw text). CVA: yes.
@@ -698,7 +698,13 @@ Slots: project `<span gogInputAddonStart>`/`<span gogInputAddonEnd>` (or a `<but
 custom leading/trailing markup — a normal DOM element with its own `aria-label`, click handler
 and disabled state, not a component-managed slot. This is the **current, non-deprecated**
 replacement for the old icon-template/icon-fn/icon-label input quartet — see
-[Deprecated patterns](#deprecated-patterns--do-not-use-in-new-code).
+[Deprecated patterns](#deprecated-patterns--do-not-use-in-new-code). On `type="password"` the end
+addon renders beside the reveal toggle, and on `type="number"` beside the stepper; both keep the
+outer edge. The clear button, while there is something to clear, takes the addon's place.
+
+Hooks: the field's own buttons carry `data-gog-part` — `increment`, `decrement`, `clear` and
+`password-toggle` — a stable selector for tests and automation. The `gog-input__*` classes are
+internal and may change.
 
 ```html
 <gog-inputfield

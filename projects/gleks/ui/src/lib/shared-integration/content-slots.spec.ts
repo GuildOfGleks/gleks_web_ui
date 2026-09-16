@@ -86,7 +86,7 @@ class MultiselectClearHost {
   `,
 })
 class InputAddonHost {
-  readonly type = signal<'text' | 'password'>('text');
+  readonly type = signal<'text' | 'password' | 'number'>('text');
 }
 
 async function render<T>(host: new () => T): Promise<ComponentFixture<T>> {
@@ -137,20 +137,31 @@ describe('projected content slots', () => {
       expect(wrapper.nativeElement.classList).toContain('gog-input-wrapper--icon-end');
     });
 
-    it("lets a password field's built-in reveal toggle keep the end slot", async () => {
+    it('renders the end addon beside the reveal toggle on a password field', async () => {
       const fixture = await render(InputAddonHost);
       fixture.componentInstance.type.set('password');
       await fixture.whenStable();
 
-      // the projected end addon is ignored, the toggle button stays
-      expect(fixture.debugElement.query(By.css('.end-marker'))).toBeNull();
-      const toggle = fixture.debugElement.query(
-        By.css('.gog-input__icon--end.gog-input__icon--action'),
-      );
-      expect(toggle).toBeTruthy();
+      const addon = fixture.debugElement.query(By.css('.gog-input__icon--beside-toggle'));
+      expect(addon?.query(By.css('.end-marker'))).toBeTruthy();
+      const toggle = fixture.debugElement.query(By.css('[data-gog-part="password-toggle"]'));
       expect(toggle.nativeElement.getAttribute('aria-label')).toBe('Show password');
+      const wrapper = fixture.debugElement.query(By.css('.gog-input-wrapper'));
+      expect(wrapper.nativeElement.classList).toContain('gog-input-wrapper--toggle-pair');
       // the leading addon is unaffected
       expect(fixture.debugElement.query(By.css(MARKER))).toBeTruthy();
+    });
+
+    it('renders the end addon beside the stepper on a number field', async () => {
+      const fixture = await render(InputAddonHost);
+      fixture.componentInstance.type.set('number');
+      await fixture.whenStable();
+
+      const addon = fixture.debugElement.query(By.css('.gog-input__icon--beside-spin'));
+      expect(addon?.query(By.css('.end-marker'))).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('[data-gog-part="increment"]'))).toBeTruthy();
+      const wrapper = fixture.debugElement.query(By.css('.gog-input-wrapper'));
+      expect(wrapper.nativeElement.classList).toContain('gog-input-wrapper--spin-pair');
     });
   });
 });

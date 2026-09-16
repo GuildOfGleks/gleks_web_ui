@@ -127,21 +127,39 @@
 }
 
 /*
- * A clearable number field shows both the stepper and the clear button. The stepper is flush
- * against the field's right border, so the text gutter has to make room for both, and the
- * clear button sits one stepper-width further in — otherwise the two land on top of each
- * other. Only this combination needs it; every other end-slot control is alone in the slot.
+ * A number field can show the stepper together with the clear button, or with an end addon or
+ * `iconEnd` when there is nothing to clear. The stepper is flush against the field's end border,
+ * so the text gutter has to make room for both, and the other control sits one stepper-width
+ * further in — otherwise the two land on top of each other.
  */
-.gog-input-wrapper--spin-clear .gog-input__field-container {
+.gog-input-wrapper--spin-clear .gog-input__field-container,
+.gog-input-wrapper--spin-pair .gog-input__field-container {
   --gog-input-pe: calc(
     var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset)) + var(--gog-input-spin-width)
   );
 }
 
-.gog-input-wrapper--spin-clear .gog-input__clear {
+.gog-input-wrapper--spin-clear .gog-input__clear,
+.gog-input-wrapper--spin-pair .gog-input__icon--beside-spin {
   inset-inline-end: calc(
     var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset)) + var(--gog-input-spin-width)
   );
+}
+
+/*
+ * A password field with an end addon or `iconEnd` shows it beside the reveal toggle. The toggle
+ * keeps the outer position; the companion starts where a lone icon's gutter ends, one offset in
+ * from the toggle, and the text gutter grows by that same glyph-plus-offset step.
+ */
+.gog-input-wrapper--toggle-pair .gog-input__field-container {
+  --gog-input-pe: calc(
+    var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset)) *
+      2 - var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset))
+  );
+}
+
+.gog-input-wrapper--toggle-pair .gog-input__icon--beside-toggle {
+  inset-inline-end: var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset));
 }
 
 .gog-input__field::placeholder {

@@ -68,8 +68,9 @@ export class GogInputAddonStartDirective {}
 /**
  * Arbitrary markup in the field's trailing slot — see `GogInputAddonStartDirective`.
  *
- * On `type="password"` the built-in show/hide toggle owns this slot and a projected end addon
- * is ignored, so the reveal control can never be accidentally replaced by a decorative one.
+ * On `type="password"` the addon renders beside the built-in show/hide toggle, and on
+ * `type="number"` beside the stepper; both keep the field's outer edge, so a built-in control can
+ * never be replaced by a decorative one.
  */
 @Directive({ selector: '[gogInputAddonEnd]' })
 export class GogInputAddonEndDirective {}
@@ -163,7 +164,10 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly fullWidth = input(true);
   /** Default icon name for the leading icon. */
   readonly iconStart = input<GogIconName | ''>('');
-  /** Default icon name for the trailing icon. */
+  /**
+   * Default icon name for the trailing icon. On `type="password"` it sits beside the reveal
+   * toggle, and on `type="number"` beside the stepper.
+   */
   readonly iconEnd = input<GogIconName | ''>('');
   /** aria-label for the reveal-password button, shown when `type` is `'password'`. Unset, falls back to `GOG_CONFIG.labels.showPassword`. */
   readonly showPasswordLabel = input<string | undefined>(undefined);
@@ -336,17 +340,15 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
    */
   protected readonly hasIconStart = computed(() => !!this.addonStart() || !!this.iconStart());
 
-  /** For password fields the trailing icon is always the built-in show/hide toggle. */
-  protected readonly effectiveIconEnd = computed<GogIconName | ''>(() =>
-    this.isPasswordField() ? (this.passwordVisible() ? 'eye-off' : 'eye') : this.iconEnd(),
+  protected readonly passwordToggleIcon = computed<GogIconName>(() =>
+    this.passwordVisible() ? 'eye-off' : 'eye',
   );
   /**
    * The end slot's only self-labelling control is the password toggle: a projected addon
    * carries its own `aria-label`, and a bare `iconEnd` is decorative.
    */
-  protected readonly effectiveIconEndLabel = computed(() => {
-    if (!this.isPasswordField()) return '';
-    return this.passwordVisible()
+  protected readonly passwordToggleLabel = computed(() =>
+    this.passwordVisible()
       ? resolveConfigured(
           this.hidePasswordLabel(),
           this.globalConfig.labels?.hidePassword,
@@ -356,10 +358,25 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
           this.showPasswordLabel(),
           this.globalConfig.labels?.showPassword,
           DEFAULT_LABELS.showPassword,
-        );
-  });
+        ),
+  );
   protected readonly hasIconEnd = computed(
-    () => this.showClear() || !!this.addonEnd() || !!this.effectiveIconEnd(),
+    () => this.showClear() || !!this.addonEnd() || !!this.iconEnd() || this.isPasswordField(),
+  );
+  /**
+   * A password field that also has an end addon or `iconEnd`: both render, the toggle at the
+   * edge and the other beside it. Drives `.gog-input-wrapper--toggle-pair`, which widens the
+   * end gutter by one icon step.
+   */
+  protected readonly hasPasswordCompanion = computed(
+    () => this.isPasswordField() && (!!this.addonEnd() || !!this.iconEnd()),
+  );
+  /**
+   * The same pairing beside the stepper. The clear button still outranks the companion, so a
+   * number field with something to clear shows `--spin-clear` instead.
+   */
+  protected readonly hasSpinCompanion = computed(
+    () => this.hasSpinButtons() && !this.showClear() && (!!this.addonEnd() || !!this.iconEnd()),
   );
 
   /** `number` for a `type="number"` field (`null` when empty), `string` otherwise. */
