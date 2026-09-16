@@ -1,16 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  input,
-  output,
-} from '@angular/core';
-
-import { Subject, timer } from 'rxjs';
-import { throttle } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 
 import { GogAriaHasPopup, GogSeverity, GogSize, GogVariant } from '@guildofgleks/ui/shared';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
@@ -160,20 +148,21 @@ export class ButtonComponent {
     return severity === 'accent' ? this.sizeClass() : `${this.sizeClass()} gog-btn--${severity}`;
   });
 
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly click$ = new Subject<MouseEvent>();
+  /** When the current debounce window closes, as a `performance.now()` time; 0 before any click. */
+  private windowEndsAt = 0;
 
-  constructor() {
-    this.click$
-      .pipe(
-        throttle(() => timer(this.resolvedDebounce()), { leading: true, trailing: false }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((event) => this.gogClick.emit(event));
-  }
-
+  /**
+   * Decides synchronously, because a click that is not emitted has to be cancelled in the same
+   * event: with `type="submit"` the native button would otherwise still submit its form, which is
+   * the double submission `loading` and `debounce` are there to prevent.
+   */
   protected onClick(event: MouseEvent): void {
-    if (this.isDisabled()) return;
-    this.click$.next(event);
+    const now = performance.now();
+    if (this.isDisabled() || now < this.windowEndsAt) {
+      event.preventDefault();
+      return;
+    }
+    this.windowEndsAt = now + this.resolvedDebounce();
+    this.gogClick.emit(event);
   }
 }

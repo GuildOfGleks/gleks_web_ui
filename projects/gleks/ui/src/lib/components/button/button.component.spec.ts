@@ -1,8 +1,28 @@
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { ButtonComponent } from './button.component';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+
+@Component({
+  imports: [ButtonComponent],
+  template: `
+    <form (submit)="onSubmit($event)">
+      <gog-button type="submit" [loading]="loading()" [debounce]="200">Save</gog-button>
+    </form>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class SubmitHost {
+  readonly loading = input(false);
+  submits = 0;
+
+  onSubmit(event: Event): void {
+    event.preventDefault();
+    this.submits++;
+  }
+}
 
 describe('ButtonComponent', () => {
   let component: ButtonComponent;
@@ -318,6 +338,20 @@ describe('ButtonComponent', () => {
       expect(clicks.length).toBe(2);
     });
 
+    it('cancels the native activation of a dropped click, and only of a dropped one', async () => {
+      fixture.componentRef.setInput('debounce', 200);
+      await fixture.whenStable();
+
+      const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+      const first = new MouseEvent('click', { bubbles: true, cancelable: true });
+      const second = new MouseEvent('click', { bubbles: true, cancelable: true });
+      button.dispatchEvent(first);
+      button.dispatchEvent(second);
+
+      expect(first.defaultPrevented).toBe(false);
+      expect(second.defaultPrevented).toBe(true);
+    });
+
     it('falls back to GOG_CONFIG.button.debounce when the input is unset', async () => {
       TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
@@ -331,6 +365,40 @@ describe('ButtonComponent', () => {
 
       expect(providedComponent.debounce()).toBeUndefined();
       expect(providedComponent['resolvedDebounce']()).toBe(30);
+    });
+  });
+
+  describe('inside a form, with type="submit"', () => {
+    async function mountForm(loading: boolean) {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({ imports: [SubmitHost] }).compileComponents();
+      const host = TestBed.createComponent(SubmitHost);
+      host.componentRef.setInput('loading', loading);
+      await host.whenStable();
+      return host;
+    }
+
+    it('submits once for clicks inside the debounce window', async () => {
+      const host = await mountForm(false);
+      const button = host.nativeElement.querySelector('button') as HTMLButtonElement;
+
+      button.click();
+      button.click();
+      button.click();
+      await host.whenStable();
+
+      expect(host.componentInstance.submits).toBe(1);
+    });
+
+    it('does not submit while loading, though the button stays focusable', async () => {
+      const host = await mountForm(true);
+      const button = host.nativeElement.querySelector('button') as HTMLButtonElement;
+
+      button.click();
+      await host.whenStable();
+
+      expect(button.disabled).toBe(false);
+      expect(host.componentInstance.submits).toBe(0);
     });
   });
 });

@@ -5,8 +5,8 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.9.0`** (in progress — the
-released version is 21.8.0; see `CHANGELOG.md` for what 21.9.0 adds). 21.7.0 removed the three
+Everything below reflects the library's actual source as of **`21.15.0`** (in progress — the
+released version is 21.14.0; see `CHANGELOG.md` for what 21.15.0 adds). 21.7.0 removed the three
 abbreviated token prefixes and 21.5.0 removed a batch of deprecated API — see **Removed in 21.7.0**
 and **Removed in 21.5.0** near the end of this file, which exist so code written against an older
 version can be migrated — and `CHANGELOG.md` has the rest. `README.md` covers the same ground at a
@@ -527,7 +527,7 @@ from '@guildofgleks/ui'` does not compile.
 | `disabled`     | `boolean`                         | `false`     |                                                                  |
 | `fullWidth`    | `boolean`                         | `false`     |                                                                  |
 | `type`         | `'button' \| 'submit' \| 'reset'` | `'button'`  |                                                                  |
-| `loading`      | `boolean`                         | `false`     | shows an inline `gog-spinner`, blocks clicks                     |
+| `loading`      | `boolean`                         | `false`     | shows an inline `gog-spinner`, blocks clicks and form submission |
 | `debounce`     | `number \| undefined`             | `300`       | ms; via `GOG_CONFIG.button.debounce` — see note below            |
 | `ariaLabel`    | `string \| null`                  | `null`      | **use this, not a raw `aria-label` attribute**                   |
 | `ariaPressed`  | `boolean \| 'mixed' \| null`      | `null`      | toggle button; `false` renders `aria-pressed="false"`            |
@@ -617,6 +617,12 @@ library paints nothing on that element in any state, because it is yours.
 
 **`debounce` is a spam guard, not a delay before the first click.** The first click in a window
 fires immediately (leading edge); further clicks within `debounce` ms are silently dropped.
+
+**A click `gog-button` does not emit is cancelled, not just ignored** (21.15.0) — one dropped by
+`debounce`, or made while `loading`. So `type="submit"` inside a `<form>` submits once for a burst
+of clicks and not at all while loading, which is what makes `[loading]="saving()"` a real guard
+against a double submission. Before 21.15.0 both only stopped `gogClick`, and the native button
+still submitted the form on every click.
 
 **Use `(gogClick)`, never `(click)`, on `gog-button`.** The click handler that drives `debounce`
 and emits `gogClick` is bound on the `<button>` inside the component's own template, not on the

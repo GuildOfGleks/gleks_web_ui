@@ -51,6 +51,17 @@ reached 1.0, so breaking changes may land in minor versions.
   a real keyboard in Chrome before the fix and after it. The row now answers Enter and Space only
   when it is the row that has focus.
 
+- **A `gog-button` with `type="submit"` submitted its form while `loading`, and on every click
+  its `debounce` dropped.** Both guards sat between the native click and `gogClick`, so they
+  stopped the output and not the button: three quick clicks sent three submissions, and a busy
+  button — which stays enabled on purpose, so it keeps focus — sent one per click. A click the
+  component does not emit is now cancelled with `preventDefault()`, which also cancels the form
+  submission it would have caused. A click that is emitted is left
+  alone. Found by the showcase's Button page, which counts form submissions next to `gogClick`,
+  and confirmed there before and after in Chrome. The window is now checked when the click lands
+  rather than by an RxJS timer, so `[debounce]="0"` no longer drops a second click dispatched in
+  the same task — a user cannot produce one.
+
 ## [21.14.0] - 13.09.2026
 
 ### Removed

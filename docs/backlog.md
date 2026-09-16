@@ -16,7 +16,11 @@ not worth carrying here.
 
 ## Defects — first
 
-- **`gog-button type="submit"` submits its form while `loading`, and past `debounce`.** Found
+- ~~**`gog-button type="submit"` submits its form while `loading`, and past `debounce`.**~~
+  **Closed 2026-09-16, in the in-progress 21.15.0**: a click the component does not emit is now
+  cancelled with `preventDefault()`, and the window is checked synchronously so the decision is
+  made inside the event. Three specs mount a real form; all three failed against the old code
+  first. Found
   2026-09-16 by the rebuilt showcase's Button page, Behaviour section. Three clicks 40ms apart
   inside a `<form>`:
 
