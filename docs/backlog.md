@@ -37,19 +37,17 @@ not worth carrying here.
   `loading` "blocks clicks". Likely fix: `preventDefault()` on a click that is dropped, which
   cancels the implicit submission; a spec should submit a real form in both cases.
 
-- **`GogButtonToggleOptionDirective`'s `let-` context types as `unknown` under `strictTemplates`,
-  even though AGENTS.md's own slot example writes `let-view` and then reads `view.icon`.** Found
-  2026-09-16 by the rebuilt showcase's Button toggle page, Content & layout section, while
-  building the `gogButtonToggleOption` demo. The directive takes no input — `TOption` has nothing
-  in the template for TypeScript to infer it from, so it stays at its declared default,
-  `unknown`, and `option.icon` (or any property access on the slot's `$implicit`) fails to
-  compile with `TS2571: Object is of type 'unknown'` in a workspace that turns
-  `strictTemplates` on, which this one does and the library's own `tsconfig` recommends. Nothing
-  in the repository actually compiles this slot today — there is no non-legacy usage anywhere,
-  and the component's own spec never mounts it — so the gap was never caught. Worked around in
-  the showcase with a hand-written cast (`asIconOption(option): DemoIconOption`); the real fix
-  is a documented pattern in AGENTS.md (a cast, or a generic-friendly way to write the template)
-  or a change to how the directive exposes its type parameter.
+- **The package's own documentation of `gogButtonToggleOption` does not say its context is
+  `unknown`, and its JSDoc example does not compile.** The directive takes no input, so nothing in
+  a template lets `strictTemplates` infer its `TOption`: `let-option` is `unknown`, and a property
+  read on it fails with `TS2571: Object is of type 'unknown'`. That limitation is known — the lab's
+  Button toggle page says so and narrows the option with a one-line helper, and every compiling use
+  in the repository does the same. What is missing is the documentation that ships: the JSDoc
+  example on the directive (`button-toggle.component.ts`) reads `view.icon` and `view.title`
+  straight off `let-view`, and `AGENTS.md`'s slot line shows `let-opt` without saying it has to be
+  narrowed. A consumer following either hits the error at the first property read, with no hint why. Documentation-only fix:
+  narrow in the JSDoc example, and add one sentence to `AGENTS.md`. Found 2026-09-16 while building
+  the rebuilt showcase's Button toggle page.
 
 - ~~**The dropdown panel's open-direction decision rests on a row height that is wrong in every
   theme.**~~ **Closed 2026-09-12, in the in-progress 21.13.0.** Found the same day by
