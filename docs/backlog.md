@@ -37,6 +37,24 @@ not worth carrying here.
   `loading` "blocks clicks". Likely fix: `preventDefault()` on a click that is dropped, which
   cancels the implicit submission; a spec should submit a real form in both cases.
 
+- **Two more local `z-index: 1` values leak into the page's stacking order, as
+  `gog-button-toggle-group`'s did.** Found 2026-09-16 by walking every library element with a
+  numeric `z-index` in the showcase and finding the nearest ancestor that creates a stacking
+  context; for these two that ancestor is the document, so each paints over a sticky header or any
+  other page layer at `z-index: 1` that comes earlier in the DOM:
+
+  - `.gog-spinner-overlay__scrim` (`spinner-overlay.component.scss`) — the loading scrim;
+  - interactive controls inside a `gog-card--interactive` (`surfaces.css`, the rule lifting them
+    above the stretched link). The same rule covers `.gog-panel__header`, which was not rendered
+    with a control in it and is unverified.
+
+  `gog-table`'s sticky header, `gog-scroll`'s track and corner, and the dropdown filters are
+  already contained. **The button toggle's fix does not transfer as it is**: `isolation: isolate`
+  on the overlay or the card would also trap the `z-index` of a `gog-select`/`gog-multiselect`
+  panel rendered inline inside it, which today escapes on purpose. Each needs its own choice —
+  isolate and accept that an inline panel needs `appendToBody` there, or order the layers by DOM
+  position instead of a `z-index` (the scrim already comes after the content).
+
 - **The package's own documentation of `gogButtonToggleOption` does not say its context is
   `unknown`, and its JSDoc example does not compile.** The directive takes no input, so nothing in
   a template lets `strictTemplates` infer its `TOption`: `let-option` is `unknown`, and a property
