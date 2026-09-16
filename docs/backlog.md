@@ -37,6 +37,20 @@ not worth carrying here.
   `loading` "blocks clicks". Likely fix: `preventDefault()` on a click that is dropped, which
   cancels the implicit submission; a spec should submit a real form in both cases.
 
+- **`GogButtonToggleOptionDirective`'s `let-` context types as `unknown` under `strictTemplates`,
+  even though AGENTS.md's own slot example writes `let-view` and then reads `view.icon`.** Found
+  2026-09-16 by the rebuilt showcase's Button toggle page, Content & layout section, while
+  building the `gogButtonToggleOption` demo. The directive takes no input — `TOption` has nothing
+  in the template for TypeScript to infer it from, so it stays at its declared default,
+  `unknown`, and `option.icon` (or any property access on the slot's `$implicit`) fails to
+  compile with `TS2571: Object is of type 'unknown'` in a workspace that turns
+  `strictTemplates` on, which this one does and the library's own `tsconfig` recommends. Nothing
+  in the repository actually compiles this slot today — there is no non-legacy usage anywhere,
+  and the component's own spec never mounts it — so the gap was never caught. Worked around in
+  the showcase with a hand-written cast (`asIconOption(option): DemoIconOption`); the real fix
+  is a documented pattern in AGENTS.md (a cast, or a generic-friendly way to write the template)
+  or a change to how the directive exposes its type parameter.
+
 - ~~**The dropdown panel's open-direction decision rests on a row height that is wrong in every
   theme.**~~ **Closed 2026-09-12, in the in-progress 21.13.0.** Found the same day by
   `docs/virtualization.md`'s iteration 0, which existed to check exactly this before anything new
