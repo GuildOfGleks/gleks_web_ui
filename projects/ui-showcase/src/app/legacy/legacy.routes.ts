@@ -20,11 +20,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/checkbox-page/checkbox-page').then((m) => m.CheckboxPage),
   },
   {
-    path: 'inputfield',
-    loadComponent: () =>
-      import('./pages/inputfield-page/inputfield-page').then((m) => m.InputfieldPage),
-  },
-  {
     path: 'textarea',
     loadComponent: () => import('./pages/textarea-page/textarea-page').then((m) => m.TextareaPage),
   },

@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 
-const REPORTED = /^(aria-|role$|disabled$|type$|tabindex$|href$)/;
+const REPORTED = /^(aria-|role$|disabled$|readonly$|type$|inputmode$|spellcheck$|tabindex$|href$)/;
 
 /**
  * Renders its content and prints the accessibility-relevant attributes of the element matching

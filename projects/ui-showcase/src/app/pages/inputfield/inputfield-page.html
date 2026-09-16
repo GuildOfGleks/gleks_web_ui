@@ -1,0 +1,322 @@
+<app-doc-page unit="inputfield">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Focus is a pseudo-class and cannot be forced from the page; every field here is live — tab in to see it."
+  >
+    <h3>size × state</h3>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-inputfield
+          [size]="size"
+          label="Label"
+          placeholder="Placeholder"
+          [disabled]="state.disabled"
+          [readonly]="state.isReadonly"
+          [errorMessage]="state.errorMessage"
+          [value]="state.value"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>type</h3>
+    <app-doc-matrix rowAxis="type" colAxis="">
+      <ng-template appDocCell [rows]="types" [cols]="controlColumn" let-typeDemo>
+        <gog-inputfield
+          [type]="typeDemo.type"
+          [label]="typeDemo.name"
+          [placeholder]="typeDemo.placeholder"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>icons & addons × size</h3>
+    <app-doc-matrix rowAxis="content" colAxis="size">
+      <ng-template appDocCell [rows]="contents" [cols]="sizes" let-content let-size="col">
+        @switch (content.kind) {
+          @case ('iconStart') {
+            <gog-inputfield [size]="size" label="Search" iconStart="search" placeholder="Search…" />
+          }
+          @case ('iconEnd') {
+            <gog-inputfield [size]="size" label="Favorite" iconEnd="star" placeholder="Item" />
+          }
+          @case ('addonStart') {
+            <gog-inputfield [size]="size" label="Amount">
+              <span gogInputAddonStart>€</span>
+            </gog-inputfield>
+          }
+          @case ('addonEnd') {
+            <gog-inputfield [size]="size" label="Weight">
+              <span gogInputAddonEnd>kg</span>
+            </gog-inputfield>
+          }
+          @case ('clearable') {
+            <gog-inputfield [size]="size" label="Name" [clearable]="true" value="Ada Lovelace" />
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>fullWidth, in a 20rem container</h3>
+    <div class="inputfield-page__narrow">
+      <gog-inputfield label="fullWidth default (true)" placeholder="Fills the container" />
+      <gog-inputfield
+        [fullWidth]="false"
+        label='[fullWidth]="false"'
+        placeholder="Shrinks to content"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="number"
+    title="Number field"
+    lead="min and max disable the stepper at that bound; arrow-key stepping on the focused field keeps working regardless of showSpinButtons."
+  >
+    <h3>stepper</h3>
+    <app-doc-matrix rowAxis="state" colAxis="">
+      <ng-template appDocCell [rows]="numberStates" [cols]="controlColumn" let-state>
+        <gog-inputfield
+          type="number"
+          label="Quantity"
+          [showSpinButtons]="state.showSpin"
+          [min]="state.min"
+          [max]="state.max"
+          [step]="state.step"
+          [value]="state.value"
+          [clearable]="state.clearable"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>end slot beside the stepper × size</h3>
+    <p class="inputfield-page__note">
+      The stepper keeps the outer edge and iconEnd or a projected addon sits beside it. The clear
+      button still takes that place while there is a value to clear.
+    </p>
+    <app-doc-matrix rowAxis="state" colAxis="size">
+      <ng-template appDocCell [rows]="numberEndSlotDemos" [cols]="sizes" let-demo let-size="col">
+        @switch (demo.kind) {
+          @case ('iconEnd') {
+            <gog-inputfield type="number" [size]="size" label="Quantity" iconEnd="star" value="5" />
+          }
+          @case ('addonEnd') {
+            <gog-inputfield type="number" [size]="size" label="Weight" value="5">
+              <span gogInputAddonEnd>kg</span>
+            </gog-inputfield>
+          }
+          @case ('clearWins') {
+            <gog-inputfield
+              type="number"
+              [size]="size"
+              label="Quantity"
+              [clearable]="true"
+              iconEnd="star"
+              value="5"
+            />
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="password"
+    title="Password field"
+    lead="The reveal toggle is real — click the eye icon. It keeps the field's outer edge; iconEnd or a projected gogInputAddonEnd renders beside it."
+  >
+    <app-doc-matrix rowAxis="state" colAxis="size">
+      <ng-template appDocCell [rows]="passwordDemos" [cols]="sizes" let-demo let-size="col">
+        @switch (demo.kind) {
+          @case ('default') {
+            <gog-inputfield type="password" [size]="size" label="Password" value="secret" />
+          }
+          @case ('iconEnd') {
+            <gog-inputfield
+              type="password"
+              [size]="size"
+              label="Password"
+              iconEnd="star"
+              value="secret"
+            />
+          }
+          @case ('addonEnd') {
+            <gog-inputfield type="password" [size]="size" label="Password" value="secret">
+              <span gogInputAddonEnd>kg</span>
+            </gog-inputfield>
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="float-label"
+    title="Float label"
+    lead="'none' keeps the label above the field; 'in', 'on' and 'over' float it into the field until focus or a value moves it clear."
+  >
+    <h3>variant × value</h3>
+    <app-doc-matrix rowAxis="variant" colAxis="state">
+      <ng-template
+        appDocCell
+        [rows]="floatLabelVariants"
+        [cols]="floatStates"
+        let-variant
+        let-state="col"
+      >
+        <gog-inputfield
+          [floatLabel]="variant"
+          label="Name"
+          placeholder="e.g. Ada Lovelace"
+          [value]="state.value"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>floatLabelShowPlaceholder</h3>
+    <p class="inputfield-page__note">
+      Focus the field below: the placeholder reappears under the floated label once it has somewhere
+      to float to.
+    </p>
+    <div class="inputfield-page__demo">
+      <gog-inputfield
+        floatLabel="over"
+        [floatLabelShowPlaceholder]="true"
+        label="Name"
+        placeholder="e.g. Ada Lovelace"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="value is model-bound: [(value)] and [value] / (valueChange) both work, and the field is a full ControlValueAccessor, so formControl works the same way."
+  >
+    <!-- A div, not a p: the field renders a div, which would close a p early and break hydration. -->
+    <h3>[(value)]</h3>
+    <div class="inputfield-page__demo">
+      <gog-inputfield
+        label="Live"
+        placeholder="Type here"
+        [(value)]="boundValue"
+        (valueChange)="increment('bound')"
+      />
+      <code>value: "{{ boundValue() }}" · {{ count('bound') }} valueChange</code>
+    </div>
+
+    <h3>formControl, errorDisplay="auto"</h3>
+    <div class="inputfield-page__demo">
+      <gog-inputfield
+        label="Email (reactive form)"
+        placeholder="jane@example.com"
+        [formControl]="formControl"
+        errorMessage="Required"
+        errorDisplay="auto"
+      />
+      <div class="inputfield-page__actions">
+        <button type="button" (click)="formControl.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="toggleFormDisabled()">
+          {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+        </button>
+      </div>
+      <code>
+        value: "{{ formControl.value }}" · touched: {{ formControl.touched }} · disabled:
+        {{ formControl.disabled }}
+      </code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre
+      class="inputfield-page__config"
+    ><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-inputfield-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-inputfield label="Label" placeholder="Placeholder" />
+              }
+              @case ('size="sm"') {
+                <gog-inputfield size="sm" label="Label" placeholder="Placeholder" />
+              }
+              @case ('clearable unset, value="42"') {
+                <gog-inputfield label="Amount" value="42" />
+              }
+            }
+          </app-inputfield-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-inputfield label="Label" placeholder="Placeholder" />
+            }
+            @case ('size="sm"') {
+              <gog-inputfield size="sm" label="Label" placeholder="Placeholder" />
+            }
+            @case ('clearable unset, value="42"') {
+              <gog-inputfield label="Amount" value="42" />
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Attributes of the native input element that gog-inputfield renders, read from the live DOM."
+  >
+    <h3>input attributes</h3>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="a11yColumns" let-state>
+        <app-doc-attrs target="input">
+          @switch (state) {
+            @case ('default') {
+              <gog-inputfield label="Name" />
+            }
+            @case ('[disabled]="true"') {
+              <gog-inputfield label="Name" [disabled]="true" />
+            }
+            @case ('[readonly]="true" value="Ada"') {
+              <gog-inputfield label="Name" [readonly]="true" value="Ada" />
+            }
+            @case ('errorMessage="Required"') {
+              <gog-inputfield label="Name" errorMessage="Required" />
+            }
+            @case ('inputMode="numeric"') {
+              <gog-inputfield label="Code" inputMode="numeric" />
+            }
+            @case ('[spellcheck]="false"') {
+              <gog-inputfield label="Reference" [spellcheck]="false" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>increment button, at bounds</h3>
+    <app-doc-matrix rowAxis="state" colAxis="">
+      <ng-template appDocCell [rows]="spinA11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target='[data-gog-part="increment"]'>
+          @switch (state) {
+            @case ('value="5"') {
+              <gog-inputfield type="number" label="Quantity" value="5" />
+            }
+            @case ('[max]="10" value="10"') {
+              <gog-inputfield type="number" label="Quantity" [max]="10" value="10" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

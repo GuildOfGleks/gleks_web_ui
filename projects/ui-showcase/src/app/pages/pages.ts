@@ -3,6 +3,7 @@ import type { Type } from '@angular/core';
 import type { DocApi } from '../doc/doc-api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
+import { INPUTFIELD_API } from './inputfield/inputfield.api';
 
 /** What `app-doc-page` renders on its own for a unit, after the page's hand-built sections. */
 export interface DocPageEntry {
@@ -24,5 +25,14 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./button-toggle/button-toggle-page').then((m) => m.ButtonTogglePage),
     api: BUTTON_TOGGLE_API,
     tokens: ['Button toggle group'],
+  },
+  inputfield: {
+    load: () => import('./inputfield/inputfield-page').then((m) => m.InputfieldPage),
+    api: INPUTFIELD_API,
+    tokens: [
+      'Input field',
+      'Field sizing (input / select / multiselect share one scale)',
+      'Float label geometry (input / textarea / select / multiselect)',
+    ],
   },
 };
