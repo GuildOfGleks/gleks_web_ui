@@ -1,0 +1,71 @@
+.multiselect-page__narrow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-16);
+  width: 20rem;
+  max-width: 100%;
+  padding: var(--gog-space-8);
+  border: 1px dashed var(--gog-border-color);
+}
+
+// A row of fields that each open a panel: in the page's own flow, not in a matrix, whose
+// scroller would clip the panel.
+.multiselect-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--gog-space-16);
+  margin-block-end: var(--gog-space-16);
+}
+
+.multiselect-page__field {
+  width: 16rem;
+  max-width: 100%;
+}
+
+.multiselect-page__demo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  max-width: 24rem;
+
+  > gog-multiselect {
+    align-self: stretch;
+  }
+}
+
+// The case appendToBody exists for: an ancestor that clips its overflow. Tall enough that the
+// inline panel shows a cut-off sliver rather than nothing at all — "clipped" has to be legible.
+.multiselect-page__clipped {
+  width: 16rem;
+  max-width: 100%;
+  height: 9.5rem;
+  overflow: hidden;
+  padding: var(--gog-space-8);
+  border: 1px dashed var(--gog-border-color);
+}
+
+.multiselect-page__option {
+  display: inline-flex;
+  gap: var(--gog-space-4);
+}
+
+.multiselect-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-8);
+}
+
+.multiselect-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}
+
+.multiselect-page__config {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+}

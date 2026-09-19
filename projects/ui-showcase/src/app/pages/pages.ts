@@ -4,6 +4,7 @@ import type { DocApi } from '../doc/doc-api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
+import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { SELECT_API } from './select/select.api';
 import { TEXTAREA_API } from './textarea/textarea.api';
 
@@ -47,6 +48,15 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     api: SELECT_API,
     tokens: [
       'Select',
+      'Field sizing (input / select / multiselect share one scale)',
+      'Float label geometry (input / textarea / select / multiselect)',
+    ],
+  },
+  multiselect: {
+    load: () => import('./multiselect/multiselect-page').then((m) => m.MultiselectPage),
+    api: MULTISELECT_API,
+    tokens: [
+      'Multiselect',
       'Field sizing (input / select / multiselect share one scale)',
       'Float label geometry (input / textarea / select / multiselect)',
     ],

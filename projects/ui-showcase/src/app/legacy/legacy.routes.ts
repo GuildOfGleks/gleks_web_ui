@@ -29,11 +29,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/chip-page/chip-page').then((m) => m.ChipPage),
   },
   {
-    path: 'multiselect',
-    loadComponent: () =>
-      import('./pages/multiselect-page/multiselect-page').then((m) => m.MultiselectPage),
-  },
-  {
     path: 'menu',
     loadComponent: () => import('./pages/menu-page/menu-page').then((m) => m.MenuPage),
   },

@@ -1,0 +1,472 @@
+<app-doc-page unit="multiselect">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Every trigger here is live — open one to see the panel. Inside a matrix the panel is clipped by the matrix's own scroller, so the sections below open theirs in the page's own flow instead."
+  >
+    <h3>size × state</h3>
+    <p class="multiselect-page__note">
+      The clear button is here without anyone asking for it: unlike every other control,
+      <code>clearable</code> defaults to <code>true</code> on this one, because it shipped a clear
+      button before the input existed. <code>[clearable]="false"</code> drops it.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-multiselect
+          [size]="size"
+          label="Frameworks"
+          [options]="frameworks"
+          [value]="state.value"
+          [disabled]="state.disabled"
+          [errorMessage]="state.errorMessage"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the +N overflow summary</h3>
+    <p class="multiselect-page__note">
+      Ten of twenty countries are selected below — more than the trigger fits on one line. The
+      labels are measured with <code>canvas.measureText</code> rather than by rendering candidates,
+      as many as fit are kept, and the rest collapse into <code>+N</code>. The count is
+      <code>aria-hidden</code>; hover or focus the trigger and the whole selection is listed in its
+      tooltip, which is bound only while something is actually hidden. Drag the window narrower to
+      watch the split recompute — it follows the container, not a render.
+    </p>
+    <div class="multiselect-page__demo">
+      <gog-multiselect
+        label="Countries"
+        [options]="countries"
+        [showControls]="true"
+        [(value)]="overflowValue"
+      />
+      <code>{{ overflowValue().length }} selected</code>
+    </div>
+
+    <h3>fullWidth and minWidth, in a 20rem container</h3>
+    <p class="multiselect-page__note">
+      With <code>[fullWidth]="false"</code> the trigger sizes to its own summary text, so an empty
+      selection collapses it; <code>minWidth</code> is the floor under that.
+    </p>
+    <div class="multiselect-page__narrow">
+      <gog-multiselect label="fullWidth default (true)" [options]="frameworks" [value]="two" />
+      <gog-multiselect
+        [fullWidth]="false"
+        label='[fullWidth]="false"'
+        [options]="frameworks"
+        [value]="two"
+      />
+      <gog-multiselect
+        [fullWidth]="false"
+        minWidth="12rem"
+        label='[fullWidth]="false" minWidth="12rem"'
+        [options]="frameworks"
+      />
+    </div>
+
+    <h3>the two icon slots, and a field with no visible label</h3>
+    <p class="multiselect-page__note">
+      <code>gogDropdownChevron</code> replaces the chevron — and with it the up/down swap the
+      built-in one does, which is the template's to draw — while
+      <code>gogMultiselectClearIcon</code> replaces the glyph inside the clear button, not the
+      button itself, so its accessible name is still <code>clearAriaLabel</code>.
+      <code>ariaLabel</code> names a field that has no <code>label</code> at all.
+    </p>
+    <div class="multiselect-page__row">
+      <div class="multiselect-page__field">
+        <gog-multiselect label="Chevron slot" [options]="frameworks" [value]="two">
+          <ng-template gogDropdownChevron>
+            <gog-icon name="sort" />
+          </ng-template>
+        </gog-multiselect>
+      </div>
+      <div class="multiselect-page__field">
+        <gog-multiselect label="Clear-icon slot" [options]="frameworks" [value]="two">
+          <ng-template gogMultiselectClearIcon>
+            <gog-icon name="trash" />
+          </ng-template>
+        </gog-multiselect>
+      </div>
+      <div class="multiselect-page__field">
+        <gog-multiselect
+          ariaLabel="Frameworks (no visible label)"
+          placeholder="Pick frameworks"
+          [options]="frameworks"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="options"
+    title="Options"
+    lead="optionLabel, optionValue and optionDisabled take a property path — dot-paths included — or a function, so a real DTO goes in unmapped."
+  >
+    <h3>accessors on a DTO with no id or name</h3>
+    <div class="multiselect-page__row">
+      <div class="multiselect-page__demo">
+        <gog-multiselect
+          label="Reviewers (by uuid)"
+          [options]="members"
+          optionLabel="profile.fullName"
+          optionValue="uuid"
+          optionDisabled="suspended"
+          [(value)]="memberIds"
+        />
+        <code>value: {{ memberIds() | json }}</code>
+      </div>
+      <div class="multiselect-page__demo">
+        <gog-multiselect
+          label="Reviewers (whole objects)"
+          placeholder="Pick people"
+          [options]="members"
+          [optionLabel]="memberLabel"
+          [optionValue]="null"
+          [(value)]="selectedMembers"
+        >
+          <!-- The row template's context is typed `unknown` — the directive has no input to
+               infer the option type from — so a consumer's own field needs `$any`. -->
+          <ng-template gogDropdownOption let-option let-label="label">
+            <span class="multiselect-page__option"
+              >{{ label }} — <em>{{ $any(option).profile.role }}</em></span
+            >
+          </ng-template>
+        </gog-multiselect>
+        <code>value: {{ names(selectedMembers()) }} (the option objects themselves)</code>
+      </div>
+    </div>
+
+    <h3>a disabled option</h3>
+    <p class="multiselect-page__note">
+      <code>optionDisabled</code> defaults to the <code>disabled</code> property, so a
+      <code>GogDropdownOption</code> carrying it needs no binding. A disabled row stays in the list
+      and is announced as disabled; neither the pointer nor "select all" picks it up.
+    </p>
+    <div class="multiselect-page__demo">
+      <gog-multiselect label="Plans" [options]="plans" [showControls]="true" [(value)]="plan" />
+      <code>value: {{ plan() | json }}</code>
+    </div>
+
+    <h3>filter</h3>
+    <p class="multiselect-page__note">
+      Worth turning on past about seven options. The default matcher is a case-insensitive substring
+      on the resolved <code>optionLabel</code>; <code>filterMatch</code> swaps in any predicate.
+      Both fields below hold the same 20 options.
+    </p>
+    <div class="multiselect-page__row">
+      <div class="multiselect-page__field">
+        <gog-multiselect
+          label='[filter]="true"'
+          placeholder="Pick countries"
+          [options]="countries"
+          [filter]="true"
+        />
+      </div>
+      <div class="multiselect-page__field">
+        <gog-multiselect
+          label='filterPosition="bottom"'
+          placeholder="Pick countries"
+          [options]="countries"
+          [filter]="true"
+          filterPosition="bottom"
+          filterPlaceholder="Type to search..."
+          filterEmptyMessage="Nothing matches that"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="panel"
+    title="Panel"
+    lead="The panel renders inline by default and is clipped by any scrolling or overflow-hidden ancestor; appendToBody moves it into the body and positions it against the trigger instead."
+  >
+    <h3>showControls × controlsPosition</h3>
+    <p class="multiselect-page__note">
+      The row is sticky at whichever end it is given, so it stays reachable in a long list.
+      <strong>"Select all" acts on the options currently visible</strong>, which is what makes it
+      mean something under an active filter — type "1" in the field below and it selects the eleven
+      countries that match, not all twenty. Disabled options are never picked up.
+    </p>
+    <app-doc-matrix rowAxis="state" colAxis="">
+      <ng-template appDocCell [rows]="controlRows" [cols]="controlColumn" let-row>
+        <gog-multiselect
+          [label]="row.name"
+          [options]="countries"
+          [showControls]="true"
+          [controlsPosition]="row.value"
+          [filter]="true"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>appendToBody, and the panel size that comes with it</h3>
+    <p class="multiselect-page__note">
+      <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and apply
+      only while the panel is appended — an inline panel matches the trigger through CSS. The first
+      two fields sit in a box with <code>overflow: hidden</code> and are pinned to
+      <code>dropdownDirection="down"</code>, so which way they open does not depend on where the
+      page happens to be scrolled: open both and only the appended one survives the box.
+    </p>
+    <div class="multiselect-page__row">
+      <div class="multiselect-page__clipped">
+        <p class="multiselect-page__note">overflow: hidden, panel inline</p>
+        <gog-multiselect label="Countries" [options]="countries" dropdownDirection="down" />
+      </div>
+      <div class="multiselect-page__clipped">
+        <p class="multiselect-page__note">overflow: hidden, [appendToBody]="true"</p>
+        <gog-multiselect
+          label="Countries"
+          [options]="countries"
+          dropdownDirection="down"
+          [appendToBody]="true"
+        />
+      </div>
+      <div class="multiselect-page__field">
+        <gog-multiselect
+          label='dropdownWidth="240px" dropdownMaxHeight="160px"'
+          [options]="countries"
+          [appendToBody]="true"
+          dropdownWidth="240px"
+          dropdownMaxHeight="160px"
+        />
+      </div>
+    </div>
+
+    <h3>virtualize</h3>
+    <p class="multiselect-page__note">
+      Both fields hold the same 10 000 options. The windowed one keeps about twenty rows in the DOM
+      whatever you scroll to; the eager one builds all 10 000 to show six. Off by default and never
+      switched on at a row count — <code>Ctrl+F</code> finds only the rendered rows, and CSS
+      targeting <code>:last-child</code> matches the last <em>rendered</em> row.
+      <code>aria-setsize</code> still carries the real list either way. Note what
+      <strong>"select all" means here</strong>: the visible options are the whole filtered list, not
+      the rendered window, so it selects all 10 000.
+    </p>
+    <div class="multiselect-page__row">
+      <div class="multiselect-page__field">
+        <gog-multiselect
+          label='[virtualize]="true"'
+          placeholder="Pick cities"
+          [options]="cities"
+          [virtualize]="true"
+          [filter]="true"
+        />
+      </div>
+      <div class="multiselect-page__field">
+        <gog-multiselect
+          label="virtualize unset (eager)"
+          placeholder="Pick cities"
+          [options]="cities"
+          [filter]="true"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="float-label"
+    title="Float label"
+    lead="'none' keeps the label above the field; 'in', 'on' and 'over' rest it inside the trigger until focus or a selection moves it clear."
+  >
+    <h3>variant × value</h3>
+    <app-doc-matrix rowAxis="variant" colAxis="state">
+      <ng-template
+        appDocCell
+        [rows]="floatLabelVariants"
+        [cols]="floatStates"
+        let-variant
+        let-state="col"
+      >
+        <gog-multiselect
+          [floatLabel]="variant"
+          label="Frameworks"
+          placeholder="e.g. Angular"
+          [options]="frameworks"
+          [value]="state.value"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>floatLabelShowPlaceholder</h3>
+    <p class="multiselect-page__note">
+      Focus the field below: the placeholder appears under the floated label once it has somewhere
+      to float to. Without it the placeholder stays hidden the whole time, because the floated label
+      is already sitting where it would be.
+    </p>
+    <div class="multiselect-page__demo">
+      <gog-multiselect
+        floatLabel="over"
+        [floatLabelShowPlaceholder]="true"
+        label="Frameworks"
+        placeholder="e.g. Angular"
+        [options]="frameworks"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="value is model-bound: [(value)] and [value] / (valueChange) both work, and the control is a full ControlValueAccessor, so formControl works the same way."
+  >
+    <!-- A div, not a p: the control renders a div, which would close a p early and break hydration. -->
+    <h3>[(value)]</h3>
+    <div class="multiselect-page__demo">
+      <gog-multiselect
+        label="Live"
+        placeholder="Pick frameworks"
+        [options]="frameworks"
+        [showControls]="true"
+        [(value)]="boundValue"
+        (valueChange)="increment('bound')"
+      />
+      <code>value: {{ boundValue() | json }} · {{ count('bound') }} valueChange</code>
+    </div>
+
+    <h3>formControl, errorDisplay="auto"</h3>
+    <p class="multiselect-page__note">
+      Open the field and close it again without choosing anything: the control decides the error
+      timing from its own touched and invalid state.
+      <code>Validators.required</code> treats the empty array as missing, which is what makes "at
+      least one" the default meaning of a required multiselect.
+    </p>
+    <div class="multiselect-page__demo">
+      <gog-multiselect
+        label="Frameworks (reactive form)"
+        placeholder="Pick frameworks"
+        [options]="frameworks"
+        [formControl]="formControl"
+        errorMessage="Pick at least one"
+        errorDisplay="auto"
+      />
+      <div class="multiselect-page__actions">
+        <button type="button" (click)="formControl.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="toggleFormDisabled()">
+          {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+        </button>
+      </div>
+      <code>
+        value: {{ formControl.value | json }} · touched: {{ formControl.touched }} · disabled:
+        {{ formControl.disabled }}
+      </code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre
+      class="multiselect-page__config"
+    ><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-multiselect-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-multiselect label="Frameworks" [options]="frameworks" />
+              }
+              @case ('size="sm"') {
+                <gog-multiselect size="sm" label="Frameworks" [options]="frameworks" />
+              }
+              @case ('filter unset, showControls, labels unset') {
+                <gog-multiselect label="Countries" [options]="countries" [showControls]="true" />
+              }
+            }
+          </app-multiselect-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-multiselect label="Frameworks" [options]="frameworks" />
+            }
+            @case ('size="sm"') {
+              <gog-multiselect size="sm" label="Frameworks" [options]="frameworks" />
+            }
+            @case ('filter unset, showControls, labels unset') {
+              <gog-multiselect label="Countries" [options]="countries" [showControls]="true" />
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The trigger is a div with role='combobox', not a button and not a native select: it carries the listbox relationship itself, takes its own tabindex, and reports disabled as aria-disabled."
+  >
+    <h3>trigger attributes</h3>
+    <p class="multiselect-page__note">
+      Read from the live DOM, so <code>aria-expanded</code> follows the panel — open one and watch
+      it flip.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="a11yColumns" let-state>
+        <app-doc-attrs target=".gog-ms">
+          @switch (state) {
+            @case ('default') {
+              <gog-multiselect label="Frameworks" [options]="frameworks" />
+            }
+            @case ('two selected') {
+              <gog-multiselect label="Frameworks" [options]="frameworks" [value]="two" />
+            }
+            @case ('[disabled]="true"') {
+              <gog-multiselect label="Frameworks" [options]="frameworks" [disabled]="true" />
+            }
+            @case ('errorMessage="Required"') {
+              <gog-multiselect label="Frameworks" [options]="frameworks" errorMessage="Required" />
+            }
+            @case ('label unset, ariaLabel="Frameworks"') {
+              <gog-multiselect ariaLabel="Frameworks" [options]="frameworks" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>panel and options</h3>
+    <p class="multiselect-page__note">
+      The panel exists only while it is open, so each line below reads "no element matches" until
+      its own field is opened — then it fills in and follows it. The list is a single tab stop: the
+      arrow keys move between rows, Home and End jump to the ends, Enter toggles a row without
+      closing the panel, and Escape closes it.
+    </p>
+    <div class="multiselect-page__demo">
+      <app-doc-attrs target='[role="listbox"]'>
+        <gog-multiselect label="Plans" [options]="plans" [value]="['pro']" />
+      </app-doc-attrs>
+      <app-doc-attrs target='[aria-selected="true"]'>
+        <gog-multiselect label="Plans (selected row)" [options]="plans" [value]="['pro']" />
+      </app-doc-attrs>
+      <app-doc-attrs target='[aria-disabled="true"]'>
+        <gog-multiselect label="Plans (disabled row)" [options]="plans" [value]="['pro']" />
+      </app-doc-attrs>
+    </div>
+
+    <h3>clear button</h3>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="clearA11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target=".gog-ms__clear">
+          @switch (state) {
+            @case ('clearAriaLabel unset') {
+              <gog-multiselect label="Frameworks" [options]="frameworks" [value]="two" />
+            }
+            @case ('clearAriaLabel="Clear frameworks"') {
+              <gog-multiselect
+                label="Frameworks"
+                [options]="frameworks"
+                clearAriaLabel="Clear frameworks"
+                [value]="two"
+              />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>
