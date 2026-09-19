@@ -65,7 +65,57 @@ not worth carrying here.
   straight off `let-view`, and `AGENTS.md`'s slot line shows `let-opt` without saying it has to be
   narrowed. A consumer following either hits the error at the first property read, with no hint why. Documentation-only fix:
   narrow in the JSDoc example, and add one sentence to `AGENTS.md`. Found 2026-09-16 while building
-  the rebuilt showcase's Button toggle page.
+  the rebuilt showcase's Button toggle page. **Read it with the entry below**, which is the same
+  root cause across all three generic slots and has a fix that types the context rather than
+  documenting around it; if that one is taken, this entry is one third of it.
+
+- **Three template slots hand the consumer an `unknown`, so every custom row is written through
+  `$any` — and a type token fixes it, verified.** Found 2026-09-19 while building the rebuilt
+  showcase's Select page.
+
+  `api-design.instructions.md`'s slot rule says to "always give the directive a typed context
+  interface so `let-` variables are checked". Three of the seven context interfaces are generic —
+  `GogDropdownOptionContext<TOption>` (`gogDropdownOption`, on select / multiselect /
+  autocomplete), `GogButtonToggleOptionContext<TOption>`, `GogColumnBodyContext<T>`
+  (`gogColumnBody`) — and none of those three directives declares an input, so under
+  `strictTemplates` nothing in a template can infer the parameter. It stays at its `= unknown`
+  default and the first property read fails with `TS2571`. The other four contexts are not
+  generic and are fine.
+
+  **What it costs today, counted in this repository**: `$any(row)` appears 14 times across
+  `ui-showcase` and `gleks-ui-lab`, all of them in `gogColumnBody` cells — both of the library's
+  own consumers already live with it. `$any(row).nmae` is an empty cell in production rather than
+  a build error, which is the failure the slot pattern exists to prevent. And the documentation
+  that ships inside the package does not compile as written: the JSDoc examples read
+  `user.avatar` and `row.ok` straight off the untyped variable, and so does `AGENTS.md`'s slot
+  line.
+
+  **The fix was built and measured before being written down here.** An optional type-token
+  input on the directive:
+
+  ```html
+  <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="members" let-option>
+    {{ option.profile.role }}
+  </ng-template>
+  ```
+
+  compiles with no `$any`, and `option.profile.rolle` fails the build with
+  `TS2551: Property 'rolle' does not exist … Did you mean 'role'?` — so the context is genuinely
+  checked, not widened to `any`. Unbound, it is `unknown` exactly as today, so the change is
+  additive: a minor, and every existing template keeps working.
+
+  **The trap, already paid for once: the input must not be named after the selector.** With
+  `[gogDropdownOption]="members"`, the bare `<ng-template gogDropdownOption>` becomes a static
+  string binding into that input and every existing template fails with `TS2322: Type 'string' is
+not assignable to type 'readonly unknown[]'` (two in `ui-showcase` alone). A distinct name
+  leaves the bare attribute a plain attribute.
+
+  **Two decisions before code**: the token's name (`*TypeOf` / `*Of` / `*For`), and whether it
+  takes an array or one element. The dropdowns have an array to hand (`options`); a `gog-column`
+  does not, and binding the table's `rows` into every column is noisy — an element-shaped token
+  may suit that one better. Closing this also means updating the three JSDoc examples and
+  `AGENTS.md`, dropping the `$any`s in `ui-showcase`, and an entry in
+  `docs/lab-after-publish.md` for the lab's own cells.
 
 - ~~**The dropdown panel's open-direction decision rests on a row height that is wrong in every
   theme.**~~ **Closed 2026-09-12, in the in-progress 21.13.0.** Found the same day by
