@@ -20,10 +20,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/checkbox-page/checkbox-page').then((m) => m.CheckboxPage),
   },
   {
-    path: 'textarea',
-    loadComponent: () => import('./pages/textarea-page/textarea-page').then((m) => m.TextareaPage),
-  },
-  {
     path: 'radio-group',
     loadComponent: () =>
       import('./pages/radio-group-page/radio-group-page').then((m) => m.RadioGroupPage),

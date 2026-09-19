@@ -1,0 +1,250 @@
+<app-doc-page unit="textarea">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Focus is a pseudo-class and cannot be forced from the page; every field here is live — tab in to see it."
+  >
+    <h3>size × state</h3>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-textarea
+          [size]="size"
+          label="Label"
+          placeholder="Placeholder"
+          [rows]="2"
+          [disabled]="state.disabled"
+          [readonly]="state.isReadonly"
+          [errorMessage]="state.errorMessage"
+          [value]="state.value"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="content"
+    title="Content & layout"
+    lead="The resize grip is the library's own; the drag underneath it is the browser's. Drag a field's corner to see the grip follow it."
+  >
+    <h3>rows</h3>
+    <app-doc-matrix rowAxis="rows" colAxis="">
+      <ng-template appDocCell [rows]="rowCounts" [cols]="controlColumn" let-rowCount>
+        <gog-textarea label="Notes" placeholder="Placeholder" [rows]="rowCount.value" />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>resize × state</h3>
+    <app-doc-matrix rowAxis="resize" colAxis="state">
+      <ng-template appDocCell [rows]="resizes" [cols]="resizeStates" let-resize let-state="col">
+        <gog-textarea
+          label="Notes"
+          [rows]="2"
+          [resize]="resize.value"
+          [disabled]="state.value"
+          [value]="shortText"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>clear button × size</h3>
+    <p class="textarea-page__note">
+      The clear button sits at the field's top end corner and steps clear of the scrollbar once the
+      content overflows.
+    </p>
+    <app-doc-matrix rowAxis="content" colAxis="size">
+      <ng-template appDocCell [rows]="clearValues" [cols]="sizes" let-content let-size="col">
+        <gog-textarea
+          [size]="size"
+          label="Notes"
+          [rows]="4"
+          [clearable]="true"
+          [value]="content.value"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>fullWidth, in a 20rem container</h3>
+    <div class="textarea-page__narrow">
+      <gog-textarea label="fullWidth default (true)" placeholder="Fills the container" [rows]="2" />
+      <gog-textarea
+        [fullWidth]="false"
+        label='[fullWidth]="false"'
+        placeholder="Shrinks to content"
+        [rows]="2"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="float-label"
+    title="Float label"
+    lead="'none' keeps the label above the field; 'in', 'on' and 'over' rest it on the first line and float it clear on focus or a value."
+  >
+    <h3>variant × value</h3>
+    <app-doc-matrix rowAxis="variant" colAxis="state">
+      <ng-template
+        appDocCell
+        [rows]="floatLabelVariants"
+        [cols]="floatStates"
+        let-variant
+        let-state="col"
+      >
+        <gog-textarea
+          [floatLabel]="variant"
+          label="Notes"
+          placeholder="Anything to add?"
+          [rows]="2"
+          [value]="state.value"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>floatLabelShowPlaceholder</h3>
+    <p class="textarea-page__note">
+      Focus the field below: the placeholder reappears under the floated label once it has somewhere
+      to float to.
+    </p>
+    <div class="textarea-page__demo">
+      <gog-textarea
+        floatLabel="over"
+        [floatLabelShowPlaceholder]="true"
+        label="Notes"
+        placeholder="Anything to add?"
+        [rows]="2"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="value is model-bound: [(value)] and [value] / (valueChange) both work, and the field is a full ControlValueAccessor, so formControl works the same way."
+  >
+    <!-- A div, not a p: the field renders a div, which would close a p early and break hydration. -->
+    <h3>[(value)]</h3>
+    <div class="textarea-page__demo">
+      <gog-textarea
+        label="Live"
+        placeholder="Type here"
+        [rows]="2"
+        [(value)]="boundValue"
+        (valueChange)="increment('bound')"
+      />
+      <code>value: {{ boundValue() | json }} · {{ count('bound') }} valueChange</code>
+    </div>
+
+    <h3>formControl, errorDisplay="auto"</h3>
+    <div class="textarea-page__demo">
+      <gog-textarea
+        label="Feedback (reactive form)"
+        placeholder="What should we change?"
+        [rows]="2"
+        [formControl]="formControl"
+        errorMessage="Required"
+        errorDisplay="auto"
+      />
+      <div class="textarea-page__actions">
+        <button type="button" (click)="formControl.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="toggleFormDisabled()">
+          {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+        </button>
+      </div>
+      <code>
+        value: {{ formControl.value | json }} · touched: {{ formControl.touched }} · disabled:
+        {{ formControl.disabled }}
+      </code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre class="textarea-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-textarea-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-textarea label="Label" placeholder="Placeholder" [rows]="2" />
+              }
+              @case ('size="sm"') {
+                <gog-textarea size="sm" label="Label" placeholder="Placeholder" [rows]="2" />
+              }
+              @case ('clearable, resize unset, value="Notes"') {
+                <gog-textarea label="Notes" value="Notes" [rows]="2" />
+              }
+            }
+          </app-textarea-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-textarea label="Label" placeholder="Placeholder" [rows]="2" />
+            }
+            @case ('size="sm"') {
+              <gog-textarea size="sm" label="Label" placeholder="Placeholder" [rows]="2" />
+            }
+            @case ('clearable, resize unset, value="Notes"') {
+              <gog-textarea label="Notes" value="Notes" [rows]="2" />
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Attributes of the native textarea and of the clear button, read from the live DOM."
+  >
+    <h3>textarea attributes</h3>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="a11yColumns" let-state>
+        <app-doc-attrs target="textarea">
+          @switch (state) {
+            @case ('default') {
+              <gog-textarea label="Notes" [rows]="2" />
+            }
+            @case ('[disabled]="true"') {
+              <gog-textarea label="Notes" [rows]="2" [disabled]="true" />
+            }
+            @case ('[readonly]="true" value="Notes"') {
+              <gog-textarea label="Notes" [rows]="2" [readonly]="true" value="Notes" />
+            }
+            @case ('errorMessage="Required"') {
+              <gog-textarea label="Notes" [rows]="2" errorMessage="Required" />
+            }
+            @case ('[spellcheck]="false"') {
+              <gog-textarea label="Notes" [rows]="2" [spellcheck]="false" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>clear button</h3>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="clearA11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target='[data-gog-part="clear"]'>
+          @switch (state) {
+            @case ('clearAriaLabel unset') {
+              <gog-textarea label="Notes" [rows]="2" [clearable]="true" value="Notes" />
+            }
+            @case ('clearAriaLabel="Erase notes"') {
+              <gog-textarea
+                label="Notes"
+                [rows]="2"
+                [clearable]="true"
+                clearAriaLabel="Erase notes"
+                value="Notes"
+              />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

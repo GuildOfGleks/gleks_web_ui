@@ -1,0 +1,39 @@
+.textarea-page__narrow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-16);
+  width: 20rem;
+  max-width: 100%;
+  padding: var(--gog-space-8);
+  border: 1px dashed var(--gog-border-color);
+}
+
+.textarea-page__demo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  max-width: 20rem;
+
+  > gog-textarea {
+    align-self: stretch;
+  }
+}
+
+.textarea-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-8);
+}
+
+.textarea-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}
+
+.textarea-page__config {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+}
