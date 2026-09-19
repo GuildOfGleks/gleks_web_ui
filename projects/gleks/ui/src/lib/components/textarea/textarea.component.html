@@ -28,6 +28,7 @@
       [class.gog-textarea__field--resize-horizontal]="resolvedResize() === 'horizontal'"
       [class.gog-textarea__field--resize-both]="resolvedResize() === 'both'"
       [class.gog-textarea__field--resize-none]="resolvedResize() === 'none'"
+      [class.gog-textarea__field--clearable]="reservesClearGutter()"
       [attr.id]="resolvedInputId()"
       [attr.name]="name() || null"
       [placeholder]="effectivePlaceholder()"
@@ -48,6 +49,7 @@
       <button
         type="button"
         class="gog-input__clear gog-textarea__clear gog-inline-center"
+        data-gog-part="clear"
         [style.--gog-textarea-scrollbar-width.px]="scrollbarWidth()"
         [attr.aria-label]="resolvedClearLabel()"
         (click)="clearValue($event)"

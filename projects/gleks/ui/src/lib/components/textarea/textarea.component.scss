@@ -22,6 +22,7 @@
 .gog-input__label {
   font-family: var(--gog-input-label-font-family);
   font-size: var(--gog-input-label-font-size);
+  line-height: var(--gog-input-label-line-height);
   color: var(--gog-input-label-color);
   text-transform: var(--gog-input-label-text-transform);
   letter-spacing: var(--gog-input-label-letter-spacing);
@@ -127,6 +128,22 @@
   resize: none;
 }
 
+/*
+ * Room for the clear button at the top end corner. The button is its glyph box, 1.2em of the field
+ * type times the ratio, set `--gog-input-clear-inset` from the edge; the text stops the same inset
+ * short of it. Resolved on the field, whose font-size is the one the button's box is drawn from.
+ * The scrollbar needs no term: it narrows the text and shifts the button by the same width.
+ */
+.gog-textarea__field--clearable {
+  padding-inline-end: max(
+    var(--gog-input-padding-x, var(--gog-input-size-padding-x, var(--gog-field-md-padding-x))),
+    calc(
+      var(--gog-input-clear-inset) * 2 + var(--gog-icon-size, var(--gog-icon-fallback-size)) *
+        var(--gog-textarea-clear-icon-ratio)
+    )
+  );
+}
+
 /* Only inputfield needs this for icon positioning today; a textarea has no icons, but the
    float label (see below) still needs a positioned ancestor to sit inside. */
 .gog-input__field-container {
@@ -220,6 +237,7 @@
 .gog-input__error {
   font-family: var(--gog-input-font-family);
   font-size: var(--gog-input-error-font-size);
+  line-height: var(--gog-input-error-line-height);
   color: var(--gog-input-error-color);
   margin-top: var(--gog-input-error-offset);
 }

@@ -476,4 +476,14 @@ describe('TextareaComponent', () => {
       expect(fixture.nativeElement.querySelector('.gog-textarea__clear')).toBeNull();
     });
   });
+
+  it('marks the clear button with data-gog-part', async () => {
+    fixture.componentRef.setInput('clearable', true);
+    fixture.componentRef.setInput('value', 'text');
+    await fixture.whenStable();
+
+    const clear = fixture.nativeElement.querySelector('[data-gog-part="clear"]');
+    expect(clear?.classList).toContain('gog-textarea__clear');
+    expect(clear?.getAttribute('aria-label')).toBe('Clear');
+  });
 });

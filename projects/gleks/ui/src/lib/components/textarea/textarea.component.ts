@@ -195,6 +195,14 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
   );
   /** Whether to render the clear button right now — see `GogClearableState`. */
   protected readonly showClear = this.clearableState.isVisible;
+  /**
+   * Reserves the clear button's gutter whenever the button can appear, not only while it is
+   * shown: on a multi-line field, widening the padding at the first keystroke would rewrap every
+   * line under the caret.
+   */
+  protected readonly reservesClearGutter = computed(
+    () => this.clearableState.enabled() && !this.isNotEditable(),
+  );
 
   protected readonly resolvedFloatLabel = this.floatLabelState.variant;
   protected readonly isFloatLabelActive = this.floatLabelState.isActive;
@@ -211,7 +219,11 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
       const el = this.fieldRef().nativeElement;
       // touch the value so this re-runs as the content changes
       this.value();
-      this.scrollbarWidth.set(el.offsetWidth - el.clientWidth);
+      // offsetWidth - clientWidth also counts both borders, which pushed the clear button in by
+      // their width on a field with no scrollbar at all.
+      const style = getComputedStyle(el);
+      const borders = parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
+      this.scrollbarWidth.set(Math.max(0, el.offsetWidth - el.clientWidth - (borders || 0)));
     });
 
     // Tracks manual drags of the resize handle — see `resizeInsetRight`/`resizeInsetBottom`.
@@ -268,13 +280,17 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
     this._onChange(textarea.value);
   }
 
-  /** Clears the field and notifies any attached form, then returns focus to the input. */
+  /**
+   * Clears the field and notifies any attached form, then returns focus to the field: the clear
+   * button disappears with the value, and focus would otherwise fall back to the page.
+   */
   protected clearValue(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
     this.value.set('');
     this._onChange('');
     this._onTouched();
+    this.fieldRef().nativeElement.focus();
   }
 
   onFocus(): void {
