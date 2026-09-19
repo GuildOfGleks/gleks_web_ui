@@ -4,6 +4,7 @@ import type { DocApi } from '../doc/doc-api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
+import { SELECT_API } from './select/select.api';
 import { TEXTAREA_API } from './textarea/textarea.api';
 
 /** What `app-doc-page` renders on its own for a unit, after the page's hand-built sections. */
@@ -40,5 +41,14 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./textarea/textarea-page').then((m) => m.TextareaPage),
     api: TEXTAREA_API,
     tokens: ['Input field', 'Float label geometry (input / textarea / select / multiselect)'],
+  },
+  select: {
+    load: () => import('./select/select-page').then((m) => m.SelectPage),
+    api: SELECT_API,
+    tokens: [
+      'Select',
+      'Field sizing (input / select / multiselect share one scale)',
+      'Float label geometry (input / textarea / select / multiselect)',
+    ],
   },
 };

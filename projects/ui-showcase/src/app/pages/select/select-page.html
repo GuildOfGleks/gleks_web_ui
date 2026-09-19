@@ -1,0 +1,474 @@
+<app-doc-page unit="select">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Every trigger here is live — open one to see the panel. Inside a matrix the panel is clipped by the matrix's own scroller, so the sections below open theirs in the page's own flow instead."
+  >
+    <h3>size × state</h3>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-select
+          [size]="size"
+          label="Framework"
+          [options]="frameworks"
+          [value]="state.value"
+          [disabled]="state.disabled"
+          [errorMessage]="state.errorMessage"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>clear button × size</h3>
+    <p class="select-page__note">
+      The clear button appears only once something is selected, so a field no longer needs a fake "—
+      not selected —" option to let people undo a choice. It is the one part of the trigger that is
+      not the trigger button: nesting a button inside a button is invalid HTML, so it is a sibling
+      positioned over the trigger's end edge.
+    </p>
+    <app-doc-matrix rowAxis="state" colAxis="size">
+      <ng-template appDocCell [rows]="states" [cols]="sizes" let-state let-size="col">
+        <gog-select
+          [size]="size"
+          label="Framework"
+          [options]="frameworks"
+          [clearable]="true"
+          [value]="state.value"
+          [disabled]="state.disabled"
+          [errorMessage]="state.errorMessage"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>fullWidth and minWidth, in a 20rem container</h3>
+    <p class="select-page__note">
+      With <code>[fullWidth]="false"</code> the trigger sizes to whatever is currently selected, so
+      a short option collapses it; <code>minWidth</code> is the floor under that.
+    </p>
+    <div class="select-page__narrow">
+      <gog-select label="fullWidth default (true)" [options]="frameworks" value="angular" />
+      <gog-select
+        [fullWidth]="false"
+        label='[fullWidth]="false"'
+        [options]="frameworks"
+        value="vue"
+      />
+      <gog-select
+        [fullWidth]="false"
+        minWidth="12rem"
+        label='[fullWidth]="false" minWidth="12rem"'
+        [options]="frameworks"
+        value="vue"
+      />
+    </div>
+
+    <h3>chevron slot, and a field with no visible label</h3>
+    <p class="select-page__note">
+      A projected <code>gogDropdownChevron</code> replaces the built-in chevron — and with it the
+      rotation the built-in one does on open, which is the template's to draw. The chevron and
+      option templates are documented as their own unit, Dropdown templates.
+      <code>ariaLabel</code> names a field that has no <code>label</code> at all.
+    </p>
+    <div class="select-page__row">
+      <div class="select-page__field">
+        <gog-select label="Sort" [options]="frameworks" value="angular">
+          <ng-template gogDropdownChevron>
+            <gog-icon name="sort" />
+          </ng-template>
+        </gog-select>
+      </div>
+      <div class="select-page__field">
+        <gog-select
+          ariaLabel="Framework (no visible label)"
+          placeholder="Pick a framework"
+          [options]="frameworks"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="options"
+    title="Options"
+    lead="optionLabel, optionValue and optionDisabled take a property path — dot-paths included — or a function, so a real DTO goes in unmapped."
+  >
+    <h3>accessors on a DTO with no id or name</h3>
+    <div class="select-page__row">
+      <div class="select-page__demo">
+        <gog-select
+          label="Reviewer (by uuid)"
+          [options]="members"
+          optionLabel="profile.fullName"
+          optionValue="uuid"
+          optionDisabled="suspended"
+          [(value)]="memberId"
+        />
+        <code>value: {{ memberId() | json }}</code>
+      </div>
+      <div class="select-page__demo">
+        <gog-select
+          label="Reviewer (whole object)"
+          placeholder="Pick someone"
+          [options]="members"
+          [optionLabel]="memberLabel"
+          [optionValue]="null"
+          [(value)]="member"
+        >
+          <!-- The row template's context is typed `unknown` — the directive has no input to
+               infer the option type from — so a consumer's own field needs `$any`. -->
+          <ng-template gogDropdownOption let-option let-label="label">
+            <span class="select-page__option"
+              >{{ label }} — <em>{{ $any(option).profile.role }}</em></span
+            >
+          </ng-template>
+        </gog-select>
+        <code>value: {{ member()?.uuid ?? 'null' }} (the option object itself)</code>
+      </div>
+    </div>
+
+    <h3>a disabled option</h3>
+    <p class="select-page__note">
+      <code>optionDisabled</code> defaults to the <code>disabled</code> property, so a
+      <code>GogDropdownOption</code> carrying it needs no binding at all. A disabled row stays in
+      the list, is announced as disabled, and neither the pointer nor Enter selects it.
+    </p>
+    <div class="select-page__demo">
+      <gog-select label="Plan" [options]="plans" [(value)]="plan" />
+      <code>value: {{ plan() | json }}</code>
+    </div>
+
+    <h3>filter</h3>
+    <p class="select-page__note">
+      Worth turning on past about seven options — or ordering them instead, since a list the reader
+      can predict is one they search rather than choose from. The default matcher is a
+      case-insensitive substring on the resolved <code>optionLabel</code>;
+      <code>filterMatch</code> swaps in any predicate. All three fields below hold the same 20
+      options.
+    </p>
+    <div class="select-page__row">
+      <div class="select-page__field">
+        <gog-select
+          label='[filter]="true"'
+          placeholder="Pick a country"
+          [options]="countries"
+          [filter]="true"
+          [clearable]="true"
+        />
+      </div>
+      <div class="select-page__field">
+        <gog-select
+          label='filterPosition="bottom"'
+          placeholder="Pick a country"
+          [options]="countries"
+          [filter]="true"
+          filterPosition="bottom"
+          filterPlaceholder="Type to search..."
+        />
+      </div>
+      <div class="select-page__field">
+        <gog-select
+          label="[filterMatch]: prefix only"
+          placeholder="Pick a country"
+          [options]="countries"
+          [filter]="true"
+          [filterMatch]="prefixMatch"
+          filterEmptyMessage="No country starts with that"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="panel"
+    title="Panel"
+    lead="The panel renders inline by default and is clipped by any scrolling or overflow-hidden ancestor; appendToBody moves it into the body and positions it against the trigger instead."
+  >
+    <h3>dropdownDirection</h3>
+    <p class="select-page__note">
+      <code>'auto'</code> measures the room under the trigger and flips up when there is not enough;
+      the other two are fixed, whatever the viewport does.
+    </p>
+    <div class="select-page__row">
+      @for (direction of directions; track direction.value) {
+        <div class="select-page__field">
+          <gog-select
+            [label]="direction.name"
+            [options]="frameworks"
+            [dropdownDirection]="direction.value"
+          />
+        </div>
+      }
+    </div>
+
+    <h3>appendToBody, and the panel size that comes with it</h3>
+    <p class="select-page__note">
+      <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and apply
+      only while the panel is appended — an inline panel matches the trigger through CSS. The capped
+      field below holds 20 options in 160px, so the panel scrolls. The first two fields sit in a box
+      with <code>overflow: hidden</code> and are pinned to <code>dropdownDirection="down"</code>, so
+      which way they open does not depend on where the page happens to be scrolled: open both and
+      only the appended one survives the box.
+    </p>
+    <div class="select-page__row">
+      <div class="select-page__clipped">
+        <p class="select-page__note">overflow: hidden, panel inline</p>
+        <gog-select label="Country" [options]="countries" dropdownDirection="down" />
+      </div>
+      <div class="select-page__clipped">
+        <p class="select-page__note">overflow: hidden, [appendToBody]="true"</p>
+        <gog-select
+          label="Country"
+          [options]="countries"
+          dropdownDirection="down"
+          [appendToBody]="true"
+        />
+      </div>
+      <div class="select-page__field">
+        <gog-select
+          label='dropdownWidth="220px" dropdownMaxHeight="160px"'
+          [options]="countries"
+          [appendToBody]="true"
+          dropdownWidth="220px"
+          dropdownMaxHeight="160px"
+        />
+      </div>
+    </div>
+
+    <h3>virtualize</h3>
+    <p class="select-page__note">
+      Both fields hold the same 10 000 options. Open each and watch how long the panel takes to
+      appear: the windowed one keeps about twenty rows in the DOM whatever you scroll to, the eager
+      one builds all 10 000 to show six. It is off by default and never switched on at a row count —
+      <code>Ctrl+F</code> finds only the rendered rows, and CSS targeting
+      <code>:last-child</code> matches the last <em>rendered</em> row. The announced count stays
+      honest either way: <code>aria-setsize</code> carries the real list.
+    </p>
+    <div class="select-page__row">
+      <div class="select-page__field">
+        <gog-select
+          label='[virtualize]="true"'
+          placeholder="Pick a city"
+          [options]="cities"
+          [virtualize]="true"
+          [filter]="true"
+        />
+      </div>
+      <div class="select-page__field">
+        <gog-select
+          label="virtualize unset (eager)"
+          placeholder="Pick a city"
+          [options]="cities"
+          [filter]="true"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="float-label"
+    title="Float label"
+    lead="'none' keeps the label above the field; 'in', 'on' and 'over' rest it inside the trigger until focus or a selection moves it clear."
+  >
+    <h3>variant × value</h3>
+    <app-doc-matrix rowAxis="variant" colAxis="state">
+      <ng-template
+        appDocCell
+        [rows]="floatLabelVariants"
+        [cols]="floatStates"
+        let-variant
+        let-state="col"
+      >
+        <gog-select
+          [floatLabel]="variant"
+          label="Framework"
+          placeholder="e.g. Angular"
+          [options]="frameworks"
+          [value]="state.value"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>floatLabelShowPlaceholder</h3>
+    <p class="select-page__note">
+      Focus the field below: the placeholder appears under the floated label once it has somewhere
+      to float to. Without it the placeholder stays hidden the whole time, because the floated label
+      is already sitting where it would be.
+    </p>
+    <div class="select-page__demo">
+      <gog-select
+        floatLabel="over"
+        [floatLabelShowPlaceholder]="true"
+        label="Framework"
+        placeholder="e.g. Angular"
+        [options]="frameworks"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="value is model-bound: [(value)] and [value] / (valueChange) both work, and the control is a full ControlValueAccessor, so formControl works the same way."
+  >
+    <!-- A div, not a p: the control renders a div, which would close a p early and break hydration. -->
+    <h3>[(value)]</h3>
+    <div class="select-page__demo">
+      <gog-select
+        label="Live"
+        placeholder="Pick a framework"
+        [options]="frameworks"
+        [clearable]="true"
+        [(value)]="boundValue"
+        (valueChange)="increment('bound')"
+      />
+      <code>value: {{ boundValue() | json }} · {{ count('bound') }} valueChange</code>
+    </div>
+
+    <h3>formControl, errorDisplay="auto"</h3>
+    <p class="select-page__note">
+      Open the field and close it again without choosing anything: the control decides the error
+      timing from its own touched and invalid state, instead of the page computing when to pass an
+      <code>errorMessage</code>.
+    </p>
+    <div class="select-page__demo">
+      <gog-select
+        label="Framework (reactive form)"
+        placeholder="Pick a framework"
+        [options]="frameworks"
+        [formControl]="formControl"
+        errorMessage="Required"
+        errorDisplay="auto"
+      />
+      <div class="select-page__actions">
+        <button type="button" (click)="formControl.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="toggleFormDisabled()">
+          {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+        </button>
+      </div>
+      <code>
+        value: {{ formControl.value | json }} · touched: {{ formControl.touched }} · disabled:
+        {{ formControl.disabled }}
+      </code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre class="select-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-select-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-select label="Framework" [options]="frameworks" />
+              }
+              @case ('size="sm"') {
+                <gog-select size="sm" label="Framework" [options]="frameworks" />
+              }
+              @case ('clearable, filter unset, value="angular"') {
+                <gog-select label="Framework" [options]="frameworks" value="angular" />
+              }
+            }
+          </app-select-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-select label="Framework" [options]="frameworks" />
+            }
+            @case ('size="sm"') {
+              <gog-select size="sm" label="Framework" [options]="frameworks" />
+            }
+            @case ('clearable, filter unset, value="angular"') {
+              <gog-select label="Framework" [options]="frameworks" value="angular" />
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The trigger is a button, not a native select: it carries the listbox relationship itself, and the label is tied to it by aria-labelledby because a button is not a labelable element."
+  >
+    <h3>trigger attributes</h3>
+    <p class="select-page__note">
+      Read from the live DOM, so <code>aria-expanded</code> follows the panel — open one and watch
+      it flip.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="a11yColumns" let-state>
+        <app-doc-attrs target=".gog-select__control">
+          @switch (state) {
+            @case ('default') {
+              <gog-select label="Framework" [options]="frameworks" />
+            }
+            @case ('value="angular"') {
+              <gog-select label="Framework" [options]="frameworks" value="angular" />
+            }
+            @case ('[disabled]="true"') {
+              <gog-select label="Framework" [options]="frameworks" [disabled]="true" />
+            }
+            @case ('errorMessage="Required"') {
+              <gog-select label="Framework" [options]="frameworks" errorMessage="Required" />
+            }
+            @case ('label unset, ariaLabel="Framework"') {
+              <gog-select ariaLabel="Framework" [options]="frameworks" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>panel and options</h3>
+    <p class="select-page__note">
+      The panel exists only while it is open, so each line below reads "no element matches" until
+      its own field is opened — then it fills in and follows it. The list is a single tab stop: the
+      arrow keys move between rows, Home and End jump to the ends, Enter selects and Escape closes.
+    </p>
+    <div class="select-page__demo">
+      <app-doc-attrs target='[role="listbox"]'>
+        <gog-select label="Plan" [options]="plans" value="pro" />
+      </app-doc-attrs>
+      <app-doc-attrs target='[aria-selected="true"]'>
+        <gog-select label="Plan (selected row)" [options]="plans" value="pro" />
+      </app-doc-attrs>
+      <app-doc-attrs target='[aria-disabled="true"]'>
+        <gog-select label="Plan (disabled row)" [options]="plans" value="pro" />
+      </app-doc-attrs>
+    </div>
+
+    <h3>clear button</h3>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="clearA11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target=".gog-select__clear">
+          @switch (state) {
+            @case ('clearAriaLabel unset') {
+              <gog-select
+                label="Framework"
+                [options]="frameworks"
+                [clearable]="true"
+                value="angular"
+              />
+            }
+            @case ('clearAriaLabel="Clear framework"') {
+              <gog-select
+                label="Framework"
+                [options]="frameworks"
+                [clearable]="true"
+                clearAriaLabel="Clear framework"
+                value="angular"
+              />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>
