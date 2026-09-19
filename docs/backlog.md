@@ -16,6 +16,30 @@ not worth carrying here.
 
 ## Defects — first
 
+- **`gogTooltip` erases any `aria-describedby` its host already had, and it silently ate a fix.**
+  Found 2026-09-19 while building the rebuilt showcase's Multiselect page. The directive declares
+  `'[attr.aria-describedby]': 'describedById()'` as a host binding, and `describedById()` is
+  `isVisible() ? uid : null` — so for as long as the tooltip is closed, which is nearly always, it
+  writes `null` over whatever else is on that element. Any host with its own description loses it
+  under a tooltip; the value is not merged, and there is no input that would let it be.
+
+  **How it surfaced**: `gog-multiselect` was the one control in the library whose errored trigger
+  reported nothing to assistive tech. `aria-invalid` was added and works, but the matching
+  `[attr.aria-describedby]="errorId()"` — the link every other control makes — never reached the
+  DOM, because the trigger is also the tooltip host for the full-selection hint. The id is still
+  computed and still put on the error span, so the eventual fix has something to hang off.
+
+  **The part worth keeping either way**: the jsdom spec asserting that link **passed**, on both the
+  trigger and the error span, while Chrome showed the attribute absent after an SSR hydration and
+  after a client-side render alike. A green test can document an attribute the browser does not
+  have — which is why the assertion was removed rather than kept as proof.
+
+  **Three shapes for the fix, all needing a decision**: an input on the directive that takes extra
+  ids to merge (public API); the directive reading and re-emitting whatever it found (cannot work
+  for a binding that changes later, which is exactly this case); or moving the tooltip off the
+  combobox onto the value span, which costs keyboard users the hint because that span is not
+  focusable.
+
 - ~~**`gog-button type="submit"` submits its form while `loading`, and past `debounce`.**~~
   **Closed 2026-09-16, in the in-progress 21.15.0**: a click the component does not emit is now
   cancelled with `preventDefault()`, and the window is checked synchronously so the decision is

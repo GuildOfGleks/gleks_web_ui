@@ -45,6 +45,21 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-multiselect` never told assistive tech it was invalid.** Its trigger carried no
+  `aria-invalid`, so a screen reader read an errored field exactly like a valid one — every other
+  control in the library (`gog-inputfield`, `gog-textarea`, `gog-select`, `gog-autocomplete`,
+  `gog-radio-group`, `gog-slider`, `gog-datepicker`) already reported it, and this one was the
+  single gap. The error message also now carries an id. Found on the showcase's new Multiselect
+  page, which reads the trigger's attributes out of the live DOM beside the same row for
+  `gog-select`.
+
+  **What is still missing, and why it is not in this fix:** the error is not linked with
+  `aria-describedby` the way the other controls link theirs. The trigger also carries `gogTooltip`
+  for the full-selection hint, and that directive's host binding owns `aria-describedby` — it
+  writes `null` there whenever the tooltip is closed, which erases anything the component sets.
+  Shipping the link would have shipped an attribute that is absent in a browser; a jsdom spec
+  asserting it passes.
+
 - **A password or number `gog-inputfield` dropped its `iconEnd` and its projected
   `gogInputAddonEnd`.** The reveal toggle, or the stepper, took the end slot and the other element
   was never rendered, so an icon or a unit set on the field silently did not appear. Both now

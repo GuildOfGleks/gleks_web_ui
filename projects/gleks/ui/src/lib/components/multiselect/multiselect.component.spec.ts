@@ -155,6 +155,36 @@ describe('MultiselectComponent', () => {
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('.gog-ms__error')).toBeNull();
     });
+
+    it('marks the trigger invalid and gives the rendered error an id', () => {
+      fixture.componentRef.setInput('errorMessage', 'Required');
+      fixture.detectChanges();
+
+      const trigger = fixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+      const error = fixture.nativeElement.querySelector('.gog-ms__error') as HTMLElement;
+
+      expect(trigger.getAttribute('aria-invalid')).toBe('true');
+      expect(error.id).toBeTruthy();
+    });
+
+    it('reports the trigger valid when no error is rendered', () => {
+      fixture.detectChanges();
+
+      const trigger = fixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+      expect(trigger.getAttribute('aria-invalid')).toBe('false');
+    });
+
+    it('gives two instances different error ids', () => {
+      const second = TestBed.createComponent(MultiselectComponent);
+      fixture.componentRef.setInput('errorMessage', 'Required');
+      second.componentRef.setInput('errorMessage', 'Required');
+      fixture.detectChanges();
+      second.detectChanges();
+
+      const first = fixture.nativeElement.querySelector('.gog-ms__error') as HTMLElement;
+      const other = second.nativeElement.querySelector('.gog-ms__error') as HTMLElement;
+      expect(first.id).not.toBe(other.id);
+    });
   });
 
   // `contain: layout` creates a stacking context, which would trap the panel's z-index

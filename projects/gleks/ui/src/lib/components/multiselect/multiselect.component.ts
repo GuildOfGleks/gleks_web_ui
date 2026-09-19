@@ -139,6 +139,19 @@ export class MultiselectComponent<
 
   protected readonly listboxId = computed(() => `gog-ms-listbox-${this.uid}`);
   protected readonly labelId = computed(() => `gog-ms-label-${this.uid}`);
+  /**
+   * Null unless an error is actually rendered.
+   *
+   * Nothing points at it yet, and that is the bug rather than the design: the trigger carries
+   * `gogTooltip` for the full-selection hint, whose host binding owns `aria-describedby` and
+   * writes `null` into it whenever the tooltip is closed -- which silently erased the
+   * `[attr.aria-describedby]` this id was added for. Every other control in the library links
+   * its error that way. Kept because the id is what the eventual fix hangs off, and because a
+   * jsdom spec asserting the link passes while a browser drops it.
+   */
+  protected readonly errorId = computed(() =>
+    this.visibleError() ? `gog-ms-error-${this.uid}` : null,
+  );
 
   /** Labels of the current selection, driven off the selected *options* so it works whatever
    * `optionValue` resolves to. */
