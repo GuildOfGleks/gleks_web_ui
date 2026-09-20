@@ -1,0 +1,72 @@
+// A row of fields that each open a panel: in the page's own flow, not in a matrix, whose
+// scroller would clip the panel.
+.dropdown-templates-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--gog-space-16);
+  margin-block-end: var(--gog-space-16);
+}
+
+.dropdown-templates-page__field {
+  width: 18rem;
+  max-width: 100%;
+}
+
+.dropdown-templates-page__demo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+}
+
+// One projected row: the label, the decoration beside it, and any flags after that.
+.dropdown-templates-page__person {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--gog-space-8);
+
+  > em {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-xs);
+  }
+}
+
+.dropdown-templates-page__flag {
+  padding: 0 var(--gog-space-4);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-2xs);
+}
+
+.dropdown-templates-page__scroll {
+  overflow-x: auto;
+  margin-block-end: var(--gog-space-16);
+}
+
+.dropdown-templates-page__table {
+  border-collapse: collapse;
+  width: 100%;
+
+  th,
+  td {
+    padding: var(--gog-space-8) var(--gog-space-12);
+    border-block-end: 1px solid var(--gog-border-color);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  thead th {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-xs);
+    font-weight: var(--gog-font-weight-medium);
+  }
+}
+
+.dropdown-templates-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}

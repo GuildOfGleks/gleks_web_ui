@@ -1,0 +1,301 @@
+<app-doc-page unit="dropdown-templates">
+  <app-doc-section
+    id="content"
+    title="Content & layout"
+    lead="Two marker directives, no inputs: each holds an ng-template the host component renders in place of something it draws itself."
+  >
+    <h3>gogDropdownOption — the inside of one row</h3>
+    <p class="dropdown-templates-page__note">
+      The slot replaces the row's <em>content</em>, never the row. The host still renders the option
+      element around it — a <code>&lt;button role="option"&gt;</code> in the two listbox controls, a
+      <code>&lt;div&gt;</code> in <code>gog-autocomplete</code>, which is a combobox and keeps focus
+      in its field — with its padding, its hover and selected states, its check mark and every ARIA
+      attribute. That is why a custom row costs no accessibility, and why it must not contain
+      anything focusable: a button inside a button is invalid, and a tab stop inside a list that has
+      exactly one is unreachable.
+    </p>
+    <div class="dropdown-templates-page__row">
+      <div class="dropdown-templates-page__field">
+        <gog-select label="no slot" [options]="members" [optionLabel]="memberLabel" />
+      </div>
+      <div class="dropdown-templates-page__field">
+        <gog-select
+          label="gogDropdownOption"
+          placeholder="Pick a reviewer"
+          [options]="members"
+          [optionLabel]="memberLabel"
+          [optionValue]="null"
+          [(value)]="picked"
+        >
+          <!-- The context is typed `unknown` — see the Context section below for why `$any`. -->
+          <ng-template gogDropdownOption let-option let-label="label">
+            <span class="dropdown-templates-page__person">
+              <strong>{{ label }}</strong>
+              <em>{{ $any(option).profile.role }}</em>
+            </span>
+          </ng-template>
+        </gog-select>
+      </div>
+      <div class="dropdown-templates-page__demo">
+        <code>value: {{ name(picked()) }}</code>
+      </div>
+    </div>
+
+    <h3>gogDropdownChevron — the glyph, not the slot it sits in</h3>
+    <p class="dropdown-templates-page__note">
+      The template is rendered through <code>gog-icon</code>, so it inherits the icon box the host
+      reserves and lines up with whatever was there before. The wrapper stays
+      <code>aria-hidden</code>, which is what makes any markup put here decorative by construction.
+    </p>
+    <div class="dropdown-templates-page__row">
+      <div class="dropdown-templates-page__field">
+        <gog-select label="no slot" [options]="frameworks" [(value)]="framework" />
+      </div>
+      <div class="dropdown-templates-page__field">
+        <gog-select label="gogDropdownChevron" [options]="frameworks">
+          <ng-template gogDropdownChevron>
+            <gog-icon name="sort" />
+          </ng-template>
+        </gog-select>
+      </div>
+      <div class="dropdown-templates-page__field">
+        <gog-multiselect label="gogDropdownChevron" [options]="frameworks" [(value)]="many">
+          <ng-template gogDropdownChevron>
+            <gog-icon name="sort" />
+          </ng-template>
+        </gog-multiselect>
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="hosts"
+    title="Where each one works"
+    lead="Three components share the base these directives belong to, and they do not all honour both slots. Every cell below is live."
+  >
+    <p class="dropdown-templates-page__note">
+      <code>gogDropdownOption</code> works in all three. <code>gogDropdownChevron</code> works in
+      two: <strong><code>gog-autocomplete</code> has no chevron at all</strong> — its trigger is a
+      text field, so there is nothing for the template to replace and it is silently dropped. The
+      directive is still accepted there, because all three inherit it from the same base; the
+      backlog carries that.
+    </p>
+    <app-doc-matrix rowAxis="slot" colAxis="host">
+      <ng-template appDocCell [rows]="slots" [cols]="hosts" let-slot let-host="col">
+        @if (slot === 'gogDropdownOption') {
+          @switch (host) {
+            @case ('gog-select') {
+              <gog-select label="Reviewer" [options]="members" [optionLabel]="memberLabel">
+                <ng-template gogDropdownOption let-option let-label="label">
+                  <span class="dropdown-templates-page__person">
+                    <strong>{{ label }}</strong>
+                    <em>{{ $any(option).profile.role }}</em>
+                  </span>
+                </ng-template>
+              </gog-select>
+            }
+            @case ('gog-multiselect') {
+              <gog-multiselect label="Reviewers" [options]="members" [optionLabel]="memberLabel">
+                <ng-template gogDropdownOption let-option let-label="label">
+                  <span class="dropdown-templates-page__person">
+                    <strong>{{ label }}</strong>
+                    <em>{{ $any(option).profile.role }}</em>
+                  </span>
+                </ng-template>
+              </gog-multiselect>
+            }
+            @case ('gog-autocomplete') {
+              <gog-autocomplete label="Reviewer" [options]="members" [optionLabel]="memberLabel">
+                <ng-template gogDropdownOption let-option let-label="label">
+                  <span class="dropdown-templates-page__person">
+                    <strong>{{ label }}</strong>
+                    <em>{{ $any(option).profile.role }}</em>
+                  </span>
+                </ng-template>
+              </gog-autocomplete>
+            }
+          }
+        } @else {
+          @switch (host) {
+            @case ('gog-select') {
+              <gog-select label="Framework" [options]="frameworks">
+                <ng-template gogDropdownChevron><gog-icon name="sort" /></ng-template>
+              </gog-select>
+            }
+            @case ('gog-multiselect') {
+              <gog-multiselect label="Frameworks" [options]="frameworks">
+                <ng-template gogDropdownChevron><gog-icon name="sort" /></ng-template>
+              </gog-multiselect>
+            }
+            @case ('gog-autocomplete') {
+              <gog-autocomplete label="Framework (no chevron to replace)" [options]="frameworks">
+                <ng-template gogDropdownChevron><gog-icon name="sort" /></ng-template>
+              </gog-autocomplete>
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>the open state, which the two hosts hand over differently</h3>
+    <p class="dropdown-templates-page__note">
+      Open the two fields below and watch the glyph.
+      <strong><code>gog-multiselect</code> still turns it</strong> — the rotation lives on the
+      wrapper and follows the panel whatever is inside.
+      <strong><code>gog-select</code> stops turning it</strong>: its rotation class is applied only
+      while there is no custom template, on the reasoning that an arbitrary glyph is not necessarily
+      a chevron and turning it upside down may be wrong. The template gets no context either, so in
+      a select the open state is yours to draw — through <code>.gog-select--open</code> in your own
+      stylesheet. Two answers to one question, and the backlog has the entry.
+    </p>
+    <div class="dropdown-templates-page__row">
+      <div class="dropdown-templates-page__field">
+        <gog-select label="gog-select, custom glyph" [options]="frameworks">
+          <ng-template gogDropdownChevron><gog-icon name="sort" /></ng-template>
+        </gog-select>
+      </div>
+      <div class="dropdown-templates-page__field">
+        <gog-multiselect label="gog-multiselect, custom glyph" [options]="frameworks">
+          <ng-template gogDropdownChevron><gog-icon name="sort" /></ng-template>
+        </gog-multiselect>
+      </div>
+      <div class="dropdown-templates-page__field">
+        <gog-select label="gog-select, built-in (turns)" [options]="frameworks" />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="context"
+    title="The row template's context"
+    lead="Four values, so a custom row can decorate what the host already resolved instead of deriving it again."
+  >
+    <div class="dropdown-templates-page__scroll">
+      <table class="dropdown-templates-page__table">
+        <thead>
+          <tr>
+            <th scope="col">Written as</th>
+            <th scope="col">Type</th>
+            <th scope="col">Is</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><code>let-option</code></th>
+            <td><code>TOption</code></td>
+            <td>your own object, untouched — not a wrapper the library made around it</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>let-label="label"</code></th>
+            <td><code>string</code></td>
+            <td>
+              the text <code>optionLabel</code> resolved, dot-path or function already applied
+            </td>
+          </tr>
+          <tr>
+            <th scope="row"><code>let-selected="selected"</code></th>
+            <td><code>boolean</code></td>
+            <td>whether this row is in the current value</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>let-disabled="disabled"</code></th>
+            <td><code>boolean</code></td>
+            <td>what <code>optionDisabled</code> resolved for it</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="dropdown-templates-page__note">
+      The row below reads all four. <code>selected</code> and <code>disabled</code> are there for
+      content, not for styling — the host has already set the classes and the ARIA state, so a row
+      that only wants to look different should reach for
+      <code>.gog-select__option--selected</code> rather than branch in the template.
+    </p>
+    <div class="dropdown-templates-page__row">
+      <div class="dropdown-templates-page__field">
+        <gog-multiselect
+          label="All four"
+          placeholder="Open me"
+          [options]="members"
+          [optionLabel]="memberLabel"
+          optionDisabled="suspended"
+        >
+          <ng-template
+            gogDropdownOption
+            let-option
+            let-label="label"
+            let-selected="selected"
+            let-disabled="disabled"
+          >
+            <span class="dropdown-templates-page__person">
+              <strong>{{ label }}</strong>
+              <em>{{ $any(option).profile.role }}</em>
+              @if (selected) {
+                <span class="dropdown-templates-page__flag">in the value</span>
+              }
+              @if (disabled) {
+                <span class="dropdown-templates-page__flag">suspended</span>
+              }
+            </span>
+          </ng-template>
+        </gog-multiselect>
+      </div>
+    </div>
+
+    <h3>why every example here writes <code>$any</code></h3>
+    <p class="dropdown-templates-page__note">
+      <code>GogDropdownOptionContext&lt;TOption&gt;</code> is generic and the directive declares no
+      input, so under <code>strictTemplates</code> nothing in a template can infer the parameter: it
+      stays <code>unknown</code>, and the first property read off <code>let-option</code> fails with
+      <code>TS2571</code>. <code>let-label</code> is unaffected — it is typed
+      <code>string</code> whatever <code>TOption</code> turns out to be — so a row that only
+      decorates the label needs no cast at all. That is the cheapest way out until the directive
+      gains a type token; the backlog carries the fix, built and measured.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Neither slot can take the accessibility with it: the host keeps the element, the role and the state, and hands the template only what is inside."
+  >
+    <p class="dropdown-templates-page__note">
+      Open the first two fields and compare the attribute lines: a custom row reports exactly what a
+      default one does. The third reads the chevron's wrapper, which is
+      <code>aria-hidden</code> whether or not a template fills it — so a glyph put there is never
+      announced, and an icon carrying a <code>title</code> would not be either.
+      <strong>Nothing focusable belongs in a row</strong>: the list is one tab stop, and a button
+      inside an option is either unreachable or steals the press the option needed.
+    </p>
+    <app-doc-matrix rowAxis="reads" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
+        @switch (row) {
+          @case ('default row') {
+            <app-doc-attrs target='[role="option"]'>
+              <gog-select label="Reviewer" [options]="members" [optionLabel]="memberLabel" />
+            </app-doc-attrs>
+          }
+          @case ('gogDropdownOption row') {
+            <app-doc-attrs target='[role="option"]'>
+              <gog-select label="Reviewer" [options]="members" [optionLabel]="memberLabel">
+                <ng-template gogDropdownOption let-label="label">
+                  <span class="dropdown-templates-page__person"
+                    ><strong>{{ label }}</strong></span
+                  >
+                </ng-template>
+              </gog-select>
+            </app-doc-attrs>
+          }
+          @case ('the chevron slot') {
+            <app-doc-attrs target=".gog-select__chevron">
+              <gog-select label="Framework" [options]="frameworks">
+                <ng-template gogDropdownChevron><gog-icon name="sort" /></ng-template>
+              </gog-select>
+            </app-doc-attrs>
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>
