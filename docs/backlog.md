@@ -111,6 +111,17 @@ not worth carrying here.
   in one place, the five `--gog-field-*-icon-reserve` calculations, rather than in any one
   component.
 
+  **And the worse instance, found 2026-09-20 while choosing the Toggle page's sections: a section
+  called `'Stacking layers'` holds the entire field sizing scale.** Two of its forty-odd tokens
+  are stacking (`--gog-badge-z`, `--gog-dropdown-z`); the rest are `--gog-field-*-padding-*`,
+  `--gog-field-*-font-size`, `--gog-field-*-icon-inset`, `--gog-control-checkbox-padding`,
+  `--gog-control-padding-*`, `--gog-elevated-surface-color` and the field line heights. This one
+  is not a rename, it is a split — and it has already cost something: the rebuilt showcase's
+  Inputfield, Select and Multiselect pages list `'Field sizing …'`, which holds three icon-glyph
+  tokens, while the padding and font-size scale those pages actually document is filed under
+  stacking and appears on none of them. Whoever splits it should walk the built pages' `tokens`
+  lists afterwards.
+
 - **`gogTooltip` erases any `aria-describedby` its host already had, and it silently ate a fix.**
   Found 2026-09-19 while building the rebuilt showcase's Multiselect page. The directive declares
   `'[attr.aria-describedby]': 'describedById()'` as a host binding, and `describedById()` is
