@@ -16,10 +16,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/themes-page/themes-page').then((m) => m.ThemesPage),
   },
   {
-    path: 'checkbox',
-    loadComponent: () => import('./pages/checkbox-page/checkbox-page').then((m) => m.CheckboxPage),
-  },
-  {
     path: 'radio-group',
     loadComponent: () =>
       import('./pages/radio-group-page/radio-group-page').then((m) => m.RadioGroupPage),

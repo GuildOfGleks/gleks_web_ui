@@ -1,0 +1,60 @@
+.checkbox-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--gog-space-16);
+  margin-block-end: var(--gog-space-16);
+  max-width: 48rem;
+}
+
+.checkbox-page__narrow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  width: 20rem;
+  max-width: 100%;
+  margin-block-end: var(--gog-space-16);
+  padding: var(--gog-space-8);
+  border: 1px dashed var(--gog-border-color);
+}
+
+.checkbox-page__demo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  max-width: 24rem;
+}
+
+// The children of a parent row, indented by the width of the parent's own box.
+.checkbox-page__children {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-4);
+  padding-inline-start: var(--gog-space-24);
+}
+
+.checkbox-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-8);
+}
+
+.checkbox-page__error {
+  color: var(--gog-danger-color);
+}
+
+.checkbox-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+.checkbox-page__config {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+}

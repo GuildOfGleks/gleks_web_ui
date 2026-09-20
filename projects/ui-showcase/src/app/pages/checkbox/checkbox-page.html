@@ -1,0 +1,254 @@
+<app-doc-page unit="checkbox">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Five states across five sizes, all live — the box, the tick, the dash and the label scale together from one size input."
+  >
+    <h3>size × state</h3>
+    <p class="checkbox-page__note">
+      <code>indeterminate</code> and <code>checked</code> are separate inputs and the dash wins
+      while both are set: it is the "some of them" state, and a row that is partly on cannot also be
+      on. The three lengths behind each column — the box, the glyph and the label — come from the
+      shared <code>--gog-control-checkbox-*</code> scale that the radio and the toggle read too,
+      which is why the three line up on a form.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-checkbox
+          [size]="size"
+          label="Notify me"
+          [checked]="state.checked"
+          [indeterminate]="state.indeterminate"
+          [disabled]="state.disabled"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the label, and the field with none</h3>
+    <p class="checkbox-page__note">
+      The whole control is a <code>&lt;label&gt;</code> wrapped around a real
+      <code>&lt;input type="checkbox"&gt;</code>, so the text <em>is</em> the accessible name —
+      there is no <code>for</code> to wire up, pressing the text toggles the box, and a form submits
+      it the way it submits any checkbox. <code>ariaLabel</code> is for the case with no visible
+      text, which is the only case it applies to.
+    </p>
+    <div class="checkbox-page__row">
+      <gog-checkbox label="Email me about releases" />
+      <gog-checkbox ariaLabel="Select this row" />
+      <gog-checkbox
+        label="A label long enough to wrap in a narrow column, which it does rather than pushing the box out of line"
+      />
+    </div>
+
+    <h3>fullWidth</h3>
+    <p class="checkbox-page__note">
+      Off by default: a checkbox is as wide as its label, so a row of them reads as a row. Turned
+      on, it fills its container — which is what puts the box at one edge of a settings row and
+      leaves the rest of the line clickable.
+    </p>
+    <div class="checkbox-page__narrow">
+      <gog-checkbox label="fullWidth unset" />
+      <gog-checkbox label='[fullWidth]="true"' [fullWidth]="true" />
+    </div>
+
+    <h3>gogCheckboxIcon — the tick, not the box</h3>
+    <p class="checkbox-page__note">
+      The slot replaces the glyph inside the box, rendered through <code>gog-icon</code> so it
+      inherits the size the scale gave it. The box, its border, its fill and every state stay the
+      component's. <strong>It is the checked glyph only</strong>: the indeterminate dash is drawn by
+      the stylesheet and a template does not reach it, which the third checkbox below shows.
+    </p>
+    <div class="checkbox-page__row">
+      <gog-checkbox label="built-in tick" [checked]="true" />
+      <gog-checkbox label="gogCheckboxIcon" [(checked)]="starred">
+        <ng-template gogCheckboxIcon>
+          <gog-icon name="star" />
+        </ng-template>
+      </gog-checkbox>
+      <gog-checkbox label="the same slot, indeterminate" [indeterminate]="true">
+        <ng-template gogCheckboxIcon>
+          <gog-icon name="star" />
+        </ng-template>
+      </gog-checkbox>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="indeterminate"
+    title="Indeterminate"
+    lead="An input, not a model: the component renders the state you pass and never clears it for you."
+  >
+    <p class="checkbox-page__note">
+      This is the one thing about this component worth reading before using it. A native checkbox
+      resolves <code>indeterminate</code> on the first click; here the dash is drawn from the input,
+      so
+      <strong
+        >a press changes <code>checked</code> and leaves <code>indeterminate</code> exactly as it
+        was</strong
+      >. Press the second checkbox below a few times: its <code>checked</code> flips under the dash
+      and nothing visible moves. That is not a bug to work around — it is what lets a parent row be
+      driven from its children rather than from its own presses — but it does mean the state is
+      yours to compute.
+    </p>
+    <div class="checkbox-page__row">
+      <div class="checkbox-page__demo">
+        <gog-checkbox
+          label="Subscribe to all"
+          [checked]="allSelected()"
+          [indeterminate]="someSelected()"
+          (checkedChange)="toggleAll($event)"
+        />
+        <div class="checkbox-page__children">
+          @for (topic of topics; track topic.id) {
+            <gog-checkbox
+              size="sm"
+              [label]="topic.name"
+              [checked]="isSelected(topic.id)"
+              (checkedChange)="toggleTopic(topic.id, $event)"
+            />
+          }
+        </div>
+        <code>
+          selected: {{ selected().length }} / {{ topics.length }} · checked: {{ allSelected() }} ·
+          indeterminate: {{ someSelected() }}
+        </code>
+      </div>
+
+      <div class="checkbox-page__demo">
+        <gog-checkbox
+          label="indeterminate never cleared"
+          [indeterminate]="true"
+          [(checked)]="stuck"
+          (checkedChange)="increment('stuck')"
+        />
+        <code>
+          checked: {{ stuck() }} · {{ count('stuck') }} checkedChange · the dash never moves
+        </code>
+      </div>
+    </div>
+
+    <p class="checkbox-page__note">
+      One detail that only shows up if you read the element rather than the component: the browser
+      clears the native <code>indeterminate</code> property on a press. The dash is drawn from the
+      input and not from the property, so the screen stays right — but until 21.15.0 the element was
+      left reporting <code>false</code> under a visible dash, which is what a consumer's
+      <code>input:indeterminate</code> rule, a test or an automation script would have read. The
+      change handler writes the input's own value back now, so the two agree.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="checked is model-bound: [(checked)] and [checked] / (checkedChange) both work, and the control is a full ControlValueAccessor, so formControl works the same way."
+  >
+    <h3>[(checked)]</h3>
+    <div class="checkbox-page__demo">
+      <gog-checkbox
+        label="Email me about releases"
+        [(checked)]="bound"
+        (checkedChange)="increment('bound')"
+      />
+      <code>checked: {{ bound() }} · {{ count('bound') }} checkedChange</code>
+    </div>
+
+    <h3>formControl, and the error a checkbox does not draw</h3>
+    <p class="checkbox-page__note">
+      <code>Validators.requiredTrue</code> is what "you must tick this" is written as. Note what is
+      missing from the API table: there is no <code>errorMessage</code> and no
+      <code>errorDisplay</code> — a checkbox has no error line of its own, so the message belongs to
+      whatever the form renders around it. Disabling through the form works the same as the input:
+      both end up in <code>disabled</code> on the native element.
+    </p>
+    <div class="checkbox-page__demo">
+      <gog-checkbox label="I accept the terms" [formControl]="formControl" />
+      <div class="checkbox-page__actions">
+        <button type="button" (click)="formControl.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="toggleFormDisabled()">
+          {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+        </button>
+      </div>
+      <code>
+        value: {{ formControl.value }} · valid: {{ formControl.valid }} · touched:
+        {{ formControl.touched }} · disabled: {{ formControl.disabled }}
+      </code>
+      @if (formControl.touched && formControl.invalid) {
+        <code class="checkbox-page__error">The form draws this line, not the checkbox.</code>
+      }
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre class="checkbox-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-checkbox-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-checkbox label="Notify me" [checked]="true" />
+              }
+              @case ('size="sm"') {
+                <gog-checkbox size="sm" label="Notify me" [checked]="true" />
+              }
+            }
+          </app-checkbox-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-checkbox label="Notify me" [checked]="true" />
+            }
+            @case ('size="sm"') {
+              <gog-checkbox size="sm" label="Notify me" [checked]="true" />
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A native input inside a native label: the role, the state, the keyboard and the name all come from the platform rather than from ARIA."
+  >
+    <h3>input attributes</h3>
+    <p class="checkbox-page__note">
+      Read from the live DOM. Two rows are worth reading against each other:
+      <code>checked</code> is a <em>property</em> of the input and never appears here, because
+      nothing sets the attribute — while <code>indeterminate</code>, which has no native attribute
+      at all, is announced through <code>aria-checked="mixed"</code>, the one piece of ARIA this
+      component needs. <kbd>Space</kbd> toggles it, as it does any checkbox; the box you see is a
+      <code>span</code> and is not focusable, the input under it is.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target=".gog-checkbox__input">
+          @switch (state) {
+            @case ('default') {
+              <gog-checkbox label="Accept the terms" />
+            }
+            @case ('[checked]="true"') {
+              <gog-checkbox label="Accept the terms" [checked]="true" />
+            }
+            @case ('[indeterminate]="true"') {
+              <gog-checkbox label="Accept the terms" [indeterminate]="true" />
+            }
+            @case ('[disabled]="true"') {
+              <gog-checkbox label="Accept the terms" [disabled]="true" />
+            }
+            @case ('label unset, ariaLabel="Accept the terms"') {
+              <gog-checkbox ariaLabel="Accept the terms" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

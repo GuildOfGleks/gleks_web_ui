@@ -4,6 +4,7 @@ import type { DocApi } from '../doc/doc-api';
 import { AUTOCOMPLETE_API } from './autocomplete/autocomplete.api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
+import { CHECKBOX_API } from './checkbox/checkbox.api';
 import { DATEPICKER_API } from './datepicker/datepicker.api';
 import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
@@ -83,5 +84,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
       import('./dropdown-templates/dropdown-templates-page').then((m) => m.DropdownTemplatesPage),
     api: DROPDOWN_TEMPLATES_API,
     tokens: [],
+  },
+  checkbox: {
+    load: () => import('./checkbox/checkbox-page').then((m) => m.CheckboxPage),
+    api: CHECKBOX_API,
+    tokens: ['Checkbox', 'Control metrics'],
   },
 };
