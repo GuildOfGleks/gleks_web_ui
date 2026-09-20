@@ -96,11 +96,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/dialog-page/dialog-page').then((m) => m.DialogPage),
   },
   {
-    path: 'datepicker',
-    loadComponent: () =>
-      import('./pages/datepicker-page/datepicker-page').then((m) => m.DatepickerPage),
-  },
-  {
     path: 'toggle',
     loadComponent: () => import('./pages/toggle-page/toggle-page').then((m) => m.TogglePage),
   },

@@ -1,0 +1,655 @@
+<app-doc-page unit="datepicker">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Every field here is live — press the calendar button to open one. Inside a matrix the panel is clipped by the matrix's own scroller, so the sections below open theirs in the page's own flow instead."
+  >
+    <h3>size × state</h3>
+    <p class="datepicker-page__note">
+      The calendar button is not optional — it is the one affordance that says this field is more
+      than a text box, so it is always there and it is what <code>openCalendarLabel</code> names.
+      The clear button is the opposite: <code>clearable</code> is <code>false</code> by default, as
+      on every control except <code>gog-multiselect</code>.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-datepicker
+          [size]="size"
+          label="Date"
+          [value]="state.value"
+          [disabled]="state.disabled"
+          [errorMessage]="state.errorMessage"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the trailing slot, and the clear button</h3>
+    <p class="datepicker-page__note">
+      <code>[clearable]="true"</code> puts a second button beside the calendar one, and unlike
+      <code>gog-autocomplete</code> it watches the <em>value</em> rather than the text: a half-typed
+      date that has not parsed yet leaves it hidden, because there is nothing committed to clear.
+    </p>
+    <div class="datepicker-page__row">
+      <div class="datepicker-page__field">
+        <gog-datepicker label="clearable unset" [value]="today" />
+      </div>
+      <div class="datepicker-page__field">
+        <gog-datepicker label='[clearable]="true"' [clearable]="true" [value]="today" />
+      </div>
+      <div class="datepicker-page__field">
+        <gog-datepicker
+          label='[clearable]="true", no value'
+          placeholder="dd.MM.yyyy"
+          [clearable]="true"
+        />
+      </div>
+    </div>
+
+    <h3>fullWidth, in a 20rem container</h3>
+    <p class="datepicker-page__note">
+      Full width of its container by default, like every other field. With
+      <code>[fullWidth]="false"</code> the field falls back to the browser's intrinsic width for a
+      text input — this control has no <code>minWidth</code> input, because there is no selected
+      label for it to collapse onto.
+    </p>
+    <div class="datepicker-page__narrow">
+      <gog-datepicker label="fullWidth default (true)" [value]="today" />
+      <gog-datepicker [fullWidth]="false" label='[fullWidth]="false"' [value]="today" />
+    </div>
+
+    <h3>a field with no visible label</h3>
+    <p class="datepicker-page__note">
+      <code>ariaLabel</code> names a field that has no <code>label</code>, and the panel takes the
+      same name — with neither it falls back to the calendar button's own label.
+      <code>placeholder</code> is empty by default, which is why stating the format in it is worth
+      doing.
+    </p>
+    <div class="datepicker-page__row">
+      <div class="datepicker-page__field">
+        <gog-datepicker ariaLabel="Date (no visible label)" placeholder="dd.MM.yyyy" />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="selection"
+    title="Selection"
+    lead="selectionMode decides what value holds: a Date in 'single', a GogDateRange in 'range'."
+  >
+    <h3>single</h3>
+    <div class="datepicker-page__demo">
+      <gog-datepicker
+        label="Date"
+        [clearable]="true"
+        [(value)]="date"
+        (valueChange)="increment('single')"
+      />
+      <code>value: {{ show(date()) }} · {{ count('single') }} valueChange</code>
+    </div>
+
+    <h3>range</h3>
+    <p class="datepicker-page__note">
+      Two months side by side is what makes a range picker usable. The panel stays open between the
+      two presses and hovering previews what the second one will produce; only the second press
+      completes the selection and closes it. Watch the counter: the half-picked range is a
+      <code>valueChange</code> of its own, because a form bound to this field has to see it — a
+      range with a start and no end is what the user currently means.
+    </p>
+    <div class="datepicker-page__demo">
+      <gog-datepicker
+        label="Stay"
+        selectionMode="range"
+        [numberOfMonths]="2"
+        [clearable]="true"
+        [(value)]="range"
+        (valueChange)="increment('range')"
+      />
+      <code>value: {{ show(range()) }} · {{ count('range') }} valueChange</code>
+    </div>
+
+    <h3>min, max, and disabledDates</h3>
+    <p class="datepicker-page__note">
+      <code>min</code> and <code>max</code> bound the range; <code>disabledDates</code> takes a
+      predicate rather than a list, because an array cannot express "weekends" or "public holidays"
+      without the consumer materialising every date first. A disabled day is a disabled
+      <code>&lt;button&gt;</code>: it is announced, and neither the pointer nor Enter takes it.
+      <code>defaultMonth</code> decides which month opens when there is nothing selected yet.
+    </p>
+    <div class="datepicker-page__row">
+      <div class="datepicker-page__field">
+        <gog-datepicker label='[min]="today"' [min]="today" />
+      </div>
+      <div class="datepicker-page__field">
+        <gog-datepicker label="this month only" [min]="monthStart" [max]="monthEnd" />
+      </div>
+      <div class="datepicker-page__field">
+        <gog-datepicker label='[disabledDates]="noWeekends"' [disabledDates]="noWeekends" />
+      </div>
+      <div class="datepicker-page__field">
+        <gog-datepicker
+          label='[defaultMonth]="nextYear"'
+          [defaultMonth]="nextYear"
+          [min]="nextYear"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="time"
+    title="Time"
+    lead="showTime adds a clock under the grid; the day and the time are set independently and neither resets the other."
+  >
+    <p class="datepicker-page__note">
+      <strong>A field with a time does not close when a day is picked</strong> — the clock is below
+      the grid and would be unreachable if it did, so the panel waits for a press outside or
+      <kbd>Esc</kbd>. That is the one behaviour difference the input makes, and it is why
+      <code>format</code> gains <code>HH:mm</code> on its own when <code>showTime</code> is on.
+      <code>minuteStep</code> moves the minute spinner in larger jumps; <code>hourFormat="12"</code>
+      adds the AM/PM toggle.
+    </p>
+    <div class="datepicker-page__row">
+      <div class="datepicker-page__demo">
+        <gog-datepicker label='[showTime]="true"' [showTime]="true" [(value)]="withTime" />
+        <code>value: {{ show(withTime(), 'dd.MM.yyyy HH:mm') }}</code>
+      </div>
+      <div class="datepicker-page__field">
+        <gog-datepicker label='hourFormat="12"' [showTime]="true" hourFormat="12" />
+      </div>
+      <div class="datepicker-page__field">
+        <gog-datepicker
+          label='[minuteStep]="15" [showSeconds]="true"'
+          [showTime]="true"
+          [minuteStep]="15"
+          [showSeconds]="true"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="typing"
+    title="Typing"
+    lead="The field is a real text input: what is written is parsed against format, and what is held is written back in it."
+  >
+    <p class="datepicker-page__note">
+      A pattern rather than a locale format, so what the field prints can always be read back. Three
+      rules are worth knowing, and each is visible in the fields below. A draft that does not parse
+      <strong>leaves the value alone</strong> rather than clearing it — otherwise every keystroke of
+      a date fires a null at an attached form — and blur snaps the text back to whatever the value
+      actually is. An impossible date is rejected rather than rolled over:
+      <code>31.02.2026</code> stays as text and the value does not become 3 March. And
+      <strong>a range field is read-only</strong> whatever <code>allowTextInput</code> says, because
+      there is no pattern for two dates and a dash.
+    </p>
+    <div class="datepicker-page__row">
+      <div class="datepicker-page__demo">
+        <gog-datepicker label="format unset (dd.MM.yyyy)" [(value)]="date" />
+        <code>value: {{ show(date()) }}</code>
+      </div>
+      <div class="datepicker-page__field">
+        <gog-datepicker label='format="yyyy-MM-dd"' format="yyyy-MM-dd" />
+      </div>
+      <div class="datepicker-page__field">
+        <gog-datepicker label='[allowTextInput]="false"' [allowTextInput]="false" [value]="today" />
+      </div>
+      <div class="datepicker-page__field">
+        <gog-datepicker
+          label='selectionMode="range" (read-only too)'
+          selectionMode="range"
+          [numberOfMonths]="2"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="locale"
+    title="Locale & labels"
+    lead="Month and weekday names come from Intl, so a locale is all a translated calendar needs; the nine fixed strings come from GOG_CONFIG.labels."
+  >
+    <h3>locale and firstDayOfWeek</h3>
+    <p class="datepicker-page__note">
+      Open each and compare the header and the weekday row. The first day of the week follows the
+      locale unless <code>firstDayOfWeek</code> overrides it — 0 is Sunday. The date
+      <em>format</em> is deliberately not derived from the locale: it is the pattern in
+      <code>format</code>, so a German app that wants <code>dd.MM.yyyy</code> gets it without
+      asking, and one that wants <code>yyyy-MM-dd</code> says so.
+    </p>
+    <div class="datepicker-page__row">
+      @for (locale of locales; track locale.value) {
+        <div class="datepicker-page__field">
+          <gog-datepicker [label]="locale.name" [locale]="locale.value" [value]="today" />
+        </div>
+      }
+      <div class="datepicker-page__field">
+        <gog-datepicker
+          label='[firstDayOfWeek]="0" (Sunday)'
+          locale="en-GB"
+          [firstDayOfWeek]="0"
+          [value]="today"
+        />
+      </div>
+    </div>
+
+    <h3>the nine labels, and which two the field forwards</h3>
+    <p class="datepicker-page__note">
+      <code>gog-calendar</code> takes an input for each of the strings it renders — the two footer
+      buttons, the four navigation arrows and the three time fields — and each falls back to
+      <code>GOG_CONFIG.labels</code> and then to English.
+      <strong><code>gog-datepicker</code> forwards only two of them</strong>,
+      <code>todayLabel</code> and <code>thisMonthLabel</code>; the other seven can be set on a field
+      only through the config, which is where an app translating its whole calendar would set them
+      anyway. The pair below shows the difference: the same seven strings, once per instance and
+      once through a scope.
+    </p>
+    <div class="datepicker-page__row">
+      <div class="datepicker-page__block">
+        <p class="datepicker-page__note"><code>gog-calendar</code>, labels set per instance</p>
+        <gog-calendar
+          locale="de-DE"
+          todayLabel="Heute"
+          thisMonthLabel="Dieser Monat"
+          previousMonthLabel="Voriger Monat"
+          nextMonthLabel="Nächster Monat"
+          previousYearLabel="Voriges Jahr"
+          nextYearLabel="Nächstes Jahr"
+          [showThisMonthButton]="true"
+          size="sm"
+        />
+      </div>
+      <div class="datepicker-page__block">
+        <p class="datepicker-page__note">
+          <code>gog-datepicker</code>: <code>todayLabel</code> lands, the arrows need the config
+        </p>
+        <gog-datepicker
+          label="Datum"
+          locale="de-DE"
+          todayLabel="Heute"
+          thisMonthLabel="Dieser Monat"
+          [showThisMonthButton]="true"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="panel"
+    title="Panel"
+    lead="The panel is a role='dialog' holding the calendar; it renders inline by default and is clipped by any scrolling or overflow-hidden ancestor."
+  >
+    <h3>appendToBody</h3>
+    <p class="datepicker-page__note">
+      Both fields below sit in a box with <code>overflow: hidden</code> and are pinned to
+      <code>dropdownDirection="down"</code>, so which way they open does not depend on where the
+      page happens to be scrolled: open both and only the appended one survives the box. The
+      appended panel follows the field on scroll and resize, and carries a scoped
+      <code>data-theme</code> with it. Unlike the dropdown controls there is no
+      <code>dropdownWidth</code> or <code>dropdownMaxHeight</code> here — a month grid is
+      intrinsically sized, and <code>--gog-datepicker-panel-width</code> is the knob if it needs
+      one.
+    </p>
+    <div class="datepicker-page__row">
+      <div class="datepicker-page__clipped">
+        <p class="datepicker-page__note">overflow: hidden, panel inline</p>
+        <gog-datepicker label="Date" dropdownDirection="down" />
+      </div>
+      <div class="datepicker-page__clipped">
+        <p class="datepicker-page__note">overflow: hidden, [appendToBody]="true"</p>
+        <gog-datepicker label="Date" dropdownDirection="down" [appendToBody]="true" />
+      </div>
+    </div>
+
+    <h3>inline</h3>
+    <p class="datepicker-page__note">
+      No field and no panel — <code>[inline]="true"</code> renders literally
+      <code>gog-calendar</code>, which is why that component is exported on its own. Every input
+      that describes the grid still applies; the ones that describe the field (<code>label</code>,
+      <code>clearable</code>, <code>floatLabel</code>, <code>appendToBody</code>) have nothing to
+      act on.
+    </p>
+    <div class="datepicker-page__demo">
+      <gog-datepicker [inline]="true" [(value)]="inlineDate" />
+      <code>value: {{ show(inlineDate()) }}</code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="calendar"
+    title="gog-calendar on its own"
+    lead="The grid is a component in its own right: an always-visible calendar, and the one place gogDateSelect exists."
+  >
+    <h3>valueChange and gogDateSelect</h3>
+    <p class="datepicker-page__note">
+      The two outputs are not the same event. <code>valueChange</code> fires for every change,
+      including the first press of a range; <code>gogDateSelect</code> fires only when the selection
+      is <em>complete</em> — a day in single mode, both ends in range mode — which is what the field
+      uses to decide when to close. <strong>Only the calendar has it</strong>: bind it on
+      <code>gog-datepicker</code> and there is no such output.
+    </p>
+    <div class="datepicker-page__row">
+      <div class="datepicker-page__demo">
+        <gog-calendar
+          [(value)]="calendarDate"
+          (valueChange)="increment('calendar')"
+          (gogDateSelect)="recordSelect($event)"
+        />
+        <code>value: {{ show(calendarDate()) }} · {{ count('calendar') }} valueChange</code>
+      </div>
+      <div class="datepicker-page__demo">
+        <gog-calendar
+          selectionMode="range"
+          [numberOfMonths]="2"
+          size="sm"
+          (gogDateSelect)="recordSelect($event)"
+        />
+        <code>
+          {{ count('select') }} gogDateSelect from either calendar · last: {{ lastSelect() }} — the
+          range one fires once, on the second press
+        </code>
+      </div>
+    </div>
+
+    <h3>the two footer buttons</h3>
+    <p class="datepicker-page__note">
+      Deliberately two controls, not one. <strong>Today</strong> <em>selects</em> today's date, and
+      the view follows because the selection is what the calendar opens on.
+      <strong>This month</strong> only moves the view back and leaves the selection alone, for
+      browsing far from today without committing to anything. One button doing both read as "take me
+      back" to one person and "set it to today" to another, and no wording fixed that. Where
+      <code>min</code> puts today out of range, <strong>Today</strong> is disabled rather than
+      silently doing nothing.
+    </p>
+    <div class="datepicker-page__row">
+      <div class="datepicker-page__block">
+        <p class="datepicker-page__note">default: Today only</p>
+        <gog-calendar size="sm" />
+      </div>
+      <div class="datepicker-page__block">
+        <p class="datepicker-page__note">[showThisMonthButton]="true"</p>
+        <gog-calendar size="sm" [showThisMonthButton]="true" />
+      </div>
+      <div class="datepicker-page__block">
+        <p class="datepicker-page__note">[min]="nextYear": Today is disabled</p>
+        <gog-calendar
+          size="sm"
+          [min]="nextYear"
+          [defaultMonth]="nextYear"
+          [showThisMonthButton]="true"
+        />
+      </div>
+      <div class="datepicker-page__block">
+        <p class="datepicker-page__note">[showTodayButton]="false": no footer at all</p>
+        <gog-calendar size="sm" [showTodayButton]="false" />
+      </div>
+    </div>
+
+    <h3>width in a block container</h3>
+    <p class="datepicker-page__note">
+      The case a flex row hides. Each calendar below is the only child of a plain full-width block:
+      the grid is intrinsically sized, so without a cap the header would spread the whole way across
+      while the days huddled at the start.
+      <code>--gog-calendar-max-width</code> is <code>max-content</code> by default and follows
+      <code>numberOfMonths</code>, <code>showTime</code> and the size variants on its own; set it to
+      <code>100%</code> for a calendar that should fill its container.
+    </p>
+    <div class="datepicker-page__stack">
+      <p class="datepicker-page__note">default</p>
+      <gog-calendar [value]="calendarDate()" />
+
+      <p class="datepicker-page__note">two months and a time — same cap, no numbers involved</p>
+      <gog-calendar [numberOfMonths]="2" [showTime]="true" />
+
+      <p class="datepicker-page__note">
+        <code>--gog-calendar-max-width: 100%</code>
+      </p>
+      <gog-calendar class="datepicker-page__stretched" />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="float-label"
+    title="Float label"
+    lead="'none' keeps the label above the field; 'in', 'on' and 'over' rest it inside until focus or a value moves it clear."
+  >
+    <h3>variant × value</h3>
+    <app-doc-matrix rowAxis="variant" colAxis="state">
+      <ng-template
+        appDocCell
+        [rows]="floatLabelVariants"
+        [cols]="floatStates"
+        let-variant
+        let-state="col"
+      >
+        <gog-datepicker
+          [floatLabel]="variant"
+          label="Date"
+          placeholder="dd.MM.yyyy"
+          [value]="state.value"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>floatLabelShowPlaceholder</h3>
+    <p class="datepicker-page__note">
+      Focus the field below: the format appears under the floated label once it has somewhere to
+      float to. Without it the placeholder stays hidden the whole time, because the resting label is
+      already sitting where it would be.
+    </p>
+    <div class="datepicker-page__demo">
+      <gog-datepicker
+        floatLabel="over"
+        [floatLabelShowPlaceholder]="true"
+        label="Date"
+        placeholder="dd.MM.yyyy"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="value is model-bound: [(value)] and [value] / (valueChange) both work, and the control is a full ControlValueAccessor, so formControl works the same way."
+  >
+    <h3>keyboard</h3>
+    <p class="datepicker-page__note">
+      From the field: <kbd>↓</kbd> or <kbd>Enter</kbd> opens the panel, <kbd>Esc</kbd> closes it —
+      from anywhere inside it, the calendar button and the day grid included, and the field takes
+      the focus back. Inside the grid the arrows move a day at a time and a week at a time,
+      <kbd>Home</kbd> and <kbd>End</kbd> go to the ends of the week, <kbd>PageUp</kbd> and
+      <kbd>PageDown</kbd> change the month — with <kbd>Shift</kbd>, the year — and
+      <kbd>Enter</kbd> or <kbd>Space</kbd> picks. The 42 day cells are one tab stop, not 42: a
+      roving <code>tabindex</code> keeps exactly one of them tabbable, the arrows move it, and the
+      focus ring goes with it.
+    </p>
+    <p class="datepicker-page__note">
+      Two of those sentences were only true from 21.15.0, and this page is why. Opening with the
+      calendar button left focus on the button, where <kbd>Esc</kbd> was not handled at all — the
+      dialog could be opened with the keyboard and not dismissed with it. And the arrows moved the
+      roving <code>tabindex</code> without moving the focus, so the ring stood still while the
+      highlight walked away and <kbd>Enter</kbd> committed a day the ring was not on.
+    </p>
+
+    <h3>formControl, errorDisplay="auto"</h3>
+    <p class="datepicker-page__note">
+      Open the panel and close it again without choosing anything: the control decides the error
+      timing from its own touched and invalid state — closing the panel is what marks it touched, as
+      blurring the field does.
+    </p>
+    <div class="datepicker-page__demo">
+      <gog-datepicker
+        label="Date (reactive form)"
+        placeholder="dd.MM.yyyy"
+        [formControl]="formControl"
+        errorMessage="Choose a date"
+        errorDisplay="auto"
+        [clearable]="true"
+      />
+      <div class="datepicker-page__actions">
+        <button type="button" (click)="formControl.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="toggleFormDisabled()">
+          {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+        </button>
+      </div>
+      <code>
+        value: {{ show(formControl.value) }} · touched: {{ formControl.touched }} · disabled:
+        {{ formControl.disabled }}
+      </code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre
+      class="datepicker-page__config"
+    ><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <p class="datepicker-page__note">
+      This is the component that earns the config most: an app states its locale, its first day of
+      week and its date format once, and every field agrees. Open the second column's two fields and
+      compare the weekday row — <code>So Mo Di …</code> under the scope — and note that the week
+      still starts on Sunday, which <code>de-DE</code> would never choose: that is
+      <code>firstDayOfWeek: 0</code> overriding the locale, one layer down. The third column shows
+      the format the field prints and parses, and the calendar button's label comes from the same
+      scope.
+    </p>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-datepicker-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-datepicker label="Date" [value]="today" />
+              }
+              @case ('locale and firstDayOfWeek unset') {
+                <gog-datepicker label="Date" [value]="today" />
+              }
+              @case ('format unset') {
+                <gog-datepicker label="Date" [value]="today" [clearable]="true" />
+              }
+            }
+          </app-datepicker-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-datepicker label="Date" [value]="today" />
+            }
+            @case ('locale and firstDayOfWeek unset') {
+              <gog-datepicker label="Date" [value]="today" />
+            }
+            @case ('format unset') {
+              <gog-datepicker label="Date" [value]="today" [clearable]="true" />
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The trigger is a text input that owns a dialog: aria-haspopup='dialog' rather than a combobox, because what opens is a grid of days and not a list of options."
+  >
+    <h3>input attributes</h3>
+    <p class="datepicker-page__note">
+      Read from the live DOM, so <code>aria-expanded</code> follows the panel — open one and watch
+      it flip. Two rows are worth reading against each other: <code>errorMessage</code> puts both
+      <code>aria-invalid="true"</code> and an <code>aria-describedby</code> pointing at the message,
+      and <code>selectionMode="range"</code> adds <code>readonly</code>, which is how the field says
+      a range cannot be typed.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="a11yColumns" let-state>
+        <app-doc-attrs target=".gog-datepicker__control">
+          @switch (state) {
+            @case ('default') {
+              <gog-datepicker label="Date" />
+            }
+            @case ('[value]="today"') {
+              <gog-datepicker label="Date" [value]="today" />
+            }
+            @case ('[disabled]="true"') {
+              <gog-datepicker label="Date" [disabled]="true" />
+            }
+            @case ('errorMessage="Required"') {
+              <gog-datepicker label="Date" errorMessage="Required" />
+            }
+            @case ('selectionMode="range"') {
+              <gog-datepicker label="Date" selectionMode="range" />
+            }
+            @case ('label unset, ariaLabel="Date"') {
+              <gog-datepicker ariaLabel="Date" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>the calendar button</h3>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="buttonA11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target=".gog-datepicker__toggle">
+          @switch (state) {
+            @case ('openCalendarLabel unset') {
+              <gog-datepicker label="Date" />
+            }
+            @case ('openCalendarLabel="Pick a date"') {
+              <gog-datepicker label="Date" openCalendarLabel="Pick a date" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>the clear button</h3>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="clearA11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target=".gog-datepicker__clear">
+          @switch (state) {
+            @case ('clearAriaLabel unset') {
+              <gog-datepicker label="Date" [clearable]="true" [value]="today" />
+            }
+            @case ('clearAriaLabel="Clear the date"') {
+              <gog-datepicker
+                label="Date"
+                [clearable]="true"
+                clearAriaLabel="Clear the date"
+                [value]="today"
+              />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>panel and grid</h3>
+    <p class="datepicker-page__note">
+      The panel exists only while it is open, so the first two lines read "no element matches" until
+      the field beside them is opened. The grid is a real <code>role="grid"</code> of
+      <code>gridcell</code>s — a month is two-dimensional, and that is what tells assistive tech the
+      arrows mean "next day" and "next week". Today's cell carries <code>aria-current="date"</code>,
+      a selected one sits in a cell with <code>aria-selected="true"</code>, and a day outside
+      <code>min</code>/<code>max</code> or excluded by <code>disabledDates</code> is a disabled
+      button.
+    </p>
+    <div class="datepicker-page__stack">
+      <app-doc-attrs target='[role="dialog"]'>
+        <gog-datepicker label="Date (open me)" />
+      </app-doc-attrs>
+      <app-doc-attrs target='[role="grid"]'>
+        <gog-calendar [value]="calendarDate()" size="sm" />
+      </app-doc-attrs>
+      <app-doc-attrs target='[aria-current="date"]'>
+        <gog-calendar size="sm" />
+      </app-doc-attrs>
+      <app-doc-attrs target=".gog-calendar__day[disabled]">
+        <gog-calendar size="sm" [disabledDates]="noWeekends" />
+      </app-doc-attrs>
+    </div>
+  </app-doc-section>
+</app-doc-page>

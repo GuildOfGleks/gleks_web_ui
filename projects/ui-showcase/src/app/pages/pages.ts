@@ -4,6 +4,7 @@ import type { DocApi } from '../doc/doc-api';
 import { AUTOCOMPLETE_API } from './autocomplete/autocomplete.api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
+import { DATEPICKER_API } from './datepicker/datepicker.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { SELECT_API } from './select/select.api';
@@ -66,5 +67,14 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./autocomplete/autocomplete-page').then((m) => m.AutocompletePage),
     api: AUTOCOMPLETE_API,
     tokens: ['Autocomplete', 'Float label geometry (input / textarea / select / multiselect)'],
+  },
+  datepicker: {
+    load: () => import('./datepicker/datepicker-page').then((m) => m.DatepickerPage),
+    api: DATEPICKER_API,
+    tokens: [
+      'Datepicker (the field; the grid inside it is themed by --gog-calendar-*)',
+      'Calendar (the month grid inside gog-datepicker, and gog-calendar on its own)',
+      'Float label geometry (input / textarea / select / multiselect)',
+    ],
   },
 };
