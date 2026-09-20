@@ -309,6 +309,22 @@ describe('AutocompleteComponent', () => {
       expect(field().value).toBe('Angular');
     });
 
+    /*
+     * Escape used to restore the selected label whatever the mode, so a create-as-you-type field
+     * lost the half-written word the moment its author pressed the key that closes the panel.
+     * Blur had the guard from the start; the same rule simply had not been written twice.
+     */
+    it('should keep free text on Escape when switched off', () => {
+      fixture.componentRef.setInput('forceSelection', false);
+      fixture.detectChanges();
+
+      type('my own value');
+      keydown('Escape');
+
+      expect(component.isOpen()).toBe(false);
+      expect(field().value).toBe('my own value');
+    });
+
     it('should keep free text when switched off', () => {
       fixture.componentRef.setInput('forceSelection', false);
       fixture.detectChanges();

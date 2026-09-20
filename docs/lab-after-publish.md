@@ -61,6 +61,14 @@ build.
   it, the key fired `gogRowClick` instead). Nothing on the site claims otherwise, checked; worth
   knowing only if a page describes the keyboard behaviour of a selectable, interactive table.
 
+- **`gog-autocomplete` with `[forceSelection]="false"`: Escape no longer empties the field** —
+  it only closes the panel, matching what blur already did. Two places on the Autocomplete page
+  say the old rule by omission and should say the new one: the "Free text (`forceSelection`)"
+  card's prose in `autocomplete-doc-page.html` ("the text is then left alone on blur" → "left
+  alone by blur and by Escape, which only closes the panel"), and the same sentence in the
+  `forceSelection` API row in `autocomplete-doc-page.ts`. The keyboard paragraph further down
+  ("Escape closes the panel") is already right for both modes.
+
 - **The stylesheets are 45% lighter**, so the comparison page's CSS figures are stale the moment
   21.15.0 installs: `theme.css` 22.5 KB and the bundled `index.css` 28.9 KB gzipped, against the
   40.8 KB and 51.4 KB `compare-full.md` measured on 2026-09-13. Update the CSS table, the short

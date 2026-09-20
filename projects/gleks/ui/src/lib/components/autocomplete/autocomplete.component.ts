@@ -109,8 +109,9 @@ export class AutocompleteComponent<
    * back to it.
    *
    * Off, what the user typed is itself meaningful — a create-as-you-type flow. The text is left
-   * alone on blur and `value` is dropped as soon as it stops matching, so the two never
-   * disagree. Read the typed text from `gogSearch` rather than from `value`.
+   * alone by blur and by Escape, which then only closes the panel, and `value` is dropped as
+   * soon as it stops matching, so the two never disagree. Read the typed text from `gogSearch`
+   * rather than from `value`.
    */
   readonly forceSelection = input(true);
 
@@ -346,7 +347,11 @@ export class AutocompleteComponent<
         event.preventDefault();
         this.close();
         this.editing = false;
-        this.restoreSelectedText();
+        // Same rule as blur, and for the same reason: with `forceSelection` off the typed text
+        // *is* the answer, so Escape closes the panel and leaves it alone. Restoring here would
+        // wipe what the user is in the middle of writing, which is the one thing that mode
+        // promises not to do.
+        if (this.forceSelection()) this.restoreSelectedText();
         return;
       }
       case 'Tab': {

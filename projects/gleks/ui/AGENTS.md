@@ -864,8 +864,9 @@ Model: `value: TValue | null`. CVA: yes.
 
 **`forceSelection` matters.** On (default): the field always ends up reflecting a real
 selection — free-typed text that matches nothing snaps back on blur/Escape. Off: what the user
-typed is itself meaningful (a create-as-you-type flow) — read the typed text from `gogSearch`,
-not from `value`, since `value` clears the moment the text stops matching the selection.
+typed is itself meaningful (a create-as-you-type flow), so neither blur nor Escape touches the
+text — Escape only closes the panel — and the typed text is read from `gogSearch`, not from
+`value`, which clears the moment the text stops matching the selection.
 
 ```html
 <gog-autocomplete

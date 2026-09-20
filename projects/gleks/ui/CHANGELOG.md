@@ -45,6 +45,15 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **Escape wiped the typed text in a `gog-autocomplete` with `[forceSelection]="false"`.** That
+  mode exists for a create-as-you-type field, where what the user types _is_ the answer — and
+  Escape, the key that closes the panel, restored the selected label regardless, which in that mode
+  is the empty string. A half-written word was gone the moment its author dismissed the suggestion
+  list. Blur already had the guard (`if (this.forceSelection())`); the Escape branch simply never
+  got the same line, so one of the two ways out of an edit obeyed the input and the other did not.
+  Escape now only closes the panel when the mode is off, and still restores the selection when it
+  is on. Found on the showcase's new Autocomplete page, in a browser.
+
 - **`gog-multiselect` never told assistive tech it was invalid.** Its trigger carried no
   `aria-invalid`, so a screen reader read an errored field exactly like a valid one — every other
   control in the library (`gog-inputfield`, `gog-textarea`, `gog-select`, `gog-autocomplete`,
