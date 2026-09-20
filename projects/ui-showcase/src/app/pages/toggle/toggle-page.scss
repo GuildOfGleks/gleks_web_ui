@@ -1,0 +1,60 @@
+.toggle-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--gog-space-24);
+  margin-block-end: var(--gog-space-16);
+  max-width: 48rem;
+}
+
+.toggle-page__narrow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  width: 20rem;
+  max-width: 100%;
+  margin-block-end: var(--gog-space-16);
+  padding: var(--gog-space-8);
+  border: 1px dashed var(--gog-border-color);
+}
+
+.toggle-page__demo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  max-width: 24rem;
+}
+
+// A settings list: what fullWidth and labelPosition are actually for.
+.toggle-page__settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-4);
+  width: 22rem;
+  max-width: 100%;
+  margin-block-end: var(--gog-space-16);
+  padding: var(--gog-space-8);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+}
+
+.toggle-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-8);
+}
+
+.toggle-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+.toggle-page__config {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+}

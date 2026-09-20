@@ -92,10 +92,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/dialog-page/dialog-page').then((m) => m.DialogPage),
   },
   {
-    path: 'toggle',
-    loadComponent: () => import('./pages/toggle-page/toggle-page').then((m) => m.TogglePage),
-  },
-  {
     path: 'tabs',
     loadComponent: () => import('./pages/tabs-page/tabs-page').then((m) => m.TabsPage),
   },

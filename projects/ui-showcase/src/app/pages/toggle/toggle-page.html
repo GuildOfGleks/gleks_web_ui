@@ -1,0 +1,220 @@
+<app-doc-page unit="toggle">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Four states across five sizes, all live — a switch has no third state, which is the first thing that separates it from a checkbox."
+  >
+    <h3>size × state</h3>
+    <p class="toggle-page__note">
+      There is no <code>indeterminate</code> here and there should not be: a setting is on or it is
+      off, and "partly on" is not an answer it can give. The track, the thumb and the label scale
+      from <code>--gog-toggle-&lt;size&gt;-*</code> —
+      <strong>this control has its own scale</strong>, unlike <code>gog-checkbox</code> and
+      <code>gog-radio-group</code>, which share one; only the padding is borrowed from theirs.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-toggle
+          [size]="size"
+          label="Notifications"
+          [checked]="state.checked"
+          [disabled]="state.disabled"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the label, and which side it sits on</h3>
+    <p class="toggle-page__note">
+      The control is a <code>&lt;label&gt;</code> around a real
+      <code>&lt;input type="checkbox"&gt;</code>, so the text is the accessible name with no
+      <code>for</code> to wire up and the whole row is the hit target.
+      <code>labelPosition="start"</code> puts the text first, which is what a settings list wants:
+      the switches then line up on one edge instead of after labels of different lengths.
+    </p>
+    <app-doc-matrix rowAxis="labelPosition" colAxis="">
+      <ng-template appDocCell [rows]="labelPositions" [cols]="controlColumn" let-row>
+        <gog-toggle [labelPosition]="row.value" label="Notifications" [checked]="true" />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>fullWidth, and what a settings list looks like</h3>
+    <p class="toggle-page__note">
+      Off by default, so a switch is as wide as its label. Turned on it fills its container, and
+      with <code>labelPosition="start"</code> that is the row every settings screen is made of —
+      label at one edge, switch at the other, the whole line pressable.
+    </p>
+    <div class="toggle-page__settings">
+      <gog-toggle
+        [fullWidth]="true"
+        labelPosition="start"
+        label="Email notifications"
+        [(checked)]="notifications"
+      />
+      <gog-toggle
+        [fullWidth]="true"
+        labelPosition="start"
+        label="Share anonymous usage data"
+        [(checked)]="telemetry"
+      />
+      <gog-toggle
+        [fullWidth]="true"
+        labelPosition="start"
+        label="Beta features"
+        [(checked)]="betaFeatures"
+        [disabled]="true"
+      />
+    </div>
+
+    <h3>onLabel and offLabel — text inside the track</h3>
+    <p class="toggle-page__note">
+      The one thing a checkbox genuinely cannot do, and what makes a switch readable at a glance in
+      a dense list. <strong>Both labels are always in the DOM</strong>, so the track is as wide as
+      the wider of the two and cannot jump as the switch flips — the inactive one is faded, not
+      removed. Keep them short, and do not put the state's meaning only there: they are
+      <code>aria-hidden</code>, because the role already announces on and off.
+    </p>
+    <div class="toggle-page__row">
+      <gog-toggle label="ON / OFF" onLabel="ON" offLabel="OFF" [checked]="true" />
+      <gog-toggle label="Yes / No" onLabel="YES" offLabel="NO" />
+      <gog-toggle label="only one of the two set" onLabel="LIVE" />
+      <gog-toggle size="slg" label="slg" onLabel="ON" offLabel="OFF" [checked]="true" />
+    </div>
+
+    <h3>a switch with no visible label</h3>
+    <p class="toggle-page__note">
+      <code>ariaLabel</code> names it when the surrounding row already says what it is — a table
+      cell, a toolbar. It is the only case that input applies to.
+    </p>
+    <div class="toggle-page__row">
+      <gog-toggle ariaLabel="Dark mode" [checked]="true" />
+      <gog-toggle ariaLabel="Compact rows" />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="checked is model-bound: [(checked)] and [checked] / (checkedChange) both work, and the control is a full ControlValueAccessor, so formControl works the same way."
+  >
+    <h3>[(checked)]</h3>
+    <p class="toggle-page__note">
+      A switch takes effect immediately — there is no Save button between the press and the setting,
+      which is the behavioural half of the difference from a checkbox. That makes
+      <code>checkedChange</code> the place to do the work, and it means a switch belongs to
+      something that can actually apply at once.
+    </p>
+    <div class="toggle-page__demo">
+      <gog-toggle
+        label="Dark mode"
+        onLabel="ON"
+        offLabel="OFF"
+        [(checked)]="bound"
+        (checkedChange)="increment('bound')"
+      />
+      <code>checked: {{ bound() }} · {{ count('bound') }} checkedChange</code>
+    </div>
+
+    <h3>formControl</h3>
+    <p class="toggle-page__note">
+      Same accessor as every other control here: the form drives <code>checked</code>, and disabling
+      through the form ends up in <code>disabled</code> on the native input, exactly where the input
+      would have put it.
+    </p>
+    <div class="toggle-page__demo">
+      <gog-toggle label="Auto-update" [formControl]="formControl" />
+      <div class="toggle-page__actions">
+        <button type="button" (click)="formControl.setValue(!formControl.value)">
+          setValue(!value)
+        </button>
+        <button type="button" (click)="toggleFormDisabled()">
+          {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+        </button>
+      </div>
+      <code>
+        value: {{ formControl.value }} · touched: {{ formControl.touched }} · disabled:
+        {{ formControl.disabled }}
+      </code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre class="toggle-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-toggle-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-toggle label="Notifications" [checked]="true" />
+              }
+              @case ('size="sm"') {
+                <gog-toggle size="sm" label="Notifications" [checked]="true" />
+              }
+            }
+          </app-toggle-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-toggle label="Notifications" [checked]="true" />
+            }
+            @case ('size="sm"') {
+              <gog-toggle size="sm" label="Notifications" [checked]="true" />
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="role='switch' on a native checkbox: it is announced 'switch, on' rather than 'checkbox, checked', and everything else still comes from the platform."
+  >
+    <h3>input attributes</h3>
+    <p class="toggle-page__note">
+      Read from the live DOM. The role is the only ARIA on the element — the state is the input's
+      own <code>checked</code> property, which is why no <code>aria-checked</code> appears here and
+      why <kbd>Space</kbd>, form submission and a <code>:checked</code> selector all keep working.
+      The track, the thumb and the two state labels are <code>aria-hidden</code>: they are the
+      painting, and painting it differently is the entire difference from <code>gog-checkbox</code>.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target=".gog-toggle__input">
+          @switch (state) {
+            @case ('default') {
+              <gog-toggle label="Dark mode" />
+            }
+            @case ('[checked]="true"') {
+              <gog-toggle label="Dark mode" [checked]="true" />
+            }
+            @case ('[disabled]="true"') {
+              <gog-toggle label="Dark mode" [disabled]="true" />
+            }
+            @case ('onLabel / offLabel set') {
+              <gog-toggle label="Dark mode" onLabel="ON" offLabel="OFF" [checked]="true" />
+            }
+            @case ('label unset, ariaLabel="Dark mode"') {
+              <gog-toggle ariaLabel="Dark mode" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>when to reach for this and when for a checkbox</h3>
+    <p class="toggle-page__note">
+      A switch answers "is this setting on" and applies at once; a checkbox answers "is this one of
+      the things you selected" and waits for the form around it. That is why this component has no
+      <code>indeterminate</code>, no error line and no group: a list of switches is a list of
+      independent settings, while a list of checkboxes is usually one answer made of several parts.
+    </p>
+  </app-doc-section>
+</app-doc-page>

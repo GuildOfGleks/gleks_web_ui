@@ -10,6 +10,7 @@ import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { SELECT_API } from './select/select.api';
+import { TOGGLE_API } from './toggle/toggle.api';
 import { TEXTAREA_API } from './textarea/textarea.api';
 
 /** What `app-doc-page` renders on its own for a unit, after the page's hand-built sections. */
@@ -89,5 +90,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./checkbox/checkbox-page').then((m) => m.CheckboxPage),
     api: CHECKBOX_API,
     tokens: ['Checkbox', 'Control metrics'],
+  },
+  toggle: {
+    load: () => import('./toggle/toggle-page').then((m) => m.TogglePage),
+    api: TOGGLE_API,
+    tokens: ['Toggle'],
   },
 };
