@@ -44,6 +44,30 @@ not worth carrying here.
   field already receives the event to close on; re-emitting it is one line. Decide the two
   together: they are the same question about how much of the calendar a field should expose.
 
+- **`gogDropdownChevron` behaves three different ways in the three components that accept it.**
+  Found 2026-09-20 while building the rebuilt showcase's Dropdown templates page, and measured in
+  Chrome with the transition disabled — a hidden tab pauses transitions, so the computed
+  `transform` read mid-flight is the seed value and says nothing.
+
+  | host               | with a custom chevron                                                |
+  | ------------------ | -------------------------------------------------------------------- |
+  | `gog-multiselect`  | turns 180° with the panel — `.gog-ms__arrow--up` follows `isOpen()`  |
+  | `gog-select`       | never turns — `--auto-rotate` is applied only while no slot is given |
+  | `gog-autocomplete` | never rendered at all — the template has no chevron element          |
+
+  The select's behaviour is defensible on its own (an arbitrary glyph is not necessarily a
+  chevron, and turning a sort icon upside down is wrong), the multiselect's is defensible on its
+  own (the open state must be visible whatever the glyph) — but they cannot both be right for the
+  same directive, and nothing in the JSDoc says which one a consumer is getting. The select also
+  hands the template no context, so a consumer cannot draw the state themselves without reaching
+  for `.gog-select--open` in their own stylesheet, which is the kind of internal class the styling
+  rules tell them not to depend on.
+
+  **Three ways out**, in increasing cost: document the split and leave it; give both hosts the
+  select's rule and let the template own the state, adding an `open` field to the chevron
+  context so it can; or give both the multiselect's rule and say the slot is for a chevron. The
+  autocomplete half is the entry below — it is the same inheritance leak.
+
 - **`gog-autocomplete` publishes four inputs that are read by nothing, and a slot that renders
   nowhere.** Found 2026-09-20 while building the rebuilt showcase's Autocomplete page, whose API
   table has to list every compiled input and so could not leave them out.
