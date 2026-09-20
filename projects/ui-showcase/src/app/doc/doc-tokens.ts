@@ -19,6 +19,12 @@ import { GOG_TOKEN_GROUPS, ThemeService } from '@guildofgleks/ui';
 @Component({
   selector: 'app-doc-tokens',
   template: `
+    @if (groups().length === 0) {
+      <p class="doc-tokens__none">
+        This unit declares no tokens of its own. It renders inside another component, which is
+        themed by that component's own group.
+      </p>
+    }
     @for (group of groups(); track group.section) {
       <h3>{{ group.section }} · {{ group.tokens.length }}</h3>
       <div class="doc-api__scroll">
@@ -49,6 +55,12 @@ import { GOG_TOKEN_GROUPS, ThemeService } from '@guildofgleks/ui';
           </tbody>
         </table>
       </div>
+    }
+  `,
+  styles: `
+    .doc-tokens__none {
+      margin: 0;
+      color: var(--gog-muted-text-color);
     }
   `,
   styleUrl: './doc-table.scss',
