@@ -61,6 +61,13 @@ build.
   it, the key fired `gogRowClick` instead). Nothing on the site claims otherwise, checked; worth
   knowing only if a page describes the keyboard behaviour of a selectable, interactive table.
 
+- **The Datepicker page can state a keyboard contract now that it is whole** (21.15.0 fixed both
+  halves): <kbd>Esc</kbd> closes the panel from anywhere inside it — the calendar button and the
+  day grid included — and returns focus to the field, and the grid's arrows move the focus ring
+  and not only the roving `tabindex`. The page says nothing about the keyboard today, which was
+  the right silence while two of those sentences were false; `AGENTS.md`'s datepicker section now
+  carries the short version to copy from.
+
 - **`gog-autocomplete` with `[forceSelection]="false"`: Escape no longer empties the field** —
   it only closes the panel, matching what blur already did. Two places on the Autocomplete page
   say the old rule by omission and should say the new one: the "Free text (`forceSelection`)"

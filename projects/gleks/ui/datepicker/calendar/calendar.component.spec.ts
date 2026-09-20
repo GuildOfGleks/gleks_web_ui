@@ -274,6 +274,30 @@ describe('CalendarComponent', () => {
       expect(focused()?.textContent?.trim()).toBe(String(Number(before) + 8));
     });
 
+    /*
+     * The roving tabindex moved and the DOM focus did not: the focus move ran in a microtask,
+     * before the render that updates `tabindex`, so it re-focused the cell the arrow had just
+     * left. A sighted keyboard user saw the ring stand still while the highlight walked away,
+     * and Enter then committed the highlighted day rather than the ringed one.
+     */
+    it('should move the DOM focus with the arrows, not only the tab stop', async () => {
+      const first = host().querySelector<HTMLElement>('.gog-calendar__day[tabindex="0"]')!;
+      first.focus();
+
+      // Deliberately not `gridKeydown`, which renders synchronously and so hides the bug: in an
+      // application the render is scheduled, and anything queued as a microtask by the handler
+      // runs first, against the DOM the key press has not changed yet.
+      host()
+        .querySelector('.gog-calendar__grid')!
+        .dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      const moved = host().querySelector<HTMLElement>('.gog-calendar__day[tabindex="0"]')!;
+      expect(moved).not.toBe(first);
+      expect(document.activeElement).toBe(moved);
+    });
+
     it('should page by month with PageDown and by year with Shift+PageDown', () => {
       gridKeydown('PageDown');
       expect(title()).toBe('July 2026');

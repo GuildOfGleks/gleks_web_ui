@@ -83,6 +83,7 @@
           [attr.aria-expanded]="isOpen()"
           [attr.aria-controls]="panelId()"
           (click)="toggle()"
+          (keydown)="onEscapeKeydown($event)"
         >
           <gog-icon name="calendar" />
         </button>
@@ -117,7 +118,11 @@
   overlay when `appendToBody` is set, which also copies any scoped `data-theme` across.
 -->
 <ng-template #panelTpl>
-  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events -- (click) here is housekeeping stopPropagation, not an interactive handler; the focusable, keyboard-operable elements are the calendar's own grid and buttons -->
+  <!--
+    (click) is housekeeping stopPropagation and (keydown) is Escape, which a dialog owes its
+    keyboard users wherever focus sits inside it. The real interactive elements are the
+    calendar's own grid and buttons.
+  -->
   <div
     [id]="panelId()"
     class="gog-datepicker__panel"
@@ -129,6 +134,7 @@
     [style.left.px]="resolvedAppendToBody() ? panelPlacement()?.left : null"
     [style.z-index]="dropdownZIndex()"
     (click)="$event.stopPropagation()"
+    (keydown)="onEscapeKeydown($event)"
   >
     <gog-calendar
       [value]="value()"

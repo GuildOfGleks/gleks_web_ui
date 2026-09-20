@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  Injector,
+  afterNextRender,
   computed,
   effect,
   inject,
@@ -157,6 +159,8 @@ export class CalendarComponent {
   readonly gogDateSelect = output<GogDatepickerValue>();
 
   private readonly elRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  /** Only for `afterNextRender` below, which is called from event handlers. */
+  private readonly injector = inject(Injector);
   private readonly globalConfig = inject(GOG_CONFIG);
 
   /**
@@ -534,16 +538,24 @@ export class CalendarComponent {
    * Moves the DOM focus onto the newly focused cell, but only after a key or button press —
    * never in response to the selection changing, which would steal focus from whatever the
    * consumer is doing elsewhere on the page.
+   *
+   * `afterNextRender`, not a microtask: the cell to focus is found by the roving `tabindex`,
+   * and that attribute is only correct once the signal change has been rendered. A microtask
+   * runs before that, so it re-focused the row the arrow had just left — the highlight moved
+   * and the focus ring did not, and Enter then committed a day the ring was not on.
    */
   private applyPendingFocus(): void {
     if (!this.pendingFocus) return;
     this.pendingFocus = false;
 
-    queueMicrotask(() => {
-      this.elRef.nativeElement
-        .querySelector<HTMLElement>('.gog-calendar__day[tabindex="0"]')
-        ?.focus();
-    });
+    afterNextRender(
+      () => {
+        this.elRef.nativeElement
+          .querySelector<HTMLElement>('.gog-calendar__day[tabindex="0"]')
+          ?.focus();
+      },
+      { injector: this.injector },
+    );
   }
 
   protected isFocusedDay(date: Date): boolean {

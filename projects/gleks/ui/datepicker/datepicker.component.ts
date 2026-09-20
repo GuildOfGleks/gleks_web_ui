@@ -415,6 +415,24 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
     this.onTouchedFn();
   }
 
+  /**
+   * Escape, from anywhere the panel can be reached with a keyboard.
+   *
+   * The field's own handler is not enough: pressing the calendar button leaves focus on the
+   * button, and tabbing from there goes into the grid — and neither of those bubbles through
+   * the `<input>`. So the dialog could be opened with the keyboard and not dismissed with it.
+   * Bound on the button and on the panel itself, which is what covers the grid in both render
+   * modes; the appended panel is outside this component's host and would miss a host listener.
+   */
+  protected onEscapeKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Escape' || !this.isOpen()) return;
+
+    event.preventDefault();
+    this.close();
+    // The focused day is about to be removed from the DOM; without this, focus lands on <body>.
+    this.focusTrigger();
+  }
+
   protected onTriggerKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape' && this.isOpen()) {
       event.preventDefault();

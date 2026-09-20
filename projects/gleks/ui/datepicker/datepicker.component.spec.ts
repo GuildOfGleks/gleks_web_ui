@@ -101,6 +101,36 @@ describe('DatepickerComponent', () => {
     expect(component.isOpen()).toBe(false);
   });
 
+  /*
+   * Escape used to be handled on the `<input>` alone. Pressing the calendar button leaves focus
+   * on the button, and tabbing from there goes into the grid, so neither keydown ever reached
+   * that handler: the dialog could be opened with the keyboard and not dismissed with it.
+   */
+  it('should close on Escape pressed on the calendar button', () => {
+    toggle().click();
+    fixture.detectChanges();
+    expect(component.isOpen()).toBe(true);
+
+    toggle().dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+
+    expect(component.isOpen()).toBe(false);
+  });
+
+  it('should close on Escape pressed on a day in the grid, and give the field back the focus', () => {
+    toggle().click();
+    fixture.detectChanges();
+
+    const day = panel()!.querySelector<HTMLButtonElement>('.gog-calendar__day')!;
+    day.focus();
+    day.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+
+    expect(component.isOpen()).toBe(false);
+    // The focused day is gone with the panel; without the refocus, focus falls to <body>.
+    expect(document.activeElement).toBe(field());
+  });
+
   it('should take a date from the calendar and close', async () => {
     toggle().click();
     fixture.detectChanges();

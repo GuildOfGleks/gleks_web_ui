@@ -45,6 +45,29 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **The calendar's arrow keys moved the highlight but not the focus.** `gog-calendar` — and so
+  `gog-datepicker`'s panel and `inline` mode — moves a roving `tabindex` across the 42 day cells,
+  and then focuses whichever cell carries it. That second step ran in a microtask, which is
+  _before_ the render that moves the attribute, so it re-focused the cell the arrow had just left.
+  The visible focus ring stood still while the highlight walked away, a screen reader announced
+  nothing at all, and <kbd>Enter</kbd> then committed the highlighted day rather than the ringed
+  one. It is now an `afterNextRender`, so the focus lands on the cell that is actually current;
+  the "This month" button, which takes the same path, stops leaving focus on a cell that the
+  re-render has replaced.
+
+  **The spec that proves it had to stop being convenient.** The existing keyboard tests dispatch a
+  key and call `detectChanges()` on the next line, which renders synchronously and hides the whole
+  ordering problem — they passed against the broken code. The new one dispatches the key and then
+  awaits, the way an application schedules its render, and fails against it.
+
+- **A `gog-datepicker` panel could be opened with the keyboard and not closed with it.** Escape was
+  handled on the `<input>` alone. Pressing the calendar button leaves focus on the button, and
+  tabbing from there goes into the grid — neither of which bubbles through the input, so the
+  dialog ignored the key from both. It is now handled on the button and on the panel itself
+  (which covers the grid in both render modes, appended included), and closing this way hands the
+  focus back to the field rather than dropping it on `<body>` with the panel. Found on the
+  showcase's new Datepicker page, in a browser.
+
 - **Escape wiped the typed text in a `gog-autocomplete` with `[forceSelection]="false"`.** That
   mode exists for a create-as-you-type field, where what the user types _is_ the answer — and
   Escape, the key that closes the panel, restored the selected label regardless, which in that mode

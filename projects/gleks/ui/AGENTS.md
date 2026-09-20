@@ -1015,6 +1015,13 @@ honours an app-wide locale without being handed one; its navigation, shortcut an
 `nextYearLabel`, `hoursLabel`, `minutesLabel`, `secondsLabel`) resolve through
 `GOG_CONFIG.labels` the same way.
 
+**Keyboard.** From the field, <kbd>↓</kbd> or <kbd>Enter</kbd> opens the panel and
+<kbd>Escape</kbd> closes it — from anywhere inside it, the calendar button and the day grid
+included, and focus returns to the field. In the grid the arrows move by a day and by a week,
+<kbd>Home</kbd>/<kbd>End</kbd> go to the ends of the week, <kbd>PageUp</kbd>/<kbd>PageDown</kbd>
+change the month and with <kbd>Shift</kbd> the year, and <kbd>Enter</kbd> or <kbd>Space</kbd>
+picks. The 42 cells are one tab stop, not 42.
+
 Also exported for direct reuse: `formatDate(date, pattern)`, `parseDate(text, pattern)`, and a
 family of date-math helpers (`addDays`, `addMonths`, `isSameDay`, `isWithinBounds`, …) from
 `date-utils`.
