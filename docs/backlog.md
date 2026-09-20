@@ -16,6 +16,34 @@ not worth carrying here.
 
 ## Defects — first
 
+- **`gog-datepicker` forwards two of `gog-calendar`'s nine label inputs, and has no
+  `gogDateSelect`.** Two gaps in the same seam — the field owns a calendar and passes only part of
+  its API through. Found 2026-09-20 while building the rebuilt showcase's Datepicker page, and
+  both were measured in a browser rather than read off the template.
+
+  **The labels.** `gog-calendar` takes `todayLabel`, `thisMonthLabel`, `previousMonthLabel`,
+  `nextMonthLabel`, `previousYearLabel`, `nextYearLabel`, `hoursLabel`, `minutesLabel` and
+  `secondsLabel`. `gog-datepicker`'s template binds the first two and nothing else, so on a field
+  the four navigation arrows and the three time inputs can only be named through
+  `GOG_CONFIG.labels`. Verified side by side: a `gog-calendar` given German labels reads
+  "Voriges Jahr / Voriger Monat / Nächster Monat / Nächstes Jahr", the `gog-datepicker` beside it
+  with the same two inputs it accepts still reads "Previous year / Previous month / …". An app
+  translating everything at once is unaffected — that is what the config is for — but a page with
+  two fields in different languages cannot do it, and neither can a consumer who wants one
+  arrow's name to differ.
+
+  The fix is seven bindings in each of the template's two `gog-calendar` instances plus the
+  matching inputs, all `undefined` when unset so the calendar keeps resolving them itself
+  (`AGENTS.md` says the nine "resolve through `GOG_CONFIG.labels` the same way", which is true of
+  the calendar and misleading about the field). Additive, so a minor.
+
+  **The output.** `gogDateSelect` — "the selection is complete", which is what the field itself
+  uses to decide when to close — exists only on `gog-calendar`. A consumer of `gog-datepicker`
+  sees `valueChange` alone, and in `selectionMode="range"` that fires for the half-picked range
+  too, so "the user has finished choosing" has to be re-derived by inspecting the value. The
+  field already receives the event to close on; re-emitting it is one line. Decide the two
+  together: they are the same question about how much of the calendar a field should expose.
+
 - **`gog-autocomplete` publishes four inputs that are read by nothing, and a slot that renders
   nowhere.** Found 2026-09-20 while building the rebuilt showcase's Autocomplete page, whose API
   table has to list every compiled input and so could not leave them out.
