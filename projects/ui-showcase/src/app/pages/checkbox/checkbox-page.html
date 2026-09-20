@@ -9,8 +9,10 @@
       <code>indeterminate</code> and <code>checked</code> are separate inputs and the dash wins
       while both are set: it is the "some of them" state, and a row that is partly on cannot also be
       on. The three lengths behind each column — the box, the glyph and the label — come from the
-      shared <code>--gog-control-checkbox-*</code> scale that the radio and the toggle read too,
-      which is why the three line up on a form.
+      shared <code>--gog-control-checkbox-*</code> scale that <code>gog-radio-group</code> reads
+      too, which is why a checkbox and a radio line up on a form. <code>gog-toggle</code> is not on
+      it — a switch has its own <code>--gog-toggle-&lt;size&gt;-*</code> scale and borrows only the
+      padding.
     </p>
     <app-doc-matrix rowAxis="size" colAxis="state">
       <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
