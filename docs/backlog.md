@@ -16,6 +16,49 @@ not worth carrying here.
 
 ## Defects — first
 
+- **`gog-autocomplete` publishes four inputs that are read by nothing, and a slot that renders
+  nowhere.** Found 2026-09-20 while building the rebuilt showcase's Autocomplete page, whose API
+  table has to list every compiled input and so could not leave them out.
+
+  The control extends `GogDropdownBase` for the option accessors, placement, the overlay, the
+  float label and `ControlValueAccessor` — and inherits with them `filter`, `filterPlaceholder`,
+  `filterPosition` and `filterEmptyMessage`, which describe the search box **inside** a panel.
+  This panel has none, because the trigger is the search box: `autocomplete.component.html`
+  renders no filter row, and `resolvedFilter()` / `resolvedFilterPosition()` are read only by the
+  `gog-select` and `gog-multiselect` templates. `filterMatch` is the exception — the component
+  overrides `visibleOptions` and uses it — and `emptyMessage` is its own input, which is why a
+  consumer who reaches for `filterEmptyMessage` gets nothing and no warning. The `gogDropdownChevron`
+  slot is the same shape of problem: `chevronSlot` is a `contentChild` on the base, and this
+  component's template never outlets it, so the template is silently dropped.
+
+  **Why it is a defect and not a tidy-up**: every one of them type-checks, and four of the five
+  resolve a `GOG_CONFIG` key, so an app that sets `dropdown.filter` app-wide reads as though it
+  configured this control too. Nothing fails, nothing logs, and the API table is the first place
+  a consumer can even find out.
+
+  **The shapes a fix could take**, none of them free: move the filter inputs out of
+  `GogDropdownBase` into a mixin or a second base the two listbox controls extend (the honest one,
+  and a breaking change for anyone binding them on an autocomplete today — which does nothing, so
+  the break is nominal); or leave the inheritance and document the four as inert, which is what
+  the showcase page does now. Whichever it is, `AGENTS.md`'s autocomplete table should say it:
+  it lists the inputs a consumer is meant to use and is silent on these.
+
+- **A token section in `GOG_TOKEN_GROUPS` names the components that read it, and gets the list
+  wrong.** `'Float label geometry (input / textarea / select / multiselect)'` holds
+  `--gog-field-float-label-reserve`, `-in-top` and `-over-reserve`. In `theme.css` five component
+  families alias them, not four: `--gog-autocomplete-float-label-*` and
+  `--gog-datepicker-float-label-*` are in the list and are not in the name. (Textarea belongs
+  there — it renders through the input's `--gog-input-*` tokens.) Found 2026-09-20 while choosing
+  the token sections for the rebuilt showcase's Autocomplete page, which renders a section's real
+  name above the table and so puts the wrong list in front of a reader.
+
+  A section name is public: it is the heading the lab's token reference and the showcase both
+  print. The fix is a string, but it is one a consumer may have grepped for, and the neighbouring
+  `'Field sizing (input / select / multiselect share one scale)'` deserves the same check in the
+  same pass — it holds only the three `--gog-field-icon-glyph*` tokens, which `theme.css` reads
+  in one place, the five `--gog-field-*-icon-reserve` calculations, rather than in any one
+  component.
+
 - **`gogTooltip` erases any `aria-describedby` its host already had, and it silently ate a fix.**
   Found 2026-09-19 while building the rebuilt showcase's Multiselect page. The directive declares
   `'[attr.aria-describedby]': 'describedById()'` as a host binding, and `describedById()` is
