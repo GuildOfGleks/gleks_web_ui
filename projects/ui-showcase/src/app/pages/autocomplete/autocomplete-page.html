@@ -1,0 +1,663 @@
+<app-doc-page unit="autocomplete">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Every field here is live — type in one to see its panel. Inside a matrix the panel is clipped by the matrix's own scroller, so the sections below open theirs in the page's own flow instead."
+  >
+    <h3>size × state</h3>
+    <p class="autocomplete-page__note">
+      There is no clear button in this matrix and no chevron either: <code>clearable</code> is
+      <code>false</code> here as it is on <code>gog-select</code>, and this control has no chevron
+      at all — the trigger is a text field, not a button, so nothing claims it is a list you can
+      open by clicking. <code>[loading]="true"</code> puts a spinner in the trailing slot for a
+      source that is still fetching.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-autocomplete
+          [size]="size"
+          label="City"
+          [options]="cities"
+          [value]="state.value"
+          [disabled]="state.disabled"
+          [errorMessage]="state.errorMessage"
+          [loading]="state.loading"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the trailing slot: clear button, spinner, or both</h3>
+    <p class="autocomplete-page__note">
+      <code>clearable</code> is opt-in here, and what it watches is the <em>text</em>, not the
+      selection: type two letters into the third field below and the clear button appears before
+      anything has been picked, because on this control the two can disagree. Clearing empties both
+      and emits <code>gogSearch</code> with an empty query, so a server-backed list resets with it.
+      The spinner sits in the same slot and the field reserves room for both.
+    </p>
+    <div class="autocomplete-page__row">
+      <div class="autocomplete-page__field">
+        <gog-autocomplete
+          label='[clearable]="true", Berlin selected'
+          [options]="cities"
+          [clearable]="true"
+          [value]="berlin"
+        />
+      </div>
+      <div class="autocomplete-page__field">
+        <gog-autocomplete
+          label='[clearable]="true" [loading]="true"'
+          [options]="cities"
+          [clearable]="true"
+          [loading]="true"
+          [value]="berlin"
+        />
+      </div>
+      <div class="autocomplete-page__field">
+        <gog-autocomplete
+          label='[clearable]="true", nothing selected'
+          placeholder="Type two letters"
+          [options]="cities"
+          [clearable]="true"
+        />
+      </div>
+    </div>
+
+    <h3>fullWidth and minWidth, in a 20rem container</h3>
+    <p class="autocomplete-page__note">
+      Unlike the two listbox controls, the trigger here does not size to its content — it is an
+      <code>&lt;input&gt;</code>, whose intrinsic width is the browser's own 20-odd characters. So
+      <code>[fullWidth]="false"</code> gives you that default box and <code>minWidth</code> is the
+      floor under it.
+    </p>
+    <div class="autocomplete-page__narrow">
+      <gog-autocomplete label="fullWidth default (true)" [options]="cities" [value]="berlin" />
+      <gog-autocomplete
+        [fullWidth]="false"
+        label='[fullWidth]="false"'
+        [options]="cities"
+        [value]="berlin"
+      />
+      <gog-autocomplete
+        [fullWidth]="false"
+        minWidth="12rem"
+        label='[fullWidth]="false" minWidth="12rem"'
+        [options]="cities"
+      />
+    </div>
+
+    <h3>a field with no visible label</h3>
+    <p class="autocomplete-page__note">
+      <code>ariaLabel</code> names a field that has no <code>label</code>. With neither, the
+      <code>placeholder</code> is the fallback accessible name — better than nothing, but it
+      disappears the moment anything is typed, which is why it is a fallback and not the plan.
+    </p>
+    <div class="autocomplete-page__row">
+      <div class="autocomplete-page__field">
+        <gog-autocomplete
+          ariaLabel="City (no visible label)"
+          placeholder="Search cities"
+          [options]="cities"
+        />
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="options"
+    title="Options"
+    lead="optionLabel, optionValue and optionDisabled take a property path — dot-paths included — or a function, so a real DTO goes in unmapped."
+  >
+    <h3>accessors on a DTO with no id or name</h3>
+    <div class="autocomplete-page__row">
+      <div class="autocomplete-page__demo">
+        <gog-autocomplete
+          label="Reviewer (by uuid)"
+          placeholder="Search people"
+          [options]="members"
+          optionLabel="profile.fullName"
+          optionValue="uuid"
+          optionDisabled="suspended"
+          [(value)]="memberId"
+        />
+        <code>value: {{ memberId() | json }}</code>
+      </div>
+      <div class="autocomplete-page__demo">
+        <gog-autocomplete
+          label="Reviewer (whole object)"
+          placeholder="Search people"
+          [options]="members"
+          [optionLabel]="memberLabel"
+          [optionValue]="null"
+          [(value)]="selectedMember"
+        >
+          <!-- The row template's context is typed `unknown` — the directive has no input to
+               infer the option type from — so a consumer's own field needs `$any`. -->
+          <ng-template gogDropdownOption let-option let-label="label">
+            <span class="autocomplete-page__option"
+              >{{ label }} — <em>{{ $any(option).profile.role }}</em></span
+            >
+          </ng-template>
+        </gog-autocomplete>
+        <code>value: {{ selectedMember()?.uuid ?? 'none' }} (the option object itself)</code>
+      </div>
+    </div>
+
+    <h3>a disabled option, and the empty message</h3>
+    <p class="autocomplete-page__note">
+      <code>optionDisabled</code> defaults to the <code>disabled</code> property, so a
+      <code>GogDropdownOption</code> carrying it needs no binding: the row stays in the list,
+      reports <code>aria-disabled</code>, and neither the pointer nor Enter picks it up.
+      <code>emptyMessage</code> replaces the list when the query matches nothing — type
+      <code>zz</code> into the second field.
+    </p>
+    <div class="autocomplete-page__row">
+      <div class="autocomplete-page__field">
+        <gog-autocomplete label="Plan" placeholder="Search plans" [options]="plans" />
+      </div>
+      <div class="autocomplete-page__field">
+        <gog-autocomplete
+          label='emptyMessage="No city by that name"'
+          placeholder="Try zz"
+          [options]="cities"
+          emptyMessage="No city by that name"
+        />
+      </div>
+    </div>
+
+    <h3>filterLocal and filterMatch</h3>
+    <p class="autocomplete-page__note">
+      Local filtering is on by default and matches the query as a case-insensitive substring of the
+      resolved <code>optionLabel</code>. <code>filterMatch</code> swaps in any predicate: type
+      <code>b</code> into both fields below and the default keeps eight cities — Barcelona, Berlin,
+      Bratislava, Brussels, Budapest, plus <em>Du<strong>b</strong>lin</em>,
+      <em>Lis<strong>b</strong>on</em> and <em>Zagre<strong>b</strong></em> — where the prefix
+      matcher keeps five. Turn <code>filterLocal</code> <strong>off</strong> when
+      <code>gogSearch</code> fetches an already-filtered list, which the Searching section below
+      does.
+    </p>
+    <div class="autocomplete-page__row">
+      <div class="autocomplete-page__field">
+        <gog-autocomplete label="filterMatch unset (substring)" [options]="cities" />
+      </div>
+      <div class="autocomplete-page__field">
+        <gog-autocomplete
+          label='[filterMatch]="startsWith"'
+          [options]="cities"
+          [filterMatch]="startsWith"
+        />
+      </div>
+    </div>
+
+    <h3>four inputs that do nothing here</h3>
+    <p class="autocomplete-page__note">
+      <code>filter</code>, <code>filterPlaceholder</code>, <code>filterPosition</code> and
+      <code>filterEmptyMessage</code> are in the API table because the compiler puts them there:
+      this control extends the same <code>GogDropdownBase</code> as <code>gog-select</code>, and
+      they describe the search box <em>inside</em> a panel. There is no such box here — the trigger
+      is the search box — so binding any of the four changes nothing. The two that do carry over are
+      <code>filterMatch</code>, which the local filtering above reads, and
+      <code>emptyMessage</code>, which is this control's own input and not
+      <code>filterEmptyMessage</code>.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="searching"
+    title="Searching"
+    lead="gogSearch is the query, debounced; minLength and openOnFocus decide when the panel is allowed to open at all."
+  >
+    <h3>minLength × openOnFocus</h3>
+    <p class="autocomplete-page__note">
+      Focus each field without typing, then type one letter. <code>openOnFocus</code> is
+      <strong>on</strong> by default and shows the whole list before <code>minLength</code> would
+      have let anything through — including when the field already holds a selection, whose label
+      would otherwise have filtered the list down to itself. With it off, nothing opens until enough
+      has been typed.
+    </p>
+    <div class="autocomplete-page__row">
+      <div class="autocomplete-page__field">
+        <gog-autocomplete label="both unset (minLength 1, openOnFocus on)" [options]="cities" />
+      </div>
+      <div class="autocomplete-page__field">
+        <gog-autocomplete label='[openOnFocus]="false"' [options]="cities" [openOnFocus]="false" />
+      </div>
+      <div class="autocomplete-page__field">
+        <gog-autocomplete
+          label='[minLength]="3" [openOnFocus]="false"'
+          placeholder="Three letters"
+          [options]="cities"
+          [minLength]="3"
+          [openOnFocus]="false"
+        />
+      </div>
+    </div>
+
+    <h3>searchDebounce</h3>
+    <p class="autocomplete-page__note">
+      Type a word at speed into each field and compare the counters: the default 300 ms collapses a
+      burst of keystrokes into one query, <code>0</code> emits on every one of them — which is what
+      a purely local source can afford and a server-backed one cannot.
+    </p>
+    <div class="autocomplete-page__row">
+      <div class="autocomplete-page__demo">
+        <gog-autocomplete
+          label="searchDebounce unset (300 ms)"
+          [options]="cities"
+          (gogSearch)="recordQuery('debounced', $event)"
+        />
+        <code>{{ count('debounced') }} gogSearch · last: "{{ query('debounced') }}"</code>
+      </div>
+      <div class="autocomplete-page__demo">
+        <gog-autocomplete
+          label='[searchDebounce]="0"'
+          [options]="cities"
+          [searchDebounce]="0"
+          (gogSearch)="recordQuery('eager', $event)"
+        />
+        <code>{{ count('eager') }} gogSearch · last: "{{ query('eager') }}"</code>
+      </div>
+    </div>
+
+    <h3>a server-backed field</h3>
+    <p class="autocomplete-page__note">
+      The three inputs that make one: <code>(gogSearch)</code> runs the lookup,
+      <code>[loading]</code> shows it is running — a deliberate 600 ms here — and
+      <code>[filterLocal]="false"</code> stops the answer being filtered a second time. That last
+      one is the bug worth naming: the server matched on fields this component cannot see, so
+      filtering its reply against the same query silently drops rows. This lookup matches on a
+      prefix, so <code>rl</code> finds nothing while <code>be</code> finds Berlin.
+    </p>
+    <div class="autocomplete-page__demo">
+      <gog-autocomplete
+        label="City (remote)"
+        placeholder="Type to search"
+        [options]="remoteResults()"
+        [filterLocal]="false"
+        [loading]="remoteLoading()"
+        [minLength]="2"
+        [clearable]="true"
+        (gogSearch)="searchRemote($event)"
+      />
+      <code>
+        {{ count('remote') }} gogSearch · last: "{{ query('remote') }}" ·
+        {{ remoteResults().length }} results · loading: {{ remoteLoading() }}
+      </code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="panel"
+    title="Panel"
+    lead="The panel renders inline by default and is clipped by any scrolling or overflow-hidden ancestor; appendToBody moves it into the body and positions it against the trigger instead."
+  >
+    <h3>appendToBody, and the panel size that comes with it</h3>
+    <p class="autocomplete-page__note">
+      <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length and apply
+      only while the panel is appended — an inline panel matches the trigger through CSS. The first
+      two fields sit in a box with <code>overflow: hidden</code> and are pinned to
+      <code>dropdownDirection="down"</code>, so which way they open does not depend on where the
+      page happens to be scrolled: type in both and only the appended one survives the box.
+    </p>
+    <div class="autocomplete-page__row">
+      <div class="autocomplete-page__clipped">
+        <p class="autocomplete-page__note">overflow: hidden, panel inline</p>
+        <gog-autocomplete label="City" [options]="cities" dropdownDirection="down" />
+      </div>
+      <div class="autocomplete-page__clipped">
+        <p class="autocomplete-page__note">overflow: hidden, [appendToBody]="true"</p>
+        <gog-autocomplete
+          label="City"
+          [options]="cities"
+          dropdownDirection="down"
+          [appendToBody]="true"
+        />
+      </div>
+      <div class="autocomplete-page__field">
+        <gog-autocomplete
+          label='dropdownWidth="240px" dropdownMaxHeight="160px"'
+          [options]="cities"
+          [appendToBody]="true"
+          dropdownWidth="240px"
+          dropdownMaxHeight="160px"
+        />
+      </div>
+    </div>
+
+    <h3>virtualize</h3>
+    <p class="autocomplete-page__note">
+      Both fields hold the same 10 000 options. The windowed one keeps a dozen rows in the DOM
+      whatever you scroll to — as many as the panel shows, plus a margin — where the eager one
+      builds all 10 000 to show six. Off by default and never switched on at a row count —
+      <code>Ctrl+F</code> finds only the rendered rows, and CSS targeting
+      <code>:last-child</code> matches the last <em>rendered</em> row.
+      <code>aria-setsize</code> still carries the real list either way, and the arrows still walk
+      all 10 000: <kbd>End</kbd> reaches the last one. Focus is not at risk here the way it is on
+      <code>gog-select</code> — this is a combobox, so focus never leaves the text field and a row
+      leaving the window cannot take it with it.
+    </p>
+    <div class="autocomplete-page__row">
+      <div class="autocomplete-page__field">
+        <gog-autocomplete
+          label='[virtualize]="true"'
+          placeholder="Search cities"
+          [options]="manyCities"
+          [virtualize]="true"
+        />
+      </div>
+      <div class="autocomplete-page__field">
+        <gog-autocomplete
+          label="virtualize unset (eager)"
+          placeholder="Search cities"
+          [options]="manyCities"
+        />
+      </div>
+    </div>
+
+    <h3>gogLoadMore</h3>
+    <p class="autocomplete-page__note">
+      Fires when the panel is scrolled to the end of the list — the signal to fetch and append
+      another page rather than handing 200 rows over up front. It is the other half of the problem
+      from <code>virtualize</code>: this keeps the number of records the <em>server</em> sends
+      small, that keeps the number of rows the <em>browser</em> builds small, and neither implies
+      the other. Open the panel and scroll to the bottom to load the next 20.
+    </p>
+    <div class="autocomplete-page__demo">
+      <gog-autocomplete
+        label="Contact"
+        placeholder="Scroll to load more"
+        [options]="contacts()"
+        [loading]="contactsLoading()"
+        (gogLoadMore)="loadMoreContacts()"
+      />
+      <code>loaded: {{ contacts().length }} / {{ contactsTotal }}</code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="float-label"
+    title="Float label"
+    lead="'none' keeps the label above the field; 'in', 'on' and 'over' rest it inside the field until focus or a value moves it clear."
+  >
+    <h3>variant × value</h3>
+    <app-doc-matrix rowAxis="variant" colAxis="state">
+      <ng-template
+        appDocCell
+        [rows]="floatLabelVariants"
+        [cols]="floatStates"
+        let-variant
+        let-state="col"
+      >
+        <gog-autocomplete
+          [floatLabel]="variant"
+          label="City"
+          placeholder="e.g. Berlin"
+          [options]="cities"
+          [value]="state.value"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>floatLabelShowPlaceholder</h3>
+    <p class="autocomplete-page__note">
+      Focus the field below: the placeholder appears under the floated label once it has somewhere
+      to float to. Without it the placeholder stays hidden the whole time, because the resting label
+      is already sitting where it would be.
+    </p>
+    <div class="autocomplete-page__demo">
+      <gog-autocomplete
+        floatLabel="over"
+        [floatLabelShowPlaceholder]="true"
+        label="City"
+        placeholder="e.g. Berlin"
+        [options]="cities"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="value is model-bound: [(value)] and [value] / (valueChange) both work, and the control is a full ControlValueAccessor, so formControl works the same way."
+  >
+    <h3>[(value)], and the text that is not the value</h3>
+    <p class="autocomplete-page__note">
+      The field holds two things: what is typed, and what is committed. Pick Berlin, then edit the
+      text — the value stays Berlin until the edit resolves, and <kbd>Esc</kbd> or clicking away
+      snaps the text back to it. That is <code>forceSelection</code>, on by default, and it is what
+      keeps a user who typed one character to refine a search from silently losing what they had
+      picked.
+    </p>
+    <div class="autocomplete-page__demo">
+      <gog-autocomplete
+        label="City"
+        placeholder="Search cities"
+        [options]="cities"
+        [clearable]="true"
+        [(value)]="boundValue"
+        (valueChange)="increment('bound')"
+      />
+      <code>
+        value: {{ boundValue() | json }} ({{ cityName(boundValue()) }}) ·
+        {{ count('bound') }} valueChange
+      </code>
+    </div>
+
+    <h3>[forceSelection]="false"</h3>
+    <p class="autocomplete-page__note">
+      For a create-as-you-type flow, where the text itself is the answer. Neither blur nor
+      <kbd>Esc</kbd> touches what you typed — <kbd>Esc</kbd> only closes the panel — and
+      <code>value</code> is dropped as soon as the text stops matching, so the two never disagree:
+      read the text from <code>gogSearch</code>, not from <code>value</code>. Pick Berlin below,
+      then type one more letter and press <kbd>Esc</kbd>. Until 21.15.0 that keystroke emptied the
+      field.
+    </p>
+    <div class="autocomplete-page__demo">
+      <gog-autocomplete
+        label="Tag"
+        placeholder="Pick one or invent one"
+        [options]="cities"
+        [forceSelection]="false"
+        (gogSearch)="recordQuery('free', $event)"
+        (valueChange)="increment('free-value')"
+      />
+      <code> gogSearch: "{{ query('free') }}" · {{ count('free-value') }} valueChange </code>
+    </div>
+
+    <h3>formControl, errorDisplay="auto"</h3>
+    <p class="autocomplete-page__note">
+      Focus the field and leave it without picking anything: the control decides the error timing
+      from its own touched and invalid state. Typing text that matches no option leaves the value
+      <code>null</code>, so a required field stays invalid however full the box looks — which is the
+      whole point of <code>forceSelection</code> being on.
+    </p>
+    <div class="autocomplete-page__demo">
+      <gog-autocomplete
+        label="City (reactive form)"
+        placeholder="Search cities"
+        [options]="cities"
+        [formControl]="formControl"
+        errorMessage="Pick a city from the list"
+        errorDisplay="auto"
+      />
+      <div class="autocomplete-page__actions">
+        <button type="button" (click)="formControl.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="toggleFormDisabled()">
+          {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+        </button>
+      </div>
+      <code>
+        value: {{ formControl.value | json }} · touched: {{ formControl.touched }} · disabled:
+        {{ formControl.disabled }}
+      </code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre
+      class="autocomplete-page__config"
+    ><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <p class="autocomplete-page__note">
+      Only the first column shows its difference standing still. Focus the second field of each row
+      and type one letter: outside the scope the panel is already open before the letter lands,
+      inside it nothing opens until the second one. Then type a word at speed into the third and
+      watch the counters — one query arrives a second later inside the scope, three tenths of a
+      second after the last keystroke outside it.
+    </p>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-autocomplete-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-autocomplete label="City" [options]="cities" />
+              }
+              @case ('minLength and openOnFocus unset') {
+                <gog-autocomplete label="City" placeholder="Focus, then type" [options]="cities" />
+              }
+              @case ('searchDebounce unset') {
+                <gog-autocomplete
+                  label="City"
+                  [options]="cities"
+                  (gogSearch)="recordQuery('scoped', $event)"
+                />
+                <code>{{ count('scoped') }} gogSearch · "{{ query('scoped') }}"</code>
+              }
+            }
+          </app-autocomplete-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-autocomplete label="City" [options]="cities" />
+            }
+            @case ('minLength and openOnFocus unset') {
+              <gog-autocomplete label="City" placeholder="Focus, then type" [options]="cities" />
+            }
+            @case ('searchDebounce unset') {
+              <gog-autocomplete
+                label="City"
+                [options]="cities"
+                (gogSearch)="recordQuery('unscoped', $event)"
+              />
+              <code>{{ count('unscoped') }} gogSearch · "{{ query('unscoped') }}"</code>
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The trigger is a real input with role='combobox': DOM focus never leaves it, and the highlighted row is pointed at with aria-activedescendant rather than being focused."
+  >
+    <h3>input attributes</h3>
+    <p class="autocomplete-page__note">
+      Read from the live DOM, so <code>aria-expanded</code> follows the panel — type in one and
+      watch it flip, then press <kbd>↓</kbd> and watch <code>aria-activedescendant</code> name the
+      row. Worth reading against the same row on the Multiselect page:
+      <code>errorMessage</code> puts <code>aria-invalid="true"</code> here <em>and</em> an
+      <code>aria-describedby</code> pointing at the message, because nothing else on this trigger
+      claims that attribute.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="a11yColumns" let-state>
+        <app-doc-attrs target=".gog-autocomplete__control">
+          @switch (state) {
+            @case ('default') {
+              <gog-autocomplete label="City" [options]="cities" />
+            }
+            @case ('[value]="4"') {
+              <gog-autocomplete label="City" [options]="cities" [value]="berlin" />
+            }
+            @case ('[disabled]="true"') {
+              <gog-autocomplete label="City" [options]="cities" [disabled]="true" />
+            }
+            @case ('errorMessage="Required"') {
+              <gog-autocomplete label="City" [options]="cities" errorMessage="Required" />
+            }
+            @case ('label unset, ariaLabel="City"') {
+              <gog-autocomplete ariaLabel="City" [options]="cities" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>aria-busy, on the host</h3>
+    <p class="autocomplete-page__note">
+      The spinner is <code>aria-hidden</code>, so a field fetching its suggestions would otherwise
+      look idle to a screen reader — the one wait that is not the user's own doing. It is the host
+      element that carries the state, not the input.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="busyStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target="gog-autocomplete">
+          @switch (state) {
+            @case ('loading unset') {
+              <gog-autocomplete label="City" [options]="cities" />
+            }
+            @case ('[loading]="true"') {
+              <gog-autocomplete label="City" [options]="cities" [loading]="true" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>panel and options</h3>
+    <p class="autocomplete-page__note">
+      The panel exists only while it is open, so each line below reads "no element matches" until
+      its own field is focused — then it fills in and follows it. The rows are plain
+      <code>div</code>s with <code>role="option"</code> and no <code>tabindex</code>: they are never
+      focused and never tab stops, because the whole keyboard contract lives on the input — the
+      arrows highlight, <kbd>Home</kbd> and <kbd>End</kbd> jump to the ends, <kbd>Enter</kbd> picks
+      the highlighted row and does nothing when there is none, <kbd>Esc</kbd> closes and restores
+      the text, <kbd>Tab</kbd> closes and moves on.
+    </p>
+    <div class="autocomplete-page__demo">
+      <app-doc-attrs target='[role="listbox"]'>
+        <gog-autocomplete label="Plan" [options]="plans" />
+      </app-doc-attrs>
+      <app-doc-attrs target='[aria-selected="true"]'>
+        <gog-autocomplete label="Plan (selected row)" [options]="plans" value="pro" />
+      </app-doc-attrs>
+      <app-doc-attrs target='[aria-disabled="true"]'>
+        <gog-autocomplete label="Plan (disabled row)" [options]="plans" />
+      </app-doc-attrs>
+    </div>
+
+    <h3>clear button</h3>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="clearA11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target=".gog-autocomplete__clear">
+          @switch (state) {
+            @case ('clearAriaLabel unset') {
+              <gog-autocomplete
+                label="City"
+                [options]="cities"
+                [clearable]="true"
+                [value]="berlin"
+              />
+            }
+            @case ('clearAriaLabel="Clear city"') {
+              <gog-autocomplete
+                label="City"
+                [options]="cities"
+                [clearable]="true"
+                clearAriaLabel="Clear city"
+                [value]="berlin"
+              />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

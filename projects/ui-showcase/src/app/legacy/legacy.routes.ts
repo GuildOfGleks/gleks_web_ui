@@ -96,11 +96,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/dialog-page/dialog-page').then((m) => m.DialogPage),
   },
   {
-    path: 'autocomplete',
-    loadComponent: () =>
-      import('./pages/autocomplete-page/autocomplete-page').then((m) => m.AutocompletePage),
-  },
-  {
     path: 'datepicker',
     loadComponent: () =>
       import('./pages/datepicker-page/datepicker-page').then((m) => m.DatepickerPage),

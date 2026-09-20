@@ -1,6 +1,7 @@
 import type { Type } from '@angular/core';
 
 import type { DocApi } from '../doc/doc-api';
+import { AUTOCOMPLETE_API } from './autocomplete/autocomplete.api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
@@ -60,5 +61,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
       'Field sizing (input / select / multiselect share one scale)',
       'Float label geometry (input / textarea / select / multiselect)',
     ],
+  },
+  autocomplete: {
+    load: () => import('./autocomplete/autocomplete-page').then((m) => m.AutocompletePage),
+    api: AUTOCOMPLETE_API,
+    tokens: ['Autocomplete', 'Float label geometry (input / textarea / select / multiselect)'],
   },
 };
