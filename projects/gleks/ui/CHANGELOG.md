@@ -45,6 +45,16 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A pressed `gog-checkbox` left `indeterminate` behind on the DOM element.** The browser clears
+  the property on a press; this component draws its dash from its own input rather than from the
+  property, so the screen and `aria-checked="mixed"` both stayed right — but the binding's value
+  had not changed, Angular wrote nothing back, and the element was left saying `false` while a
+  dash was still showing. Anything reading the element rather than the component then disagreed
+  with it: a consumer's `input:indeterminate` rule stopped matching after the first press, and so
+  did a test or a script asking the same question. The handler now re-applies the input's own
+  value. Found on the showcase's new Checkbox page, in Chrome, and the spec fails against the old
+  code in jsdom too.
+
 - **The calendar's arrow keys moved the highlight but not the focus.** `gog-calendar` — and so
   `gog-datepicker`'s panel and `inline` mode — moves a roving `tabindex` across the 42 day cells,
   and then focuses whichever cell carries it. That second step ran in a microtask, which is

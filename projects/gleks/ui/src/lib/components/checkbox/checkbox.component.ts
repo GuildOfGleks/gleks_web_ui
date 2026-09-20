@@ -114,6 +114,14 @@ export class CheckboxComponent implements ControlValueAccessor {
     if (this.isDisabled()) return;
     const input = event.target as HTMLInputElement;
     const next = input.checked;
+    /*
+     * The browser clears `indeterminate` on a press. This component draws the dash from its own
+     * input rather than from the property, so the rendering is unaffected — but the binding's
+     * value has not changed, so Angular writes nothing back and the DOM property is left
+     * disagreeing with what is on screen. That matters to anything reading the element instead
+     * of the component: a consumer's `input:indeterminate` rule, a test, an automation script.
+     */
+    input.indeterminate = this.indeterminate();
     this.checked.set(next);
     this.onCheckedChange(next);
     this.onTouched();

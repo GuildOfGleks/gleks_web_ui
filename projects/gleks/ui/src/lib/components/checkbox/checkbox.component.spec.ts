@@ -75,6 +75,25 @@ describe('CheckboxComponent', () => {
       expect(fixture.nativeElement.querySelector('gog-icon')).toBeNull();
     });
 
+    /*
+     * The browser clears `indeterminate` on a real press. The binding's value has not changed,
+     * so Angular does not write it back, and the DOM property then disagrees with the dash the
+     * component is still rendering -- and with any consumer CSS keyed on `:indeterminate`.
+     * Verified in Chrome before it was written here: one press left `input.indeterminate` false
+     * with the dash and `aria-checked="mixed"` both still in place.
+     */
+    it('should keep the native property in step with the input after a press', () => {
+      fixture.componentRef.setInput('indeterminate', true);
+      fixture.detectChanges();
+
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      input.click();
+      fixture.detectChanges();
+
+      expect(component.checked()).toBe(true);
+      expect(input.indeterminate).toBe(true);
+    });
+
     it('should still report aria-checked="mixed" when checked is also true', () => {
       fixture.componentRef.setInput('checked', true);
       fixture.componentRef.setInput('indeterminate', true);

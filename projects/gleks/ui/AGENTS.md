@@ -888,7 +888,12 @@ text — Escape only closes the panel — and the typed text is read from `gogSe
 | `indeterminate`, `disabled`, `fullWidth` | `boolean`              | `false` |
 
 Model: `checked: boolean`. CVA: yes. Slot: `<ng-template gogCheckboxIcon>` for a custom tick
-icon.
+icon (the checked glyph only — the indeterminate dash is drawn by the stylesheet).
+
+**`indeterminate` is an input, not a model.** A press changes `checked` and leaves
+`indeterminate` exactly as you passed it, so the parent row of a tri-state list is computed from
+its children rather than from its own presses — `[checked]="allSelected()"` plus
+`[indeterminate]="someSelected()"`. Leave it hard-coded `true` and the dash never moves.
 
 ```html
 <gog-checkbox label="I agree to the terms" formControlName="agree" />
