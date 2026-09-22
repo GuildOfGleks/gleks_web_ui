@@ -132,3 +132,9 @@
 :host(.gog-host--full-width) .gog-radio {
   width: 100%;
 }
+
+/* A row shares the width instead: 100% per option would wrap every one onto its own line. */
+:host(.gog-host--full-width) .gog-radio-group--horizontal .gog-radio {
+  width: auto;
+  flex: 1 1 0;
+}

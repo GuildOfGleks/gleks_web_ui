@@ -60,6 +60,12 @@ reached 1.0, so breaking changes may land in minor versions.
   The per-option class now marks only an option disabled on its own; a disabled group's options
   still get `disabled` on their native inputs, as before.
 
+- **`gog-radio-group` with `fullWidth` and `orientation="horizontal"` stacked its options.**
+  `fullWidth` made every option 100% wide, and in a wrapping row that put each one on its own line,
+  so the pair of inputs produced a vertical list. A full-width row now shares the width between its
+  options instead, each taking an equal part and the whole of it pressable; it still wraps once the
+  labels no longer fit. Vertical `fullWidth` is unchanged.
+
 - **A pressed `gog-checkbox` left `indeterminate` behind on the DOM element.** The browser clears
   the property on a press; this component draws its dash from its own input rather than from the
   property, so the screen and `aria-checked="mixed"` both stayed right — but the binding's value
