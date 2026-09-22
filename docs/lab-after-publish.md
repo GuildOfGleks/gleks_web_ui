@@ -99,6 +99,16 @@ build.
   `icon-doc-page.ts` and the accessibility card around the `[ariaHidden]="false"` example are the
   two places. The example itself needs no change.
 
+- **The Badge page's accessibility prose describes a focusable host only.** From 21.15.0 a badge
+  on `gog-button` describes the inner `<button>` through `aria-describedby` ("Inbox, button, 12
+  unread"); on 21.14.0 the count never reached that button at all. The paragraph at
+  `badge-doc-page.html` ~108 ("the host reads as 'Inbox, 12 unread messages'") should say which
+  hosts get the name and which the description — `AGENTS.md`'s badge section has the three cases.
+  **And one example is wrong on both versions:** the dot at ~line 83,
+  `<gog-icon gogBadge badgeDot badgeAriaLabel="Unread updates" />`, puts the wording inside an
+  `aria-hidden` icon, so it is never announced. Move the badge onto a button or a wrapper that
+  carries the meaning.
+
 - **The stylesheets are 45% lighter**, so the comparison page's CSS figures are stale the moment
   21.15.0 installs: `theme.css` 22.5 KB and the bundled `index.css` 28.9 KB gzipped, against the
   40.8 KB and 51.4 KB `compare-full.md` measured on 2026-09-13. Update the CSS table, the short
