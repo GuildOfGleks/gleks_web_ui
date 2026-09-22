@@ -935,6 +935,15 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   separately from use. Build it once in `lib/shared` and adopt it in the dropdowns first — a fixed
   row height — before the table, which has variable rows, a sticky header and a selection column.
 
+- **`gog-radio-group` is the one collection control with a fixed option shape.** `gog-select`,
+  `gog-multiselect`, `gog-autocomplete` and `gog-button-toggle-group` all read an option through
+  `optionLabel` / `optionValue` / `optionDisabled`; the radio group takes `{ id, label, disabled? }`
+  and nothing else, so a consumer maps every domain list into that shape before binding it, and
+  cannot give an option a second line of text or a template. Found writing the showcase's Radio
+  group page (2026-09-22), which now says so rather than working around it. Additive: the three
+  accessors defaulting to `'label'`, `'id'` and `'disabled'` keep every existing binding as it is.
+  `AGENTS.md` names the difference, so nobody is misled today — it is a gap, not a defect.
+
 ---
 
 ## Rough edges — small, and each has a reason it was left
