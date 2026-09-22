@@ -109,6 +109,11 @@ build.
   `aria-hidden` icon, so it is never announced. Move the badge onto a button or a wrapper that
   carries the meaning.
 
+- **The Chip page can say a removable chip works from the keyboard.** On 21.14.0, Enter and Space
+  on a chip's remove button pressed the chip instead, and a removable chip was named "Angular
+  Remove filter Angular"; 21.15.0 fixed both. If the lab's removable example or its prose says
+  anything about the keyboard, check it after the install; otherwise nothing to change.
+
 - **The stylesheets are 45% lighter**, so the comparison page's CSS figures are stale the moment
   21.15.0 installs: `theme.css` 22.5 KB and the bundled `index.css` 28.9 KB gzipped, against the
   40.8 KB and 51.4 KB `compare-full.md` measured on 2026-09-13. Update the CSS table, the short

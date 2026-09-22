@@ -16,6 +16,22 @@ not worth carrying here.
 
 ## Defects — first
 
+- **`gog-chip`'s remove button is an interactive control inside another one.** The surface is a
+  `role="button"` and the remove `<button>` is its descendant; ARIA makes the children of a button
+  presentational, and axe's `nested-interactive` rule flags exactly this. Chrome still exposes both
+  (measured 2026-09-22: `button "Angular"` and `button "Remove filter Angular"`), and 21.15.0 fixed
+  the two things that made it hurt — the keyboard could not remove a chip, and the chip's name
+  swallowed the button's label — so what is left is the structure. The fix is to make the remove
+  button the surface's sibling, which moves the chip's padding, border and hover from the surface
+  to the host; a layout change to every chip, not a patch.
+
+  Two smaller things found beside it. **`clickable` defaults to `true`**, so every chip is a button
+  and a tab stop even with nothing listening to `gogClick` — a row of applied filters tabs through
+  buttons that do nothing before reaching the remove buttons; flipping the default is a breaking
+  change. **A disabled chip writes `aria-disabled="true"` on an element with no role**, where it
+  means nothing: the disabled chip drops its `role="button"` and its tab stop, so the attribute
+  has nothing to qualify.
+
 - **A `range` `gog-slider`'s thumbs take the pointer at about 16px, not the 24px its stylesheet
   claims.** `slider.component.scss` gives the drawn thumb a transparent 24px `::before` "so the
   thumb stays the size it is" while meeting WCAG 2.5.8 — but the drawn thumb is
