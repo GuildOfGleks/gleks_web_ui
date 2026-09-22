@@ -16,6 +16,28 @@ not worth carrying here.
 
 ## Defects — first
 
+- **`gog-alert`'s announcement copy outlives the announcement, and is taken only once.** The
+  alert copies its heading and body into a visually hidden live region one render after it mounts
+  (`docs/alert.md` §2 — the mechanism is right and stays). Two things follow that the plan did not
+  weigh. **The copy is never cleared**, so a screen reader reading down the page meets every
+  announcing alert twice: read from Chrome's accessibility tree on 2026-09-22, one alert on the
+  legacy page exposed its heading and body as readable text, then the whole of it again as the
+  region's text. **And it is read once, in `afterNextRender`**, so an alert whose projected text
+  changes in place keeps announcing nothing and keeps the old text in the copy.
+
+  **Why it was not fixed with the page.** The obvious fix — empty the region a few seconds after
+  filling it — trades "heard twice" for a risk that cannot be measured here: whether every screen
+  reader has taken the text by the time it is removed. NVDA and JAWS queue a live region's text
+  when it changes; VoiceOver's timing is the one to check. That needs a real screen reader on
+  each platform, not an accessibility-tree read, and silencing an error message is worse than
+  repeating it. The re-announcement on change is its own decision (debounce, and whether a
+  `polite` alert that updates every second should speak every second). Until then the Alert page
+  says both, and recommends `live="off"` for anything that does not need announcing.
+
+  Also noticed beside it: `docs/alert.md`'s API table lists an `ariaLabel` input ("Names the
+  region when there is no `heading`") that was never built — the host has no role and needs no
+  name, so the input would have nothing to name. The plan's table is what is wrong, not the code.
+
 - **`gog-chip`'s remove button is an interactive control inside another one.** The surface is a
   `role="button"` and the remove `<button>` is its descendant; ARIA makes the children of a button
   presentational, and axe's `nested-interactive` rule flags exactly this. Chrome still exposes both
