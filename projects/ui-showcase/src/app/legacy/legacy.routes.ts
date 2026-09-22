@@ -46,10 +46,6 @@ export const legacyRoutes: Routes = [
       import('./pages/accordion-page/accordion-page').then((m) => m.AccordionPage),
   },
   {
-    path: 'alert',
-    loadComponent: () => import('./pages/alert-page/alert-page').then((m) => m.AlertPage),
-  },
-  {
     path: 'card',
     loadComponent: () => import('./pages/card-page/card-page').then((m) => m.CardPage),
   },

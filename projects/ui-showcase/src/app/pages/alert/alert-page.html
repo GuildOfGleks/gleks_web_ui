@@ -1,0 +1,179 @@
+<app-doc-page unit="alert">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Five severities, each in three shapes. An alert has no interactive states of its own — only its close button does."
+  >
+    <h3>shape × severity</h3>
+    <p class="alert-page__note">
+      The severity picks the edge colour and the glyph. <code>accent</code> is the default and
+      claims nothing — the library's own colour, for a notice that is neither good news nor bad; it
+      borrows <code>info</code>'s glyph because there is no icon for "this is a message".
+    </p>
+    <app-doc-matrix rowAxis="shape" colAxis="severity">
+      <ng-template appDocCell [rows]="shapes" [cols]="severities" let-shape let-severity="col">
+        <div class="alert-page__cell">
+          <gog-alert
+            [severity]="severity"
+            [heading]="shape.value.heading"
+            [dismissible]="shape.value.dismissible"
+            live="off"
+          >
+            The card issuer declined the charge.
+          </gog-alert>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the icon</h3>
+    <p class="alert-page__note">
+      <code>iconName</code> replaces the severity's glyph, <code>[iconName]="null"</code> removes it
+      for a message whose words already carry the meaning, and a <code>gogAlertIcon</code> template
+      replaces it with any markup.
+    </p>
+    <div class="alert-page__stack">
+      <gog-alert severity="success" iconName="lock" live="off">
+        <code>iconName="lock"</code> — the glyph changes, the colour stays the severity's.
+      </gog-alert>
+      <gog-alert severity="info" [iconName]="null" live="off">
+        <code>[iconName]="null"</code> — no icon, and the text starts at the edge.
+      </gog-alert>
+      <gog-alert severity="warning" live="off">
+        <ng-template gogAlertIcon><gog-icon name="clock" /></ng-template>
+        A <code>gogAlertIcon</code> template.
+      </gog-alert>
+    </div>
+
+    <h3>long content</h3>
+    <p class="alert-page__note">
+      The body is projected, so it can hold a list or a link. It wraps, and the icon stays at the
+      top rather than centring against the middle of a paragraph.
+    </p>
+    <div class="alert-page__stack">
+      <gog-alert severity="danger" heading="Three records could not be imported" live="off">
+        Rows 14, 27 and 31 name a cost centre that does not exist in this workspace. Everything else
+        in the file was imported. <a href="#content">Download the three rows</a>, fix them and
+        re-upload only those — re-uploading the whole file would duplicate the rest.
+      </gog-alert>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="dismissed means pressed, not removed: the alert stays in the DOM and the app decides what happens next."
+  >
+    <h3>dismissing, and where focus goes</h3>
+    <p class="alert-page__note">
+      Press the close button, from the keyboard for the full effect. The handler hides the alert and
+      moves focus to the button that replaces it. That is possible only because the alert did not
+      remove itself: when <code>dismissed</code> fires, the close button still exists and still has
+      focus. A component that deleted itself would drop focus to <code>&lt;body&gt;</code>, and a
+      keyboard reader would start the page over. Where focus should land is the app's to know.
+    </p>
+    <div class="alert-page__stack">
+      @if (showDismissible()) {
+        <gog-alert
+          severity="danger"
+          heading="Payment failed"
+          [dismissible]="true"
+          (dismissed)="onDismissed()"
+        >
+          The card issuer declined the charge. No money has left your account.
+        </gog-alert>
+      } @else {
+        <gog-button #restore variant="outline" (gogClick)="showDismissible.set(true)">
+          Bring the alert back
+        </gog-button>
+      }
+      <code>dismissed: {{ dismissCount() }}</code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="announcing"
+    title="Announcing"
+    lead="live decides whether a screen reader is told the message appeared: 'assertive' interrupts, 'polite' waits, 'off' says nothing. Unset, danger and warning are assertive and the rest polite."
+  >
+    <h3>mount each one and read its region</h3>
+    <p class="alert-page__note">
+      A live region only announces text that arrives <em>after</em> it exists, and an alert shown
+      with <code>&#64;if</code> arrives with its text in one go. So the alert renders a separate,
+      visually hidden region beside itself, empty, and copies its heading and body into it one
+      render later. Mount a row and the region's attributes appear beside it; <code>'off'</code>
+      renders no region at all, so its row finds nothing to read.
+    </p>
+    <app-doc-matrix rowAxis="live" colAxis="">
+      <ng-template appDocCell [rows]="liveStates" [cols]="controlColumn" let-state>
+        <div class="alert-page__mount">
+          <button type="button" (click)="toggle(state.name)">
+            {{ isShown(state.name) ? 'unmount' : 'mount' }}
+          </button>
+          @if (isShown(state.name)) {
+            <app-doc-attrs target="[aria-live]">
+              <gog-alert [severity]="state.severity" [live]="state.value">
+                Saved 3 minutes ago.
+              </gog-alert>
+            </app-doc-attrs>
+          }
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>set live="off" for a message that was there on arrival</h3>
+    <p class="alert-page__note">
+      The default is right for a message that appears in answer to something — a submit that failed.
+      It is wrong for the commonest case: an alert rendered with the page, which would interrupt
+      every visit about something the reader has not reached yet. The component cannot tell the two
+      apart, so that call is yours. Every alert above the Announcing section on this page is
+      <code>live="off"</code> for exactly that reason.
+    </p>
+
+    <h3>the copy stays</h3>
+    <p class="alert-page__note">
+      The hidden copy is not removed after it has been announced, so a screen reader reading down
+      the page meets the message twice: the visible text, then the copy. It is also taken once — if
+      the alert's text changes later, the copy keeps the old text and the change is not announced.
+      Both are filed; until then, an alert whose text changes in place is better rendered again than
+      edited, and one that never needs announcing should be <code>live="off"</code>.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="The close button's name is the one thing an alert reads from GOG_CONFIG."
+  >
+    <pre class="alert-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="controlColumn" let-where>
+        <app-doc-attrs target=".gog-alert__close button">
+          @if (where === 'inside scope') {
+            <app-alert-config-scope>
+              <gog-alert [dismissible]="true" live="off">Gespeichert.</gog-alert>
+            </app-alert-config-scope>
+          } @else {
+            <gog-alert [dismissible]="true" live="off">Saved.</gog-alert>
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The visible alert is plain content with no role; the announcement is a separate region, and the icon is decorative."
+  >
+    <p class="alert-page__note">
+      The alert itself is not a landmark and needs no name: it is read where it stands, like any
+      paragraph. The icon is <code>aria-hidden</code>, so the severity has to be in the words as
+      well — "Payment failed", not a red edge on "Payment". The close button is a
+      <code>gog-button</code> named from <code>GOG_CONFIG.labels.closeAlert</code>, "Dismiss
+      message" by default. An alert never takes focus and never traps it; for a message that has to
+      stop the reader until they answer it, that is a dialog.
+    </p>
+  </app-doc-section>
+</app-doc-page>

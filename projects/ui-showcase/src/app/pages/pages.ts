@@ -1,6 +1,7 @@
 import type { Type } from '@angular/core';
 
 import type { DocApi } from '../doc/doc-api';
+import { ALERT_API } from './alert/alert.api';
 import { AUTOCOMPLETE_API } from './autocomplete/autocomplete.api';
 import { BADGE_API } from './badge/badge.api';
 import { BUTTON_API } from './button/button.api';
@@ -131,5 +132,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./tag/tag-page').then((m) => m.TagPage),
     api: TAG_API,
     tokens: ['Tag'],
+  },
+  alert: {
+    load: () => import('./alert/alert-page').then((m) => m.AlertPage),
+    api: ALERT_API,
+    tokens: ['Alert'],
   },
 };

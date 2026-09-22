@@ -1,0 +1,39 @@
+// A matrix cell has no width of its own, and an alert fills whatever it is given.
+.alert-page__cell {
+  width: 18rem;
+}
+
+.alert-page__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--gog-space-12);
+  max-width: 40rem;
+  margin-block-end: var(--gog-space-16);
+}
+
+.alert-page__mount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  width: 36rem;
+  max-width: 100%;
+
+  > app-doc-attrs {
+    width: 100%;
+  }
+}
+
+.alert-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+.alert-page__config {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+}
