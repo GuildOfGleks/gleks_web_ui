@@ -33,10 +33,6 @@ export const legacyRoutes: Routes = [
       import('./pages/paginator-page/paginator-page').then((m) => m.PaginatorPage),
   },
   {
-    path: 'skeleton',
-    loadComponent: () => import('./pages/skeleton-page/skeleton-page').then((m) => m.SkeletonPage),
-  },
-  {
     path: 'accordion',
     loadComponent: () =>
       import('./pages/accordion-page/accordion-page').then((m) => m.AccordionPage),

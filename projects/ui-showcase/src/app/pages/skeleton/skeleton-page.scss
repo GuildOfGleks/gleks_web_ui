@@ -1,0 +1,91 @@
+// A matrix cell has no width of its own, and text and rect bones fill their container.
+.skeleton-page__cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-8);
+  width: 12rem;
+
+  > code {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-xs);
+  }
+}
+
+.skeleton-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--gog-space-24);
+  margin-block-end: var(--gog-space-16);
+}
+
+.skeleton-page__demo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  margin-block-end: var(--gog-space-16);
+}
+
+// The card and its loaded content share one set of sizes, so the swap does not move anything.
+.skeleton-page__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-12);
+  width: 22rem;
+  max-width: 100%;
+  padding: var(--gog-space-16);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+}
+
+.skeleton-page__card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-space-12);
+}
+
+.skeleton-page__avatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: var(--gog-skeleton-circle-size-lg);
+  height: var(--gog-skeleton-circle-size-lg);
+  border-radius: 50%;
+  background: var(--gog-accent-color);
+  color: var(--gog-button-primary-color);
+  font-weight: 700;
+}
+
+.skeleton-page__name {
+  font-size: var(--gog-text-lg);
+}
+
+.skeleton-page__text {
+  margin: 0;
+  font-size: var(--gog-text-sm);
+}
+
+.skeleton-page__picture {
+  display: flex;
+  align-items: flex-end;
+  height: 8rem;
+  padding: var(--gog-space-8);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}
+
+.skeleton-page__actions {
+  display: flex;
+  gap: var(--gog-space-8);
+}
+
+.skeleton-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}

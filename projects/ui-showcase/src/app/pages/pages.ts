@@ -15,6 +15,7 @@ import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { RADIO_GROUP_API } from './radio-group/radio-group.api';
 import { SELECT_API } from './select/select.api';
+import { SKELETON_API } from './skeleton/skeleton.api';
 import { SLIDER_API } from './slider/slider.api';
 import { SPINNER_API } from './spinner/spinner.api';
 import { TAG_API } from './tag/tag.api';
@@ -143,5 +144,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./spinner/spinner-page').then((m) => m.SpinnerPage),
     api: SPINNER_API,
     tokens: ['Spinner', 'Icon & spinner'],
+  },
+  skeleton: {
+    load: () => import('./skeleton/skeleton-page').then((m) => m.SkeletonPage),
+    api: SKELETON_API,
+    tokens: ['Skeleton'],
   },
 };

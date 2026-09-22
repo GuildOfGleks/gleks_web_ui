@@ -1,0 +1,147 @@
+<app-doc-page unit="skeleton">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Three shapes across five sizes, and three animations. A skeleton holds the place of content that has not arrived; it has no state beyond that."
+  >
+    <h3>size × shape</h3>
+    <p class="skeleton-page__note">
+      <code>text</code> is a line at the height of that size's text, <code>circle</code> an avatar,
+      <code>rect</code> a media block. <code>text</code> and <code>rect</code> fill their
+      container's width; the matrix cells are 12rem wide for that reason.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="shape">
+      <ng-template appDocCell [rows]="sizes" [cols]="shapes" let-size let-shape="col">
+        <div class="skeleton-page__cell">
+          <gog-skeleton [shape]="shape" [size]="size" />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>animation</h3>
+    <p class="skeleton-page__note">
+      <code>pulse</code> fades the bones in and out, <code>wave</code> sweeps a highlight across
+      them, <code>none</code> holds still. Under <code>prefers-reduced-motion</code> both animations
+      stop, whatever the input says.
+    </p>
+    <app-doc-matrix rowAxis="animation" colAxis="shape">
+      <ng-template appDocCell [rows]="animations" [cols]="shapes" let-animation let-shape="col">
+        <div class="skeleton-page__cell">
+          <gog-skeleton [shape]="shape" [animation]="animation" [lines]="2" />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>lines</h3>
+    <p class="skeleton-page__note">
+      <code>lines</code> stacks bars with the theme's spacing between them, and past one line the
+      last is shorter — the silhouette a real paragraph leaves.
+    </p>
+    <div class="skeleton-page__row">
+      @for (count of lineCounts; track count) {
+        <div class="skeleton-page__cell">
+          <gog-skeleton [lines]="count" />
+          <code>[lines]="{{ count }}"</code>
+        </div>
+      }
+    </div>
+
+    <h3>width, height and rounded</h3>
+    <p class="skeleton-page__note">
+      <code>width</code> and <code>height</code> take any CSS length, to match the thing that will
+      replace the bone. A <code>circle</code> given only a width stays a circle.
+      <code>height</code> is ignored on <code>text</code>, whose line height comes from
+      <code>size</code>. <code>[rounded]="false"</code> squares the corners for content that has
+      square ones.
+    </p>
+    <div class="skeleton-page__row">
+      <div class="skeleton-page__cell">
+        <gog-skeleton shape="text" width="8rem" [lines]="2" />
+        <code>width="8rem"</code>
+      </div>
+      <div class="skeleton-page__cell">
+        <gog-skeleton shape="circle" width="4rem" />
+        <code>circle, width="4rem"</code>
+      </div>
+      <div class="skeleton-page__cell">
+        <gog-skeleton shape="rect" height="6rem" [rounded]="false" />
+        <code>height="6rem" [rounded]="false"</code>
+      </div>
+    </div>
+
+    <h3>composed — a card that loads</h3>
+    <p class="skeleton-page__note">
+      A screen loads a layout, not a shape: an avatar, a title, a paragraph, a picture. Built from
+      bones the size of what replaces them, the card keeps its height while it loads — 308px loading
+      against 307px loaded here — so nothing below it moves when the content lands. The one part
+      that needed matching by hand was the paragraph: it wraps to three lines, so its bone has
+      <code>[lines]="3"</code>; with two it was 21px short. A bone's line height comes from its
+      <code>size</code>, not from your font, so count the lines and measure. The card reloads for
+      two seconds on demand.
+    </p>
+    <div class="skeleton-page__demo">
+      <article class="skeleton-page__card" [attr.aria-busy]="loading()">
+        @if (loading()) {
+          <div class="skeleton-page__card-head">
+            <gog-skeleton shape="circle" size="lg" ariaLabel="Loading profile" />
+            <gog-skeleton shape="text" size="lg" width="10rem" />
+          </div>
+          <gog-skeleton shape="text" [lines]="3" />
+          <gog-skeleton shape="rect" height="8rem" />
+        } @else {
+          <div class="skeleton-page__card-head">
+            <span class="skeleton-page__avatar">AL</span>
+            <strong class="skeleton-page__name">Ada Lovelace</strong>
+          </div>
+          <p class="skeleton-page__text">
+            Wrote the first published algorithm for a machine that had not yet been built, and
+            argued it could do more than arithmetic.
+          </p>
+          <div class="skeleton-page__picture">Analytical Engine, Note G</div>
+        }
+      </article>
+      <div class="skeleton-page__actions">
+        <button type="button" (click)="reload()">reload for 2s</button>
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Decorative by default: a loading page can carry dozens of bones, and each one speaking would be noise."
+  >
+    <h3>host attributes</h3>
+    <p class="skeleton-page__note">
+      Read from the live DOM. A bone is <code>aria-hidden</code>; give <code>ariaLabel</code> to the
+      one that stands for the whole loading area, and it becomes <code>role="status"</code> with
+      that name. That makes the loading area findable while reading — it does not announce anything
+      when it appears, because a live region speaks its text and a bone has none. What tells a
+      screen reader the area is changing is <code>aria-busy</code> on the container, as the card
+      above sets, and what tells it the content has arrived is the content.
+    </p>
+    <app-doc-matrix rowAxis="skeleton" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target="gog-skeleton">
+          @switch (state) {
+            @case ('default') {
+              <gog-skeleton [lines]="2" />
+            }
+            @case ('ariaLabel="Loading profile"') {
+              <gog-skeleton [lines]="2" ariaLabel="Loading profile" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>skeleton or spinner</h3>
+    <p class="skeleton-page__note">
+      A skeleton when the layout of what is coming is known — a list, a card, a profile — so the
+      page does not jump when it lands. A spinner when it is not, or when the wait belongs to an
+      action rather than to content: a button that is saving, a search that is running.
+    </p>
+  </app-doc-section>
+</app-doc-page>
