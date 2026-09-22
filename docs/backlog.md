@@ -224,6 +224,19 @@ not worth carrying here.
   `loading` "blocks clicks". Likely fix: `preventDefault()` on a click that is dropped, which
   cancels the implicit submission; a spec should submit a real form in both cases.
 
+- **`gog-spinner-overlay` covers its content from the pointer and not from the keyboard.** The
+  scrim sits over the content while `loading` is on, so nothing underneath can be clicked — but the
+  content is neither `inert` nor `disabled`, and Tab walks straight into it. Measured 2026-09-22 on
+  the showcase's Spinner page: Shift+Tab from the button after a loading region landed on the
+  region's own "Export" button, which Enter would have pressed mid-load. `aria-busy` is set, so a
+  screen reader is told the region is changing, but not stopped from acting in it.
+
+  **Why not `inert` on the spot.** Setting `inert` on the content when loading starts drops focus
+  to `<body>` if it was inside — and the commonest way a region starts loading is a button inside
+  it being pressed. The fix has to decide where that focus goes (the scrim, made focusable and
+  named by the spinner, is the likely answer) and has to give it back when loading ends. That is a
+  behaviour decision for the component, not a stylesheet patch.
+
 - **Two more local `z-index: 1` values leak into the page's stacking order, as
   `gog-button-toggle-group`'s did.** Found 2026-09-16 by walking every library element with a
   numeric `z-index` in the showcase and finding the nearest ancestor that creates a stacking

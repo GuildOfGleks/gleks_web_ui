@@ -114,6 +114,16 @@ build.
   Remove filter Angular"; 21.15.0 fixed both. If the lab's removable example or its prose says
   anything about the keyboard, check it after the install; otherwise nothing to change.
 
+- **Spinners are in the accessibility tree from 21.15.0.** `gog-spinner` is now an indeterminate
+  `role="progressbar"` named by `ariaLabel`; before, `ariaLabel` was accepted and never rendered.
+  The Spinner page already passes an `ariaLabel` to every spinner (`spinner-doc-page.html`), so its
+  examples start meaning something with no edit; its `ariaLabel` API row and any accessibility
+  prose should say what the input does, and that `ariaLabel=""` makes a spinner decorative.
+
+- **A loading `gog-button` keeps its name from 21.15.0** — the label under the spinner is hidden
+  with `opacity` instead of `visibility`, so it stays in the accessibility tree. If the Button
+  page's loading example says anything about what a screen reader hears, check it after the install.
+
 - **The stylesheets are 45% lighter**, so the comparison page's CSS figures are stale the moment
   21.15.0 installs: `theme.css` 22.5 KB and the bundled `index.css` 28.9 KB gzipped, against the
   40.8 KB and 51.4 KB `compare-full.md` measured on 2026-09-13. Update the CSS table, the short
