@@ -85,6 +85,14 @@ build.
   `orientation="horizontal"` keeps a row (options share the width) instead of stacking — the
   `fullWidth` API row ("Stretches the group to fill its container") could say that.
 
+- **The Slider page says a range thumb's name is prefixed "with `label` when there is one"** —
+  in the range card's prose (`slider-doc-page.html`, "Unset, they fall back to…") and in the
+  `startAriaLabel` API row (`slider-doc-page.ts`). From 21.15.0 the prefix is `label`, or
+  `ariaLabel` when there is no label; before it, `ariaLabel` was ignored in range mode. Both
+  sentences gain the `ariaLabel` half. The other 21.15.0 slider fix — thumbs that meet at `max`,
+  or against an `endDisabled` end, no longer lock for a pointer — needs no prose unless the page
+  describes dragging the thumbs together.
+
 - **The stylesheets are 45% lighter**, so the comparison page's CSS figures are stale the moment
   21.15.0 installs: `theme.css` 22.5 KB and the bundled `index.css` 28.9 KB gzipped, against the
   40.8 KB and 51.4 KB `compare-full.md` measured on 2026-09-13. Update the CSS table, the short
