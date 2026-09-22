@@ -1031,6 +1031,18 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
+- **A `gog-progressbar` with no name ships silently.** `ariaLabel` defaults to `''`, and a bar with
+  neither it nor an `aria-labelledby` written on its host is `progressbar ""` in Chrome's
+  accessibility tree (measured 2026-09-22 on the showcase's Progressbar page) — "progress bar, 62
+  percent", of nothing. axe flags it as `aria-progressbar-name`. The component cannot pick a
+  default the way `gog-spinner` does ("Loading"): a determinate bar measures something specific,
+  and a generic name would be as unhelpful as none while hiding the omission.
+
+  **Why it was left.** The fix is a dev-mode warning after the first render when the host has no
+  `aria-label` and no `aria-labelledby` — the same kind `gog-icon` gives for an unknown name —
+  and that wants deciding for every component that needs a consumer-supplied name, not just this
+  one. The Progressbar page says to pass one and shows both ways.
+
 - **The two loading indicators take two different roles.** Since 21.15.0 `gog-spinner` is an
   indeterminate `role="progressbar"` named by `ariaLabel` (the pattern Material's progress
   spinner uses), while `gog-skeleton` with an `ariaLabel` is `role="status"` with the same kind of
