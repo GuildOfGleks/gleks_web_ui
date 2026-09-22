@@ -93,6 +93,12 @@ build.
   or against an `endDisabled` end, no longer lock for a pointer — needs no prose unless the page
   describes dragging the thumbs together.
 
+- **The Icon page's `ariaHidden` row can say what `false` now does.** From 21.15.0 a
+  non-hidden icon is `role="img"` with its `aria-label`; before, the label sat on a roleless
+  custom element, which Chrome exposes as a generic. The `ariaHidden` API row in
+  `icon-doc-page.ts` and the accessibility card around the `[ariaHidden]="false"` example are the
+  two places. The example itself needs no change.
+
 - **The stylesheets are 45% lighter**, so the comparison page's CSS figures are stale the moment
   21.15.0 installs: `theme.css` 22.5 KB and the bundled `index.css` 28.9 KB gzipped, against the
   40.8 KB and 51.4 KB `compare-full.md` measured on 2026-09-13. Update the CSS table, the short
