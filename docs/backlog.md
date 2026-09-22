@@ -1031,6 +1031,16 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
+- **A labelled `gog-divider` is an unnamed separator.** `<gog-divider>OR</gog-divider>` renders
+  `role="separator"` with the label as ordinary content, and ARIA makes a separator's children
+  presentational — so whether the label is read at all is up to the browser. Chrome keeps it:
+  measured 2026-09-22, the label is readable text in the tree and the separator is
+  `separator ""`. The dependable form is a separator named by its label: give the label element an
+  id and point `aria-labelledby` at it when something was projected, which the template can do
+  without a new input (the stylesheet already tells the two forms apart by `:empty`). Small, but
+  it changes what every labelled divider announces, so it wants a CHANGELOG line of its own. The
+  Divider page tells consumers not to put words a reader must hear only in a divider's label.
+
 - **A `gog-progressbar` with no name ships silently.** `ariaLabel` defaults to `''`, and a bar with
   neither it nor an `aria-labelledby` written on its host is `progressbar ""` in Chrome's
   accessibility tree (measured 2026-09-22 on the showcase's Progressbar page) — "progress bar, 62
