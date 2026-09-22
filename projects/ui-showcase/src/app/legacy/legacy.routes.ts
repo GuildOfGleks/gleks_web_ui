@@ -67,10 +67,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/tabs-page/tabs-page').then((m) => m.TabsPage),
   },
   {
-    path: 'ripple',
-    loadComponent: () => import('./pages/ripple-page/ripple-page').then((m) => m.RipplePage),
-  },
-  {
     path: 'global-config',
     loadComponent: () =>
       import('./pages/global-config-page/global-config-page').then((m) => m.GlobalConfigPage),

@@ -1,0 +1,68 @@
+.ripple-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-24);
+  margin-block-end: var(--gog-space-16);
+  padding-block-start: var(--gog-space-8);
+}
+
+// The page's own markup rather than a library component: gogRipple goes on what a consumer has.
+.ripple-page__surface {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 8rem;
+  padding: var(--gog-space-12) var(--gog-space-24);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background-color: var(--gog-surface-color);
+  color: var(--gog-text-color);
+  font: inherit;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ripple-page__surface[disabled],
+.ripple-page__surface[aria-disabled='true'] {
+  opacity: var(--gog-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.ripple-page__surface--pill {
+  border-radius: 999px;
+}
+
+.ripple-page__surface--square {
+  border-radius: 0;
+}
+
+.ripple-page__surface--tile {
+  min-height: 5rem;
+}
+
+// A wrapper with no radius of its own — the caveat the Content section is about.
+.ripple-page__wrapper {
+  display: inline-flex;
+}
+
+// The ripple tokens, set on one surface each.
+.ripple-page__surface--accent {
+  --gog-ripple-color: var(--gog-accent-color);
+}
+
+.ripple-page__surface--strong {
+  --gog-ripple-opacity: 0.45;
+}
+
+.ripple-page__surface--slow {
+  --gog-ripple-enter-duration: 1.2s;
+  --gog-ripple-exit-duration: 0.6s;
+}
+
+.ripple-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}

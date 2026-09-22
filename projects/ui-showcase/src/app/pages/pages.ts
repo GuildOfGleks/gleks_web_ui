@@ -16,6 +16,7 @@ import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { RADIO_GROUP_API } from './radio-group/radio-group.api';
 import { PROGRESSBAR_API } from './progressbar/progressbar.api';
+import { RIPPLE_API } from './ripple/ripple.api';
 import { SELECT_API } from './select/select.api';
 import { SKELETON_API } from './skeleton/skeleton.api';
 import { SLIDER_API } from './slider/slider.api';
@@ -161,5 +162,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./divider/divider-page').then((m) => m.DividerPage),
     api: DIVIDER_API,
     tokens: ['Divider'],
+  },
+  ripple: {
+    load: () => import('./ripple/ripple-page').then((m) => m.RipplePage),
+    api: RIPPLE_API,
+    tokens: ['Ripple (the `gogRipple` directive; its classes live in ripple.css)'],
   },
 };

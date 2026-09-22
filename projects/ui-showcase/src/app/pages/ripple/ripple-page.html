@@ -1,0 +1,137 @@
+<app-doc-page unit="ripple">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Press any surface below — the matrix is live. The wash is clipped to the host's own corners and starts where the pointer landed."
+  >
+    <h3>setting × host shape</h3>
+    <p class="ripple-page__note">
+      <code>rippleCentred</code> starts every wave from the middle, as keyboard activation always
+      does — <kbd>Enter</kbd> and <kbd>Space</kbd> carry no coordinates. <code>rippleDisabled</code>
+      removes the listeners and the host class, not just the paint. A host that is
+      <code>disabled</code> or <code>aria-disabled="true"</code> does not answer a press it will not
+      act on. Under <code>prefers-reduced-motion</code> nothing ripples at all: it is the most
+      purely decorative motion in the library.
+    </p>
+    <app-doc-matrix rowAxis="setting" colAxis="shape">
+      <ng-template appDocCell [rows]="settings" [cols]="shapes" let-setting let-shape="col">
+        <button
+          type="button"
+          class="ripple-page__surface ripple-page__surface--{{ shape }}"
+          gogRipple
+          [rippleCentred]="setting.centred"
+          [rippleDisabled]="setting.rippleDisabled"
+          [disabled]="setting.disabled"
+          [attr.aria-disabled]="setting.ariaDisabled ? 'true' : null"
+        >
+          Press
+        </button>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>on the element that paints the surface</h3>
+    <p class="ripple-page__note">
+      The wash lives in a layer that takes its corners from the host with
+      <code>border-radius: inherit</code>. Put the directive on a wrapper whose child draws the
+      rounded background, and the layer inherits the wrapper's radius — usually none — and squares
+      off at the corners. Both pills below are wrapped; only the second has the directive on the
+      pill itself. Press near a corner of each.
+    </p>
+    <div class="ripple-page__row">
+      <span class="ripple-page__wrapper" gogRipple>
+        <button type="button" class="ripple-page__surface ripple-page__surface--pill">
+          On the wrapper
+        </button>
+      </span>
+      <span class="ripple-page__wrapper">
+        <button type="button" class="ripple-page__surface ripple-page__surface--pill" gogRipple>
+          On the surface
+        </button>
+      </span>
+    </div>
+
+    <h3>it does not clip a badge</h3>
+    <p class="ripple-page__note">
+      The obvious ripple sets <code>overflow: hidden</code> on its host, which would cut off a
+      <code>gogBadge</code> that sits outside the host's box on purpose. This one clips its own
+      layer instead, so the two directives share an element.
+    </p>
+    <div class="ripple-page__row">
+      <button type="button" class="ripple-page__surface" gogRipple gogBadge="8">Inbox</button>
+      <button
+        type="button"
+        class="ripple-page__surface ripple-page__surface--pill"
+        gogRipple
+        gogBadge
+        badgeDot
+      >
+        Updates
+      </button>
+    </div>
+
+    <h3>theming</h3>
+    <p class="ripple-page__note">
+      <code>--gog-ripple-color</code>, <code>--gog-ripple-opacity</code> and the two durations are
+      read where the host sits, so one surface can differ from the rest.
+    </p>
+    <div class="ripple-page__row">
+      <button type="button" class="ripple-page__surface ripple-page__surface--accent" gogRipple>
+        Accent wash
+      </button>
+      <button type="button" class="ripple-page__surface ripple-page__surface--strong" gogRipple>
+        Stronger, 0.45
+      </button>
+      <button type="button" class="ripple-page__surface ripple-page__surface--slow" gogRipple>
+        Slower
+      </button>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="GOG_CONFIG.ripple.enabled turns the library's own components' ripple on app-wide. It is off by default, and it does not reach this directive."
+  >
+    <p class="ripple-page__note">
+      Everything in the box below is inside <code>provideGogConfig</code> with
+      <code>ripple.enabled</code> on, and only this box — the rest of the showcase stays still. The
+      components opt their own inner surface in, so none of the wrapper trouble above applies to
+      them; each also takes a <code>ripple</code> input that wins over the config in either
+      direction. A disabled component and a chip that is not clickable stay still. Writing
+      <code>gogRipple</code> on your own element is already a per-element decision, so the config
+      does not apply to it — <code>rippleDisabled</code> takes it back.
+    </p>
+    <app-ripple-scope />
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Decoration and nothing else: the layer is aria-hidden, and the host is not changed in any way assistive tech would notice."
+  >
+    <p class="ripple-page__note">
+      Read from the live DOM. The directive adds one class to its host while enabled and nothing
+      else — no role, no name, no state. The layer it appends on the first press is
+      <code>aria-hidden="true"</code>. Whatever the host means, it means the same with or without a
+      ripple.
+    </p>
+    <app-doc-matrix rowAxis="host" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target="button">
+          @switch (state) {
+            @case ('gogRipple') {
+              <button type="button" class="ripple-page__surface" gogRipple>Save</button>
+            }
+            @case ('rippleDisabled') {
+              <button type="button" class="ripple-page__surface" gogRipple rippleDisabled>
+                Save
+              </button>
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>
