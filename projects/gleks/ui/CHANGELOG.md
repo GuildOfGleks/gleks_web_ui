@@ -53,6 +53,14 @@ reached 1.0, so breaking changes may land in minor versions.
   `aria-invalid` stayed `false`. `'manual'` was unaffected. Found while building the showcase's
   Radio group page; the new spec fails against the old code.
 
+- **A `gog-tag` longer than its container ran its text out through the border.** A tag never
+  wraps, and its content could shrink with nowhere for the text to go, so a long status in a
+  narrow table cell drew its last words across the right-hand border. The text is now cut with an
+  ellipsis inside the tag. The clip is on the inline axis only: at the tag's line-height of 1,
+  hiding the block axis as well would have shaved the descenders off every g, p and y. Verified
+  in Chrome at twice the pixel density, a long label ellipsized and a short one's descenders
+  whole.
+
 - **A removable `gog-chip` could not be removed from the keyboard.** The remove button sits
   inside the chip's own `role="button"` surface, and the surface's key handler caught Enter and
   Space as they bubbled up from it — cancelling the button's activation and pressing the chip

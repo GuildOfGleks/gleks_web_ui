@@ -125,6 +125,11 @@
 
 .gog-tag__content {
   min-width: 0;
+  /* A tag never wraps, so text longer than the room it gets is cut with an ellipsis rather than
+     running out through the border. `clip` on one axis, not `hidden`: at a line-height of 1,
+     hiding the block axis would shave the descenders off every g, p and y. */
+  overflow-x: clip;
+  text-overflow: ellipsis;
 }
 
 .gog-tag__icon {
