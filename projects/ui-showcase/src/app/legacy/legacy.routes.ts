@@ -37,10 +37,6 @@ export const legacyRoutes: Routes = [
       import('./pages/paginator-page/paginator-page').then((m) => m.PaginatorPage),
   },
   {
-    path: 'slider',
-    loadComponent: () => import('./pages/slider-page/slider-page').then((m) => m.SliderPage),
-  },
-  {
     path: 'spinner',
     loadComponent: () => import('./pages/spinner-page/spinner-page').then((m) => m.SpinnerPage),
   },

@@ -11,6 +11,7 @@ import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { RADIO_GROUP_API } from './radio-group/radio-group.api';
 import { SELECT_API } from './select/select.api';
+import { SLIDER_API } from './slider/slider.api';
 import { TOGGLE_API } from './toggle/toggle.api';
 import { TEXTAREA_API } from './textarea/textarea.api';
 
@@ -101,5 +102,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./radio-group/radio-group-page').then((m) => m.RadioGroupPage),
     api: RADIO_GROUP_API,
     tokens: ['Radio group', 'Control metrics'],
+  },
+  slider: {
+    load: () => import('./slider/slider-page').then((m) => m.SliderPage),
+    api: SLIDER_API,
+    tokens: ['Slider'],
   },
 };

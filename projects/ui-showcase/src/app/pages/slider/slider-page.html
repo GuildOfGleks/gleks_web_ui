@@ -1,0 +1,337 @@
+<app-doc-page unit="slider">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Five states, each in both modes, all live. A slider has no size input: its track, thumb and type come from --gog-slider-* alone."
+  >
+    <h3>state × mode</h3>
+    <p class="slider-page__note">
+      <code>showThumb</code> turns the control into a meter-like bar that still answers the pointer
+      and the keyboard — there is simply nothing drawn to grab. Disabled dims the whole control
+      once, label and error included.
+    </p>
+    <app-doc-matrix rowAxis="state" colAxis="mode">
+      <ng-template appDocCell [rows]="states" [cols]="modes" let-state let-mode="col">
+        <div class="slider-page__cell">
+          <gog-slider
+            label="Volume"
+            [range]="mode !== 'single'"
+            [value]="40"
+            [rangeValue]="{ start: 20, end: 70 }"
+            [showThumb]="state.showThumb"
+            [showValue]="state.showValue"
+            [disabled]="state.disabled"
+            [errorMessage]="state.errorMessage"
+          />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>min, max and step</h3>
+    <p class="slider-page__note">
+      The readout reserves the width of the longest number <code>min</code>, <code>max</code> and
+      <code>step</code> can print and uses tabular figures, so it never shifts as the value changes
+      — drag any of these and the label beside it stays put. The value is printed as a plain number:
+      there is no formatter, so a unit or a currency belongs in the <code>label</code>.
+    </p>
+    <app-doc-matrix rowAxis="range" colAxis="">
+      <ng-template appDocCell [rows]="steps" [cols]="controlColumn" let-row>
+        <div class="slider-page__cell">
+          <gog-slider
+            label="Value"
+            [min]="row.min"
+            [max]="row.max"
+            [step]="row.step"
+            [value]="row.value"
+          />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>orientation="vertical"</h3>
+    <p class="slider-page__note">
+      The same native input, turned with <code>writing-mode</code>, so dragging, touch and every
+      arrow key keep working. The value grows upward, like a fader. A vertical slider is as wide as
+      its content and its length comes from <code>--gog-slider-vertical-length</code>, which is why
+      <code>fullWidth</code> does nothing here.
+    </p>
+    <div class="slider-page__row">
+      <gog-slider label="Gain" orientation="vertical" [(value)]="vertical" />
+      <gog-slider
+        label="Band"
+        orientation="vertical"
+        [range]="true"
+        [(rangeValue)]="verticalRange"
+      />
+      <gog-slider label="Level" orientation="vertical" [showThumb]="false" [value]="80" />
+    </div>
+
+    <h3>fullWidth</h3>
+    <p class="slider-page__note">
+      On by default — the opposite of the other controls, because a track has no content to size to.
+      Turned off, it takes <code>--gog-slider-auto-width</code> (240px) instead of shrinking.
+    </p>
+    <div class="slider-page__frame">
+      <gog-slider label="fullWidth unset (true)" [value]="40" />
+      <gog-slider label='[fullWidth]="false"' [fullWidth]="false" [value]="40" />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="range"
+    title="Range"
+    lead="[range]='true' puts a second thumb on the track and switches the model: bind [(rangeValue)], a { start, end } pair, instead of [(value)]."
+  >
+    <h3>[(rangeValue)]</h3>
+    <p class="slider-page__note">
+      Each thumb is its own native input and its own <kbd>Tab</kbd> stop, and neither can pass the
+      other — a drag that tries stops where the other thumb is. Only the thumbs take the pointer in
+      this mode; a press on the bare track does nothing, which is the price of two inputs sharing
+      one track.
+    </p>
+    <div class="slider-page__demo">
+      <gog-slider
+        label="Price"
+        [range]="true"
+        [min]="0"
+        [max]="200"
+        [step]="5"
+        [(rangeValue)]="price"
+        (rangeValueChange)="increment('price')"
+      />
+      <code>rangeValue: {{ price() | json }} · {{ count('price') }} rangeValueChange</code>
+    </div>
+
+    <h3>thumbs that meet</h3>
+    <p class="slider-page__note">
+      Both thumbs start at <code>200</code> below, on top of each other at the end of the track.
+      Drag left: the start thumb comes away. Until 21.15.0 it could not — the end thumb was always
+      the one under the pointer, it cannot go past <code>max</code> or below the start thumb, and a
+      mouse or a finger had no way out; only the keyboard did.
+    </p>
+    <div class="slider-page__demo">
+      <gog-slider label="Price" [range]="true" [min]="0" [max]="200" [formControl]="rangeControl" />
+      <code>formControl.value: {{ rangeControl.value | json }}</code>
+    </div>
+
+    <h3>startDisabled and endDisabled</h3>
+    <p class="slider-page__note">
+      Pin one end and leave the other movable. They add to <code>disabled</code> rather than replace
+      it, and only the pinned thumb dims — the track stays live for the other. A start thumb dragged
+      onto a pinned end comes off it again the same way as above.
+    </p>
+    <div class="slider-page__frame">
+      <gog-slider
+        label="Floor pinned"
+        [range]="true"
+        [startDisabled]="true"
+        [(rangeValue)]="floorPinned"
+      />
+      <gog-slider
+        label="Ceiling pinned"
+        [range]="true"
+        [endDisabled]="true"
+        [(rangeValue)]="ceilingPinned"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="value is model-bound: [(value)] and [value] / (valueChange) both work, and the control is a full ControlValueAccessor — a number in single mode, a GogSliderRange in range mode."
+  >
+    <h3>[(value)], and the keyboard</h3>
+    <p class="slider-page__note">
+      The keyboard is the native range input's: the arrow keys move one <code>step</code>,
+      <kbd>Home</kbd> and <kbd>End</kbd> jump to <code>min</code> and <code>max</code>, and
+      <kbd>Page Up</kbd> / <kbd>Page Down</kbd> take larger steps. <code>valueChange</code> fires on
+      every step of a drag, not once at the end of it.
+    </p>
+    <div class="slider-page__demo">
+      <gog-slider
+        label="Volume"
+        [step]="5"
+        [(value)]="volume"
+        (valueChange)="increment('volume')"
+      />
+      <code>value: {{ volume() }} · {{ count('volume') }} valueChange</code>
+    </div>
+
+    <h3>a value outside min and max</h3>
+    <p class="slider-page__note">
+      The control draws a value clamped to <code>[min, max]</code> but does not write the clamp
+      back: bound to <code>150</code> with <code>max</code> at 100, it shows 100 and the model still
+      reads 150 until someone moves the thumb. Clamp at the source if the model has to agree.
+    </p>
+    <div class="slider-page__demo">
+      <gog-slider label="Clamped" [(value)]="clamped" />
+      <div class="slider-page__actions">
+        <button type="button" (click)="clamped.set(150)">value.set(150)</button>
+      </div>
+      <code>value: {{ clamped() }}</code>
+    </div>
+
+    <h3>formControl, errorDisplay="auto"</h3>
+    <p class="slider-page__note">
+      <code>Validators.min(20)</code> on a control that starts at 10. The error waits until the
+      slider has been touched — focus it and <kbd>Tab</kbd> away, or use the button — and moving the
+      thumb past 20 clears it.
+    </p>
+    <div class="slider-page__demo">
+      <gog-slider
+        label="Budget"
+        [formControl]="formControl"
+        errorDisplay="auto"
+        errorMessage="At least 20"
+      />
+      <div class="slider-page__actions">
+        <button type="button" (click)="formControl.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="toggleFormDisabled()">
+          {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+        </button>
+      </div>
+      <code>
+        value: {{ formControl.value }} · valid: {{ formControl.valid }} · touched:
+        {{ formControl.touched }} · disabled: {{ formControl.disabled }}
+      </code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default. errorDisplay is the only key this component reads."
+  >
+    <pre class="slider-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <p class="slider-page__note">
+      Both sliders below are bound to their own control holding 10 under
+      <code>Validators.min(20)</code>, and neither sets <code>errorDisplay</code>. Outside the scope
+      that means <code>'manual'</code> and the message shows at once; inside it the config's
+      <code>'auto'</code> holds it back until the slider is touched.
+    </p>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where>
+        <div class="slider-page__cell">
+          @if (where === 'inside scope') {
+            <app-slider-config-scope>
+              <gog-slider
+                label="Budget"
+                [formControl]="scopeControls['inside scope']"
+                errorMessage="At least 20"
+              />
+            </app-slider-config-scope>
+          } @else {
+            <gog-slider
+              label="Budget"
+              [formControl]="scopeControls['outside scope']"
+              errorMessage="At least 20"
+            />
+          }
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A native input type='range' under a drawn track: the role, the value and the keys all come from the platform, and the drawing is out of the accessibility tree."
+  >
+    <h3>input attributes</h3>
+    <p class="slider-page__note">
+      Read from the live DOM. A visible <code>label</code> names the input through its
+      <code>for</code>, so no <code>aria-label</code> appears on that row; without one,
+      <code>ariaLabel</code> does, and with neither the input is still named — "Slider", which says
+      nothing, so do not ship that row. The explicit <code>aria-value*</code> attributes repeat what
+      the native input already exposes and follow the value as it moves.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target=".gog-slider__input">
+          @switch (state) {
+            @case ('label="Volume"') {
+              <gog-slider label="Volume" [value]="40" [fullWidth]="false" />
+            }
+            @case ('label unset, ariaLabel="Volume"') {
+              <gog-slider ariaLabel="Volume" [value]="40" [fullWidth]="false" />
+            }
+            @case ('label and ariaLabel unset') {
+              <gog-slider [value]="40" [fullWidth]="false" />
+            }
+            @case ('orientation="vertical"') {
+              <gog-slider label="Volume" orientation="vertical" [value]="40" />
+            }
+            @case ('errorMessage="Too loud"') {
+              <gog-slider label="Volume" [value]="40" [fullWidth]="false" errorMessage="Too loud" />
+            }
+            @case ('[disabled]="true"') {
+              <gog-slider label="Volume" [value]="40" [fullWidth]="false" [disabled]="true" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>range thumbs</h3>
+    <p class="slider-page__note">
+      One <code>&lt;label&gt;</code> cannot name two inputs, so each thumb carries its own
+      <code>aria-label</code>: the label — or <code>ariaLabel</code> when there is none — followed
+      by "Minimum" or "Maximum", or by <code>startAriaLabel</code> / <code>endAriaLabel</code>.
+      Before 21.15.0 the <code>ariaLabel</code> row read a bare "Minimum". Each thumb's
+      <code>aria-valuemin</code>/<code>max</code> narrows to the other thumb, since that is as far
+      as it can go.
+    </p>
+    <app-doc-matrix rowAxis="thumb" colAxis="">
+      <ng-template appDocCell [rows]="rangeA11yStates" [cols]="controlColumn" let-state>
+        @switch (state) {
+          @case ('label="Price" — start') {
+            <app-doc-attrs target=".gog-slider__input--start">
+              <gog-slider label="Price" [range]="true" [rangeValue]="{ start: 20, end: 70 }" />
+            </app-doc-attrs>
+          }
+          @case ('label="Price" — end') {
+            <app-doc-attrs target=".gog-slider__input--end">
+              <gog-slider label="Price" [range]="true" [rangeValue]="{ start: 20, end: 70 }" />
+            </app-doc-attrs>
+          }
+          @case ('label unset, ariaLabel="Price" — start') {
+            <app-doc-attrs target=".gog-slider__input--start">
+              <gog-slider ariaLabel="Price" [range]="true" [rangeValue]="{ start: 20, end: 70 }" />
+            </app-doc-attrs>
+          }
+          @case ('startAriaLabel="From" — start') {
+            <app-doc-attrs target=".gog-slider__input--start">
+              <gog-slider
+                label="Price"
+                startAriaLabel="From"
+                [range]="true"
+                [rangeValue]="{ start: 20, end: 70 }"
+              />
+            </app-doc-attrs>
+          }
+          @case ('[endDisabled]="true" — end') {
+            <app-doc-attrs target=".gog-slider__input--end">
+              <gog-slider
+                label="Price"
+                [range]="true"
+                [endDisabled]="true"
+                [rangeValue]="{ start: 20, end: 70 }"
+              />
+            </app-doc-attrs>
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>pointer targets</h3>
+    <p class="slider-page__note">
+      In single mode the whole track is the target — a press anywhere on it moves the thumb there.
+      In range mode only the thumbs are, and they take the pointer at about 16px, under the 24px
+      that WCAG 2.5.8 asks for. The keyboard reaches both thumbs fully; the pointer gap is filed in
+      the backlog rather than papered over here.
+    </p>
+  </app-doc-section>
+</app-doc-page>
