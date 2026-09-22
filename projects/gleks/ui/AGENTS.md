@@ -1180,6 +1180,14 @@ wraps its host.
 Renders **nothing** when the value is `0`, `null` or empty and `badgeDot` is off — "0" badges
 are impossible by design.
 
+**What a screen reader hears.** On a focusable host (`<button gogBadge>`, `a[gogButton]`) the
+badge text — or `badgeAriaLabel` in its place — is part of the host's name: "Inbox 12 unread".
+On a host whose focusable element is _inside_ it, like `gog-button`, the badge describes that
+element through `aria-describedby` instead: "Inbox, button, 12 unread". On a host with nothing
+focusable in it the badge is plain text after the host's own — and inside a decorative
+`gog-icon`, which is `aria-hidden`, nothing is said at all, so put a count on the control it
+belongs to rather than on its icon.
+
 ```html
 <gog-button gogBadge="12" badgeAriaLabel="12 unread">Inbox</gog-button>
 <gog-icon name="info" gogBadge badgeDot />

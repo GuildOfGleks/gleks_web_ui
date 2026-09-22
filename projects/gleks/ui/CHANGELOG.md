@@ -53,6 +53,17 @@ reached 1.0, so breaking changes may land in minor versions.
   `aria-invalid` stayed `false`. `'manual'` was unaffected. Found while building the showcase's
   Radio group page; the new spec fails against the old code.
 
+- **`gogBadge` on a `gog-button` never reached the button.** The directive appends the badge,
+  and the hidden `badgeAriaLabel` wording, to its host — and `gog-button`'s host is a wrapper
+  around the real `<button>`, so both landed beside the button instead of in it. Read from
+  Chrome's accessibility tree, the library's own example —
+  `<gog-button gogBadge="12" badgeAriaLabel="12 unread">` — produced a button named "Inbox"
+  with no description, so Tab said "Inbox, button" and the count was a stray line after it. When the focusable element is inside
+  the host, the badge now describes it through `aria-describedby` — merged with any ids it
+  already had, and removed with the badge — and the copies beside it are hidden from reading so
+  nothing is said twice: the same button reads "Inbox", described "12 unread", and without a
+  label the badge text itself is the description. A host that is focusable itself is unchanged.
+
 - **A meaningful `gog-icon` was a named generic, not an image.** `[ariaHidden]="false"` put an
   `aria-label` on the `<gog-icon>` host and nothing else — and a custom element with no role is a
   generic, which ARIA 1.2 does not allow to be named. Read from Chrome's accessibility tree: the

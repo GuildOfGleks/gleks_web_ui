@@ -150,11 +150,79 @@ describe('GogBadgeDirective', () => {
     expect((fixture.nativeElement as HTMLElement).querySelector('.gog-visually-hidden')).toBeNull();
   });
 
+  it('should keep the description in the name when the host is the focusable element', () => {
+    host.ariaLabel.set('12 unread');
+    fixture.detectChanges();
+
+    // Inside the <button>, so it is part of its name — no aria-describedby needed.
+    const description = button().querySelector('.gog-visually-hidden');
+    expect(description?.textContent).toBe('12 unread');
+    expect(description?.getAttribute('aria-hidden')).toBeNull();
+    expect(button().getAttribute('aria-describedby')).toBeNull();
+  });
+
   it('should take the badge out of the DOM when the host is destroyed', () => {
     const buttonEl = button();
     expect(buttonEl.querySelector('.gog-badge')).toBeTruthy();
 
     fixture.destroy();
     expect(buttonEl.querySelector('.gog-badge')).toBeNull();
+  });
+});
+
+/** The shape of `gog-button`: the directive sits on a wrapper, the focusable element is inside. */
+@Component({
+  imports: [GogBadgeDirective],
+  template: `
+    <span [gogBadge]="value()" [badgeAriaLabel]="ariaLabel()" [badgeHidden]="hidden()">
+      <button type="button" aria-describedby="own-hint">Drafts</button>
+    </span>
+  `,
+})
+class WrappedBadgeHost {
+  readonly value = signal<string | number | null>(3);
+  readonly ariaLabel = signal('');
+  readonly hidden = signal(false);
+}
+
+describe('GogBadgeDirective on a host whose focusable element is inside it', () => {
+  let fixture: ComponentFixture<WrappedBadgeHost>;
+  let host: WrappedBadgeHost;
+
+  const root = () => fixture.nativeElement as HTMLElement;
+  const button = () => root().querySelector('button')!;
+  const description = () => root().querySelector<HTMLElement>('.gog-visually-hidden');
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [WrappedBadgeHost] }).compileComponents();
+    fixture = TestBed.createComponent(WrappedBadgeHost);
+    host = fixture.componentInstance;
+    await fixture.whenStable();
+    fixture.detectChanges();
+  });
+
+  it('describes the inner element with the badge text, keeping its own description', () => {
+    const ids = button().getAttribute('aria-describedby')!.split(' ');
+    expect(ids[0]).toBe('own-hint');
+    expect(ids).toContain(description()!.id);
+    expect(description()!.textContent).toBe('3');
+  });
+
+  it('hides both copies beside the button from reading, so nothing is said twice', () => {
+    expect(root().querySelector('.gog-badge')!.getAttribute('aria-hidden')).toBe('true');
+    expect(description()!.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('uses badgeAriaLabel as the description when one is given', () => {
+    host.ariaLabel.set('3 drafts');
+    fixture.detectChanges();
+    expect(description()!.textContent).toBe('3 drafts');
+  });
+
+  it('gives the inner element its own description back when the badge goes', () => {
+    host.hidden.set(true);
+    fixture.detectChanges();
+    expect(description()).toBeNull();
+    expect(button().getAttribute('aria-describedby')).toBe('own-hint');
   });
 });
