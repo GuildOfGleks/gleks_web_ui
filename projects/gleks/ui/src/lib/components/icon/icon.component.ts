@@ -35,6 +35,9 @@ const warnedNames = new Set<string>();
   host: {
     class: 'gog-icon',
     '[attr.aria-hidden]': 'ariaHidden() ? "true" : null',
+    // The host is a custom element, which ARIA treats as a generic, and a generic may not be
+    // named — Chrome exposes it as "generic", and screen readers skip it in reading mode.
+    '[attr.role]': 'ariaHidden() ? null : "img"',
     '[attr.aria-label]': 'ariaHidden() ? null : ariaLabel()',
   },
 })

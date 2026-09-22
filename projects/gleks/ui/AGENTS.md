@@ -1055,6 +1055,10 @@ calendar that fills its container. This is also what sizes `inline` mode, becaus
 | `title`      | `string`              | `''`                                               |
 | `ariaHidden` | `boolean`             | `true`                                             |
 
+Decorative by default. `[ariaHidden]="false"` makes it a named image — `role="img"` and
+`aria-label` from `title`, else from `name` — for an icon that carries meaning no text beside it
+repeats. Inside a button with no text, name the button instead (`ariaLabel` on `gog-button`).
+
 The package ships **41** glyphs (`GogBuiltinIconName`), all from [Lucide](https://lucide.dev)
 and inlined so the package keeps zero runtime dependencies:
 

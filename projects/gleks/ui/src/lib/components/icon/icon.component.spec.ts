@@ -135,6 +135,7 @@ describe('IconComponent', () => {
 
       expect(fixture.nativeElement.getAttribute('aria-hidden')).toBe('true');
       expect(fixture.nativeElement.getAttribute('aria-label')).toBeNull();
+      expect(fixture.nativeElement.getAttribute('role')).toBeNull();
     });
 
     it('exposes a name once ariaHidden is off', async () => {
@@ -145,6 +146,8 @@ describe('IconComponent', () => {
 
       expect(fixture.nativeElement.getAttribute('aria-hidden')).toBeNull();
       expect(fixture.nativeElement.getAttribute('aria-label')).toBe('Done');
+      // A name on an element with no role is prohibited by ARIA 1.2 — it would be a generic.
+      expect(fixture.nativeElement.getAttribute('role')).toBe('img');
     });
 
     it('falls back to the icon name when no title is given', async () => {

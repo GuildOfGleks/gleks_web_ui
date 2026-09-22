@@ -53,6 +53,13 @@ reached 1.0, so breaking changes may land in minor versions.
   `aria-invalid` stayed `false`. `'manual'` was unaffected. Found while building the showcase's
   Radio group page; the new spec fails against the old code.
 
+- **A meaningful `gog-icon` was a named generic, not an image.** `[ariaHidden]="false"` put an
+  `aria-label` on the `<gog-icon>` host and nothing else — and a custom element with no role is a
+  generic, which ARIA 1.2 does not allow to be named. Read from Chrome's accessibility tree: the
+  icon came out as `generic "Warning"`, and a screen reader in reading mode passes over a generic
+  that has no text of its own. It now also gets `role="img"`, and reads as `image "Warning"`. A
+  decorative icon, the default, is unchanged: `aria-hidden="true"` and no role.
+
 - **A `range` `gog-slider` ignored `ariaLabel`.** Each thumb's name is built from a prefix and
   `'Minimum'`/`'Maximum'`, and the prefix was the visible `label` only — so a range slider named
   the way every other control is named without a visible label, `ariaLabel="Price"`, announced its
