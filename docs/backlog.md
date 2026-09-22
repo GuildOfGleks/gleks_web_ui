@@ -16,6 +16,25 @@ not worth carrying here.
 
 ## Defects — first
 
+- **A `range` `gog-slider`'s thumbs take the pointer at about 16px, not the 24px its stylesheet
+  claims.** `slider.component.scss` gives the drawn thumb a transparent 24px `::before` "so the
+  thumb stays the size it is" while meeting WCAG 2.5.8 — but the drawn thumb is
+  `pointer-events: none`, so the `::before` never receives a press. In single mode that does not
+  matter: the whole input spans the track, and a press anywhere on it moves the thumb. In `range`
+  mode only the two native thumbs take the pointer (the inputs themselves are
+  `pointer-events: none` so both can be reached), and those are the browser's unstyled default.
+  Measured with a real mouse in Chrome on 2026-09-22: a press 7 CSS px below the thumb's centre
+  grabs it, 8 px misses — a target about 16px tall, and a press on the bare track does nothing.
+
+  **Why it was not fixed with the page.** Sizing `::-webkit-slider-thumb`/`::-moz-range-thumb` to
+  24px is the obvious half, but the browser positions a native thumb inside the input with half its
+  width of inset at each end, while the drawn thumb sits at the raw percentage of the track. At
+  16px the two already drift up to 8px apart at `min` and `max`; at 24px they drift 12px, so the
+  drawn thumbs would have to move onto the native formula (`calc(half + p * (100% - thumb))`) in
+  both orientations and both modes at the same time. That is a geometry change to the whole
+  control rather than a one-line fix, and the keyboard reaches both thumbs fully in the meantime.
+  The showcase's Slider page says so under Accessibility.
+
 - **`gog-datepicker` forwards two of `gog-calendar`'s nine label inputs, and has no
   `gogDateSelect`.** Two gaps in the same seam — the field owns a calendar and passes only part of
   its API through. Found 2026-09-20 while building the rebuilt showcase's Datepicker page, and
@@ -943,6 +962,15 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   group page (2026-09-22), which now says so rather than working around it. Additive: the three
   accessors defaulting to `'label'`, `'id'` and `'disabled'` keep every existing binding as it is.
   `AGENTS.md` names the difference, so nobody is misled today — it is a gap, not a defect.
+
+- **`gog-slider` prints its value as a bare number, and says it the same way.** There is no
+  formatter input and no `aria-valuetext`: a price range reads "40 – 120" on screen and "40" to a
+  screen reader, with the unit only in the label if the consumer put it there. The readout's width
+  reservation (`valueDisplayChars`) is computed from `min`/`max`/`step` as plain digits, so a
+  formatter would have to feed that too, or the readout starts shifting again as it did before the
+  reservation existed. Additive: a `valueFormat: (value: number) => string` input driving both the
+  readout and `aria-valuetext`. Found writing the showcase's Slider page (2026-09-22), which tells
+  the reader to put the unit in the label for now.
 
 ---
 
