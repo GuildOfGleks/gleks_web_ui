@@ -53,6 +53,13 @@ reached 1.0, so breaking changes may land in minor versions.
   `aria-invalid` stayed `false`. `'manual'` was unaffected. Found while building the showcase's
   Radio group page; the new spec fails against the old code.
 
+- **A loading `gog-button` had no name.** While `loading` is on, the button keeps its width by
+  hiding its label under the spinner — with `visibility: hidden`, which also takes the label out of
+  the accessibility tree. Read from Chrome's: every loading button on the showcase's Button page
+  was `button ""`, so a screen reader on a "Save" that had just been pressed heard "button, busy"
+  and nothing else. The label is now hidden with `opacity: 0`, which leaves it where it was on
+  screen and in the name — the same buttons read `button "BUTTON"` — and nothing changes visually.
+
 - **A `gog-tag` longer than its container ran its text out through the border.** A tag never
   wraps, and its content could shrink with nowhere for the text to go, so a long status in a
   narrow table cell drew its last words across the right-hand border. The text is now cut with an

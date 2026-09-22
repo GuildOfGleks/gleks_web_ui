@@ -329,8 +329,10 @@
   opacity: var(--gog-button-loading-opacity);
 }
 
+/* Invisible but still the button's name: `visibility: hidden` would drop the label from the
+   accessibility tree and leave a loading button announced as just "button". */
 .gog-btn__content--hidden {
-  visibility: hidden;
+  opacity: 0;
 }
 
 .gog-btn__spinner {
