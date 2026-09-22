@@ -14,6 +14,7 @@ import { ICON_API } from './icon/icon.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { RADIO_GROUP_API } from './radio-group/radio-group.api';
+import { PROGRESSBAR_API } from './progressbar/progressbar.api';
 import { SELECT_API } from './select/select.api';
 import { SKELETON_API } from './skeleton/skeleton.api';
 import { SLIDER_API } from './slider/slider.api';
@@ -149,5 +150,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./skeleton/skeleton-page').then((m) => m.SkeletonPage),
     api: SKELETON_API,
     tokens: ['Skeleton'],
+  },
+  progressbar: {
+    load: () => import('./progressbar/progressbar-page').then((m) => m.ProgressbarPage),
+    api: PROGRESSBAR_API,
+    tokens: ['Progressbar'],
   },
 };

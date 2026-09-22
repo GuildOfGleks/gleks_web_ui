@@ -1,0 +1,159 @@
+<app-doc-page unit="progressbar">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Three modes across five sizes and five colours. A progress bar has no interactive states; the mode is what changes."
+  >
+    <h3>size × mode</h3>
+    <p class="progressbar-page__note">
+      <code>determinate</code> fills to <code>value</code>; <code>buffer</code> adds a second, paler
+      tier behind it for what has been fetched but not reached; <code>indeterminate</code> sweeps a
+      segment for work whose length is not known. Under <code>prefers-reduced-motion</code> the
+      sweep stops and the bar is drawn striped instead, which still reads as "working".
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="mode">
+      <ng-template appDocCell [rows]="sizes" [cols]="modes" let-size let-mode="col">
+        <div class="progressbar-page__cell">
+          <gog-progressbar
+            [size]="size"
+            [mode]="mode"
+            [value]="40"
+            [buffer]="70"
+            ariaLabel="Uploading"
+          />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>variant × mode</h3>
+    <app-doc-matrix rowAxis="variant" colAxis="mode">
+      <ng-template appDocCell [rows]="variants" [cols]="modes" let-variant let-mode="col">
+        <div class="progressbar-page__cell">
+          <gog-progressbar
+            [variant]="variant"
+            [mode]="mode"
+            [value]="40"
+            [buffer]="70"
+            ariaLabel="Uploading"
+          />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>showValue</h3>
+    <p class="progressbar-page__note">
+      Off by default, because a bar usually sits under a label that already says what it measures.
+      On, the percentage prints beside the track in tabular figures, so the bar does not shift as
+      the number changes. It is never shown in <code>indeterminate</code> mode, which has no number.
+    </p>
+    <div class="progressbar-page__stack">
+      <gog-progressbar [value]="62" [showValue]="true" ariaLabel="Uploading" />
+      <gog-progressbar [value]="7" [showValue]="true" ariaLabel="Uploading" />
+      <gog-progressbar mode="indeterminate" [showValue]="true" ariaLabel="Uploading" />
+    </div>
+
+    <h3>where the fill ends, with and without colour</h3>
+    <p class="progressbar-page__note">
+      With <code>showValue</code> off, the boundary between fill and track <em>is</em> the value,
+      and colour alone cannot carry it: the five fills straddle mid-luminance in every theme, so no
+      single track colour clears WCAG 1.4.11's 3:1 against all of them. Two hairlines at the fill's
+      leading edge do — one dark, one light, so whichever a fill sits close to, the other stands
+      out. The right-hand column is the left one with hue taken away; every boundary is still there.
+    </p>
+    <app-doc-matrix rowAxis="variant" colAxis="rendering">
+      <ng-template appDocCell [rows]="variants" [cols]="renderings" let-variant let-rendering="col">
+        <div
+          class="progressbar-page__cell"
+          [class.progressbar-page__cell--grey]="rendering !== 'colour'"
+        >
+          <gog-progressbar [variant]="variant" [value]="62" ariaLabel="Uploading" />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="value and buffer are percentages, clamped to 0–100 rather than trusted."
+  >
+    <h3>a value that moves, and one that overshoots</h3>
+    <p class="progressbar-page__note">
+      A bar driven straight from <code>loaded / total</code> overshoots on the last chunk often
+      enough that it is clamped here instead of being allowed to break the layout. Step past 100 or
+      below 0: the bar stops at the end and <code>aria-valuenow</code> with it, while the number you
+      passed is kept as you passed it. The fill moves with a short transition, which reduced motion
+      turns off.
+    </p>
+    <div class="progressbar-page__stack">
+      <gog-progressbar [value]="upload()" [showValue]="true" ariaLabel="Uploading" />
+      <div class="progressbar-page__actions">
+        <button type="button" (click)="step(-25)">−25</button>
+        <button type="button" (click)="step(25)">+25</button>
+      </div>
+      <code>value: {{ upload() }}</code>
+    </div>
+
+    <h3>clamping</h3>
+    <app-doc-matrix rowAxis="value" colAxis="">
+      <ng-template appDocCell [rows]="clampValues" [cols]="controlColumn" let-value>
+        <div class="progressbar-page__cell">
+          <gog-progressbar [value]="value" [showValue]="true" ariaLabel="Uploading" />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="role='progressbar' on the host, with the value stated as a number and as text, and no number at all when there is none."
+  >
+    <h3>host attributes</h3>
+    <p class="progressbar-page__note">
+      Read from the live DOM. <code>indeterminate</code> leaves out <code>aria-valuenow</code> —
+      that absence is what tells a screen reader the length is unknown; reporting 0 would announce
+      "0 percent" for as long as it ran. <code>buffer</code> reports only <code>value</code>: the
+      buffered tier is a picture, not a second number anyone needs read out.
+    </p>
+    <app-doc-matrix rowAxis="progressbar" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target="gog-progressbar">
+          @switch (state) {
+            @case ('[value]="62" ariaLabel="Uploading"') {
+              <gog-progressbar [value]="62" ariaLabel="Uploading" />
+            }
+            @case ('mode="indeterminate" ariaLabel="Uploading"') {
+              <gog-progressbar mode="indeterminate" ariaLabel="Uploading" />
+            }
+            @case ('mode="buffer" [value]="40" [buffer]="70"') {
+              <gog-progressbar mode="buffer" [value]="40" [buffer]="70" ariaLabel="Streaming" />
+            }
+            @case ('ariaLabel unset') {
+              <gog-progressbar [value]="62" />
+            }
+            @case ('aria-labelledby on the host') {
+              <div class="progressbar-page__labelled">
+                <span id="progressbar-page-upload-label">report.pdf</span>
+                <gog-progressbar [value]="62" aria-labelledby="progressbar-page-upload-label" />
+              </div>
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>every bar needs a name</h3>
+    <p class="progressbar-page__note">
+      <code>ariaLabel</code> is empty by default, and a progress bar with no name is announced as
+      "progress bar, 62 percent" — of what, nobody says. Pass <code>ariaLabel</code>, or, when a
+      visible label already sits beside the bar, point at it with
+      <code>aria-labelledby</code> written on the host, as the last row does: the component binds no
+      <code>aria-labelledby</code> of its own, so yours reaches the element with the role. A
+      <code>&lt;label for&gt;</code>
+      cannot do it — a progress bar is not a form field.
+    </p>
+  </app-doc-section>
+</app-doc-page>

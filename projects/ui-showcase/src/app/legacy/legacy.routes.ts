@@ -67,11 +67,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/tabs-page/tabs-page').then((m) => m.TabsPage),
   },
   {
-    path: 'progressbar',
-    loadComponent: () =>
-      import('./pages/progressbar-page/progressbar-page').then((m) => m.ProgressbarPage),
-  },
-  {
     path: 'ripple',
     loadComponent: () => import('./pages/ripple-page/ripple-page').then((m) => m.RipplePage),
   },
