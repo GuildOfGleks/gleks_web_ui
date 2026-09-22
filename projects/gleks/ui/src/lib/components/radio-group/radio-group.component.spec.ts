@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { RadioGroupComponent, type GogRadioOption } from './radio-group.component';
 
@@ -220,6 +220,41 @@ describe('RadioGroupComponent', () => {
       expect(inputs[0].disabled).toBe(false);
       expect(inputs[1].disabled).toBe(false);
       expect(inputs[2].disabled).toBe(true);
+    });
+
+    it('should show an errorDisplay="auto" error once the control is touched and invalid', () => {
+      @Component({
+        standalone: true,
+        imports: [RadioGroupComponent, ReactiveFormsModule],
+        template: `<gog-radio-group
+          [options]="options"
+          [formControl]="control"
+          errorDisplay="auto"
+          errorMessage="Pick one."
+        />`,
+      })
+      class AutoErrorHostComponent {
+        options = OPTIONS;
+        control = new FormControl<string | number | null>(null, Validators.required);
+      }
+
+      const autoFixture = TestBed.createComponent(AutoErrorHostComponent);
+      autoFixture.detectChanges();
+      const error = () => autoFixture.nativeElement.querySelector('.gog-radio-group__error');
+      expect(error()).toBeNull();
+
+      const input = autoFixture.nativeElement.querySelector('input[type="radio"]') as HTMLElement;
+      input.dispatchEvent(new Event('blur'));
+      autoFixture.detectChanges();
+
+      expect(error()?.textContent).toBe('Pick one.');
+      expect(
+        autoFixture.nativeElement.querySelector('[role="radiogroup"]').getAttribute('aria-invalid'),
+      ).toBe('true');
+
+      autoFixture.componentInstance.control.setValue('b');
+      autoFixture.detectChanges();
+      expect(error()).toBeNull();
     });
 
     it('should not propagate changes to the FormControl while it is disabled', () => {

@@ -45,6 +45,14 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-radio-group` never showed an `errorDisplay="auto"` error.** Auto mode reads the form
+  control's `touched` and `invalid`, which Angular exposes as plain properties with no change
+  notification, so every control that offers it mirrors them on each change-detection pass. The
+  other seven did; the radio group did not, so its copy of the control's state stayed at "untouched,
+  valid" forever — a required group left empty and tabbed away from showed nothing, and
+  `aria-invalid` stayed `false`. `'manual'` was unaffected. Found while building the showcase's
+  Radio group page; the new spec fails against the old code.
+
 - **A pressed `gog-checkbox` left `indeterminate` behind on the DOM element.** The browser clears
   the property on a press; this component draws its dash from its own input rather than from the
   property, so the screen and `aria-checked="mixed"` both stayed right — but the binding's value

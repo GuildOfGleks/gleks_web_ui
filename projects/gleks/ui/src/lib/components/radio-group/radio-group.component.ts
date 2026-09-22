@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DoCheck,
   inject,
   input,
   model,
@@ -44,7 +45,7 @@ export interface GogRadioOption {
     '[class.gog-host--full-width]': 'fullWidth()',
   },
 })
-export class RadioGroupComponent implements ControlValueAccessor {
+export class RadioGroupComponent implements ControlValueAccessor, DoCheck {
   protected readonly uid = nextGogControlId('gog-radio-group');
 
   readonly options = input<GogRadioOption[]>([]);
@@ -108,6 +109,10 @@ export class RadioGroupComponent implements ControlValueAccessor {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+  }
+
+  ngDoCheck(): void {
+    this.errorState.check();
   }
 
   writeValue(val: string | number | null): void {
