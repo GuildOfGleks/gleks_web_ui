@@ -1,0 +1,155 @@
+<app-doc-page unit="badge">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Five kinds of content in the four colours, each on a real button. The badge is appended into its host after hydration, so it never changes the host's own layout."
+  >
+    <h3>content × badgeVariant</h3>
+    <p class="badge-page__note">
+      <code>badgeVariant</code> takes the four status names <code>gog-tag</code> takes and defaults
+      to <code>danger</code>, the colour of a count someone should look at. A number over
+      <code>badgeMax</code> (99) prints as <code>99+</code>; a word is left alone, since capping
+      only means something for a count. <code>badgeDot</code> drops the text for "something changed
+      here" with no number to give.
+    </p>
+    <app-doc-matrix rowAxis="content" colAxis="badgeVariant">
+      <ng-template appDocCell [rows]="contents" [cols]="variants" let-content let-variant="col">
+        <gog-button
+          variant="outline"
+          [gogBadge]="content.value"
+          [badgeDot]="content.dot"
+          [badgeVariant]="variant"
+        >
+          Inbox
+        </gog-button>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>badgePosition</h3>
+    <p class="badge-page__note">
+      The four corners, as logical positions: <code>end</code> is the right-hand corner here and the
+      left-hand one in a right-to-left page. The badge overhangs the corner by
+      <code>--gog-badge-offset</code>, so leave that much room around a badged element in a tight
+      row.
+    </p>
+    <div class="badge-page__row">
+      @for (position of positions; track position) {
+        <gog-button variant="outline" gogBadge="9" [badgePosition]="position">
+          {{ position }}
+        </gog-button>
+      }
+    </div>
+
+    <h3>hosts</h3>
+    <p class="badge-page__note">
+      A directive, so it decorates what is already there rather than wrapping it: a
+      <code>gog-button</code>, a native button, a link styled with <code>gogButton</code>, or any
+      element — the host only gains <code>position: relative</code> to hold the badge. An inline
+      element needs to be made a box (<code>inline-flex</code> below) so the corner is its corner.
+    </p>
+    <div class="badge-page__row">
+      <gog-button gogBadge="12">gog-button</gog-button>
+      <button type="button" class="badge-page__native" gogBadge="4">native button</button>
+      <a gogButton variant="outline" href="#content" gogBadge="NEW" badgeVariant="success">
+        a[gogButton]
+      </a>
+      <span class="badge-page__avatar" gogBadge badgeDot badgeVariant="success">GG</span>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="A badge that would read 0 is not rendered at all — the one bug every badge component ships with is not reachable here."
+  >
+    <h3>zero, and badgeHidden</h3>
+    <p class="badge-page__note">
+      Step the count down to zero: the badge leaves the DOM rather than showing "0", and
+      <code>null</code> and an empty string do the same. <code>badgeHidden</code> is the other way
+      to take it away — the count underneath is kept, so it comes back as it was. Neither changes
+      the host's size, because the badge was never part of its layout.
+    </p>
+    <div class="badge-page__row">
+      <gog-button
+        [gogBadge]="count()"
+        [badgeHidden]="hidden()"
+        badgeAriaLabel="{{ count() }} unread"
+      >
+        Notifications
+      </gog-button>
+      <div class="badge-page__actions">
+        <button type="button" (click)="remove()">−1</button>
+        <button type="button" (click)="add()">+1</button>
+        <button type="button" (click)="count.set(150)">set 150</button>
+        <button type="button" (click)="hidden.set(!hidden())">badgeHidden: {{ hidden() }}</button>
+      </div>
+      <code>count: {{ count() }}</code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The count has to reach the element a screen reader lands on — the focusable one — and where that element is decides how."
+  >
+    <h3>the focusable element's attributes</h3>
+    <p class="badge-page__note">
+      Read from the live DOM. On a focusable host the badge is inside it, so its text — or
+      <code>badgeAriaLabel</code>, which replaces the number — is part of the host's name and no
+      attribute appears. <code>gog-button</code> is the other case: its host is a wrapper and the
+      real <code>&lt;button&gt;</code> is inside, so the badge describes that button through
+      <code>aria-describedby</code> and it reads "Inbox, button, 12 unread". Until 21.15.0 the count
+      sat beside that button, and Tab said only "Inbox, button".
+    </p>
+    <app-doc-matrix rowAxis="host" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        @switch (state) {
+          @case ('button gogBadge="12"') {
+            <app-doc-attrs target="button">
+              <button type="button" class="badge-page__native" gogBadge="12">Inbox</button>
+            </app-doc-attrs>
+          }
+          @case ('button gogBadge="12" badgeAriaLabel="12 unread"') {
+            <app-doc-attrs target="button">
+              <button
+                type="button"
+                class="badge-page__native"
+                gogBadge="12"
+                badgeAriaLabel="12 unread"
+              >
+                Inbox
+              </button>
+            </app-doc-attrs>
+          }
+          @case ('gog-button gogBadge="12" — its inner button') {
+            <app-doc-attrs target="button">
+              <gog-button gogBadge="12">Inbox</gog-button>
+            </app-doc-attrs>
+          }
+          @case ('gog-button gogBadge="12" badgeAriaLabel="12 unread" — its inner button') {
+            <app-doc-attrs target="button">
+              <gog-button gogBadge="12" badgeAriaLabel="12 unread">Inbox</gog-button>
+            </app-doc-attrs>
+          }
+          @case ('a gogButton gogBadge="12"') {
+            <app-doc-attrs target="a">
+              <a gogButton variant="outline" href="#accessibility" gogBadge="12">Inbox</a>
+            </app-doc-attrs>
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>what to put in badgeAriaLabel, and where not to put a badge</h3>
+    <p class="badge-page__note">
+      Without it a screen reader hears the bare number, "Inbox 12", which is usually enough. Give
+      the wording when the number alone is ambiguous — "12 unread", "3 failed checks" — and keep it
+      in step with the count, as the Behaviour demo does. A dot has no text, so a dot that matters
+      needs <code>badgeAriaLabel</code> or it says nothing. And put the badge on the control, not on
+      its icon: a <code>gog-icon</code> is <code>aria-hidden</code> by default, and everything
+      appended inside it is hidden with it.
+    </p>
+  </app-doc-section>
+</app-doc-page>

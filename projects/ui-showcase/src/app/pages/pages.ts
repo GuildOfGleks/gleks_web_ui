@@ -2,6 +2,7 @@ import type { Type } from '@angular/core';
 
 import type { DocApi } from '../doc/doc-api';
 import { AUTOCOMPLETE_API } from './autocomplete/autocomplete.api';
+import { BADGE_API } from './badge/badge.api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
 import { CHECKBOX_API } from './checkbox/checkbox.api';
@@ -113,5 +114,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./icon/icon-page').then((m) => m.IconPage),
     api: ICON_API,
     tokens: ['Icon & spinner', 'Icon'],
+  },
+  badge: {
+    load: () => import('./badge/badge-page').then((m) => m.BadgePage),
+    api: BADGE_API,
+    tokens: ['Badge (the `gogBadge` directive; its classes live in utilities.css)'],
   },
 };

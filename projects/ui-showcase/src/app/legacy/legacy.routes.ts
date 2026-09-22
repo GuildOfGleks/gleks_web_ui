@@ -96,10 +96,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/ripple-page/ripple-page').then((m) => m.RipplePage),
   },
   {
-    path: 'badge',
-    loadComponent: () => import('./pages/badge-page/badge-page').then((m) => m.BadgePage),
-  },
-  {
     path: 'divider',
     loadComponent: () => import('./pages/divider-page/divider-page').then((m) => m.DividerPage),
   },

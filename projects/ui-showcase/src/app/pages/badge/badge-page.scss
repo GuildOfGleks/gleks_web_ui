@@ -1,0 +1,41 @@
+.badge-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  // Room for the badge's overhang, which is outside every host's own box.
+  gap: var(--gog-space-24);
+  margin-block-end: var(--gog-space-16);
+  padding-block-start: var(--gog-space-8);
+}
+
+.badge-page__native {
+  padding: var(--gog-space-4) var(--gog-space-12);
+  font: inherit;
+}
+
+// An inline element made a box, so the badge's corner is its corner.
+.badge-page__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--gog-space-40);
+  height: var(--gog-space-40);
+  border-radius: 50%;
+  background-color: var(--gog-surface-color);
+  border: 1px solid var(--gog-border-color);
+  font-size: var(--gog-text-sm);
+  font-weight: 700;
+}
+
+.badge-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-8);
+}
+
+.badge-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
