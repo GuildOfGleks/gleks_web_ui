@@ -1,0 +1,118 @@
+<app-doc-page unit="tag">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Four status colours across five sizes. A tag has no interactive states — it is a label, and it does not respond to the pointer."
+  >
+    <h3>size × variant</h3>
+    <p class="tag-page__note">
+      Every surface — the fill, the border, the text — is mixed from one colour per variant, so the
+      four read as one family in every theme. The colour is a hint, never the message: the text has
+      to say "Paid" or "Overdue" on its own, for anyone who cannot tell green from red.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="variant">
+      <ng-template appDocCell [rows]="sizes" [cols]="variants" let-size let-variant="col">
+        <gog-tag [size]="size" [variant]="variant" [iconName]="variantIcons[variant]">
+          {{ variant }}
+        </gog-tag>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>shape × icon</h3>
+    <div class="tag-page__grid">
+      @for (shape of shapes; track shape) {
+        <span class="tag-page__label">shape="{{ shape }}"</span>
+        <gog-tag [shape]="shape" variant="success">Paid</gog-tag>
+        <gog-tag [shape]="shape" variant="success" iconName="success">Paid</gog-tag>
+        <gog-tag [shape]="shape" variant="warning">
+          <ng-template gogTagIcon><gog-icon name="clock" /></ng-template>
+          Due in 3 days
+        </gog-tag>
+      }
+    </div>
+    <p class="tag-page__note">
+      <code>iconName</code> takes any built-in or registered name; the
+      <code>gogTagIcon</code> template (the third tag) replaces it with any markup, and wins when
+      both are set. The icon is sized from the tag's own scale, not from
+      <code>--gog-icon-size</code>.
+    </p>
+
+    <h3>width</h3>
+    <p class="tag-page__note">
+      A tag fits its text and never wraps: two words of a status splitting across lines reads as two
+      tags. <code>fullWidth</code> stretches it across its container instead, text centred. Text
+      longer than the room it gets ends in an ellipsis inside the border — until 21.15.0 it ran out
+      through it, as the third tag would have. The cut text is still read in full by a screen
+      reader, but a sighted reader loses it, so keep a status short or show the whole of it
+      somewhere else.
+    </p>
+    <div class="tag-page__frame">
+      <gog-tag variant="info">fits its text</gog-tag>
+      <gog-tag variant="info" [fullWidth]="true">[fullWidth]="true"</gog-tag>
+      <gog-tag variant="warning" iconName="clock">
+        Awaiting a sign-off from the regional finance team before release
+      </gog-tag>
+    </div>
+
+    <h3>--gog-tag-accent — a colour outside the four</h3>
+    <p class="tag-page__note">
+      The four variants cover status. For a category — a team, a label colour a user picked — set
+      <code>--gog-tag-accent</code> on the tag and the fill, border and text are all derived from it
+      the same way. Check the contrast of a colour you bring: the library's own four are measured in
+      every theme, and yours is not.
+    </p>
+    <div class="tag-page__row">
+      <gog-tag class="tag-page__accent tag-page__accent--violet">Design</gog-tag>
+      <gog-tag class="tag-page__accent tag-page__accent--teal">Platform</gog-tag>
+      <gog-tag class="tag-page__accent tag-page__accent--pink" shape="pill">Research</gog-tag>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A tag is text in a coloured box. It has no role and no name of its own, and its icon is decorative."
+  >
+    <h3>host and icon attributes</h3>
+    <p class="tag-page__note">
+      Read from the live DOM. The host carries no ARIA at all, so a screen reader reads the tag's
+      text where it stands, as it would any span. The icon is <code>aria-hidden</code> whichever way
+      it was given — so an icon cannot be the only thing that says what a tag means. A tag that must
+      interrupt, like a status that changes while the page is open, needs a live region around it;
+      <code>gog-alert</code> is the component for a message that has to be heard.
+    </p>
+    <app-doc-matrix rowAxis="tag" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        @switch (state) {
+          @case ('default') {
+            <app-doc-attrs target="gog-tag">
+              <gog-tag variant="success">Paid</gog-tag>
+            </app-doc-attrs>
+          }
+          @case ('iconName="success"') {
+            <app-doc-attrs target="gog-icon">
+              <gog-tag variant="success" iconName="success">Paid</gog-tag>
+            </app-doc-attrs>
+          }
+          @case ('gogTagIcon template') {
+            <app-doc-attrs target="gog-icon">
+              <gog-tag variant="warning">
+                <ng-template gogTagIcon><gog-icon name="clock" /></ng-template>
+                Due in 3 days
+              </gog-tag>
+            </app-doc-attrs>
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>tag, chip or badge</h3>
+    <p class="tag-page__note">
+      A tag labels something and does nothing when pressed. A chip is something to press, toggle or
+      remove. A badge is a count pinned to the corner of another control. If a tag starts needing a
+      click handler, it has become a chip.
+    </p>
+  </app-doc-section>
+</app-doc-page>

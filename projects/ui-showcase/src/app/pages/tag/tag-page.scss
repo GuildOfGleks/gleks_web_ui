@@ -1,0 +1,53 @@
+.tag-page__grid {
+  display: grid;
+  grid-template-columns: max-content repeat(3, max-content);
+  align-items: center;
+  gap: var(--gog-space-12) var(--gog-space-16);
+  margin-block-end: var(--gog-space-16);
+}
+
+.tag-page__label {
+  color: var(--gog-muted-text-color);
+  font-family: var(--gog-font-mono, monospace);
+  font-size: var(--gog-text-xs);
+}
+
+.tag-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-12);
+  margin-block-end: var(--gog-space-16);
+}
+
+.tag-page__frame {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  width: 20rem;
+  max-width: 100%;
+  margin-block-end: var(--gog-space-16);
+  padding: var(--gog-space-8);
+  border: 1px dashed var(--gog-border-color);
+}
+
+// The documented per-instance hook; one colour, and the tag derives every surface from it.
+.tag-page__accent--violet {
+  --gog-tag-accent: #7c5cdb;
+}
+
+.tag-page__accent--teal {
+  --gog-tag-accent: #1f8a80;
+}
+
+.tag-page__accent--pink {
+  --gog-tag-accent: #c2417c;
+}
+
+.tag-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}

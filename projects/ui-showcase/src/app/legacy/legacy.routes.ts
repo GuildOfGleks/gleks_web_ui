@@ -71,10 +71,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/tooltip-page/tooltip-page').then((m) => m.TooltipPage),
   },
   {
-    path: 'tag',
-    loadComponent: () => import('./pages/tag-page/tag-page').then((m) => m.TagPage),
-  },
-  {
     path: 'dialog',
     loadComponent: () => import('./pages/dialog-page/dialog-page').then((m) => m.DialogPage),
   },

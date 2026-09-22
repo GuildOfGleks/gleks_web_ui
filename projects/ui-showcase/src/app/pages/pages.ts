@@ -15,6 +15,7 @@ import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { RADIO_GROUP_API } from './radio-group/radio-group.api';
 import { SELECT_API } from './select/select.api';
 import { SLIDER_API } from './slider/slider.api';
+import { TAG_API } from './tag/tag.api';
 import { TOGGLE_API } from './toggle/toggle.api';
 import { TEXTAREA_API } from './textarea/textarea.api';
 
@@ -125,5 +126,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./chip/chip-page').then((m) => m.ChipPage),
     api: CHIP_API,
     tokens: ['Chip'],
+  },
+  tag: {
+    load: () => import('./tag/tag-page').then((m) => m.TagPage),
+    api: TAG_API,
+    tokens: ['Tag'],
   },
 };
