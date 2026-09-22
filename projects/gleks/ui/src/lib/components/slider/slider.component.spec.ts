@@ -294,6 +294,22 @@ describe('SliderComponent', () => {
       expect(endInput.getAttribute('aria-label')).toBe('Maximum');
     });
 
+    it('prefixes the thumb names with ariaLabel when there is no label', () => {
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('ariaLabel', 'Price');
+      fixture.detectChanges();
+
+      const name = (selector: string) =>
+        fixture.nativeElement.querySelector(selector).getAttribute('aria-label');
+      expect(name('.gog-slider__input--start')).toBe('Price Minimum');
+      expect(name('.gog-slider__input--end')).toBe('Price Maximum');
+
+      // A visible label still wins over ariaLabel, as it does in single mode.
+      fixture.componentRef.setInput('label', 'Budget');
+      fixture.detectChanges();
+      expect(name('.gog-slider__input--start')).toBe('Budget Minimum');
+    });
+
     it('puts the start input on top only while the end thumb cannot move', () => {
       const startOnTop = () =>
         fixture.nativeElement

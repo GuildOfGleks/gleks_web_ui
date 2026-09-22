@@ -53,6 +53,13 @@ reached 1.0, so breaking changes may land in minor versions.
   `aria-invalid` stayed `false`. `'manual'` was unaffected. Found while building the showcase's
   Radio group page; the new spec fails against the old code.
 
+- **A `range` `gog-slider` ignored `ariaLabel`.** Each thumb's name is built from a prefix and
+  `'Minimum'`/`'Maximum'`, and the prefix was the visible `label` only — so a range slider named
+  the way every other control is named without a visible label, `ariaLabel="Price"`, announced its
+  thumbs as a bare "Minimum" and "Maximum", with nothing saying what they were the minimum of. The
+  prefix is now `label`, or `ariaLabel` when there is none. `startAriaLabel`/`endAriaLabel` still
+  replace the second half.
+
 - **A `range` `gog-slider` could lock its two thumbs together for a pointer.** Both thumbs are
   native inputs stacked on one track, the end one on top, and only the native thumbs take the
   pointer — so where the thumbs meet, a press grabs the end thumb. At `max` that thumb can move

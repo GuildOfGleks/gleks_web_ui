@@ -101,8 +101,9 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
   readonly range = input(false);
   /**
    * Accessible name for the start (lower) thumb in `range` mode. Falls back to `'Minimum'`,
-   * prefixed with `label()` when one is set (e.g. `'Price Minimum'`) — a shared `<label>`
-   * can't be associated with two inputs via `for`, so each thumb needs its own name.
+   * prefixed with `label()`, or `ariaLabel()` when there is no label (e.g. `'Price Minimum'`)
+   * — a shared `<label>` can't be associated with two inputs via `for`, so each thumb needs its
+   * own name.
    */
   readonly startAriaLabel = input('');
   /** Accessible name for the end (upper) thumb in `range` mode. Falls back to `'Maximum'`. */
@@ -227,13 +228,15 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
     const chars = Math.max(digitLength(this.min(), decimals), digitLength(this.max(), decimals));
     return this.range() ? chars * 2 + 3 : chars; // +3 for the " – " separator
   });
+  /** What each thumb's name starts with in `range` mode: the visible label, else `ariaLabel`. */
+  private readonly rangeNamePrefix = computed(() => this.label() || this.ariaLabel());
   protected readonly startInputAriaLabel = computed(() => {
     const base = this.startAriaLabel() || 'Minimum';
-    return this.label() ? `${this.label()} ${base}` : base;
+    return this.rangeNamePrefix() ? `${this.rangeNamePrefix()} ${base}` : base;
   });
   protected readonly endInputAriaLabel = computed(() => {
     const base = this.endAriaLabel() || 'Maximum';
-    return this.label() ? `${this.label()} ${base}` : base;
+    return this.rangeNamePrefix() ? `${this.rangeNamePrefix()} ${base}` : base;
   });
   protected readonly isVertical = computed(() => this.orientation() === 'vertical');
   protected readonly hasError = this.errorState.hasError;
