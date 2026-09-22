@@ -14,6 +14,11 @@ const DEFAULT_VARIANT: GogSpinnerVariant = 'runic';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'gog-inline-center',
+    // An indeterminate progressbar — no aria-valuenow — named by `ariaLabel`. Deliberately no
+    // `aria-hidden` binding: a null there would strip the `aria-hidden="true"` that a host like
+    // `gog-button` writes on its own spinner, whose loading state it announces itself.
+    '[attr.role]': 'ariaLabel() ? "progressbar" : null',
+    '[attr.aria-label]': 'ariaLabel() || null',
   },
 })
 export class SpinnerComponent {
@@ -30,6 +35,7 @@ export class SpinnerComponent {
    * contained ancestor. See README's "Overlays and the viewport".
    */
   readonly overlay = input(false);
+  /** What a screen reader calls the spinner. Empty makes it decorative: no role and no name. */
   readonly ariaLabel = input('Loading');
   /**
    * `runic` and `ring` are built-in presets. Use `custom` to render your own

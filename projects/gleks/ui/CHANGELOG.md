@@ -53,6 +53,14 @@ reached 1.0, so breaking changes may land in minor versions.
   `aria-invalid` stayed `false`. `'manual'` was unaffected. Found while building the showcase's
   Radio group page; the new spec fails against the old code.
 
+- **`gog-spinner`'s `ariaLabel` did nothing.** The input existed from the first version, and
+  `gog-spinner-overlay` and `gog-autocomplete` passed a value into it, but the template never
+  rendered it and the host carried no role — so every spinner was invisible to assistive tech,
+  while `AGENTS.md` described a `role="status"` and an accessible name it did not have. The host is
+  now an indeterminate `role="progressbar"` named by `ariaLabel`, and read that way from Chrome's
+  accessibility tree (`progressbar "Loading"`); `ariaLabel=""` leaves it with no role and no name.
+  The spinner inside a loading `gog-button` keeps the `aria-hidden` the button gives it.
+
 - **A loading `gog-button` had no name.** While `loading` is on, the button keeps its width by
   hiding its label under the spinner — with `visibility: hidden`, which also takes the label out of
   the accessibility tree. Read from Chrome's: every loading button on the showcase's Button page

@@ -1326,7 +1326,15 @@ provideGogConfig({ spinner: { component: HouseLoaderComponent } });
 ```
 
 It renders inside the same size wrapper as the built-ins, so it keeps the sizing, the overlay
-behaviour, `role="status"` and the accessible name — only the visual is yours. An instance's own
+behaviour, the role and the accessible name — only the visual is yours.
+
+**What assistive tech sees.** The host is an indeterminate `role="progressbar"` — no
+`aria-valuenow` — named by `ariaLabel`, `'Loading'` by default; name it for what is loading
+("Loading invoices") when more than one can spin at once. `ariaLabel=""` makes it decorative: no
+role, no name. It is not a live region and announces nothing when it appears; the region that is
+busy says so with `aria-busy`, which `gog-spinner-overlay` and every component with a `loading`
+input set for you. A spinner inside a control that announces its own state — `gog-button`'s — is
+`aria-hidden` there. An instance's own
 `variant` still wins over it, so `<gog-spinner variant="ring">` is a ring in an app that has set
 a component: a default does not overrule something asked for explicitly.
 

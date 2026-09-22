@@ -9,6 +9,13 @@ import { SpinnerComponent } from './spinner.component';
 })
 class CustomSpinnerHostComponent {}
 
+/** The shape `gog-button` uses: a spinner its host has already hidden. */
+@Component({
+  imports: [SpinnerComponent],
+  template: `<gog-spinner aria-hidden="true" />`,
+})
+class HiddenSpinnerHostComponent {}
+
 describe('SpinnerComponent', () => {
   let component: SpinnerComponent;
   let fixture: ComponentFixture<SpinnerComponent>;
@@ -38,6 +45,33 @@ describe('SpinnerComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.gog-spinner__wrap--md')).toBeTruthy();
+  });
+
+  it('is an indeterminate progressbar named by ariaLabel', () => {
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.getAttribute('role')).toBe('progressbar');
+    expect(host.getAttribute('aria-label')).toBe('Loading');
+    expect(host.hasAttribute('aria-valuenow')).toBe(false);
+
+    fixture.componentRef.setInput('ariaLabel', 'Loading invoices');
+    fixture.detectChanges();
+    expect(host.getAttribute('aria-label')).toBe('Loading invoices');
+  });
+
+  it('has no role and no name when ariaLabel is empty', () => {
+    fixture.componentRef.setInput('ariaLabel', '');
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.getAttribute('role')).toBeNull();
+    expect(host.getAttribute('aria-label')).toBeNull();
+  });
+
+  it("keeps an aria-hidden its host wrote on it, as gog-button's spinner has", () => {
+    const hostFixture = TestBed.createComponent(HiddenSpinnerHostComponent);
+    hostFixture.detectChanges();
+    const spinner = hostFixture.nativeElement.querySelector('gog-spinner') as HTMLElement;
+    expect(spinner.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('should keep the svg hidden from assistive tech', () => {
