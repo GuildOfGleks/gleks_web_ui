@@ -277,5 +277,14 @@
         </app-doc-attrs>
       </ng-template>
     </app-doc-matrix>
+
+    <h3>while it is loading</h3>
+    <p class="button-page__note">
+      The label is hidden under the spinner with <code>opacity: 0</code>, so the button keeps its
+      width and its name: a screen reader hears "Save, button, busy". Until 21.15.0 it was hidden
+      with <code>visibility: hidden</code>, which also takes text out of the accessibility tree, and
+      every loading button was announced as just "button". The spinner itself is
+      <code>aria-hidden</code> inside a button — <code>aria-busy</code> already says it.
+    </p>
   </app-doc-section>
 </app-doc-page>

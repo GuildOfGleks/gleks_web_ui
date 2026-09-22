@@ -18,3 +18,10 @@
   overflow-x: auto;
   font-size: var(--gog-text-xs);
 }
+
+.button-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
