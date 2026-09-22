@@ -53,6 +53,16 @@ reached 1.0, so breaking changes may land in minor versions.
   `aria-invalid` stayed `false`. `'manual'` was unaffected. Found while building the showcase's
   Radio group page; the new spec fails against the old code.
 
+- **A removable `gog-chip` could not be removed from the keyboard.** The remove button sits
+  inside the chip's own `role="button"` surface, and the surface's key handler caught Enter and
+  Space as they bubbled up from it — cancelling the button's activation and pressing the chip
+  instead. With the default `clickable`, Tab to the remove button and Enter emitted `gogClick`,
+  and only a pointer could remove the chip. Verified with a real keyboard in Chrome before and
+  after: Enter and Space on the remove button now emit `gogRemove`, and the chip's own keys are
+  unchanged. The same pair made the chip's accessible name include the button's label —
+  "Angular Remove filter Angular"; a removable chip without `ariaLabel` is now named from its
+  content alone, "Angular".
+
 - **`gogBadge` on a `gog-button` never reached the button.** The directive appends the badge,
   and the hidden `badgeAriaLabel` wording, to its host — and `gog-button`'s host is a wrapper
   around the real `<button>`, so both landed beside the button instead of in it. Read from

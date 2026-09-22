@@ -255,6 +255,36 @@ describe('ChipComponent', () => {
       expect(removes).toHaveLength(1);
       expect(clicks).toHaveLength(0);
     });
+
+    it('leaves Enter and Space on the remove button to the button, not the chip', async () => {
+      const clicks: unknown[] = [];
+      component.gogClick.subscribe(() => clicks.push('clicked'));
+      fixture.componentRef.setInput('removable', true);
+      fixture.componentRef.setInput('clickable', true);
+      await fixture.whenStable();
+
+      const remove = fixture.nativeElement.querySelector('.gog-chip__remove') as HTMLElement;
+      for (const key of ['Enter', ' ']) {
+        const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        remove.dispatchEvent(event);
+        // Not cancelled, so the browser still turns the key into the button's own click.
+        expect(event.defaultPrevented).toBe(false);
+      }
+      expect(clicks).toHaveLength(0);
+    });
+
+    it("names a removable chip from its content, not from the remove button's label", async () => {
+      fixture.componentRef.setInput('removable', true);
+      await fixture.whenStable();
+
+      const content = fixture.nativeElement.querySelector('.gog-chip__content') as HTMLElement;
+      expect(surface().getAttribute('aria-labelledby')).toBe(content.id);
+
+      // An explicit ariaLabel still wins, and needs no labelledby beside it.
+      fixture.componentRef.setInput('ariaLabel', 'Angular filter');
+      await fixture.whenStable();
+      expect(surface().getAttribute('aria-labelledby')).toBeNull();
+    });
   });
 
   // `selected` is tri-state on purpose: `null` has to leave every chip that shipped before it

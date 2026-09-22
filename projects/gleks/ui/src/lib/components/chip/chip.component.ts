@@ -10,7 +10,7 @@ import {
 
 import { type GogIconName, IconComponent } from '../icon/icon.component';
 import { GogSize, GogTagShape } from '@guildofgleks/ui/shared';
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, nextGogControlId } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
 
@@ -69,6 +69,16 @@ export class ChipComponent {
   readonly gogClick = output<MouseEvent | KeyboardEvent>();
   readonly gogRemove = output<void>();
 
+  protected readonly contentId = nextGogControlId('gog-chip-content');
+  /**
+   * A removable chip's remove button sits inside the surface, and a `role="button"` takes its
+   * name from everything inside it — so without this the chip read as "Angular Remove filter
+   * Angular". Pointing the name at the content alone keeps the button's label on the button.
+   */
+  protected readonly labelledBy = computed(() =>
+    this.removable() && !this.ariaLabel() ? this.contentId : null,
+  );
+
   protected readonly hostClasses = computed(() =>
     [
       'gog-chip',
@@ -114,6 +124,9 @@ export class ChipComponent {
 
   protected onKeydown(event: KeyboardEvent): void {
     if (this.disabled()) return;
+    // A key pressed on the remove button bubbles here too. Handling it would cancel the button's
+    // own activation and press the chip instead, leaving a keyboard no way to remove it.
+    if (event.target !== event.currentTarget) return;
     if (event.key !== 'Enter' && event.key !== ' ') return;
 
     event.preventDefault();

@@ -1,6 +1,7 @@
 <div
   class="gog-chip__surface"
   [attr.aria-label]="ariaLabel() || null"
+  [attr.aria-labelledby]="labelledBy()"
   [attr.aria-disabled]="disabled() ? 'true' : null"
   [attr.role]="isInteractive() ? 'button' : null"
   [attr.aria-pressed]="ariaPressed()"
@@ -19,7 +20,7 @@
     <gog-icon class="gog-chip__icon" [ariaHidden]="true" [name]="iconName() ?? 'check'" />
   }
 
-  <span class="gog-chip__content">
+  <span class="gog-chip__content" [id]="contentId">
     <ng-content></ng-content>
   </span>
 
