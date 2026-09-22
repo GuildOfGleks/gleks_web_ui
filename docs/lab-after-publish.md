@@ -76,6 +76,15 @@ build.
   `forceSelection` API row in `autocomplete-doc-page.ts`. The keyboard paragraph further down
   ("Escape closes the panel") is already right for both modes.
 
+- **The Radio group page's "Reactive forms and validation" demo starts working.** It promises
+  "focus the group and tab away to see it" under `errorDisplay="auto"`, and on 21.14.0 nothing
+  appears — the radio group never read the form's touched/invalid state back (fixed in 21.15.0).
+  No prose change needed; check it in a browser after the install, since it is the first time that
+  sentence will be true. Two more 21.15.0 radio fixes may need nothing but are worth a look: a
+  disabled group no longer fades its options twice, and `fullWidth` with
+  `orientation="horizontal"` keeps a row (options share the width) instead of stacking — the
+  `fullWidth` API row ("Stretches the group to fill its container") could say that.
+
 - **The stylesheets are 45% lighter**, so the comparison page's CSS figures are stale the moment
   21.15.0 installs: `theme.css` 22.5 KB and the bundled `index.css` 28.9 KB gzipped, against the
   40.8 KB and 51.4 KB `compare-full.md` measured on 2026-09-13. Update the CSS table, the short
