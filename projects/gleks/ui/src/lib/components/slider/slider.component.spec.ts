@@ -293,6 +293,32 @@ describe('SliderComponent', () => {
       expect(startInput.getAttribute('aria-label')).toBe('Minimum');
       expect(endInput.getAttribute('aria-label')).toBe('Maximum');
     });
+
+    it('puts the start input on top only while the end thumb cannot move', () => {
+      const startOnTop = () =>
+        fixture.nativeElement
+          .querySelector('.gog-slider')
+          .classList.contains('gog-slider--start-on-top');
+      fixture.componentRef.setInput('range', true);
+
+      fixture.componentRef.setInput('rangeValue', { start: 20, end: 80 });
+      fixture.detectChanges();
+      expect(startOnTop()).toBe(false);
+
+      // Met at max: the end thumb can go neither up nor below the start one.
+      fixture.componentRef.setInput('rangeValue', { start: 100, end: 100 });
+      fixture.detectChanges();
+      expect(startOnTop()).toBe(true);
+
+      // Met anywhere else: the end thumb can still go up, so it keeps the pointer.
+      fixture.componentRef.setInput('rangeValue', { start: 50, end: 50 });
+      fixture.detectChanges();
+      expect(startOnTop()).toBe(false);
+
+      fixture.componentRef.setInput('endDisabled', true);
+      fixture.detectChanges();
+      expect(startOnTop()).toBe(true);
+    });
   });
 
   describe('range: one-sided disable', () => {

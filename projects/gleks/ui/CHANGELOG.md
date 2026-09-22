@@ -53,6 +53,15 @@ reached 1.0, so breaking changes may land in minor versions.
   `aria-invalid` stayed `false`. `'manual'` was unaffected. Found while building the showcase's
   Radio group page; the new spec fails against the old code.
 
+- **A `range` `gog-slider` could lock its two thumbs together for a pointer.** Both thumbs are
+  native inputs stacked on one track, the end one on top, and only the native thumbs take the
+  pointer — so where the thumbs meet, a press grabs the end thumb. At `max` that thumb can move
+  neither up nor below the start one, and the start thumb under it was out of reach: a range
+  dragged to `max – max` stayed there for a mouse or a finger, and so did a start thumb dragged
+  onto an `endDisabled` end. The keyboard was never affected. The start input now goes on top in
+  exactly those two cases. Verified with a real mouse in Chrome: `200 – 200` drags back to
+  `100 – 200`, and a pinned ceiling's start thumb comes back off it.
+
 - **A disabled `gog-radio-group` faded its options twice.** The group dims itself with
   `--gog-radio-disabled-opacity`, and every option inside it also took the per-option disabled class
   that applies the same token, so the options of a disabled group rendered at 0.16 against 0.4 for a

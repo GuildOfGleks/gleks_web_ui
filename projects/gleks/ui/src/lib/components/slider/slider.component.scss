@@ -162,6 +162,16 @@
   pointer-events: none;
 }
 
+/* Keeps the start input's z-index below inside the track instead of in the page's stacking order. */
+.gog-slider--range .gog-slider__track-container {
+  isolation: isolate;
+}
+
+/* See `isStartOnTop` in slider.component.ts: when the end thumb cannot move, the start one takes the pointer. */
+.gog-slider--start-on-top .gog-slider__input--start {
+  z-index: 1;
+}
+
 .gog-slider--range .gog-slider__input::-webkit-slider-thumb {
   pointer-events: auto;
 }

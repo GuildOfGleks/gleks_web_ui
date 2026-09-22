@@ -163,6 +163,16 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
   protected readonly isFullyDisabled = computed(() =>
     this.range() ? this.isStartDisabled() && this.isEndDisabled() : this.isDisabled(),
   );
+  /**
+   * The end input is painted over the start one, and in `range` mode only the native thumbs
+   * take the pointer — so when the thumbs meet, the pointer grabs the end thumb. That is a
+   * dead end when the end thumb cannot move: at `max()` it cannot go up, and it cannot go
+   * below the start thumb, which sits under it out of reach. Same when the end thumb is
+   * disabled. In both cases the start input goes on top instead.
+   */
+  protected readonly isStartOnTop = computed(
+    () => this.range() && (this.clampedRange().start >= this.max() || this.isEndDisabled()),
+  );
   protected readonly clampedValue = computed(() => {
     const value = this.value();
     return Math.min(this.max(), Math.max(this.min(), value));
