@@ -1,0 +1,96 @@
+.icon-page__gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: var(--gog-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.icon-page__tile {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-space-8);
+  padding: var(--gog-space-8);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  font-size: var(--gog-text-md);
+
+  code {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-xs);
+  }
+}
+
+.icon-page__sample {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.icon-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-24);
+  margin-block-end: var(--gog-space-16);
+  font-size: var(--gog-text-md);
+
+  > span,
+  > a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gog-space-4);
+  }
+}
+
+.icon-page__success {
+  color: var(--gog-success-color);
+}
+
+.icon-page__danger {
+  color: var(--gog-danger-color);
+}
+
+.icon-page__muted {
+  color: var(--gog-muted-text-color);
+}
+
+.icon-page__box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-8);
+  padding: var(--gog-space-8) var(--gog-space-16);
+  border: 1px dashed var(--gog-border-color);
+
+  > span {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gog-space-8);
+  }
+}
+
+.icon-page__box--inline {
+  flex-direction: row;
+}
+
+.icon-page__caption {
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}
+
+.icon-page__large {
+  font-size: var(--gog-text-2xl);
+}
+
+.icon-page__initials {
+  font-size: 0.6em;
+  font-weight: 700;
+}
+
+.icon-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}

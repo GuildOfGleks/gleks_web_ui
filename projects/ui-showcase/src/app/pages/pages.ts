@@ -7,6 +7,7 @@ import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
 import { CHECKBOX_API } from './checkbox/checkbox.api';
 import { DATEPICKER_API } from './datepicker/datepicker.api';
 import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.api';
+import { ICON_API } from './icon/icon.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { RADIO_GROUP_API } from './radio-group/radio-group.api';
@@ -107,5 +108,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./slider/slider-page').then((m) => m.SliderPage),
     api: SLIDER_API,
     tokens: ['Slider'],
+  },
+  icon: {
+    load: () => import('./icon/icon-page').then((m) => m.IconPage),
+    api: ICON_API,
+    tokens: ['Icon & spinner', 'Icon'],
   },
 };

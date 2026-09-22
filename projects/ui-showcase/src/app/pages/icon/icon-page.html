@@ -1,0 +1,189 @@
+<app-doc-page unit="icon">
+  <app-doc-section
+    id="content"
+    title="The built-in set"
+    lead="Every GogBuiltinIconName, read off ICON_DEFS at runtime rather than typed in — the list below cannot fall behind the package."
+  >
+    <p class="icon-page__note">
+      All of them are Lucide glyphs on one 24×24 grid, drawn with <code>currentColor</code> and
+      inlined into the package, so there is no icon font and no runtime dependency. The set is
+      outline-only apart from two pairs, <code>checkbox</code> / <code>checkbox-checked</code> and
+      <code>star</code> / <code>star-filled</code>, which exist for a toggle that has to show both
+      states. Anything else is registered by the app — see <a href="#registry">Registry</a>.
+    </p>
+    <ul class="icon-page__gallery">
+      @for (name of builtins; track name) {
+        <li class="icon-page__tile">
+          <gog-icon [name]="name" />
+          <code>{{ name }}</code>
+        </li>
+      }
+    </ul>
+  </app-doc-section>
+
+  <app-doc-section
+    id="sizing"
+    title="Size, stroke and colour"
+    lead="--gog-icon-size is 1.2em, so an icon follows the font size of whatever it sits in; the stroke width and the colour are inherited the same way."
+  >
+    <h3>font-size × --gog-icon-stroke-width</h3>
+    <p class="icon-page__note">
+      Neither axis is an input — both are the context the icon is placed in, which is the point: an
+      icon in a heading is a heading-sized icon without anyone passing a size. The stroke width
+      stays in the glyph's own units as it scales, so a thin set is one token away.
+    </p>
+    <app-doc-matrix rowAxis="context" colAxis="stroke">
+      <ng-template appDocCell [rows]="fontSizes" [cols]="strokeWidths" let-size let-stroke="col">
+        <span
+          class="icon-page__sample"
+          [style.font-size]="size.value"
+          [style.--gog-icon-stroke-width]="stroke.value"
+        >
+          <gog-icon name="settings" /> Aa
+        </span>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>colour</h3>
+    <p class="icon-page__note">
+      There is no <code>color</code> input: the glyph strokes with <code>currentColor</code>, so it
+      takes the colour of the text around it — a status colour, a link, a disabled label.
+    </p>
+    <div class="icon-page__row">
+      <span class="icon-page__success"><gog-icon name="success" /> Saved</span>
+      <span class="icon-page__danger"><gog-icon name="error" /> Failed</span>
+      <a href="#sizing"><gog-icon name="external-link" /> A link</a>
+      <span class="icon-page__muted"><gog-icon name="lock" /> Read-only</span>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="registry"
+    title="Registry"
+    lead="provideGogIcons({ name: '<svg…>' }) adds icons by name. After that they are indistinguishable from a built-in — in gog-icon and in every component that takes an icon name."
+  >
+    <h3>the app's own icons, used by name</h3>
+    <p class="icon-page__note">
+      This showcase registers <code>cart</code> and <code>rocket</code> in
+      <code>app.config.ts</code>. The tag and the chip below ask for them by name through their own
+      <code>iconName</code> inputs, with no <code>&lt;ng-template&gt;</code> anywhere — which is why
+      a registry beats the <code>template</code> input for an icon set.
+    </p>
+    <div class="icon-page__row">
+      <gog-icon name="cart" />
+      <gog-icon name="rocket" />
+      <gog-tag variant="info" iconName="cart">In basket</gog-tag>
+      <gog-chip iconName="rocket">Deploying</gog-chip>
+    </div>
+
+    <h3>a registration wins over a built-in, and a nested one layers on</h3>
+    <p class="icon-page__note">
+      The right-hand box sits inside a component that calls <code>provideGogIcons</code> again, with
+      one icon named <code>copy</code>. Inside it, <code>copy</code> is the registered glyph — that
+      is how an app swaps the library's checkmark or chevrons everywhere at once — while
+      <code>cart</code>, registered by the app above it, is still there: a nested registration adds
+      to its parent's set rather than replacing it.
+    </p>
+    <div class="icon-page__row">
+      <div class="icon-page__box">
+        <span class="icon-page__caption">app scope</span>
+        <span><gog-icon name="copy" /> copy</span>
+        <span><gog-icon name="cart" /> cart</span>
+      </div>
+      <app-icon-registry-scope>
+        <div class="icon-page__box">
+          <span class="icon-page__caption">nested provideGogIcons</span>
+          <span><gog-icon name="copy" /> copy</span>
+          <span><gog-icon name="cart" /> cart</span>
+        </div>
+      </app-icon-registry-scope>
+    </div>
+    <p class="icon-page__note">
+      Write a registered SVG the way the built-ins are written — a <code>viewBox</code>,
+      <code>currentColor</code>, no <code>width</code> or <code>height</code> — and it sizes and
+      colours like them. The markup goes in through <code>bypassSecurityTrustHtml</code>, because
+      Angular's sanitizer strips SVG: register markup you wrote, never a string built from user
+      input.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="A name that resolves to nothing renders nothing, and never throws."
+  >
+    <h3>an unknown name</h3>
+    <p class="icon-page__note">
+      The icon below asks for <code>rokcet</code>. It renders an empty host and, in dev mode, logs
+      one console warning per name — not one per instance, so a typo inside a
+      <code>&#64;for</code> of a thousand rows is one line. An icon is decoration, and taking a page
+      down over a misspelt glyph would be the worse failure; the warning is what gets it fixed.
+    </p>
+    <div class="icon-page__row">
+      <span class="icon-page__box icon-page__box--inline">
+        [<gog-icon name="rokcet" />] rendered here
+      </span>
+    </div>
+
+    <h3>template — a one-off in place of the SVG</h3>
+    <p class="icon-page__note">
+      When <code>template</code> is set it wins over <code>name</code> outright and the registry is
+      never consulted. It is for the single glyph that has no business in a shared set; anything
+      used twice belongs in <code>provideGogIcons</code>.
+    </p>
+    <ng-template #initials><span class="icon-page__initials">GG</span></ng-template>
+    <div class="icon-page__row">
+      <gog-icon name="user" class="icon-page__large" />
+      <gog-icon name="user" [template]="initials" class="icon-page__large" />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Decorative by default: an icon usually repeats the text beside it, and announcing both says everything twice."
+  >
+    <h3>host attributes</h3>
+    <p class="icon-page__note">
+      Read from the live DOM. <code>[ariaHidden]="false"</code> turns the icon into a named image:
+      <code>role="img"</code>, named by <code>title</code> or else by the icon's <code>name</code> —
+      and a name like <code>more-vertical</code> is rarely what a person should hear, so set the
+      title. Before 21.15.0 the role was missing, and the name sat on an element that Chrome exposes
+      as a generic and screen readers skip. Written as a plain attribute,
+      <code>title="Warning"</code> also lands on the host as the HTML <code>title</code> — hover the
+      second row's icon and the browser shows its tooltip, on a decorative icon as much as on a
+      named one.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target="gog-icon">
+          @switch (state) {
+            @case ('default') {
+              <gog-icon name="warning" />
+            }
+            @case ('[ariaHidden]="false" title="Warning"') {
+              <gog-icon name="warning" [ariaHidden]="false" title="Warning" />
+            }
+            @case ('[ariaHidden]="false", title unset') {
+              <gog-icon name="warning" [ariaHidden]="false" />
+            }
+            @case ('unknown name') {
+              <gog-icon name="rokcet" />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>which one to use</h3>
+    <p class="icon-page__note">
+      Beside text — the default, and nothing to do. Carrying meaning no text repeats, like a status
+      mark in a table cell — <code>[ariaHidden]="false"</code> with a <code>title</code>. The only
+      content of a button — leave the icon decorative and name the <em>button</em> (<code
+        >ariaLabel</code
+      >
+      on <code>gog-button</code>): the name then belongs to the thing that is pressed, and a screen
+      reader says it once.
+    </p>
+  </app-doc-section>
+</app-doc-page>

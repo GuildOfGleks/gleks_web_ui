@@ -104,10 +104,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/divider-page/divider-page').then((m) => m.DividerPage),
   },
   {
-    path: 'icon',
-    loadComponent: () => import('./pages/icon-page/icon-page').then((m) => m.IconPage),
-  },
-  {
     path: 'global-config',
     loadComponent: () =>
       import('./pages/global-config-page/global-config-page').then((m) => m.GlobalConfigPage),

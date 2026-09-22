@@ -4,7 +4,7 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { GOG_CONFIG, provideGogIcons } from '@guildofgleks/ui';
 
 import { routes } from './app.routes';
-import { CUSTOM_ICONS } from './legacy/custom-icons';
+import { CUSTOM_ICONS } from './custom-icons';
 import { ShowcaseSettings } from './shell/showcase-settings';
 
 export const appConfig: ApplicationConfig = {
