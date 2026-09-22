@@ -1,0 +1,202 @@
+<app-doc-page unit="chip">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Six states across five sizes, all live — hover and press are the chip's own and cannot be forced from a page."
+  >
+    <h3>size × state</h3>
+    <p class="chip-page__note">
+      <code>selected</code> is tri-state: unset, the chip is a plain chip; <code>false</code> and
+      <code>true</code> make it a toggle that is off or on, and on draws an inset ring rather than a
+      fill, because hover and press already own the background. A disabled chip keeps its ring —
+      "on, and unavailable right now" is a real state. <code>[clickable]="false"</code> is a label:
+      no hover, no press, not a button.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-chip
+          [size]="size"
+          [selected]="state.selected"
+          [disabled]="state.disabled"
+          [clickable]="state.clickable"
+        >
+          Angular
+        </gog-chip>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>size × everything a chip can hold</h3>
+    <p class="chip-page__note">
+      The avatar, the icon and the remove button are each a ratio of the chip's own font size, so
+      the whole object scales from one number — this column is where a per-size value would drift
+      away from the label first.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="">
+      <ng-template appDocCell [rows]="sizes" [cols]="controlColumn" let-size>
+        <div class="chip-page__row">
+          <gog-chip [size]="size" [avatarUrl]="ada">Ada Lovelace</gog-chip>
+          <gog-chip [size]="size" iconName="star">Starred</gog-chip>
+          <gog-chip
+            [size]="size"
+            [avatarUrl]="alan"
+            iconName="warning"
+            [removable]="true"
+            removeAriaLabel="Remove Alan Turing"
+          >
+            Alan Turing
+          </gog-chip>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>shape</h3>
+    <div class="chip-page__row">
+      @for (shape of shapes; track shape) {
+        <gog-chip [shape]="shape">shape="{{ shape }}"</gog-chip>
+        <gog-chip [shape]="shape" [avatarUrl]="ada" [removable]="true">Ada Lovelace</gog-chip>
+      }
+    </div>
+
+    <h3>fullWidth, in a 20rem container</h3>
+    <p class="chip-page__note">
+      Off by default. On, the chip fills its container, and the remove button stays at the end.
+    </p>
+    <div class="chip-page__frame">
+      <gog-chip>fullWidth unset</gog-chip>
+      <gog-chip [fullWidth]="true" [removable]="true">[fullWidth]="true"</gog-chip>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="filter"
+    title="Filter chips"
+    lead="[(selected)] turns a row of chips into a set of toggles that need no click handler: each chip flips its own value on click, Enter and Space."
+  >
+    <div class="chip-page__demo">
+      <div class="chip-page__row">
+        @for (topic of topics; track topic.label) {
+          <gog-chip [(selected)]="topic.on">{{ topic.label }}</gog-chip>
+        }
+      </div>
+      <code>selected: {{ selectedTopics().join(', ') || 'none' }}</code>
+    </div>
+    <p class="chip-page__note">
+      <code>gogClick</code> still fires, after the flip, so a handler reading the value sees the new
+      one. If the page drives the state itself from that handler, bind one-way —
+      <code>[selected]</code> — or the two flips cancel out. For a choice of exactly one, this is
+      the wrong component: that is <code>gog-button-toggle-group</code> or a radio group.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="removable"
+    title="Removable chips"
+    lead="[removable]='true' adds a button that emits gogRemove. The chip does not remove itself — the list it came from does."
+  >
+    <div class="chip-page__demo">
+      <div class="chip-page__row">
+        @for (filter of filters(); track filter) {
+          <gog-chip
+            [removable]="true"
+            [removeAriaLabel]="'Remove filter ' + filter"
+            (gogRemove)="remove(filter)"
+          >
+            {{ filter }}
+          </gog-chip>
+        }
+      </div>
+      <div class="chip-page__actions">
+        <button type="button" (click)="resetFilters()">reset</button>
+      </div>
+      <code>last: {{ lastAction() }}</code>
+    </div>
+    <p class="chip-page__note">
+      Tab reaches the chip and then its remove button, and <kbd>Enter</kbd> or <kbd>Space</kbd> on
+      the button removes the chip. Until 21.15.0 they did not: the chip's own key handler caught
+      both as they bubbled up and pressed the chip instead, so only a pointer could remove one. Give
+      each button a <code>removeAriaLabel</code> that says what it removes — the default, "Remove
+      chip", is the same for every chip in the row. A disabled chip hides its button rather than
+      offering one that does nothing.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default. The ripple is the only key a chip reads — it has no size in the control config."
+  >
+    <pre class="chip-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-chip-config-scope>
+            <gog-chip [ripple]="column === 'ripple unset' ? undefined : false">Press me</gog-chip>
+          </app-chip-config-scope>
+        } @else {
+          <gog-chip [ripple]="column === 'ripple unset' ? undefined : false">Press me</gog-chip>
+        }
+      </ng-template>
+    </app-doc-matrix>
+    <p class="chip-page__note">
+      Press each: only the one inside the scope with the input unset answers with a wave. A chip
+      that is not clickable never ripples, whatever the config says — a label that waves at a press
+      is promising something it will not do.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A clickable chip is a role='button' with a tab stop; a filter chip adds aria-pressed; a label chip is plain text."
+  >
+    <h3>surface attributes</h3>
+    <p class="chip-page__note">
+      Read from the live DOM. <code>aria-pressed="false"</code> is written, not left out, because a
+      chip with no <code>aria-pressed</code> is not a toggle to a screen reader at all. A removable
+      chip is named from its content through <code>aria-labelledby</code> — without it the name
+      swallowed the remove button's label and read "Angular Remove filter Angular", which is how it
+      was until 21.15.0.
+    </p>
+    <app-doc-matrix rowAxis="chip" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target=".gog-chip__surface">
+          @switch (state) {
+            @case ('default') {
+              <gog-chip>Angular</gog-chip>
+            }
+            @case ('[selected]="false"') {
+              <gog-chip [selected]="false">Angular</gog-chip>
+            }
+            @case ('[selected]="true"') {
+              <gog-chip [selected]="true">Angular</gog-chip>
+            }
+            @case ('[disabled]="true"') {
+              <gog-chip [disabled]="true">Angular</gog-chip>
+            }
+            @case ('[clickable]="false"') {
+              <gog-chip [clickable]="false">Angular</gog-chip>
+            }
+            @case ('[removable]="true"') {
+              <gog-chip [removable]="true" removeAriaLabel="Remove filter Angular"
+                >Angular</gog-chip
+              >
+            }
+            @case ('ariaLabel="Angular filter"') {
+              <gog-chip ariaLabel="Angular filter" [removable]="true">Angular</gog-chip>
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>clickable is on by default</h3>
+    <p class="chip-page__note">
+      Every chip is a button and a tab stop unless it says otherwise. A chip that only shows a value
+      — a tag in a list, an applied filter whose only action is its remove button — should set
+      <code>[clickable]="false"</code>, or a keyboard user tabs through a row of buttons that do
+      nothing. For a status label with a colour, <code>gog-tag</code> is the component.
+    </p>
+  </app-doc-section>
+</app-doc-page>

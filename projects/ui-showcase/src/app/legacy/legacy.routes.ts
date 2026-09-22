@@ -16,10 +16,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/themes-page/themes-page').then((m) => m.ThemesPage),
   },
   {
-    path: 'chip',
-    loadComponent: () => import('./pages/chip-page/chip-page').then((m) => m.ChipPage),
-  },
-  {
     path: 'menu',
     loadComponent: () => import('./pages/menu-page/menu-page').then((m) => m.MenuPage),
   },

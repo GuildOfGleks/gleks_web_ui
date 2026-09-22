@@ -6,6 +6,7 @@ import { BADGE_API } from './badge/badge.api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
 import { CHECKBOX_API } from './checkbox/checkbox.api';
+import { CHIP_API } from './chip/chip.api';
 import { DATEPICKER_API } from './datepicker/datepicker.api';
 import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.api';
 import { ICON_API } from './icon/icon.api';
@@ -119,5 +120,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./badge/badge-page').then((m) => m.BadgePage),
     api: BADGE_API,
     tokens: ['Badge (the `gogBadge` directive; its classes live in utilities.css)'],
+  },
+  chip: {
+    load: () => import('./chip/chip-page').then((m) => m.ChipPage),
+    api: CHIP_API,
+    tokens: ['Chip'],
   },
 };
