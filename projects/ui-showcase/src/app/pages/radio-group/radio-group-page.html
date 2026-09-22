@@ -1,0 +1,278 @@
+<app-doc-page unit="radio-group">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Four states across five sizes, all live. Every cell carries the same three options, the last disabled on its own, so the option-level and the group-level disabled can be read side by side."
+  >
+    <h3>size × state</h3>
+    <p class="radio-group-page__note">
+      The circle, the dot and the option labels scale from the
+      <code>--gog-control-checkbox-*</code> lengths that <code>gog-checkbox</code> reads too, so a
+      radio and a checkbox of one size line up on a form. A disabled group fades once, as a whole,
+      label and error included; <em>Enterprise</em> is disabled by its own
+      <code>disabled: true</code> and fades by the same amount inside a group that is not.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-radio-group
+          [size]="size"
+          label="Plan"
+          [options]="plans"
+          [value]="state.value"
+          [disabled]="state.disabled"
+          [errorMessage]="state.errorMessage"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>orientation × fullWidth, in a 28rem container</h3>
+    <p class="radio-group-page__note">
+      <code>fullWidth</code> makes every option as wide as the group, so the whole line is the hit
+      target. In a horizontal group that means the options share the row in equal parts — they stay
+      a row, and wrap only once the labels no longer fit. (Until 21.15.0 the last row here came out
+      as a vertical list: each option took the full width and wrapped onto a line of its own.)
+    </p>
+    <app-doc-matrix rowAxis="layout" colAxis="">
+      <ng-template appDocCell [rows]="layouts" [cols]="controlColumn" let-layout>
+        <div class="radio-group-page__frame">
+          <gog-radio-group
+            label="Plan"
+            [options]="plans"
+            value="free"
+            [orientation]="layout.orientation"
+            [fullWidth]="layout.fullWidth"
+          />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>options — a fixed shape</h3>
+    <p class="radio-group-page__note">
+      Options are <code>{{ '{' }} id, label, disabled? {{ '}' }}</code> and nothing else: there is
+      no <code>optionLabel</code> / <code>optionValue</code> accessor as on <code>gog-select</code>,
+      so a domain list is mapped into that shape first. The <code>id</code> is the value, and it
+      keeps its type — the second group uses numbers and hands back a number. A long label wraps
+      beside its circle rather than pushing it out of line.
+    </p>
+    <div class="radio-group-page__row">
+      <div class="radio-group-page__demo">
+        <gog-radio-group label="Seats" [options]="seats" [(value)]="seatCount" />
+        <code>value: {{ seatCount() | json }} ({{ typeOf(seatCount()) }})</code>
+      </div>
+      <div class="radio-group-page__frame">
+        <gog-radio-group label="When offline" [options]="longOptions" value="keep" />
+      </div>
+    </div>
+
+    <h3>a group with no visible label</h3>
+    <p class="radio-group-page__note">
+      <code>ariaLabel</code> names the group when the surrounding UI already says what it is. With a
+      <code>label</code> set it is ignored: the visible text names the group through
+      <code>aria-labelledby</code> instead.
+    </p>
+    <gog-radio-group ariaLabel="Plan" orientation="horizontal" [options]="plans" value="pro" />
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="value is model-bound: [(value)] and [value] / (valueChange) both work, and the control is a full ControlValueAccessor, so formControl works the same way."
+  >
+    <h3>[(value)], and the keyboard</h3>
+    <p class="radio-group-page__note">
+      The options are native <code>&lt;input type="radio"&gt;</code>s sharing one <code>name</code>,
+      so the keyboard is the platform's: the group is a single <kbd>Tab</kbd> stop, and the arrow
+      keys move <em>and select</em> in one step, skipping the disabled option. A press on the
+      selected option changes nothing — a radio group cannot be emptied by the user, only by writing
+      <code>null</code> to it, which the button below does. A value that matches no option selects
+      nothing and is kept as it is.
+    </p>
+    <div class="radio-group-page__demo">
+      <gog-radio-group
+        label="Plan"
+        [options]="plans"
+        [(value)]="bound"
+        (valueChange)="increment('bound')"
+      />
+      <div class="radio-group-page__actions">
+        <button type="button" (click)="bound.set(null)">value.set(null)</button>
+        <button type="button" (click)="bound.set('enterprise')">value.set('enterprise')</button>
+      </div>
+      <code>value: {{ bound() | json }} · {{ count('bound') }} valueChange</code>
+    </div>
+    <p class="radio-group-page__note">
+      The second button writes the id of the disabled option: the component shows it selected,
+      because <code>disabled</code> on an option stops the user from choosing it, not the model from
+      holding it.
+    </p>
+
+    <h3>formControl, errorDisplay="auto"</h3>
+    <p class="radio-group-page__note">
+      Tab into the group and out again without choosing anything: the control decides the error
+      timing from its own touched and invalid state, and a choice clears it. Before 21.15.0 this
+      mode never showed anything on a radio group — it was the one control that did not read the
+      form's state back.
+    </p>
+    <div class="radio-group-page__demo">
+      <gog-radio-group
+        label="Plan (required)"
+        [options]="plans"
+        [formControl]="formControl"
+        errorMessage="Pick a plan"
+        errorDisplay="auto"
+      />
+      <div class="radio-group-page__actions">
+        <button type="button" (click)="formControl.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="formControl.reset()">reset()</button>
+        <button type="button" (click)="toggleFormDisabled()">
+          {{ formDisabled() ? 'formControl.enable()' : 'formControl.disable()' }}
+        </button>
+      </div>
+      <code>
+        value: {{ formControl.value | json }} · touched: {{ formControl.touched }} · disabled:
+        {{ formControl.disabled }}
+      </code>
+    </div>
+
+    <h3>name</h3>
+    <p class="radio-group-page__note">
+      Unset, every group generates its own, which is what keeps two groups on one page apart. Set it
+      only when a native <code>&lt;form&gt;</code> submission needs a particular field name — and
+      never give two groups the same one: the browser would treat their options as a single group
+      and uncheck one group's option when the other is pressed, behind both components' backs.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="An instance input wins over GOG_CONFIG, which wins over the built-in default."
+  >
+    <pre
+      class="radio-group-page__config"
+    ><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="scopeColumns" let-where let-column="col">
+        @if (where === 'inside scope') {
+          <app-radio-group-config-scope>
+            @switch (column) {
+              @case ('size unset') {
+                <gog-radio-group label="Plan" [options]="plans" value="pro" />
+              }
+              @case ('size="sm"') {
+                <gog-radio-group size="sm" label="Plan" [options]="plans" value="pro" />
+              }
+            }
+          </app-radio-group-config-scope>
+        } @else {
+          @switch (column) {
+            @case ('size unset') {
+              <gog-radio-group label="Plan" [options]="plans" value="pro" />
+            }
+            @case ('size="sm"') {
+              <gog-radio-group size="sm" label="Plan" [options]="plans" value="pro" />
+            }
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+    <p class="radio-group-page__note">
+      <code>GOG_CONFIG.control.errorDisplay</code> reaches this component too, so an app that wants
+      every form control on <code>'auto'</code> sets it once rather than per group.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A role='radiogroup' container around native radios: the group carries the name and the error, and each option's role, state and keyboard come from the platform."
+  >
+    <h3>group attributes</h3>
+    <p class="radio-group-page__note">
+      Read from the live DOM. The group is named by its visible label through
+      <code>aria-labelledby</code>, or by <code>ariaLabel</code> when there is none; an error ties
+      itself on with <code>aria-describedby</code> and flips <code>aria-invalid</code>. A disabled
+      group has no attribute of its own — the disabled state lives on each option's input, below.
+    </p>
+    <app-doc-matrix rowAxis="group" colAxis="">
+      <ng-template appDocCell [rows]="groupA11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target='[role="radiogroup"]'>
+          @switch (state) {
+            @case ('label="Plan"') {
+              <gog-radio-group label="Plan" orientation="horizontal" [options]="plans" />
+            }
+            @case ('label unset, ariaLabel="Plan"') {
+              <gog-radio-group ariaLabel="Plan" orientation="horizontal" [options]="plans" />
+            }
+            @case ('errorMessage="Pick a plan"') {
+              <gog-radio-group
+                label="Plan"
+                orientation="horizontal"
+                [options]="plans"
+                errorMessage="Pick a plan"
+              />
+            }
+            @case ('[disabled]="true"') {
+              <gog-radio-group
+                label="Plan"
+                orientation="horizontal"
+                [options]="plans"
+                [disabled]="true"
+              />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>option input attributes</h3>
+    <p class="radio-group-page__note">
+      Each option is a <code>&lt;label&gt;</code> around its input, so its text is its accessible
+      name. The selected option is the input's <code>checked</code> <em>property</em>, set by the
+      component and never written as an attribute, which is why it does not appear here — it is what
+      the screen reader announces all the same. The circle is a <code>span</code> and is not
+      focusable; the input under it is.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="optionA11yStates" [cols]="controlColumn" let-state>
+        @switch (state) {
+          @case ('an option') {
+            <app-doc-attrs target=".gog-radio:nth-child(1) .gog-radio__input">
+              <gog-radio-group
+                ariaLabel="Plan"
+                orientation="horizontal"
+                [options]="plans"
+                value="free"
+              />
+            </app-doc-attrs>
+          }
+          @case ('an option with disabled: true') {
+            <app-doc-attrs target=".gog-radio:nth-child(3) .gog-radio__input">
+              <gog-radio-group ariaLabel="Plan" orientation="horizontal" [options]="plans" />
+            </app-doc-attrs>
+          }
+          @case ('an option in a [disabled]="true" group') {
+            <app-doc-attrs target=".gog-radio:nth-child(1) .gog-radio__input">
+              <gog-radio-group
+                ariaLabel="Plan"
+                orientation="horizontal"
+                [options]="plans"
+                [disabled]="true"
+              />
+            </app-doc-attrs>
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>when to reach for this and when for something else</h3>
+    <p class="radio-group-page__note">
+      A radio group is one answer from a short list that is all worth seeing at once. Past five or
+      six options it is a <code>gog-select</code>; for a choice that reads as a view switch — a
+      segmented control in a toolbar — it is <code>gog-button-toggle-group</code>, whose single mode
+      is a radio group too, with the arrow keys moving and selecting the same way.
+    </p>
+  </app-doc-section>
+</app-doc-page>

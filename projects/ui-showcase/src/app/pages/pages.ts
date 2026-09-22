@@ -9,6 +9,7 @@ import { DATEPICKER_API } from './datepicker/datepicker.api';
 import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
+import { RADIO_GROUP_API } from './radio-group/radio-group.api';
 import { SELECT_API } from './select/select.api';
 import { TOGGLE_API } from './toggle/toggle.api';
 import { TEXTAREA_API } from './textarea/textarea.api';
@@ -95,5 +96,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./toggle/toggle-page').then((m) => m.TogglePage),
     api: TOGGLE_API,
     tokens: ['Toggle'],
+  },
+  'radio-group': {
+    load: () => import('./radio-group/radio-group-page').then((m) => m.RadioGroupPage),
+    api: RADIO_GROUP_API,
+    tokens: ['Radio group', 'Control metrics'],
   },
 };

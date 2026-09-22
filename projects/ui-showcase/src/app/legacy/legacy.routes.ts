@@ -16,11 +16,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/themes-page/themes-page').then((m) => m.ThemesPage),
   },
   {
-    path: 'radio-group',
-    loadComponent: () =>
-      import('./pages/radio-group-page/radio-group-page').then((m) => m.RadioGroupPage),
-  },
-  {
     path: 'chip',
     loadComponent: () => import('./pages/chip-page/chip-page').then((m) => m.ChipPage),
   },
