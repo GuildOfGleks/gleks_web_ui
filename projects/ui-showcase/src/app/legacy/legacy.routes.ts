@@ -71,10 +71,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/ripple-page/ripple-page').then((m) => m.RipplePage),
   },
   {
-    path: 'divider',
-    loadComponent: () => import('./pages/divider-page/divider-page').then((m) => m.DividerPage),
-  },
-  {
     path: 'global-config',
     loadComponent: () =>
       import('./pages/global-config-page/global-config-page').then((m) => m.GlobalConfigPage),

@@ -1,0 +1,117 @@
+<app-doc-page unit="divider">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Three line styles, with and without a label. A divider has no state; it separates."
+  >
+    <h3>variant × label</h3>
+    <p class="divider-page__note">
+      A label is projected content, not an input, so it can be a word, an icon or a tag. With
+      nothing projected the label collapses and the two halves of the rule meet as one line — the
+      spacing around a label is its own padding for exactly that reason, so a plain divider has no
+      notch in the middle.
+    </p>
+    <app-doc-matrix rowAxis="variant" colAxis="label">
+      <ng-template appDocCell [rows]="variants" [cols]="labels" let-variant let-label="col">
+        <div class="divider-page__cell">
+          @if (label === 'OR') {
+            <gog-divider [variant]="variant">OR</gog-divider>
+          } @else {
+            <gog-divider [variant]="variant" />
+          }
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>labels</h3>
+    <div class="divider-page__stack">
+      <gog-divider>OR</gog-divider>
+      <gog-divider><gog-tag variant="info" size="xsm">New</gog-tag></gog-divider>
+      <gog-divider><gog-icon name="star" /></gog-divider>
+    </div>
+
+    <h3>orientation="vertical"</h3>
+    <p class="divider-page__note">
+      Stretches to the height of a flex or grid parent; <code>--gog-divider-vertical-length</code>
+      is the floor when there is nothing to stretch to.
+    </p>
+    <div class="divider-page__toolbar">
+      <span>Bold</span>
+      <span>Italic</span>
+      <gog-divider orientation="vertical" />
+      <span>Link</span>
+      <gog-divider orientation="vertical" variant="dashed" />
+      <span>Undo</span>
+      <span>Redo</span>
+    </div>
+
+    <h3>inset</h3>
+    <p class="divider-page__note">
+      Indents the rule from the leading edge by <code>--gog-divider-inset-size</code>, so it lines
+      up with the text of a list whose rows start with an avatar instead of cutting across the whole
+      row.
+    </p>
+    <div class="divider-page__list">
+      @for (person of people; track person; let last = $last) {
+        <div class="divider-page__person">
+          <span class="divider-page__avatar">{{ person[0] }}</span>
+          {{ person }}
+        </div>
+        @if (!last) {
+          <gog-divider [inset]="true" />
+        }
+      }
+    </div>
+
+    <h3>per-instance tokens</h3>
+    <p class="divider-page__note">
+      <code>--gog-divider-color</code>, <code>--gog-divider-thickness</code> and
+      <code>--gog-divider-spacing</code> are read only if set, so one divider can be heavier or
+      coloured without touching the theme.
+    </p>
+    <div class="divider-page__stack">
+      <gog-divider class="divider-page__accent">Accent, 3px</gog-divider>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="role='separator' on the host, with its orientation stated. The rule is aria-hidden; only a label has text to read."
+  >
+    <p class="divider-page__note">
+      Read from the live DOM. A separator is announced as a boundary, which is what it is for:
+      between groups of controls, or sections a reader moves between. Between the rows of a real
+      <code>&lt;ul&gt;</code> the list already says where each item ends — draw the line with a
+      border on the item there rather than with a divider between them.
+    </p>
+    <app-doc-matrix rowAxis="divider" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        <app-doc-attrs target="gog-divider">
+          @switch (state) {
+            @case ('horizontal') {
+              <div class="divider-page__cell"><gog-divider /></div>
+            }
+            @case ('orientation="vertical"') {
+              <div class="divider-page__toolbar">
+                <span>A</span><gog-divider orientation="vertical" /><span>B</span>
+              </div>
+            }
+            @case ('with a label') {
+              <div class="divider-page__cell"><gog-divider>OR</gog-divider></div>
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+    <p class="divider-page__note">
+      A label's text is read after the separator — in Chrome it is in the accessibility tree as
+      ordinary text — but the separator itself carries no name. ARIA treats a separator's contents
+      as presentational, so a browser may drop the label; naming the separator from its label would
+      make it dependable, and is filed. Until then, do not put words a reader must hear only in a
+      divider's label.
+    </p>
+  </app-doc-section>
+</app-doc-page>

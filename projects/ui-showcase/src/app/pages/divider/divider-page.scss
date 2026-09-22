@@ -1,0 +1,67 @@
+// A matrix cell has no width of its own, and a horizontal divider fills whatever it is given.
+.divider-page__cell {
+  width: 14rem;
+}
+
+.divider-page__stack {
+  display: flex;
+  flex-direction: column;
+  max-width: 28rem;
+  margin-block-end: var(--gog-space-16);
+}
+
+// A flex row, which is what a vertical divider stretches to.
+.divider-page__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-space-8);
+  padding: var(--gog-space-8) var(--gog-space-12);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  width: fit-content;
+  margin-block-end: var(--gog-space-16);
+  font-size: var(--gog-text-sm);
+}
+
+.divider-page__list {
+  width: 20rem;
+  max-width: 100%;
+  margin-block-end: var(--gog-space-16);
+  padding: var(--gog-space-8);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+}
+
+.divider-page__person {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-space-4);
+  font-size: var(--gog-text-sm);
+}
+
+// Avatar plus gap is the inset's width, so the rule starts where the name does.
+.divider-page__avatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--gog-divider-inset-size) - var(--gog-space-4));
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--gog-surface-color);
+  border: 1px solid var(--gog-border-color);
+  font-weight: 700;
+}
+
+// The instance-layer tokens, set on one divider.
+.divider-page__accent {
+  --gog-divider-color: var(--gog-accent-color);
+  --gog-divider-thickness: 3px;
+}
+
+.divider-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}

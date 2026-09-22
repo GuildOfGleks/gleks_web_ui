@@ -9,6 +9,7 @@ import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
 import { CHECKBOX_API } from './checkbox/checkbox.api';
 import { CHIP_API } from './chip/chip.api';
 import { DATEPICKER_API } from './datepicker/datepicker.api';
+import { DIVIDER_API } from './divider/divider.api';
 import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.api';
 import { ICON_API } from './icon/icon.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
@@ -155,5 +156,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./progressbar/progressbar-page').then((m) => m.ProgressbarPage),
     api: PROGRESSBAR_API,
     tokens: ['Progressbar'],
+  },
+  divider: {
+    load: () => import('./divider/divider-page').then((m) => m.DividerPage),
+    api: DIVIDER_API,
+    tokens: ['Divider'],
   },
 };
