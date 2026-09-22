@@ -87,6 +87,20 @@ describe('RadioGroupComponent', () => {
           .classList.contains('gog-radio-group--disabled'),
       ).toBe(true);
     });
+
+    it('should fade a disabled group once, not again per option', () => {
+      const optionClasses = () =>
+        Array.from(fixture.nativeElement.querySelectorAll('.gog-radio') as NodeListOf<Element>).map(
+          (option) => option.classList.contains('gog-radio--disabled'),
+        );
+
+      fixture.detectChanges();
+      expect(optionClasses()).toEqual([false, false, true]);
+
+      fixture.componentRef.setInput('disabled', true);
+      fixture.detectChanges();
+      expect(optionClasses()).toEqual([false, false, false]);
+    });
   });
 
   describe('fullWidth', () => {

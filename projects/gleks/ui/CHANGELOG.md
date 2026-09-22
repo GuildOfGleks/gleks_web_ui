@@ -53,6 +53,13 @@ reached 1.0, so breaking changes may land in minor versions.
   `aria-invalid` stayed `false`. `'manual'` was unaffected. Found while building the showcase's
   Radio group page; the new spec fails against the old code.
 
+- **A disabled `gog-radio-group` faded its options twice.** The group dims itself with
+  `--gog-radio-disabled-opacity`, and every option inside it also took the per-option disabled class
+  that applies the same token, so the options of a disabled group rendered at 0.16 against 0.4 for a
+  single disabled option in an enabled group — two different looks for "disabled" in one component.
+  The per-option class now marks only an option disabled on its own; a disabled group's options
+  still get `disabled` on their native inputs, as before.
+
 - **A pressed `gog-checkbox` left `indeterminate` behind on the DOM element.** The browser clears
   the property on a press; this component draws its dash from its own input rather than from the
   property, so the screen and `aria-checked="mixed"` both stayed right — but the binding's value
