@@ -1031,6 +1031,21 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
+- **The two loading indicators take two different roles.** Since 21.15.0 `gog-spinner` is an
+  indeterminate `role="progressbar"` named by `ariaLabel` (the pattern Material's progress
+  spinner uses), while `gog-skeleton` with an `ariaLabel` is `role="status"` with the same kind of
+  name. Neither announces anything when it appears — a `status` region speaks its text, and a
+  skeleton has none — so the difference is only in what a screen reader calls the element while
+  reading: "progress bar, Loading" for one, "status, Loading profile" for the other, for the same
+  job. Found writing the Skeleton page (2026-09-22).
+
+  **Why it was left.** It is a choice between the two, not a bug in either: `progressbar` says
+  "something is in progress" and is the one ARIA gives an indeterminate state; `status` is a live
+  region, which a skeleton cannot use as one. The likely answer is `progressbar` for both, so a
+  loading area reads the same whatever draws it — but changing `gog-skeleton`'s role changes what
+  a consumer's labelled skeleton announces, so it wants a CHANGELOG line and a look at the lab's
+  Skeleton page, not a drive-by edit.
+
 - ~~**`compare-full.md`'s whole bench is measured at 21.7.2.**~~ **Closed 2026-09-13**: re-run end
   to end against `@guildofgleks/ui@21.14.0`, `@angular/material@22.1.6` and `primeng@22.1.1`, in three
   isolated folders outside the repository, with the commands the page prints — every table, the
