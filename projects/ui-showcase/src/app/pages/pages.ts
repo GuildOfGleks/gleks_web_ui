@@ -16,6 +16,7 @@ import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { RADIO_GROUP_API } from './radio-group/radio-group.api';
 import { SELECT_API } from './select/select.api';
 import { SLIDER_API } from './slider/slider.api';
+import { SPINNER_API } from './spinner/spinner.api';
 import { TAG_API } from './tag/tag.api';
 import { TOGGLE_API } from './toggle/toggle.api';
 import { TEXTAREA_API } from './textarea/textarea.api';
@@ -137,5 +138,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./alert/alert-page').then((m) => m.AlertPage),
     api: ALERT_API,
     tokens: ['Alert'],
+  },
+  spinner: {
+    load: () => import('./spinner/spinner-page').then((m) => m.SpinnerPage),
+    api: SPINNER_API,
+    tokens: ['Spinner', 'Icon & spinner'],
   },
 };

@@ -1,0 +1,145 @@
+<app-doc-page unit="spinner">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Three variants across five sizes. A spinner has one state — spinning — so the axes are only how it looks."
+  >
+    <h3>size × variant</h3>
+    <p class="spinner-page__note">
+      <code>runic</code> is the default and the library's own; <code>ring</code> is the plain one.
+      <code>custom</code> projects your markup into the same size box, so it scales like the other
+      two — the third column projects a pulsing square. Under <code>prefers-reduced-motion</code>
+      the built-ins stop moving and stay drawn; a custom one is yours to stop.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="variant">
+      <ng-template appDocCell [rows]="sizes" [cols]="variants" let-size let-variant="col">
+        <gog-spinner [size]="size" [variant]="variant">
+          <span class="spinner-page__custom"></span>
+        </gog-spinner>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>--gog-spinner-color</h3>
+    <p class="spinner-page__note">
+      The spinner draws in the accent colour. On a surface where the accent does not read — a danger
+      banner, a filled button — set <code>--gog-spinner-color</code> on it or an ancestor.
+    </p>
+    <div class="spinner-page__row">
+      <span class="spinner-page__tile spinner-page__tile--danger">
+        <gog-spinner ariaLabel="Retrying" />
+      </span>
+      <span class="spinner-page__tile spinner-page__tile--success">
+        <gog-spinner variant="ring" ariaLabel="Uploading" />
+      </span>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="overlay"
+    title="Covering a region"
+    lead="gog-spinner-overlay lays a scrim and a spinner over its own content while loading is on, and marks the region aria-busy."
+  >
+    <h3>gog-spinner-overlay</h3>
+    <p class="spinner-page__note">
+      The content stays rendered underneath, so nothing jumps when loading ends. The scrim stops the
+      pointer; it does <strong>not</strong> stop the keyboard — Tab still reaches the button below
+      while it is covered. Disable what must not be pressed while it loads; the gap is filed.
+    </p>
+    <div class="spinner-page__demo">
+      <gog-spinner-overlay [loading]="regionLoading()" ariaLabel="Loading invoices">
+        <div class="spinner-page__region">
+          <p>Twelve invoices, three overdue.</p>
+          <gog-button variant="outline" size="sm">Export</gog-button>
+        </div>
+      </gog-spinner-overlay>
+      <div class="spinner-page__actions">
+        <button type="button" (click)="flash(regionLoading, 3000)">load for 3s</button>
+      </div>
+    </div>
+
+    <h3>overlay — the whole viewport</h3>
+    <p class="spinner-page__note">
+      <code>[overlay]="true"</code> on <code>gog-spinner</code> itself covers the viewport, for a
+      load that blocks the whole app. "The viewport" holds only while no ancestor creates a
+      containing block — a <code>transform</code>, <code>filter</code> or <code>contain</code>
+      above it retargets the overlay to that element, so render it near the app's root.
+    </p>
+    <div class="spinner-page__actions">
+      <button type="button" (click)="flash(fullscreen, 1500)">cover the page for 1.5s</button>
+    </div>
+    @if (fullscreen()) {
+      <gog-spinner [overlay]="true" size="lg" ariaLabel="Loading page" />
+    }
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="GOG_CONFIG.spinner.component replaces the spinner everywhere, including the four places that draw one without offering an input."
+  >
+    <p class="spinner-page__note">
+      Below, <code>GOG_CONFIG.spinner.component</code> is set to a house loader for this box alone.
+      That loader — three bars, nothing from the library — turns up in a plain spinner, in a loading
+      button, in an autocomplete that is searching, in a table in place of its rows and in a loading
+      region. It renders inside the library's size box, so it keeps the sizing and the accessible
+      name. An instance's own <code>variant</code> still wins over it;
+      <code>GOG_CONFIG.spinner.variant</code> is the lighter key, choosing between
+      <code>runic</code> and <code>ring</code> app-wide.
+    </p>
+    <app-spinner-config-scope />
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="An indeterminate progressbar named by ariaLabel. It does not announce itself — the region that is busy does, with aria-busy."
+  >
+    <h3>host attributes</h3>
+    <p class="spinner-page__note">
+      Read from the live DOM. The spinner is <code>role="progressbar"</code> with no value — the
+      pattern for "working, no idea how long" — named by <code>ariaLabel</code>. Name it for what is
+      loading when more than one thing can be. <code>ariaLabel=""</code> makes it decorative. Inside
+      a loading <code>gog-button</code> it is <code>aria-hidden</code>, because the button already
+      says it is busy. Until 21.15.0 none of this was rendered: <code>ariaLabel</code> was accepted
+      and dropped, and every spinner was missing from the accessibility tree.
+    </p>
+    <app-doc-matrix rowAxis="spinner" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>
+        @switch (state) {
+          @case ('default') {
+            <app-doc-attrs target="gog-spinner"><gog-spinner /></app-doc-attrs>
+          }
+          @case ('ariaLabel="Loading invoices"') {
+            <app-doc-attrs target="gog-spinner">
+              <gog-spinner ariaLabel="Loading invoices" />
+            </app-doc-attrs>
+          }
+          @case ('ariaLabel=""') {
+            <app-doc-attrs target="gog-spinner"><gog-spinner ariaLabel="" /></app-doc-attrs>
+          }
+          @case ('inside a loading gog-button') {
+            <app-doc-attrs target="gog-spinner">
+              <gog-button [loading]="true">Save</gog-button>
+            </app-doc-attrs>
+          }
+          @case ('gog-spinner-overlay [loading]="true"') {
+            <app-doc-attrs target="gog-spinner-overlay">
+              <gog-spinner-overlay [loading]="true">
+                <p class="spinner-page__small">Region content</p>
+              </gog-spinner-overlay>
+            </app-doc-attrs>
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+    <p class="spinner-page__note">
+      A spinner that appears announces nothing by itself — it is not a live region, and it should
+      not be one: a region that says "Loading" every time a request starts is noise. What a screen
+      reader needs is <code>aria-busy</code> on the region that is changing, which
+      <code>gog-spinner-overlay</code> and every component with a <code>loading</code> input set,
+      and the result announced when it arrives.
+    </p>
+  </app-doc-section>
+</app-doc-page>

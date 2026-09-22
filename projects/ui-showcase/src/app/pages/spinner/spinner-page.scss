@@ -1,0 +1,97 @@
+// What the custom column projects: anything, sized by the spinner's box.
+.spinner-page__custom {
+  display: block;
+  width: 60%;
+  height: 60%;
+  margin: 20%;
+  border-radius: var(--gog-radius);
+  background: var(--gog-spinner-color, var(--gog-accent-color));
+  animation: spinner-page-pulse 1s var(--gog-easing) infinite alternate;
+}
+
+@keyframes spinner-page-pulse {
+  from {
+    opacity: 0.3;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner-page__custom {
+    animation: none;
+  }
+}
+
+.spinner-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-16);
+  margin-block-end: var(--gog-space-16);
+}
+
+.spinner-page__tile {
+  display: inline-flex;
+  padding: var(--gog-space-16);
+  border-radius: var(--gog-radius);
+}
+
+// The documented hook, set on an ancestor.
+.spinner-page__tile--danger {
+  --gog-spinner-color: var(--gog-danger-color);
+  border: 1px solid var(--gog-danger-color);
+}
+
+.spinner-page__tile--success {
+  --gog-spinner-color: var(--gog-success-color);
+  border: 1px solid var(--gog-success-color);
+}
+
+.spinner-page__demo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  max-width: 28rem;
+  margin-block-end: var(--gog-space-16);
+
+  > gog-spinner-overlay {
+    width: 100%;
+  }
+}
+
+.spinner-page__region {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-8);
+  padding: var(--gog-space-16);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+
+  p {
+    margin: 0;
+  }
+}
+
+.spinner-page__small {
+  margin: 0;
+  font-size: var(--gog-text-xs);
+}
+
+.spinner-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-8);
+  margin-block-end: var(--gog-space-16);
+}
+
+.spinner-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
