@@ -158,7 +158,15 @@ import { glob } from 'node:fs/promises';
 
 import * as sass from 'sass';
 
-import { buildLayers, contrast, makeResolver, over, parseDecls, toHex } from './token-color.mjs';
+import {
+  appliesWhenDisabled,
+  buildLayers,
+  contrast,
+  makeResolver,
+  over,
+  parseDecls,
+  toHex,
+} from './token-color.mjs';
 import { SPLIT_DIRS } from './library-sources.mjs';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -640,31 +648,6 @@ function isRestPairRendered(candidate) {
     (skip) =>
       candidate.selector === skip.selector && (candidate.colour ?? '').includes(skip.colour),
   );
-}
-
-/**
- * A selector that applies **while the control is disabled**.
- *
- * WCAG exempts these: SC 1.4.3 and 1.4.11 both carve out "an inactive user interface component",
- * and a disabled control is meant to look unavailable — the whole point of dimming it is that it
- * reads as out of reach. Holding it to 4.5:1 would make "unavailable" impossible to draw.
- *
- * **This is deliberate, and the next person to read this file should not "fix" it.** It is
- * written down because the omission used to be implicit: `collectStatePairs` simply had no
- * `:disabled` in its state regex, and nothing said why, so the natural reading was oversight.
- *
- * It also was not actually true. Eight pairs reached the sweeps anyway, through *compound*
- * selectors — `.gog-accordion__item--disabled .gog-accordion__header:hover` enters on its
- * `:hover`, carrying a disabled ancestor with it — and were gated at 4.5:1. A palette change
- * could have been blocked by a state WCAG does not ask about. Found 2026-09-11.
- *
- * `:not(...)` is stripped first, because `:hover:not(:disabled)` is an **enabled**-state rule and
- * the single most common selector shape in this library. Matching it here would have excluded
- * roughly four hundred pairs that are exactly what this script exists to measure.
- */
-function appliesWhenDisabled(selector) {
-  const bare = String(selector).replace(/:not\([^)]*\)/g, '');
-  return /:disabled|--disabled|\[disabled\]|aria-disabled/.test(bare);
 }
 
 /**

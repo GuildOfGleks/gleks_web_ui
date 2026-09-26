@@ -35,7 +35,15 @@ import { fileURLToPath } from 'node:url';
 import { glob } from 'node:fs/promises';
 import * as sass from 'sass';
 
-import { buildLayers, contrast, makeResolver, over, parseDecls, toHex } from './token-color.mjs';
+import {
+  appliesWhenDisabled,
+  buildLayers,
+  contrast,
+  makeResolver,
+  over,
+  parseDecls,
+  toHex,
+} from './token-color.mjs';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -99,6 +107,8 @@ const DECORATIVE = [
 const NON_TEXT = [
   '__chevron',
   '__icon',
+  // `.accordion-chevron__glyph` is a `+`/`−` drawn as text standing in for an icon.
+  '__glyph',
   '__arrow',
   '__thumb',
   '.nav-toggle',
@@ -127,8 +137,13 @@ function rulesOf(css) {
     const selector = m[1].trim();
     if (selector.startsWith('@')) continue;
     const body = m[2];
+    // `color-mix()` as well as `var()`: a rule that mixed its colour used to fall out of the
+    // extraction entirely, so the one way to make a status colour readable was also the one way
+    // to take it off this check without a word. The resolver already reads the mix.
     const value = (prop) => {
-      const hit = body.match(new RegExp(`(?:^|;|\\s)${prop}:\\s*(var\\([^;]*?\\))\\s*(?:;|$)`));
+      const hit = body.match(
+        new RegExp(`(?:^|;|\\s)${prop}:\\s*((?:var|color-mix)\\([^;]*?\\))\\s*(?:;|$)`),
+      );
       return hit ? hit[1].trim() : null;
     };
     // A rule that says `background: none` is stating that it paints nothing — which is different
@@ -201,6 +216,10 @@ async function checkTarget(target) {
     const resolve = makeResolver(layers, decls);
     for (const pair of pairs) {
       if (DECORATIVE.some((part) => pair.selector.includes(part))) continue;
+      // An inactive control — the exemption `check-contrast.mjs` applies to the library, for the
+      // reason written on `appliesWhenDisabled`. It had never come up here only because the one
+      // disabled rule in either app set its colour with a `color-mix()`, which was not extracted.
+      if (appliesWhenDisabled(pair.selector)) continue;
 
       const label = resolve(pair.colour);
       if (!label) {
