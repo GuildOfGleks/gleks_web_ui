@@ -37,14 +37,18 @@
   padding: 2px 8px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--gog-accent-dim) 18%, transparent);
-  color: var(--gog-muted-text-color);
+  /* The text colour, not the muted one: the tint under it darkens the ground enough that muted
+     text fell to 3.36:1 in primeng. */
+  color: var(--gog-text-color);
   font-size: 0.7rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
+/* On the same tint as the base pill, so the raw accent reads at 3.52:1 in `light`; mixed toward
+   the text colour it keeps its hue and clears AA in every theme (worst: one-dark, 4.65:1). */
 .accordion-header__status--loading {
-  color: var(--gog-accent-color);
+  color: color-mix(in srgb, var(--gog-accent-color) 60%, var(--gog-text-color));
 }
 
 .accordion-header__summary {
