@@ -1,0 +1,244 @@
+<app-doc-page unit="collapsible">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="A headless primitive: it owns no markup and draws no trigger. What it adds is the state, the ARIA wiring between trigger and content, and the height animation."
+  >
+    <h3>trigger host × state</h3>
+    <p class="collapsible-page__note">
+      The trigger here is styled by this page, not by the library — that is the point of a headless
+      primitive. On a <code>&lt;div&gt;</code> the directive supplies what a button would have had
+      (see Accessibility). Disabled dims the trigger through
+      <code>--gog-collapsible-disabled-opacity</code> and ignores presses; hover and focus are the
+      page's own and are live.
+    </p>
+    <app-doc-matrix rowAxis="host" colAxis="state">
+      <ng-template appDocCell [rows]="hosts" [cols]="states" let-host let-state="col">
+        <div class="collapsible-page__cell">
+          <gog-collapsible [open]="state.value.open" [disabled]="state.value.disabled">
+            @if (host.value === 'button') {
+              <button gogCollapsibleTrigger class="collapsible-page__trigger" type="button">
+                Details
+                <gog-icon name="chevron-down" class="collapsible-page__chevron" />
+              </button>
+            } @else {
+              <div gogCollapsibleTrigger class="collapsible-page__trigger">
+                Details
+                <gog-icon name="chevron-down" class="collapsible-page__chevron" />
+              </div>
+            }
+            <div gogCollapsibleContent>
+              <p class="collapsible-page__body">Ships within 2 business days.</p>
+            </div>
+          </gog-collapsible>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the trigger is yours</h3>
+    <p class="collapsible-page__note">
+      The directive sets <code>.gog-collapsible__trigger--open</code> on the trigger while open,
+      which is all a chevron needs to rotate. A trigger can as well swap its own icon and label from
+      the <code>open</code> signal the page already holds — nothing rotates then.
+    </p>
+    <div class="collapsible-page__stack">
+      <gog-collapsible [(open)]="rowOpen">
+        <button gogCollapsibleTrigger class="collapsible-page__trigger" type="button">
+          Notifications
+          <gog-icon name="chevron-down" class="collapsible-page__chevron" />
+        </button>
+        <div gogCollapsibleContent>
+          <p class="collapsible-page__body">Email digests, push alerts, weekly summary.</p>
+        </div>
+      </gog-collapsible>
+      <gog-collapsible [(open)]="swapOpen">
+        <button gogCollapsibleTrigger class="collapsible-page__trigger" type="button">
+          <gog-icon [name]="swapOpen() ? 'minus' : 'plus'" />
+          {{ swapOpen() ? 'Hide diagnostics' : 'Show diagnostics' }}
+        </button>
+        <div gogCollapsibleContent>
+          <p class="collapsible-page__body">Last check: all systems nominal, p99 118 ms.</p>
+        </div>
+      </gog-collapsible>
+    </div>
+
+    <h3>height</h3>
+    <p class="collapsible-page__note">
+      Open, the content is as tall as it is: <code>--gog-collapsible-max-height</code> defaults to
+      <code>max-content</code>, which animates where <code>interpolate-size</code> is supported and
+      snaps open elsewhere. Set a length only to cap a panel on purpose — the rest is clipped, so
+      the second panel below scrolls on its own.
+    </p>
+    <div class="collapsible-page__stack">
+      <gog-collapsible [(open)]="cappedOpen">
+        <button gogCollapsibleTrigger class="collapsible-page__trigger" type="button">
+          Changelog, capped at 6rem
+          <gog-icon name="chevron-down" class="collapsible-page__chevron" />
+        </button>
+        <div gogCollapsibleContent class="collapsible-page__capped">
+          <ul class="collapsible-page__body">
+            @for (version of [9, 8, 7, 6, 5, 4, 3, 2]; track version) {
+              <li>v{{ version }}.0 — fixes and polish.</li>
+            }
+          </ul>
+        </div>
+      </gog-collapsible>
+    </div>
+
+    <h3>an overlay inside the content</h3>
+    <p class="collapsible-page__note">
+      Open the select: its list is cut off at the bottom of the content. The content keeps
+      <code>overflow: hidden</code> while open — the same rule that makes a capped panel above
+      scroll — so a dropdown, menu or tooltip rendered inside an open collapsible is clipped. This
+      is a defect, filed; the demo stays so the fix has a case to show.
+    </p>
+    <div class="collapsible-page__stack">
+      <gog-collapsible [(open)]="selectOpen">
+        <button gogCollapsibleTrigger class="collapsible-page__trigger" type="button">
+          Regional
+          <gog-icon name="chevron-down" class="collapsible-page__chevron" />
+        </button>
+        <div gogCollapsibleContent>
+          <div class="collapsible-page__body">
+            <gog-select label="Time zone" [options]="timezones" [(value)]="timezone" />
+          </div>
+        </div>
+      </gog-collapsible>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="open is two-way; nothing needs a trigger to drive it, and nothing closes a sibling — collapsibles are independent."
+  >
+    <h3>[(open)] from outside, with no trigger</h3>
+    <p class="collapsible-page__note">
+      A collapsible without a <code>gogCollapsibleTrigger</code> is driven entirely by
+      <code>open</code>. Its content still carries the id, <code>aria-hidden</code> and
+      <code>inert</code>; the controls below are the page's own, and wiring
+      <code>aria-expanded</code> onto them is then the page's job.
+    </p>
+    <div class="collapsible-page__actions">
+      <button type="button" (click)="externalOpen.set(true)">open</button>
+      <button type="button" (click)="externalOpen.set(false)">close</button>
+    </div>
+    <div class="collapsible-page__stack">
+      <gog-collapsible [(open)]="externalOpen">
+        <div gogCollapsibleContent>
+          <p class="collapsible-page__body">Opened from outside.</p>
+        </div>
+      </gog-collapsible>
+    </div>
+    <code>open: {{ externalOpen() }}</code>
+
+    <h3>[collapseOnFocusOut]="true"</h3>
+    <p class="collapsible-page__note">
+      Closes once focus leaves both the trigger and the content: Tab past the last link, or click
+      somewhere else on the page. Off by default, because an FAQ or a settings section read top to
+      bottom should stay open wherever focus goes. Clicking the plain text inside the open content
+      closes it too, which it should not — focus moves to the page body, and the component reads
+      that as focus leaving. Filed.
+    </p>
+    <div class="collapsible-page__stack">
+      <gog-collapsible
+        [open]="focusOutOpen()"
+        (openChange)="onFocusOutChange($event)"
+        [collapseOnFocusOut]="true"
+      >
+        <button gogCollapsibleTrigger class="collapsible-page__trigger" type="button">
+          Quick links
+          <gog-icon name="chevron-down" class="collapsible-page__chevron" />
+        </button>
+        <div gogCollapsibleContent>
+          <p class="collapsible-page__body">
+            Plain text in the content, then two links:
+            <a href="#behaviour">Billing</a> · <a href="#behaviour">Team</a>
+          </p>
+        </div>
+      </gog-collapsible>
+    </div>
+    <code>open: {{ focusOutOpen() }} · closed by focus leaving: {{ focusOutCloses() }}</code>
+
+    <h3>a list of independent collapsibles</h3>
+    <p class="collapsible-page__note">
+      Each item holds its own state, so several can be open at once. For one-at-a-time, keyboard
+      movement between headers and a heading level, that is <code>gog-accordion</code>.
+    </p>
+    <div class="collapsible-page__stack collapsible-page__list">
+      @for (item of faq(); track item.id) {
+        <gog-collapsible [open]="item.open" (openChange)="setFaqOpen(item.id, $event)">
+          <button gogCollapsibleTrigger class="collapsible-page__trigger" type="button">
+            {{ item.title }}
+            <gog-icon name="chevron-down" class="collapsible-page__chevron" />
+          </button>
+          <div gogCollapsibleContent>
+            <p class="collapsible-page__body">{{ item.body }}</p>
+          </div>
+        </gog-collapsible>
+      }
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The trigger says whether it is expanded and what it controls; on an element that is not already a control, the directive makes it one."
+  >
+    <p class="collapsible-page__note">
+      Read from the live DOM. A <code>&lt;button&gt;</code> is left as written. A
+      <code>&lt;div&gt;</code> gets <code>role="button"</code>, <code>tabindex="0"</code> and Enter
+      and Space — a control that announces itself must be reachable. A host whose
+      <code>role</code> or <code>tabindex</code> the consumer set keeps it. Closed content is
+      <code>aria-hidden</code> and <code>inert</code>, so nothing inside it takes focus.
+    </p>
+    <app-doc-matrix rowAxis="element" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
+        <app-doc-attrs [target]="row.target">
+          <div class="collapsible-page__cell">
+            @switch (row.kind) {
+              @case ('button') {
+                <gog-collapsible>
+                  <button gogCollapsibleTrigger class="collapsible-page__trigger" type="button">
+                    Details
+                  </button>
+                  <div gogCollapsibleContent><p class="collapsible-page__body">Body.</p></div>
+                </gog-collapsible>
+              }
+              @case ('div') {
+                <gog-collapsible>
+                  <div gogCollapsibleTrigger class="collapsible-page__trigger">Details</div>
+                  <div gogCollapsibleContent><p class="collapsible-page__body">Body.</p></div>
+                </gog-collapsible>
+              }
+              @case ('div-disabled') {
+                <gog-collapsible [disabled]="true">
+                  <div gogCollapsibleTrigger class="collapsible-page__trigger">Details</div>
+                  <div gogCollapsibleContent><p class="collapsible-page__body">Body.</p></div>
+                </gog-collapsible>
+              }
+              @case ('div-role') {
+                <gog-collapsible>
+                  <div role="tab" gogCollapsibleTrigger class="collapsible-page__trigger">
+                    Details
+                  </div>
+                  <div gogCollapsibleContent><p class="collapsible-page__body">Body.</p></div>
+                </gog-collapsible>
+              }
+              @default {
+                <gog-collapsible>
+                  <button gogCollapsibleTrigger class="collapsible-page__trigger" type="button">
+                    Details
+                  </button>
+                  <div gogCollapsibleContent><p class="collapsible-page__body">Body.</p></div>
+                </gog-collapsible>
+              }
+            }
+          </div>
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

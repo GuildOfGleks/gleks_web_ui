@@ -1,0 +1,79 @@
+// A matrix cell has no width of its own.
+.collapsible-page__cell {
+  width: 14rem;
+}
+
+.collapsible-page__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-8);
+  max-width: 28rem;
+  margin-block-end: var(--gog-space-8);
+}
+
+.collapsible-page__list {
+  gap: 0;
+}
+
+.collapsible-page__actions {
+  display: flex;
+  gap: var(--gog-space-8);
+  margin-block-end: var(--gog-space-8);
+}
+
+.collapsible-page__note {
+  margin-block: var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+// The page's own trigger. The library draws none: this is what a consumer writes.
+.collapsible-page__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-space-8);
+  width: 100%;
+  padding: var(--gog-space-8) var(--gog-space-16);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  color: var(--gog-text-color);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--gog-hover-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gog-accent-color);
+    outline-offset: 2px;
+  }
+}
+
+.collapsible-page__chevron {
+  margin-inline-start: auto;
+  transition: transform var(--gog-duration-fast) var(--gog-easing);
+}
+
+.gog-collapsible__trigger--open .collapsible-page__chevron {
+  transform: rotate(180deg);
+}
+
+.collapsible-page__body {
+  margin: 0;
+  padding: var(--gog-space-8) var(--gog-space-16);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}
+
+// Caps one panel on purpose; the content scrolls inside the cap.
+.collapsible-page__capped {
+  --gog-collapsible-max-height: 6rem;
+
+  &.gog-collapsible__content--open {
+    overflow-y: auto;
+  }
+}

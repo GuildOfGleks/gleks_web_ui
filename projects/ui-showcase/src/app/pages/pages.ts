@@ -10,6 +10,7 @@ import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
 import { CARD_API } from './card/card.api';
 import { CHECKBOX_API } from './checkbox/checkbox.api';
 import { CHIP_API } from './chip/chip.api';
+import { COLLAPSIBLE_API } from './collapsible/collapsible.api';
 import { DATEPICKER_API } from './datepicker/datepicker.api';
 import { DIVIDER_API } from './divider/divider.api';
 import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.api';
@@ -185,5 +186,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./accordion/accordion-page').then((m) => m.AccordionPage),
     api: ACCORDION_API,
     tokens: ['Accordion'],
+  },
+  collapsible: {
+    load: () => import('./collapsible/collapsible-page').then((m) => m.CollapsiblePage),
+    api: COLLAPSIBLE_API,
+    tokens: ['Collapsible'],
   },
 };

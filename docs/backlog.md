@@ -16,6 +16,24 @@ not worth carrying here.
 
 ## Defects — first
 
+- **A dropdown inside an open collapsible, accordion body or collapsible panel is clipped.**
+  `.gog-collapsible__content` keeps `overflow: hidden` while _open_ — the height animation needs
+  it closed, not open — so a `gog-select` rendered in the content has its list cut off at the
+  content's bottom edge. Measured on the Collapsible page on 2026-09-26: the list ran from 224px
+  to 484px, the content ended at 228px, and the element on top at the list's bottom was the page
+  section, not the list. The same rule reaches `gog-panel [collapsible]`, which uses that class
+  (its `--static` variant undoes overflow only for a panel that cannot collapse, and says why),
+  and `gog-accordion`'s open body and body-inner have their own `overflow: hidden` — both read
+  from the stylesheets, not measured. Likely fix: hidden only while closed or animating. The
+  Collapsible page keeps the clipped demo so the fix has a case.
+
+- **`collapseOnFocusOut` closes a collapsible when its own content is clicked.** Click the plain
+  text inside the open content while the trigger has focus: focus moves to `<body>`,
+  `relatedTarget` is `null`, and `onFocusOut` reads null as "focus left" — which it also is for a
+  click elsewhere on the page, so the two cannot be told apart from the focus event alone.
+  Reproduced with a real pointer click on the Collapsible page on 2026-09-26. Likely wants a
+  `pointerdown` inside the host to mark the next focusout as internal.
+
 - **A loading `filled` card or panel shows a blank tint.** The placeholder bars are
   `gog-skeleton`, whose bone colour is fixed rather than relative to the surface it sits on, and
   `filled` paints a tint of about the same lightness. Measured on the Card and Panel pages on
