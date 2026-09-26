@@ -44,12 +44,17 @@
   }
 }
 
+/* A status colour is a fill and an edge, not a text colour: primeng's success is #22c55e, which
+   carries a dark label and reads at 2.28:1 as text on white. Mixed 60/40 toward the text colour
+   it keeps its hue and clears AA in all eleven themes (worst: primeng success, 5.00:1; 65% gives
+   4.49). check:app-contrast does not read a `color-mix()` colour, so that figure is measured by
+   hand with scripts/token-color.mjs — re-measure it if either mix changes. */
 .icon-page__success {
-  color: var(--gog-success-color);
+  color: color-mix(in srgb, var(--gog-success-color) 60%, var(--gog-text-color));
 }
 
 .icon-page__danger {
-  color: var(--gog-danger-color);
+  color: color-mix(in srgb, var(--gog-danger-color) 60%, var(--gog-text-color));
 }
 
 .icon-page__muted {
