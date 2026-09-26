@@ -1,0 +1,290 @@
+<app-doc-page unit="table">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Five densities, each with rows, loading and empty. Columns are declared with gog-column; the rows are value."
+  >
+    <h3>size × state</h3>
+    <p class="table-page__note">
+      <code>size</code> is row density. Loading replaces the body with a spinner and marks the host
+      <code>aria-busy</code>; an empty <code>value</code> renders one row with a dash. Hover on a
+      sortable header is live.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <div class="table-page__cell">
+          <gog-table
+            [value]="state.value === 'empty' ? noRows : firstRows"
+            [loading]="state.value === 'loading'"
+            [size]="size"
+            [showRowNumbers]="false"
+          >
+            <gog-column field="component" header="Component" [sortable]="true" />
+            <gog-column field="status" header="Status" />
+          </gog-table>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>gogColumnBody and gogColumnHeader</h3>
+    <p class="table-page__note">
+      A cell template gets the row as <code>$implicit</code> and <code>row</code>, its
+      <code>index</code> on the page, and the resolved <code>value</code>; a header template gets
+      the column's <code>header</code> text and <code>field</code>, so it can decorate rather than
+      replace. A <code>field</code> can be a dot-path.
+    </p>
+    <gog-table [value]="rows" size="md" [showRowNumbers]="false">
+      <gog-column field="component" header="Component" />
+      <gog-column field="status" header="Status">
+        <ng-template gogColumnHeader let-header>{{ header }} ●</ng-template>
+        <ng-template gogColumnBody let-value="value">
+          <gog-tag size="xsm" [variant]="statusVariants[$any(value)]">{{ value }}</gog-tag>
+        </ng-template>
+      </gog-column>
+      <gog-column field="owner" header="Owner" />
+    </gog-table>
+
+    <h3>row numbers, column borders, emptyPlaceholder, widths</h3>
+    <p class="table-page__note">
+      <code>showRowNumbers</code> is on by default. <code>showColumnBorders</code> draws the
+      vertical rules. A missing value renders as <code>emptyPlaceholder</code> — "Accordion" has no
+      owner. <code>width</code>, <code>minWidth</code> and <code>maxWidth</code> size a column.
+    </p>
+    <gog-table [value]="rows" size="sm" [showColumnBorders]="true" emptyPlaceholder="n/a">
+      <gog-column field="component" header="Component" width="12rem" />
+      <gog-column field="owner" header="Owner" />
+      <gog-column field="updated" header="Updated" minWidth="8rem" />
+    </gog-table>
+
+    <h3>[fullWidth]="false"</h3>
+    <p class="table-page__note">The table sizes to its columns instead of its container.</p>
+    <gog-table [value]="rows" size="sm" [fullWidth]="false" [showRowNumbers]="false">
+      <gog-column field="component" header="Component" />
+      <gog-column field="owner" header="Owner" />
+    </gog-table>
+
+    <h3>pagination, total and their positions</h3>
+    <p class="table-page__note">
+      <code>pageSize</code> above 0 pages the rows; <code>showTotal</code> adds a count, placed by
+      <code>totalPosition</code>, and <code>paginatorPosition</code> places the pages.
+    </p>
+    <gog-table
+      [value]="tallRows"
+      [pageSize]="5"
+      [showTotal]="true"
+      totalPosition="left"
+      paginatorPosition="right"
+      [showPageSizeSelect]="true"
+      [pageSizeOptions]="[5, 10]"
+      size="sm"
+    >
+      <gog-column field="component" header="Component" />
+      <gog-column field="owner" header="Owner" />
+    </gog-table>
+
+    <h3>stickyHeader with maxHeight</h3>
+    <p class="table-page__note">
+      <code>maxHeight</code> gives the table its own vertical scroll, and only then can
+      <code>stickyHeader</code> pin the header to it. Scroll the table.
+    </p>
+    <gog-table [value]="tallRows" maxHeight="16rem" [stickyHeader]="true" size="sm">
+      <gog-column field="component" header="Component" />
+      <gog-column field="status" header="Status" />
+      <gog-column field="owner" header="Owner" />
+      <gog-column field="updated" header="Updated" />
+    </gog-table>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="Headers sort through asc, desc and none; rows can be selected, clicked, fetched a page at a time from a server, or windowed."
+  >
+    <h3>sorting</h3>
+    <p class="table-page__note">
+      Click a sortable header, or Tab to it and press Enter: ascending, descending, then unsorted.
+      Text sorts by locale, numeric-aware. "Component" here has a <code>comparator</code> that sorts
+      by length instead.
+    </p>
+    <gog-table [value]="rows" size="sm" (gogSortChange)="onSort($event)">
+      <gog-column field="component" header="Component" [sortable]="true" [comparator]="byLength" />
+      <gog-column field="owner" header="Owner" [sortable]="true" />
+      <gog-column field="updated" header="Updated" />
+    </gog-table>
+    <code>gogSortChange: {{ lastSort() }}</code>
+
+    <h3>selection</h3>
+    <p class="table-page__note">
+      <code>selectionMode="multiple"</code> adds a checkbox column with a select-all for the current
+      page; <code>'single'</code> keeps at most one. The selection is always an array, two-way
+      through <code>[(selection)]</code>.
+    </p>
+    <div class="table-page__pair">
+      <gog-table
+        [value]="rows"
+        size="sm"
+        selectionMode="multiple"
+        [(selection)]="picked"
+        [showRowNumbers]="false"
+      >
+        <gog-column field="component" header="Multiple" />
+      </gog-table>
+      <gog-table
+        [value]="rows"
+        size="sm"
+        selectionMode="single"
+        [(selection)]="single"
+        [showRowNumbers]="false"
+      >
+        <gog-column field="component" header="Single" />
+      </gog-table>
+    </div>
+    <code>multiple: {{ names(picked()) }} · single: {{ names(single()) }}</code>
+
+    <h3>selectOnRowClick and gogRowClick</h3>
+    <p class="table-page__note">
+      With <code>selectOnRowClick</code> the whole row toggles, so the checkbox column can go; the
+      rows become focusable and Enter or Space toggles them. <code>gogRowClick</code> fires for
+      every press that reaches a row, with the row and its index on the page.
+    </p>
+    <gog-table
+      [value]="rows"
+      size="sm"
+      selectionMode="multiple"
+      [(selection)]="picked"
+      [selectOnRowClick]="true"
+      [showSelectionColumn]="false"
+      (gogRowClick)="onRowClick($event)"
+    >
+      <gog-column field="component" header="Component" />
+      <gog-column field="owner" header="Owner" />
+    </gog-table>
+    <code>selected: {{ names(picked()) }} · gogRowClick: {{ clicked() }}</code>
+
+    <h3>[lazy]="true" — a server owns sort and pages</h3>
+    <p class="table-page__note">
+      The table renders <code>value</code> as given and asks <code>totalRecords</code> how many
+      pages there are; <code>gogSortChange</code>, <code>gogPageChange</code> and
+      <code>pageSizeChange</code> are the refetch signals. This one talks to a fake 137-row endpoint
+      with a 350 ms delay. <code>dataKey="id"</code> keeps a selection across pages and refetches.
+    </p>
+    <gog-table
+      [value]="serverRows()"
+      [lazy]="true"
+      [totalRecords]="serverTotal()"
+      [pageSize]="serverPageSize()"
+      (pageSizeChange)="onServerPageSize($event)"
+      [loading]="serverLoading()"
+      selectionMode="multiple"
+      [(selection)]="serverSelection"
+      dataKey="id"
+      [showTotal]="true"
+      [showPageSizeSelect]="true"
+      [pageSizeOptions]="[10, 25, 50]"
+      size="sm"
+      (gogSortChange)="onServerSort($event)"
+      (gogPageChange)="onServerPage($event)"
+    >
+      <gog-column field="id" header="ID" [sortable]="true" width="5rem" />
+      <gog-column field="name" header="Name" [sortable]="true" />
+      <gog-column field="team" header="Team" [sortable]="true" />
+      <gog-column field="score" header="Score" [sortable]="true" width="6rem" />
+    </gog-table>
+    <code>last request: {{ lastQuery() }} · selected: {{ selectedCount() }}</code>
+
+    <h3>[virtualize]="true"</h3>
+    <p class="table-page__note">
+      Renders only the rows in view — here 10 000, every seventh one taller, which is why the window
+      measures rows as they render rather than assuming a height. It needs
+      <code>maxHeight</code> and <code>fullWidth</code>, and switches itself off with a warning
+      without them. Give <code>maxHeight</code> in <code>px</code>, <code>%</code> or
+      <code>vh</code>: in <code>rem</code> the window silently renders every row — filed.
+    </p>
+    <gog-checkbox label="virtualize" [(checked)]="virtualizeRows" />
+    <gog-table
+      [value]="manyRows"
+      [virtualize]="virtualizeRows()"
+      maxHeight="320px"
+      [stickyHeader]="true"
+      size="sm"
+    >
+      <gog-column field="component" header="Component" width="20rem" [sortable]="true" />
+      <gog-column field="status" header="Status" width="8rem" />
+      <gog-column field="owner" header="Owner" width="8rem" [sortable]="true" />
+    </gog-table>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="The total's word and the names of the pagination and the selection checkboxes come from GOG_CONFIG.labels; the rows-per-page select from GOG_CONFIG.paginator."
+  >
+    <pre class="table-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="controlColumn" let-where>
+        <app-doc-attrs target="thead input">
+          @if (where === 'inside scope') {
+            <app-table-config-scope>
+              <gog-table
+                [value]="rows"
+                size="sm"
+                selectionMode="multiple"
+                [pageSize]="3"
+                [showTotal]="true"
+                [showRowNumbers]="false"
+              >
+                <gog-column field="component" header="Komponente" />
+              </gog-table>
+            </app-table-config-scope>
+          } @else {
+            <gog-table
+              [value]="rows"
+              size="sm"
+              selectionMode="multiple"
+              [pageSize]="3"
+              [showTotal]="true"
+              [showRowNumbers]="false"
+            >
+              <gog-column field="component" header="Component" />
+            </gog-table>
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A native table: headers are th scope='col', sorting is aria-sort on the header, and each selection checkbox is named."
+  >
+    <p class="table-page__note">
+      Read from the live DOM. A sortable header is a <code>th</code> made focusable, sorting on
+      Enter; it carries <code>aria-sort</code> only once it is sorted, and nothing says it can be
+      pressed — filed. There is no input to start a table sorted. <code>aria-rowcount</code> gives
+      the true row count when paging or windowing leaves rows out of the DOM. A selected row carries
+      <code>aria-selected</code>, which is not part of a plain table row's role, so the checkbox is
+      what states the selection.
+    </p>
+    <app-doc-matrix rowAxis="element" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
+        <app-doc-attrs [target]="row.target">
+          <div class="table-page__cell">
+            <gog-table
+              [value]="firstRows"
+              size="sm"
+              selectionMode="multiple"
+              [(selection)]="a11ySelection"
+              [showRowNumbers]="false"
+            >
+              <gog-column field="component" header="Component" [sortable]="true" />
+              <gog-column field="owner" header="Owner" [sortable]="true" />
+            </gog-table>
+          </div>
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

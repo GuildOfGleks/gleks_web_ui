@@ -16,6 +16,23 @@ not worth carrying here.
 
 ## Defects — first
 
+- **`gog-table [virtualize]` renders every row when `maxHeight` is in `rem`.** The window's
+  first viewport height comes from `resolveCssLengthPx(maxHeight)`, which reads only `px`, `%` and
+  `vh` and returns `null` for anything else — while `maxHeight`'s own docs promise "any CSS
+  length". Measured on the Table page on 2026-09-26 with 10 000 rows: `maxHeight="320px"` renders
+  13 and keeps 13 after scrolling 2000px; `maxHeight="20rem"` renders all 10 000 and still does
+  after a scroll, with `aria-rowcount` claiming a window is active. No warning either way. Likely
+  fix: take the real height from the laid-out viewport rather than parsing the string, or at
+  least resolve `rem`/`em` and warn on what it cannot read.
+
+- **With `selectOnRowClick` and no checkbox column, a row's selection may reach no one.** The
+  state is then carried only by `aria-selected` on the `<tr>`, and the table is a plain `<table>`
+  — ARIA 1.2 supports `aria-selected` on a row only inside `grid` or `treegrid`. With the checkbox
+  column shown, the checkbox states it and nothing is lost. **From the spec and the DOM, not from a
+  screen reader**: read on the Table page on 2026-09-26; what Chrome, NVDA and VoiceOver actually
+  announce was not checked, and should be before choosing between a grid role and a visually
+  hidden state.
+
 - **A dropdown inside an open collapsible, accordion body or collapsible panel is clipped.**
   `.gog-collapsible__content` keeps `overflow: hidden` while _open_ — the height animation needs
   it closed, not open — so a `gog-select` rendered in the content has its list cut off at the
@@ -1059,6 +1076,23 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
 Carried over from `consumer-dx-plan.md`'s backlog, which was the project's second live list until
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
+
+- **A sortable `gog-table` header does not say it can be pressed.** It is a `<th>` with
+  `tabindex="0"` that sorts on click and Enter, with no button inside it and no role, and
+  `aria-sort` appears only once the column is sorted — read on the Table page on 2026-09-26. A
+  screen reader meets an ordinary column header that happens to be focusable. The ARIA sortable
+  table pattern puts a `<button>` in the header cell; the table's own sort handler would move onto
+  it unchanged.
+
+- **`gog-table` cannot start sorted.** The sort lives in a public `sortState` signal with no
+  input, so a table whose data arrives sorted — every `lazy` table whose server has a default
+  order — shows unsorted headers until someone clicks one, and a template cannot set it. An
+  initial-sort input (or `[(sort)]`) is additive.
+
+- **An empty `gog-table` says "—".** `value` of `[]` renders one row holding a dash, and the text
+  is not configurable — `emptyPlaceholder` is for a missing _cell_, not an empty table. A screen
+  reader announces a one-cell table containing a dash. Wants a label (a `GOG_CONFIG.labels` key,
+  like the table's other chrome) or a template.
 
 - **`gog-paginator`'s current page says so only in words.** The current page's button is named
   "Page 3, current page" and carries no `aria-current="page"` — read on the Paginator page on

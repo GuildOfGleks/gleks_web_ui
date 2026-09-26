@@ -1,0 +1,26 @@
+// A matrix cell has no width of its own, and a full-width table fills whatever it is given.
+.table-page__cell {
+  width: 18rem;
+}
+
+.table-page__pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  align-items: start;
+  gap: var(--gog-space-16);
+  max-width: 36rem;
+  margin-block-end: var(--gog-space-8);
+}
+
+.table-page__note {
+  margin-block: var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+.table-page__config {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+}

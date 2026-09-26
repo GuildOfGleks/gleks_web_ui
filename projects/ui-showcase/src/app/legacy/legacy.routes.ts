@@ -20,10 +20,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/menu-page/menu-page').then((m) => m.MenuPage),
   },
   {
-    path: 'table',
-    loadComponent: () => import('./pages/table-page/table-page').then((m) => m.TablePage),
-  },
-  {
     path: 'toast',
     loadComponent: () => import('./pages/toast-page/toast-page').then((m) => m.ToastPage),
   },

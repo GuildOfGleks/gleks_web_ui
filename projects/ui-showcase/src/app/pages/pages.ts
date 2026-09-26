@@ -27,6 +27,7 @@ import { SELECT_API } from './select/select.api';
 import { SKELETON_API } from './skeleton/skeleton.api';
 import { SLIDER_API } from './slider/slider.api';
 import { SPINNER_API } from './spinner/spinner.api';
+import { TABLE_API } from './table/table.api';
 import { TABS_API } from './tabs/tabs.api';
 import { TAG_API } from './tag/tag.api';
 import { TOGGLE_API } from './toggle/toggle.api';
@@ -209,5 +210,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./paginator/paginator-page').then((m) => m.PaginatorPage),
     api: PAGINATOR_API,
     tokens: ['Paginator'],
+  },
+  table: {
+    load: () => import('./table/table-page').then((m) => m.TablePage),
+    api: TABLE_API,
+    tokens: ['Table'],
   },
 };
