@@ -247,7 +247,7 @@ Check, in this order:
 ends up testing stale code:
 
 ```bash
-pkill -f 'ng.js serve' || true   # or: fuser -k 4200/tcp, where psmisc is installed
+pkill -f '^ng serve' || true   # or: fuser -k 4200/tcp, where psmisc is installed
 ```
 
 ### Step 8 — run the rest of the checks

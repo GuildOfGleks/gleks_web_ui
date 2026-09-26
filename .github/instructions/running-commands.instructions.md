@@ -97,14 +97,20 @@ A hung `ng` process holds file locks on `dist/` and will corrupt the next build.
 before finishing a turn (this is also required by `agent-workflow.instructions.md`):
 
 ```bash
-pkill -f 'gleks_web_ui/node_modules/@angular/cli/bin/ng.js' || true
+pkill -f '^ng build' || true
 ```
 
 For a dev server, free the port explicitly:
 
 ```bash
-pkill -f 'ng.js serve' || true   # or: fuser -k 4200/tcp, where psmisc is installed
+pkill -f '^ng serve' || true   # or: fuser -k 4200/tcp, where psmisc is installed
 ```
+
+Angular CLI rewrites its own process title, so on Linux `/proc/<pid>/cmdline` reads
+`ng serve ui-showcase --port 4200 …` — neither `node` nor the path to `ng.js` survives. A pattern
+naming `ng.js` matches nothing and fails silently. Keep the `^` anchor: without it, `pkill -f`
+also matches the shell whose command line contains the pattern and kills it. `pgrep -af '^ng '`
+lists what is left.
 
 ## Sandbox gotchas hit in real sessions
 
