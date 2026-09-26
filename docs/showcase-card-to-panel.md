@@ -246,9 +246,8 @@ Check, in this order:
 **Then stop the dev server.** Leaving it running is the single most common way the next session
 ends up testing stale code:
 
-```powershell
-Get-NetTCPConnection -LocalPort 4200 -State Listen -ErrorAction SilentlyContinue |
-  ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
+```bash
+pkill -f 'ng.js serve' || true   # or: fuser -k 4200/tcp, where psmisc is installed
 ```
 
 ### Step 8 — run the rest of the checks

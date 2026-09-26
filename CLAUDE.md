@@ -27,9 +27,8 @@ So: explain in Russian what you are about to do, then write it in English. A Rus
 `theme.css`'s palette comments, test fixtures across nine components, JSDoc examples, the lab's
 layout comments, `.gitignore`, the lab `Dockerfile`). To check:
 
-```powershell
-git ls-files | Where-Object { $_ -notmatch 'package-lock|\.(png|ico|jpg|svg)$' } |
-  ForEach-Object { Select-String -Path $_ -Pattern '[Ѐ-ӿ]' }
+```bash
+git grep -nIP '[\x{0400}-\x{04FF}]' -- ':!package-lock.json' ':!*.png' ':!*.ico' ':!*.jpg' ':!*.svg'
 ```
 
 Two things were _not_ solved by translating to English, and both should stay as they are:

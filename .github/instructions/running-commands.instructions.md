@@ -10,7 +10,9 @@ Every script here is fast — the slowest is 15 seconds, with one deliberate exc
 is not slow, it is **hung**, and waiting will not help. This file records which commands exit
 cleanly, which do not, and how to run either kind so a session never stalls.
 
-Measured on the reference machine (Windows, `npm@11.6.2`, Angular v21), cold `.angular/cache`:
+Measured on the original reference machine (Windows, `npm@11.6.2`, Angular v21), cold `.angular/cache`.
+The workspace moved to Linux on 2026-09-26; the same scripts run there in the same order of
+magnitude or faster (`test:lib` ~6 s):
 
 | Script                                    | Exits on its own?           | Wall time                                                                                         |
 | ----------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -94,20 +96,17 @@ stuck.
 A hung `ng` process holds file locks on `dist/` and will corrupt the next build. Kill leftovers
 before finishing a turn (this is also required by `agent-workflow.instructions.md`):
 
-```powershell
-Get-CimInstance Win32_Process -Filter "Name like '%node%'" |
-  Where-Object { $_.CommandLine -like '*gleks_web_ui*' -and $_.CommandLine -like '*ng.js*' } |
-  ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+```bash
+pkill -f 'gleks_web_ui/node_modules/@angular/cli/bin/ng.js' || true
 ```
 
 For a dev server, free the port explicitly:
 
-```powershell
-Get-NetTCPConnection -LocalPort 4200 -State Listen -ErrorAction SilentlyContinue |
-  ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
+```bash
+pkill -f 'ng.js serve' || true   # or: fuser -k 4200/tcp, where psmisc is installed
 ```
 
-## Windows / sandbox gotchas hit in real sessions
+## Sandbox gotchas hit in real sessions
 
 - **`npm install` inside `projects/gleks/ui` breaks the whole test suite.** The library's
   `package.json` declares Angular as a _peer_ dependency with the range
@@ -122,12 +121,10 @@ Get-NetTCPConnection -LocalPort 4200 -State Listen -ErrorAction SilentlyContinue
   root; the library is built from source by `ng build @gleks/ui` and never needs its own install.
   If a step of the release really does need one, `npm publish` from the root with `--workspace`
   rather than `cd`-ing into the package.
-- **`rm -rf node_modules/<pkg>` is blocked** by the tool sandbox. Use PowerShell instead:
-  `Remove-Item -Recurse -Force <path>`.
 - **`npm install` will not restore a package you overwrote with a local build** when the two
   carry the same version string — npm sees the version it wants and leaves the directory alone.
-  To undo the local-library swap from `ui-showcase.instructions.md`, `Remove-Item` the package
-  directory _first_, then `npm install`.
+  To undo the local-library swap from `ui-showcase.instructions.md`, delete the package
+  directory (`rm -rf node_modules/@guildofgleks/ui`) _first_, then `npm install`.
 - **Chained sleeps are blocked** (`sleep 30; cat log`). To wait for a condition, use a
   backgrounded `until` loop: `until grep -q "marker" log; do sleep 2; done`.
 - **Prefer redirecting to a file over `| head -N`.** Reading a saved log is cheaper than

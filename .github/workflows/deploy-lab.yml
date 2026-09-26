@@ -1,7 +1,7 @@
 # =============================================================================
 # CD Pipeline — gleks-ui-lab (public docs site)
 # Trigger: manual only (workflow_dispatch). Never runs on push.
-# Invoke locally with: scripts/deploy-lab.ps1
+# Invoke locally with: scripts/deploy-lab.sh
 # =============================================================================
 
 name: Deploy gleks-ui-lab
@@ -17,7 +17,7 @@ on:
         # The port nginx proxies to on the server. Getting this wrong takes the site down:
         # the deploy step stops and removes the running container *before* starting the new
         # one, so a mismatched port leaves nginx proxying to nothing. Keep it in step with
-        # scripts/deploy-lab.ps1's own default.
+        # scripts/deploy-lab.sh's own default.
         description: "Port to expose on the server (must match what nginx proxies to)"
         required: false
         default: "9001"
