@@ -34,7 +34,8 @@
   padding: 2px 8px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--gog-accent-dim) 14%, transparent);
-  color: var(--gog-muted-text-color);
+  /* Muted text on this tint measured 3.60:1 in primeng; the text colour clears 5.33:1. */
+  color: var(--gog-text-color);
   font-size: 0.72rem;
   text-transform: capitalize;
   white-space: nowrap;
