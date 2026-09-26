@@ -1,10 +1,6 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import {
-  GogButtonDirective,
-  GogTooltipDirective,
-  type GogTooltipPosition,
-} from '@guildofgleks/ui';
+import { GogButtonDirective, GogTooltipDirective, type GogTooltipPosition } from '@guildofgleks/ui';
 
 import { DocAttrs } from '../../doc/doc-attrs';
 import { DocCell, DocMatrix } from '../../doc/doc-matrix';
@@ -18,7 +14,7 @@ import { TOOLTIP_SCOPE_CONFIG, TooltipConfigScope } from './tooltip-config-scope
     JsonPipe,
     GogButtonDirective,
     GogTooltipDirective,
-      DocAttrs,
+    DocAttrs,
     DocCell,
     DocMatrix,
     DocPage,
