@@ -1,0 +1,161 @@
+<app-doc-page unit="menu">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="A menu is closed until its trigger opens it, and it opens into <body>, so a page cannot lay open menus side by side. Open this one: its items show the states an item has."
+  >
+    <h3>items: plain, with an icon and a hint, disabled</h3>
+    <p class="menu-page__note">
+      An item is your own <code>&lt;button gogMenuItem&gt;</code>, so its content is yours — an
+      icon, a label, a shortcut. A native <code>disabled</code> item is skipped by the arrow keys
+      and cannot be pressed. Hover and the focused item are live; the trigger is your own
+      <code>&lt;button gogButton&gt;</code>. Put the trigger on a native button, not on the
+      <code>gog-button</code> component: there its ARIA lands on the component's host and never
+      reaches the real button — filed.
+    </p>
+    <div class="menu-page__row">
+      <button type="button" gogButton variant="outline" [gogMenuTrigger]="stateMenu">
+        Document
+      </button>
+      <gog-menu #stateMenu ariaLabel="Document">
+        <button gogMenuItem (click)="act('Rename')">Rename</button>
+        <button gogMenuItem (click)="act('Duplicate')">
+          <gog-icon name="copy" />
+          Duplicate
+          <kbd class="menu-page__hint">Ctrl+D</kbd>
+        </button>
+        <button gogMenuItem disabled (click)="act('Move')">Move (no permission)</button>
+        <button gogMenuItem (click)="act('Delete')">
+          <gog-icon name="trash" />
+          Delete
+        </button>
+      </gog-menu>
+    </div>
+    <code>last action: {{ lastAction() }}</code>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>a long menu scrolls itself</h3>
+    <p class="menu-page__note">
+      The panel caps itself against the viewport and scrolls inside, with the library's own thin
+      scrollbar; a wheel at the end of the list stops there instead of scrolling the page behind.
+    </p>
+    <div class="menu-page__row">
+      <button type="button" gogButton variant="outline" [gogMenuTrigger]="longMenu">
+        Move to branch
+      </button>
+      <gog-menu #longMenu ariaLabel="Move to branch">
+        @for (branch of branches; track branch) {
+          <button gogMenuItem (click)="act('Move to ' + branch)">{{ branch }}</button>
+        }
+      </gog-menu>
+    </div>
+
+    <h3>direction</h3>
+    <p class="menu-page__note">
+      <code>'auto'</code> opens below and flips above when there is no room; <code>'up'</code> and
+      <code>'down'</code> fix it.
+    </p>
+    <div class="menu-page__row">
+      <button type="button" gogButton variant="outline" size="sm" [gogMenuTrigger]="autoMenu">
+        auto
+      </button>
+      <gog-menu #autoMenu ariaLabel="Auto">
+        <button gogMenuItem>One</button>
+        <button gogMenuItem>Two</button>
+      </gog-menu>
+      <button type="button" gogButton variant="outline" size="sm" [gogMenuTrigger]="upMenu">
+        up
+      </button>
+      <gog-menu #upMenu direction="up" ariaLabel="Up">
+        <button gogMenuItem>One</button>
+        <button gogMenuItem>Two</button>
+      </gog-menu>
+      <button type="button" gogButton variant="outline" size="sm" [gogMenuTrigger]="downMenu">
+        down
+      </button>
+      <gog-menu #downMenu direction="down" ariaLabel="Down">
+        <button gogMenuItem>One</button>
+        <button gogMenuItem>Two</button>
+      </gog-menu>
+    </div>
+
+    <h3>one menu, many triggers</h3>
+    <p class="menu-page__note">
+      A menu declared once can be opened from several buttons — row actions in a list. It opens
+      beside whichever trigger opened it, and only that trigger reads as expanded.
+    </p>
+    <ul class="menu-page__list">
+      @for (file of files; track file) {
+        <li>
+          {{ file }}
+          <button
+            type="button"
+            gogButton
+            variant="ghost"
+            size="xsm"
+            [attr.aria-label]="'Actions for ' + file"
+            [gogMenuTrigger]="rowMenu"
+          >
+            <gog-icon name="more-vertical" />
+          </button>
+        </li>
+      }
+    </ul>
+    <gog-menu #rowMenu ariaLabel="File actions">
+      <button gogMenuItem (click)="act('Open')">Open</button>
+      <button gogMenuItem (click)="act('Share')">Share</button>
+    </gog-menu>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="The WAI-ARIA menu button pattern: the arrows move between items, Escape closes and returns focus to the trigger, Tab closes and moves on, and choosing an item closes the menu."
+  >
+    <h3>keyboard, and gogClosed</h3>
+    <p class="menu-page__note">
+      Focus the trigger. Enter, Space or ArrowDown open with the first item focused, ArrowUp with
+      the last; Home and End jump; disabled items are skipped. <code>gogClosed</code> fires however
+      the menu closed — an item, Escape, Tab or a click outside.
+    </p>
+    <div class="menu-page__row">
+      <button type="button" gogButton variant="outline" [gogMenuTrigger]="keyMenu">Actions</button>
+      <gog-menu #keyMenu ariaLabel="Actions" (gogClosed)="closedCount.set(closedCount() + 1)">
+        <button gogMenuItem (click)="act('First')">First</button>
+        <button gogMenuItem [disabled]="locked()" (click)="act('Second')">Second</button>
+        <button gogMenuItem (click)="act('Third')">Third</button>
+      </gog-menu>
+      <label class="menu-page__toggle">
+        <input type="checkbox" [checked]="locked()" (change)="locked.set(!locked())" />
+        "Second" disabled
+      </label>
+    </div>
+    <code>last action: {{ lastAction() }} · gogClosed fired: {{ closedCount() }}</code>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The trigger says it opens a menu, whether it is open, and which menu; the panel is role='menu' of role='menuitem' buttons, with one tab stop — the trigger."
+  >
+    <p class="menu-page__note">
+      Read from the live DOM for the closed trigger; open the menu in Behaviour to see
+      <code>aria-expanded</code> turn true and <code>aria-controls</code> appear. The panel is not
+      in the DOM while closed, so nothing of it reaches the accessibility tree. It is named by
+      <code>ariaLabel</code>, which is empty by default — name every menu.
+    </p>
+    <app-doc-matrix rowAxis="trigger" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn">
+        <app-doc-attrs target="button">
+          <button type="button" class="menu-page__plain" [gogMenuTrigger]="a11yMenu">
+            Actions
+          </button>
+          <gog-menu #a11yMenu ariaLabel="Actions">
+            <button gogMenuItem>One</button>
+          </gog-menu>
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

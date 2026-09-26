@@ -1,0 +1,48 @@
+.menu-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-12);
+  margin-block-end: var(--gog-space-8);
+}
+
+.menu-page__list {
+  max-width: 20rem;
+  margin: 0 0 var(--gog-space-8);
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--gog-space-4) var(--gog-space-8);
+    border-block-end: 1px solid var(--gog-border-color);
+    font-size: var(--gog-text-sm);
+  }
+}
+
+.menu-page__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gog-space-4);
+  font-size: var(--gog-text-sm);
+}
+
+.menu-page__plain {
+  font: inherit;
+}
+
+.menu-page__note {
+  margin-block: var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+// Items are this page's markup, so they carry its styles even though the panel renders in <body>.
+.menu-page__hint {
+  margin-inline-start: auto;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}

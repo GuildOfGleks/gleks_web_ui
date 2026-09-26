@@ -16,6 +16,7 @@ import { DIVIDER_API } from './divider/divider.api';
 import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.api';
 import { ICON_API } from './icon/icon.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
+import { MENU_API } from './menu/menu.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { PAGINATOR_API } from './paginator/paginator.api';
 import { PANEL_API } from './panel/panel.api';
@@ -215,5 +216,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./table/table-page').then((m) => m.TablePage),
     api: TABLE_API,
     tokens: ['Table'],
+  },
+  menu: {
+    load: () => import('./menu/menu-page').then((m) => m.MenuPage),
+    api: MENU_API,
+    tokens: ['Menu'],
   },
 };

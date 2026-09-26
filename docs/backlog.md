@@ -16,6 +16,16 @@ not worth carrying here.
 
 ## Defects — first
 
+- **`[gogMenuTrigger]` on a `<gog-button>` announces a plain button.** The directive writes
+  `aria-haspopup`, `aria-expanded` and `aria-controls` onto its own host, and on the `gog-button`
+  component that host is the roleless wrapper, not the `<button>` inside it — read on the Menu page
+  on 2026-09-26: the host carried all three, the inner button none. The menu still opens by click
+  and keyboard (the events bubble), so it looks fine and is silent to a screen reader. It is the
+  exact trap 21.8.0 closed for raw `[attr.aria-*]` by giving `gog-button` `ariaExpanded`,
+  `ariaHasPopup` and `ariaControls`; the trigger directive does not use them. The legacy Menu page
+  wrote its triggers this way. `<button gogButton [gogMenuTrigger]>` works, and the rebuilt page
+  uses it and says why. Worth checking every other directive that decorates a trigger the same way.
+
 - **`gog-table [virtualize]` renders every row when `maxHeight` is in `rem`.** The window's
   first viewport height comes from `resolveCssLengthPx(maxHeight)`, which reads only `px`, `%` and
   `vh` and returns `null` for anything else — while `maxHeight`'s own docs promise "any CSS
