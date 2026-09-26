@@ -39,7 +39,7 @@
  */
 
 import { createServer } from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -110,17 +110,13 @@ async function serve(dir) {
   const server = createServer(async (req, res) => {
     const url = decodeURIComponent((req.url ?? '/').split('?')[0]);
     let file = path.join(dir, url);
-    try {
-      if ((await stat(file)).isDirectory()) {
-        // A prerendered route is `<route>/index.html`. A route that only ever redirects — `/` is
-        // one — has no prerender and falls back to the client-side shell, which boots the app and
-        // lands wherever the router sends it. Both are measurable; only one exists per route.
-        const prerendered = path.join(file, 'index.html');
-        file = existsSync(prerendered) ? prerendered : path.join(file, 'index.csr.html');
-      }
-    } catch {
-      res.writeHead(404).end();
-      return;
+    if (!path.extname(url)) {
+      // A prerendered route is `<route>/index.html`. A route that only ever redirects —
+      // `/legacy` is one — has no prerender, and its folder exists only if a child's does. It
+      // falls back to the client-side shell at the root, which boots the app and lands wherever
+      // the router sends it, as any static host serving an SPA would. Both are measurable.
+      const prerendered = path.join(file, 'index.html');
+      file = existsSync(prerendered) ? prerendered : path.join(dir, 'index.csr.html');
     }
     try {
       const body = await readFile(file);
