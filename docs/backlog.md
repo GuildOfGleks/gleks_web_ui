@@ -1060,6 +1060,13 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
+- **`gog-paginator`'s current page says so only in words.** The current page's button is named
+  "Page 3, current page" and carries no `aria-current="page"` — read on the Paginator page on
+  2026-09-26. The name reaches a screen reader, but the state is not machine-readable, which is
+  what `aria-current` exists for, and a consumer who localises `labels.page` without the "current"
+  half loses it entirely. `gog-button` has no `ariaCurrent` input to forward it through, so the fix
+  is either that input or the paginator setting the attribute on the inner button itself.
+
 - **A `gog-scroll` with nothing to scroll is still a tab stop, and an unnamed one.** `focusable`
   defaults to `true` and renders `tabindex="0"` with `role="region"` whether or not the content
   overflows — read on the Scroll page on 2026-09-26 from a region holding one line. A keyboard

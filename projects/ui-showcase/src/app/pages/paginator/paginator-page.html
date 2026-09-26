@@ -1,0 +1,176 @@
+<app-doc-page unit="paginator">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="A page of five at each edge and in the middle, and disabled, at every size. The step buttons disable themselves at the edges."
+  >
+    <h3>size × state</h3>
+    <p class="paginator-page__note">
+      The current page is the one primary button; the rest are ghost buttons. On the first page
+      "previous" is disabled, on the last "next". Hover, focus and press are the buttons' own and
+      are live.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="state">
+      <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
+        <gog-paginator
+          [size]="size"
+          [totalPages]="5"
+          [page]="state.value.page"
+          [disabled]="state.value.disabled"
+          [fullWidth]="false"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>rangeMode × current page, of 20</h3>
+    <p class="paginator-page__note">
+      <code>window</code> keeps <code>visiblePages</code> buttons and slides them to centre the
+      current page, clamped at the edges; <code>showFirstPage</code> and
+      <code>showLastPage</code> pin the ends with a "…" between. <code>ellipsis</code> always pins
+      the first and last page and keeps <code>siblingCount</code> pages either side of the current
+      one.
+    </p>
+    <app-doc-matrix rowAxis="range" colAxis="page">
+      <ng-template appDocCell [rows]="ranges" [cols]="rangePages" let-range let-page="col">
+        @switch (range.value) {
+          @case ('window-pinned') {
+            <gog-paginator
+              [totalPages]="20"
+              [page]="page"
+              [showFirstPage]="true"
+              [showLastPage]="true"
+              [fullWidth]="false"
+            />
+          }
+          @case ('window-3') {
+            <gog-paginator [totalPages]="20" [page]="page" [visiblePages]="3" [fullWidth]="false" />
+          }
+          @case ('ellipsis') {
+            <gog-paginator
+              [totalPages]="20"
+              [page]="page"
+              rangeMode="ellipsis"
+              [fullWidth]="false"
+            />
+          }
+          @case ('ellipsis-1') {
+            <gog-paginator
+              [totalPages]="20"
+              [page]="page"
+              rangeMode="ellipsis"
+              [siblingCount]="1"
+              [fullWidth]="false"
+            />
+          }
+          @default {
+            <gog-paginator [totalPages]="20" [page]="page" [fullWidth]="false" />
+          }
+        }
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>fullWidth</h3>
+    <p class="paginator-page__note">
+      On by default: the paginator takes its container's width. <code>[fullWidth]="false"</code>
+      shrinks it to its buttons.
+    </p>
+    <div class="paginator-page__frame">
+      <gog-paginator [totalPages]="5" [page]="2" />
+    </div>
+    <div class="paginator-page__frame">
+      <gog-paginator [totalPages]="5" [page]="2" [fullWidth]="false" />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="page and pageSize are two-way. Given totalRecords, the paginator counts pages itself; a new page size goes back to page 1; a page past the end is pulled back."
+  >
+    <h3>[(page)], [(pageSize)] and totalRecords</h3>
+    <p class="paginator-page__note">
+      The list below is the app's; the paginator only holds the position. With
+      <code>totalRecords</code> it works out the page count from <code>pageSize</code>, so nothing
+      has to be recomputed when the rows-per-page select changes it — and changing it returns to
+      page 1, the only position that means the same thing at every size.
+    </p>
+    <ol class="paginator-page__list" [start]="(listPage() - 1) * listSize() + 1">
+      @for (person of visiblePeople(); track person) {
+        <li>{{ person }}</li>
+      }
+    </ol>
+    <gog-paginator
+      [(page)]="listPage"
+      [(pageSize)]="listSize"
+      [totalRecords]="total"
+      [showPageSizeSelect]="true"
+    />
+    <code>page: {{ listPage() }} · pageSize: {{ listSize() }} · totalRecords: {{ total }}</code>
+
+    <h3>a page count that shrinks under the current page</h3>
+    <p class="paginator-page__note">
+      The paginator is on page 8 of 8. Drop the total to 3 and it writes page 3 back through
+      <code>page</code> rather than showing a page that does not exist.
+    </p>
+    <div class="paginator-page__actions">
+      <button type="button" (click)="shrinkTotal.set(3)">totalPages = 3</button>
+      <button type="button" (click)="shrinkTotal.set(8); shrinkPage.set(8)">reset to 8 of 8</button>
+    </div>
+    <gog-paginator [(page)]="shrinkPage" [totalPages]="shrinkTotal()" [fullWidth]="false" />
+    <code>page: {{ shrinkPage() }} · totalPages: {{ shrinkTotal() }}</code>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="The navigation's name and the button labels come from GOG_CONFIG.labels; whether the rows-per-page select shows, and its choices, from GOG_CONFIG.paginator."
+  >
+    <pre
+      class="paginator-page__config"
+    ><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <p class="paginator-page__note">
+      The same paginator in both rows, with no inputs beyond its pages; the second sits under a
+      nested config. <code>labels.page</code> is a function
+      <code>(page, isCurrent) =&gt; string</code> that names each number button, and is left out
+      here only because it would not print.
+    </p>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="controlColumn" let-where>
+        <app-doc-attrs target="gog-paginator">
+          @if (where === 'inside scope') {
+            <app-paginator-config-scope>
+              <gog-paginator [totalPages]="5" [page]="2" [fullWidth]="false" />
+            </app-paginator-config-scope>
+          } @else {
+            <gog-paginator [totalPages]="5" [page]="2" [fullWidth]="false" />
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A navigation landmark of real buttons, each named for where it goes; the current page's name says it is current."
+  >
+    <p class="paginator-page__note">
+      Read from the live DOM. The page numbers are named "Go to page N", the current one "Page N,
+      current page"; the step buttons are named from config, since ‹ and › say nothing on their own.
+      A disabled step button is a native <code>disabled</code> button, out of the tab order.
+    </p>
+    <app-doc-matrix rowAxis="element" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
+        <app-doc-attrs [target]="row.target">
+          <gog-paginator
+            [totalPages]="5"
+            [page]="row.name === 'previous, on the first page' ? 1 : 3"
+            [fullWidth]="false"
+          />
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

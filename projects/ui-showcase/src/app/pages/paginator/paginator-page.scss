@@ -1,0 +1,34 @@
+// A dashed frame, so fullWidth has a container to fill or not.
+.paginator-page__frame {
+  max-width: 36rem;
+  margin-block-end: var(--gog-space-8);
+  padding: var(--gog-space-8);
+  border: 1px dashed var(--gog-border-color);
+}
+
+.paginator-page__list {
+  max-width: 36rem;
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-text-color);
+  font-size: var(--gog-text-sm);
+  columns: 2;
+}
+
+.paginator-page__actions {
+  display: flex;
+  gap: var(--gog-space-8);
+  margin-block-end: var(--gog-space-8);
+}
+
+.paginator-page__note {
+  margin-block: var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+.paginator-page__config {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+}

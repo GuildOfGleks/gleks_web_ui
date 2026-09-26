@@ -24,11 +24,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/table-page/table-page').then((m) => m.TablePage),
   },
   {
-    path: 'paginator',
-    loadComponent: () =>
-      import('./pages/paginator-page/paginator-page').then((m) => m.PaginatorPage),
-  },
-  {
     path: 'toast',
     loadComponent: () => import('./pages/toast-page/toast-page').then((m) => m.ToastPage),
   },

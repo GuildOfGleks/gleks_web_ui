@@ -17,6 +17,7 @@ import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.
 import { ICON_API } from './icon/icon.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
+import { PAGINATOR_API } from './paginator/paginator.api';
 import { PANEL_API } from './panel/panel.api';
 import { RADIO_GROUP_API } from './radio-group/radio-group.api';
 import { PROGRESSBAR_API } from './progressbar/progressbar.api';
@@ -203,5 +204,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./scroll/scroll-page').then((m) => m.ScrollPage),
     api: SCROLL_API,
     tokens: ['Scroll'],
+  },
+  paginator: {
+    load: () => import('./paginator/paginator-page').then((m) => m.PaginatorPage),
+    api: PAGINATOR_API,
+    tokens: ['Paginator'],
   },
 };
