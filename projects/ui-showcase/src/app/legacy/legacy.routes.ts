@@ -38,10 +38,6 @@ export const legacyRoutes: Routes = [
       import('./pages/accordion-page/accordion-page').then((m) => m.AccordionPage),
   },
   {
-    path: 'panel',
-    loadComponent: () => import('./pages/panel-page/panel-page').then((m) => m.PanelPage),
-  },
-  {
     path: 'collapsible',
     loadComponent: () =>
       import('./pages/collapsible-page/collapsible-page').then((m) => m.CollapsiblePage),

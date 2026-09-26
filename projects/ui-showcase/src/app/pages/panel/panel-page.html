@@ -1,0 +1,230 @@
+<app-doc-page unit="panel">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Three surfaces, each open, closed, disabled and loading. Every panel here is collapsible, since closed and disabled are states of its toggle."
+  >
+    <h3>variant × state</h3>
+    <p class="panel-page__note">
+      <code>elevated</code> is the default: a page region is usually the raised thing on the page.
+      Loading keeps the heading — a section is titled before its content arrives — and replaces only
+      the body. Hover and focus on the header row are pseudo-class states a page cannot force; the
+      cells are live.
+    </p>
+    <app-doc-matrix rowAxis="variant" colAxis="state">
+      <ng-template appDocCell [rows]="variants" [cols]="states" let-variant let-state="col">
+        <div class="panel-page__cell">
+          <gog-panel
+            [variant]="variant"
+            size="md"
+            [collapsible]="true"
+            [open]="state.value.open"
+            [disabled]="state.value.disabled"
+            [loading]="state.value.loading"
+          >
+            <h4 gogPanelHeader>Activity</h4>
+            <p class="panel-page__text">Sixteen events since Tuesday.</p>
+          </gog-panel>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>size</h3>
+    <p class="panel-page__note">
+      Padding and the gap between rows, on the same five-step scale as every control.
+      <code>lg</code> is the default — larger than a card's <code>md</code>, because a panel is a
+      region of the page rather than an item in it.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="">
+      <ng-template appDocCell [rows]="sizes" [cols]="controlColumn" let-size>
+        <div class="panel-page__cell">
+          <gog-panel [size]="size" variant="outlined">
+            <h4 gogPanelHeader>{{ size }}</h4>
+            <p class="panel-page__text">Padding and row gap follow the size.</p>
+          </gog-panel>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the three slots</h3>
+    <p class="panel-page__note">
+      <code>gogPanelHeader</code> goes on your own heading, whose level belongs to the page. The
+      body is whatever else you project, and <code>gogPanelFooter</code> sits under it and collapses
+      with it. A panel with no heading draws no header row at all unless it is collapsible, when the
+      row holds the toggle alone.
+    </p>
+    <div class="panel-page__stack">
+      <gog-panel size="md">
+        <h4 gogPanelHeader>Heading, body, footer</h4>
+        <p class="panel-page__text">The body is projected as-is.</p>
+        <div gogPanelFooter>
+          <gog-button size="xsm" variant="outline">Reset</gog-button>
+          <gog-button size="xsm">Save</gog-button>
+        </div>
+      </gog-panel>
+      <gog-panel size="md">
+        <p class="panel-page__text">Body only: no header row, and no role — see Accessibility.</p>
+      </gog-panel>
+      <gog-panel size="md" [collapsible]="true">
+        <p class="panel-page__text">
+          Collapsible with no heading: the header row holds only the toggle, named from
+          <code>GOG_CONFIG.labels.togglePanel</code>.
+        </p>
+      </gog-panel>
+    </div>
+
+    <h3>skeletonLines</h3>
+    <p class="panel-page__note">
+      While <code>loading</code> is on, the body becomes this many placeholder lines. The heading
+      and the footer stay, so the footer's actions remain usable.
+    </p>
+    <div class="panel-page__grid">
+      @for (lines of [1, 3, 5]; track lines) {
+        <gog-panel size="md" [loading]="true" [skeletonLines]="lines">
+          <h4 gogPanelHeader>{{ lines }} line{{ lines === 1 ? '' : 's' }}</h4>
+          <div gogPanelFooter><gog-button size="xsm" variant="ghost">Export</gog-button></div>
+        </gog-panel>
+      }
+    </div>
+
+    <h3>an overlay inside a panel</h3>
+    <p class="panel-page__note">
+      A panel that is not collapsible undoes the collapse geometry it inherits, overflow included,
+      so a dropdown opened inside it is not clipped. Open the select: its list must escape the
+      panel's box.
+    </p>
+    <div class="panel-page__stack">
+      <gog-panel size="md" variant="outlined">
+        <h4 gogPanelHeader>Regional</h4>
+        <gog-select label="Time zone" [options]="timezones" [(value)]="timezone" />
+      </gog-panel>
+    </div>
+
+    <h3>per-instance tokens</h3>
+    <p class="panel-page__note">
+      <code>--gog-panel-radius</code>, <code>--gog-panel-shadow</code> and the border pair are the
+      foundation surface tokens that dialogs and dropdown panels read too, so a theme's idea of a
+      raised surface reaches the panel for free. Set on one element they override that one panel.
+    </p>
+    <div class="panel-page__stack">
+      <gog-panel class="panel-page__themed" size="md">
+        <h4 gogPanelHeader>Overridden per instance</h4>
+        <p class="panel-page__text">One class on this panel sets three tokens.</p>
+      </gog-panel>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="collapsible adds a toggle; open is two-way. The panel composes gog-collapsible, so the state, the id wiring and the animation are the library's existing ones."
+  >
+    <h3>[(open)] and the header row</h3>
+    <p class="panel-page__note">
+      Click anywhere on the header row, or Tab to the toggle and press Enter or Space. The heading
+      stays a heading: the toggle is its own button, named by the heading, with its hit area
+      stretched across the row. <code>open</code> is ignored while <code>collapsible</code> is off —
+      a panel that cannot collapse is always open.
+    </p>
+    <div class="panel-page__stack">
+      <gog-panel
+        size="md"
+        [collapsible]="true"
+        [open]="notificationsOpen()"
+        (openChange)="onOpenChange($event)"
+      >
+        <h4 gogPanelHeader>Notifications</h4>
+        <gog-checkbox label="Email digest" [(checked)]="emailDigest" />
+        <gog-checkbox label="Push alerts" [(checked)]="pushAlerts" />
+        <div gogPanelFooter>
+          <gog-button size="xsm">Save</gog-button>
+        </div>
+      </gog-panel>
+    </div>
+    <code>open: {{ notificationsOpen() }} · openChange fired: {{ toggles() }}</code>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="The toggle's name when there is no heading to name it is the one thing a panel reads from GOG_CONFIG."
+  >
+    <pre class="panel-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="controlColumn" let-where>
+        <app-doc-attrs target=".gog-panel__toggle">
+          <div class="panel-page__cell">
+            @if (where === 'inside scope') {
+              <app-panel-config-scope>
+                <gog-panel size="md" [collapsible]="true">
+                  <p class="panel-page__text">Kein Titel.</p>
+                </gog-panel>
+              </app-panel-config-scope>
+            } @else {
+              <gog-panel size="md" [collapsible]="true">
+                <p class="panel-page__text">No heading.</p>
+              </gog-panel>
+            }
+          </div>
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A panel with a gogPanelHeader is a region named by that heading; without one it has no role. The toggle is a separate button, named by the heading, that says whether it is expanded."
+  >
+    <p class="panel-page__note">
+      Read from the live DOM. <code>region</code> is deliberate — a handful of named regions is how
+      a screen-reader user moves around a page, which is why a card, repeated in a grid, is a
+      <code>group</code> instead. Disabled dims the panel, keeps its content in place and makes the
+      toggle inert.
+    </p>
+    <app-doc-matrix rowAxis="panel" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
+        <app-doc-attrs [target]="row.target">
+          <div class="panel-page__cell">
+            @switch (row.name) {
+              @case ('no gogPanelHeader') {
+                <gog-panel size="md"><p class="panel-page__text">Body only.</p></gog-panel>
+              }
+              @case ('gogPanelHeader') {
+                <gog-panel size="md">
+                  <h4 gogPanelHeader>Activity</h4>
+                  <p class="panel-page__text">Named by its heading.</p>
+                </gog-panel>
+              }
+              @case ('[collapsible]="true" — its toggle') {
+                <gog-panel size="md" [collapsible]="true">
+                  <h4 gogPanelHeader>Activity</h4>
+                  <p class="panel-page__text">Open.</p>
+                </gog-panel>
+              }
+              @case ('[open]="false" — its toggle') {
+                <gog-panel size="md" [collapsible]="true" [open]="false">
+                  <h4 gogPanelHeader>Activity</h4>
+                  <p class="panel-page__text">Closed.</p>
+                </gog-panel>
+              }
+              @case ('[disabled]="true" — its toggle') {
+                <gog-panel size="md" [collapsible]="true" [disabled]="true">
+                  <h4 gogPanelHeader>Activity</h4>
+                  <p class="panel-page__text">Disabled.</p>
+                </gog-panel>
+              }
+              @default {
+                <gog-panel size="md" [loading]="true">
+                  <h4 gogPanelHeader>Activity</h4>
+                </gog-panel>
+              }
+            }
+          </div>
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

@@ -15,6 +15,7 @@ import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.
 import { ICON_API } from './icon/icon.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
+import { PANEL_API } from './panel/panel.api';
 import { RADIO_GROUP_API } from './radio-group/radio-group.api';
 import { PROGRESSBAR_API } from './progressbar/progressbar.api';
 import { RIPPLE_API } from './ripple/ripple.api';
@@ -173,5 +174,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./card/card-page').then((m) => m.CardPage),
     api: CARD_API,
     tokens: ['Card'],
+  },
+  panel: {
+    load: () => import('./panel/panel-page').then((m) => m.PanelPage),
+    api: PANEL_API,
+    tokens: ['Panel'],
   },
 };

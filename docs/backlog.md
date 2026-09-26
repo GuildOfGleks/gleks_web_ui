@@ -16,15 +16,16 @@ not worth carrying here.
 
 ## Defects — first
 
-- **A loading `gog-card variant="filled"` shows a blank tint.** The placeholder bars are
+- **A loading `filled` card or panel shows a blank tint.** The placeholder bars are
   `gog-skeleton`, whose bone colour is fixed rather than relative to the surface it sits on, and
-  `filled` paints a tint of about the same lightness. Measured on the Card page on 2026-09-26, bar
-  against card: 1.02 to 1.07:1 on `filled` (dark, light, primeng, slate) against 1.09 to 1.21:1 on
-  `outlined`, and in dark, primeng and slate the bar is _lighter_ than the filled card rather than
-  darker. The placeholder is `aria-hidden`, so no WCAG pair applies — but being seen is its whole
-  job, and a consumer who turns on `loading` on a filled card gets an empty box. Likely wants the
-  bone derived from the surface under it (the card, and `gog-panel`'s `filled` too, which was not
-  measured), not a card-only override. The Card page shows the state in its variant × state matrix.
+  `filled` paints a tint of about the same lightness. Measured on the Card and Panel pages on
+  2026-09-26, bar against surface, identical for both components: 1.02 to 1.07:1 on `filled`
+  (dark, light, primeng, slate) against 1.09 to 1.21:1 on `outlined` and `elevated`. In primeng
+  the direction flips too — the bar is darker than an outlined card and lighter than a filled one.
+  The placeholder is `aria-hidden`, so no WCAG pair applies, but being seen is its whole job, and a
+  consumer who turns on `loading` on a filled surface gets an empty box. Likely wants the bone
+  derived from the surface under it rather than a per-component override. Both pages show the
+  state in their variant × state matrix.
 
 - **`gog-alert`'s announcement copy outlives the announcement, and is taken only once.** The
   alert copies its heading and body into a visually hidden live region one render after it mounts
