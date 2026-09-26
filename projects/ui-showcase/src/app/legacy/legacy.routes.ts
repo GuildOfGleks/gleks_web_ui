@@ -45,10 +45,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/dialog-page/dialog-page').then((m) => m.DialogPage),
   },
   {
-    path: 'tabs',
-    loadComponent: () => import('./pages/tabs-page/tabs-page').then((m) => m.TabsPage),
-  },
-  {
     path: 'global-config',
     loadComponent: () =>
       import('./pages/global-config-page/global-config-page').then((m) => m.GlobalConfigPage),

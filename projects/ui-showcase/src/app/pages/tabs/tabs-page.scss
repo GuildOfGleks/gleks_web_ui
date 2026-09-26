@@ -1,0 +1,45 @@
+// A matrix cell has no width of its own.
+.tabs-page__cell {
+  width: 18rem;
+}
+
+.tabs-page__cell--wide {
+  width: 24rem;
+}
+
+.tabs-page__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-16);
+  max-width: 36rem;
+  margin-block-end: var(--gog-space-8);
+}
+
+// Narrow enough that twelve month headers cannot fit.
+.tabs-page__narrow {
+  max-width: 24rem;
+}
+
+.tabs-page__actions {
+  display: flex;
+  gap: var(--gog-space-8);
+  margin-block-end: var(--gog-space-8);
+}
+
+.tabs-page__note {
+  margin-block: var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+.tabs-page__input {
+  margin-block-start: var(--gog-space-8);
+  font: inherit;
+}
+
+.tabs-page__text {
+  margin: var(--gog-space-8) 0 0;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}

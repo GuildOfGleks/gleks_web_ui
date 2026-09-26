@@ -25,6 +25,7 @@ import { SELECT_API } from './select/select.api';
 import { SKELETON_API } from './skeleton/skeleton.api';
 import { SLIDER_API } from './slider/slider.api';
 import { SPINNER_API } from './spinner/spinner.api';
+import { TABS_API } from './tabs/tabs.api';
 import { TAG_API } from './tag/tag.api';
 import { TOGGLE_API } from './toggle/toggle.api';
 import { TEXTAREA_API } from './textarea/textarea.api';
@@ -191,5 +192,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./collapsible/collapsible-page').then((m) => m.CollapsiblePage),
     api: COLLAPSIBLE_API,
     tokens: ['Collapsible'],
+  },
+  tabs: {
+    load: () => import('./tabs/tabs-page').then((m) => m.TabsPage),
+    api: TABS_API,
+    tokens: ['Tabs'],
   },
 };

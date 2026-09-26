@@ -1,0 +1,215 @@
+<app-doc-page unit="tabs">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="A tab is active, inactive or disabled; every tablist here holds one of each, at every size and alignment."
+  >
+    <h3>size</h3>
+    <p class="tabs-page__note">
+      A tab is disabled through its own <code>disabled</code> input. Hover, focus and press are
+      pseudo-class states a page cannot force; the headers are live.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="">
+      <ng-template appDocCell [rows]="sizes" [cols]="controlColumn" let-size>
+        <div class="tabs-page__cell tabs-page__cell--wide">
+          <gog-tabs [size]="size" ariaLabel="Account">
+            <gog-tab label="Profile"><p class="tabs-page__text">Profile.</p></gog-tab>
+            <gog-tab label="Billing"><p class="tabs-page__text">Billing.</p></gog-tab>
+            <gog-tab label="Audit" [disabled]="true"><p class="tabs-page__text">Audit.</p></gog-tab>
+          </gog-tabs>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>align</h3>
+    <p class="tabs-page__note">
+      Where the headers sit in the row. <code>stretch</code> shares the row between them; the others
+      keep each header its natural width.
+    </p>
+    <app-doc-matrix rowAxis="align" colAxis="">
+      <ng-template appDocCell [rows]="aligns" [cols]="controlColumn" let-align>
+        <div class="tabs-page__cell tabs-page__cell--wide">
+          <gog-tabs [align]="align" size="sm" ariaLabel="Account">
+            <gog-tab label="Profile"><p class="tabs-page__text">Profile.</p></gog-tab>
+            <gog-tab label="Billing"><p class="tabs-page__text">Billing.</p></gog-tab>
+            <gog-tab label="Audit" [disabled]="true"><p class="tabs-page__text">Audit.</p></gog-tab>
+          </gog-tabs>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>iconName</h3>
+    <p class="tabs-page__note">
+      A leading icon in the default header. It is <code>aria-hidden</code>: the label names the tab.
+    </p>
+    <div class="tabs-page__stack">
+      <gog-tabs ariaLabel="Mailbox">
+        <gog-tab label="Inbox" iconName="mail"><p class="tabs-page__text">Inbox.</p></gog-tab>
+        <gog-tab label="Starred" iconName="star"><p class="tabs-page__text">Starred.</p></gog-tab>
+        <gog-tab label="Archive" iconName="download">
+          <p class="tabs-page__text">Archive.</p>
+        </gog-tab>
+      </gog-tabs>
+    </div>
+
+    <h3>gogTabHeader</h3>
+    <p class="tabs-page__note">
+      One template for every header, with the tab as <code>$implicit</code> and <code>active</code>,
+      <code>disabled</code> and <code>index</code> beside it. It renders inside the tab's button, so
+      it must not hold another control.
+    </p>
+    <div class="tabs-page__stack">
+      <gog-tabs ariaLabel="Mailbox">
+        <ng-template gogTabHeader let-tab>
+          {{ tab.label() }}
+          @if (tab.label() === 'Inbox') {
+            <gog-tag size="xsm" variant="info">12</gog-tag>
+          }
+        </ng-template>
+        <gog-tab label="Inbox"><p class="tabs-page__text">Twelve unread.</p></gog-tab>
+        <gog-tab label="Sent"><p class="tabs-page__text">Sent.</p></gog-tab>
+      </gog-tabs>
+    </div>
+
+    <h3>orientation="vertical"</h3>
+    <p class="tabs-page__note">
+      The headers stack beside the panel, and Up and Down move between them instead of Left and
+      Right.
+    </p>
+    <div class="tabs-page__stack">
+      <gog-tabs orientation="vertical" ariaLabel="Settings">
+        <gog-tab label="General"><p class="tabs-page__text">General settings.</p></gog-tab>
+        <gog-tab label="Security"><p class="tabs-page__text">Security settings.</p></gog-tab>
+        <gog-tab label="Billing"><p class="tabs-page__text">Billing settings.</p></gog-tab>
+      </gog-tabs>
+    </div>
+
+    <h3>overflow</h3>
+    <p class="tabs-page__note">
+      Headers that do not fit scroll inside a <code>gog-scroll</code>, not a native scrollbar. With
+      <code>scrollActiveIntoView</code> on (the default) choosing a tab centres it and the track is
+      hidden; the second row turns it off and gets a track — shown while the pointer is over the
+      row, like any <code>gog-scroll</code> — so an off-screen tab can still be reached.
+    </p>
+    <div class="tabs-page__stack tabs-page__narrow">
+      <gog-tabs size="sm" ariaLabel="Month" [activeIndex]="8">
+        @for (month of months; track month) {
+          <gog-tab [label]="month"
+            ><p class="tabs-page__text">{{ month }}.</p></gog-tab
+          >
+        }
+      </gog-tabs>
+      <gog-tabs size="sm" ariaLabel="Month" [scrollActiveIntoView]="false">
+        @for (month of months; track month) {
+          <gog-tab [label]="month"
+            ><p class="tabs-page__text">{{ month }}.</p></gog-tab
+          >
+        }
+      </gog-tabs>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="activeIndex is two-way; the arrow keys move and activate in one step, skipping disabled tabs; content is eager unless it is a gogTabContent template."
+  >
+    <h3>[(activeIndex)] and gogTabChange</h3>
+    <p class="tabs-page__note">
+      Click a header, or focus one and use the arrow keys, Home and End. Activation follows focus —
+      the automatic variant of the ARIA tabs pattern, right for panels already in the DOM.
+    </p>
+    <div class="tabs-page__stack">
+      <gog-tabs
+        ariaLabel="Account"
+        [(activeIndex)]="boundIndex"
+        (gogTabChange)="lastChange.set($event)"
+      >
+        <gog-tab label="Profile"><p class="tabs-page__text">Profile.</p></gog-tab>
+        <gog-tab label="Billing"><p class="tabs-page__text">Billing.</p></gog-tab>
+        <gog-tab label="Audit" [disabled]="true"><p class="tabs-page__text">Audit.</p></gog-tab>
+        <gog-tab label="Team"><p class="tabs-page__text">Team.</p></gog-tab>
+      </gog-tabs>
+    </div>
+    <code>activeIndex: {{ boundIndex() }} · gogTabChange: {{ lastChange() ?? 'none yet' }}</code>
+
+    <h3>an activeIndex that names a disabled tab</h3>
+    <p class="tabs-page__note">
+      The tablist shows the first enabled tab rather than nothing — but <code>activeIndex</code>
+      keeps the value it was given, so the bound value and the tab on screen disagree.
+    </p>
+    <div class="tabs-page__actions">
+      <button type="button" (click)="disabledTarget.set(2)">activeIndex = 2 (disabled)</button>
+      <button type="button" (click)="disabledTarget.set(1)">activeIndex = 1</button>
+    </div>
+    <div class="tabs-page__stack">
+      <gog-tabs ariaLabel="Account" [(activeIndex)]="disabledTarget">
+        <gog-tab label="Profile"><p class="tabs-page__text">Profile.</p></gog-tab>
+        <gog-tab label="Billing"><p class="tabs-page__text">Billing.</p></gog-tab>
+        <gog-tab label="Audit" [disabled]="true"><p class="tabs-page__text">Audit.</p></gog-tab>
+      </gog-tabs>
+    </div>
+    <code>activeIndex: {{ disabledTarget() }}</code>
+
+    <h3>eager and lazy content</h3>
+    <p class="tabs-page__note">
+      Content written straight inside <code>gog-tab</code> is built at once and only hidden while
+      inactive, so it keeps what was typed into it. Content in an
+      <code>&lt;ng-template gogTabContent&gt;</code> is built the first time its tab is shown, then
+      kept. Type in the first tab, switch away and back: the text is still there, and the lazy tab
+      reports itself built only once it has been shown.
+    </p>
+    <div class="tabs-page__stack">
+      <gog-tabs ariaLabel="Content">
+        <gog-tab label="Eager">
+          <app-tabs-build-counter name="Eager" (built)="onBuilt($event)" />
+          <input
+            class="tabs-page__input"
+            aria-label="Draft"
+            [value]="draft()"
+            (input)="onDraft($event)"
+          />
+        </gog-tab>
+        <gog-tab label="Lazy">
+          <ng-template gogTabContent>
+            <app-tabs-build-counter name="Lazy" (built)="onBuilt($event)" />
+          </ng-template>
+        </gog-tab>
+      </gog-tabs>
+    </div>
+    <code
+      >Eager built: {{ buildCount('Eager') > 0 ? 'yes' : 'no' }} · Lazy built:
+      {{ buildCount('Lazy') > 0 ? 'yes' : 'not yet' }}</code
+    >
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A tablist of real buttons with role='tab', each pointing at its panel; one tab stop for the whole row."
+  >
+    <p class="tabs-page__note">
+      Read from the live DOM. Only the active tab is in the tab order; the arrow keys reach the
+      rest. The active panel is itself focusable, so Tab from the row lands in the content even when
+      the content has no control. Name the tablist with <code>ariaLabel</code> — it is empty by
+      default, and an unnamed tablist is announced as just "tab list".
+    </p>
+    <app-doc-matrix rowAxis="element" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
+        <app-doc-attrs [target]="row.target">
+          <div class="tabs-page__cell">
+            <gog-tabs ariaLabel="Account" size="sm">
+              <gog-tab label="Profile"><p class="tabs-page__text">Profile.</p></gog-tab>
+              <gog-tab label="Billing"><p class="tabs-page__text">Billing.</p></gog-tab>
+              <gog-tab label="Audit" [disabled]="true">
+                <p class="tabs-page__text">Audit.</p>
+              </gog-tab>
+            </gog-tabs>
+          </div>
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

@@ -1060,6 +1060,27 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
+- **`gog-tabs` shows a different tab from the one `activeIndex` names, and does not say so.**
+  Set `activeIndex` to a disabled tab and the tablist falls back to the first enabled one — the
+  right thing to show — but the model keeps the value it was given, so `[(activeIndex)]` and the
+  screen disagree: bound 2, "Profile" (index 0) selected, verified on the Tabs page on 2026-09-26.
+  A consumer restoring a saved index that has since become disabled reads back a tab that is not
+  shown. Writing the resolved index back would fix the disagreement at the cost of a model write
+  the consumer did not make; either way the choice wants writing down on the input.
+
+- **A `gog-tabs` with no `ariaLabel` is an unnamed tablist.** `ariaLabel` defaults to `''`, which
+  renders no attribute, and there is no `aria-labelledby` path — the same shape as the unnamed
+  `gog-progressbar` entry below. The Tabs page tells consumers to name it.
+
+- **Every `ui-showcase` page builds its content twice on arrival.** Instrumented on the Tabs page on
+  2026-09-26 with a counter component: on a client-side navigation the page component is
+  constructed once, but every component in its template — including one outside any library
+  component — is constructed, initialised, destroyed and constructed again in the same tick. Not
+  caused by hydration (it happens on client navigation) nor by `app-doc-page`/`app-doc-section`,
+  which render `<ng-content>` unconditionally; the cause was not found. It doubles the cost of
+  every page and makes any "built N times" demo wrong, which is why the Tabs page reports lazy
+  content as built or not rather than counting.
+
 - **A `gogAccordionHeader` template inherits the theme's header casing, all of it.**
   `text-transform: var(--gog-accordion-header-text-transform)` sits on the header `<button>`, so
   in the three themes that uppercase headers (dark, light, terminal — measured on 2026-09-26) a
