@@ -165,7 +165,9 @@ async function collectPairs(stylesDir) {
   }
 
   const backgrounds = new Map();
+  const colours = new Map();
   const pairs = [];
+  const groundOnly = [];
   for (const file of files) {
     const css = sass.compile(file, { style: 'expanded', sourceMap: false }).css;
     for (const rule of rulesOf(css)) {
@@ -174,12 +176,42 @@ async function collectPairs(stylesDir) {
       // token pairs one rule's colour with the other's background — which reported a single
       // finding forty-four times before this was fixed.
       const base = rule.selector.replace(/:{1,2}[a-z-]+(\([^)]*\))?/g, '').trim();
-      if (rule.bg && !backgrounds.has(base)) backgrounds.set(base, rule.bg);
-      if (rule.colour)
-        pairs.push({ file: path.relative(rootDir, file), selector: rule.selector, base, ...rule });
+      const entry = { file: path.relative(rootDir, file), selector: rule.selector, base, ...rule };
+      // The ground a base paints *at rest*. A state rule's ground belongs to that state: it is
+      // its own pair's `bg`, or the pair built below from the rest colour. Taking whichever rule
+      // came first measured `.nav-item--nested` at rest against `.nav-item:hover`'s fill.
+      if (rule.bg && rule.selector === base && !backgrounds.has(base)) backgrounds.set(base, rule.bg);
+      if (rule.colour && rule.selector === base && !colours.has(base)) colours.set(base, rule.colour);
+      if (rule.colour) pairs.push(entry);
+      else if (rule.bg && rule.bg !== 'none' && rule.selector !== base) groundOnly.push(entry);
     }
   }
+
+  /*
+   * A state rule that changes the ground and leaves the colour alone — `.version-tag:hover`
+   * deepening its tint — is a new pair all the same: the rest colour, on the state's ground.
+   * Only rules with a `color` used to become pairs, so this one was never measured, and a hover
+   * at 3.19:1 sat behind a rest state at 3.81:1 that the check did report.
+   */
+  const stated = new Set(pairs.map((p) => p.selector));
+  for (const rule of groundOnly) {
+    if (stated.has(rule.selector)) continue;
+    const colour = colours.get(rule.base) ?? colours.get(blockOf(rule.base));
+    if (colour) pairs.push({ ...rule, colour, colourFrom: rule.base });
+  }
+
   return { pairs, backgrounds };
+}
+
+/**
+ * The BEM block a modifier belongs to: `.accordion-header__status--loading` →
+ * `.accordion-header__status`. A modifier that recolours a label usually paints nothing of its
+ * own — the tint stays on the block — so without this the loading state of a tinted pill was
+ * measured against the plain surface, and passed at a ratio it never renders at (3.52:1 in
+ * `light`, found by hand).
+ */
+function blockOf(base) {
+  return base.replace(/(\.[a-z0-9_-]+?)--[a-z0-9-]+/gi, '$1');
 }
 
 function paletteS(palettesDir) {
@@ -227,7 +259,12 @@ async function checkTarget(target) {
         continue;
       }
 
-      const declared = pair.bg ?? backgrounds.get(pair.base) ?? GROUNDS[pair.base] ?? null;
+      const declared =
+        pair.bg ??
+        backgrounds.get(pair.base) ??
+        GROUNDS[pair.base] ??
+        backgrounds.get(blockOf(pair.base)) ??
+        null;
       const stated = declared === 'none' ? null : declared;
       const candidates = stated ? [stated] : ['--gog-surface-color', '--gog-background-color'];
       const page = resolve('--gog-background-color') ?? { r: 255, g: 255, b: 255, a: 1 };
