@@ -1041,6 +1041,14 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
+- **`ui-showcase`'s initial bundle is 7 kB from failing its build.** `angular.json` warns at
+  500 kB and errors at 1 MB; `build:showcase` reported 993.28 kB on 2026-09-26, and it is a CI step.
+  The warning has been printed on every build for a while and nobody reads it any more. A new page
+  added 0.46 kB (the Card page); the growth per page is small because the component classes are
+  already eager, but the margin is small too. Worth finding out what the initial chunk actually
+  holds before raising the ceiling — `pages/pages.ts` imports every page's `*.api.ts`, and the
+  registry every component class, eagerly, which may be most of it; that is a guess, not measured.
+
 - **A labelled `gog-divider` is an unnamed separator.** `<gog-divider>OR</gog-divider>` renders
   `role="separator"` with the label as ordinary content, and ARIA makes a separator's children
   presentational — so whether the label is read at all is up to the browser. Chrome keeps it:
