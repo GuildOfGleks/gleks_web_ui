@@ -57,13 +57,15 @@
   cursor: not-allowed;
 }
 
+/* The raw danger colour on its 12% hover tint measured 3.83:1 in slate. Mixed toward the text
+   colour, over a lighter 8% tint, it clears AA in every theme (worst: one-dark, 4.65:1). */
 .collapsible-demo__link--danger {
-  color: var(--gog-danger-color);
+  color: color-mix(in srgb, var(--gog-danger-color) 60%, var(--gog-text-color));
 }
 
 .collapsible-demo__link--danger:hover {
-  color: var(--gog-danger-color);
-  background-color: color-mix(in srgb, var(--gog-danger-color) 12%, transparent);
+  color: color-mix(in srgb, var(--gog-danger-color) 60%, var(--gog-text-color));
+  background-color: color-mix(in srgb, var(--gog-danger-color) 8%, transparent);
 }
 
 .collapsible-demo__text {
