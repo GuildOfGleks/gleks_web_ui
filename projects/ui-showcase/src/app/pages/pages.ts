@@ -6,6 +6,7 @@ import { AUTOCOMPLETE_API } from './autocomplete/autocomplete.api';
 import { BADGE_API } from './badge/badge.api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
+import { CARD_API } from './card/card.api';
 import { CHECKBOX_API } from './checkbox/checkbox.api';
 import { CHIP_API } from './chip/chip.api';
 import { DATEPICKER_API } from './datepicker/datepicker.api';
@@ -167,5 +168,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./ripple/ripple-page').then((m) => m.RipplePage),
     api: RIPPLE_API,
     tokens: ['Ripple (the `gogRipple` directive; its classes live in ripple.css)'],
+  },
+  card: {
+    load: () => import('./card/card-page').then((m) => m.CardPage),
+    api: CARD_API,
+    tokens: ['Card'],
   },
 };

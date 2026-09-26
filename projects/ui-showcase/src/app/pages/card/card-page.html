@@ -1,0 +1,186 @@
+<app-doc-page unit="card">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Three surfaces, each at rest, disabled and loading. Every card here holds a gogCardLink, because disabled is mostly about what happens to that link."
+  >
+    <h3>variant × state</h3>
+    <p class="card-page__note">
+      <code>outlined</code> is a border and no shadow, which is what a grid of many wants;
+      <code>elevated</code> takes the shared surface shadow; <code>filled</code> is a tint with
+      neither. Hover lifts the link's colour and focus rings the whole surface — pseudo-class states
+      a page cannot force, so the cells are live: point at one, or Tab to it.
+    </p>
+    <app-doc-matrix rowAxis="variant" colAxis="state">
+      <ng-template appDocCell [rows]="variants" [cols]="states" let-variant let-state="col">
+        <div class="card-page__cell">
+          <gog-card
+            [variant]="variant"
+            [disabled]="state.value.disabled"
+            [loading]="state.value.loading"
+          >
+            <h4 gogCardHeader><a gogCardLink routerLink="/card" fragment="states">Report</a></h4>
+            <p class="card-page__text">Revenue is up 12% on the quarter.</p>
+          </gog-card>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>size</h3>
+    <p class="card-page__note">
+      Padding and the gap between the card's rows, on the same five-step scale as every control.
+      Loading placeholders take the card's size too.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="">
+      <ng-template appDocCell [rows]="sizes" [cols]="controlColumn" let-size>
+        <div class="card-page__cell">
+          <gog-card [size]="size">
+            <h4 gogCardHeader>{{ size }}</h4>
+            <p class="card-page__text">Padding and row gap follow the size.</p>
+          </gog-card>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the four slots</h3>
+    <p class="card-page__note">
+      <code>gogCardMedia</code> runs to the card's edges instead of sitting in its padding, and
+      rounds its top corners when it comes first. <code>gogCardHeader</code> goes on your own
+      heading — the level belongs to the page, so it is an <code>&lt;h4&gt;</code> here. The body is
+      whatever else you project, and <code>gogCardFooter</code> sits under a rule. They render in
+      that order whatever order you write them in.
+    </p>
+    <div class="card-page__grid">
+      <gog-card>
+        <img [src]="mediaSrc" gogCardMedia alt="" height="120" />
+        <h4 gogCardHeader>Media, heading, body, footer</h4>
+        <p class="card-page__text">All four slots, with the media first.</p>
+        <div gogCardFooter>
+          <gog-tag variant="info">Draft</gog-tag>
+        </div>
+      </gog-card>
+      <gog-card>
+        <h4 gogCardHeader>Heading and body</h4>
+        <p class="card-page__text">The commonest card: a title and a line or two.</p>
+      </gog-card>
+      <gog-card>
+        <p class="card-page__text">
+          Body only. With no heading the card has nothing to be named by, so it is not a group — see
+          Accessibility.
+        </p>
+      </gog-card>
+    </div>
+
+    <h3>skeletonLines</h3>
+    <p class="card-page__note">
+      While <code>loading</code> is on, the card shows a title bar and this many text lines, shaped
+      like the content that is coming so nothing moves when it lands. It is the first-paint
+      treatment; for a refresh of a card that already has content, project a
+      <code>gog-spinner-overlay</code> instead.
+    </p>
+    <div class="card-page__grid">
+      @for (lines of [0, 2, 4]; track lines) {
+        <gog-card [loading]="true" [skeletonLines]="lines">
+          <h4 gogCardHeader>Quarterly summary</h4>
+        </gog-card>
+      }
+    </div>
+
+    <h3>per-instance tokens</h3>
+    <p class="card-page__note">
+      <code>--gog-card-bg</code>, <code>--gog-card-border-color</code>,
+      <code>--gog-card-shadow</code>, <code>--gog-card-padding-y</code>,
+      <code>--gog-card-padding-x</code> and <code>--gog-card-gap</code> are undeclared on purpose,
+      so one set on an element beats the variant and size classes without a specificity fight.
+    </p>
+    <div class="card-page__grid">
+      <gog-card class="card-page__themed">
+        <h4 gogCardHeader>Overridden per instance</h4>
+        <p class="card-page__text">One class on this card sets three instance tokens.</p>
+      </gog-card>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="There is no interactive input: a card is interactive because it holds a gogCardLink on a real <a> or <button>, and the link's hit area is stretched over the surface."
+  >
+    <h3>the whole surface activates one link</h3>
+    <p class="card-page__note">
+      Each name below is an ordinary <code>routerLink</code>, so middle-click, "open in new tab" and
+      the keyboard all behave as they do anywhere else. Click anywhere on a card and the link
+      follows; the footer button sits above the hit area and still receives its own clicks. Two
+      costs come with the pattern: text in the card cannot be selected by dragging, and a second
+      link is reached by keyboard but not by clicking the surface around it.
+    </p>
+    <div class="card-page__grid">
+      @for (person of people; track person.id) {
+        <gog-card>
+          <img [src]="mediaSrc" gogCardMedia alt="" height="96" />
+          <h4 gogCardHeader>
+            <a gogCardLink routerLink="/card" [fragment]="'behaviour-' + person.id">{{
+              person.name
+            }}</a>
+          </h4>
+          <p class="card-page__text">{{ person.role }} · {{ person.years }}</p>
+          <div gogCardFooter>
+            <gog-button
+              size="xsm"
+              variant="ghost"
+              (gogClick)="footerClicks.set(footerClicks() + 1)"
+            >
+              Shortlist
+            </gog-button>
+          </div>
+        </gog-card>
+      }
+    </div>
+    <code>footer clicks: {{ footerClicks() }}</code>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A card with a gogCardHeader is a group named by that heading; without one it has no role. Loading and disabled reach the host, and disabled reaches the link."
+  >
+    <p class="card-page__note">
+      Read from the live DOM. <code>role="group"</code> rather than <code>region</code>: a grid of
+      twenty cards would otherwise put twenty landmarks in the landmark list. The header directive
+      keeps an <code>id</code> you set and generates one when there is none. Disabled and loading
+      both take the link out of the tab order and mark it <code>aria-disabled</code>; a
+      <code>tabindex</code> you set yourself is put back when they turn off.
+    </p>
+    <app-doc-matrix rowAxis="card" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
+        <app-doc-attrs [target]="row.target">
+          <div class="card-page__cell">
+            @switch (row.name) {
+              @case ('no gogCardHeader') {
+                <gog-card><p class="card-page__text">Body only.</p></gog-card>
+              }
+              @case ('gogCardHeader') {
+                <gog-card>
+                  <h4 gogCardHeader>Report</h4>
+                  <p class="card-page__text">Named by its heading.</p>
+                </gog-card>
+              }
+              @case ('[loading]="true"') {
+                <gog-card [loading]="true"><h4 gogCardHeader>Report</h4></gog-card>
+              }
+              @default {
+                <gog-card [disabled]="true">
+                  <h4 gogCardHeader>
+                    <a gogCardLink routerLink="/card" fragment="accessibility">Report</a>
+                  </h4>
+                </gog-card>
+              }
+            }
+          </div>
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

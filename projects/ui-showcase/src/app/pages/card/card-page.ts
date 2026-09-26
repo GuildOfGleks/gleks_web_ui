@@ -7,46 +7,68 @@ import {
   GogCardHeaderDirective,
   GogCardLinkDirective,
   GogCardMediaDirective,
-  GogPanelHeaderDirective,
-  GogSize,
-  GogSurfaceVariant,
-  PanelComponent,
   TagComponent,
+  type GogSize,
+  type GogSurfaceVariant,
 } from '@guildofgleks/ui';
 
+import { DocAttrs } from '../../doc/doc-attrs';
+import { DocCell, DocMatrix } from '../../doc/doc-matrix';
+import { DocPage } from '../../doc/doc-page';
+import { DocSection } from '../../doc/doc-section';
+
+interface Labelled<T> {
+  readonly name: string;
+  readonly value: T;
+}
+
 interface Person {
-  id: string;
-  name: string;
-  role: string;
-  years: string;
+  readonly id: string;
+  readonly name: string;
+  readonly role: string;
+  readonly years: string;
+}
+
+interface A11yRow {
+  readonly name: string;
+  /** Which element's attributes the row prints: the card, or the link inside it. */
+  readonly target: string;
 }
 
 @Component({
   selector: 'app-card-page',
   imports: [
+    RouterLink,
     ButtonComponent,
     CardComponent,
     GogCardFooterDirective,
     GogCardHeaderDirective,
     GogCardLinkDirective,
     GogCardMediaDirective,
-    GogPanelHeaderDirective,
-    PanelComponent,
-    RouterLink,
     TagComponent,
+    DocAttrs,
+    DocCell,
+    DocMatrix,
+    DocPage,
+    DocSection,
   ],
   templateUrl: './card-page.html',
   styleUrl: './card-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardPage {
-  protected readonly variants: GogSurfaceVariant[] = ['outlined', 'elevated', 'filled'];
-  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
+  protected readonly variants: readonly GogSurfaceVariant[] = ['outlined', 'elevated', 'filled'];
+  protected readonly states: readonly Labelled<{ disabled: boolean; loading: boolean }>[] = [
+    { name: 'rest', value: { disabled: false, loading: false } },
+    { name: '[disabled]="true"', value: { disabled: true, loading: false } },
+    { name: '[loading]="true"', value: { disabled: false, loading: true } },
+  ];
+  protected readonly sizes: readonly GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
-  protected readonly loading = signal(true);
-  protected readonly disabled = signal(false);
+  /** The single column of a matrix whose rows are the only axis. */
+  protected readonly controlColumn = ['card'] as const;
 
-  protected readonly people: Person[] = [
+  protected readonly people: readonly Person[] = [
     { id: 'ada', name: 'Ada Lovelace', role: 'Mathematician', years: '1815–1852' },
     { id: 'alan', name: 'Alan Turing', role: 'Logician', years: '1912–1954' },
     { id: 'grace', name: 'Grace Hopper', role: 'Rear Admiral', years: '1906–1992' },
@@ -54,6 +76,14 @@ export class CardPage {
 
   /** Counts clicks that reached the footer button rather than the card's own link. */
   protected readonly footerClicks = signal(0);
+
+  protected readonly a11yRows: readonly A11yRow[] = [
+    { name: 'no gogCardHeader', target: 'gog-card' },
+    { name: 'gogCardHeader', target: 'gog-card' },
+    { name: '[loading]="true"', target: 'gog-card' },
+    { name: '[disabled]="true" — the card', target: 'gog-card' },
+    { name: '[disabled]="true" — its gogCardLink', target: 'a' },
+  ];
 
   /**
    * Stand-in cover art. A data URI rather than a file in `public/`, so the media slot's
