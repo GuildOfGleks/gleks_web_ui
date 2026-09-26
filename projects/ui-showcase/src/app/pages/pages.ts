@@ -21,6 +21,7 @@ import { PANEL_API } from './panel/panel.api';
 import { RADIO_GROUP_API } from './radio-group/radio-group.api';
 import { PROGRESSBAR_API } from './progressbar/progressbar.api';
 import { RIPPLE_API } from './ripple/ripple.api';
+import { SCROLL_API } from './scroll/scroll.api';
 import { SELECT_API } from './select/select.api';
 import { SKELETON_API } from './skeleton/skeleton.api';
 import { SLIDER_API } from './slider/slider.api';
@@ -197,5 +198,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./tabs/tabs-page').then((m) => m.TabsPage),
     api: TABS_API,
     tokens: ['Tabs'],
+  },
+  scroll: {
+    load: () => import('./scroll/scroll-page').then((m) => m.ScrollPage),
+    api: SCROLL_API,
+    tokens: ['Scroll'],
   },
 };

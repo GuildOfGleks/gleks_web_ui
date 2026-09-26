@@ -1,0 +1,243 @@
+<app-doc-page unit="scroll">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="A native scroll region whose scrollbar is replaced by a themeable overlay thumb. Its look is the thumb's size and whether it hides."
+  >
+    <h3>size × autoHide</h3>
+    <p class="scroll-page__note">
+      With <code>autoHide</code> on, the thumb shows while the region is scrolled or the pointer
+      moves over it, and fades <code>hideDelay</code> ms later. Hover, drag and the track's own
+      hover are live — point at a cell.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="autoHide">
+      <ng-template appDocCell [rows]="sizes" [cols]="hideAxis" let-size let-hide="col">
+        <gog-scroll class="scroll-page__box" [size]="size" [autoHide]="hide.value">
+          @for (paragraph of paragraphs; track paragraph) {
+            <p class="scroll-page__text">{{ paragraph }}</p>
+          }
+        </gog-scroll>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>axis</h3>
+    <p class="scroll-page__note">
+      Which axes get a thumb. The other axis is not scrollable at all: <code>vertical</code> clips
+      horizontal overflow rather than scrolling it natively.
+    </p>
+    <app-doc-matrix rowAxis="axis" colAxis="">
+      <ng-template appDocCell [rows]="axes" [cols]="controlColumn" let-axis>
+        <gog-scroll class="scroll-page__box" [axis]="axis" [autoHide]="false">
+          @switch (axis) {
+            @case ('horizontal') {
+              <div class="scroll-page__row">
+                @for (chip of chips; track chip) {
+                  <span class="scroll-page__chip">{{ chip }}</span>
+                }
+              </div>
+            }
+            @case ('both') {
+              <table class="scroll-page__grid">
+                <tbody>
+                  @for (row of grid; track $index) {
+                    <tr>
+                      @for (cell of row; track cell) {
+                        <td>{{ cell }}</td>
+                      }
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+            @default {
+              @for (paragraph of paragraphs; track paragraph) {
+                <p class="scroll-page__text">{{ paragraph }}</p>
+              }
+            }
+          }
+        </gog-scroll>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the region takes its size from its host</h3>
+    <p class="scroll-page__note">
+      <code>gog-scroll</code> scrolls whatever does not fit the box its host is given: set a height
+      (or a max-height) on the element, as every region on this page does with one class. Leave the
+      host's <code>display</code> alone: it is a flex column, and that is what carries the height
+      down to the viewport — <code>display: block</code> on it lets the content spill out. Content
+      is projected as-is.
+    </p>
+
+    <h3>[showTrack]="false"</h3>
+    <p class="scroll-page__note">
+      No thumb and no track, while the region still scrolls by wheel, touch, keyboard and script —
+      for a viewport whose position is driven some other way. <code>gog-tabs</code> uses it for a
+      header row that scrolls the active tab into view by itself.
+    </p>
+    <gog-scroll class="scroll-page__box" [showTrack]="false">
+      @for (paragraph of paragraphs; track paragraph) {
+        <p class="scroll-page__text">{{ paragraph }}</p>
+      }
+    </gog-scroll>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="Scrolling is the browser's; the component adds the thumb, the wheel mapping for a horizontal region, edge events, and methods to scroll from code."
+  >
+    <h3>[horizontalWheel]="true"</h3>
+    <p class="scroll-page__note">
+      Turn a mouse wheel over each row. Without it the page scrolls, which is the browser's own
+      behaviour; with it a vertical wheel scrolls the row sideways, and once the row reaches its end
+      the page takes the wheel again. A trackpad's sideways swipe and Shift+wheel work either way.
+    </p>
+    <div class="scroll-page__pair">
+      <gog-scroll class="scroll-page__strip" axis="horizontal" [autoHide]="false">
+        <div class="scroll-page__row">
+          @for (chip of chips; track chip) {
+            <span class="scroll-page__chip">{{ chip }}</span>
+          }
+        </div>
+      </gog-scroll>
+      <gog-scroll
+        class="scroll-page__strip"
+        axis="horizontal"
+        [autoHide]="false"
+        [horizontalWheel]="true"
+      >
+        <div class="scroll-page__row">
+          @for (chip of chips; track chip) {
+            <span class="scroll-page__chip">{{ chip }}</span>
+          }
+        </div>
+      </gog-scroll>
+    </div>
+
+    <h3>overscrollBehavior</h3>
+    <p class="scroll-page__note">
+      Scroll each region to its end and keep going. <code>'auto'</code> hands the rest of the
+      gesture to the page; <code>'contain'</code> stops it at the region's edge.
+    </p>
+    <div class="scroll-page__pair">
+      <gog-scroll class="scroll-page__box">
+        @for (paragraph of paragraphs; track paragraph) {
+          <p class="scroll-page__text">{{ paragraph }}</p>
+        }
+      </gog-scroll>
+      <gog-scroll class="scroll-page__box" overscrollBehavior="contain">
+        @for (paragraph of paragraphs; track paragraph) {
+          <p class="scroll-page__text">{{ paragraph }}</p>
+        }
+      </gog-scroll>
+    </div>
+
+    <h3>edges, position, and scrolling from code</h3>
+    <p class="scroll-page__note">
+      <code>gogReachStart</code> and <code>gogReachEnd</code> fire once per edge reached, with the
+      axis; <code>reachThreshold</code> counts a region within that many pixels as there.
+      <code>gogScroll</code> reports the geometry on every scroll. The methods —
+      <code>scrollToTop</code>, <code>scrollToBottom</code>, <code>scrollToLeft</code>,
+      <code>scrollToRight</code> and <code>scrollTo</code> — are reached through a template
+      reference.
+    </p>
+    <div class="scroll-page__actions">
+      <button type="button" (click)="region.scrollToTop()">scrollToTop()</button>
+      <button type="button" (click)="region.scrollToBottom()">scrollToBottom()</button>
+    </div>
+    <gog-scroll
+      #region
+      class="scroll-page__box"
+      [reachThreshold]="8"
+      (gogReachStart)="reach.set('start, ' + $event)"
+      (gogReachEnd)="reach.set('end, ' + $event)"
+      (gogScroll)="metrics.set($event)"
+    >
+      @for (paragraph of paragraphs; track paragraph) {
+        <p class="scroll-page__text">{{ paragraph }}</p>
+      }
+    </gog-scroll>
+    <code>last edge: {{ reach() }} · {{ position(metrics()) }}</code>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="Six inputs fall back to GOG_CONFIG.scroll before their defaults, so an app sets the house scrollbar once."
+  >
+    <pre class="scroll-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <p class="scroll-page__note">
+      The same unconfigured <code>gog-scroll</code> in both cells; the second sits under a nested
+      config, so its thumb is thin and never hides. An input set on an instance still wins over
+      either.
+    </p>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="controlColumn" let-where>
+        @if (where === 'inside scope') {
+          <app-scroll-config-scope>
+            <gog-scroll class="scroll-page__box">
+              @for (paragraph of paragraphs; track paragraph) {
+                <p class="scroll-page__text">{{ paragraph }}</p>
+              }
+            </gog-scroll>
+          </app-scroll-config-scope>
+        } @else {
+          <gog-scroll class="scroll-page__box">
+            @for (paragraph of paragraphs; track paragraph) {
+              <p class="scroll-page__text">{{ paragraph }}</p>
+            }
+          </gog-scroll>
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The viewport is a focusable region, so a keyboard reader can reach it and scroll it with the arrow keys. Name it with ariaLabel."
+  >
+    <p class="scroll-page__note">
+      Read from the live DOM. A region has to be focusable to be scrolled without a pointer, which
+      is why <code>focusable</code> is on by default; turn it off inside a component that already
+      owns the keyboard, such as a listbox panel. The thumb is not in the accessibility tree — the
+      region's own scrolling is what assistive tech uses.
+    </p>
+    <app-doc-matrix rowAxis="scroll" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
+        <app-doc-attrs target=".gog-scroll__viewport">
+          @switch (row.kind) {
+            @case ('named') {
+              <gog-scroll class="scroll-page__box" ariaLabel="Release notes">
+                @for (paragraph of paragraphs; track paragraph) {
+                  <p class="scroll-page__text">{{ paragraph }}</p>
+                }
+              </gog-scroll>
+            }
+            @case ('unfocusable') {
+              <gog-scroll class="scroll-page__box" [focusable]="false">
+                @for (paragraph of paragraphs; track paragraph) {
+                  <p class="scroll-page__text">{{ paragraph }}</p>
+                }
+              </gog-scroll>
+            }
+            @case ('short') {
+              <gog-scroll class="scroll-page__box">
+                <p class="scroll-page__text">One line, nothing to scroll.</p>
+              </gog-scroll>
+            }
+            @default {
+              <gog-scroll class="scroll-page__box">
+                @for (paragraph of paragraphs; track paragraph) {
+                  <p class="scroll-page__text">{{ paragraph }}</p>
+                }
+              </gog-scroll>
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

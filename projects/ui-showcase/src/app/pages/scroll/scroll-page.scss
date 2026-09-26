@@ -1,0 +1,72 @@
+// Every region on the page gets its size from its host: that is how gog-scroll is used. The host's
+// own `display: flex` is left alone — it carries that size down to the viewport.
+.scroll-page__box {
+  width: 16rem;
+  height: 8rem;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+}
+
+.scroll-page__strip {
+  width: 20rem;
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+}
+
+.scroll-page__pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-16);
+  margin-block-end: var(--gog-space-8);
+}
+
+.scroll-page__actions {
+  display: flex;
+  gap: var(--gog-space-8);
+  margin-block-end: var(--gog-space-8);
+}
+
+.scroll-page__text {
+  margin: 0;
+  padding: var(--gog-space-4) var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}
+
+.scroll-page__row {
+  display: flex;
+  gap: var(--gog-space-8);
+  padding: var(--gog-space-8);
+  width: max-content;
+}
+
+.scroll-page__chip {
+  padding: var(--gog-space-4) var(--gog-space-8);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  font-size: var(--gog-text-sm);
+  white-space: nowrap;
+}
+
+.scroll-page__grid {
+  border-collapse: collapse;
+  font-size: var(--gog-text-xs);
+
+  td {
+    padding: var(--gog-space-4) var(--gog-space-8);
+    border: 1px solid var(--gog-border-color);
+  }
+}
+
+.scroll-page__note {
+  margin-block: var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+.scroll-page__config {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+}
