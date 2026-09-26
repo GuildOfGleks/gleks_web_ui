@@ -1119,18 +1119,6 @@ reason may stop holding.
   `<gog-checkbox disabled>` is an error, `<gog-card disabled>` is not — so the failure is loud,
   but the rule a consumer has to learn is per component. Adding the transform is additive.
 
-- **`ui-showcase`'s initial bundle is 3 kB from failing its build.** `angular.json` warns at
-  500 kB and errors at 1 MB; `build:showcase` reported 997.06 kB on 2026-09-26 after the Scroll
-  page, and it is a CI step. Each rebuilt page adds 0.5 to 1 kB, and six legacy component pages
-  are left. Measured from `ng build --stats-json` the same day, following static imports from
-  `index.csr.html`: of 997 kB, the library is 480 kB (root entry 308, `/shared` 90, `/datepicker`
-  42, `/table` 27, `/dialog` 13), its stylesheets about 100, Angular about 305, and the showcase's
-  own files about 25. The whole library is eager because `pages/pages.ts` imports every page's
-  `*.api.ts` and `registry/units.ts` imports every component class, and the shell reads both at
-  startup. Loading a page's API rows with the page, and giving the registry names rather than
-  classes where the shell only needs names, would move most of the 480 kB behind the routes;
-  raising the ceiling only postpones the same question.
-
 - **A labelled `gog-divider` is an unnamed separator.** `<gog-divider>OR</gog-divider>` renders
   `role="separator"` with the label as ordinary content, and ARIA makes a separator's children
   presentational — so whether the label is read at all is up to the browser. Chrome keeps it:

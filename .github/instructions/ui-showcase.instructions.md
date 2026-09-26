@@ -68,6 +68,16 @@ rule.
   the library. Prefix selectors with `app`.
 - Lazy-load feature routes.
 
+## Bundle size is not a goal here
+
+`ui-showcase` runs locally and is never deployed, so its initial bundle is allowed to be large:
+`angular.json` warns at 2 MB and errors at 3 MB. Decided on 2026-09-26, when the old 1 MB error
+budget was 3 kB away and the cause was measured — the whole library is eager because
+`pages/pages.ts` imports every page's API file and the registry every component class. That
+structure is kept on purpose: it keeps the shell simple, and the page's job is to show what the
+components can do, not to be small. Bundle size is measured where it matters — the consumer
+install check and the lab's own budget.
+
 ## Component pages — the rebuilt showcase
 
 The showcase is being rebuilt page by page (started 2026-09-16). Everything under
