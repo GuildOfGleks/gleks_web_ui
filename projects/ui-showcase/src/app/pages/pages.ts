@@ -1,6 +1,7 @@
 import type { Type } from '@angular/core';
 
 import type { DocApi } from '../doc/doc-api';
+import { ACCORDION_API } from './accordion/accordion.api';
 import { ALERT_API } from './alert/alert.api';
 import { AUTOCOMPLETE_API } from './autocomplete/autocomplete.api';
 import { BADGE_API } from './badge/badge.api';
@@ -179,5 +180,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./panel/panel-page').then((m) => m.PanelPage),
     api: PANEL_API,
     tokens: ['Panel'],
+  },
+  accordion: {
+    load: () => import('./accordion/accordion-page').then((m) => m.AccordionPage),
+    api: ACCORDION_API,
+    tokens: ['Accordion'],
   },
 };

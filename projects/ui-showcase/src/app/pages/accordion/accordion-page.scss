@@ -1,0 +1,53 @@
+// A matrix cell has no width of its own, and an accordion fills whatever it is given.
+.accordion-page__cell {
+  width: 18rem;
+}
+
+.accordion-page__stack {
+  max-width: 32rem;
+  margin-block-end: var(--gog-space-8);
+}
+
+.accordion-page__actions {
+  display: flex;
+  gap: var(--gog-space-8);
+  margin-block-end: var(--gog-space-8);
+}
+
+.accordion-page__text {
+  margin: 0;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}
+
+.accordion-page__note {
+  margin-block: var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+.accordion-page__status {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-space-12);
+}
+
+.accordion-page__status-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.accordion-page__subtitle {
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  font-weight: normal;
+}
+
+// A `+`/`−` in place of the icon; sized like one.
+.accordion-page__glyph {
+  display: inline-grid;
+  place-items: center;
+  width: 1em;
+  line-height: 1;
+}

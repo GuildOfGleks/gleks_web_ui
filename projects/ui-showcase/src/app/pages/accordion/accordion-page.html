@@ -1,0 +1,194 @@
+<app-doc-page unit="accordion">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="States belong to items, not to the accordion: every accordion here holds one open item, one closed and one disabled, at each of the five sizes."
+  >
+    <h3>size × item state</h3>
+    <p class="accordion-page__note">
+      An item is disabled through <code>disabled: true</code> on the item object, not by an input.
+      Hover, focus and press are pseudo-class states a page cannot force; the headers are live. The
+      open item is set through <code>openIds</code>, so these cells do not depend on
+      <code>expandFirst</code>.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="">
+      <ng-template appDocCell [rows]="sizes" [cols]="controlColumn" let-size>
+        <div class="accordion-page__cell">
+          <gog-accordion [items]="faq" [size]="size" [openIds]="firstOpen">
+            <ng-template gogAccordionContent let-item>
+              <p class="accordion-page__text">{{ item['body'] }}</p>
+            </ng-template>
+          </gog-accordion>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>loading × showChevron</h3>
+    <p class="accordion-page__note">
+      While <code>loading</code> is on, each row is a placeholder: one per item when the items are
+      known, <code>skeletonCount</code> of them when <code>items</code> is still empty. The chevron
+      gets a placeholder too, so the row that arrives has the silhouette of the one that waited.
+    </p>
+    <app-doc-matrix rowAxis="loading" colAxis="chevron">
+      <ng-template
+        appDocCell
+        [rows]="loadingStates"
+        [cols]="chevronAxis"
+        let-state
+        let-chevron="col"
+      >
+        <div class="accordion-page__cell">
+          <gog-accordion
+            [items]="state.value"
+            [loading]="true"
+            [showChevron]="chevron.value"
+            size="md"
+          />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>gogAccordionContent</h3>
+    <p class="accordion-page__note">
+      The body is an <code>&lt;ng-template gogAccordionContent let-item&gt;</code>, rendered once
+      per item with the item as <code>$implicit</code>. An item is any object with an
+      <code>id</code> and a <code>title</code>, so it can carry whatever the body needs. Every body
+      on this page is one.
+    </p>
+
+    <h3>gogAccordionHeader</h3>
+    <p class="accordion-page__note">
+      Replaces the title with any markup, with <code>$implicit</code> (the item) and
+      <code>open</code> in its context. It renders inside the header button, so it must not hold
+      another control — a button inside a button is invalid and unreachable.
+    </p>
+    <div class="accordion-page__stack">
+      <gog-accordion [items]="statusItems" size="md">
+        <ng-template gogAccordionHeader let-item>
+          <span class="accordion-page__status">
+            <gog-icon [name]="item['icon']" />
+            <span class="accordion-page__status-text">
+              <span>{{ item.title }}</span>
+              <span class="accordion-page__subtitle">{{ item['subtitle'] }}</span>
+            </span>
+          </span>
+        </ng-template>
+        <ng-template gogAccordionContent let-item>
+          <p class="accordion-page__text">{{ item['body'] }}</p>
+        </ng-template>
+      </gog-accordion>
+    </div>
+
+    <h3>gogAccordionChevron</h3>
+    <p class="accordion-page__note">
+      Replaces the chevron, with the same context. The default chevron rotates by itself; a template
+      owns its own open and closed look, so nothing rotates underneath it. It is
+      <code>aria-hidden</code> either way — <code>aria-expanded</code> on the header is what says
+      open.
+    </p>
+    <div class="accordion-page__stack">
+      <gog-accordion [items]="faq" size="md">
+        <ng-template gogAccordionChevron let-open="open">
+          <span class="accordion-page__glyph">{{ open ? '−' : '+' }}</span>
+        </ng-template>
+        <ng-template gogAccordionContent let-item>
+          <p class="accordion-page__text">{{ item['body'] }}</p>
+        </ng-template>
+      </gog-accordion>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="One item open at a time unless multi is set. openIds is two-way, and gogToggle reports each press with the item and its new state."
+  >
+    <h3>single, the default</h3>
+    <p class="accordion-page__note">
+      Opening an item closes the one that was open. The disabled item cannot be opened, and arrow
+      keys, Home and End move focus between the other headers without stopping on it.
+    </p>
+    <div class="accordion-page__stack">
+      <gog-accordion
+        [items]="faq"
+        size="md"
+        [(openIds)]="singleOpen"
+        (gogToggle)="onToggle($event)"
+      >
+        <ng-template gogAccordionContent let-item>
+          <p class="accordion-page__text">{{ item['body'] }}</p>
+        </ng-template>
+      </gog-accordion>
+    </div>
+    <code>openIds: {{ ids(singleOpen()) }} · gogToggle: {{ lastToggle() }}</code>
+
+    <h3>[multi]="true", driven from outside</h3>
+    <p class="accordion-page__note">
+      Items open independently. <code>openIds</code> is a model, so the app can set it — the buttons
+      below write the set, and the accordion follows.
+    </p>
+    <div class="accordion-page__actions">
+      <button type="button" (click)="openAll()">open all</button>
+      <button type="button" (click)="closeAll()">close all</button>
+    </div>
+    <div class="accordion-page__stack">
+      <gog-accordion [items]="faq" size="md" [multi]="true" [(openIds)]="multiOpen">
+        <ng-template gogAccordionContent let-item>
+          <p class="accordion-page__text">{{ item['body'] }}</p>
+        </ng-template>
+      </gog-accordion>
+    </div>
+    <code>openIds: {{ ids(multiOpen()) }}</code>
+
+    <h3>[expandFirst]="true"</h3>
+    <p class="accordion-page__note">
+      Opens the first item once, when items first arrive. Closing it by hand is not undone, even if
+      <code>items</code> is replaced later.
+    </p>
+    <div class="accordion-page__stack">
+      <gog-accordion [items]="faq" size="md" [expandFirst]="true">
+        <ng-template gogAccordionContent let-item>
+          <p class="accordion-page__text">{{ item['body'] }}</p>
+        </ng-template>
+      </gog-accordion>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Each header is a real button that says whether it is expanded and which body it controls; each body is a region named by its header."
+  >
+    <p class="accordion-page__note">
+      Read from the live DOM. A closed body stays in the DOM, hidden and <code>inert</code>, so its
+      contents cannot take focus. <code>headingLevel</code> wraps each header in
+      <code>role="heading"</code>, so a reader moving by headings finds the sections; it is off by
+      default because not every accordion is document structure.
+    </p>
+    <app-doc-matrix rowAxis="element" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
+        <app-doc-attrs [target]="row.target">
+          <div class="accordion-page__cell">
+            @switch (row.name) {
+              @case ('[headingLevel]="3"') {
+                <gog-accordion [items]="faq" size="sm" [headingLevel]="3" />
+              }
+              @case ('[loading]="true"') {
+                <gog-accordion [items]="faq" size="sm" [loading]="true" />
+              }
+              @default {
+                <gog-accordion [items]="faq" size="sm" [openIds]="firstOpen">
+                  <ng-template gogAccordionContent let-item>
+                    <p class="accordion-page__text">{{ item['body'] }}</p>
+                  </ng-template>
+                </gog-accordion>
+              }
+            }
+          </div>
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

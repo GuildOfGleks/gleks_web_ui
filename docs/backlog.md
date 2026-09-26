@@ -1042,6 +1042,31 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
+- **A `gogAccordionHeader` template inherits the theme's header casing, all of it.**
+  `text-transform: var(--gog-accordion-header-text-transform)` sits on the header `<button>`, so
+  in the three themes that uppercase headers (dark, light, terminal — measured on 2026-09-26) a
+  custom header's second line becomes capitals too: "ALL ENDPOINTS RESPONDING". The casing is the
+  theme's idea of a _title_; applied to `.gog-accordion__title` rather than to the button, it would
+  reach the default title and leave a template's markup to the consumer. The legacy Accordion page
+  worked around it with `text-transform: none` on its subtitle, which is the evidence that a
+  consumer has to know. The rebuilt page shows it uncorrected.
+
+- **Every collection input rejects a `readonly` array.** `gog-accordion`'s `items`,
+  `gog-table`'s `value`, the `options` of `gog-radio-group`, `gog-button-toggle` and the three
+  dropdowns (through `shared/dropdown-base.ts`) are all typed `T[]`, so a consumer holding a
+  `readonly T[]` — a `const` fixture, an NgRx selector's result — gets TS4104 under
+  `strictTemplates` and has to copy or cast. None of them mutates what it is given. Widening to
+  `readonly T[]` is source-compatible for every existing caller; found building the Accordion page,
+  which keeps its fixtures mutable for this reason.
+
+- **Whether a boolean input accepts the attribute form depends on the component.** 59 boolean
+  inputs across the library are plain `input(false)` and 10 carry
+  `{ transform: booleanAttribute }` (counted 2026-09-26): `disabled` is one on `gog-card` and
+  `gog-panel` and the other on eleven components, `fullWidth` on one of twelve. Under
+  `strictTemplates` the plain ones fail to compile when written as a bare attribute —
+  `<gog-checkbox disabled>` is an error, `<gog-card disabled>` is not — so the failure is loud,
+  but the rule a consumer has to learn is per component. Adding the transform is additive.
+
 - **`ui-showcase`'s initial bundle is 7 kB from failing its build.** `angular.json` warns at
   500 kB and errors at 1 MB; `build:showcase` reported 993.28 kB on 2026-09-26, and it is a CI step.
   The warning has been printed on every build for a while and nobody reads it any more. A new page
