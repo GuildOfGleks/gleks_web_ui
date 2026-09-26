@@ -62,3 +62,15 @@ code {
     box-shadow: inset 0 0 0 1px var(--gog-info-color);
   }
 }
+
+/*
+ * The Tooltip page's gogTooltipClass demo. The bubble is appended to <body>, outside any
+ * component's view, so a rule in that page's own (emulated-encapsulation) stylesheet would carry an
+ * attribute selector the bubble never has. Global CSS is the one place an override reaches it.
+ */
+.showcase-tooltip--brand {
+  --gog-tooltip-bg: var(--gog-accent-color);
+  --gog-tooltip-color: var(--gog-accent-text-color);
+  --gog-tooltip-border-color: var(--gog-accent-dim);
+  --gog-tooltip-radius: 999px;
+}

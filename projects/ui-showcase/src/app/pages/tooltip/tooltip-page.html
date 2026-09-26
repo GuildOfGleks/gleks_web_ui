@@ -1,0 +1,170 @@
+<app-doc-page unit="tooltip">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="A tooltip is hidden until its trigger is hovered or focused, and it renders into <body>, so a page cannot lay them open side by side. Point at each trigger, or Tab to it."
+  >
+    <h3>gogTooltipPosition</h3>
+    <p class="tooltip-page__note">
+      <code>'auto'</code> goes above and flips when there is no room; the others are fixed sides,
+      and still flip rather than leave the viewport. The bubble caps its width against the viewport
+      too.
+    </p>
+    <app-doc-matrix rowAxis="position" colAxis="">
+      <ng-template appDocCell [rows]="positions" [cols]="controlColumn" let-position>
+        <button
+          type="button"
+          gogButton
+          variant="outline"
+          size="sm"
+          [gogTooltip]="'Placed ' + position"
+          [gogTooltipPosition]="position"
+        >
+          {{ position }}
+        </button>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>text, and a template</h3>
+    <p class="tooltip-page__note">
+      <code>gogTooltip</code> takes a string, or a <code>TemplateRef</code> for richer content. A
+      long string wraps at the bubble's cap. Keep it a hint: a tooltip cannot hold a control, since
+      nothing in it can be reached by keyboard.
+    </p>
+    <div class="tooltip-page__row">
+      <button type="button" gogButton variant="outline" gogTooltip="Save changes">Save</button>
+      <button
+        type="button"
+        gogButton
+        variant="outline"
+        gogTooltip="Publishing makes this version visible to everyone with the link, including people outside your organisation. Earlier versions stay in the history."
+      >
+        Publish
+      </button>
+      <button type="button" gogButton variant="outline" [gogTooltip]="shortcut">Undo</button>
+      <ng-template #shortcut> Undo <kbd class="tooltip-page__kbd">Ctrl+Z</kbd> </ng-template>
+    </div>
+
+    <h3>gogTooltipClass</h3>
+    <p class="tooltip-page__note">
+      The bubble lives in <code>&lt;body&gt;</code>, so a <code>--gog-tooltip-*</code> token set on
+      an ancestor never reaches it. A class on the bubble itself does; the showcase's global
+      stylesheet defines the one used here.
+    </p>
+    <div class="tooltip-page__row">
+      <button
+        type="button"
+        gogButton
+        variant="outline"
+        gogTooltip="Styled through gogTooltipClass"
+        gogTooltipClass="showcase-tooltip--brand"
+      >
+        Styled
+      </button>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="Shown after gogTooltipShowDelay on hover or focus, hidden after gogTooltipHideDelay; the pointer can move onto the bubble without it closing, and Escape dismisses it."
+  >
+    <h3>delays</h3>
+    <p class="tooltip-page__note">
+      The show delay keeps tooltips from flashing as the pointer crosses a toolbar; the hide delay
+      is what lets the pointer travel from the trigger onto the bubble.
+    </p>
+    <div class="tooltip-page__row">
+      <button
+        type="button"
+        gogButton
+        variant="outline"
+        gogTooltip="No delay"
+        [gogTooltipShowDelay]="0"
+      >
+        0 ms
+      </button>
+      <button type="button" gogButton variant="outline" gogTooltip="The default">300 ms</button>
+      <button
+        type="button"
+        gogButton
+        variant="outline"
+        gogTooltip="A full second"
+        [gogTooltipShowDelay]="1000"
+      >
+        1000 ms
+      </button>
+    </div>
+
+    <h3>hoverable, dismissible, and gogTooltipDisabled</h3>
+    <p class="tooltip-page__note">
+      Move the pointer from the trigger onto the bubble: it stays. Press Escape while it shows: it
+      goes, and the trigger keeps focus. <code>gogTooltipDisabled</code> turns one off without
+      removing the directive.
+    </p>
+    <div class="tooltip-page__row">
+      <button
+        type="button"
+        gogButton
+        variant="outline"
+        gogTooltip="Hints can be switched off"
+        [gogTooltipDisabled]="muted()"
+      >
+        Hint {{ muted() ? 'off' : 'on' }}
+      </button>
+      <label class="tooltip-page__toggle">
+        <input type="checkbox" [checked]="muted()" (change)="muted.set(!muted())" />
+        gogTooltipDisabled
+      </label>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="Position and both delays fall back to GOG_CONFIG.tooltip before their defaults."
+  >
+    <pre class="tooltip-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
+    <p class="tooltip-page__note">
+      The same trigger in both rows, with no position or delay of its own; point at each.
+    </p>
+    <app-doc-matrix rowAxis="where" colAxis="">
+      <ng-template appDocCell [rows]="scopeAxis" [cols]="controlColumn" let-where>
+        @if (where === 'inside scope') {
+          <app-tooltip-config-scope>
+            <button type="button" gogButton variant="outline" size="sm" gogTooltip="Configured">
+              Hint
+            </button>
+          </app-tooltip-config-scope>
+        } @else {
+          <button type="button" gogButton variant="outline" size="sm" gogTooltip="Defaults">
+            Hint
+          </button>
+        }
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="While the bubble shows, the trigger points aria-describedby at it, so the hint is read after the trigger's own name. Hidden, it is not in the tree at all."
+  >
+    <p class="tooltip-page__note">
+      Read from the live DOM — focus the trigger below and its row gains
+      <code>aria-describedby</code>. A tooltip describes; it never names. An icon-only button still
+      needs its own <code>aria-label</code>. Put the directive on the element that takes focus: on a
+      <code>gog-button</code> component its attribute lands on the component's host, not on the
+      button inside — filed.
+    </p>
+    <app-doc-matrix rowAxis="trigger" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn">
+        <app-doc-attrs target="button">
+          <button type="button" class="tooltip-page__plain" gogTooltip="Saves a draft">Save</button>
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

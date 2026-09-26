@@ -32,6 +32,7 @@ import { TABLE_API } from './table/table.api';
 import { TABS_API } from './tabs/tabs.api';
 import { TAG_API } from './tag/tag.api';
 import { TOGGLE_API } from './toggle/toggle.api';
+import { TOOLTIP_API } from './tooltip/tooltip.api';
 import { TEXTAREA_API } from './textarea/textarea.api';
 
 /** What `app-doc-page` renders on its own for a unit, after the page's hand-built sections. */
@@ -221,5 +222,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./menu/menu-page').then((m) => m.MenuPage),
     api: MENU_API,
     tokens: ['Menu'],
+  },
+  tooltip: {
+    load: () => import('./tooltip/tooltip-page').then((m) => m.TooltipPage),
+    api: TOOLTIP_API,
+    tokens: ['Tooltip'],
   },
 };

@@ -16,15 +16,17 @@ not worth carrying here.
 
 ## Defects — first
 
-- **`[gogMenuTrigger]` on a `<gog-button>` announces a plain button.** The directive writes
-  `aria-haspopup`, `aria-expanded` and `aria-controls` onto its own host, and on the `gog-button`
-  component that host is the roleless wrapper, not the `<button>` inside it — read on the Menu page
-  on 2026-09-26: the host carried all three, the inner button none. The menu still opens by click
-  and keyboard (the events bubble), so it looks fine and is silent to a screen reader. It is the
-  exact trap 21.8.0 closed for raw `[attr.aria-*]` by giving `gog-button` `ariaExpanded`,
-  `ariaHasPopup` and `ariaControls`; the trigger directive does not use them. The legacy Menu page
-  wrote its triggers this way. `<button gogButton [gogMenuTrigger]>` works, and the rebuilt page
-  uses it and says why. Worth checking every other directive that decorates a trigger the same way.
+- **`[gogMenuTrigger]` and `[gogTooltip]` on a `<gog-button>` say nothing to a screen reader.**
+  Both directives write their ARIA onto their own host, and on the `gog-button` component that host
+  is the roleless wrapper, not the `<button>` inside it. Measured on 2026-09-26: on the Menu page
+  the host carried `aria-haspopup`, `aria-expanded` and `aria-controls` and the inner button none;
+  on the legacy Global Config page a showing tooltip's `aria-describedby` sat on the host while
+  the focused inner button had none. Both still work by pointer and keyboard (the events bubble),
+  so nothing looks wrong. It is the trap 21.8.0 closed for raw `[attr.aria-*]` by giving
+  `gog-button` `ariaExpanded`, `ariaHasPopup` and `ariaControls`; neither directive uses them, and
+  `gogTooltip`'s own JSDoc promises that `<gog-chip [gogTooltip]>` "just works". `<button
+gogButton …>` works for both, and the Menu and Tooltip pages use it and say why. Every other
+  directive that decorates a host with ARIA wants the same check.
 
 - **`gog-table [virtualize]` renders every row when `maxHeight` is in `rem`.** The window's
   first viewport height comes from `resolveCssLengthPx(maxHeight)`, which reads only `px`, `%` and

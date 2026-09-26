@@ -20,10 +20,6 @@ export const legacyRoutes: Routes = [
     loadComponent: () => import('./pages/toast-page/toast-page').then((m) => m.ToastPage),
   },
   {
-    path: 'tooltip',
-    loadComponent: () => import('./pages/tooltip-page/tooltip-page').then((m) => m.TooltipPage),
-  },
-  {
     path: 'dialog',
     loadComponent: () => import('./pages/dialog-page/dialog-page').then((m) => m.DialogPage),
   },
