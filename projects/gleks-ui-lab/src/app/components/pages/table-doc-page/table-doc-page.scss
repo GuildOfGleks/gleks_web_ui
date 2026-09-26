@@ -199,7 +199,9 @@
 
     &--empty {
       border-left-color: var(--gog-border-color);
-      color: var(--gog-muted-text-color);
+      /* Muted text on the item's hover-colour fill measured 4.16:1 in one-light; nudged 20%
+         toward the text colour it still reads as muted and clears 4.84:1 in every theme. */
+      color: color-mix(in srgb, var(--gog-muted-text-color) 80%, var(--gog-text-color));
     }
   }
 }
