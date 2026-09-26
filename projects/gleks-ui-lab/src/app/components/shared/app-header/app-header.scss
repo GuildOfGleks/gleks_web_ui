@@ -47,11 +47,15 @@
       padding: 2px 6px;
       border-radius: 4px;
       background: color-mix(in srgb, var(--gog-accent-color) 15%, transparent);
-      color: var(--gog-accent-color);
+      /* Same pair and fix as the sidebar's active item: the raw accent read at 3.81:1 in `light`,
+         this mix at 4.65:1 or better in every theme. */
+      color: color-mix(in srgb, var(--gog-accent-color) 60%, var(--gog-text-color));
       text-decoration: none;
 
+      /* Hover underlines rather than deepening the tint: on a 28% tint no label clears AA in
+         one-dark, not even the text colour itself (3.88:1). */
       &:hover {
-        background: color-mix(in srgb, var(--gog-accent-color) 28%, transparent);
+        text-decoration: underline;
       }
     }
   }

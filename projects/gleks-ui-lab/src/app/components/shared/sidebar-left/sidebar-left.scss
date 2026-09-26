@@ -90,7 +90,10 @@
 
     &.active {
       background-color: color-mix(in srgb, var(--gog-accent-color) 15%, transparent);
-      color: var(--gog-accent-color);
+      /* The raw accent on its own 15% tint measured 3.81:1 in `light`; mixed toward the text
+         colour it keeps its hue and clears AA in every theme (worst: one-dark, 4.65:1). The
+         edge below stays the raw accent — it is not text. */
+      color: color-mix(in srgb, var(--gog-accent-color) 60%, var(--gog-text-color));
       font-weight: 600;
       border-left: 3px solid var(--gog-accent-color);
     }
