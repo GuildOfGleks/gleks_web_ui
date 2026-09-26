@@ -40,10 +40,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version-file: .nvmrc
           cache: npm
 
-      # See ci.yml: node 22.x bundles an npm whose resolver disagrees with the
+      # See ci.yml: the npm bundled with Node can disagree with the
       # lock file's optional peer deps, so pin the npm version explicitly.
       - name: Use pinned npm version
         run: npm install -g npm@11.6.2

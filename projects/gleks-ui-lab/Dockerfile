@@ -1,5 +1,5 @@
 # Stage 1: build
-FROM node:22-alpine AS build
+FROM node:24.21.0-alpine AS build
 WORKDIR /app
 
 # Update npm (only where genuinely needed) and install dependencies
@@ -14,7 +14,7 @@ COPY . .
 RUN npm run build:lab
 
 # Stage 2: runtime
-FROM node:22-alpine AS runtime
+FROM node:24.21.0-alpine AS runtime
 WORKDIR /app
 
 COPY --from=build /app/dist/gleks-ui-lab ./dist/gleks-ui-lab
