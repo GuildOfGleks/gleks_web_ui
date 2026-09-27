@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, PLATFORM_ID, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { vi } from 'vitest';
@@ -1102,6 +1102,17 @@ describe('TableComponent — virtualize', () => {
     expect(spacers()[0].style.height).toBe(`${(1000 - rendered.length) * 40}px`);
   });
 
+  // Only px, % and vh parse from the string. Anything else used to seed a viewport of 0, and the
+  // first frame rendered every row until a scroll.
+  for (const maxHeight of ['20rem', 'calc(100vh - 4rem)', '30em']) {
+    it(`renders a window, not every row, when maxHeight is ${maxHeight}`, async () => {
+      await setUp({ virtualize: true, maxHeight });
+
+      expect(bodyRows().length).toBeGreaterThan(0);
+      expect(bodyRows().length).toBeLessThan(60);
+    });
+  }
+
   /*
    * A `<tbody>` takes rows and nothing else, so the spacer is a `<tr>` — and it must carry no
    * border, background or padding, or it reads as a row that is there.
@@ -1285,5 +1296,28 @@ describe('TableComponent — virtualize', () => {
     await fixture.whenStable();
 
     expect(fixture.componentInstance.selection().length).toBe(1000);
+  });
+});
+
+// The server has no window to measure; it used to seed a viewport of 0 and prerender every row.
+describe('TableComponent — virtualize on the server', () => {
+  it('prerenders a window, not the whole list', async () => {
+    await TestBed.configureTestingModule({
+      imports: [TableComponent],
+      providers: [{ provide: PLATFORM_ID, useValue: 'server' }],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(TableComponent);
+    fixture.componentRef.setInput(
+      'value',
+      Array.from({ length: 1000 }, (_, i) => ({ id: i, name: `Row ${i}` })),
+    );
+    fixture.componentRef.setInput('virtualize', true);
+    fixture.componentRef.setInput('maxHeight', '400px');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const rows = (fixture.nativeElement as HTMLElement).querySelectorAll('tbody tr.gog-table__row');
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.length).toBeLessThan(60);
   });
 });

@@ -164,3 +164,7 @@ build.
 - **`gog-inputfield` makes room for an addon wider than an icon** (before, the text ran under it).
   The Inputfield page's addon card can drop any caveat about keeping addons to one glyph, if it has
   one, and a `https://` or unit example is now safe to show.
+
+- **A virtualized table's `maxHeight` takes any CSS length, and the server prerenders a window.**
+  If the Table page's virtualize card or its `maxHeight` row advises `px`, drop the advice; a
+  prerendered lab page with a virtualized table now ships tens of rows rather than all of them.

@@ -16,6 +16,7 @@ import {
   signal,
   TemplateRef,
   untracked,
+  viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import {
@@ -43,6 +44,13 @@ import {
  * first rendered row replaces it. See `docs/table-virtualization.md`.
  */
 const FALLBACK_ROW_HEIGHT = 40;
+
+/**
+ * The viewport a windowed table assumes where there is no window to ask — on the server, and for
+ * a `maxHeight` in a unit that needs layout (`vh`, `%`). A typical laptop height: enough rows for
+ * the first paint, and the browser's first measurement replaces it.
+ */
+const SERVER_VIEWPORT_HEIGHT = 800;
 
 /**
  * The tallest an element can be before the browser clamps it, measured in Chrome: a `<tr>` asked
@@ -511,8 +519,16 @@ export class TableComponent<T extends object> {
     () => this.virtualize() && !!this.maxHeight() && this.fullWidth() && !this.loading(),
   );
 
+  /** The table's own scroller, measured for the window's viewport — see the constructor. */
+  private readonly scroller = viewChild('scroller', { read: ElementRef });
+
   /**
-   * `maxHeight` resolved to px, as the viewport's stand-in until `gog-scroll` reports a real one.
+   * `maxHeight` resolved to px, as the viewport's stand-in until the scroller is measured.
+   *
+   * Only `px`, `%` and `vh` can be resolved from the string alone. Anything else — `rem`, `em`,
+   * `calc()` — falls back to the window's height rather than to 0: 0 reads as "no viewport" and
+   * the first frame rendered every row, 10 000 of them for a `20rem` table, until a scroll. The
+   * server, which has no window, used to return 0 for every unit and so prerendered every row.
    *
    * A computed rather than a value seeded on open, which is what this was first written as and is
    * wrong for a reason worth keeping: a component's constructor runs before its inputs are set, so
@@ -520,10 +536,10 @@ export class TableComponent<T extends object> {
    * exactly the frame the seed exists to prevent.
    */
   private readonly maxHeightPx = computed(() => {
-    if (!this.isBrowser) return 0;
     const max = this.maxHeight();
     if (!max) return 0;
-    return resolveCssLengthPx(max, window.innerHeight) ?? 0;
+    const viewport = this.isBrowser ? window.innerHeight : SERVER_VIEWPORT_HEIGHT;
+    return resolveCssLengthPx(max, viewport) ?? viewport;
   });
 
   private readonly rowWindow = new GogVariableWindow({
@@ -746,6 +762,23 @@ export class TableComponent<T extends object> {
   }
 
   constructor() {
+    /*
+     * The scroller's laid-out height, as soon as it has one. `(gogScroll)` reports it too, but
+     * only on a scroll, and until then the window ran on `maxHeightPx`'s estimate — so a table
+     * nobody scrolled kept whatever that estimate rendered.
+     */
+    effect((onCleanup) => {
+      const element = this.scroller()?.nativeElement as HTMLElement | undefined;
+      if (!this.isBrowser || !element || !this.windowingActive()) return;
+      if (typeof ResizeObserver === 'undefined') return;
+      const observer = new ResizeObserver(([entry]) => {
+        const height = entry.contentRect.height;
+        if (height > 0) this.viewport.update((viewport) => ({ ...viewport, height }));
+      });
+      observer.observe(element);
+      onCleanup(() => observer.disconnect());
+    });
+
     /*
      * `gogPageChange` for user navigation and clamps, but *not* for the reset that follows a new
      * sort: `currentPage` snapping back to 1 there is part of the sort, and a lazy consumer

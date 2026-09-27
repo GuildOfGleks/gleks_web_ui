@@ -199,14 +199,14 @@
       Renders only the rows in view — here 10 000, every seventh one taller, which is why the window
       measures rows as they render rather than assuming a height. It needs
       <code>maxHeight</code> and <code>fullWidth</code>, and switches itself off with a warning
-      without them. Give <code>maxHeight</code> in <code>px</code>, <code>%</code> or
-      <code>vh</code>: in <code>rem</code> the window silently renders every row — filed.
+      without them. <code>maxHeight</code> takes any CSS length — this one is <code>20rem</code> —
+      and the window measures the scroller rather than parsing the string.
     </p>
     <gog-checkbox label="virtualize" [(checked)]="virtualizeRows" />
     <gog-table
       [value]="manyRows"
       [virtualize]="virtualizeRows()"
-      maxHeight="320px"
+      maxHeight="20rem"
       [stickyHeader]="true"
       size="sm"
     >

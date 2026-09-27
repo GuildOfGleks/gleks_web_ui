@@ -47,15 +47,6 @@ not worth carrying here.
 gogButton …>` works for both, and the Menu and Tooltip pages use it and say why. Every other
   directive that decorates a host with ARIA wants the same check.
 
-- **`gog-table [virtualize]` renders every row when `maxHeight` is in `rem`.** The window's
-  first viewport height comes from `resolveCssLengthPx(maxHeight)`, which reads only `px`, `%` and
-  `vh` and returns `null` for anything else — while `maxHeight`'s own docs promise "any CSS
-  length". Measured on the Table page on 2026-09-26 with 10 000 rows: `maxHeight="320px"` renders
-  13 and keeps 13 after scrolling 2000px; `maxHeight="20rem"` renders all 10 000 and still does
-  after a scroll, with `aria-rowcount` claiming a window is active. No warning either way. Likely
-  fix: take the real height from the laid-out viewport rather than parsing the string, or at
-  least resolve `rem`/`em` and warn on what it cannot read.
-
 - **With `selectOnRowClick` and no checkbox column, a row's selection may reach no one.** The
   state is then carried only by `aria-selected` on the `<tr>`, and the table is a plain `<table>`
   — ARIA 1.2 supports `aria-selected` on a row only inside `grid` or `treegrid`. With the checkbox

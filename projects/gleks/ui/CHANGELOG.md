@@ -45,6 +45,17 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A virtualized `gog-table` rendered every row on the server, and in the browser whenever
+  `maxHeight` was not in `px`, `%` or `vh`.** Until the scroller reported a height, the window took
+  its viewport from parsing `maxHeight`, and anything it could not parse — `rem`, `em`, `calc()` —
+  and everything on the server, which has no window, gave 0, read as "no viewport". Measured on the
+  showcase's Table page with 10 000 rows: `maxHeight="320px"` prerendered all 10 001 `<tr>` into the
+  HTML, and `maxHeight="20rem"` also rendered all 10 000 in the browser, staying that way until the
+  first scroll. Now the table measures its scroller as soon as it is laid out, an unparseable
+  length seeds from the window's height instead of 0, and the server seeds from a fixed 800px — the
+  prerender carries 15 rows, the browser never more than 28, and hydration is unchanged. So
+  `maxHeight` takes any CSS length, as its documentation always said.
+
 - **A `gog-inputfield` addon wider than an icon ran under the text.** The field reserved a gutter
   sized for an icon, whatever `gogInputAddonStart`/`gogInputAddonEnd` projected, so
   `<span gogInputAddonStart>https://</span>` and the typed value overprinted by 27px, and even a
