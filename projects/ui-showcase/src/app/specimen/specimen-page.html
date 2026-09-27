@@ -1,0 +1,769 @@
+<header class="specimen__head">
+  <h1 class="specimen__title">Specimen</h1>
+  <p class="specimen__lead">
+    Every component at least twice, composed into two screens an app might have. The switches below
+    reach every instance that takes them; the theme, RTL and hit areas are in the toolbar above.
+  </p>
+  <form class="specimen__switches" aria-label="Specimen switches">
+    <label>
+      size
+      <select name="size" [value]="size()" (change)="size.set($any($event.target).value)">
+        @for (option of sizes; track option) {
+          <option [value]="option">{{ option }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <input
+        type="checkbox"
+        name="disabled"
+        [checked]="disabled()"
+        (change)="disabled.set(!disabled())"
+      />
+      disabled
+    </label>
+    <label>
+      <input type="checkbox" name="busy" [checked]="busy()" (change)="busy.set(!busy())" />
+      loading
+    </label>
+  </form>
+</header>
+
+<!-- Scene 1: account settings -->
+<section class="specimen__scene" aria-labelledby="specimen-account">
+  <h2 id="specimen-account" class="specimen__scene-title">Account settings</h2>
+
+  <div class="specimen__layout">
+    <gog-panel [size]="size()">
+      <h3 gogPanelHeader>Account</h3>
+
+      <gog-tabs ariaLabel="Settings" [size]="size()" [(activeIndex)]="settingsTab">
+        <ng-template gogTabHeader let-tab let-active="active">
+          <gog-icon [name]="tab.iconName() ?? 'settings'" />
+          {{ tab.label() }}
+        </ng-template>
+
+        <gog-tab label="Profile" iconName="user">
+          <gog-spinner-overlay [loading]="busy()" [size]="size()" ariaLabel="Saving profile">
+            <div class="specimen__form">
+              <gog-inputfield
+                label="Full name"
+                iconStart="user"
+                [clearable]="true"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="fullName"
+              />
+              <gog-inputfield
+                label="Email"
+                type="email"
+                [errorMessage]="emailError()"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="email"
+              />
+              <gog-inputfield
+                label="Website"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="website"
+              >
+                <span gogInputAddonStart>https://</span>
+                <button
+                  gogInputAddonEnd
+                  type="button"
+                  class="specimen__addon"
+                  aria-label="Copy address"
+                  [disabled]="disabled()"
+                >
+                  <gog-icon name="copy" />
+                </button>
+              </gog-inputfield>
+              <gog-select
+                label="Country"
+                [options]="countries"
+                [filter]="true"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="country"
+              >
+                <ng-template gogDropdownOption let-option let-label="label">
+                  <code class="specimen__code">{{ asCountry(option).id }}</code> {{ label }}
+                </ng-template>
+                <ng-template gogDropdownChevron><gog-icon name="chevron-down" /></ng-template>
+              </gog-select>
+              <gog-autocomplete
+                label="City"
+                [options]="cities"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="city"
+              />
+              <gog-multiselect
+                label="Languages"
+                [options]="languages"
+                [showControls]="true"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="spoken"
+              >
+                <ng-template gogMultiselectClearIcon><gog-icon name="trash" /></ng-template>
+              </gog-multiselect>
+              <gog-datepicker
+                label="Birthday"
+                [clearable]="true"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="birthday"
+              />
+              <gog-inputfield
+                label="Display name"
+                floatLabel="on"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="fullName"
+              />
+              <gog-textarea
+                class="specimen__wide"
+                label="Bio"
+                [rows]="3"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="bio"
+              />
+              <gog-radio-group
+                label="Plan"
+                orientation="horizontal"
+                [options]="plans"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="plan"
+              />
+              <gog-slider
+                label="Digest items"
+                [min]="0"
+                [max]="50"
+                [disabled]="disabled()"
+                [(value)]="digestLimit"
+              />
+              <div class="specimen__checks">
+                <gog-toggle
+                  label="Public profile"
+                  [size]="size()"
+                  [disabled]="disabled()"
+                  [(checked)]="publicProfile"
+                />
+                <gog-checkbox
+                  label="I accept the terms"
+                  [size]="size()"
+                  [disabled]="disabled()"
+                  [(checked)]="terms"
+                >
+                  <ng-template gogCheckboxIcon><gog-icon name="star-filled" /></ng-template>
+                </gog-checkbox>
+              </div>
+            </div>
+          </gog-spinner-overlay>
+        </gog-tab>
+
+        <gog-tab label="Notifications" iconName="mail">
+          <gog-accordion
+            [items]="notificationItems"
+            [multi]="true"
+            [expandFirst]="true"
+            [size]="size()"
+          >
+            <ng-template gogAccordionHeader let-item>
+              <span class="specimen__inline">
+                <gog-icon [name]="item['icon']" />
+                {{ item.title }}
+              </span>
+            </ng-template>
+            <ng-template gogAccordionChevron let-open="open">
+              <gog-icon [name]="open ? 'chevron-up' : 'chevron-down'" />
+            </ng-template>
+            <ng-template gogAccordionContent let-item>
+              <p class="specimen__muted">{{ item['hint'] }}</p>
+              <div class="specimen__checks">
+                <gog-toggle
+                  label="Mentions"
+                  [size]="size()"
+                  [disabled]="disabled()"
+                  [(checked)]="mentions"
+                />
+                <gog-toggle
+                  label="Failures"
+                  onLabel="ON"
+                  offLabel="OFF"
+                  [size]="size()"
+                  [disabled]="disabled()"
+                  [(checked)]="failures"
+                />
+              </div>
+            </ng-template>
+          </gog-accordion>
+          <gog-divider>Quiet hours</gog-divider>
+          <gog-calendar selectionMode="range" [size]="size()" [(value)]="available" />
+        </gog-tab>
+
+        <gog-tab label="Security" iconName="lock">
+          <ng-template gogTabContent>
+            <div class="specimen__stack">
+              <gog-inputfield
+                label="New password"
+                type="password"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="password"
+              />
+              <gog-progressbar
+                ariaLabel="Password strength"
+                [value]="strength()"
+                [variant]="strength() >= 64 ? 'success' : 'warning'"
+                [showValue]="true"
+                [size]="size()"
+              />
+              <gog-table [value]="sessions" [showRowNumbers]="false" dataKey="id" [size]="size()">
+                <gog-column field="device" header="Device">
+                  <ng-template gogColumnHeader let-header>
+                    <span class="specimen__inline"><gog-icon name="user" /> {{ header }}</span>
+                  </ng-template>
+                </gog-column>
+                <gog-column field="place" header="Place" />
+                <gog-column field="seen" header="Last seen">
+                  <ng-template gogColumnBody let-row let-value="value">
+                    <span class="specimen__inline">
+                      {{ value }}
+                      @if (asSession(row).current) {
+                        <gog-tag variant="success" [size]="size()">this device</gog-tag>
+                      }
+                    </span>
+                  </ng-template>
+                </gog-column>
+              </gog-table>
+              <gog-paginator
+                [totalPages]="3"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(page)]="sessionsPage"
+              />
+              <gog-collapsible [disabled]="disabled()" [(open)]="advancedOpen">
+                <button
+                  gogCollapsibleTrigger
+                  gogButton
+                  type="button"
+                  variant="ghost"
+                  [size]="size()"
+                >
+                  Danger zone
+                  <gog-icon [name]="advancedOpen() ? 'chevron-up' : 'chevron-down'" />
+                </button>
+                <div gogCollapsibleContent class="specimen__stack specimen__pad">
+                  <gog-alert severity="danger" heading="Deleting is permanent" live="off">
+                    Your reports move to the team; your sign-in goes.
+                  </gog-alert>
+                  <div>
+                    <gog-button
+                      variant="outline"
+                      severity="danger"
+                      [size]="size()"
+                      [disabled]="disabled()"
+                      (gogClick)="deleteAccount()"
+                      >Delete account</gog-button
+                    >
+                  </div>
+                </div>
+              </gog-collapsible>
+            </div>
+          </ng-template>
+        </gog-tab>
+      </gog-tabs>
+
+      <div gogPanelFooter class="specimen__actions">
+        <button
+          type="button"
+          gogButton
+          variant="ghost"
+          [size]="size()"
+          [gogMenuTrigger]="accountMenu"
+        >
+          More
+          <gog-icon name="chevron-down" />
+        </button>
+        <gog-menu #accountMenu ariaLabel="Account actions">
+          <button gogMenuItem type="button"><gog-icon name="download" /> Export my data</button>
+          <button gogMenuItem type="button" disabled>Transfer ownership</button>
+          <button gogMenuItem type="button" (click)="deleteAccount()">
+            <gog-icon name="trash" /> Delete account
+          </button>
+        </gog-menu>
+        <span class="specimen__spacer"></span>
+        <gog-button variant="ghost" [size]="size()" [disabled]="disabled()">Cancel</gog-button>
+        <gog-button
+          [size]="size()"
+          [disabled]="disabled()"
+          [loading]="busy()"
+          (gogClick)="saveSettings()"
+          >Save</gog-button
+        >
+      </div>
+    </gog-panel>
+
+    <aside class="specimen__aside" aria-label="Account summary">
+      <gog-card variant="elevated" [size]="size()" [loading]="busy()">
+        <div gogCardMedia class="specimen__media">
+          <gog-skeleton shape="circle" width="4rem" height="4rem" animation="none" />
+        </div>
+        <h3 gogCardHeader>{{ fullName() }}</h3>
+        <p class="specimen__muted">Finance lead · Kyiv</p>
+        <div class="specimen__inline specimen__wrap">
+          <gog-chip iconName="user" [size]="size()" [disabled]="disabled()">Finance</gog-chip>
+          <gog-chip iconName="star" [size]="size()" [removable]="true" [disabled]="disabled()"
+            >Owner</gog-chip
+          >
+          <gog-tag variant="info" [size]="size()">
+            <ng-template gogTagIcon><gog-icon name="clock" /></ng-template>
+            since 2019
+          </gog-tag>
+        </div>
+        <div gogCardFooter class="specimen__actions">
+          <button
+            type="button"
+            gogButton
+            variant="ghost"
+            [size]="size()"
+            gogBadge="3"
+            badgeAriaLabel="3 unread"
+          >
+            <gog-icon name="mail" /> Inbox
+          </button>
+          <button
+            type="button"
+            gogButton
+            variant="ghost"
+            [size]="size()"
+            aria-label="What does the plan include?"
+            gogTooltip="Team: unlimited reports, five seats, email support"
+          >
+            <gog-icon name="info" />
+          </button>
+        </div>
+      </gog-card>
+
+      <gog-card [size]="size()">
+        <h3 gogCardHeader><a gogCardLink href="#specimen-orders">Orders this week</a></h3>
+        <p class="specimen__figure">23</p>
+        <div gogCardFooter>
+          <gog-tag variant="success" [size]="size()">+12%</gog-tag>
+        </div>
+      </gog-card>
+
+      <gog-button-toggle-group
+        ariaLabel="Appearance"
+        [options]="appearances"
+        [value]="appearance()"
+        [size]="size()"
+        [disabled]="disabled()"
+        (valueChange)="setAppearance($event)"
+      >
+        <ng-template gogButtonToggleOption let-option let-label="label">
+          <gog-icon [name]="asAppearance(option).icon" /> {{ label }}
+        </ng-template>
+      </gog-button-toggle-group>
+
+      <gog-alert severity="info" live="off">
+        <ng-template gogAlertIcon><gog-icon name="lock" /></ng-template>
+        Two-factor sign-in is on for every seat on the Team plan.
+      </gog-alert>
+
+      <gog-scroll class="specimen__terms" ariaLabel="Terms">
+        @for (clause of [1, 2, 3, 4, 5, 6]; track clause) {
+          <p>
+            {{ clause }}. The workspace owner decides who can see a report. Exports carry the
+            permissions of the person who made them.
+          </p>
+        }
+      </gog-scroll>
+
+      <div class="specimen__inline">
+        <gog-spinner ariaLabel="Syncing" [size]="size()" />
+        <gog-skeleton shape="text" [lines]="2" [size]="size()" width="12rem" />
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- Scene 2: orders -->
+<section class="specimen__scene" aria-labelledby="specimen-orders">
+  <h2 id="specimen-orders" class="specimen__scene-title">Orders</h2>
+
+  <div class="specimen__cards">
+    <gog-card [size]="size()">
+      <h3 gogCardHeader>Revenue</h3>
+      <p class="specimen__figure">€48 210</p>
+      <gog-progressbar
+        ariaLabel="Monthly target"
+        variant="success"
+        [value]="64"
+        [showValue]="true"
+        [size]="size()"
+      />
+      <div gogCardFooter>
+        <gog-tag variant="success" [size]="size()">
+          <ng-template gogTagIcon><gog-icon name="arrow-right" /></ng-template>
+          on track
+        </gog-tag>
+      </div>
+    </gog-card>
+
+    <gog-card [size]="size()">
+      <h3 gogCardHeader>Open orders</h3>
+      <p class="specimen__figure">7</p>
+      <div gogCardFooter>
+        <gog-button
+          variant="outline"
+          gogBadge="7"
+          badgeAriaLabel="7 new"
+          [size]="size()"
+          [disabled]="disabled()"
+          >Review</gog-button
+        >
+      </div>
+    </gog-card>
+
+    <gog-card variant="filled" [size]="size()" [loading]="true" [skeletonLines]="2">
+      <h3 gogCardHeader>Refunds</h3>
+    </gog-card>
+
+    <gog-card variant="outlined" [size]="size()">
+      <div gogCardMedia class="specimen__media specimen__media--report">
+        <gog-icon name="download" />
+      </div>
+      <h3 gogCardHeader><a gogCardLink href="#specimen-orders">September report</a></h3>
+      <p class="specimen__muted">CSV · 23 orders</p>
+    </gog-card>
+  </div>
+
+  <div class="specimen__layout">
+    <div class="specimen__stack">
+      <gog-panel variant="outlined" [size]="size()">
+        <h3 gogPanelHeader>Filters</h3>
+        <div class="specimen__form">
+          <gog-inputfield
+            label="Search"
+            iconStart="search"
+            [clearable]="true"
+            [size]="size()"
+            [disabled]="disabled()"
+            [(value)]="search"
+          >
+            <kbd gogInputAddonEnd class="specimen__kbd">/</kbd>
+          </gog-inputfield>
+          <gog-select
+            label="Status"
+            [options]="statusOptions"
+            [clearable]="true"
+            [size]="size()"
+            [disabled]="disabled()"
+            [(value)]="status"
+          >
+            <ng-template gogDropdownOption let-option let-label="label">
+              <gog-tag size="xsm" [variant]="statusVariant[asStatus(option).status]">{{
+                label
+              }}</gog-tag>
+            </ng-template>
+            <ng-template gogDropdownChevron><gog-icon name="filter" /></ng-template>
+          </gog-select>
+          <gog-multiselect
+            label="Tags"
+            [options]="tagOptions"
+            [size]="size()"
+            [disabled]="disabled()"
+            [(value)]="tags"
+          >
+            <ng-template gogMultiselectClearIcon><gog-icon name="minus" /></ng-template>
+          </gog-multiselect>
+          <gog-autocomplete
+            label="Customer"
+            [options]="customerOptions"
+            [clearable]="true"
+            [size]="size()"
+            [disabled]="disabled()"
+            [(value)]="customer"
+          />
+          <gog-datepicker
+            label="Placed"
+            selectionMode="range"
+            [numberOfMonths]="2"
+            [size]="size()"
+            [disabled]="disabled()"
+            [(value)]="range"
+          />
+        </div>
+
+        <gog-collapsible [disabled]="disabled()" [(open)]="filtersOpen">
+          <button gogCollapsibleTrigger type="button" class="specimen__disclosure">
+            <gog-icon [name]="filtersOpen() ? 'chevron-up' : 'chevron-down'" />
+            More filters
+          </button>
+          <div gogCollapsibleContent class="specimen__form specimen__pad">
+            <gog-button-toggle-group
+              ariaLabel="Period"
+              [options]="periods"
+              [size]="size()"
+              [disabled]="disabled()"
+              [(value)]="period"
+            >
+              <ng-template gogButtonToggleOption let-label="label">
+                <gog-icon name="calendar" /> {{ label }}
+              </ng-template>
+            </gog-button-toggle-group>
+            <gog-radio-group
+              label="Priority"
+              orientation="horizontal"
+              [options]="priorities"
+              [size]="size()"
+              [disabled]="disabled()"
+              [(value)]="priority"
+            />
+            <div class="specimen__checks">
+              <gog-checkbox
+                label="Only my orders"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(checked)]="onlyMine"
+              >
+                <ng-template gogCheckboxIcon><gog-icon name="check" /></ng-template>
+              </gog-checkbox>
+              <gog-toggle
+                label="Overdue only"
+                labelPosition="start"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(checked)]="overdue"
+              />
+            </div>
+            <gog-slider
+              label="Total, %"
+              [range]="true"
+              [disabled]="disabled()"
+              [(rangeValue)]="totals"
+            />
+            <gog-inputfield
+              label="Min total"
+              type="number"
+              [size]="size()"
+              [disabled]="disabled()"
+              [(value)]="minTotal"
+            >
+              <span gogInputAddonStart>€</span>
+            </gog-inputfield>
+            <gog-textarea
+              label="Note for this view"
+              [rows]="2"
+              [clearable]="true"
+              [size]="size()"
+              [disabled]="disabled()"
+              [(value)]="note"
+            />
+          </div>
+        </gog-collapsible>
+
+        <div class="specimen__inline specimen__wrap">
+          <gog-chip
+            [size]="size()"
+            [disabled]="disabled()"
+            [selected]="chipFilters().paid"
+            (selectedChange)="toggleChip('paid', $event)"
+            >Paid</gog-chip
+          >
+          <gog-chip
+            [size]="size()"
+            [disabled]="disabled()"
+            [selected]="chipFilters().pending"
+            (selectedChange)="toggleChip('pending', $event)"
+            >Pending</gog-chip
+          >
+          <gog-chip
+            [size]="size()"
+            [disabled]="disabled()"
+            [selected]="chipFilters().refunded"
+            (selectedChange)="toggleChip('refunded', $event)"
+            >Refunded</gog-chip
+          >
+          @for (tag of tags(); track tag) {
+            <gog-chip
+              shape="pill"
+              iconName="filter"
+              [removable]="true"
+              [size]="size()"
+              [disabled]="disabled()"
+              (gogRemove)="removeTag(tag)"
+              >{{ tag }}</gog-chip
+            >
+          }
+        </div>
+
+        <div gogPanelFooter class="specimen__actions">
+          <gog-button variant="ghost" [size]="size()" [disabled]="disabled()">Reset</gog-button>
+          <span class="specimen__spacer"></span>
+          <button
+            type="button"
+            gogButton
+            variant="outline"
+            [size]="size()"
+            gogTooltip="CSV, with the columns the table shows"
+            (click)="exportOrders()"
+          >
+            <gog-icon name="download" /> Export
+          </button>
+        </div>
+      </gog-panel>
+
+      @if (alertShown()) {
+        <gog-alert
+          severity="warning"
+          heading="3 payments failed overnight"
+          live="off"
+          [dismissible]="true"
+          (dismissed)="alertShown.set(false)"
+        >
+          <ng-template gogAlertIcon><gog-icon name="clock" /></ng-template>
+          The bank retries them at noon. Nothing to do yet.
+        </gog-alert>
+      }
+
+      <gog-divider variant="dashed">
+        <span class="specimen__inline">
+          @if (busy()) {
+            <gog-spinner size="xsm" ariaLabel="Refreshing orders" />
+          }
+          {{ orders().length }} results
+        </span>
+      </gog-divider>
+
+      <gog-tabs ariaLabel="Order views" [size]="size()" [(activeIndex)]="ordersTab">
+        <ng-template gogTabHeader let-tab>
+          {{ tab.label() }}
+          @if (tab.label() === 'Table') {
+            <gog-tag size="xsm" variant="info">{{ orders().length }}</gog-tag>
+          }
+        </ng-template>
+
+        <gog-tab label="Table">
+          <gog-table
+            dataKey="id"
+            selectionMode="multiple"
+            [value]="orders()"
+            [pageSize]="8"
+            [showPageSizeSelect]="true"
+            [pageSizeOptions]="[5, 8, 20]"
+            [showTotal]="true"
+            [loading]="busy()"
+            [size]="size()"
+            [(selection)]="selected"
+          >
+            <gog-column field="id" header="Order" [sortable]="true" />
+            <gog-column field="customer" header="Customer" [sortable]="true">
+              <ng-template gogColumnHeader let-header>
+                <span class="specimen__inline"><gog-icon name="user" /> {{ header }}</span>
+              </ng-template>
+            </gog-column>
+            <gog-column field="total" header="Total" [sortable]="true">
+              <ng-template gogColumnBody let-row
+                >€{{ asOrder(row).total | number: '1.2-2' }}</ng-template
+              >
+            </gog-column>
+            <gog-column field="status" header="Status">
+              <ng-template gogColumnBody let-row>
+                <gog-tag [variant]="statusVariant[asOrder(row).status]" [size]="size()">{{
+                  asOrder(row).status
+                }}</gog-tag>
+              </ng-template>
+            </gog-column>
+            <gog-column field="tags" header="Tags">
+              <ng-template gogColumnBody let-row>
+                <span class="specimen__inline specimen__wrap">
+                  @for (tag of asOrder(row).tags; track tag) {
+                    <gog-chip size="xsm" [clickable]="false">{{ tag }}</gog-chip>
+                  }
+                </span>
+              </ng-template>
+            </gog-column>
+            <gog-column field="actions" header="">
+              <ng-template gogColumnBody let-row>
+                <button
+                  type="button"
+                  gogButton
+                  variant="ghost"
+                  size="xsm"
+                  [attr.aria-label]="'Actions for ' + asOrder(row).id"
+                  [gogMenuTrigger]="rowMenu"
+                  (click)="menuOrder.set(asOrder(row))"
+                >
+                  <gog-icon name="more-horizontal" />
+                </button>
+              </ng-template>
+            </gog-column>
+          </gog-table>
+          <gog-menu #rowMenu ariaLabel="Order actions">
+            <button gogMenuItem type="button"><gog-icon name="external-link" /> Open</button>
+            <button gogMenuItem type="button"><gog-icon name="pencil" /> Edit</button>
+            <button gogMenuItem type="button" (click)="refund()">
+              <gog-icon name="refresh" /> Refund…
+            </button>
+          </gog-menu>
+        </gog-tab>
+
+        <gog-tab label="Activity">
+          <ng-template gogTabContent>
+            <div class="specimen__stack">
+              <gog-spinner-overlay [loading]="busy()" [size]="size()" ariaLabel="Loading activity">
+                <gog-scroll class="specimen__log" ariaLabel="Activity">
+                  <ul>
+                    @for (line of activity; track $index) {
+                      <li>{{ line }}</li>
+                    }
+                  </ul>
+                </gog-scroll>
+              </gog-spinner-overlay>
+              <gog-paginator
+                rangeMode="ellipsis"
+                [totalPages]="12"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(page)]="activityPage"
+              />
+            </div>
+          </ng-template>
+        </gog-tab>
+
+        <gog-tab label="Help">
+          <gog-accordion [items]="faqItems" [size]="size()">
+            <ng-template gogAccordionHeader let-item>
+              <span class="specimen__inline"><gog-icon name="info" /> {{ item.title }}</span>
+            </ng-template>
+            <ng-template gogAccordionContent let-item>
+              <p class="specimen__muted">{{ item['answer'] }}</p>
+            </ng-template>
+            <ng-template gogAccordionChevron let-open="open">
+              <gog-icon [name]="open ? 'minus' : 'plus'" />
+            </ng-template>
+          </gog-accordion>
+        </gog-tab>
+      </gog-tabs>
+    </div>
+
+    <aside class="specimen__aside" aria-label="Orders sidebar">
+      <gog-calendar selectionMode="range" [size]="size()" [(value)]="range" />
+      <div class="specimen__tiles">
+        <button type="button" class="specimen__tile" gogRipple [disabled]="disabled()">
+          <gog-icon name="plus" /> New order
+        </button>
+        <button type="button" class="specimen__tile" gogRipple [disabled]="disabled()">
+          <gog-icon name="upload" /> Import
+        </button>
+      </div>
+    </aside>
+  </div>
+</section>

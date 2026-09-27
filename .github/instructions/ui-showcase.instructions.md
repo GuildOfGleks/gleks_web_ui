@@ -99,3 +99,12 @@ The showcase was rebuilt page by page between 2026-09-16 and 2026-09-27; the old
 - **Accessibility reads the DOM** through `app-doc-attrs`, never a hand-written list.
 - Plain HTML and foundation tokens for the page's own frame; library components only as the
   subject, or where a cell needs one.
+
+## The Specimen page
+
+`/specimen` is not a unit page. It composes every component and slot directive into two screens
+(account settings, orders), each at least twice, with its own switches for `size`, `disabled` and
+`loading` on every instance that takes them — the place to check spacing, alignment and a theme
+across the whole set at once. `specimen/specimen-page.spec.ts` counts every registry part in the
+template source and fails under two, so a new component has to be added there too; the outlets and
+services the page reaches through code are listed in the spec with the pattern that proves it.

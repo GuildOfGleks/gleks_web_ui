@@ -25,6 +25,22 @@ not worth carrying here.
   do this, because it also calls `stopPropagation()`. Likely fix: the dialog ignores a
   default-prevented Escape, which covers every nested control at once, including a consumer's own.
 
+- **`gog-autocomplete` and `gog-radio-group` ignore the field-label casing every other control
+  follows.** `--gog-input-label-text-transform` and `--gog-select-label-text-transform` put the
+  label in capitals in the themes that ask for it, and textarea, multiselect, datepicker and slider
+  follow; `.gog-autocomplete__label` and `.gog-radio-group__label` read no casing token at all.
+  Measured on the Specimen page on 2026-09-27: in `dark` and `light` the inputfield and select
+  labels are `uppercase`, the autocomplete's and the radio group's `none`, side by side in one form
+  ("FULL NAME", "City", "Plan"). Likely wants both to read the shared field-label token, and a
+  check that every field label does.
+
+- **A text addon wider than an icon runs under the input's text.** The input reserves a fixed
+  start inset for an addon, sized for an icon, and `gogInputAddonStart` holds whatever the consumer
+  projects: on the Specimen page on 2026-09-27 `<span gogInputAddonStart>https://</span>` ended at
+  x=360 while the typed text began at x=333, so the two overprint ("httpgleks.example"). A one-glyph
+  addon (`€`) fits, which is what the Inputfield page shows. Likely wants the inset measured from
+  the addon, or the addon laid out beside the input rather than over it.
+
 - **A toast action with an icon is taller than one without.** `.gog-toast__action` shrinks the
   button's font and line-height to `--gog-toast-action-font-size`/`-line-height` (12px), and the
   `gog-icon` inside keeps its own box, which is taller than that line: measured on the Toast page on

@@ -1,0 +1,250 @@
+// The page's own frame reads foundation tokens only, so the theme repaints it with the components.
+:host {
+  display: block;
+  max-width: 88rem;
+}
+
+.specimen__head {
+  margin-block-end: var(--gog-space-32);
+}
+
+.specimen__title {
+  margin-block: 0 var(--gog-space-8);
+  font-family: var(--gog-font-heading), sans-serif;
+  font-size: var(--gog-text-2xl);
+}
+
+.specimen__lead {
+  margin-block: 0 var(--gog-space-12);
+  max-width: 60rem;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}
+
+.specimen__switches {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-8) var(--gog-space-24);
+  padding-block: var(--gog-space-8);
+  padding-inline: var(--gog-space-12);
+  border: 1px solid var(--gog-border-color);
+  background: var(--gog-surface-color);
+  font-family: var(--gog-font-mono), monospace;
+  font-size: var(--gog-text-xs);
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gog-space-8);
+  }
+
+  select {
+    font: inherit;
+  }
+}
+
+.specimen__scene {
+  margin-block-end: var(--gog-space-40);
+  // Clears the sticky toolbar when a card link jumps here.
+  scroll-margin-block-start: var(--shell-bar-height, 0);
+}
+
+.specimen__scene-title {
+  margin-block: 0 var(--gog-space-16);
+  padding-block-end: var(--gog-space-4);
+  border-block-end: 1px solid var(--gog-border-color);
+  font-family: var(--gog-font-heading), sans-serif;
+  font-size: var(--gog-text-lg);
+}
+
+.specimen__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  align-items: start;
+  gap: var(--gog-space-24);
+}
+
+.specimen__aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-16);
+  min-width: 0;
+}
+
+.specimen__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--gog-space-16);
+  margin-block-end: var(--gog-space-24);
+}
+
+.specimen__form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  align-items: start;
+  gap: var(--gog-space-16) var(--gog-space-24);
+  padding-block: var(--gog-space-16);
+}
+
+.specimen__wide {
+  grid-column: 1 / -1;
+}
+
+.specimen__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-16);
+  min-width: 0;
+}
+
+.specimen__pad {
+  padding-block: var(--gog-space-12);
+}
+
+.specimen__checks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-12) var(--gog-space-24);
+}
+
+.specimen__inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gog-space-8);
+}
+
+.specimen__wrap {
+  flex-wrap: wrap;
+}
+
+.specimen__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-8);
+}
+
+.specimen__spacer {
+  flex: 1;
+}
+
+.specimen__muted {
+  margin: 0;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}
+
+.specimen__figure {
+  margin: 0;
+  font-family: var(--gog-font-heading), sans-serif;
+  font-size: var(--gog-text-2xl);
+  font-variant-numeric: tabular-nums;
+}
+
+.specimen__code {
+  font-size: var(--gog-text-xs);
+  text-transform: uppercase;
+}
+
+.specimen__kbd {
+  padding-inline: var(--gog-space-4);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  color: var(--gog-muted-text-color);
+  font-family: var(--gog-font-mono), monospace;
+  font-size: var(--gog-text-xs);
+}
+
+.specimen__addon {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.specimen__disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gog-space-4);
+  margin-block-start: var(--gog-space-8);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gog-accent-color);
+  font: inherit;
+  cursor: pointer;
+}
+
+.specimen__media {
+  display: grid;
+  place-items: center;
+  min-height: 6rem;
+  background: var(--gog-surface-color);
+}
+
+.specimen__media--report {
+  background: color-mix(in srgb, var(--gog-accent-color) 18%, var(--gog-surface-color));
+  color: var(--gog-accent-color);
+  font-size: var(--gog-text-2xl);
+}
+
+.specimen__terms {
+  max-height: 8rem;
+  font-size: var(--gog-text-xs);
+
+  p {
+    margin-block: 0 var(--gog-space-8);
+  }
+}
+
+.specimen__log {
+  max-height: 14rem;
+  font-family: var(--gog-font-mono), monospace;
+  font-size: var(--gog-text-xs);
+
+  ul {
+    margin: 0;
+    padding-inline-start: var(--gog-space-16);
+  }
+
+  li {
+    padding-block: var(--gog-space-4);
+  }
+}
+
+.specimen__tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gog-space-8);
+}
+
+// gogRipple on markup the app owns: the tile paints its own surface, so the ripple sits on it.
+.specimen__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gog-space-8);
+  padding: var(--gog-space-16);
+  border: 1px solid var(--gog-control-boundary-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  color: var(--gog-text-color);
+  font: inherit;
+  font-size: var(--gog-text-sm);
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+@media (max-width: 64rem) {
+  .specimen__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

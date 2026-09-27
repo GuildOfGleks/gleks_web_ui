@@ -29,6 +29,9 @@
       [routerLinkActiveOptions]="{ exact: true }"
       >Overview</a
     >
+    <a class="shell__link" routerLink="/specimen" routerLinkActive="shell__link--active"
+      >Specimen</a
+    >
 
     @for (group of groups; track group.group) {
       <p class="shell__group">{{ group.label }}</p>
