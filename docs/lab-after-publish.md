@@ -130,3 +130,28 @@ build.
   version's "Required stylesheet" row, the prose that says most of the stylesheet is prose (it no
   longer is — say what changed instead), the FAQ's bundle answer, and `theme-starter.css`
   (`npm run generate:theme-starter`, which copies the derived layer's comments too).
+
+- **The token reference gains the `--gog-field-label-*` family** (`-color`, `-font-family`,
+  `-font-size`, `-font-weight`, `-letter-spacing`, `-text-transform`, beside the existing
+  `-line-height`), `--gog-font-weight-regular`, a `-label-font-weight` for input, select,
+  multiselect, datepicker and slider, and five new `--gog-radio-group-label-*` tokens.
+  `token-reference-data.ts` is hand-maintained: check every row against the installed
+  `theme.css`, as the 21.13.0 pass did, and regenerate `theme-starter.css`. The Theming page is the
+  place for one sentence: set the family to restyle all eight field labels at once; the
+  per-component tokens still work one component at a time. The `material`/`primeng` entries on the
+  compare page and the theme generator, if they list label colours per component, want the family
+  instead.
+
+- **Field labels look different after the install, on purpose.** The radio group's label takes the
+  field-label colour and font (the accent in nine themes, not the muted grey), the autocomplete's is
+  regular weight and follows the theme's casing, and in `material`/`primeng` the autocomplete's and
+  datepicker's labels turn grey. Any lab prose or screenshot that describes the radio group's label
+  as muted is stale.
+
+- **A disabled field dims as a whole** — label, box, icons, addons — in inputfield, textarea,
+  multiselect, autocomplete and datepicker, as select, toggle, slider, checkbox and radio group
+  already did. Nothing on the site is known to describe the old split; look at any disabled demo on
+  those five pages after the install.
+
+- **Escape in an open dropdown inside a dialog closes the list, not the dialog.** The Dialog page, if
+  it has a form with a select, can say so; the Select/Multiselect keyboard prose is unaffected.

@@ -45,6 +45,24 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **The eight form controls' labels now look the same in every theme.** Measured on the showcase's
+  Specimen page, every one of the 11 themes rendered three kinds of field label among eight
+  controls: `gog-autocomplete`'s was semibold where the rest are regular, and ignored the theme's
+  casing — `--gog-autocomplete-label-text-transform` was declared and never read; `gog-radio-group`'s
+  was muted, in the body font, with no casing or tracking; and in `material` and `primeng`, whose
+  labels are muted grey, the autocomplete's and datepicker's stayed in the accent, because each
+  preset listed the label colour per component and those two were not on the list. All eight now
+  alias one shared family, **`--gog-field-label-*`** (`-color`, `-font-family`, `-font-size`,
+  `-font-weight`, `-letter-spacing`, `-text-transform`, beside the existing `-line-height`), and the
+  two presets set it once. Visible changes: the radio group's label takes the field-label colour and
+  font (the accent, in nine themes), the autocomplete's label is regular weight and follows the
+  theme's casing, and in `material`/`primeng` the autocomplete's and datepicker's labels turn grey.
+  Every existing `--gog-<component>-label-*` still works as a per-component override. New tokens:
+  the `--gog-field-label-*` family, `--gog-font-weight-regular`, `-label-font-weight` on inputfield
+  (`--gog-input-*`), select, multiselect, datepicker and slider, and `-label-font-family`,
+  `-label-font-weight`, `-label-line-height`, `-label-letter-spacing` and `-label-text-transform`
+  on `--gog-radio-group-*`.
+
 - **Escape in an open dropdown inside a `gog-dialog` closed the dialog too.** One press closed the
   list and the dialog under it. `gog-select` and `gog-multiselect` closed their panel on Escape from
   the trigger and the filter box without preventing the event, and `gog-dialog` closed on any Escape

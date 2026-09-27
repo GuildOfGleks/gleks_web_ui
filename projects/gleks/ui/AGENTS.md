@@ -195,6 +195,12 @@ Full model is in `README.md`'s Theming section; short version:
   `--gog-toast-shadow`, `--gog-menu-shadow`, `--gog-toggle-thumb-shadow` and the `*-elevated-shadow`
   pair are still the names to override for one surface; their default is now a step. Never
   hand-write a shadow in a theme block — `npm run check:elevation` fails on it.
+- **`--gog-field-label-*` sets the label above every form control at once** (since 21.15.0):
+  `-color`, `-font-family`, `-font-size`, `-font-weight`, `-line-height`, `-letter-spacing`,
+  `-text-transform`. Inputfield, textarea, select, multiselect, autocomplete, datepicker, slider
+  and radio-group alias it through their own `--gog-<block>-label-*`, which still restyle one
+  component. A theme that wants muted or sentence-case field labels sets the shared family —
+  listing the eight per-component tokens is how two of them used to be missed.
 - **Foundation includes a small character layer** (since 21.7.0, `docs/themes.md` iteration 1):
   `--gog-radius` (corner rounding), `--gog-control-border-*`/`--gog-panel-border-*`/`--gog-border-*`
   (border weight — form fields, raised surfaces, everything smaller and inline, respectively),

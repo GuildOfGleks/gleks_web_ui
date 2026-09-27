@@ -80,16 +80,12 @@
   --gog-button-font-weight: 500;
 
   /* Field labels — muted grey rather than the accent. */
-  --gog-input-label-color: var(--gog-muted-text-color);
-  --gog-input-label-font-family: var(--gog-font-body);
+  --gog-field-label-color: var(--gog-muted-text-color);
+  --gog-field-label-font-family: var(--gog-font-body);
   /* Field boundaries need 3:1 (WCAG 1.4.11), which the decorative border colour does not give;
      this is the same grey, computed to the lightness that clears it. */
   --gog-input-field-border: #878d94;
-  --gog-select-label-color: var(--gog-muted-text-color);
-  --gog-select-label-font-family: var(--gog-font-body);
   --gog-select-field-border: #878d94;
-  --gog-multiselect-label-color: var(--gog-muted-text-color);
-  --gog-multiselect-label-font-family: var(--gog-font-body);
   --gog-multiselect-field-border: #878d94;
   --gog-multiselect-checkbox-border: #878d94;
 
@@ -113,7 +109,6 @@
 
   /* Slider and spinner — neutral track rather than accent-tinted. */
   --gog-slider-track-bg: var(--gog-border-color);
-  --gog-slider-label-color: var(--gog-muted-text-color);
   --gog-spinner-track-color: var(--gog-border-color);
 
   /* Dialog / toast */

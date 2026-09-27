@@ -639,6 +639,7 @@ export type GogTokenName =
   | '--gog-datepicker-label-color'
   | '--gog-datepicker-label-font-family'
   | '--gog-datepicker-label-font-size'
+  | '--gog-datepicker-label-font-weight'
   | '--gog-datepicker-label-letter-spacing'
   | '--gog-datepicker-label-line-height'
   | '--gog-datepicker-label-text-transform'
@@ -747,7 +748,13 @@ export type GogTokenName =
   | '--gog-field-icon-glyph'
   | '--gog-field-icon-glyph-sm'
   | '--gog-field-icon-glyph-xsm'
+  | '--gog-field-label-color'
+  | '--gog-field-label-font-family'
+  | '--gog-field-label-font-size'
+  | '--gog-field-label-font-weight'
+  | '--gog-field-label-letter-spacing'
   | '--gog-field-label-line-height'
+  | '--gog-field-label-text-transform'
   | '--gog-field-lg-font-size'
   | '--gog-field-lg-icon-inset'
   | '--gog-field-lg-icon-offset'
@@ -782,6 +789,7 @@ export type GogTokenName =
   | '--gog-font-weight-bold'
   | '--gog-font-weight-heavy'
   | '--gog-font-weight-medium'
+  | '--gog-font-weight-regular'
   | '--gog-font-weight-semibold'
   | '--gog-hover-color'
   | '--gog-icon-fallback-size'
@@ -825,6 +833,7 @@ export type GogTokenName =
   | '--gog-input-label-color'
   | '--gog-input-label-font-family'
   | '--gog-input-label-font-size'
+  | '--gog-input-label-font-weight'
   | '--gog-input-label-letter-spacing'
   | '--gog-input-label-line-height'
   | '--gog-input-label-text-transform'
@@ -922,6 +931,7 @@ export type GogTokenName =
   | '--gog-multiselect-label-color'
   | '--gog-multiselect-label-font-family'
   | '--gog-multiselect-label-font-size'
+  | '--gog-multiselect-label-font-weight'
   | '--gog-multiselect-label-letter-spacing'
   | '--gog-multiselect-label-line-height'
   | '--gog-multiselect-label-text-transform'
@@ -1072,7 +1082,12 @@ export type GogTokenName =
   | '--gog-radio-gap'
   | '--gog-radio-group-gap'
   | '--gog-radio-group-label-color'
+  | '--gog-radio-group-label-font-family'
+  | '--gog-radio-group-label-font-weight'
+  | '--gog-radio-group-label-letter-spacing'
+  | '--gog-radio-group-label-line-height'
   | '--gog-radio-group-label-size'
+  | '--gog-radio-group-label-text-transform'
   | '--gog-radio-group-option-gap'
   | '--gog-radio-group-option-gap-horizontal'
   | '--gog-radio-label-color'
@@ -1153,6 +1168,7 @@ export type GogTokenName =
   | '--gog-select-label-color'
   | '--gog-select-label-font-family'
   | '--gog-select-label-font-size'
+  | '--gog-select-label-font-weight'
   | '--gog-select-label-letter-spacing'
   | '--gog-select-label-line-height'
   | '--gog-select-label-text-transform'
@@ -1216,6 +1232,7 @@ export type GogTokenName =
   | '--gog-slider-label-color'
   | '--gog-slider-label-font-family'
   | '--gog-slider-label-font-size'
+  | '--gog-slider-label-font-weight'
   | '--gog-slider-label-letter-spacing'
   | '--gog-slider-label-line-height'
   | '--gog-slider-label-text-transform'
@@ -1618,6 +1635,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-font-weight-bold',
       '--gog-font-weight-heavy',
       '--gog-font-weight-medium',
+      '--gog-font-weight-regular',
       '--gog-font-weight-semibold',
       '--gog-letter-spacing',
       '--gog-line-height-loose',
@@ -1819,7 +1837,13 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-elevated-surface-color',
       '--gog-field-error-line-height',
       '--gog-field-float-label-over-gap',
+      '--gog-field-label-color',
+      '--gog-field-label-font-family',
+      '--gog-field-label-font-size',
+      '--gog-field-label-font-weight',
+      '--gog-field-label-letter-spacing',
       '--gog-field-label-line-height',
+      '--gog-field-label-text-transform',
       '--gog-field-lg-font-size',
       '--gog-field-lg-icon-inset',
       '--gog-field-lg-icon-offset',
@@ -2306,7 +2330,12 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-radio-gap',
       '--gog-radio-group-gap',
       '--gog-radio-group-label-color',
+      '--gog-radio-group-label-font-family',
+      '--gog-radio-group-label-font-weight',
+      '--gog-radio-group-label-letter-spacing',
+      '--gog-radio-group-label-line-height',
       '--gog-radio-group-label-size',
+      '--gog-radio-group-label-text-transform',
       '--gog-radio-group-option-gap',
       '--gog-radio-group-option-gap-horizontal',
       '--gog-radio-label-color',
@@ -2556,6 +2585,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-datepicker-label-color',
       '--gog-datepicker-label-font-family',
       '--gog-datepicker-label-font-size',
+      '--gog-datepicker-label-font-weight',
       '--gog-datepicker-label-letter-spacing',
       '--gog-datepicker-label-line-height',
       '--gog-datepicker-label-text-transform',
@@ -2639,6 +2669,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-input-label-color',
       '--gog-input-label-font-family',
       '--gog-input-label-font-size',
+      '--gog-input-label-font-weight',
       '--gog-input-label-letter-spacing',
       '--gog-input-label-line-height',
       '--gog-input-label-text-transform',
@@ -2711,6 +2742,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-multiselect-label-color',
       '--gog-multiselect-label-font-family',
       '--gog-multiselect-label-font-size',
+      '--gog-multiselect-label-font-weight',
       '--gog-multiselect-label-letter-spacing',
       '--gog-multiselect-label-line-height',
       '--gog-multiselect-label-text-transform',
@@ -2962,6 +2994,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-select-label-color',
       '--gog-select-label-font-family',
       '--gog-select-label-font-size',
+      '--gog-select-label-font-weight',
       '--gog-select-label-letter-spacing',
       '--gog-select-label-line-height',
       '--gog-select-label-text-transform',
@@ -3037,6 +3070,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-slider-label-color',
       '--gog-slider-label-font-family',
       '--gog-slider-label-font-size',
+      '--gog-slider-label-font-weight',
       '--gog-slider-label-letter-spacing',
       '--gog-slider-label-line-height',
       '--gog-slider-label-text-transform',

@@ -16,15 +16,6 @@ not worth carrying here.
 
 ## Defects — first
 
-- **`gog-autocomplete` and `gog-radio-group` ignore the field-label casing every other control
-  follows.** `--gog-input-label-text-transform` and `--gog-select-label-text-transform` put the
-  label in capitals in the themes that ask for it, and textarea, multiselect, datepicker and slider
-  follow; `.gog-autocomplete__label` and `.gog-radio-group__label` read no casing token at all.
-  Measured on the Specimen page on 2026-09-27: in `dark` and `light` the inputfield and select
-  labels are `uppercase`, the autocomplete's and the radio group's `none`, side by side in one form
-  ("FULL NAME", "City", "Plan"). Likely wants both to read the shared field-label token, and a
-  check that every field label does.
-
 - **A text addon wider than an icon runs under the input's text.** The input reserves a fixed
   start inset for an addon, sized for an icon, and `gogInputAddonStart` holds whatever the consumer
   projects: on the Specimen page on 2026-09-27 `<span gogInputAddonStart>https://</span>` ended at

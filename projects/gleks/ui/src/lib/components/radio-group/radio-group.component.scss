@@ -9,10 +9,15 @@
   gap: var(--gog-radio-group-gap);
 }
 
+/* The group's label is a field label, set like the one above every other form control. */
 .gog-radio-group__label {
-  font-family: var(--gog-radio-font-family);
+  font-family: var(--gog-radio-group-label-font-family);
   font-size: var(--gog-radio-group-label-size);
+  font-weight: var(--gog-radio-group-label-font-weight);
+  line-height: var(--gog-radio-group-label-line-height);
   color: var(--gog-radio-group-label-color);
+  text-transform: var(--gog-radio-group-label-text-transform);
+  letter-spacing: var(--gog-radio-group-label-letter-spacing);
 }
 
 .gog-radio-group__options {

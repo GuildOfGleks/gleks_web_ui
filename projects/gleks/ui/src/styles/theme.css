@@ -49,8 +49,9 @@
   --gog-text-2xl: 2rem;
   --gog-text-3xl: 3rem;
 
-  /* Weight is a character axis: a house style changes these four and every component follows.
-     No 400 step, because nothing paints it. */
+  /* Weight is a character axis: a house style changes these and every component follows. The 400
+     step is what field labels are set in. */
+  --gog-font-weight-regular: 400;
   --gog-font-weight-medium: 500;
   --gog-font-weight-semibold: 600;
   --gog-font-weight-bold: 700;
@@ -441,6 +442,15 @@
      the label and the error message (both may wrap) — declared once and aliased per component. */
   --gog-field-line-height: var(--gog-line-height-normal);
   --gog-field-label-line-height: var(--gog-line-height-snug);
+
+  /* The label above every form control, declared once so a theme restyles all eight together;
+     each component's `--gog-<block>-label-*` aliases these. */
+  --gog-field-label-color: var(--gog-accent-color);
+  --gog-field-label-font-family: var(--gog-font-heading);
+  --gog-field-label-font-size: var(--gog-text-sm);
+  --gog-field-label-font-weight: var(--gog-font-weight-regular);
+  --gog-field-label-letter-spacing: var(--gog-letter-spacing);
+  --gog-field-label-text-transform: var(--gog-text-transform);
   --gog-field-error-line-height: var(--gog-line-height-snug);
 
   --gog-field-md-padding-y: var(--gog-control-padding-y);
@@ -942,8 +952,13 @@
      Sizes reuse the `--gog-control-checkbox-*` scale. */
   --gog-radio-font-family: var(--gog-font-body);
   --gog-radio-group-gap: var(--gog-space-12);
-  --gog-radio-group-label-size: var(--gog-text-sm);
-  --gog-radio-group-label-color: var(--gog-muted-text-color);
+  --gog-radio-group-label-size: var(--gog-field-label-font-size);
+  --gog-radio-group-label-color: var(--gog-field-label-color);
+  --gog-radio-group-label-font-family: var(--gog-field-label-font-family);
+  --gog-radio-group-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-radio-group-label-line-height: var(--gog-field-label-line-height);
+  --gog-radio-group-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  --gog-radio-group-label-text-transform: var(--gog-field-label-text-transform);
   --gog-radio-group-option-gap: var(--gog-space-8);
   --gog-radio-group-option-gap-horizontal: var(--gog-space-20);
   --gog-radio-gap: var(--gog-space-12);
@@ -1098,14 +1113,14 @@
      `-bg`, `-color`, `-font-size`, `-padding-x` and `-padding-y` are intentionally NOT declared
      (per-instance escape hatch). */
   --gog-autocomplete-font-family: var(--gog-font-body);
-  --gog-autocomplete-label-font-family: var(--gog-font-heading);
+  --gog-autocomplete-label-font-family: var(--gog-field-label-font-family);
   --gog-autocomplete-gap: var(--gog-space-4);
-  --gog-autocomplete-label-color: var(--gog-accent-color);
-  --gog-autocomplete-label-font-size: var(--gog-text-sm);
+  --gog-autocomplete-label-color: var(--gog-field-label-color);
+  --gog-autocomplete-label-font-size: var(--gog-field-label-font-size);
   --gog-autocomplete-label-line-height: var(--gog-field-label-line-height);
-  --gog-autocomplete-label-font-weight: var(--gog-font-weight-semibold);
-  --gog-autocomplete-label-letter-spacing: var(--gog-letter-spacing);
-  --gog-autocomplete-label-text-transform: var(--gog-text-transform);
+  --gog-autocomplete-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-autocomplete-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  --gog-autocomplete-label-text-transform: var(--gog-field-label-text-transform);
   --gog-autocomplete-field-bg: var(--gog-surface-color);
   --gog-autocomplete-text-color: var(--gog-text-color);
   --gog-autocomplete-placeholder-color: var(--gog-muted-text-color);
@@ -1207,13 +1222,14 @@
      `-bg`, `-color`, `-font-size`, `-padding-x` and `-padding-y` are intentionally NOT declared
      (per-instance escape hatch). */
   --gog-datepicker-font-family: var(--gog-font-body);
-  --gog-datepicker-label-font-family: var(--gog-font-heading);
+  --gog-datepicker-label-font-family: var(--gog-field-label-font-family);
   --gog-datepicker-gap: var(--gog-space-4);
-  --gog-datepicker-label-color: var(--gog-accent-color);
-  --gog-datepicker-label-font-size: var(--gog-text-sm);
+  --gog-datepicker-label-color: var(--gog-field-label-color);
+  --gog-datepicker-label-font-size: var(--gog-field-label-font-size);
   --gog-datepicker-label-line-height: var(--gog-field-label-line-height);
-  --gog-datepicker-label-letter-spacing: var(--gog-letter-spacing);
-  --gog-datepicker-label-text-transform: var(--gog-text-transform);
+  --gog-datepicker-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-datepicker-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  --gog-datepicker-label-text-transform: var(--gog-field-label-text-transform);
   --gog-datepicker-field-bg: var(--gog-surface-color);
   --gog-datepicker-text-color: var(--gog-text-color);
   --gog-datepicker-placeholder-color: var(--gog-muted-text-color);
@@ -1281,13 +1297,14 @@
 
   /* ── Input field ───────────────────────────────────────────────────────────── */
   --gog-input-font-family: var(--gog-font-body);
-  --gog-input-label-font-family: var(--gog-font-heading);
+  --gog-input-label-font-family: var(--gog-field-label-font-family);
   --gog-input-gap: var(--gog-space-4);
-  --gog-input-label-color: var(--gog-accent-color);
-  --gog-input-label-font-size: var(--gog-text-sm);
+  --gog-input-label-color: var(--gog-field-label-color);
+  --gog-input-label-font-size: var(--gog-field-label-font-size);
   --gog-input-label-line-height: var(--gog-field-label-line-height);
-  --gog-input-label-letter-spacing: var(--gog-letter-spacing);
-  --gog-input-label-text-transform: var(--gog-text-transform);
+  --gog-input-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-input-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  --gog-input-label-text-transform: var(--gog-field-label-text-transform);
   --gog-input-field-bg: var(--gog-surface-color);
   --gog-input-field-border: var(--gog-accent-dim);
   --gog-input-field-border-width: var(--gog-control-border-width);
@@ -1352,16 +1369,17 @@
 
   /* ── Multiselect ───────────────────────────────────────────────────────────── */
   --gog-multiselect-font-family: var(--gog-font-body);
-  --gog-multiselect-label-font-family: var(--gog-font-heading);
+  --gog-multiselect-label-font-family: var(--gog-field-label-font-family);
   --gog-multiselect-gap: var(--gog-space-4);
   /* The gap between rows (inside a row is `-option-gap-inline`). */
   --gog-multiselect-option-gap: var(--gog-space-4);
   --gog-multiselect-options-padding: var(--gog-space-4);
-  --gog-multiselect-label-color: var(--gog-accent-color);
-  --gog-multiselect-label-font-size: var(--gog-text-sm);
+  --gog-multiselect-label-color: var(--gog-field-label-color);
+  --gog-multiselect-label-font-size: var(--gog-field-label-font-size);
   --gog-multiselect-label-line-height: var(--gog-field-label-line-height);
-  --gog-multiselect-label-letter-spacing: var(--gog-letter-spacing);
-  --gog-multiselect-label-text-transform: var(--gog-text-transform);
+  --gog-multiselect-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-multiselect-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  --gog-multiselect-label-text-transform: var(--gog-field-label-text-transform);
   --gog-multiselect-field-bg: var(--gog-surface-color);
   --gog-multiselect-field-border: var(--gog-accent-dim);
   --gog-multiselect-field-border-width: var(--gog-control-border-width);
@@ -1637,13 +1655,14 @@
 
   /* ── Select ────────────────────────────────────────────────────────────────── */
   --gog-select-font-family: var(--gog-font-body);
-  --gog-select-label-font-family: var(--gog-font-heading);
+  --gog-select-label-font-family: var(--gog-field-label-font-family);
   --gog-select-gap: var(--gog-space-4);
-  --gog-select-label-color: var(--gog-accent-color);
-  --gog-select-label-font-size: var(--gog-text-sm);
+  --gog-select-label-color: var(--gog-field-label-color);
+  --gog-select-label-font-size: var(--gog-field-label-font-size);
   --gog-select-label-line-height: var(--gog-field-label-line-height);
-  --gog-select-label-letter-spacing: var(--gog-letter-spacing);
-  --gog-select-label-text-transform: var(--gog-text-transform);
+  --gog-select-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-select-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  --gog-select-label-text-transform: var(--gog-field-label-text-transform);
   --gog-select-field-bg: var(--gog-surface-color);
   --gog-select-field-border: var(--gog-accent-dim);
   --gog-select-field-border-width: var(--gog-control-border-width);
@@ -1761,15 +1780,16 @@
   --gog-slider-auto-width: 240px;
   /* Track length of a vertical slider; `-auto-width` covers the horizontal case. */
   --gog-slider-vertical-length: 160px;
-  --gog-slider-label-font-family: var(--gog-font-heading);
+  --gog-slider-label-font-family: var(--gog-field-label-font-family);
   --gog-slider-value-font-family: var(--gog-font-mono);
   --gog-slider-error-font-family: var(--gog-font-body);
   --gog-slider-gap: var(--gog-space-8);
-  --gog-slider-label-color: var(--gog-accent-color);
-  --gog-slider-label-font-size: var(--gog-text-sm);
+  --gog-slider-label-color: var(--gog-field-label-color);
+  --gog-slider-label-font-size: var(--gog-field-label-font-size);
   --gog-slider-label-line-height: var(--gog-field-label-line-height);
-  --gog-slider-label-letter-spacing: var(--gog-letter-spacing);
-  --gog-slider-label-text-transform: var(--gog-text-transform);
+  --gog-slider-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-slider-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  --gog-slider-label-text-transform: var(--gog-field-label-text-transform);
   --gog-slider-value-color: var(--gog-accent-color);
   --gog-slider-value-font-size: var(--gog-text-sm);
   --gog-slider-value-line-height: var(--gog-line-height-none);

@@ -171,6 +171,12 @@ variant and size classes:
 > "what a raised surface looks like here". Change one and every raised surface follows, which is
 > the intent; the rest of `--gog-panel-*` belongs to the component alone.
 
+**One family styles the label above every form control.** Since 21.15.0, `--gog-field-label-*`
+(`-color`, `-font-family`, `-font-size`, `-font-weight`, `-line-height`, `-letter-spacing`,
+`-text-transform`) is what inputfield, textarea, select, multiselect, autocomplete, datepicker,
+slider and radio-group labels derive from. Set it to restyle all eight together; each component's
+own `--gog-<component>-label-*` still restyles that one alone.
+
 **Shadows come off a ladder, not out of a stylesheet.** Since 21.12.0 every raised surface reads
 one of six heights — `--gog-elevation-0` through `-5`, with Z doubling: 0, 1, 2, 4, 8, 16. Step 3
 is anything anchored to a control (a dropdown panel, a tooltip, a menu), step 4 a toast, step 5 a
