@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 
 import { CollapsibleComponent } from './collapsible.component';
 import { GogCollapsibleContentDirective } from './collapsible-content.directive';
@@ -292,5 +293,48 @@ describe('gogCollapsibleTrigger on an element that already has semantics', () =>
     const trigger = fixture.nativeElement.querySelector('[gogCollapsibleTrigger]') as HTMLElement;
     expect(trigger.getAttribute('role')).toBe('link');
     expect(trigger.getAttribute('tabindex')).toBe('-1');
+  });
+});
+
+// Open content stops clipping once it has finished animating, so a dropdown inside is not cut at
+// its edge; a deliberate --gog-collapsible-max-height cap keeps clipping.
+describe('GogCollapsibleContentDirective — settled', () => {
+  let fixture: ComponentFixture<CollapsibleHostComponent>;
+  const content = () =>
+    (fixture.nativeElement as HTMLElement).querySelector('[gogCollapsibleContent]') as HTMLElement;
+  const settled = () => content().classList.contains('gog-collapsible__content--settled');
+
+  beforeEach(async () => {
+    vi.useFakeTimers();
+    await TestBed.configureTestingModule({
+      imports: [CollapsibleHostComponent],
+    }).compileComponents();
+    fixture = TestBed.createComponent(CollapsibleHostComponent);
+    fixture.detectChanges();
+  });
+
+  afterEach(() => vi.useRealTimers());
+
+  it('settles after opening, and unsettles the moment it starts closing', () => {
+    expect(settled()).toBe(false);
+
+    fixture.componentInstance.open.set(true);
+    fixture.detectChanges();
+    vi.runAllTimers();
+    fixture.detectChanges();
+    expect(settled()).toBe(true);
+
+    fixture.componentInstance.open.set(false);
+    fixture.detectChanges();
+    expect(settled()).toBe(false);
+  });
+
+  it('never settles content capped to a length', () => {
+    content().style.maxHeight = '120px';
+    fixture.componentInstance.open.set(true);
+    fixture.detectChanges();
+    vi.runAllTimers();
+    fixture.detectChanges();
+    expect(settled()).toBe(false);
   });
 });

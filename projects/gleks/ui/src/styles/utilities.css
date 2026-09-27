@@ -190,6 +190,12 @@ gog-collapsible .gog-collapsible__trigger[aria-disabled='true'] {
   opacity: 1;
 }
 
+/* Open and done animating: nothing left to clip, and a dropdown inside must not be. A cap set with
+   --gog-collapsible-max-height keeps clipping — the directive never settles a capped one. */
+.gog-collapsible__content--settled {
+  overflow: visible;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gog-collapsible__content {
     transition: none;

@@ -45,6 +45,14 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A dropdown, menu or tooltip inside an open `gog-collapsible` or collapsible `gog-panel` was cut
+  off at the content's edge.** The content kept `overflow: hidden` while open, though only the
+  height animation needs it. It now clips while opening and closing and stops once open and
+  settled — measured on the showcase's Collapsible page, a select's list that had been cut at the
+  content's top now shows whole. **A cap still clips**: content with `--gog-collapsible-max-height`
+  set to a length never settles, as documented. `gog-accordion` clips its open body in its own way
+  and is not covered yet.
+
 - **A virtualized `gog-table` rendered every row on the server, and in the browser whenever
   `maxHeight` was not in `px`, `%` or `vh`.** Until the scroller reported a height, the window took
   its viewport from parsing `maxHeight`, and anything it could not parse — `rem`, `em`, `calc()` —

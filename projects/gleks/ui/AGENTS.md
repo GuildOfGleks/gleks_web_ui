@@ -1549,7 +1549,9 @@ you do not have to add `gogRipple` beside it.
 An open panel is as tall as its content — `--gog-collapsible-max-height` defaults to
 `max-content`. Set it to a length on an instance to cap one deliberately; the panel is
 `overflow: hidden`, so a cap **clips** rather than scrolls. (Before 21.4.4 that default was
-`480px`, which clipped taller panels silently.)
+`480px`, which clipped taller panels silently.) Uncapped, open content stops clipping once it has
+finished animating (since 21.15.0), so a `gog-select`, menu or tooltip inside it is not cut off at
+its edge; it clips only while opening and closing.
 
 #### `gog-tabs` + `gog-tab`
 
@@ -1666,8 +1668,8 @@ Model: `open: boolean` (default `true`, ignored while `collapsible` is off). No 
   `GOG_CONFIG.labels.togglePanel` (default `'Toggle section'`).
 - **A non-collapsible panel does not clip.** It undoes the collapse geometry it inherits,
   `overflow` included, so a dropdown or menu opened inside it escapes the panel's box. A
-  _collapsible_ one does clip while animating, exactly like `gog-collapsible` — prefer
-  `[appendToBody]` for an overlay inside one.
+  _collapsible_ one clips only while animating, exactly like `gog-collapsible` — once open, an
+  overlay inside it is not cut off (since 21.15.0; before, prefer `[appendToBody]` there).
 - **`loading` keeps the heading and the footer** and replaces only the body: a page section is
   titled before its content arrives, and blanking the title would move the layout twice.
 - **The surface is never itself a link** — there is no `gogPanelLink`. Controls live inside a

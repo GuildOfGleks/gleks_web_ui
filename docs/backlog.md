@@ -55,16 +55,13 @@ gogButton …>` works for both, and the Menu and Tooltip pages use it and say wh
   announce was not checked, and should be before choosing between a grid role and a visually
   hidden state.
 
-- **A dropdown inside an open collapsible, accordion body or collapsible panel is clipped.**
-  `.gog-collapsible__content` keeps `overflow: hidden` while _open_ — the height animation needs
-  it closed, not open — so a `gog-select` rendered in the content has its list cut off at the
-  content's bottom edge. Measured on the Collapsible page on 2026-09-26: the list ran from 224px
-  to 484px, the content ended at 228px, and the element on top at the list's bottom was the page
-  section, not the list. The same rule reaches `gog-panel [collapsible]`, which uses that class
-  (its `--static` variant undoes overflow only for a panel that cannot collapse, and says why),
-  and `gog-accordion`'s open body and body-inner have their own `overflow: hidden` — both read
-  from the stylesheets, not measured. Likely fix: hidden only while closed or animating. The
-  Collapsible page keeps the clipped demo so the fix has a case.
+- **A dropdown inside an open `gog-accordion` body is clipped.** `gog-collapsible` and
+  `gog-panel [collapsible]` stopped clipping once open in 21.15.0; the accordion animates its own
+  way (`grid-template-rows`) and clips in three places — the body, the body-inner, and the last
+  item, where `overflow: hidden` is what rounds the bottom corners, so the header's background does
+  not bleed past the radius. Unclipping the last one needs the corners carried another way (a
+  radius on the header and body themselves) before the overflow can go; the other two can follow
+  the collapsible's settle-after-open approach. Read from the stylesheets, not measured.
 
 - **`collapseOnFocusOut` closes a collapsible when its own content is clicked.** Click the plain
   text inside the open content while the trigger has focus: focus moves to `<body>`,

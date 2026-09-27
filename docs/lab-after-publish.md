@@ -168,3 +168,7 @@ build.
 - **A virtualized table's `maxHeight` takes any CSS length, and the server prerenders a window.**
   If the Table page's virtualize card or its `maxHeight` row advises `px`, drop the advice; a
   prerendered lab page with a virtualized table now ships tens of rows rather than all of them.
+
+- **An overlay inside an open `gog-collapsible` or collapsible `gog-panel` is no longer clipped.**
+  Any lab page that advises `[appendToBody]` for a select inside one, or says a collapsible clips
+  its open content, is stale for the uncapped case; a capped one still clips.

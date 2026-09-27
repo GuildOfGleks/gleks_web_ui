@@ -89,10 +89,9 @@
 
     <h3>an overlay inside the content</h3>
     <p class="collapsible-page__note">
-      Open the select: its list is cut off at the bottom of the content. The content keeps
-      <code>overflow: hidden</code> while open — the same rule that makes a capped panel above
-      scroll — so a dropdown, menu or tooltip rendered inside an open collapsible is clipped. This
-      is a defect, filed; the demo stays so the fix has a case to show.
+      Open the select: its list runs past the content's edge. The content clips only while it
+      animates; open and settled it does not, so a dropdown, menu or tooltip inside is whole. A
+      capped panel, like the one above, keeps clipping — that cap is the point of it.
     </p>
     <div class="collapsible-page__stack">
       <gog-collapsible [(open)]="selectOpen">
