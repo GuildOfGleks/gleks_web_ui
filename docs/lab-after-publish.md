@@ -188,3 +188,6 @@ build.
   readers to use `<button gogButton>` rather than `gog-button` for them, that advice can go; either
   works. The Multiselect page's error example now links the error to the trigger for screen
   readers, which any accessibility prose there can say.
+
+- **`gog-spinner-overlay` makes its content `inert` while loading.** If the Spinner page tells
+  readers to disable controls inside a loading region themselves, that advice can go.

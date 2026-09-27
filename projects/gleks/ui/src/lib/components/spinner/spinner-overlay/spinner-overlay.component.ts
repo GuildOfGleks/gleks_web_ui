@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  DOCUMENT,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  untracked,
+  viewChild,
+} from '@angular/core';
 
 import { GogSize, GogSpinnerVariant } from '@guildofgleks/ui/shared';
 import { SpinnerComponent } from '../spinner.component';
@@ -30,4 +41,37 @@ export class SpinnerOverlayComponent {
    * config key to fall through to, so "unset" would mean nothing there.
    */
   readonly variant = input<GogSpinnerVariant | undefined>(undefined);
+
+  private readonly scrim = viewChild<ElementRef<HTMLElement>>('scrim');
+
+  constructor() {
+    const document = inject(DOCUMENT);
+    const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+    /*
+     * `inert` takes focus out of the content, and the browser drops it on <body> — which is where
+     * a keyboard user who pressed "Refresh" inside the region would be left. So the focused element
+     * is noted before the content turns inert, focus waits on the scrim while loading, and goes
+     * back once the region is live again.
+     */
+    let returnTo: HTMLElement | null = null;
+    effect(() => {
+      if (!this.loading()) return;
+      untracked(() => {
+        const active = document.activeElement as HTMLElement | null;
+        returnTo = active && active !== host && host.contains(active) ? active : null;
+      });
+    });
+    afterRenderEffect(() => {
+      const loading = this.loading();
+      const scrim = this.scrim()?.nativeElement;
+      if (loading) {
+        if (returnTo && scrim) scrim.focus({ preventScroll: true });
+        return;
+      }
+      const target = returnTo;
+      returnTo = null;
+      const lost = !document.activeElement || document.activeElement === document.body;
+      if (target && lost && target.isConnected) target.focus({ preventScroll: true });
+    });
+  }
 }

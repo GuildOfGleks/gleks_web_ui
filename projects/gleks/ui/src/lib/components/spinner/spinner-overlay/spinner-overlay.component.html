@@ -1,10 +1,14 @@
 <div class="gog-spinner-overlay">
-  <div class="gog-spinner-overlay__content">
+  <!--
+    `inert` while loading: the scrim stops the pointer, and this stops the keyboard and assistive
+    tech, so nothing in the region can be pressed mid-load.
+  -->
+  <div class="gog-spinner-overlay__content" [attr.inert]="loading() ? '' : null">
     <ng-content />
   </div>
 
   @if (loading()) {
-    <div class="gog-spinner-overlay__scrim">
+    <div #scrim class="gog-spinner-overlay__scrim" tabindex="-1">
       <gog-spinner [size]="size()" [ariaLabel]="ariaLabel()" [variant]="variant()" />
     </div>
   }

@@ -71,6 +71,13 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-spinner-overlay` covered its content from the pointer and not from the keyboard.** Tab
+  walked into a loading region and Enter pressed its buttons mid-load. The content is now `inert`
+  while `loading`, and focus that was inside when loading began waits on the spinner and comes back
+  when it ends, rather than being dropped on `<body>` by `inert`. Verified in Chrome on the
+  showcase's Spinner page: Shift+Tab steps over the loading region, and focus on its Export button
+  goes to the spinner and back.
+
 - **`gog-collapsible [collapseOnFocusOut]` closed when its own content was clicked.** A press on
   the content's plain text moves focus to `<body>` with no `relatedTarget` — the same focusout a
   press elsewhere gives — and the component read both as focus leaving. A press inside is now

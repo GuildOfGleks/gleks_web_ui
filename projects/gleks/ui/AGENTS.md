@@ -1384,6 +1384,11 @@ defaults: neither has a config key to fall through to.
 </gog-spinner-overlay>
 ```
 
+While `loading`, the content is `inert` as well as covered (since 21.15.0): Tab skips it and
+nothing in it can be pressed. Focus that was inside when loading began waits on the spinner and
+is handed back when it ends, so a "Refresh" pressed inside the region does not strand the reader
+on `<body>`. You do not need to disable the controls inside yourself.
+
 #### `gog-skeleton`
 
 | Input             | Type                                               | Default                                              |

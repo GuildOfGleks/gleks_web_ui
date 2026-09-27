@@ -44,8 +44,8 @@
     <h3>gog-spinner-overlay</h3>
     <p class="spinner-page__note">
       The content stays rendered underneath, so nothing jumps when loading ends. The scrim stops the
-      pointer; it does <strong>not</strong> stop the keyboard — Tab still reaches the button below
-      while it is covered. Disable what must not be pressed while it loads; the gap is filed.
+      pointer, and the content is <code>inert</code>, so Tab skips it too. Focus that was inside —
+      press Export, then load — waits on the spinner and comes back when loading ends.
     </p>
     <div class="spinner-page__demo">
       <gog-spinner-overlay [loading]="regionLoading()" ariaLabel="Loading invoices">
