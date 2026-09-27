@@ -190,16 +190,15 @@
       </div>
     </div>
 
-    <h3>four inputs that do nothing here</h3>
+    <h3>four deprecated inputs</h3>
     <p class="autocomplete-page__note">
       <code>filter</code>, <code>filterPlaceholder</code>, <code>filterPosition</code> and
-      <code>filterEmptyMessage</code> are in the API table because the compiler puts them there:
-      this control extends the same <code>GogDropdownBase</code> as <code>gog-select</code>, and
-      they describe the search box <em>inside</em> a panel. There is no such box here — the trigger
-      is the search box — so binding any of the four changes nothing. The two that do carry over are
-      <code>filterMatch</code>, which the local filtering above reads, and
-      <code>emptyMessage</code>, which is this control's own input and not
-      <code>filterEmptyMessage</code>.
+      <code>filterEmptyMessage</code> are inherited from the same <code>GogDropdownBase</code> as
+      <code>gog-select</code>, and describe the search box <em>inside</em> a panel. There is no such
+      box here — the trigger is the search box — so they never did anything on this control. They
+      are deprecated on it since 21.15.0 and go in 21.16.0; use <code>placeholder</code> and
+      <code>emptyMessage</code>. <code>filterMatch</code> is not among them: the local filtering
+      above reads it.
     </p>
   </app-doc-section>
 

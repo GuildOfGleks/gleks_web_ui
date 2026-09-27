@@ -86,6 +86,15 @@ reached 1.0, so breaking changes may land in minor versions.
   is identical to its previous version once comments and whitespace are removed — so nothing
   renders differently and no override is affected.
 
+### Deprecated
+
+- **`gog-autocomplete`'s `filter`, `filterPlaceholder`, `filterPosition` and `filterEmptyMessage`**,
+  removed in 21.16.0. They are inherited from the base the three dropdowns share and describe a
+  search box inside the panel; the autocomplete's trigger is its search box, so they never did
+  anything on it — while type-checking, and while `GOG_CONFIG.dropdown.filter` read as though it
+  configured this control too. Remove the bindings; use `placeholder` and `emptyMessage`.
+  `filterMatch` stays: it does filter the list. `GOG_DEPRECATIONS` lists the four.
+
 ### Fixed
 
 - **`gog-multiselect`'s chevron pointed down whether open or not.** Open, it swapped to `chevron-up`

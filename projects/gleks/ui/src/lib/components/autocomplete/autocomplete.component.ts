@@ -14,7 +14,11 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { GogDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
+import {
+  GogDropdownBase,
+  type GogDropdownFilterPosition,
+  type GogDropdownOption,
+} from '@guildofgleks/ui/shared';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
@@ -101,6 +105,29 @@ export class AutocompleteComponent<
   readonly loading = input(false);
   /** Shown in place of the list when nothing matches. */
   readonly emptyMessage = input('No matches');
+
+  /*
+   * Four inputs inherited from GogDropdownBase describe a search box *inside* the panel, which
+   * this control does not have: its trigger is the search box. They are restated here only to be
+   * deprecated on this component; they never did anything on it. `filterMatch` is not among them —
+   * it does filter the list — and a query that matches nothing shows `emptyMessage`.
+   */
+  /**
+   * @deprecated since 21.15.0 (2026-09-27) — remove the binding; the field itself filters. Removed in 21.16.0.
+   */
+  override readonly filter = input<boolean | undefined>(undefined);
+  /**
+   * @deprecated since 21.15.0 (2026-09-27) — use `placeholder`; the panel has no search box. Removed in 21.16.0.
+   */
+  override readonly filterPlaceholder = input('Search...');
+  /**
+   * @deprecated since 21.15.0 (2026-09-27) — remove the binding; the panel has no search box. Removed in 21.16.0.
+   */
+  override readonly filterPosition = input<GogDropdownFilterPosition | undefined>(undefined);
+  /**
+   * @deprecated since 21.15.0 (2026-09-27) — use `emptyMessage`. Removed in 21.16.0.
+   */
+  override readonly filterEmptyMessage = input('No matches');
   /**
    * Whether free text that matches no option is discarded when the field loses focus.
    *

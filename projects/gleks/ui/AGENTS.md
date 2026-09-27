@@ -892,6 +892,11 @@ panel-filter box; it filters/searches off what's typed in the field itself.
 | `forceSelection`                                                                                       | `boolean`              | `true`         | see note below                                                                                                                           |
 | `ripple`                                                                                               | `boolean \| undefined` | `false`        | press ripple; via `GOG_CONFIG.ripple.enabled`                                                                                            |
 
+**`filter`, `filterPlaceholder`, `filterPosition` and `filterEmptyMessage` are deprecated on
+`gog-autocomplete`** (since 21.15.0, removed in 21.16.0). They are inherited from the shared base
+and describe a search box inside the panel, which this control does not have — they never did
+anything here. Do not bind them: use `placeholder` and `emptyMessage`. `filterMatch` does apply.
+
 Outputs: `gogSearch: string` (debounced query — wire your server lookup here),
 `gogLoadMore: void` (panel scrolled to the end — fetch the next page).
 

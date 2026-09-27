@@ -19,7 +19,7 @@ export interface GogDeprecation {
 }
 
 /**
- * Everything `@guildofgleks/ui` currently deprecates: 0 symbol(s) and 0 token(s).
+ * Everything `@guildofgleks/ui` currently deprecates: 4 symbol(s) and 0 token(s).
  *
  * Generated from the library's own source — `@deprecated` tags for symbols, and the stylesheets
  * themselves for tokens — so it cannot drift from what actually still resolves. Meant for tooling
@@ -29,4 +29,37 @@ export interface GogDeprecation {
  * An empty `symbol` half means exactly what it says: nothing in the TypeScript API is deprecated
  * right now.
  */
-export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [];
+export const GOG_DEPRECATIONS: readonly GogDeprecation[] = [
+  {
+    kind: 'symbol',
+    name: 'filter',
+    replacement: 'remove the binding; the field itself filters.',
+    since: '21.15.0',
+    sinceDate: '2026-09-27',
+    removedIn: '21.16.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'filterEmptyMessage',
+    replacement: 'use `emptyMessage`.',
+    since: '21.15.0',
+    sinceDate: '2026-09-27',
+    removedIn: '21.16.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'filterPlaceholder',
+    replacement: 'use `placeholder`; the panel has no search box.',
+    since: '21.15.0',
+    sinceDate: '2026-09-27',
+    removedIn: '21.16.0',
+  },
+  {
+    kind: 'symbol',
+    name: 'filterPosition',
+    replacement: 'remove the binding; the panel has no search box.',
+    since: '21.15.0',
+    sinceDate: '2026-09-27',
+    removedIn: '21.16.0',
+  },
+];

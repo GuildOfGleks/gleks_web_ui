@@ -204,3 +204,7 @@ build.
   Any lab example with a custom chevron on a multiselect that relied on the turn should bind
   `let-open` and swap the glyph; the Select/Multiselect pages can show the context. The multiselect's
   default chevron now actually points up when open.
+
+- **`gog-autocomplete`'s four filter inputs are deprecated** (removed in 21.16.0). The Autocomplete
+  page's API table should mark them, and no example should bind them; the lab's deprecation badges
+  read `GOG_DEPRECATIONS`, which now lists four symbols again.
