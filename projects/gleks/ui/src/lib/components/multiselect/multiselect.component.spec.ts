@@ -1013,12 +1013,8 @@ describe('MultiselectComponent — gogDropdownChevron', () => {
     part('default', '.gog-ms').click();
     fixture.detectChanges();
     await fixture.whenStable();
-    const host = (fixture.nativeElement as HTMLElement).querySelector(
-      'gog-multiselect.default',
-    ) as HTMLElement;
     const arrow = part('default', '.gog-ms__arrow');
-    const turned = arrow.classList.contains('gog-ms__arrow--up') && true;
-    expect(turned).toBe(true);
+    expect(arrow.classList.contains('gog-ms__arrow--up')).toBe(true);
     expect(arrow.querySelector('gog-icon')?.innerHTML).toContain('m6 9 6 6 6-6');
   });
 });
