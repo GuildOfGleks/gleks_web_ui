@@ -186,9 +186,11 @@
   background: var(--gog-surface-color);
 }
 
+// An accent glyph on an accent-tinted ground loses its contrast in light themes; the tint carries
+// the colour, the glyph takes the ink.
 .specimen__media--report {
   background: color-mix(in srgb, var(--gog-accent-color) 18%, var(--gog-surface-color));
-  color: var(--gog-accent-color);
+  color: var(--gog-text-color);
   font-size: var(--gog-text-2xl);
 }
 
