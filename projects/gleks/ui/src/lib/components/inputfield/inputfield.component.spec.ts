@@ -961,8 +961,13 @@ describe('InputfieldComponent', () => {
             this as unknown as ResizeObserver,
           );
         }
-        disconnect(): void {}
-        unobserve(): void {}
+        // Nothing to release: the stub holds no observation.
+        disconnect(): void {
+          return;
+        }
+        unobserve(): void {
+          return;
+        }
       } as unknown as typeof ResizeObserver;
     });
 
