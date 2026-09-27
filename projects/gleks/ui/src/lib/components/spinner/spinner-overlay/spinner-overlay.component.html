@@ -1,4 +1,4 @@
-<div class="gog-spinner-overlay">
+<div class="gog-spinner-overlay" [class.gog-spinner-overlay--loading]="loading()">
   <!--
     `inert` while loading: the scrim stops the pointer, and this stops the keyboard and assistive
     tech, so nothing in the region can be pressed mid-load.

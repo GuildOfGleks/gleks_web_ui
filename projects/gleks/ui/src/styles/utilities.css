@@ -79,6 +79,8 @@
 .gog-badge-host {
   /* The badge's containing block. An absolutely positioned host can set its own position after this. */
   position: relative;
+  /* Keeps the badge's z-index among the host's own children, not over a sticky page header. */
+  isolation: isolate;
 }
 
 .gog-badge {

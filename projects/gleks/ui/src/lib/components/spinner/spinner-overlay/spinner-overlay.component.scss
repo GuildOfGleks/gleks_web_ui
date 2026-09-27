@@ -6,6 +6,14 @@
   position: relative;
 }
 
+/* The scrim's z-index lifts it over positioned content inside the region; isolated while loading so
+   it does not also compete with the page — a sticky header, say. Only while loading: otherwise an
+   inline dropdown opened inside the region must still escape it, and while loading it cannot be
+   open, the content being inert. */
+.gog-spinner-overlay--loading {
+  isolation: isolate;
+}
+
 .gog-spinner-overlay__content {
   min-height: inherit;
 }

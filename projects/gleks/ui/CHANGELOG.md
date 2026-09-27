@@ -71,6 +71,16 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **Three more `z-index` values competed with the page instead of with their neighbours**, as
+  `gog-button-toggle-group`'s had: `gog-spinner-overlay`'s scrim, the controls lifted above an
+  interactive `gog-card`'s or a `gog-panel` header's stretched hit area, and `gogBadge`'s badge.
+  Each had the document as its nearest stacking context, so it painted over a sticky header or any
+  page layer at `z-index: 1` earlier in the DOM. The card, the panel header and the badge's host now
+  isolate their layering, and the overlay does while loading — only then, so an inline dropdown
+  inside it can still escape the region the rest of the time. Measured across all 36 showcase pages:
+  no library element's `z-index` reaches the document any more. An inline dropdown panel opened
+  inside an interactive card now stays inside it; `[appendToBody]` takes it out.
+
 - **`gog-spinner-overlay` covered its content from the pointer and not from the keyboard.** Tab
   walked into a loading region and Enter pressed its buttons mid-load. The content is now `inert`
   while `loading`, and focus that was inside when loading began waits on the spinner and comes back

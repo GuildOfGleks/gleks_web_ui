@@ -104,6 +104,12 @@
   z-index: 1;
 }
 
+/* Keeps that z-index inside the card or header, where it was meant to compete, instead of over a
+   sticky page header. An inline dropdown opened in one is contained too: use appendToBody there. */
+:where(.gog-card--interactive, .gog-panel__header) {
+  isolation: isolate;
+}
+
 /* ── gog-panel ──────────────────────────────────────────────────────────────── */
 
 .gog-panel__heading {

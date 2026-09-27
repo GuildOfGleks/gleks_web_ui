@@ -1658,7 +1658,10 @@ component — media, heading, body (the default slot), footer — not by the ord
   behave normally, and the focus ring is drawn around the card. `gogCardLink` only applies to
   `<a>` and `<button>` — on a `<div>` it does nothing, deliberately.
 - **Other controls inside an interactive card still get their own clicks.** A footer button, a
-  checkbox, a second link: each sits above the stretched hit area automatically.
+  checkbox, a second link: each sits above the stretched hit area automatically. The card isolates
+  that layering (since 21.15.0), so it never paints over a sticky page header — and an inline
+  `gog-select`/`gog-multiselect` panel opened inside an interactive card stays inside it too; give
+  one there `[appendToBody]="true"`.
 - Two costs of the pattern, inherent to it: text in the card cannot be selected by dragging, and
   a second link is reachable by keyboard but not by clicking the surface around it.
 - **`loading`** replaces the content with a title bar plus `skeletonLines` text lines and sets
