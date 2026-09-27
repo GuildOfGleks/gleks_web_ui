@@ -1044,7 +1044,14 @@ renders). Native `Date` only — no date library, no adapter.
 | `appendToBody`, `dropdownDirection`, `dropdownZIndex` |                                              | `false`, `'auto'`, `null`     |                                                                              |
 
 Model: `value: Date | GogDateRange | null` (`GogDateRange = { start: Date | null; end: Date | null }`).
-CVA: yes.
+CVA: yes. Output: `gogDateSelect: GogDatepickerValue` (since 21.15.0) — a selection made in the
+calendar is **complete**: a day in single mode, both ends of a range. `valueChange` also fires for
+a half-picked range and for typed text; bind `gogDateSelect` for "the user has finished choosing".
+
+Labels: `todayLabel`, `thisMonthLabel`, `previousMonthLabel`, `nextMonthLabel`,
+`previousYearLabel`, `nextYearLabel`, `hoursLabel`, `minutesLabel`, `secondsLabel` — the same nine
+as `gog-calendar`, handed to the calendar inside the field (all nine since 21.15.0; before, only the
+first two). Unset, each resolves through `GOG_CONFIG.labels`.
 
 `gog-calendar` (usable standalone) takes most of the same date/range/time inputs directly, plus
 `gogDateSelect: output<GogDatepickerValue>()` fired only on a _complete_ selection. It resolves

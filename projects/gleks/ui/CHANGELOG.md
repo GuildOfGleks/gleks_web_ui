@@ -8,6 +8,15 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`gog-datepicker` takes all nine of `gog-calendar`'s label inputs, and emits `gogDateSelect`.** It
+  forwarded only `todayLabel` and `thisMonthLabel`, so a field's navigation arrows and time inputs
+  could be named only through `GOG_CONFIG.labels` — two fields in different languages on one page
+  could not be. It now takes `previousMonthLabel`, `nextMonthLabel`, `previousYearLabel`,
+  `nextYearLabel`, `hoursLabel`, `minutesLabel` and `secondsLabel` too, all unset by default so the
+  config still applies. `gogDateSelect` re-emits the calendar's "selection complete" event — the one
+  the field already closed its panel on — so a range field can say when the reader has finished
+  choosing without inspecting a half-picked value. Verified on the showcase's Datepicker page.
+
 - **`DialogConfig.ariaLabelledBy`, and `ConfirmDialogData.titleId`.** A dialog was named only by its
   `title`, so one without was an unnamed `role="dialog"` — and `ConfirmationDialogComponent`, which
   shows its own heading, forced a choice between the question on screen twice (with a `title`) and

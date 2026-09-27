@@ -36,6 +36,48 @@ export const DATEPICKER_API: readonly DocApi[] = [
         config: 'GOG_CONFIG.labels.thisMonth',
       },
       {
+        name: 'previousMonthLabel',
+        type: 'string | undefined',
+        default: "'Previous month'",
+        config: 'GOG_CONFIG.labels.previousMonth',
+      },
+      {
+        name: 'nextMonthLabel',
+        type: 'string | undefined',
+        default: "'Next month'",
+        config: 'GOG_CONFIG.labels.nextMonth',
+      },
+      {
+        name: 'previousYearLabel',
+        type: 'string | undefined',
+        default: "'Previous year'",
+        config: 'GOG_CONFIG.labels.previousYear',
+      },
+      {
+        name: 'nextYearLabel',
+        type: 'string | undefined',
+        default: "'Next year'",
+        config: 'GOG_CONFIG.labels.nextYear',
+      },
+      {
+        name: 'hoursLabel',
+        type: 'string | undefined',
+        default: "'Hours'",
+        config: 'GOG_CONFIG.labels.hours',
+      },
+      {
+        name: 'minutesLabel',
+        type: 'string | undefined',
+        default: "'Minutes'",
+        config: 'GOG_CONFIG.labels.minutes',
+      },
+      {
+        name: 'secondsLabel',
+        type: 'string | undefined',
+        default: "'Seconds'",
+        config: 'GOG_CONFIG.labels.seconds',
+      },
+      {
         name: 'format',
         type: 'string | null',
         default: "'dd.MM.yyyy', or 'dd.MM.yyyy HH:mm' with showTime",
@@ -114,7 +156,10 @@ export const DATEPICKER_API: readonly DocApi[] = [
       },
       { name: 'dropdownZIndex', type: 'number | null', default: 'null' },
     ],
-    outputs: [{ name: 'valueChange', payload: 'GogDatepickerValue' }],
+    outputs: [
+      { name: 'valueChange', payload: 'GogDatepickerValue' },
+      { name: 'gogDateSelect', payload: 'GogDatepickerValue — a complete selection' },
+    ],
   },
   {
     type: CalendarComponent,

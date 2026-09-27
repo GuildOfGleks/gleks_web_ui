@@ -266,6 +266,42 @@ describe('DatepickerComponent', () => {
 
       expect(component.isOpen()).toBe(true);
     });
+
+    it('emits gogDateSelect once the range is complete, not for its first half', () => {
+      const selected: unknown[] = [];
+      component.gogDateSelect.subscribe((value) => selected.push(value));
+      toggle().click();
+      fixture.detectChanges();
+
+      const days = () =>
+        panel()!.querySelectorAll<HTMLButtonElement>(
+          '.gog-calendar__day:not(.gog-calendar__day--outside)',
+        );
+      days()[2].click();
+      fixture.detectChanges();
+      expect(selected).toHaveLength(0);
+
+      days()[5].click();
+      fixture.detectChanges();
+      expect(selected).toHaveLength(1);
+      expect((selected[0] as GogDateRange).end).not.toBeNull();
+    });
+  });
+
+  // The field used to forward two of the calendar's nine names; the arrows and the time inputs
+  // could only be named through GOG_CONFIG.labels.
+  it('forwards every calendar label to the calendar inside it', () => {
+    fixture.componentRef.setInput('inline', true);
+    fixture.componentRef.setInput('showTime', true);
+    fixture.componentRef.setInput('previousYearLabel', 'Voriges Jahr');
+    fixture.componentRef.setInput('nextMonthLabel', 'Nächster Monat');
+    fixture.componentRef.setInput('hoursLabel', 'Stunden');
+    fixture.detectChanges();
+
+    const labels = Array.from(host().querySelectorAll('[aria-label]')).map((element) =>
+      element.getAttribute('aria-label'),
+    );
+    expect(labels).toEqual(expect.arrayContaining(['Voriges Jahr', 'Nächster Monat', 'Stunden']));
   });
 
   describe('footer buttons', () => {

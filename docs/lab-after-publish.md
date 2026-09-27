@@ -195,3 +195,7 @@ build.
 - **Token reference: `--gog-slider-range-target-size`** (24px, a range thumb's pointer target) is new
   in 21.15.0. **An interactive card isolates its layering**: a lab example with a select inside an
   interactive `gog-card` would need `[appendToBody]`, if there is one.
+
+- **`gog-datepicker`: seven more label inputs and a `gogDateSelect` output.** API rows on the
+  Datepicker page; any prose saying only the calendar has `gogDateSelect`, or that a field's arrows
+  can only be named through the config, is stale.

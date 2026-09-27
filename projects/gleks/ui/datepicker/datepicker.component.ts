@@ -13,6 +13,7 @@ import {
   inject,
   input,
   model,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -115,6 +116,14 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
    */
   readonly todayLabel = input<string | undefined>(undefined);
   readonly thisMonthLabel = input<string | undefined>(undefined);
+  /** Forwarded to `gog-calendar` the same way: the arrows' and the time inputs' names. */
+  readonly previousMonthLabel = input<string | undefined>(undefined);
+  readonly nextMonthLabel = input<string | undefined>(undefined);
+  readonly previousYearLabel = input<string | undefined>(undefined);
+  readonly nextYearLabel = input<string | undefined>(undefined);
+  readonly hoursLabel = input<string | undefined>(undefined);
+  readonly minutesLabel = input<string | undefined>(undefined);
+  readonly secondsLabel = input<string | undefined>(undefined);
   /**
    * Display and parse pattern (`dd.MM.yyyy`, `yyyy-MM-dd`, …). Left unset it is derived from
    * `showTime`, so switching the time section on does not also require restating the format.
@@ -150,6 +159,12 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
 
   /** Two-way bindable value: a `Date` in `'single'` mode, a `GogDateRange` in `'range'`. */
   readonly value = model<GogDatepickerValue>(null);
+  /**
+   * A selection made in the calendar is complete — a day in single mode, both ends of a range.
+   * `valueChange` also fires for a half-picked range and for typed text; this is "the user has
+   * finished choosing", the event the field closes its panel on.
+   */
+  readonly gogDateSelect = output<GogDatepickerValue>();
 
   readonly isOpen = signal(false);
 
@@ -370,6 +385,7 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
   protected onCalendarSelect(next: GogDatepickerValue): void {
     this.isEditing.set(false);
     this.commit(next);
+    this.gogDateSelect.emit(next);
     if (!this.showTime()) {
       this.close();
       this.focusTrigger();

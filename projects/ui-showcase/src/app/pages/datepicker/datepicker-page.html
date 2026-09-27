@@ -105,8 +105,12 @@
         [clearable]="true"
         [(value)]="range"
         (valueChange)="increment('range')"
+        (gogDateSelect)="increment('range-select')"
       />
-      <code>value: {{ show(range()) }} · {{ count('range') }} valueChange</code>
+      <code
+        >value: {{ show(range()) }} · {{ count('range') }} valueChange ·
+        {{ count('range-select') }} gogDateSelect</code
+      >
     </div>
 
     <h3>min, max, and disabledDates</h3>
@@ -234,20 +238,17 @@
       </div>
     </div>
 
-    <h3>the nine labels, and which two the field forwards</h3>
+    <h3>the nine labels</h3>
     <p class="datepicker-page__note">
       <code>gog-calendar</code> takes an input for each of the strings it renders — the two footer
       buttons, the four navigation arrows and the three time fields — and each falls back to
-      <code>GOG_CONFIG.labels</code> and then to English.
-      <strong><code>gog-datepicker</code> forwards only two of them</strong>,
-      <code>todayLabel</code> and <code>thisMonthLabel</code>; the other seven can be set on a field
-      only through the config, which is where an app translating its whole calendar would set them
-      anyway. The pair below shows the difference: the same seven strings, once per instance and
-      once through a scope.
+      <code>GOG_CONFIG.labels</code> and then to English. <code>gog-datepicker</code> takes the same
+      nine and hands them to its calendar, so a field can be named in another language than the
+      app's config says. Open the field: its arrows read the same German as the calendar beside it.
     </p>
     <div class="datepicker-page__row">
       <div class="datepicker-page__block">
-        <p class="datepicker-page__note"><code>gog-calendar</code>, labels set per instance</p>
+        <p class="datepicker-page__note"><code>gog-calendar</code></p>
         <gog-calendar
           locale="de-DE"
           todayLabel="Heute"
@@ -261,14 +262,16 @@
         />
       </div>
       <div class="datepicker-page__block">
-        <p class="datepicker-page__note">
-          <code>gog-datepicker</code>: <code>todayLabel</code> lands, the arrows need the config
-        </p>
+        <p class="datepicker-page__note"><code>gog-datepicker</code></p>
         <gog-datepicker
           label="Datum"
           locale="de-DE"
           todayLabel="Heute"
           thisMonthLabel="Dieser Monat"
+          previousMonthLabel="Voriger Monat"
+          nextMonthLabel="Nächster Monat"
+          previousYearLabel="Voriges Jahr"
+          nextYearLabel="Nächstes Jahr"
           [showThisMonthButton]="true"
         />
       </div>
@@ -319,15 +322,15 @@
   <app-doc-section
     id="calendar"
     title="gog-calendar on its own"
-    lead="The grid is a component in its own right: an always-visible calendar, and the one place gogDateSelect exists."
+    lead="The grid is a component in its own right: an always-visible calendar, with the same two outputs as the field."
   >
     <h3>valueChange and gogDateSelect</h3>
     <p class="datepicker-page__note">
       The two outputs are not the same event. <code>valueChange</code> fires for every change,
       including the first press of a range; <code>gogDateSelect</code> fires only when the selection
       is <em>complete</em> — a day in single mode, both ends in range mode — which is what the field
-      uses to decide when to close. <strong>Only the calendar has it</strong>: bind it on
-      <code>gog-datepicker</code> and there is no such output.
+      uses to decide when to close. The field re-emits it, so a range field says when the reader has
+      finished choosing too — the range demo above counts both.
     </p>
     <div class="datepicker-page__row">
       <div class="datepicker-page__demo">
