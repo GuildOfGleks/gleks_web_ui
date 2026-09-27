@@ -71,6 +71,14 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-collapsible [collapseOnFocusOut]` closed when its own content was clicked.** A press on
+  the content's plain text moves focus to `<body>` with no `relatedTarget` — the same focusout a
+  press elsewhere gives — and the component read both as focus leaving. A press inside is now
+  recognised by the press itself, and while open a press outside closes the panel directly, which
+  also covers the case the first fix creates: after a press inside, focus is already on `<body>`
+  and a press elsewhere causes no focusout. Tab past the content still closes it. Verified with a
+  real pointer on the showcase's Collapsible page.
+
 - **`gogTooltip` and `[gogMenuTrigger]` on a `gog-button` said nothing to a screen reader, and the
   tooltip erased descriptions it did not own.** Both wrote their ARIA onto their host, and a
   `gog-button` host is a roleless wrapper around the real `<button>`: the menu trigger's

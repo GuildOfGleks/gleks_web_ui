@@ -138,8 +138,7 @@
       Closes once focus leaves both the trigger and the content: Tab past the last link, or click
       somewhere else on the page. Off by default, because an FAQ or a settings section read top to
       bottom should stay open wherever focus goes. Clicking the plain text inside the open content
-      closes it too, which it should not — focus moves to the page body, and the component reads
-      that as focus leaving. Filed.
+      keeps it open, and a click elsewhere afterwards still closes it.
     </p>
     <div class="collapsible-page__stack">
       <gog-collapsible

@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DOCUMENT,
+  effect,
   ElementRef,
   inject,
   input,
@@ -24,6 +26,7 @@ import {
     class: 'gog-collapsible-host',
     '[class.gog-collapsible-host--disabled]': 'disabled()',
     '(focusout)': 'onFocusOut($event)',
+    '(pointerdown)': 'onPointerDown()',
   },
 })
 export class CollapsibleComponent {
@@ -45,13 +48,40 @@ export class CollapsibleComponent {
   private readonly uid = `gog-collapsible-${CollapsibleComponent.nextUid++}`;
   readonly contentId = computed(() => `${this.uid}-content`);
 
+  /**
+   * Set by a press inside, for the focus change that press causes. A press on the content's plain
+   * text moves focus to `<body>` with no `relatedTarget` — the same focusout a press elsewhere on
+   * the page gives — so the press itself is what tells the two apart.
+   */
+  private pressedInside = false;
+
+  constructor() {
+    // Once a press inside has put focus on <body>, a later press elsewhere causes no focusout at
+    // all; so while open, a press outside closes directly.
+    const document = inject(DOCUMENT);
+    effect((onCleanup) => {
+      if (!this.collapseOnFocusOut() || !this.open()) return;
+      const onPress = (event: PointerEvent) => {
+        if (!this.elementRef.nativeElement.contains(event.target as Node)) this.open.set(false);
+      };
+      document.addEventListener('pointerdown', onPress, true);
+      onCleanup(() => document.removeEventListener('pointerdown', onPress, true));
+    });
+  }
+
   toggle(): void {
     if (this.disabled()) return;
     this.open.update((value) => !value);
   }
 
+  protected onPointerDown(): void {
+    this.pressedInside = true;
+    // The focus change a press causes lands in the same task; anything later is not this press.
+    setTimeout(() => (this.pressedInside = false));
+  }
+
   protected onFocusOut(event: FocusEvent): void {
-    if (!this.collapseOnFocusOut() || !this.open()) return;
+    if (!this.collapseOnFocusOut() || !this.open() || this.pressedInside) return;
 
     // relatedTarget is the element gaining focus — null covers a click landing outside any
     // focusable element, or the window losing focus entirely; both count as "focus left" here.

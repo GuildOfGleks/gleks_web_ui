@@ -188,6 +188,23 @@ describe('CollapsibleComponent', () => {
 
       expect(host.open()).toBe(false);
     });
+
+    // A press on the content's plain text moves focus to <body>: the focusout it causes has no
+    // relatedTarget, like a press elsewhere, and used to close the panel under the pointer.
+    it('stays open when its own content is pressed, and closes on a press outside', async () => {
+      host.collapseOnFocusOut.set(true);
+      await fixture.whenStable();
+      const content = fixture.nativeElement.querySelector('[gogCollapsibleContent]') as HTMLElement;
+
+      content.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+      subLink(0).dispatchEvent(new FocusEvent('focusout', { relatedTarget: null, bubbles: true }));
+      await fixture.whenStable();
+      expect(host.open()).toBe(true);
+
+      outsideButton().dispatchEvent(new Event('pointerdown', { bubbles: true }));
+      await fixture.whenStable();
+      expect(host.open()).toBe(false);
+    });
   });
 });
 

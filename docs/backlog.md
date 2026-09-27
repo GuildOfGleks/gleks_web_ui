@@ -32,13 +32,6 @@ not worth carrying here.
   radius on the header and body themselves) before the overflow can go; the other two can follow
   the collapsible's settle-after-open approach. Read from the stylesheets, not measured.
 
-- **`collapseOnFocusOut` closes a collapsible when its own content is clicked.** Click the plain
-  text inside the open content while the trigger has focus: focus moves to `<body>`,
-  `relatedTarget` is `null`, and `onFocusOut` reads null as "focus left" — which it also is for a
-  click elsewhere on the page, so the two cannot be told apart from the focus event alone.
-  Reproduced with a real pointer click on the Collapsible page on 2026-09-26. Likely wants a
-  `pointerdown` inside the host to mark the next focusout as internal.
-
 - **A loading `filled` card or panel shows a blank tint.** The placeholder bars are
   `gog-skeleton`, whose bone colour is fixed rather than relative to the surface it sits on, and
   `filled` paints a tint of about the same lightness. Measured on the Card and Panel pages on
