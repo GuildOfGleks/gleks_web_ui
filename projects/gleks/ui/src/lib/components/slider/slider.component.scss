@@ -181,6 +181,36 @@
   pointer-events: auto;
 }
 
+/*
+ * In range mode only the native thumbs take the pointer, so they are the target, not the drawn
+ * thumb's `::before`: 24x24 (WCAG 2.5.8) instead of the browser's unstyled ~16px. The input runs
+ * half a target past each end of the track, which puts the native thumb's centre exactly on the
+ * drawn one's at every value — at `inset: 0` the two drifted apart toward the ends. Horizontal
+ * only: the vertical input is laid out through `writing-mode` and keeps the default thumbs.
+ */
+.gog-slider--range:not(.gog-slider--vertical) .gog-slider__input {
+  -webkit-appearance: none;
+  appearance: none;
+  inset-block: calc(50% - var(--gog-slider-range-target-size) / 2);
+  inset-inline: calc(var(--gog-slider-range-target-size) / -2);
+  width: calc(100% + var(--gog-slider-range-target-size));
+  height: var(--gog-slider-range-target-size);
+  background: transparent;
+}
+
+.gog-slider--range:not(.gog-slider--vertical) .gog-slider__input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: var(--gog-slider-range-target-size);
+  height: var(--gog-slider-range-target-size);
+  border: 0;
+}
+
+.gog-slider--range:not(.gog-slider--vertical) .gog-slider__input::-moz-range-thumb {
+  width: var(--gog-slider-range-target-size);
+  height: var(--gog-slider-range-target-size);
+  border: 0;
+}
+
 .gog-slider--range .gog-slider__fill {
   position: absolute;
   inset: 0;

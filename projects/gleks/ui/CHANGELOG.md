@@ -71,6 +71,16 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A `range` `gog-slider`'s thumbs took the pointer at about 16px, not 24.** In range mode only the
+  browser's own, unstyled thumbs take the pointer, and the drawn thumb's 24px target never received
+  a press. They are now 24x24, and the input runs half a thumb past each end of the track so the
+  native thumb sits exactly under the drawn one at every value — before, the two drifted apart
+  toward the ends, which is why a press to one side of a thumb grabbed it and the same distance to
+  the other side did not. Measured with a real mouse in Chrome on the showcase's Slider page: a
+  press within 11px of either thumb's centre in any direction grabs it, 13px misses, and the two
+  centres agree to 0.1px at both ends. New token `--gog-slider-range-target-size` (24px).
+  Horizontal only; a vertical range slider keeps the default thumbs.
+
 - **Three more `z-index` values competed with the page instead of with their neighbours**, as
   `gog-button-toggle-group`'s had: `gog-spinner-overlay`'s scrim, the controls lifted above an
   interactive `gog-card`'s or a `gog-panel` header's stretched hit area, and `gogBadge`'s badge.

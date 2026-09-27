@@ -81,24 +81,11 @@ not worth carrying here.
   means nothing: the disabled chip drops its `role="button"` and its tab stop, so the attribute
   has nothing to qualify.
 
-- **A `range` `gog-slider`'s thumbs take the pointer at about 16px, not the 24px its stylesheet
-  claims.** `slider.component.scss` gives the drawn thumb a transparent 24px `::before` "so the
-  thumb stays the size it is" while meeting WCAG 2.5.8 — but the drawn thumb is
-  `pointer-events: none`, so the `::before` never receives a press. In single mode that does not
-  matter: the whole input spans the track, and a press anywhere on it moves the thumb. In `range`
-  mode only the two native thumbs take the pointer (the inputs themselves are
-  `pointer-events: none` so both can be reached), and those are the browser's unstyled default.
-  Measured with a real mouse in Chrome on 2026-09-22: a press 7 CSS px below the thumb's centre
-  grabs it, 8 px misses — a target about 16px tall, and a press on the bare track does nothing.
-
-  **Why it was not fixed with the page.** Sizing `::-webkit-slider-thumb`/`::-moz-range-thumb` to
-  24px is the obvious half, but the browser positions a native thumb inside the input with half its
-  width of inset at each end, while the drawn thumb sits at the raw percentage of the track. At
-  16px the two already drift up to 8px apart at `min` and `max`; at 24px they drift 12px, so the
-  drawn thumbs would have to move onto the native formula (`calc(half + p * (100% - thumb))`) in
-  both orientations and both modes at the same time. That is a geometry change to the whole
-  control rather than a one-line fix, and the keyboard reaches both thumbs fully in the meantime.
-  The showcase's Slider page says so under Accessibility.
+- **A vertical `range` `gog-slider`'s thumbs still take the pointer at the browser's default size.**
+  21.15.0 gave the horizontal range thumbs a 24x24 target aligned with the drawn thumb; the
+  vertical input is laid out through `writing-mode`, where the same inset and size rules would need
+  their own measurement, so it was left on the default thumbs. Measure it the same way — a real
+  mouse, presses at fixed offsets from each thumb's centre — before changing it.
 
 - **`gog-datepicker` forwards two of `gog-calendar`'s nine label inputs, and has no
   `gogDateSelect`.** Two gaps in the same seam — the field owns a calendar and passes only part of

@@ -1809,6 +1809,8 @@
   /* Bound to `background`, so a gradient works as well as a colour. */
   --gog-slider-fill-bg: var(--gog-accent-color);
   --gog-slider-thumb-size: 16px;
+  /* A range thumb's pointer target (WCAG 2.5.8); the drawn thumb stays --gog-slider-thumb-size. */
+  --gog-slider-range-target-size: 24px;
   --gog-slider-thumb-bg: var(--gog-accent-color);
   --gog-slider-thumb-border: var(--gog-background-color);
   --gog-slider-thumb-border-width: var(--gog-control-border-width);
