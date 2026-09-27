@@ -25,6 +25,15 @@ not worth carrying here.
   do this, because it also calls `stopPropagation()`. Likely fix: the dialog ignores a
   default-prevented Escape, which covers every nested control at once, including a consumer's own.
 
+- **A toast action with an icon is taller than one without.** `.gog-toast__action` shrinks the
+  button's font and line-height to `--gog-toast-action-font-size`/`-line-height` (12px), and the
+  `gog-icon` inside keeps its own box, which is taller than that line: measured on the Toast page on
+  2026-09-27, "Undo" 24px and "View" with `iconName` 28.4px in the same row, so the two labels sit
+  on different lines. The row is `display: flex` with the default `align-items`, which stretches
+  the hosts and leaves the inner buttons at their own heights. Likely wants the icon sized from the
+  action's font, as `.gog-toast__action gog-icon` already sets `font-size` for — the icon's box is
+  what does not follow it. The States matrix on the Toast page shows it in every type.
+
 - **A non-modal dialog still blocks the page under it.** `modal: false` drops the dim, the focus
   trap, `aria-modal` and the scroll lock, but the backdrop element stays `position: fixed; inset: 0`
   with pointer events, so a press anywhere on the page lands on it and — `closable` being the

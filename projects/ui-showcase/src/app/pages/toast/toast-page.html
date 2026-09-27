@@ -1,0 +1,192 @@
+<app-doc-page unit="toast">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="An app never places a gog-toast itself — the container renders one per ToastService entry. The matrix renders them directly, sticky or queued so none of them times out, to lay the four types side by side."
+  >
+    <h3>shape × type</h3>
+    <p class="toast-page__note">
+      The type picks the edge colour and the glyph. A timed toast carries a progress bar that counts
+      down its <code>duration</code>; one queued behind the front of its stack
+      (<code>[isFront]="false"</code>) keeps the bar full and still. Hover over a timed toast pauses
+      it. Closing one here hides it until
+      <button type="button" class="toast-page__link" (click)="generation.set(generation() + 1)">
+        the matrix is reset</button
+      >.
+    </p>
+    @for (g of [generation()]; track g) {
+      <app-doc-matrix rowAxis="shape" colAxis="type">
+        <ng-template appDocCell [rows]="shapes" [cols]="types" let-shape let-type="col">
+          <gog-toast
+            [toast]="cell(shape, type)"
+            [isFront]="shape.isFront"
+            (dismissed)="onDismissed($event)"
+          />
+        </ng-template>
+      </app-doc-matrix>
+    }
+    <code>last event: {{ lastEvent() }}</code>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>long message, and actions</h3>
+    <p class="toast-page__note">
+      The toast is at least <code>--gog-toast-min-width</code> wide and caps itself in
+      <code>ch</code> of its own message font, against the viewport too; the message wraps and the
+      actions go under it.
+    </p>
+    <div class="toast-page__stack">
+      <gog-toast [toast]="long" (dismissed)="onDismissed($event)" />
+    </div>
+
+    <h3>the icon</h3>
+    <p class="toast-page__note">
+      <code>iconName</code> replaces the type's glyph — any built-in, or a name the app registered
+      with <code>provideGogIcons</code>; <code>iconTemplate</code> takes any markup. The colour
+      stays the type's.
+    </p>
+    <div class="toast-page__stack">
+      @for (toast of icons; track toast.id) {
+        <gog-toast [toast]="toast" (dismissed)="onDismissed($event)" />
+      }
+    </div>
+    <div class="toast-page__row">
+      <button type="button" gogButton variant="outline" size="sm" (click)="template()">
+        Show one with iconTemplate
+      </button>
+    </div>
+    <ng-template #star><gog-icon name="star-filled" /></ng-template>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="Everything below goes through ToastService, into the one gog-toast-container in the app root."
+  >
+    <h3>types, and position</h3>
+    <div class="toast-page__row">
+      <button type="button" gogButton variant="outline" size="sm" (click)="oneOfEach()">
+        One of each type
+      </button>
+      @for (position of positions; track position) {
+        <button type="button" gogButton variant="outline" size="sm" (click)="at(position)">
+          {{ position }}
+        </button>
+      }
+    </div>
+
+    <h3>the stack, and maxVisiblePerPosition</h3>
+    <p class="toast-page__note">
+      Each corner is its own stack, oldest in front. Only the front toast counts down; the ones
+      behind wait with a full bar and fan out on hover. Past <code>maxVisiblePerPosition</code> (5)
+      the rest queue out of sight and are not announced until they are shown.
+    </p>
+    <div class="toast-page__row">
+      <button type="button" gogButton variant="outline" size="sm" (click)="burst()">
+        Queue 7 at top-right
+      </button>
+    </div>
+
+    <h3>duration and isSticky</h3>
+    <div class="toast-page__row">
+      <button type="button" gogButton variant="outline" size="sm" (click)="timed(1500)">
+        1500 ms
+      </button>
+      <button type="button" gogButton variant="outline" size="sm" (click)="timed(4000)">
+        4000 ms (default)
+      </button>
+      <button type="button" gogButton variant="outline" size="sm" (click)="timed(10000)">
+        10 000 ms
+      </button>
+      <button type="button" gogButton variant="outline" size="sm" (click)="sticky()">
+        isSticky
+      </button>
+      <button type="button" gogButton variant="ghost" size="sm" (click)="dismissAll()">
+        dismissAll()
+      </button>
+    </div>
+
+    <h3>actions, show() and dismiss()</h3>
+    <p class="toast-page__note">
+      An action's <code>onClick</code> gets the toast; pressing one does not close it, so an Undo
+      calls <code>dismiss(toast.id)</code> itself. <code>show()</code> and the four shorthands
+      return that id.
+    </p>
+    <div class="toast-page__row">
+      <button type="button" gogButton variant="outline" size="sm" (click)="withUndo()">
+        Move with Undo
+      </button>
+    </div>
+
+    <h3>dedupeKey</h3>
+    <p class="toast-page__note">
+      A <code>show()</code> whose <code>dedupeKey</code> matches a toast still open replaces it in
+      place — new message, timer restarted, announced again — instead of stacking another. Unset,
+      the key is derived from the message, type, icon, position and action labels, so the same toast
+      fired twice is one toast; this button changes its message each time, so it needs an explicit
+      key.
+    </p>
+    <div class="toast-page__row">
+      <button type="button" gogButton variant="outline" size="sm" (click)="deduped()">
+        Save draft
+      </button>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="ToastConfig, as ToastService.show() takes it."
+  >
+    <div class="toast-page__scroll">
+      <table class="toast-page__table">
+        <thead>
+          <tr>
+            <th scope="col">Field</th>
+            <th scope="col">Type</th>
+            <th scope="col">Unset</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of configRows; track row.name) {
+            <tr>
+              <th scope="row">
+                <code>{{ row.name }}</code>
+              </th>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="toast-page__note">
+      <code>GOG_CONFIG.toast.position</code> and <code>.duration</code> are read once, by the root
+      <code>ToastService</code>, so they are app-wide: a <code>provideGogConfig</code> lower down
+      never reaches them. The showcase sets neither. <code>labels.closeToast</code> names the close
+      button.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A toast carries no role or aria-live. The container owns two live regions, mounted before any toast exists — polite, and assertive for error and warning — and copies each shown toast's message into one."
+  >
+    <h3>the container's regions, live</h3>
+    <p class="toast-page__note">
+      Read from the DOM of the app's container. Fire a toast in Behaviour and its message appears in
+      its region; it leaves when the toast does.
+    </p>
+    <pre class="toast-page__out"><code>{{ regions() }}</code></pre>
+
+    <h3>the close button</h3>
+    <app-doc-attrs target=".gog-toast__close button">
+      <gog-toast [toast]="cell(shapes[0], 'info')" />
+    </app-doc-attrs>
+  </app-doc-section>
+</app-doc-page>

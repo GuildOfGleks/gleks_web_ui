@@ -1,0 +1,83 @@
+// A toast carries a high z-index for the corner stack it normally lives in. Rendered in the page,
+// it would float over the shell's sticky toolbar; its own stacking context keeps it in the page.
+:host {
+  display: block;
+  isolation: isolate;
+}
+
+.toast-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-12);
+  margin-block-end: var(--gog-space-8);
+}
+
+.toast-page__note {
+  margin-block: var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+.toast-page__scroll {
+  overflow-x: auto;
+}
+
+// The API table's look, for a type the API section cannot render: ToastConfig is an interface.
+.toast-page__table {
+  width: 100%;
+  min-width: 48rem;
+  border-collapse: collapse;
+  font-size: var(--gog-text-sm);
+
+  th,
+  td {
+    padding-block: var(--gog-space-4);
+    padding-inline: var(--gog-space-8);
+    border-block-end: 1px solid var(--gog-border-color);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  thead th {
+    color: var(--gog-muted-text-color);
+    font-size: var(--gog-text-xs);
+    font-weight: normal;
+  }
+
+  tbody th {
+    font-weight: normal;
+    white-space: nowrap;
+  }
+
+  code {
+    font-size: var(--gog-text-xs);
+  }
+}
+
+// A toast fills what it is given up to its own cap; a matrix cell gives it nothing.
+.toast-page__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-12);
+  margin-block-end: var(--gog-space-12);
+}
+
+.toast-page__out {
+  margin-block: 0 var(--gog-space-12);
+  overflow-x: auto;
+  font-size: var(--gog-text-xs);
+  white-space: pre-wrap;
+}
+
+.toast-page__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gog-accent-color);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}

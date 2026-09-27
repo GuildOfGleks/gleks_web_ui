@@ -33,6 +33,7 @@ import { TABLE_API } from './table/table.api';
 import { TABS_API } from './tabs/tabs.api';
 import { TAG_API } from './tag/tag.api';
 import { TOGGLE_API } from './toggle/toggle.api';
+import { TOAST_API } from './toast/toast.api';
 import { TOOLTIP_API } from './tooltip/tooltip.api';
 import { TEXTAREA_API } from './textarea/textarea.api';
 
@@ -233,5 +234,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./dialog/dialog-page').then((m) => m.DialogPage),
     api: DIALOG_API,
     tokens: ['Dialog'],
+  },
+  toast: {
+    load: () => import('./toast/toast-page').then((m) => m.ToastPage),
+    api: TOAST_API,
+    tokens: ['Toast', 'Toast stack'],
   },
 };

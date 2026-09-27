@@ -5,6 +5,7 @@ import {
   type GogDropdownOption,
   SelectComponent,
   ThemeService,
+  ToastContainerComponent,
   ToggleComponent,
 } from '@guildofgleks/ui';
 import { DialogComponent } from '@guildofgleks/ui/dialog';
@@ -21,6 +22,7 @@ import { THEMES } from './shell/themes';
     RouterLinkActive,
     DialogComponent,
     SelectComponent,
+    ToastContainerComponent,
     ToggleComponent,
   ],
   templateUrl: './app.html',
