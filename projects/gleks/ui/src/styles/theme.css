@@ -2301,7 +2301,9 @@
     --gog-progressbar-info-buffer-bg: color-mix(in srgb, var(--gog-info-color) 35%, transparent);
     --gog-select-focus-ring: color-mix(in srgb, var(--gog-accent-color) 25%, transparent);
     --gog-select-option-hover-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
-    --gog-skeleton-base: color-mix(in srgb, var(--gog-border-color) 40%, var(--gog-surface-color));
+    /* Translucent ink rather than a fixed colour, so a bone stands off whatever it sits on by the
+       same step — a filled card's tint as much as the page. A fixed colour vanished on `filled`. */
+    --gog-skeleton-base: color-mix(in srgb, var(--gog-text-color) 12%, transparent);
     --gog-skeleton-shine: color-mix(in srgb, var(--gog-skeleton-base), white 35%);
     --gog-slider-track-bg: color-mix(in srgb, var(--gog-text-color) 30%, var(--gog-border-color));
     --gog-slider-thumb-glow-color: color-mix(in srgb, var(--gog-accent-bright) 40%, transparent);

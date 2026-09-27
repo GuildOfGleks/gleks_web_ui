@@ -97,6 +97,16 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A loading `filled` card or panel showed a blank tint.** `gog-skeleton`'s bone was one fixed
+  colour, and `filled` tints the surface to about the same lightness, so its placeholder bars
+  measured 1.02 to 1.24:1 against the card while the same bars on `outlined` measured 1.08 to 1.44
+  — a loading filled card read as an empty box, and in `primeng` the bar was lighter than one ground
+  and darker than the other. `--gog-skeleton-base` is now the text colour at 12% over whatever lies
+  beneath, so a bone stands off its own ground by the same step everywhere: measured from rendered
+  pixels on the showcase's Card page, 1.24 to 1.40:1 on all three variants in all 11 themes, filled
+  equal to outlined. The browsers without `color-mix()` keep the previous fallback. A theme that set
+  `--gog-skeleton-base` itself is unaffected.
+
 - **A dropdown inside an open `gog-accordion` body was cut off.** Three things clipped it: the
   body's `overflow: hidden` for its height animation, the body-inner's own, and the last item's,
   which is how its bottom corners were rounded — and the body-inner's lift `transform`, even at

@@ -24,17 +24,6 @@ not worth carrying here.
   announce was not checked, and should be before choosing between a grid role and a visually
   hidden state.
 
-- **A loading `filled` card or panel shows a blank tint.** The placeholder bars are
-  `gog-skeleton`, whose bone colour is fixed rather than relative to the surface it sits on, and
-  `filled` paints a tint of about the same lightness. Measured on the Card and Panel pages on
-  2026-09-26, bar against surface, identical for both components: 1.02 to 1.07:1 on `filled`
-  (dark, light, primeng, slate) against 1.09 to 1.21:1 on `outlined` and `elevated`. In primeng
-  the direction flips too — the bar is darker than an outlined card and lighter than a filled one.
-  The placeholder is `aria-hidden`, so no WCAG pair applies, but being seen is its whole job, and a
-  consumer who turns on `loading` on a filled surface gets an empty box. Likely wants the bone
-  derived from the surface under it rather than a per-component override. Both pages show the
-  state in their variant × state matrix.
-
 - **`gog-alert`'s announcement copy outlives the announcement, and is taken only once.** The
   alert copies its heading and body into a visually hidden live region one render after it mounts
   (`docs/alert.md` §2 — the mechanism is right and stays). Two things follow that the plan did not

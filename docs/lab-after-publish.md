@@ -216,3 +216,8 @@ build.
 
 - **An overlay inside an open `gog-accordion` body is no longer clipped.** Any lab advice to use
   `[appendToBody]` for a select inside an accordion is stale.
+
+- **`--gog-skeleton-base` is translucent ink** (`color-mix(in srgb, var(--gog-text-color) 12%,
+transparent)`) rather than an opaque mix of border and surface. Its row in the token reference and
+  `theme-starter.css` need the new value; the theme generator, if it previews skeletons on a tinted
+  surface, will show them now.
