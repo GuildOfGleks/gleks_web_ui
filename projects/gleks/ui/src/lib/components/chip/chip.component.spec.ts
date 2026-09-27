@@ -273,17 +273,18 @@ describe('ChipComponent', () => {
       expect(clicks).toHaveLength(0);
     });
 
-    it("names a removable chip from its content, not from the remove button's label", async () => {
+    // A button inside a role="button" is presentational; the remove button is the surface's sibling,
+    // so the chip's name is its own content and the remove button keeps its own.
+    it('keeps the remove button out of the chip button, as its sibling', async () => {
       fixture.componentRef.setInput('removable', true);
       await fixture.whenStable();
 
-      const content = fixture.nativeElement.querySelector('.gog-chip__content') as HTMLElement;
-      expect(surface().getAttribute('aria-labelledby')).toBe(content.id);
-
-      // An explicit ariaLabel still wins, and needs no labelledby beside it.
-      fixture.componentRef.setInput('ariaLabel', 'Angular filter');
-      await fixture.whenStable();
-      expect(surface().getAttribute('aria-labelledby')).toBeNull();
+      const remove = fixture.nativeElement.querySelector('.gog-chip__remove') as HTMLElement;
+      expect(surface().contains(remove)).toBe(false);
+      expect(remove.parentElement).toBe(surface().parentElement);
+      expect(surface().textContent?.trim()).toBe(
+        surface().querySelector('.gog-chip__content')?.textContent?.trim(),
+      );
     });
   });
 

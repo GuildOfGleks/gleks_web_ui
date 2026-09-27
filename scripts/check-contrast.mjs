@@ -925,7 +925,7 @@ const CONTROL_BOUNDARIES = [
   '.gog-button-toggle__button',
   '.gog-slider__thumb',
   '.gog-slider__track',
-  '.gog-chip__surface',
+  '.gog-chip__frame',
   // `.gog-btn` was out of this list until 2026-09-11, and the reason was real: what identifies a
   // button depends on its variant, and a sweep that resolves a painting rule once read
   // `--gog-button-primary-border` — `transparent` in the base theme — for every button in the

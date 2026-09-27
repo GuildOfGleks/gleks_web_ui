@@ -6,11 +6,12 @@ import {
   input,
   model,
   output,
+  signal,
 } from '@angular/core';
 
 import { type GogIconName, IconComponent } from '../icon/icon.component';
 import { GogSize, GogTagShape } from '@guildofgleks/ui/shared';
-import { GOG_CONFIG, nextGogControlId } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
 
@@ -69,15 +70,12 @@ export class ChipComponent {
   readonly gogClick = output<MouseEvent | KeyboardEvent>();
   readonly gogRemove = output<void>();
 
-  protected readonly contentId = nextGogControlId('gog-chip-content');
   /**
-   * A removable chip's remove button sits inside the surface, and a `role="button"` takes its
-   * name from everything inside it — so without this the chip read as "Angular Remove filter
-   * Angular". Pointing the name at the content alone keeps the button's label on the button.
+   * Whether the surface has keyboard focus. The ring is drawn by the frame, which is the chip's
+   * whole box, and a parent cannot select on a child's `:focus-visible` in the browsers this
+   * package supports — so the surface reports it.
    */
-  protected readonly labelledBy = computed(() =>
-    this.removable() && !this.ariaLabel() ? this.contentId : null,
-  );
+  protected readonly surfaceFocusVisible = signal(false);
 
   protected readonly hostClasses = computed(() =>
     [
@@ -139,6 +137,10 @@ export class ChipComponent {
     const selected = this.selected();
     if (selected === null) return;
     this.selected.set(!selected);
+  }
+
+  protected onSurfaceFocus(event: FocusEvent): void {
+    this.surfaceFocusVisible.set((event.target as HTMLElement).matches(':focus-visible'));
   }
 
   protected onRemoveClick(event: MouseEvent): void {

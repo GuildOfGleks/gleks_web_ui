@@ -62,7 +62,7 @@ describe('ripple — GOG_CONFIG.ripple.enabled', () => {
 
     expect(rippling('.gog-btn')).toBe(false);
     expect(rippling('a[gogButton]')).toBe(false);
-    expect(rippling('.gog-chip__surface')).toBe(false);
+    expect(rippling('.gog-chip__frame')).toBe(false);
   });
 
   it('turns on every surface at once when the app asks for it', async () => {
@@ -70,7 +70,7 @@ describe('ripple — GOG_CONFIG.ripple.enabled', () => {
 
     expect(rippling('.gog-btn')).toBe(true);
     expect(rippling('a[gogButton]')).toBe(true);
-    expect(rippling('.gog-chip__surface')).toBe(true);
+    expect(rippling('.gog-chip__frame')).toBe(true);
   });
 
   it('lets one instance opt out of an app-wide on', async () => {
@@ -90,7 +90,7 @@ describe('ripple — GOG_CONFIG.ripple.enabled', () => {
     host.chipRipple.set(true);
     await fixture.whenStable();
 
-    expect(rippling('.gog-chip__surface')).toBe(true);
+    expect(rippling('.gog-chip__frame')).toBe(true);
     expect(rippling('.gog-btn')).toBe(false);
   });
 
@@ -119,6 +119,6 @@ describe('ripple — GOG_CONFIG.ripple.enabled', () => {
 
     // A chip that cannot be pressed is a label, and a label answering a press with a wave is a
     // promise it cannot keep.
-    expect(rippling('.gog-chip__surface')).toBe(false);
+    expect(rippling('.gog-chip__frame')).toBe(false);
   });
 });

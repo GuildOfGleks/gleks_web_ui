@@ -208,3 +208,8 @@ build.
 - **`gog-autocomplete`'s four filter inputs are deprecated** (removed in 21.16.0). The Autocomplete
   page's API table should mark them, and no example should bind them; the lab's deprecation badges
   read `GOG_DEPRECATIONS`, which now lists four symbols again.
+
+- **`gog-chip`'s box moved to `.gog-chip__frame`**, with the remove button beside the chip's button
+  rather than inside it. Nothing visible changes (measured on 70 chips); any lab stylesheet or
+  theme-generator rule that targets `.gog-chip__surface` for the chip's box needs the new class, and
+  the Chip page's accessibility prose can drop any mention of the nested remove button.

@@ -154,10 +154,10 @@
     <h3>surface attributes</h3>
     <p class="chip-page__note">
       Read from the live DOM. <code>aria-pressed="false"</code> is written, not left out, because a
-      chip with no <code>aria-pressed</code> is not a toggle to a screen reader at all. A removable
-      chip is named from its content through <code>aria-labelledby</code> — without it the name
-      swallowed the remove button's label and read "Angular Remove filter Angular", which is how it
-      was until 21.15.0.
+      chip with no <code>aria-pressed</code> is not a toggle to a screen reader at all. The remove
+      button is the surface's sibling, not its child — a button inside a
+      <code>role="button"</code> is presentational — so a removable chip is two buttons side by
+      side: "Angular" and "Remove filter".
     </p>
     <app-doc-matrix rowAxis="chip" colAxis="">
       <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>

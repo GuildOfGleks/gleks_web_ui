@@ -11,7 +11,15 @@
   contain: layout style;
 }
 
-.gog-chip__surface {
+/*
+ * The frame is the chip's box. It holds the surface (the chip's own button) and the remove button
+ * side by side — a button nested in a `role="button"` is presentational to assistive tech, which
+ * is what the remove button was until 21.15.0. `position: relative` anchors the surface's stretched
+ * press area; `isolation` keeps the remove button's lift inside the chip.
+ */
+.gog-chip__frame {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   gap: var(--gog-chip-gap, var(--gog-chip-size-gap, var(--gog-chip-md-gap)));
@@ -55,16 +63,34 @@
   user-select: none;
 }
 
-.gog-chip__surface:focus-visible {
+/* The chip's button: what it shows, with no box of its own — the frame is the box. */
+.gog-chip__surface {
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: inherit;
+  min-width: 0;
+  outline: none;
+}
+
+/* A press anywhere on the frame is a press on the surface, as when the frame was the surface. */
+.gog-chip__surface::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+/* The ring goes round the whole chip; the surface reports its keyboard focus to the frame. */
+.gog-chip__frame--focus-visible {
   outline: var(--gog-chip-focus-ring-width) solid var(--gog-chip-focus-ring-color);
   outline-offset: var(--gog-chip-focus-ring-offset);
 }
 
-:host(.gog-chip--clickable) .gog-chip__surface:hover:not([aria-disabled='true']) {
+:host(.gog-chip--clickable) .gog-chip__frame:hover:not(.gog-chip__frame--disabled) {
   background-color: var(--gog-chip-hover-bg);
 }
 
-:host(.gog-chip--clickable) .gog-chip__surface:active:not([aria-disabled='true']) {
+:host(.gog-chip--clickable) .gog-chip__frame:active:not(.gog-chip__frame--disabled) {
   background-color: var(--gog-chip-press-bg);
 }
 
@@ -80,11 +106,11 @@
  * the attribute when it is disabled, since `aria-pressed` needs the `role="button"` that goes
  * with it, and a selected-but-unavailable chip should still look selected.
  */
-:host(.gog-chip--selected) .gog-chip__surface {
+:host(.gog-chip--selected) .gog-chip__frame {
   box-shadow: var(--gog-chip-selected-shadow);
 }
 
-.gog-chip__surface[aria-disabled='true'] {
+.gog-chip__frame--disabled {
   opacity: var(--gog-chip-disabled-opacity);
   pointer-events: none;
 }
@@ -152,8 +178,9 @@
   );
   cursor: pointer;
   flex-shrink: 0;
-  /* Anchors the hit area below. */
+  /* Anchors the hit area below, and lifts the button over the surface's stretched press area. */
   position: relative;
+  z-index: 1;
 }
 
 /*
@@ -187,7 +214,7 @@
 /* === Sizes ===
    `md` needs no block: it is what every chain above falls back to. */
 
-:host(.gog-chip--xsm) .gog-chip__surface {
+:host(.gog-chip--xsm) .gog-chip__frame {
   --gog-chip-size-font-size: var(--gog-chip-xsm-font-size);
   --gog-chip-size-padding-block: var(--gog-chip-xsm-padding-block);
   --gog-chip-size-padding-inline: var(--gog-chip-xsm-padding-inline);
@@ -197,7 +224,7 @@
   --gog-chip-size-remove-size: var(--gog-chip-xsm-remove-size);
 }
 
-:host(.gog-chip--sm) .gog-chip__surface {
+:host(.gog-chip--sm) .gog-chip__frame {
   --gog-chip-size-font-size: var(--gog-chip-sm-font-size);
   --gog-chip-size-padding-block: var(--gog-chip-sm-padding-block);
   --gog-chip-size-padding-inline: var(--gog-chip-sm-padding-inline);
@@ -207,7 +234,7 @@
   --gog-chip-size-remove-size: var(--gog-chip-sm-remove-size);
 }
 
-:host(.gog-chip--md) .gog-chip__surface {
+:host(.gog-chip--md) .gog-chip__frame {
   --gog-chip-size-font-size: var(--gog-chip-md-font-size);
   --gog-chip-size-padding-block: var(--gog-chip-md-padding-block);
   --gog-chip-size-padding-inline: var(--gog-chip-md-padding-inline);
@@ -217,7 +244,7 @@
   --gog-chip-size-remove-size: var(--gog-chip-md-remove-size);
 }
 
-:host(.gog-chip--lg) .gog-chip__surface {
+:host(.gog-chip--lg) .gog-chip__frame {
   --gog-chip-size-font-size: var(--gog-chip-lg-font-size);
   --gog-chip-size-padding-block: var(--gog-chip-lg-padding-block);
   --gog-chip-size-padding-inline: var(--gog-chip-lg-padding-inline);
@@ -227,7 +254,7 @@
   --gog-chip-size-remove-size: var(--gog-chip-lg-remove-size);
 }
 
-:host(.gog-chip--slg) .gog-chip__surface {
+:host(.gog-chip--slg) .gog-chip__frame {
   --gog-chip-size-font-size: var(--gog-chip-slg-font-size);
   --gog-chip-size-padding-block: var(--gog-chip-slg-padding-block);
   --gog-chip-size-padding-inline: var(--gog-chip-slg-padding-inline);
@@ -239,15 +266,15 @@
 
 /* === Shape === */
 
-:host(.gog-chip--pill) .gog-chip__surface {
+:host(.gog-chip--pill) .gog-chip__frame {
   border-radius: var(--gog-chip-pill-radius);
 }
 
-:host(.gog-chip--rounded) .gog-chip__surface {
+:host(.gog-chip--rounded) .gog-chip__frame {
   border-radius: var(--gog-chip-radius);
 }
 
-:host(.gog-chip--has-avatar) .gog-chip__surface {
+:host(.gog-chip--has-avatar) .gog-chip__frame {
   padding-inline-start: calc(
     var(
         --gog-chip-padding-inline,
@@ -257,7 +284,7 @@
   );
 }
 
-:host(.gog-chip--removable) .gog-chip__surface {
+:host(.gog-chip--removable) .gog-chip__frame {
   padding-inline-end: calc(
     var(
         --gog-chip-padding-inline,
@@ -272,6 +299,6 @@
   display: flex;
 }
 
-:host(.gog-host--full-width) .gog-chip__surface {
+:host(.gog-host--full-width) .gog-chip__frame {
   width: 100%;
 }

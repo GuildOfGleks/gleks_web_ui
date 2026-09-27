@@ -97,6 +97,18 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-chip`'s remove button was an interactive control inside another.** The surface is a
+  `role="button"` and the remove `<button>` was its child; ARIA makes a button's children
+  presentational, and axe flags exactly this (`nested-interactive`). The chip's box — padding,
+  border, background, shape, hover, press, selected ring, ripple — moved to a new
+  `.gog-chip__frame`, which holds the surface and the remove button side by side; a press anywhere
+  on the chip still presses it, and the focus ring still goes round the whole chip. Measured on the
+  showcase's Chip page before and after: all 70 chips identical in position, size, colour, radius,
+  padding and shadow, in three themes. Chrome's accessibility tree now shows the chip and its remove
+  button as two sibling buttons. The `aria-labelledby` the surface carried to keep the remove label
+  out of its name is gone with the reason for it. If you styled `.gog-chip__surface` directly —
+  an internal class — your rule now reaches the content only; `--gog-chip-*` tokens are unaffected.
+
 - **`gog-multiselect`'s chevron pointed down whether open or not.** Open, it swapped to `chevron-up`
   and also turned 180°, so the two cancelled out and only the flip animation showed the change. It
   now turns the down chevron, as `gog-select` does. Measured in Chrome with motion off.

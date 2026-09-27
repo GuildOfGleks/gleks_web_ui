@@ -65,22 +65,6 @@ not worth carrying here.
   region when there is no `heading`") that was never built — the host has no role and needs no
   name, so the input would have nothing to name. The plan's table is what is wrong, not the code.
 
-- **`gog-chip`'s remove button is an interactive control inside another one.** The surface is a
-  `role="button"` and the remove `<button>` is its descendant; ARIA makes the children of a button
-  presentational, and axe's `nested-interactive` rule flags exactly this. Chrome still exposes both
-  (measured 2026-09-22: `button "Angular"` and `button "Remove filter Angular"`), and 21.15.0 fixed
-  the two things that made it hurt — the keyboard could not remove a chip, and the chip's name
-  swallowed the button's label — so what is left is the structure. The fix is to make the remove
-  button the surface's sibling, which moves the chip's padding, border and hover from the surface
-  to the host; a layout change to every chip, not a patch.
-
-  Two smaller things found beside it. **`clickable` defaults to `true`**, so every chip is a button
-  and a tab stop even with nothing listening to `gogClick` — a row of applied filters tabs through
-  buttons that do nothing before reaching the remove buttons; flipping the default is a breaking
-  change. **A disabled chip writes `aria-disabled="true"` on an element with no role**, where it
-  means nothing: the disabled chip drops its `role="button"` and its tab stop, so the attribute
-  has nothing to qualify.
-
 - **A vertical `range` `gog-slider`'s thumbs still take the pointer at the browser's default size.**
   21.15.0 gave the horizontal range thumbs a 24x24 target aligned with the drawn thumb; the
   vertical input is laid out through `writing-mode`, where the same inset and size rules would need

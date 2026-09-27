@@ -1,28 +1,41 @@
+<!--
+  The frame is the chip you see: padding, border, background, shape, ripple. It holds two
+  siblings — the surface, which is the chip's button, and the remove button — because a button
+  inside a `role="button"` is presentational to assistive tech. The surface's stretched `::after`
+  makes the whole frame press it, as before; the remove button sits above that.
+-->
 <div
-  class="gog-chip__surface"
-  [attr.aria-label]="ariaLabel() || null"
-  [attr.aria-labelledby]="labelledBy()"
-  [attr.aria-disabled]="disabled() ? 'true' : null"
-  [attr.role]="isInteractive() ? 'button' : null"
-  [attr.aria-pressed]="ariaPressed()"
-  [attr.tabindex]="isInteractive() ? 0 : null"
-  [style.cursor]="isInteractive() ? 'pointer' : 'default'"
-  (click)="onChipClick($event)"
-  (keydown)="onKeydown($event)"
+  class="gog-chip__frame"
+  [class.gog-chip__frame--disabled]="disabled()"
+  [class.gog-chip__frame--focus-visible]="surfaceFocusVisible()"
   gogRipple
   [rippleDisabled]="!rippleEnabled()"
 >
-  @if (avatarUrl()) {
-    <img class="gog-chip__avatar" [src]="avatarUrl()" [alt]="avatarAlt()" />
-  }
+  <div
+    class="gog-chip__surface"
+    [attr.aria-label]="ariaLabel() || null"
+    [attr.aria-disabled]="disabled() ? 'true' : null"
+    [attr.role]="isInteractive() ? 'button' : null"
+    [attr.aria-pressed]="ariaPressed()"
+    [attr.tabindex]="isInteractive() ? 0 : null"
+    [style.cursor]="isInteractive() ? 'pointer' : 'default'"
+    (click)="onChipClick($event)"
+    (keydown)="onKeydown($event)"
+    (focus)="onSurfaceFocus($event)"
+    (blur)="surfaceFocusVisible.set(false)"
+  >
+    @if (avatarUrl()) {
+      <img class="gog-chip__avatar" [src]="avatarUrl()" [alt]="avatarAlt()" />
+    }
 
-  @if (iconName()) {
-    <gog-icon class="gog-chip__icon" [ariaHidden]="true" [name]="iconName() ?? 'check'" />
-  }
+    @if (iconName()) {
+      <gog-icon class="gog-chip__icon" [ariaHidden]="true" [name]="iconName() ?? 'check'" />
+    }
 
-  <span class="gog-chip__content" [id]="contentId">
-    <ng-content></ng-content>
-  </span>
+    <span class="gog-chip__content">
+      <ng-content></ng-content>
+    </span>
+  </div>
 
   @if (removable() && !disabled()) {
     <button
