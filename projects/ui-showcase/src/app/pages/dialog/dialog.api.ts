@@ -20,6 +20,11 @@ export const DIALOG_CONFIG_ROWS: readonly {
   { name: 'modal', type: 'boolean', default: 'true' },
   { name: 'closable', type: 'boolean', default: 'true' },
   { name: 'draggable', type: 'boolean', default: 'true — needs a header to drag by' },
+  {
+    name: 'ariaLabelledBy',
+    type: 'string',
+    default: 'undefined — wins over title; with neither, no name and a dev-mode warning',
+  },
   { name: 'role', type: "'dialog' | 'alertdialog'", default: "'dialog'" },
   { name: 'width', type: 'string', default: "'auto'" },
   { name: 'maxWidth', type: 'string', default: "'90vw'" },

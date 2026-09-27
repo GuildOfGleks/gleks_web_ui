@@ -16,25 +16,6 @@ not worth carrying here.
 
 ## Defects — first
 
-- **A non-modal dialog still blocks the page under it.** `modal: false` drops the dim, the focus
-  trap, `aria-modal` and the scroll lock, but the backdrop element stays `position: fixed; inset: 0`
-  with pointer events, so a press anywhere on the page lands on it and — `closable` being the
-  default — closes the dialog instead of reaching the page. Keyboard focus can leave the dialog, a
-  pointer cannot reach anything. Measured on the Dialog page on 2026-09-27 (a click at the page's
-  bottom left closed the dialog and did nothing else). Likely wants `pointer-events: none` on the
-  non-modal backdrop with `auto` on the panel; whether an outside press should still close a
-  non-modal dialog is the decision under it.
-
-- **A dialog without `title` has no accessible name, and `ConfirmationDialogComponent` cannot give
-  it one.** The panel names itself through `aria-labelledby` only from `config.title`; without it
-  the panel is an unnamed `role="dialog"` (read on the Dialog page on 2026-09-27). The confirmation
-  dialog renders its own heading and puts `aria-labelledby`/`aria-describedby` on an inner `<div>`
-  with no role, where they name nothing — so a consumer who follows AGENTS.md's example (`title`
-  plus the component) gets the question twice on screen, and one who drops the `title` to avoid
-  that gets an unnamed dialog. The same example passes `data: { message }`, which is not a field of
-  `ConfirmDialogData` (`title`, `description`, `confirmText`, `cancelText`). Likely wants the panel
-  to fall back to the content's own heading, or a `DialogConfig.ariaLabelledBy`.
-
 - **`[gogMenuTrigger]` and `[gogTooltip]` on a `<gog-button>` say nothing to a screen reader.**
   Both directives write their ARIA onto their own host, and on the `gog-button` component that host
   is the roleless wrapper, not the `<button>` inside it. Measured on 2026-09-26: on the Menu page

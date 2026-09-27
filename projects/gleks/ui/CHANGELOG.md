@@ -8,6 +8,16 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Added
 
+- **`DialogConfig.ariaLabelledBy`, and `ConfirmDialogData.titleId`.** A dialog was named only by its
+  `title`, so one without was an unnamed `role="dialog"` — and `ConfirmationDialogComponent`, which
+  shows its own heading, forced a choice between the question on screen twice (with a `title`) and
+  a dialog with no name (without). `ariaLabelledBy` takes the id of a heading inside the component
+  and wins over `title`; the confirmation dialog's heading renders with `data.titleId` when given,
+  so the two meet. Dev mode now warns when a dialog opens with neither. The confirmation dialog's
+  inner `aria-labelledby`/`aria-describedby`, on a `<div>` with no role, named nothing and are gone.
+  `AGENTS.md`'s confirmation example, which passed a `data.message` the component never had, now
+  shows the whole shape.
+
 - **`gog-table` `selectOnRowClick` — select a row by pressing the row.** Off by default, and a no-op
   without `selectionMode`. The input existed in spirit already: `showSelectionColumn`'s own
   documentation told consumers to hide the checkboxes "for a table that selects by clicking the row
@@ -33,6 +43,13 @@ reached 1.0, so breaking changes may land in minor versions.
   the reveal toggle without reaching for the internal `gog-input__*` classes, which may change.
 
 ### Changed
+
+- **A non-modal dialog no longer blocks the page.** `modal: false` dropped the dim, the focus trap,
+  `aria-modal` and the scroll lock, but its transparent backdrop still covered the viewport and took
+  every press — closing the dialog instead of reaching the page. The backdrop now lets the pointer
+  through and only the panel takes it, and a press outside a non-modal dialog leaves it open; it
+  closes by its buttons, the close button or Escape. Verified on the showcase's Dialog page: a
+  button on the page behind an open non-modal dialog works, and the dialog stays.
 
 - **A button with an icon is now the same height as one without.** An icon is `--gog-icon-size`
   (1.2em) and a button's line is 1em, so any `gog-button` or `[gogButton]` holding an icon was 0.2em

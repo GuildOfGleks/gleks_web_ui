@@ -93,9 +93,8 @@
       Escape, the close button, and a press that both starts and ends on the backdrop — a drag that
       starts inside the panel and is released outside it does not close. All three resolve
       <code>afterClosed</code> with <code>undefined</code>. Tab and Shift+Tab cycle inside a modal
-      dialog; a non-modal one lets focus leave. Its backdrop is transparent but still covers the
-      viewport, so a press on the page behind closes the dialog rather than reaching the page —
-      filed.
+      dialog; a non-modal one lets focus leave, and the page behind it stays usable — a press there
+      reaches the page and leaves the dialog open. Try it on the <code>modal: false</code> row.
     </p>
   </app-doc-section>
 
@@ -142,8 +141,10 @@
     lead="The panel is role='dialog' (or 'alertdialog'), aria-modal while modal, and named by the title through aria-labelledby. Each cell opens a dialog that reads its own panel from the live DOM."
   >
     <p class="dialog-page__note">
-      Without a <code>title</code> the panel has no name at all — the confirmation dialog's own
-      heading is inside the body and nothing points at it. Give every dialog a title.
+      Without a <code>title</code> the panel has no name, and dev mode warns. When the content
+      carries its own heading — the confirmation dialog does — point <code>ariaLabelledBy</code> at
+      it instead of repeating it as a title; for <code>ConfirmationDialogComponent</code> pass the
+      same id as <code>data.titleId</code>.
     </p>
     <app-doc-matrix rowAxis="config" colAxis="">
       <ng-template appDocCell [rows]="a11yRows" [cols]="openColumn" let-row>

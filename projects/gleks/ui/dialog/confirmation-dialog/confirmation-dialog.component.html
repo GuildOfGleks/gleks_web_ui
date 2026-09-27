@@ -1,9 +1,5 @@
-<div
-  class="confirm-dialog"
-  [attr.aria-labelledby]="'confirm-title-' + instanceId"
-  [attr.aria-describedby]="'confirm-desc-' + instanceId"
->
-  <h3 [id]="'confirm-title-' + instanceId" class="confirm-dialog__title">
+<div class="confirm-dialog">
+  <h3 [id]="titleId" class="confirm-dialog__title">
     {{ data.title }}
   </h3>
   <p [id]="'confirm-desc-' + instanceId" class="confirm-dialog__description">

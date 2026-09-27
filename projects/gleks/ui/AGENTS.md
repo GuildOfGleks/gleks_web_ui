@@ -452,17 +452,34 @@ placed once in your app (see [gog-dialog](#gog-dialog) below — also **not** au
 private readonly dialogService = inject(DialogService);
 
 async confirmDelete(): Promise<void> {
-  const handle = this.dialogService.open<boolean>({
+  const handle = this.dialogService.open<boolean, ConfirmDialogData>({
     component: ConfirmationDialogComponent, // or your own component
-    title: 'Delete this item?',
     role: 'alertdialog',
-    data: { message: 'This cannot be undone.' },
+    // Named by the component's own heading, so the question is not shown twice.
+    ariaLabelledBy: 'delete-item-question',
+    data: {
+      titleId: 'delete-item-question',
+      title: 'Delete this item?',
+      description: 'This cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Keep',
+    },
   });
   const confirmed = await handle.afterClosed; // boolean | undefined
 }
 ```
 
-`DialogConfig<TData>`: `{ title?, component, data?: TData, modal? (default true), closable?, draggable?, closeIconName?, closeIconTemplate?, width?, maxWidth?, role? ('dialog' default | 'alertdialog'), zIndex? }`.
+`DialogConfig<TData>`: `{ title?, ariaLabelledBy?, component, data?: TData, modal? (default true), closable?, draggable?, closeIconName?, closeIconTemplate?, closeAriaLabel?, width?, maxWidth?, role? ('dialog' default | 'alertdialog'), zIndex? }`.
+
+**Every dialog needs a name: `title`, or `ariaLabelledBy`** (since 21.15.0) — the id of a heading
+inside your component, which wins over `title` when both are set. With neither the panel is an
+unnamed `role="dialog"`, and dev mode warns once per `open()`. Use `ariaLabelledBy` when the content
+already shows its own heading, rather than repeating it as a `title` above it.
+
+**`modal: false` leaves the page usable** (since 21.15.0): no dim, no focus trap, no scroll lock,
+and a press on the page reaches the page and leaves the dialog open — it closes by its own buttons,
+the close button or Escape. Before 21.15.0 its transparent backdrop still covered the viewport and
+closed the dialog on any press.
 `open<TResult, TData>()` returns `{ close(result?), afterClosed: Promise<TResult | undefined> }`. Also:
 `closeAll(result?)`, `updatePosition(id, offsetX, offsetY)` (for `draggable` dialogs).
 
@@ -488,8 +505,9 @@ per-call-site type through one shared token, so the receiving half of the round 
 trust — this closes only the half that can be closed.
 
 The library ships a ready-made `ConfirmationDialogComponent` for yes/no prompts — pass it as
-`component` with `data: { title, description, confirmText, cancelText }`; it resolves the
-dialog's result to `true`/`false`.
+`component` with `data: { title, description, confirmText, cancelText, titleId? }`; it resolves the
+dialog's result to `true`/`false`. `titleId` is the id its heading renders with — pass the same
+string as the dialog's `ariaLabelledBy`, as the example above does.
 
 **Wiring a custom component into a dialog** — it reads its data via `DIALOG_DATA` and closes
 itself via `DIALOG_REF`:
@@ -2076,7 +2094,7 @@ call:
 It has no inputs of its own — everything is driven through `DialogService` (see
 [Services](#services) above). Supports nesting, dragging (when `draggable !== false` and the
 dialog has a title or close button), a focus trap for modal dialogs, `Escape` to close (when
-`closable !== false`), and click-outside-to-close on the backdrop.
+`closable !== false`), and click-outside-to-close on a modal dialog's backdrop.
 
 #### `gog-toast` / `gog-toast-container`
 

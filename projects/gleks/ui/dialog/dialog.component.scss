@@ -20,6 +20,16 @@
   backdrop-filter: blur(var(--gog-dialog-backdrop-blur));
 }
 
+/* A non-modal dialog leaves the page usable: the transparent backdrop that centres it lets the
+   pointer through, and only the panel takes it. */
+.gog-dialog__backdrop:not(.gog-dialog__backdrop--modal) {
+  pointer-events: none;
+}
+
+.gog-dialog__backdrop:not(.gog-dialog__backdrop--modal) .gog-dialog__panel {
+  pointer-events: auto;
+}
+
 .gog-dialog__panel {
   display: flex;
   flex-direction: column;

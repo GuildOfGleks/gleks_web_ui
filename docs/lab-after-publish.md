@@ -176,3 +176,10 @@ build.
 - **Buttons with an icon are 0.2em shorter**, the same height as text buttons of their size. Any
   lab screenshot, or prose that gives a button's height, is stale for icon buttons; a lab layout
   that padded a text button to match an icon one can drop the padding.
+
+- **Dialog: `ariaLabelledBy`, `ConfirmDialogData.titleId`, and non-modal behaviour.** The Dialog
+  page's `DialogConfig` table gains `ariaLabelledBy`; any confirmation example should name the dialog
+  through it and `titleId` rather than pass a `title` that repeats the question. A `modal: false`
+  demo, if the page has one, can now say the page behind stays usable and an outside press does not
+  close it. The dev-mode warning for an unnamed dialog will show in the lab's console for any example
+  that opens one without a name — fix the example, not the warning.

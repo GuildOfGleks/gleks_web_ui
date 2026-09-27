@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Injectable, TemplateRef, inject, signal, Type } from '@angular/core';
+import { Injectable, TemplateRef, inject, isDevMode, signal, Type } from '@angular/core';
 import { GogIconName } from '@guildofgleks/ui';
 
 export interface DialogConfig<TData = unknown> {
@@ -13,6 +13,12 @@ export interface DialogConfig<TData = unknown> {
   closeIconTemplate?: TemplateRef<unknown> | null;
   width?: string;
   maxWidth?: string;
+  /**
+   * Id of the element inside `component` that names the dialog — its own heading, when the dialog
+   * has no `title` to show. Wins over `title`. A dialog with neither has no accessible name, and
+   * dev mode warns. For `ConfirmationDialogComponent`, pass the same id as `data.titleId`.
+   */
+  ariaLabelledBy?: string;
   /** ARIA role for the dialog panel. Use 'alertdialog' for confirmation prompts. Default: 'dialog' */
   role?: 'dialog' | 'alertdialog';
   /**
@@ -58,6 +64,12 @@ export class DialogService {
    * on trust.
    */
   open<TResult = unknown, TData = unknown>(config: DialogConfig<TData>): DialogHandle<TResult> {
+    if (isDevMode() && !config.title && !config.ariaLabelledBy) {
+      console.warn(
+        '[gog-dialog] A dialog opened with neither `title` nor `ariaLabelledBy` has no accessible ' +
+          'name. Pass `title`, or `ariaLabelledBy` with the id of a heading inside the component.',
+      );
+    }
     const id = ++this.nextId;
     const zIndex = config.zIndex ?? this.nextZIndex++;
     this.nextZIndex = Math.max(this.nextZIndex, zIndex + 1);

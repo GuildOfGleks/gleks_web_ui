@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { DialogComponent } from './dialog.component';
 import { DIALOG_DATA, DIALOG_REF, type DialogRef } from './dialog.tokens';
 import { DialogService } from './dialog.service';
@@ -117,6 +118,49 @@ describe('DialogComponent', () => {
 
       const panel = fixture.nativeElement.querySelector('.gog-dialog__panel') as HTMLElement;
       expect(panel.getAttribute('aria-labelledby')).toBeNull();
+    });
+
+    it('names the panel by ariaLabelledBy, over a title', async () => {
+      dialogService.open({
+        component: DialogContentComponent,
+        title: 'Shown title',
+        ariaLabelledBy: 'my-heading',
+      });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = fixture.nativeElement.querySelector('.gog-dialog__panel') as HTMLElement;
+      expect(panel.getAttribute('aria-labelledby')).toBe('my-heading');
+    });
+
+    it('names a confirmation dialog by its own heading through data.titleId', async () => {
+      dialogService.open({
+        component: ConfirmationDialogComponent,
+        ariaLabelledBy: 'delete-question',
+        data: {
+          title: 'Delete this file?',
+          titleId: 'delete-question',
+          description: 'It cannot be restored.',
+          confirmText: 'Delete',
+          cancelText: 'Keep',
+        },
+      });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const panel = fixture.nativeElement.querySelector('.gog-dialog__panel') as HTMLElement;
+      const heading = document.getElementById(panel.getAttribute('aria-labelledby') ?? '');
+      expect(heading?.textContent?.trim()).toBe('Delete this file?');
+    });
+
+    it('warns in dev mode about a dialog with neither title nor ariaLabelledBy', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      dialogService.open({ component: DialogContentComponent });
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('no accessible name'));
+      warn.mockClear();
+      dialogService.open({ component: DialogContentComponent, ariaLabelledBy: 'x' });
+      expect(warn).not.toHaveBeenCalled();
+      warn.mockRestore();
     });
 
     it('gives each open dialog its own title id', async () => {
@@ -253,6 +297,19 @@ describe('DialogComponent', () => {
 
       const panel = fixture.nativeElement.querySelector('.gog-dialog__panel') as HTMLElement;
       panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      fixture.detectChanges();
+
+      expect(dialogService.dialogs().length).toBe(1);
+    });
+
+    it('stays open when the page behind a non-modal dialog is pressed', async () => {
+      dialogService.open({ component: DialogContentComponent, modal: false });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const backdrop = fixture.nativeElement.querySelector('.gog-dialog__backdrop') as HTMLElement;
+      backdrop.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+      backdrop.dispatchEvent(new Event('pointerup', { bubbles: true }));
       fixture.detectChanges();
 
       expect(dialogService.dialogs().length).toBe(1);

@@ -95,6 +95,11 @@ export class DialogComponent {
     );
   }
 
+  /** `ariaLabelledBy` when given, else the shown title's id, else nothing. */
+  protected labelledBy(dialog: OpenDialog): string | null {
+    return dialog.config.ariaLabelledBy ?? (dialog.config.title ? this.getTitleId(dialog) : null);
+  }
+
   protected getTitleId(dialog: OpenDialog): string {
     return `gog-dialog-title-${dialog.id}`;
   }
@@ -112,8 +117,9 @@ export class DialogComponent {
     return dialog.zIndex;
   }
 
+  /** A press outside closes a modal dialog only; outside a non-modal one the page is live. */
   protected onBackdropPointerDown(event: PointerEvent, dialog: OpenDialog): void {
-    if (dialog.config.closable === false) return;
+    if (dialog.config.closable === false || dialog.config.modal === false) return;
     if (event.target === event.currentTarget) {
       this.backdropPress.add(dialog.id);
     }

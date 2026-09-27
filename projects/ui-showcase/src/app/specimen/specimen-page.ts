@@ -309,7 +309,7 @@ export class SpecimenPage {
   }
 
   protected deleteAccount(): void {
-    this.confirm('Delete account', {
+    this.confirm({
       title: 'Delete this account?',
       description: 'Every report you own moves to the team.',
       confirmText: 'Delete',
@@ -320,7 +320,7 @@ export class SpecimenPage {
   protected refund(): void {
     const order = this.menuOrder();
     if (!order) return;
-    this.confirm(`Refund ${order.id}`, {
+    this.confirm({
       title: `Refund ${order.total} to ${order.customer}?`,
       description: 'The customer is notified by email.',
       confirmText: 'Refund',
@@ -328,13 +328,15 @@ export class SpecimenPage {
     });
   }
 
-  private confirm(title: string, data: ConfirmDialogData): void {
+  /** Named by the confirmation's own heading, so the question is not shown twice. */
+  private confirm(data: ConfirmDialogData): void {
     const { confirmText } = data;
+    const titleId = 'specimen-confirm-question';
     const handle = this.dialogs.open<boolean, ConfirmDialogData>({
-      title,
       component: ConfirmationDialogComponent,
       role: 'alertdialog',
-      data,
+      ariaLabelledBy: titleId,
+      data: { ...data, titleId },
     });
     void handle.afterClosed.then((confirmed) => {
       if (confirmed) this.toasts.warning(`${confirmText}: done.`);

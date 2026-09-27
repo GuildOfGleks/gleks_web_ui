@@ -21,6 +21,7 @@ import { DIALOG_CONFIG_ROWS } from './dialog.api';
 import {
   DialogAttrsProbe,
   LongDialog,
+  type ProbeData,
   type RenameData,
   type RenameResult,
   RenameDialog,
@@ -76,6 +77,7 @@ export class DialogPage {
       name: "closeAriaLabel: 'Dismiss'",
       config: { title: 'Archive project', closeAriaLabel: 'Dismiss' },
     },
+    { name: "ariaLabelledBy: 'probe-heading'", config: { ariaLabelledBy: 'probe-heading' } },
     { name: 'no title', config: {} },
   ];
 
@@ -142,7 +144,12 @@ export class DialogPage {
   }
 
   protected probe(row: ConfigRow): void {
-    this.dialogs.open({ ...row.config, component: DialogAttrsProbe, width: '34rem' });
+    this.dialogs.open<unknown, ProbeData>({
+      ...row.config,
+      component: DialogAttrsProbe,
+      width: '34rem',
+      data: { headingId: row.config.ariaLabelledBy },
+    });
   }
 
   private record(what: string, afterClosed: Promise<unknown>): void {

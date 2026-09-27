@@ -20,7 +20,7 @@
       [attr.role]="dialog.config.role ?? 'dialog'"
       [attr.aria-modal]="dialog.config.modal === false ? null : 'true'"
       tabindex="-1"
-      [attr.aria-labelledby]="dialog.config.title ? getTitleId(dialog) : null"
+      [attr.aria-labelledby]="labelledBy(dialog)"
       (keydown)="onPanelKeydown($event, dialog, panel)"
     >
       @if (dialog.config.title || dialog.config.closable !== false) {

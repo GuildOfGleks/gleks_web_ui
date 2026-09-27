@@ -148,6 +148,11 @@ export class LongDialog {
 
 const REPORTED = /^(aria-|role$|tabindex$)/;
 
+export interface ProbeData {
+  /** Renders a heading with this id, for a dialog named through `ariaLabelledBy`. */
+  readonly headingId?: string;
+}
+
 /**
  * Prints the accessibility-relevant attributes of the panel it renders in, and the name of the
  * panel's close button, as the browser has them. The panel belongs to `gog-dialog`, so the page
@@ -157,6 +162,9 @@ const REPORTED = /^(aria-|role$|tabindex$)/;
   selector: 'app-dialog-attrs-probe',
   imports: [ButtonComponent],
   template: `
+    @if (data?.headingId; as headingId) {
+      <h3 [id]="headingId">Archive project</h3>
+    }
     <code class="demo-dialog__out">{{ attributes() }}</code>
     <div class="demo-dialog__actions">
       <gog-button (gogClick)="ref.close()">Close</gog-button>
@@ -167,6 +175,7 @@ const REPORTED = /^(aria-|role$|tabindex$)/;
 })
 export class DialogAttrsProbe {
   protected readonly ref = inject(DIALOG_REF);
+  protected readonly data = inject<ProbeData | undefined>(DIALOG_DATA);
   protected readonly attributes = signal('…');
 
   constructor() {
