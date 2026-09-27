@@ -111,10 +111,10 @@ async function serve(dir) {
     const url = decodeURIComponent((req.url ?? '/').split('?')[0]);
     let file = path.join(dir, url);
     if (!path.extname(url)) {
-      // A prerendered route is `<route>/index.html`. A route that only ever redirects —
-      // `/legacy` is one — has no prerender, and its folder exists only if a child's does. It
-      // falls back to the client-side shell at the root, which boots the app and lands wherever
-      // the router sends it, as any static host serving an SPA would. Both are measurable.
+      // A prerendered route is `<route>/index.html`. A route that only ever redirects has no
+      // prerender, and its folder exists only if a child's does. It falls back to the client-side
+      // shell at the root, which boots the app and lands wherever the router sends it, as any
+      // static host serving an SPA would. Both are measurable.
       const prerendered = path.join(file, 'index.html');
       file = existsSync(prerendered) ? prerendered : path.join(dir, 'index.csr.html');
     }

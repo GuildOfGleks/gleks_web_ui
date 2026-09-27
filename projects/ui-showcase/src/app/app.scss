@@ -95,11 +95,6 @@
   }
 }
 
-.shell__link--legacy {
-  font-family: var(--gog-font-mono), monospace;
-  font-size: var(--gog-text-xs);
-}
-
 .shell__main {
   grid-area: main;
   min-width: 0;

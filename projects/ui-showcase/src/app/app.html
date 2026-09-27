@@ -45,16 +45,6 @@
         }
       }
     }
-
-    <p class="shell__group">Legacy</p>
-    @for (path of legacyPaths; track path) {
-      <a
-        class="shell__link shell__link--legacy"
-        [routerLink]="['/legacy', path]"
-        routerLinkActive="shell__link--active"
-        >{{ path }}</a
-      >
-    }
   </nav>
 
   <main class="shell__main">

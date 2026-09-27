@@ -80,9 +80,8 @@ install check and the lab's own budget.
 
 ## Component pages — the rebuilt showcase
 
-The showcase is being rebuilt page by page (started 2026-09-16). Everything under
-`src/app/legacy/` is the old app, served at `/legacy/*`; a legacy page is deleted in the same
-change that adds its replacement. Do not extend legacy pages.
+The showcase was rebuilt page by page between 2026-09-16 and 2026-09-27; the old app, and the
+`/legacy/*` routes that served it, are gone. Every unit is a page of the shape below.
 
 - **`registry/units.ts`** lists every public unit. `registry.spec.ts` fails when an entry point
   exports a component, directive or service no unit owns.

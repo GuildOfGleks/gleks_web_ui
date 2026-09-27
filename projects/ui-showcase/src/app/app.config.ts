@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
       provide: GOG_CONFIG,
       useFactory: () => ({ ripple: { enabled: inject(ShowcaseSettings).ripple } }),
     },
-    // Only the legacy icon page reads these.
+    // The Icon page shows these next to the built-ins.
     provideGogIcons(CUSTOM_ICONS),
   ],
 };

@@ -8,7 +8,6 @@ import {
   ToggleComponent,
 } from '@guildofgleks/ui';
 
-import { legacyRoutes } from './legacy/legacy.routes';
 import { registryByGroup } from './registry/registry';
 import { ShowcaseSettings } from './shell/showcase-settings';
 import { THEMES } from './shell/themes';
@@ -25,9 +24,6 @@ export class App {
   protected readonly settings = inject(ShowcaseSettings);
 
   protected readonly groups = registryByGroup();
-  protected readonly legacyPaths = legacyRoutes
-    .map((route) => route.path)
-    .filter((path): path is string => !!path);
 
   protected readonly themeOptions: GogDropdownOption[] = THEMES.map((theme) => ({
     id: theme.name,
