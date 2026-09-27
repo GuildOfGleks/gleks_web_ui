@@ -1096,15 +1096,6 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
-- **A button with an icon is 0.2em taller than the same button without one**, `gog-button` and
-  `[gogButton]` alike: the icon is `--gog-icon-size` (1.2em) and the button's line is
-  `--gog-line-height-none` (1em), so the icon sets the row. Measured on the Specimen page on
-  2026-09-27: md 47.2px against 44.0px, sm 36.8 against 34.0. Left because it is a decision, not a
-  defect — the two kinds agree since 21.15.0, and the ways out each cost something: shrinking the
-  icon to 1em changes every icon button's look, and negative block margins on the icon keep the
-  row but let a consumer's larger `--gog-icon-size` spill out of the button. It shows only where an
-  icon button sits beside a bordered text button of the same size.
-
 - **A sortable `gog-table` header does not say it can be pressed.** It is a `<th>` with
   `tabindex="0"` that sorts on click and Enter, with no button inside it and no role, and
   `aria-sort` appears only once the column is sorted — read on the Table page on 2026-09-26. A

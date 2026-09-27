@@ -621,6 +621,11 @@ chips, tab and accordion headers, button-toggle options and the three dropdowns'
 each through its own `--gog-<block>-press-bg`. `gogCollapsibleTrigger` is the exception: the
 library paints nothing on that element in any state, because it is yours.
 
+**Every button of one size is one height, icon or not** (since 21.15.0). An icon is drawn at
+`--gog-icon-size` (1.2em) but takes a 1em share of the button's row, so an icon-only button, an
+icon-and-label one and a label-only one line up in a toolbar. Put the icon inside the button as a
+plain `<gog-icon>`; do not size it with margins or padding of your own.
+
 **`debounce` is a spam guard, not a delay before the first click.** The first click in a window
 fires immediately (leading edge); further clicks within `debounce` ms are silently dropped.
 

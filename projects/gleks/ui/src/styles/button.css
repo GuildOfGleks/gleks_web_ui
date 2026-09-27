@@ -336,6 +336,17 @@
   display: inline-flex;
   align-items: center;
   gap: var(--gog-button-gap);
+  /* Holds an icon's full height inside its own box without adding it to the row: padding widens
+     the box by the icon's overhang, and equal negative margins take it back out of the layout. */
+  padding-block: calc((var(--gog-icon-size, var(--gog-icon-fallback-size)) - 1em) / 2);
+  margin-block: calc((1em - var(--gog-icon-size, var(--gog-icon-fallback-size))) / 2);
+}
+
+/* An icon is 1.2em and the button's line 1em, so an icon made its button 0.2em taller than a text
+   one of the same size. Negative block margins give it a 1em share of the row: every button of one
+   size is one height, icon or not, and the glyph stays whole and centred over 0.1em of padding. */
+.gog-btn gog-icon {
+  margin-block: calc((1em - var(--gog-icon-size, var(--gog-icon-fallback-size))) / 2);
 }
 
 /* Invisible but still the button's name: `visibility: hidden` would drop the label from the

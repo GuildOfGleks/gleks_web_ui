@@ -172,3 +172,7 @@ build.
 - **An overlay inside an open `gog-collapsible` or collapsible `gog-panel` is no longer clipped.**
   Any lab page that advises `[appendToBody]` for a select inside one, or says a collapsible clips
   its open content, is stale for the uncapped case; a capped one still clips.
+
+- **Buttons with an icon are 0.2em shorter**, the same height as text buttons of their size. Any
+  lab screenshot, or prose that gives a button's height, is stale for icon buttons; a lab layout
+  that padded a text button to match an icon one can drop the padding.

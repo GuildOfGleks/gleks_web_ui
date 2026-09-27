@@ -34,6 +34,15 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **A button with an icon is now the same height as one without.** An icon is `--gog-icon-size`
+  (1.2em) and a button's line is 1em, so any `gog-button` or `[gogButton]` holding an icon was 0.2em
+  taller than a text button of the same size — 47.2px against 44px at `md` — and a toolbar mixing
+  the two did not line up. The icon now takes a 1em share of the row, drawn at its full size and
+  centred over 0.1em of the padding, so every button of one size is one height: icon-only, icon and
+  label, or label alone. **Icon buttons get 0.2em shorter** (3.2px at `md`); the icon itself does
+  not change, and an icon-only `xsm` button still meets the 24x24 target. A label that wraps to two
+  lines keeps its height.
+
 - **The stylesheets ship 45% lighter, because their comments were rewritten.** Every
   comment in `styles/` — `theme.css`, the global stylesheets `index.css` imports, and the presets —
   now says why a value is what it is, in a line or two. Release history, measurements, internal
