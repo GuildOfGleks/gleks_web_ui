@@ -63,12 +63,20 @@
     }
 
     <span class="gog-ms__actions">
-      <span class="gog-ms__arrow" [class.gog-ms__arrow--up]="isOpen()" aria-hidden="true">
-        <gog-icon
-          [template]="chevronSlot()?.templateRef ?? null"
-          [name]="isOpen() ? 'chevron-up' : 'chevron-down'"
-        />
+      <!-- Only the default chevron turns; a custom one gets `open` and draws the state itself. -->
+      <span
+        class="gog-ms__arrow"
+        [class.gog-ms__arrow--up]="isOpen() && !chevronSlot()"
+        aria-hidden="true"
+      >
+        <gog-icon [template]="chevronSlot() ? customChevron : null" name="chevron-down" />
       </span>
+      <ng-template #customChevron>
+        <ng-container
+          [ngTemplateOutlet]="chevronSlot()!.templateRef"
+          [ngTemplateOutletContext]="{ $implicit: isOpen(), open: isOpen() }"
+        />
+      </ng-template>
       @if (showClear()) {
         <button
           type="button"

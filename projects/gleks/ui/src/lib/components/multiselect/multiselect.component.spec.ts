@@ -8,7 +8,7 @@ import type { GogDropdownOption } from '@guildofgleks/ui/shared';
 
 /** See the note in select.component.spec.ts — generics have nothing to infer from here. */
 type DefaultMultiselect = MultiselectComponent<GogDropdownOption, string | number>;
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, GogDropdownChevronDirective } from '@guildofgleks/ui/shared';
 
 /** See the identical helper in select.component.spec.ts. */
 function stubRect(target: Element, rect: Partial<DOMRect>): void {
@@ -966,5 +966,59 @@ describe('MultiselectComponent', () => {
         );
       });
     });
+  });
+});
+
+// One rule for the slot on every host, the gogAccordionChevron one: the library turns only its own
+// chevron, and a custom template gets `open` to draw the state itself.
+describe('MultiselectComponent — gogDropdownChevron', () => {
+  @Component({
+    imports: [MultiselectComponent, GogDropdownChevronDirective],
+    template: `
+      <gog-multiselect class="default" [options]="options" />
+      <gog-multiselect class="custom" [options]="options">
+        <ng-template gogDropdownChevron let-open>
+          <span class="state">{{ open ? 'open' : 'closed' }}</span>
+        </ng-template>
+      </gog-multiselect>
+    `,
+  })
+  class ChevronHost {
+    readonly options = [{ id: 1, name: 'One' }];
+  }
+
+  let fixture: ComponentFixture<ChevronHost>;
+  const part = (host: string, selector: string) =>
+    (fixture.nativeElement as HTMLElement).querySelector(
+      `gog-multiselect.${host} ${selector}`,
+    ) as HTMLElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [ChevronHost] }).compileComponents();
+    fixture = TestBed.createComponent(ChevronHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+  });
+
+  it('hands a custom chevron the open state, and does not turn it', async () => {
+    expect(part('custom', '.state').textContent?.trim()).toBe('closed');
+    part('custom', '.gog-ms').click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(part('custom', '.state').textContent?.trim()).toBe('open');
+    expect(part('custom', '.gog-ms__arrow').classList.contains('gog-ms__arrow--up')).toBe(false);
+  });
+
+  it('turns its own default chevron when open', async () => {
+    part('default', '.gog-ms').click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const host = (fixture.nativeElement as HTMLElement).querySelector(
+      'gog-multiselect.default',
+    ) as HTMLElement;
+    const arrow = part('default', '.gog-ms__arrow');
+    const turned = arrow.classList.contains('gog-ms__arrow--up') && true;
+    expect(turned).toBe(true);
+    expect(arrow.querySelector('gog-icon')?.innerHTML).toContain('m6 9 6 6 6-6');
   });
 });

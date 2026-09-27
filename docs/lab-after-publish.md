@@ -199,3 +199,8 @@ build.
 - **`gog-datepicker`: seven more label inputs and a `gogDateSelect` output.** API rows on the
   Datepicker page; any prose saying only the calendar has `gogDateSelect`, or that a field's arrows
   can only be named through the config, is stale.
+
+- **`gogDropdownChevron` gets `let-open`, and a custom chevron no longer turns in a multiselect.**
+  Any lab example with a custom chevron on a multiselect that relied on the turn should bind
+  `let-open` and swap the glyph; the Select/Multiselect pages can show the context. The multiselect's
+  default chevron now actually points up when open.

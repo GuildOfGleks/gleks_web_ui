@@ -810,7 +810,9 @@ and multiselect unless noted otherwise):
 
 `gog-multiselect`-specific additions: `value: model<TValue[]>([])`, `showControls: boolean` (default `false`, a select-all/clear row), `controlsPosition: 'top'|'bottom'` (default `'top'`), and `selectAllLabel`/`clearAllLabel` for that row's two buttons (`'Select all'`/`'Clear'`, also via `GOG_CONFIG.labels`).
 
-CVA: yes, both. Slots (shared): `<ng-template gogDropdownChevron>` (custom chevron markup),
+CVA: yes, both. Slots (shared): `<ng-template gogDropdownChevron let-open>` (custom chevron markup;
+`open` is `GogDropdownChevronContext`'s, since 21.15.0 — the library turns only its own chevron, so a
+custom one draws its open state from `open`, the rule `gogAccordionChevron` follows),
 `<ng-template gogDropdownOption let-opt let-selected="selected" let-label="label">` (custom
 option row). Multiselect adds `<ng-template gogMultiselectClearIcon>`.
 

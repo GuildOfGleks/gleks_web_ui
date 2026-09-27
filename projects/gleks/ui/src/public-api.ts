@@ -115,7 +115,11 @@ export {
   GogDropdownChevronDirective,
   GogDropdownOptionDirective,
 } from '@guildofgleks/ui/shared';
-export type { GogDropdownOption, GogDropdownOptionContext } from '@guildofgleks/ui/shared';
+export type {
+  GogDropdownChevronContext,
+  GogDropdownOption,
+  GogDropdownOptionContext,
+} from '@guildofgleks/ui/shared';
 export { GogFloatLabelState } from '@guildofgleks/ui/shared';
 /*
  * Named, not wholesale: `GogOptionAccessor` is the type every collection control's `optionLabel`

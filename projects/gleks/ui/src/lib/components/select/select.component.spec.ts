@@ -12,7 +12,7 @@ import type { GogDropdownOption } from '@guildofgleks/ui/shared';
  * these specs pin the defaults explicitly.
  */
 type DefaultSelect = SelectComponent<GogDropdownOption, string | number | null>;
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, GogDropdownChevronDirective } from '@guildofgleks/ui/shared';
 
 function stubRect(target: Element, rect: Partial<DOMRect>): void {
   vi.spyOn(target, 'getBoundingClientRect').mockReturnValue({
@@ -1156,5 +1156,63 @@ describe('SelectComponent', () => {
         );
       });
     });
+  });
+});
+
+// One rule for the slot on every host, the gogAccordionChevron one: the library turns only its own
+// chevron, and a custom template gets `open` to draw the state itself.
+describe('SelectComponent — gogDropdownChevron', () => {
+  @Component({
+    imports: [SelectComponent, GogDropdownChevronDirective],
+    template: `
+      <gog-select class="default" [options]="options" />
+      <gog-select class="custom" [options]="options">
+        <ng-template gogDropdownChevron let-open>
+          <span class="state">{{ open ? 'open' : 'closed' }}</span>
+        </ng-template>
+      </gog-select>
+    `,
+  })
+  class ChevronHost {
+    readonly options = [{ id: 1, name: 'One' }];
+  }
+
+  let fixture: ComponentFixture<ChevronHost>;
+  const part = (host: string, selector: string) =>
+    (fixture.nativeElement as HTMLElement).querySelector(
+      `gog-select.${host} ${selector}`,
+    ) as HTMLElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [ChevronHost] }).compileComponents();
+    fixture = TestBed.createComponent(ChevronHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+  });
+
+  it('hands a custom chevron the open state, and does not turn it', async () => {
+    expect(part('custom', '.state').textContent?.trim()).toBe('closed');
+    part('custom', '.gog-select__control').click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(part('custom', '.state').textContent?.trim()).toBe('open');
+    expect(
+      part('custom', '.gog-select__chevron').classList.contains('gog-select__chevron--auto-rotate'),
+    ).toBe(false);
+  });
+
+  it('turns its own default chevron when open', async () => {
+    part('default', '.gog-select__control').click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const host = (fixture.nativeElement as HTMLElement).querySelector(
+      'gog-select.default',
+    ) as HTMLElement;
+    const arrow = part('default', '.gog-select__chevron');
+    const turned =
+      arrow.classList.contains('gog-select__chevron--auto-rotate') &&
+      !!host.querySelector('.gog-select--open');
+    expect(turned).toBe(true);
+    expect(arrow.querySelector('gog-icon')?.innerHTML).toContain('m6 9 6 6 6-6');
   });
 });

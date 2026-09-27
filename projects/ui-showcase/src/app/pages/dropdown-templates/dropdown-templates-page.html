@@ -137,30 +137,36 @@
       </ng-template>
     </app-doc-matrix>
 
-    <h3>the open state, which the two hosts hand over differently</h3>
+    <h3>the open state: <code>let-open</code></h3>
     <p class="dropdown-templates-page__note">
-      Open the two fields below and watch the glyph.
-      <strong><code>gog-multiselect</code> still turns it</strong> — the rotation lives on the
-      wrapper and follows the panel whatever is inside.
-      <strong><code>gog-select</code> stops turning it</strong>: its rotation class is applied only
-      while there is no custom template, on the reasoning that an arbitrary glyph is not necessarily
-      a chevron and turning it upside down may be wrong. The template gets no context either, so in
-      a select the open state is yours to draw — through <code>.gog-select--open</code> in your own
-      stylesheet. Two answers to one question, and the backlog has the entry.
+      Both hosts follow one rule, the one <code>gogAccordionChevron</code> follows: the library
+      turns only its own chevron. A custom glyph keeps the orientation it is drawn in — a sort icon
+      upside down would be wrong — and the template gets <code>open</code> to show the state itself.
+      Open the fields below: the first two swap their glyph through <code>let-open</code>, the third
+      keeps a fixed one, the last is the built-in chevron, which turns.
     </p>
     <div class="dropdown-templates-page__row">
       <div class="dropdown-templates-page__field">
-        <gog-select label="gog-select, custom glyph" [options]="frameworks">
-          <ng-template gogDropdownChevron><gog-icon name="sort" /></ng-template>
+        <gog-select label="gog-select, let-open" [options]="frameworks">
+          <ng-template gogDropdownChevron let-open>
+            <gog-icon [name]="open ? 'chevron-up' : 'chevron-down'" />
+          </ng-template>
         </gog-select>
       </div>
       <div class="dropdown-templates-page__field">
-        <gog-multiselect label="gog-multiselect, custom glyph" [options]="frameworks">
+        <gog-multiselect label="gog-multiselect, let-open" [options]="frameworks">
+          <ng-template gogDropdownChevron let-open>
+            <gog-icon [name]="open ? 'chevron-up' : 'chevron-down'" />
+          </ng-template>
+        </gog-multiselect>
+      </div>
+      <div class="dropdown-templates-page__field">
+        <gog-multiselect label="fixed glyph" [options]="frameworks">
           <ng-template gogDropdownChevron><gog-icon name="sort" /></ng-template>
         </gog-multiselect>
       </div>
       <div class="dropdown-templates-page__field">
-        <gog-select label="gog-select, built-in (turns)" [options]="frameworks" />
+        <gog-select label="built-in (turns)" [options]="frameworks" />
       </div>
     </div>
   </app-doc-section>

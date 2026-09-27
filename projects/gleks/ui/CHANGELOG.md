@@ -53,6 +53,14 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **`gogDropdownChevron` follows one rule on both hosts, and hands its template `open`.** A custom
+  chevron turned 180° with the panel in `gog-multiselect` and never moved in `gog-select`, and the
+  template got no context in either, so a select's open state could only be drawn through the
+  internal `.gog-select--open` class. Both now follow `gogAccordionChevron`'s rule: the library turns
+  only its own chevron, and a custom template receives `GogDropdownChevronContext`
+  (`let-open`) to draw the state itself. **A custom chevron in a `gog-multiselect` no longer turns by
+  itself** — bind `let-open` and swap the glyph, as the showcase's Dropdown templates page does.
+
 - **A non-modal dialog no longer blocks the page.** `modal: false` dropped the dim, the focus trap,
   `aria-modal` and the scroll lock, but its transparent backdrop still covered the viewport and took
   every press — closing the dialog instead of reaching the page. The backdrop now lets the pointer
@@ -79,6 +87,10 @@ reached 1.0, so breaking changes may land in minor versions.
   renders differently and no override is affected.
 
 ### Fixed
+
+- **`gog-multiselect`'s chevron pointed down whether open or not.** Open, it swapped to `chevron-up`
+  and also turned 180°, so the two cancelled out and only the flip animation showed the change. It
+  now turns the down chevron, as `gog-select` does. Measured in Chrome with motion off.
 
 - **A `range` `gog-slider`'s thumbs took the pointer at about 16px, not 24.** In range mode only the
   browser's own, unstyled thumbs take the pointer, and the drawn thumb's 24px target never received

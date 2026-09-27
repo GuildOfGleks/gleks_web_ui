@@ -43,18 +43,38 @@ import {
 import { GogVirtualWindow } from './virtual-window';
 import { GogDropdownFilterPosition, GogFloatLabelVariant, GogSize } from './types';
 
+/** Context handed to a `gogDropdownChevron` template. */
+export interface GogDropdownChevronContext {
+  /** Whether the panel is open. */
+  $implicit: boolean;
+  open: boolean;
+}
+
 /**
- * Custom markup for the trigger's chevron, on `gog-select` and `gog-multiselect`:
+ * Custom markup for the trigger's chevron, on `gog-select` and `gog-multiselect`. The library turns
+ * only its own default chevron; a custom one keeps the orientation it is drawn in and gets `open`
+ * to show the state itself — the rule `gogAccordionChevron` follows:
  *
  * ```html
  * <gog-select [options]="opts">
- *   <ng-template gogDropdownChevron><gog-icon name="sort" /></ng-template>
+ *   <ng-template gogDropdownChevron let-open>
+ *     <gog-icon [name]="open ? 'chevron-up' : 'chevron-down'" />
+ *   </ng-template>
  * </gog-select>
  * ```
+ *
+ * `gog-autocomplete` has no chevron and renders nothing for this slot.
  */
 @Directive({ selector: '[gogDropdownChevron]' })
 export class GogDropdownChevronDirective {
-  readonly templateRef = inject<TemplateRef<unknown>>(TemplateRef);
+  readonly templateRef = inject<TemplateRef<GogDropdownChevronContext>>(TemplateRef);
+
+  static ngTemplateContextGuard(
+    _dir: GogDropdownChevronDirective,
+    _context: unknown,
+  ): _context is GogDropdownChevronContext {
+    return true;
+  }
 }
 
 /** Context handed to a `gogDropdownOption` template. */

@@ -61,8 +61,14 @@
         [class.gog-select__chevron--auto-rotate]="!chevronSlot()"
         aria-hidden="true"
       >
-        <gog-icon [template]="chevronSlot()?.templateRef ?? null" name="chevron-down" />
+        <gog-icon [template]="chevronSlot() ? customChevron : null" name="chevron-down" />
       </span>
+      <ng-template #customChevron>
+        <ng-container
+          [ngTemplateOutlet]="chevronSlot()!.templateRef"
+          [ngTemplateOutletContext]="{ $implicit: isOpen(), open: isOpen() }"
+        />
+      </ng-template>
     </button>
 
     <!--
