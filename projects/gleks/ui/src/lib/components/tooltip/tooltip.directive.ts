@@ -51,7 +51,7 @@ let nextUid = 0;
     '(mouseleave)': 'onPointerLeave()',
     '(focusin)': 'onFocusIn()',
     '(focusout)': 'onFocusOut()',
-    '(keydown.escape)': 'onEscape()',
+    '(keydown.escape)': 'onEscape($event)',
   },
 })
 export class GogTooltipDirective {
@@ -131,8 +131,10 @@ export class GogTooltipDirective {
     this.queueHide();
   }
 
-  protected onEscape(): void {
+  /** Prevented only while showing: the next Escape belongs to whatever contains the trigger. */
+  protected onEscape(event: Event): void {
     if (!this.isVisible()) return;
+    event.preventDefault();
     this.cancelTimers();
     this.hide();
   }

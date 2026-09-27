@@ -446,6 +446,33 @@ describe('MultiselectComponent', () => {
       expect(fixture.nativeElement.querySelector('.gog-ms__dropdown')).toBeNull();
       expect(document.activeElement).toBe(trigger);
     });
+
+    // Prevented while open, so a gog-dialog around it leaves Escape for the next press.
+    it('takes Escape from the trigger only while open', async () => {
+      const trigger = fixture.nativeElement.querySelector('.gog-ms') as HTMLElement;
+      trigger.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const whileOpen = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
+      });
+      trigger.dispatchEvent(whileOpen);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(whileOpen.defaultPrevented).toBe(true);
+      expect(fixture.nativeElement.querySelector('.gog-ms__dropdown')).toBeNull();
+
+      const whileClosed = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
+      });
+      trigger.dispatchEvent(whileClosed);
+      expect(whileClosed.defaultPrevented).toBe(false);
+    });
   });
 
   describe('appendToBody', () => {

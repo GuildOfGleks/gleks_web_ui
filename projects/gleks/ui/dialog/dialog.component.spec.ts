@@ -230,6 +230,22 @@ describe('DialogComponent', () => {
       expect(dialogService.dialogs().length).toBe(0);
     });
 
+    it('leaves an Escape a control inside has already handled', async () => {
+      dialogService.open({ component: DialogContentComponent });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // What an open select, multiselect, autocomplete or datepicker does with Escape.
+      const body = fixture.nativeElement.querySelector('.gog-dialog__body') as HTMLElement;
+      body.addEventListener('keydown', (event) => event.preventDefault());
+      body.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+      );
+      fixture.detectChanges();
+
+      expect(dialogService.dialogs().length).toBe(1);
+    });
+
     it('does not close on Escape when closable is false', async () => {
       dialogService.open({ component: DialogContentComponent, closable: false });
       fixture.detectChanges();

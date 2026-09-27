@@ -142,9 +142,24 @@ describe('GogTooltipDirective', () => {
     fixture.detectChanges();
     expect(bubble()).not.toBeNull();
 
-    trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    const whileShown = new KeyboardEvent('keydown', {
+      key: 'Escape',
+      bubbles: true,
+      cancelable: true,
+    });
+    trigger.dispatchEvent(whileShown);
     fixture.detectChanges();
     expect(bubble()).toBeNull();
+    // Taken only while showing, so a dialog around the trigger keeps the next press.
+    expect(whileShown.defaultPrevented).toBe(true);
+
+    const whileHidden = new KeyboardEvent('keydown', {
+      key: 'Escape',
+      bubbles: true,
+      cancelable: true,
+    });
+    trigger.dispatchEvent(whileHidden);
+    expect(whileHidden.defaultPrevented).toBe(false);
   });
 
   it('never shows when disabled', () => {

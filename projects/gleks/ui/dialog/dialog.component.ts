@@ -130,6 +130,9 @@ export class DialogComponent {
 
   protected onPanelKeydown(event: KeyboardEvent, dialog: OpenDialog, panel: HTMLElement): void {
     if (event.key === 'Escape') {
+      // A control inside that already answered Escape — an open dropdown closing its list — has
+      // prevented it; closing the dialog as well would spend one key press on two things.
+      if (event.defaultPrevented) return;
       event.preventDefault();
       this.closeIfClosable(dialog);
       return;

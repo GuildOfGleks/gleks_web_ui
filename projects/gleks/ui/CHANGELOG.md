@@ -45,6 +45,15 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **Escape in an open dropdown inside a `gog-dialog` closed the dialog too.** One press closed the
+  list and the dialog under it. `gog-select` and `gog-multiselect` closed their panel on Escape from
+  the trigger and the filter box without preventing the event, and `gog-dialog` closed on any Escape
+  that reached its panel. Now every dropdown prevents Escape only while it is open, `gogTooltip` only
+  while it shows, and the dialog leaves an Escape a control inside has already prevented — so the
+  list closes first and the dialog on the next press, and a consumer's own control inside a dialog
+  can claim Escape the same way. On a closed dropdown Escape still closes the dialog at once. Found
+  on the showcase's Dialog page with a `gog-select` in a custom dialog.
+
 - **A disabled field now dims as one piece, in all ten controls.** `gog-select`, `gog-toggle`,
   `gog-slider`, `gog-checkbox` and `gog-radio-group` dimmed their whole root, label included;
   `gog-inputfield`, `gog-textarea`, `gog-autocomplete` and `gog-datepicker` dimmed only the native

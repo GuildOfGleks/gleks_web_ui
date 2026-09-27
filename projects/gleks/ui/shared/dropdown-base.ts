@@ -1031,6 +1031,18 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
     });
   }
 
+  /**
+   * Escape from the trigger or the filter box. It is taken — prevented — only while the panel is
+   * open, so a container that also answers Escape (a `gog-dialog`) closes on the next press
+   * instead of on this one; on a closed dropdown it is left alone for that container.
+   */
+  protected onEscapeKeydown(event: Event, refocus: boolean): void {
+    if (!this.isOpen()) return;
+    event.preventDefault();
+    this.close();
+    if (refocus) this.focusTrigger();
+  }
+
   /** Jumps from the trigger into the option list on ArrowDown/ArrowUp while open. */
   protected onTriggerArrowKeydown(event: Event): void {
     if (!this.isOpen()) return;

@@ -48,7 +48,7 @@
       (blur)="onFocusOut()"
       (keydown.enter)="toggle(); $event.preventDefault()"
       (keydown.space)="toggle(); $event.preventDefault()"
-      (keydown.escape)="close()"
+      (keydown.escape)="onEscapeKeydown($event, false)"
       (keydown.arrowdown)="onTriggerArrowKeydown($event)"
       (keydown.arrowup)="onTriggerArrowKeydown($event)"
     >
@@ -132,7 +132,7 @@
           [value]="filterQuery()"
           (input)="onFilterInput($event)"
           (click)="$event.stopPropagation()"
-          (keydown.escape)="close(); focusTrigger()"
+          (keydown.escape)="onEscapeKeydown($event, true)"
         />
       </div>
     }
@@ -210,7 +210,7 @@
           [value]="filterQuery()"
           (input)="onFilterInput($event)"
           (click)="$event.stopPropagation()"
-          (keydown.escape)="close(); focusTrigger()"
+          (keydown.escape)="onEscapeKeydown($event, true)"
         />
       </div>
     }

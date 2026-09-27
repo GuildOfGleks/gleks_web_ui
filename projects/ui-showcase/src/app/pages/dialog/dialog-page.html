@@ -33,8 +33,8 @@
       object, Cancel and the close button with <code>undefined</code>. Its select needs
       <code>[appendToBody]="true"</code>: the dialog's body is a scroller, and a list rendered
       inside it is clipped under the header. In <code>&lt;body&gt;</code> it stacks above the dialog
-      on the <code>--gog-dropdown-z</code> the panel raises. Escape in the open list currently
-      closes the whole dialog, not only the list — filed.
+      on the <code>--gog-dropdown-z</code> the panel raises. Escape closes the open list first, and
+      the dialog only on the next press.
     </p>
     <div class="dialog-page__row">
       <button type="button" gogButton variant="outline" (click)="rename()">Rename report</button>

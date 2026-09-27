@@ -16,15 +16,6 @@ not worth carrying here.
 
 ## Defects — first
 
-- **Escape in an open dropdown inside a `gog-dialog` closes the dialog too.** The select,
-  multiselect, autocomplete and datepicker handle Escape with `preventDefault()` alone, and
-  `DialogComponent.onPanelKeydown` closes on any Escape that reaches the panel without reading
-  `event.defaultPrevented` — so one key press closes the list and the dialog under it. Reproduced
-  on the Dialog page on 2026-09-27 with a `gog-select [appendToBody]` in a custom dialog body: list
-  open, focus on the trigger, Escape, zero dialogs left. `gog-menu` is the one overlay that does not
-  do this, because it also calls `stopPropagation()`. Likely fix: the dialog ignores a
-  default-prevented Escape, which covers every nested control at once, including a consumer's own.
-
 - **`gog-autocomplete` and `gog-radio-group` ignore the field-label casing every other control
   follows.** `--gog-input-label-text-transform` and `--gog-select-label-text-transform` put the
   label in capitals in the themes that ask for it, and textarea, multiselect, datepicker and slider
