@@ -16,13 +16,6 @@ not worth carrying here.
 
 ## Defects — first
 
-- **A text addon wider than an icon runs under the input's text.** The input reserves a fixed
-  start inset for an addon, sized for an icon, and `gogInputAddonStart` holds whatever the consumer
-  projects: on the Specimen page on 2026-09-27 `<span gogInputAddonStart>https://</span>` ended at
-  x=360 while the typed text began at x=333, so the two overprint ("httpgleks.example"). A one-glyph
-  addon (`€`) fits, which is what the Inputfield page shows. Likely wants the inset measured from
-  the addon, or the addon laid out beside the input rather than over it.
-
 - **A non-modal dialog still blocks the page under it.** `modal: false` drops the dim, the focus
   trap, `aria-modal` and the scroll lock, but the backdrop element stays `position: fixed; inset: 0`
   with pointer events, so a press anywhere on the page lands on it and — `closable` being the

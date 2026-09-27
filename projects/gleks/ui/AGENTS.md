@@ -706,7 +706,9 @@ and disabled state, not a component-managed slot. This is the **current, non-dep
 replacement for the old icon-template/icon-fn/icon-label input quartet — see
 [Deprecated patterns](#deprecated-patterns--do-not-use-in-new-code). On `type="password"` the end
 addon renders beside the reveal toggle, and on `type="number"` beside the stepper; both keep the
-outer edge. The clear button, while there is something to clear, takes the addon's place.
+outer edge. The clear button, while there is something to clear, takes the addon's place. An addon
+wider than an icon — `https://`, a unit, two buttons — widens the text gutter to fit (since 21.15.0;
+before, the text ran under it), measured in the browser, so nothing needs sizing by hand.
 
 Hooks: the field's own buttons carry `data-gog-part` — `increment`, `decrement`, `clear` and
 `password-toggle` — a stable selector for tests and automation. The `gog-input__*` classes are

@@ -15,14 +15,21 @@
   @if (label() && resolvedFloatLabel() === 'none') {
     <label class="gog-input__label" [attr.for]="resolvedInputId()">{{ label() }}</label>
   }
-  <div class="gog-input__field-container">
+  <div
+    class="gog-input__field-container"
+    [style.--input-addon-start-width.px]="addonStartWidth()"
+    [style.--input-addon-end-width.px]="addonEndWidth()"
+  >
     @if (label() && isFloatLabelActive()) {
       <label class="gog-input__label gog-input__label--float" [attr.for]="resolvedInputId()">{{
         label()
       }}</label>
     }
     @if (addonStart()) {
-      <span class="gog-input__icon gog-inline-center gog-input__icon--start gog-input__addon">
+      <span
+        #addonStartSlot
+        class="gog-input__icon gog-inline-center gog-input__icon--start gog-input__addon"
+      >
         <ng-content select="[gogInputAddonStart]" />
       </span>
     } @else if (iconStart(); as iconStartName) {
@@ -108,6 +115,7 @@
       -->
       @if (addonEnd()) {
         <span
+          #addonEndSlot
           class="gog-input__icon gog-inline-center gog-input__icon--end gog-input__addon"
           [class.gog-input__icon--beside-toggle]="isPasswordField()"
           [class.gog-input__icon--beside-spin]="hasSpinButtons()"

@@ -2,13 +2,18 @@ import {
   ChangeDetectionStrategy,
   Component,
   Directive,
+  ElementRef,
   contentChild,
   computed,
   DoCheck,
+  effect,
   inject,
   input,
   model,
+  type Signal,
   signal,
+  viewChild,
+  type WritableSignal,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -340,6 +345,16 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
    */
   protected readonly hasIconStart = computed(() => !!this.addonStart() || !!this.iconStart());
 
+  /**
+   * Rendered widths of the two addon slots, in px; 0 when there is none. The text gutter reserves
+   * an icon's width, and an addon can be wider — `https://`, `kg`, a two-button group — so the
+   * stylesheet takes the larger of the two. Measured, because the markup is the consumer's.
+   */
+  protected readonly addonStartWidth = signal(0);
+  protected readonly addonEndWidth = signal(0);
+  private readonly addonStartSlot = viewChild<ElementRef<HTMLElement>>('addonStartSlot');
+  private readonly addonEndSlot = viewChild<ElementRef<HTMLElement>>('addonEndSlot');
+
   protected readonly passwordToggleIcon = computed<GogIconName>(() =>
     this.passwordVisible() ? 'eye-off' : 'eye',
   );
@@ -390,6 +405,8 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+    trackWidth(this.addonStartSlot, this.addonStartWidth);
+    trackWidth(this.addonEndSlot, this.addonEndWidth);
   }
 
   ngDoCheck(): void {
@@ -469,4 +486,27 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     this.isFocused.set(false);
     this._onTouched();
   }
+}
+
+/**
+ * Keeps `width` at the slot's rendered inline size while the slot exists, and at 0 when it does
+ * not. A browser-only measurement: without `ResizeObserver` (the server) the value stays 0 and the
+ * gutter falls back to an icon's width, which is what it was before addons were measured.
+ */
+function trackWidth(
+  slot: Signal<ElementRef<HTMLElement> | undefined>,
+  width: WritableSignal<number>,
+): void {
+  effect((onCleanup) => {
+    const element = slot()?.nativeElement;
+    if (!element || typeof ResizeObserver === 'undefined') {
+      width.set(0);
+      return;
+    }
+    const observer = new ResizeObserver(([entry]) =>
+      width.set(entry.borderBoxSize?.[0]?.inlineSize ?? element.offsetWidth),
+    );
+    observer.observe(element);
+    onCleanup(() => observer.disconnect());
+  });
 }

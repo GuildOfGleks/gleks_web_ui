@@ -2,7 +2,11 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { GogInputAddonEndDirective, InputfieldComponent } from './inputfield.component';
+import {
+  GogInputAddonEndDirective,
+  GogInputAddonStartDirective,
+  InputfieldComponent,
+} from './inputfield.component';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 
 describe('InputfieldComponent', () => {
@@ -936,6 +940,63 @@ describe('InputfieldComponent', () => {
 
       expect(host.nativeElement.querySelector('.gog-input__clear')).toBeTruthy();
       expect(host.nativeElement.querySelector('.gog-input__addon')).toBeNull();
+    });
+  });
+
+  // The text gutter reserves an icon's width; a wider addon (`https://`) has to widen it or the
+  // two overprint. jsdom has no ResizeObserver, so a stub reports a fixed width.
+  describe('addon width', () => {
+    const original = globalThis.ResizeObserver;
+
+    beforeEach(() => {
+      globalThis.ResizeObserver = class {
+        constructor(private readonly callback: ResizeObserverCallback) {}
+        observe(): void {
+          this.callback(
+            [
+              {
+                borderBoxSize: [{ inlineSize: 57, blockSize: 20 }],
+              } as unknown as ResizeObserverEntry,
+            ],
+            this as unknown as ResizeObserver,
+          );
+        }
+        disconnect(): void {}
+        unobserve(): void {}
+      } as unknown as typeof ResizeObserver;
+    });
+
+    afterEach(() => {
+      globalThis.ResizeObserver = original;
+    });
+
+    it('hands each addon slot its measured width, and 0 once the slot is gone', async () => {
+      @Component({
+        imports: [InputfieldComponent, GogInputAddonStartDirective, GogInputAddonEndDirective],
+        template: `<gog-inputfield [clearable]="true" [value]="value()">
+          <span gogInputAddonStart>https://</span>
+          <span gogInputAddonEnd>.example</span>
+        </gog-inputfield>`,
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class WideAddonHost {
+        readonly value = signal('');
+      }
+
+      const host = TestBed.createComponent(WideAddonHost);
+      await host.whenStable();
+      host.detectChanges();
+      const container = () =>
+        host.nativeElement.querySelector('.gog-input__field-container') as HTMLElement;
+      expect(container().style.getPropertyValue('--input-addon-start-width')).toBe('57px');
+      expect(container().style.getPropertyValue('--input-addon-end-width')).toBe('57px');
+
+      // The clear button takes the end slot while there is text; its gutter is an icon's again.
+      host.componentInstance.value.set('x');
+      await host.whenStable();
+      host.detectChanges();
+      expect(container().style.getPropertyValue('--input-addon-end-width')).toBe('0px');
+      expect(container().style.getPropertyValue('--input-addon-start-width')).toBe('57px');
     });
   });
 });

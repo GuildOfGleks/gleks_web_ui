@@ -160,3 +160,7 @@ build.
   always did). Any lab example that spaces an icon inside a `gog-button` by hand — a margin, a
   `&nbsp;`, an extra space — ends up with a double gap after the install; none was found by grep on
   2026-09-27, but the Button, Toast and Dialog pages are worth a look in a browser.
+
+- **`gog-inputfield` makes room for an addon wider than an icon** (before, the text ran under it).
+  The Inputfield page's addon card can drop any caveat about keeping addons to one glyph, if it has
+  one, and a `https://` or unit example is now safe to show.

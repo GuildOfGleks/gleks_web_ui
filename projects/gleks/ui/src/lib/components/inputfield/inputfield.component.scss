@@ -128,11 +128,33 @@
  * The two are inline **start** and **end**, matching the slot names and the icons' own
  * `inset-inline-*` placement, so the whole field mirrors as one under `dir="rtl"`.
  */
+.gog-input__field-container {
+  /*
+   * What one end's slot takes from the text: an icon's gutter, or, for an addon wider than an
+   * icon, offset + the addon's measured width + offset. `--input-addon-*-width` is set by the
+   * template and is 0 with no addon, which leaves the icon gutter.
+   */
+  --input-start-reserve: max(
+    var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset)),
+    calc(
+      var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset)) * 2 +
+        var(--input-addon-start-width)
+    )
+  );
+  --input-end-reserve: max(
+    var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset)),
+    calc(
+      var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset)) * 2 +
+        var(--input-addon-end-width)
+    )
+  );
+}
+
 .gog-input-wrapper--icon-start .gog-input__field-container {
-  --gog-input-ps: var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset));
+  --gog-input-ps: var(--input-start-reserve);
 }
 .gog-input-wrapper--icon-end .gog-input__field-container {
-  --gog-input-pe: var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset));
+  --gog-input-pe: var(--input-end-reserve);
 }
 
 /*
@@ -143,9 +165,7 @@
  */
 .gog-input-wrapper--spin-clear .gog-input__field-container,
 .gog-input-wrapper--spin-pair .gog-input__field-container {
-  --gog-input-pe: calc(
-    var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset)) + var(--gog-input-spin-width)
-  );
+  --gog-input-pe: calc(var(--input-end-reserve) + var(--gog-input-spin-width));
 }
 
 .gog-input-wrapper--spin-clear .gog-input__clear,
@@ -162,8 +182,8 @@
  */
 .gog-input-wrapper--toggle-pair .gog-input__field-container {
   --gog-input-pe: calc(
-    var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset)) *
-      2 - var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset))
+    var(--gog-input-size-icon-inset, var(--gog-field-md-icon-inset)) +
+      var(--input-end-reserve) - var(--gog-input-size-icon-offset, var(--gog-field-md-icon-offset))
   );
 }
 

@@ -45,6 +45,16 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A `gog-inputfield` addon wider than an icon ran under the text.** The field reserved a gutter
+  sized for an icon, whatever `gogInputAddonStart`/`gogInputAddonEnd` projected, so
+  `<span gogInputAddonStart>https://</span>` and the typed value overprinted by 27px, and even a
+  two-letter unit like `kg` intruded by 1.8 to 7px, depending on size. The field now measures each
+  addon slot and reserves the wider of the icon's gutter and offset + addon + offset, including
+  beside the password toggle and the number stepper. A field with no addon, or one no wider than an
+  icon, is unchanged to the pixel — checked across all 246 inputfields on the showcase's
+  Inputfield and Specimen pages, in both directions. On the server, where nothing is measured, the
+  gutter is an icon's until the page hydrates.
+
 - **`gog-button`'s icon sat on the text's baseline, a few pixels high, with only a space beside
   it.** The projected content was a plain block, so an icon beside a label was baseline-aligned —
   its centre 2.7px above the text's at `xsm`, 4.5px at `slg` — and spaced by the width of a space,
