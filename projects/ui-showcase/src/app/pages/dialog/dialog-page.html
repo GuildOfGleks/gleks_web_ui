@@ -1,0 +1,156 @@
+<app-doc-page unit="dialog">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="A dialog exists only while DialogService holds it, and one gog-dialog outlet in the app root renders every one, so a page cannot lay them side by side. Each cell opens one, with the library's ConfirmationDialogComponent inside."
+  >
+    <h3>DialogConfig: modal, closable, draggable, role, title</h3>
+    <p class="dialog-page__note">
+      <code>modal</code>, <code>closable</code> and <code>draggable</code> are all on by default.
+      Off, <code>modal</code> drops the dimmed backdrop, the focus trap and the body scroll lock;
+      <code>closable</code> removes the close button, Escape and the backdrop press, leaving the
+      content's own buttons; <code>draggable</code> keeps the header but stops it moving. Without a
+      <code>title</code> the header holds only the close button.
+    </p>
+    <app-doc-matrix rowAxis="config" colAxis="">
+      <ng-template appDocCell [rows]="shapes" [cols]="openColumn" let-shape>
+        <button type="button" gogButton variant="outline" size="sm" (click)="confirm(shape)">
+          Open
+        </button>
+      </ng-template>
+    </app-doc-matrix>
+    <code>last afterClosed: {{ lastResult() }}</code>
+  </app-doc-section>
+
+  <app-doc-section
+    id="content"
+    title="Content & layout"
+    lead="The body is whatever component you pass: it reads DIALOG_DATA, closes itself through DIALOG_REF, and what it closes with resolves afterClosed."
+  >
+    <h3>your own component</h3>
+    <p class="dialog-page__note">
+      A rename form: <code>data</code> pre-fills it, Save resolves <code>afterClosed</code> with an
+      object, Cancel and the close button with <code>undefined</code>. Its select needs
+      <code>[appendToBody]="true"</code>: the dialog's body is a scroller, and a list rendered
+      inside it is clipped under the header. In <code>&lt;body&gt;</code> it stacks above the dialog
+      on the <code>--gog-dropdown-z</code> the panel raises. Escape in the open list currently
+      closes the whole dialog, not only the list — filed.
+    </p>
+    <div class="dialog-page__row">
+      <button type="button" gogButton variant="outline" (click)="rename()">Rename report</button>
+    </div>
+
+    <h3>width and maxWidth</h3>
+    <p class="dialog-page__note">
+      Both are CSS lengths written onto the panel; <code>maxWidth</code> wins when the two disagree.
+      Unset, the panel is as wide as its content, up to <code>90vw</code>.
+    </p>
+    <app-doc-matrix rowAxis="config" colAxis="">
+      <ng-template appDocCell [rows]="widths" [cols]="openColumn" let-width>
+        <button type="button" gogButton variant="outline" size="sm" (click)="confirm(width)">
+          Open
+        </button>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>long content</h3>
+    <p class="dialog-page__note">
+      The body scrolls inside the panel, capped by <code>--gog-dialog-body-max-height</code>, and
+      the header stays put.
+    </p>
+    <div class="dialog-page__row">
+      <button type="button" gogButton variant="outline" (click)="long()">Release notes</button>
+    </div>
+
+    <h3>closeIconName and closeIconTemplate</h3>
+    <div class="dialog-page__row">
+      <button type="button" gogButton variant="outline" (click)="closeIcon('name')">
+        closeIconName
+      </button>
+      <button type="button" gogButton variant="outline" (click)="closeIcon('template')">
+        closeIconTemplate
+      </button>
+    </div>
+    <ng-template #closeTemplate><gog-icon name="minus" /></ng-template>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="Dialogs stack in the order they open. The top one takes focus and Escape; closing the last one returns focus to what had it before the first opened."
+  >
+    <h3>stacking, and closeAll</h3>
+    <p class="dialog-page__note">
+      Open one, then another from inside it. Escape closes only the top one; Close all resolves
+      every open dialog's <code>afterClosed</code> with the value it is given.
+    </p>
+    <div class="dialog-page__row">
+      <button type="button" gogButton variant="outline" (click)="stacked()">Open a stack</button>
+    </div>
+
+    <h3>dismissing</h3>
+    <p class="dialog-page__note">
+      Escape, the close button, and a press that both starts and ends on the backdrop — a drag that
+      starts inside the panel and is released outside it does not close. All three resolve
+      <code>afterClosed</code> with <code>undefined</code>. Tab and Shift+Tab cycle inside a modal
+      dialog; a non-modal one lets focus leave. Its backdrop is transparent but still covers the
+      viewport, so a press on the page behind closes the dialog rather than reaching the page —
+      filed.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="configuration"
+    title="Configuration"
+    lead="DialogConfig, as DialogService.open() takes it."
+  >
+    <div class="dialog-page__scroll">
+      <table class="dialog-page__table">
+        <thead>
+          <tr>
+            <th scope="col">Field</th>
+            <th scope="col">Type</th>
+            <th scope="col">Unset</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of configRows; track row.name) {
+            <tr>
+              <th scope="row">
+                <code>{{ row.name }}</code>
+              </th>
+              <td>
+                <code>{{ row.type }}</code>
+              </td>
+              <td>
+                <code>{{ row.default }}</code>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="dialog-page__note">
+      The one <code>GOG_CONFIG</code> key is <code>labels.closeDialog</code>, read by the outlet —
+      which sits in the app root, so it is app-wide. Per dialog, <code>closeAriaLabel</code> wins.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The panel is role='dialog' (or 'alertdialog'), aria-modal while modal, and named by the title through aria-labelledby. Each cell opens a dialog that reads its own panel from the live DOM."
+  >
+    <p class="dialog-page__note">
+      Without a <code>title</code> the panel has no name at all — the confirmation dialog's own
+      heading is inside the body and nothing points at it. Give every dialog a title.
+    </p>
+    <app-doc-matrix rowAxis="config" colAxis="">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="openColumn" let-row>
+        <button type="button" gogButton variant="outline" size="sm" (click)="probe(row)">
+          Open
+        </button>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

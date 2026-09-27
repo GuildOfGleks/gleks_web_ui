@@ -7,6 +7,7 @@ import {
   ThemeService,
   ToggleComponent,
 } from '@guildofgleks/ui';
+import { DialogComponent } from '@guildofgleks/ui/dialog';
 
 import { registryByGroup } from './registry/registry';
 import { ShowcaseSettings } from './shell/showcase-settings';
@@ -14,7 +15,14 @@ import { THEMES } from './shell/themes';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, SelectComponent, ToggleComponent],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    DialogComponent,
+    SelectComponent,
+    ToggleComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

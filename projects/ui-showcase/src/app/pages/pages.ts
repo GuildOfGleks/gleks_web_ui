@@ -12,6 +12,7 @@ import { CHECKBOX_API } from './checkbox/checkbox.api';
 import { CHIP_API } from './chip/chip.api';
 import { COLLAPSIBLE_API } from './collapsible/collapsible.api';
 import { DATEPICKER_API } from './datepicker/datepicker.api';
+import { DIALOG_API } from './dialog/dialog.api';
 import { DIVIDER_API } from './divider/divider.api';
 import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.api';
 import { ICON_API } from './icon/icon.api';
@@ -227,5 +228,10 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./tooltip/tooltip-page').then((m) => m.TooltipPage),
     api: TOOLTIP_API,
     tokens: ['Tooltip'],
+  },
+  dialog: {
+    load: () => import('./dialog/dialog-page').then((m) => m.DialogPage),
+    api: DIALOG_API,
+    tokens: ['Dialog'],
   },
 };

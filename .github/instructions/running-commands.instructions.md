@@ -127,6 +127,12 @@ lists what is left.
   root; the library is built from source by `ng build @gleks/ui` and never needs its own install.
   If a step of the release really does need one, `npm publish` from the root with `--workspace`
   rather than `cd`-ing into the package.
+- **A component whose `styles` is a constant, not a literal, makes `ng test` pass and then never
+  exit.** `styles: SHARED_CSS` compiles, the build succeeds and every test passes, and the process
+  then hangs until the timeout — whether or not a spec touches that component, since it is enough
+  for its lazy chunk to be in the build. Found on 2026-09-27 with the Dialog page's demo dialogs,
+  by bisecting to that one line. Put shared component styles in a file and point each
+  `styleUrl` at it.
 - **`npm install` will not restore a package you overwrote with a local build** when the two
   carry the same version string — npm sees the version it wants and leaves the directory alone.
   To undo the local-library swap from `ui-showcase.instructions.md`, delete the package
