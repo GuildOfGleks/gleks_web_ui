@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { By } from '@angular/platform-browser';
 
 import { SkeletonComponent } from '../skeleton/skeleton.component';
@@ -438,5 +439,44 @@ describe('AccordionComponent', () => {
     ) as NodeListOf<HTMLButtonElement>;
     expect(buttons[0].getAttribute('aria-expanded')).toBe('false');
     expect(buttons[1].getAttribute('aria-expanded')).toBe('true');
+  });
+});
+
+// An open body stops clipping once it has finished opening, so a dropdown inside is not cut off;
+// closing clips again at once, so the collapse animates as before.
+describe('AccordionComponent — settled bodies', () => {
+  let fixture: ComponentFixture<AccordionComponent>;
+  const body = (index: number) =>
+    (fixture.nativeElement as HTMLElement).querySelectorAll('.gog-accordion__body')[
+      index
+    ] as HTMLElement;
+  const settled = (index: number) => body(index).classList.contains('gog-accordion__body--settled');
+
+  beforeEach(async () => {
+    vi.useFakeTimers();
+    await TestBed.configureTestingModule({ imports: [AccordionComponent] }).compileComponents();
+    fixture = TestBed.createComponent(AccordionComponent);
+    fixture.componentRef.setInput('items', [
+      { id: 'a', title: 'A' },
+      { id: 'b', title: 'B' },
+    ]);
+    fixture.detectChanges();
+  });
+
+  afterEach(() => vi.useRealTimers());
+
+  it('settles an opened body after it opens, and unsettles it the moment it closes', () => {
+    fixture.componentRef.setInput('openIds', new Set(['b']));
+    fixture.detectChanges();
+    expect(settled(1)).toBe(false);
+
+    vi.runAllTimers();
+    fixture.detectChanges();
+    expect(settled(1)).toBe(true);
+    expect(settled(0)).toBe(false);
+
+    fixture.componentRef.setInput('openIds', new Set());
+    fixture.detectChanges();
+    expect(settled(1)).toBe(false);
   });
 });

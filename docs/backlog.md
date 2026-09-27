@@ -24,14 +24,6 @@ not worth carrying here.
   announce was not checked, and should be before choosing between a grid role and a visually
   hidden state.
 
-- **A dropdown inside an open `gog-accordion` body is clipped.** `gog-collapsible` and
-  `gog-panel [collapsible]` stopped clipping once open in 21.15.0; the accordion animates its own
-  way (`grid-template-rows`) and clips in three places — the body, the body-inner, and the last
-  item, where `overflow: hidden` is what rounds the bottom corners, so the header's background does
-  not bleed past the radius. Unclipping the last one needs the corners carried another way (a
-  radius on the header and body themselves) before the overflow can go; the other two can follow
-  the collapsible's settle-after-open approach. Read from the stylesheets, not measured.
-
 - **A loading `filled` card or panel shows a blank tint.** The placeholder bars are
   `gog-skeleton`, whose bone colour is fixed rather than relative to the surface it sits on, and
   `filled` paints a tint of about the same lightness. Measured on the Card and Panel pages on

@@ -5,6 +5,7 @@ import {
   GogAccordionContentDirective,
   GogAccordionHeaderDirective,
   IconComponent,
+  SelectComponent,
   type GogAccordionItem,
   type GogAccordionToggleEvent,
   type GogIconName,
@@ -56,6 +57,7 @@ const FAQ: FaqItem[] = [
     GogAccordionContentDirective,
     GogAccordionHeaderDirective,
     IconComponent,
+    SelectComponent,
     DocAttrs,
     DocCell,
     DocMatrix,
@@ -107,6 +109,19 @@ export class AccordionPage {
       body: 'No messages have been consumed for 11 minutes.',
     },
   ];
+
+  protected readonly regionItems: GogAccordionItem[] = [
+    { id: 'language', title: 'Language' },
+    { id: 'region', title: 'Region' },
+  ];
+  protected readonly timezones = [
+    'Europe/Kyiv',
+    'Europe/Berlin',
+    'Europe/Lisbon',
+    'America/New_York',
+    'Asia/Tokyo',
+  ].map((zone) => ({ id: zone, name: zone }));
+  protected readonly timezone = signal<string | number | null>('Europe/Kyiv');
 
   protected readonly singleOpen = signal<ReadonlySet<string | number>>(new Set());
   protected readonly multiOpen = signal<ReadonlySet<string | number>>(new Set());

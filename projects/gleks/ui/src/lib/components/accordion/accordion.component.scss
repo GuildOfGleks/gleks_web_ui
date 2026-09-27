@@ -28,7 +28,23 @@
 .gog-accordion__item:last-child {
   border-bottom-left-radius: var(--gog-accordion-radius);
   border-bottom-right-radius: var(--gog-accordion-radius);
-  overflow: hidden;
+}
+
+/*
+ * The last item's corners are carried by what paints in them — its header while closed, its body
+ * while open — rather than by `overflow: hidden` on the item, which also cut off a dropdown opened
+ * inside the last body.
+ */
+.gog-accordion__item:last-child:not(.gog-accordion__item--open) .gog-accordion__header,
+.gog-accordion__item:last-child .gog-accordion__body-inner {
+  border-bottom-left-radius: max(
+    var(--gog-accordion-body-radius),
+    calc(var(--gog-accordion-radius) - var(--gog-accordion-border-width))
+  );
+  border-bottom-right-radius: max(
+    var(--gog-accordion-body-radius),
+    calc(var(--gog-accordion-radius) - var(--gog-accordion-border-width))
+  );
 }
 
 .gog-accordion__item--disabled .gog-accordion__header {
@@ -188,6 +204,16 @@
 .gog-accordion__body--open {
   grid-template-rows: 1fr;
   opacity: 1;
+}
+
+/* Open and done animating: nothing left to clip, and no transform to trap a dropdown's z-index. */
+.gog-accordion__body--settled,
+.gog-accordion__body--settled .gog-accordion__body-inner {
+  overflow: visible;
+}
+
+.gog-accordion__body--settled .gog-accordion__body-inner {
+  transform: none;
 }
 
 .gog-accordion__body-inner {

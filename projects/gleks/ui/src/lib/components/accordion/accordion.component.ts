@@ -13,8 +13,10 @@ import {
   signal,
   TemplateRef,
   untracked,
+  DestroyRef,
+  PLATFORM_ID,
 } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import { GogSize } from '@guildofgleks/ui/shared';
 import { handleRovingFocusKeydown } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
@@ -172,6 +174,7 @@ export class AccordionComponent {
   }
 
   constructor() {
+    this.trackSettling();
     effect(() => {
       const items = this.items();
 
@@ -181,6 +184,47 @@ export class AccordionComponent {
 
       this.openIds.set(new Set([items[0].id]));
       this.autoExpanded.set(true);
+    });
+  }
+
+  /**
+   * Open items that have finished opening. The body clips while its height animates; kept once
+   * open, the clip cut off a dropdown or menu opened inside it, and the body's `transform` put that
+   * dropdown under the items below. A settled body drops both. Closing unsettles at once, so the
+   * collapse animates clipped as before.
+   */
+  protected readonly settledIds = signal<ReadonlySet<string | number>>(new Set());
+  private readonly settleTimers = new Map<string | number, ReturnType<typeof setTimeout>>();
+
+  private trackSettling(): void {
+    const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+    const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+    inject(DestroyRef).onDestroy(() => this.settleTimers.forEach((timer) => clearTimeout(timer)));
+    effect(() => {
+      const open = this.openIds();
+      untracked(() => {
+        for (const [id, timer] of this.settleTimers) {
+          if (open.has(id)) continue;
+          clearTimeout(timer);
+          this.settleTimers.delete(id);
+        }
+        const settled = [...this.settledIds()].filter((id) => open.has(id));
+        if (settled.length !== this.settledIds().size) this.settledIds.set(new Set(settled));
+        if (!isBrowser) return;
+        const wait = toMs(
+          getComputedStyle(host).getPropertyValue('--gog-accordion-body-transition-duration'),
+        );
+        for (const id of open) {
+          if (this.settledIds().has(id) || this.settleTimers.has(id)) continue;
+          this.settleTimers.set(
+            id,
+            setTimeout(() => {
+              this.settleTimers.delete(id);
+              this.settledIds.update((ids) => new Set(ids).add(id));
+            }, wait),
+          );
+        }
+      });
     });
   }
 
@@ -218,4 +262,11 @@ export class AccordionComponent {
 
     handleRovingFocusKeydown(event, headers);
   }
+}
+
+/** `'0.2s'` → 200, `'150ms'` → 150, anything else → 0. */
+function toMs(duration: string): number {
+  const value = Number.parseFloat(duration);
+  if (!Number.isFinite(value)) return 0;
+  return duration.trim().endsWith('ms') ? value : value * 1000;
 }

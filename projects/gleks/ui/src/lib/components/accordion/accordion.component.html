@@ -95,6 +95,7 @@
           [id]="uid + '-body-' + item.id"
           class="gog-accordion__body"
           [class.gog-accordion__body--open]="isOpen(item.id)"
+          [class.gog-accordion__body--settled]="settledIds().has(item.id)"
           role="region"
           [attr.aria-labelledby]="uid + '-btn-' + item.id"
           [attr.aria-hidden]="!isOpen(item.id)"

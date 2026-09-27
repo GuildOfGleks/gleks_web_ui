@@ -213,3 +213,6 @@ build.
   rather than inside it. Nothing visible changes (measured on 70 chips); any lab stylesheet or
   theme-generator rule that targets `.gog-chip__surface` for the chip's box needs the new class, and
   the Chip page's accessibility prose can drop any mention of the nested remove button.
+
+- **An overlay inside an open `gog-accordion` body is no longer clipped.** Any lab advice to use
+  `[appendToBody]` for a select inside an accordion is stale.

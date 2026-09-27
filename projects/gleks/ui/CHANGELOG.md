@@ -97,6 +97,17 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A dropdown inside an open `gog-accordion` body was cut off.** Three things clipped it: the
+  body's `overflow: hidden` for its height animation, the body-inner's own, and the last item's,
+  which is how its bottom corners were rounded — and the body-inner's lift `transform`, even at
+  `translateY(0)`, made a stacking context that put an inline dropdown under the items below. An
+  open body now drops the clip and the transform once it has finished opening, and clips again the
+  moment it starts closing, the same approach 21.15.0 takes for `gog-collapsible`; the last item
+  rounds its header and body directly. Measured on the showcase's Accordion page: a select's list
+  in the last item's body shows whole over the item above. Compared pixel by pixel before and after
+  on 52 renders across `material`, `primeng`, `light` and `dark`: 24 identical, the other 28 differing
+  only in corner antialiasing, at most 11/255 on one channel.
+
 - **`gog-chip`'s remove button was an interactive control inside another.** The surface is a
   `role="button"` and the remove `<button>` was its child; ARIA makes a button's children
   presentational, and axe flags exactly this (`nested-interactive`). The chip's box — padding,

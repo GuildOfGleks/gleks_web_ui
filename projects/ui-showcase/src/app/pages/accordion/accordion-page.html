@@ -98,6 +98,21 @@
         </ng-template>
       </gog-accordion>
     </div>
+
+    <h3>an overlay inside the content</h3>
+    <p class="accordion-page__note">
+      Open the last item and its select: the list runs past the body and the items below. The body
+      clips only while it animates; open and settled it does not, and its lift transform is dropped
+      too, so the list is not painted under the next item. The last item rounds its corners on its
+      header and body rather than by clipping.
+    </p>
+    <div class="accordion-page__stack">
+      <gog-accordion [items]="regionItems" size="md">
+        <ng-template gogAccordionContent>
+          <gog-select label="Time zone" [options]="timezones" [(value)]="timezone" />
+        </ng-template>
+      </gog-accordion>
+    </div>
   </app-doc-section>
 
   <app-doc-section
