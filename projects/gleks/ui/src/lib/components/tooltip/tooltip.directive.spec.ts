@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { ButtonComponent } from '../button/button.component';
 import { GogTooltipDirective } from './tooltip.directive';
 
 @Component({
@@ -307,5 +308,60 @@ describe('GogTooltipDirective with GOG_CONFIG', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+// The directive writes its id into the focusable element's aria-describedby and takes back only
+// its own: a host binding used to own the attribute and write null over the host's own
+// description whenever the tooltip was closed, and it wrote onto a gog-button's roleless host.
+describe('GogTooltipDirective — aria-describedby', () => {
+  @Component({
+    imports: [GogTooltipDirective, ButtonComponent],
+    template: `
+      <span id="own-hint">Own hint</span>
+      <button class="native" gogTooltip="Tip" aria-describedby="own-hint">Native</button>
+      <gog-button class="component" gogTooltip="Tip">Component</gog-button>
+    `,
+  })
+  class DescribedHost {}
+
+  let fixture: ComponentFixture<DescribedHost>;
+  const el = (selector: string) =>
+    (fixture.nativeElement as HTMLElement).querySelector(selector) as HTMLElement;
+
+  beforeEach(async () => {
+    vi.useFakeTimers();
+    await TestBed.configureTestingModule({ imports: [DescribedHost] }).compileComponents();
+    fixture = TestBed.createComponent(DescribedHost);
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+    vi.useRealTimers();
+  });
+
+  it("keeps the host's own description while closed, and adds to it while showing", () => {
+    const native = el('button.native');
+    expect(native.getAttribute('aria-describedby')).toBe('own-hint');
+
+    native.dispatchEvent(new MouseEvent('mouseenter'));
+    vi.advanceTimersByTime(300);
+    const ids = native.getAttribute('aria-describedby')?.split(' ') ?? [];
+    expect(ids[0]).toBe('own-hint');
+    expect(ids).toHaveLength(2);
+
+    native.dispatchEvent(new MouseEvent('mouseleave'));
+    vi.advanceTimersByTime(100);
+    expect(native.getAttribute('aria-describedby')).toBe('own-hint');
+  });
+
+  it("describes a gog-button's inner button, not its host", () => {
+    const host = el('gog-button.component');
+    host.dispatchEvent(new MouseEvent('mouseenter'));
+    vi.advanceTimersByTime(300);
+
+    expect(host.hasAttribute('aria-describedby')).toBe(false);
+    expect(host.querySelector('button')?.getAttribute('aria-describedby')).toMatch(/gog-tooltip-/);
   });
 });

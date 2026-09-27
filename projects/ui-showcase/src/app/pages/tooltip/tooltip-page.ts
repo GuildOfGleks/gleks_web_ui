@@ -1,6 +1,11 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { GogButtonDirective, GogTooltipDirective, type GogTooltipPosition } from '@guildofgleks/ui';
+import {
+  ButtonComponent,
+  GogButtonDirective,
+  GogTooltipDirective,
+  type GogTooltipPosition,
+} from '@guildofgleks/ui';
 
 import { DocAttrs } from '../../doc/doc-attrs';
 import { DocCell, DocMatrix } from '../../doc/doc-matrix';
@@ -12,6 +17,7 @@ import { TOOLTIP_SCOPE_CONFIG, TooltipConfigScope } from './tooltip-config-scope
   selector: 'app-tooltip-page',
   imports: [
     JsonPipe,
+    ButtonComponent,
     GogButtonDirective,
     GogTooltipDirective,
     DocAttrs,
@@ -41,5 +47,9 @@ export class TooltipPage {
 
   protected readonly scopeConfig = TOOLTIP_SCOPE_CONFIG;
   protected readonly scopeAxis = ['outside scope', 'inside scope'] as const;
-  protected readonly a11yRows = ['<button gogTooltip>'] as const;
+  protected readonly a11yRows = [
+    '<button gogTooltip>',
+    '<button gogTooltip aria-describedby>',
+    '<gog-button gogTooltip>',
+  ] as const;
 }

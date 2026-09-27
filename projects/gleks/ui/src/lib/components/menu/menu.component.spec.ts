@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 
+import { ButtonComponent } from '../button/button.component';
 import { GogMenuItemDirective, GogMenuTriggerDirective, MenuComponent } from './menu.component';
 
 @Component({
@@ -301,5 +302,60 @@ describe('MenuComponent', () => {
       const anchored = [style.top, style.bottom].filter((value) => value !== '');
       expect(anchored).toHaveLength(1);
     });
+  });
+});
+
+// On a gog-button the host has no role; the state belongs on the <button> inside, and so does the
+// focus the menu hands back when it closes.
+describe('GogMenuTriggerDirective on gog-button', () => {
+  @Component({
+    imports: [MenuComponent, GogMenuItemDirective, GogMenuTriggerDirective, ButtonComponent],
+    template: `
+      <gog-button [gogMenuTrigger]="menu">Actions</gog-button>
+      <gog-menu #menu ariaLabel="Actions"><button gogMenuItem>Edit</button></gog-menu>
+    `,
+  })
+  class ComponentTriggerHost {}
+
+  let fixture: ComponentFixture<ComponentTriggerHost>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [ComponentTriggerHost] }).compileComponents();
+    fixture = TestBed.createComponent(ComponentTriggerHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+  });
+
+  afterEach(() => fixture.destroy());
+
+  it('puts haspopup, expanded and controls on the inner button', async () => {
+    const host = (fixture.nativeElement as HTMLElement).querySelector('gog-button') as HTMLElement;
+    const inner = host.querySelector('button') as HTMLButtonElement;
+    expect(host.hasAttribute('aria-haspopup')).toBe(false);
+    expect(inner.getAttribute('aria-haspopup')).toBe('menu');
+    expect(inner.getAttribute('aria-expanded')).toBe('false');
+
+    inner.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(inner.getAttribute('aria-expanded')).toBe('true');
+    expect(inner.getAttribute('aria-controls')).toBeTruthy();
+  });
+
+  it('returns focus to the inner button when the menu closes with Escape', async () => {
+    const inner = (fixture.nativeElement as HTMLElement).querySelector(
+      'gog-button button',
+    ) as HTMLButtonElement;
+    inner.focus();
+    inner.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve));
+    const item = document.body.querySelector('[gogMenuItem]') as HTMLElement;
+    item.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(document.activeElement).toBe(inner);
   });
 });

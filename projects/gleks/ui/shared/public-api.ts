@@ -10,6 +10,7 @@
  * Whole modules are re-exported because this barrel is the package's internal plumbing, not a
  * consumer-facing API: `src/public-api.ts` names what the root publishes, one symbol at a time.
  */
+export * from './aria-target';
 export * from './checkable-control.config';
 export * from './clearable-state';
 export * from './config';

@@ -183,3 +183,8 @@ build.
   demo, if the page has one, can now say the page behind stays usable and an outside press does not
   close it. The dev-mode warning for an unnamed dialog will show in the lab's console for any example
   that opens one without a name — fix the example, not the warning.
+
+- **`gogTooltip` and `[gogMenuTrigger]` work on a `gog-button`.** If the Menu or Tooltip page tells
+  readers to use `<button gogButton>` rather than `gog-button` for them, that advice can go; either
+  works. The Multiselect page's error example now links the error to the trigger for screen
+  readers, which any accessibility prose there can say.

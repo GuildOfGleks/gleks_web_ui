@@ -610,9 +610,11 @@ and unavailable" is announced either way and has to be visible; the rule had exc
 `gog-chip`'s `selected` ring has always behaved this way, and the two are now the same.
 
 **`[gogButton]` needs none of these inputs.** It styles an element you own, so write the ARIA
-attributes on your own `<button>`/`<a>` directly. Same for `[gogMenuTrigger]`, which sets
-`aria-haspopup`/`aria-expanded`/`aria-controls` on its host — put it on your own `<button
-gogButton>`, as its own example shows, not on a `<gog-button>`.
+attributes on your own `<button>`/`<a>` directly. `[gogMenuTrigger]` and `gogTooltip` work on
+either (since 21.15.0): they write their ARIA onto the element that takes focus — the host for
+`<button gogButton>`, the `<button>` inside a `<gog-button>` — and the menu hands focus back
+there when it closes. Before 21.15.0 both wrote onto a `gog-button`'s roleless host and reached
+no one.
 
 ```html
 <gog-button [ariaPressed]="mirrored()" (gogClick)="toggleMirror()">Mirror</gog-button>
@@ -1496,7 +1498,11 @@ answering a press is a promise it cannot keep.
 
 #### `gogTooltip` — directive, not a component
 
-Drop on any element — a `gog-*` component's host tag or a plain native one.
+Drop on any element — a `gog-*` component's host tag or a plain native one. The hint's id goes into
+`aria-describedby` on the element that takes focus (the `<button>` inside a `gog-button`, a
+chip's surface) while it shows, **added to** whatever that element already had and taken back
+alone when it hides. Before 21.15.0 the directive owned the attribute and wrote `null` over any
+description the host had whenever the tooltip was closed.
 
 | Input                 | Type                                                              | Default                                                            |
 | --------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------ |

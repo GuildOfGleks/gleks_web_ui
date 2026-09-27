@@ -32,6 +32,7 @@
     [attr.aria-controls]="listboxId()"
     [attr.aria-disabled]="isDisabled()"
     [attr.aria-invalid]="hasError()"
+    [attr.aria-describedby]="errorId()"
     [attr.aria-labelledby]="label() ? labelId() : null"
     [attr.aria-label]="label() ? null : ariaLabel() || placeholder() || 'Select'"
     [class.gog-ms--open]="isOpen()"

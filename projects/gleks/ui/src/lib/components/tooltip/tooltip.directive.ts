@@ -13,7 +13,7 @@ import {
   signal,
 } from '@angular/core';
 
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, gogAddIdRef, gogAriaTarget, gogRemoveIdRef } from '@guildofgleks/ui/shared';
 import { resolveLengthToken, resolveNumberToken } from '@guildofgleks/ui/shared';
 import { GogTooltipOverlay } from './tooltip-overlay';
 import {
@@ -46,7 +46,6 @@ let nextUid = 0;
 @Directive({
   selector: '[gogTooltip]',
   host: {
-    '[attr.aria-describedby]': 'describedById()',
     '(mouseenter)': 'onPointerEnter()',
     '(mouseleave)': 'onPointerLeave()',
     '(focusin)': 'onFocusIn()',
@@ -83,7 +82,12 @@ export class GogTooltipDirective {
   private readonly overlay = new GogTooltipOverlay(this.viewContainerRef, this.document);
 
   private readonly isVisible = signal(false);
-  protected readonly describedById = computed(() => (this.isVisible() ? this.uid : null));
+  /**
+   * Where the id went on show, so hide takes it back from the same element. Written by hand rather
+   * than bound: a host binding owned the whole attribute and wrote `null` over any description the
+   * host already had for as long as the tooltip was closed.
+   */
+  private describedEl: HTMLElement | null = null;
 
   private readonly resolvedPosition = computed(
     () => this.gogTooltipPosition() ?? this.globalConfig.tooltip?.position ?? DEFAULT_POSITION,
@@ -183,6 +187,9 @@ export class GogTooltipDirective {
     bubbleEl?.addEventListener('mouseenter', this.onBubbleMouseEnter);
     bubbleEl?.addEventListener('mouseleave', this.onBubbleMouseLeave);
 
+    this.describedEl = gogAriaTarget(hostEl);
+    gogAddIdRef(this.describedEl, 'aria-describedby', this.uid);
+
     ref.setInput('bubbleId', this.uid);
     ref.setInput('content', content);
     ref.setInput('zIndex', this.resolveZIndex(hostEl));
@@ -212,6 +219,8 @@ export class GogTooltipDirective {
 
     this.isVisible.set(false);
     this.activeRef = null;
+    if (this.describedEl) gogRemoveIdRef(this.describedEl, 'aria-describedby', this.uid);
+    this.describedEl = null;
     this.overlay.detach();
 
     window.removeEventListener('scroll', this.onReflow, { capture: true });

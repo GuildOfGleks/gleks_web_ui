@@ -155,14 +155,29 @@
     <p class="tooltip-page__note">
       Read from the live DOM — focus the trigger below and its row gains
       <code>aria-describedby</code>. A tooltip describes; it never names. An icon-only button still
-      needs its own <code>aria-label</code>. Put the directive on the element that takes focus: on a
-      <code>gog-button</code> component its attribute lands on the component's host, not on the
-      button inside — filed.
+      needs its own <code>aria-label</code>. On a <code>gog-button</code> the link goes on the
+      button inside it, and a description the element already had is kept beside it.
     </p>
     <app-doc-matrix rowAxis="trigger" colAxis="">
-      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
         <app-doc-attrs target="button">
-          <button type="button" class="tooltip-page__plain" gogTooltip="Saves a draft">Save</button>
+          @if (row === '<gog-button gogTooltip>') {
+            <gog-button variant="outline" size="sm" gogTooltip="Saves a draft">Save</gog-button>
+          } @else if (row === '<button gogTooltip aria-describedby>') {
+            <span id="tooltip-page-own-hint" hidden>Last saved a minute ago</span>
+            <button
+              type="button"
+              class="tooltip-page__plain"
+              gogTooltip="Saves a draft"
+              aria-describedby="tooltip-page-own-hint"
+            >
+              Save
+            </button>
+          } @else {
+            <button type="button" class="tooltip-page__plain" gogTooltip="Saves a draft">
+              Save
+            </button>
+          }
         </app-doc-attrs>
       </ng-template>
     </app-doc-matrix>

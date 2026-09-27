@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
+  ButtonComponent,
   GogButtonDirective,
   GogMenuItemDirective,
   GogMenuTriggerDirective,
@@ -15,6 +16,7 @@ import { DocSection } from '../../doc/doc-section';
 @Component({
   selector: 'app-menu-page',
   imports: [
+    ButtonComponent,
     GogButtonDirective,
     GogMenuItemDirective,
     GogMenuTriggerDirective,
@@ -36,7 +38,7 @@ export class MenuPage {
 
   /** The single column of a matrix whose rows are the only axis. */
   protected readonly controlColumn = ['trigger'] as const;
-  protected readonly a11yRows = ['closed'] as const;
+  protected readonly a11yRows = ['on <button>', 'on <gog-button>'] as const;
 
   protected readonly lastAction = signal('none yet');
   protected readonly closedCount = signal(0);

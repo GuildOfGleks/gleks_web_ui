@@ -1,5 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
+  afterRenderEffect,
   afterNextRender,
   ApplicationRef,
   ChangeDetectionStrategy,
@@ -21,7 +22,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, gogAriaTarget } from '@guildofgleks/ui/shared';
 import { resolveLengthToken, resolveNumberToken } from '@guildofgleks/ui/shared';
 import { GogDropdownOverlay } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
@@ -281,7 +282,8 @@ export class MenuComponent {
     this.pendingFocus = null;
     const trigger = this.triggerEl;
     this.triggerEl = null;
-    if (restoreFocus) trigger?.focus({ preventScroll: true });
+    // The element that took focus, not the host: a `gog-button` host cannot hold it.
+    if (restoreFocus && trigger) gogAriaTarget(trigger).focus({ preventScroll: true });
     this.gogClosed.emit();
   }
 
@@ -456,9 +458,6 @@ const PANEL_PADDING = 8;
 @Directive({
   selector: '[gogMenuTrigger]',
   host: {
-    '[attr.aria-haspopup]': "'menu'",
-    '[attr.aria-expanded]': 'isOpen()',
-    '[attr.aria-controls]': 'isOpen() ? menu().menuId : null',
     '(click)': 'onClick($event)',
     '(keydown)': 'onKeydown($event)',
   },
@@ -470,6 +469,31 @@ export class GogMenuTriggerDirective {
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   protected readonly isOpen = computed(() => this.menu().isOpenFrom(this.elementRef.nativeElement));
+
+  constructor() {
+    /*
+     * The trigger's state goes on the element that takes focus — the host itself for
+     * `<button gogButton>`, the `<button>` inside for a `gog-button` host, which has no role and
+     * whose attributes reached no one. After render, because that inner button does not exist
+     * until the component's view does; so on the server these are absent until hydration.
+     */
+    let written: HTMLElement | null = null;
+    afterRenderEffect(() => {
+      const open = this.isOpen();
+      const menuId = this.menu().menuId;
+      const target = gogAriaTarget(this.elementRef.nativeElement);
+      if (written && written !== target) {
+        for (const name of ['aria-haspopup', 'aria-expanded', 'aria-controls']) {
+          written.removeAttribute(name);
+        }
+      }
+      written = target;
+      target.setAttribute('aria-haspopup', 'menu');
+      target.setAttribute('aria-expanded', String(open));
+      if (open) target.setAttribute('aria-controls', menuId);
+      else target.removeAttribute('aria-controls');
+    });
+  }
 
   protected onClick(event: MouseEvent): void {
     event.preventDefault();

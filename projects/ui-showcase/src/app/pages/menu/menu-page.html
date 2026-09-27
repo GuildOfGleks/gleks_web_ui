@@ -9,9 +9,8 @@
       An item is your own <code>&lt;button gogMenuItem&gt;</code>, so its content is yours — an
       icon, a label, a shortcut. A native <code>disabled</code> item is skipped by the arrow keys
       and cannot be pressed. Hover and the focused item are live; the trigger is your own
-      <code>&lt;button gogButton&gt;</code>. Put the trigger on a native button, not on the
-      <code>gog-button</code> component: there its ARIA lands on the component's host and never
-      reaches the real button — filed.
+      <code>&lt;button gogButton&gt;</code>; a <code>gog-button</code> works as well — the trigger's
+      state goes on the button inside it, and focus comes back there when the menu closes.
     </p>
     <div class="menu-page__row">
       <button type="button" gogButton variant="outline" [gogMenuTrigger]="stateMenu">
@@ -146,11 +145,15 @@
       <code>ariaLabel</code>, which is empty by default — name every menu.
     </p>
     <app-doc-matrix rowAxis="trigger" colAxis="">
-      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn">
+      <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>
         <app-doc-attrs target="button">
-          <button type="button" class="menu-page__plain" [gogMenuTrigger]="a11yMenu">
-            Actions
-          </button>
+          @if (row === 'on <gog-button>') {
+            <gog-button variant="outline" size="sm" [gogMenuTrigger]="a11yMenu">Actions</gog-button>
+          } @else {
+            <button type="button" class="menu-page__plain" [gogMenuTrigger]="a11yMenu">
+              Actions
+            </button>
+          }
           <gog-menu #a11yMenu ariaLabel="Actions">
             <button gogMenuItem>One</button>
           </gog-menu>

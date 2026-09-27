@@ -16,18 +16,6 @@ not worth carrying here.
 
 ## Defects — first
 
-- **`[gogMenuTrigger]` and `[gogTooltip]` on a `<gog-button>` say nothing to a screen reader.**
-  Both directives write their ARIA onto their own host, and on the `gog-button` component that host
-  is the roleless wrapper, not the `<button>` inside it. Measured on 2026-09-26: on the Menu page
-  the host carried `aria-haspopup`, `aria-expanded` and `aria-controls` and the inner button none;
-  on the legacy Global Config page a showing tooltip's `aria-describedby` sat on the host while
-  the focused inner button had none. Both still work by pointer and keyboard (the events bubble),
-  so nothing looks wrong. It is the trap 21.8.0 closed for raw `[attr.aria-*]` by giving
-  `gog-button` `ariaExpanded`, `ariaHasPopup` and `ariaControls`; neither directive uses them, and
-  `gogTooltip`'s own JSDoc promises that `<gog-chip [gogTooltip]>` "just works". `<button
-gogButton …>` works for both, and the Menu and Tooltip pages use it and say why. Every other
-  directive that decorates a host with ARIA wants the same check.
-
 - **With `selectOnRowClick` and no checkbox column, a row's selection may reach no one.** The
   state is then carried only by `aria-selected` on the `<tr>`, and the table is a plain `<table>`
   — ARIA 1.2 supports `aria-selected` on a row only inside `grid` or `treegrid`. With the checkbox
@@ -224,51 +212,6 @@ gogButton …>` works for both, and the Menu and Tooltip pages use it and say wh
   tokens, while the padding and font-size scale those pages actually document is filed under
   stacking and appears on none of them. Whoever splits it should walk the built pages' `tokens`
   lists afterwards.
-
-- **`gogTooltip` erases any `aria-describedby` its host already had, and it silently ate a fix.**
-  Found 2026-09-19 while building the rebuilt showcase's Multiselect page. The directive declares
-  `'[attr.aria-describedby]': 'describedById()'` as a host binding, and `describedById()` is
-  `isVisible() ? uid : null` — so for as long as the tooltip is closed, which is nearly always, it
-  writes `null` over whatever else is on that element. Any host with its own description loses it
-  under a tooltip; the value is not merged, and there is no input that would let it be.
-
-  **How it surfaced**: `gog-multiselect` was the one control in the library whose errored trigger
-  reported nothing to assistive tech. `aria-invalid` was added and works, but the matching
-  `[attr.aria-describedby]="errorId()"` — the link every other control makes — never reached the
-  DOM, because the trigger is also the tooltip host for the full-selection hint. The id is still
-  computed and still put on the error span, so the eventual fix has something to hang off.
-
-  **The part worth keeping either way**: the jsdom spec asserting that link **passed**, on both the
-  trigger and the error span, while Chrome showed the attribute absent after an SSR hydration and
-  after a client-side render alike. A green test can document an attribute the browser does not
-  have — which is why the assertion was removed rather than kept as proof.
-
-  **Three shapes for the fix, all needing a decision**: an input on the directive that takes extra
-  ids to merge (public API); the directive reading and re-emitting whatever it found (cannot work
-  for a binding that changes later, which is exactly this case); or moving the tooltip off the
-  combobox onto the value span, which costs keyboard users the hint because that span is not
-  focusable.
-
-- ~~**`gog-button type="submit"` submits its form while `loading`, and past `debounce`.**~~
-  **Closed 2026-09-16, in the in-progress 21.15.0**: a click the component does not emit is now
-  cancelled with `preventDefault()`, and the window is checked synchronously so the decision is
-  made inside the event. Three specs mount a real form; all three failed against the old code
-  first. Found
-  2026-09-16 by the rebuilt showcase's Button page, Behaviour section. Three clicks 40ms apart
-  inside a `<form>`:
-
-  | button                                        | `gogClick` | form `submit` |
-  | --------------------------------------------- | ---------- | ------------- |
-  | `<gog-button type="submit">`                  | 1          | **3**         |
-  | `<gog-button type="submit" [loading]="true">` | 0          | **3**         |
-
-  `onClick` returns early while loading and the throttle drops repeat clicks, but both sit between
-  the native `click` and `gogClick`. The native `<button type="submit">` submits on every
-  activation regardless, and `loading` deliberately leaves it enabled (`aria-disabled`, so it keeps
-  focus). So the two cases a consumer reads as protection against a double submission — a button
-  that is busy, and a debounced one — are exactly the ones it misses, and `AGENTS.md` says
-  `loading` "blocks clicks". Likely fix: `preventDefault()` on a click that is dropped, which
-  cancels the implicit submission; a spec should submit a real form in both cases.
 
 - **`gog-spinner-overlay` covers its content from the pointer and not from the keyboard.** The
   scrim sits over the content while `loading` is on, so nothing underneath can be clicked — but the

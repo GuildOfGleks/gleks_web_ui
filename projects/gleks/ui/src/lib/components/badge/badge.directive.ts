@@ -12,14 +12,19 @@ import {
   input,
 } from '@angular/core';
 
-import { GogBadgePosition, GogTagVariant, nextGogControlId } from '@guildofgleks/ui/shared';
+import {
+  GOG_FOCUSABLE,
+  GogBadgePosition,
+  GogTagVariant,
+  nextGogControlId,
+} from '@guildofgleks/ui/shared';
 
 /** Beyond this count the badge renders `N+` rather than growing without limit. */
 const DEFAULT_MAX = 99;
 
 /** What can take focus, and so carries the name a screen reader says on Tab. */
-const FOCUSABLE =
-  'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
+/** Shared with `gogTooltip` and `gogMenuTrigger`, which answer the same question. */
+const FOCUSABLE = GOG_FOCUSABLE;
 
 /**
  * A count or status dot pinned to the corner of another element.

@@ -71,6 +71,21 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gogTooltip` and `[gogMenuTrigger]` on a `gog-button` said nothing to a screen reader, and the
+  tooltip erased descriptions it did not own.** Both wrote their ARIA onto their host, and a
+  `gog-button` host is a roleless wrapper around the real `<button>`: the menu trigger's
+  `aria-haspopup`/`-expanded`/`-controls` and the tooltip's `aria-describedby` reached no one, and
+  the menu's close handed focus back to that wrapper, which cannot hold it — Escape left focus
+  nowhere. Separately, the tooltip's host binding owned `aria-describedby` outright and wrote
+  `null` over it whenever it was closed, which is why `gog-multiselect`'s trigger never linked its
+  error message. Both directives now write onto the element that takes focus — the host when it
+  does, else the first focusable element inside it, the rule `gogBadge` already followed — and the
+  tooltip adds its id to the list and removes only its own. `gog-multiselect`'s trigger now points
+  `aria-describedby` at its error, as every other control does. Verified in Chrome on the Menu,
+  Tooltip and Multiselect pages, since a jsdom spec had once passed on the very link the browser
+  did not have. The menu trigger's attributes are now written after render, so a server-rendered
+  page carries them from hydration on.
+
 - **A dropdown, menu or tooltip inside an open `gog-collapsible` or collapsible `gog-panel` was cut
   off at the content's edge.** The content kept `overflow: hidden` while open, though only the
   height animation needs it. It now clips while opening and closing and stops once open and
