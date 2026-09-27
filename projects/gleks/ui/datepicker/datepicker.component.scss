@@ -83,8 +83,15 @@
   outline-offset: var(--gog-datepicker-focus-ring-offset);
 }
 
-.gog-datepicker__control:disabled {
+/*
+ * Disabled dims the whole field — label, box, icons, addons, message — as every other control
+ * does. On the native element alone the label and the icons stayed at full strength.
+ */
+.gog-datepicker--disabled {
   opacity: var(--gog-datepicker-disabled-opacity);
+}
+
+.gog-datepicker__control:disabled {
   cursor: not-allowed;
 }
 
@@ -129,7 +136,6 @@
 }
 
 .gog-datepicker__toggle:disabled {
-  opacity: var(--gog-datepicker-disabled-opacity);
   cursor: not-allowed;
 }
 

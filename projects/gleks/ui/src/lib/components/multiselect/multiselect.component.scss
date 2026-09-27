@@ -17,6 +17,14 @@
 }
 
 /*
+ * Disabled dims the whole field — label, box, icons, addons, message — as every other control
+ * does. On the box alone the label and the icons stayed at full strength.
+ */
+.gog-ms-wrapper--disabled {
+  opacity: var(--gog-multiselect-disabled-opacity);
+}
+
+/*
  * `width` has no effect on the host's own (inline, unstyled) box, so this only matters
  * once something outside — a flex or grid parent — blockifies it, which is also exactly
  * when its default "just wrap the inline content" sizing stops applying and this needs
@@ -111,7 +119,6 @@
 }
 
 .gog-ms--disabled {
-  opacity: var(--gog-multiselect-disabled-opacity);
   cursor: not-allowed;
 }
 

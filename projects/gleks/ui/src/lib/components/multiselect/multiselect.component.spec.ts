@@ -108,6 +108,16 @@ describe('MultiselectComponent', () => {
   });
 
   describe('disabled', () => {
+    it('marks the wrapper disabled, so the label dims with the field', () => {
+      const wrapper = () => fixture.nativeElement.querySelector('.gog-ms-wrapper') as HTMLElement;
+      fixture.detectChanges();
+      expect(wrapper().classList.contains('gog-ms-wrapper--disabled')).toBe(false);
+
+      fixture.componentRef.setInput('disabled', true);
+      fixture.detectChanges();
+      expect(wrapper().classList.contains('gog-ms-wrapper--disabled')).toBe(true);
+    });
+
     it('removes the trigger from the tab order when disabled', () => {
       fixture.componentRef.setInput('disabled', true);
       fixture.detectChanges();

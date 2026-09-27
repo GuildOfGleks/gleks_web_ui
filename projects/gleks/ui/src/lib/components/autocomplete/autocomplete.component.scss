@@ -85,8 +85,15 @@
   outline-offset: var(--gog-autocomplete-focus-ring-offset);
 }
 
-.gog-autocomplete__control:disabled {
+/*
+ * Disabled dims the whole field — label, box, icons, addons, message — as every other control
+ * does. On the native element alone the label and the icons stayed at full strength.
+ */
+.gog-autocomplete--disabled {
   opacity: var(--gog-autocomplete-disabled-opacity);
+}
+
+.gog-autocomplete__control:disabled {
   cursor: not-allowed;
 }
 

@@ -45,6 +45,19 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A disabled field now dims as one piece, in all ten controls.** `gog-select`, `gog-toggle`,
+  `gog-slider`, `gog-checkbox` and `gog-radio-group` dimmed their whole root, label included;
+  `gog-inputfield`, `gog-textarea`, `gog-autocomplete` and `gog-datepicker` dimmed only the native
+  `<input>`, and `gog-multiselect` only its box — so in one disabled form half the labels stayed at
+  full strength, and in an inputfield so did `iconStart`, the addons and the clear button. Nobody
+  chose the split: each rule sat on whichever element knew it was disabled — `:disabled` on a native
+  input, a modifier class on a custom control's root — and the later move of every value to
+  `--gog-disabled-opacity` made the tokens agree while the targets still did not. The five now dim
+  their root too, through the same per-component tokens, and nothing dims twice: the number stepper
+  still dims on its own at `min`/`max`, but not inside a field that is already disabled. Measured on
+  the showcase's Specimen page: every label, box, icon and addon of all ten controls at 0.4. A theme
+  that overrides `--gog-input-disabled-opacity` and its siblings now dims the label with it.
+
 - **`gog-radio-group` never showed an `errorDisplay="auto"` error.** Auto mode reads the form
   control's `touched` and `invalid`, which Angular exposes as plain properties with no change
   notification, so every control that offers it mirrors them on each change-detection pass. The

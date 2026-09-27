@@ -11,6 +11,14 @@
   width: 100%;
 }
 
+/*
+ * Disabled dims the whole field — label, box, icons, addons, message — as every other control
+ * does. On the native element alone the label and the icons stayed at full strength.
+ */
+.gog-input-wrapper--disabled {
+  opacity: var(--gog-input-disabled-opacity);
+}
+
 :host(.gog-host--auto-width) {
   width: fit-content;
 }
@@ -225,7 +233,6 @@
 }
 
 .gog-input__field:disabled {
-  opacity: var(--gog-input-disabled-opacity);
   cursor: not-allowed;
   resize: none;
 }

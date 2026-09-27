@@ -63,6 +63,15 @@ describe('TextareaComponent', () => {
       const textarea = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
       expect(textarea.disabled).toBe(true);
     });
+
+    it('marks the wrapper disabled, so the label dims with the field', async () => {
+      const wrapper = fixture.nativeElement.querySelector('.gog-input-wrapper') as HTMLElement;
+      expect(wrapper.classList.contains('gog-input-wrapper--disabled')).toBe(false);
+
+      fixture.componentRef.setInput('disabled', true);
+      await fixture.whenStable();
+      expect(wrapper.classList.contains('gog-input-wrapper--disabled')).toBe(true);
+    });
   });
 
   describe('resize', () => {

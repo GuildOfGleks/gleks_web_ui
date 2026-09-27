@@ -15,6 +15,14 @@
 }
 
 /*
+ * Disabled dims the whole field — label, box, icons, addons, message — as every other control
+ * does. On the native element alone the label and the icons stayed at full strength.
+ */
+.gog-input-wrapper--disabled {
+  opacity: var(--gog-input-disabled-opacity);
+}
+
+/*
  * `width` has no effect on the host's own (inline, unstyled) box, so this only matters
  * once something outside — a flex or grid parent — blockifies it, which is also exactly
  * when its default "just wrap the inline content" sizing stops applying and this needs
@@ -177,7 +185,6 @@
 }
 
 .gog-input__field:disabled {
-  opacity: var(--gog-input-disabled-opacity);
   cursor: not-allowed;
 }
 
@@ -332,8 +339,12 @@
   outline-offset: calc(-1 * var(--gog-input-icon-focus-ring-width));
 }
 
-.gog-input__spin-btn:disabled {
+/* A step button is also disabled at `min`/`max`; inside a disabled field the wrapper dims it. */
+.gog-input-wrapper:not(.gog-input-wrapper--disabled) .gog-input__spin-btn:disabled {
   opacity: var(--gog-input-disabled-opacity);
+}
+
+.gog-input__spin-btn:disabled {
   cursor: not-allowed;
 }
 

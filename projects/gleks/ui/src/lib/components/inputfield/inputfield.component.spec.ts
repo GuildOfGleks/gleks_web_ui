@@ -269,6 +269,23 @@ describe('InputfieldComponent', () => {
       const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
       expect(input.disabled).toBe(true);
     });
+
+    // The whole field dims, label and icons included, so the state sits on the wrapper.
+    it('marks the wrapper disabled, from the input and from the form control alike', () => {
+      const wrapper = () =>
+        fixture.nativeElement.querySelector('.gog-input-wrapper') as HTMLElement;
+      fixture.detectChanges();
+      expect(wrapper().classList.contains('gog-input-wrapper--disabled')).toBe(false);
+
+      component.setDisabledState(true);
+      fixture.detectChanges();
+      expect(wrapper().classList.contains('gog-input-wrapper--disabled')).toBe(true);
+
+      component.setDisabledState(false);
+      fixture.componentRef.setInput('disabled', true);
+      fixture.detectChanges();
+      expect(wrapper().classList.contains('gog-input-wrapper--disabled')).toBe(true);
+    });
   });
 
   describe('ControlValueAccessor / Reactive Forms integration', () => {

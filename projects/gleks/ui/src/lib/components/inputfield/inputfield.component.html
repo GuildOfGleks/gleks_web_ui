@@ -1,6 +1,7 @@
 <div
   class="gog-input-wrapper gog-contained-layout"
   [class]="sizeClass()"
+  [class.gog-input-wrapper--disabled]="isDisabled()"
   [class.gog-input-wrapper--icon-start]="hasIconStart()"
   [class.gog-input-wrapper--icon-end]="hasIconEnd() || hasSpinButtons()"
   [class.gog-input-wrapper--spin-clear]="hasSpinAndClear()"

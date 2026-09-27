@@ -6,6 +6,7 @@
 <div
   class="gog-ms-wrapper"
   [class]="sizeClass()"
+  [class.gog-ms-wrapper--disabled]="isDisabled()"
   [class.gog-ms-wrapper--float-in]="resolvedFloatLabel() === 'in'"
   [class.gog-ms-wrapper--float-on]="resolvedFloatLabel() === 'on'"
   [class.gog-ms-wrapper--float-over]="resolvedFloatLabel() === 'over'"
