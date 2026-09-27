@@ -329,6 +329,15 @@
   opacity: var(--gog-button-loading-opacity);
 }
 
+/* The projected label and icon lay out as `[gogButton]`'s children do on the button itself: centred
+   on one line, `--gog-button-gap` apart. As a plain block an icon sat on the text's baseline, a
+   few pixels high, with only a space's width beside it. */
+.gog-btn__content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gog-button-gap);
+}
+
 /* Invisible but still the button's name: `visibility: hidden` would drop the label from the
    accessibility tree and leave a loading button announced as just "button". */
 .gog-btn__content--hidden {

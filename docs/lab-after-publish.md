@@ -155,3 +155,8 @@ build.
 
 - **Escape in an open dropdown inside a dialog closes the list, not the dialog.** The Dialog page, if
   it has a form with a select, can say so; the Select/Multiselect keyboard prose is unaffected.
+
+- **`gog-button` spaces and centres an icon beside its label** (`--gog-button-gap`, as `[gogButton]`
+  always did). Any lab example that spaces an icon inside a `gog-button` by hand — a margin, a
+  `&nbsp;`, an extra space — ends up with a double gap after the install; none was found by grep on
+  2026-09-27, but the Button, Toast and Dialog pages are worth a look in a browser.

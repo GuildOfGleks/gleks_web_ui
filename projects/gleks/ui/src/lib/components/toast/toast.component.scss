@@ -137,9 +137,11 @@
   line-height: var(--gog-toast-message-line-height);
 }
 
+/* Centred, so an action with an icon, a little taller, keeps its label on its neighbours' line. */
 .gog-toast__actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--gog-toast-actions-gap);
 }
 

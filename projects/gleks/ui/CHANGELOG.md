@@ -45,6 +45,16 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-button`'s icon sat on the text's baseline, a few pixels high, with only a space beside
+  it.** The projected content was a plain block, so an icon beside a label was baseline-aligned —
+  its centre 2.7px above the text's at `xsm`, 4.5px at `slg` — and spaced by the width of a space,
+  4 to 6px depending on the font. `[gogButton]`, whose children are the button's own flex items,
+  had always centred them `--gog-button-gap` (8px) apart. The component now lays its content out the
+  same way, so the two agree to half a pixel at every size. Also `gog-toast`'s action row centres its
+  buttons, which is what had put an action with an icon on a different line from one without.
+  Measured on the showcase's Button, Toast and Specimen pages. If you spaced an icon inside a
+  `gog-button` by hand — a margin, a `&nbsp;` — the gap now includes it; remove it.
+
 - **The eight form controls' labels now look the same in every theme.** Measured on the showcase's
   Specimen page, every one of the 11 themes rendered three kinds of field label among eight
   controls: `gog-autocomplete`'s was semibold where the rest are regular, and ignored the theme's
