@@ -805,15 +805,6 @@ reason may stop holding.
   every page and makes any "built N times" demo wrong, which is why the Tabs page reports lazy
   content as built or not rather than counting.
 
-- **A `gogAccordionHeader` template inherits the theme's header casing, all of it.**
-  `text-transform: var(--gog-accordion-header-text-transform)` sits on the header `<button>`, so
-  in the three themes that uppercase headers (dark, light, terminal — measured on 2026-09-26) a
-  custom header's second line becomes capitals too: "ALL ENDPOINTS RESPONDING". The casing is the
-  theme's idea of a _title_; applied to `.gog-accordion__title` rather than to the button, it would
-  reach the default title and leave a template's markup to the consumer. The legacy Accordion page
-  worked around it with `text-transform: none` on its subtitle, which is the evidence that a
-  consumer has to know. The rebuilt page shows it uncorrected.
-
 - **A labelled `gog-divider` is an unnamed separator.** `<gog-divider>OR</gog-divider>` renders
   `role="separator"` with the label as ordinary content, and ARIA makes a separator's children
   presentational — so whether the label is read at all is up to the browser. Chrome keeps it:

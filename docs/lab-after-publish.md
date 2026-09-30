@@ -281,3 +281,7 @@ clearable>`). The Card and Panel pages' "bare attribute works" notes stop being 
 - **`gog-scroll` is a tab stop only while its content overflows** (the stop, `role="region"` and
   `ariaLabel` follow the measured overflow). The Scroll page's `focusable` row and accessibility
   prose, if they say the viewport is always a stop.
+
+- **A `gogAccordionHeader` template no longer inherits the theme's title casing/tracking.** On the
+  Accordion page, any custom-header example that corrects it with `text-transform: none` can drop
+  the correction; a sentence saying the template renders as written is worth adding.

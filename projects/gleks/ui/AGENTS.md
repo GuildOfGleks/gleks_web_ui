@@ -1582,6 +1582,10 @@ Model: `openIds: ReadonlySet<string | number>`. Output: `gogToggle: { item, open
 Slots: `<ng-template gogAccordionHeader let-item let-open="open">`,
 `<ng-template gogAccordionContent let-item>`, `<ng-template gogAccordionChevron let-item let-open="open">`.
 This is the library's canonical example of the slot pattern — copy its shape for anything similar.
+A `gogAccordionHeader` template does **not** inherit the theme's title casing and tracking
+(`--gog-accordion-header-text-transform`, `--gog-accordion-letter-spacing`): those style the
+default title only, so a template's markup renders as written — apply them yourself to the part
+that is a title if you want it to match.
 
 ```html
 <gog-accordion [items]="faqItems" [multi]="true">

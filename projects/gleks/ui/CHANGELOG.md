@@ -113,6 +113,13 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **A `gogAccordionHeader` template no longer inherits the theme's title casing.**
+  `--gog-accordion-header-text-transform` and the header's letter-spacing sat on the header
+  `<button>`, so in the three themes that uppercase headers (`dark`, `light`, `terminal`) a custom
+  header's second line came out in capitals too. They move to `.gog-accordion__title`, the default
+  title, which looks exactly as before; a template's markup renders as written. A template that
+  wants the casing applies the two tokens itself.
+
 - **`gog-scroll` is a tab stop only while its content overflows.** `focusable` rendered
   `tabindex="0"` and `role="region"` whether or not there was anything to scroll, so a keyboard
   reader stopped on an empty frame — usually an unnamed one. The stop, the role and `ariaLabel` now

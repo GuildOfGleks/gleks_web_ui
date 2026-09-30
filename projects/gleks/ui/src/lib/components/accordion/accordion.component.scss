@@ -94,11 +94,6 @@
   text-align: start;
   cursor: pointer;
   font-family: var(--gog-accordion-font-family);
-  text-transform: var(--gog-accordion-header-text-transform);
-  letter-spacing: var(
-    --gog-accordion-letter-spacing,
-    var(--gog-accordion-size-letter-spacing, var(--gog-accordion-lg-letter-spacing))
-  );
   font-size: var(
     --gog-accordion-font-size,
     var(--gog-accordion-size-font-size, var(--gog-accordion-lg-font-size))
@@ -131,6 +126,14 @@
 
 .gog-accordion__title {
   flex: 1;
+  /* The theme's casing and tracking are its idea of a *title*, so they sit on the default title
+     and not on the header button: a `gogAccordionHeader` template's markup is the consumer's, and
+     on the button they uppercased a template's second line along with its first. */
+  text-transform: var(--gog-accordion-header-text-transform);
+  letter-spacing: var(
+    --gog-accordion-letter-spacing,
+    var(--gog-accordion-size-letter-spacing, var(--gog-accordion-lg-letter-spacing))
+  );
 }
 
 .gog-accordion__header-content {

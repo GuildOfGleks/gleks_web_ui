@@ -62,7 +62,9 @@
     <p class="accordion-page__note">
       Replaces the title with any markup, with <code>$implicit</code> (the item) and
       <code>open</code> in its context. It renders inside the header button, so it must not hold
-      another control — a button inside a button is invalid and unreachable.
+      another control — a button inside a button is invalid and unreachable. It does not take the
+      theme's title casing: in the themes that uppercase headers the default titles are capitals and
+      this template's lines stay as written.
     </p>
     <div class="accordion-page__stack">
       <gog-accordion [items]="statusItems" size="md">
