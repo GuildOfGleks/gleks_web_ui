@@ -51,6 +51,27 @@ reached 1.0, so breaking changes may land in minor versions.
   `password-toggle` — so a test or an automation script can find the stepper, the clear button or
   the reveal toggle without reaching for the internal `gog-input__*` classes, which may change.
 
+- **`gogDropdownOptionTypeOf`, `gogButtonToggleOptionTypeOf` and `gogColumnBodyTypeOf` — a typed
+  context for the three generic slots.** Their `let-` variable was `unknown` under
+  `strictTemplates`, because nothing in a template told the compiler what the option or row type
+  was: the first property read failed with `TS2571`, so every custom row was written through `$any`
+  or a narrowing helper, and a typo in it rendered an empty cell instead of failing the build. Bind
+  the same array the component renders — `options` for the dropdowns and the button toggle group,
+  `value` for the table — and the variable is checked against it:
+
+  ```html
+  <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="members" let-option>
+    {{ option.profile.role }}
+  </ng-template>
+  ```
+
+  The input is never read at runtime, and a template that leaves it unbound keeps compiling
+  exactly as before. It is not named after its selector on purpose: that would turn every bare
+  `<ng-template gogDropdownOption>` into a string binding to it, and those templates would stop
+  compiling. `gogColumnBody`'s `value` is still `unknown`, since it is read from a `field` string.
+  The JSDoc examples on all three directives read properties off the untyped variable and did not
+  compile as written; they now bind the token.
+
 ### Changed
 
 - **`gogDropdownChevron` follows one rule on both hosts, and hands its template `open`.** A custom

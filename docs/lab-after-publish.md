@@ -221,3 +221,19 @@ build.
 transparent)`) rather than an opaque mix of border and surface. Its row in the token reference and
   `theme-starter.css` need the new value; the theme generator, if it previews skeletons on a tinted
   surface, will show them now.
+
+- **The three generic slots take a type token: `gogDropdownOptionTypeOf`,
+  `gogButtonToggleOptionTypeOf`, `gogColumnBodyTypeOf`.** Bound to the same array the component
+  renders, the slot's `let-` variable is typed instead of `unknown`. The lab works around the old
+  shape in two ways, and both go:
+  - **`$any` on a row**: `table-doc-page.html:71` (`$any(row).status`) and
+    `examples/menu/menu-row-actions/example.html` (four `$any(row).name`; regenerate
+    `sources.generated.ts` afterwards).
+  - **Narrowing helpers**: `asCity(option)` on the Autocomplete page and `asView(option)` on the
+    Button toggle page, plus the Button toggle page's code sample
+    (`button-toggle-doc-page.ts:332`, "The slot hands the option back as `unknown`, so narrow it
+    once here") — its prose states the limitation this removes. Grep the Select and Multiselect
+    pages for the same pattern.
+  - An API row for the token on the Select, Multiselect, Autocomplete, Button toggle and Table
+    pages, with one sentence: never read at runtime, unbound keeps compiling as before, and
+    `gogColumnBody`'s `value` stays `unknown`.

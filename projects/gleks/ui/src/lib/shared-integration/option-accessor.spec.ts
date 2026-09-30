@@ -74,10 +74,14 @@ class DtoMultiselectHost {
   imports: [SelectComponent, GogDropdownOptionDirective],
   template: `
     <gog-select [options]="users" optionLabel="profile.fullName" optionValue="uuid">
-      <ng-template gogDropdownOption let-user let-selected="selected" let-label="label">
-        <b class="custom-option" [class.is-selected]="selected"
-          >{{ label }}/{{ $any(user).uuid }}</b
-        >
+      <ng-template
+        gogDropdownOption
+        [gogDropdownOptionTypeOf]="users"
+        let-user
+        let-selected="selected"
+        let-label="label"
+      >
+        <b class="custom-option" [class.is-selected]="selected">{{ label }}/{{ user.uuid }}</b>
       </ng-template>
     </gog-select>
   `,

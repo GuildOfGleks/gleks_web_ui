@@ -87,8 +87,13 @@
                 [disabled]="disabled()"
                 [(value)]="country"
               >
-                <ng-template gogDropdownOption let-option let-label="label">
-                  <code class="specimen__code">{{ asCountry(option).id }}</code> {{ label }}
+                <ng-template
+                  gogDropdownOption
+                  [gogDropdownOptionTypeOf]="countries"
+                  let-option
+                  let-label="label"
+                >
+                  <code class="specimen__code">{{ option.id }}</code> {{ label }}
                 </ng-template>
                 <ng-template gogDropdownChevron><gog-icon name="chevron-down" /></ng-template>
               </gog-select>
@@ -231,10 +236,15 @@
                 </gog-column>
                 <gog-column field="place" header="Place" />
                 <gog-column field="seen" header="Last seen">
-                  <ng-template gogColumnBody let-row let-value="value">
+                  <ng-template
+                    gogColumnBody
+                    [gogColumnBodyTypeOf]="sessions"
+                    let-row
+                    let-value="value"
+                  >
                     <span class="specimen__inline">
                       {{ value }}
-                      @if (asSession(row).current) {
+                      @if (row.current) {
                         <gog-tag variant="success" [size]="size()">this device</gog-tag>
                       }
                     </span>
@@ -366,8 +376,13 @@
         [disabled]="disabled()"
         (valueChange)="setAppearance($event)"
       >
-        <ng-template gogButtonToggleOption let-option let-label="label">
-          <gog-icon [name]="asAppearance(option).icon" /> {{ label }}
+        <ng-template
+          gogButtonToggleOption
+          [gogButtonToggleOptionTypeOf]="appearances"
+          let-option
+          let-label="label"
+        >
+          <gog-icon [name]="option.icon" /> {{ label }}
         </ng-template>
       </gog-button-toggle-group>
 
@@ -467,10 +482,13 @@
             [disabled]="disabled()"
             [(value)]="status"
           >
-            <ng-template gogDropdownOption let-option let-label="label">
-              <gog-tag size="xsm" [variant]="statusVariant[asStatus(option).status]">{{
-                label
-              }}</gog-tag>
+            <ng-template
+              gogDropdownOption
+              [gogDropdownOptionTypeOf]="statusOptions"
+              let-option
+              let-label="label"
+            >
+              <gog-tag size="xsm" [variant]="statusVariant[option.status]">{{ label }}</gog-tag>
             </ng-template>
             <ng-template gogDropdownChevron><gog-icon name="filter" /></ng-template>
           </gog-select>
@@ -670,36 +688,36 @@
               </ng-template>
             </gog-column>
             <gog-column field="total" header="Total" [sortable]="true">
-              <ng-template gogColumnBody let-row
-                >€{{ asOrder(row).total | number: '1.2-2' }}</ng-template
+              <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row
+                >€{{ row.total | number: '1.2-2' }}</ng-template
               >
             </gog-column>
             <gog-column field="status" header="Status">
-              <ng-template gogColumnBody let-row>
-                <gog-tag [variant]="statusVariant[asOrder(row).status]" [size]="size()">{{
-                  asOrder(row).status
+              <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row>
+                <gog-tag [variant]="statusVariant[row.status]" [size]="size()">{{
+                  row.status
                 }}</gog-tag>
               </ng-template>
             </gog-column>
             <gog-column field="tags" header="Tags">
-              <ng-template gogColumnBody let-row>
+              <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row>
                 <span class="specimen__inline specimen__wrap">
-                  @for (tag of asOrder(row).tags; track tag) {
+                  @for (tag of row.tags; track tag) {
                     <gog-chip size="xsm" [clickable]="false">{{ tag }}</gog-chip>
                   }
                 </span>
               </ng-template>
             </gog-column>
             <gog-column field="actions" header="">
-              <ng-template gogColumnBody let-row>
+              <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row>
                 <button
                   type="button"
                   gogButton
                   variant="ghost"
                   size="xsm"
-                  [attr.aria-label]="'Actions for ' + asOrder(row).id"
+                  [attr.aria-label]="'Actions for ' + row.id"
                   [gogMenuTrigger]="rowMenu"
-                  (click)="menuOrder.set(asOrder(row))"
+                  (click)="menuOrder.set(row)"
                 >
                   <gog-icon name="more-horizontal" />
                 </button>

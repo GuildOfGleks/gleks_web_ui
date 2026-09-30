@@ -36,15 +36,26 @@ export interface GogColumnHeaderContext {
  *
  * ```html
  * <gog-column field="status" header="Status">
- *   <ng-template gogColumnBody let-row let-value="value">
+ *   <ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row let-value="value">
  *     <gog-tag [variant]="row.ok ? 'success' : 'danger'">{{ value }}</gog-tag>
  *   </ng-template>
  * </gog-column>
  * ```
+ *
+ * Without `gogColumnBodyTypeOf`, `let-row` is `unknown` and the first property read fails to
+ * compile under `strictTemplates`. `value` stays `unknown` either way: it is resolved from a
+ * `field` string, which may be a dot-path.
  */
 @Directive({ selector: '[gogColumnBody]' })
 export class GogColumnBodyDirective<T = unknown> {
   readonly templateRef = inject<TemplateRef<GogColumnBodyContext<T>>>(TemplateRef);
+
+  /**
+   * Types the template's context; never read at runtime. Bind the same array as the table's
+   * `value` and the cell's `row` is checked against it. Named apart from the selector for the
+   * reason `gogDropdownOptionTypeOf` gives.
+   */
+  readonly gogColumnBodyTypeOf = input<readonly T[]>();
 
   static ngTemplateContextGuard<T>(
     _dir: GogColumnBodyDirective<T>,

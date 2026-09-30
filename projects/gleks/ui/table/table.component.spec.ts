@@ -38,6 +38,7 @@ const DEFAULT_ROWS: Row[] = [
         <ng-template gogColumnHeader><em class="custom-header">ID#</em></ng-template>
       </gog-column>
       <gog-column field="name" header="Name" [sortable]="true">
+        <!-- Left untyped on purpose: the bare attribute must stay a plain attribute. -->
         <ng-template gogColumnBody let-row
           ><strong class="custom-body">{{ $any(row).name }}</strong></ng-template
         >
@@ -371,8 +372,14 @@ describe('TableComponent with projected columns and templates', () => {
         </ng-template>
       </gog-column>
       <gog-column field="name" header="Name">
-        <ng-template gogColumnBody let-row let-value="value" let-i="index">
-          <strong class="scoped-body">{{ value }}/{{ i }}/{{ $any(row).id }}</strong>
+        <ng-template
+          gogColumnBody
+          [gogColumnBodyTypeOf]="rows"
+          let-row
+          let-value="value"
+          let-i="index"
+        >
+          <strong class="scoped-body">{{ value }}/{{ i }}/{{ row.id }}</strong>
         </ng-template>
       </gog-column>
     </gog-table>

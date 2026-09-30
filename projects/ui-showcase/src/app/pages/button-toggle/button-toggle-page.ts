@@ -177,13 +177,4 @@ export class ButtonTogglePage {
       this.formControl.enable();
     }
   }
-
-  /**
-   * `GogButtonToggleOptionDirective` takes no input, so nothing in a template lets
-   * `strictTemplates` infer its `TOption` — `let-option` always types as `unknown`, even though
-   * the runtime context is exactly this page's own `toolOptions` (see `docs/backlog.md`).
-   */
-  protected asIconOption(option: unknown): DemoIconOption {
-    return option as DemoIconOption;
-  }
 }

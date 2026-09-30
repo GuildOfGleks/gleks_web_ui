@@ -153,12 +153,30 @@ exist.
   part of itself, it's an attribute directive read with `contentChild()`, given a **typed**
   context via `let-` variables — never a plain `TemplateRef` input, never a string-keyed lookup.
   Recognize the shape:
+
   ```html
   <gog-accordion [items]="items">
     <ng-template gogAccordionHeader let-item let-open="open">{{ item.title }}</ng-template>
   </gog-accordion>
   ```
+
   See the per-component tables below for which slot directives exist on which component.
+
+  **Three slots hand over the consumer's own object, and need a type token to check it**:
+  `gogDropdownOption`, `gogButtonToggleOption` and `gogColumnBody`. A template gives the compiler
+  nothing to infer the option or row type from, so unbound their `let-` variable is `unknown` and
+  the first property read fails with `TS2571`. Bind the same array the component renders to the
+  directive's `…TypeOf` input — it is never read at runtime — instead of writing `$any`:
+
+  ```html
+  <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="users" let-user
+    >{{ user.email }}</ng-template
+  >
+  <ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row>{{ row.owner.name }}</ng-template>
+  ```
+
+  The context's other fields (`label`, `selected`, `index`, …) are typed without it.
+
 - **Legacy `TemplateRef` inputs and string-keyed lookups still exist on a few components and
   still work, but are `@deprecated` — do not use them in new code.** See
   [Deprecated patterns — do not use in new code](#deprecated-patterns--do-not-use-in-new-code).
@@ -688,8 +706,8 @@ A row of buttons, single- or multi-select, built from your own option objects.
 | `ripple`                             | `boolean \| undefined`                     | `false`                | press ripple; via `GOG_CONFIG.ripple.enabled` |
 
 Model: `value: TValue | TValue[] | null` (single value, or array in `multiple` mode). CVA: yes.
-Slot: `<ng-template gogButtonToggleOption let-opt let-selected="selected">` for custom button
-markup. **Single mode is a radio group** (`role="radiogroup"`, arrows move _and_ select);
+Slot: `<ng-template gogButtonToggleOption [gogButtonToggleOptionTypeOf]="options" let-opt let-selected="selected">`
+for custom button markup — the `TypeOf` binding types `opt` (see _The custom-content slot pattern_). **Single mode is a radio group** (`role="radiogroup"`, arrows move _and_ select);
 **multiple mode is a toolbar of independent toggles** (`role="group"`, arrows only move, Space
 toggles) — this is a real ARIA distinction, not cosmetic.
 
@@ -813,8 +831,8 @@ and multiselect unless noted otherwise):
 CVA: yes, both. Slots (shared): `<ng-template gogDropdownChevron let-open>` (custom chevron markup;
 `open` is `GogDropdownChevronContext`'s, since 21.15.0 — the library turns only its own chevron, so a
 custom one draws its open state from `open`, the rule `gogAccordionChevron` follows),
-`<ng-template gogDropdownOption let-opt let-selected="selected" let-label="label">` (custom
-option row). Multiselect adds `<ng-template gogMultiselectClearIcon>`.
+`<ng-template gogDropdownOption [gogDropdownOptionTypeOf]="options" let-opt let-selected="selected" let-label="label">`
+(custom option row, on all three — the `TypeOf` binding types `opt`). Multiselect adds `<ng-template gogMultiselectClearIcon>`.
 
 **`virtualize` for a list in the thousands, and only when you mean it.** Unwindowed, 10 000
 options build 10 000 DOM rows to show about six: measured in Chrome that is 512ms before the panel
@@ -1880,7 +1898,7 @@ Columns are declared as **projected `gog-column` children**, not an input array:
   <gog-column field="name" header="Name" sortable="true" />
   <gog-column field="email" header="Email" />
   <gog-column field="status" header="Status">
-    <ng-template gogColumnBody let-row let-value="value">
+    <ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row let-value="value">
       <gog-tag [variant]="row.active ? 'success' : 'danger'">{{ value }}</gog-tag>
     </ng-template>
   </gog-column>
@@ -1976,7 +1994,8 @@ or button inside a cell is better than a whole-row target.
 
 `gog-column` inputs: `field` (required, dot-paths ok), `header`, `sortable` (default `false`),
 `width`/`minWidth`/`maxWidth`, `comparator` (custom `(a, b) => number`, defaults to a
-locale-aware collator for strings). Slots inside a column: `<ng-template gogColumnBody let-row let-value="value" let-index="index">`,
+locale-aware collator for strings). Slots inside a column: `<ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row let-value="value" let-index="index">`
+(the `TypeOf` binding types `row`; `value` is `unknown` either way),
 `<ng-template gogColumnHeader let-header let-field="field">`.
 
 **Sorting, empty/loading states and pagination are all built in** — sortable columns toggle

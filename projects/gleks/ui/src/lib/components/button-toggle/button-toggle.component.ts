@@ -42,15 +42,25 @@ export interface GogButtonToggleOptionContext<TOption> {
  *
  * ```html
  * <gog-button-toggle-group [options]="views">
- *   <ng-template gogButtonToggleOption let-view let-selected="selected">
+ *   <ng-template gogButtonToggleOption [gogButtonToggleOptionTypeOf]="views" let-view>
  *     <gog-icon [name]="view.icon" /> {{ view.title }}
  *   </ng-template>
  * </gog-button-toggle-group>
  * ```
+ *
+ * Without `gogButtonToggleOptionTypeOf`, `let-view` is `unknown` and the first property read
+ * fails to compile under `strictTemplates`.
  */
 @Directive({ selector: '[gogButtonToggleOption]' })
 export class GogButtonToggleOptionDirective<TOption = unknown> {
   readonly templateRef = inject<TemplateRef<GogButtonToggleOptionContext<TOption>>>(TemplateRef);
+
+  /**
+   * Types the template's context; never read at runtime. Bind the same array as the group's
+   * `options` and the button's `let-` variable is checked against it. Named apart from the
+   * selector for the reason `gogDropdownOptionTypeOf` gives.
+   */
+  readonly gogButtonToggleOptionTypeOf = input<readonly TOption[]>();
 
   static ngTemplateContextGuard<TOption>(
     _dir: GogButtonToggleOptionDirective<TOption>,

@@ -132,11 +132,16 @@
           [optionValue]="null"
           [(value)]="selectedMember"
         >
-          <!-- The row template's context is typed `unknown` — the directive has no input to
-               infer the option type from — so a consumer's own field needs `$any`. -->
-          <ng-template gogDropdownOption let-option let-label="label">
+          <!-- Without the TypeOf token the row's context is `unknown`; bound to the same array
+               as `options`, a typo in `option.profile.role` fails the build. -->
+          <ng-template
+            gogDropdownOption
+            [gogDropdownOptionTypeOf]="members"
+            let-option
+            let-label="label"
+          >
             <span class="autocomplete-page__option"
-              >{{ label }} — <em>{{ $any(option).profile.role }}</em></span
+              >{{ label }} — <em>{{ option.profile.role }}</em></span
             >
           </ng-template>
         </gog-autocomplete>

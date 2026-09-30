@@ -2,7 +2,7 @@
   <app-doc-section
     id="content"
     title="Content & layout"
-    lead="Two marker directives, no inputs: each holds an ng-template the host component renders in place of something it draws itself."
+    lead="Two marker directives: each holds an ng-template the host component renders in place of something it draws itself."
   >
     <h3>gogDropdownOption — the inside of one row</h3>
     <p class="dropdown-templates-page__note">
@@ -27,11 +27,16 @@
           [optionValue]="null"
           [(value)]="picked"
         >
-          <!-- The context is typed `unknown` — see the Context section below for why `$any`. -->
-          <ng-template gogDropdownOption let-option let-label="label">
+          <!-- Typed through the TypeOf token — see "typing the context" below. -->
+          <ng-template
+            gogDropdownOption
+            [gogDropdownOptionTypeOf]="members"
+            let-option
+            let-label="label"
+          >
             <span class="dropdown-templates-page__person">
               <strong>{{ label }}</strong>
-              <em>{{ $any(option).profile.role }}</em>
+              <em>{{ option.profile.role }}</em>
             </span>
           </ng-template>
         </gog-select>
@@ -86,30 +91,45 @@
           @switch (host) {
             @case ('gog-select') {
               <gog-select label="Reviewer" [options]="members" [optionLabel]="memberLabel">
-                <ng-template gogDropdownOption let-option let-label="label">
+                <ng-template
+                  gogDropdownOption
+                  [gogDropdownOptionTypeOf]="members"
+                  let-option
+                  let-label="label"
+                >
                   <span class="dropdown-templates-page__person">
                     <strong>{{ label }}</strong>
-                    <em>{{ $any(option).profile.role }}</em>
+                    <em>{{ option.profile.role }}</em>
                   </span>
                 </ng-template>
               </gog-select>
             }
             @case ('gog-multiselect') {
               <gog-multiselect label="Reviewers" [options]="members" [optionLabel]="memberLabel">
-                <ng-template gogDropdownOption let-option let-label="label">
+                <ng-template
+                  gogDropdownOption
+                  [gogDropdownOptionTypeOf]="members"
+                  let-option
+                  let-label="label"
+                >
                   <span class="dropdown-templates-page__person">
                     <strong>{{ label }}</strong>
-                    <em>{{ $any(option).profile.role }}</em>
+                    <em>{{ option.profile.role }}</em>
                   </span>
                 </ng-template>
               </gog-multiselect>
             }
             @case ('gog-autocomplete') {
               <gog-autocomplete label="Reviewer" [options]="members" [optionLabel]="memberLabel">
-                <ng-template gogDropdownOption let-option let-label="label">
+                <ng-template
+                  gogDropdownOption
+                  [gogDropdownOptionTypeOf]="members"
+                  let-option
+                  let-label="label"
+                >
                   <span class="dropdown-templates-page__person">
                     <strong>{{ label }}</strong>
-                    <em>{{ $any(option).profile.role }}</em>
+                    <em>{{ option.profile.role }}</em>
                   </span>
                 </ng-template>
               </gog-autocomplete>
@@ -229,6 +249,7 @@
         >
           <ng-template
             gogDropdownOption
+            [gogDropdownOptionTypeOf]="members"
             let-option
             let-label="label"
             let-selected="selected"
@@ -236,7 +257,7 @@
           >
             <span class="dropdown-templates-page__person">
               <strong>{{ label }}</strong>
-              <em>{{ $any(option).profile.role }}</em>
+              <em>{{ option.profile.role }}</em>
               @if (selected) {
                 <span class="dropdown-templates-page__flag">in the value</span>
               }
@@ -249,15 +270,16 @@
       </div>
     </div>
 
-    <h3>why every example here writes <code>$any</code></h3>
+    <h3>typing the context: <code>gogDropdownOptionTypeOf</code></h3>
     <p class="dropdown-templates-page__note">
-      <code>GogDropdownOptionContext&lt;TOption&gt;</code> is generic and the directive declares no
-      input, so under <code>strictTemplates</code> nothing in a template can infer the parameter: it
-      stays <code>unknown</code>, and the first property read off <code>let-option</code> fails with
-      <code>TS2571</code>. <code>let-label</code> is unaffected — it is typed
-      <code>string</code> whatever <code>TOption</code> turns out to be — so a row that only
-      decorates the label needs no cast at all. That is the cheapest way out until the directive
-      gains a type token; the backlog carries the fix, built and measured.
+      <code>GogDropdownOptionContext&lt;TOption&gt;</code> is generic, and a template has nothing of
+      its own to infer the parameter from. Unbound, it stays <code>unknown</code> and the first
+      property read off <code>let-option</code> fails with <code>TS2571</code> under
+      <code>strictTemplates</code>. Bind the same array as <code>options</code> to
+      <code>[gogDropdownOptionTypeOf]</code> and the row is checked against it:
+      <code>option.profile.rolle</code> fails the build with <code>TS2551</code> instead of
+      rendering an empty cell. The input is never read at runtime. <code>let-label</code> is typed
+      <code>string</code> either way, so a row that only decorates the label needs neither.
     </p>
   </app-doc-section>
 

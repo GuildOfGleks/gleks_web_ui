@@ -47,7 +47,13 @@ export const BUTTON_TOGGLE_API: readonly DocApi[] = [
   },
   {
     type: GogButtonToggleOptionDirective,
-    inputs: [],
+    inputs: [
+      {
+        name: 'gogButtonToggleOptionTypeOf',
+        type: 'readonly TOption[] | undefined',
+        default: 'undefined',
+      },
+    ],
     outputs: [],
   },
 ];

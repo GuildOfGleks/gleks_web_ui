@@ -88,8 +88,13 @@
       [(value)]="slotValue"
       ariaLabel="Tools"
     >
-      <ng-template gogButtonToggleOption let-option let-label="label">
-        <gog-icon [name]="asIconOption(option).icon" [ariaHidden]="true" />
+      <ng-template
+        gogButtonToggleOption
+        [gogButtonToggleOptionTypeOf]="toolOptions"
+        let-option
+        let-label="label"
+      >
+        <gog-icon [name]="option.icon" [ariaHidden]="true" />
         <span class="button-toggle-page__sr-only">{{ label }}</span>
       </ng-template>
     </gog-button-toggle-group>

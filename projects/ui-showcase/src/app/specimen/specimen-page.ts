@@ -91,7 +91,6 @@ import {
   PERIODS,
   PLANS,
   PRIORITIES,
-  type Session,
   SESSIONS,
   SIZES,
   STATUS_OPTIONS,
@@ -264,27 +263,6 @@ export class SpecimenPage {
         (this.status() === null || order.status === this.status()),
     );
   });
-
-  /** The table and the dropdowns hand their template a row or option typed `unknown`. */
-  protected asOrder(row: unknown): Order {
-    return row as Order;
-  }
-
-  protected asSession(row: unknown): Session {
-    return row as Session;
-  }
-
-  protected asStatus(option: unknown): (typeof STATUS_OPTIONS)[number] {
-    return option as (typeof STATUS_OPTIONS)[number];
-  }
-
-  protected asAppearance(option: unknown): (typeof APPEARANCES)[number] {
-    return option as (typeof APPEARANCES)[number];
-  }
-
-  protected asCountry(option: unknown): (typeof COUNTRIES)[number] {
-    return option as (typeof COUNTRIES)[number];
-  }
 
   protected removeTag(tag: string | number): void {
     this.tags.update((tags) => tags.filter((candidate) => candidate !== tag));

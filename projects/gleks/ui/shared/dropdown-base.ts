@@ -88,19 +88,31 @@ export interface GogDropdownOptionContext<TOption> {
 }
 
 /**
- * Custom markup for one option row, on `gog-select` and `gog-multiselect`:
+ * Custom markup for one option row, on `gog-select`, `gog-multiselect` and `gog-autocomplete`:
  *
  * ```html
  * <gog-select [options]="users" optionLabel="fullName" optionValue="id" [(value)]="userId">
- *   <ng-template gogDropdownOption let-user let-selected="selected">
+ *   <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="users" let-user let-selected="selected">
  *     <img [src]="user.avatar" alt="" /> {{ user.fullName }}
  *   </ng-template>
  * </gog-select>
  * ```
+ *
+ * Without `gogDropdownOptionTypeOf`, `let-user` is `unknown` and the first property read fails
+ * to compile under `strictTemplates`.
  */
 @Directive({ selector: '[gogDropdownOption]' })
 export class GogDropdownOptionDirective<TOption = unknown> {
   readonly templateRef = inject<TemplateRef<GogDropdownOptionContext<TOption>>>(TemplateRef);
+
+  /**
+   * Types the template's context; never read at runtime. Nothing else in a template tells the
+   * compiler what `TOption` is, so bind the same array as the component's `options` and the
+   * row's `let-` variable is checked against it. Named apart from the selector on purpose: an
+   * input called `gogDropdownOption` would turn every bare `<ng-template gogDropdownOption>`
+   * into a string binding to it.
+   */
+  readonly gogDropdownOptionTypeOf = input<readonly TOption[]>();
 
   static ngTemplateContextGuard<TOption>(
     _dir: GogDropdownOptionDirective<TOption>,

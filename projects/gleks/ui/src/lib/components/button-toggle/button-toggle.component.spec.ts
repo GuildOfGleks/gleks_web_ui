@@ -2,7 +2,10 @@ import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { ButtonToggleGroupComponent } from './button-toggle.component';
+import {
+  ButtonToggleGroupComponent,
+  GogButtonToggleOptionDirective,
+} from './button-toggle.component';
 
 interface View {
   id: string;
@@ -305,5 +308,49 @@ describe('ButtonToggleGroupComponent — Reactive Forms', () => {
     fixture.detectChanges();
 
     expect(hostComponent.control.touched).toBe(true);
+  });
+});
+
+@Component({
+  imports: [ButtonToggleGroupComponent, GogButtonToggleOptionDirective],
+  template: `
+    <gog-button-toggle-group [options]="views" optionLabel="name" optionValue="id" value="grid">
+      <ng-template
+        gogButtonToggleOption
+        [gogButtonToggleOptionTypeOf]="views"
+        let-view
+        let-selected="selected"
+        let-label="label"
+      >
+        <b class="custom-option" [class.is-selected]="selected">{{ label }}/{{ view.id }}</b>
+      </ng-template>
+    </gog-button-toggle-group>
+  `,
+})
+class OptionSlotHost {
+  readonly views = VIEWS;
+}
+
+describe('ButtonToggleGroupComponent — gogButtonToggleOption', () => {
+  it('renders the projected template with the option, label and selected flag', async () => {
+    await TestBed.configureTestingModule({ imports: [OptionSlotHost] }).compileComponents();
+    const fixture = TestBed.createComponent(OptionSlotHost);
+    await fixture.whenStable();
+
+    const rows = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('.custom-option'),
+    );
+    expect(rows.map((row) => row.textContent)).toEqual([
+      'List/list',
+      'Grid/grid',
+      'Map/map',
+      'Chart/chart',
+    ]);
+    expect(rows.map((row) => row.classList.contains('is-selected'))).toEqual([
+      false,
+      true,
+      false,
+      false,
+    ]);
   });
 });

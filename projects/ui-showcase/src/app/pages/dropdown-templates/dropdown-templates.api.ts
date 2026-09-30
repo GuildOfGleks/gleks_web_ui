@@ -3,11 +3,20 @@ import { GogDropdownChevronDirective, GogDropdownOptionDirective } from '@guildo
 import type { DocApi } from '../../doc/doc-api';
 
 /**
- * Both directives are pure markers: they hold a `TemplateRef` for the host component to render
- * and declare nothing a template can bind. What a consumer writes is the context the row
- * template receives, which the page's Context section documents.
+ * Both directives hold a `TemplateRef` for the host component to render. The option directive's
+ * one input only types the row's context and is never read at runtime.
  */
 export const DROPDOWN_TEMPLATES_API: readonly DocApi[] = [
-  { type: GogDropdownOptionDirective, inputs: [], outputs: [] },
+  {
+    type: GogDropdownOptionDirective,
+    inputs: [
+      {
+        name: 'gogDropdownOptionTypeOf',
+        type: 'readonly TOption[] | undefined',
+        default: 'undefined',
+      },
+    ],
+    outputs: [],
+  },
   { type: GogDropdownChevronDirective, inputs: [], outputs: [] },
 ];

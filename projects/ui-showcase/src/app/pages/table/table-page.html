@@ -33,14 +33,17 @@
       A cell template gets the row as <code>$implicit</code> and <code>row</code>, its
       <code>index</code> on the page, and the resolved <code>value</code>; a header template gets
       the column's <code>header</code> text and <code>field</code>, so it can decorate rather than
-      replace. A <code>field</code> can be a dot-path.
+      replace. A <code>field</code> can be a dot-path. Bind the table's rows to
+      <code>[gogColumnBodyTypeOf]</code> and <code>row</code> is typed as one of them; without it
+      the row is <code>unknown</code>. <code>value</code> stays <code>unknown</code> either way,
+      since it is read through a string.
     </p>
     <gog-table [value]="rows" size="md" [showRowNumbers]="false">
       <gog-column field="component" header="Component" />
       <gog-column field="status" header="Status">
         <ng-template gogColumnHeader let-header>{{ header }} ●</ng-template>
-        <ng-template gogColumnBody let-value="value">
-          <gog-tag size="xsm" [variant]="statusVariants[$any(value)]">{{ value }}</gog-tag>
+        <ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row>
+          <gog-tag size="xsm" [variant]="statusVariants[row.status]">{{ row.status }}</gog-tag>
         </ng-template>
       </gog-column>
       <gog-column field="owner" header="Owner" />

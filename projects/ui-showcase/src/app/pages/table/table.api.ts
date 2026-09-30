@@ -72,5 +72,11 @@ export const TABLE_API: readonly DocApi[] = [
     outputs: [],
   },
   { type: GogColumnHeaderDirective, inputs: [], outputs: [] },
-  { type: GogColumnBodyDirective, inputs: [], outputs: [] },
+  {
+    type: GogColumnBodyDirective,
+    inputs: [
+      { name: 'gogColumnBodyTypeOf', type: 'readonly T[] | undefined', default: 'undefined' },
+    ],
+    outputs: [],
+  },
 ];
