@@ -92,7 +92,7 @@ export class GogAccordionChevronDirective {
 })
 export class AccordionComponent {
   private static nextUid = 0;
-  readonly items = input<GogAccordionItem[]>([]);
+  readonly items = input<readonly GogAccordionItem[]>([]);
 
   /**
    * The single size modifier, replacing one `[class.gog-accordion--<size>]` binding per size.

@@ -9,7 +9,7 @@ export const MULTISELECT_API: readonly DocApi[] = [
       { name: 'label', type: 'string', default: "''" },
       { name: 'ariaLabel', type: 'string', default: "''" },
       { name: 'placeholder', type: 'string', default: "'Select...'" },
-      { name: 'options', type: 'TOption[]', default: '[]' },
+      { name: 'options', type: 'readonly TOption[]', default: '[]' },
       { name: 'optionLabel', type: 'GogOptionAccessor<TOption, string>', default: "'name'" },
       {
         name: 'optionValue',

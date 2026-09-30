@@ -106,7 +106,7 @@ export class ButtonToggleGroupComponent<
   TOption = unknown,
   TValue = unknown,
 > implements ControlValueAccessor {
-  readonly options = input<TOption[]>([]);
+  readonly options = input<readonly TOption[]>([]);
   readonly optionLabel = input<GogOptionAccessor<TOption, string>>('name');
   /**
    * How an option turns into the emitted value. `null` emits the **option object itself**,

@@ -6,7 +6,7 @@ export const BUTTON_TOGGLE_API: readonly DocApi[] = [
   {
     type: ButtonToggleGroupComponent,
     inputs: [
-      { name: 'options', type: 'TOption[]', default: '[]' },
+      { name: 'options', type: 'readonly TOption[]', default: '[]' },
       { name: 'optionLabel', type: 'GogOptionAccessor<TOption, string>', default: "'name'" },
       {
         name: 'optionValue',

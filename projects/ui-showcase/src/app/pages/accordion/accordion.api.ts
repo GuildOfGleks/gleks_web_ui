@@ -15,7 +15,7 @@ export const ACCORDION_API: readonly DocApi[] = [
   {
     type: AccordionComponent,
     inputs: [
-      { name: 'items', type: 'GogAccordionItem[]', default: '[]' },
+      { name: 'items', type: 'readonly GogAccordionItem[]', default: '[]' },
       { name: 'size', type: 'GogSize', default: "'lg'" },
       {
         name: 'ripple',

@@ -6,7 +6,7 @@ export const RADIO_GROUP_API: readonly DocApi[] = [
   {
     type: RadioGroupComponent,
     inputs: [
-      { name: 'options', type: 'GogRadioOption[]', default: '[]' },
+      { name: 'options', type: 'readonly GogRadioOption[]', default: '[]' },
       { name: 'label', type: 'string', default: "''" },
       { name: 'ariaLabel', type: 'string', default: "''" },
       { name: 'name', type: 'string', default: "'' (a unique name per instance)" },

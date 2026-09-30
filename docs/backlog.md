@@ -833,14 +833,6 @@ reason may stop holding.
   worked around it with `text-transform: none` on its subtitle, which is the evidence that a
   consumer has to know. The rebuilt page shows it uncorrected.
 
-- **Every collection input rejects a `readonly` array.** `gog-accordion`'s `items`,
-  `gog-table`'s `value`, the `options` of `gog-radio-group`, `gog-button-toggle` and the three
-  dropdowns (through `shared/dropdown-base.ts`) are all typed `T[]`, so a consumer holding a
-  `readonly T[]` — a `const` fixture, an NgRx selector's result — gets TS4104 under
-  `strictTemplates` and has to copy or cast. None of them mutates what it is given. Widening to
-  `readonly T[]` is source-compatible for every existing caller; found building the Accordion page,
-  which keeps its fixtures mutable for this reason.
-
 - **Whether a boolean input accepts the attribute form depends on the component.** 59 boolean
   inputs across the library are plain `input(false)` and 10 carry
   `{ transform: booleanAttribute }` (counted 2026-09-26): `disabled` is one on `gog-card` and

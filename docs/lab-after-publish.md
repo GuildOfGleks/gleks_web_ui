@@ -253,3 +253,8 @@ transparent)`) rather than an opaque mix of border and surface. Its row in the t
   "Page 3" now (was "Page 3, current page") with its state in `aria-current`. Any lab `labels.page`
   example with "current"/"aktuell" wording in it should drop that half —
   `public/docs/global-config.md` has one.
+
+- **Collection inputs take `readonly` arrays** (`options`, `items`, `value`, `pageSizeOptions`).
+  API-table types on the Select, Multiselect, Autocomplete, Button toggle, Radio group, Accordion,
+  Table and Paginator pages gain `readonly`; any lab fixture kept mutable, or copied with `[...x]`
+  just to satisfy the type, can become `readonly`.

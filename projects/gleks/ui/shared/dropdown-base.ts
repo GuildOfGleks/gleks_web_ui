@@ -182,7 +182,7 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   readonly label = input('');
   readonly ariaLabel = input('');
   readonly placeholder = input('Select...');
-  readonly options = input<TOption[]>([]);
+  readonly options = input<readonly TOption[]>([]);
   /**
    * How to read an option's visible text — a property path (`'name'`, `'profile.title'`) or a
    * function. Defaults to `'name'`, matching `GogDropdownOption`.

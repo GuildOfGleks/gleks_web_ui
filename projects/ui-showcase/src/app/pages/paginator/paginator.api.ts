@@ -19,7 +19,7 @@ export const PAGINATOR_API: readonly DocApi[] = [
       },
       {
         name: 'pageSizeOptions',
-        type: 'number[] | undefined',
+        type: 'readonly number[] | undefined',
         default: '[10, 20, 30, 40, 50]',
         config: 'GOG_CONFIG.paginator.pageSizeOptions',
       },

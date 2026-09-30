@@ -82,6 +82,14 @@ reached 1.0, so breaking changes may land in minor versions.
   twice. A custom `labels.page` still receives `isCurrent`; drop any "current" wording from it for
   the same reason.
 
+- **Every collection input accepts a `readonly` array.** `options` on `gog-select`,
+  `gog-multiselect`, `gog-autocomplete`, `gog-button-toggle-group` and `gog-radio-group`,
+  `gog-accordion`'s `items`, `gog-table`'s `value`, and `pageSizeOptions` on the table, the
+  paginator and `GOG_CONFIG.paginator` were typed as mutable arrays, so a `const` fixture or a store
+  selector's `readonly T[]` failed `strictTemplates` with `TS4104` and had to be copied or cast.
+  None of them mutates what it is given; the types now say so. Every existing binding compiles
+  unchanged.
+
 - **`GogScrollDirection` is exported** — the payload type of `gog-scroll`'s `gogReachStart` and
   `gogReachEnd`. It was declared without `export`, so a handler had to spell
   `'vertical' | 'horizontal'` by hand while the neighbouring `GogScrollMetrics` was importable.

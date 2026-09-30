@@ -48,7 +48,7 @@ export interface GogRadioOption {
 export class RadioGroupComponent implements ControlValueAccessor, DoCheck {
   protected readonly uid = nextGogControlId('gog-radio-group');
 
-  readonly options = input<GogRadioOption[]>([]);
+  readonly options = input<readonly GogRadioOption[]>([]);
   readonly label = input('');
   readonly ariaLabel = input('');
   /** Shared `name` for the underlying native radios. Auto-generated per instance if unset. */

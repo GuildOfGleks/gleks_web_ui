@@ -156,7 +156,7 @@ export class TableComponent<T extends object> {
   protected readonly sizeClass = computed(() =>
     this.size() === 'lg' ? '' : `gog-table--${this.size()}`,
   );
-  readonly value = input<T[]>([]);
+  readonly value = input<readonly T[]>([]);
   /**
    * Full width of the container by default. Set to `false` to shrink the table to fit
    * its columns' content instead.
@@ -184,7 +184,7 @@ export class TableComponent<T extends object> {
    * The sizes that select offers. Forwarded to `gog-paginator`; unset, falls back to
    * `GOG_CONFIG.paginator.pageSizeOptions`, then to `[10, 20, 30, 40, 50]`.
    */
-  readonly pageSizeOptions = input<number[] | undefined>(undefined);
+  readonly pageSizeOptions = input<readonly number[] | undefined>(undefined);
   /**
    * Hands sorting and paging to the server.
    *

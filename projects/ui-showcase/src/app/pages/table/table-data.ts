@@ -23,8 +23,7 @@ export const STATUS_VARIANTS: Readonly<Record<string, GogTagVariant>> = {
 const OWNERS = ['Design', 'Forms', 'Data', 'Navigation', 'Feedback'];
 const STATUSES = ['Ready', 'In review', 'Planned'];
 
-/** Mutable arrays: `value` is typed `T[]`, and a readonly one does not type-check. */
-export const ROWS: DemoRow[] = [
+export const ROWS: readonly DemoRow[] = [
   { component: 'Button', status: 'Ready', owner: 'Design', updated: 'Today' },
   { component: 'Checkbox', status: 'Ready', owner: 'Forms', updated: 'Yesterday' },
   { component: 'Table', status: 'In review', owner: 'Data', updated: '2 days ago' },

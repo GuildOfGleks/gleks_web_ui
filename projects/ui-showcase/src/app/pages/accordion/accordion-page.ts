@@ -37,8 +37,7 @@ interface A11yRow {
   readonly target: string;
 }
 
-/** Mutable: `items` takes `GogAccordionItem[]`, and a readonly array does not type-check. */
-const FAQ: FaqItem[] = [
+const FAQ: readonly FaqItem[] = [
   { id: 'shipping', title: 'Shipping', body: 'Ships within 2 business days by standard courier.' },
   { id: 'returns', title: 'Returns', body: 'Free returns within 30 days of delivery.' },
   {
@@ -74,7 +73,7 @@ export class AccordionPage {
   protected readonly firstOpen: ReadonlySet<string | number> = new Set(['shipping']);
 
   protected readonly sizes: readonly GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
-  protected readonly loadingStates: readonly Labelled<GogAccordionItem[]>[] = [
+  protected readonly loadingStates: readonly Labelled<readonly GogAccordionItem[]>[] = [
     { name: '[loading]="true", three items', value: FAQ },
     { name: '[loading]="true", items=[]', value: [] },
   ];

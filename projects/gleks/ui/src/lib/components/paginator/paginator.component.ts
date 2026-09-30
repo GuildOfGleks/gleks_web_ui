@@ -83,7 +83,7 @@ export class PaginatorComponent {
    * The choices the select offers. Unset, falls back to
    * `GOG_CONFIG.paginator.pageSizeOptions`, then to `[10, 20, 30, 40, 50]`.
    */
-  readonly pageSizeOptions = input<number[] | undefined>(undefined);
+  readonly pageSizeOptions = input<readonly number[] | undefined>(undefined);
   /**
    * `window` (default): a fixed number of page buttons (`visiblePages`) that slides to keep
    * the current page centered, clamped at the edges — no ellipsis, no pinned boundaries

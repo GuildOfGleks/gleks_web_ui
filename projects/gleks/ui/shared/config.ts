@@ -226,7 +226,7 @@ export interface GogGlobalConfig {
     /** Whether the rows-per-page select renders at all. **Off by default.** */
     showPageSizeSelect?: boolean;
     /** The choices it offers. Defaults to `[10, 20, 30, 40, 50]`. */
-    pageSizeOptions?: number[];
+    pageSizeOptions?: readonly number[];
   };
   /** Applies to `gog-autocomplete`. */
   autocomplete?: {

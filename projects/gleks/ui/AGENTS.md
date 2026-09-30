@@ -694,7 +694,7 @@ A row of buttons, single- or multi-select, built from your own option objects.
 
 | Input                                | Type                                       | Default                | Notes                                         |
 | ------------------------------------ | ------------------------------------------ | ---------------------- | --------------------------------------------- |
-| `options`                            | `TOption[]`                                | `[]`                   |                                               |
+| `options`                            | `readonly TOption[]`                       | `[]`                   |                                               |
 | `optionLabel`                        | accessor                                   | `'name'`               |                                               |
 | `optionValue`                        | accessor \| `null`                         | `'id'`                 | `null` emits the option object                |
 | `optionDisabled`                     | accessor                                   | `'disabled'`           |                                               |
@@ -803,7 +803,7 @@ and multiselect unless noted otherwise):
 | Input                                                  | Type                                    | Default                                                      | Notes                                                                               |
 | ------------------------------------------------------ | --------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
 | `label`, `ariaLabel`, `placeholder`                    | `string`                                | `''`, `''`, `'Select...'`                                    |                                                                                     |
-| `options`                                              | `TOption[]`                             | `[]`                                                         | your own objects                                                                    |
+| `options`                                              | `readonly TOption[]`                    | `[]`                                                         | your own objects                                                                    |
 | `optionLabel`                                          | accessor                                | `'name'`                                                     | path or fn                                                                          |
 | `optionValue`                                          | accessor \| `null`                      | `'id'`                                                       | `null` = emit the option object                                                     |
 | `optionDisabled`                                       | accessor                                | `'disabled'`                                                 |                                                                                     |
@@ -979,14 +979,14 @@ Model: `checked: boolean`. CVA: yes.
 
 #### `gog-radio-group`
 
-| Input                          | Type                                            | Default          |
-| ------------------------------ | ----------------------------------------------- | ---------------- |
-| `options`                      | `GogRadioOption[]` (`{ id, label, disabled? }`) | `[]`             |
-| `label`, `ariaLabel`, `name`   | `string`                                        | `''`             |
-| `size`                         | `GogSize \| undefined`                          | `'md'`           |
-| `disabled`, `fullWidth`        | `boolean`                                       | `false`          |
-| `orientation`                  | `GogOrientation`                                | `'vertical'`     |
-| `errorMessage`, `errorDisplay` |                                                 | `''`, `'manual'` |
+| Input                          | Type                                                     | Default          |
+| ------------------------------ | -------------------------------------------------------- | ---------------- |
+| `options`                      | `readonly GogRadioOption[]` (`{ id, label, disabled? }`) | `[]`             |
+| `label`, `ariaLabel`, `name`   | `string`                                                 | `''`             |
+| `size`                         | `GogSize \| undefined`                                   | `'md'`           |
+| `disabled`, `fullWidth`        | `boolean`                                                | `false`          |
+| `orientation`                  | `GogOrientation`                                         | `'vertical'`     |
+| `errorMessage`, `errorDisplay` |                                                          | `''`, `'manual'` |
 
 Model: `value: string | number | null`. CVA: yes. Fixed `{ id, label, disabled? }` shape (not
 a generic accessor, unlike select/multiselect/button-toggle).
@@ -1559,15 +1559,15 @@ description the host had whenever the tooltip was closed.
 
 #### `gog-accordion`
 
-| Input                             | Type                                                                      | Default                                                     |
-| --------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| `items`                           | `GogAccordionItem[]` (`{ id, title, disabled?, [key: string]: unknown }`) | `[]`                                                        |
-| `size`                            | `GogSize`                                                                 | `'lg'` (not `'md'` — see conventions)                       |
-| `expandFirst`, `multi`, `loading` | `boolean`                                                                 | `false`                                                     |
-| `skeletonCount`                   | `number`                                                                  | `3` — rows shown while `loading` and `items` is still empty |
-| `showChevron`                     | `boolean`                                                                 | `true`                                                      |
-| `headingLevel`                    | `2\|3\|4\|5\|6 \| undefined`                                              | `undefined` — wraps headers in `role="heading"` when set    |
-| `ripple`                          | `boolean \| undefined`                                                    | `false`; via `GOG_CONFIG.ripple.enabled`                    |
+| Input                             | Type                                                                               | Default                                                     |
+| --------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `items`                           | `readonly GogAccordionItem[]` (`{ id, title, disabled?, [key: string]: unknown }`) | `[]`                                                        |
+| `size`                            | `GogSize`                                                                          | `'lg'` (not `'md'` — see conventions)                       |
+| `expandFirst`, `multi`, `loading` | `boolean`                                                                          | `false`                                                     |
+| `skeletonCount`                   | `number`                                                                           | `3` — rows shown while `loading` and `items` is still empty |
+| `showChevron`                     | `boolean`                                                                          | `true`                                                      |
+| `headingLevel`                    | `2\|3\|4\|5\|6 \| undefined`                                                       | `undefined` — wraps headers in `role="heading"` when set    |
+| `ripple`                          | `boolean \| undefined`                                                             | `false`; via `GOG_CONFIG.ripple.enabled`                    |
 
 Model: `openIds: ReadonlySet<string | number>`. Output: `gogToggle: { item, open }`.
 
@@ -1759,7 +1759,7 @@ Model: `open: boolean` (default `true`, ignored while `collapsible` is off). No 
 | `totalRecords`                  | `number \| null`                                 | `null` — see below                                 |
 | `pageSize`                      | `model<number>`                                  | `10` — two-way bindable                            |
 | `showPageSizeSelect`            | `boolean \| undefined`                           | `false`; via `GOG_CONFIG.paginator`                |
-| `pageSizeOptions`               | `number[] \| undefined`                          | `[10, 20, 30, 40, 50]`; via `GOG_CONFIG.paginator` |
+| `pageSizeOptions`               | `readonly number[] \| undefined`                 | `[10, 20, 30, 40, 50]`; via `GOG_CONFIG.paginator` |
 
 The step buttons (`'Previous page'`/`'Next page'`) and the per-page names are configured, not
 input-driven: `GOG_CONFIG.labels.previousPage`/`nextPage`, and `labels.page`, a
@@ -1805,31 +1805,31 @@ deprecated, until 21.13.0), which is what lets a route that loads them lazily ke
 the initial bundle. Their dependencies from the root — buttons, icons, scroll, and for the table
 the paginator and select — still land wherever the root does.
 
-| Input                         | Type                          | Default                                   |
-| ----------------------------- | ----------------------------- | ----------------------------------------- |
-| `value`                       | `T[]`                         | `[]`                                      |
-| `fullWidth`                   | `boolean`                     | `true`                                    |
-| `pageSize`                    | `model<number>`               | `0` (no pagination) — two-way             |
-| `showPageSizeSelect`          | `boolean \| undefined`        | `false`; forwarded to the paginator       |
-| `pageSizeOptions`             | `number[] \| undefined`       | `[10, 20, 30, 40, 50]`; forwarded         |
-| `showRowNumbers`, `showTotal` | `boolean`                     | `true`, `false`                           |
-| `emptyPlaceholder`            | `string`                      | `'-'`                                     |
-| `paginatorPosition`           | `'left'\|'center'\|'right'`   | `'center'`                                |
-| `totalPosition`               | `'left'\|'right'\|'opposite'` | `'opposite'`                              |
-| `loading`                     | `boolean`                     | `false`                                   |
-| `showColumnBorders`           | `boolean`                     | `false`                                   |
-| `stickyHeader`                | `boolean`                     | `false` — pair with `maxHeight`           |
-| `maxHeight`                   | `string \| null`              | `null` — any CSS length                   |
-| `size`                        | `GogSize`                     | `'lg'` (row density — not `'md'`)         |
-| `lazy`                        | `boolean`                     | `false` — see below                       |
-| `totalRecords`                | `number \| null`              | `null` — `lazy` only                      |
-| `selectionMode`               | `GogTableSelectionMode`       | `'none'`                                  |
-| `selection`                   | `model<T[]>`                  | `[]` — two-way bindable                   |
-| `dataKey`                     | `string`                      | `''` — row identity field                 |
-| `showSelectionColumn`         | `boolean`                     | `true` (once selection is on)             |
-| `interactiveRows`             | `boolean`                     | `false`                                   |
-| `selectOnRowClick`            | `boolean`                     | `false` — needs `selectionMode`           |
-| `virtualize`                  | `boolean`                     | `false` — needs `maxHeight` + `fullWidth` |
+| Input                         | Type                             | Default                                   |
+| ----------------------------- | -------------------------------- | ----------------------------------------- |
+| `value`                       | `readonly T[]`                   | `[]`                                      |
+| `fullWidth`                   | `boolean`                        | `true`                                    |
+| `pageSize`                    | `model<number>`                  | `0` (no pagination) — two-way             |
+| `showPageSizeSelect`          | `boolean \| undefined`           | `false`; forwarded to the paginator       |
+| `pageSizeOptions`             | `readonly number[] \| undefined` | `[10, 20, 30, 40, 50]`; forwarded         |
+| `showRowNumbers`, `showTotal` | `boolean`                        | `true`, `false`                           |
+| `emptyPlaceholder`            | `string`                         | `'-'`                                     |
+| `paginatorPosition`           | `'left'\|'center'\|'right'`      | `'center'`                                |
+| `totalPosition`               | `'left'\|'right'\|'opposite'`    | `'opposite'`                              |
+| `loading`                     | `boolean`                        | `false`                                   |
+| `showColumnBorders`           | `boolean`                        | `false`                                   |
+| `stickyHeader`                | `boolean`                        | `false` — pair with `maxHeight`           |
+| `maxHeight`                   | `string \| null`                 | `null` — any CSS length                   |
+| `size`                        | `GogSize`                        | `'lg'` (row density — not `'md'`)         |
+| `lazy`                        | `boolean`                        | `false` — see below                       |
+| `totalRecords`                | `number \| null`                 | `null` — `lazy` only                      |
+| `selectionMode`               | `GogTableSelectionMode`          | `'none'`                                  |
+| `selection`                   | `model<T[]>`                     | `[]` — two-way bindable                   |
+| `dataKey`                     | `string`                         | `''` — row identity field                 |
+| `showSelectionColumn`         | `boolean`                        | `true` (once selection is on)             |
+| `interactiveRows`             | `boolean`                        | `false`                                   |
+| `selectOnRowClick`            | `boolean`                        | `false` — needs `selectionMode`           |
+| `virtualize`                  | `boolean`                        | `false` — needs `maxHeight` + `fullWidth` |
 
 Outputs: `gogSortChange: GogTableSortEvent` (`{ field, direction }`, `{ field: '', direction:
 null }` when the third click clears it), `gogPageChange: number` (1-based; **does not fire** on
