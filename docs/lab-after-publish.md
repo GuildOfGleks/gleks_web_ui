@@ -277,3 +277,7 @@ clearable>`). The Card and Panel pages' "bare attribute works" notes stop being 
 - **An empty `gog-table` says "No data"** (was "—"), from the new `emptyMessage` input and
   `GOG_CONFIG.labels.tableEmpty`. API row on the Table page, the key in the Global config page's
   `labels` table, and any page prose or screenshot that describes the dash.
+
+- **`gog-scroll` is a tab stop only while its content overflows** (the stop, `role="region"` and
+  `ariaLabel` follow the measured overflow). The Scroll page's `focusable` row and accessibility
+  prose, if they say the viewport is always a stop.

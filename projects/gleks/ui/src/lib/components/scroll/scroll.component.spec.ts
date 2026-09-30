@@ -187,8 +187,6 @@ describe('ScrollComponent', () => {
     expect(component.autoHide()).toBeUndefined();
     expect(component['resolvedAutoHide']()).toBe(true);
     expect(component.focusable()).toBe(true);
-    expect(viewport.getAttribute('tabindex')).toBe('0');
-    expect(viewport.getAttribute('role')).toBe('region');
   });
 
   it('drops tabindex/role when focusable is false', async () => {
@@ -199,7 +197,41 @@ describe('ScrollComponent', () => {
     expect(viewport.getAttribute('role')).toBeNull();
   });
 
+  /** Stubs the viewport's size and lets the coalesced measurement land. */
+  async function measured(scrollHeight: number, clientHeight = 100): Promise<void> {
+    mockMetrics(viewport, { scrollHeight, clientHeight, scrollWidth: 100, clientWidth: 100 });
+    viewport.dispatchEvent(new Event('scroll'));
+    await settleMeasure(fixture);
+    fixture.detectChanges();
+  }
+
+  describe('the tab stop follows the overflow', () => {
+    it('is a named region and a tab stop while the content overflows', async () => {
+      fixture.componentRef.setInput('ariaLabel', 'Message list');
+      await measured(400);
+      expect(viewport.getAttribute('tabindex')).toBe('0');
+      expect(viewport.getAttribute('role')).toBe('region');
+      expect(viewport.getAttribute('aria-label')).toBe('Message list');
+    });
+
+    it('is neither with nothing to scroll, so a keyboard reader does not stop on an empty frame', async () => {
+      fixture.componentRef.setInput('ariaLabel', 'Message list');
+      await measured(100);
+      expect(viewport.hasAttribute('tabindex')).toBe(false);
+      expect(viewport.hasAttribute('role')).toBe(false);
+      expect(viewport.hasAttribute('aria-label')).toBe(false);
+    });
+
+    it('becomes a stop again when the content grows past the viewport', async () => {
+      await measured(100);
+      expect(viewport.hasAttribute('tabindex')).toBe(false);
+      await measured(400);
+      expect(viewport.getAttribute('tabindex')).toBe('0');
+    });
+  });
+
   it('sets aria-label only while focusable', async () => {
+    await measured(400);
     fixture.componentRef.setInput('ariaLabel', 'Message list');
     await fixture.whenStable();
     expect(viewport.getAttribute('aria-label')).toBe('Message list');

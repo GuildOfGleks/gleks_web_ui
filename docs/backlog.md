@@ -778,13 +778,11 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
-- **A `gog-scroll` with nothing to scroll is still a tab stop, and an unnamed one.** `focusable`
-  defaults to `true` and renders `tabindex="0"` with `role="region"` whether or not the content
-  overflows — read on the Scroll page on 2026-09-26 from a region holding one line. A keyboard
-  reader stops on an empty frame; with `ariaLabel` at its default `''` the stop has no name either.
-  Tying the tab stop to real overflow (the component already measures it for the thumb) would
-  remove the dead stop; the name is the same default-empty shape as the tablist and progressbar
-  entries.
+- **A `gog-scroll` that does scroll is an unnamed region by default.** Since 21.15.0 the tab stop
+  and `role="region"` appear only while the content overflows, so the dead stop is gone; what is
+  left is the name — `ariaLabel` defaults to `''`, the same default-empty shape as the tablist and
+  progressbar entries, and it wants the same decision (a dev-mode warning, decided once for every
+  component that needs a consumer-supplied name).
 
 - **`gog-tabs` shows a different tab from the one `activeIndex` names, and does not say so.**
   Set `activeIndex` to a disabled tab and the tablist falls back to the first enabled one — the

@@ -89,7 +89,10 @@ export class ScrollComponent {
   readonly reachThreshold = input(0);
   /**
    * Renders the viewport as its own tab stop (`tabindex="0"`, `role="region"`) per the
-   * WAI-ARIA scrollable-region pattern. Turn off when nesting inside a component that
+   * WAI-ARIA scrollable-region pattern — **while its content actually overflows**. A region with
+   * nothing to scroll is a dead stop for a keyboard reader, so the stop, the role and the name
+   * come and go with the overflow the component already measures for its thumb (before the first
+   * measurement, on the server, it is a stop). Turn off when nesting inside a component that
    * already owns focus/keyboard handling (a listbox panel, a dialog body) so this doesn't
    * add a redundant stop — the descendants' own focus still auto-scrolls into view either way.
    */
@@ -169,6 +172,10 @@ export class ScrollComponent {
    * outer axis's wheel scroll and break its sticky headers, even though this instance itself
    * never visibly scrolls that axis. `visible` whenever the axis is inert avoids both.
    */
+  /** `focusable`, narrowed to when there is something to scroll. See `focusable`. */
+  protected readonly isTabStop = computed(
+    () => this.focusable() && (!this.measured() || this.showTrackV() || this.showTrackH()),
+  );
   protected readonly viewportOverflowY = computed(() => {
     if (this.axis() === 'horizontal') return 'visible';
     if (!this.measured()) return 'auto';

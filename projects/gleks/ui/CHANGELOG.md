@@ -113,6 +113,13 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **`gog-scroll` is a tab stop only while its content overflows.** `focusable` rendered
+  `tabindex="0"` and `role="region"` whether or not there was anything to scroll, so a keyboard
+  reader stopped on an empty frame — usually an unnamed one. The stop, the role and `ariaLabel` now
+  follow the overflow the component already measures for its thumb, and come back when the content
+  grows. Before the first measurement — on the server — it is a stop, as before. This reaches every
+  component built on it, `gog-table`'s wrapper included.
+
 - **An empty `gog-table` says "No data" instead of "—".** A dash in a one-cell row told a screen
   reader nothing, and it could not be changed: `emptyPlaceholder` is for a missing _cell_. The
   message is the new `emptyMessage` input, falling back to the new `GOG_CONFIG.labels.tableEmpty`,

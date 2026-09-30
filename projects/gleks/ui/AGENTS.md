@@ -2035,18 +2035,18 @@ Used internally by several other components (`gog-dialog`'s body, `gog-select`'s
 `gog-tabs`' header row) and equally usable directly in your own markup for any scrollable
 region — the library's official recommendation over a raw `overflow-x`/`overflow-y`.
 
-| Input                | Type                                                                     | Default                                                                                 |
-| -------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
-| `axis`               | `GogScrollAxis` (`'vertical'\|'horizontal'\|'both'`)                     | `'vertical'`                                                                            |
-| `size`               | `GogScrollSize \| undefined` (`'normal'\|'thin'`)                        | `'normal'`; via `GOG_CONFIG.scroll.size`                                                |
-| `autoHide`           | `boolean \| undefined`                                                   | `true`; via `GOG_CONFIG.scroll.autoHide`                                                |
-| `hideDelay`          | `number \| undefined`                                                    | `800`; via `GOG_CONFIG.scroll.hideDelay`                                                |
-| `reachThreshold`     | `number`                                                                 | `0`                                                                                     |
-| `focusable`          | `boolean`                                                                | `true` — turn off when the parent already owns focus (a dialog with its own focus trap) |
-| `ariaLabel`          | `string`                                                                 | `''`                                                                                    |
-| `overscrollBehavior` | `GogScrollOverscrollBehavior \| undefined` (`'auto'\|'contain'\|'none'`) | `'auto'`; via `GOG_CONFIG.scroll.overscrollBehavior`                                    |
-| `showTrack`          | `boolean \| undefined`                                                   | `true`; via `GOG_CONFIG.scroll.showTrack`                                               |
-| `horizontalWheel`    | `boolean \| undefined`                                                   | `false`; via `GOG_CONFIG.scroll.horizontalWheel`                                        |
+| Input                | Type                                                                     | Default                                                                                                                                                      |
+| -------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `axis`               | `GogScrollAxis` (`'vertical'\|'horizontal'\|'both'`)                     | `'vertical'`                                                                                                                                                 |
+| `size`               | `GogScrollSize \| undefined` (`'normal'\|'thin'`)                        | `'normal'`; via `GOG_CONFIG.scroll.size`                                                                                                                     |
+| `autoHide`           | `boolean \| undefined`                                                   | `true`; via `GOG_CONFIG.scroll.autoHide`                                                                                                                     |
+| `hideDelay`          | `number \| undefined`                                                    | `800`; via `GOG_CONFIG.scroll.hideDelay`                                                                                                                     |
+| `reachThreshold`     | `number`                                                                 | `0`                                                                                                                                                          |
+| `focusable`          | `boolean`                                                                | `true` — a tab stop and `role="region"` **only while the content overflows**; turn off when the parent already owns focus (a dialog with its own focus trap) |
+| `ariaLabel`          | `string`                                                                 | `''`                                                                                                                                                         |
+| `overscrollBehavior` | `GogScrollOverscrollBehavior \| undefined` (`'auto'\|'contain'\|'none'`) | `'auto'`; via `GOG_CONFIG.scroll.overscrollBehavior`                                                                                                         |
+| `showTrack`          | `boolean \| undefined`                                                   | `true`; via `GOG_CONFIG.scroll.showTrack`                                                                                                                    |
+| `horizontalWheel`    | `boolean \| undefined`                                                   | `false`; via `GOG_CONFIG.scroll.horizontalWheel`                                                                                                             |
 
 **`horizontalWheel` turns a vertical wheel into horizontal scrolling** (21.9.0), for the case a
 consumer hits first: hover a horizontal-only row, turn the wheel, and the _page_ moves. That is

@@ -202,7 +202,9 @@
     <p class="scroll-page__note">
       Read from the live DOM. A region has to be focusable to be scrolled without a pointer, which
       is why <code>focusable</code> is on by default; turn it off inside a component that already
-      owns the keyboard, such as a listbox panel. The thumb is not in the accessibility tree — the
+      owns the keyboard, such as a listbox panel. It is a stop only while the content overflows: the
+      last one here holds one line, so it has no <code>tabindex</code> and no role — a keyboard
+      reader does not stop on an empty frame. The thumb is not in the accessibility tree — the
       region's own scrolling is what assistive tech uses.
     </p>
     <app-doc-matrix rowAxis="scroll" colAxis="">
