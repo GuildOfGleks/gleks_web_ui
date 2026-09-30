@@ -72,6 +72,14 @@ reached 1.0, so breaking changes may land in minor versions.
   The JSDoc examples on all three directives read properties off the untyped variable and did not
   compile as written; they now bind the token.
 
+- **`gog-table` `sort` — a table can start sorted.** The sort lived only in the public
+  `sortState` signal, with no input, so a table whose data arrives ordered — every `lazy` table
+  whose server has a default order — showed unsorted headers until someone clicked one, and a
+  template could not set it. `sort` (a `GogTableSortEvent`, or `null` for unsorted) seeds the sort
+  and replaces it whenever it changes; a header press still moves it in between. Setting it does
+  not fire `gogSortChange`, which stays the reader's event, so binding the two is a two-way
+  binding, and an echoed sort with the same field and direction does not reset the page.
+
 - **`gog-button` `ariaCurrent`, and `gog-paginator` marks its current page with
   `aria-current="page"`.** The current page's state was carried only in its name ("Page 3, current
   page"), so it was not machine-readable, and a consumer who localised `labels.page` without the

@@ -82,6 +82,14 @@ export class TablePage {
   protected readonly controlColumn = ['table'] as const;
 
   protected readonly lastSort = signal('none yet');
+  protected readonly startSort = signal<GogTableSortEvent | null>({
+    field: 'component',
+    direction: 'desc',
+  });
+  protected readonly startSortLabel = computed(() => {
+    const sort = this.startSort();
+    return sort?.direction ? `${sort.field} ${sort.direction}` : 'null (unsorted)';
+  });
   protected readonly byLength = (a: unknown, b: unknown): number =>
     String(a).length - String(b).length;
 

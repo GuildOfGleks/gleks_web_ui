@@ -269,3 +269,7 @@ clearable>`). The Card and Panel pages' "bare attribute works" notes stop being 
   example in a sortable column must not put a control in the template (it now renders inside the
   sort button). Selectors in lab code or tests that click `th.gog-table__th` to sort should click
   `.gog-table__sort-button` instead.
+
+- **`gog-table` `sort`** (`GogTableSortEvent | null`): an API row on the Table page, and the
+  server-driven (`lazy`) example should bind it so its headers show the server's default order —
+  `[sort]="sort()" (gogSortChange)="sort.set($event); reload()"`. Setting it does not emit.

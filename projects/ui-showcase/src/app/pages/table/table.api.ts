@@ -27,6 +27,7 @@ export const TABLE_API: readonly DocApi[] = [
         config: 'GOG_CONFIG.paginator.pageSizeOptions',
       },
       { name: 'lazy', type: 'boolean', default: 'false' },
+      { name: 'sort', type: 'GogTableSortEvent | null', default: 'null' },
       { name: 'totalRecords', type: 'number | null', default: 'null' },
       { name: 'interactiveRows', type: 'boolean', default: 'false' },
       { name: 'selectionMode', type: 'GogTableSelectionMode', default: "'none'" },

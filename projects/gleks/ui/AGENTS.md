@@ -1829,6 +1829,7 @@ the paginator and select — still land wherever the root does.
 | `maxHeight`                   | `string \| null`                 | `null` — any CSS length                   |
 | `size`                        | `GogSize`                        | `'lg'` (row density — not `'md'`)         |
 | `lazy`                        | `boolean`                        | `false` — see below                       |
+| `sort`                        | `GogTableSortEvent \| null`      | `null` — seeds the sort; see below        |
 | `totalRecords`                | `number \| null`                 | `null` — `lazy` only                      |
 | `selectionMode`               | `GogTableSelectionMode`          | `'none'`                                  |
 | `selection`                   | `model<T[]>`                     | `[]` — two-way bindable                   |
@@ -2015,6 +2016,11 @@ asc → desc → unsorted on click (the header holds a real `<button>`, so Enter
 screen reader hears "Name, button"; the state is `aria-sort` on the `<th>`), `loading` shows a spinner in place of rows, an empty `value`
 shows `emptyPlaceholder`, and `pageSize > 0` turns on the internal paginator automatically. You
 don't need to hand-roll any of this.
+
+**Data that arrives sorted — set `sort`.** `[sort]="{ field: 'createdAt', direction: 'desc' }"`
+makes the header say what the server did; without it a `lazy` table with a server-side default
+order shows unsorted headers. A header press still moves the sort, and setting `sort` does not
+fire `gogSortChange`, so `[sort]="sort()" (gogSortChange)="sort.set($event)"` is a two-way binding.
 
 There is **no typed row-selection API** in the current version — if you need it, track
 selection yourself (e.g. a `Set` keyed by row id) and render a `gogColumnBody` checkbox column.

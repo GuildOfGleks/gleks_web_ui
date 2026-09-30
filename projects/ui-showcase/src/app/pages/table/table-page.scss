@@ -12,6 +12,12 @@
   margin-block-end: var(--gog-space-8);
 }
 
+.table-page__actions {
+  display: flex;
+  gap: var(--gog-space-8);
+  margin-block-end: var(--gog-space-8);
+}
+
 .table-page__note {
   margin-block: var(--gog-space-8);
   color: var(--gog-muted-text-color);

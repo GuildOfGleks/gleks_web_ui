@@ -1350,3 +1350,88 @@ describe('TableComponent — virtualize on the server', () => {
     expect(rows.length).toBeLessThan(60);
   });
 });
+
+describe('TableComponent — the sort input', () => {
+  @Component({
+    imports: [TableComponent, GogColumn],
+    template: `
+      <gog-table
+        [value]="rows"
+        [pageSize]="2"
+        [sort]="sort()"
+        (gogSortChange)="events.push($event); sort.set($event)"
+      >
+        <gog-column field="id" header="ID" [sortable]="true" />
+        <gog-column field="name" header="Name" [sortable]="true" />
+      </gog-table>
+    `,
+  })
+  class SortHost {
+    readonly rows: readonly Row[] = [
+      { id: 2, name: 'Bravo' },
+      { id: 1, name: 'Alpha' },
+      { id: 3, name: 'Charlie' },
+      { id: 4, name: 'Delta' },
+    ];
+    readonly sort = signal<GogTableSortEvent | null>({ field: 'name', direction: 'desc' });
+    readonly events: GogTableSortEvent[] = [];
+  }
+
+  let fixture: ComponentFixture<SortHost>;
+  const cell = (label: string) =>
+    [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('th.gog-table__th'),
+    ].find((h) => h.textContent?.trim().startsWith(label))!;
+  const names = () =>
+    [...(fixture.nativeElement as HTMLElement).querySelectorAll('tbody tr.gog-table__row')].map(
+      (r) => r.querySelectorAll('td')[2].textContent?.trim(),
+    );
+  const table = () =>
+    fixture.debugElement.query(By.directive(TableComponent))
+      .componentInstance as TableComponent<Row>;
+  const settle = async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [SortHost] }).compileComponents();
+    fixture = TestBed.createComponent(SortHost);
+    await settle();
+  });
+
+  it('starts sorted, and says so on the header, without emitting', () => {
+    expect(cell('Name').getAttribute('aria-sort')).toBe('descending');
+    expect(names()).toEqual(['Delta', 'Charlie']);
+    expect(fixture.componentInstance.events).toEqual([]);
+  });
+
+  it('lets a header press move the sort, and emits it', async () => {
+    cell('ID').querySelector('button')!.click();
+    await settle();
+    expect(cell('ID').getAttribute('aria-sort')).toBe('ascending');
+    expect(cell('Name').hasAttribute('aria-sort')).toBe(false);
+    expect(fixture.componentInstance.events).toEqual([{ field: 'id', direction: 'asc' }]);
+  });
+
+  it('replaces the sort when the input changes, and clears it with null', async () => {
+    fixture.componentInstance.sort.set({ field: 'id', direction: 'desc' });
+    await settle();
+    expect(cell('ID').getAttribute('aria-sort')).toBe('descending');
+    expect(names()).toEqual(['Delta', 'Charlie']);
+
+    fixture.componentInstance.sort.set(null);
+    await settle();
+    expect(cell('ID').hasAttribute('aria-sort')).toBe(false);
+    expect(names()).toEqual(['Bravo', 'Alpha']);
+  });
+
+  it('does not reset the page when the binding echoes an equal sort back as a new object', async () => {
+    table().currentPage.set(2);
+    await settle();
+    fixture.componentInstance.sort.set({ field: 'name', direction: 'desc' });
+    await settle();
+    expect(table().currentPage()).toBe(2);
+  });
+});

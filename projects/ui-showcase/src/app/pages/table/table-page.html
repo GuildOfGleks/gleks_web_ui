@@ -119,6 +119,30 @@
     </gog-table>
     <code>gogSortChange: {{ lastSort() }}</code>
 
+    <h3>starting sorted: [sort] with gogSortChange</h3>
+    <p class="table-page__note">
+      <code>sort</code> seeds the sort, for data that arrives already ordered; a header press still
+      moves it. Setting it does not fire <code>gogSortChange</code>, so binding both is a two-way
+      binding. The buttons set the input from outside.
+    </p>
+    <div class="table-page__actions">
+      <button type="button" (click)="startSort.set({ field: 'owner', direction: 'asc' })">
+        sort = owner asc
+      </button>
+      <button type="button" (click)="startSort.set(null)">sort = null</button>
+    </div>
+    <gog-table
+      [value]="rows"
+      size="sm"
+      [sort]="startSort()"
+      (gogSortChange)="startSort.set($event)"
+    >
+      <gog-column field="component" header="Component" [sortable]="true" />
+      <gog-column field="owner" header="Owner" [sortable]="true" />
+      <gog-column field="updated" header="Updated" />
+    </gog-table>
+    <code>sort: {{ startSortLabel() }}</code>
+
     <h3>selection</h3>
     <p class="table-page__note">
       <code>selectionMode="multiple"</code> adds a checkbox column with a select-all for the current

@@ -100,6 +100,8 @@ export interface GogTableSortEvent {
 /** Kept as the internal alias it has always been; `GogTableSortEvent` is the exported shape. */
 type SortState = GogTableSortEvent;
 
+const UNSORTED: SortState = { field: '', direction: null };
+
 export type GogTableSelectionMode = 'none' | 'single' | 'multiple';
 
 /** Built-in defaults, used when `GOG_CONFIG.labels` doesn't supply one. */
@@ -211,6 +213,20 @@ export class TableComponent<T extends object> {
    * ```
    */
   readonly lazy = input(false, { transform: booleanAttribute });
+  /**
+   * The sort to show, for a table whose data arrives already ordered — every `lazy` table whose
+   * server has a default order, which otherwise shows unsorted headers until someone clicks one.
+   * A header press still changes the sort; a new value here replaces it again. Setting it does not
+   * fire `gogSortChange`, which is for the reader's actions, so the pair makes a two-way binding:
+   *
+   * ```html
+   * <gog-table [value]="rows()" [sort]="sort()" (gogSortChange)="sort.set($event)" />
+   * ```
+   *
+   * `null` (the default) is unsorted. In local mode the table sorts `value` by it, as it would
+   * after a click.
+   */
+  readonly sort = input<GogTableSortEvent | null>(null);
   /**
    * How many rows exist on the server, across all pages. `lazy` only — without it the table
    * cannot know how many pages to offer, and pagination is disabled. Ignored when `lazy` is off,
@@ -330,7 +346,12 @@ export class TableComponent<T extends object> {
 
   readonly columns = contentChildren(GogColumn);
 
-  readonly sortState = signal<SortState>({ field: '', direction: null });
+  /** The current sort: seeded from `sort`, then moved by header presses until `sort` changes. */
+  readonly sortState = linkedSignal<SortState>(() => this.sort() ?? UNSORTED, {
+    // A two-way binding hands the emitted state back as a new object with the same contents;
+    // treating that as a new sort would reset the page for nothing.
+    equal: (a, b) => a.field === b.field && a.direction === b.direction,
+  });
 
   /**
    * In `lazy` mode `value` is the server's answer — already sorted, already the right page — so
@@ -924,7 +945,7 @@ export class TableComponent<T extends object> {
     } else if (cur.direction === 'asc') {
       this.sortState.set({ field, direction: 'desc' });
     } else {
-      this.sortState.set({ field: '', direction: null });
+      this.sortState.set(UNSORTED);
     }
     this.gogSortChange.emit(this.sortState());
   }

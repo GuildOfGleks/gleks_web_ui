@@ -778,11 +778,6 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
-- **`gog-table` cannot start sorted.** The sort lives in a public `sortState` signal with no
-  input, so a table whose data arrives sorted — every `lazy` table whose server has a default
-  order — shows unsorted headers until someone clicks one, and a template cannot set it. An
-  initial-sort input (or `[(sort)]`) is additive.
-
 - **An empty `gog-table` says "—".** `value` of `[]` renders one row holding a dash, and the text
   is not configurable — `emptyPlaceholder` is for a missing _cell_, not an empty table. A screen
   reader announces a one-cell table containing a dash. Wants a label (a `GOG_CONFIG.labels` key,
