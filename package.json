@@ -50,7 +50,9 @@
     "check:class-names": "node scripts/check-class-names.mjs",
     "check:glyph-box": "node scripts/check-glyph-box.mjs",
     "check:layering": "node scripts/check-layering.mjs",
-    "check:install": "node scripts/check-install.mjs"
+    "check:install": "node scripts/check-install.mjs",
+    "deployTest": "scripts/deploy-lab.sh",
+    "deployProd": "scripts/deploy-lab.sh --target prod"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
