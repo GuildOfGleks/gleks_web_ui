@@ -778,11 +778,6 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
-- **An empty `gog-table` says "—".** `value` of `[]` renders one row holding a dash, and the text
-  is not configurable — `emptyPlaceholder` is for a missing _cell_, not an empty table. A screen
-  reader announces a one-cell table containing a dash. Wants a label (a `GOG_CONFIG.labels` key,
-  like the table's other chrome) or a template.
-
 - **A `gog-scroll` with nothing to scroll is still a tab stop, and an unnamed one.** `focusable`
   defaults to `true` and renders `tabindex="0"` with `role="region"` whether or not the content
   overflows — read on the Scroll page on 2026-09-26 from a region holding one line. A keyboard

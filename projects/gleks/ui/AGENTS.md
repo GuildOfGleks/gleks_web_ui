@@ -387,6 +387,7 @@ provideGogConfig({
     tablePagination: 'Tabellennavigation',
     selectRow: 'Zeile auswählen',
     selectAllRows: 'Alle Zeilen auswählen',
+    tableEmpty: 'Keine Daten', // gog-table with no rows; an instance's emptyMessage wins
     today: 'Heute',
     thisMonth: 'Aktueller Monat',
     previousMonth: 'Vorheriger Monat',
@@ -1812,32 +1813,33 @@ deprecated, until 21.13.0), which is what lets a route that loads them lazily ke
 the initial bundle. Their dependencies from the root — buttons, icons, scroll, and for the table
 the paginator and select — still land wherever the root does.
 
-| Input                         | Type                             | Default                                   |
-| ----------------------------- | -------------------------------- | ----------------------------------------- |
-| `value`                       | `readonly T[]`                   | `[]`                                      |
-| `fullWidth`                   | `boolean`                        | `true`                                    |
-| `pageSize`                    | `model<number>`                  | `0` (no pagination) — two-way             |
-| `showPageSizeSelect`          | `boolean \| undefined`           | `false`; forwarded to the paginator       |
-| `pageSizeOptions`             | `readonly number[] \| undefined` | `[10, 20, 30, 40, 50]`; forwarded         |
-| `showRowNumbers`, `showTotal` | `boolean`                        | `true`, `false`                           |
-| `emptyPlaceholder`            | `string`                         | `'-'`                                     |
-| `paginatorPosition`           | `'left'\|'center'\|'right'`      | `'center'`                                |
-| `totalPosition`               | `'left'\|'right'\|'opposite'`    | `'opposite'`                              |
-| `loading`                     | `boolean`                        | `false`                                   |
-| `showColumnBorders`           | `boolean`                        | `false`                                   |
-| `stickyHeader`                | `boolean`                        | `false` — pair with `maxHeight`           |
-| `maxHeight`                   | `string \| null`                 | `null` — any CSS length                   |
-| `size`                        | `GogSize`                        | `'lg'` (row density — not `'md'`)         |
-| `lazy`                        | `boolean`                        | `false` — see below                       |
-| `sort`                        | `GogTableSortEvent \| null`      | `null` — seeds the sort; see below        |
-| `totalRecords`                | `number \| null`                 | `null` — `lazy` only                      |
-| `selectionMode`               | `GogTableSelectionMode`          | `'none'`                                  |
-| `selection`                   | `model<T[]>`                     | `[]` — two-way bindable                   |
-| `dataKey`                     | `string`                         | `''` — row identity field                 |
-| `showSelectionColumn`         | `boolean`                        | `true` (once selection is on)             |
-| `interactiveRows`             | `boolean`                        | `false`                                   |
-| `selectOnRowClick`            | `boolean`                        | `false` — needs `selectionMode`           |
-| `virtualize`                  | `boolean`                        | `false` — needs `maxHeight` + `fullWidth` |
+| Input                         | Type                             | Default                                         |
+| ----------------------------- | -------------------------------- | ----------------------------------------------- |
+| `value`                       | `readonly T[]`                   | `[]`                                            |
+| `fullWidth`                   | `boolean`                        | `true`                                          |
+| `pageSize`                    | `model<number>`                  | `0` (no pagination) — two-way                   |
+| `showPageSizeSelect`          | `boolean \| undefined`           | `false`; forwarded to the paginator             |
+| `pageSizeOptions`             | `readonly number[] \| undefined` | `[10, 20, 30, 40, 50]`; forwarded               |
+| `showRowNumbers`, `showTotal` | `boolean`                        | `true`, `false`                                 |
+| `emptyPlaceholder`            | `string`                         | `'-'` — a cell whose value is null              |
+| `emptyMessage`                | `string \| undefined`            | `'No data'`; via `GOG_CONFIG.labels.tableEmpty` |
+| `paginatorPosition`           | `'left'\|'center'\|'right'`      | `'center'`                                      |
+| `totalPosition`               | `'left'\|'right'\|'opposite'`    | `'opposite'`                                    |
+| `loading`                     | `boolean`                        | `false`                                         |
+| `showColumnBorders`           | `boolean`                        | `false`                                         |
+| `stickyHeader`                | `boolean`                        | `false` — pair with `maxHeight`                 |
+| `maxHeight`                   | `string \| null`                 | `null` — any CSS length                         |
+| `size`                        | `GogSize`                        | `'lg'` (row density — not `'md'`)               |
+| `lazy`                        | `boolean`                        | `false` — see below                             |
+| `sort`                        | `GogTableSortEvent \| null`      | `null` — seeds the sort; see below              |
+| `totalRecords`                | `number \| null`                 | `null` — `lazy` only                            |
+| `selectionMode`               | `GogTableSelectionMode`          | `'none'`                                        |
+| `selection`                   | `model<T[]>`                     | `[]` — two-way bindable                         |
+| `dataKey`                     | `string`                         | `''` — row identity field                       |
+| `showSelectionColumn`         | `boolean`                        | `true` (once selection is on)                   |
+| `interactiveRows`             | `boolean`                        | `false`                                         |
+| `selectOnRowClick`            | `boolean`                        | `false` — needs `selectionMode`                 |
+| `virtualize`                  | `boolean`                        | `false` — needs `maxHeight` + `fullWidth`       |
 
 Outputs: `gogSortChange: GogTableSortEvent` (`{ field, direction }`, `{ field: '', direction:
 null }` when the third click clears it), `gogPageChange: number` (1-based; **does not fire** on
@@ -2014,7 +2016,7 @@ decorative marks: a link, button or form control in it would be a control nested
 **Sorting, empty/loading states and pagination are all built in** — sortable columns toggle
 asc → desc → unsorted on click (the header holds a real `<button>`, so Enter and Space work and a
 screen reader hears "Name, button"; the state is `aria-sort` on the `<th>`), `loading` shows a spinner in place of rows, an empty `value`
-shows `emptyPlaceholder`, and `pageSize > 0` turns on the internal paginator automatically. You
+shows `emptyMessage` (`'No data'`), and `pageSize > 0` turns on the internal paginator automatically. You
 don't need to hand-roll any of this.
 
 **Data that arrives sorted — set `sort`.** `[sort]="{ field: 'createdAt', direction: 'desc' }"`

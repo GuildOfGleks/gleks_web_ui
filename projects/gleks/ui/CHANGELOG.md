@@ -113,6 +113,13 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **An empty `gog-table` says "No data" instead of "—".** A dash in a one-cell row told a screen
+  reader nothing, and it could not be changed: `emptyPlaceholder` is for a missing _cell_. The
+  message is the new `emptyMessage` input, falling back to the new `GOG_CONFIG.labels.tableEmpty`,
+  then to `'No data'` — per instance as well as app-wide, because "No orders yet" and "Nothing
+  matches these filters" are different sentences. A consumer who relied on the dash can set
+  `emptyMessage="—"`.
+
 - **`gogDropdownChevron` follows one rule on both hosts, and hands its template `open`.** A custom
   chevron turned 180° with the panel in `gog-multiselect` and never moved in `gog-select`, and the
   template got no context in either, so a select's open state could only be drawn through the

@@ -117,7 +117,9 @@
           </tr>
         } @else if (visibleRows().length === 0) {
           <tr>
-            <td class="gog-table__empty" [attr.colspan]="emptyColspan()">—</td>
+            <td class="gog-table__empty" [attr.colspan]="emptyColspan()">
+              {{ resolvedLabels().empty }}
+            </td>
           </tr>
         } @else {
           <!--

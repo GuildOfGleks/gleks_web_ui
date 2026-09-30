@@ -110,6 +110,7 @@ const DEFAULT_LABELS = {
   pagination: 'Table pagination',
   selectRow: 'Select row',
   selectAllRows: 'Select all rows on this page',
+  empty: 'No data',
 } as const;
 
 /** Emitted by `gogRowClick`. */
@@ -290,7 +291,14 @@ export class TableComponent<T extends object> {
   readonly selectOnRowClick = input(false, { transform: booleanAttribute });
   readonly showRowNumbers = input(true, { transform: booleanAttribute });
   readonly showTotal = input(false, { transform: booleanAttribute });
+  /** What a cell shows when its value is `null` or `undefined`. For an empty table, see `emptyMessage`. */
   readonly emptyPlaceholder = input<string>('-');
+  /**
+   * What the table says when it has no rows. Unset, falls back to `GOG_CONFIG.labels.tableEmpty`,
+   * then to `'No data'`. Per instance as well as app-wide because an empty table means different
+   * things in different places — "No orders yet" is not "Nothing matches these filters".
+   */
+  readonly emptyMessage = input<string | undefined>(undefined);
   /** Alignment of pagination controls */
   readonly paginatorPosition = input<'left' | 'center' | 'right'>('center');
   /** Alignment of total count label (only when showTotal=true) */
@@ -457,7 +465,8 @@ export class TableComponent<T extends object> {
   private readonly globalConfig = inject(GOG_CONFIG);
 
   /** `GOG_CONFIG.labels` → the built-in English defaults. No per-instance inputs: these name
-   * table chrome, and an app that relabels them does so once. */
+   * table chrome, and an app that relabels them does so once. The empty message is the exception,
+   * see `emptyMessage`. */
   protected readonly resolvedLabels = computed(() => {
     const configured = this.globalConfig.labels ?? {};
     return {
@@ -473,6 +482,7 @@ export class TableComponent<T extends object> {
         configured.selectAllRows,
         DEFAULT_LABELS.selectAllRows,
       ),
+      empty: resolveConfigured(this.emptyMessage(), configured.tableEmpty, DEFAULT_LABELS.empty),
     };
   });
 

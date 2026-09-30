@@ -120,6 +120,7 @@ export class TablePage {
   protected readonly a11yRows: readonly A11yRow[] = [
     { name: 'the table', target: 'table' },
     { name: 'a sortable header', target: 'th.gog-table__th--sortable' },
+    { name: 'its sort button', target: 'th.gog-table__th--sortable button' },
     { name: 'the select-all checkbox', target: 'thead input' },
     { name: 'a selected row', target: 'tbody tr[aria-selected=true]' },
     { name: 'a row checkbox', target: 'tr[aria-selected] input' },

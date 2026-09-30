@@ -336,6 +336,8 @@ export interface GogGlobalConfig {
     tablePagination?: string;
     selectRow?: string;
     selectAllRows?: string;
+    /** `gog-table`'s message when there are no rows; an instance's `emptyMessage` wins. */
+    tableEmpty?: string;
     /** `gog-calendar` navigation and shortcuts. */
     today?: string;
     thisMonth?: string;

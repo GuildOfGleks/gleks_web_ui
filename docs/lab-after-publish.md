@@ -273,3 +273,7 @@ clearable>`). The Card and Panel pages' "bare attribute works" notes stop being 
 - **`gog-table` `sort`** (`GogTableSortEvent | null`): an API row on the Table page, and the
   server-driven (`lazy`) example should bind it so its headers show the server's default order —
   `[sort]="sort()" (gogSortChange)="sort.set($event); reload()"`. Setting it does not emit.
+
+- **An empty `gog-table` says "No data"** (was "—"), from the new `emptyMessage` input and
+  `GOG_CONFIG.labels.tableEmpty`. API row on the Table page, the key in the Global config page's
+  `labels` table, and any page prose or screenshot that describes the dash.

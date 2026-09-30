@@ -38,6 +38,12 @@ export const TABLE_API: readonly DocApi[] = [
       { name: 'showRowNumbers', type: 'boolean', default: 'true' },
       { name: 'showTotal', type: 'boolean', default: 'false' },
       { name: 'emptyPlaceholder', type: 'string', default: "'-'" },
+      {
+        name: 'emptyMessage',
+        type: 'string | undefined',
+        default: "'No data'",
+        config: 'GOG_CONFIG.labels.tableEmpty',
+      },
       { name: 'paginatorPosition', type: "'left' | 'center' | 'right'", default: "'center'" },
       { name: 'totalPosition', type: "'left' | 'right' | 'opposite'", default: "'opposite'" },
       { name: 'loading', type: 'boolean', default: 'false' },

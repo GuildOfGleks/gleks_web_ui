@@ -7,8 +7,8 @@
     <h3>size × state</h3>
     <p class="table-page__note">
       <code>size</code> is row density. Loading replaces the body with a spinner and marks the host
-      <code>aria-busy</code>; an empty <code>value</code> renders one row with a dash. Hover on a
-      sortable header is live.
+      <code>aria-busy</code>; an empty <code>value</code> renders one row saying
+      <code>emptyMessage</code>. Hover on a sortable header is live.
     </p>
     <app-doc-matrix rowAxis="size" colAxis="state">
       <ng-template appDocCell [rows]="sizes" [cols]="states" let-size let-state="col">
@@ -247,7 +247,7 @@
   <app-doc-section
     id="configuration"
     title="Configuration"
-    lead="The total's word and the names of the pagination and the selection checkboxes come from GOG_CONFIG.labels; the rows-per-page select from GOG_CONFIG.paginator."
+    lead="The total's word, the empty message and the names of the pagination and the selection checkboxes come from GOG_CONFIG.labels; the rows-per-page select from GOG_CONFIG.paginator."
   >
     <pre class="table-page__config"><code>provideGogConfig({{ scopeConfig | json }})</code></pre>
     <app-doc-matrix rowAxis="where" colAxis="">
@@ -265,6 +265,9 @@
               >
                 <gog-column field="component" header="Komponente" />
               </gog-table>
+              <gog-table [value]="noRows" size="sm" [showRowNumbers]="false">
+                <gog-column field="component" header="Komponente" />
+              </gog-table>
             </app-table-config-scope>
           } @else {
             <gog-table
@@ -275,6 +278,9 @@
               [showTotal]="true"
               [showRowNumbers]="false"
             >
+              <gog-column field="component" header="Component" />
+            </gog-table>
+            <gog-table [value]="noRows" size="sm" [showRowNumbers]="false">
               <gog-column field="component" header="Component" />
             </gog-table>
           }
@@ -289,12 +295,13 @@
     lead="A native table: headers are th scope='col', sorting is aria-sort on the header, and each selection checkbox is named."
   >
     <p class="table-page__note">
-      Read from the live DOM. A sortable header is a <code>th</code> made focusable, sorting on
-      Enter; it carries <code>aria-sort</code> only once it is sorted, and nothing says it can be
-      pressed — filed. There is no input to start a table sorted. <code>aria-rowcount</code> gives
-      the true row count when paging or windowing leaves rows out of the DOM. A selected row carries
-      <code>aria-selected</code>, which is not part of a plain table row's role, so the checkbox is
-      what states the selection.
+      Read from the live DOM. A sortable header holds a real <code>button</code>, named by the
+      header, which is the tab stop and takes Enter and Space; the <code>th</code> carries
+      <code>aria-sort</code> once it is sorted — from the start, with <code>sort</code>. An empty
+      table's one row says <code>emptyMessage</code> ("No data") rather than a dash.
+      <code>aria-rowcount</code> gives the true row count when paging or windowing leaves rows out
+      of the DOM. A selected row carries <code>aria-selected</code>, which is not part of a plain
+      table row's role, so the checkbox is what states the selection.
     </p>
     <app-doc-matrix rowAxis="element" colAxis="">
       <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>

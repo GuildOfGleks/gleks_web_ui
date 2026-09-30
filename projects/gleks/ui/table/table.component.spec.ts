@@ -11,6 +11,7 @@ import {
 } from './table.component';
 import { GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective } from './column';
 import { PaginatorComponent, ScrollComponent } from '@guildofgleks/ui';
+import { provideGogConfig, type GogGlobalConfig } from '@guildofgleks/ui/shared';
 
 interface Row {
   id: number;
@@ -1433,5 +1434,44 @@ describe('TableComponent — the sort input', () => {
     fixture.componentInstance.sort.set({ field: 'name', direction: 'desc' });
     await settle();
     expect(table().currentPage()).toBe(2);
+  });
+});
+
+describe('TableComponent — the empty message', () => {
+  @Component({
+    imports: [TableComponent, GogColumn],
+    template: `
+      <gog-table [value]="[]" [emptyMessage]="message()">
+        <gog-column field="id" header="ID" />
+      </gog-table>
+    `,
+  })
+  class EmptyHost {
+    readonly message = signal<string | undefined>(undefined);
+  }
+
+  async function render(config: GogGlobalConfig = {}): Promise<ComponentFixture<EmptyHost>> {
+    await TestBed.configureTestingModule({
+      imports: [EmptyHost],
+      providers: [provideGogConfig(config)],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(EmptyHost);
+    await fixture.whenStable();
+    return fixture;
+  }
+  const text = (fixture: ComponentFixture<EmptyHost>) =>
+    (fixture.nativeElement as HTMLElement).querySelector('.gog-table__empty')?.textContent?.trim();
+
+  it('says "No data" by default, in words a screen reader can read', async () => {
+    expect(text(await render())).toBe('No data');
+  });
+
+  it('takes GOG_CONFIG.labels.tableEmpty, and lets an instance override it', async () => {
+    const fixture = await render({ labels: { tableEmpty: 'Keine Daten' } });
+    expect(text(fixture)).toBe('Keine Daten');
+
+    fixture.componentInstance.message.set('No orders yet');
+    await fixture.whenStable();
+    expect(text(fixture)).toBe('No orders yet');
   });
 });

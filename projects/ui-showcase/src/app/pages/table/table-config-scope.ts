@@ -8,6 +8,7 @@ export const TABLE_SCOPE_CONFIG = {
     tablePagination: 'Tabellenseiten',
     selectRow: 'Zeile auswählen',
     selectAllRows: 'Alle Zeilen dieser Seite auswählen',
+    tableEmpty: 'Keine Daten',
   },
 };
 
