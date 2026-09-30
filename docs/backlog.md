@@ -810,11 +810,6 @@ reason may stop holding.
   remove the dead stop; the name is the same default-empty shape as the tablist and progressbar
   entries.
 
-- **`gogReachStart`/`gogReachEnd`'s payload type is not exported.** Both emit
-  `GogScrollDirection`, which `scroll.component.ts` declares without `export`, so the barrel's
-  `export *` skips it and a consumer's handler has to spell `'vertical' | 'horizontal'` by hand.
-  `GogScrollMetrics`, the payload of `gogScroll`, is exported. Additive.
-
 - **`gog-tabs` shows a different tab from the one `activeIndex` names, and does not say so.**
   Set `activeIndex` to a disabled tab and the tablist falls back to the first enabled one — the
   right thing to show — but the model keeps the value it was given, so `[(activeIndex)]` and the

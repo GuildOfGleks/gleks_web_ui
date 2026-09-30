@@ -72,6 +72,10 @@ reached 1.0, so breaking changes may land in minor versions.
   The JSDoc examples on all three directives read properties off the untyped variable and did not
   compile as written; they now bind the token.
 
+- **`GogScrollDirection` is exported** — the payload type of `gog-scroll`'s `gogReachStart` and
+  `gogReachEnd`. It was declared without `export`, so a handler had to spell
+  `'vertical' | 'horizontal'` by hand while the neighbouring `GogScrollMetrics` was importable.
+
 ### Changed
 
 - **`gogDropdownChevron` follows one rule on both hosts, and hands its template `open`.** A custom

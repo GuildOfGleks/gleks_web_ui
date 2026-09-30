@@ -29,7 +29,8 @@ export interface GogScrollMetrics {
   clientWidth: number;
 }
 
-type GogScrollDirection = 'vertical' | 'horizontal';
+/** The axis `gogReachStart` / `gogReachEnd` report reaching an edge on. */
+export type GogScrollDirection = 'vertical' | 'horizontal';
 
 /** A sub-pixel overflow reading is rounding noise, not real scrollable content. */
 const OVERFLOW_EPSILON = 1;

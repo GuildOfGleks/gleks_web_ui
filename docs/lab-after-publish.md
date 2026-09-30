@@ -244,3 +244,6 @@ transparent)`) rather than an opaque mix of border and surface. Its row in the t
   keys on its own ids, so nothing breaks — but if any page prints a section name or groups by
   `layer`, re-read it against the installed package. Regenerating `theme-starter.css` will move
   the derived block's declarations under their new headings (values unchanged).
+
+- **`GogScrollDirection` is exported.** The Scroll page's output rows for `gogReachStart` /
+  `gogReachEnd` can name the type instead of spelling `'vertical' | 'horizontal'`.

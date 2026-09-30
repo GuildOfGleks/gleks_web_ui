@@ -49,8 +49,8 @@ export const SCROLL_API: readonly DocApi[] = [
     ],
     outputs: [
       { name: 'gogScroll', payload: 'GogScrollMetrics' },
-      { name: 'gogReachStart', payload: "'vertical' | 'horizontal'" },
-      { name: 'gogReachEnd', payload: "'vertical' | 'horizontal'" },
+      { name: 'gogReachStart', payload: 'GogScrollDirection' },
+      { name: 'gogReachEnd', payload: 'GogScrollDirection' },
     ],
   },
 ];

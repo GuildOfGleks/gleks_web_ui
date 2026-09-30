@@ -2041,7 +2041,8 @@ the point:** at the content's end the event is left alone and the page picks it 
 never goes dead over a scrolled-to-the-end region. `overscrollBehavior: 'contain'` still
 contains — that boundary is the browser's and this never reaches past it.
 
-Outputs: `gogScroll: GogScrollMetrics`, `gogReachStart`/`gogReachEnd: 'vertical'|'horizontal'`.
+Outputs: `gogScroll: GogScrollMetrics`, `gogReachStart`/`gogReachEnd: GogScrollDirection`
+(`'vertical' | 'horizontal'`, exported since 21.15.0).
 Methods (via template ref): `scrollTo(options)`, `scrollToTop()`, `scrollToBottom()`,
 `scrollToLeft()`, `scrollToRight()`.
 
@@ -2241,6 +2242,7 @@ Shared enum-like types (`import type { ... } from '@guildofgleks/ui'`):
 | `GogSkeletonAnimation`        | `'pulse' \| 'wave' \| 'none'`                                                                                       |
 | `GogPaginatorRangeMode`       | `'window' \| 'ellipsis'`                                                                                            |
 | `GogScrollAxis`               | `'vertical' \| 'horizontal' \| 'both'`                                                                              |
+| `GogScrollDirection`          | `'vertical' \| 'horizontal'` — the payload of `gog-scroll`'s `gogReachStart` / `gogReachEnd`                        |
 | `GogScrollSize`               | `'normal' \| 'thin'`                                                                                                |
 | `GogScrollOverscrollBehavior` | `'auto' \| 'contain' \| 'none'`                                                                                     |
 | `GogTooltipPosition`          | `'auto' \| 'top' \| 'bottom' \| 'left' \| 'right'`                                                                  |
