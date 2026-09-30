@@ -75,6 +75,7 @@ export * from './lib/services/toast-service/toast-service';
 export * from './lib/services/theme-service/theme.service';
 export type {
   GogAlertLive,
+  GogAriaCurrent,
   GogAriaHasPopup,
   GogBadgePosition,
   GogButtonToggleAppearance,

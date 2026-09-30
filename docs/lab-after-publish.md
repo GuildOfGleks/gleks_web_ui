@@ -247,3 +247,9 @@ transparent)`) rather than an opaque mix of border and surface. Its row in the t
 
 - **`GogScrollDirection` is exported.** The Scroll page's output rows for `gogReachStart` /
   `gogReachEnd` can name the type instead of spelling `'vertical' | 'horizontal'`.
+
+- **`gog-button` `ariaCurrent`, and the paginator's `aria-current="page"`.** An API row on the
+  Button page (type `GogAriaCurrent`), and on the Paginator page: the current page is named
+  "Page 3" now (was "Page 3, current page") with its state in `aria-current`. Any lab `labels.page`
+  example with "current"/"aktuell" wording in it should drop that half —
+  `public/docs/global-config.md` has one.

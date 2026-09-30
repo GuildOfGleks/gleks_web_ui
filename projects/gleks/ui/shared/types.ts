@@ -7,6 +7,12 @@ export type GogVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
  */
 export type GogAriaHasPopup = boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 /**
+ * The `aria-current` values, matching the ARIA 1.2 enumeration: which item of a set is the current
+ * one — the page in a pagination or breadcrumb (`'page'`), the step in a process, the date in a
+ * calendar. `true` means "current" with no kind.
+ */
+export type GogAriaCurrent = boolean | 'page' | 'step' | 'location' | 'date' | 'time';
+/**
  * How a surface paints itself, shared by `gog-card` and `gog-panel` so the two agree:
  * - `'outlined'` — a border, no shadow. The quietest, and right for a grid of many.
  * - `'elevated'` — the shared surface shadow (`--gog-panel-shadow`), no border.

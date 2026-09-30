@@ -154,12 +154,14 @@
   <app-doc-section
     id="accessibility"
     title="Accessibility"
-    lead="A navigation landmark of real buttons, each named for where it goes; the current page's name says it is current."
+    lead="A navigation landmark of real buttons, each named for where it goes; the current page carries aria-current."
   >
     <p class="paginator-page__note">
-      Read from the live DOM. The page numbers are named "Go to page N", the current one "Page N,
-      current page"; the step buttons are named from config, since ‹ and › say nothing on their own.
-      A disabled step button is a native <code>disabled</code> button, out of the tab order.
+      Read from the live DOM. The page numbers are named "Go to page N" and the current one "Page
+      N", with <code>aria-current="page"</code> carrying its state — a screen reader announces that
+      itself, which is why the name does not repeat it. The step buttons are named from config,
+      since ‹ and › say nothing on their own. A disabled step button is a native
+      <code>disabled</code> button, out of the tab order.
     </p>
     <app-doc-matrix rowAxis="element" colAxis="">
       <ng-template appDocCell [rows]="a11yRows" [cols]="controlColumn" let-row>

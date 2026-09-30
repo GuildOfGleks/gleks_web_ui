@@ -795,13 +795,6 @@ reason may stop holding.
   reader announces a one-cell table containing a dash. Wants a label (a `GOG_CONFIG.labels` key,
   like the table's other chrome) or a template.
 
-- **`gog-paginator`'s current page says so only in words.** The current page's button is named
-  "Page 3, current page" and carries no `aria-current="page"` — read on the Paginator page on
-  2026-09-26. The name reaches a screen reader, but the state is not machine-readable, which is
-  what `aria-current` exists for, and a consumer who localises `labels.page` without the "current"
-  half loses it entirely. `gog-button` has no `ariaCurrent` input to forward it through, so the fix
-  is either that input or the paginator setting the attribute on the inner button itself.
-
 - **A `gog-scroll` with nothing to scroll is still a tab stop, and an unnamed one.** `focusable`
   defaults to `true` and renders `tabindex="0"` with `role="region"` whether or not the content
   overflows — read on the Scroll page on 2026-09-26 from a region holding one line. A keyboard

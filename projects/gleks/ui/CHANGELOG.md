@@ -72,6 +72,16 @@ reached 1.0, so breaking changes may land in minor versions.
   The JSDoc examples on all three directives read properties off the untyped variable and did not
   compile as written; they now bind the token.
 
+- **`gog-button` `ariaCurrent`, and `gog-paginator` marks its current page with
+  `aria-current="page"`.** The current page's state was carried only in its name ("Page 3, current
+  page"), so it was not machine-readable, and a consumer who localised `labels.page` without the
+  "current" half lost it altogether. `gog-button` gains `ariaCurrent` (typed by the new exported
+  `GogAriaCurrent`), forwarded to its inner `<button>` like the other ARIA state inputs, and the
+  paginator sets it on the current page. **The default current-page name is now "Page 3"**: a
+  screen reader announces `aria-current` on its own, so the old name would have said "current"
+  twice. A custom `labels.page` still receives `isCurrent`; drop any "current" wording from it for
+  the same reason.
+
 - **`GogScrollDirection` is exported** — the payload type of `gog-scroll`'s `gogReachStart` and
   `gogReachEnd`. It was declared without `export`, so a handler had to spell
   `'vertical' | 'horizontal'` by hand while the neighbouring `GogScrollMetrics` was importable.

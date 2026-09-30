@@ -25,8 +25,9 @@ const DEFAULT_LABELS = {
   previousPage: 'Previous page',
   nextPage: 'Next page',
   rowsPerPage: 'Rows per page',
-  page: (page: number, isCurrent: boolean) =>
-    isCurrent ? `Page ${page}, current page` : `Go to page ${page}`,
+  // The current page's state is `aria-current="page"`, which a screen reader announces itself;
+  // saying it in the name as well would be heard twice.
+  page: (page: number, isCurrent: boolean) => (isCurrent ? `Page ${page}` : `Go to page ${page}`),
 };
 
 @Component({

@@ -310,13 +310,15 @@ export interface GogGlobalConfig {
     previousPage?: string;
     nextPage?: string;
     /**
-     * `gog-paginator`'s per-page button names ("Go to page 4", "Page 4, current page").
+     * `gog-paginator`'s per-page button names ("Go to page 4", and "Page 4" for the current one).
      *
      * A function rather than a string, and the only one in this block: these interpolate the
      * page number, and a template string with a `{0}` placeholder would be a second, weaker
      * formatting language to learn — one that also can't express languages where the number's
      * position or the surrounding grammar depends on its value. The default is
-     * `` (page, isCurrent) => isCurrent ? `Page ${page}, current page` : `Go to page ${page}` ``.
+     * `` (page, isCurrent) => isCurrent ? `Page ${page}` : `Go to page ${page}` ``. The current
+     * page's button also carries `aria-current="page"`, which a screen reader announces on its
+     * own, so a translation should not say "current" again.
      */
     page?: (page: number, isCurrent: boolean) => string;
     /** `gog-datepicker`'s button that opens the calendar panel. */

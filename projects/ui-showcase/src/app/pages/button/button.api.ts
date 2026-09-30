@@ -35,6 +35,7 @@ export const BUTTON_API: readonly DocApi[] = [
       { name: 'ariaExpanded', type: 'boolean | null', default: 'null' },
       { name: 'ariaControls', type: 'string | null', default: 'null' },
       { name: 'ariaHasPopup', type: 'GogAriaHasPopup | null', default: 'null' },
+      { name: 'ariaCurrent', type: 'GogAriaCurrent | null', default: 'null' },
     ],
     outputs: [{ name: 'gogClick', payload: 'MouseEvent' }],
   },

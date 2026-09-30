@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 
-import { GogAriaHasPopup, GogSeverity, GogSize, GogVariant } from '@guildofgleks/ui/shared';
+import {
+  GogAriaCurrent,
+  GogAriaHasPopup,
+  GogSeverity,
+  GogSize,
+  GogVariant,
+} from '@guildofgleks/ui/shared';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
@@ -104,6 +110,12 @@ export class ButtonComponent {
   ariaControls = input<string | null>(null);
   /** What this button opens, if anything. See `ariaPressed`. */
   ariaHasPopup = input<GogAriaHasPopup | null>(null);
+  /**
+   * Marks this button as the current item of a set — `'page'` for the current page of a
+   * pagination. Only the current one carries it; `false` renders `aria-current="false"`, which is
+   * the same as omitting it, so leave the others at `null`. See `ariaPressed`.
+   */
+  ariaCurrent = input<GogAriaCurrent | null>(null);
 
   gogClick = output<MouseEvent>();
 

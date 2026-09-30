@@ -119,6 +119,7 @@ export class ButtonPage {
     '[ariaPressed]="true"',
     'ariaPressed="mixed"',
     '[ariaExpanded]="false" ariaControls="menu-1" ariaHasPopup="menu"',
+    'ariaCurrent="page"',
     'type="submit"',
   ] as const;
   protected readonly a11yColumns = ['inner <button>'] as const;

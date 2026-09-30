@@ -80,6 +80,22 @@ describe('PaginatorComponent', () => {
     expect(component.page()).toBe(2);
   });
 
+  it('marks only the current page button with aria-current="page", and moves it', () => {
+    fixture.componentRef.setInput('totalPages', 5);
+    fixture.componentRef.setInput('page', 2);
+    fixture.detectChanges();
+
+    const current = () =>
+      pageButtons()
+        .filter((b) => b.hasAttribute('aria-current'))
+        .map((b) => [b.textContent?.trim(), b.getAttribute('aria-current')]);
+    expect(current()).toEqual([['2', 'page']]);
+
+    pageButtons()[4].click(); // prev, 1, 2, 3, [4], 5, next
+    fixture.detectChanges();
+    expect(current()).toEqual([['4', 'page']]);
+  });
+
   it('should move to the next/previous page via the arrow buttons', () => {
     fixture.componentRef.setInput('totalPages', 5);
     fixture.componentRef.setInput('page', 2);
@@ -269,7 +285,7 @@ describe('PaginatorComponent', () => {
 
       expect(labels).toContain('Previous page');
       expect(labels).toContain('Next page');
-      expect(labels).toContain('Page 1, current page');
+      expect(labels).toContain('Page 1');
       expect(labels).toContain('Go to page 2');
     });
 
@@ -290,11 +306,11 @@ describe('PaginatorComponent', () => {
       // on where it goes and what agrees with it.
       const f = await configured({
         page: (page: number, isCurrent: boolean) =>
-          isCurrent ? `Seite ${page} von 5, aktuell` : `Zu Seite ${page}`,
+          isCurrent ? `Seite ${page} von 5` : `Zu Seite ${page}`,
       });
       const labels = buttonLabels(f);
 
-      expect(labels).toContain('Seite 1 von 5, aktuell');
+      expect(labels).toContain('Seite 1 von 5');
       expect(labels).toContain('Zu Seite 3');
     });
 

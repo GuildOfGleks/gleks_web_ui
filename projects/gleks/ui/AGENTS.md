@@ -391,7 +391,7 @@ provideGogConfig({
     seconds: 'Sekunden',
     // The one non-string field: it interpolates the page number, and word order and
     // agreement around a number vary by language, so it takes a formatter.
-    page: (page, isCurrent) => (isCurrent ? `Seite ${page}, aktuell` : `Zu Seite ${page} wechseln`),
+    page: (page, isCurrent) => (isCurrent ? `Seite ${page}` : `Zu Seite ${page} wechseln`),
   },
 });
 ```
@@ -561,22 +561,23 @@ from '@guildofgleks/ui'` does not compile.
 
 #### `gog-button`
 
-| Input          | Type                              | Default     | Notes                                                            |
-| -------------- | --------------------------------- | ----------- | ---------------------------------------------------------------- |
-| `variant`      | `GogVariant`                      | `'primary'` |                                                                  |
-| `severity`     | `GogSeverity`                     | `'accent'`  | what the action means; orthogonal to `variant` — see below       |
-| `size`         | `GogSize \| undefined`            | `'md'`      | via `GOG_CONFIG.control.size`                                    |
-| `disabled`     | `boolean`                         | `false`     |                                                                  |
-| `fullWidth`    | `boolean`                         | `false`     |                                                                  |
-| `type`         | `'button' \| 'submit' \| 'reset'` | `'button'`  |                                                                  |
-| `loading`      | `boolean`                         | `false`     | shows an inline `gog-spinner`, blocks clicks and form submission |
-| `debounce`     | `number \| undefined`             | `300`       | ms; via `GOG_CONFIG.button.debounce` — see note below            |
-| `ariaLabel`    | `string \| null`                  | `null`      | **use this, not a raw `aria-label` attribute**                   |
-| `ariaPressed`  | `boolean \| 'mixed' \| null`      | `null`      | toggle button; `false` renders `aria-pressed="false"`            |
-| `ariaExpanded` | `boolean \| null`                 | `null`      | disclosure / popup trigger                                       |
-| `ariaControls` | `string \| null`                  | `null`      | id of the controlled element; pairs with `ariaExpanded`          |
-| `ariaHasPopup` | `GogAriaHasPopup \| null`         | `null`      | `boolean \| 'menu' \| 'listbox' \| 'tree' \| 'grid' \| 'dialog'` |
-| `ripple`       | `boolean \| undefined`            | `false`     | press ripple; via `GOG_CONFIG.ripple.enabled`                    |
+| Input          | Type                              | Default     | Notes                                                             |
+| -------------- | --------------------------------- | ----------- | ----------------------------------------------------------------- |
+| `variant`      | `GogVariant`                      | `'primary'` |                                                                   |
+| `severity`     | `GogSeverity`                     | `'accent'`  | what the action means; orthogonal to `variant` — see below        |
+| `size`         | `GogSize \| undefined`            | `'md'`      | via `GOG_CONFIG.control.size`                                     |
+| `disabled`     | `boolean`                         | `false`     |                                                                   |
+| `fullWidth`    | `boolean`                         | `false`     |                                                                   |
+| `type`         | `'button' \| 'submit' \| 'reset'` | `'button'`  |                                                                   |
+| `loading`      | `boolean`                         | `false`     | shows an inline `gog-spinner`, blocks clicks and form submission  |
+| `debounce`     | `number \| undefined`             | `300`       | ms; via `GOG_CONFIG.button.debounce` — see note below             |
+| `ariaLabel`    | `string \| null`                  | `null`      | **use this, not a raw `aria-label` attribute**                    |
+| `ariaPressed`  | `boolean \| 'mixed' \| null`      | `null`      | toggle button; `false` renders `aria-pressed="false"`             |
+| `ariaExpanded` | `boolean \| null`                 | `null`      | disclosure / popup trigger                                        |
+| `ariaControls` | `string \| null`                  | `null`      | id of the controlled element; pairs with `ariaExpanded`           |
+| `ariaHasPopup` | `GogAriaHasPopup \| null`         | `null`      | `boolean \| 'menu' \| 'listbox' \| 'tree' \| 'grid' \| 'dialog'`  |
+| `ariaCurrent`  | `GogAriaCurrent \| null`          | `null`      | the current item of a set, e.g. `'page'`; set it on that one only |
+| `ripple`       | `boolean \| undefined`            | `false`     | press ripple; via `GOG_CONFIG.ripple.enabled`                     |
 
 Outputs: `gogClick: MouseEvent`.
 
@@ -608,7 +609,7 @@ substitute.** `<gog-button [attr.aria-pressed]="on()">` compiles, throws nothing
 nothing: the attribute lands on the `<gog-button>` custom element, which has no role, while the
 real `<button>` inside stays unmarked. The failure is invisible — the control looks right and is
 simply not a toggle to a screen reader. Use `[ariaPressed]`, `[ariaExpanded]`, `[ariaControls]`,
-`[ariaHasPopup]` and `ariaLabel`.
+`[ariaHasPopup]`, `[ariaCurrent]` and `ariaLabel`.
 
 `false` is not the same as unset. `null` omits the attribute; `false` renders
 `aria-pressed="false"` / `aria-expanded="false"`, which is what an off toggle or a closed
@@ -1763,7 +1764,9 @@ Model: `open: boolean` (default `true`, ignored while `collapsible` is off). No 
 The step buttons (`'Previous page'`/`'Next page'`) and the per-page names are configured, not
 input-driven: `GOG_CONFIG.labels.previousPage`/`nextPage`, and `labels.page`, a
 `(page: number, isCurrent: boolean) => string` formatter defaulting to
-`` `Page ${page}, current page` `` / `` `Go to page ${page}` ``.
+`` `Page ${page}` `` / `` `Go to page ${page}` ``. The current page's button carries
+`aria-current="page"`, which a screen reader announces itself — so a translated `labels.page`
+should not say "current" in the name as well, or it is heard twice.
 
 Models: `page: number` (1-based, self-clamps) and `pageSize: number`.
 
@@ -2233,6 +2236,7 @@ Shared enum-like types (`import type { ... } from '@guildofgleks/ui'`):
 | `GogSize`                     | `'xsm' \| 'sm' \| 'md' \| 'lg' \| 'slg'`                                                                            |
 | `GogVariant`                  | `'primary' \| 'secondary' \| 'outline' \| 'ghost'`                                                                  |
 | `GogSurfaceVariant`           | `'outlined' \| 'elevated' \| 'filled'` — `gog-card` and `gog-panel`                                                 |
+| `GogAriaCurrent`              | `boolean \| 'page' \| 'step' \| 'location' \| 'date' \| 'time'` — `gog-button`'s `ariaCurrent`                      |
 | `GogAriaHasPopup`             | `boolean \| 'menu' \| 'listbox' \| 'tree' \| 'grid' \| 'dialog'` — `gog-button`'s `ariaHasPopup`                    |
 | `GogTagVariant`               | `'success' \| 'danger' \| 'warning' \| 'info'`                                                                      |
 | `GogOrientation`              | `'horizontal' \| 'vertical'`                                                                                        |

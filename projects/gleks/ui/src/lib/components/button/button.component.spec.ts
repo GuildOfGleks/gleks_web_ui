@@ -169,6 +169,8 @@ describe('ButtonComponent', () => {
       ['ariaControls', 'aria-controls', 'filters-panel', 'filters-panel'],
       ['ariaHasPopup', 'aria-haspopup', 'dialog', 'dialog'],
       ['ariaHasPopup', 'aria-haspopup', true, 'true'],
+      ['ariaCurrent', 'aria-current', 'page', 'page'],
+      ['ariaCurrent', 'aria-current', true, 'true'],
     ] as const)(
       'should forward %s to the native button as %s',
       async (inputName, attribute, value, expected) => {
@@ -184,6 +186,7 @@ describe('ButtonComponent', () => {
       ['ariaExpanded', 'aria-expanded'],
       ['ariaControls', 'aria-controls'],
       ['ariaHasPopup', 'aria-haspopup'],
+      ['ariaCurrent', 'aria-current'],
     ] as const)('should omit %s when unset', (_inputName, attribute) => {
       expect(nativeButton().hasAttribute(attribute)).toBe(false);
     });
