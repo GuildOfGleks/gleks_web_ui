@@ -113,6 +113,13 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **A labelled `gog-divider` is named by its label.** `<gog-divider>OR</gog-divider>` was an
+  unnamed `role="separator"` with the label as ordinary content — and ARIA makes a separator's
+  children presentational, so whether the word was read at all was up to the browser. The host now
+  carries `aria-labelledby` pointing at the label element; a divider with nothing projected points
+  at an empty label and stays unnamed, as before. Every labelled divider now announces its label as
+  its name, which is the point — keep labels short.
+
 - **A `gogAccordionHeader` template no longer inherits the theme's title casing.**
   `--gog-accordion-header-text-transform` and the header's letter-spacing sat on the header
   `<button>`, so in the three themes that uppercase headers (`dark`, `light`, `terminal`) a custom

@@ -5,5 +5,10 @@
   to tell them apart.
 -->
 <span class="gog-divider__rule gog-divider__rule--start" aria-hidden="true"></span>
-<span class="gog-divider__label"><ng-content></ng-content></span>
+<!--
+  The label names the separator. ARIA makes a separator's children presentational, so without
+  `aria-labelledby` whether the words are read at all is up to the browser. With nothing projected
+  the reference resolves to an empty name, which is what an unlabelled rule has anyway.
+-->
+<span class="gog-divider__label" [id]="labelId"><ng-content></ng-content></span>
 <span class="gog-divider__rule gog-divider__rule--end" aria-hidden="true"></span>

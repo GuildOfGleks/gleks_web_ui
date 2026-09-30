@@ -101,4 +101,20 @@ describe('DividerComponent — projected label', () => {
     expect(label?.textContent?.trim()).toBe('OR');
     expect(label?.childNodes.length).toBeGreaterThan(0);
   });
+
+  it('is named by its label, and each divider by its own', async () => {
+    await TestBed.configureTestingModule({ imports: [LabelledHost] }).compileComponents();
+    const labelled = TestBed.createComponent(LabelledHost);
+    await labelled.whenStable();
+    const host = (labelled.nativeElement as HTMLElement).querySelector('gog-divider')!;
+    const label = host.querySelector('.gog-divider__label')!;
+
+    expect(label.id).toBeTruthy();
+    expect(host.getAttribute('aria-labelledby')).toBe(label.id);
+    expect(document.getElementById(label.id)).toBe(label);
+    // Another divider gets its own id, so two on one page never share a name.
+    const other = TestBed.createComponent(DividerComponent);
+    await other.whenStable();
+    expect((other.nativeElement as HTMLElement).getAttribute('aria-labelledby')).not.toBe(label.id);
+  });
 });

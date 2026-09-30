@@ -6,7 +6,7 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
-import { GogDividerVariant, GogOrientation } from '@guildofgleks/ui/shared';
+import { GogDividerVariant, GogOrientation, nextGogControlId } from '@guildofgleks/ui/shared';
 
 /**
  * A rule separating two regions, optionally with a label running through it.
@@ -32,6 +32,7 @@ import { GogDividerVariant, GogOrientation } from '@guildofgleks/ui/shared';
     '[class]': 'hostClasses()',
     role: 'separator',
     '[attr.aria-orientation]': 'orientation()',
+    '[attr.aria-labelledby]': 'labelId',
   },
 })
 export class DividerComponent {
@@ -42,6 +43,8 @@ export class DividerComponent {
    * start with an icon or avatar, instead of cutting across the whole row.
    */
   readonly inset = input(false, { transform: booleanAttribute });
+
+  protected readonly labelId = nextGogControlId('gog-divider-label');
 
   protected readonly hostClasses = computed(() =>
     [

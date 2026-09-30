@@ -79,7 +79,7 @@
   <app-doc-section
     id="accessibility"
     title="Accessibility"
-    lead="role='separator' on the host, with its orientation stated. The rule is aria-hidden; only a label has text to read."
+    lead="role='separator' on the host, with its orientation stated and named by its label. The rule is aria-hidden."
   >
     <p class="divider-page__note">
       Read from the live DOM. A separator is announced as a boundary, which is what it is for:
@@ -107,11 +107,10 @@
       </ng-template>
     </app-doc-matrix>
     <p class="divider-page__note">
-      A label's text is read after the separator — in Chrome it is in the accessibility tree as
-      ordinary text — but the separator itself carries no name. ARIA treats a separator's contents
-      as presentational, so a browser may drop the label; naming the separator from its label would
-      make it dependable, and is filed. Until then, do not put words a reader must hear only in a
-      divider's label.
+      A label names the separator: the host's <code>aria-labelledby</code> points at the label
+      element, so the words reach a screen reader as the separator's name rather than depending on
+      whether the browser keeps a separator's contents, which ARIA makes presentational. A plain
+      divider points at an empty label and has no name, as before.
     </p>
   </app-doc-section>
 </app-doc-page>

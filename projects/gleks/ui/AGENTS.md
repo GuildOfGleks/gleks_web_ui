@@ -1478,7 +1478,9 @@ the marker disappears on whichever fill it happens to match.
 | `variant`     | `GogDividerVariant` (`'solid'\|'dashed'\|'dotted'`) | `'solid'`      |
 | `inset`       | `boolean`                                           | `false`        |
 
-Label is projected content, not an input — put an icon or a `gog-tag` inside it if needed.
+Label is projected content, not an input — put an icon or a `gog-tag` inside it if needed. The
+label **names** the separator (`aria-labelledby` on the host points at it), so a screen reader hears
+"separator, OR" — keep it short, and give an icon-only label its own text alternative.
 
 ```html
 <gog-divider>OR</gog-divider>

@@ -285,3 +285,7 @@ clearable>`). The Card and Panel pages' "bare attribute works" notes stop being 
 - **A `gogAccordionHeader` template no longer inherits the theme's title casing/tracking.** On the
   Accordion page, any custom-header example that corrects it with `text-transform: none` can drop
   the correction; a sentence saying the template renders as written is worth adding.
+
+- **A labelled `gog-divider` is named by its label** (`aria-labelledby` on the host). The Divider
+  page's accessibility prose, if it says the separator has no name or advises against meaningful
+  label text, should say the label is the separator's name now.
