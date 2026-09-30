@@ -10,23 +10,32 @@ import { join } from 'node:path';
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 /**
- * Hosts this server will server-render for.
+ * Hosts this server will render for — **every domain the image is deployed under**.
  *
- * **Without this the site is client-rendered in production, silently.** `AngularNodeAppEngine`
- * validates the request's `Host` header against an allow-list to prevent SSRF, and that list is
- * empty by default — it comes from the engine options or `NG_ALLOWED_HOSTS`, *not* from
- * `angular.json`'s `security.allowedHosts` (that one configures the dev-server). With nothing
- * allowed, every request fails validation and `handle()` falls back to serving the empty
- * `index.csr.html` shell, so a crawler gets a page with no content, no per-page `<title>` and no
- * description — see `components/shared/seo.ts`. Reproduced by running the built server and
- * curling it: with the list set the response carries the real page; without it, the shell.
+ * **A host missing from this list gets `400 Bad Request`, not a page.** `AngularNodeAppEngine`
+ * validates the request's `Host` header against an allow-list to prevent SSRF. Measured on
+ * 2026-09-30 against the built server: an unlisted host is answered with a 400 and logs
+ * `Header "host" with value "…" is not allowed`. (Earlier Angular releases fell back to the empty
+ * `index.csr.html` shell instead, which is what this comment used to warn about.)
  *
- * `localhost`/`127.0.0.1` are here because the container is reached through a reverse proxy that
- * may forward its own `Host`, and because `npm run serve:ssr:gleks-ui-lab` is how this gets
- * checked locally. `NG_ALLOWED_HOSTS` (comma-separated) still overrides the whole list at
- * deploy time, which is the escape hatch if the domain ever changes before this file does.
+ * One image goes to both servers — the deploy workflow builds it for test and promotes the same
+ * image to production — so both public domains are here: `ui.chebureck.org` (test, glx-01) and
+ * `ui.guildofgleks.com` (production, glx-02). They must match `vars.LAB_DOMAIN` in the `test` and
+ * `production` environments, which is the `Host` the deploy smoke test sends.
+ *
+ * `angular.json`'s `security.allowedHosts` for this project is merged into the list too (also
+ * measured), but it is left empty on purpose so there is one list to read. `localhost` and
+ * `127.0.0.1` are for the Dockerfile's `HEALTHCHECK`, which requests `127.0.0.1`, and for
+ * `npm run serve:ssr:gleks-ui-lab`. `NG_ALLOWED_HOSTS` (comma-separated) replaces the whole list at
+ * run time — so a value set there must repeat `localhost,127.0.0.1`, or the health check fails.
  */
-const ALLOWED_HOSTS = ['ui.guildofgleks.com', 'www.ui.guildofgleks.com', 'localhost', '127.0.0.1'];
+const ALLOWED_HOSTS = [
+  'ui.guildofgleks.com',
+  'www.ui.guildofgleks.com',
+  'ui.chebureck.org',
+  'localhost',
+  '127.0.0.1',
+];
 
 const allowedHosts =
   process.env['NG_ALLOWED_HOSTS']?.split(',').map((host) => host.trim()) ?? ALLOWED_HOSTS;
@@ -38,9 +47,7 @@ const angularApp = new AngularNodeAppEngine({
    * **The allow-list is checked against the `Host` header the container actually receives, not
    * the one in the address bar.** Behind nginx that is whatever `proxy_set_header Host` was set
    * to — nginx's own default is the upstream (`localhost:9001`, a container name, an IP), none of
-   * which is the public domain. When it does not match, `handle()` quietly serves the empty
-   * `index.csr.html` shell instead of the rendered page, which is invisible in a browser and
-   * fatal for crawlers.
+   * which is the public domain. When it does not match, the request is rejected with a 400.
    *
    * With this on, the engine reads `X-Forwarded-Host` / `X-Forwarded-Proto` — which Cloudflare
    * and nginx do set to the public values — and the allow-list above matches again. Safe here
@@ -121,10 +128,8 @@ app.use(
 /**
  * Handle all other requests by rendering the Angular application.
  *
- * A rejected host makes `handle()` fall back to the client-side shell rather than fail, so the
- * only sign of a misconfigured deployment is a page that looks fine to a human and empty to a
- * crawler. The header is logged once per distinct host to make that visible in `docker logs`:
- * whatever it prints is what `NG_ALLOWED_HOSTS` has to contain.
+ * A rejected host is answered with a 400 (see `ALLOWED_HOSTS`). The header is logged once per
+ * distinct host so the cause is one line in `docker logs`: whatever it prints is the host to add.
  */
 const loggedHosts = new Set<string>();
 
@@ -136,8 +141,8 @@ app.use((req, res, next) => {
     if (!allowedHosts.includes(hostname) && !allowedHosts.includes('*')) {
       console.warn(
         `[ssr] Host "${host}" is not in allowedHosts (${allowedHosts.join(', ')}) — ` +
-          'requests from it are served the client-side shell, not server-rendered HTML. ' +
-          'Add it to NG_ALLOWED_HOSTS.',
+          'requests from it are rejected with 400 Bad Request. ' +
+          'Add it to ALLOWED_HOSTS in server.ts, or to NG_ALLOWED_HOSTS.',
       );
     }
   }

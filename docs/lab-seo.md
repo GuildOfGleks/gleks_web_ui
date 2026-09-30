@@ -12,14 +12,18 @@ bare client-side shell. A crawler asking for `/components/table` received a page
 content, no per-page title and no description; whether it ever saw the real page depended on it
 choosing to execute the JavaScript.
 
-The trap is that `angular.json` _does_ have a `security.allowedHosts` entry (set to `[]`) — but
-that one configures the **dev-server**, not the SSR runtime. The runtime reads the engine options
-or the `NG_ALLOWED_HOSTS` environment variable, neither of which was set.
+This paragraph used to say that `angular.json`'s `security.allowedHosts` configures only the
+dev-server. **On Angular 21 that is no longer true** — measured 2026-09-30: a lab built with a
+domain in that entry serves it, merged with the engine's own list. It is kept `[]` anyway so the
+hosts live in one place.
 
-Fixed in `projects/gleks-ui-lab/src/server.ts`: the production domain, its `www` form, and
-`localhost`/`127.0.0.1` (the container sits behind a reverse proxy that may forward its own
-`Host`, and the local check needs it) — with `NG_ALLOWED_HOSTS` still able to override the whole
-list at deploy time.
+Fixed in `projects/gleks-ui-lab/src/server.ts`, which holds **every domain the image is deployed
+under**, because one image is built for test and promoted unchanged to production:
+`ui.guildofgleks.com` and its `www` form (production, glx-02), `ui.chebureck.org` (test, glx-01),
+and `localhost`/`127.0.0.1` (the Dockerfile's `HEALTHCHECK` and the local check). Each domain must
+equal `vars.LAB_DOMAIN` in its GitHub environment, because that is the `Host` the deploy smoke test
+sends — a mismatch fails the deploy before the live container is touched. `NG_ALLOWED_HOSTS`
+replaces the whole list at run time; a value set there must repeat `localhost,127.0.0.1`.
 
 **Two ways it goes wrong, and they look different:**
 
