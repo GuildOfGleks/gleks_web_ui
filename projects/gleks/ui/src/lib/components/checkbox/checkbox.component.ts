@@ -9,6 +9,7 @@ import {
   input,
   model,
   signal,
+  booleanAttribute,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { IconComponent } from '../icon/icon.component';
@@ -55,9 +56,9 @@ export class CheckboxComponent implements ControlValueAccessor {
   readonly ariaLabel = input('');
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   readonly size = input<GogSize | undefined>(undefined);
-  readonly indeterminate = input(false);
-  readonly disabled = input(false);
-  readonly fullWidth = input(false);
+  readonly indeterminate = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
   /** Projected `gogCheckboxIcon` template, replacing the built-in tick. */
   protected readonly checkIconSlot = contentChild(GogCheckboxIconDirective);
 

@@ -177,6 +177,13 @@ exist.
 
   The context's other fields (`label`, `selected`, `index`, …) are typed without it.
 
+- **Every boolean input takes the attribute form.** `<gog-checkbox disabled>`,
+  `<gog-select clearable>` and `<gog-column sortable>` are all `true`; the string `"false"` is
+  `false`. An input that falls back to `GOG_CONFIG` when unset (`clearable`, `ripple`,
+  `appendToBody`, …) stays unset without the attribute, so the config still applies. Two kinds are
+  the exception, on purpose: **models** (`checked`, `open`), which Angular does not let transform,
+  and **tri-state inputs** where `null` means "no attribute" (`ariaPressed`, `ariaExpanded`,
+  `gog-chip`'s `selected`, `spellcheck`) — bind those with `[x]="…"`.
 - **Legacy `TemplateRef` inputs and string-keyed lookups still exist on a few components and
   still work, but are `@deprecated` — do not use them in new code.** See
   [Deprecated patterns — do not use in new code](#deprecated-patterns--do-not-use-in-new-code).
@@ -1662,8 +1669,8 @@ A surface for one self-contained thing — a product tile, a summary, a search r
 | --------------- | -------------------------------------------------------- | --------------------------------------- |
 | `variant`       | `GogSurfaceVariant` (`'outlined'\|'elevated'\|'filled'`) | `'outlined'`                            |
 | `size`          | `GogSize`                                                | `'md'` — drives padding and the row gap |
-| `disabled`      | `boolean` (bare attribute works)                         | `false`                                 |
-| `loading`       | `boolean` (bare attribute works)                         | `false`                                 |
+| `disabled`      | `boolean`                                                | `false`                                 |
+| `loading`       | `boolean`                                                | `false`                                 |
 | `skeletonLines` | `number`                                                 | `2` — body lines shown while `loading`  |
 
 No outputs. Slots, all **attribute** directives on your own elements (not `ng-template`):
@@ -1708,14 +1715,14 @@ component — media, heading, body (the default slot), footer — not by the ord
 
 A titled region of a page — a settings section, a dashboard area, a form group.
 
-| Input           | Type                             | Default      |
-| --------------- | -------------------------------- | ------------ |
-| `variant`       | `GogSurfaceVariant`              | `'elevated'` |
-| `size`          | `GogSize`                        | `'lg'`       |
-| `collapsible`   | `boolean` (bare attribute works) | `false`      |
-| `disabled`      | `boolean` (bare attribute works) | `false`      |
-| `loading`       | `boolean` (bare attribute works) | `false`      |
-| `skeletonLines` | `number`                         | `3`          |
+| Input           | Type                | Default      |
+| --------------- | ------------------- | ------------ |
+| `variant`       | `GogSurfaceVariant` | `'elevated'` |
+| `size`          | `GogSize`           | `'lg'`       |
+| `collapsible`   | `boolean`           | `false`      |
+| `disabled`      | `boolean`           | `false`      |
+| `loading`       | `boolean`           | `false`      |
+| `skeletonLines` | `number`            | `3`          |
 
 Model: `open: boolean` (default `true`, ignored while `collapsible` is off). No outputs beyond
 `openChange`. Slots: `gogPanelHeader`, `gogPanelFooter` — attribute directives on your elements.

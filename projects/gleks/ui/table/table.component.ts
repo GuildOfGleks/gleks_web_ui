@@ -17,6 +17,7 @@ import {
   TemplateRef,
   untracked,
   viewChild,
+  booleanAttribute,
 } from '@angular/core';
 import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import {
@@ -38,6 +39,7 @@ import {
   type GogColumnHeaderContext,
   defaultCompare,
 } from './column';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /**
  * Row height assumed before any row has been measured, for `virtualize`. A seed, not a claim: the
@@ -161,7 +163,7 @@ export class TableComponent<T extends object> {
    * Full width of the container by default. Set to `false` to shrink the table to fit
    * its columns' content instead.
    */
-  readonly fullWidth = input(true);
+  readonly fullWidth = input(true, { transform: booleanAttribute });
   /**
    * Rows per page; `0` (the default) means no pagination at all.
    *
@@ -179,7 +181,9 @@ export class TableComponent<T extends object> {
    * Whether the paginator offers a rows-per-page select. Forwarded straight to `gog-paginator`;
    * unset, it falls back to `GOG_CONFIG.paginator.showPageSizeSelect`, then to `false`.
    */
-  readonly showPageSizeSelect = input<boolean | undefined>(undefined);
+  readonly showPageSizeSelect = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /**
    * The sizes that select offers. Forwarded to `gog-paginator`; unset, falls back to
    * `GOG_CONFIG.paginator.pageSizeOptions`, then to `[10, 20, 30, 40, 50]`.
@@ -206,7 +210,7 @@ export class TableComponent<T extends object> {
    * />
    * ```
    */
-  readonly lazy = input(false);
+  readonly lazy = input(false, { transform: booleanAttribute });
   /**
    * How many rows exist on the server, across all pages. `lazy` only — without it the table
    * cannot know how many pages to offer, and pagination is disabled. Ignored when `lazy` is off,
@@ -222,7 +226,7 @@ export class TableComponent<T extends object> {
    * If the row's action is better expressed as a control — a link to a detail page, a delete
    * button — put that in a cell instead. This is for the whole-row-is-the-target case.
    */
-  readonly interactiveRows = input(false);
+  readonly interactiveRows = input(false, { transform: booleanAttribute });
   /**
    * Turns on row selection. `'single'` keeps at most one row selected, `'multiple'` any number.
    *
@@ -250,7 +254,7 @@ export class TableComponent<T extends object> {
    * Whether the checkbox column renders. On by default once `selectionMode` is set; turn it off
    * for a table that selects by clicking the row itself — see `selectOnRowClick`.
    */
-  readonly showSelectionColumn = input(true);
+  readonly showSelectionColumn = input(true, { transform: booleanAttribute });
   /**
    * Toggles a row's selection when the row itself is pressed, so a table can select without making
    * the reader aim for a checkbox. Needs `selectionMode`; does nothing without it.
@@ -267,18 +271,18 @@ export class TableComponent<T extends object> {
    * report in one gesture; one whose rows also navigate should keep the two apart and leave this
    * off. Off by default.
    */
-  readonly selectOnRowClick = input(false);
-  readonly showRowNumbers = input<boolean>(true);
-  readonly showTotal = input<boolean>(false);
+  readonly selectOnRowClick = input(false, { transform: booleanAttribute });
+  readonly showRowNumbers = input(true, { transform: booleanAttribute });
+  readonly showTotal = input(false, { transform: booleanAttribute });
   readonly emptyPlaceholder = input<string>('-');
   /** Alignment of pagination controls */
   readonly paginatorPosition = input<'left' | 'center' | 'right'>('center');
   /** Alignment of total count label (only when showTotal=true) */
   readonly totalPosition = input<'left' | 'right' | 'opposite'>('opposite');
   /** Show loading spinner instead of rows */
-  readonly loading = input<boolean>(false);
+  readonly loading = input(false, { transform: booleanAttribute });
   /** Show vertical borders between columns */
-  readonly showColumnBorders = input<boolean>(false);
+  readonly showColumnBorders = input(false, { transform: booleanAttribute });
   /**
    * Stick the header row to the top of the table's own scroll viewport.
    *
@@ -292,7 +296,7 @@ export class TableComponent<T extends object> {
    *
    * With `maxHeight` set the viewport is the vertical scrollport, and the header pins to it.
    */
-  readonly stickyHeader = input<boolean>(false);
+  readonly stickyHeader = input(false, { transform: booleanAttribute });
   /**
    * Caps the table's own scroll viewport, in any CSS length — `'420px'`, `'60vh'`. The table then
    * owns its vertical scrolling instead of growing to its content and letting an ancestor scroll
@@ -492,7 +496,7 @@ export class TableComponent<T extends object> {
    *
    * @default false
    */
-  readonly virtualize = input(false);
+  readonly virtualize = input(false, { transform: booleanAttribute });
 
   private readonly elRef = inject(ElementRef<HTMLElement>);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));

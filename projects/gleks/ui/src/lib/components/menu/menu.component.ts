@@ -37,6 +37,7 @@ import {
   resolveMenuPlacement,
   type GogMenuPlacement,
 } from './menu-position';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /**
  * One command in a `gog-menu`. Put it on the consumer's own `<button>`:
@@ -67,7 +68,9 @@ export class GogMenuItemDirective {
    * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
    * `[ripple]="false"` opts one item out of an app that turned it on everywhere.
    */
-  readonly ripple = input<boolean | undefined>(undefined);
+  readonly ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
 
   readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly rippleEnabled = resolveRipple(this.ripple, inject(GOG_CONFIG));

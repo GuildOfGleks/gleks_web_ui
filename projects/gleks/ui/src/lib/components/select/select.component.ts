@@ -13,6 +13,7 @@ import { GogDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared
 import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 @Component({
   selector: 'gog-select',
@@ -61,7 +62,9 @@ export class SelectComponent<
    *
    * @default false
    */
-  readonly virtualize = input<boolean | undefined>(undefined);
+  readonly virtualize = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   protected override readonly virtualizeRequest = this.virtualize;
 
   protected readonly panelTemplate = viewChild<TemplateRef<unknown>>('panelTpl');

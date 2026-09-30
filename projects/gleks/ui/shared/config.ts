@@ -1,4 +1,4 @@
-import { InjectionToken, Provider, Type, inject } from '@angular/core';
+import { InjectionToken, Provider, Type, booleanAttribute, inject } from '@angular/core';
 
 import {
   GogFloatLabelVariant,
@@ -471,4 +471,15 @@ export function resolveConfigured<T>(
   fallback: T,
 ): T {
   return instanceValue ?? configuredValue ?? fallback;
+}
+
+/**
+ * `booleanAttribute` for an input that falls back to `GOG_CONFIG` when unset: `undefined` stays
+ * `undefined`, so `resolveConfigured` still reaches the config, and everything else is coerced the
+ * way `booleanAttribute` does — the bare attribute (`<gog-select clearable>`) is `true`, the string
+ * `'false'` is `false`. `booleanAttribute` itself would turn an unset input into `false` and
+ * silently shadow the config.
+ */
+export function configurableBooleanAttribute(value: unknown): boolean | undefined {
+  return value === undefined ? undefined : booleanAttribute(value);
 }

@@ -12,6 +12,7 @@ import {
   output,
   signal,
   viewChild,
+  booleanAttribute,
 } from '@angular/core';
 
 import {
@@ -24,6 +25,7 @@ import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SEARCH_DEBOUNCE = 300;
@@ -89,7 +91,7 @@ export class AutocompleteComponent<
    * query is the classic double-filtering bug, and it silently drops rows whose match the
    * server found in a field this component cannot see.
    */
-  readonly filterLocal = input(true);
+  readonly filterLocal = input(true, { transform: booleanAttribute });
   /** How many characters before the panel opens at all. */
   readonly minLength = input<number | undefined>(undefined);
   /**
@@ -98,11 +100,13 @@ export class AutocompleteComponent<
    * before: nothing opens until enough has been typed. Unset, falls back to
    * `GOG_CONFIG.autocomplete.openOnFocus`, then to `true`.
    */
-  readonly openOnFocus = input<boolean | undefined>(undefined);
+  readonly openOnFocus = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /** Milliseconds of quiet before `gogSearch` fires. `0` emits on every keystroke. */
   readonly searchDebounce = input<number | undefined>(undefined);
   /** Shows a spinner in the trailing slot — for a server-backed source that is still loading. */
-  readonly loading = input(false);
+  readonly loading = input(false, { transform: booleanAttribute });
   /** Shown in place of the list when nothing matches. */
   readonly emptyMessage = input('No matches');
 
@@ -115,7 +119,9 @@ export class AutocompleteComponent<
   /**
    * @deprecated since 21.15.0 (2026-09-27) — remove the binding; the field itself filters. Removed in 21.16.0.
    */
-  override readonly filter = input<boolean | undefined>(undefined);
+  override readonly filter = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /**
    * @deprecated since 21.15.0 (2026-09-27) — use `placeholder`; the panel has no search box. Removed in 21.16.0.
    */
@@ -140,7 +146,7 @@ export class AutocompleteComponent<
    * soon as it stops matching, so the two never disagree. Read the typed text from `gogSearch`
    * rather than from `value`.
    */
-  readonly forceSelection = input(true);
+  readonly forceSelection = input(true, { transform: booleanAttribute });
 
   /** The current query, debounced. Wire a server-side lookup to this. */
   readonly gogSearch = output<string>();
@@ -297,7 +303,9 @@ export class AutocompleteComponent<
    *
    * @default false
    */
-  readonly virtualize = input<boolean | undefined>(undefined);
+  readonly virtualize = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   protected override readonly virtualizeRequest = this.virtualize;
 
   protected isSelected(option: TOption): boolean {

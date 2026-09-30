@@ -6,6 +6,7 @@ import {
   input,
   model,
   signal,
+  booleanAttribute,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -45,8 +46,8 @@ export class ToggleComponent implements ControlValueAccessor {
   readonly ariaLabel = input('');
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   readonly size = input<GogSize | undefined>(undefined);
-  readonly disabled = input(false);
-  readonly fullWidth = input(false);
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
   /** Which side of the switch the label sits on. */
   readonly labelPosition = input<'start' | 'end'>('end');
   /**

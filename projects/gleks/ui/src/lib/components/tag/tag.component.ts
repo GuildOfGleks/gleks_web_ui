@@ -7,6 +7,7 @@ import {
   contentChild,
   inject,
   input,
+  booleanAttribute,
 } from '@angular/core';
 
 import { IconComponent, type GogIconName } from '../icon/icon.component';
@@ -42,7 +43,7 @@ export class TagComponent {
   readonly iconName = input<GogIconName | null>(null);
   /** Projected `gogTagIcon` template, shown in place of `iconName`. */
   protected readonly iconSlot = contentChild(GogTagIconDirective);
-  readonly fullWidth = input(false);
+  readonly fullWidth = input(false, { transform: booleanAttribute });
 
   protected readonly hasIcon = computed(() => !!this.iconSlot() || this.iconName() !== null);
 

@@ -17,6 +17,7 @@ import {
   inject,
   input,
   signal,
+  booleanAttribute,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -42,6 +43,7 @@ import {
 } from './roving-focus';
 import { GogVirtualWindow } from './virtual-window';
 import { GogDropdownFilterPosition, GogFloatLabelVariant, GogSize } from './types';
+import { configurableBooleanAttribute } from './config';
 
 /** Context handed to a `gogDropdownChevron` template. */
 export interface GogDropdownChevronContext {
@@ -202,7 +204,9 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    * Whether to offer a clear button once something is selected. Unset, falls back to
    * `GOG_CONFIG.control.clearable`, then to the control's own default.
    */
-  readonly clearable = input<boolean | undefined>(undefined);
+  readonly clearable = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /**
    * Accessible name for the clear button. Unset, falls back to
    * `GOG_CONFIG.labels.clearSelection`, then to `'Clear selection'`.
@@ -227,7 +231,9 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    * Whether the panel shows a search box that narrows the option list. Unset, falls back to
    * `GOG_CONFIG.dropdown.filter`, then to `false`.
    */
-  readonly filter = input<boolean | undefined>(undefined);
+  readonly filter = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   readonly filterPlaceholder = input('Search...');
   /**
    * Which end of the panel the search box sticks to. Named to match `gog-multiselect`'s
@@ -274,24 +280,30 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    */
   readonly dropdownMaxHeight = input<string | null>(null);
   /** Unset, falls back to `GOG_CONFIG.dropdown.appendToBody`, then to `false`. */
-  readonly appendToBody = input<boolean | undefined>(undefined);
-  readonly disabled = input(false);
+  readonly appendToBody = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
+  readonly disabled = input(false, { transform: booleanAttribute });
   /** Projected `gogDropdownChevron` template, replacing the built-in chevron. */
   protected readonly chevronSlot = contentChild(GogDropdownChevronDirective);
   /**
    * Full width of the container by default, matching every other field-style control.
    * Set to `false` to shrink the trigger to fit its selected label instead.
    */
-  readonly fullWidth = input(true);
+  readonly fullWidth = input(true, { transform: booleanAttribute });
   /** Unset, falls back to `GOG_CONFIG.floatLabel.variant`, then to `'none'` (off). */
   readonly floatLabel = input<GogFloatLabelVariant | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.showPlaceholder`, then to `false`. */
-  readonly floatLabelShowPlaceholder = input<boolean | undefined>(undefined);
+  readonly floatLabelShowPlaceholder = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /**
    * Press ripple on the panel's options. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then
    * to `false`. The trigger itself never ripples — it is a field, not a button.
    */
-  readonly ripple = input<boolean | undefined>(undefined);
+  readonly ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
 
   readonly isOpen = signal(false);
 

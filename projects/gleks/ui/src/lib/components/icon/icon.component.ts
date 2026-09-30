@@ -7,6 +7,7 @@ import {
   input,
   inject,
   isDevMode,
+  booleanAttribute,
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GogIconName, ICON_DEFS } from '@guildofgleks/ui/shared';
@@ -50,7 +51,7 @@ export class IconComponent {
   readonly name = input<GogIconName>('close');
   readonly template = input<TemplateRef<unknown> | null>(null);
   readonly title = input('');
-  readonly ariaHidden = input(true);
+  readonly ariaHidden = input(true, { transform: booleanAttribute });
 
   protected readonly ariaLabel = computed(() =>
     this.ariaHidden() ? null : this.title() || this.name(),

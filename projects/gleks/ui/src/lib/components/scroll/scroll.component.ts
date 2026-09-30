@@ -13,11 +13,13 @@ import {
   output,
   signal,
   viewChild,
+  booleanAttribute,
 } from '@angular/core';
 
 import { GogScrollAxis, GogScrollOverscrollBehavior, GogScrollSize } from '@guildofgleks/ui/shared';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import { resolveLengthToken } from '@guildofgleks/ui/shared';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Snapshot of the viewport's native scroll geometry, emitted on every scroll/resize. */
 export interface GogScrollMetrics {
@@ -78,7 +80,9 @@ export class ScrollComponent {
    * Fades the thumb out after `hideDelay` ms of inactivity; false keeps it always visible.
    * Unset, falls back to `GOG_CONFIG.scroll.autoHide`, then to `true`.
    */
-  readonly autoHide = input<boolean | undefined>(undefined);
+  readonly autoHide = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /** Unset, falls back to `GOG_CONFIG.scroll.hideDelay`, then to `800`. */
   readonly hideDelay = input<number | undefined>(undefined);
   /** Pixel distance from an edge that still counts as "reached" for gogReachStart/End. */
@@ -89,7 +93,7 @@ export class ScrollComponent {
    * already owns focus/keyboard handling (a listbox panel, a dialog body) so this doesn't
    * add a redundant stop — the descendants' own focus still auto-scrolls into view either way.
    */
-  readonly focusable = input(true);
+  readonly focusable = input(true, { transform: booleanAttribute });
   /** Accessible name for the viewport when `focusable` is true and there is no visible label. */
   readonly ariaLabel = input('');
   /**
@@ -108,7 +112,9 @@ export class ScrollComponent {
    * conflicting signals for the same thing. Unset, falls back to `GOG_CONFIG.scroll.showTrack`,
    * then to `true`.
    */
-  readonly showTrack = input<boolean | undefined>(undefined);
+  readonly showTrack = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /**
    * Turns a vertical wheel into horizontal scrolling, for the case where the container has
    * nothing to scroll vertically. Without it, hovering a horizontal-only region and turning the
@@ -130,7 +136,9 @@ export class ScrollComponent {
    * because it changes what an existing `axis="horizontal"` instance does with a gesture it
    * currently passes on, and one `provideGogConfig` line turns it on everywhere.
    */
-  readonly horizontalWheel = input<boolean | undefined>(undefined);
+  readonly horizontalWheel = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
 
   readonly gogScroll = output<GogScrollMetrics>();
   readonly gogReachStart = output<GogScrollDirection>();

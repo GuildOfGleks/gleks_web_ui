@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  booleanAttribute,
+} from '@angular/core';
 
 import { GogProgressbarMode, GogProgressbarVariant, GogSize } from '@guildofgleks/ui/shared';
 
@@ -53,7 +59,7 @@ export class ProgressbarComponent {
   readonly variant = input<GogProgressbarVariant>('accent');
   readonly size = input<GogSize>('md');
   /** Renders the percentage next to the bar. Off by default — most bars sit under a label. */
-  readonly showValue = input(false);
+  readonly showValue = input(false, { transform: booleanAttribute });
   readonly ariaLabel = input('');
 
   protected readonly isIndeterminate = computed(() => this.mode() === 'indeterminate');

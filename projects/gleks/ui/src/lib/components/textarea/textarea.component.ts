@@ -12,6 +12,7 @@ import {
   model,
   signal,
   viewChild,
+  booleanAttribute,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -22,6 +23,7 @@ import { GogClearableState } from '@guildofgleks/ui/shared';
 import { GogFloatLabelState } from '@guildofgleks/ui/shared';
 import { GogFloatLabelVariant, GogSize, GogTextareaResize } from '@guildofgleks/ui/shared';
 import { IconComponent } from '../icon/icon.component';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
@@ -59,12 +61,12 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
    * `gog-inputfield`'s own `inputId` for why that is the default rather than an opt-in.
    */
   readonly inputId = input('');
-  readonly disabled = input(false);
+  readonly disabled = input(false, { transform: booleanAttribute });
   /**
    * Native `readonly` — see `gog-inputfield`'s own `readonly` for how it differs from
    * `disabled`. Suppresses the clear button while on.
    */
-  readonly readonly = input(false);
+  readonly readonly = input(false, { transform: booleanAttribute });
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   readonly size = input<GogSize | undefined>(undefined);
   /** Native `rows` attribute, controlling the field's initial height. */
@@ -87,18 +89,22 @@ export class TextareaComponent implements ControlValueAccessor, DoCheck {
    * Full width of the container by default, matching every other field-style control.
    * Set to `false` to shrink the field to fit its content instead.
    */
-  readonly fullWidth = input(true);
+  readonly fullWidth = input(true, { transform: booleanAttribute });
   /**
    * Whether to offer a clear button once the field has text. Unset, falls back to
    * `GOG_CONFIG.control.clearable`, then to `false`.
    */
-  readonly clearable = input<boolean | undefined>(undefined);
+  readonly clearable = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /** Accessible name for the clear button. Unset, falls back to `GOG_CONFIG.labels.clear`. */
   readonly clearAriaLabel = input<string | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.variant`, then to `'none'` (off). */
   readonly floatLabel = input<GogFloatLabelVariant | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.showPlaceholder`, then to `false`. */
-  readonly floatLabelShowPlaceholder = input<boolean | undefined>(undefined);
+  readonly floatLabelShowPlaceholder = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
 
   /** Two-way bindable value: `[(value)]="signal"` or `[value]` / `(valueChange)`. */
   readonly value = model<string>('');

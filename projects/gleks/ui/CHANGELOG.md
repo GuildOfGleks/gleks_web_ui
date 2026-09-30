@@ -90,6 +90,15 @@ reached 1.0, so breaking changes may land in minor versions.
   None of them mutates what it is given; the types now say so. Every existing binding compiles
   unchanged.
 
+- **Every boolean input takes the attribute form.** 10 inputs accepted `<gog-card disabled>` and
+  115 did not: `<gog-checkbox disabled>` failed `strictTemplates` with "Type 'string' is not
+  assignable to type 'boolean'", so the rule was per component. Plain `boolean` inputs now carry
+  `booleanAttribute`, and the ones that fall back to `GOG_CONFIG` when unset carry a variant that
+  leaves `undefined` alone, so an instance without the attribute still reads the config. The
+  string `"false"` is `false`. Models (`checked`, `open`) and tri-state inputs whose `null` means
+  "no attribute" (`ariaPressed`, `ariaExpanded`, `gog-chip`'s `selected`, `spellcheck`) are left as
+  they were. Every existing binding compiles unchanged.
+
 - **`GogScrollDirection` is exported** — the payload type of `gog-scroll`'s `gogReachStart` and
   `gogReachEnd`. It was declared without `export`, so a handler had to spell
   `'vertical' | 'horizontal'` by hand while the neighbouring `GogScrollMetrics` was importable.

@@ -7,12 +7,14 @@ import {
   input,
   model,
   untracked,
+  booleanAttribute,
 } from '@angular/core';
 
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { ButtonComponent } from '../button/button.component';
 import { SelectComponent } from '../select/select.component';
 import { GogPaginatorRangeMode, GogSize } from '@guildofgleks/ui/shared';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG.labels` supplies one. */
 const DEFAULT_PAGE_SIZE = 10;
@@ -54,7 +56,7 @@ export class PaginatorComponent {
    * Full width of the container by default. Set to `false` to shrink to fit the page
    * buttons instead.
    */
-  readonly fullWidth = input(true);
+  readonly fullWidth = input(true, { transform: booleanAttribute });
   /**
    * How many pages there are. Ignored when `totalRecords` is given — see there.
    */
@@ -78,7 +80,9 @@ export class PaginatorComponent {
    * Whether to offer the rows-per-page select. Unset, falls back to
    * `GOG_CONFIG.paginator.showPageSizeSelect`, then to `false`.
    */
-  readonly showPageSizeSelect = input<boolean | undefined>(undefined);
+  readonly showPageSizeSelect = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /**
    * The choices the select offers. Unset, falls back to
    * `GOG_CONFIG.paginator.pageSizeOptions`, then to `[10, 20, 30, 40, 50]`.
@@ -96,13 +100,13 @@ export class PaginatorComponent {
   /** `rangeMode="window"` only: how many page number buttons stay visible at once. */
   readonly visiblePages = input(5);
   /** `rangeMode="window"` only: always keep page 1 reachable, with a "…" if it's not adjacent. */
-  readonly showFirstPage = input(false);
+  readonly showFirstPage = input(false, { transform: booleanAttribute });
   /** `rangeMode="window"` only: always keep the last page reachable, with a "…" if it's not adjacent. */
-  readonly showLastPage = input(false);
+  readonly showLastPage = input(false, { transform: booleanAttribute });
   /** `rangeMode="ellipsis"` only: how many page numbers to keep on each side of the current page. */
   readonly siblingCount = input(2);
   readonly size = input<GogSize>('sm');
-  readonly disabled = input(false);
+  readonly disabled = input(false, { transform: booleanAttribute });
   /**
    * Accessible name of the `<nav>`. Unset, falls back to `GOG_CONFIG.labels.pagination`, then
    * to `'Pagination'`.

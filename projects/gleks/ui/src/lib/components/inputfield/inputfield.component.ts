@@ -14,6 +14,7 @@ import {
   signal,
   viewChild,
   type WritableSignal,
+  booleanAttribute,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -24,6 +25,7 @@ import { GogClearableState } from '@guildofgleks/ui/shared';
 import { GogFloatLabelState } from '@guildofgleks/ui/shared';
 import { GogFloatLabelVariant, GogInputMode, GogInputType, GogSize } from '@guildofgleks/ui/shared';
 import { IconComponent, type GogIconName } from '../icon/icon.component';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
@@ -109,7 +111,7 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
    * Suppresses the clear button and the number field's spin buttons for as long as it is on —
    * both promise an edit the field would refuse.
    */
-  readonly readonly = input(false);
+  readonly readonly = input(false, { transform: booleanAttribute });
   /** Native `maxlength`. Unset (`null`), no limit is applied. */
   readonly maxlength = input<number | null>(null);
   /** Native `minlength`. Unset (`null`), no minimum is applied. */
@@ -140,7 +142,9 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
    * to which glyphs are visible. Unset, falls back to `GOG_CONFIG.inputfield.showSpinButtons`,
    * then to `true`.
    */
-  readonly showSpinButtons = input<boolean | undefined>(undefined);
+  readonly showSpinButtons = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /** aria-label for the number field's increment button. Unset, falls back to `GOG_CONFIG.labels.increment`. */
   readonly incrementLabel = input<string | undefined>(undefined);
   /** aria-label for the number field's decrement button. Unset, falls back to `GOG_CONFIG.labels.decrement`. */
@@ -159,14 +163,14 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
    * reference the input by a known id.
    */
   readonly inputId = input('');
-  readonly disabled = input(false);
+  readonly disabled = input(false, { transform: booleanAttribute });
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   readonly size = input<GogSize | undefined>(undefined);
   /**
    * Full width of the container by default, matching every other field-style control.
    * Set to `false` to shrink the field to fit its content instead.
    */
-  readonly fullWidth = input(true);
+  readonly fullWidth = input(true, { transform: booleanAttribute });
   /** Default icon name for the leading icon. */
   readonly iconStart = input<GogIconName | ''>('');
   /**
@@ -182,13 +186,17 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
    * Whether to offer a clear button once the field has text. Unset, falls back to
    * `GOG_CONFIG.control.clearable`, then to `false`.
    */
-  readonly clearable = input<boolean | undefined>(undefined);
+  readonly clearable = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /** Accessible name for the clear button. Unset, falls back to `GOG_CONFIG.labels.clear`. */
   readonly clearAriaLabel = input<string | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.variant`, then to `'none'` (off). */
   readonly floatLabel = input<GogFloatLabelVariant | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.floatLabel.showPlaceholder`, then to `false`. */
-  readonly floatLabelShowPlaceholder = input<boolean | undefined>(undefined);
+  readonly floatLabelShowPlaceholder = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
 
   /**
    * Two-way bindable value: `[(value)]="signal"` or `[value]` / `(valueChange)`.

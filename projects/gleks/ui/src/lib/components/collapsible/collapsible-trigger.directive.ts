@@ -4,6 +4,7 @@ import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
 import { bindRipple } from '../ripple/ripple-controller';
 import { CollapsibleComponent } from './collapsible.component';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /**
  * Elements the browser already makes focusable and operable by keyboard. A `<button>` fires
@@ -49,7 +50,9 @@ export class GogCollapsibleTriggerDirective {
    * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
    * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
    */
-  readonly ripple = input<boolean | undefined>(undefined);
+  readonly ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
 
   protected readonly collapsible = inject(CollapsibleComponent);
   private readonly rippleEnabled = resolveRipple(this.ripple, inject(GOG_CONFIG));

@@ -4,6 +4,7 @@ import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
 import { bindRipple } from '../ripple/ripple-controller';
 import { GogSeverity, GogSize, GogVariant } from '@guildofgleks/ui/shared';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in default, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
@@ -91,7 +92,9 @@ export class GogButtonDirective {
    * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
    * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
    */
-  readonly ripple = input<boolean | undefined>(undefined);
+  readonly ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   readonly fullWidth = input(false, { transform: booleanAttribute });
 
   private readonly globalConfig = inject(GOG_CONFIG);

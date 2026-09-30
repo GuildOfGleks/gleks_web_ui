@@ -15,6 +15,7 @@ import {
   untracked,
   DestroyRef,
   PLATFORM_ID,
+  booleanAttribute,
 } from '@angular/core';
 import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import { GogSize } from '@guildofgleks/ui/shared';
@@ -24,6 +25,7 @@ import { IconComponent } from '../icon/icon.component';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Cycled by `skeletonWidth()` — see there for why these are fixed rather than random. */
 const SKELETON_WIDTHS = ['62%', '45%', '71%', '53%'] as const;
@@ -107,13 +109,15 @@ export class AccordionComponent {
    * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
    * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
    */
-  readonly ripple = input<boolean | undefined>(undefined);
+  readonly ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /** Declared after the input it reads: field initialisers run in source order. */
   protected readonly rippleEnabled = resolveRipple(this.ripple, inject(GOG_CONFIG));
 
-  readonly expandFirst = input(false);
-  readonly multi = input(false);
-  readonly loading = input(false);
+  readonly expandFirst = input(false, { transform: booleanAttribute });
+  readonly multi = input(false, { transform: booleanAttribute });
+  readonly loading = input(false, { transform: booleanAttribute });
   /**
    * How many skeleton rows to render while `loading` is true and `items` is still
    * empty — the common case of "the list itself hasn't arrived yet," where there's
@@ -122,7 +126,7 @@ export class AccordionComponent {
    * the eventual shape.
    */
   readonly skeletonCount = input(3);
-  readonly showChevron = input(true);
+  readonly showChevron = input(true, { transform: booleanAttribute });
   /**
    * When set, wraps each header button in `role="heading"` with this `aria-level`,
    * so screen-reader users navigating by headings can find accordion sections.

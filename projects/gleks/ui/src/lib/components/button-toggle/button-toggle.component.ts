@@ -11,6 +11,7 @@ import {
   model,
   signal,
   viewChildren,
+  booleanAttribute,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -23,6 +24,7 @@ import { GogRippleDirective } from '../ripple/ripple.directive';
 import { type GogOptionAccessor, isSameOptionValue, readOption } from '@guildofgleks/ui/shared';
 import { handleRovingFocusKeydown } from '@guildofgleks/ui/shared';
 import { GogButtonToggleAppearance, GogOrientation, GogSize } from '@guildofgleks/ui/shared';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
@@ -118,18 +120,20 @@ export class ButtonToggleGroupComponent<
   readonly optionIcon = input<GogOptionAccessor<TOption, GogIconName | null> | null>(null);
 
   /** Whether more than one option can be active at a time. */
-  readonly multiple = input(false);
+  readonly multiple = input(false, { transform: booleanAttribute });
   readonly appearance = input<GogButtonToggleAppearance>('joined');
   readonly orientation = input<GogOrientation>('horizontal');
   /**
    * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
    * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
    */
-  readonly ripple = input<boolean | undefined>(undefined);
+  readonly ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   readonly size = input<GogSize | undefined>(undefined);
-  readonly disabled = input(false);
-  readonly fullWidth = input(false);
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
   readonly ariaLabel = input('');
 
   /**

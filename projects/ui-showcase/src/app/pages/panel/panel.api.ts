@@ -9,10 +9,10 @@ export const PANEL_API: readonly DocApi[] = [
     inputs: [
       { name: 'variant', type: 'GogSurfaceVariant', default: "'elevated'" },
       { name: 'size', type: 'GogSize', default: "'lg'" },
-      { name: 'collapsible', type: 'boolean (booleanAttribute)', default: 'false' },
+      { name: 'collapsible', type: 'boolean', default: 'false' },
       { name: 'open', type: 'boolean (model)', default: 'true' },
-      { name: 'disabled', type: 'boolean (booleanAttribute)', default: 'false' },
-      { name: 'loading', type: 'boolean (booleanAttribute)', default: 'false' },
+      { name: 'disabled', type: 'boolean', default: 'false' },
+      { name: 'loading', type: 'boolean', default: 'false' },
       { name: 'skeletonLines', type: 'number', default: '3' },
     ],
     outputs: [{ name: 'openChange', payload: 'boolean' }],

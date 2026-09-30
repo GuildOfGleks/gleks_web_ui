@@ -8,6 +8,7 @@ import {
   inject,
   input,
   model,
+  booleanAttribute,
 } from '@angular/core';
 
 /**
@@ -34,7 +35,7 @@ export class CollapsibleComponent {
 
   /** Two-way bindable open state: `[(open)]="signal"`. */
   readonly open = model(false);
-  readonly disabled = input(false);
+  readonly disabled = input(false, { transform: booleanAttribute });
   /**
    * Closes the panel once focus leaves both the trigger and the content — e.g. Tabbing past
    * the last focusable element inside, or a click landing somewhere else on the page. Off by
@@ -42,7 +43,7 @@ export class CollapsibleComponent {
    * want the panel to stay open regardless of where focus goes next, so this is opt-in rather
    * than baked in.
    */
-  readonly collapseOnFocusOut = input(false);
+  readonly collapseOnFocusOut = input(false, { transform: booleanAttribute });
 
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly uid = `gog-collapsible-${CollapsibleComponent.nextUid++}`;

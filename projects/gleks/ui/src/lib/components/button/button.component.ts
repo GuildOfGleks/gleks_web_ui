@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  booleanAttribute,
+} from '@angular/core';
 
 import {
   GogAriaCurrent,
@@ -11,6 +19,7 @@ import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
 import { SpinnerComponent } from '../spinner/spinner.component';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 const DEFAULT_DEBOUNCE = 300;
 /** Built-in default, used when neither the instance input nor `GOG_CONFIG` supplies one. */
@@ -53,15 +62,17 @@ export class ButtonComponent {
   severity = input<GogSeverity>('accent');
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   size = input<GogSize | undefined>(undefined);
-  disabled = input<boolean>(false);
-  fullWidth = input<boolean>(false);
+  disabled = input(false, { transform: booleanAttribute });
+  fullWidth = input(false, { transform: booleanAttribute });
   type = input<'button' | 'submit' | 'reset'>('button');
-  loading = input<boolean>(false);
+  loading = input(false, { transform: booleanAttribute });
   /**
    * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
    * `[ripple]="false"` is how one button opts out of an app that turned it on everywhere.
    */
-  ripple = input<boolean | undefined>(undefined);
+  ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
 
   /**
    * Minimum time, in ms, between accepted clicks. This is a spam/double-click

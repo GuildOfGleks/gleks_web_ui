@@ -56,7 +56,7 @@ export const BUTTON_API: readonly DocApi[] = [
         default: 'false',
         config: 'GOG_CONFIG.ripple.enabled',
       },
-      { name: 'fullWidth', type: 'boolean (booleanAttribute)', default: 'false' },
+      { name: 'fullWidth', type: 'boolean', default: 'false' },
     ],
     outputs: [],
   },

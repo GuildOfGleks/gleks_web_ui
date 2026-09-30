@@ -12,6 +12,7 @@ import {
   output,
   signal,
   viewChild,
+  booleanAttribute,
 } from '@angular/core';
 
 import { ButtonComponent } from '../button/button.component';
@@ -90,7 +91,7 @@ export class AlertComponent {
   readonly heading = input<string>();
 
   /** Shows the close button and enables `dismissed`. The alert never removes itself. */
-  readonly dismissible = input(false);
+  readonly dismissible = input(false, { transform: booleanAttribute });
 
   /**
    * Overrides the severity's own glyph. `null` suppresses the icon entirely — for an alert whose

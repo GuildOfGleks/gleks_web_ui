@@ -7,6 +7,7 @@ import {
   input,
   model,
   signal,
+  booleanAttribute,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -55,13 +56,13 @@ export class RadioGroupComponent implements ControlValueAccessor, DoCheck {
   readonly name = input('');
   /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
   readonly size = input<GogSize | undefined>(undefined);
-  readonly disabled = input(false);
+  readonly disabled = input(false, { transform: booleanAttribute });
   readonly orientation = input<GogOrientation>('vertical');
   readonly errorMessage = input('');
   /** See `GogErrorDisplay`. Defaults to `'manual'`, matching every other control in the library. */
   /** Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to `'manual'`. */
   readonly errorDisplay = input<GogErrorDisplay | undefined>(undefined);
-  readonly fullWidth = input(false);
+  readonly fullWidth = input(false, { transform: booleanAttribute });
 
   /** Two-way bindable selected option id: `[(value)]="signal"`. */
   readonly value = model<string | number | null>(null);

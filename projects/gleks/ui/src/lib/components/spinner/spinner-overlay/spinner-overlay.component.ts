@@ -9,6 +9,7 @@ import {
   input,
   untracked,
   viewChild,
+  booleanAttribute,
 } from '@angular/core';
 
 import { GogSize, GogSpinnerVariant } from '@guildofgleks/ui/shared';
@@ -26,7 +27,7 @@ import { SpinnerComponent } from '../spinner.component';
   },
 })
 export class SpinnerOverlayComponent {
-  readonly loading = input(false);
+  readonly loading = input(false, { transform: booleanAttribute });
   readonly size = input<GogSize>('md');
   readonly ariaLabel = input('Loading');
   /**

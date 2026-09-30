@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  booleanAttribute,
+} from '@angular/core';
 
 import { GogDividerVariant, GogOrientation } from '@guildofgleks/ui/shared';
 
@@ -35,7 +41,7 @@ export class DividerComponent {
    * Indents the rule from the leading edge so it lines up with the *text* of a list whose rows
    * start with an icon or avatar, instead of cutting across the whole row.
    */
-  readonly inset = input(false);
+  readonly inset = input(false, { transform: booleanAttribute });
 
   protected readonly hostClasses = computed(() =>
     [

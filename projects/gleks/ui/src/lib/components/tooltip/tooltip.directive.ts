@@ -11,6 +11,7 @@ import {
   inject,
   input,
   signal,
+  booleanAttribute,
 } from '@angular/core';
 
 import { GOG_CONFIG, gogAddIdRef, gogAriaTarget, gogRemoveIdRef } from '@guildofgleks/ui/shared';
@@ -62,7 +63,7 @@ export class GogTooltipDirective {
   readonly gogTooltipShowDelay = input<number | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.tooltip.hideDelay`, then to `100` (ms). */
   readonly gogTooltipHideDelay = input<number | undefined>(undefined);
-  readonly gogTooltipDisabled = input(false);
+  readonly gogTooltipDisabled = input(false, { transform: booleanAttribute });
   /**
    * Extra class(es) applied to the bubble itself, for restyling one specific tooltip
    * instance. The bubble is appended to `document.body`, so a `--gog-tooltip-*` override

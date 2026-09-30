@@ -2,7 +2,12 @@ import { Injector, runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 
-import { GOG_CONFIG, provideGogConfig, resolveConfigured } from './config';
+import {
+  GOG_CONFIG,
+  configurableBooleanAttribute,
+  provideGogConfig,
+  resolveConfigured,
+} from './config';
 
 /** Reads GOG_CONFIG out of a child injector created with `providers`. */
 function configIn(providers: unknown[], parent?: Injector) {
@@ -96,5 +101,20 @@ describe('resolveConfigured', () => {
     // `debounce`, `showDelay` and `appendToBody`.
     expect(resolveConfigured(0, 300, 500)).toBe(0);
     expect(resolveConfigured(false, true, true)).toBe(false);
+  });
+});
+
+describe('configurableBooleanAttribute', () => {
+  it('keeps undefined unset, so the config fallback is still reached', () => {
+    expect(configurableBooleanAttribute(undefined)).toBeUndefined();
+  });
+
+  it('coerces everything else the way booleanAttribute does', () => {
+    expect(configurableBooleanAttribute('')).toBe(true); // the bare attribute
+    expect(configurableBooleanAttribute('false')).toBe(false);
+    expect(configurableBooleanAttribute('true')).toBe(true);
+    expect(configurableBooleanAttribute(false)).toBe(false);
+    expect(configurableBooleanAttribute(true)).toBe(true);
+    expect(configurableBooleanAttribute(null)).toBe(false);
   });
 });

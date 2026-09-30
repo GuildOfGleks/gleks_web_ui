@@ -7,6 +7,7 @@ import {
   model,
   output,
   signal,
+  booleanAttribute,
 } from '@angular/core';
 
 import { type GogIconName, IconComponent } from '../icon/icon.component';
@@ -14,6 +15,7 @@ import { GogSize, GogTagShape } from '@guildofgleks/ui/shared';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 @Component({
   selector: 'gog-chip',
@@ -28,8 +30,8 @@ import { GogRippleDirective } from '../ripple/ripple.directive';
 export class ChipComponent {
   readonly size = input<GogSize>('md');
   readonly shape = input<GogTagShape>('rounded');
-  readonly disabled = input(false);
-  readonly clickable = input(true);
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly clickable = input(true, { transform: booleanAttribute });
   /**
    * Turns the chip into a filter chip: one you toggle on and off, rather than one you press.
    *
@@ -54,8 +56,8 @@ export class ChipComponent {
    * as well would put it back where it started.
    */
   readonly selected = model<boolean | null>(null);
-  readonly removable = input(false);
-  readonly fullWidth = input(false);
+  readonly removable = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
   readonly ariaLabel = input('');
   readonly removeAriaLabel = input('Remove chip');
   readonly avatarUrl = input<string | null>(null);
@@ -65,7 +67,9 @@ export class ChipComponent {
    * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
    * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
    */
-  readonly ripple = input<boolean | undefined>(undefined);
+  readonly ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
 
   readonly gogClick = output<MouseEvent | KeyboardEvent>();
   readonly gogRemove = output<void>();

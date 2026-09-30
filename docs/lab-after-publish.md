@@ -258,3 +258,8 @@ transparent)`) rather than an opaque mix of border and surface. Its row in the t
   API-table types on the Select, Multiselect, Autocomplete, Button toggle, Radio group, Accordion,
   Table and Paginator pages gain `readonly`; any lab fixture kept mutable, or copied with `[...x]`
   just to satisfy the type, can become `readonly`.
+
+- **Every boolean input takes the attribute form** (`<gog-checkbox disabled>`, `<gog-select
+clearable>`). The Card and Panel pages' "bare attribute works" notes stop being special; if any
+  lab page or FAQ says to write `[disabled]="true"` because the bare form does not compile, it no
+  longer applies. Models and tri-state `| null` inputs are the stated exceptions.

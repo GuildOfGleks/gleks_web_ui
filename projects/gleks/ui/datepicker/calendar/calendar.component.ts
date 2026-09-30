@@ -12,6 +12,7 @@ import {
   output,
   signal,
   untracked,
+  booleanAttribute,
 } from '@angular/core';
 
 import { IconComponent } from '@guildofgleks/ui';
@@ -120,10 +121,10 @@ export class CalendarComponent {
   readonly defaultMonth = input<Date | null>(null);
   /** How many months to show side by side. Two is what makes a range picker usable. */
   readonly numberOfMonths = input(1);
-  readonly showTime = input(false);
+  readonly showTime = input(false, { transform: booleanAttribute });
   readonly hourFormat = input<GogHourFormat>('24');
   readonly minuteStep = input(1);
-  readonly showSeconds = input(false);
+  readonly showSeconds = input(false, { transform: booleanAttribute });
   /**
    * The "Today" button, which **selects** today's date — the view follows, because the
    * selection is what the calendar opens on.
@@ -132,13 +133,13 @@ export class CalendarComponent {
    * navigated read as "jump to today" to anyone who pressed it after paging away, and there is
    * no wording that makes a single control unambiguous about which of the two it does.
    */
-  readonly showTodayButton = input(true);
+  readonly showTodayButton = input(true, { transform: booleanAttribute });
   /**
    * The "This month" button, which only moves the *view* back to the current month and leaves
    * the selection alone. Off by default — it is for browsing far from today without committing
    * to anything, which is the rarer of the two needs.
    */
-  readonly showThisMonthButton = input(false);
+  readonly showThisMonthButton = input(false, { transform: booleanAttribute });
   readonly size = input<GogSize>('md');
   /**
    * Navigation, shortcut and time-section labels. Each falls back to the matching

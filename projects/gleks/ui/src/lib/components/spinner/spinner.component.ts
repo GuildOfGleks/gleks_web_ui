@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  booleanAttribute,
+} from '@angular/core';
 import { NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogSize, GogSpinnerVariant } from '@guildofgleks/ui/shared';
@@ -34,7 +41,7 @@ export class SpinnerComponent {
    * `contain: layout style`. Render it from your app's root, or expect it to cover the
    * contained ancestor. See README's "Overlays and the viewport".
    */
-  readonly overlay = input(false);
+  readonly overlay = input(false, { transform: booleanAttribute });
   /** What a screen reader calls the spinner. Empty makes it decorative: no role and no name. */
   readonly ariaLabel = input('Loading');
   /**

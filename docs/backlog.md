@@ -833,14 +833,6 @@ reason may stop holding.
   worked around it with `text-transform: none` on its subtitle, which is the evidence that a
   consumer has to know. The rebuilt page shows it uncorrected.
 
-- **Whether a boolean input accepts the attribute form depends on the component.** 59 boolean
-  inputs across the library are plain `input(false)` and 10 carry
-  `{ transform: booleanAttribute }` (counted 2026-09-26): `disabled` is one on `gog-card` and
-  `gog-panel` and the other on eleven components, `fullWidth` on one of twelve. Under
-  `strictTemplates` the plain ones fail to compile when written as a bare attribute —
-  `<gog-checkbox disabled>` is an error, `<gog-card disabled>` is not — so the failure is loud,
-  but the rule a consumer has to learn is per component. Adding the transform is additive.
-
 - **A labelled `gog-divider` is an unnamed separator.** `<gog-divider>OR</gog-divider>` renders
   `role="separator"` with the label as ordinary content, and ARIA makes a separator's children
   presentational — so whether the label is read at all is up to the browser. Chrome keeps it:

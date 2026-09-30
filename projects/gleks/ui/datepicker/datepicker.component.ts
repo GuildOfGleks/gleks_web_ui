@@ -16,6 +16,7 @@ import {
   output,
   signal,
   viewChild,
+  booleanAttribute,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -40,6 +41,7 @@ import {
   GogSize,
 } from '@guildofgleks/ui/shared';
 import { type GogDateRange, formatDate, parseDate } from '@guildofgleks/ui/shared';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
@@ -98,17 +100,17 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
   readonly disabledDates = input<((date: Date) => boolean) | null>(null);
   readonly defaultMonth = input<Date | null>(null);
   readonly numberOfMonths = input(1);
-  readonly showTime = input(false);
+  readonly showTime = input(false, { transform: booleanAttribute });
   readonly hourFormat = input<GogHourFormat>('24');
   readonly minuteStep = input(1);
-  readonly showSeconds = input(false);
+  readonly showSeconds = input(false, { transform: booleanAttribute });
   /** The "Today" button in the panel's footer, which **selects** today's date. */
-  readonly showTodayButton = input(true);
+  readonly showTodayButton = input(true, { transform: booleanAttribute });
   /**
    * A second footer button that only moves the *view* back to the current month, leaving the
    * selection alone. Off by default; see `gog-calendar` for why the two are separate controls.
    */
-  readonly showThisMonthButton = input(false);
+  readonly showThisMonthButton = input(false, { transform: booleanAttribute });
   /**
    * Forwarded to `gog-calendar`. Left unset they stay `undefined` all the way down, so the
    * calendar resolves them against `GOG_CONFIG.labels` itself rather than receiving an English
@@ -138,20 +140,26 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
    * text that isn't a real date leaves the value untouched and is reverted on blur, rather
    * than silently resetting the field.
    */
-  readonly allowTextInput = input(true);
+  readonly allowTextInput = input(true, { transform: booleanAttribute });
   /** Renders the calendar directly, with no field and no panel. */
-  readonly inline = input(false);
-  readonly disabled = input(false);
-  readonly fullWidth = input(true);
-  readonly clearable = input<boolean | undefined>(undefined);
+  readonly inline = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(true, { transform: booleanAttribute });
+  readonly clearable = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /** Unset, falls back to `GOG_CONFIG.labels.clearDate`, then to `'Clear date'`. */
   readonly clearAriaLabel = input<string | undefined>(undefined);
   readonly errorMessage = input('');
   readonly errorDisplay = input<GogErrorDisplay | undefined>(undefined);
   readonly size = input<GogSize | undefined>(undefined);
   readonly floatLabel = input<GogFloatLabelVariant | undefined>(undefined);
-  readonly floatLabelShowPlaceholder = input<boolean | undefined>(undefined);
-  readonly appendToBody = input<boolean | undefined>(undefined);
+  readonly floatLabelShowPlaceholder = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
+  readonly appendToBody = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   readonly dropdownDirection = input<GogDropdownDirection | undefined>(undefined);
   readonly dropdownZIndex = input<number | null>(null);
   /** Unset, falls back to `GOG_CONFIG.labels.openCalendar`, then to `'Open calendar'`. */

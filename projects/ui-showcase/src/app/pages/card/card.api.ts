@@ -18,8 +18,8 @@ export const CARD_API: readonly DocApi[] = [
     inputs: [
       { name: 'variant', type: 'GogSurfaceVariant', default: "'outlined'" },
       { name: 'size', type: 'GogSize', default: "'md'" },
-      { name: 'disabled', type: 'boolean (booleanAttribute)', default: 'false' },
-      { name: 'loading', type: 'boolean (booleanAttribute)', default: 'false' },
+      { name: 'disabled', type: 'boolean', default: 'false' },
+      { name: 'loading', type: 'boolean', default: 'false' },
       { name: 'skeletonLines', type: 'number', default: '2' },
     ],
     outputs: [],

@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  booleanAttribute,
+} from '@angular/core';
 
 import { GogSize, GogSkeletonAnimation, GogSkeletonShape } from '@guildofgleks/ui/shared';
 
@@ -29,7 +35,7 @@ export class SkeletonComponent {
   readonly height = input<string | null>(null);
   /** Number of stacked lines when `shape="text"`. The last line renders shorter. */
   readonly lines = input(1);
-  readonly rounded = input(true);
+  readonly rounded = input(true, { transform: booleanAttribute });
   readonly ariaLabel = input<string | null>(null);
 
   protected readonly lineList = computed(() => {

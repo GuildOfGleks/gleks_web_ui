@@ -15,6 +15,7 @@ import {
   model,
   signal,
   viewChild,
+  booleanAttribute,
 } from '@angular/core';
 
 import { resolveConfigured } from '@guildofgleks/ui/shared';
@@ -24,6 +25,7 @@ import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { GogTooltipDirective } from '../tooltip/tooltip.directive';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Height of the select-all/clear row, included in the panel height estimate. */
 const CONTROLS_ROW_HEIGHT = 38;
@@ -66,7 +68,7 @@ export class MultiselectComponent<
   TOption = GogDropdownOption,
   TValue = string | number,
 > extends GogDropdownBase<TValue[], TOption> {
-  readonly showControls = input(false);
+  readonly showControls = input(false, { transform: booleanAttribute });
   /** Where the "select all"/"clear" row sits relative to the option list. Sticky either way. */
   readonly controlsPosition = input<'top' | 'bottom'>('top');
   /**
@@ -118,7 +120,9 @@ export class MultiselectComponent<
    *
    * @default false
    */
-  readonly virtualize = input<boolean | undefined>(undefined);
+  readonly virtualize = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   protected override readonly virtualizeRequest = this.virtualize;
 
   protected readonly panelTemplate = viewChild<TemplateRef<unknown>>('panelTpl');

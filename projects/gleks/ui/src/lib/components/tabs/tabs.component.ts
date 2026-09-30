@@ -16,6 +16,7 @@ import {
   model,
   output,
   viewChildren,
+  booleanAttribute,
 } from '@angular/core';
 
 import { GogRippleDirective } from '../ripple/ripple.directive';
@@ -27,6 +28,7 @@ import { handleRovingFocusKeydown } from '@guildofgleks/ui/shared';
 import { GogOrientation, GogSize, GogTabsAlign } from '@guildofgleks/ui/shared';
 import { GOG_TABS_STATE, type GogTabsState } from './tabs-state';
 import { TabComponent } from './tab.component';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Context handed to a `gogTabHeader` template. */
 export interface GogTabHeaderContext {
@@ -99,13 +101,15 @@ export class TabsComponent implements GogTabsState {
   readonly align = input<GogTabsAlign>('start');
   readonly orientation = input<GogOrientation>('horizontal');
   readonly size = input<GogSize>('md');
-  readonly fullWidth = input(false);
+  readonly fullWidth = input(false, { transform: booleanAttribute });
   readonly ariaLabel = input('');
   /**
    * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
    * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
    */
-  readonly ripple = input<boolean | undefined>(undefined);
+  readonly ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
   /** Declared after the input it reads: field initialisers run in source order. */
   protected readonly rippleEnabled = resolveRipple(this.ripple, inject(GOG_CONFIG));
 
@@ -117,7 +121,7 @@ export class TabsComponent implements GogTabsState {
    * consumer setting it directly. On by default; turn it off for a header that never actually
    * overflows, or to own the scroll position yourself.
    */
-  readonly scrollActiveIntoView = input(true);
+  readonly scrollActiveIntoView = input(true, { transform: booleanAttribute });
   /**
    * Whether the header row shows its own draggable scroll thumb/track. Native scrolling
    * (wheel, touch, keyboard) works the same regardless; this is purely the visual affordance.
@@ -128,7 +132,9 @@ export class TabsComponent implements GogTabsState {
    * off, since the track is then the only way to reach an off-screen tab without a keyboard.
    * Set explicitly to pin it either way regardless of `scrollActiveIntoView`.
    */
-  readonly showScrollTrack = input<boolean | undefined>(undefined);
+  readonly showScrollTrack = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
 
   /** Emits the newly active index whenever it changes, including via keyboard. */
   readonly gogTabChange = output<number>();

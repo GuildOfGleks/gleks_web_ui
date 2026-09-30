@@ -7,6 +7,7 @@ import {
   input,
   model,
   signal,
+  booleanAttribute,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -64,14 +65,14 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
   readonly min = input(0);
   readonly max = input(100);
   readonly step = input(1);
-  readonly showValue = input(true);
-  readonly showThumb = input(true);
+  readonly showValue = input(true, { transform: booleanAttribute });
+  readonly showThumb = input(true, { transform: booleanAttribute });
   readonly errorMessage = input('');
   /** See `GogErrorDisplay`. Defaults to `'manual'`, matching every other control in the library. */
   /** Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to `'manual'`. */
   readonly errorDisplay = input<GogErrorDisplay | undefined>(undefined);
   readonly ariaLabel = input('');
-  readonly disabled = input(false);
+  readonly disabled = input(false, { transform: booleanAttribute });
   /**
    * Full width of the container by default. Set to `false` to size the track to
    * `--gog-slider-auto-width` instead — a slider's track has no content of its own to
@@ -83,7 +84,7 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
    * comes from `--gog-slider-vertical-length` (default `160px`), same idea as
    * `--gog-slider-auto-width` for the horizontal auto-width case.
    */
-  readonly fullWidth = input(true);
+  readonly fullWidth = input(true, { transform: booleanAttribute });
   /**
    * `'horizontal'` (default) or `'vertical'`. The developer picks per instance — there is
    * no global default for this, since it's a layout decision tied to where the slider sits,
@@ -98,7 +99,7 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
    * single one. When on, use `[(rangeValue)]` instead of `[(value)]` — the two are mutually
    * exclusive; `value`/`writeValue` are ignored while this is `true`, and vice versa.
    */
-  readonly range = input(false);
+  readonly range = input(false, { transform: booleanAttribute });
   /**
    * Accessible name for the start (lower) thumb in `range` mode. Falls back to `'Minimum'`,
    * prefixed with `label()`, or `ariaLabel()` when there is no label (e.g. `'Price Minimum'`)
@@ -118,9 +119,9 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
    * dot dims) and functionally (the native input's own `disabled` attribute takes it out of
    * the tab order), so the other thumb stays fully usable.
    */
-  readonly startDisabled = input(false);
+  readonly startDisabled = input(false, { transform: booleanAttribute });
   /** Disables only the end (upper) thumb in `range` mode. Mirrors `startDisabled`. */
-  readonly endDisabled = input(false);
+  readonly endDisabled = input(false, { transform: booleanAttribute });
 
   /** Two-way bindable value: `[(value)]="signal"`. Ignored when `range` is `true`. */
   readonly value = model<number>(0);

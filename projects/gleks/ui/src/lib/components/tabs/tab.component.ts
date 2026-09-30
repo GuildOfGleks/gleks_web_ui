@@ -10,6 +10,7 @@ import {
   inject,
   input,
   signal,
+  booleanAttribute,
 } from '@angular/core';
 
 import type { GogIconName } from '../icon/icon.component';
@@ -71,7 +72,7 @@ export class TabComponent {
   readonly label = input('');
   /** Optional leading icon in the header. */
   readonly iconName = input<GogIconName | null>(null);
-  readonly disabled = input(false);
+  readonly disabled = input(false, { transform: booleanAttribute });
 
   readonly panelId = `${this.uid}-panel`;
   readonly headerId = `${this.uid}-header`;

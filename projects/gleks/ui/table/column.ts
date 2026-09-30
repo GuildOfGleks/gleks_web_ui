@@ -1,4 +1,11 @@
-import { Directive, TemplateRef, contentChild, inject, input } from '@angular/core';
+import {
+  Directive,
+  TemplateRef,
+  contentChild,
+  inject,
+  input,
+  booleanAttribute,
+} from '@angular/core';
 
 /** Case-insensitive, numeric-aware (`"item2" < "item10"`) — the sensible default for text. */
 const defaultCollator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
@@ -95,7 +102,7 @@ export class GogColumn {
   /** Field name, or a dot-path into a nested property (e.g. `"address.city"`). */
   readonly field = input.required<string>();
   readonly header = input<string>('');
-  readonly sortable = input<boolean>(false);
+  readonly sortable = input(false, { transform: booleanAttribute });
   /** Fixed width, e.g. "120px" or "20%" */
   readonly width = input<string>('');
   /** Min width, e.g. "80px" */
