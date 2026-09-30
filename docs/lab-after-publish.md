@@ -263,3 +263,9 @@ transparent)`) rather than an opaque mix of border and surface. Its row in the t
 clearable>`). The Card and Panel pages' "bare attribute works" notes stop being special; if any
   lab page or FAQ says to write `[disabled]="true"` because the bare form does not compile, it no
   longer applies. Models and tri-state `| null` inputs are the stated exceptions.
+
+- **A sortable `gog-table` header holds a `<button>`.** The Table page's accessibility prose, if it
+  describes a focusable header cell, should describe the button; and any lab `gogColumnHeader`
+  example in a sortable column must not put a control in the template (it now renders inside the
+  sort button). Selectors in lab code or tests that click `th.gog-table__th` to sort should click
+  `.gog-table__sort-button` instead.

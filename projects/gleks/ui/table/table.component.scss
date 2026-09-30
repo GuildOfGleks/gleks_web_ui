@@ -124,7 +124,41 @@
   user-select: none;
 }
 
-.gog-table__th--sortable:focus-visible {
+/* Stretches the sort button's hit area over the cell. `relative` is overridden by the sticky
+   header's `sticky`, which is a containing block for the button's `::after` just the same. */
+.gog-table__th--sortable {
+  position: relative;
+}
+
+.gog-table__sort-button {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: inherit;
+  appearance: none;
+}
+
+.gog-table__sort-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.gog-table__sort-button:focus-visible {
+  outline: none;
+}
+
+/* The ring is drawn on the stretched area, so it outlines the cell exactly as it did when the
+   header cell itself took focus. */
+.gog-table__sort-button:focus-visible::after {
   outline: var(--gog-table-focus-ring-width) solid var(--gog-table-focus-ring);
   outline-offset: calc(var(--gog-table-focus-ring-width) * -1);
 }

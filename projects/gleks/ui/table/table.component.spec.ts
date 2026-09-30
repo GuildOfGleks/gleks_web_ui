@@ -258,31 +258,49 @@ describe('TableComponent with projected columns and templates', () => {
     return Array.from(hostFixture.nativeElement.querySelectorAll('.gog-table__row'));
   }
 
+  const sortButton = (header: HTMLElement) =>
+    header.querySelector<HTMLButtonElement>('button.gog-table__sort-button');
+
   it('cycles asc -> desc -> none when the same sortable header is clicked repeatedly', async () => {
     const idHeader = headerCells()[1]; // [0] is the row-number header
-    idHeader.click();
+    sortButton(idHeader)!.click();
     await hostFixture.whenStable();
     expect(idHeader.getAttribute('aria-sort')).toBe('ascending');
     expect(bodyRows()[0].textContent).toContain('1');
 
-    idHeader.click();
+    sortButton(idHeader)!.click();
     await hostFixture.whenStable();
     expect(idHeader.getAttribute('aria-sort')).toBe('descending');
     expect(bodyRows()[0].textContent).toContain('3');
 
-    idHeader.click();
+    sortButton(idHeader)!.click();
     await hostFixture.whenStable();
     expect(idHeader.getAttribute('aria-sort')).toBeNull();
     // back to insertion order
     expect(bodyRows()[0].textContent).toContain('2');
   });
 
-  it('activates sorting via keyboard (Enter/Space) on the header', async () => {
-    const idHeader = headerCells()[1];
-    idHeader.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+  // The ARIA sortable-table pattern: the header cell carries the state, a real button inside it
+  // is the control. Enter and Space are the button's own, so the cell needs no tabindex or key
+  // handling of its own.
+  it('puts a button named by the header inside a sortable header cell, and makes the cell no tab stop', () => {
+    const [, idHeader, nameHeader] = headerCells();
+    expect(idHeader.hasAttribute('tabindex')).toBe(false);
+    expect(sortButton(idHeader)?.type).toBe('button');
+    // The custom header template renders inside the button, so it names it.
+    expect(sortButton(idHeader)?.textContent?.trim()).toBe('ID#');
+    expect(sortButton(nameHeader)?.textContent?.trim()).toBe('Name');
+  });
+
+  it('renders no sort button while loading, and sorts nothing on a press of the cell', async () => {
+    hostFixture.componentRef.setInput('loading', true);
     await hostFixture.whenStable();
 
-    expect(idHeader.getAttribute('aria-sort')).toBe('ascending');
+    const idHeader = headerCells()[1];
+    expect(sortButton(idHeader)).toBeNull();
+    idHeader.click();
+    await hostFixture.whenStable();
+    expect(idHeader.getAttribute('aria-sort')).toBeNull();
   });
 
   it('renders custom header and body cell templates instead of the defaults', async () => {
@@ -480,9 +498,13 @@ describe('TableComponent — outputs, lazy mode and selection', () => {
    * By label, not by index: the row-number and selection columns shift the positions around, and
    * an index here silently starts clicking the wrong header the moment either is toggled.
    */
-  const header = (label: string) =>
-    [...headers()].find((h) => (h as HTMLElement).textContent?.trim().startsWith(label)) as
-      HTMLElement | undefined;
+  /** The header's sort button when it is sortable (what a press lands on), else the cell. */
+  const header = (label: string) => {
+    const cell = [...headers()].find((h) =>
+      (h as HTMLElement).textContent?.trim().startsWith(label),
+    ) as HTMLElement | undefined;
+    return cell?.querySelector<HTMLElement>('button.gog-table__sort-button') ?? cell;
+  };
   const settle = async () => {
     fixture.detectChanges();
     await fixture.whenStable();

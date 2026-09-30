@@ -2006,10 +2006,13 @@ or button inside a cell is better than a whole-row target.
 `width`/`minWidth`/`maxWidth`, `comparator` (custom `(a, b) => number`, defaults to a
 locale-aware collator for strings). Slots inside a column: `<ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row let-value="value" let-index="index">`
 (the `TypeOf` binding types `row`; `value` is `unknown` either way),
-`<ng-template gogColumnHeader let-header let-field="field">`.
+`<ng-template gogColumnHeader let-header let-field="field">`. **In a sortable column the header
+template renders inside the sort `<button>`**, and it names that button — so keep it to text and
+decorative marks: a link, button or form control in it would be a control nested in a control.
 
 **Sorting, empty/loading states and pagination are all built in** — sortable columns toggle
-asc → desc → unsorted on click, `loading` shows a spinner in place of rows, an empty `value`
+asc → desc → unsorted on click (the header holds a real `<button>`, so Enter and Space work and a
+screen reader hears "Name, button"; the state is `aria-sort` on the `<th>`), `loading` shows a spinner in place of rows, an empty `value`
 shows `emptyPlaceholder`, and `pageSize > 0` turns on the internal paginator automatically. You
 don't need to hand-roll any of this.
 

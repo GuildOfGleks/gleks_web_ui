@@ -90,11 +90,12 @@
     <h3>stickyHeader with maxHeight</h3>
     <p class="table-page__note">
       <code>maxHeight</code> gives the table its own vertical scroll, and only then can
-      <code>stickyHeader</code> pin the header to it. Scroll the table.
+      <code>stickyHeader</code> pin the header to it. Scroll the table: a pinned header still sorts,
+      from anywhere in its cell.
     </p>
     <gog-table [value]="tallRows" maxHeight="16rem" [stickyHeader]="true" size="sm">
-      <gog-column field="component" header="Component" />
-      <gog-column field="status" header="Status" />
+      <gog-column field="component" header="Component" [sortable]="true" />
+      <gog-column field="status" header="Status" [sortable]="true" />
       <gog-column field="owner" header="Owner" />
       <gog-column field="updated" header="Updated" />
     </gog-table>

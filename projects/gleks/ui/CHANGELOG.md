@@ -149,6 +149,15 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A sortable `gog-table` header is a button to a screen reader.** It was a `<th tabindex="0">`
+  that sorted on click and Enter, with no role saying it could be pressed — an ordinary column
+  header that happened to take focus. It now holds a real `<button>`, the ARIA sortable-table
+  pattern: `aria-sort` stays on the `<th>`, the button is the tab stop and takes Enter and Space
+  natively, and its hit area covers the whole cell, so a press on the padding still sorts. The
+  header looks the same at rest; the focus ring is drawn inside the cell rather than over its
+  bottom rule, 1px in from where it was. **A `gogColumnHeader` template in a sortable column now
+  renders inside that button**, so it must not contain a link, button or form control.
+
 - **`GOG_TOKEN_GROUPS` files the derived foundation tokens where they belong, and names its
   sections for what they hold.** The catalogue is generated from `theme.css`'s `── Section ──`
   headings, and the derived block had lost most of its headings: everything after the five z-index

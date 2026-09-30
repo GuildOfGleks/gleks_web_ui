@@ -778,13 +778,6 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
-- **A sortable `gog-table` header does not say it can be pressed.** It is a `<th>` with
-  `tabindex="0"` that sorts on click and Enter, with no button inside it and no role, and
-  `aria-sort` appears only once the column is sorted — read on the Table page on 2026-09-26. A
-  screen reader meets an ordinary column header that happens to be focusable. The ARIA sortable
-  table pattern puts a `<button>` in the header cell; the table's own sort handler would move onto
-  it unchanged.
-
 - **`gog-table` cannot start sorted.** The sort lives in a public `sortState` signal with no
   input, so a table whose data arrives sorted — every `lazy` table whose server has a default
   order — shows unsorted headers until someone clicks one, and a template cannot set it. An
