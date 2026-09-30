@@ -237,3 +237,10 @@ transparent)`) rather than an opaque mix of border and surface. Its row in the t
   - An API row for the token on the Select, Multiselect, Autocomplete, Button toggle and Table
     pages, with one sentence: never read at runtime, unbound keeps compiling as before, and
     `gogColumnBody`'s `value` stays `unknown`.
+
+- **`GOG_TOKEN_GROUPS` section names changed** (`'Stacking layers'` split up; `'Field sizing'` and
+  `'Float label geometry'` lost their parentheticals; new `'Field label'`), and the derived
+  foundation tokens report `layer: 'foundation'`. The lab's token reference is hand-maintained and
+  keys on its own ids, so nothing breaks — but if any page prints a section name or groups by
+  `layer`, re-read it against the installed package. Regenerating `theme-starter.css` will move
+  the derived block's declarations under their new headings (values unchanged).

@@ -118,6 +118,30 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`GOG_TOKEN_GROUPS` files the derived foundation tokens where they belong, and names its
+  sections for what they hold.** The catalogue is generated from `theme.css`'s `── Section ──`
+  headings, and the derived block had lost most of its headings: everything after the five z-index
+  steps — the whole `--gog-space-*` scale, the field padding, font-size, icon-offset and inset
+  scale, the field label and line-height tokens, the control padding, the toast's padding and
+  width, `--gog-panel-radius` and `--gog-elevated-surface-color`, 58 tokens in all — sat under a
+  section called `'Stacking layers'`. And `layer` was `'component'` for every derived foundation
+  token past the first heading, the elevation ladder and the status-fill text included, because
+  the generator decided the layer by the section's name. Section names are public strings, and
+  these change:
+  - `'Stacking layers'` is gone: its z-index steps join `--gog-z-base` in `'Overlay stacking'`,
+    and the rest move to `'Spacing & geometry'`, `'Control metrics'`, `'Field sizing'`,
+    `'Float label geometry'`, `'Toast stack'`, `'Elevation'` and a new `'Field label'`.
+  - `'Field sizing (input / select / multiselect share one scale)'` is now `'Field sizing'`, and
+    `'Float label geometry (input / textarea / select / multiselect)'` is `'Float label geometry'`.
+    Both lists were wrong: six controls read the field scale, including the autocomplete and the
+    datepicker.
+  - `'The elevation ladder'`, `'Text on a status fill'` and the groups above report
+    `layer: 'foundation'`. The layer is now decided by the derived block's `COMPONENT TOKENS`
+    banner rather than by a heading's name.
+
+  No token was added, removed or given a new value; the declarations only moved within their
+  block, where their order has no effect. `TOKENS.md` is regenerated.
+
 - **A loading `filled` card or panel showed a blank tint.** `gog-skeleton`'s bone was one fixed
   colour, and `filled` tints the surface to about the same lightness, so its placeholder bars
   measured 1.02 to 1.24:1 against the card while the same bars on `outlined` measured 1.08 to 1.44

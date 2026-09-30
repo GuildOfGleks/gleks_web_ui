@@ -64,33 +64,6 @@ not worth carrying here.
   on an autocomplete never rendered and is documented as such; with the query gone it is simply
   unread.
 
-- **A token section in `GOG_TOKEN_GROUPS` names the components that read it, and gets the list
-  wrong.** `'Float label geometry (input / textarea / select / multiselect)'` holds
-  `--gog-field-float-label-reserve`, `-in-top` and `-over-reserve`. In `theme.css` five component
-  families alias them, not four: `--gog-autocomplete-float-label-*` and
-  `--gog-datepicker-float-label-*` are in the list and are not in the name. (Textarea belongs
-  there — it renders through the input's `--gog-input-*` tokens.) Found 2026-09-20 while choosing
-  the token sections for the rebuilt showcase's Autocomplete page, which renders a section's real
-  name above the table and so puts the wrong list in front of a reader.
-
-  A section name is public: it is the heading the lab's token reference and the showcase both
-  print. The fix is a string, but it is one a consumer may have grepped for, and the neighbouring
-  `'Field sizing (input / select / multiselect share one scale)'` deserves the same check in the
-  same pass — it holds only the three `--gog-field-icon-glyph*` tokens, which `theme.css` reads
-  in one place, the five `--gog-field-*-icon-reserve` calculations, rather than in any one
-  component.
-
-  **And the worse instance, found 2026-09-20 while choosing the Toggle page's sections: a section
-  called `'Stacking layers'` holds the entire field sizing scale.** Two of its forty-odd tokens
-  are stacking (`--gog-badge-z`, `--gog-dropdown-z`); the rest are `--gog-field-*-padding-*`,
-  `--gog-field-*-font-size`, `--gog-field-*-icon-inset`, `--gog-control-checkbox-padding`,
-  `--gog-control-padding-*`, `--gog-elevated-surface-color` and the field line heights. This one
-  is not a rename, it is a split — and it has already cost something: the rebuilt showcase's
-  Inputfield, Select and Multiselect pages list `'Field sizing …'`, which holds three icon-glyph
-  tokens, while the padding and font-size scale those pages actually document is filed under
-  stacking and appears on none of them. Whoever splits it should walk the built pages' `tokens`
-  lists afterwards.
-
 - ~~**The dropdown panel's open-direction decision rests on a row height that is wrong in every
   theme.**~~ **Closed 2026-09-12, in the in-progress 21.13.0.** Found the same day by
   `docs/virtualization.md`'s iteration 0, which existed to check exactly this before anything new

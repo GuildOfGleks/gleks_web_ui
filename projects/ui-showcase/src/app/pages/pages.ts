@@ -61,39 +61,27 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
   inputfield: {
     load: () => import('./inputfield/inputfield-page').then((m) => m.InputfieldPage),
     api: INPUTFIELD_API,
-    tokens: [
-      'Input field',
-      'Field sizing (input / select / multiselect share one scale)',
-      'Float label geometry (input / textarea / select / multiselect)',
-    ],
+    tokens: ['Input field', 'Field sizing', 'Float label geometry', 'Field label'],
   },
   textarea: {
     load: () => import('./textarea/textarea-page').then((m) => m.TextareaPage),
     api: TEXTAREA_API,
-    tokens: ['Input field', 'Float label geometry (input / textarea / select / multiselect)'],
+    tokens: ['Input field', 'Field sizing', 'Float label geometry', 'Field label'],
   },
   select: {
     load: () => import('./select/select-page').then((m) => m.SelectPage),
     api: SELECT_API,
-    tokens: [
-      'Select',
-      'Field sizing (input / select / multiselect share one scale)',
-      'Float label geometry (input / textarea / select / multiselect)',
-    ],
+    tokens: ['Select', 'Field sizing', 'Float label geometry', 'Field label'],
   },
   multiselect: {
     load: () => import('./multiselect/multiselect-page').then((m) => m.MultiselectPage),
     api: MULTISELECT_API,
-    tokens: [
-      'Multiselect',
-      'Field sizing (input / select / multiselect share one scale)',
-      'Float label geometry (input / textarea / select / multiselect)',
-    ],
+    tokens: ['Multiselect', 'Field sizing', 'Float label geometry', 'Field label'],
   },
   autocomplete: {
     load: () => import('./autocomplete/autocomplete-page').then((m) => m.AutocompletePage),
     api: AUTOCOMPLETE_API,
-    tokens: ['Autocomplete', 'Float label geometry (input / textarea / select / multiselect)'],
+    tokens: ['Autocomplete', 'Field sizing', 'Float label geometry', 'Field label'],
   },
   datepicker: {
     load: () => import('./datepicker/datepicker-page').then((m) => m.DatepickerPage),
@@ -101,7 +89,9 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     tokens: [
       'Datepicker (the field; the grid inside it is themed by --gog-calendar-*)',
       'Calendar (the month grid inside gog-datepicker, and gog-calendar on its own)',
-      'Float label geometry (input / textarea / select / multiselect)',
+      'Field sizing',
+      'Float label geometry',
+      'Field label',
     ],
   },
   'dropdown-templates': {
@@ -123,12 +113,12 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
   'radio-group': {
     load: () => import('./radio-group/radio-group-page').then((m) => m.RadioGroupPage),
     api: RADIO_GROUP_API,
-    tokens: ['Radio group', 'Control metrics'],
+    tokens: ['Radio group', 'Control metrics', 'Field label'],
   },
   slider: {
     load: () => import('./slider/slider-page').then((m) => m.SliderPage),
     api: SLIDER_API,
-    tokens: ['Slider'],
+    tokens: ['Slider', 'Field label'],
   },
   icon: {
     load: () => import('./icon/icon-page').then((m) => m.IconPage),

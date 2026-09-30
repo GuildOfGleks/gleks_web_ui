@@ -81,10 +81,6 @@
      re-resolve inside each theme scope. */
   --gog-density: 1;
 
-  /* What a raised surface paints. Equal to the surface on light themes, where a shadow carries
-     elevation; dark themes lift it instead, because a shadow has nothing to darken on a near-black
-     page. */
-
   --gog-radius: 8px;
   /* Three border tiers: controls (2px), raised surfaces (`--gog-panel-border-width`) and this one
      for small inline marks — chip, tag, badge, table rows. Separate so a theme can thicken one
@@ -131,16 +127,16 @@
   --gog-control-checkbox-icon-size-lg: 18px;
   --gog-control-checkbox-icon-size-slg: 22px;
 
-  /* ── Button sizing ─────────────────────────────────────────────────────────── */
-
-  /* ── Field sizing (input / select / multiselect share one scale) ─────────────
-     Offsets follow `--gog-density`; the glyph box does not, because an icon that shrinks with the
-     padding stops being legible first. The text inset is derived as offset + glyph + offset. */
+  /* ── Field sizing ───────────────────────────────────────────────────────────────
+     One scale for every text field — input, textarea, select, multiselect, autocomplete and
+     datepicker. The padding, font-size and offset steps read other tokens, so they sit in the
+     derived block under the same heading. Offsets follow `--gog-density`; the glyph box does not,
+     because an icon that shrinks with the padding stops being legible first. */
   --gog-field-icon-glyph-xsm: 12px;
   --gog-field-icon-glyph-sm: 14px;
   --gog-field-icon-glyph: 16px;
 
-  /* ── Float label geometry (input / textarea / select / multiselect) ─────────
+  /* ── Float label geometry ───────────────────────────────────────────────────────
      One scale for every field that floats its label; each control aliases it, so one value retunes
      all of them and a single control can still be tuned alone. */
   --gog-field-float-label-reserve: 14px;
@@ -382,7 +378,7 @@
   --gog-danger-shade: var(--gog-text-color);
   --gog-warning-shade: var(--gog-text-color);
   --gog-info-shade: var(--gog-text-color);
-  /* ── Stacking layers ─────────────────────────────────────────────────────────
+  /* ── Overlay stacking ─────────────────────────────────────────────────────────
      All read `--gog-z-base`. The gaps leave room for an app to slot its own layer in between. */
   --gog-badge-z: calc(var(--gog-z-base) + 1);
   --gog-toast-base-z: calc(var(--gog-z-base) + 100);
@@ -391,6 +387,7 @@
   /* Above everything, including a dialog it may be covering. */
   --gog-spinner-overlay-z: calc(var(--gog-z-base) + 8000);
 
+  /* ── Spacing & geometry ─────────────────────────────────────────────────────── */
   --gog-space-4: calc(4px * var(--gog-density));
   --gog-space-8: calc(8px * var(--gog-density));
   --gog-space-12: calc(12px * var(--gog-density));
@@ -407,54 +404,39 @@
   --gog-space-md: var(--gog-space-16);
   --gog-space-lg: var(--gog-space-24);
   --gog-space-2xl: var(--gog-space-48);
+  --gog-panel-radius: calc(var(--gog-radius) + 8px);
+
+  /* ── Control metrics ────────────────────────────────────────────────────────── */
   /* The shared control padding, at the library's 2:1 horizontal-to-vertical ratio. */
   --gog-control-padding-y: var(--gog-space-12);
   --gog-control-padding-x: var(--gog-space-24);
   /* Padding around a checkable control's box is part of its pointer target: it is what lets the
      smallest checkbox reach 24×24 (WCAG 2.5.8) without growing the box. */
   --gog-control-checkbox-padding: var(--gog-space-8);
+  --gog-control-icon-offset: var(--gog-space-12);
+
+  /* ── Field sizing ───────────────────────────────────────────────────────────── */
   --gog-field-xsm-padding-y: var(--gog-space-4);
   --gog-field-xsm-padding-x: var(--gog-space-8);
   --gog-field-sm-padding-y: var(--gog-space-8);
   --gog-field-sm-padding-x: var(--gog-space-16);
+  --gog-field-md-padding-y: var(--gog-control-padding-y);
+  --gog-field-md-padding-x: var(--gog-control-padding-x);
   --gog-field-lg-padding-y: var(--gog-space-16);
   --gog-field-lg-padding-x: var(--gog-space-32);
   --gog-field-slg-padding-y: var(--gog-space-20);
   --gog-field-slg-padding-x: var(--gog-space-40);
-  --gog-field-float-label-over-gap: var(--gog-space-8);
-  --gog-toast-stack-padding: var(--gog-space-16);
-  /* The message wraps, so the cap is a measure in `ch`; the viewport clamp keeps the toast on screen
-     on narrow devices. */
-  --gog-toast-max-width: min(53ch, calc(100vw - var(--gog-toast-stack-padding) * 2));
-  --gog-field-xsm-icon-offset: var(--gog-space-8);
-  --gog-field-sm-icon-offset: var(--gog-space-8);
-  --gog-field-lg-icon-offset: var(--gog-space-16);
-  --gog-field-slg-icon-offset: var(--gog-space-20);
-  --gog-control-icon-offset: var(--gog-space-12);
-  --gog-elevated-surface-color: var(--gog-surface-color);
-  --gog-panel-radius: calc(var(--gog-radius) + 8px);
   --gog-field-xsm-font-size: var(--gog-text-xs);
   --gog-field-sm-font-size: var(--gog-text-sm);
+  --gog-field-md-font-size: var(--gog-text-md);
+  --gog-field-lg-font-size: var(--gog-text-lg);
   /* A type size among geometry, because it reads a token and so must live in this derived block. */
   --gog-field-slg-font-size: var(--gog-text-slg);
-
-  /* Leading for the three kinds of text a field renders — the value (one line, sized to the row),
-     the label and the error message (both may wrap) — declared once and aliased per component. */
-  --gog-field-line-height: var(--gog-line-height-normal);
-  --gog-field-label-line-height: var(--gog-line-height-snug);
-
-  /* The label above every form control, declared once so a theme restyles all eight together;
-     each component's `--gog-<block>-label-*` aliases these. */
-  --gog-field-label-color: var(--gog-accent-color);
-  --gog-field-label-font-family: var(--gog-font-heading);
-  --gog-field-label-font-size: var(--gog-text-sm);
-  --gog-field-label-font-weight: var(--gog-font-weight-regular);
-  --gog-field-label-letter-spacing: var(--gog-letter-spacing);
-  --gog-field-label-text-transform: var(--gog-text-transform);
-  --gog-field-error-line-height: var(--gog-line-height-snug);
-
-  --gog-field-md-padding-y: var(--gog-control-padding-y);
-  --gog-field-md-padding-x: var(--gog-control-padding-x);
+  --gog-field-xsm-icon-offset: var(--gog-space-8);
+  --gog-field-sm-icon-offset: var(--gog-space-8);
+  --gog-field-md-icon-offset: var(--gog-control-icon-offset);
+  --gog-field-lg-icon-offset: var(--gog-space-16);
+  --gog-field-slg-icon-offset: var(--gog-space-20);
 
   /* offset + glyph + offset. */
   --gog-field-xsm-icon-inset: calc(
@@ -472,9 +454,37 @@
   --gog-field-slg-icon-inset: calc(
     var(--gog-field-slg-icon-offset) * 2 + var(--gog-field-icon-glyph)
   );
-  --gog-field-md-font-size: var(--gog-text-md);
-  --gog-field-md-icon-offset: var(--gog-control-icon-offset);
-  --gog-field-lg-font-size: var(--gog-text-lg);
+
+  /* Leading for the three kinds of text a field renders — the value (one line, sized to the row),
+     the label and the error message (both may wrap) — declared once and aliased per component. */
+  --gog-field-line-height: var(--gog-line-height-normal);
+  --gog-field-label-line-height: var(--gog-line-height-snug);
+  --gog-field-error-line-height: var(--gog-line-height-snug);
+
+  /* ── Float label geometry ───────────────────────────────────────────────────── */
+  --gog-field-float-label-over-gap: var(--gog-space-8);
+
+  /* ── Field label ──────────────────────────────────────────────────────────────
+     The label above every form control, declared once so a theme restyles all eight together;
+     each component's `--gog-<block>-label-*` aliases these. */
+  --gog-field-label-color: var(--gog-accent-color);
+  --gog-field-label-font-family: var(--gog-font-heading);
+  --gog-field-label-font-size: var(--gog-text-sm);
+  --gog-field-label-font-weight: var(--gog-font-weight-regular);
+  --gog-field-label-letter-spacing: var(--gog-letter-spacing);
+  --gog-field-label-text-transform: var(--gog-text-transform);
+
+  /* ── Toast stack ──────────────────────────────────────────────────────────── */
+  --gog-toast-stack-padding: var(--gog-space-16);
+  /* The message wraps, so the cap is a measure in `ch`; the viewport clamp keeps the toast on screen
+     on narrow devices. */
+  --gog-toast-max-width: min(53ch, calc(100vw - var(--gog-toast-stack-padding) * 2));
+
+  /* ── Elevation ────────────────────────────────────────────────────────────────
+     What a raised surface paints. Equal to the surface on light themes, where a shadow carries
+     elevation; dark themes lift it instead, because a shadow has nothing to darken on a near-black
+     page. */
+  --gog-elevated-surface-color: var(--gog-surface-color);
 
   /* ══════════════════════════════════════════════════════════════════════════════
      COMPONENT TOKENS
