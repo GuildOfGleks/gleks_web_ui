@@ -183,8 +183,12 @@ jobs:
           PROBE_PATH="/components/table"
           PROBE_TITLE="Angular Table Component"
 
+          # `grep -F … >/dev/null`, never `grep -q`: this step runs under `bash -e -o pipefail`, and
+          # `grep -q` exits at the first match -- the title is ~500 bytes into a multi-megabyte page --
+          # so curl dies writing the rest (exit 23) and pipefail fails a probe that found the title.
+          # Every deploy's smoke test failed that way on 2026-09-30. Reading the whole stream avoids it.
           probe() {
-            curl -sf --max-time 10 -H "Host: $DOMAIN" "http://127.0.0.1:$1$PROBE_PATH" 2>/dev/null | grep -q "$PROBE_TITLE"
+            curl -sf --max-time 10 -H "Host: $DOMAIN" "http://127.0.0.1:$1$PROBE_PATH" 2>/dev/null | grep -F "$PROBE_TITLE" >/dev/null
           }
 
           wait_healthy() {
