@@ -110,13 +110,22 @@
         A <code>gogDropdownOption</code> template replaces one row, with the option itself plus
         <code>selected</code>, <code>disabled</code> and the resolved <code>label</code> in its
         context — so a custom row can decorate the label rather than re-derive it.
+        <code>[gogDropdownOptionTypeOf]="cities"</code> <app-since version="21.15.0" /> types
+        <code>let-option</code> as a <code>City</code>: bind the same array the field renders, and
+        <code>option.country</code> is checked under <code>strictTemplates</code> instead of being
+        <code>unknown</code>. It is never read at runtime.
       </p>
       <div class="demo-card__preview autocomplete-demo__field">
         <gog-autocomplete label="City" [options]="cities" [(value)]="slotCity">
-          <ng-template gogDropdownOption let-option let-label="label">
+          <ng-template
+            gogDropdownOption
+            [gogDropdownOptionTypeOf]="cities"
+            let-option
+            let-label="label"
+          >
             <span class="autocomplete-demo__row">
               <strong>{{ label }}</strong>
-              <small>{{ asCity(option).country }}</small>
+              <small>{{ option.country }}</small>
             </span>
           </ng-template>
         </gog-autocomplete>
@@ -129,7 +138,8 @@
       <p class="demo-card__meta">
         On by default, the field always ends up reflecting a real selection: editing is treated as
         transient, so <code>value</code> survives keystrokes and Escape or blur snaps the text back
-        to it. Turn it off for a create-as-you-type flow — the text is then left alone on blur and
+        to it. Turn it off for a create-as-you-type flow — the text is then left alone by blur and
+        by Escape, which only closes the panel <app-since version="21.15.0" />, and
         <code>value</code> is dropped as soon as it stops matching, so the two never disagree. Read
         what was typed from <code>gogSearch</code>, not from <code>value</code>.
       </p>
@@ -255,10 +265,11 @@
     <h3 class="doc-section__subtitle">Inputs — shared with Select</h3>
     <p class="doc-section__intro">
       These come from <code>GogDropdownBase</code> and behave exactly as they do on
-      <a routerLink="/components/select">Select</a>. The one exception is <code>filter</code>: an
+      <a routerLink="/components/select">Select</a>. The exception is the panel's search box: an
       autocomplete's trigger already <em>is</em> the search box, so the panel never gets a second
-      one — <code>filterMatch</code> still applies, though, since it plugs into
-      <code>filterLocal</code>'s own matching rather than the panel's search box.
+      one, and the four inputs that configure it are deprecated here (below).
+      <code>filterMatch</code> still applies, since it plugs into <code>filterLocal</code>'s own
+      matching rather than the panel's search box.
     </p>
     <div class="api-table-scroll">
       <table class="api-table">
@@ -291,6 +302,40 @@
         </tbody>
       </table>
     </div>
+
+    @if (deprecatedInputs.length > 0) {
+      <h3 id="deprecated" class="doc-section__subtitle">Deprecated inputs</h3>
+      <p class="doc-section__intro">
+        Inherited from the base the three dropdowns share, where they configure the panel's search
+        box — which this control does not have, so they never did anything on it. Remove the
+        bindings. Read from <code>GOG_DEPRECATIONS</code> in the installed package, so this table
+        empties itself once they are gone.
+      </p>
+      <div class="api-table-scroll">
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Instead</th>
+              <th>Deprecated</th>
+              <th>Removed in</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of deprecatedInputs; track row.name) {
+              <tr>
+                <td>
+                  <code>{{ row.name }}</code>
+                </td>
+                <td>{{ row.replacement }}</td>
+                <td>{{ row.since }} ({{ row.sinceDate }})</td>
+                <td>{{ row.removedIn }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
 
     <h3 class="doc-section__subtitle">Outputs</h3>
     <div class="api-table-scroll">
@@ -340,6 +385,15 @@
               <code>{{ '$' }}implicit, selected, disabled, label</code>
             </td>
             <td>Replaces one suggestion row.</td>
+          </tr>
+          <tr>
+            <td><code>[gogDropdownOptionTypeOf]</code> <app-since version="21.15.0" /></td>
+            <td><code>readonly TOption[]</code> — an input on <code>gogDropdownOption</code></td>
+            <td>
+              Bind the same array as <code>options</code> and <code>{{ '$' }}implicit</code> is
+              typed as its element instead of <code>unknown</code>. Never read at runtime; left
+              unbound, the template compiles exactly as before.
+            </td>
           </tr>
         </tbody>
       </table>

@@ -1,6 +1,10 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AutocompleteComponent, GogDropdownOptionDirective } from '@guildofgleks/ui';
+import {
+  AutocompleteComponent,
+  GOG_DEPRECATIONS,
+  GogDropdownOptionDirective,
+} from '@guildofgleks/ui';
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
@@ -73,7 +77,7 @@ const OWN_INPUTS: readonly ApiRow[] = [
     type: 'boolean',
     default: 'true',
     description:
-      'On, the field always ends up reflecting a real selection — editing is transient and Escape or blur snaps the text back. Off, the typed text is itself meaningful (a create-as-you-type flow): it survives blur and value is dropped as soon as it stops matching, so the two never disagree.',
+      'On, the field always ends up reflecting a real selection — editing is transient and Escape or blur snaps the text back. Off, the typed text is itself meaningful (a create-as-you-type flow): it is left alone by blur and by Escape, which only closes the panel, and value is dropped as soon as it stops matching, so the two never disagree.',
   },
   {
     name: 'inputId',
@@ -106,10 +110,22 @@ const MANY_CITIES: City[] = Array.from({ length: 10_000 }, (_, i) => ({
   country: ['Netherlands', 'Belgium', 'France', 'Germany'][i % 4],
 }));
 
+/**
+ * The panel-search-box inputs this control inherits and deprecated in 21.15.0. Matched by name
+ * against the manifest, which names inputs without their component — so the set is spelled out
+ * here, and the table empties itself once the installed package stops listing them.
+ */
+const DEPRECATED_INPUT_NAMES = new Set([
+  'filter',
+  'filterPlaceholder',
+  'filterPosition',
+  'filterEmptyMessage',
+]);
+
 const SHARED_INPUTS: readonly ApiRow[] = [
   {
     name: 'options',
-    type: 'TOption[]',
+    type: 'readonly TOption[]',
     default: '[]',
     description: 'The suggestions. Your own objects.',
   },
@@ -272,6 +288,9 @@ export class AutocompleteDocPage {
   protected readonly apiInputs = OWN_INPUTS;
   protected readonly sharedInputs = SHARED_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
+  protected readonly deprecatedInputs = GOG_DEPRECATIONS.filter(
+    (entry) => entry.kind === 'symbol' && DEPRECATED_INPUT_NAMES.has(entry.name),
+  );
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'autocomplete')?.tokens ?? [];
 
@@ -390,7 +409,7 @@ export class AutocompleteDocPage {
 
   protected readonly slotHtml = [
     '<gog-autocomplete label="City" [options]="cities" [(value)]="slotCity">',
-    '  <ng-template gogDropdownOption let-option let-label="label">',
+    '  <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="cities" let-option let-label="label">',
     '    <strong>{{ label }}</strong>',
     '    <small>{{ option.country }}</small>',
     '  </ng-template>',
@@ -405,17 +424,22 @@ export class AutocompleteDocPage {
     '  imports: [AutocompleteComponent, GogDropdownOptionDirective],',
     '  template: `',
     '    <gog-autocomplete label="City" [options]="cities" [(value)]="slotCity">',
-    '      <ng-template gogDropdownOption let-option let-label="label">',
+    '      <!-- [gogDropdownOptionTypeOf] types `option` as a City. -->',
+    '      <ng-template',
+    '        gogDropdownOption',
+    '        [gogDropdownOptionTypeOf]="cities"',
+    '        let-option',
+    '        let-label="label"',
+    '      >',
     '        <strong>{{ label }}</strong>',
-    '        <small>{{ asCity(option).country }}</small>',
+    '        <small>{{ option.country }}</small>',
     '      </ng-template>',
     '    </gog-autocomplete>',
     '  `,',
     '})',
     'export class ExampleComponent {',
-    '  protected asCity(option: unknown): City {',
-    '    return option as City;',
-    '  }',
+    '  protected readonly cities: readonly City[] = [/* ... */];',
+    '  protected readonly slotCity = signal<number | null>(null);',
     '}',
   ].join('\n');
 
@@ -450,10 +474,6 @@ export class AutocompleteDocPage {
     "  protected readonly draft = signal('');",
     '}',
   ].join('\n');
-
-  protected asCity(option: unknown): City {
-    return option as City;
-  }
 
   /** Stands in for a server lookup so the demo can show `loading` and `filterLocal="false"`. */
   protected search(query: string): void {
