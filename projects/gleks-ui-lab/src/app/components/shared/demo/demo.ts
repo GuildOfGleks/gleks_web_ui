@@ -12,11 +12,13 @@ import type { ExampleSource } from '../example-source';
  * - `row` — its top-level elements in one wrapping, centred row: buttons, chips, toggles.
  * - `rows` — each top-level element a wrapping row, the rows centred as one block; a leading
  *   `<span>` in a row is drawn as that row's label.
+ * - `fields` — form fields in centred rows of equal cells; a `<div>` cell stacks a field with
+ *   the line under it.
  * - `frame` — a narrow dashed box, for an example whose point is how it fills its container.
  *
  * A new arrangement is added here, never as CSS in an example.
  */
-export type DemoLayout = 'block' | 'row' | 'rows' | 'frame';
+export type DemoLayout = 'block' | 'row' | 'rows' | 'fields' | 'frame';
 
 /**
  * One documentation example: the live component, then its three files behind the tab strip.

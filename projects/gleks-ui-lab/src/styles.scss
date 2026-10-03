@@ -349,10 +349,33 @@ h3[id] {
   font-size: var(--gog-text-sm);
 }
 
+/* `fields` — form fields, one per cell, in centred rows of equal cells. A field fills its
+   container by default, so on its own it would stretch across the whole card; each top-level
+   element of the example is one cell, and a `<div>` cell stacks a field with the line under it. */
+.demo-preview--fields > * {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px 24px;
+}
+
+/* Flex rather than grid so a short last row is centred too, not left in the first columns. */
+.demo-preview--fields > * > * {
+  flex: 0 1 280px;
+  min-width: 220px;
+}
+
+.demo-preview--fields > * > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 /* `frame` — a narrow dashed box, centred: for an example whose point is how it fills its
    container. The dashed edge is the container the reader is meant to see filled. */
 .demo-preview--frame {
-  max-width: 320px;
+  max-width: 400px;
   padding: 12px;
   border: 1px dashed var(--gog-border-color);
 }
@@ -360,4 +383,10 @@ h3[id] {
 .demo-preview--frame > * {
   display: grid;
   row-gap: 12px;
+}
+
+/* A grid item will not shrink below its content's own width by default, and an <input>'s own
+   width is the browser's ~20 characters — wider than the frame on a narrow field. */
+.demo-preview--frame > * > * {
+  min-width: 0;
 }

@@ -14,7 +14,8 @@ export interface ApiRow {
 }
 
 /** Which table: it picks the column set, so every page's tables read the same way. */
-export type ApiTableKind = 'inputs' | 'outputs' | 'slots' | 'methods' | 'directives' | 'tokens';
+export type ApiTableKind =
+  'inputs' | 'outputs' | 'slots' | 'methods' | 'directives' | 'deprecations' | 'tokens';
 
 interface Column {
   readonly label: string;
@@ -42,6 +43,14 @@ const COLUMNS: Record<ApiTableKind, readonly Column[]> = {
     { label: 'Selector', field: 'name' },
     { label: 'Goes on', field: 'type' },
     { label: 'Description', field: 'description' },
+  ],
+  // A row built from a `GOG_DEPRECATIONS` entry: `type` is when it was deprecated, `default` the
+  // version that removes it, `description` what to use instead.
+  deprecations: [
+    { label: 'Name', field: 'name' },
+    { label: 'Instead', field: 'description' },
+    { label: 'Deprecated', field: 'type' },
+    { label: 'Removed in', field: 'default' },
   ],
   methods: [
     { label: 'Signature', field: 'name' },

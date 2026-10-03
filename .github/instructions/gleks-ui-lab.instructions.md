@@ -33,7 +33,7 @@ status, is `docs/lab-component-pages.md`; the rules are stated here because they
 
 ## Demo layout
 
-`<app-demo layout>` is one of `block` (default), `row`, `rows`, `frame` — defined once in
+`<app-demo layout>` is one of `block` (default), `row`, `rows`, `fields`, `frame` — defined once in
 `src/styles.scss`. A new arrangement is added there, never as CSS in an example. Every layout keeps
 three rules, and a new one must too:
 
@@ -45,7 +45,8 @@ three rules, and a new one must too:
   the tabs.
 
 In `rows`, a leading `<span>` in a row is its label, drawn in a fixed-width column so the rows
-line up.
+line up. Form fields use `fields`: each top-level element is one cell (220–280px) in centred, wrapping rows,
+so a field does not stretch across the card; a `<div>` cell stacks a field with a line under it.
 
 ## Component page outline
 
