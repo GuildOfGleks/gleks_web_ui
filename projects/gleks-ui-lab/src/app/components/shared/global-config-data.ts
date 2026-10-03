@@ -186,6 +186,11 @@ export const GLOBAL_CONFIG_BY_COMPONENT: Readonly<Record<string, readonly Global
     { key: 'labels.tablePagination' },
     { key: 'labels.selectRow' },
     { key: 'labels.selectAllRows' },
+    {
+      key: 'labels.tableRowSelected',
+      note: 'hidden text on a selected row, when the checkbox column is off',
+    },
+    { key: 'labels.tableEmpty', note: 'the row an empty table renders; emptyMessage wins' },
     { key: 'spinner.component', note: 'the spinner shown in place of rows while loading' },
     { key: 'spinner.variant', note: 'the same spinner, when no component is set' },
   ],

@@ -113,6 +113,8 @@ provideGogConfig({
     tablePagination: 'Tabellennavigation',
     selectRow: 'Zeile auswählen',
     selectAllRows: 'Alle Zeilen auswählen',
+    tableRowSelected: 'Ausgewählt', // gog-table's hidden state text, when the checkbox column is off
+    tableEmpty: 'Keine Daten', // gog-table with no rows; an instance's emptyMessage wins
     today: 'Heute',
     thisMonth: 'Aktueller Monat',
     previousMonth: 'Vorheriger Monat',
@@ -129,20 +131,31 @@ provideGogConfig({
 
 Five of those — `rowsPerPage`, `total`, `tablePagination`, `selectRow`, `selectAllRows` — arrived
 with the table's selection and the paginator's size select
-<span class="since" title="Added in 21.4.0">21.4.0</span>.
+<span class="since" title="Added in 21.4.0">21.4.0</span>. Two more are table strings
+<span class="since" title="Added in 21.15.0">21.15.0</span>: `tableEmpty`, the one row an empty
+table renders (`'No data'`; a table's own `emptyMessage` wins), and `tableRowSelected`, the visually
+hidden text that starts a selected row when the checkbox column is off, so the selection reaches a
+screen reader (`'Selected'`).
 
 ### `labels.page` takes a function, not a string
 
-The paginator's per-page button names ("Go to page 4", "Page 4, current page") interpolate the
-page number, so this one field is a formatter:
+The paginator's per-page button names ("Go to page 4", "Page 4") interpolate the page number, so
+this one field is a formatter:
 
 ```ts
 provideGogConfig({
   labels: {
-    page: (page, isCurrent) => (isCurrent ? `Seite ${page}, aktuell` : `Zu Seite ${page} wechseln`),
+    page: (page, isCurrent) => (isCurrent ? `Seite ${page}` : `Zu Seite ${page} wechseln`),
   },
 });
 ```
+
+**Leave "current" out of the current page's name.** <span class="since" title="Added in 21.15.0">21.15.0</span>
+The paginator marks that button with `aria-current="page"`, and a screen reader announces it on
+its own — a name that also says "current" says it twice. Before 21.15.0 the default name was
+"Page 4, current page", and the state existed only in that wording, so a translation that dropped
+it dropped the state too. `isCurrent` is still passed, for a language that words the two cases
+differently.
 
 It is the only non-string field in `labels`, and deliberately so: a template string with a `{0}`
 placeholder would be a second, weaker formatting language to learn — one that also cannot express
